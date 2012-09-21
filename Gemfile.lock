@@ -51,6 +51,7 @@ GEM
     erubis (2.7.0)
     execjs (1.4.0)
       multi_json (~> 1.0)
+    haml (3.1.7)
     hike (1.2.1)
     i18n (0.6.1)
     journey (1.0.4)
@@ -123,10 +124,12 @@ PLATFORMS
 DEPENDENCIES
   cache_digests
   coffee-rails (~> 3.2.1)
+  haml
   jquery-rails
   mysql2
   obis-bridge!
   rails (= 3.2.8)
+  sass
   sass-rails (~> 3.2.3)
   sqlite3
   uglifier (>= 1.0.3)

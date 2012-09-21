@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120606143100) do
+ActiveRecord::Schema.define(:version => 20120606145034) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.boolean  "cchp"
     t.datetime "created_at",           :null => false
     t.datetime "updated_at",           :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "affiliations", ["protocol_id"], :name => "index_affiliations_on_protocol_id"
@@ -34,6 +35,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.datetime "approval_date"
     t.datetime "created_at",         :null => false
     t.datetime "updated_at",         :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "approvals", ["service_request_id"], :name => "index_approvals_on_service_request_id"
@@ -43,6 +45,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.integer  "organization_id"
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "catalog_managers", ["identity_id"], :name => "index_catalog_managers_on_identity_id"
@@ -54,6 +57,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.decimal  "charge_amount",      :precision => 12, :scale => 4
     t.datetime "created_at",                                        :null => false
     t.datetime "updated_at",                                        :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "charges", ["service_request_id"], :name => "index_charges_on_service_request_id"
@@ -63,6 +67,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.string   "funding_source"
     t.datetime "created_at",     :null => false
     t.datetime "updated_at",     :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "excluded_funding_sources", ["subsidy_map_id"], :name => "index_excluded_funding_sources_on_subsidy_map_id"
@@ -75,6 +80,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.datetime "date"
     t.datetime "created_at",   :null => false
     t.datetime "updated_at",   :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "fulfillments", ["line_item_id"], :name => "index_fulfillments_on_line_item_id"
@@ -89,6 +95,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.datetime "irb_expiration_date"
     t.datetime "created_at",          :null => false
     t.datetime "updated_at",          :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "human_subjects", ["protocol_id"], :name => "index_human_subjects_on_protocol_id"
@@ -108,6 +115,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.string   "phone"
     t.datetime "created_at",       :null => false
     t.datetime "updated_at",       :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "identities", ["email"], :name => "index_identities_on_email"
@@ -125,6 +133,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.boolean  "cancer"
     t.datetime "created_at",   :null => false
     t.datetime "updated_at",   :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "impact_areas", ["protocol_id"], :name => "index_impact_areas_on_protocol_id"
@@ -136,6 +145,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.string   "ide_number"
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "investigational_products", ["protocol_id"], :name => "index_investigational_products_on_protocol_id"
@@ -146,6 +156,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.text     "inventors"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "ip_patents", ["protocol_id"], :name => "index_ip_patents_on_protocol_id"
@@ -163,6 +174,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.datetime "in_process_date"
     t.datetime "created_at",             :null => false
     t.datetime "updated_at",             :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "line_items", ["service_request_id"], :name => "index_line_items_on_service_request_id"
@@ -186,6 +198,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.boolean  "is_available"
     t.datetime "created_at",   :null => false
     t.datetime "updated_at",   :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "organizations", ["is_available"], :name => "index_organizations_on_is_available"
@@ -198,6 +211,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.datetime "date"
     t.datetime "created_at",             :null => false
     t.datetime "updated_at",             :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "past_statuses", ["sub_service_request_id"], :name => "index_past_statuses_on_sub_service_request_id"
@@ -217,6 +231,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.datetime "effective_date"
     t.datetime "created_at",                                                :null => false
     t.datetime "updated_at",                                                :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "pricing_maps", ["service_id"], :name => "index_pricing_maps_on_service_id"
@@ -228,6 +243,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.string   "role"
     t.datetime "created_at",     :null => false
     t.datetime "updated_at",     :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "project_roles", ["protocol_id"], :name => "index_project_roles_on_protocol_id"
@@ -256,6 +272,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.string   "federal_phs_sponsor"
     t.datetime "created_at",                                                 :null => false
     t.datetime "updated_at",                                                 :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "protocols", ["obisid"], :name => "index_protocols_on_obisid"
@@ -268,6 +285,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.boolean  "ip_patents"
     t.datetime "created_at",               :null => false
     t.datetime "updated_at",               :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "research_types", ["protocol_id"], :name => "index_research_types_on_protocol_id"
@@ -290,6 +308,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.boolean  "optional"
     t.datetime "created_at",         :null => false
     t.datetime "updated_at",         :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "service_relations", ["service_id"], :name => "index_service_relations_on_service_id"
@@ -312,6 +331,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.datetime "submitted_at"
     t.datetime "created_at",               :null => false
     t.datetime "updated_at",               :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "service_requests", ["obisid"], :name => "index_service_requests_on_obisid"
@@ -333,6 +353,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.integer  "organization_id"
     t.datetime "created_at",                                         :null => false
     t.datetime "updated_at",                                         :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "services", ["is_available"], :name => "index_services_on_is_available"
@@ -346,6 +367,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.boolean  "basic_science"
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "study_types", ["protocol_id"], :name => "index_study_types_on_protocol_id"
@@ -359,6 +381,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.string   "status"
     t.datetime "created_at",         :null => false
     t.datetime "updated_at",         :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "sub_service_requests", ["organization_id"], :name => "index_sub_service_requests_on_organization_id"
@@ -369,6 +392,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.string   "email"
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "submission_emails", ["organization_id"], :name => "index_submission_emails_on_organization_id"
@@ -379,6 +403,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.integer  "pi_contribution"
     t.datetime "created_at",         :null => false
     t.datetime "updated_at",         :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "subsidies", ["service_request_id"], :name => "index_subsidies_on_service_request_id"
@@ -389,6 +414,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.decimal  "max_percentage",  :precision => 5,  :scale => 2
     t.datetime "created_at",                                     :null => false
     t.datetime "updated_at",                                     :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "subsidy_maps", ["organization_id"], :name => "index_subsidy_maps_on_organization_id"
@@ -398,6 +424,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.integer  "organization_id"
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "super_users", ["organization_id"], :name => "index_super_users_on_organization_id"
@@ -408,6 +435,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.string   "token"
     t.datetime "created_at",         :null => false
     t.datetime "updated_at",         :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "tokens", ["service_request_id"], :name => "index_tokens_on_service_request_id"
@@ -420,6 +448,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.datetime "iacuc_expiration_date"
     t.datetime "created_at",            :null => false
     t.datetime "updated_at",            :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "vertebrate_animals", ["protocol_id"], :name => "index_vertebrate_animals_on_protocol_id"
@@ -430,6 +459,7 @@ ActiveRecord::Schema.define(:version => 20120606143100) do
     t.string   "billing"
     t.datetime "created_at",   :null => false
     t.datetime "updated_at",   :null => false
+    t.datetime "deleted_at"
   end
 
   add_index "visits", ["line_item_id"], :name => "index_visits_on_line_item_id"

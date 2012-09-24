@@ -1,0 +1,15 @@
+.clear
+- cache institutions do
+  #institution_accordion
+    - institutions.each do |institution|
+      %h3
+        = link_to institution.name, update_description_navigation_path(institution), :class => institution.css_class
+      %div.institution
+        .provider_accordion
+          - institution.providers.order('`order`').each do |provider|
+            %h3
+              = link_to provider.name, update_description_navigation_path(provider), :class => provider.css_class
+            %div.provider
+              - provider.programs.order('`order`').each do |program|
+                %h4
+                  = link_to program.name, update_description_navigation_path(program), :remote => true, :method => :post

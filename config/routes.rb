@@ -1,4 +1,11 @@
 SparcRails::Application.routes.draw do
+  resources :navigations do
+    member do
+      post 'update_description'
+    end
+  end
+
+  root :to => 'navigations#index'
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

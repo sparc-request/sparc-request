@@ -1,0 +1,6 @@
+.line-items
+  - service_request.line_items.each do |line_item|
+    .line_item
+      %div= line_item.service.abbreviation
+      = link_to image_tag('cancel.png'), '#', :class => 'remove-button'
+

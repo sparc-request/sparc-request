@@ -8,6 +8,9 @@ loadDescription = (url) ->
     url: url
 
 $(document).ready ->
+  $(document).ajaxError ->
+      alert("Connection to the server has been terminated and/or failed.  Data may have been lost")
+
   $('#institution_accordion').accordion
     autoHeight: false
     collapsible: true
@@ -24,5 +27,4 @@ $(document).ready ->
   
 
   $('.title .name a').live 'click', ->
-    console.log $(this)
     $(this).parents('.title').siblings('.service-description').toggle()

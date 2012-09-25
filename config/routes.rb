@@ -12,6 +12,7 @@ SparcRails::Application.routes.draw do
     end
   end
 
+  match 'rubyception' => 'rubyception/application#index'
   root :to => 'navigations#index'
   # The priority is based upon order of creation:
   # first created -> highest priority.

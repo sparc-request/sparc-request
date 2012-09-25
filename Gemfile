@@ -11,6 +11,7 @@ gem 'sass'
 
 group :development, :test do
   gem 'sqlite3'
+  gem 'rubyception'
 end
 
 
@@ -45,3 +46,5 @@ gem 'obis-bridge', :path => '/Users/anc63/Projects/obis-bridge'
 
 # To use debugger
 # gem 'debugger'
+#
+

@@ -11,5 +11,8 @@
 //= require jquery-ui
 //= require jquery.qtip.min
 //= require jquery.form
-//= require navigations
 //= require jquery_ujs
+//= require shared
+//= require navigations
+//= require catalogs
+//= require service_requests

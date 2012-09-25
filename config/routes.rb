@@ -1,7 +1,14 @@
 SparcRails::Application.routes.draw do
-  resources :navigations do
+  resources :catalogs do
     member do
       post 'update_description'
+    end
+  end
+
+  resources :service_requests do
+    member do
+      post 'add_service'
+      post 'remove_service'
     end
   end
 

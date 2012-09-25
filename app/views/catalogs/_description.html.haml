@@ -6,24 +6,24 @@
   - if organization.type == "Program"
     - if organization.cores.empty?
       .program-services
-        - organization.services.each do |service|
+        - organization.services.order('`order`').each do |service|
           .service-view
             %span.title
               %span.name= link_to service.name, '#'
-              %button Add
+              %button.add_service{:id => "service-#{service.id}"} Add
               .clear
             %span.service-description.description{:style => 'display:none'}= service.description
     - else
       .core-accordion
-        - organization.cores.each do |core|
+        - organization.cores.order('`order`').each do |core|
           %h3{:class => css_class(organization)}
             = link_to core.name, "#"
           .core_view
-            - core.services.each do |service|
+            - core.services.order('`order`').each do |service|
               .service-view
                 %span.title
                   %span.name= link_to service.name, '#'
-                  %button Add
+                  %button.add_service{:id => "service-#{service.id}"} Add
                   .clear
                 %span.service-description.description{:style => 'display:none'}= service.description
 

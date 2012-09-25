@@ -37,6 +37,7 @@ $(document).ready ->
     addService(id)
 
   $('.remove-button').live 'click', ->
+    $(this).hide()
     id = $(this).attr('id')
     removeService(id)
 

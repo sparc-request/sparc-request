@@ -12,6 +12,7 @@ SparcRails::Application.routes.draw do
     end
   end
 
+  match 'search' => 'search#index'
   match 'rubyception' => 'rubyception/application#index'
   root :to => 'navigations#index'
   # The priority is based upon order of creation:

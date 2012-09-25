@@ -125,3 +125,28 @@ $(document).ready ->
       name: "light"
       width: 250
 
+  $('#service_query').autocomplete
+    source: '/search'
+    minLength: 2
+    search: (event, ui) ->
+      $('.catalog-search-clear-icon').remove()
+      $("#service_query").after('<img src="assets/spinner.gif" class="catalog-search-spinner" />')
+    open: (event, ui) ->
+      $('.catalog-search-spinner').remove()
+      $("#service_query").after('<img src="assets/clear_icon.png" class="catalog-search-clear-icon" />')
+    close: (event, ui) ->
+      $('.catalog-search-spinner').remove()
+      $('.catalog-search-clear-icon').remove()
+
+  .data("autocomplete")._renderItem = (ul, item) ->
+    if item.label == 'No Results'
+      $("<li class='search_result'></li>")
+      .data("item.autocomplete", item)
+      .append("#{item.label}")
+      .appendTo(ul)
+    else
+      $("<li class='search_result'></li>")
+      .data("item.autocomplete", item)
+      .append("#{item.parents}<br><a>#{item.label}</a>")
+      .appendTo(ul)
+  

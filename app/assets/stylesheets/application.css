@@ -1287,7 +1287,6 @@ li.organization-option {
   padding-top: 60px;
   padding-left: 70px;
   position: absolute;
-<<<<<<< HEAD
 }
 
 .catalog-search-spinner, .catalog-search-clear-icon {
@@ -1313,7 +1312,7 @@ li.organization-option {
   float: left;
 }
 
-.service-search-results {
+.ui-autocomplete {
   list-style : none;
   position   : absolute;
   z-index    : 2;
@@ -1328,11 +1327,11 @@ li.organization-option {
   border     : 1px solid #999;
 }
 
-.service-search-results li:nth-child(odd) {
+.ui-autocomplete li:nth-child(odd) {
   background: #f0f9ff;
 }
 
-.service-search-results li {
+.ui-autocomplete li {
   border-bottom: 1px solid #ccc;
 }
 
@@ -1340,8 +1339,15 @@ li.organization-option {
   font-weight: bold;
 }
 
-.service-search-results li:hover .name {
+.ui-autocomplete li:hover .name {
   color: #0099FF;
+}
+
+.search_result {
+  font-size: 12px;
+  color: #707070;
+  font-family: "Helvetica Neue",Arial,Helvetica,sans-serif;
+  padding: 5px;
 }
 
 .service-search-result {

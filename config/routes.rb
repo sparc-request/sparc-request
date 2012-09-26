@@ -2,6 +2,7 @@ SparcRails::Application.routes.draw do
   resources :service_requests do
     member do
       get 'catalog'
+      get 'protocol'
     end
   end
 

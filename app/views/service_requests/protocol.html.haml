@@ -1,0 +1,12 @@
+= render :partial => 'steps', :locals => {:step => 1}
+.grid_9
+  #protocol-details
+    Select a Research Study:
+    = collection_select :study, :id, @studies, :id, :short_title
+.grid_3.catalog-view-right.right
+  #services.ui-widget.ui-widget-content.cart-view
+    %h3
+      My Services
+      %span#cart-help Help
+    .line-items= render :partial => 'catalogs/cart', :locals => {:service_request => @service_request}
+  .dashboard-button= link_to image_tag('dashboard.png'), '#'

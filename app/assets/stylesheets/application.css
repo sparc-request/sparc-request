@@ -1405,4 +1405,8 @@ input.search-services{display:inline-block;width:209px;height:18px;padding:4px;f
   display: none;
 }
 
-
+#steps_banner {
+  margin-top: -10px;
+  margin-left: -10px;
+  width: 102%;
+}

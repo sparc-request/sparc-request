@@ -4,6 +4,11 @@ class ServiceRequestsController < ApplicationController
     #@service_request = @current_user.service_requests.find session[:service_request_id]
     @service_request = ServiceRequest.find session[:service_request_id]
   end
+  
+  def protocol
+    @studies = @current_user.studies
+    @service_request = ServiceRequest.find session[:service_request_id]
+  end
 
   def add_service
     id = params[:service_id].sub('service-', '').to_i

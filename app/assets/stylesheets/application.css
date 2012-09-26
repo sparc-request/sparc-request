@@ -1391,3 +1391,18 @@ input.search-services{line-height:normal;*overflow:visible;}
 input.search-services::-moz-focus-inner{border:0;padding:0;}
 input.search-services{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:13px;font-weight:normal;line-height:normal;}
 input.search-services{display:inline-block;width:209px;height:18px;padding:4px;font-size:13px;line-height:18px;color:#808080;border:1px solid #ccc;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;}
+
+
+.search_result .service-name {
+  font-weight: bold;
+}
+
+.search_result .service-name:hover {
+  color: #0099FF;
+}
+
+.search_result .service-description {
+  display: none;
+}
+
+

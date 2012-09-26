@@ -125,7 +125,7 @@ $(document).ready ->
       name: "light"
       width: 250
 
-  $('#service_query').autocomplete
+  autoComplete = $('#service_query').autocomplete
     source: '/search'
     minLength: 2
     search: (event, ui) ->
@@ -134,9 +134,39 @@ $(document).ready ->
     open: (event, ui) ->
       $('.catalog-search-spinner').remove()
       $("#service_query").after('<img src="assets/clear_icon.png" class="catalog-search-clear-icon" />')
+      $('.service-name').qtip
+        content: { text: false}
+        position:
+          corner:
+            target: "rightMiddle"
+            tooltip: "leftMiddle"
+
+          adjust: screen: true
+
+        show:
+          delay: 0
+          when: "mouseover"
+          solo: true
+
+        hide:
+          delay: 0
+          when: "mouseout"
+          solo: true
+        
+        style:
+          tip: true
+          border:
+            width: 0
+            radius: 4
+
+          name: "light"
+          width: 250
+
     close: (event, ui) ->
       $('.catalog-search-spinner').remove()
       $('.catalog-search-clear-icon').remove()
+    select: (event, ui) ->
+      console.log 'i was selected'
 
   .data("autocomplete")._renderItem = (ul, item) ->
     if item.label == 'No Results'
@@ -147,6 +177,11 @@ $(document).ready ->
     else
       $("<li class='search_result'></li>")
       .data("item.autocomplete", item)
-      .append("#{item.parents}<br><a>#{item.label}</a>")
+      .append("#{item.parents}<br><span class='service-name' title='#{item.description}'>#{item.label}</span><br><button id='service-#{item.value}' style='font-size: 11px;' class='add_service'>Add to Cart</button><span class='service-description'>#{item.description}</span>")
       .appendTo(ul)
   
+  $('.catalog-search-clear-icon').live 'click', ->
+    $("#service_query").autocomplete("close")
+    $("#service_query").clearFields()
+
+

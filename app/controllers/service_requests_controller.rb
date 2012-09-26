@@ -1,9 +1,14 @@
 class ServiceRequestsController < ApplicationController
-  layout false
+  def edit
+    @institutions = Institution.all
+    #@service_request = @current_user.service_requests.find session[:service_request_id]
+    @service_request = ServiceRequest.find session[:service_request_id]
+  end
 
   def add_service
-    id = params[:id].sub('service-', '').to_i
-    @service_request = @current_user.service_requests.find session[:service_request_id]
+    id = params[:service_id].sub('service-', '').to_i
+    #@service_request = @current_user.service_requests.find session[:service_request_id]
+    @service_request = ServiceRequest.find session[:service_request_id]
     if @service_request.line_items.map(&:service_id).include? id
       render :text => 'Service exists in line items' 
     else
@@ -25,8 +30,9 @@ class ServiceRequestsController < ApplicationController
   end
 
   def remove_service
-    id = params[:id].sub('line_item-', '').to_i
-    @service_request = @current_user.service_requests.find session[:service_request_id]
+    id = params[:line_item_id].sub('line_item-', '').to_i
+    #@service_request = @current_user.service_requests.find session[:service_request_id]
+    @service_request = ServiceRequest.find session[:service_request_id]
 
     line_items = @service_request.line_items
     service = line_items.find(id).service
@@ -42,6 +48,7 @@ class ServiceRequestsController < ApplicationController
 
     @service_request.line_items.find_by_service_id(service.id).delete
     
-    @service_request = @current_user.service_requests.find session[:service_request_id]
+    #@service_request = @current_user.service_requests.find session[:service_request_id]
+    @service_request = ServiceRequest.find session[:service_request_id]
   end
 end

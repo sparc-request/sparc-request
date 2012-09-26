@@ -9,7 +9,28 @@ class ApplicationController < ActionController::Base
     @current_user = Identity.find 10332 #anc63
   end
 
+
   def set_service_request_id
-    session[:service_request_id] ||= @service_request = @current_user.service_requests.find_or_create_by_id(:id => params[:service_request_id])
+    if params[:controller] == 'service_requests'
+      #blow the session away if we aren't logged in and don't have a valid url
+      session.delete(:service_request_id) unless @current_user and params[:id]
+
+      if @current_user and params[:id]
+        if sr = @current_user.protocol_service_requests.find(params[:id]) rescue false
+          session[:service_request_id] = sr.id
+        elsif (sr = @current_user.requested_service_requests.find(params[:id]) rescue false) and session[:first_draft]
+          session[:service_request_id] = sr.id
+        else
+          render :text => 'get out'
+        end
+      elsif @current_user and not session[:service_request_id]
+        sr = @current_user.requested_service_requests.create(:service_requester_id => @current_user.id)
+        session[:service_request_id] = sr.id
+        session[:first_draft] = true
+        redirect_to edit_service_request_path(sr)
+      else #we aren't logged in so let's do some funky stuff
+        render :text => 'not logged in'
+      end
+    end
   end
 end

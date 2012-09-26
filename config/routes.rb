@@ -1,20 +1,18 @@
 SparcRails::Application.routes.draw do
+  resources :service_requests
+
   resources :catalogs do
     member do
       post 'update_description'
     end
   end
 
-  resources :service_requests do
-    member do
-      post 'add_service'
-      post 'remove_service'
-    end
-  end
-
+  match 'service_requests/:id/add_service/:service_id' => 'service_requests#add_service'
+  match 'service_requests/:id/remove_service/:line_item_id' => 'service_requests#remove_service'
   match 'search' => 'search#index'
   match 'rubyception' => 'rubyception/application#index'
-  root :to => 'navigations#index'
+  root :to => 'service_requests#edit'
+
   # The priority is based upon order of creation:
   # first created -> highest priority.
 

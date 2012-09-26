@@ -3,15 +3,15 @@ loadDescription = (url) ->
     type: 'POST'
     url: url
 
-addService = (id) ->
+addService = (sr_id, id) ->
   $.ajax
     type: 'POST'
-    url: "/service_requests/#{id}/add_service"
+    url: "/service_requests/#{sr_id}/add_service/#{id}"
 
-removeService = (id) ->
+removeService = (sr_id, id) ->
   $.ajax
     type: 'POST'
-    url: "/service_requests/#{id}/remove_service"
+    url: "/service_requests/#{sr_id}/remove_service/#{id}"
 
 $(document).ready ->
   $('#institution_accordion').accordion
@@ -33,13 +33,15 @@ $(document).ready ->
     $(this).parents('.title').siblings('.service-description').toggle()
 
   $('.add_service').live 'click', ->
+    sr_id = $(this).attr('sr_id')
     id = $(this).attr('id')
-    addService(id)
+    addService(sr_id, id)
 
   $('.remove-button').live 'click', ->
     $(this).hide()
+    sr_id = $(this).attr('sr_id')
     id = $(this).attr('id')
-    removeService(id)
+    removeService(sr_id, id)
 
   helpList = "<ul>
                 <li>
@@ -130,10 +132,10 @@ $(document).ready ->
     minLength: 2
     search: (event, ui) ->
       $('.catalog-search-clear-icon').remove()
-      $("#service_query").after('<img src="assets/spinner.gif" class="catalog-search-spinner" />')
+      $("#service_query").after('<img src="/assets/spinner.gif" class="catalog-search-spinner" />')
     open: (event, ui) ->
       $('.catalog-search-spinner').remove()
-      $("#service_query").after('<img src="assets/clear_icon.png" class="catalog-search-clear-icon" />')
+      $("#service_query").after('<img src="/assets/clear_icon.png" class="catalog-search-clear-icon" />')
       $('.service-name').qtip
         content: { text: false}
         position:
@@ -177,7 +179,7 @@ $(document).ready ->
     else
       $("<li class='search_result'></li>")
       .data("item.autocomplete", item)
-      .append("#{item.parents}<br><span class='service-name' title='#{item.description}'>#{item.label}</span><br><button id='service-#{item.value}' style='font-size: 11px;' class='add_service'>Add to Cart</button><span class='service-description'>#{item.description}</span>")
+      .append("#{item.parents}<br><span class='service-name' title='#{item.description}'>#{item.label}</span><br><button id='service-#{item.value}' sr_id='#{item.sr_id}' style='font-size: 11px;' class='add_service'>Add to Cart</button><span class='service-description'>#{item.description}</span>")
       .appendTo(ul)
   
   $('.catalog-search-clear-icon').live 'click', ->

@@ -11,4 +11,15 @@ module ApplicationHelper
       css_class(organization.program)
     end
   end
+
+  def portal_link
+    case Rails.env
+    when "development"
+      "localhost:3001"
+    when "staging"
+      "sparc-stg.musc.edu/portal"
+    when "production"
+      "sparc.musc.edu/portal"
+    end
+  end
 end

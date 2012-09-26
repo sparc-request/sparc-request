@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
         sr = @current_user.requested_service_requests.create(:service_requester_id => @current_user.id)
         session[:service_request_id] = sr.id
         session[:first_draft] = true
-        redirect_to edit_service_request_path(sr)
+        redirect_to catalog_service_request_path(sr)
       else #we aren't logged in so let's do some funky stuff
         render :text => 'not logged in'
       end

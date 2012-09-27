@@ -30,7 +30,7 @@ end
 gem 'jquery-rails'
 gem 'cache_digests'
 
-gem 'obis-bridge', :path => '/Users/anc63/Projects/obis-bridge'
+gem 'obis-bridge', :path => '~/musc/obis-bridge'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'

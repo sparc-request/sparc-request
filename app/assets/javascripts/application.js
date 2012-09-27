@@ -13,6 +13,3 @@
 //= require jquery.form
 //= require jquery_ujs
 //= require shared
-//= require navigations
-//= require catalogs
-//= require service_requests

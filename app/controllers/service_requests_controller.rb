@@ -7,6 +7,7 @@ class ServiceRequestsController < ApplicationController
   
   def protocol
     @studies = @current_user.studies
+    @projects = @current_user.projects
     @service_request = ServiceRequest.find session[:service_request_id]
   end
 

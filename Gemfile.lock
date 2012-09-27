@@ -1,5 +1,5 @@
 PATH
-  remote: /Users/anc63/Projects/obis-bridge
+  remote: ~/musc/obis-bridge
   specs:
     obis-bridge (0.0.1)
       activerecord

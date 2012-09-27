@@ -1,12 +1,57 @@
+= javascript_include_tag 'protocol'
 = render :partial => 'steps', :locals => {:step => 1}
 .grid_9
-  #protocol-details
-    Select a Research Study:
-    = collection_select :study, :id, @studies, :id, :short_title
-.grid_3.catalog-view-right.right
+  .select-project-view
+    .dotted-border.left
+      .instruction_area
+        %p.instructions Please review the SPARC Services you are requesting below.
+        %p.instructions
+          %span.red Please note that any "Professional Services" listed below have UMA fees associated with them and cannot be removed from this screen.
+          If Professional Services are covered by % effort, you will have the opportunity to indicate this in Step 2.
+        %p.instructions If you wish to add services, you must return to the "Service Catalog".
+
+      %p.instructions.center Before continuing to Step 2, you must select a Research Study or Project to which the services selected are associated. Only 1 Research Study/Project can be assigned to this request.
+
+      .type-select.center
+        Is this Service Request tied to a particular Research Study
+        = select_tag "select-type", options_for_select([["Yes"], ["No"]])
+        %span#infotip= image_tag('information.png')
+        %br
+        %br
+
+      .existing-study.center
+        #study.study-select
+          Select a Research Study:
+          = collection_select :study, :id, @studies, :id, :short_title, :prompt => 'Select a Study'
+          %button.edit-study Edit Study
+          %br
+          %br
+          %span -- OR --
+          %br
+          %br
+          %button.new-study New Study
+          %br
+          %br
+
+      .existing-project.center{:style => 'display:none;'}
+        #project.project-select
+          Select a Research Project:
+          = collection_select :project, :id, @projects, :id, :short_title, :prompt => 'Select a Project'
+          %button.edit-project Edit Project
+          %br
+          %br
+          %span -- OR --
+          %br
+          %br
+          %button.new-project New Project
+          %br
+          %br
+  .continue= render :partial => 'service_requests/continue'
+
+.grid_3.right
   #services.ui-widget.ui-widget-content.cart-view
     %h3
       My Services
       %span#cart-help Help
     .line-items= render :partial => 'catalogs/cart', :locals => {:service_request => @service_request}
-  .dashboard-button= link_to image_tag('dashboard.png'), '#'
+  .dashboard-button= link_to image_tag('back_to_catalog.png'), '#'

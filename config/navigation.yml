@@ -1,0 +1,8 @@
+protocol:
+  css_class: blue-provider
+  back: catalog
+  forward: service_details
+  validation_groups: 
+    catalog:
+    service_details:
+      - protocol

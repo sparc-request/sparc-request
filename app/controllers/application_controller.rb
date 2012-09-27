@@ -4,11 +4,11 @@ class ApplicationController < ActionController::Base
 
   before_filter :authenticate
   before_filter :set_service_request_id
+  before_filter :setup_navigation
 
   def authenticate
     @current_user = Identity.find 10332 #anc63
   end
-
 
   def set_service_request_id
     if params[:controller] == 'service_requests'
@@ -31,6 +31,17 @@ class ApplicationController < ActionController::Base
       else #we aren't logged in so let's do some funky stuff
         render :text => 'not logged in'
       end
+    end
+  end
+
+  def setup_navigation
+    page = params[:action] == 'navigate' ? request.referrer.split('/').last : params[:action]
+    c = YAML.load_file(Rails.root.join('config', 'navigation.yml'))[page]
+    unless c.nil?
+      @css_class = c['css_class']
+      @back = c['back']
+      @forward = c['forward']
+      @validation_groups = c['validation_groups']
     end
   end
 end

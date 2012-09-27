@@ -1,0 +1,11 @@
+- if session[:errors]
+  .grid_12
+    #errorExplanation
+      %h2
+        = pluralize(session[:errors].count, "error")
+        prohibited this service request from being save:
+      %ul
+        - session[:errors][0].full_messages.each do |msg|
+          %li= msg
+  - session.delete(:errors)
+

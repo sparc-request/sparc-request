@@ -1,4 +1,25 @@
 class ServiceRequestsController < ApplicationController
+  def navigate
+    # need to save and navigate to the right page
+    puts "#"*50
+    puts params.inspect
+    puts request.referrer.split('/').last
+    puts "#"*50
+
+    #### add logic to save data
+    referrer = request.referrer.split('/').last
+    @service_request = ServiceRequest.find session[:service_request_id]
+    @service_request.update_attributes(params[:service_request])
+    location = params["location"]
+
+    if @validation_groups[location].nil? or @validation_groups[location].map{|vg| @service_request.group_valid? vg.to_sym}.all?
+      redirect_to "/service_requests/#{@service_request.id}/#{location}"
+    else
+      session[:errors] = @validation_groups[location].map{|vg| @service_request.grouped_errors[vg.to_sym]}
+      redirect_to :back
+    end
+  end
+
   def catalog
     @institutions = Institution.all
     #@service_request = @current_user.service_requests.find session[:service_request_id]

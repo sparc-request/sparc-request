@@ -22,4 +22,8 @@ module ApplicationHelper
       "sparc.musc.edu/portal"
     end
   end
+
+  def navigation_link(img_or_txt, location)
+    link_to img_or_txt, "javascript:void(0)", :class => 'navigation_link', :location => location
+  end
 end

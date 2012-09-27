@@ -1,0 +1,7 @@
+.grid_12
+  %div{:class => @css_class}
+    .nav-backward
+      .return-to-previous= navigation_link image_tag('GoBack.png'), @back
+    .exit= navigation_link image_tag('SaveExit.png'), 'save_and_exit'
+    .nav-forward
+      .save-and-continue= navigation_link image_tag('SaveContinue.png'), @forward

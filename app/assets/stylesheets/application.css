@@ -127,7 +127,7 @@ a.save-option{
 }
 
 .step-header {
-  margin: 8px;
+  margin: 4px -2px;
   padding: 6px;
   color: #fff;
 }
@@ -233,6 +233,13 @@ a.save-option{
 .catalog-view-right {
   background:  #003366;
   min-height: 700px;
+  margin-top: -10px !important;
+  margin-right: -10px !important;
+  width: 226px !important;
+  padding: 2px !important;
+}
+
+.protocol-view-right {
   margin-top: -10px !important;
   margin-right: -10px !important;
   width: 226px !important;
@@ -1208,7 +1215,8 @@ li.organization-option {
 
 .instruction_area {
   border: 1px solid #000;
-  padding: 5px;
+  padding: 15px;
+  margin-right: 15px;
   margin-bottom: 10px;
   border-radius: 5px;
 }

@@ -3,6 +3,8 @@ SparcRails::Application.routes.draw do
     member do
       get 'catalog'
       get 'protocol'
+      get 'service_details'
+      post 'navigate'
     end
   end
 

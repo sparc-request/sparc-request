@@ -1,3 +1,6 @@
+#= require cart
+#= require navigation
+
 $(document).ready ->
   $('#select-type').change ->
     if $(this).val() == 'Yes'
@@ -15,9 +18,3 @@ $(document).ready ->
   $('.new-study').button()
   $('.edit-project').button()
   $('.new-project').button()
-
-  $('.navigation_link').live 'click', ->
-    location = $(this).attr('location')
-    $('#location').val(location)
-    $('#navigation_form').submit()
-    console.log $(this).attr('location')

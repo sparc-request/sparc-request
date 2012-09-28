@@ -392,12 +392,12 @@ a.save-option{
   min-height: 200px;
 }
 
-.project-details .service-list .provider-header {
+.service-list .provider-header {
   font-weight: bold;
   font-size: 14px;
 }
 
-.project-details .service-list .service-name {
+.service-list .service-name {
   padding: 5px;
   margin: 4px;
   background: #E8E8E8;

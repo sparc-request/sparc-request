@@ -6,3 +6,15 @@ protocol:
     catalog:
     service_details:
       - protocol
+
+service_details:
+  css_class: light-blue-provider
+  back: protocol
+  forward: service_calendar
+  validation_groups:
+    protocol:
+      - service_details
+      - protocol
+    service_calendar:
+      - service_details
+      - protocol

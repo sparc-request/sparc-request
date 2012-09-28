@@ -14,6 +14,11 @@
             If Professional Services are covered by % effort, you will have the opportunity to indicate this in Step 2.
           %p.instructions If you wish to add services, you must return to the "Service Catalog".
 
+        .service-list= render :partial => 'service_list', :locals => {:service_request => @service_request}
+  
+        %br
+        %br
+
         %p.instructions.center Before continuing to Step 2, you must select a Research Study or Project to which the services selected are associated. Only 1 Research Study/Project can be assigned to this request.
 
         .type-select.center
@@ -32,7 +37,7 @@
 
         .existing-project.center{:style => 'display:none;'}
           #project.project-select
-            #project-select= render :partial => 'project_select', :locals => {:projects => @projects} if @projects.empty?
+            #project-select= render :partial => 'project_select', :locals => {:projects => @projects} unless @projects.empty?
             %button.new-project New Project
             %br
             %br

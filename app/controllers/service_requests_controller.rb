@@ -4,6 +4,7 @@ class ServiceRequestsController < ApplicationController
     puts "#"*50
     puts params.inspect
     puts request.referrer.split('/').last
+    puts params[:service_request]
     puts "#"*50
 
     #### add logic to save data
@@ -20,6 +21,8 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
+  # service request wizard pages
+
   def catalog
     @institutions = Institution.all
     #@service_request = @current_user.service_requests.find session[:service_request_id]
@@ -31,6 +34,12 @@ class ServiceRequestsController < ApplicationController
     @projects = @current_user.projects
     @service_request = ServiceRequest.find session[:service_request_id]
   end
+  
+  def service_details
+    @service_request = ServiceRequest.find session[:service_request_id]
+  end
+
+  # methods only used by ajax requests
 
   def add_service
     id = params[:service_id].sub('service-', '').to_i

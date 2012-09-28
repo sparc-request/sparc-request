@@ -84,4 +84,11 @@ $(document).ready ->
     $("#service_query").autocomplete("close")
     $("#service_query").clearFields()
 
-
+  $('.submit-request-button').click ->
+    if $('#line_item_count').val() <= 0
+      $('#submit_error').dialog
+        modal: true
+        buttons:
+            Ok: ->
+              $(this).dialog('close')
+      return false

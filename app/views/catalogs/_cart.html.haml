@@ -1,4 +1,5 @@
 .line-items
+  = hidden_field_tag :line_item_count, service_request.line_items.size
   - service_request.line_items.each do |line_item|
     .line_item{:class => cycle('', 'odd')}
       %div= line_item.service.abbreviation

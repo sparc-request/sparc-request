@@ -18,3 +18,19 @@ $(document).ready ->
   $('.new-study').button()
   $('.edit-project').button()
   $('.new-project').button()
+
+  $('#infotip').qtip
+    content: 'Research Study: An individual research study with defined aims and outcomes'
+    position:
+      corner:
+        target: "topRight"
+        tooltip: "bottomLeft"
+        
+    style:
+      tip: true
+      border:
+        width: 0
+        radius: 4
+
+      name: "light"
+      width: 250

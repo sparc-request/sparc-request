@@ -86,5 +86,6 @@ class ServiceRequestsController < ApplicationController
     
     #@service_request = @current_user.service_requests.find session[:service_request_id]
     @service_request = ServiceRequest.find session[:service_request_id]
+    @page = request.referrer.split('/').last # we need for pages other than the catalog
   end
 end

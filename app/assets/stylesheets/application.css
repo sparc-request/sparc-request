@@ -619,6 +619,11 @@ a.save-option{
 
 .edit-project-view {
   font-size: 12px;
+  font-family: "Verdana", Arial, sans-serif;
+}
+
+.edit-project-view .description {
+  padding: 0 12px 12px;
 }
 
 .edit-project-view .box {
@@ -628,12 +633,16 @@ a.save-option{
   height: auto;
 }
 
+legend {
+  font-weight: bold;
+}
+
 .study_phase {
   margin-bottom: 5px;
 }
 
 .edit-project-view .info {
-  width: 530px;
+  width: 520px;
   padding: 10px;
   float: left;
   border-right: 10px solid #FFF;
@@ -643,7 +652,7 @@ a.save-option{
 
 .edit-project-view .box .info fieldset {
   padding: 1px 7px 5px 7px;
-  margin-top: 7px;
+  margin-top: 10px;
   margin-bottom: 5px;
 }
 

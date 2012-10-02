@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120606145034) do
+ActiveRecord::Schema.define(:version => 20121002172704) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -43,9 +43,10 @@ ActiveRecord::Schema.define(:version => 20120606145034) do
   create_table "catalog_managers", :force => true do |t|
     t.integer  "identity_id"
     t.integer  "organization_id"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
     t.datetime "deleted_at"
+    t.boolean  "edit_historic_data"
   end
 
   add_index "catalog_managers", ["identity_id"], :name => "index_catalog_managers_on_identity_id"
@@ -116,6 +117,7 @@ ActiveRecord::Schema.define(:version => 20120606145034) do
     t.datetime "created_at",       :null => false
     t.datetime "updated_at",       :null => false
     t.datetime "deleted_at"
+    t.boolean  "catalog_overlord"
   end
 
   add_index "identities", ["email"], :name => "index_identities_on_email"
@@ -297,6 +299,7 @@ ActiveRecord::Schema.define(:version => 20120606145034) do
     t.boolean  "is_primary_contact"
     t.datetime "created_at",         :null => false
     t.datetime "updated_at",         :null => false
+    t.boolean  "hold_emails"
   end
 
   add_index "service_providers", ["organization_id"], :name => "index_service_providers_on_organization_id"

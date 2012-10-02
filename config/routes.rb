@@ -8,6 +8,8 @@ SparcRails::Application.routes.draw do
     end
   end
 
+  resources :protocols
+
   resources :catalogs do
     member do
       post 'update_description'

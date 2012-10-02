@@ -24,7 +24,8 @@ class ApplicationController < ActionController::Base
           render :text => 'get out'
         end
       elsif @current_user and not session[:service_request_id]
-        sr = @current_user.requested_service_requests.create(:service_requester_id => @current_user.id)
+        sr = @current_user.requested_service_requests.new(:service_requester_id => @current_user.id)
+        sr.save :validate => false
         session[:service_request_id] = sr.id
         session[:first_draft] = true
         redirect_to catalog_service_request_path(sr)

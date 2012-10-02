@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121002172704) do
+ActiveRecord::Schema.define(:version => 20121002203422) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -276,7 +276,7 @@ ActiveRecord::Schema.define(:version => 20121002172704) do
     t.text     "title"
     t.string   "sponsor_name"
     t.text     "brief_description"
-    t.decimal  "indirect_cost_rate",           :precision => 5, :scale => 2
+    t.decimal  "indirect_cost_rate",             :precision => 5, :scale => 2
     t.string   "study_phase"
     t.string   "udak_project_number"
     t.string   "funding_rfa"
@@ -290,9 +290,11 @@ ActiveRecord::Schema.define(:version => 20121002172704) do
     t.string   "federal_grant_code_id"
     t.string   "federal_non_phs_sponsor"
     t.string   "federal_phs_sponsor"
-    t.datetime "created_at",                                                 :null => false
-    t.datetime "updated_at",                                                 :null => false
+    t.datetime "created_at",                                                   :null => false
+    t.datetime "updated_at",                                                   :null => false
     t.datetime "deleted_at"
+    t.string   "potential_funding_source_other"
+    t.string   "funding_source_other"
   end
 
   add_index "protocols", ["obisid"], :name => "index_protocols_on_obisid"

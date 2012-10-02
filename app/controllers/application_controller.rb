@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
 
   def authenticate
     @current_user = Identity.find 10332 #anc63
+    Identity.current_user = @current_user
   end
 
   def set_service_request_id

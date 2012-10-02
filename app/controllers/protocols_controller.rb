@@ -13,7 +13,21 @@ class ProtocolsController < ApplicationController
   end
 
   def create
+    @service_request = ServiceRequest.find session[:service_request_id]
+    puts "#"*50
+    puts params.inspect
+    puts "#"*50
+    @protocol = Protocol.new params[:protocol]
 
+    if @protocol.valid?
+      @protocol.save
+    else
+      puts "#"*50
+      puts @protocol.errors
+      puts "#"*50
+
+      render :text => @protocol.errors
+    end
   end
 
   def edit

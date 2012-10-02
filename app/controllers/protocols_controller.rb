@@ -23,10 +23,10 @@ class ProtocolsController < ApplicationController
       @protocol.save
     else
       puts "#"*50
-      puts @protocol.errors
+      puts @protocol.errors.inspect
       puts "#"*50
 
-      render :text => @protocol.errors
+      render :text => @protocol.errors.inspect
     end
   end
 

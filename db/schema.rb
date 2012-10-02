@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120606145034) do
+ActiveRecord::Schema.define(:version => 20121002165234) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -225,16 +225,34 @@ ActiveRecord::Schema.define(:version => 20120606145034) do
     t.decimal  "full_rate",                  :precision => 12, :scale => 4
     t.boolean  "exclude_from_indirect_cost"
     t.integer  "unit_minimum"
-    t.decimal  "non_corporate_rate",         :precision => 12, :scale => 4
+    t.decimal  "federal_rate",               :precision => 12, :scale => 4
     t.decimal  "corporate_rate",             :precision => 12, :scale => 4
-    t.decimal  "research_rate",              :precision => 12, :scale => 4
     t.datetime "effective_date"
     t.datetime "created_at",                                                :null => false
     t.datetime "updated_at",                                                :null => false
     t.datetime "deleted_at"
+    t.datetime "display_date"
+    t.decimal  "other_rate",                 :precision => 12, :scale => 4
+    t.decimal  "member_rate",                :precision => 12, :scale => 4
   end
 
   add_index "pricing_maps", ["service_id"], :name => "index_pricing_maps_on_service_id"
+
+  create_table "pricing_setups", :force => true do |t|
+    t.integer  "organization_id"
+    t.datetime "display_date"
+    t.datetime "effective_date"
+    t.boolean  "charge_master"
+    t.decimal  "federal",                     :precision => 5, :scale => 2
+    t.decimal  "corporate",                   :precision => 5, :scale => 2
+    t.decimal  "other",                       :precision => 5, :scale => 2
+    t.decimal  "member",                      :precision => 5, :scale => 2
+    t.string   "college_funding_source"
+    t.string   "federal_funding_source"
+    t.string   "industry_funding_source"
+    t.string   "investigator_funding_source"
+    t.string   "internal_funding_source"
+  end
 
   create_table "project_roles", :force => true do |t|
     t.integer  "protocol_id"

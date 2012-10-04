@@ -6,7 +6,7 @@ PATH
       grouped_validations
       json
       mysql2
-      net-ldap
+      obis-net-ldap
       sinatra
 
 GEM
@@ -82,7 +82,7 @@ GEM
     mime-types (1.19)
     multi_json (1.3.6)
     mysql2 (0.3.11)
-    net-ldap (0.3.1)
+    obis-net-ldap (0.4.0)
     polyglot (0.3.3)
     rack (1.4.1)
     rack-cache (1.2)

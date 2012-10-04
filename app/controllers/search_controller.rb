@@ -10,11 +10,8 @@ class SearchController < ApplicationController
 
   def identities
     term = params[:term].strip
-    results = Identity.search(term)
-    puts "#"*50
-    puts results
-    puts "#"*50
     results = Identity.search(term).map{|i| {:label => i.display_name, :value => i.id}}
+    results = [{:label => 'No Results'}] if results.empty?
     render :json => results.to_json
   end
 end

@@ -29,6 +29,7 @@ end
 
 gem 'jquery-rails'
 gem 'cache_digests'
+gem 'dynamic_form'
 
 gem 'obis-bridge', :path => '~/musc/obis-bridge'
 

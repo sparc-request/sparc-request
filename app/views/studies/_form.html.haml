@@ -1,0 +1,12 @@
+= form_for study, :remote => true do |f|
+  = f.error_messages
+  .edit-project-view= render :partial => 'fields', :locals => {:study => study, :f => f}
+  .continue
+    .grid_12
+      %div{:class => 'blue-provider'}
+        .nav-backward
+          .return-to-previous= link_to image_tag('CancelAction.png'), protocol_service_request_path(service_request)
+        .exit= image_tag('Filler.png')
+        .nav-forward
+          .save-and-continue
+            %input{:type => 'image', :src => '/assets/SaveContinue.png'}

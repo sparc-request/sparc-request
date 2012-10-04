@@ -707,6 +707,7 @@ legend {
   display: block;
   float: left;
   margin-right: 10px;
+  padding: 2px;
 }
 
 .edit-project-view .box .info input {
@@ -1306,26 +1307,32 @@ li.organization-option {
   position: absolute;
 }
 
+.user-search-spinner, .user-search-clear-icon {
+  float       : right;
+  margin-right: 86px;
+  z-index     : 999 !important;
+}
+
 .catalog-search-spinner, .catalog-search-clear-icon {
   float       : right;
   margin-right: 5px;
   z-index     : 999 !important;
 }
 
-.catalog-search-spinner {
+.catalog-search-spinner, .user-search-spinner {
   margin-top: -22px;
   width     : 16px;
   height    : 16px;
 }
 
-.catalog-search-clear-icon {
+.catalog-search-clear-icon, .user-search-clear-icon {
   margin-top: -21px;
   width     : 14px;
   height    : 14px;
   cursor    : pointer;
 }
 
-.search-services {
+.search-services, .search-identities {
   float: left;
 }
 
@@ -1401,13 +1408,13 @@ li.organization-option {
   z-index      : 999;
 }
 
-input.search-services{-webkit-transition:border linear 0.2s,box-shadow linear 0.2s;-moz-transition:border linear 0.2s,box-shadow linear 0.2s;-ms-transition:border linear 0.2s,box-shadow linear 0.2s;-o-transition:border linear 0.2s,box-shadow linear 0.2s;transition:border linear 0.2s,box-shadow linear 0.2s;-webkit-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1);-moz-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1);box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1);}
-input.search-services:focus{outline:0;border-color:rgba(82, 168, 236, 0.8);-webkit-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 8px rgba(82, 168, 236, 0.6);-moz-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 8px rgba(82, 168, 236, 0.6);box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 8px rgba(82, 168, 236, 0.6);}
-input.search-services{font-size:100%;margin:0;vertical-align:baseline;*vertical-align:middle;}
-input.search-services{line-height:normal;*overflow:visible;}
-input.search-services::-moz-focus-inner{border:0;padding:0;}
-input.search-services{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:13px;font-weight:normal;line-height:normal;}
-input.search-services{display:inline-block;width:209px;height:18px;padding:4px;font-size:13px;line-height:18px;color:#808080;border:1px solid #ccc;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;}
+input.search-services, input.search-identities{-webkit-transition:border linear 0.2s,box-shadow linear 0.2s;-moz-transition:border linear 0.2s,box-shadow linear 0.2s;-ms-transition:border linear 0.2s,box-shadow linear 0.2s;-o-transition:border linear 0.2s,box-shadow linear 0.2s;transition:border linear 0.2s,box-shadow linear 0.2s;-webkit-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1);-moz-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1);box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1);}
+input.search-services:focus, input.search-identities:focus{outline:0;border-color:rgba(82, 168, 236, 0.8);-webkit-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 8px rgba(82, 168, 236, 0.6);-moz-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 8px rgba(82, 168, 236, 0.6);box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 8px rgba(82, 168, 236, 0.6);}
+input.search-services, input.search-identities{font-size:100%;margin:0;vertical-align:baseline;*vertical-align:middle;}
+input.search-services, input.search-identities{line-height:normal;*overflow:visible;}
+input.search-services::-moz-focus-inner, input.search-identites::-moz-focus-inner{border:0;padding:0;}
+input.search-services, input.search-identities{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:13px;font-weight:normal;line-height:normal;}
+input.search-services, input.search-identities{display:inline-block;width:209px;height:18px;padding:4px;font-size:13px;line-height:18px;color:#808080;border:1px solid #ccc;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;}
 
 
 .search_result .service-name {
@@ -1426,4 +1433,19 @@ input.search-services{display:inline-block;width:209px;height:18px;padding:4px;f
   margin-top: -10px;
   margin-left: -10px;
   width: 102%;
+}
+
+#errorExplanation {
+  border: 4px solid red;
+  margin: 10px;
+  padding: 15px;
+}
+
+#errorExplanation h2 {
+  font-size: 14px;
+}
+
+.field_with_errors label {
+  background: red;
+  color: #fff;
 }

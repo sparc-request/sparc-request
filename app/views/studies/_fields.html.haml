@@ -254,67 +254,118 @@
             = rt.label :reach, "REACH:"
             = rt.check_box :reach
 
-.grid_5.box
+.grid_5.box.info.user-manager-view.add-user-details
   .grid_4.search_container
     %p To begin to search and add authorized users to this study/project, type in the first or last name of the user. Select as appropriate.
     %br 
-    %h4 User Search 
+    %h3 User Search 
     .search
       = text_field_tag 'user_search_term', nil, :placeholder => "Search for User ...", :class => "search-identities"
+    .search-results
+  .grid_4.user-d
+    %h3 User Details:
+    .user-details
+      %br
+      .user_name
+        = label_tag :name, "Name:"
+        = text_field_tag :name
+        %br
+        %br
+       
+      .user_email
+        = label_tag :email, "Email:"
+        = text_field_tag :email
+        %br
+        %br
 
-  .grid_4
-    .user-d
-      %h4 User Details:
-      .user-details
-        /= f.fields_for :project_roles do |pr| 
-/          .user_name
-/            = f.label :name_label
-/            = f.label :name
-/          
-/          .user_email
-/            = f.label :email_label
-/            = f.label :email
-/
-/          .user_phone
-/            = f.label :phone_label
-/            = f.label :phone
+      .user_phone
+        = label_tag :phone, "Phone:"
+        = text_field_tag :phone
+        %br
+        %br
 
-/         .user_role
-/           = f.label :role_label
-/           = f.select :project_roles, options_for_select(USER_ROLES, project.project_roles)
+      .user_role
+        = label_tag :role, "Role:"
+        = select_tag :role, options_for_select(USER_ROLES), :prompt => "Select a Role"
 
-/           .era_commons_name
-/             = f.label :era_commons_name
-/             = f.text_field :era_commons_name
+        .role_other
+          = label_tag :role_other, "   "
+          = text_field_tag :role_other
+        %br
+        %br
 
-/           .role_other
-/             = f.text_field :role_other
+        .era_commons_name
+          = label_tag :era_commons_name, "ERA Commons Name:"
+          = text_field_tag :era_commons_name
+          %br
+          %br
+          %br
 
-/         .user_institution
-/           = f.label :institution_label
-/           = f.select :institution, options_for_select(INSTITUTIONS, project.institution)
+      .user_institution
+        = label_tag :institution, "Institution:"
+        = select_tag :institution, options_for_select(INSTITUTIONS), :prompt => "Select an Institution"
+        %br
+        %br
 
-/         .user_college
-/           = f.label :college_label
-/           = f.select :college, options_for_select(COLLEGES, project.college)
+      .user_college
+        = label_tag :college, "College:"
+        = select_tag :college, options_for_select(COLLEGES), :prompt => "Select a College"
+        %br
+        %br
 
-/         .user_department
-/           = f.label :department_label
-/           = f.select :department, options_for_select(DEPARTMENTS, project.department)
+      .user_department
+        = label_tag :department, "Department:"
+        = select_tag :department, options_for_select(DEPARTMENTS), :prompt => "Select a Department"
+        %br
+        %br
 
-/         .user_credentials
-/           = f.label :credentials_label
-/           = f.select :credentials, options_for_select(USER_CREDENTIALS, project.credentials)
+      .user_credentials
+        = label_tag :credentials, "Credentials:"
+        = select_tag :credentials, options_for_select(USER_CREDENTIALS), :prompt => "Select a Credential"
 
-/           .credentials_other
-/             = f.text_field :credentials_other
+        .credentials_other
+          = label_tag :credentials_other, "  "
+          = text_field_tag :credentials_other
+        %br
+        %br
+
+        .subspecialty
+          = label_tag :subspecialty, "Subspecialty:"
+          = select_tag :subspecialty, options_for_select(SUBSPECIALTIES)
+          %br
+          %br
+
+      .add-user
+        = button_tag "Add Authorized User"
 
 
 
 
 
 .grid_12
-  User roles
+  %table.authorized-users
+    %thead
+      %tr
+        %th.authorized-users-section{:colspan => 3}
+          User Information:
+        %th.authorized-users-section{:colspan => 4}
+          Proxy Rights
+          %br
+          %span (Select appropriate level of study/project rights)
+    %thead
+      %tr
+        %th Name:
+        %th
+        %th Role:
+        %th.proxy-rights Member Only:
+        %th.proxy-rights View Rights:
+        %th.proxy-rights Request/Approve Services
+        %th.proxy-rights
+          Authorize/Change
+          %br
+          Study Charges:
+    %tbody
+  %br
 
 
 /#<Protocol id: nil, type: nil, obisid: nil, next_ssr_id: nil, short_title: nil, title: nil, sponsor_name: nil, 

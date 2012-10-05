@@ -736,7 +736,7 @@ legend {
 
 .edit-project-view .add-user-details {
   float: right;
-  width: 316px;
+  width: 350px !important;
   min-height: 430px;
   height: 100%;
 }
@@ -744,28 +744,25 @@ legend {
 .edit-project-view .search-container {
   border-bottom: 10px solid #fff;
   padding: 8px;
+  width: 340px !important;
 }
 
 .edit-project-view .user-d {
   padding: 8px;
+  width: 340px !important;
+  margin-left: -5px;
 }
 
-.edit-project-view .add-user-details .user-manager-view .user-details table {
+.user-details {
+  padding-left: 5px;
+}
+
+.edit-project-view .add-user-details .user-manager-view .user-details {
   border: 1px solid #ECECEC;
   width: 100%;
 }
 
-.edit-project-view .add-user-details .user-manager-view .user-details select,
-.edit-project-view .add-user-details .user-manager-view .user-details option {
-  width: 195px;
-}
-
-.edit-project-view .add-user-details .user-manager-view .user-details table th {
-  text-align: left;
-  padding: 2px;
-}
-
-.edit-project-view .add-user-details .user-manager-view .user-details table tr {
+.edit-project-view .add-user-details .user-manager-view .user-details {
   height: 30px;
 }
 
@@ -774,11 +771,17 @@ legend {
 }
 
 .edit-project-view .add-user-details label {
-  width: 100px;
+  width: 130px;
+  font-weight: bold;
+  padding: 1px;
 }
 
 .edit-project-view .add-user-details input {
-  width: 150px;
+  width: 190px;
+}
+
+.edit-project-view .add-user-details select {
+  width: 195px;
 }
 
 .edit-project-view .add-user-details label,

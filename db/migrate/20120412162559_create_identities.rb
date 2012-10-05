@@ -17,8 +17,8 @@ class CreateIdentities < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :identities, :ldap_uid
-    add_index :identities, :obisid
+    add_index :identities, :ldap_uid, :unique => true
+    add_index :identities, :obisid, :unique => true
     add_index :identities, :last_name
     add_index :identities, :email
   end

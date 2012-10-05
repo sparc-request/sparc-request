@@ -255,18 +255,67 @@
             = rt.check_box :reach
 
 .grid_5.box
-  .grid_4.search_container
+  .search_container
     %p To begin to search and add authorized users to this study/project, type in the first or last name of the user. Select as appropriate.
     %br 
     %h4 User Search 
     .search
       = text_field_tag 'user_search_term', nil, :placeholder => "Search for User ...", :class => "search-identities"
 
-  .grid_4
-    .user-d
-      %h4 User Details:
-      .user-details
-        /= f.fields_for :project_roles do |pr| 
+.grid_5.box.user-details
+  .details
+    %h4 User Details:
+    .user_name
+      = label_tag :name, "Name:"
+      = text_field_tag :name
+     
+    .user_email
+      = label_tag :email, "Email:"
+      = text_field_tag :email
+
+    .user_phone
+      = label_tag :phone
+      = text_field_tag :phone
+
+    .user_role
+      = label_tag :role
+      = select_tag :role, options_for_select(USER_ROLES)
+      
+      .role_other
+        = label_tag :role_other
+        = text_field_tag :role_other
+
+      .era_commons_name
+        = label_tag :era_commons_name
+        = text_field_tag :era_commons_name
+
+    .user_institution
+      = label_tag :institution
+      = select_tag :institution, options_for_select(INSTITUTIONS)
+
+    .user_college
+      = label_tag :college
+      = select_tag :college, options_for_select(COLLEGES)
+
+    .user_department
+      = label_tag :department
+      = select_tag :department, options_for_select(DEPARTMENTS)
+
+    .user_credentials
+      = label_tag :credentials
+      = select_tag :credentials, options_for_select(USER_CREDENTIALS)
+
+      .credentials_other
+        = label_tag :credentials_other
+        = text_field_tag :credentials_other
+
+    .subspecialty
+      = label_tag :subspecialty
+      = select_tag :subspecialty, options_for_select(SUBSPECIALTIES)
+
+    .add-user
+      = button_tag "Add Authorized User"
+/= f.fields_for :project_roles do |pr| 
 /          .user_name
 /            = f.label :name_label
 /            = f.label :name

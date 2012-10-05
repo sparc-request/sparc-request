@@ -629,8 +629,26 @@ a.save-option{
 .edit-project-view .box {
   background: #E8E8E8;
   width: 100%;
-  min-height: 430px;
   height: auto;
+}
+
+.edit-project-view .user-details {
+  margin-top: 10px;
+  /* display: none; */
+}
+
+.edit-project-view .user-details label {
+  width: 100px;
+  float: left;
+}
+
+.edit-project-view .user-details select {
+  width: 250px;
+}
+
+.edit-project-view .user-details .details, .edit-project-view .box .search_container {
+  padding: 10px;
+  margin-bottom: 40px;
 }
 
 legend {
@@ -1309,7 +1327,7 @@ li.organization-option {
 
 .user-search-spinner, .user-search-clear-icon {
   float       : right;
-  margin-right: 86px;
+  margin-right: 147px;
   z-index     : 999 !important;
 }
 

@@ -122,8 +122,8 @@ ActiveRecord::Schema.define(:version => 20121002203422) do
 
   add_index "identities", ["email"], :name => "index_identities_on_email"
   add_index "identities", ["last_name"], :name => "index_identities_on_last_name"
-  add_index "identities", ["ldap_uid"], :name => "index_identities_on_ldap_uid"
-  add_index "identities", ["obisid"], :name => "index_identities_on_obisid"
+  add_index "identities", ["ldap_uid"], :name => "index_identities_on_ldap_uid", :unique => true
+  add_index "identities", ["obisid"], :name => "index_identities_on_obisid", :unique => true
 
   create_table "impact_areas", :force => true do |t|
     t.integer  "protocol_id"

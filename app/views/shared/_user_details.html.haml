@@ -1,4 +1,7 @@
-.details
+= javascript_include_tag 'user_details'
+
+.details#identity_details
+  #user_detail_errors
   = hidden_field_tag :identity_id, identity.id
   %h3 User Details:
   %br
@@ -25,14 +28,14 @@
 
   .user_role
     = label_tag :role, "Role:"
-    = select_tag :role, options_for_select(USER_ROLES, study.role_for(identity)), :prompt => "Select a Role"
+    = select_tag :role, options_for_select(USER_ROLES, (protocol.role_for(identity) if protocol)), :prompt => "Select a Role"
 
     %br
     %br
 
   .role_other
     = label_tag :role_other, "   "
-    = text_field_tag :role_other, study.role_other_for(identity)
+    = text_field_tag :role_other, (protocol.role_other_for(identity) if protocol)
     %br
     %br
 
@@ -75,7 +78,7 @@
 
   .subspecialty
     = label_tag :subspecialty, "Subspecialty:"
-    = select_tag :subspecialty, options_for_select(SUBSPECIALTIES, study.subspecialty_for(identity))
+    = select_tag :subspecialty, options_for_select(SUBSPECIALTIES, (protocol.subspecialty_for(identity) if protocol)), :prompt => "Select a Subspecialty"
     %br
     %br
 

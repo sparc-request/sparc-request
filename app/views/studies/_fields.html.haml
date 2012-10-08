@@ -264,9 +264,9 @@
 .grid_5.box= render :partial => 'shared/user_search'
  
 
-.grid_5.box.user-details.user-manager-view.add-user-details= render :partial => 'shared/user_details', :locals => {:identity => (study.new_record? ? @current_user : Identity.new), :study => study}
+.grid_5.box.user-details.user-manager-view.add-user-details= render :partial => 'shared/user_details', :locals => {:identity => (study.new_record? ? @current_user : Identity.new), :protocol => study}
 
-.grid_12= render :partial => 'shared/user_list'
+.grid_12= render :partial => 'shared/user_list', :locals => {:protocol => study}
   
 
 

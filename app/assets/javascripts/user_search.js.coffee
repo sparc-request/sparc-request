@@ -12,9 +12,11 @@ $(document).ready ->
       $('.user-search-spinner').remove()
       $('.user-search-clear-icon').remove()
     select: (event, ui) ->
-      console.log ui
-      console.log event
-      console.log 'i was selected'
+      $.ajax
+        url: "/identities/#{ui.item.value}"
+        type: 'GET'
+      $('#user_search_term').clearFields()
+      return false
 
   .data("autocomplete")._renderItem = (ul, item) ->
     if item.label == 'No Results'

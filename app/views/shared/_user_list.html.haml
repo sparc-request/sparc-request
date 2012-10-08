@@ -20,4 +20,7 @@
         %br
         Study Charges:
   %tbody
+    - protocol.project_roles.each do |pr|
+      = render :partial => 'shared/user_proxy_right', :locals => {:project_role => pr}
+
 %br

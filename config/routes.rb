@@ -1,5 +1,10 @@
 SparcRails::Application.routes.draw do
-  resources :identities
+  resources :identities do
+    collection do
+      post 'add_to_protocol'
+    end
+  end
+
   resources :service_requests do
     resources :projects
     resources :studies
@@ -12,7 +17,10 @@ SparcRails::Application.routes.draw do
   end
 
   resources :projects
-  resources :studies
+
+  resources :studies do
+    resources :identities
+  end
 
   resources :catalogs do
     member do

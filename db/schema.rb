@@ -15,15 +15,9 @@ ActiveRecord::Schema.define(:version => 20121002203422) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
-    t.boolean  "cancer_center"
-    t.boolean  "oral_health_cobre"
-    t.boolean  "reach"
-    t.boolean  "lipidomics_cobre"
-    t.boolean  "cardiovascular_cobre"
-    t.boolean  "inbre"
-    t.boolean  "cchp"
-    t.datetime "created_at",           :null => false
-    t.datetime "updated_at",           :null => false
+    t.string   "name"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
     t.datetime "deleted_at"
   end
 
@@ -127,14 +121,9 @@ ActiveRecord::Schema.define(:version => 20121002203422) do
 
   create_table "impact_areas", :force => true do |t|
     t.integer  "protocol_id"
-    t.boolean  "hiv_aids"
-    t.boolean  "pediatrics"
-    t.boolean  "stroke"
-    t.boolean  "diabetes"
-    t.boolean  "hypertension"
-    t.boolean  "cancer"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.string   "name"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
     t.datetime "deleted_at"
   end
 

@@ -1,6 +1,6 @@
-class CreateHumanSubjects < ActiveRecord::Migration
+class CreateHumanSubjectsInfo < ActiveRecord::Migration
   def change
-    create_table :human_subjects do |t|
+    create_table :human_subjects_info do |t|
       t.integer :protocol_id
       t.string :hr_number
       t.string :pro_number
@@ -12,6 +12,6 @@ class CreateHumanSubjects < ActiveRecord::Migration
       t.timestamps
     end
 
-    add_index :human_subjects, :protocol_id
+    add_index :human_subjects_info, :protocol_id
   end
 end

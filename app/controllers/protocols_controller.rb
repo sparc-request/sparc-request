@@ -2,11 +2,11 @@ class ProtocolsController < ApplicationController
   def new
     @service_request = ServiceRequest.find session[:service_request_id]
     @protocol = Protocol.new
-    @protocol.build_research_types
-    @protocol.build_human_subjects
-    @protocol.build_vertebrate_animals
-    @protocol.build_investigational_products
-    @protocol.build_ip_patents
+    @protocol.build_research_types_info
+    @protocol.build_human_subjects_info
+    @protocol.build_vertebrate_animals_info
+    @protocol.build_investigational_products_info
+    @protocol.build_ip_patents_info
     @protocol.build_study_types
     @protocol.build_impact_areas
     @protocol.build_affiliations  

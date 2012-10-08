@@ -104,7 +104,7 @@
               .field.human_subjects
                 = rt.label :human_subjects, "Human Subjects:"
                 = rt.check_box :human_subjects
-            = fields_for @protocol.human_subjects do |hs|
+            = fields_for @protocol.human_subjects_info do |hs|
               .field.hr_number
                 = hs.label :hr_number, "HR#:"
                 = hs.text_field :hr_number
@@ -120,7 +120,7 @@
               .field.submission_type
                 = hs.label :submission_type, "Submission Type:"
                 %br
-                = hs.select :submission_type, options_for_select(SUBMISSION_TYPES, @protocol.human_subjects.submission_type), :include_blank => "Pick a Submission Type"
+                = hs.select :submission_type, options_for_select(SUBMISSION_TYPES, @protocol.human_subjects_info.submission_type), :include_blank => "Pick a Submission Type"
 
               .field.irb_approval_date
                 = hs.label :irb_approval_date, "IRB Approval Date:"
@@ -152,12 +152,12 @@
                 = va.label :iacuc_expiration_date, "IACUC Expiration Date:"
                 = va.text_field :iacuc_expiration_date
             
-            = fields_for @protocol.research_types do |rt|
+            = fields_for @protocol.research_types_info do |rt|
               .field.investigational_products
                 = rt.label :investigational_products, "Investigational Products:"
                 = rt.check_box :investigational_products
 
-            = fields_for @protocol.investigational_products do |ip|
+            = fields_for @protocol.investigational_products_info do |ip|
               .field.ind_number
                 = ip.label :ind_number, "IND#:"
                 = ip.text_field :ind_number
@@ -167,7 +167,7 @@
                 = ip.text_field :ide_number
 
 
-            = fields_for @protocol.research_types do |rt|
+            = fields_for @protocol.research_types_info do |rt|
               .field.ip_patents
                 = rt.label :ip_patents, "IP/Patents:"
                 = rt.check_box :ip_patents

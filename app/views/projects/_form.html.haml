@@ -1,12 +1,12 @@
 /////////////////////////////////////////////
 //
-// STUDY - Form for New/Editing Studies
+// PROJECT - Form for New/Editing Projects
 //
 /////////////////////////////////////////////
 
-= form_for study, :remote => true do |f|
+= form_for @project, :remote => true do |f|
   = f.error_messages
-  .edit-project-view= render :partial => 'studies/fields', :locals => {:study => study, :f => f}
+  .edit-project-view= render :partial => 'projects/fields', :locals => {:project => @project, :f => f}
   .continue
     .grid_12
       %div{:class => 'blue-provider'}

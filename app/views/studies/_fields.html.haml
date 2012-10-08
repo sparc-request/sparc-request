@@ -1,3 +1,9 @@
+/////////////////////////////////////////////
+//
+// STUDIES - Fields for New/Editing Studies
+//
+/////////////////////////////////////////////
+
 = javascript_include_tag 'studies'
 
 .description Before you can complete a service request, please tell us more about your research study. This information will be used by our staff to decide the best way to process your request.
@@ -255,40 +261,13 @@
             = rt.label :reach, "REACH:"
             = rt.check_box :reach
 
-.grid_5.box
-  .search_container
-    %p To begin to search and add authorized users to this study/project, type in the first or last name of the user. Select as appropriate.
-    %br 
-    %h3 User Search 
-    .search
-      = text_field_tag 'user_search_term', nil, :placeholder => "Search for User ...", :class => "search-identities"
+.grid_5.box= render :partial => 'shared/user_search'
+ 
 
-.grid_5.box.user-details.user-manager-view.add-user-details= render :partial => 'user_details', :locals => {:identity => (study.new_record? ? @current_user : Identity.new), :study => study}
+.grid_5.box.user-details.user-manager-view.add-user-details= render :partial => 'shared/user_details', :locals => {:identity => (study.new_record? ? @current_user : Identity.new), :study => study}
 
-.grid_12
-  %table.authorized-users
-    %thead
-      %tr
-        %th.authorized-users-section{:colspan => 3}
-          User Information:
-        %th.authorized-users-section{:colspan => 4}
-          Proxy Rights
-          %br
-          %span (Select appropriate level of study/project rights)
-    %thead
-      %tr
-        %th Name:
-        %th
-        %th Role:
-        %th.proxy-rights Member Only:
-        %th.proxy-rights View Rights:
-        %th.proxy-rights Request/Approve Services
-        %th.proxy-rights
-          Authorize/Change
-          %br
-          Study Charges:
-    %tbody
-  %br
+.grid_12= render :partial => 'shared/user_list'
+  
 
 
 /#<Protocol id: nil, type: nil, obisid: nil, next_ssr_id: nil, short_title: nil, title: nil, sponsor_name: nil, 

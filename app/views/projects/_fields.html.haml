@@ -1,0 +1,34 @@
+/////////////////////////////////////////////
+//
+// PROJECT - Fields for New/Editing Projects
+//
+/////////////////////////////////////////////
+
+.description Before you can complete a service request, please tell us more about your research project. This information will be used by our staff to decide the best way to process your request.
+.grid_7.box
+  .info
+    .field
+      = f.label :short_title, "Short Title:"
+      = f.text_field :short_title
+
+    .field
+      = f.label :title, "Project Title:"
+      = f.text_field :title
+
+    .field
+      = f.label :brief_description, "Brief Description:"
+      = f.text_area :brief_description
+
+    .field
+      = f.label :funding_source, "Funding Source:"
+      = f.select :funding_source, options_for_select(FUNDING_SOURCES, project.funding_source), :include_blank => "Select a Funding Source"
+
+    .field
+      = f.label :indirect_cost_rate, "Indirect Cost Rate:"
+      = f.text_field :indirect_cost_rate
+
+.grid_5.box= render :partial => 'shared/user_search'
+
+.grid_5.box.user-details.user-manager-view.add-user-details= render :partial => 'shared/user_details', :locals => {:identity => (project.new_record? ? @current_user : Identity.new), :study => project}
+
+.grid_12= render :partial => 'shared/user_list'

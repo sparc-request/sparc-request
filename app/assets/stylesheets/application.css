@@ -646,7 +646,11 @@ a.save-option{
   width: 250px;
 }
 
-.edit-project-view .user-details .details, .edit-project-view .box .search_container {
+.edit-project-view .user-details .details {
+  padding: 10px;
+}
+
+.edit-project-view .box .search_container {
   padding: 10px;
   margin-bottom: 40px;
 }
@@ -754,8 +758,6 @@ legend {
 
 .edit-project-view .add-user-details {
   float: right;
-  width: 350px !important;
-  min-height: 430px;
   height: 100%;
 }
 
@@ -769,10 +771,6 @@ legend {
   padding: 8px;
   width: 340px !important;
   margin-left: -5px;
-}
-
-.user-details {
-  padding-left: 5px;
 }
 
 .edit-project-view .add-user-details .user-manager-view .user-details {
@@ -791,7 +789,7 @@ legend {
 .edit-project-view .add-user-details label {
   width: 130px;
   font-weight: bold;
-  padding: 1px;
+  padding: 1px 1px 1px 10px;
 }
 
 .edit-project-view .add-user-details input {

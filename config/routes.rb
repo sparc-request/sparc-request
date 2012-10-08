@@ -1,4 +1,5 @@
 SparcRails::Application.routes.draw do
+  resources :identities
   resources :service_requests do
     resources :projects
     resources :studies

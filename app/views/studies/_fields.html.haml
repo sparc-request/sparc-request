@@ -1,0 +1,279 @@
+/////////////////////////////////////////////
+//
+// STUDIES - Fields for New/Editing Studies
+//
+/////////////////////////////////////////////
+
+= javascript_include_tag 'studies'
+
+.description Before you can complete a service request, please tell us more about your research study. This information will be used by our staff to decide the best way to process your request.
+.grid_7.box
+  .info
+    .field
+      = f.label :short_title, "Short Title:"
+      = f.text_field :short_title
+    
+    .field
+      = f.label :title, "Protocol Title:"
+      = f.text_field :title
+    
+    .field
+      = f.label :funding_status, "Proposal Funding Status:"
+      = f.select :funding_status, options_for_select(FUNDING_STATUSES, study.funding_status), :include_blank => "Select a Funding Status"
+    
+    .field
+      = f.label :udak_project_number, "UDAK/Project #:"
+      = f.text_field :udak_project_number
+      
+    .field
+      = f.label :sponsor_name, "Sponsor Name:"
+      = f.text_field :sponsor_name
+
+    #pending_funding
+      .field
+        = f.label :funding_rfa, "Funding Opportunity #/RFA:"
+        = f.text_field :funding_rfa
+
+      .field
+        = f.label :potential_funding_start_date, "Potential Funding Start Date:"
+        = f.text_field :potential_funding_start_date
+
+      .field
+        = f.label :potential_funding_source, "Potential Funding Source:"
+        = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, study.potential_funding_source), :include_blank => "Select a Potential Funding Source"
+
+      / Internal Funded Pilot Project selected
+      .internal_funded_pilot_project
+        .field
+          = f.label :potential_funding_source_other, "Please Specify"
+          = f.text_field :potential_funding_source_other
+    
+    .funded
+      .field
+        = f.label :funding_start_date, "Funding Start Date:"
+        = f.text_field :funding_start_date
+      
+      .field
+        = f.label :funding_source, "Funding Source:"
+        = f.select :funding_source, options_for_select(FUNDING_SOURCES, study.funding_source), :include_blank => "Select a Funding Source"
+
+      / Internal Funded Pilot Project selected
+      .internal_funded_pilot_project
+        .field
+          = f.label :funding_source_other, "Please Specify"
+          = f.text_field :funding_source_other
+
+    .field
+      = f.label :indirect_cost_rate, "Indirect Cost Rate"
+      = f.text_field :indirect_cost_rate
+
+    .funded
+      .federal
+        .field
+          = f.label :federal_grant_title, "Federal Grant Title:"
+          = f.text_field :federal_grant_title
+
+        .field
+          = f.label :federal_grant_code_id, "Federal Grant Code:"
+          = f.select :federal_grant_code_id, options_for_select(FEDERAL_GRANT_CODES, study.federal_grant_code_id), :include_blank => "Select a Federal Grant Code"
+
+        .field
+          = f.label :federal_phs_sponsor, "Federal Grant PHS Sponsor:"
+          = f.select :federal_phs_sponsor, options_for_select(FEDERAL_GRANT_PHS_SPONSORS, study.federal_phs_sponsor), :include_blank => "Please Select if Applicable"
+
+    %br
+    %span -OR-
+    %br
+    
+    .funded
+      .federal
+        .field
+          = f.label :federal_non_phs_sponsor, "Federal Grant Non-PHS Sponsor:"
+          = f.select :federal_non_phs_sponsor, options_for_select(FEDERAL_GRANT_NON_PHS_SPONSORS, study.federal_non_phs_sponsor), :include_blank => "Please Select if Applicable"
+
+        .field
+          = f.label :federal_grant_serial_number, "Federal Grant Serial Number:"
+          = f.text_field :federal_grant_serial_number
+
+    .field
+      = f.label :study_phase, "Study Phase:"
+      = f.select :study_phase, options_for_select(STUDY_PHASES, study.study_phase), :include_blank => "Select a Study Phase"
+
+    %br
+    %br
+    %fieldset
+      %legend Research Involving (Check all that apply)
+      %div
+        = f.fields_for :research_types do |rt|
+          .field.human_subjects
+            = rt.label :human_subjects, "Human Subjects:"
+            = rt.check_box :human_subjects
+        = f.fields_for :human_subjects do |hs|
+          .field.hr_number
+            = hs.label :hr_number, "HR#:"
+            = hs.text_field :hr_number
+
+          .field.pro_number
+            = hs.label :pro_number, "Pro #:"
+            = hs.text_field :pro_number
+
+          .field.irb_of_record
+            = hs.label :irb_of_record, "IRB of Record:"
+            = hs.text_field :irb_of_record
+
+          .field.submission_type
+            = hs.label :submission_type, "Submission Type:"
+            %br
+            = hs.select :submission_type, options_for_select(SUBMISSION_TYPES, study.human_subjects.submission_type), :include_blank => "Pick a Submission Type"
+
+          .field.irb_approval_date
+            = hs.label :irb_approval_date, "IRB Approval Date:"
+            = hs.text_field :irb_approval_date
+
+          .field.irb_expiration_date
+            = hs.label :irb_expiration_date, "IRB Expiration Date:"
+            = hs.text_field :irb_expiration_date
+
+        = f.fields_for :research_types do |rt|
+          .field.vertebrate_animals
+            = rt.label :vertebrate_animals, "Vertebrate Animals:"
+            = rt.check_box :vertebrate_animals
+
+        = f.fields_for :vertebrate_animals do |va|
+          .field.iacuc_number
+            = va.label :iacuc_number, "IACUC #:"
+            = va.text_field :iacuc_number
+
+          .field.name_of_iacuc
+            = va.label :name_of_iacuc, "Name of IACUC:"
+            = va.text_field :name_of_iacuc
+
+          .field.iacuc_approval_date
+            = va.label :iacuc_approval_date, "IACUC Approval Date:"
+            = va.text_field :iacuc_approval_date
+
+          .field.iacuc_expiration_date
+            = va.label :iacuc_expiration_date, "IACUC Expiration Date:"
+            = va.text_field :iacuc_expiration_date
+        
+        = f.fields_for :research_types do |rt|
+          .field.investigational_products
+            = rt.label :investigational_products, "Investigational Products:"
+            = rt.check_box :investigational_products
+
+        = f.fields_for :investigational_products do |ip|
+          .field.ind_number
+            = ip.label :ind_number, "IND#:"
+            = ip.text_field :ind_number
+
+          .field.ide_number
+            = ip.label :ide_number, "IDE#:"
+            = ip.text_field :ide_number
+
+
+        = f.fields_for :research_types do |rt|
+          .field.ip_patents
+            = rt.label :ip_patents, "IP/Patents:"
+            = rt.check_box :ip_patents
+
+        = f.fields_for :ip_patents do |ip|
+          .field.patent_number
+            = ip.label :patent_number, "Patent Number:"
+            = ip.text_field :patent_number
+
+          .field.inventors
+            = ip.label :inventors, "Inventors:"
+            = ip.text_area :inventors
+
+    %fieldset
+      %legend Study Type (Check all that apply) 
+      %div
+        = f.fields_for :study_types do |rt|
+          .field.clinical_trials
+            = rt.label :clinical_trials, "Clinical Trials:"
+            = rt.check_box :clinical_trials
+
+          .field.basic_science
+            = rt.label :basic_science, "Basic Science:"
+            = rt.check_box :basic_science
+         
+          .field.translational_science
+            = rt.label :translational_science, "Translational Science:"
+            = rt.check_box :translational_science
+
+    %fieldset
+      %legend Impact Areas
+      %div
+        = f.fields_for :impact_areas do |rt|
+          .field.pediatrics
+            = rt.label :pediatrics, "Pediatrics:"
+            = rt.check_box :pediatrics
+
+          .field.hiv_aids
+            = rt.label :hiv_aids, "HIV/AIDS:"
+            = rt.check_box :hiv_aids
+         
+          .field.hypertension
+            = rt.label :hypertension, "Hypertenstion:"
+            = rt.check_box :hypertension
+
+          .field.stroke
+            = rt.label :stroke, "Stroke:"
+            = rt.check_box :stroke
+   
+          .field.diabetes
+            = rt.label :diabetes, "Diabetes:"
+            = rt.check_box :diabetes
+   
+          .field.cancer
+            = rt.label :cancer, "Cancer:"
+            = rt.check_box :cancer
+
+    %fieldset
+      %legend Affiliations and Collaborations 
+      %div
+        = f.fields_for :affiliations do |rt|
+          .field.cancer_center
+            = rt.label :cancer_center, "Cancer Center:"
+            = rt.check_box :cancer_center
+
+          .field.lipidomics_cobre
+            = rt.label :lipidomics_cobre, "Lipidomics COBRE:"
+            = rt.check_box :lipidomics_cobre
+         
+          .field.oral_health_cobre
+            = rt.label :oral_health_cobre, "Oral Health COBRE:"
+            = rt.check_box :oral_health_cobre
+
+          .field.cardiovascular_cobre
+            = rt.label :cardiovascular_cobre, "Cardiovascular COBRE:"
+            = rt.check_box :cardiovascular_cobre
+   
+          .field.cchp
+            = rt.label :cchp, "CCHP:"
+            = rt.check_box :cchp
+   
+          .field.inbre
+            = rt.label :inbre, "INBRE:"
+            = rt.check_box :inbre
+
+          .field.reach
+            = rt.label :reach, "REACH:"
+            = rt.check_box :reach
+
+.grid_5.box= render :partial => 'shared/user_search'
+ 
+
+.grid_5.box.user-details.user-manager-view.add-user-details= render :partial => 'shared/user_details', :locals => {:identity => (study.new_record? ? @current_user : Identity.new), :study => study}
+
+.grid_12= render :partial => 'shared/user_list'
+  
+
+
+/#<Protocol id: nil, type: nil, obisid: nil, next_ssr_id: nil, short_title: nil, title: nil, sponsor_name: nil, 
+/ brief_description: nil, indirect_cost_rate: nil, study_phase: nil, udak_project_number: nil, funding_rfa: nil, 
+/ funding_status: nil, potential_funding_source: nil, potential_funding_start_date: nil, funding_source: nil, 
+/ funding_start_date: nil, federal_grant_serial_number: nil, federal_grant_title: nil, federal_grant_code_id: nil, 
+/ federal_non_phs_sponsor: nil, federal_phs_sponsor: nil, created_at: nil, updated_at: nil, deleted_at: nil>
+
+

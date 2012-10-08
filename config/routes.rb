@@ -1,5 +1,8 @@
 SparcRails::Application.routes.draw do
+  resources :identities
   resources :service_requests do
+    resources :projects
+    resources :studies
     member do
       get 'catalog'
       get 'protocol'
@@ -8,7 +11,8 @@ SparcRails::Application.routes.draw do
     end
   end
 
-  resources :protocols
+  resources :projects
+  resources :studies
 
   resources :catalogs do
     member do
@@ -16,9 +20,15 @@ SparcRails::Application.routes.draw do
     end
   end
 
+  resources :search do
+    collection do
+      get :services
+      get :identities
+    end
+  end
+
   match 'service_requests/:id/add_service/:service_id' => 'service_requests#add_service'
   match 'service_requests/:id/remove_service/:line_item_id' => 'service_requests#remove_service'
-  match 'search' => 'search#index'
   match 'rubyception' => 'rubyception/application#index'
   root :to => 'service_requests#catalog'
 

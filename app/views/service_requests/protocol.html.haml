@@ -31,7 +31,7 @@
         .existing-study.center
           #study.study-select
             #study-select= render :partial => 'study_select', :locals => {:studies => @studies} unless @studies.empty?
-            %button.new-study New Study
+            = link_to 'New Study', new_service_request_study_path(@service_request), :class => 'new-study'
             %br
             %br
 

@@ -26,7 +26,7 @@ $(document).ready ->
 
 
   autoComplete = $('#service_query').autocomplete
-    source: '/search'
+    source: '/search/services'
     minLength: 2
     search: (event, ui) ->
       $('.catalog-search-clear-icon').remove()

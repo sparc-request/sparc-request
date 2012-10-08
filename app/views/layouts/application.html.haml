@@ -7,6 +7,9 @@
     = javascript_include_tag "application"
     = csrf_meta_tags
   %body
+    // load spinner and cancel images so they are cached
+    = image_tag 'spinner.gif', :style => 'display:none'
+    = image_tag 'cancel.png', :style => 'display:none'
     #container.container
       #header
         #sctr_logo

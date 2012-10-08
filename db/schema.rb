@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121002203422) do
+ActiveRecord::Schema.define(:version => 20121004204104) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -108,10 +108,11 @@ ActiveRecord::Schema.define(:version => 20121002203422) do
     t.string   "credentials"
     t.string   "subspecialty"
     t.string   "phone"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
     t.datetime "deleted_at"
     t.boolean  "catalog_overlord"
+    t.string   "credentials_other"
   end
 
   add_index "identities", ["email"], :name => "index_identities_on_email"
@@ -253,6 +254,8 @@ ActiveRecord::Schema.define(:version => 20121002203422) do
     t.datetime "created_at",     :null => false
     t.datetime "updated_at",     :null => false
     t.datetime "deleted_at"
+    t.string   "role_other"
+    t.string   "subspecialty"
   end
 
   add_index "project_roles", ["protocol_id"], :name => "index_project_roles_on_protocol_id"

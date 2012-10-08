@@ -1,0 +1,9 @@
+/////////////////////////////////////////////
+//
+// PROJECT - New Project
+//
+/////////////////////////////////////////////
+
+= render :partial => 'service_requests/steps'
+.clear
+.new_project= render :partial => 'projects/form', :locals => {:study => @project, :service_request => @service_request}

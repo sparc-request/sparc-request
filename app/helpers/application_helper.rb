@@ -12,6 +12,10 @@ module ApplicationHelper
     end
   end
 
+  def controller_action
+    params[:controller] + '/' + params[:action]
+  end
+
   def portal_link
     case Rails.env
     when "development"

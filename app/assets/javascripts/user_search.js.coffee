@@ -29,3 +29,7 @@ $(document).ready ->
       .data("item.autocomplete", item)
       .append("<a>" + item.label + "</a>")
       .appendTo(ul)
+
+  $('.user-search-clear-icon').live 'click', ->
+    $("#user_search_term").autocomplete("close")
+    $("#user_search_term").clearFields()

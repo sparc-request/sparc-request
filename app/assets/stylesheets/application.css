@@ -1232,7 +1232,7 @@ li.organization-option {
   cursor: default !important;
 }
 
-.error-reporter-view, .flash-error {
+.error-reporter-view, .flash-error, #user_detail_errors {
   margin-top: 5px;
   margin-bottom: 5px;
   padding: 15px;
@@ -1240,6 +1240,7 @@ li.organization-option {
   border: 3px solid #F55;
   font-size: medium;
   font-weight: bold;
+  display: none;
 }
 
 .instruction_area {
@@ -1368,6 +1369,8 @@ li.organization-option {
   margin-left: 1px;
   margin-top : 28px;
   border     : 1px solid #999;
+  max-height     : 400px;
+  overflow-y : scroll;
 }
 
 .ui-autocomplete li:nth-child(odd) {

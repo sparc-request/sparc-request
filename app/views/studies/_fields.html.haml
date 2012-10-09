@@ -104,11 +104,11 @@
     %fieldset
       %legend Research Involving (Check all that apply)
       %div
-        = f.fields_for :research_types do |rt|
+        = f.fields_for :research_types_info do |rt|
           .field.human_subjects
             = rt.label :human_subjects, "Human Subjects:"
             = rt.check_box :human_subjects
-        = f.fields_for :human_subjects do |hs|
+        = f.fields_for :human_subjects_info do |hs|
           .field.hr_number
             = hs.label :hr_number, "HR#:"
             = hs.text_field :hr_number
@@ -124,7 +124,7 @@
           .field.submission_type
             = hs.label :submission_type, "Submission Type:"
             %br
-            = hs.select :submission_type, options_for_select(SUBMISSION_TYPES, study.human_subjects.submission_type), :include_blank => "Pick a Submission Type"
+            = hs.select :submission_type, options_for_select(SUBMISSION_TYPES, study.human_subjects_info.submission_type), :include_blank => "Pick a Submission Type"
 
           .field.irb_approval_date
             = hs.label :irb_approval_date, "IRB Approval Date:"
@@ -134,12 +134,12 @@
             = hs.label :irb_expiration_date, "IRB Expiration Date:"
             = hs.text_field :irb_expiration_date
 
-        = f.fields_for :research_types do |rt|
+        = f.fields_for :research_types_info do |rt|
           .field.vertebrate_animals
             = rt.label :vertebrate_animals, "Vertebrate Animals:"
             = rt.check_box :vertebrate_animals
 
-        = f.fields_for :vertebrate_animals do |va|
+        = f.fields_for :vertebrate_animals_info do |va|
           .field.iacuc_number
             = va.label :iacuc_number, "IACUC #:"
             = va.text_field :iacuc_number
@@ -156,12 +156,12 @@
             = va.label :iacuc_expiration_date, "IACUC Expiration Date:"
             = va.text_field :iacuc_expiration_date
         
-        = f.fields_for :research_types do |rt|
+        = f.fields_for :research_types_info do |rt|
           .field.investigational_products
             = rt.label :investigational_products, "Investigational Products:"
             = rt.check_box :investigational_products
 
-        = f.fields_for :investigational_products do |ip|
+        = f.fields_for :investigational_products_info do |ip|
           .field.ind_number
             = ip.label :ind_number, "IND#:"
             = ip.text_field :ind_number
@@ -171,12 +171,12 @@
             = ip.text_field :ide_number
 
 
-        = f.fields_for :research_types do |rt|
+        = f.fields_for :research_types_info do |rt|
           .field.ip_patents
             = rt.label :ip_patents, "IP/Patents:"
             = rt.check_box :ip_patents
 
-        = f.fields_for :ip_patents do |ip|
+        = f.fields_for :ip_patents_info do |ip|
           .field.patent_number
             = ip.label :patent_number, "Patent Number:"
             = ip.text_field :patent_number
@@ -189,17 +189,9 @@
       %legend Study Type (Check all that apply) 
       %div
         = f.fields_for :study_types do |rt|
-          .field.clinical_trials
-            = rt.label :clinical_trials, "Clinical Trials:"
-            = rt.check_box :clinical_trials
-
-          .field.basic_science
-            = rt.label :basic_science, "Basic Science:"
-            = rt.check_box :basic_science
-         
-          .field.translational_science
-            = rt.label :translational_science, "Translational Science:"
-            = rt.check_box :translational_science
+          .field{:class => rt.object.name}
+            = rt.label :name, "#{rt.object.name.humanize.capitalize}:"
+            = rt.check_box :name, {:checked => !rt.object.new}, rt.object.name, nil
 
     %fieldset
       %legend Impact Areas

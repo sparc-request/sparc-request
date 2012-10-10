@@ -2,7 +2,7 @@ class IdentitiesController < ApplicationController
   def show
     @identity = Identity.find params[:id]
     @can_edit = false
-    project_role_params = params[:study][:project_roles_attributes][@identity.id.to_s] rescue nil
+    project_role_params = params[session[:protocol_type].to_sym][:project_roles_attributes][@identity.id.to_s] rescue nil
     if project_role_params
       project_role_params.delete '_destroy'
       id = project_role_params.delete 'id'

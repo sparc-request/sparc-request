@@ -3,6 +3,15 @@ $(document).ready ->
     if request.statusText != 'abort'
       alert("An error happened processing your request: " + settings.url)
 
+  $('.edit_project_role').live 'click', ->
+    parent = $(this).attr('parent')
+    project_role_id = $(this).attr('project_role_id')
+    identity_id = $(this).attr('identity_id')
+    $.ajax
+      url: "/identities/#{identity_id}?project_role_id=#{project_role_id}"
+      type: 'GET'
+    console.log "about to edit"
+
   $('.add-user button').live 'click', ->
     $.ajax
       url: '/identities/add_to_protocol'

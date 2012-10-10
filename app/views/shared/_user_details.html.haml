@@ -1,88 +1,89 @@
 = javascript_include_tag 'user_details'
 
 .details#identity_details
-  = hidden_field_tag :identity_id, identity.id
-  = hidden_field_tag :protocol_id, protocol.id if protocol
+  = hidden_field_tag "identity[id]", identity.id
+  = hidden_field_tag "project_role[protocol_id]", project_role.protocol.id if project_role.protocol
+  = hidden_field_tag "project_role[id]", project_role.id
   %h3 User Details:
   #user_detail_errors.errorExplanation
   %br
   .user_info
     .user_name
-      = label_tag :name, "Name:"
+      = label_tag "identity[name]", "Name:"
       = "#{identity.first_name} #{identity.last_name}"
-      = hidden_field_tag :first_name, identity.first_name
-      = hidden_field_tag :last_name, identity.last_name
+      = hidden_field_tag "identity[first_name]", identity.first_name
+      = hidden_field_tag "identity[last_name]", identity.last_name
       %br
       %br
      
     .user_email
-      = label_tag :email, "Email:"
+      = label_tag "identity[email]", "Email:"
       = identity.email
-      = hidden_field_tag :email, identity.email
+      = hidden_field_tag "identity[email]", identity.email
       %br
       %br
 
     .user_phone
-      = label_tag :phone, "Phone:"
-      = text_field_tag :phone, identity.phone
+      = label_tag "identity[phone]", "Phone:"
+      = text_field_tag "identity[phone]", identity.phone
       %br
       %br
 
     .user_role
-      = label_tag :role, "Role:"
-      = select_tag :role, options_for_select(USER_ROLES, (protocol.role_for(identity) if protocol)), :prompt => "Select a Role"
+      = label_tag "project_role[role]", "Role:"
+      = select_tag "project_role[role]", options_for_select(USER_ROLES, project_role.role), :prompt => "Select a Role"
 
       %br
       %br
 
     .role_other
-      = label_tag :role_other, "   "
-      = text_field_tag :role_other, (protocol.role_other_for(identity) if protocol)
+      = label_tag "project_role[role_other]", "   "
+      = text_field_tag "project_role[role_other]", project_role.role_other
       %br
       %br
 
     .era_commons_name
-      = label_tag :era_commons_name, "ERA Commons Name:"
-      = text_field_tag :era_commons_name, identity.era_commons_name
+      = label_tag "identity[era_commons_name]", "ERA Commons Name:"
+      = text_field_tag "identity[era_commons_name]", identity.era_commons_name
       %br
       %br
       %br
 
     .user_institution
-      = label_tag :institution, "Institution:"
-      = select_tag :institution, options_for_select(INSTITUTIONS, identity.institution), :prompt => "Select an Institution"
+      = label_tag "identity[institution]", "Institution:"
+      = select_tag "identity[institution]", options_for_select(INSTITUTIONS, identity.institution), :prompt => "Select an Institution"
       %br
       %br
 
     .user_college
-      = label_tag :college, "College:"
-      = select_tag :college, options_for_select(COLLEGES, identity.college), :prompt => "Select a College"
+      = label_tag "identity[college]", "College:"
+      = select_tag "identity[college]", options_for_select(COLLEGES, identity.college), :prompt => "Select a College"
       %br
       %br
 
     .user_department
-      = label_tag :department, "Department:"
-      = select_tag :department, options_for_select(DEPARTMENTS, identity.department), :prompt => "Select a Department"
+      = label_tag "identity[department]", "Department:"
+      = select_tag "identity[department]", options_for_select(DEPARTMENTS, identity.department), :prompt => "Select a Department"
       %br
       %br
 
     .user_credentials
-      = label_tag :credentials, "Credentials:"
-      = select_tag :credentials, options_for_select(USER_CREDENTIALS, identity.credentials), :prompt => "Select a Credential"
+      = label_tag "identity[credentials]", "Credentials:"
+      = select_tag "identity[credentials]", options_for_select(USER_CREDENTIALS, identity.credentials), :prompt => "Select a Credential"
       %br
       %br
 
     .credentials_other
-      = label_tag :credentials_other, "  "
-      = text_field_tag :credentials_other, identity.credentials_other
+      = label_tag "identity[credentials_other]", "  "
+      = text_field_tag "identity[credentials_other]", identity.credentials_other
       %br
       %br
 
     .subspecialty
-      = label_tag :subspecialty, "Subspecialty:"
-      = select_tag :subspecialty, options_for_select(SUBSPECIALTIES, (protocol.subspecialty_for(identity) if protocol)), :prompt => "Select a Subspecialty"
+      = label_tag "project_role[subspecialty]", "Subspecialty:"
+      = select_tag "project_role[subspecialty]", options_for_select(SUBSPECIALTIES, project_role.subspecialty), :prompt => "Select a Subspecialty"
       %br
       %br
 
     .add-user
-      = button_tag "Add Authorized User"
+      = button_tag project_role.new_record? ? "Add Authorized User" : "Update Authorized User"

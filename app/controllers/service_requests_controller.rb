@@ -58,16 +58,16 @@ class ServiceRequestsController < ApplicationController
       service = Service.find id
 
       # add service to line items
-      @service_request.line_items.create(:service_id => service.id, :optional => true)
+      @service_request.line_items.create(:service_id => service.id, :optional => true, :is_one_time_fee => service.current_pricing_map.is_one_time_fee)
 
       # add required services to line items
       service.required_services.each do |rs|
-        @service_request.line_items.create(:service_id => rs.id, :optional => false)
+        @service_request.line_items.create(:service_id => rs.id, :optional => false, :is_one_time_fee => rs.current_pricing_map.is_one_time_fee)
       end
 
       # add optional services to line items
       service.optional_services.each do |rs|
-        @service_request.line_items.create(:service_id => rs.id, :optional => true)
+        @service_request.line_items.create(:service_id => rs.id, :optional => true, :is_one_time_fee => rs.current_pricing_map.is_one_time_fee)
       end
     end
   end

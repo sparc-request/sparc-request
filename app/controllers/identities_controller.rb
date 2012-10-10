@@ -1,9 +1,10 @@
 class IdentitiesController < ApplicationController
   def show
     @identity = Identity.find params[:id]
+    puts params.inspect
     if params[:project_role_id].blank?
       @project_role = ProjectRole.new
-    else 
+    else
       @project_role = ProjectRole.find params[:project_role_id]
     end
   end

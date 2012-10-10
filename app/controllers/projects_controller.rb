@@ -3,37 +3,33 @@ class ProjectsController < ApplicationController
   def new
     @service_request = ServiceRequest.find session[:service_request_id]
     @project = Project.new
-    @project.build_research_types_info
-    @project.build_human_subjects_info
-    @project.build_vertebrate_animals_info
-    @project.build_investigational_products_info
-    @project.build_ip_patents_info
-    @project.build_study_types
-    @project.build_impact_areas
-    @project.build_affiliations  
+    @project.requester_id = @current_user.id
   end
 
   def create
     @service_request = ServiceRequest.find session[:service_request_id]
-    puts "#"*50
-    puts params.inspect
-    puts "#"*50
     @project = Project.new params[:project]
-    puts "#"*50
-    puts @project.research_types_info
-    puts "#"*50
 
     if @project.valid?
       @project.save
+      @service_request.protocol = @project
+      @service_request.save
+      flash[:notice] = "New project created"
     end
   end
 
   def edit
-
+    @service_request = ServiceRequest.find session[:service_request_id]
+    @project = @current_user.projects.find params[:id]
   end
 
   def update
+    @service_request = ServiceRequest.find session[:service_request_id]
+    @project = @current_user.projects.find params[:id]
 
+    if @project.update_attributes params[:project]
+      flash[:notice] = "Project updated"
+    end
   end
 
   def destroy

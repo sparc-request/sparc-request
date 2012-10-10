@@ -42,6 +42,7 @@ class ApplicationController < ActionController::Base
     unless c.nil?
       @css_class = c['css_class']
       @back = c['back']
+      @catalog = c['catalog']
       @forward = c['forward']
       @validation_groups = c['validation_groups']
     end

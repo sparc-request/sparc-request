@@ -1,6 +1,7 @@
 protocol:
   css_class: blue-provider
   back: catalog
+  catalog: catalog
   forward: service_details
   validation_groups: 
     catalog:
@@ -10,6 +11,7 @@ protocol:
 service_details:
   css_class: light-blue-provider
   back: protocol
+  catalog: catalog
   forward: service_calendar
   validation_groups:
     protocol:

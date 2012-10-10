@@ -14,14 +14,16 @@ class IdentitiesController < ApplicationController
       @error_field = 'role'
     end
 
+    @protocol_type = session[:protocol_type]
+
     identity = Identity.find params[:identity_id]
-    protocol = params[:protocol_id].blank? ? Protocol.new : Protocol.find(params[:protocol_id])
     
     puts "#"*50
     puts params.inspect
     puts "#"*50
     # insert logic to update identity
-    
-    @project_role = ProjectRole.new :protocol_id => protocol.id, :identity_id => identity.id, :role => (params[:role] == 'other' ? params[:role_other] : params[:role])
+   
+    # should check if this is an existing project role
+    @project_role = ProjectRole.new :identity_id => identity.id, :role => (params[:role] == 'other' ? params[:role_other] : params[:role])
   end
 end

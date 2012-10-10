@@ -1,4 +1,7 @@
-if "<%= @error %>" != ""
+if $("#<%= @protocol_type %>_project_roles_attributes_<%= @project_role.identity.id %>_identity_id").length > 0
+  alert "<%= @project_role.identity.display_name %> has already been added to this project. Click edit in the table below to make changes to this user." 
+
+else if "<%= @error %>" != ""
   $('#user_detail_errors').html("<h2>1 error prohibited this user from being added</h2><p>There were problems with the following fields:</p><ul><li><%= @error %></li></ul>")
 
   # add error fields depending on error received

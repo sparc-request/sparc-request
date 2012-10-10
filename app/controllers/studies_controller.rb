@@ -3,7 +3,7 @@ class StudiesController < ApplicationController
   def new
     @service_request = ServiceRequest.find session[:service_request_id]
     @study = Study.new
-    @study.requester = @current_user
+    @study.requester_id = @current_user.id
     @study.build_research_types_info
     @study.build_human_subjects_info
     @study.build_vertebrate_animals_info
@@ -20,6 +20,8 @@ class StudiesController < ApplicationController
 
     if @study.valid?
       @study.save
+      @service_request.protocol = @study
+      @service_request.save
     else
       @study.setup_study_types
       @study.setup_impact_areas

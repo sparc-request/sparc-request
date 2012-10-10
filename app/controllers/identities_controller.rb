@@ -1,14 +1,27 @@
 class IdentitiesController < ApplicationController
   def show
     @identity = Identity.find params[:id]
-    if params[:project_role_id].blank?
+    @can_edit = false
+    project_role_params = params[:study][:project_roles_attributes][@identity.id.to_s] rescue nil
+    if project_role_params
+      project_role_params.delete '_destroy'
+      id = project_role_params.delete 'id'
+
+      if id.blank?
+        @project_role = ProjectRole.new project_role_params
+      else 
+        @project_role = ProjectRole.find id
+        @project_role.project_rights = project_role_params[:project_rights]
+      end
+
+      @can_edit = true
+    else
       @project_role = ProjectRole.new
-    else 
-      @project_role = ProjectRole.find params[:project_role_id]
     end
   end
 
   def add_to_protocol
+    @can_edit = params[:can_edit]
     @error = nil 
     @error_field = nil
     if params[:project_role][:role].blank?

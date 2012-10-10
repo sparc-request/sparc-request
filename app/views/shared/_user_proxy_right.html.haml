@@ -14,7 +14,7 @@
       = f.hidden_field :subspecialty
     %td 
       .actions
-        = link_to image_tag('pencil.png'), 'javascript:void(0)', :class => 'edit_project_role', :parent_class => parent_class, :project_role_id => project_role.id, :identity_id => identity.id
+        = link_to image_tag('pencil.png'), 'javascript:void(0)', :class => 'edit_project_role', :parent => parent_class, :identity_id => identity.id
         = link_to image_tag('cancel.png'), 'javascript:void(0)', :class => 'remove_project_role', :parent => parent_class unless identity == @current_user
       .restore{:style => 'display:none;'}
         = link_to image_tag('arrow_undo.png'), 'javascript:void(0)', :class => 'restore_project_role', :parent => parent_class

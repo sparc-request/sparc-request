@@ -22,6 +22,7 @@ class StudiesController < ApplicationController
       @study.save
       @service_request.protocol = @study
       @service_request.save
+      flash[:notice] = "New study created"
     else
       @study.setup_study_types
       @study.setup_impact_areas
@@ -30,11 +31,24 @@ class StudiesController < ApplicationController
   end
 
   def edit
-    #@study.setup_study_types!
+    @service_request = ServiceRequest.find session[:service_request_id]
+    @study = @current_user.studies.find params[:id]
+    @study.setup_study_types
+    @study.setup_impact_areas
+    @study.setup_affiliations
   end
 
   def update
+    @service_request = ServiceRequest.find session[:service_request_id]
+    @study = @current_user.studies.find params[:id]
 
+    if @study.update_attributes params[:study]
+      flash[:notice] = "Study updated"
+    else
+      @study.setup_study_types
+      @study.setup_impact_areas
+      @study.setup_affiliations
+    end
   end
 
   def destroy

@@ -1,0 +1,9 @@
+/////////////////////////////////////////////
+//
+// STUDY - Edit Study
+//
+/////////////////////////////////////////////
+
+= render :partial => 'service_requests/steps'
+.clear
+.edit_study= render :partial => 'studies/form', :locals => {:study => @study, :service_request => @service_request}

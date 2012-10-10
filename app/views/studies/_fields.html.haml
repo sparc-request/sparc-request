@@ -185,76 +185,34 @@
             = ip.label :inventors, "Inventors:"
             = ip.text_area :inventors
 
+    -# study types are initialized in obis-bridge lib/models/protocol.rb def setup_study_types
     %fieldset
       %legend Study Type (Check all that apply) 
       %div
         = f.fields_for :study_types do |rt|
           .field{:class => rt.object.name}
-            = rt.label :name, "#{rt.object.name.humanize.capitalize}:"
+            = rt.label :name, "#{StudyType::TYPES[rt.object.name]}:"
             = rt.check_box :name, {:checked => !rt.object.new}, rt.object.name, nil
 
+    -# impact_areas are initialized in obis-bridge lib/models/protocol.rb def setup_impact_areas
     %fieldset
       %legend Impact Areas
       %div
         = f.fields_for :impact_areas do |rt|
-          .field.pediatrics
-            = rt.label :pediatrics, "Pediatrics:"
-            = rt.check_box :pediatrics
+          .field{:class => rt.object.name}
+            = rt.label :name, "#{ImpactArea::TYPES[rt.object.name]}:"
+            = rt.check_box :name, {:checked => !rt.object.new}, rt.object.name, nil
 
-          .field.hiv_aids
-            = rt.label :hiv_aids, "HIV/AIDS:"
-            = rt.check_box :hiv_aids
-         
-          .field.hypertension
-            = rt.label :hypertension, "Hypertenstion:"
-            = rt.check_box :hypertension
-
-          .field.stroke
-            = rt.label :stroke, "Stroke:"
-            = rt.check_box :stroke
-   
-          .field.diabetes
-            = rt.label :diabetes, "Diabetes:"
-            = rt.check_box :diabetes
-   
-          .field.cancer
-            = rt.label :cancer, "Cancer:"
-            = rt.check_box :cancer
-
+    -# affiliations are initialized in obis-bridge lib/models/protocol.rb def setup_affiliations
     %fieldset
       %legend Affiliations and Collaborations 
       %div
         = f.fields_for :affiliations do |rt|
-          .field.cancer_center
-            = rt.label :cancer_center, "Cancer Center:"
-            = rt.check_box :cancer_center
-
-          .field.lipidomics_cobre
-            = rt.label :lipidomics_cobre, "Lipidomics COBRE:"
-            = rt.check_box :lipidomics_cobre
-         
-          .field.oral_health_cobre
-            = rt.label :oral_health_cobre, "Oral Health COBRE:"
-            = rt.check_box :oral_health_cobre
-
-          .field.cardiovascular_cobre
-            = rt.label :cardiovascular_cobre, "Cardiovascular COBRE:"
-            = rt.check_box :cardiovascular_cobre
-   
-          .field.cchp
-            = rt.label :cchp, "CCHP:"
-            = rt.check_box :cchp
-   
-          .field.inbre
-            = rt.label :inbre, "INBRE:"
-            = rt.check_box :inbre
-
-          .field.reach
-            = rt.label :reach, "REACH:"
-            = rt.check_box :reach
+          .field{:class => rt.object.name}
+            = rt.label :name, "#{Affiliation::TYPES[rt.object.name]}:"
+            = rt.check_box :name, {:checked => !rt.object.new}, rt.object.name, nil
 
 .grid_5.box= render :partial => 'shared/user_search'
- 
 
 .grid_5.box.user-details.user-manager-view.add-user-details= render :partial => 'shared/user_details', :locals => {:identity => (study.new_record? ? @current_user : Identity.new), :protocol => study}
 

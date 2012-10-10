@@ -10,6 +10,8 @@ class StudiesController < ApplicationController
     @study.build_investigational_products_info
     @study.build_ip_patents_info
     @study.setup_study_types
+    @study.setup_impact_areas
+    @study.setup_affiliations
   end
 
   def create
@@ -20,6 +22,8 @@ class StudiesController < ApplicationController
       @study.save
     else
       @study.setup_study_types
+      @study.setup_impact_areas
+      @study.setup_affiliations
     end
   end
 

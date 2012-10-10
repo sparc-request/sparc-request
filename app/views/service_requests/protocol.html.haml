@@ -23,7 +23,7 @@
 
         .type-select.center
           Is this Service Request tied to a particular Research Study
-          = select_tag "select-type", options_for_select([["Yes"], ["No"]])
+          = select_tag "select-type", options_for_select([["Yes"], ["No"]], (@service_request.protocol.try(:type) == 'Project' ? 'No' : 'Yes'))
           %span#infotip= image_tag('information.png')
           %br
           %br

@@ -14,6 +14,8 @@ $(document).ready ->
       $('#project-select #service_request_protocol_id').removeAttr('disabled')
       $('#study-select #service_request_protocol_id').attr('disabled', 'disabled')
 
+  $('#select-type').change()
+
   $('.edit-study').button()
   $('.new-study').button()
   $('.edit-project').button()

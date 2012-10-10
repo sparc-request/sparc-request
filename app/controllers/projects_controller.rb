@@ -12,8 +12,7 @@ class ProjectsController < ApplicationController
 
     if @project.valid?
       @project.save
-      @service_request.protocol = @project
-      @service_request.save
+      session[:saved_project_id] = @project.id
       flash[:notice] = "New project created"
     end
   end
@@ -28,6 +27,7 @@ class ProjectsController < ApplicationController
     @project = @current_user.projects.find params[:id]
 
     if @project.update_attributes params[:project]
+      session[:saved_project_id] = @project.id
       flash[:notice] = "Project updated"
     end
   end

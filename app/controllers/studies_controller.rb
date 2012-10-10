@@ -20,8 +20,7 @@ class StudiesController < ApplicationController
 
     if @study.valid?
       @study.save
-      @service_request.protocol = @study
-      @service_request.save
+      session[:saved_study_id] = @study.id
       flash[:notice] = "New study created"
     else
       @study.setup_study_types
@@ -47,6 +46,7 @@ class StudiesController < ApplicationController
     puts "#"*50
 
     if @study.update_attributes params[:study]
+      session[:saved_study_id] = @study.id
       flash[:notice] = "Study updated"
     end
       

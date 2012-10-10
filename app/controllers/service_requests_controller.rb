@@ -33,6 +33,13 @@ class ServiceRequestsController < ApplicationController
     @studies = @current_user.studies
     @projects = @current_user.projects
     @service_request = ServiceRequest.find session[:service_request_id]
+    if session[:saved_study_id]
+      @service_request.protocol = Study.find session[:saved_study_id]
+      session.delete :saved_study_id
+    elsif session[:saved_project_id]
+      @service_request.protocol = Project.find session[:saved_project_id]
+      session.delete :saved_project_id
+    end
   end
   
   def service_details

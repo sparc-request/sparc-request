@@ -19,6 +19,12 @@ $(document).ready ->
   $('.edit-project').button()
   $('.new-project').button()
 
+  $('.edit-study').click ->
+    study_id = $('.edit_study_id').val()
+    service_request_id = $('#service_request_id').val()
+    window.location.href = "/service_requests/#{service_request_id}/studies/#{study_id}/edit"
+    return false
+
   $('#infotip').qtip
     content: 'Research Study: An individual research study with defined aims and outcomes'
     position:

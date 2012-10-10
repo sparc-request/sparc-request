@@ -1,5 +1,5 @@
 Select a Research Study:
-= collection_select :service_request, :protocol_id, studies, :id, :short_title, :include_blank => 'Select a Study'
+= collection_select :service_request, :protocol_id, studies, :id, :short_title, {:include_blank => 'Select a Study'}, :class => 'edit_study_id'
 %button.edit-study Edit Study
 %br
 %br

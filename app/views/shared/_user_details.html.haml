@@ -2,8 +2,9 @@
 
 .details#identity_details
   = hidden_field_tag :identity_id, identity.id
+  = hidden_field_tag :protocol_id, protocol.id if protocol
   %h3 User Details:
-  #user_detail_errors
+  #user_detail_errors.errorExplanation
   %br
   .user_info
     .user_name

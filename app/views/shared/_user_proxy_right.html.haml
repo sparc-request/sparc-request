@@ -1,9 +1,15 @@
 - identity = project_role.identity
-%tr
-  %td= "#{identity.first_name} #{identity.last_name}"
-  %td Edit / Delete
-  %td= USER_ROLES.invert[project_role.role]
-  %td= radio_button_tag "identity[#{identity.id}][role]", 'none', project_role.should_select?('none', @current_user), :disabled => !project_role.can_switch_to?('none', @current_user)
-  %td= radio_button_tag "identity[#{identity.id}][role]", 'view', project_role.should_select?('view', @current_user), :disabled => !project_role.can_switch_to?('view', @current_user)
-  %td= radio_button_tag "identity[#{identity.id}][role]", 'request', project_role.should_select?('request', @current_user), :disabled => !project_role.can_switch_to?('request', @current_user)
-  %td= radio_button_tag "identity[#{identity.id}][role]", 'approve', project_role.should_select?('approve', @current_user), :disabled => !project_role.can_switch_to?('approve', @current_user)
+= fields_for "#{session[:protocol_type]}[project_roles_attributes][#{identity.id}]", project_role do |f|
+  %tr
+    %td
+      = "#{identity.first_name} #{identity.last_name}"
+      = f.hidden_field :identity_id
+      = f.hidden_field :role 
+      = f.hidden_field :role_other
+      = f.hidden_field :protocol_id
+    %td Edit / Delete
+    %td= USER_ROLES.invert[project_role.role]
+    %td= f.radio_button :project_rights, 'none', :checked => project_role.should_select?('none', @current_user), :disabled => !project_role.can_switch_to?('none', @current_user)
+    %td= f.radio_button :project_rights, 'view', :checked => project_role.should_select?('view', @current_user), :disabled => !project_role.can_switch_to?('view', @current_user)
+    %td= f.radio_button :project_rights, 'request', :checked => project_role.should_select?('request', @current_user), :disabled => !project_role.can_switch_to?('request', @current_user)
+    %td= f.radio_button :project_rights, 'approve', :checked => project_role.should_select?('approve', @current_user), :disabled => !project_role.can_switch_to?('approve', @current_user)

@@ -7,8 +7,7 @@ class ApplicationController < ActionController::Base
   before_filter :setup_navigation
 
   def authenticate
-    @current_user = Identity.find 10332 #anc63
-    Identity.current_user = @current_user
+    @current_user = Identity.find 9248 #anc63
   end
 
   def set_service_request_id

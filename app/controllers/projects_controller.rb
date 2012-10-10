@@ -1,4 +1,5 @@
 class ProjectsController < ApplicationController
+  before_filter :set_protocol_type
   def new
     @service_request = ServiceRequest.find session[:service_request_id]
     @project = Project.new
@@ -37,5 +38,9 @@ class ProjectsController < ApplicationController
 
   def destroy
 
+  end
+
+  def set_protocol_type
+    session[:protocol_type] = 'project'
   end
 end

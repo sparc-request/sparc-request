@@ -1,13 +1,22 @@
 - identity = project_role.identity
-= fields_for "#{session[:protocol_type]}[project_roles_attributes][#{identity.id}]", project_role do |f|
-  %tr
+- field_name = "#{session[:protocol_type]}[project_roles_attributes][#{identity.id}]"
+- parent_class = "project_role_#{identity.id}"
+= fields_for field_name, project_role do |f|
+  %tr{:class => parent_class}
     %td
       = "#{identity.first_name} #{identity.last_name}"
+      = f.hidden_field "_destroy"
+      = f.hidden_field :id
       = f.hidden_field :identity_id
       = f.hidden_field :role 
       = f.hidden_field :role_other
       = f.hidden_field :protocol_id
-    %td Edit / Delete
+    %td 
+      .actions
+        = link_to image_tag('pencil.png'), 'javascript:void(0)', :class => 'edit_project_role', :parent_class => parent_class
+        = link_to image_tag('cancel.png'), 'javascript:void(0)', :class => 'remove_project_role', :parent => parent_class unless identity == @current_user
+      .restore{:style => 'display:none;'}
+        = link_to image_tag('arrow_undo.png'), 'javascript:void(0)', :class => 'restore_project_role', :parent => parent_class
     %td= USER_ROLES.invert[project_role.role]
     %td= f.radio_button :project_rights, 'none', :checked => project_role.should_select?('none', @current_user), :disabled => !project_role.can_switch_to?('none', @current_user)
     %td= f.radio_button :project_rights, 'view', :checked => project_role.should_select?('view', @current_user), :disabled => !project_role.can_switch_to?('view', @current_user)

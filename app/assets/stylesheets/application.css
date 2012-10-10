@@ -632,9 +632,17 @@ a.save-option{
   height: auto;
 }
 
-.edit-project-view .user-details {
+.edit-project-view .user-details, .edit-project-view .user_added_message {
   margin-top: 10px;
   /* display: none; */
+}
+
+.user_added_message {
+  background: yellow !important;
+}
+
+.user_added_message p {
+ padding: 10px;
 }
 
 .edit-project-view .user-details label {

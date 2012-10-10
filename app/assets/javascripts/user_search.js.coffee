@@ -16,6 +16,7 @@ $(document).ready ->
         url: "/identities/#{ui.item.value}"
         type: 'GET'
       $('#user_search_term').clearFields()
+      $('.add-user-details').show()
       return false
 
   .data("autocomplete")._renderItem = (ul, item) ->

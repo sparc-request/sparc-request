@@ -42,13 +42,17 @@ class StudiesController < ApplicationController
     @service_request = ServiceRequest.find session[:service_request_id]
     @study = @current_user.studies.find params[:id]
 
+    puts "#"*50
+    puts params[:study].inspect
+    puts "#"*50
+
     if @study.update_attributes params[:study]
       flash[:notice] = "Study updated"
-    else
-      @study.setup_study_types
-      @study.setup_impact_areas
-      @study.setup_affiliations
     end
+      
+    @study.setup_study_types
+    @study.setup_impact_areas
+    @study.setup_affiliations
   end
 
   def destroy

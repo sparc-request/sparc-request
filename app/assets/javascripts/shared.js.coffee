@@ -9,3 +9,17 @@ $(document).ready ->
       type: 'POST'
       data: $('#identity_details :input').serialize()
     return false
+
+  $('.restore_project_role').live 'click', ->
+    parent = $(this).attr('parent')
+    $(".#{parent}").css({opacity: 1})
+    $(".#{parent} .actions").show()
+    $(".#{parent} .restore").hide()
+    $(".#{parent} input[name*='destroy']").val(false)
+
+  $('.remove_project_role').live 'click', ->
+    parent = $(this).attr('parent')
+    $(".#{parent}").css({opacity: 0.5})
+    $(".#{parent} .actions").hide()
+    $(".#{parent} .restore").show()
+    $(".#{parent} input[name*='destroy']").val(true)

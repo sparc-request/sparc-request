@@ -214,7 +214,12 @@
 
 .grid_5.box= render :partial => 'shared/user_search'
 
-.grid_5.box.user-details.user-manager-view.add-user-details= render :partial => 'shared/user_details', :locals => {:identity => (study.new_record? ? @current_user : Identity.new), :protocol => study}
+- hide_user_details = (study.new_record? and study.project_roles.empty?) ? '' : 'display:none;'
+
+.grid_5.box.user_added_message{:style => 'display:none;'}
+  %p User added!  See table below to set proxy rights.
+
+.grid_5.box.user-details.user-manager-view.add-user-details{:style => "#{hide_user_details}"}= render :partial => 'shared/user_details', :locals => {:identity => (study.new_record? ? @current_user : Identity.new), :protocol => study}
 
 .grid_12= render :partial => 'shared/user_list', :locals => {:protocol => study}
   

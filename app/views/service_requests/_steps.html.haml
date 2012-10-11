@@ -1,10 +1,4 @@
 .grid_12
   = image_tag '/assets/steps.png', :id => 'steps_banner'
-  - case controller_action
-  - when 'service_requests/protocol'
-    %h3.step-header.ui-corner-all.blue-provider STEP 1: Review Services and Assign Study or Project
-  - when 'studies/new'
-    %h3.step-header.ui-corner-all.blue-provider STEP 1: Create New Study
-  - when 'service_requests/service_details'
-    %h3.step-header.ui-corner-all.light-blue-provider STEP 2: Enter Service Details
+  %h3.step-header.ui-corner-all{:class => @css_class}= @step_text
   %br

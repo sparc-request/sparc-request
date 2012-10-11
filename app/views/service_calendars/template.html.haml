@@ -40,6 +40,10 @@
               %td.visit_4= check_box_tag :thisss
               %td.visit_5= check_box_tag :thatss
               %td.total $1000.00
+      
+      %th{:colspan => 12}
+        %hr
+      
       %tr.totals_section.begin_totals
         %td{:colspan => 5} Maximum Total Direct Costs Per Patient
         %td &nbsp;
@@ -72,10 +76,11 @@
         %td $2000.00
       
       %tr.totals_section
-        %th{:colspan => 5} Total Costs (Per Patient/Visit Services) Per Study
-        %th{:colspan => 6}
-        %th $2000.00
+        %td{:colspan => 5} Total Costs (Per Patient/Visit Services) Per Study
+        %td{:colspan => 6}
+        %td $2000.00
 
+      %th.totals_section{:colspan => 12} &nbsp;
 
     - if @service_request.has_one_time_fee_services?
       %tr.section_header
@@ -85,4 +90,47 @@
           %th{:colspan => 12}= value[:name]
           - value[:line_items].each do |line_item|
             %tr.line_item{:class => cycle('odd', '', :name => 'otfs')}
-              %th= line_item.service.name
+              %td.service_name= line_item.service.name
+              %td.service_rate $25.00
+              %td.your_cost $20.00
+              %td{:colspan => 8}
+              %td $2000.00
+
+      %th{:colspan => 12}
+        %hr
+      
+      %tr.totals_section.begin_totals
+        %td{:colspan => 5} Total Direct Costs (other) Per Study
+        %td{:colspan => 6}
+        %td $2000.00
+
+      %tr.totals_section
+        %td{:colspan => 5} Total Indirect Costs (other) Per Study
+        %td{:colspan => 6}
+        %td $2000.00
+
+      %tr.totals_section
+        %td{:colspan => 5} Total Costs (other) Per Study
+        %td{:colspan => 6}
+        %td $2000.00
+
+      %th.totals_section{:colspan => 12} &nbsp;
+
+    %tr.section_header
+      %th{:colspan => 12} Total Study Costs
+
+      %tr.totals_section
+        %td{:colspan => 5} Grand Total: Direct Costs
+        %td{:colspan => 6}
+        %td $2000.00
+
+      %tr.totals_section
+        %td{:colspan => 5} Grand Total: Indirect Costs
+        %td{:colspan => 6}
+        %td $2000.00
+
+      %tr.totals_section
+        %td{:colspan => 5} Grand Total:
+        %td{:colspan => 6}
+        %td $2000.00
+

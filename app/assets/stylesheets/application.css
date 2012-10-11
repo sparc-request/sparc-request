@@ -1540,3 +1540,7 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   background: #E8E8E8;
 }
 
+.begin_totals {
+  border-top: none !important;
+}
+

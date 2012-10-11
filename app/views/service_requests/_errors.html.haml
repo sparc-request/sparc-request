@@ -3,9 +3,10 @@
     #errorExplanation
       %h2
         = pluralize(session[:errors].count, "error")
-        prohibited this service request from being save:
+        prohibited this service request from being saved:
       %ul
-        - session[:errors][0].full_messages.each do |msg|
-          %li= msg
+        - session[:errors][0].messages.each do |key, msgs|
+          - msgs.each do |msg|
+            %li= msg
   - session.delete(:errors)
 

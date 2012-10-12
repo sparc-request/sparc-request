@@ -1552,3 +1552,7 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 .visit_number {
   font-size: 11px;
 }
+
+.line_item_visit_quantity {
+  width: 35px;
+}

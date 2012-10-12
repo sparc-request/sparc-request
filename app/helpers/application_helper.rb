@@ -16,6 +16,20 @@ module ApplicationHelper
     params[:controller] + '/' + params[:action]
   end
 
+  def line_item_visit_input line_item, visit, tab
+    case tab
+    when 'template'
+      check_box_tag "service_requests[line_item_items][#{line_item.id}][visits][#{visit.id}]"
+    when 'quantity'
+      check_box_tag "service_requests[line_item_items][#{line_item.id}][visits][#{visit.id}]"
+    when 'billing_strategy'
+      check_box_tag "service_requests[line_item_items][#{line_item.id}][visits][#{visit.id}]"
+    when 'pricing'
+      "$0.00"
+    end
+  end
+
+
   def portal_link
     case Rails.env
     when "development"

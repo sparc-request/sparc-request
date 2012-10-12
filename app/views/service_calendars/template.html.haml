@@ -34,7 +34,7 @@
               %td.unit_type= line_item.service.displayed_pricing_map.unit_type
               %td.subject_count= select_tag :count, options_for_select((0..@service_request.subject_count))
               %td &nbsp;
-              %td.visit_1= check_box_tag :that
+              %td.visit_1= line_item_visit_input line_item, line_item.visits.first, 'template'
               %td.visit_2= check_box_tag :thiss
               %td.visit_3= check_box_tag :thats
               %td.visit_4= check_box_tag :thisss

@@ -32,6 +32,7 @@ gem 'cache_digests'
 gem 'dynamic_form'
 
 gem 'obis-bridge', :path => '~/musc/obis-bridge'
+gem 'will_paginate'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'

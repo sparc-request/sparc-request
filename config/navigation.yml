@@ -1,4 +1,5 @@
 protocol:
+  step_text: 'STEP 1: Review Services and Assign Study or Project'
   css_class: blue-provider
   back: catalog
   catalog: catalog
@@ -9,6 +10,7 @@ protocol:
       - protocol
 
 service_details:
+  step_text: 'STEP 2: Enter Service Details'
   css_class: light-blue-provider
   back: protocol
   catalog: catalog
@@ -20,3 +22,19 @@ service_details:
     service_calendar:
       - service_details
       - protocol
+
+service_calendar:
+  step_text: 'STEP 2: Visit Calendar'
+  css_class: light-blue-provider
+  back: service_details 
+  catalog: catalog
+  forward: service_subsidy
+  validation_groups:
+    protocol:
+      - service_details
+      - protocol
+    service_calendar:
+      - service_details
+      - protocol
+    service_details:
+    service_subsidy:

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121004204104) do
+ActiveRecord::Schema.define(:version => 20121011172153) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -202,9 +202,10 @@ ActiveRecord::Schema.define(:version => 20121004204104) do
     t.boolean  "is_one_time_fee"
     t.datetime "complete_date"
     t.datetime "in_process_date"
-    t.datetime "created_at",             :null => false
-    t.datetime "updated_at",             :null => false
+    t.datetime "created_at",                            :null => false
+    t.datetime "updated_at",                            :null => false
     t.datetime "deleted_at"
+    t.integer  "units_per_quantity",     :default => 1
   end
 
   add_index "line_items", ["service_request_id"], :name => "index_line_items_on_service_request_id"

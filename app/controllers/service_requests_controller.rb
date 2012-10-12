@@ -46,6 +46,10 @@ class ServiceRequestsController < ApplicationController
     @service_request = ServiceRequest.find session[:service_request_id]
   end
 
+  def service_calendar
+    @service_request = ServiceRequest.find session[:service_request_id]
+  end
+
   # methods only used by ajax requests
 
   def add_service

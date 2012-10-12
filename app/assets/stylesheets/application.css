@@ -1484,3 +1484,71 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   background: red;
   color: #fff;
 }
+
+.service_calendar {
+  width: 922px;
+  border-collapse: collapse;
+  border: 1px solid #ccc;
+}
+
+.service_calendar thead tr th {
+  border: 1px solid #ccc;
+}
+
+#service_calendar .ui-tabs-panel {
+  padding: 10px 5px;
+}
+
+.service_calendar .table_header {
+  font-size: 12px;
+}
+
+.service_calendar .section_header {
+  font-size: 11px;
+  background: #adadad;
+}
+
+.service_calendar .sub_section_header {
+  font-size: 10px;
+  background: #ccc;
+}
+
+.service_calendar .section_header,
+.service_calendar .totals_section,
+.service_calendar .sub_section_header {
+  text-align: left;
+}
+
+.service_calendar .line_item .service_name {
+  text-align: left;
+}
+
+.service_calendar .totals_section,
+.service_calendar .line_item {
+  font-size: 10px;
+  border-top: 1px solid #adadad;
+}
+
+.service_calendar .section_header th,
+.service_calendar .sub_section_header th,
+.service_calendar .totals_section td,
+.service_calendar .line_item td {
+  padding: 5px;
+}
+
+.service_calendar .odd {
+  background: #E8E8E8;
+}
+
+.begin_totals {
+  border-top: none !important;
+}
+
+.visit_count {
+  width: 275px;
+  display: inline-table;
+}
+
+.visit_number {
+  font-size: 11px;
+}

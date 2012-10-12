@@ -161,7 +161,6 @@ ActiveRecord::Schema.define(:version => 20121012175742) do
     t.boolean  "optional"
     t.integer  "quantity"
     t.integer  "subject_count"
-    t.boolean  "is_one_time_fee"
     t.datetime "complete_date"
     t.datetime "in_process_date"
     t.datetime "created_at",                            :null => false

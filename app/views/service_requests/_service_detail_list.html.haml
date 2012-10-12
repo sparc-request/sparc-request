@@ -1,12 +1,14 @@
-- @service_request.service_list.each do |key, value|
+- @service_request.service_list(true).each do |key, value|
   %tr
     %th.provider-header{:colspan => 4}= value[:name]
   %tr
-  - value[:services].each do |service|
-    %tr
-      %td= "- " + service.name
-      %td
-        = text_field_tag :quantity
-      %td
-        = text_field_tag :units_per_quantity
-      %td= service.try(:displayed_pricing_map).try(:unit_type).try(:humanize)
+  - value[:line_items].each do |line_item|
+    = fields_for "service_request[line_items_attributes][]", line_item do |f|
+      %tr
+        %td= "- " + line_item.service.name
+        %td
+          = f.hidden_field :id
+          = f.text_field :quantity
+        %td
+          = f.text_field :units_per_quantity
+        %td= line_item.service.try(:displayed_pricing_map).try(:unit_type).try(:humanize)

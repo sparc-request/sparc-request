@@ -32,14 +32,17 @@
                     %th Estimated Study Start Date
                     %th Estimated Study End Date
                 %tbody
-                  %td
-                    = text_field_tag :subject_count
-                  %td
-                    = text_field_tag :visit_count
-                  %td
-                    = text_field_tag :start_date, nil, :class => 'jquery-ui-date'
-                  %td
-                    = text_field_tag :end_date, nil, :class => 'jquery-ui-date'
+                  = fields_for @service_request do |f|
+                    %td
+                      = f.text_field :subject_count
+                    %td
+                      = f.text_field :visit_count
+                    %td
+                      = text_field_tag :start_date, (@service_request.start_date.strftime('%_m/%d/%Y') rescue nil) # only used for datepicker
+                      = f.hidden_field :start_date
+                    %td
+                      = text_field_tag :end_date, (@service_request.end_date.strftime('%_m/%d/%Y') rescue nil) #only use for datepicker
+                      = f.hidden_field :end_date
           - else
             - if @service_request.has_per_patient_per_visit_services?
               %br
@@ -56,5 +59,7 @@
         %span#cart-help Help
       .line-items= render :partial => 'catalogs/cart', :locals => {:service_request => @service_request}
     .dashboard-button= navigation_link image_tag('back_to_catalog.png'), @catalog
+
+  .clear
 
   .continue= render :partial => 'service_requests/navigation'

@@ -36,7 +36,7 @@ module ApplicationHelper
     returning_html = ""
 
     (beginning_visit .. ending_visit).each do |n|
-      returning_html += content_tag(:th, "Visit #{n}00", :width => 60, :class => 'visit_number')
+      returning_html += content_tag(:th, "Visit #{n}", :width => 60, :class => 'visit_number')
     end
 
     ((page * 5) - service_request.visit_count).times do

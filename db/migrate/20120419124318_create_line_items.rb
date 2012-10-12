@@ -8,7 +8,6 @@ class CreateLineItems < ActiveRecord::Migration
       t.boolean :optional
       t.integer :quantity
       t.integer :subject_count
-      t.boolean :is_one_time_fee
       t.datetime :complete_date
       t.datetime :in_process_date
 

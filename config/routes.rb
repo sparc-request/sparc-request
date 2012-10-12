@@ -15,14 +15,14 @@ SparcRails::Application.routes.draw do
       get 'service_calendar'
       post 'navigate'
     end
-  end
 
-  resources :service_calendars do
-    member do
-      get 'template'
-      get 'quantity'
-      get 'billing_strategy'
-      get 'pricing'
+    resource :service_calendars do
+      member do
+        get 'template'
+        get 'quantity'
+        get 'billing_strategy'
+        get 'pricing'
+      end
     end
   end
 

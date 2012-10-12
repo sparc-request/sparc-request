@@ -7,10 +7,10 @@
   .grid_12
     #service_calendar
       %ul
-        %li= link_to 'Template', template_service_calendar_path(@service_request, :page => params[:page])
-        %li= link_to 'Quantity', quantity_service_calendar_path(@service_request, :page => params[:page])
-        %li= link_to 'Billing Strategy', billing_strategy_service_calendar_path(@service_request, :page => params[:page])
-        %li= link_to 'Pricing', pricing_service_calendar_path(@service_request, :page => params[:page])
+        %li= link_to 'Template', template_service_request_service_calendars_path(@service_request, :page => params[:page])
+        %li= link_to 'Quantity', quantity_service_request_service_calendars_path(@service_request, :page => params[:page])
+        %li= link_to 'Billing Strategy', billing_strategy_service_request_service_calendars_path(@service_request, :page => params[:page])
+        %li= link_to 'Pricing', pricing_service_request_service_calendars_path(@service_request, :page => params[:page])
 
   .clear
   .continue= render :partial => 'service_requests/navigation'

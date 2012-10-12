@@ -1486,7 +1486,7 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 }
 
 .service_calendar {
-  width: 100%;
+  width: 922px;
   border-collapse: collapse;
   border: 1px solid #ccc;
 }
@@ -1544,3 +1544,11 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   border-top: none !important;
 }
 
+.visit_count {
+  width: 275px;
+  display: inline-table;
+}
+
+.visit_number {
+  font-size: 11px;
+}

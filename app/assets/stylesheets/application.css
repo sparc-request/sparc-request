@@ -325,7 +325,7 @@ a.save-option{
 }
 
 .dotted-border{
-  padding-right: 2px;
+  padding-right: 22px;
   border-right-style: dotted;
   border-right-color: #ccc;
 }

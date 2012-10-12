@@ -1,7 +1,8 @@
 class ServiceCalendarsController < ApplicationController
   layout false
-  def template
+  def table
     @service_request = ServiceRequest.find session[:service_request_id]
+    @tab = params[:tab]
     @page = @service_request.set_visit_page params[:page].to_i
   end
 

@@ -21,9 +21,13 @@ module ApplicationHelper
     when 'template'
       check_box_tag "service_requests[line_item_items][#{line_item.id}][visits][#{visit.id}]"
     when 'quantity'
-      check_box_tag "service_requests[line_item_items][#{line_item.id}][visits][#{visit.id}]"
+      text_field_tag "service_requests[line_item_items][#{line_item.id}][visits][#{visit.id}][quantity]", visit.quantity, :class => 'line_item_visit_quantity'
     when 'billing_strategy'
-      check_box_tag "service_requests[line_item_items][#{line_item.id}][visits][#{visit.id}]"
+      returning_html = ""
+      returning_html += text_field_tag "service_requests[line_item_items][#{line_item.id}][visits][#{visit.id}][research_billing_qty]", visit.research_billing_qty, :class => 'line_item_visit_billing'
+      returning_html += text_field_tag "service_requests[line_item_items][#{line_item.id}][visits][#{visit.id}][insurance_billing_qty]", visit.insurance_billing_qty, :class => 'line_item_visit_billing'
+      returning_html += text_field_tag "service_requests[line_item_items][#{line_item.id}][visits][#{visit.id}][effort_billing_qty]", visit.effort_billing_qty, :class => 'line_item_visit_billing'
+      raw(returning_html)
     when 'pricing'
       "$0.00"
     end
@@ -52,14 +56,16 @@ module ApplicationHelper
     ending_visit = (page * 5) > service_request.visit_count ? service_request.visit_count : (page * 5)
     returning_html = ""
     
-    returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')), eval("#{tab}_service_request_service_calendars_path(service_request, :page => page - 1)"), 
+    returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')), 
+                              table_service_request_service_calendars_path(service_request, :page => page - 1, :tab => tab), 
                               :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only') unless page <= 1
     returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')), 
                                   :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled', :disabled => true) if page <= 1
 
     returning_html += content_tag(:span, "Visits #{beginning_visit} - #{ending_visit} of #{service_request.visit_count}", :class => 'visit_count')
 
-    returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')), eval("#{tab}_service_request_service_calendars_path(service_request, :page => page + 1)"), 
+    returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')), 
+                              table_service_request_service_calendars_path(service_request, :page => page + 1, :tab => tab), 
                               :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only') unless ((page + 1) * 5) - 4 > service_request.visit_count
     returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')), 
                                   :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled', :disabled => true) if ((page + 1) * 5) - 4 > service_request.visit_count

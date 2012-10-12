@@ -5,7 +5,7 @@
   - value[:line_items].each do |line_item|
     = fields_for "service_request[line_items_attributes][]", line_item do |f|
       %tr
-        %td= "- " + line_item.service.name
+        %td= line_item.service.name
         %td
           = f.hidden_field :id
           = f.text_field :quantity

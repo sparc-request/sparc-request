@@ -1556,3 +1556,13 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 .line_item_visit_quantity {
   width: 35px;
 }
+
+.line_item_visit_billing {
+  width: 15px;
+}
+
+.billing_type {
+  display: inline-table;
+  text-align: center;
+  width: 18px;
+}

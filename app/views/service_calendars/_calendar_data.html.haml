@@ -1,3 +1,5 @@
+= javascript_include_tag 'service_calendar_logic'
+
 %table.service_calendar
   %thead.ui-widget-header
     %tr.table_header
@@ -7,7 +9,7 @@
       %th{:rowspan => 2} # Subjects
       %th &nbsp;
       %th{:colspan => 5, :height => 40, :width => 375} 
-        = generate_visit_navigation @service_request, @page, tab
+        = generate_visit_navigation @service_request, @page, @tab
         
 
       %th &nbsp;
@@ -23,20 +25,31 @@
       %tr.section_header
         %th{:colspan => 12} Per Patient/Visit Services
       - @service_request.service_list(false).each do |key, value| # get only per patient/per visit services and group them
-        %tr.sub_section_header
-          %th{:colspan => 12}= value[:name]
-          - value[:line_items].each do |line_item|
-            %tr.line_item{:class => cycle('odd', '', :name => 'pppvs')}
-              %td.service_name= line_item.service.name
-              %td.service_rate $25.00
-              %td.your_cost $20.00
-              %td.unit_type= line_item.service.displayed_pricing_map.unit_type
-              %td.subject_count= select_tag :count, options_for_select((0..@service_request.subject_count))
-              %td &nbsp;
-              - visits = line_item.visits.paginate(:page => @page, :per_page => 5)
-              - visits.each do |v|
-                %td.visit= line_item_visit_input line_item, v, 'template'
-              %td.total $1000.00
+        - if @tab == 'billing_strategy'
+          %tr.sub_section_header
+            %th{:colspan => 6}= value[:name]
+            -5.times do
+              %th.billing_type_list
+                %span.billing_type R
+                %span.billing_type T
+                %span.billing_type %
+            %th &nbsp;
+        - else
+          %tr.sub_section_header
+            %th{:colspan => 12}= value[:name]
+
+        - value[:line_items].each do |line_item|
+          %tr.line_item{:class => cycle('odd', '', :name => 'pppvs')}
+            %td.service_name= line_item.service.name
+            %td.service_rate $25.00
+            %td.your_cost $20.00
+            %td.unit_type= line_item.service.displayed_pricing_map.unit_type
+            %td.subject_count= select_tag :count, options_for_select((0..@service_request.subject_count))
+            %td &nbsp;
+            - visits = line_item.visits.paginate(:page => @page, :per_page => 5)
+            - visits.each do |v|
+              %td.visit= line_item_visit_input line_item, v, @tab
+            %td.total $1000.00
       
       %th{:colspan => 12}
         %hr

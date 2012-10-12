@@ -18,10 +18,7 @@ SparcRails::Application.routes.draw do
 
     resource :service_calendars do
       member do
-        get 'template'
-        get 'quantity'
-        get 'billing_strategy'
-        get 'pricing'
+        get 'table'
       end
     end
   end

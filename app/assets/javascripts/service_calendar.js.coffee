@@ -28,3 +28,10 @@ $(document).ready ->
     .complete ->
       $('.service_calendar_spinner').hide()
 
+  $('.line_item_visit_count').live 'change', ->
+    $('.service_calendar_spinner').show()
+    $.ajax
+      type: 'PUT'
+      url: $(this).attr('update') + "&qty=#{$(this).val()}"
+    .complete ->
+      $('.service_calendar_spinner').hide()

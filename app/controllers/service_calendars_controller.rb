@@ -10,16 +10,16 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def update
-    puts "#"*50
-    puts params.inspect
-    puts "#"*50
-    visit = Visit.find params[:visit]
+    visit = Visit.find params[:visit] rescue nil
+    line_item = LineItem.find params[:line_item] rescue nil
     tab = params[:tab]
     checked = params[:checked]
     qty = params[:qty].to_i
     column = params[:column]
 
-    if tab == 'template' and visit.research_billing_qty.to_i <= 0 and checked == 'true'
+    if tab == 'template' and line_item
+      line_item.update_attribute(:subject_count, qty)
+    elsif tab == 'template' and visit.research_billing_qty.to_i <= 0 and checked == 'true'
       # set quantity and research billing qty to 1
       visit.update_attribute(:quantity, 1)
       visit.update_attribute(:research_billing_qty, 1)

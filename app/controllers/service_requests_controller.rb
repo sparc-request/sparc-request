@@ -121,4 +121,9 @@ class ServiceRequestsController < ApplicationController
     @service_request = ServiceRequest.find session[:service_request_id]
     @page = request.referrer.split('/').last # we need for pages other than the catalog
   end
+
+  def review
+    @service_request = ServiceRequest.find session[:service_request_id]
+  end
+
 end

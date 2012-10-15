@@ -2,11 +2,12 @@
   .grid_12
     #errorExplanation
       %h2
-        = pluralize(session[:errors][0].count, "error")
+        = pluralize(session[:errors].count, "error")
         prohibited this service request from being saved:
       %ul
-        - session[:errors][0].messages.each do |key, msgs|
-          - msgs.each do |msg|
-            %li= msg
+        - session[:errors].each do |errors|
+          - errors.each do |key, msgs|
+            - msgs.each do |msg|
+              %li= msg
   - session.delete(:errors)
 

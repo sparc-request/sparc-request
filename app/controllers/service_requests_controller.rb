@@ -14,9 +14,11 @@ class ServiceRequestsController < ApplicationController
     location = params["location"]
 
     if @validation_groups[location].nil? or @validation_groups[location].map{|vg| @service_request.group_valid? vg.to_sym}.all?
+      @service_request.save(:validate => false)
       redirect_to "/service_requests/#{@service_request.id}/#{location}"
     else
-      session[:errors] = @validation_groups[location].map{|vg| @service_request.grouped_errors[vg.to_sym]}
+      errors = @validation_groups[location].map{|vg| @service_request.grouped_errors[vg.to_sym].messages}
+      session[:errors] = errors.flatten
       redirect_to :back
     end
   end

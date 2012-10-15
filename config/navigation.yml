@@ -17,7 +17,6 @@ service_details:
   forward: service_calendar
   validation_groups:
     protocol:
-      - service_details
       - protocol
     service_calendar:
       - service_details
@@ -33,7 +32,7 @@ service_calendar:
     protocol:
       - service_details
       - protocol
-    service_calendar:
+    service_details:
       - service_details
       - protocol
     service_details:

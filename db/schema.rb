@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121012175742) do
+ActiveRecord::Schema.define(:version => 20121015133813) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -161,6 +161,7 @@ ActiveRecord::Schema.define(:version => 20121012175742) do
     t.boolean  "optional"
     t.integer  "quantity"
     t.integer  "subject_count"
+    t.boolean  "is_one_time_fee"
     t.datetime "complete_date"
     t.datetime "in_process_date"
     t.datetime "created_at",                            :null => false
@@ -374,6 +375,16 @@ ActiveRecord::Schema.define(:version => 20121012175742) do
   add_index "services", ["is_available"], :name => "index_services_on_is_available"
   add_index "services", ["obisid"], :name => "index_services_on_obisid"
   add_index "services", ["organization_id"], :name => "index_services_on_organization_id"
+
+  create_table "sessions", :force => true do |t|
+    t.string   "session_id", :null => false
+    t.text     "data"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
+  add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
 
   create_table "study_types", :force => true do |t|
     t.integer  "protocol_id"

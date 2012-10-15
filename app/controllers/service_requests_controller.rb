@@ -47,6 +47,9 @@ class ServiceRequestsController < ApplicationController
   end
 
   def service_calendar
+    #use session so we know what page to show when tabs are switched
+    session[:service_calendar_page] = params[:page] if params[:page]
+
     @service_request = ServiceRequest.find session[:service_request_id]
 
     # build out visits if they don't already exist and delete/create if the visit count changes

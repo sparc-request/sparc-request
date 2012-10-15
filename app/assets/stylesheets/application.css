@@ -1363,6 +1363,12 @@ li.organization-option {
   cursor    : pointer;
 }
 
+.service_calendar_spinner {
+  width: 16px;
+  height: 16px;
+  display: none;
+}
+
 .search-services, .search-identities {
   float: left;
 }

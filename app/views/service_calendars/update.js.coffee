@@ -1,0 +1,2 @@
+unless "<%= @errors %>" == ""
+  alert "<%= @errors %>"

@@ -28,7 +28,6 @@ $(document).ready ->
     return false
 
   $('.edit-project').click ->
-    console.log 'project click'
     project_id = $('.edit_project_id').val()
     service_request_id = $('#service_request_id').val()
     window.location.href = "/service_requests/#{service_request_id}/projects/#{project_id}/edit"

@@ -11,8 +11,8 @@
       %th{:colspan => 5, :height => 40, :width => 375} 
         = generate_visit_navigation @service_request, @page, @tab
         
+      %th= image_tag 'spinner.gif', :class => 'service_calendar_spinner'
 
-      %th &nbsp;
     %tr.table_header
       %th Service Rate
       %th Your Cost

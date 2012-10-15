@@ -14,4 +14,3 @@ $(document).ready ->
 
       name: "light"
       width: 250
-

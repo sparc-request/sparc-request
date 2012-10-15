@@ -17,16 +17,17 @@ module ApplicationHelper
   end
 
   def line_item_visit_input line_item, visit, tab
+    base_url = "/service_requests/#{line_item.service_request_id}/service_calendars?visit=#{visit.id}"
     case tab
     when 'template'
-      check_box_tag "service_requests[line_item_items][#{line_item.id}][visits][#{visit.id}]"
+      check_box_tag "visits_#{visit.id}", 1, (visit.research_billing_qty.to_i > 0), :class => 'line_item_visit_template', :update => "#{base_url}&tab=template"
     when 'quantity'
-      text_field_tag "service_requests[line_item_items][#{line_item.id}][visits][#{visit.id}][quantity]", visit.quantity, :class => 'line_item_visit_quantity'
+      text_field_tag "visits_#{visit.id}_quantity", visit.quantity, :class => 'line_item_visit_quantity', :update => "#{base_url}&tab=quantity"
     when 'billing_strategy'
       returning_html = ""
-      returning_html += text_field_tag "service_requests[line_item_items][#{line_item.id}][visits][#{visit.id}][research_billing_qty]", visit.research_billing_qty, :class => 'line_item_visit_billing'
-      returning_html += text_field_tag "service_requests[line_item_items][#{line_item.id}][visits][#{visit.id}][insurance_billing_qty]", visit.insurance_billing_qty, :class => 'line_item_visit_billing'
-      returning_html += text_field_tag "service_requests[line_item_items][#{line_item.id}][visits][#{visit.id}][effort_billing_qty]", visit.effort_billing_qty, :class => 'line_item_visit_billing'
+      returning_html += text_field_tag "visits_#{visit.id}_research_billing_qty", visit.research_billing_qty, :class => 'line_item_visit_billing', :update => "#{base_url}&tab=billing_strategy&column=research_billing_qty"
+      returning_html += text_field_tag "visits_#{visit.id}_insurance_billing_qty", visit.insurance_billing_qty, :class => 'line_item_visit_billing', :update => "#{base_url}&tab=billing_strategy&column=insurance_billing_qty"
+      returning_html += text_field_tag "visits_#{visit.id}_effort_billing_qty", visit.effort_billing_qty, :class => 'line_item_visit_billing', :update => "#{base_url}&tab=billing_strategy&column=effort_billing_qty"
       raw(returning_html)
     when 'pricing'
       "$0.00"
@@ -69,7 +70,6 @@ module ApplicationHelper
                               :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only') unless ((page + 1) * 5) - 4 > service_request.visit_count
     returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')), 
                                   :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled', :disabled => true) if ((page + 1) * 5) - 4 > service_request.visit_count
-
     raw(returning_html)
   end
   

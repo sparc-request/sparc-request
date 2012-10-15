@@ -1,20 +1,42 @@
 class ServiceCalendarsController < ApplicationController
   layout false
   def table
+    #use session so we know what page to show when tabs are switched
+    session[:service_calendar_page] = params[:page] if params[:page]
+
     @service_request = ServiceRequest.find session[:service_request_id]
     @tab = params[:tab]
-    @page = @service_request.set_visit_page params[:page].to_i
+    @page = @service_request.set_visit_page session[:service_calendar_page].to_i
   end
 
-  def quantity
+  def update
+    puts "#"*50
+    puts params.inspect
+    puts "#"*50
+    visit = Visit.find params[:visit]
+    tab = params[:tab]
+    checked = params[:checked]
+    qty = params[:qty].to_i
+    column = params[:column]
 
-  end
-
-  def billing_strategy
-
-  end
-
-  def pricing
-
+    if tab == 'template' and visit.research_billing_qty.to_i <= 0 and checked == 'true'
+      # set quantity and research billing qty to 1
+      visit.update_attribute(:quantity, 1)
+      visit.update_attribute(:research_billing_qty, 1)
+    elsif tab == 'template' and checked == 'false'
+      visit.update_attribute(:quantity, nil)
+      visit.update_attribute(:research_billing_qty, nil)
+      visit.update_attribute(:insurance_billing_qty, nil)
+      visit.update_attribute(:effort_billing_qty, nil)
+    elsif tab == 'quantity'
+      @errors = "Quantity must be greater than zero" if qty < 0
+      visit.update_attribute(:quantity, qty) unless qty < 0
+    elsif tab == 'billing_strategy'
+      @errors = "Quantity must be greater than zero" if qty < 0
+      visit.update_attribute(column, qty) unless qty < 0
+      #update the total quantity to reflect the 3 billing qty total
+      total = visit.research_billing_qty.to_i + visit.insurance_billing_qty.to_i + visit.effort_billing_qty.to_i
+      visit.update_attribute(:quantity, total) unless total < 0
+    end
   end
 end

@@ -17,8 +17,10 @@ class ServiceRequestsController < ApplicationController
       @service_request.save(:validate => false)
       redirect_to "/service_requests/#{@service_request.id}/#{location}"
     else
-      errors = @validation_groups[location].map{|vg| @service_request.grouped_errors[vg.to_sym].messages}
-      session[:errors] = errors.flatten
+      errors = @validation_groups[location].map do |vg| 
+        @service_request.grouped_errors[vg.to_sym].messages unless @service_request.grouped_errors[vg.to_sym].messages.empty?
+      end
+      session[:errors] = errors.compact.flatten.first # I DON'T LIKE THIS AT ALL
       redirect_to :back
     end
   end
@@ -68,6 +70,14 @@ class ServiceRequestsController < ApplicationController
         end
       end
     end
+  end
+
+  def service_subsidy
+    @service_request = ServiceRequest.find session[:service_request_id]
+  end
+  
+  def document_management
+    @service_request = ServiceRequest.find session[:service_request_id]
   end
 
   # methods only used by ajax requests

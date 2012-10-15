@@ -5,9 +5,8 @@
         = pluralize(session[:errors].count, "error")
         prohibited this service request from being saved:
       %ul
-        - session[:errors].each do |errors|
-          - errors.each do |key, msgs|
-            - msgs.each do |msg|
-              %li= msg
+        - session[:errors].each do |key, msgs|
+          - msgs.each do |msg|
+            %li= msg
   - session.delete(:errors)
 

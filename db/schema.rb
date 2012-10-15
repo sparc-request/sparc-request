@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121015133813) do
+ActiveRecord::Schema.define(:version => 20121015182029) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -56,6 +56,18 @@ ActiveRecord::Schema.define(:version => 20121015133813) do
   end
 
   add_index "charges", ["service_request_id"], :name => "index_charges_on_service_request_id"
+
+  create_table "documents", :force => true do |t|
+    t.integer  "sub_service_request_id"
+    t.datetime "deleted_at"
+    t.string   "doc_type"
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
+  end
 
   create_table "excluded_funding_sources", :force => true do |t|
     t.integer  "subsidy_map_id"

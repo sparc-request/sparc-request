@@ -1,6 +1,6 @@
 = javascript_include_tag 'document_management'
 
-= form_tag navigate_service_request_path(@service_request), {:id => 'navigation_form', :class => 'service-request-setup-view'} do
+= form_tag navigate_service_request_path(@service_request), {:id => 'navigation_form', :class => 'root-view', :multipart => true} do
   = hidden_field_tag :location, ''
   = render :partial => 'steps'
   = render :partial => 'errors'
@@ -8,7 +8,16 @@
     .select-project-view
       .left.dotted-border
         .document-management-container
-          Andre
+          %ul
+            - @service_request.documents.each do |doc|
+              %li= doc.document_file_name
+
+          - @service_request.service_list.each do |key, value|
+            = label_tag "sub_service_requests[]", value[:name]
+            = check_box_tag "sub_service_requests[]", key
+            = select_tag "document[doc_type]", options_for_select(DOCUMENT_TYPES), :prompt => "Select a Type"
+          = file_field_tag :document
+          = navigation_link 'Upload', 'document_management', 'upload_button'
 
   .grid_3.protocol-view-right.right
     #services.ui-widget.ui-widget-content.cart-view

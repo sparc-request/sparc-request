@@ -11,6 +11,17 @@ class ServiceRequestsController < ApplicationController
     referrer = request.referrer.split('/').last
     @service_request = ServiceRequest.find session[:service_request_id]
     @service_request.update_attributes(params[:service_request])
+
+    #### save documents if we have them
+    sub_service_requests = params[:sub_service_requests]
+    if sub_service_requests
+      sub_service_requests.each do |ssr|
+        sub_service_request = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => ssr.to_i
+        sub_service_request.documents.create :document => params[:document]
+        sub_service_request.save
+      end
+    end
+
     location = params["location"]
 
     if @validation_groups[location].nil? or @validation_groups[location].map{|vg| @service_request.group_valid? vg.to_sym}.all?

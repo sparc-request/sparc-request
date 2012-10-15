@@ -84,7 +84,7 @@ module ApplicationHelper
     end
   end
 
-  def navigation_link(img_or_txt, location)
-    link_to img_or_txt, "javascript:void(0)", :class => 'navigation_link', :location => location
+  def navigation_link(img_or_txt, location, class_name=nil)
+    link_to img_or_txt, "javascript:void(0)", :class => "navigation_link #{class_name}", :location => location
   end
 end

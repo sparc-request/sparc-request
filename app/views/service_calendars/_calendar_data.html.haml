@@ -49,6 +49,8 @@
             - visits = line_item.visits.paginate(:page => @page, :per_page => 5)
             - visits.each do |v|
               %td.visit= line_item_visit_input line_item, v, @tab
+            - (5 - visits.size).times do
+              %td &nbsp;
             %td.total $1000.00
       
       %th{:colspan => 12}

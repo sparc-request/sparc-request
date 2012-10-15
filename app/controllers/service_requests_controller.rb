@@ -48,6 +48,21 @@ class ServiceRequestsController < ApplicationController
 
   def service_calendar
     @service_request = ServiceRequest.find session[:service_request_id]
+
+    # build out visits if they don't already exist and delete/create if the visit count changes
+    @service_request.line_items.where("is_one_time_fee is not true").each do |line_item|
+      unless line_item.visits.count == @service_request.visit_count
+        if line_item.visits.count < @service_request.visit_count
+          (@service_request.visit_count - line_item.visits.count).times do
+            line_item.visits.create
+          end
+        elsif line_item.visits.count > @service_request.visit_count
+          (line_item.visits.count - @service_request.visit_count).times do
+            line_item.visits.last.delete
+          end
+        end
+      end
+    end
   end
 
   # methods only used by ajax requests

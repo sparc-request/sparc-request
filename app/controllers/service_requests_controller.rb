@@ -72,6 +72,14 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
+  def service_subsidy
+    @service_request = ServiceRequest.find session[:service_request_id]
+  end
+  
+  def document_management
+    @service_request = ServiceRequest.find session[:service_request_id]
+  end
+
   # methods only used by ajax requests
 
   def add_service

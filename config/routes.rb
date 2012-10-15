@@ -14,6 +14,8 @@ SparcRails::Application.routes.draw do
       get 'review'
       get 'service_details'
       get 'service_calendar'
+      get 'service_subsidy'
+      get 'document_management'
       post 'navigate'
     end
 

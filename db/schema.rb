@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121015133813) do
+ActiveRecord::Schema.define(:version => 20121015160230) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -161,7 +161,6 @@ ActiveRecord::Schema.define(:version => 20121015133813) do
     t.boolean  "optional"
     t.integer  "quantity"
     t.integer  "subject_count"
-    t.boolean  "is_one_time_fee"
     t.datetime "complete_date"
     t.datetime "in_process_date"
     t.datetime "created_at",                            :null => false
@@ -236,15 +235,16 @@ ActiveRecord::Schema.define(:version => 20121015133813) do
     t.datetime "display_date"
     t.datetime "effective_date"
     t.boolean  "charge_master"
-    t.decimal  "federal",                     :precision => 5, :scale => 2
-    t.decimal  "corporate",                   :precision => 5, :scale => 2
-    t.decimal  "other",                       :precision => 5, :scale => 2
-    t.decimal  "member",                      :precision => 5, :scale => 2
-    t.string   "college_funding_source"
-    t.string   "federal_funding_source"
-    t.string   "industry_funding_source"
-    t.string   "investigator_funding_source"
-    t.string   "internal_funding_source"
+    t.decimal  "federal",                :precision => 5, :scale => 2
+    t.decimal  "corporate",              :precision => 5, :scale => 2
+    t.decimal  "other",                  :precision => 5, :scale => 2
+    t.decimal  "member",                 :precision => 5, :scale => 2
+    t.string   "college_rate_type"
+    t.string   "federal_rate_type"
+    t.string   "industry_rate_type"
+    t.string   "investigator_rate_type"
+    t.string   "internal_rate_type"
+    t.string   "foundation_rate_type"
   end
 
   create_table "project_roles", :force => true do |t|

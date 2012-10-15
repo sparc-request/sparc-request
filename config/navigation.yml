@@ -27,7 +27,7 @@ service_calendar:
   css_class: light-blue-provider
   back: service_details 
   catalog: catalog
-  forward: service_subsidy
+  forward: review
   validation_groups:
     protocol:
       - service_details
@@ -37,3 +37,10 @@ service_calendar:
       - protocol
     service_details:
     service_subsidy:
+
+review:
+  step_text: 'STEP 4: Review Your Request'
+  css_class: red-provider
+  back: protocol
+  catalog: catalog
+  forward: confirmation

@@ -16,11 +16,8 @@ service_details:
   catalog: catalog
   forward: service_calendar
   validation_groups:
-    protocol:
-      - protocol
     service_calendar:
       - service_details
-      - protocol
 
 service_calendar:
   step_text: 'STEP 2: Visit Calendar'
@@ -29,11 +26,23 @@ service_calendar:
   catalog: catalog
   forward: service_subsidy
   validation_groups:
-    protocol:
-      - service_details
-      - protocol
-    service_details:
-      - service_details
-      - protocol
-    service_details:
     service_subsidy:
+      - service_calendar
+
+service_subsidy:
+  step_text: 'STEP 2: Enter Subsidy Information'
+  css_class: light-blue-provider
+  back: service_calendar
+  forward: document_management
+  validation_groups:
+    document_management:
+      - service_subsidy
+
+document_management:
+  step_text: 'STEP 3: Additional Notes and Information'
+  css_class: orange-provider
+  back: service_subsidy
+  forward: review_view
+  validation_groups:
+    review_view:
+      - document_management

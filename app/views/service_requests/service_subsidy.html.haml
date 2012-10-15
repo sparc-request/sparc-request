@@ -1,0 +1,15 @@
+= javascript_include_tag 'service_subsidy'
+
+= form_tag navigate_service_request_path(@service_request), {:id => 'navigation_form', :class => 'service-request-setup-view'} do
+  = hidden_field_tag :location, ''
+  = render :partial => 'steps'
+  = render :partial => 'errors'
+  .grid_9
+    .select-project-view
+      .left.dotted-border
+        .service-details 
+          Insert Subsidy Page
+
+  .clear
+
+  .continue= render :partial => 'service_requests/navigation'

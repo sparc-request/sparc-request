@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121015160230) do
+ActiveRecord::Schema.define(:version => 20121015200448) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -428,6 +428,7 @@ ActiveRecord::Schema.define(:version => 20121015160230) do
     t.datetime "created_at",         :null => false
     t.datetime "updated_at",         :null => false
     t.datetime "deleted_at"
+    t.boolean  "overridden"
   end
 
   add_index "subsidies", ["service_request_id"], :name => "index_subsidies_on_service_request_id"

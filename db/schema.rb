@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121016165642) do
+ActiveRecord::Schema.define(:version => 20121016204011) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -254,18 +254,6 @@ ActiveRecord::Schema.define(:version => 20121016165642) do
     t.datetime "display_date"
     t.datetime "effective_date"
     t.boolean  "charge_master"
-<<<<<<< HEAD
-    t.decimal  "federal",                     :precision => 5, :scale => 2
-    t.decimal  "corporate",                   :precision => 5, :scale => 2
-    t.decimal  "other",                       :precision => 5, :scale => 2
-    t.decimal  "member",                      :precision => 5, :scale => 2
-    t.string   "college_funding_source"
-    t.string   "federal_funding_source"
-    t.string   "industry_funding_source"
-    t.string   "investigator_funding_source"
-    t.string   "internal_funding_source"
-    t.datetime "deleted_at"
-=======
     t.decimal  "federal",                :precision => 5, :scale => 2
     t.decimal  "corporate",              :precision => 5, :scale => 2
     t.decimal  "other",                  :precision => 5, :scale => 2
@@ -276,7 +264,7 @@ ActiveRecord::Schema.define(:version => 20121016165642) do
     t.string   "investigator_rate_type"
     t.string   "internal_rate_type"
     t.string   "foundation_rate_type"
->>>>>>> 11fd46583d3b01242a8da81a85776d28dd441bc7
+    t.datetime "deleted_at"
   end
 
   create_table "project_roles", :force => true do |t|

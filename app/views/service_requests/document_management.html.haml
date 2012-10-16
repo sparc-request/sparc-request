@@ -1,31 +1,42 @@
 = javascript_include_tag 'document_management'
 
+#upload_message{:style => 'display:none'}
+  Your file is uploading.  Please be patient as this may take a while with large files.
+
 = form_tag navigate_service_request_path(@service_request), {:id => 'navigation_form', :class => 'root-view', :multipart => true} do
   = hidden_field_tag :location, ''
   = render :partial => 'steps'
   = render :partial => 'errors'
-  .grid_9
-    .select-project-view
-      .left.dotted-border
-        .document-management-container
-          %ul
-            - @service_request.documents.each do |doc|
-              %li= doc.document_file_name
+  .grid_12
+    .document-management-container
+      - if @service_request.documents.count >= 1
+        %table.document-table
+          %tr.header
+            %th Institution/Provider/Program/Core
+            %th Type
+            %th Title
+            %th Actions
 
-          - @service_request.service_list.each do |key, value|
-            = label_tag "sub_service_requests[]", value[:name]
-            = check_box_tag "sub_service_requests[]", key
-            = select_tag "document[doc_type]", options_for_select(DOCUMENT_TYPES), :prompt => "Select a Type"
-          = file_field_tag :document
-          = navigation_link 'Upload', 'document_management', 'upload_button'
+          - @service_request.documents.group_by(&:document_grouping_id).each do |grouping_id, docs|
+            - doc = docs.first
+            %tr.document{:id => "document_grouping_#{grouping_id}"}
+              %td{:style => "text-align:left"}
+                - docs.each do |document|
+                  = @service_list[document.sub_service_request.organization_id][:name]
+                  %br
+              %td= doc.doc_type
+              %td= doc.document_file_name
+              %td
+                = link_to "Edit", "/service_requests/#{@service_request.id}/edit_document_group/#{grouping_id}", :remote => true, :class => 'document_edit'
+                = link_to "Delete", "/service_requests/#{@service_request.id}/delete_document_group/#{grouping_id}", :remote => true, :class => 'document_delete'
+      - else
+        %div No documents found
 
-  .grid_3.protocol-view-right.right
-    #services.ui-widget.ui-widget-content.cart-view
-      %h3
-        My Services
-        %span#cart-help Help
-      .line-items= render :partial => 'catalogs/cart', :locals => {:service_request => @service_request}
-    .dashboard-button= navigation_link image_tag('back_to_catalog.png'), @catalog
+      .clear
+      %br
+      %br
+        
+      = render :partial => 'document_form'
 
   .clear
 

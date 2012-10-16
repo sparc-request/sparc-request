@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121015182029) do
+ActiveRecord::Schema.define(:version => 20121016165642) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -57,6 +57,12 @@ ActiveRecord::Schema.define(:version => 20121015182029) do
 
   add_index "charges", ["service_request_id"], :name => "index_charges_on_service_request_id"
 
+  create_table "document_groupings", :force => true do |t|
+    t.integer  "service_request_id"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+  end
+
   create_table "documents", :force => true do |t|
     t.integer  "sub_service_request_id"
     t.datetime "deleted_at"
@@ -67,6 +73,7 @@ ActiveRecord::Schema.define(:version => 20121015182029) do
     t.string   "document_content_type"
     t.integer  "document_file_size"
     t.datetime "document_updated_at"
+    t.integer  "document_grouping_id"
   end
 
   create_table "excluded_funding_sources", :force => true do |t|
@@ -257,6 +264,7 @@ ActiveRecord::Schema.define(:version => 20121015182029) do
     t.string   "industry_funding_source"
     t.string   "investigator_funding_source"
     t.string   "internal_funding_source"
+    t.datetime "deleted_at"
   end
 
   create_table "project_roles", :force => true do |t|
@@ -325,6 +333,7 @@ ActiveRecord::Schema.define(:version => 20121015182029) do
     t.datetime "created_at",         :null => false
     t.datetime "updated_at",         :null => false
     t.boolean  "hold_emails"
+    t.datetime "deleted_at"
   end
 
   add_index "service_providers", ["organization_id"], :name => "index_service_providers_on_organization_id"
@@ -475,6 +484,17 @@ ActiveRecord::Schema.define(:version => 20121015182029) do
   end
 
   add_index "tokens", ["service_request_id"], :name => "index_tokens_on_service_request_id"
+
+  create_table "versions", :force => true do |t|
+    t.string   "item_type",  :null => false
+    t.integer  "item_id",    :null => false
+    t.string   "event",      :null => false
+    t.string   "whodunnit"
+    t.text     "object"
+    t.datetime "created_at"
+  end
+
+  add_index "versions", ["item_type", "item_id"], :name => "index_versions_on_item_type_and_item_id"
 
   create_table "vertebrate_animals_info", :force => true do |t|
     t.integer  "protocol_id"

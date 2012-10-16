@@ -1,5 +1,5 @@
 #= require navigation
-#= require cart
 
 $(document).ready ->
-  $(".upload_button").button()
+  $(".document_delete").button()
+  $(".document_edit").button()

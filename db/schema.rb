@@ -180,7 +180,6 @@ ActiveRecord::Schema.define(:version => 20121016165642) do
     t.boolean  "optional"
     t.integer  "quantity"
     t.integer  "subject_count"
-    t.boolean  "is_one_time_fee"
     t.datetime "complete_date"
     t.datetime "in_process_date"
     t.datetime "created_at",                            :null => false
@@ -255,6 +254,7 @@ ActiveRecord::Schema.define(:version => 20121016165642) do
     t.datetime "display_date"
     t.datetime "effective_date"
     t.boolean  "charge_master"
+<<<<<<< HEAD
     t.decimal  "federal",                     :precision => 5, :scale => 2
     t.decimal  "corporate",                   :precision => 5, :scale => 2
     t.decimal  "other",                       :precision => 5, :scale => 2
@@ -265,6 +265,18 @@ ActiveRecord::Schema.define(:version => 20121016165642) do
     t.string   "investigator_funding_source"
     t.string   "internal_funding_source"
     t.datetime "deleted_at"
+=======
+    t.decimal  "federal",                :precision => 5, :scale => 2
+    t.decimal  "corporate",              :precision => 5, :scale => 2
+    t.decimal  "other",                  :precision => 5, :scale => 2
+    t.decimal  "member",                 :precision => 5, :scale => 2
+    t.string   "college_rate_type"
+    t.string   "federal_rate_type"
+    t.string   "industry_rate_type"
+    t.string   "investigator_rate_type"
+    t.string   "internal_rate_type"
+    t.string   "foundation_rate_type"
+>>>>>>> 11fd46583d3b01242a8da81a85776d28dd441bc7
   end
 
   create_table "project_roles", :force => true do |t|
@@ -449,6 +461,7 @@ ActiveRecord::Schema.define(:version => 20121016165642) do
     t.datetime "created_at",         :null => false
     t.datetime "updated_at",         :null => false
     t.datetime "deleted_at"
+    t.boolean  "overridden"
   end
 
   add_index "subsidies", ["service_request_id"], :name => "index_subsidies_on_service_request_id"

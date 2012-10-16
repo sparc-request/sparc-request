@@ -196,4 +196,8 @@ class ServiceRequestsController < ApplicationController
     @service_list = service_request.service_list
   end
 
+  def review
+    @service_request = ServiceRequest.find session[:service_request_id]
+  end
+
 end

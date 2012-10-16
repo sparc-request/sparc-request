@@ -11,6 +11,7 @@ SparcRails::Application.routes.draw do
     member do
       get 'catalog'
       get 'protocol'
+      get 'review'
       get 'service_details'
       get 'service_calendar'
       get 'service_subsidy'

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121016165642) do
+ActiveRecord::Schema.define(:version => 20121016204011) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"

@@ -59,9 +59,12 @@ class ServiceRequestsController < ApplicationController
       end
     end
 
-    location = params["location"]
+    # end document saving stuff
 
-    if (@validation_groups[location].nil? or @validation_groups[location].map{|vg| @service_request.group_valid? vg.to_sym}.all?) and errors.empty?
+    location = params["location"]
+    validates = params["validates"]
+
+    if (@validation_groups[location].nil? or @validation_groups[location].map{|vg| @service_request.group_valid? vg.to_sym}.all?) and (validates.blank? or @service_request.group_valid? validates.to_sym) and errors.empty?
       @service_request.save(:validate => false)
       redirect_to "/service_requests/#{@service_request.id}/#{location}"
     else
@@ -69,6 +72,10 @@ class ServiceRequestsController < ApplicationController
         @validation_groups[location].each do |vg| 
           errors << @service_request.grouped_errors[vg.to_sym].messages unless @service_request.grouped_errors[vg.to_sym].messages.empty?
         end
+      end
+
+      unless validates.blank?
+        errors << @service_request.grouped_errors[validates.to_sym].messages unless @service_request.grouped_errors[validates.to_sym].messages.empty?
       end
       session[:errors] = errors.compact.flatten.first # TODO I DON'T LIKE THIS AT ALL
       redirect_to :back

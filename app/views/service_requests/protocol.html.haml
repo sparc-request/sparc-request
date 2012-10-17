@@ -2,6 +2,7 @@
 
 = form_tag navigate_service_request_path(@service_request), :id => 'navigation_form' do
   = hidden_field_tag :location, ''
+  = hidden_field_tag :validates, ''
   = render :partial => 'steps'
   = render :partial => 'errors'
   .grid_9

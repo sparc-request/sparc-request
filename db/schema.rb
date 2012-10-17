@@ -263,8 +263,8 @@ ActiveRecord::Schema.define(:version => 20121016204011) do
     t.string   "industry_rate_type"
     t.string   "investigator_rate_type"
     t.string   "internal_rate_type"
-    t.string   "foundation_rate_type"
     t.datetime "deleted_at"
+    t.string   "foundation_rate_type"
   end
 
   create_table "project_roles", :force => true do |t|

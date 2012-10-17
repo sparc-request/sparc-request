@@ -107,7 +107,7 @@ class ServiceRequestsController < ApplicationController
     @service_request = ServiceRequest.find session[:service_request_id]
 
     # build out visits if they don't already exist and delete/create if the visit count changes
-    @service_request.line_items.where("is_one_time_fee is not true").each do |line_item|
+    @service_request.per_patient_per_visit_line_items.each do |line_item|
       unless line_item.visits.count == @service_request.visit_count
         if line_item.visits.count < @service_request.visit_count
           (@service_request.visit_count - line_item.visits.count).times do
@@ -143,16 +143,16 @@ class ServiceRequestsController < ApplicationController
       service = Service.find id
 
       # add service to line items
-      @service_request.line_items.create(:service_id => service.id, :optional => true, :is_one_time_fee => service.displayed_pricing_map.is_one_time_fee)
+      @service_request.line_items.create(:service_id => service.id, :optional => true)
 
       # add required services to line items
       service.required_services.each do |rs|
-        @service_request.line_items.create(:service_id => rs.id, :optional => false, :is_one_time_fee => rs.displayed_pricing_map.is_one_time_fee)
+        @service_request.line_items.create(:service_id => rs.id, :optional => false)
       end
 
       # add optional services to line items
       service.optional_services.each do |rs|
-        @service_request.line_items.create(:service_id => rs.id, :optional => true, :is_one_time_fee => rs.displayed_pricing_map.is_one_time_fee)
+        @service_request.line_items.create(:service_id => rs.id, :optional => true)
       end
     end
   end

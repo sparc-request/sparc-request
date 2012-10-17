@@ -24,15 +24,25 @@ service_calendar:
   css_class: light-blue-provider
   back: service_details 
   catalog: catalog
-  forward: review
+  forward: service_subsidy
   validation_groups:
     service_subsidy:
+
+service_subsidy:
+  step_text: 'STEP 2: Enter Subsidy Information'
+  css_class: light-blue-provider
+  back: service_calendar
+  catalog: catalog
+  forward: document_management 
+  validation_groups:
+    document_management:
+      - service_subsidy
 
 document_management:
   step_text: 'STEP 3: Additional Notes and Information'
   css_class: orange-provider
   back: service_subsidy
-  forward: review_view
+  forward: review
   validation_groups:
     review_view:
       - document_management
@@ -40,6 +50,6 @@ document_management:
 review:
   step_text: 'STEP 4: Review Your Request'
   css_class: red-provider
-  back: protocol
+  back: document_management 
   catalog: catalog
   forward: confirmation

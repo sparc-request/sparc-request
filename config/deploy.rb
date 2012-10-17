@@ -4,6 +4,8 @@ require 'rvm/capistrano'
 
 set :rvm_ruby_string, "1.9.3@sparc-rails"
 
+set :bundle_gemfile, "DeployGemfile"
+set :bundle_without, [:development, :test]
 
 set :application, "sparc-rails"
 set :repository,  "git@github.com:HSSC/sparc-rails.git"

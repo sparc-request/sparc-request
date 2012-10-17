@@ -3,6 +3,7 @@ require 'bundler/capistrano'
 require 'rvm/capistrano'
 
 set :rvm_ruby_string, "1.9.3@sparc-rails"
+set :rvm_type, :system
 
 set :bundle_gemfile, "DeployGemfile"
 set :bundle_without, [:development, :test]

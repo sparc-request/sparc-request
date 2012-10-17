@@ -53,3 +53,6 @@ review:
   back: document_management 
   catalog: catalog
   forward: confirmation
+  validation_groups:
+    document_management:
+

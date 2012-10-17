@@ -9,7 +9,7 @@
       %th{:rowspan => 2} # Subjects
       %th &nbsp;
       %th{:colspan => 5, :height => 40, :width => 375} 
-        = generate_visit_navigation @service_request, @page, @tab
+        = generate_visit_navigation @service_request, @page, @tab if @service_request.has_per_patient_per_visit_services?
         
       %th= image_tag 'spinner.gif', :class => 'service_calendar_spinner'
 
@@ -17,7 +17,10 @@
       %th Service Rate
       %th Your Cost
       %th &nbsp;
-      = generate_visit_header_row @service_request, @page
+      - if @service_request.has_per_patient_per_visit_services?
+        = generate_visit_header_row @service_request, @page
+      - else
+        %th{:colspan => 5} &nbsp;
       %th Total
 
   %tbody

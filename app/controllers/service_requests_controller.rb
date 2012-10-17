@@ -205,6 +205,7 @@ class ServiceRequestsController < ApplicationController
 
   def review
     @service_request = ServiceRequest.find session[:service_request_id]
+    @service_list = @service_request.service_list
     @protocol = @service_request.protocol
   end
 

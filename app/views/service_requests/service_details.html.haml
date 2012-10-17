@@ -22,30 +22,31 @@
                 %tbody
                   = render :partial => 'service_detail_list', :locals => {:service_request => @service_request}
             %br
-          .visit-calendar-details 
-            - if @service_request.has_one_time_fee_services?
-              .instructions Next, please enter the following information specific to your research study/project. This information will help us generate applicable service fees for your review.
-            - else
-              .instructions Please enter the following information specific to your research study/project. This information will help us generate applicable service fees for your review.
-            %table.service-details-table
-              %thead
-                %tr
-                  %th Estimated Total Number of Subjects
-                  %th Estimated Total Number of Visits
-                  %th Estimated Study Start Date
-                  %th Estimated Study End Date
-              %tbody
-                = fields_for @service_request do |f|
-                  %td
-                    = f.text_field :subject_count
-                  %td
-                    = f.text_field :visit_count
-                  %td
-                    = text_field_tag :start_date, (@service_request.start_date.strftime('%_m/%d/%Y') rescue nil) # only used for datepicker
-                    = f.hidden_field :start_date
-                  %td
-                    = text_field_tag :end_date, (@service_request.end_date.strftime('%_m/%d/%Y') rescue nil) #only use for datepicker
-                    = f.hidden_field :end_date
+          - if @service_request.has_per_patient_per_visit_services?
+            .visit-calendar-details 
+              - if @service_request.has_one_time_fee_services?
+                .instructions Next, please enter the following information specific to your research study/project. This information will help us generate applicable service fees for your review.
+              - else
+                .instructions Please enter the following information specific to your research study/project. This information will help us generate applicable service fees for your review.
+              %table.service-details-table
+                %thead
+                  %tr
+                    %th Estimated Total Number of Subjects
+                    %th Estimated Total Number of Visits
+                    %th Estimated Study Start Date
+                    %th Estimated Study End Date
+                %tbody
+                  = fields_for @service_request do |f|
+                    %td
+                      = f.text_field :subject_count
+                    %td
+                      = f.text_field :visit_count
+                    %td
+                      = text_field_tag :start_date, (@service_request.start_date.strftime('%_m/%d/%Y') rescue nil) # only used for datepicker
+                      = f.hidden_field :start_date
+                    %td
+                      = text_field_tag :end_date, (@service_request.end_date.strftime('%_m/%d/%Y') rescue nil) #only use for datepicker
+                      = f.hidden_field :end_date
           - if @service_request.has_one_time_fee_services? == false and @service_request.has_per_patient_per_visit_services? == false
             .visit-calendar-details
               .instructions

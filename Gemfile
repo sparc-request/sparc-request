@@ -44,7 +44,10 @@ gem 'will_paginate'
 # gem 'unicorn'
 
 # Deploy with Capistrano
-# gem 'capistrano'
+gem 'capistrano'
+gem 'capistrano-ext'
+
+#gem 'exception_notification', :require => 'exception_notifier'
 
 # To use debugger
 # gem 'debugger'

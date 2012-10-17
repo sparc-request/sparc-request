@@ -1,4 +1,6 @@
-Assumptions:
+Assumptions/Directions:
+  * You have obis-bridge alias for ssh in .ssh/config (this is needed because we have to bundle install the DeployGemfile to create a lock file)
+  * bundle install --gemfile DeployGemfile and then commit the DeployGemfile.lock
   * mysql is installed and empty database has been created
   * rvm is installed system wide
   * capistrano user exists and has access to rvm group

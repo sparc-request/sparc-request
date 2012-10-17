@@ -3,6 +3,9 @@ Assumptions/Directions:
   * bundle install --gemfile DeployGemfile and then commit the DeployGemfile.lock
   * mysql is installed and empty database has been created
   * rvm is installed system wide
+  * httpd is installed
+  * sudo gem install passenger
+  * rvmsudo passenger-install-apache2-module
   * capistrano user exists and has access to rvm group
   * your public key has been added to the capistrano users .ssh/authorized_keys file
   * capistrano user has sudo rights, needed to update/install rvm

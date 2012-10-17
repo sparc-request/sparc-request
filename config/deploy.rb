@@ -2,6 +2,8 @@ set :rvm_ruby_string, "1.9.3@sparc-rails"
 set :rvm_type, :system
 set :rvm_install_with_sudo, true
 
+set :default_environment, { 'BUNDLE_GEMFILE' => "DeployGemfile" }
+
 set :bundle_gemfile, "DeployGemfile"
 set :bundle_without, [:development, :test]
 

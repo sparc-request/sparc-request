@@ -1,0 +1,17 @@
+Assumptions:
+  * mysql is installed and empty database has been created
+  * rvm is installed system wide
+  * capistrano user exists and has access to rvm group
+  * your public key has been added to the capistrano users .ssh/authorized_keys file
+  * capistrano user has sudo rights, needed to update/install rvm
+  * after cap deploy:setup you must manually create shared/config/database.yml
+  * capistrano user has rights to clone the obis-bridge and sparc-rails repos from github (require 2 keys and .ssh/config to be setup)
+    - ssh-keygen -t rsa twice and copy these keys to github as deploy keys
+    - example .ssh/config
+      Host obis-bridge
+      HostName github.com
+      User git
+      IdentityFile ~/.ssh/obis_bridge
+      IdentitiesOnly yes
+
+

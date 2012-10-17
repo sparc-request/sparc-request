@@ -1,5 +1,9 @@
 require 'capistrano/ext/multistage'
 require 'bundler/capistrano'
+require 'rvm/capistrano'
+
+set :rvm_ruby_string, "1.9.3@sparc-rails"
+
 
 set :application, "sparc-rails"
 set :repository,  "git@github.com:HSSC/sparc-rails.git"
@@ -14,6 +18,9 @@ ssh_options[:forward_agent] = true
 
 set :stages, %w(testing staging production)
 set :default_stage, "testing"
+
+before "deploy:setup", "rvm:install_rvm"
+before "deploy:setup", "rvm:install_ruby"
 
 after "deploy:update_code", "db:symlink"
 

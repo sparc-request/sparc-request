@@ -151,6 +151,8 @@ GEM
       jenny
       rails
       sass
+    rvm-capistrano (1.2.7)
+      capistrano (>= 2.0.0)
     sass (3.2.1)
     sass-rails (3.2.5)
       railties (~> 3.2.0)
@@ -191,6 +193,7 @@ DEPENDENCIES
   obis-bridge!
   rails (= 3.2.8)
   rubyception
+  rvm-capistrano
   sass
   sass-rails (~> 3.2.3)
   sqlite3

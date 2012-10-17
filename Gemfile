@@ -31,7 +31,14 @@ gem 'jquery-rails'
 gem 'cache_digests'
 gem 'dynamic_form'
 
-gem 'obis-bridge', :path => '~/musc/obis-bridge'
+group :development do
+  gem 'obis-bridge', :path => '~/musc/obis-bridge'
+end
+
+group :testing, :staging, :production do
+  gem 'obis-bridge', :git => 'git@github.com:HSSC/obis-bridge.git'
+end
+
 gem 'will_paginate'
 
 # To use ActiveModel has_secure_password
@@ -46,6 +53,7 @@ gem 'will_paginate'
 # Deploy with Capistrano
 gem 'capistrano'
 gem 'capistrano-ext'
+gem 'rvm-capistrano'
 
 #gem 'exception_notification', :require => 'exception_notifier'
 

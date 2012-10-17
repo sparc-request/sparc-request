@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121016204011) do
+ActiveRecord::Schema.define(:version => 20121017103808) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -520,6 +520,7 @@ ActiveRecord::Schema.define(:version => 20121016204011) do
     t.integer  "research_billing_qty"
     t.integer  "insurance_billing_qty"
     t.integer  "effort_billing_qty"
+    t.integer  "position"
   end
 
   add_index "visits", ["line_item_id"], :name => "index_visits_on_line_item_id"

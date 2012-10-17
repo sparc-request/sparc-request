@@ -1,9 +1,6 @@
-require 'capistrano/ext/multistage'
-require 'bundler/capistrano'
-require 'rvm/capistrano'
-
 set :rvm_ruby_string, "1.9.3@sparc-rails"
 set :rvm_type, :system
+set :rvm_install_with_sudo, true
 
 set :bundle_gemfile, "DeployGemfile"
 set :bundle_without, [:development, :test]
@@ -55,3 +52,8 @@ namespace :db do
     run "cd #{current_path} ; rake db:seed RAILS_ENV=#{rails_env}"
   end
 end
+
+require 'capistrano/ext/multistage'
+require 'bundler/capistrano'
+require 'rvm/capistrano'
+

@@ -38,6 +38,13 @@
         
       = render :partial => 'document_form'
 
+      .clear
+      %br
+      %br
+
+      %div{:style => 'text-align: left'} Additional Notes -- If specific to service, please specify in text:
+      = text_area_tag 'service_request[notes]', @service_request.notes, :rows => 14, :cols => 114 
+
   .clear
 
   .continue= render :partial => 'service_requests/navigation'

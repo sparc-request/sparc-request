@@ -70,7 +70,7 @@ class ServiceRequestsController < ApplicationController
           errors << @service_request.grouped_errors[vg.to_sym].messages unless @service_request.grouped_errors[vg.to_sym].messages.empty?
         end
       end
-      session[:errors] = errors.compact.flatten.first # I DON'T LIKE THIS AT ALL
+      session[:errors] = errors.compact.flatten.first # TODO I DON'T LIKE THIS AT ALL
       redirect_to :back
     end
   end
@@ -167,7 +167,7 @@ class ServiceRequestsController < ApplicationController
     line_item_service_ids = line_items.map(&:service_id)
 
     # look at related services and set them to optional
-    # POTENTIAL ISSUE: what if another service has the same related service
+    # TODO POTENTIAL ISSUE: what if another service has the same related service
     service.related_services.each do |rs|
       if line_item_service_ids.include? rs.id
         line_items.find_by_service_id(rs.id).update_attribute(:optional, true)

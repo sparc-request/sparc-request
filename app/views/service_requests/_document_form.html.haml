@@ -1,0 +1,36 @@
+= javascript_include_tag 'document_upload'
+
+-# TODO this is ugly but works for now
+- orgs = []
+- first_doc_type = nil
+- first_doc = nil
+- orgs = @grouping.documents.map{|d| d.sub_service_request.organization_id} if @grouping
+- first_doc_type = @grouping.documents.first.doc_type if @grouping
+- first_doc = @grouping.documents.first if @grouping
+- button_text = @grouping ? "Update" : "Upload"
+= hidden_field_tag :document_grouping_id, @grouping.id if @grouping
+-# ugly but working
+
+%table#new_document
+  %tr.header
+    %th Recipients 
+    %th Include
+    %th Type
+    %th File
+    %th &nbsp;
+  %tr
+    %td{:style => "text-align:left"}
+      - @service_list.each do |key, values|
+        = label_tag "process_ssr_organization_ids[]", values[:name]
+        %br
+    %td
+      - @service_list.each do |key, values|
+        = check_box_tag "process_ssr_organization_ids[]", key, orgs.include?(key)
+        %br
+    %td= select_tag :doc_type, options_for_select(DOCUMENT_TYPES, first_doc_type), :prompt => "Select a Type"
+    %td
+      - if @grouping
+        = first_doc.document_file_name
+        %br
+      = file_field_tag :document
+    %td= navigation_link button_text, 'document_management', 'upload_button'

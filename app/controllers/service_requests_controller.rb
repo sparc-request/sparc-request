@@ -1,5 +1,6 @@
 class ServiceRequestsController < ApplicationController
   def navigate
+    errors = [] 
     # need to save and navigate to the right page
     puts "#"*50
     puts params.inspect
@@ -11,16 +12,72 @@ class ServiceRequestsController < ApplicationController
     referrer = request.referrer.split('/').last
     @service_request = ServiceRequest.find session[:service_request_id]
     @service_request.update_attributes(params[:service_request])
-    location = params["location"]
 
-    if @validation_groups[location].nil? or @validation_groups[location].map{|vg| @service_request.group_valid? vg.to_sym}.all?
+    #### save/update documents if we have them
+    process_ssr_organization_ids = params[:process_ssr_organization_ids]
+    document_grouping_id = params[:document_grouping_id]
+    document = params[:document]
+
+    if document_grouping_id and not process_ssr_organization_ids
+      # we are deleting this grouping, this is essentially the same as clicking delete next to a grouping
+      document_grouping = @service_request.document_groupings.find document_grouping_id
+      document_grouping.destroy
+    elsif process_ssr_organization_ids and not document and not document_grouping_id
+      # we did not provide a document
+      errors << {:document_upload => ["You must select a document to upload"]}
+    elsif process_ssr_organization_ids and not document_grouping_id
+      # we have a new grouping
+      document_grouping = @service_request.document_groupings.create
+      process_ssr_organization_ids.each do |org_id|
+        sub_service_request = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
+        sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :document_grouping_id => document_grouping.id
+        sub_service_request.save
+      end
+    elsif process_ssr_organization_ids and document_grouping_id
+      # we need to update an existing grouping
+      document_grouping = @service_request.document_groupings.find document_grouping_id
+      grouping_org_ids = document_grouping.documents.map{|d| d.sub_service_request.organization_id.to_s}
+      to_delete = grouping_org_ids - process_ssr_organization_ids
+      to_add = process_ssr_organization_ids - grouping_org_ids
+      to_update = process_ssr_organization_ids & grouping_org_ids
+      to_delete.each do |org_id|
+        document_grouping.documents.each do |doc|
+          doc.destroy if doc.organization.id == org_id.to_i
+        end
+      end
+      
+      to_add.each do |org_id|
+        sub_service_request = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
+        sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :document_grouping_id => document_grouping.id
+        sub_service_request.save
+      end
+
+      to_update.each do |org_id|
+        document_grouping.documents.each do |doc|
+          doc.update_attributes(:document => document, :doc_type => params[:doc_type]) if doc.organization.id == org_id.to_i
+        end
+      end
+    end
+
+    # end document saving stuff
+
+    location = params["location"]
+    validates = params["validates"]
+
+    if (@validation_groups[location].nil? or @validation_groups[location].map{|vg| @service_request.group_valid? vg.to_sym}.all?) and (validates.blank? or @service_request.group_valid? validates.to_sym) and errors.empty?
       @service_request.save(:validate => false)
       redirect_to "/service_requests/#{@service_request.id}/#{location}"
     else
-      errors = @validation_groups[location].map do |vg| 
-        @service_request.grouped_errors[vg.to_sym].messages unless @service_request.grouped_errors[vg.to_sym].messages.empty?
+      if @validation_groups[location]
+        @validation_groups[location].each do |vg| 
+          errors << @service_request.grouped_errors[vg.to_sym].messages unless @service_request.grouped_errors[vg.to_sym].messages.empty?
+        end
       end
-      session[:errors] = errors.compact.flatten.first # I DON'T LIKE THIS AT ALL
+
+      unless validates.blank?
+        errors << @service_request.grouped_errors[validates.to_sym].messages unless @service_request.grouped_errors[validates.to_sym].messages.empty?
+      end
+      session[:errors] = errors.compact.flatten.first # TODO I DON'T LIKE THIS AT ALL
       redirect_to :back
     end
   end
@@ -57,7 +114,7 @@ class ServiceRequestsController < ApplicationController
     @service_request = ServiceRequest.find session[:service_request_id]
 
     # build out visits if they don't already exist and delete/create if the visit count changes
-    @service_request.line_items.where("is_one_time_fee is not true").each do |line_item|
+    @service_request.per_patient_per_visit_line_items.each do |line_item|
       unless line_item.visits.count == @service_request.visit_count
         if line_item.visits.count < @service_request.visit_count
           (@service_request.visit_count - line_item.visits.count).times do
@@ -78,6 +135,7 @@ class ServiceRequestsController < ApplicationController
   
   def document_management
     @service_request = ServiceRequest.find session[:service_request_id]
+    @service_list = @service_request.service_list
   end
 
   # methods only used by ajax requests
@@ -92,16 +150,16 @@ class ServiceRequestsController < ApplicationController
       service = Service.find id
 
       # add service to line items
-      @service_request.line_items.create(:service_id => service.id, :optional => true, :is_one_time_fee => service.displayed_pricing_map.is_one_time_fee)
+      @service_request.line_items.create(:service_id => service.id, :optional => true)
 
       # add required services to line items
       service.required_services.each do |rs|
-        @service_request.line_items.create(:service_id => rs.id, :optional => false, :is_one_time_fee => rs.displayed_pricing_map.is_one_time_fee)
+        @service_request.line_items.create(:service_id => rs.id, :optional => false)
       end
 
       # add optional services to line items
       service.optional_services.each do |rs|
-        @service_request.line_items.create(:service_id => rs.id, :optional => true, :is_one_time_fee => rs.displayed_pricing_map.is_one_time_fee)
+        @service_request.line_items.create(:service_id => rs.id, :optional => true)
       end
     end
   end
@@ -116,7 +174,7 @@ class ServiceRequestsController < ApplicationController
     line_item_service_ids = line_items.map(&:service_id)
 
     # look at related services and set them to optional
-    # POTENTIAL ISSUE: what if another service has the same related service
+    # TODO POTENTIAL ISSUE: what if another service has the same related service
     service.related_services.each do |rs|
       if line_item_service_ids.include? rs.id
         line_items.find_by_service_id(rs.id).update_attribute(:optional, true)
@@ -128,6 +186,21 @@ class ServiceRequestsController < ApplicationController
     #@service_request = @current_user.service_requests.find session[:service_request_id]
     @service_request = ServiceRequest.find session[:service_request_id]
     @page = request.referrer.split('/').last # we need for pages other than the catalog
+  end
+
+  def delete_documents
+    # deletes a group of documents
+    service_request = ServiceRequest.find session[:service_request_id]
+    grouping = service_request.document_groupings.find params[:document_group_id]
+    @tr_id = "#document_grouping_#{grouping.id}"
+
+    grouping.destroy # destroys the grouping and the documents
+  end
+
+  def edit_documents
+    service_request = ServiceRequest.find session[:service_request_id]
+    @grouping = service_request.document_groupings.find params[:document_group_id]
+    @service_list = service_request.service_list
   end
 
   def review

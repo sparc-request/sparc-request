@@ -1,2 +1,5 @@
 #= require navigation
-#= require cart
+
+$(document).ready ->
+  $(".document_delete").button()
+  $(".document_edit").button()

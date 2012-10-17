@@ -47,6 +47,8 @@ SparcRails::Application.routes.draw do
 
   match 'service_requests/:id/add_service/:service_id' => 'service_requests#add_service'
   match 'service_requests/:id/remove_service/:line_item_id' => 'service_requests#remove_service'
+  match 'service_requests/:id/delete_document_group/:document_group_id' => 'service_requests#delete_documents'
+  match 'service_requests/:id/edit_document_group/:document_group_id' => 'service_requests#edit_documents'
   match 'rubyception' => 'rubyception/application#index'
   root :to => 'service_requests#catalog'
 

@@ -1130,7 +1130,6 @@ tr.total-visit-based-services {
   margin: 10px;
   margin-right: 0px;
   padding: 10px;
-  width: 630px;
   min-height: 50px;
   text-align: center;
 }
@@ -1569,4 +1568,8 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   display: inline-table;
   text-align: center;
   width: 18px;
+}
+
+.inline .field_with_errors {
+  display: inline-table;
 }

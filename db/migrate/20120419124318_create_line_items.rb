@@ -5,6 +5,7 @@ class CreateLineItems < ActiveRecord::Migration
       t.integer :sub_service_request_id
       t.integer :service_id
       t.string :ssr_id
+      t.boolean :is_one_time_fee
       t.boolean :optional
       t.integer :quantity
       t.integer :subject_count

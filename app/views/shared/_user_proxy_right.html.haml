@@ -1,6 +1,8 @@
+-# TODO - should these be defined in the view
 - identity = project_role.identity
 - field_name = "#{session[:protocol_type]}[project_roles_attributes][#{identity.id}]"
 - parent_class = "project_role_#{identity.id}"
+
 = fields_for field_name, project_role do |f|
   %tr{:class => parent_class}
     %td

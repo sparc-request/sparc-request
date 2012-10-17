@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121015160230) do
+ActiveRecord::Schema.define(:version => 20121017103808) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -56,6 +56,25 @@ ActiveRecord::Schema.define(:version => 20121015160230) do
   end
 
   add_index "charges", ["service_request_id"], :name => "index_charges_on_service_request_id"
+
+  create_table "document_groupings", :force => true do |t|
+    t.integer  "service_request_id"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+  end
+
+  create_table "documents", :force => true do |t|
+    t.integer  "sub_service_request_id"
+    t.datetime "deleted_at"
+    t.string   "doc_type"
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
+    t.string   "document_file_name"
+    t.string   "document_content_type"
+    t.integer  "document_file_size"
+    t.datetime "document_updated_at"
+    t.integer  "document_grouping_id"
+  end
 
   create_table "excluded_funding_sources", :force => true do |t|
     t.integer  "subsidy_map_id"
@@ -244,6 +263,7 @@ ActiveRecord::Schema.define(:version => 20121015160230) do
     t.string   "industry_rate_type"
     t.string   "investigator_rate_type"
     t.string   "internal_rate_type"
+    t.datetime "deleted_at"
     t.string   "foundation_rate_type"
   end
 
@@ -313,6 +333,7 @@ ActiveRecord::Schema.define(:version => 20121015160230) do
     t.datetime "created_at",         :null => false
     t.datetime "updated_at",         :null => false
     t.boolean  "hold_emails"
+    t.datetime "deleted_at"
   end
 
   add_index "service_providers", ["organization_id"], :name => "index_service_providers_on_organization_id"
@@ -428,6 +449,7 @@ ActiveRecord::Schema.define(:version => 20121015160230) do
     t.datetime "created_at",         :null => false
     t.datetime "updated_at",         :null => false
     t.datetime "deleted_at"
+    t.boolean  "overridden"
   end
 
   add_index "subsidies", ["service_request_id"], :name => "index_subsidies_on_service_request_id"
@@ -464,6 +486,17 @@ ActiveRecord::Schema.define(:version => 20121015160230) do
 
   add_index "tokens", ["service_request_id"], :name => "index_tokens_on_service_request_id"
 
+  create_table "versions", :force => true do |t|
+    t.string   "item_type",  :null => false
+    t.integer  "item_id",    :null => false
+    t.string   "event",      :null => false
+    t.string   "whodunnit"
+    t.text     "object"
+    t.datetime "created_at"
+  end
+
+  add_index "versions", ["item_type", "item_id"], :name => "index_versions_on_item_type_and_item_id"
+
   create_table "vertebrate_animals_info", :force => true do |t|
     t.integer  "protocol_id"
     t.string   "iacuc_number"
@@ -487,6 +520,7 @@ ActiveRecord::Schema.define(:version => 20121015160230) do
     t.integer  "research_billing_qty"
     t.integer  "insurance_billing_qty"
     t.integer  "effort_billing_qty"
+    t.integer  "position"
   end
 
   add_index "visits", ["line_item_id"], :name => "index_visits_on_line_item_id"

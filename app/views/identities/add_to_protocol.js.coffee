@@ -1,3 +1,5 @@
+# TODO - this could be cleaned up
+
 if $(".project_role_<%= @project_role.identity.id %>").length > 0 and "<%= @can_edit %>" == "false"
   alert "<%= @project_role.identity.display_name %> has already been added to this project. Click edit in the table below to make changes to this user." 
 else if "<%= @error %>" != ""

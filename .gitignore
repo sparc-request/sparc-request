@@ -27,6 +27,7 @@ scratch
 *.jar
 *.war
 public/assets
+public/system
 *~
 config/alfresco.yml
 config/database.yml

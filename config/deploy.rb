@@ -46,7 +46,7 @@ end
 namespace :db do
   task :symlink do
     run "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"
-    run "ln -nfs #{shared_path}/config/setup_load_path.rb #{release_path}/config/setup_load_path.rb"
+    run "ln -nfs #{shared_path}/config/setup_load_paths.rb #{release_path}/config/setup_load_paths.rb"
   end
 
   desc "seed the database for the rails environment"

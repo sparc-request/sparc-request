@@ -11,23 +11,24 @@ class ServiceCalendarsController < ApplicationController
 
   def update
     visit = Visit.find params[:visit] rescue nil
-    line_item = LineItem.find params[:line_item] rescue nil
+    
+    @line_item = LineItem.find params[:line_item] rescue nil
     tab = params[:tab]
     checked = params[:checked]
     qty = params[:qty].to_i
     column = params[:column]
 
-    if tab == 'template' and line_item
-      line_item.update_attribute(:subject_count, qty)
+    if tab == 'template' and @line_item
+      @line_item.update_attribute(:subject_count, qty)
     elsif tab == 'template' and visit.research_billing_qty.to_i <= 0 and checked == 'true'
       # set quantity and research billing qty to 1
       visit.update_attribute(:quantity, 1)
       visit.update_attribute(:research_billing_qty, 1)
     elsif tab == 'template' and checked == 'false'
-      visit.update_attribute(:quantity, nil)
-      visit.update_attribute(:research_billing_qty, nil)
-      visit.update_attribute(:insurance_billing_qty, nil)
-      visit.update_attribute(:effort_billing_qty, nil)
+      visit.update_attribute(:quantity, 0)
+      visit.update_attribute(:research_billing_qty, 0)
+      visit.update_attribute(:insurance_billing_qty, 0)
+      visit.update_attribute(:effort_billing_qty, 0)
     elsif tab == 'quantity'
       @errors = "Quantity must be greater than zero" if qty < 0
       visit.update_attribute(:quantity, qty) unless qty < 0
@@ -38,5 +39,8 @@ class ServiceCalendarsController < ApplicationController
       total = visit.research_billing_qty.to_i + visit.insurance_billing_qty.to_i + visit.effort_billing_qty.to_i
       visit.update_attribute(:quantity, total) unless total < 0
     end
+
+    @line_item = visit.line_item if @line_item.nil?
+    @line_item_total_td = "#total_#{@line_item.id}"
   end
 end

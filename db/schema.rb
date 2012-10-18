@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121017103808) do
+ActiveRecord::Schema.define(:version => 20121018153053) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -216,8 +216,8 @@ ActiveRecord::Schema.define(:version => 20121017103808) do
     t.integer  "service_id"
     t.string   "ssr_id"
     t.boolean  "optional"
-    t.integer  "quantity"
-    t.integer  "subject_count"
+    t.integer  "quantity",               :default => 0
+    t.integer  "subject_count",          :default => 1
     t.datetime "complete_date"
     t.datetime "in_process_date"
     t.datetime "created_at",                            :null => false
@@ -576,14 +576,14 @@ ActiveRecord::Schema.define(:version => 20121017103808) do
 
   create_table "visits", :force => true do |t|
     t.integer  "line_item_id"
-    t.integer  "quantity"
+    t.integer  "quantity",              :default => 0
     t.string   "billing"
-    t.datetime "created_at",            :null => false
-    t.datetime "updated_at",            :null => false
+    t.datetime "created_at",                           :null => false
+    t.datetime "updated_at",                           :null => false
     t.datetime "deleted_at"
-    t.integer  "research_billing_qty"
-    t.integer  "insurance_billing_qty"
-    t.integer  "effort_billing_qty"
+    t.integer  "research_billing_qty",  :default => 0
+    t.integer  "insurance_billing_qty", :default => 0
+    t.integer  "effort_billing_qty",    :default => 0
     t.integer  "position"
   end
 

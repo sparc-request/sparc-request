@@ -32,9 +32,7 @@ class StudiesController < ApplicationController
   def edit
     @service_request = ServiceRequest.find session[:service_request_id]
     @study = @current_user.studies.find params[:id]
-    @study.setup_study_types
-    @study.setup_impact_areas
-    @study.setup_affiliations
+    @study.populate_for_edit
   end
 
   def update

@@ -32,6 +32,9 @@ class ServiceCalendarsController < ApplicationController
     elsif tab == 'quantity'
       @errors = "Quantity must be greater than zero" if qty < 0
       visit.update_attribute(:quantity, qty) unless qty < 0
+      puts '%'*50
+      puts qty
+      puts '%'*50
     elsif tab == 'billing_strategy'
       @errors = "Quantity must be greater than zero" if qty < 0
       visit.update_attribute(column, qty) unless qty < 0
@@ -42,5 +45,6 @@ class ServiceCalendarsController < ApplicationController
 
     @line_item = visit.line_item if @line_item.nil?
     @line_item_total_td = "#total_#{@line_item.id}"
+    @service_request = ServiceRequest.find session[:service_request_id]
   end
 end

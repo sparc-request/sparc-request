@@ -20,3 +20,63 @@ $(document).ready ->
       'true'             : ['.patent_number', '.inventors']
 
   FormFxManager.registerListeners($('.edit-project-view'), display_dependencies)
+
+  $('#study_funding_source').change ->
+    switch $(this).val()
+      when "internal", "college" then $('#study_indirect_cost_rate').val("")
+      when "industry", "foundation", "investigator" then $('#study_indirect_cost_rate').val("25")
+      when "federal" then $('#study_indirect_cost_rate').val("47.5")
+
+  $('#study_potential_funding_source').change ->
+    switch $(this).val()
+      when "internal", "college" then $('#study_indirect_cost_rate').val("")
+      when "industry", "foundation", "investigator" then $('#study_indirect_cost_rate').val("25")
+      when "federal" then $('#study_indirect_cost_rate').val("47.5")
+
+  $("#funding_start_date").datepicker(
+    changeMonth: true,
+    changeYear:true,
+    constrainInput: true,
+    dateFormat: "m/dd/yy",
+    showButtonPanel: true,
+    altField: '#study_funding_start_date',
+    altFormat: 'yy-mm-dd',
+
+    beforeShow: (input)->
+      callback = ->
+        buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane")
+        buttonPane.find('button.ui-datepicker-current').hide()
+        $("<button>", {
+          class: "ui-state-default ui-priority-primary ui-corner-all"
+          text: "Clear"
+          click: ->
+            $.datepicker._clearDate(input)
+        }).appendTo(buttonPane)
+      setTimeout( callback, 1)
+    ).addClass('date');
+
+  $('#funding_start_date').attr("readOnly", true)
+
+  $("#potential_funding_start_date").datepicker(
+    changeMonth: true,
+    changeYear:true,
+    constrainInput: true,
+    dateFormat: "m/dd/yy",
+    showButtonPanel: true,
+    altField: '#study_potential_funding_start_date',
+    altFormat: 'yy-mm-dd',
+
+    beforeShow: (input)->
+      callback = ->
+        buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane")
+        buttonPane.find('button.ui-datepicker-current').hide()
+        $("<button>", {
+          class: "ui-state-default ui-priority-primary ui-corner-all"
+          text: "Clear"
+          click: ->
+            $.datepicker._clearDate(input)
+        }).appendTo(buttonPane)
+      setTimeout( callback, 1)
+    ).addClass('date');
+
+  $('#potential_funding_start_date').attr("readOnly", true)

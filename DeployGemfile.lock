@@ -1,8 +1,8 @@
 GIT
   remote: obis-bridge:HSSC/obis-bridge.git
-  revision: a13debc019ffc41945c71349a4c5f78b11407840
+  revision: a4cbc652cebe1179ce91487d739d82b5747fbbf1
   specs:
-    obis-bridge (0.0.1)
+    obis-bridge (0.0.2)
       activerecord
       acts_as_list
       grouped_validations

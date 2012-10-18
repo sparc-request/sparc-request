@@ -59,9 +59,12 @@ class ServiceRequestsController < ApplicationController
       end
     end
 
-    location = params["location"]
+    # end document saving stuff
 
-    if (@validation_groups[location].nil? or @validation_groups[location].map{|vg| @service_request.group_valid? vg.to_sym}.all?) and errors.empty?
+    location = params["location"]
+    validates = params["validates"]
+
+    if (@validation_groups[location].nil? or @validation_groups[location].map{|vg| @service_request.group_valid? vg.to_sym}.all?) and (validates.blank? or @service_request.group_valid? validates.to_sym) and errors.empty?
       @service_request.save(:validate => false)
       redirect_to "/service_requests/#{@service_request.id}/#{location}"
     else
@@ -70,7 +73,11 @@ class ServiceRequestsController < ApplicationController
           errors << @service_request.grouped_errors[vg.to_sym].messages unless @service_request.grouped_errors[vg.to_sym].messages.empty?
         end
       end
-      session[:errors] = errors.compact.flatten.first # I DON'T LIKE THIS AT ALL
+
+      unless validates.blank?
+        errors << @service_request.grouped_errors[validates.to_sym].messages unless @service_request.grouped_errors[validates.to_sym].messages.empty?
+      end
+      session[:errors] = errors.compact.flatten.first # TODO I DON'T LIKE THIS AT ALL
       redirect_to :back
     end
   end
@@ -107,7 +114,7 @@ class ServiceRequestsController < ApplicationController
     @service_request = ServiceRequest.find session[:service_request_id]
 
     # build out visits if they don't already exist and delete/create if the visit count changes
-    @service_request.line_items.where("is_one_time_fee is not true").each do |line_item|
+    @service_request.per_patient_per_visit_line_items.each do |line_item|
       unless line_item.visits.count == @service_request.visit_count
         if line_item.visits.count < @service_request.visit_count
           (@service_request.visit_count - line_item.visits.count).times do
@@ -143,16 +150,16 @@ class ServiceRequestsController < ApplicationController
       service = Service.find id
 
       # add service to line items
-      @service_request.line_items.create(:service_id => service.id, :optional => true, :is_one_time_fee => service.displayed_pricing_map.is_one_time_fee)
+      @service_request.line_items.create(:service_id => service.id, :optional => true)
 
       # add required services to line items
       service.required_services.each do |rs|
-        @service_request.line_items.create(:service_id => rs.id, :optional => false, :is_one_time_fee => rs.displayed_pricing_map.is_one_time_fee)
+        @service_request.line_items.create(:service_id => rs.id, :optional => false)
       end
 
       # add optional services to line items
       service.optional_services.each do |rs|
-        @service_request.line_items.create(:service_id => rs.id, :optional => true, :is_one_time_fee => rs.displayed_pricing_map.is_one_time_fee)
+        @service_request.line_items.create(:service_id => rs.id, :optional => true)
       end
     end
   end
@@ -167,7 +174,7 @@ class ServiceRequestsController < ApplicationController
     line_item_service_ids = line_items.map(&:service_id)
 
     # look at related services and set them to optional
-    # POTENTIAL ISSUE: what if another service has the same related service
+    # TODO POTENTIAL ISSUE: what if another service has the same related service
     service.related_services.each do |rs|
       if line_item_service_ids.include? rs.id
         line_items.find_by_service_id(rs.id).update_attribute(:optional, true)
@@ -198,6 +205,8 @@ class ServiceRequestsController < ApplicationController
 
   def review
     @service_request = ServiceRequest.find session[:service_request_id]
+    @service_list = @service_request.service_list
+    @protocol = @service_request.protocol
   end
 
 end

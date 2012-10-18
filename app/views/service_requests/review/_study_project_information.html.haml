@@ -1,0 +1,45 @@
+%table.project-information
+  %thead
+    %tr
+      %th.light-blue-provider{:colspan=>2}
+        %strong Study/Project Information
+  %tbody
+    %tr
+      %th Study/Project ID:
+      %td 
+        = @protocol.id
+    %tr
+      %th Short Title
+      %td 
+        = @protocol.short_title
+    %tr
+      %th Study/Project Title:
+      %td 
+        = @protocol.title
+    - if @protocol.type == 'Study' 
+      %tr
+        %th Sponsor Name:
+        %td 
+          = @protocol.sponsor_name
+    %tr
+      %th Funding Source:
+      %td 
+        = @protocol.funding_source
+%table.project-roles
+  %thead
+    %tr
+      %th.light-blue-provider{:colspan=>3}
+        %strong Authorized Users
+    %tr
+      %th Name:
+      %th Role:
+      %th Proxy Rights:
+  %tbody
+    - @protocol.project_roles.each do |pr|
+      %tr
+        %td.name 
+          = pr.identity.first_name + " " + pr.identity.last_name
+        %td.role
+          = pr.role
+        %td.proxy-rights
+          = pr.project_rights

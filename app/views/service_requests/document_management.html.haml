@@ -5,38 +5,23 @@
 
 = form_tag navigate_service_request_path(@service_request), {:id => 'navigation_form', :class => 'root-view', :multipart => true} do
   = hidden_field_tag :location, ''
+  = hidden_field_tag :validates, ''
   = render :partial => 'steps'
   = render :partial => 'errors'
   .grid_12
     .document-management-container
-      - if @service_request.documents.count >= 1
-        %table.document-table
-          %tr.header
-            %th Institution/Provider/Program/Core
-            %th Type
-            %th Title
-            %th Actions
-
-          - @service_request.documents.group_by(&:document_grouping_id).each do |grouping_id, docs|
-            - doc = docs.first
-            %tr.document{:id => "document_grouping_#{grouping_id}"}
-              %td{:style => "text-align:left"}
-                - docs.each do |document|
-                  = @service_list[document.sub_service_request.organization_id][:name]
-                  %br
-              %td= doc.doc_type
-              %td= doc.document_file_name
-              %td
-                = link_to "Edit", "/service_requests/#{@service_request.id}/edit_document_group/#{grouping_id}", :remote => true, :class => 'document_edit'
-                = link_to "Delete", "/service_requests/#{@service_request.id}/delete_document_group/#{grouping_id}", :remote => true, :class => 'document_delete'
-      - else
-        %div No documents found
-
+      = render :partial => 'document_list'
       .clear
       %br
       %br
         
       = render :partial => 'document_form'
+      .clear
+      %br
+      %br
+
+      %div{:style => 'text-align: left'} Additional Notes -- If specific to service, please specify in text:
+      = text_area_tag 'service_request[notes]', @service_request.notes, :rows => 14, :cols => 114 
 
   .clear
 

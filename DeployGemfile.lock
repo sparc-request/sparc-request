@@ -1,5 +1,6 @@
-PATH
-  remote: ~/musc/obis-bridge
+GIT
+  remote: obis-bridge:HSSC/obis-bridge.git
+  revision: a4cbc652cebe1179ce91487d739d82b5747fbbf1
   specs:
     obis-bridge (0.0.2)
       activerecord
@@ -90,6 +91,7 @@ GEM
       thor (~> 0.14)
     jruby-pageant (1.1.1)
     json (1.7.5)
+    libv8 (3.3.10.4)
     mail (2.4.4)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
@@ -167,15 +169,14 @@ GEM
       rack (~> 1.0)
       tilt (~> 1.1, != 1.3.0)
     sqlite3 (1.3.6)
+    therubyracer (0.10.2)
+      libv8 (~> 3.3.10)
     thor (0.16.0)
     tilt (1.3.3)
     treetop (1.4.11)
       polyglot
       polyglot (>= 0.3.1)
     tzinfo (0.3.33)
-    uglifier (1.3.0)
-      execjs (>= 0.3.0)
-      multi_json (~> 1.0, >= 1.0.2)
     will_paginate (3.0.3)
 
 PLATFORMS
@@ -187,6 +188,7 @@ DEPENDENCIES
   capistrano-ext
   coffee-rails (~> 3.2.1)
   dynamic_form
+  execjs
   haml
   jquery-rails
   mysql2
@@ -197,5 +199,5 @@ DEPENDENCIES
   sass
   sass-rails (~> 3.2.3)
   sqlite3
-  uglifier (>= 1.0.3)
+  therubyracer
   will_paginate

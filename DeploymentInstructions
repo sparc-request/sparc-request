@@ -1,0 +1,77 @@
+Assumptions/Directions:
+  * You have obis-bridge alias for ssh in .ssh/config (this is needed because we have to bundle install the DeployGemfile to create a lock file)
+
+  * bundle install --gemfile DeployGemfile and then commit the DeployGemfile.lock
+
+  * mysql is installed and empty database has been created
+
+  * rvm is installed system wide
+
+  * add rvm_trust_rvmrcs_flag=1 to /etc/rvmrc
+
+  * set default ruby to one used by app ## not totally sure if this is necessary
+
+  * httpd is installed
+
+  * sudo gem install passenger
+
+  * rvmsudo passenger-install-apache2-module
+
+  * copy lines passenger provides into /etc/httpd/conf/httpd.conf
+    # load phusion passenger
+    LoadModule passenger_module /usr/local/rvm/gems/ruby-1.9.3-p286/gems/passenger-3.0.17/ext/apache2/mod_passenger.so
+    PassengerRoot /usr/local/rvm/gems/ruby-1.9.3-p286/gems/passenger-3.0.17
+
+  * create a conf file for the app /etc/httpd/conf.d/sparc-rails.conf and change the RackEnv
+    <VirtualHost *:80>
+      ServerName obis-sparc-dev.mdc.musc.edu
+      DocumentRoot /var/www/rails/sparc-rails/current/public
+      <Directory /var/www/rails/sparc-rails/current/public>
+        AllowOverride all
+        Options -MultiViews
+        RackEnv testing
+      </Directory>
+    </VirtualHost>
+
+  * capistrano user exists and has access to rvm group
+
+  * your public key has been added to the capistrano users .ssh/authorized_keys file
+
+  * capistrano user has sudo rights, needed to update/install rvm
+
+  * after cap deploy:setup you must manually create shared/config/database.yml and shared/config/setup_load_paths.rb
+    example database.yml
+
+    testing:
+      adapter: mysql2
+      database: sparc_rails_testing
+      username: root
+      password: password
+
+    example setup_load_paths.rb
+
+    if ENV['MY_RUBY_HOME'] && ENV['MY_RUBY_HOME'].include?('rvm')
+      begin
+        gems_path = ENV['MY_RUBY_HOME'].split(/@/)[0].sub(/rubies/,'gems')
+        ENV['GEM_PATH'] = "#{gems_path}:#{gems_path}@global"
+        require 'rvm'
+        RVM.use_from_path! File.dirname(File.dirname(__FILE__))
+      rescue LoadError
+        raise "RVM gem is currently unavailable."
+      end
+    end
+
+    # If you're not using Bundler at all, remove lines bellow
+    ENV['BUNDLE_GEMFILE'] = File.expand_path('../DeployGemfile', File.dirname(__FILE__))
+    require 'bundler/setup'
+
+  * capistrano user has rights to clone the obis-bridge and sparc-rails repos from github (require 2 keys and .ssh/config to be setup)
+    - ssh-keygen -t rsa twice and copy these keys to github as deploy keys
+    - example .ssh/config
+      Host obis-bridge
+      HostName github.com
+      User git
+      IdentityFile ~/.ssh/obis_bridge
+      IdentitiesOnly yes
+
+

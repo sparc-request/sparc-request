@@ -75,3 +75,10 @@ Assumptions/Directions:
       IdentitiesOnly yes
 
 
+  * to update obis-bridge
+    - bump the version number in lib/obis-bridge/version.rb (not really necessary)
+    - rm DeployGemfile.lock
+    - bundle install --gemfile DeployGemfile
+    - git add DeployGemfile*
+    - commit and push
+    - cap deploy

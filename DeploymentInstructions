@@ -3,6 +3,8 @@ Assumptions/Directions:
   * bundle install --gemfile DeployGemfile and then commit the DeployGemfile.lock
   * mysql is installed and empty database has been created
   * rvm is installed system wide
+  * add rvm_trust_rvmrcs_flag=1 to /etc/rvmrc
+  * set default ruby to one used by app ## not totally sure if this is necessary
   * httpd is installed
   * sudo gem install passenger
   * rvmsudo passenger-install-apache2-module

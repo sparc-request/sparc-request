@@ -36,7 +36,8 @@
 
       .field
         = f.label :potential_funding_start_date, "Potential Funding Start Date:"
-        = f.text_field :potential_funding_start_date
+        = text_field_tag :potential_funding_start_date, (study.potential_funding_start_date.strftime('%_m/%d/%Y') rescue nil)
+        = f.hidden_field :potential_funding_start_date
 
       .field
         = f.label :potential_funding_source, "Potential Funding Source:"
@@ -51,7 +52,8 @@
     .funded
       .field
         = f.label :funding_start_date, "Funding Start Date:"
-        = f.text_field :funding_start_date
+        = text_field_tag :funding_start_date, (study.funding_start_date.strftime('%_m/%d/%Y') rescue nil)
+        = f.hidden_field :funding_start_date
       
       .field
         = f.label :funding_source, "Funding Source:"
@@ -63,7 +65,7 @@
           = f.label :funding_source_other, "Please Specify"
           = f.text_field :funding_source_other
 
-    .field
+    .indirect_cost_rate
       = f.label :indirect_cost_rate, "Indirect Cost Rate"
       = f.text_field :indirect_cost_rate
 

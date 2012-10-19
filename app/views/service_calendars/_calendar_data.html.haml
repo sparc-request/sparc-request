@@ -44,8 +44,8 @@
         - value[:line_items].each do |line_item|
           %tr.line_item{:class => cycle('odd', '', :name => 'pppvs')}
             %td.service_name= line_item.service.name
-            %td.service_rate $25.00
-            %td.your_cost $20.00
+            %td.service_rate= display_service_rate line_item
+            %td.your_cost= display_your_cost line_item
             %td.unit_type= line_item.service.displayed_pricing_map.unit_type
             %td.subject_count= select_tag "line_item_#{line_item.id}_count", options_for_select((0..@service_request.subject_count), line_item.subject_count), :class => 'line_item_visit_count', :update => "/service_requests/#{line_item.service_request_id}/service_calendars?line_item=#{line_item.id}&tab=template"
             %td &nbsp;
@@ -54,7 +54,8 @@
               %td.visit= line_item_visit_input line_item, v, @tab
             - (5 - visits.size).times do
               %td &nbsp;
-            %td.total $1000.00
+            %td{:id => "total_#{line_item.id}"}= display_visit_based_direct_cost line_item
+
       
       %th{:colspan => 12}
         %hr
@@ -64,36 +65,36 @@
         %td &nbsp;
         - 5.times do
           %td $0.00
-        %td $2000.00
+        %td{:id => "pp_max_total_direct_cost"}= dispaly_max_total_direct_cost_per_patient @service_request.line_items
       
       %tr.totals_section
         %td{:colspan => 5} Maximum Total Indirect Costs Per Patient
         %td &nbsp;
         - 5.times do
           %td $0.00
-        %td $2000.00
+        %td{:id => "pp_max_total_indirect_cost"}= dispaly_max_total_indirect_cost_per_patient @service_request.line_items
 
       %tr.totals_section
         %td{:colspan => 5} Maximum Total Per Patient
         %td &nbsp;
         - 5.times do
           %td $0.00
-        %td $2000.00
+        %td{:id => "pp_max_total"}= dispaly_max_total_cost_per_patient @service_request.line_items
       
       %tr.totals_section
         %td{:colspan => 5} Total Direct Costs (Per Patient/Visit Services) Per Study
         %td{:colspan => 6}
-        %td $2000.00
+        %td{:id => "pp_total_direct_cost"}= dispaly_total_direct_cost_per_study @service_request.line_items
       
       %tr.totals_section
         %td{:colspan => 5} Total Indirect Costs (Per Patient/Visit Services) Per Study
         %td{:colspan => 6}
-        %td $2000.00
+        %td{:id => "pp_total_indirect_cost"}= dispaly_total_indirect_cost_per_study @service_request.line_items
       
-      %tr.totals_section
+      %tr.totals_section.total-visit-based-services
         %td{:colspan => 5} Total Costs (Per Patient/Visit Services) Per Study
         %td{:colspan => 6}
-        %td $2000.00
+        %td{:id => "pp_total_cost"}= dispaly_total_cost_per_study @service_request.line_items
 
       %th.totals_section{:colspan => 12} &nbsp;
 

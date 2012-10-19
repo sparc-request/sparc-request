@@ -65,13 +65,12 @@ Assumptions/Directions:
     ENV['BUNDLE_GEMFILE'] = File.expand_path('../DeployGemfile', File.dirname(__FILE__))
     require 'bundler/setup'
 
-  * capistrano user has rights to clone the obis-bridge and sparc-rails repos from github (require 2 keys and .ssh/config to be setup)
-    - ssh-keygen -t rsa twice and copy these keys to github as deploy keys
-    - example .ssh/config
-      Host obis-bridge
-      HostName github.com
-      User git
-      IdentityFile ~/.ssh/obis_bridge
-      IdentitiesOnly yes
+  * capistrano user has rights to clone the obis-bridge and sparc-rails repos from github, make sure the capistrano users key is added as key for a user that rights to the repos
 
-
+  * to update obis-bridge
+    - bump the version number in lib/obis-bridge/version.rb (not really necessary)
+    - rm DeployGemfile.lock
+    - bundle install --gemfile DeployGemfile
+    - git add DeployGemfile*
+    - commit and push
+    - cap deploy

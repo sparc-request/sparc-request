@@ -10,7 +10,7 @@
   = render :partial => 'errors'
   .grid_12
     .document-management-container
-      = render :partial => 'document_list'
+      = render :partial => 'document_list', :locals => {:review => false}
       .clear
       %br
       %br

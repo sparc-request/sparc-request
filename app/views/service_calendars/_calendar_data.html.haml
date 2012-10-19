@@ -50,12 +50,12 @@
             %td.subject_count= select_tag "line_item_#{line_item.id}_count", options_for_select((0..@service_request.subject_count), line_item.subject_count), :class => 'line_item_visit_count', :update => "/service_requests/#{line_item.service_request_id}/service_calendars?line_item=#{line_item.id}&tab=template"
             %td &nbsp;
             - visits = line_item.visits.paginate(:page => @page, :per_page => 5)
+            - totals_hash = line_item.try(:per_subject_subtotals)
             - visits.each do |v|
-              %td.visit= line_item_visit_input line_item, v, @tab
+              %td.visit= line_item_visit_input line_item, v, @tab, totals_hash
             - (5 - visits.size).times do
               %td &nbsp;
-            %td{:id => "total_#{line_item.id}"}= display_visit_based_direct_cost line_item
-
+            %td{:class => "total_#{line_item.id}"}= display_visit_based_direct_cost line_item
       
       %th{:colspan => 12}
         %hr
@@ -63,38 +63,38 @@
       %tr.totals_section.begin_totals
         %td{:colspan => 5} Maximum Total Direct Costs Per Patient
         %td &nbsp;
-        - 5.times do
-          %td $0.00
-        %td{:id => "pp_max_total_direct_cost"}= dispaly_max_total_direct_cost_per_patient @service_request.line_items
+        - 5.times do |i|
+          %td{:class => "visit_column_#{i + 1} max_direct_per_patient"} $110.00
+        %td{:id => "pp_max_total_direct_cost"}= dispaly_max_total_direct_cost_per_patient @service_request
       
       %tr.totals_section
         %td{:colspan => 5} Maximum Total Indirect Costs Per Patient
         %td &nbsp;
-        - 5.times do
-          %td $0.00
-        %td{:id => "pp_max_total_indirect_cost"}= dispaly_max_total_indirect_cost_per_patient @service_request.line_items
+        - 5.times do |i|
+          %td{:class => "visit_column_#{i + 1} max_indirect_per_patient"} $0.00
+        %td{:id => "pp_max_total_indirect_cost"}= dispaly_max_total_indirect_cost_per_patient @service_request
 
       %tr.totals_section
         %td{:colspan => 5} Maximum Total Per Patient
         %td &nbsp;
-        - 5.times do
-          %td $0.00
-        %td{:id => "pp_max_total"}= dispaly_max_total_cost_per_patient @service_request.line_items
+        - 5.times do |i|
+          %td{:class => "visit_column_#{i + 1} max_total_per_patient"} $0.00
+        %td{:id => "pp_max_total"}= dispaly_max_total_cost_per_patient @service_request
       
       %tr.totals_section
         %td{:colspan => 5} Total Direct Costs (Per Patient/Visit Services) Per Study
         %td{:colspan => 6}
-        %td{:id => "pp_total_direct_cost"}= dispaly_total_direct_cost_per_study @service_request.line_items
+        %td{:id => "pp_total_direct_cost"}= dispaly_total_direct_cost_per_study_pppvs @service_request
       
       %tr.totals_section
         %td{:colspan => 5} Total Indirect Costs (Per Patient/Visit Services) Per Study
         %td{:colspan => 6}
-        %td{:id => "pp_total_indirect_cost"}= dispaly_total_indirect_cost_per_study @service_request.line_items
+        %td{:id => "pp_total_indirect_cost"}= dispaly_total_indirect_cost_per_study_pppvs @service_request
       
       %tr.totals_section.total-visit-based-services
         %td{:colspan => 5} Total Costs (Per Patient/Visit Services) Per Study
         %td{:colspan => 6}
-        %td{:id => "pp_total_cost"}= dispaly_total_cost_per_study @service_request.line_items
+        %td{:id => "pp_total_cost"}= dispaly_total_cost_per_study_pppvs @service_request
 
       %th.totals_section{:colspan => 12} &nbsp;
 
@@ -107,10 +107,10 @@
           - value[:line_items].each do |line_item|
             %tr.line_item{:class => cycle('odd', '', :name => 'otfs')}
               %td.service_name= line_item.service.name
-              %td.service_rate $25.00
-              %td.your_cost $20.00
+              %td.service_rate= display_service_rate line_item
+              %td.your_cost= display_your_cost line_item
               %td{:colspan => 8}
-              %td $2000.00
+              %td= display_one_time_fee_direct_cost line_item
 
       %th{:colspan => 12}
         %hr
@@ -118,17 +118,17 @@
       %tr.totals_section.begin_totals
         %td{:colspan => 5} Total Direct Costs (other) Per Study
         %td{:colspan => 6}
-        %td $2000.00
+        %td= display_total_direct_cost_per_study_otfs @service_request
 
       %tr.totals_section
         %td{:colspan => 5} Total Indirect Costs (other) Per Study
         %td{:colspan => 6}
-        %td $2000.00
+        %td= display_total_indirect_cost_per_study_otfs @service_request
 
       %tr.totals_section
         %td{:colspan => 5} Total Costs (other) Per Study
         %td{:colspan => 6}
-        %td $2000.00
+        %td= display_total_cost_per_study_otfs @service_request
 
       %th.totals_section{:colspan => 12} &nbsp;
 
@@ -138,14 +138,14 @@
       %tr.totals_section
         %td{:colspan => 5} Grand Total: Direct Costs
         %td{:colspan => 6}
-        %td $2000.00
+        %td{:id => 'grand_total_direct'}= display_grand_total_direct_costs @service_request
 
       %tr.totals_section
         %td{:colspan => 5} Grand Total: Indirect Costs
         %td{:colspan => 6}
-        %td $2000.00
+        %td{:id => 'grand_total_indirect'}= display_grand_total_indirect_costs @service_request
 
       %tr.totals_section
         %td{:colspan => 5} Grand Total:
         %td{:colspan => 6}
-        %td $2000.00
+        %td{:id => 'grand_total'}= display_grand_total @service_request

@@ -57,9 +57,11 @@ module ServiceCalendarHelper
     sum = service_request.total_costs_per_patient
     currency_converter(sum)
   end
-  #############################################
-  # End Visit Based Services
-  #############################################
+
+  # Displays max totals per patient per visit
+  def update_visit_data_cents visit
+    visit.cost
+  end
 
   #############################################
   # One Time Fee Services
@@ -87,9 +89,6 @@ module ServiceCalendarHelper
     sum = service_request.total_costs_one_time
     currency_converter sum
   end
-  #############################################
-  # End One Time Fee Services
-  #############################################
 
   #############################################
   # Grand Totals
@@ -111,4 +110,6 @@ module ServiceCalendarHelper
     sum = service_request.grand_total
     currency_converter sum
   end
+
+
 end

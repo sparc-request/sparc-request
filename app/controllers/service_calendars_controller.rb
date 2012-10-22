@@ -43,6 +43,8 @@ class ServiceCalendarsController < ApplicationController
       visit.update_attribute(:quantity, total) unless total < 0
     end
 
+    @visit = visit
+    @visit_td = "#visits_#{visit.id}"
     @line_item = visit.line_item if @line_item.nil?
     @line_item_total_td = ".total_#{@line_item.id}"
     @service_request = ServiceRequest.find session[:service_request_id]

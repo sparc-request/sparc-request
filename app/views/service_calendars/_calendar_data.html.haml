@@ -1,5 +1,5 @@
 = javascript_include_tag 'service_calendar_logic'
-
+= hidden_field_tag :indirect_rate, @service_request.protocol.indirect_cost_rate
 %table.service_calendar
   %thead.ui-widget-header
     %tr.table_header
@@ -51,8 +51,8 @@
             %td &nbsp;
             - visits = line_item.visits.paginate(:page => @page, :per_page => 5)
             - totals_hash = line_item.try(:per_subject_subtotals)
-            - visits.each do |v|
-              %td.visit= line_item_visit_input line_item, v, @tab, totals_hash
+            - visits.each_with_index do |v, index|
+              %td.visit{:visit_column => index + 1, :class => "visit_column_#{index + 1}", :'data-cents' => totals_hash["#{v.id}"] || 0}= line_item_visit_input line_item, v, @tab, totals_hash
             - (5 - visits.size).times do
               %td &nbsp;
             %td{:class => "total_#{line_item.id}"}= display_visit_based_direct_cost line_item
@@ -64,21 +64,21 @@
         %td{:colspan => 5} Maximum Total Direct Costs Per Patient
         %td &nbsp;
         - 5.times do |i|
-          %td{:class => "visit_column_#{i + 1} max_direct_per_patient"} $110.00
+          %td{:class => "visit_column_#{i + 1} max_direct_per_patient"}
         %td{:id => "pp_max_total_direct_cost"}= dispaly_max_total_direct_cost_per_patient @service_request
       
       %tr.totals_section
         %td{:colspan => 5} Maximum Total Indirect Costs Per Patient
         %td &nbsp;
         - 5.times do |i|
-          %td{:class => "visit_column_#{i + 1} max_indirect_per_patient"} $0.00
+          %td{:class => "visit_column_#{i + 1} max_indirect_per_patient"}
         %td{:id => "pp_max_total_indirect_cost"}= dispaly_max_total_indirect_cost_per_patient @service_request
 
       %tr.totals_section
         %td{:colspan => 5} Maximum Total Per Patient
         %td &nbsp;
         - 5.times do |i|
-          %td{:class => "visit_column_#{i + 1} max_total_per_patient"} $0.00
+          %td{:class => "visit_column_#{i + 1} max_total_per_patient"}
         %td{:id => "pp_max_total"}= dispaly_max_total_cost_per_patient @service_request
       
       %tr.totals_section

@@ -16,7 +16,7 @@ module ApplicationHelper
     params[:controller] + '/' + params[:action]
   end
 
-  def line_item_visit_input line_item, visit, tab
+  def line_item_visit_input line_item, visit, tab, totals_hash={}
     base_url = "/service_requests/#{line_item.service_request_id}/service_calendars?visit=#{visit.id}"
     case tab
     when 'template'
@@ -30,7 +30,7 @@ module ApplicationHelper
       returning_html += text_field_tag "visits_#{visit.id}_effort_billing_qty", visit.effort_billing_qty, :class => 'line_item_visit_billing', :update => "#{base_url}&tab=billing_strategy&column=effort_billing_qty"
       raw(returning_html)
     when 'pricing'
-      "$0.00"
+      currency_converter(totals_hash["#{visit.id}"])
     end
   end
 

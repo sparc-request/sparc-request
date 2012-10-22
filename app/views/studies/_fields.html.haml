@@ -194,7 +194,8 @@
         = f.fields_for :study_types do |rt|
           .field{:class => rt.object.name}
             = rt.label :name, "#{StudyType::TYPES[rt.object.name]}:"
-            = rt.check_box :name, {:checked => !rt.object.new}, rt.object.name, nil
+            = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
+            = rt.hidden_field :name, :value => rt.object.name
 
     -# impact_areas are initialized in obis-bridge lib/models/protocol.rb def setup_impact_areas
     %fieldset
@@ -203,7 +204,8 @@
         = f.fields_for :impact_areas do |rt|
           .field{:class => rt.object.name}
             = rt.label :name, "#{ImpactArea::TYPES[rt.object.name]}:"
-            = rt.check_box :name, {:checked => !rt.object.new}, rt.object.name, nil
+            = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
+            = rt.hidden_field :name, :value => rt.object.name
 
     -# affiliations are initialized in obis-bridge lib/models/protocol.rb def setup_affiliations
     %fieldset
@@ -212,7 +214,8 @@
         = f.fields_for :affiliations do |rt|
           .field{:class => rt.object.name}
             = rt.label :name, "#{Affiliation::TYPES[rt.object.name]}:"
-            = rt.check_box :name, {:checked => !rt.object.new}, rt.object.name, nil
+            = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
+            = rt.hidden_field :name, :value => rt.object.name
 
 .grid_5.box= render :partial => 'shared/user_search'
 

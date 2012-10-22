@@ -7,20 +7,11 @@
   = render :partial => 'errors'
   .grid_9
     .select-project-view
-      .left.dotted-border
+      .dotted-border.left
         .service-details 
           - if @service_request.has_one_time_fee_services?
-            .one-time-fee-details 
-              .instructions Please enter service details for SPARC Services that you selected
-              %table.one-time-fees
-                %thead
-                  %tr
-                    %th Service
-                    %th Quantity
-                    %th Units Per Quantity
-                    %th Unit Type
-                %tbody
-                  = render :partial => 'service_detail_list', :locals => {:service_request => @service_request}
+            .instructions Please enter service details for SPARC Services that you selected
+            .one-time-fee-details= render :partial => 'service_detail_list', :locals => {:service_request => @service_request}
             %br
           - if @service_request.has_per_patient_per_visit_services?
             .visit-calendar-details 

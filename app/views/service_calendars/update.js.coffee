@@ -20,4 +20,5 @@ if "<%= @errors %>" == ""
   $("#grand_total_indirect").html("<%= display_grand_total_indirect_costs(@service_request) %>")
   $("#grand_total").html("<%= display_grand_total(@service_request) %>")
 
-  $("<%= @visit_td %>").parent().data('cents', "<%= update_visit_data_cents(@visit) %>")
+  if "<%= @visit_td %>" != ""
+    $("<%= @visit_td %>").parent().data('cents', "<%= update_visit_data_cents(@visit) %>")

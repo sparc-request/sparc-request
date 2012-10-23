@@ -14,3 +14,6 @@ $(document).ready ->
 
       name: "light"
       width: 250
+
+  $('.line_item_visit_template').each (index, visit) ->
+    calculate_max_rates($(visit).parent())

@@ -28,7 +28,7 @@ $(document).ready ->
 
   $('#study_funding_source, #study_potential_funding_source').change ->
     switch $(this).val()
-      when "internal", "college" then $('#study_indirect_cost_rate').val("")
+      when "internal", "college" then $('#study_indirect_cost_rate').val("0")
       when "industry", "foundation", "investigator" then $('#study_indirect_cost_rate').val("25")
       when "federal" then $('#study_indirect_cost_rate').val("47.5")
 

@@ -23,37 +23,37 @@ module ServiceCalendarHelper
   end
 
   # Displays max totals per patient
-  def dispaly_max_total_direct_cost_per_patient service_request
+  def display_max_total_direct_cost_per_patient service_request
     sum = 0
     sum = service_request.maximum_direct_costs_per_patient
     currency_converter sum
   end
 
-  def dispaly_max_total_indirect_cost_per_patient service_request
+  def display_max_total_indirect_cost_per_patient service_request
     sum = 0
     sum = service_request.maximum_indirect_costs_per_patient
     currency_converter sum
   end
 
-  def dispaly_max_total_cost_per_patient service_request
+  def display_max_total_cost_per_patient service_request
     sum = service_request.maximum_total_per_patient
     currency_converter sum
   end
 
   # Displays grand totals per study
-  def dispaly_total_direct_cost_per_study_pppvs service_request
+  def display_total_direct_cost_per_study_pppvs service_request
     sum = 0
     sum = service_request.total_direct_costs_per_patient
     currency_converter sum
   end
 
-  def dispaly_total_indirect_cost_per_study_pppvs service_request
+  def display_total_indirect_cost_per_study_pppvs service_request
     sum = 0
     sum = service_request.total_indirect_costs_per_patient
     currency_converter sum
   end
 
-  def dispaly_total_cost_per_study_pppvs service_request
+  def display_total_cost_per_study_pppvs service_request
     sum = service_request.total_costs_per_patient
     currency_converter(sum)
   end

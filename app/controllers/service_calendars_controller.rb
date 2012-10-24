@@ -41,7 +41,7 @@ class ServiceCalendarsController < ApplicationController
     end
 
     @visit = visit
-    @visit_td = visit.nil? ? "" : "#visits_#{visit.id}"
+    @visit_td = visit.nil? ? "" : ".visits_#{visit.id}"
     @line_item = visit.line_item if @line_item.nil?
     @line_item_total_td = ".total_#{@line_item.id}"
     @service_request = ServiceRequest.find session[:service_request_id]

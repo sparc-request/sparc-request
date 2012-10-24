@@ -9,8 +9,8 @@
     #service_calendar
       %ul
         %li= link_to 'Template', table_service_request_service_calendars_path(@service_request, :tab => "template"), :id => 'template_tab'
-        %li= link_to 'Quantity', table_service_request_service_calendars_path(@service_request, :tab => "quantity")
         %li= link_to 'Billing Strategy', table_service_request_service_calendars_path(@service_request, :tab => "billing_strategy")
+        %li= link_to 'Quantity', table_service_request_service_calendars_path(@service_request, :tab => "quantity")
         %li= link_to 'Pricing', table_service_request_service_calendars_path(@service_request, :tab => "pricing")
 
   .clear

@@ -20,14 +20,14 @@ module ApplicationHelper
     base_url = "/service_requests/#{line_item.service_request_id}/service_calendars?visit=#{visit.id}"
     case tab
     when 'template'
-      check_box_tag "visits_#{visit.id}", 1, (visit.research_billing_qty.to_i > 0), :class => 'line_item_visit_template', :update => "#{base_url}&tab=template"
+      check_box_tag "visits_#{visit.id}", 1, (visit.research_billing_qty.to_i > 0), :class => "line_item_visit_template visits_#{visit.id}", :update => "#{base_url}&tab=template"
     when 'quantity'
-      text_field_tag "visits_#{visit.id}_quantity", visit.quantity, :class => 'line_item_visit_quantity', :update => "#{base_url}&tab=quantity"
+      content_tag(:div, visit.quantity, :style => 'text-align:center') 
     when 'billing_strategy'
       returning_html = ""
-      returning_html += text_field_tag "visits_#{visit.id}_research_billing_qty", visit.research_billing_qty, :class => 'line_item_visit_billing', :update => "#{base_url}&tab=billing_strategy&column=research_billing_qty"
-      returning_html += text_field_tag "visits_#{visit.id}_insurance_billing_qty", visit.insurance_billing_qty, :class => 'line_item_visit_billing', :update => "#{base_url}&tab=billing_strategy&column=insurance_billing_qty"
-      returning_html += text_field_tag "visits_#{visit.id}_effort_billing_qty", visit.effort_billing_qty, :class => 'line_item_visit_billing', :update => "#{base_url}&tab=billing_strategy&column=effort_billing_qty"
+      returning_html += text_field_tag "visits_#{visit.id}_research_billing_qty", visit.research_billing_qty, :class => "line_item_visit_billing visits_#{visit.id}", :update => "#{base_url}&tab=billing_strategy&column=research_billing_qty"
+      returning_html += text_field_tag "visits_#{visit.id}_insurance_billing_qty", visit.insurance_billing_qty, :class => "line_item_visit_billing visits_#{visit.id}", :update => "#{base_url}&tab=billing_strategy&column=insurance_billing_qty"
+      returning_html += text_field_tag "visits_#{visit.id}_effort_billing_qty", visit.effort_billing_qty, :class => "line_item_visit_billing visits_#{visit.id}", :update => "#{base_url}&tab=billing_strategy&column=effort_billing_qty"
       raw(returning_html)
     when 'pricing'
       currency_converter(totals_hash["#{visit.id}"])

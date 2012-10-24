@@ -475,9 +475,11 @@ ActiveRecord::Schema.define(:version => 20121024194815) do
     t.string   "ssr_id"
     t.datetime "status_date"
     t.string   "status"
-    t.datetime "created_at",         :null => false
-    t.datetime "updated_at",         :null => false
+    t.datetime "created_at",               :null => false
+    t.datetime "updated_at",               :null => false
     t.datetime "deleted_at"
+    t.datetime "consult_arranged_date"
+    t.datetime "requester_contacted_date"
   end
 
   add_index "sub_service_requests", ["organization_id"], :name => "index_sub_service_requests_on_organization_id"

@@ -26,6 +26,12 @@ $(document).ready ->
     $('#study_potential_funding_source').val("")
     $('#study_indirect_cost_rate').val("")
 
+  $('#study_federal_phs_sponsor').change ->
+    $('#study_federal_non_phs_sponsor').val("")
+
+  $('#study_federal_non_phs_sponsor').change ->
+    $('#study_federal_phs_sponsor').val("")
+
   $('#study_funding_source, #study_potential_funding_source').change ->
     switch $(this).val()
       when "internal", "college" then $('#study_indirect_cost_rate').val("0")

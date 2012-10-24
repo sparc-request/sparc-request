@@ -2,9 +2,15 @@
   %thead
     %tr
       %th Service
-      %th Quantity
-      %th Units Per Quantity
-      %th Unit Type
+      %th 
+        Quantity
+        %br
+        %span.small_desc (Samples, hours, etc...)
+      %th 
+        Units Per Quantity
+        %br
+        %span.small_desc (Slides, etc...)
+      %th Quantity Type
   %tbody
     - @service_request.service_list(true).each do |key, value|
       %tr
@@ -16,7 +22,7 @@
             %td= line_item.service.name
             %td
               = f.hidden_field :id
-              = f.text_field :quantity
+              = f.text_field :quantity, :value => line_item.quantity.nil? ? line_item.service.displayed_pricing_map.unit_minimum : line_item.quantity
             %td
               = f.text_field :units_per_quantity
             %td= line_item.service.try(:displayed_pricing_map).try(:unit_type).try(:humanize)

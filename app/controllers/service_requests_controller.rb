@@ -121,8 +121,8 @@ class ServiceRequestsController < ApplicationController
             line_item.visits.create
           end
         elsif line_item.visits.count > @service_request.visit_count
-          (line_item.visits.count - @service_request.visit_count).times do
-            line_item.visits.last.delete
+          line_item.visits.last(line_item.visits.count - @service_request.visit_count).each do |li|
+            li.delete
           end
         end
       end

@@ -116,13 +116,16 @@ class ServiceRequestsController < ApplicationController
     # build out visits if they don't already exist and delete/create if the visit count changes
     @service_request.per_patient_per_visit_line_items.each do |line_item|
       unless line_item.visits.count == @service_request.visit_count
-        if line_item.visits.count < @service_request.visit_count
-          (@service_request.visit_count - line_item.visits.count).times do
-            line_item.visits.create
-          end
-        elsif line_item.visits.count > @service_request.visit_count
-          (line_item.visits.count - @service_request.visit_count).times do
-            line_item.visits.last.delete
+        start_time = Time.now
+        ActiveRecord::Base.transaction do
+          if line_item.visits.count < @service_request.visit_count
+            (@service_request.visit_count - line_item.visits.count).times do
+              line_item.visits.create
+            end
+          elsif line_item.visits.count > @service_request.visit_count
+            (line_item.visits.count - @service_request.visit_count).times do
+              line_item.visits.last.delete
+            end
           end
         end
       end

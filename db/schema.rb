@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121025154834) do
+ActiveRecord::Schema.define(:version => 20121025203611) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -349,6 +349,14 @@ ActiveRecord::Schema.define(:version => 20121025154834) do
   end
 
   add_index "protocols", ["obisid"], :name => "index_protocols_on_obisid"
+
+  create_table "questions", :force => true do |t|
+    t.string   "to"
+    t.string   "from"
+    t.text     "body"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "research_types", :force => true do |t|
     t.integer  "protocol_id"

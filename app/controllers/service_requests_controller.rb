@@ -214,4 +214,7 @@ class ServiceRequestsController < ApplicationController
     @protocol = @service_request.protocol
   end
 
+  def ask_a_question
+    render :text => 'yo what do you want'
+  end
 end

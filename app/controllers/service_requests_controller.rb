@@ -120,6 +120,7 @@ class ServiceRequestsController < ApplicationController
         start_time = Time.now
         ActiveRecord::Base.transaction do
           if visits.count < @service_request.visit_count then
+            # Use bulk_create to optimize creation of visits
             n = @service_request.visit_count - visits.count
             Visit.bulk_create(n, :line_item_id => line_item.id)
           elsif visits.count > @service_request.visit_count

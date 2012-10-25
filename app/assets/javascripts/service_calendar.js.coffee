@@ -39,7 +39,7 @@ $(document).ready ->
       $('.service_calendar_spinner').hide()
 
     
-calculate_max_rates = (parent) ->
+(exports ? this).calculate_max_rates = (parent) ->
   col_num = parent.attr('visit_column')
   column = '.visit_column_' + col_num
   visits = $(column + '.visit')

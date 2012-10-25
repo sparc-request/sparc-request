@@ -26,6 +26,13 @@
       %div{:style => 'text-align: left'} Additional Notes -- If specific to service, please specify in text:
       = text_area_tag 'service_request[notes]', @service_request.notes, :rows => 14, :cols => 114 
 
+      %br
+      %br
+
+      %div 
+        To make changes to selected services please click
+        = navigation_link 'here', @catalog
+
   .clear
 
   .continue= render :partial => 'service_requests/navigation'

@@ -1573,3 +1573,8 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 .inline .field_with_errors {
   display: inline-table;
 }
+
+.small_desc {
+  font-size: 10px;
+  font-weight: normal;
+}

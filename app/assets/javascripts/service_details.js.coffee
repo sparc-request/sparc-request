@@ -2,7 +2,6 @@
 #= require navigation
 
 $ ->
-
   $("#start_date").datepicker(
     changeMonth: true,
     changeYear:true,
@@ -49,3 +48,25 @@ $ ->
 
   $('#start_date').attr("readOnly", true)
   $('#end_date').attr("readOnly", true)
+
+  $('#navigation_form').submit ->
+    go = true
+    $('.line_item_quantity').each ->
+      if verify_unit_minimum($(this)) == false
+        go = false
+    return go
+
+verify_unit_minimum = (obj) ->
+  unit_min = obj.attr('unit_minimum')
+  prev_qty = obj.attr('current_quantity')
+  qty = obj.val()
+  if qty < unit_min
+    obj.val(prev_qty)
+    obj.css({'border': '2px solid red'})
+    $('#quantity').html(qty)
+    $('#unit_minimum').html(unit_min)
+    $('#one_time_fee_errors').show()
+    return false
+  else
+    $('#one_time_fee_errors').hide()
+    obj.css('border', '')

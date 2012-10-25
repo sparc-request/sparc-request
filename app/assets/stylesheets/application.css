@@ -1578,3 +1578,8 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   font-size: 10px;
   font-weight: normal;
 }
+
+#one_time_fee_errors {
+  border: 2px solid red;
+  padding: 5px;
+}

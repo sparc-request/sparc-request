@@ -55,8 +55,8 @@
               %td.visit{:visit_column => index + 1, :class => "visit_column_#{index + 1}", :'data-cents' => totals_hash["#{v.id}"] || 0}= line_item_visit_input line_item, v, @tab, totals_hash
             - (5 - visits.size).times do
               %td &nbsp;
-            %td{:class => "total_#{line_item.id}"}= display_visit_based_direct_cost line_item
-      
+            %td{:class => "total_#{line_item.id}"}= display_visit_based_direct_cost(line_item, visits)
+
       %th{:colspan => 12}
         %hr
       

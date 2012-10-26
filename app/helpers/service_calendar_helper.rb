@@ -18,8 +18,8 @@ module ServiceCalendarHelper
   # Visit Based Services
   #############################################
   # Displays line item totals
-  def display_visit_based_direct_cost line_item
-    currency_converter(line_item.direct_costs_for_visit_based_service_single_subject)
+  def display_visit_based_direct_cost(line_item, visits=line_item.visits)
+    currency_converter(line_item.direct_costs_for_visit_based_service_single_subject(visits))
   end
 
   # Displays max totals per patient

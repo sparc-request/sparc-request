@@ -460,7 +460,6 @@ a.save-option{
 /* ReviewView */
 .review-details {
   margin-left: 10px;
-  text-align: left;
 }
 
 .review-details table {
@@ -508,6 +507,10 @@ a.save-option{
 .review-details .notes {
   margin-bottom: 20px;
   margin-top: 20px;
+}
+
+.notes table thead tr th {
+  text-align: left;
 }
 
 .review-details .notes pre {
@@ -1598,4 +1601,8 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 #one_time_fee_errors {
   border: 2px solid red;
   padding: 5px;
+}
+
+.document-table tbody tr th {
+  text-align: left;
 }

@@ -17,6 +17,7 @@ SparcRails::Application.routes.draw do
       get 'service_subsidy'
       get 'document_management'
       post 'navigate'
+      post 'ask_a_question'
     end
 
     resource :service_calendars do

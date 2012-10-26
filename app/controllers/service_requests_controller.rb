@@ -1,4 +1,6 @@
 class ServiceRequestsController < ApplicationController
+  layout false, :only => :ask_a_question
+
   def navigate
     errors = [] 
     # need to save and navigate to the right page
@@ -155,16 +157,16 @@ class ServiceRequestsController < ApplicationController
       service = Service.find id
 
       # add service to line items
-      @service_request.line_items.create(:service_id => service.id, :optional => true)
+      @service_request.line_items.create(:service_id => service.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum)
 
       # add required services to line items
       service.required_services.each do |rs|
-        @service_request.line_items.create(:service_id => rs.id, :optional => false)
+        @service_request.line_items.create(:service_id => rs.id, :optional => false, :quantity => service.displayed_pricing_map.unit_minimum)
       end
 
       # add optional services to line items
       service.optional_services.each do |rs|
-        @service_request.line_items.create(:service_id => rs.id, :optional => true)
+        @service_request.line_items.create(:service_id => rs.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum)
       end
     end
   end
@@ -214,4 +216,11 @@ class ServiceRequestsController < ApplicationController
     @protocol = @service_request.protocol
   end
 
+  def ask_a_question
+    from = params['question_email'] || 'no-reply@musc.edu'
+    body = params['question_body'] || 'No question asked'
+
+    question = Question.create :to => @default_mail_to, :from => from, :body => body
+    Notifier.ask_a_question(question).deliver
+  end
 end

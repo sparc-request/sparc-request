@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121024194815) do
+ActiveRecord::Schema.define(:version => 20121026152721) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -185,7 +185,7 @@ ActiveRecord::Schema.define(:version => 20121024194815) do
     t.datetime "created_at",                            :null => false
     t.datetime "updated_at",                            :null => false
     t.datetime "deleted_at"
-    t.integer  "units_per_quantity",     :default => 0
+    t.integer  "units_per_quantity",     :default => 1
   end
 
   add_index "line_items", ["service_request_id"], :name => "index_line_items_on_service_request_id"
@@ -311,6 +311,14 @@ ActiveRecord::Schema.define(:version => 20121024194815) do
   end
 
   add_index "protocols", ["obisid"], :name => "index_protocols_on_obisid"
+
+  create_table "questions", :force => true do |t|
+    t.string   "to"
+    t.string   "from"
+    t.text     "body"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "research_types_info", :force => true do |t|
     t.integer  "protocol_id"
@@ -445,16 +453,13 @@ ActiveRecord::Schema.define(:version => 20121024194815) do
   add_index "submission_emails", ["organization_id"], :name => "index_submission_emails_on_organization_id"
 
   create_table "subsidies", :force => true do |t|
-    t.integer  "service_request_id"
-    t.integer  "organization_id"
     t.integer  "pi_contribution"
-    t.datetime "created_at",         :null => false
-    t.datetime "updated_at",         :null => false
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
     t.datetime "deleted_at"
     t.boolean  "overridden"
+    t.integer  "sub_service_request_id"
   end
-
-  add_index "subsidies", ["service_request_id"], :name => "index_subsidies_on_service_request_id"
 
   create_table "subsidy_maps", :force => true do |t|
     t.integer  "organization_id"

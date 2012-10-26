@@ -1330,6 +1330,14 @@ li.organization-option {
 
 .your-question, .question-submit { margin-top: 5px; }
 
+.your-question, .your-email {
+  padding-left: 5px;
+}
+
+.your-email {
+  padding-top: 5px;
+}
+
 .notification-loader {
   z-index: 999;
   padding-top: 60px;

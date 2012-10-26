@@ -5,11 +5,13 @@ $(document).ready ->
   $('#select-type').change ->
     if $(this).val() == 'Yes'
       $('.existing-study').show()
+      $('.edit-study').show() unless $('.edit_study_id').val() == ""
       $('.existing-project').hide()
       $('#study-select #service_request_protocol_id').removeAttr('disabled')
       $('#project-select #service_request_protocol_id').attr('disabled', 'disabled')
     else
       $('.existing-project').show()
+      $('.edit-project').show() unless $('.edit_project_id').val() == ""
       $('.existing-study').hide()
       $('#project-select #service_request_protocol_id').removeAttr('disabled')
       $('#study-select #service_request_protocol_id').attr('disabled', 'disabled')
@@ -17,9 +19,25 @@ $(document).ready ->
   $('#select-type').change()
 
   $('.edit-study').button()
+  $('.edit-study').hide() unless $('.edit_study_id').val() != ""
   $('.new-study').button()
   $('.edit-project').button()
+  $('.edit-project').hide() unless $('.edit_project_id').val() != ""
   $('.new-project').button()
+
+  $('.edit_study_id').change ->
+    if ($(this).val() == "")
+      $('.edit-study').hide()
+    else
+      $('.edit-study').show()
+
+  $('.edit_project_id').change ->
+    console.log $(this).val()
+    console.log $('edit-project')
+    if ($(this).val() == "")
+      $('.edit-project').hide()
+    else
+      $('.edit-project').show()
 
   $('.edit-study').click ->
     study_id = $('.edit_study_id').val()

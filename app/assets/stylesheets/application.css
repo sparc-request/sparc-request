@@ -1544,7 +1544,7 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 }
 
 .begin_totals {
-  border-top: none !important;
+  /*border-top: none !important;*/
 }
 
 .visit_count {
@@ -1554,6 +1554,15 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 
 .visit_number {
   font-size: 11px;
+}
+
+.visit .checkbox{
+  text-align: center;
+}
+
+.cell-border td{
+  border: 1px solid #ADADAD !important;
+  border-bottom: none;
 }
 
 .line_item_visit_quantity {
@@ -1572,4 +1581,14 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 
 .inline .field_with_errors {
   display: inline-table;
+}
+
+.small_desc {
+  font-size: 10px;
+  font-weight: normal;
+}
+
+#one_time_fee_errors {
+  border: 2px solid red;
+  padding: 5px;
 }

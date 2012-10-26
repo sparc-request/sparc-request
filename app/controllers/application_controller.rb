@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   before_filter :setup_navigation
 
   def authenticate
-    @current_user = Identity.find 9248 #anc63
+    @current_user = Identity.find_by_ldap_uid 'anc63'
   end
 
   def set_service_request_id

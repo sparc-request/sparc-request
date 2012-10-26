@@ -113,8 +113,13 @@ class ServiceRequestsController < ApplicationController
 
     @service_request = ServiceRequest.find session[:service_request_id]
 
+
     # build out visits if they don't already exist and delete/create if the visit count changes
     @service_request.per_patient_per_visit_line_items.each do |line_item|
+      if line_item.subject_count.nil?
+        line_item.update_attribute(:subject_count, @service_request.subject_count)
+      end
+
       unless line_item.visits.count == @service_request.visit_count
         if line_item.visits.count < @service_request.visit_count
           (@service_request.visit_count - line_item.visits.count).times do
@@ -150,16 +155,16 @@ class ServiceRequestsController < ApplicationController
       service = Service.find id
 
       # add service to line items
-      @service_request.line_items.create(:service_id => service.id, :optional => true)
+      @service_request.line_items.create(:service_id => service.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum)
 
       # add required services to line items
       service.required_services.each do |rs|
-        @service_request.line_items.create(:service_id => rs.id, :optional => false)
+        @service_request.line_items.create(:service_id => rs.id, :optional => false, :quantity => service.displayed_pricing_map.unit_minimum)
       end
 
       # add optional services to line items
       service.optional_services.each do |rs|
-        @service_request.line_items.create(:service_id => rs.id, :optional => true)
+        @service_request.line_items.create(:service_id => rs.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum)
       end
     end
   end
@@ -209,4 +214,7 @@ class ServiceRequestsController < ApplicationController
     @protocol = @service_request.protocol
   end
 
+  def ask_a_question
+    render :text => 'yo what do you want'
+  end
 end

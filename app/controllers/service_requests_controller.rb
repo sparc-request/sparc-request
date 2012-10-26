@@ -1,4 +1,6 @@
 class ServiceRequestsController < ApplicationController
+  layout false, :only => :ask_a_question
+
   def navigate
     errors = [] 
     # need to save and navigate to the right page
@@ -215,6 +217,10 @@ class ServiceRequestsController < ApplicationController
   end
 
   def ask_a_question
-    render :text => 'yo what do you want'
+    from = params['question_email'] || 'no-reply@musc.edu'
+    body = params['question_body'] || 'No question asked'
+
+    question = Question.create :to => @default_mail_to, :from => from, :body => body
+    Notifier.ask_a_question(question).deliver
   end
 end

@@ -1,16 +1,16 @@
 .ask-a-question
   = form_tag ask_a_question_service_request_path(@service_request), :remote => true do
     .ask-us-button(href="javascript:void(0);")
-      Ask us a question!
+      %span#ask_a_question_header Ask us a question!
       %div(style="float:right")
         %img.carat.up-carat(src="/assets/white_arrow_up.png")
         %img.carat.down-carat(src="/assets/white_arrow_down.png")
     .ask-a-question-form-container
       .your-email       
         %label(for="question-email") Your email:
-        %input(type="text" id="question-email")
+        = text_field_tag 'question_email'
       .your-question
         %label(for="question-field") Your question:
-        %textarea(id="question-field" style='width:153px; height:75px')
+        = text_area_tag 'question_body', nil, :style => 'width:153px; height:75px'
       .question-submit.right-align
         %input.submit_question(type="submit" value="Ask Question")

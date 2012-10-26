@@ -471,18 +471,17 @@ a.save-option{
 
 .review-details table th {
   font-weight: bold;
-  border: 1px solid #FFF;
 }
 
 .review-details table th,
 .review-details table td {
+  border: 1px solid #E8E8E8;
   width: 298px;
   padding: 5px;
 }
 
 .review-details table td {
   font-weight: normal;
-  border: 1px solid #E8E8E8;
 }
 
 .review-details table th.no-right-border {

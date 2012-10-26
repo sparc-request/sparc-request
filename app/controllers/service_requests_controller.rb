@@ -144,6 +144,18 @@ class ServiceRequestsController < ApplicationController
     @service_request = ServiceRequest.find session[:service_request_id]
     @service_list = @service_request.service_list
   end
+  
+  def review
+    session[:service_calendar_page] = params[:page] if params[:page]
+
+    @service_request = ServiceRequest.find session[:service_request_id]
+    @service_list = @service_request.service_list
+    @protocol = @service_request.protocol
+    
+    @page = @service_request.set_visit_page session[:service_calendar_page].to_i
+    @tab = 'pricing'
+  end
+
 
   # methods only used by ajax requests
 
@@ -208,12 +220,6 @@ class ServiceRequestsController < ApplicationController
     service_request = ServiceRequest.find session[:service_request_id]
     @grouping = service_request.document_groupings.find params[:document_group_id]
     @service_list = service_request.service_list
-  end
-
-  def review
-    @service_request = ServiceRequest.find session[:service_request_id]
-    @service_list = @service_request.service_list
-    @protocol = @service_request.protocol
   end
 
   def ask_a_question

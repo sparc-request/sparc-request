@@ -46,6 +46,7 @@ class ApplicationController < ActionController::Base
     begin 
       @application_config ||= YAML.load_file(Rails.root.join('config', 'application.yml'))[Rails.env]
       @default_mail_to = @application_config['default_mail_to']
+      @user_portal_link = @application_config['user_portal_link']
     rescue
       raise "application.yml not found, see config/application.yml.example"
     end

@@ -165,6 +165,14 @@ class ServiceRequestsController < ApplicationController
     @tab = 'pricing'
   end
 
+  def confirmation
+    session[:service_calendar_page] = params[:page] if params[:page]
+
+    @service_request = ServiceRequest.find session[:service_request_id]
+    @service_list = @service_request.service_list
+    @protocol = @service_request.protocol
+  end
+
   def refresh_service_calendar
     session[:service_calendar_page] = params[:page] if params[:page]
     @service_request = ServiceRequest.find session[:service_request_id]

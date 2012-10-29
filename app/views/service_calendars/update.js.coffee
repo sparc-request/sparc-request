@@ -22,3 +22,4 @@ if "<%= @errors %>" == ""
 
   if "<%= @visit_td %>" != ""
     $("<%= @visit_td %>").parent().data('cents', "<%= update_visit_data_cents(@visit) %>")
+

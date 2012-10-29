@@ -1,6 +1,13 @@
 class ServiceRequestsController < ApplicationController
   layout false, :only => :ask_a_question
 
+  def show
+    @service_request = ServiceRequest.find params[:id]
+    @protocol = @service_request.protocol
+    @service_list = @service_request.service_list
+    render xlsx: "show", filename: "service_request", disposition: "inline"
+  end
+
   def navigate
     errors = [] 
     # need to save and navigate to the right page
@@ -123,13 +130,15 @@ class ServiceRequestsController < ApplicationController
       end
 
       unless line_item.visits.count == @service_request.visit_count
-        if line_item.visits.count < @service_request.visit_count
-          (@service_request.visit_count - line_item.visits.count).times do
-            line_item.visits.create
-          end
-        elsif line_item.visits.count > @service_request.visit_count
-          line_item.visits.last(line_item.visits.count - @service_request.visit_count).each do |li|
-            li.delete
+        ActiveRecord::Base.transaction do
+          if line_item.visits.count < @service_request.visit_count
+            (@service_request.visit_count - line_item.visits.count).times do
+              line_item.visits.create
+            end
+          elsif line_item.visits.count > @service_request.visit_count
+            line_item.visits.last(line_item.visits.count - @service_request.visit_count).each do |li|
+              li.delete
+            end
           end
         end
       end

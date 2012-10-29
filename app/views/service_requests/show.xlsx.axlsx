@@ -1,0 +1,87 @@
+wb = xlsx_package.workbook
+default = wb.styles.add_style alignment: { horizontal: :left }
+row_header_style = wb.styles.add_style b: true
+header_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :left }
+sub_header_style = wb.styles.add_style sz: 12, b: true, bg_color: 'E8E8E8', alignment: { horizontal: :left }
+wb.add_worksheet(name: "Review") do |sheet|
+
+  sheet.add_row ["#{@protocol.class.to_s} Information"], :style => header_style
+  sheet.add_row ["#{@protocol.class.to_s} ID:", @service_request.id], :style => default
+  sheet.add_row ['Short Title:', @protocol.short_title], :style => default
+  sheet.add_row ["#{@protocol.class.to_s} Title:", @protocol.short_title], :style => default
+  sheet.add_row ["Funding Source:", @protocol.display_funding_source_value], :style => default
+  
+  sheet.add_row
+
+  sheet.add_row ["Authorized Users"], :style => header_style
+  sheet.add_row ["Name", "Role", "", "Proxy Rights"], :style => sub_header_style
+  @protocol.project_roles.each do |pr|
+    sheet.add_row [pr.identity.full_name, USER_ROLES.key(pr.role), "", pr.project_rights.humanize], :style => default
+  end
+
+  sheet.add_row
+
+  sheet.add_row ["Document Uploads"], :style => header_style
+  sheet.add_row ["Name", "Type", "", "Institution/Provider/Program/Core"], :style => sub_header_style
+  @service_request.documents.group_by(&:document_grouping_id).each do |grouping_id, docs|
+    doc = docs.first
+    parents = docs.map{|d| @service_list[d.sub_service_request.organization_id][:name]}
+    sheet.add_row [doc.document_file_name, DOCUMENT_TYPES.key(doc.doc_type), "", parents.first], :style => default
+    parents.shift #remove first and iterate over remaining
+    parents.each do |p|
+      sheet.add_row ["", "", "", p], :style => default
+    end
+  end
+
+  sheet.add_row
+
+  sheet.add_row ["Selected Services", "Your Cost", "# of Subjects", "Service Total"], :style => header_style
+
+  services_sub_header_rows = []
+  @service_request.service_list.each do |key, value|
+    services_sub_header_rows << sheet.add_row([value[:name]], :style => sub_header_style)
+
+    value[:line_items].each do |line_item|
+      if line_item.service.is_one_time_fee?
+        sheet.add_row [line_item.service.name, display_your_cost(line_item), line_item.subject_count, display_one_time_fee_direct_cost(line_item)], :style => default
+      else
+        sheet.add_row [line_item.service.name, display_your_cost(line_item), line_item.subject_count, display_visit_based_direct_cost(line_item)], :style => default
+      end
+    end
+  end
+
+  sheet.add_row 
+
+  sheet.add_row ["", "Total Direct Cost", "", display_grand_total_direct_costs(@service_request)], :style => row_header_style
+  sheet.add_row ["", "Total Indirect Cost", "", display_grand_total_indirect_costs(@service_request)], :style => row_header_style
+  sheet.add_row ["", "Grand Total", "", display_grand_total(@service_request)], :style => row_header_style
+
+
+  ###### style and merge cells ######
+
+  sheet.merge_cells("A1:D1") #info header
+  sheet.merge_cells("B2:D2") #id
+  sheet["A2"].style = row_header_style
+  sheet.merge_cells("B3:D3") #short title
+  sheet["A3"].style = row_header_style
+  sheet.merge_cells("B4:D4") #title
+  sheet["A4"].style = row_header_style
+  sheet.merge_cells("B5:D5") #funding source
+  sheet["A5"].style = row_header_style
+
+  sheet.merge_cells("A7:D7") #authorized user header
+  sheet.merge_cells("B8:C8") #table sub header
+  last_authorized_user_row_number = 0 #store it so we know where the document uploads start
+  @protocol.project_roles.size.times do |n|
+    sheet.merge_cells("B#{8+n+1}:C#{8+n+1}")
+    last_authorized_user_row_number = 8+n+1
+  end
+
+  document_uploads_row_number = last_authorized_user_row_number + 2 #row number for the document uploads header
+  sheet.merge_cells("A#{document_uploads_row_number}:D#{document_uploads_row_number}")
+
+  services_sub_header_rows.each do |sshr|
+    sheet.merge_cells("A#{sshr.index+1}:D#{sshr.index+1}") #selected services sub header row
+  end
+
+end

@@ -18,6 +18,7 @@ SparcRails::Application.routes.draw do
       get 'document_management'
       post 'navigate'
       post 'ask_a_question'
+      get 'refresh_service_calendar'
     end
 
     resource :service_calendars do
@@ -25,6 +26,7 @@ SparcRails::Application.routes.draw do
         get 'table'
       end
     end
+
   end
 
   resources :projects

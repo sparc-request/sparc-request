@@ -156,6 +156,13 @@ class ServiceRequestsController < ApplicationController
     @tab = 'pricing'
   end
 
+  def refresh_service_calendar
+    session[:service_calendar_page] = params[:page] if params[:page]
+    @service_request = ServiceRequest.find session[:service_request_id]
+    @page = @service_request.set_visit_page session[:service_calendar_page].to_i
+    @tab = 'pricing'
+  end
+
 
   # methods only used by ajax requests
 

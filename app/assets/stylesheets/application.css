@@ -1606,3 +1606,8 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 .document-table tbody tr th {
   text-align: left;
 }
+
+.total_cell {
+  font-weight: bold !important;
+  background-color: #CCCCCC;
+}

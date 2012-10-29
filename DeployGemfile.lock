@@ -1,8 +1,8 @@
 GIT
   remote: git@github.com:HSSC/obis-bridge.git
-  revision: 90224ceb6da1aafdb6d438754ea1b8f33ddff094
+  revision: fb9081932e45094ecf9cff4dc55c781d97abcc93
   specs:
-    obis-bridge (0.0.7)
+    obis-bridge (0.0.12)
       activerecord
       acts_as_list
       grouped_validations
@@ -65,7 +65,7 @@ GEM
     coffee-script (2.2.0)
       coffee-script-source
       execjs
-    coffee-script-source (1.3.3)
+    coffee-script-source (1.4.0)
     compass (0.12.2)
       chunky_png (~> 1.2)
       fssm (>= 0.2.7)

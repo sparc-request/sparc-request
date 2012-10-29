@@ -24,13 +24,11 @@ module ServiceCalendarHelper
 
   # Displays max totals per patient
   def display_max_total_direct_cost_per_patient service_request
-    sum = 0
     sum = service_request.maximum_direct_costs_per_patient
     currency_converter sum
   end
 
   def display_max_total_indirect_cost_per_patient service_request
-    sum = 0
     sum = service_request.maximum_indirect_costs_per_patient
     currency_converter sum
   end

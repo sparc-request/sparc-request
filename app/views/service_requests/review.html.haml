@@ -20,63 +20,13 @@
               %tbody
                 %tr
                   %td= @service_request.notes
-          %table.calendar
-            %tbody
-              %tr.header.ui-widget-header
-                %th{:rowspan=>2} Selected Services
-                %th{:rowspan=>2} Your Cost
-                %th{:rowspan=>2} # of Subjects
-                %th.nav.no-right-border
-                  = button_tag "", {:class => "left ui-button ui-widget ui-state-default ui-corner-all ui-button-disabled ui-state-disabled ui-button-icon-only", :title => "←", :role=>"button", "aria-disabled"=>"true", :disabled=>"disabled"} do
-                    %span.ui-button-icon-primary.ui-icon.ui-icon-circle-arrow-w
-                    %span.ui-button-text "←"
-                %th.no-right-border{:colspan=>3}
-                  .center Cost Per Visit
-                %th.nav
-                  = button_tag "", {:class => "right ui-button ui-widget ui-state-default ui-corner-all ui-button-disabled ui-state-disabled ui-button-icon-only", :role=>"button", "aria-disabled"=>"true", :disabled=>"disabled", :title => "→"} do
-                    %span.ui-button-icon-primary.ui-icon.ui-icon-circle-arrow-e
-                    %span.ui-button-text "→"
-                %th{"data-header"=>"primary", :rowspan=>2} Service Total
-              %tr.header.ui-widget-header
-                %th
-                %th
-                %th
-                %th
-                %th
-              %tr.provider-header
-                %td{:colspan=>9} SCTR1 -- CTRC1
-              %tr.service
-                %td.name Breast Milk Collection
-                %td.money $80.00
-                %td
-                %td.money
-                %td.money
-                %td.money
-                %td.money
-                %td.money
-                %td.money-total $0.00
-              %tr.provider-header
-                %td{:colspan=>9} SCTR1 -- Informatics -- REDCap Services
-              %tr.totals
-                %td.name REDCap Database Consultation
-                %td.money $0.00
-                %td{:colspan=>6}
-                %td.money-total $0.00
-              %tr.total-row
-                %td{:colspan=>7}
-                %td.grey.right-align.total-description Total Direct Cost:
-                %td.grey.money $0.00
-              %tr.total-row
-                %td{:colspan=>7}
-                %td.grey.right-align.total-description Total Indirect Cost:
-                %td.grey.money $0.00
-              %tr.total-row
-                %td{:colspan=>7}
-                %td.grey.right-align.total-description Grand Total:
-                %td.grey.money $0.00
+          #service_calendar_container= render :partial => 'service_requests/review/calendar'
+          %br
+          %br
+          %br
           %div
             .return-to-step-3
-              = link_to image_tag( 'go_back.png'), "", :class => "return-to-previous"
+              = link_to image_tag( 'go_back.png'), document_management_service_request_path, :class => "return-to-previous"
             .save-as-draft
               = link_to image_tag( 'wait_save_draft.png'), "", :class => "draft"
             .submit-request

@@ -130,11 +130,13 @@
 
           .field.irb_approval_date
             = hs.label :irb_approval_date, "IRB Approval Date:"
-            = hs.text_field :irb_approval_date
+            = text_field_tag :irb_approval_date, (study.human_subjects_info.irb_approval_date.strftime('%_m/%d/%Y') rescue nil)
+            = hs.hidden_field :irb_approval_date
 
           .field.irb_expiration_date
             = hs.label :irb_expiration_date, "IRB Expiration Date:"
-            = hs.text_field :irb_expiration_date
+            = text_field_tag :irb_expiration_date, (study.human_subjects_info.irb_expiration_date.strftime('%_m/%d/%Y') rescue nil)
+            = hs.hidden_field :irb_expiration_date
 
         = f.fields_for :research_types_info do |rt|
           .field.vertebrate_animals
@@ -152,11 +154,13 @@
 
           .field.iacuc_approval_date
             = va.label :iacuc_approval_date, "IACUC Approval Date:"
-            = va.text_field :iacuc_approval_date
+            = text_field_tag :iacuc_approval_date, (study.vertebrate_animals_info.iacuc_approval_date.strftime('%_m/%d/%Y') rescue nil)
+            = va.hidden_field :iacuc_approval_date
 
           .field.iacuc_expiration_date
             = va.label :iacuc_expiration_date, "IACUC Expiration Date:"
-            = va.text_field :iacuc_expiration_date
+            = text_field_tag :iacuc_expiration_date, (study.vertebrate_animals_info.iacuc_expiration_date.strftime('%_m/%d/%Y') rescue nil)
+            = va.hidden_field :iacuc_expiration_date
         
         = f.fields_for :research_types_info do |rt|
           .field.investigational_products

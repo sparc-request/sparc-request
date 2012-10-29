@@ -1,4 +1,6 @@
 class ServiceRequestsController < ApplicationController
+  layout false, :only => :ask_a_question
+
   def navigate
     errors = [] 
     # need to save and navigate to the right page
@@ -113,20 +115,22 @@ class ServiceRequestsController < ApplicationController
 
     @service_request = ServiceRequest.find session[:service_request_id]
 
+
     # build out visits if they don't already exist and delete/create if the visit count changes
     @service_request.per_patient_per_visit_line_items.each do |line_item|
-      visits = line_item.visits
-      unless visits.count == @service_request.visit_count
-        start_time = Time.now
+      if line_item.subject_count.nil?
+        line_item.update_attribute(:subject_count, @service_request.subject_count)
+      end
+
+      unless line_item.visits.count == @service_request.visit_count
         ActiveRecord::Base.transaction do
-          if visits.count < @service_request.visit_count then
-            # Use bulk_create to optimize creation of visits
-            n = @service_request.visit_count - visits.count
-            Visit.bulk_create(n, :line_item_id => line_item.id)
-          elsif visits.count > @service_request.visit_count
-            (visits.count - @service_request.visit_count).times do
-              visits.last.delete
+          if line_item.visits.count < @service_request.visit_count
+            (@service_request.visit_count - line_item.visits.count).times do
+              line_item.visits.create
             end
+          elsif line_item.visits.count > @service_request.visit_count
+            line_item.visits.last(line_item.visits.count - @service_request.visit_count).each do |li|
+              li.delete
           end
         end
       end
@@ -141,6 +145,18 @@ class ServiceRequestsController < ApplicationController
     @service_request = ServiceRequest.find session[:service_request_id]
     @service_list = @service_request.service_list
   end
+  
+  def review
+    session[:service_calendar_page] = params[:page] if params[:page]
+
+    @service_request = ServiceRequest.find session[:service_request_id]
+    @service_list = @service_request.service_list
+    @protocol = @service_request.protocol
+    
+    @page = @service_request.set_visit_page session[:service_calendar_page].to_i
+    @tab = 'pricing'
+  end
+
 
   # methods only used by ajax requests
 
@@ -154,16 +170,16 @@ class ServiceRequestsController < ApplicationController
       service = Service.find id
 
       # add service to line items
-      @service_request.line_items.create(:service_id => service.id, :optional => true)
+      @service_request.line_items.create(:service_id => service.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum)
 
       # add required services to line items
       service.required_services.each do |rs|
-        @service_request.line_items.create(:service_id => rs.id, :optional => false)
+        @service_request.line_items.create(:service_id => rs.id, :optional => false, :quantity => service.displayed_pricing_map.unit_minimum)
       end
 
       # add optional services to line items
       service.optional_services.each do |rs|
-        @service_request.line_items.create(:service_id => rs.id, :optional => true)
+        @service_request.line_items.create(:service_id => rs.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum)
       end
     end
   end
@@ -207,10 +223,11 @@ class ServiceRequestsController < ApplicationController
     @service_list = service_request.service_list
   end
 
-  def review
-    @service_request = ServiceRequest.find session[:service_request_id]
-    @service_list = @service_request.service_list
-    @protocol = @service_request.protocol
-  end
+  def ask_a_question
+    from = params['question_email'] || 'no-reply@musc.edu'
+    body = params['question_body'] || 'No question asked'
 
+    question = Question.create :to => @default_mail_to, :from => from, :body => body
+    Notifier.ask_a_question(question).deliver
+  end
 end

@@ -9,5 +9,10 @@ if Rails.env.profile? then
   use Rack::RubyProf, :path => 'profile', :printers => { RubyProf::CallTreePrinter => 'calltree.out' }
 end
 
+if Rails.env.development? then
+  # puts "Removing filters from backtrace cleaner"
+  # Rails.backtrace_cleaner.remove_filters!
+end
+
 run SparcRails::Application
 

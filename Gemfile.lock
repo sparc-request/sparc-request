@@ -1,7 +1,7 @@
 PATH
   remote: ../obis-bridge
   specs:
-    obis-bridge (0.0.16)
+    obis-bridge (0.0.18)
       activerecord
       acts_as_list
       grouped_validations
@@ -9,6 +9,7 @@ PATH
       mysql2
       obis-net-ldap
       paper_trail
+      paper_trail (~> 2)
       paperclip
       sinatra
 

@@ -1,2 +1,2 @@
 development:
-  mail_to: catesa@musc.edu
+  default_mail_to: catesa@musc.edu

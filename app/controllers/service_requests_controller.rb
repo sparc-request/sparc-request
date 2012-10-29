@@ -131,6 +131,7 @@ class ServiceRequestsController < ApplicationController
           elsif line_item.visits.count > @service_request.visit_count
             line_item.visits.last(line_item.visits.count - @service_request.visit_count).each do |li|
               li.delete
+            end
           end
         end
       end

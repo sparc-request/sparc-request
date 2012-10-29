@@ -57,3 +57,11 @@ review:
   validation_groups:
     document_management:
 
+confirmation:
+  step_text: 'STEP 5: Submission Confirmation'
+  css_class: red-provider
+  back: review 
+  catalog: catalog
+  forward: confirmation
+  validation_groups:
+    document_management:

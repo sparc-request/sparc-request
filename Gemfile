@@ -35,6 +35,9 @@ gem 'obis-bridge', :path => '~/musc/obis-bridge'
 
 gem 'will_paginate'
 
+# requirements for excel export
+gem 'axlsx_rails'
+
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 

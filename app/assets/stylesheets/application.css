@@ -474,7 +474,7 @@ a.save-option{
 
 .review-details table th,
 .review-details table td {
-  border: 1px solid #E8E8E8;
+  border: 1px solid #E8E8E8 !important;
   width: 298px;
   padding: 5px;
 }

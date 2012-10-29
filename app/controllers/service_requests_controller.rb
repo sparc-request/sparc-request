@@ -130,13 +130,14 @@ class ServiceRequestsController < ApplicationController
       end
 
       unless line_item.visits.count == @service_request.visit_count
-        if line_item.visits.count < @service_request.visit_count
-          (@service_request.visit_count - line_item.visits.count).times do
-            line_item.visits.create
-          end
-        elsif line_item.visits.count > @service_request.visit_count
-          line_item.visits.last(line_item.visits.count - @service_request.visit_count).each do |li|
-            li.delete
+        ActiveRecord::Base.transaction do
+          if line_item.visits.count < @service_request.visit_count
+            (@service_request.visit_count - line_item.visits.count).times do
+              line_item.visits.create
+            end
+          elsif line_item.visits.count > @service_request.visit_count
+            line_item.visits.last(line_item.visits.count - @service_request.visit_count).each do |li|
+              li.delete
           end
         end
       end

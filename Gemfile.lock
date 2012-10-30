@@ -9,7 +9,6 @@ PATH
       mysql2
       obis-net-ldap
       paper_trail
-      paper_trail (~> 2)
       paperclip
       sinatra
 

@@ -59,7 +59,7 @@ review:
 
 confirmation:
   step_text: 'STEP 5: Submission Confirmation'
-  css_class: red-provider
+  css_class: green-provider
   back: review 
   catalog: catalog
   forward: confirmation

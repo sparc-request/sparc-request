@@ -1,1 +1,27 @@
-THIS IS THE CONFIRMATION DETAILS
+%table{cellpadding: 4}
+  %tbody
+    %tr
+      %th.date_submitted{colspan: 3}Date Submitted: service_request.submitted_at
+      %th.short_title{colspan: 2}Short Title: protocol.short_title
+    %tr
+      %th Service Request ID:
+      %th Provider: @service_request.service_list.value.name
+      %th{colspan: 2} Program/Core:
+      %th Contact:
+    %tr.provider-header
+      %td 5478-0009
+      %td SCTR1
+      %td Informatics
+      %td REDCap Services
+      %td Stephanie Oppenheimer | oppenhei@musc.edu
+    %tr.provider-header
+      %td 5478-0010
+      %td SCTR1
+      %td CTRC1
+      %td
+      %td Julia Glenn | glennj@musc.edu
+
+      - @service_request.service_list.each do |key, value|
+  .provider-header= value[:name]
+  - value[:services].each do |service|
+    .service-name= service.name

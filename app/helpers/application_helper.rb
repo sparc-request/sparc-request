@@ -109,4 +109,48 @@ module ApplicationHelper
   def navigation_link(img_or_txt, location, class_name=nil)
     link_to img_or_txt, "javascript:void(0)", :class => "navigation_link #{class_name}", :location => location
   end
+
+  def ssr_program_core organization
+    case organization.type
+    when 'Core'
+      "#{organization.parent.abbreviation}/#{organization.abbreviation}"
+    when 'Program'
+      organization.abbreviation
+    else
+      nil
+    end
+  end
+  
+  def ssr_provider organization
+    case organization.type
+    when 'Core'
+      organization.parent.parent.abbreviation
+    when 'Program'
+      organization.parent.abbreviation
+    when 'Provider'
+      organization.abbreviation
+    else
+      nil
+    end
+  end
+  
+  def ssr_institution organization
+    case organization.type
+    when 'Core'
+      organization.parent.parent.parent.abbreviation
+    when 'Program'
+      organization.parent.parent.abbreviation
+    when 'Provider'
+      organization.parent.abbreviation
+    when 'Institution'
+      organization.abbreviation
+    else
+      nil
+    end
+  end
+
+  def ssr_primary_contacts organization
+    sps = organization.service_providers_lookup
+    sps.map{|x| x.is_primary_contact? ? x.identity.display_name : nil}.compact.join("<br />")
+  end
 end

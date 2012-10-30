@@ -5,7 +5,7 @@ class ServiceRequestsController < ApplicationController
     @service_request = ServiceRequest.find params[:id]
     @protocol = @service_request.protocol
     @service_list = @service_request.service_list
-    render xlsx: "show", filename: "service_request", disposition: "inline"
+    render xlsx: "show", filename: "service_request_#{@service_request.id}", disposition: "inline"
   end
 
   def navigate
@@ -38,7 +38,7 @@ class ServiceRequestsController < ApplicationController
       # we have a new grouping
       document_grouping = @service_request.document_groupings.create
       process_ssr_organization_ids.each do |org_id|
-        sub_service_request = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
+        sub_service_request = @service_request.sub_service_requests.find_by_organization_id org_id.to_i
         sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :document_grouping_id => document_grouping.id
         sub_service_request.save
       end
@@ -166,11 +166,16 @@ class ServiceRequestsController < ApplicationController
   end
 
   def confirmation
-    session[:service_calendar_page] = params[:page] if params[:page]
-
     @service_request = ServiceRequest.find session[:service_request_id]
-    @service_list = @service_request.service_list
-    @protocol = @service_request.protocol
+    @service_request.update_attribute(:status, 'submitted')
+    @service_request.update_attribute(:submitted_at, Time.now)
+    next_ssr_id = @service_request.protocol.next_ssr_id || 1
+    @service_request.sub_service_requests.each do |ssr|
+      ssr.update_attribute(:status, 'submitted')
+      ssr.update_attribute(:ssr_id, "%04d" % next_ssr_id) unless ssr.ssr_id
+      next_ssr_id += 1
+    end
+    @service_request.protocol.update_attribute(:next_ssr_id, next_ssr_id)
   end
 
   def refresh_service_calendar
@@ -204,6 +209,17 @@ class ServiceRequestsController < ApplicationController
       service.optional_services.each do |rs|
         @service_request.line_items.create(:service_id => rs.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum)
       end
+
+      # create sub_service_rquests
+      @service_request.reload
+      @service_request.service_list.each do |org_id, values|
+        line_items = values[:line_items]
+        ssr = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
+
+        line_items.each do |li|
+          li.update_attribute(:sub_service_request_id, ssr.id)
+        end
+      end
     end
   end
 
@@ -229,6 +245,13 @@ class ServiceRequestsController < ApplicationController
     #@service_request = @current_user.service_requests.find session[:service_request_id]
     @service_request = ServiceRequest.find session[:service_request_id]
     @page = request.referrer.split('/').last # we need for pages other than the catalog
+
+    # clean up sub_service_requests
+    @service_request.reload
+    to_delete = @service_request.sub_service_requests.map(&:organization_id) - @service_request.service_list.keys
+    to_delete.each do |org_id|
+      @service_request.sub_service_requests.find_by_organization_id(org_id).destroy
+    end
   end
 
   def delete_documents

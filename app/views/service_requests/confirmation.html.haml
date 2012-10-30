@@ -10,6 +10,6 @@
           %p.instructions Thank you for submitting a service request through SPARC. An email(s) has been submitted on your behalf, and we will respond to your service request shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below.
           = render :partial => 'confirmation_details', :locals => {:service_request => @service_request}
           .links
-            = link_to image_tag( 'download_request.png'), "javascript:void(0);", :class => "download"
+            = link_to image_tag( 'download_request.png'), service_request_path(:format => :xlsx), :class => "download"
             = link_to image_tag( 'view_requests.png'), "https://sparc-stg.musc.edu/portal/", :class => "user-portal"
     .footer

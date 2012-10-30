@@ -7,10 +7,15 @@ class ApplicationController < ActionController::Base
   before_filter :load_defaults
   before_filter :setup_navigation
 
+  # for now we are assuming auto login
   def authenticate
     @current_user = Identity.find_by_ldap_uid 'anc63'
   end
 
+  def current_user
+    Identity.find_by_ldap_uid('anc63').id
+  end
+  
   def set_service_request_id
     if params[:controller] == 'service_requests'
       #blow the session away if we aren't logged in and don't have a valid url
@@ -41,6 +46,7 @@ class ApplicationController < ActionController::Base
     begin 
       @application_config ||= YAML.load_file(Rails.root.join('config', 'application.yml'))[Rails.env]
       @default_mail_to = @application_config['default_mail_to']
+      @user_portal_link = @application_config['user_portal_link']
     rescue
       raise "application.yml not found, see config/application.yml.example"
     end

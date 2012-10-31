@@ -1,7 +1,7 @@
 PATH
   remote: ../obis-bridge
   specs:
-    obis-bridge (0.0.18)
+    obis-bridge (0.0.21)
       activerecord
       acts_as_list
       grouped_validations

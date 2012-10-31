@@ -83,12 +83,10 @@
           = f.label :federal_phs_sponsor, "Federal Grant PHS Sponsor:"
           = f.select :federal_phs_sponsor, options_for_select(FEDERAL_GRANT_PHS_SPONSORS, study.federal_phs_sponsor), :include_blank => "Please Select if Applicable"
 
-    %br
-    %span -OR-
-    %br
+        %br
+        %span -OR-
+        %br
     
-    .funded
-      .federal
         .field
           = f.label :federal_non_phs_sponsor, "Federal Grant Non-PHS Sponsor:"
           = f.select :federal_non_phs_sponsor, options_for_select(FEDERAL_GRANT_NON_PHS_SPONSORS, study.federal_non_phs_sponsor), :include_blank => "Please Select if Applicable"

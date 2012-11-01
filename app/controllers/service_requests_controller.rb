@@ -147,6 +147,15 @@ class ServiceRequestsController < ApplicationController
 
   def service_subsidy
     @service_request = ServiceRequest.find session[:service_request_id]
+    @subsidies = []
+    @service_request.sub_service_requests.each do |ssr|
+      if ssr.subsidy
+        @subsidies << ssr.subsidy
+      elsif ssr.eligible_for_subsidy?
+        ssr.build_subsidy
+        @subsidies << ssr.subsidy
+      end
+    end
   end
   
   def document_management

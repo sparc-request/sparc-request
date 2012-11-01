@@ -1611,3 +1611,12 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   font-weight: bold !important;
   background-color: #CCCCCC;
 }
+
+.subsidies {
+  width: 922px;
+  background: none repeat scroll 0 0 #E8E8E8;
+}
+
+.subsidies .table_header {
+  background-color: #FFFFFF !important;
+}

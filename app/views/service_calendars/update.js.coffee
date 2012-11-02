@@ -2,6 +2,17 @@ unless "<%= @errors %>" == ""
   alert "<%= @errors %>"
 
 if "<%= @errors %>" == ""
+  if "<%= @line_item.service.displayed_pricing_map.unit_factor %>" > 1
+    "<%= update_per_subject_subtotals(@line_item) %>"
+
+  <% @line_item.visits.each do |visit| %>
+    console.log $('.visits_<%= visit.id %>').parent().data('cents')
+    $('.visits_<%= visit.id %>').parent().data('cents', "<%= update_visit_data_cents(visit) %>")
+    console.log $('.visits_<%= visit.id %>').parent().data('cents')
+  <% end %>
+  else if "<%= @visit_td %>" != ""
+    $("<%= @visit_td %>").parent().data('cents', "<%= update_visit_data_cents(@visit) %>")
+
   # Display for each line items total cost
   $("<%= @line_item_total_td %>").html("<%= display_visit_based_direct_cost(@line_item) %>")
 
@@ -19,7 +30,3 @@ if "<%= @errors %>" == ""
   $(".grand_total_direct").html("<%= display_grand_total_direct_costs(@service_request) %>")
   $(".grand_total_indirect").html("<%= display_grand_total_indirect_costs(@service_request) %>")
   $(".grand_total").html("<%= display_grand_total(@service_request) %>")
-
-  if "<%= @visit_td %>" != ""
-    $("<%= @visit_td %>").parent().data('cents', "<%= update_visit_data_cents(@visit) %>")
-

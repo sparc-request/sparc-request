@@ -14,6 +14,10 @@ module ServiceCalendarHelper
     currency_converter(line_item.applicable_rate)
   end
 
+  def update_per_subject_subtotals line_item
+    line_item.per_subject_subtotals
+  end
+
   #############################################
   # Visit Based Services
   #############################################

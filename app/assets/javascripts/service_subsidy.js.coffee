@@ -2,6 +2,11 @@
 
 $(document).ready ->
 
+  $('.pi-contribution').keypress (event) ->
+    if event.keyCode is 13
+      event.preventDefault()
+      $(this).change()
+
   $('.pi-contribution').live 'change', ->
     id = $(this).attr('id')
     direct_cost = $('.estimated_cost_' + id).data('cost') / 100
@@ -15,7 +20,7 @@ $(document).ready ->
     $('.requested_funding_' + id).text(rf_display)
 
     percent = calculate_subsidy_percent(direct_cost, contribution)
-    percent_display = if percent != "" then percent.toFixed(1) + '%' else '0%'
+    percent_display = if percent != "" then percent + '%' else '0%'
     $('.subsidy_percent_' + id).text(percent_display)
 
   calculate_requested_funding = (direct_cost, contribution) ->
@@ -28,5 +33,5 @@ $(document).ready ->
     percent = 0
     if contribution > 0
       funded_amount = direct_cost - contribution
-      percent = (funded_amount / direct_cost) * 100
+      percent = (funded_amount / direct_cost).toFixed(2) * 100
     percent

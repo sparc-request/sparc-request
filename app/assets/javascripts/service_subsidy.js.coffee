@@ -20,7 +20,7 @@ $(document).ready ->
     $('.requested_funding_' + id).text(rf_display)
 
     percent = calculate_subsidy_percent(direct_cost, contribution)
-    percent_display = if percent != "" then percent + '%' else '0%'
+    percent_display = if percent != "" then percent.toFixed(1) + '%' else '0%'
     $('.subsidy_percent_' + id).text(percent_display)
 
   calculate_requested_funding = (direct_cost, contribution) ->
@@ -33,5 +33,5 @@ $(document).ready ->
     percent = 0
     if contribution > 0
       funded_amount = direct_cost - contribution
-      percent = (funded_amount / direct_cost).toFixed(2) * 100
+      percent = (funded_amount / direct_cost) * 100
     percent

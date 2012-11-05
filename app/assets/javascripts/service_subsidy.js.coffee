@@ -53,7 +53,7 @@ $(document).ready ->
         buttons:
           Ok: ->
             $(this).dialog('close')
-    return false
+    return pass
 
   calculate_requested_funding = (direct_cost, contribution) ->
     rf = 0

@@ -6,22 +6,22 @@ The services selected below may be eligible for a subsidy. Please enter requeste
 %br
 %br
 %table.subsidies
-  %tr.table_header
-    %th Institution/Provider/Program/Core
-    %th Total Estimated Costs
-    %th PI Contribution
-    %th Requested Funding
-    %th % Subsidy
+  %thead
+    %tr.table_header
+      %th Institution/Provider/Program/Core
+      %th Total Estimated Costs
+      %th PI Contribution
+      %th Requested Funding
+      %th % Subsidy
 
-  %tbody
+  %tbody.subsidies-list
     - @subsidies.each do |subsidy|
-      %tr.subsidies_list
+      %tr.subsidy-item
         - direct_cost_total = subsidy.sub_service_request.direct_cost_total
         - pi_contribution = subsidy.pi_contribution
         - organization = subsidy.sub_service_request.organization
-        %td= "#{ssr_institution(organization)}/#{ssr_provider(organization)}/#{ssr_program_core(organization)}"
+        %td= "#{ssr_institution(organization)} / #{ssr_provider(organization)} / #{ssr_program_core(organization)}"
         %td{:class => "estimated_cost_#{subsidy.sub_service_request_id}", :'data-cost' => direct_cost_total}= currency_converter(direct_cost_total)
         %td= text_field_tag "#{subsidy.sub_service_request_id}", pi_contribution, :class => "pi-contribution ssr_#{subsidy.sub_service_request_id}", :disabled => (subsidy.overridden) ? true : false
         %td{:class => "requested_funding_#{subsidy.sub_service_request_id}"}= display_requested_funding direct_cost_total, pi_contribution
         %td{:class => "subsidy_percent_#{subsidy.sub_service_request_id}"}= "#{calculate_subsidy_percentage(direct_cost_total, pi_contribution)}%"
-

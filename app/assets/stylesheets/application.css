@@ -1614,9 +1614,24 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 
 .subsidies {
   width: 922px;
-  background: none repeat scroll 0 0 #E8E8E8;
 }
 
-.subsidies .table_header {
-  background-color: #FFFFFF !important;
+.subsidies thead tr.table_header {
+  border: none;
+}
+
+.subsidies tbody.subsidies-list {
+  background-color: #E8E8E8;
+}
+
+.subsidies tbody.subsidies-list tr td {
+  padding: 3px 15px;
+}
+
+.subsidies tbody.subsidies-list tr.subsidy-item td input {
+  width: 75%;
+}
+
+.additional-funding {
+  text-align: center;
 }

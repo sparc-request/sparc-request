@@ -5,10 +5,13 @@
   = hidden_field_tag :validates, ''
   = render :partial => 'steps'
   = render :partial => 'errors'
-  .grid_9
+  .grid_12
     .select-project-view
       =render :partial => 'subsidies/subsidy_data'
-
+    %br
+    .additional-funding
+      To request additional research funding go to
+      = link_to "sctr.musc.edu", "https://sctr.musc.edu/"
   .clear
 
   .continue= render :partial => 'service_requests/navigation'

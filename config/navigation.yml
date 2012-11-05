@@ -42,6 +42,7 @@ document_management:
   step_text: 'STEP 3: Additional Notes and Information'
   css_class: orange-provider
   back: service_subsidy
+  catalog: catalog
   forward: review
   validation_groups:
     review_view:
@@ -56,3 +57,11 @@ review:
   validation_groups:
     document_management:
 
+confirmation:
+  step_text: 'STEP 5: Submission Confirmation'
+  css_class: green-provider
+  back: review 
+  catalog: catalog
+  forward: confirmation
+  validation_groups:
+    document_management:

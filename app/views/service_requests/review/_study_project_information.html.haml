@@ -24,7 +24,7 @@
     %tr
       %th Funding Source:
       %td 
-        = @protocol.funding_source
+        = @protocol.display_funding_source_value
 %table.project-roles
   %thead
     %tr
@@ -40,6 +40,6 @@
         %td.name 
           = pr.identity.first_name + " " + pr.identity.last_name
         %td.role
-          = pr.role
+          = USER_ROLES.key(pr.role)
         %td.proxy-rights
-          = pr.project_rights
+          = pr.project_rights.capitalize

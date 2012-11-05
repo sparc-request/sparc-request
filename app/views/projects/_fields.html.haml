@@ -4,6 +4,8 @@
 //
 /////////////////////////////////////////////
 
+= javascript_include_tag 'projects'
+
 .description Before you can complete a service request, please tell us more about your research project. This information will be used by our staff to decide the best way to process your request.
 .grid_7.box
   .info
@@ -19,11 +21,12 @@
       = f.label :brief_description, "Brief Description:"
       = f.text_area :brief_description
 
-    .field
-      = f.label :funding_source, "Funding Source:"
-      = f.select :funding_source, options_for_select(FUNDING_SOURCES, project.funding_source), :include_blank => "Select a Funding Source"
+    .funded
+      .field
+        = f.label :funding_source, "Funding Source:"
+        = f.select :funding_source, options_for_select(FUNDING_SOURCES, project.funding_source), :include_blank => "Select a Funding Source"
 
-    .field
+    .indirect_cost_rate
       = f.label :indirect_cost_rate, "Indirect Cost Rate:"
       = f.text_field :indirect_cost_rate
 

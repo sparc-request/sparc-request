@@ -31,3 +31,4 @@ public/system
 *~
 config/alfresco.yml
 config/database.yml
+config/application.yml

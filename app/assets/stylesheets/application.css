@@ -460,7 +460,6 @@ a.save-option{
 /* ReviewView */
 .review-details {
   margin-left: 10px;
-  text-align: left;
 }
 
 .review-details table {
@@ -471,18 +470,17 @@ a.save-option{
 
 .review-details table th {
   font-weight: bold;
-  border: 1px solid #FFF;
 }
 
 .review-details table th,
 .review-details table td {
+  border: 1px solid #E8E8E8 !important;
   width: 298px;
   padding: 5px;
 }
 
 .review-details table td {
   font-weight: normal;
-  border: 1px solid #E8E8E8;
 }
 
 .review-details table th.no-right-border {
@@ -509,6 +507,10 @@ a.save-option{
 .review-details .notes {
   margin-bottom: 20px;
   margin-top: 20px;
+}
+
+.notes table thead tr th {
+  text-align: left;
 }
 
 .review-details .notes pre {
@@ -1330,6 +1332,14 @@ li.organization-option {
 
 .your-question, .question-submit { margin-top: 5px; }
 
+.your-question, .your-email {
+  padding-left: 5px;
+}
+
+.your-email {
+  padding-top: 5px;
+}
+
 .notification-loader {
   z-index: 999;
   padding-top: 60px;
@@ -1544,7 +1554,7 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 }
 
 .begin_totals {
-  border-top: none !important;
+  /*border-top: none !important;*/
 }
 
 .visit_count {
@@ -1554,6 +1564,15 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 
 .visit_number {
   font-size: 11px;
+}
+
+.visit .checkbox{
+  text-align: center;
+}
+
+.cell-border td{
+  border: 1px solid #ADADAD !important;
+  border-bottom: none;
 }
 
 .line_item_visit_quantity {
@@ -1572,4 +1591,47 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 
 .inline .field_with_errors {
   display: inline-table;
+}
+
+.small_desc {
+  font-size: 10px;
+  font-weight: normal;
+}
+
+#one_time_fee_errors {
+  border: 2px solid red;
+  padding: 5px;
+}
+
+.document-table tbody tr th {
+  text-align: left;
+}
+
+.total_cell {
+  font-weight: bold !important;
+  background-color: #CCCCCC;
+}
+
+.subsidies {
+  width: 922px;
+}
+
+.subsidies thead tr.table_header {
+  border: none;
+}
+
+.subsidies tbody.subsidies-list {
+  background-color: #E8E8E8;
+}
+
+.subsidies tbody.subsidies-list tr td {
+  padding: 3px 15px;
+}
+
+.subsidies tbody.subsidies-list tr.subsidy-item td input {
+  width: 75%;
+}
+
+.additional-funding {
+  text-align: center;
 }

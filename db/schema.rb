@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121017103808) do
+ActiveRecord::Schema.define(:version => 20121026152721) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -350,6 +350,14 @@ ActiveRecord::Schema.define(:version => 20121017103808) do
 
   add_index "protocols", ["obisid"], :name => "index_protocols_on_obisid"
 
+  create_table "questions", :force => true do |t|
+    t.string   "to"
+    t.string   "from"
+    t.text     "body"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
   create_table "research_types", :force => true do |t|
     t.integer  "protocol_id"
     t.boolean  "human_subjects"
@@ -475,9 +483,11 @@ ActiveRecord::Schema.define(:version => 20121017103808) do
     t.string   "ssr_id"
     t.datetime "status_date"
     t.string   "status"
-    t.datetime "created_at",         :null => false
-    t.datetime "updated_at",         :null => false
+    t.datetime "created_at",               :null => false
+    t.datetime "updated_at",               :null => false
     t.datetime "deleted_at"
+    t.datetime "consult_arranged_date"
+    t.datetime "requester_contacted_date"
   end
 
   add_index "sub_service_requests", ["organization_id"], :name => "index_sub_service_requests_on_organization_id"
@@ -494,16 +504,13 @@ ActiveRecord::Schema.define(:version => 20121017103808) do
   add_index "submission_emails", ["organization_id"], :name => "index_submission_emails_on_organization_id"
 
   create_table "subsidies", :force => true do |t|
-    t.integer  "service_request_id"
-    t.integer  "organization_id"
     t.integer  "pi_contribution"
-    t.datetime "created_at",         :null => false
-    t.datetime "updated_at",         :null => false
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
     t.datetime "deleted_at"
     t.boolean  "overridden"
+    t.integer  "sub_service_request_id"
   end
-
-  add_index "subsidies", ["service_request_id"], :name => "index_subsidies_on_service_request_id"
 
   create_table "subsidy_maps", :force => true do |t|
     t.integer  "organization_id"
@@ -576,14 +583,14 @@ ActiveRecord::Schema.define(:version => 20121017103808) do
 
   create_table "visits", :force => true do |t|
     t.integer  "line_item_id"
-    t.integer  "quantity"
+    t.integer  "quantity",              :default => 0
     t.string   "billing"
-    t.datetime "created_at",            :null => false
-    t.datetime "updated_at",            :null => false
+    t.datetime "created_at",                           :null => false
+    t.datetime "updated_at",                           :null => false
     t.datetime "deleted_at"
-    t.integer  "research_billing_qty"
-    t.integer  "insurance_billing_qty"
-    t.integer  "effort_billing_qty"
+    t.integer  "research_billing_qty",  :default => 0
+    t.integer  "insurance_billing_qty", :default => 0
+    t.integer  "effort_billing_qty",    :default => 0
     t.integer  "position"
   end
 

@@ -44,7 +44,7 @@
         = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, study.potential_funding_source), :include_blank => "Select a Potential Funding Source"
 
       / Internal Funded Pilot Project selected
-      .internal_funded_pilot_project
+      .internal_potential_funded_pilot_project
         .field
           = f.label :potential_funding_source_other, "Please Specify"
           = f.text_field :potential_funding_source_other
@@ -83,12 +83,10 @@
           = f.label :federal_phs_sponsor, "Federal Grant PHS Sponsor:"
           = f.select :federal_phs_sponsor, options_for_select(FEDERAL_GRANT_PHS_SPONSORS, study.federal_phs_sponsor), :include_blank => "Please Select if Applicable"
 
-    %br
-    %span -OR-
-    %br
+        %br
+        %span -OR-
+        %br
     
-    .funded
-      .federal
         .field
           = f.label :federal_non_phs_sponsor, "Federal Grant Non-PHS Sponsor:"
           = f.select :federal_non_phs_sponsor, options_for_select(FEDERAL_GRANT_NON_PHS_SPONSORS, study.federal_non_phs_sponsor), :include_blank => "Please Select if Applicable"
@@ -130,11 +128,13 @@
 
           .field.irb_approval_date
             = hs.label :irb_approval_date, "IRB Approval Date:"
-            = hs.text_field :irb_approval_date
+            = text_field_tag :irb_approval_date, (study.human_subjects_info.irb_approval_date.strftime('%_m/%d/%Y') rescue nil)
+            = hs.hidden_field :irb_approval_date
 
           .field.irb_expiration_date
             = hs.label :irb_expiration_date, "IRB Expiration Date:"
-            = hs.text_field :irb_expiration_date
+            = text_field_tag :irb_expiration_date, (study.human_subjects_info.irb_expiration_date.strftime('%_m/%d/%Y') rescue nil)
+            = hs.hidden_field :irb_expiration_date
 
         = f.fields_for :research_types_info do |rt|
           .field.vertebrate_animals
@@ -152,11 +152,13 @@
 
           .field.iacuc_approval_date
             = va.label :iacuc_approval_date, "IACUC Approval Date:"
-            = va.text_field :iacuc_approval_date
+            = text_field_tag :iacuc_approval_date, (study.vertebrate_animals_info.iacuc_approval_date.strftime('%_m/%d/%Y') rescue nil)
+            = va.hidden_field :iacuc_approval_date
 
           .field.iacuc_expiration_date
             = va.label :iacuc_expiration_date, "IACUC Expiration Date:"
-            = va.text_field :iacuc_expiration_date
+            = text_field_tag :iacuc_expiration_date, (study.vertebrate_animals_info.iacuc_expiration_date.strftime('%_m/%d/%Y') rescue nil)
+            = va.hidden_field :iacuc_expiration_date
         
         = f.fields_for :research_types_info do |rt|
           .field.investigational_products
@@ -167,6 +169,10 @@
           .field.ind_number
             = ip.label :ind_number, "IND#:"
             = ip.text_field :ind_number
+
+          .field.ind_on_hold
+            = ip.label :ind_on_hold, "IND on Hold?"
+            = ip.check_box :ind_on_hold
 
           .field.ide_number
             = ip.label :ide_number, "IDE#:"
@@ -194,7 +200,8 @@
         = f.fields_for :study_types do |rt|
           .field{:class => rt.object.name}
             = rt.label :name, "#{StudyType::TYPES[rt.object.name]}:"
-            = rt.check_box :name, {:checked => !rt.object.new}, rt.object.name, nil
+            = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
+            = rt.hidden_field :name, :value => rt.object.name
 
     -# impact_areas are initialized in obis-bridge lib/models/protocol.rb def setup_impact_areas
     %fieldset
@@ -203,7 +210,8 @@
         = f.fields_for :impact_areas do |rt|
           .field{:class => rt.object.name}
             = rt.label :name, "#{ImpactArea::TYPES[rt.object.name]}:"
-            = rt.check_box :name, {:checked => !rt.object.new}, rt.object.name, nil
+            = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
+            = rt.hidden_field :name, :value => rt.object.name
 
     -# affiliations are initialized in obis-bridge lib/models/protocol.rb def setup_affiliations
     %fieldset
@@ -212,7 +220,8 @@
         = f.fields_for :affiliations do |rt|
           .field{:class => rt.object.name}
             = rt.label :name, "#{Affiliation::TYPES[rt.object.name]}:"
-            = rt.check_box :name, {:checked => !rt.object.new}, rt.object.name, nil
+            = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
+            = rt.hidden_field :name, :value => rt.object.name
 
 .grid_5.box= render :partial => 'shared/user_search'
 

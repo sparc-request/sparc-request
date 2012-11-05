@@ -31,3 +31,21 @@ $(document).ready ->
     $(".#{parent} .actions").hide()
     $(".#{parent} .restore").show()
     $(".#{parent} input[name*='destroy']").val(true)
+
+  $('.ask-us-button').click ->
+    toggle_form_slide()
+
+(exports ? this).toggle_form_slide = ->
+  if $('.ask-a-question-form-container').is(":visible")
+    $('.up-carat').show()
+    $('.down-carat').hide()
+  else
+    $('#question_email').val('')
+    $('#question_body').val('')
+    $('.up-carat').hide()
+    $('.down-carat').show()
+
+  $('.ask-a-question-form-container').slideToggle('slow', ->
+    $('.your-email > input').focus()
+  )
+

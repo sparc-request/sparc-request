@@ -24,9 +24,36 @@ $(document).ready ->
     $('.subsidy_percent_' + id).text(percent_display)
 
   $('#navigation_form').submit ->
+    message = ""
+    pass = true
     # check stuff
-    alert 'sorry'
-    return false
+    $('.pi-contribution').each (index, elem) ->
+      pi = $(this).val()
+      id = $(this).attr('data-id')
+      direct_cost = $('.estimated_cost_' + id).data('cost') / 100
+      max_dollar = $(this).attr('data-max_dollar')
+      max_percent = $(this).attr('data-max_percent')
+      core = $('.core_' + id).text()
+
+      if max_dollar > 0.0
+        if calculate_requested_funding(direct_cost, pi) > max_dollar
+          pass = false
+          message = 'Subsidy amount for ' + core + ' cannot exceed maximum dollar amount of $' + max_dollar
+          return
+      else if max_percent > 0.0
+        if calculate_subsidy_percent(direct_cost, pi) > max_percent
+          pass = false
+          message = 'Subsidy amount for ' + core + ' cannot exceed maximum percentage of ' + max_percent + '%'
+          return
+
+    if pass == false
+      $("#submit_error .message").html(message)
+      $("#submit_error").dialog
+        modal: true
+        buttons:
+          Ok: ->
+            $(this).dialog('close')
+    return pass
 
   calculate_requested_funding = (direct_cost, contribution) ->
     rf = 0

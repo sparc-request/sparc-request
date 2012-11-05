@@ -15,6 +15,7 @@ The services selected below may be eligible for a subsidy. Please enter requeste
       %th % Subsidy
 
   %tbody.subsidies-list
+
     - @subsidies.each do |subsidy|
       = fields_for @service_request do |sr|
         = sr.fields_for :sub_service_requests, subsidy.sub_service_request do |ssr|
@@ -23,11 +24,15 @@ The services selected below may be eligible for a subsidy. Please enter requeste
               - direct_cost_total = subsidy.sub_service_request.direct_cost_total
               - pi_contribution = subsidy.pi_contribution
               - organization = subsidy.sub_service_request.organization
-              %td= "#{ssr_institution(organization)} / #{ssr_provider(organization)} / #{ssr_program_core(organization)}"
+              %td{:class => "core_#{subsidy.sub_service_request_id}"}= "#{ssr_institution(organization)} / #{ssr_provider(organization)} / #{ssr_program_core(organization)}"
               %td{:class => "estimated_cost_#{subsidy.sub_service_request_id}", :'data-cost' => direct_cost_total}= currency_converter(direct_cost_total)
               %td
                 = ssr.hidden_field :id
                 = s.hidden_field :id
-                = s.text_field :pi_contribution, :"data-id" => subsidy.sub_service_request_id, :class => "pi-contribution ssr_#{subsidy.sub_service_request_id}", :disabled => (subsidy.overridden) ? true : false
+                = s.text_field :pi_contribution, :"data-id" => subsidy.sub_service_request_id, :"data-max_dollar" => organization.subsidy_map.max_dollar_cap, :"data-max_percent" => organization.subsidy_map.max_percentage, :class => "pi-contribution ssr_#{subsidy.sub_service_request_id}", :disabled => (subsidy.overridden) ? true : false
               %td{:class => "requested_funding_#{subsidy.sub_service_request_id}"}= display_requested_funding direct_cost_total, pi_contribution
               %td{:class => "subsidy_percent_#{subsidy.sub_service_request_id}"}= "#{calculate_subsidy_percentage(direct_cost_total, pi_contribution)}%"
+  #submit_error{:style => "display: none"}
+    .message
+
+

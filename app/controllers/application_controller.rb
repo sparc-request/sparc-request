@@ -9,7 +9,7 @@ class ApplicationController < ActionController::Base
 
   # for now we are assuming auto login
   def authenticate
-    @current_user = Identity.find_by_ldap_uid 'anc63'
+    @current_user = Identity.find_by_ldap_uid 'jug2'
   end
 
   def current_user

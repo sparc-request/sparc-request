@@ -17,6 +17,14 @@ class ServiceRequestsController < ApplicationController
     puts params[:service_request]
     puts "#"*50
 
+    #### convert dollars to cents for subsidy
+    if params[:sub_service_request_attributes]
+      params[:sub_service_request_attributes].each do |key, values|
+        dollars = values[:subsidy_attributes][:pi_contribution]
+        values[:subsidy_attributes][:pi_contribution] = Service.dollars_to_cents(dollars)
+      end
+    end
+
     #### add logic to save data
     referrer = request.referrer.split('/').last
     @service_request = ServiceRequest.find session[:service_request_id]

@@ -23,6 +23,11 @@ $(document).ready ->
     percent_display = if percent != "" then percent.toFixed(1) + '%' else '0%'
     $('.subsidy_percent_' + id).text(percent_display)
 
+  $('#navigation_form').submit ->
+    # check stuff
+    alert 'sorry'
+    return false
+
   calculate_requested_funding = (direct_cost, contribution) ->
     rf = 0
     if contribution > 0

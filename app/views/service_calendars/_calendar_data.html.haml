@@ -62,36 +62,36 @@
         %td &nbsp;
         - 5.times do |i|
           %td{:class => "visit_column_#{i + 1} max_direct_per_patient"}
-        %td{:id => "pp_max_total_direct_cost"}= display_max_total_direct_cost_per_patient @service_request
+        %td{:class => "pp_max_total_direct_cost"}= display_max_total_direct_cost_per_patient @service_request
       
       %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
         %td{:colspan => 5} Maximum Total Indirect Costs Per Patient
         %td &nbsp;
         - 5.times do |i|
           %td{:class => "visit_column_#{i + 1} max_indirect_per_patient"}
-        %td{:id => "pp_max_total_indirect_cost"}= display_max_total_indirect_cost_per_patient @service_request
+        %td{:class => "pp_max_total_indirect_cost"}= display_max_total_indirect_cost_per_patient @service_request
 
       %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
         %td{:colspan => 5} Maximum Total Per Patient
         %td &nbsp;
         - 5.times do |i|
           %td{:class => "visit_column_#{i + 1} max_total_per_patient"}
-        %td{:id => "pp_max_total"}= display_max_total_cost_per_patient @service_request
+        %td{:class => "pp_max_total"}= display_max_total_cost_per_patient @service_request
       
       %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
         %td{:colspan => 5} Total Direct Costs (Per Patient/Visit Services) Per Study
         %td{:colspan => 6}
-        %td{:id => "pp_total_direct_cost"}= display_total_direct_cost_per_study_pppvs @service_request
+        %td{:class => "pp_total_direct_cost"}= display_total_direct_cost_per_study_pppvs @service_request
       
       %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
         %td{:colspan => 5} Total Indirect Costs (Per Patient/Visit Services) Per Study
         %td{:colspan => 6}
-        %td{:id => "pp_total_indirect_cost"}= display_total_indirect_cost_per_study_pppvs @service_request
+        %td{:class => "pp_total_indirect_cost"}= display_total_indirect_cost_per_study_pppvs @service_request
       
       %tr.totals_section.total-visit-based-services{:class => cycle('odd', '', :name => 'pppvs')}
         %td{:colspan => 5} Total Costs (Per Patient/Visit Services) Per Study
         %td{:colspan => 6}
-        %td{:id => "pp_total_cost"}= display_total_cost_per_study_pppvs @service_request
+        %td{:class => "pp_total_cost"}= display_total_cost_per_study_pppvs @service_request
 
       %th.totals_section{:colspan => 12} &nbsp;
 
@@ -132,14 +132,14 @@
       %tr.totals_section{:class => cycle('odd', '', :name => 'totals')}
         %td{:colspan => 5} Grand Total: Direct Costs
         %td{:colspan => 6}
-        %td{:id => 'grand_total_direct'}= display_grand_total_direct_costs @service_request
+        %td{:class => 'grand_total_direct'}= display_grand_total_direct_costs @service_request
 
       %tr.totals_section{:class => cycle('odd', '', :name => 'totals')}
         %td{:colspan => 5} Grand Total: Indirect Costs
         %td{:colspan => 6}
-        %td{:id => 'grand_total_indirect'}= display_grand_total_indirect_costs @service_request
+        %td{:class => 'grand_total_indirect'}= display_grand_total_indirect_costs @service_request
 
       %tr.totals_section{:class => cycle('odd', '', :name => 'totals')}
         %td{:colspan => 5} Grand Total:
         %td{:colspan => 6}
-        %td{:id => 'grand_total'}= display_grand_total @service_request
+        %td{:class => 'grand_total'}= display_grand_total @service_request

@@ -20,7 +20,7 @@
         %br
         %span.small_desc (Slides, etc...)
       %th Quantity Type
-  %tbody
+  %tbody#this-is-a-test
     - @service_request.service_list(true).each do |key, value|
       %tr
         %th.provider-header{:colspan => 4}= value[:name]

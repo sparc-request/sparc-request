@@ -1,4 +1,13 @@
 class ServiceRequestsController < ApplicationController
+  layout false, :only => :ask_a_question
+
+  def show
+    @service_request = ServiceRequest.find params[:id]
+    @protocol = @service_request.protocol
+    @service_list = @service_request.service_list
+    render xlsx: "show", filename: "service_request_#{@service_request.id}", disposition: "inline"
+  end
+
   def navigate
     errors = [] 
     # need to save and navigate to the right page
@@ -29,7 +38,7 @@ class ServiceRequestsController < ApplicationController
       # we have a new grouping
       document_grouping = @service_request.document_groupings.create
       process_ssr_organization_ids.each do |org_id|
-        sub_service_request = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
+        sub_service_request = @service_request.sub_service_requests.find_by_organization_id org_id.to_i
         sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :document_grouping_id => document_grouping.id
         sub_service_request.save
       end
@@ -121,13 +130,15 @@ class ServiceRequestsController < ApplicationController
       end
 
       unless line_item.visits.count == @service_request.visit_count
-        if line_item.visits.count < @service_request.visit_count
-          (@service_request.visit_count - line_item.visits.count).times do
-            line_item.visits.create
-          end
-        elsif line_item.visits.count > @service_request.visit_count
-          line_item.visits.last(line_item.visits.count - @service_request.visit_count).each do |li|
-            li.delete
+        ActiveRecord::Base.transaction do
+          if line_item.visits.count < @service_request.visit_count
+            (@service_request.visit_count - line_item.visits.count).times do
+              line_item.visits.create
+            end
+          elsif line_item.visits.count > @service_request.visit_count
+            line_item.visits.last(line_item.visits.count - @service_request.visit_count).each do |li|
+              li.delete
+            end
           end
         end
       end
@@ -136,12 +147,53 @@ class ServiceRequestsController < ApplicationController
 
   def service_subsidy
     @service_request = ServiceRequest.find session[:service_request_id]
+    @subsidies = []
+    @service_request.sub_service_requests.each do |ssr|
+      if ssr.subsidy
+        @subsidies << ssr.subsidy
+      elsif ssr.eligible_for_subsidy?
+        ssr.build_subsidy
+        @subsidies << ssr.subsidy
+      end
+    end
   end
   
   def document_management
     @service_request = ServiceRequest.find session[:service_request_id]
     @service_list = @service_request.service_list
   end
+  
+  def review
+    session[:service_calendar_page] = params[:page] if params[:page]
+
+    @service_request = ServiceRequest.find session[:service_request_id]
+    @service_list = @service_request.service_list
+    @protocol = @service_request.protocol
+    
+    @page = @service_request.set_visit_page session[:service_calendar_page].to_i
+    @tab = 'pricing'
+  end
+
+  def confirmation
+    @service_request = ServiceRequest.find session[:service_request_id]
+    @service_request.update_attribute(:status, 'submitted')
+    @service_request.update_attribute(:submitted_at, Time.now)
+    next_ssr_id = @service_request.protocol.next_ssr_id || 1
+    @service_request.sub_service_requests.each do |ssr|
+      ssr.update_attribute(:status, 'submitted')
+      ssr.update_attribute(:ssr_id, "%04d" % next_ssr_id) unless ssr.ssr_id
+      next_ssr_id += 1
+    end
+    @service_request.protocol.update_attribute(:next_ssr_id, next_ssr_id)
+  end
+
+  def refresh_service_calendar
+    session[:service_calendar_page] = params[:page] if params[:page]
+    @service_request = ServiceRequest.find session[:service_request_id]
+    @page = @service_request.set_visit_page session[:service_calendar_page].to_i
+    @tab = 'pricing'
+  end
+
 
   # methods only used by ajax requests
 
@@ -165,6 +217,17 @@ class ServiceRequestsController < ApplicationController
       # add optional services to line items
       service.optional_services.each do |rs|
         @service_request.line_items.create(:service_id => rs.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum)
+      end
+
+      # create sub_service_rquests
+      @service_request.reload
+      @service_request.service_list.each do |org_id, values|
+        line_items = values[:line_items]
+        ssr = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
+
+        line_items.each do |li|
+          li.update_attribute(:sub_service_request_id, ssr.id)
+        end
       end
     end
   end
@@ -191,6 +254,13 @@ class ServiceRequestsController < ApplicationController
     #@service_request = @current_user.service_requests.find session[:service_request_id]
     @service_request = ServiceRequest.find session[:service_request_id]
     @page = request.referrer.split('/').last # we need for pages other than the catalog
+
+    # clean up sub_service_requests
+    @service_request.reload
+    to_delete = @service_request.sub_service_requests.map(&:organization_id) - @service_request.service_list.keys
+    to_delete.each do |org_id|
+      @service_request.sub_service_requests.find_by_organization_id(org_id).destroy
+    end
   end
 
   def delete_documents
@@ -208,13 +278,11 @@ class ServiceRequestsController < ApplicationController
     @service_list = service_request.service_list
   end
 
-  def review
-    @service_request = ServiceRequest.find session[:service_request_id]
-    @service_list = @service_request.service_list
-    @protocol = @service_request.protocol
-  end
-
   def ask_a_question
-    render :text => 'yo what do you want'
+    from = params['question_email'] || 'no-reply@musc.edu'
+    body = params['question_body'] || 'No question asked'
+
+    question = Question.create :to => @default_mail_to, :from => from, :body => body
+    Notifier.ask_a_question(question).deliver
   end
 end

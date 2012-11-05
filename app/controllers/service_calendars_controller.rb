@@ -44,6 +44,7 @@ class ServiceCalendarsController < ApplicationController
     @visit_td = visit.nil? ? "" : ".visits_#{visit.id}"
     @line_item = visit.line_item if @line_item.nil?
     @line_item_total_td = ".total_#{@line_item.id}"
+    @displayed_visits = @line_item.visits.paginate(page: params[:page], per_page: 5)
     @service_request = ServiceRequest.find session[:service_request_id]
   end
 end

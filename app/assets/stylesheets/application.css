@@ -460,7 +460,6 @@ a.save-option{
 /* ReviewView */
 .review-details {
   margin-left: 10px;
-  text-align: left;
 }
 
 .review-details table {
@@ -471,18 +470,17 @@ a.save-option{
 
 .review-details table th {
   font-weight: bold;
-  border: 1px solid #FFF;
 }
 
 .review-details table th,
 .review-details table td {
+  border: 1px solid #E8E8E8 !important;
   width: 298px;
   padding: 5px;
 }
 
 .review-details table td {
   font-weight: normal;
-  border: 1px solid #E8E8E8;
 }
 
 .review-details table th.no-right-border {
@@ -509,6 +507,10 @@ a.save-option{
 .review-details .notes {
   margin-bottom: 20px;
   margin-top: 20px;
+}
+
+.notes table thead tr th {
+  text-align: left;
 }
 
 .review-details .notes pre {
@@ -1330,6 +1332,14 @@ li.organization-option {
 
 .your-question, .question-submit { margin-top: 5px; }
 
+.your-question, .your-email {
+  padding-left: 5px;
+}
+
+.your-email {
+  padding-top: 5px;
+}
+
 .notification-loader {
   z-index: 999;
   padding-top: 60px;
@@ -1591,4 +1601,22 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 #one_time_fee_errors {
   border: 2px solid red;
   padding: 5px;
+}
+
+.document-table tbody tr th {
+  text-align: left;
+}
+
+.total_cell {
+  font-weight: bold !important;
+  background-color: #CCCCCC;
+}
+
+.subsidies {
+  width: 922px;
+  background: none repeat scroll 0 0 #E8E8E8;
+}
+
+.subsidies .table_header {
+  background-color: #FFFFFF !important;
 }

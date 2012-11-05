@@ -14,23 +14,25 @@ module ServiceCalendarHelper
     currency_converter(line_item.applicable_rate)
   end
 
+  def update_per_subject_subtotals line_item
+    line_item.per_subject_subtotals
+  end
+
   #############################################
   # Visit Based Services
   #############################################
   # Displays line item totals
-  def display_visit_based_direct_cost line_item
+  def display_visit_based_direct_cost(line_item)
     currency_converter(line_item.direct_costs_for_visit_based_service_single_subject)
   end
 
   # Displays max totals per patient
   def display_max_total_direct_cost_per_patient service_request
-    sum = 0
     sum = service_request.maximum_direct_costs_per_patient
     currency_converter sum
   end
 
   def display_max_total_indirect_cost_per_patient service_request
-    sum = 0
     sum = service_request.maximum_indirect_costs_per_patient
     currency_converter sum
   end

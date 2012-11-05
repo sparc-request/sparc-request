@@ -44,7 +44,7 @@
         = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, study.potential_funding_source), :include_blank => "Select a Potential Funding Source"
 
       / Internal Funded Pilot Project selected
-      .internal_funded_pilot_project
+      .internal_potential_funded_pilot_project
         .field
           = f.label :potential_funding_source_other, "Please Specify"
           = f.text_field :potential_funding_source_other
@@ -83,12 +83,10 @@
           = f.label :federal_phs_sponsor, "Federal Grant PHS Sponsor:"
           = f.select :federal_phs_sponsor, options_for_select(FEDERAL_GRANT_PHS_SPONSORS, study.federal_phs_sponsor), :include_blank => "Please Select if Applicable"
 
-    %br
-    %span -OR-
-    %br
+        %br
+        %span -OR-
+        %br
     
-    .funded
-      .federal
         .field
           = f.label :federal_non_phs_sponsor, "Federal Grant Non-PHS Sponsor:"
           = f.select :federal_non_phs_sponsor, options_for_select(FEDERAL_GRANT_NON_PHS_SPONSORS, study.federal_non_phs_sponsor), :include_blank => "Please Select if Applicable"
@@ -171,6 +169,10 @@
           .field.ind_number
             = ip.label :ind_number, "IND#:"
             = ip.text_field :ind_number
+
+          .field.ind_on_hold
+            = ip.label :ind_on_hold, "IND on Hold?"
+            = ip.check_box :ind_on_hold
 
           .field.ide_number
             = ip.label :ide_number, "IDE#:"

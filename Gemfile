@@ -9,7 +9,7 @@ gem 'mysql2'
 gem 'haml'
 gem 'sass'
 
-group :development, :test do
+group :development, :test, :profile do
   gem 'sqlite3'
   gem 'rubyception'
 end
@@ -31,9 +31,12 @@ gem 'jquery-rails'
 gem 'cache_digests'
 gem 'dynamic_form'
 
-gem 'obis-bridge', :path => '~/musc/obis-bridge'
+gem 'obis-bridge', :path => '../obis-bridge'
 
 gem 'will_paginate'
+
+# requirements for excel export
+gem 'axlsx_rails'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
@@ -54,4 +57,8 @@ gem 'rvm-capistrano'
 # To use debugger
 # gem 'debugger'
 #
+
+group :profile do
+  gem 'ruby-prof'
+end
 

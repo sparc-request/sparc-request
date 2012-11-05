@@ -8,7 +8,7 @@ $(document).ready ->
       $(this).change()
 
   $('.pi-contribution').live 'change', ->
-    id = $(this).attr('id')
+    id = $(this).attr('data-id')
     direct_cost = $('.estimated_cost_' + id).data('cost') / 100
     contribution = $(this).val()
     if contribution > direct_cost

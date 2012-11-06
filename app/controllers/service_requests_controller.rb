@@ -18,8 +18,8 @@ class ServiceRequestsController < ApplicationController
     puts "#"*50
 
     #### convert dollars to cents for subsidy
-    if params[:sub_service_request_attributes]
-      params[:sub_service_request_attributes].each do |key, values|
+    if params[:service_request] && params[:service_request][:sub_service_requests_attributes]
+      params[:service_request][:sub_service_requests_attributes].each do |key, values|
         dollars = values[:subsidy_attributes][:pi_contribution]
         values[:subsidy_attributes][:pi_contribution] = Service.dollars_to_cents(dollars)
       end

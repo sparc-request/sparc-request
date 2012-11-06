@@ -1635,3 +1635,8 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 .additional-funding {
   text-align: center;
 }
+
+.visit_number a.ui-button {
+  width: 20px;
+  height: 20px;
+}

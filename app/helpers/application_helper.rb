@@ -39,9 +39,20 @@ module ApplicationHelper
     beginning_visit = (page * 5) - 4
     ending_visit = (page * 5) > service_request.visit_count ? service_request.visit_count : (page * 5)
     returning_html = ""
+    line_items = service_request.per_patient_per_visit_line_items
 
     (beginning_visit .. ending_visit).each do |n|
-      returning_html += content_tag(:th, "Visit #{n}", :width => 60, :class => 'visit_number')
+      checked = line_items.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?
+      action = checked == true ? 'unselect_calendar_column' : 'select_calendar_column'
+      icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
+
+      returning_html += content_tag(:th, 
+                                    content_tag(:span, "Visit #{n} ") +
+                                    tag(:br) + 
+                                    link_to((content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')), 
+                                            "/service_requests/#{service_request.id}/#{action}/#{n}", 
+                                            :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only'),
+                                    :width => 60, :class => 'visit_number')
     end
 
     ((page * 5) - service_request.visit_count).times do

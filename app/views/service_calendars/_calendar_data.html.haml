@@ -48,7 +48,7 @@
             %td.your_cost= display_your_cost line_item
             %td.unit_type= line_item.service.displayed_pricing_map.unit_type
             %td.subject_count= select_tag "line_item_#{line_item.id}_count", options_for_select((1..@service_request.subject_count), line_item.subject_count), :class => 'line_item_visit_count', :update => "/service_requests/#{line_item.service_request_id}/service_calendars?line_item=#{line_item.id}&tab=template"
-            %td &nbsp;
+            %td= select_row line_item
             - visits = line_item.visits.paginate(:page => @page, :per_page => 5)
             - totals_hash = line_item.try(:per_subject_subtotals)
             - visits.each_with_index do |v, index|

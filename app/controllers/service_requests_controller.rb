@@ -17,6 +17,14 @@ class ServiceRequestsController < ApplicationController
     puts params[:service_request]
     puts "#"*50
 
+    #### convert dollars to cents for subsidy
+    if params[:sub_service_request_attributes]
+      params[:sub_service_request_attributes].each do |key, values|
+        dollars = values[:subsidy_attributes][:pi_contribution]
+        values[:subsidy_attributes][:pi_contribution] = Service.dollars_to_cents(dollars)
+      end
+    end
+
     #### add logic to save data
     referrer = request.referrer.split('/').last
     @service_request = ServiceRequest.find session[:service_request_id]
@@ -284,5 +292,47 @@ class ServiceRequestsController < ApplicationController
 
     question = Question.create :to => @default_mail_to, :from => from, :body => body
     Notifier.ask_a_question(question).deliver
+  end
+
+  def select_calendar_row
+    @line_item = LineItem.find params[:line_item_id]
+    @line_item.visits.each do |visit|
+      visit.update_attributes({:quantity => 1, :research_billing_qty => 1, :insurance_billing_qty => 0, :effort_billing_qty => 0})
+    end
+    
+    render :partial => 'update_service_calendar'
+  end
+  
+  def unselect_calendar_row
+    @line_item = LineItem.find params[:line_item_id]
+    @line_item.visits.each do |visit|
+      visit.update_attributes({:quantity => 0, :research_billing_qty => 0, :insurance_billing_qty => 0, :effort_billing_qty => 0})
+    end
+
+    render :partial => 'update_service_calendar'
+  end
+
+  def select_calendar_column
+    @service_request = ServiceRequest.find session[:service_request_id]
+    column_id = params[:column_id].to_i
+
+    @service_request.per_patient_per_visit_line_items.each do |line_item|
+      visit = line_item.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
+      visit.update_attributes({:quantity => 1, :research_billing_qty => 1, :insurance_billing_qty => 0, :effort_billing_qty => 0})
+    end
+    
+    render :partial => 'update_service_calendar'
+  end
+  
+  def unselect_calendar_column
+    @service_request = ServiceRequest.find session[:service_request_id]
+    column_id = params[:column_id].to_i
+
+    @service_request.per_patient_per_visit_line_items.each do |line_item|
+      visit = line_item.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
+      visit.update_attributes({:quantity => 0, :research_billing_qty => 0, :insurance_billing_qty => 0, :effort_billing_qty => 0})
+    end
+    
+    render :partial => 'update_service_calendar'
   end
 end

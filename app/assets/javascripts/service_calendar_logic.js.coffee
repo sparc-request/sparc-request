@@ -23,3 +23,4 @@ $(document).ready ->
     calculate_max_rates()
   else if $('.line_item_visit_pricing').is(':visible')
     calculate_max_rates()
+

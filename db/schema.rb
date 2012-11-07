@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121105162328) do
+ActiveRecord::Schema.define(:version => 20121107160740) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -202,7 +202,6 @@ ActiveRecord::Schema.define(:version => 20121105162328) do
     t.string   "email"
     t.string   "subject"
     t.text     "body"
-    t.boolean  "read"
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
   end
@@ -515,6 +514,7 @@ ActiveRecord::Schema.define(:version => 20121105162328) do
   create_table "user_notifications", :force => true do |t|
     t.integer "identity_id"
     t.integer "notification_id"
+    t.boolean "read"
   end
 
   create_table "versions", :force => true do |t|

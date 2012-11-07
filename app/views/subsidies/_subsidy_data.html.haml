@@ -2,26 +2,43 @@
 / If it has overridden flag disable the inputs
 / If it has overridden flag pass validation
 
-The services selected below may be eligible for a subsidy. Please enter requested funding information.
-%br
-%br
-%table.subsidies
-  %tr.table_header
-    %th Institution/Provider/Program/Core
-    %th Total Estimated Costs
-    %th PI Contribution
-    %th Requested Funding
-    %th % Subsidy
+- if @subsidies.count == 0
+  None of the services you have selected are eligible for a subsidy.
+-else
+  The services selected below may be eligible for a subsidy. Please enter requested funding information.
+  %br
+  %br
+  %table.subsidies
+    %thead
+      %tr.table_header
+        %th Institution/Provider/Program/Core
+        %th Total Estimated Costs
+        %th PI Contribution
+        %th Requested Funding
+        %th % Subsidy
 
-  %tbody
-    - @subsidies.each do |subsidy|
-      %tr.subsidies_list
-        - direct_cost_total = subsidy.sub_service_request.direct_cost_total
-        - pi_contribution = subsidy.pi_contribution
-        - organization = subsidy.sub_service_request.organization
-        %td= "#{ssr_institution(organization)}/#{ssr_provider(organization)}/#{ssr_program_core(organization)}"
-        %td{:class => "estimated_cost_#{subsidy.sub_service_request_id}", :'data-cost' => direct_cost_total}= currency_converter(direct_cost_total)
-        %td= text_field_tag "#{subsidy.sub_service_request_id}", pi_contribution, :class => "pi-contribution ssr_#{subsidy.sub_service_request_id}", :disabled => (subsidy.overridden) ? true : false
-        %td{:class => "requested_funding_#{subsidy.sub_service_request_id}"}= display_requested_funding direct_cost_total, pi_contribution
-        %td{:class => "subsidy_percent_#{subsidy.sub_service_request_id}"}= "#{calculate_subsidy_percentage(direct_cost_total, pi_contribution)}%"
+    %tbody.subsidies-list
+      - @subsidies.each do |subsidy|
+        = fields_for @service_request do |sr|
+          = sr.fields_for :sub_service_requests, subsidy.sub_service_request do |ssr|
+            = ssr.fields_for :subsidy_attributes, ssr.object.subsidy do |s|
+              %tr.subsidy-item
+                - direct_cost_total = subsidy.sub_service_request.direct_cost_total
+                - pi_contribution = subsidy.pi_contribution
+                - organization = subsidy.sub_service_request.organization
+                %td{:class => "core_#{subsidy.sub_service_request_id}"}= "#{ssr_institution(organization)} / #{ssr_provider(organization)} / #{ssr_program_core(organization)}"
+                %td{:class => "estimated_cost_#{subsidy.sub_service_request_id}", :'data-cost' => direct_cost_total}= currency_converter(direct_cost_total)
+                %td
+                  = ssr.hidden_field :id
+                  = s.hidden_field :id
+                  = s.text_field :pi_contribution, :value => (Service.cents_to_dollars(s.object.pi_contribution.to_s) if s.object), :"data-id" => subsidy.sub_service_request_id, :"data-max_dollar" => organization.subsidy_map.max_dollar_cap, :"data-max_percent" => organization.subsidy_map.max_percentage, :class => "pi-contribution ssr_#{subsidy.sub_service_request_id}", :disabled => (subsidy.overridden) ? true : false
+                %td{:class => "requested_funding_#{subsidy.sub_service_request_id}"}= display_requested_funding direct_cost_total, pi_contribution
+                %td{:class => "subsidy_percent_#{subsidy.sub_service_request_id}"}= "#{calculate_subsidy_percentage(direct_cost_total, pi_contribution)}%"
+  %br
+  .additional-funding
+    To request additional research funding go to
+    = link_to "sctr.musc.edu", "https://sctr.musc.edu/", :confirm => "Are you sure you want to leave? Any unsaved changes to this service request will be lost."
+  #submit_error{:style => "display: none"}
+    .message
+
 

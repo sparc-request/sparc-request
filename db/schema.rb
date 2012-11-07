@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121026152721) do
+ActiveRecord::Schema.define(:version => 20121105162328) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -193,6 +193,25 @@ ActiveRecord::Schema.define(:version => 20121026152721) do
   create_table "lookups", :force => true do |t|
     t.integer "new_id"
     t.string  "old_id"
+  end
+
+  create_table "messages", :force => true do |t|
+    t.integer  "notification_id"
+    t.integer  "to"
+    t.integer  "from"
+    t.string   "email"
+    t.string   "subject"
+    t.text     "body"
+    t.boolean  "read"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  create_table "notifications", :force => true do |t|
+    t.integer  "sub_service_request_id"
+    t.integer  "originator_id"
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
   end
 
   create_table "organizations", :force => true do |t|
@@ -492,6 +511,11 @@ ActiveRecord::Schema.define(:version => 20121026152721) do
   end
 
   add_index "tokens", ["service_request_id"], :name => "index_tokens_on_service_request_id"
+
+  create_table "user_notifications", :force => true do |t|
+    t.integer "identity_id"
+    t.integer "notification_id"
+  end
 
   create_table "versions", :force => true do |t|
     t.string   "item_type",  :null => false

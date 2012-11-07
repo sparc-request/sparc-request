@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121107160740) do
+ActiveRecord::Schema.define(:version => 20121107201951) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -512,9 +512,11 @@ ActiveRecord::Schema.define(:version => 20121107160740) do
   add_index "tokens", ["service_request_id"], :name => "index_tokens_on_service_request_id"
 
   create_table "user_notifications", :force => true do |t|
-    t.integer "identity_id"
-    t.integer "notification_id"
-    t.boolean "read"
+    t.integer  "identity_id"
+    t.integer  "notification_id"
+    t.boolean  "read"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "versions", :force => true do |t|

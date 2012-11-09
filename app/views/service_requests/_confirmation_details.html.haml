@@ -22,5 +22,5 @@
         %td= ssr_institution(ssr.organization) 
         %td= ssr_provider(ssr.organization) 
         %td= ssr_program_core(ssr.organization)
-        %td= raw(ssr.line_items.map{|li| li.service.abbreviation}.join("<br />"))
+        %td &nbsp;
         %td= raw(ssr_primary_contacts(ssr.organization))

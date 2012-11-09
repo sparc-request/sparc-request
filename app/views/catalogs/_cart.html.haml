@@ -2,5 +2,5 @@
   = hidden_field_tag :line_item_count, service_request.line_items.size
   - service_request.line_items.each do |line_item|
     .line_item{:class => cycle('', 'odd')}
-      %div= line_item.service.abbreviation
+      %div= line_item.service.display_service_abbreviation
       = link_to(image_tag('cancel.png'), 'javascript:void(0);', :class => 'remove-button', :id => "line_item-#{line_item.id}", :sr_id => "#{service_request.id}") if line_item.optional?

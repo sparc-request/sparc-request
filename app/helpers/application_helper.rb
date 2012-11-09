@@ -46,13 +46,17 @@ module ApplicationHelper
       action = checked == true ? 'unselect_calendar_column' : 'select_calendar_column'
       icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
 
-      returning_html += content_tag(:th, 
-                                    content_tag(:span, "Visit #{n} ") +
-                                    tag(:br) + 
-                                    link_to((content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')), 
-                                            "/service_requests/#{service_request.id}/#{action}/#{n}", 
-                                            :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only'),
-                                    :width => 60, :class => 'visit_number')
+      if params[:action] == 'review'
+        returning_html += content_tag(:th, content_tag(:span, "Visit #{n} "), :width => 60, :class => 'visit_number')
+      else
+        returning_html += content_tag(:th, 
+                                      content_tag(:span, "Visit #{n} ") +
+                                      tag(:br) + 
+                                      link_to((content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')), 
+                                              "/service_requests/#{service_request.id}/#{action}/#{n}", 
+                                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only'),
+                                      :width => 60, :class => 'visit_number')
+      end
     end
 
     ((page * 5) - service_request.visit_count).times do

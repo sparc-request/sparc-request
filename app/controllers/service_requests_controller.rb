@@ -17,17 +17,25 @@ class ServiceRequestsController < ApplicationController
     puts params[:service_request]
     puts "#"*50
 
+    #### add logic to save data
+    referrer = request.referrer.split('/').last
+    @service_request = ServiceRequest.find session[:service_request_id]
+    
     #### convert dollars to cents for subsidy
     if params[:service_request] && params[:service_request][:sub_service_requests_attributes]
       params[:service_request][:sub_service_requests_attributes].each do |key, values|
         dollars = values[:subsidy_attributes][:pi_contribution]
-        values[:subsidy_attributes][:pi_contribution] = Service.dollars_to_cents(dollars)
+
+        if dollars.blank? # we don't want to create a subsidy if it's blank
+          values.delete(:subsidy_attributes) 
+          ssr = @service_request.sub_service_requests.find values[:id]
+          ssr.subsidy.delete if ssr.subsidy
+        else
+          values[:subsidy_attributes][:pi_contribution] = Service.dollars_to_cents(dollars)
+        end
       end
     end
 
-    #### add logic to save data
-    referrer = request.referrer.split('/').last
-    @service_request = ServiceRequest.find session[:service_request_id]
     @service_request.update_attributes(params[:service_request])
 
     #### save/update documents if we have them

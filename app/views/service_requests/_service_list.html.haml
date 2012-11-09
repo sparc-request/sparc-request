@@ -1,4 +1,4 @@
 - @service_request.service_list.each do |key, value|
   .provider-header= value[:name]
   - value[:services].each do |service|
-    .service-name= service.name
+    .service-name= service.display_service_name

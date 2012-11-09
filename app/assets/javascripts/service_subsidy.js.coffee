@@ -61,13 +61,13 @@ $(document).ready ->
 
   calculate_requested_funding = (direct_cost, contribution) ->
     rf = 0
-    if contribution >= 0
+    if contribution >= 0 and contribution != ""
       rf = (direct_cost - contribution)
     rf
 
   calculate_subsidy_percent = (direct_cost, contribution) ->
     percent = 0
-    if contribution >= 0
+    if contribution >= 0 and contribution != ""
       funded_amount = direct_cost - contribution
       percent = (funded_amount / direct_cost) * 100
     percent

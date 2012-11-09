@@ -43,7 +43,7 @@
 
         - value[:line_items].each do |line_item|
           %tr.line_item{:class => cycle('odd', '', :name => 'pppvs')}
-            %td.service_name= line_item.service.name
+            %td.service_name= line_item.service.display_service_name
             %td.service_rate= display_service_rate line_item
             %td.your_cost= display_your_cost line_item
             %td.unit_type= line_item.service.displayed_pricing_map.unit_type

@@ -16,7 +16,7 @@ module ApplicationHelper
     params[:controller] + '/' + params[:action]
   end
 
-  def line_item_visit_input line_item, visit, tab, totals_hash={}
+  def line_item_visit_input line_item, visit, tab, totals_hash={}, unit_minimum=0
     base_url = "/service_requests/#{line_item.service_request_id}/service_calendars?visit=#{visit.id}"
     case tab
     when 'template'
@@ -25,7 +25,7 @@ module ApplicationHelper
       content_tag(:div, visit.quantity, {:style => 'text-align:center', :class => "line_item_visit_quantity"}) 
     when 'billing_strategy'
       returning_html = ""
-      returning_html += text_field_tag "visits_#{visit.id}_research_billing_qty", visit.research_billing_qty, :class => "line_item_visit_billing visits_#{visit.id}", :update => "#{base_url}&tab=billing_strategy&column=research_billing_qty"
+      returning_html += text_field_tag "visits_#{visit.id}_research_billing_qty", visit.research_billing_qty, :"data-unit-minimum" => unit_minimum, :class => "line_item_visit_research_billing_qty line_item_visit_billing visits_#{visit.id}", :update => "#{base_url}&tab=billing_strategy&column=research_billing_qty"
       returning_html += text_field_tag "visits_#{visit.id}_insurance_billing_qty", visit.insurance_billing_qty, :class => "line_item_visit_billing visits_#{visit.id}", :update => "#{base_url}&tab=billing_strategy&column=insurance_billing_qty"
       returning_html += text_field_tag "visits_#{visit.id}_effort_billing_qty", visit.effort_billing_qty, :class => "line_item_visit_billing visits_#{visit.id}", :update => "#{base_url}&tab=billing_strategy&column=effort_billing_qty"
       raw(returning_html)

@@ -22,8 +22,8 @@ class ServiceCalendarsController < ApplicationController
       @line_item.update_attribute(:subject_count, qty)
     elsif tab == 'template' and visit.research_billing_qty.to_i <= 0 and checked == 'true'
       # set quantity and research billing qty to 1
-      visit.update_attribute(:quantity, 1)
-      visit.update_attribute(:research_billing_qty, 1)
+      visit.update_attribute(:quantity, visit.line_item.service.displayed_pricing_map.unit_minimum)
+      visit.update_attribute(:research_billing_qty, visit.line_item.service.displayed_pricing_map.unit_minimum)
     elsif tab == 'template' and checked == 'false'
       visit.update_attribute(:quantity, 0)
       visit.update_attribute(:research_billing_qty, 0)

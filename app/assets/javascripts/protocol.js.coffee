@@ -32,8 +32,6 @@ $(document).ready ->
       $('.edit-study').show()
 
   $('.edit_project_id').change ->
-    console.log $(this).val()
-    console.log $('edit-project')
     if ($(this).val() == "")
       $('.edit-project').hide()
     else

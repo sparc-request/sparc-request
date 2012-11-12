@@ -65,8 +65,6 @@ $(document).ready ->
     close: (event, ui) ->
       $('.catalog-search-spinner').remove()
       $('.catalog-search-clear-icon').remove()
-    select: (event, ui) ->
-      console.log 'i was selected'
 
   .data("autocomplete")._renderItem = (ul, item) ->
     if item.label == 'No Results'

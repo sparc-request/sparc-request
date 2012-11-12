@@ -15,7 +15,7 @@ $(document).ready ->
       'true'             : ['.iacuc_number', '.name_of_iacuc', '.iacuc_approval_date',
                             '.iacuc_expiration_date']
     '#study_research_types_info_attributes_investigational_products' :
-      'true'             : ['.ind_number', '.ide_number', '.ind_on_hold']
+      'true'             : ['.ind_number', '.ide_number']
     '#study_research_types_info_attributes_ip_patents':
       'true'             : ['.patent_number', '.inventors']
     '#study_investigational_products_info_attributes_ind_number':
@@ -29,6 +29,12 @@ $(document).ready ->
     $('#study_funding_source').change()
     $('#study_potential_funding_source').change()
     $('#study_indirect_cost_rate').val("")
+
+  $('#study_research_types_info_attributes_investigational_products').change ->
+    if !$(this).is(':checked')
+      $('#study_investigational_products_info_attributes_ind_number').val('')
+      $('#study_investigational_products_info_attributes_ind_number').change()
+      $('#study_investigational_products_info_attributes_ind_on_hold').attr('checked', false)
 
   $('#study_federal_phs_sponsor').change ->
     $('#study_federal_non_phs_sponsor').val("")

@@ -26,9 +26,8 @@
           %br
           %div
             .return-to-step-3
-              = link_to image_tag( 'go_back.png'), document_management_service_request_path, :class => "return-to-previous"
-            .save-as-draft
-              = link_to image_tag( 'wait_save_draft.png'), "", :class => "draft"
+              .return-to-previous= navigation_link image_tag('go_back.png'), @back
+            .save-as-draft= navigation_link image_tag('wait_save_draft.png'), 'save_and_exit'
             .submit-request
               = link_to image_tag( 'confirm_request.png'), confirmation_service_request_path, :class => "save-and-continue"
       .footer

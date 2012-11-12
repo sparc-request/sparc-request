@@ -1,6 +1,11 @@
 FUNDING_STATUSES = {'Pending Funding' => 'pending_funding',
                     'Funded' => 'funded'}
 
+PROXY_RIGHTS = {'Authorize/Change Study Charges' => 'approve', 
+                'Request/Approve Services' => 'request',
+                'View Rights' => 'view',
+                'Member Only' => 'none'}
+
 FUNDING_SOURCES = {'College Department' => 'college',
                    'Federal' => 'federal',
                    'Foundation/Organization' => 'foundation',

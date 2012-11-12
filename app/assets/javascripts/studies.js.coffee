@@ -15,7 +15,7 @@ $(document).ready ->
       'true'             : ['.iacuc_number', '.name_of_iacuc', '.iacuc_approval_date',
                             '.iacuc_expiration_date']
     '#study_research_types_info_attributes_investigational_products' :
-      'true'             : ['.ind_number', '.ide_number']
+      'true'             : ['.ind_number', '.ide_number', '.ind_on_hold']
     '#study_research_types_info_attributes_ip_patents':
       'true'             : ['.patent_number', '.inventors']
     '#study_investigational_products_info_attributes_ind_number':

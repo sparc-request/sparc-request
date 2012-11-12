@@ -206,8 +206,12 @@ class ServiceRequestsController < ApplicationController
   def save_and_exit
     @service_request = ServiceRequest.find session[:service_request_id]
     @service_request.update_attribute(:status, 'draft')
+    
+    next_ssr_id = @service_request.protocol.next_ssr_id || 1
     @service_request.sub_service_requests.each do |ssr|
       ssr.update_attribute(:status, 'draft')
+      ssr.update_attribute(:ssr_id, "%04d" % next_ssr_id) unless ssr.ssr_id
+      next_ssr_id += 1
     end
 
     redirect_to @user_portal_link

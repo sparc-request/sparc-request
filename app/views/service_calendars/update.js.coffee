@@ -6,9 +6,7 @@ if "<%= @errors %>" == ""
     "<%= update_per_subject_subtotals(@line_item) %>"
 
   <% @line_item.visits.each do |visit| %>
-    console.log $('.visits_<%= visit.id %>').parent().data('cents')
     $('.visits_<%= visit.id %>').parent().data('cents', "<%= update_visit_data_cents(visit) %>")
-    console.log $('.visits_<%= visit.id %>').parent().data('cents')
   <% end %>
   else if "<%= @visit_td %>" != ""
     $("<%= @visit_td %>").parent().data('cents', "<%= update_visit_data_cents(@visit) %>")

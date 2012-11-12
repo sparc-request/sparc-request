@@ -15,8 +15,11 @@ wb.add_worksheet(name: "Review") do |sheet|
 
   sheet.add_row ["Authorized Users"], :style => header_style
   proxy_row = ["Name", "Role", "", "Proxy Rights"]
-  (@service_request.visit_count + 1).times do
-    proxy_row << ""
+
+  if @service_request.has_per_patient_per_visit_services? 
+    (@service_request.visit_count + 1).times do
+      proxy_row << ""
+    end
   end
 
   sheet.add_row proxy_row, :style => sub_header_style
@@ -30,8 +33,10 @@ wb.add_worksheet(name: "Review") do |sheet|
   sheet.add_row ["Document Uploads"], :style => header_style
 
   doc_row = ["Name", "Type", "", "Institution/Provider/Program/Core"]
-  (@service_request.visit_count + 1).times do
-    doc_row << ""
+  if @service_request.has_per_patient_per_visit_services? 
+    (@service_request.visit_count + 1).times do
+      doc_row << ""
+    end
   end
 
   sheet.add_row doc_row, :style => sub_header_style
@@ -49,9 +54,12 @@ wb.add_worksheet(name: "Review") do |sheet|
   sheet.add_row
 
   services_row = ["Selected Services", "", "Your Cost", "# of Subjects"]
-  @service_request.visit_count.times do |n|
-    services_row << "Visit #{n+1}"
+  if @service_request.has_per_patient_per_visit_services? 
+    @service_request.visit_count.times do |n|
+      services_row << "Visit #{n+1}"
+    end
   end
+
   services_row << "Service Total"
 
   services_row = sheet.add_row services_row, :style => header_style
@@ -79,9 +87,11 @@ wb.add_worksheet(name: "Review") do |sheet|
 
     value[:line_items].each do |line_item|
       service_row = [line_item.service.name, "", display_your_cost(line_item), line_item.subject_count]
-      
-      @service_request.visit_count.times do
-        service_row << ''
+     
+      if @service_request.has_per_patient_per_visit_services?
+        @service_request.visit_count.times do
+          service_row << ''
+        end
       end
       
       service_row << display_one_time_fee_direct_cost(line_item)
@@ -92,24 +102,33 @@ wb.add_worksheet(name: "Review") do |sheet|
   sheet.add_row 
 
   direct_cost_total_row = ["", "", "", ""]
-  (@service_request.visit_count - 3).times do
-    direct_cost_total_row << ""
+  
+  if @service_request.has_per_patient_per_visit_services? 
+    (@service_request.visit_count - 3).times do
+      direct_cost_total_row << ""
+    end
   end
 
   direct_cost_total_row += ["Total Direct Cost", "", "", display_grand_total_direct_costs(@service_request)]
   direct_cost_total_row = sheet.add_row(direct_cost_total_row, :style => row_header_style)
   
   indirect_cost_total_row = ["", "", "", ""]
-  (@service_request.visit_count - 3).times do
-    indirect_cost_total_row << ""
+
+  if @service_request.has_per_patient_per_visit_services? 
+    (@service_request.visit_count - 3).times do
+      indirect_cost_total_row << ""
+    end
   end
 
   indirect_cost_total_row += ["Total Indirect Cost", "", "", display_grand_total_indirect_costs(@service_request)]
   indirect_cost_total_row = sheet.add_row(indirect_cost_total_row, :style => row_header_style)
   
   grand_total_row = ["", "", "", ""]
-  (@service_request.visit_count - 3).times do
-    grand_total_row << ""
+  
+  if @service_request.has_per_patient_per_visit_services? 
+    (@service_request.visit_count - 3).times do
+      grand_total_row << ""
+    end
   end
 
   grand_total_row += ["Grand Total", "", "", display_grand_total(@service_request)]
@@ -118,7 +137,11 @@ wb.add_worksheet(name: "Review") do |sheet|
   ###### style and merge cells ######
 
   alpha_array = ("A".."Z").to_a
-  end_column = alpha_array[@service_request.visit_count + 4]
+  if @service_request.has_per_patient_per_visit_services? 
+    end_column = alpha_array[@service_request.visit_count + 4]
+  else 
+    end_column = alpha_array[4]
+  end
 
   sheet.merge_cells("A1:#{end_column}1") #info header
   sheet.merge_cells("B2:D2") #id
@@ -143,7 +166,6 @@ wb.add_worksheet(name: "Review") do |sheet|
 
   sheet.merge_cells("A#{services_row.index+1}:B#{services_row.index+1}")
 
-  end_column = alpha_array[@service_request.visit_count + 4]
   services_sub_header_rows.each do |sshr|
     sheet.merge_cells("A#{sshr.index+1}:#{end_column}#{sshr.index+1}") #selected services sub header row
   end
@@ -153,8 +175,9 @@ wb.add_worksheet(name: "Review") do |sheet|
   end
 
   ######## +4 from left and then -3 from visit count to align correctly #######
-  begin_column = alpha_array[@service_request.visit_count + 4 - 3]
-  end_column = alpha_array[@service_request.visit_count + 4 - 2]
+  visit_count = @service_request.has_per_patient_per_visit_services? ? @service_request.visit_count : 0
+  begin_column = alpha_array[visit_count + 4 - 3]
+  end_column = alpha_array[visit_count + 4 - 2]
   sheet.merge_cells("#{begin_column}#{direct_cost_total_row.index+1}:#{end_column}#{direct_cost_total_row.index+1}")
   sheet.merge_cells("#{begin_column}#{indirect_cost_total_row.index+1}:#{end_column}#{indirect_cost_total_row.index+1}")
   sheet.merge_cells("#{begin_column}#{grand_total_row.index+1}:#{end_column}#{grand_total_row.index+1}")

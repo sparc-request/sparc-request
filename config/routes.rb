@@ -20,6 +20,7 @@ SparcRails::Application.routes.draw do
       post 'navigate'
       post 'ask_a_question'
       get 'refresh_service_calendar'
+      get 'save_and_exit'
     end
 
     resource :service_calendars do

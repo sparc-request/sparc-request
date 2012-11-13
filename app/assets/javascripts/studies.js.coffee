@@ -30,6 +30,12 @@ $(document).ready ->
     $('#study_potential_funding_source').change()
     $('#study_indirect_cost_rate').val("")
 
+  $('#study_research_types_info_attributes_investigational_products').change ->
+    if !$(this).is(':checked')
+      $('#study_investigational_products_info_attributes_ind_number').val('')
+      $('#study_investigational_products_info_attributes_ind_number').change()
+      $('#study_investigational_products_info_attributes_ind_on_hold').attr('checked', false)
+
   $('#study_federal_phs_sponsor').change ->
     $('#study_federal_non_phs_sponsor').val("")
 

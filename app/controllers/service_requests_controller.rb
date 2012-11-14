@@ -110,7 +110,7 @@ class ServiceRequestsController < ApplicationController
       end
 
       unless validates.blank?
-        errors << @service_request.grouped_errors[validates.to_sym].messages unless @service_request.grouped_errors[validates.to_sym].messages.empty?
+        errors << @service_request.grouped_errors[validates.to_sym].messages unless @service_request.grouped_errors[validates.to_sym].empty?
       end
       session[:errors] = errors.compact.flatten.first # TODO I DON'T LIKE THIS AT ALL
       redirect_to :back
@@ -155,9 +155,8 @@ class ServiceRequestsController < ApplicationController
       unless line_item.visits.count == @service_request.visit_count
         ActiveRecord::Base.transaction do
           if line_item.visits.count < @service_request.visit_count
-            (@service_request.visit_count - line_item.visits.count).times do
-              line_item.visits.create
-            end
+            n = @service_request.visit_count - line_item.visits.count
+            Visit.bulk_create(n, :line_item_id => line_item.id)
           elsif line_item.visits.count > @service_request.visit_count
             line_item.visits.last(line_item.visits.count - @service_request.visit_count).each do |li|
               li.delete

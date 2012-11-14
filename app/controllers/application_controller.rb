@@ -3,8 +3,8 @@ class ApplicationController < ActionController::Base
   helper :all
 
   before_filter :authenticate
-  before_filter :setup_session
   before_filter :load_defaults
+  before_filter :setup_session
   before_filter :setup_navigation
 
   # for now we are assuming auto login
@@ -31,6 +31,11 @@ class ApplicationController < ActionController::Base
       end
      
       if @current_user and params[:id]
+        
+        if session[:service_request_id] != params[:id].to_i #we are trying to access different service request, so we want to make sure we remove the first_draft session variable
+          session.delete(:first_draft) 
+        end
+
         if @service_request = @current_user.protocol_service_requests.find(params[:id]) rescue false
           @line_items = @service_request.line_items
           @documents = @service_request.documents
@@ -40,7 +45,8 @@ class ApplicationController < ActionController::Base
           @documents = @service_request.documents
           session[:service_request_id] = @service_request.id
         else
-          render :text => 'You are not authorized to view this page'
+          error = 'You are not authorized to view this page'
+          render :partial => 'service_requests/authorization_error', :locals => {:error => error}
         end
 
         if params[:sub_service_request_id] or session[:sub_service_request_id]

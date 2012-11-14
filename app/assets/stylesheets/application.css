@@ -1652,3 +1652,15 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   width: 20px;
   height: 20px;
 }
+
+.authorization_error {
+  border: 2px solid black;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 30px 0;
+}
+
+.authorization_error #auth_error {
+  color: red;
+}

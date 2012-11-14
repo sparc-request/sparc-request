@@ -68,15 +68,14 @@ $(document).ready ->
     direct_total = 0
     $(visits).each (index, visit) =>
       if $(visit).is(':hidden') == false && $(visit).data('cents')
-        direct_total += $(visit).data('cents') / 100.00
-
+        direct_total += Math.floor($(visit).data('cents')) / 100.0
     indirect_rate = parseFloat($("#indirect_rate").val()) / 100.0
     indirect_total = direct_total * indirect_rate
     max_total = direct_total + indirect_total
 
     direct_total_display = '$' + (direct_total).toFixed(2)
-    indirect_total_display = '$' + indirect_total.toFixed(2)
-    max_total_display = '$' + max_total.toFixed(2)
+    indirect_total_display = '$' + Math.floor(indirect_total * 100) / 100
+    max_total_display = '$' + Math.floor(max_total * 100) / 100
 
     $(column + '.max_direct_per_patient').html(direct_total_display)
     $(column + '.max_indirect_per_patient').html(indirect_total_display)

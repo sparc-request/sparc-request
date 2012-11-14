@@ -25,7 +25,7 @@ $(document).ready ->
     li_count = $('#line_item_count').val()
 
     if li_count == "1" and ssr_id != ''
-      if confirm("Are you sure you want to remove the last service in this service request?  Do so will automatically delete this service request and redirect you to your user portal.")
+      if confirm("This action will delete this service request and you will be redirected to your user portal. Click OK to proceed.")
         $(this).hide()
         removeService(sr_id, id, true)
     else

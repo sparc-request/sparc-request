@@ -6,6 +6,15 @@ development:
   pool: 5
   timeout: 5000
 
+profile:
+  username: sparc
+  password: sparc
+  adapter: mysql2
+  encoding: utf8
+  database: sparc_development
+  pool: 5
+  timeout: 5000
+
 test: &test
   adapter: mysql2
   encoding: utf8

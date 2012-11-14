@@ -4,7 +4,7 @@ $(document).ready ->
 
   $(".upload_button").click ->
     $(".upload_button").attr("disabled", "disabled");
-    $(".upload_button span").html('Please Wait...');
+    $(".upload_button span").html('Wait...');
 
   $(".ui_close_button").click ->
     $(".document_upload").hide() 

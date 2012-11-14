@@ -11,5 +11,5 @@
           = render :partial => 'confirmation_details', :locals => {:service_request => @service_request}
           .links
             = link_to image_tag( 'download_request.png'), service_request_path(:format => :xlsx), :class => "download"
-            = link_to image_tag( 'view_requests.png'), "https://sparc-stg.musc.edu/portal/", :class => "user-portal"
+            = link_to image_tag( 'view_requests.png'), @user_portal_link, :class => "user-portal"
     .footer

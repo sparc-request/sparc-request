@@ -110,7 +110,7 @@ class ServiceRequestsController < ApplicationController
   # service request wizard pages
 
   def catalog
-    @institutions = Institution.all
+    @institutions = Institution.order('`order`')
     #@service_request = @current_user.service_requests.find session[:service_request_id]
     @service_request = ServiceRequest.find session[:service_request_id]
   end
@@ -201,6 +201,20 @@ class ServiceRequestsController < ApplicationController
       next_ssr_id += 1
     end
     @service_request.protocol.update_attribute(:next_ssr_id, next_ssr_id)
+  end
+
+  def save_and_exit
+    @service_request = ServiceRequest.find session[:service_request_id]
+    @service_request.update_attribute(:status, 'draft')
+    
+    next_ssr_id = @service_request.protocol.next_ssr_id || 1
+    @service_request.sub_service_requests.each do |ssr|
+      ssr.update_attribute(:status, 'draft')
+      ssr.update_attribute(:ssr_id, "%04d" % next_ssr_id) unless ssr.ssr_id
+      next_ssr_id += 1
+    end
+
+    redirect_to @user_portal_link
   end
 
   def refresh_service_calendar
@@ -305,7 +319,7 @@ class ServiceRequestsController < ApplicationController
   def select_calendar_row
     @line_item = LineItem.find params[:line_item_id]
     @line_item.visits.each do |visit|
-      visit.update_attributes({:quantity => 1, :research_billing_qty => 1, :insurance_billing_qty => 0, :effort_billing_qty => 0})
+      visit.update_attributes({:quantity => visit.line_item.service.displayed_pricing_map.unit_minimum, :research_billing_qty => visit.line_item.service.displayed_pricing_map.unit_minimum, :insurance_billing_qty => 0, :effort_billing_qty => 0})
     end
     
     render :partial => 'update_service_calendar'
@@ -326,7 +340,7 @@ class ServiceRequestsController < ApplicationController
 
     @service_request.per_patient_per_visit_line_items.each do |line_item|
       visit = line_item.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
-      visit.update_attributes({:quantity => 1, :research_billing_qty => 1, :insurance_billing_qty => 0, :effort_billing_qty => 0})
+      visit.update_attributes({:quantity => visit.line_item.service.displayed_pricing_map.unit_minimum, :research_billing_qty => visit.line_item.service.displayed_pricing_map.unit_minimum, :insurance_billing_qty => 0, :effort_billing_qty => 0})
     end
     
     render :partial => 'update_service_calendar'

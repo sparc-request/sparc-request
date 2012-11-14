@@ -23,6 +23,7 @@
           %a{:href => "http://www.musc.edu/", :target => "_blank"}
             %img{:alt => "Musc_logo", :src => "/assets/musc_logo.gif"}/
       #title
+        #sub_service_request_header= show_friendly_ssr_id @sub_service_request
         %h1 SPARC
       #content.container_12= yield
       = render :partial => 'shared/ask_a_question'

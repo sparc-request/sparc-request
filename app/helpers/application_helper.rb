@@ -1,4 +1,10 @@
 module ApplicationHelper
+  def show_friendly_ssr_id ssr
+    unless ssr.nil?
+      "Editing ID: #{ssr.service_request.protocol.id}-#{ssr.ssr_id}"
+    end
+  end
+
   def css_class(organization)
     case organization.type
     when 'Institution'
@@ -110,17 +116,6 @@ module ApplicationHelper
     raw(returning_html)
   end
   
-  def portal_link
-    case Rails.env
-    when "development"
-      "localhost:3001"
-    when "staging"
-      "sparc-stg.musc.edu/portal"
-    when "production"
-      "sparc.musc.edu/portal"
-    end
-  end
-
   def navigation_link(img_or_txt, location, class_name=nil)
     link_to img_or_txt, "javascript:void(0)", :class => "navigation_link #{class_name}", :location => location
   end

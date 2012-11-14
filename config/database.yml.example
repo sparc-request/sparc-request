@@ -6,9 +6,16 @@ development:
   pool: 5
   timeout: 5000
 
-test: &test
+profile:
+  username: sparc
+  password: sparc
   adapter: mysql2
   encoding: utf8
-  database: sparc_rails_test
+  database: sparc_development
   pool: 5
   timeout: 5000
+
+test:
+  adapter: sqlite3
+  database: ':memory:'
+

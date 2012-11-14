@@ -13,6 +13,7 @@ group :development, :test, :profile do
   gem 'sqlite3'
   gem 'rubyception'
   gem 'rspec-rails'
+  gem 'launchy'
   gem 'capybara'
   gem 'database_cleaner'
   gem 'factory_girl'

@@ -3,10 +3,13 @@ addService = (sr_id, id) ->
     type: 'POST'
     url: "/service_requests/#{sr_id}/add_service/#{id}"
 
-removeService = (sr_id, id) ->
+removeService = (sr_id, id, move_on) ->
   $.ajax
     type: 'POST'
     url: "/service_requests/#{sr_id}/remove_service/#{id}"
+    success: (data, textStatus, jqXHR) ->
+      if move_on
+        window.location.replace($("#user_portal_link").val())
 
 $(document).ready ->
   
@@ -16,10 +19,18 @@ $(document).ready ->
     addService(sr_id, id)
 
   $('.remove-button').live 'click', ->
-    $(this).hide()
     sr_id = $(this).attr('sr_id')
+    ssr_id = $(this).attr('ssr_id')
     id = $(this).attr('id')
-    removeService(sr_id, id)
+    li_count = $('#line_item_count').val()
+
+    if li_count == "1" and ssr_id != ''
+      if confirm("Are you sure you want to remove the last service in this service request?  Do so will automatically delete this service request and redirect you to your user portal.")
+        $(this).hide()
+        removeService(sr_id, id, true)
+    else
+      $(this).hide()
+      removeService(sr_id, id, false)
 
   helpList = "<ul>
                 <li>

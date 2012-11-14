@@ -14,6 +14,7 @@
       %th{colspan: 2} Program/Core:
       %th Contact:
     - @service_request.sub_service_requests.each do |ssr|
+      - next unless @sub_service_request.nil? or @sub_service_request == ssr
       %tr.provider-header
         %td
           = @service_request.protocol.id

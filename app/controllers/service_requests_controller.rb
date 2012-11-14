@@ -67,6 +67,9 @@ class ServiceRequestsController < ApplicationController
         document_grouping.documents.each do |doc|
           doc.destroy if doc.organization.id == org_id.to_i
         end
+
+        document_grouping.reload
+        document_grouping.destroy if document_grouping.documents.empty?
       end
       
       to_add.each do |org_id|
@@ -75,9 +78,17 @@ class ServiceRequestsController < ApplicationController
         sub_service_request.save
       end
 
+      # updating sub_service_request documents should create a new grouping unless the grouping only contains documents for that sub_service_request
       to_update.each do |org_id|
-        document_grouping.documents.each do |doc|
-          doc.update_attributes(:document => document, :doc_type => params[:doc_type]) if doc.organization.id == org_id.to_i
+        if @sub_service_request.nil? or document_grouping.documents.size == 1 # we either don't have a sub_service_request or the only document in this group is the one we are updating
+          document_grouping.documents.each do |doc|
+            doc.update_attributes(:document => document, :doc_type => params[:doc_type]) if doc.organization.id == org_id.to_i
+          end
+        else # we have a sub_service_request and the document count is greater than 1 so we need to do some special stuff
+          new_document_grouping = @service_request.document_groupings.create
+          document_grouping.documents.each do |doc|
+            doc.update_attribute(:document_grouping_id, new_document_grouping.id) if doc.organization.id == @sub_service_request.id
+          end
         end
       end
     end
@@ -280,11 +291,17 @@ class ServiceRequestsController < ApplicationController
   end
 
   def delete_documents
-    # deletes a group of documents
+    # deletes a group of documents unless we are working with a sub_service_request
     grouping = @service_request.document_groupings.find params[:document_group_id]
     @tr_id = "#document_grouping_#{grouping.id}"
 
-    grouping.destroy # destroys the grouping and the documents
+    if @sub_service_request.nil?
+      grouping.destroy # destroys the grouping and the documents
+    else
+      grouping.documents.find_by_sub_service_request_id(@sub_service_request.id).destroy
+      grouping.reload
+      grouping.destroy if grouping.documents.empty?
+    end
   end
 
   def edit_documents

@@ -1,4 +1,4 @@
-- if @service_request.documents.count >= 1
+- if (@sub_service_request.nil? ? @service_request.documents.size >= 1 : @sub_service_request.documents.size >= 1)
   %table.document-table
     - if review
       %tr
@@ -11,10 +11,12 @@
         %th Actions
 
     - @service_request.documents.group_by(&:document_grouping_id).each do |grouping_id, docs|
+      - next unless @sub_service_request.nil? or docs.map(&:sub_service_request_id).include?(@sub_service_request.id)
       - doc = docs.first
       %tr.document{:id => "document_grouping_#{grouping_id}"}
         %td{:style => "text-align:left"}
           - docs.each do |document|
+            - next unless @sub_service_request.nil? or @sub_service_request.organization.name == document.sub_service_request.organization.name
             = @service_list[document.sub_service_request.organization_id][:name]
             %br
         %td= DOCUMENT_TYPES.key doc.doc_type

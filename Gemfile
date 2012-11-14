@@ -14,6 +14,9 @@ group :development, :test, :profile do
   gem 'rubyception'
   gem 'rspec-rails'
   gem 'capybara'
+  gem 'database_cleaner'
+  gem 'factory_girl'
+  gem 'faker'
 end
 
 

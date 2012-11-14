@@ -1,20 +1,18 @@
 require 'spec_helper'
 
 feature 'as a user on catalog page' do
-  #let(:user) { FactoryGirl.create(:identity) }
-  let!(:identity) {FactoryGirl.create(:identity)}
   it 'Submit Request', :js => true do
-    #login(user)
+    # puts Identity.all.inspect
+    # login(identity)
     visit root_path
-    click_link "Office of Biomedical Informatics"
-    save_and_open_page
+    click_link("South Carolina Clinical and Translational Institute (SCTR)")
+    sleep(3)
+    click_link("Office of Biomedical Informatics")
+    sleep(10)
+    click_button("Add")
+    sleep(3)
+    find(:xpath, "//a/img[@alt='Submit_request']/..").click
+    #save_and_open_page
   end
 
-  before(:all) do
-    Capybara.current_driver = :selenium
-  end
-
-  after(:all) do
-    Capybara.use_default_driver
-  end
 end

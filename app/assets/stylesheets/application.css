@@ -218,6 +218,11 @@ a.save-option{
   font-style: italic;
 }
 
+.provider_accordion {
+  width: 97% !important;
+  float: right;
+}
+
 /* CatalogView */
 .core-accordion {
   width: 450px;

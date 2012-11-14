@@ -16,6 +16,7 @@ $(document).ready ->
   $('.provider_accordion').accordion
     autoHeight: false
     collapsible: true
+    active: false
     change: (event, ui)->
       if url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))
         loadDescription(url)

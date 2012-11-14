@@ -60,10 +60,15 @@ class ApplicationController < ActionController::Base
       else #we aren't logged in so let's do some funky stuff
         render :text => 'You are not logged in'
       end
-    elsif params[:controller] == 'search'
+    elsif ['search', 'service_calendars'].include? params[:controller]
       @service_request = ServiceRequest.find session[:service_request_id]
       if session[:sub_service_request_id]
-          @sub_service_request = @service_request.sub_service_requests.find session[:sub_service_request_id]
+        @sub_service_request = @service_request.sub_service_requests.find session[:sub_service_request_id]
+        @line_items = @sub_service_request.line_items
+        @documents = @sub_service_request.documents
+      else
+        @line_items = @service_request.line_items
+        @documents = @service_request.documents
       end
     end
   end

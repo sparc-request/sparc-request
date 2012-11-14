@@ -86,9 +86,6 @@ class ServiceRequestsController < ApplicationController
 
     location = params["location"]
     additional_params = request.referrer.split('/').last.split('?').size == 2 ? "?" + request.referrer.split('/').last.split('?').last : nil
-    puts "#"*50
-    puts request.referrer
-    puts "#"*50
     validates = params["validates"]
 
     if (@validation_groups[location].nil? or @validation_groups[location].map{|vg| @service_request.group_valid? vg.to_sym}.all?) and (validates.blank? or @service_request.group_valid? validates.to_sym) and errors.empty?
@@ -120,8 +117,8 @@ class ServiceRequestsController < ApplicationController
   end
   
   def protocol
-    @studies = @current_user.studies
-    @projects = @current_user.projects
+    @studies = @sub_service_request.nil? ? @current_user.studies : [@service_request.protocol]
+    @projects = @sub_service_request.nil? ? @current_user.projects : [@service_request.protocol]
     if session[:saved_study_id]
       @service_request.protocol = Study.find session[:saved_study_id]
       session.delete :saved_study_id
@@ -267,7 +264,8 @@ class ServiceRequestsController < ApplicationController
       end
     end
 
-    @service_request.line_items.find_by_service_id(service.id).delete
+    @line_items.find_by_service_id(service.id).delete
+    @line_items.reload
     
     #@service_request = @current_user.service_requests.find session[:service_request_id]
     @service_request = ServiceRequest.find session[:service_request_id]

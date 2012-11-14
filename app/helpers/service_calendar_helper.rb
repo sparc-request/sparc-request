@@ -37,36 +37,36 @@ module ServiceCalendarHelper
   end
 
   # Displays max totals per patient
-  def display_max_total_direct_cost_per_patient service_request
-    sum = service_request.maximum_direct_costs_per_patient
+  def display_max_total_direct_cost_per_patient service_request, line_items
+    sum = service_request.maximum_direct_costs_per_patient line_items
     currency_converter sum
   end
 
-  def display_max_total_indirect_cost_per_patient service_request
-    sum = service_request.maximum_indirect_costs_per_patient
+  def display_max_total_indirect_cost_per_patient service_request, line_items
+    sum = service_request.maximum_indirect_costs_per_patient line_items
     currency_converter sum
   end
 
-  def display_max_total_cost_per_patient service_request
-    sum = service_request.maximum_total_per_patient
+  def display_max_total_cost_per_patient service_request, line_items
+    sum = service_request.maximum_total_per_patient line_items
     currency_converter sum
   end
 
   # Displays grand totals per study
-  def display_total_direct_cost_per_study_pppvs service_request
+  def display_total_direct_cost_per_study_pppvs service_request, line_items
     sum = 0
-    sum = service_request.total_direct_costs_per_patient
+    sum = service_request.total_direct_costs_per_patient line_items
     currency_converter sum
   end
 
-  def display_total_indirect_cost_per_study_pppvs service_request
+  def display_total_indirect_cost_per_study_pppvs service_request, line_items
     sum = 0
-    sum = service_request.total_indirect_costs_per_patient
+    sum = service_request.total_indirect_costs_per_patient line_items
     currency_converter sum
   end
 
-  def display_total_cost_per_study_pppvs service_request
-    sum = service_request.total_costs_per_patient
+  def display_total_cost_per_study_pppvs service_request, line_items
+    sum = service_request.total_costs_per_patient line_items
     currency_converter(sum)
   end
 
@@ -84,42 +84,42 @@ module ServiceCalendarHelper
   end
 
   # Display grand totals per study
-  def display_total_direct_cost_per_study_otfs service_request
+  def display_total_direct_cost_per_study_otfs service_request, line_items
     sum = 0
-    sum = service_request.total_direct_costs_one_time
+    sum = service_request.total_direct_costs_one_time line_items
     currency_converter sum
   end
 
-  def display_total_indirect_cost_per_study_otfs service_request
+  def display_total_indirect_cost_per_study_otfs service_request, line_items
     sum = 0
-    sum = service_request.total_indirect_costs_one_time
-    currency_converter sum
+    sum = service_request.total_indirect_costs_one_time line_items
+    currency_converter sum 
   end
 
-  def display_total_cost_per_study_otfs service_request
+  def display_total_cost_per_study_otfs service_request, line_items
     sum = 0
-    sum = service_request.total_costs_one_time
+    sum = service_request.total_costs_one_time line_items
     currency_converter sum
   end
 
   #############################################
   # Grand Totals
   #############################################
-  def display_grand_total_direct_costs service_request
+  def display_grand_total_direct_costs service_request, line_items
     sum = 0
-    sum = service_request.direct_cost_total
+    sum = service_request.direct_cost_total line_items
     currency_converter sum
   end
 
-  def display_grand_total_indirect_costs service_request
+  def display_grand_total_indirect_costs service_request, line_items
     sum = 0
-    sum = service_request.indirect_cost_total
+    sum = service_request.indirect_cost_total line_items
     currency_converter sum
   end
 
-  def display_grand_total service_request
+  def display_grand_total service_request, line_items
     sum = 0
-    sum = service_request.grand_total
+    sum = service_request.grand_total line_items
     currency_converter sum
   end
 

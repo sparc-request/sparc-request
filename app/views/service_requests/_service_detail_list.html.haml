@@ -22,6 +22,7 @@
       %th Quantity Type
   %tbody#this-is-a-test
     - @service_request.service_list(true).each do |key, value|
+      - next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
       %tr
         %th.provider-header{:colspan => 4}= value[:name]
       %tr

@@ -4,7 +4,6 @@ class ServiceCalendarsController < ApplicationController
     #use session so we know what page to show when tabs are switched
     session[:service_calendar_page] = params[:page] if params[:page]
 
-    @service_request = ServiceRequest.find session[:service_request_id]
     @tab = params[:tab]
     @page = @service_request.set_visit_page session[:service_calendar_page].to_i
   end
@@ -45,6 +44,5 @@ class ServiceCalendarsController < ApplicationController
     @line_item = visit.line_item if @line_item.nil?
     @line_item_total_td = ".total_#{@line_item.id}"
     @displayed_visits = @line_item.visits.paginate(page: params[:page], per_page: 5)
-    @service_request = ServiceRequest.find session[:service_request_id]
   end
 end

@@ -8,7 +8,7 @@ feature 'as a user on catalog page' do
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
     sleep(3)
     click_link("Office of Biomedical Informatics")
-    sleep(10)
+    sleep(3)
     click_button("Add")
     sleep(3)
     find(:xpath, "//a/img[@alt='Submit_request']/..").click

@@ -155,7 +155,7 @@ class ServiceRequestsController < ApplicationController
       unless line_item.visits.count == @service_request.visit_count
         ActiveRecord::Base.transaction do
           if line_item.visits.count < @service_request.visit_count
-            n = @service_request.visit_count - visits.count
+            n = @service_request.visit_count - line_item.visits.count
             Visit.bulk_create(n, :line_item_id => line_item.id)
           elsif line_item.visits.count > @service_request.visit_count
             line_item.visits.last(line_item.visits.count - @service_request.visit_count).each do |li|

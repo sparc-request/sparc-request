@@ -3,8 +3,8 @@ $(document).ready ->
   $(".ui_close_button").button()
 
   $(".upload_button").click ->
-    $(".upload_button").attr("disabled", "disabled")
-    $(".upload_button span").html('Please Wait...')
+    $(".upload_button").attr("disabled", "disabled");
+    $(".upload_button span").html('Wait...');
 
   $(".ui_close_button").click ->
     $(".upload_button").removeAttr("disabled")

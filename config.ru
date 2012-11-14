@@ -10,8 +10,8 @@ if Rails.env.profile? then
 end
 
 if Rails.env.development? then
-  # puts "Removing filters from backtrace cleaner"
-  # Rails.backtrace_cleaner.remove_filters!
+  puts "Removing filters from backtrace cleaner"
+  Rails.backtrace_cleaner.remove_filters!
 end
 
 run SparcRails::Application

@@ -110,7 +110,7 @@ class ServiceRequestsController < ApplicationController
       end
 
       unless validates.blank?
-        errors << @service_request.grouped_errors[validates.to_sym].messages unless @service_request.grouped_errors[validates.to_sym].messages.empty?
+        errors << @service_request.grouped_errors[validates.to_sym].messages unless @service_request.grouped_errors[validates.to_sym].empty?
       end
       session[:errors] = errors.compact.flatten.first # TODO I DON'T LIKE THIS AT ALL
       redirect_to :back

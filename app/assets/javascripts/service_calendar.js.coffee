@@ -28,22 +28,30 @@ $(document).ready ->
       $('.service_calendar_spinner').hide()
 
   $('.line_item_visit_billing').live 'change', ->
-    if $(this).hasClass('line_item_visit_research_billing_qty')
-      unit_minimum = $(this).attr('data-unit-minimum')
-      qty = parseInt($(this).val(), 10)
+    intRegex = /^\d+$/
 
-      if qty > 0 and qty < unit_minimum
-        alert "Quantity of #{qty} is less than the unit minimum of #{unit_minimum}.\nQuantity is being set to the unit minimum"
-        $(this).val(unit_minimum)
-        qty = unit_minimum
+    qty = parseInt($(this).val(), 10)
+    
+    if intRegex.test qty
+      if $(this).hasClass('line_item_visit_research_billing_qty')
+        unit_minimum = $(this).attr('data-unit-minimum')
 
-    $('.service_calendar_spinner').show()
-    $.ajax
-      type: 'PUT'
-      url: $(this).attr('update') + "&qty=#{qty}"
-    .complete =>
+        if qty > 0 and qty < unit_minimum
+          alert "Quantity of #{qty} is less than the unit minimum of #{unit_minimum}.\nQuantity is being set to the unit minimum"
+          $(this).val(unit_minimum)
+          qty = unit_minimum
+
+      $('.service_calendar_spinner').show()
+      $.ajax
+        type: 'PUT'
+        url: $(this).attr('update') + "&qty=#{qty}"
+      .complete =>
+        $('.service_calendar_spinner').hide()
+        calculate_max_rates()
+    else
+      alert "Quantity must be a whole number"
       $('.service_calendar_spinner').hide()
-      calculate_max_rates()
+      $(this).val(0)
 
   $('.line_item_visit_count').live 'change', ->
     $('.service_calendar_spinner').show()

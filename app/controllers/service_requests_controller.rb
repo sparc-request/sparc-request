@@ -2,7 +2,6 @@ class ServiceRequestsController < ApplicationController
   layout false, :only => :ask_a_question
 
   def show
-    @service_request = ServiceRequest.find params[:id]
     @protocol = @service_request.protocol
     @service_list = @service_request.service_list
     render xlsx: "show", filename: "service_request_#{@service_request.id}", disposition: "inline"
@@ -19,7 +18,6 @@ class ServiceRequestsController < ApplicationController
 
     #### add logic to save data
     referrer = request.referrer.split('/').last
-    @service_request = ServiceRequest.find session[:service_request_id]
     
     #### convert dollars to cents for subsidy
     if params[:service_request] && params[:service_request][:sub_service_requests_attributes]
@@ -87,11 +85,15 @@ class ServiceRequestsController < ApplicationController
     # end document saving stuff
 
     location = params["location"]
+    additional_params = request.referrer.split('/').last.split('?').size == 2 ? "?" + request.referrer.split('/').last.split('?').last : nil
+    puts "#"*50
+    puts request.referrer
+    puts "#"*50
     validates = params["validates"]
 
     if (@validation_groups[location].nil? or @validation_groups[location].map{|vg| @service_request.group_valid? vg.to_sym}.all?) and (validates.blank? or @service_request.group_valid? validates.to_sym) and errors.empty?
       @service_request.save(:validate => false)
-      redirect_to "/service_requests/#{@service_request.id}/#{location}"
+      redirect_to "/service_requests/#{@service_request.id}/#{location}#{additional_params}"
     else
       if @validation_groups[location]
         @validation_groups[location].each do |vg| 
@@ -110,15 +112,16 @@ class ServiceRequestsController < ApplicationController
   # service request wizard pages
 
   def catalog
-    @institutions = Institution.order('`order`')
-    #@service_request = @current_user.service_requests.find session[:service_request_id]
-    @service_request = ServiceRequest.find session[:service_request_id]
+    if session['sub_service_request_id']
+      @institutions = @sub_service_request.organization.parents.select{|x| x.type == 'Institution'}
+    else
+      @institutions = Institution.order('`order`')
+    end
   end
   
   def protocol
     @studies = @current_user.studies
     @projects = @current_user.projects
-    @service_request = ServiceRequest.find session[:service_request_id]
     if session[:saved_study_id]
       @service_request.protocol = Study.find session[:saved_study_id]
       session.delete :saved_study_id
@@ -129,15 +132,11 @@ class ServiceRequestsController < ApplicationController
   end
   
   def service_details
-    @service_request = ServiceRequest.find session[:service_request_id]
   end
 
   def service_calendar
     #use session so we know what page to show when tabs are switched
     session[:service_calendar_page] = params[:page] if params[:page]
-
-    @service_request = ServiceRequest.find session[:service_request_id]
-
 
     # build out visits if they don't already exist and delete/create if the visit count changes
     @service_request.per_patient_per_visit_line_items.each do |line_item|
@@ -162,7 +161,6 @@ class ServiceRequestsController < ApplicationController
   end
 
   def service_subsidy
-    @service_request = ServiceRequest.find session[:service_request_id]
     @subsidies = []
     @service_request.sub_service_requests.each do |ssr|
       if ssr.subsidy
@@ -175,14 +173,12 @@ class ServiceRequestsController < ApplicationController
   end
   
   def document_management
-    @service_request = ServiceRequest.find session[:service_request_id]
     @service_list = @service_request.service_list
   end
   
   def review
     session[:service_calendar_page] = params[:page] if params[:page]
 
-    @service_request = ServiceRequest.find session[:service_request_id]
     @service_list = @service_request.service_list
     @protocol = @service_request.protocol
     
@@ -191,7 +187,6 @@ class ServiceRequestsController < ApplicationController
   end
 
   def confirmation
-    @service_request = ServiceRequest.find session[:service_request_id]
     @service_request.update_attribute(:status, 'submitted')
     @service_request.update_attribute(:submitted_at, Time.now)
     next_ssr_id = @service_request.protocol.next_ssr_id || 1
@@ -204,7 +199,6 @@ class ServiceRequestsController < ApplicationController
   end
 
   def save_and_exit
-    @service_request = ServiceRequest.find session[:service_request_id]
     @service_request.update_attribute(:status, 'draft')
     
     next_ssr_id = @service_request.protocol.next_ssr_id || 1
@@ -219,7 +213,6 @@ class ServiceRequestsController < ApplicationController
 
   def refresh_service_calendar
     session[:service_calendar_page] = params[:page] if params[:page]
-    @service_request = ServiceRequest.find session[:service_request_id]
     @page = @service_request.set_visit_page session[:service_calendar_page].to_i
     @tab = 'pricing'
   end
@@ -229,8 +222,6 @@ class ServiceRequestsController < ApplicationController
 
   def add_service
     id = params[:service_id].sub('service-', '').to_i
-    #@service_request = @current_user.service_requests.find session[:service_request_id]
-    @service_request = ServiceRequest.find session[:service_request_id]
     if @service_request.line_items.map(&:service_id).include? id
       render :text => 'Service exists in line items' 
     else
@@ -264,18 +255,15 @@ class ServiceRequestsController < ApplicationController
 
   def remove_service
     id = params[:line_item_id].sub('line_item-', '').to_i
-    #@service_request = @current_user.service_requests.find session[:service_request_id]
-    @service_request = ServiceRequest.find session[:service_request_id]
 
-    line_items = @service_request.line_items
-    service = line_items.find(id).service
-    line_item_service_ids = line_items.map(&:service_id)
+    service = @service_request.line_items.find(id).service
+    line_item_service_ids = @service_request.line_items.map(&:service_id)
 
     # look at related services and set them to optional
     # TODO POTENTIAL ISSUE: what if another service has the same related service
     service.related_services.each do |rs|
       if line_item_service_ids.include? rs.id
-        line_items.find_by_service_id(rs.id).update_attribute(:optional, true)
+        @service_request.line_items.find_by_service_id(rs.id).update_attribute(:optional, true)
       end
     end
 
@@ -295,17 +283,15 @@ class ServiceRequestsController < ApplicationController
 
   def delete_documents
     # deletes a group of documents
-    service_request = ServiceRequest.find session[:service_request_id]
-    grouping = service_request.document_groupings.find params[:document_group_id]
+    grouping = @service_request.document_groupings.find params[:document_group_id]
     @tr_id = "#document_grouping_#{grouping.id}"
 
     grouping.destroy # destroys the grouping and the documents
   end
 
   def edit_documents
-    service_request = ServiceRequest.find session[:service_request_id]
-    @grouping = service_request.document_groupings.find params[:document_group_id]
-    @service_list = service_request.service_list
+    @grouping = @service_request.document_groupings.find params[:document_group_id]
+    @service_list = @service_request.service_list
   end
 
   def ask_a_question
@@ -335,7 +321,6 @@ class ServiceRequestsController < ApplicationController
   end
 
   def select_calendar_column
-    @service_request = ServiceRequest.find session[:service_request_id]
     column_id = params[:column_id].to_i
 
     @service_request.per_patient_per_visit_line_items.each do |line_item|
@@ -347,7 +332,6 @@ class ServiceRequestsController < ApplicationController
   end
   
   def unselect_calendar_column
-    @service_request = ServiceRequest.find session[:service_request_id]
     column_id = params[:column_id].to_i
 
     @service_request.per_patient_per_visit_line_items.each do |line_item|

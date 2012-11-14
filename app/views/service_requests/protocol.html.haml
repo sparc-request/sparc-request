@@ -15,7 +15,7 @@
             If Professional Services are covered by % effort, you will have the opportunity to indicate this in Step 2.
           %p.instructions If you wish to add services, you must return to the "Service Catalog".
 
-        .service-list= render :partial => 'service_list', :locals => {:service_request => @service_request}
+        .service-list= render :partial => 'service_list'
   
         %br
         %br
@@ -23,11 +23,12 @@
         %p.instructions.center Before continuing to Step 2, you must select a Research Study or Project to which the services selected are associated. Only 1 Research Study/Project can be assigned to this request.
 
         .type-select.center
-          Is this Service Request tied to a particular Research Study
-          = select_tag "select-type", options_for_select([["Yes"], ["No"]], (@service_request.protocol.try(:type) == 'Project' ? 'No' : 'Yes'))
-          %span#infotip= image_tag('information.png')
-          %br
-          %br
+          - if @sub_service_request.nil?
+            Is this Service Request tied to a particular Research Study
+            = select_tag "select-type", options_for_select([["Yes"], ["No"]], (@service_request.protocol.try(:type) == 'Project' ? 'No' : 'Yes'))
+            %span#infotip= image_tag('information.png')
+            %br
+            %br
 
         .existing-study.center
           #study.study-select
@@ -48,6 +49,6 @@
       %h3
         My Services
         %span#cart-help Help
-      .line-items= render :partial => 'catalogs/cart', :locals => {:service_request => @service_request}
+      .line-items= render :partial => 'catalogs/cart'
     .dashboard-button= navigation_link image_tag('back_to_catalog.png'), @back
 .continue= render :partial => 'service_requests/navigation'

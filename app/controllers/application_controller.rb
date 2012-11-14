@@ -3,7 +3,7 @@ class ApplicationController < ActionController::Base
   helper :all
 
   before_filter :authenticate
-  before_filter :set_service_request_id
+  before_filter :setup_session
   before_filter :load_defaults
   before_filter :setup_navigation
 
@@ -16,28 +16,54 @@ class ApplicationController < ActionController::Base
     Identity.find_by_ldap_uid('anc63').id
   end
   
-  def set_service_request_id
+  def setup_session
+    # set/get the objects we need to manipulate in other controllers
+    @service_request = nil
+    @sub_service_request = nil
+    @line_items = nil
+    @documents = nil
+
     if params[:controller] == 'service_requests'
       #blow the session away if we aren't logged in and don't have a valid url
-      session.delete(:service_request_id) unless @current_user and params[:id]
-
+      unless @current_user and params[:id]
+        session.delete(:service_request_id) 
+        session.delete(:sub_service_request_id)
+      end
+     
       if @current_user and params[:id]
-        if sr = @current_user.protocol_service_requests.find(params[:id]) rescue false
-          session[:service_request_id] = sr.id
-        elsif (sr = @current_user.requested_service_requests.find(params[:id]) rescue false) and session[:first_draft]
-          session[:service_request_id] = sr.id
+        if @service_request = @current_user.protocol_service_requests.find(params[:id]) rescue false
+          @line_items = @service_request.line_items
+          @documents = @service_request.documents
+          session[:service_request_id] = @service_request.id
+        elsif (@service_request = @current_user.requested_service_requests.find(params[:id]) rescue false) and session[:first_draft]
+          @line_items = @service_request.line_items
+          @documents = @service_request.documents
+          session[:service_request_id] = @service_request.id
         else
-          render :text => 'get out'
+          render :text => 'You are not authorized to view this page'
+        end
+
+        if params[:sub_service_request_id] or session[:sub_service_request_id]
+          session[:sub_service_request_id] = params[:sub_service_request_id] ? params[:sub_service_request_id] : session[:sub_service_request_id]
+          @sub_service_request = @service_request.sub_service_requests.find session[:sub_service_request_id]
+
+          @line_items = @sub_service_request.line_items
+          @documents = @sub_service_request.documents
         end
       elsif @current_user and not session[:service_request_id]
-        sr = @current_user.requested_service_requests.new(:service_requester_id => @current_user.id)
-        sr.save :validate => false
+        @service_request = @current_user.requested_service_requests.new(:service_requester_id => @current_user.id)
+        @service_request.save :validate => false
 
-        session[:service_request_id] = sr.id
+        session[:service_request_id] = @service_request.id
         session[:first_draft] = true
-        redirect_to catalog_service_request_path(sr)
+        redirect_to catalog_service_request_path(@service_request)
       else #we aren't logged in so let's do some funky stuff
-        render :text => 'not logged in'
+        render :text => 'You are not logged in'
+      end
+    elsif params[:controller] == 'search'
+      @service_request = ServiceRequest.find session[:service_request_id]
+      if session[:sub_service_request_id]
+          @sub_service_request = @service_request.sub_service_requests.find session[:sub_service_request_id]
       end
     end
   end
@@ -53,7 +79,8 @@ class ApplicationController < ActionController::Base
   end
       
   def setup_navigation
-    page = params[:action] == 'navigate' ? request.referrer.split('/').last : params[:action]
+    #TODO - this could definitely be done a better way
+    page = params[:action] == 'navigate' ? request.referrer.split('/').last.split('?').first : params[:action]
     c = YAML.load_file(Rails.root.join('config', 'navigation.yml'))[page]
     unless c.nil?
       @step_text = c['step_text']

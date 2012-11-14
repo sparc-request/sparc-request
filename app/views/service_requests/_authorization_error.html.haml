@@ -1,0 +1,30 @@
+!!! 1.1
+%html{"xml:lang" => "en", :xmlns => "http://www.w3.org/1999/xhtml"}
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    = stylesheet_link_tag 'application', '960', 'jquery-ui', :media => 'all'
+  %body
+    #container.container
+      #header
+        #sctr_logo
+          %a{:href => "http://sctr.musc.edu/"}
+            %img{:alt => "Sctr_logo", :src => "/assets/sctr_logo.png"}/
+        #sctr_header_title
+          %a{:href => "http://sctr.musc.edu/"}
+            %img{:alt => "Department_name", :src => "/assets/department_name.gif"}/
+        #musc_logo
+          %a{:href => "http://www.musc.edu/", :target => "_blank"}
+            %img{:alt => "Musc_logo", :src => "/assets/musc_logo.gif"}/
+      #title
+        %h1 SPARC
+      #content.container_12
+        %br
+        %br
+        .grid_3 &nbsp;
+        .grid_6.authorization_error.ui-corner-all
+          #auth_error= error
+          %br
+          Click
+          = link_to 'here', @user_portal_link
+          to return to your user portal
+        .grid_3 &nbsp;

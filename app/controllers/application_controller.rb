@@ -58,6 +58,10 @@ class ApplicationController < ActionController::Base
         end
       elsif @current_user and not session[:service_request_id]
         @service_request = @current_user.requested_service_requests.new(:service_requester_id => @current_user.id)
+        if params[:protocol_id]
+          @service_request.protocol_id = params[:protocol_id]
+        end
+
         @service_request.save :validate => false
 
         session[:service_request_id] = @service_request.id

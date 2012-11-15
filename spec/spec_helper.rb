@@ -120,9 +120,19 @@ RSpec.configure do |config|
       name:                 'MUSC Research Data Request (CDW)',
       abbreviation:         'CDW',
       order:                1,
-      description:          'The MUSC Clinical Data Warehouse (CDW) contains electronic clinical data from the OACIS Clinical Data Repository, including patient demographics, ICD-coded diagnoses, CPT-coded procedures, and laboratory test results. A data request committee will review the clinical data needs of your research project, provide advice on requesting IRB approval to obtain clinical data from the CDW and discuss options for clinical data abstraction, reporting and storage to meet your research needs.',
+      cpt_code:             '',
       organization_id:      core.id)
     service.save!
+
+    pricing_map = FactoryGirl.create(:pricing_map,
+      service_id:                   67,
+      unit_type:                    'Per Query',
+      unit_factor:                  1,
+      is_one_time_fee:              1,
+      full_rate:                    0,
+      exclude_from_indirect_cost:   0,
+      unit_minimum:                 1)
+    pricing_map.save!
 
   end
 

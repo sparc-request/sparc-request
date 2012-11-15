@@ -20,14 +20,31 @@
         </div>
       </div>
       <div id="title"><h1>SPARC</h1></div>
+      <div id="login_header">
+        <h1>SPARC Federated Login</h1>
+      </div>
       <div id="content">
-
-          <br />
+        <br />
+        <div id="select-text">
+          <h2>Select your Home/Affiliated Organization</h2>
+        </div>
+        <br />
+        <div id="welcome-text">
+          In order to access SPARC services, you must first authenticate yourself. Once authentication is complete, you will be given access to the SPARC application.
+        </div>
           <br />
           <br />
           <div id="idpSelect">
 <div id="idpSelectIdPSelector"><div id="idpSelectPreferredIdPTile"><div class="IdPSelectTextDiv">Use a suggested selection:</div><div class="IdPSelectPreferredIdPButton" title="MUSC"><a href="https://sparc-stg.musc.edu/Shibboleth.sso/Login?SAMLDS=1&amp;target=cookie%3A82c34a73&amp;entityID=https%3A%2F%2Fshibboleth.musc.edu%2Fshibboleth-idp"><div class="IdPSelectPreferredIdPImg"><img width="90" height="80" src="flyingpiglogo.jpg" alt="DefaultLogo"></div><div class="IdPSelectTextDiv">MUSC</div></a></div></div><div id="idpSelectIdPEntryTile" style="display: none;"><div class="IdPSelectTextDiv">Or enter your organization's name</div><form action="https://sparc-stg.musc.edu/Shibboleth.sso/Login" method="GET" autocomplete="OFF"><input type="hidden" name="SAMLDS" value="1"><input type="hidden" name="target" value="cookie:82c34a73"><input type="text" id="idpSelectInput"><input type="hidden" name="entityID" value="-"><input type="submit" value="Continue" id="idpSelectSelectButton" disabled=""></form><a href="#" class="IdPSelectDropDownToggle">Allow me to pick from a list</a><a href="https://wiki.shibboleth.net/confluence/display/SHIB2/DSRoadmap" class="IdPSelectHelpButton">Help</a></div><div id="idpSelectIdPListTile" style="display: inline;"><div class="IdPSelectTextDiv">Or select your organization from the list below</div><form action="https://sparc-stg.musc.edu/Shibboleth.sso/Login" method="GET" autocomplete="OFF"><input type="hidden" name="SAMLDS" value="1"><input type="hidden" name="target" value="cookie:82c34a73"><select id="idpSelectSelector" name="entityID"><option value="-">Please select your organization...</option><option value="https://shibboleth.musc.edu/shibboleth-idp">MUSC</option></select><input type="submit" value="Continue" id="idpSelectListButton"></form><a href="#" class="IdPSelectDropDownToggle">Allow me to specify the site</a><a href="https://wiki.shibboleth.net/confluence/display/SHIB2/DSRoadmap" class="IdPSelectHelpButton">Help</a></div></div>
           </div>
+        <br />
+        <br />
+        <div>
+          This Web Application was developed by SCTR Office of Biomedical Informatics. By using this application you are liable for any actions that occur during the time you are logged in. Use of this application is logged and monitored by an authorized security personnel.
+          <br />
+          <br />
+          <h3>If you are not affiliated with an institution and need to create a SPARC account, please <a href="javascript:void(0)">click here</a> to proceed.</h3>
+        </div>
 
 	  <script src="idpselect_config.js" type="text/javascript" language="javascript"></script>
 	  <script src="idpselect.js" type="text/javascript" language="javascript"></script>

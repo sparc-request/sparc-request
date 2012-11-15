@@ -1679,7 +1679,7 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 .authorization_error {
   border: 2px solid black;
   text-align: center;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   padding: 30px 0;
 }

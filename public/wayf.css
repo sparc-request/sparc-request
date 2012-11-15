@@ -3,7 +3,7 @@
 {
     width: 389px;
     text-align: left;
-    background-color: #FFFFFF;
+    background-color: #F2F2F2;
     border: 2px #A40000 solid;
     padding: 10px;
     margin: 0 auto;
@@ -169,8 +169,27 @@ div.IdPSelectDropDown div {
     padding: 0px 3px;
 }
 
- div.IdPSelectDropDown div.IdPSelectCurrent {
+div.IdPSelectDropDown div.IdPSelectCurrent {
     background-color: #3366cc;
     color: white;
+}
+
+div#login_header {
+    text-align: center;
+    color: #FFF;
+    background-color: #003366;
+    padding: 10px;
+}
+
+#content div{
+    text-align: left;
+    width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+div#select-text {
+    text-align: center;
+    color: #0099FF
 }
 /* END */

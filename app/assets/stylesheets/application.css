@@ -224,6 +224,25 @@ a.save-option{
 }
 
 /* CatalogView */
+
+#left_signin_button{
+  float: left;
+  width: 250px;
+  margin-top: 20px;
+  margin-left: 20px;
+}
+
+#right_signin_button{
+  float: right;
+  width: 250px;
+  margin-top: 20px;
+  margin-right: 20px;
+}
+
+.signin_dialog{
+  margin-top: 10px;
+}
+
 .core-accordion {
   width: 450px;
 }
@@ -1136,6 +1155,10 @@ tr.total-visit-based-services {
 
 .ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl {
     border-top-left-radius: 3px !important;
+}
+
+.no-close .ui-dialog-titlebar-close {
+  display: none 
 }
 
 /*DOCUMENT MANAGEMENT STYLES*/

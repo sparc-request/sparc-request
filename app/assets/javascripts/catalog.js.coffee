@@ -6,6 +6,7 @@ loadDescription = (url) ->
     url: url
 
 $(document).ready ->
+
   $('#institution_accordion').accordion
     autoHeight: false
     collapsible: true
@@ -91,3 +92,10 @@ $(document).ready ->
             Ok: ->
               $(this).dialog('close')
       return false
+
+  $('#sign_in').dialog
+    modal: true
+    title: "Please select one of the fabulous options below:"
+    width: 800
+    height: 400
+    #dialogClass: 'no-close'

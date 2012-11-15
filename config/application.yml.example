@@ -1,3 +1,5 @@
 development:
   default_mail_to: catesa@musc.edu
-  user_portal_link: /portal/
+  user_portal_link: 'http://musc-pro.homelinux.net:3001/'
+  error_contact: "792-8300 or success@musc.edu"
+  application_title: "SPARC"

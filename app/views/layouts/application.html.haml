@@ -2,6 +2,7 @@
 %html{"xml:lang" => "en", :xmlns => "http://www.w3.org/1999/xhtml"}
   %head
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %title= @application_title
     = stylesheet_link_tag 'application', '960', 'jquery-ui', :media => 'all'
     = javascript_include_tag "application"
     = csrf_meta_tags

@@ -3,7 +3,7 @@ ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'rspec/autorun'
-require 'database_cleaner'
+# require 'database_cleaner'
 require 'factory_girl'
 require 'faker'
 
@@ -57,8 +57,9 @@ RSpec.configure do |config|
 
 
   
-  config.before(:each, :js => true) do
+  before = proc do
     DatabaseCleaner.start
+
     identity = Identity.create(
       last_name:           'Glenn',
       first_name:          'Julia',
@@ -76,8 +77,7 @@ RSpec.configure do |config|
       name:                 'Medical University of South Carolina',
       order:                1,
       obisid:               '87d1220c5abf9f9608121672be000412',
-      abbreviation:         'MUSC',
-      is_available:         1)
+      abbreviation:         'MUSC', is_available:         1)
     institution.save!
 
     provider = FactoryGirl.create(:provider,
@@ -133,11 +133,12 @@ RSpec.configure do |config|
       exclude_from_indirect_cost:   0,
       unit_minimum:                 1)
     pricing_map.save!
-
   end
+
+  config.before(:each, :js => true, &before)
+  config.before(:each, &before)
 
   config.after(:each) do
     DatabaseCleaner.clean
   end
-
 end

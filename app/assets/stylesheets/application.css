@@ -1687,3 +1687,7 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 .authorization_error #auth_error {
   color: red;
 }
+
+.document_edit span {
+  width: 75px;
+}

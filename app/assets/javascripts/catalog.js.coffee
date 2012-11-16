@@ -6,6 +6,7 @@ loadDescription = (url) ->
     url: url
 
 $(document).ready ->
+
   $('#institution_accordion').accordion
     autoHeight: false
     collapsible: true

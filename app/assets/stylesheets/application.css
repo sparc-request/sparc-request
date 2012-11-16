@@ -224,6 +224,25 @@ a.save-option{
 }
 
 /* CatalogView */
+
+#left_signin_button{
+  float: left;
+  width: 250px;
+  margin-top: 60px;
+  margin-left: 60px;
+}
+
+#right_signin_button{
+  float: right;
+  width: 250px;
+  margin-top: 60px;
+  margin-right: 60px;
+}
+
+.signin_dialog{
+  margin-top: 30px;
+}
+
 .core-accordion {
   width: 450px;
 }
@@ -1138,6 +1157,10 @@ tr.total-visit-based-services {
     border-top-left-radius: 3px !important;
 }
 
+.no-close .ui-dialog-titlebar-close {
+  display: none 
+}
+
 /*DOCUMENT MANAGEMENT STYLES*/
 
 .document-management-container {
@@ -1656,11 +1679,15 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 .authorization_error {
   border: 2px solid black;
   text-align: center;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   padding: 30px 0;
 }
 
 .authorization_error #auth_error {
   color: red;
+}
+
+.document_edit span {
+  width: 75px;
 }

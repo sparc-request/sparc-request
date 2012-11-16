@@ -22,7 +22,7 @@
         %br
         .grid_3 &nbsp;
         .grid_6.authorization_error.ui-corner-all
-          #auth_error= error
+          #auth_error= raw(error)
           %br
           Click
           = link_to 'here', @user_portal_link

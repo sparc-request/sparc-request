@@ -3,7 +3,7 @@ ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'rspec/autorun'
-require 'database_cleaner'
+# require 'database_cleaner'
 require 'factory_girl'
 require 'faker'
 
@@ -51,14 +51,14 @@ RSpec.configure do |config|
       load "schema.rb"
     }
     silence_stream(STDOUT, &load_schema)
-    DatabaseCleaner.strategy = :transaction
-    DatabaseCleaner.clean_with(:truncation)
+    # DatabaseCleaner.strategy = :transaction
+    # DatabaseCleaner.clean_with(:truncation)
   end
 
 
   
-  config.before(:each, :js => true) do
-    DatabaseCleaner.start
+  before = proc do
+    # DatabaseCleaner.start
     identity = Identity.create(
       last_name:           'Glenn',
       first_name:          'Julia',
@@ -133,11 +133,12 @@ RSpec.configure do |config|
       exclude_from_indirect_cost:   0,
       unit_minimum:                 1)
     pricing_map.save!
-
   end
+
+  config.before(:each, :js => true, &before)
+  config.before(:each, &before)
 
   config.after(:each) do
-    DatabaseCleaner.clean
+    # DatabaseCleaner.clean
   end
-
 end

@@ -221,6 +221,8 @@ class ServiceRequestsController < ApplicationController
       next_ssr_id += 1
     end
     @service_request.protocol.update_attribute(:next_ssr_id, next_ssr_id)
+
+    # fire off emails to those in need
   end
 
   def save_and_exit
@@ -232,6 +234,7 @@ class ServiceRequestsController < ApplicationController
       ssr.update_attribute(:ssr_id, "%04d" % next_ssr_id) unless ssr.ssr_id
       next_ssr_id += 1
     end
+    @service_request.protocol.update_attribute(:next_ssr_id, next_ssr_id)
 
     redirect_to @user_portal_link
   end

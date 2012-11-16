@@ -33,6 +33,12 @@ class ApplicationController < ActionController::Base
     @sub_service_request = nil
     @line_items = nil
 
+    if params[:from_user_portal] == 'true' # if we come from user portal we should clear out session information
+        session.delete(:first_draft) 
+        session.delete(:service_request_id) 
+        session.delete(:sub_service_request_id)
+    end
+
     if params[:controller] == 'service_requests'
 
       # we are starting a new service request
@@ -127,6 +133,7 @@ class ApplicationController < ActionController::Base
       @user_portal_link = @application_config['user_portal_link']
       @error_contact = @application_config['error_contact']
       @application_title = @application_config['application_title']
+      @account_create_url = @application_config['account_create_url']
     rescue
       raise "application.yml not found, see config/application.yml.example"
     end

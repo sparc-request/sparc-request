@@ -5,3 +5,6 @@ $(document).ready ->
     width: 800
     height: 400
     dialogClass: 'no-close'
+
+  $('.proceed_with_shib').click ->
+    $('#sign_in').dialog('close')

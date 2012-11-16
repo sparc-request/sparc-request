@@ -3,3 +3,10 @@ development:
   user_portal_link: 'http://musc-pro.homelinux.net:3001/'
   error_contact: "792-8300 or success@musc.edu"
   application_title: "SPARC"
+
+test:
+  default_mail_to: root@localhost
+  user_portal_link: /portal/
+  error_contact: "error contact"
+  application_title: "SPARC"
+

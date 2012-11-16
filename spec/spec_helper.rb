@@ -51,14 +51,15 @@ RSpec.configure do |config|
       load "schema.rb"
     }
     silence_stream(STDOUT, &load_schema)
-    # DatabaseCleaner.strategy = :transaction
-    # DatabaseCleaner.clean_with(:truncation)
+    DatabaseCleaner.strategy = :transaction
+    DatabaseCleaner.clean_with(:truncation)
   end
 
 
   
   before = proc do
-    # DatabaseCleaner.start
+    DatabaseCleaner.start
+
     identity = Identity.create(
       last_name:           'Glenn',
       first_name:          'Julia',
@@ -76,8 +77,7 @@ RSpec.configure do |config|
       name:                 'Medical University of South Carolina',
       order:                1,
       obisid:               '87d1220c5abf9f9608121672be000412',
-      abbreviation:         'MUSC',
-      is_available:         1)
+      abbreviation:         'MUSC', is_available:         1)
     institution.save!
 
     provider = FactoryGirl.create(:provider,
@@ -139,6 +139,6 @@ RSpec.configure do |config|
   config.before(:each, &before)
 
   config.after(:each) do
-    # DatabaseCleaner.clean
+    DatabaseCleaner.clean
   end
 end

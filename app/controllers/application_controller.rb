@@ -9,6 +9,7 @@ class ApplicationController < ActionController::Base
 
   # for now we are assuming auto login
   def authenticate
+    #session[:errors] = nil # clear out the error messages, only used in testing/development
     @current_user = Identity.find_by_ldap_uid 'jug2'
 
     #@current_user = nil #uncomment to test as if not logged in

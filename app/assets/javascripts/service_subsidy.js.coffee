@@ -44,7 +44,7 @@ $(document).ready ->
             pass = false
             message = 'Subsidy amount for ' + core + ' cannot exceed maximum dollar amount of $' + max_dollar
             return
-        else if max_percent > 0.0
+        if max_percent > 0.0
           if calculate_subsidy_percent(direct_cost, pi) > max_percent
             pass = false
             message = 'Subsidy amount for ' + core + ' cannot exceed maximum percentage of ' + max_percent + '%'

@@ -5,6 +5,7 @@ feature 'as a user on catalog page' do
     # puts Identity.all.inspect
     # login(identity)
     visit root_path
+    click_link("Click here to proceed with your institutional login")
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
     sleep(3)
     click_link("Office of Biomedical Informatics")

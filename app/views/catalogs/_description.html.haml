@@ -4,11 +4,12 @@
     .provider-description.description.ui-widget.ui-widget-content.ui-corner-all= organization.description
 
   - if organization.type == "Program"
-    - if organization.cores.empty?
+    - unless organization.services.empty?
       .program-services
         - organization.services.order('`order`').each do |service|
           = render :partial => 'service', :locals => {:service => service, :service_request => service_request}
-    - else
+    %br
+    - unless organization.cores.empty?
       .core-accordion
         - organization.cores.order('`order`').each do |core|
           %h3{:class => css_class(organization)}

@@ -138,12 +138,10 @@ class ServiceRequestsController < ApplicationController
   # service request wizard pages
 
   def catalog
-    puts "HERE"
     if session['sub_service_request_id']
       @institutions = @sub_service_request.organization.parents.select{|x| x.type == 'Institution'}
     else
       @institutions = Institution.order('`order`')
-      p @institutions
     end
   end
   

@@ -104,6 +104,18 @@ RSpec.configure do |config|
       is_available:         1)
     program.save!
 
+    program2 = FactoryGirl.create(:program,
+      id:                   5,
+      type:                 'Program',
+      name:                 'Clinical and Translational Research Center (CTRC)',
+      order:                2,
+      obisid:               '87d1220c5abf9f9608121672be0e3ac1',
+      parent_id:            provider.id,
+      abbreviation:         'Informatics',
+      process_ssrs:         0,
+      is_available:         1)
+    program2.save!
+
     core = FactoryGirl.create(:core,
       id:                   33,
       type:                 'Core',
@@ -113,6 +125,16 @@ RSpec.configure do |config|
       parent_id:            program.id,
       abbreviation:         'Clinical Data Warehouse')
     core.save!
+
+    core2 = FactoryGirl.create(:core,
+      id:                   8,
+      type:                 'Core',
+      obisid:               '87d1220c5abf9f9608121672be06cca0',
+      name:                 'Nursing Services',
+      abbreviation:         'Nursing Services',
+      order:                1,
+      parent_id:             program2.id)
+    core2.save!
 
     service = FactoryGirl.create(:service,
       id:                   67,
@@ -124,6 +146,16 @@ RSpec.configure do |config|
       organization_id:      core.id)
     service.save!
 
+    service2 = FactoryGirl.create(:service,
+      id:                   16,
+      obisid:               '87d1220c5abf9f9608121672be1b4a95',
+      name:                 'Breast Milk Collection',
+      abbreviation:         'Breast Milk Collection',
+      order:                1,
+      cpt_code:             '',
+      organization_id:      core2.id)
+    service2.save!
+
     pricing_map = FactoryGirl.create(:pricing_map,
       service_id:                   67,
       unit_type:                    'Per Query',
@@ -133,6 +165,16 @@ RSpec.configure do |config|
       exclude_from_indirect_cost:   0,
       unit_minimum:                 1)
     pricing_map.save!
+
+    pricing_map2 = FactoryGirl.create(:pricing_map,
+      service_id:                   16,
+      unit_type:                    'Per patient/visit',
+      unit_factor:                  1,
+      is_one_time_fee:              0,
+      full_rate:                    636,
+      exclude_from_indirect_cost:   0,
+      unit_minimum:                 1)
+    pricing_map2.save!
   end
 
   config.before(:each, :js => true, &before)

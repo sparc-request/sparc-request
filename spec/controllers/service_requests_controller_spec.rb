@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 describe ServiceRequestsController do
   context 'testing base class' do
   end

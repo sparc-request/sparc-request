@@ -4,7 +4,19 @@ class ServiceRequestsController < ApplicationController
   def show
     @protocol = @service_request.protocol
     @service_list = @service_request.service_list
-    render xlsx: "show", filename: "service_request_#{@service_request.id}", disposition: "inline"
+
+    # TODO: this gives an error in the spec tests, because they think
+    # it's trying to render html instead of xlsx
+    #
+    #   render xlsx: "show", filename: "service_request_#{@service_request.id}", disposition: "inline"
+    #
+    # So I did this instead, but I don't know if it's right:
+    #
+    respond_to do |format|
+      format.xlsx do
+        render xlsx: "show", filename: "service_request_#{@service_request.id}", disposition: "inline"
+      end
+    end
   end
 
   def navigate

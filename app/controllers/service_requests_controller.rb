@@ -160,6 +160,9 @@ class ServiceRequestsController < ApplicationController
   def protocol
     @studies = @sub_service_request.nil? ? @current_user.studies : [@service_request.protocol]
     @projects = @sub_service_request.nil? ? @current_user.projects : [@service_request.protocol]
+
+    # TODO: with multiple table inheritance we can use Protocol.find
+    # instead
     if session[:saved_study_id]
       @service_request.protocol = Study.find session[:saved_study_id]
       session.delete :saved_study_id

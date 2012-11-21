@@ -7,13 +7,16 @@ describe ServiceRequestsController do
   let!(:program) { FactoryGirl.create(:program, parent_id: provider.id) }
   let!(:core) { FactoryGirl.create(:core, parent_id: program.id) }
 
+  # TODO: shouldn't be bypassing validations...
+  let!(:study) { study = Study.create(FactoryGirl.attributes_for(:protocol)); study.save!(:validate => false); study }
+  let!(:project) { project = Project.create(FactoryGirl.attributes_for(:protocol)); project.save!(:validate => false); project }
+
   # TODO: assign service_list
-  # TODO: assign protocol
   let!(:service_request) { FactoryGirl.create(:service_request) }
+  let!(:service_request_with_study) { FactoryGirl.create(:service_request, :protocol_id => study.id) }
+  let!(:service_request_with_project) { FactoryGirl.create(:service_request, :protocol_id => project.id) }
 
   let!(:sub_service_request) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id ) }
-  let!(:study) { Study.create(FactoryGirl.attributes_for(:protocol)) }
-  let!(:project) { Project.create(FactoryGirl.attributes_for(:protocol)) }
 
 
   # Stub out all the methods in ApplicationController so we're not
@@ -66,21 +69,21 @@ describe ServiceRequestsController do
   describe 'GET protocol' do
     it "should set protocol to the service request's study" do
       session[:identity_id] = identity.id
-      session[:service_request_id] = service_request.id
+      session[:service_request_id] = service_request_with_study.id
       session[:sub_service_request_id] = sub_service_request.id
       session[:saved_study_id] = study.id
-      get :protocol, :id => service_request.id
-      assigns(:service_request).protocol.should eq study.id
+      get :protocol, :id => service_request_with_study.id
+      assigns(:service_request).protocol.should eq study
       session[:saved_study_id].should eq nil
     end
 
     it "should set protocol to the service request's project" do
       session[:identity_id] = identity.id
-      session[:service_request_id] = service_request.id
+      session[:service_request_id] = service_request_with_project.id
       session[:sub_service_request_id] = sub_service_request.id
-      session[:saved_project_id] = study.id
-      get :protocol, :id => service_request.id
-      assigns(:service_request).protocol.should eq project.id
+      session[:saved_project_id] = project.id
+      get :protocol, :id => service_request_with_project.id
+      assigns(:service_request).protocol.should eq project
       session[:saved_project_id].should eq nil
     end
 
@@ -134,6 +137,14 @@ describe ServiceRequestsController do
   end
 
   describe 'GET confirmation' do
+    it "should set the service request's status to submitted" do
+      session[:service_request_id] = service_request.id
+      get :confirmation, :id => service_request.id
+      assigns(:service_request).status.should eq 'submitted'
+    end
+
+    it "should set the service request's submitted_at to Time.now" do
+    end
   end
 
   describe 'GET service_details' do

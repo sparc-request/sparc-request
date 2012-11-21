@@ -134,7 +134,7 @@ GEM
       net-ssh (>= 1.99.1)
     nokogiri (1.5.5)
     obis-net-ldap (0.4.0)
-    paper_trail (2.6.3)
+    paper_trail (2.6.4)
       activerecord (~> 3.0)
       railties (~> 3.0)
     paperclip (3.3.1)

@@ -292,10 +292,58 @@ describe ServiceRequestsController do
   end
 
   describe 'GET service_calendar' do
+    let!(:service) {
+      service = FactoryGirl.create(:service, pricing_map_count: 1)
+      service.pricing_maps[0].display_date = Date.today
+      service
+    }
+
+    let!(:pricing_map) { service.pricing_maps[0] }
+    let!(:line_item) { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id) }
+
     it "should set the page if page is passed in" do
       session[:service_request_id] = service_request.id
       get :service_calendar, { :id => service_request.id, :page => 42 }.with_indifferent_access
       session[:service_calendar_page].should eq '42'
+    end
+
+    it 'should set subject count on the per patient per visit line items if it is not set' do
+      pricing_map.update_attribute(:is_one_time_fee, false)
+      service_request.update_attribute(:subject_count, 42)
+      line_item.update_attribute(:subject_count, nil)
+      service_request.reload
+
+      session[:service_request_id] = service_request.id
+      get :service_calendar, { :id => service_request.id, :page => 42 }.with_indifferent_access
+
+      line_item.reload
+      line_item.subject_count.should eq 42
+    end
+
+    it 'should NOT set subject count on the per patient per visit line items if it is set' do
+      pricing_map.update_attribute(:is_one_time_fee, false)
+      service_request.update_attribute(:subject_count, 42)
+      line_item.update_attribute(:subject_count, 500)
+      service_request.reload
+
+      session[:service_request_id] = service_request.id
+      get :service_calendar, { :id => service_request.id, :page => 42 }.with_indifferent_access
+
+      line_item.reload
+      line_item.subject_count.should eq 500
+    end
+
+    it 'should NOT set subject count on the one time fee line items' do
+      pricing_map.update_attribute(:is_one_time_fee, true)
+      service_request.update_attribute(:subject_count, 42)
+      line_item.update_attribute(:subject_count, nil)
+      service_request.reload
+
+      session[:service_request_id] = service_request.id
+      get :service_calendar, { :id => service_request.id, :page => 42 }.with_indifferent_access
+
+      line_item.reload
+      line_item.subject_count.should eq nil
     end
   end
 

@@ -32,6 +32,7 @@ describe ServiceRequestsController do
         @current_user = Identity.find_by_id(session[:identity_id])
         @service_request = ServiceRequest.find_by_id(session[:service_request_id])
         @sub_service_request = SubServiceRequest.find_by_id(session[:sub_service_request_id])
+        @user_portal_link = '/'
       end
     end
 
@@ -208,6 +209,73 @@ describe ServiceRequestsController do
   end
 
   describe 'GET save_and_exit' do
+    it "should set the service request's status to submitted" do
+      session[:service_request_id] = service_request_with_project.id
+      get :save_and_exit, :id => service_request_with_project.id
+      assigns(:service_request).status.should eq 'draft'
+    end
+
+    it "should NOT set the service request's submitted_at to Time.now" do
+      time = Time.parse('2012-06-01 12:34:56')
+      Timecop.freeze(time) do
+        service_request_with_project.update_attribute(:submitted_at, nil)
+        session[:service_request_id] = service_request_with_project.id
+        get :save_and_exit, :id => service_request_with_project.id
+        service_request_with_project.reload
+        service_request_with_project.submitted_at.should eq nil
+      end
+    end
+
+    it 'should increment next_ssr_id' do
+      service_request_with_project.protocol.update_attribute(:next_ssr_id, 42)
+      ssr = FactoryGirl.create(
+          :sub_service_request,
+          service_request_id: service_request_with_project.id)
+      session[:service_request_id] = service_request_with_project.id
+      get :save_and_exit, :id => service_request_with_project.id
+      service_request_with_project.protocol.reload
+      service_request_with_project.protocol.next_ssr_id.should eq 43
+    end
+
+    it 'should should set status and ssr_id on all the sub service request' do
+      service_request_with_project.protocol.update_attribute(:next_ssr_id, 42)
+
+      ssr1 = FactoryGirl.create(
+          :sub_service_request,
+          service_request_id: service_request_with_project.id,
+          ssr_id: nil)
+      ssr2 = FactoryGirl.create(
+          :sub_service_request,
+          service_request_id: service_request_with_project.id,
+          ssr_id: nil)
+
+      session[:service_request_id] = service_request_with_project.id
+      get :save_and_exit, :id => service_request_with_project.id
+
+      ssr1.reload
+      ssr2.reload
+
+      ssr1.status.should eq 'draft'
+      ssr2.status.should eq 'draft'
+
+      ssr1.ssr_id.should eq '0042'
+      ssr2.ssr_id.should eq '0043'
+    end
+
+    it 'should set ssr_id correctly when next_ssr_id > 9999' do
+      service_request_with_project.protocol.update_attribute(:next_ssr_id, 10042)
+
+      ssr1 = FactoryGirl.create(
+          :sub_service_request,
+          service_request_id: service_request_with_project.id,
+          ssr_id: nil)
+
+      session[:service_request_id] = service_request_with_project.id
+      get :save_and_exit, :id => service_request_with_project.id
+
+      ssr1.reload
+      ssr1.ssr_id.should eq '10042'
+    end
   end
 
   describe 'GET service_details' do

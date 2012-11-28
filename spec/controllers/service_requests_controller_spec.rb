@@ -32,7 +32,7 @@ describe ServiceRequestsController do
         @current_user = Identity.find_by_id(session[:identity_id])
         @service_request = ServiceRequest.find_by_id(session[:service_request_id])
         @sub_service_request = SubServiceRequest.find_by_id(session[:sub_service_request_id])
-        @user_portal_link = '/'
+        @user_portal_link = '/user_portal'
       end
     end
 
@@ -275,6 +275,12 @@ describe ServiceRequestsController do
 
       ssr1.reload
       ssr1.ssr_id.should eq '10042'
+    end
+
+    it 'should redirect the user to the user portal link' do
+      session[:service_request_id] = service_request_with_project.id
+      get :save_and_exit, :id => service_request_with_project.id
+      response.should redirect_to('/user_portal')
     end
   end
 

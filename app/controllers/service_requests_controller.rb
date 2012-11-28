@@ -227,6 +227,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def confirmation
+    # TODO: refactor into the ServiceRequest model
     @service_request.update_attribute(:status, 'submitted')
     @service_request.update_attribute(:submitted_at, Time.now)
     next_ssr_id = @service_request.protocol.next_ssr_id || 1
@@ -237,10 +238,12 @@ class ServiceRequestsController < ApplicationController
     end
     @service_request.protocol.update_attribute(:next_ssr_id, next_ssr_id)
 
-    # fire off emails to those in need
+    # TODO: fire off emails to those in need
   end
 
   def save_and_exit
+    # TODO: refactor into the ServiceRequest model
+
     @service_request.update_attribute(:status, 'draft')
     
     next_ssr_id = @service_request.protocol.next_ssr_id || 1

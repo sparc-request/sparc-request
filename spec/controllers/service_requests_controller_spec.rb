@@ -138,8 +138,8 @@ describe ServiceRequestsController do
 
   describe 'GET confirmation' do
     it "should set the service request's status to submitted" do
-      session[:service_request_id] = service_request.id
-      get :confirmation, :id => service_request.id
+      session[:service_request_id] = service_request_with_project.id
+      get :confirmation, :id => service_request_with_project.id
       assigns(:service_request).status.should eq 'submitted'
     end
 

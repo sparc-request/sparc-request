@@ -311,7 +311,6 @@ describe ServiceRequestsController do
       pricing_map.update_attribute(:is_one_time_fee, false)
       service_request.update_attribute(:subject_count, 42)
       line_item.update_attribute(:subject_count, nil)
-      service_request.reload
 
       session[:service_request_id] = service_request.id
       get :service_calendar, { :id => service_request.id, :page => 42 }.with_indifferent_access
@@ -324,7 +323,6 @@ describe ServiceRequestsController do
       pricing_map.update_attribute(:is_one_time_fee, false)
       service_request.update_attribute(:subject_count, 42)
       line_item.update_attribute(:subject_count, 500)
-      service_request.reload
 
       session[:service_request_id] = service_request.id
       get :service_calendar, { :id => service_request.id, :page => 42 }.with_indifferent_access
@@ -337,13 +335,60 @@ describe ServiceRequestsController do
       pricing_map.update_attribute(:is_one_time_fee, true)
       service_request.update_attribute(:subject_count, 42)
       line_item.update_attribute(:subject_count, nil)
-      service_request.reload
 
       session[:service_request_id] = service_request.id
       get :service_calendar, { :id => service_request.id, :page => 42 }.with_indifferent_access
 
       line_item.reload
       line_item.subject_count.should eq nil
+    end
+
+    it 'should delete extra visits on per patient per visit line items' do
+      pricing_map.update_attribute(:is_one_time_fee, false)
+      service_request.update_attribute(:visit_count, 10)
+      Visit.bulk_create(20, line_item_id: line_item.id)
+
+      session[:service_request_id] = service_request.id
+      get :service_calendar, { :id => service_request.id, :page => 42 }.with_indifferent_access
+
+      line_item.reload
+      line_item.visits.count.should eq 10
+    end
+
+    it 'should create visits if too few on per patient per visit line items' do
+      pricing_map.update_attribute(:is_one_time_fee, false)
+      service_request.update_attribute(:visit_count, 10)
+      Visit.bulk_create(0, line_item_id: line_item.id)
+
+      session[:service_request_id] = service_request.id
+      get :service_calendar, { :id => service_request.id, :page => 42 }.with_indifferent_access
+
+      line_item.reload
+      line_item.visits.count.should eq 10
+    end
+
+    it 'should NOT delete extra visits on one time fee line items' do
+      pricing_map.update_attribute(:is_one_time_fee, true)
+      service_request.update_attribute(:visit_count, 10)
+      Visit.bulk_create(20, line_item_id: line_item.id)
+
+      session[:service_request_id] = service_request.id
+      get :service_calendar, { :id => service_request.id, :page => 42 }.with_indifferent_access
+
+      line_item.reload
+      line_item.visits.count.should eq 20
+    end
+
+    it 'should NOT create visits if too few on one time fee line items' do
+      pricing_map.update_attribute(:is_one_time_fee, true)
+      service_request.update_attribute(:visit_count, 10)
+      Visit.bulk_create(5, line_item_id: line_item.id)
+
+      session[:service_request_id] = service_request.id
+      get :service_calendar, { :id => service_request.id, :page => 42 }.with_indifferent_access
+
+      line_item.reload
+      line_item.visits.count.should eq 5
     end
   end
 

@@ -417,9 +417,34 @@ describe ServiceRequestsController do
   end
 
   describe 'POST ask_a_question' do
+
   end
 
   describe 'GET refresh_service_calendar' do
+  end
+
+  describe 'GET add_service' do
+  end
+
+  describe 'GET remove_service' do
+  end
+
+  describe 'GET select_calendar_row' do
+  end
+
+  describe 'GET unselect_calendar_row' do
+  end
+
+  describe 'GET select_calendar_column' do
+  end
+
+  describe 'GET unselect_calendar_column' do
+  end
+
+  describe 'GET delete_document_group' do
+  end
+
+  describe 'GET edit_document_group' do
   end
 
   describe 'GET navigate' do
@@ -431,5 +456,6 @@ describe ServiceRequestsController do
     # TODO: wow, this method is complicated.  I'm not sure what to test
     # for.
   end
+
 end
 

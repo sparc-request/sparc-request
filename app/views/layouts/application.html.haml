@@ -8,7 +8,7 @@
     = csrf_meta_tags
   %body
     // add the service_request_id for easy access to it
-    = hidden_field_tag :service_request_id, @service_request.id
+    = hidden_field_tag(:service_request_id, @service_request.id) if @service_request
     // load spinner and cancel images so they are cached
     = image_tag 'spinner.gif', :style => 'display:none'
     = image_tag 'cancel.png', :style => 'display:none'
@@ -24,7 +24,7 @@
           %a{:href => "http://www.musc.edu/", :target => "_blank"}
             %img{:alt => "Musc_logo", :src => "/assets/musc_logo.gif"}/
       #title
-        #sub_service_request_header= show_friendly_ssr_id @sub_service_request
+        #sub_service_request_header= show_friendly_ssr_id(@sub_service_request) if @sub_service_request
         %h1 SPARC
       #content.container_12= yield
       = render :partial => 'shared/ask_a_question'

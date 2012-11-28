@@ -179,6 +179,10 @@ class ServiceRequestsController < ApplicationController
     #use session so we know what page to show when tabs are switched
     session[:service_calendar_page] = params[:page] if params[:page]
 
+    # TODO: why is @page not set here?  if it's not supposed to be set
+    # then there should be a comment as to why it's set in #review but
+    # not here
+
     # build out visits if they don't already exist and delete/create if the visit count changes
     @service_request.per_patient_per_visit_line_items.each do |line_item|
       if line_item.subject_count.nil?

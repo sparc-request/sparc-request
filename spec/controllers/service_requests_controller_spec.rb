@@ -292,6 +292,11 @@ describe ServiceRequestsController do
   end
 
   describe 'GET service_calendar' do
+    it "should set the page if page is passed in" do
+      session[:service_request_id] = service_request.id
+      get :service_calendar, { :id => service_request.id, :page => 42 }.with_indifferent_access
+      session[:service_calendar_page].should eq '42'
+    end
   end
 
   describe 'GET service_subsidy' do

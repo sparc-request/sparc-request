@@ -1688,6 +1688,60 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   color: red;
 }
 
+/********Devise Form Styling********/
+.devise_form {
+  padding-left:10px;
+}
+.devise_form h2 {
+  margin-bottom:10px;
+}
+.devise_form .box .info .field {
+  padding: 5px 0px;
+}
+.devise_form .box {
+  background: #E8E8E8;
+}
+.devise_form .box .info {
+  margin-top: 10px;
+  margin-bottom: 15px;
+  margin-left: 15px;
+  margin:10px 15px 15px 15px;
+}
+.devise_form .box .info label {
+  font-weight: bold;
+  width: 125px;
+  display: block;
+  float: left;
+  margin-right: 10px;
+}
+.devise_form label {
+  padding-top:1px;
+}
+.devise_form .box .info input[type=text] {
+  width: 325px;
+}
+.devise_form #button {
+  float:left;
+  margin-top:10px;
+}
+.devise_form .links {
+  float:right;
+  margin-top:10px;
+}
+
+/****Unique devise form styles****/
+.devise_form#new .field {
+  margin-top:5px;
+}
+.devise_form#login .box .info label {
+  width:100px;
+}
+.devise_form#reset .box .info label {
+  width:45px;
+}
+
+/*End Devise Form Styling*/
+
 .document_edit span {
   width: 75px;
 }

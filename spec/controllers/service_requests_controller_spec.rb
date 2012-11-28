@@ -285,6 +285,10 @@ describe ServiceRequestsController do
   end
 
   describe 'GET service_details' do
+    it 'should do nothing?' do
+      session[:service_request_id] = service_request.id
+      get :service_details, :id => service_request.id
+    end
   end
 
   describe 'GET service_calendar' do

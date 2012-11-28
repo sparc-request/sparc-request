@@ -185,6 +185,7 @@ class ServiceRequestsController < ApplicationController
         line_item.update_attribute(:subject_count, @service_request.subject_count)
       end
 
+      # TODO: refactor this into the model
       unless line_item.visits.count == @service_request.visit_count
         ActiveRecord::Base.transaction do
           if line_item.visits.count < @service_request.visit_count

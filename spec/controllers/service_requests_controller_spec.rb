@@ -154,6 +154,60 @@ describe ServiceRequestsController do
         service_request_with_project.submitted_at.should eq Time.now
       end
     end
+
+    it 'should increment next_ssr_id' do
+      service_request_with_project.protocol.update_attribute(:next_ssr_id, 42)
+      ssr = FactoryGirl.create(
+          :sub_service_request,
+          service_request_id: service_request_with_project.id)
+      session[:service_request_id] = service_request_with_project.id
+      get :confirmation, :id => service_request_with_project.id
+      service_request_with_project.protocol.reload
+      service_request_with_project.protocol.next_ssr_id.should eq 43
+    end
+
+    it 'should should set status and ssr_id on all the sub service request' do
+      service_request_with_project.protocol.update_attribute(:next_ssr_id, 42)
+
+      ssr1 = FactoryGirl.create(
+          :sub_service_request,
+          service_request_id: service_request_with_project.id,
+          ssr_id: nil)
+      ssr2 = FactoryGirl.create(
+          :sub_service_request,
+          service_request_id: service_request_with_project.id,
+          ssr_id: nil)
+
+      session[:service_request_id] = service_request_with_project.id
+      get :confirmation, :id => service_request_with_project.id
+
+      ssr1.reload
+      ssr2.reload
+
+      ssr1.status.should eq 'submitted'
+      ssr2.status.should eq 'submitted'
+
+      ssr1.ssr_id.should eq '0042'
+      ssr2.ssr_id.should eq '0043'
+    end
+
+    it 'should set ssr_id correctly when next_ssr_id > 9999' do
+      service_request_with_project.protocol.update_attribute(:next_ssr_id, 10042)
+
+      ssr1 = FactoryGirl.create(
+          :sub_service_request,
+          service_request_id: service_request_with_project.id,
+          ssr_id: nil)
+
+      session[:service_request_id] = service_request_with_project.id
+      get :confirmation, :id => service_request_with_project.id
+
+      ssr1.reload
+      ssr1.ssr_id.should eq '10042'
+    end
+  end
+
+  describe 'GET save_and_exit' do
   end
 
   describe 'GET service_details' do
@@ -175,9 +229,6 @@ describe ServiceRequestsController do
   end
 
   describe 'GET refresh_service_calendar' do
-  end
-
-  describe 'GET save_and_exit' do
   end
 end
 

@@ -15,6 +15,6 @@
             = f.label :remember_me, "Remember me:"
         #button
           = f.submit "Sign in", {:class => 'btn ui-button ui-widget ui-state-default ui-corner-all'}
-        .links
-          = render "devise/shared/links"
         .clear
+  .links.grid_5
+    = render "devise/shared/links"

@@ -8,7 +8,7 @@
           = f.label :email, "Email:"
           = f.email_field :email
         #button
-          = f.submit "Send me password reset instructions", {:class => 'btn ui-button ui-widget ui-state-default ui-corner-all'}
-        .links
-          = render "devise/shared/links"
+          = f.submit "Send password reset", {:class => 'btn ui-button ui-widget ui-state-default ui-corner-all'}
         .clear
+  .links.grid_5
+    = render "devise/shared/links"

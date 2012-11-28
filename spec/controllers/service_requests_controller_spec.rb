@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'timecop'
 
 describe ServiceRequestsController do
   let!(:identity) { FactoryGirl.create(:identity) }
@@ -144,6 +145,14 @@ describe ServiceRequestsController do
     end
 
     it "should set the service request's submitted_at to Time.now" do
+      time = Time.parse('2012-06-01 12:34:56')
+      Timecop.freeze(time) do
+        service_request_with_project.update_attribute(:submitted_at, nil)
+        session[:service_request_id] = service_request_with_project.id
+        get :confirmation, :id => service_request_with_project.id
+        service_request_with_project.reload
+        service_request_with_project.submitted_at.should eq Time.now
+      end
     end
   end
 

@@ -18,6 +18,7 @@ group :development, :test, :profile do
   gem 'database_cleaner'
   gem 'factory_girl'
   gem 'faker'
+  gem 'timecop'
 end
 
 

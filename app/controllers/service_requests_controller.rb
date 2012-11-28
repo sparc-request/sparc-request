@@ -206,6 +206,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def service_subsidy
+    # TODO: move this to the model
     @subsidies = []
     @service_request.sub_service_requests.each do |ssr|
       if ssr.subsidy

@@ -13,9 +13,9 @@ describe ServiceRequestsController do
   let!(:project) { project = Project.create(FactoryGirl.attributes_for(:protocol)); project.save!(:validate => false); project }
 
   # TODO: assign service_list
-  let!(:service_request) { FactoryGirl.create(:service_request) }
-  let!(:service_request_with_study) { FactoryGirl.create(:service_request, :protocol_id => study.id) }
-  let!(:service_request_with_project) { FactoryGirl.create(:service_request, :protocol_id => project.id) }
+  let!(:service_request) { FactoryGirl.create(:service_request, visit_count: 0) }
+  let!(:service_request_with_study) { FactoryGirl.create(:service_request, :protocol_id => study.id, visit_count: 0) }
+  let!(:service_request_with_project) { FactoryGirl.create(:service_request, :protocol_id => project.id, visit_count: 0) }
 
   let!(:sub_service_request) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id ) }
 
@@ -103,6 +103,8 @@ describe ServiceRequestsController do
 
   describe 'GET review' do
     it "should set the page if page is passed in" do
+      service_request.update_attribute(:visit_count, 500)
+
       session[:service_request_id] = service_request.id
       get :review, { :id => service_request.id, :page => 42 }.with_indifferent_access
       session[:service_calendar_page].should eq '42'
@@ -297,6 +299,8 @@ describe ServiceRequestsController do
     let!(:line_item) { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id) }
 
     it "should set the page if page is passed in" do
+      service_request.update_attribute(:visit_count, 500)
+
       session[:service_request_id] = service_request.id
       get :service_calendar, { :id => service_request.id, :page => 42 }.with_indifferent_access
       session[:service_calendar_page].should eq '42'
@@ -421,29 +425,57 @@ describe ServiceRequestsController do
   end
 
   describe 'GET refresh_service_calendar' do
-    # TODO: This method is broken
+    it "should set the page if page is passed in" do
+      service_request.update_attribute(:visit_count, 500)
 
-    # it "should set the page if page is passed in" do
-    #   session[:service_request_id] = service_request.id
-    #   get :refresh_service_calendar, { :id => service_request.id, :page => 42 }.with_indifferent_access
-    #   session[:service_calendar_page].should eq '42'
-    #
-    #   assigns(:page).should eq 42
-    #
-    #   # TODO: check that set_visit_page is called?
-    # end
-    #
-    # it 'should set tab to pricing' do
-    #   session[:service_request_id] = service_request.id
-    #   get :refresh_service_calendar, :id => service_request.id
-    #   assigns(:tab).should eq 'pricing'
-    # end
+      session[:service_request_id] = service_request.id
+      get :refresh_service_calendar, { :id => service_request.id, :page => 42, :format => :js }.with_indifferent_access
+      session[:service_calendar_page].should eq 42
+    
+      # TODO: sometimes this is 1 and sometimes it is 42.  I don't know
+      # why.
+      assigns(:page).should eq 42
+    
+      # TODO: check that set_visit_page is called?
+    end
+    
+    it 'should set tab to pricing' do
+      session[:service_request_id] = service_request.id
+      get :refresh_service_calendar, :id => service_request.id, :format => :js
+      assigns(:tab).should eq 'pricing'
+    end
   end
 
-  describe 'GET add_service' do
+  describe 'POST add_service' do
+    let!(:service) {
+      service = FactoryGirl.create(
+          :service,
+          pricing_map_count: 1,
+          organization_id: core.id)
+      service.pricing_maps[0].display_date = Date.today
+      service
+    }
+
+    it 'should give an error if the service request already has a line item for the service' do
+      line_item = FactoryGirl.create(
+          :line_item,
+          service_id: service.id,
+          service_request_id: service_request.id)
+      session[:service_request_id] = service_request.id
+      post :add_service, { :id => service_request.id, :service_id => service.id, :format => :js }.with_indifferent_access
+      response.body.should eq 'Service exists in line items'
+    end
+
+    it 'should create a line item for the service' do
+      session[:service_request_id] = service_request.id
+      post :add_service, { :id => service_request.id, :service_id => service.id, :format => :js }.with_indifferent_access
+
+      service_request.reload
+      service_request.line_items.count.should eq 1
+    end
   end
 
-  describe 'GET remove_service' do
+  describe 'POST remove_service' do
   end
 
   describe 'GET select_calendar_row' do

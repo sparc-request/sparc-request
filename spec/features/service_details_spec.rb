@@ -7,7 +7,7 @@ describe "submitting a filled in form" do
   let!(:program) {FactoryGirl.create(:program,type:'Program',parent_id:provider.id,name:'Office of Biomedical Informatics',order:1,obisid:'87d1220c5abf9f9608121672be021963',abbreviation:'Informatics',process_ssrs:  0,is_available: 1)}
   let!(:service)         { FactoryGirl.create(:service, organization_id:program.id) }
   let!(:service2)        { FactoryGirl.create(:service, organization_id:program.id) }
-  let!(:sub_service_request) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, status: "draft")}
+  let!(:sub_service_request) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id,status: "draft")}
   let!(:line_item)        { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service.id, sub_service_request_id: sub_service_request.id) }
   let!(:line_item2)       { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service2.id, sub_service_request_id: sub_service_request.id) }
   let!(:pricing_setup)   {FactoryGirl.create(:pricing_setup, organization_id: program.id)}

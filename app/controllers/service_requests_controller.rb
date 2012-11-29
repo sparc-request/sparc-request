@@ -263,6 +263,9 @@ class ServiceRequestsController < ApplicationController
     redirect_to @user_portal_link
   end
 
+  # TODO: This method results in a "Template is missing" exception.  The
+  # method is likely not called from anywhere in the application and
+  # should be removed.
   def refresh_service_calendar
     session[:service_calendar_page] = params[:page] if params[:page]
     @page = @service_request.set_visit_page session[:service_calendar_page].to_i

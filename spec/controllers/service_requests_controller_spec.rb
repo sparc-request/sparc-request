@@ -421,6 +421,23 @@ describe ServiceRequestsController do
   end
 
   describe 'GET refresh_service_calendar' do
+    # TODO: This method is broken
+
+    # it "should set the page if page is passed in" do
+    #   session[:service_request_id] = service_request.id
+    #   get :refresh_service_calendar, { :id => service_request.id, :page => 42 }.with_indifferent_access
+    #   session[:service_calendar_page].should eq '42'
+    #
+    #   assigns(:page).should eq 42
+    #
+    #   # TODO: check that set_visit_page is called?
+    # end
+    #
+    # it 'should set tab to pricing' do
+    #   session[:service_request_id] = service_request.id
+    #   get :refresh_service_calendar, :id => service_request.id
+    #   assigns(:tab).should eq 'pricing'
+    # end
   end
 
   describe 'GET add_service' do

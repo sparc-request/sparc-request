@@ -13,7 +13,7 @@ describe "creating a new project " do
     it "should show errors when submitting a blank form", :js => true do
       find('#errorExplanation').visible?().should eq(true)
     end
-
+    sleep 2
     it "should require a protocol title", :js => true do
       page.should have_content("Title can't be blank")
     end

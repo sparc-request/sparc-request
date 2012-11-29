@@ -48,11 +48,6 @@ describe ServiceRequestsController do
     end
   end
 
-  describe 'GET navigate' do
-    # TODO: wow, this method is complicated.  I'm not sure what to test
-    # for.
-  end
-
   describe 'GET catalog' do
     it 'should set institutions to all institutions if there is no sub service request id' do
       session[:service_request_id] = service_request.id
@@ -396,15 +391,71 @@ describe ServiceRequestsController do
   end
 
   describe 'GET document_management' do
-  end
+    let!(:service1) { service = FactoryGirl.create(:service, pricing_map_count: 0) }
+    let!(:service2) { service = FactoryGirl.create(:service, pricing_map_count: 0) }
 
-  describe 'POST navigate' do
+    before(:each) do
+      service_list = [ service1, service2 ]
+
+      controller.stub!(:setup_session) do
+        controller.instance_eval do
+          @current_user = Identity.find_by_id(session[:identity_id])
+          @service_request = ServiceRequest.find_by_id(session[:service_request_id])
+          @sub_service_request = SubServiceRequest.find_by_id(session[:sub_service_request_id])
+
+          @service_request.stub!(:service_list) { service_list }
+        end
+      end
+    end
+
+    it "should set the service list ot the service request's service list" do
+      session[:service_request_id] = service_request.id
+      get :document_management, :id => service_request.id
+
+      assigns(:service_list).should eq [ service1, service2 ]
+    end
   end
 
   describe 'POST ask_a_question' do
+
   end
 
   describe 'GET refresh_service_calendar' do
   end
+
+  describe 'GET add_service' do
+  end
+
+  describe 'GET remove_service' do
+  end
+
+  describe 'GET select_calendar_row' do
+  end
+
+  describe 'GET unselect_calendar_row' do
+  end
+
+  describe 'GET select_calendar_column' do
+  end
+
+  describe 'GET unselect_calendar_column' do
+  end
+
+  describe 'GET delete_document_group' do
+  end
+
+  describe 'GET edit_document_group' do
+  end
+
+  describe 'GET navigate' do
+    # TODO: wow, this method is complicated.  I'm not sure what to test
+    # for.
+  end
+
+  describe 'POST navigate' do
+    # TODO: wow, this method is complicated.  I'm not sure what to test
+    # for.
+  end
+
 end
 

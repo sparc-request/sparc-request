@@ -29,10 +29,14 @@ describe "submitting a filled in form" do
       sleep 1
       visit service_details_service_request_path 1
       sleep 1
+      fill_in "service_request_visit_count", :with => ""
+      sleep 1
+      find(:xpath, "//a/img[@alt='Savecontinue']/..").click
+      sleep 2
       fill_in "service_request_visit_count", :with => "20"
       sleep 1
       find(:xpath, "//a/img[@alt='Savecontinue']/..").click
-      sleep 5
+      sleep 1
     end
   end
 end

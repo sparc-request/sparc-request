@@ -10,8 +10,8 @@ describe "submitting a filled in form" do
   let!(:sub_service_request) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id,status: "draft")}
   let!(:line_item)        { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service.id, sub_service_request_id: sub_service_request.id) }
   let!(:line_item2)       { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service2.id, sub_service_request_id: sub_service_request.id) }
-  let!(:pricing_setup)   {FactoryGirl.create(:pricing_setup, organization_id: program.id)}
-  let!(:pricing_map)     { FactoryGirl.create(:pricing_map, service_id: service.id, is_one_time_fee: true, display_date: '2006-12-1') }
+  let!(:pricing_setup)   {FactoryGirl.create(:pricing_setup, organization_id: program.id, display_date: '2006-12-1', federal: 50, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal')}
+  let!(:pricing_map)     { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service.id, is_one_time_fee: true, display_date: '2006-12-1') }
 
   before :each do
     protocol = Project.create(FactoryGirl.attributes_for(:protocol))

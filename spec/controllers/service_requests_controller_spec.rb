@@ -26,14 +26,19 @@ describe ServiceRequestsController do
   # TODO: refactor this into stub_helper.rb
   before(:each) do
     controller.stub!(:authenticate)
-    controller.stub!(:load_defaults)
+
+    controller.stub!(:load_defaults) do
+      controller.instance_eval do
+        @user_portal_link = '/user_portal'
+      end
+    end
 
     controller.stub!(:setup_session) do
       controller.instance_eval do
         @current_user = Identity.find_by_id(session[:identity_id])
         @service_request = ServiceRequest.find_by_id(session[:service_request_id])
         @sub_service_request = SubServiceRequest.find_by_id(session[:sub_service_request_id])
-        @user_portal_link = '/user_portal'
+        @line_items = @service_request.line_items
       end
     end
 
@@ -568,6 +573,37 @@ describe ServiceRequestsController do
   end
 
   describe 'POST remove_service' do
+    let!(:service1) { service = FactoryGirl.create( :service, organization_id: core.id) }
+    let!(:service2) { service = FactoryGirl.create( :service, organization_id: core.id) }
+    let!(:service3) { service = FactoryGirl.create( :service, organization_id: core2.id) }
+
+    let!(:line_item1) { FactoryGirl.create(:line_item, service_id: service1.id, service_request_id: service_request.id) }
+    let!(:line_item2) { FactoryGirl.create(:line_item, service_id: service2.id, service_request_id: service_request.id) }
+    let!(:line_item3) { FactoryGirl.create(:line_item, service_id: service3.id, service_request_id: service_request.id) }
+
+    it 'should delete any line items for the removed service' do
+      controller.request.stub referrer: 'http://example.com'
+
+      line_item1 # create line item
+      line_item2 # create line item
+      line_item3 # create line item
+
+      session[:service_request_id] = service_request.id
+      post :remove_service, {
+        :id            => service_request.id,
+        :service_id    => service1.id,
+        :line_item_id  => line_item1.id,
+        :format        => :js,
+      }.with_indifferent_access
+
+      service_request.line_items.should_not include(line_item1)
+    end
+
+    it 'should delete sub service requests for organizations that no longer have a service in the service request' do
+    end
+
+    it 'should set the page' do
+    end
   end
 
   describe 'GET select_calendar_row' do

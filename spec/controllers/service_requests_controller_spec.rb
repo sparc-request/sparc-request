@@ -7,6 +7,7 @@ describe ServiceRequestsController do
   let!(:provider) { FactoryGirl.create(:provider, parent_id: institution.id) }
   let!(:program) { FactoryGirl.create(:program, parent_id: provider.id) }
   let!(:core) { FactoryGirl.create(:core, parent_id: program.id) }
+  let!(:core2) { FactoryGirl.create(:core, parent_id: program.id) }
 
   # TODO: shouldn't be bypassing validations...
   let!(:study) { study = Study.create(FactoryGirl.attributes_for(:protocol)); study.save!(:validate => false); study }
@@ -456,6 +457,24 @@ describe ServiceRequestsController do
       service
     }
 
+    let!(:service2) {
+      service = FactoryGirl.create(
+          :service,
+          pricing_map_count: 1,
+          organization_id: core.id)
+      service.pricing_maps[0].display_date = Date.today
+      service
+    }
+
+    let!(:service3) {
+      service = FactoryGirl.create(
+          :service,
+          pricing_map_count: 1,
+          organization_id: core2.id)
+      service.pricing_maps[0].display_date = Date.today
+      service
+    }
+
     it 'should give an error if the service request already has a line item for the service' do
       line_item = FactoryGirl.create(
           :line_item,
@@ -472,6 +491,79 @@ describe ServiceRequestsController do
 
       service_request.reload
       service_request.line_items.count.should eq 1
+      service_request.line_items[0].service.should eq service
+      service_request.line_items[0].optional.should eq true
+      service_request.line_items[0].quantity.should eq 1
+    end
+
+    it 'should create a line item for a required service' do
+      FactoryGirl.create(
+          :service_relation,
+          service_id: service.id,
+          related_service_id: service2.id,
+          optional: false)
+
+      session[:service_request_id] = service_request.id
+      post :add_service, { :id => service_request.id, :service_id => service.id, :format => :js }.with_indifferent_access
+
+      service_request.reload
+      service_request.line_items.count.should eq 2
+      service_request.line_items[0].service.should eq service
+      service_request.line_items[0].optional.should eq true
+      service_request.line_items[0].quantity.should eq 1
+      service_request.line_items[1].service.should eq service2
+      service_request.line_items[1].optional.should eq false
+      service_request.line_items[1].quantity.should eq 1
+    end
+
+    it 'should create a line item for an optional service' do
+      FactoryGirl.create(
+          :service_relation,
+          service_id: service.id,
+          related_service_id: service2.id,
+          optional: true)
+
+      session[:service_request_id] = service_request.id
+      post :add_service, { :id => service_request.id, :service_id => service.id, :format => :js }.with_indifferent_access
+
+      service_request.reload
+      service_request.line_items.count.should eq 2
+      service_request.line_items[0].service.should eq service
+      service_request.line_items[0].optional.should eq true
+      service_request.line_items[0].quantity.should eq 1
+      service_request.line_items[1].service.should eq service2
+      service_request.line_items[1].optional.should eq true
+      service_request.line_items[1].quantity.should eq 1
+    end
+
+    it 'should create a sub service request for each organization in the service list' do
+      session[:service_request_id] = service_request.id
+
+      [ service, service2, service3 ].each do |service_to_add|
+        post :add_service, { :id => service_request.id, :service_id => service_to_add.id, :format => :js }.with_indifferent_access
+      end
+
+      service_request.reload
+      service_request.sub_service_requests.count.should eq 2
+      service_request.sub_service_requests[0].organization.should eq core
+      service_request.sub_service_requests[1].organization.should eq core2
+    end
+
+    it 'should update each of the line items with the appropriate ssr id' do
+      session[:service_request_id] = service_request.id
+
+      [ service, service2, service3 ].each do |service_to_add|
+        post :add_service, { :id => service_request.id, :service_id => service_to_add.id, :format => :js }.with_indifferent_access
+      end
+
+      core_ssr = service_request.sub_service_requests.find_by_organization_id(core.id)
+      core2_ssr = service_request.sub_service_requests.find_by_organization_id(core2.id)
+
+      service_request.reload
+      service_request.line_items.count.should eq 3
+      service_request.line_items[0].sub_service_request.should eq core_ssr
+      service_request.line_items[1].sub_service_request.should eq core_ssr
+      service_request.line_items[2].sub_service_request.should eq core2_ssr
     end
   end
 

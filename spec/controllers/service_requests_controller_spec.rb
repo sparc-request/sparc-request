@@ -570,6 +570,8 @@ describe ServiceRequestsController do
       service_request.line_items[1].sub_service_request.should eq core_ssr
       service_request.line_items[2].sub_service_request.should eq core2_ssr
     end
+
+    # TODO: test for adding an already added service
   end
 
   describe 'POST remove_service' do
@@ -581,12 +583,15 @@ describe ServiceRequestsController do
     let!(:line_item2) { FactoryGirl.create(:line_item, service_id: service2.id, service_request_id: service_request.id) }
     let!(:line_item3) { FactoryGirl.create(:line_item, service_id: service3.id, service_request_id: service_request.id) }
 
+    let!(:ssr1) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
+    let!(:ssr2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
+
     it 'should delete any line items for the removed service' do
       controller.request.stub referrer: 'http://example.com'
 
-      line_item1 # create line item
-      line_item2 # create line item
-      line_item3 # create line item
+      line_item1 # create line item (service1, core)
+      line_item2 # create line item (service2, core)
+      line_item3 # create line item (service3, core2)
 
       session[:service_request_id] = service_request.id
       post :remove_service, {
@@ -596,14 +601,63 @@ describe ServiceRequestsController do
         :format        => :js,
       }.with_indifferent_access
 
+      service_request.reload
       service_request.line_items.should_not include(line_item1)
+      service_request.line_items.should include(line_item2)
+      service_request.line_items.should include(line_item3)
     end
 
     it 'should delete sub service requests for organizations that no longer have a service in the service request' do
+      controller.request.stub referrer: 'http://example.com'
+
+      line_item1 # create line item (service1, core)
+      line_item2 # create line item (service2, core)
+      line_item3 # create line item (service3, core2)
+
+      ssr1 # create ssr (core)
+      ssr2 # create ssr (core2)
+
+      session[:service_request_id] = service_request.id
+
+      post :remove_service, {
+        :id            => service_request.id,
+        :service_id    => service1.id,
+        :line_item_id  => line_item1.id,
+        :format        => :js,
+      }.with_indifferent_access
+
+      service_request.reload
+      service_request.sub_service_requests.should include(ssr1)
+      service_request.sub_service_requests.should include(ssr2)
+
+      post :remove_service, {
+        :id            => service_request.id,
+        :service_id    => service2.id,
+        :line_item_id  => line_item2.id,
+        :format        => :js,
+      }.with_indifferent_access
+
+      service_request.reload
+      service_request.sub_service_requests.should_not include(ssr1)
+      service_request.sub_service_requests.should include(ssr2)
+
+      post :remove_service, {
+        :id            => service_request.id,
+        :service_id    => service3.id,
+        :line_item_id  => line_item3.id,
+        :format        => :js,
+      }.with_indifferent_access
+
+      service_request.reload
+      service_request.sub_service_requests.should_not include(ssr1)
+      service_request.sub_service_requests.should_not include(ssr2)
     end
 
     it 'should set the page' do
+      # TODO
     end
+
+    # TODO: test for removing an already removed service
   end
 
   describe 'GET select_calendar_row' do

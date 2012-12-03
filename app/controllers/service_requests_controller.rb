@@ -364,7 +364,11 @@ class ServiceRequestsController < ApplicationController
   def select_calendar_row
     @line_item = LineItem.find params[:line_item_id]
     @line_item.visits.each do |visit|
-      visit.update_attributes({:quantity => visit.line_item.service.displayed_pricing_map.unit_minimum, :research_billing_qty => visit.line_item.service.displayed_pricing_map.unit_minimum, :insurance_billing_qty => 0, :effort_billing_qty => 0})
+      visit.update_attributes(
+          quantity:              visit.line_item.service.displayed_pricing_map.unit_minimum,
+          research_billing_qty:  visit.line_item.service.displayed_pricing_map.unit_minimum,
+          insurance_billing_qty: 0,
+          effort_billing_qty:    0)
     end
     
     render :partial => 'update_service_calendar'
@@ -384,7 +388,11 @@ class ServiceRequestsController < ApplicationController
 
     @service_request.per_patient_per_visit_line_items.each do |line_item|
       visit = line_item.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
-      visit.update_attributes({:quantity => visit.line_item.service.displayed_pricing_map.unit_minimum, :research_billing_qty => visit.line_item.service.displayed_pricing_map.unit_minimum, :insurance_billing_qty => 0, :effort_billing_qty => 0})
+      visit.update_attributes(
+          quantity:              visit.line_item.service.displayed_pricing_map.unit_minimum,
+          research_billing_qty:  visit.line_item.service.displayed_pricing_map.unit_minimum,
+          insurance_billing_qty: 0,
+          effort_billing_qty:    0)
     end
     
     render :partial => 'update_service_calendar'

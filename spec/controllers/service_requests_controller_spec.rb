@@ -397,9 +397,6 @@ describe ServiceRequestsController do
     end
   end
 
-  describe 'GET service_subsidy' do
-  end
-
   describe 'GET document_management' do
     let!(:service1) { service = FactoryGirl.create(:service, pricing_map_count: 0) }
     let!(:service2) { service = FactoryGirl.create(:service, pricing_map_count: 0) }
@@ -731,99 +728,134 @@ describe ServiceRequestsController do
       assigns(:line_item).should eq line_item
     end
 
-    it "should update each of the line item's visits" do
-      pricing_map.update_attribute(:unit_minimum, 100)
+    context('calendar methods') do
+      let!(:service1) {
+        service = FactoryGirl.create(:service, pricing_map_count: 1)
+        service.pricing_maps[0].display_date = Date.today
+        service
+      }
 
-      session[:service_request_id] = service_request.id
-      post :select_calendar_row, {
-        :id            => service_request.id,
-        :line_item_id  => line_item.id,
-        :format        => :js
-      }.with_indifferent_access
+      let!(:service2) {
+        service = FactoryGirl.create(:service, pricing_map_count: 1)
+        service.pricing_maps[0].display_date = Date.today
+        service
+      }
 
-      line_item.visits.count.should eq 3
-      line_item.visits[0].quantity.should               eq 100
-      line_item.visits[0].research_billing_qty.should   eq 100
-      line_item.visits[0].insurance_billing_qty.should  eq 0
-      line_item.visits[0].effort_billing_qty.should     eq 0
-      line_item.visits[1].quantity.should               eq 100
-      line_item.visits[1].research_billing_qty.should   eq 100
-      line_item.visits[1].insurance_billing_qty.should  eq 0
-      line_item.visits[1].effort_billing_qty.should     eq 0
-      line_item.visits[2].quantity.should               eq 100
-      line_item.visits[2].research_billing_qty.should   eq 100
-      line_item.visits[2].insurance_billing_qty.should  eq 0
-      line_item.visits[2].effort_billing_qty.should     eq 0
+      let!(:service3) {
+        service = FactoryGirl.create(:service, pricing_map_count: 1)
+        service.pricing_maps[0].display_date = Date.today
+        service
+      }
+
+      let!(:pricing_map1) { service1.pricing_maps[0] }
+      let!(:pricing_map2) { service2.pricing_maps[0] }
+      let!(:pricing_map3) { service3.pricing_maps[0] }
+
+      let!(:line_item1) { FactoryGirl.create(:line_item, service_id: service1.id, service_request_id: service_request.id) }
+      let!(:line_item2) { FactoryGirl.create(:line_item, service_id: service2.id, service_request_id: service_request.id) }
+      let!(:line_item3) { FactoryGirl.create(:line_item, service_id: service3.id, service_request_id: service_request.id) }
+
+      describe(:select_calencdar_row) do
+        it 'should set line item' do
+          pricing_map1.update_attribute(:unit_minimum, 100)
+          Visit.bulk_create(3, line_item_id: line_item1.id)
+
+          session[:service_request_id] = service_request.id
+          post :select_calendar_row, {
+            :id            => service_request.id,
+            :line_item_id  => line_item1.id,
+            :format        => :js
+          }.with_indifferent_access
+
+          assigns(:line_item).should eq line_item1
+        end
+
+        it "should update each of the line item's visits" do
+          pricing_map1.update_attribute(:unit_minimum, 100)
+          Visit.bulk_create(3, line_item_id: line_item1.id)
+
+          session[:service_request_id] = service_request.id
+          post :select_calendar_row, {
+            :id            => service_request.id,
+            :line_item_id  => line_item1.id,
+            :format        => :js
+          }.with_indifferent_access
+
+          line_item1.visits.count.should eq 3
+          line_item1.visits[0].quantity.should               eq 100
+          line_item1.visits[0].research_billing_qty.should   eq 100
+          line_item1.visits[0].insurance_billing_qty.should  eq 0
+          line_item1.visits[0].effort_billing_qty.should     eq 0
+          line_item1.visits[1].quantity.should               eq 100
+          line_item1.visits[1].research_billing_qty.should   eq 100
+          line_item1.visits[1].insurance_billing_qty.should  eq 0
+          line_item1.visits[1].effort_billing_qty.should     eq 0
+          line_item1.visits[2].quantity.should               eq 100
+          line_item1.visits[2].research_billing_qty.should   eq 100
+          line_item1.visits[2].insurance_billing_qty.should  eq 0
+          line_item1.visits[2].effort_billing_qty.should     eq 0
+        end
+      end
+
+      describe 'GET unselect_calendar_row' do
+        it 'should set line item' do
+          pricing_map1.update_attribute(:unit_minimum, 100)
+          Visit.bulk_create(3, line_item_id: line_item1.id)
+
+          session[:service_request_id] = service_request.id
+          post :unselect_calendar_row, {
+            :id            => service_request.id,
+            :line_item_id  => line_item1.id,
+            :format        => :js
+          }.with_indifferent_access
+
+          assigns(:line_item).should eq line_item1
+        end
+
+        it "should update each of the line item's visits" do
+          pricing_map1.update_attribute(:unit_minimum, 100)
+          Visit.bulk_create(3, line_item_id: line_item1.id)
+
+          session[:service_request_id] = service_request.id
+          post :unselect_calendar_row, {
+            :id            => service_request.id,
+            :line_item_id  => line_item.id,
+            :format        => :js
+          }.with_indifferent_access
+
+          line_item1.visits.count.should eq 3
+          line_item1.visits[0].quantity.should               eq 0
+          line_item1.visits[0].research_billing_qty.should   eq 0
+          line_item1.visits[0].insurance_billing_qty.should  eq 0
+          line_item1.visits[0].effort_billing_qty.should     eq 0
+          line_item1.visits[1].quantity.should               eq 0
+          line_item1.visits[1].research_billing_qty.should   eq 0
+          line_item1.visits[1].insurance_billing_qty.should  eq 0
+          line_item1.visits[1].effort_billing_qty.should     eq 0
+          line_item1.visits[2].quantity.should               eq 0
+          line_item1.visits[2].research_billing_qty.should   eq 0
+          line_item1.visits[2].insurance_billing_qty.should  eq 0
+          line_item1.visits[2].effort_billing_qty.should     eq 0
+        end
+      end
     end
-  end
 
-  describe 'GET unselect_calendar_row' do
-    let!(:service) {
-      service = FactoryGirl.create(:service, pricing_map_count: 1)
-      service.pricing_maps[0].display_date = Date.today
-      service
-    }
-
-    let!(:pricing_map) {
-      service.pricing_maps[0]
-    }
-
-    let!(:line_item) {
-      line_item = FactoryGirl.create(
-          :line_item,
-          service_id: service.id,
-          service_request_id: service_request.id)
-      Visit.bulk_create(3, line_item_id: line_item.id)
-      line_item
-    }
-
-    it 'should set line item' do
-      session[:service_request_id] = service_request.id
-      post :unselect_calendar_row, {
-        :id            => service_request.id,
-        :line_item_id  => line_item.id,
-        :format        => :js
-      }.with_indifferent_access
-
-      assigns(:line_item).should eq line_item
+    describe 'GET select_calendar_column' do
+      it 'should update each of the visits' do
+      end
     end
 
-    it "should update each of the line item's visits" do
-      pricing_map.update_attribute(:unit_minimum, 100)
-
-      session[:service_request_id] = service_request.id
-      post :unselect_calendar_row, {
-        :id            => service_request.id,
-        :line_item_id  => line_item.id,
-        :format        => :js
-      }.with_indifferent_access
-
-      line_item.visits.count.should eq 3
-      line_item.visits[0].quantity.should               eq 0
-      line_item.visits[0].research_billing_qty.should   eq 0
-      line_item.visits[0].insurance_billing_qty.should  eq 0
-      line_item.visits[0].effort_billing_qty.should     eq 0
-      line_item.visits[1].quantity.should               eq 0
-      line_item.visits[1].research_billing_qty.should   eq 0
-      line_item.visits[1].insurance_billing_qty.should  eq 0
-      line_item.visits[1].effort_billing_qty.should     eq 0
-      line_item.visits[2].quantity.should               eq 0
-      line_item.visits[2].research_billing_qty.should   eq 0
-      line_item.visits[2].insurance_billing_qty.should  eq 0
-      line_item.visits[2].effort_billing_qty.should     eq 0
+    describe 'GET unselect_calendar_column' do
     end
-  end
-
-  describe 'GET select_calendar_column' do
-  end
-
-  describe 'GET unselect_calendar_column' do
   end
 
   describe 'GET delete_document_group' do
   end
 
   describe 'GET edit_document_group' do
+  end
+
+  describe 'GET service_subsidy' do
   end
 
   describe 'GET navigate' do

@@ -654,10 +654,50 @@ describe ServiceRequestsController do
     end
 
     it 'should set the page' do
-      # TODO
+      controller.request.stub referrer: 'http://example.com/foo/bar'
+
+      line_item1 # create line item (service1, core)
+      line_item2 # create line item (service2, core)
+      line_item3 # create line item (service3, core2)
+
+      session[:service_request_id] = service_request.id
+      post :remove_service, {
+        :id            => service_request.id,
+        :service_id    => service1.id,
+        :line_item_id  => line_item1.id,
+        :format        => :js,
+      }.with_indifferent_access
+
+      # TODO: why is @page set to a string in this method but set to an
+      # integer elsewhere?
+      assigns(:page).should eq 'bar'
     end
 
-    # TODO: test for removing an already removed service
+    it 'should raise an exception if a service is removed twice' do
+      controller.request.stub referrer: 'http://example.com'
+
+      line_item1 # create line item (service1, core)
+      line_item2 # create line item (service2, core)
+      line_item3 # create line item (service3, core2)
+
+      session[:service_request_id] = service_request.id
+
+      post :remove_service, {
+        :id            => service_request.id,
+        :service_id    => service1.id,
+        :line_item_id  => line_item1.id,
+        :format        => :js,
+      }.with_indifferent_access
+
+      proc {
+        post :remove_service, {
+          :id            => service_request.id,
+          :service_id    => service1.id,
+          :line_item_id  => line_item1.id,
+          :format        => :js,
+        }.with_indifferent_access
+      }.should raise_error(ActiveRecord::RecordNotFound)
+    end
   end
 
   describe 'GET select_calendar_row' do

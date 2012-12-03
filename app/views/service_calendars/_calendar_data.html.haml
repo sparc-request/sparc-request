@@ -45,7 +45,7 @@
         - value[:line_items].each do |line_item|
           %tr.line_item{:class => cycle('odd', '', :name => 'pppvs')}
             %td.service_name= line_item.service.display_service_name
-            %td.service_rate= display_service_rate line_item
+            %td{:class => "service_rate_#{line_item.id}"}= display_service_rate line_item
             %td.your_cost= display_your_cost line_item
             %td.unit_type= line_item.service.displayed_pricing_map.unit_type
             %td.subject_count= select_tag "line_item_#{line_item.id}_count", options_for_select((1..@service_request.subject_count), line_item.subject_count), :class => 'line_item_visit_count', :update => "/service_requests/#{line_item.service_request_id}/service_calendars?line_item=#{line_item.id}&tab=template"
@@ -107,25 +107,25 @@
           - value[:line_items].each do |line_item|
             %tr.line_item{:class => cycle('odd', '', :name => 'otfs')}
               %td.service_name= line_item.service.name
-              %td.service_rate= display_service_rate line_item
+              %td{:class => "service_rate_#{line_item.id}"}= display_service_rate line_item
               %td.your_cost= display_your_cost line_item
               %td{:colspan => 8}
-              %td= display_one_time_fee_direct_cost line_item
+              %td{:class => "total_#{line_item.id}"}= display_one_time_fee_direct_cost line_item
       
       %tr.totals_section.begin_totals{:class => cycle('odd', '', :name => 'otfs')}
         %td{:colspan => 5} Total Direct Costs (other) Per Study
         %td{:colspan => 6}
-        %td= display_total_direct_cost_per_study_otfs @service_request, @line_items
+        %td.otf_total_direct_cost= display_total_direct_cost_per_study_otfs @service_request, @line_items
 
       %tr.totals_section{:class => cycle('odd', '', :name => 'otfs')}
         %td{:colspan => 5} Total Indirect Costs (other) Per Study
         %td{:colspan => 6}
-        %td= display_total_indirect_cost_per_study_otfs @service_request, @line_items
+        %td.otf_total_indirect_cost= display_total_indirect_cost_per_study_otfs @service_request, @line_items
 
       %tr.totals_section{:class => cycle('odd', '', :name => 'otfs')}
         %td{:colspan => 5} Total Costs (other) Per Study
         %td{:colspan => 6}
-        %td= display_total_cost_per_study_otfs @service_request, @line_items
+        %td.otf_total_cost= display_total_cost_per_study_otfs @service_request, @line_items
 
       %th.totals_section{:colspan => 12} &nbsp;
 

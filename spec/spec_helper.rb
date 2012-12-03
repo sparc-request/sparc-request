@@ -82,6 +82,16 @@ RSpec.configure do |config|
   end
 end
 
+def build_service_request_with_project
+  build_service_request()
+  build_project()
+end
+
+def build_service_request_with_study
+  build_service_request()
+  build_study()
+end
+
 def build_service_request
   let!(:service_request) { FactoryGirl.create(:service_request, status: "draft", subject_count: 2, visit_count: 10) }
   let!(:institution)  {FactoryGirl.create(:institution,name: 'Medical University of South Carolina', order: 1,obisid: '87d1220c5abf9f9608121672be000412',abbreviation: 'MUSC', is_available: 1)}
@@ -102,6 +112,12 @@ def build_service_request
 
   before :each do
     service_request.update_attribute(:service_requester_id, Identity.find_by_ldap_uid("jug2").id)
+  end
+end
+
+def add_visits
+  (1..service_request.visit_count).each do
+    FactoryGirl.create(:visit, line_item_id: line_item2.id, quantity: 0)
   end
 end
 

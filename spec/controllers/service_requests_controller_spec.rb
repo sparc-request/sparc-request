@@ -742,18 +742,18 @@ describe ServiceRequestsController do
       }.with_indifferent_access
 
       line_item.visits.count.should eq 3
-      line_item.visits[0].quantity.should eq 100
-      line_item.visits[0].research_billing_qty.should eq 100
-      line_item.visits[0].insurance_billing_qty.should eq 0
-      line_item.visits[0].effort_billing_qty.should eq 0
-      line_item.visits[1].quantity.should eq 100
-      line_item.visits[1].research_billing_qty.should eq 100
-      line_item.visits[1].insurance_billing_qty.should eq 0
-      line_item.visits[1].effort_billing_qty.should eq 0
-      line_item.visits[2].quantity.should eq 100
-      line_item.visits[2].research_billing_qty.should eq 100
-      line_item.visits[2].insurance_billing_qty.should eq 0
-      line_item.visits[2].effort_billing_qty.should eq 0
+      line_item.visits[0].quantity.should               eq 100
+      line_item.visits[0].research_billing_qty.should   eq 100
+      line_item.visits[0].insurance_billing_qty.should  eq 0
+      line_item.visits[0].effort_billing_qty.should     eq 0
+      line_item.visits[1].quantity.should               eq 100
+      line_item.visits[1].research_billing_qty.should   eq 100
+      line_item.visits[1].insurance_billing_qty.should  eq 0
+      line_item.visits[1].effort_billing_qty.should     eq 0
+      line_item.visits[2].quantity.should               eq 100
+      line_item.visits[2].research_billing_qty.should   eq 100
+      line_item.visits[2].insurance_billing_qty.should  eq 0
+      line_item.visits[2].effort_billing_qty.should     eq 0
     end
   end
 
@@ -799,18 +799,18 @@ describe ServiceRequestsController do
       }.with_indifferent_access
 
       line_item.visits.count.should eq 3
-      line_item.visits[0].quantity.should eq 0
-      line_item.visits[0].research_billing_qty.should eq 0
-      line_item.visits[0].insurance_billing_qty.should eq 0
-      line_item.visits[0].effort_billing_qty.should eq 0
-      line_item.visits[1].quantity.should eq 0
-      line_item.visits[1].research_billing_qty.should eq 0
-      line_item.visits[1].insurance_billing_qty.should eq 0
-      line_item.visits[1].effort_billing_qty.should eq 0
-      line_item.visits[2].quantity.should eq 0
-      line_item.visits[2].research_billing_qty.should eq 0
-      line_item.visits[2].insurance_billing_qty.should eq 0
-      line_item.visits[2].effort_billing_qty.should eq 0
+      line_item.visits[0].quantity.should               eq 0
+      line_item.visits[0].research_billing_qty.should   eq 0
+      line_item.visits[0].insurance_billing_qty.should  eq 0
+      line_item.visits[0].effort_billing_qty.should     eq 0
+      line_item.visits[1].quantity.should               eq 0
+      line_item.visits[1].research_billing_qty.should   eq 0
+      line_item.visits[1].insurance_billing_qty.should  eq 0
+      line_item.visits[1].effort_billing_qty.should     eq 0
+      line_item.visits[2].quantity.should               eq 0
+      line_item.visits[2].research_billing_qty.should   eq 0
+      line_item.visits[2].insurance_billing_qty.should  eq 0
+      line_item.visits[2].effort_billing_qty.should     eq 0
     end
   end
 
@@ -835,6 +835,5 @@ describe ServiceRequestsController do
     # TODO: wow, this method is complicated.  I'm not sure what to test
     # for.
   end
-
 end
 

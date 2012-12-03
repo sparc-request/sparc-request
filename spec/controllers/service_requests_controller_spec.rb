@@ -944,6 +944,25 @@ describe ServiceRequestsController do
     end
 
     describe 'POST edit_document_group' do
+      it 'should set grouping' do
+        session[:service_request_id] = service_request.id
+        post :delete_documents, {
+          :id                      => service_request.id,
+          :document_group_id       => docgroup.id,
+          :format                  => :js,
+        }.with_indifferent_access
+        assigns(:grouping).should eq docgroup
+      end
+
+      it 'should set service_list' do
+        session[:service_request_id] = service_request.id
+        post :delete_documents, {
+          :id                      => service_request.id,
+          :document_group_id       => docgroup.id,
+          :format                  => :js,
+        }.with_indifferent_access
+        assigns(:service_list).should eq service_request.service_list
+      end
     end
   end
 

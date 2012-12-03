@@ -364,7 +364,11 @@ class ServiceRequestsController < ApplicationController
   def select_calendar_row
     @line_item = LineItem.find params[:line_item_id]
     @line_item.visits.each do |visit|
-      visit.update_attributes({:quantity => visit.line_item.service.displayed_pricing_map.unit_minimum, :research_billing_qty => visit.line_item.service.displayed_pricing_map.unit_minimum, :insurance_billing_qty => 0, :effort_billing_qty => 0})
+      visit.update_attributes(
+          quantity:              visit.line_item.service.displayed_pricing_map.unit_minimum,
+          research_billing_qty:  visit.line_item.service.displayed_pricing_map.unit_minimum,
+          insurance_billing_qty: 0,
+          effort_billing_qty:    0)
     end
     
     render :partial => 'update_service_calendar'

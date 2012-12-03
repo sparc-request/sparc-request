@@ -697,155 +697,182 @@ describe ServiceRequestsController do
     end
   end
 
-  describe 'POST select_calendar_row' do
-    let!(:service) {
+  context('calendar methods') do
+    let!(:service1) {
       service = FactoryGirl.create(:service, pricing_map_count: 1)
       service.pricing_maps[0].display_date = Date.today
+      service.pricing_maps[0].is_one_time_fee = false
       service
     }
 
-    let!(:pricing_map) {
-      service.pricing_maps[0]
+    let!(:service2) {
+      service = FactoryGirl.create(:service, pricing_map_count: 1)
+      service.pricing_maps[0].display_date = Date.today
+      service.pricing_maps[0].is_one_time_fee = false
+      service
     }
 
-    let!(:line_item) {
-      line_item = FactoryGirl.create(
-          :line_item,
-          service_id: service.id,
-          service_request_id: service_request.id)
-      Visit.bulk_create(3, line_item_id: line_item.id)
-      line_item
+    let!(:service3) {
+      service = FactoryGirl.create(:service, pricing_map_count: 1)
+      service.pricing_maps[0].display_date = Date.today
+      service.pricing_maps[0].is_one_time_fee = false
+      service
     }
 
-    it 'should set line item' do
-      session[:service_request_id] = service_request.id
-      post :select_calendar_row, {
-        :id            => service_request.id,
-        :line_item_id  => line_item.id,
-        :format        => :js
-      }.with_indifferent_access
+    let!(:pricing_map1) { service1.pricing_maps[0] }
+    let!(:pricing_map2) { service2.pricing_maps[0] }
+    let!(:pricing_map3) { service3.pricing_maps[0] }
 
-      assigns(:line_item).should eq line_item
-    end
+    let!(:line_item1) { FactoryGirl.create(:line_item, service_id: service1.id, service_request_id: service_request.id) }
+    let!(:line_item2) { FactoryGirl.create(:line_item, service_id: service2.id, service_request_id: service_request.id) }
+    let!(:line_item3) { FactoryGirl.create(:line_item, service_id: service3.id, service_request_id: service_request.id) }
 
-    context('calendar methods') do
-      let!(:service1) {
-        service = FactoryGirl.create(:service, pricing_map_count: 1)
-        service.pricing_maps[0].display_date = Date.today
-        service
-      }
+    describe 'POST select_calendar_row' do
+      it 'should set line item' do
+        pricing_map1.update_attribute(:unit_minimum, 100)
+        Visit.bulk_create(3, line_item_id: line_item1.id)
 
-      let!(:service2) {
-        service = FactoryGirl.create(:service, pricing_map_count: 1)
-        service.pricing_maps[0].display_date = Date.today
-        service
-      }
+        session[:service_request_id] = service_request.id
+        post :select_calendar_row, {
+          :id            => service_request.id,
+          :line_item_id  => line_item1.id,
+          :format        => :js
+        }.with_indifferent_access
 
-      let!(:service3) {
-        service = FactoryGirl.create(:service, pricing_map_count: 1)
-        service.pricing_maps[0].display_date = Date.today
-        service
-      }
-
-      let!(:pricing_map1) { service1.pricing_maps[0] }
-      let!(:pricing_map2) { service2.pricing_maps[0] }
-      let!(:pricing_map3) { service3.pricing_maps[0] }
-
-      let!(:line_item1) { FactoryGirl.create(:line_item, service_id: service1.id, service_request_id: service_request.id) }
-      let!(:line_item2) { FactoryGirl.create(:line_item, service_id: service2.id, service_request_id: service_request.id) }
-      let!(:line_item3) { FactoryGirl.create(:line_item, service_id: service3.id, service_request_id: service_request.id) }
-
-      describe(:select_calencdar_row) do
-        it 'should set line item' do
-          pricing_map1.update_attribute(:unit_minimum, 100)
-          Visit.bulk_create(3, line_item_id: line_item1.id)
-
-          session[:service_request_id] = service_request.id
-          post :select_calendar_row, {
-            :id            => service_request.id,
-            :line_item_id  => line_item1.id,
-            :format        => :js
-          }.with_indifferent_access
-
-          assigns(:line_item).should eq line_item1
-        end
-
-        it "should update each of the line item's visits" do
-          pricing_map1.update_attribute(:unit_minimum, 100)
-          Visit.bulk_create(3, line_item_id: line_item1.id)
-
-          session[:service_request_id] = service_request.id
-          post :select_calendar_row, {
-            :id            => service_request.id,
-            :line_item_id  => line_item1.id,
-            :format        => :js
-          }.with_indifferent_access
-
-          line_item1.visits.count.should eq 3
-          line_item1.visits[0].quantity.should               eq 100
-          line_item1.visits[0].research_billing_qty.should   eq 100
-          line_item1.visits[0].insurance_billing_qty.should  eq 0
-          line_item1.visits[0].effort_billing_qty.should     eq 0
-          line_item1.visits[1].quantity.should               eq 100
-          line_item1.visits[1].research_billing_qty.should   eq 100
-          line_item1.visits[1].insurance_billing_qty.should  eq 0
-          line_item1.visits[1].effort_billing_qty.should     eq 0
-          line_item1.visits[2].quantity.should               eq 100
-          line_item1.visits[2].research_billing_qty.should   eq 100
-          line_item1.visits[2].insurance_billing_qty.should  eq 0
-          line_item1.visits[2].effort_billing_qty.should     eq 0
-        end
+        assigns(:line_item).should eq line_item1
       end
 
-      describe 'GET unselect_calendar_row' do
-        it 'should set line item' do
-          pricing_map1.update_attribute(:unit_minimum, 100)
-          Visit.bulk_create(3, line_item_id: line_item1.id)
+      it "should update each of the line item's visits" do
+        pricing_map1.update_attribute(:unit_minimum, 100)
+        Visit.bulk_create(3, line_item_id: line_item1.id)
 
-          session[:service_request_id] = service_request.id
-          post :unselect_calendar_row, {
-            :id            => service_request.id,
-            :line_item_id  => line_item1.id,
-            :format        => :js
-          }.with_indifferent_access
+        session[:service_request_id] = service_request.id
+        post :select_calendar_row, {
+          :id            => service_request.id,
+          :line_item_id  => line_item1.id,
+          :format        => :js
+        }.with_indifferent_access
 
-          assigns(:line_item).should eq line_item1
-        end
+        line_item1.visits.count.should eq 3
+        line_item1.visits[0].quantity.should               eq 100
+        line_item1.visits[0].research_billing_qty.should   eq 100
+        line_item1.visits[0].insurance_billing_qty.should  eq 0
+        line_item1.visits[0].effort_billing_qty.should     eq 0
+        line_item1.visits[1].quantity.should               eq 100
+        line_item1.visits[1].research_billing_qty.should   eq 100
+        line_item1.visits[1].insurance_billing_qty.should  eq 0
+        line_item1.visits[1].effort_billing_qty.should     eq 0
+        line_item1.visits[2].quantity.should               eq 100
+        line_item1.visits[2].research_billing_qty.should   eq 100
+        line_item1.visits[2].insurance_billing_qty.should  eq 0
+        line_item1.visits[2].effort_billing_qty.should     eq 0
+      end
+    end
 
-        it "should update each of the line item's visits" do
-          pricing_map1.update_attribute(:unit_minimum, 100)
-          Visit.bulk_create(3, line_item_id: line_item1.id)
+    describe 'GET unselect_calendar_row' do
+      it 'should set line item' do
+        pricing_map1.update_attribute(:unit_minimum, 100)
+        Visit.bulk_create(3, line_item_id: line_item1.id)
 
-          session[:service_request_id] = service_request.id
-          post :unselect_calendar_row, {
-            :id            => service_request.id,
-            :line_item_id  => line_item.id,
-            :format        => :js
-          }.with_indifferent_access
+        session[:service_request_id] = service_request.id
+        post :unselect_calendar_row, {
+          :id            => service_request.id,
+          :line_item_id  => line_item1.id,
+          :format        => :js
+        }.with_indifferent_access
 
-          line_item1.visits.count.should eq 3
-          line_item1.visits[0].quantity.should               eq 0
-          line_item1.visits[0].research_billing_qty.should   eq 0
-          line_item1.visits[0].insurance_billing_qty.should  eq 0
-          line_item1.visits[0].effort_billing_qty.should     eq 0
-          line_item1.visits[1].quantity.should               eq 0
-          line_item1.visits[1].research_billing_qty.should   eq 0
-          line_item1.visits[1].insurance_billing_qty.should  eq 0
-          line_item1.visits[1].effort_billing_qty.should     eq 0
-          line_item1.visits[2].quantity.should               eq 0
-          line_item1.visits[2].research_billing_qty.should   eq 0
-          line_item1.visits[2].insurance_billing_qty.should  eq 0
-          line_item1.visits[2].effort_billing_qty.should     eq 0
-        end
+        assigns(:line_item).should eq line_item1
+      end
+
+      it "should update each of the line item's visits" do
+        pricing_map1.update_attribute(:unit_minimum, 100)
+        Visit.bulk_create(3, line_item_id: line_item1.id)
+
+        session[:service_request_id] = service_request.id
+        post :unselect_calendar_row, {
+          :id            => service_request.id,
+          :line_item_id  => line_item1.id,
+          :format        => :js
+        }.with_indifferent_access
+
+        line_item1.visits.count.should eq 3
+        line_item1.visits[0].quantity.should               eq 0
+        line_item1.visits[0].research_billing_qty.should   eq 0
+        line_item1.visits[0].insurance_billing_qty.should  eq 0
+        line_item1.visits[0].effort_billing_qty.should     eq 0
+        line_item1.visits[1].quantity.should               eq 0
+        line_item1.visits[1].research_billing_qty.should   eq 0
+        line_item1.visits[1].insurance_billing_qty.should  eq 0
+        line_item1.visits[1].effort_billing_qty.should     eq 0
+        line_item1.visits[2].quantity.should               eq 0
+        line_item1.visits[2].research_billing_qty.should   eq 0
+        line_item1.visits[2].insurance_billing_qty.should  eq 0
+        line_item1.visits[2].effort_billing_qty.should     eq 0
       end
     end
 
     describe 'GET select_calendar_column' do
       it 'should update each of the visits' do
+        pricing_map1.update_attribute(:unit_minimum, 100)
+        pricing_map2.update_attribute(:unit_minimum, 100)
+        pricing_map3.update_attribute(:unit_minimum, 100)
+
+        Visit.bulk_create(3, line_item_id: line_item1.id)
+        Visit.bulk_create(3, line_item_id: line_item2.id)
+        Visit.bulk_create(3, line_item_id: line_item3.id)
+
+        session[:service_request_id] = service_request.id
+        post :select_calendar_column, {
+          :id            => service_request.id,
+          :column_id     => 2, # 1-based
+          :format        => :js,
+        }.with_indifferent_access
+
+        line_item1.visits[1].quantity.should               eq 100
+        line_item1.visits[1].research_billing_qty.should   eq 100
+        line_item1.visits[1].insurance_billing_qty.should  eq 0
+        line_item1.visits[1].effort_billing_qty.should     eq 0
+        line_item2.visits[1].quantity.should               eq 100
+        line_item2.visits[1].research_billing_qty.should   eq 100
+        line_item2.visits[1].insurance_billing_qty.should  eq 0
+        line_item2.visits[1].effort_billing_qty.should     eq 0
+        line_item3.visits[1].quantity.should               eq 100
+        line_item3.visits[1].research_billing_qty.should   eq 100
+        line_item3.visits[1].insurance_billing_qty.should  eq 0
+        line_item3.visits[1].effort_billing_qty.should     eq 0
       end
     end
 
     describe 'GET unselect_calendar_column' do
+      it 'should update each of the visits' do
+        pricing_map1.update_attribute(:unit_minimum, 100)
+        pricing_map2.update_attribute(:unit_minimum, 100)
+        pricing_map3.update_attribute(:unit_minimum, 100)
+
+        Visit.bulk_create(3, line_item_id: line_item1.id)
+        Visit.bulk_create(3, line_item_id: line_item2.id)
+        Visit.bulk_create(3, line_item_id: line_item3.id)
+
+        session[:service_request_id] = service_request.id
+        post :unselect_calendar_column, {
+          :id            => service_request.id,
+          :column_id     => 2, # 1-based
+          :format        => :js,
+        }.with_indifferent_access
+
+        line_item1.visits[1].quantity.should               eq 0
+        line_item1.visits[1].research_billing_qty.should   eq 0
+        line_item1.visits[1].insurance_billing_qty.should  eq 0
+        line_item1.visits[1].effort_billing_qty.should     eq 0
+        line_item2.visits[1].quantity.should               eq 0
+        line_item2.visits[1].research_billing_qty.should   eq 0
+        line_item2.visits[1].insurance_billing_qty.should  eq 0
+        line_item2.visits[1].effort_billing_qty.should     eq 0
+        line_item3.visits[1].quantity.should               eq 0
+        line_item3.visits[1].research_billing_qty.should   eq 0
+        line_item3.visits[1].insurance_billing_qty.should  eq 0
+        line_item3.visits[1].effort_billing_qty.should     eq 0
+      end
     end
   end
 

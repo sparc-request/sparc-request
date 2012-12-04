@@ -98,5 +98,66 @@ describe ProjectsController do
       flash[:notice].should eq nil
     end
   end
+
+  describe 'GET edit' do
+    let!(:project) {
+      project = Project.create(FactoryGirl.attributes_for(:protocol))
+      project.save!(validate: false)
+      project_role = FactoryGirl.create(
+          :project_role,
+          protocol_id: project.id,
+          identity_id: identity.id,
+          project_rights: "approve",
+          role: "pi")
+      project.reload
+      project
+    }
+
+    it 'should set service_request' do
+      session[:service_request_id] = service_request.id
+      session[:identity_id] = identity.id
+      get :edit, { :id => project.id, :format => :js }.with_indifferent_access
+      assigns(:service_request).should eq service_request
+    end
+
+    it 'should set project' do
+      session[:service_request_id] = service_request.id
+      session[:identity_id] = identity.id
+      get :edit, { :id => project.id, :format => :js }.with_indifferent_access
+      assigns(:project).class.should eq Project
+    end
+  end
+
+  describe 'GET update' do
+    let!(:project) {
+      project = Project.create(FactoryGirl.attributes_for(:protocol))
+      project.save!(validate: false)
+      project_role = FactoryGirl.create(
+          :project_role,
+          protocol_id: project.id,
+          identity_id: identity.id,
+          project_rights: "approve",
+          role: "pi")
+      project.reload
+      project
+    }
+
+    it 'should set service_request' do
+      session[:service_request_id] = service_request.id
+      session[:identity_id] = identity.id
+      get :update, { :id => project.id, :format => :js }.with_indifferent_access
+      assigns(:service_request).should eq service_request
+    end
+
+    it 'should set project' do
+      session[:service_request_id] = service_request.id
+      session[:identity_id] = identity.id
+      get :update, { :id => project.id, :format => :js }.with_indifferent_access
+      assigns(:project).class.should eq Project
+    end
+  end
+
+  describe 'GET destroy' do
+  end
 end
 

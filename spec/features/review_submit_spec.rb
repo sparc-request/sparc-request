@@ -10,7 +10,11 @@ describe "review page" do
   describe "clicking submit" do
     it 'Should submit the page', :js => true do
       visit review_service_request_path service_request.id
-      sleep 5
+      sleep 1
+         find(:xpath, "//a/img[@alt='Confirm_request']/..").click
+      sleep 1
+      service_request_test = ServiceRequest.find(service_request.id)
+      service_request_test.status.should eq("submitted")
     end
   end
 

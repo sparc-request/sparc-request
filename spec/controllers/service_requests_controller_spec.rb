@@ -946,7 +946,7 @@ describe ServiceRequestsController do
     describe 'POST edit_document_group' do
       it 'should set grouping' do
         session[:service_request_id] = service_request.id
-        post :delete_documents, {
+        post :edit_documents, {
           :id                      => service_request.id,
           :document_group_id       => docgroup.id,
           :format                  => :js,
@@ -956,7 +956,7 @@ describe ServiceRequestsController do
 
       it 'should set service_list' do
         session[:service_request_id] = service_request.id
-        post :delete_documents, {
+        post :edit_documents, {
           :id                      => service_request.id,
           :document_group_id       => docgroup.id,
           :format                  => :js,

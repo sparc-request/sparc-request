@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121107201951) do
+ActiveRecord::Schema.define(:version => 20121116194204) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -499,6 +499,16 @@ ActiveRecord::Schema.define(:version => 20121107201951) do
   end
 
   add_index "super_users", ["organization_id"], :name => "index_super_users_on_organization_id"
+
+  create_table "toast_messages", :force => true do |t|
+    t.integer  "from"
+    t.integer  "to"
+    t.string   "sending_class"
+    t.integer  "sending_class_id"
+    t.string   "message"
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
 
   create_table "tokens", :force => true do |t|
     t.integer  "service_request_id"

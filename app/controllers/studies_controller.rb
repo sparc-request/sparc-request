@@ -39,10 +39,6 @@ class StudiesController < ApplicationController
     @service_request = ServiceRequest.find session[:service_request_id]
     @study = @current_user.studies.find params[:id]
 
-    puts "#"*50
-    puts params[:study].inspect
-    puts "#"*50
-
     if @study.update_attributes params[:study]
       session[:saved_study_id] = @study.id
       flash[:notice] = "Study updated"

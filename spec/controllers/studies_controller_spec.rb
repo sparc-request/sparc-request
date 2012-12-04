@@ -2,7 +2,7 @@ require 'spec_helper'
 
 # index new create edit update delete show
 
-describe ProjectsController do
+describe StudiesController do
   let!(:service_request) { FactoryGirl.create(:service_request, visit_count: 0) }
   let!(:identity) { FactoryGirl.create(:identity) }
 
@@ -30,7 +30,7 @@ describe ProjectsController do
     controller.stub!(:setup_navigation)
   end
 
-  context 'do not have a project' do
+  context 'do not have a study' do
     describe 'GET new' do
       it 'should set service_request' do
         session[:service_request_id] = service_request.id
@@ -39,12 +39,21 @@ describe ProjectsController do
         assigns(:service_request).should eq service_request
       end
 
-      it 'should set project' do
+      it 'should set study' do
         session[:service_request_id] = service_request.id
         session[:identity_id] = identity.id
         get :new, { :id => nil, :format => :js }.with_indifferent_access
-        assigns(:project).class.should eq Project
-        assigns(:project).requester_id.should eq identity.id
+
+        assigns(:study).class.should eq Study
+        assigns(:study).requester_id.should eq identity.id
+        assigns(:study).research_types_info.should_not            eq nil
+        assigns(:study).human_subjects_info.should_not            eq nil
+        assigns(:study).vertebrate_animals_info.should_not        eq nil
+        assigns(:study).investigational_products_info.should_not  eq nil
+        assigns(:study).ip_patents_info.should_not                eq nil
+        assigns(:study).study_types.should_not                    eq nil
+        assigns(:study).impact_areas.should_not                   eq nil
+        assigns(:study).affiliations.should_not                   eq nil
       end
     end
 
@@ -55,26 +64,34 @@ describe ProjectsController do
         assigns(:service_request).should eq service_request
       end
 
-      it 'should create a project with the given parameters' do
+      it 'should create a study with the given parameters' do
         session[:service_request_id] = service_request.id
-        get :create, { :id => nil, :format => :js, :project => { :title => 'this is the title', :funding_status => 'not in a million years' } }.with_indifferent_access
-        assigns(:project).title.should eq 'this is the title'
-        assigns(:project).funding_status.should eq 'not in a million years'
+        get :create, { :id => nil, :format => :js, :study => { :title => 'this is the title', :funding_status => 'not in a million years' } }.with_indifferent_access
+        assigns(:study).title.should eq 'this is the title'
+        assigns(:study).funding_status.should eq 'not in a million years'
       end
 
-      it 'should put the project id into the session' do
+      it 'should setup study types if the study is invalid' do
+        session[:service_request_id] = service_request.id
+        get :create, { :id => nil, :format => :js, :study => { :title => 'this is the title', :funding_status => 'not in a million years' } }.with_indifferent_access
+        assigns(:study).study_types.should_not eq nil
+        assigns(:study).impact_areas.should_not eq nil
+        assigns(:study).affiliations.should_not eq nil
+      end
+
+      it 'should put the study id into the session' do
         session[:service_request_id] = service_request.id
         get :create, { :id => nil, :format => :js }.with_indifferent_access
-        session[:saved_project_id].should eq assigns(:project).id
+        session[:saved_study_id].should eq assigns(:study).id
       end
 
-      it 'should flash a notice to the user if it created a valid project' do
+      it 'should flash a notice to the user if it created a valid study' do
         session[:service_request_id] = service_request.id
         session[:identity_id] = identity.id
         get :create, {
           :id => nil,
           :format => :js,
-          :project => {
+          :study => {
             :short_title     => 'foo',
             :title           => 'this is the title',
             :funding_status  => 'not in a million years',
@@ -83,76 +100,82 @@ describe ProjectsController do
             :requester_id    => identity.id,
           }
         }.with_indifferent_access
-        assigns(:project).valid?.should eq true
-        assigns(:project).errors.messages.should eq({ })
-        flash[:notice].should eq 'New project created'
+        assigns(:study).valid?.should eq true
+        assigns(:study).errors.messages.should eq({ })
+        flash[:notice].should eq 'New study created'
       end
 
-      it 'should not flash a notice to the user if it did not create a valid project' do
+      it 'should not flash a notice to the user if it did not create a valid study' do
         session[:service_request_id] = service_request.id
         session[:identity_id] = identity.id
         get :create, {
           :id => nil,
           :format => :js,
         }.with_indifferent_access
-        assigns(:project).valid?.should eq false
+        assigns(:study).valid?.should eq false
         flash[:notice].should eq nil
       end
     end
   end
 
-  context 'already have a project' do
-    let!(:project) {
-      project = Project.create(FactoryGirl.attributes_for(:protocol))
-      project.save!(validate: false)
+  context 'already have a study' do
+    let!(:study) {
+      study = Study.create(FactoryGirl.attributes_for(:protocol))
+      study.save!(validate: false)
       project_role = FactoryGirl.create(
           :project_role,
-          protocol_id: project.id,
+          protocol_id: study.id,
           identity_id: identity.id,
           project_rights: "approve",
           role: "pi")
-      project.reload
-      project
+      study.reload
+      study
     }
 
     describe 'GET edit' do
       it 'should set service_request' do
         session[:service_request_id] = service_request.id
         session[:identity_id] = identity.id
-        get :edit, { :id => project.id, :format => :js }.with_indifferent_access
+        get :edit, { :id => study.id, :format => :js }.with_indifferent_access
         assigns(:service_request).should eq service_request
       end
 
-      it 'should set project' do
+      it 'should set study' do
         session[:service_request_id] = service_request.id
         session[:identity_id] = identity.id
-        get :edit, { :id => project.id, :format => :js }.with_indifferent_access
-        assigns(:project).class.should eq Project
+        get :edit, { :id => study.id, :format => :js }.with_indifferent_access
+        assigns(:study).class.should eq Study
       end
+
+      # TODO: check that populate_for_edit was called
     end
 
     describe 'GET update' do
       it 'should set service_request' do
         session[:service_request_id] = service_request.id
         session[:identity_id] = identity.id
-        get :update, { :id => project.id, :format => :js }.with_indifferent_access
+        get :update, { :id => study.id, :format => :js }.with_indifferent_access
         assigns(:service_request).should eq service_request
       end
 
-      it 'should set project' do
+      it 'should set study' do
         session[:service_request_id] = service_request.id
         session[:identity_id] = identity.id
-        get :update, { :id => project.id, :format => :js }.with_indifferent_access
-        assigns(:project).class.should eq Project
+        get :update, { :id => study.id, :format => :js }.with_indifferent_access
+        assigns(:study).class.should eq Study
+        assigns(:study).study_types.should_not eq nil
+        # TODO: check that setup_study_types was called
+        # TODO: check that setup_impact_affiliations was called
+        # TODO: check that setup_affiliations was called
       end
 
-      it 'should flash a notice to the user if the project was valid' do
+      it 'should flash a notice to the user if the study was valid' do
         session[:service_request_id] = service_request.id
         session[:identity_id] = identity.id
         get :update, {
-          :id => project.id,
+          :id => study.id,
           :format => :js,
-          :project => {
+          :study => {
             :short_title     => 'foo',
             :title           => 'this is the title',
             :funding_status  => 'not in a million years',
@@ -161,19 +184,19 @@ describe ProjectsController do
             :requester_id    => identity.id,
           }
         }.with_indifferent_access
-        assigns(:project).valid?.should eq true
-        assigns(:project).errors.messages.should eq({ })
-        flash[:notice].should eq 'Project updated'
+        assigns(:study).valid?.should eq true
+        assigns(:study).errors.messages.should eq({ })
+        flash[:notice].should eq 'Study updated'
       end
 
-      it 'should not flash a notice to the user if the project was not valid' do
+      it 'should not flash a notice to the user if the study was not valid' do
         session[:service_request_id] = service_request.id
         session[:identity_id] = identity.id
         get :update, {
-          :id => project.id,
+          :id => study.id,
           :format => :js,
         }.with_indifferent_access
-        assigns(:project).valid?.should eq false
+        assigns(:study).valid?.should eq false
         flash[:notice].should eq nil
       end
     end

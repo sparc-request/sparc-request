@@ -93,5 +93,121 @@ describe IdentitiesController do
       assigns(:project_role).project_rights.should eq 'jack squat'
     end
   end
+
+  describe 'POST add_to_protocol' do
+    it 'should set can_edit to true if true was passed in' do
+      session[:identity_id] = identity.id
+      get :add_to_protocol, {
+        :format => :js,
+        :id => identity.id,
+        :can_edit => true,
+        :project_role => {
+          :id => project_role.id,
+          :role => '',
+        },
+        :identity => {
+          :id => identity.id,
+        }
+      }.with_indifferent_access
+      assigns(:can_edit).should eq true
+    end
+
+    it 'should set error if role is blank' do
+      session[:identity_id] = identity.id
+      get :add_to_protocol, {
+        :format => :js,
+        :id => identity.id,
+        :can_edit => true,
+        :project_role => {
+          :id => project_role.id,
+          :role => '',
+        },
+        :identity => {
+          :id => identity.id,
+        }
+      }.with_indifferent_access
+      assigns(:error).should eq "Role can't be blank"
+      assigns(:error_field).should eq 'role'
+    end
+
+    it 'should set error if role other and role_other is blank' do
+      session[:identity_id] = identity.id
+      get :add_to_protocol, {
+        :format => :js,
+        :id => identity.id,
+        :can_edit => true,
+        :project_role => {
+          :id => project_role.id,
+          :role => 'other',
+          :role_other => '',
+        },
+        :identity => {
+          :id => identity.id,
+        }
+      }.with_indifferent_access
+      assigns(:error).should eq "'Other' role can't be blank"
+      assigns(:error_field).should eq 'role'
+    end
+
+    it 'should set protocol type' do
+      session[:identity_id] = identity.id
+      session[:protocol_type] = 'study'
+      get :add_to_protocol, {
+        :format => :js,
+        :id => identity.id,
+        :can_edit => true,
+        :project_role => {
+          :id => project_role.id,
+          :role => 'head honcho',
+        },
+        :identity => {
+          :id => identity.id,
+        }
+      }.with_indifferent_access
+      assigns(:protocol_type).should eq 'study'
+    end
+
+    it 'should create a new project role if id is blank' do
+      session[:identity_id] = identity.id
+      session[:protocol_type] = 'study'
+      get :add_to_protocol, {
+        :format => :js,
+        :id => identity.id,
+        :can_edit => true,
+        :project_role => {
+          :id => nil,
+          :role => 'head honcho',
+        },
+        :identity => {
+          :id => identity.id,
+        }
+      }.with_indifferent_access
+      assigns(:project_role).class.should eq ProjectRole
+      assigns(:project_role).role.should eq 'head honcho'
+      assigns(:project_role).identity.should eq identity
+      assigns(:project_role).persisted?.should eq false
+    end
+
+    it 'should use the given project role if id is not blank' do
+      session[:identity_id] = identity.id
+      session[:protocol_type] = 'study'
+      get :add_to_protocol, {
+        :format => :js,
+        :id => identity.id,
+        :can_edit => true,
+        :project_role => {
+          :id => project_role.id,
+          :role => 'head honcho',
+        },
+        :identity => {
+          :id => identity.id,
+        }
+      }.with_indifferent_access
+      assigns(:project_role).class.should eq ProjectRole
+      assigns(:project_role).role.should eq 'head honcho'
+      assigns(:project_role).identity.should eq identity
+      assigns(:project_role).persisted?.should eq true
+    end
+  end
 end
 

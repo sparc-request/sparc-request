@@ -6,29 +6,7 @@ describe ProjectsController do
   let!(:service_request) { FactoryGirl.create(:service_request, visit_count: 0) }
   let!(:identity) { FactoryGirl.create(:identity) }
 
-  # Stub out all the methods in ApplicationController so we're not
-  # testing them
-  # TODO: refactor this into stub_helper.rb
-  before(:each) do
-    controller.stub!(:authenticate)
-
-    controller.stub!(:load_defaults) do
-      controller.instance_eval do
-        @user_portal_link = '/user_portal'
-      end
-    end
-
-    controller.stub!(:setup_session) do
-      controller.instance_eval do
-        @current_user = Identity.find_by_id(session[:identity_id])
-        @service_request = ServiceRequest.find_by_id(session[:service_request_id])
-        @sub_service_request = SubServiceRequest.find_by_id(session[:sub_service_request_id])
-        @line_items = @service_request.line_items
-      end
-    end
-
-    controller.stub!(:setup_navigation)
-  end
+  stub_controller
 
   context 'do not have a project' do
     describe 'GET new' do

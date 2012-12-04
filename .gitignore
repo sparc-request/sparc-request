@@ -17,6 +17,7 @@
 .rspec
 .sass-cache/
 .DS_Store
+.rbenv-version
 scratch
 .jhw-cache/
 *.swp

@@ -967,6 +967,56 @@ describe ServiceRequestsController do
   end
 
   describe 'GET service_subsidy' do
+    it 'should set subsidies to an empty array if there are no sub service requests' do
+      service_request.sub_service_requests.each { |ssr| ssr.destroy }
+      service_request.reload
+      session[:service_request_id] = service_request.id
+      get :service_subsidy, :id => service_request.id
+      assigns(:subsidies).should eq [ ]
+    end
+
+    it 'should put the subsidy into subsidies if the ssr has a subsidy' do
+      subsidy = FactoryGirl.create(
+          :subsidy,
+          sub_service_request_id: sub_service_request.id)
+
+      session[:service_request_id] = service_request.id
+      get :service_subsidy, :id => service_request.id
+      assigns(:subsidies).should eq [ subsidy ]
+    end
+
+    it 'should create a new subsidy and put it into subsidies if the ssr does not have a subsidy and it is eligible for subsidy' do
+      sub_service_request.subsidy_organization.subsidy_map.update_attributes(
+          max_dollar_cap: 100,
+          max_percentage: 100)
+
+      session[:service_request_id] = service_request.id
+      get :service_subsidy, :id => service_request.id
+
+      assigns(:subsidies).map { |s| s.class}.should eq [ Subsidy ]
+    end
+
+    it 'should not create a new subsidy if the ssr does not have a subsidy and it not is eligible for subsidy' do
+      core.subsidy_map.update_attributes!(
+          max_dollar_cap: 0,
+          max_percentage: 0)
+      provider.subsidy_map.update_attributes!(
+          max_dollar_cap: 0,
+          max_percentage: 0)
+      program.subsidy_map.update_attributes!(
+          max_dollar_cap: 0,
+          max_percentage: 0)
+
+      sub_service_request.eligible_for_subsidy?.should_not eq nil
+
+      session[:service_request_id] = service_request.id
+      get :service_subsidy, :id => service_request.id
+
+      subsidy = sub_service_request.subsidy
+      subsidy.should eq nil
+
+      assigns(:subsidies).should eq [ ]
+    end
   end
 
   describe 'GET navigate' do

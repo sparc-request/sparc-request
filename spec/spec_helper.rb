@@ -161,7 +161,7 @@ def stub_controller
         @current_user = Identity.find_by_id(session[:identity_id])
         @service_request = ServiceRequest.find_by_id(session[:service_request_id])
         @sub_service_request = SubServiceRequest.find_by_id(session[:sub_service_request_id])
-        @line_items = @service_request.line_items
+        @line_items = @service_request.try(:line_items)
       end
     end
 

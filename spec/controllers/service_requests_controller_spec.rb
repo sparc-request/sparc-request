@@ -20,30 +20,7 @@ describe ServiceRequestsController do
 
   let!(:sub_service_request) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id ) }
 
-
-  # Stub out all the methods in ApplicationController so we're not
-  # testing them
-  # TODO: refactor this into stub_helper.rb
-  before(:each) do
-    controller.stub!(:authenticate)
-
-    controller.stub!(:load_defaults) do
-      controller.instance_eval do
-        @user_portal_link = '/user_portal'
-      end
-    end
-
-    controller.stub!(:setup_session) do
-      controller.instance_eval do
-        @current_user = Identity.find_by_id(session[:identity_id])
-        @service_request = ServiceRequest.find_by_id(session[:service_request_id])
-        @sub_service_request = SubServiceRequest.find_by_id(session[:sub_service_request_id])
-        @line_items = @service_request.line_items
-      end
-    end
-
-    controller.stub!(:setup_navigation)
-  end
+  stub_controller
 
   describe 'GET show' do
     it 'should set protocol and service_list' do

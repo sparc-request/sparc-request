@@ -169,6 +169,7 @@ describe ProjectsController do
       it 'should not flash a notice to the user if the project was not valid' do
         session[:service_request_id] = service_request.id
         session[:identity_id] = identity.id
+        project.update_attribute(:title, nil)
         get :update, {
           :id => project.id,
           :format => :js,

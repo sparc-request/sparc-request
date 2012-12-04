@@ -109,6 +109,7 @@ def build_service_request
   let!(:line_item2)      { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service2.id, sub_service_request_id: sub_service_request.id) }
   let!(:pricing_setup2)  {FactoryGirl.create(:pricing_setup, organization_id: program2.id, display_date: Time.now - 1.day, federal: 150, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal')}
   let!(:pricing_map2)    { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service2.id, is_one_time_fee: false, display_date: Time.now - 1.day, full_rate: 2000) }
+  let!(:service_provider) {FactoryGirl.create(:service_provider, organization_id: program.id)}
 
   before :each do
     service_request.update_attribute(:service_requester_id, Identity.find_by_ldap_uid("jug2").id)

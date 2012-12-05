@@ -3,79 +3,79 @@ require 'spec_helper'
 describe SearchController do
   stub_controller
 
-  let!(:identity) { FactoryGirl.create(:identity) }
-  let!(:institution) { FactoryGirl.create(:institution) }
-  let!(:provider) { FactoryGirl.create(:provider, parent_id: institution.id) }
-  let!(:program) { FactoryGirl.create(:program, parent_id: provider.id) }
-  let!(:core) { FactoryGirl.create(:core, parent_id: program.id) }
-  let!(:core2) { FactoryGirl.create(:core, parent_id: program.id) }
-  let!(:unavailable_core) { FactoryGirl.create(:core, parent_id: program.id, is_available: false) }
-
-  let!(:service_request) { FactoryGirl.create(:service_request, visit_count: 0) }
-
-  let!(:core_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
-  let!(:core2_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
-  let!(:program_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id) }
-  let!(:provider_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: provider.id) }
-  let!(:institution_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: institution.id) }
-  let!(:unavailable_core_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: unavailable_core.id) }
-
-  let!(:service1a) {
-    service = FactoryGirl.create(
-        :service,
-        name: 'service1a',
-        abbreviation: 'ser1a',
-        description: 'this is service 1a',
-        organization_id: core.id,
-        pricing_map_count: 0)
-    service
-  }
-
-  let!(:service1b) {
-    service = FactoryGirl.create(
-        :service,
-        name: 'service1b',
-        abbreviation: 'ser1b',
-        description: 'this is service 1b',
-        organization_id: core.id,
-        pricing_map_count: 0)
-    service
-  }
-
-  let!(:service2) {
-    service = FactoryGirl.create(
-        :service,
-        name: 'service2',
-        abbreviation: 'ser2',
-        description: 'this is service 2',
-        organization_id: core2.id,
-        pricing_map_count: 0)
-    service
-  }
-
-  let!(:service3) {
-    service = FactoryGirl.create(
-        :service,
-        name: 'service3',
-        abbreviation: 'ser3',
-        description: 'this is service 3',
-        organization_id: program.id,
-        pricing_map_count: 0)
-    service
-  }
-
-  let!(:unavailable_service) {
-    service = FactoryGirl.create(
-        :service,
-        name: 'unavailable service',
-        abbreviation: 'unavail',
-        description: 'this is an unavailable service',
-        organization_id: unavailable_core.id,
-        pricing_map_count: 0)
-    service
-  }
-
   describe 'GET services' do
+    let!(:identity) { FactoryGirl.create(:identity) }
+    let!(:institution) { FactoryGirl.create(:institution) }
+    let!(:provider) { FactoryGirl.create(:provider, parent_id: institution.id) }
+    let!(:program) { FactoryGirl.create(:program, parent_id: provider.id) }
+    let!(:core) { FactoryGirl.create(:core, parent_id: program.id) }
+    let!(:core2) { FactoryGirl.create(:core, parent_id: program.id) }
+    let!(:unavailable_core) { FactoryGirl.create(:core, parent_id: program.id, is_available: false) }
+
+    let!(:service_request) { FactoryGirl.create(:service_request, visit_count: 0) }
+
+    let!(:core_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
+    let!(:core2_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
+    let!(:program_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id) }
+    let!(:provider_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: provider.id) }
+    let!(:institution_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: institution.id) }
+    let!(:unavailable_core_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: unavailable_core.id) }
+
+    let!(:service1a) {
+      service = FactoryGirl.create(
+          :service,
+          name: 'service1a',
+          abbreviation: 'ser1a',
+          description: 'this is service 1a',
+          organization_id: core.id,
+          pricing_map_count: 0)
+      service
+    }
+
+    let!(:service1b) {
+      service = FactoryGirl.create(
+          :service,
+          name: 'service1b',
+          abbreviation: 'ser1b',
+          description: 'this is service 1b',
+          organization_id: core.id,
+          pricing_map_count: 0)
+      service
+    }
+
+    let!(:service2) {
+      service = FactoryGirl.create(
+          :service,
+          name: 'service2',
+          abbreviation: 'ser2',
+          description: 'this is service 2',
+          organization_id: core2.id,
+          pricing_map_count: 0)
+      service
+    }
+
+    let!(:service3) {
+      service = FactoryGirl.create(
+          :service,
+          name: 'service3',
+          abbreviation: 'ser3',
+          description: 'this is service 3',
+          organization_id: program.id,
+          pricing_map_count: 0)
+      service
+    }
+
+    let!(:unavailable_service) {
+      service = FactoryGirl.create(
+          :service,
+          name: 'unavailable service',
+          abbreviation: 'unavail',
+          description: 'this is an unavailable service',
+          organization_id: unavailable_core.id,
+          pricing_map_count: 0)
+      service
+    }
+
     it 'should return one service if only one service matches' do
       session['service_request_id'] = service_request.id
 
@@ -185,7 +185,7 @@ describe SearchController do
       session['sub_service_request_id'] = unavailable_core_ssr.id
 
       get :services, {
-        :format => :js,
+        :format => :json,
         :id => nil,
         :term => 'unavailable_core',
       }.with_indifferent_access
@@ -197,6 +197,103 @@ describe SearchController do
   end
 
   describe 'GET identities' do
+    let!(:identity) {
+      identity = FactoryGirl.create(
+          :identity,
+          first_name:        'Justin',
+          last_name:         'Frankel',
+          ldap_uid:          '`burn',
+          email:             'burn@nullsoft.com',
+          institution:       'Nullsoft',
+          phone:             '555-1212',
+          era_commons_name:  'huh?',
+          college:           'Winamp',
+          department:        'Awesomeness',
+          credentials:       'Master Hacker',
+          credentials_other: 'Irc Junkie',
+          )
+      identity
+    }
+
+    let!(:identity2) {
+      identity = FactoryGirl.create(
+          :identity,
+          first_name:        'John',
+          last_name:         'McAfee',
+          email:             'john@mcafee.com',
+          institution:       'McAfee',
+          phone:             '867-5309',
+          era_commons_name:  'wtf?',
+          college:           'Roanoke College',
+          department:        'Scandalous',
+          credentials:       'Running from the authorities',
+          credentials_other: 'Dangerous hobbies',
+          )
+      identity
+    }
+
+    it 'should return one instance if search returns one instance' do
+      Identity.stub(:search) { [ identity ] }
+      Identity.should_receive(:search).with('search term')
+
+      get :identities, {
+        :format => :json,
+        :id => nil,
+        :term => 'search term',
+      }.with_indifferent_access
+
+      results = JSON.parse(response.body)
+
+      results.length.should eq 1
+
+      results[0]['label'].should              eq 'Justin Frankel (burn@nullsoft.com)'
+      results[0]['value'].should              eq identity.id
+      results[0]['email'].should              eq 'burn@nullsoft.com'
+      results[0]['institution'].should        eq 'Nullsoft'
+      results[0]['phone'].should              eq '555-1212'
+      results[0]['era_commons_name'].should   eq 'huh?'
+      results[0]['college'].should            eq 'Winamp'
+      results[0]['department'].should         eq 'Awesomeness'
+      results[0]['credentials'].should        eq 'Master Hacker'
+      results[0]['credentials_other'].should  eq 'Irc Junkie'
+    end
+
+    it 'should return two instances if search returns two instances' do
+      Identity.stub(:search) { [ identity, identity2 ] }
+      Identity.should_receive(:search).with('search term')
+
+      get :identities, {
+        :format => :json,
+        :id => nil,
+        :term => 'search term',
+      }.with_indifferent_access
+
+      results = JSON.parse(response.body)
+
+      results.length.should eq 2
+
+      results[0]['label'].should              eq 'Justin Frankel (burn@nullsoft.com)'
+      results[0]['value'].should              eq identity.id
+      results[0]['email'].should              eq 'burn@nullsoft.com'
+      results[0]['institution'].should        eq 'Nullsoft'
+      results[0]['phone'].should              eq '555-1212'
+      results[0]['era_commons_name'].should   eq 'huh?'
+      results[0]['college'].should            eq 'Winamp'
+      results[0]['department'].should         eq 'Awesomeness'
+      results[0]['credentials'].should        eq 'Master Hacker'
+      results[0]['credentials_other'].should  eq 'Irc Junkie'
+
+      # TODO: should this be "Mcafee" or "McAfee"?
+      results[1]['label'].should              eq 'John Mcafee (john@mcafee.com)'
+      results[1]['value'].should              eq identity2.id
+      results[1]['email'].should              eq 'john@mcafee.com'
+      results[1]['institution'].should        eq 'McAfee'
+      results[1]['phone'].should              eq '867-5309'
+      results[1]['era_commons_name'].should   eq 'wtf?'
+      results[1]['college'].should            eq 'Roanoke College'
+      results[1]['credentials'].should        eq 'Running from the authorities'
+      results[1]['credentials_other'].should  eq 'Dangerous hobbies'
+    end
   end
 end
 

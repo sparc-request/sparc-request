@@ -9,8 +9,16 @@ describe SearchController do
   let!(:program) { FactoryGirl.create(:program, parent_id: provider.id) }
   let!(:core) { FactoryGirl.create(:core, parent_id: program.id) }
   let!(:core2) { FactoryGirl.create(:core, parent_id: program.id) }
+  let!(:unavailable_core) { FactoryGirl.create(:core, parent_id: program.id, is_available: false) }
 
   let!(:service_request) { FactoryGirl.create(:service_request, visit_count: 0) }
+
+  let!(:core_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
+  let!(:core2_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
+  let!(:program_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id) }
+  let!(:provider_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: provider.id) }
+  let!(:institution_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: institution.id) }
+  let!(:unavailable_core_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: unavailable_core.id) }
 
   let!(:service1a) {
     service = FactoryGirl.create(
@@ -18,7 +26,6 @@ describe SearchController do
         name: 'service1a',
         abbreviation: 'ser1a',
         description: 'this is service 1a',
-        is_available: true,
         organization_id: core.id,
         pricing_map_count: 0)
     service
@@ -30,7 +37,6 @@ describe SearchController do
         name: 'service1b',
         abbreviation: 'ser1b',
         description: 'this is service 1b',
-        is_available: false,
         organization_id: core.id,
         pricing_map_count: 0)
     service
@@ -42,7 +48,6 @@ describe SearchController do
         name: 'service2',
         abbreviation: 'ser2',
         description: 'this is service 2',
-        is_available: true,
         organization_id: core2.id,
         pricing_map_count: 0)
     service
@@ -54,8 +59,18 @@ describe SearchController do
         name: 'service3',
         abbreviation: 'ser3',
         description: 'this is service 3',
-        is_available: true,
         organization_id: program.id,
+        pricing_map_count: 0)
+    service
+  }
+
+  let!(:unavailable_service) {
+    service = FactoryGirl.create(
+        :service,
+        name: 'unavailable service',
+        abbreviation: 'unavail',
+        description: 'this is an unavailable service',
+        organization_id: unavailable_core.id,
         pricing_map_count: 0)
     service
   }
@@ -122,6 +137,60 @@ describe SearchController do
       results = JSON.parse(response.body)
 
       parents = core2.parents.reverse + [ core2 ]
+
+      results.should eq [ { 'label' => 'No Results' } ]
+    end
+
+    it "should not return a service whose organization is not a parent of the sub service request's organization" do
+      session['service_request_id'] = service_request.id
+      session['sub_service_request_id'] = core_ssr.id
+
+      get :services, {
+        :format => :js,
+        :id => nil,
+        :term => 'service2', # service2's parent is core2
+      }.with_indifferent_access
+
+      results = JSON.parse(response.body)
+
+      parents = core2.parents.reverse + [ core2 ]
+
+      results.should eq [ { 'label' => 'No Results' } ]
+    end
+
+    it "should return a service whose organization is a parent of the sub service request's organization" do
+      session['service_request_id'] = service_request.id
+      session['sub_service_request_id'] = core2.id
+
+      get :services, {
+        :format => :js,
+        :id => nil,
+        :term => 'service2', # service2's parent is core2
+      }.with_indifferent_access
+
+      results = JSON.parse(response.body)
+
+      parents = core2.parents.reverse + [ core2 ]
+
+      results.count.should eq 1
+      results[0]['parents'].should eq parents.map { |p| p.abbreviation }.join(' | ')
+      results[0]['label'].should eq 'service2'
+      results[0]['value'].should eq service2.id
+      results[0]['description'].should eq 'this is service 2'
+      results[0]['sr_id'].should eq service_request.id
+    end
+
+    it 'should not return a service that is not available' do
+      session['service_request_id'] = service_request.id
+      session['sub_service_request_id'] = unavailable_core_ssr.id
+
+      get :services, {
+        :format => :js,
+        :id => nil,
+        :term => 'unavailable_core',
+      }.with_indifferent_access
+
+      results = JSON.parse(response.body)
 
       results.should eq [ { 'label' => 'No Results' } ]
     end

@@ -1,4 +1,5 @@
 class ServiceRequestsController < ApplicationController
+  before_filter :authenticate_identity!, :except => [:catalog, :add_service, :remove_service, :ask_a_question]
   layout false, :only => :ask_a_question
 
   def show
@@ -146,8 +147,10 @@ class ServiceRequestsController < ApplicationController
   end
   
   def protocol
-    @studies = @sub_service_request.nil? ? @current_user.studies : [@service_request.protocol]
-    @projects = @sub_service_request.nil? ? @current_user.projects : [@service_request.protocol]
+    @service_request.update_attribute(:service_requester_id, current_user.id) if @service_request.service_requester_id.nil?
+    
+    @studies = @sub_service_request.nil? ? current_user.studies : [@service_request.protocol]
+    @projects = @sub_service_request.nil? ? current_user.projects : [@service_request.protocol]
     if session[:saved_study_id]
       @service_request.protocol = Study.find session[:saved_study_id]
       session.delete :saved_study_id
@@ -298,7 +301,7 @@ class ServiceRequestsController < ApplicationController
     @line_items.find_by_service_id(service.id).delete
     @line_items.reload
     
-    #@service_request = @current_user.service_requests.find session[:service_request_id]
+    #@service_request = current_user.service_requests.find session[:service_request_id]
     @service_request = ServiceRequest.find session[:service_request_id]
     @page = request.referrer.split('/').last # we need for pages other than the catalog
 

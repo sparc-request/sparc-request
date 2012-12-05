@@ -125,7 +125,7 @@ a.save-option{
 }
 
 #container #title {
-  margin-top: 31px;
+  margin-top: 8px;
   background: white url("banner.png") no-repeat;
   height: 58px;
   padding: 23px 0 0 23px;
@@ -1749,4 +1749,13 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 
 .document_edit span {
   width: 75px;
+}
+
+#welcome_msg {
+  text-align: right;
+  margin-top: 6px;
+}
+
+.acknowledge_approval_status_dialog {
+  text-align: center;
 }

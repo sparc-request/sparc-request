@@ -61,15 +61,18 @@ RSpec.configure do |config|
     DatabaseCleaner.start
 
     identity = Identity.create(
-      last_name:           'Glenn',
-      first_name:          'Julia',
-      ldap_uid:            'jug2',
-      institution:         'medical_university_of_south_carolina',
-      college:             'college_of_medecine',
-      department:          'other',
-      email:               'glennj@musc.edu',
-      credentials:         'BS,    MRA',
-      catalog_overlord:    true)
+      last_name:             'Glenn',
+      first_name:            'Julia',
+      ldap_uid:              'jug2',
+      institution:           'medical_university_of_south_carolina',
+      college:               'college_of_medecine',
+      department:            'other',
+      email:                 'glennj@musc.edu',
+      credentials:           'BS,    MRA',
+      catalog_overlord:      true,
+      password:              'p4ssword',
+      password_confirmation: 'p4ssword'
+    )
     identity.save!
 
     institution = FactoryGirl.create(:institution,

@@ -1,5 +1,5 @@
 SparcRails::Application.routes.draw do
-  devise_for :identities
+  devise_for :identities, :controllers => { :omniauth_callbacks => "identities/omniauth_callbacks" }
 
   resources :identities do
     collection do

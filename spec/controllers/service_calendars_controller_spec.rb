@@ -94,6 +94,39 @@ describe ServiceCalendarsController do
 
       assigns(:line_item).should eq line_item
     end
+
+    it 'should set subject count on the line item if on the template tab' do
+    end
+
+    it 'should set quantity and research billing quantity on the visit if on the template tab and there is no line item, research billing quantity is 0, and checked is true' do
+    end
+
+    it 'should set all the quantities to 0 if on the template tab and there is no line item and checked is false' do
+    end
+
+    it 'should give an error if on the quantity tab and quantity is less than 0' do
+    end
+
+    it 'should update quantity on the visit if on the quantity tab and quantity is 0' do
+    end
+
+    it 'should update quantity on the visit if on the quantity tab and quantity is greater than 0' do
+    end
+
+    it 'should give an error if on the billing strategy tab and quantity is less than 0' do
+    end
+
+    it 'should update the given column on the visit if on the billing strategy tab and quantity is 0' do
+    end
+
+    it 'should update the given column on the visit if on the billing strategy tab and quantity is greater than 0' do
+    end
+
+    it 'should update quantity on the visit to the total if on the billing strategy tab' do
+    end
+
+    it 'should set displayed_visits' do
+    end
   end
 end
 

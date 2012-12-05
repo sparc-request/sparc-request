@@ -20,30 +20,7 @@ describe ServiceRequestsController do
 
   let!(:sub_service_request) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id ) }
 
-
-  # Stub out all the methods in ApplicationController so we're not
-  # testing them
-  # TODO: refactor this into stub_helper.rb
-  before(:each) do
-    controller.stub!(:authenticate)
-
-    controller.stub!(:load_defaults) do
-      controller.instance_eval do
-        @user_portal_link = '/user_portal'
-      end
-    end
-
-    controller.stub!(:setup_session) do
-      controller.instance_eval do
-        @current_user = Identity.find_by_id(session[:identity_id])
-        @service_request = ServiceRequest.find_by_id(session[:service_request_id])
-        @sub_service_request = SubServiceRequest.find_by_id(session[:sub_service_request_id])
-        @line_items = @service_request.line_items
-      end
-    end
-
-    controller.stub!(:setup_navigation)
-  end
+  stub_controller
 
   describe 'GET show' do
     it 'should set protocol and service_list' do
@@ -876,13 +853,147 @@ describe ServiceRequestsController do
     end
   end
 
-  describe 'GET delete_document_group' do
-  end
+  describe 'POST delete_document_group' do
+    let!(:docgroup) { DocumentGrouping.create(:service_request_id => service_request.id) }
 
-  describe 'GET edit_document_group' do
+    let!(:ssr1) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
+    let!(:ssr2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
+
+    let!(:doc1) { Document.create(:document_grouping_id => docgroup.id, :sub_service_request_id => ssr1.id) }
+    let!(:doc2) { Document.create(:document_grouping_id => docgroup.id, :sub_service_request_id => ssr2.id) }
+
+    context('document group methods') do
+      it 'should set tr_id' do
+        session[:service_request_id] = service_request.id
+        post :delete_documents, {
+          :id                => service_request.id,
+          :document_group_id => docgroup.id,
+          :format            => :js,
+        }.with_indifferent_access
+        assigns(:tr_id).should eq "#document_grouping_#{docgroup.id}"
+      end
+
+      it 'should destroy the grouping if there is no sub service request' do
+        session[:service_request_id] = service_request.id
+        post :delete_documents, {
+          :id                => service_request.id,
+          :document_group_id => docgroup.id,
+          :format            => :js,
+        }.with_indifferent_access
+
+        expect {
+          docgroup.reload
+        }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it 'should destroy only the document for that sub service request if there is a sub service request' do
+        session[:service_request_id] = service_request.id
+        session[:sub_service_request_id] = ssr1.id
+        post :delete_documents, {
+          :id                      => service_request.id,
+          :document_group_id       => docgroup.id,
+          :format                  => :js,
+        }.with_indifferent_access
+
+        docgroup.reload
+        docgroup.destroyed?.should eq false
+
+        expect {
+          doc1.reload
+        }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it 'should destroy the document grouping if all documents are destroyed' do
+        doc1.destroy
+
+        session[:service_request_id] = service_request.id
+        session[:sub_service_request_id] = ssr2.id
+        post :delete_documents, {
+          :id                      => service_request.id,
+          :document_group_id       => docgroup.id,
+          :format                  => :js,
+        }.with_indifferent_access
+
+        expect {
+          docgroup.reload
+        }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+    end
+
+    describe 'POST edit_document_group' do
+      it 'should set grouping' do
+        session[:service_request_id] = service_request.id
+        post :edit_documents, {
+          :id                      => service_request.id,
+          :document_group_id       => docgroup.id,
+          :format                  => :js,
+        }.with_indifferent_access
+        assigns(:grouping).should eq docgroup
+      end
+
+      it 'should set service_list' do
+        session[:service_request_id] = service_request.id
+        post :edit_documents, {
+          :id                      => service_request.id,
+          :document_group_id       => docgroup.id,
+          :format                  => :js,
+        }.with_indifferent_access
+        assigns(:service_list).should eq service_request.service_list
+      end
+    end
   end
 
   describe 'GET service_subsidy' do
+    it 'should set subsidies to an empty array if there are no sub service requests' do
+      service_request.sub_service_requests.each { |ssr| ssr.destroy }
+      service_request.reload
+      session[:service_request_id] = service_request.id
+      get :service_subsidy, :id => service_request.id
+      assigns(:subsidies).should eq [ ]
+    end
+
+    it 'should put the subsidy into subsidies if the ssr has a subsidy' do
+      subsidy = FactoryGirl.create(
+          :subsidy,
+          sub_service_request_id: sub_service_request.id)
+
+      session[:service_request_id] = service_request.id
+      get :service_subsidy, :id => service_request.id
+      assigns(:subsidies).should eq [ subsidy ]
+    end
+
+    it 'should create a new subsidy and put it into subsidies if the ssr does not have a subsidy and it is eligible for subsidy' do
+      sub_service_request.subsidy_organization.subsidy_map.update_attributes(
+          max_dollar_cap: 100,
+          max_percentage: 100)
+
+      session[:service_request_id] = service_request.id
+      get :service_subsidy, :id => service_request.id
+
+      assigns(:subsidies).map { |s| s.class}.should eq [ Subsidy ]
+    end
+
+    it 'should not create a new subsidy if the ssr does not have a subsidy and it not is eligible for subsidy' do
+      core.subsidy_map.update_attributes!(
+          max_dollar_cap: 0,
+          max_percentage: 0)
+      provider.subsidy_map.update_attributes!(
+          max_dollar_cap: 0,
+          max_percentage: 0)
+      program.subsidy_map.update_attributes!(
+          max_dollar_cap: 0,
+          max_percentage: 0)
+
+      sub_service_request.eligible_for_subsidy?.should_not eq nil
+
+      session[:service_request_id] = service_request.id
+      get :service_subsidy, :id => service_request.id
+
+      subsidy = sub_service_request.subsidy
+      subsidy.should eq nil
+
+      assigns(:subsidies).should eq [ ]
+    end
   end
 
   describe 'GET navigate' do

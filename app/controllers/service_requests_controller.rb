@@ -206,12 +206,16 @@ class ServiceRequestsController < ApplicationController
   end
 
   def service_subsidy
-    # TODO: move this to the model
     @subsidies = []
     @service_request.sub_service_requests.each do |ssr|
       if ssr.subsidy
+        # we already have a subsidy; add it to the list
         @subsidies << ssr.subsidy
       elsif ssr.eligible_for_subsidy?
+        # we don't have a subsidy yet; add it to the list but don't save
+        # it yet
+        # TODO: is it a good idea to modify this SubServiceRequest like
+        # this without saving it to the database?
         ssr.build_subsidy
         @subsidies << ssr.subsidy
       end

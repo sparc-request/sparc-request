@@ -1,5 +1,5 @@
 .ask-a-question
-  = form_tag ask_a_question_service_request_path(@service_request), :remote => true do
+  = form_tag ask_a_question_service_requests_path, :remote => true do
     .ask-us-button(href="javascript:void(0);")
       %span#ask_a_question_header Ask us a question!
       %div(style="float:right")

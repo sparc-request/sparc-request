@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121116194204) do
+ActiveRecord::Schema.define(:version => 20121204161218) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -127,17 +127,31 @@ ActiveRecord::Schema.define(:version => 20121116194204) do
     t.string   "credentials"
     t.string   "subspecialty"
     t.string   "phone"
-    t.datetime "created_at",        :null => false
-    t.datetime "updated_at",        :null => false
+    t.datetime "created_at",                                :null => false
+    t.datetime "updated_at",                                :null => false
     t.datetime "deleted_at"
     t.boolean  "catalog_overlord"
     t.string   "credentials_other"
+    t.string   "encrypted_password",     :default => "",    :null => false
+    t.string   "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",          :default => 0
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.text     "reason"
+    t.string   "company"
+    t.boolean  "approved",               :default => false, :null => false
   end
 
+  add_index "identities", ["approved"], :name => "index_identities_on_approved"
   add_index "identities", ["email"], :name => "index_identities_on_email"
   add_index "identities", ["last_name"], :name => "index_identities_on_last_name"
   add_index "identities", ["ldap_uid"], :name => "index_identities_on_ldap_uid", :unique => true
   add_index "identities", ["obisid"], :name => "index_identities_on_obisid", :unique => true
+  add_index "identities", ["reset_password_token"], :name => "index_identities_on_reset_password_token", :unique => true
 
   create_table "impact_areas", :force => true do |t|
     t.integer  "protocol_id"

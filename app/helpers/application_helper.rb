@@ -1,4 +1,13 @@
 module ApplicationHelper
+  def show_welcome_message current_user
+    if current_user
+      content_tag(:span, "Logged in as #{current_user.display_name}, ") + link_to('logout', destroy_identity_session_path, :method => :delete)
+    else
+      # could be used to provide a login link
+      content_tag(:span, "Not Logged In")
+    end
+  end
+
   def show_friendly_ssr_id ssr
     unless ssr.nil?
       "Editing ID: #{ssr.service_request.protocol.id}-#{ssr.ssr_id}"

@@ -3,7 +3,7 @@ class ProjectsController < ApplicationController
   def new
     @service_request = ServiceRequest.find session[:service_request_id]
     @project = Project.new
-    @project.requester_id = @current_user.id
+    @project.requester_id = current_user.id
   end
 
   def create
@@ -19,12 +19,12 @@ class ProjectsController < ApplicationController
 
   def edit
     @service_request = ServiceRequest.find session[:service_request_id]
-    @project = @current_user.projects.find params[:id]
+    @project = current_user.projects.find params[:id]
   end
 
   def update
     @service_request = ServiceRequest.find session[:service_request_id]
-    @project = @current_user.projects.find params[:id]
+    @project = current_user.projects.find params[:id]
 
     if @project.update_attributes params[:project]
       session[:saved_project_id] = @project.id

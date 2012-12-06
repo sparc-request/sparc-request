@@ -1,0 +1,27 @@
+.devise_form#login
+  .grid_5.box
+    .info
+      %h2 Institutional Login
+      Click
+      = link_to "Here", identity_omniauth_authorize_path(:shibboleth)
+
+
+  .grid_5.box
+    .info
+      %h2 Sign in using a locally created account (Lane need wording)
+      = form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
+        .field
+          = f.label :ldap_uid, "Username:"
+          = f.text_field :ldap_uid, :size => '30', :style => 'width:auto'
+        .field
+          = f.label :password, "Password:"
+          = f.password_field :password
+        - if devise_mapping.rememberable?
+          .field
+            = f.check_box :remember_me
+            = f.label :remember_me, "Remember me:"
+        #button
+          = f.submit "Sign in", {:class => 'btn ui-button ui-widget ui-state-default ui-corner-all'}
+        .clear
+    .links
+      = render "devise/shared/links"

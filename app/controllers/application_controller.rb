@@ -1,121 +1,111 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
   helper :all
+  helper_method :current_user
 
-  before_filter :authenticate
   before_filter :load_defaults
-  before_filter :setup_session
+  before_filter :initialize_service_request
+  before_filter :authorize_identity
   before_filter :setup_navigation
-
-  # for now we are assuming auto login
-  def authenticate
-    #session[:errors] = nil # clear out the error messages, only used in testing/development
-    @current_user = Identity.find_by_ldap_uid 'jug2'
-
-    #@current_user = nil #uncomment to test as if not logged in
-    # let's do some cleanup if the user changes
-    if @current_user and @current_user.id != session[:identity_id]
-        session.delete(:service_request_id) 
-        session.delete(:sub_service_request_id)
-        session.delete(:first_draft)
-    end
-
-    session[:identity_id] = @current_user.id unless @current_user.nil?
-  end
-
+  
   def current_user
-    Identity.find session[:identity_id]
+    current_identity
   end
   
-  def setup_session
-    # set/get the objects we need to manipulate in other controllers
+  def load_defaults
+    # load some default configuration
+    begin 
+      @application_config ||= YAML.load_file(Rails.root.join('config', 'application.yml'))[Rails.env]
+      @default_mail_to = @application_config['default_mail_to']
+      @user_portal_link = @application_config['user_portal_link']
+    rescue
+      raise "application.yml not found, see config/application.yml.example"
+    end
+  end
+
+  def authorization_error msg, ref
+    error = msg
+    error += "<br />If you believe this is in error please contact, #{I18n.t 'error_contact'}, and provide the following information:"
+    error += "<br /> Reference #: "
+    error += ref
+    render :partial => 'service_requests/authorization_error', :locals => {:error => error}
+  end
+
+  def initialize_service_request
     @service_request = nil
     @sub_service_request = nil
     @line_items = nil
 
-    if params[:from_user_portal] == 'true' # if we come from user portal we should clear out session information
-        session.delete(:first_draft) 
-        session.delete(:service_request_id) 
-        session.delete(:sub_service_request_id)
-    end
+    Rails.logger.info "#"*50
+    Rails.logger.info params[:controller]
+    Rails.logger.info params[:action]
+    Rails.logger.info "#"*50
 
     if params[:controller] == 'service_requests'
+      Rails.logger.info "#"*50
+      Rails.logger.info "i'm in the service requests controller"
+      Rails.logger.info "#"*50
 
-      # we are starting a new service request
-      unless params[:id]
-        if session[:service_request_id] != params[:id].to_i # we are trying to access different service request, so we want to make sure we remove the first_draft session variable
-          session.delete(:first_draft) 
-        end
-        
-        session.delete(:service_request_id) 
+      if params[:action] == 'catalog' and params[:id].nil?
+        session.delete(:service_request_id)
         session.delete(:sub_service_request_id)
+      else
+        session[:service_request_id] = params[:id] if params[:id]
       end
-     
-      if @current_user and params[:id] # we are logged in and trying to access a service request
-        
-        # let's find the service requests with this id
-        @service_request = @current_user.protocol_service_requests.where(:id => params[:id]).empty? ? @current_user.requested_service_requests.where(:id => params[:id]).first : @current_user.protocol_service_requests.where(:id => params[:id]).first
 
-        if @service_request.nil? # we didn't find a service request for this user with the id supplied 
-          error = "The service request you are trying to access can not be found <br /> or is not editable by you. <br />If you believe this is in error please contact, #{@error_contact}, and provide the following information:"
-          error += "<br /> Reference #: SR#{params[:id]}"
-          render :partial => 'service_requests/authorization_error', :locals => {:error => error}
-        elsif !@current_user.can_edit_service_request? @service_request and !session[:first_draft] # the service requested isn't in a state that can be edited and we aren't working on a new service request
-          error = "The service request you are trying to access is not editable. <br />If you believe this is in error please contact, #{@error_contact}, and provide the following information:"
-          error += "<br /> Reference #: SR#{params[:id]}"
-          render :partial => 'service_requests/authorization_error', :locals => {:error => error}
-        else # otherwise let's grab the line items we need
+      if session[:service_request_id]
+        Rails.logger.info "#"*50
+        Rails.logger.info "i have a service request id"
+        Rails.logger.info "#"*50
+
+        @service_request = ServiceRequest.where(:id => session[:service_request_id]).first
+
+        if @service_request.nil?
+          authorization_error "The service request you are trying to access can not be found.", "SR#{params[:id]}"
+        else
           @line_items = @service_request.line_items
-          session[:service_request_id] = @service_request.id
-        end
-
-        if !@service_request.nil? and (params[:sub_service_request_id] or session[:sub_service_request_id]) # we are trying to edit a sub service request
-          session[:sub_service_request_id] = params[:sub_service_request_id] ? params[:sub_service_request_id] : session[:sub_service_request_id]
-          @sub_service_request = @service_request.sub_service_requests.where(:id => session[:sub_service_request_id]).first
-
-          if @sub_service_request.nil? # we didn't find a sub service request for the id supplied
-            error = "The service request you are trying to access can not be found. <br />If you believe this is in error please contact, #{@error_contact}, and provide the following information:"
-            error += "<br /> Reference #: SSR#{session[:sub_service_request_id]}"
-            render :partial => 'service_requests/authorization_error', :locals => {:error => error}
-          elsif !@current_user.can_edit_sub_service_request? @sub_service_request # the sub service request isn't ina  state that can be edited
-            error = "The service request you are trying to access is not editable. <br />If you believe this is in error please contact, #{@error_contact}, and provide the following information:"
-            error += "<br /> Reference #: SSR#{session[:sub_service_request_id]}"
-            render :partial => 'service_requests/authorization_error', :locals => {:error => error}
-          else #otherwise let's replace the line items we use with the ones provided by the service request
-            @line_items = @sub_service_request.line_items
+          
+          if params[:sub_service_request_id] or session[:sub_service_request_id]
+            session[:sub_service_request_id] = params[:sub_service_request_id] if params[:sub_service_request_id]
+            @sub_service_request = SubServiceRequest.where(:id => session[:sub_service_request_id]).first
+            
+            if @sub_service_request.nil?
+              authorization_error "The service request you are trying to access can not be found.", 
+                                  "SSR#{params[:sub_service_request_id]}"
+            else
+              @line_items = @sub_service_request.line_items
+            end
           end
         end
-      elsif @current_user and not session[:service_request_id] # we are logged in and we want to create a new service request
-        @service_request = @current_user.requested_service_requests.new(:service_requester_id => @current_user.id)
+      else # we need to create a new service request
+        @service_request = ServiceRequest.new :status => 'first_draft'
         if params[:protocol_id] # we want to create a new service request that belongs to an existing protocol
-          if @current_user.protocols.where(:id => params[:protocol_id]).empty? # this user doesn't have permission to create service request under this protocol
-            error = "You are attempting to create a service request under a study/project that you do not have permissions to access. <br />If you believe this is in error please contact, #{@error_contact}, and provide the following information:"
-            error += "<br /> Reference #: PROTOCOL#{params[:protocol_id]}"
-            render :partial => 'service_requests/authorization_error', :locals => {:error => error}
+          if current_user and current_user.protocols.where(:id => params[:protocol_id]).empty? # this user doesn't have permission to create service request under this protocol
+            authorization_error "You are attempting to create a service request under a study/project that you do not have permissions to access.",
+                                "PROTOCOL#{params[:protocol_id]}"
           else # otherwise associate the service request with this protocol
             @service_request.protocol_id = params[:protocol_id]
           end
         end
 
-        @service_request.save :validate => false
+        Rails.logger.info "#"*50
+        Rails.logger.info flash.inspect
+        Rails.logger.info "#"*50    
 
-        session[:service_request_id] = @service_request.id
-        session[:first_draft] = true
-        redirect_to catalog_service_request_path(@service_request)
-      else #we aren't logged in so let's create a service request that doesn't have a requester.  one will be added once they click 'Submit Request'
-        if session[:service_request_id]
-          @service_request = ServiceRequest.find session[:service_request_id]
-          @line_items = @service_request.line_items
-        else
-          @service_request = ServiceRequest.new
-          @service_request.save :validate => false
-          session[:first_draft] = true
-          session[:service_request_id] = @service_request.id
-          redirect_to catalog_service_request_path(@service_request)
+        # if the user has requested an account and it is pending approval we need to change the login message
+        signed_up_but_not_approved = false
+        if flash[:notice] == I18n.t("devise.registrations.identity.signed_up_but_not_approved") # use the local version of the text
+          signed_up_but_not_approved = true
         end
 
+        @service_request.save :validate => false
+        session[:service_request_id] = @service_request.id
+        redirect_to catalog_service_request_path(@service_request, :signed_up_but_not_approved => signed_up_but_not_approved)
       end
-    elsif ['search', 'service_calendars'].include? params[:controller]
+    else
+      Rails.logger.info "#"*50
+      Rails.logger.info "i'm gonna find you"
+      Rails.logger.info "#"*50
       @service_request = ServiceRequest.find session[:service_request_id]
       if session[:sub_service_request_id]
         @sub_service_request = @service_request.sub_service_requests.find session[:sub_service_request_id]
@@ -126,19 +116,35 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def load_defaults
-    begin 
-      @application_config ||= YAML.load_file(Rails.root.join('config', 'application.yml'))[Rails.env]
-      @default_mail_to = @application_config['default_mail_to']
-      @user_portal_link = @application_config['user_portal_link']
-      @error_contact = @application_config['error_contact']
-      @application_title = @application_config['application_title']
-      @account_create_url = @application_config['account_create_url']
-    rescue
-      raise "application.yml not found, see config/application.yml.example"
+  def authorize_identity
+    # can the user edit the service request
+    # can the user edit the sub service request
+ 
+    # we have a current user
+    if current_user
+      if @sub_service_request.nil? and current_user.can_edit_service_request? @service_request
+        return true
+      elsif @sub_service_request and current_user.can_edit_sub_service_request? @sub_service_request
+        return true
+      end
+
+    # the service request is in first draft and has yet to be submitted (catalog page only)
+    elsif @service_request.status == 'first_draft' and @service_request.service_requester_id.nil?
+      return true
+    elsif !@service_request.status.nil? # this is a previous service request so we should attempt to sign in
+      authenticate_identity! 
+      return true
+    end
+    
+    if @sub_service_request.nil?
+      authorization_error "The service request you are trying to access is not editable.",
+                          "SR#{session[:service_request_id]}"
+    else
+      authorization_error "The service request you are trying to access is not editable.",
+                          "SSR#{session[:sub_service_request_id]}"
     end
   end
-      
+
   def setup_navigation
     #TODO - this could definitely be done a better way
     page = params[:action] == 'navigate' ? request.referrer.split('/').last.split('?').first : params[:action]

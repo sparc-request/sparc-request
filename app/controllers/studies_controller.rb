@@ -3,7 +3,7 @@ class StudiesController < ApplicationController
   def new
     @service_request = ServiceRequest.find session[:service_request_id]
     @study = Study.new
-    @study.requester_id = @current_user.id
+    @study.requester_id = current_user.id
     @study.build_research_types_info
     @study.build_human_subjects_info
     @study.build_vertebrate_animals_info
@@ -31,13 +31,13 @@ class StudiesController < ApplicationController
 
   def edit
     @service_request = ServiceRequest.find session[:service_request_id]
-    @study = @current_user.studies.find params[:id]
+    @study = current_user.studies.find params[:id]
     @study.populate_for_edit
   end
 
   def update
     @service_request = ServiceRequest.find session[:service_request_id]
-    @study = @current_user.studies.find params[:id]
+    @study = current_user.studies.find params[:id]
 
     if @study.update_attributes params[:study]
       session[:saved_study_id] = @study.id

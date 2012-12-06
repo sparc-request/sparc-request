@@ -2,13 +2,13 @@
 %html{"xml:lang" => "en", :xmlns => "http://www.w3.org/1999/xhtml"}
   %head
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
-    %title= @application_title
+    %title= t 'application_title'
     = stylesheet_link_tag 'application', '960', 'jquery-ui', :media => 'all'
     = javascript_include_tag "application"
     = csrf_meta_tags
   %body
     // add the service_request_id for easy access to it
-    = hidden_field_tag :service_request_id, @service_request.id
+    = hidden_field_tag(:service_request_id, @service_request.id) if @service_request
     // load spinner and cancel images so they are cached
     = image_tag 'spinner.gif', :style => 'display:none'
     = image_tag 'cancel.png', :style => 'display:none'
@@ -23,8 +23,12 @@
         #musc_logo
           %a{:href => "http://www.musc.edu/", :target => "_blank"}
             %img{:alt => "Musc_logo", :src => "/assets/musc_logo.gif"}/
+      #welcome_msg= show_welcome_message(current_user)
       #title
-        #sub_service_request_header= show_friendly_ssr_id @sub_service_request
+        #sub_service_request_header= show_friendly_ssr_id(@sub_service_request) if @sub_service_request
         %h1 SPARC
-      #content.container_12= yield
+      #content.container_12
+        - flash.each do |name, msg|
+          = content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String)
+        = yield
       = render :partial => 'shared/ask_a_question'

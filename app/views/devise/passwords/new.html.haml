@@ -1,0 +1,14 @@
+.devise_form#reset
+  .grid_5.box
+    .info
+      %h2 Forgot your password?
+      = form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :post }) do |f|
+        = devise_error_messages!
+        .field
+          = f.label :ldap_uid, "Username:"
+          = f.email_field :ldap_uid
+        #button
+          = f.submit "Send password reset", {:class => 'btn ui-button ui-widget ui-state-default ui-corner-all'}
+        .clear
+  .links.grid_5
+    = render "devise/shared/links"

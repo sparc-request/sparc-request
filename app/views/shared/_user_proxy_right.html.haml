@@ -17,11 +17,11 @@
     %td 
       .actions
         = link_to image_tag('pencil.png'), 'javascript:void(0)', :class => 'edit_project_role', :parent => parent_class, :identity_id => identity.id
-        = link_to image_tag('cancel.png'), 'javascript:void(0)', :class => 'remove_project_role', :parent => parent_class unless identity == @current_user
+        = link_to image_tag('cancel.png'), 'javascript:void(0)', :class => 'remove_project_role', :parent => parent_class unless identity == current_user
       .restore{:style => 'display:none;'}
         = link_to image_tag('arrow_undo.png'), 'javascript:void(0)', :class => 'restore_project_role', :parent => parent_class
     %td= USER_ROLES.invert[project_role.role]
-    %td= f.radio_button :project_rights, 'none', :checked => project_role.should_select?('none', @current_user), :disabled => !project_role.can_switch_to?('none', @current_user)
-    %td= f.radio_button :project_rights, 'view', :checked => project_role.should_select?('view', @current_user), :disabled => !project_role.can_switch_to?('view', @current_user)
-    %td= f.radio_button :project_rights, 'request', :checked => project_role.should_select?('request', @current_user), :disabled => !project_role.can_switch_to?('request', @current_user)
-    %td= f.radio_button :project_rights, 'approve', :checked => project_role.should_select?('approve', @current_user), :disabled => !project_role.can_switch_to?('approve', @current_user)
+    %td= f.radio_button :project_rights, 'none', :checked => project_role.should_select?('none', current_user), :disabled => !project_role.can_switch_to?('none', current_user)
+    %td= f.radio_button :project_rights, 'view', :checked => project_role.should_select?('view', current_user), :disabled => !project_role.can_switch_to?('view', current_user)
+    %td= f.radio_button :project_rights, 'request', :checked => project_role.should_select?('request', current_user), :disabled => !project_role.can_switch_to?('request', current_user)
+    %td= f.radio_button :project_rights, 'approve', :checked => project_role.should_select?('approve', current_user), :disabled => !project_role.can_switch_to?('approve', current_user)

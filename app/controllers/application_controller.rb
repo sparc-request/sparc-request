@@ -119,21 +119,23 @@ class ApplicationController < ActionController::Base
   def authorize_identity
     # can the user edit the service request
     # can the user edit the sub service request
-  
+ 
     # we have a current user
     if current_user
       if @sub_service_request.nil? and current_user.can_edit_service_request? @service_request
         return true
-      elsif current_user.can_edit_sub_service_request? @sub_service_request
+      elsif @sub_service_request and current_user.can_edit_sub_service_request? @sub_service_request
         return true
       end
 
     # the service request is in first draft and has yet to be submitted (catalog page only)
     elsif @service_request.status == 'first_draft' and @service_request.service_requester_id.nil?
       return true
+    elsif !@service_request.status.nil? # this is a previous service request so we should attempt to sign in
+      authenticate_identity! 
+      return true
     end
-
-    # otherwise throw an errorS
+    
     if @sub_service_request.nil?
       authorization_error "The service request you are trying to access is not editable.",
                           "SR#{session[:service_request_id]}"

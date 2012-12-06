@@ -311,6 +311,19 @@ describe ServiceCalendarsController do
     end
 
     it 'should set displayed_visits' do
+      Visit.bulk_create(20, line_item_id: line_item.id)
+
+      session[:service_request_id] = service_request.id
+
+      get :update, {
+        :format              => :js,
+        :tab                 => 'foo',
+        :service_request_id  => service_request.id,
+        :line_item           => line_item.id,
+        :visit               => line_item.visits[0].id,
+      }.with_indifferent_access
+
+      assigns(:displayed_visits).should eq line_item.visits[0...5]
     end
   end
 end

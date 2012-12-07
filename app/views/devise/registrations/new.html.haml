@@ -1,0 +1,52 @@
+.edit-user-view
+  .devise_form#new
+
+    .description To create an account for utilization of the SPARC application, please provide the following information:
+
+    = form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| 
+      = devise_error_messages!
+
+      %br
+      .grid_7.box
+        .info
+          .field
+            = f.label :last_name, "Last Name:"
+            = f.text_field :last_name
+
+          .field
+            = f.label :first_name, "First Name:"
+            = f.text_field :first_name
+
+          .field
+            = f.label :company, "Company:"
+            = f.text_field :company
+
+          .field
+            = f.label :email, "Email:"
+            = f.text_field :email
+
+          .field
+            = f.label :phone, "Telephone Number:"
+            = f.text_field :phone
+
+          .field
+            = f.label :ldap_uid, "Username:"
+            = f.text_field :ldap_uid
+          
+          .field
+            = f.label :password, "Password:"
+            = f.password_field :password
+          
+          .field
+            = f.label :password_confirmation, "Password Confirmation:"
+            = f.password_field :password_confirmation
+
+          .field
+            = f.label :reason, "Reason for account/login request:"
+            = f.text_area :reason
+
+          .create_user#button
+            = f.submit "Create New User", {:class => 'btn ui-button ui-widget ui-state-default ui-corner-all'}
+          .clear
+      .links.grid_7
+        = render "devise/shared/links"

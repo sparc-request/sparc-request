@@ -1,4 +1,6 @@
 SparcRails::Application.routes.draw do
+  devise_for :identities, :controllers => { :omniauth_callbacks => "identities/omniauth_callbacks" }
+
   resources :identities do
     collection do
       post 'add_to_protocol'
@@ -18,9 +20,12 @@ SparcRails::Application.routes.draw do
       get 'service_subsidy'
       get 'document_management'
       post 'navigate'
-      post 'ask_a_question'
       get 'refresh_service_calendar'
       get 'save_and_exit'
+    end
+
+    collection do
+      post 'ask_a_question'
     end
 
     resource :service_calendars do

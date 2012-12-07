@@ -4,13 +4,10 @@ PATH
     obis-bridge (0.1.0)
       activerecord
       acts_as_list
-      devise
       grouped_validations
       json
       mysql2
       obis-net-ldap
-      omniauth
-      omniauth-shibboleth
       paper_trail
       paper_trail (~> 2)
       paperclip
@@ -256,6 +253,7 @@ DEPENDENCIES
   capybara
   coffee-rails (~> 3.2.1)
   database_cleaner
+  devise
   dynamic_form
   factory_girl
   faker
@@ -264,6 +262,7 @@ DEPENDENCIES
   launchy
   mysql2
   obis-bridge!
+  omniauth-shibboleth
   rails (= 3.2.8)
   rspec-rails
   ruby-prof

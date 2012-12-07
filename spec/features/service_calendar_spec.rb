@@ -5,6 +5,7 @@ describe "service calendar" do
 
   before :each do
     visit service_calendar_service_request_path service_request.id
+    sign_in
     sleep 1
   end
 
@@ -93,7 +94,6 @@ describe "service calendar" do
           find('.pp_max_total_direct_cost').text().should eq("$30.00")
         end
       end
-
     end
 
     describe "billing strategy tab" do

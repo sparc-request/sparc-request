@@ -1,10 +1,14 @@
 require 'spec_helper'
 
 describe "creating a new study " do 
+  build_service_request_with_study()
 
   before :each do
-    visit root_path
-    visit new_service_request_study_path 1
+    visit protocol_service_request_path service_request.id
+    sign_in
+    sleep 1
+    click_link "New Study"
+    sleep 1
     find(:xpath, "//input[@alt='SaveAndContinue']").click
   end
 
@@ -34,7 +38,7 @@ describe "creating a new study " do
 
       find(:xpath, "//input[@alt='SaveAndContinue']").click
 
-      find("#service_request_protocol_id").value().should eq("1")
+      find("#service_request_protocol_id").value().should eq("2")
     end
   end
 end
@@ -46,6 +50,8 @@ describe "editing a study" do
 
   before :each do
     visit protocol_service_request_path service_request.id
+    sign_in
+    sleep 1
   end
 
   describe "editing the short title", :js => true do

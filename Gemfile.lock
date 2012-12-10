@@ -4,10 +4,13 @@ PATH
     obis-bridge (0.1.0)
       activerecord
       acts_as_list
+      devise
       grouped_validations
       json
       mysql2
       obis-net-ldap
+      omniauth
+      omniauth-shibboleth
       paper_trail
       paper_trail (~> 2)
       paperclip

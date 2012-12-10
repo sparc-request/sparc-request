@@ -113,6 +113,7 @@ describe "service calendar" do
 
       describe "increasing the 'R' billing quantity" do
         it "should increase the total cost", :js => true do
+          click_link "check_row_#{line_item2.id}_billing_strategy"
           fill_in "visits_#{line_item2.visits[1].id}_research_billing_qty", :with => 10
           fill_in "visits_#{line_item2.visits[1].id}_insurance_billing_qty", :with => 10
           sleep 2
@@ -126,16 +127,30 @@ describe "service calendar" do
 
       describe "increasing the '%' or 'T' billing quantity" do
         it "should not increase the total cost", :js => true do
+          click_link "check_row_#{line_item2.id}_billing_strategy"
           fill_in "visits_#{line_item2.visits[1].id}_insurance_billing_qty", :with => 10
           fill_in "visits_#{line_item2.visits[1].id}_effort_billing_qty", :with => 10
           sleep 1
           all('.pp_max_total_direct_cost').each do |x|
             if x.visible?
-              x.text().should eq('$0.00')
+              x.text().should eq('$300.00')
             end
           end
         end
       end
+    end
+
+    describe "quantity tab" do
+      it "should add all billing quantities together", :js => true do
+        click_link "billing_strategy_tab"
+        fill_in "visits_#{line_item2.visits[1].id}_research_billing_qty", :with => 10
+        fill_in "visits_#{line_item2.visits[1].id}_insurance_billing_qty", :with => 10
+        fill_in "visits_#{line_item2.visits[1].id}_effort_billing_qty", :with => 10
+      end
+    end
+
+    describe "pricing tab" do
+
     end
   end
 end

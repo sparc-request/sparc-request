@@ -70,8 +70,9 @@ RSpec.configure do |config|
       email:                 'glennj@musc.edu',
       credentials:           'BS,    MRA',
       catalog_overlord:      true,
-      password:              'p4ssword',
-      password_confirmation: 'p4ssword'
+      password:              'password',
+      password_confirmation: 'password',
+      approved:              true
     )
     identity.save!
 
@@ -83,6 +84,12 @@ RSpec.configure do |config|
   config.after(:each) do
     DatabaseCleaner.clean
   end
+end
+
+def sign_in uid="jug2", password="password"
+  fill_in "identity_ldap_uid", :with => uid
+  fill_in "identity_password", :with => password
+  click_button "Sign in"
 end
 
 def build_service_request_with_project

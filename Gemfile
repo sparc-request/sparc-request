@@ -42,6 +42,9 @@ gem 'obis-bridge', :path => '../obis-bridge'
 
 gem 'will_paginate'
 
+gem 'devise'
+gem 'omniauth-shibboleth'
+
 # requirements for excel export
 gem 'axlsx_rails'
 
@@ -68,4 +71,3 @@ gem 'rvm-capistrano'
 group :profile do
   gem 'ruby-prof'
 end
-

@@ -1,4 +1,4 @@
-set :rvm_ruby_string, "1.9.3@sparc-rails"
+set :rvm_ruby_string, "1.9.3@sparc-rails --create"
 set :rvm_type, :system
 set :rvm_install_with_sudo, true
 

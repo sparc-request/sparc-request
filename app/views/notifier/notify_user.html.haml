@@ -6,16 +6,16 @@
     %title Service Request
 
   %body
-    -if role == 'pi'
+    -if @role == 'pi'
       %p
-        Dear #{name},
+        Dear #{@identity.full_name},
       %p
-        Services have been requested or changed in SPARC (sparc.musc.edu) for your #{project_type}
+        Services have been requested or changed in SPARC (sparc.musc.edu) for your #{@protocol.type.downcase}
         listed below. In addition, below is a list of users who have been granted access to this
-        #{project_type} on your behalf.
+        #{@protocol.type.downcase} on your behalf.
     -else
       %p
-        Services have been requested or changed in SPARC (sparc.musc.edu) for a #{project_type}
+        Services have been requested or changed in SPARC (sparc.musc.edu) for a #{@protocol.type.downcase}
         to which you have been granted access.
 
     %table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
@@ -26,19 +26,19 @@
       %tbody
         %tr{:style => 'border: 1px solid black;'}
           %th{:style => 'border: 1px solid black; width:200px; text-align:left;'} Project ID:
-          %td{:style => 'border: 1px solid black;'}= project['friendly_id']
+          %td{:style => 'border: 1px solid black;'}= @protocol.id
         %tr{:style => 'border: 1px solid black;'}
           %th{:style => 'border: 1px solid black; width:200px; text-align:left;'} Short Title:
-          %td{:style => 'border: 1px solid black;'}= project['short_title']
+          %td{:style => 'border: 1px solid black;'}= @protocol.short_title
         %tr{:style => 'border: 1px solid black;'}
           %th{:style => 'border: 1px solid black; width:200px; text-align:left;'} Project Title:
-          %td{:style => 'border: 1px solid black;'}= project['title']
+          %td{:style => 'border: 1px solid black;'}= @protocol.title
         %tr{:style => 'border: 1px solid black;'}
           %th{:style => 'border: 1px solid black; width:200px; text-align:left;'} Sponsor Name:
-          %td{:style => 'border: 1px solid black;'}= project['sponsor_name']
+          %td{:style => 'border: 1px solid black;'}= @protocol.sponsor_name
         %tr{:style => 'border: 1px solid black;'}
           %th{:style => 'border: 1px solid black; width:200px; text-align:left;'} Funding Source:
-          %td{:style => 'border: 1px solid black;'}= (project['funding_source'] or project['potential_funding_source'] or "").capitalize
+          %td{:style => 'border: 1px solid black;'}= (@protocol.funding_source or @protocol.potential_funding_source or "").capitalize
 
     %br
     %br
@@ -50,23 +50,22 @@
           %th{:style => 'border: 1px solid black;'} Role:
           %th{:style => 'border: 1px solid black;'} Proxy Rights:
       %tbody
-        - users.each do |user|
-          - role = roles.detect{|r| r['user_id'] == user['id']}
+        - @protocol.project_roles.each do |pr|
           %tr{:style => 'border: 1px solid black;'}
-            %td{:style => 'border: 1px solid black;'}= "#{user['first_name']} #{user['last_name']}"
-            %td{:style => 'border: 1px solid black; text-align: center;'}= role['role'].upcase
-            %td{:style => 'border: 1px solid black; text-align: center;'}= {"approve"=>"Authorize/Change Study Charges", "request"=>"Request/Approve Services", "view"=>"View Rights", "none"=>"Member Only"}[role['project_rights']]
-        
-    %p A list of requested services is attached.
-    - if approval_url
-      %p
-        To approve the charges associated with the selected services please click
-        %a{:style => "color: red; font-weight: bold;", :href => approval_url} HERE
-        ="."
-    %p
-      %a{:style => "color: blue; font-weight: bold;", :href => user_portal_link}=user_portal_text
-    %p
-      Please contact the SUCCESS Center at (843) 792-8300 for assistance with this process
-      or with any questions you may have.
-    - acks.each do |ack|
-      %p{:style => 'font-size: small;'}=ack
+            %td{:style => 'border: 1px solid black;'}= pr.identity.full_name
+            %td{:style => 'border: 1px solid black; text-align: center;'}= pr.role.upcase
+            %td{:style => 'border: 1px solid black; text-align: center;'}= {"approve"=>"Authorize/Change Study Charges", "request"=>"Request/Approve Services", "view"=>"View Rights", "none"=>"Member Only"}[pr.project_rights]
+
+-#  %p A list of requested services is attached.
+-#  - if approval_url
+-#    %p
+-#      To approve the charges associated with the selected services please click
+-#      %a{:style => "color: red; font-weight: bold;", :href => approval_url} HERE
+-#      ="."
+-#  %p
+-#    %a{:style => "color: blue; font-weight: bold;", :href => user_portal_link}=user_portal_text
+-#  %p
+-#    Please contact the SUCCESS Center at (843) 792-8300 for assistance with this process
+-#    or with any questions you may have.
+-#  - acks.each do |ack|
+-#    %p{:style => 'font-size: small;'}=ack

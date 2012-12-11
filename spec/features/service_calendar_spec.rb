@@ -99,7 +99,7 @@ describe "service calendar" do
     describe "billing strategy tab" do
       before :each do
         click_link "billing_strategy_tab"
-        sleep 1
+        sleep 3
       end
 
       describe "selecting check all row button" do
@@ -114,12 +114,32 @@ describe "service calendar" do
       describe "increasing the 'R' billing quantity" do
         it "should increase the total cost", :js => true do
           click_link "check_row_#{line_item2.id}_billing_strategy"
+          sleep 5
           fill_in "visits_#{line_item2.visits[1].id}_research_billing_qty", :with => 10
-          fill_in "visits_#{line_item2.visits[1].id}_insurance_billing_qty", :with => 10
-          sleep 2
+          fill_in "visits_#{line_item2.visits[1].id}_insurance_billing_qty", :with => 0
+          sleep 3
           all('.pp_max_total_direct_cost').each do |x|
             if x.visible?
-              x.text().should eq('$300.00')
+              x.text().should eq('$570.00')
+            end
+          end
+        end
+
+        it "should update each visits maximum costs", :js => true do
+          click_link "check_row_#{line_item2.id}_billing_strategy"
+          sleep 5
+          fill_in "visits_#{line_item2.visits[1].id}_research_billing_qty", :with => 10
+          fill_in "visits_#{line_item2.visits[1].id}_insurance_billing_qty", :with => 0
+          sleep 3
+          all('.visit_column_2.max_direct_per_patient').each do |x|
+            if x.visible?
+              x.text().should eq "$300.00"
+            end
+          end
+
+          all('.visit_column_2.max_indirect_per_patient').each do |x|
+            if x.visible?
+              x.text().should eq "$150.00"
             end
           end
         end
@@ -128,9 +148,11 @@ describe "service calendar" do
       describe "increasing the '%' or 'T' billing quantity" do
         it "should not increase the total cost", :js => true do
           click_link "check_row_#{line_item2.id}_billing_strategy"
+          sleep 5
           fill_in "visits_#{line_item2.visits[1].id}_insurance_billing_qty", :with => 10
           fill_in "visits_#{line_item2.visits[1].id}_effort_billing_qty", :with => 10
-          sleep 1
+          fill_in "visits_#{line_item2.visits[1].id}_research_billing_qty", :with => 1
+          sleep 5
           all('.pp_max_total_direct_cost').each do |x|
             if x.visible?
               x.text().should eq('$300.00')
@@ -143,14 +165,46 @@ describe "service calendar" do
     describe "quantity tab" do
       it "should add all billing quantities together", :js => true do
         click_link "billing_strategy_tab"
+        click_link "check_row_#{line_item2.id}_billing_strategy"
+        sleep 1
         fill_in "visits_#{line_item2.visits[1].id}_research_billing_qty", :with => 10
         fill_in "visits_#{line_item2.visits[1].id}_insurance_billing_qty", :with => 10
         fill_in "visits_#{line_item2.visits[1].id}_effort_billing_qty", :with => 10
+        sleep 1
+        click_link "quantity_tab"
+        sleep 2
+        all('.visit.visit_column_2').each do |x|
+          if x.visible?
+            x.text().should eq('30')
+          end
+        end
       end
     end
 
     describe "pricing tab" do
+      it "should be blank if the visit is not checked", :js => true do
+        click_link "pricing_tab"
+        sleep 1
+        all('.visit.visit_column_2').each do |x|
+          if x.visible?
+            x.text().should eq('')
+          end
+        end
+      end
 
+      it "should show total price for that visit", :js => true do
+        click_link "billing_strategy_tab"
+        sleep 1
+        fill_in "visits_#{line_item2.visits[1].id}_research_billing_qty", :with => 5
+        sleep 1
+        click_link "pricing_tab"
+        sleep 2
+        all('.visit.visit_column_2').each do |x|
+          if x.visible?
+            x.text().should eq('$150.00')
+          end
+        end
+      end
     end
   end
 end

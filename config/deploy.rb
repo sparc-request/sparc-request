@@ -47,6 +47,7 @@ namespace :db do
   task :symlink do
     run "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"
     run "ln -nfs #{shared_path}/config/setup_load_paths.rb #{release_path}/config/setup_load_paths.rb"
+    run "ln -nfs #{shared_path}/config/application.yml #{release_path}/config/application.yml"
 
     #symlink other apps so that sparc-rails can run as root
     run "ln -nfs /var/www/rails/catalog_manager/current/public #{release_path}/public/catalog_manager"

@@ -21,8 +21,8 @@ ssh_options[:forward_agent] = true
 set :stages, %w(testing staging production)
 set :default_stage, "testing"
 
-before "deploy:setup", "rvm:install_rvm"
-before "deploy:setup", "rvm:install_ruby"
+#before "deploy:setup", "rvm:install_rvm"
+#before "deploy:setup", "rvm:install_ruby"
 
 after "deploy:update_code", "db:symlink"
 

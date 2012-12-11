@@ -137,6 +137,7 @@ def build_project
     protocol = Project.create(FactoryGirl.attributes_for(:protocol))
     protocol.update_attribute(:funding_status, "funded")
     protocol.update_attribute(:funding_source, "federal")
+    protocol.update_attribute(:indirect_cost_rate, 50.0)
     protocol.save :validate => false
     FactoryGirl.create(:project_role, protocol_id: protocol.id, identity_id: Identity.find_by_ldap_uid("jug2"), project_rights: "approve", role: "pi")
     service_request.update_attribute(:protocol_id, protocol.id)
@@ -148,6 +149,7 @@ def build_study
     protocol = Study.create(FactoryGirl.attributes_for(:protocol))
     protocol.update_attribute(:funding_status, "funded")
     protocol.update_attribute(:funding_source, "federal")
+    protocol.update_attribute(:indirect_cost_rate, 50.0)
     protocol.save :validate => false
     FactoryGirl.create(:project_role, protocol_id: protocol.id, identity_id: Identity.find_by_ldap_uid("jug2"), project_rights: "approve", role: "pi")
     service_request.update_attribute(:protocol_id, protocol.id)

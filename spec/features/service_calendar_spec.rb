@@ -115,8 +115,10 @@ describe "service calendar" do
         it "should increase the total cost", :js => true do
           click_link "check_row_#{line_item2.id}_billing_strategy"
           sleep 5
-          fill_in "visits_#{line_item2.visits[1].id}_research_billing_qty", :with => 10
-          fill_in "visits_#{line_item2.visits[1].id}_insurance_billing_qty", :with => 0
+          find("#visits_#{line_item2.visits[1].id}_research_billing_qty").set("")
+          find("#visits_#{line_item2.visits[1].id}_research_billing_qty").click()
+          fill_in( "visits_#{line_item2.visits[1].id}_research_billing_qty", :with => 10)
+          find("#visits_#{line_item2.visits[1].id}_insurance_billing_qty").click()
           sleep 3
           all('.pp_max_total_direct_cost').each do |x|
             if x.visible?
@@ -128,8 +130,10 @@ describe "service calendar" do
         it "should update each visits maximum costs", :js => true do
           click_link "check_row_#{line_item2.id}_billing_strategy"
           sleep 5
+          find("#visits_#{line_item2.visits[1].id}_research_billing_qty").set("")
+          find("#visits_#{line_item2.visits[1].id}_research_billing_qty").click()
           fill_in "visits_#{line_item2.visits[1].id}_research_billing_qty", :with => 10
-          fill_in "visits_#{line_item2.visits[1].id}_insurance_billing_qty", :with => 0
+          find("#visits_#{line_item2.visits[1].id}_insurance_billing_qty").click()
           sleep 3
           all('.visit_column_2.max_direct_per_patient').each do |x|
             if x.visible?

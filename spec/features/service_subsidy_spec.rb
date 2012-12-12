@@ -1,4 +1,5 @@
 require 'spec_helper'
+#include 'ServiceCalendarHelper'
 
 describe "subsidy page" do
   build_service_request_with_project
@@ -23,7 +24,10 @@ describe "subsidy page" do
       find('.pi-contribution').set(amount)
       find(:xpath, "//a/img[@alt='Savecontinue']/..").click
       sleep 2
-      sub_service_request.subsidy.pi_contribution.should eq(Service.dollars_to_cents(amount.to_s))
+      (sub_service_request.subsidy.pi_contribution/100).should eq(amount.to_i)
+      # sub_service_request.subsidy.pi_contribution.should eq(currency_converter(amount))
+      # Service.cents_to_dollars(sub_service_request.subsidy.pi_contribution.to_s).should eq(amount)
+      # sub_service_request.subsidy.pi_contribution.should eq(amount.to_i)
     end
   end
 

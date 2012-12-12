@@ -40,7 +40,7 @@ class Identity::ObisEntitySerializer < Entity::ObisEntitySerializer
     attributes = h['attributes']
 
     entity.update_attributes!(
-        :ldap_uid          => attributes['uid'],
+        :ldap_uid          => "#{attributes['uid']}@musc.edu",
         :email             => attributes['email'],
         :last_name         => attributes['last_name'],
         :first_name        => attributes['first_name'],

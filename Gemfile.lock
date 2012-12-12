@@ -1,7 +1,7 @@
 PATH
   remote: ../obis-bridge
   specs:
-    obis-bridge (0.1.1)
+    obis-bridge (0.1.2)
       activerecord
       acts_as_list
       devise

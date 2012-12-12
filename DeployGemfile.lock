@@ -1,8 +1,8 @@
 GIT
   remote: git@github.com:HSSC/obis-bridge.git
-  revision: 81e2e82f0f9ec8045604804837d1bee25b3fcc57
+  revision: daa405cc4e360b0ac47a81ac54c20c56458e60d9
   specs:
-    obis-bridge (0.1.1)
+    obis-bridge (0.1.2)
       activerecord
       acts_as_list
       devise
@@ -124,7 +124,7 @@ GEM
     rack (1.4.1)
     rack-cache (1.2)
       rack (>= 0.4)
-    rack-protection (1.3.1)
+    rack-protection (1.3.2)
       rack
     rack-ssl (1.3.2)
       rack

@@ -9,7 +9,6 @@ class ApplicationController < ActionController::Base
   before_filter :setup_navigation
   
   def current_user
-    pp backtrace
     current_identity
   end
   

@@ -159,9 +159,10 @@ end
 # Stub out all the methods in ApplicationController so we're not testing
 # them
 def stub_controller
-  # TODO: refactor this into stub_helper.rb
   before(:each) do
-    controller.stub!(:authenticate)
+    controller.stub!(:current_user) do
+      Identity.find_by_id(session[:identity_id])
+    end
 
     controller.stub!(:load_defaults) do
       controller.instance_eval do
@@ -169,16 +170,19 @@ def stub_controller
       end
     end
 
-    controller.stub!(:setup_session) do
+    controller.stub!(:initialize_service_request) do
       controller.instance_eval do
-        @current_user = Identity.find_by_id(session[:identity_id])
         @service_request = ServiceRequest.find_by_id(session[:service_request_id])
         @sub_service_request = SubServiceRequest.find_by_id(session[:sub_service_request_id])
         @line_items = @service_request.try(:line_items)
       end
     end
 
-    controller.stub!(:setup_navigation)
+    controller.stub!(:authorize_identity) { }
+
+    controller.stub!(:authenticate_identity!) { }
+
+    controller.stub!(:setup_navigation) { }
   end
 end
 

@@ -35,3 +35,7 @@ config/database.yml
 config/application.yml
 public/portal
 public/catalog_manager
+
+import/checkpoints
+import/entities.json
+

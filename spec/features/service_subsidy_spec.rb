@@ -30,5 +30,9 @@ describe "subsidy page" do
       # sub_service_request.subsidy.pi_contribution.should eq(amount.to_i)
     end
   end
+  describe "Subsidy Map IS preset" do
+    it 'Should NOT allow PI Contribution to be set', :js => true do
+    end
+  end
 
 end

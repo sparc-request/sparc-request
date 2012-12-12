@@ -55,6 +55,18 @@ RSpec.configure do |config|
   before = proc do
     DatabaseCleaner.start
 
+  end
+
+  config.before(:each, :js => true, &before)
+  config.before(:each, &before)
+
+  config.after(:each) do
+    DatabaseCleaner.clean
+  end
+end
+
+def let_there_be_lane
+  before = proc do
     identity = Identity.create(
       last_name:             'Glenn',
       first_name:            'Julia',
@@ -70,15 +82,10 @@ RSpec.configure do |config|
       approved:              true
     )
     identity.save!
-
   end
 
   config.before(:each, :js => true, &before)
   config.before(:each, &before)
-
-  config.after(:each) do
-    DatabaseCleaner.clean
-  end
 end
 
 def sign_in uid="jug2", password="password"

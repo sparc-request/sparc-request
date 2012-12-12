@@ -400,7 +400,20 @@ describe ServiceRequestsController do
   end
 
   describe 'POST ask_a_question' do
-
+    it 'should call ask_a_question' do
+      deliverer = double()
+      deliverer.should_receive(:deliver)
+      Notifier.stub!(:ask_a_question) { |question|
+        question.to.should eq 'nobody@nowhere.com'
+        question.from.should eq 'no-reply@musc.edu'
+        question.body.should eq 'No question asked'
+        deliverer
+      }
+      get :ask_a_question, {
+        :id => service_request.id,
+        :format => :js
+      }
+    end
   end
 
   describe 'GET refresh_service_calendar' do

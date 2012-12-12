@@ -30,7 +30,7 @@ save_state()
   name="$1"
   if [ "$save_state" ]; then
     echo "Saving state to $name.sql"
-    mysqldump sparc_development --user=sparc --password=sparc > $name.sql
+    mysqldump sparc_development --user=sparc --password=sparc > checkpoints/$name.sql
   fi
 }
 
@@ -38,7 +38,7 @@ restore_state()
 {
   name="$1"
   echo "Restoring state from $name.sql"
-  mysql sparc_development --user=sparc --password=sparc < $name.sql
+  mysql sparc_development --user=sparc --password=sparc < checkpoints/$name.sql
 }
 
 import_args="-N"

@@ -84,8 +84,8 @@ def let_there_be_lane
     identity.save!
   end
 
-  config.before(:each, :js => true, &before)
-  config.before(:each, &before)
+  before(:each, :js => true, &before)
+  before(:each, &before)
 end
 
 def sign_in uid="jug2", password="password"

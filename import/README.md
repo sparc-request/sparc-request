@@ -2,8 +2,8 @@
 
 To do an import:
 
-* Checkout `sparc-rails`, `obis-bridge`, `obis-common`, and
-  `migration_scripts` into the same directory.
+* Checkout `sparc-rails`, `obis-common`, and `migration_scripts` into
+  the same directory.
 
 * Run obis-common on port 4567:
 
@@ -43,7 +43,6 @@ validate.rb with the correct database name and credentials.
 The above import process will not import any documents.  To import
 documents from an alfresco server:
 
-* Make sure sparc-rails is checked out along obis-bridge
 * Create a config file in obis-bridge/import/config/alfresco.yml.  There
   is an example file that you can follow, or you can copy the file from
   an existing sparkling-lips installation.

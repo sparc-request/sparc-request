@@ -1,0 +1,36 @@
+// Place all the styles related to the Services controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+td.include_date_picture {
+  width: 430px;
+}
+
+div.blank_pricing_map {
+  display: none;
+}
+
+div.blank_pricing_setup {
+  display: none;
+}
+
+input.rate_field {
+  width: 290px !important;
+}
+
+td.set_rate {
+  width: 97px !important;
+  text-align: center !important;
+}
+
+td.include_date_picture {
+  input {
+    width: 384px !important;
+  }
+}
+
+div.service_provider_error {
+  background-color: lightyellow;
+  border: 2px solid red;
+  padding: 5px;
+}

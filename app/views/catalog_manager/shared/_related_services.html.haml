@@ -1,0 +1,16 @@
+.rls
+  - if entity.related_services
+    %table
+      %thead
+        %tr
+          %th Service
+          %th Required
+          %th Delete
+      %tbody
+        - entity.related_services.each do |rs|
+          %tr
+            %td= rs['service'].display_name
+            %td= check_box_tag rs['rel_id'], false, rs['optional'] == false, :class => 'optional', :original_service => entity.id, :rel_id => rs['rel_id'], :optional_flag => rs['optional']
+            %td= image_tag 'cancel.png', :id => rs['service'].id, :rel_id => rs['rel_id'], :original_service => entity.id, :class => 'rs_delete'
+
+  = text_field_tag 'new_rs', 'New Related Service'

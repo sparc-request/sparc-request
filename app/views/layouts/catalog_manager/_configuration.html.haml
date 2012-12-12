@@ -1,0 +1,6 @@
+:javascript
+  #{'sub_uri = ""' if Rails.env == 'development'}
+  #{'sub_uri = "/catalog_manager"' if Rails.env == 'staging'}
+  #{'sub_uri = "/catalog_manager"' if Rails.env == 'testing'}
+  #{'sub_uri = "/catalog_manager"' if Rails.env == 'training'}
+  #{'sub_uri = "/catalog_manager"' if Rails.env == 'production'}

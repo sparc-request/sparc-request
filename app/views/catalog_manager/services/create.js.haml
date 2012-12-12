@@ -1,0 +1,28 @@
+:plain
+  $('#details').empty();
+
+  $('#details').html('#{escape_javascript(render :partial => 'form')}');
+  $('#catalog').jstree('create_node', 
+    $("##{@service.organization.class.to_s.upcase}#{@service.organization.id}"), 
+    "last", 
+    { attr: { 
+      id: "SERVICE#{@service.id}"}, 
+      data: {
+        attr: {
+          cid: "#{@service.id}", 
+          object_type: "service",
+        },
+        title: "#{@service.name}"
+      }
+    }, 
+    function(){}, 
+    true
+  );
+  $("#SERVICE#{@service.id} a").click()
+
+  /* display the success message */
+  $('#flash').hide();
+  $('#flash').html("New service created!");
+  $('#flash').slideDown();
+  $('#flash').delay(3000);
+  $('#flash').slideUp();

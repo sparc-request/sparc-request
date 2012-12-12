@@ -1,3 +1,11 @@
+ACCORDION_COLOR_OPTIONS = {
+  "blue" => 'blue-provider',
+  "light-blue" => 'light-blue-provider',
+  "orange" => 'orange-provider',
+  "red" => 'red-provider',
+  "green" => 'green-provider'
+}
+
 FUNDING_STATUSES = {'Pending Funding' => 'pending_funding',
                     'Funded' => 'funded'}
 

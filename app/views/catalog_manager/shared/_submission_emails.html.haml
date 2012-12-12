@@ -1,0 +1,25 @@
+.ses
+  %table.se_clone_table{:style => "display:none"}
+    %tbody
+      %tr
+        %td
+          = hidden_field_tag "CLONE#{entity.class.to_s.downcase}[submission_emails][]", 'clone_only', :class => 'se_value'
+          %span.se_display clone only
+        %td= image_tag 'cancel.png', :class => 'se_delete'
+
+  - style = (!entity.submission_emails or entity.submission_emails.empty?) ? 'display:none;' : ''
+  %table.se_table{:style => style}
+    %thead
+      %tr
+        %th Email
+        %th Delete
+    %tbody
+      - if entity.submission_emails
+        - entity.submission_emails.each do |se|
+          %tr
+            %td
+              = hidden_field_tag "#{entity.class.to_s.downcase}[submission_emails][]", se, :class => 'se_value'
+              %span.se_display= se.email
+            %td= image_tag 'cancel.png', :class => 'se_delete'
+
+  = text_field_tag 'new_se', 'New Submission Email'

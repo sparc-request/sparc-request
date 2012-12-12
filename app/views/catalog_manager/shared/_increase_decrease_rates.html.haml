@@ -1,0 +1,51 @@
+%input.increase_decrease_rates{:type => 'button', :value => 'Increase or Decrease Rates'}
+  
+.increase_decrease_dialog
+  %div
+    %label{:for => "percent_of_change"} Percent of Change
+    %div
+      %input.percent_of_change.change_rate{:type => 'text', :class => 'percent_of_change'}
+      %span %
+      %p Enter a negative percent to decrease.
+  %div
+    %label{:for => "pricing_display_date"} Display Date
+    %input#pricing_display_date.change_rate.datepicker{:type => 'text', :class => 'change_rate_display_date', :display => 'display_date', :past_date => (can_edit_historical_data ? 'true' : 'false')}
+  %div{:style => 'margin-top:5px;'}
+    %label{:for => "pricing_effective_date"} Effective Date
+    %input#pricing_effective_date.change_rate.datepicker{:type => 'text', :class => 'change_rate_effective_date', :display => 'effective_date', :past_date => (can_edit_historical_data ? 'true' : 'false')}
+  %input.entity_id{:type => 'hidden', :value => entity.id}
+  
+:javascript
+  $(document).ready(function() {
+    if($('.increase_decrease_dialog').length > 1 ){ $('.change_rate').datepicker('destroy'); $('.increase_decrease_dialog:first').dialog('destroy').remove(); }
+    $('.increase_decrease_dialog').dialog({
+      autoOpen: false, 
+      title: "Increase/Decrease Rates",
+      width: 410,
+      closeText: "",
+      modal: true,
+      open: function() {
+        var datepicker_images = $(this).find($('.ui-datepicker-trigger'))
+
+        if($('.increase_decrease_dialog').length > 1 ){ $('.change_rate').datepicker('destroy').remove(); $('.increase_decrease_dialog:first').dialog('destroy').remove(); }        
+      },
+      buttons: [
+          {
+            text: "Cancel",
+            click: function() { $(this).dialog("close"); }
+          },          
+          {
+            text: "Submit",
+            click: function() { 
+              percent_of_change = $(this).find('.percent_of_change').val()
+              effective_date = $(this).find('.change_rate_effective_date').val()
+              display_date = $(this).find('.change_rate_display_date').val()
+              entity_id = $(this).children('.entity_id').val()
+              Sparc.catalog.submitRateChanges(entity_id, percent_of_change, effective_date, display_date)
+              $(this).dialog('close');
+            }
+          }
+      ]      
+    })
+    //Sparc.config.ready()
+  })  

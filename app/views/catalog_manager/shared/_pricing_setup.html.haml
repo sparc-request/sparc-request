@@ -1,0 +1,80 @@
+%h3
+  %a{:href => '#'}Effective on #{pricing_setup.try(:[], 'effective_date').try(:to_date).try(:strftime, "%-m/%d/%Y")} -  Display on #{pricing_setup.try(:[], 'display_date').try(:to_date).try(:strftime, "%-m/%d/%Y")}
+.pricing_setup_form
+  = hidden_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][id]", "#{pricing_setup ? pricing_setup.id : 'blank'}" 
+  - if pricing_setup_disabled
+    %input{:name => "diabled_fields_present", :value => 'true', :type => 'hidden'} 
+  - unless pricing_setup
+    %a.button.remove_pricing_setup{:href => 'javascript:void(0);'} Remove Pricing Setup
+  %fieldset
+    %legend Dates
+    %table
+      %tbody
+        %tr
+          %th Display Date*
+          %td
+            %input.display_date{:type => 'text', :value => pricing_setup.try(:[], 'display_date'), :class => "#{pricing_setup_disabled ? 'disabled_datepicker' : 'datepicker'} #{pricing_setup ? 'validate' : ''} ", :disabled => pricing_setup_disabled, :past_date => (can_edit_historical_data ? 'true' : 'false'), :display => 'display_date'}
+            = hidden_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][display_date]", pricing_setup.try(:[], 'display_date'), :class => "submitted_date display_date_hidden #{pricing_setup ? 'fix_pricing_maps_on_change' : ''}", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled, :date_type => '.display_date_hidden', :old_value => pricing_setup.try(:[], 'display_date'), :entity_name => entity.try(:name), :entity_id => entity.try(:id)
+        %tr
+          %th Effective Date*
+          %td
+            %input.effective_date{:type => 'text', :value => pricing_setup.try(:[], 'effective_date'), :class => "#{pricing_setup_disabled ? 'disabled_datepicker' : 'datepicker'} #{pricing_setup ? 'validate' : ''} ", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled, :past_date => (can_edit_historical_data ? 'true' : 'false'), :display => 'effective_date'}
+            = hidden_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][effective_date]", pricing_setup.try(:[], 'effective_date'), :class => "submitted_date effective_date_hidden #{pricing_setup ? 'fix_pricing_maps_on_change' : ''}", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled, :date_type => '.effective_date_hidden', :old_value => pricing_setup.try(:[], 'effective_date'), :entity_name => entity.try(:name), :entity_id => entity.try(:id)
+        %tr
+          %th &nbsp;
+          %td.footnote *Required Field.
+          
+
+  %fieldset
+    %legend Source of Price / Rate
+    %table
+      %tbody
+        %tr
+          %th Self Defined          
+          %td= radio_button_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][charge_master]", false, pricing_setup.try(:[], 'charge_master') == false, :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
+        %tr
+          %th Charge Master
+          %td= radio_button_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][charge_master]", true, pricing_setup.try(:[], 'charge_master') == true, :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
+        
+  %fieldset
+    %legend Percent of Fee
+    %table
+      %tbody
+        %tr.federal_row
+          %th Federal
+          %td{:class => "#{pricing_setup_disabled ? 'disabled_inputs' : ''}"}
+            = text_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][federal]", pricing_setup.try(:[], 'federal'), :display => "Federal", :class => 'federal_percentage_field percentage_field', :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
+            = '%'
+        %tr
+          %th &nbsp;
+          %td.apply_federal_to_all
+            %a{:href => 'javascript:void(0)', :class => "#{pricing_setup_disabled ? '' : 'apply_federal_to_all_link'}"} Apply Federal % to All
+            
+        %tr.corporate_row
+          %th Corporate*
+          %td{:class => "#{pricing_setup_disabled ? 'disabled_inputs' : ''}"}
+            = text_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][corporate]", pricing_setup.try(:[], 'corporate'), :display => "Corporate", :class => 'corporate_percentage_field percentage_field', :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
+            = '%'
+        %tr.other_row
+          %th Other*
+          %td{:class => "#{pricing_setup_disabled ? 'disabled_inputs' : ''}"}
+            = text_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][other]", pricing_setup.try(:[], 'other'), :display => "Other", :class => 'other_percentage_field percentage_field', :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
+            = '%'
+        %tr.member_row
+          %th Member*
+          %td{:class => "#{pricing_setup_disabled ? 'disabled_inputs' : ''}"}
+            = text_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][member]", pricing_setup.try(:[], 'member'), :display => "Member", :class => 'member_percentage_field percentage_field', :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
+            = '%'
+        %tr
+          %th &nbsp;
+          %td.footnote *Must be greater than or equal to Federal Percent.
+          
+  %fieldset
+    %legend Rates
+    #rate_info= render 'catalog_manager/shared/rates', :rates => pricing_setup, :pricing_setup_disabled => pricing_setup_disabled
+  
+:javascript
+  $(document).ready( function() {
+    Sparc.services.create_accordion('.pricing_setup_accordion')
+    $('.button').button()
+  })    

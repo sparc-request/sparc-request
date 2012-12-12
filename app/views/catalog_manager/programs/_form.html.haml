@@ -1,0 +1,113 @@
+= button_to 'Delete', catalog_manager_program_path(@program), :remote => true, :method => 'delete', :class => 'delete_button', :confirm => "Are you sure you want to delete the program '#{@program.name}'?", :style => 'display:none;', :id => 'delete_button'
+
+= form_for @program, :url => catalog_manager_program_path, :remote => true, :id => 'entity_form' do |f|
+  .errorExplanation#errorExplanation{:style => 'display:none;'}
+
+  = hidden_field_tag 'org_unit[id]', @program.id # added for autocomplete to use
+  = hidden_field_tag 'program[id]', @program.id
+
+  #entity_description
+    %fieldset
+      %legend Actions    
+      = f.submit "Save", :id => 'save_button', :class => 'btn save_button provider_program_core_save'
+      %img.spinner{:src => 'assets/catalog_manager/spinner_small.gif'}
+      %label.btn{:for => 'delete_button'} Delete
+
+    %br
+
+    %fieldset
+      %legend General Information
+      %table
+        %tr
+          %th Name
+          %td= f.text_field :name
+        %tr
+          %th Abbreviation
+          %td= f.text_field :abbreviation
+        %tr
+          %th Description
+          %td= f.text_area :description, :rows => 8
+        %tr
+          %th Acknowledgment Language
+          %td= f.text_area :ack_language, :rows => 8
+        %tr
+          %th Order
+          %td= f.text_field :order
+        %tr
+          %th Split/Notify Here
+          %td= f.check_box :process_ssrs
+        %tr
+          %th Disabled
+          %td= f.check_box :is_available, {:checked => (@program.is_available.nil? ? false : !@program.is_available) }, false, true
+
+    %br
+
+    %fieldset
+      %legend Submission E-mails
+      #se_info= render :partial => 'catalog_manager/shared/submission_emails', :locals => {:entity => @program}
+    
+    %br
+    
+    %fieldset
+      %legend Super Users
+      #su_info= render :partial => 'catalog_manager/shared/super_users', :locals => {:entity => @program}
+    
+    %br
+    
+    %fieldset
+      %legend Service Providers
+      #sp_info= render :partial => 'catalog_manager/shared/service_providers', :locals => {:entity => @program}
+    
+    %br
+    
+    %fieldset
+      %legend Catalog Manager Rights
+      #cm_info= render :partial => 'catalog_manager/shared/catalog_managers', :locals => {:entity => @program}
+    
+    %br
+    
+    %fieldset
+      %legend Automatic Pricing Adjustment
+      = render :partial => 'catalog_manager/shared/increase_decrease_rates', :locals => {:entity => @program, :can_edit_historical_data => @user.can_edit_historical_data_for?(@program)}
+    
+    %br      
+    
+    %fieldset
+      %legend Pricing Setup
+      %input.add_pricing_setup{:type => 'button', :value => 'Add Pricing Setup'}
+      %br
+      .pricing_setup_accordion
+        - @program.pricing_setups.each do |pricing_setup|
+          = render :partial => 'catalog_manager/shared/pricing_setup', :locals => {:pricing_setup => pricing_setup, :pricing_setup_disabled => disable_pricing_setup(pricing_setup, @user.can_edit_historical_data_for?(@program)), :can_edit_historical_data => @user.can_edit_historical_data_for?(@program), :entity => @program }
+
+    %br
+    
+    %fieldset
+      %legend Subsidy Information
+      %table
+        = f.fields_for :subsidy_map do |f_subsidy_map|
+          %tr
+            %th Max Percentage
+            %td= f_subsidy_map.text_field :max_percentage
+          %tr
+            %th Max Dollar Cap
+            %td= f_subsidy_map.text_field :max_dollar_cap
+          = render 'catalog_manager/shared/excluded_funding_sources', :entity => @program
+    
+    %br
+    
+    %fieldset
+      %legend Actions
+      = f.submit "Save", :id => 'save_button', :class => 'save_button btn provider_program_core_save'
+      %img.spinner{:src => 'assets/catalog_manager/spinner_small.gif'}
+      %label.btn{:for => 'delete_button'} Delete
+      .ui-corner-all.blank_field_errors Effective Date, Display Dates, and Rates are required on all pricing setups.
+      
+.blank_pricing_setup
+  = render 'catalog_manager/shared/pricing_setup', :pricing_setup_disabled => false, :can_edit_historical_data => @user.can_edit_historical_data_for?(@program), :entity => @program
+
+:javascript
+  $(document).ready( function() {
+    Sparc.config.ready();
+    Sparc.config.displayDatesForUser($('.datepicker, .disabled_datepicker'));
+  })

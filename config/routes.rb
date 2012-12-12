@@ -64,62 +64,44 @@ SparcRails::Application.routes.draw do
   match 'service_requests/:id/delete_document_group/:document_group_id' => 'service_requests#delete_documents'
   match 'service_requests/:id/edit_document_group/:document_group_id' => 'service_requests#edit_documents'
   match 'rubyception' => 'rubyception/application#index'
+
+  ##### sparc-services routes brought in and namespaced
+  namespace :catalog_manager do
+    match 'services/search' => 'services#search'
+    match 'services/associate' => 'services#associate'
+    match 'services/disassociate' => 'services#disassociate'
+    match 'services/set_optional' => 'services#set_optional'
+    match 'services/get_updated_rate_maps' => 'services#get_updated_rate_maps'
+
+    resources :catalog do
+      collection do
+        post :add_excluded_funding_source
+        delete :remove_excluded_funding_source
+      end
+    end
+
+    resources :institutions
+    resources :providers
+    resources :programs
+    resources :cores
+    resources :services
+
+    match 'identities/associate_with_org_unit' => 'identities#associate_with_org_unit'
+    match 'identities/disassociate_with_org_unit' => 'identities#disassociate_with_org_unit'
+    match 'identities/set_view_draft_status' => 'identities#set_view_draft_status'
+    match 'identities/set_primary_contact' => 'identities#set_primary_contact'
+    match 'identities/set_hold_emails' => 'identities#set_hold_emails'
+    match 'identities/set_edit_historic_data' => 'identities#set_edit_historic_data'
+    match 'identities/search' => 'identities#search'
+    match 'services/update_cores/:id' => 'services#update_cores'
+    match 'update_pricing_maps' => 'catalog#update_pricing_maps'
+    match 'update_dates_on_pricing_maps' => 'catalog#update_dates_on_pricing_maps'
+    match 'validate_pricing_map_dates' => 'catalog#validate_pricing_map_dates'
+    match '*verify_valid_pricing_setups' => 'catalog#verify_valid_pricing_setups'  
+
+    root :to => 'catalog#index'
+  end
+
   root :to => 'service_requests#catalog'
 
-  # The priority is based upon order of creation:
-  # first created -> highest priority.
-
-  # Sample of regular route:
-  #   match 'products/:id' => 'catalog#view'
-  # Keep in mind you can assign values other than :controller and :action
-
-  # Sample of named route:
-  #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
-  # This route can be invoked with purchase_url(:id => product.id)
-
-  # Sample resource route (maps HTTP verbs to controller actions automatically):
-  #   resources :products
-
-  # Sample resource route with options:
-  #   resources :products do
-  #     member do
-  #       get 'short'
-  #       post 'toggle'
-  #     end
-  #
-  #     collection do
-  #       get 'sold'
-  #     end
-  #   end
-
-  # Sample resource route with sub-resources:
-  #   resources :products do
-  #     resources :comments, :sales
-  #     resource :seller
-  #   end
-
-  # Sample resource route with more complex sub-resources
-  #   resources :products do
-  #     resources :comments
-  #     resources :sales do
-  #       get 'recent', :on => :collection
-  #     end
-  #   end
-
-  # Sample resource route within a namespace:
-  #   namespace :admin do
-  #     # Directs /admin/products/* to Admin::ProductsController
-  #     # (app/controllers/admin/products_controller.rb)
-  #     resources :products
-  #   end
-
-  # You can have the root of your site routed with "root"
-  # just remember to delete public/index.html.
-  # root :to => 'welcome#index'
-
-  # See how all your routes lay out with "rake routes"
-
-  # This is a legacy wild controller route that's not recommended for RESTful applications.
-  # Note: This route will make all actions in every controller accessible via GET requests.
-  # match ':controller(/:action(/:id))(.:format)'
 end

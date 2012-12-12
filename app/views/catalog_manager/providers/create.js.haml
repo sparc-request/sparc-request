@@ -1,0 +1,20 @@
+:plain
+  $('#catalog').jstree(
+    'create_node', 
+    $("#INSTITUTION#{@institution.id}"), 
+    1, 
+    { attr: 
+      {id: "PROVIDER#{@provider.id}"}, 
+      data: 
+      { attr: 
+        { cid: "#{@provider.id}", 
+        object_type: "provider"}, 
+        title: "#{@provider.name}"}
+        }, 
+
+        function(){
+          $('#catalog').jstree('create_node',
+            $("#PROVIDER#{@provider.id}"),
+            'inside',
+            {data: 'Create New Program'},
+            true)});

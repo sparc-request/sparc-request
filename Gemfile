@@ -23,6 +23,7 @@ group :development, :test, :profile do
 end
 
 
+
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
@@ -39,35 +40,29 @@ gem 'jquery-rails'
 gem 'cache_digests'
 gem 'dynamic_form'
 
-gem 'obis-bridge', :path => '../obis-bridge'
+#gem 'obis-bridge', :path => '../obis-bridge' this now lives within the application
+# yanked from obis-bridge
+gem 'json'
+gem 'sinatra'
+gem 'grouped_validations'
+gem 'obis-net-ldap'
+gem 'paperclip'
+gem 'acts_as_list'
+gem "paper_trail", "~> 2"
+gem 'devise'
+gem 'omniauth'
+gem 'omniauth-shibboleth'
+# end obis-bridge gems
 
 gem 'will_paginate'
 
-gem 'devise'
-gem 'omniauth-shibboleth'
-
 # requirements for excel export
 gem 'axlsx_rails'
-
-# To use ActiveModel has_secure_password
-# gem 'bcrypt-ruby', '~> 3.0.0'
-
-# To use Jbuilder templates for JSON
-# gem 'jbuilder'
-
-# Use unicorn as the app server
-# gem 'unicorn'
 
 # Deploy with Capistrano
 gem 'capistrano'
 gem 'capistrano-ext'
 gem 'rvm-capistrano'
-
-#gem 'exception_notification', :require => 'exception_notifier'
-
-# To use debugger
-# gem 'debugger'
-#
 
 group :profile do
   gem 'ruby-prof'

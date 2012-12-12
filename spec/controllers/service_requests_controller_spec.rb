@@ -381,9 +381,8 @@ describe ServiceRequestsController do
     before(:each) do
       service_list = [ service1, service2 ]
 
-      controller.stub!(:setup_session) do
+      controller.stub!(:initialize_service_request) do
         controller.instance_eval do
-          @current_user = Identity.find_by_id(session[:identity_id])
           @service_request = ServiceRequest.find_by_id(session[:service_request_id])
           @sub_service_request = SubServiceRequest.find_by_id(session[:sub_service_request_id])
 
@@ -392,7 +391,7 @@ describe ServiceRequestsController do
       end
     end
 
-    it "should set the service list ot the service request's service list" do
+    it "should set the service list to the service request's service list" do
       session[:service_request_id] = service_request.id
       get :document_management, :id => service_request.id
 

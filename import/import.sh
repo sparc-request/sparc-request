@@ -13,7 +13,7 @@ set -e
 pprof()
 {
   perftools_gem=$(gem which perftools | sort | tail -1)
-  CPUPROFILE=import.rb.prof RUBYOPT="-rubygems -r$perftools_gem" ruby -I../lib $*
+  CPUPROFILE=import.rb.prof RUBYOPT="-rubygems -r$perftools_gem" ruby -I../lib -I../app -Ilib $*
 }
 
 migrate()

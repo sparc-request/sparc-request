@@ -70,8 +70,8 @@ RSpec.configure do |config|
       email:                 'glennj@musc.edu',
       credentials:           'BS,    MRA',
       catalog_overlord:      true,
-      password:              'p4ssword',
-      password_confirmation: 'p4ssword',
+      password:              'password',
+      password_confirmation: 'password',
       approved:              true
     )
     identity.save!
@@ -86,9 +86,9 @@ RSpec.configure do |config|
   end
 end
 
-def sign_in
-  fill_in "identity_ldap_uid", :with => 'jug2'
-  fill_in "identity_password", :with => 'p4ssword'
+def sign_in uid="jug2", password="password"
+  fill_in "identity_ldap_uid", :with => uid
+  fill_in "identity_password", :with => password
   click_button "Sign in"
 end
 
@@ -137,6 +137,7 @@ def build_project
     protocol = Project.create(FactoryGirl.attributes_for(:protocol))
     protocol.update_attribute(:funding_status, "funded")
     protocol.update_attribute(:funding_source, "federal")
+    protocol.update_attribute(:indirect_cost_rate, 50.0)
     protocol.save :validate => false
     FactoryGirl.create(:project_role, protocol_id: protocol.id, identity_id: Identity.find_by_ldap_uid("jug2"), project_rights: "approve", role: "pi")
     service_request.update_attribute(:protocol_id, protocol.id)
@@ -148,6 +149,7 @@ def build_study
     protocol = Study.create(FactoryGirl.attributes_for(:protocol))
     protocol.update_attribute(:funding_status, "funded")
     protocol.update_attribute(:funding_source, "federal")
+    protocol.update_attribute(:indirect_cost_rate, 50.0)
     protocol.save :validate => false
     FactoryGirl.create(:project_role, protocol_id: protocol.id, identity_id: Identity.find_by_ldap_uid("jug2"), project_rights: "approve", role: "pi")
     service_request.update_attribute(:protocol_id, protocol.id)

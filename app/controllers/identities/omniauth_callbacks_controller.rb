@@ -1,6 +1,6 @@
 class Identities::OmniauthCallbacksController < Devise::OmniauthCallbacksController
   def shibboleth
-    @identity = Identity.find_for_shibboleth_oauth(request.env["omniauth.auth"], current_user)
+    @identity = Identity.find_for_shibboleth_oauth(request.env["omniauth.auth"], current_identity)
 
     if @identity.persisted?
       sign_in_and_redirect @identity, :event => :authentication #this will throw if @identity is not activated

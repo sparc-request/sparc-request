@@ -3,11 +3,16 @@ require 'spec_helper'
 describe "submitting a in form" do
   build_service_request_with_project
 
+  before :each do
+    visit service_details_service_request_path service_request.id
+    sleep 1
+    sign_in
+    sleep 1
+  end
+
 
   describe "submitting an empty form" do
     it "Should throw errors", :js => true do
-      visit service_details_service_request_path service_request.id
-      sleep 1
       fill_in "service_request_visit_count", :with => ""
       fill_in "service_request_subject_count", :with => ""
       sleep 1
@@ -20,8 +25,6 @@ describe "submitting a in form" do
 
   describe "submitting a completed form" do
     it 'Should pass, and submit', :js => true do
-      visit service_details_service_request_path service_request.id
-      sleep 1
       fill_in "service_request_subject_count", :with => "4"
       fill_in "service_request_visit_count", :with => "20"
       sleep 1

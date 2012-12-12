@@ -1,0 +1,23 @@
+:plain
+  $('#catalog').jstree(
+    'create_node',
+    $("#catalog"),
+    1,
+    { attr:
+      { id: "INSTITUTION#{@institution.id}"},
+      data:
+      { attr:
+        { cid: "#{@institution.id}",
+        object_type: "institution"},
+      title: "#{@institution.name}"
+      }
+    },
+
+    function(){
+      $('#catalog').jstree('create_node',
+        $("#INSTITUTION#{@institution.id}"),
+        'inside',
+        {data: 'Create New Provider'},
+        true)
+    }
+  );

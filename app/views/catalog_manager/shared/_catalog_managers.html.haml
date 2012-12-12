@@ -1,0 +1,19 @@
+.cms
+  - if entity.catalog_managers
+    %table
+      %thead
+        %tr
+          %th Name/Email
+          -if @user.is_overlord?
+            %th Can Edit Historical Data
+          %th Delete
+      %tbody
+        - entity.catalog_managers.each do |cm|
+          %tr
+            %td= cm.identity.display_name
+            -if @user.is_overlord?
+              %td.check= check_box_tag "#{cm.id}_edit_historic_data", true, cm.edit_historic_data, :class => 'edit_historic_data', :org_id => entity.id, :identity => cm.id, :identity_user_id => cm.identity_id, :current_user_id => @user.id, :edit_historic_data => cm.edit_historic_data
+            %td= image_tag 'catalog_manager/cancel.png', :id => cm.id, :class => 'cm_delete'
+            
+
+  = text_field_tag 'new_cm', 'New Catalog Manager'

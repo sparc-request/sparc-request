@@ -30,8 +30,6 @@ group :import do
   gem 'mustache'
 end
 
-
-
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
@@ -44,7 +42,6 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
 end
 
-gem 'jquery-rails'
 gem 'cache_digests'
 gem 'dynamic_form'
 
@@ -61,6 +58,24 @@ gem 'devise'
 gem 'omniauth'
 gem 'omniauth-shibboleth'
 # end obis-bridge gems
+
+# yanked from sparc-services
+gem "nested_form"
+gem 'jquery-rails', "2.1.3"
+
+group :development, :test do
+  gem 'turn', :require => false
+  gem 'jasmine'
+  gem 'addressable', '~> 2.3.2'
+  gem 'watchr'
+  gem 'nyan-cat-formatter'
+  gem 'capybara-firebug'
+end
+
+group :development do
+  gem 'highline'
+end
+# end sparc-services gems
 
 gem 'will_paginate'
 

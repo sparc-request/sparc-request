@@ -1,0 +1,14 @@
+.sus
+  - if entity.super_users
+    %table
+      %thead
+        %tr
+          %th Name/Email
+          %th Delete
+      %tbody
+        - entity.super_users.each do |su|
+          %tr
+            %td= su.identity.display_name
+            %td= image_tag 'cancel.png', :id => su.id, :class => 'su_delete'
+
+  = text_field_tag 'new_su', 'New Super User'

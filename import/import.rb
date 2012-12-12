@@ -4,12 +4,23 @@ require 'rest_client'
 require 'optparse'
 require 'pp'
 
-require 'obis-bridge/obis_entity'
-
 require 'active_support/core_ext/string/inflections'
 
-require_relative 'validation_disabler'
-require_relative '../validate/annotate'
+require 'import/obis_entity'
+require 'import/annotate'
+require 'import/validation_disabler'
+
+# Load all the model files
+Dir['../app/models/*.rb'].each do |model_file|
+  resource = "models/#{File.basename(model_file).gsub(/\.rb$/, '')}"
+  require resource
+end
+
+# Load all the files required for the import
+Dir['./lib/import/models/*.rb'].each do |model_file|
+  resource = "import/models/#{File.basename(model_file).gsub(/\.rb$/, '')}"
+  require resource
+end
 
 ActiveRecord::Base.establish_connection(
     :adapter => 'mysql2',

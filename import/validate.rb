@@ -9,8 +9,8 @@ require 'obis-bridge/obis_entity'
 
 require 'active_support/core_ext/object/blank'
 
-require_relative '../validate/validate'
-require_relative '../validate/compare'
+require 'import/validate'
+require 'import/compare'
 
 ActiveRecord::Base.establish_connection(
     :adapter => 'mysql2',

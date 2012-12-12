@@ -20,6 +20,14 @@ group :development, :test, :profile do
   gem 'faker'
   gem 'timecop'
   gem 'debugger'
+
+end
+
+# these are needed for the import script
+group :import do
+  gem 'alfresco_handler', :path => '../alfresco_handler'
+  gem 'progress_bar'
+  gem 'mustache'
 end
 
 

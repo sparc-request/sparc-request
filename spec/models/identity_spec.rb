@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'net/ldap' # TODO: not sure why this is necessary
 
 describe "Identity" do
 

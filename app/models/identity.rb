@@ -224,7 +224,7 @@ class Identity < ActiveRecord::Base
 
   # Determines whether this identity (that is a user) can edit a given sub_service_request that is
   # a child of this service request.
-  # TODO: Not sure why this method is on the ServiceRequest rathar than on the SubServiceRequest
+  # TODO: Not sure why this method is on the ServiceRequest rather than on the SubServiceRequest
   def can_edit_sub_service_request? sub_service_request
     # things to consider
     # 1. sub_service_requests statuses == draft or submitted

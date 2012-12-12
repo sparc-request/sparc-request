@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'extensions/float'
+# require 'extensions/float'
 
 describe 'Float' do
   context "testing decimal extension methods" do

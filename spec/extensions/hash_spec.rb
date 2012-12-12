@@ -1,5 +1,5 @@
 require 'spec_helper'
-require 'extensions/hash'
+# require 'extensions/hash'
 
 describe 'Hash' do
   context "testing hash extension methods" do

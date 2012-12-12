@@ -1,0 +1,16 @@
+FactoryGirl.define do
+  factory :subsidy_map do
+    id           
+    max_dollar_cap  { Random.rand(100) }
+    max_percentage  { Random.rand(100) }
+    
+    ignore do
+      excluded_funding_source_count 0
+    end
+
+    after(:build) do |subsidy_map, evaluator|
+      FactoryGirl.create_list(:excluded_funding_source,
+       evaluator.excluded_funding_source_count, subsidy_map: subsidy_map)
+    end
+  end
+end

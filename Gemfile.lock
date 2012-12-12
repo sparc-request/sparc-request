@@ -1,3 +1,11 @@
+PATH
+  remote: ../alfresco_handler
+  specs:
+    alfresco_handler (0.1.2)
+      json
+      nokogiri (= 1.5.0)
+      rest-client
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -32,11 +40,11 @@ GEM
     addressable (2.3.2)
     ansi (1.4.3)
     arel (3.0.2)
-    axlsx (1.3.1)
+    axlsx (1.3.4)
       htmlentities (~> 4.3.1)
       nokogiri (>= 1.4.1)
       rubyzip (>= 0.9.5)
-    axlsx_rails (0.1.2)
+    axlsx_rails (0.1.3)
       axlsx
       rails (~> 3.1)
     bcrypt-ruby (3.0.1)
@@ -51,14 +59,14 @@ GEM
       net-ssh-gateway (>= 1.1.0)
     capistrano-ext (1.2.1)
       capistrano (>= 1.0.0)
-    capybara (2.0.0)
+    capybara (2.0.1)
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       selenium-webdriver (~> 2.0)
       xpath (~> 1.0.0)
-    capybara-firebug (1.2.3)
+    capybara-firebug (1.3.0)
       capybara (>= 1.0, < 3.0)
     childprocess (0.3.6)
       ffi (~> 1.0, >= 1.0.6)
@@ -102,7 +110,8 @@ GEM
       activesupport (>= 3.0.0)
     faker (1.1.2)
       i18n (~> 0.5)
-    ffi (1.1.5)
+    fattr (2.2.1)
+    ffi (1.2.0)
     fssm (0.2.9)
     grouped_validations (0.3.2)
     haml (3.1.7)
@@ -125,24 +134,26 @@ GEM
     json (1.7.5)
     launchy (2.1.2)
       addressable (~> 2.3)
-    libwebsocket (0.1.5)
+    libwebsocket (0.1.7.1)
       addressable
+      websocket
     mail (2.4.4)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.19)
-    multi_json (1.3.7)
+    multi_json (1.5.0)
+    mustache (0.99.4)
     mysql2 (0.3.11)
     nested_form (0.3.1)
     net-scp (1.0.4)
       net-ssh (>= 1.99.1)
     net-sftp (2.0.5)
       net-ssh (>= 2.0.9)
-    net-ssh (2.6.1)
+    net-ssh (2.6.2)
     net-ssh-gateway (1.1.0)
       net-ssh (>= 1.99.1)
-    nokogiri (1.5.5)
+    nokogiri (1.5.0)
     nyan-cat-formatter (0.2.0)
     obis-net-ldap (0.4.0)
     omniauth (1.1.1)
@@ -150,6 +161,8 @@ GEM
       rack
     omniauth-shibboleth (1.0.8)
       omniauth (>= 1.0.0)
+    options (2.3.0)
+      fattr
     orm_adapter (0.4.0)
     paper_trail (2.6.4)
       activerecord (~> 3.0)
@@ -161,10 +174,13 @@ GEM
       cocaine (~> 0.4.0)
       mime-types
     polyglot (0.3.3)
+    progress_bar (0.4.0)
+      highline (~> 1.6.1)
+      options (~> 2.3.0)
     rack (1.4.1)
     rack-cache (1.2)
       rack (>= 0.4)
-    rack-protection (1.3.1)
+    rack-protection (1.3.2)
       rack
     rack-ssl (1.3.2)
       rack
@@ -188,11 +204,13 @@ GEM
     rake (10.0.2)
     rdoc (3.12)
       json (~> 1.4)
+    rest-client (1.6.7)
+      mime-types (>= 1.16)
     rspec (2.12.0)
       rspec-core (~> 2.12.0)
       rspec-expectations (~> 2.12.0)
       rspec-mocks (~> 2.12.0)
-    rspec-core (2.12.0)
+    rspec-core (2.12.1)
     rspec-expectations (2.12.0)
       diff-lcs (~> 1.1.3)
     rspec-mocks (2.12.0)
@@ -204,7 +222,7 @@ GEM
       rspec-expectations (~> 2.12.0)
       rspec-mocks (~> 2.12.0)
     ruby-prof (0.11.2)
-    rubyception (0.1.1)
+    rubyception (0.2.0)
       coffee-script
       compass
       em-websocket
@@ -215,12 +233,12 @@ GEM
     rubyzip (0.9.9)
     rvm-capistrano (1.2.7)
       capistrano (>= 2.0.0)
-    sass (3.2.1)
+    sass (3.2.3)
     sass-rails (3.2.5)
       railties (~> 3.2.0)
       sass (>= 3.1.10)
       tilt (~> 1.3)
-    selenium-webdriver (2.26.0)
+    selenium-webdriver (2.27.2)
       childprocess (>= 0.2.5)
       libwebsocket (~> 0.1.3)
       multi_json (~> 1.0)
@@ -236,19 +254,20 @@ GEM
     sqlite3 (1.3.6)
     thor (0.16.0)
     tilt (1.3.3)
-    timecop (0.5.3)
+    timecop (0.5.4)
     treetop (1.4.12)
       polyglot
       polyglot (>= 0.3.1)
     turn (0.9.6)
       ansi
-    tzinfo (0.3.34)
+    tzinfo (0.3.35)
     uglifier (1.3.0)
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
     warden (1.2.1)
       rack (>= 1.0)
     watchr (0.7)
+    websocket (1.0.4)
     will_paginate (3.0.3)
     xpath (1.0.0)
       nokogiri (~> 1.3)
@@ -259,6 +278,7 @@ PLATFORMS
 DEPENDENCIES
   acts_as_list
   addressable (~> 2.3.2)
+  alfresco_handler!
   axlsx_rails
   cache_digests
   capistrano
@@ -279,6 +299,7 @@ DEPENDENCIES
   jquery-rails (= 2.1.3)
   json
   launchy
+  mustache
   mysql2
   nested_form
   nyan-cat-formatter
@@ -287,6 +308,7 @@ DEPENDENCIES
   omniauth-shibboleth
   paper_trail (~> 2)
   paperclip
+  progress_bar
   rails (= 3.2.8)
   rspec-rails
   ruby-prof

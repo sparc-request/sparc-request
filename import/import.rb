@@ -3,13 +3,7 @@ require 'progress_bar'
 require 'rest_client'
 require 'optparse'
 require 'pp'
-
-require 'obis-bridge/obis_entity'
-
-require 'active_support/core_ext/string/inflections'
-
-require_relative 'validation_disabler'
-require_relative '../validate/annotate'
+require 'import'
 
 ActiveRecord::Base.establish_connection(
     :adapter => 'mysql2',

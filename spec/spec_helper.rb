@@ -12,12 +12,6 @@ require 'capybara/rspec'
 require 'capybara/rails'
 require 'capybara/dsl'
 
-# Requires supporting ruby files with custom matchers and macros, etc,
-# in spec/support/ and its subdirectories.
-# TODO: use rubygems to find the path to obis-bridge
-FactoryGirl.definition_file_paths.append(
-    File.expand_path('../../../obis-bridge/spec/factories', __FILE__))
-
 FactoryGirl.define do
   sequence :id do |id|
     id
@@ -48,7 +42,8 @@ RSpec.configure do |config|
 
   config.before(:suite) do
     load_schema = lambda {
-      load "schema.rb"
+      basedir = File.expand_path(File.dirname(__FILE__))
+      load File.join(basedir, '../db/schema.rb')
     }
     silence_stream(STDOUT, &load_schema)
     DatabaseCleaner.strategy = :transaction
@@ -186,3 +181,44 @@ def stub_controller
   end
 end
 
+def json_factory(object, klass)
+  ViewModel.class_eval(klass).from_entity(object)
+end
+
+def simple_json_factory(object, klass)
+  ViewModel.from_simple(object, klass)
+end
+
+def create_ldap_filter(term)
+  fields = %w(uid surName givenname mail)
+  return fields.map {|f| Net::LDAP::Filter.contains(f, term)}.inject(:|)
+end
+
+class MockDataSource
+  class Undefined; end
+
+  attr_reader :result, :results
+
+  def results
+    @results
+  end
+
+  def initialize(entities)
+    @entities = entities
+    @result = Undefined
+    @results = []
+  end
+
+  def get(entity_type, interface=:simple)
+    if block_given?
+      return yield @entities[entity_type]
+    end
+
+    @entities[entity_type]
+  end
+
+  def put(entity, entity_type)
+    @results << entity
+    @result = entity
+  end
+end

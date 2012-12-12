@@ -13,12 +13,12 @@ set -e
 pprof()
 {
   perftools_gem=$(gem which perftools | sort | tail -1)
-  CPUPROFILE=import.rb.prof RUBYOPT="-rubygems -r$perftools_gem" ruby -I../lib $*
+  CPUPROFILE=import.rb.prof RUBYOPT="-rubygems -r$perftools_gem" ruby $ruby_args -Ilib $*
 }
 
 migrate()
 {
-  cd ../../sparc-rails
+  cd ..
   rake db:drop
   rake db:create
   rake db:migrate
@@ -45,7 +45,7 @@ import_args="-N"
 import_relationships_args=""
 validate_args=""
 save_state=1
-ruby_args="-I../lib -I../validate"
+ruby_args="-I../lib -I../app -Ilib"
 skip_to="start"
 
 while getopts "O:S:" opt; do

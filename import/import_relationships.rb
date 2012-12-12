@@ -3,9 +3,7 @@ require 'progress_bar'
 require 'rest_client'
 require 'optparse'
 require 'set'
-require 'obis-bridge/obis_entity'
-
-require 'active_support/core_ext/string/inflections'
+require 'import'
 
 ActiveRecord::Base.establish_connection(
     :adapter => 'mysql2',

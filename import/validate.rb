@@ -5,10 +5,10 @@ require 'ostruct'
 require 'pstore'
 require 'progress_bar'
 require 'optparse'
-require 'obis-bridge/obis_entity'
 
 require 'active_support/core_ext/object/blank'
 
+require 'import'
 require 'import/validate'
 require 'import/compare'
 

@@ -18,7 +18,7 @@ pprof()
 
 migrate()
 {
-  cd ../../sparc-rails
+  cd ..
   rake db:drop
   rake db:create
   rake db:migrate

@@ -19,6 +19,7 @@ group :development, :test, :profile do
   gem 'factory_girl'
   gem 'faker'
   gem 'timecop'
+  gem 'debugger'
 end
 
 

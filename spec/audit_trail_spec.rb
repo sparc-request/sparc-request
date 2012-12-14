@@ -1,6 +1,6 @@
 require 'ostruct'
 require 'spec_helper'
-require 'models/identity'
+# require 'models/identity'
 
 describe 'Audit trail' do
 #  to_test = [

@@ -2,6 +2,7 @@ require 'spec_helper'
 #include 'ServiceCalendarHelper'
 
 describe "subsidy page" do
+  let_there_be_lane
   build_service_request_with_project
 
 

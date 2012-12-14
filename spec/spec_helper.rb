@@ -68,7 +68,7 @@ RSpec.configure do |config|
 end
 
 def let_there_be_lane
-  before = proc do
+  before(:each) do
     identity = Identity.create(
       last_name:             'Glenn',
       first_name:            'Julia',
@@ -85,9 +85,6 @@ def let_there_be_lane
     )
     identity.save!
   end
-
-  before(:each, :js => true, &before)
-  before(:each, &before)
 end
 
 def sign_in uid="jug2", password="password"

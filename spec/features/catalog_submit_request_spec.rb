@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'as a user on catalog page' do
+  let_there_be_lane
+
   let!(:institution)  {FactoryGirl.create(:institution,id: 53,name: 'Medical University of South Carolina', order: 1,obisid: '87d1220c5abf9f9608121672be000412',abbreviation: 'MUSC', is_available: 1)}
   let!(:provider) {FactoryGirl.create(:provider,id: 10,name: 'South Carolina Clinical and Translational Institute (SCTR)',order: 1,css_class: 'blue-provider',obisid: '87d1220c5abf9f9608121672be0011ff',parent_id: institution.id,abbreviation: 'SCTR1',process_ssrs: 0,is_available: 1)}
   let!(:program) {FactoryGirl.create(:program,id:54,type:'Program',name:'Office of Biomedical Informatics',order:1,obisid:'87d1220c5abf9f9608121672be021963',parent_id:provider.id,abbreviation:'Informatics',process_ssrs:  0,is_available: 1)}

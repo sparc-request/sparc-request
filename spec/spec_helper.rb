@@ -63,6 +63,8 @@ RSpec.configure do |config|
   config.after(:each) do
     DatabaseCleaner.clean
   end
+
+  config.color_enabled = true
 end
 
 def let_there_be_lane

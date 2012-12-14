@@ -71,4 +71,64 @@ describe 'ServiceRequest' do
       end
     end
   end
+
+  context "line items" do
+
+    let!(:service_request)     { FactoryGirl.create(:service_request, subject_count: 5, visit_count: 5) }
+    let!(:service)             { FactoryGirl.create(:service) }
+    let!(:pricing_map)         { FactoryGirl.create(:pricing_map, service_id: service.id) }
+    let!(:line_item)           { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service.id) }
+       
+    describe "one time fee line items" do
+      
+      it "should return an array of line items that are one time fees" do
+        pricing_map.update_attributes(is_one_time_fee: true)
+        service_request.reload
+        service_request.one_time_fee_line_items.should include(line_item)
+      end
+
+      it "should not return any per patient per visit line items" do
+        service_request.reload
+        service_request.one_time_fee_line_items.should_not include(line_item)
+      end
+    end
+
+    describe "per patient per visit line items" do
+
+      it "should return an array of line items that are per patient per visit" do
+        service_request.reload
+        service_request.per_patient_per_visit_line_items.should include(line_item)
+      end
+
+      it "should not return any one time fee line items" do
+        pricing_map.update_attributes(is_one_time_fee: true)
+        service_request.reload
+        service_request.per_patient_per_visit_line_items.should_not include(line_item)
+      end
+    end
+  end
+
+  describe "set visit page" do
+
+    let!(:service_request)  { FactoryGirl.create(:service_request, visit_count: 10) }
+
+    it "should return 1 if there is no visit count or it is <= 5" do
+      service_request.update_attributes(visit_count: nil)
+      service_request.set_visit_page(1).should eq(1)
+      service_request.update_attributes(visit_count: 5)
+      service_request.set_visit_page(1).should eq(1)
+    end
+
+    it "should return 1 if there is the pages passed are <= 0" do
+      service_request.set_visit_page(0).should eq(1)
+    end
+
+    it "should return 1 if the pages passed are greater than the visit count divided by 5" do
+      service_request.set_visit_page(3).should eq(1)
+    end
+
+    it "should return the pages passed if above conditions are not true" do
+      service_request.set_visit_page(2).should eq(2)
+    end
+  end
 end

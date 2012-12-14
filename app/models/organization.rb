@@ -121,9 +121,8 @@ class Organization < ActiveRecord::Base
       return self.parent.pricing_setup_for_date(date)
     end
 
-    current_setups = self.pricing_setups.select { |x| x.display_date <= date }
+    current_setups = self.pricing_setups.select { |x| x.display_date.to_date <= date }
     raise ArgumentError, "Organization has no current pricing setups" if current_setups.empty?
-
     sorted_setups = current_setups.sort { |lhs, rhs| lhs.display_date <=> rhs.display_date }
     pricing_setup = sorted_setups.last
 

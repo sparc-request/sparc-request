@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe "submitting a in form" do
+  let_there_be_lane
   build_service_request_with_project
 
   before :each do

@@ -68,25 +68,26 @@ RSpec.configure do |config|
 end
 
 def let_there_be_lane
-  identity = Identity.create(
-    last_name:             'Glenn',
-    first_name:            'Julia',
-    ldap_uid:              'jug2',
-    institution:           'medical_university_of_south_carolina',
-    college:               'college_of_medecine',
-    department:            'other',
-    email:                 'glennj@musc.edu',
-    credentials:           'BS,    MRA',
-    catalog_overlord:      true,
-    password:              'password',
-    password_confirmation: 'password',
-    approved:              true
-  )
-  identity.save!
+  before(:each) do
+    identity = Identity.create(
+      last_name:             'Glenn',
+      first_name:            'Julia',
+      ldap_uid:              'jug2',
+      institution:           'medical_university_of_south_carolina',
+      college:               'college_of_medecine',
+      department:            'other',
+      email:                 'glennj@musc.edu',
+      credentials:           'BS,    MRA',
+      catalog_overlord:      true,
+      password:              'password',
+      password_confirmation: 'password',
+      approved:              true
+    )
+    identity.save!
+  end
 end
 
 def sign_in uid="jug2", password="password"
-  let_there_be_lane
   fill_in "identity_ldap_uid", :with => uid
   fill_in "identity_password", :with => password
   click_button "Sign in"

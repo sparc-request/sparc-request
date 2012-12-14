@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe "creating a new project " do 
+  let_there_be_lane
+
   build_service_request_with_project()
 
   before :each do

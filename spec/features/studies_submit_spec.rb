@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe "creating a new study " do 
+  let_there_be_lane
   build_service_request_with_study()
 
   before :each do
@@ -44,7 +45,7 @@ describe "creating a new study " do
 end
 
 describe "editing a study" do
-
+  let_there_be_lane
   build_service_request()
   build_study()
 

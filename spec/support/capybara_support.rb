@@ -102,6 +102,12 @@ module CapybaraSupport
       internal_rate_type:           'full')
     pricing_setup.save!
 
+    service_request = FactoryGirl.create(:service_request, status: "draft", subject_count: 2, visit_count: 10)
+
+    sub_service_request = FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id,status: "draft")
+
+    service_request.update_attribute(:service_requester_id, Identity.find_by_ldap_uid("jug2").id)
+
   end
   
   def retry_on_timeout(n = 3, &block)
@@ -117,7 +123,6 @@ module CapybaraSupport
       
   def default_catalog_manager_setup
     create_default_data
-    visit catalog_manager_root_path
     ## Logs in the default identity.
     visit catalog_manager_root_path
     sign_in

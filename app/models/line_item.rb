@@ -10,6 +10,7 @@ class LineItem < ActiveRecord::Base
 
   attr_accessible :service_request_id
   attr_accessible :sub_service_request_id
+  attr_accessible :ssr_id
   attr_accessible :service_id
   attr_accessible :optional
   attr_accessible :quantity

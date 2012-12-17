@@ -52,8 +52,8 @@ describe 'PricingSetup' do
     
     it "should return pricing maps with correct effective and display dates" do
       pricing_setup.create_pricing_maps
-      service.pricing_maps[1].display_date.should eq(pricing_setup.display_date)
-      service.pricing_maps[1].effective_date.should eq(pricing_setup.effective_date)
+      service.pricing_maps[1].display_date.to_date.should eq(pricing_setup.display_date.to_date)
+      service.pricing_maps[1].effective_date.to_date.should eq(pricing_setup.effective_date.to_date)
     end
 
     it "should return nil if there is no organization" do

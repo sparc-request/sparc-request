@@ -1,15 +1,15 @@
 class Notifier < ActionMailer::Base
   def ask_a_question question
     @question = question
-    mail(:to => @question.to, :from => @question.from, :subject => 'New Question from SPARC')
+    mail(:to => @default_mail_to, :from => @question.from, :subject => 'New Question from SPARC')
   end
 
   def new_identity_waiting_for_approval identity
     @identity = identity
-    mail(:to => "catesa@musc.edu", :from => "no-reply@musc.edu", :subject => "A New Identity is Waiting for Approval")
+    mail(:to => @default_mail_to, :from => "no-reply@musc.edu", :subject => "A New Identity is Waiting for Approval")
   end
 
-  def notify_user identity, service_request
+  def notify_user identity, service_request, sub_service_request=nil
     @identity = identity
     @protocol = service_request.protocol
     @role = @protocol.project_roles.detect{|pr| pr.identity_id = identity.id}.role

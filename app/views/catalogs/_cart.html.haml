@@ -1,6 +1,6 @@
 .line-items
   = hidden_field_tag :line_item_count, @line_items.size
-  = hidden_field_tag :user_portal_link, @user_portal_link
+  = hidden_field_tag :user_portal_link, USER_PORTAL_LINK
   - @line_items.each do |line_item|
     .line_item{:class => cycle('', 'odd')}
       %div= line_item.service.display_service_abbreviation

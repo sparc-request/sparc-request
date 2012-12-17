@@ -400,7 +400,48 @@ describe ServiceRequestsController do
   end
 
   describe 'POST ask_a_question' do
+    it 'should call ask_a_question and then deliver' do
+      deliverer = double()
+      deliverer.should_receive(:deliver)
+      Notifier.stub!(:ask_a_question) { |question|
+        question.to.should eq 'nobody@nowhere.com'
+        question.from.should eq 'no-reply@musc.edu'
+        question.body.should eq 'No question asked'
+        deliverer
+      }
+      get :ask_a_question, {
+        :id => service_request.id,
+        :format => :js
+      }
+    end
 
+    it 'should use question_email if passed in' do
+      deliverer = double()
+      deliverer.should_receive(:deliver)
+      Notifier.stub!(:ask_a_question) { |question|
+        question.from.should eq 'billg@microsoft.com'
+        deliverer
+      }
+      get :ask_a_question, {
+        :id => service_request.id,
+        :question_email => 'billg@microsoft.com',
+        :format => :js
+      }
+    end
+
+    it 'should use question_body if passed in' do
+      deliverer = double()
+      deliverer.should_receive(:deliver)
+      Notifier.stub!(:ask_a_question) { |question|
+        question.body.should eq 'is this thing on?'
+        deliverer
+      }
+      get :ask_a_question, {
+        :id => service_request.id,
+        :question_body => 'is this thing on?',
+        :format => :js
+      }
+    end
   end
 
   describe 'GET refresh_service_calendar' do

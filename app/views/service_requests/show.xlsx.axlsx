@@ -78,7 +78,7 @@ wb.add_worksheet(name: "Review") do |sheet|
       service_row = [line_item.service.name, "", display_your_cost(line_item), line_item.subject_count]
 
       line_item.visits.each_with_index do |v, index|
-        service_row << (totals_hash["#{v.id}"].nil? ? '' : 'X')
+        service_row << (totals_hash["#{v.id}"].nil? ? '' : v.quantity_total)
       end
       
       service_row << display_visit_based_direct_cost(line_item)

@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 feature 'create new core', :js => true do
+  build_service_request
   scenario 'user creates a new core' do
     default_catalog_manager_setup
 

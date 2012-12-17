@@ -20,6 +20,7 @@ group :development, :test, :profile do
   gem 'faker'
   gem 'timecop'
   gem 'debugger'
+  gem 'quiet_assets'
 
 end
 

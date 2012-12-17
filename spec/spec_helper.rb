@@ -171,6 +171,7 @@ def stub_controller
     controller.stub!(:load_defaults) do
       controller.instance_eval do
         @user_portal_link = '/user_portal'
+        @default_mail_to  = 'nobody@nowhere.com'
       end
     end
 

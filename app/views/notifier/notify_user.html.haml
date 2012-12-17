@@ -56,9 +56,8 @@
             %td{:style => 'border: 1px solid black; text-align: center;'}= pr.role.upcase
             %td{:style => 'border: 1px solid black; text-align: center;'}= {"approve"=>"Authorize/Change Study Charges", "request"=>"Request/Approve Services", "view"=>"View Rights", "none"=>"Member Only"}[pr.project_rights]
 
-    %p
-      Please contact the SUCCESS Center at (843) 792-8300 for assistance with this process
-      or with any questions you may have.
+    %p= t(:issue_contact)
+    
     - @service_request.service_list.map{|k, v| v[:acks]}.flatten.uniq.each do |ack|
       %p{:style => 'font-size: small;'}=ack
 

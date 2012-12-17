@@ -5,6 +5,11 @@ SparcRails::Application.routes.draw do
     collection do
       post 'add_to_protocol'
     end
+
+    member do
+      get 'approve_account'
+      get 'disapprove_account'
+    end
   end
 
   resources :service_requests do

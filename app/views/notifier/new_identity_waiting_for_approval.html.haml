@@ -1,5 +1,42 @@
-A new user is waiting for approval.
+!!!
+%html{ :xmlns => "http://www.w3.org/1999/xhtml", :"xml:lang" => "en", :lang => "en" }
 
-Insert details.
+  %head
+    %meta{ :"http-equiv" => "content-type", :content => "text/html;charset=UTF-8" }
+    %title Request for new SPARC account submitted and awaiting approval
 
-Link to approve.
+  %body
+    A new SPARC account is waiting for approval.
+    %br
+    %br
+
+    %table
+      %tr
+        %th Last Name
+        %td= @identity.last_name
+      %tr
+        %th First Name
+        %td= @identity.first_name
+      %tr
+        %th Company
+        %td= @identity.company
+      %tr
+        %th Email
+        %td= @identity.email
+      %tr
+        %th Telephone Number
+        %td= @identity.phone
+      %tr
+        %th Reason for account/login request
+        %td= @identity.reason
+
+    %br
+    %br
+
+    = link_to 'Approve Account', approve_account_identity_url(@identity)
+
+    %br
+    \- OR - 
+    %br
+
+    = link_to 'Disapprove Account', disapprove_account_identity_url(@identity)

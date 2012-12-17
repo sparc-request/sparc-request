@@ -3,7 +3,7 @@
     %tbody
       %tr
         %td
-          = hidden_field_tag "CLONE#{entity.class.to_s.downcase}[submission_emails][]", 'clone_only', :class => 'se_value'
+          = hidden_field_tag "CLONE#{entity.class.to_s.downcase}[submission_emails_attributes][][email]", 'clone_only', :class => 'se_value'
           %span.se_display clone only
         %td= image_tag 'cancel.png', :class => 'se_delete'
 
@@ -18,7 +18,8 @@
         - entity.submission_emails.each do |se|
           %tr
             %td
-              = hidden_field_tag "#{entity.class.to_s.downcase}[submission_emails][]", se, :class => 'se_value'
+              = hidden_field_tag "#{entity.class.to_s.downcase}[submission_emails_attributes][][email]", se.email, :class => 'se_value'
+              = hidden_field_tag "#{entity.class.to_s.downcase}[submission_emails_attributes][][id]", se.id, :class => 'se_value'
               %span.se_display= se.email
             %td= image_tag 'cancel.png', :class => 'se_delete'
 

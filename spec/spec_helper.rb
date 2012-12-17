@@ -11,6 +11,13 @@ require 'faker'
 require 'capybara/rspec'
 require 'capybara/rails'
 require 'capybara/dsl'
+require 'capybara/firebug'
+
+# Requires supporting ruby files with custom matchers and macros, etc,
+# in spec/support/ and its subdirectories.
+Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
+include CapybaraSupport
+include IdentityHelper
 
 FactoryGirl.define do
   sequence :id do |id|

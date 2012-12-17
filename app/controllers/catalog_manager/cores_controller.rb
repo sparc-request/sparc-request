@@ -17,7 +17,8 @@ class CatalogManager::CoresController < CatalogManager::ApplicationController
   
   def update
     @core = Core.find(params[:id])
-    
+
+    params[:core].delete(:id)
     if @core.update_attributes(params[:core])
       flash[:notice] = "#{@core.name} saved correctly."
     else

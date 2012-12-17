@@ -17,7 +17,8 @@ class CatalogManager::ProvidersController < CatalogManager::ApplicationControlle
 
   def update
     @provider = Provider.find(params[:id])
-    
+
+    params[:provider].delete(:id)    
     if @provider.update_attributes(params[:provider])
       flash[:notice] = "#{@provider.name} saved correctly."
     else
@@ -28,7 +29,10 @@ class CatalogManager::ProvidersController < CatalogManager::ApplicationControlle
       if ps[1]['id'] == 'blank'
         @provider.pricing_setups.build(ps[1])
       else
-        @provider.pricing_setups.find(ps[1]['id']).update_attributes(ps[1])
+        # @provider.pricing_setups.find(ps[1]['id']).update_attributes(ps[1])
+        ps_id = ps[1]['id']
+        ps[1].delete(:id)
+        @provider.pricing_setups.find(ps_id).update_attributes(ps[1])        
       end
       @provider.save
     end if params[:pricing_setups]

@@ -76,12 +76,20 @@ class CatalogManager::ServicesController < CatalogManager::ApplicationController
   def update
     @service = Service.find(params[:id])
     saved = false
+    
+    program = params[:service][:program]
+    core = params[:service][:core]
+
+    params[:service].delete(:id)
+    params[:service].delete(:program)
+    params[:service].delete(:core)    
+    
     saved = @service.update_attributes(params[:service])
     
     # This will update the service.organization if a user changes the core of the service.
-    unless params[:service][:core].blank? && params[:service][:program].blank?
-      orgid = params[:service][:program]
-      orgid = params[:service][:core] unless (params[:service][:core].blank? || params[:service][:core] == '0')
+    unless core.blank? && program.blank?
+      orgid = program
+      orgid = core unless (core.blank? || core == '0')    
       unless @service.organization.id.to_s == orgid.to_s
         new_org = Organization.find(orgid)
         @service.update_attribute(:organization_id, orgid) if new_org
@@ -97,7 +105,10 @@ class CatalogManager::ServicesController < CatalogManager::ApplicationController
       if pm[1]['id'] == 'blank'
         @service.pricing_maps.build(pm[1])
       else
-        saved = @service.pricing_maps.find(pm[1]['id']).update_attributes(pm[1])
+        # saved = @service.pricing_maps.find(pm[1]['id']).update_attributes(pm[1])	
+        pm_id = pm[1]['id']
+        pm[1].delete(:id)
+        saved = @service.pricing_maps.find(pm_id).update_attributes(pm[1])        
       end
       if saved == true
         saved = @service.save

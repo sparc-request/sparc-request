@@ -1,7 +1,27 @@
 require 'spec_helper'
 require 'net/ldap' # TODO: not sure why this is necessary
 
+# The following code will suppress the stdout created
+# by the 'searching identities' block 
+# Possibly useful when running specs often
+# RSpec.configure do |config|
+
+#   config.before(:all) do
+#     @null_out = File.open('/dev/null', 'w')
+#     @orig_out = $stdout
+#   end
+
+#   config.before(:each) do
+#     $stdout = @null_out
+#   end
+
+#   config.after(:each) do
+#     $stdout = @orig_out
+#   end
+# end
+
 describe "Identity" do
+  
 
   describe "helper methods" do
 

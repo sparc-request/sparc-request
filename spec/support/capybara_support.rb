@@ -1,7 +1,21 @@
 module CapybaraSupport
   def create_default_data
-    identity = Identity.last
-
+    identity = Identity.create(
+      last_name:             'Glenn',
+      first_name:            'Julia',
+      ldap_uid:              'jug2',
+      institution:           'medical_university_of_south_carolina',
+      college:               'college_of_medecine',
+      department:            'other',
+      email:                 'glennj@musc.edu',
+      credentials:           'BS,    MRA',
+      catalog_overlord:      true,
+      password:              'p4ssword',
+      password_confirmation: 'p4ssword',
+      approved:              true
+      )
+    identity.save!
+    
     institution = FactoryGirl.create(:institution,
       name:                 'Medical University of South Carolina',
       order:                1,
@@ -103,6 +117,7 @@ module CapybaraSupport
       
   def default_catalog_manager_setup
     create_default_data
+    visit catalog_manager_root_path
     ## Logs in the default identity.
     visit catalog_manager_root_path
     sign_in

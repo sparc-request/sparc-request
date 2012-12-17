@@ -1642,6 +1642,14 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   text-align: left;
 }
 
+.document-table tr.header th {
+  text-align: center;
+}
+
+.document-table tr.header th:nth-child(1) {
+  text-align: left;
+}
+
 .total_cell {
   font-weight: bold !important;
   background-color: #CCCCCC;

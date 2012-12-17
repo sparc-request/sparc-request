@@ -54,13 +54,13 @@ class PricingSetup < ActiveRecord::Base
     self.organization.all_child_services.each do |service|
       begin
         closest_map = PricingMap.new(service.effective_pricing_map_for_date(self.effective_date).attributes)
-        closest_map.effective_date = self.effective_date
-        closest_map.display_date = self.display_date
+        closest_map.effective_date = self.effective_date.to_date
+        closest_map.display_date = self.display_date.to_date
         closest_map.save
       rescue
         new_map = service.pricing_maps.build
-        new_map.effective_date = self.effective_date
-        new_map.display_date = self.display_date
+        new_map.effective_date = self.effective_date.to_date
+        new_map.display_date = self.display_date.to_date
         new_map.full_rate = 0
         new_map.unit_factor = 1
         new_map.unit_minimum = 1

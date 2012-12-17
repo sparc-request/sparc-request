@@ -52,4 +52,16 @@ class IdentitiesController < ApplicationController
       @project_role.update_attributes params[:project_role]
     end
   end
+
+  def approve_account
+    @identity = Identity.find params[:id]
+    @identity.update_attribute(:approved, true)
+    Notifier.account_status_change(@identity, true).deliver
+  end
+
+  def disapprove_account
+    @identity = Identity.find params[:id]
+    @identity.update_attribute(:approved, true)
+    Notifier.account_status_change(@identity, false).deliver
+  end
 end

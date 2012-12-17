@@ -61,11 +61,8 @@ describe 'SubServiceRequest' do
       let!(:service_request2)     { FactoryGirl.create(:service_request) }
       let!(:sub_service_request)  { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id) }
       let!(:sub_service_request2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request2.id) }
-
-      before :each do
-        FactoryGirl.create(:pricing_map, service_id: service.id)
-      end
-
+      let!(:pricing_map)          { FactoryGirl.create(:pricing_map, service_id: service.id) }
+ 
       context 'adding a line item' do
        
         it 'should fail if service is already on the service request' do

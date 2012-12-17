@@ -161,7 +161,7 @@ class Service < ActiveRecord::Base
     raise ArgumentError, "Service has no pricing maps" if self.pricing_maps.empty?
 
     # TODO: use #where? (warning: potential performance issue)
-    current_maps = self.pricing_maps.select { |x| x.display_date <= date }
+    current_maps = self.pricing_maps.select { |x| x.display_date.to_date <= date.to_date }
     raise ArgumentError, "Service has no current pricing maps" if current_maps.empty?
 
     sorted_maps = current_maps.sort { |lhs, rhs| lhs.display_date <=> rhs.display_date }
@@ -181,7 +181,7 @@ class Service < ActiveRecord::Base
     raise ArgumentError, "Service has no pricing maps" if self.pricing_maps.empty?
 
     # TODO: use #where? (warning: potential performance issue)
-    current_maps = self.pricing_maps.select { |x| x.effective_date <= date }
+    current_maps = self.pricing_maps.select { |x| x.effective_date.to_date <= date.to_date }
     raise ArgumentError, "Service has no current pricing maps" if current_maps.empty?
 
     sorted_maps = current_maps.sort { |lhs, rhs| lhs.effective_date <=> rhs.effective_date }

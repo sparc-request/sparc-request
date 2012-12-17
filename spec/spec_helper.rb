@@ -11,6 +11,12 @@ require 'faker'
 require 'capybara/rspec'
 require 'capybara/rails'
 require 'capybara/dsl'
+require 'capybara/firebug'
+
+# Requires supporting ruby files with custom matchers and macros, etc,
+# in spec/support/ and its subdirectories.
+Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
+include CapybaraSupport
 
 FactoryGirl.define do
   sequence :id do |id|
@@ -22,7 +28,6 @@ FactoryGirl.find_definitions
 
 Capybara.javascript_driver = :selenium
 Capybara.default_wait_time = 10
-
 
 class ActiveRecord::Base
   mattr_accessor :shared_connection
@@ -50,8 +55,6 @@ RSpec.configure do |config|
     DatabaseCleaner.clean_with(:truncation)
   end
 
-
-  
   before = proc do
     DatabaseCleaner.start
 

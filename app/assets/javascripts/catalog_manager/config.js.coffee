@@ -39,7 +39,7 @@ $ ->
         datepicker_attributes.showOn = "both"
         datepicker_attributes.buttonText = "Select a Date"
         datepicker_attributes.buttonImageOnly = true
-        datepicker_attributes.buttonImage = "#{sub_uri}/assets/calendar_edit.png"
+        datepicker_attributes.buttonImage = "calendar_edit.png"
 
       for datepicker in $('.datepicker')
         if $(datepicker).attr('past_date') == 'true'

@@ -16,6 +16,7 @@ class CatalogManager::InstitutionsController < CatalogManager::ApplicationContro
   def update
     @institution = Institution.find(params[:id])
     
+    params[:institution].delete(:id)
     if @institution.update_attributes(params[:institution])
       flash[:notice] = "#{@institution.name} saved correctly."
     else

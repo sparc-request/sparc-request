@@ -265,7 +265,7 @@ class ServiceRequestsController < ApplicationController
     end
     @service_request.protocol.update_attribute(:next_ssr_id, next_ssr_id)
 
-    redirect_to @user_portal_link
+    redirect_to USER_PORTAL_LINK 
   end
 
   def refresh_service_calendar
@@ -362,7 +362,7 @@ class ServiceRequestsController < ApplicationController
     from = params['question_email'] || 'no-reply@musc.edu'
     body = params['question_body'] || 'No question asked'
 
-    question = Question.create :to => @default_mail_to, :from => from, :body => body
+    question = Question.create :to => DEFAULT_MAIL_TO, :from => from, :body => body
     Notifier.ask_a_question(question).deliver
   end
 

@@ -1,3 +1,11 @@
+begin 
+  application_config ||= YAML.load_file(Rails.root.join('config', 'application.yml'))[Rails.env]
+  DEFAULT_MAIL_TO = application_config['default_mail_to']
+  USER_PORTAL_LINK = application_config['user_portal_link']
+rescue
+  raise "application.yml not found, see config/application.yml.example"
+end
+
 FUNDING_STATUSES = {'Pending Funding' => 'pending_funding',
                     'Funded' => 'funded'}
 

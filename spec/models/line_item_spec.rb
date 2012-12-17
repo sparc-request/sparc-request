@@ -58,50 +58,69 @@ describe "Line Item" do
   end
 
   context "business methods" do
+
+    let!(:program)       { FactoryGirl.create(:program) }
+    let!(:pricing_setup) { FactoryGirl.create(:pricing_setup, organization_id: program.id) }
+
     before :each do
-      @program = Program.create!(FactoryGirl.attributes_for(:organization))
-      @program.pricing_setups.build(FactoryGirl.attributes_for(:pricing_setup)).save
-      study = FactoryGirl.build(:protocol, :funded, :federal)
-      study.save(:validate => false)
-      @service_request = FactoryGirl.create(:service_request, protocol_id: study.id)
-      @ssr = @service_request.sub_service_requests.build(FactoryGirl.attributes_for(
-        :sub_service_request, organization_id: @program.id))
+
+      @study = FactoryGirl.build(:study, :funded, :federal)
+      @study.save(validate: false)
     end
+
+    # before :each do
+    #   @program = Program.create!(FactoryGirl.attributes_for(:organization))
+    #   @program.pricing_setups.build(FactoryGirl.attributes_for(:pricing_setup)).save
+    #   study = FactoryGirl.build(:protocol, :funded, :federal)
+    #   study.save(:validate => false)
+    #   @service_request = FactoryGirl.create(:service_request, protocol_id: study.id)
+    #   @ssr = @service_request.sub_service_requests.build(FactoryGirl.attributes_for(
+    #     :sub_service_request, organization_id: @program.id))
+    # end
 
 
     describe "per_unit_cost" do
-
-      before :each do
-        service = @program.services.build(FactoryGirl.attributes_for(:service))
-        service.save
-        service.pricing_maps.build(FactoryGirl.attributes_for(:pricing_map, :is_one_time_fee)).save
-        @line_item = @service_request.line_items.build(FactoryGirl.attributes_for(
-          :line_item, sub_service_request_id: @ssr.id, service_id: service.id))
-      end
+      let!(:service_request) { FactoryGirl.create(:service_request, protocol_id: @study.id) }
+      let!(:ssr)             { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id,
+                              organization_id: program.id) }
+      let!(:service)         { FactoryGirl.create(:service, organization_id: program.id) }
+      let!(:pricing_map)     { FactoryGirl.create(:pricing_map, service_id: service.id, is_one_time_fee: true) }
+      let!(:line_item)       { FactoryGirl.create(:line_item, service_request_id: service_request.id, 
+                              sub_service_request_id: ssr.id, service_id: service.id)}
+      # before :each do
+      #   service = @program.services.build(FactoryGirl.attributes_for(:service))
+      #   service.save
+      #   service.pricing_maps.build(FactoryGirl.attributes_for(:pricing_map, :is_one_time_fee)).save
+      #   @line_item = @service_request.line_items.build(FactoryGirl.attributes_for(
+      #     :line_item, sub_service_request_id: @ssr.id, service_id: service.id))
+      # end
 
       it "should return the per unit cost for full quantity with no arguments" do
-        @line_item.per_unit_cost.should eq(100)
+        line_item.per_unit_cost.should eq(100)
       end
 
       it "should return 0 if the quantity is 0" do
-        @line_item.quantity = 0
-        @line_item.per_unit_cost.should eq(0)
+        line_item.quantity = 0
+        line_item.per_unit_cost.should eq(0)
       end
 
       it "should return the per unit cost for a specific quantity from arguments" do
-        line_item1 = line_item2 = @line_item
+        line_item1 = line_item2 = line_item
         line_item1.quantity = 5
         line_item1.per_unit_cost.should eq(line_item2.per_unit_cost)
       end
     end
 
     describe "units per package" do
- 
+
+      let!(:service_request) { FactoryGirl.create(:service_request, protocol_id: @study.id) }
+      let!(:ssr)             { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id,
+                              organization_id: program.id) }
       let!(:service)      {FactoryGirl.create(:service)}
       let!(:pricing_map)  {FactoryGirl.create(:pricing_map, service_id: service.id)}
       let!(:pricing_map2) {FactoryGirl.create(:pricing_map, service_id: service.id, display_date: Date.parse('2040-01-01'))}
-      let!(:line_item)    {FactoryGirl.create(:line_item, service_request_id: @service_request.id,
-                           sub_service_request_id: @ssr.id, service_id: service.id)}  
+      let!(:line_item)    {FactoryGirl.create(:line_item, service_request_id: service_request.id,
+                           sub_service_request_id: ssr.id, service_id: service.id)}  
 
       it "should select the correct pricing map based on display date" do
         pricing_map.update_attributes(unit_factor: 5)
@@ -127,12 +146,16 @@ describe "Line Item" do
 
     describe "per_subject_subtotals" do
 
+      let!(:service_request) { FactoryGirl.create(:service_request, protocol_id: @study.id) }
+      let!(:ssr)             { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id,
+                              organization_id: program.id) }
+
       before :each do
-        service = @program.services.build(FactoryGirl.attributes_for(:service))
+        service = program.services.build(FactoryGirl.attributes_for(:service))
         service.save
         service.pricing_maps.build(FactoryGirl.attributes_for(:pricing_map, federal_rate: 100)).save
-        @ppv_line_item = FactoryGirl.create(:line_item, service_request_id: @service_request.id,
-          sub_service_request_id: @ssr.id, service_id: service.id, visit_count: 5)
+        @ppv_line_item = FactoryGirl.create(:line_item, service_request_id: service_request.id,
+          sub_service_request_id: ssr.id, service_id: service.id, visit_count: 5)
       end
 
       it "should return a hash with the cost of each visit" do
@@ -208,18 +231,21 @@ describe "Line Item" do
 
     describe "cost calculations" do
 
-      let!(:service)       {FactoryGirl.create(:service, organization_id: @program.id)}
+      let!(:service_request) { FactoryGirl.create(:service_request, protocol_id: @study.id) }
+      let!(:ssr)             { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id,
+                              organization_id: program.id) }
+      let!(:service)       {FactoryGirl.create(:service, organization_id: program.id)}
       let!(:pricing_map)   {FactoryGirl.create(:pricing_map, service_id: service.id, unit_factor: 5)}
       let!(:line_item)     {FactoryGirl.create(:line_item, service_id: service.id,
-                            service_request_id: @service_request.id, subject_count: 5)}  
+                            service_request_id: service_request.id, subject_count: 5)}  
       let!(:visit)         {FactoryGirl.create(:visit, line_item_id: line_item.id, research_billing_qty: 5)}
-      let!(:pricing_setup) {FactoryGirl.create(:pricing_setup, organization_id: @program.id)}
+      let!(:pricing_setup) {FactoryGirl.create(:pricing_setup, organization_id: program.id)}
 
       before :each do
         @protocol = Study.create(FactoryGirl.attributes_for(:protocol))
         @protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 200)
         @protocol.save :validate => false
-        @service_request.update_attributes(protocol_id: @protocol.id)
+        service_request.update_attributes(protocol_id: @protocol.id)
       end
 
       context "direct cost for visit based service single subject" do

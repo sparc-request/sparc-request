@@ -141,7 +141,7 @@ $ ->
     obj_type = node_ref.rslt.obj.context.attributes['object_type'].nodeValue
 
     $(this).jstree('toggle_node')
-    $('#details').load("#{obj_type}s/#{cid}")
+    $('#details').load("/catalog_manager/#{obj_type}s/#{cid}")
 
   $('#search_button').click ->
     $('#catalog').jstree 'search', $('#search').val()

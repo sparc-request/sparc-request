@@ -247,20 +247,55 @@ class ServiceRequestsController < ApplicationController
       ssr.update_attribute(:ssr_id, "%04d" % next_ssr_id) unless ssr.ssr_id
       next_ssr_id += 1
     end
-    @service_request.protocol.update_attribute(:next_ssr_id, next_ssr_id)
-
-    # TODO: fire off emails to those in need
+    
     @protocol = @service_request.protocol
     @service_list = @service_request.service_list
-    
-    xls = render_to_string :template => '/service_requests/show.xlsx.axlsx'
+
+    @protocol.update_attribute(:next_ssr_id, next_ssr_id)
+
+    # Does an approval need to be created, check that the user submitting has approve rights
+    if @protocol.project_roles.detect{|pr| pr.identity_id == current_user.id}.project_rights != "approve"
+      approval = @service_request.approvals.create
+    else
+      approval = false
+    end
+
+    # generate the excel for this service request
+    xls = render_to_string :action => 'show', :formats => [:xlsx]
 
     # send e-mail to all folks with view and above
-    @protocol.project_roles.each do |pr|
-      next if pr.project_rights == 'none'
-      Notifier.notify_user pr.identity, pr.role, @service_request, @sub_service_request, xls
+    @protocol.project_roles.each do |project_role|
+      next if project_role.project_rights == 'none'
+      Notifier.notify_user(project_role, @service_request, xls, approval).deliver
+    end
 
+    # send e-mail to admins and service providers
+    Notifier.notify_admin(@service_request, xls).deliver
 
+    # send e-mail to all service providers
+    if @sub_service_request # only notify the service providers for this sub service request
+      @sub_service_request.organization.service_providers.where("hold_emails IS NOT true").each do |service_provider|
+        Notifier.notify_service_provider(service_provider, @service_request, xls).deliver
+      end
+    else
+      @service_request.sub_service_requests.each do |sub_service_request|
+        sub_service_request.organization.service_providers.where("hold_emails IS NOT true").each do |service_provider|
+          Notifier.notify_service_provider(service_provider, @service_request, xls).deliver
+        end
+      end
+    end
+    
+    render :formats => [:html]
+  end
+
+  def approve_changes
+    @approval = @service_request.approvals.where(:id => params[:approval_id]).first
+    @previously_approved = true
+ 
+    if @approval and @approval.identity.nil?
+      @approval.update_attribute(:identity_id, current_user.id)
+      @previously_approved = false 
+    end
   end
 
   def save_and_exit

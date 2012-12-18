@@ -7,7 +7,6 @@ describe "service calendar" do
 
   before :each do
     visit service_calendar_service_request_path service_request.id
-    sleep 1
   end
 
   describe "display rates" do
@@ -113,7 +112,7 @@ describe "service calendar" do
       end
 
       describe "increasing the 'R' billing quantity" do
-        it "should increase the total cost", :js => true, :firebug => true do
+        it "should increase the total cost", :js => true do
           # Remove these elements so that fill_in can't fill in the "old" fields
           page.execute_script("$('#visits_#{line_item2.visits[1].id}_insurance_billing_qty').remove()")
           page.execute_script("$('#visits_#{line_item2.visits[1].id}_effort_billing_qty').remove()")
@@ -162,7 +161,7 @@ describe "service calendar" do
       end
 
       describe "increasing the '%' or 'T' billing quantity" do
-        it "should not increase the total cost", :js => true, :firebug => true do
+        it "should not increase the total cost", :js => true do
           # Remove these elements so that fill_in can't fill in the "old" fields
           page.execute_script("$('#visits_#{line_item2.visits[1].id}_insurance_billing_qty').remove()")
           page.execute_script("$('#visits_#{line_item2.visits[1].id}_effort_billing_qty').remove()")

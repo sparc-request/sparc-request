@@ -63,11 +63,11 @@ $(document).ready ->
 
   $('.add_pricing_setup').live('click', ->
     blank_pricing_setup = $('.blank_pricing_setup').html()
-    pricing_map_form = $('.pricing_setup_accordion').append(blank_pricing_setup)
-    pricing_map_form.find('.effective_date').addClass('validate')
-    pricing_map_form.find('.display_date').addClass('validate')
-    pricing_map_form.find('.rate').addClass('validate')
-    pricing_map_form.find('.pricing_setup_form:last').append('<input name="pricing_setups[blank_pricing_setup][newly_created]" type="hidden" value="true">')
+    pricing_setup_form = $('.pricing_setup_accordion').append(blank_pricing_setup)
+    pricing_setup_form.find('.effective_date').addClass('validate')
+    pricing_setup_form.find('.display_date').addClass('validate')
+    pricing_setup_form.find('.rate').addClass('validate')
+    pricing_setup_form.find('.pricing_setup_form:last').append('<input name="pricing_setups[blank_pricing_setup][newly_created]" type="hidden" value="true">')
     Sparc.services.create_accordion('.pricing_setup_accordion')
     Sparc.config.setDatePicker()
     $('.blank_field_errors').css('display', 'inline-block')

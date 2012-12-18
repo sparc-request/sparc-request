@@ -2,11 +2,11 @@ require 'spec_helper'
 
 describe "service calendar" do
   let_there_be_lane
+  fake_login_for_each_test
   build_service_request_with_project()
 
   before :each do
     visit service_calendar_service_request_path service_request.id
-    sign_in
     sleep 1
   end
 

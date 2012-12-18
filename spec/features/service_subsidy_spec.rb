@@ -19,7 +19,7 @@ describe "subsidy page" do
       page.should_not have_css("input.pi-contribution[disabled=disabled]")
     end
     it 'Should save PI Contribution', :js => true do
-      total = sub_service_request.direct_cost_total
+      total = sub_service_request.direct_cost_total / 100
       max = program.subsidy_map.max_dollar_cap
       amount = total - max + 5
       find('.pi-contribution').set(amount)

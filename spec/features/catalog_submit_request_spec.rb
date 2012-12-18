@@ -19,7 +19,7 @@ describe 'as a user on catalog page' do
     # login(identity)
 
     visit root_path
-    click_link("Click here to proceed with your institutional login")
+    click_link("Click here to proceed with your institutional/existing SPARC login")
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
     sleep(2)
     click_link("Office of Biomedical Informatics")

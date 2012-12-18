@@ -250,6 +250,17 @@ class ServiceRequestsController < ApplicationController
     @service_request.protocol.update_attribute(:next_ssr_id, next_ssr_id)
 
     # TODO: fire off emails to those in need
+    @protocol = @service_request.protocol
+    @service_list = @service_request.service_list
+    
+    xls = render_to_string :template => '/service_requests/show.xlsx.axlsx'
+
+    # send e-mail to all folks with view and above
+    @protocol.project_roles.each do |pr|
+      next if pr.project_rights == 'none'
+      Notifier.notify_user pr.identity, pr.role, @service_request, @sub_service_request, xls
+
+
   end
 
   def save_and_exit

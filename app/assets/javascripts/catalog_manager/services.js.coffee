@@ -53,6 +53,8 @@ $(document).ready ->
     $('.pricing_map_accordion').append(blank_pricing_map)
     Sparc.services.create_accordion()
     Sparc.config.setDatePicker()
+    $('.blank_field_errors').css('display', 'inline-block')
+    $('.save_button').attr('disabled', true)    
   )
 
   $('.remove_pricing_map').live('click', ->

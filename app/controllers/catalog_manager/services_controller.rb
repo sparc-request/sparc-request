@@ -128,7 +128,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     end
 
     @entity = @service
-    respond_with @service, :location => service_path(@service)
+    respond_with @service, :location => catalog_manager_service_path(@service)
   end
 
   def associate

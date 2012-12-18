@@ -3,10 +3,8 @@ class ApplicationController < ActionController::Base
   helper :all
   helper_method :current_user
 
-  before_filter :initialize_service_request
-  before_filter :authorize_identity
   before_filter :setup_navigation
-  
+
   def current_user
     current_identity
   end

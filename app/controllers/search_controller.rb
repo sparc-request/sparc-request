@@ -1,4 +1,6 @@
 class SearchController < ApplicationController
+  before_filter :initialize_service_request
+  before_filter :authorize_identity
   def services
     term = params[:term].strip
     results = Service.where("(name LIKE '%#{term}%' OR abbreviation LIKE '%#{term}%') AND is_available != 0")

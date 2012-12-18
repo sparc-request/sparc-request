@@ -1,4 +1,6 @@
 class ProjectsController < ApplicationController
+  before_filter :initialize_service_request
+  before_filter :authorize_identity
   before_filter :set_protocol_type
   def new
     @service_request = ServiceRequest.find session[:service_request_id]

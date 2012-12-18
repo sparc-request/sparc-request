@@ -1,4 +1,4 @@
-class CatalogManager::ProgramsController < CatalogManager::ApplicationController
+class CatalogManager::ProgramsController < CatalogManager::AppController
   respond_to :js, :html, :json
   layout false
 

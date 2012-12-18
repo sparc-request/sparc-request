@@ -1,4 +1,6 @@
 class IdentitiesController < ApplicationController
+  before_filter :initialize_service_request
+  before_filter :authorize_identity
   def show
     @identity = Identity.find params[:id]
     @can_edit = false

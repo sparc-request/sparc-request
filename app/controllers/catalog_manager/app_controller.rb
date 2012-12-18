@@ -1,7 +1,8 @@
-class CatalogManager::ApplicationController < ActionController::Base
+# named AppController because Devise was having problems when it was named the same as the main ApplicationController
+class CatalogManager::AppController < ActionController::Base
   layout 'catalog_manager/application'
   protect_from_forgery
-  
+
   before_filter :authenticate_identity!
   before_filter :set_user
 

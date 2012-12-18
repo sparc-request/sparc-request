@@ -62,7 +62,7 @@ $ ->
     verify_valid_pricing_setups()
 
   verify_valid_pricing_setups = () ->
-    $.get 'verify_valid_pricing_setups', (data) ->
+    $.get 'catalog_manager/verify_valid_pricing_setups', (data) ->
       if data == 'true'
         $(".pricing_setup_error").hide()
       else

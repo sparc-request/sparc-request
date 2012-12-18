@@ -20,6 +20,7 @@ describe "review page" do
       service_request_test.status.should eq("draft")
     end
   end
+
   describe "clicking submit" do
     it 'Should submit the page', :js => true do
       find(:xpath, "//a/img[@alt='Confirm_request']/..").click

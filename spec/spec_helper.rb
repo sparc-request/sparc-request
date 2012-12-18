@@ -96,6 +96,18 @@ def sign_in uid="jug2", password="p4ssword"
   click_button "Sign in"
 end
 
+include Warden::Test::Helpers
+
+def fake_login_for_each_test(uid='jug2')
+  before :each do
+    login_as(Identity.find_by_ldap_uid(uid))
+  end
+
+  after :each do
+    Warden.test_mode!
+  end
+end
+
 def build_service_request_with_project
   build_service_request()
   build_project()

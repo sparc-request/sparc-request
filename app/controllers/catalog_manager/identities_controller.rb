@@ -1,4 +1,4 @@
-class CatalogManager::IdentitiesController < CatalogManager::ApplicationController
+class CatalogManager::IdentitiesController < CatalogManager::AppController
   require 'search'
   respond_to :json
   layout false

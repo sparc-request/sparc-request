@@ -1,4 +1,4 @@
-class CatalogManager::CatalogController < CatalogManager::ApplicationController
+class CatalogManager::CatalogController < CatalogManager::AppController
   respond_to :js, :haml, :json
 
   def index

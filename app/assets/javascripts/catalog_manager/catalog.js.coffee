@@ -105,34 +105,34 @@ $ ->
       if /Create New Institution/.test click_text
         institution_name = prompt("Please enter the name of the institution to be created")
         if institution_name and institution_name.length > 0
-          $.post 'institutions', {name: institution_name}
+          $.post '/catalog_manager/institutions', {name: institution_name}
 
       # create a provider
       if /Create New Provider/.test click_text
         institution_id = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('cid')
         provider_name = prompt("Please enter the name of the provider you would like to create")
         if provider_name and provider_name.length > 0
-          $.post 'providers', {name: provider_name, institution_id: institution_id}
+          $.post '/catalog_manager/providers', {name: provider_name, institution_id: institution_id}
 
       # create a program
       if /Create New Program/.test click_text
         provider_id = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('cid')
         program_name = prompt("Please enter the name of the program you would like to create")
         if program_name and program_name.length > 0
-          $.post 'programs', {name: program_name, provider_id: provider_id}
+          $.post '/catalog_manager/programs', {name: program_name, provider_id: provider_id}
 
       # create a core
       if /Create New Core/.test click_text
         program_id = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('cid')
         core_name = prompt("Please enter the name of the core you would like to create")
         if core_name and core_name.length > 0
-          $.post 'cores', {name: core_name, program_id: program_id}
+          $.post '/catalog_manager/cores', {name: core_name, program_id: program_id}
 
       # create a service
       if /Create New Service/.test click_text
         parent_id = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('cid')
         parent_object_type = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('object_type')
-        $.get("services/new", {parent_id: parent_id, parent_object_type: parent_object_type},
+        $.get("/catalog_manager/services/new", {parent_id: parent_id, parent_object_type: parent_object_type},
               (data)-> $('#details').html(data) )
 
     return unless node_ref.rslt.obj.context.attributes['object_type']

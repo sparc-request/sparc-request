@@ -1,4 +1,6 @@
 class ServiceRequestsController < ApplicationController
+  before_filter :initialize_service_request
+  before_filter :authorize_identity
   before_filter :authenticate_identity!, :except => [:catalog, :add_service, :remove_service, :ask_a_question]
   layout false, :only => :ask_a_question
 

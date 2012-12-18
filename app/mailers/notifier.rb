@@ -78,9 +78,10 @@ class Notifier < ActionMailer::Base
   def account_status_change identity, approved
     @approved = approved
     
-    email = Rails.env == 'production' ? ADMIN_MAIL_TO : DEFAULT_MAIL_TO
-    #subject = Rails.env == 'production' ? "SPARC account request - status change" : "[#{Rails.env.capitalize} - EMAIL TO #{ADMIN_MAIL_TO}] SPARC account request - status change"
-    subject = "SPARC account request - status change"
-    mail(:to => identity.email, :from => email, :subject => subject)
+    email_from = Rails.env == 'production' ? ADMIN_MAIL_TO : DEFAULT_MAIL_TO
+    email_to = Rails.env == 'production' ? identity.email : DEFAULT_MAIL_TO
+    subject = Rails.env == 'production' ? "SPARC account request - status change" : "[#{Rails.env.capitalize} - EMAIL TO #{identity.email}] SPARC account request - status change"
+
+    mail(:to => email_to, :from => email_from, :subject => subject)
   end
 end

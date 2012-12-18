@@ -1,14 +1,28 @@
 .devise_form#login
   .grid_5.box
     .info
-      %h2 Institutional Login
-      Click
-      = link_to "Here", identity_omniauth_authorize_path(:shibboleth)
+      %h2 
+        Sign in using your institutional login 
+        %br
+        (ie - MUSC netid and password)
+
+      = button_to "Continue to sign in page", identity_omniauth_authorize_path(:shibboleth), :class => 'btn ui-button ui-widget ui-state-default ui-corner-all'
+      %br
+      %br
+      %br
+      %br
+      %br
+      %br
+      %br
 
 
   .grid_5.box
     .info
-      %h2 Sign in using a locally created account (Lane need wording)
+      %h2 
+        Sign in using a non-institutional login
+        %br
+        (ie - SPARC created account)
+
       = form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
         .field
           = f.label :ldap_uid, "Username:"

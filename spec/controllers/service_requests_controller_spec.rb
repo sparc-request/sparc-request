@@ -8,10 +8,22 @@ describe ServiceRequestsController do
   let!(:program) { FactoryGirl.create(:program, parent_id: provider.id) }
   let!(:core) { FactoryGirl.create(:core, parent_id: program.id) }
   let!(:core2) { FactoryGirl.create(:core, parent_id: program.id) }
+  let!(:service_provider)  {FactoryGirl.create(:service_provider, identity_id: identity.id, organization_id: core.id, hold_emails: false)}
 
   # TODO: shouldn't be bypassing validations...
   let!(:study) { study = Study.create(FactoryGirl.attributes_for(:protocol)); study.save!(:validate => false); study }
-  let!(:project) { project = Project.create(FactoryGirl.attributes_for(:protocol)); project.save!(:validate => false); project }
+  let!(:project) { 
+    project = Project.create(FactoryGirl.attributes_for(:protocol))
+    project.save!(:validate => false)
+    project_role = FactoryGirl.create(
+        :project_role,
+        protocol_id: project.id,
+        identity_id: identity.id,
+        project_rights: "approve",
+        role: "pi")
+    project.reload
+    project
+  }
 
   # TODO: assign service_list
   let!(:service_request) { FactoryGirl.create(:service_request, visit_count: 0) }
@@ -120,12 +132,14 @@ describe ServiceRequestsController do
 
   describe 'GET confirmation' do
     it "should set the service request's status to submitted" do
+      session[:identity_id] = identity.id
       session[:service_request_id] = service_request_with_project.id
       get :confirmation, :id => service_request_with_project.id
       assigns(:service_request).status.should eq 'submitted'
     end
 
     it "should set the service request's submitted_at to Time.now" do
+      session[:identity_id] = identity.id
       time = Time.parse('2012-06-01 12:34:56')
       Timecop.freeze(time) do
         service_request_with_project.update_attribute(:submitted_at, nil)
@@ -137,10 +151,12 @@ describe ServiceRequestsController do
     end
 
     it 'should increment next_ssr_id' do
+      session[:identity_id] = identity.id
       service_request_with_project.protocol.update_attribute(:next_ssr_id, 42)
       ssr = FactoryGirl.create(
           :sub_service_request,
-          service_request_id: service_request_with_project.id)
+          service_request_id: service_request_with_project.id,
+          organization_id: core.id)
       session[:service_request_id] = service_request_with_project.id
       get :confirmation, :id => service_request_with_project.id
       service_request_with_project.protocol.reload
@@ -148,16 +164,19 @@ describe ServiceRequestsController do
     end
 
     it 'should should set status and ssr_id on all the sub service request' do
+      session[:identity_id] = identity.id
       service_request_with_project.protocol.update_attribute(:next_ssr_id, 42)
 
       ssr1 = FactoryGirl.create(
           :sub_service_request,
           service_request_id: service_request_with_project.id,
-          ssr_id: nil)
+          ssr_id: nil,
+          organization_id: provider.id)
       ssr2 = FactoryGirl.create(
           :sub_service_request,
           service_request_id: service_request_with_project.id,
-          ssr_id: nil)
+          ssr_id: nil,
+          organization_id: core.id)
 
       session[:service_request_id] = service_request_with_project.id
       get :confirmation, :id => service_request_with_project.id
@@ -173,12 +192,14 @@ describe ServiceRequestsController do
     end
 
     it 'should set ssr_id correctly when next_ssr_id > 9999' do
+      session[:identity_id] = identity.id
       service_request_with_project.protocol.update_attribute(:next_ssr_id, 10042)
 
       ssr1 = FactoryGirl.create(
           :sub_service_request,
           service_request_id: service_request_with_project.id,
-          ssr_id: nil)
+          ssr_id: nil,
+          organization_id: core.id)
 
       session[:service_request_id] = service_request_with_project.id
       get :confirmation, :id => service_request_with_project.id
@@ -260,7 +281,7 @@ describe ServiceRequestsController do
     it 'should redirect the user to the user portal link' do
       session[:service_request_id] = service_request_with_project.id
       get :save_and_exit, :id => service_request_with_project.id
-      response.should redirect_to('/user_portal')
+      response.should redirect_to('/portal')
     end
   end
 

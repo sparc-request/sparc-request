@@ -5,9 +5,13 @@ module ServiceCalendarHelper
     action = checked == true ? 'unselect_calendar_row' : 'select_calendar_row'
     icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
 
-    link_to((content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')), 
-                              "/service_requests/#{line_item.service_request.id}/#{action}/#{line_item.id}", 
-                              :remote => true, :role => 'button', :class => "ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only service_calendar_row", :id => "check_row_#{line_item.id}_#{tab}")
+    link_to(
+        (content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')), 
+        "/service_requests/#{line_item.service_request.id}/#{action}/#{line_item.id}", 
+        :remote  => true,
+        :role    => 'button',
+        :class   => "ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only service_calendar_row",
+        :id      => "check_row_#{line_item.id}_#{tab}")
   end
 
   def currency_converter cents

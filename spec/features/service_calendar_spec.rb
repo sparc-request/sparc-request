@@ -113,54 +113,79 @@ describe "service calendar" do
       end
 
       describe "increasing the 'R' billing quantity" do
-        it "should increase the total cost", :js => true do
+        it "should increase the total cost", :js => true, :firebug => true do
+          # Remove these elements so that fill_in can't fill in the "old" fields
+          page.execute_script("$('#visits_#{line_item2.visits[1].id}_insurance_billing_qty').remove()")
+          page.execute_script("$('#visits_#{line_item2.visits[1].id}_effort_billing_qty').remove()")
+          page.execute_script("$('#visits_#{line_item2.visits[1].id}_research_billing_qty').remove()")
+
           click_link "check_row_#{line_item2.id}_billing_strategy"
-          sleep 5
+
           find("#visits_#{line_item2.visits[1].id}_research_billing_qty").set("")
           find("#visits_#{line_item2.visits[1].id}_research_billing_qty").click()
           fill_in( "visits_#{line_item2.visits[1].id}_research_billing_qty", :with => 10)
           find("#visits_#{line_item2.visits[1].id}_insurance_billing_qty").click()
-          sleep 3
+
           all('.pp_max_total_direct_cost').each do |x|
             if x.visible?
-              x.text().should eq('$570.00')
+              x.should have_exact_text("$570.00")
             end
           end
         end
 
         it "should update each visits maximum costs", :js => true do
+          # Remove these elements so that fill_in can't fill in the "old" fields
+          page.execute_script("$('#visits_#{line_item2.visits[1].id}_insurance_billing_qty').remove()")
+          page.execute_script("$('#visits_#{line_item2.visits[1].id}_effort_billing_qty').remove()")
+          page.execute_script("$('#visits_#{line_item2.visits[1].id}_research_billing_qty').remove()")
+
           click_link "check_row_#{line_item2.id}_billing_strategy"
-          sleep 5
+
           find("#visits_#{line_item2.visits[1].id}_research_billing_qty").set("")
           find("#visits_#{line_item2.visits[1].id}_research_billing_qty").click()
           fill_in "visits_#{line_item2.visits[1].id}_research_billing_qty", :with => 10
           find("#visits_#{line_item2.visits[1].id}_insurance_billing_qty").click()
-          sleep 3
+          # sleep 3
+
           all('.visit_column_2.max_direct_per_patient').each do |x|
             if x.visible?
-              x.text().should eq "$300.00"
+              x.should have_exact_text("$300.00")
             end
           end
 
           all('.visit_column_2.max_indirect_per_patient').each do |x|
             if x.visible?
-              x.text().should eq "$150.00"
+              x.should have_exact_text "$150.00"
             end
           end
         end
       end
 
       describe "increasing the '%' or 'T' billing quantity" do
-        it "should not increase the total cost", :js => true do
+        it "should not increase the total cost", :js => true, :firebug => true do
+          # Remove these elements so that fill_in can't fill in the "old" fields
+          page.execute_script("$('#visits_#{line_item2.visits[1].id}_insurance_billing_qty').remove()")
+          page.execute_script("$('#visits_#{line_item2.visits[1].id}_effort_billing_qty').remove()")
+          page.execute_script("$('#visits_#{line_item2.visits[1].id}_research_billing_qty').remove()")
+
+          # Now check the row; the fields we just deleted will be
+          # re-created
           click_link "check_row_#{line_item2.id}_billing_strategy"
-          sleep 5
+
+          # Putting values in these fields should not increase the total
+          # cost
           fill_in "visits_#{line_item2.visits[1].id}_insurance_billing_qty", :with => 10
+          find("#visits_#{line_item2.visits[1].id}_effort_billing_qty").click()
+
           fill_in "visits_#{line_item2.visits[1].id}_effort_billing_qty", :with => 10
+          find("#visits_#{line_item2.visits[1].id}_research_billing_qty").click()
+
           fill_in "visits_#{line_item2.visits[1].id}_research_billing_qty", :with => 1
-          sleep 5
+          find("#visits_#{line_item2.visits[1].id}_insurance_billing_qty").click()
+
           all('.pp_max_total_direct_cost').each do |x|
             if x.visible?
-              x.text().should eq('$300.00')
+              x.should have_exact_text "$300.00"
             end
           end
         end

@@ -2,12 +2,11 @@ require 'spec_helper'
 
 describe "creating a new study " do 
   let_there_be_lane
+  fake_login_for_each_test
   build_service_request_with_study()
 
   before :each do
     visit protocol_service_request_path service_request.id
-    sign_in
-    sleep 1
     click_link "New Study"
     sleep 1
     find(:xpath, "//input[@alt='SaveAndContinue']").click
@@ -46,13 +45,12 @@ end
 
 describe "editing a study" do
   let_there_be_lane
+  fake_login_for_each_test
   build_service_request()
   build_study()
 
   before :each do
     visit protocol_service_request_path service_request.id
-    sign_in
-    sleep 1
   end
 
   describe "editing the short title", :js => true do

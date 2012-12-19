@@ -2,13 +2,11 @@ require 'spec_helper'
 
 describe "submitting a in form" do
   let_there_be_lane
+  fake_login_for_each_test
   build_service_request_with_project
 
   before :each do
     visit service_details_service_request_path service_request.id
-    sleep 1
-    sign_in
-    sleep 1
   end
 
 

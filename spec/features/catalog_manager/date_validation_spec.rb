@@ -61,7 +61,8 @@ feature 'effective and display date validations' do
     end
 
     # This is the only way I could figure out how to test the text of the confirmation dialog
-    prompt = page.driver.browser.switch_to.alert
+    prompt = retry_until { page.driver.browser.switch_to.alert }
+
     # The test will pass if the confirmation dialog is closed, so if text matches the test will pass, otherwise it will fail    
     if prompt.text == ('This display date is before the display date of existing pricing maps, are you sure you want to do this?')
       prompt.dismiss # dismissed confirmation to avoid a second confirmation dialog, which capybara does not appear to handle

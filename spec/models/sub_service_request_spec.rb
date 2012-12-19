@@ -198,9 +198,8 @@ describe 'SubServiceRequest' do
         end
 
         it "should return false is organization is excluded from subsidy" do
-          core.update_attributes(name: "Slappy")
           subsidy_map.update_attributes(max_dollar_cap: 100)
-          excluded_funding_source = FactoryGirl.create(:excluded_funding_source, subsidy_map_id: subsidy_map.id, funding_source: "Slappy")
+          excluded_funding_source = FactoryGirl.create(:excluded_funding_source, subsidy_map_id: subsidy_map.id, funding_source: "federal")
           sub_service_request.eligible_for_subsidy?.should eq(false)
         end
       end

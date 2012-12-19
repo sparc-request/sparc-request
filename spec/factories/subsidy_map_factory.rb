@@ -1,8 +1,6 @@
 FactoryGirl.define do
   factory :subsidy_map do
-    id           
-    max_dollar_cap  { Random.rand(100) }
-    max_percentage  { Random.rand(100) }
+    id          
     
     ignore do
       excluded_funding_source_count 0

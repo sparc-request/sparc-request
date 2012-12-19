@@ -112,10 +112,10 @@ class Identity < ActiveRecord::Base
       filter = fields.map{|f| Net::LDAP::Filter.contains(f, term)}.inject(:|)
       res = ldap.search(:filter => filter)
     rescue => e
-      puts '#'*100
-      puts "#{e.message} (#{e.class})"
-      #puts e.backtrace.first(20) this is breaking other envs, not sure why it's here
-      puts '#'*100
+      Rails.logger.info '#'*100
+      Rails.logger.info "#{e.message} (#{e.class})"
+      #rails.logger.info e.backtrace.first(20) this is breaking other envs, not sure why it's here
+      Rails.logger.info '#'*100
       res = nil
     end
 
@@ -136,10 +136,10 @@ class Identity < ActiveRecord::Base
       begin
         Identity.create :ldap_uid => "#{new_identity[:uid]}@musc.edu", :first_name => new_identity[:first_name], :last_name => new_identity[:last_name], :email => new_identity[:email], :password => Devise.friendly_token[0,20], :approved => true
       rescue ActiveRecord::RecordNotUnique => e
-        puts '#'*100
-        puts "#{e.message} (#{e.class})"
-        puts e.backtrace.first(20)
-        puts '#'*100
+        Rails.logger.info '#'*100
+        Rails.logger.info "#{e.message} (#{e.class})"
+        Rails.logger.info e.backtrace.first(20)
+        Rails.logger.info '#'*100
       end
     end
 

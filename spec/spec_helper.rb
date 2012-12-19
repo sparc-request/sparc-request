@@ -27,7 +27,7 @@ end
 FactoryGirl.find_definitions
 
 Capybara.javascript_driver = :selenium
-Capybara.default_wait_time = 10
+Capybara.default_wait_time = 15
 
 class ActiveRecord::Base
   mattr_accessor :shared_connection

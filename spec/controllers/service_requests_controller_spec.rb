@@ -281,7 +281,7 @@ describe ServiceRequestsController do
     it 'should redirect the user to the user portal link' do
       session[:service_request_id] = service_request_with_project.id
       get :save_and_exit, :id => service_request_with_project.id
-      response.should redirect_to('/portal')
+      response.should redirect_to(USER_PORTAL_LINK)
     end
   end
 
@@ -425,7 +425,7 @@ describe ServiceRequestsController do
       deliverer = double()
       deliverer.should_receive(:deliver)
       Notifier.stub!(:ask_a_question) { |question|
-        question.to.should eq 'nobody@nowhere.com'
+        question.to.should eq DEFAULT_MAIL_TO
         question.from.should eq 'no-reply@musc.edu'
         question.body.should eq 'No question asked'
         deliverer

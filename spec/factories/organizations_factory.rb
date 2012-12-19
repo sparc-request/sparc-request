@@ -18,10 +18,6 @@ FactoryGirl.define do
       is_available false
     end
 
-    after(:build) do |organization|
-      organization.build_subsidy_map(FactoryGirl.attributes_for(:subsidy_map))
-    end
-
     ignore do
       sub_service_request_count 0
       service_count 0
@@ -104,10 +100,6 @@ FactoryGirl.define do
       is_available false
     end
 
-    after(:build) do |organization|
-      organization.build_subsidy_map(FactoryGirl.attributes_for(:subsidy_map))
-    end
-
     ignore do
       sub_service_request_count 0
       catalog_manager_count 0
@@ -156,11 +148,7 @@ FactoryGirl.define do
     trait :disabled do
       is_available false
     end
-
-    after(:build) do |organization|
-      organization.build_subsidy_map(FactoryGirl.attributes_for(:subsidy_map))
-    end
-
+  
     ignore do
       sub_service_request_count 0
       service_count 0
@@ -213,11 +201,7 @@ FactoryGirl.define do
     trait :disabled do
       is_available false
     end
-
-    after(:build) do |organization|
-      organization.build_subsidy_map(FactoryGirl.attributes_for(:subsidy_map))
-    end
-
+  
     ignore do
       sub_service_request_count 0
       service_count 0

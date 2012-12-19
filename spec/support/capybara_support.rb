@@ -123,9 +123,9 @@ module CapybaraSupport
       
   def default_catalog_manager_setup
     create_default_data
+    login_as(Identity.find_by_ldap_uid('jug2'))
     ## Logs in the default identity.
     visit catalog_manager_root_path
-    sign_in("jug2", "p4ssword")
     ## This is used to reveal all nodes in the js tree to make it easier to access during testing.
     page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
   end  

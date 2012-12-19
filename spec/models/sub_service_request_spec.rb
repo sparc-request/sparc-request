@@ -129,7 +129,7 @@ describe 'SubServiceRequest' do
       let!(:service2)             { FactoryGirl.create(:service, organization_id: core.id) }
       let!(:service_request)      { FactoryGirl.create(:service_request, subject_count: 5, visit_count: 5) }
       let!(:service_request2)     { FactoryGirl.create(:service_request) }
-      let!(:sub_service_request)  { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id) }
+      let!(:sub_service_request)  { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
       let!(:sub_service_request2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request2.id) }
       let!(:pricing_map)          { FactoryGirl.create(:pricing_map, service_id: service.id, is_one_time_fee: true)}
       let!(:pricing_map2)         { FactoryGirl.create(:pricing_map, service_id: service2.id)}
@@ -148,7 +148,7 @@ describe 'SubServiceRequest' do
         service_request2.update_attributes(protocol_id: @protocol.id)
       end
 
-      describe "direct cost total" do
+      context "direct cost total" do
 
         it "should return the direct cost for services that are one time fees" do
           sub_service_request2.direct_cost_total.should eq(500)
@@ -159,7 +159,7 @@ describe 'SubServiceRequest' do
         end
       end
 
-      describe "indirect cost total" do
+      context "indirect cost total" do
 
         it "should return the indirect cost for one time fees" do
           sub_service_request2.indirect_cost_total.should eq(1000)
@@ -170,19 +170,40 @@ describe 'SubServiceRequest' do
         end
       end
 
-      describe "grand total" do
+      context "grand total" do
 
         it "should return the grand total cost of the sub service request" do
           sub_service_request.grand_total.should eq(1500)
         end
       end
 
-      describe "subsidy percentage" do
+      context "subsidy percentage" do
 
         it "should return the correct subsidy percentage" do
           sub_service_request.subsidy_percentage.should eq(50)
         end
       end
+
+      context "eligible for subsidy" do
+
+        let!(:subsidy_map)  { FactoryGirl.create(:subsidy_map, organization_id: core.id, max_dollar_cap: 100.0) }
+
+        it "should return true if the sub service request is eligible for subsidy" do
+          subsidy_map.update_attributes(max_percentage: 15.0)
+          #sub_service_request.eligible_for_subsidy?.should eq(true)
+        end
+      end
+    end
+
+    describe "sub service request status" do
+
+      context "can be edited"
+
+      context "candidate statuses"
+
+      context "status equals"
+
+      context "update past status"
     end
   end
 end

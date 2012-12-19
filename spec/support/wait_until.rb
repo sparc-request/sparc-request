@@ -22,8 +22,25 @@ def wait_until(seconds=10, &block)
   loop do
     raise WaitUntilTimedOut, "Timed out" if Time.now > end_time
     result = yield
-    return if result
+    return result if result
     sleep 0.01
+  end
+end
+
+# Like wait_until but keeps going until the block returns without
+# raising an exception.
+def retry_until(seconds=10, exception=StandardError)
+  start_time = Time.now
+  end_time = start_time + seconds
+
+  loop do
+    raise WaitUntilTimedOut, "Timed out" if Time.now > end_time
+    begin
+      result = yield
+      return result
+    rescue exception
+      sleep 0.01
+    end
   end
 end
 

@@ -134,6 +134,17 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     @entity = @service
     respond_with @service, :location => catalog_manager_service_path(@service)
   end
+  
+  def destroy
+    @service = Service.find(params[:id])
+    @entity = @service
+    if @service.delete
+      flash[:notice] = "#{@service.name} deleted correctly."
+    else
+      flash[:alert] = "Failed to delete #{@service.name}."
+    end
+    respond_with [:catalog_manager, @service]
+  end  
 
   def associate
     service_id         = params["service"]

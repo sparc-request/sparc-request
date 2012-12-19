@@ -1,0 +1,3 @@
+$("#add-user-form").html("<%= escape_javascript(render(:partial => 'portal/associated_users/new', :locals => {:protocol => @protocol, :protocol_role => @protocol_role, :identity => @identity})) %>");
+
+FormFxManager.registerListeners($('#add-user-form'), Sparc.associated_users.display_dependencies);

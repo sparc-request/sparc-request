@@ -1,0 +1,10 @@
+- if !@protocol_role.errors.messages.empty? || !@identity.errors.messages.empty?
+  - @protocol_role.errors.messages.merge!(@identity.errors.messages)
+  - @entity_errors = @protocol_role.errors.to_json
+  :plain
+    Sparc.home.handle_ajax_errors("#{escape_javascript(@entity_errors)}", "Authorized User")
+- else
+  :plain
+    $('.edit-associated-user-dialog').dialog('close')
+    Sparc.protocol.renderProtocolAccordionTab("#{@protocol_role.protocol_id}")
+

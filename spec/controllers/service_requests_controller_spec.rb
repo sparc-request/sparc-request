@@ -10,6 +10,12 @@ describe ServiceRequestsController do
   let!(:core2) { FactoryGirl.create(:core, parent_id: program.id) }
   let!(:service_provider)  {FactoryGirl.create(:service_provider, identity_id: identity.id, organization_id: core.id, hold_emails: false)}
 
+  let!(:institution_subsidy_map) { FactoryGirl.create(:subsidy_map, organization_id: institution.id) }
+  let!(:provider_subsidy_map)    { FactoryGirl.create(:subsidy_map, organization_id: provider.id) }
+  let!(:program_subsidy_map)     { FactoryGirl.create(:subsidy_map, organization_id: program.id) }
+  let!(:core_subsidy_map)        { FactoryGirl.create(:subsidy_map, organization_id: core.id) }
+  let!(:core2_subsidy_map)       { FactoryGirl.create(:subsidy_map, organization_id: core2.id) }
+
   # TODO: shouldn't be bypassing validations...
   let!(:study) { study = Study.create(FactoryGirl.attributes_for(:protocol)); study.save!(:validate => false); study }
   let!(:project) { 
@@ -281,7 +287,7 @@ describe ServiceRequestsController do
     it 'should redirect the user to the user portal link' do
       session[:service_request_id] = service_request_with_project.id
       get :save_and_exit, :id => service_request_with_project.id
-      response.should redirect_to('/portal')
+      response.should redirect_to(USER_PORTAL_LINK)
     end
   end
 
@@ -425,7 +431,7 @@ describe ServiceRequestsController do
       deliverer = double()
       deliverer.should_receive(:deliver)
       Notifier.stub!(:ask_a_question) { |question|
-        question.to.should eq 'nobody@nowhere.com'
+        question.to.should eq DEFAULT_MAIL_TO
         question.from.should eq 'no-reply@musc.edu'
         question.body.should eq 'No question asked'
         deliverer

@@ -33,9 +33,11 @@ class Organization < ActiveRecord::Base
   attr_accessible :is_available
   attr_accessible :subsidy_map_attributes
   attr_accessible :pricing_setups_attributes
+  attr_accessible :submission_emails_attributes
  
   accepts_nested_attributes_for :subsidy_map
   accepts_nested_attributes_for :pricing_setups
+  accepts_nested_attributes_for :submission_emails
 
   before_validation :assign_obisid, :on => :create
 

@@ -22,6 +22,11 @@ group :development, :test, :profile do
   gem 'debugger'
   gem 'quiet_assets'
 
+  # Add dependency on poltergeist.  If you want to use poltergeist, you
+  # will need to configure Capybara to use it.  This particular
+  # poltergeist repository is for Capybara 2.0 support.  Poltergeist
+  # should official support Capybara 2.0 after Dec. 20.
+  gem 'poltergeist', :git => 'git://github.com/brutuscat/poltergeist.git'
 end
 
 # these are needed for the import script
@@ -41,6 +46,7 @@ group :assets do
   # gem 'therubyracer', :platforms => :ruby
 
   gem 'uglifier', '>= 1.0.3'
+  gem 'inflection-js-rails'
 end
 
 gem 'cache_digests'

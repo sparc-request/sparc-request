@@ -1,0 +1,42 @@
+.notifications.left
+  .back-to-notifications.ui-corner-all.right{:onclick => "window.location='#{portal_notifications_path}'"}
+    = link_to 'Back to Notifications', notifications_path
+  .clear
+  %ul.message-list{:style => 'list-style:none;margin-top:5px'}
+    - @notification.messages.each_with_index do |message, i|
+      - style_class = i == 0 ? 'first_message' : ''
+      %li{:class => "#{message_hide_or_show(@notification, i)}-message #{style_class}", :'data-message_id' => message.id}
+        %div.message-header
+          .right
+            = message.created_at.localtime.strftime('%l:%M%P on %m/%d/%Y')
+          %strong= User.find(message.from).try(:full_name)
+          .message_recipients{:class => "#{message_hide_or_show(@notification, i)}"}
+            %p{:style => 'color:#777784;'}
+              to
+              = User.find(message.to).try(:full_name)
+        %div{:style => 'width:550px;margin-top: 5px;', :class => message_hide_or_show(@notification, i) == 'shown' ? 'shown-message-body' : 'truncated-message-body'}
+          = message.body.html_safe
+
+      - unless i == (@notification.messages.count - 1)
+        %div{:style => 'text-align:center;margin-top:-7px', :class => "gray_arrow_down_#{message.id}"}
+          = image_tag 'portal/gray_arrow_down.png'
+        %div{:style => 'text-align:center;margin-top:-10px;display:none', :class => "white_arrow_up_#{message.id}"}
+          = image_tag 'portal/white_arrow_up.png'
+  - message = @notification.messages.last
+  .reply
+    = form_tag(portal_notification_path(message.id), :method => :put, :remote => true, :class => 'notification-dialog-form-admin') do
+      - from = @user.id == message.to ? User.find(message.from) : User.find(message.to)
+      %input{:type => 'hidden', :name => "reply[from]", :value => @user.id}
+      %input{:type => 'hidden', :name => "reply[subject]", :value => "RE: #{message.subject}"}
+      %input{:type => 'hidden', :name => "reply[to][email]", :value => from.try(:email) }
+      %input{:type => 'hidden', :name => "reply[to][uid]", :value => from.id }
+      %textarea{:placeholder => 'Please enter text to begin a reply', :name => "reply[body]"}
+      %br
+      %br
+      .notification-submit.right
+        %input.ui-corner-all{:type => 'submit', :value => 'Submit Reply'}
+
+.right-dashboard
+  = render 'portal/home/user_information'
+
+.clear

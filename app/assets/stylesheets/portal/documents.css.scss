@@ -1,0 +1,193 @@
+// Place all the styles related to the Documents controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+#documents {
+  
+
+  font-size: 14px;
+  background-color: #EEEEEE;
+
+  .documents {
+    background-color: #FFF;
+    padding: 10px;
+    margin: 10px auto;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+  }
+
+  .document-management-container {
+    margin: 10px 0 10px 10px;
+    min-height: 50px;
+    padding: 10px;
+    text-align: center;
+  }
+
+  table {
+    width: 100%;
+    margin: 10px auto;
+    
+    tbody {
+      background-color:white;
+    }
+
+    th {
+      font-weight: bold;
+      padding: 5px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 8px;
+      -moz-border-radius: 4px;
+      -webkit-border-radius: 4px;
+    }
+
+    .document_date {
+      width: 80px;
+    }
+    
+    .delete {
+      text-align: center;
+    }
+
+    .update_document {
+      width: 360px;
+    }
+
+    .document_link a {
+      text-decoration: underline;
+    }
+  }
+  
+  select#document_type {
+    width: auto;
+  }
+
+  /*DOCUMENT MANAGEMENT STYLES*/
+
+  .document-management-container {
+    margin: 10px;
+    margin-right: 0px;
+    padding: 10px;
+    min-height: 50px;
+    text-align: center;
+  }
+
+  .document-management-container table {
+    margin: 0 auto;
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  .document-management-container table td {
+    border: 1px solid #CCC;
+    padding: 5px;
+  }
+
+  .document-management-container table tr.header {
+    text-align: center;
+    background-color: #CCC;
+    width: 630px;
+  }
+
+  .document-management-container table th {
+    font-weight: bold;
+    padding: 5px;
+    border: 1px solid #CCC;
+  }
+
+  .document-management-container table tr.document:nth-child(odd) {
+    background-color: #EEE;
+  }
+
+  .document-edit-container {
+    font-size: 12px;
+    background-color: #E1E1E1;
+  }
+
+  .document-management-container button.add-new-document {
+    margin-top: 15px;
+  }
+
+  table.document-edit-table {
+    width: 100%;
+    text-align: center;
+  }
+
+  table.document-edit-table tr td, th {
+    padding: 2px;
+  }
+
+  .document-upload {
+    width: 250px;
+  }
+
+  .document-save {
+    width: 80px;
+    text-align: right;
+  }
+
+  .document-delete {
+    width: 30px;
+    text-align: right;
+  }
+
+  .upload-document-type {
+    padding-top: 2px;
+    width: 140px;
+  }
+
+  .upload-document-upload {
+    width: 220px;
+  }
+
+  .upload-document-save {
+    padding-top: 2px;
+    width: 70px;
+    text-align: right;
+  }
+
+  ul.document-headers {
+    text-align: center;
+  }
+
+  ul.document_list, ul.new-document-upload-list {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+#information {
+  width: 892px;
+  margin: 0 auto;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  background-color: #EEEEEE;
+  border: 1px solid #DDDDDD;
+  color: #333333;
+  margin-bottom: 5px;
+  font-family: Trebuchet MS,Tahoma,Verdana,Arial,sans-serif;
+  font-size: 14px;
+  padding: 10px;
+
+  #wrapper {
+    background-color: #FFF;
+    padding: 2px;
+    margin: 2px auto;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+  }
+
+  table {
+    width: 100%;
+    
+    th, td {
+      text-align: left;
+      background-color: #EEE;
+      padding: 8px;
+      -moz-border-radius: 4px;
+      -webkit-border-radius: 4px;   
+    }
+  }
+}

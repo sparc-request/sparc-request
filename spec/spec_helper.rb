@@ -13,6 +13,16 @@ require 'capybara/rails'
 require 'capybara/dsl'
 require 'capybara/firebug'
 
+# Set default values for capybara; these can be overriden by a file in
+# the support directory (see below).  For example, to use poltergeist,
+# create file spec/support.poltergeist.rb that contains:
+#
+#   require 'capybara/poltergeist'
+#   Capybara.javascript_driver = :poltergeist
+#
+Capybara.javascript_driver = :selenium
+Capybara.default_wait_time = 15
+
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
@@ -25,9 +35,6 @@ FactoryGirl.define do
 end
 
 FactoryGirl.find_definitions
-
-Capybara.javascript_driver = :selenium
-Capybara.default_wait_time = 10
 
 class ActiveRecord::Base
   mattr_accessor :shared_connection

@@ -185,6 +185,32 @@ describe 'SubServiceRequest' do
         end
       end
 
+      context "subsidy organization" do
+
+        let!(:institution)  { FactoryGirl.create(:institution) }
+        let!(:provider)     { FactoryGirl.create(:provider, parent_id: institution.id) }
+        let!(:program)      { FactoryGirl.create(:program, parent_id: provider.id) }
+        let!(:subsidy_map2) { FactoryGirl.create(:subsidy_map, organization_id: program.id, max_dollar_cap: 100) }
+
+        it "should return the core if max dollar cap or max percentage is > 0" do
+          subsidy_map.update_attributes(max_dollar_cap: 100)
+          sub_service_request.subsidy_organization.should eq(core)
+        end
+
+        it "should return the institution if the organization is a provider and max dollar cap or percentage is < 0" do
+          sub_service_request.update_attributes(organization_id: provider.id)
+          subsidy_map.update_attributes(organization_id: provider.id)
+          sub_service_request.subsidy_organization.should eq(institution)
+        end
+
+        it "should return the parent if the max dollar cap or percentage is < 0" do
+          core.update_attributes(parent_id: program.id)
+          sub_service_request.subsidy_organization.should eq(program)
+        end
+
+
+      end
+
       context "eligible for subsidy" do
         
         it "should return true if the organization's max dollar cap is > 0" do

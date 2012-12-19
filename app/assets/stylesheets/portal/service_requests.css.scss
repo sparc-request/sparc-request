@@ -1,0 +1,20 @@
+// Place all the styles related to the service_requests controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+td.document_download_link {
+
+  a {
+    color: #00F;
+    text-decoration: underline;
+  }
+
+  a:visited {
+    color: #800080;
+  }
+
+  a:active {
+    color: #F00;
+  }
+
+}

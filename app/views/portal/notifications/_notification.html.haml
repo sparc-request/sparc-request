@@ -1,0 +1,20 @@
+- if notification.messages.last
+  .notifications-list.ui-corner-all{:class => "#{read_unread(notification, @user)} notification_#{notification.try(:id)}"}
+    .icon-column{:'data-notification_id' => notification.id, :'data-from_user_id' => notification.messages.last.from, :'data-user_id' => @user.id}
+      %span
+    .from-column{:'data-notification_id' => notification.id, :'data-from_user_id' => notification.messages.last.from, :'data-user_id' => @user.id}
+      - from_users = notification.messages.map{ |m| Identity.find(m.from).try(:full_name) }
+      = from_users.join(', ')
+    - if notification.messages.count > 1
+      .message-count{:'data-notification_id' => notification.id, :'data-from_user_id' => notification.messages.last.from, :'data-user_id' => @user.id}
+        = "(#{notification.messages.count})"
+    .subject-column{:'data-notification_id' => notification.id, :'data-from_user_id' => notification.messages.last.from, :'data-user_id' => @user.id}
+      = notification.messages.last.try(:subject)
+    .preview-column{:'data-notification_id' => notification.id, :'data-from_user_id' => notification.messages.last.from, :'data-user_id' => @user.id}
+      = notification.messages.last.try(:body)
+    .received-column{:'data-notification_id' => notification.id, :'data-from_user_id' => notification.messages.last.from, :'data-user_id' => @user.id}
+      = notification.created_at.try(:strftime, "%D")
+    .notification-selection-column
+      %input.mark_notification{:type => 'checkbox', :'data-notification_id' => notification.id}
+      %input.mark_notification_hidden{:type => 'hidden', :name => 'notification_ids[][id]', :id => "notification_#{notification.id}", :value => ''}
+    .clear

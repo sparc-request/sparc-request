@@ -131,6 +131,7 @@ describe "service calendar" do
           find("#visits_#{line_item2.visits[1].id}_research_billing_qty").click()
           fill_in( "visits_#{line_item2.visits[1].id}_research_billing_qty", :with => 10)
           find("#visits_#{line_item2.visits[1].id}_insurance_billing_qty").click()
+          wait_for_javascript_to_finish
 
           all('.pp_max_total_direct_cost').each do |x|
             if x.visible?
@@ -211,13 +212,14 @@ describe "service calendar" do
         page.execute_script("$('#visits_#{line_item2.visits[1].id}_effort_billing_qty').remove()")
         page.execute_script("$('#visits_#{line_item2.visits[1].id}_research_billing_qty').remove()")
 
-        click_link "check_row_#{line_item2.id}_billing_strategy"
+        #click_link "check_row_#{line_item2.id}_billing_strategy"
 
         fill_in "visits_#{line_item2.visits[1].id}_research_billing_qty", :with => 10
         fill_in "visits_#{line_item2.visits[1].id}_insurance_billing_qty", :with => 10
         fill_in "visits_#{line_item2.visits[1].id}_effort_billing_qty", :with => 10
 
         click_link "quantity_tab"
+        wait_for_javascript_to_finish
 
         all('.visit.visit_column_2').each do |x|
           if x.visible?

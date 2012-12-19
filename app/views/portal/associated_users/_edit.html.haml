@@ -1,0 +1,4 @@
+= form_for protocol_role, :url => portal_associated_user_path(protocol_role), :remote => true, :html => {:class => 'dialog-form associated_users_form'} do |f|
+  - if @sub_service_request
+    = hidden_field_tag(:sub_service_request_id, @sub_service_request.id)
+  = render 'form', :f => f, :protocol_role => protocol_role, :identity => identity, :type => "edit"

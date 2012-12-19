@@ -1,0 +1,144 @@
+
+// Place all the styles related to the associated_users controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+#associated_users {
+  
+  font-size: 12px;
+  background-color: #EEEEEE;
+
+  #users {
+    background-color: #FFF;
+    padding: 10px;
+    margin: 10px auto;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+  }
+
+  table {
+    width: 100%;
+    
+    th, td {
+      text-align: left;
+      background-color: #EEE;
+      padding: 8px;
+      -moz-border-radius: 4px;
+      -webkit-border-radius: 4px;   
+    }
+     
+    .name {
+      width: 150px;
+    }
+    
+    .phone {
+      width: 100px;
+    }
+
+    .role {
+      width: 150px;
+    }
+
+    .rights {
+      text-align: center;
+    }
+
+    .actions {
+      text-align: center;
+      width: 60px;
+    }
+
+    .edit, .delete {
+      width: 30px;
+      text-align: center;
+    }
+    
+    td.actions img {
+      cursor: pointer;
+    }
+    
+    td.new-button {
+      text-align:center;
+      padding: 8px;
+      padding-left: 0;
+      padding-right: 10px;
+    }
+  }
+}
+
+.ui-autocomplete {
+	max-height: 300px;
+	overflow-y: auto;
+	/* prevent horizontal scrollbar */
+	overflow-x: hidden;
+	/* add padding to account for vertical scrollbar */
+	padding-right: 20px;
+}
+
+#user_form {
+  width: 800px;
+  
+  .user-search-container {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
+  #actions {
+    text-align: center;
+  }
+}
+
+#add-user-form {
+  
+  .right {
+    select {
+      width: 254px;
+    }
+  }
+  
+  #project_rights {
+    ul.rights_labels {
+      list-style: none;
+      float: left;
+      padding-left: 15px;
+    }
+
+    ul.rights_radios {
+      list-style: none;
+      float: right;
+      padding-left: 10px;
+    }
+  }
+}
+
+#identity_details {
+  background-color: whitesmoke;
+}
+
+.left_info {
+  width: 250px;
+  float: left;
+}
+
+.right_info {
+  width: 325px;
+  float: left;
+}
+
+#project_rights {
+  ul.rights_labels {
+    list-style: none;
+    float: left;
+    padding-left: 15px;
+  }
+
+  ul.rights_radios {
+    list-style: none;
+    float: right;
+    padding-left: 10px;
+  }
+}
+
+fieldset {
+  position: relative;
+}

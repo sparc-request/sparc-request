@@ -1,6 +1,6 @@
 = button_to 'Delete', catalog_manager_service_path(@service), :remote => true, :method => 'delete', :class => 'delete_button', :confirm => "Are you sure you want to delete the service '#{@service.name}'?", :style => 'display:none;', :id => 'delete_button'
 
-= form_for @service, :url => catalog_manager_service_path, :remote => true, :id => 'entity_form' do |f|
+= form_for @service, :url => catalog_manager_services_path, :remote => true, :id => 'entity_form' do |f|
   .errorExplanation#errorExplanation{:style => 'display:none;'}
 
   = hidden_field_tag 'org_unit[id]', @service.id # added for autocomplete to use

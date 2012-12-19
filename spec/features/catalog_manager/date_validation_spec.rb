@@ -18,10 +18,11 @@ feature 'effective and display date validations' do
     end
  
     # This is the only way I could figure out how to test the text of the confirmation dialog
-    prompt = page.driver.browser.switch_to.alert
-    # The test will pass if the confirmation dialog is closed, so if text matches the test will pass, otherwise it will fail
-    if prompt.text == ('A pricing map already exists with that effective date.  Please choose another date.')
-      prompt.accept
+    get_alert_window do |prompt|
+      # The test will pass if the confirmation dialog is closed, so if text matches the test will pass, otherwise it will fail
+      if prompt.text == ('A pricing map already exists with that effective date.  Please choose another date.')
+        prompt.accept
+      end
     end
   end
   
@@ -37,13 +38,17 @@ feature 'effective and display date validations' do
       page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
     end
 
-    # This is the only way I could figure out how to test the text of the confirmation dialog
-    prompt = retry_until { page.driver.browser.switch_to.alert }
-
-    # The test will pass if the confirmation dialog is closed, so if text matches the test will pass, otherwise it will fail    
-    if prompt.text == ('A pricing map already exists with that display date.  Please choose another date.')
-      prompt.accept
-    end
+    # This is the only way I could figure out how to test the text of
+    # the confirmation dialog
+    retry_until {
+      get_alert_window do |prompt|
+        # The test will pass if the confirmation dialog is closed, so if
+        # text matches the test will pass, otherwise it will fail    
+        if prompt.text == ('A pricing map already exists with that display date.  Please choose another date.')
+          prompt.accept
+        end
+      end
+    }
   end
   
 
@@ -60,13 +65,17 @@ feature 'effective and display date validations' do
       sleep 1 # TODO: wait_for_javascript_to_finish doesn't work here
     end
 
-    # This is the only way I could figure out how to test the text of the confirmation dialog
-    prompt = retry_until { page.driver.browser.switch_to.alert }
-
-    # The test will pass if the confirmation dialog is closed, so if text matches the test will pass, otherwise it will fail    
-    if prompt.text == ('This display date is before the display date of existing pricing maps, are you sure you want to do this?')
-      prompt.dismiss # dismissed confirmation to avoid a second confirmation dialog, which capybara does not appear to handle
+    # This is the only way I could figure out how to test the text of
+    # the confirmation dialog
+    prompt = retry_until {
+      get_alert_window do |prompt|
+        # The test will pass if the confirmation dialog is closed, so if
+        # text matches the test will pass, otherwise it will fail    
+        if prompt.text == ('This display date is before the display date of existing pricing maps, are you sure you want to do this?')
+          prompt.dismiss # dismissed confirmation to avoid a second confirmation dialog, which capybara does not appear to handle
+      end
     end
+    }
     
   end
 
@@ -85,13 +94,14 @@ feature 'effective and display date validations' do
   #     page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on the 15th
   #   end
   #   # This is the only way I could figure out how to test the text of the confirmation dialog
-  #   prompt = page.driver.browser.switch_to.alert
-  #   # The test will pass if the confirmation dialog is closed, so if text matches the test will pass, otherwise it will fail    
-  #   if prompt.text == ('You have selected a Effective date before an existing Effective date, are you sure you want to do this?')
-  #     prompt.accept
+  #   get_alert_window do |prompt|
+  #     # The test will pass if the confirmation dialog is closed, so if text matches the test will pass, otherwise it will fail    
+  #     if prompt.text == ('You have selected a Effective date before an existing Effective date, are you sure you want to do this?')
+  #       prompt.accept
+  #     end
   #   end
   #   # # This is the only way I could figure out how to test the text of the confirmation dialog
-  #   # prompt2 = page.driver.browser.switch_to.alert
+  #   # prompt2 = get_alert_window
   #   # # # The test will pass if the confirmation dialog is closed, so if text matches the test will pass, otherwise it will fail    
   #   # if prompt2.text == ('This effective date is before the effective date of existing pricing maps, are you sure you want to do this?')
   #   #   prompt2.accept

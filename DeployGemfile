@@ -28,6 +28,9 @@ gem 'obis-bridge', :git => 'git@github.com:HSSC/obis-bridge.git'
 
 gem 'will_paginate'
 
+# requirements for excel export
+gem 'axlsx_rails'
+
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 

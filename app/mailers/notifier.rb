@@ -1,26 +1,87 @@
 class Notifier < ActionMailer::Base
   def ask_a_question question
     @question = question
-    mail(:to => DEFAULT_MAIL_TO, :from => @question.from, :subject => 'New Question from SPARC')
+
+    # TODO: this process needs to be moved to a helper method
+    # it's repeated in each action with slightly different information
+    email = Rails.env == 'production' ? ADMIN_MAIL_TO : DEFAULT_MAIL_TO
+    subject = Rails.env == 'production' ? 'New Question from SPARC' : "[#{Rails.env.capitalize} - EMAIL TO #{ADMIN_MAIL_TO}] New Question from SPARC"
+
+    mail(:to => email, :from => @question.from, :subject => subject)
   end
 
   def new_identity_waiting_for_approval identity
     @identity = identity
-    mail(:to => DEFAULT_MAIL_TO, :from => @identity.email, :subject => "Request for new SPARC account submitted and awaiting approval") 
+    
+    email = Rails.env == 'production' ? ADMIN_MAIL_TO : DEFAULT_MAIL_TO
+    subject = Rails.env == 'production' ? 'New Question from SPARC' : "[#{Rails.env.capitalize} - EMAIL TO #{ADMIN_MAIL_TO}] Request for new SPARC account submitted and awaiting approval"
+    
+    mail(:to => email, :from => @identity.email, :subject => subject) 
   end
 
-  def notify_user identity, service_request, sub_service_request
-    @identity = identity
+  def notify_user project_role, service_request, xls, approval_id
+    @identity = project_role.identity
+    @role = project_role.role 
+
+    @approval_link = project_role.project_rights == 'approve' ? approve_changes_service_request_url(service_request, :approval_id => approval_id) : nil
+    
     @protocol = service_request.protocol
-    @role = @protocol.project_roles.detect{|pr| pr.identity_id = identity.id}.role
     @service_request = service_request
-    @sub_service_request = sub_service_request
-    attachments["service_request_#{@service_request.id}.xls"] = render xlsx: "show", filename: "service_request_#{@service_request.id}", disposition: "inline"
-    mail(:to => identity.email, :from => "no-reply@musc.edu", :subject => "SPARC Service Request")
+    @portal_link = USER_PORTAL_LINK + "?default_protocol=#{@protocol.id}"
+    @portal_text = "To VIEW and/or MAKE any changes to this request, please click here."
+    
+    attachments["service_request_#{@service_request.id}.xls"] = xls 
+    
+    # only send these to the correct person in the production env
+    email = Rails.env == 'production' ? @identity.email : DEFAULT_MAIL_TO
+    subject = Rails.env == 'production' ? "SPARC Service Request" : "[#{Rails.env.capitalize} - EMAIL TO #{@identity.email}] SPARC Service Request"
+    
+    mail(:to => email, :from => "no-reply@musc.edu", :subject => subject)
+  end
+
+  def notify_admin service_request, xls
+    @protocol = service_request.protocol
+    @service_request = service_request
+    @role == 'none'
+    @approval_link = nil
+
+    @portal_link = USER_PORTAL_LINK + "admin"
+    @portal_text = "Administrators/Service Providers, Click Here"
+    
+    attachments["service_request_#{@service_request.id}.xls"] = xls 
+    
+    # only send these to the correct person in the production env
+    email = Rails.env == 'production' ? ADMIN_MAIL_TO : DEFAULT_MAIL_TO
+    subject = Rails.env == 'production' ? "SPARC Service Request" : "[#{Rails.env.capitalize} - EMAIL TO #{ADMIN_MAIL_TO}] SPARC Service Request"
+    
+    mail(:to => email, :from => "no-reply@musc.edu", :subject => subject)
+  end
+  
+  def notify_service_provider service_provider, service_request, xls
+    @protocol = service_request.protocol
+    @service_request = service_request
+    @role == 'none'
+    @approval_link = nil
+
+    @portal_link = USER_PORTAL_LINK + "admin"
+    @portal_text = "Administrators/Service Providers, Click Here"
+    
+    attachments["service_request_#{@service_request.id}.xls"] = xls 
+    
+    # only send these to the correct person in the production env
+    email = Rails.env == 'production' ? service_provider.identity.email : DEFAULT_MAIL_TO
+    subject = Rails.env == 'production' ? "SPARC Service Request" : "[#{Rails.env.capitalize} - EMAIL TO #{service_provider.identity.email}] SPARC Service Request"
+    
+    mail(:to => email, :from => "no-reply@musc.edu", :subject => subject)
   end
 
   def account_status_change identity, approved
     @approved = approved
-    mail(:to => identity.email, :from => DEFAULT_MAIL_TO, :subject => "SPARC account request - status change")
+    
+    email_from = Rails.env == 'production' ? ADMIN_MAIL_TO : DEFAULT_MAIL_TO
+    email_to = Rails.env == 'production' ? identity.email : DEFAULT_MAIL_TO
+    subject = Rails.env == 'production' ? "SPARC account request - status change" : "[#{Rails.env.capitalize} - EMAIL TO #{identity.email}] SPARC account request - status change"
+
+    mail(:to => email_to, :from => email_from, :subject => subject)
   end
 end

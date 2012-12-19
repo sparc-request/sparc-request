@@ -1,7 +1,9 @@
 development:
   default_mail_to: catesa@musc.edu
+  admin_mail_to: catesa@musc.edu
   user_portal_link: 'http://musc-pro.homelinux.net:3001/'
 
 test:
   default_mail_to: catesa@musc.edu
+  admin_mail_to: catesa@musc.edu
   user_portal_link: http://localhost:3000/

@@ -1,0 +1,6 @@
+#approval_statement
+  - if @previously_approved
+    = @approval.identity.display_name
+    has already approved these changes
+  - else
+    You have successfully approved the changes requested.

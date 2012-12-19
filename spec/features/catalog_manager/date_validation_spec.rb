@@ -56,7 +56,7 @@ feature 'effective and display date validations' do
       find('.display_date').click
       page.execute_script %Q{ $('a.ui-datepicker-prev').trigger("click") } # go back one month
       page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15  
-      sleep 1
+      sleep 1 # TODO: wait_for_javascript_to_finish doesn't work here
     end
 
     # This is the only way I could figure out how to test the text of the confirmation dialog

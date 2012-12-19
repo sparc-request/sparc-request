@@ -1,0 +1,44 @@
+- if @per_patient_per_visit_line_items.blank?
+  %div.blank_requests
+    There are no per-patient per-visit requests.
+- else
+  - @per_patient_per_visit_line_items.each do |li|
+    - if li.visits
+      %li.service.per_patient_per_visit{:style => 'display:block'}
+
+        %input.sub_service_request_id{:type => 'hidden', :value => li.sub_service_request_id}
+        %input.optional{:type => 'hidden', :value => li.optional.to_json}
+
+        %ul
+          %li.ui-corner-all
+            %span.ui-icon.ui-icon-triangle-1-e.open_close_visits{:style => 'display:inline-block'}
+            %span.ui-icon.ui-icon-triangle-1-s.open_close_visits{:style => 'display:none'}
+            %div.service_select_area.ui-corner-left
+              %select.update_on_change{:id => "service_#{li.service.id}", :class => 'service_id', :style => 'width:450px', :'data-old_service_id' => li.service_id}
+                - @per_patient_per_visit_services.each do |service|
+                  - ls = Service.find(service['id'], {:core_id => service['core_id']})
+                  - core = ls.build_core_by_core_id
+                  - if services_are_available(ls, service, li, core)
+                    %option{:value => service['id'], :'data-is_one_time_fee' => ls.pricing_map['is_one_time_fee'].to_s, :selected => service_selected(service['name'], li.service.name)}= service['name']
+                - unless li.service.try(:is_available) == false && core_is_available(li.service)
+                  %option{:value => li.service.id, :selected => true}=li.service.name
+
+
+
+
+            %div.service_subject_count_area
+              %input.subject_count.update_on_change{:type => 'text', :value => li.subject_count}
+            %div.remove_service.ui-corner-right{:'data-service_type' => 'per_patient_per_visit'}= link_to(image_tag('cancel.png'), 'javascript:void(0);')
+        %ul.visits
+          - li.visits.each_with_index do |visit, i|
+            %li.visit{:class => "visit_#{i + 1}"}
+              %div{:class => "visit_text_#{i + 1}", :style => 'width:135px'}
+                %strong Visit #{i + 1}
+              .quantity_div
+                Quantity:
+                %input.quantity.update_on_change{:type => 'text', :value => visit['quantity'], :'data-old_quantity' => visit['quantity']}
+              .billing_div
+                Billing:
+                %select.billing_type.update_on_change
+                  - ['', 'R', 'T', '%'].each do |billing_type|
+                    %option{:selected => pre_select_billing_type(billing_type, visit['billing'])}= billing_type

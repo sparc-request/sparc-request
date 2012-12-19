@@ -1,0 +1,1 @@
+$('#new_document').replaceWith("<%= escape_javascript(render :partial => 'portal/sub_service_requests/document_form', :locals => {:grouping => @grouping, :service_list => @service_list, :edit => true}) %>")

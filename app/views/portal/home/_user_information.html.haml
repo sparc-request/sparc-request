@@ -1,0 +1,19 @@
+.user-information-title.ui-corner-all
+  %h3 Welcome!
+.user-information-body.ui-corner-bottom
+  %p
+    %strong= @user.display_name
+    %br
+    = @user.email
+    %br
+.notifications-link
+  = link_to 'portal/notifications' do
+    - if @user.unread_notification_count(@user) >= 1
+      = image_tag 'portal/email_64.png', :class => 'left'
+    - else
+      = image_tag 'portal/email_open_64.png', :class => 'left'
+    .notifications-text.left
+      Notifications:
+      %br
+      = pluralize(@user.unread_notification_count(@user), 'Unread Message')
+.clear

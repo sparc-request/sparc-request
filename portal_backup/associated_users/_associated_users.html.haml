@@ -1,0 +1,35 @@
+// TODO: this file is deprecated and should be deleted
+
+.admin#users
+  %table
+    %thead
+      %tr
+        %th{:colspan => 5} User Information
+        %th.actions{:colspan => 2} Actions
+      %tr
+        %th.name Name
+        %th.role Role
+        %th.email Email Address
+        %th.phone Phone Number
+        %th.proxy_right Proxy Rights
+        %th.edit Edit
+        %th.delete Delete
+    %tbody
+      - @protocol.users.each do |user|
+        = render :partial => "portal/associated_users/associated_user", :locals => {:user => user, :protocol => @protocol}
+    %tfoot
+      %tr
+        %td{:colspan => 7}
+      %tr
+        %td{:colspan => 5}
+        %td.new-button{:colspan => 2}
+          .associated-user-button.ui-corner-all{:'data-protocol_id' => @protocol.id, :'data-permission' => "true"}
+            Add a new Associated User
+
+.add-associated-user-dialog
+.edit-associated-user-dialog
+
+=  # {:colspan => 3}= link_to 'Add a new Associated User', new_project_associated_user_path(@project.id), :id => 'add-user', :title => "Add a new user", :class => 'associated_user_button'
+
+:javascript
+  $(document).ready( function() { Sparc.associated_users.ready(); });

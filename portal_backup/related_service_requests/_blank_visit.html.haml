@@ -1,0 +1,12 @@
+%div.blank_visit
+  %li.visit{:class => '', :style => 'display:none'}
+    %div{:style => 'width:135px', :class => ''}
+      %strong Visit
+    .quantity_div
+      Quantity:
+      %input.quantity.update_on_change{:type => 'text', :value => '0', :'data-old_quantity' => '0'}
+    .billing_div
+      Billing:
+      %select.billing_type.update_on_change
+        - ['', 'R', 'T', '%'].each do |billing_type|
+          %option= billing_type

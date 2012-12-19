@@ -1,0 +1,12 @@
+#service_request_status
+  %h3 Service Request Status
+  = select_tag "sub_service_request_status", options_for_select(@sub_service_request ? @sub_service_request.try(:available_statuses).collect {|s| [correct_status_display(s), s]} : [], @sub_service_request.try(:get_status))
+  = image_tag('spinner.gif', :style => "display:none; vertical-align:middle;", :id => 'status-spinner')
+%br
+#service_request_owner{:style => @service_request.status == 'draft' ? 'display:none;' : ''}
+  %h3 Service Request Owner
+  = select_tag 'sub_service_request_owner', owners_for_select(@sub_service_request), :prompt => '---Please Select---'
+  = image_tag 'spinner.gif', :style => 'display:none; vertical-align:middle;', :id => 'owner-spinner'
+
+:javascript
+  $(document).ready(function(){ Sparc.fulfillment_status.ready(); })

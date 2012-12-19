@@ -1,0 +1,12 @@
+- if !@protocol_role.errors.messages.empty?
+  - @protocol_role.errors.messages.merge!(@identity.errors.messages)
+  - @entity_errors = @protocol_role.errors.to_json
+  :plain
+    Sparc.home.handle_ajax_errors("#{escape_javascript(@entity_errors)}", "Authorized User");
+- else
+  :plain
+    $('.edit-associated-user-dialog').dialog('close').dialog('destroy').remove();
+    $('.add-associated-user-dialog').dialog('close').dialog('destroy').remove();
+    $("#associated_users").html("#{escape_javascript(render(:partial =>'portal/sub_service_requests/associated_users'))}");
+    Sparc.associated_users.create_edit_associated_user_dialog();
+    Sparc.associated_users.create_add_associated_user_dialog();

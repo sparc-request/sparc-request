@@ -1,0 +1,17 @@
+%div.blank_fulfillment{:style => 'display:none'}
+  %li.left
+    %div
+      Date:
+      %input.date{:type => 'text', :value => ''}
+    %div
+      Qty:
+      %input.time{:type => 'text', :value => 0, :'data-old_value' => 0}
+      %select.timeframe
+        %option Min
+        %option Hours
+        %option Days
+        %option Each
+    %div
+      Notes:
+      %input.notes{:type => 'text', :value => ''}
+    %div.remove_fulfillment= link_to(image_tag('cancel.png'), 'javascript:void(0);')

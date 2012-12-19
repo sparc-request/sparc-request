@@ -108,6 +108,102 @@ SparcRails::Application.routes.draw do
     root :to => 'catalog#index'
   end
 
+  ##### sparc-user routes brought in and namespaced
+  namespace :portal do
+    
+    resources :services, :admin
+
+    resources :associated_users do
+      collection do
+        get :search
+      end
+    end
+
+    resources :service_requests do
+      member do
+        put :update_line_item
+        get 'refresh_service_calendar'
+      end
+    end
+
+    resources :protocols do
+      member do
+        get :add_user
+      end
+      resources :associated_users
+    end
+
+    resources :studies, :controller => :protocols
+    resources :projects, :controller => :protocols
+
+    resources :notifications do
+      member do
+        put :user_portal_update
+        put :admin_update
+      end
+      collection do
+        put :mark_as_read
+      end
+    end
+
+    resources :documents do
+      collection do
+        post :upload
+        post :override
+      end
+      get :download
+    end
+
+    resources :admin do
+      collection do
+
+        resources :sub_service_requests do
+          member do
+            put :update_from_fulfillment
+            post :add_line_item
+            post :new_document
+          end
+        end
+
+        resources :subsidies do
+          member do
+            put :update_from_fulfillment
+          end
+        end
+
+        resources :fulfillments do
+          member do
+            put :update_from_fulfillment
+          end
+        end
+
+        resources :line_items do
+          member do
+            put :update_from_fulfillment
+          end
+        end
+
+        resources :visits do
+          member do
+            put :update_from_fulfillment
+          end
+        end
+
+        put "/visits/:id/update_from_fulfillment" => "visits#update_from_fulfillment"
+        put "/service_requests/:id/update_from_fulfillment" => "service_requests#update_from_fulfillment"
+        post "/service_requests/:id/add_per_patient_per_visit_visit" => "service_requests#add_per_patient_per_visit_visit"
+        put "/subsidys/:id/update_from_fulfillment" => "subsidies#update_from_fulfillment"
+        delete "/subsidys/:id" => "subsidies#destroy"
+        delete "/service_requests/:id/remove_per_patient_per_visit_visit" => "service_requests#remove_per_patient_per_visit_visit"
+        delete "/delete_toast_message/:id" => "admin#delete_toast_message"
+      end
+    end
+    match '/admin/sub_service_requests/:id/edit_document_group/:document_group_id' => 'sub_service_requests#edit_documents'
+    match "/admin/sub_service_requests/:id/delete_document_group/:document_group_id" => "sub_service_requests#delete_documents"
+    
+    root :to => 'home#index'
+  end
+
   root :to => 'service_requests#catalog'
 
 end

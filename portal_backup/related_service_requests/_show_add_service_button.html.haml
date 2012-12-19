@@ -1,0 +1,13 @@
+%h3 Add a Service
+%select#add_service_request_select
+  %option{:value => ''} Please select
+  - (@one_time_fee_services + @per_patient_per_visit_services).each do |ls|
+    - hash = core_or_program_hash(ls)
+    - service = Service.find(ls['id'], hash)
+    - program_core = program_or_core(ls, service)
+    - if service.is_available == true && program_core.try(:attributes).try(:[], 'is_available') == true
+      %option{:value => service.id, :'data-is_one_time_fee' => service.pricing_map['is_one_time_fee'].to_s, :'data-unit_minimum' => service.pricing_map['unit_minimum'], :'data-cost' => "#{determine_package_cost(@project, service) * 0.01 rescue 'N/A'}", :'data-unit_type' => service.pricing_map['unit_type'], :'data-unit_factor' => service.pricing_map['unit_factor']}= service.name
+.add_service.btn{:'data-friendly_service_request_id' => @service_request.friendly_id, :'data-service_request_id' => @service_request.id, :'data-subject_count' => @service_request.subject_count, :'data-sub_service_request_id' => "_#{params[:id]}", :'data-is_one_time_fee' => @service_request.is_one_time_fee} Add Service
+
+:javascript
+  $(document).ready(function(){ Sparc.fulfillment_add_service.ready(); });

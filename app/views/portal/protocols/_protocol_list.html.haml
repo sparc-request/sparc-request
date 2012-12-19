@@ -1,0 +1,14 @@
+- @protocols.each do |protocol|
+  %h3.blue-provider{:id => "blue-provider-#{protocol.id}", :class => "blue-provider-#{protocol.id}", :'data-protocol_id' => "#{protocol.id}"}
+    %a{:href => '#'}
+      .left.protocol-accordion-title
+        = "#{protocol.type.capitalize}:"
+        = protocol.id
+        = "-"
+        = protocol.short_title
+        - if protocol.principal_investigators
+          %br
+          = "PI(s): #{protocol.principal_investigators.map(&:display_name).join(', ')}"
+      .clear
+
+  .protocol-information{:class => "protocol-information-#{protocol.id}"}

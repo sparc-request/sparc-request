@@ -1,0 +1,18 @@
+.documents
+  %table
+    %thead
+      %tr
+        %th{:colspan => 4} All Documents
+      %tr
+        %th Document Type
+        %th Document Name
+        %th Date Last Modified
+    %tbody
+      - sleep(2) #alfresco isn't ready so let's wait
+      - @documents = @sub_service_request.try(:documents)
+      - @documents.each do |document|
+        %tr
+          %td
+            = display_document_type(document.document_type)
+          %td.document_link= link_to("#{document.title}", document_download_path(document.id))
+          %td= document.updated_at.strftime("%D")

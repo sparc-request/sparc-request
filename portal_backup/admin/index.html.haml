@@ -1,0 +1,84 @@
+:javascript
+  $(document).ready( function() {
+    Sparc.admin.ready();
+  });
+
+.admin-right-dashboard
+  .user-information-title.ui-corner-all
+    %h3 My Profile
+  .user-information-body.ui-corner-bottom
+    %p
+      %strong= @user.display_name
+      %br
+      = @user.email
+      %br
+      %br
+  .admin-buttons
+    = link_to "#{SPARC_RAILS_URL}/" do
+      = image_tag 'create_new_request.png', :class => 'create_new_request'
+
+%div{:style => 'width:665px;margin:15px 10px 10px 10px;padding-right: 10px;border-right: 1px solid #ccc;display:inline-block'}
+  %input.search-all-service-requests{:type => 'text', :placeholder => 'Search all service requests...'}
+  %br
+  %select#service_request_workflow_states
+    - @user.available_workflow_states.each do |workflow_state|
+      %option{:value => pretty_tag(workflow_state), :selected => (pretty_tag(workflow_state) == "submitted")} #{workflow_state} (#{@service_requests[pretty_tag(workflow_state)].try(:length) || 0})
+
+  .admin_indicator
+    = image_tag 'spinner.gif'
+  #admin_tabs
+    %div
+      %table#admin-tablesorter.tablesorter
+        %thead
+          %tr
+            %th SRID&nbsp;&nbsp;&nbsp;&nbsp;
+            %th Short Title
+            %th Date Submitted
+            %th Service
+            %th Requester&nbsp;&nbsp;&nbsp;&nbsp;
+            %th PI&nbsp;&nbsp;&nbsp;&nbsp;
+            %th Person Assigned
+            %th Program/ Provider/Core
+        %tbody
+          - pis = []
+          - search_pis = []
+          - requesters = []
+          - srids = []
+          - @service_requests.each do |status|
+            - status[1].each do |ssr|
+              - search_pis << {:value => ssr.try(:service_request).try(:protocol).try(:principal_investigators).try(:first).try(:full_name), :id => pretty_tag(ssr.try(:service_request).try(:protocol).try(:principal_investigators).try(:first).try(:full_name))}
+              - requesters << {:value => ssr.try(:service_request).try(:service_requester).try(:full_name), :id => pretty_tag(ssr.try(:service_request).try(:service_requester).try(:full_name))}
+              - srids << {:value => /(.*)-/.match(full_ssr_id(ssr))[1], :id => /(.*)-/.match(full_ssr_id(ssr))[1]}
+
+              %tr.admin_service_request{:class => "services #{pretty_tag(status[0])} all #{ssr.service_request.protocol.id} #{pretty_tag(ssr.try(:service_request).try(:service_requester).try(:full_name))} #{pretty_tag(ssr.try(:service_request).try(:protocol).try(:principal_investigators).try(:first).try(:full_name))}", :style => default_display(status[0]), :'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id}
+                %td{:id => "service_request_ssr.id", :'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => "service_request_links"}= full_ssr_id(ssr)
+                %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => "service_request_links"}= ssr.service_request.protocol.try(:short_title)
+                %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => "service_request_links"}= ssr.service_request.submitted_at.try(:strftime, "%m/%d/%Y")
+                %td
+                  %ul.services_first
+                    %li.ui-corner-top
+                      - services = ssr.line_items.map(&:service).sort_by{|srv| srv.name}.map(&:name)
+            
+                    - if services.size > 1
+                      %span.ui-icon.ui-icon-triangle-1-e.open_close_services{:style => 'display:inline-block'}
+                      %span.ui-icon.ui-icon-triangle-1-s.open_close_services{:style => 'display:none'}
+            
+                    %span= services.shift
+                  %ul.services_rest{:style => 'display:none'}
+                    - services.each do |service|
+                      %li= service
+                %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => "service_request_links"}= ssr.service_request.service_requester.try(:full_name)
+                %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => "service_request_links"}
+                  -# %ul.services_first
+                  -#   %li.ui-corner-top
+                  - pis = ssr.service_request.protocol.try(:principal_investigators).try(:map, &:full_name) || []
+                  - if pis.size > 1
+                    - pis.each do |pi|
+                      = pi
+                  - else
+                    = pis[0]
+                %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => "service_request_links"}= ssr.owner.try(:full_name)
+                %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => "service_request_links"}= ssr.organization.process_ssrs_parent.try(:name)
+
+        %input.values_test{:value => (search_pis + requesters + srids).uniq.to_json, :type => 'hidden'}
+

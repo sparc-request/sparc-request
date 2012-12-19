@@ -1,0 +1,11 @@
+%h3 Approval History
+%table{:id => 'approval_history_table', :class => 'tablesorter'}
+  %thead
+    %tr
+      %th Date Approved
+      %th Approved By
+  %tbody
+    - @service_request.approvals.each do |approval|
+      %tr
+        %td= approval.try(:approval_date).try(:strftime, "%D")
+        %td= approval.try(:identity).try(:full_name).try(:humanize)

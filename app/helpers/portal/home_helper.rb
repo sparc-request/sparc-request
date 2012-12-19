@@ -1,0 +1,2 @@
+module Portal::HomeHelper
+end

@@ -1,0 +1,19 @@
+#users
+  %table
+    %thead
+      %tr
+        %th{:colspan => 5} User Information
+      %tr
+        %th.name Name
+        %th Role
+        %th Email Address
+        %th.phone Phone Number
+        %th.proxy_right Proxy Rights
+    %tbody
+      - @project.associated_users.each do |user|
+        %tr
+          %td= user.try(:full_name)
+          %td= user.try(:display_user_role)
+          %td= mail_to user.try(:email) rescue ''
+          %td= user.try(:phone_number) rescue ''
+          %td.rights= user.try(:display_rights)

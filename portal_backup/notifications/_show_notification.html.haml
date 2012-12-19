@@ -1,0 +1,36 @@
+.notifications{:style => 'border-right:0px;'}
+  %ul.message-list{:style => 'list-style:none;margin-top:5px'}
+    - @notification.messages.each_with_index do |message, i|
+      - style_class = i == 0 ? 'first_message' : ''
+      %li{:class => "#{message_hide_or_show(@notification, i)}-message #{style_class}", :'data-message_id' => message.id}
+        %div.message-header
+          .right
+            = message.created_at.localtime.strftime('%l:%M%P on %m/%d/%Y')
+          %strong= message.try(:sender).try(:full_name)
+          .message_recipients{:class => "#{message_hide_or_show(@notification, i)}"}
+            %p{:style => 'color:#777784;'}
+              to
+              = message.try(:recipient).try(:full_name)
+        %div{:style => 'width:550px;margin-top: 5px;', :class => message_hide_or_show(@notification, i) == 'shown' ? 'shown-message-body' : 'truncated-message-body'}
+          = message.body.html_safe
+
+      - unless i == (@notification.messages.count - 1)
+        %div{:style => 'text-align:center;margin-top:-7px', :class => "gray_arrow_down_#{message.id}"}
+          = image_tag 'gray_arrow_down.png'
+        %div{:style => 'text-align:center;margin-top:-10px;display:none', :class => "white_arrow_up_#{message.id}"}
+          = image_tag 'white_arrow_up.png'
+  - message = @notification.messages.last
+  .reply
+    - update_notification = @sub_service_request ? portal_admin_update_notification_path(@notification.id) : portal_user_portal_update_notification_path(@notification.id)
+    = form_tag(update_notification, :method => :put, :remote => true, :class => 'notification-dialog-form') do
+      - from = @user.id == message.to ? Identity.find(message.from) : Identity.find(message.to)
+      = hidden_field_tag('message_notification_id', @notification.id, :name => 'message[notification_id]')
+      = hidden_field_tag('message_from', @user.id, :name => 'message[from]')
+      = hidden_field_tag('message_to', from.id, :name => 'message[to]')
+      = hidden_field_tag('message_email', from.email, :name => 'message[email]')
+      = hidden_field_tag('message_subject', "RE: #{@notification.try(:messages).try(:first).try(:subject)}", :name => 'message[subject]')
+      = text_area_tag("message_body", '', :placeholder => "Please enter text to begin a reply", :name => 'message[body]')
+.clear
+
+:javascript
+  $(document).ready(function(){ Sparc.fulfillment_show_notification.ready(); })

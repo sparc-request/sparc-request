@@ -1,0 +1,14 @@
+- protocol.project_roles.each do |pr|
+  - identity = pr.identity
+  %tr{:id => "user_#{identity.id}"}
+    %td= identity.try(:full_name)
+    %td= USER_ROLES.detect{|k,v| v == pr.role}.try(:first)
+    %td= identity.try(:email)
+    %td= identity.try(:phone)
+    %td= pr.try(:display_rights)
+    %td.edit
+      %a.edit-associated-user-button{:href => "javascript:void(0)", :style => 'font-size:10px', :'data-protocol_id' => pr.protocol_id, :'data-user_id' => identity.id, :'data-pr_id' => pr.id, :'data-permission' => "true", :'data-sub_service_request_id' => @sub_service_request.id}
+        = image_tag('application_form_edit.png')
+    %td.delete
+      %a.delete-associated-user-button{:href => "javascript:void(0)", :'data-protocol_id' => pr.protocol_id, :'data-user_id' => identity.id, :'data-pr_id' => pr.id, :'data-permission' => "true", :'data-sub_service_request_id' => @sub_service_request.id}
+        = image_tag('delete.png')

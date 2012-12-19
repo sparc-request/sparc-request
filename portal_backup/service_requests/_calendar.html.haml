@@ -1,0 +1,63 @@
+%table.service_calendar
+  %thead.ui-widget-header
+    %tr.table_header
+      %th.services{:rowspan => 2} Services
+      %th.your_cost{:rowspan => 2} Your Cost
+      %th.subjects{:rowspan => 2} # Subjects
+      %th.visits_header{:colspan => 5, :height => 40, :width => 375} 
+        = generate_review_visit_navigation @service_request, @page, @tab if @service_request.has_per_patient_per_visit_services?
+        %th.total{:rowspan => 2} Service Total
+        
+    %tr.table_header
+      - if @service_request.has_per_patient_per_visit_services?
+        = generate_visit_header_row @service_request, @page
+      - else
+        %th{:colspan => 5} &nbsp;
+
+  %tbody.cell-border
+    - if @service_request.has_per_patient_per_visit_services?
+      %tr.section_header
+      - @service_request.service_list(false).each do |key, value| # get only per patient/per visit services and group them
+        %tr.sub_section_header
+          %th{:colspan => 9}= value[:name]
+
+        - value[:line_items].each do |line_item|
+          %tr.line_item
+            %td.service_name= line_item.service.name
+            %td.your_cost= display_your_cost line_item
+            %td.subject_count= line_item.subject_count
+            - visits = line_item.visits.paginate(:page => @page, :per_page => 5)
+            - totals_hash = line_item.try(:per_subject_subtotals)
+            - visits.each_with_index do |v, index|
+              %td.visit{:visit_column => index + 1, :class => "visit_column_#{index + 1}", :'data-cents' => (totals_hash["#{v.id}"] || 0), :style => (@tab == 'template' ? "text-align:center" : '')}= line_item_visit_input line_item, v, @tab, totals_hash
+            - (5 - visits.size).times do
+              %td &nbsp;
+            %td{:class => "total_#{line_item.id}"}= display_visit_based_direct_cost line_item
+
+    - if @service_request.has_one_time_fee_services?
+      %tr.section_header
+      - @service_request.service_list(true).each do |key, value| # get only one time fee services and group them
+        %tr.sub_section_header
+          %th{:colspan => 9}= value[:name]
+          - value[:line_items].each do |line_item|
+            %tr.line_item
+              %td.service_name= line_item.service.name
+              %td.your_cost= display_your_cost line_item
+              %td{:colspan => 6}
+              %td= display_one_time_fee_direct_cost line_item
+
+    %tr.section_header
+      %tr.totals_section
+        %td{:colspan => 6}
+        %td.dark_gray_bg.totals{:colspan => 2} Total Direct Cost
+        %td.dark_gray_bg.totals{:id => 'grand_total_direct'}= display_grand_total_direct_costs @service_request
+
+      %tr.totals_section
+        %td{:colspan => 6}
+        %td.dark_gray_bg.totals{:colspan => 2} Total Indirect Costs
+        %td.dark_gray_bg.totals{:id => 'grand_total_indirect'}= display_grand_total_indirect_costs @service_request
+
+      %tr.totals_section
+        %td{:colspan => 6}
+        %td.dark_gray_bg.totals{:colspan => 2} Grand Total:
+        %td.dark_gray_bg.totals{:id => 'grand_total'}= display_grand_total @service_request

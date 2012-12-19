@@ -1,0 +1,17 @@
+.productivity.left
+  .productivity-content
+    %p
+      Please help MUSC keep its funding by indicating your research productivity below.
+      %br
+      To associate a grant and/or publication to a specific project, simply
+      %strong drag and drop.
+    %br
+    %h2.title My Projects
+
+
+    #productivity-accordion
+      - @protocols.each do |protocol|
+        = render 'protocol', :protocol => protocol
+
+.grants-publications-dashboard
+  = render 'grants_publications_sidebar'

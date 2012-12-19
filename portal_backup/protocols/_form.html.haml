@@ -1,0 +1,11 @@
+= form_for protocol do |f|
+  = f.hidden_field :requester_id
+  - admin ||= false
+  - if admin
+    = hidden_field_tag "admin_page", admin
+  -# = f.error_messages_for
+  - protocol_type = protocol.type
+  - if protocol_type == "Study"
+    .edit-study-view= render :partial => 'portal/protocols/study_fields', :locals => {:study => protocol, :f => f}
+  - elsif protocol_type == "Project"
+    .edit-project-view= render :partial => 'portal/protocols/project_fields', :locals => {:project => protocol, :f => f}

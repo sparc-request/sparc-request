@@ -1,0 +1,60 @@
+%h4 Per-Patient/Per-Visit
+- if !(@sub_service_request.per_patient_per_visit_line_items.length >= 1)
+  .blank_requests
+    There are no per-patient/per-visit requests.
+- else
+  #per_patient_per_visit_table
+    %table
+      %thead
+        %tr
+          %th{:colspan => 1}
+          %th{:colspan => 2} Add a Visit
+          %th{:colspan => 2} Delete a Visit
+          %th{:colspan => 3}
+        %tr
+          %td{:colspan => 1}
+          %td{:colspan => 2}
+            = select_tag "visit_position", visits_for_select(@sub_service_request)
+            %br
+            = link_to "Add a Visit", 'javascript:void(0);', :class => "add_visit_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id
+          %td{:colspan => 2}
+            = select_tag "delete_visit_position", visits_for_delete(@sub_service_request)
+            %br
+            = link_to "Delete a Visit", 'javascript:void(0);', :class => "delete_visit_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id
+          %td{:colspan => 3}
+        %tr
+          %th
+          %th.services_selected Services Selected
+          %th{:colspan => 5} Total Subjects
+          %th Delete
+      %tbody
+        - @sub_service_request.per_patient_per_visit_line_items.each do |ppv|
+          %tr
+            %td.expand_li{:'data-line_item_id' => ppv.id}
+              .ui-icon.ui-icon-triangle-1-e
+            %td.ppv_service_select
+              = select_tag "line_item_service_id", options_for_select(candidate_service_options(@candidate_per_patient_per_visit), ppv.try(:service).try(:id)), :'data-line_item_id' => ppv.id, :class => 'fulfillment_data'
+            %td.ppv_text_field{:colspan => 5}
+              = text_field_tag "line_item_subject_count", ppv.try(:subject_count), :'data-line_item_id' => ppv.id, :class => 'fulfillment_data'
+
+            %td= link_to(image_tag('cancel.png'), 'javascript:void(0);', :'data-line_item_id' => ppv.id, :class => "delete_data")
+          - unless ppv.visits.empty?
+            %tr.visit{:class => "li_#{ppv.id}"}
+              %th
+              %th
+              %th Visit
+              %th Quantity
+              %th R
+              %th T
+              %th %
+              %th
+            - ppv.visits.each do |visit|
+              %tr.visit{:class => "li_#{ppv.id}"}
+                %td
+                %td
+                %td= visit.try(:position)
+                %td= visit.try(:quantity_total)
+                %td= text_field_tag "visit_research_billing_qty", visit.try(:research_billing_qty), :'data-visit_id' => visit.id, :class => 'fulfillment_data to_zero research_billing'
+                %td= text_field_tag "visit_insurance_billing_qty", visit.try(:insurance_billing_qty), :'data-visit_id' => visit.id, :class => 'fulfillment_data to_zero'
+                %td= text_field_tag "visit_effort_billing_qty", visit.try(:effort_billing_qty), :'data-visit_id' => visit.id, :class => 'fulfillment_data to_zero'
+                

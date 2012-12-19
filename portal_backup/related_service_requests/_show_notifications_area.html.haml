@@ -1,0 +1,18 @@
+%h3 Send Notifications
+%ul.fulfillment_notifications
+  %li.new_notification.ui-corner-all{:'data-url' => link_to_new_notification(@service_request.try(:requester).try(:id)), :'data-friendly_id' => @service_request.friendly_id, :'data-ssr_id' => params[:id]}
+    = image_tag('unread.png', :style => 'margin-bottom:-9px')
+    = 'Requester: ' + @service_request.try(:requester).try(:full_name)
+  .clear
+
+  - @project.users.each do |user|
+    %li.new_notification.ui-corner-all{:'data-url' => link_to_new_notification(user.id), :'data-friendly_id' => @service_request.friendly_id, :'data-ssr_id' => params[:id]}
+      = image_tag('unread.png', :style => 'margin-bottom:-9px')
+      = display_user_role(user) + ': '
+      = user.full_name
+    .clear
+
+.new_notification_dialog
+
+:javascript
+  $(document).ready(function(){ Sparc.fulfillment_new_notification.ready(); })

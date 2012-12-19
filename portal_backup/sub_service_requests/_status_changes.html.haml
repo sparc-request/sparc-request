@@ -1,0 +1,12 @@
+%h3 Status Changes
+%table{:id => 'status_history_table', :class => 'tablesorter'}
+  %thead
+    %tr
+      %th Date Changed
+      %th Status Changed To
+  %tbody
+    - if @sub_service_request
+      - @sub_service_request.past_statuses.each do |past_status|
+        %tr
+          %td= past_status.try(:created_at).try(:strftime, "%D %r")
+          %td= past_status.try(:status).try(:humanize)

@@ -1,0 +1,4 @@
+- if @user.admin?
+  = render 'portal/associated_users/associated_users'
+- else
+  = render 'portal/related_service_requests/viewer/associated_users'

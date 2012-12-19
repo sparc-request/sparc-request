@@ -1,0 +1,4 @@
+$(".edit-associated-user-dialog").html("<%= escape_javascript(render(:partial => 'portal/asssociated_users/edit', :locals => {:protocol => @protocol, :protocol_role => @protocol_role, :identity => @identity})) %>");
+
+FormFxManager.registerListeners($('.edit-associated-user-dialog'), Sparc.associated_users.display_dependencies);
+

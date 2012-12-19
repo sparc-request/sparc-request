@@ -1,0 +1,275 @@
+#project_viewer_table
+  %fieldset
+    %legend Attributes
+    %table
+      %tr#short_title
+        %th= label_tag('project[short_title]', 'Short Title:')
+        %td
+          .info= @project.try(:short_title)
+      %tr#full_title
+        %th= label_tag('project[title]', 'Full Title:')
+        %td
+          .info= @project.try(:title)
+      %tr#funding_status
+        %th= label_tag('project[funding_status]', 'Proposal Funding Status:')
+        %td
+          .info= display_funding_status(@project.try(:funding_status))
+      %tr#udak_project_number
+        %th= label_tag('project[udak_project_number]', 'UDAK/Project #:')
+        %td
+          .info= @project.try(:udak_project_number)
+      %tr#sponsor_name
+        %th= label_tag('project[sponsor_name]', 'Sponsor:')
+        %td
+          .info= @project.try(:sponsor_name)
+
+      / POTENTIAL FIELDS
+      - if @project.try(:funding_status) == 'pending_funding'
+        %tr#funding_rfa
+          %th= label_tag('project[funding_rfa]', 'Funding Opportunity #/RFA:')
+          %td
+            .info= @project.try(:funding_rfa)
+        %tr#potential_funding_start_date
+          %th= label_tag('project[potential_funding_start_date]', 'Potential Funding Start Date:')
+          %td
+            .info= @project.try(:potential_funding_start_date)
+        %tr#potential_funding_source
+          %th= label_tag('project[potential_funding_source]', 'Potential Funding Source:')
+          %td
+            .info= display_viewer_funding_source(@project)
+        - if @project.try(:potential_funding_source) == 'internal'
+          %tr#potential_funding_source_other
+            %th= label_tag('project[potential_funding_source_other]', 'Please Specify:')
+            %td
+              .info= @project.try(:potential_funding_source_other)
+
+      / AWARDED FIELDS
+      - if @project.try(:funding_status) == 'funded'
+        %tr#funding_start_date
+          %th= label_tag('project[funding_start_date]', 'Funding Start Date:')
+          %td
+            .info= @project.try(:funding_start_date)
+        %tr#funding_source
+          %th= label_tag('project[funding_source]', 'Funding Source:')
+          %td
+            .info= display_viewer_funding_source(@project)
+        - if @project.try(:funding_source) == 'internal'
+          %tr#funding_source_other
+            %th= label_tag('project[funding_source_other]', 'Please Specify:')
+            %td
+              .info= @project.try(:funding_source_other)
+
+      %tr#indirect_cost_rate
+        %th= label_tag('project[indirect_cost_rate]', 'Indirect Cost Rate:')
+        %td
+          .info= @project.try(:indirect_cost_rate)
+
+      / FEDERAL FIELDS
+      - if @project.try(:funding_source) == 'federal'
+        %tr#federal_grant_title
+          %th= label_tag('project[federal_grant_title]', 'Federal Grant Title:')
+          %td
+            .info= @project.try(:federal_grant_title)
+        %tr#federal_grant_code_id
+          %th= label_tag('project[federal_grant_code_id]', 'Federal Grant Code:')
+          %td
+            .info= @project.try(:federal_grant_code_id)
+        %tr#federal_phs_sponsor
+          %th= label_tag('project[federal_phs_sponsor]', 'Federal Grant PHS Sponsor:')
+          %td
+            .info= @project.try(:federal_phs_sponsor)
+        %tr#f_or
+          %th -- OR --
+          %td
+        %tr#federal_non_phs_sponsor
+          %th= label_tag('project[federal_non_phs_sponsor]', 'Federal Grant Non-PHS Sponsor:')
+          %td
+            .info= @project.try(:federal_non_phs_sponsor)
+        %tr#federal_grant_serial_number
+          %th= label_tag('project[federal_grant_serial_number]', 'Federal Grant Serial Number:')
+          %td
+            .info= @project.try(:federal_grant_serial_number)
+
+      %tr#study_phase
+        %th= label_tag('project[study_phase]', 'Study Phase:')
+        %td
+          .info= @project.try(:study_phase).try(:upcase)
+
+    / RESEARCH TYPE FIELDS
+  %fieldset
+    %legend Research Type
+
+    / HUMAN SUBJECTS FIELDS
+    %fieldset
+      %table
+        %tr#human_subjects
+          %th= label_tag('project[research_types[human_subjects]]', 'Human Subjects:')
+          %td
+            .info= boolean_to_image(@project.try(:research_types).try(:[], "human_subjects"))
+        - if @project.try(:research_types).try(:[], "human_subjects")
+          %tr#hr_number
+            %th= label_tag('project[hr_number]', 'HR#:')
+            %td
+              .info= @project.try(:hr_number)
+          %tr#pro_number
+            %th= label_tag('project[pro_number]', 'PRO Number:')
+            %td
+              .info= @project.try(:pro_number)
+          %tr#irb_of_record
+            %th= label_tag('project[irb_of_record]', 'IRB of Record:')
+            %td
+              .info= @project.try(:irb_of_record)
+          %tr#submission_type
+            %th= label_tag('project[submission_type]', 'Submission Type:')
+            %td
+              .info= @project.try(:submission_type)
+          %tr#irb_approval_date
+            %th= label_tag('project[irb_approval_date]', 'IRB Approval Date:')
+            %td
+              .info= @project.try(:irb_approval_date)
+          %tr#irb_expiration_date
+            %th= label_tag('project[irb_expiration_date]', 'IRB Expiration Date:')
+            %td
+              .info= @project.try(:irb_expiration_date)
+
+      / VERTEBRATE ANIMALS FIELDS
+    %fieldset
+      %table
+        %tr#vertebrate_animals
+          %th= label_tag('project[research_types[vertebrate_animals]]', 'Vertebrate Animals:')
+          %td
+            .info= boolean_to_image(@project.try(:research_types).try(:[], "vertebrate_animals"))
+        - if @project.try(:research_types).try(:[], "vertebrate_animals")
+          %tr#iacuc_number
+            %th= label_tag('project[iacuc_number]', 'IACUC Number:')
+            %td
+              .info= @project.try(:iacuc_number)
+          %tr#name_of_iacuc
+            %th= label_tag('project[name_of_iacuc]', 'Name of IACUC:')
+            %td
+              .info= @project.try(:name_of_iacuc)
+          %tr#iacuc_approval_date
+            %th= label_tag('project[iacuc_approval_date]', 'IACUC Approval Date:')
+            %td
+              .info= @project.try(:iacuc_approval_date)
+          %tr#iacuc_expiration_date
+            %th= label_tag('project[iacuc_expiration_date]', 'IACUC Expiration Date:')
+            %td
+              .info= @project.try(:iacuc_expiration_date)
+
+      / IND/IDE FIELDS
+    %fieldset
+      %table
+        %tr#investigational_products
+          %th= label_tag('project[research_types[investigational_products]]', 'Investigational Products:')
+          %td
+            .info= boolean_to_image(@project.try(:research_types).try(:[], "investigational_products"))
+        - if @project.try(:research_types).try(:[], "investigational_products")
+          %tr#ind_number
+            %th= label_tag('project[ind_number]', 'IND#:')
+            %td
+              .info= @project.try(:ind_number)
+          %tr#ind_on_hold
+            %th= label_tag('project[ind_on_hold]', 'IND on Hold?')
+            %td
+              .info= boolean_to_image(@project.try(:ind_on_hold))
+          %tr#ide_number
+            %th= label_tag('project[ide_number]', 'IDE#:')
+            %td
+              .info= @project.try(:ide_number)
+
+      / IP FIELDS
+    %fieldset
+      %table
+        %tr#ip_patents
+          %th= label_tag('project[research_types[ip_patents]]', 'IP/Patents:')
+          %td
+            .info= boolean_to_image(@project.try(:research_types).try(:[], "ip_patents"))
+        - if @project.try(:research_types).try(:[], "ip_patents")
+          %tr#patent_number
+            %th= label_tag('project[patent_number]', 'Patent Number:')
+            %td
+              .info= @project.try(:patent_number)
+          %tr#inventors
+            %th= label_tag('project[inventors]', 'Inventors:')
+            %td
+              .info= @project.try(:inventors)
+
+    / STUDY TYPE FIELDS
+  %fieldset
+    %legend Study Type
+    %table
+      %tr#clinical_trials
+        %th= label_tag('project[study_types[clinical_trials]]', 'Clinical Trials:')
+        %td
+          .info= boolean_to_image(@project.try(:study_types).try(:[], "clinical_trials"))
+      %tr#basic_science
+        %th= label_tag('project[study_types[basic_science]]', 'Basic Science:')
+        %td
+          .info= boolean_to_image(@project.try(:study_types).try(:[], "basic_science"))
+      %tr#translational_science
+        %th= label_tag('project[study_types[translational_science]]', 'Translational Science:')
+        %td
+          .info= boolean_to_image(@project.try(:study_types).try(:[], "translational_science"))
+
+    / IMPACT AREA FIELDS
+  %fieldset
+    %legend Impact Areas
+    %table
+      %tr#pediatrics
+        %th= label_tag('project[impact_areas[pediatrics]]', 'Pediatrics:')
+        %td
+          .info= boolean_to_image(@project.try(:impact_areas).try(:[], "pediatrics"))
+      %tr#hiv_aids
+        %th= label_tag('project[impact_areas[hiv_aids]]', 'HIV/AIDS:')
+        %td
+          .info= boolean_to_image(@project.try(:impact_areas).try(:[], "hiv_aids"))
+      %tr#hypertension
+        %th= label_tag('project[impact_areas[hypertension]]', 'Hypertension:')
+        %td
+          .info= boolean_to_image(@project.try(:impact_areas).try(:[], "hypertension"))
+      %tr#stroke
+        %th= label_tag('project[impact_areas[stroke]]', 'Stroke:')
+        %td
+          .info= boolean_to_image(@project.try(:impact_areas).try(:[], "stroke"))
+      %tr#diabetes
+        %th= label_tag('project[impact_areas[diabetes]]', 'Diabetes:')
+        %td
+          .info= boolean_to_image(@project.try(:impact_areas).try(:[], "diabetes"))
+      %tr#cancer
+        %th= label_tag('project[impact_areas[cancer]]', 'Cancer:')
+        %td
+          .info= boolean_to_image(@project.try(:impact_areas).try(:[], "cancer"))
+
+    / AFFILIATIONS AND COLLABORATIONS
+  %fieldset
+    %legend Affiliations and Collaborations
+    %table
+      %tr#cancer_center
+        %th= label_tag('project[affiliations[cancer_center]]', 'Cancer Center:')
+        %td
+          .info= boolean_to_image(@project.try(:affiliations).try(:[], "cancer_center"))
+      %tr#lipidomics_cobre
+        %th= label_tag('project[affiliations[lipidomics_cobre]]', 'Lipidomocs COBRE:')
+        %td
+          .info= boolean_to_image(@project.try(:affiliations).try(:[], "lipidomics_cobre"))
+      %tr#oral_health_cobre
+        %th= label_tag('project[affiliations[oral_health_cobre]]', 'Oral Health COBRE:')
+        %td
+          .info= boolean_to_image(@project.try(:affiliations).try(:[], "oral_health_cobre"))
+      %tr#cardiovascular_cobre
+        %th= label_tag('project[affiliations[cardiovascular_cobre]]', 'Cardiovascular COBRE:')
+        %td
+          .info= boolean_to_image(@project.try(:affiliations).try(:[], "cardiovascular_cobre"))
+      %tr#cchp
+        %th= label_tag('project[affiliations[cchp]]', 'CCHP:')
+        %td
+          .info= boolean_to_image(@project.try(:affiliations).try(:[], "cchp"))
+      %tr#inbre
+        %th= label_tag('project[affiliations[inbre]]', 'INBRE:')
+        %td
+          .info= boolean_to_image(@project.try(:affiliations).try(:[], "inbre"))
+      %tr#reach
+        %th= label_tag('project[affiliations[reach]]', 'REACH:')
+        %td
+          .info= boolean_to_image(@project.try(:affiliations).try(:[], "reach"))

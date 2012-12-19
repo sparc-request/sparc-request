@@ -1,0 +1,56 @@
+:javascript
+  $(document).ready( function() { Sparc.admin.show_return_to_portal_button(); Sparc.admin.ready(); });
+
+%input.service-request-id{:type => 'hidden', :value => params[:service_request_id]}
+%input.sub-service-request-id{:type => 'hidden', :value => params[:id]}
+
+#information
+  #wrapper
+    %table#ssr_info
+      %thead
+        %tr
+          %th SRID
+          %th PI
+          %th Requester
+          %th Short Title
+          %th Delete This Request
+      %tbody
+        %tr
+          %td #{@project.try(:friendly_id)}-#{params[:id]}
+          %td= @project.pi.try(:full_name)
+          %td= @service_request.try(:requester).try(:full_name)
+          %td= @project.short_title
+          %td
+            .delete-ssr-button{:'data-service_request_id' => @service_request.id, :'data-sub_service_request_id' => params[:id]} Delete
+            .delete-ssr-indicator
+              = image_tag 'spinner.gif'
+#tabs
+  %ul
+    -if @user.admin?
+      %li= link_to "Fulfillment"             ,"#fulfillment"              ,:class => 'fulfillment-tab'
+    %li= link_to "Project/Study Information" ,"#project"                  ,:class => 'project-tab'
+    %li= link_to "Documents"                 ,"#documents"                ,:class => 'documents-tab'
+    %li= link_to "Related Service Requests"  ,"#related_service_requests" ,:class => 'related_service_requests-tab'
+    %li= link_to "Associated Users"          ,"#associated_users"         ,:class => 'associated_users-tab'
+    %li= link_to "Notifications"             ,"#notifications"            ,:class => 'notifications-tab'
+  - if @user.admin?
+    #fulfillment
+      = render 'fulfillment'
+  #project
+    .project-spinner= image_tag 'spinner.gif'
+  #documents
+    .documents-spinner= image_tag 'spinner.gif'
+  #related_service_requests
+    .related_service_requests-spinner= image_tag 'spinner.gif'
+  #associated_users
+    .associated_users-spinner= image_tag 'spinner.gif'
+  #notifications
+    .notifications-spinner= image_tag 'spinner.gif'
+.notification_dialog
+%script#fulfillment_template{:type => 'text/html'}
+
+// - else
+//   .center{:style => 'margin-top:100px;margin-bottom:200px'}
+//     Services no longer selected for this service request.
+//     %br
+//     Please ensure the correct address was entered.

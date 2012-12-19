@@ -1,0 +1,30 @@
+.success_check.ui-corner-bottom
+  = image_tag('success_check.png', :class => 'success_check_img')
+  Saved!
+%h3 Non Per-Patient/Per-Visit
+.clear
+.pseudo_table_header
+  .one_time_fee_actions{:style => @one_time_fee_line_items.blank? ? 'display:none;' : ''}
+    / Dear future coder,
+    / I honestly should have used a table for all this information,
+    / for it displays tabular data. The way I went about this, finding the
+    / "magic pixel count" was not the right choice. -rwp
+    %ul{:style => 'margin-left:15px'}
+      %li
+        %div
+        %div{:style => 'width:203px'} Services Selected
+        %div{:style => 'width:75px'} Charge Code
+        %div{:style => 'width:42px'} Quantity
+        .service_type Type
+        %div{:style => 'width:75px'} Cost
+        %div{:style => 'width:67px'} Received
+        .date_area In Process
+        .date_area Complete
+        %div{:style => 'width:30px'} Delete
+
+.center
+  .services-selected.one_time_fee_services
+    %ul.service_list
+      = render 'portal/related_service_requests/one_time_fee_service_clone'
+      = render 'portal/related_service_requests/blank_fulfillment'
+      = render 'portal/related_service_requests/non_per_patient-per_visit'

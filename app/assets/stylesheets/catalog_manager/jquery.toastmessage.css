@@ -34,7 +34,7 @@
 }
 
 .toast-item-close {
-    background:url(../assets/close.gif);
+    background:url(../assets/catalog_manager/close.gif);
     width:22px;
     height:22px;
     position: absolute;
@@ -52,19 +52,19 @@
 }
 
 .toast-item-image-notice {
-    background:url(../assets/notice.png);
+    background:url(../assets/catalog_manager/notice.png);
 }
 
 .toast-item-image-success {
-    background:url(../assets/success.png);
+    background:url(../assets/catalog_manager/success.png);
 }
 
 .toast-item-image-warning {
-    background:url(../assets/warning.png);
+    background:url(../assets/catalog_manager/warning.png);
 }
 
 .toast-item-image-error {
-    background:url(../assets/error.png);
+    background:url(../assets/catalog_manager/error.png);
 }
 
 

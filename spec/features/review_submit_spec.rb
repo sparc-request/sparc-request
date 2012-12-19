@@ -1,5 +1,12 @@
 require 'spec_helper'
 
+# TODO: I want to remove the sleeps from this page, but I can't because
+# when I replace then with wait_for_javascript_to_finish, I get:
+#
+#      Failure/Error: wait_for_javascript_to_finish
+#      Selenium::WebDriver::Error::JavascriptError:
+#        ReferenceError: $ is not defined
+
 describe "review page" do
   let_there_be_lane
   fake_login_for_each_test

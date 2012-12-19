@@ -39,7 +39,7 @@ gem 'jquery-rails'
 gem 'cache_digests'
 gem 'dynamic_form'
 
-gem 'obis-bridge', :path => '../obis-bridge'
+gem 'obis-bridge', :git => "git@github.com:HSSC/obis-bridge.git"
 
 gem 'will_paginate'
 

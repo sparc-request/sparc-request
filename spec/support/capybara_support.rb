@@ -60,6 +60,16 @@ module CapybaraSupport
     )
     subsidy_map.save!
 
+    program_service = FactoryGirl.create(:service,
+      obisid:               '87d1220c5abf9f9608121672be093511',
+      name:                 'Human Subject Review',
+      abbreviation:         'HSR',
+      order:                1,
+      cpt_code:             '',
+      organization_id:      program.id,
+      is_available:         true)
+    program_service.save!      
+
     core = FactoryGirl.create(:core,
       type:                 'Core',
       name:                 'Clinical Data Warehouse',
@@ -87,7 +97,8 @@ module CapybaraSupport
       is_one_time_fee:              1,
       full_rate:                    4500.0000,
       exclude_from_indirect_cost:   0,
-      unit_minimum:                 1)
+      unit_minimum:                 1,
+      unit_type:                    'self')
     pricing_map.save!
 
     pricing_setup = FactoryGirl.create(:pricing_setup,

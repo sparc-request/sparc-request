@@ -1,9 +1,11 @@
 require 'spec_helper'
 
 describe 'as a user on catalog page' do
-  it 'the user should create a pricing setup', :js => true do
+  before(:each) do
     default_catalog_manager_setup
-    
+  end
+  
+  it 'the user should create a pricing setup', :js => true do
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
     click_button("Add Pricing Setup")
     
@@ -34,6 +36,51 @@ describe 'as a user on catalog page' do
 
     page.should have_content "South Carolina Clinical and Translational Institute (SCTR) saved successfully"
     
+  end
+  
+  it 'should not save if required fields are missing', :js => true do
+    click_link("South Carolina Clinical and Translational Institute (SCTR)")
+    click_button("Add Pricing Setup")
+    
+    page.execute_script("$('.ui-accordion-header').click()")
+    page.execute_script %Q{ $(".save_button").click() }
+    wait_for_javascript_to_finish
+    
+    page.should_not have_content "South Carolina Clinical and Translational Institute (SCTR) saved successfully"    
+  end
+  
+  it 'should display an error message when required fields are missing', :js => true do
+    click_link("South Carolina Clinical and Translational Institute (SCTR)")
+    click_button("Add Pricing Setup")
+    
+    page.execute_script("$('.ui-accordion-header').click()")
+    page.execute_script %Q{ $(".save_button").click() }
+    wait_for_javascript_to_finish
+    
+    page.should have_content "Effective Date, Display Dates, and Rates are required on all pricing setups."        
+  end
+  
+  it 'should display an error when rates are less than the federal rate in the percent of fee section', :js => true do
+    click_link("South Carolina Clinical and Translational Institute (SCTR)")
+    click_button("Add Pricing Setup")
+    
+    page.execute_script("$('.ui-accordion-header').click()")
+
+    within('.ui-accordion') do
+      find('.federal_percentage_field').set('50')
+    
+      find('.corporate_percentage_field').set('49')
+      page.execute_script %Q{ $(".corporate_percentage_field").change() }
+      page.should have_content "Corporate percentage must be >= to the Federal percentage."
+    
+      find('.other_percentage_field').set('49')
+      page.execute_script %Q{ $(".other_percentage_field").change() }
+      page.should have_content "Other percentage must be >= to the Federal percentage."
+
+      find('.member_percentage_field').set('49')
+      page.execute_script %Q{ $(".member_percentage_field").change() }
+      page.should have_content "Member percentage must be >= to the Federal percentage."
+    end
   end
 
 end

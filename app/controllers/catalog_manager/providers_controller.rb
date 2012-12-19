@@ -27,6 +27,8 @@ class CatalogManager::ProvidersController < CatalogManager::AppController
     
     params[:pricing_setups].each do |ps|
       if ps[1]['id'] == 'blank'
+        ps[1].delete(:id)
+        ps[1].delete(:newly_created)
         @provider.pricing_setups.build(ps[1])
       else
         # @provider.pricing_setups.find(ps[1]['id']).update_attributes(ps[1])

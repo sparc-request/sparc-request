@@ -1,0 +1,72 @@
+!!!
+%html{ :xmlns => "http://www.w3.org/1999/xhtml", :"xml:lang" => "en", :lang => "en" }
+
+  %head
+    %meta{ :"http-equiv" => "content-type", :content => "text/html;charset=UTF-8" }
+    %title Service Request
+
+  %body
+    -if @role == 'pi'
+      %p
+        Dear #{@identity.full_name},
+      %p
+        Services have been requested or changed in SPARC (sparc.musc.edu) for your #{@protocol.type.downcase}
+        listed below. In addition, below is a list of users who have been granted access to this
+        #{@protocol.type.downcase} on your behalf.
+    -else
+      %p
+        Services have been requested or changed in SPARC (sparc.musc.edu) for a #{@protocol.type.downcase}
+        to which you have been granted access.
+
+    %table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
+      %thead
+        %tr{:style => 'border: 1px solid black;'}
+          %td{:colspan => 2}
+            %strong Project Information
+      %tbody
+        %tr{:style => 'border: 1px solid black;'}
+          %th{:style => 'border: 1px solid black; width:200px; text-align:left;'} Project ID:
+          %td{:style => 'border: 1px solid black;'}= @protocol.id
+        %tr{:style => 'border: 1px solid black;'}
+          %th{:style => 'border: 1px solid black; width:200px; text-align:left;'} Short Title:
+          %td{:style => 'border: 1px solid black;'}= @protocol.short_title
+        %tr{:style => 'border: 1px solid black;'}
+          %th{:style => 'border: 1px solid black; width:200px; text-align:left;'} Project Title:
+          %td{:style => 'border: 1px solid black;'}= @protocol.title
+        %tr{:style => 'border: 1px solid black;'}
+          %th{:style => 'border: 1px solid black; width:200px; text-align:left;'} Sponsor Name:
+          %td{:style => 'border: 1px solid black;'}= @protocol.sponsor_name
+        %tr{:style => 'border: 1px solid black;'}
+          %th{:style => 'border: 1px solid black; width:200px; text-align:left;'} Funding Source:
+          %td{:style => 'border: 1px solid black;'}= (@protocol.funding_source or @protocol.potential_funding_source or "").capitalize
+
+    %br
+    %br
+
+    %table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
+      %thead
+        %tr{:style => 'border: 1px solid black;'}
+          %th{:style => 'border: 1px solid black; text-align: left;'} Name:
+          %th{:style => 'border: 1px solid black;'} Role:
+          %th{:style => 'border: 1px solid black;'} Proxy Rights:
+      %tbody
+        - @protocol.project_roles.each do |pr|
+          %tr{:style => 'border: 1px solid black;'}
+            %td{:style => 'border: 1px solid black;'}= pr.identity.full_name
+            %td{:style => 'border: 1px solid black; text-align: center;'}= pr.role.upcase
+            %td{:style => 'border: 1px solid black; text-align: center;'}= {"approve"=>"Authorize/Change Study Charges", "request"=>"Request/Approve Services", "view"=>"View Rights", "none"=>"Member Only"}[pr.project_rights]
+
+    %p= t(:issue_contact)
+
+    %p A list of requested services is attached.
+    - if @approval_link
+      %p
+        To approve the charges associated with the selected services please click
+        %a{:style => "color: red; font-weight: bold;", :href => @approval_link} HERE
+        ="."
+    %p
+      %a{:style => "color: blue; font-weight: bold;", :href => @portal_link}=@portal_text
+    
+    - @service_request.service_list.map{|k, v| v[:acks]}.flatten.uniq.each do |ack|
+      %p{:style => 'font-size: small;'}=ack
+

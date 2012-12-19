@@ -1,6 +1,6 @@
 GIT
   remote: git@github.com:HSSC/obis-bridge.git
-  revision: ec2b9ab8af030600c85502b0879d67377c481583
+  revision: 9a42835f091c5e78ac19adeaa2d80abe99a7b88c
   specs:
     obis-bridge (0.1.4)
       activerecord
@@ -49,6 +49,13 @@ GEM
       multi_json (~> 1.0)
     acts_as_list (0.1.9)
     arel (3.0.2)
+    axlsx (1.3.4)
+      htmlentities (~> 4.3.1)
+      nokogiri (>= 1.4.1)
+      rubyzip (>= 0.9.5)
+    axlsx_rails (0.1.3)
+      axlsx
+      rails (~> 3.1)
     bcrypt-ruby (3.0.1)
     builder (3.0.4)
     cache_digests (0.2.0)
@@ -83,6 +90,7 @@ GEM
     hashie (1.2.0)
     highline (1.6.15)
     hike (1.2.1)
+    htmlentities (4.3.1)
     i18n (0.6.1)
     journey (1.0.4)
     jquery-rails (2.1.4)
@@ -104,6 +112,7 @@ GEM
     net-ssh (2.6.2)
     net-ssh-gateway (1.1.0)
       net-ssh (>= 1.99.1)
+    nokogiri (1.5.5)
     obis-net-ldap (0.4.0)
     omniauth (1.1.1)
       hashie (~> 1.2)
@@ -148,6 +157,7 @@ GEM
     rake (10.0.3)
     rdoc (3.12)
       json (~> 1.4)
+    rubyzip (0.9.9)
     rvm-capistrano (1.2.7)
       capistrano (>= 2.0.0)
     sass (3.2.3)
@@ -179,6 +189,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  axlsx_rails
   cache_digests
   capistrano
   capistrano-ext

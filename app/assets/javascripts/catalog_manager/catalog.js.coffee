@@ -38,7 +38,7 @@ $ ->
       data = {date: date, entity_id: entity_id, str: str}
       date_element = $(changed_element)
       $.ajax({
-        url: "validate_pricing_map_dates"
+        url: "catalog_manager/validate_pricing_map_dates"
         data: data
         success: (data) ->
           if data.same_dates == 'true'

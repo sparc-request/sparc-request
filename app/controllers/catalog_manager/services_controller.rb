@@ -35,9 +35,13 @@ class CatalogManager::ServicesController < CatalogManager::AppController
   def create
     if params[:service][:core] && params[:service][:core] != '0'
       @core = Core.find(params[:service][:core])
+      params[:service].delete(:program)
+      params[:service].delete(:core)      
       @service = @core.services.build(params[:service])      
     elsif params[:service][:program]
       @program = Program.find(params[:service][:program])
+      params[:service].delete(:program)
+      params[:service].delete(:core)
       @service = @program.services.build(params[:service])      
     else
       @service = Service.new(params[:service])      
@@ -69,7 +73,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       @service.save!
       @programs = @service.provider.programs
       @cores = @service.program.cores
-      respond_with @service, :location => services_path(@service)
+      respond_with @service, :location => catalog_manager_services_path(@service)
     end
   end
 
@@ -128,7 +132,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     end
 
     @entity = @service
-    respond_with @service, :location => service_path(@service)
+    respond_with @service, :location => catalog_manager_service_path(@service)
   end
 
   def associate

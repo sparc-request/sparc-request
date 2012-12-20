@@ -29,3 +29,16 @@ def stub_controller
   end
 end
 
+# Same as stub_controller, but for controllers which inherit from
+# Portal::BaseController
+def stub_portal_controller
+  before(:each) do
+    controller.stub!(:authenticate_identity!) do
+    end
+
+    controller.stub!(:current_identity) do
+      Identity.find_by_id(session[:identity_id])
+    end
+  end
+end
+

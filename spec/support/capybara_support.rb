@@ -78,6 +78,13 @@ module CapybaraSupport
       parent_id:            program.id,
       abbreviation:         'Clinical Data Warehouse')
     core.save!
+    
+    core_subsidy_map = SubsidyMap.create(
+      organization_id:      core.id,
+      max_dollar_cap:       121.0000,
+      max_percentage:       12.00
+    )
+    core_subsidy_map.save!    
 
     service = FactoryGirl.create(:service,
       obisid:               '87d1220c5abf9f9608121672be03867a',

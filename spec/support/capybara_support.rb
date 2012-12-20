@@ -41,6 +41,13 @@ module CapybaraSupport
       is_available:         1)
     provider.save!
 
+    provider_subsidy_map = SubsidyMap.create(
+      organization_id:      provider.id,
+      max_dollar_cap:       121.0000,
+      max_percentage:       12.00
+    )
+    provider_subsidy_map.save! 
+
     program = FactoryGirl.create(:program,
       type:                 'Program',
       name:                 'Office of Biomedical Informatics',

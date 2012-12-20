@@ -6,6 +6,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
 
   def show
     # TODO: is it right to call to_i here?
+    # TODO: id here should be the id of a project role, not an identity
     project_role = @protocol.project_roles.find {|role| role.identity.id == params[:id].to_i}
     @user = project_role.try(:identity)
     render :nothing => true # TODO: looks like there's no view for show
@@ -21,6 +22,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
     end
   end
 
+  # TODO: why does edit use identity_id, but new uses user_id?
   def new
     @identity = Identity.find params[:user_id]
     @protocol_role = @protocol.project_roles.build(:identity_id => @identity.id)

@@ -6,6 +6,8 @@ describe Portal::AssociatedUsersController do
   let!(:identity) { FactoryGirl.create(:identity) }
   let!(:identity2) { FactoryGirl.create(:identity) }
 
+  let!(:core) { FactoryGirl.create(:core, parent_id: nil) }
+
   let!(:project) {
     project = Project.create(FactoryGirl.attributes_for(:protocol))
     project.save!(validate: false)
@@ -18,6 +20,9 @@ describe Portal::AssociatedUsersController do
     project.reload
     project
   }
+
+  let!(:service_request) { FactoryGirl.create(:service_request, visit_count: 0) }
+  let!(:sub_service_request) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id ) }
 
   describe 'GET show' do
     it 'should set user if user is an associated user' do
@@ -41,6 +46,109 @@ describe Portal::AssociatedUsersController do
     end
   end
 
+  describe 'POST edit' do
+    it 'should set identity' do
+      post(:edit, {
+        format: :json,
+        id: project.project_roles[0].id,
+        identity_id: identity.id,
+        protocol_id: project.id,
+      }.with_indifferent_access)
+      assigns(:identity).should eq identity
+    end
+
+    it 'should set protocol_role' do
+      post(:edit, {
+        format: :json,
+        id: project.project_roles[0].id,
+        identity_id: identity.id,
+        protocol_id: project.id,
+      }.with_indifferent_access)
+      assigns(:protocol_role).should eq project.project_roles[0]
+    end
+
+    it 'should set sub_service_request if sub_service_request_id is set' do
+      post(:edit, {
+        format: :json,
+        identity_id: identity.id,
+        id: project.project_roles[0].id,
+        protocol_id: project.id,
+        sub_service_request_id: sub_service_request.id,
+      }.with_indifferent_access)
+      assigns(:sub_service_request).should eq sub_service_request
+    end
+  end
+
+  describe 'POST new' do
+    it 'should set identity' do
+      post(:new, {
+        format: :json,
+        id: project.project_roles[0].id, # not used by new, but we supply it anyway
+        user_id: identity.id,
+        protocol_id: project.id,
+      }.with_indifferent_access)
+      assigns(:identity).should eq identity
+    end
+
+    it 'should set protocol_role' do
+      post(:new, {
+        format: :json,
+        id: project.project_roles[0].id, # not used by new, but we supply it anyway
+        user_id: identity.id,
+        protocol_id: project.id,
+      }.with_indifferent_access)
+      assigns(:protocol_role).should_not eq project.project_roles[0]
+      assigns(:protocol_role).identity eq identity
+    end
+
+  end
+
+  describe 'POST create' do
+    it 'should set procotol_role' do
+      # TODO
+    end
+
+    it 'should set identity' do
+      # TODO
+    end
+
+    it 'should set sub_service_request if sub_service_request_id is sent' do
+    end
+
+    it "should set protocol to the sub_service_request_id's protocol if sub_service_request_id is sent" do
+    end
+
+    it "should create the associated user relationship" do
+      # TODO
+    end
+
+    it "should fix the booleans" do
+      # TODO
+    end
+  end
+
+  describe 'POST update' do
+    it "should update the associated user" do
+      # TODO
+    end
+  
+    it "should fix the booleans" do
+      # TODO
+    end
+  
+    it "should change the proxy rights" do
+      # TODO
+    end
+  end
+
+  describe 'POST destroy' do
+    # TODO
+  end
+
+  describe 'GET search' do
+    # TODO
+  end
+
   # include EntityHelpers
   #
   # render_views
@@ -50,14 +158,6 @@ describe Portal::AssociatedUsersController do
   #   @user = make_user :first_name => "Gunnels", :last_name => "Marcus", :email => "chester@wester.bear"
   #   @new_user = make_user :first_name => "Cates", :last_name => "Andronicus", :email => "catesa@musc.edu"
   #   attach_user_to_project(@user, @protocol, 'pi')
-  # end
-  #
-  # describe "SHOW protocol/:id/associated_users/" do
-  #
-  #   it "should get the appropriate associated users" # do
-  #    #          get 'show', :id => @protocol['id'], :protocol_id => @protocol['id'], :protocol => @protocol, :user => @user
-  #    #        end
-  #
   # end
   #
   # describe "GET protocol/:id/associated_users/new" do

@@ -10,6 +10,13 @@ describe Portal::AdminController, :type => :controller do
   let!(:sub_service_request1) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id ) }
   let!(:sub_service_request2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id ) }
 
+  let!(:message) {
+    ToastMessage.create(
+      from:    'CmdrTaco@slashdot.org',
+      to:      'esr@fsf.org',
+      message: 'happy birthday!')
+  }
+
   describe 'GET index' do
     it 'should set service_requests' do  
       session[:identity_id] = identity.id
@@ -20,6 +27,21 @@ describe Portal::AdminController, :type => :controller do
   end
 
   describe 'POST delete_toast_message' do
+    it 'should set message' do
+      get(:delete_toast_message, {
+        format: :js,
+        id: message.id,
+      }.with_indifferent_access)
+      assigns(:message).should eq message
+    end
+
+    it 'should delete the message' do
+      get(:delete_toast_message, {
+        format: :js,
+        id: message.id,
+      }.with_indifferent_access)
+      expect { message.reload }.to raise_exception(ActiveRecord::RecordNotFound)
+    end
   end
 end
 

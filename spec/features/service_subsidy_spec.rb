@@ -8,7 +8,7 @@ describe "subsidy page" do
 
   before :each do
     add_visits
-    subsidy_map = FactoryGirl.create(:subsidy_map, organization_id: program.id, max_percentage: 50.00)
+    subsidy_map = FactoryGirl.create(:subsidy_map, organization_id: program.id, max_dollar_cap: 775.00, max_percentage: 50.00)
     program.update_attribute(:subsidy_map, subsidy_map)
     visit service_subsidy_service_request_path service_request.id
   end
@@ -31,9 +31,9 @@ describe "subsidy page" do
         @total = (sub_service_request.direct_cost_total / 100)
         @contribution = @total - program.subsidy_map.max_dollar_cap
         find('.pi-contribution').set(@contribution)
-        sleep 10
+        sleep 2
         find('.select-project-view').click
-        sleep 10
+        sleep 2
       end
 
       it 'Should save PI Contribution', :js => true do

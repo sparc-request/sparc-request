@@ -5,7 +5,10 @@ class Portal::AssociatedUsersController < Portal::BaseController
   before_filter :find_project, :only => [:show, :edit, :new, :create, :update]
 
   def show
-    @user = @project.associated_users.find {|user| user.id == params[:id]}
+    # TODO: is it right to call to_i here?
+    project_role = @protocol.project_roles.find {|role| role.identity.id == params[:id].to_i}
+    @user = project_role.try(:identity)
+    render :nothing => true # TODO: looks like there's no view for show
   end
 
   def edit

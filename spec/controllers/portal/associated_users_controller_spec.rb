@@ -1,6 +1,46 @@
 require 'spec_helper'
 
 describe Portal::AssociatedUsersController do
+  stub_portal_controller
+
+  let!(:identity) { FactoryGirl.create(:identity) }
+  let!(:identity2) { FactoryGirl.create(:identity) }
+
+  let!(:project) {
+    project = Project.create(FactoryGirl.attributes_for(:protocol))
+    project.save!(validate: false)
+    project_role = FactoryGirl.create(
+        :project_role,
+        protocol_id: project.id,
+        identity_id: identity.id,
+        project_rights: "approve",
+        role: "pi")
+    project.reload
+    project
+  }
+
+  describe 'GET show' do
+    it 'should set user if user is an associated user' do
+      get(:show, {
+        format: :json,
+        id: identity.id,
+        protocol_id: project.id,
+      }.with_indifferent_access)
+
+      assigns(:user).should eq identity
+    end
+
+    it 'should not set user if user is not an associated user' do
+      get(:show, {
+        format: :json,
+        id: identity2.id,
+        protocol_id: project.id,
+      }.with_indifferent_access)
+
+      assigns(:user).should eq nil
+    end
+  end
+
   # include EntityHelpers
   #
   # render_views

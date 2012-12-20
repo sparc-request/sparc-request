@@ -64,7 +64,7 @@ class PricingSetup < ActiveRecord::Base
         new_map.full_rate = 0
         new_map.unit_factor = 1
         new_map.unit_minimum = 1
-        new_map.unit_type = ""
+        new_map.unit_type = "Each"
         new_map.save
       end
     end

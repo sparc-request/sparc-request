@@ -70,7 +70,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     if params[:cancel]
       render :action => 'cancel'
     else
-      @service.save!
+      @service.save
       @programs = @service.provider.programs
       @cores = @service.program.cores
       respond_with @service, :location => catalog_manager_services_path(@service)

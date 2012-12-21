@@ -202,6 +202,7 @@ QUERIES = [
     obisid_query:  'http://localhost:{{{port}}}/obisentity/{{{entity_type}}}/{{{obisid}}}/',
     compare_func: proc { |type, orig, new|
       prepare_entity(orig)
+      prepare_new_entity(new)
       orig.compare(new)
     }
   ),
@@ -398,6 +399,10 @@ def prepare_project(project)
   end
 end
 
+def prepare_new_entity(entity)
+  entity['attributes'].delete('subspecialty') # too hard to test
+end
+
 def prepare_entity(entity)
   annotate("while preparing entity: #{entity.pretty_inspect}") do
     entity.delete('_rev')
@@ -406,6 +411,7 @@ def prepare_entity(entity)
       entity['attributes'].delete('admin')
       entity['attributes'].delete('credentials_other')
       entity['attributes'].delete('other_credentials')
+      entity['attributes'].delete('subspecialty') # too hard to test
       entity['attributes'].delete('email') if entity['attributes']['email'].nil?
       entity['identifiers']['email'] = entity['attributes']['email'] if entity['attributes']['email']
       entity['identifiers']['ldap_uid'] = "#{entity['identifiers']['ldap_uid']}@musc.edu" if entity['identifiers']['ldap_uid']

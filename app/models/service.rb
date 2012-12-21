@@ -225,7 +225,7 @@ class Service < ActiveRecord::Base
       current_map.full_rate = 0
       current_map.unit_factor = 1
       current_map.unit_minimum = 1
-      current_map.unit_type = ""
+      current_map.unit_type = "Each"
     end
       
     current_map.display_date = display_date

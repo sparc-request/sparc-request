@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121204161218) do
+ActiveRecord::Schema.define(:version => 20121221163635) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -74,6 +74,7 @@ ActiveRecord::Schema.define(:version => 20121204161218) do
     t.integer  "document_file_size"
     t.datetime "document_updated_at"
     t.integer  "document_grouping_id"
+    t.string   "doc_type_other"
   end
 
   create_table "excluded_funding_sources", :force => true do |t|
@@ -308,7 +309,6 @@ ActiveRecord::Schema.define(:version => 20121204161218) do
     t.datetime "updated_at",     :null => false
     t.datetime "deleted_at"
     t.string   "role_other"
-    t.string   "subspecialty"
   end
 
   add_index "project_roles", ["protocol_id"], :name => "index_project_roles_on_protocol_id"

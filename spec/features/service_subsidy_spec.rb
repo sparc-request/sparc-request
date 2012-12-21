@@ -8,6 +8,8 @@ describe "subsidy page" do
 
   before :each do
     add_visits
+    subsidy_map = FactoryGirl.create(:subsidy_map, organization_id: program.id, max_dollar_cap: 775.00, max_percentage: 50.00)
+    program.update_attribute(:subsidy_map, subsidy_map)
     visit service_subsidy_service_request_path service_request.id
   end
 

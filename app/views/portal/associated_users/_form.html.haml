@@ -74,9 +74,9 @@
         %br
       .subspecialty
         %strong
-          = f.label :subspecialty, "Subspecialty:"
+          = label_tag "identity[subspecialty]", "Subspecialty:"
         %br
-        = f.select :subspecialty, options_for_select(SUBSPECIALTIES, f.object.subspecialty), :prompt => "Select a Subspecialty"
+        = select_tag "identity[subspecialty]", options_for_select(SUBSPECIALTIES, identity.subspecialty), :prompt => "Select a Subspecialty"
         %br
       #project_rights
         %strong User Rights:

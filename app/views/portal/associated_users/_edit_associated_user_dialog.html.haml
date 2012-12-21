@@ -1,3 +1,5 @@
+/ DEPRICATED
+
 = form_tag(portal_protocol_associated_user_path(project.id, user.id), :method => :put, :remote => true, :class => 'dialog-form') do
   %input.edit_user_project_id{:type => 'hidden', :value => project.id}
   = hidden_field_tag('associated_user[pr_id]', user.pr_id)

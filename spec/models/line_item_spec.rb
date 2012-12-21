@@ -18,7 +18,7 @@ describe "Line Item" do
       service = FactoryGirl.create(:service, :organization_id => organization.id, :pricing_map_count => 1)
       service.pricing_maps[0].display_date = Date.today - 1
       project = Project.create(FactoryGirl.attributes_for(:protocol))
-            service_request = ServiceRequest.create(FactoryGirl.attributes_for(:service_request, protocol_id: project.id), :validate => false)
+      service_request = ServiceRequest.create(FactoryGirl.attributes_for(:service_request, protocol_id: project.id), :validate => false)
       line_item = FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id)
       lambda { line_item.applicable_rate }.should raise_exception(ArgumentError)
     end
@@ -151,8 +151,9 @@ describe "Line Item" do
                               organization_id: program.id) }
 
       before :each do
-        service = program.services.build(FactoryGirl.attributes_for(:service))
-        service.save
+        service = FactoryGirl.create(:service)
+        program.services << service
+        program.save
         service.pricing_maps.build(FactoryGirl.attributes_for(:pricing_map, federal_rate: 100)).save
         @ppv_line_item = FactoryGirl.create(:line_item, service_request_id: service_request.id,
           sub_service_request_id: ssr.id, service_id: service.id, visit_count: 5)

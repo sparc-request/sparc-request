@@ -10,6 +10,7 @@ FactoryGirl.define do
     service_center_cost { Random.rand(100) }
     charge_code         { Faker::Lorem.words().first }
     revenue_code        { Faker::Lorem.words().first }
+    pricing_maps        [ FactoryGirl.create(:pricing_map) ]
     
     trait :disabled do
       is_available false

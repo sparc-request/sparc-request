@@ -82,8 +82,8 @@
       %br
 
     .subspecialty
-      = label_tag "project_role[subspecialty]", "Subspecialty:"
-      = select_tag "project_role[subspecialty]", options_for_select(SUBSPECIALTIES, project_role.subspecialty), :prompt => "Select a Subspecialty"
+      = label_tag "identity[subspecialty]", "Subspecialty:"
+      = select_tag "identity[subspecialty]", options_for_select(SUBSPECIALTIES, identity.subspecialty), :prompt => "Select a Subspecialty"
       %br
       %br
 

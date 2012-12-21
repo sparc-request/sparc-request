@@ -36,6 +36,15 @@ class Service < ActiveRecord::Base
   attr_accessible :organization_id
 
   before_validation :assign_obisid, :on => :create
+  
+  validate :validate_pricing_maps_present
+  
+  ###############################################
+  # Validations
+  def validate_pricing_maps_present
+    errors.add(:service, "must contain at least 1 pricing map.") if pricing_maps.length < 1
+  end
+  ###############################################
 
   # Return the parent organizations of the service.  Note that this
   # returns the organizations in the reverse order of
@@ -225,7 +234,7 @@ class Service < ActiveRecord::Base
       current_map.full_rate = 0
       current_map.unit_factor = 1
       current_map.unit_minimum = 1
-      current_map.unit_type = ""
+      current_map.unit_type = "Each"
     end
       
     current_map.display_date = display_date

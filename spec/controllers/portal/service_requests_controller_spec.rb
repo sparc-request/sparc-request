@@ -16,6 +16,7 @@ describe Portal::ServiceRequestsController do
     FactoryGirl.create(
       :service_request,
       visit_count: 0,
+      subject_count: 1,
       protocol_id: study.id)
   }
 
@@ -94,14 +95,79 @@ describe Portal::ServiceRequestsController do
     end
 
     # TODO: test visit_position
+
+    it 'should call fix_pi_contribution on the subsidy' do
+      # TODO
+    end
+
+    it 'should create toasts for each of the new visits created' do
+      # TODO
+    end
   end
 
   describe 'POST remove_per_patient_per_visit_visit' do
+    before(:each) do
+      service_request.update_attributes(visit_count: 10)
+      Visit.bulk_create(10, line_item_id: line_item.id)
+    end
+
+    it 'should set instance variables' do
+      post :remove_per_patient_per_visit_visit, {
+        format: :js,
+        id: service_request.id,
+        service_request_id: service_request.id,
+        sub_service_request_id: ssr.id,
+        visit_position: 5,
+      }.with_indifferent_access
+
+      assigns(:sub_service_request).should eq ssr
+      assigns(:subsidy).should eq subsidy
+      assigns(:candidate_per_patient_per_visit).should eq [ service ]
+      assigns(:service_request).should eq service_request
+    end
+
+    it 'should remove the visit at the given position' do
+      post :remove_per_patient_per_visit_visit, {
+        format: :js,
+        id: service_request.id,
+        service_request_id: service_request.id,
+        sub_service_request_id: ssr.id,
+        visit_position: 5,
+      }.with_indifferent_access
+
+      line_item.reload
+      line_item.visits.count.should eq 9
+      # TODO: test that the right visit was removed
+    end
+
+    it 'should call fix_pi_contribution on the subsidy' do
+      # TODO
+    end
+
+    it 'should create toasts for each of the new visits created' do
+      # TODO
+    end
   end
 
   describe 'POST update_from_fulfillment' do
+    # TODO
   end
 
   describe 'POST refresh_service_calendar' do
+    it 'should set instance variables' do
+      post :refresh_service_calendar, {
+        format: :js,
+        id: service_request.id,
+        service_request_id: service_request.id,
+        page: 1,
+      }.with_indifferent_access
+
+      session[:service_calendar_page].should eq 1
+
+      assigns(:service_request).should eq service_request
+      assigns(:page).should eq 1
+      assigns(:tab).should eq 'pricing'
+    end
   end
 end
+

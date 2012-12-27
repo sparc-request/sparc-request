@@ -3,12 +3,14 @@ class Portal::DocumentsController < Portal::BaseController
   require 'open-uri'
   require 'base64'
 
+  # TODO: looks like this method is no longer used
   def download
     document = Document.find(params[:document_id])
     tempfile = open(document.url)
     send_data tempfile.read, :filename => document.title, :type => document.content_type
   end
 
+  # TODO: looks like this method is no longer used (it uses alfresco)
   def override
     document_id = params[:document_id]
     document = params[:document]
@@ -43,6 +45,7 @@ class Portal::DocumentsController < Portal::BaseController
     redirect_to :controller => 'related_service_requests', :action => 'show', :anchor => 'documents', :service_request_id => params[:friendly_id], :id => params[:ssr_id]
   end
 
+  # TODO: looks like this method is no longer used (it uses alfresco)
   def upload
     document = params[:document]
     service_request_id = params[:service_request_id]
@@ -99,6 +102,7 @@ class Portal::DocumentsController < Portal::BaseController
     redirect_to :controller => 'related_service_requests', :action => 'show', :anchor => 'documents', :service_request_id => params[:friendly_id], :id => params[:ssr_id]
   end
 
+  # TODO: looks like this method is no longer used
   def destroy
     document = Document.find(params[:id])
     document.destroy

@@ -64,6 +64,7 @@ entities.each do |entity|
   new = JSON.parse(new_json)
 
   prepare_entity(orig)
+  prepare_new_entity(new)
   orig.compare(new)
 
   bar.increment!

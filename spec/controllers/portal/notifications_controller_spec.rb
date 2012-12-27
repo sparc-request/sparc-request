@@ -352,5 +352,63 @@ describe Portal::NotificationsController do
   end
 
   describe 'POST mark_as_read' do
+    it 'should set sub_service_request if sub_service_request_id is sent' do
+      session[:identity_id] = identity1.id
+      post :mark_as_read, {
+        format: :json,
+        id: notification_with_ssr.id,
+        sub_service_request_id: ssr.id,
+        notifications: { },
+      }
+      assigns(:sub_service_request).should eq ssr
+    end
+
+    it 'should set notifications if sub_service_request_id is sent' do
+      session[:identity_id] = identity1.id
+      post :mark_as_read, {
+        format: :json,
+        id: notification_with_ssr.id,
+        sub_service_request_id: ssr.id,
+        notifications: { },
+      }
+      assigns(:notifications).should eq [ ]
+    end
+
+    it 'should not set sub_service_request if sub_service_request_id is not sent' do
+      session[:identity_id] = identity1.id
+      post :mark_as_read, {
+        format: :json,
+        id: notification_with_ssr.id,
+        notifications: { },
+      }
+      assigns(:sub_service_request).should eq nil
+    end
+
+    it 'should set notifications if sub_service_request_id is not sent' do
+      session[:identity_id] = identity1.id
+      post :mark_as_read, {
+        format: :json,
+        id: notification_with_ssr.id,
+        notifications: { },
+      }
+      assigns(:notifications).should eq [ notification1, notification2 ]
+    end
+
+    it 'should set the read attribute on all notifications that are passed in' do
+      session[:identity_id] = identity1.id
+      post :mark_as_read, {
+        format: :json,
+        id: notification_with_ssr.id,
+        notifications: { notification1 => true, notification2  => false },
+      }
+
+      user_notification1.reload
+      user_notification2.reload
+      user_notification3.reload
+
+      user_notification1.read.should eq true
+      user_notification2.read.should eq false
+      user_notification3.read.should eq nil
+    end
   end
 end

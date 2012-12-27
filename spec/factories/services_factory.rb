@@ -10,6 +10,7 @@ FactoryGirl.define do
     service_center_cost { Random.rand(100) }
     charge_code         { Faker::Lorem.words().first }
     revenue_code        { Faker::Lorem.words().first }
+    pricing_maps        [ FactoryGirl.create(:pricing_map) ]
     
     trait :disabled do
       is_available false
@@ -25,10 +26,10 @@ FactoryGirl.define do
       after(:build) do |service, evaluator|
         FactoryGirl.create_list(:line_item, evaluator.line_item_count, 
           service: service)
-    
+        
         FactoryGirl.create_list(:pricing_map, evaluator.pricing_map_count, 
           service: service)
-    
+
         FactoryGirl.create_list(:service_provider, evaluator.service_provider_count, 
           service: service)
     

@@ -10,7 +10,6 @@ class ProjectRole < ActiveRecord::Base
   attr_accessible :project_rights
   attr_accessible :role
   attr_accessible :role_other
-  attr_accessible :subspecialty
 
   validates :role, :presence => true
   validates :project_rights, :presence => true

@@ -195,10 +195,12 @@ describe 'Service' do
     let!(:service)             { FactoryGirl.create(:service) }
 
     it "should raise an exception if there are no pricing maps" do
+      service.pricing_maps.delete_all
       lambda { service.displayed_pricing_map }.should raise_exception(ArgumentError)
     end
 
     it "should raise an exception if there are no current pricing maps" do
+      service.pricing_maps.delete_all      
       pricing_map = FactoryGirl.create(:pricing_map, service_id: service.id, display_date: Date.today + 1)
       lambda { service.displayed_pricing_map }.should raise_exception(ArgumentError)
     end
@@ -213,17 +215,20 @@ describe 'Service' do
     it 'should raise an exception if there are no pricing maps' do
       service = FactoryGirl.build(:service)
       service.save!
+      service.pricing_maps.delete_all      
       lambda { service.current_pricing_map }.should raise_exception(ArgumentError)
     end
 
     it 'should return the only pricing map if there is one pricing map and it is in the past' do
       service = FactoryGirl.build(:service, :pricing_map_count => 1)
+      service.reload      
       service.pricing_maps[0].display_date = Date.today - 1
       service.current_pricing_map.should eq service.pricing_maps[0]
     end
 
     it 'should return the most recent pricing map in the past if there is more than one' do
       service = FactoryGirl.build(:service, :pricing_map_count => 2)
+      service.reload      
       service.pricing_maps[0].display_date = Date.today - 1
       service.pricing_maps[1].display_date = Date.today - 2
       service.current_pricing_map.should eq service.pricing_maps[0]
@@ -231,6 +236,7 @@ describe 'Service' do
 
     it 'should return the pricing map in the past if one is in the past and one is in the future' do
       service = FactoryGirl.build(:service, :pricing_map_count => 2)
+      service.reload      
       service.pricing_maps[0].display_date = Date.today + 1
       service.pricing_maps[1].display_date = Date.today - 1
       service.current_pricing_map.should eq service.pricing_maps[1]
@@ -241,11 +247,13 @@ describe 'Service' do
     it 'should raise an exception if there are no pricing maps' do
       service = FactoryGirl.build(:service)
       service.save!
+      service.pricing_maps.delete_all      
       lambda { service.current_pricing_map }.should raise_exception(ArgumentError)
     end
 
     it 'should return the pricing map for the given date if there is a pricing map with a display date of that date' do
       service = FactoryGirl.build(:service, :pricing_map_count => 5)
+      service.reload      
       base_date = Date.parse('2012-01-01')
       service.pricing_maps[0].display_date = base_date + 1
       service.pricing_maps[1].display_date = base_date
@@ -263,17 +271,20 @@ describe 'Service' do
     it 'should raise an exception if there are no pricing maps' do
       service = FactoryGirl.build(:service)
       service.save!
+      service.pricing_maps.delete_all      
       lambda { service.current_effective_pricing_map }.should raise_exception(ArgumentError)
     end
 
     it 'should return the only pricing map if there is one pricing map and it is in the past' do
       service = FactoryGirl.build(:service, :pricing_map_count => 1)
+      service.reload      
       service.pricing_maps[0].effective_date = Date.today - 1
       service.current_effective_pricing_map.should eq service.pricing_maps[0]
     end
 
     it 'should return the most recent pricing map in the past if there is more than one' do
       service = FactoryGirl.build(:service, :pricing_map_count => 2)
+      service.reload
       service.pricing_maps[0].effective_date = Date.today - 1
       service.pricing_maps[1].effective_date = Date.today - 2
       service.current_effective_pricing_map.should eq service.pricing_maps[0]
@@ -281,6 +292,7 @@ describe 'Service' do
 
     it 'should return the pricing map in the past if one is in the past and one is in the future' do
       service = FactoryGirl.build(:service, :pricing_map_count => 2)
+      service.reload
       service.pricing_maps[0].effective_date = Date.today + 1
       service.pricing_maps[1].effective_date = Date.today - 1
       service.current_effective_pricing_map.should eq service.pricing_maps[1]
@@ -291,11 +303,13 @@ describe 'Service' do
     it 'should raise an exception if there are no pricing maps' do
       service = FactoryGirl.build(:service)
       service.save!
+      service.pricing_maps.delete_all
       lambda { service.current_effective_pricing_map }.should raise_exception(ArgumentError)
     end
 
     it 'should return the pricing map for the given date if there is a pricing map with a effective date of that date' do
       service = FactoryGirl.build(:service, :pricing_map_count => 5)
+      service.reload
       base_date = Date.parse('2012-01-01')
       service.pricing_maps[0].effective_date = base_date + 1
       service.pricing_maps[1].effective_date = base_date

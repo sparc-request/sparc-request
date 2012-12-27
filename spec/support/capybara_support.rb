@@ -41,6 +41,13 @@ module CapybaraSupport
       is_available:         1)
     provider.save!
 
+    provider_subsidy_map = SubsidyMap.create(
+      organization_id:      provider.id,
+      max_dollar_cap:       121.0000,
+      max_percentage:       12.00
+    )
+    provider_subsidy_map.save! 
+
     program = FactoryGirl.create(:program,
       type:                 'Program',
       name:                 'Office of Biomedical Informatics',
@@ -60,16 +67,6 @@ module CapybaraSupport
     )
     subsidy_map.save!
 
-    program_service = FactoryGirl.create(:service,
-      obisid:               '87d1220c5abf9f9608121672be093511',
-      name:                 'Human Subject Review',
-      abbreviation:         'HSR',
-      order:                1,
-      cpt_code:             '',
-      organization_id:      program.id,
-      is_available:         true)
-    program_service.save!      
-
     core = FactoryGirl.create(:core,
       type:                 'Core',
       name:                 'Clinical Data Warehouse',
@@ -86,17 +83,7 @@ module CapybaraSupport
     )
     core_subsidy_map.save!    
 
-    service = FactoryGirl.create(:service,
-      obisid:               '87d1220c5abf9f9608121672be03867a',
-      name:                 'MUSC Research Data Request (CDW)',
-      abbreviation:         'CDW',
-      order:                1,
-      cpt_code:             '',
-      organization_id:      core.id)
-    service.save!
-    
-    pricing_map = FactoryGirl.create(:pricing_map,
-      service_id:                   service.id,
+    program_service_pricing_map = FactoryGirl.create(:pricing_map,
       display_date:                 Date.yesterday,
       effective_date:               Date.yesterday,
       unit_type:                    'Per Query',
@@ -106,7 +93,41 @@ module CapybaraSupport
       exclude_from_indirect_cost:   0,
       unit_minimum:                 1,
       unit_type:                    'self')
-    pricing_map.save!
+    program_service_pricing_map.save!
+
+    program_service = FactoryGirl.create(:service,
+      obisid:               '87d1220c5abf9f9608121672be093511',
+      name:                 'Human Subject Review',
+      abbreviation:         'HSR',
+      order:                1,
+      cpt_code:             '',
+      organization_id:      program.id,
+      is_available:         true,
+      pricing_maps:         [program_service_pricing_map])
+    program_service.save!      
+
+    service_pricing_map = FactoryGirl.create(:pricing_map,
+      display_date:                 Date.yesterday,
+      effective_date:               Date.yesterday,
+      unit_type:                    'Per Query',
+      unit_factor:                  1,
+      is_one_time_fee:              1,
+      full_rate:                    4500.0000,
+      exclude_from_indirect_cost:   0,
+      unit_minimum:                 1,
+      unit_type:                    'self')
+    service_pricing_map.save!
+    
+    service = FactoryGirl.create(:service,
+      obisid:               '87d1220c5abf9f9608121672be03867a',
+      name:                 'MUSC Research Data Request (CDW)',
+      abbreviation:         'CDW',
+      order:                1,
+      cpt_code:             '',
+      organization_id:      core.id,
+      pricing_maps:         [service_pricing_map])
+    service.save!
+    
 
     pricing_setup = FactoryGirl.create(:pricing_setup,
       organization_id:              program.id,

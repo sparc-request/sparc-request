@@ -24,10 +24,35 @@ feature 'create new service' do
     fill_in 'service_name', :with => 'Test Service'
     fill_in 'service_abbreviation', :with => 'TestService'
     fill_in 'service_order', :with => '1'
-    fill_in 'service_description', :with => ''
+    fill_in 'service_description', :with => 'Description'
+    
+    ## Create a Pricing Map
+    click_button('Add Pricing Map')
+    
+    within('.ui-accordion') do
+      page.execute_script %Q{ $('.ui-accordion-header:last').click() }
+      page.execute_script %Q{ $('.pricing_map_display_date:visible').focus() }
+      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
+      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
+      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
+      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15    
+      wait_for_javascript_to_finish
+
+      page.execute_script %Q{ $('.pricing_map_effective_date:visible').focus() }
+      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
+      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
+      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
+      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15    
+      wait_for_javascript_to_finish
+
+      fill_in "pricing_maps_blank_pricing_map_full_rate", :with => 4321
+      fill_in "pricing_maps_blank_pricing_map_unit_type", :with => "Each"
+      
+      page.execute_script %Q{ $(".service_unit_type").change() }
+    end    
 
     page.execute_script("$('#save_button').click();")
-    page.should have_content( 'New service created!' )
+    page.should have_content( 'Test Service created successfully' )
   end
 
   scenario 'create new service under a core', :js => true do
@@ -49,10 +74,35 @@ feature 'create new service' do
     fill_in 'service_name', :with => 'Core Test Service'
     fill_in 'service_abbreviation', :with => 'CoreTestService'
     fill_in 'service_order', :with => '1'
-    fill_in 'service_description', :with => ''
+    fill_in 'service_description', :with => 'Description'
+    
+    ## Create a Pricing Map
+    click_button('Add Pricing Map')
+    
+    within('.ui-accordion') do
+      page.execute_script %Q{ $('.ui-accordion-header:last').click() }
+      page.execute_script %Q{ $('.pricing_map_display_date:visible').focus() }
+      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
+      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
+      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
+      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15    
+      wait_for_javascript_to_finish
+
+      page.execute_script %Q{ $('.pricing_map_effective_date:visible').focus() }
+      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
+      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
+      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
+      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15    
+      wait_for_javascript_to_finish
+
+      fill_in "pricing_maps_blank_pricing_map_full_rate", :with => 4321
+      fill_in "pricing_maps_blank_pricing_map_unit_type", :with => "Each"
+      
+      page.execute_script %Q{ $(".service_unit_type").change() }
+    end      
 
     page.execute_script("$('#save_button').click();")
-    page.should have_content( 'New service created!' )
+    page.should have_content( 'Core Test Service created successfully' )
   end
 
 end

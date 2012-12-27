@@ -54,7 +54,7 @@ class Identity < ActiveRecord::Base
   attr_accessible :credentials_other
   attr_accessible :phone
   attr_accessible :catalog_overlord
-  attr_accessible :subspecialty # TODO: do we need this here?  Andrew thinks it's wrong.
+  attr_accessible :subspecialty
   
   cattr_accessor :current_user
 

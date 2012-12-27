@@ -27,7 +27,7 @@ $ ->
     submitRateChanges: (entity_id, percentage, effective_date, display_date) ->
       data = { entity_id: entity_id, percentage: percentage, effective_date: Sparc.config.readyMyDate(effective_date, 'send'), display_date: Sparc.config.readyMyDate(display_date, 'send')}
       $.ajax({
-        url: "update_pricing_maps"
+        url: "/catalog_manager/update_pricing_maps"
         data: data
         success: ->
         error: ->
@@ -38,7 +38,7 @@ $ ->
       data = {date: date, entity_id: entity_id, str: str}
       date_element = $(changed_element)
       $.ajax({
-        url: "catalog_manager/validate_pricing_map_dates"
+        url: "/catalog_manager/validate_pricing_map_dates"
         data: data
         success: (data) ->
           if data.same_dates == 'true'
@@ -62,7 +62,7 @@ $ ->
     verify_valid_pricing_setups()
 
   verify_valid_pricing_setups = () ->
-    $.get 'catalog_manager/verify_valid_pricing_setups', (data) ->
+    $.get '/catalog_manager/verify_valid_pricing_setups', (data) ->
       if data == 'true'
         $(".pricing_setup_error").hide()
       else
@@ -73,7 +73,7 @@ $ ->
 
   $('#program').live 'change', ->
     new_program_id = $(this).val()
-    $.post 'services/update_cores/' + new_program_id, (data) ->
+    $.post '/catalog_manager/services/update_cores/' + new_program_id, (data) ->
       $('#core_list').html(data)
 
   $('#catalog').jstree
@@ -150,20 +150,20 @@ $ ->
   $('input#new_rs').live 'focus', -> $(this).val('')
   $('input#new_rs').live 'keydown.autocomplete', ->
     $(this).autocomplete
-      source: "services/search",
+      source: "/catalog_manager/services/search",
       minLength: 3,
       select: (event, ui) ->
-        $.post 'services/associate', {related_service: ui.item.id, service: $('#service_id').val()}, (data) ->
+        $.post '/catalog_manager/services/associate', {related_service: ui.item.id, service: $('#service_id').val()}, (data) ->
           $('#rs_info').html(data)
 
 
   $('.rs_delete').live 'click', ->
     if confirm 'Are you sure you want to remove this Related Service?'
-      $.post 'services/disassociate', {related_service: $(this).attr('id'), service: $(this).attr('original_service'), rel_id: $(this).attr('rel_id')}, (data) ->
+      $.post '/catalog_manager/services/disassociate', {related_service: $(this).attr('id'), service: $(this).attr('original_service'), rel_id: $(this).attr('rel_id')}, (data) ->
         $('#rs_info').html(data)
 
   $('.optional').live 'click', ->
-    $.post 'services/set_optional', {related_service: $(this).attr('id'), service: $(this).attr('original_service'), rel_id: $(this).attr('rel_id'), optional_flag: $(this).attr('optional_flag')}, (data) ->
+    $.post '/catalog_manager/services/set_optional', {related_service: $(this).attr('id'), service: $(this).attr('original_service'), rel_id: $(this).attr('rel_id'), optional_flag: $(this).attr('optional_flag')}, (data) ->
         $('#rs_info').html(data)
 
   # submission e-mails
@@ -188,55 +188,55 @@ $ ->
   $('input#new_su').live 'focus', -> $(this).val('')
   $('input#new_su').live 'keydown.autocomplete', ->
     $(this).autocomplete
-      source: "identities/search",
+      source: "/catalog_manager/identities/search",
       minLength: 3,
       select: (event, ui) ->
-        $.post 'identities/associate_with_org_unit', {identity: ui.item.value, org_unit: $('#org_unit_id').val(), rel_type: "super_user_organizational_unit"}, (data) ->
+        $.post '/catalog_manager/identities/associate_with_org_unit', {identity: ui.item.value, org_unit: $('#org_unit_id').val(), rel_type: "super_user_organizational_unit"}, (data) ->
           $('#su_info').html(data)
 
   $('.su_delete').live 'click', ->
     if confirm 'Are you sure you want to remove this Super User?'
-      $.post 'identities/disassociate_with_org_unit', {relationship: $(this).attr('id'), org_unit: $('#org_unit_id').val(), rel_type: "super_user_organizational_unit"}, (data) ->
+      $.post '/catalog_manager/identities/disassociate_with_org_unit', {relationship: $(this).attr('id'), org_unit: $('#org_unit_id').val(), rel_type: "super_user_organizational_unit"}, (data) ->
         $('#su_info').html(data)
 
   # service providers
   $('input#new_sp').live 'focus', -> $(this).val('')
   $('input#new_sp').live 'keydown.autocomplete', ->
     $(this).autocomplete
-      source: "identities/search",
+      source: "/catalog_manager/identities/search",
       minLength: 3,
       select: (event, ui) ->
-        $.post 'identities/associate_with_org_unit', {identity: ui.item.value, org_unit: $('#org_unit_id').val(), rel_type: "service_provider_organizational_unit"}, (data) ->
+        $.post '/catalog_manager/identities/associate_with_org_unit', {identity: ui.item.value, org_unit: $('#org_unit_id').val(), rel_type: "service_provider_organizational_unit"}, (data) ->
           $('#sp_info').html(data)
 
   $('.sp_delete').live 'click', ->
     if confirm 'Are you sure you want to remove this Service Provider?'
-      $.post 'identities/disassociate_with_org_unit', {relationship: $(this).attr('id'), org_unit: $('#org_unit_id').val(), rel_type: "service_provider_organizational_unit"}, (data) ->
+      $.post '/catalog_manager/identities/disassociate_with_org_unit', {relationship: $(this).attr('id'), org_unit: $('#org_unit_id').val(), rel_type: "service_provider_organizational_unit"}, (data) ->
         $('#sp_info').html(data)
 
   #catalog managers
   $('input#new_cm').live 'focus', -> $(this).val('')
   $('input#new_cm').live 'keydown.autocomplete', ->
     $(this).autocomplete
-      source: "identities/search",
+      source: "/catalog_manager/identities/search",
       minLength: 3,
       select: (event, ui) ->
-        $.post 'identities/associate_with_org_unit', {identity: ui.item.value, org_unit: $('#org_unit_id').val(), rel_type: "catalog_manager_organizational_unit"}, (data) ->
+        $.post '/catalog_manager/identities/associate_with_org_unit', {identity: ui.item.value, org_unit: $('#org_unit_id').val(), rel_type: "catalog_manager_organizational_unit"}, (data) ->
           $('#cm_info').html(data)
 
   $('.cm_delete').live 'click', ->
     if confirm 'Are you sure you want to remove rights for this user from the Catalog Manager?'
-      $.post 'identities/disassociate_with_org_unit', {relationship: $(this).attr('id'), org_unit: $('#org_unit_id').val(), rel_type: "catalog_manager_organizational_unit"}, (data) ->
+      $.post '/catalog_manager/identities/disassociate_with_org_unit', {relationship: $(this).attr('id'), org_unit: $('#org_unit_id').val(), rel_type: "catalog_manager_organizational_unit"}, (data) ->
         $('#cm_info').html(data)
 
   #primary contact toggle
   $('.primary_contact').live 'click', ->
-    $.post 'identities/set_primary_contact', {service_provider: $(this).attr('identity'), org_id: $(this).attr('org_id')}, (data) ->
+    $.post '/catalog_manager/identities/set_primary_contact', {service_provider: $(this).attr('identity'), org_id: $(this).attr('org_id')}, (data) ->
         $('#sp_info').html(data)
 
   #hold emails toggle
   $('.hold_emails').live 'click', ->
-    $.post 'identities/set_hold_emails', {service_provider: $(this).attr('identity'), org_id: $(this).attr('org_id')}, (data) ->
+    $.post '/catalog_manager/identities/set_hold_emails', {service_provider: $(this).attr('identity'), org_id: $(this).attr('org_id')}, (data) ->
         $('#sp_info').html(data)
 
   #edit history data toggle
@@ -244,7 +244,7 @@ $ ->
     current_user_id = $(this).attr('current_user_id')
     identity = $(this).attr('identity')
     identity_user_id = $(this).attr('identity_user_id')
-    $.post 'identities/set_edit_historic_data', {manager: $(this).attr('identity'), org_id: $(this).attr('org_id')}, (data) ->
+    $.post '/catalog_manager/identities/set_edit_historic_data', {manager: $(this).attr('identity'), org_id: $(this).attr('org_id')}, (data) ->
       $('#cm_info').html(data)
       if current_user_id == identity_user_id
         alert("You are changing your own permissions. Your page will refresh automatically when this window closes.")
@@ -327,7 +327,7 @@ $ ->
     org_id = $(this).attr('org_id')
     data = {funding_source: funding_source, org_id: org_id, org_type: org_type}
     $.ajax
-      url: 'catalog/add_excluded_funding_source'
+      url: '/catalog_manager/catalog/add_excluded_funding_source'
       type: 'post'
       data: data
 
@@ -336,7 +336,7 @@ $ ->
     remove_this = $(this).parent()
     if confirm("Are you sure?")
       $.ajax
-        url: 'catalog/remove_excluded_funding_source'
+        url: '/catalog_manager/catalog/remove_excluded_funding_source'
         type: 'delete'
         data: { funding_source_id: $(this).attr('funding_source_id') }
         success: ->

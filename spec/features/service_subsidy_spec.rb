@@ -6,6 +6,17 @@ describe "subsidy page" do
   fake_login_for_each_test
   build_service_request_with_project
 
+  describe "no subsidy available" do
+    before :each do
+      add_visits
+      visit service_subsidy_service_request_path service_request.id
+      sleep 2
+    end
+    it 'should not have any subsidies', :js => true do
+      page.should_not have_css(".subsidy-item")
+    end
+  end
+
   before :each do
     add_visits
     subsidy_map = FactoryGirl.create(:subsidy_map, organization_id: program.id, max_dollar_cap: 775.00, max_percentage: 50.00)
@@ -26,7 +37,24 @@ describe "subsidy page" do
       end
     end
 
-    describe "filling out the form" do
+    describe "filling in with wrong values" do
+      before :each do
+        @total = (sub_service_request.direct_cost_total / 100)
+        @contribution = (@total - program.subsidy_map.max_dollar_cap) - 100
+        find('.pi-contribution').set(@contribution)
+        sleep 2
+        find('.select-project-view').click
+        sleep 2
+      end
+      it 'should reject to high an amount', :js => true do
+        page.should have_text("cannot exceed maximum dollar amount")
+      end
+
+      it 'should reject to high a percentage', :js => true do
+      end
+    end
+
+    describe "filling in with correct values" do
       before :each do
         @total = (sub_service_request.direct_cost_total / 100)
         @contribution = @total - program.subsidy_map.max_dollar_cap

@@ -20,7 +20,7 @@ class Portal::ServiceRequestsController < Portal::BaseController
     @subsidy = @sub_service_request.subsidy
     percent = @subsidy.try(:percent_subsidy).try(:*, 100)
     @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
-    @service_request = ServiceRequest.find(params[:service_request_id])
+    @service_request = ServiceRequest.find(params[:service_request_id]) # TODO: is this different from params[:id] ?
     if @service_request.add_visit(params[:visit_position])
       @subsidy.try(:sub_service_request).try(:reload)
       @subsidy.try(:fix_pi_contribution, percent)
@@ -48,6 +48,7 @@ class Portal::ServiceRequestsController < Portal::BaseController
       end
       render 'portal/service_requests/add_per_patient_per_visit_visit'
     else
+      p @service_request.errors
       respond_to do |format|
         format.js { render :status => 500, :json => clean_errors(@service_request.errors) }
       end

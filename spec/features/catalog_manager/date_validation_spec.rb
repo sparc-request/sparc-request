@@ -78,6 +78,28 @@ feature 'effective and display date validations' do
     }
     
   end
+  
+  scenario 'an alert will pop when a user selects an effective date in the increase/decrease rates dialog that is 
+            the same as a pricing map', :js => true, :focus => true, :firebug => true do
+
+    click_link('South Carolina Clinical and Translational Institute (SCTR)')
+    click_button('Increase or Decrease Rates')
+    
+    within('.increase_decrease_dialog') do
+      numerical_day = Date.today.strftime("%d").gsub(/^0/,'')
+      find('.change_rate_display_date').click
+      page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
+    end
+
+    # This is the only way I could figure out how to test the text of the confirmation dialog
+    get_alert_window do |prompt|
+      # The test will pass if the confirmation dialog is closed, so if text matches the test will pass, otherwise it will fail
+      if prompt.text == ('A pricing map already exists with that display date.  Please choose another date.')
+        prompt.accept
+      end
+    end
+  end
+      
 
   # ## Need to figure out how to handle two confirmation dialogs in capybara
 

@@ -227,7 +227,15 @@ class Service < ActiveRecord::Base
   def increase_decrease_pricing_map(percent_of_change, display_date, effective_date)
     current_map = nil
     begin
-      current_map = PricingMap.new(self.effective_pricing_map_for_date(effective_date).attributes)
+      effective_pricing_map = self.effective_pricing_map_for_date(effective_date).attributes
+      
+      ## Deleting the attributes to prevent mass-assignment errors.
+      effective_pricing_map.delete('id')
+      effective_pricing_map.delete('created_at')
+      effective_pricing_map.delete('updated_at')
+      effective_pricing_map.delete('deleted_at')
+      
+      current_map = PricingMap.new(effective_pricing_map)
       current_map.full_rate = current_map.full_rate + (current_map.full_rate * ( (percent_of_change.to_f * 0.01).floor_to(2) ))
     rescue
       current_map = self.pricing_maps.build
@@ -236,7 +244,7 @@ class Service < ActiveRecord::Base
       current_map.unit_minimum = 1
       current_map.unit_type = "Each"
     end
-      
+    
     current_map.display_date = display_date
     current_map.effective_date = effective_date
     current_map.save

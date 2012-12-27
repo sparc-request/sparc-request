@@ -38,7 +38,13 @@ class Portal::NotificationsController < Portal::BaseController
     @notification = Notification.create(params[:notification])
     if @message = @notification.messages.create(params[:message])
       @sub_service_request = @notification.sub_service_request
+
+      # TODO: we created a new Notification, but all_notifications()
+      # searches for UserNotifications.  do we need to also create a
+      # UserNotification?
+      # (also, perhaps the name all_notifications is confusing?)
       @notifications = @user.all_notifications.where(:sub_service_request_id => @sub_service_request.id)
+
       UserMailer.notification_received(@user).deliver
     end
     respond_to do |format|

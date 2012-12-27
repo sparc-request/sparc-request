@@ -10,6 +10,7 @@ class Portal::NotificationsController < Portal::BaseController
   def show
     sub_service_request_id = params[:sub_service_request_id]
     @sub_service_request = SubServiceRequest.find(sub_service_request_id) if sub_service_request_id
+
     # Marking as read is being done in ajax when viewing notifications.
     # This, however, is the code for doing it in the controller.
     # @notification.user_notifications.where(:identity_id => @user.id).each do |user_notification|
@@ -25,6 +26,8 @@ class Portal::NotificationsController < Portal::BaseController
   def new
     @recipient = Identity.find(params[:identity_id])
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+
+    # TODO: should #new create a new notification?
     respond_to do |format|
       format.js
       format.html

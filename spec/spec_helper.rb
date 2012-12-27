@@ -34,6 +34,15 @@ FactoryGirl.define do
   end
 end
 
+def load_schema
+  load_schema = lambda {
+    basedir = File.expand_path(File.dirname(__FILE__))
+    load File.join(basedir, '../db/schema.rb')
+  }
+  silence_stream(STDOUT, &load_schema)
+end
+
+load_schema()
 FactoryGirl.find_definitions
 
 class ActiveRecord::Base
@@ -53,11 +62,7 @@ ActiveRecord::Base.shared_connection = ActiveRecord::Base.connection
 RSpec.configure do |config|
 
   config.before(:suite) do
-    load_schema = lambda {
-      basedir = File.expand_path(File.dirname(__FILE__))
-      load File.join(basedir, '../db/schema.rb')
-    }
-    silence_stream(STDOUT, &load_schema)
+    load_schema()
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)
   end

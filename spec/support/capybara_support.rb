@@ -117,6 +117,7 @@ module CapybaraSupport
       unit_minimum:                 1,
       unit_type:                    'self')
     service_pricing_map.save!
+    
     service = FactoryGirl.create(:service,
       obisid:               '87d1220c5abf9f9608121672be03867a',
       name:                 'MUSC Research Data Request (CDW)',

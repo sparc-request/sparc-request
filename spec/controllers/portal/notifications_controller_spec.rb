@@ -23,6 +23,8 @@ describe Portal::NotificationsController do
   let!(:service_request) { FactoryGirl.create(:service_request, visit_count: 0) }
   let!(:ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
 
+  let!(:notification_with_ssr) { Notification.create(sub_service_request_id: ssr.id) }
+
   let!(:deliverer) { double() }
 
   before(:each) do
@@ -196,7 +198,7 @@ describe Portal::NotificationsController do
   describe 'POST user_portal_update' do
     it 'should set notification' do
       session[:identity_id] = identity1.id
-      post :show, {
+      post :user_portal_update, {
         format: :json,
         id: notification1.id,
       }.with_indifferent_access
@@ -228,9 +230,125 @@ describe Portal::NotificationsController do
       message.subject.should eq 'Emancipation'
       message.body.should eq 'Four score and seven years ago...'
     end
+
+    it 'should set notifications' do
+      session[:identity_id] = identity1.id
+      post :user_portal_update, {
+        format: :json,
+        id: notification1.id,
+        message: {
+          from: identity1.id,
+          to:   identity2.id,
+          email:   'abe.lincoln@whitehouse.gov',
+          subject: 'Emancipation',
+          body:    'Four score and seven years ago...',
+        },
+      }.with_indifferent_access
+      assigns(:notifications).should eq [ notification1, notification2 ]
+    end
+
+    it 'should deliver the notification via email' do
+      UserMailer.should_receive(:notification_received)
+
+      session[:identity_id] = identity1.id
+      post :user_portal_update, {
+        format: :json,
+        id: notification1.id,
+        message: {
+          from: identity1.id,
+          to:   identity2.id,
+          email:   'abe.lincoln@whitehouse.gov',
+          subject: 'Emancipation',
+          body:    'Four score and seven years ago...',
+        },
+      }.with_indifferent_access
+    end
   end
 
   describe 'POST admin_update' do
+    it 'should set notification' do
+      session[:identity_id] = identity1.id
+      post :admin_update, {
+        format: :json,
+        id: notification_with_ssr.id,
+      }.with_indifferent_access
+      assigns(:notification).should eq notification_with_ssr
+    end
+
+    it 'should create a new message' do
+      session[:identity_id] = identity1.id
+      post :admin_update, {
+        format: :json,
+        id: notification_with_ssr.id,
+        message: {
+          from: identity1.id,
+          to:   identity2.id,
+          email:   'abe.lincoln@whitehouse.gov',
+          subject: 'Emancipation',
+          body:    'Four score and seven years ago...',
+        },
+      }.with_indifferent_access
+
+      notification_with_ssr.reload
+      notification_with_ssr.messages.count.should eq 1
+      message = notification_with_ssr.messages[0]
+      message.id.should_not eq nil
+      message.notification.should eq notification_with_ssr
+      message.sender.should eq identity1
+      message.recipient.should eq identity2
+      message.email.should eq 'abe.lincoln@whitehouse.gov'
+      message.subject.should eq 'Emancipation'
+      message.body.should eq 'Four score and seven years ago...'
+    end
+
+    it 'should set sub_service_request' do
+      session[:identity_id] = identity1.id
+      post :admin_update, {
+        format: :json,
+        id: notification_with_ssr.id,
+        message: {
+          from: identity1.id,
+          to:   identity2.id,
+          email:   'abe.lincoln@whitehouse.gov',
+          subject: 'Emancipation',
+          body:    'Four score and seven years ago...',
+        },
+      }.with_indifferent_access
+      assigns(:sub_service_request).should eq ssr
+    end
+
+    it 'should set notifications' do
+      session[:identity_id] = identity1.id
+      post :admin_update, {
+        format: :json,
+        id: notification_with_ssr.id,
+        message: {
+          from: identity1.id,
+          to:   identity2.id,
+          email:   'abe.lincoln@whitehouse.gov',
+          subject: 'Emancipation',
+          body:    'Four score and seven years ago...',
+        },
+      }.with_indifferent_access
+      assigns(:notifications).should eq [ notification_with_ssr ]
+    end
+
+    it 'should deliver the notification via email' do
+      UserMailer.should_receive(:notification_received)
+
+      session[:identity_id] = identity1.id
+      post :admin_update, {
+        format: :json,
+        id: notification_with_ssr.id,
+        message: {
+          from: identity1.id,
+          to:   identity2.id,
+          email:   'abe.lincoln@whitehouse.gov',
+          subject: 'Emancipation',
+          body:    'Four score and seven years ago...',
+        },
+      }.with_indifferent_access
+    end
   end
 
   describe 'POST mark_as_read' do

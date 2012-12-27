@@ -56,7 +56,9 @@ class Portal::NotificationsController < Portal::BaseController
   def user_portal_update
     @notification = Notification.find(params[:id])
     
+    # TODO: @message is not set here; is that correct?
     if @notification.messages.create(params[:message])
+      # TODO: this is not set if no message is created; is that correct?
       @notifications = @user.all_notifications
       UserMailer.notification_received(@user).deliver
     end    

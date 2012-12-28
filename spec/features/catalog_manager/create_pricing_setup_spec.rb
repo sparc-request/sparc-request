@@ -83,7 +83,7 @@ describe 'as a user on catalog page' do
     end
   end
   
-  it 'should create a pricing map with the same dates as the pricing setup', :js => true, :focus => true do
+  it 'should create a pricing map with the same dates as the pricing setup', :js => true do
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
     click_button("Add Pricing Setup")
     

@@ -80,7 +80,7 @@ feature 'effective and display date validations' do
   end
   
   scenario 'an alert will pop when a user selects an effective date in the increase/decrease rates dialog that is 
-            the same as a pricing map', :js => true, :focus => true, :firebug => true do
+            the same as a pricing map', :js => true do
 
     click_link('South Carolina Clinical and Translational Institute (SCTR)')
     click_button('Increase or Decrease Rates')

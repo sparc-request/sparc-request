@@ -52,21 +52,28 @@ class PricingSetup < ActiveRecord::Base
     return if self.organization.nil?
 
     self.organization.all_child_services.each do |service|
+      current_map = nil
       begin
-        closest_map = PricingMap.new(service.effective_pricing_map_for_date(self.effective_date).attributes)
-        closest_map.effective_date = self.effective_date.to_date
-        closest_map.display_date = self.display_date.to_date
-        closest_map.save
+        effective_pricing_map = service.effective_pricing_map_for_date(self.effective_date).attributes
+        
+        ## Deleting the attributes to prevent mass-assignment errors.
+        effective_pricing_map.delete('id')
+        effective_pricing_map.delete('created_at')
+        effective_pricing_map.delete('updated_at')
+        effective_pricing_map.delete('deleted_at')
+                
+        current_map = PricingMap.new(effective_pricing_map)
       rescue
-        new_map = service.pricing_maps.build
-        new_map.effective_date = self.effective_date.to_date
-        new_map.display_date = self.display_date.to_date
-        new_map.full_rate = 0
-        new_map.unit_factor = 1
-        new_map.unit_minimum = 1
-        new_map.unit_type = "Each"
-        new_map.save
+        current_map = service.pricing_maps.build
+        current_map.full_rate = 0
+        current_map.unit_factor = 1
+        current_map.unit_minimum = 1
+        current_map.unit_type = "Each"
       end
+      
+      current_map.effective_date = self.effective_date.to_date
+      current_map.display_date = self.display_date.to_date
+      current_map.save      
     end
   end
 end

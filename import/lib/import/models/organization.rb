@@ -73,22 +73,9 @@ class Organization::ObisEntitySerializer < Entity::ObisEntitySerializer
   end
 end
 
-class Organization::ObisSimpleSerializer < Entity::ObisSimpleSerializer
-  # The user might try to POST to an obisentity/organizational_units
-  # url, so we need to instantiate the right Organization subclass in
-  # order for the 'type' field to be set.
-  def self.create_from_json(entity_class, h, options = nil)
-    obj = options[:model].new
-    obj.update_from_json(h, options)
-    return obj
-  end
-end
-
 class Organization
   include JsonSerializable
   json_serializer :obisentity, ObisEntitySerializer
   json_serializer :relationships, RelationshipsSerializer
-  json_serializer :obissimple, ObisSimpleSerializer
-  json_serializer :simplerelationships, ObisSimpleRelationshipsSerializer
 end
 

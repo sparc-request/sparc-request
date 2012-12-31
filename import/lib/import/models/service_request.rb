@@ -188,43 +188,9 @@ class ServiceRequest::ObisEntitySerializer < Entity::ObisEntitySerializer
 
 end
 
-class ServiceRequest::ObisSimpleSerializer < Entity::ObisSimpleSerializer
-  def as_json(entity, options = nil)
-    h = super(entity, options)
-    h['project_id'] = entity.protocol.obisid if entity.protocol
-    return h
-  end
-
-  def self.create_from_json(entity_class, h, options = nil)
-    if h['friendly_id'] then
-      obj = entity_class.new
-      obj.id = h['friendly_id']
-      obj.save!
-    else
-      obj = entity_class.create()
-    end
-
-    obj.update_from_json(h, options)
-
-    return obj
-  end
-
-  def update_from_json(entity, h, options = { })
-    service_request = super(entity, h, options)
-    if h['project_id'] then
-      protocol = Protocol.find_by_obisid(h['project_id'])
-      raise ArgumentError, "Could not find project with obisid #{h['project_id']}" if protocol.nil?
-      service_request.update_attribute(:protocol_id, protocol.id)
-    end
-    return service_request
-  end
-end
-
 class ServiceRequest
   include JsonSerializable
   json_serializer :obisentity, ObisEntitySerializer
   json_serializer :relationships, RelationshipsSerializer
-  json_serializer :obissimple, ObisSimpleSerializer
-  json_serializer :simplerelationships, ObisSimpleRelationshipsSerializer
 end
 

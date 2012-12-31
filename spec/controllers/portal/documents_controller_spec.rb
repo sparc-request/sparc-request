@@ -1,6 +1,22 @@
 require 'spec_helper'
 
 describe Portal::DocumentsController do
+  describe 'GET download' do
+    # TODO: looks like this method is no longer used
+  end
+
+  describe 'POST override' do
+    # TODO: looks like this method is no longer used (it uses alfresco)
+  end
+
+  describe 'POST upload' do
+    # TODO: looks like this method is no longer used (it uses alfresco)
+  end
+
+  describe 'POST destroy' do
+    # TODO: looks like this method is no longer used
+  end
+
   # include EntityHelpers
   #
   # render_views

@@ -194,45 +194,6 @@ class ObisQuery
   end
 end
 
-QUERIES = [
-  ObisQuery.new(
-    query_type:    'obisentity',
-    all_query:     'http://localhost:{{{port}}}/obisentity/{{{entity_type}}}/',
-    post_query:    'http://localhost:{{{port}}}/obisentity/{{{entity_type}}}/',
-    obisid_query:  'http://localhost:{{{port}}}/obisentity/{{{entity_type}}}/{{{obisid}}}/',
-    compare_func: proc { |type, orig, new|
-      prepare_entity(orig)
-      orig.compare(new)
-    }
-  ),
-  ObisQuery.new(
-    query_type:    'relationships',
-    all_query:     'http://localhost:{{{port}}}/obisentity/{{{entity_type}}}/',
-    post_query:    'http://localhost:{{{port}}}/obisentity/{{{entity_type}}}/{{{obisid}}}/relationships',
-    obisid_query:  'http://localhost:{{{port}}}/obisentity/{{{entity_type}}}/{{{obisid}}}/relationships',
-    rid_query:     'http://localhost:{{{port}}}/obisentity/{{{entity_type}}}/{{{obisid}}}/relationships/{{{rid}}}',
-    compare_func: proc { |type, orig, new|
-      orig.each { |rel| prepare_relationship(rel) }
-      new.each { |rel| rel.delete('relationship_id') }
-      sort_relationships!(orig)
-      sort_relationships!(new)
-      compare_relationship_types(orig, new)
-      orig.compare(new)
-    }
-  ),
-  ObisQuery.new(
-    query_type:    'obissimple',
-    all_query:     'http://localhost:{{{port}}}/obissimple/{{{entity_type}}}/',
-    post_query:    'http://localhost:{{{port}}}/obissimple/{{{entity_type}}}/',
-    obisid_query:  'http://localhost:{{{port}}}/obissimple/{{{entity_type}}}/{{{obisid}}}/',
-    relationships: false,
-    compare_func: proc { |type, orig, new|
-      prepare_simple(type, orig)
-      orig.compare(new)
-    }
-  ),
-]
-
 def fix_legacy_date(s)
   case s
   when nil, ''                                                                                  
@@ -398,6 +359,10 @@ def prepare_project(project)
   end
 end
 
+def prepare_new_entity(entity)
+  entity['attributes'].delete('subspecialty') # too hard to test
+end
+
 def prepare_entity(entity)
   annotate("while preparing entity: #{entity.pretty_inspect}") do
     entity.delete('_rev')
@@ -406,6 +371,7 @@ def prepare_entity(entity)
       entity['attributes'].delete('admin')
       entity['attributes'].delete('credentials_other')
       entity['attributes'].delete('other_credentials')
+      entity['attributes'].delete('subspecialty') # too hard to test
       entity['attributes'].delete('email') if entity['attributes']['email'].nil?
       entity['identifiers']['email'] = entity['attributes']['email'] if entity['attributes']['email']
       entity['identifiers']['ldap_uid'] = "#{entity['identifiers']['ldap_uid']}@musc.edu" if entity['identifiers']['ldap_uid']
@@ -476,36 +442,6 @@ def prepare_relationship(rel)
 
   end
 
-end
-
-def prepare_simple(type, simple)
-  case type
-  when 'identities'
-    simple.delete('admin')
-    simple.delete('email') if simple['email'].nil?
-    simple.delete('credentials_other')
-    simple.delete('other_credentials')
-
-  when 'organizational_units', 'cores', 'institutions', 'programs', 'providers'
-    simple['submission_emails'] ||= [ ]
-    simple.delete('subsidy')
-    simple.delete('css_class') if simple['css_class'].nil?
-    simple['order'] = Integer(simple['order']) if not simple['order'].nil?
-
-  when 'services'
-    if simple['pricing_maps'] then
-      simple['pricing_maps'].each do |pricing_map|
-        pricing_map.delete('exclude_from_indirect_cost') if pricing_map['exclude_from_indirect_cost'].nil?
-      end
-    end
-
-    simple.delete('subsidy') # deprecated
-    simple.delete('line_items') # service requests have line items, not services
-
-  when 'service_requests'
-    prepare_service_request(simple)
-
-  end
 end
 
 def sort_relationships!(relationships)

@@ -10,6 +10,7 @@ class Portal::NotificationsController < Portal::BaseController
   def show
     sub_service_request_id = params[:sub_service_request_id]
     @sub_service_request = SubServiceRequest.find(sub_service_request_id) if sub_service_request_id
+
     # Marking as read is being done in ajax when viewing notifications.
     # This, however, is the code for doing it in the controller.
     # @notification.user_notifications.where(:identity_id => @user.id).each do |user_notification|
@@ -25,6 +26,8 @@ class Portal::NotificationsController < Portal::BaseController
   def new
     @recipient = Identity.find(params[:identity_id])
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+
+    # TODO: should #new create a new notification?
     respond_to do |format|
       format.js
       format.html
@@ -35,7 +38,13 @@ class Portal::NotificationsController < Portal::BaseController
     @notification = Notification.create(params[:notification])
     if @message = @notification.messages.create(params[:message])
       @sub_service_request = @notification.sub_service_request
+
+      # TODO: we created a new Notification, but all_notifications()
+      # searches for UserNotifications.  do we need to also create a
+      # UserNotification?
+      # (also, perhaps the name all_notifications is confusing?)
       @notifications = @user.all_notifications.where(:sub_service_request_id => @sub_service_request.id)
+
       UserMailer.notification_received(@user).deliver
     end
     respond_to do |format|
@@ -47,7 +56,9 @@ class Portal::NotificationsController < Portal::BaseController
   def user_portal_update
     @notification = Notification.find(params[:id])
     
+    # TODO: @message is not set here; is that correct?
     if @notification.messages.create(params[:message])
+      # TODO: this is not set if no message is created; is that correct?
       @notifications = @user.all_notifications
       UserMailer.notification_received(@user).deliver
     end    

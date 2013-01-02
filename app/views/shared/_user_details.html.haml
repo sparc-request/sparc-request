@@ -32,7 +32,7 @@
       %br
 
     .user_role
-      = label_tag "project_role[role]", "Role:"
+      = label_tag "project_role[role]", "Role:*"
       = select_tag "project_role[role]", options_for_select(USER_ROLES, project_role.role), :prompt => "Select a Role"
 
       %br

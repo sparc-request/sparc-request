@@ -10,15 +10,15 @@
 .grid_7.box
   .info
     .field
-      = f.label :short_title, "Short Title:"
+      = f.label :short_title, "Short Title:*"
       = f.text_field :short_title
     
     .field
-      = f.label :title, "Protocol Title:"
+      = f.label :title, "Protocol Title:*"
       = f.text_field :title
     
     .field
-      = f.label :funding_status, "Proposal Funding Status:"
+      = f.label :funding_status, "Proposal Funding Status:*"
       = f.select :funding_status, options_for_select(FUNDING_STATUSES, study.funding_status), :include_blank => "Select a Funding Status"
     
     .field
@@ -40,7 +40,7 @@
         = f.hidden_field :potential_funding_start_date
 
       .field
-        = f.label :potential_funding_source, "Potential Funding Source:"
+        = f.label :potential_funding_source, "Potential Funding Source:*"
         = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, study.potential_funding_source), :include_blank => "Select a Potential Funding Source"
 
       / Internal Funded Pilot Project selected
@@ -56,7 +56,7 @@
         = f.hidden_field :funding_start_date
       
       .field
-        = f.label :funding_source, "Funding Source:"
+        = f.label :funding_source, "Funding Source:*"
         = f.select :funding_source, options_for_select(FUNDING_SOURCES, study.funding_source), :include_blank => "Select a Funding Source"
 
       / Internal Funded Pilot Project selected

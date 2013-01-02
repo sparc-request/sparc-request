@@ -7,11 +7,11 @@
   .grid_7.box
     .info
       .field
-        = f.label :short_title, "Short Title:"
+        = f.label :short_title, "Short Title:*"
         = f.text_field :short_title
 
       .field
-        = f.label :title, "Project Title:"
+        = f.label :title, "Project Title:*"
         = f.text_field :title
 
       .field
@@ -20,7 +20,7 @@
 
       .funded
         .field
-          = f.label :funding_source, "Funding Source:"
+          = f.label :funding_source, "Funding Source:*"
           = f.select :funding_source, options_for_select(FUNDING_SOURCES, project.funding_source), :include_blank => "Select a Funding Source"
 
       .indirect_cost_rate

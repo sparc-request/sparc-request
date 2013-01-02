@@ -29,10 +29,13 @@ class Portal::VisitsController < Portal::BaseController
     percent = @subsidy.try(:percent_subsidy).try(:*, 100)
     position = @visit.position
     line_item = @visit.line_item
-    @visit.move_to_bottom
+    @visit.move_to_bottom # TODO: why?
     @visit.line_item.visits.reload
     if @visit.delete
-      @service_request = @sub_service_request.service_request
+      @service_request = @sub_service_request.service_request # TODO: we already did this earlier
+
+      # destroy all the other visits at the same position
+      # TODO: this logic should be moved to the model
       @service_request.per_patient_per_visit_line_items.each do |li|
         unless li == line_item
           visit = li.visits.find_by_position(position)
@@ -41,6 +44,7 @@ class Portal::VisitsController < Portal::BaseController
           visit.try(:delete)
         end
       end
+
       @service_request.update_attribute(:visit_count, @service_request.visit_count - 1)
       # Change the pi_contribution on the subsidy in accordance with the new direct cost total
       # Have to reload the service request to get the correct direct cost total for the subsidy

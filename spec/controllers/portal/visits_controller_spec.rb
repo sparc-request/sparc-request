@@ -52,6 +52,8 @@ describe Portal::VisitsController do
       }
 
       let!(:visit) {
+        # TODO: use ServiceRequest#add_visit ?
+        service_request.update_attributes(visit_count: 1)
         FactoryGirl.create(
             :visit,
             line_item_id:
@@ -121,6 +123,7 @@ describe Portal::VisitsController do
         line_item1_visits = Visit.bulk_create(10, line_item_id: line_item1.id)
         line_item2_visits = Visit.bulk_create(10, line_item_id: line_item2.id)
         line_item3_visits = Visit.bulk_create(10, line_item_id: line_item3.id)
+        service_request.update_attributes(visit_count: 10)
 
         post :destroy, {
           format: :js,
@@ -138,6 +141,21 @@ describe Portal::VisitsController do
         line_item1.visits.count.should eq 9
         line_item2.visits.count.should eq 9
         line_item3.visits.count.should eq 9
+      end
+
+      it 'should update visit count' do
+        line_item1_visits = Visit.bulk_create(10, line_item_id: line_item1.id)
+        line_item2_visits = Visit.bulk_create(10, line_item_id: line_item2.id)
+        line_item3_visits = Visit.bulk_create(10, line_item_id: line_item3.id)
+        service_request.update_attributes(visit_count: 10)
+
+        post :destroy, {
+          format: :js,
+          id: line_item1_visits[4].id,
+        }.with_indifferent_access
+
+        service_request.reload
+        service_request.visit_count.should eq 9
       end
     end
   end

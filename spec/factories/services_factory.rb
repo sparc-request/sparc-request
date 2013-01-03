@@ -28,7 +28,7 @@ FactoryGirl.define do
       end
       
       evaluator.pricing_map_count.times do
-        service.pricing_maps.build
+        service.pricing_maps.build(display_date: Date.today)
       end
 
       evaluator.service_provider_count.times do

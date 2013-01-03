@@ -226,17 +226,13 @@ a.save-option{
 /* CatalogView */
 
 #left_signin_button{
-  float: left;
-  width: 250px;
-  margin-top: 60px;
-  margin-left: 60px;
+  width: 215px;
+  padding: 10px;
 }
 
 #right_signin_button{
-  float: right;
-  width: 250px;
-  margin-top: 60px;
-  margin-right: 60px;
+  width: 215px;
+  padding: 10px;
 }
 
 .signin_dialog{

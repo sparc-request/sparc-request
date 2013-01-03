@@ -249,13 +249,14 @@ describe "Line Item" do
                             service_request_id: service_request.id, subject_count: 5)}  
       let!(:visit)         {FactoryGirl.create(:visit, line_item_id: line_item.id, research_billing_qty: 5)}
       let!(:pricing_setup) {FactoryGirl.create(:pricing_setup, organization_id: program.id)}
+      let!(:pricing_map)   { service.pricing_maps[0] }
 
       before :each do
         @protocol = Study.create(FactoryGirl.attributes_for(:protocol))
         @protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 200)
         @protocol.save :validate => false
         service_request.update_attributes(protocol_id: @protocol.id)
-        service.pricing_maps[0].update_attributes(unit_factor: 5)
+        pricing_map.update_attributes(unit_factor: 5)
       end
 
       context "direct cost for visit based service single subject" do

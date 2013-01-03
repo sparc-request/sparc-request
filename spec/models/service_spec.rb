@@ -6,40 +6,25 @@ describe 'Service' do
   describe 'parents' do
 
     it 'should return an array with only the organization if there are no parents' do
-      organization = FactoryGirl.build(:organization)
-      organization.save!
-
-      service = FactoryGirl.build(:service, :organization_id => organization.id)
-      service.save!
+      organization = FactoryGirl.create(:organization)
+      service = FactoryGirl.create(:service, :organization_id => organization.id)
 
       service.parents.should eq [ organization ]
     end
 
     it 'should return an array with the organization and its parent if there is a parent' do
-      parent = FactoryGirl.build(:organization)
-      parent.save!
-
-      child = FactoryGirl.build(:organization, :parent_id => parent.id)
-      child.save!
-
-      service = FactoryGirl.build(:service, :organization_id => child.id)
-      service.save!
+      parent = FactoryGirl.create(:organization)
+      child = FactoryGirl.create(:organization, :parent_id => parent.id)
+      service = FactoryGirl.create(:service, :organization_id => child.id)
 
       service.parents.should eq [ parent, child ]
     end
 
     it 'should return an array with the grandparent, parent, and child if there is a grandparent' do
-      grandparent = FactoryGirl.build(:organization)
-      grandparent.save!
-
-      parent = FactoryGirl.build(:organization, :parent_id => grandparent.id)
-      parent.save!
-
-      child = FactoryGirl.build(:organization, :parent_id => parent.id)
-      child.save!
-
-      service = FactoryGirl.build(:service, :organization_id => child.id)
-      service.save!
+      grandparent = FactoryGirl.create(:organization)
+      parent = FactoryGirl.create(:organization, :parent_id => grandparent.id)
+      child = FactoryGirl.create(:organization, :parent_id => parent.id)
+      service = FactoryGirl.create(:service, :organization_id => child.id)
 
       service.parents.should eq [ grandparent, parent, child ]
     end
@@ -149,7 +134,7 @@ describe 'Service' do
   describe "is one time fee" do
 
     let!(:service)     { FactoryGirl.create(:service) }
-    let!(:pricing_map) { FactoryGirl.create(:pricing_map, service_id: service.id) }
+    let!(:pricing_map) { service.pricing_maps[0] }
 
     it "should return false if the pricing map is not a one time fee" do
       service.is_one_time_fee?.should eq(false)
@@ -206,37 +191,34 @@ describe 'Service' do
     end
 
     it "should raise an exception if the display date is nil" do
-      pricing_map = FactoryGirl.create(:pricing_map, service_id: service.id, display_date: nil)
+      pricing_map = service.pricing_maps[0]
+      pricing_map.update_attributes(display_date: nil)
       lambda { service.displayed_pricing_map }.should raise_exception(TypeError)
     end
   end
 
   describe 'current_pricing_map' do
     it 'should raise an exception if there are no pricing maps' do
-      service = FactoryGirl.build(:service)
-      service.save!
+      service = FactoryGirl.create(:service)
       service.pricing_maps.delete_all      
       lambda { service.current_pricing_map }.should raise_exception(ArgumentError)
     end
 
     it 'should return the only pricing map if there is one pricing map and it is in the past' do
-      service = FactoryGirl.build(:service, :pricing_map_count => 1)
-      service.reload      
+      service = FactoryGirl.create(:service, :pricing_map_count => 1)
       service.pricing_maps[0].display_date = Date.today - 1
       service.current_pricing_map.should eq service.pricing_maps[0]
     end
 
     it 'should return the most recent pricing map in the past if there is more than one' do
-      service = FactoryGirl.build(:service, :pricing_map_count => 2)
-      service.reload      
+      service = FactoryGirl.create(:service, :pricing_map_count => 2)
       service.pricing_maps[0].display_date = Date.today - 1
       service.pricing_maps[1].display_date = Date.today - 2
       service.current_pricing_map.should eq service.pricing_maps[0]
     end
 
     it 'should return the pricing map in the past if one is in the past and one is in the future' do
-      service = FactoryGirl.build(:service, :pricing_map_count => 2)
-      service.reload      
+      service = FactoryGirl.create(:service, :pricing_map_count => 2)
       service.pricing_maps[0].display_date = Date.today + 1
       service.pricing_maps[1].display_date = Date.today - 1
       service.current_pricing_map.should eq service.pricing_maps[1]
@@ -245,15 +227,13 @@ describe 'Service' do
 
   describe 'pricing_map_for_date' do
     it 'should raise an exception if there are no pricing maps' do
-      service = FactoryGirl.build(:service)
-      service.save!
+      service = FactoryGirl.create(:service)
       service.pricing_maps.delete_all      
       lambda { service.current_pricing_map }.should raise_exception(ArgumentError)
     end
 
     it 'should return the pricing map for the given date if there is a pricing map with a display date of that date' do
-      service = FactoryGirl.build(:service, :pricing_map_count => 5)
-      service.reload      
+      service = FactoryGirl.create(:service, :pricing_map_count => 5)
       base_date = Date.parse('2012-01-01')
       service.pricing_maps[0].display_date = base_date + 1
       service.pricing_maps[1].display_date = base_date
@@ -269,30 +249,26 @@ describe 'Service' do
 
   describe 'current_effective_pricing_map' do
     it 'should raise an exception if there are no pricing maps' do
-      service = FactoryGirl.build(:service)
-      service.save!
+      service = FactoryGirl.create(:service)
       service.pricing_maps.delete_all      
       lambda { service.current_effective_pricing_map }.should raise_exception(ArgumentError)
     end
 
     it 'should return the only pricing map if there is one pricing map and it is in the past' do
-      service = FactoryGirl.build(:service, :pricing_map_count => 1)
-      service.reload      
+      service = FactoryGirl.create(:service, :pricing_map_count => 1)
       service.pricing_maps[0].effective_date = Date.today - 1
       service.current_effective_pricing_map.should eq service.pricing_maps[0]
     end
 
     it 'should return the most recent pricing map in the past if there is more than one' do
-      service = FactoryGirl.build(:service, :pricing_map_count => 2)
-      service.reload
+      service = FactoryGirl.create(:service, :pricing_map_count => 2)
       service.pricing_maps[0].effective_date = Date.today - 1
       service.pricing_maps[1].effective_date = Date.today - 2
       service.current_effective_pricing_map.should eq service.pricing_maps[0]
     end
 
     it 'should return the pricing map in the past if one is in the past and one is in the future' do
-      service = FactoryGirl.build(:service, :pricing_map_count => 2)
-      service.reload
+      service = FactoryGirl.create(:service, :pricing_map_count => 2)
       service.pricing_maps[0].effective_date = Date.today + 1
       service.pricing_maps[1].effective_date = Date.today - 1
       service.current_effective_pricing_map.should eq service.pricing_maps[1]
@@ -301,15 +277,13 @@ describe 'Service' do
 
   describe 'effective_pricing_map_for_date' do
     it 'should raise an exception if there are no pricing maps' do
-      service = FactoryGirl.build(:service)
-      service.save!
+      service = FactoryGirl.create(:service)
       service.pricing_maps.delete_all
       lambda { service.current_effective_pricing_map }.should raise_exception(ArgumentError)
     end
 
     it 'should return the pricing map for the given date if there is a pricing map with a effective date of that date' do
-      service = FactoryGirl.build(:service, :pricing_map_count => 5)
-      service.reload
+      service = FactoryGirl.create(:service, :pricing_map_count => 5)
       base_date = Date.parse('2012-01-01')
       service.pricing_maps[0].effective_date = base_date + 1
       service.pricing_maps[1].effective_date = base_date
@@ -356,10 +330,15 @@ describe 'Service' do
   describe "get rate maps" do
     let!(:core)          { FactoryGirl.create(:core) }
     let!(:service)       { FactoryGirl.create(:service, organization_id: core.id) }
-    let!(:pricing_map)   { FactoryGirl.create(:pricing_map, full_rate: 100, display_date: Date.today - 1,
-                           service_id: service.id) }
+    let!(:pricing_map)   { service.pricing_maps[0] }
     let!(:pricing_setup) { FactoryGirl.create(:pricing_setup, display_date: Date.today - 1, federal: 25,
                            corporate: 25, other: 25, member: 25, organization_id: core.id)}
+
+    before(:each) do
+      pricing_map.update_attributes(
+          full_rate: 100,
+          display_date: Date.today - 1)
+    end
                                                           
     it "should return a hash with the correct rates" do
       pm = PricingMap.find(pricing_map.id)

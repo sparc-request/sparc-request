@@ -71,6 +71,7 @@ def generate_report
             'IACUC#',
             'IACUC Approval Date',
             'IND (Y/N)',
+            'IND#',
             'IND On Hold (Y/N)',
             'IDE (Y/N)',
             'Organizational Entities Selected for Request']
@@ -132,9 +133,12 @@ def generate_report
 
       row << (protocol.research_types_info.investigational_products ? 'Yes' : 'No')
       if protocol.research_types_info.investigational_products
+        row << (protocol.research_types_info.investigational_products ? protocol.investigational_products_info.ind_number : '')
         row << (protocol.research_types_info.investigational_products ? (protocol.investigational_products_info.ind_on_hold ? 'Yes' : 'No') : '')
       else
-        row << ''
+        2.times do
+          row << ''
+        end
       end
 
       row << (protocol.research_types_info.ip_patents ? 'Yes' : 'No')

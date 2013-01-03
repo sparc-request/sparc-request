@@ -53,7 +53,7 @@
 
     .user_institution
       = label_tag "identity[institution]", "Institution:"
-      = select_tag "identity[institution]", options_for_select(INSTITUTIONS, identity.institution), :prompt => "Select an Institution"
+      = select_tag "identity[institution]", options_for_select((INSTITUTIONS.sort), identity.institution), :prompt => "Select an Institution"
       %br
       %br
 
@@ -83,7 +83,7 @@
 
     .subspecialty
       = label_tag "identity[subspecialty]", "Subspecialty:"
-      = select_tag "identity[subspecialty]", options_for_select(SUBSPECIALTIES, identity.subspecialty), :prompt => "Select a Subspecialty"
+      = select_tag "identity[subspecialty]", options_for_select((SUBSPECIALTIES.sort), identity.subspecialty), :prompt => "Select a Subspecialty"
       %br
       %br
 

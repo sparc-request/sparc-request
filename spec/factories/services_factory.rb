@@ -24,19 +24,19 @@ FactoryGirl.define do
 
     before(:create) do |service, evaluator|
       evaluator.line_item_count.times do
-        service.line_items.build
+        service.line_items.build(FactoryGirl.attributes_for(:line_item))
       end
       
       evaluator.pricing_map_count.times do
-        service.pricing_maps.build(display_date: Date.today)
+        service.pricing_maps.build(FactoryGirl.attributes_for(:pricing_map))
       end
 
       evaluator.service_provider_count.times do
-        service.service_providers.build
+        service.service_providers.build(FactoryGirl.attributes_for(:service_provider))
       end
 
       evaluator.service_relation_count.times do
-        service.service_relations.build
+        service.service_relations.build(FactoryGirl.attributes_for(:service_relation))
       end
     end
   end

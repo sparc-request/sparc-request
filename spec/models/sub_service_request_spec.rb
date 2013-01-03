@@ -233,9 +233,40 @@ describe 'SubServiceRequest' do
 
     describe "sub service request status" do
 
-      context "can be edited"
+      let!(:sub_service_request) { FactoryGirl.create(:sub_service_request) }
 
-      context "candidate statuses"
+      context "can be edited" do
+
+        it "should return true if the status is draft" do
+          sub_service_request.update_attributes(status: "draft")
+          sub_service_request.can_be_edited?.should eq(true)
+        end
+
+        it "should return true if the status is submitted" do
+          sub_service_request.update_attributes(status: "submitted")
+          sub_service_request.can_be_edited?.should eq(true)
+        end
+
+        it "should return true if the status is nil" do
+          sub_service_request.update_attributes(status: nil)
+          sub_service_request.can_be_edited?.should eq(true)
+        end
+
+        it "should return false if status is anything other than above states" do
+          sub_service_request.update_attributes(status: "complete")
+          sub_service_request.can_be_edited?.should eq(false)
+        end
+      end
+
+      context "candidate statuses" do
+
+      let!(:core)  { FactoryGirl.create(:core, id: 5) }
+
+      it "should contain 'ctrc approved' and 'ctrc review' if the organization is ctrc"
+
+      it "should not contain ctrc statuses if the organization is not ctrc"
+              
+      end 
 
       context "status equals"
 

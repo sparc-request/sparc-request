@@ -6,16 +6,16 @@ describe "subsidy page" do
   fake_login_for_each_test
   build_service_request_with_project
 
-  describe "no subsidy available" do
-    before :each do
-      add_visits
-      visit service_subsidy_service_request_path service_request.id
-      sleep 2
-    end
-    it 'should not have any subsidies', :js => true do
-      page.should_not have_css(".subsidy-item")
-    end
-  end
+  # describe "no subsidy available" do
+  #   before :each do
+  #     add_visits
+  #     visit service_subsidy_service_request_path service_request.id
+  #     sleep 2
+  #   end
+  #   it 'should not have any subsidies', :js => true do
+  #     page.should_not have_css(".subsidy-item")
+  #   end
+  # end
 
   before :each do
     add_visits
@@ -47,10 +47,12 @@ describe "subsidy page" do
         sleep 2
       end
       it 'should reject to high an amount', :js => true do
+        find(:xpath, "//a/img[@alt='Savecontinue']/..").click
         page.should have_text("cannot exceed maximum dollar amount")
       end
 
-      it 'should reject to high a percentage', :js => true do
+      it 'should reject too high a percentage', :js => true do
+        
       end
     end
 

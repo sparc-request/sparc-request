@@ -31,7 +31,7 @@
         %br
       .user_role
         %strong
-          = f.label :role, "Role:"
+          = f.label :role, "Role:*"
         %br
         = f.select :role, options_for_select(USER_ROLES, f.object.role), :prompt => "Select a Role"
         %br

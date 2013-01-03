@@ -28,7 +28,7 @@
           = text_field_tag('associated_user[phone]', user.phone, :disabled => true)
 
         #role
-          %strong= label_tag('associated_user[role]', 'Role:')
+          %strong= label_tag('associated_user[role]', 'Role:*')
           %br
           = select_tag('associated_user[role]', options_for_select(USER_ROLES, user.role), :prompt => 'Please Select')
           #pi-validation-message

@@ -10,6 +10,7 @@ class SubServiceRequest < ActiveRecord::Base
   has_many :past_statuses, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
   has_many :documents, :dependent => :destroy
+  has_many :notes, :dependent => :destroy 
   has_one :subsidy, :dependent => :destroy
 
   # These two ids together form a unique id for the sub service request

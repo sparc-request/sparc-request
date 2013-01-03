@@ -126,8 +126,8 @@ describe "Line Item" do
       let!(:ssr)             { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id,
                               organization_id: program.id) }
       let!(:service)      {FactoryGirl.create(:service)}
-      let!(:pricing_map)  {FactoryGirl.create(:pricing_map, service_id: service.id)}
-      let!(:pricing_map2) {FactoryGirl.create(:pricing_map, service_id: service.id, display_date: Date.parse('2040-01-01'))}
+      let!(:pricing_map)  {FactoryGirl.create(:pricing_map, service_id: service.id, display_date: Date.today) }
+      let!(:pricing_map2) {FactoryGirl.create(:pricing_map, service_id: service.id, display_date: Date.today + 1) }
       let!(:line_item)    {FactoryGirl.create(:line_item, service_request_id: service_request.id,
                            sub_service_request_id: ssr.id, service_id: service.id)}  
 
@@ -245,7 +245,6 @@ describe "Line Item" do
       let!(:ssr)             { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id,
                               organization_id: program.id) }
       let!(:service)       {FactoryGirl.create(:service, organization_id: program.id)}
-      let!(:pricing_map)   {FactoryGirl.create(:pricing_map, service_id: service.id, unit_factor: 5)}
       let!(:line_item)     {FactoryGirl.create(:line_item, service_id: service.id,
                             service_request_id: service_request.id, subject_count: 5)}  
       let!(:visit)         {FactoryGirl.create(:visit, line_item_id: line_item.id, research_billing_qty: 5)}
@@ -256,6 +255,7 @@ describe "Line Item" do
         @protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 200)
         @protocol.save :validate => false
         service_request.update_attributes(protocol_id: @protocol.id)
+        service.pricing_maps[0].update_attributes(unit_factor: 5)
       end
 
       context "direct cost for visit based service single subject" do

@@ -14,6 +14,7 @@ class Visit < ActiveRecord::Base
   attr_accessible :insurance_billing_qty #qty billed to the patients insurance or third party
   attr_accessible :effort_billing_qty #qty billing to % effort
   attr_accessible :position
+  attr_accessible :name
 
   validates :research_billing_qty, :numericality => {:only_integer => true}
   validates :insurance_billing_qty, :numericality => {:only_integer => true}

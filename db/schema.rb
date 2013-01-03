@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121221163635) do
+ActiveRecord::Schema.define(:version => 20130103170244) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -256,6 +256,14 @@ ActiveRecord::Schema.define(:version => 20121221163635) do
     t.text     "body"
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
+  end
+
+  create_table "notes", :force => true do |t|
+    t.integer  "identity_id"
+    t.integer  "sub_service_request_id"
+    t.string   "body"
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
   end
 
   create_table "notifications", :force => true do |t|
@@ -641,6 +649,7 @@ ActiveRecord::Schema.define(:version => 20121221163635) do
     t.integer  "insurance_billing_qty", :default => 0
     t.integer  "effort_billing_qty",    :default => 0
     t.integer  "position"
+    t.string   "name"
   end
 
   add_index "visits", ["line_item_id"], :name => "index_visits_on_line_item_id"

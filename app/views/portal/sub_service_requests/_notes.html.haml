@@ -1,0 +1,7 @@
+#notes_table
+  %table
+    %thead
+      %tr
+        %td{:colspan => 1}
+        %td{:colspan => 2}
+          = link_to "Add a Note", 'javascript:void(0);', :class => "add_note_link", :'data-sub_service_request_id' => @sub_service_request.id

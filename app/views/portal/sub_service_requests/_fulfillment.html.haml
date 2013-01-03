@@ -31,6 +31,11 @@
   #add_service_container
     = render 'add_service'
 
+#fulfillment_notes.ui-corner-all
+  %h3 Notes
+  #notes
+    = render 'notes'
+
 #visit_toasts
   - @user_toasts.each do |user_toast|
     .user_toast{:'data-toast_id' => user_toast.id, :'data-message' => user_toast.message}

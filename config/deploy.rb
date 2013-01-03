@@ -53,8 +53,8 @@ namespace :db do
     # run "ln -nfs /var/www/rails/catalog_manager/current/public #{release_path}/public/catalog_manager"
     # run "ln -nfs /var/www/rails/portal/current/public #{release_path}/public/portal"
 
-    #symlinked document folders
-    run "ln -nfs #{shared_path}/system /var/www/rails/portal/current/public/system"
+    # #symlinked document folders
+    # run "ln -nfs #{shared_path}/system /var/www/rails/portal/current/public/system"
   end
 
   desc "seed the database for the rails environment"

@@ -35,6 +35,7 @@ class Identity < ActiveRecord::Base
   has_many :user_notifications, :dependent => :destroy
   has_many :received_toast_messages, :class_name => 'ToastMessage', :foreign_key => 'to', :dependent => :destroy
   has_many :sent_toast_messages, :class_name => 'ToastMessage', :foreign_key => 'from', :dependent => :destroy
+  has_many :notes, :dependent => :destroy
 
   # TODO: Identity doesn't really have many sub service requests; an
   # identity is the owner of many sub service requests.  We need a

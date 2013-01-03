@@ -17,7 +17,8 @@ class ImpactArea < ActiveRecord::Base
     'hypertension' => 'Hypertension',
     'stroke' => 'Stroke',
     'diabetes' => 'Diabetes',
-    'cancer' => 'Cancer'
+    'cancer' => 'Cancer',
+    'other' => 'Other'
   }
 end
 

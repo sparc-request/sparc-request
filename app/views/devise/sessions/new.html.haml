@@ -1,24 +1,21 @@
-.devise_form#login
-  .grid_5.box
+.devise_form#login{:style => "padding-left:0"}
+  .grid_6.prefix_3.suffix_3.box
     .info
-      %h2 
+      %h2.center
         Sign in using your institutional login 
         %br
         (ie - MUSC netid and password)
-
-      = button_to "Continue to sign in page", identity_omniauth_authorize_path(:shibboleth), :class => 'btn ui-button ui-widget ui-state-default ui-corner-all'
       %br
-      %br
-      %br
-      %br
-      %br
-      %br
+      .center 
+        = button_to "Continue to sign in page", identity_omniauth_authorize_path(:shibboleth), :class => 'btn ui-button ui-widget ui-state-default ui-corner-all'
+      
       %br
 
-
-  .grid_5.box
+  .clear
+  %br
+  .grid_6.prefix_3.suffix_3.box
     .info
-      %h2 
+      %h2.center
         Sign in using a non-institutional login
         %br
         (ie - SPARC created account)
@@ -39,3 +36,4 @@
         .clear
     .links
       = render "devise/shared/links"
+    %br

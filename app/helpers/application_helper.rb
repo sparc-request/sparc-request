@@ -63,7 +63,7 @@ module ApplicationHelper
       icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
       visit_name = line_items[0].visits[n - 1].name || "Visit #{n}"
 
-      if params[:action] == 'review'
+      if params[:action] == 'review' || params[:action] == 'show'
         returning_html += content_tag(:th, content_tag(:span, visit_name), :width => 60, :class => 'visit_number')
       else
         returning_html += content_tag(:th, 

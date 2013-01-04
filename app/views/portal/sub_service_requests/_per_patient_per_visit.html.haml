@@ -41,6 +41,7 @@
           - unless ppv.visits.empty?
             %tr.visit{:class => "li_#{ppv.id}"}
               %th
+              %th
               %th Position
               %th Name
               %th Quantity
@@ -50,6 +51,7 @@
               %th
             - ppv.visits.each do |visit|
               %tr.visit{:class => "li_#{ppv.id}"}
+                %td
                 %td
                 %td= visit.try(:position)
                 %td= visit.try(:name) || "Visit #{visit.try(:position)}"

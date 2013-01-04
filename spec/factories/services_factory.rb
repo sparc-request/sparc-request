@@ -23,11 +23,23 @@ FactoryGirl.define do
     end
 
     before(:create) do |service, evaluator|
+      # There are two ways which we add pricing maps to a newly created
+      # service in a test:
+      #
+      #   1) pricing_map = FactoryGirl.create(:pricing_map, ...)
+      #      service = FactoryGirl.create(:service, pricing_maps = [ pricing_map ], ... )
+      #
+      #   2) service = FactoryGirl.create(:service, pricing_map_count = 1, ...)
+      #
+      # This will ensure that if pricing_maps is specified, we won't
+      # create any additional pricing maps.
+      pricing_map_count = evaluator.pricing_maps.count > 0 ? 0 : evaluator.pricing_map_count
+
       evaluator.line_item_count.times do
         service.line_items.build(FactoryGirl.attributes_for(:line_item))
       end
       
-      evaluator.pricing_map_count.times do
+      pricing_map_count.times do
         service.pricing_maps.build(FactoryGirl.attributes_for(:pricing_map))
       end
 

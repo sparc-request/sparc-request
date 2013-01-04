@@ -121,11 +121,13 @@ describe 'as a user on catalog page' do
 
     ## Ensure pricing map copied over the content from the existing pricing map
     page.execute_script("$('.ui-accordion-header:last').click()")
-    
-    within('.pricing_map_form:nth-of-type(4)') do
-      find("input[id$='full_rate']").value.should eq '45.00'
-      find("input[id$='unit_type']").value.should eq 'self'
-    end
+
+    # Check the last pricing map.  The one at position -1 is blank (and
+    # not visible); test the one prior to it instead.
+    form = all(".pricing_map_form")[-2]
+
+    retry_until { form.find("input[id$='full_rate']").value.should eq '45.00' }
+    retry_until { form.find("input[id$='unit_type']").value.should eq 'self' }
   end
 
 end

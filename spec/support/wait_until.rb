@@ -32,13 +32,22 @@ end
 def retry_until(seconds=10, exception=StandardError)
   start_time = Time.now
   end_time = start_time + seconds
+  last_exception = nil
 
   loop do
-    raise WaitUntilTimedOut, "Timed out" if Time.now > end_time
+    if Time.now > end_time then
+      if last_exception then
+        raise last_exception
+      else
+        raise WaitUntilTimedOut, "Timed out"
+      end
+    end
+
     begin
       result = yield
       return result
-    rescue exception
+    rescue exception => e
+      last_exception = e
       sleep 0.01
     end
   end

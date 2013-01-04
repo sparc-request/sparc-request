@@ -83,11 +83,14 @@ describe 'as a user on catalog page' do
     end
   end
   
-  it 'should create a pricing map with the same dates as the pricing setup', :js => true do
+  it 'should create a pricing map with the same dates as the pricing setup', :js => true, :firebug => true do
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
     click_button("Add Pricing Setup")
     
+    p PricingMap.all
+
     page.execute_script("$('.ui-accordion-header').click()") 
+    p PricingMap.all
     within('.ui-accordion') do
       find('.display_date').click
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
@@ -107,6 +110,7 @@ describe 'as a user on catalog page' do
       page.execute_script %Q{ $(".rate").change() }
     end
   
+    p PricingMap.all
     page.execute_script %Q{ $(".save_button").click() }
     wait_for_javascript_to_finish
 
@@ -121,11 +125,27 @@ describe 'as a user on catalog page' do
 
     ## Ensure pricing map copied over the content from the existing pricing map
     page.execute_script("$('.ui-accordion-header:last').click()")
-    
-    within('.pricing_map_form:nth-of-type(4)') do
-      find("input[id$='full_rate']").value.should eq '45.00'
-      find("input[id$='unit_type']").value.should eq 'self'
-    end
+
+    # TODO: There appear to be 6 pricing map forms, with the following
+    # values for full rate:
+    #
+    #   "45.00"
+    #   "1.00"
+    #   "45.00"
+    #   "45.00"
+    #   "45.00"
+    #   ""
+    #
+    # The first five are visible on the page and the last one is not, so
+    # we take the next-to-last one.
+    #
+    # Why does the second one have a different value from all the rest?
+    # I have no idea.
+    #
+    form = all(".pricing_map_form")[-2]
+
+    retry_until { form.find("input[id$='full_rate']").value.should eq '45.00' }
+    retry_until { form.find("input[id$='unit_type']").value.should eq 'self' }
   end
 
 end

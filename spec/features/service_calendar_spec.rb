@@ -212,7 +212,7 @@ describe "service calendar" do
         page.execute_script("$('#visits_#{line_item2.visits[1].id}_effort_billing_qty').remove()")
         page.execute_script("$('#visits_#{line_item2.visits[1].id}_research_billing_qty').remove()")
 
-        #click_link "check_row_#{line_item2.id}_billing_strategy"
+        click_link "check_row_#{line_item2.id}_billing_strategy"
 
         fill_in "visits_#{line_item2.visits[1].id}_research_billing_qty", :with => 10
         fill_in "visits_#{line_item2.visits[1].id}_insurance_billing_qty", :with => 10

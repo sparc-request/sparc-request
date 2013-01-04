@@ -25,7 +25,7 @@ gem 'cache_digests'
 gem 'dynamic_form'
 gem 'inflection-js-rails'
 
-gem 'obis-bridge', :git => 'git@github.com:HSSC/obis-bridge.git'
+# gem 'obis-bridge', :git => 'git@github.com:HSSC/obis-bridge.git'
 
 gem 'will_paginate'
 

@@ -32,6 +32,18 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     end
   end
 
+  def add_note
+    @sub_service_request = SubServiceRequest.find(params[:id])
+    if @sub_service_request.notes.create(:identity_id => @user.id, :body => params[:body])
+      @sub_service_request.reload
+      render 'portal/sub_service_requests/add_note'
+    else
+      respond_to do |format|
+        format.js { render :status => 500, :json => clean_errors(@sub_service_request.errors) }
+      end
+    end
+  end
+
   # TODO: Move this logic to the model
   def add_line_item
     @sub_service_request = SubServiceRequest.find(params[:id])

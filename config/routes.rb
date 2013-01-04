@@ -162,6 +162,7 @@ SparcRails::Application.routes.draw do
             put :update_from_fulfillment
             post :add_line_item
             post :new_document
+            post :add_note
           end
         end
 

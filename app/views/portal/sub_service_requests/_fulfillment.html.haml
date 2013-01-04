@@ -31,10 +31,8 @@
   #add_service_container
     = render 'add_service'
 
-#fulfillment_notes.ui-corner-all
-  %h3 Notes
-  #notes
-    = render 'notes'
+#ssr_notes.ui-corner-all
+  = render 'notes'
 
 #visit_toasts
   - @user_toasts.each do |user_toast|

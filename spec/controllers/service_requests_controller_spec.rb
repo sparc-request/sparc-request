@@ -301,11 +301,12 @@ describe ServiceRequestsController do
   describe 'GET service_calendar' do
     let!(:service) {
       service = FactoryGirl.create(:service, pricing_map_count: 1)
-      service.pricing_maps[0].display_date = Date.today
+      service.pricing_maps[0].update_attributes(display_date: Date.today)
       service
     }
 
     let!(:pricing_map) { service.pricing_maps[0] }
+
     let!(:line_item) { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id) }
 
     it "should set the page if page is passed in" do
@@ -388,7 +389,7 @@ describe ServiceRequestsController do
       line_item.visits.count.should eq 20
     end
 
-    it 'should NOT create visits if too few on one time fee line items' do
+    it 'should NOT create visits if there are too few of them, on one time fee line items' do
       pricing_map.update_attribute(:is_one_time_fee, true)
       service_request.update_attribute(:visit_count, 10)
       Visit.bulk_create(5, line_item_id: line_item.id)
@@ -402,8 +403,8 @@ describe ServiceRequestsController do
   end
 
   describe 'GET document_management' do
-    let!(:service1) { service = FactoryGirl.create(:service, pricing_map_count: 0) }
-    let!(:service2) { service = FactoryGirl.create(:service, pricing_map_count: 0) }
+    let!(:service1) { service = FactoryGirl.create(:service) }
+    let!(:service2) { service = FactoryGirl.create(:service) }
 
     before(:each) do
       service_list = [ service1, service2 ]
@@ -499,7 +500,9 @@ describe ServiceRequestsController do
           :service,
           pricing_map_count: 1,
           organization_id: core.id)
-      service.pricing_maps[0].display_date = Date.today
+      service.pricing_maps[0].update_attributes(
+          display_date: Date.today,
+          unit_minimum: 42)
       service
     }
 
@@ -508,7 +511,7 @@ describe ServiceRequestsController do
           :service,
           pricing_map_count: 1,
           organization_id: core.id)
-      service.pricing_maps[0].display_date = Date.today
+      service.pricing_maps[0].update_attributes(display_date: Date.today)
       service
     }
 
@@ -517,7 +520,7 @@ describe ServiceRequestsController do
           :service,
           pricing_map_count: 1,
           organization_id: core2.id)
-      service.pricing_maps[0].display_date = Date.today
+      service.pricing_maps[0].update_attributes(display_date: Date.today)
       service
     }
 
@@ -539,7 +542,7 @@ describe ServiceRequestsController do
       service_request.line_items.count.should eq 1
       service_request.line_items[0].service.should eq service
       service_request.line_items[0].optional.should eq true
-      service_request.line_items[0].quantity.should eq 1
+      service_request.line_items[0].quantity.should eq 42
     end
 
     it 'should create a line item for a required service' do
@@ -556,10 +559,10 @@ describe ServiceRequestsController do
       service_request.line_items.count.should eq 2
       service_request.line_items[0].service.should eq service
       service_request.line_items[0].optional.should eq true
-      service_request.line_items[0].quantity.should eq 1
+      service_request.line_items[0].quantity.should eq 42
       service_request.line_items[1].service.should eq service2
       service_request.line_items[1].optional.should eq false
-      service_request.line_items[1].quantity.should eq 1
+      service_request.line_items[1].quantity.should eq 42
     end
 
     it 'should create a line item for an optional service' do
@@ -576,10 +579,10 @@ describe ServiceRequestsController do
       service_request.line_items.count.should eq 2
       service_request.line_items[0].service.should eq service
       service_request.line_items[0].optional.should eq true
-      service_request.line_items[0].quantity.should eq 1
+      service_request.line_items[0].quantity.should eq 42
       service_request.line_items[1].service.should eq service2
       service_request.line_items[1].optional.should eq true
-      service_request.line_items[1].quantity.should eq 1
+      service_request.line_items[1].quantity.should eq 42
     end
 
     it 'should create a sub service request for each organization in the service list' do
@@ -744,22 +747,25 @@ describe ServiceRequestsController do
   context('calendar methods') do
     let!(:service1) {
       service = FactoryGirl.create(:service, pricing_map_count: 1)
-      service.pricing_maps[0].display_date = Date.today
-      service.pricing_maps[0].is_one_time_fee = false
+      service.pricing_maps[0].update_attributes(
+          display_date: Date.today,
+          is_one_time_fee: false)
       service
     }
 
     let!(:service2) {
       service = FactoryGirl.create(:service, pricing_map_count: 1)
-      service.pricing_maps[0].display_date = Date.today
-      service.pricing_maps[0].is_one_time_fee = false
+      service.pricing_maps[0].update_attributes(
+          display_date: Date.today,
+          is_one_time_fee: false)
       service
     }
 
     let!(:service3) {
       service = FactoryGirl.create(:service, pricing_map_count: 1)
-      service.pricing_maps[0].display_date = Date.today
-      service.pricing_maps[0].is_one_time_fee = false
+      service.pricing_maps[0].update_attributes(
+          display_date: Date.today,
+          is_one_time_fee: false)
       service
     }
 

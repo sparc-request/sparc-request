@@ -11,7 +11,6 @@ gem 'sass'
 
 group :development, :test, :profile do
   gem 'sqlite3'
-  gem 'rubyception'
   gem 'rspec-rails'
   gem 'launchy'
   gem 'capybara'
@@ -27,6 +26,12 @@ group :development, :test, :profile do
   # poltergeist repository is for Capybara 2.0 support.  Poltergeist
   # should official support Capybara 2.0 after Dec. 20.
   gem 'poltergeist', :git => 'git://github.com/brutuscat/poltergeist.git'
+
+  # You can put gems in here that you want to use for development but
+  # don't want to force on other developers (e.g. rubyception).
+  if File.exists?('Gemfile.devel') then
+    eval File.read('Gemfile.devel'), nil, 'Gemfile.devel'
+  end
 end
 
 # these are needed for the import script

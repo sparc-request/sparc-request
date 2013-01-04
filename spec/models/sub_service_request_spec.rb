@@ -131,8 +131,8 @@ describe 'SubServiceRequest' do
       let!(:service_request2)     { FactoryGirl.create(:service_request) }
       let!(:sub_service_request)  { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
       let!(:sub_service_request2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request2.id) }
-      let!(:pricing_map)          { FactoryGirl.create(:pricing_map, service_id: service.id, is_one_time_fee: true)}
-      let!(:pricing_map2)         { FactoryGirl.create(:pricing_map, service_id: service2.id)}
+      let!(:pricing_map)          { service.pricing_maps[0] }
+      let!(:pricing_map2)         { service2.pricing_maps[0] }
       let!(:line_item)            { FactoryGirl.create(:line_item, service_request_id: service_request2.id, sub_service_request_id: sub_service_request2.id,
                                    service_id: service.id) }
       let!(:line_item2)           { FactoryGirl.create(:line_item, service_request_id: service_request.id, sub_service_request_id: sub_service_request.id,
@@ -147,6 +147,8 @@ describe 'SubServiceRequest' do
         @protocol.save :validate => false
         service_request.update_attributes(protocol_id: @protocol.id)
         service_request2.update_attributes(protocol_id: @protocol.id)
+        pricing_map.update_attributes(is_one_time_fee: true)
+        pricing_map2.update_attributes(is_one_time_fee: false)
       end
 
       context "direct cost total" do

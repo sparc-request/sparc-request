@@ -47,11 +47,14 @@ describe 'PricingSetup' do
 
     let!(:program)       { FactoryGirl.create(:program) }
     let!(:service)       { FactoryGirl.create(:service, organization_id: program.id) }
-    let!(:pricing_setup) { FactoryGirl.create(:pricing_setup, organization_id: program.id, display_date: Time.now,
-                          effective_date: Time.now) }
+    let!(:pricing_setup) { FactoryGirl.create(:pricing_setup,
+                           organization_id: program.id,
+                           display_date: Time.now,
+                           effective_date: Time.now) }
     
     it "should return pricing maps with correct effective and display dates" do
       pricing_setup.create_pricing_maps
+      service.reload
       service.pricing_maps[1].display_date.to_date.should eq(pricing_setup.display_date.to_date)
       service.pricing_maps[1].effective_date.to_date.should eq(pricing_setup.effective_date.to_date)
     end

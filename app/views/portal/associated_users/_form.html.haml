@@ -58,7 +58,7 @@
         %strong
           = label_tag "identity[institution]", "Institution:"
         %br
-        = select_tag "identity[institution]", options_for_select(INSTITUTIONS, identity.institution), :prompt => "Select an Institution"
+        = select_tag "identity[institution]", options_for_select((INSTITUTIONS.sort), identity.institution), :prompt => "Select an Institution"
         %br
       .user_college
         %strong
@@ -76,7 +76,7 @@
         %strong
           = label_tag "identity[subspecialty]", "Subspecialty:"
         %br
-        = select_tag "identity[subspecialty]", options_for_select(SUBSPECIALTIES, identity.subspecialty), :prompt => "Select a Subspecialty"
+        = select_tag "identity[subspecialty]", options_for_select((SUBSPECIALTIES.sort), identity.subspecialty), :prompt => "Select a Subspecialty"
         %br
       #project_rights
         %strong User Rights:

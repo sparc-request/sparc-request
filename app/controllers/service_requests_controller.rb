@@ -25,11 +25,6 @@ class ServiceRequestsController < ApplicationController
   def navigate
     errors = [] 
     # need to save and navigate to the right page
-    puts "#"*50
-    puts params.inspect
-    puts request.referrer.split('/').last
-    puts params[:service_request]
-    puts "#"*50
 
     #### add logic to save data
     referrer = request.referrer.split('/').last

@@ -42,7 +42,8 @@
             %tr.visit{:class => "li_#{ppv.id}"}
               %th
               %th
-              %th Visit
+              %th Position
+              %th Name
               %th Quantity
               %th R
               %th T
@@ -53,6 +54,7 @@
                 %td
                 %td
                 %td= visit.try(:position)
+                %td= text_field_tag "visit_name", visit.try(:name), :'data-visit_id' => visit.id, :class => 'fulfillment_data'
                 %td= visit.try(:quantity_total)
                 %td= text_field_tag "visit_research_billing_qty", visit.try(:research_billing_qty), :'data-visit_id' => visit.id, :class => 'fulfillment_data to_zero research_billing'
                 %td= text_field_tag "visit_insurance_billing_qty", visit.try(:insurance_billing_qty), :'data-visit_id' => visit.id, :class => 'fulfillment_data to_zero'

@@ -50,6 +50,7 @@ module ApplicationHelper
   end
 
   def generate_visit_header_row service_request, page
+    base_url = "/service_requests/#{service_request.id}/service_calendars/rename_visit"
     page = page == 0 ? 1 : page
     beginning_visit = (page * 5) - 4
     ending_visit = (page * 5) > service_request.visit_count ? service_request.visit_count : (page * 5)
@@ -60,12 +61,13 @@ module ApplicationHelper
       checked = line_items.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?
       action = checked == true ? 'unselect_calendar_column' : 'select_calendar_column'
       icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
+      visit_name = line_items[0].visits[n - 1].name || "Visit #{n}"
 
-      if params[:action] == 'review'
-        returning_html += content_tag(:th, content_tag(:span, "Visit #{n} "), :width => 60, :class => 'visit_number')
+      if params[:action] == 'review' || params[:action] == 'show'
+        returning_html += content_tag(:th, content_tag(:span, visit_name), :width => 60, :class => 'visit_number')
       else
         returning_html += content_tag(:th, 
-                                      content_tag(:span, "Visit #{n} ") +
+                                      text_field_tag("visit_name_#{n}", visit_name, :class => "visit_name", :size => 10, :update => "#{base_url}?visit_position=#{n-1}") +
                                       tag(:br) + 
                                       link_to((content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')), 
                                               "/service_requests/#{service_request.id}/#{action}/#{n}", 

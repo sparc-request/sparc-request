@@ -38,6 +38,9 @@ SparcRails::Application.routes.draw do
       member do
         get 'table'
       end
+      collection do
+        put 'rename_visit'
+      end
     end
 
   end

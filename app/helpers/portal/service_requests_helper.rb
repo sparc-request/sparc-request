@@ -96,7 +96,8 @@ module Portal::ServiceRequestsHelper
         end
         arr = [["Add Visit #{last_position + 1}", nil]]
         last_position.times do |visit|
-          arr << ["Insert before visit #{visit + 1}", visit + 1]
+          visit_name = line_item.visits[visit].name || "Visit #{visit}"
+          arr << ["Insert before #{visit + 1} - #{visit_name}", visit + 1]
         end
       else
         arr = [["Add Visit 1", nil]]
@@ -113,7 +114,8 @@ module Portal::ServiceRequestsHelper
     visit_count = line_item.visits.count
     arr = []
     visit_count.times do |visit|
-      arr << ["Delete Visit #{visit + 1}", visit + 1]
+      visit_name = line_item.visits[visit].name || "Visit #{visit}"
+      arr << ["Delete Visit #{visit + 1} - #{visit_name}", visit + 1]
     end
 
     options_for_select(arr, line_item.visits.count)

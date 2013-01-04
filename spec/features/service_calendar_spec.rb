@@ -46,7 +46,9 @@ describe "service calendar" do
 
       it "should change visits when -> is clicked", :js => true do
         click_link("->")
-        page.should have_content("Visit 6")
+        retry_until {
+          find('#visit_name_6').value.should eq("Visit 6")
+        }
       end
 
       describe "selecting check row button" do

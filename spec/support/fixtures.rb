@@ -65,7 +65,13 @@ def build_project
     protocol.update_attribute(:funding_source, "federal")
     protocol.update_attribute(:indirect_cost_rate, 50.0)
     protocol.save :validate => false
-    FactoryGirl.create(:project_role, protocol_id: protocol.id, identity_id: Identity.find_by_ldap_uid("jug2"), project_rights: "approve", role: "pi")
+    identity = Identity.find_by_ldap_uid('jug2')
+    FactoryGirl.create(
+        :project_role,
+        protocol_id:     protocol.id,
+        identity_id:     identity.id,
+        project_rights:  "approve",
+        role:            "pi")
     service_request.update_attribute(:protocol_id, protocol.id)
   end
 end
@@ -77,7 +83,13 @@ def build_study
     protocol.update_attribute(:funding_source, "federal")
     protocol.update_attribute(:indirect_cost_rate, 50.0)
     protocol.save :validate => false
-    FactoryGirl.create(:project_role, protocol_id: protocol.id, identity_id: Identity.find_by_ldap_uid("jug2"), project_rights: "approve", role: "pi")
+    identity = Identity.find_by_ldap_uid('jug2')
+    FactoryGirl.create(
+        :project_role,
+        protocol_id:     protocol.id,
+        identity_id:     identity.id,
+        project_rights:  "approve",
+        role:            "pi")
     service_request.update_attribute(:protocol_id, protocol.id)
   end
 end

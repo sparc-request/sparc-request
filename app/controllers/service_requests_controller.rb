@@ -67,7 +67,7 @@ class ServiceRequestsController < ApplicationController
       document_grouping = @service_request.document_groupings.create
       process_ssr_organization_ids.each do |org_id|
         sub_service_request = @service_request.sub_service_requests.find_by_organization_id org_id.to_i
-        sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :document_grouping_id => document_grouping.id
+        sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other], :document_grouping_id => document_grouping.id
         sub_service_request.save
       end
     elsif process_ssr_organization_ids and document_grouping_id
@@ -89,7 +89,7 @@ class ServiceRequestsController < ApplicationController
       to_add.each do |org_id|
         if document and not params[:doc_type].empty?
           sub_service_request = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
-          sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :document_grouping_id => document_grouping.id
+          sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other], :document_grouping_id => document_grouping.id
           sub_service_request.save
         else
           doc_errors = {}
@@ -107,13 +107,13 @@ class ServiceRequestsController < ApplicationController
           if @sub_service_request.nil? or document_grouping.documents.size == 1 # we either don't have a sub_service_request or the only document in this group is the one we are updating
             document_grouping.documents.each do |doc|
               new_doc = document ? document : doc.document # use the old document
-              doc.update_attributes(:document => new_doc, :doc_type => params[:doc_type]) if doc.organization.id == org_id.to_i
+              doc.update_attributes(:document => new_doc, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other]) if doc.organization.id == org_id.to_i
             end
           else # we have a sub_service_request and the document count is greater than 1 so we need to do some special stuff
             new_document_grouping = @service_request.document_groupings.create
             document_grouping.documents.each do |doc|
               new_doc = document ? document : doc.document # use the old document
-              doc.update_attributes({:document => new_doc, :doc_type => params[:doc_type], :document_grouping_id => new_document_grouping.id}) if doc.organization.id == @sub_service_request.id
+              doc.update_attributes({:document => new_doc, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other], :document_grouping_id => new_document_grouping.id}) if doc.organization.id == @sub_service_request.id
             end
           end
         end
@@ -345,6 +345,9 @@ class ServiceRequestsController < ApplicationController
       @service_request.service_list.each do |org_id, values|
         line_items = values[:line_items]
         ssr = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
+        unless @service_request.status.nil? and !ssr.status.nil?
+          ssr.update_attribute(:status, @service_request.status)
+        end
 
         line_items.each do |li|
           li.update_attribute(:sub_service_request_id, ssr.id)

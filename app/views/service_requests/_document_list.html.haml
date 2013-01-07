@@ -19,7 +19,7 @@
             - next unless @sub_service_request.nil? or @sub_service_request.organization.name == document.sub_service_request.organization.name
             = @service_list[document.sub_service_request.organization_id][:name]
             %br
-        %td= DOCUMENT_TYPES.key doc.doc_type
+        %td= display_document_type(doc)
         %td= link_to doc.document_file_name, doc.document.url
         - if not review
           %td

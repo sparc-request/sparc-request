@@ -74,6 +74,7 @@ ActiveRecord::Schema.define(:version => 20130107163409) do
     t.integer  "document_file_size"
     t.datetime "document_updated_at"
     t.integer  "document_grouping_id"
+    t.string   "doc_type_other"
   end
 
   create_table "excluded_funding_sources", :force => true do |t|

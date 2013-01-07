@@ -229,11 +229,8 @@ class Protocol::ObisEntitySerializer < Entity::ObisEntitySerializer
         :title                          => attributes['title'],
         :udak_project_number            => attributes['udak_project_number'],
     }
-    p entity
     entity.save!(:validate => false)
-    p entity
     entity.reload
-    p entity
 
     update_affiliations_from_json(entity, attributes, options)
     update_impact_areas_from_json(entity, attributes, options)

@@ -345,6 +345,9 @@ class ServiceRequestsController < ApplicationController
       @service_request.service_list.each do |org_id, values|
         line_items = values[:line_items]
         ssr = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
+        unless @service_request.status.nil? and !ssr.status.nil?
+          ssr.update_attribute(:status, @service_request.status)
+        end
 
         line_items.each do |li|
           li.update_attribute(:sub_service_request_id, ssr.id)

@@ -3,7 +3,6 @@
 FactoryGirl.define do
 
   factory :study_type do
-    id          
     name        { Faker::Lorem.word }
   end
 end

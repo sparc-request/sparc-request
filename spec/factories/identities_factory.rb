@@ -1,7 +1,6 @@
 FactoryGirl.define do
   
   factory :identity do
-    id                    { Random.rand(10000) }
     obisid                { SecureRandom.hex(16) }
     ldap_uid              { Faker::Internet.user_name }
     last_name             { Faker::Name.last_name }

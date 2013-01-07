@@ -39,7 +39,6 @@ describe "service calendar" do
 
       it "should update total costs when a visit is checked", :js => true do
         visit_id = line_item2.visits[1].id
-        remove_from_dom(".total_#{line_item2.id}")
         page.check("visits_#{visit_id}")
         find(".total_#{line_item2.id}").should have_exact_text("$30.00")
       end
@@ -184,6 +183,8 @@ describe "service calendar" do
           # Now check the row; the fields we just deleted will be
           # re-created
           click_link "check_row_#{line_item2.id}_billing_strategy"
+
+          remove_from_dom('.pp_max_total_direct_cost')
 
           # Putting values in these fields should not increase the total
           # cost

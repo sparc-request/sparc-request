@@ -29,7 +29,7 @@ class PricingMap::ObisEntitySerializer
   def update_from_json(pricing_map, h, options = nil)
     pricing_map.update_attributes!(
         :unit_minimum               => h['unit_minimum'],
-        :is_one_time_fee            => h['is_one_time_fee'],
+        :is_one_time_fee            => h['is_one_time_fee'] ? true : false,
         :percent_of_fee             => h['percent_of_fee'],
         :effective_date             => h['effective_date'],
         :display_date               => h['display_date'],

@@ -750,6 +750,10 @@ legend {
   width: 335px;
 }
 
+.approval_pending {
+  margin-top: 10px;
+}
+
 .edit-project-view .box .info .study-type {
   display: block;
   float: left;

@@ -20,6 +20,7 @@ group :development, :test, :profile do
   gem 'timecop'
   gem 'debugger'
   gem 'quiet_assets'
+  gem 'connection_pool'
 
   # Add dependency on poltergeist.  If you want to use poltergeist, you
   # will need to configure Capybara to use it.  This particular

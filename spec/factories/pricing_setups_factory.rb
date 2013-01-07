@@ -3,7 +3,6 @@ FactoryGirl.define do
 
 
   factory :pricing_setup do
-    id                         
     charge_master               { false }
     federal                     { 100 }
     corporate                   { 100 }

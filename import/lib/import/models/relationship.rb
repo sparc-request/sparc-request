@@ -655,6 +655,16 @@ class ServiceOffering < Relationship
         h,
         new_service,
         organization_id: @organization.id)
+
+    # now update the is_available attribute
+    # it needs to be set to the organization's is_available attribute if
+    # it is not set at all
+    if new_service.is_available == nil then
+      update_relationship(
+          h,
+          new_service,
+          is_available: @organization.is_available)
+    end
   end
 end
 

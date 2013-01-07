@@ -1,7 +1,6 @@
 FactoryGirl.define do
 
   factory :service_relation do
-    id                 { Random.rand(10000) }
     related_service_id { Random.rand(10000) }
     optional           { false }
 

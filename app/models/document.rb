@@ -10,6 +10,7 @@ class Document < ActiveRecord::Base
 
   attr_accessible :document
   attr_accessible :doc_type
+  attr_accessible :doc_type_other
   attr_accessible :document_grouping_id
   attr_accessible :sub_service_request_id
 end

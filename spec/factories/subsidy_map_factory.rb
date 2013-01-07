@@ -1,7 +1,5 @@
 FactoryGirl.define do
   factory :subsidy_map do
-    id          
-    
     ignore do
       excluded_funding_source_count 0
     end

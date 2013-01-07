@@ -1,7 +1,6 @@
 FactoryGirl.define do
 
   factory :visit do
-    id           
     quantity                   { 15 }
     billing                    { Faker::Lorem.word }
     research_billing_qty       { 5 }

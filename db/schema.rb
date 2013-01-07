@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130103170244) do
+ActiveRecord::Schema.define(:version => 20130107163409) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -74,6 +74,7 @@ ActiveRecord::Schema.define(:version => 20130103170244) do
     t.integer  "document_file_size"
     t.datetime "document_updated_at"
     t.integer  "document_grouping_id"
+    t.string   "doc_type_other"
   end
 
   create_table "excluded_funding_sources", :force => true do |t|
@@ -110,6 +111,7 @@ ActiveRecord::Schema.define(:version => 20130103170244) do
     t.datetime "created_at",          :null => false
     t.datetime "updated_at",          :null => false
     t.datetime "deleted_at"
+    t.boolean  "approval_pending"
   end
 
   add_index "human_subjects_info", ["protocol_id"], :name => "index_human_subjects_info_on_protocol_id"

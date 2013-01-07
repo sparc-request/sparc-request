@@ -1,7 +1,6 @@
 FactoryGirl.define do
 
   factory :research_types_info do
-    id                       
     human_subjects           { false }
     vertebrate_animals       { false }
     investigational_products { false }

@@ -36,7 +36,7 @@ class Organization::ObisEntitySerializer < Entity::ObisEntitySerializer
         :abbreviation  => attributes['abbreviation'],
         :ack_language  => attributes['ack_language'],
         :process_ssrs  => attributes['process_ssrs'],
-        :is_available  => attributes['is_available']
+        :is_available  => attributes['is_available'] ? true : false
     )
 
     entity.build_subsidy_map() if not entity.subsidy_map

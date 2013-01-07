@@ -7,7 +7,7 @@ class Service::ObisEntitySerializer < Entity::ObisEntitySerializer
       'abbreviation'         => service.abbreviation,
       'order'                => service.order,
       'description'          => service.description,
-      'is_available'         => service.is_available,
+      # 'is_available'         => service.is_available, # TODO: to check this, we need to have access to the organization
       'service_center_cost'  => service.service_center_cost,
       'cpt_code'             => service.cpt_code,
       'charge_code'          => service.charge_code,
@@ -28,7 +28,7 @@ class Service::ObisEntitySerializer < Entity::ObisEntitySerializer
     identifiers = h['identifiers']
     attributes = h['attributes']
 
-    entity.update_attributes!(
+    entity.attributes = {
         :name => attributes['name'],
         :abbreviation => attributes['abbreviation'],
         :order => attributes['order'],
@@ -37,7 +37,8 @@ class Service::ObisEntitySerializer < Entity::ObisEntitySerializer
         :service_center_cost => attributes['service_center_cost'],
         :cpt_code => attributes['cpt_code'],
         :charge_code => attributes['charge_code'],
-        :revenue_code => attributes['revenue_code'])
+        :revenue_code => attributes['revenue_code'],
+    }
 
     # Delete all pricing maps for the service; they will be
     # re-created in the next step.
@@ -50,6 +51,10 @@ class Service::ObisEntitySerializer < Entity::ObisEntitySerializer
       pricing_map = entity.pricing_maps.create()
       pricing_map.update_from_json(h_pricing_map, options)
     end
+
+    # Save here, after pricing maps have been created, so that we can
+    # pass the pricing map validation
+    entity.save!
   end
 end
 

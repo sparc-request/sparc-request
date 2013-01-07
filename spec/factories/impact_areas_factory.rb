@@ -3,7 +3,6 @@
 FactoryGirl.define do
 
   factory :impact_area do
-    id          
     name        { Faker::Lorem.word }
   end
 end

@@ -28,6 +28,10 @@ Capybara.default_wait_time = 15
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 include CapybaraSupport
 
+# I'm not sure why this is necessary.  None of the examples at
+# https://github.com/thoughtbot/factory_girl/blob/master/GETTING_STARTED.md
+# seem to do this, but without it, we get the error "ArgumentError:
+# Trait not registered: id".
 FactoryGirl.define do
   sequence :id do |id|
     id
@@ -45,20 +49,6 @@ end
 load_schema()
 FactoryGirl.find_definitions
 
-class ActiveRecord::Base
-  mattr_accessor :shared_connection
-  @@shared_connection = nil
-
-
-  def self.connection
-    @@shared_connection || retrieve_connection
-  end
-end
-
-# Forces all threads to share the same connection. This works on
-# Capybara because it starts the web server in a thread.
-ActiveRecord::Base.shared_connection = ActiveRecord::Base.connection
-
 RSpec.configure do |config|
 
   config.before(:suite) do
@@ -69,7 +59,6 @@ RSpec.configure do |config|
 
   before = proc do
     DatabaseCleaner.start
-
   end
 
   config.before(:each, :js => true, &before)

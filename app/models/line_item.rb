@@ -56,8 +56,7 @@ class LineItem < ActiveRecord::Base
 
   def quantity_total
     # quantity_total = self.visits.map {|x| x.research_billing_qty}.inject(:+) * self.subject_count
-    result = self.connection.execute("SELECT SUM(research_billing_qty) FROM visits WHERE line_item_id=#{self.id}") # TODO: sanitize
-    quantity_total = result.to_a[0][0] || 0
+    quantity_total = self.visits.sum('research_billing_qty')
     return quantity_total * self.subject_count
   end
 
@@ -78,6 +77,7 @@ class LineItem < ActiveRecord::Base
 
   # Determine the direct costs for a visit-based service for one subject
   def direct_costs_for_visit_based_service_single_subject
+    # TODO: use sum() here
     # totals_array = self.per_subject_subtotals(visits).values.select {|x| x.class == Float}
     # subject_total = totals_array.empty? ? 0 : totals_array.inject(:+)
     result = self.connection.execute("SELECT SUM(research_billing_qty) FROM visits WHERE line_item_id=#{self.id} AND research_billing_qty >= 1")
@@ -177,4 +177,11 @@ class LineItem < ActiveRecord::Base
     end
   end
 
+  def fix_missing_visits(visit_count=self.service_request.visit_count)
+    if self.visits.count < visit_count
+      n = visit_count - self.visits.count
+      Visit.bulk_create(n, :line_item_id => self.id)
+    end
+  end
 end
+

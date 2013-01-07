@@ -1,0 +1,53 @@
+.service_request_information
+  %table.project_information
+    %tr
+      %th.blue_header{:colspan => 2} Project/Study Information
+    %tr
+      %td.percent_30.highlight
+        %strong Project/Study ID
+      %td.no-border-right= @protocol.id
+    %tr
+      %td.percent_30.highlight
+        %strong Short Title
+      %td.no-border-right= @protocol.short_title
+    %tr
+      %td.percent_30.highlight
+        %strong Project Title
+      %td.no-border-right= @protocol.title
+    %tr
+      %td.percent_30.highlight
+        %strong Sponsor Name
+      %td.no-border-right= @protocol.sponsor_name
+    %tr
+      %td.percent_30.highlight
+        %strong= display_funding_source_title(@protocol)
+      %td.no-border-right= display_funding_source_or_potential(@protocol)
+
+  %br
+  %table.user_information
+    %tr
+      %th.blue_header{:colspan => 3} Users
+    %tr
+      %th.highlight{:colspan => 1} Name
+      %th.highlight{:colspan => 1} Role
+      %th.highlight{:colspan => 1} Proxy Rights:
+    - @protocol.project_roles.each do |pr|
+      %tr
+        %td.percent_30= pr.identity.full_name
+        %td.percent_30= USER_ROLES.key(pr.role)
+        %td.no-border-right= PROXY_RIGHTS.key(pr.project_rights)
+
+  %br
+  %table.uploads_information
+    %tr
+      %th.blue_header{:colspan => 2} Uploads
+    %tr
+      %th.highlight{:colspan => 1} File Name
+      %th.highlight{:colspan => 1} Program/Core
+    - @service_request.documents.each do |document|
+      %tr
+        %td.percent_30.document_download_link= link_to document.document_file_name, document.document.url
+        %td.no-border-right= @service_list[document.sub_service_request.organization_id][:name] 
+        
+  %br
+  #service_calendar_container= render :partial => 'portal/service_requests/calendar'

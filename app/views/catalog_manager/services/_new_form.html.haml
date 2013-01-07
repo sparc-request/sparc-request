@@ -1,6 +1,8 @@
 = button_to 'Cancel', catalog_manager_root_path, :confirm => "Are you sure?", :style => 'display:none;', :id => 'cancel_button'
 
-= form_for @service, :url => catalog_manager_service_path, :method => :post, :remote => true, :id => 'entity_form' do |f|
+= form_for @service, :url => catalog_manager_services_path, :method => :post, :remote => true, :id => 'entity_form' do |f|
+  .errorExplanation#errorExplanation{:style => 'display:none;'}
+
   #entity_description
     .service_form
 

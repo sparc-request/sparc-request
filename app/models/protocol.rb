@@ -106,7 +106,7 @@ class Protocol < ActiveRecord::Base
   end
 
   def subspecialty_for identity
-    project_roles.detect{|pr| pr.identity_id == identity.id}.try(:subspecialty)
+    identity.subspecialty
   end
 
   def all_child_sub_service_requests

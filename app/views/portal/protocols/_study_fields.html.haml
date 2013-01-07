@@ -1,0 +1,228 @@
+.user-edit-protocol-view
+
+  :javascript
+    $(document).ready(function() {
+    Sparc.study.ready();
+    });
+  
+  .grid_7.box
+    .info
+      %fieldset
+        %legend Study Attributes
+        .field
+          = f.label :short_title, "Short Title:*"
+          = f.text_field :short_title
+        
+        .field
+          = f.label :title, "Protocol Title:*"
+          = f.text_field :title
+        
+        .field
+          = f.label :funding_status, "Proposal Funding Status:"
+          = f.select :funding_status, options_for_select(FUNDING_STATUSES, study.funding_status), :include_blank => "Select a Funding Status"
+        
+        .field
+          = f.label :udak_project_number, "UDAK/Project #:"
+          = f.text_field :udak_project_number
+          
+        .field
+          = f.label :sponsor_name, "Sponsor Name:"
+          = f.text_field :sponsor_name
+    
+        #pending_funding
+          .field
+            = f.label :funding_rfa, "Funding Opportunity #/RFA:"
+            = f.text_field :funding_rfa
+    
+          .field
+            = f.label :potential_funding_start_date, "Potential Funding Start Date:"
+            = text_field_tag :potential_funding_start_date, (study.potential_funding_start_date.strftime('%_m/%d/%Y') rescue nil)
+            = f.hidden_field :potential_funding_start_date
+    
+          .field
+            = f.label :potential_funding_source, "Potential Funding Source:*"
+            = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, study.potential_funding_source), :include_blank => "Select a Potential Funding Source"
+    
+          / Internal Funded Pilot Project selected
+          .internal_potential_funded_pilot_project
+            .field
+              = f.label :potential_funding_source_other, "Please Specify"
+              = f.text_field :potential_funding_source_other
+        
+        .funded
+          .field
+            = f.label :funding_start_date, "Funding Start Date:"
+            = text_field_tag :funding_start_date, (study.funding_start_date.strftime('%_m/%d/%Y') rescue nil)
+            = f.hidden_field :funding_start_date
+          
+          .field
+            = f.label :funding_source, "Funding Source:*"
+            = f.select :funding_source, options_for_select(FUNDING_SOURCES, study.funding_source), :include_blank => "Select a Funding Source"
+    
+          / Internal Funded Pilot Project selected
+          .internal_funded_pilot_project
+            .field
+              = f.label :funding_source_other, "Please Specify"
+              = f.text_field :funding_source_other
+    
+        .indirect_cost_rate
+          = f.label :indirect_cost_rate, "Indirect Cost Rate"
+          = f.text_field :indirect_cost_rate
+    
+        .funded
+          .federal
+            .field
+              = f.label :federal_grant_title, "Federal Grant Title:"
+              = f.text_field :federal_grant_title
+    
+            .field
+              = f.label :federal_grant_code_id, "Federal Grant Code:"
+              = f.select :federal_grant_code_id, options_for_select(FEDERAL_GRANT_CODES, study.federal_grant_code_id), :include_blank => "Select a Federal Grant Code"
+    
+            .field
+              = f.label :federal_phs_sponsor, "Federal Grant PHS Sponsor:"
+              = f.select :federal_phs_sponsor, options_for_select(FEDERAL_GRANT_PHS_SPONSORS, study.federal_phs_sponsor), :include_blank => "Please Select if Applicable"
+    
+            %br
+            %span -OR-
+            %br
+        
+            .field
+              = f.label :federal_non_phs_sponsor, "Federal Grant Non-PHS Sponsor:"
+              = f.select :federal_non_phs_sponsor, options_for_select(FEDERAL_GRANT_NON_PHS_SPONSORS, study.federal_non_phs_sponsor), :include_blank => "Please Select if Applicable"
+    
+            .field
+              = f.label :federal_grant_serial_number, "Federal Grant Serial Number:"
+              = f.text_field :federal_grant_serial_number
+    
+        .field
+          = f.label :study_phase, "Study Phase:"
+          = f.select :study_phase, options_for_select(STUDY_PHASES, study.study_phase), :include_blank => "Select a Study Phase"
+  
+      %fieldset
+        %legend Research Involving (Check all that apply)
+        %div
+          = f.fields_for :research_types_info do |rt|
+            .field.human_subjects
+              = rt.label :human_subjects, "Human Subjects:"
+              = rt.check_box :human_subjects
+          = f.fields_for :human_subjects_info do |hs|
+            .field.hr_number
+              = hs.label :hr_number, "HR#:"
+              = hs.text_field :hr_number
+  
+            .field.pro_number
+              = hs.label :pro_number, "Pro #:"
+              = hs.text_field :pro_number
+  
+            .field.irb_of_record
+              = hs.label :irb_of_record, "IRB of Record:"
+              = hs.text_field :irb_of_record
+  
+            .field.submission_type
+              = hs.label :submission_type, "Submission Type:"
+              %br
+              = hs.select :submission_type, options_for_select(SUBMISSION_TYPES, study.human_subjects_info.submission_type), :include_blank => "Pick a Submission Type"
+  
+            .field.irb_approval_date
+              = hs.label :irb_approval_date, "IRB Approval Date:"
+              = text_field_tag :irb_approval_date, (study.human_subjects_info.irb_approval_date.strftime('%_m/%d/%Y') rescue nil)
+              = hs.hidden_field :irb_approval_date
+  
+            .field.irb_expiration_date
+              = hs.label :irb_expiration_date, "IRB Expiration Date:"
+              = text_field_tag :irb_expiration_date, (study.human_subjects_info.irb_expiration_date.strftime('%_m/%d/%Y') rescue nil)
+              = hs.hidden_field :irb_expiration_date
+  
+          = f.fields_for :research_types_info do |rt|
+            .field.vertebrate_animals
+              = rt.label :vertebrate_animals, "Vertebrate Animals:"
+              = rt.check_box :vertebrate_animals
+  
+          = f.fields_for :vertebrate_animals_info do |va|
+            .field.iacuc_number
+              = va.label :iacuc_number, "IACUC #:"
+              = va.text_field :iacuc_number
+  
+            .field.name_of_iacuc
+              = va.label :name_of_iacuc, "Name of IACUC:"
+              = va.text_field :name_of_iacuc
+  
+            .field.iacuc_approval_date
+              = va.label :iacuc_approval_date, "IACUC Approval Date:"
+              = text_field_tag :iacuc_approval_date, (study.vertebrate_animals_info.iacuc_approval_date.strftime('%_m/%d/%Y') rescue nil)
+              = va.hidden_field :iacuc_approval_date
+  
+            .field.iacuc_expiration_date
+              = va.label :iacuc_expiration_date, "IACUC Expiration Date:"
+              = text_field_tag :iacuc_expiration_date, (study.vertebrate_animals_info.iacuc_expiration_date.strftime('%_m/%d/%Y') rescue nil)
+              = va.hidden_field :iacuc_expiration_date
+          
+          = f.fields_for :research_types_info do |rt|
+            .field.investigational_products
+              = rt.label :investigational_products, "Investigational Products:"
+              = rt.check_box :investigational_products
+  
+          = f.fields_for :investigational_products_info do |ip|
+            .field.ind_number
+              = ip.label :ind_number, "IND#:"
+              = ip.text_field :ind_number
+  
+            .field.ind_on_hold
+              = ip.label :ind_on_hold, "IND on Hold?"
+              = ip.check_box :ind_on_hold
+  
+            .field.ide_number
+              = ip.label :ide_number, "IDE#:"
+              = ip.text_field :ide_number
+  
+  
+          = f.fields_for :research_types_info do |rt|
+            .field.ip_patents
+              = rt.label :ip_patents, "IP/Patents:"
+              = rt.check_box :ip_patents
+  
+          = f.fields_for :ip_patents_info do |ip|
+            .field.patent_number
+              = ip.label :patent_number, "Patent Number:"
+              = ip.text_field :patent_number
+  
+            .field.inventors
+              = ip.label :inventors, "Inventors:"
+              = ip.text_area :inventors
+  
+      -# study types are initialized in obis-bridge lib/models/protocol.rb def setup_study_types
+      %fieldset
+        %legend Study Type (Check all that apply) 
+        %div
+          = f.fields_for :study_types do |rt|
+            .field{:class => rt.object.name}
+              = rt.label :name, "#{StudyType::TYPES[rt.object.name]}:"
+              = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
+              = rt.hidden_field :name, :value => rt.object.name
+  
+      -# impact_areas are initialized in obis-bridge lib/models/protocol.rb def setup_impact_areas
+      %fieldset
+        %legend Impact Areas
+        %div
+          = f.fields_for :impact_areas do |rt|
+            .field{:class => rt.object.name}
+              = rt.label :name, "#{ImpactArea::TYPES[rt.object.name]}:"
+              = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
+              = rt.hidden_field :name, :value => rt.object.name
+  
+      -# affiliations are initialized in obis-bridge lib/models/protocol.rb def setup_affiliations
+      %fieldset
+        %legend Affiliations and Collaborations 
+        %div
+          = f.fields_for :affiliations do |rt|
+            .field{:class => rt.object.name}
+              = rt.label :name, "#{Affiliation::TYPES[rt.object.name]}:"
+              = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
+              = rt.hidden_field :name, :value => rt.object.name
+
+  %br.clear
+  #actions
+    = submit_tag("Save study")
+    or
+    = link_to "Cancel", portal_root_path

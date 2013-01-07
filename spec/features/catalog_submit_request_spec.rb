@@ -2,6 +2,11 @@ require 'spec_helper'
 
 describe 'as a user on catalog page' do
   let_there_be_lane
+  fake_login_for_each_test
+
+  after :each do
+    wait_for_javascript_to_finish
+  end
 
   let!(:institution)  {FactoryGirl.create(:institution,id: 53,name: 'Medical University of South Carolina', order: 1,obisid: '87d1220c5abf9f9608121672be000412',abbreviation: 'MUSC', is_available: 1)}
   let!(:provider) {FactoryGirl.create(:provider,id: 10,name: 'South Carolina Clinical and Translational Institute (SCTR)',order: 1,css_class: 'blue-provider',obisid: '87d1220c5abf9f9608121672be0011ff',parent_id: institution.id,abbreviation: 'SCTR1',process_ssrs: 0,is_available: 1)}
@@ -19,17 +24,16 @@ describe 'as a user on catalog page' do
     # login(identity)
 
     visit root_path
-    click_link("Click here to proceed with your institutional login")
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
-    sleep(2)
+
     click_link("Office of Biomedical Informatics")
-    sleep(2)
     click_button("Add")
-    sleep(2)
+    wait_for_javascript_to_finish
+
     click_link("Clinical and Translational Research Center (CTRC)")
-    sleep(2)
     click_button("Add")
-    sleep(2)
+    wait_for_javascript_to_finish
+
     find(:xpath, "//a/img[@alt='Submit_request']/..").click
     #save_and_open_page
   end

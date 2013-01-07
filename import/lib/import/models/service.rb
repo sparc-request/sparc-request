@@ -53,32 +53,9 @@ class Service::ObisEntitySerializer < Entity::ObisEntitySerializer
   end
 end
 
-class Service::ObisSimpleSerializer < Entity::ObisSimpleSerializer
-  def as_json(entity, options = nil)
-    h = super(entity, options)
-    id_type = "#{entity.organization.type.downcase}_id"
-    h[id_type] = entity.organization.obisid
-    return h
-  end
-
-  def update_from_json(entity, h, options = { })
-    service = super(entity, h, options)
-    organization_obisid = \
-      h['core_id'] ||
-      h['program_id'] ||
-      h['provider_id'] ||
-      h['institution_id']
-    organization = Organization.find_by_obisid(organization_obisid)
-    service.update_attribute(:organization_id, organization.id)
-    return service
-  end
-end
-
 class Service
   include JsonSerializable
   json_serializer :obisentity, ObisEntitySerializer
   json_serializer :relationships, RelationshipsSerializer
-  json_serializer :obissimple, ObisSimpleSerializer
-  json_serializer :simplerelationships, ObisSimpleRelationshipsSerializer
 end
 

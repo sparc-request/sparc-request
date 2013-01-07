@@ -1,7 +1,6 @@
 FactoryGirl.define do
 
   factory :pricing_map do
-    id                        
     unit_type                  { Faker::Lorem.word }
     unit_factor                { 1 }
     percent_of_fee             { 50 }

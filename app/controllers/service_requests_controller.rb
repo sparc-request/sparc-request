@@ -1,4 +1,6 @@
 class ServiceRequestsController < ApplicationController
+  before_filter :initialize_service_request, :except => [:approve_changes]
+  before_filter :authorize_identity, :except => [:approve_changes]
   before_filter :authenticate_identity!, :except => [:catalog, :add_service, :remove_service, :ask_a_question]
   layout false, :only => :ask_a_question
 
@@ -23,11 +25,6 @@ class ServiceRequestsController < ApplicationController
   def navigate
     errors = [] 
     # need to save and navigate to the right page
-    puts "#"*50
-    puts params.inspect
-    puts request.referrer.split('/').last
-    puts params[:service_request]
-    puts "#"*50
 
     #### add logic to save data
     referrer = request.referrer.split('/').last
@@ -247,9 +244,55 @@ class ServiceRequestsController < ApplicationController
       ssr.update_attribute(:ssr_id, "%04d" % next_ssr_id) unless ssr.ssr_id
       next_ssr_id += 1
     end
-    @service_request.protocol.update_attribute(:next_ssr_id, next_ssr_id)
+    
+    @protocol = @service_request.protocol
+    @service_list = @service_request.service_list
 
-    # TODO: fire off emails to those in need
+    @protocol.update_attribute(:next_ssr_id, next_ssr_id)
+
+    # Does an approval need to be created, check that the user submitting has approve rights
+    if @protocol.project_roles.detect{|pr| pr.identity_id == current_user.id}.project_rights != "approve"
+      approval = @service_request.approvals.create
+    else
+      approval = false
+    end
+
+    # generate the excel for this service request
+    xls = render_to_string :action => 'show', :formats => [:xlsx]
+
+    # send e-mail to all folks with view and above
+    @protocol.project_roles.each do |project_role|
+      next if project_role.project_rights == 'none'
+      Notifier.notify_user(project_role, @service_request, xls, approval).deliver
+    end
+
+    # send e-mail to admins and service providers
+    Notifier.notify_admin(@service_request, xls).deliver
+
+    # send e-mail to all service providers
+    if @sub_service_request # only notify the service providers for this sub service request
+      @sub_service_request.organization.service_providers.where(ServiceProvider.arel_table[:hold_emails].not_eq(true)).each do |service_provider|
+        Notifier.notify_service_provider(service_provider, @service_request, xls).deliver
+      end
+    else
+      @service_request.sub_service_requests.each do |sub_service_request|
+        sub_service_request.organization.service_providers.where(ServiceProvider.arel_table[:hold_emails].not_eq(true)).each do |service_provider|
+          Notifier.notify_service_provider(service_provider, @service_request, xls).deliver
+        end
+      end
+    end
+    
+    render :formats => [:html]
+  end
+
+  def approve_changes
+    @approval = @service_request.approvals.where(:id => params[:approval_id]).first
+    @previously_approved = true
+ 
+    if @approval and @approval.identity.nil?
+      @approval.update_attribute(:identity_id, current_user.id)
+      @previously_approved = false 
+    end
   end
 
   def save_and_exit
@@ -265,7 +308,7 @@ class ServiceRequestsController < ApplicationController
     end
     @service_request.protocol.update_attribute(:next_ssr_id, next_ssr_id)
 
-    redirect_to @user_portal_link
+    redirect_to USER_PORTAL_LINK 
   end
 
   def refresh_service_calendar
@@ -302,6 +345,9 @@ class ServiceRequestsController < ApplicationController
       @service_request.service_list.each do |org_id, values|
         line_items = values[:line_items]
         ssr = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
+        unless @service_request.status.nil? and !ssr.status.nil?
+          ssr.update_attribute(:status, @service_request.status)
+        end
 
         line_items.each do |li|
           li.update_attribute(:sub_service_request_id, ssr.id)
@@ -362,7 +408,7 @@ class ServiceRequestsController < ApplicationController
     from = params['question_email'] || 'no-reply@musc.edu'
     body = params['question_body'] || 'No question asked'
 
-    question = Question.create :to => @default_mail_to, :from => from, :body => body
+    question = Question.create :to => DEFAULT_MAIL_TO, :from => from, :body => body
     Notifier.ask_a_question(question).deliver
   end
 

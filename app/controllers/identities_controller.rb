@@ -1,4 +1,6 @@
 class IdentitiesController < ApplicationController
+  before_filter :initialize_service_request, :except => [:approve_account, :disapprove_account]
+  before_filter :authorize_identity, :except => [:approve_account, :disapprove_account]
   def show
     @identity = Identity.find params[:id]
     @can_edit = false
@@ -51,5 +53,17 @@ class IdentitiesController < ApplicationController
       @project_role = ProjectRole.find params[:project_role][:id]
       @project_role.update_attributes params[:project_role]
     end
+  end
+
+  def approve_account
+    @identity = Identity.find params[:id]
+    @identity.update_attribute(:approved, true)
+    Notifier.account_status_change(@identity, true).deliver
+  end
+
+  def disapprove_account
+    @identity = Identity.find params[:id]
+    @identity.update_attribute(:approved, true)
+    Notifier.account_status_change(@identity, false).deliver
   end
 end

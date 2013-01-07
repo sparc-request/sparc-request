@@ -226,17 +226,13 @@ a.save-option{
 /* CatalogView */
 
 #left_signin_button{
-  float: left;
-  width: 250px;
-  margin-top: 60px;
-  margin-left: 60px;
+  width: 215px;
+  padding: 10px;
 }
 
 #right_signin_button{
-  float: right;
-  width: 250px;
-  margin-top: 60px;
-  margin-right: 60px;
+  width: 215px;
+  padding: 10px;
 }
 
 .signin_dialog{
@@ -559,12 +555,24 @@ a.save-option{
 }
 
 .confirmation-details .links {
-  margin-top: 20px;
+  text-align: center;
 }
 
-.confirmation-details .links .download {
-  margin-left: 90px;
-  margin-right: 50px;
+.confirmation-button {
+  display: inline-block;
+  background: #339933;
+  margin: 20px;
+  padding: 7px;
+  border-radius: 5px;
+}
+
+.confirmation-button a {
+  font-size: 14px;
+  font-weight: bold;
+  color: #FFF;
+  text-decoration: none;
+  letter-spacing: 1px;
+  margin: 0 50px;
 }
 
 .confirmation-details th {
@@ -1541,6 +1549,11 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 
 .service_calendar thead tr th {
   border: 1px solid #ccc;
+}
+
+.billing-info {
+  float: right;
+  padding-right: 10px;
 }
 
 #service_calendar .ui-tabs-panel {

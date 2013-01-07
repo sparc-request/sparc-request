@@ -3,26 +3,12 @@ class ApplicationController < ActionController::Base
   helper :all
   helper_method :current_user
 
-  before_filter :load_defaults
-  before_filter :initialize_service_request
-  before_filter :authorize_identity
   before_filter :setup_navigation
-  
+
   def current_user
     current_identity
   end
   
-  def load_defaults
-    # load some default configuration
-    begin 
-      @application_config ||= YAML.load_file(Rails.root.join('config', 'application.yml'))[Rails.env]
-      @default_mail_to = @application_config['default_mail_to']
-      @user_portal_link = @application_config['user_portal_link']
-    rescue
-      raise "application.yml not found, see config/application.yml.example"
-    end
-  end
-
   def authorization_error msg, ref
     error = msg
     error += "<br />If you believe this is in error please contact, #{I18n.t 'error_contact'}, and provide the following information:"

@@ -41,6 +41,13 @@ module CapybaraSupport
       is_available:         1)
     provider.save!
 
+    provider_subsidy_map = SubsidyMap.create(
+      organization_id:      provider.id,
+      max_dollar_cap:       121.0000,
+      max_percentage:       12.00
+    )
+    provider_subsidy_map.save! 
+
     program = FactoryGirl.create(:program,
       type:                 'Program',
       name:                 'Office of Biomedical Informatics',
@@ -68,18 +75,15 @@ module CapybaraSupport
       parent_id:            program.id,
       abbreviation:         'Clinical Data Warehouse')
     core.save!
-
-    service = FactoryGirl.create(:service,
-      obisid:               '87d1220c5abf9f9608121672be03867a',
-      name:                 'MUSC Research Data Request (CDW)',
-      abbreviation:         'CDW',
-      order:                1,
-      cpt_code:             '',
-      organization_id:      core.id)
-    service.save!
     
-    pricing_map = FactoryGirl.create(:pricing_map,
-      service_id:                   service.id,
+    core_subsidy_map = SubsidyMap.create(
+      organization_id:      core.id,
+      max_dollar_cap:       121.0000,
+      max_percentage:       12.00
+    )
+    core_subsidy_map.save!    
+
+    program_service_pricing_map = FactoryGirl.create(:pricing_map,
       display_date:                 Date.yesterday,
       effective_date:               Date.yesterday,
       unit_type:                    'Per Query',
@@ -87,8 +91,43 @@ module CapybaraSupport
       is_one_time_fee:              1,
       full_rate:                    4500.0000,
       exclude_from_indirect_cost:   0,
-      unit_minimum:                 1)
-    pricing_map.save!
+      unit_minimum:                 1,
+      unit_type:                    'self')
+    program_service_pricing_map.save!
+
+    program_service = FactoryGirl.create(:service,
+      obisid:               '87d1220c5abf9f9608121672be093511',
+      name:                 'Human Subject Review',
+      abbreviation:         'HSR',
+      order:                1,
+      cpt_code:             '',
+      organization_id:      program.id,
+      is_available:         true,
+      pricing_maps:         [program_service_pricing_map])
+    program_service.save!      
+
+    service_pricing_map = FactoryGirl.create(:pricing_map,
+      display_date:                 Date.yesterday,
+      effective_date:               Date.yesterday,
+      unit_type:                    'Per Query',
+      unit_factor:                  1,
+      is_one_time_fee:              1,
+      full_rate:                    4500.0000,
+      exclude_from_indirect_cost:   0,
+      unit_minimum:                 1,
+      unit_type:                    'self')
+    service_pricing_map.save!
+    
+    service = FactoryGirl.create(:service,
+      obisid:               '87d1220c5abf9f9608121672be03867a',
+      name:                 'MUSC Research Data Request (CDW)',
+      abbreviation:         'CDW',
+      order:                1,
+      cpt_code:             '',
+      organization_id:      core.id,
+      pricing_maps:         [service_pricing_map])
+    service.save!
+    
 
     pricing_setup = FactoryGirl.create(:pricing_setup,
       organization_id:              program.id,
@@ -102,24 +141,19 @@ module CapybaraSupport
       internal_rate_type:           'full')
     pricing_setup.save!
 
+    service_request = FactoryGirl.create(:service_request, status: "draft", subject_count: 2, visit_count: 10)
+
+    sub_service_request = FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id,status: "draft")
+
+    service_request.update_attribute(:service_requester_id, Identity.find_by_ldap_uid("jug2").id)
+
   end
   
-  def retry_on_timeout(n = 3, &block)
-    block.call
-  rescue Capybara::TimeoutError, Capybara::ElementNotFound => e
-    if n > 0
-      puts "Catched error: #{e.message}. #{n-1} more attempts."
-      retry_on_timeout(n - 1, &block)
-    else
-      raise
-    end
-  end
-      
   def default_catalog_manager_setup
     create_default_data
-    visit catalog_manager_root_path
+    login_as(Identity.find_by_ldap_uid('jug2'))
     ## Logs in the default identity.
-    log_in('jug2', 'p4ssword')
+    visit catalog_manager_root_path
     ## This is used to reveal all nodes in the js tree to make it easier to access during testing.
     page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
   end  

@@ -53,6 +53,8 @@ $(document).ready ->
     $('.pricing_map_accordion').append(blank_pricing_map)
     Sparc.services.create_accordion()
     Sparc.config.setDatePicker()
+    $('.blank_field_errors').css('display', 'inline-block')
+    $('.save_button').attr('disabled', true)    
   )
 
   $('.remove_pricing_map').live('click', ->
@@ -63,11 +65,11 @@ $(document).ready ->
 
   $('.add_pricing_setup').live('click', ->
     blank_pricing_setup = $('.blank_pricing_setup').html()
-    pricing_map_form = $('.pricing_setup_accordion').append(blank_pricing_setup)
-    pricing_map_form.find('.effective_date').addClass('validate')
-    pricing_map_form.find('.display_date').addClass('validate')
-    pricing_map_form.find('.rate').addClass('validate')
-    pricing_map_form.find('.pricing_setup_form:last').append('<input name="pricing_setups[blank_pricing_setup][newly_created]" type="hidden" value="true">')
+    pricing_setup_form = $('.pricing_setup_accordion').append(blank_pricing_setup)
+    pricing_setup_form.find('.effective_date').addClass('validate')
+    pricing_setup_form.find('.display_date').addClass('validate')
+    pricing_setup_form.find('.rate').addClass('validate')
+    pricing_setup_form.find('.pricing_setup_form:last').append('<input name="pricing_setups[blank_pricing_setup][newly_created]" type="hidden" value="true">')
     Sparc.services.create_accordion('.pricing_setup_accordion')
     Sparc.config.setDatePicker()
     $('.blank_field_errors').css('display', 'inline-block')
@@ -98,7 +100,7 @@ $(document).ready ->
     data = {full_rate: rate, organization_id: organization_id, date: display_date}
     service_rate = $(this)
     $.ajax({
-      url: "services/get_updated_rate_maps"
+      url: "catalog_manager/services/get_updated_rate_maps"
       data: data
       success: (data) ->
         service_rate.closest('tr').siblings('.federal_rate_row').find('.set_rate').html("#{data.federal_rate}")

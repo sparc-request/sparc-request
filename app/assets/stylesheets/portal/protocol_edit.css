@@ -1,0 +1,103 @@
+.user-edit-protocol-view {
+  font-size: 12px;
+  font-family: "Verdana", Arial, sans-serif;
+}
+
+.user-edit-protocol-view .description {
+  padding: 0 12px 12px;
+}
+
+.user-edit-protocol-view .box {
+  background: #E8E8E8;
+  width: 100% !important;
+  height: auto;
+}
+
+.user-edit-protocol-view .info {
+  padding: 10px;
+  float: left;
+  height: 100%;
+}
+
+.user-edit-protocol-view .box .info fieldset {
+  padding: 1px 7px 5px 7px;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+
+.user-edit-protocol-view .box .info fieldset legend {
+  font-size: 12px;
+}
+
+.user-edit-protocol-view .box .info fieldset .field {
+  padding: 2px;
+}
+
+.user-edit-protocol-view .box .info .research-type {
+  display: block;
+  float: left;
+  width: 100% !important;
+}
+
+.user-edit-protocol-view .box .info .human-subjects,
+.user-edit-protocol-view .box .info .vertebrate-animals {
+  padding-left: 40px;
+}
+
+.user-edit-protocol-view .box .info .study-type {
+  display: block;
+  float: left;
+  width: 100% !important;
+}
+
+.user-edit-protocol-view .box .info hr {
+  color: #fff;
+}
+
+.user-edit-protocol-view .box .info .study-type .study-type-fields{
+  padding-left: 40px;
+}
+
+.user-edit-protocol-view .box .info .field .date {
+  width: 100px !important;
+}
+
+.user-edit-protocol-view .box .info .field {
+  display: block;
+  float: left;
+  clear: both;
+  margin-top: 4px;
+  width: 100% !important;
+}
+
+.user-edit-protocol-view .box .info label {
+  width: 125px !important;
+  display: block;
+  float: left;
+  margin-right: 10px;
+  padding: 2px;
+}
+
+.user-edit-protocol-view .box .info input {
+  width: auto !important;
+  display: block;
+  float: left;
+}
+
+.user-edit-protocol-view .box .info input[type=text],
+.user-edit-protocol-view .box .info textarea,
+.user-edit-protocol-view .box .info select {
+  width: 715px !important;
+}
+
+.user-edit-protocol-view .box .info textarea {
+  height: 300px;
+}
+
+.user-edit-protocol-view .box .info input[type=checkbox] {
+  margin-top: 2px;
+}
+
+.user-edit-protocol-view .box .info option {
+  max-width: 375px !important;
+}

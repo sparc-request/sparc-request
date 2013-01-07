@@ -1,0 +1,2 @@
+id = "<%= @protocol.id %>"
+$(".protocol-information-" + id).html("<%= escape_javascript(render(:partial => 'portal/protocols/protocol_information', :locals => {:protocol => @protocol, :user => @user, :protocol_role => @protocol_role})) %>");

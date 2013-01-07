@@ -60,6 +60,14 @@ $(document).ready ->
       url: $(this).attr('update') + "&qty=#{$(this).val()}"
     .complete ->
       $('.service_calendar_spinner').hide()
+
+  $('.visit_name').live 'change', ->
+    $('.service_calendar_spinner').show()
+    $.ajax
+      type: 'PUT'
+      url: $(this).attr('update') + "&name=#{$(this).val()}"
+    .complete ->
+      $('.service_calendar_spinner').hide()
     
 (exports ? this).calculate_max_rates = ->
   for num in [1..5]

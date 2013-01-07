@@ -76,7 +76,7 @@ describe 'ServiceRequest' do
 
     let!(:service_request)     { FactoryGirl.create(:service_request, subject_count: 5, visit_count: 5) }
     let!(:service)             { FactoryGirl.create(:service) }
-    let!(:pricing_map)         { FactoryGirl.create(:pricing_map, service_id: service.id) }
+    let!(:pricing_map)         { service.pricing_maps[0] }
     let!(:line_item)           { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service.id) }
        
     describe "one time fee line items" do

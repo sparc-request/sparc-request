@@ -27,8 +27,7 @@ describe SearchController do
           name: 'service1a',
           abbreviation: 'ser1a',
           description: 'this is service 1a',
-          organization_id: core.id,
-          pricing_map_count: 0)
+          organization_id: core.id)
       service
     }
 
@@ -38,8 +37,7 @@ describe SearchController do
           name: 'service1b',
           abbreviation: 'ser1b',
           description: 'this is service 1b',
-          organization_id: core.id,
-          pricing_map_count: 0)
+          organization_id: core.id)
       service
     }
 
@@ -49,8 +47,7 @@ describe SearchController do
           name: 'service2',
           abbreviation: 'ser2',
           description: 'this is service 2',
-          organization_id: core2.id,
-          pricing_map_count: 0)
+          organization_id: core2.id)
       service
     }
 
@@ -60,8 +57,7 @@ describe SearchController do
           name: 'service3',
           abbreviation: 'ser3',
           description: 'this is service 3',
-          organization_id: program.id,
-          pricing_map_count: 0)
+          organization_id: program.id)
       service
     }
 
@@ -71,8 +67,7 @@ describe SearchController do
           name: 'unavailable service',
           abbreviation: 'unavail',
           description: 'this is an unavailable service',
-          organization_id: unavailable_core.id,
-          pricing_map_count: 0)
+          organization_id: unavailable_core.id)
       service
     }
 

@@ -57,9 +57,10 @@ wb.add_worksheet(name: "Review") do |sheet|
   sheet.add_row
 
   services_row = ["Selected Services", "", "Your Cost", "# of Subjects"]
-  if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?) 
+  if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
+    line_item = @service_request.per_patient_per_visit_line_items[0] || @sub_service_request.per_patient_per_visit_line_items[0]
     visit_count.times do |n|
-      services_row << "Visit #{n+1}"
+      services_row << "#{line_item.visits[n].name}"
     end
   end
 
@@ -78,7 +79,7 @@ wb.add_worksheet(name: "Review") do |sheet|
       service_row = [line_item.service.name, "", display_your_cost(line_item), line_item.subject_count]
 
       line_item.visits.each_with_index do |v, index|
-        service_row << (totals_hash["#{v.id}"].nil? ? '' : 'X')
+        service_row << (totals_hash["#{v.id}"].nil? ? '' : v.quantity_total)
       end
       
       service_row << display_visit_based_direct_cost(line_item)

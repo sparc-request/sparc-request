@@ -1,4 +1,6 @@
 class ServiceCalendarsController < ApplicationController
+  before_filter :initialize_service_request
+  before_filter :authorize_identity
   layout false
   def table
     #use session so we know what page to show when tabs are switched
@@ -44,5 +46,17 @@ class ServiceCalendarsController < ApplicationController
     @line_item = visit.line_item if @line_item.nil?
     @line_item_total_td = ".total_#{@line_item.id}"
     @displayed_visits = @line_item.visits.paginate(page: params[:page], per_page: 5)
+  end
+
+  def rename_visit
+    visit_name = params[:name]
+    visit_position = params[:visit_position].to_i
+    service_request = ServiceRequest.find params[:service_request_id]
+
+    line_items = service_request.per_patient_per_visit_line_items
+
+    line_items.each do |li|
+      li.visits[visit_position].update_attribute(:name, visit_name)
+    end
   end
 end

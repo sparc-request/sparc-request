@@ -1,0 +1,3 @@
+= form_for protocol_role, :url => portal_associated_users_path, :method => :post, :remote => true, :html => {:class => 'dialog-form associated_users_form' } do |f|
+
+  = render 'portal/associated_users/form', :f => f, :protocol_role => protocol_role, :identity => identity, :type => "add"

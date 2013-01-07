@@ -39,7 +39,7 @@ $ ->
         datepicker_attributes.showOn = "both"
         datepicker_attributes.buttonText = "Select a Date"
         datepicker_attributes.buttonImageOnly = true
-        datepicker_attributes.buttonImage = "calendar_edit.png"
+        datepicker_attributes.buttonImage = "/assets/catalog_manager/calendar_edit.png"
 
       for datepicker in $('.datepicker')
         if $(datepicker).attr('past_date') == 'true'
@@ -79,13 +79,3 @@ $ ->
         $(date).val(Sparc.config.readyMyDate($(date).val(), 'view'))
 
   }
-
-  #  Need to come back to this as a possible solution to the double datepickers on the date elements. -- RDN 
-  # 
-  # $(document).on "nested:fieldAdded", (event) ->
-  #   # this field was just inserted into your form
-  #   field = event.field
-  #   # it's a jQuery object already! Now you can find date input
-  #   dateField = field.find(".datepicker")
-  # 
-  #   dateField(Sparc.config.setDatePicker("with button image"))

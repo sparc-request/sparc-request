@@ -13,7 +13,8 @@ describe 'Catalog' do
 
     describe "providers with pricing_setups" do
       it "should be able to validate that pricing_setups are correct" do
-        Provider.stub!(:provider).and_return(provider1)    
+        Provider.stub!(:provider).and_return(provider1) 
+        allow_message_expectations_on_nil    
         @user.stub!(:can_edit_entity?).and_return(true)
         Catalog.invalid_pricing_setups_for(@user).should be_empty
       end
@@ -22,6 +23,7 @@ describe 'Catalog' do
     describe "providers without pricing_setups and programs with pricing_setups" do
       it "should be able to validate that pricing_setups are correct" do
         Provider.stub!(:all).and_return([provider1, provider2])
+        allow_message_expectations_on_nil 
         @user.stub!(:can_edit_entity?).and_return(true)
         Catalog.invalid_pricing_setups_for(@user).should be_empty
       end
@@ -40,6 +42,7 @@ describe 'Catalog' do
     describe "mixed provider/program pricing_setups" do    
       it "should be able to validate that pricing_setups are incorrect" do
         Provider.stub!(:all).and_return([provider3, provider4])
+        allow_message_expectations_on_nil 
         @user.stub!(:can_edit_entity?).and_return(true)
         Catalog.invalid_pricing_setups_for(@user).should_not be_empty
       end

@@ -286,10 +286,7 @@ class ServiceRequest < ActiveRecord::Base
   def fix_missing_visits
     if self.visit_count_changed?
       self.per_patient_per_visit_line_items.each do |li|
-        if li.visits.count < self.visit_count
-          n = self.visit_count - li.visits.count
-          Visit.bulk_create(n, :line_item_id => li.id)
-        end
+        li.fix_missing_visits(self.visit_count)
       end
     end
   end

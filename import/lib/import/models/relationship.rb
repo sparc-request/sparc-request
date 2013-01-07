@@ -578,6 +578,14 @@ class ProjectRoleRelationship < Relationship
         project_rights:   attributes['project_rights'],
         role:             attributes['role'])
 
+    if attributes['subspecialty'] then
+      update_relationship(
+          h,
+          identity,
+          has_timestamps: false,
+          subspecialty:   attributes['subspecialty'])
+    end
+
     # TODO: we don't update the obisid here (attributes['id']) because:
     # 1) it's not always present in the couch database
     # 2) it's probably not the behavior we want anyway

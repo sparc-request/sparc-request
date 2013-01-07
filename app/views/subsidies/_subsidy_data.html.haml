@@ -19,9 +19,6 @@
 
     %tbody.subsidies-list
       - @subsidies.each do |subsidy|
-        - puts "#"*50
-        - puts @sub_service_request.nil? or subsidy.sub_service_request == @sub_service_request
-        - puts "#"*50
         - next unless @sub_service_request.nil? or subsidy.sub_service_request == @sub_service_request
         = fields_for @service_request do |sr|
           = sr.fields_for :sub_service_requests, subsidy.sub_service_request do |ssr|

@@ -1,10 +1,12 @@
-%div.signin_dialog
-  You are not currently logged into SPARC. If you are affiliated with an institution and have an institutional login OR have created a SPARC account have currently have a SPARC login and password, please click the button on the left to proceed. If you are not currently affiliated with an institution OR do not have a SPARC login/password, please click the button on the right to proceed with creating a new SPARC account.
-  %div#left_signin_button
-    %div.proceed_with_shib.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only
-      %span.ui-button-text
-        = link_to('Click here to proceed with your institutional login', "javascript:void(0);")
-  %div#right_signin_button
-    %div.create_new_account.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only
-      %span.ui-button-text
-        = link_to('Click here to proceed by creating a new SPARC account', new_identity_registration_path)
+%div.signin_dialog.center
+  You are not currently logged into SPARC. If you are affiliated with an institution and have an institutional login OR have created a SPARC account and have a SPARC login and password, please click the button on the left to proceed. If you are not currently affiliated with an institution OR do not have a SPARC login/password, please click the button on the right to proceed with creating a new account.
+  %clear
+  %br
+  %br
+  .container_6
+    #left_signin_button.proceed_with_shib.ui-button.ui-button-text.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only
+      = link_to('Click here to proceed with your institutional/existing SPARC login', "javascript:void(0);")
+    %br
+    %br
+    #right_signin_button.create_new_account.ui-button.ui-button-text.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only
+      = link_to('Click here to proceed by creating a new account', new_identity_registration_path)

@@ -6,7 +6,7 @@ class Identities::OmniauthCallbacksController < Devise::OmniauthCallbacksControl
       sign_in_and_redirect @identity, :event => :authentication #this will throw if @identity is not activated
       set_flash_message(:notice, :success, :kind => "Shibboleth") if is_navigational_format?
     else
-      session["devise.facebook_data"] = request.env["omniauth.auth"]
+      session["devise.shibboleth_data"] = request.env["omniauth.auth"]
       redirect_to new_identity_registration_url
     end
   end

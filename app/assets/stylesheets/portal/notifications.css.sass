@@ -1,0 +1,184 @@
+// Place all the styles related to the notifications controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+
+table.admin_notifications
+  width: 100%
+  border-collapse: collapse
+
+  th, td
+    text-align: left
+    &.notification_icon
+      width: 4%
+    &.from_column
+      width: 28%
+    &.subject_column 
+      width: 13%
+    &.body_column
+      width: 32%
+    &.received_column
+      width: 9%
+    &.mark_unread
+      text-align: center
+
+.user_portal_notifications
+  width: 100%
+  margin: 14px 8px 8px 
+  float: left
+  .admin-notifications
+    width: auto
+
+
+
+
+
+
+
+.notifications
+  width: 670px
+  padding-right: 10px
+  margin: 14px 8px 8px 8px
+  border-right: 1px solid #ccc
+  .notification-action-bar
+    color: #fff
+    margin-bottom: 5px
+    padding: 5px 8px
+    background: #0099ff !important
+
+.admin-notifications
+  width: 870px
+  padding-right: 10px
+  margin: 14px 8px 8px 8px
+  .notification-action-bar
+    color: #fff
+    margin-bottom: 5px
+    padding: 5px 8px
+    background: #0099ff !important
+
+.notifications-header
+  margin-left: -3px
+
+.icon-column:hover, .from-column:hover, .message-count:hover, .subject-column:hover, .preview-column:hover, .received-column:hover, .hidden-message:hover, .clickable-message-header:hover
+  cursor: pointer
+
+.message
+  padding: 5px 10px 10px 10px
+  border-bottom: 1px solid #ccc
+.first_message
+  border-top: 1px solid #ccc
+.hidden-message
+  background: #e8e8e8
+  padding: 5px 10px 10px 10px
+  border-bottom: 1px solid #ccc
+.shown-message
+  padding: 5px 10px 10px 10px
+  border-bottom: 1px solid #ccc
+
+
+.icon-column, .from-column, .message-count, .subject-column, .preview-column, .received-column, .notification-selection-column
+  margin: 5px 0
+  vertical-align: middle
+  display: inline-block
+  white-space: nowrap
+  overflow: hidden
+  text-overflow: clip
+  -o-text-overflow: clip
+
+.from-column, .subject-column, .preview-column, .truncated-message-body
+  text-overflow: ellipsis
+  white-space: nowrap
+  overflow: hidden
+
+.from-column
+  width: 125px
+  margin-left: 10px
+
+.message-count
+  position: absolute
+  display: inline-block
+  margin-left: -5px
+
+.subject-column
+  width: 100px
+  margin-left: 25px
+
+.preview-column
+  width: 175px
+  margin-left: 25px
+
+.received-column
+  margin-left: 30px
+  margin-right: 15px
+  width: 75px
+
+.icon-column
+  width: 35px
+  padding-left: 5px
+
+.notification-selection-column
+  width: 15px
+
+.unread
+  background: #fbf7bd
+  .icon-column
+    width: 32px
+    height: 26px
+    margin-top: -1px
+    span
+      padding-right: 32px
+      padding-bottom: 10px
+      background: url(unread.png)
+
+.unread:hover
+  background-color: #F6EE79
+.read:hover
+  background-color: #E8E8E8
+.read
+  .icon-column
+    width: 32px
+    height: 26px
+    margin-top: -1px
+    span
+      padding-right: 32px
+      padding-bottom: 10px
+      background: url(read.png)
+
+.reply
+  margin-top: 20px
+  textarea
+    margin-left: 10px
+    width: 650px
+    height: 100px
+
+.back-to-notifications
+  background: #0099FF
+  width: 170px
+  height: 25px
+  font-size: 14px
+  padding-top: 5px
+  text-align: center
+  a:link, a:visited
+    color: #FFF
+.back-to-notifications:hover
+  background: #3bbdf0
+  cursor: pointer
+
+.notification-body
+  padding: 0 10px
+
+
+.notification-submit
+  margin-right: 10px
+  input[type="submit"]
+    font-family: Verdana, Arial, Helvetica, sans-serif
+    background: #3bbdf0
+    color: #fff
+    border: none
+    padding: 10px
+  input[type="submit"]:hover
+    background: #0099FF
+    cursor: pointer
+
+.notification_spinner
+  margin: 180px 326px

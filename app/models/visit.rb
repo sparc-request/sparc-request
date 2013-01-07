@@ -14,6 +14,7 @@ class Visit < ActiveRecord::Base
   attr_accessible :insurance_billing_qty #qty billed to the patients insurance or third party
   attr_accessible :effort_billing_qty #qty billing to % effort
   attr_accessible :position
+  attr_accessible :name
 
   validates :research_billing_qty, :numericality => {:only_integer => true}
   validates :insurance_billing_qty, :numericality => {:only_integer => true}
@@ -24,6 +25,8 @@ class Visit < ActiveRecord::Base
   # TODO: This is no longer true, since we're using acts_as_list.
   # Should we remove default_scope?
   # default_scope :order => 'id ASC'
+
+  after_create :set_default_name
 
   def cost(per_unit_cost = self.line_item.per_unit_cost(self.line_item.quantity_total))
     li = self.line_item
@@ -39,5 +42,9 @@ class Visit < ActiveRecord::Base
   def quantity_total
     self.research_billing_qty + self.insurance_billing_qty + self.effort_billing_qty
   end
+
+  def set_default_name
+    self.update_attributes(:name => "Visit #{self.position}")
+  end 
 
 end

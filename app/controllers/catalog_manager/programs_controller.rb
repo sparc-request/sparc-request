@@ -1,4 +1,4 @@
-class CatalogManager::ProgramsController < CatalogManager::ApplicationController
+class CatalogManager::ProgramsController < CatalogManager::AppController
   respond_to :js, :html, :json
   layout false
 
@@ -29,9 +29,10 @@ class CatalogManager::ProgramsController < CatalogManager::ApplicationController
     
     params[:pricing_setups].each do |ps|
       if ps[1]['id'] == 'blank'
+        ps[1].delete(:id)
+        ps[1].delete(:newly_created)
         @program.pricing_setups.build(ps[1])
       else
-        # @program.pricing_setups.find(ps[1]['id']).update_attributes(ps[1])
         ps_id = ps[1]['id']
         ps[1].delete(:id)
         @program.pricing_setups.find(ps_id).update_attributes(ps[1])        

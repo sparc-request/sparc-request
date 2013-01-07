@@ -1,14 +1,25 @@
-.devise_form#login
-  .grid_5.box
+.devise_form#login{:style => "padding-left:0"}
+  .grid_6.prefix_3.suffix_3.box
     .info
-      %h2 Institutional Login
-      Click
-      = link_to "Here", identity_omniauth_authorize_path(:shibboleth)
+      %h2.center
+        Sign in using your institutional login 
+        %br
+        (ie - MUSC netid and password)
+      %br
+      .center 
+        = button_to "Continue to sign in page", identity_omniauth_authorize_path(:shibboleth), :class => 'btn ui-button ui-widget ui-state-default ui-corner-all'
+      
+      %br
 
-
-  .grid_5.box
+  .clear
+  %br
+  .grid_6.prefix_3.suffix_3.box
     .info
-      %h2 Sign in using a locally created account (Lane need wording)
+      %h2.center
+        Sign in using a non-institutional login
+        %br
+        (ie - SPARC created account)
+
       = form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
         .field
           = f.label :ldap_uid, "Username:"
@@ -25,3 +36,4 @@
         .clear
     .links
       = render "devise/shared/links"
+    %br

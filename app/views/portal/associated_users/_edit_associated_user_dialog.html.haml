@@ -1,0 +1,108 @@
+/ DEPRICATED
+
+= form_tag(portal_protocol_associated_user_path(project.id, user.id), :method => :put, :remote => true, :class => 'dialog-form') do
+  %input.edit_user_project_id{:type => 'hidden', :value => project.id}
+  = hidden_field_tag('associated_user[pr_id]', user.pr_id)
+  = hidden_field_tag('associated_user[id]', user.id)
+
+  %fieldset.edit-user
+    %legend Edit
+    .clear
+
+    #add-user-form
+      .left
+        %input#pi_count{:type => 'hidden', :value => project.pi_count}
+        #name
+          %strong= label_tag('associated_user[name]', 'Name:')
+          %br
+          = text_field_tag('associated_user[name]', user.full_name, :disabled => true)
+
+        #email
+          %strong= label_tag('associated_user[email]', 'Email:')
+          %br
+          = text_field_tag('associated_user[email]', user.email, :disabled => true)
+
+        #phone
+          %strong= label_tag('associated_user[phone]', 'Phone:')
+          %br
+          = text_field_tag('associated_user[phone]', user.phone, :disabled => true)
+
+        #role
+          %strong= label_tag('associated_user[role]', 'Role:*')
+          %br
+          = select_tag('associated_user[role]', options_for_select(USER_ROLES, user.role), :prompt => 'Please Select')
+          #pi-validation-message
+            Project requires at least 1 PI
+          #user-role-validation-message
+            Associated user requires a role
+
+        .role_other{:style => "display:none"}
+          %strong= label_tag('associated_user[role_other]', 'Please Specify:')
+          %br
+          = text_field_tag('associated_user[role_other]', user.role_other)
+
+        #commons_name.commons_name
+          %strong= label_tag('user[era_commons_name]', 'ERA Commons Name:')
+          %br
+          = text_field_tag('user[era_commons_name]', user.era_commons_name)
+
+        #credentials
+          %strong= label_tag('user[credentials]', 'Credentials:')
+          %br
+          - pre_selected_credentials = pre_select_user_credentials(user.credentials)
+          = select_tag('user[credentials]', options_for_select(reverse_user_credential_hash, pre_selected_credentials), :prompt => '--- Please Select ---', :class => 'user_credentials')
+        - if pre_selected_credentials == 'other'
+          #credentials_other
+            = text_field_tag('user[credentials]', user.credentials)
+
+      .right
+        #institution
+          %strong= label_tag('user[institution]', 'Institution:')
+          %br
+          = select_tag('user[institution]', options_for_select(INSTITUTIONS, user.institution), :include_blank => true)
+
+        #college
+          %strong= label_tag('user[college]', 'College:')
+          %br
+          = select_tag('user[college]', options_for_select(COLLEGES, user.college), :include_blank => true)
+
+        #department
+          %strong= label_tag('user[department]', 'Department:')
+          %br
+          = select_tag('user[department]', options_for_select(DEPARTMENTS, user.department), :include_blank => true)
+
+        #subspecialty.subspecialty
+          %strong= label_tag('user[subspecialty]', 'Subspecialty:')
+          %br
+          = select_tag('user[subspecialty]', options_for_select(SUBSPECIALTIES, user.subspecialty), :include_blank => true)
+        #project_rights
+          %strong User Rights:
+          %br
+
+          %ul.rights_labels
+            %li
+              = label_tag('associated_user[project_rights]', 'Study/Project Member Only', :value => 'none')
+            %li
+              = label_tag('associated_user[project_rights]', 'View Rights', :value => 'view')
+            %li
+              = label_tag('associated_user[project_rights]', 'Request/Approve Services', :value => 'request')
+            %li
+              = label_tag('associated_user[project_rights]', 'Authorize/Change Study Charges', :value => 'approve')
+          %ul.rights_radios
+            %li= radio_button_tag('associated_user[project_rights]', 'none', user.project_rights == "none")
+            %li= radio_button_tag('associated_user[project_rights]', 'view', user.project_rights == "view")
+            %li= radio_button_tag('associated_user[project_rights]', 'request', user.project_rights == "request")
+            %li= radio_button_tag('associated_user[project_rights]', 'approve', user.project_rights == "approve")
+          .clear
+      .clear
+
+:javascript
+  $(document).ready(function(){
+    initial_role = $('.edit-user #associated_user_role').val();
+    $('.edit-user #associated_user_role').live('change', (function() {
+      var role = $(this).val();
+      if (initial_role === 'pi'){
+        Sparc.associated_users.validatePiPresence(role);
+      }
+    }));
+  });

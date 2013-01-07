@@ -2,7 +2,7 @@ class PricingMap::ObisEntitySerializer
   def as_json(pricing_map, options = nil)
     h = {
       'unit_minimum'               => pricing_map.unit_minimum,
-      'is_one_time_fee'            => pricing_map.is_one_time_fee,
+      'is_one_time_fee'            => pricing_map.is_one_time_fee ? true : false,
       'full_rate'                  => pricing_map.full_rate.to_f,
       'unit_factor'                => pricing_map.unit_factor.to_f,
       'unit_type'                  => pricing_map.unit_type,

@@ -13,4 +13,9 @@ class Document < ActiveRecord::Base
   attr_accessible :doc_type_other
   attr_accessible :document_grouping_id
   attr_accessible :sub_service_request_id
+
+  def display_document_type
+    self.doc_type == "other" ? self.doc_type_other.try(:humanize) : DOCUMENT_TYPES.key(self.doc_type)
+  end
+
 end

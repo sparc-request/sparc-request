@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130103170244) do
+ActiveRecord::Schema.define(:version => 20130107163409) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -110,6 +110,7 @@ ActiveRecord::Schema.define(:version => 20130103170244) do
     t.datetime "created_at",          :null => false
     t.datetime "updated_at",          :null => false
     t.datetime "deleted_at"
+    t.boolean  "approval_pending"
   end
 
   add_index "human_subjects_info", ["protocol_id"], :name => "index_human_subjects_info_on_protocol_id"

@@ -184,6 +184,8 @@ describe "service calendar" do
           # re-created
           click_link "check_row_#{line_item2.id}_billing_strategy"
 
+          remove_from_dom('.pp_max_total_direct_cost')
+
           # Putting values in these fields should not increase the total
           # cost
           fill_in "visits_#{line_item2.visits[1].id}_insurance_billing_qty", :with => 10

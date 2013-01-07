@@ -39,7 +39,7 @@ describe "creating a new study " do
       find(:xpath, "//input[@alt='SaveAndContinue']").click
       wait_for_javascript_to_finish
 
-      find("#service_request_protocol_id").value().should eq("2")
+      find("#service_request_protocol_id").value().should eq Protocol.last.id.to_s
     end
   end
 end

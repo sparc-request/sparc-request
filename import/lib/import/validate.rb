@@ -224,7 +224,7 @@ def prepare_line_items(line_items)
   line_items.each do |line_item|
     line_item['complete_date'] = fix_legacy_date(line_item['complete_date'])
     line_item['in_process_date'] = fix_legacy_date(line_item['in_process_date'])
-    line_item['is_one_time_fee'] ||= false
+    line_item.delete('is_one_time_fee') # doesn't belong here
     line_item.delete('complete_date')         if line_item['complete_date'] == '' or line_item['complete_date'].nil?
     line_item.delete('in_process_date')       if line_item['in_process_date'] == '' or line_item['in_process_date'].nil?
     line_item.delete('subject_count')         if line_item['subject_count'].nil?
@@ -390,6 +390,7 @@ def prepare_service(entity)
   entity['attributes'].delete('line_items') # service requests have line items, not services
   if entity['attributes']['pricing_maps'] then
     entity['attributes']['pricing_maps'].each do |pricing_map|
+      pricing_map['is_one_time_fee'] ||= false
       pricing_map.delete('exclude_from_indirect_cost') if pricing_map['exclude_from_indirect_cost'].nil?
       pricing_map.delete('display_date') if pricing_map['display_date'].blank?
     end

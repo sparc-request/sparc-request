@@ -3,7 +3,6 @@
 FactoryGirl.define do
 
   factory :project_role do
-    id            
     project_rights { Faker::Lorem.sentence(2) }
     role           'pi'
     

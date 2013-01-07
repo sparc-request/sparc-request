@@ -2,7 +2,6 @@
 # due to validations on protocol
 FactoryGirl.define do
   factory :service_request do
-    id                   
     protocol_id          { Random.rand(10000) }
     obisid               { SecureRandom.hex(16) }
     status               { Faker::Lorem.sentence(3) }

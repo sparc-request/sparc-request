@@ -1,7 +1,6 @@
 FactoryGirl.define do
 
   factory :organization do
-    id            
     name          { Faker::Lorem.sentence(3) }
     description   { Faker::Lorem.paragraph(4) }
     obisid        { SecureRandom.hex(16) }

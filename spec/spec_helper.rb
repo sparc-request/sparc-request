@@ -28,6 +28,10 @@ Capybara.default_wait_time = 15
 Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 include CapybaraSupport
 
+# I'm not sure why this is necessary.  None of the examples at
+# https://github.com/thoughtbot/factory_girl/blob/master/GETTING_STARTED.md
+# seem to do this, but without it, we get the error "ArgumentError:
+# Trait not registered: id".
 FactoryGirl.define do
   sequence :id do |id|
     id

@@ -7,10 +7,13 @@ class ServiceCalendarsController < ApplicationController
     session[:service_calendar_page] = params[:page] if params[:page]
 
     @tab = params[:tab]
+    @portal = params[:portal]
     @page = @service_request.set_visit_page session[:service_calendar_page].to_i
+    @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition {|x| x.is_one_time_fee?} if @sub_service_request
   end
 
   def update
+    @portal = params[:portal]
     visit = Visit.find params[:visit] rescue nil
     
     @line_item = LineItem.find params[:line_item] rescue nil

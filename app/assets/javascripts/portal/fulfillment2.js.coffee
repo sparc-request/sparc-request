@@ -118,9 +118,10 @@ $(document).ready ->
 
   $(document).on('click', '#add_service', ->
     ssr_id = $(this).data('sub_service_request_id')
+    new_service_id = $(this).data('select_id')
     data = 
       'sub_service_request_id': ssr_id
-      'new_service_id': $("#new_service_id").val()
+      'new_service_id': $("##{new_service_id}").val()
     $.ajax
       type:        'POST'
       url:         "/portal/admin/sub_service_requests/#{ssr_id}/add_line_item"

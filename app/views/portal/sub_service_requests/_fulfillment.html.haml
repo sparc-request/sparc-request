@@ -23,13 +23,19 @@
 
   %br
 
+  #add_otf_service_container
+    = render :partial => 'add_service', :locals => {:services => @candidate_one_time_fees, :select_id => 'new_otf_service_id'}
+
+  %br
+  
+  = javascript_include_tag 'jquery.qtip.min'
   #per_patient_services
     = render 'per_patient_per_visit'
 
   %br
 
-  #add_service_container
-    = render 'add_service'
+  #add_ppv_service_container
+    = render :partial => 'add_service', :locals => {:services => @candidate_per_patient_per_visit, :select_id => 'new_ppv_service_id'}
 
 #ssr_notes.ui-corner-all
   = render 'notes'

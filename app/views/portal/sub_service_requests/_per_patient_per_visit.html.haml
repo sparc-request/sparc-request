@@ -1,3 +1,5 @@
+= javascript_include_tag 'service_calendar'
+= javascript_include_tag 'service_calendar_logic'
 %h4 Per-Patient/Per-Visit
 - if !(@sub_service_request.per_patient_per_visit_line_items.length >= 1)
   .blank_requests
@@ -22,41 +24,7 @@
             %br
             = link_to "Delete a Visit", 'javascript:void(0);', :class => "delete_visit_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id
           %td{:colspan => 3}
-        %tr
-          %th
-          %th.services_selected Services Selected
-          %th{:colspan => 5} Total Subjects
-          %th Delete
-      %tbody
-        - @sub_service_request.per_patient_per_visit_line_items.each do |ppv|
-          %tr
-            %td.expand_li{:'data-line_item_id' => ppv.id}
-              .ui-icon.ui-icon-triangle-1-e
-            %td.ppv_service_select
-              = select_tag "line_item_service_id", options_for_select(candidate_service_options(@candidate_per_patient_per_visit), ppv.try(:service).try(:id)), :'data-line_item_id' => ppv.id, :class => 'fulfillment_data'
-            %td.ppv_text_field{:colspan => 5}
-              = text_field_tag "line_item_subject_count", ppv.try(:subject_count), :'data-line_item_id' => ppv.id, :class => 'fulfillment_data'
-
-            %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-line_item_id' => ppv.id, :class => "delete_data")
-          - unless ppv.visits.empty?
-            %tr.visit{:class => "li_#{ppv.id}"}
-              %th
-              %th
-              %th Position
-              %th Name
-              %th Quantity
-              %th R
-              %th T
-              %th %
-              %th
-            - ppv.visits.each do |visit|
-              %tr.visit{:class => "li_#{ppv.id}"}
-                %td
-                %td
-                %td= visit.try(:position)
-                %td= text_field_tag "visit_name", visit.try(:name), :'data-visit_id' => visit.id, :class => 'fulfillment_data'
-                %td= visit.try(:quantity_total)
-                %td= text_field_tag "visit_research_billing_qty", visit.try(:research_billing_qty), :'data-visit_id' => visit.id, :class => 'fulfillment_data to_zero research_billing'
-                %td= text_field_tag "visit_insurance_billing_qty", visit.try(:insurance_billing_qty), :'data-visit_id' => visit.id, :class => 'fulfillment_data to_zero'
-                %td= text_field_tag "visit_effort_billing_qty", visit.try(:effort_billing_qty), :'data-visit_id' => visit.id, :class => 'fulfillment_data to_zero'
-                
+    #service_calendar
+      %ul
+        %li= link_to 'Template', table_service_request_service_calendars_path(@service_request, :tab => "template", :portal => true) , :id => 'template_tab'
+        %li= link_to 'Billing Strategy', table_service_request_service_calendars_path(@service_request, :tab => "billing_strategy", :portal => true), :id => 'billing_strategy_tab'

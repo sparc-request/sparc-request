@@ -14,3 +14,11 @@ $(document).ready ->
     $("table#new_document .upload_button span.ui-button-text").text("Upload")
     $(".document_upload").hide()
     $(".document_upload_button").show()
+
+  $(document).on('change', '#doc_type', ->
+    if $(this).val() == 'other'
+      $('.document_type_other').show()
+    else
+      $('.document_type_other').hide()
+  )
+    

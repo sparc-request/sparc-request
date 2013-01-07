@@ -1,7 +1,16 @@
-#notes_table
-  %table
-    %thead
-      %tr
-        %td{:colspan => 1}
-        %td{:colspan => 2}
-          = link_to "Add a Note", 'javascript:void(0);', :class => "add_note_link", :'data-sub_service_request_id' => @sub_service_request.id
+%h3 Notes
+#notes
+  #notes_table
+    %table
+      %thead
+        - @sub_service_request.notes.each do |note|
+          %tr
+            %td.saved_note
+              .note_body= note.try(:body)
+              .note_date= note.try(:created_at).try(:strftime, '%D')
+              .note_name= note.try(:identity).try(:full_name)
+          %tr.space
+        %tr
+          %td= text_area_tag "notes", "", :class => "note_box" 
+        %tr
+          %td= link_to "Add Note", 'javascript:void(0);', :class => "add_note_link", :'data-sub_service_request_id' => @sub_service_request.id

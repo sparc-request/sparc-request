@@ -1,6 +1,6 @@
 class ServiceRequestsController < ApplicationController
-  before_filter :initialize_service_request
-  before_filter :authorize_identity
+  before_filter :initialize_service_request, :except => [:approve_changes]
+  before_filter :authorize_identity, :except => [:approve_changes]
   before_filter :authenticate_identity!, :except => [:catalog, :add_service, :remove_service, :ask_a_question]
   layout false, :only => :ask_a_question
 
@@ -345,6 +345,9 @@ class ServiceRequestsController < ApplicationController
       @service_request.service_list.each do |org_id, values|
         line_items = values[:line_items]
         ssr = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
+        unless @service_request.status.nil? and !ssr.status.nil?
+          ssr.update_attribute(:status, @service_request.status)
+        end
 
         line_items.each do |li|
           li.update_attribute(:sub_service_request_id, ssr.id)

@@ -22,6 +22,10 @@ class ApplicationController < ActionController::Base
     @sub_service_request = nil
     @line_items = nil
 
+    if params[:edit_original]
+      session.delete(:sub_service_request_id)
+    end
+
     Rails.logger.info "#"*50
     Rails.logger.info params[:controller]
     Rails.logger.info params[:action]

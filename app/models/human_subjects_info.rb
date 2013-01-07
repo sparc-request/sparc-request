@@ -13,5 +13,6 @@ class HumanSubjectsInfo < ActiveRecord::Base
   attr_accessible :submission_type
   attr_accessible :irb_approval_date
   attr_accessible :irb_expiration_date
+  attr_accessible :approval_pending
 end
 

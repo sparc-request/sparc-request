@@ -126,6 +126,10 @@
             %br
             = hs.select :submission_type, options_for_select(SUBMISSION_TYPES, study.human_subjects_info.submission_type), :include_blank => "Pick a Submission Type"
 
+          .field.approval_pending
+            = hs.label :approval_pending, "Application/Approval Pending:"
+            .approval_pending= hs.check_box :approval_pending
+
           .field.irb_approval_date
             = hs.label :irb_approval_date, "IRB Approval Date:"
             = text_field_tag :irb_approval_date, (study.human_subjects_info.irb_approval_date.strftime('%_m/%d/%Y') rescue nil)

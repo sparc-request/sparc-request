@@ -205,7 +205,6 @@ class Protocol::ObisEntitySerializer < Entity::ObisEntitySerializer
       raise ArgumentError, "Cannot change project id from #{entity.id.inspect} to #{identifiers['project_id'].inspect}"
     end
 
-    p attributes
     entity.attributes = {
         :indirect_cost_rate             => attributes['indirect_cost_rate'],
         :brief_description              => attributes['brief_description'],

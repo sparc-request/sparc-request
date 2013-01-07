@@ -663,7 +663,7 @@ class ServiceOffering < Relationship
       update_relationship(
           h,
           new_service,
-          is_available: organization.is_available)
+          is_available: @organization.is_available)
     end
   end
 end

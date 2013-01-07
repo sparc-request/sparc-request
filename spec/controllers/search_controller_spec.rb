@@ -27,6 +27,7 @@ describe SearchController do
           name: 'service1a',
           abbreviation: 'ser1a',
           description: 'this is service 1a',
+          cpt_code: '123',
           organization_id: core.id)
       service
     }
@@ -37,6 +38,7 @@ describe SearchController do
           name: 'service1b',
           abbreviation: 'ser1b',
           description: 'this is service 1b',
+          cpt_code: '352',
           organization_id: core.id)
       service
     }
@@ -47,6 +49,7 @@ describe SearchController do
           name: 'service2',
           abbreviation: 'ser2',
           description: 'this is service 2',
+          cpt_code: '987',
           organization_id: core2.id)
       service
     }
@@ -90,6 +93,24 @@ describe SearchController do
       results[0]['value'].should eq service2.id
       results[0]['description'].should eq 'this is service 2'
       results[0]['sr_id'].should eq service_request.id
+    end
+
+    it 'should find by cpt code' do
+      session['service_request_id'] = service_request.id
+
+      get :services, {
+        :format => :js,
+        :id => nil,
+        :term => '123',
+      }.with_indifferent_access
+
+      results = JSON.parse(response.body)
+
+      results.count.should eq 1
+      results[0]['label'].should eq 'service1a'
+      results[0]['value'].should eq service1a.id
+      results[0]['description'].should eq 'this is service 1a'
+
     end
 
     it 'should return two services if two services match' do

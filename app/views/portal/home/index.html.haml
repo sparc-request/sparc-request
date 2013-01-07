@@ -54,7 +54,7 @@
         selected_option = ui.item.label
         $.ajax({
           method: 'get',
-          url: "portal/associated_users/new",
+          url: "associated_users/new",
           data: {user_id: ui.item.value, protocol_id: $('#add-user-form #protocol_id').val()},
           success: function() {
           }

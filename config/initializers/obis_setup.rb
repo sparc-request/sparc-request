@@ -551,7 +551,8 @@ DOCUMENT_TYPES = {'Protocol'      => 'protocol',
                   'DSMP'          => 'dsmp',
                   'Budget'        => 'budget',
                   'Justification' => 'justification',
-                  'Biosketch'     => 'biosketch'}
+                  'Biosketch'     => 'biosketch',
+                  'Other'         => 'other'}
 
 INSTITUTIONS = {"University of South Carolina" => "university_of_south_carolina",
                 "Health Sciences South Carolina" => "health_sciences_south_carolina",

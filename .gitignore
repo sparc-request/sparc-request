@@ -27,6 +27,7 @@ scratch
 .#*
 *.jar
 *.war
+*.csv
 public/assets
 public/system
 *~

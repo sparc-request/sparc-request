@@ -95,7 +95,7 @@
             - first_ssr = false
             %td{:rowspan => sr.sub_service_requests.size}
               - if @user.can_edit_service_request? sr
-                %a.edit_service_request.btn{:href => "javascript:void(0);", :'data-permission' => rights.to_s, :'data-url' => "/service_requests/#{sr.id}/catalog?from_user_portal=true"} Edit Original
+                %a.edit_service_request.btn{:href => "javascript:void(0);", :'data-permission' => rights.to_s, :'data-url' => "/service_requests/#{sr.id}/catalog?from_user_portal=true&edit_original=true"} Edit Original
     - reset_cycle('protocol')
 
 

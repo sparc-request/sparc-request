@@ -68,7 +68,7 @@ This will:
 * Import:
 * 
             mysql notifications --user=notify --password=notify < notifier.sql
-            ruby import_notifications.rb
+            ./import_notifications.sh
 
 
 # What to do if the import process fails #

@@ -1,8 +1,5 @@
-require 'models/message'
-require 'models/notification'
-require 'models/user_notification'
-require 'models/question'
 require 'mysql2'
+require 'import'
 
 db = Mysql2::Client.new(
     :host => 'localhost',

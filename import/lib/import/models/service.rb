@@ -7,7 +7,7 @@ class Service::ObisEntitySerializer < Entity::ObisEntitySerializer
       'abbreviation'         => service.abbreviation,
       'order'                => service.order,
       'description'          => service.description,
-      'is_available'         => service.is_available,
+      # 'is_available'         => service.is_available, # TODO: to check this, we need to have access to the organization
       'service_center_cost'  => service.service_center_cost,
       'cpt_code'             => service.cpt_code,
       'charge_code'          => service.charge_code,

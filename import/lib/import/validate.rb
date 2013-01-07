@@ -224,7 +224,7 @@ def prepare_line_items(line_items)
   line_items.each do |line_item|
     line_item['complete_date'] = fix_legacy_date(line_item['complete_date'])
     line_item['in_process_date'] = fix_legacy_date(line_item['in_process_date'])
-    line_item.delete('is_one_time_fee')
+    line_item['is_one_time_fee'] ||= false
     line_item.delete('complete_date')         if line_item['complete_date'] == '' or line_item['complete_date'].nil?
     line_item.delete('in_process_date')       if line_item['in_process_date'] == '' or line_item['in_process_date'].nil?
     line_item.delete('subject_count')         if line_item['subject_count'].nil?
@@ -363,31 +363,52 @@ def prepare_new_entity(entity)
   entity['attributes'].delete('subspecialty') # too hard to test
 end
 
+def prepare_identity(entity)
+  entity['attributes'].delete('admin')
+  entity['attributes'].delete('credentials_other')
+  entity['attributes'].delete('other_credentials')
+  entity['attributes'].delete('subspecialty') # too hard to test
+  entity['attributes'].delete('email') if entity['attributes']['email'].nil?
+  entity['identifiers']['email'] = entity['attributes']['email'] if entity['attributes']['email']
+  entity['identifiers']['ldap_uid'] = "#{entity['identifiers']['ldap_uid']}@musc.edu" if entity['identifiers']['ldap_uid']
+  entity['attributes']['uid'] = "#{entity['attributes']['uid']}@musc.edu" if entity['attributes']['uid']
+end
+
+def prepare_organization(entity)
+  entity['attributes']['submission_emails'] ||= [ ]
+  # entity['attributes']['subsidy_map'] ||= {"max_percentage"=>nil, "max_dollar_cap"=>nil, "excluded_funding_sources"=>[]}
+  entity['attributes'].delete('subsidy')
+  entity['attributes'].delete('edit_historic_data')
+  entity['attributes'].delete('pricing_setups')
+  entity['attributes'].delete('css_class') if entity['attributes']['css_class'].nil?
+  entity['attributes']['order'] = Integer(entity['attributes']['order']) if not entity['attributes']['order'].nil?
+  entity['attributes']['is_available'] ||= false
+end
+
+def prepare_service(entity)
+  entity['attributes'].delete('subsidy') # deprecated
+  entity['attributes'].delete('line_items') # service requests have line items, not services
+  if entity['attributes']['pricing_maps'] then
+    entity['attributes']['pricing_maps'].each do |pricing_map|
+      pricing_map.delete('exclude_from_indirect_cost') if pricing_map['exclude_from_indirect_cost'].nil?
+      pricing_map.delete('display_date') if pricing_map['display_date'].blank?
+    end
+  end
+  entity['attributes'].delete('is_available') # TODO: to check this, we need to have access to the organization
+end
+
 def prepare_entity(entity)
   annotate("while preparing entity: #{entity.pretty_inspect}") do
     entity.delete('_rev')
 
     if entity['classes'].include?('identity') then
-      entity['attributes'].delete('admin')
-      entity['attributes'].delete('credentials_other')
-      entity['attributes'].delete('other_credentials')
-      entity['attributes'].delete('subspecialty') # too hard to test
-      entity['attributes'].delete('email') if entity['attributes']['email'].nil?
-      entity['identifiers']['email'] = entity['attributes']['email'] if entity['attributes']['email']
-      entity['identifiers']['ldap_uid'] = "#{entity['identifiers']['ldap_uid']}@musc.edu" if entity['identifiers']['ldap_uid']
-      entity['attributes']['uid'] = "#{entity['attributes']['uid']}@musc.edu" if entity['attributes']['uid']
+      prepare_identity(entity)
 
     elsif entity['classes'].include?('core') or
           entity['classes'].include?('institution') or
           entity['classes'].include?('provider') or
           entity['classes'].include?('program') then
-      entity['attributes']['submission_emails'] ||= [ ]
-      # entity['attributes']['subsidy_map'] ||= {"max_percentage"=>nil, "max_dollar_cap"=>nil, "excluded_funding_sources"=>[]}
-      entity['attributes'].delete('subsidy')
-      entity['attributes'].delete('edit_historic_data')
-      entity['attributes'].delete('pricing_setups')
-      entity['attributes'].delete('css_class') if entity['attributes']['css_class'].nil?
-      entity['attributes']['order'] = Integer(entity['attributes']['order']) if not entity['attributes']['order'].nil?
+      prepare_organization(entity)
 
     elsif entity['classes'].include?('project') or
           entity['classes'].include?('study') then
@@ -397,14 +418,7 @@ def prepare_entity(entity)
       prepare_project(entity['attributes'])
 
     elsif entity['classes'].include?('service') then
-      entity['attributes'].delete('subsidy') # deprecated
-      entity['attributes'].delete('line_items') # service requests have line items, not services
-      if entity['attributes']['pricing_maps'] then
-        entity['attributes']['pricing_maps'].each do |pricing_map|
-          pricing_map.delete('exclude_from_indirect_cost') if pricing_map['exclude_from_indirect_cost'].nil?
-          pricing_map.delete('display_date') if pricing_map['display_date'].blank?
-        end
-      end
+      prepare_service(entity)
 
     elsif entity['classes'].include?('service_request')
       prepare_service_request(entity['attributes'])

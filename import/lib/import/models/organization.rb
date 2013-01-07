@@ -10,7 +10,7 @@ class Organization::ObisEntitySerializer < Entity::ObisEntitySerializer
       'abbreviation'       => entity.abbreviation,
       'ack_language'       => entity.ack_language,
       'process_ssrs'       => entity.process_ssrs,
-      'is_available'       => entity.is_available ? true : false,
+      'is_available'       => entity.is_available,
       'subsidy_map'        => entity.subsidy_map.as_json(options),
       'submission_emails'  => entity.submission_emails.as_json(options)
     }
@@ -36,7 +36,7 @@ class Organization::ObisEntitySerializer < Entity::ObisEntitySerializer
         :abbreviation  => attributes['abbreviation'],
         :ack_language  => attributes['ack_language'],
         :process_ssrs  => attributes['process_ssrs'],
-        :is_available  => attributes['is_available']
+        :is_available  => attributes['is_available'] ? true : false
     )
 
     entity.build_subsidy_map() if not entity.subsidy_map

@@ -59,7 +59,7 @@ wb.add_worksheet(name: "Review") do |sheet|
   services_row = ["Selected Services", "", "Your Cost", "# of Subjects"]
   if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?) 
     visit_count.times do |n|
-      services_row << "#{n.name}"
+      services_row << "Visit #{n+1}"
     end
   end
 

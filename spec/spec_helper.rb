@@ -69,7 +69,6 @@ RSpec.configure do |config|
 
   before = proc do
     DatabaseCleaner.start
-
   end
 
   config.before(:each, :js => true, &before)

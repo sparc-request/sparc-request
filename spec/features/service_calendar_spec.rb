@@ -39,7 +39,6 @@ describe "service calendar" do
 
       it "should update total costs when a visit is checked", :js => true do
         visit_id = line_item2.visits[1].id
-        remove_from_dom(".total_#{line_item2.id}")
         page.check("visits_#{visit_id}")
         find(".total_#{line_item2.id}").should have_exact_text("$30.00")
       end

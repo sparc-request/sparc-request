@@ -297,16 +297,20 @@ class ServiceRequestsController < ApplicationController
 
   def save_and_exit
     # TODO: refactor into the ServiceRequest model
-
-    @service_request.update_attribute(:status, 'draft')
     
-    next_ssr_id = @service_request.protocol.next_ssr_id || 1
-    @service_request.sub_service_requests.each do |ssr|
-      ssr.update_attribute(:status, 'draft')
-      ssr.update_attribute(:ssr_id, "%04d" % next_ssr_id) unless ssr.ssr_id
-      next_ssr_id += 1
+    if @sub_service_request # if we are editing a sub service request we should just update it's status
+      @sub_service_request.update_attribute(:status, 'draft')
+    else
+      @service_request.update_attribute(:status, 'draft')
+      
+      next_ssr_id = @service_request.protocol.next_ssr_id || 1
+      @service_request.sub_service_requests.each do |ssr|
+        ssr.update_attribute(:status, 'draft')
+        ssr.update_attribute(:ssr_id, "%04d" % next_ssr_id) unless ssr.ssr_id
+        next_ssr_id += 1
+      end
+      @service_request.protocol.update_attribute(:next_ssr_id, next_ssr_id)
     end
-    @service_request.protocol.update_attribute(:next_ssr_id, next_ssr_id)
 
     redirect_to USER_PORTAL_LINK 
   end

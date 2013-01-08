@@ -336,7 +336,7 @@ class Identity < ActiveRecord::Base
     hash = {}
 
     ssrs.each do |ssr|
-      unless ssr.status.blank?
+      unless ssr.status.blank? or ssr.status == 'first_draft'
         ssr_status = ssr.status.to_s.gsub(/\s/, "_").gsub(/[^-\w]/, "").downcase
         hash[ssr_status] = [] unless hash[ssr_status]
         hash[ssr_status] << ssr

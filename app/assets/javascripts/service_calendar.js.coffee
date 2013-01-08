@@ -39,7 +39,6 @@ $(document).ready ->
     qty += sibling_qty
     
     if intRegex.test qty
-      #if $(this).hasClass('line_item_visit_research_billing_qty')
       unit_minimum = $(this).attr('data-unit-minimum')
 
       if qty > 0 and qty < unit_minimum

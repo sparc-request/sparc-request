@@ -1560,6 +1560,10 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   padding-right: 10px;
 }
 
+.tab_arrow {
+  padding-left: 30px;
+}
+
 #service_calendar .ui-tabs-panel {
   padding: 10px 5px;
 }

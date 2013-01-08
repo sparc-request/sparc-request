@@ -14,10 +14,10 @@
   .grid_12
     #service_calendar
       %ul
-        %li= link_to 'Template', table_service_request_service_calendars_path(@service_request, :tab => "template"), :id => 'template_tab'
-        %li= link_to 'Billing Strategy', table_service_request_service_calendars_path(@service_request, :tab => "billing_strategy"), :id => 'billing_strategy_tab'
-        %li= link_to 'Quantity', table_service_request_service_calendars_path(@service_request, :tab => "quantity"), :id => 'quantity_tab'
-        %li= link_to 'Pricing', table_service_request_service_calendars_path(@service_request, :tab => "pricing"), :id => 'pricing_tab'
+        %li= link_to 'Template Tab', table_service_request_service_calendars_path(@service_request, :tab => "template"), :id => 'template_tab'
+        %li= link_to 'Billing Strategy Tab', table_service_request_service_calendars_path(@service_request, :tab => "billing_strategy"), :id => 'billing_strategy_tab'
+        %li= link_to 'Quantity Tab', table_service_request_service_calendars_path(@service_request, :tab => "quantity"), :id => 'quantity_tab'
+        %li= link_to 'Pricing Tab', table_service_request_service_calendars_path(@service_request, :tab => "pricing"), :id => 'pricing_tab'
 
   .clear
   .continue= render :partial => 'service_requests/navigation'

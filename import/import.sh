@@ -141,6 +141,7 @@ case "$skip_to" in
   validate)
     echo "Validating import"
     ruby $ruby_args validate.rb $validate_args
+    save_state 'final'
     ;&
 esac
 

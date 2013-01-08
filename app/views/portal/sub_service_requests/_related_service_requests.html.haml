@@ -24,7 +24,7 @@
   .rsr-dialog{:id => "ssr_#{rsr.id}"}
     %ul
       - rsr.line_items.each do |li|
-        %li= li.service.name
+        %li= li.service.display_service_name
 
 :javascript
   $(document).ready( function() { Sparc.related_service_requests.ready(); });

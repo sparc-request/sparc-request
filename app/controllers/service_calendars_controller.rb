@@ -1,6 +1,6 @@
 class ServiceCalendarsController < ApplicationController
   before_filter :initialize_service_request
-  before_filter :authorize_identity
+  before_filter {|c| params[:portal] == 'true' ? true : c.send(:authorize_identity)}
   layout false
   def table
     #use session so we know what page to show when tabs are switched

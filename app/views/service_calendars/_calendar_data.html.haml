@@ -49,7 +49,7 @@
         - value[:line_items].each do |line_item|
           %tr.line_item{:class => cycle('odd', '', :name => 'pppvs')}
             - if @portal 
-              %td= select_tag "line_item_service_id", options_for_select(candidate_service_options(@candidate_per_patient_per_visit), line_item.try(:service).try(:id)), :'data-line_item_id' => line_item.id, :class => 'fulfillment_data'
+              %td= select_tag "line_item_service_id", options_for_select(candidate_service_options(@candidate_per_patient_per_visit), line_item.try(:service).try(:id)), :'data-line_item_id' => line_item.id, :class => 'fulfillment_data fulfillment_selecter' 
             - else
               %td.service_name= line_item.service.display_service_name
             - unless @portal

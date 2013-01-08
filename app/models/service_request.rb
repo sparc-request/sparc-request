@@ -127,10 +127,15 @@ class ServiceRequest < ActiveRecord::Base
         name << parent.abbreviation
         acks << parent.ack_language unless parent.ack_language.blank?
       end
-      if last_parent.nil?
+      if found_parent == false
+        service.parents.reverse.each do |parent|
+          name << parent.abbreviation
+          acks << parent.ack_language unless parent.ack_language.blank?
+        end
         last_parent = service.organization.id
         last_parent_name = service.organization.name
       end
+      
       if groupings.include? last_parent
         g = groupings[last_parent]
         g[:services] << service

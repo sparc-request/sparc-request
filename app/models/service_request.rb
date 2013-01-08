@@ -118,22 +118,25 @@ class ServiceRequest < ActiveRecord::Base
       acks = []
       last_parent = nil
       last_parent_name = nil
-      service.parents.each do |parent|
+      found_parent = false
+      service.parents.reverse.each do |parent|
+        next if !parent.process_ssrs? && !found_parent
+        found_parent = true
+        last_parent = last_parent || parent.id
+        last_parent_name = last_parent_name || parent.name
         name << parent.abbreviation
         acks << parent.ack_language unless parent.ack_language.blank?
-        last_parent = parent.id
-        if parent.process_ssrs?
-          last_parent = parent.id
-          last_parent_name = parent.name
-          break
-        end
+      end
+      if last_parent.nil?
+        last_parent = service.organization.id
+        last_parent_name = service.organization.name
       end
       if groupings.include? last_parent
         g = groupings[last_parent]
         g[:services] << service
         g[:line_items] << line_item
       else
-        groupings[last_parent] = {:process_ssr_organization_name => last_parent_name, :name => name.join(' -- '), :services => [service], :line_items => [line_item], :acks => acks.uniq.compact}
+        groupings[last_parent] = {:process_ssr_organization_name => last_parent_name, :name => name.reverse.join(' -- '), :services => [service], :line_items => [line_item], :acks => acks.reverse.uniq.compact}
       end
     end
 

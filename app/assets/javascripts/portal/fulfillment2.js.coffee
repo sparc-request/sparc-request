@@ -248,6 +248,7 @@ $(document).ready ->
   # INSTANTIATE HELPERS
   # set_percent_subsidy()
   $('.delete-ssr-button').button()
+  $('.export_to_excel_button').button()
   $('#approval_history_table').tablesorter()
   $('#status_history_table').tablesorter()
 

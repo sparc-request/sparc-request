@@ -1,2 +1,2 @@
-= select_tag "new_service_id", options_for_select(candidate_service_options(@sub_service_request.candidate_services)), :'data-sub_service_request_id' => @sub_service_request.id
-%button#add_service{:'data-sub_service_request_id' => @sub_service_request.id} Add Service
+= select_tag select_id, options_for_select(candidate_service_options(services)), :'data-sub_service_request_id' => @sub_service_request.id
+%button#add_service{:'data-sub_service_request_id' => @sub_service_request.id, :'data-select_id' => select_id} Add Service

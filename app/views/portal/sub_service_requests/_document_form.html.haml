@@ -6,6 +6,7 @@
 - first_doc = nil
 - orgs = @grouping.documents.map{|d| d.sub_service_request.organization_id} if @grouping
 - first_doc_type = @grouping.documents.first.doc_type if @grouping
+- first_doc_type_other = @grouping.documents.first.doc_type_other if first_doc_type == 'other'
 - first_doc = @grouping.documents.first if @grouping
 - button_text = @grouping ? "Update" : "Upload"
 = hidden_field_tag :document_grouping_id, @grouping.id if @grouping
@@ -17,7 +18,10 @@
     %th File
     %th &nbsp;
   %tr
-    %td{:style => "width:212px;"}= select_tag :doc_type, options_for_select(DOCUMENT_TYPES, first_doc_type), :prompt => "Select Type", :style => "margin-left:5px;"
+    %td{:style => "width:212px;"}
+      = select_tag :doc_type, options_for_select(DOCUMENT_TYPES, first_doc_type), :prompt => "Select Type", :style => "margin-left:5px;"
+      .document_type_other{:style => first_doc_type == 'other' ? '' : 'display:none;'}
+        = text_field_tag :doc_type_other, first_doc_type_other
     = hidden_field_tag "process_ssr_organization_ids[]", @sub_service_request.organization.id
     - if !defined?(edit).nil?
       = hidden_field_tag "is_edit", "true"

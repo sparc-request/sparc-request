@@ -16,7 +16,7 @@
       - @documents.each do |document|
         %tr
           %td
-            = display_document_type(document.try(:document_type))
+            = document.display_document_type
           %td.document_link= link_to("#{document.title}", portal_document_download_path(document.id))
           %td.document_date= document.updated_at.strftime("%D")
           %td.delete.update_document

@@ -3,6 +3,11 @@ class Portal::SubServiceRequestsController < Portal::BaseController
 
   def show
     @sub_service_request = SubServiceRequest.find(params[:id])
+    
+    session[:sub_service_request_id] = @sub_service_request.id
+    session[:service_request_id] = @sub_service_request.service_request_id
+    session[:service_calendar_page] = params[:page] if params[:page]
+
     if @user.can_edit_fulfillment? @sub_service_request.organization
       @user_toasts = @user.received_toast_messages.select {|x| x.sending_object.class == SubServiceRequest}
       @service_request = @sub_service_request.service_request
@@ -129,12 +134,11 @@ class Portal::SubServiceRequestsController < Portal::BaseController
         sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :document_grouping_id => document_grouping.id
         sub_service_request.save
       end
-
       to_update.each do |org_id|
         if document_grouping.documents.size == 1# updating sub_service_request documents should create a new grouping unless the grouping only contains documents for that sub_service_request
           document_grouping.documents.each do |doc|
             if params[:is_edit] && !document
-              doc.update_attributes(:doc_type => params[:doc_type]) if doc.organization.id == org_id.to_i
+              doc.update_attributes(:doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other]) if doc.organization.id == org_id.to_i
             else
               doc.update_attributes(:document => document, :doc_type => params[:doc_type]) if doc.organization.id == org_id.to_i
             end

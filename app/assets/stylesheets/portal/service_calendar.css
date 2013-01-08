@@ -1,3 +1,9 @@
+.service_calendar_spinner {
+  width: 16px;
+  height: 16px;
+  display: none;
+}
+
 .service_calendar {
   width: 922px;
   border-collapse: collapse;
@@ -69,4 +75,22 @@
 .service_calendar .table_header th span.visit_count {
   display: inline-table;
   width: 250px;
+}
+
+.service_calendar .line_item_visit_billing {
+  width: 15px;
+}
+
+.service_calendar .billing_type_list {
+  padding: 5px;
+}
+
+.service_calendar .billing_type {
+  display: inline-table;
+  text-align: center;
+  width: 18px;
+}
+
+.fulfillment_selecter {
+  width: 200px;
 }

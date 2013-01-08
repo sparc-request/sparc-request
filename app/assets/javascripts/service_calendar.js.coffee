@@ -31,15 +31,21 @@ $(document).ready ->
     intRegex = /^\d+$/
 
     qty = parseInt($(this).val(), 10)
+    sibling_qty = 0
+
+    $(this).siblings().each (i, element) ->
+      sibling_qty += parseInt($(this).val(), 10)
+
+    qty += sibling_qty
     
     if intRegex.test qty
-      if $(this).hasClass('line_item_visit_research_billing_qty')
-        unit_minimum = $(this).attr('data-unit-minimum')
+      #if $(this).hasClass('line_item_visit_research_billing_qty')
+      unit_minimum = $(this).attr('data-unit-minimum')
 
-        if qty > 0 and qty < unit_minimum
-          alert "Quantity of #{qty} is less than the unit minimum of #{unit_minimum}.\nQuantity is being set to the unit minimum"
-          $(this).val(unit_minimum)
-          qty = unit_minimum
+      if qty > 0 and qty < unit_minimum
+        alert "Quantity of #{qty} is less than the unit minimum of #{unit_minimum}.\nTotal quantity is being set to the unit minimum"
+        $(this).val(unit_minimum - sibling_qty)
+        qty = unit_minimum
 
       $('.service_calendar_spinner').show()
       $.ajax

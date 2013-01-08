@@ -17,16 +17,4 @@ module Portal::AdminHelper
 
     "#{protocol.id}-#{ssr.ssr_id}"
   end
-
-  def display_document_type(type)
-    case type
-    when 'protocol'      then 'Protocol'
-    when 'consent'       then 'Consent'
-    when 'hipaa'         then 'HIPAA'
-    when 'dsmp'          then 'DSMP'
-    when 'budget'        then 'Budget'
-    when 'justification' then 'Justification'
-    when 'biosketch'     then 'Biosketch'
-    end
-  end
 end

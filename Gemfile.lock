@@ -90,6 +90,7 @@ GEM
       execjs
     coffee-script-source (1.4.0)
     columnize (0.3.6)
+    connection_pool (1.0.0)
     database_cleaner (0.9.1)
     debugger (1.2.2)
       columnize (>= 0.3.1)
@@ -287,6 +288,7 @@ DEPENDENCIES
   capybara
   capybara-firebug
   coffee-rails (~> 3.2.1)
+  connection_pool
   database_cleaner
   debugger
   devise

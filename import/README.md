@@ -47,7 +47,7 @@ documents from an alfresco server:
   is an example file that you can follow, or you can copy the file from
   an existing sparkling-lips installation.
 * Edit `import_documents.rb` to point to the sql database.
-* Run `import_documents.rb` to import the documents.
+* Run `import_documents.sh` to import the documents.
 
 This will:
 

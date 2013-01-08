@@ -1,11 +1,10 @@
 require 'progress_bar'
 require 'bundler/setup'
 require 'alfresco_handler'
-require 'active_record'
 require 'open-uri'
 require 'rails'
 
-require 'models/sub_service_request'
+require 'import'
 
 ActiveRecord::Base.establish_connection(
     :adapter => 'mysql2',

@@ -113,7 +113,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       document_grouping = @service_request.document_groupings.create
       process_ssr_organization_ids.each do |org_id|
         sub_service_request = @service_request.sub_service_requests.find_by_organization_id org_id.to_i
-        sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :document_grouping_id => document_grouping.id
+        sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other], :document_grouping_id => document_grouping.id
         sub_service_request.save
       end
     elsif process_ssr_organization_ids and document_grouping_id
@@ -131,7 +131,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       
       to_add.each do |org_id|
         sub_service_request = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
-        sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :document_grouping_id => document_grouping.id
+        sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other], :document_grouping_id => document_grouping.id
         sub_service_request.save
       end
       to_update.each do |org_id|
@@ -140,7 +140,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
             if params[:is_edit] && !document
               doc.update_attributes(:doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other]) if doc.organization.id == org_id.to_i
             else
-              doc.update_attributes(:document => document, :doc_type => params[:doc_type]) if doc.organization.id == org_id.to_i
+              doc.update_attributes(:document => document, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other]) if doc.organization.id == org_id.to_i
             end
           end
         else# The document count is greater than 1 so we need to do some special stuff

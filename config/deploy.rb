@@ -1,12 +1,8 @@
-require 'rvm/capistrano'
-
 set :rvm_ruby_string, "ruby-1.9.3-p286@sparc"
 set :rvm_type, :system
-set :rvm_install_with_sudo, true
 
 set :default_environment, { 'BUNDLE_GEMFILE' => "DeployGemfile" }
 
-require 'capistrano/ext/multistage'
 
 set :bundle_gemfile, "DeployGemfile"
 set :bundle_without, [:development, :test]
@@ -29,6 +25,7 @@ set :default_stage, "testing"
 #before "deploy:setup", "rvm:install_ruby"
 
 after "deploy:update_code", "db:symlink"
+after "deploy", "rvm:trust_rvmrc"
 
 namespace :deploy do
   desc "restart app"
@@ -68,5 +65,12 @@ namespace :db do
   end
 end
 
-require 'bundler/capistrano'
+namespace :rvm do
+  task :trust_rvmrc do
+    run "rvm rvmrc trust #{release_path}"
+  end
+end
 
+require 'rvm/capistrano'
+require 'capistrano/ext/multistage'
+require 'bundler/capistrano'

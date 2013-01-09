@@ -18,7 +18,7 @@ set :user, "capistrano"
 set :use_sudo, false
 ssh_options[:forward_agent] = true
 
-set :stages, %w(testing staging production)
+set :stages, %w(testing staging tomcat_staging production)
 set :default_stage, "testing"
 
 #before "deploy:setup", "rvm:install_rvm"

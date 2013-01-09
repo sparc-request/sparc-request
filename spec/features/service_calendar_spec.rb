@@ -211,16 +211,18 @@ describe "service calendar" do
         click_link "billing_strategy_tab"
         wait_for_javascript_to_finish
 
-        fill_in "visits_#{line_item2.visits[1].id}_research_billing_qty", :with => 10
-        find("visits_#{line_item2.visits[1].id}_insurance_billing_qty").click()
+        visit_id = line_item2.visits[1].id
+
+        fill_in "visits_#{visit_id}_research_billing_qty", :with => 10
+        find("#visits_#{visit_id}_insurance_billing_qty").click()
         wait_for_javascript_to_finish
 
-        fill_in "visits_#{line_item2.visits[1].id}_insurance_billing_qty", :with => 10
-        find("visits_#{line_item2.visits[1].id}_effort_billing_qty").click()
+        fill_in "visits_#{visit_id}_insurance_billing_qty", :with => 10
+        find("#visits_#{visit_id}_effort_billing_qty").click()
         wait_for_javascript_to_finish
 
-        fill_in "visits_#{line_item2.visits[1].id}_effort_billing_qty", :with => 10
-        find("visits_#{line_item2.visits[1].id}_research_billing_qty").click()
+        fill_in "visits_#{visit_id}_effort_billing_qty", :with => 10
+        find("#visits_#{visit_id}_research_billing_qty").click()
         wait_for_javascript_to_finish
 
         click_link "quantity_tab"

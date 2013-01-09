@@ -51,9 +51,9 @@ describe "subsidy page" do
         page.should have_text("cannot exceed maximum dollar amount")
       end
 
-      it 'should reject too high a percentage', :js => true do
+      # it 'should reject too high a percentage', :js => true do
         
-      end
+      # end
     end
 
     describe "filling in with correct values" do
@@ -86,7 +86,8 @@ describe "subsidy page" do
     it 'Should NOT allow PI Contribution to be set', :js => true do
       subsidy = FactoryGirl.create(:subsidy, sub_service_request_id: sub_service_request.id, pi_contribution: sub_service_request.direct_cost_total, overridden: true)
       visit service_subsidy_service_request_path service_request.id
-      sleep 2
+      page.should have_css("input.pi-contribution[disabled=disabled]")
+      find("input.pi-contribution").value.should eq("1550.0")
     end
   end
 

@@ -1,8 +1,12 @@
+require 'rvm/capistrano'
+
 set :rvm_ruby_string, "ruby-1.9.3-p286@sparc"
 set :rvm_type, :system
 set :rvm_install_with_sudo, true
 
 set :default_environment, { 'BUNDLE_GEMFILE' => "DeployGemfile" }
+
+require 'capistrano/ext/multistage'
 
 set :bundle_gemfile, "DeployGemfile"
 set :bundle_without, [:development, :test]
@@ -64,7 +68,5 @@ namespace :db do
   end
 end
 
-require 'capistrano/ext/multistage'
 require 'bundler/capistrano'
-require 'rvm/capistrano'
 

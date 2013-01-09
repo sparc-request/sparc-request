@@ -1,3 +1,4 @@
+/ Used in User Portal Associated User update
 - if !@protocol_role.errors.messages.empty? || !@identity.errors.messages.empty?
   - @protocol_role.errors.messages.merge!(@identity.errors.messages)
   - @entity_errors = @protocol_role.errors.to_json

@@ -73,6 +73,7 @@
       - first_ssr = true
       - css_class = cycle('odd', 'even', :name => 'protocol')
       - sr.sub_service_requests.each do |ssr|
+        - next if ssr.status == 'first_draft'
         %tr.service_request.center{:class => css_class}
           %td
             = pretty_ssr_id(protocol, ssr)

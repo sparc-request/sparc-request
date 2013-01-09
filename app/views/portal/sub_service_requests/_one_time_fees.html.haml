@@ -24,7 +24,7 @@
             %td.expand_li{:'data-line_item_id' => otf.id}
               .ui-icon.ui-icon-triangle-1-e
             %td.otf_service_select
-              = select_tag "line_item_service_id", options_for_select(candidate_service_options(@candidate_one_time_fees), otf.try(:service).try(:id)), :'data-line_item_id' => otf.id, :class => 'fulfillment_data'
+              = select_tag "line_item_service_id", options_for_select(candidate_service_options(@candidate_one_time_fees, true), otf.try(:service).try(:id)), :'data-line_item_id' => otf.id, :class => 'fulfillment_data'
             %td= otf.try(:service).try(:charge_code)
             %td.otf_text_field
               = text_field_tag "line_item_quantity", otf.try(:quantity), :'data-line_item_id' => otf.id, :class => 'fulfillment_data'

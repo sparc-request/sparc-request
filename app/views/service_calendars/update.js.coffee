@@ -3,7 +3,7 @@ unless "<%= @errors %>" == ""
 
 if "<%= @errors %>" == ""
   unless "<%= @portal %>" == "true"
-    if "<%= @line_item.service.displayed_pricing_map.unit_factor %>" > 1
+    if <%= @line_item.service.displayed_pricing_map.unit_factor %> > 1
       "<%= update_per_subject_subtotals(@line_item) %>"
 
     <% @line_item.visits.each do |visit| %>

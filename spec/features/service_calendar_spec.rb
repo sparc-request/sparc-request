@@ -207,19 +207,23 @@ describe "service calendar" do
     end
 
     describe "quantity tab" do
-      it "should add all billing quantities together", :js => true do
+      it "should add all billing quantities together", :js => true, :firebug => true do
         click_link "billing_strategy_tab"
+        wait_for_javascript_to_finish
 
-        # Remove these elements so that fill_in can't fill in the "old" fields
-        page.execute_script("$('#visits_#{line_item2.visits[1].id}_insurance_billing_qty').remove()")
-        page.execute_script("$('#visits_#{line_item2.visits[1].id}_effort_billing_qty').remove()")
-        page.execute_script("$('#visits_#{line_item2.visits[1].id}_research_billing_qty').remove()")
+        visit_id = line_item2.visits[1].id
 
-        click_link "check_row_#{line_item2.id}_billing_strategy"
+        fill_in "visits_#{visit_id}_research_billing_qty", :with => 10
+        find("#visits_#{visit_id}_insurance_billing_qty").click()
+        wait_for_javascript_to_finish
 
-        fill_in "visits_#{line_item2.visits[1].id}_research_billing_qty", :with => 10
-        fill_in "visits_#{line_item2.visits[1].id}_insurance_billing_qty", :with => 10
-        fill_in "visits_#{line_item2.visits[1].id}_effort_billing_qty", :with => 10
+        fill_in "visits_#{visit_id}_insurance_billing_qty", :with => 10
+        find("#visits_#{visit_id}_effort_billing_qty").click()
+        wait_for_javascript_to_finish
+
+        fill_in "visits_#{visit_id}_effort_billing_qty", :with => 10
+        find("#visits_#{visit_id}_research_billing_qty").click()
+        wait_for_javascript_to_finish
 
         click_link "quantity_tab"
         wait_for_javascript_to_finish

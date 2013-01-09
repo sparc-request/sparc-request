@@ -1,4 +1,4 @@
-set :rvm_ruby_string, "ruby-1.9.3-p286@sparc-rails"
+set :rvm_ruby_string, "ruby-1.9.3-p286@sparc"
 set :rvm_type, :system
 set :rvm_install_with_sudo, true
 

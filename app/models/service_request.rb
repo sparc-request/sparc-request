@@ -8,6 +8,7 @@ class ServiceRequest < ActiveRecord::Base
   belongs_to :protocol
   has_many :sub_service_requests, :dependent => :destroy
   has_many :line_items, :include => [:visits, :service], :dependent => :destroy
+  has_many :visits, :through => :line_items
   has_many :charges, :dependent => :destroy
   has_many :tokens, :dependent => :destroy
   has_many :approvals, :dependent => :destroy
@@ -21,6 +22,11 @@ class ServiceRequest < ActiveRecord::Base
   validation_group :service_details do
     validates :visit_count, :numericality => { :greater_than => 0, :message => "You must specify the estimated total number of visits (greater than zero) before continuing.", :if => :has_per_patient_per_visit_services?}
     validates :subject_count, :numericality => {:message => "You must specify the estimated total number of subjects before continuing.", :if => :has_per_patient_per_visit_services?}
+  end
+  
+  validation_group :service_details_back do
+    validates :visit_count, :numericality => { :greater_than => 0, :message => "You must specify the estimated total number of visits (greater than zero) before continuing.", :if => :has_visits?}
+    validates :subject_count, :numericality => {:message => "You must specify the estimated total number of subjects before continuing.", :if => :has_visits?}
   end
 
   validation_group :service_calendar do
@@ -41,6 +47,10 @@ class ServiceRequest < ActiveRecord::Base
   
   validation_group :confirmation do
     #insert group specific validation
+  end
+
+  def has_visits?
+    visits.count > 0 
   end
 
   attr_accessible :protocol_id

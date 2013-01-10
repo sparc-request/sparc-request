@@ -21,7 +21,7 @@
           = image_tag 'portal/white_arrow_up.png'
   - message = @notification.messages.last
   .reply
-    - update_notification = @sub_service_request ? admin_update_portal_notification_path(@notification.id) : portal_user_portal_update_notification_path(@notification.id)
+    - update_notification = @sub_service_request ? admin_update_portal_notification_path(@notification.id) : user_portal_update_portal_notification_path(@notification.id)
     = form_tag(update_notification, :method => :put, :remote => true, :class => 'notification-dialog-form') do
       - from = @user.id == message.to ? Identity.find(message.from) : Identity.find(message.to)
       = hidden_field_tag('message_notification_id', @notification.id, :name => 'message[notification_id]')
@@ -31,6 +31,3 @@
       = hidden_field_tag('message_subject', "RE: #{@notification.try(:messages).try(:first).try(:subject)}", :name => 'message[subject]')
       = text_area_tag("message_body", '', :placeholder => "Please enter text to begin a reply", :name => 'message[body]')
 .clear
-
-:javascript
-  $(document).ready(function(){ Sparc.fulfillment_show_notification.ready(); })

@@ -286,5 +286,43 @@ describe 'SubServiceRequest' do
         end
       end
     end
+
+    describe "sub service request ownership" do
+
+      context "candidate owners" do
+
+        let!(:institution)         { FactoryGirl.create(:institution) }
+        let!(:provider)            { FactoryGirl.create(:provider, parent_id: institution.id, process_ssrs: true) }
+        let!(:core)                { FactoryGirl.create(:core, parent_id: provider.id, process_ssrs: true) }
+        let!(:program)             { FactoryGirl.create(:program, parent_id: core.id, process_ssrs: true)}
+        let!(:sub_service_request) { FactoryGirl.create(:sub_service_request, organization_id: core.id) }
+        let!(:user1)               { FactoryGirl.create(:identity) }
+        let!(:user2)               { FactoryGirl.create(:identity) }
+        let!(:user3)               { FactoryGirl.create(:identity) }
+        let!(:service_provider1)   { FactoryGirl.create(:service_provider, identity_id: user1.id, organization_id: core.id) }
+        let!(:service_provider2)   { FactoryGirl.create(:service_provider, identity_id: user2.id, organization_id: provider.id) }
+        let!(:service_provider3)   { FactoryGirl.create(:service_provider, identity_id: user3.id, organization_id: program.id) }
+
+        it "should return all identities associated with the sub service request's organization, children, and parents" do
+          sub_service_request.candidate_owners.should include(user1, user2, user3)
+        end
+
+        it "should not return any identities from child organizations if process ssrs is not set" do
+          core.update_attributes(process_ssrs: false)
+          sub_service_request.candidate_owners.should_not include(user3)
+        end
+
+        it "should return the owner" do
+          user = FactoryGirl.create(:identity)
+          sub_service_request.update_attributes(owner_id: user.id)
+          sub_service_request.candidate_owners.should include(user)
+        end
+
+        it "should not return the same identity twice if it is both the owner and service provider" do
+          sub_service_request.update_attributes(owner_id: user2.id)
+          sub_service_request.candidate_owners.uniq.length.should eq(sub_service_request.candidate_owners.length) 
+        end
+      end
+    end      
   end
 end

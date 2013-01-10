@@ -38,22 +38,30 @@ describe "subsidy page" do
     end
 
     describe "filling in with wrong values" do
-      before :each do
+      it 'should reject to high an amount', :js => true do
         @total = (sub_service_request.direct_cost_total / 100)
-        @contribution = (@total - program.subsidy_map.max_dollar_cap) - 100
-        find('.pi-contribution').set(@contribution)
+        find('.pi-contribution').set((@total - program.subsidy_map.max_dollar_cap) - 100)
         sleep 2
         find('.select-project-view').click
         sleep 2
-      end
-      it 'should reject to high an amount', :js => true do
         find(:xpath, "//a/img[@alt='Savecontinue']/..").click
         page.should have_text("cannot exceed maximum dollar amount")
       end
 
-      # it 'should reject too high a percentage', :js => true do
-        
-      # end
+      it 'should reject too high a percentage', :js => true do
+        #Change values, and re-visit page, to independantly test the percentage, instead of max_dollar_cap
+        subsidy_map = FactoryGirl.create(:subsidy_map, organization_id: program.id, max_dollar_cap: 1200.00, max_percentage: 50.00)
+        program.update_attribute(:subsidy_map, subsidy_map)
+        visit service_subsidy_service_request_path service_request.id
+
+        @total = (sub_service_request.direct_cost_total / 100)
+        find('.pi-contribution').set((@total - program.subsidy_map.max_dollar_cap) + 100)
+        sleep 2
+        find('.select-project-view').click
+        sleep 2
+        find(:xpath, "//a/img[@alt='Savecontinue']/..").click
+        page.should have_text("cannot exceed maximum percentage of")
+      end
     end
 
     describe "filling in with correct values" do

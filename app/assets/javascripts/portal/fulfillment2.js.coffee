@@ -16,9 +16,10 @@ $(document).ready ->
       altFormat: 'yy-mm-dd'
       altField: "#{selector.replace('_picker', '')}"
 
-  $('.datepicker').change ->
+  $(document).on('change', '.datepicker', ->
     selector = "##{$(this).attr("id").replace('_picker', '')}"
     $("#{selector}").change()
+  )
 
   for datepicker in $('.datepicker')
     do_datepicker("##{$(datepicker).attr('id')}")

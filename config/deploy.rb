@@ -4,6 +4,7 @@ set :rvm_install_with_sudo, true
 
 set :default_environment, { 'BUNDLE_GEMFILE' => "DeployGemfile" }
 
+
 set :bundle_gemfile, "DeployGemfile"
 set :bundle_without, [:development, :test]
 
@@ -21,10 +22,11 @@ ssh_options[:forward_agent] = true
 set :stages, %w(testing staging tomcat_staging production)
 set :default_stage, "testing"
 
-#before "deploy:setup", "rvm:install_rvm"
-#before "deploy:setup", "rvm:install_ruby"
+before "deploy:setup", "rvm:install_rvm"
+before "deploy:setup", "rvm:install_ruby"
 
 after "deploy:update_code", "db:symlink"
+after "deploy", "rvm:trust_rvmrc"
 
 namespace :deploy do
   desc "restart app"
@@ -64,7 +66,12 @@ namespace :db do
   end
 end
 
+namespace :rvm do
+  task :trust_rvmrc do
+    run "rvm rvmrc trust #{release_path}"
+  end
+end
+
+require 'rvm/capistrano'
 require 'capistrano/ext/multistage'
 require 'bundler/capistrano'
-require 'rvm/capistrano'
-

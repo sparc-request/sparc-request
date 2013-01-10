@@ -131,4 +131,34 @@ describe 'ServiceRequest' do
       service_request.set_visit_page(2).should eq(2)
     end
   end
+
+  describe "identities" do
+
+    let!(:institution)         { FactoryGirl.create(:institution) }
+    let!(:provider)            { FactoryGirl.create(:provider, parent_id: institution.id, process_ssrs: true) }
+    let!(:core)                { FactoryGirl.create(:core, parent_id: provider.id, process_ssrs: true) }
+    let!(:program)             { FactoryGirl.create(:program, parent_id: core.id, process_ssrs: true)}
+    let!(:service_request)     { FactoryGirl.create(:service_request) }
+    let!(:sub_service_request) { FactoryGirl.create(:sub_service_request, organization_id: core.id, service_request_id: service_request.id) }
+    let!(:user1)               { FactoryGirl.create(:identity) }
+    let!(:user2)               { FactoryGirl.create(:identity) }
+    let!(:user3)               { FactoryGirl.create(:identity) }
+    let!(:user4)               { FactoryGirl.create(:identity) }
+    let!(:service_provider1)   { FactoryGirl.create(:service_provider, identity_id: user1.id, organization_id: core.id) }
+    let!(:super_user)          { FactoryGirl.create(:super_user, identity_id: user2.id, organization_id: core.id)} 
+    let!(:super_user2)         { FactoryGirl.create(:super_user, identity_id: user3.id, organization_id: provider.id)} 
+    let!(:super_user3)         { FactoryGirl.create(:super_user, identity_id: user4.id, organization_id: program.id)} 
+
+    context "relevant_service_providers_and_super_users" do
+
+      it "should return all service providers and super users for related sub service requests" do
+        service_request.relevant_service_providers_and_super_users.should include(user1, user2, user3, user4)
+      end
+
+      it "should not return any identities from child organizations if process ssrs is not set" do
+        core.update_attributes(process_ssrs: false)
+        service_request.relevant_service_providers_and_super_users.should_not include(user4)
+      end
+    end
+  end
 end

@@ -85,13 +85,9 @@ describe "Line Item" do
 
     describe "per_unit_cost" do
       let!(:service_request) { FactoryGirl.create(:service_request, protocol_id: @study.id) }
-      let!(:ssr)             { FactoryGirl.create(:sub_service_request,
-                               service_request_id: service_request.id,
-                               organization_id: program.id) }
+      let!(:ssr)             { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id) }
       let!(:service)         { FactoryGirl.create(:service, organization_id: program.id) }
-      let!(:line_item)       { FactoryGirl.create(:line_item,
-                               service_request_id: service_request.id, 
-                               sub_service_request_id: ssr.id, service_id: service.id,
+      let!(:line_item)       { FactoryGirl.create(:line_item, service_request_id: service_request.id, sub_service_request_id: ssr.id, service_id: service.id,
                                quantity: 20, subject_count: 5) }
 
       before(:each) do
@@ -123,13 +119,11 @@ describe "Line Item" do
     describe "units per package" do
 
       let!(:service_request) { FactoryGirl.create(:service_request, protocol_id: @study.id) }
-      let!(:ssr)             { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id,
-                              organization_id: program.id) }
-      let!(:service)      {FactoryGirl.create(:service)}
-      let!(:pricing_map)  {FactoryGirl.create(:pricing_map, service_id: service.id, display_date: Date.today) }
-      let!(:pricing_map2) {FactoryGirl.create(:pricing_map, service_id: service.id, display_date: Date.today + 1) }
-      let!(:line_item)    {FactoryGirl.create(:line_item, service_request_id: service_request.id,
-                           sub_service_request_id: ssr.id, service_id: service.id)}  
+      let!(:ssr)             { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id) }
+      let!(:service)         {FactoryGirl.create(:service)}
+      let!(:pricing_map)     {FactoryGirl.create(:pricing_map, service_id: service.id, display_date: Date.today) }
+      let!(:pricing_map2)    {FactoryGirl.create(:pricing_map, service_id: service.id, display_date: Date.today + 1) }
+      let!(:line_item)       {FactoryGirl.create(:line_item, service_request_id: service_request.id, sub_service_request_id: ssr.id, service_id: service.id)}  
 
       it "should select the correct pricing map based on display date" do
         pricing_map.update_attributes(unit_factor: 5)
@@ -140,8 +134,8 @@ describe "Line Item" do
 
     describe "quantity total" do
       
-      let!(:line_item)    {FactoryGirl.create(:line_item, subject_count: 5)}  
-      let!(:visit)        {FactoryGirl.create(:visit, line_item_id: line_item.id, research_billing_qty: 5)}
+      let!(:line_item) {FactoryGirl.create(:line_item, subject_count: 5)}  
+      let!(:visit)     {FactoryGirl.create(:visit, line_item_id: line_item.id, research_billing_qty: 5)}
 
       it "should return the correct quantity" do
         line_item.quantity_total.should eq(25)
@@ -156,8 +150,7 @@ describe "Line Item" do
     describe "per_subject_subtotals" do
 
       let!(:service_request) { FactoryGirl.create(:service_request, protocol_id: @study.id) }
-      let!(:ssr)             { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id,
-                              organization_id: program.id) }
+      let!(:ssr)             { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id) }
 
       before :each do
         service = FactoryGirl.create(:service)
@@ -242,14 +235,12 @@ describe "Line Item" do
     describe "cost calculations" do
 
       let!(:service_request) { FactoryGirl.create(:service_request, protocol_id: @study.id) }
-      let!(:ssr)             { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id,
-                              organization_id: program.id) }
-      let!(:service)       {FactoryGirl.create(:service, organization_id: program.id)}
-      let!(:line_item)     {FactoryGirl.create(:line_item, service_id: service.id,
-                            service_request_id: service_request.id, subject_count: 5)}  
-      let!(:visit)         {FactoryGirl.create(:visit, line_item_id: line_item.id, research_billing_qty: 5)}
-      let!(:pricing_setup) {FactoryGirl.create(:pricing_setup, organization_id: program.id)}
-      let!(:pricing_map)   { service.pricing_maps[0] }
+      let!(:ssr)             { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id) }
+      let!(:service)         { FactoryGirl.create(:service, organization_id: program.id) }
+      let!(:line_item)       { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id, subject_count: 5) }  
+      let!(:visit)           { FactoryGirl.create(:visit, line_item_id: line_item.id, research_billing_qty: 5) }
+      let!(:pricing_setup)   { FactoryGirl.create(:pricing_setup, organization_id: program.id) }
+      let!(:pricing_map)     { service.pricing_maps[0] }
 
       before :each do
         @protocol = Study.create(FactoryGirl.attributes_for(:protocol))
@@ -330,8 +321,8 @@ describe "Line Item" do
   end
 
   context 'bulk creatable list' do
-    let!(:service) { FactoryGirl.create(:service) }
-    let!(:line_item) { FactoryGirl.create(:line_item, service_id: service.id) }
+    let!(:service)    { FactoryGirl.create(:service) }
+    let!(:line_item)  { FactoryGirl.create(:line_item, service_id: service.id) }
     let!(:line_item2) { FactoryGirl.create(:line_item, service_id: service.id) }
 
     describe 'bulk_create' do

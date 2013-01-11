@@ -43,15 +43,5 @@ class CatalogManager::ProgramsController < CatalogManager::AppController
     @entity = @program
     respond_with @program, :location => catalog_manager_program_path(@program)
   end
-  
-  def destroy
-    @program = Program.find(params[:id])
-    @entity = @program
-    if @program.delete
-      flash[:notice] = "#{@program.name} deleted correctly."
-    else
-      flash[:alert] = "Failed to delete #{@program.name}."
-    end
-    respond_with [:catalog_manager, @program]
-  end
+
 end

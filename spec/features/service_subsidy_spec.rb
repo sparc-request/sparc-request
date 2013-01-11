@@ -65,6 +65,7 @@ describe "subsidy page" do
         @contribution = @total - program.subsidy_map.max_dollar_cap
         find('.pi-contribution').set(@contribution)
         find('.select-project-view').click
+        wait_for_javascript_to_finish
       end
 
       it 'Should save PI Contribution', :js => true do
@@ -73,11 +74,15 @@ describe "subsidy page" do
       end
 
       it 'should adjust requested funding correctly', :js => true do
-        find(".requested_funding_#{sub_service_request.id}").text.gsub!('$', '').to_f.should eq(@total - @contribution)
+        retry_until do
+          find(".requested_funding_#{sub_service_request.id}").text.gsub!('$', '').to_f.should eq(@total - @contribution)
+        end
       end
 
       it 'should adjust subsidy percent correctly', :js => true do
-        find(".subsidy_percent_#{sub_service_request.id}").text.gsub!('%', '').to_f.should eq (((@total - @contribution) / @total) * 100).round(1)
+        retry_until do
+          find(".subsidy_percent_#{sub_service_request.id}").text.gsub!('%', '').to_f.should eq (((@total - @contribution) / @total) * 100).round(1)
+        end
       end
     end
   end
@@ -87,7 +92,9 @@ describe "subsidy page" do
       subsidy = FactoryGirl.create(:subsidy, sub_service_request_id: sub_service_request.id, pi_contribution: sub_service_request.direct_cost_total, overridden: true)
       visit service_subsidy_service_request_path service_request.id
       page.should have_css("input.pi-contribution[disabled=disabled]")
-      find("input.pi-contribution").value.should eq("1550.0")
+      retry_until do
+        find("input.pi-contribution").value.should eq("1550.0")
+      end
     end
   end
 

@@ -11,7 +11,6 @@ require 'faker'
 require 'capybara/rspec'
 require 'capybara/rails'
 require 'capybara/dsl'
-require 'capybara/firebug'
 
 # Set default values for capybara; these can be overriden by a file in
 # the support directory (see below).  For example, to use poltergeist,
@@ -19,6 +18,11 @@ require 'capybara/firebug'
 #
 #   require 'capybara/poltergeist'
 #   Capybara.javascript_driver = :poltergeist
+#
+# You can also enable firebug:
+#
+#   require 'capybara/firebug'
+#   Capybara.javascript_driver = :selenium_with_firebug
 #
 Capybara.javascript_driver = :selenium
 Capybara.default_wait_time = 15

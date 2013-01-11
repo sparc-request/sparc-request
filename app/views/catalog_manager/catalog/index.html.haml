@@ -55,6 +55,13 @@
                                       - core.services.order("`order`").each do |service|
                                         %li{:id => 'SERVICE' + service.id.to_s}= node service
 #details
+
+#processing_request.ui-corner-all{:style => "border: 1px solid black; padding: 3px; width: 200px; margin: 30px auto; text-align: center"}
+  %br
+  Processing request
+  %br
+  = image_tag 'spinner.gif'
+
 #fix_pricing_maps_dialog
   %input.fix_pricing_maps_entity_id{:type => 'hidden'}
   %input.fix_pricing_maps_old_value{:type => 'hidden'}

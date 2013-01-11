@@ -457,3 +457,11 @@ span.remove_funding_source {
   float: right;
   cursor: pointer;
 }
+
+#processing_request {
+  margin: 0 !important;
+}
+
+.processing_request .ui-dialog-titlebar {
+  display: none;
+}

@@ -4,19 +4,19 @@
 
 $ ->
   Sparc.catalog = {
-    
+
     clear_error_fields: ->
       $('.errorExplanation').html('').hide()
-  
+
     handle_ajax_errors: (errors_array, entity_type) ->
       errors_array = JSON.parse(errors_array)
       error_string = ""
       error_number = 0
       for key,value of errors_array
-        for error in value          
+        for error in value
           error_number += 1
-          error_string += "<li>#{key[0].toUpperCase()}#{key.substr(1, key.length - 1)} #{error}</li>"   
-   
+          error_string += "<li>#{key[0].toUpperCase()}#{key.substr(1, key.length - 1)} #{error}</li>"
+
       $('.errorExplanation').html("<h2>#{error_number} error(s) prevented this #{entity_type} from being saved:</h2>
         <p>There were problems with the following fields:</p>
         <ul>
@@ -31,8 +31,8 @@ $ ->
         data: data
         success: ->
         error: ->
-      })      
-      
+      })
+
     validate_change_rate_date: (changed_element, entity_id, str) ->
       date = $(changed_element).val()
       data = {date: date, entity_id: entity_id, str: str}
@@ -48,14 +48,16 @@ $ ->
           if data.later_dates == 'true'
             if (confirm "This #{(str.replace('_',' '))} is before the #{(str.replace('_',' '))} of existing pricing maps, are you sure you want to do this?") == false
               date_element.val('')
-              date_element.siblings().val('')              
+              date_element.siblings().val('')
             else if (confirm "Are you sure?") == false
               date_element.val('')
               date_element.siblings().val('')
-      })  
+      })
   }
+    
+  $('#processing_request').dialog({ dialogClass: 'processing_request', resizable: false, height: 100, autoOpen: false })
 
-  $('.custom_button').button();
+  $('.custom_button').button()
 
   # alert until all services have a pricing setup either at the program or provider level
   $(".provider_program_core_save").live 'click', ->
@@ -68,7 +70,7 @@ $ ->
       else
         $(".pricing_setup_error p").html(data)
         $(".pricing_setup_error").show()
-  
+
   verify_valid_pricing_setups()
 
   $('#program').live 'change', ->
@@ -136,12 +138,15 @@ $ ->
               (data)-> $('#details').html(data) )
 
     return unless node_ref.rslt.obj.context.attributes['object_type']
+    
+    $('#processing_request').dialog('open')
 
     cid = node_ref.rslt.obj.context.attributes['cid'].nodeValue
     obj_type = node_ref.rslt.obj.context.attributes['object_type'].nodeValue
 
     $(this).jstree('toggle_node')
-    $('#details').load("/catalog_manager/#{obj_type}s/#{cid}")
+    $('#details').load "/catalog_manager/#{obj_type}s/#{cid}", ->
+      $('#processing_request').dialog('close')
 
   $('#search_button').click ->
     $('#catalog').jstree 'search', $('#search').val()
@@ -249,13 +254,13 @@ $ ->
       if current_user_id == identity_user_id
         alert("You are changing your own permissions. Your page will refresh automatically when this window closes.")
         window.location = ''
-  
+
   $('.increase_decrease_rates').live('click', ->
     $('.increase_decrease_dialog').dialog('open')
     $('.increase_or_decrease').val($(this).attr('action'))
-  ) 
-    
-  $('.submit_rate_change').live('click', -> 
+  )
+
+  $('.submit_rate_change').live('click', ->
     percent_of_change = $(this).siblings('.percent_of_change').val()
     effective_date = $(this).siblings('.effective_date').val()
     display_date = $(this).siglings('.display_date').val()
@@ -277,10 +282,10 @@ $ ->
     .pricing_map_effective_date').live('change', ->
     blank_field = false
     validates = $(this).closest('.service_form').find('.validate')
-    
+
     for field in $(validates)
-      blank_field = true if $(field).val() == ""   
-    
+      blank_field = true if $(field).val() == ""
+
     if blank_field == false
       $('.save_button').removeAttr('disabled')
       $('.blank_field_errors').hide()
@@ -288,39 +293,39 @@ $ ->
       $('.save_button').attr('disabled', true)
       $('.blank_field_errors').css('display', 'inline-block')
   )
-  
-  
+
+
   $('.remove_pricing_setup').live('click', ->
     $(this).parent().prevAll('h3:first').remove()
     $(this).parent().remove()
     validate_dates_and_rates()
   )
-  
+
   validate_dates_and_rates = () ->
     blank_field = false
-    
+
     for field in $('.validate')
-      blank_field = true if $(field).val() == ""   
-    
+      blank_field = true if $(field).val() == ""
+
     if blank_field == false
       $('.save_button').removeAttr('disabled')
       $('.blank_field_errors').hide()
     else
       $('.save_button').attr('disabled', true)
       $('.blank_field_errors').css('display', 'inline-block')
-    
-  
-  
+
+
+
   $('.change_rate_display_date, .change_rate_effective_date').live('change', ->
     entity_id = $(this).closest('.increase_decrease_dialog').children('.entity_id').val()
     Sparc.catalog.validate_change_rate_date(this, entity_id, $(this).attr('display')) if $(this).val() != ""
-  )  
-  
+  )
+
   $('.display_date, .effective_date').live('change', ->
     entity_id = $(this).siblings(".submitted_date").attr('entity_id')
     Sparc.catalog.validate_change_rate_date(this, entity_id, $(this).attr('display')) if $(this).val() != ""
-  )  
-  
+  )
+
   $('a.add_new_excluded_funding_source').live 'click', ->
     funding_source = $('select.new_excluded_funding_source').val()
     org_type = $(this).attr('org_type')
@@ -341,4 +346,4 @@ $ ->
         data: { funding_source_id: $(this).attr('funding_source_id') }
         success: ->
           remove_this.remove()
-      
+

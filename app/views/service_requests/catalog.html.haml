@@ -9,7 +9,7 @@
     %h3
       My Services
       %span#cart-help Help
-    .line-items= render :partial => 'catalogs/cart'
+    = render :partial => 'catalogs/cart'
   .submit-request-button
     = link_to image_tag('submit_request.png'), protocol_service_request_path(@service_request)
   #submit_error{:style => "display: none"}

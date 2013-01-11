@@ -326,22 +326,31 @@ class ServiceRequestsController < ApplicationController
 
   def add_service
     id = params[:service_id].sub('service-', '').to_i
-    if @service_request.line_items.map(&:service_id).include? id
+    @new_line_items = []
+    existing_service_ids = @service_request.line_items.map(&:service_id)
+
+    if existing_service_ids.include? id
       render :text => 'Service exists in line items' 
     else
       service = Service.find id
 
       # add service to line items
-      @service_request.line_items.create(:service_id => service.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum)
+      new_line_item = @service_request.line_items.create(:service_id => service.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum, :subject_count => @service_request.subject_count)
+      Visit.bulk_create(@service_request.visit_count, :line_item_id => new_line_item.id) unless @service_request.visit_count.blank?
+      @new_line_items << new_line_item
 
       # add required services to line items
       service.required_services.each do |rs|
-        @service_request.line_items.create(:service_id => rs.id, :optional => false, :quantity => service.displayed_pricing_map.unit_minimum)
+        new_line_item = @service_request.line_items.create(:service_id => rs.id, :optional => false, :quantity => service.displayed_pricing_map.unit_minimum, :subject_count => @service_request.subject_count) unless existing_service_ids.include?(rs.id)
+        Visit.bulk_create(@service_request.visit_count, :line_item_id => new_line_item.id) unless @service_request.visit_count.blank?
+        @new_line_items << new_line_item
       end
 
       # add optional services to line items
       service.optional_services.each do |rs|
-        @service_request.line_items.create(:service_id => rs.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum)
+        new_line_item = @service_request.line_items.create(:service_id => rs.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum, :subject_count => @service_request.subject_count) unless existing_service_ids.include?(rs.id)
+        Visit.bulk_create(@service_request.visit_count, :line_item_id => new_line_item.id) unless @service_request.visit_count.blank?
+        @new_line_items << new_line_item
       end
 
       # create sub_service_rquests
@@ -363,7 +372,8 @@ class ServiceRequestsController < ApplicationController
   def remove_service
     id = params[:line_item_id].sub('line_item-', '').to_i
 
-    service = @service_request.line_items.find(id).service
+    @line_item = @service_request.line_items.find(id)
+    service = @line_item.service
     line_item_service_ids = @service_request.line_items.map(&:service_id)
 
     # look at related services and set them to optional

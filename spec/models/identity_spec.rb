@@ -207,6 +207,11 @@ describe "Identity" do
         it "should also collect all child organizations" do
           user.admin_organizations.should include(provider, program)
         end
+
+        it "should not ignore nil organizations" do
+          sp = FactoryGirl.create(:service_provider, identity_id: user.id, organization_id: 9999)
+          lambda {user.admin_organizations}.should_not raise_exception
+        end
       end
 
       describe "available workflow states" do

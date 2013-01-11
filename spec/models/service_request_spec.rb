@@ -161,4 +161,21 @@ describe 'ServiceRequest' do
       end
     end
   end
+
+  describe "cost calculations" do
+
+    let!(:core)            { FactoryGirl.create(:core) }
+    let!(:service_request) { FactoryGirl.create(:service_request, subject_count: 5, visit_count: 5) }
+    let!(:service)         { FactoryGirl.create(:service, organization_id: core.id) }
+    let!(:line_item)       { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service.id) }
+    let!(:pricing_map)     { FactoryGirl.create(:pricing_map, service_id: service.id) }
+    let!(:pricing_setup)   { FactoryGirl.create(:pricing_setup, )} 
+
+    before :each do
+      @protocol = Study.create(FactoryGirl.attributes_for(:protocol))
+      @protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 100)
+      @protocol.save :validate => false
+      service_request.update_attributes(protocol_id: @protocol.id)
+    end
+  end
 end

@@ -15,7 +15,7 @@ require 'capybara/firebug'
 
 # Set default values for capybara; these can be overriden by a file in
 # the support directory (see below).  For example, to use poltergeist,
-# create file spec/support.poltergeist.rb that contains:
+# create file spec/support/poltergeist.rb that contains:
 #
 #   require 'capybara/poltergeist'
 #   Capybara.javascript_driver = :poltergeist

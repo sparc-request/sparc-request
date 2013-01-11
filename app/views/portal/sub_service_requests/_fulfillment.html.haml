@@ -1,0 +1,49 @@
+#service_request_info
+  = render 'service_request_info'
+
+#notifications_area
+  = render 'notifications_area'
+
+.clear
+
+#fulfillment_info.ui-corner-all
+  - if @sub_service_request.ctrc?
+    #service_request_core_approvals
+      = render 'core_approvals'
+
+  #service_request_status_changes
+    = render 'status_changes'
+
+  #service_request_approval_changes
+    = render 'approval_changes'
+
+  #service_request_information
+    = render 'service_request_information'
+
+#fulfillment_services.ui-corner-all
+  %h3 Services
+  #one_time_fees
+    = render 'one_time_fees'
+
+  %br
+
+  #add_otf_service_container
+    = render :partial => 'add_service', :locals => {:services => @candidate_one_time_fees, :select_id => 'new_otf_service_id'}
+
+  %br
+  
+  = javascript_include_tag 'jquery.qtip.min'
+  #per_patient_services
+    = render 'per_patient_per_visit'
+
+  %br
+
+  #add_ppv_service_container
+    = render :partial => 'add_service', :locals => {:services => @candidate_per_patient_per_visit, :select_id => 'new_ppv_service_id'}
+
+#ssr_notes.ui-corner-all
+  = render 'notes'
+
+#visit_toasts
+  - @user_toasts.each do |user_toast|
+    .user_toast{:'data-toast_id' => user_toast.id, :'data-message' => user_toast.message}

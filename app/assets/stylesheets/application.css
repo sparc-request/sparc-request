@@ -226,17 +226,13 @@ a.save-option{
 /* CatalogView */
 
 #left_signin_button{
-  float: left;
-  width: 250px;
-  margin-top: 60px;
-  margin-left: 60px;
+  width: 215px;
+  padding: 10px;
 }
 
 #right_signin_button{
-  float: right;
-  width: 250px;
-  margin-top: 60px;
-  margin-right: 60px;
+  width: 215px;
+  padding: 10px;
 }
 
 .signin_dialog{
@@ -379,6 +375,10 @@ a.save-option{
 }
 
 .cart-view div.odd {
+  background: #E8E8E8;
+}
+
+.line-items .line_item:nth-child(even) {
   background: #E8E8E8;
 }
 
@@ -559,12 +559,24 @@ a.save-option{
 }
 
 .confirmation-details .links {
-  margin-top: 20px;
+  text-align: center;
 }
 
-.confirmation-details .links .download {
-  margin-left: 90px;
-  margin-right: 50px;
+.confirmation-button {
+  display: inline-block;
+  background: #339933;
+  margin: 20px;
+  padding: 7px;
+  border-radius: 5px;
+}
+
+.confirmation-button a {
+  font-size: 14px;
+  font-weight: bold;
+  color: #FFF;
+  text-decoration: none;
+  letter-spacing: 1px;
+  margin: 0 50px;
 }
 
 .confirmation-details th {
@@ -740,6 +752,10 @@ legend {
 
 .edit-project-view .box .info .human-subjects select {
   width: 335px;
+}
+
+.approval_pending {
+  margin-top: 10px;
 }
 
 .edit-project-view .box .info .study-type {
@@ -1543,6 +1559,15 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   border: 1px solid #ccc;
 }
 
+.billing-info {
+  float: right;
+  padding-right: 10px;
+}
+
+.tab_arrow {
+  padding-left: 30px;
+}
+
 #service_calendar .ui-tabs-panel {
   padding: 10px 5px;
 }
@@ -1639,6 +1664,14 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 }
 
 .document-table tbody tr th {
+  text-align: left;
+}
+
+.document-table tr.header th {
+  text-align: center;
+}
+
+.document-table tr.header th:nth-child(1) {
   text-align: left;
 }
 

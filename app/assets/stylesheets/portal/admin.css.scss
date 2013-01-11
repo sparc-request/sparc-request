@@ -1,0 +1,119 @@
+// Place all the styles related to the admin controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+#admin-tablesorter {
+  table {
+    table-layout: fixed;
+    td, th {
+      width: 30px;
+      overflow: hidden;
+    }
+  }
+}
+
+#admin_container, #flash {
+  width: 915px;
+  margin: 10px auto;
+}
+
+.admin_indicator {
+  display: none;
+}
+
+#service_request_workflow_states {
+  margin-top: 10px;
+}
+
+#admin_container, table.tablesorter {
+  width: 100%;
+}
+
+#admin_container, table.tablesorter {
+  font-family:arial;
+  background-color: #CDCDCD;
+  margin:10px 0pt 15px;
+  font-size: 8pt;
+  width: 100%;
+  text-align: left;
+}
+
+#admin_container, table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+  background-color: #e6EEEE;
+  border: 1px solid #FFF;
+  font-size: 8pt;
+  padding: 4px;
+}
+
+#admin_container, table.tablesorter thead tr .header {
+  background-image: url(bg.gif);
+  background-repeat: no-repeat;
+  background-position: center right;
+  cursor: pointer;
+}
+
+#admin_container, table.tablesorter tbody td {
+  color: #3D3D3D;
+  padding: 4px;
+  background-color: #FFF;
+  vertical-align: top;
+}
+
+#admin_container, table.tablesorter tbody tr.odd td {
+  background-color:#F0F0F6;
+}
+
+#admin_container, table.tablesorter thead tr .headerSortUp {
+  background-image: url(asc.gif);
+}
+
+#admin_container, table.tablesorter thead tr .headerSortDown {
+  background-image: url(desc.gif);
+}
+
+#admin_container, table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+background-color: #8dbdd8;
+}
+
+.admin-right-dashboard {
+  float: right;
+  display: inline;
+  width: 243px;
+  padding: 14px 0 14px 0px;
+}
+
+.admin-buttons {
+  margin-top: 8px
+}
+
+.services_first { list-style: none; }
+.services_rest { list-style: none;
+                 margin-left: 19px;
+                 }
+
+.admin_service_request:hover {
+  cursor: pointer
+}
+
+#service_request_status_changes, #service_request_approval_changes {
+  table {
+    th, td {
+      width: 50%;
+    }
+  }
+}
+
+.fulfillment-spinner, .documents-spinner, .associated_users-spinner,
+  .notifications-spinner, .project-spinner, .related_service_requests-spinner,
+  .service_request_info-spinner, .notifications_area-spinner,
+  .service_request_status_changes-spinner, .service_request_approval_changes-spinner,
+  .service_request_information-spinner, .one_time_fees-spinner, .per_patient_services-spinner, .add_service-spinner {
+  display: none;
+}
+
+.search-all-service-requests{-webkit-transition:border linear 0.2s,box-shadow linear 0.2s;-moz-transition:border linear 0.2s,box-shadow linear 0.2s;-ms-transition:border linear 0.2s,box-shadow linear 0.2s;-o-transition:border linear 0.2s,box-shadow linear 0.2s;transition:border linear 0.2s,box-shadow linear 0.2s;-webkit-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1);-moz-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1);box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1);}
+.search-all-service-requests:focus{outline:0;border-color:rgba(82, 168, 236, 0.8);-webkit-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 8px rgba(82, 168, 236, 0.6);-moz-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 8px rgba(82, 168, 236, 0.6);box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 8px rgba(82, 168, 236, 0.6);}
+.search-all-service-requests{font-size:100%;margin:0;vertical-align:baseline;*vertical-align:middle;}
+.search-all-service-requests{line-height:normal;*overflow:visible;}
+.search-all-service-requests::-moz-focus-inner{border:0;padding:0;}
+.search-all-service-requests{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:13px;font-weight:normal;line-height:normal;}
+.search-all-service-requests{display:inline-block;width:210px;height:18px;padding:4px;font-size:13px;line-height:18px;color:#808080;border:1px solid #ccc;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;}

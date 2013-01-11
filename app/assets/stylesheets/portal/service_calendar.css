@@ -1,0 +1,96 @@
+.service_calendar_spinner {
+  width: 16px;
+  height: 16px;
+  display: none;
+}
+
+.service_calendar {
+  width: 922px;
+  border-collapse: collapse;
+  border: 1px solid #ccc;
+}
+
+.service_calendar thead tr th {
+  border: 1px solid #ccc;
+}
+
+#service_calendar .ui-tabs-panel {
+  padding: 10px 5px;
+}
+
+.service_calendar .table_header {
+  font-size: 12px;
+}
+
+.service_calendar .section_header {
+  font-size: 11px;
+  background: #adadad;
+}
+
+.service_calendar .sub_section_header {
+  font-size: 10px;
+  background: #ccc;
+}
+
+.service_calendar .section_header,
+.service_calendar .totals_section,
+.service_calendar .sub_section_header {
+  text-align: left;
+}
+
+.service_calendar .line_item .service_name {
+  text-align: left;
+}
+
+.service_calendar .totals_section,
+.service_calendar .line_item {
+  font-size: 10px;
+  border-top: 1px solid #adadad;
+}
+
+.service_calendar .line_item td.subject_count {
+  text-align: center;
+}
+
+.service_calendar .section_header th,
+.service_calendar .sub_section_header th,
+.service_calendar .totals_section td,
+.service_calendar .line_item td {
+  padding: 5px;
+}
+
+.service_calendar .odd {
+  background: #E8E8E8;
+}
+
+.service_calendar .table_header .services,
+.service_calendar .table_header .your_cost,
+.service_calendar .table_header .subjects,
+.service_calendar .table_header .visits_header,
+.service_calendar .table_header .visit_number,
+.service_calendar .table_header .total {
+  text-align: center;
+}
+
+.service_calendar .table_header th span.visit_count {
+  display: inline-table;
+  width: 250px;
+}
+
+.service_calendar .line_item_visit_billing {
+  width: 15px;
+}
+
+.service_calendar .billing_type_list {
+  padding: 5px;
+}
+
+.service_calendar .billing_type {
+  display: inline-table;
+  text-align: center;
+  width: 18px;
+}
+
+.fulfillment_selecter {
+  width: 200px;
+}

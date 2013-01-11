@@ -30,21 +30,26 @@ $(document).ready ->
   $('.line_item_visit_billing').live 'change', ->
     intRegex = /^\d+$/
 
-    qty = parseInt($(this).val(), 10)
+    my_qty = parseInt($(this).val(), 10)
+    sibling_qty = 0
+
+    $(this).siblings().each (i, element) ->
+      sibling_qty += parseInt($(this).val(), 10)
+
+    qty = my_qty + sibling_qty
     
     if intRegex.test qty
-      if $(this).hasClass('line_item_visit_research_billing_qty')
-        unit_minimum = $(this).attr('data-unit-minimum')
+      unit_minimum = $(this).attr('data-unit-minimum')
 
-        if qty > 0 and qty < unit_minimum
-          alert "Quantity of #{qty} is less than the unit minimum of #{unit_minimum}.\nQuantity is being set to the unit minimum"
-          $(this).val(unit_minimum)
-          qty = unit_minimum
+      if qty > 0 and qty < unit_minimum
+        alert "Quantity of #{qty} is less than the unit minimum of #{unit_minimum}.\nTotal quantity is being set to the unit minimum"
+        my_qty = unit_minimum - sibling_qty
+        $(this).val(my_qty)
 
       $('.service_calendar_spinner').show()
       $.ajax
         type: 'PUT'
-        url: $(this).attr('update') + "&qty=#{qty}"
+        url: $(this).attr('update') + "&qty=#{my_qty}"
       .complete =>
         $('.service_calendar_spinner').hide()
         calculate_max_rates()
@@ -58,6 +63,14 @@ $(document).ready ->
     $.ajax
       type: 'PUT'
       url: $(this).attr('update') + "&qty=#{$(this).val()}"
+    .complete ->
+      $('.service_calendar_spinner').hide()
+
+  $('.visit_name').live 'change', ->
+    $('.service_calendar_spinner').show()
+    $.ajax
+      type: 'PUT'
+      url: $(this).attr('update') + "&name=#{$(this).val()}"
     .complete ->
       $('.service_calendar_spinner').hide()
     

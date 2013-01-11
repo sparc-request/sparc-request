@@ -1,0 +1,65 @@
+= form_for @institution, :url => catalog_manager_institution_path, :remote => true, :id => 'entity_form' do |f|
+  .errorExplanation#errorExplanation{:style => 'display:none;'}
+  
+  = hidden_field_tag 'org_unit[id]', @institution.id # added for autocomplete to use
+  = hidden_field_tag 'institution[id]', @institution.id
+
+  #entity_description
+    %fieldset
+      %legend Actions
+      = f.submit 'Save', :id => 'save_button', :class => 'btn save_button'
+      %img.spinner{:src => '/assets/catalog_manager/spinner_small.gif'}
+    %br
+  
+    %fieldset
+      %legend General Information
+      %table
+        %tr
+          %th Name
+          %td= f.text_field :name
+        %tr
+          %th Abbreviation
+          %td= f.text_field :abbreviation
+        %tr
+          %th Description
+          %td= f.text_area :description, :rows => 8
+        %tr
+          %th Acknowledgment Language
+          %td= f.text_area :ack_language, :rows => 8
+        %tr
+          %th Order
+          %td= f.text_field :order
+        
+        - if @user.is_overlord?
+          %tr
+            %th CSS Class
+            %td= f.select :css_class, ACCORDION_COLOR_OPTIONS, :include_blank => 'Select a Color'
+        
+        %tr
+          %th Disabled
+          %td= f.check_box :is_available, {:checked => (@institution.is_available.nil? ? false : !@institution.is_available) }, false, true
+    %br
+
+    %br
+
+    %fieldset
+      %legend Super Users
+      #su_info= render :partial => 'catalog_manager/shared/super_users', :locals => {:entity => @institution}
+
+    %br
+
+    %fieldset
+      %legend Catalog Manager Rights
+      #cm_info= render :partial => 'catalog_manager/shared/catalog_managers', :locals => {:entity => @institution}
+
+    %br    
+
+    %fieldset
+      %legend Actions
+      = f.submit 'Save', :id => 'save_button', :class => 'btn save_button'
+      %img.spinner{:src => '/assets/catalog_manager/spinner_small.gif'}
+
+:javascript
+  $(document).ready( function() {
+    Sparc.config.ready();
+  })

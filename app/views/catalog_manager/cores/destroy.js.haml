@@ -1,0 +1,22 @@
+:plain
+  $('.spinner').hide();
+  $('.save_button').removeAttr('disabled');
+
+- unless @entity.errors.messages.empty?
+  - @entity_errors = @entity.errors.to_json
+  :plain
+    $('#flash').hide();
+    $('#flash').html("There were errors saving #{escape_javascript(@entity.name)}.");
+    Sparc.catalog.handle_ajax_errors("#{escape_javascript(@entity_errors)}", "#{@entity.type}")
+
+- else
+  :plain
+    $('#flash').hide();
+    $('#flash').html("#{escape_javascript(@entity.name)} removed successfully");
+    $("#CORE#{@entity.id}").remove()
+    $('#details').empty();
+
+:plain
+  $('#flash').slideDown();
+  $('#flash').delay(3000);
+  $('#flash').slideUp();

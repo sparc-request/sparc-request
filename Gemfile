@@ -11,7 +11,6 @@ gem 'sass'
 
 group :development, :test, :profile do
   gem 'sqlite3'
-  gem 'rubyception'
   gem 'rspec-rails'
   gem 'launchy'
   gem 'capybara'
@@ -20,8 +19,28 @@ group :development, :test, :profile do
   gem 'faker'
   gem 'timecop'
   gem 'debugger'
+  gem 'quiet_assets'
+  gem 'connection_pool'
+
+  # Add dependency on poltergeist.  If you want to use poltergeist, you
+  # will need to configure Capybara to use it.  This particular
+  # poltergeist repository is for Capybara 2.0 support.  Poltergeist
+  # should official support Capybara 2.0 after Dec. 20.
+  gem 'poltergeist', :git => 'git://github.com/brutuscat/poltergeist.git'
+
+  # You can put gems in here that you want to use for development but
+  # don't want to force on other developers (e.g. rubyception).
+  if File.exists?('Gemfile.devel') then
+    eval File.read('Gemfile.devel'), nil, 'Gemfile.devel'
+  end
 end
 
+# these are needed for the import script
+group :import do
+  gem 'alfresco_handler', :path => '../alfresco_handler'
+  gem 'progress_bar'
+  gem 'mustache'
+end
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -33,41 +52,53 @@ group :assets do
   # gem 'therubyracer', :platforms => :ruby
 
   gem 'uglifier', '>= 1.0.3'
+  gem 'inflection-js-rails'
 end
 
-gem 'jquery-rails'
 gem 'cache_digests'
 gem 'dynamic_form'
 
-gem 'obis-bridge', :git => "git@github.com:HSSC/obis-bridge.git"
+#gem 'obis-bridge', :path => '../obis-bridge' this now lives within the application
+# yanked from obis-bridge
+gem 'json'
+gem 'sinatra'
+gem 'grouped_validations'
+gem 'obis-net-ldap'
+gem 'paperclip'
+gem 'acts_as_list'
+gem "paper_trail", "~> 2"
+gem 'devise'
+gem 'omniauth'
+gem 'omniauth-shibboleth'
+# end obis-bridge gems
+
+# yanked from sparc-services
+gem "nested_form"
+gem 'jquery-rails', "2.1.3"
+
+group :development, :test do
+  gem 'turn', :require => false
+  gem 'jasmine'
+  gem 'addressable', '~> 2.3.2'
+  gem 'watchr'
+  gem 'nyan-cat-formatter'
+  gem 'capybara-firebug'
+end
+
+group :development do
+  gem 'highline'
+end
+# end sparc-services gems
 
 gem 'will_paginate'
 
-gem 'devise'
-gem 'omniauth-shibboleth'
-
 # requirements for excel export
 gem 'axlsx_rails'
-
-# To use ActiveModel has_secure_password
-# gem 'bcrypt-ruby', '~> 3.0.0'
-
-# To use Jbuilder templates for JSON
-# gem 'jbuilder'
-
-# Use unicorn as the app server
-# gem 'unicorn'
 
 # Deploy with Capistrano
 gem 'capistrano'
 gem 'capistrano-ext'
 gem 'rvm-capistrano'
-
-#gem 'exception_notification', :require => 'exception_notifier'
-
-# To use debugger
-# gem 'debugger'
-#
 
 group :profile do
   gem 'ruby-prof'

@@ -1,0 +1,74 @@
+#search_box
+  %span.search Search:
+  = text_field_tag 'search'
+  = submit_tag 'Submit', :class => 'custom_button', :id => 'search_button'
+
+  %span.ui-corner-all.pricing_setup_error
+    %p 
+%br
+
+#catalog
+  %ul
+    - can_create_institution = @user.is_overlord?
+    - if can_create_institution
+      %li= link_to 'Create New Institution', '#'
+    - @institutions.each do |institution|
+      %li{:id => 'INSTITUTION' + institution.id.to_s}
+        - can_access_institution = @user.can_edit_entity? institution
+        = node institution, can_access_institution, 'root'
+        %ul
+          - if can_access_institution
+            %li= link_to 'Create New Provider', '#'
+          - institution.providers.order("`order`").each do |provider|
+            %li{:id => 'PROVIDER' + provider.id.to_s}
+              - can_access_provider = @user.can_edit_entity? provider
+              = node provider, can_access_provider
+              %ul
+                - if can_access_provider
+                  %li= link_to 'Create New Program', '#'
+                  - provider.programs.order("`order`").each do |program|
+                    %li{:id => 'PROGRAM' + program.id.to_s}
+                      - can_access_program = @user.can_edit_entity? program
+                      = node program, can_access_program
+                      - if program.cores.empty?
+                        %ul
+                          - if can_access_program
+                            %li= link_to 'Create New Core', '#'
+                            %li= link_to 'Create New Service', '#'
+                            - program.services.order("`order`").each do |service|
+                              %li{:id => 'SERVICE' + service.id.to_s}= node service
+                      - else
+                        %ul
+                          - if can_access_program
+                            %li= link_to 'Create New Core', '#'
+                            %li= link_to 'Create New Service', '#'
+                            - program.services.order("`order`").each do |service|
+                              %li{:id => 'SERVICE' + service.id.to_s}= node service                            
+                            - program.cores.order("`order`").each do |core|
+                              %li{:id => 'CORE' + core.id.to_s}
+                                - can_access_core = @user.can_edit_entity? core
+                                = node core, can_access_core
+                                %ul
+                                  - if can_access_core
+                                    %li= link_to 'Create New Service', '#'
+                                    - unless core.services.empty?
+                                      - core.services.order("`order`").each do |service|
+                                        %li{:id => 'SERVICE' + service.id.to_s}= node service
+#details
+#fix_pricing_maps_dialog
+  %input.fix_pricing_maps_entity_id{:type => 'hidden'}
+  %input.fix_pricing_maps_old_value{:type => 'hidden'}
+  %input.fix_pricing_maps_old_value_type{:type => 'hidden'}
+  %input.fix_pricing_maps_new_value{:type => 'hidden'}  
+
+  .fix_pricing_maps_dialog_content
+  
+  %br
+  %center
+    %button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only{:type => "button", :role => "button"}
+      %span.dont_fix_pricing_maps_button.ui-button-text No Pricing Map Changes
+    %button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only{:type => "button", :role => "button"}
+      %span.fix_pricing_maps_button.ui-button-text Save and Apply to Pricing Maps
+    %img.pricing_map_fix_spinner{:src => '/assets/catalog_manager/spinner_small.gif'}  
+  
+    

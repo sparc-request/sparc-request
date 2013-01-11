@@ -1,0 +1,1102 @@
+// Mixins
+// ------------------------------------------------>
+
+// Variables
+// ------------------------------------------------>
+$sexy_blue: #0099FF
+$white: #FFFFFF
+$dark_gray: #CCCCCC
+$light_gray: #E8E8E8
+
+// The rest
+// ------------------------------------------------>
+html, body
+  height: 100%
+
+body
+  background: white url(background_gradient.png) left top repeat-x
+  color: #222222
+  font-family: Verdana, Arial, Helvetica, sans-serif
+  font-size: 75%
+
+*
+  margin: 0
+  padding: 0
+
+img
+  border: 0
+
+a
+  text-decoration: none
+
+a.white_link
+  color: $white
+
+
+ul
+  list-style-position: inside
+
+h2.title
+  color: #00346A
+
+
+.required
+  color: red
+
+
+.error
+  border: 1px solid red
+
+
+.center
+  width: 100%
+  text-align: center
+
+
+.left
+  float: left
+
+.right
+  float: right
+
+
+.clear
+  clear: both
+
+
+.red
+  color: red
+
+.hidden
+  display: none
+
+.return-to-catalog
+  margin: 25px
+  cursor: pointer
+
+
+#container
+  width: 945px
+  height: 100%
+  margin: 0 auto
+
+
+#container #header
+  height: 102px
+
+
+#container #sctr_logo, #container #sctr_header_title, #container #musc_logo
+  float: left
+
+
+#container #sctr_logo
+  width: 270px
+  margin-top: 20px
+
+
+#container #sctr_header_title
+  width: 510px
+  margin: 22px 15px 0 -30px
+  text-align: center
+  a
+    font-weight: bold
+    font-size: 22px
+    font-family: "Times New Roman"
+    text-decoration: none
+    color: $white
+
+.button-disabled, .button-disabled:hover
+  background: #CCC !important
+  color: $light_gray !important
+  border: 1px solid #CCC !important
+  cursor: default !important
+
+#container #musc_logo
+  width: 150px
+  margin: 5px 0 0 13px
+  text-align: right
+
+#container #main
+  box-shadow: 0px 0px 6px #113967
+  width: 941px
+#title
+  color: #00346A
+  margin-top: 31px
+  background: white url(banner.png) no-repeat
+  height: 58px
+  padding: 23px 0 0 23px
+#content
+  background: #FFF
+  overflow: auto
+  border: 0
+  width: auto
+  margin: 5px auto 0 auto
+.dashboard-view
+  float: left
+  padding-right: 10px
+  margin: 14px 8px 8px 8px
+  border-right: 1px solid $dark_gray
+
+.protocol-accordion-title
+  width: 630px
+.protocol-short-title
+  width: 300px
+  display: inline
+.protocol-information
+  border: none
+.protocol-information-title
+  color: $white
+  padding: 3px 0 3px 5px
+  background: #0099ff !important
+.protocol-information-body
+  padding: 3px 0 3px 5px
+  background: #d8d8d8 !important
+  margin-bottom: 1px
+  ul
+    list-style: none
+    margin: 0 5px 15px 5px
+    li
+      margin: 1px
+.protocol-information-table
+  background: $white !important
+  margin-bottom: 1px
+  table
+    text-align: center
+    th
+      background: #d8d8d8
+      padding: 0 3px 3px 3px
+      font-size: 8px
+      td
+        background: #d8d8d8
+        padding: 3px
+        font-size: 13px
+
+.protocol-information-button, .associated-user-button
+  width: 98.5%
+  color: $white
+  cursor: pointer
+  text-align: center
+  padding: 3px 0 3px 5px
+  background: #0099ff !important
+  border: 2px outset #80CCFF
+.associated-user-button:hover, .service-request-button:hover
+  cursor: pointer
+.service-request-title
+  color: $white
+  padding: 3px 0 3px 5px
+  background: #00B741 !important
+.service-request-button
+  color: $white
+  text-align: center
+  padding: 3px 0 3px 5px
+  background: #00B741 !important
+  border: 2px outset #80CCFF
+
+.right-dashboard
+  float: left
+  display: inline
+  width: 243px
+  padding: 14px 0 14px 0px
+.notifications-link
+  float: left
+  width: 230px
+  height: 60px
+  background: #FDF57C
+  font-weight: bold
+  a:link, a:visited, a:hover
+    color: #000
+  .notifications-text
+    display: inline-block
+    margin-top: 12px
+.user-information-title
+  color: $white
+  padding: 10px 0 10px 10px
+  margin: 0 14px 0 0
+  background: #0099ff !important
+.user-information-body
+  float: left
+  height: 46px
+  width: 645px
+  padding: 10px 10px 5px 10px
+  margin: 0 5px 0 0
+  background: #d8d8d8 !important
+.my_navigation
+  margin-top: 3px
+.user-buttons
+  margin: 8px auto auto 10px
+
+// Dialog form styles
+
+.dialog-form
+  fieldset
+    border: 1px solid $dark_gray
+    margin-top: 10px
+    margin-right: 8px
+    fieldset
+      margin-top: 10px
+      margin-left: 8px
+      margin-right: 8px
+      width: 650px
+      legend
+        background: $sexy_blue
+  legend
+    border: 1px solid $sexy_blue
+    padding: 3px 10px 3px 10px
+    margin-left: 10px
+    background: #73B9D7
+    color: #FFF
+  div
+    padding: 3px 20px 6px 20px
+    input[type="text"], select
+      width: 200px
+    select
+      width: 205px
+
+.icon
+  background-repeat: no-repeat
+  border: medium none
+  display: inline-block
+  height: 0
+  overflow: hidden
+  padding: 0
+  text-decoration: none !important
+  vertical-align: middle
+  background: url('http://placehold.it/16x16') no-repeat top left
+.icon.check
+  background: url(green_check.png) no-repeat top left
+  width: 16px
+  height: 16px
+.icon.uncheck
+  background: url(red_x.png) no-repeat top left
+  width: 16px
+  height: 16px
+
+// Productivity
+
+.productivity
+  width: 570px
+  padding-right: 10px
+  margin: 14px 8px 8px 8px
+  border-right: 1px solid $dark_gray
+  .ui-accordion
+    .ui-icon
+      background-image: url("ui-icons_0078ae_256x240.png")
+    .ui-state-active a, .ui-state-default a
+      color: #000
+    .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active
+      border: none
+    .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default
+      border: none
+
+.productivity-content
+  padding: 0 6px 6px 6px
+
+.productivity-information-body
+  padding: 3px 0 3px 5px
+  margin-bottom: 1px
+  ul
+    list-style: none
+    margin: 0 14px 15px 14px
+    li
+      margin: 1px
+      font-size: 11px
+      .grant
+        float: left
+        color: $sexy_blue
+        font-weight: bold
+        .protocol-id, .protocol-title
+          color: #000
+          display: inline
+          font-weight: normal
+          margin-left: 30px
+      .publication
+        float: left
+        color: #34AD55
+        font-weight: bold
+        .publication-title
+          color: #000
+          display: inline
+          font-weight: normal
+          margin-left: 40px
+
+.my-grants-title, .my-publications-title
+  color: $white
+  padding: 10px 0 10px 10px
+  margin: 0 14px 0 5px
+.my-grants-title
+  background: #0099ff !important
+.my-publications-title
+  margin-top: 14px
+  background: #34AD55 !important
+.my-grants-body, .my-publications-body
+  padding: 5px 10px 5px 10px
+  margin: 0 14px 0 5px
+  background: #d8d8d8 !important
+  ul
+    list-style: none
+    li.draggable
+      background: $white
+      padding: 3px
+      border: 2px dotted $dark_gray
+      cursor: move
+
+.grant-protocol-title
+  display: inline
+  margin-left: 90px
+
+.grants-publications-dashboard
+  float: left
+  display: inline
+  width: 340px
+  padding: 14px 0 14px 0px
+
+.closed-hand
+  cursor: url(closedhand.cur) !important
+
+.drop-active
+  padding: 3px
+  border: 2px dotted $dark_gray
+
+.drop-hover
+  background-color: #fbf7bd
+
+#shield
+  position: absolute
+  z-index: 99999999
+  display: none
+  width: 90%
+  height: 86%
+  color: $white
+  font-family: Verdana, Arial, Helvetica, sans-serif
+  font-size: 13px
+  font-weight: bold
+  border-radius: 4px
+  -webkit-border-radius: 4px
+  -moz-border-radius: 4px
+  background: #000
+  background: rgba(0,0,0,.9)
+  top: 30px
+  left: 13px
+
+  span
+    display: block
+    margin-top: 100px
+    text-align: center
+
+#tip
+  position: absolute
+  display: none
+  height: 25px
+  padding: 9px 9px 0px
+  color: $white
+  font-family: Verdana, Arial, Helvetica, sans-serif
+  font-size: 11px
+  font-weight: bold
+  border-radius: 4px
+  -webkit-border-radius: 4px
+  -moz-border-radius: 4px
+  background: #000
+  background: rgba(0,0,0,.8)
+
+#tip .arrow
+  width: 0
+  height: 0
+  line-height: 0
+  border-right: 8px solid #000
+  border-right: 8px solid rgba(0,0,0,.8)
+  border-top: 8px solid transparent
+  border-bottom: 8px solid transparent
+  position: absolute
+  left: -8px
+  top: 9px
+
+// End Productivity
+.odd
+  background: #CCC
+.even
+  background: #FFF
+
+.list
+  .ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default
+    border: 1px solid #41B05D
+    background: #0078ae url(ui-bg_glass_green_1x400.png) 50% 50% repeat-x
+
+  .ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus
+    border: 1px solid #41B05D
+    background: #41B05D url(ui-bg_glass_green_hover_1x400.png) 50% 50% repeat-x
+    font-weight: normal
+    color: green
+
+.step-header
+  margin: 8px
+  padding: 6px
+  color: $white
+
+.instructions
+  margin-bottom: 10px
+  width: 95%
+
+
+// RootView
+
+#welcome_message
+  margin: 0 20px
+  padding-top: 10px
+
+
+#welcome_message h1
+  font-size: 20px
+  color: #0099ff
+
+
+#welcome_message .section
+  margin-top: 10px
+
+.right #services
+  margin: 10px auto
+  width: 92%
+
+
+.right #services h3
+  padding: 4px
+  background: #0099ff
+  font-size: 14px
+  color: $white
+  font-weight: normal
+
+
+.submit-request-button
+  text-align: center
+  cursor: pointer
+
+
+.dashboard-button
+  display: block
+  text-align: center
+
+
+#cart-help
+  float: right
+
+
+.qtip-content ul
+  margin-left: 10px
+  list-style-position: outside
+
+
+.qtip-content ul li
+  margin-bottom: 10px
+
+
+// CatalogView
+.catalog-view .left
+  width: 199px
+  float: left
+  padding: 10px 0 0 10px
+
+.catalog-view .middle
+  width: 471px
+  padding: 10px 0 0 10px
+  float: left
+
+
+.catalog-view .right
+  background:  #003366
+  min-height: 700px
+
+
+.blue-provider
+  background: #003366 !important
+
+.orange-provider
+  background: #ff9933 !important
+
+
+.red-provider
+  background: #ff3333 !important
+
+
+.green-provider
+  background: #339933 !important
+
+.grey-provider
+  background: #E1E1E1 !important
+  height: 30px
+
+.core-view
+  padding: 5px 12px !important
+
+
+.service-view
+  margin: 4px 0
+
+
+.service-view button
+  float: right
+  font-size: 13.5px
+
+
+#my_services
+  padding: 3px
+  min-height: 200px
+  overflow: auto
+
+
+#my_services div.line_item
+  padding: 4px 2px
+  overflow: auto
+
+
+#my_services div.line_item div
+  width: 180px
+  float: left
+
+
+#my_services div.odd
+  background: $light_gray
+
+
+#my_services .remove-button
+  float: right
+
+
+.service-view .title
+  background: $light_gray
+  display: block
+  padding: 6px
+  height: auto
+
+
+.service-view .name
+  display: block
+  float: left
+  max-width: 385px
+
+
+.service-view .name a
+  color: #222222
+  font-size: 13.5px
+  font-family: Verdana,Arial,sans-serif
+
+
+.service-view .description
+  display: block
+  padding: 6px
+
+
+// SelectprotocolView
+
+.protocol-details
+  margin-left: 10px
+  width: 670px
+  min-height: 200px
+
+
+.protocol-details .service-list .provider-header
+  font-weight: bold
+  font-size: 14px
+
+
+.protocol-details .service-list .service-name
+  padding: 5px
+  margin: 4px
+  background: $light_gray
+
+
+.protocol-details .protocol-select, .protocol-details .study-select, .protocol-details .type-select,
+.protocol-details .new-protocol, .protocol-details .new-study
+  margin: 20px
+  text-align: center
+
+
+.user-actions
+  width: 70px
+
+
+.user-actions img
+  margin-right: 5px
+
+
+// Navigation Bar
+.return
+  margin-left: 10px
+  color: $white
+  font-size: 14px
+  font-weight: bold
+  width: 452px
+  float: left
+  padding-left: 10px
+  clear: both
+  cursor: pointer
+
+
+.return a img, .continue a img
+  vertical-align: middle
+
+
+.continue
+  color: $white
+  font-size: 14px
+  font-weight: bold
+  float: left
+  width: 452px
+  text-align: right
+  padding-right: 10px
+  cursor: pointer
+
+
+// ReviewView
+.review-details
+  margin-left: 10px
+  text-align: left
+
+
+.review-details table
+  width: 924px
+  border: 1px solid $light_gray
+  border-collapse: collapse
+
+
+.review-details table th
+  font-weight: bold
+  background: $light_gray
+  border: 1px solid #FFF
+
+
+.review-details table th,
+.review-details table td
+  width: 298px
+  padding: 5px
+
+
+.review-details table td
+  font-weight: normal
+  border: 1px solid $light_gray
+
+
+.review-details table th.no-right-border
+  border-right: 1px solid $light_gray
+
+
+.review-details table tr.total-row td
+  font-weight: bold
+
+
+.review-details table tr td.filler
+  background-color: $dark_gray
+
+
+.return-to-step-3, .save-as-draft
+  float: left
+  margin-right: 158px
+
+
+// ConfirmationView
+
+.confirmation-details
+  margin-left: 10px
+
+
+.confirmation-details .links
+  margin-top: 20px
+
+
+.confirmation-details .links .download
+  margin-left: 90px
+  margin-right: 50px
+
+
+.confirmation-details table
+  width: 100%
+  border: 1px solid $light_gray
+  border-collapse: collapse
+
+
+.confirmation-details table th, .confirmation-details table td
+  text-align: left
+  padding: 4px
+  border: 1px solid $light_gray
+
+
+// ServiceRequestSetupView
+
+.service-request-setup-view .service-details
+  background: $light_gray
+  width: 670px
+  margin-top: 10px
+  margin-left: 10px
+  height: 100%
+
+
+.service-details .instructions
+  background-color: #FFF
+  padding: 10px 0
+  width: 100%
+  margin: 0
+
+
+.service-request-setup-view .service-details table th
+  width: 115px
+  text-align: left
+
+
+.service-request-setup-view .service-details-table td,
+.service-request-setup-view .service-details-table th
+  padding: 5px 30px
+
+
+.service-request-setup-view .service-details .one-time-fees thead
+  border: 0
+  background-color: #FFF
+
+
+.service-request-setup-view .one-time-fees
+  width: 100%
+  border-style: none
+  border-spacing: 0
+
+
+.service-request-setup-view .one-time-fees td,
+.service-request-setup-view .one-time-fees th
+  padding: 5px 10px
+  border-style: none
+
+
+.service-request-setup-view table td
+  margin: 10px
+
+
+.service-request-setup-view input
+  width: 100%
+  font-size: 25px
+
+
+.service-request-setup-view input[type=submit]
+  float: right
+  margin: 30px 0
+  width: auto
+  font-size: inherit
+
+
+.program-details-view .description, .provider-details-view .description
+  margin-bottom: 10px !important
+  padding: 5px !important
+
+
+// New protocol View
+
+.edit-protocol-view
+  font-size: 12px
+
+
+.edit-protocol-view .box
+  background: $light_gray
+  width: 100%
+  min-height: 430px
+  height: auto
+
+
+.edit-protocol-view .info
+  width: 530px
+  padding: 10px
+  float: left
+  border-right: 10px solid #FFF
+  height: 100%
+  min-height: 450px
+
+
+.edit-protocol-view .box .info .research-type
+  display: block
+  float: left
+  width: 100%
+
+
+.edit-protocol-view .box .info .human-subjects,
+.edit-protocol-view .box .info .vertebrate-animals
+  padding-left: 40px
+
+
+.edit-protocol-view .box .info .human-subjects input[type=text],
+.edit-protocol-view .box .info .vertebrate-animals input[type=text]
+  width: 335px
+
+
+.edit-protocol-view .box .info .human-subjects select
+  width: 335px
+
+
+.edit-protocol-view .box .info .study-type
+  display: block
+  float: left
+  width: 100%
+
+
+.edit-protocol-view .box .info hr
+  color: $white
+
+
+.edit-protocol-view .box .info .study-type .study-type-fields
+  padding-left: 40px
+
+
+.edit-protocol-view .box .info .field
+  display: block
+  float: left
+  clear: both
+  margin-top: 4px
+  width: 100%
+
+
+.edit-protocol-view .box .info label
+  width: 125px
+  display: block
+  float: left
+  margin-right: 10px
+
+
+.edit-protocol-view .box .info input
+  width: auto
+  display: block
+  float: left
+
+
+.edit-protocol-view .box .info input[type=text],
+.edit-protocol-view .box .info textarea,
+.edit-protocol-view .box .info select
+  width: 375px
+
+
+.edit-protocol-view .box .info textarea
+  height: 300px
+
+
+.edit-protocol-view .box .info input[type=checkbox]
+  margin-top: 2px
+
+
+.edit-protocol-view .box .info option
+  max-width: 375px
+
+
+.edit-protocol-view .add-user-details
+  float: right
+  width: 316px
+  min-height: 430px
+  height: 100%
+
+
+.edit-protocol-view .search-container
+  border-bottom: 10px solid $white
+  padding: 8px
+
+
+.edit-protocol-view .user-d
+  padding: 8px
+
+
+.edit-protocol-view .add-user-details .user-manager-view .user-details table
+  border: 1px solid #ECECEC
+  width: 100%
+
+
+.edit-protocol-view .add-user-details .user-manager-view .user-details select,
+.edit-protocol-view .add-user-details .user-manager-view .user-details option
+  width: 195px
+
+
+.edit-protocol-view .add-user-details .user-manager-view .user-details table th
+  text-align: left
+  padding: 2px
+
+
+.edit-protocol-view .add-user-details .center .add-user
+  margin-top: 10px
+
+
+.edit-protocol-view .add-user-details label
+  width: 100px
+
+
+.edit-protocol-view .add-user-details input
+  width: 150px
+
+
+.edit-protocol-view .add-user-details label,
+.edit-protocol-view .add-user-details input
+  float: left
+
+
+.edit-protocol-view .authorized-users
+  margin-top: 10px
+  border: 1px solid $white
+  border-collapse: collapse
+  width: 100%
+
+
+.edit-protocol-view .authorized-users th.authorized-users-section
+  width: 50%
+  text-align: center
+
+
+.edit-protocol-view .authorized-users th.proxy-rights
+  font-size: 10px
+  text-align: center
+
+
+.edit-protocol-view .authorized-users .authorized-users-section,
+.edit-protocol-view .authorized-users th
+  background: $light_gray
+
+
+.edit-protocol-view .authorized-users th,
+.edit-protocol-view .authorized-users td
+  border: 1px solid $white
+  text-align: left
+  height: 35px
+
+
+.edit-protocol-view .search-results
+  height: 185px
+  overflow: auto
+  margin-bottom: 20px
+
+
+.edit-protocol-view .search-results .user
+  border: 1px solid $light_gray
+  border-bottom: none
+  padding: 3px
+  background: $white
+
+
+.edit-protocol-view .search-results .user:hover
+  background-color: #AAE
+  cursor: pointer
+
+
+// Dashboard View
+
+.dash-instructions
+  margin-bottom: 10px
+  padding: 0 6px 6px 6px
+
+
+// Document Mgmt View
+
+.document-details
+  margin-left: 10px
+  margin-bottom: 20px
+  text-align: center
+
+// row edit dialog
+
+.row-edit-dialog p
+  margin: 10px 0 0 0
+
+
+.row-edit-dialog button
+  float: right
+
+
+// jquery ui overrides
+
+.ui-accordion .ui-accordion-content
+  padding: 4px 8px
+
+
+.ui-accordion .ui-accordion-header
+  margin-top: 5px
+
+
+.ui-accordion .ui-accordion-content h4
+  margin: 2px 0
+
+
+.ui-accordion .ui-accordion-content h4 a
+  font-size: 12px
+  font-weight: normal
+  color:  #003366
+
+
+.ui-accordion .ui-accordion-content h4 a:hover
+  color: red
+
+
+.ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br
+  border-bottom-right-radius: 3px
+
+
+.ui-corner-all, .ui-corner-bottom, .ui-corner-left, .ui-corner-bl
+  border-bottom-left-radius: 3px
+
+
+.ui-corner-all, .ui-corner-top, .ui-corner-right, .ui-corner-tr
+  border-top-right-radius: 3px
+
+
+.ui-corner-all, .ui-corner-top, .ui-corner-left, .ui-corner-tl
+  border-top-left-radius: 3px
+
+.blue_header
+  background: $sexy_blue
+  color: $white
+  padding: 2px
+
+.service_request_information
+  th, td
+    padding: 5px
+
+#productivity-accordion .ui-accordion-content h3 a
+  color: #000
+
+.dark_gray_bg
+  background: $dark_gray
+
+.totals
+  border-top-color: $light_gray !important
+  border-right-color: $light_gray !important
+  font-weight: bold
+
+// // Navy: #003366
+// * Sexy Blue: #0099ff
+// * Orange: #ff9933
+// * Red: #ff3333
+// * Green: #339933
+
+
+
+#error_explanation, .error_explanation, #errorExplanation, .errorExplanation
+  padding: 20px 35px !important
+  border: 1px solid #8a1f11 !important
+  padding: 7px !important
+  padding-bottom: 12px !important
+  margin: 20px 0 !important
+  background: #FFFFD5 !important
+  color: #8a1f11 !important
+  width: 500px !important
+  h2
+    text-align: left !important
+    font-weight: bold !important
+    padding: 5px 5px 5px 15px !important
+    font-size: 12px !important
+    margin: -7px !important
+    margin-bottom: 5px !important
+    background-color: #FFFFD5 !important
+  p
+    color: #333 !important
+    margin-bottom: 0 !important
+    padding: 5px !important
+  ul
+    margin-left: 25px
+    li
+      font-size: 12px !important
+      list-style: square !important
+      list-style-position: inside
+
+.field_with_errors
+  display: inline !important
+  label
+    color: #8a1f11 !important
+  input, select, textarea
+    border: 1px solid #8a1f11 !important
+    background-color: #FFFFD5 !important
+    color: red !important

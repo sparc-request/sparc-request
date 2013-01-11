@@ -1,0 +1,69 @@
+:javascript
+  $(document).ready( function() {
+    Sparc.protocol.ready();
+    Sparc.associated_users.ready();
+  });
+
+.dashboard-view
+  = render 'user_information'
+  %p.dash-instructions
+  Within your dashboard, you can view (and/or edit, submit) service requests currently in SPARC, as well as all of those still in "draft" status. To edit any study/project specific information, click on the "Edit" button located under the "Study/Project Information" heading. To add or edit users, click on the "Edit Authorized Users" button located under the "Authorized Users" heading.
+  %br
+  %br
+  Please note that studies/projects are listed in descending order.
+  %br
+  %br
+  %input.search_protocols{:placeholder => 'Type here to search...', :style => "display:none;"}
+  .loading_protocol.ui-corner-all{:style => "border: 1px solid black; padding: 3px; width: 200px; margin: 30px auto; text-align: center"}
+    Loading your projects/studies
+    %br
+    = image_tag 'portal/spinner.gif'
+  .search_protocols_div
+  #protocol-accordion{:style => 'margin-top:15px;'}
+
+.add-associated-user-dialog
+  .user-search-container
+    = label_tag 'user_search', 'Search for a user:'
+    = text_field_tag 'user_search'
+    = image_tag('portal/spinner.gif', :style => "display:none; vertical-align:middle;", :id => 'search-spinner')
+  #add-user-form
+    =render :partial => "portal/associated_users/new", :locals => {:protocol => @protocol, :protocol_role => ProjectRole.new, :identity => Identity.new}
+
+.edit-associated-user-dialog
+.view-sub-service-request-dialog
+.permissions-dialog
+  You do not have appropriate rights to
+  %b
+    %span.text
+      Edit
+  Should you need this right, please contact your PI or Authorized Users
+
+
+%input.default_protocol{:type => 'hidden', :value => params.try(:[], :default_protocol) || ''}
+
+:javascript
+  $(document).ready(function(){
+    var source = "/portal/associated_users/search"
+    selected_option = ''
+    $('input#user_search').autocomplete({
+      source: source,
+      minLength: 3,
+      search: function(event, ui) {$('#search-spinner').show()},
+      open: function(event, ui) {$('#search-spinner').hide()},
+      select: function(event, ui) {
+        selected_option = ui.item.label
+        $.ajax({
+          method: 'get',
+          url: "/portal/associated_users/new",
+          data: {user_id: ui.item.value, protocol_id: $('#add-user-form #protocol_id').val()},
+          success: function() {
+          }
+        })
+      },
+      close: function() {
+        $('input#user_search').autocomplete('disable')
+        $('input#user_search').val(selected_option)
+        $('input#user_search').autocomplete('enable')
+      }
+    });
+  });

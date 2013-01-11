@@ -1,4 +1,6 @@
 class IdentitiesController < ApplicationController
+  before_filter :initialize_service_request, :except => [:approve_account, :disapprove_account]
+  before_filter :authorize_identity, :except => [:approve_account, :disapprove_account]
   def show
     @identity = Identity.find params[:id]
     @can_edit = false

@@ -1,0 +1,50 @@
+#protocol {
+    background-color: #EEEEEE;
+    table {
+        font-size: 14px;
+        width: 100%;
+
+        th {
+            width: 25%;
+            padding: 4px;
+            text-align: left;
+        }
+
+        td {
+            padding: 4px;
+
+            div {
+                min-height: 25px;
+            }
+        }
+    }
+
+    input {
+        width: 98%;
+    }
+
+    input[type="checkbox"] {
+        width: auto;
+    }
+
+    input.protocol_date, .form-date {
+        width: 15%;
+    }
+
+    input[type=submit] {
+        width: auto;
+    }
+
+    select {
+        width: 99%;
+    }
+
+    #actions {
+        margin-top: 15px;
+        text-align: center;
+
+        span {
+            margin: 0 10px;
+        }
+    }
+}

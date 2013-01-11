@@ -1,0 +1,24 @@
+- if @service_request.documents.count >= 1
+  %table.document-table
+    - if review
+      %tr
+        %th.light-blue-provider{:colspan => 3} Document Uploads
+    %tr.header
+      %th Type
+      %th Title
+      %th Uploaded
+      - if not review
+        %th Actions
+
+    - @sub_service_request.documents.group_by(&:document_grouping_id).each do |grouping_id, docs|
+      - doc = docs.first
+      %tr.document{:id => "document_grouping_#{grouping_id}"}
+        %td{:style => "width:212px;"}= doc.display_document_type
+        %td= link_to doc.document_file_name, doc.document.url
+        %td= doc.created_at.strftime("%m/%d/%Y")
+        - if not review
+          %td{:style => "width:165px;"}
+            = link_to "Edit", "/portal/admin/sub_service_requests/#{@sub_service_request.id}/edit_document_group/#{grouping_id}", :remote => true, :class => 'document_edit'
+            = link_to "Delete", "/portal/admin/sub_service_requests/#{@sub_service_request.id}/delete_document_group/#{grouping_id}", :remote => true, :class => 'document_delete'
+- else
+  %div No documents found

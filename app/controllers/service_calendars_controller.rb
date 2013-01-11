@@ -1,14 +1,19 @@
 class ServiceCalendarsController < ApplicationController
+  before_filter :initialize_service_request
+  before_filter {|c| params[:portal] == 'true' ? true : c.send(:authorize_identity)}
   layout false
   def table
     #use session so we know what page to show when tabs are switched
     session[:service_calendar_page] = params[:page] if params[:page]
 
     @tab = params[:tab]
+    @portal = params[:portal]
     @page = @service_request.set_visit_page session[:service_calendar_page].to_i
+    @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition {|x| x.is_one_time_fee?} if @sub_service_request
   end
 
   def update
+    @portal = params[:portal]
     visit = Visit.find params[:visit] rescue nil
     
     @line_item = LineItem.find params[:line_item] rescue nil
@@ -44,5 +49,17 @@ class ServiceCalendarsController < ApplicationController
     @line_item = visit.line_item if @line_item.nil?
     @line_item_total_td = ".total_#{@line_item.id}"
     @displayed_visits = @line_item.visits.paginate(page: params[:page], per_page: 5)
+  end
+
+  def rename_visit
+    visit_name = params[:name]
+    visit_position = params[:visit_position].to_i
+    service_request = ServiceRequest.find params[:service_request_id]
+
+    line_items = service_request.per_patient_per_visit_line_items
+
+    line_items.each do |li|
+      li.visits[visit_position].update_attribute(:name, visit_name)
+    end
   end
 end

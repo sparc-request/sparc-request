@@ -1,0 +1,93 @@
+= hidden_field_tag "protocol_id", protocol_role.protocol_id
+= f.hidden_field :identity_id
+- if @sub_service_request
+  = hidden_field_tag :sub_service_request_id, @sub_service_request.id
+%br
+.details
+  .errorExplanation#errorExplanation{:style => 'display:none;'}
+  %br
+  %fieldset.user_info
+    %legend#edit_legend 
+      - if type == "add"
+        Add User
+      - else
+        Edit User
+    .left_info
+      .user_name
+        %strong Name:
+        %br
+        = text_field_tag "", "#{identity.first_name} #{identity.last_name}", {:disabled => true}
+        %br
+      .user_email
+        %strong E-mail:
+        %br
+        = text_field_tag "", identity.email, {:disabled => true}
+        %br
+      .user_phone
+        %strong
+          = label_tag "identity[phone]", "Phone:"
+        %br
+        = text_field_tag "identity[phone]", identity.phone, {:disabled => true}
+        %br
+      .user_role
+        %strong
+          = f.label :role, "Role:*"
+        %br
+        = f.select :role, options_for_select(USER_ROLES, f.object.role), :prompt => "Select a Role"
+        %br
+      .role_other
+        = f.text_field :role_other
+        %br
+      .era_commons_name
+        %strong
+          = label_tag "identity[era_commons_name]", "ERA Commons Name:"
+        %br
+        = text_field_tag "identity[era_commons_name]", identity.era_commons_name
+        %br
+      .user_credentials
+        %strong
+          = label_tag "identity[credentials]", "Credentials:"
+        %br
+        = select_tag "identity[credentials]", options_for_select(USER_CREDENTIALS, identity.credentials), :prompt => "Select a Credential"
+        %br
+      .credentials_other
+        = text_field_tag "identity[credentials_other]", identity.credentials_other
+        %br
+    .right_info
+      .user_institution
+        %strong
+          = label_tag "identity[institution]", "Institution:"
+        %br
+        = select_tag "identity[institution]", options_for_select((INSTITUTIONS.sort), identity.institution), :prompt => "Select an Institution"
+        %br
+      .user_college
+        %strong
+          = label_tag "identity[college]", "College:"
+        %br
+        = select_tag "identity[college]", options_for_select(COLLEGES, identity.college), :prompt => "Select a College"
+        %br
+      .user_department
+        %strong
+          = label_tag "identity[department]", "Department:"
+        %br
+        = select_tag "identity[department]", options_for_select(DEPARTMENTS, identity.department), :prompt => "Select a Department"
+        %br
+      .subspecialty
+        %strong
+          = label_tag "identity[subspecialty]", "Subspecialty:"
+        %br
+        = select_tag "identity[subspecialty]", options_for_select((SUBSPECIALTIES.sort), identity.subspecialty), :prompt => "Select a Subspecialty"
+        %br
+      #project_rights
+        %strong User Rights:
+        %br
+          %ul.rights_labels
+            %li= f.label :project_rights_none, 'Study/Project Member Only'
+            %li= f.label :project_rights_view, 'View Rights'
+            %li= f.label :project_rights_request, 'Request/Approve Services'
+            %li= f.label :project_rights_approve, 'Authorize/Change Study Charges'
+          %ul.rights_radios
+            %li= f.radio_button :project_rights, 'none'
+            %li= f.radio_button :project_rights, 'view'
+            %li= f.radio_button :project_rights, 'request'
+            %li= f.radio_button :project_rights, 'approve'

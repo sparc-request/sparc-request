@@ -27,6 +27,7 @@ scratch
 .#*
 *.jar
 *.war
+*.csv
 public/assets
 public/system
 *~
@@ -35,3 +36,9 @@ config/database.yml
 config/application.yml
 public/portal
 public/catalog_manager
+
+import/checkpoints
+import/entities.json
+import/config/alfresco.yml
+
+

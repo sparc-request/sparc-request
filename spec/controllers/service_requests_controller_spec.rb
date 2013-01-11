@@ -8,10 +8,28 @@ describe ServiceRequestsController do
   let!(:program) { FactoryGirl.create(:program, parent_id: provider.id) }
   let!(:core) { FactoryGirl.create(:core, parent_id: program.id) }
   let!(:core2) { FactoryGirl.create(:core, parent_id: program.id) }
+  let!(:service_provider)  {FactoryGirl.create(:service_provider, identity_id: identity.id, organization_id: core.id, hold_emails: false)}
+
+  let!(:institution_subsidy_map) { FactoryGirl.create(:subsidy_map, organization_id: institution.id) }
+  let!(:provider_subsidy_map)    { FactoryGirl.create(:subsidy_map, organization_id: provider.id) }
+  let!(:program_subsidy_map)     { FactoryGirl.create(:subsidy_map, organization_id: program.id) }
+  let!(:core_subsidy_map)        { FactoryGirl.create(:subsidy_map, organization_id: core.id) }
+  let!(:core2_subsidy_map)       { FactoryGirl.create(:subsidy_map, organization_id: core2.id) }
 
   # TODO: shouldn't be bypassing validations...
   let!(:study) { study = Study.create(FactoryGirl.attributes_for(:protocol)); study.save!(:validate => false); study }
-  let!(:project) { project = Project.create(FactoryGirl.attributes_for(:protocol)); project.save!(:validate => false); project }
+  let!(:project) { 
+    project = Project.create(FactoryGirl.attributes_for(:protocol))
+    project.save!(:validate => false)
+    project_role = FactoryGirl.create(
+        :project_role,
+        protocol_id: project.id,
+        identity_id: identity.id,
+        project_rights: "approve",
+        role: "pi")
+    project.reload
+    project
+  }
 
   # TODO: assign service_list
   let!(:service_request) { FactoryGirl.create(:service_request, visit_count: 0) }
@@ -120,12 +138,14 @@ describe ServiceRequestsController do
 
   describe 'GET confirmation' do
     it "should set the service request's status to submitted" do
+      session[:identity_id] = identity.id
       session[:service_request_id] = service_request_with_project.id
       get :confirmation, :id => service_request_with_project.id
       assigns(:service_request).status.should eq 'submitted'
     end
 
     it "should set the service request's submitted_at to Time.now" do
+      session[:identity_id] = identity.id
       time = Time.parse('2012-06-01 12:34:56')
       Timecop.freeze(time) do
         service_request_with_project.update_attribute(:submitted_at, nil)
@@ -137,10 +157,12 @@ describe ServiceRequestsController do
     end
 
     it 'should increment next_ssr_id' do
+      session[:identity_id] = identity.id
       service_request_with_project.protocol.update_attribute(:next_ssr_id, 42)
       ssr = FactoryGirl.create(
           :sub_service_request,
-          service_request_id: service_request_with_project.id)
+          service_request_id: service_request_with_project.id,
+          organization_id: core.id)
       session[:service_request_id] = service_request_with_project.id
       get :confirmation, :id => service_request_with_project.id
       service_request_with_project.protocol.reload
@@ -148,16 +170,19 @@ describe ServiceRequestsController do
     end
 
     it 'should should set status and ssr_id on all the sub service request' do
+      session[:identity_id] = identity.id
       service_request_with_project.protocol.update_attribute(:next_ssr_id, 42)
 
       ssr1 = FactoryGirl.create(
           :sub_service_request,
           service_request_id: service_request_with_project.id,
-          ssr_id: nil)
+          ssr_id: nil,
+          organization_id: provider.id)
       ssr2 = FactoryGirl.create(
           :sub_service_request,
           service_request_id: service_request_with_project.id,
-          ssr_id: nil)
+          ssr_id: nil,
+          organization_id: core.id)
 
       session[:service_request_id] = service_request_with_project.id
       get :confirmation, :id => service_request_with_project.id
@@ -173,12 +198,14 @@ describe ServiceRequestsController do
     end
 
     it 'should set ssr_id correctly when next_ssr_id > 9999' do
+      session[:identity_id] = identity.id
       service_request_with_project.protocol.update_attribute(:next_ssr_id, 10042)
 
       ssr1 = FactoryGirl.create(
           :sub_service_request,
           service_request_id: service_request_with_project.id,
-          ssr_id: nil)
+          ssr_id: nil,
+          organization_id: core.id)
 
       session[:service_request_id] = service_request_with_project.id
       get :confirmation, :id => service_request_with_project.id
@@ -260,7 +287,7 @@ describe ServiceRequestsController do
     it 'should redirect the user to the user portal link' do
       session[:service_request_id] = service_request_with_project.id
       get :save_and_exit, :id => service_request_with_project.id
-      response.should redirect_to('/user_portal')
+      response.should redirect_to(USER_PORTAL_LINK)
     end
   end
 
@@ -274,11 +301,12 @@ describe ServiceRequestsController do
   describe 'GET service_calendar' do
     let!(:service) {
       service = FactoryGirl.create(:service, pricing_map_count: 1)
-      service.pricing_maps[0].display_date = Date.today
+      service.pricing_maps[0].update_attributes(display_date: Date.today)
       service
     }
 
     let!(:pricing_map) { service.pricing_maps[0] }
+
     let!(:line_item) { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id) }
 
     it "should set the page if page is passed in" do
@@ -361,7 +389,7 @@ describe ServiceRequestsController do
       line_item.visits.count.should eq 20
     end
 
-    it 'should NOT create visits if too few on one time fee line items' do
+    it 'should NOT create visits if there are too few of them, on one time fee line items' do
       pricing_map.update_attribute(:is_one_time_fee, true)
       service_request.update_attribute(:visit_count, 10)
       Visit.bulk_create(5, line_item_id: line_item.id)
@@ -375,8 +403,8 @@ describe ServiceRequestsController do
   end
 
   describe 'GET document_management' do
-    let!(:service1) { service = FactoryGirl.create(:service, pricing_map_count: 0) }
-    let!(:service2) { service = FactoryGirl.create(:service, pricing_map_count: 0) }
+    let!(:service1) { service = FactoryGirl.create(:service) }
+    let!(:service2) { service = FactoryGirl.create(:service) }
 
     before(:each) do
       service_list = [ service1, service2 ]
@@ -404,7 +432,7 @@ describe ServiceRequestsController do
       deliverer = double()
       deliverer.should_receive(:deliver)
       Notifier.stub!(:ask_a_question) { |question|
-        question.to.should eq 'nobody@nowhere.com'
+        question.to.should eq DEFAULT_MAIL_TO
         question.from.should eq 'no-reply@musc.edu'
         question.body.should eq 'No question asked'
         deliverer
@@ -472,7 +500,9 @@ describe ServiceRequestsController do
           :service,
           pricing_map_count: 1,
           organization_id: core.id)
-      service.pricing_maps[0].display_date = Date.today
+      service.pricing_maps[0].update_attributes(
+          display_date: Date.today,
+          unit_minimum: 42)
       service
     }
 
@@ -481,7 +511,7 @@ describe ServiceRequestsController do
           :service,
           pricing_map_count: 1,
           organization_id: core.id)
-      service.pricing_maps[0].display_date = Date.today
+      service.pricing_maps[0].update_attributes(display_date: Date.today)
       service
     }
 
@@ -490,7 +520,7 @@ describe ServiceRequestsController do
           :service,
           pricing_map_count: 1,
           organization_id: core2.id)
-      service.pricing_maps[0].display_date = Date.today
+      service.pricing_maps[0].update_attributes(display_date: Date.today)
       service
     }
 
@@ -512,7 +542,7 @@ describe ServiceRequestsController do
       service_request.line_items.count.should eq 1
       service_request.line_items[0].service.should eq service
       service_request.line_items[0].optional.should eq true
-      service_request.line_items[0].quantity.should eq 1
+      service_request.line_items[0].quantity.should eq 42
     end
 
     it 'should create a line item for a required service' do
@@ -529,10 +559,10 @@ describe ServiceRequestsController do
       service_request.line_items.count.should eq 2
       service_request.line_items[0].service.should eq service
       service_request.line_items[0].optional.should eq true
-      service_request.line_items[0].quantity.should eq 1
+      service_request.line_items[0].quantity.should eq 42
       service_request.line_items[1].service.should eq service2
       service_request.line_items[1].optional.should eq false
-      service_request.line_items[1].quantity.should eq 1
+      service_request.line_items[1].quantity.should eq 42
     end
 
     it 'should create a line item for an optional service' do
@@ -549,10 +579,10 @@ describe ServiceRequestsController do
       service_request.line_items.count.should eq 2
       service_request.line_items[0].service.should eq service
       service_request.line_items[0].optional.should eq true
-      service_request.line_items[0].quantity.should eq 1
+      service_request.line_items[0].quantity.should eq 42
       service_request.line_items[1].service.should eq service2
       service_request.line_items[1].optional.should eq true
-      service_request.line_items[1].quantity.should eq 1
+      service_request.line_items[1].quantity.should eq 42
     end
 
     it 'should create a sub service request for each organization in the service list' do
@@ -717,22 +747,25 @@ describe ServiceRequestsController do
   context('calendar methods') do
     let!(:service1) {
       service = FactoryGirl.create(:service, pricing_map_count: 1)
-      service.pricing_maps[0].display_date = Date.today
-      service.pricing_maps[0].is_one_time_fee = false
+      service.pricing_maps[0].update_attributes(
+          display_date: Date.today,
+          is_one_time_fee: false)
       service
     }
 
     let!(:service2) {
       service = FactoryGirl.create(:service, pricing_map_count: 1)
-      service.pricing_maps[0].display_date = Date.today
-      service.pricing_maps[0].is_one_time_fee = false
+      service.pricing_maps[0].update_attributes(
+          display_date: Date.today,
+          is_one_time_fee: false)
       service
     }
 
     let!(:service3) {
       service = FactoryGirl.create(:service, pricing_map_count: 1)
-      service.pricing_maps[0].display_date = Date.today
-      service.pricing_maps[0].is_one_time_fee = false
+      service.pricing_maps[0].update_attributes(
+          display_date: Date.today,
+          is_one_time_fee: false)
       service
     }
 

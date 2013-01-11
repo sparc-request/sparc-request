@@ -6,6 +6,8 @@ protocol:
   forward: service_details
   validation_groups: 
     catalog:
+    save_and_exit:
+      - protocol
     service_details:
       - protocol
 
@@ -16,6 +18,12 @@ service_details:
   catalog: catalog
   forward: service_calendar
   validation_groups:
+    catalog:
+      - service_details_back
+    protocol:
+      - service_details_back
+    save_and_exit:
+      - service_details_back
     service_calendar:
       - service_details
 

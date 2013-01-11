@@ -1,4 +1,6 @@
 class ServiceRequestsController < ApplicationController
+  before_filter :initialize_service_request, :except => [:approve_changes]
+  before_filter :authorize_identity, :except => [:approve_changes]
   before_filter :authenticate_identity!, :except => [:catalog, :add_service, :remove_service, :ask_a_question]
   layout false, :only => :ask_a_question
 
@@ -23,11 +25,6 @@ class ServiceRequestsController < ApplicationController
   def navigate
     errors = [] 
     # need to save and navigate to the right page
-    puts "#"*50
-    puts params.inspect
-    puts request.referrer.split('/').last
-    puts params[:service_request]
-    puts "#"*50
 
     #### add logic to save data
     referrer = request.referrer.split('/').last
@@ -70,7 +67,7 @@ class ServiceRequestsController < ApplicationController
       document_grouping = @service_request.document_groupings.create
       process_ssr_organization_ids.each do |org_id|
         sub_service_request = @service_request.sub_service_requests.find_by_organization_id org_id.to_i
-        sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :document_grouping_id => document_grouping.id
+        sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other], :document_grouping_id => document_grouping.id
         sub_service_request.save
       end
     elsif process_ssr_organization_ids and document_grouping_id
@@ -92,7 +89,7 @@ class ServiceRequestsController < ApplicationController
       to_add.each do |org_id|
         if document and not params[:doc_type].empty?
           sub_service_request = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
-          sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :document_grouping_id => document_grouping.id
+          sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other], :document_grouping_id => document_grouping.id
           sub_service_request.save
         else
           doc_errors = {}
@@ -110,13 +107,13 @@ class ServiceRequestsController < ApplicationController
           if @sub_service_request.nil? or document_grouping.documents.size == 1 # we either don't have a sub_service_request or the only document in this group is the one we are updating
             document_grouping.documents.each do |doc|
               new_doc = document ? document : doc.document # use the old document
-              doc.update_attributes(:document => new_doc, :doc_type => params[:doc_type]) if doc.organization.id == org_id.to_i
+              doc.update_attributes(:document => new_doc, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other]) if doc.organization.id == org_id.to_i
             end
           else # we have a sub_service_request and the document count is greater than 1 so we need to do some special stuff
             new_document_grouping = @service_request.document_groupings.create
             document_grouping.documents.each do |doc|
               new_doc = document ? document : doc.document # use the old document
-              doc.update_attributes({:document => new_doc, :doc_type => params[:doc_type], :document_grouping_id => new_document_grouping.id}) if doc.organization.id == @sub_service_request.id
+              doc.update_attributes({:document => new_doc, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other], :document_grouping_id => new_document_grouping.id}) if doc.organization.id == @sub_service_request.id
             end
           end
         end
@@ -274,12 +271,12 @@ class ServiceRequestsController < ApplicationController
 
     # send e-mail to all service providers
     if @sub_service_request # only notify the service providers for this sub service request
-      @sub_service_request.organization.service_providers.where("hold_emails IS NOT true").each do |service_provider|
+      @sub_service_request.organization.service_providers.where(ServiceProvider.arel_table[:hold_emails].not_eq(true)).each do |service_provider|
         Notifier.notify_service_provider(service_provider, @service_request, xls).deliver
       end
     else
       @service_request.sub_service_requests.each do |sub_service_request|
-        sub_service_request.organization.service_providers.where("hold_emails IS NOT true").each do |service_provider|
+        sub_service_request.organization.service_providers.where(ServiceProvider.arel_table[:hold_emails].not_eq(true)).each do |service_provider|
           Notifier.notify_service_provider(service_provider, @service_request, xls).deliver
         end
       end
@@ -300,16 +297,20 @@ class ServiceRequestsController < ApplicationController
 
   def save_and_exit
     # TODO: refactor into the ServiceRequest model
-
-    @service_request.update_attribute(:status, 'draft')
     
-    next_ssr_id = @service_request.protocol.next_ssr_id || 1
-    @service_request.sub_service_requests.each do |ssr|
-      ssr.update_attribute(:status, 'draft')
-      ssr.update_attribute(:ssr_id, "%04d" % next_ssr_id) unless ssr.ssr_id
-      next_ssr_id += 1
+    if @sub_service_request # if we are editing a sub service request we should just update it's status
+      @sub_service_request.update_attribute(:status, 'draft')
+    else
+      @service_request.update_attribute(:status, 'draft')
+      
+      next_ssr_id = @service_request.protocol.next_ssr_id || 1
+      @service_request.sub_service_requests.each do |ssr|
+        ssr.update_attribute(:status, 'draft')
+        ssr.update_attribute(:ssr_id, "%04d" % next_ssr_id) unless ssr.ssr_id
+        next_ssr_id += 1
+      end
+      @service_request.protocol.update_attribute(:next_ssr_id, next_ssr_id)
     end
-    @service_request.protocol.update_attribute(:next_ssr_id, next_ssr_id)
 
     redirect_to USER_PORTAL_LINK 
   end
@@ -325,22 +326,31 @@ class ServiceRequestsController < ApplicationController
 
   def add_service
     id = params[:service_id].sub('service-', '').to_i
-    if @service_request.line_items.map(&:service_id).include? id
+    @new_line_items = []
+    existing_service_ids = @service_request.line_items.map(&:service_id)
+
+    if existing_service_ids.include? id
       render :text => 'Service exists in line items' 
     else
       service = Service.find id
 
       # add service to line items
-      @service_request.line_items.create(:service_id => service.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum)
+      new_line_item = @service_request.line_items.create(:service_id => service.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum, :subject_count => @service_request.subject_count)
+      Visit.bulk_create(@service_request.visit_count, :line_item_id => new_line_item.id) unless @service_request.visit_count.blank?
+      @new_line_items << new_line_item
 
       # add required services to line items
       service.required_services.each do |rs|
-        @service_request.line_items.create(:service_id => rs.id, :optional => false, :quantity => service.displayed_pricing_map.unit_minimum)
+        new_line_item = @service_request.line_items.create(:service_id => rs.id, :optional => false, :quantity => service.displayed_pricing_map.unit_minimum, :subject_count => @service_request.subject_count) unless existing_service_ids.include?(rs.id)
+        Visit.bulk_create(@service_request.visit_count, :line_item_id => new_line_item.id) unless @service_request.visit_count.blank?
+        @new_line_items << new_line_item
       end
 
       # add optional services to line items
       service.optional_services.each do |rs|
-        @service_request.line_items.create(:service_id => rs.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum)
+        new_line_item = @service_request.line_items.create(:service_id => rs.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum, :subject_count => @service_request.subject_count) unless existing_service_ids.include?(rs.id)
+        Visit.bulk_create(@service_request.visit_count, :line_item_id => new_line_item.id) unless @service_request.visit_count.blank?
+        @new_line_items << new_line_item
       end
 
       # create sub_service_rquests
@@ -348,6 +358,9 @@ class ServiceRequestsController < ApplicationController
       @service_request.service_list.each do |org_id, values|
         line_items = values[:line_items]
         ssr = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
+        unless @service_request.status.nil? and !ssr.status.nil?
+          ssr.update_attribute(:status, @service_request.status)
+        end
 
         line_items.each do |li|
           li.update_attribute(:sub_service_request_id, ssr.id)
@@ -359,7 +372,8 @@ class ServiceRequestsController < ApplicationController
   def remove_service
     id = params[:line_item_id].sub('line_item-', '').to_i
 
-    service = @service_request.line_items.find(id).service
+    @line_item = @service_request.line_items.find(id)
+    service = @line_item.service
     line_item_service_ids = @service_request.line_items.map(&:service_id)
 
     # look at related services and set them to optional

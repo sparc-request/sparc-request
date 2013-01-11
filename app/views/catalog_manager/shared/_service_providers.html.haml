@@ -1,0 +1,18 @@
+.sps
+  - if entity.service_providers
+    %table
+      %thead
+        %tr
+          %th Name/Email
+          %th.check Primary Contact
+          %th.check Hold Emails
+          %th Delete
+      %tbody
+        - entity.service_providers.each do |sp|
+          %tr
+            %td= sp.identity.display_name
+            %td.check= check_box_tag "#{sp.id}_contact", true, sp.is_primary_contact, :class => 'primary_contact', :org_id => entity.id, :contact_flag => sp.is_primary_contact, :identity => sp.id, :emails_flag => sp.hold_emails
+            %td.check= check_box_tag "#{sp.id}_emails", true, sp.hold_emails, :class => 'hold_emails', :org_id => entity.id, :contact_flag => sp.is_primary_contact, :identity => sp.id, :emails_flag => sp.hold_emails
+            %td= image_tag 'cancel.png', :id => sp.id, :class => 'sp_delete'
+
+  = text_field_tag 'new_sp', 'New Service Provider'

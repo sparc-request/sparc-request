@@ -1,0 +1,30 @@
+#requests
+  %table
+    %thead
+      %tr
+        %th SRID
+        %th Date Submitted
+        %th Requester
+        %th PI
+        %th Program/Core
+        %th Service
+    %tbody
+      - @related_service_requests.each do |rsr|
+        %tr
+          %td= full_ssr_id(rsr)
+          %td= pretty_submitted_at(rsr.service_request)
+          %td= rsr.service_request.try(:service_requester).try(:full_name)
+          %td= @protocol.try(:principal_investigators).try(:first).try(:full_name)
+          %td= pretty_program_core(rsr)
+          %td
+            = rsr.line_items.first.service.name
+            %a{:href => 'javascript: void(0)', :id => "ssr_#{rsr.id}", :class => "rsr-link"} [+]
+
+- @related_service_requests.each do |rsr|
+  .rsr-dialog{:id => "ssr_#{rsr.id}"}
+    %ul
+      - rsr.line_items.each do |li|
+        %li= li.service.display_service_name
+
+:javascript
+  $(document).ready( function() { Sparc.related_service_requests.ready(); });

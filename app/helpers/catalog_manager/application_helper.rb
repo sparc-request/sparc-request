@@ -1,0 +1,2 @@
+module CatalogManager::ApplicationHelper
+end

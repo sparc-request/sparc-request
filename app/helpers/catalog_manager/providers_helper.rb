@@ -1,0 +1,2 @@
+module CatalogManager::ProvidersHelper  
+end

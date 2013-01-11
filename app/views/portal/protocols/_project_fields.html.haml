@@ -1,0 +1,36 @@
+.user-edit-protocol-view
+  :javascript
+    $(document).ready(function() {
+    Sparc.project.ready();
+    });
+  
+  .grid_7.box
+    .info
+      .field
+        = f.label :short_title, "Short Title:*"
+        = f.text_field :short_title
+
+      .field
+        = f.label :title, "Project Title:*"
+        = f.text_field :title
+
+      .field
+        = f.label :brief_description, "Brief Description:"
+        = f.text_area :brief_description
+
+      .funded
+        .field
+          = f.label :funding_source, "Funding Source:*"
+          = f.select :funding_source, options_for_select(FUNDING_SOURCES, project.funding_source), :include_blank => "Select a Funding Source"
+
+      .indirect_cost_rate
+        = f.label :indirect_cost_rate, "Indirect Cost Rate:"
+        = f.text_field :indirect_cost_rate
+
+
+  %br.clear
+  #actions
+    = submit_tag("Save project")
+    or
+    = link_to "Cancel", root_path
+    

@@ -1,0 +1,30 @@
+= javascript_include_tag 'service_calendar'
+= javascript_include_tag 'service_calendar_logic'
+%h4 Per-Patient/Per-Visit
+- if !(@sub_service_request.per_patient_per_visit_line_items.length >= 1)
+  .blank_requests
+    There are no per-patient/per-visit requests.
+- else
+  #per_patient_per_visit_table
+    %table
+      %thead
+        %tr
+          %th{:colspan => 1}
+          %th{:colspan => 2} Add a Visit
+          %th{:colspan => 2} Delete a Visit
+          %th{:colspan => 3}
+        %tr
+          %td{:colspan => 1}
+          %td{:colspan => 2}
+            = select_tag "visit_position", visits_for_select(@sub_service_request)
+            %br
+            = link_to "Add a Visit", 'javascript:void(0);', :class => "add_visit_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id
+          %td{:colspan => 2}
+            = select_tag "delete_visit_position", visits_for_delete(@sub_service_request)
+            %br
+            = link_to "Delete a Visit", 'javascript:void(0);', :class => "delete_visit_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id
+          %td{:colspan => 3}
+    #service_calendar
+      %ul
+        %li= link_to 'Template', table_service_request_service_calendars_path(@service_request, :tab => "template", :portal => true) , :id => 'template_tab'
+        %li= link_to 'Billing Strategy', table_service_request_service_calendars_path(@service_request, :tab => "billing_strategy", :portal => true), :id => 'billing_strategy_tab'

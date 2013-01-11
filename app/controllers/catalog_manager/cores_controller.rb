@@ -29,15 +29,4 @@ class CatalogManager::CoresController < CatalogManager::AppController
     respond_with @core, :location => catalog_manager_core_path(@core)          
   end
   
-  def destroy
-    @core = Core.find(params[:id])
-    @entity = @core
-    if @core.delete
-      flash[:notice] = "#{@core.name} deleted correctly."
-    else
-      flash[:alert] = "Failed to delete #{@core.name}."
-    end
-    respond_with [:catalog_manager, @core]
-  end
-  
 end

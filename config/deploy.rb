@@ -1,5 +1,6 @@
 set :rvm_ruby_string, "ruby-1.9.3-p286@sparc"
 set :rvm_type, :system
+set :rvm_install_with_sudo, true
 
 set :default_environment, { 'BUNDLE_GEMFILE' => "DeployGemfile" }
 
@@ -21,8 +22,8 @@ ssh_options[:forward_agent] = true
 set :stages, %w(testing staging tomcat_staging production)
 set :default_stage, "testing"
 
-#before "deploy:setup", "rvm:install_rvm"
-#before "deploy:setup", "rvm:install_ruby"
+before "deploy:setup", "rvm:install_rvm"
+before "deploy:setup", "rvm:install_ruby"
 
 after "deploy:update_code", "db:symlink"
 after "deploy", "rvm:trust_rvmrc"

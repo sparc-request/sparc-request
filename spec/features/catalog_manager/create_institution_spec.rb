@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 feature 'create new institution', :js => true do
-  let_there_be_lane
+  before :each do
+    default_catalog_manager_setup
+  end
+
   scenario 'user creates a new institution' do
-    visit catalog_manager_root_path
-    sign_in('jug2', 'p4ssword')
-    
     click_link('Create New Institution')
     get_alert_window do |prompt|
       prompt.send_keys("Greatest Institution")
@@ -21,5 +21,4 @@ feature 'create new institution', :js => true do
       page.should have_content( 'Greatest Institution saved successfully' )
     end
   end
-  
 end

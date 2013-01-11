@@ -1,3 +1,5 @@
+load "deploy/assets"
+
 set :rvm_ruby_string, "ruby-1.9.3-p286"
 set :rvm_type, :system
 

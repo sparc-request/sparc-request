@@ -20,7 +20,12 @@ describe "review page" do
   describe "clicking save and exit/draft" do
     it 'Should save request as a draft', :js => true do
       find(:xpath, "//a/img[@alt='Wait_save_draft']/..").click
-      sleep 1
+
+      # TODO: uncommenting this results in '$ is not defined', but
+      # ideally we do need to wait for ajax requests to complete before
+      # reading from the database
+      # wait_for_javascript_to_finish
+
       service_request_test = ServiceRequest.find(service_request.id)
       service_request_test.status.should eq("draft")
     end
@@ -29,7 +34,7 @@ describe "review page" do
   describe "clicking submit" do
     it 'Should submit the page', :js => true do
       find(:xpath, "//a/img[@alt='Confirm_request']/..").click
-      sleep 1
+      wait_for_javascript_to_finish
       service_request_test = ServiceRequest.find(service_request.id)
       service_request_test.status.should eq("submitted")
     end

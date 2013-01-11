@@ -378,6 +378,10 @@ a.save-option{
   background: #E8E8E8;
 }
 
+.line-items .line_item:nth-child(even) {
+  background: #E8E8E8;
+}
+
 .cart-view .remove-button {
   float: right;
 }

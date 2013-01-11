@@ -302,12 +302,12 @@ class Identity < ActiveRecord::Base
     arr = []
     arr << self.super_users.map(&:organization)
     arr << self.service_providers.map(&:organization)
-    arr = arr.flatten.uniq
+    arr = arr.flatten.compact.uniq
 
     arr.each do |org|
       orgs << org.all_children
     end
-    orgs.flatten.uniq
+    orgs.flatten.compact.uniq
   end
 
   # Collects all workflow states that are available to the given user based on what organizations

@@ -75,14 +75,33 @@ background-color: #8dbdd8;
 }
 
 .admin-right-dashboard {
-  float: right;
-  display: inline;
-  width: 243px;
-  padding: 14px 0 14px 0px;
+  .user-information-title {
+    margin-right: 0;
+  }
+  .user-information-body {
+    width: auto;
+    margin: 0;
+    float: none;
+  }
+  // float: right;
+  // display: inline;
+  // width: 243px;
+  // padding: 14px 0 14px 0px;
+  p {
+    display: inline-block;
+  }
+}
+
+.admin-index-ssr-list {
+  display: inline-block;
+  width: 100%;
+  .admin-index-ssr-table {
+    padding: 15px 10px;
+  }
 }
 
 .admin-buttons {
-  margin-top: 8px
+  float: right;
 }
 
 .services_first { list-style: none; }

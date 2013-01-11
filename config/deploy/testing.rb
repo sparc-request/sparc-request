@@ -14,12 +14,4 @@ role :db, domain, :primary => true
 before "deploy:setup", "rvm:install_rvm"
 before "deploy:setup", "rvm:install_ruby"
 
-after "deploy", "rvm:trust_rvmrc"
-
-namespace :rvm do
-  task :trust_rvmrc do
-    run "rvm rvmrc trust #{release_path}"
-  end
-end
-
 require 'rvm/capistrano'

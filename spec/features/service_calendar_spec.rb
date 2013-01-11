@@ -207,7 +207,7 @@ describe "service calendar" do
     end
 
     describe "quantity tab" do
-      it "should add all billing quantities together", :js => true, :firebug => true do
+      it "should add all billing quantities together", :js => true do
         click_link "billing_strategy_tab"
         wait_for_javascript_to_finish
 

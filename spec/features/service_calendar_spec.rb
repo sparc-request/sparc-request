@@ -54,16 +54,19 @@ describe "service calendar" do
         it "should check all visits", :js => true do
           remove_from_dom(".total_#{line_item2.id}")
           click_link "check_row_#{line_item2.id}_template"
+          wait_for_javascript_to_finish
           find(".total_#{line_item2.id}").should have_exact_text('$300.00') # Probably a better way to do this. But this should be the 10 visits added together.
         end
 
         it "should uncheck all visits", :js => true do
           remove_from_dom(".total_#{line_item2.id}")
           click_link "check_row_#{line_item2.id}_template"
+          wait_for_javascript_to_finish
           find(".total_#{line_item2.id}").should have_exact_text('$300.00') # this is here to wait for javascript to finish
 
           remove_from_dom(".total_#{line_item2.id}")
           click_link "check_row_#{line_item2.id}_template"
+          wait_for_javascript_to_finish
           find(".total_#{line_item2.id}").should have_exact_text('$0.00') # Probably a better way to do this.
         end
       end
@@ -114,8 +117,10 @@ describe "service calendar" do
       describe "selecting check all row button" do
         it "should overwrite the quantity in research billing box", :js => true do
           fill_in "visits_#{line_item2.visits[1].id}_research_billing_qty", :with => 10
+          wait_for_javascript_to_finish
           click_link "check_row_#{line_item2.id}_billing_strategy"
-          find("#visits_#{line_item2.visits[1].id}_research_billing_qty").value().should eq("10")
+          wait_for_javascript_to_finish
+          find("#visits_#{line_item2.visits[1].id}_research_billing_qty").value().should eq("1")
         end
       end
 
@@ -127,6 +132,7 @@ describe "service calendar" do
           page.execute_script("$('#visits_#{line_item2.visits[1].id}_research_billing_qty').remove()")
 
           click_link "check_row_#{line_item2.id}_billing_strategy"
+          wait_for_javascript_to_finish
 
           find("#visits_#{line_item2.visits[1].id}_research_billing_qty").set("")
           find("#visits_#{line_item2.visits[1].id}_research_billing_qty").click()
@@ -149,6 +155,7 @@ describe "service calendar" do
           page.execute_script("$('.visit_column_2.max_direct_per_patient').remove()")
 
           click_link "check_row_#{line_item2.id}_billing_strategy"
+          wait_for_javascript_to_finish
 
           find("#visits_#{line_item2.visits[1].id}_research_billing_qty").set("")
           find("#visits_#{line_item2.visits[1].id}_research_billing_qty").click()
@@ -183,6 +190,7 @@ describe "service calendar" do
           # Now check the row; the fields we just deleted will be
           # re-created
           click_link "check_row_#{line_item2.id}_billing_strategy"
+          wait_for_javascript_to_finish
 
           remove_from_dom('.pp_max_total_direct_cost')
 
@@ -207,7 +215,7 @@ describe "service calendar" do
     end
 
     describe "quantity tab" do
-      it "should add all billing quantities together", :js => true, :firebug => true do
+      it "should add all billing quantities together", :js => true do
         click_link "billing_strategy_tab"
         wait_for_javascript_to_finish
 

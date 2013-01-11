@@ -7,7 +7,7 @@
     - unless organization.services.empty?
       .program-services
         - organization.services.order('`order`').each do |service|
-          - if service.is_available?
+          - if service.is_available? or service.is_available.nil?
             = render :partial => 'service', :locals => {:service => service, :service_request => service_request}
     %br
     - unless organization.cores.empty?
@@ -17,7 +17,7 @@
             = link_to core.name, "#"
           .core_view
             - core.services.order('`order`').each do |service|
-              - if service.is_available?
+              - if service.is_available? or service.is_available.nil?
                 = render :partial => 'service', :locals => {:service => service, :service_request => service_request}
 
 

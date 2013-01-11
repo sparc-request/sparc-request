@@ -334,6 +334,11 @@ class ServiceRequestsController < ApplicationController
     else
       service = Service.find id
 
+      unless service.is_one_time_fee?
+        @service_request.insure_visit_count
+        @service_request.insure_subject_count
+      end
+
       # add service to line items
       new_line_item = @service_request.line_items.create(:service_id => service.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum, :subject_count => @service_request.subject_count)
       Visit.bulk_create(@service_request.visit_count, :line_item_id => new_line_item.id) unless @service_request.visit_count.blank?

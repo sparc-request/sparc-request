@@ -1,5 +1,3 @@
-= button_to 'Delete', catalog_manager_program_path(@program), :remote => true, :method => 'delete', :class => 'delete_button', :confirm => "Are you sure you want to delete the program '#{@program.name}'?", :style => 'display:none;', :id => 'delete_button'
-
 = form_for @program, :url => catalog_manager_program_path, :remote => true, :id => 'entity_form' do |f|
   .errorExplanation#errorExplanation{:style => 'display:none;'}
 
@@ -11,7 +9,6 @@
       %legend Actions    
       = f.submit "Save", :id => 'save_button', :class => 'btn save_button provider_program_core_save'
       %img.spinner{:src => '/assets/catalog_manager/spinner_small.gif'}
-      %label.btn{:for => 'delete_button'} Delete
 
     %br
 
@@ -100,7 +97,6 @@
       %legend Actions
       = f.submit "Save", :id => 'save_button', :class => 'save_button btn provider_program_core_save'
       %img.spinner{:src => '/assets/catalog_manager/spinner_small.gif'}
-      %label.btn{:for => 'delete_button'} Delete
       .ui-corner-all.blank_field_errors Effective Date, Display Dates, and Rates are required on all pricing setups.
       
 .blank_pricing_setup

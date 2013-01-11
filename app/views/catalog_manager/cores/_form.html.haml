@@ -1,5 +1,3 @@
-= button_to 'Delete', catalog_manager_core_path(@core), :remote => true, :method => 'delete', :class => 'delete_button', :confirm => "Are you sure you want to delete the core '#{@core.name}'?", :style => 'display:none;', :id => 'delete_button'
-
 = form_for @core, :url => catalog_manager_core_path, :remote => true, :id => 'entity_form' do |f|
   = hidden_field_tag 'org_unit[id]', @core.id # added for autocomplete to use
   = hidden_field_tag 'core[id]', @core.id
@@ -10,7 +8,6 @@
       %legend Actions   
       = f.submit 'Save', :id => 'save_button', :class => 'save_button btn provider_program_core_save'
       %img.spinner{:src => '/assets/catalog_manager/spinner_small.gif'}
-      %label.btn{:for => 'delete_button'} Delete  
 
     %br
 
@@ -88,7 +85,6 @@
       %legend Actions
       = f.submit 'Save', :id => 'save_button', :class => 'save_button btn provider_program_core_save'
       %img.spinner{:src => '/assets/catalog_manager/spinner_small.gif'}
-      %label.btn{:for => 'delete_button'} Delete
       .ui-corner-all.blank_field_errors Effective Date, Display Dates, and Rates are required on all pricing setups.
 
 :javascript

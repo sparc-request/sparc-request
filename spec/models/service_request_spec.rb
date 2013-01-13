@@ -165,17 +165,50 @@ describe 'ServiceRequest' do
   describe "cost calculations" do
 
     let!(:core)            { FactoryGirl.create(:core) }
+    let!(:pricing_setup)   { FactoryGirl.create(:pricing_setup, organization_id: core.id) } 
     let!(:service_request) { FactoryGirl.create(:service_request, subject_count: 5, visit_count: 5) }
+    let!(:ssr)             { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
     let!(:service)         { FactoryGirl.create(:service, organization_id: core.id) }
-    let!(:line_item)       { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service.id) }
     let!(:pricing_map)     { FactoryGirl.create(:pricing_map, service_id: service.id) }
-    let!(:pricing_setup)   { FactoryGirl.create(:pricing_setup, )} 
+    let!(:line_item)       { FactoryGirl.create(:line_item, service_request_id: service_request.id, sub_service_request_id: ssr.id, service_id: service.id, subject_count: 5) }
+    let!(:line_item2)      { FactoryGirl.create(:line_item, service_request_id: service_request.id, sub_service_request_id: ssr.id, service_id: service.id, subject_count: 5) }
+    let!(:visit)           { FactoryGirl.create(:visit, line_item_id: line_item.id, research_billing_qty: 5) }
+    let!(:visit2)          { FactoryGirl.create(:visit, line_item_id: line_item2.id, research_billing_qty: 5) }
 
     before :each do
       @protocol = Study.create(FactoryGirl.attributes_for(:protocol))
-      @protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 100)
+      @protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 200)
       @protocol.save :validate => false
       service_request.update_attributes(protocol_id: @protocol.id)
+      service_request.reload
+    end
+
+    context "total direct cost per patient" do
+
+      it "should return the sum of all line items visit-based direct cost" do
+        service_request.total_direct_costs_per_patient.should eq(5000)
+      end
+    end
+
+    context "total indirect cost per patient" do
+
+      it "should return the sum of all line items visit-based indirect cost" do
+        service_request.total_indirect_costs_per_patient.should eq(10000)
+      end
+    end
+
+    context "total costs per patient" do
+
+      it "should return the total of the direct and indirect costs" do
+        service_request.total_costs_per_patient.should eq(15000)
+      end
+    end
+
+    context "maximum direct costs per patient" do
+
+      it "should return the maximum direct cost" do
+        service_request.maximum_direct_costs_per_patient.should eq(1000)
+      end
     end
   end
 end

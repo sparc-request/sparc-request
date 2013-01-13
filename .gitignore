@@ -43,4 +43,5 @@ import/checkpoints
 import/config/alfresco.yml
 import/*.sql
 import/*.json
+import/documents.tar.gz
 

@@ -1,4 +1,4 @@
-class Pricingsetup::ObisEntitySerializer
+class PricingSetup::ObisEntitySerializer
   def as_json(pricing_setup, options = nil)
     h = {
       'display_date' => pricing_setup.display_date.try(:strftime, '%Y-%m-%d'),

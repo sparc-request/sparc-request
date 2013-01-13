@@ -40,7 +40,7 @@ public/portal
 public/catalog_manager
 
 import/checkpoints
-import/entities.json
 import/config/alfresco.yml
-
+import/*.sql
+import/*.json
 

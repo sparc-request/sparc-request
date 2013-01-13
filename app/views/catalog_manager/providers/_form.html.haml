@@ -101,7 +101,7 @@
       %legend Actions
       = f.submit 'Save', :id => 'save_button', :class => 'save_button btn provider_program_core_save'
       %img.spinner{:src => '/assets/catalog_manager/spinner_small.gif'}
-      .ui-corner-all.blank_field_errors Effective Date, Display Dates, and Rates are required on all pricing setups.
+      .ui-corner-all.blank_field_errors Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups.
 
 .blank_pricing_setup
   = render 'catalog_manager/shared/pricing_setup', :pricing_setup_disabled => false, :can_edit_historical_data => @user.can_edit_historical_data_for?(@provider), :entity => @provider

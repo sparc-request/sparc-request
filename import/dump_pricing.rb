@@ -22,11 +22,13 @@ ActiveRecord::Base.establish_connection(
 
 obisentity = ObisEntity.new
 
-pricing_setups = obisentity.get_all('pricing_setup')
-pricing_maps = obisentity.get_all('pricing_maps')
-json = [ pricing_setups, pricing_maps ].to_json
+pricing_setups = JSON.parse(obisentity.get_all('pricing_setup'))
+pricing_maps = JSON.parse(obisentity.get_all('pricing_maps'))
 
-File.open('pricing.json', 'w') do |out|
-  out.puts json
+File.open('pricing_setups.json', 'w') do |out|
+  out.puts pricing_setups.to_json
 end
 
+File.open('pricing_maps.json', 'w') do |out|
+  out.puts pricing_maps.to_json
+end

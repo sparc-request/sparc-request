@@ -42,6 +42,12 @@ class PricingMap::ObisEntitySerializer
         :other_rate                 => h['other_rate'],
         :exclude_from_indirect_cost => h['exclude_from_indirect_cost'])
   end
+
+  def self.create_from_json(entity_class, h, options = nil)
+    obj = entity_class.create()
+    obj.update_from_json(h, options)
+    return obj
+  end
 end
 
 class PricingMap

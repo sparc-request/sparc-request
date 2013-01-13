@@ -41,9 +41,9 @@
     %table
       %tbody
         %tr.federal_row
-          %th Federal
+          %th Federal*
           %td{:class => "#{pricing_setup_disabled ? 'disabled_inputs' : ''}"}
-            = text_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][federal]", pricing_setup.try(:[], 'federal'), :display => "Federal", :class => 'federal_percentage_field percentage_field', :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
+            = text_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][federal]", pricing_setup.try(:[], 'federal'), :display => "Federal", :class => "federal_percentage_field percentage_field #{pricing_setup ? 'validate' : ''}", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
             = '%'
         %tr
           %th &nbsp;
@@ -53,17 +53,17 @@
         %tr.corporate_row
           %th Corporate*
           %td{:class => "#{pricing_setup_disabled ? 'disabled_inputs' : ''}"}
-            = text_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][corporate]", pricing_setup.try(:[], 'corporate'), :display => "Corporate", :class => 'corporate_percentage_field percentage_field', :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
+            = text_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][corporate]", pricing_setup.try(:[], 'corporate'), :display => "Corporate", :class => "corporate_percentage_field percentage_field #{pricing_setup ? 'validate' : ''}", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
             = '%'
         %tr.other_row
           %th Other*
           %td{:class => "#{pricing_setup_disabled ? 'disabled_inputs' : ''}"}
-            = text_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][other]", pricing_setup.try(:[], 'other'), :display => "Other", :class => 'other_percentage_field percentage_field', :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
+            = text_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][other]", pricing_setup.try(:[], 'other'), :display => "Other", :class => "other_percentage_field percentage_field #{pricing_setup ? 'validate' : ''}", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
             = '%'
         %tr.member_row
           %th Member*
           %td{:class => "#{pricing_setup_disabled ? 'disabled_inputs' : ''}"}
-            = text_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][member]", pricing_setup.try(:[], 'member'), :display => "Member", :class => 'member_percentage_field percentage_field', :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
+            = text_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][member]", pricing_setup.try(:[], 'member'), :display => "Member", :class => "member_percentage_field percentage_field #{pricing_setup ? 'validate' : ''}", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled
             = '%'
         %tr
           %th &nbsp;

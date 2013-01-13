@@ -69,6 +69,7 @@ $(document).ready ->
     pricing_setup_form.find('.effective_date').addClass('validate')
     pricing_setup_form.find('.display_date').addClass('validate')
     pricing_setup_form.find('.rate').addClass('validate')
+    pricing_setup_form.find('.percentage_field').addClass('validate')
     pricing_setup_form.find('.pricing_setup_form:last').append('<input name="pricing_setups[blank_pricing_setup][newly_created]" type="hidden" value="true">')
     Sparc.services.create_accordion('.pricing_setup_accordion')
     Sparc.config.setDatePicker()

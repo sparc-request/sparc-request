@@ -57,7 +57,7 @@ describe 'as a user on catalog page' do
     page.execute_script %Q{ $(".save_button").click() }
     wait_for_javascript_to_finish
     
-    page.should have_content "Effective Date, Display Dates, and Rates are required on all pricing setups."        
+    page.should have_content "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."        
   end
   
   it 'should display an error when rates are less than the federal rate in the percent of fee section', :js => true do

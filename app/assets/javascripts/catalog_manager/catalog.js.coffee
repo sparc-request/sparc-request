@@ -268,7 +268,7 @@ $ ->
     Sparc.catalog.submitRateChanges(entity_id, percent_of_change, effective_date, display_date)
   )
 
-  $('.display_date, .effective_date, .rate').live('change', ->
+  $('.display_date, .effective_date, .rate, .percentage_field').live('change', ->
     validate_dates_and_rates()
   )
 

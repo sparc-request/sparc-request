@@ -164,11 +164,11 @@ $ ->
 
   $('.rs_delete').live 'click', ->
     if confirm 'Are you sure you want to remove this Related Service?'
-      $.post '/catalog_manager/services/disassociate', {related_service: $(this).attr('id'), service: $(this).attr('original_service'), rel_id: $(this).attr('rel_id')}, (data) ->
+      $.post '/catalog_manager/services/disassociate', {service_relation_id: $(this).data('service_relation_id')}, (data) ->
         $('#rs_info').html(data)
 
   $('.optional').live 'click', ->
-    $.post '/catalog_manager/services/set_optional', {related_service: $(this).attr('id'), service: $(this).attr('original_service'), rel_id: $(this).attr('rel_id'), optional_flag: $(this).attr('optional_flag')}, (data) ->
+    $.post '/catalog_manager/services/set_optional', {service_relation_id: $(this).attr('id'), optional: $(this).val()}, (data) ->
         $('#rs_info').html(data)
 
   # submission e-mails

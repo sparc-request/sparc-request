@@ -16,6 +16,9 @@ $(document).ready ->
     $('.custom_error_field').removeClass('custom_error_field')
     
   cannot_contain_letters = (selector) ->
+    $(selector).val().match(/^[0-9]\d*(\.\d+)?$/) || [null]
+
+  cannot_contain_letters_or_zero = (selector) ->
     $(selector).val().match(/^[1-9]\d*(\.\d+)?$/) || [null]
   
   validate_numbers_only = (selector) ->
@@ -27,8 +30,8 @@ $(document).ready ->
         
   validate_percentages_to_federal_percentage = (selector, federal) ->
     unless $(selector).val() == ''  
-      validated_number = cannot_contain_letters(selector) 
-      if parseFloat(validated_number[0]) < parseFloat(federal)      
+      validated_number = cannot_contain_letters_or_zero(selector) 
+      if parseFloat(validated_number[0]) < parseFloat(federal)
         add_error(selector, "#{$(selector).attr('display')} percentage must be >= to the Federal percentage.")
         $(selector).val('')        
 

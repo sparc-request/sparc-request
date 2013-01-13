@@ -13,8 +13,6 @@ ActiveRecord::Base.establish_connection(
     :password => 'sparc',
 ) 
 
-$obisentity = ObisEntity.new
-
 def is_study(entity, entity_type)
   return entity_type == 'projects' && entity['attributes']['type'] == 'study'
 end
@@ -30,13 +28,13 @@ pricing_maps = JSON.parse(File.read('pricing_maps.json'))
 
 ActiveRecord::Base.transaction do
   pricing_setups.each do |entity|
-    $obisentity.post_one('pricing_setup', entity)
+    obj = PricingSetup.create_from_json(entity, :jsontype => :pricing)
   end
 end
 
 ActiveRecord::Base.transaction do
   pricing_maps.each do |entity|
-    $obisentity.post_one('pricing_map', entity)
+    obj = PricingMap.create_from_json(entity, :jsontype => :pricing)
   end
 end
 

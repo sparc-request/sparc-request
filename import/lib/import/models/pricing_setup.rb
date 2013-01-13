@@ -34,6 +34,20 @@ class PricingSetup::ObisEntitySerializer
         :investigator_rate_type => h['investigator_rate_type'],
         :internal_rate_type => h['internal_rate_type'])
   end
+end
+
+class PricingSetup::PricingSerializer < PricingSetup::ObisEntitySerializer
+  def as_json(pricing_setup, options = nil)
+    h = super(pricing_setup, options)
+    h['organization_id'] = pricing_setup.organization.obisid
+    return h
+  end
+
+  def update_from_json(pricing_setup, h, options = nil)
+    super(pricing_setup, h, options)
+    pricing_setup.update_attributes!(
+        organization_id: Organization.find_by_obisid(h['organization_id']).id)
+  end
 
   def self.create_from_json(entity_class, h, options = nil)
     obj = entity_class.create()
@@ -45,5 +59,6 @@ end
 class PricingSetup
   include JsonSerializable
   json_serializer :obisentity, ObisEntitySerializer
+  json_serializer :pricing, PricingSerializer
 end
 

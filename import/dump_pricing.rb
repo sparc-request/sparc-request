@@ -20,15 +20,13 @@ ActiveRecord::Base.establish_connection(
     :password => 'sparc'
 ) 
 
-obisentity = ObisEntity.new
-
-pricing_setups = JSON.parse(obisentity.get_all('pricing_setup'))
-pricing_maps = JSON.parse(obisentity.get_all('pricing_maps'))
+pricing_setups = PricingSetup.all.to_json(:jsontype => :pricing)
+pricing_maps = PricingMap.all.to_json(:jsontype => :pricing)
 
 File.open('pricing_setups.json', 'w') do |out|
-  out.puts pricing_setups.to_json
+  out.puts pricing_setups
 end
 
 File.open('pricing_maps.json', 'w') do |out|
-  out.puts pricing_maps.to_json
+  out.puts pricing_maps
 end

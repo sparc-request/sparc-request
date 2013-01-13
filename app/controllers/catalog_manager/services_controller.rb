@@ -136,60 +136,44 @@ class CatalogManager::ServicesController < CatalogManager::AppController
   end 
 
   def associate
-    service_id         = params["service"]
-    related_service_id = params["related_service"]
 
-    os = Service.find service_id
-    rs = Service.find related_service_id
+    service = Service.find params["service"]
+    related_service = Service.find params["related_service"]
 
-    if not os.related_services or (os.related_services and not os.related_services.map{|x| x['service'].id}.include? related_service_id)
-      os.create_relationship_to rs.id, 'associated_service', {"optional" => false}
+    if not service.related_services.include? related_service
+      service.service_relations.create :related_service_id => related_service.id, :optional => false
     end
 
-    render :partial => 'catalog_manager/shared/related_services', :locals => {:entity => os}
+    render :partial => 'catalog_manager/shared/related_services', :locals => {:entity => service}
   end
 
   def disassociate
-    service_id = params["service"]
-    rel_id     = params["rel_id"]
+    service_relation = ServiceRelation.find params[:service_relation_id]
+    service = service_relation.service
 
-    os = Service.find service_id
+    service_relation.destroy
 
-    os.destroy_relationship_with rel_id
-
-    render :partial => 'catalog_manager/shared/related_services', :locals => {:entity => os}
+    render :partial => 'catalog_manager/shared/related_services', :locals => {:entity => service}
   end
 
   def set_optional
-    rel_id        = params["rel_id"]
-    optional_flag = params["optional_flag"]
+    service_relation = ServiceRelation.find params[:service_relation_id]
+    service = service_relation.service
 
-    optional_flag = optional_flag == "true"
-
-    atts = {:optional => optional_flag == false}
-
-    @rel = {
-      'relationship_type' => 'associated_service',
-      'attributes'        => atts,
-      'from'              => params["service"],
-      'to'                => params["related_service"]
-    }
-
-    os = Service.find params["service"]
-
-    os.update_relationship rel_id, @rel
-
-    render :partial => 'catalog_manager/shared/related_services', :locals => {:entity => os}
+    service_relation.update_attribute(:optional, params[:optional])
+    render :partial => 'catalog_manager/shared/related_services', :locals => {:entity => service}
   end
 
   def search
-    services = Service.search params[:term]
+    term = params[:term].strip
+    services = Service.where("name LIKE '%#{term}%' OR abbreviation LIKE '%#{term}%' OR cpt_code LIKE '%#{term}%'")
+
     reformatted_services = []
     services.each do |service|
-      reformatted_services << {"label" => service.display_name, "value" => service.name, "id" => service.id}
+      reformatted_services << {"label" => service.display_service_name, "value" => service.name, "id" => service.id}
     end
-    respond_with [:catalog_manager, reformatted_services.to_json]
-    #respond_with [{"label" => "Andrew", "value" => "Cates", "id" => 123}].to_json
+
+    render :json => reformatted_services.to_json
   end
   
   def get_updated_rate_maps

@@ -271,12 +271,12 @@ class ServiceRequestsController < ApplicationController
 
     # send e-mail to all service providers
     if @sub_service_request # only notify the service providers for this sub service request
-      @sub_service_request.organization.service_providers.where(ServiceProvider.arel_table[:hold_emails].not_eq(true)).each do |service_provider|
+      @sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
         Notifier.notify_service_provider(service_provider, @service_request, xls).deliver
       end
     else
       @service_request.sub_service_requests.each do |sub_service_request|
-        sub_service_request.organization.service_providers.where(ServiceProvider.arel_table[:hold_emails].not_eq(true)).each do |service_provider|
+        sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
           Notifier.notify_service_provider(service_provider, @service_request, xls).deliver
         end
       end

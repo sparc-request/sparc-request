@@ -37,6 +37,18 @@ describe 'Directory' do
   end
 
   describe 'create_or_update_database_from_ldap' do
+    it 'should do nothing if ldap_results is nil' do
+      orig_count = Identity.count
+      Directory.create_or_update_database_from_ldap(nil, Identity.all)
+      Identity.count.should eq orig_count
+    end
+
+    it 'should do nothing if ldap_results is an empty array' do
+      orig_count = Identity.count
+      Directory.create_or_update_database_from_ldap([], Identity.all)
+      Identity.count.should eq orig_count
+    end
+
     it 'should create identities that are not already there' do
       r = OpenStruct.new(
           uid:       [ 'foo' ],

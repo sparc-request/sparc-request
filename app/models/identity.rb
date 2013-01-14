@@ -62,10 +62,6 @@ class Identity < ActiveRecord::Base
   validates_presence_of :last_name
   validates_presence_of :first_name
   validates_presence_of :ldap_uid
-  validates_presence_of :obisid
-
-  # TODO: :on => :create seems to be getting ignored
-  before_validation :assign_obisid, :on => :create
 
   ###############################################################################
   ############################## HELPER METHODS #################################

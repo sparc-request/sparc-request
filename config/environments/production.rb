@@ -66,4 +66,7 @@ SparcRails::Application.configure do
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
   config.action_mailer.default_url_options = { :host => 'sparc.musc.edu' }
 
+  config.middleware.use ExceptionNotifier,
+    sender_address: 'no-reply@musc.edu',
+    exception_recipients: ['catesa@musc.edu', 'scoma@musc.edu', 'kelsey@musc.edu', 'johstu@musc.edu', 'leonarjp@musc.edu', 'brannan@musc.edu']
 end

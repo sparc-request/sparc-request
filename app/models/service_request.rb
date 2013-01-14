@@ -76,8 +76,6 @@ class ServiceRequest < ActiveRecord::Base
 
   alias_attribute :service_request_id, :id
 
-  before_validation :assign_obisid, :on => :create
-
   after_save :fix_missing_visits
 
   def init

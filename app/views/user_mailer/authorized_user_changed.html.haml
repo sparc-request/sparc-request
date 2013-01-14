@@ -1,4 +1,4 @@
-%p= "Dear #{@user.identity.try(:full_name)},"
+%p= "Dear #{@send_to.try(:full_name)},"
 %p
   Authorized Users have been edited or added in
   = link_to('SPARC', root_url)

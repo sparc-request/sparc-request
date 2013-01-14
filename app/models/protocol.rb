@@ -60,8 +60,6 @@ class Protocol < ActiveRecord::Base
   accepts_nested_attributes_for :affiliations, :allow_destroy => true
   accepts_nested_attributes_for :project_roles, :allow_destroy => true
 
-  before_validation :assign_obisid, :on => :create
-
   validates :short_title, :presence => true
   validates :title, :presence => true
   validate  :requester_included, :on => :create

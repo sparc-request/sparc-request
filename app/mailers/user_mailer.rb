@@ -2,39 +2,27 @@ class UserMailer < ActionMailer::Base
   default :from => "no-reply@musc.edu"
 
   def authorized_user_changed(user, protocol)
-    @user = user
+    @send_to = user
     @protocol = protocol
 
-    send_message()
-    
+    send_message('SPARC Authorized Users')
   end
 
   def notification_received(user)
-    @user = user
+    @send_to = user
 
-    send_message()
+    send_message('New SPARC Notification')
   end
 
   private
 
-  def send_message
-    case Rails.env
-    when 'development'
-      @portal_host = "localhost:3000"
-      mail(:to => 'scoma@musc.edu', :subject => "SPARC Authorized Users")
-    when 'staging'
-      @portal_host = "sparc-stg.musc.edu/user_portal"
-      mail(:to => 'glennj@musc.edu', :subject => "SPARC Authorized Users")
-    when 'testing'
-      @portal_host = "sparc-test.musc.edu/portal"
-      mail(:to => 'glennj@musc.edu', :subject => "SPARC Authorized Users")
-    when 'training'
-      @portal_host = "sparc-trn.musc.edu/portal"
-      mail(:to => 'glennj@musc.edu', :subject => "SPARC Authorized Users")
-    else
-      @portal_host = "sparc.musc.edu/portal"
-      mail(:to => @user.email, :subject => "SPARC Authorized Users")
-    end
+  def send_message subject
+    email = Rails.env == 'production' ? @send_to.email : DEFAULT_MAIL_TO
+    subject = Rails.env == 'production' ? subject : "[#{Rails.env.capitalize} - EMAIL TO #{@send_to.email}] #{subject}"
+
+    @portal_host = USER_PORTAL_LINK
+   
+    mail(:to => email, :subject => subject)
   end
 
 end

@@ -39,8 +39,6 @@ class Organization < ActiveRecord::Base
   accepts_nested_attributes_for :pricing_setups
   accepts_nested_attributes_for :submission_emails
 
-  before_validation :assign_obisid, :on => :create
-
   ###############################################################################
   ############################# HIERARCHY METHODS ###############################
   ###############################################################################

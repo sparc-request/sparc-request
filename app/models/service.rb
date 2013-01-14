@@ -35,8 +35,6 @@ class Service < ActiveRecord::Base
   attr_accessible :revenue_code
   attr_accessible :organization_id
 
-  before_validation :assign_obisid, :on => :create
-  
   validate :validate_pricing_maps_present
   
   ###############################################

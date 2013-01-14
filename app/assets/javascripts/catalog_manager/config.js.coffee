@@ -26,11 +26,11 @@ $ ->
           # button to prevent the issue.
           callback = ->
             buttonPane = $(input).datepicker( "widget" ).find( ".ui-datepicker-buttonpane" )
-            buttonPane.find('button.ui-datepicker-current').hide()          
+            buttonPane.find('button.ui-datepicker-current').hide()
             $( "<button>", {
               class: "ui-state-default ui-priority-primary ui-corner-all"
               text: "Clear"
-              click: -> 
+              click: ->
                 $.datepicker._clearDate(input)
             }).appendTo(buttonPane)
           setTimeout( callback, 1)

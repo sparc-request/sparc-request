@@ -23,7 +23,7 @@
           %td 
             .export_to_excel_button= link_to "Export", service_request_path(@sub_service_request.service_request, :format => :xlsx)
           %td
-            .delete-ssr-button{:'data-sub_service_request_id' => @sub_service_request.id} Delete
+            .delete-ssr-button= link_to "Delete", portal_admin_sub_service_request_path(@sub_service_request_id), :method => :delete, :confirm => true
 
 #tabs
   %ul

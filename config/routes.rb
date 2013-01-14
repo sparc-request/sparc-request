@@ -157,42 +157,41 @@ SparcRails::Application.routes.draw do
       get :download
     end
 
-    resources :admin do
+    resource :admin do
+      resources :sub_service_requests do
+        member do
+          put :update_from_fulfillment
+          post :add_line_item
+          post :new_document
+          post :add_note
+        end
+      end
+
+      resources :subsidies do
+        member do
+          put :update_from_fulfillment
+        end
+      end
+
+      resources :fulfillments do
+        member do
+          put :update_from_fulfillment
+        end
+      end
+
+      resources :line_items do
+        member do
+          put :update_from_fulfillment
+        end
+      end
+
+      resources :visits do
+        member do
+          put :update_from_fulfillment
+        end
+      end
+
       collection do
-
-        resources :sub_service_requests do
-          member do
-            put :update_from_fulfillment
-            post :add_line_item
-            post :new_document
-            post :add_note
-          end
-        end
-
-        resources :subsidies do
-          member do
-            put :update_from_fulfillment
-          end
-        end
-
-        resources :fulfillments do
-          member do
-            put :update_from_fulfillment
-          end
-        end
-
-        resources :line_items do
-          member do
-            put :update_from_fulfillment
-          end
-        end
-
-        resources :visits do
-          member do
-            put :update_from_fulfillment
-          end
-        end
-
         put "/visits/:id/update_from_fulfillment" => "visits#update_from_fulfillment"
         put "/service_requests/:id/update_from_fulfillment" => "service_requests#update_from_fulfillment"
         post "/service_requests/:id/add_per_patient_per_visit_visit" => "service_requests#add_per_patient_per_visit_visit"

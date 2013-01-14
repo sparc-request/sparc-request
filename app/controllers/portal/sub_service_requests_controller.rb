@@ -184,8 +184,8 @@ class Portal::SubServiceRequestsController < Portal::BaseController
 
   def destroy
     @sub_service_request = SubServiceRequest.find(params[:id])
-    if @sub_service_request.delete
-    end
+    @sub_service_request.destroy
+    redirect_to "/portal/admin"
   end
 
 end

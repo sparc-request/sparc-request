@@ -317,7 +317,7 @@ class Identity < ActiveRecord::Base
   def available_workflow_states
     available_statuses = ['Draft', 'Submitted', 'In Process', 'Complete', 'Awaiting PI Approval', 'On Hold', 'CTRC Review', 'CTRC Approved']
     # IF ID OF CTRC EVER CHANGES THIS NEEDS TO BE CHANGED
-    ctrc = Organization.find(5)
+    ctrc = Organization.find(14)
     if ctrc.service_providers.map(&:identity_id).include?(self.id) || ctrc.super_users.map(&:identity_id).include?(self.id)
       available_statuses
     else

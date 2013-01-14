@@ -3,7 +3,8 @@ describe 'Directory' do
     # no tests for search it's the top-level method
   end
 
-  let!(:id1) { FactoryGirl.create(ldap_uid: 'mobama', email: 'mo_bama@whitehouse.gov', last_name: 'Obama', first_name: 'Mo' }
+  let!(:id1) { FactoryGirl.create(ldap_uid: 'mobama', email: 'mo_bama@whitehouse.gov', last_name: 'Obama', first_name: 'Mo') }
+  let!(:id2) { FactoryGirl.create(ldap_uid: 'georgec', email: 'castanza@uranus.planet', last_name: 'Pluto', first_name: 'Isaplanettoo') }
 
   describe 'search_database' do
     it 'should search the ldap uid field' do
@@ -34,10 +35,14 @@ describe 'Directory' do
 
   describe 'ldap_entries_not_in_database' do
     it 'should work' do
+      ldap_results = [
+        
+      ]
     end
   end
 
   describe 'create_identities' do
+
   end
 end
 

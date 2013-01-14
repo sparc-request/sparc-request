@@ -98,9 +98,15 @@ describe "Identity" do
     let!(:catalog_manager2)     {FactoryGirl.create(:catalog_manager, identity_id: user.id, organization_id: institution.id)}
     let!(:super_user)           {FactoryGirl.create(:super_user, identity_id: user.id, organization_id: institution.id)}
     let!(:service_provider)     {FactoryGirl.create(:service_provider, identity_id: user.id, organization_id: institution.id)}
-    let!(:project_role)         {FactoryGirl.create(:project_role, identity_id: user.id, project_rights: 'approve')}
-    let!(:service_request)      {FactoryGirl.create(:service_request, status: 'draft', service_requester_id: user.id)}
-    let!(:service_request2)     {FactoryGirl.create(:service_request, status: 'submitted', service_requester_id: user.id)}
+    
+    let!(:project) {
+      project = Project.create(FactoryGirl.attributes_for(:protocol))
+      project.save!(validate: false)
+      project
+    }
+    let!(:project_role)         {FactoryGirl.create(:project_role, identity_id: user.id, protocol_id: project.id, project_rights: 'approve')}
+    let!(:service_request)      {FactoryGirl.create(:service_request, status: 'draft', service_requester_id: user.id, protocol_id: project.id)}
+    let!(:service_request2)     {FactoryGirl.create(:service_request, status: 'submitted', service_requester_id: user.id, protocol_id: project.id)}
     let!(:sub_service_request)  {FactoryGirl.create(:sub_service_request, status: 'draft', service_request_id: service_request.id,
                                                     organization_id: institution.id)}
     let!(:sub_service_request2) {FactoryGirl.create(:sub_service_request, status: 'draft', service_request_id: service_request.id)}
@@ -217,12 +223,12 @@ describe "Identity" do
       describe "available workflow states" do
 
         it "should not return 'CTRC Review' and 'CTRC Approved' if user does not have ctrc permissions" do
-          organization = FactoryGirl.create(:organization, id: 5)
+          organization = FactoryGirl.create(:organization, id: 14)
           user.available_workflow_states.should_not include('CTRC Review', 'CTRC Approved')
         end
 
         it "should return 'CTRC Review' and 'CTRC Aproved' if user does have ctrc permissions" do
-          organization = FactoryGirl.create(:organization, id: 5)
+          organization = FactoryGirl.create(:organization, id: 14)
           super_user.update_attributes(organization_id: organization.id)
           user.available_workflow_states.should include('CTRC Review', 'CTRC Approved')
         end

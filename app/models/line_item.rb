@@ -25,8 +25,7 @@ class LineItem < ActiveRecord::Base
   def applicable_rate
     pricing_map         = self.service.displayed_pricing_map
     pricing_setup       = self.service.organization.current_pricing_setup
-    funding_source      = self.service_request.protocol.type == 'Project' ? self.service_request.protocol.funding_source
-                                                                          : self.service_request.protocol.funding_source_based_on_status
+    funding_source      = self.service_request.protocol.type == 'Project' ? self.service_request.protocol.funding_source : self.service_request.protocol.funding_source_based_on_status
     selected_rate_type  = pricing_setup.rate_type(funding_source)
     applied_percentage  = pricing_setup.applied_percentage(selected_rate_type)
     rate                = pricing_map.applicable_rate(selected_rate_type, applied_percentage)

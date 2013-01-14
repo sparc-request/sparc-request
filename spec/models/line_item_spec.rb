@@ -24,7 +24,7 @@ describe "Line Item" do
       lambda { line_item.applicable_rate }.should raise_exception(ArgumentError)
     end
 
-    it 'should call applicable_rate on the pricing map with the applied percentage and rate type returned by the pricing setup' do
+    it 'should call applicable_rate on the pricing map of a project with the applied percentage and rate type returned by the pricing setup' do
       # TODO: it's obvious by the complexity of this test that
       # applicable_rate() is doing too much, but I'm not sure how to
       # refactor it to be simpler.
@@ -41,7 +41,44 @@ describe "Line Item" do
       service_request = FactoryGirl.build(:service_request, protocol_id: project.id)
       service_request.save(:validate => false)
       line_item = FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id)
+      line_item.service_request.protocol.stub(:funding_source).and_return('college')
+
+      line_item.service.organization.pricing_setups[0].
+        should_receive(:rate_type).
+        with('college').
+        and_return('federal')
+      line_item.service.organization.pricing_setups[0].
+        stub!(:applied_percentage).
+        with('federal').
+        and_return(0.42)
+
+      service.pricing_maps[0] = double(:display_date => Date.today - 1)
+      line_item.service.pricing_maps[0].
+        should_receive(:applicable_rate).
+        with('federal', 0.42)
+
+      line_item.applicable_rate
+    end
+    
+    it 'should call applicable_rate on the pricing map of a study with the applied percentage and rate type returned by the pricing setup' do
+      # TODO: it's obvious by the complexity of this test that
+      # applicable_rate() is doing too much, but I'm not sure how to
+      # refactor it to be simpler.
+
+      study = Study.create(FactoryGirl.attributes_for(:protocol))
+      study.save(:validate => false)
+
+      organization = FactoryGirl.create(:organization, :pricing_setup_count => 1)
+      organization.pricing_setups[0].update_attributes(display_date: Date.today - 1)
+
+      service = FactoryGirl.create(:service, :organization_id => organization.id, :pricing_map_count => 1)
+      service.pricing_maps[0].update_attributes(display_date: Date.today)
+
+      service_request = FactoryGirl.build(:service_request, protocol_id: study.id)
+      service_request.save(:validate => false)
+      line_item = FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id)
       line_item.service_request.protocol.stub(:funding_source_based_on_status).and_return('college')
+      #line_item.service_request.protocol.stub(:funding_source).and_return('college')
 
       line_item.service.organization.pricing_setups[0].
         should_receive(:rate_type).

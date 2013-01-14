@@ -1,7 +1,7 @@
 (exports ? this).do_datepicker = (selector) ->
   $(selector).datepicker
     constrainInput: true
-    dateFormat: 'm/dd/y'
+    dateFormat: 'm/dd/yy'
     altFormat: 'yy-mm-dd'
     altField: "#{selector.replace('_picker', '')}"
 
@@ -11,7 +11,7 @@ $(document).ready ->
       data = $(selector).siblings('.fulfillment_data')
       $(selector).datepicker
         constrainInput: true
-        dateFormat: 'm/dd/y'
+        dateFormat: 'm/dd/yy'
         altFormat: 'yy-mm-dd'
         altField: data
       

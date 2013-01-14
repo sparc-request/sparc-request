@@ -281,12 +281,5 @@ describe "Identity" do
       lambda { FactoryGirl.build(:identity, :first_name => nil).save! }.should raise_exception(ActiveRecord::RecordInvalid)
       lambda { FactoryGirl.build(:identity, :last_name => nil).save! }.should raise_exception(ActiveRecord::RecordInvalid)
     end
-
-    it "should assign an obisid before validation if none is present" do
-      identity = FactoryGirl.build(:identity, :obisid => nil)
-      identity.obisid.should be_nil
-      identity.save!
-      identity.obisid.should_not be_blank
-    end
   end
 end

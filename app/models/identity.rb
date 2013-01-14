@@ -1,3 +1,5 @@
+require 'directory'
+
 class Identity < ActiveRecord::Base
   include Entity
 
@@ -96,52 +98,8 @@ class Identity < ActiveRecord::Base
   ############################# SEARCH METHODS ##################################
   ###############################################################################
 
-  # Searches LDAP and the database for a given search string (can be ldap_uid, last_name, first_name, email).
-  # If an identity is found in LDAP that is not in the database, an Identity is created for it.
-  # Returns an array of Identities that match the query.
-  def self.search term
-    fields = %w(uid surName givenname mail)
-   
-    #query ldap and create new identities
-    # TODO: needs to use config/application.yml for ldap config
-    begin
-      ldap = Net::LDAP.new( :host => 'authldap.musc.edu', :port => 636, :base => 'ou=people,dc=musc,dc=edu', :encryption => :simple_tls)
-      filter = fields.map{|f| Net::LDAP::Filter.contains(f, term)}.inject(:|)
-      res = ldap.search(:filter => filter)
-    rescue => e
-      Rails.logger.info '#'*100
-      Rails.logger.info "#{e.message} (#{e.class})"
-      #rails.logger.info e.backtrace.first(20) this is breaking other envs, not sure why it's here
-      Rails.logger.info '#'*100
-      res = nil
-    end
-
-    if res.nil? # no results from ldap
-      ldap_map = []
-    else
-      ldap_map = res.map{|r| {:first_name => r.givenname.first.downcase, :last_name => r.sn.first.downcase, :email => r.mail.first.downcase, :uid => r.uid.first.downcase}}
-    end
-
-    identities = Identity.where("ldap_uid LIKE '%#{term}%' OR email LIKE '%#{term}%' OR last_name LIKE '%#{term}%' OR first_name LIKE '%#{term}%'")
-    db_map = identities.map{|i| {:first_name => i.first_name.downcase, :last_name => i.last_name.downcase, :email => i.email.downcase, :uid => i.ldap_uid.downcase}}
-
-    # Any users that are in the LDAP results but not the database results, should have
-    # a database entry created for them.
-    (ldap_map - db_map).each do |new_identity|
-      # TODO: needs to use config/application.yml for host config
-      # since we auto create we need to set a random password and auto confirm the addition so that the user has immediate access
-      begin
-        Identity.create :ldap_uid => "#{new_identity[:uid]}@musc.edu", :first_name => new_identity[:first_name], :last_name => new_identity[:last_name], :email => new_identity[:email], :password => Devise.friendly_token[0,20], :approved => true
-      rescue ActiveRecord::RecordNotUnique => e
-        Rails.logger.info '#'*100
-        Rails.logger.info "#{e.message} (#{e.class})"
-        Rails.logger.info e.backtrace.first(20)
-        Rails.logger.info '#'*100
-      end
-    end
-
-    identities = Identity.where("ldap_uid LIKE '%#{term}%' OR email LIKE '%#{term}%' OR last_name LIKE '%#{term}%' OR first_name LIKE '%#{term}%'")
-    identities
+  def self.search(term)
+    return Directory.search(term)
   end
 
   ###############################################################################

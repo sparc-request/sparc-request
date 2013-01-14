@@ -76,10 +76,7 @@ class Directory
       identities[identity.ldap_uid] = identity
     end
 
-    # Any users that are in the LDAP results but not the database results, should have
-    # a database entry created for them.
     ldap_results.each do |r|
-      # since we auto create we need to set a random password and auto confirm the addition so that the user has immediate access
       begin
         uid         = "#{r.uid.first.downcase}@#{DOMAIN}"
         email       = r.mail.first
@@ -88,7 +85,6 @@ class Directory
 
         # Check to see if the identity is already in the database
         if (identity = identities[uid]) then
-
           # Do we need to update any of the fields?  Has someone's last
           # name changed due to getting married, etc.?
           if identity.email != email or
@@ -101,12 +97,15 @@ class Directory
                 last_name:  last_name)
           end
 
-        # If it is not, then add it.
         else
-
+          # If it is not in the database already, then add it.
+          #
           # Use what we got from ldap for first/last name.  We don't use
           # String#capitalize here because it does not work for names
           # like "McHenry".
+          #
+          # since we auto create we need to set a random password and auto
+          # confirm the addition so that the user has immediate access
           Identity.create!(
               first_name: first_name,
               last_name:  last_name,
@@ -114,7 +113,6 @@ class Directory
               ldap_uid:   uid,
               password:   Devise.friendly_token[0,20],
               approved:   true)
-
         end
 
       rescue ActiveRecord::ActiveRecordError => e

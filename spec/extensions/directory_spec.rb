@@ -45,7 +45,7 @@ describe 'Directory' do
           sn:        [ 'Bar' ])
 
       orig_count = Identity.count
-      Directory.create_or_update_database_from_ldap([r])
+      Directory.create_or_update_database_from_ldap([r], Identity.all)
       Identity.count.should eq orig_count + 1
 
       id = Identity.find_by_ldap_uid('foo@musc.edu')
@@ -64,7 +64,7 @@ describe 'Directory' do
           sn:        [ 'Bama' ])
 
       orig_count = Identity.count
-      Directory.create_or_update_database_from_ldap([r])
+      Directory.create_or_update_database_from_ldap([r], Identity.all)
       Identity.count.should eq orig_count
 
       id = Identity.find_by_ldap_uid('mobama@musc.edu')

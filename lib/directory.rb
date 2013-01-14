@@ -15,10 +15,11 @@ class Directory
   def self.search(term)
     # Search ldap and the database
     ldap_results = search_ldap(term)
+    db_results = search_database(term)
 
     # If there are any entries returned from ldap that were not in the
     # database, then create them
-    create_or_update_database_from_ldap(ldap_results)
+    create_or_update_database_from_ldap(ldap_results, db_results)
 
     # Finally, search the database a second time and return the results.
     # If there were no new identities created, then this should return
@@ -64,28 +65,17 @@ class Directory
     return res
   end
 
-  def ldap_to_common_form(r)
-    {
-      first_name: r.givenname.first.downcase,
-      last_name:  r.sn.first.downcase,
-      email:      r.mail.first.downcase,
-      uid:        "#{r.uid.first.downcase}@#{DOMAIN}",
-    }
-  end
+  # Create or update the database based on what was returned from ldap.
+  # ldap_results should be an array as would be returned from
+  # search_ldap.  db_results should be an array as would be returned
+  # from search_database.
+  def self.create_or_update_database_from_ldap(ldap_results, db_results)
+    # This is an optimization so we only have to go to the database once
+    identities = { }
+    db_results.each do |identity|
+      identities[identity.ldap_uid] = identity
+    end
 
-  def db_to_common_form(i)
-    {
-      first_name: i.first_name.downcase,
-      last_name:  i.last_name.downcase,
-      email:      i.email.downcase,
-      uid:        i.ldap_uid.downcase,
-    }
-  end
-
-  # Create a new identity for from each element of the given array.
-  # Expects the entry to be an object as would be returned from
-  # ldap_entries_not_in_database().
-  def self.create_or_update_database_from_ldap(ldap_results)
     # Any users that are in the LDAP results but not the database results, should have
     # a database entry created for them.
     ldap_results.each do |r|
@@ -96,13 +86,8 @@ class Directory
         first_name  = r.givenname.first
         last_name   = r.sn.first
 
-        # TODO: This might turn out to be too slow.  Will it need to be
-        # optimized?  In particular, if there are a lot of results from
-        # ldap, then this will result in a lot of queries to the
-        # database.
-
         # Check to see if the identity is already in the database
-        if (identity = Identity.find_by_ldap_uid(uid)) then
+        if (identity = identities[uid]) then
 
           # Do we need to update any of the fields?  Has someone's last
           # name changed due to getting married, etc.?
@@ -111,15 +96,17 @@ class Directory
              identity.first_name != first_name then
 
             identity.update_attributes!(
-                email: email,
+                email:      email,
                 first_name: first_name,
-                last_name: last_name)
+                last_name:  last_name)
           end
 
-        # if it is not, then added it
+        # If it is not, then add it.
         else
 
-          # TODO: using capitalize will not work for McHenry, e.g.
+          # Use what we got from ldap for first/last name.  We don't use
+          # String#capitalize here because it does not work for names
+          # like "McHenry".
           Identity.create!(
               first_name: first_name,
               last_name:  last_name,

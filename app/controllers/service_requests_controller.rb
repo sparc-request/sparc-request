@@ -183,7 +183,7 @@ class ServiceRequestsController < ApplicationController
 
     # build out visits if they don't already exist and delete/create if the visit count changes
     @service_request.per_patient_per_visit_line_items.each do |line_item|
-      if line_item.subject_count.nil?
+      if @service_request.status == 'first_draft' or line_item.subject_count.nil?
         line_item.update_attribute(:subject_count, @service_request.subject_count)
       end
 

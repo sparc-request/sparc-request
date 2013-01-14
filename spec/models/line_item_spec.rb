@@ -41,7 +41,6 @@ describe "Line Item" do
       service_request = FactoryGirl.build(:service_request, protocol_id: project.id)
       service_request.save(:validate => false)
       line_item = FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id)
-      #line_item.service_request.protocol.stub(:funding_source_based_on_status).and_return('college')
       line_item.service_request.protocol.stub(:funding_source).and_return('college')
 
       line_item.service.organization.pricing_setups[0].

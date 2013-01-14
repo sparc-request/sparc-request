@@ -35,7 +35,7 @@ $(document).ready ->
           success: ->
             $('.date').datepicker
               constrainInput: true
-              dateFormat: "m/dd/y"
+              dateFormat: "m/dd/yy"
               changeMonth: true
               changeYear: true
               showButtonPanel: true

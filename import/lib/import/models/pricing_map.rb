@@ -44,8 +44,29 @@ class PricingMap::ObisEntitySerializer
   end
 end
 
+class PricingMap::PricingSerializer < PricingMap::ObisEntitySerializer
+  def as_json(pricing_map, options = nil)
+    h = super(pricing_map, options)
+    h['service_id'] = pricing_map.service.obisid
+    return h
+  end
+
+  def update_from_json(pricing_map, h, options = nil)
+    super(pricing_map, h, options)
+    pricing_map.update_attributes!(
+        service_id: Service.find_by_obisid(h['service_id']).id)
+  end
+
+  def self.create_from_json(entity_class, h, options = nil)
+    obj = entity_class.create()
+    obj.update_from_json(h, options)
+    return obj
+  end
+end
+
 class PricingMap
   include JsonSerializable
   json_serializer :obisentity, ObisEntitySerializer
+  json_serializer :pricing, PricingSerializer
 end
 

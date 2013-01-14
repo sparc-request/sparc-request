@@ -317,7 +317,7 @@ class Identity < ActiveRecord::Base
   def available_workflow_states
     available_statuses = ['Draft', 'Submitted', 'In Process', 'Complete', 'Awaiting PI Approval', 'On Hold', 'CTRC Review', 'CTRC Approved']
     # IF ID OF CTRC EVER CHANGES THIS NEEDS TO BE CHANGED
-    ctrc = Organization.find(5)
+    ctrc = Organization.find(14)
     if ctrc.service_providers.map(&:identity_id).include?(self.id) || ctrc.super_users.map(&:identity_id).include?(self.id)
       available_statuses
     else
@@ -337,9 +337,13 @@ class Identity < ActiveRecord::Base
 
     ssrs.each do |ssr|
       unless ssr.status.blank? or ssr.status == 'first_draft'
-        ssr_status = ssr.status.to_s.gsub(/\s/, "_").gsub(/[^-\w]/, "").downcase
-        hash[ssr_status] = [] unless hash[ssr_status]
-        hash[ssr_status] << ssr
+        if ssr.service_request
+          if ssr.service_request.protocol
+            ssr_status = ssr.status.to_s.gsub(/\s/, "_").gsub(/[^-\w]/, "").downcase
+            hash[ssr_status] = [] unless hash[ssr_status]
+            hash[ssr_status] << ssr
+          end
+        end
       else
 
       end

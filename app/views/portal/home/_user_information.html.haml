@@ -7,7 +7,7 @@
     = @user.email
     %br
 .notifications-link
-  = link_to 'portal/notifications' do
+  = link_to portal_notifications_path do
     - if @user.unread_notification_count(@user) >= 1
       = image_tag 'portal/email_64.png', :class => 'left'
     - else

@@ -1,3 +1,10 @@
+(exports ? this).do_datepicker = (selector) ->
+  $(selector).datepicker
+    constrainInput: true
+    dateFormat: 'm/dd/yy'
+    altFormat: 'yy-mm-dd'
+    altField: "#{selector.replace('_picker', '')}"
+
 $(document).ready ->
   Sparc.datepicker = {
     ready: (selector) ->
@@ -9,12 +16,6 @@ $(document).ready ->
         altField: data
       
   }
-  do_datepicker = (selector) ->
-    $(selector).datepicker
-      constrainInput: true
-      dateFormat: 'm/dd/yy'
-      altFormat: 'yy-mm-dd'
-      altField: "#{selector.replace('_picker', '')}"
 
   $(document).on('change', '.datepicker', ->
     selector = "##{$(this).attr("id").replace('_picker', '')}"

@@ -56,7 +56,7 @@
                   = hidden_field_tag "fulfillment_#{fulfillment.id}_date", fulfillment.try(:date).try(:strftime, "%F"), :'data-fulfillment_id' => fulfillment.id, :class => 'fulfillment_data', :name => "fulfillment_date" 
                 %td= select_tag "fulfillment_timeframe", options_for_select(Fulfillment::QUANTITY_TYPES, fulfillment.try(:timeframe)), :'data-fulfillment_id' => fulfillment.id, :class => 'fulfillment_data'
                 %td.fulfillment_text_field= text_field_tag "fulfillment_time", fulfillment.try(:time), :'data-fulfillment_id' => fulfillment.id, :class => 'fulfillment_data'
-                %td.fulfillment_notes{:colspan => 6}= text_field_tag "fulfillment_notes", fulfillment.try(:notes), :'data-fulfillment_id' => fulfillment.id, :class => 'fulfillment_data'
+                %td.fulfillment_notes{:colspan => 6}= text_area_tag "fulfillment_notes", fulfillment.try(:notes), :'data-fulfillment_id' => fulfillment.id, :class => 'fulfillment_data', :cols => 50, :rows => 1
                 %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-fulfillment_id' => fulfillment.id, :class => 'delete_data')
           %tr.fulfillment{:class => "li_#{otf.id}"}
             %td{:colspan => 11}

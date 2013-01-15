@@ -50,5 +50,25 @@ namespace :db do
   end
 end
 
+namespace :mysql do
+  desc "performs a backup (using mysqldump) in app shared dir"
+  task :backup, :roles => :db, :only => { :primary => true } do
+    filename = "#{application}.db_backup.#{Time.now.to_f}.sql.bz2"
+    filepath = "#{shared_path}/database_backups/#{filename}"
+    text = capture "cat #{deploy_to}/current/config/database.yml"
+    yaml = YAML::load(text)
+
+    run "mkdir -p #{shared_path}/database_backups"
+
+    on_rollback { run "rm #{filepath}" }
+    run "mysqldump -u #{yaml['production']['username']} -p #{yaml['production']['database']} | bzip2 -c > #{filepath}" do |ch, stream, out|
+      ch.send_data "#{yaml['production']['password']}\n" if out =~ /^Enter password:/
+    end
+
+  end
+end
+
+ before :deploy, 'mysql:backup' 
+
 require 'capistrano/ext/multistage'
 require 'bundler/capistrano'

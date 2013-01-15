@@ -3,17 +3,6 @@
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
 $(document).ready ->
-  $('.delete-ssr-button').click ->
-    if confirm("Are you sure")
-      $('.delete-ssr-indicator').show()
-      sub_service_request_id = $(this).attr('data-sub_service_request_id')
-      $.ajax({
-        type: 'DELETE'
-        url: "/portal/admin/sub_service_requests/#{sub_service_request_id}"
-        dataType: 'script'
-        contentType: 'application/json; charset=utf-8'
-      })
-
   Sparc.related_service_requests = {
     ready: ->
       $(".rsr-dialog").dialog(

@@ -11,6 +11,7 @@ require 'faker'
 require 'capybara/rspec'
 require 'capybara/rails'
 require 'capybara/dsl'
+require 'selenium-webdriver'
 
 # Set default values for capybara; these can be overriden by a file in
 # the support directory (see below).  For example, to use poltergeist,
@@ -24,7 +25,15 @@ require 'capybara/dsl'
 #   require 'capybara/firebug'
 #   Capybara.javascript_driver = :selenium_with_firebug
 #
-Capybara.javascript_driver = :selenium
+
+profile = Selenium::WebDriver::Firefox::Profile.new
+profile["focusmanager.testmode"] = true
+
+Capybara.register_driver :selenium_firefox_focus do |app|
+  Capybara::Selenium::Driver.new(app, :browser => :firefox, :profile => profile)
+end
+
+Capybara.javascript_driver = :selenium_firefox_focus
 Capybara.default_wait_time = 15
 
 # Requires supporting ruby files with custom matchers and macros, etc,

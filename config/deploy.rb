@@ -61,8 +61,8 @@ namespace :mysql do
     run "mkdir -p #{shared_path}/database_backups"
 
     on_rollback { run "rm #{filepath}" }
-    run "mysqldump -u #{yaml['production']['username']} -p #{yaml['production']['database']} | bzip2 -c > #{filepath}" do |ch, stream, out|
-      ch.send_data "#{yaml['production']['password']}\n" if out =~ /^Enter password:/
+    run "mysqldump -u #{yaml[rails_env]['username']} -p #{yaml[rails_env]['database']} | bzip2 -c > #{filepath}" do |ch, stream, out|
+      ch.send_data "#{yaml[rails_env]['password']}\n" if out =~ /^Enter password:/
     end
 
   end

@@ -223,12 +223,11 @@ describe "Identity" do
       describe "available workflow states" do
 
         it "should not return 'CTRC Review' and 'CTRC Approved' if user does not have ctrc permissions" do
-          organization = FactoryGirl.create(:organization, id: 14)
           user.available_workflow_states.should_not include('CTRC Review', 'CTRC Approved')
         end
 
         it "should return 'CTRC Review' and 'CTRC Aproved' if user does have ctrc permissions" do
-          organization = FactoryGirl.create(:organization, id: 14)
+          organization = FactoryGirl.create(:organization, is_ctrc: true)
           super_user.update_attributes(organization_id: organization.id)
           user.available_workflow_states.should include('CTRC Review', 'CTRC Approved')
         end

@@ -48,11 +48,12 @@ class Directory
    
     # query ldap and create new identities
     begin
-      ldap = Net::LDAP.new(
-          host: LDAP_HOST,
-          port: LDAP_PORT,
-          base: LDAP_BASE,
-          encryption: LDAP_ENCRYPTION)
+      #ldap = Net::LDAP.new(
+      #   host: LDAP_HOST,
+      #   port: LDAP_PORT,
+      #   base: LDAP_BASE,
+      #   encryption: LDAP_ENCRYPTION)
+      ldap = Net::LDAP.new( :host => 'authldap.musc.edu', :port => 636, :base => 'ou=people,dc=musc,dc=edu', :encryption => :simple_tls)
       filter = fields.map { |f| Net::LDAP::Filter.contains(f, term) }.inject(:|)
       res = ldap.search(:filter => filter)
     rescue => e
@@ -70,8 +71,11 @@ class Directory
   # search_ldap.  db_results should be an array as would be returned
   # from search_database.
   def self.create_or_update_database_from_ldap(ldap_results, db_results)
+    # no need to proceed if ldap_results == nil or []
+    return if ldap_results.blank?
     # This is an optimization so we only have to go to the database once
     identities = { }
+
     db_results.each do |identity|
       identities[identity.ldap_uid] = identity
     end

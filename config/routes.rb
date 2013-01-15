@@ -163,6 +163,7 @@ SparcRails::Application.routes.draw do
         resources :sub_service_requests do
           member do
             put :update_from_fulfillment
+            put :update_from_project_study_information
             post :add_line_item
             post :new_document
             post :add_note

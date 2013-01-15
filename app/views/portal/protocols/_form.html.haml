@@ -1,9 +1,11 @@
-= form_for protocol, :url => portal_protocol_path(protocol) do |f|
+- admin ||= false
+- url = admin ? update_from_project_study_information_portal_sub_service_request_path(@sub_service_request.id) : portal_protocol_path(protocol)
+= form_for protocol, :url => url do |f|
   = f.hidden_field :requester_id
-  - admin ||= false
   - if admin
     = hidden_field_tag "admin_page", admin
-  -# = f.error_messages_for
+    = hidden_field_tag "protocol_id", @protocol.id
+  = f.error_messages
   - protocol_type = protocol.type
   - if protocol_type == "Study"
     .edit-study-view= render :partial => 'portal/protocols/study_fields', :locals => {:study => protocol, :f => f}

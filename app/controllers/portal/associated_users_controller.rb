@@ -42,8 +42,8 @@ class Portal::AssociatedUsersController < Portal::BaseController
     if @protocol_role.validate_one_pi && @protocol_role.validate_uniqueness_within_protocol
       @protocol_role.save
       @identity.update_attributes params[:identity]
-      @protocol.emailed_associated_users.each do |user|
-        UserMailer.authorized_user_changed(user, @protocol).deliver
+      @protocol.emailed_associated_users.each do |project_role|
+        UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver
       end
     end
 
@@ -66,8 +66,8 @@ class Portal::AssociatedUsersController < Portal::BaseController
     @protocol_role.assign_attributes params[:project_role]
     if @protocol_role.validate_one_pi
       @protocol_role.save
-      @protocol.emailed_associated_users.each do |user|
-        UserMailer.authorized_user_changed(user, @protocol).deliver
+      @protocol.emailed_associated_users.each do |project_role|
+        UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver
       end
     end
 

@@ -36,4 +36,9 @@ SparcRails::Application.configure do
   config.assets.debug = true
 
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
+  config.action_mailer.delivery_method = :letter_opener
+
+  config.middleware.use ExceptionNotifier,
+    sender_address: 'no-reply@musc.edu',
+    exception_recipients: ['catesa@musc.edu', 'scoma@musc.edu', 'kelsey@musc.edu', 'johstu@musc.edu', 'leonarjp@musc.edu', 'brannan@musc.edu']
 end

@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.8'
+gem 'rails', '3.2.11'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
@@ -103,3 +103,6 @@ gem 'rvm-capistrano'
 group :profile do
   gem 'ruby-prof'
 end
+
+gem 'exception_notification'
+gem 'letter_opener'

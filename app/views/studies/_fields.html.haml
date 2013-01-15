@@ -9,98 +9,97 @@
 .description Before you can complete a service request, please tell us more about your research study. This information will be used by our staff to decide the best way to process your request.
 .grid_7.box
   .info
-    .field
-      = f.label :short_title, "Short Title:*"
-      = f.text_field :short_title
-    
-    .field
-      = f.label :title, "Protocol Title:*"
-      = f.text_field :title
-    
-    .field
-      = f.label :funding_status, "Proposal Funding Status:*"
-      = f.select :funding_status, options_for_select(FUNDING_STATUSES, study.funding_status), :include_blank => "Select a Funding Status"
-    
-    .field
-      = f.label :udak_project_number, "UDAK/Project #:"
-      = f.text_field :udak_project_number
-      
-    .field
-      = f.label :sponsor_name, "Sponsor Name:"
-      = f.text_field :sponsor_name
-
-    #pending_funding
+    %fieldset
       .field
-        = f.label :funding_rfa, "Funding Opportunity #/RFA:"
-        = f.text_field :funding_rfa
-
-      .field
-        = f.label :potential_funding_start_date, "Potential Funding Start Date:"
-        = text_field_tag :potential_funding_start_date, (study.potential_funding_start_date.strftime('%_m/%d/%Y') rescue nil)
-        = f.hidden_field :potential_funding_start_date
-
-      .field
-        = f.label :potential_funding_source, "Potential Funding Source:*"
-        = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, study.potential_funding_source), :include_blank => "Select a Potential Funding Source"
-
-      / Internal Funded Pilot Project selected
-      .internal_potential_funded_pilot_project
-        .field
-          = f.label :potential_funding_source_other, "Please Specify"
-          = f.text_field :potential_funding_source_other
-    
-    .funded
-      .field
-        = f.label :funding_start_date, "Funding Start Date:"
-        = text_field_tag :funding_start_date, (study.funding_start_date.strftime('%_m/%d/%Y') rescue nil)
-        = f.hidden_field :funding_start_date
+        = f.label :short_title, "Short Title:*"
+        = f.text_field :short_title
       
       .field
-        = f.label :funding_source, "Funding Source:*"
-        = f.select :funding_source, options_for_select(FUNDING_SOURCES, study.funding_source), :include_blank => "Select a Funding Source"
+        = f.label :title, "Protocol Title:*"
+        = f.text_field :title
+      
+      .field
+        = f.label :funding_status, "Proposal Funding Status:*"
+        = f.select :funding_status, options_for_select(FUNDING_STATUSES, study.funding_status), :include_blank => "Select a Funding Status"
+      
+      .field
+        = f.label :udak_project_number, "UDAK/Project #:"
+        = f.text_field :udak_project_number
+        
+      .field
+        = f.label :sponsor_name, "Sponsor Name:"
+        = f.text_field :sponsor_name
 
-      / Internal Funded Pilot Project selected
-      .internal_funded_pilot_project
+      #pending_funding
         .field
-          = f.label :funding_source_other, "Please Specify"
-          = f.text_field :funding_source_other
-
-    .indirect_cost_rate
-      = f.label :indirect_cost_rate, "Indirect Cost Rate"
-      = f.text_field :indirect_cost_rate
-
-    .funded
-      .federal
-        .field
-          = f.label :federal_grant_title, "Federal Grant Title:"
-          = f.text_field :federal_grant_title
-
-        .field
-          = f.label :federal_grant_code_id, "Federal Grant Code:"
-          = f.select :federal_grant_code_id, options_for_select(FEDERAL_GRANT_CODES, study.federal_grant_code_id), :include_blank => "Select a Federal Grant Code"
+          = f.label :funding_rfa, "Funding Opportunity #/RFA:"
+          = f.text_field :funding_rfa
 
         .field
-          = f.label :federal_phs_sponsor, "Federal Grant PHS Sponsor:"
-          = f.select :federal_phs_sponsor, options_for_select(FEDERAL_GRANT_PHS_SPONSORS, study.federal_phs_sponsor), :include_blank => "Please Select if Applicable"
-
-        %br
-        %span -OR-
-        %br
-    
-        .field
-          = f.label :federal_non_phs_sponsor, "Federal Grant Non-PHS Sponsor:"
-          = f.select :federal_non_phs_sponsor, options_for_select(FEDERAL_GRANT_NON_PHS_SPONSORS, study.federal_non_phs_sponsor), :include_blank => "Please Select if Applicable"
+          = f.label :potential_funding_start_date, "Potential Funding Start Date:"
+          = text_field_tag :potential_funding_start_date, (study.potential_funding_start_date.strftime('%_m/%d/%Y') rescue nil)
+          = f.hidden_field :potential_funding_start_date
 
         .field
-          = f.label :federal_grant_serial_number, "Federal Grant Serial Number:"
-          = f.text_field :federal_grant_serial_number
+          = f.label :potential_funding_source, "Potential Funding Source:*"
+          = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, study.potential_funding_source), :include_blank => "Select a Potential Funding Source"
 
-    .field
-      = f.label :study_phase, "Study Phase:"
-      = f.select :study_phase, options_for_select(STUDY_PHASES, study.study_phase), :include_blank => "Select a Study Phase"
+        / Internal Funded Pilot Project selected
+        .internal_potential_funded_pilot_project
+          .field
+            = f.label :potential_funding_source_other, "Please Specify"
+            = f.text_field :potential_funding_source_other
+      
+      .funded
+        .field
+          = f.label :funding_start_date, "Funding Start Date:"
+          = text_field_tag :funding_start_date, (study.funding_start_date.strftime('%_m/%d/%Y') rescue nil)
+          = f.hidden_field :funding_start_date
+        
+        .field
+          = f.label :funding_source, "Funding Source:*"
+          = f.select :funding_source, options_for_select(FUNDING_SOURCES, study.funding_source), :include_blank => "Select a Funding Source"
 
-    %br
-    %br
+        / Internal Funded Pilot Project selected
+        .internal_funded_pilot_project
+          .field
+            = f.label :funding_source_other, "Please Specify"
+            = f.text_field :funding_source_other
+
+      .indirect_cost_rate
+        = f.label :indirect_cost_rate, "Indirect Cost Rate"
+        = f.text_field :indirect_cost_rate
+
+      .funded
+        .federal
+          .field
+            = f.label :federal_grant_title, "Federal Grant Title:"
+            = f.text_field :federal_grant_title
+
+          .field
+            = f.label :federal_grant_code_id, "Federal Grant Code:"
+            = f.select :federal_grant_code_id, options_for_select(FEDERAL_GRANT_CODES, study.federal_grant_code_id), :include_blank => "Select a Federal Grant Code"
+
+          .field
+            = f.label :federal_phs_sponsor, "Federal Grant PHS Sponsor:"
+            = f.select :federal_phs_sponsor, options_for_select(FEDERAL_GRANT_PHS_SPONSORS, study.federal_phs_sponsor), :include_blank => "Please Select if Applicable"
+
+          %br
+          %span -OR-
+          %br
+      
+          .field
+            = f.label :federal_non_phs_sponsor, "Federal Grant Non-PHS Sponsor:"
+            = f.select :federal_non_phs_sponsor, options_for_select(FEDERAL_GRANT_NON_PHS_SPONSORS, study.federal_non_phs_sponsor), :include_blank => "Please Select if Applicable"
+
+          .field
+            = f.label :federal_grant_serial_number, "Federal Grant Serial Number:"
+            = f.text_field :federal_grant_serial_number
+
+      .field
+        = f.label :study_phase, "Study Phase:"
+        = f.select :study_phase, options_for_select(STUDY_PHASES, study.study_phase), :include_blank => "Select a Study Phase"
+
     %fieldset
       %legend Research Involving (Check all that apply)
       %div

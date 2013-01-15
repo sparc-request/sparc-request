@@ -167,7 +167,7 @@ class SubServiceRequest < ActiveRecord::Base
   ## SSR STATUS METHODS ##
   ########################
   def ctrc?
-    self.organization.id == 14
+    self.organization.is_ctrc
   end
 
   def can_be_edited?

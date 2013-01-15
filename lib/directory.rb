@@ -4,7 +4,7 @@ class Directory
   # TODO: needs to use config/application.yml for ldap config
   LDAP_HOST       = 'authldap.musc.edu'
   LDAP_PORT       = 636
-  LDAP_BASE       = 'ou=people,dc=musc.edu,dc=edu'
+  LDAP_BASE       = 'ou=people,dc=musc,dc=edu'
   LDAP_ENCRYPTION = :simple_tls
   DOMAIN          = 'musc.edu'
 
@@ -48,12 +48,11 @@ class Directory
    
     # query ldap and create new identities
     begin
-      #ldap = Net::LDAP.new(
-      #   host: LDAP_HOST,
-      #   port: LDAP_PORT,
-      #   base: LDAP_BASE,
-      #   encryption: LDAP_ENCRYPTION)
-      ldap = Net::LDAP.new( :host => 'authldap.musc.edu', :port => 636, :base => 'ou=people,dc=musc,dc=edu', :encryption => :simple_tls)
+      ldap = Net::LDAP.new(
+         host: LDAP_HOST,
+         port: LDAP_PORT,
+         base: LDAP_BASE,
+         encryption: LDAP_ENCRYPTION)
       filter = fields.map { |f| Net::LDAP::Filter.contains(f, term) }.inject(:|)
       res = ldap.search(:filter => filter)
     rescue => e

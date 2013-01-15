@@ -34,6 +34,7 @@ class Organization < ActiveRecord::Base
   attr_accessible :subsidy_map_attributes
   attr_accessible :pricing_setups_attributes
   attr_accessible :submission_emails_attributes
+  attr_accessible :is_ctrc
  
   accepts_nested_attributes_for :subsidy_map
   accepts_nested_attributes_for :pricing_setups

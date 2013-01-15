@@ -63,3 +63,5 @@ gem 'devise'
 gem 'omniauth'
 gem 'omniauth-shibboleth'
 gem "nested_form"
+
+gem 'exception_notification'

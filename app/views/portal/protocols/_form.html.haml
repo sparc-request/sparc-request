@@ -8,6 +8,6 @@
   = f.error_messages
   - protocol_type = protocol.type
   - if protocol_type == "Study"
-    .edit-study-view= render :partial => 'portal/protocols/study_fields', :locals => {:study => protocol, :f => f}
+    .edit-study-view= render :partial => 'portal/protocols/study_fields', :locals => {:study => protocol, :f => f, :admin => admin}
   - elsif protocol_type == "Project"
-    .edit-project-view= render :partial => 'portal/protocols/project_fields', :locals => {:project => protocol, :f => f}
+    .edit-project-view= render :partial => 'portal/protocols/project_fields', :locals => {:project => protocol, :f => f, :admin => admin}

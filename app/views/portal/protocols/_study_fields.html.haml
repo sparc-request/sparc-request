@@ -229,4 +229,7 @@
   #actions
     = submit_tag("Save study")
     or
-    = link_to "Cancel", portal_root_path
+    - if admin
+      = link_to "Cancel", "/portal/admin/sub_service_requests/#{@sub_service_request.id}"
+    - else
+      = link_to "Cancel", portal_root_path

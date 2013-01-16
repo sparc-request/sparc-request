@@ -249,9 +249,10 @@ ActiveRecord::Schema.define(:version => 20130116091708) do
     t.text     "ack_language"
     t.boolean  "process_ssrs"
     t.boolean  "is_available"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
     t.datetime "deleted_at"
+    t.boolean  "is_ctrc",      :default => false
   end
 
   add_index "organizations", ["is_available"], :name => "index_organizations_on_is_available"

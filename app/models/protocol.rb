@@ -62,22 +62,17 @@ class Protocol < ActiveRecord::Base
 
   validates :short_title, :presence => true
   validates :title, :presence => true
+  validates :funding_status, :presence => true
   validate  :requester_included, :on => :create
   validate  :pi_exists
   validate  :validate_funding_source
   validate  :validate_proxy_rights
 
   def validate_funding_source
-    if self.type == 'Study'
-      if self.funding_status == "funded" && self.funding_source.blank?
-        errors.add(:funding_source, "You must select a funding source")
-      elsif self.funding_status == "pending_funding" && self.potential_funding_source.blank?
-        errors.add(:potential_funding_source, "You must select a potential funding source")
-      end
-    else
-      if self.funding_source.blank?
-        errors.add(:funding_source, "You must select a funding source")
-      end
+    if self.funding_status == "funded" && self.funding_source.blank?
+      errors.add(:funding_source, "You must select a funding source")
+    elsif self.funding_status == "pending_funding" && self.potential_funding_source.blank?
+      errors.add(:potential_funding_source, "You must select a potential funding source")
     end
   end
 

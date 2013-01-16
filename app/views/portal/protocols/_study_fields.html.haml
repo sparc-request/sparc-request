@@ -18,7 +18,7 @@
           = f.text_field :title
         
         .field
-          = f.label :funding_status, "Proposal Funding Status:"
+          = f.label :funding_status, "Proposal Funding Status:*"
           = f.select :funding_status, options_for_select(FUNDING_STATUSES, study.funding_status), :include_blank => "Select a Funding Status"
         
         .field

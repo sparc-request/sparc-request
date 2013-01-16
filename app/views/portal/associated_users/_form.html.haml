@@ -16,12 +16,12 @@
       .user_name
         %strong Name:
         %br
-        = text_field_tag "", "#{identity.first_name} #{identity.last_name}", {:disabled => true}
+        = text_field_tag "full_name", "#{identity.first_name} #{identity.last_name}", {:disabled => true}
         %br
       .user_email
         %strong E-mail:
         %br
-        = text_field_tag "", identity.email, {:disabled => true}
+        = text_field_tag "email", identity.email, {:disabled => true}
         %br
       .user_phone
         %strong

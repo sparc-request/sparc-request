@@ -73,7 +73,7 @@ describe "admin index page", :js => true do
       end
 
       it "should open a sub service request if I click that sub service request" do
-        find('td', :text => service_request.protocol.short_title).click
+        find('td', :text => "1-").click
         wait_for_javascript_to_finish
         page.should have_content('Send Notifications')
       end

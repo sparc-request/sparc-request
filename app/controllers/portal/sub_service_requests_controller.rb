@@ -44,7 +44,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     attrs = params[@protocol.type.downcase.to_sym]
     
     if @protocol.update_attributes attrs
-      redirect_to request.referer
+      redirect_to "/portal/admin/sub_service_requests/#{@sub_service_request.id}"
     else
       @user_toasts = @user.received_toast_messages.select {|x| x.sending_object.class == SubServiceRequest}
       @service_request = @sub_service_request.service_request

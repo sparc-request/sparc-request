@@ -39,6 +39,28 @@ $(document).ready ->
       $.ajax({ type: 'GET', url: "/portal/notifications/#{id}" })
   )
 
+  $('.hidden-message').live('click', ->
+    message_id = $(this).data('message_id')
+    message_header = $(this).children('.message-header')
+    $(this).removeClass('hidden-message').addClass('shown-message')
+    message_header.children('.message_recipients').removeClass('hidden').addClass('shown')
+    $(this).children('.truncated-message-body').addClass('shown-message-body').removeClass('truncated-message-body')
+    $(this).children('.message-header').addClass('clickable-message-header')
+    $(".gray_arrow_down_#{message_id}").hide()
+    $(".white_arrow_up_#{message_id}").show()
+  )
+
+  $('.clickable-message-header').live('click', ->
+    message = $(this).parent('.shown-message')
+    message_id = message.data('message_id')
+    message.children('message-header').removeClass('clickable-message-header')
+    message.removeClass('shown-message').addClass('hidden-message')
+    $(this).children('.message_recipients').removeClass('shown').addClass('hidden')
+    message.children('.shown-message-body').addClass('truncated-message-body').removeClass('shown-message-body')
+    $(".gray_arrow_down_#{message_id}").show()
+    $(".white_arrow_up_#{message_id}").hide()
+  )
+
   $('.new_notification_dialog').dialog({
     autoOpen: false
     title: 'Send notification'

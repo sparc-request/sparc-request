@@ -68,7 +68,8 @@ namespace :mysql do
   end
 end
 
- before :deploy, 'mysql:backup' 
+before "deploy:migrate", 'mysql:backup' 
+before "deploy", 'mysql:backup' 
 
 require 'capistrano/ext/multistage'
 require 'bundler/capistrano'

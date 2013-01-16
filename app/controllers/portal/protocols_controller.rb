@@ -44,11 +44,10 @@ class Portal::ProtocolsController < Portal::BaseController
     attrs = params[@protocol.type.downcase.to_sym]
     if @protocol.update_attributes attrs
       flash[:notice] = "Study updated"
-      if params[:admin_page]
-        redirect_to request.referer
-      else
-        redirect_to portal_root_path(:default_protocol => @protocol)
-      end
+      redirect_to portal_root_path(:default_protocol => @protocol)
+    else
+      @protocol.populate_for_edit if @protocol.type == "Study"
+      render :action => 'edit'
     end
   end
 

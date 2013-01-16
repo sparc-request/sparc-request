@@ -34,6 +34,7 @@ describe "creating a new project " do
     it "should clear errors and submit the form" do
       fill_in "project_short_title", :with => "Bob"
       fill_in "project_title", :with => "Dole"
+      select "Funded", :from => "project_funding_status"
       select "Federal", :from => "project_funding_source"
       select "PD/PI", :from => "project_role_role"
       click_button "Add Authorized User"

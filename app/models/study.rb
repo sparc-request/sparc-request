@@ -1,7 +1,5 @@
 class Study < Protocol
 
-  validates :funding_status, :presence => true
-  
   def classes
     return [ 'project' ] # for backward-compatibility
   end

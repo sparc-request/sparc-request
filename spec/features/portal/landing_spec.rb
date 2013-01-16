@@ -21,6 +21,15 @@ describe "landing page", :js => true do
     it 'should have requests' do
       page.should have_css("div#protocol-accordion h3")
     end
-    
+
+    it 'should be able to search' do
+      sleep 5
+      find("h3#blue-provider-2 a").click
+      sleep 2
+      page.fill_in 'search_box', :with => '2'
+      find("ul.ui-autocomplete li.ui-menu-item a.ui-corner-all").click
+      find("div.protocol-information-2").visible?.should eq(true)
+    end
+
   end
 end

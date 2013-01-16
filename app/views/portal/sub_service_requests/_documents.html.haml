@@ -3,7 +3,7 @@
 #upload_message{:style => 'display:none'}
   Your file is uploading.  Please be patient as this may take a while with large files.
 
-= form_tag new_document_portal_sub_service_request_path(@sub_service_request), {:id => 'new_document_form', :class => 'root-view', :multipart => true} do
+= form_tag new_document_portal_admin_sub_service_request_path(@sub_service_request), {:id => 'new_document_form', :class => 'root-view', :multipart => true} do
   = hidden_field_tag :location, ''
   = hidden_field_tag :validates, ''
   = render :partial => "errors"

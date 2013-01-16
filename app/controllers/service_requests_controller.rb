@@ -286,6 +286,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def approve_changes
+    @service_request = ServiceRequest.find params[:id]
     @approval = @service_request.approvals.where(:id => params[:approval_id]).first
     @previously_approved = true
  

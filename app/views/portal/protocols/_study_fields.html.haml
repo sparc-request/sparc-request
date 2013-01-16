@@ -18,7 +18,7 @@
           = f.text_field :title
         
         .field
-          = f.label :funding_status, "Proposal Funding Status:"
+          = f.label :funding_status, "Proposal Funding Status:*"
           = f.select :funding_status, options_for_select(FUNDING_STATUSES, study.funding_status), :include_blank => "Select a Funding Status"
         
         .field
@@ -229,4 +229,7 @@
   #actions
     = submit_tag("Save study")
     or
-    = link_to "Cancel", portal_root_path
+    - if admin
+      = link_to "Cancel", "/portal/admin/sub_service_requests/#{@sub_service_request.id}"
+    - else
+      = link_to "Cancel", portal_root_path

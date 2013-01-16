@@ -29,6 +29,9 @@
         %tr
           %th Order
           %td= f.text_field :order
+        %tr
+          %th Is CTRC?
+          %td= f.check_box :is_ctrc
         
         - if @user.is_overlord?
           %tr

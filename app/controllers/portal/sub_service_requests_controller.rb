@@ -37,6 +37,27 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     end
   end
 
+  def update_from_project_study_information
+    @protocol = Protocol.find(params[:protocol_id])
+    @sub_service_request = SubServiceRequest.find params[:id]
+
+    attrs = params[@protocol.type.downcase.to_sym]
+    
+    if @protocol.update_attributes attrs
+      redirect_to "/portal/admin/sub_service_requests/#{@sub_service_request.id}"
+    else
+      @user_toasts = @user.received_toast_messages.select {|x| x.sending_object.class == SubServiceRequest}
+      @service_request = @sub_service_request.service_request
+      @protocol.populate_for_edit if @protocol.type == "Study"
+      @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition {|x| x.is_one_time_fee?}
+      @subsidy = @sub_service_request.subsidy
+      @notifications = @user.all_notifications.where(:sub_service_request_id => @sub_service_request.id)
+      @service_list = @service_request.service_list
+      @related_service_requests = @protocol.all_child_sub_service_requests
+      render :action => 'show'
+    end
+  end   
+
   def add_note
     @sub_service_request = SubServiceRequest.find(params[:id])
     if @sub_service_request.notes.create(:identity_id => @user.id, :body => params[:body])

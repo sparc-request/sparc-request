@@ -13,24 +13,35 @@
       .field
         = f.label :title, "Project Title:*"
         = f.text_field :title
+        
+      .field
+        = f.label :funding_status, "Proposal Funding Status:*"
+        = f.select :funding_status, options_for_select(FUNDING_STATUSES, project.funding_status), :include_blank => "Select a Funding Status"
+      
+      #funded
+        .field
+          = f.label :funding_source, "Funding Source:*"
+          = f.select :funding_source, options_for_select(FUNDING_SOURCES, project.funding_source), :include_blank => "Select a Funding Source"
+
+      #pending_funding 
+        .field
+          = f.label :potential_funding_source, "Potential Funding Source:*"
+          = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, project.potential_funding_source), :include_blank => "Select a Potential Funding Source"
 
       .field
         = f.label :brief_description, "Brief Description:"
         = f.text_area :brief_description
 
-      .funded
-        .field
-          = f.label :funding_source, "Funding Source:*"
-          = f.select :funding_source, options_for_select(FUNDING_SOURCES, project.funding_source), :include_blank => "Select a Funding Source"
-
       .indirect_cost_rate
         = f.label :indirect_cost_rate, "Indirect Cost Rate:"
         = f.text_field :indirect_cost_rate
-
-
+  
   %br.clear
   #actions
     = submit_tag("Save project")
     or
-    = link_to "Cancel", root_path
+    - if admin
+      = link_to "Cancel", "/portal/admin/sub_service_requests/#{@sub_service_request.id}"
+    - else
+      = link_to "Cancel", portal_root_path
     

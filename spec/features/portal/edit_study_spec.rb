@@ -4,10 +4,11 @@ describe "editing a study", js: true do
   let_there_be_lane
   fake_login_for_each_test
   build_service_request_with_study()
+
   let(:numerical_day) { Date.today.strftime("%d").gsub(/^0/,'') }
 
   before :each do
-    visit edit_portal_protocol_path service_request.id
+    visit edit_portal_protocol_path service_request.protocol.id
   end
 
   context "validations" do
@@ -39,7 +40,7 @@ describe "editing a study", js: true do
     it "should save the short title" do
       fill_in "study_short_title", with: "Bob"
       click_button "Save study"
-      visit edit_portal_protocol_path service_request.id
+      visit edit_portal_protocol_path service_request.protocol.id
       find("#study_short_title").value().should eq("Bob")
     end
   end
@@ -49,7 +50,7 @@ describe "editing a study", js: true do
     it "should save the protocol title" do
       fill_in "study_title", with: "Slappy"
       click_button "Save study"
-      visit edit_portal_protocol_path service_request.id
+      visit edit_portal_protocol_path service_request.protocol.id
       find("#study_title").value().should eq("Slappy")
     end
   end
@@ -72,7 +73,7 @@ describe "editing a study", js: true do
     it "should save the udak/project number" do
       fill_in "study_udak_project_number", with: "12345"
       click_button "Save study"
-      visit edit_portal_protocol_path service_request.id
+      visit edit_portal_protocol_path service_request.protocol.id
       find("#study_udak_project_number").value().should eq("12345")
     end    
   end
@@ -82,7 +83,7 @@ describe "editing a study", js: true do
     it "should save the sponsor name" do
       fill_in "study_sponsor_name", with: "Kurt Zanzibar"
       click_button "Save study"
-      visit edit_portal_protocol_path service_request.id
+      visit edit_portal_protocol_path service_request.protocol.id
       find("#study_sponsor_name").value().should eq("Kurt Zanzibar")
     end
   end
@@ -125,7 +126,7 @@ describe "editing a study", js: true do
       it "should save the funding opportunity number" do
         fill_in "study_funding_rfa", with: "12345"
         click_button "Save study"
-        visit edit_portal_protocol_path service_request.id
+        visit edit_portal_protocol_path service_request.protocol.id
         find("#study_funding_rfa").value().should eq("12345")
       end      
     end
@@ -179,7 +180,7 @@ describe "editing a study", js: true do
       it "should save the hr number" do
         fill_in "study_human_subjects_info_attributes_hr_number", with: "12345"
         click_button "Save study"
-        visit edit_portal_protocol_path service_request.id
+        visit edit_portal_protocol_path service_request.protocol.id
         find("#study_human_subjects_info_attributes_hr_number").value().should eq("12345")
       end
     end
@@ -189,7 +190,7 @@ describe "editing a study", js: true do
       it "should save the pro number" do
         fill_in "study_human_subjects_info_attributes_pro_number", with: "12345"
         click_button "Save study"
-        visit edit_portal_protocol_path service_request.id
+        visit edit_portal_protocol_path service_request.protocol.id
         find("#study_human_subjects_info_attributes_pro_number").value().should eq("12345")
       end
     end
@@ -199,7 +200,7 @@ describe "editing a study", js: true do
       it "should save the irb" do
         fill_in "study_human_subjects_info_attributes_irb_of_record", with: "crazy town"
         click_button "Save study"
-        visit edit_portal_protocol_path service_request.id
+        visit edit_portal_protocol_path service_request.protocol.id
         find("#study_human_subjects_info_attributes_irb_of_record").value().should eq("crazy town")
       end
     end
@@ -257,4 +258,35 @@ describe "editing a study", js: true do
       end
     end
   end  
+
+  context "study check boxes" do
+
+    describe "clinical trials" do
+
+      it "should change their state when clicked" do
+
+      end
+
+      it "should change state when clicked" do
+        check("study_study_types_attributes_0__destroy")
+        find("#study_study_types_attributes_0__destroy")
+      end
+    end
+
+    describe "basic science" do
+
+      it "should change state when clicked" do
+        check("study_study_types_attributes_1__destroy")
+        find("#study_study_types_attributes_1__destroy")
+      end
+    end
+
+    describe "translational science" do
+
+      it "should change state when clicked" do
+        check("study_study_types_attributes_2__destroy")
+        find("#study_study_types_attributes_2__destroy")
+      end
+    end
+  end
 end

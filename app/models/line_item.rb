@@ -19,6 +19,9 @@ class LineItem < ActiveRecord::Base
   attr_accessible :in_process_date
   attr_accessible :units_per_quantity
 
+  validates :service_id, :numericality => true
+  validates :service_request_id, :numericality => true
+
   # TODO: order by date/id instead of just by date?
   default_scope :order => 'id ASC'
 

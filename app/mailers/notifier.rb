@@ -19,11 +19,14 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => @identity.email, :subject => subject) 
   end
 
-  def notify_user project_role, service_request, xls, approval_id
+  def notify_user project_role, service_request, xls, approval
     @identity = project_role.identity
     @role = project_role.role 
 
-    @approval_link = project_role.project_rights == 'approve' ? approve_changes_service_request_url(service_request, :approval_id => approval_id) : nil
+    @approval_link = nil
+    if approval and project_role.project_rights == 'approve'
+      @approval_link = approve_changes_service_request_url(service_request, :approval_id => approval.id)
+    end
     
     @protocol = service_request.protocol
     @service_request = service_request

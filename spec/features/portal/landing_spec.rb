@@ -26,7 +26,8 @@ describe "landing page", :js => true do
       sleep 5
       find("h3#blue-provider-#{service_request.protocol_id} a").click
       sleep 2
-      page.fill_in 'search_box', :with => '2'
+      page.fill_in 'search_box', :with => "#{service_request.protocol_id}"
+      sleep 2
       find("ul.ui-autocomplete li.ui-menu-item a.ui-corner-all").click
       find("div.protocol-information-#{service_request.protocol_id}").visible?.should eq(true)
     end

@@ -1,5 +1,5 @@
 - admin ||= false
-- url = admin ? update_from_project_study_information_portal_sub_service_request_path(@sub_service_request.id) : portal_protocol_path(protocol)
+- url = admin ? update_from_project_study_information_portal_admin_sub_service_request_path(@sub_service_request.id) : portal_protocol_path(protocol)
 = form_for protocol, :url => url do |f|
   = f.hidden_field :requester_id
   - if admin

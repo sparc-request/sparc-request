@@ -24,9 +24,8 @@ Message.import = true
 
 def update_timestamps(record, row)
   record.record_timestamps = false
-  record.update_attributes(
-      created_at: row['created_at'],
-      updated_at: row['updated_at'])
+  record.created_at = row['created_at'] ? row['created_at'] : Time.now
+  record.updated_at = row['updated_at'] ? row['updated_at'] : Time.now
   record.save!
 end
 

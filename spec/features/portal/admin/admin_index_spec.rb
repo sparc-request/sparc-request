@@ -31,8 +31,8 @@ describe "admin index page", :js => true do
     describe "search functionality" do
 
       it "should search by protocol id" do
-        find('.search-all-service-requests').set('1')
-        find('.ui-autocomplete').should have_content('1')
+        find('.search-all-service-requests').set("#{service_request.protocol.id}")
+        find('.ui-autocomplete').should have_content("#{service_request.protocol.id}")
       end
 
       it "should search by service requester" do
@@ -73,7 +73,7 @@ describe "admin index page", :js => true do
       end
 
       it "should open a sub service request if I click that sub service request" do
-        find('td', :text => "1-").click
+        find('td', :text => "#{service_request.protocol.id}-").click
         wait_for_javascript_to_finish
         page.should have_content('Send Notifications')
       end

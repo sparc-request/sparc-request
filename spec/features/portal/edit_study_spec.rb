@@ -4,10 +4,11 @@ describe "editing a study", js: true do
   let_there_be_lane
   fake_login_for_each_test
   build_service_request_with_study()
+
   let(:numerical_day) { Date.today.strftime("%d").gsub(/^0/,'') }
 
   before :each do
-    visit edit_portal_protocol_path service_request.id
+    visit edit_portal_protocol_path service_request.protocol.id
   end
 
   context "validations" do
@@ -39,7 +40,7 @@ describe "editing a study", js: true do
     it "should save the short title" do
       fill_in "study_short_title", with: "Bob"
       click_button "Save study"
-      visit edit_portal_protocol_path service_request.id
+      visit edit_portal_protocol_path service_request.protocol.id
       find("#study_short_title").value().should eq("Bob")
     end
   end
@@ -49,7 +50,7 @@ describe "editing a study", js: true do
     it "should save the protocol title" do
       fill_in "study_title", with: "Slappy"
       click_button "Save study"
-      visit edit_portal_protocol_path service_request.id
+      visit edit_portal_protocol_path service_request.protocol.id
       find("#study_title").value().should eq("Slappy")
     end
   end
@@ -72,7 +73,7 @@ describe "editing a study", js: true do
     it "should save the udak/project number" do
       fill_in "study_udak_project_number", with: "12345"
       click_button "Save study"
-      visit edit_portal_protocol_path service_request.id
+      visit edit_portal_protocol_path service_request.protocol.id
       find("#study_udak_project_number").value().should eq("12345")
     end    
   end
@@ -82,7 +83,7 @@ describe "editing a study", js: true do
     it "should save the sponsor name" do
       fill_in "study_sponsor_name", with: "Kurt Zanzibar"
       click_button "Save study"
-      visit edit_portal_protocol_path service_request.id
+      visit edit_portal_protocol_path service_request.protocol.id
       find("#study_sponsor_name").value().should eq("Kurt Zanzibar")
     end
   end
@@ -125,7 +126,7 @@ describe "editing a study", js: true do
       it "should save the funding opportunity number" do
         fill_in "study_funding_rfa", with: "12345"
         click_button "Save study"
-        visit edit_portal_protocol_path service_request.id
+        visit edit_portal_protocol_path service_request.protocol.id
         find("#study_funding_rfa").value().should eq("12345")
       end      
     end
@@ -174,22 +175,18 @@ describe "editing a study", js: true do
       end
     end
 
-    describe "editing the hr number" do
+    describe "editing the hr number and the pro number" do
 
-      it "should save the hr number" do
-        fill_in "study_human_subjects_info_attributes_hr_number", with: "12345"
+      it "should save the hr and pro number" do
+        field_array = ["hr_number", "pro_number"]
+        field_num = 0
+        2.times do 
+          fill_in "study_human_subjects_info_attributes_#{field_array[field_num]}", with: "12345"
+          field_num += 1
+        end
         click_button "Save study"
-        visit edit_portal_protocol_path service_request.id
+        visit edit_portal_protocol_path service_request.protocol.id
         find("#study_human_subjects_info_attributes_hr_number").value().should eq("12345")
-      end
-    end
-
-    describe "editing the pro number" do
-
-      it "should save the pro number" do
-        fill_in "study_human_subjects_info_attributes_pro_number", with: "12345"
-        click_button "Save study"
-        visit edit_portal_protocol_path service_request.id
         find("#study_human_subjects_info_attributes_pro_number").value().should eq("12345")
       end
     end
@@ -199,7 +196,7 @@ describe "editing a study", js: true do
       it "should save the irb" do
         fill_in "study_human_subjects_info_attributes_irb_of_record", with: "crazy town"
         click_button "Save study"
-        visit edit_portal_protocol_path service_request.id
+        visit edit_portal_protocol_path service_request.protocol.id
         find("#study_human_subjects_info_attributes_irb_of_record").value().should eq("crazy town")
       end
     end
@@ -235,26 +232,76 @@ describe "editing a study", js: true do
 
     describe "vertebrate animals" do
 
-      it "should change state when clicked" do
-        check("study_research_types_info_attributes_vertebrate_animals")
+      it "should change their state when clicked" do
+        box_array = ["vertebrate_animals", "investigational_products", "ip_patents"]
+        box_num = 0
+        3.times do
+          check("study_research_types_info_attributes_#{box_array[box_num]}")
+          box_num += 1
+        end
         find("#study_research_types_info_attributes_vertebrate_animals").should be_checked
-      end
-    end
-
-    describe "investigational products" do
-
-      it "should change state when clicked" do
-        check("study_research_types_info_attributes_investigational_products")
         find("#study_research_types_info_attributes_investigational_products").should be_checked
-      end
-    end
-
-    describe "ip/patents" do
-
-      it "should change state when clicked" do
-        check("study_research_types_info_attributes_ip_patents")
         find("#study_research_types_info_attributes_ip_patents").should be_checked
       end
     end
   end  
+
+  context "study check boxes" do
+
+    describe "clinical trials, basic science, and translational science" do
+
+      it "should change their state when clicked" do
+        box_num = 0
+        3.times do
+          check("study_study_types_attributes_#{box_num}__destroy")
+          box_num += 1
+        end
+        find("#study_study_types_attributes_0__destroy").should be_checked
+        find("#study_study_types_attributes_1__destroy").should be_checked
+        find("#study_study_types_attributes_2__destroy").should be_checked
+      end
+    end
+  end
+
+  context "impact check boxes" do
+
+    describe "pediactrics, hiv/aids, hypertension, stroke, diabetes, cancer, and other" do
+
+      it "should change their state when clicked" do
+        box_num = 0
+        7.times do
+          check("study_impact_areas_attributes_#{box_num}__destroy")
+          box_num += 1
+        end
+        find("#study_impact_areas_attributes_0__destroy").should be_checked
+        find("#study_impact_areas_attributes_1__destroy").should be_checked
+        find("#study_impact_areas_attributes_2__destroy").should be_checked
+        find("#study_impact_areas_attributes_3__destroy").should be_checked
+        find("#study_impact_areas_attributes_4__destroy").should be_checked
+        find("#study_impact_areas_attributes_5__destroy").should be_checked
+        find("#study_impact_areas_attributes_6__destroy").should be_checked
+      end
+    end
+  end
+
+  context "affiliations check boxes" do
+
+    describe "cancer center, lipidomics, oral health, cardiovascular, cchp, inbre, reach" do
+      
+      it "should change theit state when clicked" do
+        box_num = 0
+        7.times do
+          check("study_affiliations_attributes_#{box_num}__destroy")
+          box_num += 1
+        end
+        find("#study_affiliations_attributes_0__destroy").should be_checked
+        find("#study_affiliations_attributes_1__destroy").should be_checked
+        find("#study_affiliations_attributes_2__destroy").should be_checked
+        find("#study_affiliations_attributes_3__destroy").should be_checked
+        find("#study_affiliations_attributes_4__destroy").should be_checked
+        find("#study_affiliations_attributes_5__destroy").should be_checked
+        find("#study_affiliations_attributes_6__destroy").should be_checked
+      end    
+    end
+  end
 end

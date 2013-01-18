@@ -70,11 +70,11 @@ describe "landing page", :js => true do
     end
 
     it 'should be able to search' do
-      sleep 5
+      wait_for_javascript_to_finish
       find("h3#blue-provider-#{service_request.protocol_id} a").click
-      sleep 2
+      wait_for_javascript_to_finish
       page.fill_in 'search_box', :with => "#{service_request.protocol_id}"
-      sleep 2
+      wait_for_javascript_to_finish
       find("ul.ui-autocomplete li.ui-menu-item a.ui-corner-all").click
       find("div.protocol-information-#{service_request.protocol_id}").should be_visible
     end

@@ -65,7 +65,6 @@ FactoryGirl.find_definitions
 RSpec.configure do |config|
 
   config.before(:suite) do
-    load_schema()
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)
   end

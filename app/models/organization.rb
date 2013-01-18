@@ -71,7 +71,15 @@ class Organization < ActiveRecord::Base
     if !service_providers.empty?
       return service_providers
     else 
-      return self.parents.select {|x| !x.service_providers.empty?}.first.service_providers
+      return self.parents.select {|x| !x.service_providers.empty?}.first.try(:service_providers) || []
+    end
+  end
+
+  def submission_emails_lookup
+    if !submission_emails.empty?
+      return submission_emails
+    else 
+      return self.parents.select {|x| !x.submission_emails.empty?}.first.try(:submission_emails) || []
     end
   end
 

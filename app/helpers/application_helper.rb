@@ -58,18 +58,10 @@ module ApplicationHelper
     line_items = service_request.per_patient_per_visit_line_items
 
     (beginning_visit .. ending_visit).each do |n|
-      checked = line_items.each.map{ |l|
-        visit = l.visits[n-1]
-        if visit then
-          visit.research_billing_qty >= 1 ? true : false
-        else
-          nil # TODO: ???
-        end
-      }.all?
-      
+      checked = line_items.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?
       action = checked == true ? 'unselect_calendar_column' : 'select_calendar_column'
       icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
-      visit_name = line_items[0].visits[n - 1].try(:name) || "Visit #{n}"
+      visit_name = line_items[0].visits[n - 1].name || "Visit #{n}"
       
       if params[:action] == 'review' || params[:action] == 'show' || params[:action] == 'refresh_service_calendar'
         returning_html += content_tag(:th, content_tag(:span, visit_name), :width => 60, :class => 'visit_number')

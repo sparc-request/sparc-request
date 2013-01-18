@@ -2,6 +2,32 @@ require 'date'
 require 'spec_helper'
 
 describe 'Organization' do
+  describe 'submission_emails_lookup' do
+      let!(:submission_email_1) {FactoryGirl.create(:submission_email)}
+      let!(:submission_email_2) {FactoryGirl.create(:submission_email)}
+      let!(:submission_email_3) {FactoryGirl.create(:submission_email)}
+      let!(:provider) {FactoryGirl.create(:provider, submission_emails: [submission_email_1])}
+      let!(:program) {FactoryGirl.create(:program, parent_id: provider.id, submission_emails: [submission_email_2])}
+      let!(:core) {FactoryGirl.create(:core, :process_ssrs, parent_id: program.id, submission_emails: [submission_email_3])}
+      let!(:sub_service_request) {FactoryGirl.create(:sub_service_request, organization_id: core.id)}
+
+      it "should return the first submission e-mails it finds" do
+        sub_service_request.organization.submission_emails_lookup.should include(submission_email_3)
+        core.submission_emails.delete_all
+        sub_service_request.reload
+        sub_service_request.organization.submission_emails_lookup.should include(submission_email_2)
+        program.submission_emails.delete_all
+        sub_service_request.reload
+        sub_service_request.organization.submission_emails_lookup.should include(submission_email_1)
+
+        # now let's add the core back
+        submission_email_4 = core.submission_emails.create(:email => submission_email_3.email)
+        core.save!
+        sub_service_request.reload
+        sub_service_request.organization.submission_emails_lookup.should include(submission_email_4)
+      end
+  end
+
   describe 'parent' do
     it "should return nil if there is no parent" do
       organization = FactoryGirl.build(:organization)

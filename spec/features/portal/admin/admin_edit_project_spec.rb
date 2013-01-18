@@ -6,6 +6,7 @@ describe "editing a project", js: true do
   build_service_request_with_project()
  
   before :each do
+    add_visits
     visit portal_admin_sub_service_request_path sub_service_request.id
     click_on("Project/Study Information")
   end

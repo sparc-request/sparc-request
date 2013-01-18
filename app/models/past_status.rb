@@ -8,5 +8,7 @@ class PastStatus < ActiveRecord::Base
   attr_accessible :status
   attr_accessible :date
 
+  attr_accessor :changed_to
+
   default_scope :order => 'date ASC'
 end

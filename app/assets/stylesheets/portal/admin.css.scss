@@ -113,7 +113,15 @@ background-color: #8dbdd8;
   cursor: pointer
 }
 
-#service_request_status_changes, #service_request_approval_changes {
+#service_request_status_changes {
+  table {
+    th, td {
+      width: 33%;
+    }
+  }
+}
+
+#service_request_approval_changes {
   table {
     th, td {
       width: 50%;

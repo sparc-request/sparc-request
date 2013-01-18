@@ -37,7 +37,7 @@ describe "editing a study", js: true do
 
   context "editing the short title" do
 
-    it "should save the short title" do
+    it "should save the new short title" do
       fill_in "study_short_title", with: "Bob"
       click_button "Save study"
       visit edit_portal_protocol_path service_request.protocol.id
@@ -47,7 +47,7 @@ describe "editing a study", js: true do
 
   context "editing the protocol title" do
 
-    it "should save the protocol title" do
+    it "should save the new protocol title" do
       fill_in "study_title", with: "Slappy"
       click_button "Save study"
       visit edit_portal_protocol_path service_request.protocol.id
@@ -70,7 +70,7 @@ describe "editing a study", js: true do
 
   context "editing the UDAK/Project #" do
 
-    it "should save the udak/project number" do
+    it "should save the new udak/project number" do
       fill_in "study_udak_project_number", with: "12345"
       click_button "Save study"
       visit edit_portal_protocol_path service_request.protocol.id
@@ -80,7 +80,7 @@ describe "editing a study", js: true do
 
   context "editing the sponsor name" do
 
-    it "should save the sponsor name" do
+    it "should save the new sponsor name" do
       fill_in "study_sponsor_name", with: "Kurt Zanzibar"
       click_button "Save study"
       visit edit_portal_protocol_path service_request.protocol.id
@@ -123,7 +123,7 @@ describe "editing a study", js: true do
 
     describe "editing the funding opportunity number" do
 
-      it "should save the funding opportunity number" do
+      it "should save the new funding opportunity number" do
         fill_in "study_funding_rfa", with: "12345"
         click_button "Save study"
         visit edit_portal_protocol_path service_request.protocol.id
@@ -177,7 +177,7 @@ describe "editing a study", js: true do
 
     describe "editing the hr number and the pro number" do
 
-      it "should save the hr and pro number" do
+      it "should save the new hr and pro number" do
         field_array = ["hr_number", "pro_number"]
         field_num = 0
         2.times do 
@@ -193,7 +193,7 @@ describe "editing a study", js: true do
 
     describe "irb of record" do
 
-      it "should save the irb" do
+      it "should save the new irb" do
         fill_in "study_human_subjects_info_attributes_irb_of_record", with: "crazy town"
         click_button "Save study"
         visit edit_portal_protocol_path service_request.protocol.id

@@ -267,7 +267,17 @@ class ServiceRequestsController < ApplicationController
     end
 
     # send e-mail to admins and service providers
-    Notifier.notify_admin(@service_request, xls).deliver
+    if @sub_service_request # only notify the submission e-mails for this sub service request
+      @sub_service_request.organization.submission_emails_lookup.each do |submission_email|
+        Notifier.notify_admin(@service_request, submission_email.email, xls).deliver
+      end
+    else # notify the submission e-mails for the service request
+      @service_request.sub_service_requests.each do |sub_service_request|
+        sub_service_request.organization.submission_emails_lookup.each do |submission_email|
+          Notifier.notify_admin(@service_request, submission_email.email, xls).deliver
+        end
+      end
+    end
 
     # send e-mail to all service providers
     if @sub_service_request # only notify the service providers for this sub service request

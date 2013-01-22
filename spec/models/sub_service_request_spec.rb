@@ -275,16 +275,6 @@ describe 'SubServiceRequest' do
           sub_service_request.candidate_statuses.should_not include('ctrc approved', 'ctrc review')
         end 
       end
-      
-      context "update past status" do
-
-        let!(:past_status) { FactoryGirl.create(:past_status, sub_service_request_id: sub_service_request.id)}
-
-        it "should set sub service request's past status to 'draft' if no previous status" do
-          sub_service_request.update_past_status
-          sub_service_request.past_statuses.last.status.should eq("draft")
-        end
-      end
     end
 
     describe "sub service request ownership" do

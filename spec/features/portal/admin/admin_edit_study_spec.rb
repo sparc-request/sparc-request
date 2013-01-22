@@ -4,11 +4,13 @@ describe "editing a study", js: true do
   let_there_be_lane
   fake_login_for_each_test
   build_service_request_with_study()
-
+ 
   let(:numerical_day) { Date.today.strftime("%d").gsub(/^0/,'') }
 
   before :each do
-    visit edit_portal_protocol_path service_request.protocol.id
+    add_visits
+    visit portal_admin_sub_service_request_path sub_service_request.id
+    click_on("Project/Study Information")
   end
 
   context "validations" do
@@ -27,21 +29,21 @@ describe "editing a study", js: true do
     end
   end
 
-  context "saving a study" do
-
-    it "should redirect to the main portal page" do
-      click_button "Save study"
-      page.should have_content("Welcome!")
-    end
-  end
-
   context "editing the short title" do
 
     it "should save the new short title" do
       fill_in "study_short_title", with: "Bob"
       click_button "Save study"
-      visit edit_portal_protocol_path service_request.protocol.id
       find("#study_short_title").value().should eq("Bob")
+    end
+  end
+
+  context "clicking cancel button" do
+
+    it "should not save changes" do
+      fill_in "study_short_title", with: "Jason"
+      find(".admin_cancel_link").click()    
+      find("#study_short_title").should_not eq("Jason")
     end
   end
 
@@ -50,7 +52,6 @@ describe "editing a study", js: true do
     it "should save the new protocol title" do
       fill_in "study_title", with: "Slappy"
       click_button "Save study"
-      visit edit_portal_protocol_path service_request.protocol.id
       find("#study_title").value().should eq("Slappy")
     end
   end
@@ -73,7 +74,6 @@ describe "editing a study", js: true do
     it "should save the new udak/project number" do
       fill_in "study_udak_project_number", with: "12345"
       click_button "Save study"
-      visit edit_portal_protocol_path service_request.protocol.id
       find("#study_udak_project_number").value().should eq("12345")
     end    
   end
@@ -83,7 +83,6 @@ describe "editing a study", js: true do
     it "should save the new sponsor name" do
       fill_in "study_sponsor_name", with: "Kurt Zanzibar"
       click_button "Save study"
-      visit edit_portal_protocol_path service_request.protocol.id
       find("#study_sponsor_name").value().should eq("Kurt Zanzibar")
     end
   end
@@ -126,7 +125,6 @@ describe "editing a study", js: true do
       it "should save the new funding opportunity number" do
         fill_in "study_funding_rfa", with: "12345"
         click_button "Save study"
-        visit edit_portal_protocol_path service_request.protocol.id
         find("#study_funding_rfa").value().should eq("12345")
       end      
     end
@@ -185,7 +183,6 @@ describe "editing a study", js: true do
           field_num += 1
         end
         click_button "Save study"
-        visit edit_portal_protocol_path service_request.protocol.id
         find("#study_human_subjects_info_attributes_hr_number").value().should eq("12345")
         find("#study_human_subjects_info_attributes_pro_number").value().should eq("12345")
       end
@@ -196,7 +193,6 @@ describe "editing a study", js: true do
       it "should save the new irb" do
         fill_in "study_human_subjects_info_attributes_irb_of_record", with: "crazy town"
         click_button "Save study"
-        visit edit_portal_protocol_path service_request.protocol.id
         find("#study_human_subjects_info_attributes_irb_of_record").value().should eq("crazy town")
       end
     end
@@ -304,4 +300,4 @@ describe "editing a study", js: true do
       end    
     end
   end
-end
+end  

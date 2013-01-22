@@ -42,7 +42,7 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => "no-reply@musc.edu", :subject => subject)
   end
 
-  def notify_admin service_request, xls
+  def notify_admin service_request, submission_email_address, xls
     @protocol = service_request.protocol
     @service_request = service_request
     @role == 'none'
@@ -54,8 +54,8 @@ class Notifier < ActionMailer::Base
     attachments["service_request_#{@service_request.id}.xls"] = xls 
     
     # only send these to the correct person in the production env
-    email = Rails.env == 'production' ? ADMIN_MAIL_TO : DEFAULT_MAIL_TO
-    subject = Rails.env == 'production' ? "SPARC Service Request" : "[#{Rails.env.capitalize} - EMAIL TO #{ADMIN_MAIL_TO}] SPARC Service Request"
+    email = Rails.env == 'production' ?  submission_email_address : DEFAULT_MAIL_TO
+    subject = Rails.env == 'production' ? "SPARC Service Request" : "[#{Rails.env.capitalize} - EMAIL TO #{submission_email_address}] SPARC Service Request"
     
     mail(:to => email, :from => "no-reply@musc.edu", :subject => subject)
   end

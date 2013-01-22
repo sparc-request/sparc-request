@@ -6,7 +6,9 @@ describe "editing a project", js: true do
   build_service_request_with_project()
  
   before :each do
-    visit edit_portal_protocol_path service_request.protocol.id
+    add_visits
+    visit portal_admin_sub_service_request_path sub_service_request.id
+    click_on("Project/Study Information")
   end
 
   context "validations" do
@@ -26,11 +28,12 @@ describe "editing a project", js: true do
     end
   end
 
-  context "cancel button" do
+  context "clicking cancel button" do
 
-    it "should redirect back to the main portal page" do
-      click_on "Cancel"
-      page.should have_content("Welcome!")
+    it "should not save changes" do
+      fill_in "project_short_title", with: "Jason"
+      find(".admin_cancel_link").click()    
+      find("#project_short_title").should_not eq("Jason")
     end
   end
 
@@ -39,7 +42,6 @@ describe "editing a project", js: true do
     it "should save the new short title" do
       fill_in "project_short_title", with: "Julius"
       click_button "Save project"
-      visit edit_portal_protocol_path service_request.protocol.id
       find("#project_short_title").value().should eq("Julius")
     end
   end
@@ -49,7 +51,6 @@ describe "editing a project", js: true do
     it "should save the new project title" do
       fill_in "project_title", with: "Swanson"
       click_button "Save project"
-      visit edit_portal_protocol_path service_request.protocol.id
       find("#project_title").value().should eq("Swanson")
     end
   end
@@ -90,7 +91,6 @@ describe "editing a project", js: true do
     it "should save the brief description" do
       fill_in "project_brief_description", with: "This is an amazing description."
       click_button "Save project"
-      visit edit_portal_protocol_path service_request.protocol.id
       find("#project_brief_description").value().should eq("This is an amazing description.")
     end
   end
@@ -100,7 +100,6 @@ describe "editing a project", js: true do
     it "should save the indirect cost rate" do
       fill_in "project_indirect_cost_rate", with: "50.0"
       click_button "Save project"
-      visit edit_portal_protocol_path service_request.protocol.id
       find("#project_indirect_cost_rate").value().should eq("50.0")
     end
   end

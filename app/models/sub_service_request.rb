@@ -187,7 +187,7 @@ class SubServiceRequest < ActiveRecord::Base
   end
 
   def status= status
-    @prev_status = self.status || 'draft'
+    @prev_status = self.status
     super(status)
   end
 
@@ -196,6 +196,27 @@ class SubServiceRequest < ActiveRecord::Base
     if @prev_status and (not old_status or old_status.status != @prev_status)
       self.past_statuses.create(:status => @prev_status, :date => Time.now)
     end
+  end
+
+  def past_status_lookup
+    ps = []
+    is_first = true
+    previous_status = nil
+
+    past_statuses.reverse.each do |past_status|
+      next if past_status.status == 'first_draft'
+
+      if is_first
+        past_status.changed_to = self.status
+      else
+        past_status.changed_to = previous_status
+      end
+      is_first = false
+      previous_status = past_status.status
+      ps << past_status
+    end
+
+    ps.reverse
   end
 
   ###################

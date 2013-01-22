@@ -150,14 +150,22 @@ $(document).ready ->
           height: 485
           modal: true
           resizable: false
-          buttons: {
-            "Submit": () ->
-              form = $(".edit-associated-user-dialog").children('form')
-              form.submit()
-            "Cancel": () ->
-              $(this).dialog("close")
-              $("#errorExplanation").remove()
-          }
+          buttons: [
+            {
+              id: 'edit_authorized_user_submit_button'
+              text: 'Submit'
+              click: ->
+                form = $(".edit-associated-user-dialog").children('form')
+                form.submit()
+            },
+            {
+              id: 'edit_authorized_user_cancel_button'
+              text: 'Cancel'
+              click: ->
+                $(this).dialog("close")
+                $("#errorExplanation").remove()
+            }
+          ]
           open: ->
             $('#associated_user_role').change()
       })

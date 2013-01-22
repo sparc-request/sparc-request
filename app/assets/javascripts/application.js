@@ -12,6 +12,7 @@
 //= require jquery.qtip.min
 //= require jquery.form
 //= require jquery_ujs
+//= require json2
 //= require shared
 //= require underscore-min
 //= require form_fx_manager

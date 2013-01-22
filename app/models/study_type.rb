@@ -11,10 +11,12 @@ class StudyType < ActiveRecord::Base
   attr_accessor :new
   attr_accessor :position
 
-  TYPES = {
-    'clinical_trials' => 'Clinical Trials',
-    'basic_science' => 'Basic Science',
-    'translational_science' => 'Translational Science'
-  }
+  begin
+    constant_file = File.join(Rails.root, 'config', 'constants.yml')
+    config = YAML::load_file(constant_file)
+    TYPES = config['study_types']
+  rescue
+    raise "constants.yml not found"
+  end
 end
 

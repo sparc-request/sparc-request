@@ -25,8 +25,16 @@ $(document).ready ->
   for datepicker in $('.datepicker')
     do_datepicker("##{$(datepicker).attr('id')}")
 
+  # WARNING: Object.keys(obj) does not work in IE 6,7,or 8.  Please do not use.
+  getObjKlass = (obj) ->
+    objData = $(obj).data()
+    objKeys = $.map(objData, (val, key) ->
+      key
+    )
+    objKeys[0].replace('_id', '')
+
   $(document).on('change', '.fulfillment_data', ->
-    klass = Object.keys($(this).data())[0].replace('_id', '')
+    klass = getObjKlass(this)
     object_id = $(this).data("#{klass}_id")
     name = $(this).attr('name')
     key = name.replace("#{klass}_", '')
@@ -36,7 +44,7 @@ $(document).ready ->
   )
 
   $(document).on('click', '.delete_data', ->
-    klass = Object.keys($(this).data())[0].replace('_id', '')
+    klass = getObjKlass(this)
     object_id = $(this).data("#{klass}_id")
     $.ajax
       type: 'DELETE'

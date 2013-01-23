@@ -11,12 +11,6 @@ class Affiliation < ActiveRecord::Base
   attr_accessor :new
   attr_accessor :position
 
-  begin
-    constant_file = File.join(Rails.root, 'config', 'constants.yml')
-    config = YAML::load_file(constant_file)
-    TYPES = config['affiliations']
-  rescue
-    raise "constants.yml not found"
-  end
+  TYPES = AFFILIATION_TYPES
 end
 

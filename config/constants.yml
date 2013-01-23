@@ -1,0 +1,17 @@
+impact_areas: { 'pediatrics': 'Pediatrics',
+               'hiv_aids': 'HIV/AIDS',
+               'hypertension': 'Hypertension',
+               'stroke': 'Stroke',
+               'diabetes': 'Diabetes',
+               'cancer': 'Cancer',
+               'other': 'Other' }
+affiliations: { 'cancer_center': 'Cancer Center',
+                'lipidomics_cobre': 'Lipidomics COBRE',
+                'oral_health_cobre': 'Oral Health COBRE',
+                'cardiovascular_cobre': 'Cardiovascular COBRE',
+                'cchp': 'CCHP',
+                'inbre': 'INBRE',
+                'reach': 'REACH' }
+study_types: { 'clinical_trials': 'Clinical Trials',
+               'basic_science': 'Basic Science',
+               'translational_science': 'Translational Science' }

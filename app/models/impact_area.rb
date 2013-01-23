@@ -11,14 +11,12 @@ class ImpactArea < ActiveRecord::Base
   attr_accessor :new
   attr_accessor :position
 
-  TYPES = {
-    'pediatrics' => 'Pediatrics',
-    'hiv_aids' => 'HIV/AIDS',
-    'hypertension' => 'Hypertension',
-    'stroke' => 'Stroke',
-    'diabetes' => 'Diabetes',
-    'cancer' => 'Cancer',
-    'other' => 'Other'
-  }
+  begin
+    constant_file = File.join(Rails.root, 'config', 'constants.yml')
+    config = YAML::load_file(constant_file)
+    TYPES = config['impact_areas']
+  rescue
+    raise "constants.yml not found"
+  end
 end
 

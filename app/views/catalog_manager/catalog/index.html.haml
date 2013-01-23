@@ -26,34 +26,34 @@
               %ul
                 - if can_access_provider
                   %li= link_to 'Create New Program', '#'
-                  - provider.programs.order("`order`").each do |program|
-                    %li{:id => 'PROGRAM' + program.id.to_s}
-                      - can_access_program = @user.can_edit_entity? program
-                      = node program, can_access_program
-                      - if program.cores.empty?
-                        %ul
-                          - if can_access_program
-                            %li= link_to 'Create New Core', '#'
-                            %li= link_to 'Create New Service', '#'
-                            - program.services.order("`order`").each do |service|
-                              %li{:id => 'SERVICE' + service.id.to_s}= node service
-                      - else
-                        %ul
-                          - if can_access_program
-                            %li= link_to 'Create New Core', '#'
-                            %li= link_to 'Create New Service', '#'
-                            - program.services.order("`order`").each do |service|
-                              %li{:id => 'SERVICE' + service.id.to_s}= node service                            
-                            - program.cores.order("`order`").each do |core|
-                              %li{:id => 'CORE' + core.id.to_s}
-                                - can_access_core = @user.can_edit_entity? core
-                                = node core, can_access_core
-                                %ul
-                                  - if can_access_core
-                                    %li= link_to 'Create New Service', '#'
-                                    - unless core.services.empty?
-                                      - core.services.order("`order`").each do |service|
-                                        %li{:id => 'SERVICE' + service.id.to_s}= node service
+                - provider.programs.order("`order`").each do |program|
+                  %li{:id => 'PROGRAM' + program.id.to_s}
+                    - can_access_program = @user.can_edit_entity? program
+                    = node program, can_access_program
+                    - if program.cores.empty?
+                      %ul
+                        - if can_access_program
+                          %li= link_to 'Create New Core', '#'
+                          %li= link_to 'Create New Service', '#'
+                        - program.services.order("`order`").each do |service|
+                          %li{:id => 'SERVICE' + service.id.to_s}= node service
+                    - else
+                      %ul
+                        - if can_access_program
+                          %li= link_to 'Create New Core', '#'
+                          %li= link_to 'Create New Service', '#'
+                        - program.services.order("`order`").each do |service|
+                          %li{:id => 'SERVICE' + service.id.to_s}= node service                            
+                        - program.cores.order("`order`").each do |core|
+                          %li{:id => 'CORE' + core.id.to_s}
+                            - can_access_core = @user.can_edit_entity? core
+                            = node core, can_access_core
+                            %ul
+                              - if can_access_core
+                                %li= link_to 'Create New Service', '#'
+                              - unless core.services.empty?
+                                - core.services.order("`order`").each do |service|
+                                  %li{:id => 'SERVICE' + service.id.to_s}= node service
 #details
 
 #processing_request.ui-corner-all{:style => "border: 1px solid black; padding: 3px; width: 200px; margin: 30px auto; text-align: center"}

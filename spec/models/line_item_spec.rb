@@ -8,8 +8,8 @@ describe "Line Item" do
       organization.pricing_setups[0].update_attributes(display_date: Date.today - 1)
       service = FactoryGirl.build(:service, :organization_id => organization.id, :pricing_map_count => 0)
       service.save!(validate: false)
-      project = Project.create(FactoryGirl.attributes_for(:protocol))
-      service_request = ServiceRequest.create(FactoryGirl.attributes_for(:service_request, protocol_id: project.id), :validate => false)
+      project = Project.create(FactoryGirl.attributes_for(:protocol), :validate => false)
+      service_request = ServiceRequest.create(FactoryGirl.attributes_for(:service_request), protocol_id: project.id, :validate => false)
       line_item = FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id)
       lambda { line_item.applicable_rate }.should raise_exception(ArgumentError)
     end
@@ -19,7 +19,7 @@ describe "Line Item" do
       service = FactoryGirl.create(:service, :organization_id => organization.id, :pricing_map_count => 1)
       service.pricing_maps[0].update_attributes(display_date: Date.today - 1)
       project = Project.create(FactoryGirl.attributes_for(:protocol))
-      service_request = ServiceRequest.create(FactoryGirl.attributes_for(:service_request, protocol_id: project.id), :validate => false)
+      service_request = ServiceRequest.create(FactoryGirl.attributes_for(:service_request), protocol_id: project.id, :validate => false)
       line_item = FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id)
       lambda { line_item.applicable_rate }.should raise_exception(ArgumentError)
     end
@@ -171,8 +171,9 @@ describe "Line Item" do
     end
 
     describe "quantity total" do
-      
-      let!(:line_item) {FactoryGirl.create(:line_item, subject_count: 5)}  
+      let!(:service_request) { FactoryGirl.create(:service_request, protocol_id: @study.id) }
+      let!(:service)         {FactoryGirl.create(:service)}
+      let!(:line_item) {FactoryGirl.create(:line_item, subject_count: 5, service_request_id: service_request.id, service_id: service.id)}  
       let!(:visit)     {FactoryGirl.create(:visit, line_item_id: line_item.id, research_billing_qty: 5)}
 
       it "should return the correct quantity" do
@@ -243,10 +244,11 @@ describe "Line Item" do
     describe 'visit manipulation' do
 
       let!(:service) { FactoryGirl.create(:service) }
+      let!(:service_request) { FactoryGirl.create(:service_request, protocol_id: @study.id) }
 
       context 'adding a visit' do
 
-        let!(:line_item_with_visits) { FactoryGirl.create(:line_item, service_id: service.id, visit_count: 5) }
+        let!(:line_item_with_visits) { FactoryGirl.create(:line_item, service_id: service.id, visit_count: 5, service_request_id: service_request.id) }
 
         it 'should add the visit in the correct position' do
           line_item_with_visits.add_visit(3)
@@ -257,7 +259,7 @@ describe "Line Item" do
 
       context "removing a visit" do
 
-        let!(:line_item_with_visits) { FactoryGirl.create(:line_item, service_id: service.id, visit_count: 5) }
+        let!(:line_item_with_visits) { FactoryGirl.create(:line_item, service_id: service.id, visit_count: 5, service_request_id: service_request.id) }
 
         it "should delete a visit in the correct position" do
         first_visit = line_item_with_visits.visits.first
@@ -360,8 +362,10 @@ describe "Line Item" do
 
   context 'bulk creatable list' do
     let!(:service)    { FactoryGirl.create(:service) }
-    let!(:line_item)  { FactoryGirl.create(:line_item, service_id: service.id) }
-    let!(:line_item2) { FactoryGirl.create(:line_item, service_id: service.id) }
+    let!(:project) {Project.create(FactoryGirl.attributes_for(:protocol), :validate => false)}
+    let!(:service_request) {ServiceRequest.create(FactoryGirl.attributes_for(:service_request), protocol_id: project.id, :validate => false)}
+    let!(:line_item)  { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id) }
+    let!(:line_item2) { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id) }
 
     describe 'bulk_create' do
       it 'should create 5 visits when passed n=5' do

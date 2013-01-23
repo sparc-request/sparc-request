@@ -4,6 +4,13 @@ describe "landing page", :js => true do
   let_there_be_lane
   fake_login_for_each_test
 
+  describe "notifications link" do
+    it 'should work' do
+      find(".notifications-link a").click
+      page.should have_css("div#notifications")
+    end
+  end
+
   describe "with no requests" do
     it 'should be empty' do
       visit portal_root_path

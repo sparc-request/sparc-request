@@ -7,6 +7,7 @@
 //= require catalog_manager/sparc
 //= require jquery
 //= require jquery_ujs
+//= require json2
 //= require catalog_manager/jquery.cookie
 //= require catalog_manager/jquery.jstree
 //= require catalog_manager/jquery.form

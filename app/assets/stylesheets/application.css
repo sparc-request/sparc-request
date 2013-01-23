@@ -95,21 +95,21 @@ a.save-option{
   height: 102px;
 }
 
-#container #sctr_logo, #container #sctr_header_title, #container #musc_logo {
+#container #org_logo, #container #department_title, #container #institution_logo {
   float: left;
 }
 
-#container #sctr_logo {
+#container #org_logo {
   width: 270px;
   margin-top: 20px;
 }
 
-#container #sctr_header_title {
+#container #department_title {
   width: 510px;
   margin: 22px 0 0 -4px;
 }
 
-#container #musc_logo {
+#container #institution_logo {
   width: 150px;
   margin: 5px 0 0 13px;
   text-align: right;

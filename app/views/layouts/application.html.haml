@@ -14,15 +14,15 @@
     = image_tag 'cancel.png', :style => 'display:none'
     #container.container
       #header
-        #sctr_logo
-          %a{:href => "http://sctr.musc.edu/"}
-            %img{:alt => "Sctr_logo", :src => "/assets/sctr_logo.png"}/
-        #sctr_header_title
-          %a{:href => "http://sctr.musc.edu/"}
-            %img{:alt => "Department_name", :src => "/assets/department_name.gif"}/
-        #musc_logo
-          %a{:href => "http://www.musc.edu/", :target => "_blank"}
-            %img{:alt => "Musc_logo", :src => "/assets/musc_logo.gif"}/
+        #org_logo
+          %a{:href => HEADER_LINK_1}
+            = image_tag '/assets/org_logo_197x57.png', :alt => 'org_logo'
+        #department_title
+          %a{:href => HEADER_LINK_2}
+            = image_tag "/assets/department_name_460x60.gif", :alt => "department_logo"
+        #institution_logo
+          %a{:href => HEADER_LINK_3, :target => '_blank'}
+            = image_tag '/assets/institution_logo_136x86.gif', :alt => 'institution_logo'
       #welcome_msg= show_welcome_message(current_user)
       #title
         #sub_service_request_header= show_friendly_ssr_id(@sub_service_request) if @sub_service_request

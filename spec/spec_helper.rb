@@ -59,13 +59,19 @@ def load_schema
   silence_stream(STDOUT, &load_schema)
 end
 
-load_schema()
+# We need to load the schema if we are using the in-memory sqlite3
+# database; if we are using mysql, we can save some time by skipping
+# this step.
+ar_config = ActiveRecord::Base.configurations[Rails.env]
+if ar_config['adapter'] == 'sqlite3' and ar_config['database'] == ':memory:' then
+  load_schema()
+end
+
 FactoryGirl.find_definitions
 
 RSpec.configure do |config|
 
   config.before(:suite) do
-    load_schema()
     DatabaseCleaner.strategy = :transaction
     DatabaseCleaner.clean_with(:truncation)
   end

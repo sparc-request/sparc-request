@@ -2,9 +2,9 @@
   .grid_6.prefix_3.suffix_3.box
     .info
       %h2.center
-        Sign in using your institutional login 
+        = t :signin_message1
         %br
-        (ie - MUSC netid and password)
+        = t :signin_message2
       %br
       .center 
         = button_to "Continue to sign in page", identity_omniauth_authorize_path(:shibboleth), :class => 'btn ui-button ui-widget ui-state-default ui-corner-all'
@@ -16,21 +16,21 @@
   .grid_6.prefix_3.suffix_3.box
     .info
       %h2.center
-        Sign in using a non-institutional login
+        = t :signin_message3
         %br
-        (ie - SPARC created account)
+        = t :signin_message4
 
       = form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
         .field
-          = f.label :ldap_uid, "Username:"
+          = f.label(:ldap_uid, t(:login_name))
           = f.text_field :ldap_uid, :size => '30', :style => 'width:auto'
         .field
-          = f.label :password, "Password:"
+          = f.label(:password, t(:login_password))
           = f.password_field :password
         - if devise_mapping.rememberable?
           .field
             = f.check_box :remember_me
-            = f.label :remember_me, "Remember me:"
+            = f.label(:remember_me, t(:remember_user))
         #button
           = f.submit "Sign in", {:class => 'btn ui-button ui-widget ui-state-default ui-corner-all'}
         .clear

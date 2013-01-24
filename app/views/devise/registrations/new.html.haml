@@ -1,7 +1,7 @@
 .edit-user-view
   .devise_form#new
 
-    .description To create an account for utilization of the SPARC application, please provide the following information:
+    .description= t :signup_message
 
     = form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| 
       = devise_error_messages!
@@ -10,39 +10,39 @@
       .grid_7.box
         .info
           .field
-            = f.label :last_name, "Last Name:"
+            = f.label(:last_name, t(:signup_lname))
             = f.text_field :last_name
 
           .field
-            = f.label :first_name, "First Name:"
+            = f.label(:first_name, t(:signup_fname))
             = f.text_field :first_name
 
           .field
-            = f.label :company, "Company:"
+            = f.label(:company, t(:signup_company))
             = f.text_field :company
 
           .field
-            = f.label :email, "Email:"
+            = f.label(:email, t(:signup_mail))
             = f.text_field :email
 
           .field
-            = f.label :phone, "Telephone Number:"
+            = f.label(:phone, t(:signup_phone))
             = f.text_field :phone
 
           .field
-            = f.label :ldap_uid, "Username:"
+            = f.label(:ldap_uid, t(:login_name))
             = f.text_field :ldap_uid
           
           .field
-            = f.label :password, "Password:"
+            = f.label(:password, t(:login_password))
             = f.password_field :password
           
           .field
-            = f.label :password_confirmation, "Password Confirmation:"
+            = f.label(:password_confirmation, t(:signup_confirm))
             = f.password_field :password_confirmation
 
           .field
-            = f.label :reason, "Reason for account/login request:"
+            = f.label(:reason, t(:signup_reason))
             = f.text_area :reason
 
           .create_user#button

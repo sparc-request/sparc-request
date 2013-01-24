@@ -8,3 +8,6 @@ en:
   signin_message2: "(ie - MUSC netid and password"
   signin_message3: "Sign in using your non-institutional login"
   signin_message4: "(ie - SPARC created account)"
+  login_name: "Username:"
+  login_password: "Password:"
+  remember_user: "Remember me:"

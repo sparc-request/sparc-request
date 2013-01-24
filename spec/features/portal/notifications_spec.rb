@@ -21,11 +21,10 @@ describe "notifications page", :js => true do
     find("div.shown-message-body").should be_visible
   end
 
-  it "should allow user to respond to message" do
+  it "should allow user to reply to a message" do
     find("td.subject_column").click
     wait_for_javascript_to_finish
     page.fill_in 'message[body]', :with => "Test Reply"
-    find("div.message-header").click
     click_button("Submit")
     wait_for_javascript_to_finish
     find("td.body_column").text.should eq("Test Reply")

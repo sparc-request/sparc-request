@@ -5,8 +5,9 @@
       = form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :post }) do |f|
         = devise_error_messages!
         .field
-          = f.label :ldap_uid, "Username:"
-          = f.email_field :ldap_uid
+          = f.label :ldap_uid, "Username:", :style => 'width:auto'
+          = f.text_field :ldap_uid, :style => 'width:auto'
+
         #button
           = f.submit "Send password reset", {:class => 'btn ui-button ui-widget ui-state-default ui-corner-all'}
         .clear

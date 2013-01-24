@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "admin fulfillment tab" do
+describe "admin fulfillment tab", :js => true do
   let_there_be_lane
   fake_login_for_each_test
   build_service_request_with_study
@@ -23,6 +23,10 @@ describe "admin fulfillment tab" do
     it "should contain the sub service request information" do
       page.should have_xpath("//option[@value='draft' and @selected='selected']")
       # More data checks here (more information probably needs to be put in the mocks)
+      page.should_not have_content('#service_request_owner')
+      page.should have_xpath("//option[@value='#{service.id}' and @selected='selected']")
+      page.find('#visit_name_4').value.should eq 'teapot'
+      page.should have_xpath("//option[@value='#{service2.id}' and @selected='selected']")
     end
 
   end

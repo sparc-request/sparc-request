@@ -14,7 +14,7 @@ describe "admin related service requests tab", :js => true do
 
   it "should list the service request" do
     within "div#related_service_requests" do
-      find("#requests tr td:first").should have_content("#{sub_service_request.id}")
+      find("#requests tr td:first").should have_content("#{sub_service_request.ssr_id}")
     end
   end
 

@@ -1,4 +1,4 @@
-class Catalog	< ActiveRecord::Base
+class Catalog
 
   def self.invalid_pricing_setups_for user
     # should only validate against providers and programs the user has access to

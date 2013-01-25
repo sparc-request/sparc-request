@@ -59,7 +59,7 @@ feature 'effective and display date validations' do
     page.execute_script("$('.ui-accordion-header:nth-of-type(2)').click()") 
 
     within('.ui-accordion > div:nth-of-type(2)') do
-      find('.display_date').click
+      find('.effective_date').click
       page.execute_script %Q{ $('a.ui-datepicker-prev').trigger("click") } # go back one month
       page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15  
       sleep 1 # TODO: wait_for_javascript_to_finish doesn't work here
@@ -71,7 +71,7 @@ feature 'effective and display date validations' do
       get_alert_window do |prompt|
         # The test will pass if the confirmation dialog is closed, so if
         # text matches the test will pass, otherwise it will fail    
-        if prompt.text == ('This display date is before the display date of existing pricing maps, are you sure you want to do this?')
+        if prompt.text == ('This effective date is before the effective date of existing pricing maps, are you sure you want to do this?')
           prompt.dismiss # dismissed confirmation to avoid a second confirmation dialog, which capybara does not appear to handle
       end
     end

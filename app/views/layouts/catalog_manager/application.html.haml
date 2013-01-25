@@ -8,3 +8,4 @@
   %body
     #flash.ui-state-highlight.ui-corner-all{:style => 'display:none; position:fixed'}
     = yield
+    = render :partial => 'shared/piwik_tracking' if Rails.env == 'production'

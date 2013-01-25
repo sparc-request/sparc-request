@@ -129,36 +129,14 @@ class SubServiceRequest < ActiveRecord::Base
     line_item
   end
 
-  # SO MANY IFS
-  def subsidy_organization
-    if self.organization.subsidy_map
-      if self.organization.subsidy_map.max_dollar_cap and self.organization.subsidy_map.max_dollar_cap > 0
-        return self.organization
-      elsif self.organization.subsidy_map.max_percentage and self.organization.subsidy_map.max_percentage > 0
-        return self.organization
-      else
-        self.organization.parents.each do |parent|
-          if parent.type == "Institution"
-            return parent
-          else
-            if parent.subsidy_map.max_dollar_cap and parent.subsidy_map.max_dollar_cap > 0
-              return parent
-            elsif parent.subsidy_map.max_percentage and parent.subsidy_map.max_percentage > 0
-              return parent
-            end
-          end
-        end
-      end
+  def eligible_for_subsidy?
+    if organization.eligible_for_subsidy? and not organization.funding_source_excluded_from_subsidy?(self.service_request.protocol.try(:funding_source_based_on_status))
+      true
+    else
+      false
     end
   end
 
-  def eligible_for_subsidy?
-    eligible = true
-    eligible = false if self.subsidy_organization.funding_source_excluded_from_subsidy?(self.service_request.protocol.try(:funding_source_based_on_status))
-    eligible = false unless self.subsidy_organization.eligible_for_subsidy?
-    
-    eligible
-  end
   ###############################################################################
   ######################## FULFILLMENT RELATED METHODS ##########################
   ###############################################################################

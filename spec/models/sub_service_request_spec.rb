@@ -196,21 +196,8 @@ describe 'SubServiceRequest' do
 
         it "should return the core if max dollar cap or max percentage is > 0" do
           subsidy_map.update_attributes(max_dollar_cap: 100)
-          sub_service_request.subsidy_organization.should eq(core)
+          sub_service_request.organization.should eq(core)
         end
-
-        it "should return the institution if the organization is a provider and max dollar cap or percentage is < 0" do
-          sub_service_request.update_attributes(organization_id: provider.id)
-          subsidy_map.update_attributes(organization_id: provider.id)
-          sub_service_request.subsidy_organization.should eq(institution)
-        end
-
-        it "should return the parent if the max dollar cap or percentage is < 0" do
-          core.update_attributes(parent_id: program.id)
-          sub_service_request.subsidy_organization.should eq(program)
-        end
-
-
       end
 
       context "eligible for subsidy" do

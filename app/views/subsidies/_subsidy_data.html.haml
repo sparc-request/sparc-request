@@ -26,7 +26,7 @@
               %tr.subsidy-item
                 - direct_cost_total = subsidy.sub_service_request.direct_cost_total
                 - pi_contribution = subsidy.pi_contribution
-                - organization = subsidy.sub_service_request.subsidy_organization
+                - organization = subsidy.sub_service_request.organization
                 %td{:class => "core_#{subsidy.sub_service_request_id}"}= "#{ssr_institution(organization)} -- #{ssr_provider(organization)} -- #{ssr_program_core(organization)}"
                 %td{:class => "estimated_cost_#{subsidy.sub_service_request_id}", :'data-cost' => direct_cost_total}= currency_converter(direct_cost_total)
                 %td

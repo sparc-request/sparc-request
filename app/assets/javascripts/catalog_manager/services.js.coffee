@@ -77,12 +77,12 @@ $(document).ready ->
     $('.save_button').attr('disabled', true)
   )
 
-  $('.effective_date_hidden, .pricing_map_effective_date_hidden').live('change', ->
-    Sparc.services.create_date_display(this, $(this).attr('date_type'), 'Effective')
+  $('.pricing_map_effective_date_hidden').live('change', ->
+    Sparc.services.create_date_display(this, $(this).attr('date_type'), 'effective')
   )
   
-  $('.display_date_hidden, .pricing_map_display_date_hidden').live('change', ->
-    Sparc.services.create_date_display(this, $(this).attr('date_type'), 'Display')
+  $('.pricing_map_display_date_hidden').live('change', ->
+    Sparc.services.create_date_display(this, $(this).attr('date_type'), 'display')
   )
   
   $(".rate_field").live('change', ->

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130116173251) do
+ActiveRecord::Schema.define(:version => 20130123183847) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -281,11 +281,11 @@ ActiveRecord::Schema.define(:version => 20130116173251) do
     t.integer  "unit_minimum"
     t.decimal  "federal_rate",               :precision => 12, :scale => 4
     t.decimal  "corporate_rate",             :precision => 12, :scale => 4
-    t.datetime "effective_date"
+    t.date     "effective_date"
     t.datetime "created_at",                                                :null => false
     t.datetime "updated_at",                                                :null => false
     t.datetime "deleted_at"
-    t.datetime "display_date"
+    t.date     "display_date"
     t.decimal  "other_rate",                 :precision => 12, :scale => 4
     t.decimal  "member_rate",                :precision => 12, :scale => 4
   end
@@ -294,8 +294,8 @@ ActiveRecord::Schema.define(:version => 20130116173251) do
 
   create_table "pricing_setups", :force => true do |t|
     t.integer  "organization_id"
-    t.datetime "display_date"
-    t.datetime "effective_date"
+    t.date     "display_date"
+    t.date     "effective_date"
     t.boolean  "charge_master"
     t.decimal  "federal",                :precision => 5, :scale => 2
     t.decimal  "corporate",              :precision => 5, :scale => 2

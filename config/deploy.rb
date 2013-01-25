@@ -55,7 +55,7 @@ namespace :mysql do
   task :backup, :roles => :db, :only => { :primary => true } do
     filename = "#{application}.db_backup.#{Time.now.to_f}.sql.bz2"
     filepath = "#{shared_path}/database_backups/#{filename}"
-    text = capture "cat #{deploy_to}/current/config/database.yml"
+    text = capture "cat #{shared_path}/config/database.yml"
     yaml = YAML::load(text)
 
     run "mkdir -p #{shared_path}/database_backups"

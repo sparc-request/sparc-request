@@ -19,3 +19,4 @@ en:
   signup_phone: "Telephone Number:"
   signup_confirm: "Password Confirmation"
   signup_reason: "Reason for account/login request:"
+  password_reset_message: "Forgot your password?"

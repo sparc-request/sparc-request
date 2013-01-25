@@ -1,11 +1,11 @@
 .devise_form#reset
   .grid_5.box
     .info
-      %h2 Forgot your password?
+      %h2= t :password_reset_message
       = form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :post }) do |f|
         = devise_error_messages!
         .field
-          = f.label :ldap_uid, "Username:", :style => 'width:auto'
+          = f.label(:ldap_uid, t(:login_name), :style => 'width:auto')
           = f.text_field :ldap_uid, :style => 'width:auto'
 
         #button

@@ -139,8 +139,8 @@ class Service < ActiveRecord::Base
       raise TypeError, "One of service's pricing maps has no display date!"
     end
     if pricing_maps && !pricing_maps.empty?
-      current_date = date || Time.now.strftime("%F")
-      current_maps = pricing_maps.select {|x| x.display_date <= Time.parse(current_date.to_s)}
+      current_date = date || Date.today
+      current_maps = pricing_maps.select {|x| x.display_date <= current_date}
       if current_maps.empty?
         raise ArgumentError, "Service has no current pricing maps!"
       else

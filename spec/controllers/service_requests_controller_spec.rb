@@ -1036,7 +1036,7 @@ describe ServiceRequestsController do
     end
 
     it 'should create a new subsidy and put it into subsidies if the ssr does not have a subsidy and it is eligible for subsidy' do
-      sub_service_request.subsidy_organization.subsidy_map.update_attributes(
+      sub_service_request.organization.subsidy_map.update_attributes(
           max_dollar_cap: 100,
           max_percentage: 100)
 

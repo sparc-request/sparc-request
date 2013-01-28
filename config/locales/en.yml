@@ -47,3 +47,17 @@ en:
         answer_text: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARC uses this data to calculate your total overall indirect costs."
       - question_text: "I\\'m stuck! Who can I contact for assistance with SPARC?"
         answer_text: "The SUCCESS Center is happy to assist you! Please contact us at <a href=\"mailto:success@musc.edu\">success@musc.edu</a> or (843) 792-3357."
+
+  # new/editing projects
+  project_message: "Before you can complete a service request, please tell us more about your research project.  This information will be used by our staff to decide the best way to process your request."
+  project_title1: "Short Title:*"
+  project_title2: "Project Title:*"
+  project_funding_status: "Proposal Funding Status:*"
+  status_dropdown_default: "Select a Funding Status"
+  project_funding_source: "Funding Source:*"
+  project_potential_funding_source: "Potential Funding Source:*"
+  funded_dropdown_default: "Select a Funding Source"
+  potential_dropdown_default: "Select a Potential Funding Source"
+  project_description: "Brief Description"
+
+

@@ -6,33 +6,34 @@
 
 = javascript_include_tag 'projects'
 
-.description Before you can complete a service request, please tell us more about your research project. This information will be used by our staff to decide the best way to process your request.
+.description= t :project_message
+
 .grid_7.box
   .info
     .field
-      = f.label :short_title, "Short Title:*"
+      = f.label :short_title, t(:project_title1)
       = f.text_field :short_title
 
     .field
-      = f.label :title, "Project Title:*"
+      = f.label :title, t(:project_title2)
       = f.text_field :title
       
     .field
-      = f.label :funding_status, "Proposal Funding Status:*"
-      = f.select :funding_status, options_for_select(FUNDING_STATUSES, project.funding_status), :include_blank => "Select a Funding Status"
+      = f.label :funding_status, t(:project_funding_status)
+      = f.select :funding_status, options_for_select(FUNDING_STATUSES, project.funding_status), :include_blank => t(:status_dropdown_default)
 
     #funded
       .field
-        = f.label :funding_source, "Funding Source:*"
-        = f.select :funding_source, options_for_select(FUNDING_SOURCES, project.funding_source), :include_blank => "Select a Funding Source"
+        = f.label :funding_source, t(:project_funding_source)
+        = f.select :funding_source, options_for_select(FUNDING_SOURCES, project.funding_source), :include_blank => t(:funded_dropdown_default)
 
     #pending_funding 
       .field
-        = f.label :potential_funding_source, "Potential Funding Source:*"
-        = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, project.potential_funding_source), :include_blank => "Select a Potential Funding Source"
+        = f.label :potential_funding_source, t(:project_potential_funding_source)
+        = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, project.potential_funding_source), :include_blank => t(:potential_dropdown_default)
 
     .field
-      = f.label :brief_description, "Brief Description:"
+      = f.label :brief_description, t(:project_description)
       = f.text_area :brief_description
 
     .indirect_cost_rate

@@ -70,6 +70,18 @@ en:
     instructions_center: "Before continuing to Step 2, you must select a Research Study or Project to which the services selected are associated. Only 1 Research Study/Project can be assigned to this request."
     tied_to_study: "Is this Service Request tied to a particular Research Study"
 
+  # Subsidy Page
+  subsidy_page:
+    not_eligible: "None of the services you have selected are eligible for a subsidy."
+    eligible: "The services selected below may be eligible for a subsidy. Please enter requested funding information."
+    table:
+      institution: "Institution/Provider/Program/Core"
+      total_estimated: "Total Estimated Costs"
+      pi_contribution: "PI Contribution"
+      requested_funding: "Requested Funding"
+      subsidy: "% Subsidy"
+    request_additional: "To request additional research funding go to"
+
 
   # user search partial
   user_search_message: "To begin to search and add authorized users to this study/project, type in the first or last name of the user.  Select as appropriate."

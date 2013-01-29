@@ -3,19 +3,19 @@
 / If it has overridden flag pass validation
 
 - if @subsidies.count == 0
-  None of the services you have selected are eligible for a subsidy.
+  = t("subsidy_page.not_eligible")
 -else
-  The services selected below may be eligible for a subsidy. Please enter requested funding information.
+  = t("subsidy_page.eligible")
   %br
   %br
   %table.subsidies
     %thead
       %tr.table_header
-        %th Institution/Provider/Program/Core
-        %th Total Estimated Costs
-        %th PI Contribution
-        %th Requested Funding
-        %th % Subsidy
+        %th= t("subsidy_page.table.institution")
+        %th= t("subsidy_page.table.total_estimated")
+        %th= t("subsidy_page.table.pi_contribution")
+        %th= t("subsidy_page.table.requested_funding")
+        %th= t("subsidy_page.table.subsidy")
 
     %tbody.subsidies-list
       - @subsidies.each do |subsidy|
@@ -37,7 +37,7 @@
                 %td{:class => "subsidy_percent_#{subsidy.sub_service_request_id}"}= "#{calculate_subsidy_percentage(direct_cost_total, pi_contribution)}%"
   %br
   .additional-funding
-    To request additional research funding go to
+    = t("subsidy_page.request_additional")
     = link_to "sctr.musc.edu", "https://sctr.musc.edu/", :confirm => "Are you sure you want to leave? Any unsaved changes to this service request will be lost."
   #submit_error{:style => "display: none"}
     .message

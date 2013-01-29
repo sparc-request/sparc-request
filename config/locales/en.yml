@@ -102,3 +102,14 @@ en:
   study_form_ip_patents: "IP/Patents:"
   study_form_patent_number: "Patent Number:"
   study_form_inventors: "Inventors:"
+
+  # Service Request Details form
+  service_request_details_one_time_fee_instructions: "Please enter service details for SPARC Services that you selected"
+  service_request_details_one_time_fee_and_per_patient_instructions: "Next, please enter the following information specific to your research study/project. This information will help us generate applicable service fees for your review."
+  service_request_details_per_patient_instructions: "Please enter the following information specific to your research study/project. This information will help us generate applicable service fees for your review."
+  service_request_details_number_of_subjects: "Estimated Total Number of Subjects"
+  service_request_details_number_of_visits: "Estimated Total Number of Visits"
+  service_request_details_study_start_date: "Estimated Study Start Date"
+  service_request_details_study_end_date: "Estimated Study End Date"
+  service_request_details_services_required: "You can't continue unless you have services in your cart."
+    

@@ -58,6 +58,44 @@ en:
   project_potential_funding_source: "Potential Funding Source:*"
   funded_dropdown_default: "Select a Funding Source"
   potential_dropdown_default: "Select a Potential Funding Source"
-  project_description: "Brief Description"
+  project_description: "Brief Description:"
+  project_rate: "Indirect Cost Rate:"
+
+  # user search partial
+  user_search_message: "To begin to search and add authorized users to this study/project, type in the first or last name of the user.  Select as appropriate."
+  search_box_header: "User Search"
+  search_placeholder: "Search for user..."
+
+  # user details partial
+  displayed_name: "Name:"
+  displayed_email: "Email:"
+  user_phone: "Phone:"
+  user_role: "Role:*"
+  role_select: "Select a Role"
+  ec_name: "ERA Commons Name:"
+  user_institution: "Institution:"
+  institution_select: "Select an Institution"
+  user_college: "College:"
+  college_select: "Select a College"
+  user_department: "Department:"
+  department_select: "select a Department"
+  user_credentials: "Credentials:"
+  credentials_select: "Select a Credential"
+  user_subspeciality: "Subspeciality:"
+  subspeciality_select: "Select a Subspeciality"
+  update_user_button: "Update Authorized User"
+  add_user_button: "Add Authorized User"
+
+  # user list partial
+  user_information: "User Information:"
+  proxy_rights: "Proxy Rights"
+  rights_message: "(Select appropriate level of study/project rights)"
+  actions: "Actions:"
+  displayed_role: "Role:"
+  member_rights: "Member Only:"
+  view_rights: "View Rights:"
+  services_rights: "Request/Approve Services:"
+  charge_rights1: "Authorize/Change"
+  charge_rights2: "Study Charges:"
 
 

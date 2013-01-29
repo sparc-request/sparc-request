@@ -1,8 +1,8 @@
 = javascript_include_tag 'user_search'
 
 .search_container
-  %p To begin to search and add authorized users to this study/project, type in the first or last name of the user. Select as appropriate.
+  %p= t :user_search_message
   %br 
-  %h3 User Search 
+  %h3= t :search_box_header 
   .search
-    = text_field_tag 'user_search_term', nil, :placeholder => "Search for User ...", :class => "search-identities"
+    = text_field_tag 'user_search_term', nil, :placeholder => t(:search_placeholder), :class => "search-identities"

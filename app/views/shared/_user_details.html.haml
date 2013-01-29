@@ -11,7 +11,7 @@
   %br
   .user_info
     .user_name
-      = label_tag "identity[name]", "Name:"
+      = label_tag "identity[name]", t(:displayed_name)
       = "#{identity.first_name} #{identity.last_name}"
       = hidden_field_tag "identity[first_name]", identity.first_name
       = hidden_field_tag "identity[last_name]", identity.last_name
@@ -19,21 +19,21 @@
       %br
      
     .user_email
-      = label_tag "identity[email]", "Email:"
+      = label_tag "identity[email]", t(:displayed_email)
       = identity.email
       = hidden_field_tag "identity[email]", identity.email
       %br
       %br
 
     .user_phone
-      = label_tag "identity[phone]", "Phone:"
+      = label_tag "identity[phone]", t(:user_phone)
       = text_field_tag "identity[phone]", identity.phone
       %br
       %br
 
     .user_role
-      = label_tag "project_role[role]", "Role:*"
-      = select_tag "project_role[role]", options_for_select(USER_ROLES, project_role.role), :prompt => "Select a Role"
+      = label_tag "project_role[role]", t(:user_role)
+      = select_tag "project_role[role]", options_for_select(USER_ROLES, project_role.role), :prompt => t(:role_select)
 
       %br
       %br
@@ -45,33 +45,33 @@
       %br
 
     .era_commons_name
-      = label_tag "identity[era_commons_name]", "ERA Commons Name:"
+      = label_tag "identity[era_commons_name]", t(:ec_name)
       = text_field_tag "identity[era_commons_name]", identity.era_commons_name
       %br
       %br
       %br
 
     .user_institution
-      = label_tag "identity[institution]", "Institution:"
-      = select_tag "identity[institution]", options_for_select((INSTITUTIONS.sort), identity.institution), :prompt => "Select an Institution"
+      = label_tag "identity[institution]", t(:user_institution)
+      = select_tag "identity[institution]", options_for_select((INSTITUTIONS.sort), identity.institution), :prompt => t(:institution_select)
       %br
       %br
 
     .user_college
-      = label_tag "identity[college]", "College:"
-      = select_tag "identity[college]", options_for_select(COLLEGES, identity.college), :prompt => "Select a College"
+      = label_tag "identity[college]", t(:user_college)
+      = select_tag "identity[college]", options_for_select(COLLEGES, identity.college), :prompt => t(:college_select)
       %br
       %br
 
     .user_department
-      = label_tag "identity[department]", "Department:"
-      = select_tag "identity[department]", options_for_select(DEPARTMENTS, identity.department), :prompt => "Select a Department"
+      = label_tag "identity[department]", t(:user_department)
+      = select_tag "identity[department]", options_for_select(DEPARTMENTS, identity.department), :prompt => t(:department_select)
       %br
       %br
 
     .user_credentials
-      = label_tag "identity[credentials]", "Credentials:"
-      = select_tag "identity[credentials]", options_for_select(USER_CREDENTIALS, identity.credentials), :prompt => "Select a Credential"
+      = label_tag "identity[credentials]", t(:user_credentials)
+      = select_tag "identity[credentials]", options_for_select(USER_CREDENTIALS, identity.credentials), :prompt => t(:credentials_select)
       %br
       %br
 
@@ -82,10 +82,10 @@
       %br
 
     .subspecialty
-      = label_tag "identity[subspecialty]", "Subspecialty:"
-      = select_tag "identity[subspecialty]", options_for_select((SUBSPECIALTIES.sort), identity.subspecialty), :prompt => "Select a Subspecialty"
+      = label_tag "identity[subspecialty]", t(:user_subspeciality)
+      = select_tag "identity[subspecialty]", options_for_select((SUBSPECIALTIES.sort), identity.subspecialty), :prompt => t(:subspeciality_select)
       %br
       %br
 
     .add-user
-      = button_tag @can_edit ? "Update Authorized User" : "Add Authorized User" 
+      = button_tag @can_edit ? t(:update_user_button) : t(:add_user_button) 

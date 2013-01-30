@@ -83,11 +83,6 @@ class Identity < ActiveRecord::Base
   ############################ ATTRIBUTE METHODS ################################
   ###############################################################################
 
-  # Covers instances from the old data structure where type used to be called.
-  def type
-    return 'identity'
-  end
-
   # Returns true if the user is a catalog overlord.  Should only be true for three uids:
   # jug2, anc63, mas244
   def is_overlord?

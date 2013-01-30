@@ -153,10 +153,6 @@ class Service < ActiveRecord::Base
     end
   end
 
-  def type
-    'service'
-  end
-
   # Find a pricing map with a display date for today's date.
   def current_pricing_map
     return pricing_map_for_date(Date.today)

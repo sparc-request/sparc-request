@@ -13,7 +13,7 @@
     %li
       Short Title:
       = protocol.try(:short_title)
-    - if protocol._type == 'study'
+    - if protocol.type == 'Study'
       %li
         Sponsor Name:
         = protocol.try(:sponsor_name)

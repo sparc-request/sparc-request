@@ -11,23 +11,23 @@
         .service-details 
           - if (@sub_service_request.nil? ? @service_request.has_one_time_fee_services? : @sub_service_request.has_one_time_fee_services?)
             #show-one-time-fee
-              .instructions= t(:service_request_details_one_time_fee_instructions)
+              .instructions= t(:service_request_details)[:one_time_fee_instructions]
               .one-time-fee-details= render :partial => 'service_detail_list'
               %br
           - if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
             #show-visit-calendar-details
               .visit-calendar-details 
                 - if @service_request.has_one_time_fee_services?
-                  .instructions= t(:service_request_details_one_time_fee_and_per_patient_instructions)
+                  .instructions= t(:service_request_details)[:one_time_fee_and_per_patient_instructions]
                 - else
-                  .instructions= t(:service_request_details_per_patient_instructions)
+                  .instructions= t(:service_request_details)[:per_patient_instructions]
                 %table.service-details-table
                   %thead
                     %tr
-                      %th= t(:service_request_details_number_of_subjects)
-                      %th= t(:service_request_details_number_of_visits) 
-                      %th= t(:service_request_details_study_start_date)
-                      %th= t(:service_request_details_study_end_date) 
+                      %th= t(:service_request_details)[:number_of_subjects]
+                      %th= t(:service_request_details)[:number_of_visits)]
+                      %th= t(:service_request_details)[:study_start_date]
+                      %th= t(:service_request_details)[:study_end_date)]
                   %tbody
                     = fields_for @service_request do |f|
                       %td
@@ -42,7 +42,7 @@
                         = f.hidden_field :end_date
           .visit-calendar-details{:style => ((@sub_service_request.nil? ? @service_request.line_items.empty? : @sub_service_request.line_items.empty?) ? '' : 'display:none')}
             .instructions
-              = t(:service_request_details_services_required)
+              = t(:service_request_details)[:services_required]
 
   .grid_3.protocol-view-right.right
     #services.ui-widget.ui-widget-content.cart-view

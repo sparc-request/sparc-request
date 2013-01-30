@@ -164,10 +164,6 @@ class ServiceRequest < ActiveRecord::Base
     per_patient_per_visit_line_items.count > 0
   end
 
-  def type
-    'service_request'
-  end
-
   def total_direct_costs_per_patient line_items=self.line_items
     total = 0.0
     line_items.select {|x| !x.service.is_one_time_fee?}.each do |li|

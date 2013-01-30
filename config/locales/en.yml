@@ -67,6 +67,28 @@ en:
     description: "Brief Description:"
     rate: "Indirect Cost Rate:"
 
+  # Project/Study assignment page
+  study_assignment:
+    instructions_1: "Please review the SPARC Services you are requesting below."
+    instructions_2: "Please note that any \"Professional Services\" listed below have UMA fees associated with them and cannot be removed from this screen."
+    instructions_3: "If Professional Services are covered by % effort, you will have the opportunity to indicate this in Step 2."
+    instructions_4: "If you wish to add services, you must return to the \"Service Catalog\"."
+    instructions_center: "Before continuing to Step 2, you must select a Research Study or Project to which the services selected are associated. Only 1 Research Study/Project can be assigned to this request."
+    tied_to_study: "Is this Service Request tied to a particular Research Study"
+
+  # Subsidy Page
+  subsidy_page:
+    not_eligible: "None of the services you have selected are eligible for a subsidy."
+    eligible: "The services selected below may be eligible for a subsidy. Please enter requested funding information."
+    table:
+      institution: "Institution/Provider/Program/Core"
+      total_estimated: "Total Estimated Costs"
+      pi_contribution: "PI Contribution"
+      requested_funding: "Requested Funding"
+      subsidy: "% Subsidy"
+    request_additional: "To request additional research funding go to"
+
+
   # user search partial
   user_search_message: "To begin to search and add authorized users to this study/project, type in the first or last name of the user.  Select as appropriate."
   search_box_header: "User Search"
@@ -146,3 +168,14 @@ en:
   study_form_ip_patents: "IP/Patents:"
   study_form_patent_number: "Patent Number:"
   study_form_inventors: "Inventors:"
+
+  # Service Request Details form
+  service_request_details_one_time_fee_instructions: "Please enter service details for SPARC Services that you selected"
+  service_request_details_one_time_fee_and_per_patient_instructions: "Next, please enter the following information specific to your research study/project. This information will help us generate applicable service fees for your review."
+  service_request_details_per_patient_instructions: "Please enter the following information specific to your research study/project. This information will help us generate applicable service fees for your review."
+  service_request_details_number_of_subjects: "Estimated Total Number of Subjects"
+  service_request_details_number_of_visits: "Estimated Total Number of Visits"
+  service_request_details_study_start_date: "Estimated Study Start Date"
+  service_request_details_study_end_date: "Estimated Study End Date"
+  service_request_details_services_required: "You can't continue unless you have services in your cart."
+    

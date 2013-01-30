@@ -6,23 +6,28 @@ en:
   issue_contact: "Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have."
 
   # sign in page
-  signin_message1: "Sign in using your institutional login"
-  signin_message2: "(ie - MUSC netid and password"
-  signin_message3: "Sign in using your non-institutional login"
-  signin_message4: "(ie - SPARC created account)"
+  signin:
+    message1: "Sign in using your institutional login"
+    message2: "(ie - MUSC netid and password"
+    message3: "Sign in using your non-institutional login"
+    message4: "(ie - SPARC created account)"
+    button1: "Continue to sign in page"
+    button2: "Sign in"
   login_name: "Username:"
   login_password: "Password:"
   remember_user: "Remember me:"
 
   # new user sign up
-  signup_message: "To create an account for the utilization of the SPARC application, please provide the following information:"
-  signup_lname: "Last Name:"
-  signup_fname: "First Name:"
-  signup_company: "Company:"
-  signup_mail: "Email:"
-  signup_phone: "Telephone Number:"
-  signup_confirm: "Password Confirmation"
-  signup_reason: "Reason for account/login request:"
+  signup:
+    message: "To create an account for the utilization of the SPARC application, please provide the following information:"
+    lname: "Last Name:"
+    fname: "First Name:"
+    company: "Company:"
+    mail: "Email:"
+    phone: "Telephone Number:"
+    confirm: "Password Confirmation:"
+    reason: "Reason for account/login request:"
+    submit: "Create New User"
 
   # password reset
   password_reset_message: "Forgot your password?"
@@ -49,17 +54,18 @@ en:
         answer_text: "The SUCCESS Center is happy to assist you! Please contact us at <a href=\"mailto:success@musc.edu\">success@musc.edu</a> or (843) 792-3357."
 
   # new/editing projects
-  project_message: "Before you can complete a service request, please tell us more about your research project.  This information will be used by our staff to decide the best way to process your request."
-  project_title1: "Short Title:*"
-  project_title2: "Project Title:*"
-  project_funding_status: "Proposal Funding Status:*"
-  status_dropdown_default: "Select a Funding Status"
-  project_funding_source: "Funding Source:*"
-  project_potential_funding_source: "Potential Funding Source:*"
-  funded_dropdown_default: "Select a Funding Source"
-  potential_dropdown_default: "Select a Potential Funding Source"
-  project_description: "Brief Description:"
-  project_rate: "Indirect Cost Rate:"
+  sr_project:
+    message: "Before you can complete a service request, please tell us more about your research project.  This information will be used by our staff to decide the best way to process your request."
+    title1: "Short Title:*"
+    title2: "Project Title:*"
+    funding_status: "Proposal Funding Status:*"
+    dropdown_default1: "Select a Funding Status"
+    funding_source: "Funding Source:*"
+    potential_funding_source: "Potential Funding Source:*"
+    dropdown_default2: "Select a Funding Source"
+    dropdown_default3: "Select a Potential Funding Source"
+    description: "Brief Description:"
+    rate: "Indirect Cost Rate:"
 
   # user search partial
   user_search_message: "To begin to search and add authorized users to this study/project, type in the first or last name of the user.  Select as appropriate."

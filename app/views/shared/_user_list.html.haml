@@ -2,23 +2,23 @@
   %thead
     %tr
       %th.authorized-users-section{:colspan => 3}
-        = t(:user_information)
+        = t("user_list.information")
       %th.authorized-users-section{:colspan => 4}
-        = t(:proxy_rights)
+        = t("user_list.proxy_rights")
         %br
-        %span= t(:rights_message)
+        %span= t("user_list.message")
   %thead
     %tr
-      %th= t(:displayed_name)
-      %th= t(:actions)
-      %th= t(:displayed_role)
-      %th.proxy-rights= t(:member_rights)
-      %th.proxy-rights= t(:view_rights)
-      %th.proxy-rights= t(:services_rights)
+      %th= t("user_details.name")
+      %th= t("user_list.actions")
+      %th= t("user_list.role")
+      %th.proxy-rights= t("user_list.rights1")
+      %th.proxy-rights= t("user_list.rights2")
+      %th.proxy-rights= t("user_list.rights3")
       %th.proxy-rights
-        = t(:charge_rights1)
+        = t("user_list.rights4")
         %br
-        = t(:charge_rights2)
+        = t("user_list.rights5")
   %tbody
     - protocol.project_roles.each do |pr|
       = render :partial => 'shared/user_proxy_right', :locals => {:project_role => pr}

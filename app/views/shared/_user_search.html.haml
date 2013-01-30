@@ -1,8 +1,8 @@
 = javascript_include_tag 'user_search'
 
 .search_container
-  %p= t :user_search_message
+  %p= t ("user_search.message")
   %br 
-  %h3= t :search_box_header 
+  %h3= t("user_search.search_box_header") 
   .search
-    = text_field_tag 'user_search_term', nil, :placeholder => t(:search_placeholder), :class => "search-identities"
+    = text_field_tag 'user_search_term', nil, :placeholder => t("user_search.search_placeholder"), :class => "search-identities"

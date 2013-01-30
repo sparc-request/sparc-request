@@ -177,7 +177,7 @@ describe 'associated users tab', :js => true do
       within("#user_#{bob.id}") do
         find('.edit-associated-user-button').click
       end
-      select "Technician", :from => 'project_role_role'
+      page.find('#project_role_role', :visible => true).select 'Technician'
       click_button("edit_authorized_user_submit_button")
 
       within("#user_#{bob.id}") do

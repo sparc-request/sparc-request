@@ -141,21 +141,88 @@ describe "admin fulfillment tab", :js => true do
     end
 
     context "changing fulfillment attributes" do
+      before :each do
+        find("td.expand_li[data-line_item_id='#{line_item.id}']").click
+        wait_for_javascript_to_finish
+      end
 
+      it 'should be able to add a fulfillment' do
+        page.should have_link 'Add a Fulfillment'
+        click_link 'Add a Fulfillment'
+        page.has_field?("fulfillment_#{line_item.fulfillments[0].id}_date_picker").should eq true
+        page.has_field?("fulfillment_notes").should eq true
+        page.has_field?("fulfillment_time").should eq true
+      end
+
+      it 'should be able to edit a fulfillment' do
+        click_link 'Add a Fulfillment'
+        wait_for_javascript_to_finish
+        page.execute_script %Q{ $('#fulfillment_#{line_item.fulfillments[0].id}_date_picker:visible').focus() }
+        page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
+        page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15    
+        wait_for_javascript_to_finish
+
+        notes = "And Shepherds we shall be\nFor thee, my Lord, for thee.\nPower hath descended forth from Thy hand\nOur feet may swiftly carry out Thy commands.\nSo we shall flow a river forth to Thee\nAnd teeming with souls shall it ever be.\nIn Nomeni Patri Et Fili Spiritus Sancti."
+        fill_in 'fulfillment_notes', :with => notes
+        page.should have_content "Service request has been saved."
+      end
+
+      it 'should be able to remove a fulfillment' do
+        click_link 'Add a Fulfillment'
+        wait_for_javascript_to_finish
+        find(".delete_data[data-fulfillment_id]").click
+        wait_for_javascript_to_finish
+        line_item.fulfillments.empty?.should eq true
+      end
     end
 
     context "changing visit attributes" do
+      it 'should update visit names' do
+        fill_in 'visit_name_1', :with => "HOLYCOW"
+        find('#visit_name_2').click
+        wait_for_javascript_to_finish
+        line_item2.visits[0].name.should eq "HOLYCOW"
+      end
 
+      it "should add visits" do
+        click_link 'Add a Visit'
+        wait_for_javascript_to_finish
+        page.should have_content "Service request has been saved."
+        page.should have_content 'Add Visit 12'
+      end
+
+      it 'should remove visits' do
+        click_link 'Delete a Visit'
+        wait_for_javascript_to_finish
+        page.should have_content 'Service request has been saved.'
+        page.should_not have_content 'Delete Visit 10'
+      end
     end
-
-  end
-
-  describe "notifications" do
-
   end
 
   describe "notes" do
+    before :each do
+      @notes = "And Shepherds we shall be For thee, my Lord, for thee. Power hath descended forth from Thy hand Our feet may swiftly carry out Thy commands. So we shall flow a river forth to Thee And teeming with souls shall it ever be."
+      fill_in 'notes', :with => @notes
+      click_link 'Add Note'
+      wait_for_javascript_to_finish
+    end
 
+    it 'should add notes' do
+      within '.note_body' do
+        page.should have_content @notes
+      end
+    end
+
+    it 'should record who posted the note and the date' do
+      within '.note_date' do
+        page.should have_content Date.today.strftime("%m/%d/%y")
+      end
+
+      within '.note_name' do
+        page.should have_content "#{jug2.first_name} #{jug2.last_name}"
+      end
+    end
   end
 
 end

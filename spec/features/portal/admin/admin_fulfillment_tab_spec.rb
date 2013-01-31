@@ -113,15 +113,10 @@ describe "admin fulfillment tab", :js => true do
     context "changing line item attributes" do
       context "changing quantities" do
         it 'should update the cost' do
-          find("#line_item_quantity[data-line_item_id='#{line_item.id}']").set 10
+          find("#line_item_quantity[data-line_item_id='#{line_item.id}']").set "10"
           find("#line_item_units_per_quantity[data-line_item_id='#{line_item.id}']").click
           wait_for_javascript_to_finish
-          find("#line_item_units_per_quantity[data-line_item_id='#{line_item.id}']").set 3
-          find("#line_item_quantity[data-line_item_id='#{line_item.id}']").click
-          wait_for_javascript_to_finish
-          within '#one_time_fee_table' do
-            has_content?('$300.00').should eq true
-          end
+          find("#line_item_#{line_item.id}_cost").text.should eq("$100.00")
         end
       end
 
@@ -149,6 +144,8 @@ describe "admin fulfillment tab", :js => true do
       it 'should be able to add a fulfillment' do
         page.should have_link 'Add a Fulfillment'
         click_link 'Add a Fulfillment'
+        wait_for_javascript_to_finish
+        line_item.reload
         page.has_field?("fulfillment_#{line_item.fulfillments[0].id}_date_picker").should eq true
         page.has_field?("fulfillment_notes").should eq true
         page.has_field?("fulfillment_time").should eq true
@@ -157,6 +154,7 @@ describe "admin fulfillment tab", :js => true do
       it 'should be able to edit a fulfillment' do
         click_link 'Add a Fulfillment'
         wait_for_javascript_to_finish
+        line_item.reload
         page.execute_script %Q{ $('#fulfillment_#{line_item.fulfillments[0].id}_date_picker:visible').focus() }
         page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
         page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15    
@@ -172,6 +170,7 @@ describe "admin fulfillment tab", :js => true do
         wait_for_javascript_to_finish
         find(".delete_data[data-fulfillment_id]").click
         wait_for_javascript_to_finish
+        line_item.reload
         line_item.fulfillments.empty?.should eq true
       end
     end
@@ -203,7 +202,7 @@ describe "admin fulfillment tab", :js => true do
   describe "notes" do
     before :each do
       @notes = "And Shepherds we shall be For thee, my Lord, for thee. Power hath descended forth from Thy hand Our feet may swiftly carry out Thy commands. So we shall flow a river forth to Thee And teeming with souls shall it ever be."
-      fill_in 'notes', :with => @notes
+      find('.note_box', :visible => true).set @notes
       click_link 'Add Note'
       wait_for_javascript_to_finish
     end

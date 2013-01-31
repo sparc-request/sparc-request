@@ -27,7 +27,7 @@ feature 'automatic pricing adjustment' do
     within('.ui-dialog-buttonset') do
       click_button('Submit')
     end
-    
+    wait_for_javascript_to_finish
     page.should have_content('Successfully updated the pricing maps for all of the services under 
                               South Carolina Clinical and Translational Institute (SCTR).')
     

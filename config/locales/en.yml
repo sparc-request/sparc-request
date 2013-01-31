@@ -115,6 +115,28 @@ en:
       grand_total_indirect: "Grand Total: Indirect Costs"
       grand_total: "Grand Total:"
 
+  # Documents Page
+  documents:
+    no_documents: "No documents found"
+    instructions: "Please add any additional information that may be helpful to service providers."
+    make_changes: "To make changes to selected services please click"
+    here: "here"
+    add_button: "Add a New Document"
+    headers:
+      recipients: "Recipients"
+      allow: "Allow Access"
+      type: "Type"
+      file: "File"
+      institution: "Institution/Provider/Program/Core"
+      title: "Title"
+      actions: "Actions"
+      uploads: "Document Uploads"
+    upload_button: "Upload"
+    update_button: "Update"
+    cancel_button: "Cancel"
+    edit_button: "Edit"
+    delete_button: "Delete"
+
 
   # user search partial
   user_search:

@@ -2,12 +2,12 @@
   .grid_6.prefix_3.suffix_3.box
     .info
       %h2.center
-        = t :signin_message1
+        = t(:signin)[:message1]
         %br
-        = t :signin_message2
+        = t(:signin)[:message2]
       %br
       .center 
-        = button_to "Continue to sign in page", identity_omniauth_authorize_path(:shibboleth), :class => 'btn ui-button ui-widget ui-state-default ui-corner-all'
+        = button_to t(:signin)[:button1], identity_omniauth_authorize_path(:shibboleth), :class => 'btn ui-button ui-widget ui-state-default ui-corner-all'
       
       %br
 
@@ -16,9 +16,9 @@
   .grid_6.prefix_3.suffix_3.box
     .info
       %h2.center
-        = t :signin_message3
+        = t(:signin)[:message3]
         %br
-        = t :signin_message4
+        = t(:signin)[:message4]
 
       = form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
         .field
@@ -32,7 +32,7 @@
             = f.check_box :remember_me
             = f.label(:remember_me, t(:remember_user))
         #button
-          = f.submit "Sign in", {:class => 'btn ui-button ui-widget ui-state-default ui-corner-all'}
+          = f.submit t(:signin)[:button2], {:class => 'btn ui-button ui-widget ui-state-default ui-corner-all'}
         .clear
     .links
       = render "devise/shared/links"

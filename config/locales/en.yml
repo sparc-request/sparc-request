@@ -88,6 +88,55 @@ en:
       subsidy: "% Subsidy"
     request_additional: "To request additional research funding go to"
 
+  # Calendar Page
+  calendar_page:
+    headers:
+      services: "Services"
+      unit_costs: "Unit Costs"
+      service_rate: "Service Rate"
+      your_cost: "Your Cost"
+      qty_type: "Qty Type"
+      subjects: "# Subjects"
+      total: "Total"
+      other_services: "Other Services"
+      total_study: "Total Study Costs"
+    per_patient: "Per Patient/Visit Services"
+    labels:
+      maximum_direct: "Maximum Total Direct Costs Per Patient"
+      maximum_indirect: "Maximum Total Indirect Costs Per Patient"
+      maximum_per: "Maximum Total Per Patient"
+      total_direct: "Total Direct Costs (Per Patient/Visit Services) Per Study"
+      total_indirect: "Total Indirect Costs (Per Patient/Visit Services) Per Study"
+      total_costs: "Total Costs (Per Patient/Visit Services) Per Study"
+      total_direct_other: "Total Direct Costs (other) Per Study"
+      total_indirect_other: "Total Indirect Costs (other) Per Study"
+      total_costs_other: "Total Costs (other) Per Study"
+      grand_total_direct: "Grand Total: Direct Costs"
+      grand_total_indirect: "Grand Total: Indirect Costs"
+      grand_total: "Grand Total:"
+
+  # Documents Page
+  documents:
+    no_documents: "No documents found"
+    instructions: "Please add any additional information that may be helpful to service providers."
+    make_changes: "To make changes to selected services please click"
+    here: "here"
+    add_button: "Add a New Document"
+    headers:
+      recipients: "Recipients"
+      allow: "Allow Access"
+      type: "Type"
+      file: "File"
+      institution: "Institution/Provider/Program/Core"
+      title: "Title"
+      actions: "Actions"
+      uploads: "Document Uploads"
+    upload_button: "Upload"
+    update_button: "Update"
+    cancel_button: "Cancel"
+    edit_button: "Edit"
+    delete_button: "Delete"
+
 
   # user search partial
   user_search:

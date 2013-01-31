@@ -13,7 +13,7 @@
     %li
       Short Title:
       = protocol.try(:short_title)
-    - if protocol._type == 'study'
+    - if protocol.type == 'Study'
       %li
         Sponsor Name:
         = protocol.try(:sponsor_name)
@@ -34,7 +34,7 @@
       %th{:colspan => 2} Actions
     - protocol.project_roles.each do |pr|
       - u = pr.identity
-      %tr
+      %tr{:class => "#{u.first_name}"}
         %td
           = u.first_name
           = u.last_name
@@ -85,7 +85,7 @@
             = pretty_program_core(ssr)
           %td
             = ssr.status
-          %td
+          %td{:class => "edit-td"}
             - if @user.can_edit_sub_service_request? ssr
               %center
                 %a.edit_service_request.btn{:href => "javascript:void(0);", :'data-permission' => rights.to_s, :'data-url' => "/service_requests/#{sr.id}/catalog?sub_service_request_id=#{ssr.id}&from_user_portal=true"} Edit
@@ -94,12 +94,12 @@
               %a.view-sub-service-request-button.btn{:href => "javascript:void(0);", :'data-service_request_id' => ssr.service_request.id, :'data-protocol_id' => protocol.id, :'data-status' => ssr.status} View
           - if sr.sub_service_requests.size > 0 && first_ssr
             - first_ssr = false
-            %td{:rowspan => sr.sub_service_requests.size}
+            %td{:class => "edit-original-td", :rowspan => sr.sub_service_requests.size}
               - if @user.can_edit_service_request? sr
                 %a.edit_service_request.btn{:href => "javascript:void(0);", :'data-permission' => rights.to_s, :'data-url' => "/service_requests/#{sr.id}/catalog?from_user_portal=true&edit_original=true"} Edit Original
     - reset_cycle('protocol')
 
 
 
-.service-request-button.ui-corner-top{:'data-url' => "/?protocol_id=#{protocol.id}", :'data-permission' => rights.to_s}= "+ ADD Additional Services to this #{protocol.type.capitalize}"
+.service-request-button.ui-corner-top.add-services-button{:'data-url' => "/?protocol_id=#{protocol.id}", :'data-permission' => rights.to_s}= "+ ADD Additional Services to this #{protocol.type.capitalize}"
 

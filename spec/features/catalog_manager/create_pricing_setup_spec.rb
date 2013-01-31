@@ -34,9 +34,7 @@ describe 'as a user on catalog page' do
     page.execute_script %Q{ $(".save_button").click() }
     wait_for_javascript_to_finish
     
-    using_wait_time 20 do
-      page.should have_content "South Carolina Clinical and Translational Institute (SCTR) saved successfully"
-    end
+    page.should have_content "South Carolina Clinical and Translational Institute (SCTR) saved successfully"
     
   end
   

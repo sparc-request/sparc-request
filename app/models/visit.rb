@@ -44,7 +44,9 @@ class Visit < ActiveRecord::Base
   end
 
   def set_default_name
-    self.update_attributes(:name => "Visit #{self.position}")
+    if name.nil? || name == ""
+      self.update_attributes(:name => "Visit #{self.position}")
+    end
   end 
 
 end

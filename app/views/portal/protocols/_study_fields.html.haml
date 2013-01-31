@@ -126,7 +126,7 @@
 
             .field.approval_pending
               = hs.label :approval_pending, "Application/Approval Pending:"
-              .approval_pending= hs.check_box :approval_pending
+              = hs.check_box :approval_pending
   
             .field.irb_approval_date
               = hs.label :irb_approval_date, "IRB Approval Date:"
@@ -230,6 +230,6 @@
     = submit_tag("Save study")
     or
     - if admin
-      = link_to "Cancel", "/portal/admin/sub_service_requests/#{@sub_service_request.id}"
+      = link_to "Cancel", "/portal/admin/sub_service_requests/#{@sub_service_request.id}", :class => "admin_cancel_link"
     - else
       = link_to "Cancel", portal_root_path

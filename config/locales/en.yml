@@ -82,6 +82,33 @@ en:
       subsidy: "% Subsidy"
     request_additional: "To request additional research funding go to"
 
+  # Calendar Page
+  calendar_page:
+    headers:
+      services: "Services"
+      unit_costs: "Unit Costs"
+      service_rate: "Service Rate"
+      your_cost: "Your Cost"
+      qty_type: "Qty Type"
+      subjects: "# Subjects"
+      total: "Total"
+      other_services: "Other Services"
+      total_study: "Total Study Costs"
+    per_patient: "Per Patient/Visit Services"
+    labels:
+      maximum_direct: "Maximum Total Direct Costs Per Patient"
+      maximum_indirect: "Maximum Total Indirect Costs Per Patient"
+      maximum_per: "Maximum Total Per Patient"
+      total_direct: "Total Direct Costs (Per Patient/Visit Services) Per Study"
+      total_indirect: "Total Indirect Costs (Per Patient/Visit Services) Per Study"
+      total_costs: "Total Costs (Per Patient/Visit Services) Per Study"
+      total_direct_other: "Total Direct Costs (other) Per Study"
+      total_indirect_other: "Total Indirect Costs (other) Per Study"
+      total_costs_other: "Total Costs (other) Per Study"
+      grand_total_direct: "Grand Total: Direct Costs"
+      grand_total_indirect: "Grand Total: Indirect Costs"
+      grand_total: "Grand Total:"
+
 
   # user search partial
   user_search_message: "To begin to search and add authorized users to this study/project, type in the first or last name of the user.  Select as appropriate."

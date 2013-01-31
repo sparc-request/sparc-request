@@ -129,6 +129,8 @@ describe 'associated users tab', :js => true do
       it 'should ask for confirmation' do
         @a.text.should eq "Are you sure?"
         @a.accept
+        @a = page.driver.browser.switch_to.alert
+        @a.text.should eq "Projects require a PI. Please add a new one before continuing."
         @a.accept
       end
 

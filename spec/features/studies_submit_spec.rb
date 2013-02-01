@@ -39,7 +39,7 @@ describe "creating a new study " do
       find(:xpath, "//input[@alt='SaveAndContinue']").click
       wait_for_javascript_to_finish
 
-      find("#service_request_protocol_id").value().should eq Protocol.last.id.to_s
+      find("#service_request_protocol_id").should have_value Protocol.last.id.to_s
     end
   end
 end
@@ -65,7 +65,7 @@ describe "editing a study" do
       click_button("Edit Study")
       wait_for_javascript_to_finish
 
-      find("#study_short_title").value().should eq("Bob")
+      find("#study_short_title").should have_value("Bob")
     end
   end
 

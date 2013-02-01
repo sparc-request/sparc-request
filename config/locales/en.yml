@@ -231,3 +231,21 @@ en:
     study_start_date: "Estimated Study Start Date"
     study_end_date: "Estimated Study End Date"
     services_required: "You can't continue unless you have services in your cart."
+
+  # Catalog Manager - Organization Form
+  organization_form:
+    gen_info: "General Information"
+    name: "Name"
+    abbreviation: "Abbreviation"
+    description: "Description"
+    ack_language: "Acknowledgement Language"
+    order: "Order"
+    is_ctrc: "Is CTRC?"
+    split_notify: "Split/Notify Here"
+    css_class: "CSS Class"
+    disabled: "Disabled"
+    super_users: "Super Users"
+    cm_rights: "Catalog Manager Rights"
+    actions: "Actions"
+    submit_button: "Save"
+

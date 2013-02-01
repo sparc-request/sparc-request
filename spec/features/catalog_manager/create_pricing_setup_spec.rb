@@ -27,8 +27,10 @@ describe 'as a user on catalog page' do
       
       find('.federal_percentage_field').set('150')
       click_link('Apply Federal % to All')
+      wait_for_javascript_to_finish
       page.execute_script %Q{ $(".rate").val("full") }
       page.execute_script %Q{ $(".rate").change() }
+      wait_for_javascript_to_finish
     end
   
     page.execute_script %Q{ $(".save_button").click() }

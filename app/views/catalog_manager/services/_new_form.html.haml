@@ -1,4 +1,4 @@
-= button_to 'Cancel', catalog_manager_root_path, :confirm => "Are you sure?", :style => 'display:none;', :id => 'cancel_button'
+= button_to t(:organization_form)[:cancel_button], catalog_manager_root_path, :confirm => "Are you sure?", :style => 'display:none;', :id => 'cancel_button'
 
 = form_for @service, :url => catalog_manager_services_path, :method => :post, :remote => true, :id => 'entity_form' do |f|
   .errorExplanation#errorExplanation{:style => 'display:none;'}
@@ -7,68 +7,68 @@
     .service_form
 
       %fieldset
-        %legend Actions
-        = f.submit 'Save', :id => 'save_button', :class => 'save_button btn'
+        %legend= t(:organization_form)[:actions]
+        = f.submit t(:organization_form)[:submit_button], :id => 'save_button', :class => 'save_button btn'
         %label.btn{:for => 'cancel_button'} Cancel
 
       %br
 
       %fieldset
-        %legend General Information
+        %legend= t(:organization_form)[:gen_info]
         %table
           %tr
-            %th Program
+            %th= f.label :program, t(:organization_form)[:program]
             %td
               = f.select :program, options_for_select(@programs.map{|p| [p.name, p.id]}, @service.program.id)
           %tr
-            %th Core
+            %th= f.label :core, t(:organization_form)[:core]
             %td#core_list= f.select :core, options_for_select(@cores.map{|c| [c.name, c.id]}.insert(0, ['None', 0]), (@service.core.id if @service.core))
           %tr
-            %th Name
+            %th= f.label :name, t(:organization_form)[:name]
             %td= f.text_field :name, :class => "service_name validate"
           %tr
-            %th Abbreviation
+            %th= f.label :abbreviation, t(:organization_form)[:abbreviation]
             %td= f.text_field :abbreviation
           %tr
-            %th Description
+            %th= f.label :description, t(:organization_form)[:description]
             %td= f.text_area :description, :rows => 8
           %tr
-            %th Order
+            %th= f.label :order, t(:organization_form)[:order]
             %td= f.text_field :order, :class => 'service_order validate'
           %tr
-            %th Disabled
+            %th= f.label :disabled, t(:organization_form)[:disabled]
             %td
               = f.check_box :is_available, {:checked => (@service.is_available.nil? ? false : !@service.is_available) }, false, true
       %br
 
       %fieldset
-        %legend Core/Facility Based Services
+        %legend= t(:organization_form)[:core_facility]
         %table
           %tr
-            %th Service Center Cost
+            %th= f.label :service_center_cost, t(:organization_form)[:service_center_cost]
             %td= f.text_field :service_center_cost
 
       %br
 
       %fieldset
-        %legend Hospital Based Services
+        %legend= t(:organization_form)[:hospital_based_services]
         %table
           %tr
-            %th CPT Code
+            %th= f.label :cpt_code, t(:organization_form)[:cpt_code]
             %td= f.text_field :cpt_code
 
           %tr
-            %th Charge Code
+            %th= f.label :charge_code, t(:organization_form)[:charge_code]
             %td= f.text_field :charge_code
 
           %tr
-            %th Revenue Code
+            %th= f.label :revenue_code, t(:organization_form)[:revenue_code]
             %td= f.text_field :revenue_code
 
       %br
 
       %fieldset
-        %legend Pricing Maps
+        %legend= t(:organization_form)[:pricing_maps]
         %input.add_pricing_map{:type => 'button', :value => 'Add Pricing Map'}
         .pricing_map_accordion
           - @service.pricing_maps.each do |pricing_map|
@@ -77,11 +77,11 @@
       %br
 
       %fieldset
-        %legend Actions
-        = f.submit 'Save', :id => 'save_button', :class => 'save_button btn'
+        %legend= t(:organization_form)[:actions]
+        = f.submit t(:organization_form)[:submit_button], :id => 'save_button', :class => 'save_button btn'
         %label.btn{:for => 'cancel_button'} Cancel
         
-        .ui-corner-all.blank_field_errors Name, Order, Unit Type, Unit Factor, Unit Minimum, Effective Date, and Display Date are required for new services.
+        .ui-corner-all.blank_field_errors= t(:organization_form)[:blank_field_errors]
 
 .blank_pricing_map
   = render 'pricing_map', :pricing_map_disabled => false, :can_edit_historical_data => @user.can_edit_historical_data_for?(@service.organization), :entity => @service

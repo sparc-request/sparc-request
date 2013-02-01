@@ -235,6 +235,8 @@ en:
   # Catalog Manager - Organization Form
   organization_form:
     gen_info: "General Information"
+    program: "Program"
+    core: "Core"
     name: "Name"
     abbreviation: "Abbreviation"
     description: "Description"
@@ -244,6 +246,14 @@ en:
     split_notify: "Split/Notify Here"
     css_class: "CSS Class"
     disabled: "Disabled"
+    core_facility: "Core/Facility Based Services"
+    service_center_cost: "Service Center Cost"
+    hospital_based_services: "Hospital Based Services"
+    cpt_code: "CPT Code"
+    charge_code: "Charge Code"
+    revenue_code: "Revenue Code"
+    pricing_maps: "Pricing Maps"
+    related_services: "Related Services"
     submission_emails: "Submission E-mails"
     super_users: "Super Users"
     service_providers: "Service Providers"
@@ -254,4 +264,5 @@ en:
     subsidy_max_dollar: "Max Dollar Cap"
     actions: "Actions"
     submit_button: "Save"
-
+    cancel_button: "Cancel"
+    blank_field_errors: "Name and Order on the Service, and Quantity Type, Unit Factor, Unit Minimum, Effective Date, and Display Date on all Pricing Maps are required."

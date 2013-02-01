@@ -7,48 +7,48 @@
   #entity_description
     %fieldset
       %legend Actions
-      = f.submit 'Save', :id => 'save_button', :class => 'save_button btn provider_program_core_save'
+      = f.submit t(:organization_form)[:submit_button], :id => 'save_button', :class => 'save_button btn provider_program_core_save'
       %img.spinner{:src => '/assets/catalog_manager/spinner_small.gif'}
     %br
   
     %fieldset
-      %legend General Information
+      %legend= t(:organization_form)[:gen_info]
       %table
         %tr
-          %th Name
+          %th= t(:organization_form)[:name]
           %td= f.text_field :name
         %tr
-          %th Abbreviation
+          %th= t(:organization_form)[:abbreviation]
           %td= f.text_field :abbreviation
         %tr
-          %th Description
+          %th= t(:organization_form)[:description] 
           %td= f.text_area :description, :rows => 8
         %tr
-          %th Acknowledgment Language
+          %th= t(:organization_form)[:ack_language]
           %td= f.text_area :ack_language, :rows => 8
         %tr
-          %th Order
+          %th= t(:organization_form)[:order]
           %td= f.text_field :order
         %tr
-          %th Is CTRC?
+          %th= t(:organization_form)[:is_ctrc]
           %td= f.check_box :is_ctrc
         
         - if @user.is_overlord?
           %tr
-            %th CSS Class
+            %th= t(:organization_form)[:css_class]
             %td= f.select :css_class, ACCORDION_COLOR_OPTIONS, :include_blank => 'Select a Color'
         
         %tr
-          %th Split/Notify Here
+          %th= t(:organization_form)[:split_notify]
           %td= f.check_box :process_ssrs
         %tr
-          %th Disabled
+          %th= t(:organization_form)[:disabled]
           %td= f.check_box :is_available, {:checked => (@provider.is_available.nil? ? false : !@provider.is_available) }, false, true
 
     %br
 
     %fieldset
-      %legend Submission E-mails
+      %legend= t(:organization_form)[:submission_emails]
       #se_info= render :partial => 'catalog_manager/shared/submission_emails', :locals => {:entity => @provider}
 
     %br

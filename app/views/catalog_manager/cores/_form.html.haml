@@ -5,14 +5,14 @@
 
   #entity_description
     %fieldset
-      %legend= f.label :actions, t(:organization_form)[:actions]
+      %legend= t(:organization_form)[:actions]
       = f.submit t(:organization_form)[:submit_button], :id => 'save_button', :class => 'save_button btn provider_program_core_save'
       %img.spinner{:src => '/assets/catalog_manager/spinner_small.gif'}
 
     %br
 
     %fieldset
-      %legend= f.label :gen_info, t(:organization_form)[:gen_info]
+      %legend= t(:organization_form)[:gen_info]
       %table
         %tr
           %th= f.label :name, t(:organization_form)[:name]
@@ -41,37 +41,37 @@
     %br
     
     %fieldset
-      %legend= f.label :submission_emails, t(:organization_form)[:submission_emails]
+      %legend= t(:organization_form)[:submission_emails]
       #se_info= render :partial => 'catalog_manager/shared/submission_emails', :locals => {:entity => @core}
       
     %br
 
     %fieldset
-      %legend= f.label :super_users, t(:organization_form)[:super_users]
+      %legend= t(:organization_form)[:super_users]
       #su_info= render :partial => 'catalog_manager/shared/super_users', :locals => {:entity => @core}
     
     %br
 
     %fieldset
-      %legend= f.label :service_providers, t(:organization_form)[:service_providers]
+      %legend= t(:organization_form)[:service_providers]
       #sp_info= render :partial => 'catalog_manager/shared/service_providers', :locals => {:entity => @core}
     
     %br
     
     %fieldset
-      %legend= f.label :cm_rights, t(:organization_form)[:cm_rights]
+      %legend= t(:organization_form)[:cm_rights]
       #cm_info= render :partial => 'catalog_manager/shared/catalog_managers', :locals => {:entity => @core}
     
     %br
     
     %fieldset
-      %legend= f.label :auto_pricing_adj, t(:organization_form)[:auto_pricing_adj]
+      %legend= t(:organization_form)[:auto_pricing_adj]
       = render :partial => 'catalog_manager/shared/increase_decrease_rates', :locals => {:entity => @core, :can_edit_historical_data => @user.can_edit_historical_data_for?(@core)}
     
     %br
     
     %fieldset
-      %legend= f.label :subsidy_info, t(:organization_form)[:subsidy_info]
+      %legend= t(:organization_form)[:subsidy_info]
       %table
         = f.fields_for :subsidy_map do |f_subsidy_map|
           %tr
@@ -85,7 +85,7 @@
     %br
 
     %fieldset
-      %legend= f.label :actions, t(:organization_form)[:actions]
+      %legend= t(:organization_form)[:actions]
       = f.submit t(:organization_form)[:submit_button], :id => 'save_button', :class => 'save_button btn provider_program_core_save'
       %img.spinner{:src => '/assets/catalog_manager/spinner_small.gif'}
       .ui-corner-all.blank_field_errors Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups.

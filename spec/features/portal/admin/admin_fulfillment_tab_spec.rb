@@ -10,6 +10,10 @@ describe "admin fulfillment tab", :js => true do
     visit portal_admin_sub_service_request_path(sub_service_request)
   end
 
+  after :each do
+    wait_for_javascript_to_finish
+  end
+
   describe "ensure information is present" do
 
     it "should contain the user header information" do

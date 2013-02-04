@@ -3,9 +3,9 @@
     %table
       %thead
         %tr
-          %th Service
-          %th Required
-          %th Delete
+          %th= t("cm_shared.labels.service")
+          %th= t("cm_shared.labels.required")
+          %th= t("cm_shared.lables.delete")
       %tbody
         - entity.service_relations.each do |service_relation|
           - service = service_relation.related_service
@@ -14,4 +14,4 @@
             %td= check_box_tag service_relation.id, !service_relation.optional, service_relation.optional == false, :class => 'optional'
             %td= image_tag 'cancel.png', :"data-service_relation_id" => service_relation.id, :class => 'rs_delete'
 
-  = text_field_tag 'new_rs', 'New Related Service'
+  = text_field_tag 'new_rs', t("cm_shared.labels.new_related")

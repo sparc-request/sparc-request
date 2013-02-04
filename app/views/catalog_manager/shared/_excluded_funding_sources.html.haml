@@ -1,5 +1,5 @@
 %tr
-  %th.excluded_funding_source Exclude These Funding Sources
+  %th.excluded_funding_source= t("cm_shared.labels.exclude_funding")
   %td
     %ul.excluded_funding_sources
       - entity.subsidy_map.excluded_funding_sources.each do |excluded_funding_source|
@@ -7,6 +7,7 @@
           = FUNDING_SOURCES.reverse_hash_to_strings[excluded_funding_source.funding_source]
           %span.ui-icon.ui-icon-close.remove_funding_source{:funding_source_id => excluded_funding_source.id}
     = select_tag 'funding_source', options_for_select( FUNDING_SOURCES.each{ |a| [a[0], a[1]]}), :prompt => '--- Select ---', :class => 'new_excluded_funding_source', :style => 'width:325px;'
-    %a.add_new_excluded_funding_source.btn{:org_id => entity.id, :org_type => entity.class} Exclude
+    %a.add_new_excluded_funding_source.btn{:org_id => entity.id, :org_type => entity.class}
+      = t("cm_shared.labels.exclude_button")
     %br
-    (college, federal, foundation, industry, investigator, internal, unfunded)
+    = t("cm_shared.labels.exclude_instructions")

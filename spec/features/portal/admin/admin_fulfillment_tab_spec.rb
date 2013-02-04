@@ -23,7 +23,7 @@ describe "admin fulfillment tab", :js => true do
       # More data checks here (more information probably needs to be put in the mocks)
       page.should_not have_content('#service_request_owner')
       page.should have_xpath("//option[@value='#{service.id}' and @selected='selected']")
-      page.find('#visit_name_4').value.should eq 'teapot'
+      page.find('#visit_name_4').should have_value 'teapot'
       page.should have_xpath("//option[@value='#{service2.id}' and @selected='selected']")
     end
 
@@ -36,7 +36,7 @@ describe "admin fulfillment tab", :js => true do
         select 'Submitted', :from => 'sub_service_request_status'
         visit portal_admin_sub_service_request_path(sub_service_request)
         page.should have_xpath("//option[@value='submitted' and @selected='selected']")
-        page.find('#sub_service_request_owner_id').value.should eq ""
+        page.find('#sub_service_request_owner_id').should have_value ""
       end
 
       it 'should save the proposed start and end date' do
@@ -57,8 +57,8 @@ describe "admin fulfillment tab", :js => true do
         
         visit portal_admin_sub_service_request_path(sub_service_request)
         service_request.reload
-        page.find('#service_request_start_date_picker').value.should eq service_request.start_date.strftime("%m/%d/%y")
-        page.find('#service_request_end_date_picker').value.should eq service_request.end_date.strftime("%m/%d/%y")
+        page.find('#service_request_start_date_picker').should have_value service_request.start_date.strftime("%m/%d/%y")
+        page.find('#service_request_end_date_picker').should have_value service_request.end_date.strftime("%m/%d/%y")
       end
     end
 
@@ -78,8 +78,8 @@ describe "admin fulfillment tab", :js => true do
         
         visit portal_admin_sub_service_request_path(sub_service_request)
         sub_service_request.reload
-        page.find('#sub_service_request_consult_arranged_date_picker').value.should eq sub_service_request.consult_arranged_date.strftime("%m/%d/%y")
-        page.find('#sub_service_request_requester_contacted_date_picker').value.should eq sub_service_request.requester_contacted_date.strftime("%m/%d/%y")
+        page.find('#sub_service_request_consult_arranged_date_picker').should have_value sub_service_request.consult_arranged_date.strftime("%m/%d/%y")
+        page.find('#sub_service_request_requester_contacted_date_picker').should have_value sub_service_request.requester_contacted_date.strftime("%m/%d/%y")
       end
 
       context "subsidy information" do
@@ -105,7 +105,7 @@ describe "admin fulfillment tab", :js => true do
           find('#subsidy_pi_contribution').click
           wait_for_javascript_to_finish
           page.should have_content "Service request has been saved."
-          find('#subsidy_pi_contribution').value.should eq '775.0'
+          find('#subsidy_pi_contribution').should have_value '775.0'
         end
       end
     end

@@ -41,8 +41,8 @@ describe "editing a project", js: true do
 
     it "should save the new short title" do
       fill_in "project_short_title", with: "Julius"
-      click_button "Save Project"
-      find("#project_short_title").value().should eq("Julius")
+      click_button "Save project"
+      find("#project_short_title").should have_value("Julius")
     end
   end
 
@@ -50,8 +50,8 @@ describe "editing a project", js: true do
 
     it "should save the new project title" do
       fill_in "project_title", with: "Swanson"
-      click_button "Save Project"
-      find("#project_title").value().should eq("Swanson")
+      click_button "Save project"
+      find("#project_title").should have_value("Swanson")
     end
   end
 
@@ -76,13 +76,13 @@ describe "editing a project", js: true do
     it "should save the new funding source" do
       select("Funded", from: "Proposal Funding Status")
       select("Federal", from: "project_funding_source")
-      find("#project_funding_source").value().should eq("federal")
+      find("#project_funding_source").should have_value("federal")
     end
 
     it "should save the new pending funding source" do
       select("Pending Funding", from: "Proposal Funding Status")
       select("Federal", from: "Potential Funding Source")
-      find("#project_potential_funding_source").value().should eq("federal")
+      find("#project_potential_funding_source").should have_value("federal")
     end
   end
 
@@ -90,8 +90,8 @@ describe "editing a project", js: true do
 
     it "should save the brief description" do
       fill_in "project_brief_description", with: "This is an amazing description."
-      click_button "Save Project"
-      find("#project_brief_description").value().should eq("This is an amazing description.")
+      click_button "Save project"
+      find("#project_brief_description").should have_value("This is an amazing description.")
     end
   end
 
@@ -99,8 +99,8 @@ describe "editing a project", js: true do
 
     it "should save the indirect cost rate" do
       fill_in "project_indirect_cost_rate", with: "50.0"
-      click_button "Save Project"
-      find("#project_indirect_cost_rate").value().should eq("50.0")
+      click_button "Save project"
+      find("#project_indirect_cost_rate").should have_value("50.0")
     end
   end
 end

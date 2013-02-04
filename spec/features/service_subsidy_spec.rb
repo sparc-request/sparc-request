@@ -93,7 +93,7 @@ describe "subsidy page" do
       visit service_subsidy_service_request_path service_request.id
       page.should have_css("input.pi-contribution[disabled=disabled]")
       retry_until do
-        find("input.pi-contribution").value.should eq("1550.0")
+        find("input.pi-contribution").should have_value("1550.0")
       end
     end
   end

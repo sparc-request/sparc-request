@@ -2,27 +2,27 @@
   %thead
     %tr
       %th.light-blue-provider{:colspan=>2}
-        %strong Study/Project Information
+        %strong= t(:sr_review)[:study_project_info][:title]
   %tbody
     %tr
-      %th Study/Project ID:
+      %th= t(:sr_review)[:study_project_info][:id]
       %td 
         = @protocol.id
     %tr
-      %th Short Title
+      %th= t(:sr_review)[:study_project_info][:short_title]
       %td 
         = @protocol.short_title
     %tr
-      %th Study/Project Title:
+      %th= t(:sr_review)[:study_project_info][:title] 
       %td 
         = @protocol.title
     - if @protocol.type == 'Study' 
       %tr
-        %th Sponsor Name:
+        %th= t(:sr_review)[:study_project_info][:sponsor_name]
         %td 
           = @protocol.sponsor_name
     %tr
-      %th Funding Source:
+      %th= t(:sr_review)[:study_project_info][:funding_source]
       %td 
         = @protocol.display_funding_source_value
 %table.project-roles
@@ -31,9 +31,9 @@
       %th.light-blue-provider{:colspan=>3}
         %strong Authorized Users
     %tr
-      %th Name:
-      %th Role:
-      %th Proxy Rights:
+      %th= t(:sr_review)[:auth_users][:name]
+      %th= t(:sr_review)[:auth_users][:role]
+      %th= t(:sr_review)[:auth_users][:proxy_rights]
   %tbody
     - @protocol.project_roles.each do |pr|
       %tr

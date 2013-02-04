@@ -128,8 +128,8 @@ describe 'as a user on catalog page' do
     # not visible); test the one prior to it instead.
     form = all(".pricing_map_form")[-2]
 
-    retry_until { form.find("input[id$='full_rate']").value.should eq '45.00' }
-    retry_until { form.find("input[id$='unit_type']").value.should eq 'self' }
+    form.find("input[id$='full_rate']").should have_value '45.00'
+    form.find("input[id$='unit_type']").should have_value 'self'
   end
 
 end

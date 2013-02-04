@@ -33,7 +33,7 @@ describe "editing a project", js: true do
     it "should not save changes" do
       fill_in "project_short_title", with: "Jason"
       find(".admin_cancel_link").click()    
-      find("#project_short_title").should_not eq("Jason")
+      find("#project_short_title").should_not have_text("Jason")
     end
   end
 

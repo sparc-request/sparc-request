@@ -158,4 +158,12 @@ module CapybaraSupport
     page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
   end  
   
+  def increase_wait_time(seconds)
+    orig_seconds = seconds
+    begin
+      Capybara.default_wait_time = seconds
+    ensure
+      Capybara.default_wait_time = orig_seconds
+    end
+  end
 end

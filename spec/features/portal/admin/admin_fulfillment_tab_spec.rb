@@ -10,6 +10,10 @@ describe "admin fulfillment tab", :js => true do
     visit portal_admin_sub_service_request_path(sub_service_request)
   end
 
+  after :each do
+    wait_for_javascript_to_finish
+  end
+
   describe "ensure information is present" do
 
     it "should contain the user header information" do
@@ -88,16 +92,16 @@ describe "admin fulfillment tab", :js => true do
         end
 
         it "should be able to add a subsidy" do
-          page.has_field?('subsidy_pi_contribution').should eq true
-          page.has_field?('subsidy_percent_subsidy').should eq true
-          page.has_selector?('#direct_cost_total').should eq true
+          page.should have_field('subsidy_pi_contribution')
+          page.should have_field('subsidy_percent_subsidy')
+          page.should have_selector('#direct_cost_total')
         end
 
         it "should be able to remove a subsidy" do
           within '#subsidy_table' do
             find('.delete_data').click
           end
-          has_link?("Add a Subsidy").should eq true
+          page.should have_link("Add a Subsidy")
         end
 
         it 'should be able to edit a subsidy' do
@@ -146,9 +150,9 @@ describe "admin fulfillment tab", :js => true do
         click_link 'Add a Fulfillment'
         wait_for_javascript_to_finish
         line_item.reload
-        page.has_field?("fulfillment_#{line_item.fulfillments[0].id}_date_picker").should eq true
-        page.has_field?("fulfillment_notes").should eq true
-        page.has_field?("fulfillment_time").should eq true
+        page.should have_field("fulfillment_#{line_item.fulfillments[0].id}_date_picker")
+        page.should have_field("fulfillment_notes")
+        page.should have_field("fulfillment_time")
       end
 
       it 'should be able to edit a fulfillment' do
@@ -208,8 +212,12 @@ describe "admin fulfillment tab", :js => true do
     end
 
     it 'should add notes' do
-      within '.note_body' do
-        page.should have_content @notes
+      # TODO: This test inconsistently fails on Jenkins, possibly due to
+      # Add Note taking too long.
+      increase_wait_time(20) do
+        within '.note_body' do
+          page.should have_content @notes
+        end
       end
     end
 

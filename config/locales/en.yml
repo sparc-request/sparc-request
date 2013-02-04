@@ -272,6 +272,35 @@ en:
       program_core: "Program/Core:"
       contact: "Contact:"
 
+  # Portal sub service request dialog
+  ssr_dialog:
+    project_study_details:
+      info: "Project/Study Information"
+      id: "Project/Study ID"
+      short_title: "Short Title"
+      project_title: "Project Title"
+      sponsor_name: "Sponsor Name"
+    auth_users:
+      name: "Name"
+      role: "Role"
+      proxy_rights: "Proxy Rights:"
+    docs:
+      uploads: "Uploads"
+      file_name: "File Name"
+      program_core: "Program/Core"
+    calendar:
+      headers:
+        services: "Services"
+        cost: "Your Cost"
+        subjects: "# Subjects"
+        total: "Service Total"
+      totals:
+        direct_cost: "Total Direct Cost"
+        indirect_cost: "Total Indirect Costs"
+        grand: "Grand Total:"
+
+      
+    
   # Catalog Manager - Organization Form
   organization_form:
     gen_info: "General Information"

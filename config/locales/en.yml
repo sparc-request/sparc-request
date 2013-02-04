@@ -257,7 +257,20 @@ en:
         direct_cost: "Total Direct Cost"
         indirect_cost: "Total Indirect Costs"
         grand: "Grand Total:"
-          
+
+  # Service Request Confirmation Page
+  sr_confirmation:
+    instructions: "Thank you for submitting a service request through SPARC. An email(s) has been submitted on your behalf, and we will respond to your service request shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
+    download_button: "Download my Service Request"
+    portal_button: "Go to SPARC User Portal"
+    details:
+      date_submitted: "Date Submitted: "
+      short_title: "Short Title: "
+      id: "Service Request ID:"
+      institution: "Institution:"
+      provider: "Provider:"
+      program_core: "Program/Core:"
+      contact: "Contact:"
 
   # Catalog Manager - Organization Form
   organization_form:

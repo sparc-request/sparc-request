@@ -259,6 +259,7 @@ en:
     service_providers: "Service Providers"
     cm_rights: "Catalog Manager Rights"
     auto_price_adj: "Automatic Pricing Adjustment"
+    pricing_setup: "Pricing Setup"
     subsidy_info: "Subsidy Information"
     subsidy_max_percent: "Max Percentage"
     subsidy_max_dollar: "Max Dollar Cap"

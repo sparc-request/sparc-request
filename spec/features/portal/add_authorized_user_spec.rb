@@ -43,7 +43,7 @@ describe 'adding an authrozied user', :js => true do
     end
 
     it 'should display the users information' do
-      find('#full_name').value.should eq 'Brian Kelsey'
+      find('#full_name').should have_value 'Brian Kelsey'
     end
 
     describe 'submitting the user' do

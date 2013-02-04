@@ -70,7 +70,7 @@ describe 'associated users tab', :js => true do
       end
 
       it 'should display the users information' do
-        find('#full_name').value.should eq 'Brian Kelsey'
+        find('#full_name').should have_value 'Brian Kelsey'
       end
 
       describe 'submitting the user' do
@@ -171,8 +171,8 @@ describe 'associated users tab', :js => true do
         find('.edit-associated-user-button').click
       end
       wait_for_javascript_to_finish
-      find('#full_name', :visible => true).value.should eq "Julia Glenn"
-      find('#email', :visible => true).value.should eq "glennj@musc.edu"
+      find('#full_name', :visible => true).should have_value "Julia Glenn"
+      find('#email', :visible => true).should have_value "glennj@musc.edu"
     end
 
     it 'should allow user roles to change' do

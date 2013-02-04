@@ -24,6 +24,28 @@ module Capybara::Node::Matchers
   end 
 
   alias_method :does_not_have_exact_content?, :does_not_have_exact_text?
+
+  def has_value?(expected)
+    synchronize do
+      unless value == expected
+        raise Capybara::ExpectationNotMet
+      end                                                                                   
+    end
+    return true
+  rescue Capybara::ExpectationNotMet                                                        
+    return false                                                                            
+  end 
+
+  def does_not_have_value?(expected)
+    synchronize do
+      if value == expected
+        raise Capybara::ExpectationNotMet
+      end                                                                                   
+    end
+    return true
+  rescue Capybara::ExpectationNotMet                                                        
+    return false                                                                            
+  end 
 end
 
 module Capybara::RSpecMatchers
@@ -84,6 +106,57 @@ module Capybara::RSpecMatchers
 
   def does_not_have_exact_text(text)
     HaveExactText.new(text)
+  end
+
+  class HaveValue
+    attr_reader :value
+
+    def initialize(value)
+      @value = value
+    end
+
+    def matches?(actual)
+      @actual = wrap(actual)
+      @actual.has_value?(value)
+    end
+
+    def does_not_match?(actual)
+      @actual = wrap(actual)
+      @actual.does_not_have_exact_value?(value)
+    end
+
+    def failure_message_for_should
+      "expected #{format(value)} to equal #{format(@actual.value)}"
+    end
+
+    def failure_message_for_should_not
+      "expected #{format(value)} to not equal #{format(@actual.value)}"
+    end
+
+    def description
+      "equal #{format(value)}"
+    end
+
+    def wrap(actual)
+      if actual.respond_to?("has_selector?")
+        actual
+      else
+        Capybara.string(actual.to_s)
+      end
+    end
+
+    def format(value)
+      value = Capybara::Helpers.normalize_whitespace(value) unless value.is_a? Regexp
+      value.inspect
+    end
+  end
+
+  def have_value(value)
+    HaveValue.new(value)
+  end
+
+  def does_not_have_value(value)
+    HaveValue.new(value)
   end
 end
 

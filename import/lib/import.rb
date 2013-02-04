@@ -19,7 +19,7 @@ require 'entity'
 # does it do that?
 require 'models/organization'
 require 'models/protocol'
-Dir['../app/models/*.rb'].each do |model_file|
+Dir["#{File.dirname(__FILE__)}/../../app/models/*.rb"].each do |model_file|
   resource = "models/#{File.basename(model_file).gsub(/\.rb$/, '')}"
   require resource
 end

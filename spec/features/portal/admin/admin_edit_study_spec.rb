@@ -13,6 +13,10 @@ describe "editing a study", js: true do
     click_on("Project/Study Information")
   end
 
+  after :each do
+    wait_for_javascript_to_finish
+  end
+
   context "validations" do
 
     it "should raise an error message if study's status is pending and no potential funding source is selected" do

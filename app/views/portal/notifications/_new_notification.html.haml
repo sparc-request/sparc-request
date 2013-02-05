@@ -9,15 +9,15 @@
         = hidden_field_tag('message_email', @recipient.try(:email), :name => 'message[email]')
         = hidden_field_tag('notification_sub_service_request_id', @sub_service_request.id, :name => 'notification[sub_service_request_id]')
 
-        Recipient:
+        = t(:notifications)[:recipient]
         = @recipient.try(:full_name)
         %br
         %br
       %p
-        %input#message_subject{:type => 'text', :name => "message[subject]", :placeholder => 'Subject', :tabindex => -1}
+        %input#message_subject{:type => 'text', :name => "message[subject]", :placeholder => t(:notifications)[:subject], :tabindex => -1}
         %br
         %br
       %p
-        %textarea#message_body{:placeholder => 'Please enter notification text here', :name => "message[body]", :cols => 75, :style => 'height:100px', :tabindex => -1}
+        %textarea#message_body{:placeholder => t(:notifications)[:message], :name => "message[body]", :cols => 75, :style => 'height:100px', :tabindex => -1}
   - else
-    You can not send a message to yourself.
+    = t(:notifications)[:warning]

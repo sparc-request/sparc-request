@@ -325,8 +325,7 @@ en:
       view: 'View Rights'
       request: 'Request/Approve Services'
       approve: 'Authorize/Change Study Charges'
-      
-    
+
   # Catalog Manager - Organization Form
   organization_form:
     gen_info: "General Information"
@@ -379,3 +378,18 @@ en:
     unit_minimum: "Unit Minimum"
     is_one_time_fee: "Is One Time Fee"
     exclude_from_indirect_cost: "Exclude from Indirect Cost"
+
+  # Notifications
+  notifications:
+    recipient: "Recipient:"
+    subject: "Subject"
+    message: "Please enter notification text here"
+    warning: "You can not send a message to yourself."
+    select: "Select All"
+    deselect: "Deselect All"
+    read: "Mark as Read"
+    unread: "Mark as Unread"
+    from: "Message Last Sent From:"
+    about: "Subject:"
+    preview: "Preview:"
+    received: "Received:"

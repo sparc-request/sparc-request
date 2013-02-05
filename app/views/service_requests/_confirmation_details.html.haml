@@ -2,17 +2,15 @@
   %tbody
     %tr
       %th.date_submitted{colspan: 4}
-        Date Submitted: 
-        = @service_request.submitted_at.strftime('%m/%d/%Y')
+        = t(:sr_confirmation)[:details][:date_submitted] + @service_request.submitted_at.strftime('%m/%d/%Y')
       %th.short_title{colspan: 2}
-        Short Title: 
-        = @service_request.protocol.short_title
+        = t(:sr_confirmation)[:details][:short_title] + @service_request.protocol.short_title
     %tr
-      %th Service Request ID:
-      %th Institution:
-      %th Provider: 
-      %th{colspan: 2} Program/Core:
-      %th Contact:
+      %th= t(:sr_confirmation)[:details][:id]
+      %th= t(:sr_confirmation)[:details][:institution]
+      %th= t(:sr_confirmation)[:details][:provider]
+      %th{colspan: 2}= t(:sr_confirmation)[:details][:program_core]  
+      %th= t(:sr_confirmation)[:details][:contact] 
     - @service_request.sub_service_requests.each do |ssr|
       - next unless @sub_service_request.nil? or @sub_service_request == ssr
       %tr.provider-header

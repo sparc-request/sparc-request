@@ -1,6 +1,7 @@
 en:
   application_title: "SPARC"
   portal_title: "SPARC Portal"
+  admin_portal_title: "SPARC Administration"
   catalog_manager_title: "SPARC Catalog Manager"
   error_contact: "(843) 792-8300 or success@musc.edu"
   issue_contact: "Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have."
@@ -325,8 +326,7 @@ en:
       view: 'View Rights'
       request: 'Request/Approve Services'
       approve: 'Authorize/Change Study Charges'
-      
-    
+
   # Catalog Manager - Organization Form
   organization_form:
     gen_info: "General Information"
@@ -377,3 +377,33 @@ en:
     about: "Subject:"
     preview: "Preview:"
     received: "Received:"
+    requester: "Requester: "
+
+  # Fulfillment tab
+  fulfillments:
+    approval_history: 
+      header: "Approval History"
+      date_approved: "Date Approved"
+      approved_by: "Approved By"
+    service_button: "Add Service"
+    core_approvals:
+      header: "Core Approvals"
+      nursing: "Nursing/Nutrition Approved"
+      lab: "Lab Approved"
+      imaging: "Imaging Approved"
+    status_changes:
+      header: "Status Changes"
+      date: "Date Changed"
+      from: "Status Changed From"
+      to: "Status Changed To"
+    notes:
+      header: "Notes"
+      link:  "Add Note"
+    timeline:
+      header: "Timeline"
+      start_date: "Proposed Start Date"
+      end_date: "Proposed End Date"
+      arranged_date: "Consult Arranged Date"
+      contacted_date: "Requester Contacted Date"
+
+

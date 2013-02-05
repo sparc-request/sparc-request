@@ -1,9 +1,9 @@
-%h3 Approval History
+%h3= t(:fulfillments)[:approval_history][:header]
 %table{:id => 'approval_history_table', :class => 'tablesorter'}
   %thead
     %tr
-      %th Date Approved
-      %th Approved By
+      %th= t(:fulfillments)[:approval_history][:date_approved]
+      %th= t(:fulfillments)[:approval_history][:approved_by]
   %tbody
     - @service_request.approvals.each do |approval|
       %tr

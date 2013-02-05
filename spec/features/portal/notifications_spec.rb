@@ -27,7 +27,7 @@ describe "notifications page", :js => true do
     page.fill_in 'message[body]', :with => "Test Reply"
     click_button("Submit")
     wait_for_javascript_to_finish
-    find("td.body_column").text.should eq("Test Reply")
+    find("td.body_column").should have_text("Test Reply")
   end
 
 end

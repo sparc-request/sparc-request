@@ -46,7 +46,7 @@ describe "service calendar" do
       it "should change visits when -> is clicked", :js => true do
         click_link("->")
         retry_until {
-          find('#visit_name_6').value.should eq("Visit 6")
+          find('#visit_name_6').should have_value("Visit 6")
         }
       end
 
@@ -120,7 +120,7 @@ describe "service calendar" do
           wait_for_javascript_to_finish
           click_link "check_row_#{line_item2.id}_billing_strategy"
           wait_for_javascript_to_finish
-          find("#visits_#{line_item2.visits[1].id}_research_billing_qty").value().should eq("1")
+          find("#visits_#{line_item2.visits[1].id}_research_billing_qty").should have_value("1")
         end
       end
 

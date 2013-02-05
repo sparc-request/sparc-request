@@ -1,22 +1,22 @@
 .service_request_information
   %table.project_information
     %tr
-      %th.blue_header{:colspan => 2} Project/Study Information
+      %th.blue_header{:colspan => 2}= t(:ssr_dialog)[:project_study_details][:info]
     %tr
       %td.percent_30.highlight
-        %strong Project/Study ID
+        %strong= t(:ssr_dialog)[:project_study_details][:id]
       %td.protocol-id-td.no-border-right= @protocol.id
     %tr
       %td.percent_30.highlight
-        %strong Short Title
+        %strong= t(:ssr_dialog)[:project_study_details][:short_title]
       %td.no-border-right= @protocol.short_title
     %tr
       %td.percent_30.highlight
-        %strong Project Title
+        %strong= t(:ssr_dialog)[:project_study_details][:project_title] 
       %td.no-border-right= @protocol.title
     %tr
       %td.percent_30.highlight
-        %strong Sponsor Name
+        %strong= t(:ssr_dialog)[:project_study_details][:sponsor_name]  
       %td.no-border-right= @protocol.sponsor_name
     %tr
       %td.percent_30.highlight
@@ -28,9 +28,9 @@
     %tr
       %th.blue_header{:colspan => 3} Users
     %tr
-      %th.highlight{:colspan => 1} Name
-      %th.highlight{:colspan => 1} Role
-      %th.highlight{:colspan => 1} Proxy Rights:
+      %th.highlight{:colspan => 1}= t(:ssr_dialog)[:auth_users][:name]
+      %th.highlight{:colspan => 1}= t(:ssr_dialog)[:auth_users][:role] 
+      %th.highlight{:colspan => 1}= t(:ssr_dialog)[:auth_users][:proxy_rights]
     - @protocol.project_roles.each do |pr|
       %tr
         %td.percent_30= pr.identity.full_name
@@ -40,10 +40,10 @@
   %br
   %table.uploads_information
     %tr
-      %th.blue_header{:colspan => 2} Uploads
+      %th.blue_header{:colspan => 2}= t(:ssr_dialog)[:docs][:uploads]
     %tr
-      %th.highlight{:colspan => 1} File Name
-      %th.highlight{:colspan => 1} Program/Core
+      %th.highlight{:colspan => 1}= t(:ssr_dialog)[:docs][:file_name] 
+      %th.highlight{:colspan => 1}= t(:ssr_dialog)[:docs][:program_core] 
     - @service_request.documents.each do |document|
       %tr
         %td.percent_30.document_download_link= link_to document.document_file_name, document.document.url

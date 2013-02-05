@@ -66,7 +66,7 @@ describe 'associated users tab', :js => true do
       end
 
       it 'should remove the black shield' do
-        page.has_selector?('#shield').should eq false
+        page.should_not have_selector('#shield')
       end
 
       it 'should display the users information' do
@@ -123,22 +123,25 @@ describe 'associated users tab', :js => true do
         within("#user_#{jug2.id}") do
           page.find('.delete-associated-user-button', :visible => true).click
         end
-        @a = page.driver.browser.switch_to.alert
       end
 
       it 'should ask for confirmation' do
-        @a.text.should eq "Are you sure?"
-        @a.accept
-        @a = page.driver.browser.switch_to.alert
-        @a.text.should eq "Projects require a PI. Please add a new one before continuing."
-        @a.accept
+        a = page.driver.browser.switch_to.alert
+        a.text.should eq "Are you sure?"
+        a.accept
+
+        a = page.driver.browser.switch_to.alert
+        a.text.should eq "Projects require a PI. Please add a new one before continuing."
+        a.accept
       end
 
       it 'should not allow the only PD/PI to be removed' do
-        @a.accept
-        @a = page.driver.browser.switch_to.alert
-        @a.text.should eq "Projects require a PI. Please add a new one before continuing."
-        @a.accept
+        a = page.driver.browser.switch_to.alert
+        a.accept
+
+        a = page.driver.browser.switch_to.alert
+        a.text.should eq "Projects require a PI. Please add a new one before continuing."
+        a.accept
       end
     end
 
@@ -150,7 +153,7 @@ describe 'associated users tab', :js => true do
       a.accept
       wait_for_javascript_to_finish
       within('#users') do
-        page.has_selector?("#user_#{bob.id}").should eq false
+        page.should_not have_selector("#user_#{bob.id}")
       end
     end
   end

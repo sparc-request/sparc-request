@@ -1,12 +1,12 @@
 %table.service_calendar
   %thead.ui-widget-header
     %tr.table_header
-      %th{:rowspan => 2} Services
-      %th{:rowspan => 2} Your Cost
-      %th{:rowspan => 2} # Subjects
+      %th{:rowspan => 2}= t(:sr_review)[:calendar][:headers][:services]
+      %th{:rowspan => 2}= t(:sr_review)[:calendar][:headers][:cost]
+      %th{:rowspan => 2}= t(:sr_review)[:calendar][:headers][:subjects]
       %th{:colspan => 5, :height => 40, :width => 375} 
         = generate_review_visit_navigation @service_request, @page, @tab if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
-      %th{:rowspan => 2} Service Total
+      %th{:rowspan => 2}= t(:sr_review)[:calendar][:headers][:total] 
         
 
     %tr.table_header
@@ -52,15 +52,15 @@
     %tr.section_header
       %tr.totals_section
         %td{:colspan => 7}
-        %td.total_cell Total Direct Cost
+        %td.total_cell= t(:sr_review)[:calendar][:totals][:direct_cost]
         %td.total_cell{:id => 'grand_total_direct'}= display_grand_total_direct_costs @service_request, @line_items
 
       %tr.totals_section
         %td{:colspan => 7}
-        %td.total_cell Total Indirect Costs
+        %td.total_cell= t(:sr_review)[:calendar][:totals][:indirect_cost]
         %td.total_cell{:id => 'grand_total_indirect'}= display_grand_total_indirect_costs @service_request, @line_items
 
       %tr.totals_section
         %td{:colspan => 7}
-        %td.total_cell Grand Total:
+        %td.total_cell= t(:sr_review)[:calendar][:totals][:grand]
         %td.total_cell{:id => 'grand_total'}= display_grand_total @service_request, @line_items

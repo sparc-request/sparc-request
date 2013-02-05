@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'ostruct'
 
 
-describe 'adding an authrozied user', :js => true do
+describe 'adding an authorized user', :js => true do
   let_there_be_lane
   fake_login_for_each_test
   build_service_request_with_project
@@ -39,7 +39,7 @@ describe 'adding an authrozied user', :js => true do
     end
 
     it 'should remove the black shield' do
-      page.has_selector?('#shield').should eq false
+      page.should_not have_selector('#shield')
     end
 
     it 'should display the users information' do

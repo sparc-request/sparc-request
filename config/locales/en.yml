@@ -232,6 +232,101 @@ en:
     study_end_date: "Estimated Study End Date"
     services_required: "You can't continue unless you have services in your cart."
 
+  # Service Request review page
+  sr_review:
+    instructions: "Please review the following information to ensure the accuracy of your request. If you need to make changes, click on the steps above or click \"Go Back\" at the bottom of the page. After you have reviewed your request, click \"Submit my Service Request.\" Alternatively, you may save your request as a draft for future submission. Please note: Draft requests are not reviewed by staff for approval."
+    study_project_info:
+      title: "Study/Project Information"
+      id: "Study/Project ID:"
+      short_title: "Short Title"
+      title: "Study/Project Title:"
+      sponsor_name: "Sponsor Name:"
+      funding_source: "Funding Source:"
+    auth_users:
+      name: "Name:"
+      role: "Role:"
+      proxy_rights: "Proxy Rights:"
+    notes_header: "Service Request Notes"
+    calendar:
+      headers:
+        services: "Services"
+        cost: "Your Cost"
+        subjects: "# Subjects"
+        total: "Service Total"
+      totals:
+        direct_cost: "Total Direct Cost"
+        indirect_cost: "Total Indirect Costs"
+        grand: "Grand Total:"
+
+  # Service Request Confirmation Page
+  sr_confirmation:
+    instructions: "Thank you for submitting a service request through SPARC. An email(s) has been submitted on your behalf, and we will respond to your service request shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
+    download_button: "Download my Service Request"
+    portal_button: "Go to SPARC User Portal"
+    details:
+      date_submitted: "Date Submitted: "
+      short_title: "Short Title: "
+      id: "Service Request ID:"
+      institution: "Institution:"
+      provider: "Provider:"
+      program_core: "Program/Core:"
+      contact: "Contact:"
+
+  # Portal sub service request dialog
+  ssr_dialog:
+    project_study_details:
+      info: "Project/Study Information"
+      id: "Project/Study ID"
+      short_title: "Short Title"
+      project_title: "Project Title"
+      sponsor_name: "Sponsor Name"
+    auth_users:
+      name: "Name"
+      role: "Role"
+      proxy_rights: "Proxy Rights:"
+    docs:
+      uploads: "Uploads"
+      file_name: "File Name"
+      program_core: "Program/Core"
+    calendar:
+      headers:
+        services: "Services"
+        cost: "Your Cost"
+        subjects: "# Subjects"
+        total: "Service Total"
+      totals:
+        direct_cost: "Total Direct Cost"
+        indirect_cost: "Total Indirect Costs"
+        grand: "Grand Total:"
+
+  # Portal Editing user for study/project
+  portal_user_form:
+    add_user: "Add User"
+    edit_user: "Edit User"
+    name: "Name:"
+    email: "E-mail:"
+    phone: "Phone:"
+    role: "Role:*"
+    role_prompt: "Select a Role"
+    era: "ERA Commons Name:"
+    credentials: "Credentials:"
+    credentials_prompt: "Select a Credential"
+    institution: "Institution:"
+    institution_prompt: "Select an Institution"
+    college: "College:"
+    college_prompt: "Select a College"
+    department: "Department:"
+    department_prompt: "Select a Department"
+    subspeciality: "Subspecialty:"
+    subspeciality_prompt: "Select a Subspecialty"
+    rights:
+      header: "User Rights:"
+      none: 'Study/Project Member Only'
+      view: 'View Rights'
+      request: 'Request/Approve Services'
+      approve: 'Authorize/Change Study Charges'
+      
+    
   # Catalog Manager - Organization Form
   organization_form:
     gen_info: "General Information"

@@ -43,7 +43,7 @@ describe "admin portal notifications", :js => true do
         click_button("Submit")
       end
       wait_for_javascript_to_finish
-      find("td.body_column").text.should eq("Test Reply II, Reply to Reply")
+      find("td.body_column").should have_exact_text("Test Reply II, Reply to Reply")
     end
   end
 

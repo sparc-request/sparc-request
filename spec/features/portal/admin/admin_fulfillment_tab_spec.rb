@@ -116,7 +116,7 @@ describe "admin fulfillment tab", :js => true do
           find("#line_item_quantity[data-line_item_id='#{line_item.id}']").set "10"
           find("#line_item_units_per_quantity[data-line_item_id='#{line_item.id}']").click
           wait_for_javascript_to_finish
-          find("#line_item_#{line_item.id}_cost").text.should eq("$100.00")
+          find("#line_item_#{line_item.id}_cost").should have_exact_text("$100.00")
         end
       end
 
@@ -210,7 +210,7 @@ describe "admin fulfillment tab", :js => true do
     it 'should add notes' do
       # TODO: This test inconsistently fails on Jenkins, possibly due to
       # Add Note taking too long.
-      increase_wait_time(20) do
+      increase_wait_time(30) do
         within '.note_body' do
           page.should have_content @notes
         end
@@ -218,12 +218,14 @@ describe "admin fulfillment tab", :js => true do
     end
 
     it 'should record who posted the note and the date' do
-      within '.note_date' do
-        page.should have_content Date.today.strftime("%m/%d/%y")
-      end
+      increase_wait_time(30) do
+        within '.note_date' do
+          page.should have_content Date.today.strftime("%m/%d/%y")
+        end
 
-      within '.note_name' do
-        page.should have_content "#{jug2.first_name} #{jug2.last_name}"
+        within '.note_name' do
+          page.should have_content "#{jug2.first_name} #{jug2.last_name}"
+        end
       end
     end
   end

@@ -267,3 +267,18 @@ en:
     submit_button: "Save"
     cancel_button: "Cancel"
     blank_field_errors: "Name and Order on the Service, and Quantity Type, Unit Factor, Unit Minimum, Effective Date, and Display Date on all Pricing Maps are required."
+
+  # Notifications
+  notifications:
+    recipient: "Recipient:"
+    subject: "Subject"
+    message: "Please enter notification text here"
+    warning: "You can not send a message to yourself."
+    select: "Select All"
+    deselect: "Deselect All"
+    read: "Mark as Read"
+    unread: "Mark as Unread"
+    from: "Message Last Sent From:"
+    about: "Subject:"
+    preview: "Preview:"
+    received: "Received:"

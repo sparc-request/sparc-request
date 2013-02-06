@@ -1,12 +1,12 @@
-%h3 Timeline
+%h3= t(:fulfillments)[:timeline][:header]
 #timeline_table
   %table
     %thead
       %tr
-        %th Proposed Start Date
-        %th Proposed End Date
-        %th Consult Arranged Date
-        %th Requester Contacted Date
+        %th= t(:fulfillments)[:timeline][:start_date]
+        %th= t(:fulfillments)[:timeline][:end_date]
+        %th= t(:fulfillments)[:timeline][:arranged_date]
+        %th= t(:fulfillments)[:timeline][:contacted_date]
     %tbody
       %tr
         %td

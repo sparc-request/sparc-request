@@ -6,17 +6,17 @@
   = render :partial => 'steps'
   = render :partial => 'errors'
   %ul.billing-info
-    %li R = Research
-    %li T = Third Party (PT Insurance)
-    %li % = % Effort
+    %li= t(:calendar_page)[:billing_legend][:research]
+    %li= t(:calendar_page)[:billing_legend][:third_party]
+    %li= t(:calendar_page)[:billing_legend][:effort]
   %div 
   .grid_12
     #service_calendar
       %ul
-        %li= link_to 'Template Tab', table_service_request_service_calendars_path(@service_request, :tab => "template"), :id => 'template_tab'
-        %li= link_to 'Billing Strategy Tab', table_service_request_service_calendars_path(@service_request, :tab => "billing_strategy"), :id => 'billing_strategy_tab'
-        %li= link_to 'Quantity Tab', table_service_request_service_calendars_path(@service_request, :tab => "quantity"), :id => 'quantity_tab'
-        %li= link_to 'Pricing Tab', table_service_request_service_calendars_path(@service_request, :tab => "pricing"), :id => 'pricing_tab'
+        %li= link_to t(:calendar_page)[:tabs][:template], table_service_request_service_calendars_path(@service_request, :tab => "template"), :id => 'template_tab'
+        %li= link_to t(:calendar_page)[:tabs][:billing], table_service_request_service_calendars_path(@service_request, :tab => "billing_strategy"), :id => 'billing_strategy_tab'
+        %li= link_to t(:calendar_page)[:tabs][:quantity], table_service_request_service_calendars_path(@service_request, :tab => "quantity"), :id => 'quantity_tab'
+        %li= link_to t(:calendar_page)[:tabs][:pricing], table_service_request_service_calendars_path(@service_request, :tab => "pricing"), :id => 'pricing_tab'
 
   .clear
   .continue= render :partial => 'service_requests/navigation'

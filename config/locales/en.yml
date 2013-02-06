@@ -91,6 +91,15 @@ en:
 
   # Calendar Page
   calendar_page:
+    tabs:
+      template: "Template Tab"
+      billing: "Billing Strategy Tab"
+      quantity: "Quantity Tab"
+      pricing: "Pricing Tab"
+    billing_legend:
+      research: "R = Research"
+      third_party: "T = Third Party (PT Insurance)"
+      effort: "% = % Effort"
     headers:
       services: "Services"
       unit_costs: "Unit Costs"
@@ -422,5 +431,3 @@ en:
       end_date: "Proposed End Date"
       arranged_date: "Consult Arranged Date"
       contacted_date: "Requester Contacted Date"
-
-

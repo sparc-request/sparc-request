@@ -3,10 +3,10 @@
     %table
       %thead
         %tr
-          %th Name/Email
-          %th.check Primary Contact
-          %th.check Hold Emails
-          %th Delete
+          %th= t("cm_shared.labels.name_email")
+          %th.check= t("cm_shared.labels.primary")
+          %th.check= t("cm_shared.labels.hold")
+          %th= t("cm_shared.labels.delete")
       %tbody
         - entity.service_providers.each do |sp|
           %tr

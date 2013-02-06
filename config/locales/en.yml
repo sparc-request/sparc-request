@@ -120,6 +120,8 @@ en:
   documents:
     no_documents: "No documents found"
     instructions: "Please add any additional information that may be helpful to service providers."
+    admin_instructions: "Additional Notes -- If specific to service, please specify in text:"
+    upload_message: "Your file is uploading.  Please be patient as this may take a while with large files."
     make_changes: "To make changes to selected services please click"
     here: "here"
     add_button: "Add a New Document"
@@ -132,6 +134,7 @@ en:
       title: "Title"
       actions: "Actions"
       uploads: "Document Uploads"
+      uploaded: "Uploaded"
     upload_button: "Upload"
     update_button: "Update"
     cancel_button: "Cancel"

@@ -539,3 +539,23 @@ en:
         add_link: "Add a Visit"
         delete_link: "Delete a Visit"
 
+  # Admin Dashboard
+  admin_dashboard:
+    title: "My Dashboard"
+    id: "SRID"
+    pi: "PI"
+    requester: "Requester"
+    short_title: "Short Title"
+    export: "Export to Excel"
+    delete: "Delete This Request"
+    export_link: "Export"
+    delete_link: "Delete"
+    delete_confirm: "Are you sure?"
+    tabs:
+      fulfillment: "Fulfillment"
+      protocol_info: "Project/Study Information"
+      docs: "Documents"
+      related_srs: "Related Service Requests"
+      users: "Associated Users"
+      notifications: "Notifications"
+

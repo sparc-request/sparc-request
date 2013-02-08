@@ -91,6 +91,15 @@ en:
 
   # Calendar Page
   calendar_page:
+    tabs:
+      template: "Template Tab"
+      billing: "Billing Strategy Tab"
+      quantity: "Quantity Tab"
+      pricing: "Pricing Tab"
+    billing_legend:
+      research: "R = Research"
+      third_party: "T = Third Party (PT Insurance)"
+      effort: "% = % Effort"
     headers:
       services: "Services"
       unit_costs: "Unit Costs"
@@ -505,5 +514,38 @@ en:
       end_date: "Proposed End Date"
       arranged_date: "Consult Arranged Date"
       contacted_date: "Requester Contacted Date"
-
+    subsidies:
+      header: "Subsidy Information"
+      no_subsidy: "No subsidy has been requested for this service request."
+      pi: "PI Contribution"
+      percent: "% Subsidy"
+      cost: "Total Cost"
+      delete: "Delete Subsidy"
+      link: "Add a Subsidy"
+    services:
+      header: "Services"
+      no_visits:
+        header: "Non Per-Patient/Per-Visit"
+        no_requests: "There are no non per-patient/per-visit requests."
+        selected: "Services Selected"
+        code: "Charge Code"
+        quantity: "Quantity"
+        units: "Units Per Quantity"
+        type: "Type"
+        cost: "Cost"
+        received: "Received"
+        in_process: "In Process"
+        complete: "Complete"
+        delete: "Delete"
+        date: "Date"
+        timeframe: "Timeframe"
+        time: "Time"
+        notes: "Notes"
+      visits:
+        header: "Per-Patient/Per-Visit"
+        no_requests: "There are no per-patient/per-visit requests."
+        add: "Add a Visit"
+        delete: "Delete a Visit"
+        add_link: "Add a Visit"
+        delete_link: "Delete a Visit"
 

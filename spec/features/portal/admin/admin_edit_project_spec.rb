@@ -46,6 +46,7 @@ describe "editing a project", js: true do
     it "should save the new short title" do
       fill_in "project_short_title", with: "Julius"
       click_button "Save project"
+      wait_for_javascript_to_finish
       find("#project_short_title").should have_value("Julius")
     end
   end

@@ -26,16 +26,7 @@ class ApplicationController < ActionController::Base
       session.delete(:sub_service_request_id)
     end
 
-    Rails.logger.info "#"*50
-    Rails.logger.info params[:controller]
-    Rails.logger.info params[:action]
-    Rails.logger.info "#"*50
-
     if params[:controller] == 'service_requests'
-      Rails.logger.info "#"*50
-      Rails.logger.info "i'm in the service requests controller"
-      Rails.logger.info "#"*50
-
       if params[:action] == 'catalog' and params[:id].nil?
         session.delete(:service_request_id)
         session.delete(:sub_service_request_id)
@@ -44,10 +35,6 @@ class ApplicationController < ActionController::Base
       end
 
       if session[:service_request_id]
-        Rails.logger.info "#"*50
-        Rails.logger.info "i have a service request id"
-        Rails.logger.info "#"*50
-
         @service_request = ServiceRequest.where(:id => session[:service_request_id]).first
 
         if @service_request.nil?
@@ -78,10 +65,6 @@ class ApplicationController < ActionController::Base
           end
         end
 
-        Rails.logger.info "#"*50
-        Rails.logger.info flash.inspect
-        Rails.logger.info "#"*50    
-
         # if the user has requested an account and it is pending approval we need to change the login message
         signed_up_but_not_approved = false
         if flash[:notice] == I18n.t("devise.registrations.identity.signed_up_but_not_approved") # use the local version of the text
@@ -93,9 +76,6 @@ class ApplicationController < ActionController::Base
         redirect_to catalog_service_request_path(@service_request, :signed_up_but_not_approved => signed_up_but_not_approved)
       end
     else
-      Rails.logger.info "#"*50
-      Rails.logger.info "i'm gonna find you"
-      Rails.logger.info "#"*50
       @service_request = ServiceRequest.find session[:service_request_id]
       if session[:sub_service_request_id]
         @sub_service_request = @service_request.sub_service_requests.find session[:sub_service_request_id]

@@ -150,6 +150,16 @@ en:
     edit_button: "Edit"
     delete_button: "Delete"
 
+  # Related Service Requests (portal/admin/)
+  related:
+    headers:
+      srid: "SRID"
+      date_submitted: "Date Submitted"
+      requester: "Requester"
+      pi: "PI"
+      program_core: "Program/Core"
+      service: "Service"
+
   # Catalog Manager Program Form
   cm_program:
     labels:

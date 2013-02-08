@@ -2,12 +2,12 @@
   %table
     %thead
       %tr
-        %th SRID
-        %th Date Submitted
-        %th Requester
-        %th PI
-        %th Program/Core
-        %th Service
+        %th= t("related.headers.srid")
+        %th= t("related.headers.date_submitted")
+        %th= t("related.headers.requester")
+        %th= t("related.headers.pi")
+        %th= t("related.headers.program_core")
+        %th= t("related.headers.service")
     %tbody
       - @related_service_requests.each do |rsr|
         %tr

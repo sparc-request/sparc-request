@@ -569,3 +569,14 @@ en:
       users: "Associated Users"
       notifications: "Notifications"
 
+  # Admin Root Page
+  admin_root:
+    title: "My Profile"
+    search_placeholder: "Search all service requests..." 
+    date: "Date Submitted"
+    service: "Service"
+    requester: "Requester"
+    assigned: "Person Assigned"
+    orgs: "Program/Provider/Core"
+
+

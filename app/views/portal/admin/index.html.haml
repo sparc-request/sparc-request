@@ -5,7 +5,7 @@
 
 .admin-right-dashboard
   .user-information-title.ui-corner-all
-    %h3 My Profile
+    %h3= t(:admin_root)[:title]
   .user-information-body.ui-corner-bottom
     %p
       %strong= @user.display_name
@@ -15,7 +15,7 @@
 
 .admin-index-ssr-list
   .admin-index-ssr-table
-    %input.search-all-service-requests{:type => 'text', :placeholder => 'Search all service requests...'}
+    %input.search-all-service-requests{:type => 'text', :placeholder => t(:admin_root)[:search_placeholder]}
     %br
     %select#service_request_workflow_states
       - @user.available_workflow_states.each do |workflow_state|
@@ -28,14 +28,14 @@
         %table#admin-tablesorter.tablesorter
           %thead
             %tr
-              %th SRID&nbsp;&nbsp;&nbsp;&nbsp;
-              %th Short Title
-              %th Date Submitted
-              %th Service
-              %th Requester&nbsp;&nbsp;&nbsp;&nbsp;
-              %th PI&nbsp;&nbsp;&nbsp;&nbsp;
-              %th Person Assigned
-              %th Program/ Provider/Core
+              %th= t(:admin_dashboard)[:id]
+              %th= t(:admin_dashboard)[:short_title]
+              %th= t(:admin_root)[:date]
+              %th= t(:admin_root)[:service]
+              %th= t(:admin_root)[:requester]
+              %th= t(:admin_dashboard)[:pi]
+              %th= t(:admin_root)[:assigned]
+              %th= t(:admin_root)[:orgs]
           %tbody
             - pis = []
             - search_pis = []

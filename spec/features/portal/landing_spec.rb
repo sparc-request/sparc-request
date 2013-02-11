@@ -4,6 +4,10 @@ describe "landing page", :js => true do
   let_there_be_lane
   fake_login_for_each_test
 
+  after :each do
+    wait_for_javascript_to_finish
+  end
+
   describe "notifications link" do
     it 'should work' do
       visit portal_root_path

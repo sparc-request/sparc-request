@@ -499,6 +499,9 @@ en:
       nursing: "Nursing/Nutrition Approved"
       lab: "Lab Approved"
       imaging: "Imaging Approved"
+    src_approval:
+      headar: "SRC Approval"
+      label: "SRC Approved"
     status_changes:
       header: "Status Changes"
       date: "Date Changed"

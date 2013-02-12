@@ -1,7 +1,7 @@
 %h4= t(:fulfillments)[:services][:no_visits][:header]
 - if !(@sub_service_request.one_time_fee_line_items.length >= 1)
   .blank_requests
-    = t(:fulfillments)[:services][:no_visit][:no_requests]
+    = t(:fulfillments)[:services][:no_visits][:no_requests]
 - else
   #one_time_fee_table
     %table

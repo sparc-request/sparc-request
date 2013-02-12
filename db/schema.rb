@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130123183847) do
+ActiveRecord::Schema.define(:version => 20130212142320) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -482,6 +482,7 @@ ActiveRecord::Schema.define(:version => 20130123183847) do
     t.boolean  "nursing_nutrition_approved", :default => false
     t.boolean  "lab_approved",               :default => false
     t.boolean  "imaging_approved",           :default => false
+    t.boolean  "src_approved",               :default => false
   end
 
   add_index "sub_service_requests", ["organization_id"], :name => "index_sub_service_requests_on_organization_id"

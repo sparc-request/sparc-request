@@ -239,32 +239,31 @@ en:
 
   # user details partial
   user_details:
-    name: "Name:"
-    email: "Email:"
-    phone: "Phone:"
-    role: "Role:*"
+    name: "Name"
+    email: "Email"
+    phone: "Phone"
+    role: "Role"
     role_select: "Select a Role"
-    ec_name: "ERA Commons Name:"
-    institution: "Institution:"
+    ec_name: "ERA Commons Name"
+    institution: "Institution"
     institution_select: "Select an Institution"
-    college: "College:"
+    college: "College"
     college_select: "Select a College"
-    department: "Department:"
+    department: "Department"
     department_select: "select a Department"
-    credentials: "Credentials:"
+    credentials: "Credentials"
     credentials_select: "Select a Credential"
-    subspeciality: "Subspeciality:"
+    subspeciality: "Subspeciality"
     subspeciality_select: "Select a Subspeciality"
     update_button: "Update Authorized User"
     add_button: "Add Authorized User"
 
   # user list partial
   user_list:
-    information: "User Information:"
+    information: "User Information"
     proxy_rights: "Proxy Rights"
     message: "(Select appropriate level of study/project rights)"
-    actions: "Actions:"
-    role: "Role:"
+    actions: "Actions"
     rights1: "Member Only:"
     rights2: "View Rights:"
     rights3: "Request/Approve Services:"
@@ -578,5 +577,11 @@ en:
     requester: "Requester"
     assigned: "Person Assigned"
     orgs: "Program/Provider/Core"
+
+  # Associated Users Tab
+  associated_users:
+    add: "Add a new Associated User"
+
+
 
 

@@ -98,10 +98,16 @@ describe "editing a project", js: true do
   context "editing the indirect cost rate" do
 
     it "should save the indirect cost rate" do
-      fill_in "project_indirect_cost_rate", with: "50.0"
+      # TODO: this test seems to exhibit different behavior on sqlite
+      # and mysql if 51.0 is used instead of 51.1.  It has to do, I
+      # think, with sqlite not returning exactly the same object in
+      # #show as it used in #update_from_project_study_information,
+      # resulting in #indirect_cost_rate_before_type_cast returning 51
+      # instead of "51.0".
+      fill_in "project_indirect_cost_rate", with: "51.1"
       click_button "Save project"
       visit edit_portal_protocol_path service_request.protocol.id
-      find("#project_indirect_cost_rate").should have_value("50.0")
+      find("#project_indirect_cost_rate").should have_value("51.1")
     end
   end
 end

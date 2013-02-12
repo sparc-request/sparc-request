@@ -11,6 +11,7 @@ describe "editing a study", js: true do
     add_visits
     visit portal_admin_sub_service_request_path sub_service_request.id
     click_on("Project/Study Information")
+    wait_for_javascript_to_finish
   end
 
   after :each do

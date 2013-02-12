@@ -120,7 +120,7 @@ describe "admin fulfillment tab", :js => true do
           find("#line_item_quantity[data-line_item_id='#{line_item.id}']").set "10"
           find("#line_item_units_per_quantity[data-line_item_id='#{line_item.id}']").click
           wait_for_javascript_to_finish
-          find("#line_item_#{line_item.id}_cost").should have_exact_text("$100.00")
+          find("#line_item_#{line_item.id}_cost").should have_exact_text("$100.00") # TODO: this test fails a lot
         end
       end
 

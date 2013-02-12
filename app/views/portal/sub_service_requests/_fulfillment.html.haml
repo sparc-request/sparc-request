@@ -10,7 +10,9 @@
   - if @sub_service_request.ctrc?
     #service_request_core_approvals
       = render 'core_approvals'
-
+    #service_request_src_approval
+      = render 'src_approval'
+      
   #service_request_status_changes
     = render 'status_changes'
 

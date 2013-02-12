@@ -25,6 +25,7 @@ class SubServiceRequest < ActiveRecord::Base
   attr_accessible :nursing_nutrition_approved
   attr_accessible :lab_approved
   attr_accessible :imaging_approved
+  attr_accessible :src_approved
   attr_accessible :requester_contacted_date
   attr_accessible :subsidy_attributes
 

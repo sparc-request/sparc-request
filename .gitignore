@@ -35,6 +35,7 @@ public/system
 *~
 config/alfresco.yml
 config/database.yml
+config/ldap.yml
 config/application.yml
 public/portal
 public/catalog_manager

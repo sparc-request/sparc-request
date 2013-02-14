@@ -103,22 +103,34 @@ class LineItem < ActiveRecord::Base
 
   # Determine the indirect cost rate related to a particular line item
   def indirect_cost_rate
-    self.service_request.protocol.indirect_cost_rate.to_f / 100
+    if USE_INDIRECT_COST
+      self.service_request.protocol.indirect_cost_rate.to_f / 100
+    else
+      return 0
+    end
   end
 
   # Determine the indirect cost rate for a visit-based service for one subject
   def indirect_costs_for_visit_based_service_single_subject
-    self.direct_costs_for_visit_based_service_single_subject * self.indirect_cost_rate
+    if USE_INDIRECT_COST
+      self.direct_costs_for_visit_based_service_single_subject * self.indirect_cost_rate
+    else
+      return 0
+    end
   end
 
   # Determine the indirect costs for a visit-based service
   def indirect_costs_for_visit_based_service
-    self.direct_costs_for_visit_based_service * self.indirect_cost_rate
+    if USE_INDIRECT_COST
+      self.direct_costs_for_visit_based_service * self.indirect_cost_rate
+    else
+      return 0
+    end
   end
 
   # Determine the indirect costs for a one-time-fee service
   def indirect_costs_for_one_time_fee
-    if self.service.displayed_pricing_map.exclude_from_indirect_cost
+    if self.service.displayed_pricing_map.exclude_from_indirect_cost || !USE_INDIRECT_COST
       return 0
     else
       self.direct_costs_for_one_time_fee * self.indirect_cost_rate

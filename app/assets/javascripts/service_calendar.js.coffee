@@ -1,4 +1,5 @@
 #= require navigation
+#= require constants
 
 $(document).ready ->
   $('#service_calendar').tabs
@@ -83,7 +84,7 @@ $(document).ready ->
       if $(visit).is(':hidden') == false && $(visit).data('cents')
         direct_total += Math.floor($(visit).data('cents')) / 100.0
     indirect_rate = parseFloat($("#indirect_rate").val()) / 100.0
-    indirect_total = direct_total * indirect_rate
+    indirect_total = if use_indirect_cost == 'true' then direct_total * indirect_rate else 0
     max_total = direct_total + indirect_total
 
     direct_total_display = '$' + (direct_total).toFixed(2)

@@ -3,9 +3,11 @@
   %thead
     %tr
       %th Date Approved
+      %th Type
       %th Approved By
   %tbody
-    - @service_request.approvals.each do |approval|
+    - @approvals.each do |approval|
       %tr
         %td= approval.try(:approval_date).try(:strftime, "%D")
+        %td= approval.try(:approval_type)
         %td= approval.try(:identity).try(:full_name).try(:humanize)

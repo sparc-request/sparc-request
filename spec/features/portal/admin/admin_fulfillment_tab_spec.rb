@@ -112,16 +112,63 @@ describe "admin fulfillment tab", :js => true do
           find('#subsidy_pi_contribution').should have_value '775.0'
         end
       end
+
+      context "checking approvals" do
+        it "should disable the approval once it has been checked" do
+          find("#sub_service_request_lab_approved[data-sub_service_request_id='#{sub_service_request.id}']").click
+          wait_for_javascript_to_finish
+          find("#sub_service_request_lab_approved[data-sub_service_request_id='#{sub_service_request.id}']")['disabled'].should eq("true")
+        end
+
+        it "should add the approval to the approval history table" do
+          find("#sub_service_request_lab_approved[data-sub_service_request_id='#{sub_service_request.id}']").click
+          wait_for_javascript_to_finish
+          within('#approval_history_table') do
+            page.should have_content(Date.today.strftime("%m/%d/%y"))
+            page.should have_content("Lab Approved")
+            page.should have_content("Julia Glenn")
+          end
+        end
+
+        it "should add the approvals in the proper order" do
+          find("#sub_service_request_imaging_approved[data-sub_service_request_id='#{sub_service_request.id}']").click
+          wait_for_javascript_to_finish
+          find("#sub_service_request_src_approved[data-sub_service_request_id='#{sub_service_request.id}']").click
+          wait_for_javascript_to_finish
+          find("#sub_service_request_lab_approved[data-sub_service_request_id='#{sub_service_request.id}']").click
+          wait_for_javascript_to_finish
+          find("#sub_service_request_nursing_nutrition_approved[data-sub_service_request_id='#{sub_service_request.id}']").click
+          wait_for_javascript_to_finish
+
+          tr = all('#approval_history_table tr')
+
+          within(tr[1]) do
+            page.should have_content("Imaging Approved")
+          end
+          within(tr[2]) do
+            page.should have_content("SRC Approved")
+          end
+          within(tr[3]) do
+            page.should have_content("Lab Approved")
+          end
+          within(tr[4]) do
+            page.should have_content("Nursing/Nutrition Approved")
+          end
+        end
+      end
     end
 
     context "changing line item attributes" do
       context "changing quantities" do
         it 'should update the cost' do
-          find("#line_item_quantity[data-line_item_id='#{line_item.id}']").set "10"
           remove_from_dom("#line_item_#{line_item.id}_cost")
+          find("#line_item_quantity[data-line_item_id='#{line_item.id}']").set "10"
           find("#line_item_units_per_quantity[data-line_item_id='#{line_item.id}']").click
           wait_for_javascript_to_finish
-          find("#line_item_#{line_item.id}_cost").should have_exact_text("$100.00") # TODO: this test fails a lot
+
+          increase_wait_time(25) do
+            find("#line_item_#{line_item.id}_cost").should have_exact_text("$100.00") # TODO: this test fails a lot
+          end
         end
       end
 

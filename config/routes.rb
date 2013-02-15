@@ -168,6 +168,12 @@ SparcRails::Application.routes.draw do
         end
       end
 
+      resources :protocols do
+        member do
+          put :update_protocol_type
+        end
+      end
+
       resources :subsidies do
         member do
           put :update_from_fulfillment

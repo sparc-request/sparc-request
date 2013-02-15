@@ -8,6 +8,7 @@ describe "admin fulfillment tab", :js => true do
   before :each do
     add_visits
     visit portal_admin_sub_service_request_path(sub_service_request)
+    wait_for_javascript_to_finish
   end
 
   after :each do

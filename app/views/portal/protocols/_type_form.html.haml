@@ -1,0 +1,10 @@
+#change_protocol_type_area
+  = form_tag update_protocol_type_portal_admin_protocol_path(@protocol), :method => :put, :id => "edit_protocol_#{@protocol.id}" do
+    = hidden_field_tag :sub_service_request_id, @sub_service_request.id
+    .user-edit-protocol-view
+      .grid_7.box
+        .info
+          .field
+            = label_tag 'type', 'Project/Study Type:'
+            = select_tag 'protocol_type', options_for_select([['Project', 'Project'], ['Study', 'Study']], @protocol.type), :name => 'protocol[type]'
+            = submit_tag 'Change Type', :confirm => 'This will change the type of this Project/Study.  Are you sure?'

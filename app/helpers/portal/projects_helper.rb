@@ -23,7 +23,7 @@ module Portal::ProjectsHelper
       if !core.abbreviation.blank?
         "#{program.abbreviation}/#{core.abbreviation}"
       else
-        "#{ssr.program_name}/#{ssr.core_name}"
+        "#{program.name}/#{core.name}"
       end
     else
       program.name

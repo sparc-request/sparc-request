@@ -10,4 +10,4 @@
       %tr
         %td= approval.try(:approval_date).try(:strftime, "%D")
         %td= approval.try(:approval_type)
-        %td= approval.try(:identity).try(:full_name).try(:humanize)
+        %td= approval.try(:identity).try(:full_name)

@@ -58,6 +58,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       @notifications = @user.all_notifications.where(:sub_service_request_id => @sub_service_request.id)
       @service_list = @service_request.service_list
       @related_service_requests = @protocol.all_child_sub_service_requests
+      @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
       render :action => 'show'
     end
   end   

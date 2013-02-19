@@ -34,6 +34,7 @@ begin
   COLLEGES = config['colleges']
   DEPARTMENTS = config['departments']
   USER_CREDENTIALS = config['user_credentials']
+  AVAILABLE_STATUSES = config['available_statuses']
 rescue
   raise "constants.yml not found"
 end

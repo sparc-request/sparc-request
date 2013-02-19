@@ -264,7 +264,7 @@ class Identity < ActiveRecord::Base
   # Currently serves largely to insert CTRC statuses if this identity has permissions for the CTRC.
   # Returns an array of statuses as strings.
   def available_workflow_states
-    available_statuses = ['Draft', 'Submitted', 'In Process', 'Complete', 'Awaiting PI Approval', 'On Hold', 'CTRC Review', 'CTRC Approved']
+    available_statuses = AVAILABLE_STATUSES
     ctrc_organizations = Organization.where(:is_ctrc => true)
     if ctrc_organizations.map(&:service_providers).flatten.map(&:identity_id).include?(self.id) || ctrc_organizations.map(&:super_users).flatten.map(&:identity_id).include?(self.id)
       available_statuses

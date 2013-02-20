@@ -24,7 +24,8 @@ available_statuses: { 'draft': 'Draft',
                       'awaiting_pi_approval': 'Awaiting PI Approval',
                       'on_hold': 'On Hold',
                       'ctrc_review': 'CTRC Review',
-                      'ctrc_approved': 'CTRC Approved' }
+                      'ctrc_approved': 'CTRC Approved',
+                      'invoiced': 'Invoiced' }
 accordion_color_options: { "blue": 'blue-provider',
                            "light-blue": 'light-blue-provider',
                            "orange": 'orange-provider',

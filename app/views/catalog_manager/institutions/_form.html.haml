@@ -45,7 +45,7 @@
     %br
     
     %fieldset
-      %legend Status Options (Check all that apply)
+      %legend= t(:organization_form)[:status_legend]
       %table
         = f.fields_for :available_statuses do |as|
           %tr

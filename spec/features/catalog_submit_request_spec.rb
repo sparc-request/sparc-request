@@ -22,7 +22,7 @@ describe 'as a user on catalog page' do
   it 'Submit Request', :js => true do
     visit root_path
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
-    wait_for_javascript_to_finish
+    find(".provider-name").should have_text("South Carolina Clinical and Translational Institute (SCTR)")
 
     click_link("Office of Biomedical Informatics")
     click_button("Add")

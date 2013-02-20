@@ -21,6 +21,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       @notifications = @user.all_notifications.where(:sub_service_request_id => @sub_service_request.id)
       @service_list = @service_request.service_list
       @related_service_requests = @protocol.all_child_sub_service_requests
+      @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
     else
       redirect_to portal_admin_index_path
     end
@@ -29,6 +30,9 @@ class Portal::SubServiceRequestsController < Portal::BaseController
   def update_from_fulfillment
     @sub_service_request = SubServiceRequest.find(params[:id])
     if @sub_service_request.update_attributes(params[:sub_service_request])
+      @sub_service_request.generate_approvals(@user)
+      @service_request = @sub_service_request.service_request
+      @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
       render 'portal/sub_service_requests/update_past_status'
     else
       respond_to do |format|
@@ -54,6 +58,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       @notifications = @user.all_notifications.where(:sub_service_request_id => @sub_service_request.id)
       @service_list = @service_request.service_list
       @related_service_requests = @protocol.all_child_sub_service_requests
+      @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
       render :action => 'show'
     end
   end   

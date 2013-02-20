@@ -27,9 +27,11 @@ ActiveRecord::Schema.define(:version => 20130214160342) do
     t.integer  "service_request_id"
     t.integer  "identity_id"
     t.datetime "approval_date"
-    t.datetime "created_at",         :null => false
-    t.datetime "updated_at",         :null => false
+    t.datetime "created_at",                                              :null => false
+    t.datetime "updated_at",                                              :null => false
     t.datetime "deleted_at"
+    t.string   "approval_type",          :default => "Resource Approval"
+    t.integer  "sub_service_request_id"
   end
 
   add_index "approvals", ["service_request_id"], :name => "index_approvals_on_service_request_id"

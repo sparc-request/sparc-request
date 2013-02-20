@@ -55,10 +55,11 @@
         %td.total_cell Total Direct Cost
         %td.total_cell{:id => 'grand_total_direct'}= display_grand_total_direct_costs @service_request, @line_items
 
-      %tr.totals_section
-        %td{:colspan => 7}
-        %td.total_cell Total Indirect Costs
-        %td.total_cell{:id => 'grand_total_indirect'}= display_grand_total_indirect_costs @service_request, @line_items
+      - if USE_INDIRECT_COST
+        %tr.totals_section
+          %td{:colspan => 7}
+          %td.total_cell Total Indirect Costs
+          %td.total_cell{:id => 'grand_total_indirect'}= display_grand_total_indirect_costs @service_request, @line_items
 
       %tr.totals_section
         %td{:colspan => 7}

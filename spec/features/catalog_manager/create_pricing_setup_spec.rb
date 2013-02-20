@@ -8,6 +8,7 @@ describe 'as a user on catalog page' do
   it 'the user should create a pricing setup', :js => true do
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
     click_button("Add Pricing Setup")
+    wait_for_javascript_to_finish
     
     page.execute_script("$('.ui-accordion-header').click()") 
     within('.ui-accordion') do

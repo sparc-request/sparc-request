@@ -33,7 +33,9 @@ describe "service calendar" do
     describe "template tab" do
       it "totals should be 0 when visits aren't checked", :js => true do
         find(".pp_total_direct_cost").text().should have_exact_text("$0.00")
-        find(".pp_total_indirect_cost").text().should have_exact_text("$0.00")
+        if USE_INDIRECT_COST
+          find(".pp_total_indirect_cost").text().should have_exact_text("$0.00")
+        end
         find(".pp_total_cost").text().should have_exact_text("$0.00")
       end
 

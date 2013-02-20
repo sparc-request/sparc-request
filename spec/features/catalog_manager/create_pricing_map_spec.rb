@@ -30,8 +30,9 @@ describe 'as a user on catalog page' do
 
       fill_in "pricing_maps_blank_pricing_map_full_rate", :with => 4321
       fill_in "pricing_maps_blank_pricing_map_unit_type", :with => "Each"
+      fill_in "pricing_maps_blank_pricing_map_units_per_qty_max", :with => "1"
       
-      page.execute_script %Q{ $(".service_unit_type").change() }
+      page.execute_script %Q{ $(".service_units_per_qty_max").change() }
     end
     page.execute_script %Q{ $(".save_button").click() }
     page.should have_content "MUSC Research Data Request (CDW) saved successfully"    

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130212142320) do
+ActiveRecord::Schema.define(:version => 20130214160342) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -320,12 +320,13 @@ ActiveRecord::Schema.define(:version => 20130212142320) do
     t.decimal  "federal_rate",               :precision => 12, :scale => 4
     t.decimal  "corporate_rate",             :precision => 12, :scale => 4
     t.date     "effective_date"
-    t.datetime "created_at",                                                :null => false
-    t.datetime "updated_at",                                                :null => false
+    t.datetime "created_at",                                                               :null => false
+    t.datetime "updated_at",                                                               :null => false
     t.datetime "deleted_at"
     t.date     "display_date"
     t.decimal  "other_rate",                 :precision => 12, :scale => 4
     t.decimal  "member_rate",                :precision => 12, :scale => 4
+    t.integer  "units_per_qty_max",                                         :default => 1
   end
 
   add_index "pricing_maps", ["service_id"], :name => "index_pricing_maps_on_service_id"

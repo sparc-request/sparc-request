@@ -41,7 +41,8 @@ describe 'as a user on catalog page' do
       find("input[id$='full_rate']").set(3800) ## change the service rate
       find("input[id$='unit_type']").set("Each") ## change the quantity type
       find("input[id$='unit_minimum']").set(2) ## change the unit minimum
-      page.execute_script %Q{ $("input[id$='unit_minimum']").change() }
+      find("input[id$='units_per_qty_max']").set(2) ## change the units per qty max
+      page.execute_script %Q{ $("input[id$='units_per_qty_max']").change() }
 
     end
 

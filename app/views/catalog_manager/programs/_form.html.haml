@@ -43,6 +43,17 @@
     %br
 
     %fieldset
+      %legend Status Options (Check all that apply)
+      %table
+        = f.fields_for :available_statuses do |as|
+          %tr
+            %th= as.label :status, "#{AvailableStatus::TYPES[as.object.status]}:"
+            %td= as.check_box "_destroy", {:checked => !as.object.new}, false, true
+            = as.hidden_field :status, :value => as.object.status    
+
+    %br
+
+    %fieldset
       %legend= t("cm_shared.headers.submission")
       #se_info= render :partial => 'catalog_manager/shared/submission_emails', :locals => {:entity => @program}
     

@@ -55,7 +55,7 @@ describe 'as a user on catalog page' do
     page.execute_script("$('.ui-accordion-header:last').click()")
     page.execute_script %Q{ $(".save_button").click() }
     wait_for_javascript_to_finish
-    page.should have_content "Name and Order on the Service, and Quantity Type, Unit Factor, Unit Minimum, Effective Date, and Display Date on all Pricing Maps are required."
+    page.should have_content "Name and Order on the Service, and Quantity Type, Unit Factor, Unit Minimum, Units Per Qty Maximum, Effective Date, and Display Date on all Pricing Maps are required."
   end    
 
 end

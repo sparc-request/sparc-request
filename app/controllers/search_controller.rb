@@ -4,7 +4,7 @@ class SearchController < ApplicationController
   def services
     term = params[:term].strip
     results = Service.where("(name LIKE '%#{term}%' OR abbreviation LIKE '%#{term}%' OR cpt_code LIKE '%#{term}%') AND is_available != 0")
-                     .reject{|s| s.parents.map(&:is_available).compact.all? == false }
+                     .reject{|s| (s.parents.map(&:is_available).compact.all? == false) or ((s.current_pricing_map rescue false) == false)}
     
     unless @sub_service_request.nil?
       results = results.reject{|s| s.parents.exclude? @sub_service_request.organization}

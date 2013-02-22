@@ -343,6 +343,7 @@ describe 'Organization' do
     let!(:provider)          {FactoryGirl.create(:provider, parent_id: institution.id)}
     let!(:provider2)         {FactoryGirl.create(:provider, parent_id: institution2.id)}
     let!(:program)           {FactoryGirl.create(:program, parent_id: provider2.id)}
+    let!(:program2)          {FactoryGirl.create(:program, parent_id: provider.id)}
     let!(:service_provider)  {FactoryGirl.create(:service_provider, identity_id: 1, organization_id: provider.id)}
     let!(:service_provider2) {FactoryGirl.create(:service_provider, identity_id: 2, organization_id: institution2.id)}
     let!(:service_provider3) {FactoryGirl.create(:service_provider, identity_id: 3, organization_id: program.id)}
@@ -350,6 +351,9 @@ describe 'Organization' do
     let!(:super_user)        {FactoryGirl.create(:super_user, identity_id: 1, organization_id: institution2.id)}
     let!(:super_user2)       {FactoryGirl.create(:super_user, identity_id: 2, organization_id: provider2.id)}
     let!(:super_user3)       {FactoryGirl.create(:super_user, identity_id: 3, organization_id: program.id)}
+    let!(:available_status)  {FactoryGirl.create(:available_status, organization_id: program.id)}
+    let!(:available_status2) {FactoryGirl.create(:available_status, organization_id: provider2.id, status: 'Draft')}
+    let!(:available_status3) {FactoryGirl.create(:available_status, organization_id: program2.id)}
 
     describe "service providers lookup" do
 
@@ -399,6 +403,18 @@ describe 'Organization' do
         institution2.all_super_users.should eq([super_user2, super_user3, super_user])
       end
     end
+
+    # describe "get available statuses" do
+
+    #   it "should set the status to the parent's status if there is one" do
+    #     program2.get_available_statuses.should eq("Draft")
+    #   end
+
+    #   it "should set the status to the default if there are no parent statuses" do
+    #     program.available_statuses.should include("Draft", "Submitted", "In Process", "Complete", "Awaiting PI Approval", "On Hold")
+    #   end
+
+    # end
   end
 end
 

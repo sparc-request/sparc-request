@@ -233,4 +233,28 @@ class Organization < ActiveRecord::Base
     return all_super_users.flatten.uniq {|x| x.identity_id}
   end
 
+  def get_available_statuses
+    tmp_available_statuses = self.available_statuses.reject{|status| status.new_record?} 
+    statuses = []
+    if tmp_available_statuses.empty?
+      puts "my statuses are empty"
+      self.parents.each do |parent|
+        if !parent.available_statuses.empty?
+          statuses = AVAILABLE_STATUSES.select{|k,v| parent.available_statuses.map(&:status).include? k}
+          return statuses
+        end        
+      end
+    else
+      puts "my statuses are not empty"
+      statuses = AVAILABLE_STATUSES.select{|k,v| tmp.available_statuses.map(&:status).include? k}
+      puts statuses
+      puts self.available_statuses
+    end
+    if statuses.empty?
+      puts "statuses are still empty"
+      statuses = AVAILABLE_STATUSES.select{|k,v| DEFAULT_STATUSES.include? k}
+    end
+    statuses
+  end
+
 end

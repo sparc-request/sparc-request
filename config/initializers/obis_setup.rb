@@ -35,6 +35,7 @@ begin
   DEPARTMENTS = config['departments']
   USER_CREDENTIALS = config['user_credentials']
   AVAILABLE_STATUSES = config['available_statuses']
+  DEFAULT_STATUSES = config['default_statuses']
 rescue
   raise "constants.yml not found"
 end

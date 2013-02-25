@@ -244,7 +244,7 @@ class Organization < ActiveRecord::Base
         end        
       end
     else
-      statuses = AVAILABLE_STATUSES.select{|k,v| tmp.available_statuses.map(&:status).include? k}
+      statuses = AVAILABLE_STATUSES.select{|k,v| tmp_available_statuses.map(&:status).include? k}
     end
     if statuses.empty?
       statuses = AVAILABLE_STATUSES.select{|k,v| DEFAULT_STATUSES.include? k}

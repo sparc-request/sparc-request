@@ -77,12 +77,13 @@
             %td{:class => "visit_column_#{i + 1} max_direct_per_patient"}
           %td{:class => "pp_max_total_direct_cost"}= display_max_total_direct_cost_per_patient @service_request, @line_items
         
-        %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
-          %td{:colspan => 5}= t("calendar_page.labels.maximum_indirect")
-          %td &nbsp;
-          - 5.times do |i|
-            %td{:class => "visit_column_#{i + 1} max_indirect_per_patient"}
-          %td{:class => "pp_max_total_indirect_cost"}= display_max_total_indirect_cost_per_patient @service_request, @line_items
+        - if USE_INDIRECT_COST
+          %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
+            %td{:colspan => 5}= t("calendar_page.labels.maximum_indirect")
+            %td &nbsp;
+            - 5.times do |i|
+              %td{:class => "visit_column_#{i + 1} max_indirect_per_patient"}
+            %td{:class => "pp_max_total_indirect_cost"}= display_max_total_indirect_cost_per_patient @service_request, @line_items
 
         %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
           %td{:colspan => 5}= t("calendar_page.labels.maximum_per")
@@ -96,10 +97,11 @@
           %td{:colspan => 6}
           %td{:class => "pp_total_direct_cost"}= display_total_direct_cost_per_study_pppvs @service_request, @line_items
         
-        %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
-          %td{:colspan => 5}= t("calendar_page.labels.total_indirect")
-          %td{:colspan => 6}
-          %td{:class => "pp_total_indirect_cost"}= display_total_indirect_cost_per_study_pppvs @service_request, @line_items
+        - if USE_INDIRECT_COST
+          %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
+            %td{:colspan => 5}= t("calendar_page.labels.total_indirect")
+            %td{:colspan => 6}
+            %td{:class => "pp_total_indirect_cost"}= display_total_indirect_cost_per_study_pppvs @service_request, @line_items
         
         %tr.totals_section.total-visit-based-services{:class => cycle('odd', '', :name => 'pppvs')}
           %td{:colspan => 5}= t("calendar_page.labels.total_costs")
@@ -128,10 +130,11 @@
         %td{:colspan => 6}
         %td.otf_total_direct_cost= display_total_direct_cost_per_study_otfs @service_request, @line_items
 
-      %tr.totals_section{:class => cycle('odd', '', :name => 'otfs')}
-        %td{:colspan => 5}= t("calendar_page.labels.total_indirect_other")
-        %td{:colspan => 6}
-        %td.otf_total_indirect_cost= display_total_indirect_cost_per_study_otfs @service_request, @line_items
+      - if USE_INDIRECT_COST
+        %tr.totals_section{:class => cycle('odd', '', :name => 'otfs')}
+          %td{:colspan => 5}= t("calendar_page.labels.total_indirect_other")
+          %td{:colspan => 6}
+          %td.otf_total_indirect_cost= display_total_indirect_cost_per_study_otfs @service_request, @line_items
 
       %tr.totals_section{:class => cycle('odd', '', :name => 'otfs')}
         %td{:colspan => 5}= t("calendar_page.labels.total_costs_other")
@@ -149,10 +152,11 @@
           %td{:colspan => 6}
           %td{:class => 'grand_total_direct'}= display_grand_total_direct_costs @service_request, @line_items
 
-        %tr.totals_section{:class => cycle('odd', '', :name => 'totals')}
-          %td{:colspan => 5}= t("calendar_page.labels.grand_total_indirect")
-          %td{:colspan => 6}
-          %td{:class => 'grand_total_indirect'}= display_grand_total_indirect_costs @service_request, @line_items
+        - if USE_INDIRECT_COST
+          %tr.totals_section{:class => cycle('odd', '', :name => 'totals')}
+            %td{:colspan => 5}= t("calendar_page.labels.grand_total_indirect")
+            %td{:colspan => 6}
+            %td{:class => 'grand_total_indirect'}= display_grand_total_indirect_costs @service_request, @line_items
 
         %tr.totals_section{:class => cycle('odd', '', :name => 'totals')}
           %td{:colspan => 5}= t("calendar_page.labels.grand_total")

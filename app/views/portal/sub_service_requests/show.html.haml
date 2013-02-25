@@ -27,16 +27,17 @@
 
 #tabs
   %ul
-    %li= link_to t(:admin_dashboard)[:tabs][:fulfillment] ,"#fulfillment", :class => 'fulfillment-tab'
-    %li= link_to t(:admin_dashboard)[:tabs][:protocol_info] ,"#protocol" , :class => 'project-tab'
-    %li= link_to t(:admin_dashboard)[:tabs][:docs] ,"#documents"         , :class => 'documents-tab'
-    %li= link_to t(:admin_dashboard)[:tabs][:related_srs] ,"#related_service_requests" ,:class => 'related_service_requests-tab'
-    %li= link_to t(:admin_dashboard)[:tabs][:users] ,"#associated_users" , :class => 'associated_users-tab'
-    %li= link_to t(:admin_dashboard)[:tabs][:notifications] ,"#notifications" , :class => 'notifications-tab'
+    %li= link_to t(:admin_dashboard)[:tabs][:fulfillment], "#fulfillment", :class => 'fulfillment-tab'
+    %li= link_to t(:admin_dashboard)[:tabs][:protocol_info], "#protocol", :class => 'project-tab'
+    %li= link_to t(:admin_dashboard)[:tabs][:docs], "#documents", :class => 'documents-tab'
+    %li= link_to t(:admin_dashboard)[:tabs][:related_srs], "#related_service_requests", :class => 'related_service_requests-tab'
+    %li= link_to t(:admin_dashboard)[:tabs][:users], "#associated_users", :class => 'associated_users-tab'
+    %li= link_to t(:admin_dashboard)[:tabs][:notifications], "#notifications", :class => 'notifications-tab'
   #fulfillment
     = render 'fulfillment'
     
   #protocol{:style => 'padding:15px;'}
+    = render :partial => 'portal/protocols/type_form'
     = render :partial => 'portal/protocols/form', :locals => {:protocol => @protocol, :admin => true}
       
   #documents

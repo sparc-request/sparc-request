@@ -492,6 +492,7 @@ en:
     approval_history: 
       header: "Approval History"
       date_approved: "Date Approved"
+      approval_type: "Type"
       approved_by: "Approved By"
     service_button: "Add Service"
     core_approvals:

@@ -35,6 +35,7 @@ public/system
 *~
 config/alfresco.yml
 config/database.yml
+config/ldap.yml
 config/application.yml
 config/ldap.yml
 public/portal

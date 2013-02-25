@@ -3,9 +3,11 @@
   %thead
     %tr
       %th= t(:fulfillments)[:approval_history][:date_approved]
+      %th= t(:fulfillments)[:approval_history][:approval_type]
       %th= t(:fulfillments)[:approval_history][:approved_by]
   %tbody
-    - @service_request.approvals.each do |approval|
+    - @approvals.each do |approval|
       %tr
         %td= approval.try(:approval_date).try(:strftime, "%D")
-        %td= approval.try(:identity).try(:full_name).try(:humanize)
+        %td= approval.try(:approval_type)
+        %td= approval.try(:identity).try(:full_name)

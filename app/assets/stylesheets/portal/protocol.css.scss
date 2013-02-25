@@ -48,3 +48,21 @@
         }
     }
 }
+
+#change_protocol_type_area {
+    .info {
+        width: 95%;
+    }
+    input, select {
+        float: left;
+    }
+    input {
+        margin-left: 10px;
+    }
+    select {
+        width: 60% !important;
+    }
+    option {
+        max-width: 100% !important;
+    }
+}

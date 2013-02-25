@@ -8,6 +8,7 @@ feature 'automatic pricing adjustment' do
   scenario 'successfully creates pricing map with adjusted rates and dates', :js => true do
     click_link('South Carolina Clinical and Translational Institute (SCTR)')
     click_button('Increase or Decrease Rates')
+    wait_for_javascript_to_finish
     
     numerical_day = 10
 

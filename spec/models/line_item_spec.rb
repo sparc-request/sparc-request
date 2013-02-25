@@ -326,21 +326,33 @@ describe "Line Item" do
       context "indirect cost rate" do
 
         it "should return the correct indirect cost rate related to the line item" do
-          line_item.indirect_cost_rate.should eq(2.0)
+          if USE_INDIRECT_COST
+            line_item.indirect_cost_rate.should eq(2.0)
+          else
+            line_item.indirect_cost_rate.should eq(0)
+          end
         end
       end
 
       context "indirect costs for visit based service single object" do
 
         it "should return the correct rate for a single subject" do
-          line_item.indirect_costs_for_visit_based_service_single_subject.should eq(200)
+          if USE_INDIRECT_COST
+            line_item.indirect_costs_for_visit_based_service_single_subject.should eq(200)
+          else
+            line_item.indirect_costs_for_visit_based_service_single_subject.should eq(0)
+          end
         end
       end
 
       context "indirect costs for visit based service" do
 
         it "should return the correct indirect cost" do
-          line_item.indirect_costs_for_visit_based_service.should eq(1000)
+          if USE_INDIRECT_COST
+            line_item.indirect_costs_for_visit_based_service.should eq(1000)
+          else
+            line_item.indirect_costs_for_visit_based_service.should eq(0)
+          end
         end
       end
 
@@ -349,7 +361,11 @@ describe "Line Item" do
         it "should return the correct indirect cost" do
           pricing_map.update_attributes(is_one_time_fee: true)
           line_item.update_attributes(quantity: 10)
-          line_item.indirect_costs_for_one_time_fee.should eq(400)
+          if USE_INDIRECT_COST
+            line_item.indirect_costs_for_one_time_fee.should eq(400)
+          else
+            line_item.indirect_costs_for_one_time_fee.should eq(0)
+          end
         end
 
         it "should return zero if the displayed pricing map is excluded from indirect costs" do

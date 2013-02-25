@@ -6,6 +6,7 @@ begin
   HEADER_LINK_1        = application_config['header_link_1']
   HEADER_LINK_2        = application_config['header_link_2']
   HEADER_LINK_3        = application_config['header_link_3']
+  USE_INDIRECT_COST = application_config['use_indirect_cost']
 rescue
   raise "application.yml not found, see config/application.yml.example"
 end

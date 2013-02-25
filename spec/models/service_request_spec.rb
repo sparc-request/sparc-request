@@ -193,14 +193,22 @@ describe 'ServiceRequest' do
     context "total indirect cost per patient" do
 
       it "should return the sum of all line items visit-based indirect cost" do
-        service_request.total_indirect_costs_per_patient.should eq(10000)
+        if USE_INDIRECT_COST
+          service_request.total_indirect_costs_per_patient.should eq(10000)
+        else
+          service_request.total_indirect_costs_per_patient.should eq(0.0)
+        end
       end
     end
 
     context "total costs per patient" do
 
       it "should return the total of the direct and indirect costs" do
-        service_request.total_costs_per_patient.should eq(15000)
+        if USE_INDIRECT_COST
+          service_request.total_costs_per_patient.should eq(15000)
+        else
+          service_request.total_costs_per_patient.should eq(5000.0)
+        end
       end
     end
 

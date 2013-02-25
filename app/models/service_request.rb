@@ -196,7 +196,11 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def maximum_indirect_costs_per_patient line_items=self.line_items
-    self.maximum_direct_costs_per_patient(line_items) * (self.protocol.indirect_cost_rate.to_f / 100)
+    if USE_INDIRECT_COST
+      self.maximum_direct_costs_per_patient(line_items) * (self.protocol.indirect_cost_rate.to_f / 100)
+    else
+      return 0
+    end
   end
 
   def maximum_total_per_patient line_items=self.line_items

@@ -10,5 +10,5 @@
       - @sub_service_request.past_status_lookup.each do |past_status|
         %tr
           %td= past_status.try(:created_at).try(:strftime, "%D %r")
-          %td= correct_status_display(past_status.try(:status))
-          %td= correct_status_display(past_status.try(:changed_to))
+          %td= AVAILABLE_STATUSES[past_status.try(:status)]
+          %td= AVAILABLE_STATUSES[past_status.try(:changed_to)]

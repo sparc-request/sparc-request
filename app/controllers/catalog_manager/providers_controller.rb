@@ -6,6 +6,7 @@ class CatalogManager::ProvidersController < CatalogManager::AppController
     @institution = Institution.find(params[:institution_id])
     @provider = Provider.new({:name => params[:name], :abbreviation => params[:name], :parent_id => @institution.id})
     @provider.build_subsidy_map()
+    @provider.setup_available_statuses
     @provider.save
     
     respond_with [:catalog_manger, @provider]
@@ -13,6 +14,7 @@ class CatalogManager::ProvidersController < CatalogManager::AppController
 
   def show
     @provider = Provider.find(params[:id])
+    @provider.setup_available_statuses
   end
 
   def update
@@ -39,6 +41,7 @@ class CatalogManager::ProvidersController < CatalogManager::AppController
       @provider.save
     end if params[:pricing_setups]
 
+    @provider.setup_available_statuses
     @entity = @provider
     respond_with @provider, :location => catalog_manager_provider_path(@provider)
   end

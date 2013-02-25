@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130214160342) do
+ActiveRecord::Schema.define(:version => 20130219192329) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -35,6 +35,15 @@ ActiveRecord::Schema.define(:version => 20130214160342) do
   end
 
   add_index "approvals", ["service_request_id"], :name => "index_approvals_on_service_request_id"
+
+  create_table "available_statuses", :force => true do |t|
+    t.integer  "organization_id"
+    t.string   "status"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  add_index "available_statuses", ["organization_id"], :name => "index_available_statuses_on_organization_id"
 
   create_table "catalog_managers", :force => true do |t|
     t.integer  "identity_id"

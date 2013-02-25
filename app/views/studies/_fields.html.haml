@@ -84,10 +84,9 @@
           .field
             = f.label :federal_phs_sponsor, t(:study_form)[:federal_phs_sponsor]
             = f.select :federal_phs_sponsor, options_for_select(FEDERAL_GRANT_PHS_SPONSORS, study.federal_phs_sponsor), :include_blank => "Please Select if Applicable"
-
-          %br
-          %span -OR-
-          %br
+          
+          .field
+            %span -OR-
       
           .field
             = f.label :federal_non_phs_sponsor, t(:study_form)[:federal_non_phs_sponsor]

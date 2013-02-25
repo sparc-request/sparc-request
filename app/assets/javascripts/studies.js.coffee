@@ -46,7 +46,7 @@ $(document).ready ->
     switch $(this).val()
       when "internal", "college" then $('#study_indirect_cost_rate').val("0")
       when "industry", "foundation", "investigator" then $('#study_indirect_cost_rate').val("25")
-      when "federal" then $('#study_indirect_cost_rate').val("47.5")
+      when "federal" then $('#study_indirect_cost_rate').val("49")
 
   $("#funding_start_date").datepicker(
     changeMonth: true,

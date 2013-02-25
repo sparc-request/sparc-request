@@ -107,3 +107,5 @@ end
 
 gem 'exception_notification'
 gem 'letter_opener'
+
+gem 'prawn'

@@ -17,6 +17,16 @@ study_types: { 'clinical_trials': 'Clinical Trials',
                'translational_science': 'Translational Science' }
 funding_statuses: { 'Pending Funding': 'pending_funding',
                     'Funded': 'funded' }
+available_statuses: { 'draft': 'Draft',
+                      'submitted': 'Submitted',
+                      'in_process': 'In Process',
+                      'complete': 'Complete',
+                      'awaiting_pi_approval': 'Awaiting PI Approval',
+                      'on_hold': 'On Hold',
+                      'ctrc_review': 'CTRC Review',
+                      'ctrc_approved': 'CTRC Approved',
+                      'invoiced': 'Invoiced' }
+default_statuses : ["draft", "submitted", "in_process", "complete", "awaiting_pi_approval", "on_hold"]
 accordion_color_options: { "blue": 'blue-provider',
                            "light-blue": 'light-blue-provider',
                            "orange": 'orange-provider',

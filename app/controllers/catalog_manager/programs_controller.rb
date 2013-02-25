@@ -6,6 +6,7 @@ class CatalogManager::ProgramsController < CatalogManager::AppController
     @provider = Provider.find(params[:provider_id])
     @program = Program.new({:name => params[:name], :abbreviation => params[:name], :parent_id => @provider.id})
     @program.build_subsidy_map()
+    @program.setup_available_statuses
     @program.save
     
     respond_with [:catalog_manager, @program]
@@ -14,6 +15,7 @@ class CatalogManager::ProgramsController < CatalogManager::AppController
   def show
     @organization = Organization.find params[:id]
     @program = Program.find params[:id]
+    @program.setup_available_statuses
   end
   
   def update
@@ -39,7 +41,8 @@ class CatalogManager::ProgramsController < CatalogManager::AppController
       end
       @program.save
     end if params[:pricing_setups]
-        
+  
+    @program.setup_available_statuses      
     @entity = @program
     respond_with @program, :location => catalog_manager_program_path(@program)
   end

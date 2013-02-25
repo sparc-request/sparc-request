@@ -5,12 +5,14 @@ class CatalogManager::InstitutionsController < CatalogManager::AppController
   def create
     @institution = Institution.create({:name => params[:name], :abbreviation => params[:name], :is_available => false})
     @user.catalog_manager_rights.create :organization_id => @institution.id
+    @institution.setup_available_statuses
 
     respond_with [:catalog_manger, @institution]
   end
 
   def show
     @institution = Institution.find(params[:id])
+    @institution.setup_available_statuses
   end
 
   def update
@@ -22,6 +24,8 @@ class CatalogManager::InstitutionsController < CatalogManager::AppController
     else
       flash[:alert] = "Failed to update #{@institution.name}."
     end
+    
+    @institution.setup_available_statuses
     @entity = @institution
     respond_with @institution, :location => catalog_manager_institution_path(@institution)
   end

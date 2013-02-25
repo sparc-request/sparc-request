@@ -20,6 +20,7 @@ class Organization < ActiveRecord::Base
   has_many :services, :dependent => :destroy
   has_many :subsidies, :dependent => :destroy
   has_many :sub_service_requests, :dependent => :destroy
+  has_many :available_statuses, :dependent => :destroy
 
   attr_accessible :name
   attr_accessible :order
@@ -35,10 +36,12 @@ class Organization < ActiveRecord::Base
   attr_accessible :pricing_setups_attributes
   attr_accessible :submission_emails_attributes
   attr_accessible :is_ctrc
+  attr_accessible :available_statuses_attributes
  
   accepts_nested_attributes_for :subsidy_map
   accepts_nested_attributes_for :pricing_setups
   accepts_nested_attributes_for :submission_emails
+  accepts_nested_attributes_for :available_statuses, :allow_destroy => true
 
   ###############################################################################
   ############################# HIERARCHY METHODS ###############################
@@ -228,6 +231,25 @@ class Organization < ActiveRecord::Base
     end
 
     return all_super_users.flatten.uniq {|x| x.identity_id}
+  end
+
+  def get_available_statuses
+    tmp_available_statuses = self.available_statuses.reject{|status| status.new_record?} 
+    statuses = []
+    if tmp_available_statuses.empty?
+      self.parents.each do |parent|
+        if !parent.available_statuses.empty?
+          statuses = AVAILABLE_STATUSES.select{|k,v| parent.available_statuses.map(&:status).include? k}
+          return statuses
+        end        
+      end
+    else
+      statuses = AVAILABLE_STATUSES.select{|k,v| tmp_available_statuses.map(&:status).include? k}
+    end
+    if statuses.empty?
+      statuses = AVAILABLE_STATUSES.select{|k,v| DEFAULT_STATUSES.include? k}
+    end
+    statuses
   end
 
 end

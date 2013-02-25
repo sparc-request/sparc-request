@@ -195,7 +195,6 @@
               = ip.label :inventors, t(:study_form)[:inventors]
               = ip.text_area :inventors
   
-      -# study types are initialized in obis-bridge lib/models/protocol.rb def setup_study_types
       %fieldset
         %legend Study Type (Check all that apply) 
         %div
@@ -205,7 +204,6 @@
               = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
               = rt.hidden_field :name, :value => rt.object.name
   
-      -# impact_areas are initialized in obis-bridge lib/models/protocol.rb def setup_impact_areas
       %fieldset
         %legend Impact Areas
         %div
@@ -215,7 +213,6 @@
               = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
               = rt.hidden_field :name, :value => rt.object.name
   
-      -# affiliations are initialized in obis-bridge lib/models/protocol.rb def setup_affiliations
       %fieldset
         %legend Affiliations and Collaborations 
         %div

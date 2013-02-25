@@ -87,4 +87,8 @@ class Notifier < ActionMailer::Base
 
     mail(:to => email_to, :from => email_from, :subject => subject)
   end
+
+  def obtain_research_pricing service_provider, service_request
+
+  end
 end

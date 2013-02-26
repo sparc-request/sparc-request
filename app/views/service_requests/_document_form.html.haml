@@ -8,16 +8,16 @@
 - first_doc_type = @grouping.documents.first.doc_type if @grouping
 - first_doc_type_other = @grouping.documents.first.doc_type_other if first_doc_type == 'other'
 - first_doc = @grouping.documents.first if @grouping
-- button_text = @grouping ? "Update" : "Upload"
+- button_text = @grouping ? t("documents.update_button") : t("documents.upload_button")
 = hidden_field_tag :document_grouping_id, @grouping.id if @grouping
 -# ugly but working
 
 %table#new_document
   %tr.ui-dialog-titlebar.ui-widget-header
-    %th Recipients 
-    %th Allow Access
-    %th Type
-    %th File
+    %th= t("documents.headers.recipients")
+    %th= t("documents.headers.allow")
+    %th= t("documents.headers.type")
+    %th= t("documents.headers.file")
     %th &nbsp;
   %tr
     %td{:style => "text-align:left"}
@@ -45,4 +45,4 @@
       = file_field_tag :document
     %td
       = navigation_link button_text, 'document_management', 'upload_button'
-      = link_to "Cancel", "javascript:void(0)", :class => "ui_close_button", :id => 'cancel_upload'
+      = link_to t("documents.cancel_button"), "javascript:void(0)", :class => "ui_close_button", :id => 'cancel_upload'

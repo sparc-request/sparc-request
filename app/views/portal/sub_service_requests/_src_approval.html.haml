@@ -1,5 +1,5 @@
-%h3 SRC Approval
+%h3= t(:fulfillments)[:src_approval][:header]
 #admin_src_approval
-  = label_tag "sub_service_request_src_approved", "SRC Approved"
+  = label_tag "sub_service_request_src_approved", t(:fulfillments)[:src_approval][:label]
   = check_box_tag "sub_service_request_src_approved", true, @sub_service_request.src_approved, :'data-sub_service_request_id' => @sub_service_request.id, :class => 'fulfillment_data', :disabled => @sub_service_request.src_approved?
   

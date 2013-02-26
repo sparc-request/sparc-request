@@ -15,7 +15,7 @@
       %br
       %br
       
-      %td= link_to "Add a New Document", "javascript:void(0)", :class => "document_upload_button", :location => 'document_management'
+      %td= link_to t("documents.add_button"), "javascript:void(0)", :class => "document_upload_button", :location => 'document_management'
 
       .document_upload{:style=>'display:none'}
         = render :partial => 'document_form'
@@ -23,15 +23,15 @@
       %br
       %br
 
-      %div{:style => 'text-align: left'} Please add any additional information that may be helpful to service providers.
+      %div{:style => 'text-align: left'}= t("documents.instructions")
       = text_area_tag 'service_request[notes]', @service_request.notes, :rows => 14, :cols => 114 
 
       %br
       %br
 
       %div 
-        To make changes to selected services please click
-        = navigation_link 'here', @catalog
+        = t("documents.make_changes")
+        = navigation_link t("documents.here"), @catalog
 
   .clear
 

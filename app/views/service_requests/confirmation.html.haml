@@ -7,11 +7,11 @@
     .view-anchor
       .confirmation-view
         .confirmation-details
-          %p.instructions Thank you for submitting a service request through SPARC. An email(s) has been submitted on your behalf, and we will respond to your service request shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below.
+          %p.instructions= t(:sr_confirmation)[:instructions]
           = render :partial => 'confirmation_details'
           .links
             .confirmation-button
-              = link_to "Download my Service Request", service_request_path(:format => :xlsx)
+              = link_to t(:sr_confirmation)[:download_button], service_request_path(:format => :xlsx)
             .confirmation-button
-              = link_to "Go to SPARC User Portal", USER_PORTAL_LINK, :class => "user-portal"
+              = link_to t(:sr_confirmation)[:portal_button], USER_PORTAL_LINK, :class => "user-portal"
     .footer

@@ -2,16 +2,16 @@
   %table
     %thead
       %tr
-        %th{:colspan => 5} User Information
-        %th{:colspan => 2} Actions
+        %th{:colspan => 5}= t(:user_list)[:information]
+        %th{:colspan => 2}= t(:user_list)[:actions]
       %tr
-        %th Name
-        %th Role
-        %th Email Address
-        %th Phone Number
-        %th Proxy Rights
-        %th Edit
-        %th Delete
+        %th= t(:user_details)[:name]
+        %th= t(:user_details)[:role]
+        %th= t(:user_details)[:email]
+        %th= t(:user_details)[:phone]
+        %th= t(:user_list)[:proxy_rights]
+        %th= t(:documents)[:edit_button]
+        %th= t(:documents)[:delete_button]
     %tbody
       = render :partial => "portal/sub_service_requests/associated_user", :locals => {:protocol => @protocol}
     %tfoot
@@ -20,8 +20,7 @@
       %tr
         %td{:colspan => 5}
         %td.new-button{:colspan => 2}
-          .associated-user-button.ui-corner-all{:'data-protocol_id' => @protocol.id, :'data-permission' => "true"}
-            Add a new Associated User
+          .associated-user-button.ui-corner-all{:'data-protocol_id' => @protocol.id, :'data-permission' => "true"}= t(:associated_users)[:add]
 
 .add-associated-user-dialog
   // TODO: this is copied directly from index.html.haml; should refactor

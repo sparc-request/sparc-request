@@ -343,6 +343,8 @@ describe 'Organization' do
     let!(:provider)          {FactoryGirl.create(:provider, parent_id: institution.id)}
     let!(:provider2)         {FactoryGirl.create(:provider, parent_id: institution2.id)}
     let!(:program)           {FactoryGirl.create(:program, parent_id: provider2.id)}
+    let!(:program2)          {FactoryGirl.create(:program, parent_id: provider.id)}
+    let!(:program3)          {FactoryGirl.create(:program, parent_id: provider2.id)}
     let!(:service_provider)  {FactoryGirl.create(:service_provider, identity_id: 1, organization_id: provider.id)}
     let!(:service_provider2) {FactoryGirl.create(:service_provider, identity_id: 2, organization_id: institution2.id)}
     let!(:service_provider3) {FactoryGirl.create(:service_provider, identity_id: 3, organization_id: program.id)}
@@ -350,6 +352,9 @@ describe 'Organization' do
     let!(:super_user)        {FactoryGirl.create(:super_user, identity_id: 1, organization_id: institution2.id)}
     let!(:super_user2)       {FactoryGirl.create(:super_user, identity_id: 2, organization_id: provider2.id)}
     let!(:super_user3)       {FactoryGirl.create(:super_user, identity_id: 3, organization_id: program.id)}
+    let!(:available_status)  {FactoryGirl.create(:available_status, organization_id: program3.id, status: 'submitted')}
+    let!(:available_status2) {FactoryGirl.create(:available_status, organization_id: provider2.id, status: 'draft')}
+    # let!(:available_status3) {FactoryGirl.create(:available_status, organization_id: program2.id)}
 
     describe "service providers lookup" do
 
@@ -397,6 +402,22 @@ describe 'Organization' do
 
       it "should not include its own super user more than once" do
         institution2.all_super_users.should eq([super_user2, super_user3, super_user])
+      end
+    end
+
+    describe "get available statuses" do
+
+      it "should set the status to the parent's status if there is one" do
+        program.available_statuses = []
+        program.get_available_statuses.should eq({"draft" => "Draft"})
+      end
+
+      it "should set the status to the default if there are no parent statuses" do
+        program2.get_available_statuses.should include("draft" => "Draft", "submitted" => "Submitted", "complete" => "Complete", "in_process" => "In Process", "awaiting_pi_approval" => "Awaiting PI Approval", "on_hold" => "On Hold")
+      end
+
+      it "should not get the parent's status if it already has a status" do
+        program3.get_available_statuses.should eq({"submitted" => "Submitted"})
       end
     end
   end

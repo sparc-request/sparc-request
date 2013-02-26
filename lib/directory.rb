@@ -1,12 +1,21 @@
 require 'net/ldap'
 
 class Directory
-  # TODO: needs to use config/application.yml for ldap config
-  LDAP_HOST       = 'authldap.musc.edu'
-  LDAP_PORT       = 636
-  LDAP_BASE       = 'ou=people,dc=musc,dc=edu'
-  LDAP_ENCRYPTION = :simple_tls
-  DOMAIN          = 'musc.edu'
+  # Load the YAML file for ldap configuration and set constants
+  begin 
+    ldap_config   ||= YAML.load_file(Rails.root.join('config', 'ldap.yml'))[Rails.env]
+    LDAP_HOST       = ldap_config['ldap_host']
+    LDAP_PORT       = ldap_config['ldap_port']
+    LDAP_BASE       = ldap_config['ldap_base']
+    LDAP_ENCRYPTION = ldap_config['ldap_encryption'].to_sym
+    DOMAIN          = ldap_config['ldap_domain']
+    LDAP_UID        = ldap_config['ldap_uid']
+    LDAP_LAST_NAME  = ldap_config['ldap_last_name']
+    LDAP_FIRST_NAME = ldap_config['ldap_first_name']
+    LDAP_EMAIL      = ldap_config['ldap_email']
+  rescue
+    raise "ldap.yml not found, see config/ldap.yml.example"
+  end
 
   # Searches LDAP and the database for a given search string (can be
   # ldap_uid, last_name, first_name, email).  If an identity is found in
@@ -44,7 +53,8 @@ class Directory
   # Searches LDAP only for the given search string.  Returns an array of
   # Net::LDAP::Entry.
   def self.search_ldap(term)
-    fields = %w(uid surName givenname mail)
+    # Set the search fields from the constants provided
+    fields = [LDAP_UID, LDAP_LAST_NAME, LDAP_FIRST_NAME, LDAP_EMAIL]
    
     # query ldap and create new identities
     begin
@@ -81,10 +91,10 @@ class Directory
 
     ldap_results.each do |r|
       begin
-        uid         = "#{r.uid.first.downcase}@#{DOMAIN}"
-        email       = r.mail.first
-        first_name  = r.givenname.first
-        last_name   = r.sn.first
+        uid         = "#{r.send(LDAP_UID).first.downcase}@#{DOMAIN}"
+        email       = r.send(LDAP_EMAIL).first
+        first_name  = r.send(LDAP_FIRST_NAME).first
+        last_name   = r.send(LDAP_LAST_NAME).first
 
         # Check to see if the identity is already in the database
         if (identity = identities[uid]) then

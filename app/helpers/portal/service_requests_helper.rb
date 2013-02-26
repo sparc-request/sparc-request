@@ -216,20 +216,6 @@ module Portal::ServiceRequestsHelper
     end
   end
 
-  def correct_status_display(status)
-    case status
-    when "draft" then "Draft"
-    when "submitted" then "Submitted"
-    when "in process" then "In Process"
-    when "complete" then "Complete"
-    when "ctrc review" then "CTRC Review"
-    when "ctrc approved" then "CTRC Approved"
-    when "awaiting pi approval" then "Awaiting PI Approval"
-    when "on hold" then "On Hold"
-    end
-
-  end
-
   def display_one_time_fee_direct_cost line_item
     currency_converter line_item.direct_costs_for_one_time_fee
   end

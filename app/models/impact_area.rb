@@ -11,14 +11,6 @@ class ImpactArea < ActiveRecord::Base
   attr_accessor :new
   attr_accessor :position
 
-  TYPES = {
-    'pediatrics' => 'Pediatrics',
-    'hiv_aids' => 'HIV/AIDS',
-    'hypertension' => 'Hypertension',
-    'stroke' => 'Stroke',
-    'diabetes' => 'Diabetes',
-    'cancer' => 'Cancer',
-    'other' => 'Other'
-  }
+  TYPES = IMPACT_AREAS
 end
 

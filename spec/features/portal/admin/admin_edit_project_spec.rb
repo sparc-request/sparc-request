@@ -21,16 +21,14 @@ describe "editing a project", js: true do
     it "should raise an error message if study's status is pending and no potential funding source is selected" do
       select("Pending Funding", from: "Proposal Funding Status")
       select("Select a Potential Funding Source", from: "Potential Funding Source")
-      click_button "Save project"
-      wait_for_javascript_to_finish
+      click_button "Save Project"
       page.should have_content("1 error prohibited this project from being saved")
     end
 
     it "should raise an error message if study's status is funded but no funding source is selected" do
       select("Funded", from: "Proposal Funding Status")
       select("Select a Funding Source", from: "project_funding_source")
-      click_button "Save project"
-      wait_for_javascript_to_finish
+      click_button "Save Project"
       page.should have_content("1 error prohibited this project from being saved")
     end
   end
@@ -48,9 +46,7 @@ describe "editing a project", js: true do
 
     it "should save the new short title" do
       fill_in "project_short_title", with: "Julius"
-      click_button "Save project"
-      wait_for_javascript_to_finish
-      wait_for_javascript_to_finish
+      click_button "Save Project"
       find("#project_short_title").should have_value("Julius")
     end
   end
@@ -59,8 +55,7 @@ describe "editing a project", js: true do
 
     it "should save the new project title" do
       fill_in "project_title", with: "Swanson"
-      click_button "Save project"
-      wait_for_javascript_to_finish
+      click_button "Save Project"
       find("#project_title").should have_value("Swanson")
     end
   end
@@ -100,8 +95,7 @@ describe "editing a project", js: true do
 
     it "should save the brief description" do
       fill_in "project_brief_description", with: "This is an amazing description."
-      click_button "Save project"
-      wait_for_javascript_to_finish
+      click_button "Save Project"
       find("#project_brief_description").should have_value("This is an amazing description.")
     end
   end
@@ -116,7 +110,7 @@ describe "editing a project", js: true do
       # resulting in #indirect_cost_rate_before_type_cast returning 51
       # instead of "51.0".
       fill_in "project_indirect_cost_rate", with: "51.1"
-      click_button "Save project"
+      click_button "Save Project"
       wait_for_javascript_to_finish
       find("#project_indirect_cost_rate").should have_value("51.1")
     end

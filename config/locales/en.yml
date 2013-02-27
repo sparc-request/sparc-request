@@ -248,7 +248,7 @@ en:
 
   # user list partial
   user_list:
-    information: "User Information"
+    information: "Research Study/Project Authorized Users"
     proxy_rights: "Proxy Rights"
     message: "(Select appropriate level of study/project rights)"
     actions: "Actions"

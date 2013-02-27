@@ -109,7 +109,7 @@ describe "editing a study", js: true do
         select("Foundation/Organization", from: "study_funding_source")
         find("#study_indirect_cost_rate").should have_value("25")
         select("Federal", from: "study_funding_source")
-        find("#study_indirect_cost_rate").should have_value("47.5")
+        find("#study_indirect_cost_rate").should have_value("49")
       end
     end
   end

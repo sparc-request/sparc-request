@@ -9,6 +9,7 @@ require 'spec_helper'
 
 describe "review page" do
   let_there_be_lane
+  let_there_be_j
   fake_login_for_each_test
   build_service_request_with_project
 

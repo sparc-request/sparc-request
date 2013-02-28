@@ -440,7 +440,7 @@ en:
     actions: "Actions"
     submit_button: "Save"
     cancel_button: "Cancel"
-    blank_field_errors: "Name and Order on the Service, and Quantity Type, Unit Factor, Unit Minimum, Effective Date, and Display Date on all Pricing Maps are required."
+    blank_field_errors: "Name and Order on the Service, and Quantity Type, Unit Factor, Unit Minimum, Units Per Qty Maximum, Effective Date, and Display Date on all Pricing Maps are required."
     status_legend: "Status Options (Check all that apply)"
     default_statuses: "Default Statuses:"
 

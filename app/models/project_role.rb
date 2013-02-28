@@ -78,6 +78,10 @@ class ProjectRole < ActiveRecord::Base
       return true
     end
 
+    if role == 'billing-business-manager' and right == 'approve'
+      return true
+    end
+
     if current_user == identity and role != 'pi' and right == 'request'
       return true
     end

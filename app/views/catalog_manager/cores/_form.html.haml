@@ -88,7 +88,7 @@
     %br
     
     %fieldset
-      %legend= t(:organization_form)[:auto_pricing_adj]
+      %legend= t(:organization_form)[:auto_price_adj]
       = render :partial => 'catalog_manager/shared/increase_decrease_rates', :locals => {:entity => @core, :can_edit_historical_data => @user.can_edit_historical_data_for?(@core)}
     
     %br

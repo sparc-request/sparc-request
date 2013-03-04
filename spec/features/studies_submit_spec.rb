@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe "creating a new study " do 
   let_there_be_lane
+  let_there_be_j
   fake_login_for_each_test
   build_service_request_with_study()
 
@@ -36,6 +37,14 @@ describe "creating a new study " do
       click_button "Add Authorized User"
       wait_for_javascript_to_finish
 
+      fill_in "user_search_term", :with => "Leonard"
+      wait_for_javascript_to_finish
+      page.find('a', :text => "Jason Leonard (leonarjp@musc.edu)", :visible => true).click()
+      wait_for_javascript_to_finish
+      select "Billing/Business Manager", :from => "project_role_role"
+      click_button "Add Authorized User"
+      wait_for_javascript_to_finish
+
       find(:xpath, "//input[@alt='SaveAndContinue']").click
       wait_for_javascript_to_finish
 
@@ -46,6 +55,7 @@ end
 
 describe "editing a study" do
   let_there_be_lane
+  let_there_be_j
   fake_login_for_each_test
   build_service_request()
   build_study()

@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe "creating a new project " do 
   let_there_be_lane
+  let_there_be_j
   fake_login_for_each_test
   build_service_request_with_project()
 
@@ -40,8 +41,16 @@ describe "creating a new project " do
       click_button "Add Authorized User"
       wait_for_javascript_to_finish
 
-      find(:xpath, "//input[@alt='SaveAndContinue']").click
+      fill_in "user_search_term", :with => "Leonard"
+      wait_for_javascript_to_finish
+      page.find('a', :text => "Jason Leonard (leonarjp@musc.edu)", :visible => true).click()
+      wait_for_javascript_to_finish
+      select "Billing/Business Manager", :from => "project_role_role"
+      click_button "Add Authorized User"
+      wait_for_javascript_to_finish
 
+      find(:xpath, "//input[@alt='SaveAndContinue']").click
+      
       find("#service_request_protocol_id").should have_value Protocol.last.id.to_s
     end
   end
@@ -49,6 +58,7 @@ end
 
 describe "editing a project" do
   let_there_be_lane
+  let_there_be_j
   fake_login_for_each_test
   build_service_request()
   build_project()

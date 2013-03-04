@@ -15,6 +15,23 @@ def let_there_be_lane
     )}
 end
 
+def let_there_be_j
+  let!(:jpl6) { FactoryGirl.create(:identity, 
+      last_name:             'Leonard',
+      first_name:            'Jason',
+      ldap_uid:              'jpl6',
+      institution:           'medical_university_of_south_carolina',
+      college:               'college_of_medecine',
+      department:            'other',
+      email:                 'leonarjp@musc.edu',
+      credentials:           'BS,    MRA',
+      catalog_overlord:      true,
+      password:              'p4ssword',
+      password_confirmation: 'p4ssword',
+      approved:              true
+    )}
+end
+
 def build_service_request_with_project
   build_service_request()
   build_project()
@@ -69,6 +86,13 @@ def build_project
         identity_id:     identity.id,
         project_rights:  "approve",
         role:            "pi")
+    identity2 = Identity.find_by_ldap_uid('jpl6')
+    FactoryGirl.create(
+        :project_role,
+        protocol_id:     protocol.id,
+        identity_id:     identity2.id,
+        project_rights:  "approve",
+        role:            "billing-business-manager")
     service_request.update_attribute(:protocol_id, protocol.id)
   end
 end
@@ -87,6 +111,13 @@ def build_study
         identity_id:     identity.id,
         project_rights:  "approve",
         role:            "pi")
+    identity2 = Identity.find_by_ldap_uid('jpl6')
+    FactoryGirl.create(
+        :project_role,
+        protocol_id:     protocol.id,
+        identity_id:     identity2.id,
+        project_rights:  "approve",
+        role:            "billing-business-manager")
     service_request.update_attribute(:protocol_id, protocol.id)
   end
 end

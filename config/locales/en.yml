@@ -312,6 +312,11 @@ en:
     ip_patents: "IP/Patents:"
     patent_number: "Patent Number:"
     inventors: "Inventors:"
+    type: "Study Type (Check all that apply)"
+    impact: "Impact Areas"
+    affiliations: "Affiliations and Collaborations"
+    save: "Save Study"
+    cancel: "Cancel"
 
   # Service Request Details form
   service_request_details:
@@ -363,6 +368,34 @@ en:
       provider: "Provider:"
       program_core: "Program/Core:"
       contact: "Contact:"
+
+  # Portal Root/Information
+  protocol_information:
+    message1: "Within your dashboard, you can view (and/or edit, submit) service requests currently in SPARC, as well as all of those still in 'draft' status. To edit any study/project specific information, click on the 'Edit' button located under the 'Study/Project Information' heading. To add or edit users, click on the 'Edit Authorized Users' button located under the 'Authorized Users' heading."
+    message2: "Please note that studies/projects are listed in descending order."
+    loading: "Loading your project/studies"
+    rights1: "You do not have appropriate rights to"
+    rights2: "Should you need this right, please contact your PI or Authorized Users"
+    information: "Information:"
+    title: "Title:"
+    short_title: "Short Title:"
+    funding: "Funding Source:"
+    authorized_users: "Authorized Users:"
+    name: "Name:"
+    role: "Role:"
+    proxy: "Proxy Rights:"
+    actions: "Actions"
+    edit: "Edit"
+    delete: "Delete"
+    no_authorized_users: "Currently no authorized users"
+    add_authorized_user: "+ ADD An Authorized User"
+    service_requests: "Service Requests:"
+    srid: "SRID:"
+    date: "Submitted Date:"
+    provider: "Provider:"
+    program: "Program/Core:"
+    status: "Status:"
+    edit_original: "Edit Original"
 
   # Portal sub service request dialog
   ssr_dialog:
@@ -452,7 +485,7 @@ en:
     actions: "Actions"
     submit_button: "Save"
     cancel_button: "Cancel"
-    blank_field_errors: "Name and Order on the Service, and Quantity Type, Unit Factor, Unit Minimum, Effective Date, and Display Date on all Pricing Maps are required."
+    blank_field_errors: "Name and Order on the Service, and Quantity Type, Unit Factor, Unit Minimum, Units Per Qty Maximum, Effective Date, and Display Date on all Pricing Maps are required."
     status_legend: "Status Options (Check all that apply)"
     default_statuses: "Default Statuses:"
 

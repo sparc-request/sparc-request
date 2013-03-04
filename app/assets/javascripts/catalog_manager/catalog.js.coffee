@@ -278,6 +278,7 @@ $ ->
     .service_unit_type,
     .service_unit_factor,
     .service_unit_minimum,
+    .service_units_per_qty_max,
     .pricing_map_display_date,
     .pricing_map_effective_date').live('change', ->
     blank_field = false

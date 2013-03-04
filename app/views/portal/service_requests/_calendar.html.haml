@@ -52,10 +52,11 @@
         %td.dark_gray_bg.totals{:colspan => 2} Total Direct Cost
         %td.dark_gray_bg.totals{:id => 'grand_total_direct'}= display_grand_total_direct_costs @service_request, @service_request.line_items
 
-      %tr.totals_section
-        %td{:colspan => 6}
-        %td.dark_gray_bg.totals{:colspan => 2} Total Indirect Costs
-        %td.dark_gray_bg.totals{:id => 'grand_total_indirect'}= display_grand_total_indirect_costs @service_request, @service_request.line_items
+      - if USE_INDIRECT_COST
+        %tr.totals_section
+          %td{:colspan => 6}
+          %td.dark_gray_bg.totals{:colspan => 2} Total Indirect Costs
+          %td.dark_gray_bg.totals{:id => 'grand_total_indirect'}= display_grand_total_indirect_costs @service_request, @service_request.line_items
 
       %tr.totals_section
         %td{:colspan => 6}

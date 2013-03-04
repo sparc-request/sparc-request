@@ -2,9 +2,9 @@
   Select a Research Project:
   = collection_select :service_request, :protocol_id, projects, :id, :short_title, {:include_blank => 'Select a Project'}, :class => 'edit_project_id'
   %button.edit-project Edit Project
-%br
-%br
+
 - if @sub_service_request.nil?
+  %br
   %span -- OR --
-%br
-%br
+  %br
+  %br

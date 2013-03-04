@@ -165,18 +165,30 @@ describe 'SubServiceRequest' do
       context "indirect cost total" do
 
         it "should return the indirect cost for one time fees" do
-          sub_service_request2.indirect_cost_total.should eq(1000)
+          if USE_INDIRECT_COST
+            sub_service_request2.indirect_cost_total.should eq(1000)
+          else
+            sub_service_request2.indirect_cost_total.should eq(0.0)
+          end
         end
 
         it "should return the indirect cost for visit based services" do
-          sub_service_request.indirect_cost_total.should eq(1000)
+          if USE_INDIRECT_COST
+            sub_service_request.indirect_cost_total.should eq(1000)
+          else
+            sub_service_request.indirect_cost_total.should eq(0.0)
+          end
         end
       end
 
       context "grand total" do
 
         it "should return the grand total cost of the sub service request" do
-          sub_service_request.grand_total.should eq(1500)
+          if USE_INDIRECT_COST
+            sub_service_request.grand_total.should eq(1500)
+          else
+            sub_service_request.grand_total.should eq(500.0)
+          end
         end
       end
 

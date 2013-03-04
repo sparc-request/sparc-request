@@ -7,8 +7,7 @@
     - unless organization.services.empty?
       .program-services
         - organization.services.order('`order`').each do |service|
-          - if service.is_available? or service.is_available.nil?
-            = render :partial => 'service', :locals => {:service => service, :service_request => service_request}
+          = display_service_in_catalog service, service_request
     %br
     - unless organization.cores.empty?
       .core-accordion
@@ -17,9 +16,7 @@
             = link_to core.name, "#"
           .core_view
             - core.services.order('`order`').each do |service|
-              - if service.is_available? or service.is_available.nil?
-                = render :partial => 'service', :locals => {:service => service, :service_request => service_request}
-
+              = display_service_in_catalog service, service_request
 
 - else
   %h1 Welcome to the SPARC Services Catalog

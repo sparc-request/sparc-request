@@ -20,11 +20,9 @@ describe 'as a user on catalog page' do
   let!(:pricing_map2) {FactoryGirl.create(:pricing_map,service_id:16,unit_type:'Per patient/visit',unit_factor:1,is_one_time_fee:0,full_rate:636,exclude_from_indirect_cost: 0,unit_minimum:1)}
 
   it 'Submit Request', :js => true do
-    # puts Identity.all.inspect
-    # login(identity)
-
     visit root_path
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
+    find(".provider-name").should have_text("South Carolina Clinical and Translational Institute (SCTR)")
 
     click_link("Office of Biomedical Informatics")
     click_button("Add")
@@ -35,7 +33,6 @@ describe 'as a user on catalog page' do
     wait_for_javascript_to_finish
 
     find(:xpath, "//a/img[@alt='Submit_request']/..").click
-    #save_and_open_page
   end
 
 end

@@ -27,7 +27,7 @@
 
 #tabs
   %ul
-    %li= link_to "Fulfillment"             ,"#fulfillment"              ,:class => 'fulfillment-tab'
+    %li= link_to "Fulfillment"               ,"#fulfillment"              ,:class => 'fulfillment-tab'
     %li= link_to "Project/Study Information" ,"#protocol"                  ,:class => 'project-tab'
     %li= link_to "Documents"                 ,"#documents"                ,:class => 'documents-tab'
     %li= link_to "Related Service Requests"  ,"#related_service_requests" ,:class => 'related_service_requests-tab'
@@ -37,6 +37,7 @@
     = render 'fulfillment'
     
   #protocol{:style => 'padding:15px;'}
+    = render :partial => 'portal/protocols/type_form'
     = render :partial => 'portal/protocols/form', :locals => {:protocol => @protocol, :admin => true}
       
   #documents

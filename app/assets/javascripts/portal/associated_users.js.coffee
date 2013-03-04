@@ -120,17 +120,22 @@ $(document).ready ->
         height: 495
         modal: true
         resizable: false
-        buttons: {
-          "Submit": () ->
-            # console.log $("#project_role_role").val()
-            $("#new_project_role").submit()
-            $("#user_search").val('')
-          "Cancel": () ->
-            $(this).dialog('close')
-            # $('.add-associated-user-dialog').children().remove()
-            $("#user_search").val('')
-            $("#errorExplanation").remove()
-        }
+        buttons: [
+          {
+            id: "add_authorized_user_submit_button"
+            text: "Submit"
+            click: ->
+              $("#new_project_role").submit()
+              $("#user_search").val('')
+          },
+          {
+            id: "add_authorized_user_cancel_button"
+            text: "Cancel"
+            click: ->
+              $(this).dialog('close')
+              $("#user_search").val('')
+              $("#errorExplanation").remove()
+          }]
         open: ->
           Sparc.associated_users.createShield()
           $('.dialog-form input,.dialog-form select').attr('disabled',true)
@@ -145,14 +150,22 @@ $(document).ready ->
           height: 485
           modal: true
           resizable: false
-          buttons: {
-            "Submit": () ->
-              form = $(".edit-associated-user-dialog").children('form')
-              form.submit()
-            "Cancel": () ->
-              $(this).dialog("close")
-              $("#errorExplanation").remove()
-          }
+          buttons: [
+            {
+              id: 'edit_authorized_user_submit_button'
+              text: 'Submit'
+              click: ->
+                form = $(".edit-associated-user-dialog").children('form')
+                form.submit()
+            },
+            {
+              id: 'edit_authorized_user_cancel_button'
+              text: 'Cancel'
+              click: ->
+                $(this).dialog("close")
+                $("#errorExplanation").remove()
+            }
+          ]
           open: ->
             $('#associated_user_role').change()
       })

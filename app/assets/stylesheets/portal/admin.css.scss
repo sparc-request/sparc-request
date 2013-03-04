@@ -109,6 +109,11 @@ background-color: #8dbdd8;
                  margin-left: 19px;
                  }
 
+#admin_src_approval {
+  text-align: center;
+  font-weight: bold;
+}
+
 .admin_service_request:hover {
   cursor: pointer
 }
@@ -124,7 +129,7 @@ background-color: #8dbdd8;
 #service_request_approval_changes {
   table {
     th, td {
-      width: 50%;
+      width: 33%;
     }
   }
 }

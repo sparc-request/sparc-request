@@ -3,6 +3,7 @@ begin
   DEFAULT_MAIL_TO = application_config['default_mail_to']
   ADMIN_MAIL_TO = application_config['admin_mail_to']
   USER_PORTAL_LINK = application_config['user_portal_link']
+  USE_INDIRECT_COST = application_config['use_indirect_cost']
 rescue
   raise "application.yml not found, see config/application.yml.example"
 end

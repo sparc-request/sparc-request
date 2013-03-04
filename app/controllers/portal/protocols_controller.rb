@@ -61,6 +61,15 @@ class Portal::ProtocolsController < Portal::BaseController
     end
   end
 
+  def update_protocol_type
+    @protocol = Protocol.find(params[:id])
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    # Using update_attribute here is intentional, type is a protected attribute
+    if @protocol.update_attribute(:type, params[:protocol][:type])
+      redirect_to portal_admin_sub_service_request_path(@sub_service_request)
+    end
+  end
+
 
   private
   # TODO: Move this somewhere else. Short on time, though. - nb

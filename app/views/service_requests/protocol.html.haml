@@ -37,7 +37,7 @@
             %br
             %br
 
-        .existing-project.center{:style => 'display:none;'}
+        .existing-project.center
           #project.project-select
             #project-select= render :partial => 'project_select', :locals => {:projects => @projects} unless @projects.empty?
             = link_to('New Project', new_service_request_project_path(@service_request), :class => 'new-project') if @sub_service_request.nil?

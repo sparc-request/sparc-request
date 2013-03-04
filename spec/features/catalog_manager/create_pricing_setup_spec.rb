@@ -8,6 +8,7 @@ describe 'as a user on catalog page' do
   it 'the user should create a pricing setup', :js => true do
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
     click_button("Add Pricing Setup")
+    wait_for_javascript_to_finish
     
     page.execute_script("$('.ui-accordion-header').click()") 
     within('.ui-accordion') do
@@ -27,13 +28,15 @@ describe 'as a user on catalog page' do
       
       find('.federal_percentage_field').set('150')
       click_link('Apply Federal % to All')
+      wait_for_javascript_to_finish
       page.execute_script %Q{ $(".rate").val("full") }
       page.execute_script %Q{ $(".rate").change() }
+      wait_for_javascript_to_finish
     end
   
     page.execute_script %Q{ $(".save_button").click() }
     wait_for_javascript_to_finish
-
+    
     page.should have_content "South Carolina Clinical and Translational Institute (SCTR) saved successfully"
     
   end
@@ -126,8 +129,8 @@ describe 'as a user on catalog page' do
     # not visible); test the one prior to it instead.
     form = all(".pricing_map_form")[-2]
 
-    retry_until { form.find("input[id$='full_rate']").value.should eq '45.00' }
-    retry_until { form.find("input[id$='unit_type']").value.should eq 'self' }
+    form.find("input[id$='full_rate']").should have_value '45.00'
+    form.find("input[id$='unit_type']").should have_value 'self'
   end
 
 end

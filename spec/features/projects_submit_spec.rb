@@ -42,7 +42,7 @@ describe "creating a new project " do
 
       find(:xpath, "//input[@alt='SaveAndContinue']").click
 
-      find("#service_request_protocol_id").value().should eq Protocol.last.id.to_s
+      find("#service_request_protocol_id").should have_value Protocol.last.id.to_s
     end
   end
 end
@@ -65,7 +65,7 @@ describe "editing a project" do
       find(:xpath, "//input[@alt='SaveAndContinue']").click
       click_button("Edit Project")
 
-      find("#project_short_title").value().should eq("Bob")
+      find("#project_short_title").should have_value("Bob")
     end
   end
 

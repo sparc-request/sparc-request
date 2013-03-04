@@ -1,9 +1,9 @@
 .inline
-  Select a Research Study:
-  = collection_select :service_request, :protocol_id, studies, :id, :short_title, {:include_blank => 'Select a Study'}, :class => 'edit_study_id'
-  %button.edit-study Edit Study
+  = t("study_assignment.select_study_long")
+  = collection_select :service_request, :protocol_id, studies, :id, :short_title, {:include_blank => t("study_assignment.select_study")}, :class => 'edit_study_id'
+  %button.edit-study= t("study_assignment.edit_study")
 - if @sub_service_request.nil?
   %br
-  %span -- OR --
+  %span= t("study_assignment.or")
   %br
   %br

@@ -76,6 +76,18 @@ en:
     instructions_4: "If you wish to add services, you must return to the \"Service Catalog\"."
     instructions_center: "Before continuing to Step 2, you must select a Research Study or Project to which the services selected are associated. Only 1 Research Study/Project can be assigned to this request."
     tied_to_study: "Is this Service Request tied to a particular Research Study"
+    select_study: "Select a Study"
+    select_study_long: "Select a Research Study:"
+    edit_study: "Edit Study"
+    select_project: "Select a Project"
+    select_project_long: "Select a Research Project:"
+    edit_project: "Edit Project"
+    or: "-- OR --"
+    new_study: "New Study"
+    new_project: "New Project"
+    sidebar_box:
+      my_services: "My Services"
+      help: "Help"
 
   # Subsidy Page
   subsidy_page:

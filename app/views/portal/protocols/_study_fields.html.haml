@@ -196,7 +196,7 @@
               = ip.text_area :inventors
   
       %fieldset
-        %legend Study Type (Check all that apply) 
+        %legend= t(:study_form)[:type] 
         %div
           = f.fields_for :study_types do |rt|
             .field{:class => rt.object.name}
@@ -205,7 +205,7 @@
               = rt.hidden_field :name, :value => rt.object.name
   
       %fieldset
-        %legend Impact Areas
+        %legend= t(:study_form)[:impact]
         %div
           = f.fields_for :impact_areas do |rt|
             .field{:class => rt.object.name}
@@ -214,7 +214,7 @@
               = rt.hidden_field :name, :value => rt.object.name
   
       %fieldset
-        %legend Affiliations and Collaborations 
+        %legend= t(:study_form)[:affiliations] 
         %div
           = f.fields_for :affiliations do |rt|
             .field{:class => rt.object.name}
@@ -224,9 +224,9 @@
 
   %br.clear
   #actions
-    = submit_tag("Save study")
+    = submit_tag(t(:study_form)[:save])
     or
     - if admin
       = link_to "Cancel", "/portal/admin/sub_service_requests/#{@sub_service_request.id}", :class => "admin_cancel_link"
     - else
-      = link_to "Cancel", portal_root_path
+      = link_to t(:study_form)[:cancel], portal_root_path

@@ -7,15 +7,15 @@
 .dashboard-view
   = render 'user_information'
   %p.dash-instructions
-  Within your dashboard, you can view (and/or edit, submit) service requests currently in SPARC, as well as all of those still in "draft" status. To edit any study/project specific information, click on the "Edit" button located under the "Study/Project Information" heading. To add or edit users, click on the "Edit Authorized Users" button located under the "Authorized Users" heading.
+  = t(:protocol_information)[:message1]
   %br
   %br
-  Please note that studies/projects are listed in descending order.
+  = t(:protocol_information)[:message2]
   %br
   %br
   %input#search_box.search_protocols{:placeholder => 'Type here to search...', :style => "display:none;"}
   .loading_protocol.ui-corner-all{:style => "border: 1px solid black; padding: 3px; width: 200px; margin: 30px auto; text-align: center"}
-    Loading your projects/studies
+    = t(:protocol_information)[:loading]
     %br
     = image_tag 'portal/spinner.gif'
   .search_protocols_div
@@ -32,11 +32,11 @@
 .edit-associated-user-dialog
 .view-sub-service-request-dialog
 .permissions-dialog
-  You do not have appropriate rights to
+  = t(:protocol_information)[:rights1]
   %b
     %span.text
-      Edit
-  Should you need this right, please contact your PI or Authorized Users
+      = t(:protocol_information)[:edit]
+  = t(:protocol_information)[:rights2]
 
 
 %input.default_protocol{:type => 'hidden', :value => params.try(:[], :default_protocol) || ''}

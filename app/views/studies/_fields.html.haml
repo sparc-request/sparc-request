@@ -12,7 +12,7 @@
   .info
     %fieldset
       .field
-        = f.label :short_title, t(:study_form)[:short_title]
+        = f.label :short_title, t(:protocol_shared)[:title]
         = f.text_field :short_title
       
       .field
@@ -20,7 +20,7 @@
         = f.text_field :title
       
       .field
-        = f.label :funding_status, t(:study_form)[:funding_status]
+        = f.label :funding_status, t(:protocol_shared)[:funding_status]
         = f.select :funding_status, options_for_select(FUNDING_STATUSES, study.funding_status), :include_blank => "Select a Funding Status"
       
       .field
@@ -42,7 +42,7 @@
           = f.hidden_field :potential_funding_start_date
 
         .field
-          = f.label :potential_funding_source, t(:study_form)[:potential_funding_source]
+          = f.label :potential_funding_source, t(:protocol_shared)[:potential_funding_source]
           = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, study.potential_funding_source), :include_blank => "Select a Potential Funding Source"
 
         / Internal Funded Pilot Project selected
@@ -58,7 +58,7 @@
           = f.hidden_field :funding_start_date
         
         .field
-          = f.label :funding_source, t(:study_form)[:funding_source]
+          = f.label :funding_source, t(:protocol_shared)[:funding_source]
           = f.select :funding_source, options_for_select(FUNDING_SOURCES, study.funding_source), :include_blank => "Select a Funding Source"
 
         / Internal Funded Pilot Project selected
@@ -68,7 +68,7 @@
             = f.text_field :funding_source_other
 
       .indirect_cost_rate
-        = f.label :indirect_cost_rate, t(:study_form)[:indirect_cost_rate]
+        = f.label :indirect_cost_rate, t(:study_form)[:rate]
         = f.text_field :indirect_cost_rate
 
       .funded
@@ -198,7 +198,7 @@
 
     -# study types are initialized in obis-bridge lib/models/protocol.rb def setup_study_types
     %fieldset
-      %legend Study Type (Check all that apply) 
+      %legend= t(:study_form)[:type] 
       %div
         = f.fields_for :study_types do |rt|
           .field{:class => rt.object.name}
@@ -208,7 +208,7 @@
 
     -# impact_areas are initialized in obis-bridge lib/models/protocol.rb def setup_impact_areas
     %fieldset
-      %legend Impact Areas
+      %legend= t(:study_form)[:impact]
       %div
         = f.fields_for :impact_areas do |rt|
           .field{:class => rt.object.name}
@@ -218,7 +218,7 @@
 
     -# affiliations are initialized in obis-bridge lib/models/protocol.rb def setup_affiliations
     %fieldset
-      %legend Affiliations and Collaborations 
+      %legend= t(:study_form)[:affiliations] 
       %div
         = f.fields_for :affiliations do |rt|
           .field{:class => rt.object.name}

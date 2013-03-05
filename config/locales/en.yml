@@ -54,6 +54,41 @@ en:
       - question_text: "I\\'m stuck! Who can I contact for assistance with SPARC?"
         answer_text: "The SUCCESS Center is happy to assist you! Please contact us at <a href=\"mailto:success@musc.edu\">success@musc.edu</a> or (843) 792-3357."
 
+  # new/editing projects
+  sr_project:
+    message: "Before you can complete a service request, please tell us more about your research project.  This information will be used by our staff to decide the best way to process your request."
+    title1: "Short Title:*"
+    title2: "Project Title:*"
+    funding_status: "Proposal Funding Status:*"
+    dropdown_default1: "Select a Funding Status"
+    funding_source: "Funding Source:*"
+    potential_funding_source: "Potential Funding Source:*"
+    dropdown_default2: "Select a Funding Source"
+    dropdown_default3: "Select a Potential Funding Source"
+    description: "Brief Description:"
+    rate: "Indirect Cost Rate:"
+
+  # Project/Study assignment page
+  study_assignment:
+    instructions_1: "Please review the SPARC Services you are requesting below."
+    instructions_2: "Please note that any \"Professional Services\" listed below have UMA fees associated with them and cannot be removed from this screen."
+    instructions_3: "If Professional Services are covered by % effort, you will have the opportunity to indicate this in Step 2."
+    instructions_4: "If you wish to add services, you must return to the \"Service Catalog\"."
+    instructions_center: "Before continuing to Step 2, you must select a Research Study or Project to which the services selected are associated. Only 1 Research Study/Project can be assigned to this request."
+    tied_to_study: "Is this Service Request tied to a particular Research Study"
+    select_study: "Select a Study"
+    select_study_long: "Select a Research Study:"
+    edit_study: "Edit Study"
+    select_project: "Select a Project"
+    select_project_long: "Select a Research Project:"
+    edit_project: "Edit Project"
+    or: "-- OR --"
+    new_study: "New Study"
+    new_project: "New Project"
+    sidebar_box:
+      my_services: "My Services"
+      help: "Help"
+
   # Subsidy Page
   subsidy_page:
     not_eligible: "None of the services you have selected are eligible for a subsidy."
@@ -65,6 +100,7 @@ en:
       requested_funding: "Requested Funding"
       subsidy: "% Subsidy"
     request_additional: "To request additional research funding go to"
+    additional_confirm: "Are you sure you want to leave? Any unsaved changes to this service request will be lost."
 
   # Calendar Page
   calendar_page:

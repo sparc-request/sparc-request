@@ -6,38 +6,38 @@
 
 = javascript_include_tag 'projects'
 
-.description= t(:sr_project)[:message]
+.description= t(:project_form)[:message]
 
 .grid_7.box
   .info
     .field
-      = f.label :short_title, t(:sr_project)[:title1]
+      = f.label :short_title, t(:protocol_shared)[:title]
       = f.text_field :short_title
 
     .field
-      = f.label :title, t(:sr_project)[:title2]
+      = f.label :title, t(:project_form)[:title]
       = f.text_field :title
       
     .field
-      = f.label :funding_status, t(:sr_project)[:funding_status]
-      = f.select :funding_status, options_for_select(FUNDING_STATUSES, project.funding_status), :include_blank => t(:sr_project)[:dropdown_default1]
+      = f.label :funding_status, t(:protocol_shared)[:funding_status]
+      = f.select :funding_status, options_for_select(FUNDING_STATUSES, project.funding_status), :include_blank => t(:project_form)[:dropdown_default1]
 
     #funded
       .field
-        = f.label :funding_source, t(:sr_project)[:funding_source]
-        = f.select :funding_source, options_for_select(FUNDING_SOURCES, project.funding_source), :include_blank => t(:sr_project)[:dropdown_default2]
+        = f.label :funding_source, t(:protocol_shared)[:funding_source]
+        = f.select :funding_source, options_for_select(FUNDING_SOURCES, project.funding_source), :include_blank => t(:project_form)[:dropdown_default2]
 
     #pending_funding 
       .field
-        = f.label :potential_funding_source, t(:sr_project)[:potential_funding_source]
-        = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, project.potential_funding_source), :include_blank => t(:sr_project)[:dropdown_default3]
+        = f.label :potential_funding_source, t(:protocol_shared)[:potential_funding_source]
+        = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, project.potential_funding_source), :include_blank => t(:project_form)[:dropdown_default3]
 
     .field
-      = f.label :brief_description, t(:sr_project)[:description]
+      = f.label :brief_description, t(:project_form)[:description]
       = f.text_area :brief_description
 
     .indirect_cost_rate
-      = f.label :indirect_cost_rate, t(:sr_project)[:rate]
+      = f.label :indirect_cost_rate, t(:project_form)[:rate]
       = f.text_field :indirect_cost_rate
 
 .grid_5.box= render :partial => 'shared/user_search'

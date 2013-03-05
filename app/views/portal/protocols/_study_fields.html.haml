@@ -10,7 +10,7 @@
       %fieldset
         %legend Study Attributes
         .field
-          = f.label :short_title, t(:study_form)[:short_title]
+          = f.label :short_title, t(:protocol_shared)[:title]
           = f.text_field :short_title
         
         .field
@@ -18,7 +18,7 @@
           = f.text_field :title
         
         .field
-          = f.label :funding_status, t(:study_form)[:funding_status]
+          = f.label :funding_status, t(:protocol_shared)[:funding_status]
           = f.select :funding_status, options_for_select(FUNDING_STATUSES, study.funding_status), :include_blank => "Select a Funding Status"
         
         .field
@@ -40,7 +40,7 @@
             = f.hidden_field :potential_funding_start_date
     
           .field
-            = f.label :potential_funding_source, t(:study_form)[:potential_funding_source]
+            = f.label :potential_funding_source, t(:protocol_shared)[:potential_funding_source]
             = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, study.potential_funding_source), :include_blank => "Select a Potential Funding Source"
     
           / Internal Funded Pilot Project selected
@@ -56,7 +56,7 @@
             = f.hidden_field :funding_start_date
           
           .field
-            = f.label :funding_source, t(:study_form)[:funding_source]
+            = f.label :funding_source, t(:protocol_shared)[:funding_source]
             = f.select :funding_source, options_for_select(FUNDING_SOURCES, study.funding_source), :include_blank => "Select a Funding Source"
     
           / Internal Funded Pilot Project selected
@@ -229,4 +229,4 @@
     - if admin
       = link_to "Cancel", "/portal/admin/sub_service_requests/#{@sub_service_request.id}", :class => "admin_cancel_link"
     - else
-      = link_to t(:study_form)[:cancel], portal_root_path
+      = link_to t(:protocol_shared)[:cancel], portal_root_path

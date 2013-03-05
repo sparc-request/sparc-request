@@ -100,6 +100,7 @@ en:
       requested_funding: "Requested Funding"
       subsidy: "% Subsidy"
     request_additional: "To request additional research funding go to"
+    additional_confirm: "Are you sure you want to leave? Any unsaved changes to this service request will be lost."
 
   # Calendar Page
   calendar_page:

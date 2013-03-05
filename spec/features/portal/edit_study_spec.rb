@@ -16,14 +16,14 @@ describe "editing a study", js: true do
 
     it "should raise an error message if study's status is pending and no potential funding source is selected" do
       select("Pending Funding", from: "Proposal Funding Status")
-      click_button "Save study"
+      click_button "Save Study"
       page.should have_content("1 error prohibited this study from being saved")
     end
 
     it "should raise an error message if study's status is funded but no funding source is selected" do
       select("Funded", from: "Proposal Funding Status")
       select("Select a Funding Source", from: "study_funding_source")
-      click_button "Save study"
+      click_button "Save Study"
       page.should have_content("1 error prohibited this study from being saved")
     end
   end
@@ -31,7 +31,7 @@ describe "editing a study", js: true do
   context "saving a study" do
 
     it "should redirect to the main portal page" do
-      click_button "Save study"
+      click_button "Save Study"
       page.should have_content("Welcome!")
     end
   end
@@ -40,7 +40,7 @@ describe "editing a study", js: true do
 
     it "should save the new short title" do
       fill_in "study_short_title", with: "Bob"
-      click_button "Save study"
+      click_button "Save Study"
       visit edit_portal_protocol_path service_request.protocol.id
       find("#study_short_title").should have_value("Bob")
     end
@@ -50,7 +50,7 @@ describe "editing a study", js: true do
 
     it "should save the new protocol title" do
       fill_in "study_title", with: "Slappy"
-      click_button "Save study"
+      click_button "Save Study"
       visit edit_portal_protocol_path service_request.protocol.id
       find("#study_title").should have_value("Slappy")
     end
@@ -73,7 +73,7 @@ describe "editing a study", js: true do
 
     it "should save the new udak/project number" do
       fill_in "study_udak_project_number", with: "12345"
-      click_button "Save study"
+      click_button "Save Study"
       visit edit_portal_protocol_path service_request.protocol.id
       find("#study_udak_project_number").should have_value("12345")
     end    
@@ -83,7 +83,7 @@ describe "editing a study", js: true do
 
     it "should save the new sponsor name" do
       fill_in "study_sponsor_name", with: "Kurt Zanzibar"
-      click_button "Save study"
+      click_button "Save Study"
       visit edit_portal_protocol_path service_request.protocol.id
       find("#study_sponsor_name").should have_value("Kurt Zanzibar")
     end
@@ -126,7 +126,7 @@ describe "editing a study", js: true do
 
       it "should save the new funding opportunity number" do
         fill_in "study_funding_rfa", with: "12345"
-        click_button "Save study"
+        click_button "Save Study"
         visit edit_portal_protocol_path service_request.protocol.id
         find("#study_funding_rfa").should have_value("12345")
       end      
@@ -185,7 +185,7 @@ describe "editing a study", js: true do
           fill_in "study_human_subjects_info_attributes_#{field_array[field_num]}", with: "12345"
           field_num += 1
         end
-        click_button "Save study"
+        click_button "Save Study"
         visit edit_portal_protocol_path service_request.protocol.id
         find("#study_human_subjects_info_attributes_hr_number").should have_value("12345")
         find("#study_human_subjects_info_attributes_pro_number").should have_value("12345")
@@ -196,7 +196,7 @@ describe "editing a study", js: true do
 
       it "should save the new irb" do
         fill_in "study_human_subjects_info_attributes_irb_of_record", with: "crazy town"
-        click_button "Save study"
+        click_button "Save Study"
         visit edit_portal_protocol_path service_request.protocol.id
         find("#study_human_subjects_info_attributes_irb_of_record").should have_value("crazy town")
       end

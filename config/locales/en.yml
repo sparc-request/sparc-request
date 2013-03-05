@@ -162,6 +162,7 @@ en:
     cancel_button: "Cancel"
     edit_button: "Edit"
     delete_button: "Delete"
+    select_prompt: "Select a Type"
 
   # Related Service Requests (portal/admin/)
   related:

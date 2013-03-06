@@ -36,7 +36,7 @@
         - if @user.is_overlord?
           %tr
             %th= t(:organization_form)[:css_class]
-            %td= f.select :css_class, ACCORDION_COLOR_OPTIONS, :include_blank => 'Select a Color'
+            %td= f.select :css_class, ACCORDION_COLOR_OPTIONS, :include_blank => t(:organization_form)[:color_blank]
         
         %tr
           %th= t(:organization_form)[:split_notify]

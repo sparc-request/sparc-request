@@ -46,7 +46,7 @@
             = f.text_area :reason
 
           .create_user#button
-            = f.submit "signup.submit", {:class => 'btn ui-button ui-widget ui-state-default ui-corner-all'}
+            = f.submit t(:signup)[:submit], {:class => 'btn ui-button ui-widget ui-state-default ui-corner-all'}
           .clear
       .links.grid_7
         = render "devise/shared/links"

@@ -92,7 +92,7 @@ def build_project
         protocol_id:     protocol.id,
         identity_id:     identity2.id,
         project_rights:  "approve",
-        role:            "billing-business-manager")
+        role:            "business-grants-manager")
     service_request.update_attribute(:protocol_id, protocol.id)
   end
 end
@@ -117,7 +117,7 @@ def build_study
         protocol_id:     protocol.id,
         identity_id:     identity2.id,
         project_rights:  "approve",
-        role:            "billing-business-manager")
+        role:            "business-grants-manager")
     service_request.update_attribute(:protocol_id, protocol.id)
   end
 end

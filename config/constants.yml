@@ -543,7 +543,7 @@ user_roles: { 'PD/PI': 'pi',
               'Technician': 'technician',
               'Mentor': 'mentor',
               'General Access User': 'general-access-user',
-              'Billing/Business Manager': 'billing-business-manager',
+              'Billing/Business Manager': 'business-grants-manager',
               'Other': 'other' }
 study_phases: { 'I': 'i',
                 'II': 'ii',

@@ -231,7 +231,8 @@
 - hide_user_details = (study.new_record? and study.project_roles.empty?) ? '' : 'display:none;'
 
 .grid_5.box.user_added_message{:style => 'display:none;'}
-  %p User added!  See table below to set proxy rights.
+  %p
+    - t(:protocol_shared)[:add_user]
 
 .grid_5.box.user-details.user-manager-view.add-user-details{:style => "#{hide_user_details}"}= render :partial => 'shared/user_details', :locals => {:identity => current_user, :project_role => ProjectRole.new, :can_edit => true}
 

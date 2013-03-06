@@ -162,6 +162,7 @@ en:
     cancel_button: "Cancel"
     edit_button: "Edit"
     delete_button: "Delete"
+    select_prompt: "Select a Type"
 
   # Related Service Requests (portal/admin/)
   related:
@@ -345,6 +346,8 @@ en:
     change: "Project/Study Type:"
     button: "Change Type"
     confirm: "This will change the type of this Project/Study.  Are you sure?"
+    add_user: "User added!  See table below to set proxy rights."
+    update_user: 'User updated!  See table below to set proxy rights.'
 
   # Project/Study assignment page
   study_assignment:

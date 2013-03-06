@@ -66,7 +66,7 @@ class LineItem < ActiveRecord::Base
   end
 
   def subject_count
-    raise NotImplementedError, "Needs to look in ArmsLineItems?"
+    return self.visit_groupings.sum('subject_count')
   end
 
   # Returns a hash of subtotals for the visits in the line item.

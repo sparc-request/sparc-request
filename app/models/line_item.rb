@@ -8,13 +8,15 @@ class LineItem < ActiveRecord::Base
   has_many :visits, :dependent => :destroy, :order => 'position'
   has_many :fulfillments, :dependent => :destroy
 
+  has_many :visit_groupings
+  has_many :arms, :through => :visit_groupings
+
   attr_accessible :service_request_id
   attr_accessible :sub_service_request_id
   attr_accessible :ssr_id
   attr_accessible :service_id
   attr_accessible :optional
   attr_accessible :quantity
-  attr_accessible :subject_count
   attr_accessible :complete_date
   attr_accessible :in_process_date
   attr_accessible :units_per_quantity
@@ -61,6 +63,10 @@ class LineItem < ActiveRecord::Base
     # quantity_total = self.visits.map {|x| x.research_billing_qty}.inject(:+) * self.subject_count
     quantity_total = self.visits.sum('research_billing_qty')
     return quantity_total * self.subject_count
+  end
+
+  def subject_count
+    raise NotImplementedError, "Needs to look in ArmsLineItems?"
   end
 
   # Returns a hash of subtotals for the visits in the line item.

@@ -56,7 +56,8 @@ def load_schema
     basedir = File.expand_path(File.dirname(__FILE__))
     load File.join(basedir, '../db/schema.rb')
   }
-  silence_stream(STDOUT, &load_schema)
+  # silence_stream(STDOUT, &load_schema)
+  load_schema.call
 end
 
 # We need to load the schema if we are using the in-memory sqlite3

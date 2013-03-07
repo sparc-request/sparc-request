@@ -7,14 +7,20 @@ class RequestGrantBillingPdf
     pdf = Prawn::Document.new :template => template_file_name
     pdf.font_size = 9
    
-    principal_investigators = service_request.protocol.project_roles.where(:role => "pi").map{|pr| pr.identity.full_name}.join(", ") 
+    #get data for pdf
+    protocol = service_request.protocol
+    principal_investigators = protocol.project_roles.where(:role => "pi").map{|pr| pr.identity.full_name}.join(", ") 
+    billing_business_managers = protocol.project_roles.where(:role => "business-grants-manager").map{|pr| pr.identity.full_name}.join(", ") 
+    hr_pro_numbers = [protocol.human_subjects_info.hr_number, protocol.human_subjects_info.pro_number].compact.join(", ")
+
+
     # question 1
     pdf.draw_text principal_investigators, :at => [225, 651]
 
     # question 2
     #pdf.draw_text "Grant Number", :at => [85, 628]
-    pdf.draw_text "HR# Number or PRO Number", :at => [280, 628]
-    pdf.draw_text "Full UDAK", :at => [210, 612]
+    pdf.draw_text hr_pro_numbers, :at => [280, 628]
+    pdf.draw_text protocol.udak_project_number, :at => [210, 612]
     pdf.draw_text "Billing/Business Manager", :at => [275, 584]
 
     # question 3

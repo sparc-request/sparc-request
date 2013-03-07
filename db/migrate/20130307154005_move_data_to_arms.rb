@@ -13,6 +13,12 @@ class MoveDataToArms < ActiveRecord::Migration
   class Visit < ActiveRecord::Base
   end
 
+  class Arm < ActiveRecord::Base
+    attr_accessible :name
+    attr_accessible :visit_count
+    attr_accessible :subject_count
+  end
+
   def up
     LineItem.reset_column_information
 

@@ -6,7 +6,6 @@ class CatalogManager::ProvidersController < CatalogManager::AppController
     @institution = Institution.find(params[:institution_id])
     @provider = Provider.new({:name => params[:name], :abbreviation => params[:name], :parent_id => @institution.id})
     @provider.build_subsidy_map()
-    @provider.setup_available_statuses
     @provider.save
     
     respond_with [:catalog_manger, @provider]

@@ -1,5 +1,21 @@
 class MoveDataToArms < ActiveRecord::Migration
+
+  class ServiceRequest < ActiveRecord::Base
+    has_many :arms
+    has_many :line_items
+  end
+
+  class LineItem < ActiveRecord::Base
+    has_many :visits
+    has_many :visit_groupings
+  end
+
+  class Visit < ActiveRecord::Base
+  end
+
   def up
+    LineItem.reset_column_information
+
     add_column :visits, :visit_grouping_id, :integer
     Visit.reset_column_information
 

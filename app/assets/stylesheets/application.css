@@ -621,7 +621,9 @@ a.save-option{
 }
 
 .service-request-setup-view .service-details-table td,
-.service-request-setup-view .service-details-table th{
+.service-request-setup-view .service-dates-table td,
+.service-request-setup-view .service-details-table th,
+.service-request-setup-view .service-dates-table th{
   padding: 5px 30px;
 }
 

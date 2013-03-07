@@ -21,25 +21,30 @@
                   .instructions= t(:service_request_details)[:one_time_fee_and_per_patient_instructions]
                 - else
                   .instructions= t(:service_request_details)[:per_patient_instructions]
-                %table.service-details-table
+                %table.service-dates-table
                   %thead
-                    %tr
-                      %th= t(:service_request_details)[:number_of_subjects]
-                      %th= t(:service_request_details)[:number_of_visits]
-                      %th= t(:service_request_details)[:study_start_date]
-                      %th= t(:service_request_details)[:study_end_date]
+                    %th= t(:service_request_details)[:study_start_date]
+                    %th= t(:service_request_details)[:study_end_date]
                   %tbody
                     = fields_for @service_request do |f|
-                      %td
-                        = f.text_field :subject_count
-                      %td
-                        = f.text_field :visit_count
                       %td
                         = text_field_tag :start_date, (@service_request.start_date.strftime('%_m/%d/%Y') rescue nil) # only used for datepicker
                         = f.hidden_field :start_date
                       %td
                         = text_field_tag :end_date, (@service_request.end_date.strftime('%_m/%d/%Y') rescue nil) #only use for datepicker
                         = f.hidden_field :end_date
+                %br
+                %table.service-details-table
+                  %thead
+                    %tr
+                      %th= t(:service_request_details)[:number_of_subjects]
+                      %th= t(:service_request_details)[:number_of_visits]
+                  %tbody
+                    = fields_for @service_request do |f|
+                      %td
+                        = f.text_field :subject_count
+                      %td
+                        = f.text_field :visit_count
           .visit-calendar-details{:style => ((@sub_service_request.nil? ? @service_request.line_items.empty? : @sub_service_request.line_items.empty?) ? '' : 'display:none')}
             .instructions
               = t(:service_request_details)[:services_required]

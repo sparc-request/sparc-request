@@ -2,8 +2,6 @@ class Organization < ActiveRecord::Base
   #Version.primary_key = 'id'
   #has_paper_trail
 
-  include Entity
-
   belongs_to :parent, :class_name => 'Organization'
   has_many :submission_emails, :dependent => :destroy
   has_many :pricing_setups, :dependent => :destroy

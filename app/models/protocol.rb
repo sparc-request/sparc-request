@@ -145,6 +145,4 @@ class Protocol < ActiveRecord::Base
 
     return funding_source
   end
-
-  include Entity
 end

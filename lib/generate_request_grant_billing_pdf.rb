@@ -1,20 +1,21 @@
-require 'prawn'
+require File.expand_path('../../config/environment', __FILE__)
 
 class RequestGrantBillingPdf
   def self.generate_pdf(service_request)
     #template_file_name = Rails.root.join('config/pdf_templates/request_grant_billing_template.pdf')
-    template_file_name = '../config/pdf_templates/request_grant_billing_template.pdf'
+    template_file_name = File.expand_path('../../config/pdf_templates/request_grant_billing_template.pdf', __FILE__)
     pdf = Prawn::Document.new :template => template_file_name
-    pdf.font_size = 10
-    
+    pdf.font_size = 9
+   
+    principal_investigators = service_request.protocol.project_roles.where(:role => "pi").map{|pr| pr.identity.full_name}.join(", ") 
     # question 1
-    pdf.draw_text "I am the PI", :at => [225, 651]
+    pdf.draw_text principal_investigators, :at => [225, 651]
 
     # question 2
-    pdf.draw_text "Grant Number", :at => [85, 628]
-    pdf.draw_text "HR Number", :at => [280, 628]
+    #pdf.draw_text "Grant Number", :at => [85, 628]
+    pdf.draw_text "HR# Number or PRO Number", :at => [280, 628]
     pdf.draw_text "Full UDAK", :at => [210, 612]
-    pdf.draw_text "Business Manager", :at => [275, 584]
+    pdf.draw_text "Billing/Business Manager", :at => [275, 584]
 
     # question 3
     pdf.draw_text "Andrew's Super Fabulous Study", :at => [116, 558]
@@ -38,12 +39,9 @@ class RequestGrantBillingPdf
     # question 8
     #pdf.draw_text "My house, I guess", :at => [178, 432]
 
-    pdf.render_file '../tmp/pdfs/xyz.pdf'
-  end
-
-  def self.attach_to_sub_service_request(sub_service_request)
-
+    pdf.render_file File.expand_path('../../tmp/pdfs/xyz.pdf', __FILE__)
   end
 end
 
-RequestGrantBillingPdf.generate_pdf 'test'
+sr = ServiceRequest.find 10189
+RequestGrantBillingPdf.generate_pdf sr

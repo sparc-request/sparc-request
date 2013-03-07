@@ -7,13 +7,13 @@ class ServiceRequest < ActiveRecord::Base
   belongs_to :service_requester, :class_name => "Identity", :foreign_key => "service_requester_id"
   belongs_to :protocol
   has_many :sub_service_requests, :dependent => :destroy
-  has_many :line_items, :include => [:visits, :service], :dependent => :destroy
-  has_many :visits, :through => :line_items
+  has_many :line_items, :include => [:service], :dependent => :destroy
   has_many :charges, :dependent => :destroy
   has_many :tokens, :dependent => :destroy
   has_many :approvals, :dependent => :destroy
   has_many :documents, :through => :sub_service_requests
   has_many :document_groupings, :dependent => :destroy
+  has_many :arms
 
   validation_group :protocol do
     validates :protocol_id, :presence => {:message => "You must identify the service request with a study/project before continuing."} 

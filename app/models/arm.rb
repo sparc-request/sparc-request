@@ -6,4 +6,5 @@ class Arm < ActiveRecord::Base
 
   attr_accessible :name
   attr_accessible :visit_count
+  attr_accessible :subject_count
 end

@@ -5,7 +5,6 @@ class LineItem < ActiveRecord::Base
   belongs_to :service_request
   belongs_to :service, :include => [:pricing_maps, :organization]
   belongs_to :sub_service_request
-  has_many :visits, :dependent => :destroy, :order => 'position'
   has_many :fulfillments, :dependent => :destroy
 
   has_many :visit_groupings
@@ -63,10 +62,6 @@ class LineItem < ActiveRecord::Base
     # quantity_total = self.visits.map {|x| x.research_billing_qty}.inject(:+) * self.subject_count
     quantity_total = self.visits.sum('research_billing_qty')
     return quantity_total * self.subject_count
-  end
-
-  def subject_count
-    return self.visit_groupings.sum('subject_count')
   end
 
   # Returns a hash of subtotals for the visits in the line item.

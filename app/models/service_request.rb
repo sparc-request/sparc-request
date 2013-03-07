@@ -13,20 +13,22 @@ class ServiceRequest < ActiveRecord::Base
   has_many :approvals, :dependent => :destroy
   has_many :documents, :through => :sub_service_requests
   has_many :document_groupings, :dependent => :destroy
-  has_many :arms
+  has_many :arms, :dependent => :destroy
 
   validation_group :protocol do
     validates :protocol_id, :presence => {:message => "You must identify the service request with a study/project before continuing."} 
   end
 
   validation_group :service_details do
-    validates :visit_count, :numericality => { :greater_than => 0, :message => "You must specify the estimated total number of visits (greater than zero) before continuing.", :if => :has_per_patient_per_visit_services?}
-    validates :subject_count, :numericality => {:message => "You must specify the estimated total number of subjects before continuing.", :if => :has_per_patient_per_visit_services?}
+    # TODO: Fix validations for this area
+    # validates :visit_count, :numericality => { :greater_than => 0, :message => "You must specify the estimated total number of visits (greater than zero) before continuing.", :if => :has_per_patient_per_visit_services?}
+    # validates :subject_count, :numericality => {:message => "You must specify the estimated total number of subjects before continuing.", :if => :has_per_patient_per_visit_services?}
   end
   
   validation_group :service_details_back do
-    validates :visit_count, :numericality => { :greater_than => 0, :message => "You must specify the estimated total number of visits (greater than zero) before continuing.", :if => :has_visits?}
-    validates :subject_count, :numericality => {:message => "You must specify the estimated total number of subjects before continuing.", :if => :has_visits?}
+    # TODO: Fix validations for this area
+    # validates :visit_count, :numericality => { :greater_than => 0, :message => "You must specify the estimated total number of visits (greater than zero) before continuing.", :if => :has_visits?}
+    # validates :subject_count, :numericality => {:message => "You must specify the estimated total number of subjects before continuing.", :if => :has_visits?}
   end
 
   validation_group :service_calendar do
@@ -73,6 +75,7 @@ class ServiceRequest < ActiveRecord::Base
 
   accepts_nested_attributes_for :line_items
   accepts_nested_attributes_for :sub_service_requests
+  accepts_nested_attributes_for :arms
 
   alias_attribute :service_request_id, :id
 

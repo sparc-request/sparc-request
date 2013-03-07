@@ -34,17 +34,23 @@
                         = text_field_tag :end_date, (@service_request.end_date.strftime('%_m/%d/%Y') rescue nil) #only use for datepicker
                         = f.hidden_field :end_date
                 %br
-                %table.service-details-table
-                  %thead
-                    %tr
-                      %th= t(:service_request_details)[:number_of_subjects]
-                      %th= t(:service_request_details)[:number_of_visits]
-                  %tbody
-                    = fields_for @service_request do |f|
-                      %td
-                        = f.text_field :subject_count
-                      %td
-                        = f.text_field :visit_count
+                .arm-info
+                  = nested_form_for @service_request do |f|
+                    .arm-header
+                      .arm-cell= t(:service_request_details)[:name]
+                      .arm-cell= t(:service_request_details)[:number_of_subjects]
+                      .arm-cell= t(:service_request_details)[:number_of_visits]
+                    .clear
+                    .arms
+                      = f.fields_for :arms do |arm|
+                        .arm-cell= arm.text_field :name
+                        .arm-cell= arm.text_field :subject_count
+                        .arm-cell= arm.text_field :visit_count
+                        .arm-cell= arm.link_to_remove "Remove Arm"
+                        .clear
+                      .clear
+                    = f.link_to_add "Add Arm", :arms
+
           .visit-calendar-details{:style => ((@sub_service_request.nil? ? @service_request.line_items.empty? : @sub_service_request.line_items.empty?) ? '' : 'display:none')}
             .instructions
               = t(:service_request_details)[:services_required]

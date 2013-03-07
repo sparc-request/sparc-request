@@ -368,6 +368,7 @@ en:
     study_start_date: "Estimated Study Start Date"
     study_end_date: "Estimated Study End Date"
     services_required: "You can't continue unless you have services in your cart."
+    name: "ARM Name"
 
   # Service Request review page
   sr_review:

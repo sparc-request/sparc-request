@@ -600,7 +600,6 @@ a.save-option{
 }
 
 /* ServiceRequestSetupView */
-
 .service-request-setup-view .service-details {
   background: #E8E8E8;
   width: 670px;
@@ -663,6 +662,21 @@ a.save-option{
 .program-details-view .description, .provider-details-view .description {
   margin-bottom: 10px !important;
   padding: 5px !important;
+}
+
+.service-request-setup-view .arm-info {
+  width: 100%;
+  background: #E8E8E8 !important;
+}
+
+.service-request-setup-view .arm-info .arm-header {
+  font-weight: bold;
+}
+
+.service-request-setup-view .arm-info .arm-cell {
+  width: 107px;
+  float: left;
+  padding: 5px 30px;
 }
 
 /* New Project View */

@@ -7,7 +7,7 @@ class LineItem < ActiveRecord::Base
   belongs_to :sub_service_request
   has_many :fulfillments, :dependent => :destroy
 
-  has_many :visit_groupings
+  has_many :visit_groupings, dependent => :destroy
   has_many :arms, :through => :visit_groupings
 
   attr_accessible :service_request_id

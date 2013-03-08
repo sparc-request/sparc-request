@@ -1,12 +1,3 @@
-###ITEMS
-- Header Images
-- Text for attribute labels
-- Text on pages
-- Help questions
-- Indirect cost options
-- CTRC flag
-- Catalog Overlords
-
 ##Sparc Customization Options
 ###Contents
 	

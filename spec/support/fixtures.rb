@@ -61,6 +61,8 @@ def build_service_request
   let!(:service_provider) {FactoryGirl.create(:service_provider, organization_id: program.id, identity_id: jug2.id)}
 
   before :each do
+    program.tag_list.add("ctrc")
+    program.save
     service_request.update_attribute(:service_requester_id, Identity.find_by_ldap_uid("jug2").id)
   end
 end

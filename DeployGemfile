@@ -65,3 +65,6 @@ gem 'omniauth-shibboleth'
 gem "nested_form"
 
 gem 'exception_notification'
+
+gem 'prawn'
+gem 'acts-as-taggable-on', '~> 2.3.1'

@@ -227,7 +227,9 @@ describe "Identity" do
         end
 
         it "should return 'CTRC Review' and 'CTRC Aproved' if user does have ctrc permissions" do
-          organization = FactoryGirl.create(:organization, is_ctrc: true)
+          organization = FactoryGirl.create(:organization)
+          organization.tag_list = "ctrc"
+          organization.save
           super_user.update_attributes(organization_id: organization.id)
           user.available_workflow_states.should include('CTRC Review', 'CTRC Approved')
         end

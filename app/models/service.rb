@@ -1,6 +1,4 @@
 class Service < ActiveRecord::Base
-  include Entity
-  
   #Version.primary_key = 'id'
   #has_paper_trail
 

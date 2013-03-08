@@ -29,18 +29,18 @@
         %tr
           %th= f.label :order, t(:organization_form)[:order]
           %td= f.text_field :order
-        %tr
-          %th= f.label :is_ctrc, t(:organization_form)[:is_ctrc]
-          %td= f.check_box :is_ctrc
         
         - if @user.is_overlord?
           %tr
             %th= f.label :css_class, t(:organization_form)[:css_class]
-            %td= f.select :css_class, ACCORDION_COLOR_OPTIONS, :include_blank => 'Select a Color'
+            %td= f.select :css_class, ACCORDION_COLOR_OPTIONS, :include_blank => t(:organization_form)[:color_blank]
         
         %tr
           %th= f.label :disabled, t(:organization_form)[:disabled]
           %td= f.check_box :is_available, {:checked => (@institution.is_available.nil? ? false : !@institution.is_available) }, false, true
+        %tr
+          %th= t(:organization_form)[:tag_list]
+          %td= f.text_field :tag_list
 
     %br
     

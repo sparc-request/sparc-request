@@ -1,8 +1,7 @@
 class Organization < ActiveRecord::Base
   #Version.primary_key = 'id'
   #has_paper_trail
-
-  include Entity
+  acts_as_taggable
 
   belongs_to :parent, :class_name => 'Organization'
   has_many :submission_emails, :dependent => :destroy
@@ -35,8 +34,8 @@ class Organization < ActiveRecord::Base
   attr_accessible :subsidy_map_attributes
   attr_accessible :pricing_setups_attributes
   attr_accessible :submission_emails_attributes
-  attr_accessible :is_ctrc
   attr_accessible :available_statuses_attributes
+  attr_accessible :tag_list
  
   accepts_nested_attributes_for :subsidy_map
   accepts_nested_attributes_for :pricing_setups

@@ -1,8 +1,6 @@
 require 'directory'
 
 class Identity < ActiveRecord::Base
-  include Entity
-
   after_create :send_admin_mail
 
   #Version.primary_key = 'id'
@@ -265,7 +263,7 @@ class Identity < ActiveRecord::Base
   # Returns an array of statuses as strings.
   def available_workflow_states
     available_statuses = AVAILABLE_STATUSES.collect { |k, v| v }
-    ctrc_organizations = Organization.where(:is_ctrc => true)
+    ctrc_organizations = Organization.tagged_with 'ctrc'
     if ctrc_organizations.map(&:service_providers).flatten.map(&:identity_id).include?(self.id) || ctrc_organizations.map(&:super_users).flatten.map(&:identity_id).include?(self.id)
       available_statuses
     else

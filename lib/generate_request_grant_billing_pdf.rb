@@ -1,49 +1,117 @@
-require 'prawn'
+require File.expand_path('../../config/environment', __FILE__)
 
 class RequestGrantBillingPdf
-  def self.generate_pdf(service_request)
-    #template_file_name = Rails.root.join('config/pdf_templates/request_grant_billing_template.pdf')
-    template_file_name = '../config/pdf_templates/request_grant_billing_template.pdf'
-    pdf = Prawn::Document.new :template => template_file_name
-    pdf.font_size = 10
-    
-    # question 1
-    pdf.draw_text "I am the PI", :at => [225, 651]
 
-    # question 2
-    pdf.draw_text "Grant Number", :at => [85, 628]
-    pdf.draw_text "HR Number", :at => [280, 628]
-    pdf.draw_text "Full UDAK", :at => [210, 612]
-    pdf.draw_text "Business Manager", :at => [275, 584]
-
-    # question 3
-    pdf.draw_text "Andrew's Super Fabulous Study", :at => [116, 558]
-
-    # question 4
-    #pdf.fill_and_stroke_rectangle [118, 539], 5, 6 # funded by Corporate
-    pdf.fill_and_stroke_rectangle [226, 539], 5, 6 # funded by Federal
-    #pdf.fill_and_stroke_rectangle [334, 539], 5, 6 # funded by Other
-    #pdf.draw_text "Other Funding Source", :at => [375, 534]
-   
-    # question 5
-    pdf.fill_and_stroke_rectangle [150, 505], 5, 6 # yes
-    #pdf.fill_and_stroke_rectangle [226, 505], 5, 6 # no
-    
-    # question 6
-    pdf.draw_text "02/16/2013", :at => [130, 478]
-    
-    # question 7
-    pdf.draw_text "02/16/2019", :at => [125, 455]
-
-    # question 8
-    #pdf.draw_text "My house, I guess", :at => [178, 432]
-
-    pdf.render_file '../tmp/pdfs/xyz.pdf'
+  def self.text_box_options options
+    default_text_box_options = { :height => 10, :overflow => :shrink_to_fit, :min_font_size => 7 }
+    default_text_box_options.dup.update options
   end
 
-  def self.attach_to_sub_service_request(sub_service_request)
+  def self.generate_pdf(service_request)
+    #template_file_name = Rails.root.join('config/pdf_templates/request_grant_billing_template.pdf')
+    template_file_name = File.expand_path('../../config/pdf_templates/request_grant_billing_template.pdf', __FILE__)
+    pdf = Prawn::Document.new :template => template_file_name
+    pdf.font_size = 9
+   
+    #get data for pdf
+    protocol = service_request.protocol
+    
+    principal_investigators = protocol.project_roles.where(:role => "pi").map{|pr| pr.identity.full_name}.join(", ") 
+    billing_business_managers = protocol.project_roles.where(:role => "business-grants-manager").map{|pr| pr.identity.full_name}.join(", ") 
 
+    hr_pro_numbers = ""
+    hr_pro_numbers = [protocol.human_subjects_info.hr_number, protocol.human_subjects_info.pro_number].compact.join(", ") if protocol.human_subjects_info
+    udak_number = protocol.udak_project_number
+    short_title = protocol.short_title
+
+    # question 1
+    pdf.text_box principal_investigators, text_box_options(:at => [222, 659], :width => 175)
+
+    # question 2
+    pdf.text_box hr_pro_numbers, text_box_options(:at => [280, 636], :width => 100)
+    pdf.text_box udak_number, text_box_options(:at => [210, 620], :width => 220)
+    pdf.text_box billing_business_managers, text_box_options(:at => [275, 592], :width => 160)
+
+    # question 3
+    pdf.text_box short_title, text_box_options(:at => [116, 565], :width => 270)
+
+    # question 4
+    case protocol.funding_source_based_on_status  
+    when "industry", "investigator"
+      pdf.fill_and_stroke_rectangle [118, 539], 5, 6 # funded by Corporate
+    when "federal"
+      pdf.fill_and_stroke_rectangle [226, 539], 5, 6 # funded by Federal
+    else
+      pdf.fill_and_stroke_rectangle [334, 539], 5, 6 # funded by Other
+      pdf.text_box protocol.display_funding_source_value, text_box_options(:at => [375, 542], :width => 120)
+    end
+   
+    # question 5
+    if service_request.sub_service_requests.map(&:ctrc?).any?
+      pdf.fill_and_stroke_rectangle [150, 505], 5, 6 # yes
+    else
+      pdf.fill_and_stroke_rectangle [226, 505], 5, 6 # no
+    end
+    
+    # question 6
+    start_date = service_request.start_date.nil? ? "" : service_request.start_date.strftime('%m/%d/%Y')
+    pdf.text_box start_date, text_box_options(:at => [130, 486])
+    
+    # question 7
+    end_date = service_request.end_date.nil? ? "" : service_request.end_date.strftime('%m/%d/%Y')
+    pdf.text_box end_date, text_box_options(:at => [125, 463])
+
+    # question 8
+    
+    # question 9
+    pdf.text_box service_request.subject_count.to_s, text_box_options(:at => [192, 415])
+    
+    # question 10
+    # question 11
+    # question 12
+    
+    # question 13
+    pdf.text_box billing_business_managers, text_box_options(:at => [48, 279], :width => 335)
+    
+    # question 14
+    
+    # question 15, max 58 characters then put it on attached page
+    # get only MUHA studies
+    muha_service_names = service_request.sub_service_requests
+                               .select{|x| x.organization.tag_list.include? 'muha'}
+                               .map(&:line_items)
+                               .flatten
+                               .uniq
+                               .map{|line_item| line_item.service.display_service_name}
+                               
+
+    muha_service_display = muha_service_names.join(', ').size > 58 ? "See Attached" : muha_service_names.join(', ')
+    pdf.text_box muha_service_display, text_box_options(:at => [48, 211], :width => 338)
+
+
+    # add signatures and submitted_at
+    # principal_investigators
+    pdf.text_box principal_investigators, text_box_options(:at => [70, 64], :width => 240)
+    pdf.text_box service_request.submitted_at.strftime('%m/%d/%Y'), text_box_options(:at => [358, 64])
+    
+    #billing/business managers
+    pdf.text_box billing_business_managers, text_box_options(:at => [70, 21], :width => 240)
+    pdf.text_box service_request.submitted_at.strftime('%m/%d/%Y'), text_box_options(:at => [358, 21])
+
+    if muha_service_display == "See Attached" # too long to list on original form
+      pdf.start_new_page
+      pdf.text "Tests to be included in the study (Question 15)", :size => 14
+      pdf.stroke_horizontal_rule
+      pdf.move_down 10
+      muha_service_names.each do |name|
+        pdf.text name
+      end
+    end
+
+    pdf.render # for testing only, _file File.expand_path('../../tmp/pdfs/xyz.pdf', __FILE__)
   end
 end
 
-RequestGrantBillingPdf.generate_pdf 'test'
+# uncomment below for testing
+#sr = ServiceRequest.find 11396
+#RequestGrantBillingPdf.generate_pdf sr

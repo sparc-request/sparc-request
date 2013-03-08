@@ -147,7 +147,7 @@ class SubServiceRequest < ActiveRecord::Base
   ## SSR STATUS METHODS ##
   ########################
   def ctrc?
-    self.organization.is_ctrc
+    self.organization.tag_list.include? "ctrc"
   end
 
   def can_be_edited?

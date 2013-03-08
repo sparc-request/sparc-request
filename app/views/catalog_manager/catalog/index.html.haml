@@ -1,7 +1,7 @@
 #search_box
-  %span.search Search:
+  %span.search= t(:cm_index)[:search]
   = text_field_tag 'search'
-  = submit_tag 'Submit', :class => 'custom_button', :id => 'search_button'
+  = submit_tag t(:cm_index)[:submit], :class => 'custom_button', :id => 'search_button'
 
   %span.ui-corner-all.pricing_setup_error
     %p 
@@ -11,21 +11,21 @@
   %ul
     - can_create_institution = @user.is_overlord?
     - if can_create_institution
-      %li= link_to 'Create New Institution', '#'
+      %li= link_to t(:cm_index)[:institution], '#'
     - @institutions.each do |institution|
       %li{:id => 'INSTITUTION' + institution.id.to_s}
         - can_access_institution = @user.can_edit_entity? institution
         = node institution, can_access_institution, 'root'
         %ul
           - if can_access_institution
-            %li= link_to 'Create New Provider', '#'
+            %li= link_to t(:cm_index)[:provider], '#'
           - institution.providers.order("`order`").each do |provider|
             %li{:id => 'PROVIDER' + provider.id.to_s}
               - can_access_provider = @user.can_edit_entity? provider
               = node provider, can_access_provider
               %ul
                 - if can_access_provider
-                  %li= link_to 'Create New Program', '#'
+                  %li= link_to t(:cm_index)[:program], '#'
                 - provider.programs.order("`order`").each do |program|
                   %li{:id => 'PROGRAM' + program.id.to_s}
                     - can_access_program = @user.can_edit_entity? program
@@ -33,15 +33,15 @@
                     - if program.cores.empty?
                       %ul
                         - if can_access_program
-                          %li= link_to 'Create New Core', '#'
-                          %li= link_to 'Create New Service', '#'
+                          %li= link_to t(:cm_index)[:core], '#'
+                          %li= link_to t(:cm_index)[:service], '#'
                         - program.services.order("`order`").each do |service|
                           %li{:id => 'SERVICE' + service.id.to_s}= node service
                     - else
                       %ul
                         - if can_access_program
-                          %li= link_to 'Create New Core', '#'
-                          %li= link_to 'Create New Service', '#'
+                          %li= link_to t(:cm_index)[:core], '#'
+                          %li= link_to t(:cm_index)[:service], '#'
                         - program.services.order("`order`").each do |service|
                           %li{:id => 'SERVICE' + service.id.to_s}= node service                            
                         - program.cores.order("`order`").each do |core|
@@ -50,7 +50,7 @@
                             = node core, can_access_core
                             %ul
                               - if can_access_core
-                                %li= link_to 'Create New Service', '#'
+                                %li= link_to t(:cm_index)[:service], '#'
                               - unless core.services.empty?
                                 - core.services.order("`order`").each do |service|
                                   %li{:id => 'SERVICE' + service.id.to_s}= node service
@@ -58,7 +58,7 @@
 
 #processing_request.ui-corner-all{:style => "border: 1px solid black; padding: 3px; width: 200px; margin: 30px auto; text-align: center"}
   %br
-  Processing request
+  = t(:cm_index)[:processing]
   %br
   = image_tag 'spinner.gif'
 
@@ -73,9 +73,9 @@
   %br
   %center
     %button.dont_fix_pricing_maps_button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only{:type => "button", :role => "button"}
-      %span.ui-button-text No Pricing Map Changes
+      %span.ui-button-text= t(:cm_index)[:pricing_map1]
     %button.fix_pricing_maps_button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only{:type => "button", :role => "button"}
-      %span.ui-button-text Save and Apply to Pricing Maps
+      %span.ui-button-text= t(:cm_index)[:pricing_map2]
     %img.pricing_map_fix_spinner{:src => '/assets/catalog_manager/spinner_small.gif'}  
   
     

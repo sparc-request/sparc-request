@@ -15,6 +15,23 @@ def let_there_be_lane
     )}
 end
 
+def let_there_be_j
+  let!(:jpl6) { FactoryGirl.create(:identity, 
+      last_name:             'Leonard',
+      first_name:            'Jason',
+      ldap_uid:              'jpl6',
+      institution:           'medical_university_of_south_carolina',
+      college:               'college_of_medecine',
+      department:            'other',
+      email:                 'leonarjp@musc.edu',
+      credentials:           'BS,    MRA',
+      catalog_overlord:      true,
+      password:              'p4ssword',
+      password_confirmation: 'p4ssword',
+      approved:              true
+    )}
+end
+
 def build_service_request_with_project
   build_service_request()
   build_project()
@@ -29,7 +46,7 @@ def build_service_request
   let!(:service_request) { FactoryGirl.create(:service_request, status: "draft", subject_count: 2, visit_count: 10, start_date: Time.now, end_date: Time.now + 10.days) }
   let!(:institution)  {FactoryGirl.create(:institution,name: 'Medical University of South Carolina', order: 1,obisid: '87d1220c5abf9f9608121672be000412',abbreviation: 'MUSC', is_available: 1)}
   let!(:provider) {FactoryGirl.create(:provider,parent_id:institution.id,name: 'South Carolina Clinical and Translational Institute (SCTR)',order: 1,css_class: 'blue-provider',obisid: '87d1220c5abf9f9608121672be0011ff',abbreviation: 'SCTR1',process_ssrs: 0,is_available: 1)}
-  let!(:program) {FactoryGirl.create(:program,type:'Program',parent_id:provider.id,name:'Office of Biomedical Informatics',order:1,obisid:'87d1220c5abf9f9608121672be021963',abbreviation:'Informatics',process_ssrs:  0, is_available: 1, is_ctrc: true)}
+  let!(:program) {FactoryGirl.create(:program,type:'Program',parent_id:provider.id,name:'Office of Biomedical Informatics',order:1,obisid:'87d1220c5abf9f9608121672be021963',abbreviation:'Informatics',process_ssrs:  0, is_available: 1)}
   # let!(:program2) {FactoryGirl.create(:program,type:'Program',parent_id:provider.id,name:'Office of Biomedical Informatics',order:1,obisid:'87d1220c5abf9f9608121672be021963',abbreviation:'Informatics',process_ssrs:  0,is_available: 1)}
   let!(:sub_service_request) { FactoryGirl.create(:sub_service_request, ssr_id: "0001", service_request_id: service_request.id, organization_id: program.id,status: "draft")}
   # One time fee service
@@ -69,6 +86,13 @@ def build_project
         identity_id:     identity.id,
         project_rights:  "approve",
         role:            "pi")
+    identity2 = Identity.find_by_ldap_uid('jpl6')
+    FactoryGirl.create(
+        :project_role,
+        protocol_id:     protocol.id,
+        identity_id:     identity2.id,
+        project_rights:  "approve",
+        role:            "business-grants-manager")
     service_request.update_attribute(:protocol_id, protocol.id)
   end
 end
@@ -87,6 +111,13 @@ def build_study
         identity_id:     identity.id,
         project_rights:  "approve",
         role:            "pi")
+    identity2 = Identity.find_by_ldap_uid('jpl6')
+    FactoryGirl.create(
+        :project_role,
+        protocol_id:     protocol.id,
+        identity_id:     identity2.id,
+        project_rights:  "approve",
+        role:            "business-grants-manager")
     service_request.update_attribute(:protocol_id, protocol.id)
   end
 end

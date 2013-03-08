@@ -1,3 +1,5 @@
+require 'generate_request_grant_billing_pdf'
+
 class ServiceRequestsController < ApplicationController
   before_filter :initialize_service_request, :except => [:approve_changes]
   before_filter :authorize_identity, :except => [:approve_changes, :show]
@@ -257,8 +259,10 @@ class ServiceRequestsController < ApplicationController
       approval = false
     end
 
+
     # generate the excel for this service request
     xls = render_to_string :action => 'show', :formats => [:xlsx]
+
 
     # send e-mail to all folks with view and above
     @protocol.project_roles.each do |project_role|
@@ -282,12 +286,32 @@ class ServiceRequestsController < ApplicationController
     # send e-mail to all service providers
     if @sub_service_request # only notify the service providers for this sub service request
       @sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-        Notifier.notify_service_provider(service_provider, @service_request, xls).deliver
+        attachments = {}
+        attachments["service_request_#{@service_request.id}.xls"] = xls
+
+        #TODO this is not very multi-institutional
+        # generate the muha pdf if it's required
+        if @sub_service_request.organization.tag_list.include? 'muha'
+          request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf @service_request
+          attachments["request_for_grant_billing_#{@service_request.id}.pdf"] = request_for_grant_billing_form
+        end
+
+        Notifier.notify_service_provider(service_provider, @service_request, attachments).deliver
       end
     else
       @service_request.sub_service_requests.each do |sub_service_request|
         sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-          Notifier.notify_service_provider(service_provider, @service_request, xls).deliver
+          attachments = {}
+          attachments["service_request_#{@service_request.id}.xls"] = xls
+
+          #TODO this is not very multi-institutional
+          # generate the muha pdf if it's required
+          if sub_service_request.organization.tag_list.include? 'muha'
+            request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf @service_request
+            attachments["request_for_grant_billing_#{@service_request.id}.pdf"] = request_for_grant_billing_form
+          end
+
+          Notifier.notify_service_provider(service_provider, @service_request, attachments).deliver
         end
       end
     end

@@ -1,10 +1,10 @@
 .inline
-  Select a Research Project:
-  = collection_select :service_request, :protocol_id, projects, :id, :short_title, {:include_blank => 'Select a Project'}, :class => 'edit_project_id'
-  %button.edit-project Edit Project
+  = t("study_assignment.select_project_long")
+  = collection_select :service_request, :protocol_id, projects, :id, :short_title, {:include_blank => t("study_assignment.select_project")}, :class => 'edit_project_id'
+  %button.edit-project= t("study_assignment.edit_project")
 
 - if @sub_service_request.nil?
   %br
-  %span -- OR --
+  %span= t("study_assignment.or")
   %br
   %br

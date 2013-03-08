@@ -56,6 +56,21 @@ $ ->
         go = false
     return go
 
+$('.units_per_quantity').live 'change', ->
+  max = $(this).attr('data-qty_max')
+  user_input = $(this).val()
+  if user_input > max
+    $(this).css({'border': '2px solid red'})
+    $('#unit_max_error').css({'border': '2px solid red'})
+    $('#unit_quantity').html(user_input)
+    $('#unit_max').html(max + ".")
+    $('#unit_max_error').show()
+    $(this).val(max)
+  else
+    $('#unit_max_error').hide()
+    $('#unit_max_error').css('border', '')
+    $(this).css('border', '')
+
 verify_unit_minimum = (obj) ->
   unit_min = obj.attr('unit_minimum')
   prev_qty = obj.attr('current_quantity')
@@ -64,7 +79,7 @@ verify_unit_minimum = (obj) ->
     obj.val(prev_qty)
     obj.css({'border': '2px solid red'})
     $('#quantity').html(qty)
-    $('#unit_minimum').html(unit_min)
+    $('#unit_minimum').html(unit_min + ".")
     $('#one_time_fee_errors').show()
     return false
   else

@@ -6,74 +6,97 @@
 
   #entity_description
     %fieldset
-      %legend Actions    
-      = f.submit "Save", :id => 'save_button', :class => 'btn save_button provider_program_core_save'
+      %legend= t(:organization_form)[:actions]
+      = f.submit t(:organization_form)[:submit_button], :id => 'save_button', :class => 'btn save_button provider_program_core_save'
       %img.spinner{:src => '/assets/catalog_manager/spinner_small.gif'}
 
     %br
 
     %fieldset
-      %legend General Information
+      %legend= t(:organization_form)[:gen_info]
       %table
         %tr
-          %th Name
+          %th= t(:organization_form)[:name]
           %td= f.text_field :name
         %tr
-          %th Abbreviation
+          %th= t(:organization_form)[:abbreviation]
           %td= f.text_field :abbreviation
         %tr
-          %th Description
+          %th= t(:organization_form)[:description]
           %td= f.text_area :description, :rows => 8
         %tr
-          %th Acknowledgment Language
+          %th= t(:organization_form)[:ack_language]
           %td= f.text_area :ack_language, :rows => 8
         %tr
-          %th Order
+          %th= t(:organization_form)[:order]
           %td= f.text_field :order
         %tr
-          %th Is CTRC?
+          %th= t(:organization_form)[:is_ctrc]
           %td= f.check_box :is_ctrc
         %tr
-          %th Split/Notify Here
+          %th= t(:organization_form)[:split_notify]
           %td= f.check_box :process_ssrs
         %tr
-          %th Disabled
+          %th= t(:organization_form)[:disabled]
           %td= f.check_box :is_available, {:checked => (@program.is_available.nil? ? false : !@program.is_available) }, false, true
 
     %br
 
     %fieldset
-      %legend Submission E-mails
+      %legend= t(:organization_form)[:status_legend]
+      %table
+        %tr
+          %td
+            %table
+              = f.fields_for :available_statuses do |as|
+                %tr
+                  %th= as.label :status, "#{AvailableStatus::TYPES[as.object.status]}:"
+                  %td= as.check_box "_destroy", {:checked => !as.object.new}, false, true
+                  = as.hidden_field :status, :value => as.object.status
+          %td
+            %legend= t(:organization_form)[:default_statuses]
+            %table
+              %tr
+              %tr
+              %tr
+                - f.object.get_available_statuses.each do |k, v|
+                  %tr
+                    %th= v  
+
+    %br
+
+    %fieldset
+      %legend= t(:organization_form)[:submission_emails]
       #se_info= render :partial => 'catalog_manager/shared/submission_emails', :locals => {:entity => @program}
     
     %br
     
     %fieldset
-      %legend Super Users
+      %legend= t(:organization_form)[:super_users]
       #su_info= render :partial => 'catalog_manager/shared/super_users', :locals => {:entity => @program}
     
     %br
     
     %fieldset
-      %legend Service Providers
+      %legend= t(:organization_form)[:service_providers]
       #sp_info= render :partial => 'catalog_manager/shared/service_providers', :locals => {:entity => @program}
     
     %br
     
     %fieldset
-      %legend Catalog Manager Rights
+      %legend= t(:organization_form)[:cm_rights]
       #cm_info= render :partial => 'catalog_manager/shared/catalog_managers', :locals => {:entity => @program}
     
     %br
     
     %fieldset
-      %legend Automatic Pricing Adjustment
+      %legend= t(:organization_form)[:auto_price_adj]
       = render :partial => 'catalog_manager/shared/increase_decrease_rates', :locals => {:entity => @program, :can_edit_historical_data => @user.can_edit_historical_data_for?(@program)}
     
     %br      
     
     %fieldset
-      %legend Pricing Setup
+      %legend= t(:organization_form)[:pricing_setup]
       %input.add_pricing_setup{:type => 'button', :value => 'Add Pricing Setup'}
       %br
       .pricing_setup_accordion
@@ -83,24 +106,24 @@
     %br
     
     %fieldset
-      %legend Subsidy Information
+      %legend= t(:organization_form)[:subsidy_info]
       %table
         = f.fields_for :subsidy_map do |f_subsidy_map|
           %tr
-            %th Max Percentage
+            %th= t(:organization_form)[:subsidy_max_percent]
             %td= f_subsidy_map.text_field :max_percentage
           %tr
-            %th Max Dollar Cap
+            %th= t(:organization_form)[:subsidy_max_dollar]
             %td= f_subsidy_map.text_field :max_dollar_cap
           = render 'catalog_manager/shared/excluded_funding_sources', :entity => @program
     
     %br
     
     %fieldset
-      %legend Actions
-      = f.submit "Save", :id => 'save_button', :class => 'save_button btn provider_program_core_save'
+      %legend= t(:organization_form)[:actions]
+      = f.submit t(:organization_form)[:submit_button], :id => 'save_button', :class => 'save_button btn provider_program_core_save'
       %img.spinner{:src => '/assets/catalog_manager/spinner_small.gif'}
-      .ui-corner-all.blank_field_errors Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups.
+      .ui-corner-all.blank_field_errors= t("cm_shared.labels.required_list")
       
 .blank_pricing_setup
   = render 'catalog_manager/shared/pricing_setup', :pricing_setup_disabled => false, :can_edit_historical_data => @user.can_edit_historical_data_for?(@program), :entity => @program

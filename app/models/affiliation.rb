@@ -11,14 +11,6 @@ class Affiliation < ActiveRecord::Base
   attr_accessor :new
   attr_accessor :position
 
-  TYPES = {
-    'cancer_center' => 'Cancer Center',
-    'lipidomics_cobre' => 'Lipidomics COBRE',
-    'oral_health_cobre' => 'Oral Health COBRE',
-    'cardiovascular_cobre' => 'Cardiovascular COBRE',
-    'cchp' => 'CCHP',
-    'inbre' => 'INBRE',
-    'reach' => 'REACH'
-  }
+  TYPES = AFFILIATION_TYPES
 end
 

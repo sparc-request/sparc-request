@@ -30,8 +30,9 @@ describe 'as a user on catalog page' do
 
       fill_in "pricing_maps_blank_pricing_map_full_rate", :with => 4321
       fill_in "pricing_maps_blank_pricing_map_unit_type", :with => "Each"
+      fill_in "pricing_maps_blank_pricing_map_units_per_qty_max", :with => "1"
       
-      page.execute_script %Q{ $(".service_unit_type").change() }
+      page.execute_script %Q{ $(".service_units_per_qty_max").change() }
     end
     page.execute_script %Q{ $(".save_button").click() }
     page.should have_content "MUSC Research Data Request (CDW) saved successfully"    
@@ -50,11 +51,8 @@ describe 'as a user on catalog page' do
   it 'should display an error message when required fields are missing', :js => true do
     click_link("MUSC Research Data Request (CDW)")
     click_button("Add Pricing Map")
-    
-    page.execute_script("$('.ui-accordion-header:last').click()")
-    page.execute_script %Q{ $(".save_button").click() }
     wait_for_javascript_to_finish
-    page.should have_content "Name and Order on the Service, and Quantity Type, Unit Factor, Unit Minimum, Effective Date, and Display Date on all Pricing Maps are required."
+    page.should have_content "Name and Order on the Service, and Quantity Type, Unit Factor, Unit Minimum, Units Per Qty Maximum, Effective Date, and Display Date on all Pricing Maps are required."
   end    
 
 end

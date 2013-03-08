@@ -1,4 +1,4 @@
-%h3 Notes
+%h3= t(:fulfillments)[:notes][:header]
 #notes
   #notes_table
     %table
@@ -13,4 +13,4 @@
         %tr
           %td= text_area_tag "notes", "", :class => "note_box" 
         %tr
-          %td= link_to "Add Note", 'javascript:void(0);', :class => "add_note_link", :'data-sub_service_request_id' => @sub_service_request.id
+          %td= link_to t(:fulfillments)[:notes][:link], 'javascript:void(0);', :class => "add_note_link", :'data-sub_service_request_id' => @sub_service_request.id

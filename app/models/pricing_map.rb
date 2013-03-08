@@ -12,6 +12,7 @@ class PricingMap < ActiveRecord::Base
   attr_accessible :full_rate
   attr_accessible :exclude_from_indirect_cost
   attr_accessible :unit_minimum
+  attr_accessible :units_per_qty_max
   attr_accessible :federal_rate
   attr_accessible :corporate_rate
   attr_accessible :other_rate

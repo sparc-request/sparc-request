@@ -1,14 +1,14 @@
-%h3 Status Changes
+%h3= t(:fulfillments)[:status_changes][:header]
 %table{:id => 'status_history_table', :class => 'tablesorter'}
   %thead
     %tr
-      %th Date Changed
-      %th Status Changed From
-      %th Status Changed To
+      %th= t(:fulfillments)[:status_changes][:date]
+      %th= t(:fulfillments)[:status_changes][:from]
+      %th= t(:fulfillments)[:status_changes][:to]
   %tbody
     - if @sub_service_request
       - @sub_service_request.past_status_lookup.each do |past_status|
         %tr
           %td= past_status.try(:created_at).try(:strftime, "%D %r")
-          %td= correct_status_display(past_status.try(:status))
-          %td= correct_status_display(past_status.try(:changed_to))
+          %td= AVAILABLE_STATUSES[past_status.try(:status)]
+          %td= AVAILABLE_STATUSES[past_status.try(:changed_to)]

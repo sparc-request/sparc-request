@@ -174,4 +174,11 @@ module ApplicationHelper
     sps = organization.service_providers_lookup
     sps.map{|x| x.is_primary_contact? ? x.identity.display_name : nil}.compact.join("<br />")
   end
+
+  def display_service_in_catalog service, service_request
+    has_current_pricing_map = service.current_pricing_map rescue false # work around for current_pricing_map method raising false
+    if (service.is_available? or service.is_available.nil?) and has_current_pricing_map
+      render :partial => 'service', :locals => {:service => service, :service_request => service_request}
+    end
+  end
 end

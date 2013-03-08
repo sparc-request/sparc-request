@@ -6,37 +6,38 @@
 
 = javascript_include_tag 'projects'
 
-.description Before you can complete a service request, please tell us more about your research project. This information will be used by our staff to decide the best way to process your request.
+.description= t(:project_form)[:message]
+
 .grid_7.box
   .info
     .field
-      = f.label :short_title, "Short Title:*"
+      = f.label :short_title, t(:protocol_shared)[:title]
       = f.text_field :short_title
 
     .field
-      = f.label :title, "Project Title:*"
+      = f.label :title, t(:project_form)[:title]
       = f.text_field :title
       
     .field
-      = f.label :funding_status, "Proposal Funding Status:*"
-      = f.select :funding_status, options_for_select(FUNDING_STATUSES, project.funding_status), :include_blank => "Select a Funding Status"
+      = f.label :funding_status, t(:protocol_shared)[:funding_status]
+      = f.select :funding_status, options_for_select(FUNDING_STATUSES, project.funding_status), :include_blank => t(:project_form)[:dropdown_default1]
 
     #funded
       .field
-        = f.label :funding_source, "Funding Source:*"
-        = f.select :funding_source, options_for_select(FUNDING_SOURCES, project.funding_source), :include_blank => "Select a Funding Source"
+        = f.label :funding_source, t(:protocol_shared)[:funding_source]
+        = f.select :funding_source, options_for_select(FUNDING_SOURCES, project.funding_source), :include_blank => t(:project_form)[:dropdown_default2]
 
     #pending_funding 
       .field
-        = f.label :potential_funding_source, "Potential Funding Source:*"
-        = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, project.potential_funding_source), :include_blank => "Select a Potential Funding Source"
+        = f.label :potential_funding_source, t(:protocol_shared)[:potential_funding_source]
+        = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, project.potential_funding_source), :include_blank => t(:project_form)[:dropdown_default3]
 
     .field
-      = f.label :brief_description, "Brief Description:"
+      = f.label :brief_description, t(:project_form)[:description]
       = f.text_area :brief_description
 
     .indirect_cost_rate
-      = f.label :indirect_cost_rate, "Indirect Cost Rate:"
+      = f.label :indirect_cost_rate, t(:project_form)[:rate]
       = f.text_field :indirect_cost_rate
 
 .grid_5.box= render :partial => 'shared/user_search'
@@ -44,7 +45,8 @@
 - hide_user_details = (project.new_record? and project.project_roles.empty?) ? '' : 'display:none;'
 
 .grid_5.box.user_added_message{:style => 'display:none;'}
-  %p User added!  See table below to set proxy rights.
+  %p
+    - t(:protocol_shared)[:add_user]
 
 .grid_5.box.user-details.user-manager-view.add-user-details{:style => "#{hide_user_details}"}= render :partial => 'shared/user_details', :locals => {:identity => current_user, :project_role => ProjectRole.new, :can_edit => true}
 

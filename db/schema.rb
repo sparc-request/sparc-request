@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130213183830) do
+ActiveRecord::Schema.define(:version => 20130219192329) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -35,6 +35,15 @@ ActiveRecord::Schema.define(:version => 20130213183830) do
   end
 
   add_index "approvals", ["service_request_id"], :name => "index_approvals_on_service_request_id"
+
+  create_table "available_statuses", :force => true do |t|
+    t.integer  "organization_id"
+    t.string   "status"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  add_index "available_statuses", ["organization_id"], :name => "index_available_statuses_on_organization_id"
 
   create_table "catalog_managers", :force => true do |t|
     t.integer  "identity_id"
@@ -102,21 +111,6 @@ ActiveRecord::Schema.define(:version => 20130213183830) do
 
   add_index "fulfillments", ["line_item_id"], :name => "index_fulfillments_on_line_item_id"
 
-  create_table "human_subjects", :force => true do |t|
-    t.integer  "protocol_id"
-    t.string   "hr_number"
-    t.string   "pro_number"
-    t.string   "irb_of_record"
-    t.string   "submission_type"
-    t.datetime "irb_approval_date"
-    t.datetime "irb_expiration_date"
-    t.datetime "created_at",          :null => false
-    t.datetime "updated_at",          :null => false
-    t.datetime "deleted_at"
-  end
-
-  add_index "human_subjects", ["protocol_id"], :name => "index_human_subjects_on_protocol_id"
-
   create_table "human_subjects_info", :force => true do |t|
     t.integer  "protocol_id"
     t.string   "hr_number"
@@ -182,18 +176,6 @@ ActiveRecord::Schema.define(:version => 20130213183830) do
 
   add_index "impact_areas", ["protocol_id"], :name => "index_impact_areas_on_protocol_id"
 
-  create_table "investigational_products", :force => true do |t|
-    t.integer  "protocol_id"
-    t.string   "ind_number"
-    t.boolean  "ind_on_hold"
-    t.string   "ide_number"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
-    t.datetime "deleted_at"
-  end
-
-  add_index "investigational_products", ["protocol_id"], :name => "index_investigational_products_on_protocol_id"
-
   create_table "investigational_products_info", :force => true do |t|
     t.integer  "protocol_id"
     t.string   "ind_number"
@@ -205,17 +187,6 @@ ActiveRecord::Schema.define(:version => 20130213183830) do
   end
 
   add_index "investigational_products_info", ["protocol_id"], :name => "index_investigational_products_info_on_protocol_id"
-
-  create_table "ip_patents", :force => true do |t|
-    t.integer  "protocol_id"
-    t.string   "patent_number"
-    t.text     "inventors"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
-    t.datetime "deleted_at"
-  end
-
-  add_index "ip_patents", ["protocol_id"], :name => "index_ip_patents_on_protocol_id"
 
   create_table "ip_patents_info", :force => true do |t|
     t.integer  "protocol_id"
@@ -322,12 +293,13 @@ ActiveRecord::Schema.define(:version => 20130213183830) do
     t.decimal  "federal_rate",               :precision => 12, :scale => 4
     t.decimal  "corporate_rate",             :precision => 12, :scale => 4
     t.date     "effective_date"
-    t.datetime "created_at",                                                :null => false
-    t.datetime "updated_at",                                                :null => false
+    t.datetime "created_at",                                                               :null => false
+    t.datetime "updated_at",                                                               :null => false
     t.datetime "deleted_at"
     t.date     "display_date"
     t.decimal  "other_rate",                 :precision => 12, :scale => 4
     t.decimal  "member_rate",                :precision => 12, :scale => 4
+    t.integer  "units_per_qty_max",                                         :default => 1
   end
 
   add_index "pricing_maps", ["service_id"], :name => "index_pricing_maps_on_service_id"
@@ -401,19 +373,6 @@ ActiveRecord::Schema.define(:version => 20130213183830) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
-
-  create_table "research_types", :force => true do |t|
-    t.integer  "protocol_id"
-    t.boolean  "human_subjects"
-    t.boolean  "vertebrate_animals"
-    t.boolean  "investigational_products"
-    t.boolean  "ip_patents"
-    t.datetime "created_at",               :null => false
-    t.datetime "updated_at",               :null => false
-    t.datetime "deleted_at"
-  end
-
-  add_index "research_types", ["protocol_id"], :name => "index_research_types_on_protocol_id"
 
   create_table "research_types_info", :force => true do |t|
     t.integer  "protocol_id"
@@ -620,19 +579,6 @@ ActiveRecord::Schema.define(:version => 20130213183830) do
   end
 
   add_index "versions", ["item_type", "item_id"], :name => "index_versions_on_item_type_and_item_id"
-
-  create_table "vertebrate_animals", :force => true do |t|
-    t.integer  "protocol_id"
-    t.string   "iacuc_number"
-    t.string   "name_of_iacuc"
-    t.datetime "iacuc_approval_date"
-    t.datetime "iacuc_expiration_date"
-    t.datetime "created_at",            :null => false
-    t.datetime "updated_at",            :null => false
-    t.datetime "deleted_at"
-  end
-
-  add_index "vertebrate_animals", ["protocol_id"], :name => "index_vertebrate_animals_on_protocol_id"
 
   create_table "vertebrate_animals_info", :force => true do |t|
     t.integer  "protocol_id"

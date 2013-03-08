@@ -1,12 +1,12 @@
 %table.service_calendar
   %thead.ui-widget-header
     %tr.table_header
-      %th.services{:rowspan => 2} Services
-      %th.your_cost{:rowspan => 2} Your Cost
-      %th.subjects{:rowspan => 2} # Subjects
+      %th.services{:rowspan => 2}= t(:ssr_dialog)[:calendar][:headers][:services]
+      %th.your_cost{:rowspan => 2}= t(:ssr_dialog)[:calendar][:headers][:cost]
+      %th.subjects{:rowspan => 2}= t(:ssr_dialog)[:calendar][:headers][:subjects]
       %th.visits_header{:colspan => 5, :height => 40, :width => 375} 
         = generate_review_visit_navigation @service_request, @page, @tab if @service_request.has_per_patient_per_visit_services?
-        %th.total{:rowspan => 2} Service Total
+        %th.total{:rowspan => 2}= t(:ssr_dialog)[:calendar][:headers][:total]
         
     %tr.table_header
       - if @service_request.has_per_patient_per_visit_services?
@@ -49,16 +49,16 @@
     %tr.section_header
       %tr.totals_section
         %td{:colspan => 6}
-        %td.dark_gray_bg.totals{:colspan => 2} Total Direct Cost
+        %td.dark_gray_bg.totals{:colspan => 2}= t(:ssr_dialog)[:calendar][:totals][:direct_cost]
         %td.dark_gray_bg.totals{:id => 'grand_total_direct'}= display_grand_total_direct_costs @service_request, @service_request.line_items
 
       - if USE_INDIRECT_COST
         %tr.totals_section
           %td{:colspan => 6}
-          %td.dark_gray_bg.totals{:colspan => 2} Total Indirect Costs
+          %td.dark_gray_bg.totals{:colspan => 2}= t(:ssr_dialog)[:calendar][:totals][:indirect_cost]
           %td.dark_gray_bg.totals{:id => 'grand_total_indirect'}= display_grand_total_indirect_costs @service_request, @service_request.line_items
 
       %tr.totals_section
         %td{:colspan => 6}
-        %td.dark_gray_bg.totals{:colspan => 2} Grand Total:
+        %td.dark_gray_bg.totals{:colspan => 2}= t(:ssr_dialog)[:calendar][:totals][:grand]
         %td.dark_gray_bg.totals{:id => 'grand_total'}= display_grand_total @service_request, @service_request.line_items

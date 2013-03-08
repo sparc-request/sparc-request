@@ -14,6 +14,7 @@ class CatalogManager::ProgramsController < CatalogManager::AppController
   def show
     @organization = Organization.find params[:id]
     @program = Program.find params[:id]
+    @program.setup_available_statuses
   end
   
   def update
@@ -39,7 +40,8 @@ class CatalogManager::ProgramsController < CatalogManager::AppController
       end
       @program.save
     end if params[:pricing_setups]
-        
+  
+    @program.setup_available_statuses      
     @entity = @program
     respond_with @program, :location => catalog_manager_program_path(@program)
   end

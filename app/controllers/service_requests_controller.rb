@@ -340,10 +340,8 @@ class ServiceRequestsController < ApplicationController
       approval = false
     end
 
-
     # generate the excel for this service request
     xls = render_to_string :action => 'show', :formats => [:xlsx]
-
 
     # send e-mail to all folks with view and above
     @protocol.project_roles.each do |project_role|

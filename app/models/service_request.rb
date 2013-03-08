@@ -43,6 +43,10 @@ class ServiceRequest < ActiveRecord::Base
     #insert group specific validation
   end
   
+  validation_group :obtain_research_pricing do
+    #insert group specific validation
+  end
+
   validation_group :confirmation do
     #insert group specific validation
   end

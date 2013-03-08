@@ -6,16 +6,17 @@
     %title Service Request
 
   %body
+    - welcome_text = @service_request.status == "obtain_research_pricing" ? "A request has been made to obtain research pricing" : "Services have been requested or changed"
     -if @role == 'pi'
       %p
         Dear #{@identity.full_name},
       %p
-        Services have been requested or changed in SPARC (sparc.musc.edu) for your #{@protocol.type.downcase}
+        #{welcome_text} in SPARC (sparc.musc.edu) for your #{@protocol.type.downcase}
         listed below. In addition, below is a list of users who have been granted access to this
         #{@protocol.type.downcase} on your behalf.
     -else
       %p
-        Services have been requested or changed in SPARC (sparc.musc.edu) for a #{@protocol.type.downcase}
+        #{welcome_text} in SPARC (sparc.musc.edu) for a #{@protocol.type.downcase}
         to which you have been granted access.
 
     %table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}

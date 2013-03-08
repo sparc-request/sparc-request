@@ -6,7 +6,6 @@ class CatalogManager::ProgramsController < CatalogManager::AppController
     @provider = Provider.find(params[:provider_id])
     @program = Program.new({:name => params[:name], :abbreviation => params[:name], :parent_id => @provider.id})
     @program.build_subsidy_map()
-    @program.setup_available_statuses
     @program.save
     
     respond_with [:catalog_manager, @program]

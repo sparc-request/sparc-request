@@ -35,7 +35,7 @@
           = hidden_field_tag "process_ssr_organization_ids[]", key, :id => 'process_ssr_organization_ids', :disabled => (@grouping ? false : true) 
         %br
     %td
-      = select_tag :doc_type, options_for_select(DOCUMENT_TYPES, first_doc_type), :prompt => "Select a Type"
+      = select_tag :doc_type, options_for_select(DOCUMENT_TYPES, first_doc_type), :prompt => t("documents.select_prompt")
       .document_type_other{:style => first_doc_type == 'other' ? '' : 'display:none;'}
         = text_field_tag :doc_type_other, first_doc_type_other
     %td#file

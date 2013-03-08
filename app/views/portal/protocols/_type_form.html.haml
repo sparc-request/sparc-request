@@ -5,6 +5,6 @@
       .grid_7.box
         .info
           .field
-            = label_tag 'type', 'Project/Study Type:'
+            = label_tag 'type', t(:protocol_shared)[:change]
             = select_tag 'protocol_type', options_for_select([['Project', 'Project'], ['Study', 'Study']], @protocol.type), :name => 'protocol[type]'
-            = submit_tag 'Change Type', :confirm => 'This will change the type of this Project/Study.  Are you sure?'
+            = submit_tag t(:protocol_shared)[:button], :confirm => t(:protocol_shared)[:confirm]

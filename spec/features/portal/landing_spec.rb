@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe "landing page", :js => true do
   let_there_be_lane
+  let_there_be_j
   fake_login_for_each_test
 
   after :each do
@@ -36,9 +37,11 @@ describe "landing page", :js => true do
     end
 
     it 'should bring up the edit user box' do
-      find(".edit-associated-user-button").click
-      wait_for_javascript_to_finish
-      find(".edit-associated-user-dialog").should be_visible
+      within(".Julia") do
+        click_on("Edit")
+        wait_for_javascript_to_finish
+      end
+      page.should have_text("Edit An Authorized User")
     end
 
     it 'should allow user to delete users' do

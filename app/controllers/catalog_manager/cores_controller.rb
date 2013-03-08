@@ -6,7 +6,6 @@ class CatalogManager::CoresController < CatalogManager::AppController
     @program = Program.find(params[:program_id])
     @core = Core.new({:name => params[:name], :abbreviation => params[:name], :parent_id => @program.id})
     @core.build_subsidy_map()
-    @core.setup_available_statuses
     @core.save
     
     respond_with [:catalog_manager, @core]

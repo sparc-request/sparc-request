@@ -8,9 +8,9 @@
   .grid_7.box
     .info
       %fieldset
-        %legend Study Attributes
+        %legend= t(:study_form)[:attributes]
         .field
-          = f.label :short_title, t(:study_form)[:short_title]
+          = f.label :short_title, t(:protocol_shared)[:title]
           = f.text_field :short_title
         
         .field
@@ -18,8 +18,8 @@
           = f.text_field :title
         
         .field
-          = f.label :funding_status, t(:study_form)[:funding_status]
-          = f.select :funding_status, options_for_select(FUNDING_STATUSES, study.funding_status), :include_blank => "Select a Funding Status"
+          = f.label :funding_status, t(:protocol_shared)[:funding_status]
+          = f.select :funding_status, options_for_select(FUNDING_STATUSES, study.funding_status), :include_blank => t(:study_form)[:status_blank]
         
         .field
           = f.label :udak_project_number, t(:study_form)[:udak_project_number]
@@ -40,8 +40,8 @@
             = f.hidden_field :potential_funding_start_date
     
           .field
-            = f.label :potential_funding_source, t(:study_form)[:potential_funding_source]
-            = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, study.potential_funding_source), :include_blank => "Select a Potential Funding Source"
+            = f.label :potential_funding_source, t(:protocol_shared)[:potential_funding_source]
+            = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, study.potential_funding_source), :include_blank => t(:study_form)[:potential_blank]
     
           / Internal Funded Pilot Project selected
           .internal_potential_funded_pilot_project
@@ -56,8 +56,8 @@
             = f.hidden_field :funding_start_date
           
           .field
-            = f.label :funding_source, t(:study_form)[:funding_source]
-            = f.select :funding_source, options_for_select(FUNDING_SOURCES, study.funding_source), :include_blank => "Select a Funding Source"
+            = f.label :funding_source, t(:protocol_shared)[:funding_source]
+            = f.select :funding_source, options_for_select(FUNDING_SOURCES, study.funding_source), :include_blank => t(:study_form)[:funding_blank]
     
           / Internal Funded Pilot Project selected
           .internal_funded_pilot_project
@@ -66,7 +66,7 @@
               = f.text_field :funding_source_other
     
         .indirect_cost_rate
-          = f.label :indirect_cost_rate, t(:study_form)[:indirect_cost_rate]
+          = f.label :indirect_cost_rate, t(:study_form)[:rate]
           = f.text_field :indirect_cost_rate
     
         .funded
@@ -77,11 +77,11 @@
     
             .field
               = f.label :federal_grant_code_id, t(:study_form)[:federal_grant_code_id]
-              = f.select :federal_grant_code_id, options_for_select(FEDERAL_GRANT_CODES, study.federal_grant_code_id), :include_blank => "Select a Federal Grant Code"
+              = f.select :federal_grant_code_id, options_for_select(FEDERAL_GRANT_CODES, study.federal_grant_code_id), :include_blank => t(:study_form)[:code_blank]
     
             .field
               = f.label :federal_phs_sponsor, t(:study_form)[:federal_phs_sponsor]
-              = f.select :federal_phs_sponsor, options_for_select(FEDERAL_GRANT_PHS_SPONSORS, study.federal_phs_sponsor), :include_blank => "Please Select if Applicable"
+              = f.select :federal_phs_sponsor, options_for_select(FEDERAL_GRANT_PHS_SPONSORS, study.federal_phs_sponsor), :include_blank => t(:study_form)[:phs_blank]
     
             %br
             %span -OR-
@@ -89,7 +89,7 @@
         
             .field
               = f.label :federal_non_phs_sponsor, t(:study_form)[:federal_non_phs_sponsor]
-              = f.select :federal_non_phs_sponsor, options_for_select(FEDERAL_GRANT_NON_PHS_SPONSORS, study.federal_non_phs_sponsor), :include_blank => "Please Select if Applicable"
+              = f.select :federal_non_phs_sponsor, options_for_select(FEDERAL_GRANT_NON_PHS_SPONSORS, study.federal_non_phs_sponsor), :include_blank => t(:study_form)[:phs_blank]
     
             .field
               = f.label :federal_grant_serial_number, t(:study_form)[:federal_grant_serial_number]
@@ -97,10 +97,10 @@
     
         .field
           = f.label :study_phase, t(:study_form)[:study_phase]
-          = f.select :study_phase, options_for_select(STUDY_PHASES, study.study_phase), :include_blank => "Select a Study Phase"
+          = f.select :study_phase, options_for_select(STUDY_PHASES, study.study_phase), :include_blank => t(:study_form)[:phase_blank]
   
       %fieldset
-        %legend Research Involving (Check all that apply)
+        %legend= t(:study_form)[:research]
         %div
           = f.fields_for :research_types_info do |rt|
             .field.human_subjects
@@ -122,7 +122,7 @@
             .field.submission_type
               = hs.label :submission_type, t(:study_form)[:submission_type]
               %br
-              = hs.select :submission_type, options_for_select(SUBMISSION_TYPES, study.human_subjects_info.submission_type), :include_blank => "Pick a Submission Type"
+              = hs.select :submission_type, options_for_select(SUBMISSION_TYPES, study.human_subjects_info.submission_type), :include_blank => t(:study_form)[:submission_type]
 
             .field.approval_pending
               = hs.label :approval_pending, t(:study_form)[:approval_pending]
@@ -196,7 +196,7 @@
               = ip.text_area :inventors
   
       %fieldset
-        %legend Study Type (Check all that apply) 
+        %legend= t(:study_form)[:type] 
         %div
           = f.fields_for :study_types do |rt|
             .field{:class => rt.object.name}
@@ -205,7 +205,7 @@
               = rt.hidden_field :name, :value => rt.object.name
   
       %fieldset
-        %legend Impact Areas
+        %legend= t(:study_form)[:impact]
         %div
           = f.fields_for :impact_areas do |rt|
             .field{:class => rt.object.name}
@@ -214,7 +214,7 @@
               = rt.hidden_field :name, :value => rt.object.name
   
       %fieldset
-        %legend Affiliations and Collaborations 
+        %legend= t(:study_form)[:affiliations] 
         %div
           = f.fields_for :affiliations do |rt|
             .field{:class => rt.object.name}
@@ -224,9 +224,9 @@
 
   %br.clear
   #actions
-    = submit_tag("Save study")
+    = submit_tag(t(:study_form)[:save])
     or
     - if admin
       = link_to "Cancel", "/portal/admin/sub_service_requests/#{@sub_service_request.id}", :class => "admin_cancel_link"
     - else
-      = link_to "Cancel", portal_root_path
+      = link_to t(:protocol_shared)[:cancel], portal_root_path

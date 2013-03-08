@@ -17,12 +17,12 @@ else if "<%= @error %>" != ""
 else if $(".project_role_<%= @project_role.identity.id %>").length > 0 and "<%= @can_edit %>" == "true"
   $('#user_detail_errors').hide()
   $(".project_role_<%= @project_role.identity.id %>").replaceWith("<%= escape_javascript(render :partial => 'shared/user_proxy_right', :locals => {:project_role => @project_role}) %>")
-  $('.user_added_message p').html('User updated!  See table below to set proxy rights.')
+  $('.user_added_message p').html("<%= escape_javascript(t("protocol_shared.update_user")) %>")
   $('.user_added_message').show().fadeOut(2500, 'linear')
   $('.add-user-details').hide()
 else
   $('#user_detail_errors').hide()
   $('.authorized-users tbody').append("<%= escape_javascript(render :partial => 'shared/user_proxy_right', :locals => {:project_role => @project_role}) %>")
-  $('.user_added_message p').html('User added!  See table below to set proxy rights.')
+  $('.user_added_message p').html("<%= escape_javascript(t("protocol_shared.add_user")) %>")
   $('.user_added_message').show().fadeOut(2500, 'linear')
   $('.add-user-details').hide()

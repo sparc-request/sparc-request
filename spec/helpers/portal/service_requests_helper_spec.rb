@@ -185,37 +185,4 @@ describe Portal::ServiceRequestsHelper do
   #   end
   # end
 
-  context :correct_status_display do
-    it "should fix the display of ctrc review" do
-      correct_status_display("draft").should eq "Draft"
-    end
-
-    it "should fix the display of complete" do
-      correct_status_display("submitted").should eq "Submitted"
-    end
-
-    it "should fix the display of draft" do
-      correct_status_display("in process").should eq "In Process"
-    end
-
-    it "should fix the display of complete" do
-      correct_status_display("complete").should eq "Complete"
-    end
-
-    it "should fix the display of ctrc review" do
-      correct_status_display("ctrc review").should eq "CTRC Review"
-    end
-
-    it "should fix the display of draft" do
-      correct_status_display("ctrc approved").should eq "CTRC Approved"
-    end
-
-    it "should fix the display of complete" do
-      correct_status_display("awaiting pi approval").should eq "Awaiting PI Approval"
-    end
-
-    it "should fix the display of ctrc review" do
-      correct_status_display("on hold").should eq "On Hold"
-    end
-  end
 end

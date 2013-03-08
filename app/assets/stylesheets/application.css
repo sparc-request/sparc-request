@@ -155,6 +155,10 @@ a.save-option{
   color: #0099ff;
 }
 
+#welcome_message #red_description {
+  color: red;
+}
+
 #welcome_message .section {
   margin-top: 10px;
 }

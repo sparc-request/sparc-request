@@ -76,6 +76,18 @@ en:
     instructions_4: "If you wish to add services, you must return to the \"Service Catalog\"."
     instructions_center: "Before continuing to Step 2, you must select a Research Study or Project to which the services selected are associated. Only 1 Research Study/Project can be assigned to this request."
     tied_to_study: "Is this Service Request tied to a particular Research Study"
+    select_study: "Select a Study"
+    select_study_long: "Select a Research Study:"
+    edit_study: "Edit Study"
+    select_project: "Select a Project"
+    select_project_long: "Select a Research Project:"
+    edit_project: "Edit Project"
+    or: "-- OR --"
+    new_study: "New Study"
+    new_project: "New Project"
+    sidebar_box:
+      my_services: "My Services"
+      help: "Help"
 
   # Subsidy Page
   subsidy_page:
@@ -88,6 +100,7 @@ en:
       requested_funding: "Requested Funding"
       subsidy: "% Subsidy"
     request_additional: "To request additional research funding go to"
+    additional_confirm: "Are you sure you want to leave? Any unsaved changes to this service request will be lost."
 
   # Calendar Page
   calendar_page:
@@ -149,6 +162,7 @@ en:
     cancel_button: "Cancel"
     edit_button: "Edit"
     delete_button: "Delete"
+    select_prompt: "Select a Type"
 
   # Related Service Requests (portal/admin/)
   related:
@@ -159,6 +173,19 @@ en:
       pi: "PI"
       program_core: "Program/Core"
       service: "Service"
+
+  # Catalog Manager Index Page
+  cm_index:
+    search: "Search"
+    submit: "Submit"
+    institution: "Create New Institution"
+    provider: "Create New Provider"
+    program: "Create New Program"
+    core: "Create New Core"
+    service: "Create New Service"
+    processing: "Processing request"
+    pricing_map1: "No Pricing Map Changes"
+    pricing_map2: "Save and Apply to Pricing Maps"
 
   # Catalog Manager Shared Stuff
   cm_shared:
@@ -248,7 +275,7 @@ en:
 
   # user list partial
   user_list:
-    information: "User Information"
+    information: "Research Study/Project Authorized Users"
     proxy_rights: "Proxy Rights"
     message: "(Select appropriate level of study/project rights)"
     actions: "Actions"
@@ -261,30 +288,36 @@ en:
   # Edit Study form
   study_form:
     description: "Before you can complete a service request, please tell us more about your research study. This information will be used by our staff to decide the best way to process your request."
-    short_title: "Short Title:*"
+    attributes: "Study Attributes"
     title: "Protocol Title:*"
-    funding_status: "Proposal Funding Status:*"
+    status_blank: "Select a Funding Status"
     udak_project_number: "UDAK/Project #:"
     sponsor_name: "Sponsor Name:"
+    rate: "Indirect Cost Rate:"
     funding_rfa: "Funding Opportunity #/RFA:"
     potential_funding_start_date: "Potential Funding Start Date:"
-    potential_funding_source: "Potential Funding Source:*"
+    potential_blank: "Select a Potential Funding Source"
     potential_funding_source_other: "Please Specify"
+    funding_blank: "Select a Funding Source"
     funding_start_date: "Funding Start Date:"
-    funding_source: "Funding Source:*"
     funding_source_other: "Please Specify"
     indirect_cost_rate: "Indirect Cost Rate"
     federal_grant_title: "Federal Grant Title:"
     federal_grant_code_id: "Federal Grant Code:"
+    code_blank: "Select a Federal Grant Code"
     federal_phs_sponsor: "Federal Grant PHS Sponsor:"
+    phs_blank: "Please Select if Applicable"
     federal_non_phs_sponsor: "Federal Grant Non-PHS Sponsor:"
     federal_grant_serial_number: "Federal Grant Serial Number:"
     study_phase: "Study Phase:"
+    phase_blank: "Select a Study Phase"
+    research: "Research Involving (Check all that apply)"
     human_subjects: "Human Subjects:"
     hr_number: "HR#:"
     pro_number: "Pro #:"
     irb_of_record: "IRB of Record:"
     submission_type: "Submission Type:"
+    submission_blank: "Pick a Submission Type"
     approval_pending: "Application/Approval Pending:"
     irb_approval_date: "IRB Approval Date:"
     irb_expiration_date: "IRB Expiration Date:"
@@ -300,6 +333,43 @@ en:
     ip_patents: "IP/Patents:"
     patent_number: "Patent Number:"
     inventors: "Inventors:"
+    type: "Study Type (Check all that apply)"
+    impact: "Impact Areas"
+    affiliations: "Affiliations and Collaborations"
+    save: "Save Study"
+
+  # Edit Project Form
+  project_form:
+    message: "Before you can complete a service request, please tell us more about your research project.  This information will be used by our staff to decide the best way to process your request."
+    title: "Project Title:*"
+    dropdown_default1: "Select a Funding Status"
+    dropdown_default2: "Select a Funding Source"
+    dropdown_default3: "Select a Potential Funding Source"
+    description: "Brief Description:"
+    rate: "Indirect Cost Rate:"
+    save: "Save Project"
+
+  # Study/Project Shared
+  protocol_shared:
+    title: "Short Title:*"
+    funding_source: "Funding Source:*"
+    funding_status: "Proposal Funding Status:*"
+    potential_funding_source: "Potential Funding Source:*"
+    cancel: "Cancel"
+    change: "Project/Study Type:"
+    button: "Change Type"
+    confirm: "This will change the type of this Project/Study.  Are you sure?"
+    add_user: "User added!  See table below to set proxy rights."
+    update_user: 'User updated!  See table below to set proxy rights.'
+
+  # Project/Study assignment page
+  study_assignment:
+    instructions_1: "Please review the SPARC Services you are requesting below."
+    instructions_2: "Please note that any \"Professional Services\" listed below have UMA fees associated with them and cannot be removed from this screen."
+    instructions_3: "If Professional Services are covered by % effort, you will have the opportunity to indicate this in Step 2."
+    instructions_4: "If you wish to add services, you must return to the \"Service Catalog\"."
+    instructions_center: "Before continuing to Step 2, you must select a Research Study or Project to which the services selected are associated. Only 1 Research Study/Project can be assigned to this request."
+    tied_to_study: "Is this Service Request tied to a particular Research Study"
 
   # Service Request Details form
   service_request_details:
@@ -351,6 +421,34 @@ en:
       provider: "Provider:"
       program_core: "Program/Core:"
       contact: "Contact:"
+
+  # Portal Root/Information
+  protocol_information:
+    message1: "Within your dashboard, you can view (and/or edit, submit) service requests currently in SPARC, as well as all of those still in 'draft' status. To edit any study/project specific information, click on the 'Edit' button located under the 'Study/Project Information' heading. To add or edit users, click on the 'Edit Authorized Users' button located under the 'Authorized Users' heading."
+    message2: "Please note that studies/projects are listed in descending order."
+    loading: "Loading your project/studies"
+    rights1: "You do not have appropriate rights to"
+    rights2: "Should you need this right, please contact your PI or Authorized Users"
+    information: "Information:"
+    title: "Title:"
+    short_title: "Short Title:"
+    funding: "Funding Source:"
+    authorized_users: "Authorized Users:"
+    name: "Name:"
+    role: "Role:"
+    proxy: "Proxy Rights:"
+    actions: "Actions"
+    edit: "Edit"
+    delete: "Delete"
+    no_authorized_users: "Currently no authorized users"
+    add_authorized_user: "+ ADD An Authorized User"
+    service_requests: "Service Requests:"
+    srid: "SRID:"
+    date: "Submitted Date:"
+    provider: "Provider:"
+    program: "Program/Core:"
+    status: "Status:"
+    edit_original: "Edit Original"
 
   # Portal sub service request dialog
   ssr_dialog:
@@ -441,9 +539,11 @@ en:
     actions: "Actions"
     submit_button: "Save"
     cancel_button: "Cancel"
-    blank_field_errors: "Name and Order on the Service, and Quantity Type, Unit Factor, Unit Minimum, Effective Date, and Display Date on all Pricing Maps are required."
+    blank_field_errors: "Name and Order on the Service, and Quantity Type, Unit Factor, Unit Minimum, Units Per Qty Maximum, Effective Date, and Display Date on all Pricing Maps are required."
     status_legend: "Status Options (Check all that apply)"
     default_statuses: "Default Statuses:"
+    color_blank: "Select a Color"
+    errors: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
 
   pricing_map_form:
     dates: "Dates"

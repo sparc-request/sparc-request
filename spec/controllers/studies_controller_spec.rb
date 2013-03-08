@@ -74,7 +74,7 @@ describe StudiesController do
             :title           => 'this is the title',
             :funding_status  => 'not in a million years',
             :funding_source  => 'God',
-            :project_roles_attributes  => [ { :role => 'pi', :project_rights => 'jack squat', :identity_id => identity.id } ],
+            :project_roles_attributes  => [ { :role => 'pi', :project_rights => 'jack squat', :identity_id => identity.id }, { :role => 'business-grants-manager', :project_rights => 'approve', :identity_id => identity.id } ],
             :requester_id    => identity.id,
           }
         }.with_indifferent_access
@@ -158,7 +158,7 @@ describe StudiesController do
             :title           => 'this is the title',
             :funding_status  => 'not in a million years',
             :funding_source  => 'God',
-            :project_roles_attributes  => [ { :role => 'pi', :project_rights => 'jack squat', :identity_id => identity.id } ],
+            :project_roles_attributes  => [ { :role => 'pi', :project_rights => 'jack squat', :identity_id => identity.id }, { :role => 'business-grants-manager', :project_rights => 'approve', :identity_id => identity.id } ],
             :requester_id    => identity.id,
           }
         }.with_indifferent_access

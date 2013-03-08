@@ -33,22 +33,22 @@
         .existing-study.center
           #study.study-select
             #study-select= render :partial => 'study_select', :locals => {:studies => @studies} unless @studies.empty?
-            = link_to('New Study', new_service_request_study_path(@service_request), :class => 'new-study') if @sub_service_request.nil?
+            = link_to(t("study_assignment.new_study"), new_service_request_study_path(@service_request), :class => 'new-study') if @sub_service_request.nil?
             %br
             %br
 
         .existing-project.center
           #project.project-select
             #project-select= render :partial => 'project_select', :locals => {:projects => @projects} unless @projects.empty?
-            = link_to('New Project', new_service_request_project_path(@service_request), :class => 'new-project') if @sub_service_request.nil?
+            = link_to(t("study_assignment.new_project"), new_service_request_project_path(@service_request), :class => 'new-project') if @sub_service_request.nil?
             %br
             %br
 
   .grid_3.protocol-view-right.right
     #services.ui-widget.ui-widget-content.cart-view
       %h3
-        My Services
-        %span#cart-help Help
+        = t("study_assignment.sidebar_box.my_services")
+        %span#cart-help= t("study_assignment.sidebar_box.help")
       .line-items= render :partial => 'catalogs/cart'
     .dashboard-button= navigation_link image_tag('back_to_catalog.png'), @back
 .continue= render :partial => 'service_requests/navigation'

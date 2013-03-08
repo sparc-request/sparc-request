@@ -19,6 +19,7 @@ SparcRails::Application.routes.draw do
       get 'catalog'
       get 'protocol'
       get 'review'
+      get 'obtain_research_pricing'
       get 'confirmation'
       get 'service_details'
       get 'service_calendar'

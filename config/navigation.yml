@@ -61,7 +61,16 @@ review:
   css_class: red-provider
   back: document_management 
   catalog: catalog
+  obtain_research_pricing: obtain_research_pricing
   forward: confirmation
+  validation_groups:
+    document_management:
+
+obtain_research_pricing:
+  step_text: 'STEP 5a: Obtain Research Pricing'
+  css_class: green-provider
+  back: review 
+  catalog: catalog
   validation_groups:
     document_management:
 

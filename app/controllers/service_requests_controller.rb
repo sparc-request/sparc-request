@@ -236,6 +236,87 @@ class ServiceRequestsController < ApplicationController
     @tab = 'pricing'
   end
 
+  def obtain_research_pricing
+    # TODO: refactor into the ServiceRequest model
+    @service_request.update_attribute(:status, 'obtain_research_pricing')
+    @service_request.update_attribute(:submitted_at, Time.now)
+    next_ssr_id = @service_request.protocol.next_ssr_id || 1
+    @service_request.sub_service_requests.each do |ssr|
+      ssr.update_attribute(:status, 'obtain_research_pricing')
+      ssr.update_attribute(:ssr_id, "%04d" % next_ssr_id) unless ssr.ssr_id
+      next_ssr_id += 1
+    end
+    
+    @protocol = @service_request.protocol
+    @service_list = @service_request.service_list
+
+    @protocol.update_attribute(:next_ssr_id, next_ssr_id)
+
+    # Does an approval need to be created, check that the user submitting has approve rights
+    if @protocol.project_roles.detect{|pr| pr.identity_id == current_user.id}.project_rights != "approve"
+      approval = @service_request.approvals.create
+    else
+      approval = false
+    end
+
+    # generate the excel for this service request
+    xls = render_to_string :action => 'show', :formats => [:xlsx]
+
+    # send e-mail to all folks with view and above
+    @protocol.project_roles.each do |project_role|
+      next if project_role.project_rights == 'none'
+      Notifier.notify_user(project_role, @service_request, xls, approval).deliver
+    end
+
+    # send e-mail to admins and service providers
+    if @sub_service_request # only notify the submission e-mails for this sub service request
+      @sub_service_request.organization.submission_emails_lookup.each do |submission_email|
+        Notifier.notify_admin(@service_request, submission_email.email, xls).deliver
+      end
+    else # notify the submission e-mails for the service request
+      @service_request.sub_service_requests.each do |sub_service_request|
+        sub_service_request.organization.submission_emails_lookup.each do |submission_email|
+          Notifier.notify_admin(@service_request, submission_email.email, xls).deliver
+        end
+      end
+    end
+
+    # send e-mail to all service providers
+    if @sub_service_request # only notify the service providers for this sub service request
+      @sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
+        attachments = {}
+        attachments["service_request_#{@service_request.id}.xls"] = xls
+
+        #TODO this is not very multi-institutional
+        # generate the muha pdf if it's required
+        if @sub_service_request.organization.tag_list.include? 'muha'
+          request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf @service_request
+          attachments["request_for_grant_billing_#{@service_request.id}.pdf"] = request_for_grant_billing_form
+        end
+
+        Notifier.notify_service_provider(service_provider, @service_request, attachments).deliver
+      end
+    else
+      @service_request.sub_service_requests.each do |sub_service_request|
+        sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
+          attachments = {}
+          attachments["service_request_#{@service_request.id}.xls"] = xls
+
+          #TODO this is not very multi-institutional
+          # generate the muha pdf if it's required
+          if sub_service_request.organization.tag_list.include? 'muha'
+            request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf @service_request
+            attachments["request_for_grant_billing_#{@service_request.id}.pdf"] = request_for_grant_billing_form
+          end
+
+          Notifier.notify_service_provider(service_provider, @service_request, attachments).deliver
+        end
+      end
+    end
+    
+    render :formats => [:html]
+  end
+
   def confirmation
     # TODO: refactor into the ServiceRequest model
     @service_request.update_attribute(:status, 'submitted')
@@ -259,10 +340,8 @@ class ServiceRequestsController < ApplicationController
       approval = false
     end
 
-
     # generate the excel for this service request
     xls = render_to_string :action => 'show', :formats => [:xlsx]
-
 
     # send e-mail to all folks with view and above
     @protocol.project_roles.each do |project_role|

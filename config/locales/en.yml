@@ -408,9 +408,10 @@ en:
         indirect_cost: "Total Indirect Costs"
         grand: "Grand Total:"
 
-  # Service Request Confirmation Page
+  # Service Request Confirmation Page and Obtain Research Pricing Page
   sr_confirmation:
     instructions: "Thank you for submitting a service request through SPARC. An email(s) has been submitted on your behalf, and we will respond to your service request shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
+    research_pricing_instructions : "You have successfully submitted a request to obtain research pricing. An email(s) has been submitted on your behalf, and we will respond to your request for research pricing shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
     download_button: "Download my Service Request"
     portal_button: "Go to SPARC User Portal"
     details:

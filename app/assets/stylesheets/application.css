@@ -534,9 +534,9 @@ a.save-option{
   background-color: #ccc;
 }
 
-.return-to-step-3, .save-as-draft {
+.return-to-step-3, .save-as-draft, .obtain-research-pricing {
   float: left;
-  margin-right: 158px;
+  margin-right: 38px;
 }
 
 .review-details .notes {

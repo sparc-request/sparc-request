@@ -261,7 +261,12 @@ describe 'SubServiceRequest' do
 
       context "candidate statuses" do
 
-        let!(:ctrc)     { FactoryGirl.create(:provider, is_ctrc: true) }
+        let!(:ctrc) do
+          org = FactoryGirl.create(:provider)
+          org.tag_list = "ctrc"
+          org.save
+          org 
+        end
         let!(:provider) { FactoryGirl.create(:provider) }
 
         it "should contain 'ctrc approved' and 'ctrc review' if the organization is ctrc" do

@@ -34,7 +34,6 @@ class Organization < ActiveRecord::Base
   attr_accessible :subsidy_map_attributes
   attr_accessible :pricing_setups_attributes
   attr_accessible :submission_emails_attributes
-  attr_accessible :is_ctrc
   attr_accessible :available_statuses_attributes
   attr_accessible :tag_list
  

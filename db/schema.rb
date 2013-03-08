@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130219192329) do
+ActiveRecord::Schema.define(:version => 20130308133055) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -260,10 +260,9 @@ ActiveRecord::Schema.define(:version => 20130219192329) do
     t.text     "ack_language"
     t.boolean  "process_ssrs"
     t.boolean  "is_available"
-    t.datetime "created_at",                      :null => false
-    t.datetime "updated_at",                      :null => false
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
     t.datetime "deleted_at"
-    t.boolean  "is_ctrc",      :default => false
   end
 
   add_index "organizations", ["is_available"], :name => "index_organizations_on_is_available"
@@ -539,6 +538,23 @@ ActiveRecord::Schema.define(:version => 20130219192329) do
   end
 
   add_index "super_users", ["organization_id"], :name => "index_super_users_on_organization_id"
+
+  create_table "taggings", :force => true do |t|
+    t.integer  "tag_id"
+    t.integer  "taggable_id"
+    t.string   "taggable_type"
+    t.integer  "tagger_id"
+    t.string   "tagger_type"
+    t.string   "context",       :limit => 128
+    t.datetime "created_at"
+  end
+
+  add_index "taggings", ["tag_id"], :name => "index_taggings_on_tag_id"
+  add_index "taggings", ["taggable_id", "taggable_type", "context"], :name => "index_taggings_on_taggable_id_and_taggable_type_and_context"
+
+  create_table "tags", :force => true do |t|
+    t.string "name"
+  end
 
   create_table "toast_messages", :force => true do |t|
     t.integer  "from"

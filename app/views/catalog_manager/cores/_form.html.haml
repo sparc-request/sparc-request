@@ -30,14 +30,14 @@
           %th= f.label :order, t(:organization_form)[:order]
           %td= f.text_field :order
         %tr
-          %th= f.label :is_ctrc, t(:organization_form)[:is_ctrc]
-          %td= f.check_box :is_ctrc
-        %tr
           %th= f.label :split_notify, t(:organization_form)[:split_notify]
           %td= f.check_box :process_ssrs
         %tr
           %th= f.label :disabled, t(:organization_form)[:disabled]
           %td= f.check_box :is_available, {:checked => (@core.is_available.nil? ? false : !@core.is_available) }, false, true
+        %tr
+          %th= t(:organization_form)[:tag_list]
+          %td= f.text_field :tag_list
 
     %br
 

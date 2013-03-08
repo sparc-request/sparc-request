@@ -416,6 +416,7 @@ en:
     description: "Description"
     ack_language: "Acknowledgement Language"
     order: "Order"
+    tag_list: "Tags (comma separated)"
     is_ctrc: "Is CTRC?"
     split_notify: "Split/Notify Here"
     css_class: "CSS Class"

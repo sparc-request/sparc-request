@@ -49,7 +49,8 @@
                         .arm-cell= arm.link_to_remove "Remove Arm"
                         .clear
                       .clear
-                    = f.link_to_add "Add Arm", :arms
+                    .add-arm= f.link_to_add "Add Arm", :arms
+                    .clear
 
           .visit-calendar-details{:style => ((@sub_service_request.nil? ? @service_request.line_items.empty? : @sub_service_request.line_items.empty?) ? '' : 'display:none')}
             .instructions

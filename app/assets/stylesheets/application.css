@@ -679,6 +679,11 @@ a.save-option{
   padding: 5px 30px;
 }
 
+.service-request-setup-view .arm-info .add-arm .add_nested_fields {
+  padding: 5px 30px;
+  width: 107px;
+}
+
 /* New Project View */
 
 .edit-project-view {

@@ -72,6 +72,7 @@ class ServiceRequest < ActiveRecord::Base
   attr_accessible :submitted_at
   attr_accessible :line_items_attributes
   attr_accessible :sub_service_requests_attributes
+  attr_accessible :arms_attributes
 
   accepts_nested_attributes_for :line_items
   accepts_nested_attributes_for :sub_service_requests
@@ -98,7 +99,8 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def set_visit_page page_passed
-    return 1 if visit_count == nil or visit_count <= 5
+    # TODO: Need to fix this for arms
+    return 1 #if visit_count == nil or visit_count <= 5
 
     page = case 
            when page_passed <= 0
@@ -303,18 +305,20 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def fix_missing_visits
-    if self.visit_count_changed?
-      self.per_patient_per_visit_line_items.each do |li|
-        li.fix_missing_visits(self.visit_count)
-      end
-    end
+    # TODO This possibly needs to be fixed
+    # if self.visit_count_changed?
+    #   self.per_patient_per_visit_line_items.each do |li|
+    #     li.fix_missing_visits(self.visit_count)
+    #   end
+    # end
   end
 
   def insure_visit_count
-    if self.visit_count.nil? or self.visit_count <= 0
-      self.update_attribute(:visit_count, 1)
-      self.reload
-    end
+    # TODO: Fix for arms
+    # if self.visit_count.nil? or self.visit_count <= 0
+    #   self.update_attribute(:visit_count, 1)
+    #   self.reload
+    # end
   end
 
   def insure_subject_count

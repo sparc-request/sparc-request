@@ -1,1 +1,2 @@
-= render :partial => 'calendar_data', :locals => {:tab => @tab}
+- @service_request.arms.each do |arm|
+  = render :partial => 'calendar_data', :locals => {:tab => @tab, :arm => arm}

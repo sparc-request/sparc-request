@@ -35,7 +35,7 @@
                         = f.hidden_field :end_date
                 %br
                 .arm-info
-                  = nested_form_for @service_request do |f|
+                  = nested_form_for @service_request, :method => :post do |f|
                     .arm-header
                       .arm-cell= t(:service_request_details)[:name]
                       .arm-cell= t(:service_request_details)[:number_of_subjects]
@@ -51,6 +51,7 @@
                       .clear
                     .add-arm= f.link_to_add "Add Arm", :arms
                     .clear
+                    %br
 
           .visit-calendar-details{:style => ((@sub_service_request.nil? ? @service_request.line_items.empty? : @sub_service_request.line_items.empty?) ? '' : 'display:none')}
             .instructions

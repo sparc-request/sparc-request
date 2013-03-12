@@ -183,19 +183,22 @@ class ServiceRequestsController < ApplicationController
 
     # build out visits if they don't already exist and delete/create if the visit count changes
     @service_request.per_patient_per_visit_line_items.each do |line_item|
-      if @service_request.status == 'first_draft' or line_item.subject_count.nil?
-        line_item.update_attribute(:subject_count, @service_request.subject_count)
-      end
+      line_item.visit_groupings.each do |vg|
+        if @service_request.status == 'first_draft' or vg.subject_count.nil?
+          vg.update_attribute(:subject_count, @service_request.subject_count)
+        end
 
-      # TODO: refactor this into the model
-      unless line_item.visits.count == @service_request.visit_count
-        ActiveRecord::Base.transaction do
-          if line_item.visits.count < @service_request.visit_count
-            n = @service_request.visit_count - line_item.visits.count
-            Visit.bulk_create(n, :line_item_id => line_item.id)
-          elsif line_item.visits.count > @service_request.visit_count
-            line_item.visits.last(line_item.visits.count - @service_request.visit_count).each do |li|
-              li.delete
+        # TODO: refactor this into the model
+        visit_count = vg.arm.visit_count
+        unless vg.visits.count == visit_count
+          ActiveRecord::Base.transaction do
+            if vg.visits.count < visit_count
+              n = visit_count - vg.visits.count
+              Visit.bulk_create(n, :visit_grouping_id => vg.id)
+            elsif vg.visits.count > visit_count
+              vg.visits.last(vg.visits.count - visit_count).each do |li|
+                li.delete
+              end
             end
           end
         end

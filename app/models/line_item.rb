@@ -7,7 +7,7 @@ class LineItem < ActiveRecord::Base
   belongs_to :sub_service_request
   has_many :fulfillments, :dependent => :destroy
 
-  has_many :visit_groupings, dependent => :destroy
+  has_many :visit_groupings, :dependent => :destroy
   has_many :arms, :through => :visit_groupings
 
   attr_accessible :service_request_id
@@ -194,10 +194,11 @@ class LineItem < ActiveRecord::Base
   end
 
   def fix_missing_visits(visit_count=self.service_request.visit_count)
-    if self.visits.count < visit_count
-      n = visit_count - self.visits.count
-      Visit.bulk_create(n, :line_item_id => self.id)
-    end
+    # TODO This probably needs to be fixed
+    # if self.visits.count < visit_count
+    #   n = visit_count - self.visits.count
+    #   Visit.bulk_create(n, :line_item_id => self.id)
+    # end
   end
 end
 

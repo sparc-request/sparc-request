@@ -10,7 +10,7 @@
       %th{:rowspan => 2}= t("calendar_page.headers.subjects")
       %th &nbsp;
       %th{:colspan => 5, :height => 40, :width => 375} 
-        = generate_visit_navigation @service_request, @page, @tab, @portal if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
+        = generate_visit_navigation arm, @service_request, @page, @tab, @portal if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
       %th= image_tag 'spinner.gif', :class => 'service_calendar_spinner'
 
     %tr.table_header
@@ -19,7 +19,7 @@
         %th= t("calendar_page.headers.your_cost")
       %th &nbsp;
       - if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?) 
-        = generate_visit_header_row @service_request, @page
+        = generate_visit_header_row arm, @service_request, @page
       - else
         %th{:colspan => 5} &nbsp;
       - if @portal
@@ -46,21 +46,27 @@
           %tr.sub_section_header
             %th{:colspan => 12}= value[:name]
 
-        - value[:line_items].each do |line_item|
+        - arm.visit_groupings.each do |vg|
+          - line_item = vg.line_item
           %tr.line_item{:class => cycle('odd', '', :name => 'pppvs')}
             - if @portal 
               %td= select_tag "line_item_service_id", options_for_select(candidate_service_options(@candidate_per_patient_per_visit, true), line_item.try(:service).try(:id)), :'data-line_item_id' => line_item.id, :class => 'fulfillment_data fulfillment_selecter' 
             - else
               %td.service_name= line_item.service.display_service_name
             - unless @portal
-              %td{:class => "service_rate_#{line_item.id}"}= display_service_rate line_item
-              %td.your_cost= display_your_cost line_item
-              %td.unit_type= line_item.service.displayed_pricing_map.unit_type
-            %td.subject_count= select_tag "line_item_#{line_item.id}_count", options_for_select((1..@service_request.subject_count), line_item.subject_count), :class => 'line_item_visit_count', :update => "/service_requests/#{line_item.service_request_id}/service_calendars?line_item=#{line_item.id}&tab=template&portal=#{@portal}"
-            %td= select_row line_item, @tab
-            - visits = line_item.visits.paginate(:page => @page, :per_page => 5)
-            - unit_minimum = line_item.service.displayed_pricing_map.unit_minimum
-            - totals_hash = line_item.try(:per_subject_subtotals)
+              %td{:class => "service_rate_#{line_item.id}"}
+                / TODO: Fix this for arms= display_service_rate line_item
+              %td.your_cost
+                / TODO: Fix this for arms= display_your_cost line_item
+              %td.unit_type
+                / TODO: Fix this for arms= line_item.service.displayed_pricing_map.unit_type
+            %td.subject_count= select_tag "line_item_#{line_item.id}_count", options_for_select((1..arm.subject_count), vg.subject_count), :class => 'line_item_visit_count', :update => "/service_requests/#{line_item.service_request_id}/service_calendars?line_item=#{line_item.id}&tab=template&portal=#{@portal}"
+            %td
+              / TODO: Fix for arms= select_row line_item, @tab
+            - visits = vg.visits.paginate(:page => @page, :per_page => 5)
+            - unit_minimum = 1
+            / TODO: Fix this for arms line_item.service.displayed_pricing_map.unit_minimum
+            - totals_hash = vg.try(:per_subject_subtotals)
             - visits.each_with_index do |v, index|
               %td.visit{:visit_column => index + 1, :class => "visit_column_#{index + 1}", :'data-cents' => (totals_hash["#{v.id}"] || 0), :style => (@tab == 'template' ? "text-align:center" : '')}= line_item_visit_input line_item, v, @tab, totals_hash, unit_minimum, @portal
             - (5 - visits.size).times do
@@ -68,14 +74,16 @@
             - if @portal 
               %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-line_item_id' => line_item.id, :class => "delete_data")
             - else
-              %td{:class => "total_#{line_item.id}"}= display_visit_based_direct_cost(line_item)
+              %td{:class => "total_#{line_item.id}"}
+              / TODO: Fix this for arms= display_visit_based_direct_cost(line_item)
       - unless @portal 
         %tr.totals_section.begin_totals{:class => cycle('odd', '', :name => 'pppvs')}
           %td{:colspan => 5}= t("calendar_page.labels.maximum_direct")
           %td &nbsp;
           - 5.times do |i|
             %td{:class => "visit_column_#{i + 1} max_direct_per_patient"}
-          %td{:class => "pp_max_total_direct_cost"}= display_max_total_direct_cost_per_patient @service_request, @line_items
+          %td{:class => "pp_max_total_direct_cost"}
+          / TODO: Fix this for arms= display_max_total_direct_cost_per_patient @service_request, @line_items
         
         - if USE_INDIRECT_COST
           %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
@@ -83,82 +91,87 @@
             %td &nbsp;
             - 5.times do |i|
               %td{:class => "visit_column_#{i + 1} max_indirect_per_patient"}
-            %td{:class => "pp_max_total_indirect_cost"}= display_max_total_indirect_cost_per_patient @service_request, @line_items
+            %td{:class => "pp_max_total_indirect_cost"}
+            / TODO: Fix this for arms= display_max_total_indirect_cost_per_patient @service_request, @line_items
 
         %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
           %td{:colspan => 5}= t("calendar_page.labels.maximum_per")
           %td &nbsp;
           - 5.times do |i|
             %td{:class => "visit_column_#{i + 1} max_total_per_patient"}
-          %td{:class => "pp_max_total"}= display_max_total_cost_per_patient @service_request, @line_items
+          %td{:class => "pp_max_total"}
+          / TODO: Fix this for arms= display_max_total_cost_per_patient @service_request, @line_items
         
         %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
           %td{:colspan => 5}= t("calendar_page.labels.total_direct")
           %td{:colspan => 6}
-          %td{:class => "pp_total_direct_cost"}= display_total_direct_cost_per_study_pppvs @service_request, @line_items
+          %td{:class => "pp_total_direct_cost"}
+          / TODO: Fix this for arms= display_total_direct_cost_per_study_pppvs @service_request, @line_items
         
         - if USE_INDIRECT_COST
           %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
             %td{:colspan => 5}= t("calendar_page.labels.total_indirect")
             %td{:colspan => 6}
-            %td{:class => "pp_total_indirect_cost"}= display_total_indirect_cost_per_study_pppvs @service_request, @line_items
+            %td{:class => "pp_total_indirect_cost"}
+            / TODO: Fix this for arms= display_total_indirect_cost_per_study_pppvs @service_request, @line_items
         
         %tr.totals_section.total-visit-based-services{:class => cycle('odd', '', :name => 'pppvs')}
           %td{:colspan => 5}= t("calendar_page.labels.total_costs")
           %td{:colspan => 6}
-          %td{:class => "pp_total_cost"}= display_total_cost_per_study_pppvs @service_request, @line_items
+          %td{:class => "pp_total_cost"}
+          / TODO: Fix this for arms= display_total_cost_per_study_pppvs @service_request, @line_items
 
-        %th.totals_section{:colspan => 12} &nbsp;
+        /%th.totals_section{:colspan => 12} &nbsp;
 
-    - if (@sub_service_request.nil? ? @service_request.has_one_time_fee_services? : @sub_service_request.has_one_time_fee_services?) and !@portal
-      %tr.section_header
-        %th{:colspan => 12}= t("calendar_page.headers.other_services")
-      - @service_request.service_list(true).each do |key, value| # get only one time fee services and group them
-        - next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
-        %tr.sub_section_header
-          %th{:colspan => 12}= value[:name]
-          - value[:line_items].each do |line_item|
-            %tr.line_item{:class => cycle('odd', '', :name => 'otfs')}
-              %td.service_name= line_item.service.name
-              %td{:class => "service_rate_#{line_item.id}"}= display_service_rate line_item
-              %td.your_cost= display_your_cost line_item
-              %td{:colspan => 8}
-              %td{:class => "total_#{line_item.id}"}= display_one_time_fee_direct_cost line_item
+    / - if (@sub_service_request.nil? ? @service_request.has_one_time_fee_services? : @sub_service_request.has_one_time_fee_services?) and !@portal
+    /   %tr.section_header
+    /     %th{:colspan => 12}= t("calendar_page.headers.other_services")
+    /   - @service_request.service_list(true).each do |key, value| # get only one time fee services and group them
+    /     - next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
+    /     %tr.sub_section_header
+    /       %th{:colspan => 12}= value[:name]
+    /       - value[:line_items].each do |line_item|
+    /         %tr.line_item{:class => cycle('odd', '', :name => 'otfs')}
+    /           %td.service_name= line_item.service.name
+    /           %td{:class => "service_rate_#{line_item.id}"}= display_service_rate line_item
+    /           %td.your_cost= display_your_cost line_item
+    /           %td{:colspan => 8}
+    /           %td{:class => "total_#{line_item.id}"}= display_one_time_fee_direct_cost line_item
       
-      %tr.totals_section.begin_totals{:class => cycle('odd', '', :name => 'otfs')}
-        %td{:colspan => 5}= t("calendar_page.labels.total_direct_other")
-        %td{:colspan => 6}
-        %td.otf_total_direct_cost= display_total_direct_cost_per_study_otfs @service_request, @line_items
+    /   %tr.totals_section.begin_totals{:class => cycle('odd', '', :name => 'otfs')}
+    /     %td{:colspan => 5}= t("calendar_page.labels.total_direct_other")
+    /     %td{:colspan => 6}
+    /     %td.otf_total_direct_cost= display_total_direct_cost_per_study_otfs @service_request, @line_items
 
-      - if USE_INDIRECT_COST
-        %tr.totals_section{:class => cycle('odd', '', :name => 'otfs')}
-          %td{:colspan => 5}= t("calendar_page.labels.total_indirect_other")
-          %td{:colspan => 6}
-          %td.otf_total_indirect_cost= display_total_indirect_cost_per_study_otfs @service_request, @line_items
+    /   - if USE_INDIRECT_COST
+    /     %tr.totals_section{:class => cycle('odd', '', :name => 'otfs')}
+    /       %td{:colspan => 5}= t("calendar_page.labels.total_indirect_other")
+    /       %td{:colspan => 6}
+    /       %td.otf_total_indirect_cost= display_total_indirect_cost_per_study_otfs @service_request, @line_items
 
-      %tr.totals_section{:class => cycle('odd', '', :name => 'otfs')}
-        %td{:colspan => 5}= t("calendar_page.labels.total_costs_other")
-        %td{:colspan => 6}
-        %td.otf_total_cost= display_total_cost_per_study_otfs @service_request, @line_items
+    /   %tr.totals_section{:class => cycle('odd', '', :name => 'otfs')}
+    /     %td{:colspan => 5}= t("calendar_page.labels.total_costs_other")
+    /     %td{:colspan => 6}
+    /     %td.otf_total_cost= display_total_cost_per_study_otfs @service_request, @line_items
 
-      %th.totals_section{:colspan => 12} &nbsp;
+    /   %th.totals_section{:colspan => 12} &nbsp;
 
-    - unless @portal
-      %tr.section_header
-        %th{:colspan => 12}= t("calendar_page.headers.total_study")
+    / - unless @portal
+    /   %tr.section_header
+    /     %th{:colspan => 12}= t("calendar_page.headers.total_study")
 
-        %tr.totals_section{:class => cycle('odd', '', :name => 'totals')}
-          %td{:colspan => 5}= t("calendar_page.labels.grand_total_direct")
-          %td{:colspan => 6}
-          %td{:class => 'grand_total_direct'}= display_grand_total_direct_costs @service_request, @line_items
+    /     %tr.totals_section{:class => cycle('odd', '', :name => 'totals')}
+    /       %td{:colspan => 5}= t("calendar_page.labels.grand_total_direct")
+    /       %td{:colspan => 6}
+    /       %td{:class => 'grand_total_direct'}= display_grand_total_direct_costs @service_request, @line_items
 
-        - if USE_INDIRECT_COST
-          %tr.totals_section{:class => cycle('odd', '', :name => 'totals')}
-            %td{:colspan => 5}= t("calendar_page.labels.grand_total_indirect")
-            %td{:colspan => 6}
-            %td{:class => 'grand_total_indirect'}= display_grand_total_indirect_costs @service_request, @line_items
+    /     - if USE_INDIRECT_COST
+    /       %tr.totals_section{:class => cycle('odd', '', :name => 'totals')}
+    /         %td{:colspan => 5}= t("calendar_page.labels.grand_total_indirect")
+    /         %td{:colspan => 6}
+    /         %td{:class => 'grand_total_indirect'}= display_grand_total_indirect_costs @service_request, @line_items
 
-        %tr.totals_section{:class => cycle('odd', '', :name => 'totals')}
-          %td{:colspan => 5}= t("calendar_page.labels.grand_total")
-          %td{:colspan => 6}
-          %td{:class => 'grand_total'}= display_grand_total @service_request, @line_items
+    /     %tr.totals_section{:class => cycle('odd', '', :name => 'totals')}
+    /       %td{:colspan => 5}= t("calendar_page.labels.grand_total")
+    /       %td{:colspan => 6}
+    /       %td{:class => 'grand_total'}= display_grand_total @service_request, @line_items

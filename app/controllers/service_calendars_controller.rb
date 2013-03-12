@@ -15,19 +15,19 @@ class ServiceCalendarsController < ApplicationController
   def update
     @portal = params[:portal]
     visit = Visit.find params[:visit] rescue nil
-    
+    @visit_grouping = VisitGrouping.find params[:visit_grouping] rescue nil
     @line_item = LineItem.find params[:line_item] rescue nil
     tab = params[:tab]
     checked = params[:checked]
     qty = params[:qty].to_i
     column = params[:column]
 
-    if tab == 'template' and @line_item
-      @line_item.update_attribute(:subject_count, qty)
+    if tab == 'template' and @visit_grouping
+      @visit_grouping.update_attribute(:subject_count, qty)
     elsif tab == 'template' and visit.research_billing_qty.to_i <= 0 and checked == 'true'
       # set quantity and research billing qty to 1
-      visit.update_attribute(:quantity, visit.line_item.service.displayed_pricing_map.unit_minimum)
-      visit.update_attribute(:research_billing_qty, visit.line_item.service.displayed_pricing_map.unit_minimum)
+      visit.update_attribute(:quantity, visit.visit_grouping.line_item.service.displayed_pricing_map.unit_minimum)
+      visit.update_attribute(:research_billing_qty, visit.visit_grouping.line_item.service.displayed_pricing_map.unit_minimum)
     elsif tab == 'template' and checked == 'false'
       visit.update_attribute(:quantity, 0)
       visit.update_attribute(:research_billing_qty, 0)
@@ -46,9 +46,10 @@ class ServiceCalendarsController < ApplicationController
 
     @visit = visit
     @visit_td = visit.nil? ? "" : ".visits_#{visit.id}"
-    @line_item = visit.line_item if @line_item.nil?
-    @line_item_total_td = ".total_#{@line_item.id}"
-    @displayed_visits = @line_item.visits.paginate(page: params[:page], per_page: 5)
+    @visit_grouping = visit.visit_grouping if @visit_grouping.nil?
+    @line_item = @visit_grouping.line_item if @line_item.nil?
+    @line_item_total_td = ".total_#{@visit_grouping.id}"
+    # @displayed_visits = @line_item.visits.paginate(page: params[:page], per_page: 5)
   end
 
   def rename_visit

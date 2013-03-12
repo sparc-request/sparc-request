@@ -4,16 +4,16 @@ unless "<%= @errors %>" == ""
 if "<%= @errors %>" == ""
   unless "<%= @portal %>" == "true"
     if <%= @line_item.service.displayed_pricing_map.unit_factor %> > 1
-      "<%= update_per_subject_subtotals(@line_item) %>"
+      "<%= update_per_subject_subtotals(@visit_grouping) %>"
 
-    <% @line_item.visits.each do |visit| %>
+    <% @visit_grouping.visits.each do |visit| %>
       $('.visits_<%= visit.id %>').parent().data('cents', "<%= update_visit_data_cents(visit) %>")
     <% end %>
     else if "<%= @visit_td %>" != ""
       $("<%= @visit_td %>").parent().data('cents', "<%= update_visit_data_cents(@visit) %>")
 
     # Display for each line items total cost
-    $("<%= @line_item_total_td %>").html("<%= display_visit_based_direct_cost(@line_item) %>")
+    $("<%= @line_item_total_td %>").html("<%= display_visit_based_direct_cost(@visit_grouping) %>")
 
     # Display for all line items max direct, indirect, and total costs per patient
     $(".pp_max_total_direct_cost").html("<%= display_max_total_direct_cost_per_patient(@service_request, @line_items) %>")

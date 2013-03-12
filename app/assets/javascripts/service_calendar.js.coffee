@@ -76,21 +76,22 @@ $(document).ready ->
       $('.service_calendar_spinner').hide()
     
 (exports ? this).calculate_max_rates = ->
-  for num in [1..5]
-    column = '.visit_column_' + num
-    visits = $(column + '.visit')
-    direct_total = 0
-    $(visits).each (index, visit) =>
-      if $(visit).is(':hidden') == false && $(visit).data('cents')
-        direct_total += Math.floor($(visit).data('cents')) / 100.0
-    indirect_rate = parseFloat($("#indirect_rate").val()) / 100.0
-    indirect_total = if use_indirect_cost == 'true' then direct_total * indirect_rate else 0
-    max_total = direct_total + indirect_total
+  # TODO: Need to update this for the arms
+  # for num in [1..5]
+  #   column = '.visit_column_' + num
+  #   visits = $(column + '.visit')
+  #   direct_total = 0
+  #   $(visits).each (index, visit) =>
+  #     if $(visit).is(':hidden') == false && $(visit).data('cents')
+  #       direct_total += Math.floor($(visit).data('cents')) / 100.0
+  #   indirect_rate = parseFloat($("#indirect_rate").val()) / 100.0
+  #   indirect_total = if use_indirect_cost == 'true' then direct_total * indirect_rate else 0
+  #   max_total = direct_total + indirect_total
 
-    direct_total_display = '$' + (direct_total).toFixed(2)
-    indirect_total_display = '$' + (Math.floor(indirect_total * 100) / 100).toFixed(2)
-    max_total_display = '$' + (Math.floor(max_total * 100) / 100).toFixed(2)
+  #   direct_total_display = '$' + (direct_total).toFixed(2)
+  #   indirect_total_display = '$' + (Math.floor(indirect_total * 100) / 100).toFixed(2)
+  #   max_total_display = '$' + (Math.floor(max_total * 100) / 100).toFixed(2)
 
-    $(column + '.max_direct_per_patient').html(direct_total_display)
-    $(column + '.max_indirect_per_patient').html(indirect_total_display)
-    $(column + '.max_total_per_patient').html(max_total_display)
+  #   $(column + '.max_direct_per_patient').html(direct_total_display)
+  #   $(column + '.max_indirect_per_patient').html(indirect_total_display)
+  #   $(column + '.max_total_per_patient').html(max_total_display)

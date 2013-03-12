@@ -46,36 +46,31 @@
           %tr.sub_section_header
             %th{:colspan => 12}= value[:name]
 
-        - arm.per_patient_per_visit_visit_groupings.each do |vg|
-          - line_item = vg.line_item
+        - arm.per_patient_per_visit_visit_groupings.each do |visit_grouping|
+          - line_item = visit_grouping.line_item
           %tr.line_item{:class => cycle('odd', '', :name => 'pppvs')}
             - if @portal 
               %td= select_tag "line_item_service_id", options_for_select(candidate_service_options(@candidate_per_patient_per_visit, true), line_item.try(:service).try(:id)), :'data-line_item_id' => line_item.id, :class => 'fulfillment_data fulfillment_selecter' 
             - else
               %td.service_name= line_item.service.display_service_name
             - unless @portal
-              %td{:class => "service_rate_#{line_item.id}"}
-                / TODO: Fix this for arms= display_service_rate line_item
-              %td.your_cost
-                / TODO: Fix this for arms= display_your_cost line_item
-              %td.unit_type
-                / TODO: Fix this for arms= line_item.service.displayed_pricing_map.unit_type
-            %td.subject_count= select_tag "line_item_#{line_item.id}_count", options_for_select((1..arm.subject_count), vg.subject_count), :class => 'line_item_visit_count', :update => "/service_requests/#{line_item.service_request_id}/service_calendars?line_item=#{line_item.id}&tab=template&portal=#{@portal}"
+              %td{:class => "service_rate_#{line_item.id}"}= display_service_rate line_item
+              %td.your_cost= display_your_cost line_item
+              %td.unit_type= line_item.service.displayed_pricing_map.unit_type
+            %td.subject_count= select_tag "line_item_#{line_item.id}_count", options_for_select((1..arm.subject_count), visit_grouping.subject_count), :class => 'line_item_visit_count', :update => "/service_requests/#{line_item.service_request_id}/service_calendars?visit_grouping=#{visit_grouping.id}&tab=template&portal=#{@portal}"
             %td
               / TODO: Fix for arms= select_row line_item, @tab
-            - visits = vg.visits.paginate(:page => @page, :per_page => 5)
-            - unit_minimum = 1
-            / TODO: Fix this for arms line_item.service.displayed_pricing_map.unit_minimum
-            - totals_hash = vg.try(:per_subject_subtotals)
+            - visits = visit_grouping.visits.paginate(:page => @page, :per_page => 5)
+            - unit_minimum = line_item.service.displayed_pricing_map.unit_minimum
+            - totals_hash = visit_grouping.try(:per_subject_subtotals)
             - visits.each_with_index do |v, index|
-              %td.visit{:visit_column => index + 1, :class => "visit_column_#{index + 1}", :'data-cents' => (totals_hash["#{v.id}"] || 0), :style => (@tab == 'template' ? "text-align:center" : '')}= line_item_visit_input line_item, v, @tab, totals_hash, unit_minimum, @portal
+              %td.visit{:visit_column => index + 1, :class => "visit_column_#{index + 1}", :'data-cents' => (totals_hash["#{v.id}"] || 0), :style => (@tab == 'template' ? "text-align:center" : '')}= line_item_visit_input visit_grouping, line_item, v, @tab, totals_hash, unit_minimum, @portal
             - (5 - visits.size).times do
               %td &nbsp;
             - if @portal 
               %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-line_item_id' => line_item.id, :class => "delete_data")
             - else
-              %td{:class => "total_#{line_item.id}"}
-              / TODO: Fix this for arms= display_visit_based_direct_cost(line_item)
+              %td{:class => "total_#{visit_grouping.id}"}= display_visit_based_direct_cost(visit_grouping)
       - unless @portal 
         %tr.totals_section.begin_totals{:class => cycle('odd', '', :name => 'pppvs')}
           %td{:colspan => 5}= t("calendar_page.labels.maximum_direct")

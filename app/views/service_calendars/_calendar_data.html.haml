@@ -46,7 +46,7 @@
           %tr.sub_section_header
             %th{:colspan => 12}= value[:name]
 
-        - arm.visit_groupings.each do |vg|
+        - arm.per_patient_per_visit_visit_groupings.each do |vg|
           - line_item = vg.line_item
           %tr.line_item{:class => cycle('odd', '', :name => 'pppvs')}
             - if @portal 
@@ -121,7 +121,7 @@
           %td{:class => "pp_total_cost"}
           / TODO: Fix this for arms= display_total_cost_per_study_pppvs @service_request, @line_items
 
-        /%th.totals_section{:colspan => 12} &nbsp;
+        %th.totals_section{:colspan => 12} &nbsp;
 
     / - if (@sub_service_request.nil? ? @service_request.has_one_time_fee_services? : @sub_service_request.has_one_time_fee_services?) and !@portal
     /   %tr.section_header

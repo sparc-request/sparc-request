@@ -14,9 +14,10 @@ class Notifier < ActionMailer::Base
     @identity = identity
     
     email = Rails.env == 'production' ? ADMIN_MAIL_TO : DEFAULT_MAIL_TO
-    subject = Rails.env == 'production' ? 'New Question from SPARC' : "[#{Rails.env.capitalize} - EMAIL TO #{ADMIN_MAIL_TO}] Request for new SPARC account submitted and awaiting approval"
+    cc = Rails.env == 'production' ? NEW_USER_CC : nil
+    subject = Rails.env == 'production' ? 'New Question from SPARC' : "[#{Rails.env.capitalize} - EMAIL TO #{ADMIN_MAIL_TO} AND CC TO #{NEW_USER_CC}] Request for new SPARC account submitted and awaiting approval"
     
-    mail(:to => email, :from => @identity.email, :subject => subject) 
+    mail(:to => email, :cc => cc, :from => @identity.email, :subject => subject) 
   end
 
   def notify_user project_role, service_request, xls, approval

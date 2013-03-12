@@ -64,7 +64,7 @@
             - unit_minimum = line_item.service.displayed_pricing_map.unit_minimum
             - totals_hash = visit_grouping.try(:per_subject_subtotals)
             - visits.each_with_index do |v, index|
-              %td.visit{:visit_column => index + 1, :class => "visit_column_#{index + 1}", :'data-cents' => (totals_hash["#{v.id}"] || 0), :style => (@tab == 'template' ? "text-align:center" : '')}= line_item_visit_input visit_grouping, line_item, v, @tab, totals_hash, unit_minimum, @portal
+              %td.visit{:visit_column => index + 1, :class => "visit_column_#{index + 1}", :'data-cents' => (totals_hash["#{v.id}"] || 0), :style => (@tab == 'template' ? "text-align:center" : '')}= line_item_visit_input line_item, v, @tab, totals_hash, unit_minimum, @portal
             - (5 - visits.size).times do
               %td &nbsp;
             - if @portal 
@@ -77,8 +77,7 @@
           %td &nbsp;
           - 5.times do |i|
             %td{:class => "visit_column_#{i + 1} max_direct_per_patient"}
-          %td{:class => "pp_max_total_direct_cost"}
-          / TODO: Fix this for arms= display_max_total_direct_cost_per_patient @service_request, @line_items
+          %td{:class => "pp_max_total_direct_cost"}= display_max_total_direct_cost_per_patient arm
         
         - if USE_INDIRECT_COST
           %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}

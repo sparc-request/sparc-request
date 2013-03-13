@@ -1,36 +1,36 @@
 %p= "Dear #{@user.identity.try(:full_name)},"
 %p
-  Authorized Users have been edited or added in
-  = link_to('SPARC', root_url)
-  for your
+  = t(:mailer)[:header1]
+  = link_to(t(:mailer)[:link1], root_url)
+  = t(:mailer)[:header2]
   = @protocol.try(:type).try(:humanize)
-  listed below.
+  = t(:mailer)[:header3]
 %p
-  To VIEW and/or MAKE any changes to this request,
+  = t(:mailer)[:body1]
   / Development:
   / %strong= link_to 'please click here.', root_url(:host => "localhost:3000", :default_protocol => @protocol.id)
   / Staging:
-  %strong= link_to 'please click here.', root_url(:host => @portal_host, :default_protocol => @protocol.id)
+  %strong= link_to t(:mailer)[:link2], root_url(:host => @portal_host, :default_protocol => @protocol.id)
 %p
   %table{:style => 'border: 1px solid #000; width: 100%; border-collapse: collapse;'}
     %tr
       %td{:colspan => 2, :style => 'border: 1px solid #000'}
-        %strong Protocol Information
+        %strong= t(:mailer)[:p_info]
     %tr
       %td{:style => 'border: 1px solid #000'}
-        %strong Protocol ID:
+        %strong= t(:mailer)[:p_id]
       %td{:style => 'border: 1px solid #000'}= @protocol.id
     %tr
       %td{:style => 'border: 1px solid #000'}
-        %strong Short Title:
+        %strong= t(:mailer)[:title1]
       %td{:style => 'border: 1px solid #000'}= @protocol.try(:short_title)
     %tr
       %td{:style => 'border: 1px solid #000'}
-        %strong Project Title:
+        %strong= t(:mailer)[:title2]
       %td{:style => 'border: 1px solid #000'}= @protocol.try(:title)
     %tr
       %td{:style => 'border: 1px solid #000'}
-        %strong Sponsor Name
+        %strong= t(:mailer)[:s_name]
       %td{:style => 'border: 1px solid #000'}= @protocol.try(:sponsor_name)
     %tr
       %td{:style => 'border: 1px solid #000'}
@@ -40,14 +40,14 @@
   %table{:style => 'border: 1px solid #000; width: 100%; border-collapse: collapse;'}
     %tr
       %th{:colspan => 3, :style => 'border: 1px solid #000'}
-        %strong User Information:
+        %strong= t(:mailer)[:user_info]
     %tr
       %th{:style => 'border: 1px solid #000'}
-        %strong Name:
+        %strong= t(:mailer)[:name]
       %th{:style => 'border: 1px solid #000'}
-        %strong Role:
+        %strong= t(:mailer)[:role]
       %th{:style => 'border: 1px solid #000'}
-        %strong Proxy Rights
+        %strong= t(:mailer)[:proxy]
     - @protocol.project_roles.each do |user|
       %tr
         %td{:style => 'border: 1px solid #000'}= user.identity.try(:full_name)

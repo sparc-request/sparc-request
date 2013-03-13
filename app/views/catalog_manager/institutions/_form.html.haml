@@ -6,60 +6,61 @@
 
   #entity_description
     %fieldset
-      %legend Actions
-      = f.submit 'Save', :id => 'save_button', :class => 'btn save_button'
+      %legend= t(:organization_form)[:actions]
+      = f.submit t(:organization_form)[:submit_button], :id => 'save_button', :class => 'btn save_button'
       %img.spinner{:src => '/assets/catalog_manager/spinner_small.gif'}
     %br
   
     %fieldset
-      %legend General Information
+      %legend= t(:organization_form)[:gen_info]
       %table
         %tr
-          %th Name
+          %th= f.label :name, t(:organization_form)[:name]
           %td= f.text_field :name
         %tr
-          %th Abbreviation
+          %th= f.label :abbreviation, t(:organization_form)[:abbreviation]
           %td= f.text_field :abbreviation
         %tr
-          %th Description
+          %th= f.label :description, t(:organization_form)[:description]
           %td= f.text_area :description, :rows => 8
         %tr
-          %th Acknowledgment Language
+          %th= f.label :ack_language, t(:organization_form)[:ack_language]
           %td= f.text_area :ack_language, :rows => 8
         %tr
-          %th Order
+          %th= f.label :order, t(:organization_form)[:order]
           %td= f.text_field :order
-        %tr
-          %th Is CTRC?
-          %td= f.check_box :is_ctrc
         
         - if @user.is_overlord?
           %tr
-            %th CSS Class
-            %td= f.select :css_class, ACCORDION_COLOR_OPTIONS, :include_blank => 'Select a Color'
+            %th= f.label :css_class, t(:organization_form)[:css_class]
+            %td= f.select :css_class, ACCORDION_COLOR_OPTIONS, :include_blank => t(:organization_form)[:color_blank]
         
         %tr
-          %th Disabled
+          %th= f.label :disabled, t(:organization_form)[:disabled]
           %td= f.check_box :is_available, {:checked => (@institution.is_available.nil? ? false : !@institution.is_available) }, false, true
-    %br
+        %tr
+          %th= t(:organization_form)[:tag_list]
+          %td= f.text_field :tag_list
 
     %br
+    
+    = render :partial => 'catalog_manager/shared/available_statuses', :locals => {:f => f}
 
     %fieldset
-      %legend Super Users
+      %legend= t(:organization_form)[:super_users]
       #su_info= render :partial => 'catalog_manager/shared/super_users', :locals => {:entity => @institution}
 
     %br
 
     %fieldset
-      %legend Catalog Manager Rights
+      %legend= t(:organization_form)[:cm_rights]
       #cm_info= render :partial => 'catalog_manager/shared/catalog_managers', :locals => {:entity => @institution}
 
     %br    
 
     %fieldset
-      %legend Actions
-      = f.submit 'Save', :id => 'save_button', :class => 'btn save_button'
+      %legend= t(:organization_form)[:actions]
+      = f.submit t(:organization_form)[:submit_button], :id => 'save_button', :class => 'btn save_button'
       %img.spinner{:src => '/assets/catalog_manager/spinner_small.gif'}
 
 :javascript

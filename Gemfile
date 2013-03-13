@@ -107,3 +107,6 @@ end
 
 gem 'exception_notification'
 gem 'letter_opener'
+
+gem 'prawn'
+gem 'acts-as-taggable-on', '~> 2.3.1'

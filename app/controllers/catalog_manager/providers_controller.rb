@@ -13,6 +13,7 @@ class CatalogManager::ProvidersController < CatalogManager::AppController
 
   def show
     @provider = Provider.find(params[:id])
+    @provider.setup_available_statuses
   end
 
   def update
@@ -39,6 +40,7 @@ class CatalogManager::ProvidersController < CatalogManager::AppController
       @provider.save
     end if params[:pricing_setups]
 
+    @provider.setup_available_statuses
     @entity = @provider
     respond_with @provider, :location => catalog_manager_provider_path(@provider)
   end

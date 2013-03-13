@@ -13,6 +13,7 @@ class CatalogManager::CoresController < CatalogManager::AppController
   
   def show
     @core = Core.find(params[:id])
+    @core.setup_available_statuses
   end
   
   def update
@@ -25,6 +26,7 @@ class CatalogManager::CoresController < CatalogManager::AppController
       flash[:alert] = "Failed to update #{@core.name}."
     end
     
+    @core.setup_available_statuses
     @entity = @core
     respond_with @core, :location => catalog_manager_core_path(@core)          
   end

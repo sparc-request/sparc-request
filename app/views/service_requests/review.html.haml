@@ -7,7 +7,7 @@
     .view-anchor
       .review-view
         .review-details
-          %p.instructions Please review the following information to ensure the accuracy of your request. If you need to make changes, click on the steps above or click "Go Back" at the bottom of the page. After you have reviewed your request, click "Submit my Service Request." Alternatively, you may save your request as a draft for future submission.<br/>Please note: Draft requests are not reviewed by staff for approval.
+          %p.instructions= t(:sr_review)[:instructions]
           .project
             = render :partial => 'service_requests/review/study_project_information', :locals => {:protocol => @protocol}
           .documents
@@ -16,7 +16,7 @@
             %table
               %thead
                 %tr
-                  %th.light-blue-provider Service Request Notes
+                  %th.light-blue-provider= t(:sr_review)[:notes_header]
               %tbody
                 %tr
                   %td= @service_request.notes
@@ -28,6 +28,8 @@
             .return-to-step-3
               .return-to-previous= navigation_link image_tag('go_back.png'), @back
             .save-as-draft= navigation_link image_tag('wait_save_draft.png'), 'save_and_exit'
+            .obtain-research-pricing
+              = link_to image_tag( 'obtain_research_pricing.png'), obtain_research_pricing_service_request_path
             .submit-request
               = link_to image_tag( 'confirm_request.png'), confirmation_service_request_path, :class => "save-and-continue"
       .footer

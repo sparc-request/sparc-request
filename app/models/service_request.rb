@@ -2,8 +2,6 @@ class ServiceRequest < ActiveRecord::Base
   #Version.primary_key = 'id'
   #has_paper_trail
 
-  include Entity
-
   belongs_to :service_requester, :class_name => "Identity", :foreign_key => "service_requester_id"
   belongs_to :protocol
   has_many :sub_service_requests, :dependent => :destroy
@@ -45,6 +43,10 @@ class ServiceRequest < ActiveRecord::Base
     #insert group specific validation
   end
   
+  validation_group :obtain_research_pricing do
+    #insert group specific validation
+  end
+
   validation_group :confirmation do
     #insert group specific validation
   end

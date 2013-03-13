@@ -1,9 +1,9 @@
-%h3 Core Approvals
+%h3= t(:fulfillments)[:core_approvals][:header]
 %table{:id => 'core_approvals'}
   %tr
-    %th Nursing/Nutrition Approved
+    %th= t(:fulfillments)[:core_approvals][:nursing]
     %td= check_box_tag "sub_service_request_nursing_nutrition_approved", true, @sub_service_request.nursing_nutrition_approved, :'data-sub_service_request_id' => @sub_service_request.id, :class => 'fulfillment_data', :disabled => @sub_service_request.nursing_nutrition_approved?
-    %th Lab Approved
+    %th= t(:fulfillments)[:core_approvals][:lab]
     %td= check_box_tag "sub_service_request_lab_approved", true, @sub_service_request.lab_approved, :'data-sub_service_request_id' => @sub_service_request.id, :class => 'fulfillment_data', :disabled => @sub_service_request.lab_approved?
-    %th Imaging Approved
+    %th= t(:fulfillments)[:core_approvals][:imaging]
     %td= check_box_tag "sub_service_request_imaging_approved", true, @sub_service_request.imaging_approved, :'data-sub_service_request_id' => @sub_service_request.id, :class => 'fulfillment_data', :disabled => @sub_service_request.imaging_approved?

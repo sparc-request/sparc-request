@@ -11,10 +11,7 @@ class StudyType < ActiveRecord::Base
   attr_accessor :new
   attr_accessor :position
 
-  TYPES = {
-    'clinical_trials' => 'Clinical Trials',
-    'basic_science' => 'Basic Science',
-    'translational_science' => 'Translational Science'
-  }
+  TYPES = STUDY_TYPES
+  
 end
 

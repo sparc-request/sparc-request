@@ -1,17 +1,17 @@
-%input.increase_decrease_rates{:type => 'button', :value => 'Increase or Decrease Rates'}
+%input.increase_decrease_rates{:type => 'button', :value => t(:organization_form)[:change_rates]}
   
 .increase_decrease_dialog
   %div
-    %label{:for => "percent_of_change"} Percent of Change
+    %label{:for => "percent_of_change"}= t("cm_shared.labels.percent_of_change")
     %div
       %input.percent_of_change.change_rate{:type => 'text', :class => 'percent_of_change'}
       %span %
-      %p Enter a negative percent to decrease.
+      %p= t("cm_shared.labels.negative_to_change")
   %div
-    %label{:for => "pricing_display_date"} Display Date
+    %label{:for => "pricing_display_date"}= t("cm_shared.labels.display_date")
     %input#pricing_display_date.change_rate.datepicker{:type => 'text', :class => 'change_rate_display_date', :display => 'display_date', :past_date => (can_edit_historical_data ? 'true' : 'false')}
   %div{:style => 'margin-top:5px;'}
-    %label{:for => "pricing_effective_date"} Effective Date
+    %label{:for => "pricing_effective_date"}= t("cm_shared.labels.effective_date")
     %input#pricing_effective_date.change_rate.datepicker{:type => 'text', :class => 'change_rate_effective_date', :display => 'effective_date', :past_date => (can_edit_historical_data ? 'true' : 'false')}
   %input.entity_id{:type => 'hidden', :value => entity.id}
   

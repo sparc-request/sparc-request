@@ -9,73 +9,74 @@
   - rate_map = @service.get_rate_maps(pricing_map.try(:[], 'display_date').try(:to_date).try(:strftime, "%F"), (pricing_map.try(:[], 'full_rate'))) rescue {}
 
   %fieldset
-    %legend Dates
+    %legend= t(:pricing_map_form)[:dates]
     %table    
       %tbody
         %tr
-          %th Display Date
+          %th= t(:pricing_map_form)[:display_date]
           %td{:colspan => 2, :class => "include_date_picture"}
             %input.pricing_map_display_date.validate{:type => 'text', :value => pricing_map.try(:[], 'display_date'),  :class => "#{pricing_map_disabled ? 'disabled_datepicker' : 'datepicker'}", :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :past_date => (can_edit_historical_data ? 'true' : 'false')}
             = hidden_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][display_date]", pricing_map.try(:[], 'display_date'), :class => 'submitted_date pricing_map_display_date_hidden', :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :date_type => '.pricing_map_display_date_hidden', :entity_name => entity.try(:name), :entity_id => entity.try(:id), :entity_type => entity.try(:class).to_s.downcase
         %tr
-          %th Effective Date
+          %th= t(:pricing_map_form)[:effective_date]
           %td.include_date_picture{:colspan => 2}
             %input.pricing_map_effective_date.validate{:type => 'text', :value => pricing_map.try(:[], 'effective_date'), :class => "#{pricing_map_disabled ? 'disabled_datepicker' : 'datepicker'}", :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :past_date => (can_edit_historical_data ? 'true' : 'false')}
             = hidden_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][effective_date]", pricing_map.try(:[], 'effective_date'), :class => 'submitted_date pricing_map_effective_date_hidden', :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :date_type => '.pricing_map_effective_date_hidden', :entity_name => entity.try(:name), :entity_id => entity.try(:id), :entity_type => entity.try(:class).to_s.downcase
 
   %fieldset
-    %legend Rates
+    %legend= t(:pricing_map_form)[:rates]
     %table
       %tbody
         %tr
-          %th Service Rate
+          %th= t(:pricing_map_form)[:service_rate]
           %td{:colspan => 2}= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][full_rate]", Service.cents_to_dollars(pricing_map.try(:[], 'full_rate') ), :class => 'service_rate validate rate_field', :old_value => Service.cents_to_dollars(pricing_map.try(:[], 'full_rate') ), :rate_type => "Service", :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :organization_id => @service.organization.id, :display => 'Service Rate'
         %tr
           %th
           %td.set_rate{:style => 'font-size: 12px;'} CALCULATED
           %td.rate_field{:style => 'font-size: 12px;'} OVERRIDE
         %tr.federal_rate_row
-          %th Federal Rate
+          %th= t(:pricing_map_form)[:federal_rate]
           %td.set_rate= rate_map.try(:[], 'federal_rate')
           %td= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][federal_rate]", Service.cents_to_dollars(pricing_map.try(:[], 'federal_rate')), :class => 'rate_field', :old_value => Service.cents_to_dollars(pricing_map.try(:[], 'federal_rate') ), :rate_type => "Federal", :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :display => 'Federal Rate'
         %tr.corporate_rate_row
-          %th Corporate Rate
+          %th= t(:pricing_map_form)[:corporate_rate]
           %td.set_rate= rate_map.try(:[], 'corporate_rate')
           %td= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][corporate_rate]", Service.cents_to_dollars(pricing_map.try(:[],  'corporate_rate')), :class => 'rate_field', :old_value => Service.cents_to_dollars(pricing_map.try(:[], 'corporate_rate') ), :rate_type => "Corporate", :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :display => 'Corporate Rate'
         %tr.other_rate_row
-          %th Other Rate
+          %th= t(:pricing_map_form)[:other_rate]
           %td.set_rate= rate_map.try(:[], 'other_rate')
           %td= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][other_rate]", Service.cents_to_dollars(pricing_map.try(:[], 'other_rate')), :class => 'rate_field', :old_value => Service.cents_to_dollars(pricing_map.try(:[], 'other_rate') ), :rate_type => "Other", :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :display => 'Other Rate'
         %tr.member_rate_row
-          %th Member Rate
+          %th= t(:pricing_map_form)[:member_rate]
           %td.set_rate= rate_map.try(:[], 'member_rate')
           %td= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][member_rate]", Service.cents_to_dollars(pricing_map.try(:[], 'member_rate')), :class => 'rate_field', :old_value => Service.cents_to_dollars(pricing_map.try(:[], 'member_rate') ), :rate_type => "Member", :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :display => 'Member Rate'
         %tr
           %th
-            %td.set_rate{:colspan => 2, :style => "font-size: 12px"} *IF N/A, NO PRICING SET-UP IS DEFINED FOR THE CURRENT DATES
+            %td.set_rate{:colspan => 2, :style => "font-size: 12px"}= t(:pricing_map_form)[:rate_disclaimer]
 
   %fieldset
     %table
       %tbody
         %tr
-          %th Quantity Type
+          %th= t(:pricing_map_form)[:quantity_type]
           %td{:colspan => 2}= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][unit_type]", pricing_map.try(:[], 'unit_type'), :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :class => 'service_unit_type validate'
         %tr
-          %th Unit Factor
+          %th= t(:pricing_map_form)[:unit_factor]
           %td{:colspan => 2}= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][unit_factor]", pricing_map.try(:[], 'unit_factor') || 1, :class => 'unit_field service_unit_factor validate', :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :display => 'Unit Factor'
         %tr
-          %th Unit Minimum
+          %th= t(:pricing_map_form)[:unit_minimum]
           %td{:colspan => 2}= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][unit_minimum]", pricing_map.try(:[], 'unit_minimum') || 1, :class => 'unit_field service_unit_minimum validate', :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :display => 'Unit Minimum'
         %tr
           %th Units Per Qty Maximum
           %td{:colspan => 2}= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][units_per_qty_max]", pricing_map.try(:[], 'units_per_qty_max') || 1, :class => 'unit_field service_units_per_qty_max validate', :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :display => 'Units Per Qty Maximum'
             
         %tr
-          %th Is One Time Fee
+          %th= t(:pricing_map_form)[:is_one_time_fee]
           %td.is_one_time_fee{:colspan => 2}= check_box_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][is_one_time_fee]", true, pricing_map.try(:[], 'is_one_time_fee'), :disabled => pricing_map_disabled, :readonly => pricing_map_disabled
+        
         - if USE_INDIRECT_COST
           %tr
-            %th Exclude from Indirect Cost
+            %th= t(:pricing_map_form)[:exclude_from_indirect_cost]
             %td{:colspan => 2}
               = check_box_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][exclude_from_indirect_cost]", true, pricing_map.try(:[], 'exclude_from_indirect_cost'), :style => 'width: 250px;', :disabled => pricing_map_disabled, :readonly => pricing_map_disabled
 

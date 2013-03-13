@@ -11,23 +11,23 @@
         .service-details 
           - if (@sub_service_request.nil? ? @service_request.has_one_time_fee_services? : @sub_service_request.has_one_time_fee_services?)
             #show-one-time-fee
-              .instructions Please enter service details for SPARC Services that you selected
+              .instructions= t(:service_request_details)[:one_time_fee_instructions]
               .one-time-fee-details= render :partial => 'service_detail_list'
               %br
           - if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
             #show-visit-calendar-details
               .visit-calendar-details 
                 - if @service_request.has_one_time_fee_services?
-                  .instructions Next, please enter the following information specific to your research study/project. This information will help us generate applicable service fees for your review.
+                  .instructions= t(:service_request_details)[:one_time_fee_and_per_patient_instructions]
                 - else
-                  .instructions Please enter the following information specific to your research study/project. This information will help us generate applicable service fees for your review.
+                  .instructions= t(:service_request_details)[:per_patient_instructions]
                 %table.service-details-table
                   %thead
                     %tr
-                      %th Estimated Total Number of Subjects
-                      %th Estimated Total Number of Visits
-                      %th Estimated Study Start Date
-                      %th Estimated Study End Date
+                      %th= t(:service_request_details)[:number_of_subjects]
+                      %th= t(:service_request_details)[:number_of_visits]
+                      %th= t(:service_request_details)[:study_start_date]
+                      %th= t(:service_request_details)[:study_end_date]
                   %tbody
                     = fields_for @service_request do |f|
                       %td
@@ -42,13 +42,13 @@
                         = f.hidden_field :end_date
           .visit-calendar-details{:style => ((@sub_service_request.nil? ? @service_request.line_items.empty? : @sub_service_request.line_items.empty?) ? '' : 'display:none')}
             .instructions
-              You can't continue unless you have services in your cart.
+              = t(:service_request_details)[:services_required]
 
   .grid_3.protocol-view-right.right
     #services.ui-widget.ui-widget-content.cart-view
       %h3
-        My Services
-        %span#cart-help Help
+        = t(:service_request_details)[:services]
+        %span#cart-help= t(:service_request_details)[:help]
       .line-items= render :partial => 'catalogs/cart', :locals => {:service_request => @service_request}
     .dashboard-button= navigation_link image_tag('back_to_catalog.png'), @catalog
 

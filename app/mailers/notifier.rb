@@ -61,7 +61,7 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => "no-reply@musc.edu", :subject => subject)
   end
   
-  def notify_service_provider service_provider, service_request, xls
+  def notify_service_provider service_provider, service_request, attachments_to_add
     @protocol = service_request.protocol
     @service_request = service_request
     @role == 'none'
@@ -70,7 +70,9 @@ class Notifier < ActionMailer::Base
     @portal_link = USER_PORTAL_LINK + "admin"
     @portal_text = "Administrators/Service Providers, Click Here"
     
-    attachments["service_request_#{@service_request.id}.xls"] = xls 
+    attachments_to_add.each do |file_name, document|
+      attachments[file_name] = document
+    end
     
     # only send these to the correct person in the production env
     email = Rails.env == 'production' ? service_provider.identity.email : DEFAULT_MAIL_TO
@@ -87,5 +89,9 @@ class Notifier < ActionMailer::Base
     subject = Rails.env == 'production' ? "SPARC account request - status change" : "[#{Rails.env.capitalize} - EMAIL TO #{identity.email}] SPARC account request - status change"
 
     mail(:to => email_to, :from => email_from, :subject => subject)
+  end
+
+  def obtain_research_pricing service_provider, service_request
+
   end
 end

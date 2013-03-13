@@ -3,12 +3,12 @@
     %table
       %thead
         %tr
-          %th Name/Email
-          %th Delete
+          %th= t("cm_shared.labels.name_email")
+          %th= t("cm_shared.labels.delete")
       %tbody
         - entity.super_users.each do |su|
           %tr
             %td= su.identity.display_name
             %td= image_tag 'cancel.png', :id => su.id, :class => 'su_delete'
 
-  = text_field_tag 'new_su', 'New Super User'
+  = text_field_tag 'new_su', t("cm_shared.labels.new_super")

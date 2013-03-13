@@ -147,11 +147,11 @@ class SubServiceRequest < ActiveRecord::Base
   ## SSR STATUS METHODS ##
   ########################
   def ctrc?
-    self.organization.is_ctrc
+    self.organization.tag_list.include? "ctrc"
   end
 
   def can_be_edited?
-    ['draft', 'submitted', nil].include?(self.status) ? true : false
+    ['draft', 'submitted', nil, 'obtain_research_pricing'].include?(self.status) ? true : false
   end
 
   def candidate_statuses

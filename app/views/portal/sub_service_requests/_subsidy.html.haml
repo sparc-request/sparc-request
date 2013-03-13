@@ -1,17 +1,17 @@
-%h3 Subsidy Information
+%h3= t(:fulfillments)[:subsidies][:header]
 - unless @subsidy
   %p.blank_requests
-    No subsidy has been requested for this service request.
-    = link_to "Add a Subsidy", 'javascript:void(0);', :class => "add_subsidy_link", :'data-sub_service_request_id' => @sub_service_request.id
+    = t(:fulfillments)[:subsidies][:no_subsidy]
+    = link_to t(:fulfillments)[:subsidies][:link], 'javascript:void(0);', :class => "add_subsidy_link", :'data-sub_service_request_id' => @sub_service_request.id
 - else
   #subsidy_table
     %table
       %thead
         %tr
-          %th PI Contribution
-          %th % Subsidy
-          %th Total Cost
-          %th Delete Subsidy
+          %th= t(:fulfillments)[:subsidies][:pi]
+          %th= t(:fulfillments)[:subsidies][:percent]
+          %th= t(:fulfillments)[:subsidies][:cost]
+          %th= t(:fulfillments)[:subsidies][:delete]
       %tbody
         %tr
           %td= text_field_tag "subsidy_pi_contribution", @subsidy.try(:pi_contribution).try(:/, 100.0), :'data-subsidy_id' => @subsidy.id, :class => 'fulfillment_data'

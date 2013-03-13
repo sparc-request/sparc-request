@@ -3,10 +3,10 @@
     %table
       %thead
         %tr
-          %th Name/Email
+          %th= t("cm_shared.labels.name_email")
           -if @user.is_overlord?
-            %th Can Edit Historical Data
-          %th Delete
+            %th= t("cm_shared.labels.can_edit")
+          %th= t("cm_shared.labels.delete")
       %tbody
         - entity.catalog_managers.each do |cm|
           %tr
@@ -16,4 +16,4 @@
             %td= image_tag 'catalog_manager/cancel.png', :id => cm.id, :class => 'cm_delete'
             
 
-  = text_field_tag 'new_cm', 'New Catalog Manager'
+  = text_field_tag 'new_cm', t(:organization_form)[:new_cm]

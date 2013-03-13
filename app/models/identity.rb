@@ -1,8 +1,6 @@
 require 'directory'
 
 class Identity < ActiveRecord::Base
-  include Entity
-
   after_create :send_admin_mail
 
   #Version.primary_key = 'id'
@@ -153,17 +151,17 @@ class Identity < ActiveRecord::Base
   # have been moved out of 'draft' or 'submitted' status.
   def can_edit_service_request? service_request
     # things to consider
-    # service_request status == first_draft or draft or submitted
+    # service_request status == first_draft or draft or submitted or obtain_research_pricing
     # if all sub_service_request statuses == all draft or all submitted, no mix and match
     # identity project role, i believe only request and approve can edit
-    statuses = ['draft', 'submitted']
+    statuses = ['draft', 'submitted', 'obtain_research_pricing']
 
     if service_request.status == 'first_draft' and (service_request.service_requester_id == self.id or service_request.service_requester_id.nil?)
       return true
     else
       sub_service_requests_statuses = service_request.sub_service_requests.map(&:status)
       if statuses.include?(service_request.status) and
-         (sub_service_requests_statuses.map{|s| s == 'draft'}.all? or sub_service_requests_statuses.map{|s| s == 'submitted'}.all?) and
+         (sub_service_requests_statuses.map{|s| s == 'draft'}.all? or sub_service_requests_statuses.map{|s| s == 'submitted'}.all? or sub_service_requests_statuses.map{|s| s == 'obtain_research_pricing'}.all?) and
          !self.project_roles.select{|pr| pr.protocol_id == service_request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights}.empty?
         return true
       end
@@ -177,9 +175,9 @@ class Identity < ActiveRecord::Base
   # TODO: Not sure why this method is on the ServiceRequest rather than on the SubServiceRequest
   def can_edit_sub_service_request? sub_service_request
     # things to consider
-    # 1. sub_service_requests statuses == draft or submitted
+    # 1. sub_service_requests statuses == draft or submitted or obtain_research_pricing
     # 2. identity project role, i believe only request and approve can edit
-    if (sub_service_request.status == 'draft' or sub_service_request.status == 'submitted') and
+    if (sub_service_request.status == 'draft' or sub_service_request.status == 'submitted' or sub_service_request.status == 'obtain_research_pricing') and
        self.project_roles.select{|pr| pr.protocol_id == sub_service_request.service_request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights}
       return true
     end
@@ -264,8 +262,8 @@ class Identity < ActiveRecord::Base
   # Currently serves largely to insert CTRC statuses if this identity has permissions for the CTRC.
   # Returns an array of statuses as strings.
   def available_workflow_states
-    available_statuses = ['Draft', 'Submitted', 'In Process', 'Complete', 'Awaiting PI Approval', 'On Hold', 'CTRC Review', 'CTRC Approved']
-    ctrc_organizations = Organization.where(:is_ctrc => true)
+    available_statuses = AVAILABLE_STATUSES.collect { |k, v| v }
+    ctrc_organizations = Organization.tagged_with 'ctrc'
     if ctrc_organizations.map(&:service_providers).flatten.map(&:identity_id).include?(self.id) || ctrc_organizations.map(&:super_users).flatten.map(&:identity_id).include?(self.id)
       available_statuses
     else

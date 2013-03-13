@@ -15,13 +15,22 @@ $(document).ready ->
       name: "light"
       width: 250
 
-  # TODO: Fix this for arms
-  # if $('.line_item_visit_template').is(':visible')
-  #   calculate_max_rates()
-  # else if $('.line_item_visit_billing').is(':visible')
-  #   calculate_max_rates()
-  # else if $('.line_item_visit_quantity').is(':visible')
-  #   calculate_max_rates()
-  # else if $('.line_item_visit_pricing').is(':visible')
-  #   calculate_max_rates()
+  changing_tabs_calculating_rates = ->
+    arm_ids = []
+    $('.arm_calendar_container').each (index, arm) ->
+      if $(arm).is(':hidden') == false then arm_ids.push $(arm).data('arm_id')
+
+    i = 0
+    while i < arm_ids.length
+      calculate_max_rates(arm_ids[i])
+      i++
+
+  if $('.line_item_visit_template').is(':visible')
+    changing_tabs_calculating_rates()
+  else if $('.line_item_visit_billing').is(':visible')
+    changing_tabs_calculating_rates()
+  else if $('.line_item_visit_quantity').is(':visible')
+    changing_tabs_calculating_rates()
+  else if $('.line_item_visit_pricing').is(':visible')
+    changing_tabs_calculating_rates()
 

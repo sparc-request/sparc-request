@@ -140,6 +140,7 @@ en:
 
   # Documents Page
   documents:
+    message: "Your file is uploading.  Please be patient as this may take a while with large files."
     no_documents: "No documents found"
     instructions: "Please add any additional information that may be helpful to service providers."
     admin_instructions: "Additional Notes -- If specific to service, please specify in text:"
@@ -381,6 +382,35 @@ en:
     study_start_date: "Estimated Study Start Date"
     study_end_date: "Estimated Study End Date"
     services_required: "You can't continue unless you have services in your cart."
+    services: "My Services"
+    help: "Help"
+
+  # Service Requests
+  service_requests:
+    detail_list:
+      text1: "Quantity of"
+      text2: "is less than the unit minimum of"
+      text3: "Quantity is being reset to the previous value."
+      text4: "Units Per Quantity of"
+      text5: "is more than the maximum allowed of"
+      text6: "Units Per Quantity is being set to the maximum allowed value."
+      service: "Service"
+      quantity: "Quantity"
+      description1: "(Samples, hours, etc...)"
+      up_quantity: "Units Per Quantity"
+      description2: "(Slides, etc...)"
+      q_type: "Quantity Type"
+    approve_changes:
+      text1: "has already approved these changes"
+      text2: "You have successfully approved the changes requested."
+    catalog:
+      text1: "My Services"
+      text2: "Help"
+      text3: "Please ensure that you have added all necessary research services to your My Services cart before proceeding. For a listing of available services to add, click on any of the Programs listed on the left-hand side of the page. Services will appear in the middle of the screen. Add services by clicking \"Add\"."
+      text4: "At least 1 service needs to be in cart first time through before clicking \"Submit request\" from catalog page."
+    info: 
+      text1: "Service Request Status"
+      text2: "Service Request Owner"
 
   # Service Request review page
   sr_review:
@@ -579,6 +609,58 @@ en:
     received: "Received:"
     requester: "Requester: "
 
+  # Notifier
+  notifier:
+    sr: "Service Request"
+    p_info: "Project Information"
+    p_id: "Project ID:"
+    title1: "Short Title:"
+    title2: "Project Title:"
+    s_name: "Sponsor Name:"
+    source: "Funding Source:"
+    name: "Name:"
+    role: "Role:"
+    proxy: "Proxy Rights:"
+    body6: "A list of requested services is attached."
+    body7: "To approve the charges associated with the selected services please click"
+    link: "HERE"
+    notice:
+      body1: "Request for new SPARC account submitted and awaiting approval"
+      body2: "A new SPARC account is waiting for approval."
+      last: "Last Name"
+      first: "First Name"
+      company: "Company"
+      email: "Email"
+      number: "Telephone Number"
+      reason: "Reason for account/login request"
+      approve: "Approve Account"
+      disapprove: "Disapprove Account"
+    status_change:
+      body1: "Request for new SPARC account status change"
+      body2: "Your request for a new SPARC account has been approved.  You may proceed with your service "
+      body3: "request using your newly created"
+      body4: "username and password."
+      body5: "Your request for a new SPARC account has NOT been approved."
+
+  # Mailer
+  mailer:
+    header1: "Authorized Users have been edited or added in"
+    header2: "for your"
+    header3: "listed below."
+    body1: "To VIEW and/or MAKE any changes to this request,"
+    link1: "SPARC"
+    link2: "please click here."
+    p_info: "Protocol Information"
+    p_id: "Protocol ID:"
+    title1: "Short Title:"
+    title2: "Project Title:"
+    s_name: "Sponsor Name"
+    user_info: "User Information:"
+    name: "Name:"
+    role: "Role:"
+    proxy: "Proxy Rights"
+    received: "You have received a new notification on your SPARC User Dashboard. Please login  @ #{portal_root_url} to retrieve it. Thank you."
+
   # Fulfillment tab
   fulfillments:
     approval_history: 
@@ -677,6 +759,7 @@ en:
   # Associated Users Tab
   associated_users:
     add: "Add a new Associated User"
+
 
 
 

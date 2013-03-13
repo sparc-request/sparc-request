@@ -7,14 +7,14 @@
 .grid_3.catalog-view-right.right
   #services.ui-widget.ui-widget-content.cart-view
     %h3
-      My Services
-      %span#cart-help Help
+      = t(:service_requests)[:catalog][:text1]
+      %span#cart-help= t(:service_requests)[:catalog][:text2]
     = render :partial => 'catalogs/cart'
   .submit-request-button
     = link_to image_tag('submit_request.png'), protocol_service_request_path(@service_request)
   #submit_error{:style => "display: none"}
-    Please ensure that you have added all necessary research services to your My Services cart before proceeding. For a listing of available services to add, click on any of the Programs listed on the left-hand side of the page. Services will appear in the middle of the screen. Add services by clicking "Add"
-    At least 1 service needs to be in cart first time through before clicking "Submit request" from catalog page.
+    = t(:service_requests)[:catalog][:text3]
+    = t(:service_requests)[:catalog][:text4]
   - if current_user.nil? and not params[:signed_up_but_not_approved] == 'true'
     = javascript_include_tag "sign_in"
     #sign_in{:style => "display: none"}

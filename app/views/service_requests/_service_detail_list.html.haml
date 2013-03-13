@@ -1,32 +1,32 @@
 #one_time_fee_errors{:style => 'display:none;'}
-  Quantity of
+  = t(:service_requests)[:detail_list][:text1]
   %span#quantity
-  is less than the unit minimum of
+  = t(:service_requests)[:detail_list][:text2]
   %span#unit_minimum
   %br
-  Quantity is being reset to the previous value.
+  = t(:service_requests)[:detail_list][:text3]
 
 #unit_max_error{:style => 'display:none;'}
-  Units Per Quantity of
+  = t(:service_requests)[:detail_list][:text4]
   %span#unit_quantity
-  is more than the maximum allowed of
+  = t(:service_requests)[:detail_list][:text5]
   %span#unit_max
   %br
-  Units Per Quantity is being set to the maximum allowed value.
+  = t(:service_requests)[:detail_list][:text6]
 
 %table.one-time-fees
   %thead
     %tr
-      %th Service
+      %th= t(:service_requests)[:detail_list][:service]
       %th 
-        Quantity
+        = t(:service_requests)[:detail_list][:quantity]
         %br
-        %span.small_desc (Samples, hours, etc...)
+        %span.small_desc= t(:service_requests)[:detail_list][:description1]
       %th 
-        Units Per Quantity
+        = t(:service_requests)[:detail_list][:up_quantity]
         %br
-        %span.small_desc (Slides, etc...)
-      %th Quantity Type
+        %span.small_desc= t(:service_requests)[:detail_list][:description2]
+      %th= t(:service_requests)[:detail_list][:q_type]
   %tbody#this-is-a-test
     - @service_request.service_list(true).each do |key, value|
       - next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]

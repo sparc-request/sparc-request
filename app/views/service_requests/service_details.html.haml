@@ -47,8 +47,8 @@
   .grid_3.protocol-view-right.right
     #services.ui-widget.ui-widget-content.cart-view
       %h3
-        My Services
-        %span#cart-help Help
+        = t(:service_request_details)[:services]
+        %span#cart-help= t(:service_request_details)[:help]
       .line-items= render :partial => 'catalogs/cart', :locals => {:service_request => @service_request}
     .dashboard-button= navigation_link image_tag('back_to_catalog.png'), @catalog
 

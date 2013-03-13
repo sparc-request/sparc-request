@@ -21,7 +21,7 @@
       
       .field
         = f.label :funding_status, t(:protocol_shared)[:funding_status]
-        = f.select :funding_status, options_for_select(FUNDING_STATUSES, study.funding_status), :include_blank => "Select a Funding Status"
+        = f.select :funding_status, options_for_select(FUNDING_STATUSES, study.funding_status), :include_blank => t(:study_form)[:status_blank]
       
       .field
         = f.label :udak_project_number, t(:study_form)[:udak_project_number]
@@ -43,7 +43,7 @@
 
         .field
           = f.label :potential_funding_source, t(:protocol_shared)[:potential_funding_source]
-          = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, study.potential_funding_source), :include_blank => "Select a Potential Funding Source"
+          = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, study.potential_funding_source), :include_blank => t(:study_form)[:potential_blank]
 
         / Internal Funded Pilot Project selected
         .internal_potential_funded_pilot_project
@@ -59,7 +59,7 @@
         
         .field
           = f.label :funding_source, t(:protocol_shared)[:funding_source]
-          = f.select :funding_source, options_for_select(FUNDING_SOURCES, study.funding_source), :include_blank => "Select a Funding Source"
+          = f.select :funding_source, options_for_select(FUNDING_SOURCES, study.funding_source), :include_blank => t(:study_form)[:funding_blank]
 
         / Internal Funded Pilot Project selected
         .internal_funded_pilot_project
@@ -79,18 +79,18 @@
 
           .field
             = f.label :federal_grant_code_id, t(:study_form)[:federal_grant_code_id]
-            = f.select :federal_grant_code_id, options_for_select(FEDERAL_GRANT_CODES, study.federal_grant_code_id), :include_blank => "Select a Federal Grant Code"
+            = f.select :federal_grant_code_id, options_for_select(FEDERAL_GRANT_CODES, study.federal_grant_code_id), :include_blank => t(:study_form)[:code_blank]
 
           .field
             = f.label :federal_phs_sponsor, t(:study_form)[:federal_phs_sponsor]
-            = f.select :federal_phs_sponsor, options_for_select(FEDERAL_GRANT_PHS_SPONSORS, study.federal_phs_sponsor), :include_blank => "Please Select if Applicable"
+            = f.select :federal_phs_sponsor, options_for_select(FEDERAL_GRANT_PHS_SPONSORS, study.federal_phs_sponsor), :include_blank => t(:study_form)[:phs_blank]
           
           .field
             %span -OR-
       
           .field
             = f.label :federal_non_phs_sponsor, t(:study_form)[:federal_non_phs_sponsor]
-            = f.select :federal_non_phs_sponsor, options_for_select(FEDERAL_GRANT_NON_PHS_SPONSORS, study.federal_non_phs_sponsor), :include_blank => "Please Select if Applicable"
+            = f.select :federal_non_phs_sponsor, options_for_select(FEDERAL_GRANT_NON_PHS_SPONSORS, study.federal_non_phs_sponsor), :include_blank => t(:study_form)[:phs_blank]
 
           .field
             = f.label :federal_grant_serial_number, t(:study_form)[:federal_grant_serial_number]
@@ -98,7 +98,7 @@
 
       .field
         = f.label :study_phase, t(:study_form)[:study_phase]
-        = f.select :study_phase, options_for_select(STUDY_PHASES, study.study_phase), :include_blank => "Select a Study Phase"
+        = f.select :study_phase, options_for_select(STUDY_PHASES, study.study_phase), :include_blank => t(:study_form)[:phase_blank]
 
     %fieldset
       %legend Research Involving (Check all that apply)
@@ -123,7 +123,7 @@
           .field.submission_type
             = hs.label :submission_type, t(:study_form)[:submission_type]
             %br
-            = hs.select :submission_type, options_for_select(SUBMISSION_TYPES, study.human_subjects_info.submission_type), :include_blank => "Pick a Submission Type"
+            = hs.select :submission_type, options_for_select(SUBMISSION_TYPES, study.human_subjects_info.submission_type), :include_blank => t(:study_form)[:submission_blank]
 
           .field.approval_pending
             = hs.label :approval_pending, t(:study_form)[:approval_pending]

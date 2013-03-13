@@ -64,7 +64,7 @@
             - unit_minimum = line_item.service.displayed_pricing_map.unit_minimum
             - totals_hash = visit_grouping.try(:per_subject_subtotals)
             - visits.each_with_index do |v, index|
-              %td.visit{:visit_column => index + 1, :class => "visit_column_#{index + 1}", :'data-cents' => (totals_hash["#{v.id}"] || 0), :style => (@tab == 'template' ? "text-align:center" : '')}= line_item_visit_input line_item, v, @tab, totals_hash, unit_minimum, @portal
+              %td.visit{:visit_column => index + 1, :class => "visit_column_#{index + 1} arm_#{arm.id}", :'data-cents' => (totals_hash["#{v.id}"] || 0), :style => (@tab == 'template' ? "text-align:center" : '')}= line_item_visit_input arm, line_item, v, @tab, totals_hash, unit_minimum, @portal
             - (5 - visits.size).times do
               %td &nbsp;
             - if @portal 
@@ -76,46 +76,46 @@
           %td{:colspan => 5}= t("calendar_page.labels.maximum_direct")
           %td &nbsp;
           - 5.times do |i|
-            %td{:class => "visit_column_#{i + 1} max_direct_per_patient"}
-          %td{:class => "pp_max_total_direct_cost"}= display_max_total_direct_cost_per_patient arm
+            %td{:class => "visit_column_#{i + 1} max_direct_per_patient arm_#{arm.id}"}
+          %td{:class => "pp_max_total_direct_cost arm_#{arm.id}"}= display_max_total_direct_cost_per_patient arm
         
         - if USE_INDIRECT_COST
           %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
             %td{:colspan => 5}= t("calendar_page.labels.maximum_indirect")
             %td &nbsp;
             - 5.times do |i|
-              %td{:class => "visit_column_#{i + 1} max_indirect_per_patient"}
-            %td{:class => "pp_max_total_indirect_cost"}
+              %td{:class => "visit_column_#{i + 1} max_indirect_per_patient arm_#{arm.id}"}
+            %td{:class => "pp_max_total_indirect_cost arm_#{arm.id}"}
             / TODO: Fix this for arms= display_max_total_indirect_cost_per_patient @service_request, @line_items
 
         %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
           %td{:colspan => 5}= t("calendar_page.labels.maximum_per")
           %td &nbsp;
           - 5.times do |i|
-            %td{:class => "visit_column_#{i + 1} max_total_per_patient"}
-          %td{:class => "pp_max_total"}
+            %td{:class => "visit_column_#{i + 1} max_total_per_patient arm_#{arm.id}"}
+          %td{:class => "pp_max_total arm_#{arm.id}"}
           / TODO: Fix this for arms= display_max_total_cost_per_patient @service_request, @line_items
         
-        %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
-          %td{:colspan => 5}= t("calendar_page.labels.total_direct")
-          %td{:colspan => 6}
-          %td{:class => "pp_total_direct_cost"}
-          / TODO: Fix this for arms= display_total_direct_cost_per_study_pppvs @service_request, @line_items
+        / %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
+        /   %td{:colspan => 5}= t("calendar_page.labels.total_direct")
+        /   %td{:colspan => 6}
+        /   %td{:class => "pp_total_direct_cost"}
+        /   / TODO: Fix this for arms= display_total_direct_cost_per_study_pppvs @service_request, @line_items
         
-        - if USE_INDIRECT_COST
-          %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
-            %td{:colspan => 5}= t("calendar_page.labels.total_indirect")
-            %td{:colspan => 6}
-            %td{:class => "pp_total_indirect_cost"}
-            / TODO: Fix this for arms= display_total_indirect_cost_per_study_pppvs @service_request, @line_items
+        / - if USE_INDIRECT_COST
+        /   %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
+        /     %td{:colspan => 5}= t("calendar_page.labels.total_indirect")
+        /     %td{:colspan => 6}
+        /     %td{:class => "pp_total_indirect_cost"}
+        /     / TODO: Fix this for arms= display_total_indirect_cost_per_study_pppvs @service_request, @line_items
         
-        %tr.totals_section.total-visit-based-services{:class => cycle('odd', '', :name => 'pppvs')}
-          %td{:colspan => 5}= t("calendar_page.labels.total_costs")
-          %td{:colspan => 6}
-          %td{:class => "pp_total_cost"}
-          / TODO: Fix this for arms= display_total_cost_per_study_pppvs @service_request, @line_items
+        / %tr.totals_section.total-visit-based-services{:class => cycle('odd', '', :name => 'pppvs')}
+        /   %td{:colspan => 5}= t("calendar_page.labels.total_costs")
+        /   %td{:colspan => 6}
+        /   %td{:class => "pp_total_cost"}
+        /   / TODO: Fix this for arms= display_total_cost_per_study_pppvs @service_request, @line_items
 
-        %th.totals_section{:colspan => 12} &nbsp;
+        / %th.totals_section{:colspan => 12} &nbsp;
 
     / - if (@sub_service_request.nil? ? @service_request.has_one_time_fee_services? : @sub_service_request.has_one_time_fee_services?) and !@portal
     /   %tr.section_header

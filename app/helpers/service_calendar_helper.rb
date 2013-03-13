@@ -76,7 +76,7 @@ module ServiceCalendarHelper
 
   # Displays max totals per patient per visit
   def update_visit_data_cents visit
-    # visit.cost unless visit.nil?
+    visit.cost unless visit.nil?
   end
 
   #############################################

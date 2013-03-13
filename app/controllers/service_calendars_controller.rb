@@ -49,6 +49,7 @@ class ServiceCalendarsController < ApplicationController
     @visit_grouping = visit.visit_grouping if @visit_grouping.nil?
     @line_item = @visit_grouping.line_item if @line_item.nil?
     @line_item_total_td = ".total_#{@visit_grouping.id}"
+    @arm_id = '.arm_' + @visit_grouping.arm.id.to_s
     # @displayed_visits = @line_item.visits.paginate(page: params[:page], per_page: 5)
   end
 

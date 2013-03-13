@@ -18,7 +18,8 @@ $(document).ready ->
       url: $(this).attr('update') + "&checked=#{$(this).is(':checked')}"
     .complete =>
       $('.service_calendar_spinner').hide()
-      calculate_max_rates()
+      arm_id = $(this).data("arm_id")
+      calculate_max_rates(arm_id)
 
   $('.line_item_visit_quantity').live 'change', ->
     $('.service_calendar_spinner').show()
@@ -75,23 +76,27 @@ $(document).ready ->
     .complete ->
       $('.service_calendar_spinner').hide()
     
-(exports ? this).calculate_max_rates = ->
+(exports ? this).calculate_max_rates = (arm_id) ->
   # TODO: Need to update this for the arms
-  # for num in [1..5]
-  #   column = '.visit_column_' + num
-  #   visits = $(column + '.visit')
-  #   direct_total = 0
-  #   $(visits).each (index, visit) =>
-  #     if $(visit).is(':hidden') == false && $(visit).data('cents')
-  #       direct_total += Math.floor($(visit).data('cents')) / 100.0
-  #   indirect_rate = parseFloat($("#indirect_rate").val()) / 100.0
-  #   indirect_total = if use_indirect_cost == 'true' then direct_total * indirect_rate else 0
-  #   max_total = direct_total + indirect_total
+  for num in [1..5]
+    column = '.visit_column_' + num
+    visits = $(column + '.visit' + '.arm_' + arm_id)
+    console.log visits
+    direct_total = 0
+    $(visits).each (index, visit) =>
+      console.log $(visit).is(':hidden') == false
+      console.log $(visit).data('cents')
+      if $(visit).is(':hidden') == false && $(visit).data('cents')
+        direct_total += Math.floor($(visit).data('cents')) / 100.0
+        console.log direct_total
+    indirect_rate = parseFloat($("#indirect_rate").val()) / 100.0
+    indirect_total = if use_indirect_cost == 'true' then direct_total * indirect_rate else 0
+    max_total = direct_total + indirect_total
 
-  #   direct_total_display = '$' + (direct_total).toFixed(2)
+    direct_total_display = '$' + (direct_total).toFixed(2)
   #   indirect_total_display = '$' + (Math.floor(indirect_total * 100) / 100).toFixed(2)
   #   max_total_display = '$' + (Math.floor(max_total * 100) / 100).toFixed(2)
 
-  #   $(column + '.max_direct_per_patient').html(direct_total_display)
+    $(column + '.max_direct_per_patient' + '.arm_' + arm_id).html(direct_total_display)
   #   $(column + '.max_indirect_per_patient').html(indirect_total_display)
   #   $(column + '.max_total_per_patient').html(max_total_display)

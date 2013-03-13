@@ -28,7 +28,7 @@ class Visit < ActiveRecord::Base
 
   after_create :set_default_name
 
-  def cost(per_unit_cost = self.visit_grouping.line_item.per_unit_cost(self.line_item.quantity_total))
+  def cost(per_unit_cost = self.visit_grouping.per_unit_cost(self.visit_grouping.quantity_total))
     li = self.visit_grouping.line_item
     if li.applicable_rate == "N/A"
       return "N/A"

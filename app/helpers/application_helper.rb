@@ -31,11 +31,11 @@ module ApplicationHelper
     params[:controller] + '/' + params[:action]
   end
 
-  def line_item_visit_input line_item, visit, tab, totals_hash={}, unit_minimum=0, portal=nil
+  def line_item_visit_input arm, line_item, visit, tab, totals_hash={}, unit_minimum=0, portal=nil
     base_url = "/service_requests/#{line_item.service_request_id}/service_calendars?visit=#{visit.id}"
     case tab
     when 'template'
-      check_box_tag "visits_#{visit.id}", 1, (visit.research_billing_qty.to_i > 0), :class => "line_item_visit_template visits_#{visit.id}", :update => "#{base_url}&tab=template&portal=#{portal}"
+      check_box_tag "visits_#{visit.id}", 1, (visit.research_billing_qty.to_i > 0), :class => "line_item_visit_template visits_#{visit.id}", :'data-arm_id' => arm.id, :update => "#{base_url}&tab=template&portal=#{portal}"
     when 'quantity'
       content_tag(:div, (visit.research_billing_qty.to_i + visit.insurance_billing_qty.to_i + visit.effort_billing_qty.to_i), {:style => 'text-align:center', :class => "line_item_visit_quantity"}) 
     when 'billing_strategy'

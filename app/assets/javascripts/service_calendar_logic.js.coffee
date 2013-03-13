@@ -15,12 +15,13 @@ $(document).ready ->
       name: "light"
       width: 250
 
-  if $('.line_item_visit_template').is(':visible')
-    calculate_max_rates()
-  else if $('.line_item_visit_billing').is(':visible')
-    calculate_max_rates()
-  else if $('.line_item_visit_quantity').is(':visible')
-    calculate_max_rates()
-  else if $('.line_item_visit_pricing').is(':visible')
-    calculate_max_rates()
+  # TODO: Fix this for arms
+  # if $('.line_item_visit_template').is(':visible')
+  #   calculate_max_rates()
+  # else if $('.line_item_visit_billing').is(':visible')
+  #   calculate_max_rates()
+  # else if $('.line_item_visit_quantity').is(':visible')
+  #   calculate_max_rates()
+  # else if $('.line_item_visit_pricing').is(':visible')
+  #   calculate_max_rates()
 

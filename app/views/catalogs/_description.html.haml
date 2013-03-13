@@ -19,24 +19,23 @@
               = display_service_in_catalog service, service_request
 
 - else
-  %h1 Welcome to the SPARC Services Catalog
+  %h1= t(:rails_root)[:welcome]
   .section
-    Please browse through the SPARC Services Catalog to view all available SPARC services.  Service providers are located on the left-hand side of the page.
-    Click on a provider to see available services.
+    = t(:rails_root)[:message1]
   .section
-    Click "Add Services" at the bottom of any service description to add it to your "My Services."
+    = t(:rails_root)[:message2]
   .section
-    To delete a service from "My Services," use the red X beside any service.
+    = t(:rails_root)[:message3]
   .section
-    ** Please Note: You may only select services applicable to ONE research study/project at a time.  Should you need to select services for multiple studies/projects you need to submit multiple "Requests."
+    = t(:rails_root)[:message4]
     %br
     %br
     %br
     %br
     #blue_description.section 
-      Please note that any studies/projects previously entered into SCTR SPARK (sctr.musc.edu/spark) have been migrated to the new SPARC system and are available on your new SPARC User Dashboard. To access, please visit
+      = t(:rails_root)[:message5]
       = link_to USER_PORTAL_LINK, USER_PORTAL_LINK
       \.
-      %span Any service requests previously entered into SPARK have been archived and will continue to be fulfilled by SCTR staff as approved. You may continue to request new services under any existing study/project through SPARC.
+      %span= t(:rails_root)[:message6]
     #red_description.section
-      Due to user feedback regarding the inclusion of Indirect Costs in the Grand Total of Study Costs, Indirect Costs (as a line item) have currently been removed from SPARC and will be reintroduced in the budget template tools in the Study Tracker Release. Please contact the SUCCESS Center at 792-8300 with any questions.
+      = t(:rails_root)[:message7]

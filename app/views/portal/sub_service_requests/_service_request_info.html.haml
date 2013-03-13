@@ -1,7 +1,7 @@
 #service_request_status
-  %h3 Service Request Status
+  %h3= t(:service_requests)[:info][:text1]
   = select_tag "sub_service_request_status", options_for_select(@sub_service_request ? @sub_service_request.organization.get_available_statuses.invert : [], @sub_service_request.try(:status)), :'data-sub_service_request_id' => @sub_service_request.id, :class => 'fulfillment_data'
 %br
 #service_request_owner{:style => @sub_service_request.status == 'draft' ? 'display:none;' : ''}
-  %h3 Service Request Owner
+  %h3= t(:service_requests)[:info][:text2]
   = select_tag "sub_service_request_owner_id", owners_for_select(@sub_service_request), :prompt => '---Please Select---', :'data-sub_service_request_id' => @sub_service_request.id, :class => 'fulfillment_data'

@@ -54,7 +54,8 @@ $(document).ready ->
         url: $(this).attr('update') + "&qty=#{my_qty}"
       .complete =>
         $('.service_calendar_spinner').hide()
-        calculate_max_rates()
+        arm_id = $(this).data("arm_id")
+        calculate_max_rates(arm_id)
     else
       alert "Quantity must be a whole number"
       $('.service_calendar_spinner').hide()
@@ -77,7 +78,6 @@ $(document).ready ->
       $('.service_calendar_spinner').hide()
     
 (exports ? this).calculate_max_rates = (arm_id) ->
-  # TODO: Need to update this for the arms
   for num in [1..5]
     column = '.visit_column_' + num
     visits = $(column + '.visit' + '.arm_' + arm_id)
@@ -90,9 +90,9 @@ $(document).ready ->
     max_total = direct_total + indirect_total
 
     direct_total_display = '$' + (direct_total).toFixed(2)
-  #   indirect_total_display = '$' + (Math.floor(indirect_total * 100) / 100).toFixed(2)
-  #   max_total_display = '$' + (Math.floor(max_total * 100) / 100).toFixed(2)
+    indirect_total_display = '$' + (Math.floor(indirect_total * 100) / 100).toFixed(2)
+    max_total_display = '$' + (Math.floor(max_total * 100) / 100).toFixed(2)
 
     $(column + '.max_direct_per_patient' + '.arm_' + arm_id).html(direct_total_display)
-  #   $(column + '.max_indirect_per_patient').html(indirect_total_display)
-  #   $(column + '.max_total_per_patient').html(max_total_display)
+    $(column + '.max_indirect_per_patient' + '.arm_' + arm_id).html(indirect_total_display)
+    $(column + '.max_total_per_patient' + '.arm_' + arm_id).html(max_total_display)

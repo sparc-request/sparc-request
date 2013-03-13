@@ -28,4 +28,16 @@ class Arm < ActiveRecord::Base
 
     total
   end
+
+  def maximum_indirect_costs_per_patient visit_groupings=self.visit_groupings
+    if USE_INDIRECT_COST
+      self.maximum_direct_costs_per_patient(visit_groupings) * (self.service_request.protocol.indirect_cost_rate.to_f / 100)
+    else
+      return 0
+    end
+  end
+
+  def maximum_total_per_patient visit_groupings=self.visit_groupings
+    self.maximum_direct_costs_per_patient(visit_groupings) + maximum_indirect_costs_per_patient(visit_groupings)
+  end
 end

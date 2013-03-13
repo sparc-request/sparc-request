@@ -46,14 +46,14 @@ module ServiceCalendarHelper
     currency_converter sum
   end
 
-  def display_max_total_indirect_cost_per_patient service_request, line_items
-    # sum = service_request.maximum_indirect_costs_per_patient line_items
-    # currency_converter sum
+  def display_max_total_indirect_cost_per_patient arm
+    sum = arm.maximum_indirect_costs_per_patient
+    currency_converter sum
   end
 
-  def display_max_total_cost_per_patient service_request, line_items
-    # sum = service_request.maximum_total_per_patient line_items
-    # currency_converter sum
+  def display_max_total_cost_per_patient arm
+    sum = arm.maximum_total_per_patient
+    currency_converter sum
   end
 
   # Displays grand totals per study

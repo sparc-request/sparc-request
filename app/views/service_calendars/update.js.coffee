@@ -17,8 +17,8 @@ if "<%= @errors %>" == ""
 
     # Display for all line items max direct, indirect, and total costs per patient
     $(".pp_max_total_direct_cost<%= @arm_id %>").html("<%= display_max_total_direct_cost_per_patient(@visit_grouping.arm) %>")
-    $(".pp_max_total_indirect_cost").html("<%= display_max_total_indirect_cost_per_patient(@service_request, @line_items) %>")
-    $(".pp_max_total").html("<%= display_max_total_cost_per_patient(@service_request, @line_items) %>")
+    $(".pp_max_total_indirect_cost<%= @arm_id %>").html("<%= display_max_total_indirect_cost_per_patient(@visit_grouping.arm) %>")
+    $(".pp_max_total<%= @arm_id %>").html("<%= display_max_total_cost_per_patient(@visit_grouping.arm) %>")
 
     # Display for all line items total direct, indirect, and total costs per study
     $(".pp_total_direct_cost").html("<%= display_total_direct_cost_per_study_pppvs(@service_request, @line_items) %>")

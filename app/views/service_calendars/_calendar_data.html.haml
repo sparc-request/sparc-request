@@ -85,16 +85,14 @@
             %td &nbsp;
             - 5.times do |i|
               %td{:class => "visit_column_#{i + 1} max_indirect_per_patient arm_#{arm.id}"}
-            %td{:class => "pp_max_total_indirect_cost arm_#{arm.id}"}
-            / TODO: Fix this for arms= display_max_total_indirect_cost_per_patient @service_request, @line_items
+            %td{:class => "pp_max_total_indirect_cost arm_#{arm.id}"}= display_max_total_indirect_cost_per_patient arm
 
         %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
           %td{:colspan => 5}= t("calendar_page.labels.maximum_per")
           %td &nbsp;
           - 5.times do |i|
             %td{:class => "visit_column_#{i + 1} max_total_per_patient arm_#{arm.id}"}
-          %td{:class => "pp_max_total arm_#{arm.id}"}
-          / TODO: Fix this for arms= display_max_total_cost_per_patient @service_request, @line_items
+          %td{:class => "pp_max_total arm_#{arm.id}"}= display_max_total_cost_per_patient arm
         
         / %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
         /   %td{:colspan => 5}= t("calendar_page.labels.total_direct")

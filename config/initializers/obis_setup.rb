@@ -2,6 +2,7 @@ begin
   application_config ||= YAML.load_file(Rails.root.join('config', 'application.yml'))[Rails.env]
   DEFAULT_MAIL_TO      = application_config['default_mail_to']
   ADMIN_MAIL_TO        = application_config['admin_mail_to']
+  NEW_USER_CC          = application_config['new_user_cc']
   USER_PORTAL_LINK     = application_config['user_portal_link']
   HEADER_LINK_1        = application_config['header_link_1']
   HEADER_LINK_2        = application_config['header_link_2']

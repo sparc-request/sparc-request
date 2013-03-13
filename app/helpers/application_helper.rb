@@ -49,7 +49,7 @@ module ApplicationHelper
     end
   end
 
-  def generate_visit_header_row service_request, page
+  def generate_visit_header_row service_request, page, portal=nil
     base_url = "/service_requests/#{service_request.id}/service_calendars/rename_visit"
     page = page == 0 ? 1 : page
     beginning_visit = (page * 5) - 4
@@ -67,7 +67,7 @@ module ApplicationHelper
         returning_html += content_tag(:th, content_tag(:span, visit_name), :width => 60, :class => 'visit_number')
       else
         returning_html += content_tag(:th, 
-                                      text_field_tag("visit_name_#{n}", visit_name, :class => "visit_name", :size => 10, :update => "#{base_url}?visit_position=#{n-1}") +
+                                      text_field_tag("visit_name_#{n}", visit_name, :class => "visit_name", :size => 10, :update => "#{base_url}?visit_position=#{n-1}&portal=#{portal}") +
                                       tag(:br) + 
                                       link_to((content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')), 
                                               "/service_requests/#{service_request.id}/#{action}/#{n}", 

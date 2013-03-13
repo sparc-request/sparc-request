@@ -7,7 +7,7 @@ impact_areas: { 'pediatrics': 'Pediatrics',
                'other': 'Other' }
 affiliations: { 'cancer_center': 'Cancer Center',
                 'lipidomics_cobre': 'Lipidomics COBRE',
-                'oral_health_cobre': 'Oral Health COBRE',
+                'oral_health_cobre': 'Center for Oral Health Research',
                 'cardiovascular_cobre': 'Cardiovascular COBRE',
                 'cchp': 'CCHP',
                 'inbre': 'INBRE',

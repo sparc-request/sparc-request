@@ -1,5 +1,5 @@
 .user-information-title.ui-corner-all
-  %h3 Welcome!
+  %h3= t(:protocol_information)[:greeting]
 .user-information-body.ui-corner-bottom
   %p
     %strong= @user.display_name
@@ -13,7 +13,7 @@
     - else
       = image_tag 'portal/email_open_64.png', :class => 'left'
     .notifications-text.left
-      Notifications:
+      = t(:protocol_information)[:notes]
       %br
-      = pluralize(@user.unread_notification_count(@user), 'Unread Message')
+      = pluralize(@user.unread_notification_count(@user), t(:protocol_information)[:note_count])
 .clear

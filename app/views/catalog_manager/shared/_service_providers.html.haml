@@ -15,4 +15,4 @@
             %td.check= check_box_tag "#{sp.id}_emails", true, sp.hold_emails, :class => 'hold_emails', :org_id => entity.id, :contact_flag => sp.is_primary_contact, :identity => sp.id, :emails_flag => sp.hold_emails
             %td= image_tag 'cancel.png', :id => sp.id, :class => 'sp_delete'
 
-  = text_field_tag 'new_sp', 'New Service Provider'
+  = text_field_tag 'new_sp', t(:organization_form)[:new_sp]

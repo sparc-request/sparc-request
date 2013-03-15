@@ -378,21 +378,36 @@ class ServiceRequestsController < ApplicationController
       end
 
       # add service to line items
-      new_line_item = @service_request.line_items.create(:service_id => service.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum, :subject_count => @service_request.subject_count)
-      Visit.bulk_create(@service_request.visit_count, :line_item_id => new_line_item.id) unless @service_request.visit_count.blank?
+      new_line_item = @service_request.line_items.create(:service_id => service.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum)
+      if !new_line_item.service.is_one_time_fee?
+        @service_request.arms.each do |arm|
+          vg = arm.visit_groupings.create(:arm_id => arm.id, :line_item_id => new_line_item.id, :subject_count => arm.subject_count)
+          Visit.bulk_create(arm.visit_count, :visit_grouping_id => vg.id) unless arm.visit_count.blank?
+        end
+      end
       @new_line_items << new_line_item
 
       # add required services to line items
       service.required_services.each do |rs|
-        new_line_item = @service_request.line_items.create(:service_id => rs.id, :optional => false, :quantity => service.displayed_pricing_map.unit_minimum, :subject_count => @service_request.subject_count) unless existing_service_ids.include?(rs.id)
-        Visit.bulk_create(@service_request.visit_count, :line_item_id => new_line_item.id) unless @service_request.visit_count.blank?
+        new_line_item = @service_request.line_items.create(:service_id => rs.id, :optional => false, :quantity => service.displayed_pricing_map.unit_minimum) unless existing_service_ids.include?(rs.id)
+        if !new_line_item.service.is_one_time_fee?
+          @service_request.arms.each do |arm|
+            vg = arm.visit_groupings.create(:arm_id => arm.id, :line_item_id => new_line_item.id, :subject_count => arm.subject_count)
+            Visit.bulk_create(arm.visit_count, :visit_grouping_id => vg.id) unless arm.visit_count.blank?
+          end
+        end
         @new_line_items << new_line_item
       end
 
       # add optional services to line items
       service.optional_services.each do |rs|
-        new_line_item = @service_request.line_items.create(:service_id => rs.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum, :subject_count => @service_request.subject_count) unless existing_service_ids.include?(rs.id)
-        Visit.bulk_create(@service_request.visit_count, :line_item_id => new_line_item.id) unless @service_request.visit_count.blank?
+        new_line_item = @service_request.line_items.create(:service_id => rs.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum) unless existing_service_ids.include?(rs.id)
+        if !new_line_item.service.is_one_time_fee?
+          @service_request.arms.each do |arm|
+            vg = arm.visit_groupings.create(:arm_id => arm.id, :line_item_id => new_line_item.id, :subject_count => arm.subject_count)
+            Visit.bulk_create(arm.visit_count, :visit_grouping_id => vg.id) unless arm.visit_count.blank?
+          end
+        end
         @new_line_items << new_line_item
       end
 

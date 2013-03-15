@@ -37,7 +37,6 @@ class Study < Protocol
       impact_area.position = position
       position += 1
     end
-
     impact_areas.sort!{|a, b| a.position <=> b.position}
   end
   

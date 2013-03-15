@@ -101,7 +101,7 @@
         = f.select :study_phase, options_for_select(STUDY_PHASES, study.study_phase), :include_blank => t(:study_form)[:phase_blank]
 
     %fieldset
-      %legend Research Involving (Check all that apply)
+      %legend= t(:study_form)[:research]
       %div
         = f.fields_for :research_types_info do |rt|
           .field.human_subjects
@@ -196,7 +196,6 @@
             = ip.label :inventors, t(:study_form)[:inventors]
             = ip.text_area :inventors
 
-    -# study types are initialized in obis-bridge lib/models/protocol.rb def setup_study_types
     %fieldset
       %legend= t(:study_form)[:type] 
       %div
@@ -206,7 +205,6 @@
             = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
             = rt.hidden_field :name, :value => rt.object.name
 
-    -# impact_areas are initialized in obis-bridge lib/models/protocol.rb def setup_impact_areas
     %fieldset
       %legend= t(:study_form)[:impact]
       %div
@@ -215,8 +213,11 @@
             = rt.label :name, "#{ImpactArea::TYPES[rt.object.name]}:"
             = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
             = rt.hidden_field :name, :value => rt.object.name
+            - if rt.object.name == "other"
+              .field.impact_other
+                = rt.label :other_text, "Enter area:"
+                = rt.text_field :other_text, :id => "study_impact_areas_other"
 
-    -# affiliations are initialized in obis-bridge lib/models/protocol.rb def setup_affiliations
     %fieldset
       %legend= t(:study_form)[:affiliations] 
       %div

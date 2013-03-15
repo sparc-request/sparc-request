@@ -98,14 +98,11 @@ class ServiceRequest < ActiveRecord::Base
     end.compact
   end
 
-  def set_visit_page page_passed
-    # TODO: Need to fix this for arms
-    return 1 #if visit_count == nil or visit_count <= 5
-
+  def set_visit_page page_passed, arm
     page = case 
            when page_passed <= 0
              1
-           when page_passed > (visit_count / 5.0).ceil
+           when page_passed > (arm.visit_count / 5.0).ceil
              1
            else 
              page_passed

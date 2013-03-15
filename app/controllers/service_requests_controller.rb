@@ -181,23 +181,46 @@ class ServiceRequestsController < ApplicationController
     # then there should be a comment as to why it's set in #review but
     # not here
 
-    # build out visits if they don't already exist and delete/create if the visit count changes
-    @service_request.per_patient_per_visit_line_items.each do |line_item|
-      line_item.visit_groupings.each do |vg|
-        if @service_request.status == 'first_draft' or vg.subject_count.nil?
-          vg.update_attribute(:subject_count, @service_request.subject_count)
+    @service_request.arms.each do |arm|
+      puts "#" * 50
+      puts arm.marked_for_destruction?
+      puts "#" * 50
+      #check each ARM for visit_groupings (in other words, it's a new arm)
+      if arm.visit_groupings.empty?
+        #Create missing visit_groupings
+        new_visit_groupings = Array.new
+        @service_request.per_patient_per_visit_line_items.each do |line_item|
+          vg = arm.visit_groupings.new
+          vg.line_item_id = line_item.id
+          vg.subject_count = arm.subject_count
+          vg.save
+          #push them to array, for easily looping over to create visits...
+          new_visit_groupings.push(vg)
         end
+        #create missing visits
+        ActiveRecord::Base.transaction do
+          new_visit_groupings.each do |vg|
+            Visit.bulk_create(arm.visit_count, :visit_grouping_id => vg.id)
+          end
+        end
+      else
+        #Check to see if ARM has been modified...
+        arm.visit_groupings.each do |vg|
+          #Update subject counts under certain conditions
+          if @service_request.status == 'first_draft' or vg.subject_count.nil? or vg.subject_count > arm.subject_count
+            vg.update_attribute(:subject_count, arm.subject_count)
+          end
 
-        # TODO: refactor this into the model
-        visit_count = vg.arm.visit_count
-        unless vg.visits.count == visit_count
-          ActiveRecord::Base.transaction do
-            if vg.visits.count < visit_count
-              n = visit_count - vg.visits.count
-              Visit.bulk_create(n, :visit_grouping_id => vg.id)
-            elsif vg.visits.count > visit_count
-              vg.visits.last(vg.visits.count - visit_count).each do |li|
-                li.delete
+          visit_count = vg.visits.size
+          unless arm.visit_count == visit_count
+            ActiveRecord::Base.transaction do
+              if arm.visit_count > visit_count
+                difference = arm.visit_count - visit_count
+                Visit.bulk_create(difference, :visit_grouping_id => vg.id)
+              elsif arm.visit_count < visit_count
+                vg.visits.last(vg.visits.count - arm.visit_count).each do |visit|
+                  visit.delete
+                end
               end
             end
           end

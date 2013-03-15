@@ -31,39 +31,18 @@
           %th= t(:organization_form)[:order]
           %td= f.text_field :order
         %tr
-          %th= t(:organization_form)[:is_ctrc]
-          %td= f.check_box :is_ctrc
-        %tr
           %th= t(:organization_form)[:split_notify]
           %td= f.check_box :process_ssrs
         %tr
           %th= t(:organization_form)[:disabled]
           %td= f.check_box :is_available, {:checked => (@program.is_available.nil? ? false : !@program.is_available) }, false, true
-
-    %br
-
-    %fieldset
-      %legend= t(:organization_form)[:status_legend]
-      %table
         %tr
-          %td
-            %table
-              = f.fields_for :available_statuses do |as|
-                %tr
-                  %th= as.label :status, "#{AvailableStatus::TYPES[as.object.status]}:"
-                  %td= as.check_box "_destroy", {:checked => !as.object.new}, false, true
-                  = as.hidden_field :status, :value => as.object.status
-          %td
-            %legend= t(:organization_form)[:default_statuses]
-            %table
-              %tr
-              %tr
-              %tr
-                - f.object.get_available_statuses.each do |k, v|
-                  %tr
-                    %th= v  
+          %th= t(:organization_form)[:tag_list]
+          %td= f.text_field :tag_list
 
     %br
+
+    = render :partial => 'catalog_manager/shared/available_statuses', :locals => {:f => f}
 
     %fieldset
       %legend= t(:organization_form)[:submission_emails]

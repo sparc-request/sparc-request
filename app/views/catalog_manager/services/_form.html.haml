@@ -6,7 +6,7 @@
   
   - unless @service.has_service_providers?
     .service_provider_error
-      There are no service providers anywhere on this tree.
+      = t(:organization_form)[:service_error]
   
   #entity_description
     .service_form
@@ -73,7 +73,7 @@
 
       %fieldset
         %legend= t(:organization_form)[:pricing_maps]
-        %input.add_pricing_map{:type => 'button', :value => 'Add Pricing Map'}
+        %input.add_pricing_map{:type => 'button', :value => t(:organization_form)[:add_map]}
         .pricing_map_accordion
           - @service.pricing_maps.each do |pricing_map|
             = render 'pricing_map', :pricing_map => pricing_map, :pricing_map_disabled => disable_pricing_map(pricing_map, @user.can_edit_historical_data_for?(@service.organization)), :can_edit_historical_data => @user.can_edit_historical_data_for?(@service.organization), :entity => @service

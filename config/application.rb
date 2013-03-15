@@ -2,8 +2,8 @@ require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
 require 'devise'
-require './lib/bulk_creatable_list.rb'
-require './lib/entity.rb'
+require File.expand_path('../../lib/bulk_creatable_list', __FILE__)
+require File.expand_path('../../lib/entity', __FILE__)
 
 if defined?(Bundler)
   # If you precompile assets before deploying to production, use this line

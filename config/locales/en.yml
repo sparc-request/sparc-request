@@ -29,6 +29,7 @@ en:
     confirm: "Password Confirmation:"
     reason: "Reason for account/login request:"
     submit: "Create New User"
+    not_approved: "Click here to proceed"
 
   # password reset
   password_reset_message: "Forgot your password?"
@@ -37,6 +38,29 @@ en:
   initial_signin_dialog: "You are not currently logged into SPARC. If you are affiliated with an institution and have an institutional login OR have created a SPARC account and have a SPARC login and password, please click the top button to proceed. If you are not currently affiliated with an institution OR do not have a SPARC login/password, please click the button on the bottom to proceed with creating a new account."
   proceed_to_login_link: "Click here to proceed with your institutional/existing SPARC login"
   create_new_account_link: "Click here to proceed by creating a new account"
+
+  # Notifier
+  notifier:
+    title: "Service Request"
+    body1: "Dear #{@identity.full_name},"
+    body2: "Services have been requested or changed in SPARC (sparc.musc.edu) for your" 
+    body3: "#{@protocol.type.downcase}"
+    body4: "listed below. In addition, below is a list of users who have been granted access to this"
+    body5: "#{@protocol.type.downcase} on your behalf."
+    body6: "Services have been requested or changed in SPARC (sparc.musc.edu) for a "
+    body7: "to which you have been granted access."
+    header: "Project Information"
+    id: "Project ID:"
+    short: "Short Title:"
+    p_title: "Project Title:"
+    sponsor: "Sponsor Name:"
+    funding: "Funding Source:"
+    name: "Name:"
+    role: "Role:"
+    proxy: "Proxy Rights"
+    list1: "A list of requested services is attached."
+    list2: "To approve the charges associated with the selected services please click"
+    list3: "HERE"
 
   # Tooltip help dialogs
   cart_help:
@@ -140,6 +164,7 @@ en:
 
   # Documents Page
   documents:
+    message: "Your file is uploading.  Please be patient as this may take a while with large files."
     no_documents: "No documents found"
     instructions: "Please add any additional information that may be helpful to service providers."
     admin_instructions: "Additional Notes -- If specific to service, please specify in text:"
@@ -173,6 +198,19 @@ en:
       pi: "PI"
       program_core: "Program/Core"
       service: "Service"
+
+  # Catalog Manager Index Page
+  cm_index:
+    search: "Search"
+    submit: "Submit"
+    institution: "Create New Institution"
+    provider: "Create New Provider"
+    program: "Create New Program"
+    core: "Create New Core"
+    service: "Create New Service"
+    processing: "Processing request"
+    pricing_map1: "No Pricing Map Changes"
+    pricing_map2: "Save and Apply to Pricing Maps"
 
   # Catalog Manager Shared Stuff
   cm_shared:
@@ -232,6 +270,7 @@ en:
       new_related: "New Related Service"
       new_submission: "New Submission Email"
       new_super: "New Super User"
+    title: "SPARC Services Catalog"
 
   # user search partial
   user_search:
@@ -278,7 +317,7 @@ en:
     attributes: "Study Attributes"
     title: "Protocol Title:*"
     status_blank: "Select a Funding Status"
-    udak_project_number: "UDAK/Project #:"
+    udak_project_number: "Financial Account (UDAK#):"
     sponsor_name: "Sponsor Name:"
     rate: "Indirect Cost Rate:"
     funding_rfa: "Funding Opportunity #/RFA:"
@@ -369,6 +408,35 @@ en:
     study_end_date: "Estimated Study End Date"
     services_required: "You can't continue unless you have services in your cart."
     name: "ARM Name"
+    services: "My Services"
+    help: "Help"
+
+  # Service Requests
+  service_requests:
+    detail_list:
+      text1: "Quantity of"
+      text2: "is less than the unit minimum of"
+      text3: "Quantity is being reset to the previous value."
+      text4: "Units Per Quantity of"
+      text5: "is more than the maximum allowed of"
+      text6: "Units Per Quantity is being set to the maximum allowed value."
+      service: "Service"
+      quantity: "Quantity"
+      description1: "(Samples, hours, etc...)"
+      up_quantity: "Units Per Quantity"
+      description2: "(Slides, etc...)"
+      q_type: "Quantity Type"
+    approve_changes:
+      text1: "has already approved these changes"
+      text2: "You have successfully approved the changes requested."
+    catalog:
+      text1: "My Services"
+      text2: "Help"
+      text3: "Please ensure that you have added all necessary research services to your My Services cart before proceeding. For a listing of available services to add, click on any of the Programs listed on the left-hand side of the page. Services will appear in the middle of the screen. Add services by clicking \"Add\"."
+      text4: "At least 1 service needs to be in cart first time through before clicking \"Submit request\" from catalog page."
+    info: 
+      text1: "Service Request Status"
+      text2: "Service Request Owner"
 
   # Service Request review page
   sr_review:
@@ -396,9 +464,10 @@ en:
         indirect_cost: "Total Indirect Costs"
         grand: "Grand Total:"
 
-  # Service Request Confirmation Page
+  # Service Request Confirmation Page and Obtain Research Pricing Page
   sr_confirmation:
     instructions: "Thank you for submitting a service request through SPARC. An email(s) has been submitted on your behalf, and we will respond to your service request shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
+    research_pricing_instructions : "You have successfully submitted a request to obtain research pricing. An email(s) has been submitted on your behalf, and we will respond to your request for research pricing shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
     download_button: "Download my Service Request"
     portal_button: "Go to SPARC User Portal"
     details:
@@ -412,6 +481,9 @@ en:
 
   # Portal Root/Information
   protocol_information:
+    greeting: "Welcome!"
+    notes: "Notifications:"
+    note_count: "Unread Message"
     message1: "Within your dashboard, you can view (and/or edit, submit) service requests currently in SPARC, as well as all of those still in 'draft' status. To edit any study/project specific information, click on the 'Edit' button located under the 'Study/Project Information' heading. To add or edit users, click on the 'Edit Authorized Users' button located under the 'Authorized Users' heading."
     message2: "Please note that studies/projects are listed in descending order."
     loading: "Loading your project/studies"
@@ -502,6 +574,7 @@ en:
     description: "Description"
     ack_language: "Acknowledgement Language"
     order: "Order"
+    tag_list: "Tags (comma separated)"
     is_ctrc: "Is CTRC?"
     split_notify: "Split/Notify Here"
     css_class: "CSS Class"
@@ -513,12 +586,17 @@ en:
     charge_code: "Charge Code"
     revenue_code: "Revenue Code"
     pricing_maps: "Pricing Maps"
+    add_map: "Add Pricing Map"
     related_services: "Related Services"
     submission_emails: "Submission E-mails"
     super_users: "Super Users"
     service_providers: "Service Providers"
+    new_sp: "New Service Provider"
+    service_error: "There are no service providers anywhere on this tree."
     cm_rights: "Catalog Manager Rights"
+    new_cm: "New Catalog Manager"
     auto_price_adj: "Automatic Pricing Adjustment"
+    change_rates: "Increase or Decrease Rates"
     pricing_setup: "Pricing Setup"
     subsidy_info: "Subsidy Information"
     subsidy_max_percent: "Max Percentage"
@@ -527,8 +605,10 @@ en:
     submit_button: "Save"
     cancel_button: "Cancel"
     blank_field_errors: "Name and Order on the Service, and Quantity Type, Unit Factor, Unit Minimum, Units Per Qty Maximum, Effective Date, and Display Date on all Pricing Maps are required."
-    status_legend: "Status Options (Check all that apply)"
+    status_legend: "Status Options (Use default statuses below or click to create custom service request statuses)"
     default_statuses: "Default Statuses:"
+    color_blank: "Select a Color"
+    errors: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
 
   pricing_map_form:
     dates: "Dates"
@@ -562,6 +642,58 @@ en:
     preview: "Preview:"
     received: "Received:"
     requester: "Requester: "
+
+  # Notifier
+  notifier:
+    sr: "Service Request"
+    p_info: "Project Information"
+    p_id: "Project ID:"
+    title1: "Short Title:"
+    title2: "Project Title:"
+    s_name: "Sponsor Name:"
+    source: "Funding Source:"
+    name: "Name:"
+    role: "Role:"
+    proxy: "Proxy Rights:"
+    body6: "A list of requested services is attached."
+    body7: "To approve the charges associated with the selected services please click"
+    link: "HERE"
+    notice:
+      body1: "Request for new SPARC account submitted and awaiting approval"
+      body2: "A new SPARC account is waiting for approval."
+      last: "Last Name"
+      first: "First Name"
+      company: "Company"
+      email: "Email"
+      number: "Telephone Number"
+      reason: "Reason for account/login request"
+      approve: "Approve Account"
+      disapprove: "Disapprove Account"
+    status_change:
+      body1: "Request for new SPARC account status change"
+      body2: "Your request for a new SPARC account has been approved.  You may proceed with your service "
+      body3: "request using your newly created"
+      body4: "username and password."
+      body5: "Your request for a new SPARC account has NOT been approved."
+
+  # Mailer
+  mailer:
+    header1: "Authorized Users have been edited or added in"
+    header2: "for your"
+    header3: "listed below."
+    body1: "To VIEW and/or MAKE any changes to this request,"
+    link1: "SPARC"
+    link2: "please click here."
+    p_info: "Protocol Information"
+    p_id: "Protocol ID:"
+    title1: "Short Title:"
+    title2: "Project Title:"
+    s_name: "Sponsor Name"
+    user_info: "User Information:"
+    name: "Name:"
+    role: "Role:"
+    proxy: "Proxy Rights"
+    received: "You have received a new notification on your SPARC User Dashboard. Please login  @ #{portal_root_url} to retrieve it. Thank you."
 
   # Fulfillment tab
   fulfillments:
@@ -662,6 +794,21 @@ en:
   associated_users:
     add: "Add a new Associated User"
 
+  # Rails Root Page Messages
+  rails_root:
+    welcome: "Welcome to the SPARC Services Catalog"
+    message1: "Please browse through the SPARC Services Catalog to view all available SPARC services.  Service providers are located on the left-hand side of the page.  Click on a provider to see available services."
+    message2: "Click \"Add Services\" at the bottom of any service description to add it to your \"My Services\"."
+    message3: "To delete a service from \"My Services\", use the red X beside any service."
+    message4: "** Please Note: You may only select services applicable to ONE research study/project at a time.  Should you need to select services for multiple studies/projects you need to submit multiple \"Requests\"."
+    message5: "Please note that any studies/projects previously entered into SCTR SPARK (sctr.musc.edu/spark) have been migrated to the new SPARC system and are available on your new SPARC User Dashboard. To access, please visit"
+    message6: "Any service requests previously entered into SPARK have been archived and will continue to be fulfilled by SCTR staff as approved. You may continue to request new services under any existing study/project through SPARC."
+    message7: "Due to user feedback regarding the inclusion of Indirect Costs in the Grand Total of Study Costs, Indirect Costs (as a line item) have currently been removed from SPARC and will be reintroduced in the budget template tools in the Study Tracker Release. Please contact the SUCCESS Center at 792-8300 with any questions."
+
+  # Identities Account Aproved/Disapproved
+  identity:
+    approved: "Account approved"
+    disapproved: "Account disapproved"
 
 
 

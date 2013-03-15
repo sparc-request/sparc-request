@@ -30,38 +30,18 @@
           %th= f.label :order, t(:organization_form)[:order]
           %td= f.text_field :order
         %tr
-          %th= f.label :is_ctrc, t(:organization_form)[:is_ctrc]
-          %td= f.check_box :is_ctrc
-        %tr
           %th= f.label :split_notify, t(:organization_form)[:split_notify]
           %td= f.check_box :process_ssrs
         %tr
           %th= f.label :disabled, t(:organization_form)[:disabled]
           %td= f.check_box :is_available, {:checked => (@core.is_available.nil? ? false : !@core.is_available) }, false, true
-
-    %br
-
-    %fieldset
-      %legend= t(:organization_form)[:status_legend]
-      %table
         %tr
-          %td
-            %table
-              = f.fields_for :available_statuses do |as|
-                %tr
-                  %th= as.label :status, "#{AvailableStatus::TYPES[as.object.status]}:"
-                  %td= as.check_box "_destroy", {:checked => !as.object.new}, false, true
-                  = as.hidden_field :status, :value => as.object.status
-          %td
-            %legend= t(:organization_form)[:default_statuses]
-            %table
-              %tr
-              %tr
-              %tr
-                - f.object.get_available_statuses.each do |k, v|
-                  %tr
-                    %th= v
+          %th= t(:organization_form)[:tag_list]
+          %td= f.text_field :tag_list
+
     %br
+
+    = render :partial => 'catalog_manager/shared/available_statuses', :locals => {:f => f}
     
     %fieldset
       %legend= t(:organization_form)[:submission_emails]
@@ -111,7 +91,7 @@
       %legend= t(:organization_form)[:actions]
       = f.submit t(:organization_form)[:submit_button], :id => 'save_button', :class => 'save_button btn provider_program_core_save'
       %img.spinner{:src => '/assets/catalog_manager/spinner_small.gif'}
-      .ui-corner-all.blank_field_errors Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups.
+      .ui-corner-all.blank_field_errors= t(:organization_form)[:errors]
 
 :javascript
   $(document).ready( function() {

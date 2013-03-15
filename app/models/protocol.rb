@@ -98,7 +98,7 @@ class Protocol < ActiveRecord::Base
   end
 
   def billing_manager_exists
-    errors.add(:base, "You must add a Billing/Business Manager to the study/project") unless project_roles.map(&:role).include? 'billing-business-manager'
+    errors.add(:base, "You must add a Billing/Business Manager to the study/project") unless project_roles.map(&:role).include? 'business-grants-manager'
   end
 
   def role_for identity
@@ -150,6 +150,4 @@ class Protocol < ActiveRecord::Base
 
     return funding_source
   end
-
-  include Entity
 end

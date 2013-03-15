@@ -3,40 +3,40 @@
 
   %head
     %meta{ :"http-equiv" => "content-type", :content => "text/html;charset=UTF-8" }
-    %title Request for new SPARC account submitted and awaiting approval
+    %title= t(:notifier)[:notice][:body1]
 
   %body
-    A new SPARC account is waiting for approval.
+    = t(:notifier)[:notice][:body2]
     %br
     %br
 
     %table
       %tr
-        %th Last Name
+        %th= t(:notifier)[:notice][:last]
         %td= @identity.last_name
       %tr
-        %th First Name
+        %th= t(:notifier)[:notice][:first]
         %td= @identity.first_name
       %tr
-        %th Company
+        %th= t(:notifier)[:notice][:company]
         %td= @identity.company
       %tr
-        %th Email
+        %th= t(:notifier)[:notice][:email]
         %td= @identity.email
       %tr
-        %th Telephone Number
+        %th= t(:notifier)[:notice][:number]
         %td= @identity.phone
       %tr
-        %th Reason for account/login request
+        %th= t(:notifier)[:notice][:reason]
         %td= @identity.reason
 
     %br
     %br
 
-    = link_to 'Approve Account', approve_account_identity_url(@identity)
+    = link_to t(:notifier)[:notice][:approve], approve_account_identity_url(@identity)
 
     %br
     \- OR - 
     %br
 
-    = link_to 'Disapprove Account', disapprove_account_identity_url(@identity)
+    = link_to t(:notifier)[:notice][:disapprove], disapprove_account_identity_url(@identity)

@@ -212,7 +212,11 @@
               = rt.label :name, "#{ImpactArea::TYPES[rt.object.name]}:"
               = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
               = rt.hidden_field :name, :value => rt.object.name
-  
+              - if rt.object.name == "other"
+                .field.impact_other
+                  = rt.label :other_text, "Enter area:"
+                  = rt.text_field :other_text, :id => "study_impact_areas_other"
+
       %fieldset
         %legend= t(:study_form)[:affiliations] 
         %div

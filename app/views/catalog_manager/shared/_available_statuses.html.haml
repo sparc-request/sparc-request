@@ -1,0 +1,22 @@
+%fieldset
+  %legend= t(:organization_form)[:status_legend]
+  %table
+    %tr
+      %td
+        %table
+          = f.fields_for :available_statuses do |as|
+            %tr
+              %th= as.label :status, "#{AvailableStatus::TYPES[as.object.status]}:"
+              %td= as.check_box "_destroy", {:checked => !as.object.new}, false, true
+              = as.hidden_field :status, :value => as.object.status
+      %td
+        %legend= t(:organization_form)[:default_statuses]
+        %table
+          %tr
+          %tr
+          %tr
+            - f.object.get_available_statuses.each do |k, v|
+              %tr
+                %th= v
+
+%br

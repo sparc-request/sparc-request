@@ -282,6 +282,22 @@ describe "editing a study", js: true do
         find("#study_impact_areas_attributes_5__destroy").should be_checked
         find("#study_impact_areas_attributes_6__destroy").should be_checked
       end
+
+      context "other checkbox" do
+
+        it "should open up text field when 'other' is checked" do
+          check("study_impact_areas_attributes_6__destroy")
+          find("#study_impact_areas_other").should be_visible 
+        end
+
+        it "should save the value after text is entered" do
+          check("study_impact_areas_attributes_6__destroy")
+          fill_in "study_impact_areas_other", with: "El Guapo's Area"
+          click_button "Save Study"
+          visit edit_portal_protocol_path service_request.protocol.id
+          find("#study_impact_areas_other").should have_value("El Guapo's Area")
+        end
+      end
     end
   end
 

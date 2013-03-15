@@ -20,6 +20,8 @@ $(document).ready ->
       'true'             : ['.patent_number', '.inventors']
     '#study_investigational_products_info_attributes_ind_number':
       'true'             : ['.ind_on_hold']
+    '#study_impact_areas_attributes_6__destroy':
+      'true'             : ['.impact_other']
 
   FormFxManager.registerListeners($('.edit-project-view'), display_dependencies)
 

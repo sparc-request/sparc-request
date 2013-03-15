@@ -6,6 +6,7 @@ class ImpactArea < ActiveRecord::Base
 
   attr_accessible :protocol_id
   attr_accessible :name
+  attr_accessible :other_text
   attr_accessible :new
   attr_accessible :position
   attr_accessor :new

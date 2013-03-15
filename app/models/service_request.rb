@@ -76,7 +76,7 @@ class ServiceRequest < ActiveRecord::Base
 
   accepts_nested_attributes_for :line_items
   accepts_nested_attributes_for :sub_service_requests
-  accepts_nested_attributes_for :arms
+  accepts_nested_attributes_for :arms, :allow_destroy => true
 
   alias_attribute :service_request_id, :id
 

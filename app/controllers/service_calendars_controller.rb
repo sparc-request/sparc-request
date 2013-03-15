@@ -64,12 +64,10 @@ class ServiceCalendarsController < ApplicationController
   def rename_visit
     visit_name = params[:name]
     visit_position = params[:visit_position].to_i
-    service_request = ServiceRequest.find params[:service_request_id]
+    arm = Arm.find params[:arm_id]
 
-    line_items = service_request.per_patient_per_visit_line_items
-
-    line_items.each do |li|
-      li.visits[visit_position].update_attribute(:name, visit_name)
+    arm.visit_groupings.each do |vg|
+      vg.visits[visit_position].update_attribute(:name, visit_name)
     end
   end
 end

@@ -49,6 +49,15 @@ class ProjectRole < ActiveRecord::Base
     return false
   end
 
+  def is_only_billing_manager?
+    if self.role == 'business-grants-manager'
+      bm_project_roles = self.protocol.project_roles.select {|x| x.role == 'business-grants-manager'}
+      return true if bm_project_roles.size == 1
+    end
+
+    return false
+  end
+
   def can_switch_to?(right, current_user)
     # none, view, request, approve
     

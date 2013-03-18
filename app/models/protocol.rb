@@ -85,6 +85,10 @@ class Protocol < ActiveRecord::Base
     project_roles.reject{|pr| pr.role != 'pi'}.map(&:identity)
   end
 
+  def billing_managers
+    project_roles.reject{|pr| pr.role != 'business-grants-manager'}.map(&:identity)
+  end
+
   def emailed_associated_users
     project_roles.reject {|pr| pr.project_rights == 'none'}
   end

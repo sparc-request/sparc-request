@@ -1,6 +1,8 @@
 - rights = user_rights(protocol_role)
 - pi_count_var = protocol.principal_investigators.size
+- billing_manager_count_var = protocol.billing_managers.size
 %input{:type => 'hidden', :value => "#{pi_count_var}", :id => "pi_count_#{protocol.id}"}
+%input{:type => 'hidden', :value => "#{billing_manager_count_var}", :id => "billing_manager_count_#{protocol.id}"}
 .protocol-information-title.ui-corner-top= t(:protocol_information)[:information]
 .protocol-information-body.ui-corner-bottom
   %ul

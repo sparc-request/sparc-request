@@ -476,8 +476,9 @@ class ServiceRequestsController < ApplicationController
       service = Service.find id
 
       unless service.is_one_time_fee?
-        @service_request.insure_visit_count
-        @service_request.insure_subject_count
+        if @service_request.arms.empty?
+          @service_request.arms.create(:name => "ARM 1", :visit_count => 1, :subject_count => 1)
+        end
       end
 
       # add service to line items
@@ -545,7 +546,7 @@ class ServiceRequestsController < ApplicationController
       end
     end
 
-    @line_items.find_by_service_id(service.id).delete
+    @line_items.find_by_service_id(service.id).destroy
     @line_items.reload
     
     #@service_request = current_user.service_requests.find session[:service_request_id]

@@ -57,8 +57,8 @@ $ ->
     return go
 
 $('.units_per_quantity').live 'change', ->
-  max = $(this).attr('data-qty_max')
-  user_input = $(this).val()
+  max = parseInt($(this).attr('data-qty_max'), 10)
+  user_input = parseInt($(this).val(), 10)
   if user_input > max
     $(this).css({'border': '2px solid red'})
     $('#unit_max_error').css({'border': '2px solid red'})
@@ -72,9 +72,9 @@ $('.units_per_quantity').live 'change', ->
     $(this).css('border', '')
 
 verify_unit_minimum = (obj) ->
-  unit_min = obj.attr('unit_minimum')
+  unit_min = parseInt(obj.attr('unit_minimum'), 10)
   prev_qty = obj.attr('current_quantity')
-  qty = obj.val()
+  qty = parseInt(obj.val(), 10)
   if qty < unit_min
     obj.val(prev_qty)
     obj.css({'border': '2px solid red'})

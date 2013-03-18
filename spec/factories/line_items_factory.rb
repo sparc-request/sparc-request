@@ -3,8 +3,7 @@ FactoryGirl.define do
     ssr_id                 { Faker::Lorem.word }
     optional               { false }
     quantity               { 5 }
-    subject_count          { 5 }
-
+  
     trait :is_optional do
       optional true
     end

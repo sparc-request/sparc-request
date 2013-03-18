@@ -88,6 +88,8 @@ class Portal::AssociatedUsersController < Portal::BaseController
     @protocol_role = ProjectRole.find params[:id]
     if @protocol_role.is_only_pi?
       render :js => "alert(\"Projects require a PI. Please add a new one before continuing.\")"
+    elsif @protocol_role.is_only_billing_manager?
+      render :js => "alert(\"Projects require a Billing/Business Manager. Please add a new one before continuing.\")"
     else
       @protocol_role.destroy
       if params[:sub_service_request_id]

@@ -559,6 +559,14 @@ class ServiceRequestsController < ApplicationController
     to_delete.each do |org_id|
       @service_request.sub_service_requests.find_by_organization_id(org_id).destroy
     end
+
+    # clean up arms
+    @service_request.reload
+    @service_request.arms.each do |arm|
+      if arm.visit_groupings.empty?
+        arm.destroy
+      end
+    end
   end
 
   def delete_documents

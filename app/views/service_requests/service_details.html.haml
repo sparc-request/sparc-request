@@ -21,32 +21,35 @@
                   .instructions= t(:service_request_details)[:one_time_fee_and_per_patient_instructions]
                 - else
                   .instructions= t(:service_request_details)[:per_patient_instructions]
-                %table.service-dates-table
-                  %thead
-                    %th= t(:service_request_details)[:study_start_date]
-                    %th= t(:service_request_details)[:study_end_date]
-                  %tbody
+                .arm-info
+                  .arm-header
+                    .arm-cell= t(:service_request_details)[:study_start_date]
+                    .arm-cell= t(:service_request_details)[:study_end_date]
+                    .clear
+                  .clear
+                  .arms
                     = fields_for @service_request do |f|
-                      %td
+                      .arm-cell
                         = text_field_tag :start_date, (@service_request.start_date.strftime('%_m/%d/%Y') rescue nil) # only used for datepicker
                         = f.hidden_field :start_date
-                      %td
+                      .arm-cell
                         = text_field_tag :end_date, (@service_request.end_date.strftime('%_m/%d/%Y') rescue nil) #only use for datepicker
                         = f.hidden_field :end_date
-                %br
+                %div{:style => "height:25px;background-color:#FFFFFF; clear:both;"}
                 .arm-info
                   = nested_form_for @service_request, :method => :post do |f|
                     .arm-header
                       .arm-cell= t(:service_request_details)[:name]
                       .arm-cell= t(:service_request_details)[:number_of_subjects]
                       .arm-cell= t(:service_request_details)[:number_of_visits]
+                      .clear
                     .clear
                     .arms
                       = f.fields_for :arms do |arm|
                         .arm-cell= arm.text_field :name
                         .arm-cell= arm.text_field :subject_count
                         .arm-cell= arm.text_field :visit_count
-                        .arm-cell= arm.link_to_remove "Remove Arm"
+                        .arm-cell{:style => "padding:5px 0px 5px 5px; width:auto;"}= arm.link_to_remove "Remove Arm"
                         .clear
                       .clear
                     .add-arm= f.link_to_add "Add Arm", :arms

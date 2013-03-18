@@ -609,22 +609,22 @@ a.save-option{
 
 .service-details .instructions {
   background-color: #FFF;
-  padding: 10px 0;
+  padding: 25px 0;
   width: 100%;
   margin: 0;
 }
 
-.service-request-setup-view .service-details table th {
+/*.service-request-setup-view .service-details table th {
   width: 115px;
   text-align: left;
-}
+}*/
 
-.service-request-setup-view .service-details-table td,
+/*.service-request-setup-view .service-details-table td,
 .service-request-setup-view .service-dates-table td,
 .service-request-setup-view .service-details-table th,
 .service-request-setup-view .service-dates-table th{
   padding: 5px 30px;
-}
+}*/
 
 .service-request-setup-view .service-details .one-time-fees thead{
   border: 0;
@@ -671,12 +671,13 @@ a.save-option{
 
 .service-request-setup-view .arm-info .arm-header {
   font-weight: bold;
+  background-color:#FFFFFF;
 }
 
 .service-request-setup-view .arm-info .arm-cell {
-  width: 107px;
+  width: 175px;
   float: left;
-  padding: 5px 30px;
+  padding: 5px 10px;
 }
 
 .service-request-setup-view .arm-info .add-arm .add_nested_fields {

@@ -27,7 +27,7 @@ group :development, :test, :profile do
   # will need to configure Capybara to use it.  This particular
   # poltergeist repository is for Capybara 2.0 support.  Poltergeist
   # should official support Capybara 2.0 after Dec. 20.
-  gem 'poltergeist', :git => 'git://github.com/brutuscat/poltergeist.git'
+  gem 'poltergeist' #, :git => 'git://github.com/brutuscat/poltergeist.git'
 
   # You can put gems in here that you want to use for development but
   # don't want to force on other developers (e.g. rubyception).

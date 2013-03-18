@@ -5,7 +5,6 @@ class FixConsultArrangedDateAndRequesterContactedDate < ActiveRecord::Migration
     count = 0
     service_requests.each do |sr|
       next if sr.sub_service_requests.count > 1
-      next if sr.sub_service_requests.count == 0
 
       ssr = sr.sub_service_requests.first
       

@@ -19,7 +19,7 @@
         %th= t("calendar_page.headers.your_cost")
       %th &nbsp;
       - if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?) 
-        = generate_visit_header_row @service_request, @page
+        = generate_visit_header_row @service_request, @page, @portal
       - else
         %th{:colspan => 5} &nbsp;
       - if @portal

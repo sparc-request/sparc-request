@@ -19,13 +19,3 @@ if "<%= @errors %>" == ""
     $(".pp_max_total_direct_cost<%= @arm_id %>").html("<%= display_max_total_direct_cost_per_patient(@visit_grouping.arm) %>")
     $(".pp_max_total_indirect_cost<%= @arm_id %>").html("<%= display_max_total_indirect_cost_per_patient(@visit_grouping.arm) %>")
     $(".pp_max_total<%= @arm_id %>").html("<%= display_max_total_cost_per_patient(@visit_grouping.arm) %>")
-
-    # Display for all line items total direct, indirect, and total costs per study
-    $(".pp_total_direct_cost").html("<%= display_total_direct_cost_per_study_pppvs(@service_request, @line_items) %>")
-    $(".pp_total_indirect_cost").html("<%= display_total_indirect_cost_per_study_pppvs(@service_request, @line_items) %>")
-    $(".pp_total_cost").html("<%= display_total_cost_per_study_pppvs(@service_request, @line_items) %>")
-
-    # Displays the grand totals for the entire service service_request
-    $(".grand_total_direct").html("<%= display_grand_total_direct_costs(@service_request, @line_items) %>")
-    $(".grand_total_indirect").html("<%= display_grand_total_indirect_costs(@service_request, @line_items) %>")
-    $(".grand_total").html("<%= display_grand_total(@service_request, @line_items) %>")

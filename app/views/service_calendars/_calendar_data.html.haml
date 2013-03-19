@@ -54,7 +54,7 @@
             - else
               %td.service_name= line_item.service.display_service_name
             - unless @portal
-              %td{:class => "service_rate_#{line_item.id}"}= display_service_rate line_item
+              %td{:class => "service_rate_#{visit_grouping.id}"}= display_service_rate line_item
               %td.your_cost= display_your_cost line_item
               %td.unit_type= line_item.service.displayed_pricing_map.unit_type
             %td.subject_count= select_tag "line_item_#{line_item.id}_count", options_for_select((1..arm.subject_count), visit_grouping.subject_count), :class => 'line_item_visit_count', :update => "/service_requests/#{line_item.service_request_id}/service_calendars?visit_grouping=#{visit_grouping.id}&tab=template&portal=#{@portal}"

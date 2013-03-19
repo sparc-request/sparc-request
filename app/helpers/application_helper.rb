@@ -55,7 +55,7 @@ module ApplicationHelper
     beginning_visit = (page * 5) - 4
     ending_visit = (page * 5) > arm.visit_count ? arm.visit_count : (page * 5)
     returning_html = ""
-    visit_groupings = arm.per_patient_per_visit_visit_groupings
+    visit_groupings = arm.visit_groupings
 
     (beginning_visit .. ending_visit).each do |n|
       checked = visit_groupings.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?

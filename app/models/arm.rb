@@ -16,7 +16,7 @@ class Arm < ActiveRecord::Base
 
   def maximum_direct_costs_per_patient visit_groupings=self.visit_groupings
     total = 0.0
-    per_patient_per_visit_visit_groupings.each do |vg|
+    visit_groupings.each do |vg|
       total += vg.direct_costs_for_visit_based_service_single_subject
     end
 

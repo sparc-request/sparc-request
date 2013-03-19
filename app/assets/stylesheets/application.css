@@ -127,10 +127,18 @@ a.save-option{
 #container #title {
   margin-top: 8px;
   background: white url("banner.png") no-repeat;
-  height: 58px;
+  height: 136px;
   padding: 23px 0 0 23px;
   border-left: outset 1px black;
   border-right: outset 1px black;
+}
+
+#container #title h1 {
+  margin-top: 32px;
+  margin-left: 6px;
+  color: #fff;
+  font-size: 28px;
+  font-weight: normal;
 }
 
 .step-header {

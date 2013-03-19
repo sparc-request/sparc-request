@@ -1589,6 +1589,11 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   border: 1px solid #ccc;
 }
 
+.review-details #service_calendar_container table td,
+.review-details #service_calendar_container table th {
+  width: 92px !important;
+}
+
 .service_calendar thead tr th {
   border: 1px solid #ccc;
 }

@@ -5,7 +5,7 @@ class ServiceCalendarsController < ApplicationController
   def table
     #use session so we know what page to show when tabs are switched
     arm_id = params[:arm_id] if params[:arm_id]
-    page = params[:page] if params[:pages]
+    page = params[:page] if params[:page]
     session[:service_calendar_pages] = params[:pages] if params[:pages]
     session[:service_calendar_pages][arm_id] = page if page && arm_id
     @tab = params[:tab]

@@ -10,13 +10,7 @@ class Arm < ActiveRecord::Base
 
   def per_patient_per_visit_line_items
     visit_groupings.each.map do |vg|
-      vg.line_item.service.is_one_time_fee? ? nil : vg.line_item
-    end.compact
-  end
-
-  def per_patient_per_visit_visit_groupings
-    visit_groupings.each.map do |vg|
-      vg.line_item.service.is_one_time_fee? ? nil : vg
+      vg.line_item
     end.compact
   end
 

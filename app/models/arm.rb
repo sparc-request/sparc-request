@@ -40,4 +40,20 @@ class Arm < ActiveRecord::Base
   def maximum_total_per_patient visit_groupings=self.visit_groupings
     self.maximum_direct_costs_per_patient(visit_groupings) + maximum_indirect_costs_per_patient(visit_groupings)
   end
+
+  def direct_costs_for_visit_based_service
+    total = 0.0
+    visit_groupings.each do |vg|
+      total += vg.direct_costs_for_visit_based_service
+    end
+    return total
+  end
+
+  def indirect_costs_for_visit_based_service
+    total = 0.0
+    visit_groupings.each do |vg|
+      total += vg.indirect_costs_for_visit_based_service
+    end
+    return total
+  end
 end

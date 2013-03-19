@@ -1052,6 +1052,14 @@ tr.total-visit-based-services {
   font-weight: bold;
 }
 
+tr.total-one-time-fees {
+  font-weight: bold;
+}
+
+tr.grand-totals {
+  font-weight: bold;
+}
+
 .calendar tr.service td.name, .calendar tr.totals td.name {
   text-align: left;
 }

@@ -57,21 +57,22 @@ module ServiceCalendarHelper
   end
 
   # Displays grand totals per study
-  def display_total_direct_cost_per_study_pppvs service_request, line_items
+  def display_total_direct_cost_per_study_pppvs service_request
     sum = 0
-    # sum = service_request.total_direct_costs_per_patient line_items
+    sum = service_request.total_direct_costs_per_patient
     currency_converter sum
   end
 
-  def display_total_indirect_cost_per_study_pppvs service_request, line_items
+  def display_total_indirect_cost_per_study_pppvs service_request
     sum = 0
-    # sum = service_request.total_indirect_costs_per_patient line_items
+    sum = service_request.total_indirect_costs_per_patient
     currency_converter sum
   end
 
-  def display_total_cost_per_study_pppvs service_request, line_items
-    # sum = service_request.total_costs_per_patient line_items
-    # currency_converter(sum)
+  def display_total_cost_per_study_pppvs service_request
+    sum = 0
+    sum = service_request.total_costs_per_patient
+    currency_converter(sum)
   end
 
   # Displays max totals per patient per visit
@@ -111,19 +112,19 @@ module ServiceCalendarHelper
   #############################################
   def display_grand_total_direct_costs service_request, line_items
     sum = 0
-    # sum = service_request.direct_cost_total line_items
+    sum = service_request.direct_cost_total line_items
     currency_converter sum
   end
 
   def display_grand_total_indirect_costs service_request, line_items
     sum = 0
-    # sum = service_request.indirect_cost_total line_items
+    sum = service_request.indirect_cost_total line_items
     currency_converter sum
   end
 
   def display_grand_total service_request, line_items
     sum = 0
-    # sum = service_request.grand_total line_items
+    sum = service_request.grand_total line_items
     currency_converter sum
   end
 

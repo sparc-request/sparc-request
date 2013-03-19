@@ -77,7 +77,7 @@ class VisitGrouping < ActiveRecord::Base
   # Determine the indirect cost rate related to a particular line item
   def indirect_cost_rate
     if USE_INDIRECT_COST
-      self.service_request.protocol.indirect_cost_rate.to_f / 100
+      self.line_item.service_request.protocol.indirect_cost_rate.to_f / 100
     else
       return 0
     end

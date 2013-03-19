@@ -23,6 +23,7 @@ SparcRails::Application.routes.draw do
       get 'confirmation'
       get 'service_details'
       get 'service_calendar'
+      get 'calendar_totals'
       get 'service_subsidy'
       get 'document_management'
       post 'navigate'

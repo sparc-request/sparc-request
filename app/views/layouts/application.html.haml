@@ -26,7 +26,7 @@
       #welcome_msg= show_welcome_message(current_user)
       #title
         #sub_service_request_header= show_friendly_ssr_id(@sub_service_request) if @sub_service_request
-        %h1 SPARC
+        %h1= t 'application_title' 
       #content.container_12
         - flash.each do |name, msg|
           = content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String)

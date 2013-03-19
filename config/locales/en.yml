@@ -1,8 +1,8 @@
 en:
-  application_title: "SPARC"
-  portal_title: "SPARC Portal"
-  admin_portal_title: "SPARC Administration"
-  catalog_manager_title: "SPARC Catalog Manager"
+  application_title: "SPARC Request"
+  portal_title: "SPARC Request Portal"
+  admin_portal_title: "SPARC Request Administration"
+  catalog_manager_title: "SPARC Request Catalog Manager"
   error_contact: "(843) 792-8300 or success@musc.edu"
   issue_contact: "Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have."
 

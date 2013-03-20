@@ -270,8 +270,7 @@ class ServiceRequestsController < ApplicationController
     
     @pages = {}
     @service_request.arms.each do |arm|
-      new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-      @pages[arm.id] = @service_request.set_visit_page new_page, arm
+      @pages[arm.id] = 1
     end
     @tab = 'pricing'
   end
@@ -471,8 +470,16 @@ class ServiceRequestsController < ApplicationController
   end
 
   def refresh_service_calendar
-    session[:service_calendar_page] = params[:page] if params[:page]
-    @page = @service_request.set_visit_page session[:service_calendar_page].to_i
+    arm_id = params[:arm_id] if params[:arm_id]
+    @arm = Arm.find arm_id if arm_id
+    page = params[:page] if params[:page]
+    session[:service_calendar_pages] = params[:pages] if params[:pages]
+    session[:service_calendar_pages][arm_id] = page if page && arm_id
+    @pages = {}
+    @service_request.arms.each do |arm|
+      new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
+      @pages[arm.id] = @service_request.set_visit_page new_page, arm
+    end
     @tab = 'pricing'
   end
 

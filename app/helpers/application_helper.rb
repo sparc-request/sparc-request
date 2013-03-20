@@ -112,7 +112,7 @@ module ApplicationHelper
     returning_html = ""
     
     returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')), 
-                              refresh_service_calendar_service_request_path(service_request, :page => page - 1, :pages => pages, :tab => tab), 
+                              refresh_service_calendar_service_request_path(service_request, :page => page - 1, :pages => pages, :arm_id => arm.id, :tab => tab), 
                               :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only') unless page <= 1
     returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')), 
                                   :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled', :disabled => true) if page <= 1
@@ -120,7 +120,7 @@ module ApplicationHelper
     returning_html += content_tag(:span, "Visits #{beginning_visit} - #{ending_visit} of #{arm.visit_count}", :class => 'visit_count')
 
     returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')), 
-                              refresh_service_calendar_service_request_path(service_request, :page => page + 1, :pages => pages, :tab => tab), 
+                              refresh_service_calendar_service_request_path(service_request, :page => page + 1, :pages => pages, :arm_id => arm.id, :tab => tab), 
                               :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only') unless ((page + 1) * 5) - 4 > arm.visit_count
     returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')), 
                                   :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled', :disabled => true) if ((page + 1) * 5) - 4 > arm.visit_count

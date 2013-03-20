@@ -1,3 +1,5 @@
+require 'date'
+
 set :default_environment, { 'BUNDLE_GEMFILE' => "DeployGemfile" }
 
 set :bundle_gemfile, "DeployGemfile"
@@ -6,6 +8,7 @@ set :bundle_without, [:development, :test]
 set :application, "sparc-rails"
 set :repository,  "git@github.com:HSSC/sparc-rails.git"
 set :deploy_root, "/var/www/rails"
+set :days_to_keep_backups 30
 
 set :scm, :git
 set :deploy_via, :remote_cache
@@ -65,12 +68,23 @@ namespace :mysql do
     run "mysqldump -u #{yaml[rails_env]['username']} -p #{yaml[rails_env]['database']} | bzip2 -c > #{filepath}" do |ch, stream, out|
       ch.send_data "#{yaml[rails_env]['password']}\n" if out =~ /^Enter password:/
     end
+    
+  end
 
+  desc "removes all database backups that are older than days_to_keep_db_backups"
+  task :cleanup_backups, :roles => :db, :only => { :primary => true } do
+    backup_dir = "#{shared_path}/database_backups/"
+    backups = Dir.entries(backup_dir).find_all {|file_name| file_name =~ /.*\.bz2/}
+    backup_files = backups.map {|file_name| backup_dir + file_name}
+    old_backup_date = Date.today - days_to_keep_backups
+    backups_to_delete = backup_files.find_all {|file| File.mtime(file).to_date < old_backup_date}
+    File.delete(backups_to_delete)
   end
 end
 
 before "deploy:migrate", 'mysql:backup' 
 before "deploy", 'mysql:backup' 
+after "mysql:backup", "mysql:cleanup_backups"
 
 require 'capistrano/ext/multistage'
 require 'bundler/capistrano'

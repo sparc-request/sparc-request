@@ -47,6 +47,19 @@ describe 'adding an authorized user', :js => true do
       find('#full_name').should have_value 'Brian Kelsey'
     end
 
+    describe 'setting the proper rights' do
+
+      it 'should default to the highest rights for pi' do
+        select "PD/PI", :from => 'project_role_role'
+        find("#project_role_project_rights_approve").should be_checked()
+      end
+
+      it 'should default to the highest rights for billing/business manager' do
+        select "Billing/Business Manager", :from => 'project_role_role'
+        find("#project_role_project_rights_approve").should be_checked()
+      end
+    end
+
     describe 'submitting the user' do
       it 'should add the user to the study/project' do
         select "Co-Investigator", :from => 'project_role_role'
@@ -88,5 +101,4 @@ describe 'adding an authorized user', :js => true do
       end
     end
   end
-  
 end

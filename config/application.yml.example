@@ -2,6 +2,7 @@ development:
   default_mail_to: catesa@musc.edu
   admin_mail_to: catesa@musc.edu
   new_user_cc: "amcates@gmail.com, no-reply@musc.edu"
+  root_url: "https://andrews-mac-pro.thurmond-gazes.musc.edu"
   user_portal_link: 'http://musc-pro.homelinux.net:3001/'
   header_link_1: http://sctr.musc.edu
   header_link_2: http://sctr.musc.edu
@@ -12,6 +13,7 @@ test:
   default_mail_to: catesa@musc.edu
   admin_mail_to: catesa@musc.edu
   new_user_cc: "amcates@gmail.com, no-reply@musc.edu"
+  root_url: "https://andrews-mac-pro.thurmond-gazes.musc.edu"
   user_portal_link: http://localhost:3000/
   header_link_1: http://sctr.musc.edu
   header_link_2: http://sctr.musc.edu

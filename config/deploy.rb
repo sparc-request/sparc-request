@@ -1,5 +1,3 @@
-require 'date'
-
 set :default_environment, { 'BUNDLE_GEMFILE' => "DeployGemfile" }
 
 set :bundle_gemfile, "DeployGemfile"
@@ -8,7 +6,7 @@ set :bundle_without, [:development, :test]
 set :application, "sparc-rails"
 set :repository,  "git@github.com:HSSC/sparc-rails.git"
 set :deploy_root, "/var/www/rails"
-set :days_to_keep_backups 30
+set :days_to_keep_backups, 30
 
 set :scm, :git
 set :deploy_via, :remote_cache
@@ -71,14 +69,21 @@ namespace :mysql do
     
   end
 
-  desc "removes all database backups that are older than days_to_keep_db_backups"
+  desc "removes all database backups that are older than days_to_keep_backups"
   task :cleanup_backups, :roles => :db, :only => { :primary => true } do
-    backup_dir = "#{shared_path}/database_backups/"
-    backups = Dir.entries(backup_dir).find_all {|file_name| file_name =~ /.*\.bz2/}
-    backup_files = backups.map {|file_name| backup_dir + file_name}
-    old_backup_date = Date.today - days_to_keep_backups
-    backups_to_delete = backup_files.find_all {|file| File.mtime(file).to_date < old_backup_date}
-    File.delete(backups_to_delete)
+    backup_dir = "#{shared_path}/database_backups"
+    # Gets the output of ls as a string and splits on new lines and
+    # selects the bziped files.
+    backups = capture("ls #{backup_dir}").split("\n").find_all {|file_name| file_name =~ /.*\.bz2/}
+    old_backup_date = (Time.now.to_date - days_to_keep_backups).to_time
+    backups.each do |file_name|
+      # Gets the float epoch timestamp out of the file name
+      timestamp = file_name.match(/\.((\d*)\.(\d*))/)[1]
+      backup_time = Time.at(timestamp.to_f)
+      if backup_time < old_backup_date
+        run "rm #{backup_dir}/#{file_name}"
+      end
+    end
   end
 end
 

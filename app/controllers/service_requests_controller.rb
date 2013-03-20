@@ -176,49 +176,53 @@ class ServiceRequestsController < ApplicationController
   end
 
   def service_calendar
-    #use session so we know what page to show when tabs are switched
-    session[:service_calendar_page] = params[:page] if params[:page]
+    if @service_request.arms.blank?
+      redirect_to "/service_requests/#{@service_request.id}/#{@forward}"
+    else
+      #use session so we know what page to show when tabs are switched
+      session[:service_calendar_page] = params[:page] if params[:page]
 
-    # TODO: why is @page not set here?  if it's not supposed to be set
-    # then there should be a comment as to why it's set in #review but
-    # not here
+      # TODO: why is @page not set here?  if it's not supposed to be set
+      # then there should be a comment as to why it's set in #review but
+      # not here
 
-    @service_request.arms.each do |arm|
-      #check each ARM for visit_groupings (in other words, it's a new arm)
-      if arm.visit_groupings.empty?
-        #Create missing visit_groupings
-        new_visit_groupings = Array.new
-        @service_request.per_patient_per_visit_line_items.each do |line_item|
-          vg = arm.visit_groupings.new
-          vg.line_item_id = line_item.id
-          vg.subject_count = arm.subject_count
-          vg.save
-          #push them to array, for easily looping over to create visits...
-          new_visit_groupings.push(vg)
-        end
-        #create missing visits
-        ActiveRecord::Base.transaction do
-          new_visit_groupings.each do |vg|
-            Visit.bulk_create(arm.visit_count, :visit_grouping_id => vg.id)
+      @service_request.arms.each do |arm|
+        #check each ARM for visit_groupings (in other words, it's a new arm)
+        if arm.visit_groupings.empty?
+          #Create missing visit_groupings
+          new_visit_groupings = Array.new
+          @service_request.per_patient_per_visit_line_items.each do |line_item|
+            vg = arm.visit_groupings.new
+            vg.line_item_id = line_item.id
+            vg.subject_count = arm.subject_count
+            vg.save
+            #push them to array, for easily looping over to create visits...
+            new_visit_groupings.push(vg)
           end
-        end
-      else
-        #Check to see if ARM has been modified...
-        arm.visit_groupings.each do |vg|
-          #Update subject counts under certain conditions
-          if @service_request.status == 'first_draft' and (vg.subject_count.nil? or vg.subject_count > arm.subject_count)
-            vg.update_attribute(:subject_count, arm.subject_count)
+          #create missing visits
+          ActiveRecord::Base.transaction do
+            new_visit_groupings.each do |vg|
+              Visit.bulk_create(arm.visit_count, :visit_grouping_id => vg.id)
+            end
           end
+        else
+          #Check to see if ARM has been modified...
+          arm.visit_groupings.each do |vg|
+            #Update subject counts under certain conditions
+            if @service_request.status == 'first_draft' and (vg.subject_count.nil? or vg.subject_count > arm.subject_count)
+              vg.update_attribute(:subject_count, arm.subject_count)
+            end
 
-          visit_count = vg.visits.size
-          unless arm.visit_count == visit_count
-            ActiveRecord::Base.transaction do
-              if arm.visit_count > visit_count
-                difference = arm.visit_count - visit_count
-                Visit.bulk_create(difference, :visit_grouping_id => vg.id)
-              elsif arm.visit_count < visit_count
-                vg.visits.last(vg.visits.count - arm.visit_count).each do |visit|
-                  visit.delete
+            visit_count = vg.visits.size
+            unless arm.visit_count == visit_count
+              ActiveRecord::Base.transaction do
+                if arm.visit_count > visit_count
+                  difference = arm.visit_count - visit_count
+                  Visit.bulk_create(difference, :visit_grouping_id => vg.id)
+                elsif arm.visit_count < visit_count
+                  vg.visits.last(vg.visits.count - arm.visit_count).each do |visit|
+                    visit.delete
+                  end
                 end
               end
             end

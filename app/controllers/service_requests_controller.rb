@@ -233,7 +233,9 @@ class ServiceRequestsController < ApplicationController
   end
 
   def calendar_totals
-    
+    if @service_request.arms.blank?
+      @back = 'service_details'
+    end
   end
 
   def service_subsidy

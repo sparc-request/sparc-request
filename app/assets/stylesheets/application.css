@@ -683,14 +683,16 @@ a.save-option{
 }
 
 .service-request-setup-view .arm-info .arm-cell {
-  width: 175px;
+  width: 170px;
   float: left;
   padding: 5px 10px;
 }
 
 .service-request-setup-view .arm-info .add-arm .add_nested_fields {
   padding: 5px 15px;
-  width: 107px;
+  width: 50px;
+  margin: 0px 10px;
+  display: block;
 }
 
 /* New Project View */

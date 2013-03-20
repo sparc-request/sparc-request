@@ -5,13 +5,13 @@ class UserMailer < ActionMailer::Base
     @send_to = user
     @protocol = protocol
 
-    send_message('SPARC Authorized Users')
+    send_message("#{I18n.t('application_title')} Authorized Users")
   end
 
   def notification_received(user)
     @send_to = user
 
-    send_message('New SPARC Notification')
+    send_message("New #{I18n.t('application_title')} Notification")
   end
 
   private

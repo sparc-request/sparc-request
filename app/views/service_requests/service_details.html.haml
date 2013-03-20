@@ -49,10 +49,10 @@
                         .arm-cell= arm.text_field :name
                         .arm-cell= arm.text_field :subject_count
                         .arm-cell= arm.text_field :visit_count
-                        .arm-cell{:style => "padding:5px 0px 5px 5px; width:auto;"}= arm.link_to_remove "Remove Arm"
+                        .arm-cell{:style => "padding:5px 0px 5px 0px; width:auto;"}= arm.link_to_remove "Remove Arm", {:class => "ui-state-default ui-corner-top ui-tabs-selected ui-state-active", :style => "padding: 3px 10px"}
                         .clear
                       .clear
-                    .add-arm= f.link_to_add "Add Arm", :arms
+                    .add-arm= f.link_to_add "Add Arm", :arms, {:class => "ui-state-default ui-corner-top ui-tabs-selected ui-state-active" }
                     .clear
                     %br
 

@@ -46,7 +46,7 @@
           %tr.sub_section_header
             %th{:colspan => 12}= value[:name]
 
-        - arm.per_patient_per_visit_visit_groupings.each do |visit_grouping|
+        - arm.visit_groupings.each do |visit_grouping|
           - line_item = visit_grouping.line_item
           %tr.line_item{:class => cycle('odd', '', :name => 'pppvs')}
             - if @portal 

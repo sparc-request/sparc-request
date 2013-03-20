@@ -54,6 +54,24 @@ describe "landing page", :js => true do
       page.should_not have_css("tr.Julia2")
     end
 
+    it 'should not delete the user if only pi' do
+
+      within(".Julia") do
+        click_on("Delete")
+        page.driver.browser.switch_to.alert.accept
+      end
+      page.should have_css('tr.Julia')
+    end
+
+    it 'should not delete the user if only billing/business manager' do
+
+      within(".Jason") do
+        click_on("Delete")
+        page.driver.browser.switch_to.alert.accept
+      end
+      page.should have_css('tr.Jason')
+    end
+
     it 'should bring up the add user box' do
       find("div.associated-user-button").click
       find(".add-associated-user-dialog").should be_visible
@@ -73,13 +91,13 @@ describe "landing page", :js => true do
 
     it 'should allow user to edit original service request' do
       find("td.edit-original-td a").click
-      page.should have_text("Welcome to the SPARC Services Catalog")
+      page.should have_text("Welcome to the SPARC Request Services Catalog")
       page.should_not have_text("Editing ID: #{service_request.protocol_id}")
     end
 
     it 'should allow user to add additional services to request' do
       find(".add-services-button").click
-      page.should have_text("Welcome to the SPARC Services Catalog")
+      page.should have_text("Welcome to the SPARC Request Services Catalog")
       page.should_not have_text("Editing ID: #{service_request.protocol_id}")
       page.should_not have_css("div#services div.line_item")
     end

@@ -52,13 +52,7 @@ class SubServiceRequest < ActiveRecord::Base
   def direct_cost_total
     total = 0.0
 
-    self.line_items.each do |li|
-      if li.service.is_one_time_fee?
-        total += li.direct_costs_for_one_time_fee
-      else
-        total += li.direct_costs_for_visit_based_service
-      end
-    end
+    total = service_request.direct_cost_total
 
     return total
   end
@@ -67,13 +61,7 @@ class SubServiceRequest < ActiveRecord::Base
   def indirect_cost_total
     total = 0.0
 
-    self.line_items.each do |li|
-      if li.service.is_one_time_fee?
-        total += li.indirect_costs_for_one_time_fee
-      else
-        total += li.indirect_costs_for_visit_based_service
-      end
-    end
+    total = service_request.indirect_cost_total
 
     return total
   end

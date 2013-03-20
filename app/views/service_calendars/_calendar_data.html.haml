@@ -58,8 +58,7 @@
               %td.your_cost= display_your_cost line_item
               %td.unit_type= line_item.service.displayed_pricing_map.unit_type
             %td.subject_count= select_tag "visit_grouping_#{visit_grouping.id}_count", options_for_select((1..arm.subject_count), visit_grouping.subject_count), :class => 'visit_grouping_subject_count', :update => "/service_requests/#{line_item.service_request_id}/service_calendars?visit_grouping=#{visit_grouping.id}&tab=template&portal=#{@portal}"
-            %td
-              / TODO: Fix for arms= select_row line_item, @tab
+            %td= select_row visit_grouping, @tab
             - visits = visit_grouping.visits.paginate(:page => @pages[arm.id].to_i, :per_page => 5)
             - unit_minimum = line_item.service.displayed_pricing_map.unit_minimum
             - totals_hash = visit_grouping.try(:per_subject_subtotals)

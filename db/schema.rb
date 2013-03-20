@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130308133055) do
+ActiveRecord::Schema.define(:version => 20130314205731) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -172,6 +172,7 @@ ActiveRecord::Schema.define(:version => 20130308133055) do
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
     t.datetime "deleted_at"
+    t.string   "other_text"
   end
 
   add_index "impact_areas", ["protocol_id"], :name => "index_impact_areas_on_protocol_id"

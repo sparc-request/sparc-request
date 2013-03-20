@@ -3,6 +3,7 @@ begin
   DEFAULT_MAIL_TO      = application_config['default_mail_to']
   ADMIN_MAIL_TO        = application_config['admin_mail_to']
   NEW_USER_CC          = application_config['new_user_cc']
+  ROOT_URL             = application_config['root_url']
   USER_PORTAL_LINK     = application_config['user_portal_link']
   HEADER_LINK_1        = application_config['header_link_1']
   HEADER_LINK_2        = application_config['header_link_2']

@@ -299,7 +299,9 @@ class ServiceRequestsController < ApplicationController
     end
 
     # generate the excel for this service request
-    xls = render_to_string :action => 'show', :formats => [:xlsx]
+    # xls = render_to_string :action => 'show', :formats => [:xlsx]
+    # TODO: Fix for arms
+    xls = "FIX ALL THE BROKEN THINGS"
 
     # send e-mail to all folks with view and above
     @protocol.project_roles.each do |project_role|
@@ -380,7 +382,9 @@ class ServiceRequestsController < ApplicationController
     end
 
     # generate the excel for this service request
-    xls = render_to_string :action => 'show', :formats => [:xlsx]
+    # xls = render_to_string :action => 'show', :formats => [:xlsx]
+    # TODO: Fix for arms
+    xls = 'FIX ALL THE BROKEN THINGS!!'
 
     # send e-mail to all folks with view and above
     @protocol.project_roles.each do |project_role|

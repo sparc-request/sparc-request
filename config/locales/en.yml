@@ -404,15 +404,6 @@ en:
     add_user: "User added!  See table below to set proxy rights."
     update_user: 'User updated!  See table below to set proxy rights.'
 
-  # Project/Study assignment page
-  study_assignment:
-    instructions_1: "Please review the SPARC Request Services you are requesting below."
-    instructions_2: "Please note that any \"Professional Services\" listed below have UMA fees associated with them and cannot be removed from this screen."
-    instructions_3: "If Professional Services are covered by % effort, you will have the opportunity to indicate this in Step 2."
-    instructions_4: "If you wish to add services, you must return to the \"Service Catalog\"."
-    instructions_center: "Before continuing to Step 2, you must select a Research Study or Project to which the services selected are associated. Only 1 Research Study/Project can be assigned to this request."
-    tied_to_study: "Is this Service Request tied to a particular Research Study"
-
   # Service Request Details form
   service_request_details:
     one_time_fee_instructions: "Please enter service details for SPARC Request Services that you selected"

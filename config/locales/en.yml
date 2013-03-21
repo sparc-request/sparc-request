@@ -41,24 +41,42 @@ en:
 
   # Notifier
   notifier:
-    title: "Service Request"
+    service_request: "Service Request"
     welcome_obtain_research_pricing: "A request has been made to obtain research pricing"
     welcome_submit: "Services have been requested or changed"
     body1: "Dear %{full_name},"
     body2_pi: "%{welcome} in %{application_title} (%{root_url}) for your %{protocol_type} listed below. In addition, below is a list of users who have been granted access to this %{protocol_type} on your behalf."
     body2_non_pi: "%{welcome} in %{application_title} (%{root_url}) for a %{protocol_type} to which you have been granted access."
-    header: "Project Information"
-    id: "Project ID:"
-    short: "Short Title:"
     p_title: "Project Title:"
-    sponsor: "Sponsor Name:"
-    funding: "Funding Source:"
+    p_info: "Project Information"
+    p_id: "Project ID:"
+    title1: "Short Title:"
+    title2: "Project Title:"
+    s_name: "Sponsor Name:"
+    source: "Funding Source:"
     name: "Name:"
     role: "Role:"
-    proxy: "Proxy Rights"
-    list1: "A list of requested services is attached."
-    list2: "To approve the charges associated with the selected services please click"
-    list3: "HERE"
+    proxy: "Proxy Rights:"
+    body6: "A list of requested services is attached."
+    body7: "To approve the charges associated with the selected services please click"
+    link: "HERE"
+    notice:
+      body1: "Request for new SPARC Request account submitted and awaiting approval"
+      body2: "A new SPARC Request account is waiting for approval."
+      last: "Last Name"
+      first: "First Name"
+      company: "Company"
+      email: "Email"
+      number: "Telephone Number"
+      reason: "Reason for account/login request"
+      approve: "Approve Account"
+      disapprove: "Disapprove Account"
+    status_change:
+      body1: "Request for new SPARC Request account status change"
+      body2: "Your request for a new SPARC Request account has been approved.  You may proceed with your service "
+      body3: "request using your newly created"
+      body4: "username and password."
+      body5: "Your request for a new SPARC Request account has NOT been approved."
 
   # Tooltip help dialogs
   cart_help:
@@ -639,39 +657,6 @@ en:
     preview: "Preview:"
     received: "Received:"
     requester: "Requester: "
-
-  # Notifier
-  notifier:
-    sr: "Service Request"
-    p_info: "Project Information"
-    p_id: "Project ID:"
-    title1: "Short Title:"
-    title2: "Project Title:"
-    s_name: "Sponsor Name:"
-    source: "Funding Source:"
-    name: "Name:"
-    role: "Role:"
-    proxy: "Proxy Rights:"
-    body6: "A list of requested services is attached."
-    body7: "To approve the charges associated with the selected services please click"
-    link: "HERE"
-    notice:
-      body1: "Request for new SPARC Request account submitted and awaiting approval"
-      body2: "A new SPARC Request account is waiting for approval."
-      last: "Last Name"
-      first: "First Name"
-      company: "Company"
-      email: "Email"
-      number: "Telephone Number"
-      reason: "Reason for account/login request"
-      approve: "Approve Account"
-      disapprove: "Disapprove Account"
-    status_change:
-      body1: "Request for new SPARC Request account status change"
-      body2: "Your request for a new SPARC Request account has been approved.  You may proceed with your service "
-      body3: "request using your newly created"
-      body4: "username and password."
-      body5: "Your request for a new SPARC Request account has NOT been approved."
 
   # Mailer
   mailer:

@@ -37,6 +37,7 @@
                         = f.hidden_field :end_date
                 %div{:style => "height:25px;background-color:#FFFFFF; clear:both;"}
                 .arm-info
+                  - @x = 0
                   = nested_form_for @service_request, :method => :post do |f|
                     .arm-header
                       .arm-cell= t(:service_request_details)[:name]
@@ -49,7 +50,7 @@
                         .arm-cell= arm.text_field :name
                         .arm-cell= arm.text_field :subject_count
                         .arm-cell= arm.text_field :visit_count
-                        .arm-cell{:style => "padding:5px 0px 5px 5px; width:auto;"}= arm.link_to_remove "Remove Arm"
+                        .arm-cell{:id => "#{@x+=1}", :style => "padding:5px 0px 5px 5px; width:auto;"}= arm.link_to_remove "Remove Arm"
                         .clear
                       .clear
                     .add-arm= f.link_to_add "Add Arm", :arms

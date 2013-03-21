@@ -50,4 +50,8 @@ class Arm < ActiveRecord::Base
     end
     return total
   end
+
+  def total_costs_for_visit_based_service
+    direct_costs_for_visit_based_service + indirect_costs_for_visit_based_service
+  end
 end

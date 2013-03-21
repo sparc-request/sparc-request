@@ -92,3 +92,9 @@
           - 5.times do |i|
             %td{:class => "visit_column_#{i + 1} max_total_per_patient arm_#{arm.id}"}
           %td{:class => "pp_max_total arm_#{arm.id}"}= display_max_total_cost_per_patient arm
+
+        %tr.totals_section.grand-totals{:class => cycle('odd', '', :name => 'pppvs')}
+          %td{:colspan => 5}= t("calendar_page.labels.total_costs") + " -- " + arm.name
+          %td &nbsp;
+          %td{:colspan => 5}
+          %td{:class => "pp_total arm_#{arm.id}"}= display_total_cost_per_arm arm

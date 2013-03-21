@@ -56,6 +56,12 @@ module ServiceCalendarHelper
     currency_converter sum
   end
 
+  def display_total_cost_per_arm arm
+    sum = 0
+    sum = arm.total_costs_for_visit_based_service
+    currency_converter sum
+  end
+
   # Displays grand totals per study
   def display_total_direct_cost_per_study_pppvs service_request
     sum = 0

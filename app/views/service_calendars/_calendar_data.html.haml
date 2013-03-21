@@ -46,8 +46,9 @@
           %tr.sub_section_header
             %th{:colspan => 12}= value[:name]
 
-        - arm.per_patient_per_visit_visit_groupings.each do |visit_grouping|
+        - arm.visit_groupings.each do |visit_grouping|
           - line_item = visit_grouping.line_item
+          - next unless value[:line_items].include?(line_item)
           %tr.line_item{:class => cycle('odd', '', :name => 'pppvs')}
             - if @portal 
               %td= select_tag "line_item_service_id", options_for_select(candidate_service_options(@candidate_per_patient_per_visit, true), line_item.try(:service).try(:id)), :'data-line_item_id' => line_item.id, :class => 'fulfillment_data fulfillment_selecter' 
@@ -57,9 +58,8 @@
               %td{:class => "service_rate_#{visit_grouping.id}"}= display_service_rate line_item
               %td.your_cost= display_your_cost line_item
               %td.unit_type= line_item.service.displayed_pricing_map.unit_type
-            %td.subject_count= select_tag "line_item_#{line_item.id}_count", options_for_select((1..arm.subject_count), visit_grouping.subject_count), :class => 'line_item_visit_count', :update => "/service_requests/#{line_item.service_request_id}/service_calendars?visit_grouping=#{visit_grouping.id}&tab=template&portal=#{@portal}"
-            %td
-              / TODO: Fix for arms= select_row line_item, @tab
+            %td.subject_count= select_tag "visit_grouping_#{visit_grouping.id}_count", options_for_select((1..arm.subject_count), visit_grouping.subject_count), :class => 'visit_grouping_subject_count', :update => "/service_requests/#{line_item.service_request_id}/service_calendars?visit_grouping=#{visit_grouping.id}&tab=template&portal=#{@portal}"
+            %td= select_row visit_grouping, @tab
             - visits = visit_grouping.visits.paginate(:page => @pages[arm.id].to_i, :per_page => 5)
             - unit_minimum = line_item.service.displayed_pricing_map.unit_minimum
             - totals_hash = visit_grouping.try(:per_subject_subtotals)
@@ -93,3 +93,9 @@
           - 5.times do |i|
             %td{:class => "visit_column_#{i + 1} max_total_per_patient arm_#{arm.id}"}
           %td{:class => "pp_max_total arm_#{arm.id}"}= display_max_total_cost_per_patient arm
+
+        %tr.totals_section.grand-totals{:class => cycle('odd', '', :name => 'pppvs')}
+          %td{:colspan => 5}= t("calendar_page.labels.total_costs") + " -- " + arm.name
+          %td &nbsp;
+          %td{:colspan => 5}
+          %td{:class => "pp_total arm_#{arm.id}"}= display_total_cost_per_arm arm

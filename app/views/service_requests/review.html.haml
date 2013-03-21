@@ -20,7 +20,10 @@
               %tbody
                 %tr
                   %td= @service_request.notes
-          #service_calendar_container= render :partial => 'service_requests/review/calendar'
+          #service_calendar_container
+            - @service_request.arms.each do |arm|
+              = render :partial => 'service_requests/review/calendar', :locals => {:arm => arm}
+            = render :partial => 'service_requests/review/review_totals'
           %br
           %br
           %br

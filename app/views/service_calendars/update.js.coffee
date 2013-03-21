@@ -19,3 +19,5 @@ if "<%= @errors %>" == ""
     $(".pp_max_total_direct_cost<%= @arm_id %>").html("<%= display_max_total_direct_cost_per_patient(@visit_grouping.arm) %>")
     $(".pp_max_total_indirect_cost<%= @arm_id %>").html("<%= display_max_total_indirect_cost_per_patient(@visit_grouping.arm) %>")
     $(".pp_max_total<%= @arm_id %>").html("<%= display_max_total_cost_per_patient(@visit_grouping.arm) %>")
+
+    $(".pp_total<%= @arm_id %>").html("<%= display_total_cost_per_arm(@visit_grouping.arm) %>")

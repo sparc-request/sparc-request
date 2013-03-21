@@ -9,7 +9,7 @@ class VisitGrouping < ActiveRecord::Base
   attr_accessible :subject_count
 
   # Returns the cost per unit based on a quantity (usually just the quantity on the line_item)
-  def per_unit_cost quantity_total=self.quantity
+  def per_unit_cost quantity_total=self.line_item.quantity
     if quantity_total == 0 || quantity_total.nil?
       0
     else

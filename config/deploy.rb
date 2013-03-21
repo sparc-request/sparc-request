@@ -6,6 +6,7 @@ set :bundle_without, [:development, :test]
 set :application, "sparc-rails"
 set :repository,  "git@github.com:HSSC/sparc-rails.git"
 set :deploy_root, "/var/www/rails"
+set :days_to_keep_backups, 30
 
 set :scm, :git
 set :deploy_via, :remote_cache
@@ -65,12 +66,30 @@ namespace :mysql do
     run "mysqldump -u #{yaml[rails_env]['username']} -p #{yaml[rails_env]['database']} | bzip2 -c > #{filepath}" do |ch, stream, out|
       ch.send_data "#{yaml[rails_env]['password']}\n" if out =~ /^Enter password:/
     end
+    
+  end
 
+  desc "removes all database backups that are older than days_to_keep_backups"
+  task :cleanup_backups, :roles => :db, :only => { :primary => true } do
+    backup_dir = "#{shared_path}/database_backups"
+    # Gets the output of ls as a string and splits on new lines and
+    # selects the bziped files.
+    backups = capture("ls #{backup_dir}").split("\n").find_all {|file_name| file_name =~ /.*\.bz2/}
+    old_backup_date = (Time.now.to_date - days_to_keep_backups).to_time
+    backups.each do |file_name|
+      # Gets the float epoch timestamp out of the file name
+      timestamp = file_name.match(/\.((\d*)\.(\d*))/)[1]
+      backup_time = Time.at(timestamp.to_f)
+      if backup_time < old_backup_date
+        run "rm #{backup_dir}/#{file_name}"
+      end
+    end
   end
 end
 
 before "deploy:migrate", 'mysql:backup' 
 before "deploy", 'mysql:backup' 
+after "mysql:backup", "mysql:cleanup_backups"
 
 require 'capistrano/ext/multistage'
 require 'bundler/capistrano'

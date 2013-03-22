@@ -112,6 +112,7 @@ wb.add_worksheet(name: "Review") do |sheet|
     merge_services_row << services_row
     merge_service_rows << service_rows
     merge_sub_header_rows << services_sub_header_rows
+    sheet.add_row
   end
   ############ end of arms.each
 

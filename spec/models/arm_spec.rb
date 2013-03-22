@@ -11,6 +11,65 @@ describe Arm do
     @study = FactoryGirl.build(:study, :funded, :federal, indirect_cost_rate: 200)
     @study.save(validate: false)
   end
+  
+  context 'fulfillment' do
+
+    describe 'adding and removing visits' do
+
+      let!(:service_request) { FactoryGirl.create(:service_request) }
+      let!(:service)         { FactoryGirl.create(:service) }
+      let!(:service2)        { FactoryGirl.create(:service) }
+      let(:line_item)        { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service.id) }
+      let(:line_item2)       { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service2.id) }
+      let!(:arm)             { FactoryGirl.create(:arm, service_request_id: service_request.id, subject_count: 5, visit_count: 5)}
+      let!(:visit_grouping)  { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item.id, subject_count: 5)}
+      let!(:visit_grouping2)  { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item2.id, subject_count: 5)}
+
+      before(:each) do
+        5.times do
+          FactoryGirl.create(:visit, visit_grouping_id: visit_grouping.id)
+          FactoryGirl.create(:visit, visit_grouping_id: visit_grouping2.id)
+        end
+        @sr = ServiceRequest.first
+        @arm = Arm.first
+      end
+
+      it "should increase the visit count on the arm by one" do
+        original_visit_count = arm.visit_count
+        @arm.add_visit
+        @arm.visit_count.should eq(original_visit_count + 1)
+      end
+
+      it "should add a visit to the end if no position is specified" do
+        @arm.add_visit
+        VisitGrouping.find(visit_grouping.id).visits.count.should eq(6)
+      end
+
+      it "should add a visit at the specified position" do
+        last_visit = visit_grouping.visits.last
+        last_visit.update_attribute(:research_billing_qty, 99)
+        @arm.add_visit(3).should eq true
+        @arm.visit_count.should eq 6
+        @arm.visit_groupings[0].visits.count.should eq 6
+        @arm.visit_groupings[1].visits.count.should eq 6
+        visit_grouping.visits.where(:position => 6).first.research_billing_qty.should eq(99)
+      end
+
+      it "should decrease the visit count by one" do
+        visit_count = @arm.visit_count
+        @arm.remove_visit(1)
+        @arm.visit_count.should eq(visit_count - 1)
+      end 
+
+      it "should remove a visit at the specified position" do
+        first_visit = visit_grouping.visits.first
+        first_visit.update_attributes(billing: "your mom")
+        @arm.remove_visit(1)
+        new_first_visit = visit_grouping.visits.first
+        new_first_visit.billing.should_not eq("your mom")
+      end
+    end
+  end
 
   context "methods" do
 

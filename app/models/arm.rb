@@ -54,4 +54,86 @@ class Arm < ActiveRecord::Base
   def total_costs_for_visit_based_service
     direct_costs_for_visit_based_service + indirect_costs_for_visit_based_service
   end
+  
+  # Add a single visit.  Returns true upon success and false upon
+  # failure.  If there is a failure, any changes are rolled back.
+  # 
+  # TODO: I don't quite like the way this is written.  Perhaps we should
+  # rename this method to add_visit! and make it raise exceptions; it
+  # would be easier to read.  But I'm not sure how to get access to the
+  # errors object in that case.
+  def add_visit position=nil
+    result = self.transaction do
+      # Add visits to each line item under the service request
+      self.visit_groupings.each do |vg|
+        if not vg.add_visit(position) then
+          self.errors.initialize_dup(vg.errors) # TODO: is this the right way to do this?
+          raise ActiveRecord::Rollback
+        end
+      end
+
+      # Reload to force refresh of the visits
+      self.reload
+
+      self.visit_count ||= 0 # in case we import a service request with nil visit count
+      self.visit_count += 1
+
+      self.save or raise ActiveRecord::Rollback
+    end
+
+    if result then
+      return true
+    else
+      self.reload
+      return false
+    end
+  end
+
+  def remove_visit position
+    result = self.transaction do
+      self.visit_groupings.each do |vg|
+        if not vg.remove_visit(position) then
+          self.errors.initialize_dup(vg.errors)
+          raise ActiveRecord::Rollback
+        end
+      end
+
+      self.reload
+
+      self.visit_count -= 1
+
+      self.save or raise ActiveRecord::Rollback
+    end
+    
+    if result
+      return true
+    else
+      self.reload
+      return false
+    end
+  end
+
+  def fix_missing_visits
+    # TODO This possibly needs to be fixed
+    # if self.visit_count_changed?
+    #   self.per_patient_per_visit_line_items.each do |li|
+    #     li.fix_missing_visits(self.visit_count)
+    #   end
+    # end
+  end
+
+  def insure_visit_count
+    # TODO: Fix for arms
+    # if self.visit_count.nil? or self.visit_count <= 0
+    #   self.update_attribute(:visit_count, 1)
+    #   self.reload
+    # end
+  end
+
+  def insure_subject_count
+    if subject_count.nil? or subject_count < 0
+      self.update_attribute(:subject_count, 1)
+      self.reload
+    end
+  end
 end

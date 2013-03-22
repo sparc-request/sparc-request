@@ -20,7 +20,7 @@ describe "subsidy page" do
 
   before :each do
     add_visits
-    subsidy_map = FactoryGirl.create(:subsidy_map, organization_id: program.id, max_dollar_cap: 775.00, max_percentage: 50.00)
+    subsidy_map = FactoryGirl.create(:subsidy_map, organization_id: program.id, max_dollar_cap: (sub_service_request.direct_cost_total / 200), max_percentage: 50.00)
     program.update_attribute(:subsidy_map, subsidy_map)
     visit service_subsidy_service_request_path service_request.id
   end
@@ -48,7 +48,7 @@ describe "subsidy page" do
 
       it 'should reject too high a percentage', :js => true do
         #Change values, and re-visit page, to independantly test the percentage, instead of max_dollar_cap
-        subsidy_map = FactoryGirl.create(:subsidy_map, organization_id: program.id, max_dollar_cap: 1200.00, max_percentage: 50.00)
+        subsidy_map = FactoryGirl.create(:subsidy_map, organization_id: program.id, max_dollar_cap: ((sub_service_request.direct_cost_total / 100) - 100), max_percentage: 50.00)
         program.update_attribute(:subsidy_map, subsidy_map)
         visit service_subsidy_service_request_path service_request.id
 
@@ -94,7 +94,7 @@ describe "subsidy page" do
       visit service_subsidy_service_request_path service_request.id
       page.should have_css("input.pi-contribution[disabled=disabled]")
       retry_until do
-        find("input.pi-contribution").should have_value("1550.0")
+        find("input.pi-contribution").should have_value("#{(sub_service_request.direct_cost_total / 100).to_f}")
       end
     end
   end

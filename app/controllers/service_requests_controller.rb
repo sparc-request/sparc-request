@@ -209,7 +209,7 @@ class ServiceRequestsController < ApplicationController
           #Check to see if ARM has been modified...
           arm.visit_groupings.each do |vg|
             #Update subject counts under certain conditions
-            if @service_request.status == 'first_draft' and (vg.subject_count.nil? or vg.subject_count > arm.subject_count)
+            if @service_request.status == 'first_draft' or vg.subject_count.nil? or arm.subject_count < vg.subject_count
               vg.update_attribute(:subject_count, arm.subject_count)
             end
 
@@ -300,8 +300,7 @@ class ServiceRequestsController < ApplicationController
 
     # generate the excel for this service request
     # xls = render_to_string :action => 'show', :formats => [:xlsx]
-    # TODO: Fix for arms
-    xls = "FIX ALL THE BROKEN THINGS"
+    xls = render_to_string :action => 'show', :formats => [:xlsx]
 
     # send e-mail to all folks with view and above
     @protocol.project_roles.each do |project_role|
@@ -383,8 +382,7 @@ class ServiceRequestsController < ApplicationController
 
     # generate the excel for this service request
     # xls = render_to_string :action => 'show', :formats => [:xlsx]
-    # TODO: Fix for arms
-    xls = 'FIX ALL THE BROKEN THINGS!!'
+    xls = render_to_string :action => 'show', :formats => [:xlsx]
 
     # send e-mail to all folks with view and above
     @protocol.project_roles.each do |project_role|
@@ -502,7 +500,7 @@ class ServiceRequestsController < ApplicationController
 
       unless service.is_one_time_fee?
         if @service_request.arms.empty?
-          @service_request.arms.create(:name => "ARM 1", :visit_count => 1)
+          @service_request.arms.create(:name => "ARM 1", :visit_count => 1, :subject_count => 1)
         end
       end
 

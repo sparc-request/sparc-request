@@ -70,7 +70,7 @@ module ApplicationHelper
                                       text_field_tag("visit_name_#{n}", visit_name, :class => "visit_name", :size => 10, :update => "#{base_url}?visit_position=#{n-1}&arm_id=#{arm.id}") +
                                       tag(:br) + 
                                       link_to((content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')), 
-                                              "/service_requests/#{service_request.id}/#{action}/#{n}", 
+                                              "/service_requests/#{service_request.id}/#{action}/#{n}/#{arm.id}",
                                               :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only', :id => "check_all_column_#{n}"),
                                       :width => 60, :class => 'visit_number')
       end

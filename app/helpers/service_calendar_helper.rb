@@ -1,17 +1,17 @@
 module ServiceCalendarHelper
 
-  def select_row line_item, tab
-    checked = line_item.visits.map{|v| v.research_billing_qty >= 1 ? true : false}.all?
+  def select_row visit_grouping, tab
+    checked = visit_grouping.visits.map{|v| v.research_billing_qty >= 1 ? true : false}.all?
     action = checked == true ? 'unselect_calendar_row' : 'select_calendar_row'
     icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
 
     link_to(
         (content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')), 
-        "/service_requests/#{line_item.service_request.id}/#{action}/#{line_item.id}", 
+        "/service_requests/#{visit_grouping.line_item.service_request.id}/#{action}/#{visit_grouping.id}", 
         :remote  => true,
         :role    => 'button',
         :class   => "ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only service_calendar_row",
-        :id      => "check_row_#{line_item.id}_#{tab}")
+        :id      => "check_row_#{visit_grouping.id}_#{tab}")
   end
 
   def currency_converter cents
@@ -53,6 +53,12 @@ module ServiceCalendarHelper
 
   def display_max_total_cost_per_patient arm
     sum = arm.maximum_total_per_patient
+    currency_converter sum
+  end
+
+  def display_total_cost_per_arm arm
+    sum = 0
+    sum = arm.total_costs_for_visit_based_service
     currency_converter sum
   end
 

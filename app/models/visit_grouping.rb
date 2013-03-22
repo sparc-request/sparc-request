@@ -70,7 +70,7 @@ class VisitGrouping < ActiveRecord::Base
 
   # Determine the direct costs for a one-time-fee service
   def direct_costs_for_one_time_fee
-    num = self.quantity || 0.0
+    num = self.line_item.quantity || 0.0
     num * self.per_unit_cost
   end
 
@@ -103,7 +103,7 @@ class VisitGrouping < ActiveRecord::Base
 
   # Determine the indirect costs for a one-time-fee service
   def indirect_costs_for_one_time_fee
-    if self.service.displayed_pricing_map.exclude_from_indirect_cost || !USE_INDIRECT_COST
+    if self.line_item.service.displayed_pricing_map.exclude_from_indirect_cost || !USE_INDIRECT_COST
       return 0
     else
       self.direct_costs_for_one_time_fee * self.indirect_cost_rate
@@ -129,8 +129,8 @@ class VisitGrouping < ActiveRecord::Base
   # In fulfillment, when you change the service on an existing line item
   def switch_to_one_time_fee
     result = self.transaction do
-      self.quantity = 1 unless self.quantity  
-      self.units_per_quantity unless self.units_per_quantity
+      self.line_item.quantity = 1 unless self.line_item.quantity  
+      self.line_items.units_per_quantity unless self.line_item.units_per_quantity
       self.visits.each {|x| x.destroy}
       self.save or raise ActiveRecord::Rollback
     end

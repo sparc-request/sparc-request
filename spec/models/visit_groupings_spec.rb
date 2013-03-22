@@ -98,7 +98,74 @@ describe VisitGrouping do
           visit.update_attributes(research_billing_qty: 0)
           visit_grouping.direct_costs_for_visit_based_service_single_subject.should eq(0)
         end
-      end      
+      end
+
+      describe "direct costs for visit based services" do
+
+        it "should return the correct cost for all subjects" do
+          visit_grouping.direct_costs_for_visit_based_service.should eq(2500)
+        end
+      end
+
+      describe "direct costs for one time fee" do
+
+        it "should return the correct direct cost" do
+          pricing_map.update_attributes(is_one_time_fee: true)
+          visit_grouping.direct_costs_for_one_time_fee.should eq(2000)
+        end
+      end
+
+      describe "indirect cost" do
+
+        before :each do
+          stub_const("USE_INDIRECT_COST", true)
+        end
+
+        context "indirect cost rate" do
+
+          it "should determine the indirect cost rate" do
+            visit_grouping.indirect_cost_rate.should eq(2)
+          end
+        end
+
+        context "indirect costs for visit based service single subject" do
+
+          it "should return the correct indirect cost" do
+            visit_grouping.indirect_costs_for_visit_based_service_single_subject.should eq(1000)
+          end
+        end
+
+        context "indirect costs for visit based service" do
+
+          it "should return the correct cost" do
+            visit_grouping.indirect_costs_for_visit_based_service.should eq(5000)
+          end
+        end
+
+        context "indirect costs for one time fee" do
+
+          it "should return the correct cost" do
+            visit_grouping.indirect_costs_for_one_time_fee.should eq(4000)
+          end
+        end
+      end
+
+      describe "add visit" do
+
+        it "should add a visit" do
+          visit_grouping.add_visit(2)
+          visit_grouping.visits.count.should eq(2)
+        end
+      end
+
+      describe "remove visit" do
+
+        it "should delete a visit" do
+          visit_grouping.add_visit(2)
+          visit_grouping.remove_visit(2)
+          visit_grouping.visits.count.should eq(1)
+        end
+      end
     end
   end
 end

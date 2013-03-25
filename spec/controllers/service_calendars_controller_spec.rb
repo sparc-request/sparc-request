@@ -3,7 +3,7 @@ require 'spec_helper'
 describe ServiceCalendarsController do
   stub_controller
 
-  let!(:service_request) { FactoryGirl.create(:service_request, visit_count: 0) }
+  let!(:service_request) { FactoryGirl.create(:service_request) }
 
   describe 'GET table' do
     it 'should set tab to whatever was passed in' do
@@ -44,11 +44,13 @@ describe ServiceCalendarsController do
       service
     }
 
+    let!(:arm) { FactoryGirl.create(:arm) }
     let!(:line_item) { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id) }
+    let!(:visit_grouping) { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item.id) }
 
 
     it 'should set visit to the given visit' do
-      Visit.bulk_create(20, line_item_id: line_item.id)
+      Visit.bulk_create(20, visit_grouping_id: visit_grouping.id)
 
       session[:service_request_id] = service_request.id
 
@@ -57,14 +59,14 @@ describe ServiceCalendarsController do
         :tab                 => 'foo',
         :service_request_id  => service_request.id,
         :line_item           => line_item.id,
-        :visit               => line_item.visits[0].id,
+        :visit               => visit_grouping.visits[0].id,
       }.with_indifferent_access
 
-      assigns(:visit).should eq line_item.visits[0]
+      assigns(:visit).should eq visit
     end
 
     it 'should set line_item to the given line item if it exists' do
-      Visit.bulk_create(20, line_item_id: line_item.id)
+      Visit.bulk_create(20, visit_grouping_id: visit_grouping.id)
 
       session[:service_request_id] = service_request.id
 
@@ -73,14 +75,14 @@ describe ServiceCalendarsController do
         :tab                 => 'foo',
         :service_request_id  => service_request.id,
         :line_item           => line_item.id,
-        :visit               => line_item.visits[0].id,
+        :visit               => visit_grouping.visits[0].id,
       }.with_indifferent_access
 
       assigns(:line_item).should eq line_item
     end
 
     it "should set line_item to the visit's line item if there is no line item given" do
-      Visit.bulk_create(20, line_item_id: line_item.id)
+      Visit.bulk_create(20, visit_grouping_id: visit_grouping.id)
 
       session[:service_request_id] = service_request.id
 
@@ -89,7 +91,7 @@ describe ServiceCalendarsController do
         :tab                 => 'foo',
         :service_request_id  => service_request.id,
         :line_item           => nil,
-        :visit               => line_item.visits[0].id,
+        :visit               => visit_grouping.visits[0].id,
       }.with_indifferent_access
 
       assigns(:line_item).should eq line_item
@@ -113,8 +115,8 @@ describe ServiceCalendarsController do
     it 'should set quantity and research billing quantity on the visit if on the template tab and there is no line item, research billing quantity is 0, and checked is true' do
       LineItem.any_instance.stub_chain(:service, :displayed_pricing_map, :unit_minimum) { 120 }
 
-      Visit.bulk_create(20, line_item_id: line_item.id)
-      visit = line_item.visits[0]
+      Visit.bulk_create(20, visit_grouping_id: visit_grouping.id)
+      visit = visit_grouping.visits[0]
       visit.update_attributes(:research_billing_qty => 0)
 
       session[:service_request_id] = service_request.id
@@ -123,7 +125,7 @@ describe ServiceCalendarsController do
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_item           => nil,
-        :visit               => line_item.visits[0].id,
+        :visit               => visit.id,
         :tab                 => 'template',
         :checked             => 'true',
       }.with_indifferent_access
@@ -135,8 +137,8 @@ describe ServiceCalendarsController do
     end
 
     it 'should set all the quantities to 0 if on the template tab and there is no line item and checked is false' do
-      Visit.bulk_create(20, line_item_id: line_item.id)
-      visit = line_item.visits[0]
+      Visit.bulk_create(20, visit_grouping_id: visit_grouping.id)
+      visit = visit_grouping.visits[0]
       visit.update_attributes(:research_billing_qty => 0)
 
       session[:service_request_id] = service_request.id
@@ -145,7 +147,7 @@ describe ServiceCalendarsController do
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_item           => nil,
-        :visit               => line_item.visits[0].id,
+        :visit               => visit_grouping.visits[0].id,
         :tab                 => 'template',
         :checked             => 'false',
       }.with_indifferent_access
@@ -159,8 +161,8 @@ describe ServiceCalendarsController do
     end
 
     it 'should give an error if on the quantity tab and quantity is less than 0' do
-      Visit.bulk_create(20, line_item_id: line_item.id)
-      visit = line_item.visits[0]
+      Visit.bulk_create(20, visit_grouping_id: visit_grouping.id)
+      visit = visit_grouping.visits[0]
       visit.update_attributes(:research_billing_qty => 0)
 
       session[:service_request_id] = service_request.id
@@ -169,7 +171,7 @@ describe ServiceCalendarsController do
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_item           => nil,
-        :visit               => line_item.visits[0].id,
+        :visit               => visit.id,
         :tab                 => 'quantity',
         :qty                 => -1,
       }.with_indifferent_access
@@ -178,8 +180,8 @@ describe ServiceCalendarsController do
     end
 
     it 'should update quantity on the visit if on the quantity tab and quantity is 0' do
-      Visit.bulk_create(20, line_item_id: line_item.id)
-      visit = line_item.visits[0]
+      Visit.bulk_create(20, visit_grouping_id: visit_grouping.id)
+      visit = visit_grouping.visits[0]
       visit.update_attributes(:research_billing_qty => 0)
 
       session[:service_request_id] = service_request.id
@@ -188,7 +190,7 @@ describe ServiceCalendarsController do
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_item           => nil,
-        :visit               => line_item.visits[0].id,
+        :visit               => visit.id,
         :tab                 => 'quantity',
         :qty                 => 0
       }.with_indifferent_access
@@ -201,8 +203,8 @@ describe ServiceCalendarsController do
     it 'should update quantity on the visit if on the quantity tab and quantity is greater than 0' do
       LineItem.any_instance.stub_chain(:service, :displayed_pricing_map, :unit_minimum) { 120 }
 
-      Visit.bulk_create(20, line_item_id: line_item.id)
-      visit = line_item.visits[0]
+      Visit.bulk_create(20, visit_grouping_id: visit_grouping.id)
+      visit = visit_grouping.visits[0]
       visit.update_attributes(:research_billing_qty => 0)
 
       session[:service_request_id] = service_request.id
@@ -211,7 +213,7 @@ describe ServiceCalendarsController do
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_item           => nil,
-        :visit               => line_item.visits[0].id,
+        :visit               => visit.id,
         :tab                 => 'quantity',
         :qty                 => 18
       }.with_indifferent_access
@@ -222,8 +224,8 @@ describe ServiceCalendarsController do
     end
 
     it 'should give an error if on the billing strategy tab and quantity is less than 0' do
-      Visit.bulk_create(20, line_item_id: line_item.id)
-      visit = line_item.visits[0]
+      Visit.bulk_create(20, visit_grouping_id: visit_grouping.id)
+      visit = visit_grouping.visits[0]
       visit.update_attributes(:research_billing_qty => 0)
 
       session[:service_request_id] = service_request.id
@@ -232,7 +234,7 @@ describe ServiceCalendarsController do
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_item           => nil,
-        :visit               => line_item.visits[0].id,
+        :visit               => visit.id,
         :tab                 => 'billing_strategy',
         :qty                 => -1,
       }.with_indifferent_access
@@ -241,8 +243,8 @@ describe ServiceCalendarsController do
     end
 
     it 'should update the given column on the visit if on the billing strategy tab and quantity is 0' do
-      Visit.bulk_create(20, line_item_id: line_item.id)
-      visit = line_item.visits[0]
+      Visit.bulk_create(20, visit_grouping_id: visit_grouping.id)
+      visit = visit_grouping.visits[0]
       visit.update_attributes(:research_billing_qty => 0)
       visit.update_attributes(:effort_billing_qty => 42)
 
@@ -252,7 +254,7 @@ describe ServiceCalendarsController do
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_item           => nil,
-        :visit               => line_item.visits[0].id,
+        :visit               => visit.id,
         :tab                 => 'billing_strategy',
         :qty                 => 0,
         :column              => 'effort_billing_qty',
@@ -264,8 +266,8 @@ describe ServiceCalendarsController do
     end
 
     it 'should update the given column on the visit if on the billing strategy tab and quantity is greater than 0' do
-      Visit.bulk_create(20, line_item_id: line_item.id)
-      visit = line_item.visits[0]
+      Visit.bulk_create(20, visit_grouping_id: visit_grouping.id)
+      visit = visit_grouping.visits[0]
       visit.update_attributes(:research_billing_qty => 0)
       visit.update_attributes(:effort_billing_qty => 42)
 
@@ -275,7 +277,7 @@ describe ServiceCalendarsController do
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_item           => nil,
-        :visit               => line_item.visits[0].id,
+        :visit               => visit.id,
         :tab                 => 'billing_strategy',
         :qty                 => 100,
         :column              => 'effort_billing_qty',
@@ -287,8 +289,8 @@ describe ServiceCalendarsController do
     end
 
     it 'should update quantity on the visit to the total if on the billing strategy tab' do
-      Visit.bulk_create(20, line_item_id: line_item.id)
-      visit = line_item.visits[0]
+      Visit.bulk_create(20, visit_grouping_id: visit_grouping.id)
+      visit = visit_grouping.visits[0]
       visit.update_attributes(:research_billing_qty => 8)
       visit.update_attributes(:insurance_billing_qty => 17)
       visit.update_attributes(:effort_billing_qty => 42)
@@ -299,7 +301,7 @@ describe ServiceCalendarsController do
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_item           => nil,
-        :visit               => line_item.visits[0].id,
+        :visit               => visit.id,
         :tab                 => 'billing_strategy',
         :qty                 => 100,
         :column              => 'effort_billing_qty',
@@ -311,7 +313,7 @@ describe ServiceCalendarsController do
     end
 
     it 'should set displayed_visits' do
-      Visit.bulk_create(20, line_item_id: line_item.id)
+      Visit.bulk_create(20, visit_grouping_id: visit_grouping.id)
 
       session[:service_request_id] = service_request.id
 
@@ -320,10 +322,10 @@ describe ServiceCalendarsController do
         :tab                 => 'foo',
         :service_request_id  => service_request.id,
         :line_item           => line_item.id,
-        :visit               => line_item.visits[0].id,
+        :visit               => visit_grouping.visits[0].id,
       }.with_indifferent_access
 
-      assigns(:displayed_visits).should eq line_item.visits[0...5]
+      assigns(:displayed_visits).should eq visit_grouping.visits[0...5]
     end
   end
 end

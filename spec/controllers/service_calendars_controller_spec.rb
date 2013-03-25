@@ -4,6 +4,7 @@ describe ServiceCalendarsController do
   stub_controller
 
   let!(:service_request) { FactoryGirl.create(:service_request) }
+  let!(:arm) { FactoryGirl.create(:arm, service_request_id: service_request.id, visit_count: 1) }
 
   describe 'GET table' do
     it 'should set tab to whatever was passed in' do
@@ -21,11 +22,11 @@ describe ServiceCalendarsController do
     it 'should set the visit page for the service request' do
       ServiceRequest.any_instance.
         should_receive(:set_visit_page).
-        with(42).
+        with(42, arm).
         and_return(12)
 
       session[:service_request_id] = service_request.id
-      session[:service_calendar_page] = 42
+      session[:service_calendar_pages] = { arm.id.to_s => 42 }
         
       get :table, {
         :format => :js,
@@ -33,7 +34,7 @@ describe ServiceCalendarsController do
         :service_request_id => service_request.id,
       }.with_indifferent_access
 
-      assigns(:page).should eq 12
+      assigns(:pages).should eq({ arm.id => 12 })
     end
   end
 
@@ -44,13 +45,13 @@ describe ServiceCalendarsController do
       service
     }
 
-    let!(:arm) { FactoryGirl.create(:arm) }
     let!(:line_item) { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id) }
     let!(:visit_grouping) { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item.id) }
 
 
     it 'should set visit to the given visit' do
       Visit.bulk_create(20, visit_grouping_id: visit_grouping.id)
+      visit = visit_grouping.visits[0]
 
       session[:service_request_id] = service_request.id
 
@@ -59,7 +60,7 @@ describe ServiceCalendarsController do
         :tab                 => 'foo',
         :service_request_id  => service_request.id,
         :line_item           => line_item.id,
-        :visit               => visit_grouping.visits[0].id,
+        :visit               => visit.id,
       }.with_indifferent_access
 
       assigns(:visit).should eq visit
@@ -83,6 +84,7 @@ describe ServiceCalendarsController do
 
     it "should set line_item to the visit's line item if there is no line item given" do
       Visit.bulk_create(20, visit_grouping_id: visit_grouping.id)
+      visit = visit_grouping.visits[0]
 
       session[:service_request_id] = service_request.id
 
@@ -91,25 +93,30 @@ describe ServiceCalendarsController do
         :tab                 => 'foo',
         :service_request_id  => service_request.id,
         :line_item           => nil,
-        :visit               => visit_grouping.visits[0].id,
+        :visit               => visit.id,
       }.with_indifferent_access
 
       assigns(:line_item).should eq line_item
     end
 
-    it 'should set subject count on the line item if on the template tab' do
+    it 'should set subject count on the visit grouping if on the template tab' do
+      Visit.bulk_create(20, visit_grouping_id: visit_grouping.id)
+      visit = visit_grouping.visits[0]
+
       session[:service_request_id] = service_request.id
 
       get :update, {
         :format              => :js,
         :service_request_id  => service_request.id,
+        :visit_grouping      => visit_grouping.id,
         :line_item           => line_item.id,
+        :visit               => visit.id,
         :qty                 => 240,
         :tab                 => 'template',
       }.with_indifferent_access
 
-      line_item.reload
-      line_item.subject_count.should eq 240
+      visit_grouping.reload
+      visit_grouping.subject_count.should eq 240
     end
 
     it 'should set quantity and research billing quantity on the visit if on the template tab and there is no line item, research billing quantity is 0, and checked is true' do
@@ -310,22 +317,6 @@ describe ServiceCalendarsController do
       visit.reload
 
       visit.quantity.should eq(8 + 17 + 100)
-    end
-
-    it 'should set displayed_visits' do
-      Visit.bulk_create(20, visit_grouping_id: visit_grouping.id)
-
-      session[:service_request_id] = service_request.id
-
-      get :update, {
-        :format              => :js,
-        :tab                 => 'foo',
-        :service_request_id  => service_request.id,
-        :line_item           => line_item.id,
-        :visit               => visit_grouping.visits[0].id,
-      }.with_indifferent_access
-
-      assigns(:displayed_visits).should eq visit_grouping.visits[0...5]
     end
   end
 end

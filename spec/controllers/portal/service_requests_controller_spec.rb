@@ -15,9 +15,13 @@ describe Portal::ServiceRequestsController do
   let!(:service_request) {
     FactoryGirl.create(
       :service_request,
-      visit_count: 0,
-      subject_count: 1,
       protocol_id: study.id)
+  }
+
+  let!(:arm) {
+    FactoryGirl.create(
+      :arm,
+      service_request_id: service_request.id)
   }
 
   let!(:ssr) {
@@ -43,6 +47,7 @@ describe Portal::ServiceRequestsController do
   }
 
   let!(:line_item) { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id) }
+  let!(:visit_grouping) { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item.id) }
 
   describe 'GET show' do
     it 'should set instance variables' do
@@ -107,8 +112,8 @@ describe Portal::ServiceRequestsController do
 
   describe 'POST remove_per_patient_per_visit_visit' do
     before(:each) do
-      service_request.update_attributes(visit_count: 10)
-      Visit.bulk_create(10, line_item_id: line_item.id)
+      arm.update_attributes(visit_count: 10)
+      Visit.bulk_create(10, visit_grouping_id: visit_grouping.id)
     end
 
     it 'should set instance variables' do

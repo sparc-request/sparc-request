@@ -6,7 +6,7 @@ class VisitGrouping < ActiveRecord::Base
 
   attr_accessible :arm_id
   attr_accessible :line_item_id
-  attr_accessible :subject_count
+  attr_accessible :subject_count  # number of subjects for this visit grouping
 
   # Returns the cost per unit based on a quantity (usually just the quantity on the line_item)
   def per_unit_cost quantity_total=self.line_item.quantity

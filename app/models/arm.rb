@@ -123,11 +123,10 @@ class Arm < ActiveRecord::Base
   end
 
   def insure_visit_count
-    # TODO: Fix for arms
-    # if self.visit_count.nil? or self.visit_count <= 0
-    #   self.update_attribute(:visit_count, 1)
-    #   self.reload
-    # end
+    if self.visit_count.nil? or self.visit_count <= 0
+      self.update_attribute(:visit_count, 1)
+      self.reload
+    end
   end
 
   def insure_subject_count

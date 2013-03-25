@@ -147,5 +147,35 @@ describe Arm do
         arm.total_costs_for_visit_based_service.should eq(5000)
       end
     end
+
+    describe "insure subject count" do
+
+      it "should give the arm a subject count of 1 if the count is nil" do
+        arm.update_attributes(subject_count: nil)
+        arm.insure_subject_count
+        arm.subject_count.should eq(1)
+      end
+
+      it "should give the arm a subject count of 1 if the count is negative" do
+        arm.update_attributes(subject_count: -1)
+        arm.insure_subject_count
+        arm.subject_count.should eq(1)
+      end
+    end
+
+    describe "insure visit count" do
+
+      it "should give the arm a visit count of 1 if the count is nil" do
+        arm.update_attributes(visit_count: nil)
+        arm.insure_visit_count
+        arm.visit_count.should eq(1)
+      end
+
+      it "should give the arm a visit count of 1 if the count is negative" do
+        arm.update_attributes(visit_count: -1)
+        arm.insure_visit_count
+        arm.visit_count.should eq(1)
+      end
+    end
   end
 end

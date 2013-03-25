@@ -6,7 +6,7 @@ class Arm < ActiveRecord::Base
 
   attr_accessible :name
   attr_accessible :visit_count
-  attr_accessible :subject_count
+  attr_accessible :subject_count      # maximum number of subjects for any visit grouping
 
   def per_patient_per_visit_line_items
     visit_groupings.each.map do |vg|
@@ -123,11 +123,10 @@ class Arm < ActiveRecord::Base
   end
 
   def insure_visit_count
-    # TODO: Fix for arms
-    # if self.visit_count.nil? or self.visit_count <= 0
-    #   self.update_attribute(:visit_count, 1)
-    #   self.reload
-    # end
+    if self.visit_count.nil? or self.visit_count <= 0
+      self.update_attribute(:visit_count, 1)
+      self.reload
+    end
   end
 
   def insure_subject_count

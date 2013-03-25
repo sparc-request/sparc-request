@@ -94,21 +94,6 @@ class SubServiceRequest < ActiveRecord::Base
     services
   end
 
-  def add_line_item service
-    if self.line_items.map {|li| li.service.id}.include? service.id
-      raise ArgumentError, "Service #{service.id} is already on service request #{self.service_request.id} "
-    else
-      line_item = self.line_items.create(service_id: service.id, service_request_id: self.service_request.id, ssr_id: self.ssr_id)
-      unless service.is_one_time_fee? 
-        self.service_request.visit_count.times do 
-           line_item.visits.create(line_item_id: line_item.id)
-        end
-      end
-    end
-
-    line_item
-  end
-
   def update_line_item line_item, args
     if self.line_items.map {|li| li.id}.include? line_item.id
       line_item.update_attributes!(args)

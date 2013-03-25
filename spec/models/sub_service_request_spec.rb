@@ -57,26 +57,12 @@ describe 'SubServiceRequest' do
       let!(:core)                 { FactoryGirl.create(:core) }
       let!(:service)              { FactoryGirl.create(:service, organization_id: core.id, ) }
       let!(:service2)             { FactoryGirl.create(:service, organization_id: core.id) }
-      let!(:service_request)      { FactoryGirl.create(:service_request, subject_count: 5, visit_count: 5) }
+      let!(:service_request)      { FactoryGirl.create(:service_request) }
       let!(:service_request2)     { FactoryGirl.create(:service_request) }
       let!(:sub_service_request)  { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id) }
       let!(:sub_service_request2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request2.id) }
       let!(:pricing_map)          { FactoryGirl.create(:pricing_map, service_id: service.id) }
  
-      context 'adding a line item' do
-       
-        it 'should fail if service is already on the service request' do
-          FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id,
-            sub_service_request_id: sub_service_request.id)
-          lambda { sub_service_request.add_line_item(service) }.should raise_exception
-        end
-
-        it 'should have added the line item if successful' do
-          sub_service_request.add_line_item(service)
-          service_request.line_items.count.should eq(1)
-        end
-      end
-
       context 'updating a line item' do
 
         it 'should fail if the line item is not on the sub service request' do
@@ -92,34 +78,6 @@ describe 'SubServiceRequest' do
           line_item.quantity.should eq(50)
         end
       end
-
-      describe 'one time fee manipulation' do
-
-        before :each do
-          FactoryGirl.create(:pricing_map, :is_one_time_fee, service_id: service.id)
-        end
-
-        it 'should work with one time fees' do
-          service.stub!(:is_one_time_fee?).and_return true
-          lambda { sub_service_request.add_line_item(service) }.should_not raise_exception
-        end
-      end
-
-      describe 'per patient per visit manipulation' do
-
-        before :each do
-          FactoryGirl.create(:pricing_map, service_id: service2.id)
-        end
-
-        context 'adding a line item' do
-
-          it 'should build the visits successfully' do
-            sr = ServiceRequest.find(service_request.id)
-            sub_service_request.add_line_item(service2)
-            sr.line_items.first.visits.count.should eq(service_request.visit_count)
-          end
-        end
-      end
     end
 
     describe "cost calculations" do
@@ -127,7 +85,7 @@ describe 'SubServiceRequest' do
       let!(:core)                 { FactoryGirl.create(:core) }
       let!(:service)              { FactoryGirl.create(:service, organization_id: core.id, ) }
       let!(:service2)             { FactoryGirl.create(:service, organization_id: core.id) }
-      let!(:service_request)      { FactoryGirl.create(:service_request, subject_count: 5, visit_count: 5) }
+      let!(:service_request)      { FactoryGirl.create(:service_request) }
       let!(:service_request2)     { FactoryGirl.create(:service_request) }
       let!(:sub_service_request)  { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
       let!(:sub_service_request2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request2.id) }

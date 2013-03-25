@@ -68,8 +68,6 @@ class ServiceRequest < ActiveRecord::Base
   attr_accessible :approved
   attr_accessible :start_date
   attr_accessible :end_date
-  attr_accessible :visit_count
-  attr_accessible :subject_count
   attr_accessible :consult_arranged_date
   attr_accessible :pppv_complete_date
   attr_accessible :pppv_in_process_date
@@ -86,10 +84,6 @@ class ServiceRequest < ActiveRecord::Base
   alias_attribute :service_request_id, :id
 
   #after_save :fix_missing_visits
-
-  def init
-    self.visit_count = 0
-  end
 
   def one_time_fee_line_items
     line_items.map do |line_item|

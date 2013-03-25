@@ -15,8 +15,6 @@ describe Portal::SubServiceRequestsController do
   let!(:service_request) {
     FactoryGirl.create(
       :service_request,
-      visit_count: 0,
-      subject_count: 1,
       protocol_id: study.id)
   }
 
@@ -56,9 +54,7 @@ describe Portal::SubServiceRequestsController do
 
     it 'should work (smoke test)' do
       service_request = FactoryGirl.create(
-          :service_request,
-          subject_count: 5,
-          visit_count:   5)
+          :service_request)
       sub_service_request = FactoryGirl.create(
           :sub_service_request,
           service_request_id: service_request.id,
@@ -76,6 +72,8 @@ describe Portal::SubServiceRequestsController do
     end
 
     it 'should work when the service request visit count is nil' do
+      # TODO: does this test still make sense?
+
       service_request = FactoryGirl.create(
           :service_request,
           subject_count: 5,

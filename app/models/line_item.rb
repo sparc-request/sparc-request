@@ -138,22 +138,6 @@ class LineItem < ActiveRecord::Base
     end
   end
 
-  # Add a new visit.  Returns the new Visit upon success or false upon
-  # error.
-  def add_visit position=nil
-    self.visits.create(position: position)
-  end
-
-  def remove_visit position
-    visit = self.visits.find_by_position(position)
-    # Move visit to the end by position, re-number other visits
-    visit.move_to_bottom
-    # Must reload to refresh other visit positions, otherwise two 
-    # records with same postion will exist
-    self.reload
-    visit.delete
-  end
-
   # In fulfillment, when you change the service on an existing line item
   def switch_to_one_time_fee
     result = self.transaction do

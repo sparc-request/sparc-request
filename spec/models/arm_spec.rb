@@ -23,7 +23,7 @@ describe Arm do
       let(:line_item2)       { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service2.id) }
       let!(:arm)             { FactoryGirl.create(:arm, service_request_id: service_request.id, subject_count: 5, visit_count: 5)}
       let!(:visit_grouping)  { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item.id, subject_count: 5)}
-      let!(:visit_grouping2)  { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item2.id, subject_count: 5)}
+      let!(:visit_grouping2) { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item2.id, subject_count: 5)}
 
       before(:each) do
         5.times do

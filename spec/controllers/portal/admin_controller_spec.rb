@@ -18,7 +18,7 @@ describe Portal::AdminController, :type => :controller do
     project.reload
     project
   }
-  let!(:service_request) { FactoryGirl.create(:service_request, visit_count: 0, protocol_id: project.id) }
+  let!(:service_request) { FactoryGirl.create(:service_request, protocol_id: project.id) }
   let!(:sub_service_request1) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id ) }
   let!(:sub_service_request2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id ) }
   

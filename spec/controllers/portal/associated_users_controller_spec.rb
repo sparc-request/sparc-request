@@ -21,7 +21,7 @@ describe Portal::AssociatedUsersController do
     project
   }
 
-  let!(:service_request) { FactoryGirl.create(:service_request, visit_count: 0) }
+  let!(:service_request) { FactoryGirl.create(:service_request) }
   let!(:sub_service_request) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id ) }
 
   describe 'GET show' do

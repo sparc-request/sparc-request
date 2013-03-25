@@ -19,8 +19,6 @@ describe Portal::SubsidiesController do
   let!(:service_request) {
     FactoryGirl.create(
       :service_request,
-      visit_count: 0,
-      subject_count: 1,
       protocol_id: study.id)
   }
 

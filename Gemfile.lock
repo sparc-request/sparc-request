@@ -39,8 +39,7 @@ GEM
       multi_json (~> 1.0)
     acts-as-taggable-on (2.3.3)
       rails (~> 3.0)
-    acts_as_list (0.2.0)
-      activerecord (>= 3.0)
+    acts_as_list (0.1.9)
     addressable (2.3.3)
     afm (0.2.0)
     ansi (1.4.3)
@@ -124,6 +123,7 @@ GEM
     hashie (1.2.0)
     highline (1.6.16)
     hike (1.2.1)
+    hpricot (0.8.6)
     htmlentities (4.3.1)
     http_parser.rb (0.5.3)
     i18n (0.6.4)
@@ -300,7 +300,7 @@ PLATFORMS
 
 DEPENDENCIES
   acts-as-taggable-on (~> 2.3.1)
-  acts_as_list
+  acts_as_list (= 0.1.9)
   addressable (~> 2.3.2)
   alfresco_handler!
   axlsx_rails
@@ -321,6 +321,7 @@ DEPENDENCIES
   grouped_validations
   haml
   highline
+  hpricot
   inflection-js-rails
   jasmine
   jquery-rails (= 2.1.3)

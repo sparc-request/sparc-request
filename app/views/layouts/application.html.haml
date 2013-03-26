@@ -5,6 +5,7 @@
     %title= t 'application_title'
     = stylesheet_link_tag 'application', '960', 'jquery-ui', :media => 'all'
     = javascript_include_tag "application"
+    = javascript_include_tag "feedback"
     = csrf_meta_tags
   %body
     // add the service_request_id for easy access to it
@@ -26,10 +27,20 @@
       #welcome_msg= show_welcome_message(current_user)
       #title
         #sub_service_request_header= show_friendly_ssr_id(@sub_service_request) if @sub_service_request
-        %h1= t 'application_title' 
+        %h1= t 'application_title'
+        #feedback= t 'feedback'
       #content.container_12
         - flash.each do |name, msg|
           = content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String)
         = yield
       = render :partial => 'shared/ask_a_question'
       = render :partial => 'shared/piwik_tracking' if Rails.env == 'production'
+
+      #feedback-form{:style => 'display: none', :title => 'Give Us Your Feedback!'}
+        = form_tag feedback_service_requests_path, :method => :post, :remote => true, :id => 'feedback_form' do
+          %p
+            = text_field_tag "feedback[email]", nil, {:placeholder => t(:notifications)[:email], :size => 35, :tabindex => -1}
+            %br
+            %br
+          %p
+            = text_area_tag "feedback[message]", nil, {:placeholder => t(:notifications)[:feedback], :cols => 65, :rows => 15, :tabindex => -1}

@@ -34,6 +34,17 @@ ul {
   font-size: 20px;
 }
 
+#feedback {
+  float: right;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 .ui-icon-white{
   background-image: url(images/ui-icons_e0fdff_256x240.png);
   width: 16px;

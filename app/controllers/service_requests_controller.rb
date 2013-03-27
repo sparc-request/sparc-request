@@ -3,8 +3,9 @@ require 'generate_request_grant_billing_pdf'
 class ServiceRequestsController < ApplicationController
   before_filter :initialize_service_request, :except => [:approve_changes]
   before_filter :authorize_identity, :except => [:approve_changes, :show]
-  before_filter :authenticate_identity!, :except => [:catalog, :add_service, :remove_service, :ask_a_question]
-  layout false, :only => :ask_a_question
+  before_filter :authenticate_identity!, :except => [:catalog, :add_service, :remove_service, :ask_a_question, :feedback]
+  layout false, :only => [:ask_a_question, :feedback]
+  respond_to :js, :json, :html
 
   def show
     @protocol = @service_request.protocol
@@ -617,6 +618,18 @@ class ServiceRequestsController < ApplicationController
 
     question = Question.create :to => DEFAULT_MAIL_TO, :from => from, :body => body
     Notifier.ask_a_question(question).deliver
+  end
+
+  def feedback
+    feedback = Feedback.new(params[:feedback])
+    if feedback.save
+      Notifier.provide_feedback(feedback).deliver
+      render :nothing => true
+    else
+      respond_to do |format|
+        format.js { render :status => 403, :json => feedback.errors.to_a.map {|k,v| "#{k.humanize} #{v}".rstrip + '.'} }
+      end
+    end
   end
 
   def select_calendar_row

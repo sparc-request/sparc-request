@@ -34,6 +34,7 @@ SparcRails::Application.routes.draw do
 
     collection do
       post 'ask_a_question'
+      post 'feedback'
     end
 
     resource :service_calendars do

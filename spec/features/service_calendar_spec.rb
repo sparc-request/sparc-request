@@ -21,27 +21,30 @@ describe "service calendar" do
   end
 
   describe "per patient per visit" do
+
+    # let(:visit_grouping) { FactoryGirl.create(:visit_grouping, arm_id: arm1.id, line_item_id: arm1.visit_groupings.first.id, subject_count: arm.subject_count) }
+
     describe "template tab" do
 
-
       describe "selecting check row button" do
+
         it "should check all visits", :js => true do
-          remove_from_dom(".total_#{line_item2.id}")
-          click_link "check_row_#{line_item2.id}_template"
+          puts "#"*100
+          puts service_request.line_items.inspect
+          click_link "check_row_#{arm1.visit_groupings.first.id}_template"
           wait_for_javascript_to_finish
-          find(".total_#{line_item2.id}").should have_exact_text('$150.00') # Probably a better way to do this. But this should be the 10 visits added together.
+          first(".total_#{arm1.visit_groupings.first.id}").should have_exact_text('$300.00') # Probably a better way to do this. But this should be the 10 visits added together.
         end
 
         it "should uncheck all visits", :js => true do
-          remove_from_dom(".total_#{line_item2.id}")
-          click_link "check_row_#{line_item2.id}_template"
+          click_link "check_row_#{arm1.visit_groupings.first.id}_template"
           wait_for_javascript_to_finish
-          find(".total_#{line_item2.id}").should have_exact_text('$150.00') # this is here to wait for javascript to finish
+          first(".total_#{arm1.visit_groupings.first.id}").should have_exact_text('$300.00') # this is here to wait for javascript to finish
 
-          remove_from_dom(".total_#{line_item2.id}")
-          click_link "check_row_#{line_item2.id}_template"
+          remove_from_dom(".total_#{arm1.visit_groupings.first.id}")
+          click_link "check_row_#{arm1.visit_groupings.first.id}_template"
           wait_for_javascript_to_finish
-          find(".total_#{line_item2.id}").should have_exact_text('$0.00') # Probably a better way to do this.
+          first(".total_#{arm1.visit_groupings.first.id}").should have_exact_text('$0.00') # Probably a better way to do this.
         end
       end
 
@@ -94,9 +97,9 @@ describe "service calendar" do
         it "should overwrite the quantity in research billing box", :js => true do
           fill_in "visits_#{@visit_id}_research_billing_qty", :with => 10
           wait_for_javascript_to_finish
-          click_link "check_row_#{line_item2.id}_billing_strategy"
+          click_link "check_row_#{arm1.visit_groupings.first.id}_billing_strategy"
           wait_for_javascript_to_finish
-          find("#visits_#{@visit_id}_research_billing_qty").should have_value("10")
+          find("#visits_#{@visit_id}_research_billing_qty").should have_value("1")
         end
       end
 

@@ -38,6 +38,9 @@
 
       #feedback-form{:style => 'display: none', :title => 'Give Us Your Feedback!'}
         = form_tag feedback_service_requests_path, :method => :post, :remote => true, :id => 'feedback_form' do
+          #errors
+            #error-text
+            %br
           %p
             = text_field_tag "feedback[email]", nil, {:placeholder => t(:notifications)[:email], :size => 35, :tabindex => -1}
             %br

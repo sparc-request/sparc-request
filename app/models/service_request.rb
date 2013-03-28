@@ -56,10 +56,6 @@ class ServiceRequest < ActiveRecord::Base
     #insert group specific validation
   end
 
-  def has_visits?
-    visits.count > 0 
-  end
-
   attr_accessible :protocol_id
   attr_accessible :obisid
   attr_accessible :status

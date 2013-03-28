@@ -59,17 +59,19 @@ describe 'ServiceRequest' do
   describe "cost calculations" do
 
     let!(:core)            { FactoryGirl.create(:core) }
-    let!(:pricing_setup)   { FactoryGirl.create(:pricing_setup, organization_id: core.id) } 
-    let!(:service_request) { FactoryGirl.create(:service_request, subject_count: 5, visit_count: 5) }
-    let!(:ssr)             { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
+    let!(:pricing_setup)   { FactoryGirl.create(:pricing_setup, organization_id: core.id, display_date: Time.now - 1.day, federal: 50, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal')}
+    let!(:service_request) { FactoryGirl.create(:service_request, status: "draft", start_date: Time.now, end_date: Time.now + 10.days) }
+    let!(:ssr)             { FactoryGirl.create(:sub_service_request, ssr_id: "0001", service_request_id: service_request.id, organization_id: core.id)}
     let!(:service)         { FactoryGirl.create(:service, organization_id: core.id) }
+    let!(:service2)        { FactoryGirl.create(:service, organization_id: core.id, name: 'Per Patient') }
     let!(:pricing_map)     { FactoryGirl.create(:pricing_map, service_id: service.id) }
-    let!(:line_item)       { FactoryGirl.create(:line_item, service_request_id: service_request.id, sub_service_request_id: ssr.id, service_id: service.id, subject_count: 5) }
-    let!(:line_item2)      { FactoryGirl.create(:line_item, service_request_id: service_request.id, sub_service_request_id: ssr.id, service_id: service.id, subject_count: 5) }
-    let!(:visit)           { FactoryGirl.create(:visit, line_item_id: line_item.id, research_billing_qty: 5) }
-    let!(:visit2)          { FactoryGirl.create(:visit, line_item_id: line_item2.id, research_billing_qty: 5) }
+    let!(:line_item)       { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service.id, sub_service_request_id: ssr.id, quantity: 5, units_per_quantity: 1) }
+    let!(:line_item2)      { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service2.id, sub_service_request_id: ssr.id, quantity: 0) }
+    let!(:arm1)            { FactoryGirl.create(:arm, name: "Arm", service_request_id: service_request.id, visit_count: 10, subject_count: 2)}
+    let!(:arm2)            { FactoryGirl.create(:arm, name: "Arm2", service_request_id: service_request.id, visit_count: 5, subject_count: 4)}
 
     before :each do
+      add_visits
       @protocol = Study.create(FactoryGirl.attributes_for(:protocol))
       @protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 200)
       @protocol.save :validate => false
@@ -80,7 +82,7 @@ describe 'ServiceRequest' do
     context "total direct cost per patient" do
 
       it "should return the sum of all line items visit-based direct cost" do
-        service_request.total_direct_costs_per_patient.should eq(5000)
+        service_request.total_direct_costs_per_patient.should eq(10000)
       end
     end
 
@@ -101,15 +103,8 @@ describe 'ServiceRequest' do
         if USE_INDIRECT_COST
           service_request.total_costs_per_patient.should eq(15000)
         else
-          service_request.total_costs_per_patient.should eq(5000.0)
+          service_request.total_costs_per_patient.should eq(10000.0)
         end
-      end
-    end
-
-    context "maximum direct costs per patient" do
-
-      it "should return the maximum direct cost" do
-        service_request.maximum_direct_costs_per_patient.should eq(1000)
       end
     end
   end

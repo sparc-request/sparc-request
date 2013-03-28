@@ -1,5 +1,7 @@
 $(document).ready ->
 
+  $('#errors').hide()
+
   $('#feedback').live 'click', ->
     $("#feedback-form").dialog( "open" )
 
@@ -29,6 +31,8 @@ $(document).ready ->
       dataType: "script"
       contentType: 'application/json; charset=utf-8'
       success: ->
+        $('#errors').hide()
         $('#feedback-form').dialog 'close'
-      error: ->
-        console.log 'test'
+      error: (event) ->
+        $('#errors').show()
+        $('#error-text').html("Message can't be blank")

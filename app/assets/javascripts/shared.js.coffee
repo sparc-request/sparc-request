@@ -1,6 +1,6 @@
 $(document).ready ->
   $(document).ajaxError (event, request, settings) ->
-    if request.statusText != 'abort'
+    if request.statusText != 'abort' && settings.url != '/service_requests/feedback'
       alert("An error happened processing your request: " + settings.url)
 
   $('.edit_project_role').live 'click', ->

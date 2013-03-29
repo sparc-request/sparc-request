@@ -141,11 +141,15 @@ module CapybaraSupport
       internal_rate_type:           'full')
     pricing_setup.save!
 
-    service_request = FactoryGirl.create(:service_request, status: "draft", subject_count: 2, visit_count: 10)
+    service_request = FactoryGirl.create(:service_request, status: "draft", subject_count: 2)
 
     sub_service_request = FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id,status: "draft")
 
     service_request.update_attribute(:service_requester_id, Identity.find_by_ldap_uid("jug2").id)
+
+    arm = FactoryGirl.create(:arm, service_request_id: service_request.id, subject_count: 2, visit_count: 10)
+
+    visit_grouping = FactoryGirl.create(:visit_grouping, arm_id: arm.id, subject_count: arm.subject_count)
 
   end
   

@@ -29,7 +29,7 @@
       - @service_request.service_list(true).each do |key, value| # get only one time fee services and group them
         - next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
         %tr.sub_section_header
-          %th{:colspan => 12}= value[:name]
+          %th.otf{:colspan => 12}= value[:name]
           - value[:line_items].each do |line_item|
             %tr.line_item{:class => cycle('odd', '', :name => 'otfs')}
               %td.service_name= line_item.service.name

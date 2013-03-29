@@ -16,32 +16,33 @@ describe "calender totals" do
 
 
   describe "one time fees" do
-
+    
     it "should calculate the totals", :js => true do
-      find(".total_#{line_item.id}").should have_exact_text("$50.00") # 5 quantity 1 unit per
+      find(".total_#{line_item3.id}").should have_exact_text("$50.00") # 5 quantity 1 unit per
     end
   end
 
   describe "display rates" do
 
     it "should show the full rate when full rate > your cost", :js => true do
-      find(".service_rate_#{line_item.id}").should have_exact_text("$20.00")
+      find(".service_rate_#{line_item3.id}").should have_exact_text("$20.00")
     end
   end
 
   describe "displaying totals" do
     it "totals should be 0 when visits aren't checked", :js => true do
-      find(".pp_total_direct_cost").text().should have_exact_text("$0.00")
+      wait_for_javascript_to_finish
+      first(".pp_max_total_direct_cost").text().should have_exact_text("$0.00")
       if USE_INDIRECT_COST
         find(".pp_total_indirect_cost").text().should have_exact_text("$0.00")
       end
-      find(".pp_total_cost").text().should have_exact_text("$0.00")
+      first(".pp_total").text().should have_exact_text("$0.00")
     end
 
     it "should update total costs when a visit is checked", :js => true do
-      visit_id = line_item2.visits[1].id
+      visit_id = arm1.visit_groupings.first.visits[1].id
       page.check("visits_#{visit_id}")
-      find(".total_#{line_item2.id}").should have_exact_text("$30.00")
+      first(".total_#{arm1.visit_groupings.first.id}").should have_exact_text("$30.00")
     end
 
     it "should change visits when -> is clicked", :js => true do

@@ -77,16 +77,8 @@ RSpec.configure do |config|
     DatabaseCleaner.clean_with(:truncation)
   end
 
-  before = proc do
-    DatabaseCleaner.start
-  end
-
-  config.before(:each, :js => true, &before)
-  config.before(:each, &before)
-
-  config.after(:each) do
-    DatabaseCleaner.clean
-  end
+  config.before(:each) { DatabaseCleaner.start }
+  config.after(:each) { DatabaseCleaner.clean }
 
   config.color_enabled = true
 end

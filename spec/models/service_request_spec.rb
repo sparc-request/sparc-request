@@ -56,19 +56,42 @@ describe 'ServiceRequest' do
     end
   end
 
-  describe "cost calculations" do
+  context "methods" do
+    let_there_be_lane
+    let_there_be_j
+    build_service_request_with_project
 
-    let!(:core)            { FactoryGirl.create(:core) }
-    let!(:pricing_setup)   { FactoryGirl.create(:pricing_setup, organization_id: core.id, display_date: Time.now - 1.day, federal: 50, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal')}
-    let!(:service_request) { FactoryGirl.create(:service_request, status: "draft", start_date: Time.now, end_date: Time.now + 10.days) }
-    let!(:ssr)             { FactoryGirl.create(:sub_service_request, ssr_id: "0001", service_request_id: service_request.id, organization_id: core.id)}
-    let!(:service)         { FactoryGirl.create(:service, organization_id: core.id) }
-    let!(:service2)        { FactoryGirl.create(:service, organization_id: core.id, name: 'Per Patient') }
-    let!(:pricing_map)     { FactoryGirl.create(:pricing_map, service_id: service.id) }
-    let!(:line_item)       { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service.id, sub_service_request_id: ssr.id, quantity: 5, units_per_quantity: 1) }
-    let!(:line_item2)      { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service2.id, sub_service_request_id: ssr.id, quantity: 0) }
-    let!(:arm1)            { FactoryGirl.create(:arm, name: "Arm", service_request_id: service_request.id, visit_count: 10, subject_count: 2)}
-    let!(:arm2)            { FactoryGirl.create(:arm, name: "Arm2", service_request_id: service_request.id, visit_count: 5, subject_count: 4)}
+    before :each do
+      add_visits
+    end
+
+    describe "one time fee line items" do
+      it "should return one time fee line items" do
+        service_request.one_time_fee_line_items[0].service.name.should eq("One Time Fee")
+      end
+    end
+    describe "has one time fee services" do
+      it "should return true" do
+        service_request.has_one_time_fee_services?.should eq(true)
+      end
+    end
+    describe "has per patient per visit services" do
+      it "should return true" do
+        service_request.has_per_patient_per_visit_services?.should eq(true)
+      end
+    end
+    # describe "servcie list" do
+    #   it "should do stuff" do
+    #     service_request.service_list.should eq(3)
+    #   end
+    # end
+  end
+
+  describe "cost calculations" do
+    let_there_be_lane
+    let_there_be_j
+    build_service_request_with_project
+    #USE_INDIRECT_COST = true  #For testing indirect cost
 
     before :each do
       add_visits
@@ -79,10 +102,61 @@ describe 'ServiceRequest' do
       service_request.reload
     end
 
+    context "total direct cost one time" do
+      it "should return the sum of all line items one time fee direct cost" do
+        service_request.total_direct_costs_one_time.should eq(5000)
+      end
+    end
+    context "total indirect cost one time" do
+      it "should return the sum of all line items one time fee indirect cost" do
+        if USE_INDIRECT_COST
+          service_request.total_indirect_costs_one_time.should eq(10000)
+        else
+          service_request.total_indirect_costs_one_time.should eq(0.0)
+        end
+      end
+    end
+
+    context "total cost one time" do
+      it "should return the sum of all line items one time fee direct and indirect costs" do
+        if USE_INDIRECT_COST
+          service_request.total_costs_one_time.should eq(15000)
+        else
+          service_request.total_costs_one_time.should eq(5000)
+        end
+      end
+    end
+
+    context "total direct cost" do
+      it "should return the sum of all line items direct cost" do
+        service_request.direct_cost_total.should eq(605000)
+      end
+    end
+
+    context "total indirect cost" do
+      it "should return the sum of all line items indirect cost" do
+        if USE_INDIRECT_COST
+          service_request.indirect_cost_total.should eq(1210000)
+        else
+          service_request.indirect_cost_total.should eq(0.0)
+        end
+      end
+    end
+
+    context "grand total" do
+      it "should return the grand total of all costs" do
+        if USE_INDIRECT_COST
+          service_request.grand_total.should eq(1815000)
+        else
+          service_request.grand_total.should eq(605000)
+        end
+      end
+    end
+
     context "total direct cost per patient" do
 
       it "should return the sum of all line items visit-based direct cost" do
-        service_request.total_direct_costs_per_patient.should eq(10000)
+        service_request.total_direct_costs_per_patient.should eq(600000)
       end
     end
 
@@ -90,7 +164,7 @@ describe 'ServiceRequest' do
 
       it "should return the sum of all line items visit-based indirect cost" do
         if USE_INDIRECT_COST
-          service_request.total_indirect_costs_per_patient.should eq(10000)
+          service_request.total_indirect_costs_per_patient.should eq(1200000)
         else
           service_request.total_indirect_costs_per_patient.should eq(0.0)
         end
@@ -101,9 +175,9 @@ describe 'ServiceRequest' do
 
       it "should return the total of the direct and indirect costs" do
         if USE_INDIRECT_COST
-          service_request.total_costs_per_patient.should eq(15000)
+          service_request.total_costs_per_patient.should eq(1800000)
         else
-          service_request.total_costs_per_patient.should eq(10000.0)
+          service_request.total_costs_per_patient.should eq(600000.0)
         end
       end
     end

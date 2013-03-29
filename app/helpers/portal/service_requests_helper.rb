@@ -55,10 +55,11 @@ module Portal::ServiceRequestsHelper
   end
 
   def max_visit_count sub_service_request
-    sub_service_request.line_items.inject(0) do |visit_count, li|
-      visit_count = li.visits.length if li.try(:visits) && li.visits.length > visit_count
-      visit_count
-    end
+    visit_groupings = sub_service_request.line_items.map { |li| li.visit_groupings }
+    visit_groupings.flatten!
+    visit_counts = visit_groupings.map { |vg| vg.visits.count }
+
+    return visit_counts.max
   end
 
   def pre_select_billing_type billing_type, option
@@ -82,21 +83,22 @@ module Portal::ServiceRequestsHelper
   def visits_for_select sub_service_request
     unless sub_service_request.line_items.empty?
       line_item = sub_service_request.per_patient_per_visit_line_items.first
-      unless line_item.visits.empty?
+      vg = line_item.visit_groupings.first
+      unless vg.visits.empty?
         # If there are position attributes set, use positon
-        if line_item.visits.last.position
-          unless line_item.visits.last.position.blank?
-            last_position = line_item.visits.last.position
+        if vg.visits.last.position
+          unless vg.visits.last.position.blank?
+            last_position = vg.visits.last.position
           else
-            last_position = line_item.visits.count
+            last_position = vg.visits.count
           end
         # If position is for some reason nil (IT SHOULD NOT BE) use count
         else
-          last_position = line_item.visits.count
+          last_position = vg.visits.count
         end
         arr = [["Add Visit #{last_position + 1}", nil]]
         last_position.times do |visit|
-          visit_name = line_item.visits[visit].name || "Visit #{visit}"
+          visit_name = vg.visits[visit].name || "Visit #{visit}"
           arr << ["Insert before #{visit + 1} - #{visit_name}", visit + 1]
         end
       else
@@ -111,14 +113,15 @@ module Portal::ServiceRequestsHelper
 
   def visits_for_delete sub_service_request
     line_item = sub_service_request.per_patient_per_visit_line_items.first
-    visit_count = line_item.visits.count
+    vg = line_item.visit_groupings.first
+    visit_count = vg.visits.count
     arr = []
     visit_count.times do |visit|
-      visit_name = line_item.visits[visit].name || "Visit #{visit}"
+      visit_name = vg.visits[visit].name || "Visit #{visit}"
       arr << ["Delete Visit #{visit + 1} - #{visit_name}", visit + 1]
     end
 
-    options_for_select(arr, line_item.visits.count)
+    options_for_select(arr, vg.visits.count)
   end
 
 

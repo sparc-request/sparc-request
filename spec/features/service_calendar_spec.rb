@@ -22,8 +22,6 @@ describe "service calendar" do
 
   describe "per patient per visit" do
 
-    # let(:visit_grouping) { FactoryGirl.create(:visit_grouping, arm_id: arm1.id, line_item_id: arm1.visit_groupings.first.id, subject_count: arm.subject_count) }
-
     describe "template tab" do
 
       describe "selecting check row button" do

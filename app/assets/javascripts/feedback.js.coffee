@@ -1,5 +1,7 @@
 $(document).ready ->
 
+  $('#errors').hide()
+
   $('#feedback').live 'click', ->
     $("#feedback-form").dialog( "open" )
 
@@ -9,11 +11,19 @@ $(document).ready ->
     height: 425
     width: 500
     modal: true
-    buttons:
-      Submit: ->
-        $(this).submit()
-      Cancel: ->
-        $(this).dialog "close"
+    buttons: [
+      {
+        id: "submit_feedback"
+        text: "Submit"
+        click: ->
+          $("#feedback_form").submit()
+      },
+      {
+        id: "cancel_feedback"
+        text: "Cancel"
+        click: ->
+          $(this).dialog('close')
+      }]
     close: ->
         $(this).clearForm()
 
@@ -29,6 +39,8 @@ $(document).ready ->
       dataType: "script"
       contentType: 'application/json; charset=utf-8'
       success: ->
+        $('#errors').hide()
         $('#feedback-form').dialog 'close'
-      error: ->
-        console.log 'test'
+      error: (event) ->
+        $('#errors').show()
+        $('#error-text').html("Message can't be blank")

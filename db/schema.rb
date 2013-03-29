@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130314205731) do
+ActiveRecord::Schema.define(:version => 20130326164536) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -106,6 +106,13 @@ ActiveRecord::Schema.define(:version => 20130314205731) do
   end
 
   add_index "excluded_funding_sources", ["subsidy_map_id"], :name => "index_excluded_funding_sources_on_subsidy_map_id"
+
+  create_table "feedbacks", :force => true do |t|
+    t.text     "message"
+    t.string   "email"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "fulfillments", :force => true do |t|
     t.integer  "line_item_id"

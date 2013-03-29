@@ -11,6 +11,14 @@
     $('#flash').hide();
     $('#flash').html("#{escape_javascript(@entity.name)} saved successfully");
 
+-# re-render available_statuses
+-#TODO this is ugly and wrong, refactor
+- if not @entity.instance_of? Service and @entity
+  - my_class = @entity.class.to_s.downcase
+  - url = eval("catalog_manager_#{my_class}_path")
+  - @f = nil; form_for(@entity, :url => url) {|f| @f = f}
+  $('#available_statuses_fieldset').replaceWith("#{escape_javascript(render :partial => 'catalog_manager/shared/available_statuses', :locals => {:f => @f})}")
+
 -# re-render pricing_setups if the entity is a Provider or Program
 - if @entity.instance_of? Provider or @entity.instance_of? Program
   $('.pricing_setup_accordion').empty()

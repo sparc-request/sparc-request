@@ -45,6 +45,11 @@ ul {
   cursor: pointer;
 }
 
+#feedback-form #errors #error-text {
+  color: red;
+  font-weight: bold;
+}
+
 .ui-icon-white{
   background-image: url(images/ui-icons_e0fdff_256x240.png);
   width: 16px;

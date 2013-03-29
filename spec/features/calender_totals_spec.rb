@@ -5,9 +5,13 @@ describe "calender totals" do
   let_there_be_j
   fake_login_for_each_test
   build_service_request_with_project()
+  let!(:line_item3) { FactoryGirl.create(:line_item, id: 123456789, service_request_id: service_request.id, service_id: service.id, sub_service_request_id: sub_service_request.id, quantity: 5, units_per_quantity: 1) }
+  
 
   before :each do
+    service_request.reload
     visit service_calendar_service_request_path service_request.id
+
   end
 
   after :each do

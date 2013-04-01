@@ -20,8 +20,6 @@ class UserMailer < ActionMailer::Base
     email = Rails.env == 'production' ? @send_to.email : DEFAULT_MAIL_TO
     subject = Rails.env == 'production' ? subject : "[#{Rails.env.capitalize} - EMAIL TO #{@send_to.email}] #{subject}"
 
-    @portal_host = USER_PORTAL_LINK
-   
     mail(:to => email, :subject => subject)
   end
 

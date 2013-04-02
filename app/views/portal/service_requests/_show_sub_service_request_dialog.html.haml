@@ -50,4 +50,7 @@
         %td.no-border-right= @service_list[document.sub_service_request.organization_id][:name] 
         
   %br
-  #service_calendar_container= render :partial => 'portal/service_requests/calendar'
+  #service_calendar_container
+    - @service_request.arms.each do |arm|
+      = render :partial => 'portal/service_requests/calendar', :locals => {:arm => arm}
+    = render :partial => 'portal/service_requests/one_time_fees'

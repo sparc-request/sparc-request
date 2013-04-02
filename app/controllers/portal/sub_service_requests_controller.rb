@@ -3,7 +3,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
 
   def show
     @sub_service_request = SubServiceRequest.find(params[:id])
-    
+
     session[:sub_service_request_id] = @sub_service_request.id
     session[:service_request_id] = @sub_service_request.service_request_id
     session[:service_calendar_page] = params[:page] if params[:page]
@@ -22,6 +22,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       @service_list = @service_request.service_list
       @related_service_requests = @protocol.all_child_sub_service_requests
       @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
+      @selected_arm = @service_request.arms.first
     else
       redirect_to portal_admin_index_path
     end

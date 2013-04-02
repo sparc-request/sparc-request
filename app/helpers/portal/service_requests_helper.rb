@@ -79,11 +79,19 @@ module Portal::ServiceRequestsHelper
     end
   end
 
+  def arms_for_select service_request, arm
+    arr = []
+    service_request.arms.each_with_index do |arm, index|
+      arr << ["#{arm.name}", index]
+    end
+    index = service_request.arms.index(arm)
+    options_for_select(arr, index || 0)
+  end
+
   # This method is ugly
-  def visits_for_select sub_service_request
-    unless sub_service_request.line_items.empty?
-      line_item = sub_service_request.per_patient_per_visit_line_items.first
-      vg = line_item.visit_groupings.first
+  def visits_for_select arm
+    unless arm.visit_groupings.empty?
+      vg = arm.visit_groupings.first
       unless vg.visits.empty?
         # If there are position attributes set, use positon
         if vg.visits.last.position
@@ -111,9 +119,8 @@ module Portal::ServiceRequestsHelper
     options_for_select(arr)
   end
 
-  def visits_for_delete sub_service_request
-    line_item = sub_service_request.per_patient_per_visit_line_items.first
-    vg = line_item.visit_groupings.first
+  def visits_for_delete arm
+    vg = arm.visit_groupings.first
     visit_count = vg.visits.count
     arr = []
     visit_count.times do |visit|

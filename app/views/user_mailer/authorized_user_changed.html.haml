@@ -7,10 +7,7 @@
   = t(:mailer)[:header3]
 %p
   = t(:mailer)[:body1]
-  / Development:
-  / %strong= link_to 'please click here.', root_url(:host => "localhost:3000", :default_protocol => @protocol.id)
-  / Staging:
-  %strong= link_to t(:mailer)[:link2], root_url(:host => @portal_host, :default_protocol => @protocol.id)
+  %strong= link_to t(:mailer)[:link2], portal_root_url(:protocol => 'https', :default_protocol => @protocol.id)
 %p
   %table{:style => 'border: 1px solid #000; width: 100%; border-collapse: collapse;'}
     %tr

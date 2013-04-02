@@ -80,11 +80,30 @@ describe 'ServiceRequest' do
         service_request.has_per_patient_per_visit_services?.should eq(true)
       end
     end
-    # describe "servcie list" do
-    #   it "should do stuff" do
-    #     service_request.service_list.should eq(3)
-    #   end
-    # end
+    describe "service list" do
+      context "no param" do
+        it "should return all services" do
+          id = Organization.find_by_name("Office of Biomedical Informatics").id
+          service_request.service_list[id][:services].size.should eq(2)
+          service_request.service_list[id][:services].first[:name].should eq("One Time Fee")
+          service_request.service_list[id][:services].last[:name].should eq("Per Patient")
+        end
+      end
+      context "true param" do
+        it "should return one time fee services" do
+          id = Organization.find_by_name("Office of Biomedical Informatics").id
+          service_request.service_list(true)[id][:services].size.should eq(1)
+          service_request.service_list(true)[id][:services].first[:name].should eq("One Time Fee")
+        end
+      end
+      context "false param" do
+        it "should return per patient services" do
+          id = Organization.find_by_name("Office of Biomedical Informatics").id
+          service_request.service_list(false)[id][:services].size.should eq(1)
+          service_request.service_list(false)[id][:services].last[:name].should eq("Per Patient")
+        end
+      end
+    end
   end
 
   describe "cost calculations" do

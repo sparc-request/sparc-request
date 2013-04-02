@@ -9,21 +9,27 @@
     %table
       %thead
         %tr
-          %th{:colspan => 1}
+          %th{:colspan => 2}= t(:fulfillments)[:services][:visits][:arm]
           %th{:colspan => 2}= t(:fulfillments)[:services][:visits][:add]
           %th{:colspan => 2}= t(:fulfillments)[:services][:visits][:delete]
-          %th{:colspan => 3}
+          %th{:colspan => 2}
         %tr
-          %td{:colspan => 1}
           %td{:colspan => 2}
-            = select_tag "visit_position", visits_for_select(@sub_service_request)
+            / TODO: Add arms selector
+            = select_tag "arm_position", arms_for_select(@service_request, @selected_arm), :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id
+            %br
+            = link_to t(:fulfillments)[:services][:visits][:add_arm], 'javascript:void(0);', :class => "add_arm_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id
+          %td{:colspan => 2}
+            / TODO: Fix for arms
+            = select_tag "visit_position", visits_for_select(@selected_arm)
             %br
             = link_to t(:fulfillments)[:services][:visits][:add_link], 'javascript:void(0);', :class => "add_visit_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id
           %td{:colspan => 2}
-            = select_tag "delete_visit_position", visits_for_delete(@sub_service_request)
+            / TODO: Fix for arms
+            = select_tag "delete_visit_position", visits_for_delete(@selected_arm)
             %br
             = link_to t(:fulfillments)[:services][:visits][:delete_link], 'javascript:void(0);', :class => "delete_visit_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id
-          %td{:colspan => 3}
+          %td{:colspan => 2}
     #service_calendar
       %ul
         %li= link_to t(:calendar_page)[:tabs][:template], table_service_request_service_calendars_path(@service_request, :tab => "template", :portal => true) , :id => 'template_tab'

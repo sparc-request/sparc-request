@@ -21,7 +21,8 @@ describe Portal::ServiceRequestsController do
   let!(:arm) {
     FactoryGirl.create(
       :arm,
-      service_request_id: service_request.id)
+      service_request_id: service_request.id,
+      visit_count: 5)
   }
 
   let!(:ssr) {
@@ -55,6 +56,7 @@ describe Portal::ServiceRequestsController do
       get :show, {
         format: :js,
         id: service_request.id,
+        arm_id: arm.id,
       }.with_indifferent_access
 
       service_request.reload
@@ -65,7 +67,7 @@ describe Portal::ServiceRequestsController do
       controller.instance_eval { @service_list }.should eq service_request.service_list
 
       assigns(:protocol).should eq study
-      assigns(:page).should eq 1
+      assigns(:pages).should eq({ arm.id => 1 })
       assigns(:tab).should eq 'pricing'
     end
   end

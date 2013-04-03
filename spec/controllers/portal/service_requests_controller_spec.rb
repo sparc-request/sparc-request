@@ -48,7 +48,7 @@ describe Portal::ServiceRequestsController do
   }
 
   let!(:line_item) { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id) }
-  let!(:visit_grouping) { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item.id) }
+  let!(:visit_grouping) { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item.id, subject_count: 10) }
 
   describe 'GET show' do
     it 'should set instance variables' do

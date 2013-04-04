@@ -735,6 +735,8 @@ en:
       visits:
         header: "Per-Patient/Per-Visit"
         no_requests: "There are no per-patient/per-visit requests."
+        arm: "Select Arm"
+        add_arm: "Add an Arm"
         add: "Add a Visit"
         delete: "Delete a Visit"
         add_link: "Add a Visit"

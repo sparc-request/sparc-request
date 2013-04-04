@@ -49,5 +49,40 @@ describe 'edit a core', :js => true do
         @core.get_available_statuses.should eq( {"draft" => "Draft"} )
       end
     end
+
+    context "adding and removing tags" do
+
+      before :each do
+        @core = Organization.where(abbreviation: "Clinical Data Warehouse").first
+        wait_for_javascript_to_finish
+      end
+
+      it "should get the tag that is entered" do
+        fill_in 'core_tag_list', :with => 'The Doctor'
+        first("#save_button").click
+        wait_for_javascript_to_finish
+
+        @core.tag_list.should eq(["The Doctor"])
+      end
+
+      it "should delete the tag once the field is cleared and saved" do
+        fill_in 'core_tag_list', :with => 'The Doctor'
+        first("#save_button").click
+        wait_for_javascript_to_finish
+        fill_in 'core_tag_list', :with => ''
+        first("#save_button").click
+        wait_for_javascript_to_finish
+
+        @core.tag_list.should eq([])
+      end
+
+      it "should create an array of tags if more than one is entered" do
+        fill_in 'core_tag_list', :with => 'The Doctor, Dalek, Amy Pond'
+        first("#save_button").click
+        wait_for_javascript_to_finish
+
+        @core.tag_list.should eq(['The Doctor', 'Dalek', 'Amy Pond'])
+      end
+    end
   end
 end

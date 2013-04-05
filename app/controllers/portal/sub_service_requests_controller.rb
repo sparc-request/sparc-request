@@ -60,6 +60,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       @service_list = @service_request.service_list
       @related_service_requests = @protocol.all_child_sub_service_requests
       @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
+      @selected_arm = @service_request.arms.first
       render :action => 'show'
     end
   end   

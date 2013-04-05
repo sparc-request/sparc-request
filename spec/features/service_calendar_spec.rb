@@ -27,8 +27,6 @@ describe "service calendar" do
       describe "selecting check row button" do
 
         it "should check all visits", :js => true do
-          puts "#"*100
-          puts service_request.line_items.inspect
           click_link "check_row_#{arm1.visit_groupings.first.id}_template"
           wait_for_javascript_to_finish
           first(".total_#{arm1.visit_groupings.first.id}").should have_exact_text('$300.00') # Probably a better way to do this. But this should be the 10 visits added together.

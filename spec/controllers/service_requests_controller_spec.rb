@@ -805,7 +805,7 @@ describe ServiceRequestsController do
     describe 'POST select_calendar_row' do
       it 'should set line item' do
         pricing_map1.update_attribute(:unit_minimum, 100)
-        Visit.bulk_create(3, visit_grouping_id: visit_groupin1.id)
+        Visit.bulk_create(3, visit_grouping_id: visit_grouping1.id)
 
         session[:service_request_id] = service_request.id
         post :select_calendar_row, {

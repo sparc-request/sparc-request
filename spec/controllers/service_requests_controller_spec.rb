@@ -805,7 +805,7 @@ describe ServiceRequestsController do
     describe 'POST select_calendar_row' do
       it 'should set line item' do
         pricing_map1.update_attribute(:unit_minimum, 100)
-        Visit.bulk_create(3, visit_grouping_id: line_item1.id)
+        Visit.bulk_create(3, visit_grouping_id: visit_groupin1.id)
 
         session[:service_request_id] = service_request.id
         post :select_calendar_row, {
@@ -819,7 +819,7 @@ describe ServiceRequestsController do
 
       it "should update each of the line item's visits" do
         pricing_map1.update_attribute(:unit_minimum, 100)
-        Visit.bulk_create(3, visit_grouping_id: line_item1.id)
+        Visit.bulk_create(3, visit_grouping_id: visit_grouping1.id)
 
         session[:service_request_id] = service_request.id
         post :select_calendar_row, {
@@ -847,7 +847,7 @@ describe ServiceRequestsController do
     describe 'GET unselect_calendar_row' do
       it 'should set line item' do
         pricing_map1.update_attribute(:unit_minimum, 100)
-        Visit.bulk_create(3, visit_grouping_id: line_item1.id)
+        Visit.bulk_create(3, visit_grouping_id: visit_grouping1.id)
 
         session[:service_request_id] = service_request.id
         post :unselect_calendar_row, {
@@ -861,7 +861,7 @@ describe ServiceRequestsController do
 
       it "should update each of the line item's visits" do
         pricing_map1.update_attribute(:unit_minimum, 100)
-        Visit.bulk_create(3, visit_grouping_id: line_item1.id)
+        Visit.bulk_create(3, visit_grouping_id: visit_grouping1.id)
 
         session[:service_request_id] = service_request.id
         post :unselect_calendar_row, {
@@ -892,9 +892,9 @@ describe ServiceRequestsController do
         pricing_map2.update_attribute(:unit_minimum, 100)
         pricing_map3.update_attribute(:unit_minimum, 100)
 
-        Visit.bulk_create(3, visit_grouping_id: line_item1.id)
-        Visit.bulk_create(3, visit_grouping_id: line_item2.id)
-        Visit.bulk_create(3, visit_grouping_id: line_item3.id)
+        Visit.bulk_create(3, visit_grouping_id: visit_grouping1.id)
+        Visit.bulk_create(3, visit_grouping_id: visit_grouping2.id)
+        Visit.bulk_create(3, visit_grouping_id: visit_grouping3.id)
 
         session[:service_request_id] = service_request.id
         post :select_calendar_column, {

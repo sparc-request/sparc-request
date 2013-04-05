@@ -345,7 +345,7 @@ describe ServiceRequestsController do
       visit_grouping.subject_count.should eq 42
     end
 
-    it 'should NOT set subject count on the per patient per visit line items if it is set' do
+    it 'should set subject count on the per patient per visit line items if it is set and is higher than the visit grouping subject count' do
       arm.update_attribute(:subject_count, 42)
       visit_grouping.update_attribute(:subject_count, 500)
 
@@ -353,7 +353,18 @@ describe ServiceRequestsController do
       get :service_calendar, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
 
       visit_grouping.reload
-      visit_grouping.subject_count.should eq 500
+      visit_grouping.subject_count.should eq 42
+    end
+
+    it 'should NOT set subject count on the per patient per visit line items if it is set and is lower than the visit grouping subject count' do
+      arm.update_attribute(:subject_count, 42)
+      visit_grouping.update_attribute(:subject_count, 10)
+
+      session[:service_request_id] = service_request.id
+      get :service_calendar, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
+
+      visit_grouping.reload
+      visit_grouping.subject_count.should eq 10
     end
 
     it 'should NOT set subject count on the one time fee line items' do

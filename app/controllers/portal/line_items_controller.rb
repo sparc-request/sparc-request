@@ -5,6 +5,7 @@ class Portal::LineItemsController < Portal::BaseController
     @line_item = LineItem.find(params[:id])
     @sub_service_request = @line_item.sub_service_request
     @service_request = @sub_service_request.service_request
+    @selected_arm = @service_request.arms.first
     @subsidy = @sub_service_request.subsidy
     percent = @subsidy.try(:percent_subsidy).try(:*, 100)
 

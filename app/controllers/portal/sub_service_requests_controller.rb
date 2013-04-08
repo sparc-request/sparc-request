@@ -99,8 +99,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
         @service_request.insure_visit_count()
         @service_request.insure_subject_count()
 
-        li.fix_missing_visits
-
         li.update_attribute(:subject_count, @service_request.subject_count)
         li.reload
       end

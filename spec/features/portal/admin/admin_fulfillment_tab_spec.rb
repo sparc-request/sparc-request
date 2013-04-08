@@ -29,7 +29,7 @@ describe "admin fulfillment tab", :js => true do
       # More data checks here (more information probably needs to be put in the mocks)
       page.should_not have_content('#service_request_owner')
       page.should have_xpath("//option[@value='#{service.id}' and @selected='selected']")
-      page.find('#visit_name_4').should have_value 'teapot'
+      page.find("#arm_#{arm1.id}_visit_name_4").should have_value 'teapot'
       page.should have_xpath("//option[@value='#{service2.id}' and @selected='selected']")
     end
 
@@ -231,10 +231,10 @@ describe "admin fulfillment tab", :js => true do
 
     context "changing visit attributes" do
       it 'should update visit names' do
-        fill_in 'visit_name_1', :with => "HOLYCOW"
-        find('#visit_name_2').click
+        fill_in "arm_#{arm1.id}_visit_name_1", :with => "HOLYCOW"
+        find("#arm_#{arm1.id}_visit_name_2").click
         wait_for_javascript_to_finish
-        line_item2.visits[0].name.should eq "HOLYCOW"
+        line_item2.visit_groupings[0].visits[0].name.should eq "HOLYCOW"
       end
 
       it "should add visits" do

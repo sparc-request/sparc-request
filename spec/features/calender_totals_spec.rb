@@ -52,7 +52,7 @@ describe "calender totals" do
     it "should change visits when -> is clicked", :js => true do
       click_link("->")
       retry_until {
-        find('#visit_name_6').should have_value("Visit 6")
+        find("#arm_#{arm1.id}_visit_name_6").should have_value("Visit 6")
       }
     end
   end

@@ -6,7 +6,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
 
     session[:sub_service_request_id] = @sub_service_request.id
     session[:service_request_id] = @sub_service_request.service_request_id
-    session[:service_calendar_page] = params[:page] if params[:page]
+    session[:service_calendar_pages] = params[:pages] if params[:pages]
 
     if @user.can_edit_fulfillment? @sub_service_request.organization
       @user_toasts = @user.received_toast_messages.select {|x| x.sending_object.class == SubServiceRequest}

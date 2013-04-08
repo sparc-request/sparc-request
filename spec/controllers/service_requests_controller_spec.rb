@@ -306,13 +306,25 @@ describe ServiceRequestsController do
     let!(:service) {
       service = FactoryGirl.create(:service, pricing_map_count: 1)
       service.pricing_maps[0].update_attributes(display_date: Date.today)
+      service.pricing_maps[0].update_attributes(is_one_time_fee: false)
+      service
+    }
+
+    let!(:one_time_fee_service) {
+      service = FactoryGirl.create(:service, pricing_map_count: 1)
+      service.pricing_maps[0].update_attributes(display_date: Date.today)
+      service.pricing_maps[0].update_attributes(is_one_time_fee: true)
       service
     }
 
     let!(:pricing_map) { service.pricing_maps[0] }
+    let!(:one_time_fee_pricing_map) { one_time_fee_service.pricing_maps[0] }
 
     let!(:line_item) { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id) }
+    let!(:one_time_fee_line_item) { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id) }
+
     let!(:visit_grouping) { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item.id) }
+    let!(:one_time_fee_visit_grouping) { FactoryGirl.create(:visit_grouping, line_item_id: line_item.id) }
 
     it "should set the page if page is passed in" do
       arm.update_attribute(:visit_count, 500)
@@ -323,43 +335,50 @@ describe ServiceRequestsController do
     end
 
     it 'should set subject count on the per patient per visit line items if it is not set' do
-      pricing_map.update_attribute(:is_one_time_fee, false)
-      service_request.update_attribute(:subject_count, 42)
-      arm.update_attribute(:subject_count, nil)
+      arm.update_attribute(:subject_count, 42)
+      visit_grouping.update_attribute(:subject_count, nil)
 
       session[:service_request_id] = service_request.id
       get :service_calendar, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
 
-      arm.reload
-      arm.subject_count.should eq 42
+      visit_grouping.reload
+      visit_grouping.subject_count.should eq 42
     end
 
-    it 'should NOT set subject count on the per patient per visit line items if it is set' do
-      pricing_map.update_attribute(:is_one_time_fee, false)
-      service_request.update_attribute(:subject_count, 42)
-      arm.update_attribute(:subject_count, 500)
+    it 'should set subject count on the per patient per visit line items if it is set and is higher than the visit grouping subject count' do
+      arm.update_attribute(:subject_count, 42)
+      visit_grouping.update_attribute(:subject_count, 500)
 
       session[:service_request_id] = service_request.id
       get :service_calendar, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
 
-      arm.reload
-      arm.subject_count.should eq 500
+      visit_grouping.reload
+      visit_grouping.subject_count.should eq 42
+    end
+
+    it 'should NOT set subject count on the per patient per visit line items if it is set and is lower than the visit grouping subject count' do
+      arm.update_attribute(:subject_count, 42)
+      visit_grouping.update_attribute(:subject_count, 10)
+
+      session[:service_request_id] = service_request.id
+      get :service_calendar, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
+
+      visit_grouping.reload
+      visit_grouping.subject_count.should eq 10
     end
 
     it 'should NOT set subject count on the one time fee line items' do
-      pricing_map.update_attribute(:is_one_time_fee, true)
-      service_request.update_attribute(:subject_count, 42)
-      arm.update_attribute(:subject_count, nil)
+      arm.update_attribute(:subject_count, 42)
+      one_time_fee_visit_grouping.update_attribute(:subject_count, nil)
 
       session[:service_request_id] = service_request.id
       get :service_calendar, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
 
-      arm.reload
-      arm.subject_count.should eq nil
+      one_time_fee_visit_grouping.reload
+      one_time_fee_visit_grouping.subject_count.should eq nil
     end
 
     it 'should delete extra visits on per patient per visit line items' do
-      pricing_map.update_attribute(:is_one_time_fee, false)
       arm.update_attribute(:visit_count, 10)
       Visit.bulk_create(20, visit_grouping_id: visit_grouping.id)
 
@@ -371,7 +390,6 @@ describe ServiceRequestsController do
     end
 
     it 'should create visits if too few on per patient per visit line items' do
-      pricing_map.update_attribute(:is_one_time_fee, false)
       arm.update_attribute(:visit_count, 10)
       Visit.bulk_create(0, visit_grouping_id: visit_grouping.id)
 
@@ -383,27 +401,25 @@ describe ServiceRequestsController do
     end
 
     it 'should NOT delete extra visits on one time fee line items' do
-      pricing_map.update_attribute(:is_one_time_fee, true)
       arm.update_attribute(:visit_count, 10)
-      Visit.bulk_create(20, visit_grouping_id: visit_grouping.id)
+      Visit.bulk_create(20, visit_grouping_id: one_time_fee_visit_grouping.id)
 
       session[:service_request_id] = service_request.id
       get :service_calendar, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
 
-      visit_grouping.reload
-      visit_grouping.visits.count.should eq 20
+      one_time_fee_visit_grouping.reload
+      one_time_fee_visit_grouping.visits.count.should eq 20
     end
 
     it 'should NOT create visits if there are too few of them, on one time fee line items' do
-      pricing_map.update_attribute(:is_one_time_fee, true)
       arm.update_attribute(:visit_count, 10)
-      Visit.bulk_create(5, visit_grouping_id: visit_grouping.id)
+      Visit.bulk_create(5, visit_grouping_id: one_time_fee_visit_grouping.id)
 
       session[:service_request_id] = service_request.id
       get :service_calendar, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
 
-      visit_grouping.reload
-      visit_grouping.visits.count.should eq 5
+      one_time_fee_visit_grouping.reload
+      one_time_fee_visit_grouping.visits.count.should eq 5
     end
   end
 
@@ -789,7 +805,7 @@ describe ServiceRequestsController do
     describe 'POST select_calendar_row' do
       it 'should set line item' do
         pricing_map1.update_attribute(:unit_minimum, 100)
-        Visit.bulk_create(3, visit_grouping_id: line_item1.id)
+        Visit.bulk_create(3, visit_grouping_id: visit_grouping1.id)
 
         session[:service_request_id] = service_request.id
         post :select_calendar_row, {
@@ -803,7 +819,7 @@ describe ServiceRequestsController do
 
       it "should update each of the line item's visits" do
         pricing_map1.update_attribute(:unit_minimum, 100)
-        Visit.bulk_create(3, visit_grouping_id: line_item1.id)
+        Visit.bulk_create(3, visit_grouping_id: visit_grouping1.id)
 
         session[:service_request_id] = service_request.id
         post :select_calendar_row, {
@@ -831,7 +847,7 @@ describe ServiceRequestsController do
     describe 'GET unselect_calendar_row' do
       it 'should set line item' do
         pricing_map1.update_attribute(:unit_minimum, 100)
-        Visit.bulk_create(3, visit_grouping_id: line_item1.id)
+        Visit.bulk_create(3, visit_grouping_id: visit_grouping1.id)
 
         session[:service_request_id] = service_request.id
         post :unselect_calendar_row, {
@@ -845,7 +861,7 @@ describe ServiceRequestsController do
 
       it "should update each of the line item's visits" do
         pricing_map1.update_attribute(:unit_minimum, 100)
-        Visit.bulk_create(3, visit_grouping_id: line_item1.id)
+        Visit.bulk_create(3, visit_grouping_id: visit_grouping1.id)
 
         session[:service_request_id] = service_request.id
         post :unselect_calendar_row, {
@@ -876,9 +892,9 @@ describe ServiceRequestsController do
         pricing_map2.update_attribute(:unit_minimum, 100)
         pricing_map3.update_attribute(:unit_minimum, 100)
 
-        Visit.bulk_create(3, visit_grouping_id: line_item1.id)
-        Visit.bulk_create(3, visit_grouping_id: line_item2.id)
-        Visit.bulk_create(3, visit_grouping_id: line_item3.id)
+        Visit.bulk_create(3, visit_grouping_id: visit_grouping1.id)
+        Visit.bulk_create(3, visit_grouping_id: visit_grouping2.id)
+        Visit.bulk_create(3, visit_grouping_id: visit_grouping3.id)
 
         session[:service_request_id] = service_request.id
         post :select_calendar_column, {

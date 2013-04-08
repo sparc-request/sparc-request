@@ -39,6 +39,7 @@ class Portal::ServiceRequestsController < Portal::BaseController
     if @selected_arm.add_visit(params[:visit_position])
       @subsidy.try(:sub_service_request).try(:reload)
       @subsidy.try(:fix_pi_contribution, percent)
+      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
       @service_request.relevant_service_providers_and_super_users.each do |identity|
         create_visit_change_toast(identity, @sub_service_request) unless identity == @user
       end
@@ -80,13 +81,6 @@ class Portal::ServiceRequestsController < Portal::BaseController
         format.js { render :status => 500, :json => clean_errors(@service_request.errors) } 
       end
     end
-  end
-
-  def refresh_service_calendar
-    @service_request = ServiceRequest.find(params[:id])
-    session[:service_calendar_page] = params[:page] if params[:page]
-    @page = @service_request.set_visit_page session[:service_calendar_page].to_i
-    @tab = 'pricing'
   end
 
   ##### NOT ACTIONS #####

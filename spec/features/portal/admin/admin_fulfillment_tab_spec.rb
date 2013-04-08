@@ -111,7 +111,7 @@ describe "admin fulfillment tab", :js => true do
           find('#subsidy_pi_contribution').click
           wait_for_javascript_to_finish
           page.should have_content "Service request has been saved."
-          find('#subsidy_pi_contribution').should have_value '775.0'
+          find('#subsidy_pi_contribution').should have_value('%.1f' % [sub_service_request.grand_total / 100 / 2])
         end
       end
 

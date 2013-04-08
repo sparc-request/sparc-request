@@ -103,6 +103,29 @@ $(document).ready ->
         for error in errors
           $().toastmessage('showErrorToast', "#{error.humanize()}.");
   )
+
+  $(document).on('click', '.add_arm_link', ->
+    sr_id = $(this).data('service_request_id')
+    data =
+      'sub_service_request_id': $(this).data('sub_service_request_id')
+      'service_request_id': sr_id
+      'arm_position': $('#arm_position').val()
+    $.ajax
+      type: 'POST'
+      url:   "/portal/admin/service_requests/#{sr_id}/add_arm"
+      data:  JSON.stringify(data)
+      dataType: 'script'
+      contentType: 'application/json; charset=utf-8'
+      success: ->
+        $().toastmessage('showSuccessToast', "Service request has been saved.")
+      error: (jqXHR, textStatus, errorThrown) ->
+        if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
+          errors = JSON.parse(jqXHR.responseText)
+        else
+          errors = [textStatus]
+        for error in errors
+          $().toastmessage('showErrorToast', "#{error.humanize()}.");
+  )
   
   $(document).on('click', '.add_visit_link', ->
     sr_id = $(this).data('service_request_id')

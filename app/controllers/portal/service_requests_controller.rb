@@ -30,6 +30,20 @@ class Portal::ServiceRequestsController < Portal::BaseController
     @selected_arm = params[:arm_position] ? @service_request.arms[@arm_position] : @service_request.arms.first
   end
 
+  def add_arm
+    @arm_position = params[:arm_position].to_i if params[:arm_position]
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    @service_request = ServiceRequest.find(params[:service_request_id]) # TODO: is this different from params[:id] ?
+
+    @selected_arm = @service_request.arms.create(:name => "ARM #{@service_request.arms.count + 1}", :visit_count => 1, :subject_count => 1)
+    @service_request.per_patient_per_visit_line_items.each do |li|
+      vg = @selected_arm.visit_groupings.create(:arm_id => @selected_arm.id, :line_item_id => li.id, :subject_count => @selected_arm.subject_count)
+      vg.visits.create(:visit_grouping_id => vg.id)
+    end
+
+    render 'portal/service_requests/change_arm'
+  end
+
   def add_per_patient_per_visit_visit
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @subsidy = @sub_service_request.subsidy

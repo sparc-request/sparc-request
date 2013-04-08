@@ -111,12 +111,10 @@ describe ServiceRequestsController do
       arm.update_attribute(:visit_count, 500)
 
       session[:service_request_id] = service_request.id
-      get :review, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
-      session[:service_calendar_page].should eq '42'
+      get :review, { :id => service_request.id, :pages => { arm.id.to_s => 42 } }.with_indifferent_access
+      session[:service_calendar_pages].should eq({arm.id.to_s => '42'})
 
-      # TODO: sometimes this is 1 and sometimes it is 42.  I don't know
-      # why.
-      assigns(:page).should eq 42
+      assigns(:pages).should eq({arm.id => 1})
 
       # TODO: check that set_visit_page is called?
     end
@@ -330,8 +328,8 @@ describe ServiceRequestsController do
       arm.update_attribute(:visit_count, 500)
 
       session[:service_request_id] = service_request.id
-      get :service_calendar, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
-      session[:service_calendar_page].should eq '42'
+      get :service_calendar, { :id => service_request.id, :pages => { arm.id.to_s => 42 } }.with_indifferent_access
+      session[:service_calendar_pages].should eq({arm.id.to_s => '42'})
     end
 
     it 'should set subject count on the per patient per visit line items if it is not set' do
@@ -498,12 +496,12 @@ describe ServiceRequestsController do
       arm.update_attribute(:visit_count, 500)
 
       session[:service_request_id] = service_request.id
-      get :refresh_service_calendar, { :id => service_request.id, :arm_id => arm.id, :pages => { arm.id => 42 }, :format => :js }.with_indifferent_access
-      session[:service_calendar_page].should eq 42
+      get :refresh_service_calendar, { :id => service_request.id, :arm_id => arm.id, :pages => { arm.id.to_s => 42 }, :format => :js }.with_indifferent_access
+      session[:service_calendar_pages].should eq({arm.id.to_s => 42})
     
       # TODO: sometimes this is 1 and sometimes it is 42.  I don't know
       # why.
-      assigns(:page).should eq 42
+      assigns(:pages).should eq({arm.id => 42})
     
       # TODO: check that set_visit_page is called?
     end

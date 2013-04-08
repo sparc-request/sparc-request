@@ -261,7 +261,7 @@ class ServiceRequestsController < ApplicationController
   end
   
   def review
-    arm_id = params[:arm_id] if params[:arm_id]
+    arm_id = params[:arm_id].to_s if params[:arm_id]
     page = params[:page] if params[:page]
     session[:service_calendar_pages] = params[:pages] if params[:pages]
     session[:service_calendar_pages][arm_id] = page if page && arm_id
@@ -269,10 +269,13 @@ class ServiceRequestsController < ApplicationController
     @service_list = @service_request.service_list
     @protocol = @service_request.protocol
     
+    # Reset all the page numbers to 1 at the start of the review request
+    # step.
     @pages = {}
     @service_request.arms.each do |arm|
       @pages[arm.id] = 1
     end
+
     @tab = 'pricing'
   end
 
@@ -473,7 +476,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def refresh_service_calendar
-    arm_id = params[:arm_id] if params[:arm_id]
+    arm_id = params[:arm_id].to_s if params[:arm_id]
     @arm = Arm.find arm_id if arm_id
     page = params[:page] if params[:page]
     session[:service_calendar_pages] = params[:pages] if params[:pages]

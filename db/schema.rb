@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130409182531) do
+ActiveRecord::Schema.define(:version => 20130409183200) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -348,6 +348,16 @@ ActiveRecord::Schema.define(:version => 20130409182531) do
     t.string   "internal_rate_type"
     t.string   "foundation_rate_type"
     t.datetime "deleted_at"
+  end
+
+  create_table "procedures", :force => true do |t|
+    t.integer  "appointment_id"
+    t.integer  "visit_id"
+    t.integer  "service_id"
+    t.integer  "status"
+    t.boolean  "to_be_done"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
   end
 
   create_table "project_roles", :force => true do |t|

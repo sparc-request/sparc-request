@@ -9,6 +9,11 @@ describe 'edit a core', :js => true do
 
   context 'successfully update an existing core' do
    
+    before :each do
+      @core = Organization.where(abbreviation: "Clinical Data Warehouse").first
+      wait_for_javascript_to_finish
+    end
+
     it "should successfully edit and save the core" do  
       # General Information fields
       fill_in 'core_abbreviation', :with => 'PTP'
@@ -23,11 +28,6 @@ describe 'edit a core', :js => true do
     end
 
     context "editing status options" do
-
-      before :each do
-        @core = Organization.where(abbreviation: "Clinical Data Warehouse").first
-        wait_for_javascript_to_finish
-      end
 
       it "should get the default statuses" do
         @core.get_available_statuses.should eq( {"draft" => "Draft", "submitted" => "Submitted", "obtain_research_pricing" => "Obtain Research Pricing", "in_process" => "In Process", "complete" => "Complete", "awaiting_pi_approval" => "Awaiting PI Approval", "on_hold" => "On Hold"} )
@@ -51,11 +51,6 @@ describe 'edit a core', :js => true do
     end
 
     context "adding and removing tags" do
-
-      before :each do
-        @core = Organization.where(abbreviation: "Clinical Data Warehouse").first
-        wait_for_javascript_to_finish
-      end
 
       it "should get the tag that is entered" do
         fill_in 'core_tag_list', :with => 'The Doctor'

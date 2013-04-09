@@ -44,6 +44,18 @@ class Portal::ServiceRequestsController < Portal::BaseController
     render 'portal/service_requests/change_arm'
   end
 
+  def remove_arm
+    @arm_position = params[:arm_position].to_i if params[:arm_position]
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    @service_request = ServiceRequest.find(params[:service_request_id]) # TODO: is this different from params[:id] ?
+
+    @service_request.arms[@arm_position].destroy
+
+    @selected_arm = @service_request.arms.first
+
+    render 'portal/service_requests/add_per_patient_per_visit_visit'
+  end
+
   def add_per_patient_per_visit_visit
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @subsidy = @sub_service_request.subsidy

@@ -206,7 +206,7 @@ SparcRails::Application.routes.draw do
         put "/service_requests/:id/update_from_fulfillment" => "service_requests#update_from_fulfillment"
         get "/service_requests/:id/change_arm" => "service_requests#change_arm"
         post "/service_requests/:id/add_arm" => "service_requests#add_arm"
-        post "/service_requests/:id/delete_arm" => "service_requests#delete_arm"
+        post "/service_requests/:id/remove_arm" => "service_requests#remove_arm"
         post "/service_requests/:id/add_per_patient_per_visit_visit" => "service_requests#add_per_patient_per_visit_visit"
         put "/subsidys/:id/update_from_fulfillment" => "subsidies#update_from_fulfillment"
         delete "/subsidys/:id" => "subsidies#destroy"

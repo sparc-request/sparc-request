@@ -79,13 +79,9 @@ module Portal::ServiceRequestsHelper
     end
   end
 
-  def arms_for_select service_request, arm
-    arr = []
-    service_request.arms.each_with_index do |arm, index|
-      arr << ["#{arm.name}", index]
-    end
-    index = service_request.arms.index(arm)
-    options_for_select(arr, index || 0)
+  def arms_for_select service_request, selected_arm
+    arr = service_request.arms.map { |arm| [ arm.name, arm.id ] }
+    options_for_select(arr, selected_arm.id)
   end
 
   # This method is ugly

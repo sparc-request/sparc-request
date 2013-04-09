@@ -68,7 +68,7 @@
             - (5 - visits.size).times do
               %td &nbsp;
             - if @portal 
-              %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-line_item_id' => line_item.id, :class => "delete_data")
+              %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-visit_grouping_id' => visit_grouping.id, :class => "delete_data")
             - else
               %td{:class => "total_#{visit_grouping.id}"}= display_visit_based_direct_cost(visit_grouping)
       - unless @portal 

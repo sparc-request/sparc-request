@@ -58,10 +58,10 @@ class LineItem < ActiveRecord::Base
     return units_per_package
   end
 
-  def quantity_total
+  def quantity_total(visit_grouping)
     # quantity_total = self.visits.map {|x| x.research_billing_qty}.inject(:+) * self.subject_count
-    quantity_total = self.visits.sum('research_billing_qty')
-    return quantity_total * self.subject_count
+    quantity_total = visit_grouping.visits.sum('research_billing_qty')
+    return quantity_total * visit_grouping.subject_count
   end
 
   # Returns a hash of subtotals for the visits in the line item.
@@ -80,20 +80,24 @@ class LineItem < ActiveRecord::Base
   end
 
   # Determine the direct costs for a visit-based service for one subject
-  def direct_costs_for_visit_based_service_single_subject
+  def direct_costs_for_visit_based_service_single_subject(visit_grouping)
     # TODO: use sum() here
     # totals_array = self.per_subject_subtotals(visits).values.select {|x| x.class == Float}
     # subject_total = totals_array.empty? ? 0 : totals_array.inject(:+)
-    result = self.connection.execute("SELECT SUM(research_billing_qty) FROM visits WHERE line_item_id=#{self.id} AND research_billing_qty >= 1")
+    result = visit_grouping.connection.execute("SELECT SUM(research_billing_qty) FROM visits WHERE visit_grouping_id=#{visit_grouping.id} AND research_billing_qty >= 1")
     research_billing_qty_total = result.to_a[0][0] || 0
-    subject_total = research_billing_qty_total * per_unit_cost(quantity_total())
+    subject_total = research_billing_qty_total * per_unit_cost(quantity_total(visit_grouping))
 
     subject_total
   end
 
   # Determine the direct costs for a visit-based service
   def direct_costs_for_visit_based_service
-    self.subject_count * self.direct_costs_for_visit_based_service_single_subject
+    total = 0
+    self.visit_groupings.each do |visit_grouping|
+      total += visit_grouping.subject_count * self.direct_costs_for_visit_based_service_single_subject(visit_grouping)
+    end
+    total
   end
 
   # Determine the direct costs for a one-time-fee service
@@ -114,7 +118,11 @@ class LineItem < ActiveRecord::Base
   # Determine the indirect cost rate for a visit-based service for one subject
   def indirect_costs_for_visit_based_service_single_subject
     if USE_INDIRECT_COST
-      self.direct_costs_for_visit_based_service_single_subject * self.indirect_cost_rate
+      total = 0
+      self.visit_groupings.each do |visit_grouping|
+        total += self.direct_costs_for_visit_based_service_single_subject(visit_grouping) * self.indirect_cost_rate
+      end
+      return total
     else
       return 0
     end

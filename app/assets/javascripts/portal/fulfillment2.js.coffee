@@ -80,14 +80,14 @@ $(document).ready ->
       contentType: 'application/json; charset=utf-8'
   )
 
-  $(document).on('change', '#arm_position', ->
+  $(document).on('change', '#arm_id', ->
     $("#visit_position").attr('disabled', 'disabled')
     $("#delete_visit_position").attr('disabled', 'disabled')
     sr_id = $(this).data('service_request_id')
     data =
       'sub_service_request_id': $(this).data('sub_service_request_id')
       'service_request_id': sr_id
-      'arm_position': $('#arm_position').val()
+      'arm_id': $('#arm_id').val()
     $.ajax
       type: 'GET'
       url:  "/portal/admin/service_requests/#{sr_id}/change_arm"
@@ -109,7 +109,7 @@ $(document).ready ->
     data =
       'sub_service_request_id': $(this).data('sub_service_request_id')
       'service_request_id': sr_id
-      'arm_position': $('#arm_position').val()
+      'arm_id': $('#arm_id').val()
     $.ajax
       type: 'POST'
       url:   "/portal/admin/service_requests/#{sr_id}/add_arm"
@@ -126,6 +126,30 @@ $(document).ready ->
         for error in errors
           $().toastmessage('showErrorToast', "#{error.humanize()}.");
   )
+
+  $(document).on('click', '.remove_arm_link', ->
+    if confirm("Are you sure you want to remove the ARM?")
+      sr_id = $(this).data('service_request_id')
+      data =
+        'sub_service_request_id': $(this).data('sub_service_request_id')
+        'service_request_id': sr_id
+        'arm_id': $('#arm_id').val()
+      $.ajax
+        type: 'POST'
+        url:   "/portal/admin/service_requests/#{sr_id}/remove_arm"
+        data:  JSON.stringify(data)
+        dataType: 'script'
+        contentType: 'application/json; charset=utf-8'
+        success: ->
+          $().toastmessage('showSuccessToast', "Service request has been saved.")
+        error: (jqXHR, textStatus, errorThrown) ->
+          if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
+            errors = JSON.parse(jqXHR.responseText)
+          else
+            errors = [textStatus]
+          for error in errors
+            $().toastmessage('showErrorToast', "#{error.humanize()}.");
+  )
   
   $(document).on('click', '.add_visit_link', ->
     sr_id = $(this).data('service_request_id')
@@ -133,7 +157,7 @@ $(document).ready ->
       'sub_service_request_id': $(this).data('sub_service_request_id')
       'service_request_id': sr_id
       'visit_position': $('#visit_position').val()
-      'arm_position': $('#arm_position').val()
+      'arm_id': $('#arm_id').val()
     $.ajax
       type: 'POST'
       url:   "/portal/admin/service_requests/#{sr_id}/add_per_patient_per_visit_visit"
@@ -157,7 +181,7 @@ $(document).ready ->
       'sub_service_request_id': $(this).data('sub_service_request_id')
       'service_request_id': sr_id
       'visit_position': $('#delete_visit_position').val()
-      'arm_position': $('#arm_position').val()
+      'arm_id': $('#arm_id').val()
     $.ajax
       type: 'DELETE'
       url:   "/portal/admin/service_requests/#{sr_id}/remove_per_patient_per_visit_visit"

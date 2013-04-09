@@ -74,9 +74,8 @@ def add_visits
   service_request.arms.each do |arm|
     visit_grouping = FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item2.id, subject_count: arm.subject_count)
     arm.visit_count.times do |index|
-       FactoryGirl.create(:visit, quantity: 0, name: visit_names[index - 1], visit_grouping_id: visit_grouping.id)
+       FactoryGirl.create(:visit, quantity: 0, name: visit_names[index], visit_grouping_id: visit_grouping.id)
     end
-    
   end
 end
 

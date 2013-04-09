@@ -16,9 +16,11 @@
         %tr
           %td{:colspan => 2}
             / TODO: Add arms selector
-            = select_tag "arm_position", arms_for_select(@service_request, @selected_arm), :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id
+            = select_tag "arm_id", arms_for_select(@service_request, @selected_arm), :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id
             %br
             = link_to t(:fulfillments)[:services][:visits][:add_arm], 'javascript:void(0);', :class => "add_arm_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id
+            %br
+            = link_to t(:fulfillments)[:services][:visits][:remove_arm], 'javascript:void(0);', :class => "remove_arm_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id
           %td{:colspan => 2}
             / TODO: Fix for arms
             = select_tag "visit_position", visits_for_select(@selected_arm)

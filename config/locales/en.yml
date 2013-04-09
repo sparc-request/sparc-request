@@ -737,6 +737,7 @@ en:
         no_requests: "There are no per-patient/per-visit requests."
         arm: "Select Arm"
         add_arm: "Add an Arm"
+        remove_arm: "Remove an Arm"
         add: "Add a Visit"
         delete: "Delete a Visit"
         add_link: "Add a Visit"

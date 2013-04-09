@@ -77,6 +77,7 @@ describe Portal::ServiceRequestsController do
       post :add_per_patient_per_visit_visit, {
         format: :js,
         id: service_request.id,
+        arm_id: arm.id,
         service_request_id: service_request.id,
         sub_service_request_id: ssr.id,
       }.with_indifferent_access
@@ -93,12 +94,13 @@ describe Portal::ServiceRequestsController do
       post :add_per_patient_per_visit_visit, {
         format: :js,
         id: service_request.id,
+        arm_id: arm.id,
         service_request_id: service_request.id,
         sub_service_request_id: ssr.id,
       }.with_indifferent_access
 
-      line_item.reload
-      line_item.visits.count.should eq 1
+      visit_grouping.reload
+      visit_grouping.visits.count.should eq 1
     end
 
     # TODO: test visit_position
@@ -122,6 +124,7 @@ describe Portal::ServiceRequestsController do
       post :remove_per_patient_per_visit_visit, {
         format: :js,
         id: service_request.id,
+        arm_id: arm.id,
         service_request_id: service_request.id,
         sub_service_request_id: ssr.id,
         visit_position: 5,
@@ -137,13 +140,14 @@ describe Portal::ServiceRequestsController do
       post :remove_per_patient_per_visit_visit, {
         format: :js,
         id: service_request.id,
+        arm_id: arm.id,
         service_request_id: service_request.id,
         sub_service_request_id: ssr.id,
         visit_position: 5,
       }.with_indifferent_access
 
-      line_item.reload
-      line_item.visits.count.should eq 9
+      visit_grouping.reload
+      visit_grouping.visits.count.should eq 9
       # TODO: test that the right visit was removed
     end
 
@@ -158,23 +162,6 @@ describe Portal::ServiceRequestsController do
 
   describe 'POST update_from_fulfillment' do
     # TODO
-  end
-
-  describe 'POST refresh_service_calendar' do
-    it 'should set instance variables' do
-      post :refresh_service_calendar, {
-        format: :js,
-        id: service_request.id,
-        service_request_id: service_request.id,
-        page: 1,
-      }.with_indifferent_access
-
-      session[:service_calendar_page].should eq 1
-
-      assigns(:service_request).should eq service_request
-      assigns(:page).should eq 1
-      assigns(:tab).should eq 'pricing'
-    end
   end
 end
 

@@ -85,35 +85,5 @@ describe 'edit a program', :js => true do
         @program.tag_list.should eq(['The Doctor', 'Dalek', 'Amy Pond'])
       end
     end
-
-    context "adding and deleting super users" do
-
-      it "should add a new super user" do
-        fill_in "new_su", :with => "Leonard"
-        wait_for_javascript_to_finish
-        page.find('a', :text => "Jason Leonard (leonarjp@musc.edu)", :visible => true).click()
-        wait_for_javascript_to_finish
-        first("#save_button").click
-        wait_for_javascript_to_finish
-
-        page.should have_content("Jason Leonard")
-      end
-
-      it "should delete a super user" do
-        fill_in "new_su", :with => "Leonard"
-        wait_for_javascript_to_finish
-        page.find('a', :text => "Jason Leonard (leonarjp@musc.edu)", :visible => true).click()
-        wait_for_javascript_to_finish
-        first("#save_button").click
-        wait_for_javascript_to_finish
-
-        # This overrides the javascript confirm dialog
-        page.evaluate_script('window.confirm = function() { return true; }')
-
-        find('.su_delete').click
-        wait_for_javascript_to_finish
-        page.should_not have_content("Jason Leonard")
-      end
-    end
   end
 end

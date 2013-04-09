@@ -170,4 +170,22 @@ module CapybaraSupport
       Capybara.default_wait_time = orig_seconds
     end
   end
+
+  # Following two methods used for adding and deleting catalog managers, service providers, etc. in spec/features/catalog_manger/shared_spec.rb
+  def add_identity_to_organization(field)
+    fill_in "#{field}", with: "Leonard"
+    wait_for_javascript_to_finish
+    page.find('a', text: "Jason Leonard (leonarjp@musc.edu)", visible: true).click()
+    wait_for_javascript_to_finish
+    first("#save_button").click
+    wait_for_javascript_to_finish
+  end
+
+  def delete_identity_from_organization(field, delete)
+    add_identity_to_organization("#{field}")
+    # This overrides the javascript confirm dialog
+    page.evaluate_script('window.confirm = function() { return true; }')
+    find("#{delete}").click
+    wait_for_javascript_to_finish
+  end
 end

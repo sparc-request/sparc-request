@@ -133,7 +133,7 @@ $(document).ready ->
       data =
         'sub_service_request_id': $(this).data('sub_service_request_id')
         'service_request_id': sr_id
-        'arm_position': $('#arm_position').val()
+        'arm_id': $('#arm_id').val()
       $.ajax
         type: 'POST'
         url:   "/portal/admin/service_requests/#{sr_id}/remove_arm"

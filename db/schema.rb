@@ -45,12 +45,6 @@ ActiveRecord::Schema.define(:version => 20130405202702) do
     t.integer  "subject_count"
   end
 
-  create_table "arms_line_items", :force => true do |t|
-    t.integer  "subject_count"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
-  end
-
   create_table "available_statuses", :force => true do |t|
     t.integer  "organization_id"
     t.string   "status"

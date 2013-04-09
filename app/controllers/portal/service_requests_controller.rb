@@ -45,11 +45,11 @@ class Portal::ServiceRequestsController < Portal::BaseController
   end
 
   def remove_arm
-    @arm_position = params[:arm_position].to_i if params[:arm_position]
+    @arm_id = params[:arm_id].to_i if params[:arm_id]
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @service_request = ServiceRequest.find(params[:service_request_id]) # TODO: is this different from params[:id] ?
 
-    @service_request.arms[@arm_position].destroy
+    Arm.find(@arm_id).destroy
 
     @selected_arm = @service_request.arms.first
 

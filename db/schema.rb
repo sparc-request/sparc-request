@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130409175020) do
+ActiveRecord::Schema.define(:version => 20130409180905) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -521,8 +521,15 @@ ActiveRecord::Schema.define(:version => 20130409175020) do
   add_index "sub_service_requests", ["service_request_id"], :name => "index_sub_service_requests_on_service_request_id"
 
   create_table "subjects", :force => true do |t|
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+    t.integer  "arm_id"
+    t.string   "name"
+    t.string   "mrn"
+    t.string   "external_subject_id"
+    t.date     "dob"
+    t.string   "gender"
+    t.string   "ethnicity"
   end
 
   create_table "submission_emails", :force => true do |t|

@@ -3,6 +3,7 @@ class Arm < ActiveRecord::Base
 
   has_many :visit_groupings, :dependent => :destroy
   has_many :line_items, :through => :visit_groupings
+  has_many :subjects
 
   attr_accessible :name
   attr_accessible :visit_count

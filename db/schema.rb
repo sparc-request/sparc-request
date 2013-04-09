@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130409174452) do
+ActiveRecord::Schema.define(:version => 20130409175020) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -53,6 +53,12 @@ ActiveRecord::Schema.define(:version => 20130409174452) do
   end
 
   add_index "available_statuses", ["organization_id"], :name => "index_available_statuses_on_organization_id"
+
+  create_table "calendars", :force => true do |t|
+    t.integer  "subject_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "catalog_managers", :force => true do |t|
     t.integer  "identity_id"

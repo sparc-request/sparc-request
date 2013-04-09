@@ -3,6 +3,9 @@ class Visit < ActiveRecord::Base
   #has_paper_trail
 
   belongs_to :visit_grouping
+  has_many :procedures
+  has_many :appointments, :through => :procedures
+
 
   acts_as_list :scope => :visit_grouping
   include BulkCreateableList

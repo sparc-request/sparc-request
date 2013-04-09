@@ -176,13 +176,5 @@ class LineItem < ActiveRecord::Base
       return false
     end
   end
-
-  def fix_missing_visits(visit_count=self.service_request.visit_count)
-    # TODO This probably needs to be fixed
-    # if self.visits.count < visit_count
-    #   n = visit_count - self.visits.count
-    #   Visit.bulk_create(n, :line_item_id => self.id)
-    # end
-  end
 end
 

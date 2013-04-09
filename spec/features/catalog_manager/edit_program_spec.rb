@@ -5,9 +5,15 @@ describe 'edit a program', :js => true do
   before :each do
     default_catalog_manager_setup
     click_link('Office of Biomedical Informatics')
+    wait_for_javascript_to_finish
   end
 
   context 'successfully update an existing program' do
+
+    before :each do
+      @program = Organization.where(abbreviation: "Informatics").first
+      wait_for_javascript_to_finish
+    end
 
     it "should successfully edit and save the program" do
       # General Information fields
@@ -26,12 +32,7 @@ describe 'edit a program', :js => true do
     end
 
     context "editing status options" do
-
-      before :each do
-        @program = Organization.where(abbreviation: "Informatics").first
-        wait_for_javascript_to_finish
-      end
-
+   
       it "should get the default statuses" do
         @program.get_available_statuses.should eq( {"draft" => "Draft", "submitted" => "Submitted", "obtain_research_pricing" => "Obtain Research Pricing", "in_process" => "In Process", "complete" => "Complete", "awaiting_pi_approval" => "Awaiting PI Approval", "on_hold" => "On Hold"} )
       end
@@ -40,6 +41,7 @@ describe 'edit a program', :js => true do
         find("#program_available_statuses_attributes_0__destroy").click
         first("#save_button").click
         wait_for_javascript_to_finish
+
         @program.get_available_statuses.should eq( {"draft" => "Draft"} )
       end
 
@@ -49,16 +51,12 @@ describe 'edit a program', :js => true do
         wait_for_javascript_to_finish
         first("#save_button").click
         wait_for_javascript_to_finish
+
         @program.get_available_statuses.should eq( {"draft" => "Draft"} )
       end
     end
 
     context "adding and removing tags" do
-
-      before :each do
-        @program = Organization.where(abbreviation: "Informatics").first
-        wait_for_javascript_to_finish
-      end
 
       it "should get the tag that is entered" do
         fill_in 'program_tag_list', :with => 'The Doctor'
@@ -85,6 +83,66 @@ describe 'edit a program', :js => true do
         wait_for_javascript_to_finish
 
         @program.tag_list.should eq(['The Doctor', 'Dalek', 'Amy Pond'])
+      end
+    end
+
+    context "adding and deleting super users" do
+
+      it "should add a new super user" do
+        fill_in "new_su", :with => "Leonard"
+        wait_for_javascript_to_finish
+        page.find('a', :text => "Jason Leonard (leonarjp@musc.edu)", :visible => true).click()
+        wait_for_javascript_to_finish
+        first("#save_button").click
+        wait_for_javascript_to_finish
+
+        page.should have_content("Jason Leonard")
+      end
+
+      it "should delete a super user" do
+        fill_in "new_su", :with => "Leonard"
+        wait_for_javascript_to_finish
+        page.find('a', :text => "Jason Leonard (leonarjp@musc.edu)", :visible => true).click()
+        wait_for_javascript_to_finish
+        first("#save_button").click
+        wait_for_javascript_to_finish
+
+        # This overrides the javascript confirm dialog
+        page.evaluate_script('window.confirm = function() { return true; }')
+
+        find('.su_delete').click
+        wait_for_javascript_to_finish
+        page.should_not have_content("Jason Leonard")
+      end
+    end
+
+    context "adding and deleting catalog managers" do
+
+      it "should add a new catalog manager" do
+        fill_in "new_cm", :with => "Leonard"
+        wait_for_javascript_to_finish
+        page.find('a', :text => "Jason Leonard (leonarjp@musc.edu)", :visible => true).click()
+        wait_for_javascript_to_finish
+        first("#save_button").click
+        wait_for_javascript_to_finish
+
+        page.should have_content("Jason Leonard")
+      end
+
+      it "should delete a catalog manager" do
+        fill_in "new_cm", :with => "Leonard"
+        wait_for_javascript_to_finish
+        page.find('a', :text => "Jason Leonard (leonarjp@musc.edu)", :visible => true).click()
+        wait_for_javascript_to_finish
+        first("#save_button").click
+        wait_for_javascript_to_finish
+
+        # This overrides the javascript confirm dialog
+        page.evaluate_script('window.confirm = function() { return true; }')
+
+        find('.cm_delete').click
+        wait_for_javascript_to_finish
+        page.should_not have_content("Jason Leonard")
       end
     end
   end

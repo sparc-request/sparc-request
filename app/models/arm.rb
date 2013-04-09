@@ -113,15 +113,6 @@ class Arm < ActiveRecord::Base
     end
   end
 
-  def fix_missing_visits
-    # TODO This possibly needs to be fixed
-    # if self.visit_count_changed?
-    #   self.per_patient_per_visit_line_items.each do |li|
-    #     li.fix_missing_visits(self.visit_count)
-    #   end
-    # end
-  end
-
   def insure_visit_count
     if self.visit_count.nil? or self.visit_count <= 0
       self.update_attribute(:visit_count, 1)

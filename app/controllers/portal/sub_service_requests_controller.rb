@@ -6,7 +6,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
 
     session[:sub_service_request_id] = @sub_service_request.id
     session[:service_request_id] = @sub_service_request.service_request_id
-    session[:service_calendar_page] = params[:page] if params[:page]
+    session[:service_calendar_pages] = params[:pages] if params[:pages]
 
     if @user.can_edit_fulfillment? @sub_service_request.organization
       @user_toasts = @user.received_toast_messages.select {|x| x.sending_object.class == SubServiceRequest}
@@ -98,8 +98,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
         # insure_visit_count will set it to 1, and the visit will be created automatically.
         @service_request.insure_visit_count()
         @service_request.insure_subject_count()
-
-        li.fix_missing_visits
 
         li.update_attribute(:subject_count, @service_request.subject_count)
         li.reload

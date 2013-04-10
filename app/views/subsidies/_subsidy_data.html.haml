@@ -18,23 +18,24 @@
         %th= t("subsidy_page.table.subsidy")
 
     %tbody.subsidies-list
-      - @subsidies.each do |subsidy|
-        - next unless @sub_service_request.nil? or subsidy.sub_service_request == @sub_service_request
-        = fields_for @service_request do |sr|
-          = sr.fields_for :sub_service_requests, subsidy.sub_service_request do |ssr|
-            = ssr.fields_for :subsidy_attributes, ssr.object.subsidy do |s|
-              %tr.subsidy-item
-                - direct_cost_total = subsidy.sub_service_request.direct_cost_total
-                - pi_contribution = subsidy.pi_contribution
-                - organization = subsidy.sub_service_request.organization
-                %td{:class => "core_#{subsidy.sub_service_request_id}"}= "#{ssr_institution(organization)} -- #{ssr_provider(organization)} -- #{ssr_program_core(organization)}"
-                %td{:class => "estimated_cost_#{subsidy.sub_service_request_id}", :'data-cost' => direct_cost_total}= currency_converter(direct_cost_total)
-                %td
-                  = ssr.hidden_field :id
-                  = s.hidden_field :id
-                  = s.text_field :pi_contribution, :value => (Service.cents_to_dollars(s.object.pi_contribution.to_s) if s.object and not s.object.pi_contribution.blank?), :"data-id" => subsidy.sub_service_request_id, :"data-max_dollar" => organization.subsidy_map.max_dollar_cap, :"data-max_percent" => organization.subsidy_map.max_percentage, :class => "pi-contribution ssr_#{subsidy.sub_service_request_id}", :disabled => (subsidy.overridden or (direct_cost_total == 0.0)) ? true : false
-                %td{:class => "requested_funding_#{subsidy.sub_service_request_id}"}= display_requested_funding direct_cost_total, pi_contribution
-                %td{:class => "subsidy_percent_#{subsidy.sub_service_request_id}"}= "#{calculate_subsidy_percentage(direct_cost_total, pi_contribution)}%"
+      = fields_for @service_request do |sr_fields|
+        - sr_fields.fields_for :sub_service_requests do |ssr_fields|
+          - sub_service_request = ssr_fields.object
+          - subsidy = sub_service_request.subsidy
+          - next unless @subsidies.include?(subsidy) and (@sub_service_request.nil? or sub_service_request == @sub_service_request)
+          = ssr_fields.fields_for :subsidy do |subsidy_fields|
+            %tr.subsidy-item
+              - direct_cost_total = sub_service_request.direct_cost_total
+              - pi_contribution = subsidy.pi_contribution
+              - organization = sub_service_request.organization
+              %td{:class => "core_#{sub_service_request.id}"}= "#{ssr_institution(organization)} -- #{ssr_provider(organization)} -- #{ssr_program_core(organization)}"
+              %td{:class => "estimated_cost_#{sub_service_request.id}", :'data-cost' => direct_cost_total}= currency_converter(direct_cost_total)
+              %td
+                = ssr_fields.hidden_field :id
+                = subsidy_fields.hidden_field :id
+                = subsidy_fields.text_field :pi_contribution, :value => (Service.cents_to_dollars(subsidy.pi_contribution.to_s) if not subsidy.pi_contribution.blank?), :"data-id" => subsidy.sub_service_request_id, :"data-max_dollar" => organization.subsidy_map.max_dollar_cap, :"data-max_percent" => organization.subsidy_map.max_percentage, :class => "pi-contribution ssr_#{sub_service_request.id}", :disabled => (subsidy.overridden or (direct_cost_total == 0.0)) ? true : false
+              %td{:class => "requested_funding_#{sub_service_request.id}"}= display_requested_funding direct_cost_total, pi_contribution
+              %td{:class => "subsidy_percent_#{sub_service_request.id}"}= "#{calculate_subsidy_percentage(direct_cost_total, pi_contribution)}%"
   %br
   .additional-funding
     = t("subsidy_page.request_additional")

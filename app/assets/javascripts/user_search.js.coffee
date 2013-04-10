@@ -34,3 +34,6 @@ $(document).ready ->
   $('.user-search-clear-icon').live 'click', ->
     $("#user_search_term").autocomplete("close")
     $("#user_search_term").clearFields()
+
+  $('#user_search_term').keypress (event) ->
+    event.preventDefault() if event.keyCode is 13

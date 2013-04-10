@@ -205,6 +205,7 @@ $(document).ready ->
     data = 
       'sub_service_request_id': ssr_id
       'new_service_id': $("##{new_service_id}").val()
+      'arm_id': $('#arm_id').val()
     $.ajax
       type:        'POST'
       url:         "/portal/admin/sub_service_requests/#{ssr_id}/add_line_item"
@@ -220,6 +221,15 @@ $(document).ready ->
           errors = [textStatus]
         for error in errors
           $().toastmessage('showErrorToast', "#{error.humanize()}.");
+  )
+
+  $(document).on('click', '#remove_service', ->
+    object_id = $('#delete_ppv_service_id').val()
+    $.ajax
+      type: 'DELETE'
+      url:  "/portal/admin/line_items/#{object_id}"
+      success: ->
+        $().toastmessage('showSuccessToast', "#{klass.humanize()} has been deleted.");
   )
 
   $(document).on('click', '.expand_li', ->

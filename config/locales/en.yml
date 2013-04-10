@@ -683,6 +683,7 @@ en:
       approval_type: "Type"
       approved_by: "Approved By"
     service_button: "Add Service"
+    remove_service_button: "Remove Service"
     core_approvals:
       header: "Core Approvals"
       nursing: "Nursing/Nutrition Approved"

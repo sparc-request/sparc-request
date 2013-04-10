@@ -42,7 +42,8 @@
 
   #add_ppv_service_container
     = render :partial => 'add_service', :locals => {:services => @candidate_per_patient_per_visit, :select_id => 'new_ppv_service_id'}
-
+  #remove_ppv_service_container
+    = render :partial => 'remove_service', :locals => {:line_items => @sub_service_request.per_patient_per_visit_line_items, :select_id => 'delete_ppv_service_id'}
 #ssr_notes.ui-corner-all
   = render 'notes'
 

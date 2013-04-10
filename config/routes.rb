@@ -195,6 +195,12 @@ SparcRails::Application.routes.draw do
         end
       end
 
+      resources :visit_groupings do
+        member do
+          put :update_from_fulfillment
+        end
+      end
+
       resources :visits do
         member do
           put :update_from_fulfillment

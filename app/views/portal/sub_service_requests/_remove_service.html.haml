@@ -1,0 +1,2 @@
+= select_tag select_id, options_for_select(per_patient_line_items(line_items)), :'data-sub_service_request_id' => @sub_service_request.id
+%button#remove_service{:'data-sub_service_request_id' => @sub_service_request.id, :'data-select_id' => select_id}= t(:fulfillments)[:remove_service_button]

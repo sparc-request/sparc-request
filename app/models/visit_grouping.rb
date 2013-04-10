@@ -8,6 +8,16 @@ class VisitGrouping < ActiveRecord::Base
   attr_accessible :line_item_id
   attr_accessible :subject_count  # number of subjects for this visit grouping
 
+  def create_visits
+    Visit.bulk_create(self.arm.visit_count, :visit_grouping_id => self.id)
+  end
+
+  def update_visit_names visit_grouping
+    self.visits.count do |index|
+      self.visits[index].name = visit_grouping.visits[index].name
+    end
+  end
+
   # Returns the cost per unit based on a quantity (usually just the quantity on the line_item)
   def per_unit_cost quantity_total=self.line_item.quantity
     if quantity_total == 0 || quantity_total.nil?

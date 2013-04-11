@@ -63,16 +63,20 @@ describe 'shared views', js: true do
         page.should have_content("franzferdinand@ww1.gov")
       end
 
-      # it "should delete an email from the program" do
-      #   fill_in "new_se", with: "franzferdinand@ww1.gov"
-      #   find('#new_se').native.send_keys(:return)
-     
-      #   wait_for_javascript_to_finish
+      it "should delete an email from the program" do
+        fill_in "new_se", with: "franzferdinand@ww1.gov"
+        find('#new_se').native.send_keys(:return)
+        wait_for_javascript_to_finish
+        first("#save_button").click
+        wait_for_javascript_to_finish
 
-      #   first(".se_delete").click
-      #   wait_for_javascript_to_finish
-      #   page.should_not have_content("franzferdinand@ww1.gov")
-      # end
+        within('.se_table') do
+          find(".se_delete").click
+        end
+        
+        wait_for_javascript_to_finish
+        page.should_not have_content("franzferdinand@ww1.gov")
+      end
     end
   end
 end

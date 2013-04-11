@@ -354,8 +354,8 @@ ActiveRecord::Schema.define(:version => 20130409183200) do
     t.integer  "appointment_id"
     t.integer  "visit_id"
     t.integer  "service_id"
-    t.integer  "status"
-    t.boolean  "to_be_done"
+    t.boolean  "completed"
+    t.boolean  "required"
     t.datetime "created_at",     :null => false
     t.datetime "updated_at",     :null => false
   end

@@ -136,4 +136,12 @@ class Arm < ActiveRecord::Base
       self.reload
     end
   end
+
+  def populate_subjects
+    visits = Visit.joins(:visit_grouping => :arm).where(:arms => {:id => arm.id})
+    subject_count.times do
+      subject = self.subjects.create
+      subject.calendar.populate(visits)
+    end
+  end
 end

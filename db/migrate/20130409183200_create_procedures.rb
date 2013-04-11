@@ -4,8 +4,8 @@ class CreateProcedures < ActiveRecord::Migration
       t.belongs_to :appointment
       t.belongs_to :visit
       t.belongs_to :service
-      t.integer :status
-      t.boolean :to_be_done
+      t.boolean :completed
+      t.boolean :required
 
       t.timestamps
     end

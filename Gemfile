@@ -10,6 +10,7 @@ gem 'haml'
 gem 'sass'
 
 group :development, :test, :profile do
+  gem "rails-erd"
   gem 'sqlite3'
   gem 'rspec-rails'
   gem 'launchy'

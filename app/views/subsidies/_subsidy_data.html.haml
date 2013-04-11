@@ -19,7 +19,7 @@
 
     %tbody.subsidies-list
       = fields_for @service_request do |sr_fields|
-        = sr_fields.fields_for :sub_service_requests do |ssr_fields|
+        = sr_fields.fields_for :sub_service_requests, :include_id => false do |ssr_fields|
           - sub_service_request = ssr_fields.object
           - subsidy = sub_service_request.subsidy
           - next unless @subsidies.include?(subsidy) and (@sub_service_request.nil? or sub_service_request == @sub_service_request)

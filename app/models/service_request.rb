@@ -81,8 +81,8 @@ class ServiceRequest < ActiveRecord::Base
 
   #after_save :fix_missing_visits
 
-  def create_arm name='ARM', visit_count=1, subject_count=1
-    arm = self.arms.create(:name => name, :visit_count => visit_count, :subject_count => subject_count)
+  def create_arm(args)
+    arm = self.arms.create(args)
     self.per_patient_per_visit_line_items.each do |li|
       arm.create_visit_grouping(li)
     end

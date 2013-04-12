@@ -1867,3 +1867,13 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   width: 50px;
 }
 
+.document_upload_instructions {
+  border: 1px solid black;
+  margin: 0 auto;
+  padding: 7px;
+  width: 510px;
+}
+
+.document_upload_instructions ul {
+  list-style: decimal inside;
+}

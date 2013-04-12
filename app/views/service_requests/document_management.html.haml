@@ -9,6 +9,7 @@
   = render :partial => 'steps'
   = render :partial => 'errors'
   .grid_12
+    .document_upload_instructions= t("documents.upload_instructions_html")
     .document-management-container
       = render :partial => 'document_list', :locals => {:review => false}
       .clear
@@ -24,7 +25,7 @@
       %br
 
       %div{:style => 'text-align: center'}
-        = t("documents.instructions")
+        = t("documents.notes_instructions")
         = text_area_tag 'service_request[notes]', @service_request.notes, :rows => 14, :cols => 100 
 
       %br

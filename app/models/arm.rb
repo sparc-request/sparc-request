@@ -1,8 +1,8 @@
 class Arm < ActiveRecord::Base
   belongs_to :service_request
 
-  has_many :visit_groupings, :dependent => :destroy
-  has_many :line_items, :through => :visit_groupings
+  has_many :line_items_visits, :dependent => :destroy
+  has_many :line_items, :through => :line_items_visits
   has_many :subjects
 
   attr_accessible :name
@@ -19,35 +19,35 @@ class Arm < ActiveRecord::Base
   end
 
   def per_patient_per_visit_line_items
-    visit_groupings.each.map do |vg|
+    line_items_visits.each.map do |vg|
       vg.line_item
     end.compact
   end
 
-  def maximum_direct_costs_per_patient visit_groupings=self.visit_groupings
+  def maximum_direct_costs_per_patient line_items_visits=self.line_items_visits
     total = 0.0
-    visit_groupings.each do |vg|
+    line_items_visits.each do |vg|
       total += vg.direct_costs_for_visit_based_service_single_subject
     end
 
     total
   end
 
-  def maximum_indirect_costs_per_patient visit_groupings=self.visit_groupings
+  def maximum_indirect_costs_per_patient line_items_visits=self.line_items_visits
     if USE_INDIRECT_COST
-      self.maximum_direct_costs_per_patient(visit_groupings) * (self.service_request.protocol.indirect_cost_rate.to_f / 100)
+      self.maximum_direct_costs_per_patient(line_items_visits) * (self.service_request.protocol.indirect_cost_rate.to_f / 100)
     else
       return 0
     end
   end
 
-  def maximum_total_per_patient visit_groupings=self.visit_groupings
-    self.maximum_direct_costs_per_patient(visit_groupings) + maximum_indirect_costs_per_patient(visit_groupings)
+  def maximum_total_per_patient line_items_visits=self.line_items_visits
+    self.maximum_direct_costs_per_patient(line_items_visits) + maximum_indirect_costs_per_patient(line_items_visits)
   end
 
   def direct_costs_for_visit_based_service
     total = 0.0
-    visit_groupings.each do |vg|
+    line_items_visits.each do |vg|
       total += vg.direct_costs_for_visit_based_service
     end
     return total
@@ -55,7 +55,7 @@ class Arm < ActiveRecord::Base
 
   def indirect_costs_for_visit_based_service
     total = 0.0
-    visit_groupings.each do |vg|
+    line_items_visits.each do |vg|
       total += vg.indirect_costs_for_visit_based_service
     end
     return total
@@ -75,7 +75,7 @@ class Arm < ActiveRecord::Base
   def add_visit position=nil
     result = self.transaction do
       # Add visits to each line item under the service request
-      self.visit_groupings.each do |vg|
+      self.line_items_visits.each do |vg|
         if not vg.add_visit(position) then
           self.errors.initialize_dup(vg.errors) # TODO: is this the right way to do this?
           raise ActiveRecord::Rollback
@@ -101,7 +101,7 @@ class Arm < ActiveRecord::Base
 
   def remove_visit position
     result = self.transaction do
-      self.visit_groupings.each do |vg|
+      self.line_items_visits.each do |vg|
         if not vg.remove_visit(position) then
           self.errors.initialize_dup(vg.errors)
           raise ActiveRecord::Rollback

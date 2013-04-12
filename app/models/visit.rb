@@ -2,21 +2,19 @@ class Visit < ActiveRecord::Base
   #Version.primary_key = 'id'
   #has_paper_trail
 
-  belongs_to :visit_grouping
+  belongs_to :line_items_visit
   has_many :procedures
   has_many :appointments, :through => :procedures
+  belongs_to :visit_group
 
-
-  acts_as_list :scope => :visit_grouping
   include BulkCreateableList
 
-  attr_accessible :visit_grouping_id
+  attr_accessible :line_items_visit_id
   attr_accessible :quantity
   attr_accessible :billing
   attr_accessible :research_billing_qty #qty billed to the study/project
   attr_accessible :insurance_billing_qty #qty billed to the patients insurance or third party
   attr_accessible :effort_billing_qty #qty billing to % effort
-  attr_accessible :position
   attr_accessible :name
 
   validates :research_billing_qty, :numericality => {:only_integer => true}
@@ -31,8 +29,8 @@ class Visit < ActiveRecord::Base
 
   after_create :set_default_name
 
-  def cost(per_unit_cost = self.visit_grouping.per_unit_cost(self.visit_grouping.quantity_total))
-    li = self.visit_grouping.line_item
+  def cost(per_unit_cost = self.line_items_visit.per_unit_cost(self.line_items_visit.quantity_total))
+    li = self.line_items_visit.line_item
     if li.applicable_rate == "N/A"
       return "N/A"
     elsif self.research_billing_qty >= 1
@@ -50,6 +48,11 @@ class Visit < ActiveRecord::Base
     if name.nil? || name == ""
       self.update_attributes(:name => "Visit #{self.position}")
     end
-  end 
+  end
+
+  def position
+    ##get position from visit_group
+    return self.visit_group.position
+  end
 
 end

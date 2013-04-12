@@ -149,7 +149,7 @@ module CapybaraSupport
 
     arm = FactoryGirl.create(:arm, service_request_id: service_request.id, subject_count: 2, visit_count: 10)
 
-    visit_grouping = FactoryGirl.create(:visit_grouping, arm_id: arm.id, subject_count: arm.subject_count)
+    line_items_visit = FactoryGirl.create(:line_items_visit, arm_id: arm.id, subject_count: arm.subject_count)
 
   end
   

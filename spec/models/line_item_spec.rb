@@ -176,8 +176,8 @@ describe "Line Item" do
     #   let!(:service)         {FactoryGirl.create(:service)}
     #   let!(:line_item)       {FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service.id)}  
     #   let!(:arm)             {FactoryGirl.create(:arm, service_request_id: service_request.id, subject_count: 5)}
-    #   let!(:visit_grouping)  {FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item.id, subject_count: 5)}
-    #   let!(:visit)           {FactoryGirl.create(:visit, visit_grouping_id: visit_grouping.id, research_billing_qty: 5)}
+    #   let!(:line_items_visit)  {FactoryGirl.create(:line_items_visit, arm_id: arm.id, line_item_id: line_item.id, subject_count: 5)}
+    #   let!(:visit)           {FactoryGirl.create(:visit, line_items_visit_id: line_items_visit.id, research_billing_qty: 5)}
 
     #   it "should return the correct quantity" do
     #     line_item.quantity_total.should eq(25)
@@ -283,8 +283,8 @@ describe "Line Item" do
       let!(:service)         { FactoryGirl.create(:service, organization_id: program.id) }
       let!(:line_item)       { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service.id)}  
       let!(:arm)             { FactoryGirl.create(:arm, service_request_id: service_request.id, subject_count: 5)}
-      let!(:visit_grouping)  { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item.id, subject_count: 5)}
-      let!(:visit)           { FactoryGirl.create(:visit, visit_grouping_id: visit_grouping.id, research_billing_qty: 5)}
+      let!(:line_items_visit)  { FactoryGirl.create(:line_items_visit, arm_id: arm.id, line_item_id: line_item.id, subject_count: 5)}
+      let!(:visit)           { FactoryGirl.create(:visit, line_items_visit_id: line_items_visit.id, research_billing_qty: 5)}
       let!(:pricing_setup)   { FactoryGirl.create(:pricing_setup, organization_id: program.id) }
       let!(:pricing_map)     { service.pricing_maps[0] }
 

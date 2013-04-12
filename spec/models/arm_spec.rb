@@ -22,13 +22,13 @@ describe Arm do
       let(:line_item)        { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service.id) }
       let(:line_item2)       { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service2.id) }
       let!(:arm)             { FactoryGirl.create(:arm, service_request_id: service_request.id, subject_count: 5, visit_count: 5)}
-      let!(:visit_grouping)  { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item.id, subject_count: 5)}
-      let!(:visit_grouping2) { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item2.id, subject_count: 5)}
+      let!(:line_items_visit)  { FactoryGirl.create(:line_items_visit, arm_id: arm.id, line_item_id: line_item.id, subject_count: 5)}
+      let!(:line_items_visit2) { FactoryGirl.create(:line_items_visit, arm_id: arm.id, line_item_id: line_item2.id, subject_count: 5)}
 
       before(:each) do
         5.times do
-          FactoryGirl.create(:visit, visit_grouping_id: visit_grouping.id)
-          FactoryGirl.create(:visit, visit_grouping_id: visit_grouping2.id)
+          FactoryGirl.create(:visit, line_items_visit_id: line_items_visit.id)
+          FactoryGirl.create(:visit, line_items_visit_id: line_items_visit2.id)
         end
         @sr = ServiceRequest.first
         @arm = Arm.first
@@ -42,17 +42,17 @@ describe Arm do
 
       it "should add a visit to the end if no position is specified" do
         @arm.add_visit
-        VisitGrouping.find(visit_grouping.id).visits.count.should eq(6)
+        LineItemsVisit.find(line_items_visit.id).visits.count.should eq(6)
       end
 
       it "should add a visit at the specified position" do
-        last_visit = visit_grouping.visits.last
+        last_visit = line_items_visit.visits.last
         last_visit.update_attribute(:research_billing_qty, 99)
         @arm.add_visit(3).should eq true
         @arm.visit_count.should eq 6
-        @arm.visit_groupings[0].visits.count.should eq 6
-        @arm.visit_groupings[1].visits.count.should eq 6
-        visit_grouping.visits.where(:position => 6).first.research_billing_qty.should eq(99)
+        @arm.line_items_visits[0].visits.count.should eq 6
+        @arm.line_items_visits[1].visits.count.should eq 6
+        line_items_visit.visits.where(:position => 6).first.research_billing_qty.should eq(99)
       end
 
       it "should decrease the visit count by one" do
@@ -62,10 +62,10 @@ describe Arm do
       end 
 
       it "should remove a visit at the specified position" do
-        first_visit = visit_grouping.visits.first
+        first_visit = line_items_visit.visits.first
         first_visit.update_attributes(billing: "your mom")
         @arm.remove_visit(1)
-        new_first_visit = visit_grouping.visits.first
+        new_first_visit = line_items_visit.visits.first
         new_first_visit.billing.should_not eq("your mom")
       end
     end
@@ -82,10 +82,10 @@ describe Arm do
     let!(:pricing_map2)    { FactoryGirl.create(:pricing_map, service_id: service.id, display_date: Date.today + 1) }
     let!(:line_item)       { FactoryGirl.create(:line_item, service_request_id: service_request.id, sub_service_request_id: ssr.id, service_id: service.id, quantity: 20)} 
     let!(:arm)             { FactoryGirl.create(:arm, service_request_id: service_request.id) }
-    let!(:visit_grouping)  { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item.id, subject_count: 5) }   
-    let!(:visit_grouping2) { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item.id, subject_count: 5) }   
-    let!(:visit)           { FactoryGirl.create(:visit, visit_grouping_id: visit_grouping.id, research_billing_qty: 5)}
-    let!(:visit2)          { FactoryGirl.create(:visit, visit_grouping_id: visit_grouping2.id, research_billing_qty: 5)}
+    let!(:line_items_visit)  { FactoryGirl.create(:line_items_visit, arm_id: arm.id, line_item_id: line_item.id, subject_count: 5) }   
+    let!(:line_items_visit2) { FactoryGirl.create(:line_items_visit, arm_id: arm.id, line_item_id: line_item.id, subject_count: 5) }   
+    let!(:visit)           { FactoryGirl.create(:visit, line_items_visit_id: line_items_visit.id, research_billing_qty: 5)}
+    let!(:visit2)          { FactoryGirl.create(:visit, line_items_visit_id: line_items_visit2.id, research_billing_qty: 5)}
 
     describe "per patient per visit" do
 

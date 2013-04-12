@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130409183200) do
+ActiveRecord::Schema.define(:version => 20130411152202) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -245,6 +245,14 @@ ActiveRecord::Schema.define(:version => 20130409183200) do
   end
 
   add_index "line_items", ["service_request_id"], :name => "index_line_items_on_service_request_id"
+
+  create_table "line_items_visits", :force => true do |t|
+    t.integer  "arm_id"
+    t.integer  "line_item_id"
+    t.integer  "subject_count"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
 
   create_table "lookups", :force => true do |t|
     t.integer "new_id"
@@ -659,13 +667,14 @@ ActiveRecord::Schema.define(:version => 20130409183200) do
 
   add_index "vertebrate_animals_info", ["protocol_id"], :name => "index_vertebrate_animals_info_on_protocol_id"
 
-  create_table "visit_groupings", :force => true do |t|
+  create_table "visit_groups", :force => true do |t|
+    t.string   "name"
     t.integer  "arm_id"
-    t.integer  "line_item_id"
-    t.integer  "subject_count"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
   end
+
+  add_index "visit_groups", ["arm_id"], :name => "index_visit_groups_on_arm_id"
 
   create_table "visits", :force => true do |t|
     t.integer  "quantity",              :default => 0
@@ -678,7 +687,8 @@ ActiveRecord::Schema.define(:version => 20130409183200) do
     t.integer  "effort_billing_qty",    :default => 0
     t.integer  "position"
     t.string   "name"
-    t.integer  "visit_grouping_id"
+    t.integer  "line_items_visit_id"
+    t.integer  "visit_group_id"
   end
 
 end

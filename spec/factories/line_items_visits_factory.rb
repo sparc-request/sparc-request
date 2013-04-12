@@ -1,5 +1,5 @@
 FactoryGirl.define do
 
-  factory :visit_grouping do
+  factory :line_items_visit do
   end
 end

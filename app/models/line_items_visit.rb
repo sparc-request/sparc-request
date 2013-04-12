@@ -1,67 +1,49 @@
-class LineItem < ActiveRecord::Base
-  #Version.primary_key = 'id'
-  #has_paper_trail
+class LineItemsVisit < ActiveRecord::Base
+  belongs_to :arm
+  belongs_to :line_item
 
-  belongs_to :service_request
-  belongs_to :service, :include => [:pricing_maps, :organization]
-  belongs_to :sub_service_request
-  has_many :fulfillments, :dependent => :destroy
+  has_many :visits, :dependent => :destroy, :order => 'position'
 
-  has_many :line_items_visits, :dependent => :destroy
-  has_many :arms, :through => :line_items_visits
+  attr_accessible :arm_id
+  attr_accessible :line_item_id
+  attr_accessible :subject_count  # number of subjects for this visit grouping
 
-  attr_accessible :service_request_id
-  attr_accessible :sub_service_request_id
-  attr_accessible :ssr_id
-  attr_accessible :service_id
-  attr_accessible :optional
-  attr_accessible :quantity
-  attr_accessible :complete_date
-  attr_accessible :in_process_date
-  attr_accessible :units_per_quantity
+  def create_visits
+    Visit.bulk_create(self.arm.visit_count, :line_items_visit_id => self.id)
+  end
 
-  validates :service_id, :numericality => true
-  validates :service_request_id, :numericality => true
-
-  # TODO: order by date/id instead of just by date?
-  default_scope :order => 'id ASC'
-
-  def applicable_rate
-    pricing_map         = self.service.displayed_pricing_map
-    pricing_setup       = self.service.organization.current_pricing_setup
-    funding_source      = self.service_request.protocol.funding_source_based_on_status
-    selected_rate_type  = pricing_setup.rate_type(funding_source)
-    applied_percentage  = pricing_setup.applied_percentage(selected_rate_type)
-    rate                = pricing_map.applicable_rate(selected_rate_type, applied_percentage)
-    return rate
+  def update_visit_names line_items_visit
+    self.visits.count do |index|
+      self.visits[index].name = line_items_visit.visits[index].name
+    end
   end
 
   # Returns the cost per unit based on a quantity (usually just the quantity on the line_item)
-  def per_unit_cost quantity_total=self.quantity
+  def per_unit_cost quantity_total=self.line_item.quantity
     if quantity_total == 0 || quantity_total.nil?
       0
     else
       units_per_package = self.units_per_package
       packages_we_have_to_get = (quantity_total.to_f / units_per_package.to_f).ceil
-      total_cost = packages_we_have_to_get.to_f * self.applicable_rate.to_f
+      total_cost = packages_we_have_to_get.to_f * self.line_item.applicable_rate.to_f
       ret_cost = total_cost / quantity_total.to_f
-      unless self.units_per_quantity.blank?
-        ret_cost = ret_cost * self.units_per_quantity
+      unless self.line_item.units_per_quantity.blank?
+        ret_cost = ret_cost * self.line_item.units_per_quantity
       end
       return ret_cost
     end
   end
 
   def units_per_package
-    unit_factor = self.service.displayed_pricing_map.unit_factor
+    unit_factor = self.line_item.service.displayed_pricing_map.unit_factor
     units_per_package = unit_factor || 1
     return units_per_package
   end
 
-  def quantity_total(line_items_visit)
+  def quantity_total
     # quantity_total = self.visits.map {|x| x.research_billing_qty}.inject(:+) * self.subject_count
-    quantity_total = line_items_visit.visits.sum('research_billing_qty')
-    return quantity_total * line_items_visit.subject_count
+    quantity_total = self.visits.sum('research_billing_qty')
+    return quantity_total * self.subject_count
   end
 
   # Returns a hash of subtotals for the visits in the line item.
@@ -80,36 +62,32 @@ class LineItem < ActiveRecord::Base
   end
 
   # Determine the direct costs for a visit-based service for one subject
-  def direct_costs_for_visit_based_service_single_subject(line_items_visit)
+  def direct_costs_for_visit_based_service_single_subject
     # TODO: use sum() here
     # totals_array = self.per_subject_subtotals(visits).values.select {|x| x.class == Float}
     # subject_total = totals_array.empty? ? 0 : totals_array.inject(:+)
-    result = line_items_visit.connection.execute("SELECT SUM(research_billing_qty) FROM visits WHERE line_items_visit_id=#{line_items_visit.id} AND research_billing_qty >= 1")
+    result = self.connection.execute("SELECT SUM(research_billing_qty) FROM visits WHERE line_items_visit_id=#{self.id} AND research_billing_qty >= 1")
     research_billing_qty_total = result.to_a[0][0] || 0
-    subject_total = research_billing_qty_total * per_unit_cost(quantity_total(line_items_visit))
+    subject_total = research_billing_qty_total * per_unit_cost(quantity_total())
 
     subject_total
   end
 
   # Determine the direct costs for a visit-based service
   def direct_costs_for_visit_based_service
-    total = 0
-    self.line_items_visit.each do |line_items_visit|
-      total += line_items_visit.subject_count * self.direct_costs_for_visit_based_service_single_subject(line_items_visit)
-    end
-    total
+    self.subject_count * self.direct_costs_for_visit_based_service_single_subject
   end
 
   # Determine the direct costs for a one-time-fee service
   def direct_costs_for_one_time_fee
-    num = self.quantity || 0.0
+    num = self.line_item.quantity || 0.0
     num * self.per_unit_cost
   end
 
   # Determine the indirect cost rate related to a particular line item
   def indirect_cost_rate
     if USE_INDIRECT_COST
-      self.service_request.protocol.indirect_cost_rate.to_f / 100
+      self.line_item.service_request.protocol.indirect_cost_rate.to_f / 100
     else
       return 0
     end
@@ -118,11 +96,7 @@ class LineItem < ActiveRecord::Base
   # Determine the indirect cost rate for a visit-based service for one subject
   def indirect_costs_for_visit_based_service_single_subject
     if USE_INDIRECT_COST
-      total = 0
-      self.line_items_visits.each do |line_items_visit|
-        total += self.direct_costs_for_visit_based_service_single_subject(line_items_visit) * self.indirect_cost_rate
-      end
-      return total
+      self.direct_costs_for_visit_based_service_single_subject * self.indirect_cost_rate
     else
       return 0
     end
@@ -139,18 +113,34 @@ class LineItem < ActiveRecord::Base
 
   # Determine the indirect costs for a one-time-fee service
   def indirect_costs_for_one_time_fee
-    if self.service.displayed_pricing_map.exclude_from_indirect_cost || !USE_INDIRECT_COST
+    if self.line_item.service.displayed_pricing_map.exclude_from_indirect_cost || !USE_INDIRECT_COST
       return 0
     else
       self.direct_costs_for_one_time_fee * self.indirect_cost_rate
     end
   end
 
+  # Add a new visit.  Returns the new Visit upon success or false upon
+  # error.
+  def add_visit position=nil
+    self.visits.create(position: position)
+  end
+
+  def remove_visit position
+    visit = self.visits.find_by_position(position)
+    # Move visit to the end by position, re-number other visits
+    visit.move_to_bottom
+    # Must reload to refresh other visit positions, otherwise two 
+    # records with same postion will exist
+    self.reload
+    visit.delete
+  end
+
   # In fulfillment, when you change the service on an existing line item
   def switch_to_one_time_fee
     result = self.transaction do
-      self.quantity = 1 unless self.quantity  
-      self.units_per_quantity unless self.units_per_quantity
+      self.line_item.quantity = 1 unless self.line_item.quantity  
+      self.line_items.units_per_quantity unless self.line_item.units_per_quantity
       self.visits.each {|x| x.destroy}
       self.save or raise ActiveRecord::Rollback
     end

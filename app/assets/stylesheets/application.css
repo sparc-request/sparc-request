@@ -1857,3 +1857,13 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 .acknowledge_approval_status_dialog {
   text-align: center;
 }
+
+.skinny_fields {
+  text-align: center;
+}
+
+.skinny_fields input {
+  text-align: center;
+  width: 50px;
+}
+

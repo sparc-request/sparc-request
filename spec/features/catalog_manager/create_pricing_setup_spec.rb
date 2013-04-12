@@ -6,6 +6,7 @@ describe 'as a user on catalog page' do
   end
   
   it 'the user should create a pricing setup', :js => true do
+    provider = Organization.where(abbreviation: 'SCTR1').first
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
     click_button("Add Pricing Setup")
     wait_for_javascript_to_finish
@@ -37,7 +38,7 @@ describe 'as a user on catalog page' do
     page.execute_script %Q{ $(".save_button").click() }
     wait_for_javascript_to_finish
     
-    page.should have_content "South Carolina Clinical and Translational Institute (SCTR) saved successfully"
+    provider.pricing_setups.first.federal.should eq(150)
     
   end
   

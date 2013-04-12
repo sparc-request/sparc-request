@@ -78,5 +78,4 @@ describe "editing a study" do
       find("#study_short_title").should have_value("Bob")
     end
   end
-
 end

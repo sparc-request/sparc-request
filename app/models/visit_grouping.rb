@@ -135,44 +135,5 @@ class VisitGrouping < ActiveRecord::Base
     self.reload
     visit.delete
   end
-
-  # In fulfillment, when you change the service on an existing line item
-  def switch_to_one_time_fee
-    result = self.transaction do
-      self.line_item.quantity = 1 unless self.line_item.quantity  
-      self.line_items.units_per_quantity unless self.line_item.units_per_quantity
-      self.visits.each {|x| x.destroy}
-      self.save or raise ActiveRecord::Rollback
-    end
-
-    if result
-      return true
-    else
-      self.reload
-      return false
-    end
-  end
-
-  # In fulfillment, when you change the service on an existing line item
-  def switch_to_per_patient_per_visit
-    result = self.transaction do
-      self.service_request.insure_visit_count()
-      (self.service_request.visit_count - visits.size).times do #somehow service request visit count is higher so create
-        visits.create!
-      end
-      (visits.size - self.service_request.visit_count).times do #somehow service request visit count is lower so delete
-        visits.last.destroy
-      end
-      self.service_request.insure_subject_count()
-      self.save or raise ActiveRecord::Rollback
-    end
-
-    if result
-      return true
-    else
-      self.reload
-      return false
-    end
-  end
 end
 

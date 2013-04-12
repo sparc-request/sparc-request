@@ -776,6 +776,15 @@ legend {
   min-height: 491px;
 }
 
+.edit-project-view .info2 {
+  width: 360px;
+  padding: 10px;
+  float: left;
+  border-right: 10px solid #FFF;
+  height: 100%;
+  min-height: 491px;
+}
+
 .edit-project-view .box .info fieldset {
   padding: 1px 7px 5px 7px;
   margin-top: 10px;

@@ -22,25 +22,8 @@
       .field
         = f.label :funding_status, t(:protocol_shared)[:funding_status]
         = f.select :funding_status, options_for_select(FUNDING_STATUSES, study.funding_status), :include_blank => t(:study_form)[:status_blank]
-      
-      .field
-        = f.label :udak_project_number, t(:study_form)[:udak_project_number]
-        = f.text_field :udak_project_number
-        
-      .field
-        = f.label :sponsor_name, t(:study_form)[:sponsor_name]
-        = f.text_field :sponsor_name
 
-      #pending_funding
-        .field
-          = f.label :funding_rfa, t(:study_form)[:funding_rfa]
-          = f.text_field :funding_rfa
-
-        .field
-          = f.label :potential_funding_start_date, t(:study_form)[:potential_funding_start_date]
-          = text_field_tag :potential_funding_start_date, (study.potential_funding_start_date.strftime('%_m/%d/%Y') rescue nil)
-          = f.hidden_field :potential_funding_start_date
-
+      .pending_funding
         .field
           = f.label :potential_funding_source, t(:protocol_shared)[:potential_funding_source]
           = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, study.potential_funding_source), :include_blank => t(:study_form)[:potential_blank]
@@ -50,28 +33,11 @@
           .field
             = f.label :potential_funding_source_other, t(:study_form)[:potential_funding_source_other]
             = f.text_field :potential_funding_source_other
-      
       .funded
-        .field
-          = f.label :funding_start_date, t(:study_form)[:funding_start_date]
-          = text_field_tag :funding_start_date, (study.funding_start_date.strftime('%_m/%d/%Y') rescue nil)
-          = f.hidden_field :funding_start_date
-        
         .field
           = f.label :funding_source, t(:protocol_shared)[:funding_source]
           = f.select :funding_source, options_for_select(FUNDING_SOURCES, study.funding_source), :include_blank => t(:study_form)[:funding_blank]
 
-        / Internal Funded Pilot Project selected
-        .internal_funded_pilot_project
-          .field
-            = f.label :funding_source_other, t(:study_form)[:funding_source_other]
-            = f.text_field :funding_source_other
-
-      .indirect_cost_rate
-        = f.label :indirect_cost_rate, t(:study_form)[:rate]
-        = f.text_field :indirect_cost_rate
-
-      .funded
         .federal
           .field
             = f.label :federal_grant_title, t(:study_form)[:federal_grant_title]
@@ -96,9 +62,62 @@
             = f.label :federal_grant_serial_number, t(:study_form)[:federal_grant_serial_number]
             = f.text_field :federal_grant_serial_number
 
+        / Internal Funded Pilot Project selected
+        .internal_funded_pilot_project
+          .field
+            = f.label :funding_source_other, t(:study_form)[:funding_source_other]
+            = f.text_field :funding_source_other
+
       .field
-        = f.label :study_phase, t(:study_form)[:study_phase]
-        = f.select :study_phase, options_for_select(STUDY_PHASES, study.study_phase), :include_blank => t(:study_form)[:phase_blank]
+        = f.label :sponsor_name, t(:study_form)[:sponsor_name]
+        = f.text_field :sponsor_name
+
+.grid_5.box= render :partial => 'shared/user_search'
+
+- hide_user_details = (study.new_record? and study.project_roles.empty?) ? '' : 'display:none;'
+
+.grid_5.box.user_added_message{:style => 'display:none;'}
+  %p
+    - t(:protocol_shared)[:add_user]
+
+.grid_5.box.user-details.user-manager-view.add-user-details{:style => "#{hide_user_details}"}= render :partial => 'shared/user_details', :locals => {:identity => current_user, :project_role => ProjectRole.new, :can_edit => true}
+
+
+.grid_12= render :partial => 'shared/user_list', :locals => {:protocol => study}
+
+.grid_12
+  .desription
+    = t(:study_form)[:optional_text]
+  .clear
+  %br
+
+.grid_7.box
+  .info
+    %fieldset
+      %legend= t(:study_form)[:options]
+      .field
+        = f.label :udak_project_number, t(:study_form)[:udak_project_number]
+        = f.text_field :udak_project_number
+
+      .indirect_cost_rate
+        = f.label :indirect_cost_rate, t(:study_form)[:rate]
+        = f.text_field :indirect_cost_rate
+
+      .funded
+        .field
+          = f.label :funding_start_date, t(:study_form)[:funding_start_date]
+          = text_field_tag :funding_start_date, (study.funding_start_date.strftime('%_m/%d/%Y') rescue nil)
+          = f.hidden_field :funding_start_date
+
+      .pending_funding
+        .field
+          = f.label :funding_rfa, t(:study_form)[:funding_rfa]
+          = f.text_field :funding_rfa
+
+        .field
+          = f.label :potential_funding_start_date, t(:study_form)[:potential_funding_start_date]
+          = text_field_tag :potential_funding_start_date, (study.potential_funding_start_date.strftime('%_m/%d/%Y') rescue nil)
+          = f.hidden_field :potential_funding_start_date
 
     %fieldset
       %legend= t(:study_form)[:research]
@@ -107,6 +126,7 @@
           .field.human_subjects
             = rt.label :human_subjects, t(:study_form)[:human_subjects]
             = rt.check_box :human_subjects
+
         = f.fields_for :human_subjects_info do |hs|
           .field.hr_number
             = hs.label :hr_number, t(:study_form)[:hr_number]
@@ -138,6 +158,10 @@
             = hs.label :irb_expiration_date, t(:study_form)[:irb_expiration_date]
             = text_field_tag :irb_expiration_date, (study.human_subjects_info.irb_expiration_date.strftime('%_m/%d/%Y') rescue nil)
             = hs.hidden_field :irb_expiration_date
+
+        .field
+          = f.label :study_phase, t(:study_form)[:study_phase]
+          = f.select :study_phase, options_for_select(STUDY_PHASES, study.study_phase), :include_blank => t(:study_form)[:phase_blank]
 
         = f.fields_for :research_types_info do |rt|
           .field.vertebrate_animals
@@ -195,7 +219,16 @@
           .field.inventors
             = ip.label :inventors, t(:study_form)[:inventors]
             = ip.text_area :inventors
-
+.grid_5.box
+  .info.info2
+    %fieldset
+      %legend= t(:study_form)[:affiliations]
+      %div
+        = f.fields_for :affiliations do |rt|
+          .field{:class => rt.object.name}
+            = rt.label :name, "#{Affiliation::TYPES[rt.object.name]}:"
+            = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
+            = rt.hidden_field :name, :value => rt.object.name
     %fieldset
       %legend= t(:study_form)[:type] 
       %div
@@ -218,23 +251,3 @@
                 = rt.label :other_text, "Enter area:"
                 = rt.text_field :other_text, :id => "study_impact_areas_other"
 
-    %fieldset
-      %legend= t(:study_form)[:affiliations] 
-      %div
-        = f.fields_for :affiliations do |rt|
-          .field{:class => rt.object.name}
-            = rt.label :name, "#{Affiliation::TYPES[rt.object.name]}:"
-            = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
-            = rt.hidden_field :name, :value => rt.object.name
-
-.grid_5.box= render :partial => 'shared/user_search'
-
-- hide_user_details = (study.new_record? and study.project_roles.empty?) ? '' : 'display:none;'
-
-.grid_5.box.user_added_message{:style => 'display:none;'}
-  %p
-    - t(:protocol_shared)[:add_user]
-
-.grid_5.box.user-details.user-manager-view.add-user-details{:style => "#{hide_user_details}"}= render :partial => 'shared/user_details', :locals => {:identity => current_user, :project_role => ProjectRole.new, :can_edit => true}
-
-.grid_12= render :partial => 'shared/user_list', :locals => {:protocol => study}

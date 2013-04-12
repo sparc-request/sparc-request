@@ -334,6 +334,8 @@ en:
   # Edit Study form
   study_form:
     description: "Before you can complete a service request, please tell us more about your research study. This information will be used by our staff to decide the best way to process your request."
+    optional_text: "Optional Information (Used for reporting purposes and saved for your future use)"
+    options: "Optional"
     attributes: "Study Attributes"
     title: "Protocol Title:*"
     status_blank: "Select a Funding Status"
@@ -381,7 +383,7 @@ en:
     inventors: "Inventors:"
     type: "Study Type (Check all that apply)"
     impact: "Impact Areas"
-    affiliations: "Affiliations and Collaborations"
+    affiliations: "Affiliations, Collaborations, and Memberships"
     save: "Save Study"
 
   # Edit Project Form

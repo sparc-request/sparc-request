@@ -1,7 +1,7 @@
 $(document).ready ->
   display_dependencies=
     "#study_funding_status" :
-      pending_funding    : ['#pending_funding']
+      pending_funding    : ['.pending_funding']
       funded             : ['.funded']
     "#study_potential_funding_source" :
       internal           : ['.internal_potential_funded_pilot_project']

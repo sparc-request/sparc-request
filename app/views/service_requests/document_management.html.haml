@@ -23,8 +23,9 @@
       %br
       %br
 
-      %div{:style => 'text-align: left'}= t("documents.instructions")
-      = text_area_tag 'service_request[notes]', @service_request.notes, :rows => 14, :cols => 114 
+      %div{:style => 'text-align: center'}
+        = t("documents.instructions")
+        = text_area_tag 'service_request[notes]', @service_request.notes, :rows => 14, :cols => 100 
 
       %br
       %br

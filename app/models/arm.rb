@@ -10,7 +10,7 @@ class Arm < ActiveRecord::Base
 
   def create_visit_grouping line_item
     vg = self.visit_groupings.create(:line_item_id => line_item.id, :arm_id => self.id, :subject_count => self.subject_count)
-    vg.create_visits
+    vg.create_or_destroy_visits
 
     if visit_groupings.count > 1
       vg.update_visit_names self.visit_groupings.first

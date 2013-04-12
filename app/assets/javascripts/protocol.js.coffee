@@ -3,7 +3,7 @@
 
 $(document).ready ->
   $('#select-type').change ->
-    if $(this).val() == 'Yes'
+    if $(this).val() == 'Research Study'
       $('.existing-study').show()
       $('.edit-study').show() unless $('.edit_study_id').val() == ""
       $('.existing-project').hide()

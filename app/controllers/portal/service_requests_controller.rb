@@ -31,15 +31,13 @@ class Portal::ServiceRequestsController < Portal::BaseController
   end
 
   def add_arm
-    @arm_id = params[:arm_id].to_i if params[:arm_id]
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @service_request = ServiceRequest.find(params[:service_request_id]) # TODO: is this different from params[:id] ?
+    name = params[:arm_name] ? params[:arm_name] : "ARM #{@service_request.arms.count + 1}"
+    visit_count = params[:visit_count] ? params[:visit_count].to_i : 1
+    subject_count = params[:subject_count] ? params[:subject_count].to_i : 1
 
-    @selected_arm = @service_request.arms.create(:name => "ARM #{@service_request.arms.count + 1}", :visit_count => 1, :subject_count => 1)
-    @service_request.per_patient_per_visit_line_items.each do |li|
-      vg = @selected_arm.visit_groupings.create(:arm_id => @selected_arm.id, :line_item_id => li.id, :subject_count => @selected_arm.subject_count)
-      vg.visits.create(:visit_grouping_id => vg.id)
-    end
+    @selected_arm = @service_request.create_arm(name, visit_count, subject_count)
 
     render 'portal/service_requests/change_arm'
   end

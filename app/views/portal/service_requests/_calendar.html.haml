@@ -20,6 +20,7 @@
 
       - arm.visit_groupings.each do |visit_grouping|
         - line_item = visit_grouping.line_item
+        - next unless value[:line_items].include?(line_item)
         %tr.line_item
           %td.service_name= line_item.service.name
           %td.your_cost= display_your_cost line_item

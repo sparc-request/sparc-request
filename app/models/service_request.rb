@@ -81,6 +81,30 @@ class ServiceRequest < ActiveRecord::Base
 
   #after_save :fix_missing_visits
 
+  def create_arm name='ARM', visit_count=1, subject_count=1
+    arm = self.arms.create(:name => name, :visit_count => visit_count, :subject_count => subject_count)
+    self.per_patient_per_visit_line_items.each do |li|
+      arm.create_visit_grouping(li)
+    end
+    # Lets return this in case we need it for something else
+    arm
+  end
+
+  def create_line_item service_id, sub_service_request_id, quantity=1
+    if line_item = self.line_items.create(service_id: service_id, sub_service_request_id: sub_service_request_id) then
+      if line_item.service.is_one_time_fee?
+        line_item.update_attribute(:quantity, quantity)
+      else
+        self.arms.each do |arm|
+          arm.create_visit_grouping(line_item)
+        end
+      end
+      line_item.reload
+    else
+      return false
+    end
+  end
+
   def one_time_fee_line_items
     line_items.map do |line_item|
       line_item.service.is_one_time_fee? ? line_item : nil

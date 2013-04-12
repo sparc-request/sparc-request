@@ -776,6 +776,15 @@ legend {
   min-height: 491px;
 }
 
+.edit-project-view .info2 {
+  width: 360px;
+  padding: 10px;
+  float: left;
+  border-right: 10px solid #FFF;
+  height: 100%;
+  min-height: 491px;
+}
+
 .edit-project-view .box .info fieldset {
   padding: 1px 7px 5px 7px;
   margin-top: 10px;
@@ -1856,4 +1865,24 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 
 .acknowledge_approval_status_dialog {
   text-align: center;
+}
+
+.skinny_fields {
+  text-align: center;
+}
+
+.skinny_fields input {
+  text-align: center;
+  width: 50px;
+}
+
+.document_upload_instructions {
+  border: 1px solid black;
+  margin: 0 auto;
+  padding: 7px;
+  width: 510px;
+}
+
+.document_upload_instructions ul {
+  list-style: decimal inside;
 }

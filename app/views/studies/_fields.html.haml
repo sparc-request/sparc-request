@@ -10,6 +10,7 @@
   = t(:study_form)[:description]
 .grid_7.box
   .info
+    = t(:study_form)[:needed_info]
     %fieldset
       .field
         = f.label :short_title, t(:protocol_shared)[:title]
@@ -85,14 +86,9 @@
 
 .grid_12= render :partial => 'shared/user_list', :locals => {:protocol => study}
 
-.grid_12
-  .desription
-    = t(:study_form)[:optional_text]
-  .clear
-  %br
-
 .grid_7.box
   .info
+    = t(:study_form)[:optional_text]
     %fieldset
       %legend= t(:study_form)[:options]
       .field
@@ -159,7 +155,7 @@
             = text_field_tag :irb_expiration_date, (study.human_subjects_info.irb_expiration_date.strftime('%_m/%d/%Y') rescue nil)
             = hs.hidden_field :irb_expiration_date
 
-        .field
+        .field.study_phase
           = f.label :study_phase, t(:study_form)[:study_phase]
           = f.select :study_phase, options_for_select(STUDY_PHASES, study.study_phase), :include_blank => t(:study_form)[:phase_blank]
 

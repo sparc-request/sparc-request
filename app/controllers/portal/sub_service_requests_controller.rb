@@ -77,7 +77,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     end
   end
 
-  # TODO: Move this logic to the model
   def add_line_item
     @sub_service_request = SubServiceRequest.find(params[:id])
     @service_request = @sub_service_request.service_request

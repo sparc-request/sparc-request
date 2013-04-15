@@ -200,11 +200,8 @@ class ServiceRequestsController < ApplicationController
             #push them to array, for easily looping over to create visits...
             new_visit_groupings.push(vg)
           end
-          #create missing visits
-          ActiveRecord::Base.transaction do
-            new_visit_groupings.each do |vg|
-              Visit.bulk_create(arm.visit_count, :visit_grouping_id => vg.id)
-            end
+          new_visit_groupings.each do |vg|
+            vg.create_or_destroy_visits
           end
         else
           #Check to see if ARM has been modified...
@@ -214,19 +211,7 @@ class ServiceRequestsController < ApplicationController
               vg.update_attribute(:subject_count, arm.subject_count)
             end
 
-            visit_count = vg.visits.size
-            unless arm.visit_count == visit_count
-              ActiveRecord::Base.transaction do
-                if arm.visit_count > visit_count
-                  difference = arm.visit_count - visit_count
-                  Visit.bulk_create(difference, :visit_grouping_id => vg.id)
-                elsif arm.visit_count < visit_count
-                  vg.visits.last(vg.visits.count - arm.visit_count).each do |visit|
-                    visit.delete
-                  end
-                end
-              end
-            end
+            vg.create_or_destroy_visits
           end
         end
       end
@@ -513,7 +498,7 @@ class ServiceRequestsController < ApplicationController
       if !new_line_item.service.is_one_time_fee?
         @service_request.arms.each do |arm|
           vg = arm.visit_groupings.create(:arm_id => arm.id, :line_item_id => new_line_item.id, :subject_count => arm.subject_count)
-          Visit.bulk_create(arm.visit_count, :visit_grouping_id => vg.id) unless arm.visit_count.blank?
+          vg.create_or_destroy_visits
         end
       end
       @new_line_items << new_line_item
@@ -524,7 +509,7 @@ class ServiceRequestsController < ApplicationController
         if !new_line_item.service.is_one_time_fee?
           @service_request.arms.each do |arm|
             vg = arm.visit_groupings.create(:arm_id => arm.id, :line_item_id => new_line_item.id, :subject_count => arm.subject_count)
-            Visit.bulk_create(arm.visit_count, :visit_grouping_id => vg.id) unless arm.visit_count.blank?
+            vg.create_or_destroy_visits
           end
         end
         @new_line_items << new_line_item

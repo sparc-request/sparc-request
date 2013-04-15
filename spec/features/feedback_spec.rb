@@ -15,6 +15,7 @@ describe "Feedback", :js => true do
     describe 'submitting feedback' do
       it 'should require text in the message box' do
         find_by_id('submit_feedback').click()
+        wait_for_javascript_to_finish
         find_by_id('error-text').text.should eq "Message can't be blank"
       end
       

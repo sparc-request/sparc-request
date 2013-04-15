@@ -12,6 +12,29 @@ class LineItemsVisit < ActiveRecord::Base
     Visit.bulk_create(self.arm.visit_count, :line_items_visit_id => self.id)
   end
 
+  # Create or destroy visits to make the number of visits in the
+  # grouping match the arm's visit count.
+  def create_or_destroy_visits(visit_count = self.arm.visit_count || 0)
+    if visit_count == self.visits.count
+      # if we already have the right number of visits, then do nothing
+      return
+    end
+
+    ActiveRecord::Base.transaction do
+      if visit_count > self.visits.count
+        # if we don't have enough visits, then create them
+        difference = visit_count - self.visits.count
+        Visit.bulk_create(difference, :visit_grouping_id => self.id)
+
+      elsif arm.visit_count < self.visits.count
+        # if we have too many visits, then delete some
+        self.visits.last(self.visits.count - visit_count).each do |visit|
+          visit.delete
+        end
+      end
+    end
+  end
+
   def update_visit_names line_items_visit
     self.visits.count do |index|
       self.visits[index].name = line_items_visit.visits[index].name
@@ -130,49 +153,9 @@ class LineItemsVisit < ActiveRecord::Base
     visit = self.visits.find_by_position(position)
     # Move visit to the end by position, re-number other visits
     visit.move_to_bottom
-    # Must reload to refresh other visit positions, otherwise two 
+    # Must reload to refresh other visit positions, otherwise two
     # records with same postion will exist
     self.reload
     visit.delete
   end
-
-  # In fulfillment, when you change the service on an existing line item
-  def switch_to_one_time_fee
-    result = self.transaction do
-      self.line_item.quantity = 1 unless self.line_item.quantity  
-      self.line_items.units_per_quantity unless self.line_item.units_per_quantity
-      self.visits.each {|x| x.destroy}
-      self.save or raise ActiveRecord::Rollback
-    end
-
-    if result
-      return true
-    else
-      self.reload
-      return false
-    end
-  end
-
-  # In fulfillment, when you change the service on an existing line item
-  def switch_to_per_patient_per_visit
-    result = self.transaction do
-      self.service_request.insure_visit_count()
-      (self.service_request.visit_count - visits.size).times do #somehow service request visit count is higher so create
-        visits.create!
-      end
-      (visits.size - self.service_request.visit_count).times do #somehow service request visit count is lower so delete
-        visits.last.destroy
-      end
-      self.service_request.insure_subject_count()
-      self.save or raise ActiveRecord::Rollback
-    end
-
-    if result
-      return true
-    else
-      self.reload
-      return false
-    end
-  end
 end
-

@@ -37,7 +37,10 @@ class Portal::ServiceRequestsController < Portal::BaseController
     visit_count = params[:visit_count] ? params[:visit_count].to_i : 1
     subject_count = params[:subject_count] ? params[:subject_count].to_i : 1
 
-    @selected_arm = @service_request.create_arm(name, visit_count, subject_count)
+    @selected_arm = @service_request.create_arm(
+        name:          name,
+        visit_count:   visit_count,
+        subject_count: subject_count)
 
     render 'portal/service_requests/change_arm'
   end

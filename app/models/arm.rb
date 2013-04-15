@@ -4,6 +4,7 @@ class Arm < ActiveRecord::Base
   has_many :line_items_visits, :dependent => :destroy
   has_many :line_items, :through => :line_items_visits
   has_many :subjects
+  has_many :visit_groups
 
   attr_accessible :name
   attr_accessible :visit_count
@@ -138,10 +139,10 @@ class Arm < ActiveRecord::Base
   end
 
   def populate_subjects
-    visits = Visit.joins(:visit_grouping => :arm).where(:arms => {:id => arm.id})
+    groups = self.visit_groups
     subject_count.times do
       subject = self.subjects.create
-      subject.calendar.populate(visits)
+      subject.calendar.populate(groups)
     end
   end
 end

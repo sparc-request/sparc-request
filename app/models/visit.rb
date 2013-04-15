@@ -55,4 +55,7 @@ class Visit < ActiveRecord::Base
     return self.visit_group.position
   end
 
+  def to_be_performed?
+    self.research_billing_qty == 1
+  end
 end

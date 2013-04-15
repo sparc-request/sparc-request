@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130411152202) do
+ActiveRecord::Schema.define(:version => 20130415113301) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -26,8 +26,9 @@ ActiveRecord::Schema.define(:version => 20130411152202) do
   create_table "appointments", :force => true do |t|
     t.integer  "calendar_id"
     t.datetime "completed_at"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+    t.integer  "visit_group_id"
   end
 
   create_table "approvals", :force => true do |t|

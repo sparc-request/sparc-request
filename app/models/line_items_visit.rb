@@ -12,29 +12,6 @@ class LineItemsVisit < ActiveRecord::Base
     Visit.bulk_create(self.arm.visit_count, :line_items_visit_id => self.id)
   end
 
-  # Create or destroy visits to make the number of visits in the
-  # grouping match the arm's visit count.
-  def create_or_destroy_visits(visit_count = self.arm.visit_count || 0)
-    if visit_count == self.visits.count
-      # if we already have the right number of visits, then do nothing
-      return
-    end
-
-    ActiveRecord::Base.transaction do
-      if visit_count > self.visits.count
-        # if we don't have enough visits, then create them
-        difference = visit_count - self.visits.count
-        Visit.bulk_create(difference, :visit_grouping_id => self.id)
-
-      elsif arm.visit_count < self.visits.count
-        # if we have too many visits, then delete some
-        self.visits.last(self.visits.count - visit_count).each do |visit|
-          visit.delete
-        end
-      end
-    end
-  end
-
   def update_visit_names line_items_visit
     self.visits.count do |index|
       self.visits[index].name = line_items_visit.visits[index].name

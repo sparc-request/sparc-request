@@ -673,6 +673,7 @@ ActiveRecord::Schema.define(:version => 20130415113301) do
     t.integer  "arm_id"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+    t.integer  "position"
   end
 
   add_index "visit_groups", ["arm_id"], :name => "index_visit_groups_on_arm_id"
@@ -686,8 +687,6 @@ ActiveRecord::Schema.define(:version => 20130415113301) do
     t.integer  "research_billing_qty",  :default => 0
     t.integer  "insurance_billing_qty", :default => 0
     t.integer  "effort_billing_qty",    :default => 0
-    t.integer  "position"
-    t.string   "name"
     t.integer  "line_items_visit_id"
     t.integer  "visit_group_id"
   end

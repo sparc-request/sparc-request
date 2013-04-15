@@ -1,3 +1,5 @@
+require "bulk_creatable"
+
 class Visit < ActiveRecord::Base
   #Version.primary_key = 'id'
   #has_paper_trail
@@ -7,7 +9,7 @@ class Visit < ActiveRecord::Base
   has_many :appointments, :through => :procedures
   belongs_to :visit_group
 
-  include BulkCreateableList
+  include BulkCreateable
 
   attr_accessible :line_items_visit_id
   attr_accessible :quantity
@@ -15,19 +17,10 @@ class Visit < ActiveRecord::Base
   attr_accessible :research_billing_qty #qty billed to the study/project
   attr_accessible :insurance_billing_qty #qty billed to the patients insurance or third party
   attr_accessible :effort_billing_qty #qty billing to % effort
-  attr_accessible :name
 
   validates :research_billing_qty, :numericality => {:only_integer => true}
   validates :insurance_billing_qty, :numericality => {:only_integer => true}
   validates :effort_billing_qty, :numericality => {:only_integer => true}
-
-  # Visits are ordered by their monotonically increasing id.  Be careful
-  # when inserting new visits!
-  # TODO: This is no longer true, since we're using acts_as_list.
-  # Should we remove default_scope?
-  # default_scope :order => 'id ASC'
-
-  after_create :set_default_name
 
   def cost(per_unit_cost = self.line_items_visit.per_unit_cost(self.line_items_visit.quantity_total))
     li = self.line_items_visit.line_item
@@ -42,12 +35,6 @@ class Visit < ActiveRecord::Base
 
   def quantity_total
     self.research_billing_qty + self.insurance_billing_qty + self.effort_billing_qty
-  end
-
-  def set_default_name
-    if name.nil? || name == ""
-      self.update_attributes(:name => "Visit #{self.position}")
-    end
   end
 
   def position

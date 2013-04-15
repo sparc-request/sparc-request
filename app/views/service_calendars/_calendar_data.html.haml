@@ -11,7 +11,7 @@
       %th &nbsp;
       %th{:colspan => 5, :height => 40, :width => 375} 
         = generate_visit_navigation arm, @service_request, @pages, @tab, @portal if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
-      %th= image_tag 'spinner.gif', :class => 'service_calendar_spinner'
+      %th{:colspan => 2}= image_tag 'spinner.gif', :class => 'service_calendar_spinner'
 
     %tr.table_header
       - unless @portal
@@ -25,17 +25,18 @@
       - if @portal
         %th &nbsp;
       - else
-        %th= t("calendar_page.headers.total")
+        %th= t("calendar_page.headers.total_per_patient")
+        %th= t("calendar_page.headers.total_per_study")
 
   %tbody.cell-border
     - if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?) 
       %tr.section_header
-        %th{:colspan => @portal ? 11 : 12}= t("calendar_page.per_patient") + " -- " + arm.name
+        %th{:colspan => @portal ? 11 : 13}= t("calendar_page.per_patient") + " -- " + arm.name
       - @service_request.service_list(false).each do |key, value| # get only per patient/per visit services and group them
         - next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
         - if @tab == 'billing_strategy'
           %tr.sub_section_header
-            %th{:colspan => @portal ? 3 : 6}= value[:name]
+            %th{:colspan => @portal ? 3 : 7}= value[:name]
             -5.times do
               %th.billing_type_list
                 %span.billing_type R
@@ -44,7 +45,7 @@
             %th &nbsp;
         - else
           %tr.sub_section_header
-            %th{:colspan => 12}= value[:name]
+            %th{:colspan => 13}= value[:name]
 
         - arm.visit_groupings.each do |visit_grouping|
           - line_item = visit_grouping.line_item
@@ -71,6 +72,7 @@
               %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-visit_grouping_id' => visit_grouping.id, :class => "delete_data")
             - else
               %td{:class => "total_#{visit_grouping.id}"}= display_visit_based_direct_cost(visit_grouping)
+              %td{:class => "total_#{visit_grouping.id}_per_study"}= display_visit_based_direct_cost_per_study(visit_grouping)
       - unless @portal 
         %tr.totals_section.begin_totals{:class => cycle('odd', '', :name => 'pppvs')}
           %td{:colspan => 5}= t("calendar_page.labels.maximum_direct")
@@ -97,5 +99,5 @@
         %tr.totals_section.grand-totals{:class => cycle('odd', '', :name => 'pppvs')}
           %td{:colspan => 5}= t("calendar_page.labels.total_costs") + " -- " + arm.name
           %td &nbsp;
-          %td{:colspan => 5}
+          %td{:colspan => 6}
           %td{:class => "pp_total arm_#{arm.id}"}= display_total_cost_per_arm arm

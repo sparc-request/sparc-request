@@ -6,23 +6,24 @@
       %th{:rowspan => 2}= t(:sr_review)[:calendar][:headers][:subjects]
       %th{:colspan => 5, :height => 40, :width => 375} 
         = generate_review_visit_navigation arm, @service_request, @pages, @tab if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
-      %th{:rowspan => 2}= t(:sr_review)[:calendar][:headers][:total] 
+      %th{:rowspan => 2}= t(:sr_review)[:calendar][:headers][:total_per_patient] 
+      %th{:rowspan => 2}= t(:sr_review)[:calendar][:headers][:total_per_study] 
         
 
     %tr.table_header
       - if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?) 
         = generate_visit_header_row arm, @service_request, @pages[arm.id].to_i
       - else
-        %th{:colspan => 5} &nbsp;
+        %th{:colspan => 6} &nbsp;
 
   %tbody.cell-border
     - if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?) 
       %tr.section_header
-        %th{:colspan => @portal ? 11 : 12}= t("calendar_page.per_patient") + " -- " + arm.name
+        %th{:colspan => @portal ? 11 : 13}= t("calendar_page.per_patient") + " -- " + arm.name
       - @service_request.service_list(false).each do |key, value| # get only per patient/per visit services and group them
         - next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
         %tr.sub_section_header
-          %th{:colspan => 9}= value[:name]
+          %th{:colspan => 10}= value[:name]
 
         - arm.visit_groupings.each do |visit_grouping|
           - line_item = visit_grouping.line_item
@@ -38,3 +39,4 @@
             - (5 - visits.size).times do
               %td &nbsp;
             %td{:class => "total_#{visit_grouping.id}"}= display_visit_based_direct_cost visit_grouping
+            %td{:class => "total_#{visit_grouping.id}_per_study"}= display_visit_based_direct_cost_per_study visit_grouping

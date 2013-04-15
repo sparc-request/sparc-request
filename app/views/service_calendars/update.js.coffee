@@ -14,6 +14,7 @@ if "<%= @errors %>" == ""
 
     # Display for each line items total cost
     $("<%= @line_item_total_td %>").html("<%= display_visit_based_direct_cost(@visit_grouping) %>")
+    $("<%= @line_item_total_study_td %>").html("<%= display_visit_based_direct_cost_per_study(@visit_grouping) %>")
 
     # Display for all line items max direct, indirect, and total costs per patient
     $(".pp_max_total_direct_cost<%= @arm_id %>").html("<%= display_max_total_direct_cost_per_patient(@visit_grouping.arm) %>")

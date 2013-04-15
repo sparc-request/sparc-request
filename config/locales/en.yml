@@ -162,6 +162,8 @@ en:
       qty_type: "Qty Type"
       subjects: "# Subjects"
       total: "Total"
+      total_per_patient: "Total Per Patient"
+      total_per_study: "Total Per Study"
       other_services: "Other Services"
       total_study: "Study Cost Totals"
     per_patient: "Per Patient/Visit Services"
@@ -474,6 +476,8 @@ en:
         cost: "Your Cost"
         subjects: "# Subjects"
         total: "Service Total"
+        total_per_patient: "Total Per Patient"
+        total_per_study: "Total Per Study"
       totals:
         direct_cost: "Total Direct Cost"
         indirect_cost: "Total Indirect Costs"

@@ -195,7 +195,19 @@ class Portal::SubServiceRequestsController < Portal::BaseController
 
   def destroy
     @sub_service_request = SubServiceRequest.find(params[:id])
-    @sub_service_request.destroy
+    if @sub_service_request.destroy
+      # notify users with view rights or above of deletion
+      @sub_service_request.service_request.protocol.project_roles.each do |project_role|
+        next if project_role.project_rights == 'none'
+        Notifier.sub_service_request_deleted(project_role.identity, @sub_service_request).deliver
+      end
+
+      # notify service providers
+      @sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
+        Notifier.sub_service_request_deleted(service_provider.identity, @sub_service_request).deliver
+      end
+    end
+
     redirect_to "/portal/admin"
   end
 

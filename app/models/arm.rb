@@ -10,12 +10,12 @@ class Arm < ActiveRecord::Base
   attr_accessible :visit_count
   attr_accessible :subject_count      # maximum number of subjects for any visit grouping
 
-  def create_visit_grouping line_item
-    vg = self.visit_groupings.create(:line_item_id => line_item.id, :arm_id => self.id, :subject_count => self.subject_count)
-    vg.create_or_destroy_visits
+  def create_line_items_visit line_item
+    liv = self.line_items_visits.create(:line_item_id => line_item.id, :arm_id => self.id, :subject_count => self.subject_count)
+    liv.create_or_destroy_visits
 
-    if visit_groupings.count > 1
-      vg.update_visit_names self.visit_groupings.first
+    if line_items_visits.count > 1
+      liv.update_visit_names self.line_items_visits.first
     end
   end
 
@@ -75,10 +75,14 @@ class Arm < ActiveRecord::Base
   # errors object in that case.
   def add_visit position=nil
     result = self.transaction do
+      if not visit_group = self.visit_groups.create(position: position) then
+        raise ActiveRecord::Rollback
+      end
+
       # Add visits to each line item under the service request
-      self.line_items_visits.each do |vg|
-        if not vg.add_visit(position) then
-          self.errors.initialize_dup(vg.errors) # TODO: is this the right way to do this?
+      self.line_items_visits.each do |liv|
+        if not liv.add_visit(visit_group) then
+          self.errors.initialize_dup(liv.errors) # TODO: is this the right way to do this?
           raise ActiveRecord::Rollback
         end
       end
@@ -101,27 +105,8 @@ class Arm < ActiveRecord::Base
   end
 
   def remove_visit position
-    result = self.transaction do
-      self.line_items_visits.each do |vg|
-        if not vg.remove_visit(position) then
-          self.errors.initialize_dup(vg.errors)
-          raise ActiveRecord::Rollback
-        end
-      end
-
-      self.reload
-
-      self.visit_count -= 1
-
-      self.save or raise ActiveRecord::Rollback
-    end
-    
-    if result
-      return true
-    else
-      self.reload
-      return false
-    end
+    visit_group = self.visit_groups.find_by_position(position)
+    return visit_group.destroy
   end
 
   def insure_visit_count

@@ -153,7 +153,8 @@ describe LineItemsVisit do
       describe "add visit" do
 
         it "should add a visit" do
-          line_items_visit.add_visit(2)
+          vg = arm.visit_groups.create(position: nil)
+          line_items_visit.add_visit(vg)
           line_items_visit.visits.count.should eq(2)
         end
       end
@@ -161,8 +162,9 @@ describe LineItemsVisit do
       describe "remove visit" do
 
         it "should delete a visit" do
-          line_items_visit.add_visit(2)
-          line_items_visit.remove_visit(2)
+          vg = arm.visit_groups.create(position: nil)
+          line_items_visit.add_visit(vg)
+          line_items_visit.remove_visit(vg)
           line_items_visit.visits.count.should eq(1)
         end
       end

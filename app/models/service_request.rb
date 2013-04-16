@@ -84,7 +84,7 @@ class ServiceRequest < ActiveRecord::Base
   def create_arm(args)
     arm = self.arms.create(args)
     self.per_patient_per_visit_line_items.each do |li|
-      arm.create_visit_grouping(li)
+      arm.create_line_items_visit(li)
     end
     # Lets return this in case we need it for something else
     arm
@@ -96,7 +96,7 @@ class ServiceRequest < ActiveRecord::Base
         line_item.update_attribute(:quantity, quantity)
       else
         self.arms.each do |arm|
-          arm.create_visit_grouping(line_item)
+          arm.create_line_items_visit(line_item)
         end
       end
       line_item.reload

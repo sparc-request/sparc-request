@@ -178,33 +178,33 @@ describe Arm do
       end
     end
 
-    describe 'create_visit_grouping' do
+    describe 'create_line_items_visit' do
       it 'should create a visit grouping with a subject count the same as the arm' do
         arm.update_attributes(subject_count: 42)
-        arm.create_visit_grouping(line_item)
-        arm.visit_groupings.count.should eq 3
-        arm.visit_groupings[2].subject_count.should eq 42
+        arm.create_line_items_visit(line_item)
+        arm.line_items_visits.count.should eq 3
+        arm.line_items_visits[2].subject_count.should eq 42
       end
 
       it 'should create a visit grouping with new visits' do
         arm.update_attributes(visit_count: 5)
-        arm.visit_groupings[0].create_or_destroy_visits
-        arm.visit_groupings[1].create_or_destroy_visits
+        arm.line_items_visits[0].create_or_destroy_visits
+        arm.line_items_visits[1].create_or_destroy_visits
 
-        arm.create_visit_grouping(line_item)
+        arm.create_line_items_visit(line_item)
 
         # we started with 2 visit groupings; now we should have 3
-        arm.visit_groupings.count.should eq 3
+        arm.line_items_visits.count.should eq 3
 
         # ensure that the new visit grouping had its visits created
-        arm.visit_groupings[2].visits.count.should eq 5
+        arm.line_items_visits[2].visits.count.should eq 5
 
         # ensure that the names are copied from the first visit grouping
-        arm.visit_groupings[2].visits[0].name.should eq arm.visit_groupings[0].visits[0].name
-        arm.visit_groupings[2].visits[1].name.should eq arm.visit_groupings[0].visits[1].name
-        arm.visit_groupings[2].visits[2].name.should eq arm.visit_groupings[0].visits[2].name
-        arm.visit_groupings[2].visits[3].name.should eq arm.visit_groupings[0].visits[3].name
-        arm.visit_groupings[2].visits[4].name.should eq arm.visit_groupings[0].visits[4].name
+        arm.line_items_visits[2].visits[0].name.should eq arm.line_items_visits[0].visits[0].name
+        arm.line_items_visits[2].visits[1].name.should eq arm.line_items_visits[0].visits[1].name
+        arm.line_items_visits[2].visits[2].name.should eq arm.line_items_visits[0].visits[2].name
+        arm.line_items_visits[2].visits[3].name.should eq arm.line_items_visits[0].visits[3].name
+        arm.line_items_visits[2].visits[4].name.should eq arm.line_items_visits[0].visits[4].name
       end
     end
   end

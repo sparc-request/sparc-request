@@ -78,7 +78,7 @@ def add_visits
         FactoryGirl.create(:visit_group, name: "name", arm_id: arm.id)
       end
       arm.visit_count.times do |index|
-         FactoryGirl.create(:visit, quantity: 0, name: visit_names[index], line_items_visit_id: line_items_visit.id, visit_group_id: arm.visit_groups[index])
+         FactoryGirl.create(:visit, quantity: 0, line_items_visit_id: line_items_visit.id, visit_group_id: arm.visit_groups[index].id)
       end
     end
   end

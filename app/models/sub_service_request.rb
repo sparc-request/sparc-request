@@ -38,7 +38,7 @@ class SubServiceRequest < ActiveRecord::Base
         line_item.update_attribute(:quantity, quantity)
       else
         self.service_request.arms.each do |arm|
-          arm.create_visit_grouping(line_item)
+          arm.create_line_items_visit(line_item)
         end
       end
       line_item.reload

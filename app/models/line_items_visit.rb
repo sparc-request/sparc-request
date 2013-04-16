@@ -2,7 +2,7 @@ class LineItemsVisit < ActiveRecord::Base
   belongs_to :arm
   belongs_to :line_item
 
-  has_many :visits, :dependent => :destroy, :order => 'position'
+  has_many :visits, :dependent => :destroy, :include => :visit_group, :order => 'visit_groups.position'
 
   attr_accessible :arm_id
   attr_accessible :line_item_id
@@ -122,17 +122,12 @@ class LineItemsVisit < ActiveRecord::Base
 
   # Add a new visit.  Returns the new Visit upon success or false upon
   # error.
-  def add_visit position=nil
-    self.visits.create(position: position)
+  def add_visit visit_group
+    self.visits.create(visit_group_id: visit_group.id)
   end
 
-  def remove_visit position
-    visit = self.visits.find_by_position(position)
-    # Move visit to the end by position, re-number other visits
-    visit.move_to_bottom
-    # Must reload to refresh other visit positions, otherwise two
-    # records with same postion will exist
-    self.reload
+  def remove_visit visit_group
+    visit = self.visits.find_by_visit_group_id(visit_group.id)
     visit.delete
   end
 end

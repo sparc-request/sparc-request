@@ -76,7 +76,14 @@ $(document).ready ->
       url: $(this).attr('update') + "&name=#{$(this).val()}"
     .complete ->
       $('.service_calendar_spinner').hide()
-    
+
+  $(".visit_name").live 'mouseover', ->
+    $(this).qtip
+      overwrite: false
+      content: "Click to rename your visits."
+      show:
+        ready: true
+
 (exports ? this).calculate_max_rates = (arm_id) ->
   for num in [1..5]
     column = '.visit_column_' + num

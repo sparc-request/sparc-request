@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "service calendar" do
+describe "service calendar", :js => true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
@@ -15,7 +15,7 @@ describe "service calendar" do
   end
 
   describe "display rates" do
-    it "should not show the full rate if your cost > full rate", :js => true do
+    it "should not show the full rate if your cost > full rate" do
       first(".service_rate_#{arm1.visit_groupings.first.id}").should have_exact_text("")
     end
   end
@@ -26,13 +26,13 @@ describe "service calendar" do
 
       describe "selecting check row button" do
 
-        it "should check all visits", :js => true do
+        it "should check all visits" do
           click_link "check_row_#{arm1.visit_groupings.first.id}_template"
           wait_for_javascript_to_finish
           first(".total_#{arm1.visit_groupings.first.id}").should have_exact_text('$300.00') # Probably a better way to do this. But this should be the 10 visits added together.
         end
 
-        it "should uncheck all visits", :js => true do
+        it "should uncheck all visits" do
           click_link "check_row_#{arm1.visit_groupings.first.id}_template"
           wait_for_javascript_to_finish
           first(".total_#{arm1.visit_groupings.first.id}").should have_exact_text('$300.00') # this is here to wait for javascript to finish
@@ -46,7 +46,7 @@ describe "service calendar" do
 
       describe "selecting check column button" do
 
-        it "should check all visits in the given column", :js => true do
+        it "should check all visits in the given column" do
           wait_for_javascript_to_finish
           first("#check_all_column_3").click
           wait_for_javascript_to_finish
@@ -54,7 +54,7 @@ describe "service calendar" do
           find("#visits_#{arm1.visit_groupings.first.visits[2].id}").checked?.should eq(true)
         end
 
-        it "should uncheck all visits in the given column", :js => true do
+        it "should uncheck all visits in the given column" do
           wait_for_javascript_to_finish
           first("#check_all_column_3").click        
           wait_for_javascript_to_finish
@@ -76,7 +76,7 @@ describe "service calendar" do
           select "2", :from => "visit_grouping_#{arm1.visit_groupings.first.id}_count"
         end
 
-        it "should not change maximum totals", :js => true do
+        it "should not change maximum totals" do
           find(".pp_max_total_direct_cost.arm_#{arm1.id}").should have_exact_text("$30.00")
         end
       end
@@ -90,7 +90,7 @@ describe "service calendar" do
 
       describe "selecting check all row button" do
 
-        it "should overwrite the quantity in research billing box", :js => true do
+        it "should overwrite the quantity in research billing box" do
           fill_in "visits_#{@visit_id}_research_billing_qty", :with => 10
           wait_for_javascript_to_finish
           click_link "check_row_#{arm1.visit_groupings.first.id}_billing_strategy"
@@ -105,7 +105,7 @@ describe "service calendar" do
         #   @visit_id = arm1.visit_groupings.first.visits[1].id
         # end
 
-        it "should increase the total cost", :js => true do
+        it "should increase the total cost" do
          
           find("#visits_#{@visit_id}_research_billing_qty").set("")
           find("#visits_#{@visit_id}_research_billing_qty").click()
@@ -120,7 +120,7 @@ describe "service calendar" do
           end
         end
 
-        it "should update each visits maximum costs", :js => true do
+        it "should update each visits maximum costs" do
 
           find("#visits_#{@visit_id}_research_billing_qty").set("")
           find("#visits_#{@visit_id}_research_billing_qty").click()
@@ -153,7 +153,7 @@ describe "service calendar" do
           @visit_id = arm1.visit_groupings.first.visits[1].id
         end
 
-        it "should not increase the total cost", :js => true do
+        it "should not increase the total cost" do
 
           remove_from_dom('.pp_max_total_direct_cost')
 
@@ -183,7 +183,7 @@ describe "service calendar" do
         @visit_id = arm1.visit_groupings.first.visits[1].id
       end
 
-      it "should add all billing quantities together", :js => true do
+      it "should add all billing quantities together" do
         click_link "billing_strategy_tab"
         wait_for_javascript_to_finish
 
@@ -218,7 +218,7 @@ describe "service calendar" do
         @visit_id = arm1.visit_groupings.first.visits[1].id
       end
 
-      it "should be blank if the visit is not checked", :js => true do
+      it "should be blank if the visit is not checked" do
         click_link "pricing_tab"
         all('.visit.visit_column_2').each do |x|
           if x.visible?
@@ -227,7 +227,7 @@ describe "service calendar" do
         end
       end
 
-      it "should show total price for that visit", :js => true do
+      it "should show total price for that visit" do
         click_link "billing_strategy_tab"
         fill_in "visits_#{@visit_id}_research_billing_qty", :with => 5
         click_link "pricing_tab"
@@ -236,6 +236,16 @@ describe "service calendar" do
             x.should have_exact_text('150.00')
           end
         end
+      end
+    end
+
+    describe "hovering over visit name text box" do
+
+      it "should open up a qtip message" do
+        wait_for_javascript_to_finish
+        first('.visit_name').click
+        wait_for_javascript_to_finish
+        page.should have_content("Click to rename your visits.")
       end
     end
   end

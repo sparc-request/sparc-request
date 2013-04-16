@@ -58,6 +58,7 @@ class ServiceCalendarsController < ApplicationController
     @visit_grouping = visit.visit_grouping if @visit_grouping.nil?
     @line_item = @visit_grouping.line_item if @line_item.nil?
     @line_item_total_td = ".total_#{@visit_grouping.id}"
+    @line_item_total_study_td = ".total_#{@visit_grouping.id}_per_study"
     @arm_id = '.arm_' + @visit_grouping.arm.id.to_s
   end
 

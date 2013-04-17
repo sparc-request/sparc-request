@@ -52,7 +52,7 @@ describe Arm do
         @arm.visit_count.should eq 6
         @arm.line_items_visits[0].visits.count.should eq 6
         @arm.line_items_visits[1].visits.count.should eq 6
-        line_items_visit.visits.where(:position => 6).first.research_billing_qty.should eq(99)
+        line_items_visit.visits.map{|visit| visit.position == 6}.first.research_billing_qty.should eq(99)
       end
 
       it "should decrease the visit count by one" do
@@ -188,8 +188,8 @@ describe Arm do
 
       it 'should create a visit grouping with new visits' do
         arm.update_attributes(visit_count: 5)
-        arm.line_items_visits[0].create_or_destroy_visits
-        arm.line_items_visits[1].create_or_destroy_visits
+        arm.line_items_visits[0].create_visits
+        arm.line_items_visits[1].create_visits
 
         arm.create_line_items_visit(line_item)
 

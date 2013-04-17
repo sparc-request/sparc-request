@@ -12,6 +12,7 @@ class Visit < ActiveRecord::Base
   include BulkCreateable
 
   attr_accessible :line_items_visit_id
+  attr_accessible :visit_group_id
   attr_accessible :quantity
   attr_accessible :billing
   attr_accessible :research_billing_qty #qty billed to the study/project

@@ -12,7 +12,7 @@ class Arm < ActiveRecord::Base
 
   def create_line_items_visit line_item
     liv = self.line_items_visits.create(:line_item_id => line_item.id, :arm_id => self.id, :subject_count => self.subject_count)
-    liv.create_or_destroy_visits
+    liv.create_visits
 
     if line_items_visits.count > 1
       liv.update_visit_names self.line_items_visits.first
@@ -93,7 +93,7 @@ class Arm < ActiveRecord::Base
       self.visit_count ||= 0 # in case we import a service request with nil visit count
       self.visit_count += 1
 
-      self.save or raise ActiveRecord::Rollback
+      self.save or raise ActiveRecord::Rollback0
     end
 
     if result then

@@ -1,5 +1,7 @@
 class Study < Protocol
 
+  validates :sponsor_name, :presence => true
+
   def classes
     return [ 'project' ] # for backward-compatibility
   end

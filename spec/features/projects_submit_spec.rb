@@ -50,6 +50,7 @@ describe "creating a new project " do
       wait_for_javascript_to_finish
 
       find(:xpath, "//input[@alt='SaveAndContinue']").click
+      sleep 10
       
       find("#service_request_protocol_id").should have_value Protocol.last.id.to_s
     end

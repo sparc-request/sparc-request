@@ -27,8 +27,8 @@ class Arm < ActiveRecord::Base
 
   def maximum_direct_costs_per_patient line_items_visits=self.line_items_visits
     total = 0.0
-    line_items_visits.each do |vg|
-      total += vg.direct_costs_for_visit_based_service_single_subject
+    line_items_visits.each do |liv|
+      total += liv.direct_costs_for_visit_based_service_single_subject
     end
 
     total
@@ -105,6 +105,7 @@ class Arm < ActiveRecord::Base
   end
 
   def remove_visit position
+    self.update_attribute(:visit_count, (self.visit_count - 1))
     visit_group = self.visit_groups.find_by_position(position)
     return visit_group.destroy
   end

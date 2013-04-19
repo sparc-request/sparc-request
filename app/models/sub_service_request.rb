@@ -32,19 +32,12 @@ class SubServiceRequest < ActiveRecord::Base
 
   accepts_nested_attributes_for :subsidy
 
-  def create_line_item service_id, quantity=1
-    if line_item = self.line_items.create(service_id: service_id, service_request_id: self.service_request_id) then
-      if line_item.service.is_one_time_fee?
-        line_item.update_attribute(:quantity, quantity)
-      else
-        self.service_request.arms.each do |arm|
-          arm.create_visit_grouping(line_item)
-        end
-      end
-      line_item.reload
-    else
-      return false
-    end
+  def create_line_item(args)
+    new_args = {
+      service_request_id: self.service_request_id
+    }
+    new_args.update(args)
+    return service_request.create_line_item(new_args)
   end
 
   def one_time_fee_line_items

@@ -561,7 +561,7 @@ describe ServiceRequestsController do
       service_request.line_items.count.should eq 1
       service_request.line_items[0].service.should eq service
       service_request.line_items[0].optional.should eq true
-      service_request.line_items[0].quantity.should eq 42
+      service_request.line_items[0].quantity.should eq nil # always nil for pppv
     end
 
     it 'should create a line item for a required service' do
@@ -578,10 +578,10 @@ describe ServiceRequestsController do
       service_request.line_items.count.should eq 2
       service_request.line_items[0].service.should eq service
       service_request.line_items[0].optional.should eq true
-      service_request.line_items[0].quantity.should eq 42
+      service_request.line_items[0].quantity.should eq nil # always nil for pppv
       service_request.line_items[1].service.should eq service2
       service_request.line_items[1].optional.should eq false
-      service_request.line_items[1].quantity.should eq 42
+      service_request.line_items[1].quantity.should eq nil # always nil for pppv
     end
 
     it 'should create a line item for an optional service' do
@@ -598,10 +598,10 @@ describe ServiceRequestsController do
       service_request.line_items.count.should eq 2
       service_request.line_items[0].service.should eq service
       service_request.line_items[0].optional.should eq true
-      service_request.line_items[0].quantity.should eq 42
+      service_request.line_items[0].quantity.should eq nil # always nil for pppv
       service_request.line_items[1].service.should eq service2
       service_request.line_items[1].optional.should eq true
-      service_request.line_items[1].quantity.should eq 42
+      service_request.line_items[1].quantity.should eq nil # always nil for pppv
     end
 
     it 'should create a sub service request for each organization in the service list' do

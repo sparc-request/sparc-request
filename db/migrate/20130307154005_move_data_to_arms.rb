@@ -1,5 +1,12 @@
 class MoveDataToArms < ActiveRecord::Migration
 
+  class VisitGrouping < ActiveRecord::Base
+    belongs_to :line_item
+    belongs_to :arm
+    has_many :visits
+    attr_accessible :arm_id, :subject_count
+  end
+
   class ServiceRequest < ActiveRecord::Base
     has_many :arms
     has_many :line_items

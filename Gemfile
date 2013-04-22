@@ -38,7 +38,7 @@ end
 
 # these are needed for the import script
 group :import do
-  gem 'alfresco_handler', :path => '../alfresco_handler'
+  # gem 'alfresco_handler', :path => '../alfresco_handler'
   gem 'progress_bar'
   gem 'mustache'
 end

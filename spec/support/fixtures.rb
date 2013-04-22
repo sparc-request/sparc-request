@@ -62,6 +62,7 @@ def build_service_request
   let!(:pricing_map2)    { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service2.id, is_one_time_fee: false, display_date: Time.now - 1.day, full_rate: 2000, federal_rate: 3000, units_per_qty_max: 20) }
   let!(:service_provider) {FactoryGirl.create(:service_provider, organization_id: program.id, identity_id: jug2.id)}
   let!(:super_user)      { FactoryGirl.create(:super_user, organization_id: program.id, identity_id: jpl6.id)}
+  let!(:catalog_manager) { FactoryGirl.create(:catalog_manager, organization_id: program.id, identity_id: jpl6.id) }
 
   before :each do
     program.tag_list.add("ctrc")

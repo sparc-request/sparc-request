@@ -1,4 +1,21 @@
 class RemoveOneTimeFeeLineItemsFromArms < ActiveRecord::Migration
+  class ServiceRequest < ActiveRecord::Base
+    has_many :arms
+    has_many :line_items
+  end
+  class VisitGrouping < ActiveRecord::Base
+    belongs_to :line_item
+    belongs_to :arm
+    has_many :visits
+    attr_accessible :arm_id, :subject_count
+  end
+  class Arm < ActiveRecord::Base
+    attr_accessible :name
+    attr_accessible :visit_count
+    attr_accessible :subject_count
+    has_many :visit_groupings
+  end
+
   def up
     service_requests = ServiceRequest.all
 

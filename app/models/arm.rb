@@ -5,6 +5,7 @@ class Arm < ActiveRecord::Base
   has_many :line_items, :through => :line_items_visits
   has_many :subjects
   has_many :visit_groups
+  has_many :visits, :through => :line_items_visits
 
   attr_accessible :name
   attr_accessible :visit_count

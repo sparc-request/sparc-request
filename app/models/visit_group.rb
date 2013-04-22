@@ -3,6 +3,7 @@ class VisitGroup < ActiveRecord::Base
   has_many :visits, :dependent => :destroy
   attr_accessible :name
   attr_accessible :position
+  attr_accessible :arm_id
   acts_as_list :scope => :arm
 
   after_create :set_default_name

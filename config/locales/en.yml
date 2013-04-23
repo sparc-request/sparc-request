@@ -10,7 +10,7 @@ en:
   # sign in page
   signin:
     message1: "Sign in using your institutional login"
-    message2: "(ie - MUSC netid and password"
+    message2: "(ie - MUSC netid and password)"
     message3: "Sign in using your non-institutional login"
     message4: "(ie - SPARC Request created account)"
     button1: "Continue to sign in page"

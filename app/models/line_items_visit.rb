@@ -152,6 +152,7 @@ class LineItemsVisit < ActiveRecord::Base
     self.visits.create(visit_group_id: visit_group.id)
   end
 
+  ##TODO: This should not exist, arm.remove_visit does this correctly
   def remove_visit visit_group
     visit = self.visits.find_by_visit_group_id(visit_group.id)
     visit.delete

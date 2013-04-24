@@ -188,30 +188,34 @@ class ServiceRequestsController < ApplicationController
       # not here
 
       @service_request.arms.each do |arm|
-        #check each ARM for visit_groupings (in other words, it's a new arm)
-        if arm.visit_groupings.empty?
-          #Create missing visit_groupings
-          new_visit_groupings = Array.new
+        #check each ARM for line_items_visits (in other words, it's a new arm)
+        if arm.line_items_visits.empty?
+          #Create missing line_items_visits
+          new_line_items_visits = Array.new
           @service_request.per_patient_per_visit_line_items.each do |line_item|
-            vg = arm.visit_groupings.new
+            vg = arm.line_items_visits.new
             vg.line_item_id = line_item.id
             vg.subject_count = arm.subject_count
             vg.save
             #push them to array, for easily looping over to create visits...
-            new_visit_groupings.push(vg)
+            new_line_items_visits.push(vg)
           end
-          new_visit_groupings.each do |vg|
-            vg.create_or_destroy_visits
+          new_line_items_visits.each do |liv|
+            liv.create_visits
           end
         else
           #Check to see if ARM has been modified...
-          arm.visit_groupings.each do |vg|
+          arm.line_items_visits.each do |liv|
             #Update subject counts under certain conditions
-            if @service_request.status == 'first_draft' or vg.subject_count.nil? or vg.subject_count > arm.subject_count
-              vg.update_attribute(:subject_count, arm.subject_count)
+            if @service_request.status == 'first_draft' or liv.subject_count.nil? or liv.subject_count > arm.subject_count
+              liv.update_attribute(:subject_count, arm.subject_count)
             end
-
-            vg.create_or_destroy_visits
+            if arm.visit_count > liv.visits.count
+              liv.create_visits
+            end
+          end
+          if arm.visit_count < arm.visit_groups.count
+            arm.visit_groups.last.destroy until arm.visit_count == arm.visit_groups.count
           end
         end
       end
@@ -497,8 +501,8 @@ class ServiceRequestsController < ApplicationController
       new_line_item = @service_request.line_items.create(:service_id => service.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum)
       if !new_line_item.service.is_one_time_fee?
         @service_request.arms.each do |arm|
-          vg = arm.visit_groupings.create(:arm_id => arm.id, :line_item_id => new_line_item.id, :subject_count => arm.subject_count)
-          vg.create_or_destroy_visits
+          liv = arm.line_items_visits.create(:arm_id => arm.id, :line_item_id => new_line_item.id, :subject_count => arm.subject_count)
+          liv.create_visits
         end
       end
       @new_line_items << new_line_item
@@ -508,8 +512,8 @@ class ServiceRequestsController < ApplicationController
         new_line_item = @service_request.line_items.create(:service_id => rs.id, :optional => false, :quantity => service.displayed_pricing_map.unit_minimum) unless existing_service_ids.include?(rs.id)
         if !new_line_item.service.is_one_time_fee?
           @service_request.arms.each do |arm|
-            vg = arm.visit_groupings.create(:arm_id => arm.id, :line_item_id => new_line_item.id, :subject_count => arm.subject_count)
-            vg.create_or_destroy_visits
+            liv = arm.line_items_visits.create(:arm_id => arm.id, :line_item_id => new_line_item.id, :subject_count => arm.subject_count)
+            liv.create_visits
           end
         end
         @new_line_items << new_line_item
@@ -520,8 +524,8 @@ class ServiceRequestsController < ApplicationController
         new_line_item = @service_request.line_items.create(:service_id => rs.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum) unless existing_service_ids.include?(rs.id)
         if !new_line_item.service.is_one_time_fee?
           @service_request.arms.each do |arm|
-            vg = arm.visit_groupings.create(:arm_id => arm.id, :line_item_id => new_line_item.id, :subject_count => arm.subject_count)
-            Visit.bulk_create(arm.visit_count, :visit_grouping_id => vg.id) unless arm.visit_count.blank?
+            liv = arm.line_items_visits.create(:arm_id => arm.id, :line_item_id => new_line_item.id, :subject_count => arm.subject_count)
+            liv.create_visits unless arm.visit_count.blank?
           end
         end
         @new_line_items << new_line_item
@@ -575,7 +579,7 @@ class ServiceRequestsController < ApplicationController
     # clean up arms
     @service_request.reload
     @service_request.arms.each do |arm|
-      if arm.visit_groupings.empty?
+      if arm.line_items_visits.empty?
         arm.destroy
       end
     end
@@ -621,9 +625,9 @@ class ServiceRequestsController < ApplicationController
   end
 
   def select_calendar_row
-    @visit_grouping = VisitGrouping.find params[:visit_grouping_id]
-    @service = @visit_grouping.line_item.service
-    @visit_grouping.visits.each do |visit|
+    @line_items_visit = LineItemsVisit.find params[:line_items_visit_id]
+    @service = @line_items_visit.line_item.service
+    @line_items_visit.visits.each do |visit|
       visit.update_attributes(
           quantity:              @service.displayed_pricing_map.unit_minimum,
           research_billing_qty:  @service.displayed_pricing_map.unit_minimum,
@@ -635,8 +639,8 @@ class ServiceRequestsController < ApplicationController
   end
   
   def unselect_calendar_row
-    @visit_grouping = VisitGrouping.find params[:visit_grouping_id]
-    @visit_grouping.visits.each do |visit|
+    @line_items_visit = LineItemsVisit.find params[:line_items_visit_id]
+    @line_items_visit.visits.each do |visit|
       visit.update_attributes({:quantity => 0, :research_billing_qty => 0, :insurance_billing_qty => 0, :effort_billing_qty => 0})
     end
 
@@ -647,7 +651,7 @@ class ServiceRequestsController < ApplicationController
     column_id = params[:column_id].to_i
     @arm = Arm.find params[:arm_id]
 
-    @arm.visit_groupings.each do |vg|
+    @arm.line_items_visits.each do |vg|
       visit = vg.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
       visit.update_attributes(
           quantity:              vg.line_item.service.displayed_pricing_map.unit_minimum,
@@ -663,7 +667,7 @@ class ServiceRequestsController < ApplicationController
     column_id = params[:column_id].to_i
     @arm = Arm.find params[:arm_id]
 
-    @arm.visit_groupings.each do |vg|
+    @arm.line_items_visits.each do |vg|
       visit = vg.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
       visit.update_attributes({:quantity => 0, :research_billing_qty => 0, :insurance_billing_qty => 0, :effort_billing_qty => 0})
     end

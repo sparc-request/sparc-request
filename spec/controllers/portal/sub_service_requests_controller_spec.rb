@@ -68,7 +68,7 @@ describe Portal::SubServiceRequestsController do
       service_request.reload
       service_request.line_items.count.should eq 1
       service_request.line_items[0].quantity.should eq nil
-      service_request.line_items[0].visit_groupings.count.should eq 0
+      service_request.line_items[0].line_items_visits.count.should eq 0
     end
 
     it 'should create a new visit grouping for each arm' do
@@ -94,14 +94,14 @@ describe Portal::SubServiceRequestsController do
 
       line_items.count.should eq 1
       line_items[0].quantity.should eq nil
-      line_items[0].visit_groupings.count.should eq 2
-      line_items[0].visit_groupings[0].should eq arms[0].visit_groupings[0]
-      line_items[0].visit_groupings[1].should eq arms[1].visit_groupings[0]
-      line_items[0].visit_groupings[1].visits.count.should eq 5
-      arms[0].visit_groupings.count.should eq 1
-      arms[0].visit_groupings[0].visits.count.should eq 5
-      arms[1].visit_groupings.count.should eq 1
-      arms[1].visit_groupings[0].visits.count.should eq 5
+      line_items[0].line_items_visits.count.should eq 2
+      line_items[0].line_items_visits[0].should eq arms[0].line_items_visits[0]
+      line_items[0].line_items_visits[1].should eq arms[1].line_items_visits[0]
+      line_items[0].line_items_visits[1].visits.count.should eq 5
+      arms[0].line_items_visits.count.should eq 1
+      arms[0].line_items_visits[0].visits.count.should eq 5
+      arms[1].line_items_visits.count.should eq 1
+      arms[1].line_items_visits[0].visits.count.should eq 5
     end
   end
 

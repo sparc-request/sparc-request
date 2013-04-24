@@ -40,7 +40,7 @@ class LineItemsVisit < ActiveRecord::Base
 
   def update_visit_names line_items_visit
     self.visits.count do |index|
-      self.visits[index].name = line_items_visit.visits[index].name
+      self.visits[index].visit_group.name = line_items_visit.visits[index].visit_group.name
     end
   end
 

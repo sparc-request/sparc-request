@@ -1,11 +1,3 @@
-PATH
-  remote: ../alfresco_handler
-  specs:
-    alfresco_handler (0.1.2)
-      json
-      nokogiri (= 1.5.0)
-      rest-client
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -229,8 +221,6 @@ GEM
     rake (10.0.3)
     rdoc (3.12)
       json (~> 1.4)
-    rest-client (1.6.7)
-      mime-types (>= 1.16)
     rspec (2.12.0)
       rspec-core (~> 2.12.0)
       rspec-expectations (~> 2.12.0)
@@ -317,7 +307,6 @@ DEPENDENCIES
   acts-as-taggable-on (~> 2.3.1)
   acts_as_list
   addressable (~> 2.3.2)
-  alfresco_handler!
   axlsx_rails
   cache_digests
   capistrano

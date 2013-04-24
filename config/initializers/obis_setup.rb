@@ -11,6 +11,7 @@ begin
   HEADER_LINK_3        = application_config['header_link_3']
   USE_INDIRECT_COST    = application_config['use_indirect_cost']
   USE_SHIBOLETH        = application_config['use_shiboleth']
+  USE_LDAP             = application_config['use_ldap']
 rescue
   raise "application.yml not found, see config/application.yml.example"
 end

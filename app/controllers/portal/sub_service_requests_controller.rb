@@ -9,7 +9,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     session[:service_calendar_page] = params[:page] if params[:page]
 
     if @user.can_edit_fulfillment? @sub_service_request.organization
-      @user_toasts = @user.received_toast_messages.select {|x| x.sending_object.class == SubServiceRequest}
+      @user_toasts = @user.received_toast_messages.select {|x| x.sending_object.class == SubServiceRequest}.select {|y| y.sending_class_id == @sub_service_request.id}
       @service_request = @sub_service_request.service_request
       @protocol = @sub_service_request.try(:service_request).try(:protocol)
       if not @protocol then

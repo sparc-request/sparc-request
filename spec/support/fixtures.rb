@@ -63,7 +63,7 @@ def build_service_request
   let!(:service_provider)    { FactoryGirl.create(:service_provider, organization_id: program.id, identity_id: jug2.id)}
   let!(:super_user)          { FactoryGirl.create(:super_user, organization_id: program.id, identity_id: jpl6.id)}
   let!(:catalog_manager)     { FactoryGirl.create(:catalog_manager, organization_id: program.id, identity_id: jpl6.id) }
-  let!(:available_status)    { FactoryGirl.create(:available_status, organization_id: program.id, status: 'submitted')}
+  let!(:available_status)  {FactoryGirl.create(:available_status, organization_id: program.id, status: 'submitted')}
 
   before :each do
     program.tag_list.add("ctrc")

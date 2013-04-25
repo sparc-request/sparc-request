@@ -2,6 +2,10 @@ require 'spec_helper'
 
 describe 'SubServiceRequest' do
 
+  let_there_be_lane
+  let_there_be_j
+  build_service_request_with_study
+
   context 'fulfillment' do
 
     describe 'candidate_services' do
@@ -54,32 +58,22 @@ describe 'SubServiceRequest' do
 
     describe 'fulfillment line item manipulation' do
 
-      let!(:core)                 { FactoryGirl.create(:core) }
-      let!(:service)              { FactoryGirl.create(:service, organization_id: core.id, ) }
-      let!(:service2)             { FactoryGirl.create(:service, organization_id: core.id) }
-      let!(:service_request)      { FactoryGirl.create(:service_request) }
-      let!(:service_request2)     { FactoryGirl.create(:service_request) }
-      let!(:sub_service_request)  { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id) }
-      let!(:sub_service_request2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request2.id) }
-      let!(:pricing_map)          { FactoryGirl.create(:pricing_map, service_id: service.id) }
+      let!(:sub_service_request2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id) }
  
       context 'updating a line item' do
 
         it 'should fail if the line item is not on the sub service request' do
-          FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id,
-            sub_service_request_id: sub_service_request.id)
           lambda { sub_service_request2.update_line_item(line_item) }.should raise_exception
         end
 
         it 'should update the line item successfully' do
-          line_item = FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id,
-            sub_service_request_id: sub_service_request.id)
           sub_service_request.update_line_item(line_item, quantity: 50)
           line_item.quantity.should eq(50)
         end
       end
     end
 
+    # These tests need to create their own data
     describe "cost calculations" do
 
       let!(:core)                 { FactoryGirl.create(:core) }
@@ -159,9 +153,6 @@ describe 'SubServiceRequest' do
 
       context "subsidy organization" do
 
-        let!(:institution)  { FactoryGirl.create(:institution) }
-        let!(:provider)     { FactoryGirl.create(:provider, parent_id: institution.id) }
-        let!(:program)      { FactoryGirl.create(:program, parent_id: provider.id) }
         let!(:subsidy_map2) { FactoryGirl.create(:subsidy_map, organization_id: program.id, max_dollar_cap: 100) }
 
         it "should return the core if max dollar cap or max percentage is > 0" do
@@ -192,7 +183,7 @@ describe 'SubServiceRequest' do
 
     describe "sub service request status" do
 
-      let!(:sub_service_request) { FactoryGirl.create(:sub_service_request) }
+      # let!(:sub_service_request) { FactoryGirl.create(:sub_service_request) }
 
       context "can be edited" do
 
@@ -242,36 +233,26 @@ describe 'SubServiceRequest' do
     describe "sub service request ownership" do
 
       context "candidate owners" do
-
-        let!(:institution)         { FactoryGirl.create(:institution) }
-        let!(:provider)            { FactoryGirl.create(:provider, parent_id: institution.id, process_ssrs: true) }
-        let!(:core)                { FactoryGirl.create(:core, parent_id: provider.id, process_ssrs: true) }
-        let!(:program)             { FactoryGirl.create(:program, parent_id: core.id, process_ssrs: true)}
-        let!(:sub_service_request) { FactoryGirl.create(:sub_service_request, organization_id: core.id) }
-        let!(:user1)               { FactoryGirl.create(:identity) }
-        let!(:user2)               { FactoryGirl.create(:identity) }
-        let!(:user3)               { FactoryGirl.create(:identity) }
-        let!(:service_provider1)   { FactoryGirl.create(:service_provider, identity_id: user1.id, organization_id: core.id) }
-        let!(:service_provider2)   { FactoryGirl.create(:service_provider, identity_id: user2.id, organization_id: provider.id) }
-        let!(:service_provider3)   { FactoryGirl.create(:service_provider, identity_id: user3.id, organization_id: program.id) }
-
-        it "should return all identities associated with the sub service request's organization, children, and parents" do
-          sub_service_request.candidate_owners.should include(user1, user2, user3)
+       
+        let!(:user)               { FactoryGirl.create(:identity) }
+     
+        before :each do
+          provider.update_attributes(process_ssrs: true)
+          program.update_attributes(process_ssrs: true)
+          core.update_attributes(process_ssrs: true)
         end
 
-        it "should not return any identities from child organizations if process ssrs is not set" do
-          core.update_attributes(process_ssrs: false)
-          sub_service_request.candidate_owners.should_not include(user3)
+        it "should return all identities associated with the sub service request's organization, children, and parents" do
+          sub_service_request.candidate_owners.should include(jug2)
         end
 
         it "should return the owner" do
-          user = FactoryGirl.create(:identity)
           sub_service_request.update_attributes(owner_id: user.id)
-          sub_service_request.candidate_owners.should include(user)
+          sub_service_request.candidate_owners.should include(user, jug2)
         end
 
         it "should not return the same identity twice if it is both the owner and service provider" do
-          sub_service_request.update_attributes(owner_id: user2.id)
+          sub_service_request.update_attributes(owner_id: user.id)
           sub_service_request.candidate_owners.uniq.length.should eq(sub_service_request.candidate_owners.length) 
         end
       end

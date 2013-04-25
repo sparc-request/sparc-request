@@ -55,13 +55,13 @@ module ApplicationHelper
     beginning_visit = (page * 5) - 4
     ending_visit = (page * 5) > arm.visit_count ? arm.visit_count : (page * 5)
     returning_html = ""
-    visit_groupings = arm.visit_groupings
+    line_items_visits = arm.line_items_visits
 
     (beginning_visit .. ending_visit).each do |n|
-      checked = visit_groupings.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?
+      checked = line_items_visits.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?
       action = checked == true ? 'unselect_calendar_column' : 'select_calendar_column'
       icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
-      visit_name = visit_groupings[0].visits[n - 1].name || "Visit #{n}"
+      visit_name = line_items_visits[0].visits[n - 1].visit_group.name || "Visit #{n}"
       
       if params[:action] == 'review' || params[:action] == 'show' || params[:action] == 'refresh_service_calendar'
         returning_html += content_tag(:th, content_tag(:span, visit_name), :width => 60, :class => 'visit_number')

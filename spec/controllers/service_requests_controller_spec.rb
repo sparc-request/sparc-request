@@ -321,8 +321,8 @@ describe ServiceRequestsController do
     let!(:line_item) { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id) }
     let!(:one_time_fee_line_item) { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id) }
 
-    let!(:visit_grouping) { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item.id) }
-    let!(:one_time_fee_visit_grouping) { FactoryGirl.create(:visit_grouping, line_item_id: line_item.id) }
+    let!(:line_items_visit) { FactoryGirl.create(:line_items_visit, arm_id: arm.id, line_item_id: line_item.id) }
+    let!(:one_time_fee_line_items_visit) { FactoryGirl.create(:line_items_visit, line_item_id: line_item.id) }
 
     it "should set the page if page is passed in" do
       arm.update_attribute(:visit_count, 500)
@@ -334,90 +334,90 @@ describe ServiceRequestsController do
 
     it 'should set subject count on the per patient per visit line items if it is not set' do
       arm.update_attribute(:subject_count, 42)
-      visit_grouping.update_attribute(:subject_count, nil)
+      line_items_visit.update_attribute(:subject_count, nil)
 
       session[:service_request_id] = service_request.id
       get :service_calendar, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
 
-      visit_grouping.reload
-      visit_grouping.subject_count.should eq 42
+      line_items_visit.reload
+      line_items_visit.subject_count.should eq 42
     end
 
     it 'should set subject count on the per patient per visit line items if it is set and is higher than the visit grouping subject count' do
       arm.update_attribute(:subject_count, 42)
-      visit_grouping.update_attribute(:subject_count, 500)
+      line_items_visit.update_attribute(:subject_count, 500)
 
       session[:service_request_id] = service_request.id
       get :service_calendar, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
 
-      visit_grouping.reload
-      visit_grouping.subject_count.should eq 42
+      line_items_visit.reload
+      line_items_visit.subject_count.should eq 42
     end
 
     it 'should NOT set subject count on the per patient per visit line items if it is set and is lower than the visit grouping subject count' do
       arm.update_attribute(:subject_count, 42)
-      visit_grouping.update_attribute(:subject_count, 10)
+      line_items_visit.update_attribute(:subject_count, 10)
 
       session[:service_request_id] = service_request.id
       get :service_calendar, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
 
-      visit_grouping.reload
-      visit_grouping.subject_count.should eq 10
+      line_items_visit.reload
+      line_items_visit.subject_count.should eq 10
     end
 
     it 'should NOT set subject count on the one time fee line items' do
       arm.update_attribute(:subject_count, 42)
-      one_time_fee_visit_grouping.update_attribute(:subject_count, nil)
+      one_time_fee_line_items_visit.update_attribute(:subject_count, nil)
 
       session[:service_request_id] = service_request.id
       get :service_calendar, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
 
-      one_time_fee_visit_grouping.reload
-      one_time_fee_visit_grouping.subject_count.should eq nil
+      one_time_fee_line_items_visit.reload
+      one_time_fee_line_items_visit.subject_count.should eq nil
     end
 
     it 'should delete extra visits on per patient per visit line items' do
       arm.update_attribute(:visit_count, 10)
-      Visit.bulk_create(20, visit_grouping_id: visit_grouping.id)
+      Visit.bulk_create(20, line_items_visit_id: line_items_visit.id)
 
       session[:service_request_id] = service_request.id
       get :service_calendar, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
 
-      visit_grouping.reload
-      visit_grouping.visits.count.should eq 10
+      line_items_visit.reload
+      line_items_visit.visits.count.should eq 10
     end
 
     it 'should create visits if too few on per patient per visit line items' do
       arm.update_attribute(:visit_count, 10)
-      Visit.bulk_create(0, visit_grouping_id: visit_grouping.id)
+      Visit.bulk_create(0, line_items_visit_id: line_items_visit.id)
 
       session[:service_request_id] = service_request.id
       get :service_calendar, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
 
-      visit_grouping.reload
-      visit_grouping.visits.count.should eq 10
+      line_items_visit.reload
+      line_items_visit.visits.count.should eq 10
     end
 
     it 'should NOT delete extra visits on one time fee line items' do
       arm.update_attribute(:visit_count, 10)
-      Visit.bulk_create(20, visit_grouping_id: one_time_fee_visit_grouping.id)
+      Visit.bulk_create(20, line_items_visit_id: one_time_fee_line_items_visit.id)
 
       session[:service_request_id] = service_request.id
       get :service_calendar, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
 
-      one_time_fee_visit_grouping.reload
-      one_time_fee_visit_grouping.visits.count.should eq 20
+      one_time_fee_line_items_visit.reload
+      one_time_fee_line_items_visit.visits.count.should eq 20
     end
 
     it 'should NOT create visits if there are too few of them, on one time fee line items' do
       arm.update_attribute(:visit_count, 10)
-      Visit.bulk_create(5, visit_grouping_id: one_time_fee_visit_grouping.id)
+      Visit.bulk_create(5, line_items_visit_id: one_time_fee_line_items_visit.id)
 
       session[:service_request_id] = service_request.id
       get :service_calendar, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
 
-      one_time_fee_visit_grouping.reload
-      one_time_fee_visit_grouping.visits.count.should eq 5
+      one_time_fee_line_items_visit.reload
+      one_time_fee_line_items_visit.visits.count.should eq 5
     end
   end
 
@@ -796,91 +796,91 @@ describe ServiceRequestsController do
     let!(:line_item2) { FactoryGirl.create(:line_item, service_id: service2.id, service_request_id: service_request.id) }
     let!(:line_item3) { FactoryGirl.create(:line_item, service_id: service3.id, service_request_id: service_request.id) }
 
-    let!(:visit_grouping1) { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item1.id) }
-    let!(:visit_grouping2) { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item2.id) }
-    let!(:visit_grouping3) { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item3.id) }
+    let!(:line_items_visit1) { FactoryGirl.create(:line_items_visit, arm_id: arm.id, line_item_id: line_item1.id) }
+    let!(:line_items_visit2) { FactoryGirl.create(:line_items_visit, arm_id: arm.id, line_item_id: line_item2.id) }
+    let!(:line_items_visit3) { FactoryGirl.create(:line_items_visit, arm_id: arm.id, line_item_id: line_item3.id) }
 
     describe 'POST select_calendar_row' do
       it 'should set line item' do
         pricing_map1.update_attribute(:unit_minimum, 100)
-        Visit.bulk_create(3, visit_grouping_id: visit_grouping1.id)
+        Visit.bulk_create(3, line_items_visit_id: line_items_visit1.id)
 
         session[:service_request_id] = service_request.id
         post :select_calendar_row, {
           :id                 => service_request.id,
-          :visit_grouping_id  => visit_grouping1.id,
+          :line_items_visit_id  => line_items_visit1.id,
           :format             => :js
         }.with_indifferent_access
 
-        assigns(:visit_grouping).should eq visit_grouping1
+        assigns(:line_items_visit).should eq line_items_visit1
       end
 
       it "should update each of the line item's visits" do
         pricing_map1.update_attribute(:unit_minimum, 100)
-        Visit.bulk_create(3, visit_grouping_id: visit_grouping1.id)
+        Visit.bulk_create(3, line_items_visit_id: line_items_visit1.id)
 
         session[:service_request_id] = service_request.id
         post :select_calendar_row, {
           :id                 => service_request.id,
-          :visit_grouping_id  => visit_grouping1.id,
+          :line_items_visit_id  => line_items_visit1.id,
           :format             => :js
         }.with_indifferent_access
 
-        visit_grouping1.visits.count.should eq 3
-        visit_grouping1.visits[0].quantity.should               eq 100
-        visit_grouping1.visits[0].research_billing_qty.should   eq 100
-        visit_grouping1.visits[0].insurance_billing_qty.should  eq 0
-        visit_grouping1.visits[0].effort_billing_qty.should     eq 0
-        visit_grouping1.visits[1].quantity.should               eq 100
-        visit_grouping1.visits[1].research_billing_qty.should   eq 100
-        visit_grouping1.visits[1].insurance_billing_qty.should  eq 0
-        visit_grouping1.visits[1].effort_billing_qty.should     eq 0
-        visit_grouping1.visits[2].quantity.should               eq 100
-        visit_grouping1.visits[2].research_billing_qty.should   eq 100
-        visit_grouping1.visits[2].insurance_billing_qty.should  eq 0
-        visit_grouping1.visits[2].effort_billing_qty.should     eq 0
+        line_items_visit1.visits.count.should eq 3
+        line_items_visit1.visits[0].quantity.should               eq 100
+        line_items_visit1.visits[0].research_billing_qty.should   eq 100
+        line_items_visit1.visits[0].insurance_billing_qty.should  eq 0
+        line_items_visit1.visits[0].effort_billing_qty.should     eq 0
+        line_items_visit1.visits[1].quantity.should               eq 100
+        line_items_visit1.visits[1].research_billing_qty.should   eq 100
+        line_items_visit1.visits[1].insurance_billing_qty.should  eq 0
+        line_items_visit1.visits[1].effort_billing_qty.should     eq 0
+        line_items_visit1.visits[2].quantity.should               eq 100
+        line_items_visit1.visits[2].research_billing_qty.should   eq 100
+        line_items_visit1.visits[2].insurance_billing_qty.should  eq 0
+        line_items_visit1.visits[2].effort_billing_qty.should     eq 0
       end
     end
 
     describe 'GET unselect_calendar_row' do
       it 'should set line item' do
         pricing_map1.update_attribute(:unit_minimum, 100)
-        Visit.bulk_create(3, visit_grouping_id: visit_grouping1.id)
+        Visit.bulk_create(3, line_items_visit_id: line_items_visit1.id)
 
         session[:service_request_id] = service_request.id
         post :unselect_calendar_row, {
           :id                 => service_request.id,
-          :visit_grouping_id  => visit_grouping1.id,
+          :line_items_visit_id  => line_items_visit1.id,
           :format             => :js
         }.with_indifferent_access
 
-        assigns(:visit_grouping).should eq visit_grouping1
+        assigns(:line_items_visit).should eq line_items_visit1
       end
 
       it "should update each of the line item's visits" do
         pricing_map1.update_attribute(:unit_minimum, 100)
-        Visit.bulk_create(3, visit_grouping_id: visit_grouping1.id)
+        Visit.bulk_create(3, line_items_visit_id: line_items_visit1.id)
 
         session[:service_request_id] = service_request.id
         post :unselect_calendar_row, {
           :id                 => service_request.id,
-          :visit_grouping_id  => visit_grouping1.id,
+          :line_items_visit_id  => line_items_visit1.id,
           :format             => :js
         }.with_indifferent_access
 
-        visit_grouping1.visits.count.should eq 3
-        visit_grouping1.visits[0].quantity.should               eq 0
-        visit_grouping1.visits[0].research_billing_qty.should   eq 0
-        visit_grouping1.visits[0].insurance_billing_qty.should  eq 0
-        visit_grouping1.visits[0].effort_billing_qty.should     eq 0
-        visit_grouping1.visits[1].quantity.should               eq 0
-        visit_grouping1.visits[1].research_billing_qty.should   eq 0
-        visit_grouping1.visits[1].insurance_billing_qty.should  eq 0
-        visit_grouping1.visits[1].effort_billing_qty.should     eq 0
-        visit_grouping1.visits[2].quantity.should               eq 0
-        visit_grouping1.visits[2].research_billing_qty.should   eq 0
-        visit_grouping1.visits[2].insurance_billing_qty.should  eq 0
-        visit_grouping1.visits[2].effort_billing_qty.should     eq 0
+        line_items_visit1.visits.count.should eq 3
+        line_items_visit1.visits[0].quantity.should               eq 0
+        line_items_visit1.visits[0].research_billing_qty.should   eq 0
+        line_items_visit1.visits[0].insurance_billing_qty.should  eq 0
+        line_items_visit1.visits[0].effort_billing_qty.should     eq 0
+        line_items_visit1.visits[1].quantity.should               eq 0
+        line_items_visit1.visits[1].research_billing_qty.should   eq 0
+        line_items_visit1.visits[1].insurance_billing_qty.should  eq 0
+        line_items_visit1.visits[1].effort_billing_qty.should     eq 0
+        line_items_visit1.visits[2].quantity.should               eq 0
+        line_items_visit1.visits[2].research_billing_qty.should   eq 0
+        line_items_visit1.visits[2].insurance_billing_qty.should  eq 0
+        line_items_visit1.visits[2].effort_billing_qty.should     eq 0
       end
     end
 
@@ -890,9 +890,9 @@ describe ServiceRequestsController do
         pricing_map2.update_attribute(:unit_minimum, 100)
         pricing_map3.update_attribute(:unit_minimum, 100)
 
-        Visit.bulk_create(3, visit_grouping_id: visit_grouping1.id)
-        Visit.bulk_create(3, visit_grouping_id: visit_grouping2.id)
-        Visit.bulk_create(3, visit_grouping_id: visit_grouping3.id)
+        Visit.bulk_create(3, line_items_visit_id: line_items_visit1.id)
+        Visit.bulk_create(3, line_items_visit_id: line_items_visit2.id)
+        Visit.bulk_create(3, line_items_visit_id: line_items_visit3.id)
 
         session[:service_request_id] = service_request.id
         post :select_calendar_column, {
@@ -902,18 +902,18 @@ describe ServiceRequestsController do
           :format        => :js,
         }.with_indifferent_access
 
-        visit_grouping1.visits[1].quantity.should               eq 100
-        visit_grouping1.visits[1].research_billing_qty.should   eq 100
-        visit_grouping1.visits[1].insurance_billing_qty.should  eq 0
-        visit_grouping1.visits[1].effort_billing_qty.should     eq 0
-        visit_grouping2.visits[1].quantity.should               eq 100
-        visit_grouping2.visits[1].research_billing_qty.should   eq 100
-        visit_grouping2.visits[1].insurance_billing_qty.should  eq 0
-        visit_grouping2.visits[1].effort_billing_qty.should     eq 0
-        visit_grouping3.visits[1].quantity.should               eq 100
-        visit_grouping3.visits[1].research_billing_qty.should   eq 100
-        visit_grouping3.visits[1].insurance_billing_qty.should  eq 0
-        visit_grouping3.visits[1].effort_billing_qty.should     eq 0
+        line_items_visit1.visits[1].quantity.should               eq 100
+        line_items_visit1.visits[1].research_billing_qty.should   eq 100
+        line_items_visit1.visits[1].insurance_billing_qty.should  eq 0
+        line_items_visit1.visits[1].effort_billing_qty.should     eq 0
+        line_items_visit2.visits[1].quantity.should               eq 100
+        line_items_visit2.visits[1].research_billing_qty.should   eq 100
+        line_items_visit2.visits[1].insurance_billing_qty.should  eq 0
+        line_items_visit2.visits[1].effort_billing_qty.should     eq 0
+        line_items_visit3.visits[1].quantity.should               eq 100
+        line_items_visit3.visits[1].research_billing_qty.should   eq 100
+        line_items_visit3.visits[1].insurance_billing_qty.should  eq 0
+        line_items_visit3.visits[1].effort_billing_qty.should     eq 0
       end
     end
 
@@ -923,9 +923,9 @@ describe ServiceRequestsController do
         pricing_map2.update_attribute(:unit_minimum, 100)
         pricing_map3.update_attribute(:unit_minimum, 100)
 
-        Visit.bulk_create(3, visit_grouping_id: visit_grouping1.id)
-        Visit.bulk_create(3, visit_grouping_id: visit_grouping2.id)
-        Visit.bulk_create(3, visit_grouping_id: visit_grouping3.id)
+        Visit.bulk_create(3, line_items_visit_id: line_items_visit1.id)
+        Visit.bulk_create(3, line_items_visit_id: line_items_visit2.id)
+        Visit.bulk_create(3, line_items_visit_id: line_items_visit3.id)
 
         session[:service_request_id] = service_request.id
         post :unselect_calendar_column, {
@@ -935,18 +935,18 @@ describe ServiceRequestsController do
           :format        => :js,
         }.with_indifferent_access
 
-        visit_grouping1.visits[1].quantity.should               eq 0
-        visit_grouping1.visits[1].research_billing_qty.should   eq 0
-        visit_grouping1.visits[1].insurance_billing_qty.should  eq 0
-        visit_grouping1.visits[1].effort_billing_qty.should     eq 0
-        visit_grouping2.visits[1].quantity.should               eq 0
-        visit_grouping2.visits[1].research_billing_qty.should   eq 0
-        visit_grouping2.visits[1].insurance_billing_qty.should  eq 0
-        visit_grouping2.visits[1].effort_billing_qty.should     eq 0
-        visit_grouping3.visits[1].quantity.should               eq 0
-        visit_grouping3.visits[1].research_billing_qty.should   eq 0
-        visit_grouping3.visits[1].insurance_billing_qty.should  eq 0
-        visit_grouping3.visits[1].effort_billing_qty.should     eq 0
+        line_items_visit1.visits[1].quantity.should               eq 0
+        line_items_visit1.visits[1].research_billing_qty.should   eq 0
+        line_items_visit1.visits[1].insurance_billing_qty.should  eq 0
+        line_items_visit1.visits[1].effort_billing_qty.should     eq 0
+        line_items_visit2.visits[1].quantity.should               eq 0
+        line_items_visit2.visits[1].research_billing_qty.should   eq 0
+        line_items_visit2.visits[1].insurance_billing_qty.should  eq 0
+        line_items_visit2.visits[1].effort_billing_qty.should     eq 0
+        line_items_visit3.visits[1].quantity.should               eq 0
+        line_items_visit3.visits[1].research_billing_qty.should   eq 0
+        line_items_visit3.visits[1].insurance_billing_qty.should  eq 0
+        line_items_visit3.visits[1].effort_billing_qty.should     eq 0
       end
     end
   end

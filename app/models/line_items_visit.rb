@@ -40,7 +40,7 @@ class LineItemsVisit < ActiveRecord::Base
 
   def update_visit_names line_items_visit
     self.visits.count do |index|
-      self.visits[index].name = line_items_visit.visits[index].name
+      self.visits[index].visit_group.name = line_items_visit.visits[index].visit_group.name
     end
   end
 
@@ -152,6 +152,7 @@ class LineItemsVisit < ActiveRecord::Base
     self.visits.create(visit_group_id: visit_group.id)
   end
 
+  ##TODO: This should not exist, arm.remove_visit does this correctly
   def remove_visit visit_group
     visit = self.visits.find_by_visit_group_id(visit_group.id)
     visit.delete

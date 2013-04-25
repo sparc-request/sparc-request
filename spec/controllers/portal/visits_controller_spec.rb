@@ -47,9 +47,9 @@ describe Portal::VisitsController do
             sub_service_request_id: ssr.id)
       }
 
-      let!(:visit_grouping) {
+      let!(:line_items_visit) {
         FactoryGirl.create(
-            :visit_grouping,
+            :line_items_visit,
             arm_id: arm.id,
             line_item_id: line_item.id,
             subject_count: 1)
@@ -60,7 +60,7 @@ describe Portal::VisitsController do
         arm.update_attributes(visit_count: 1)
         FactoryGirl.create(
             :visit,
-            visit_grouping_id: visit_grouping.id,
+            line_items_visit_id: line_items_visit.id,
             research_billing_qty: 5)
       }
 
@@ -123,34 +123,34 @@ describe Portal::VisitsController do
             sub_service_request_id: ssr.id)
       }
 
-      let!(:visit_grouping1) {
+      let!(:line_items_visit1) {
         FactoryGirl.create(
-            :visit_grouping,
+            :line_items_visit,
             arm_id: arm.id,
             line_item_id: line_item1.id,
             subject_count: 1)
       }
 
-      let!(:visit_grouping2) {
+      let!(:line_items_visit2) {
         FactoryGirl.create(
-            :visit_grouping,
+            :line_items_visit,
             arm_id: arm.id,
             line_item_id: line_item2.id,
             subject_count: 1)
       }
 
-      let!(:visit_grouping3) {
+      let!(:line_items_visit3) {
         FactoryGirl.create(
-            :visit_grouping,
+            :line_items_visit,
             arm_id: arm.id,
             line_item_id: line_item3.id,
             subject_count: 1)
       }
 
       it 'should destroy all the other visits at the same position' do
-        vg1_visits = Visit.bulk_create(10, visit_grouping_id: visit_grouping1.id)
-        vg2_visits = Visit.bulk_create(10, visit_grouping_id: visit_grouping2.id)
-        vg3_visits = Visit.bulk_create(10, visit_grouping_id: visit_grouping3.id)
+        vg1_visits = Visit.bulk_create(10, line_items_visit_id: line_items_visit1.id)
+        vg2_visits = Visit.bulk_create(10, line_items_visit_id: line_items_visit2.id)
+        vg3_visits = Visit.bulk_create(10, line_items_visit_id: line_items_visit3.id)
         arm.update_attributes(visit_count: 10)
 
         post :destroy, {
@@ -162,19 +162,19 @@ describe Portal::VisitsController do
         expect { vg2_visits[4].reload }.to raise_exception(ActiveRecord::RecordNotFound)
         expect { vg3_visits[4].reload }.to raise_exception(ActiveRecord::RecordNotFound)
 
-        visit_grouping1.reload
-        visit_grouping2.reload
-        visit_grouping3.reload
+        line_items_visit1.reload
+        line_items_visit2.reload
+        line_items_visit3.reload
 
-        visit_grouping1.visits.count.should eq 9
-        visit_grouping2.visits.count.should eq 9
-        visit_grouping3.visits.count.should eq 9
+        line_items_visit1.visits.count.should eq 9
+        line_items_visit2.visits.count.should eq 9
+        line_items_visit3.visits.count.should eq 9
       end
 
       it 'should update visit count' do
-        vg1_visits = Visit.bulk_create(10, visit_grouping_id: visit_grouping1.id)
-        vg2_visits = Visit.bulk_create(10, visit_grouping_id: visit_grouping2.id)
-        vg3_visits = Visit.bulk_create(10, visit_grouping_id: visit_grouping3.id)
+        vg1_visits = Visit.bulk_create(10, line_items_visit_id: line_items_visit1.id)
+        vg2_visits = Visit.bulk_create(10, line_items_visit_id: line_items_visit2.id)
+        vg3_visits = Visit.bulk_create(10, line_items_visit_id: line_items_visit3.id)
         arm.update_attributes(visit_count: 10)
 
         post :destroy, {

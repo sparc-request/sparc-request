@@ -9,7 +9,6 @@ describe "VisitGroup" do
   context "setting the default name" do
 
     it "should set a default name based on its position" do
-      puts visit_group.inspect
       visit_group.name.should eq("Visit 1")
     end
 

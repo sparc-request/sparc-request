@@ -1,5 +1,21 @@
 require 'spec_helper'
 
-describe VisitGroup do
-  pending "add some examples to (or delete) #{__FILE__}"
+describe "VisitGroup" do
+
+  let_there_be_lane
+  let_there_be_j
+  build_service_request_with_study
+
+  context "setting the default name" do
+
+    it "should set a default name based on its position" do
+      visit_group.name.should eq("Visit 1")
+    end
+
+    it "should not set the name if it already has one" do
+      visit_group.update_attributes(name: "Foobar")
+      visit_group.set_default_name
+      visit_group.name.should eq("Foobar")
+    end
+  end
 end

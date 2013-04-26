@@ -94,7 +94,7 @@ class LineItem < ActiveRecord::Base
   # Determine the direct costs for a visit-based service
   def direct_costs_for_visit_based_service
     total = 0
-    self.line_items_visit.each do |line_items_visit|
+    self.line_items_visits.each do |line_items_visit|
       total += line_items_visit.subject_count * self.direct_costs_for_visit_based_service_single_subject(line_items_visit)
     end
     total

@@ -73,7 +73,7 @@ describe 'SubServiceRequest' do
       end
     end
 
-    # These tests need to create their own data
+    # These tests need to create their own data.
     describe "cost calculations" do
 
       let!(:core)                 { FactoryGirl.create(:core) }
@@ -182,8 +182,6 @@ describe 'SubServiceRequest' do
     end
 
     describe "sub service request status" do
-
-      # let!(:sub_service_request) { FactoryGirl.create(:sub_service_request) }
 
       context "can be edited" do
 

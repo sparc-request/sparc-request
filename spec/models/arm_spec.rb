@@ -172,7 +172,7 @@ describe Arm do
         arm1.line_items_visits.count.should eq 2
 
         #Ensure that the new line_items_visit had its visits created
-        arm1.line_items_visits.last.visits.count.should eq(10)
+        arm1.line_items_visits.last.visits.count.should eq(11)
 
         #Go through new visits, and ensure they are connected to the correct visit_group (visit.position simply points to position on the visit_group)
         arm1.line_items_visits.last.visits.each_with_index do |visit,position|

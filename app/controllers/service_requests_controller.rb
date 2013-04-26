@@ -191,17 +191,8 @@ class ServiceRequestsController < ApplicationController
         #check each ARM for line_items_visits (in other words, it's a new arm)
         if arm.line_items_visits.empty?
           #Create missing line_items_visits
-          new_line_items_visits = Array.new
           @service_request.per_patient_per_visit_line_items.each do |line_item|
-            vg = arm.line_items_visits.new
-            vg.line_item_id = line_item.id
-            vg.subject_count = arm.subject_count
-            vg.save
-            #push them to array, for easily looping over to create visits...
-            new_line_items_visits.push(vg)
-          end
-          new_line_items_visits.each do |liv|
-            liv.create_visits
+            arm.create_line_items_visit(line_item)
           end
         else
           #Check to see if ARM has been modified...

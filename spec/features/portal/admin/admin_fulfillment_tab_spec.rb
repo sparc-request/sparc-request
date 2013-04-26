@@ -234,7 +234,7 @@ describe "admin fulfillment tab", :js => true do
         fill_in "arm_#{arm1.id}_visit_name_1", :with => "HOLYCOW"
         find("#arm_#{arm1.id}_visit_name_2").click
         wait_for_javascript_to_finish
-        line_item2.visit_groupings[0].visits[0].name.should eq "HOLYCOW"
+        line_item2.line_items_visits[0].visits[0].name.should eq "HOLYCOW"
       end
 
       it "should add visits" do

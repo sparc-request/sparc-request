@@ -12,6 +12,9 @@ class Arm < ActiveRecord::Base
   attr_accessible :subject_count      # maximum number of subjects for any visit grouping
 
   def create_line_items_visit line_item
+    if self.visit_groups.size < self.visit_count
+      self.visit_groups.create until self.visit_groups.size == self.visit_count
+    end
     liv = self.line_items_visits.create(:line_item_id => line_item.id, :arm_id => self.id, :subject_count => self.subject_count)
     liv.create_visits
 

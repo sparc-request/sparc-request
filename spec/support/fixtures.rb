@@ -65,6 +65,7 @@ def build_service_request
   let!(:super_user)          { FactoryGirl.create(:super_user, organization_id: program.id, identity_id: jpl6.id)}
   let!(:catalog_manager)     { FactoryGirl.create(:catalog_manager, organization_id: program.id, identity_id: jpl6.id) }
   let!(:available_status)    { FactoryGirl.create(:available_status, organization_id: program.id, status: 'submitted')}
+  let!(:available_status2)   { FactoryGirl.create(:available_status, organization_id: program.id, status: 'draft')}
   let!(:subsidy)             { FactoryGirl.create(:subsidy, pi_contribution: 2500, sub_service_request_id: sub_service_request.id)}
   let!(:subsidy_map)         { FactoryGirl.create(:subsidy_map, organization_id: program.id) }
 
@@ -76,16 +77,17 @@ def build_service_request
 end
 
 def add_visits
-  visit_names = ["I'm", "a", 'little', 'teapot', 'short', 'and', 'stout', 'visit', 'me', 'please']
+  #visit_names = ["I'm", "a", 'little', 'teapot', 'short', 'and', 'stout', 'visit', 'me', 'please']
   service_request.arms.each do |arm|
     service_request.per_patient_per_visit_line_items.each do |line_item|
-      line_items_visit = FactoryGirl.create(:line_items_visit, arm_id: arm.id, line_item_id: line_item.id, subject_count: arm.subject_count)
-      arm.visit_count.times do |index|
-        FactoryGirl.create(:visit_group, name: "name", arm_id: arm.id)
-      end
-      arm.visit_count.times do |index|
-         FactoryGirl.create(:visit, quantity: 0, line_items_visit_id: line_items_visit.id, visit_group_id: arm.visit_groups[index].id)
-      end
+      arm.create_line_items_visit(line_item)
+      # line_items_visit = FactoryGirl.create(:line_items_visit, arm_id: arm.id, line_item_id: line_item.id, subject_count: arm.subject_count)
+      # arm.visit_count.times do |index|
+      #   FactoryGirl.create(:visit_group, name: visit_names[index], arm_id: arm.id)
+      # end
+      # arm.visit_count.times do |index|
+      #    FactoryGirl.create(:visit, quantity: 0, line_items_visit_id: line_items_visit.id, visit_group_id: arm.visit_groups[index].id)
+      # end
     end
   end
 end

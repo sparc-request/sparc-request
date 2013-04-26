@@ -8,6 +8,15 @@ class LineItemsVisit < ActiveRecord::Base
   attr_accessible :line_item_id
   attr_accessible :subject_count  # number of subjects for this visit grouping
 
+  # Find a LineItemsVisit for the given arm and line item.  If it does
+  # not exist, create it first, then return it.
+  def self.for(arm, line_item)
+    return LineItemsVisit.find_or_create_by_arm_id_and_line_item_id(
+        arm.id,
+        line_item.id,
+        subject_count: arm.subject_count)
+  end
+
   # def create_or_destroy_visits(visit_count = self.arm.visit_count || 0)
   #   if visit_count == self.visits.count
   #     # if we already have the right number of visits, then do nothing

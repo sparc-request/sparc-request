@@ -15,7 +15,8 @@ class Arm < ActiveRecord::Base
     if self.visit_groups.size < self.visit_count
       self.visit_groups.create until self.visit_groups.size == self.visit_count
     end
-    liv = self.line_items_visits.create(:line_item_id => line_item.id, :arm_id => self.id, :subject_count => self.subject_count)
+
+    liv = LineItemsVisit.for(self, line_item)
     liv.create_visits
 
     if line_items_visits.count > 1

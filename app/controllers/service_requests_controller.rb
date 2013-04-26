@@ -642,11 +642,11 @@ class ServiceRequestsController < ApplicationController
     column_id = params[:column_id].to_i
     @arm = Arm.find params[:arm_id]
 
-    @arm.line_items_visits.each do |vg|
-      visit = vg.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
+    @arm.line_items_visits.each do |liv|
+      visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
       visit.update_attributes(
-          quantity:              vg.line_item.service.displayed_pricing_map.unit_minimum,
-          research_billing_qty:  vg.line_item.service.displayed_pricing_map.unit_minimum,
+          quantity:              liv.line_item.service.displayed_pricing_map.unit_minimum,
+          research_billing_qty:  liv.line_item.service.displayed_pricing_map.unit_minimum,
           insurance_billing_qty: 0,
           effort_billing_qty:    0)
     end
@@ -658,8 +658,8 @@ class ServiceRequestsController < ApplicationController
     column_id = params[:column_id].to_i
     @arm = Arm.find params[:arm_id]
 
-    @arm.line_items_visits.each do |vg|
-      visit = vg.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
+    @arm.line_items_visits.each do |liv|
+      visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
       visit.update_attributes({:quantity => 0, :research_billing_qty => 0, :insurance_billing_qty => 0, :effort_billing_qty => 0})
     end
     

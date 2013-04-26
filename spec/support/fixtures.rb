@@ -77,23 +77,15 @@ def build_service_request
 end
 
 def add_visits
-  #visit_names = ["I'm", "a", 'little', 'teapot', 'short', 'and', 'stout', 'visit', 'me', 'please']
   service_request.arms.each do |arm|
     service_request.per_patient_per_visit_line_items.each do |line_item|
       arm.create_line_items_visit(line_item)
-      # line_items_visit = FactoryGirl.create(:line_items_visit, arm_id: arm.id, line_item_id: line_item.id, subject_count: arm.subject_count)
-      # arm.visit_count.times do |index|
-      #   FactoryGirl.create(:visit_group, name: visit_names[index], arm_id: arm.id)
-      # end
-      # arm.visit_count.times do |index|
-      #    FactoryGirl.create(:visit, quantity: 0, line_items_visit_id: line_items_visit.id, visit_group_id: arm.visit_groups[index].id)
-      # end
     end
   end
 end
 
 def build_project
-  before :each do
+  let!(:project) {
     protocol = Project.create(FactoryGirl.attributes_for(:protocol))
     protocol.update_attribute(:funding_status, "funded")
     protocol.update_attribute(:funding_source, "federal")
@@ -114,11 +106,12 @@ def build_project
         project_rights:  "approve",
         role:            "business-grants-manager")
     service_request.update_attribute(:protocol_id, protocol.id)
-  end
+    protocol
+  }
 end
 
 def build_study
-  before :each do
+  let!(:study) {
     protocol = Study.create(FactoryGirl.attributes_for(:protocol))
     protocol.update_attribute(:funding_status, "funded")
     protocol.update_attribute(:funding_source, "federal")
@@ -139,7 +132,8 @@ def build_study
         project_rights:  "approve",
         role:            "business-grants-manager")
     service_request.update_attribute(:protocol_id, protocol.id)
-  end
+    protocol
+  }
 end
 
 def build_fake_notification

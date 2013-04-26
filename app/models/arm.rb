@@ -8,6 +8,18 @@ class Arm < ActiveRecord::Base
   attr_accessible :visit_count
   attr_accessible :subject_count      # maximum number of subjects for any visit grouping
 
+  after_save :fix_visit_grouping_subject_counts
+
+  def fix_visit_grouping_subject_counts
+    if self.subject_count_changed?
+      self.visit_groupings.each do |vg|
+        if vg.subject_count == self.subject_count_was
+          vg.update_attributes(:subject_count => self.subject_count)
+        end
+      end
+    end
+  end
+
   def create_visit_grouping line_item
     vg = self.visit_groupings.create(:line_item_id => line_item.id, :arm_id => self.id, :subject_count => self.subject_count)
     vg.create_or_destroy_visits

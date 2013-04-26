@@ -207,7 +207,7 @@ class ServiceRequestsController < ApplicationController
           #Check to see if ARM has been modified...
           arm.visit_groupings.each do |vg|
             #Update subject counts under certain conditions
-            if @service_request.status == 'first_draft' or vg.subject_count.nil? or vg.subject_count > arm.subject_count
+            if vg.subject_count.nil? or vg.subject_count > arm.subject_count
               vg.update_attribute(:subject_count, arm.subject_count)
             end
 

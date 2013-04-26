@@ -11,7 +11,8 @@ describe "calender totals" do
   before :each do
     service_request.reload
     visit service_calendar_service_request_path service_request.id
-
+    arm1.reload
+    arm2.reload
   end
 
   after :each do

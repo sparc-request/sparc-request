@@ -175,6 +175,7 @@ $ ->
   $('input#new_se').live 'focus', -> $(this).val('')
   $('input#new_se').live 'keypress', (e) ->
     if e.which == 13
+      return false if $(this).val() == ''
       new_tr = $('.ses table.se_clone_table tbody tr:first').clone()
       new_name = new_tr.find('.se_value').attr('name').replace('CLONE', '')
       new_tr.find('.se_value').attr('name', new_name)
@@ -184,6 +185,7 @@ $ ->
       $('table.se_table').show()
       e.preventDefault()
       $('#entity_form').submit()
+      $(this).val('')
 
   $('.se_delete').live 'click', ->
     $(this).parent().parent().remove()

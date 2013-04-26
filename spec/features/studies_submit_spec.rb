@@ -30,6 +30,7 @@ describe "creating a new study " do
     it "should clear errors and submit the form" do
       fill_in "study_short_title", :with => "Bob"
       fill_in "study_title", :with => "Dole"
+      fill_in "study_sponsor_name", :with => "Captain Kurt 'Hotdog' Zanzibar"
       select "Funded", :from => "study_funding_status"
       select "Federal", :from => "study_funding_source"
 
@@ -78,5 +79,4 @@ describe "editing a study" do
       find("#study_short_title").should have_value("Bob")
     end
   end
-
 end

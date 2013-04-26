@@ -5,30 +5,35 @@ class ServiceRequest < ActiveRecord::Base
   belongs_to :service_requester, :class_name => "Identity", :foreign_key => "service_requester_id"
   belongs_to :protocol
   has_many :sub_service_requests, :dependent => :destroy
-  has_many :line_items, :include => [:visits, :service], :dependent => :destroy
-  has_many :visits, :through => :line_items
+  has_many :line_items, :include => [:service], :dependent => :destroy
   has_many :charges, :dependent => :destroy
   has_many :tokens, :dependent => :destroy
   has_many :approvals, :dependent => :destroy
   has_many :documents, :through => :sub_service_requests
   has_many :document_groupings, :dependent => :destroy
+  has_many :arms, :dependent => :destroy
 
   validation_group :protocol do
     validates :protocol_id, :presence => {:message => "You must identify the service request with a study/project before continuing."} 
   end
 
   validation_group :service_details do
-    validates :visit_count, :numericality => { :greater_than => 0, :message => "You must specify the estimated total number of visits (greater than zero) before continuing.", :if => :has_per_patient_per_visit_services?}
-    validates :subject_count, :numericality => {:message => "You must specify the estimated total number of subjects before continuing.", :if => :has_per_patient_per_visit_services?}
+    # TODO: Fix validations for this area
+    # validates :visit_count, :numericality => { :greater_than => 0, :message => "You must specify the estimated total number of visits (greater than zero) before continuing.", :if => :has_per_patient_per_visit_services?}
+    # validates :subject_count, :numericality => {:message => "You must specify the estimated total number of subjects before continuing.", :if => :has_per_patient_per_visit_services?}
   end
   
   validation_group :service_details_back do
-    validates :visit_count, :numericality => { :greater_than => 0, :message => "You must specify the estimated total number of visits (greater than zero) before continuing.", :if => :has_visits?}
-    validates :subject_count, :numericality => {:message => "You must specify the estimated total number of subjects before continuing.", :if => :has_visits?}
+    # TODO: Fix validations for this area
+    # validates :visit_count, :numericality => { :greater_than => 0, :message => "You must specify the estimated total number of visits (greater than zero) before continuing.", :if => :has_visits?}
+    # validates :subject_count, :numericality => {:message => "You must specify the estimated total number of subjects before continuing.", :if => :has_visits?}
   end
 
   validation_group :service_calendar do
     #insert group specific validation
+  end
+
+  validation_group :calendar_totals do
   end
 
   validation_group :service_subsidy do
@@ -51,10 +56,6 @@ class ServiceRequest < ActiveRecord::Base
     #insert group specific validation
   end
 
-  def has_visits?
-    visits.count > 0 
-  end
-
   attr_accessible :protocol_id
   attr_accessible :obisid
   attr_accessible :status
@@ -63,8 +64,6 @@ class ServiceRequest < ActiveRecord::Base
   attr_accessible :approved
   attr_accessible :start_date
   attr_accessible :end_date
-  attr_accessible :visit_count
-  attr_accessible :subject_count
   attr_accessible :consult_arranged_date
   attr_accessible :pppv_complete_date
   attr_accessible :pppv_in_process_date
@@ -72,16 +71,45 @@ class ServiceRequest < ActiveRecord::Base
   attr_accessible :submitted_at
   attr_accessible :line_items_attributes
   attr_accessible :sub_service_requests_attributes
+  attr_accessible :arms_attributes
 
   accepts_nested_attributes_for :line_items
   accepts_nested_attributes_for :sub_service_requests
+  accepts_nested_attributes_for :arms, :allow_destroy => true
 
   alias_attribute :service_request_id, :id
 
-  after_save :fix_missing_visits
+  #after_save :fix_missing_visits
 
-  def init
-    self.visit_count = 0
+  def create_arm(args)
+    arm = self.arms.create(args)
+    self.per_patient_per_visit_line_items.each do |li|
+      arm.create_visit_grouping(li)
+    end
+    # Lets return this in case we need it for something else
+    arm
+  end
+
+  def create_line_item(args)
+    quantity = args.delete(:quantity) || 1
+    if line_item = self.line_items.create(args)
+
+      if line_item.service.is_one_time_fee?
+        # quantity is only set for one time fee
+        line_item.update_attribute(:quantity, quantity)
+
+      else
+        # only per-patient per-visit have arms
+        self.arms.each do |arm|
+          arm.create_visit_grouping(line_item)
+        end
+      end
+
+      line_item.reload
+      return line_item
+    else
+      return false
+    end
   end
 
   def one_time_fee_line_items
@@ -96,13 +124,11 @@ class ServiceRequest < ActiveRecord::Base
     end.compact
   end
 
-  def set_visit_page page_passed
-    return 1 if visit_count == nil or visit_count <= 5
-
+  def set_visit_page page_passed, arm
     page = case 
            when page_passed <= 0
              1
-           when page_passed > (visit_count / 5.0).ceil
+           when page_passed > (arm.visit_count / 5.0).ceil
              1
            else 
              page_passed
@@ -166,47 +192,26 @@ class ServiceRequest < ActiveRecord::Base
     per_patient_per_visit_line_items.count > 0
   end
 
-  def total_direct_costs_per_patient line_items=self.line_items
+  def total_direct_costs_per_patient arms=self.arms
     total = 0.0
-    line_items.select {|x| !x.service.is_one_time_fee?}.each do |li|
-      total += li.direct_costs_for_visit_based_service
+    arms.each do |arm|
+      total += arm.direct_costs_for_visit_based_service
     end
 
     total
   end
 
-  def total_indirect_costs_per_patient line_items=self.line_items
+  def total_indirect_costs_per_patient arms=self.arms
     total = 0.0
-    line_items.select {|x| !x.service.is_one_time_fee?}.each do |li|
-      total += li.indirect_costs_for_visit_based_service
+    arms.each do |arm|
+      total += arm.indirect_costs_for_visit_based_service
     end
 
     total
   end
 
-  def total_costs_per_patient line_items=self.line_items
-    self.total_direct_costs_per_patient(line_items) + self.total_indirect_costs_per_patient(line_items)
-  end
-
-  def maximum_direct_costs_per_patient line_items=self.line_items
-    total = 0.0
-    line_items.select {|x| !x.service.is_one_time_fee?}.each do |li|
-      total += li.direct_costs_for_visit_based_service_single_subject
-    end
-
-    total
-  end
-
-  def maximum_indirect_costs_per_patient line_items=self.line_items
-    if USE_INDIRECT_COST
-      self.maximum_direct_costs_per_patient(line_items) * (self.protocol.indirect_cost_rate.to_f / 100)
-    else
-      return 0
-    end
-  end
-
-  def maximum_total_per_patient line_items=self.line_items
-    self.maximum_direct_costs_per_patient(line_items) + maximum_indirect_costs_per_patient(line_items)
+  def total_costs_per_patient arms=self.arms
+    self.total_direct_costs_per_patient(arms) + self.total_indirect_costs_per_patient(arms)
   end
 
   def total_direct_costs_one_time line_items=self.line_items
@@ -232,95 +237,15 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def direct_cost_total line_items=self.line_items
-    self.total_direct_costs_one_time(line_items) + self.total_direct_costs_per_patient(line_items)
+    self.total_direct_costs_one_time(line_items) + self.total_direct_costs_per_patient
   end
 
   def indirect_cost_total line_items=self.line_items
-    self.total_indirect_costs_one_time(line_items) + self.total_indirect_costs_per_patient(line_items)
+    self.total_indirect_costs_one_time(line_items) + self.total_indirect_costs_per_patient
   end
 
   def grand_total line_items=self.line_items
     self.direct_cost_total(line_items) + self.indirect_cost_total(line_items)
-  end
-
-  # Add a single visit.  Returns true upon success and false upon
-  # failure.  If there is a failure, any changes are rolled back.
-  # 
-  # TODO: I don't quite like the way this is written.  Perhaps we should
-  # rename this method to add_visit! and make it raise exceptions; it
-  # would be easier to read.  But I'm not sure how to get access to the
-  # errors object in that case.
-  def add_visit position=nil
-    result = self.transaction do
-      # Add visits to each line item under the service request
-      self.per_patient_per_visit_line_items.each do |li|
-        if not li.add_visit(position) then
-          self.errors.initialize_dup(li.errors) # TODO: is this the right way to do this?
-          raise ActiveRecord::Rollback
-        end
-      end
-
-      # Reload to force refresh of the visits
-      self.reload
-
-      self.visit_count ||= 0 # in case we import a service request with nil visit count
-      self.visit_count += 1
-
-      self.save or raise ActiveRecord::Rollback
-    end
-
-    if result then
-      return true
-    else
-      self.reload
-      return false
-    end
-  end
-
-  def remove_visit position
-    result = self.transaction do
-      self.per_patient_per_visit_line_items.each do |li|
-        if not li.remove_visit(position) then
-          self.errors.initialize_dup(li.errors)
-          raise ActiveRecord::Rollback
-        end
-      end
-
-      self.reload
-
-      self.visit_count -= 1
-
-      self.save or raise ActiveRecord::Rollback
-    end
-    
-    if result
-      return true
-    else
-      self.reload
-      return false
-    end
-  end
-
-  def fix_missing_visits
-    if self.visit_count_changed?
-      self.per_patient_per_visit_line_items.each do |li|
-        li.fix_missing_visits(self.visit_count)
-      end
-    end
-  end
-
-  def insure_visit_count
-    if self.visit_count.nil? or self.visit_count <= 0
-      self.update_attribute(:visit_count, 1)
-      self.reload
-    end
-  end
-
-  def insure_subject_count
-    if subject_count.nil? or subject_count < 0
-      self.update_attribute(:subject_count, 1)
-      self.reload
-    end
   end
 
   def relevant_service_providers_and_super_users

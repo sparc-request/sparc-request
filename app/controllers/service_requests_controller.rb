@@ -177,32 +177,50 @@ class ServiceRequestsController < ApplicationController
   end
 
   def service_calendar
-    #use session so we know what page to show when tabs are switched
-    session[:service_calendar_page] = params[:page] if params[:page]
+    if @service_request.arms.blank?
+      redirect_to "/service_requests/#{@service_request.id}/#{@forward}"
+    else
+      #use session so we know what page to show when tabs are switched
+      session[:service_calendar_pages] = params[:pages] if params[:pages]
 
-    # TODO: why is @page not set here?  if it's not supposed to be set
-    # then there should be a comment as to why it's set in #review but
-    # not here
+      # TODO: why is @page not set here?  if it's not supposed to be set
+      # then there should be a comment as to why it's set in #review but
+      # not here
 
-    # build out visits if they don't already exist and delete/create if the visit count changes
-    @service_request.per_patient_per_visit_line_items.each do |line_item|
-      if @service_request.status == 'first_draft' or line_item.subject_count.nil?
-        line_item.update_attribute(:subject_count, @service_request.subject_count)
-      end
-
-      # TODO: refactor this into the model
-      unless line_item.visits.count == @service_request.visit_count
-        ActiveRecord::Base.transaction do
-          if line_item.visits.count < @service_request.visit_count
-            n = @service_request.visit_count - line_item.visits.count
-            Visit.bulk_create(n, :line_item_id => line_item.id)
-          elsif line_item.visits.count > @service_request.visit_count
-            line_item.visits.last(line_item.visits.count - @service_request.visit_count).each do |li|
-              li.delete
+      @service_request.arms.each do |arm|
+        #check each ARM for visit_groupings (in other words, it's a new arm)
+        if arm.visit_groupings.empty?
+          #Create missing visit_groupings
+          new_visit_groupings = Array.new
+          @service_request.per_patient_per_visit_line_items.each do |line_item|
+            vg = arm.visit_groupings.new
+            vg.line_item_id = line_item.id
+            vg.subject_count = arm.subject_count
+            vg.save
+            #push them to array, for easily looping over to create visits...
+            new_visit_groupings.push(vg)
+          end
+          new_visit_groupings.each do |vg|
+            vg.create_or_destroy_visits
+          end
+        else
+          #Check to see if ARM has been modified...
+          arm.visit_groupings.each do |vg|
+            #Update subject counts under certain conditions
+            if @service_request.status == 'first_draft' or vg.subject_count.nil? or vg.subject_count > arm.subject_count
+              vg.update_attribute(:subject_count, arm.subject_count)
             end
+
+            vg.create_or_destroy_visits
           end
         end
       end
+    end
+  end
+
+  def calendar_totals
+    if @service_request.arms.blank?
+      @back = 'service_details'
     end
   end
 
@@ -228,12 +246,21 @@ class ServiceRequestsController < ApplicationController
   end
   
   def review
-    session[:service_calendar_page] = params[:page] if params[:page]
+    arm_id = params[:arm_id].to_s if params[:arm_id]
+    page = params[:page] if params[:page]
+    session[:service_calendar_pages] = params[:pages] if params[:pages]
+    session[:service_calendar_pages][arm_id] = page if page && arm_id
 
     @service_list = @service_request.service_list
     @protocol = @service_request.protocol
     
-    @page = @service_request.set_visit_page session[:service_calendar_page].to_i
+    # Reset all the page numbers to 1 at the start of the review request
+    # step.
+    @pages = {}
+    @service_request.arms.each do |arm|
+      @pages[arm.id] = 1
+    end
+
     @tab = 'pricing'
   end
 
@@ -261,6 +288,7 @@ class ServiceRequestsController < ApplicationController
     end
 
     # generate the excel for this service request
+    # xls = render_to_string :action => 'show', :formats => [:xlsx]
     xls = render_to_string :action => 'show', :formats => [:xlsx]
 
     # send e-mail to all folks with view and above
@@ -342,6 +370,7 @@ class ServiceRequestsController < ApplicationController
     end
 
     # generate the excel for this service request
+    # xls = render_to_string :action => 'show', :formats => [:xlsx]
     xls = render_to_string :action => 'show', :formats => [:xlsx]
 
     # send e-mail to all folks with view and above
@@ -432,8 +461,16 @@ class ServiceRequestsController < ApplicationController
   end
 
   def refresh_service_calendar
-    session[:service_calendar_page] = params[:page] if params[:page]
-    @page = @service_request.set_visit_page session[:service_calendar_page].to_i
+    arm_id = params[:arm_id].to_s if params[:arm_id]
+    @arm = Arm.find arm_id if arm_id
+    page = params[:page] if params[:page]
+    session[:service_calendar_pages] = params[:pages] if params[:pages]
+    session[:service_calendar_pages][arm_id] = page if page && arm_id
+    @pages = {}
+    @service_request.arms.each do |arm|
+      new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
+      @pages[arm.id] = @service_request.set_visit_page new_page, arm
+    end
     @tab = 'pricing'
   end
 
@@ -451,27 +488,31 @@ class ServiceRequestsController < ApplicationController
       service = Service.find id
 
       unless service.is_one_time_fee?
-        @service_request.insure_visit_count
-        @service_request.insure_subject_count
+        if @service_request.arms.empty?
+          @service_request.arms.create(:name => "ARM 1", :visit_count => 1, :subject_count => 1)
+        end
       end
 
       # add service to line items
-      new_line_item = @service_request.line_items.create(:service_id => service.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum, :subject_count => @service_request.subject_count)
-      Visit.bulk_create(@service_request.visit_count, :line_item_id => new_line_item.id) unless @service_request.visit_count.blank?
-      @new_line_items << new_line_item
+      @new_line_items << @service_request.create_line_item(
+          service_id: service.id,
+          optional: true,
+          quantity: service.displayed_pricing_map.unit_minimum)
 
       # add required services to line items
       service.required_services.each do |rs|
-        new_line_item = @service_request.line_items.create(:service_id => rs.id, :optional => false, :quantity => service.displayed_pricing_map.unit_minimum, :subject_count => @service_request.subject_count) unless existing_service_ids.include?(rs.id)
-        Visit.bulk_create(@service_request.visit_count, :line_item_id => new_line_item.id) unless @service_request.visit_count.blank?
-        @new_line_items << new_line_item
+        @new_line_items << @service_request.create_line_item(
+            service_id: rs.id,
+            optional: false,
+            quantity: service.displayed_pricing_map.unit_minimum) unless existing_service_ids.include?(rs.id)
       end
 
       # add optional services to line items
       service.optional_services.each do |rs|
-        new_line_item = @service_request.line_items.create(:service_id => rs.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum, :subject_count => @service_request.subject_count) unless existing_service_ids.include?(rs.id)
-        Visit.bulk_create(@service_request.visit_count, :line_item_id => new_line_item.id) unless @service_request.visit_count.blank?
-        @new_line_items << new_line_item
+        @new_line_items << @service_request.create_line_item(
+            service_id: rs.id,
+            optional: true,
+            quantity: service.displayed_pricing_map.unit_minimum) unless existing_service_ids.include?(rs.id)
       end
 
       # create sub_service_rquests
@@ -505,7 +546,7 @@ class ServiceRequestsController < ApplicationController
       end
     end
 
-    @line_items.find_by_service_id(service.id).delete
+    @line_items.find_by_service_id(service.id).destroy
     @line_items.reload
     
     #@service_request = current_user.service_requests.find session[:service_request_id]
@@ -517,6 +558,14 @@ class ServiceRequestsController < ApplicationController
     to_delete = @service_request.sub_service_requests.map(&:organization_id) - @service_request.service_list.keys
     to_delete.each do |org_id|
       @service_request.sub_service_requests.find_by_organization_id(org_id).destroy
+    end
+
+    # clean up arms
+    @service_request.reload
+    @service_request.arms.each do |arm|
+      if arm.visit_groupings.empty?
+        arm.destroy
+      end
     end
   end
 
@@ -560,11 +609,12 @@ class ServiceRequestsController < ApplicationController
   end
 
   def select_calendar_row
-    @line_item = LineItem.find params[:line_item_id]
-    @line_item.visits.each do |visit|
+    @visit_grouping = VisitGrouping.find params[:visit_grouping_id]
+    @service = @visit_grouping.line_item.service
+    @visit_grouping.visits.each do |visit|
       visit.update_attributes(
-          quantity:              visit.line_item.service.displayed_pricing_map.unit_minimum,
-          research_billing_qty:  visit.line_item.service.displayed_pricing_map.unit_minimum,
+          quantity:              @service.displayed_pricing_map.unit_minimum,
+          research_billing_qty:  @service.displayed_pricing_map.unit_minimum,
           insurance_billing_qty: 0,
           effort_billing_qty:    0)
     end
@@ -573,8 +623,8 @@ class ServiceRequestsController < ApplicationController
   end
   
   def unselect_calendar_row
-    @line_item = LineItem.find params[:line_item_id]
-    @line_item.visits.each do |visit|
+    @visit_grouping = VisitGrouping.find params[:visit_grouping_id]
+    @visit_grouping.visits.each do |visit|
       visit.update_attributes({:quantity => 0, :research_billing_qty => 0, :insurance_billing_qty => 0, :effort_billing_qty => 0})
     end
 
@@ -583,12 +633,13 @@ class ServiceRequestsController < ApplicationController
 
   def select_calendar_column
     column_id = params[:column_id].to_i
+    @arm = Arm.find params[:arm_id]
 
-    @service_request.per_patient_per_visit_line_items.each do |line_item|
-      visit = line_item.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
+    @arm.visit_groupings.each do |vg|
+      visit = vg.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
       visit.update_attributes(
-          quantity:              visit.line_item.service.displayed_pricing_map.unit_minimum,
-          research_billing_qty:  visit.line_item.service.displayed_pricing_map.unit_minimum,
+          quantity:              vg.line_item.service.displayed_pricing_map.unit_minimum,
+          research_billing_qty:  vg.line_item.service.displayed_pricing_map.unit_minimum,
           insurance_billing_qty: 0,
           effort_billing_qty:    0)
     end
@@ -598,9 +649,10 @@ class ServiceRequestsController < ApplicationController
   
   def unselect_calendar_column
     column_id = params[:column_id].to_i
+    @arm = Arm.find params[:arm_id]
 
-    @service_request.per_patient_per_visit_line_items.each do |line_item|
-      visit = line_item.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
+    @arm.visit_groupings.each do |vg|
+      visit = vg.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
       visit.update_attributes({:quantity => 0, :research_billing_qty => 0, :insurance_billing_qty => 0, :effort_billing_qty => 0})
     end
     

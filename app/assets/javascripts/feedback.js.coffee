@@ -11,11 +11,19 @@ $(document).ready ->
     height: 425
     width: 500
     modal: true
-    buttons:
-      Submit: ->
-        $(this).submit()
-      Cancel: ->
-        $(this).dialog "close"
+    buttons: [
+      {
+        id: "submit_feedback"
+        text: "Submit"
+        click: ->
+          $("#feedback_form").submit()
+      },
+      {
+        id: "cancel_feedback"
+        text: "Cancel"
+        click: ->
+          $(this).dialog('close')
+      }]
     close: ->
         $(this).clearForm()
 

@@ -43,7 +43,7 @@ def build_service_request_with_study
 end
 
 def build_service_request
-  let!(:service_request) { FactoryGirl.create(:service_request, status: "draft", subject_count: 2, visit_count: 10, start_date: Time.now, end_date: Time.now + 10.days) }
+  let!(:service_request) { FactoryGirl.create(:service_request, status: "draft", start_date: Time.now, end_date: Time.now + 10.days) }
   let!(:institution)  {FactoryGirl.create(:institution,name: 'Medical University of South Carolina', order: 1,obisid: '87d1220c5abf9f9608121672be000412',abbreviation: 'MUSC', is_available: 1)}
   let!(:provider) {FactoryGirl.create(:provider,parent_id:institution.id,name: 'South Carolina Clinical and Translational Institute (SCTR)',order: 1,css_class: 'blue-provider',obisid: '87d1220c5abf9f9608121672be0011ff',abbreviation: 'SCTR1',process_ssrs: 0,is_available: 1)}
   let!(:program) {FactoryGirl.create(:program,type:'Program',parent_id:provider.id,name:'Office of Biomedical Informatics',order:1,obisid:'87d1220c5abf9f9608121672be021963',abbreviation:'Informatics',process_ssrs:  0, is_available: 1)}
@@ -53,11 +53,13 @@ def build_service_request
   let!(:service)         { FactoryGirl.create(:service, organization_id:program.id, name: 'One Time Fee') }
   let!(:line_item)       { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service.id, sub_service_request_id: sub_service_request.id, quantity: 5, units_per_quantity: 1) }
   let!(:pricing_setup)   {FactoryGirl.create(:pricing_setup, organization_id: program.id, display_date: Time.now - 1.day, federal: 50, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal')}
-  let!(:pricing_map)     { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service.id, is_one_time_fee: true, display_date: Time.now - 1.day, full_rate: 2000) }
+  let!(:pricing_map)     { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service.id, is_one_time_fee: true, display_date: Time.now - 1.day, full_rate: 2000, units_per_qty_max: 20) }
   # Per patient per visit service
   let!(:service2)        { FactoryGirl.create(:service, organization_id:program.id, name: 'Per Patient') }
-  let!(:line_item2)      { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service2.id, sub_service_request_id: sub_service_request.id, subject_count: 1, quantity: 0) }
-  let!(:pricing_map2)    { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service2.id, is_one_time_fee: false, display_date: Time.now - 1.day, full_rate: 2000, federal_rate: 3000) }
+  let!(:line_item2)      { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service2.id, sub_service_request_id: sub_service_request.id, quantity: 0) }
+  let!(:arm1)            { FactoryGirl.create(:arm, name: "Arm", service_request_id: service_request.id, visit_count: 10, subject_count: 2)}
+  let!(:arm2)            { FactoryGirl.create(:arm, name: "Arm2", service_request_id: service_request.id, visit_count: 5, subject_count: 4)}
+  let!(:pricing_map2)    { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service2.id, is_one_time_fee: false, display_date: Time.now - 1.day, full_rate: 2000, federal_rate: 3000, units_per_qty_max: 20) }
   let!(:service_provider) {FactoryGirl.create(:service_provider, organization_id: program.id, identity_id: jug2.id)}
 
   before :each do
@@ -69,8 +71,11 @@ end
 
 def add_visits
   visit_names = ["I'm", "a", 'little', 'teapot', 'short', 'and', 'stout', 'visit', 'me', 'please']
-  (1..service_request.visit_count).each do |index|
-    FactoryGirl.create(:visit, line_item_id: line_item2.id, quantity: 0, name: visit_names[index - 1])
+  service_request.arms.each do |arm|
+    visit_grouping = FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item2.id, subject_count: arm.subject_count)
+    arm.visit_count.times do |index|
+       FactoryGirl.create(:visit, quantity: 0, name: visit_names[index], visit_grouping_id: visit_grouping.id)
+    end
   end
 end
 

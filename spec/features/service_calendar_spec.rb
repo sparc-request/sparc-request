@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "service calendar" do
+describe "service calendar", :js => true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
@@ -15,99 +15,69 @@ describe "service calendar" do
   end
 
   describe "display rates" do
-    it "should not show the full rate if your cost > full rate", :js => true do
-      find(".service_rate_#{line_item2.id}").should have_exact_text("")
-    end
-
-    it "should show the full rate when full rate > your cost", :js => true do
-      find(".service_rate_#{line_item.id}").should have_exact_text("$20.00")
-    end
-  end
-
-  describe "one time fees" do
-    it "should calculate the totals", :js => true do
-      find(".total_#{line_item.id}").should have_exact_text("$50.00") # 5 quantity 1 unit per
+    it "should not show the full rate if your cost > full rate" do
+      first(".service_rate_#{arm1.visit_groupings.first.id}").should have_exact_text("")
     end
   end
 
   describe "per patient per visit" do
+
     describe "template tab" do
-      it "totals should be 0 when visits aren't checked", :js => true do
-        find(".pp_total_direct_cost").text().should have_exact_text("$0.00")
-        if USE_INDIRECT_COST
-          find(".pp_total_indirect_cost").text().should have_exact_text("$0.00")
-        end
-        find(".pp_total_cost").text().should have_exact_text("$0.00")
-      end
-
-      it "should update total costs when a visit is checked", :js => true do
-        visit_id = line_item2.visits[1].id
-        page.check("visits_#{visit_id}")
-        find(".total_#{line_item2.id}").should have_exact_text("$30.00")
-      end
-
-      it "should change visits when -> is clicked", :js => true do
-        click_link("->")
-        retry_until {
-          find('#visit_name_6').should have_value("Visit 6")
-        }
-      end
 
       describe "selecting check row button" do
-        it "should check all visits", :js => true do
-          remove_from_dom(".total_#{line_item2.id}")
-          click_link "check_row_#{line_item2.id}_template"
+
+        it "should check all visits" do
+          click_link "check_row_#{arm1.visit_groupings.first.id}_template"
           wait_for_javascript_to_finish
-          find(".total_#{line_item2.id}").should have_exact_text('$300.00') # Probably a better way to do this. But this should be the 10 visits added together.
+          first(".total_#{arm1.visit_groupings.first.id}").should have_exact_text('$300.00') # Probably a better way to do this. But this should be the 10 visits added together.
         end
 
-        it "should uncheck all visits", :js => true do
-          remove_from_dom(".total_#{line_item2.id}")
-          click_link "check_row_#{line_item2.id}_template"
+        it "should uncheck all visits" do
+          click_link "check_row_#{arm1.visit_groupings.first.id}_template"
           wait_for_javascript_to_finish
-          find(".total_#{line_item2.id}").should have_exact_text('$300.00') # this is here to wait for javascript to finish
+          first(".total_#{arm1.visit_groupings.first.id}").should have_exact_text('$300.00') # this is here to wait for javascript to finish
 
-          remove_from_dom(".total_#{line_item2.id}")
-          click_link "check_row_#{line_item2.id}_template"
+          remove_from_dom(".total_#{arm1.visit_groupings.first.id}")
+          click_link "check_row_#{arm1.visit_groupings.first.id}_template"
           wait_for_javascript_to_finish
-          find(".total_#{line_item2.id}").should have_exact_text('$0.00') # Probably a better way to do this.
+          first(".total_#{arm1.visit_groupings.first.id}").should have_exact_text('$0.00') # Probably a better way to do this.
         end
       end
 
       describe "selecting check column button" do
-        it "should check all visits in the given column", :js => true do
-          click_link "check_all_column_3"
+
+        it "should check all visits in the given column" do
+          wait_for_javascript_to_finish
+          first("#check_all_column_3").click
           wait_for_javascript_to_finish
 
-          find("#visits_#{line_item2.visits[2].id}").checked?.should eq(true)
+          find("#visits_#{arm1.visit_groupings.first.visits[2].id}").checked?.should eq(true)
         end
 
-        it "should uncheck all visits in the given column", :js => true do
-          click_link "check_all_column_3"
+        it "should uncheck all visits in the given column" do
+          wait_for_javascript_to_finish
+          first("#check_all_column_3").click        
+          wait_for_javascript_to_finish
+          
+
+          find("#visits_#{arm1.visit_groupings.first.visits[2].id}").checked?.should eq(true)
+          wait_for_javascript_to_finish
+          first("#check_all_column_3").click
           wait_for_javascript_to_finish
 
-          find("#visits_#{line_item2.visits[2].id}").checked?.should eq(true)
-
-          click_link "check_all_column_3"
-          wait_for_javascript_to_finish
-
-          find("#visits_#{line_item2.visits[2].id}").checked?.should eq(false)
+          find("#visits_#{arm1.visit_groupings.first.visits[2].id}").checked?.should eq(false)
         end
       end
 
       describe "changing subject count" do
         before :each do
-          visit_id = line_item2.visits[1].id
+          visit_id = arm1.visit_groupings.first.visits[1].id
           page.check("visits_#{visit_id}")
-          select "2", :from => "line_item_#{line_item2.id}_count"
+          select "2", :from => "visit_grouping_#{arm1.visit_groupings.first.id}_count"
         end
 
-        it "should change total costs", :js => true do
-          find('.pp_total_direct_cost').should have_exact_text('$60.00')
-        end
-
-        it "should not change maximum totals", :js => true do
-          find('.pp_max_total_direct_cost').should have_exact_text("$30.00")
+        it "should not change maximum totals" do
+          find(".pp_max_total_direct_cost.arm_#{arm1.id}").should have_exact_text("$30.00")
         end
       end
     end
@@ -115,102 +85,92 @@ describe "service calendar" do
     describe "billing strategy tab" do
       before :each do
         click_link "billing_strategy_tab"
+        @visit_id = arm1.visit_groupings.first.visits[1].id
       end
 
       describe "selecting check all row button" do
-        it "should overwrite the quantity in research billing box", :js => true do
-          fill_in "visits_#{line_item2.visits[1].id}_research_billing_qty", :with => 10
+
+        it "should overwrite the quantity in research billing box" do
+          fill_in "visits_#{@visit_id}_research_billing_qty", :with => 10
           wait_for_javascript_to_finish
-          click_link "check_row_#{line_item2.id}_billing_strategy"
+          click_link "check_row_#{arm1.visit_groupings.first.id}_billing_strategy"
           wait_for_javascript_to_finish
-          find("#visits_#{line_item2.visits[1].id}_research_billing_qty").should have_value("1")
+          find("#visits_#{@visit_id}_research_billing_qty").should have_value("1")
         end
       end
 
       describe "increasing the 'R' billing quantity" do
-        it "should increase the total cost", :js => true do
-          # Remove these elements so that fill_in can't fill in the "old" fields
-          page.execute_script("$('#visits_#{line_item2.visits[1].id}_insurance_billing_qty').remove()")
-          page.execute_script("$('#visits_#{line_item2.visits[1].id}_effort_billing_qty').remove()")
-          page.execute_script("$('#visits_#{line_item2.visits[1].id}_research_billing_qty').remove()")
 
-          click_link "check_row_#{line_item2.id}_billing_strategy"
+        # before :each do
+        #   @visit_id = arm1.visit_groupings.first.visits[1].id
+        # end
+
+        it "should increase the total cost" do
+         
+          find("#visits_#{@visit_id}_research_billing_qty").set("")
+          find("#visits_#{@visit_id}_research_billing_qty").click()
+          fill_in( "visits_#{@visit_id}_research_billing_qty", :with => 10)
+          find("#visits_#{@visit_id}_insurance_billing_qty").click()
           wait_for_javascript_to_finish
 
-          find("#visits_#{line_item2.visits[1].id}_research_billing_qty").set("")
-          find("#visits_#{line_item2.visits[1].id}_research_billing_qty").click()
-          fill_in( "visits_#{line_item2.visits[1].id}_research_billing_qty", :with => 10)
-          find("#visits_#{line_item2.visits[1].id}_insurance_billing_qty").click()
-          wait_for_javascript_to_finish
-
-          all('.pp_max_total_direct_cost').each do |x|
+          all(".pp_max_total_direct_cost.arm_#{arm1.id}").each do |x|
             if x.visible?
-              x.should have_exact_text("$570.00")
+              x.should have_exact_text("$300.00")
             end
           end
         end
 
-        it "should update each visits maximum costs", :js => true do
-          # Remove these elements so that fill_in can't fill in the "old" fields
-          page.execute_script("$('#visits_#{line_item2.visits[1].id}_insurance_billing_qty').remove()")
-          page.execute_script("$('#visits_#{line_item2.visits[1].id}_effort_billing_qty').remove()")
-          page.execute_script("$('#visits_#{line_item2.visits[1].id}_research_billing_qty').remove()")
-          page.execute_script("$('.visit_column_2.max_direct_per_patient').remove()")
+        it "should update each visits maximum costs" do
 
-          click_link "check_row_#{line_item2.id}_billing_strategy"
-          wait_for_javascript_to_finish
-
-          find("#visits_#{line_item2.visits[1].id}_research_billing_qty").set("")
-          find("#visits_#{line_item2.visits[1].id}_research_billing_qty").click()
-          fill_in "visits_#{line_item2.visits[1].id}_research_billing_qty", :with => 10
-          find("#visits_#{line_item2.visits[1].id}_insurance_billing_qty").click()
+          find("#visits_#{@visit_id}_research_billing_qty").set("")
+          find("#visits_#{@visit_id}_research_billing_qty").click()
+          fill_in "visits_#{@visit_id}_research_billing_qty", :with => 10
+          find("#visits_#{@visit_id}_insurance_billing_qty").click()
 
           wait_for_javascript_to_finish
 
           sleep 3 # TODO: ugh: I got rid of all the sleeps, but I can't get rid of this one
-
-          all('.visit_column_2.max_direct_per_patient').each do |x|
+     
+          all(".visit_column_2.max_direct_per_patient.arm_#{arm1.id}").each do |x|
             if x.visible?
               x.should have_exact_text("$300.00")
             end
           end
 
-          all('.visit_column_2.max_indirect_per_patient').each do |x|
-            if x.visible?
-              x.should have_exact_text "$150.00"
+          if USE_INDIRECT_COST
+            all(".visit_column_2.max_indirect_per_patient.arm_#{arm1.id}").each do |x|
+              if x.visible?
+                x.should have_exact_text "$150.00"
+              end
             end
           end
         end
       end
 
       describe "increasing the '%' or 'T' billing quantity" do
-        it "should not increase the total cost", :js => true do
-          # Remove these elements so that fill_in can't fill in the "old" fields
-          page.execute_script("$('#visits_#{line_item2.visits[1].id}_insurance_billing_qty').remove()")
-          page.execute_script("$('#visits_#{line_item2.visits[1].id}_effort_billing_qty').remove()")
-          page.execute_script("$('#visits_#{line_item2.visits[1].id}_research_billing_qty').remove()")
 
-          # Now check the row; the fields we just deleted will be
-          # re-created
-          click_link "check_row_#{line_item2.id}_billing_strategy"
-          wait_for_javascript_to_finish
+        before :each do
+          @visit_id = arm1.visit_groupings.first.visits[1].id
+        end
+
+        it "should not increase the total cost" do
 
           remove_from_dom('.pp_max_total_direct_cost')
 
           # Putting values in these fields should not increase the total
           # cost
-          fill_in "visits_#{line_item2.visits[1].id}_insurance_billing_qty", :with => 10
-          find("#visits_#{line_item2.visits[1].id}_effort_billing_qty").click()
+          fill_in "visits_#{@visit_id}_insurance_billing_qty", :with => 10
+          find("#visits_#{@visit_id}_effort_billing_qty").click()
 
-          fill_in "visits_#{line_item2.visits[1].id}_effort_billing_qty", :with => 10
-          find("#visits_#{line_item2.visits[1].id}_research_billing_qty").click()
+          fill_in "visits_#{@visit_id}_effort_billing_qty", :with => 10
+          find("#visits_#{@visit_id}_research_billing_qty").click()
 
-          fill_in "visits_#{line_item2.visits[1].id}_research_billing_qty", :with => 1
-          find("#visits_#{line_item2.visits[1].id}_insurance_billing_qty").click()
+          fill_in "visits_#{@visit_id}_research_billing_qty", :with => 1
+          find("#visits_#{@visit_id}_insurance_billing_qty").click()
 
-          all('.pp_max_total_direct_cost').each do |x|
+          all(".pp_max_total_direct_cost.arm_#{arm1.id}").each do |x|
             if x.visible?
-              x.should have_exact_text "$300.00"
+              x.should have_exact_text "$30.00"
             end
           end
         end
@@ -218,11 +178,16 @@ describe "service calendar" do
     end
 
     describe "quantity tab" do
-      it "should add all billing quantities together", :js => true do
+
+      before :each do
+        @visit_id = arm1.visit_groupings.first.visits[1].id
+      end
+
+      it "should add all billing quantities together" do
         click_link "billing_strategy_tab"
         wait_for_javascript_to_finish
 
-        visit_id = line_item2.visits[1].id
+        visit_id = @visit_id
 
         fill_in "visits_#{visit_id}_research_billing_qty", :with => 10
         find("#visits_#{visit_id}_insurance_billing_qty").click()
@@ -239,7 +204,7 @@ describe "service calendar" do
         click_link "quantity_tab"
         wait_for_javascript_to_finish
 
-        all('.visit.visit_column_2').each do |x|
+        all(".visit.visit_column_2.arm_#{arm1.id}").each do |x|
           if x.visible?
             x.should have_exact_text('30')
           end
@@ -248,7 +213,12 @@ describe "service calendar" do
     end
 
     describe "pricing tab" do
-      it "should be blank if the visit is not checked", :js => true do
+
+      before :each do
+        @visit_id = arm1.visit_groupings.first.visits[1].id
+      end
+
+      it "should be blank if the visit is not checked" do
         click_link "pricing_tab"
         all('.visit.visit_column_2').each do |x|
           if x.visible?
@@ -257,15 +227,25 @@ describe "service calendar" do
         end
       end
 
-      it "should show total price for that visit", :js => true do
+      it "should show total price for that visit" do
         click_link "billing_strategy_tab"
-        fill_in "visits_#{line_item2.visits[1].id}_research_billing_qty", :with => 5
+        fill_in "visits_#{@visit_id}_research_billing_qty", :with => 5
         click_link "pricing_tab"
         all('.visit.visit_column_2').each do |x|
           if x.visible?
             x.should have_exact_text('150.00')
           end
         end
+      end
+    end
+
+    describe "hovering over visit name text box" do
+
+      it "should open up a qtip message" do
+        wait_for_javascript_to_finish
+        first('.visit_name').click
+        wait_for_javascript_to_finish
+        page.should have_content("Click to rename your visits.")
       end
     end
   end

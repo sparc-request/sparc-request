@@ -141,11 +141,15 @@ module CapybaraSupport
       internal_rate_type:           'full')
     pricing_setup.save!
 
-    service_request = FactoryGirl.create(:service_request, status: "draft", subject_count: 2, visit_count: 10)
+    service_request = FactoryGirl.create(:service_request, status: "draft", subject_count: 2)
 
     sub_service_request = FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id,status: "draft")
 
     service_request.update_attribute(:service_requester_id, Identity.find_by_ldap_uid("jug2").id)
+
+    arm = FactoryGirl.create(:arm, service_request_id: service_request.id, subject_count: 2, visit_count: 10)
+
+    visit_grouping = FactoryGirl.create(:visit_grouping, arm_id: arm.id, subject_count: arm.subject_count)
 
   end
   
@@ -165,5 +169,23 @@ module CapybaraSupport
     ensure
       Capybara.default_wait_time = orig_seconds
     end
+  end
+
+  # Following two methods used for adding and deleting catalog managers, service providers, etc. in spec/features/catalog_manger/shared_spec.rb
+  def add_identity_to_organization(field)
+    fill_in "#{field}", with: "Leonard"
+    wait_for_javascript_to_finish
+    page.find('a', text: "Jason Leonard (leonarjp@musc.edu)", visible: true).click()
+    wait_for_javascript_to_finish
+    first("#save_button").click
+    wait_for_javascript_to_finish
+  end
+
+  def delete_identity_from_organization(field, delete)
+    add_identity_to_organization("#{field}")
+    # This overrides the javascript confirm dialog
+    page.evaluate_script('window.confirm = function() { return true; }')
+    find("#{delete}").click
+    wait_for_javascript_to_finish
   end
 end

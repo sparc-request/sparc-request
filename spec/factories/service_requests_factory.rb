@@ -8,8 +8,6 @@ FactoryGirl.define do
     service_requester_id { Random.rand(1000) }
     notes                { Faker::Lorem.sentences(2) }
     approved             { false }
-    visit_count          { Random.rand(500) }
-    subject_count        { Random.rand(500) } 
 
 
     trait :approved do

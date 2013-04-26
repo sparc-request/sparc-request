@@ -115,15 +115,15 @@ en:
     instructions_2: "Please note that any \"Professional Services\" listed below have UMA fees associated with them and cannot be removed from this screen."
     instructions_3: "If Professional Services are covered by % effort, you will have the opportunity to indicate this in Step 2."
     instructions_4: "If you wish to add services, you must return to the \"Service Catalog\"."
-    instructions_center: "Before continuing to Step 2, you must select a Research Study or Project to which the services selected are associated. Only 1 Research Study/Project can be assigned to this request."
-    tied_to_study: "Is this Service Request tied to a particular Research Study"
+    instructions_center: "Before continuing to Step 2, please select a Research Study or Project to which the services selected are associated. Please note that only 1 Research Study/Project can be assigned to this request."
+    tied_to_study: "Is this request tied to a Research Study or a Research Project?"
     select_study: "Select a Study"
     select_study_long: "Select a Research Study:"
     edit_study: "Edit Study"
     select_project: "Select a Project"
     select_project_long: "Select a Research Project:"
     edit_project: "Edit Project"
-    or: "-- OR --"
+    or: "-- If not in list above, create NEW Study/Project Below --"
     new_study: "New Study"
     new_project: "New Project"
     sidebar_box:
@@ -133,7 +133,7 @@ en:
   # Subsidy Page
   subsidy_page:
     not_eligible: "None of the services you have selected are eligible for a subsidy."
-    eligible: "The services selected below may be eligible for a subsidy. Please enter requested funding information."
+    eligible_html: "The services selected below may be eligible for a <b><i>funding award</i></b> or subsidy to cover some or all of the costs of the services. For example, SCTR (CTSA) provides funding awards for the CTRC."
     table:
       institution: "Institution/Provider/Program/Core"
       total_estimated: "Total Estimated Costs"
@@ -147,9 +147,9 @@ en:
   calendar_page:
     tabs:
       template: "Template Tab"
-      billing: "Billing Strategy Tab"
-      quantity: "Quantity Tab"
-      pricing: "Pricing Tab"
+      billing: "Quantity/Billing Tab"
+      quantity: "Quantity Display Tab"
+      pricing: "Pricing Display Tab"
     billing_legend:
       research: "R = Research"
       third_party: "T = Third Party (PT Insurance)"
@@ -162,8 +162,10 @@ en:
       qty_type: "Qty Type"
       subjects: "# Subjects"
       total: "Total"
+      total_per_patient: "Total Per Patient"
+      total_per_study: "Total Per Study"
       other_services: "Other Services"
-      total_study: "Total Study Costs"
+      total_study: "Study Cost Totals"
     per_patient: "Per Patient/Visit Services"
     labels:
       maximum_direct: "Maximum Total Direct Costs Per Patient"
@@ -172,9 +174,12 @@ en:
       total_direct: "Total Direct Costs (Per Patient/Visit Services) Per Study"
       total_indirect: "Total Indirect Costs (Per Patient/Visit Services) Per Study"
       total_costs: "Total Costs (Per Patient/Visit Services) Per Study"
-      total_direct_other: "Total Direct Costs (other) Per Study"
-      total_indirect_other: "Total Indirect Costs (other) Per Study"
-      total_costs_other: "Total Costs (other) Per Study"
+      total_direct_arm: "Total Direct Costs (Per Patient/Visit Services) All ARMs"
+      total_indirect_arm: "Total Indirect Costs (Per Patient/Visit Services) All ARMs"
+      total_costs_arm: "Total Costs (Per Patient/Visit Services) All ARMs"
+      total_direct_other: "Total Direct Costs (Other Services) Per Study"
+      total_indirect_other: "Total Indirect Costs (Other Services) Per Study"
+      total_costs_other: "Total Costs (Other Services) Per Study"
       grand_total_direct: "Grand Total: Direct Costs"
       grand_total_indirect: "Grand Total: Indirect Costs"
       grand_total: "Grand Total:"
@@ -183,7 +188,8 @@ en:
   documents:
     message: "Your file is uploading.  Please be patient as this may take a while with large files."
     no_documents: "No documents found"
-    instructions: "Please add any additional information that may be helpful to service providers."
+    upload_instructions_html: "<ul><li>Click Add New Document.</li><li>Check the service providers you wish to receive the document in the Allow Access column.</li><li>Select the file you wish to upload and click Upload.</li></ul>"
+    notes_instructions: "Please add any additional information that may be helpful to service providers."
     admin_instructions: "Additional Notes -- If specific to service, please specify in text:"
     upload_message: "Your file is uploading.  Please be patient as this may take a while with large files."
     make_changes: "To make changes to selected services please click"
@@ -331,11 +337,14 @@ en:
   # Edit Study form
   study_form:
     description: "Before you can complete a service request, please tell us more about your research study. This information will be used by our staff to decide the best way to process your request."
+    needed_info: "Information Needed to obtain correct pricing"
+    optional_text: "Optional Information (Used for reporting purposes and saved for your future use)"
+    options: "Optional"
     attributes: "Study Attributes"
     title: "Protocol Title:*"
     status_blank: "Select a Funding Status"
     udak_project_number: "Financial Account (UDAK#):"
-    sponsor_name: "Sponsor Name:"
+    sponsor_name: "Sponsor Name:*"
     rate: "Indirect Cost Rate:"
     funding_rfa: "Funding Opportunity #/RFA:"
     potential_funding_start_date: "Potential Funding Start Date:"
@@ -378,7 +387,7 @@ en:
     inventors: "Inventors:"
     type: "Study Type (Check all that apply)"
     impact: "Impact Areas"
-    affiliations: "Affiliations and Collaborations"
+    affiliations: "Affiliations, Collaborations, and Memberships"
     save: "Save Study"
 
   # Edit Project Form
@@ -415,6 +424,7 @@ en:
     study_start_date: "Estimated Study Start Date"
     study_end_date: "Estimated Study End Date"
     services_required: "You can't continue unless you have services in your cart."
+    name: "ARM Name"
     services: "My Services"
     help: "Help"
 
@@ -466,6 +476,8 @@ en:
         cost: "Your Cost"
         subjects: "# Subjects"
         total: "Service Total"
+        total_per_patient: "Total Per Patient"
+        total_per_study: "Total Per Study"
       totals:
         direct_cost: "Total Direct Cost"
         indirect_cost: "Total Indirect Costs"
@@ -679,6 +691,7 @@ en:
       approval_type: "Type"
       approved_by: "Approved By"
     service_button: "Add Service"
+    remove_service_button: "Remove Service"
     core_approvals:
       header: "Core Approvals"
       nursing: "Nursing/Nutrition Approved"
@@ -731,6 +744,9 @@ en:
       visits:
         header: "Per-Patient/Per-Visit"
         no_requests: "There are no per-patient/per-visit requests."
+        arm: "Select Arm"
+        add_arm: "Add an Arm"
+        remove_arm: "Remove an Arm"
         add: "Add a Visit"
         delete: "Delete a Visit"
         add_link: "Add a Visit"

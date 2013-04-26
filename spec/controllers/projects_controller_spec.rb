@@ -3,7 +3,7 @@ require 'spec_helper'
 # index new create edit update delete show
 
 describe ProjectsController do
-  let!(:service_request) { FactoryGirl.create(:service_request, visit_count: 0) }
+  let!(:service_request) { FactoryGirl.create(:service_request) }
   let!(:identity) { FactoryGirl.create(:identity) }
 
   stub_controller

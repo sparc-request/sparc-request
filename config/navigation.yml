@@ -32,6 +32,15 @@ service_calendar:
   css_class: light-blue-provider
   back: service_details 
   catalog: catalog
+  forward: calendar_totals
+  validation_groups:
+    service_subsidy:
+
+calendar_totals:
+  step_text: 'STEP 2: Study Cost Totals'
+  css_class: light-blue-provider
+  back: service_calendar
+  catalog: catalog
   forward: service_subsidy
   validation_groups:
     service_subsidy:
@@ -39,7 +48,7 @@ service_calendar:
 service_subsidy:
   step_text: 'STEP 2: Enter Subsidy Information'
   css_class: light-blue-provider
-  back: service_calendar
+  back: calendar_totals
   catalog: catalog
   forward: document_management 
   validation_groups:

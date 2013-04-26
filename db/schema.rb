@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130326164536) do
+ActiveRecord::Schema.define(:version => 20130405202702) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -35,6 +35,15 @@ ActiveRecord::Schema.define(:version => 20130326164536) do
   end
 
   add_index "approvals", ["service_request_id"], :name => "index_approvals_on_service_request_id"
+
+  create_table "arms", :force => true do |t|
+    t.string   "name"
+    t.integer  "visit_count"
+    t.integer  "service_request_id"
+    t.datetime "created_at",         :null => false
+    t.datetime "updated_at",         :null => false
+    t.integer  "subject_count"
+  end
 
   create_table "available_statuses", :force => true do |t|
     t.integer  "organization_id"
@@ -214,7 +223,6 @@ ActiveRecord::Schema.define(:version => 20130326164536) do
     t.string   "ssr_id"
     t.boolean  "optional"
     t.integer  "quantity"
-    t.integer  "subject_count"
     t.datetime "complete_date"
     t.datetime "in_process_date"
     t.datetime "created_at",                            :null => false
@@ -428,7 +436,6 @@ ActiveRecord::Schema.define(:version => 20130326164536) do
     t.boolean  "approved"
     t.datetime "start_date"
     t.datetime "end_date"
-    t.integer  "visit_count"
     t.integer  "subject_count"
     t.datetime "consult_arranged_date"
     t.datetime "pppv_complete_date"
@@ -617,8 +624,15 @@ ActiveRecord::Schema.define(:version => 20130326164536) do
 
   add_index "vertebrate_animals_info", ["protocol_id"], :name => "index_vertebrate_animals_info_on_protocol_id"
 
-  create_table "visits", :force => true do |t|
+  create_table "visit_groupings", :force => true do |t|
+    t.integer  "arm_id"
     t.integer  "line_item_id"
+    t.integer  "subject_count"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  create_table "visits", :force => true do |t|
     t.integer  "quantity",              :default => 0
     t.string   "billing"
     t.datetime "created_at",                           :null => false
@@ -629,8 +643,7 @@ ActiveRecord::Schema.define(:version => 20130326164536) do
     t.integer  "effort_billing_qty",    :default => 0
     t.integer  "position"
     t.string   "name"
+    t.integer  "visit_grouping_id"
   end
-
-  add_index "visits", ["line_item_id"], :name => "index_visits_on_line_item_id"
 
 end

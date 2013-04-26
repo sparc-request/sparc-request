@@ -2,12 +2,12 @@ class Visit < ActiveRecord::Base
   #Version.primary_key = 'id'
   #has_paper_trail
 
-  belongs_to :line_item
+  belongs_to :visit_grouping
 
-  acts_as_list :scope => :line_item
+  acts_as_list :scope => :visit_grouping
   include BulkCreateableList
 
-  attr_accessible :line_item_id
+  attr_accessible :visit_grouping_id
   attr_accessible :quantity
   attr_accessible :billing
   attr_accessible :research_billing_qty #qty billed to the study/project
@@ -28,8 +28,8 @@ class Visit < ActiveRecord::Base
 
   after_create :set_default_name
 
-  def cost(per_unit_cost = self.line_item.per_unit_cost(self.line_item.quantity_total))
-    li = self.line_item
+  def cost(per_unit_cost = self.visit_grouping.per_unit_cost(self.visit_grouping.quantity_total))
+    li = self.visit_grouping.line_item
     if li.applicable_rate == "N/A"
       return "N/A"
     elsif self.research_billing_qty >= 1

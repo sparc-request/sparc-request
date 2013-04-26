@@ -37,9 +37,9 @@
         = fields_for "service_request[line_items_attributes][]", line_item do |f|
           %tr
             %td= line_item.service.name
-            %td
+            %td.skinny_fields
               = f.hidden_field :id
               = f.text_field :quantity, :unit_minimum => line_item.service.displayed_pricing_map.unit_minimum, :class => 'line_item_quantity', :current_quantity => line_item.quantity
-            %td
+            %td.skinny_fields
               = f.text_field :units_per_quantity, "data-qty_max" => line_item.service.displayed_pricing_map.units_per_qty_max, :class => "units_per_quantity"
             %td= line_item.service.try(:displayed_pricing_map).try(:unit_type).try(:humanize)

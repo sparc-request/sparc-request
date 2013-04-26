@@ -624,7 +624,6 @@ a.save-option{
 }
 
 /* ServiceRequestSetupView */
-
 .service-request-setup-view .service-details {
   background: #E8E8E8;
   width: 670px;
@@ -634,20 +633,22 @@ a.save-option{
 
 .service-details .instructions {
   background-color: #FFF;
-  padding: 10px 0;
+  padding: 25px 0;
   width: 100%;
   margin: 0;
 }
 
-.service-request-setup-view .service-details table th {
+/*.service-request-setup-view .service-details table th {
   width: 115px;
   text-align: left;
-}
+}*/
 
-.service-request-setup-view .service-details-table td,
-.service-request-setup-view .service-details-table th{
+/*.service-request-setup-view .service-details-table td,
+.service-request-setup-view .service-dates-table td,
+.service-request-setup-view .service-details-table th,
+.service-request-setup-view .service-dates-table th{
   padding: 5px 30px;
-}
+}*/
 
 .service-request-setup-view .service-details .one-time-fees thead{
   border: 0;
@@ -687,6 +688,29 @@ a.save-option{
   padding: 5px !important;
 }
 
+.service-request-setup-view .arm-info {
+  width: 100%;
+  background: #E8E8E8 !important;
+}
+
+.service-request-setup-view .arm-info .arm-header {
+  font-weight: bold;
+  background-color:#FFFFFF;
+}
+
+.service-request-setup-view .arm-info .arm-cell {
+  width: 170px;
+  float: left;
+  padding: 5px 10px;
+}
+
+.service-request-setup-view .arm-info .add-arm .add_nested_fields {
+  padding: 5px 15px;
+  width: 50px;
+  margin: 0px 10px;
+  display: block;
+}
+
 /* New Project View */
 
 .edit-project-view {
@@ -699,7 +723,7 @@ a.save-option{
 }
 
 .edit-project-view .box {
-  background: #E8E8E8;
+  background: #B0E2FF;
   width: 100%;
   height: auto;
 }
@@ -745,6 +769,15 @@ legend {
 
 .edit-project-view .info {
   width: 520px;
+  padding: 10px;
+  float: left;
+  border-right: 10px solid #FFF;
+  height: 100%;
+  min-height: 491px;
+}
+
+.edit-project-view .info2 {
+  width: 360px;
   padding: 10px;
   float: left;
   border-right: 10px solid #FFF;
@@ -1051,6 +1084,14 @@ tr.provider-header td {
 }
 
 tr.total-visit-based-services {
+  font-weight: bold;
+}
+
+tr.total-one-time-fees {
+  font-weight: bold;
+}
+
+tr.grand-totals {
   font-weight: bold;
 }
 
@@ -1583,6 +1624,11 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   border: 1px solid #ccc;
 }
 
+.review-details #service_calendar_container table td,
+.review-details #service_calendar_container table th {
+  width: 92px !important;
+}
+
 .service_calendar thead tr th {
   border: 1px solid #ccc;
 }
@@ -1819,4 +1865,24 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 
 .acknowledge_approval_status_dialog {
   text-align: center;
+}
+
+.skinny_fields {
+  text-align: center;
+}
+
+.skinny_fields input {
+  text-align: center;
+  width: 50px;
+}
+
+.document_upload_instructions {
+  border: 1px solid black;
+  margin: 0 auto;
+  padding: 7px;
+  width: 510px;
+}
+
+.document_upload_instructions ul {
+  list-style: decimal inside;
 }

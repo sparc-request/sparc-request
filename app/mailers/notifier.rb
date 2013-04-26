@@ -103,4 +103,13 @@ class Notifier < ActionMailer::Base
 
     mail(:to => email_to, :from => email_from, :subject => "Feedback")
   end
+
+  def sub_service_request_deleted identity, sub_service_request
+    @ssr_id = "#{sub_service_request.service_request.protocol.id}-#{sub_service_request.ssr_id}"
+
+    email_to = Rails.env == 'production' ? identity.email : DEFAULT_MAIL_TO
+    subject = Rails.env == 'production' ? "#{I18n.t('application_title')} - service request deleted" : "[#{Rails.env.capitalize} - EMAIL TO #{identity.email}] #{I18n.t('application_title')} - service request deleted"
+
+    mail(:to => email_to, :from => 'no-reply@musc.edu', :subject => subject)
+  end
 end

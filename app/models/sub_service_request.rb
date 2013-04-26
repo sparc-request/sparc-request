@@ -32,6 +32,14 @@ class SubServiceRequest < ActiveRecord::Base
 
   accepts_nested_attributes_for :subsidy
 
+  def create_line_item(args)
+    new_args = {
+      service_request_id: self.service_request_id
+    }
+    new_args.update(args)
+    return service_request.create_line_item(new_args)
+  end
+
   def one_time_fee_line_items
     self.line_items.select {|li| li.service.is_one_time_fee?}
   end
@@ -69,9 +77,9 @@ class SubServiceRequest < ActiveRecord::Base
 
     self.line_items.each do |li|
       if li.service.is_one_time_fee?
-        total += li.indirect_costs_for_one_time_fee
+       total += li.indirect_costs_for_one_time_fee
       else
-        total += li.indirect_costs_for_visit_based_service
+       total += li.indirect_costs_for_visit_based_service
       end
     end
 
@@ -104,21 +112,6 @@ class SubServiceRequest < ActiveRecord::Base
     end 
 
     services
-  end
-
-  def add_line_item service
-    if self.line_items.map {|li| li.service.id}.include? service.id
-      raise ArgumentError, "Service #{service.id} is already on service request #{self.service_request.id} "
-    else
-      line_item = self.line_items.create(service_id: service.id, service_request_id: self.service_request.id, ssr_id: self.ssr_id)
-      unless service.is_one_time_fee? 
-        self.service_request.visit_count.times do 
-           line_item.visits.create(line_item_id: line_item.id)
-        end
-      end
-    end
-
-    line_item
   end
 
   def update_line_item line_item, args

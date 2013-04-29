@@ -131,6 +131,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       flash[:alert] = "Failed to update #{@service.name}."
     end
 
+    @service.reload
     @entity = @service
     respond_with @service, :location => catalog_manager_service_path(@service)
   end 

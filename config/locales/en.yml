@@ -664,39 +664,6 @@ en:
     feedback: "Please enter your feedback text here"
     email: "Enter Your Email (optional)"
 
-  # Notifier
-  notifier:
-    sr: "Service Request"
-    p_info: "Project Information"
-    p_id: "Project ID:"
-    title1: "Short Title:"
-    title2: "Project Title:"
-    s_name: "Sponsor Name:"
-    source: "Funding Source:"
-    name: "Name:"
-    role: "Role:"
-    proxy: "Proxy Rights:"
-    body6: "A list of requested services is attached."
-    body7: "To approve the charges associated with the selected services please click"
-    link: "HERE"
-    notice:
-      body1: "Request for new SPARC account submitted and awaiting approval"
-      body2: "A new SPARC account is waiting for approval."
-      last: "Last Name"
-      first: "First Name"
-      company: "Company"
-      email: "Email"
-      number: "Telephone Number"
-      reason: "Reason for account/login request"
-      approve: "Approve Account"
-      disapprove: "Disapprove Account"
-    status_change:
-      body1: "Request for new SPARC account status change"
-      body2: "Your request for a new SPARC account has been approved.  You may proceed with your service "
-      body3: "request using your newly created"
-      body4: "username and password."
-      body5: "Your request for a new SPARC account has NOT been approved."
-
   # Mailer
   mailer:
     header1: "Authorized Users have been edited or added in"

@@ -73,7 +73,6 @@ describe 'SubServiceRequest' do
       end
     end
 
-    # These tests need to create their own data.
     describe "cost calculations" do
 
       context "direct cost total" do

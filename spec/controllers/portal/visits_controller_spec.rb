@@ -17,12 +17,8 @@ describe Portal::VisitsController do
     service
   }
 
-  let!(:service_request) {
-    FactoryGirl.create(
-      :service_request,
-      visit_count: 0,
-      subject_count: 1)
-  }
+  let!(:service_request) { FactoryGirl.create(:service_request) }
+  let!(:arm) { FactoryGirl.create(:arm, service_request_id: service_request.id, visit_count: 0, subject_count: 1) }
 
   let!(:ssr) {
     FactoryGirl.create(
@@ -51,13 +47,21 @@ describe Portal::VisitsController do
             sub_service_request_id: ssr.id)
       }
 
+      let!(:visit_grouping) {
+        FactoryGirl.create(
+            :visit_grouping,
+            arm_id: arm.id,
+            line_item_id: line_item.id,
+            subject_count: 1)
+      }
+
       let!(:visit) {
         # TODO: use ServiceRequest#add_visit ?
-        service_request.update_attributes(visit_count: 1)
+        arm.update_attributes(visit_count: 1)
         FactoryGirl.create(
             :visit,
-            line_item_id:
-            line_item.id, research_billing_qty: 5)
+            visit_grouping_id: visit_grouping.id,
+            research_billing_qty: 5)
       }
 
       it 'should set instance variables' do
@@ -119,43 +123,67 @@ describe Portal::VisitsController do
             sub_service_request_id: ssr.id)
       }
 
+      let!(:visit_grouping1) {
+        FactoryGirl.create(
+            :visit_grouping,
+            arm_id: arm.id,
+            line_item_id: line_item1.id,
+            subject_count: 1)
+      }
+
+      let!(:visit_grouping2) {
+        FactoryGirl.create(
+            :visit_grouping,
+            arm_id: arm.id,
+            line_item_id: line_item2.id,
+            subject_count: 1)
+      }
+
+      let!(:visit_grouping3) {
+        FactoryGirl.create(
+            :visit_grouping,
+            arm_id: arm.id,
+            line_item_id: line_item3.id,
+            subject_count: 1)
+      }
+
       it 'should destroy all the other visits at the same position' do
-        line_item1_visits = Visit.bulk_create(10, line_item_id: line_item1.id)
-        line_item2_visits = Visit.bulk_create(10, line_item_id: line_item2.id)
-        line_item3_visits = Visit.bulk_create(10, line_item_id: line_item3.id)
-        service_request.update_attributes(visit_count: 10)
+        vg1_visits = Visit.bulk_create(10, visit_grouping_id: visit_grouping1.id)
+        vg2_visits = Visit.bulk_create(10, visit_grouping_id: visit_grouping2.id)
+        vg3_visits = Visit.bulk_create(10, visit_grouping_id: visit_grouping3.id)
+        arm.update_attributes(visit_count: 10)
 
         post :destroy, {
           format: :js,
-          id: line_item1_visits[4].id,
+          id: vg1_visits[4].id,
         }.with_indifferent_access
 
-        expect { line_item1_visits[4].reload }.to raise_exception(ActiveRecord::RecordNotFound)
-        expect { line_item2_visits[4].reload }.to raise_exception(ActiveRecord::RecordNotFound)
-        expect { line_item3_visits[4].reload }.to raise_exception(ActiveRecord::RecordNotFound)
+        expect { vg1_visits[4].reload }.to raise_exception(ActiveRecord::RecordNotFound)
+        expect { vg2_visits[4].reload }.to raise_exception(ActiveRecord::RecordNotFound)
+        expect { vg3_visits[4].reload }.to raise_exception(ActiveRecord::RecordNotFound)
 
-        line_item1.reload
-        line_item2.reload
-        line_item3.reload
+        visit_grouping1.reload
+        visit_grouping2.reload
+        visit_grouping3.reload
 
-        line_item1.visits.count.should eq 9
-        line_item2.visits.count.should eq 9
-        line_item3.visits.count.should eq 9
+        visit_grouping1.visits.count.should eq 9
+        visit_grouping2.visits.count.should eq 9
+        visit_grouping3.visits.count.should eq 9
       end
 
       it 'should update visit count' do
-        line_item1_visits = Visit.bulk_create(10, line_item_id: line_item1.id)
-        line_item2_visits = Visit.bulk_create(10, line_item_id: line_item2.id)
-        line_item3_visits = Visit.bulk_create(10, line_item_id: line_item3.id)
-        service_request.update_attributes(visit_count: 10)
+        vg1_visits = Visit.bulk_create(10, visit_grouping_id: visit_grouping1.id)
+        vg2_visits = Visit.bulk_create(10, visit_grouping_id: visit_grouping2.id)
+        vg3_visits = Visit.bulk_create(10, visit_grouping_id: visit_grouping3.id)
+        arm.update_attributes(visit_count: 10)
 
         post :destroy, {
           format: :js,
-          id: line_item1_visits[4].id,
+          id: vg1_visits[4].id,
         }.with_indifferent_access
 
-        service_request.reload
-        service_request.visit_count.should eq 9
+        arm.reload
+        arm.visit_count.should eq 9
       end
     end
   end

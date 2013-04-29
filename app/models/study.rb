@@ -1,5 +1,7 @@
 class Study < Protocol
 
+  validates :sponsor_name, :presence => true
+
   def classes
     return [ 'project' ] # for backward-compatibility
   end
@@ -37,7 +39,6 @@ class Study < Protocol
       impact_area.position = position
       position += 1
     end
-
     impact_areas.sort!{|a, b| a.position <=> b.position}
   end
   

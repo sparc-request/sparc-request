@@ -141,7 +141,7 @@ describe Portal::ServiceRequestsHelper do
   end
 
   context :display_service_total do
-    let(:li) { LineItem.new("subject_count"=>4, "service_id"=>"123", "quantity"=>0, "optional"=>true) }
+    let(:li) { LineItem.new("service_id"=>"123", "quantity"=>0, "optional"=>true) }
     let(:li2) { LineItem.new("service_id"=>"321", "quantity"=>6, "optional"=>true, "sub_service_request_id"=>"0003") }
 
     before do

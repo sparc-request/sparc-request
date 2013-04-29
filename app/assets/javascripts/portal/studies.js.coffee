@@ -21,6 +21,8 @@ $(document).ready ->
         'true'             : ['.patent_number', '.inventors']
       '#study_investigational_products_info_attributes_ind_number':
         'true'             : ['.ind_on_hold']
+      '#study_impact_areas_attributes_6__destroy':
+        'true'             : ['.impact_other']
         
     ready: ->
       FormFxManager.registerListeners($('.user-edit-protocol-view'), Sparc.study.display_dependencies)
@@ -37,6 +39,9 @@ $(document).ready ->
 
       $('#study_federal_non_phs_sponsor').change ->
         $('#study_federal_phs_sponsor').val("")
+
+      $('#study_impact_areas_attributes_6__destroy').change ->
+        $('#study_impact_areas_other').val("")
 
       $('#study_funding_source, #study_potential_funding_source').change ->
         switch $(this).val()

@@ -126,7 +126,7 @@ describe "Line Item" do
       let!(:ssr)             { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id) }
       let!(:service)         { FactoryGirl.create(:service, organization_id: program.id) }
       let!(:line_item)       { FactoryGirl.create(:line_item, service_request_id: service_request.id, sub_service_request_id: ssr.id, service_id: service.id,
-                               quantity: 20, subject_count: 5) }
+                               quantity: 20) }
 
       before(:each) do
         line_item.stub!(:applicable_rate) { 100 }
@@ -170,115 +170,121 @@ describe "Line Item" do
       end
     end
 
-    describe "quantity total" do
-      let!(:service_request) { FactoryGirl.create(:service_request, protocol_id: @study.id) }
-      let!(:service)         {FactoryGirl.create(:service)}
-      let!(:line_item) {FactoryGirl.create(:line_item, subject_count: 5, service_request_id: service_request.id, service_id: service.id)}  
-      let!(:visit)     {FactoryGirl.create(:visit, line_item_id: line_item.id, research_billing_qty: 5)}
+    # TODO: This might be deleted if these calculations are being done on the visit grouping
+    # describe "quantity total" do
+    #   let!(:service_request) { FactoryGirl.create(:service_request, protocol_id: @study.id) }
+    #   let!(:service)         {FactoryGirl.create(:service)}
+    #   let!(:line_item)       {FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service.id)}  
+    #   let!(:arm)             {FactoryGirl.create(:arm, service_request_id: service_request.id, subject_count: 5)}
+    #   let!(:visit_grouping)  {FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item.id, subject_count: 5)}
+    #   let!(:visit)           {FactoryGirl.create(:visit, visit_grouping_id: visit_grouping.id, research_billing_qty: 5)}
 
-      it "should return the correct quantity" do
-        line_item.quantity_total.should eq(25)
-      end
+    #   it "should return the correct quantity" do
+    #     line_item.quantity_total.should eq(25)
+    #   end
 
-      it "should return zero if the reaserch billing quantity is zero" do
-        visit.update_attributes(research_billing_qty: 0)
-        line_item.quantity_total.should eq(0)
-      end
-    end
+    #   it "should return zero if the reaserch billing quantity is zero" do
+    #     visit.update_attributes(research_billing_qty: 0)
+    #     line_item.quantity_total.should eq(0)
+    #   end
+    # end
 
-    describe "per_subject_subtotals" do
+    # TODO: All below visit-based specs may be deleted and moved to visit groupings
+    # describe "per_subject_subtotals" do
 
-      let!(:service_request) { FactoryGirl.create(:service_request, protocol_id: @study.id) }
-      let!(:ssr)             { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id) }
+    #   let!(:service_request) { FactoryGirl.create(:service_request, protocol_id: @study.id) }
+    #   let!(:ssr)             { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id) }
 
-      before :each do
-        service = FactoryGirl.create(:service)
-        program.services << service
-        program.save
-        service.pricing_maps.build(FactoryGirl.attributes_for(:pricing_map, federal_rate: 100)).save
-        @ppv_line_item = FactoryGirl.create(:line_item, service_request_id: service_request.id,
-          sub_service_request_id: ssr.id, service_id: service.id, visit_count: 5)
-      end
+    #   before :each do
+    #     service = FactoryGirl.create(:service)
+    #     program.services << service
+    #     program.save
+    #     service.pricing_maps.build(FactoryGirl.attributes_for(:pricing_map, federal_rate: 100)).save
+    #     @ppv_line_item = FactoryGirl.create(:line_item, service_request_id: service_request.id,
+    #       sub_service_request_id: ssr.id, service_id: service.id, visit_count: 5)
+    #   end
 
-      it "should return a hash with the cost of each visit" do
-        expected_return = {}
-        @ppv_line_item.visits.each do |visit|
-          expected_return[visit.id.to_s] = 500
-        end
-        @ppv_line_item.per_subject_subtotals.should eq(expected_return)
-      end
+    #   it "should return a hash with the cost of each visit" do
+    #     expected_return = {}
+    #     @ppv_line_item.visits.each do |visit|
+    #       expected_return[visit.id.to_s] = 500
+    #     end
+    #     @ppv_line_item.per_subject_subtotals.should eq(expected_return)
+    #   end
 
-      it "should return a hash of N/As for each visit if the applicable rate is N/A" do
-        expected_return = {}
+    #   it "should return a hash of N/As for each visit if the applicable rate is N/A" do
+    #     expected_return = {}
 
-        @ppv_line_item.visits.each do |visit|
-          expected_return[visit.id.to_s] = "N/A"
+    #     @ppv_line_item.visits.each do |visit|
+    #       expected_return[visit.id.to_s] = "N/A"
 
-          # In order for the stub to work, all the visits need to use
-          # the same line item object.  When the visit is loaded from
-          # the database, even though all visits have the same line item
-          # in the database, a new LineItem instance is getting created.
-          # Here we explicitly set the visit's line item to
-          # @ppv_line_item so we can stub only one line item instead of
-          # stubbing each individual instance.
-          visit.line_item = @ppv_line_item
-        end
+    #       # In order for the stub to work, all the visits need to use
+    #       # the same line item object.  When the visit is loaded from
+    #       # the database, even though all visits have the same line item
+    #       # in the database, a new LineItem instance is getting created.
+    #       # Here we explicitly set the visit's line item to
+    #       # @ppv_line_item so we can stub only one line item instead of
+    #       # stubbing each individual instance.
+    #       visit.line_item = @ppv_line_item
+    #     end
 
-        @ppv_line_item.stub(:applicable_rate).and_return("N/A")
-        @ppv_line_item.per_subject_subtotals.should eq(expected_return)
-      end
+    #     @ppv_line_item.stub(:applicable_rate).and_return("N/A")
+    #     @ppv_line_item.per_subject_subtotals.should eq(expected_return)
+    #   end
 
-      it "should have nil as the cost of a visit that has no research billing" do
-        new_visit = FactoryGirl.create(:visit, line_item_id: @ppv_line_item.id, research_billing_qty: 0)
+    #   it "should have nil as the cost of a visit that has no research billing" do
+    #     new_visit = FactoryGirl.create(:visit, line_item_id: @ppv_line_item.id, research_billing_qty: 0)
 
-        expected_return = {}
-        @ppv_line_item.visits.each do |visit|
-          expected_return[visit.id.to_s] = 500
-        end
-        expected_return[new_visit.id.to_s] = nil
+    #     expected_return = {}
+    #     @ppv_line_item.visits.each do |visit|
+    #       expected_return[visit.id.to_s] = 500
+    #     end
+    #     expected_return[new_visit.id.to_s] = nil
 
-        @ppv_line_item.per_subject_subtotals.should eq(expected_return)
-      end
-    end
+    #     @ppv_line_item.per_subject_subtotals.should eq(expected_return)
+    #   end
+    # end
 
-    describe 'visit manipulation' do
+    # describe 'visit manipulation' do
 
-      let!(:service) { FactoryGirl.create(:service) }
-      let!(:service_request) { FactoryGirl.create(:service_request, protocol_id: @study.id) }
+    #   let!(:service) { FactoryGirl.create(:service) }
+    #   let!(:service_request) { FactoryGirl.create(:service_request, protocol_id: @study.id) }
 
-      context 'adding a visit' do
+    #   context 'adding a visit' do
 
-        let!(:line_item_with_visits) { FactoryGirl.create(:line_item, service_id: service.id, visit_count: 5, service_request_id: service_request.id) }
+    #     let!(:line_item_with_visits) { FactoryGirl.create(:line_item, service_id: service.id, visit_count: 5, service_request_id: service_request.id) }
 
-        it 'should add the visit in the correct position' do
-          line_item_with_visits.add_visit(3)
-          line_item_with_visits.visits.count.should eq(6)
-          line_item_with_visits.visits.where(:position => 3).first.research_billing_qty.should eq(0)
-        end
-      end
+    #     it 'should add the visit in the correct position' do
+    #       line_item_with_visits.add_visit(3)
+    #       line_item_with_visits.visits.count.should eq(6)
+    #       line_item_with_visits.visits.where(:position => 3).first.research_billing_qty.should eq(0)
+    #     end
+    #   end
 
-      context "removing a visit" do
+    #   context "removing a visit" do
 
-        let!(:line_item_with_visits) { FactoryGirl.create(:line_item, service_id: service.id, visit_count: 5, service_request_id: service_request.id) }
+    #     let!(:line_item_with_visits) { FactoryGirl.create(:line_item, service_id: service.id, visit_count: 5, service_request_id: service_request.id) }
 
-        it "should delete a visit in the correct position" do
-        first_visit = line_item_with_visits.visits.first
-        first_visit.update_attributes(billing: "your mom")
-        line_item_with_visits.remove_visit(1)
-        line_item_with_visits.visits.count.should eq(4)
-        new_first_visit = line_item_with_visits.visits.first
-        new_first_visit.billing.should_not eq("your mom")
-        end
-      end 
-    end
+    #     it "should delete a visit in the correct position" do
+    #     first_visit = line_item_with_visits.visits.first
+    #     first_visit.update_attributes(billing: "your mom")
+    #     line_item_with_visits.remove_visit(1)
+    #     line_item_with_visits.visits.count.should eq(4)
+    #     new_first_visit = line_item_with_visits.visits.first
+    #     new_first_visit.billing.should_not eq("your mom")
+    #     end
+    #   end 
+    # end
 
     describe "cost calculations" do
 
       let!(:service_request) { FactoryGirl.create(:service_request, protocol_id: @study.id) }
       let!(:ssr)             { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id) }
       let!(:service)         { FactoryGirl.create(:service, organization_id: program.id) }
-      let!(:line_item)       { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id, subject_count: 5) }  
-      let!(:visit)           { FactoryGirl.create(:visit, line_item_id: line_item.id, research_billing_qty: 5) }
+      let!(:line_item)       { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service.id)}  
+      let!(:arm)             { FactoryGirl.create(:arm, service_request_id: service_request.id, subject_count: 5)}
+      let!(:visit_grouping)  { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item.id, subject_count: 5)}
+      let!(:visit)           { FactoryGirl.create(:visit, visit_grouping_id: visit_grouping.id, research_billing_qty: 5)}
       let!(:pricing_setup)   { FactoryGirl.create(:pricing_setup, organization_id: program.id) }
       let!(:pricing_map)     { service.pricing_maps[0] }
 
@@ -290,24 +296,25 @@ describe "Line Item" do
         pricing_map.update_attributes(unit_factor: 5)
       end
 
-      context "direct cost for visit based service single subject" do
+      # TODO: May be deleted f moved to visit groupings
+      # context "direct cost for visit based service single subject" do
 
-        it "should return the correct cost for one subject" do
-          line_item.direct_costs_for_visit_based_service_single_subject.should eq(100)
-        end
+      #   it "should return the correct cost for one subject" do
+      #     line_item.direct_costs_for_visit_based_service_single_subject.should eq(100)
+      #   end
 
-        it "should return zero if the research billing quantity is zero" do
-          visit.update_attributes(research_billing_qty: 0)
-          line_item.direct_costs_for_visit_based_service_single_subject.should eq(0)
-        end
-      end
+      #   it "should return zero if the research billing quantity is zero" do
+      #     visit.update_attributes(research_billing_qty: 0)
+      #     line_item.direct_costs_for_visit_based_service_single_subject.should eq(0)
+      #   end
+      # end
+   
+      # context "direct cost for visit based service" do
 
-      context "direct cost for visit based service" do
-
-        it "should return the correct cost for all subjects" do
-          line_item.direct_costs_for_visit_based_service.should eq(500)
-        end
-      end
+      #   it "should return the correct cost for all subjects" do
+      #     line_item.direct_costs_for_visit_based_service.should eq(500)
+      #   end
+      # end
 
       context "direct costs for one time fee" do
 
@@ -334,27 +341,28 @@ describe "Line Item" do
         end
       end
 
-      context "indirect costs for visit based service single object" do
+      # TODO: May be deleted if moved to visit groupings
+      # context "indirect costs for visit based service single object" do
 
-        it "should return the correct rate for a single subject" do
-          if USE_INDIRECT_COST
-            line_item.indirect_costs_for_visit_based_service_single_subject.should eq(200)
-          else
-            line_item.indirect_costs_for_visit_based_service_single_subject.should eq(0)
-          end
-        end
-      end
+      #   it "should return the correct rate for a single subject" do
+      #     if USE_INDIRECT_COST
+      #       line_item.indirect_costs_for_visit_based_service_single_subject.should eq(200)
+      #     else
+      #       line_item.indirect_costs_for_visit_based_service_single_subject.should eq(0)
+      #     end
+      #   end
+      # end
 
-      context "indirect costs for visit based service" do
+      # context "indirect costs for visit based service" do
 
-        it "should return the correct indirect cost" do
-          if USE_INDIRECT_COST
-            line_item.indirect_costs_for_visit_based_service.should eq(1000)
-          else
-            line_item.indirect_costs_for_visit_based_service.should eq(0)
-          end
-        end
-      end
+      #   it "should return the correct indirect cost" do
+      #     if USE_INDIRECT_COST
+      #       line_item.indirect_costs_for_visit_based_service.should eq(1000)
+      #     else
+      #       line_item.indirect_costs_for_visit_based_service.should eq(0)
+      #     end
+      #   end
+      # end
 
       context "indirect costs for one time fee" do
 
@@ -376,33 +384,34 @@ describe "Line Item" do
     end
   end
 
-  context 'bulk creatable list' do
-    let!(:service)    { FactoryGirl.create(:service) }
-    let!(:project) {Project.create(FactoryGirl.attributes_for(:protocol), :validate => false)}
-    let!(:service_request) {ServiceRequest.create(FactoryGirl.attributes_for(:service_request), protocol_id: project.id, :validate => false)}
-    let!(:line_item)  { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id) }
-    let!(:line_item2) { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id) }
+  # TODO: May be deleted if moved to visit groupings
+  # context 'bulk creatable list' do
+  #   let!(:service)    { FactoryGirl.create(:service) }
+  #   let!(:project) {Project.create(FactoryGirl.attributes_for(:protocol), :validate => false)}
+  #   let!(:service_request) {ServiceRequest.create(FactoryGirl.attributes_for(:service_request), protocol_id: project.id, :validate => false)}
+  #   let!(:line_item)  { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id) }
+  #   let!(:line_item2) { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id) }
 
-    describe 'bulk_create' do
-      it 'should create 5 visits when passed n=5' do
-        Visit.bulk_create(5, :line_item_id => line_item.id)
-        line_item.visits.count.should eq 5
-      end
+  #   describe 'bulk_create' do
+  #     it 'should create 5 visits when passed n=5' do
+  #       Visit.bulk_create(5, :line_item_id => line_item.id)
+  #       line_item.visits.count.should eq 5
+  #     end
 
-      it 'should create visits with the right position' do
-        Visit.bulk_create(5, :line_item_id => line_item.id)
-        line_item.visits.count.should eq 5
+  #     it 'should create visits with the right position' do
+  #       Visit.bulk_create(5, :line_item_id => line_item.id)
+  #       line_item.visits.count.should eq 5
 
-        Visit.bulk_create(5, :line_item_id => line_item2.id)
-        line_item2.visits.count.should eq 5
+  #       Visit.bulk_create(5, :line_item_id => line_item2.id)
+  #       line_item2.visits.count.should eq 5
 
-        Visit.bulk_create(5, :line_item_id => line_item.id)
-        line_item.visits.count.should eq 10
+  #       Visit.bulk_create(5, :line_item_id => line_item.id)
+  #       line_item.visits.count.should eq 10
 
-        positions = line_item.visits.map { |visit| visit.position }
-        positions.should eq [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
-      end
-    end
-  end
+  #       positions = line_item.visits.map { |visit| visit.position }
+  #       positions.should eq [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ]
+  #     end
+  #   end
+  # end
 
 end

@@ -31,99 +31,99 @@ module ApplicationHelper
     params[:controller] + '/' + params[:action]
   end
 
-  def line_item_visit_input line_item, visit, tab, totals_hash={}, unit_minimum=0, portal=nil
+  def line_item_visit_input arm, line_item, visit, tab, totals_hash={}, unit_minimum=0, portal=nil
     base_url = "/service_requests/#{line_item.service_request_id}/service_calendars?visit=#{visit.id}"
     case tab
     when 'template'
-      check_box_tag "visits_#{visit.id}", 1, (visit.research_billing_qty.to_i > 0), :class => "line_item_visit_template visits_#{visit.id}", :update => "#{base_url}&tab=template&portal=#{portal}"
+      check_box_tag "visits_#{visit.id}", 1, (visit.research_billing_qty.to_i > 0), :class => "line_item_visit_template visits_#{visit.id}", :'data-arm_id' => arm.id, :update => "#{base_url}&tab=template&portal=#{portal}"
     when 'quantity'
       content_tag(:div, (visit.research_billing_qty.to_i + visit.insurance_billing_qty.to_i + visit.effort_billing_qty.to_i), {:style => 'text-align:center', :class => "line_item_visit_quantity"}) 
     when 'billing_strategy'
       returning_html = ""
-      returning_html += text_field_tag "visits_#{visit.id}_research_billing_qty", visit.research_billing_qty, :"data-unit-minimum" => unit_minimum, :class => "line_item_visit_research_billing_qty line_item_visit_billing visits_#{visit.id}", :update => "#{base_url}&tab=billing_strategy&column=research_billing_qty&portal=#{portal}"
-      returning_html += text_field_tag "visits_#{visit.id}_insurance_billing_qty", visit.insurance_billing_qty, :"data-unit-minimum" => unit_minimum, :class => "line_item_visit_billing visits_#{visit.id}", :update => "#{base_url}&tab=billing_strategy&column=insurance_billing_qty&portal=#{portal}"
-      returning_html += text_field_tag "visits_#{visit.id}_effort_billing_qty", visit.effort_billing_qty, :"data-unit-minimum" => unit_minimum, :class => "line_item_visit_billing visits_#{visit.id}", :update => "#{base_url}&tab=billing_strategy&column=effort_billing_qty&portal=#{portal}"
+      returning_html += text_field_tag "visits_#{visit.id}_research_billing_qty", visit.research_billing_qty, :"data-unit-minimum" => unit_minimum, :'data-arm_id' => arm.id, :class => "line_item_visit_research_billing_qty line_item_visit_billing visits_#{visit.id}", :update => "#{base_url}&tab=billing_strategy&column=research_billing_qty&portal=#{portal}"
+      returning_html += text_field_tag "visits_#{visit.id}_insurance_billing_qty", visit.insurance_billing_qty, :"data-unit-minimum" => unit_minimum, :'data-arm_id' => arm.id, :class => "line_item_visit_billing visits_#{visit.id}", :update => "#{base_url}&tab=billing_strategy&column=insurance_billing_qty&portal=#{portal}"
+      returning_html += text_field_tag "visits_#{visit.id}_effort_billing_qty", visit.effort_billing_qty, :"data-unit-minimum" => unit_minimum, :'data-arm_id' => arm.id, :class => "line_item_visit_billing visits_#{visit.id}", :update => "#{base_url}&tab=billing_strategy&column=effort_billing_qty&portal=#{portal}"
       raw(returning_html)
     when 'pricing'
       label_tag nil, currency_converter(totals_hash["#{visit.id}"]), :class => "line_item_visit_pricing"
     end
   end
 
-  def generate_visit_header_row service_request, page, portal=nil
+  def generate_visit_header_row arm, service_request, page
     base_url = "/service_requests/#{service_request.id}/service_calendars/rename_visit"
     page = page == 0 ? 1 : page
     beginning_visit = (page * 5) - 4
-    ending_visit = (page * 5) > service_request.visit_count ? service_request.visit_count : (page * 5)
+    ending_visit = (page * 5) > arm.visit_count ? arm.visit_count : (page * 5)
     returning_html = ""
-    line_items = service_request.per_patient_per_visit_line_items
+    visit_groupings = arm.visit_groupings
 
     (beginning_visit .. ending_visit).each do |n|
-      checked = line_items.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?
+      checked = visit_groupings.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?
       action = checked == true ? 'unselect_calendar_column' : 'select_calendar_column'
       icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
-      visit_name = line_items[0].visits[n - 1].name || "Visit #{n}"
+      visit_name = visit_groupings[0].visits[n - 1].name || "Visit #{n}"
       
       if params[:action] == 'review' || params[:action] == 'show' || params[:action] == 'refresh_service_calendar'
         returning_html += content_tag(:th, content_tag(:span, visit_name), :width => 60, :class => 'visit_number')
       else
-        returning_html += content_tag(:th, 
-                                      text_field_tag("visit_name_#{n}", visit_name, :class => "visit_name", :size => 10, :update => "#{base_url}?visit_position=#{n-1}&portal=#{portal}") +
+        returning_html += content_tag(:th,
+                                      text_field_tag("arm_#{arm.id}_visit_name_#{n}", visit_name, :class => "visit_name", :size => 10, :update => "#{base_url}?visit_position=#{n-1}&arm_id=#{arm.id}") +
                                       tag(:br) + 
                                       link_to((content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')), 
-                                              "/service_requests/#{service_request.id}/#{action}/#{n}", 
+                                              "/service_requests/#{service_request.id}/#{action}/#{n}/#{arm.id}",
                                               :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only', :id => "check_all_column_#{n}"),
                                       :width => 60, :class => 'visit_number')
       end
     end
 
-    ((page * 5) - service_request.visit_count).times do
+    ((page * 5) - arm.visit_count).times do
       returning_html += content_tag(:th, "", :width => 60, :class => 'visit_number')
     end
 
     raw(returning_html)
   end
 
-  def generate_visit_navigation service_request, page, tab, portal=nil
-    page = page == 0 ? 1 : page
+  def generate_visit_navigation arm, service_request, pages, tab, portal=nil
+    page = pages[arm.id].to_i == 0 ? 1 : pages[arm.id].to_i
     beginning_visit = (page * 5) - 4
-    ending_visit = (page * 5) > service_request.visit_count ? service_request.visit_count : (page * 5)
+    ending_visit = (page * 5) > arm.visit_count ? arm.visit_count : (page * 5)
     returning_html = ""
     
     returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')), 
-                              table_service_request_service_calendars_path(service_request, :page => page - 1, :tab => tab, :portal => portal), 
+                              table_service_request_service_calendars_path(service_request, :page => page - 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal), 
                               :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only') unless page <= 1
     returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')), 
                                   :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled', :disabled => true) if page <= 1
 
-    returning_html += content_tag(:span, "Visits #{beginning_visit} - #{ending_visit} of #{service_request.visit_count}", :class => 'visit_count')
+    returning_html += content_tag(:span, "Visits #{beginning_visit} - #{ending_visit} of #{arm.visit_count}", :class => 'visit_count')
 
     returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')), 
-                              table_service_request_service_calendars_path(service_request, :page => page + 1, :tab => tab, :portal => portal), 
-                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only') unless ((page + 1) * 5) - 4 > service_request.visit_count
+                              table_service_request_service_calendars_path(service_request, :page => page + 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal), 
+                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only') unless ((page + 1) * 5) - 4 > arm.visit_count
     returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')), 
-                                  :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled', :disabled => true) if ((page + 1) * 5) - 4 > service_request.visit_count
+                                  :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled', :disabled => true) if ((page + 1) * 5) - 4 > arm.visit_count
     raw(returning_html)
   end
 
-  def generate_review_visit_navigation service_request, page, tab
-    page = page == 0 ? 1 : page
+  def generate_review_visit_navigation arm, service_request, pages, tab
+    page = pages[arm.id].to_i == 0 ? 1 : pages[arm.id].to_i
     beginning_visit = (page * 5) - 4
-    ending_visit = (page * 5) > service_request.visit_count ? service_request.visit_count : (page * 5)
+    ending_visit = (page * 5) > arm.visit_count ? arm.visit_count : (page * 5)
     returning_html = ""
     
     returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')), 
-                              refresh_service_calendar_service_request_path(service_request, :page => page - 1, :tab => tab), 
+                              refresh_service_calendar_service_request_path(service_request, :page => page - 1, :pages => pages, :arm_id => arm.id, :tab => tab), 
                               :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only') unless page <= 1
     returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')), 
                                   :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled', :disabled => true) if page <= 1
 
-    returning_html += content_tag(:span, "Visits #{beginning_visit} - #{ending_visit} of #{service_request.visit_count}", :class => 'visit_count')
+    returning_html += content_tag(:span, "Visits #{beginning_visit} - #{ending_visit} of #{arm.visit_count}", :class => 'visit_count')
 
     returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')), 
-                              refresh_service_calendar_service_request_path(service_request, :page => page + 1, :tab => tab), 
-                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only') unless ((page + 1) * 5) - 4 > service_request.visit_count
+                              refresh_service_calendar_service_request_path(service_request, :page => page + 1, :pages => pages, :arm_id => arm.id, :tab => tab), 
+                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only') unless ((page + 1) * 5) - 4 > arm.visit_count
     returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')), 
-                                  :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled', :disabled => true) if ((page + 1) * 5) - 4 > service_request.visit_count
+                                  :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled', :disabled => true) if ((page + 1) * 5) - 4 > arm.visit_count
     raw(returning_html)
   end
   

@@ -10,6 +10,7 @@ gem 'haml'
 gem 'sass'
 
 group :development, :test, :profile do
+  gem "rails-erd"
   gem 'sqlite3'
   gem 'rspec-rails'
   gem 'launchy'
@@ -27,7 +28,7 @@ group :development, :test, :profile do
   # will need to configure Capybara to use it.  This particular
   # poltergeist repository is for Capybara 2.0 support.  Poltergeist
   # should official support Capybara 2.0 after Dec. 20.
-  gem 'poltergeist', :git => 'git://github.com/brutuscat/poltergeist.git'
+  gem 'poltergeist' #, :git => 'git://github.com/brutuscat/poltergeist.git'
 
   # You can put gems in here that you want to use for development but
   # don't want to force on other developers (e.g. rubyception).
@@ -38,7 +39,7 @@ end
 
 # these are needed for the import script
 group :import do
-  gem 'alfresco_handler', :path => '../alfresco_handler'
+  # gem 'alfresco_handler', :path => '../alfresco_handler'
   gem 'progress_bar'
   gem 'mustache'
 end
@@ -66,7 +67,7 @@ gem 'sinatra'
 gem 'grouped_validations'
 gem 'obis-net-ldap'
 gem 'paperclip'
-gem 'acts_as_list'
+gem 'acts_as_list', '0.1.9'
 gem "paper_trail", "~> 2"
 gem 'devise'
 gem 'omniauth'

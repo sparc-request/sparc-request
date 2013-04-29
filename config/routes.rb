@@ -23,6 +23,7 @@ SparcRails::Application.routes.draw do
       get 'confirmation'
       get 'service_details'
       get 'service_calendar'
+      get 'calendar_totals'
       get 'service_subsidy'
       get 'document_management'
       post 'navigate'
@@ -68,10 +69,10 @@ SparcRails::Application.routes.draw do
 
   match 'service_requests/:id/add_service/:service_id' => 'service_requests#add_service'
   match 'service_requests/:id/remove_service/:line_item_id' => 'service_requests#remove_service'
-  match 'service_requests/:id/select_calendar_row/:line_item_id' => 'service_requests#select_calendar_row'
-  match 'service_requests/:id/unselect_calendar_row/:line_item_id' => 'service_requests#unselect_calendar_row'
-  match 'service_requests/:id/select_calendar_column/:column_id' => 'service_requests#select_calendar_column'
-  match 'service_requests/:id/unselect_calendar_column/:column_id' => 'service_requests#unselect_calendar_column'
+  match 'service_requests/:id/select_calendar_row/:visit_grouping_id' => 'service_requests#select_calendar_row'
+  match 'service_requests/:id/unselect_calendar_row/:visit_grouping_id' => 'service_requests#unselect_calendar_row'
+  match 'service_requests/:id/select_calendar_column/:column_id/:arm_id' => 'service_requests#select_calendar_column'
+  match 'service_requests/:id/unselect_calendar_column/:column_id/:arm_id' => 'service_requests#unselect_calendar_column'
   match 'service_requests/:id/delete_document_group/:document_group_id' => 'service_requests#delete_documents'
   match 'service_requests/:id/edit_document_group/:document_group_id' => 'service_requests#edit_documents'
   match 'rubyception' => 'rubyception/application#index'
@@ -194,6 +195,12 @@ SparcRails::Application.routes.draw do
         end
       end
 
+      resources :visit_groupings do
+        member do
+          put :update_from_fulfillment
+        end
+      end
+
       resources :visits do
         member do
           put :update_from_fulfillment
@@ -203,6 +210,9 @@ SparcRails::Application.routes.draw do
       collection do
         put "/visits/:id/update_from_fulfillment" => "visits#update_from_fulfillment"
         put "/service_requests/:id/update_from_fulfillment" => "service_requests#update_from_fulfillment"
+        get "/service_requests/:id/change_arm" => "service_requests#change_arm"
+        post "/service_requests/:id/add_arm" => "service_requests#add_arm"
+        post "/service_requests/:id/remove_arm" => "service_requests#remove_arm"
         post "/service_requests/:id/add_per_patient_per_visit_visit" => "service_requests#add_per_patient_per_visit_visit"
         put "/subsidys/:id/update_from_fulfillment" => "subsidies#update_from_fulfillment"
         delete "/subsidys/:id" => "subsidies#destroy"

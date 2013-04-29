@@ -93,7 +93,7 @@ describe "admin index page", :js => true do
       it "should redirect to the root path" do
         visit portal_admin_index_path
         wait_for_javascript_to_finish
-        page.should have_content('Welcome to the SPARC Services Catalog')
+        page.should have_content('Welcome to the SPARC Request Services Catalog')
       end
     end
 

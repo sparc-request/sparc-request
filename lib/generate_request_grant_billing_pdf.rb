@@ -21,7 +21,7 @@ class RequestGrantBillingPdf
 
     hr_pro_numbers = ""
     hr_pro_numbers = [protocol.human_subjects_info.hr_number, protocol.human_subjects_info.pro_number].compact.join(", ") if protocol.human_subjects_info
-    udak_number = protocol.udak_project_number
+    udak_number = protocol.udak_project_number || ""
     short_title = protocol.short_title
 
     # question 1
@@ -64,7 +64,8 @@ class RequestGrantBillingPdf
     # question 8
     
     # question 9
-    pdf.text_box service_request.subject_count.to_s, text_box_options(:at => [192, 415])
+    subject_count = service_request.arms.map{|arm| arm.subject_count}.sum
+    pdf.text_box subject_count.to_s, text_box_options(:at => [192, 415])
     
     # question 10
     # question 11
@@ -113,5 +114,5 @@ class RequestGrantBillingPdf
 end
 
 # uncomment below for testing
-#sr = ServiceRequest.find 11396
-#RequestGrantBillingPdf.generate_pdf sr
+# sr = ServiceRequest.find 11704
+# RequestGrantBillingPdf.generate_pdf sr

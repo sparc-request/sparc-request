@@ -10,9 +10,9 @@ en:
   # sign in page
   signin:
     message1: "Sign in using your institutional login"
-    message2: "(ie - MUSC netid and password"
+    message2: "(ie - MUSC netid and password)"
     message3: "Sign in using your non-institutional login"
-    message4: "(ie - SPARC created account)"
+    message4: "(ie - SPARC Request created account)"
     button1: "Continue to sign in page"
     button2: "Sign in"
   login_name: "Username:"
@@ -21,7 +21,7 @@ en:
 
   # new user sign up
   signup:
-    message: "To create an account for the utilization of the SPARC application, please provide the following information:"
+    message: "To create an account for the utilization of the SPARC Request application, please provide the following information:"
     lname: "Last Name:"
     fname: "First Name:"
     company: "Company:"
@@ -36,32 +36,48 @@ en:
   password_reset_message: "Forgot your password?"
 
   # sign in popup
-  initial_signin_dialog: "You are not currently logged into SPARC. If you are affiliated with an institution and have an institutional login OR have created a SPARC account and have a SPARC login and password, please click the top button to proceed. If you are not currently affiliated with an institution OR do not have a SPARC login/password, please click the button on the bottom to proceed with creating a new account."
-  proceed_to_login_link: "Click here to proceed with your institutional/existing SPARC login"
+  initial_signin_dialog: "You are not currently logged into SPARC Request. If you are affiliated with an institution and have an institutional login OR have created a SPARC Request account and have a SPARC Request login and password, please click the top button to proceed. If you are not currently affiliated with an institution OR do not have a SPARC Request login/password, please click the button on the bottom to proceed with creating a new account."
+  proceed_to_login_link: "Click here to proceed with your institutional/existing SPARC Request login"
   create_new_account_link: "Click here to proceed by creating a new account"
 
   # Notifier
   notifier:
-    title: "Service Request"
-    body1: "Dear #{@identity.full_name},"
-    body2: "Services have been requested or changed in SPARC (sparc.musc.edu) for your" 
-    body3: "#{@protocol.type.downcase}"
-    body4: "listed below. In addition, below is a list of users who have been granted access to this"
-    body5: "#{@protocol.type.downcase} on your behalf."
-    body6: "Services have been requested or changed in SPARC (sparc.musc.edu) for a "
-    body7: "to which you have been granted access."
-    header: "Project Information"
-    id: "Project ID:"
-    short: "Short Title:"
+    service_request: "Service Request"
+    welcome_obtain_research_pricing: "A request has been made to obtain research pricing"
+    welcome_submit: "Services have been requested or changed"
+    body1: "Dear %{full_name},"
+    body2_pi: "%{welcome} in %{application_title} (%{root_url}) for your %{protocol_type} listed below. In addition, below is a list of users who have been granted access to this %{protocol_type} on your behalf."
+    body2_non_pi: "%{welcome} in %{application_title} (%{root_url}) for a %{protocol_type} to which you have been granted access."
     p_title: "Project Title:"
-    sponsor: "Sponsor Name:"
-    funding: "Funding Source:"
+    p_info: "Project Information"
+    p_id: "Project ID:"
+    title1: "Short Title:"
+    title2: "Project Title:"
+    s_name: "Sponsor Name:"
+    source: "Funding Source:"
     name: "Name:"
     role: "Role:"
-    proxy: "Proxy Rights"
-    list1: "A list of requested services is attached."
-    list2: "To approve the charges associated with the selected services please click"
-    list3: "HERE"
+    proxy: "Proxy Rights:"
+    body6: "A list of requested services is attached."
+    body7: "To approve the charges associated with the selected services please click"
+    link: "HERE"
+    notice:
+      body1: "Request for new SPARC Request account submitted and awaiting approval"
+      body2: "A new SPARC Request account is waiting for approval."
+      last: "Last Name"
+      first: "First Name"
+      company: "Company"
+      email: "Email"
+      number: "Telephone Number"
+      reason: "Reason for account/login request"
+      approve: "Approve Account"
+      disapprove: "Disapprove Account"
+    status_change:
+      body1: "Request for new SPARC Request account status change"
+      body2: "Your request for a new SPARC Request account has been approved.  You may proceed with your service "
+      body3: "request using your newly created"
+      body4: "username and password."
+      body5: "Your request for a new SPARC Request account has NOT been approved."
 
   # Tooltip help dialogs
   cart_help:
@@ -74,9 +90,9 @@ en:
         answer_text: "Add as many Authorized Users as you feel is pertinent. There is no limit."
       - question_text: "What is the difference  between a Research Study and a Research Project?"
         answer_text: "A Research Study is an individual research protocol with defined aims and outcomes."
-      - question_text: "How is SPARC calculating my indirect costs?"
-        answer_text: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARC uses this data to calculate your total overall indirect costs."
-      - question_text: "I\\'m stuck! Who can I contact for assistance with SPARC?"
+      - question_text: "How is SPARC Request calculating my indirect costs?"
+        answer_text: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARC Request uses this data to calculate your total overall indirect costs."
+      - question_text: "I\\'m stuck! Who can I contact for assistance with SPARC Request?"
         answer_text: "The SUCCESS Center is happy to assist you! Please contact us at <a href=\"mailto:success@musc.edu\">success@musc.edu</a> or (843) 792-3357."
 
   # new/editing projects
@@ -95,19 +111,19 @@ en:
 
   # Project/Study assignment page
   study_assignment:
-    instructions_1: "Please review the SPARC Services you are requesting below."
+    instructions_1: "Please review the SPARC Request Services you are requesting below."
     instructions_2: "Please note that any \"Professional Services\" listed below have UMA fees associated with them and cannot be removed from this screen."
     instructions_3: "If Professional Services are covered by % effort, you will have the opportunity to indicate this in Step 2."
     instructions_4: "If you wish to add services, you must return to the \"Service Catalog\"."
-    instructions_center: "Before continuing to Step 2, you must select a Research Study or Project to which the services selected are associated. Only 1 Research Study/Project can be assigned to this request."
-    tied_to_study: "Is this Service Request tied to a particular Research Study"
+    instructions_center: "Before continuing to Step 2, please select a Research Study or Project to which the services selected are associated. Please note that only 1 Research Study/Project can be assigned to this request."
+    tied_to_study: "Is this request tied to a Research Study or a Research Project?"
     select_study: "Select a Study"
     select_study_long: "Select a Research Study:"
     edit_study: "Edit Study"
     select_project: "Select a Project"
     select_project_long: "Select a Research Project:"
     edit_project: "Edit Project"
-    or: "-- OR --"
+    or: "-- If not in list above, create NEW Study/Project Below --"
     new_study: "New Study"
     new_project: "New Project"
     sidebar_box:
@@ -117,7 +133,7 @@ en:
   # Subsidy Page
   subsidy_page:
     not_eligible: "None of the services you have selected are eligible for a subsidy."
-    eligible: "The services selected below may be eligible for a subsidy. Please enter requested funding information."
+    eligible_html: "The services selected below may be eligible for a <b><i>funding award</i></b> or subsidy to cover some or all of the costs of the services. For example, SCTR (CTSA) provides funding awards for the CTRC."
     table:
       institution: "Institution/Provider/Program/Core"
       total_estimated: "Total Estimated Costs"
@@ -131,9 +147,9 @@ en:
   calendar_page:
     tabs:
       template: "Template Tab"
-      billing: "Billing Strategy Tab"
-      quantity: "Quantity Tab"
-      pricing: "Pricing Tab"
+      billing: "Quantity/Billing Tab"
+      quantity: "Quantity Display Tab"
+      pricing: "Pricing Display Tab"
     billing_legend:
       research: "R = Research"
       third_party: "T = Third Party (PT Insurance)"
@@ -146,8 +162,10 @@ en:
       qty_type: "Qty Type"
       subjects: "# Subjects"
       total: "Total"
+      total_per_patient: "Total Per Patient"
+      total_per_study: "Total Per Study"
       other_services: "Other Services"
-      total_study: "Total Study Costs"
+      total_study: "Study Cost Totals"
     per_patient: "Per Patient/Visit Services"
     labels:
       maximum_direct: "Maximum Total Direct Costs Per Patient"
@@ -156,9 +174,12 @@ en:
       total_direct: "Total Direct Costs (Per Patient/Visit Services) Per Study"
       total_indirect: "Total Indirect Costs (Per Patient/Visit Services) Per Study"
       total_costs: "Total Costs (Per Patient/Visit Services) Per Study"
-      total_direct_other: "Total Direct Costs (other) Per Study"
-      total_indirect_other: "Total Indirect Costs (other) Per Study"
-      total_costs_other: "Total Costs (other) Per Study"
+      total_direct_arm: "Total Direct Costs (Per Patient/Visit Services) All ARMs"
+      total_indirect_arm: "Total Indirect Costs (Per Patient/Visit Services) All ARMs"
+      total_costs_arm: "Total Costs (Per Patient/Visit Services) All ARMs"
+      total_direct_other: "Total Direct Costs (Other Services) Per Study"
+      total_indirect_other: "Total Indirect Costs (Other Services) Per Study"
+      total_costs_other: "Total Costs (Other Services) Per Study"
       grand_total_direct: "Grand Total: Direct Costs"
       grand_total_indirect: "Grand Total: Indirect Costs"
       grand_total: "Grand Total:"
@@ -167,7 +188,8 @@ en:
   documents:
     message: "Your file is uploading.  Please be patient as this may take a while with large files."
     no_documents: "No documents found"
-    instructions: "Please add any additional information that may be helpful to service providers."
+    upload_instructions_html: "<ul><li>Click Add New Document.</li><li>Check the service providers you wish to receive the document in the Allow Access column.</li><li>Select the file you wish to upload and click Upload.</li></ul>"
+    notes_instructions: "Please add any additional information that may be helpful to service providers."
     admin_instructions: "Additional Notes -- If specific to service, please specify in text:"
     upload_message: "Your file is uploading.  Please be patient as this may take a while with large files."
     make_changes: "To make changes to selected services please click"
@@ -271,7 +293,7 @@ en:
       new_related: "New Related Service"
       new_submission: "New Submission Email"
       new_super: "New Super User"
-    title: "SPARC Services Catalog"
+    title: "SPARC Request Services Catalog"
 
   # user search partial
   user_search:
@@ -315,11 +337,14 @@ en:
   # Edit Study form
   study_form:
     description: "Before you can complete a service request, please tell us more about your research study. This information will be used by our staff to decide the best way to process your request."
+    needed_info: "Information Needed to obtain correct pricing"
+    optional_text: "Optional Information (Used for reporting purposes and saved for your future use)"
+    options: "Optional"
     attributes: "Study Attributes"
     title: "Protocol Title:*"
     status_blank: "Select a Funding Status"
     udak_project_number: "Financial Account (UDAK#):"
-    sponsor_name: "Sponsor Name:"
+    sponsor_name: "Sponsor Name:*"
     rate: "Indirect Cost Rate:"
     funding_rfa: "Funding Opportunity #/RFA:"
     potential_funding_start_date: "Potential Funding Start Date:"
@@ -362,7 +387,7 @@ en:
     inventors: "Inventors:"
     type: "Study Type (Check all that apply)"
     impact: "Impact Areas"
-    affiliations: "Affiliations and Collaborations"
+    affiliations: "Affiliations, Collaborations, and Memberships"
     save: "Save Study"
 
   # Edit Project Form
@@ -389,18 +414,9 @@ en:
     add_user: "User added!  See table below to set proxy rights."
     update_user: 'User updated!  See table below to set proxy rights.'
 
-  # Project/Study assignment page
-  study_assignment:
-    instructions_1: "Please review the SPARC Services you are requesting below."
-    instructions_2: "Please note that any \"Professional Services\" listed below have UMA fees associated with them and cannot be removed from this screen."
-    instructions_3: "If Professional Services are covered by % effort, you will have the opportunity to indicate this in Step 2."
-    instructions_4: "If you wish to add services, you must return to the \"Service Catalog\"."
-    instructions_center: "Before continuing to Step 2, you must select a Research Study or Project to which the services selected are associated. Only 1 Research Study/Project can be assigned to this request."
-    tied_to_study: "Is this Service Request tied to a particular Research Study"
-
   # Service Request Details form
   service_request_details:
-    one_time_fee_instructions: "Please enter service details for SPARC Services that you selected"
+    one_time_fee_instructions: "Please enter service details for SPARC Request Services that you selected"
     one_time_fee_and_per_patient_instructions: "Next, please enter the following information specific to your research study/project. This information will help us generate applicable service fees for your review."
     per_patient_instructions: "Please enter the following information specific to your research study/project. This information will help us generate applicable service fees for your review."
     number_of_subjects: "Estimated Total Number of Subjects"
@@ -408,6 +424,7 @@ en:
     study_start_date: "Estimated Study Start Date"
     study_end_date: "Estimated Study End Date"
     services_required: "You can't continue unless you have services in your cart."
+    name: "ARM Name"
     services: "My Services"
     help: "Help"
 
@@ -459,6 +476,8 @@ en:
         cost: "Your Cost"
         subjects: "# Subjects"
         total: "Service Total"
+        total_per_patient: "Total Per Patient"
+        total_per_study: "Total Per Study"
       totals:
         direct_cost: "Total Direct Cost"
         indirect_cost: "Total Indirect Costs"
@@ -466,10 +485,10 @@ en:
 
   # Service Request Confirmation Page and Obtain Research Pricing Page
   sr_confirmation:
-    instructions: "Thank you for submitting a service request through SPARC. An email(s) has been submitted on your behalf, and we will respond to your service request shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
+    instructions: "Thank you for submitting a service request through SPARC Request. An email(s) has been submitted on your behalf, and we will respond to your service request shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
     research_pricing_instructions : "You have successfully submitted a request to obtain research pricing. An email(s) has been submitted on your behalf, and we will respond to your request for research pricing shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
     download_button: "Download my Service Request"
-    portal_button: "Go to SPARC User Portal"
+    portal_button: "Go to SPARC Request User Portal"
     details:
       date_submitted: "Date Submitted: "
       short_title: "Short Title: "
@@ -484,7 +503,7 @@ en:
     greeting: "Welcome!"
     notes: "Notifications:"
     note_count: "Unread Message"
-    message1: "Within your dashboard, you can view (and/or edit, submit) service requests currently in SPARC, as well as all of those still in 'draft' status. To edit any study/project specific information, click on the 'Edit' button located under the 'Study/Project Information' heading. To add or edit users, click on the 'Edit Authorized Users' button located under the 'Authorized Users' heading."
+    message1: "Within your dashboard, you can view (and/or edit, submit) service requests currently in SPARC Request, as well as all of those still in 'draft' status. To edit any study/project specific information, click on the 'Edit' button located under the 'Study/Project Information' heading. To add or edit users, click on the 'Edit Authorized Users' button located under the 'Authorized Users' heading."
     message2: "Please note that studies/projects are listed in descending order."
     loading: "Loading your project/studies"
     rights1: "You do not have appropriate rights to"
@@ -684,7 +703,7 @@ en:
     header2: "for your"
     header3: "listed below."
     body1: "To VIEW and/or MAKE any changes to this request,"
-    link1: "SPARC"
+    link1: "SPARC Request"
     link2: "please click here."
     p_info: "Protocol Information"
     p_id: "Protocol ID:"
@@ -695,7 +714,7 @@ en:
     name: "Name:"
     role: "Role:"
     proxy: "Proxy Rights"
-    received: "You have received a new notification on your SPARC User Dashboard. Please login  @ #{portal_root_url} to retrieve it. Thank you."
+    received: "You have received a new notification on your SPARC Request User Dashboard. Please login  @ %{portal_root_url} to retrieve it. Thank you."
 
   # Fulfillment tab
   fulfillments:
@@ -705,6 +724,7 @@ en:
       approval_type: "Type"
       approved_by: "Approved By"
     service_button: "Add Service"
+    remove_service_button: "Remove Service"
     core_approvals:
       header: "Core Approvals"
       nursing: "Nursing/Nutrition Approved"
@@ -757,6 +777,9 @@ en:
       visits:
         header: "Per-Patient/Per-Visit"
         no_requests: "There are no per-patient/per-visit requests."
+        arm: "Select Arm"
+        add_arm: "Add an Arm"
+        remove_arm: "Remove an Arm"
         add: "Add a Visit"
         delete: "Delete a Visit"
         add_link: "Add a Visit"
@@ -798,14 +821,14 @@ en:
 
   # Rails Root Page Messages
   rails_root:
-    welcome: "Welcome to the SPARC Services Catalog"
-    message1: "Please browse through the SPARC Services Catalog to view all available SPARC services.  Service providers are located on the left-hand side of the page.  Click on a provider to see available services."
+    welcome: "Welcome to the SPARC Request Services Catalog"
+    message1: "Please browse through the SPARC Request Services Catalog to view all available SPARC Request services.  Service providers are located on the left-hand side of the page.  Click on a provider to see available services."
     message2: "Click \"Add Services\" at the bottom of any service description to add it to your \"My Services\"."
     message3: "To delete a service from \"My Services\", use the red X beside any service."
     message4: "** Please Note: You may only select services applicable to ONE research study/project at a time.  Should you need to select services for multiple studies/projects you need to submit multiple \"Requests\"."
-    message5: "Please note that any studies/projects previously entered into SCTR SPARK (sctr.musc.edu/spark) have been migrated to the new SPARC system and are available on your new SPARC User Dashboard. To access, please visit"
-    message6: "Any service requests previously entered into SPARK have been archived and will continue to be fulfilled by SCTR staff as approved. You may continue to request new services under any existing study/project through SPARC."
-    message7: "Due to user feedback regarding the inclusion of Indirect Costs in the Grand Total of Study Costs, Indirect Costs (as a line item) have currently been removed from SPARC and will be reintroduced in the budget template tools in the Study Tracker Release. Please contact the SUCCESS Center at 792-8300 with any questions."
+    message5: "Please note that any studies/projects previously entered into SCTR SPARK (sctr.musc.edu/spark) have been migrated to the new SPARC Request system and are available on your new SPARC Request User Dashboard. To access, please visit"
+    message6: "Any service requests previously entered into SPARK have been archived and will continue to be fulfilled by SCTR staff as approved. You may continue to request new services under any existing study/project through SPARC Request."
+    message7: "Due to user feedback regarding the inclusion of Indirect Costs in the Grand Total of Study Costs, Indirect Costs (as a line item) have currently been removed from SPARC Request and will be reintroduced in the budget template tools in the Study Tracker Release. Please contact the SUCCESS Center at 792-8300 with any questions."
 
   # Identities Account Aproved/Disapproved
   identity:

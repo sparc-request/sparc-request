@@ -7,4 +7,8 @@ module Portal::SubServiceRequestsHelper
     end
   end
 
+  def per_patient_line_items(line_items)
+    line_items.map { |line_item| [line_item.service.name, line_item.id]}
+  end
+
 end

@@ -3,10 +3,10 @@ class Portal::SubServiceRequestsController < Portal::BaseController
 
   def show
     @sub_service_request = SubServiceRequest.find(params[:id])
-    
+
     session[:sub_service_request_id] = @sub_service_request.id
     session[:service_request_id] = @sub_service_request.service_request_id
-    session[:service_calendar_page] = params[:page] if params[:page]
+    session[:service_calendar_pages] = params[:pages] if params[:pages]
 
     if @user.can_edit_fulfillment? @sub_service_request.organization
       @user_toasts = @user.received_toast_messages.select {|x| x.sending_object.class == SubServiceRequest}.select {|y| y.sending_class_id == @sub_service_request.id}
@@ -22,6 +22,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       @service_list = @service_request.service_list
       @related_service_requests = @protocol.all_child_sub_service_requests
       @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
+      @selected_arm = @service_request.arms.first
     else
       redirect_to portal_admin_index_path
     end
@@ -59,6 +60,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       @service_list = @service_request.service_list
       @related_service_requests = @protocol.all_child_sub_service_requests
       @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
+      @selected_arm = @service_request.arms.first
       render :action => 'show'
     end
   end   
@@ -75,7 +77,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     end
   end
 
-  # TODO: Move this logic to the model
   def add_line_item
     @sub_service_request = SubServiceRequest.find(params[:id])
     @service_request = @sub_service_request.service_request
@@ -83,25 +84,11 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     percent = @subsidy.try(:percent_subsidy).try(:*, 100)
     @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.is_one_time_fee?}
     @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
-    if li = @sub_service_request.line_items.create(
-        service_id:            params[:new_service_id],
-        service_request_id:    @sub_service_request.service_request.id,
-        subject_count:         @service_request.subject_count) then
-      li.reload
-      if li.service.is_one_time_fee?
-        li.update_attribute(:quantity, 1)
-      else
-        # When the visit count is updated here the service request will automatically build
-        # visits on its line items to get to the visit count.  If there is no visit count
-        # insure_visit_count will set it to 1, and the visit will be created automatically.
-        @service_request.insure_visit_count()
-        @service_request.insure_subject_count()
-
-        li.fix_missing_visits
-
-        li.update_attribute(:subject_count, @service_request.subject_count)
-        li.reload
-      end
+    @arm_id = params[:arm_id].to_i if params[:arm_id]
+    @selected_arm = params[:arm_id] ? Arm.find(@arm_id) : @service_request.arms.first
+    if @sub_service_request.create_line_item(
+        service_id: params[:new_service_id],
+        sub_service_request_id: @sub_service_request.service_request.id)
       # Have to reload the service request to get the correct direct cost total for the subsidy
       @subsidy.try(:sub_service_request).try(:reload)
       @subsidy.try(:fix_pi_contribution, percent)
@@ -210,7 +197,19 @@ class Portal::SubServiceRequestsController < Portal::BaseController
 
   def destroy
     @sub_service_request = SubServiceRequest.find(params[:id])
-    @sub_service_request.destroy
+    if @sub_service_request.destroy
+      # notify users with view rights or above of deletion
+      @sub_service_request.service_request.protocol.project_roles.each do |project_role|
+        next if project_role.project_rights == 'none'
+        Notifier.sub_service_request_deleted(project_role.identity, @sub_service_request).deliver
+      end
+
+      # notify service providers
+      @sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
+        Notifier.sub_service_request_deleted(service_provider.identity, @sub_service_request).deliver
+      end
+    end
+
     redirect_to "/portal/admin"
   end
 

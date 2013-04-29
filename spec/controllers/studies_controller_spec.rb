@@ -3,7 +3,7 @@ require 'spec_helper'
 # index new create edit update delete show
 
 describe StudiesController do
-  let!(:service_request) { FactoryGirl.create(:service_request, visit_count: 0) }
+  let!(:service_request) { FactoryGirl.create(:service_request) }
   let!(:identity) { FactoryGirl.create(:identity) }
 
   stub_controller
@@ -74,6 +74,7 @@ describe StudiesController do
             :title           => 'this is the title',
             :funding_status  => 'not in a million years',
             :funding_source  => 'God',
+            :sponsor_name    => 'Sam Gamgee',
             :project_roles_attributes  => [ { :role => 'pi', :project_rights => 'jack squat', :identity_id => identity.id }, { :role => 'business-grants-manager', :project_rights => 'approve', :identity_id => identity.id } ],
             :requester_id    => identity.id,
           }

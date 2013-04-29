@@ -18,7 +18,8 @@ $(document).ready ->
       url: $(this).attr('update') + "&checked=#{$(this).is(':checked')}"
     .complete =>
       $('.service_calendar_spinner').hide()
-      calculate_max_rates()
+      arm_id = $(this).data("arm_id")
+      calculate_max_rates(arm_id)
 
   $('.line_item_visit_quantity').live 'change', ->
     $('.service_calendar_spinner').show()
@@ -53,13 +54,14 @@ $(document).ready ->
         url: $(this).attr('update') + "&qty=#{my_qty}"
       .complete =>
         $('.service_calendar_spinner').hide()
-        calculate_max_rates()
+        arm_id = $(this).data("arm_id")
+        calculate_max_rates(arm_id)
     else
       alert "Quantity must be a whole number"
       $('.service_calendar_spinner').hide()
       $(this).val(0)
 
-  $('.line_item_visit_count').live 'change', ->
+  $('.visit_grouping_subject_count').live 'change', ->
     $('.service_calendar_spinner').show()
     $.ajax
       type: 'PUT'
@@ -74,11 +76,18 @@ $(document).ready ->
       url: $(this).attr('update') + "&name=#{$(this).val()}"
     .complete ->
       $('.service_calendar_spinner').hide()
-    
-(exports ? this).calculate_max_rates = ->
+
+  $(".visit_name").live 'mouseover', ->
+    $(this).qtip
+      overwrite: false
+      content: "Click to rename your visits."
+      show:
+        ready: true
+
+(exports ? this).calculate_max_rates = (arm_id) ->
   for num in [1..5]
     column = '.visit_column_' + num
-    visits = $(column + '.visit')
+    visits = $(column + '.visit' + '.arm_' + arm_id)
     direct_total = 0
     $(visits).each (index, visit) =>
       if $(visit).is(':hidden') == false && $(visit).data('cents')
@@ -91,6 +100,6 @@ $(document).ready ->
     indirect_total_display = '$' + (Math.floor(indirect_total * 100) / 100).toFixed(2)
     max_total_display = '$' + (Math.floor(max_total * 100) / 100).toFixed(2)
 
-    $(column + '.max_direct_per_patient').html(direct_total_display)
-    $(column + '.max_indirect_per_patient').html(indirect_total_display)
-    $(column + '.max_total_per_patient').html(max_total_display)
+    $(column + '.max_direct_per_patient' + '.arm_' + arm_id).html(direct_total_display)
+    $(column + '.max_indirect_per_patient' + '.arm_' + arm_id).html(indirect_total_display)
+    $(column + '.max_total_per_patient' + '.arm_' + arm_id).html(max_total_display)

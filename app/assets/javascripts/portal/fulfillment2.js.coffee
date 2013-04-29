@@ -79,6 +79,106 @@ $(document).ready ->
       dataType: "script"
       contentType: 'application/json; charset=utf-8'
   )
+
+  $(document).on('change', '#arm_id', ->
+    $("#visit_position").attr('disabled', 'disabled')
+    $("#delete_visit_position").attr('disabled', 'disabled')
+    sr_id = $(this).data('service_request_id')
+    data =
+      'sub_service_request_id': $(this).data('sub_service_request_id')
+      'service_request_id': sr_id
+      'arm_id': $('#arm_id').val()
+    $.ajax
+      type: 'GET'
+      url:  "/portal/admin/service_requests/#{sr_id}/change_arm"
+      data:  data
+      success: ->
+        $("#visit_position").attr('disabled', false)
+        $("#delete_visit_position").attr('disabled', false)
+      error: (jqXHR, textStatus, errorThrown) ->
+        if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
+          errors = JSON.parse(jqXHR.responseText)
+        else
+          errors = [textStatus]
+        for error in errors
+          $().toastmessage('showErrorToast', "#{error.humanize()}.");
+  )
+
+  $(document).on('click', '.add_arm_link', ->
+    $('#arm-form').dialog('open')
+    console.log 'open dialog'
+  )
+
+  $('#arm-form').dialog
+    autoOpen: false
+    height: 275
+    width: 300
+    modal: true
+    resizable: false
+    buttons: [
+      {
+        id: "submit_arm"
+        text: "Submit"
+        click: ->
+          $("#arm-form").submit()
+          $(this).dialog('close')
+      },
+      {
+        id: "cancel_arm"
+        text: "Cancel"
+        click: ->
+          $(this).dialog('close')
+      }]
+    close: ->
+        $(this).clearForm()
+
+  $('#arm-form').submit ->
+    sr_id = $('#arm_id').data('service_request_id')
+    data =
+      'sub_service_request_id': $('#arm_id').data('sub_service_request_id')
+      'service_request_id': sr_id
+      'arm_name': $('#arm_name').val()
+      'subject_count': $('#subject_count').val()
+      'visit_count': $('#visit_count').val()
+    $.ajax
+      type: 'POST'
+      url:   "/portal/admin/service_requests/#{sr_id}/add_arm"
+      data:  JSON.stringify(data)
+      dataType: 'script'
+      contentType: 'application/json; charset=utf-8'
+      success: ->
+        $().toastmessage('showSuccessToast', "Service request has been saved.")
+      error: (jqXHR, textStatus, errorThrown) ->
+        if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
+          errors = JSON.parse(jqXHR.responseText)
+        else
+          errors = [textStatus]
+        for error in errors
+          $().toastmessage('showErrorToast', "#{error.humanize()}.");
+
+  $(document).on('click', '.remove_arm_link', ->
+    if confirm("Are you sure you want to remove the ARM?")
+      sr_id = $(this).data('service_request_id')
+      data =
+        'sub_service_request_id': $(this).data('sub_service_request_id')
+        'service_request_id': sr_id
+        'arm_id': $('#arm_id').val()
+      $.ajax
+        type: 'POST'
+        url:   "/portal/admin/service_requests/#{sr_id}/remove_arm"
+        data:  JSON.stringify(data)
+        dataType: 'script'
+        contentType: 'application/json; charset=utf-8'
+        success: ->
+          $().toastmessage('showSuccessToast', "Service request has been saved.")
+        error: (jqXHR, textStatus, errorThrown) ->
+          if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
+            errors = JSON.parse(jqXHR.responseText)
+          else
+            errors = [textStatus]
+          for error in errors
+            $().toastmessage('showErrorToast', "#{error.humanize()}.");
+  )
   
   $(document).on('click', '.add_visit_link', ->
     sr_id = $(this).data('service_request_id')
@@ -86,6 +186,7 @@ $(document).ready ->
       'sub_service_request_id': $(this).data('sub_service_request_id')
       'service_request_id': sr_id
       'visit_position': $('#visit_position').val()
+      'arm_id': $('#arm_id').val()
     $.ajax
       type: 'POST'
       url:   "/portal/admin/service_requests/#{sr_id}/add_per_patient_per_visit_visit"
@@ -109,6 +210,7 @@ $(document).ready ->
       'sub_service_request_id': $(this).data('sub_service_request_id')
       'service_request_id': sr_id
       'visit_position': $('#delete_visit_position').val()
+      'arm_id': $('#arm_id').val()
     $.ajax
       type: 'DELETE'
       url:   "/portal/admin/service_requests/#{sr_id}/remove_per_patient_per_visit_visit"
@@ -132,6 +234,7 @@ $(document).ready ->
     data = 
       'sub_service_request_id': ssr_id
       'new_service_id': $("##{new_service_id}").val()
+      'arm_id': $('#arm_id').val()
     $.ajax
       type:        'POST'
       url:         "/portal/admin/sub_service_requests/#{ssr_id}/add_line_item"
@@ -147,6 +250,15 @@ $(document).ready ->
           errors = [textStatus]
         for error in errors
           $().toastmessage('showErrorToast', "#{error.humanize()}.");
+  )
+
+  $(document).on('click', '#remove_service', ->
+    object_id = $('#delete_ppv_service_id').val()
+    $.ajax
+      type: 'DELETE'
+      url:  "/portal/admin/line_items/#{object_id}"
+      success: ->
+        $().toastmessage('showSuccessToast', "#{klass.humanize()} has been deleted.");
   )
 
   $(document).on('click', '.expand_li', ->

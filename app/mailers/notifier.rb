@@ -5,7 +5,7 @@ class Notifier < ActionMailer::Base
     # TODO: this process needs to be moved to a helper method
     # it's repeated in each action with slightly different information
     email = Rails.env == 'production' ? ADMIN_MAIL_TO : DEFAULT_MAIL_TO
-    subject = Rails.env == 'production' ? 'New Question from SPARC' : "[#{Rails.env.capitalize} - EMAIL TO #{ADMIN_MAIL_TO}] New Question from SPARC"
+    subject = Rails.env == 'production' ? "New Question from #{I18n.t('application_title')}" : "[#{Rails.env.capitalize} - EMAIL TO #{ADMIN_MAIL_TO}] New Question from #{I18n.t('application_title')}"
 
     mail(:to => email, :from => @question.from, :subject => subject)
   end
@@ -15,7 +15,7 @@ class Notifier < ActionMailer::Base
     
     email = Rails.env == 'production' ? ADMIN_MAIL_TO : DEFAULT_MAIL_TO
     cc = Rails.env == 'production' ? NEW_USER_CC : nil
-    subject = Rails.env == 'production' ? 'New Question from SPARC' : "[#{Rails.env.capitalize} - EMAIL TO #{ADMIN_MAIL_TO} AND CC TO #{NEW_USER_CC}] Request for new SPARC account submitted and awaiting approval"
+    subject = Rails.env == 'production' ? "New Question from #{I18n.t('application_title')}" : "[#{Rails.env.capitalize} - EMAIL TO #{ADMIN_MAIL_TO} AND CC TO #{NEW_USER_CC}] Request for new #{I18n.t('application_title')} account submitted and awaiting approval"
     
     mail(:to => email, :cc => cc, :from => @identity.email, :subject => subject) 
   end
@@ -38,7 +38,7 @@ class Notifier < ActionMailer::Base
     
     # only send these to the correct person in the production env
     email = Rails.env == 'production' ? @identity.email : DEFAULT_MAIL_TO
-    subject = Rails.env == 'production' ? "SPARC Service Request" : "[#{Rails.env.capitalize} - EMAIL TO #{@identity.email}] SPARC Service Request"
+    subject = Rails.env == 'production' ? "#{I18n.t('application_title')} service request" : "[#{Rails.env.capitalize} - EMAIL TO #{@identity.email}] #{I18n.t('application_title')} service request"
     
     mail(:to => email, :from => "no-reply@musc.edu", :subject => subject)
   end
@@ -56,7 +56,7 @@ class Notifier < ActionMailer::Base
     
     # only send these to the correct person in the production env
     email = Rails.env == 'production' ?  submission_email_address : DEFAULT_MAIL_TO
-    subject = Rails.env == 'production' ? "SPARC Service Request" : "[#{Rails.env.capitalize} - EMAIL TO #{submission_email_address}] SPARC Service Request"
+    subject = Rails.env == 'production' ? "#{I18n.t('application_title')} service request" : "[#{Rails.env.capitalize} - EMAIL TO #{submission_email_address}] #{I18n.t('application_title')} service request"
     
     mail(:to => email, :from => "no-reply@musc.edu", :subject => subject)
   end
@@ -76,7 +76,7 @@ class Notifier < ActionMailer::Base
     
     # only send these to the correct person in the production env
     email = Rails.env == 'production' ? service_provider.identity.email : DEFAULT_MAIL_TO
-    subject = Rails.env == 'production' ? "SPARC Service Request" : "[#{Rails.env.capitalize} - EMAIL TO #{service_provider.identity.email}] SPARC Service Request"
+    subject = Rails.env == 'production' ? "#{I18n.t('application_title')} service request" : "[#{Rails.env.capitalize} - EMAIL TO #{service_provider.identity.email}] #{I18n.t('application_title')} service request"
     
     mail(:to => email, :from => "no-reply@musc.edu", :subject => subject)
   end
@@ -86,7 +86,7 @@ class Notifier < ActionMailer::Base
     
     email_from = Rails.env == 'production' ? ADMIN_MAIL_TO : DEFAULT_MAIL_TO
     email_to = Rails.env == 'production' ? identity.email : DEFAULT_MAIL_TO
-    subject = Rails.env == 'production' ? "SPARC account request - status change" : "[#{Rails.env.capitalize} - EMAIL TO #{identity.email}] SPARC account request - status change"
+    subject = Rails.env == 'production' ? "#{I18n.t('application_title')} account request - status change" : "[#{Rails.env.capitalize} - EMAIL TO #{identity.email}] #{I18n.t('application_title')} account request - status change"
 
     mail(:to => email_to, :from => email_from, :subject => subject)
   end
@@ -103,4 +103,14 @@ class Notifier < ActionMailer::Base
 
     mail(:to => email_to, :from => email_from, :subject => "Feedback")
   end
+
+  def sub_service_request_deleted identity, sub_service_request
+    @ssr_id = "#{sub_service_request.service_request.protocol.id}-#{sub_service_request.ssr_id}"
+
+    email_to = Rails.env == 'production' ? identity.email : DEFAULT_MAIL_TO
+    subject = Rails.env == 'production' ? "#{I18n.t('application_title')} - service request deleted" : "[#{Rails.env.capitalize} - EMAIL TO #{identity.email}] #{I18n.t('application_title')} - service request deleted"
+
+    mail(:to => email_to, :from => 'no-reply@musc.edu', :subject => subject)
+  end
+
 end

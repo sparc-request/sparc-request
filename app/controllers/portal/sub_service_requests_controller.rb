@@ -198,6 +198,11 @@ class Portal::SubServiceRequestsController < Portal::BaseController
   def destroy
     @sub_service_request = SubServiceRequest.find(params[:id])
     if @sub_service_request.destroy
+      # Delete all related toast messages
+      ToastMessage.where(:sending_class_id => params[:id]).where(:sending_class => "SubServiceRequest").each do |toast|
+        toast.destroy
+      end
+
       # notify users with view rights or above of deletion
       @sub_service_request.service_request.protocol.project_roles.each do |project_role|
         next if project_role.project_rights == 'none'

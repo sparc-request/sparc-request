@@ -80,17 +80,7 @@ class Arm < ActiveRecord::Base
   # errors object in that case.
   def add_visit position=nil
     result = self.transaction do
-      if not visit_group = self.visit_groups.create(position: position) then
-        raise ActiveRecord::Rollback
-      end
-
-      # Add visits to each line item under the service request
-      self.line_items_visits.each do |liv|
-        if not liv.add_visit(visit_group) then
-          self.errors.initialize_dup(liv.errors) # TODO: is this the right way to do this?
-          raise ActiveRecord::Rollback
-        end
-      end
+      self.create_visit_group(position)
 
       # Reload to force refresh of the visits
       self.reload
@@ -107,6 +97,22 @@ class Arm < ActiveRecord::Base
       self.reload
       return false
     end
+  end
+
+  def create_visit_group position=nil
+    if not visit_group = self.visit_groups.create(position: position) then
+      raise ActiveRecord::Rollback
+    end
+
+    # Add visits to each line item under the service request
+    self.line_items_visits.each do |liv|
+      if not liv.add_visit(visit_group) then
+        self.errors.initialize_dup(liv.errors) # TODO: is this the right way to do this?
+        raise ActiveRecord::Rollback
+      end
+    end
+
+    return visit_group
   end
 
   def remove_visit position

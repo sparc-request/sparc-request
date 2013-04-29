@@ -201,10 +201,15 @@ class ServiceRequestsController < ApplicationController
             if @service_request.status == 'first_draft' or liv.subject_count.nil? or liv.subject_count > arm.subject_count
               liv.update_attribute(:subject_count, arm.subject_count)
             end
-            if arm.visit_count > liv.visits.count
-              liv.create_visits
-            end
+            # if arm.visit_count > liv.visits.count
+            #   liv.create_visits
+            # end
           end
+          #Arm.visit_count has benn increased, so create new visit group, and populate the visits
+          if arm.visit_count > arm.visit_groups.count
+            arm.create_visit_group until arm.visit_count == arm.visit_groups.count
+          end
+          #Arm.visit_count has been decreased, destroy visit group (and visits)
           if arm.visit_count < arm.visit_groups.count
             arm.visit_groups.last.destroy until arm.visit_count == arm.visit_groups.count
           end
@@ -492,8 +497,7 @@ class ServiceRequestsController < ApplicationController
       new_line_item = @service_request.line_items.create(:service_id => service.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum)
       if !new_line_item.service.is_one_time_fee?
         @service_request.arms.each do |arm|
-          liv = arm.line_items_visits.create(:arm_id => arm.id, :line_item_id => new_line_item.id, :subject_count => arm.subject_count)
-          liv.create_visits
+          arm.create_line_items_visit(new_line_item)
         end
       end
       @new_line_items << new_line_item
@@ -503,8 +507,7 @@ class ServiceRequestsController < ApplicationController
         new_line_item = @service_request.line_items.create(:service_id => rs.id, :optional => false, :quantity => service.displayed_pricing_map.unit_minimum) unless existing_service_ids.include?(rs.id)
         if !new_line_item.service.is_one_time_fee?
           @service_request.arms.each do |arm|
-            liv = arm.line_items_visits.create(:arm_id => arm.id, :line_item_id => new_line_item.id, :subject_count => arm.subject_count)
-            liv.create_visits
+            arm.create_line_items_visit(new_line_item)
           end
         end
         @new_line_items << new_line_item
@@ -515,8 +518,7 @@ class ServiceRequestsController < ApplicationController
         new_line_item = @service_request.line_items.create(:service_id => rs.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum) unless existing_service_ids.include?(rs.id)
         if !new_line_item.service.is_one_time_fee?
           @service_request.arms.each do |arm|
-            liv = arm.line_items_visits.create(:arm_id => arm.id, :line_item_id => new_line_item.id, :subject_count => arm.subject_count)
-            liv.create_visits unless arm.visit_count.blank?
+            arm.create_line_items_visit(new_line_item)
           end
         end
         @new_line_items << new_line_item

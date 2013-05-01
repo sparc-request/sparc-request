@@ -116,7 +116,6 @@ describe 'Service' do
       1000.times do
         Service.dollars_to_cents("#{amount / 100.00}").should eq(amount)
         amount = amount + 1
-        puts amount
       end
     end
   end

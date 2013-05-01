@@ -112,8 +112,8 @@ describe 'Service' do
       Service.dollars_to_cents('1').should eq 100
     end
 
-    it 'should return 250 cents given 2.5 dollars' do
-      Service.dollars_to_cents('2.5').should eq 250
+    it 'should return 435 cents given 4.35 dollars' do
+      Service.dollars_to_cents('4.35').should eq 435
     end
   end
 

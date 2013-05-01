@@ -159,20 +159,24 @@ describe Arm do
     end
 
     describe 'create_line_items_visit' do
+      before :each do
+        @line_item3 = FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service2.id, sub_service_request_id: sub_service_request.id, quantity: 0)
+      end
+
       it 'should create a line_items_visit with a subject count the same as the arm' do
         arm1.update_attributes(subject_count: 42)
-        arm1.create_line_items_visit(line_item2)
+        arm1.create_line_items_visit(@line_item3)
         arm1.line_items_visits.count.should eq 2
-        arm1.line_items_visits.last.subject_count.should eq 42
+        arm1.line_items_visits.last.subject_count.should eq(arm1.subject_count)
       end
 
       it 'should create a line_items_visit with new visits' do
         #We started with 1 line_items_visit; now we should have 2
-        arm1.create_line_items_visit(line_item2)
+        arm1.create_line_items_visit(@line_item3)
         arm1.line_items_visits.count.should eq 2
 
         #Ensure that the new line_items_visit had its visits created
-        arm1.line_items_visits.last.visits.count.should eq(11)
+        arm1.line_items_visits.last.visits.count.should eq(arm1.visit_count)
 
         #Go through new visits, and ensure they are connected to the correct visit_group (visit.position simply points to position on the visit_group)
         arm1.line_items_visits.last.visits.each_with_index do |visit,position|

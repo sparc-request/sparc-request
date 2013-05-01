@@ -346,7 +346,7 @@ describe 'organization' do
     describe "get available statuses" do
 
       it "should set the status to the parent's status if there is one" do
-        core.get_available_statuses.should eq({"submitted" => "Submitted"})
+        core.get_available_statuses.should eq({"draft"=>"Draft", "submitted"=>"Submitted"})
       end
 
       it "should set the status to the default if there are no parent statuses" do
@@ -354,7 +354,7 @@ describe 'organization' do
       end
 
       it "should not get the parent's status if it already has a status" do
-        program.get_available_statuses.should eq({"submitted" => "Submitted"})
+        program.get_available_statuses.should eq({"draft"=>"Draft", "submitted"=>"Submitted"})
       end
     end
   end

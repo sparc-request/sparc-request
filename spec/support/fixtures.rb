@@ -81,6 +81,9 @@ def add_visits
     service_request.per_patient_per_visit_line_items.each do |line_item|
       arm.create_line_items_visit(line_item)
     end
+    arm.visits.each do |visit|
+      visit.update_attributes(quantity: 15, research_billing_qty: 5, insurance_billing_qty: 5, effort_billing_qty: 5, billing: Faker::Lorem.word)
+    end
   end
 end
 

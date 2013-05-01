@@ -181,6 +181,7 @@ a.save-option{
 
 #welcome_message #red_description {
   color: red;
+  font-size: 120%;
 }
 
 #welcome_message .section {

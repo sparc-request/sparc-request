@@ -80,7 +80,7 @@ class Service < ActiveRecord::Base
   def self.dollars_to_cents dollars
     # TODO: should this return nil if passed in nil?
     dollars = dollars.gsub(',','')
-    (dollars.to_f * 100).ceil.to_i
+    (BigDecimal(dollars) * 100).to_i
   end
 
   # Given an integer number of cents, return a Float representing the

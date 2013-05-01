@@ -108,12 +108,16 @@ describe 'Service' do
   end
 
   describe 'dollars_to_cents' do
-    it 'should return 100 cents given 1 dollar' do
-      Service.dollars_to_cents('1').should eq 100
-    end
 
-    it 'should return 435 cents given 4.35 dollars' do
-      Service.dollars_to_cents('4.35').should eq 435
+    it "should return the correct cents for a given dollar amount" do
+
+      amount = 0
+      
+      1000.times do
+        Service.dollars_to_cents("#{amount / 100.00}").should eq(amount)
+        amount = amount + 1
+        puts amount
+      end
     end
   end
 

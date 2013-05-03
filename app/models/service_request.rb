@@ -90,16 +90,23 @@ class ServiceRequest < ActiveRecord::Base
     arm
   end
 
-  def create_line_item service_id, sub_service_request_id, quantity=1
-    if line_item = self.line_items.create(service_id: service_id, sub_service_request_id: sub_service_request_id) then
+  def create_line_item(args)
+    quantity = args.delete(:quantity) || 1
+    if line_item = self.line_items.create(args)
+
       if line_item.service.is_one_time_fee?
+        # quantity is only set for one time fee
         line_item.update_attribute(:quantity, quantity)
+
       else
+        # only per-patient per-visit have arms
         self.arms.each do |arm|
           arm.create_line_items_visit(line_item)
         end
       end
+
       line_item.reload
+      return line_item
     else
       return false
     end

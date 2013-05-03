@@ -494,34 +494,25 @@ class ServiceRequestsController < ApplicationController
       end
 
       # add service to line items
-      new_line_item = @service_request.line_items.create(:service_id => service.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum)
-      if !new_line_item.service.is_one_time_fee?
-        @service_request.arms.each do |arm|
-          arm.create_line_items_visit(new_line_item)
-        end
-      end
-      @new_line_items << new_line_item
+      @new_line_items << @service_request.create_line_item(
+          service_id: service.id,
+          optional: true,
+          quantity: service.displayed_pricing_map.unit_minimum)
 
       # add required services to line items
       service.required_services.each do |rs|
-        new_line_item = @service_request.line_items.create(:service_id => rs.id, :optional => false, :quantity => service.displayed_pricing_map.unit_minimum) unless existing_service_ids.include?(rs.id)
-        if !new_line_item.service.is_one_time_fee?
-          @service_request.arms.each do |arm|
-            arm.create_line_items_visit(new_line_item)
-          end
-        end
-        @new_line_items << new_line_item
+        @new_line_items << @service_request.create_line_item(
+            service_id: rs.id,
+            optional: false,
+            quantity: service.displayed_pricing_map.unit_minimum) unless existing_service_ids.include?(rs.id)
       end
 
       # add optional services to line items
       service.optional_services.each do |rs|
-        new_line_item = @service_request.line_items.create(:service_id => rs.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum) unless existing_service_ids.include?(rs.id)
-        if !new_line_item.service.is_one_time_fee?
-          @service_request.arms.each do |arm|
-            arm.create_line_items_visit(new_line_item)
-          end
-        end
-        @new_line_items << new_line_item
+        @new_line_items << @service_request.create_line_item(
+            service_id: rs.id,
+            optional: true,
+            quantity: service.displayed_pricing_map.unit_minimum) unless existing_service_ids.include?(rs.id)
       end
 
       # create sub_service_rquests

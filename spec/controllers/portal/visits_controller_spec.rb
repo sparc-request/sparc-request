@@ -47,21 +47,10 @@ describe Portal::VisitsController do
             sub_service_request_id: ssr.id)
       }
 
-      let!(:line_items_visit) {
-        FactoryGirl.create(
-            :line_items_visit,
-            arm_id: arm.id,
-            line_item_id: line_item.id,
-            subject_count: 1)
-      }
-
       let!(:visit) {
-        # TODO: use ServiceRequest#add_visit ?
         arm.update_attributes(visit_count: 1)
-        FactoryGirl.create(
-            :visit,
-            line_items_visit_id: line_items_visit.id,
-            research_billing_qty: 5)
+        arm.create_line_items_visit(line_item)
+        visit = arm.visits[0]
       }
 
       it 'should set instance variables' do
@@ -123,63 +112,44 @@ describe Portal::VisitsController do
             sub_service_request_id: ssr.id)
       }
 
-      let!(:line_items_visit1) {
-        FactoryGirl.create(
-            :line_items_visit,
-            arm_id: arm.id,
-            line_item_id: line_item1.id,
-            subject_count: 1)
-      }
-
-      let!(:line_items_visit2) {
-        FactoryGirl.create(
-            :line_items_visit,
-            arm_id: arm.id,
-            line_item_id: line_item2.id,
-            subject_count: 1)
-      }
-
-      let!(:line_items_visit3) {
-        FactoryGirl.create(
-            :line_items_visit,
-            arm_id: arm.id,
-            line_item_id: line_item3.id,
-            subject_count: 1)
-      }
-
       it 'should destroy all the other visits at the same position' do
-        vg1_visits = Visit.bulk_create(10, line_items_visit_id: line_items_visit1.id)
-        vg2_visits = Visit.bulk_create(10, line_items_visit_id: line_items_visit2.id)
-        vg3_visits = Visit.bulk_create(10, line_items_visit_id: line_items_visit3.id)
         arm.update_attributes(visit_count: 10)
+        arm.create_line_items_visit(line_item1)
+        arm.create_line_items_visit(line_item2)
+        arm.create_line_items_visit(line_item3)
+
+        visit = arm.visits[0]
+        visits = arm.visit_groups.find_by_position(visit.position).visits
 
         post :destroy, {
           format: :js,
-          id: vg1_visits[4].id,
+          id: visit.id,
         }.with_indifferent_access
 
-        expect { vg1_visits[4].reload }.to raise_exception(ActiveRecord::RecordNotFound)
-        expect { vg2_visits[4].reload }.to raise_exception(ActiveRecord::RecordNotFound)
-        expect { vg3_visits[4].reload }.to raise_exception(ActiveRecord::RecordNotFound)
+        # Reloading deleted visits should result in an exception
+        visits.each do |v|
+          expect { v.reload }.to raise_exception(ActiveRecord::RecordNotFound)
+          expect { v.reload }.to raise_exception(ActiveRecord::RecordNotFound)
+          expect { v.reload }.to raise_exception(ActiveRecord::RecordNotFound)
+        end
 
-        line_items_visit1.reload
-        line_items_visit2.reload
-        line_items_visit3.reload
-
-        line_items_visit1.visits.count.should eq 9
-        line_items_visit2.visits.count.should eq 9
-        line_items_visit3.visits.count.should eq 9
+        LineItemsVisit.for(arm, line_item1).visits.count.should eq 9
+        LineItemsVisit.for(arm, line_item2).visits.count.should eq 9
+        LineItemsVisit.for(arm, line_item3).visits.count.should eq 9
       end
 
       it 'should update visit count' do
-        vg1_visits = Visit.bulk_create(10, line_items_visit_id: line_items_visit1.id)
-        vg2_visits = Visit.bulk_create(10, line_items_visit_id: line_items_visit2.id)
-        vg3_visits = Visit.bulk_create(10, line_items_visit_id: line_items_visit3.id)
         arm.update_attributes(visit_count: 10)
+        arm.create_line_items_visit(line_item1)
+        arm.create_line_items_visit(line_item2)
+        arm.create_line_items_visit(line_item3)
+
+        visit = arm.visits[0]
+        visits = arm.visit_groups.find_by_position(visit.position).visits
 
         post :destroy, {
           format: :js,
-          id: vg1_visits[4].id,
+          id: visit.id,
         }.with_indifferent_access
 
         arm.reload

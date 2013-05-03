@@ -771,6 +771,7 @@ en:
       related_srs: "Related Service Requests"
       users: "Associated Users"
       notifications: "Notifications"
+      cw_fulfillment: "Clinical Work Fulfillment"
 
   # Admin Root Page
   admin_root:

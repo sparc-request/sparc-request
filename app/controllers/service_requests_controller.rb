@@ -504,7 +504,7 @@ class ServiceRequestsController < ApplicationController
         @new_line_items << @service_request.create_line_item(
             service_id: rs.id,
             optional: false,
-            quantity: service.displayed_pricing_map.unit_minimum) unless existing_service_ids.include?(rs.id)
+            quantity: rs.displayed_pricing_map.unit_minimum) unless existing_service_ids.include?(rs.id)
       end
 
       # add optional services to line items
@@ -512,7 +512,7 @@ class ServiceRequestsController < ApplicationController
         @new_line_items << @service_request.create_line_item(
             service_id: rs.id,
             optional: true,
-            quantity: service.displayed_pricing_map.unit_minimum) unless existing_service_ids.include?(rs.id)
+            quantity: rs.displayed_pricing_map.unit_minimum) unless existing_service_ids.include?(rs.id)
       end
 
       # create sub_service_rquests

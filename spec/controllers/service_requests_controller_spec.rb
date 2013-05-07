@@ -500,18 +500,19 @@ describe ServiceRequestsController do
   end
 
   describe 'POST add_service' do
-    let!(:service) {
+    let!(:new_service) {
       service = FactoryGirl.create(
           :service,
           pricing_map_count: 1,
           organization_id: core.id)
       service.pricing_maps[0].update_attributes(
           display_date: Date.today,
+          is_one_time_fee: true,
           unit_minimum: 42)
       service
     }
 
-    let!(:service2) {
+    let!(:new_service2) {
       service = FactoryGirl.create(
           :service,
           pricing_map_count: 1,
@@ -520,7 +521,7 @@ describe ServiceRequestsController do
       service
     }
 
-    let!(:service3) {
+    let!(:new_service3) {
       service = FactoryGirl.create(
           :service,
           pricing_map_count: 1,
@@ -532,10 +533,14 @@ describe ServiceRequestsController do
     it 'should give an error if the service request already has a line item for the service' do
       line_item = FactoryGirl.create(
           :line_item,
-          service_id: service.id,
+          service_id: new_service.id,
           service_request_id: service_request.id)
       session[:service_request_id] = service_request.id
-      post :add_service, { :id => service_request.id, :service_id => service.id, :format => :js }.with_indifferent_access
+      post :add_service, {
+        :id          => service_request.id,
+        :service_id  => new_service.id,
+        :format      => :js
+      }.with_indifferent_access
       response.body.should eq 'Service exists in line items'
     end
 
@@ -543,13 +548,18 @@ describe ServiceRequestsController do
       orig_count = service_request.line_items.count
 
       session[:service_request_id] = service_request.id
-      post :add_service, { :id => service_request.id, :service_id => service.id, :format => :js }.with_indifferent_access
+      post :add_service, {
+        :id          => service_request.id,
+        :service_id  => new_service.id,
+        :format      => :js
+      }.with_indifferent_access
 
       service_request.reload
       service_request.line_items.count.should eq orig_count + 1
-      service_request.line_items[-1].service.should eq service
-      service_request.line_items[-1].optional.should eq true
-      service_request.line_items[-1].quantity.should eq 42
+      line_item = service_request.line_items.find_by_service_id(new_service.id)
+      line_item.service.should eq new_service
+      line_item.optional.should eq true
+      line_item.quantity.should eq 42
     end
 
     it 'should create a line item for a required service' do
@@ -557,19 +567,19 @@ describe ServiceRequestsController do
 
       FactoryGirl.create(
           :service_relation,
-          service_id: service.id,
-          related_service_id: service2.id,
+          service_id: new_service.id,
+          related_service_id: new_service2.id,
           optional: false)
 
       session[:service_request_id] = service_request.id
-      post :add_service, { :id => service_request.id, :service_id => service.id, :format => :js }.with_indifferent_access
+      post :add_service, { :id => service_request.id, :service_id => new_service.id, :format => :js }.with_indifferent_access
 
       # there was one service and one line item already, then we added
       # one
 
       service_request.reload
       service_request.line_items.count.should eq orig_count + 1
-      service_request.line_items[-1].service.should eq service2
+      service_request.line_items[-1].service.should eq new_service2
       service_request.line_items[-1].optional.should eq false
       service_request.line_items[-1].quantity.should eq 42
     end
@@ -582,14 +592,14 @@ describe ServiceRequestsController do
           optional: true)
 
       session[:service_request_id] = service_request.id
-      post :add_service, { :id => service_request.id, :service_id => service.id, :format => :js }.with_indifferent_access
+      post :add_service, { :id => service_request.id, :service_id => new_service.id, :format => :js }.with_indifferent_access
 
       service_request.reload
       service_request.line_items.count.should eq 2
-      service_request.line_items[0].service.should eq service
+      service_request.line_items[0].service.should eq new_service
       service_request.line_items[0].optional.should eq true
       service_request.line_items[0].quantity.should eq nil # always nil for pppv
-      service_request.line_items[1].service.should eq service2
+      service_request.line_items[1].service.should eq new_service2
       service_request.line_items[1].optional.should eq true
       service_request.line_items[1].quantity.should eq nil # always nil for pppv
     end
@@ -597,7 +607,7 @@ describe ServiceRequestsController do
     it 'should create a sub service request for each organization in the service list' do
       session[:service_request_id] = service_request.id
 
-      [ service, service2, service3 ].each do |service_to_add|
+      [ new_service, new_service2, new_service3 ].each do |service_to_add|
         post :add_service, { :id => service_request.id, :service_id => service_to_add.id, :format => :js }.with_indifferent_access
       end
 
@@ -610,7 +620,7 @@ describe ServiceRequestsController do
     it 'should update each of the line items with the appropriate ssr id' do
       session[:service_request_id] = service_request.id
 
-      [ service, service2, service3 ].each do |service_to_add|
+      [ new_service, new_service2, new_service3 ].each do |service_to_add|
         post :add_service, { :id => service_request.id, :service_id => service_to_add.id, :format => :js }.with_indifferent_access
       end
 

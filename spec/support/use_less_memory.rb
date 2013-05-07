@@ -1,0 +1,42 @@
+# Upon profiling, it seems we are spending 55% of our time in the
+# garbage collector, because we are holding on to objects much longer
+# than we should.  This patch does two things:
+#
+#   1) it disables running the garbage collector during a test and only
+#      runs the garbage collector when the test completes
+#   2) it removes any instance variables from the test object after the
+#      test finishes (allowing the objects referenced by the test object
+#      to be freed)
+#
+# The most important instance variable that is removed is @__memoized,
+# which holds all the variables defined by let/let!.
+#
+# Source: http://blog.carbonfive.com/2011/02/02/crank-your-specs/
+
+RSpec.configure do |config|
+  RESERVED_IVARS = %w(@loaded_fixtures)
+  last_gc_run = Time.now
+ 
+  # Disable the garbage collector before starting each test
+  config.before(:each) do
+    # puts "Turning off garbage collector"
+    GC.disable
+  end
+ 
+  config.after(:each) do
+    # Remove any instance variables in this test object (the one that
+    # just completed)
+    (instance_variables - RESERVED_IVARS).each do |ivar|
+      instance_variable_set(ivar, nil)
+    end
+
+    # Run the garbage collector if it hasn't been run in over a second
+    if Time.now - last_gc_run > 1.0
+      # puts "Runnng garbage collector"
+      GC.enable
+      GC.start
+      last_gc_run = Time.now
+    end
+  end
+end
+

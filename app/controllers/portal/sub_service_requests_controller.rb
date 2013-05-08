@@ -86,9 +86,9 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
     @arm_id = params[:arm_id].to_i if params[:arm_id]
     @selected_arm = params[:arm_id] ? Arm.find(@arm_id) : @service_request.arms.first
+    service = Service.find(params[:new_service_id])
     if @sub_service_request.create_line_item(
-        service_id: params[:new_service_id],
-        sub_service_request_id: @sub_service_request.service_request.id)
+        service_id: params[:new_service_id])
       # Have to reload the service request to get the correct direct cost total for the subsidy
       @subsidy.try(:sub_service_request).try(:reload)
       @subsidy.try(:fix_pi_contribution, percent)

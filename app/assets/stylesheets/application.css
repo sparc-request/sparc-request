@@ -306,6 +306,14 @@ a.save-option{
   color: red !important;
 }
 
+.even {
+  background: #FFFFFF;
+}
+
+.odd {
+  background: #E8E8E8;
+}
+
 /* Navy: #003366
  * Light Blue: #0099ff
  * Orange: #ff9933

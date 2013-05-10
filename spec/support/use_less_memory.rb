@@ -30,6 +30,17 @@ RSpec.configure do |config|
       instance_variable_set(ivar, nil)
     end
 
+    # DatabaseCleaner issues a ROLLBACK statement, but does not complete
+    # the transaction; this causes the list of current transaction
+    # records to grow without bound, and no activerecord objects are ever
+    # cleaned up (see https://github.com/bmabey/database_cleaner/issues/204).
+    # This works around the problem.  The assumption is that we have
+    # only one connection to the database and it is accessible via
+    # #shared_connection (see support/active_record.rb).
+    ActiveRecord::Base.shared_connection.with { |conn|
+      conn.instance_eval { @_current_transaction_records = [ [ ] ] }
+    }
+
     # Run the garbage collector if it hasn't been run in over a second
     if Time.now - last_gc_run > 1.0
       # puts "Runnng garbage collector"

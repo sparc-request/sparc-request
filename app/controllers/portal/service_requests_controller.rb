@@ -92,7 +92,6 @@ class Portal::ServiceRequestsController < Portal::BaseController
       end
       render 'portal/service_requests/add_per_patient_per_visit_visit'
     else
-      p @service_request.errors
       respond_to do |format|
         format.js { render :status => 500, :json => clean_errors(@service_request.errors) }
       end
@@ -127,7 +126,7 @@ class Portal::ServiceRequestsController < Portal::BaseController
   def create_visit_change_toast identity, sub_service_request
     ToastMessage.create(
       :to => identity.id,
-      :from => @user.id,
+      :from => current_identity.id,
       :sending_class => 'SubServiceRequest',
       :sending_class_id => sub_service_request.id,
       :message => "The visit count on this service request has been changed"

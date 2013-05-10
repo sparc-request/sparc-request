@@ -36,12 +36,13 @@
         - next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
         - if @tab == 'billing_strategy'
           %tr.sub_section_header
-            %th{:colspan => @portal ? 3 : 7}= value[:name]
+            %th{:colspan => @portal ? 3 : 6}= value[:name]
             -5.times do
               %th.billing_type_list
                 %span.billing_type R
                 %span.billing_type T
                 %span.billing_type %
+            %th &nbsp;
             %th &nbsp;
         - else
           %tr.sub_section_header

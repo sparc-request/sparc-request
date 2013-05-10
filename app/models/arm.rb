@@ -88,7 +88,7 @@ class Arm < ActiveRecord::Base
       self.visit_count ||= 0 # in case we import a service request with nil visit count
       self.visit_count += 1
 
-      self.save or raise ActiveRecord::Rollback0
+      self.save or raise ActiveRecord::Rollback
     end
 
     if result then

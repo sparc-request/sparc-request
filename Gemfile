@@ -12,6 +12,7 @@ gem 'sass'
 group :development, :test, :profile do
   gem "rails-erd"
   gem 'sqlite3'
+  gem 'rspec'
   gem 'rspec-rails'
   gem 'launchy'
   gem 'capybara'

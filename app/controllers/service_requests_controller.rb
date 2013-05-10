@@ -489,42 +489,19 @@ class ServiceRequestsController < ApplicationController
 
       unless service.is_one_time_fee?
         if @service_request.arms.empty?
-          @service_request.arms.create(:name => "ARM 1", :visit_count => 1, :subject_count => 1)
+          @service_request.arms.create(
+              name: 'ARM 1',
+              visit_count: 1,
+              subject_count: 1)
         end
       end
 
-      # add service to line items
-      new_line_item = @service_request.line_items.create(:service_id => service.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum)
-      if !new_line_item.service.is_one_time_fee?
-        @service_request.arms.each do |arm|
-          arm.create_line_items_visit(new_line_item)
-        end
-      end
-      @new_line_items << new_line_item
+      @new_line_items = @service_request.create_line_items_for_service(
+          service: service,
+          optional: true,
+          existing_service_ids: existing_service_ids)
 
-      # add required services to line items
-      service.required_services.each do |rs|
-        new_line_item = @service_request.line_items.create(:service_id => rs.id, :optional => false, :quantity => service.displayed_pricing_map.unit_minimum) unless existing_service_ids.include?(rs.id)
-        if !new_line_item.service.is_one_time_fee?
-          @service_request.arms.each do |arm|
-            arm.create_line_items_visit(new_line_item)
-          end
-        end
-        @new_line_items << new_line_item
-      end
-
-      # add optional services to line items
-      service.optional_services.each do |rs|
-        new_line_item = @service_request.line_items.create(:service_id => rs.id, :optional => true, :quantity => service.displayed_pricing_map.unit_minimum) unless existing_service_ids.include?(rs.id)
-        if !new_line_item.service.is_one_time_fee?
-          @service_request.arms.each do |arm|
-            arm.create_line_items_visit(new_line_item)
-          end
-        end
-        @new_line_items << new_line_item
-      end
-
-      # create sub_service_rquests
+      # create sub_service_requests
       @service_request.reload
       @service_request.service_list.each do |org_id, values|
         line_items = values[:line_items]

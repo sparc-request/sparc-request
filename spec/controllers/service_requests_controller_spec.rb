@@ -500,27 +500,31 @@ describe ServiceRequestsController do
   end
 
   describe 'POST add_service' do
-    let!(:service) {
+    let!(:new_service) {
       service = FactoryGirl.create(
           :service,
           pricing_map_count: 1,
           organization_id: core.id)
       service.pricing_maps[0].update_attributes(
           display_date: Date.today,
+          is_one_time_fee: true,
           unit_minimum: 42)
       service
     }
 
-    let!(:service2) {
+    let!(:new_service2) {
       service = FactoryGirl.create(
           :service,
           pricing_map_count: 1,
           organization_id: core.id)
-      service.pricing_maps[0].update_attributes(display_date: Date.today)
+      service.pricing_maps[0].update_attributes(
+          display_date: Date.today,
+          is_one_time_fee: true,
+          unit_minimum: 54)
       service
     }
 
-    let!(:service3) {
+    let!(:new_service3) {
       service = FactoryGirl.create(
           :service,
           pricing_map_count: 1,
@@ -532,10 +536,14 @@ describe ServiceRequestsController do
     it 'should give an error if the service request already has a line item for the service' do
       line_item = FactoryGirl.create(
           :line_item,
-          service_id: service.id,
+          service_id: new_service.id,
           service_request_id: service_request.id)
       session[:service_request_id] = service_request.id
-      post :add_service, { :id => service_request.id, :service_id => service.id, :format => :js }.with_indifferent_access
+      post :add_service, {
+        :id          => service_request.id,
+        :service_id  => new_service.id,
+        :format      => :js
+      }.with_indifferent_access
       response.body.should eq 'Service exists in line items'
     end
 
@@ -543,13 +551,18 @@ describe ServiceRequestsController do
       orig_count = service_request.line_items.count
 
       session[:service_request_id] = service_request.id
-      post :add_service, { :id => service_request.id, :service_id => service.id, :format => :js }.with_indifferent_access
+      post :add_service, {
+        :id          => service_request.id,
+        :service_id  => new_service.id,
+        :format      => :js
+      }.with_indifferent_access
 
       service_request.reload
       service_request.line_items.count.should eq orig_count + 1
-      service_request.line_items[-1].service.should eq service
-      service_request.line_items[-1].optional.should eq true
-      service_request.line_items[-1].quantity.should eq 42
+      line_item = service_request.line_items.find_by_service_id(new_service.id)
+      line_item.service.should eq new_service
+      line_item.optional.should eq true
+      line_item.quantity.should eq 42
     end
 
     it 'should create a line item for a required service' do
@@ -557,72 +570,94 @@ describe ServiceRequestsController do
 
       FactoryGirl.create(
           :service_relation,
-          service_id: service.id,
-          related_service_id: service2.id,
+          service_id: new_service.id,
+          related_service_id: new_service2.id,
           optional: false)
 
       session[:service_request_id] = service_request.id
-      post :add_service, { :id => service_request.id, :service_id => service.id, :format => :js }.with_indifferent_access
+      post :add_service, { :id => service_request.id, :service_id => new_service.id, :format => :js }.with_indifferent_access
 
       # there was one service and one line item already, then we added
       # one
 
       service_request.reload
-      service_request.line_items.count.should eq orig_count + 1
-      service_request.line_items[-1].service.should eq service2
-      service_request.line_items[-1].optional.should eq false
-      service_request.line_items[-1].quantity.should eq 42
+      service_request.line_items.count.should eq orig_count + 2
+      line_item = service_request.line_items.find_by_service_id(new_service2.id)
+      line_item.service.should eq new_service2
+      line_item.optional.should eq false
+      line_item.quantity.should eq 54
     end
 
     it 'should create a line item for an optional service' do
+      orig_count = service_request.line_items.count
+
       FactoryGirl.create(
           :service_relation,
-          service_id: service.id,
-          related_service_id: service2.id,
+          service_id: new_service.id,
+          related_service_id: new_service2.id,
           optional: true)
 
       session[:service_request_id] = service_request.id
-      post :add_service, { :id => service_request.id, :service_id => service.id, :format => :js }.with_indifferent_access
+      post :add_service, {
+        :id          => service_request.id,
+        :service_id  => new_service.id,
+        :format      => :js
+      }.with_indifferent_access
 
       service_request.reload
-      service_request.line_items.count.should eq 2
-      service_request.line_items[0].service.should eq service
-      service_request.line_items[0].optional.should eq true
-      service_request.line_items[0].quantity.should eq 42
-      service_request.line_items[1].service.should eq service2
-      service_request.line_items[1].optional.should eq true
-      service_request.line_items[1].quantity.should eq 42
+      service_request.line_items.count.should eq orig_count + 2
+
+      line_item = service_request.line_items.find_by_service_id(new_service.id)
+      line_item.service.should eq new_service
+      line_item.optional.should eq true
+      line_item.quantity.should eq 42
+
+      line_item = service_request.line_items.find_by_service_id(new_service2.id)
+      line_item.service.should eq new_service2
+      line_item.optional.should eq true
+      line_item.quantity.should eq 54
     end
 
     it 'should create a sub service request for each organization in the service list' do
+      orig_count = service_request.sub_service_requests.count
+
       session[:service_request_id] = service_request.id
 
-      [ service, service2, service3 ].each do |service_to_add|
-        post :add_service, { :id => service_request.id, :service_id => service_to_add.id, :format => :js }.with_indifferent_access
+      [ new_service, new_service2, new_service3 ].each do |service_to_add|
+        post :add_service, {
+          :id          => service_request.id,
+          :service_id  => service_to_add.id,
+          :format      => :js
+        }.with_indifferent_access
       end
 
       service_request.reload
-      service_request.sub_service_requests.count.should eq 2
-      service_request.sub_service_requests[0].organization.should eq core
-      service_request.sub_service_requests[1].organization.should eq core2
+      service_request.sub_service_requests.count.should eq orig_count + 2
+      service_request.sub_service_requests[-2].organization.should eq core
+      service_request.sub_service_requests[-1].organization.should eq core2
     end
 
     it 'should update each of the line items with the appropriate ssr id' do
+      orig_count = service_request.line_items.count
+
       session[:service_request_id] = service_request.id
 
-      [ service, service2, service3 ].each do |service_to_add|
-        post :add_service, { :id => service_request.id, :service_id => service_to_add.id, :format => :js }.with_indifferent_access
+      [ new_service, new_service2, new_service3 ].each do |service_to_add|
+        post :add_service, {
+          :id          => service_request.id,
+          :service_id  => service_to_add.id,
+          :format      => :js
+        }.with_indifferent_access
       end
 
-      service_request.sub_service_requests.each { |ssr| ssr.destroy }
       core_ssr = service_request.sub_service_requests.find_by_organization_id(core.id)
       core2_ssr = service_request.sub_service_requests.find_by_organization_id(core2.id)
 
       service_request.reload
-      service_request.line_items.count.should eq 3
-      service_request.line_items[0].sub_service_request.should eq core_ssr
-      service_request.line_items[1].sub_service_request.should eq core_ssr
-      service_request.line_items[2].sub_service_request.should eq core2_ssr
+      service_request.line_items.count.should eq(orig_count + 3)
+      service_request.line_items[-3].sub_service_request.should eq core_ssr
+      service_request.line_items[-2].sub_service_request.should eq core_ssr
+      service_request.line_items[-1].sub_service_request.should eq core2_ssr
     end
 
     # TODO: test for adding an already added service

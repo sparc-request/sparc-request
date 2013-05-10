@@ -772,6 +772,10 @@ en:
       users: "Associated Users"
       notifications: "Notifications"
       cw_fulfillment: "Clinical Work Fulfillment"
+      subject_tracker: "Subject Tracker"
+      payments: "Payments"
+      invoices: "Invoices"
+
 
   # Admin Root Page
   admin_root:

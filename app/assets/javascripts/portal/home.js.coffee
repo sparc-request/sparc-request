@@ -54,16 +54,17 @@ $(document).ready ->
             spinner.remove()
   }
 
-  $('#tabs').tabs
+  $('.tabs').tabs
     cookie: { expires: 1 }
     show: (event, ui) ->
       class_name = ui.tab.className
       switch class_name
-        when 'documents-tab'                then Sparc.home.getInfo('documents')
-        when 'associated_users-tab'         then Sparc.home.getInfo('associated_users')
-        when 'notifications-tab'            then Sparc.home.getInfo('notifications')
-        when 'project-tab'                  then Sparc.home.getInfo('project')
-        when 'related_service_requests-tab' then Sparc.home.getInfo('related_service_requests')
+        when 'documents-tab'                 then Sparc.home.getInfo('documents')
+        when 'associated_users-tab'          then Sparc.home.getInfo('associated_users')
+        when 'notifications-tab'             then Sparc.home.getInfo('notifications')
+        when 'project-tab'                   then Sparc.home.getInfo('project')
+        when 'related_service_requests-tab'  then Sparc.home.getInfo('related_service_requests')
+        when 'clinical_work_fulfillment-tab' then Sparc.home.getInfo('clinical_work_fulfillment')
         when 'fulfillment-tab'
           Sparc.home.getInfo('service_request_info')
           Sparc.home.getInfo('add_service')

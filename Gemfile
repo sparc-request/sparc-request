@@ -69,7 +69,7 @@ gem 'grouped_validations'
 gem 'obis-net-ldap'
 gem 'paperclip'
 gem 'acts_as_list', '0.1.9'
-gem "paper_trail", "~> 2"
+# gem "paper_trail", "~> 2"
 gem 'devise'
 gem 'omniauth'
 gem 'omniauth-shibboleth'

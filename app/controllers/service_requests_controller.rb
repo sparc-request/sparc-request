@@ -161,8 +161,8 @@ class ServiceRequestsController < ApplicationController
   def protocol
     @service_request.update_attribute(:service_requester_id, current_user.id) if @service_request.service_requester_id.nil?
     
-    @studies = @sub_service_request.nil? ? current_user.studies : @service_request.protocol.type == "Study" ? [@service_request.protocol] : []
-    @projects = @sub_service_request.nil? ? current_user.projects : @service_request.protocol.type == "Project" ? [@service_request.protocol] : []
+    @studies = @sub_service_request.nil? ? current_user.studies(:order => 'id') : @service_request.protocol.type == "Study" ? [@service_request.protocol] : []
+    @projects = @sub_service_request.nil? ? current_user.projects(:order => 'id') : @service_request.protocol.type == "Project" ? [@service_request.protocol] : []
 
     if session[:saved_study_id]
       @service_request.protocol = Study.find session[:saved_study_id]

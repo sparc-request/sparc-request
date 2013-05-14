@@ -22,7 +22,8 @@ class CtrcSubsidyReport
       csv << ['SRID',
               'Total Cost',
               'PI Contribution',
-              'Subsidy']
+              'Subsidy',
+              '(Potential)Funding Source']
 
       # Get all sub service requests belonging to the CTRC
       SubServiceRequest.all.select {|x| x.ctrc?}.each do |ssr|
@@ -44,6 +45,7 @@ class CtrcSubsidyReport
                 row << ""
                 row << ""
               end
+              row << ssr.service_request.protocol.display_funding_source_value
 
               csv << row
             end

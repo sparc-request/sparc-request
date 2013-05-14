@@ -25,7 +25,7 @@
           %td
             .delete-ssr-button= link_to t(:admin_dashboard)[:delete_link], "/portal/admin/sub_service_requests/#{@sub_service_request.id}", :method => :delete, :confirm => t(:admin_dashboard)[:delete_confirm]
 
-#tabs
+.tabs
   %ul
     %li= link_to t(:admin_dashboard)[:tabs][:fulfillment], "#fulfillment", :class => 'fulfillment-tab'
     %li= link_to t(:admin_dashboard)[:tabs][:protocol_info], "#protocol", :class => 'project-tab'
@@ -33,7 +33,7 @@
     %li= link_to t(:admin_dashboard)[:tabs][:related_srs], "#related_service_requests", :class => 'related_service_requests-tab'
     %li= link_to t(:admin_dashboard)[:tabs][:users], "#associated_users", :class => 'associated_users-tab'
     %li= link_to t(:admin_dashboard)[:tabs][:notifications], "#notifications", :class => 'notifications-tab'
-    %li= link_to t(:admin_dashboard)[:tabs][:cw_fulfillment], "#cw_fulfillment", :class => 'cw_fulfillment-tab'
+    %li= link_to t(:admin_dashboard)[:tabs][:cw_fulfillment], "#clinical_work_fulfillment", :class => 'clinical_work_fulfillment-tab'
 
   #fulfillment
     = render 'fulfillment'
@@ -51,5 +51,9 @@
   #notifications
     = render 'portal/notifications/notifications'
   .notification_dialog
+  #clinical_work_fulfillment
+    = render 'portal/sub_service_requests/clinical_work_fulfillment'
+
+  
 
 

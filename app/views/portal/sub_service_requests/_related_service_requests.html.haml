@@ -17,8 +17,11 @@
           %td= @protocol.try(:principal_investigators).try(:first).try(:full_name)
           %td= pretty_program_core(rsr)
           %td
-            = rsr.line_items.first.service.name
-            %a{:href => 'javascript: void(0)', :id => "ssr_#{rsr.id}", :class => "rsr-link"} [+]
+            - if rsr.line_items.first
+              = rsr.line_items.first.service.name
+              %a{:href => 'javascript: void(0)', :id => "ssr_#{rsr.id}", :class => "rsr-link"} [+]
+            - else
+              There are no line items for this service request.
 
 - @related_service_requests.each do |rsr|
   .rsr-dialog{:id => "ssr_#{rsr.id}"}

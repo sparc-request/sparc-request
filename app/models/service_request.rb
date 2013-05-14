@@ -90,6 +90,69 @@ class ServiceRequest < ActiveRecord::Base
     arm
   end
 
+  # Given a service, create a line item for that service and for all
+  # services it depends on.
+  #
+  # Required services will be marked non-optional; optional services
+  # will be marked optional.
+  #
+  # Recursively adds services (e.g. if a service1 depends on service2,
+  # and service2 depends on service3, then all 3 services will get line
+  # items).
+  #
+  # Returns an array containing all the line items that were created.
+  #
+  # Parameters:
+  #
+  #   service:              the service for which to create line item(s)
+  #
+  #   optional:             whether the service is optional
+  #
+  #   existing_service_ids: an array containing the ids of all the
+  #                         services that have already been added to the
+  #                         service request.  This array will be
+  #                         modified to contain the services for the
+  #                         newly created line items.
+  #
+  def create_line_items_for_service(args)
+    service = args[:service]
+    optional = args[:optional]
+    existing_service_ids = args[:existing_service_ids]
+
+    # If this service has already been added, then do nothing
+    return if existing_service_ids.include?(service.id)
+
+    line_items = [ ]
+
+    # add service to line items
+    line_items << create_line_item(
+        service_id: service.id,
+        optional: optional,
+        quantity: service.displayed_pricing_map.unit_minimum)
+
+    existing_service_ids << service.id
+
+    # add required services to line items
+    service.required_services.each do |rs|
+      rs_line_items = create_line_items_for_service(
+        service: rs,
+        optional: false,
+        existing_service_ids: existing_service_ids)
+      line_items.concat(rs_line_items)
+    end
+
+    # add optional services to line items
+    service.optional_services.each do |rs|
+      rs_line_items = create_line_items_for_service(
+        service: rs,
+        optional: true,
+        existing_service_ids: existing_service_ids)
+      line_items.concat(rs_line_items)
+    end
+
+    return line_items
+  end
+
   def create_line_item(args)
     quantity = args.delete(:quantity) || 1
     if line_item = self.line_items.create(args)

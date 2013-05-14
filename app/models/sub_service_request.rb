@@ -34,7 +34,7 @@ class SubServiceRequest < ActiveRecord::Base
 
   def create_line_item(args)
     new_args = {
-      service_request_id: self.service_request_id
+      sub_service_request_id: self.service_request_id
     }
     new_args.update(args)
     return service_request.create_line_item(new_args)

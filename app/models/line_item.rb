@@ -9,6 +9,7 @@ class LineItem < ActiveRecord::Base
 
   has_many :line_items_visits, :dependent => :destroy
   has_many :arms, :through => :line_items_visits
+  has_many :procedures
 
   attr_accessible :service_request_id
   attr_accessible :sub_service_request_id
@@ -22,6 +23,8 @@ class LineItem < ActiveRecord::Base
 
   validates :service_id, :numericality => true
   validates :service_request_id, :numericality => true
+
+  after_destroy :remove_procedures
 
   # TODO: order by date/id instead of just by date?
   default_scope :order => 'id ASC'
@@ -143,6 +146,15 @@ class LineItem < ActiveRecord::Base
       return 0
     else
       self.direct_costs_for_one_time_fee * self.indirect_cost_rate
+    end
+  end
+
+  private
+
+  def remove_procedures
+    procedures = self.procedures
+    procedures.each do |pro|
+      pro.destroy unless pro.completed
     end
   end
 end

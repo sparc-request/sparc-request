@@ -4,7 +4,7 @@ class Calendar < ActiveRecord::Base
 
   def populate(visit_groups)
     visit_groups.each do |visit_group|
-      appt = self.appointments.create(:visit_group => visit_group)
+      appt = self.appointments.create(visit_group_id: visit_group.id)
       appt.populate_procedures(visit_group.visits)
     end
   end

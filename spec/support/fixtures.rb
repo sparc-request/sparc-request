@@ -72,9 +72,11 @@ end
 def add_visits
   visit_names = ["I'm", "a", 'little', 'teapot', 'short', 'and', 'stout', 'visit', 'me', 'please']
   service_request.arms.each do |arm|
-    visit_grouping = FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item2.id, subject_count: arm.subject_count)
-    arm.visit_count.times do |index|
-       FactoryGirl.create(:visit, quantity: 0, name: visit_names[index], visit_grouping_id: visit_grouping.id)
+    service_request.per_patient_per_visit_line_items.each do |li|
+      visit_grouping = FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: li.id, subject_count: arm.subject_count)
+      arm.visit_count.times do |index|
+         FactoryGirl.create(:visit, quantity: 0, name: visit_names[index], visit_grouping_id: visit_grouping.id)
+      end
     end
   end
 end

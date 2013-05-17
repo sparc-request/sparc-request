@@ -20,7 +20,7 @@ class ServiceRequestsController < ApplicationController
     #
     respond_to do |format|
       format.xlsx do
-        render xlsx: "show", filename: "service_request_#{@service_request.id}", disposition: "inline"
+        render xlsx: "show", filename: "service_request_#{@service_request.protocol.id}", disposition: "inline"
       end
     end
   end

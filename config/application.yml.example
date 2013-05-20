@@ -9,6 +9,8 @@ development:
   header_link_2: http://sctr.musc.edu
   header_link_3: http://www.musc.edu
   use_indirect_cost: false
+  use_shiboleth: true
+  use_ldap: true
   
 test:
   default_mail_to: catesa@musc.edu
@@ -21,3 +23,5 @@ test:
   header_link_2: http://sctr.musc.edu
   header_link_3: http://www.musc.edu
   use_indirect_cost: false
+  use_shiboleth: true
+  use_ldap: true

@@ -1,15 +1,16 @@
 .devise_form#login{:style => "padding-left:0"}
-  .grid_6.prefix_3.suffix_3.box
-    .info
-      %h2.center
-        = t(:signin)[:message1]
+  - if USE_SHIBOLETH
+    .grid_6.prefix_3.suffix_3.box
+      .info
+        %h2.center
+          = t(:signin)[:message1]
+          %br
+          = t(:signin)[:message2]
         %br
-        = t(:signin)[:message2]
-      %br
-      .center 
-        = button_to t(:signin)[:button1], identity_omniauth_authorize_path(:shibboleth), :class => 'btn ui-button ui-widget ui-state-default ui-corner-all'
-      
-      %br
+        .center
+          = button_to t(:signin)[:button1], identity_omniauth_authorize_path(:shibboleth), :class => 'btn ui-button ui-widget ui-state-default ui-corner-all'
+
+        %br
 
   .clear
   %br

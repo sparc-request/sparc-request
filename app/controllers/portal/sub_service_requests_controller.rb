@@ -9,7 +9,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     session[:service_calendar_pages] = params[:pages] if params[:pages]
 
     if @user.can_edit_fulfillment? @sub_service_request.organization
-      @user_toasts = @user.received_toast_messages.select {|x| x.sending_object.class == SubServiceRequest}
+      @user_toasts = @user.received_toast_messages.select {|x| x.sending_object.class == SubServiceRequest}.select {|y| y.sending_class_id == @sub_service_request.id}
       @service_request = @sub_service_request.service_request
       @protocol = @sub_service_request.try(:service_request).try(:protocol)
       if not @protocol then
@@ -198,6 +198,11 @@ class Portal::SubServiceRequestsController < Portal::BaseController
   def destroy
     @sub_service_request = SubServiceRequest.find(params[:id])
     if @sub_service_request.destroy
+      # Delete all related toast messages
+      ToastMessage.where(:sending_class_id => params[:id]).where(:sending_class => "SubServiceRequest").each do |toast|
+        toast.destroy
+      end
+
       # notify users with view rights or above of deletion
       @sub_service_request.service_request.protocol.project_roles.each do |project_role|
         next if project_role.project_rights == 'none'

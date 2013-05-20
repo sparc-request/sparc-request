@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'as a user on catalog page' do
+describe 'as a user on catalog page', :js => true do
   before(:each) do
     default_catalog_manager_setup
     
@@ -14,13 +14,14 @@ describe 'as a user on catalog page' do
         organization_id:   Program.first.id,
         display_date:      '2000-01-01',
         effective_date:    '2000-01-01')
-  end
 
-  it 'should successfully update an existing pricing map', :js => true do
     click_link('MUSC Research Data Request (CDW)')
     sleep 2
     
     page.execute_script("$('.ui-accordion-header:nth-of-type(2)').click()")
+  end
+
+  it 'should successfully update an existing pricing map' do
     
     within('.ui-accordion > div:nth-of-type(2)') do
       page.execute_script %Q{ $('.pricing_map_display_date:visible').focus() }
@@ -50,6 +51,17 @@ describe 'as a user on catalog page' do
     wait_for_javascript_to_finish
     
     page.should have_content "MUSC Research Data Request (CDW) saved successfully"        
+  end
+
+  it "should save the fields after the return key is hit" do
+
+    within('.ui-accordion > div:nth-of-type(2)') do
+
+      find("input[id$='full_rate']").set(2000) 
+      find("input[id$='full_rate']").native.send_keys(:return)
+      wait_for_javascript_to_finish
+      find("input[id$='full_rate']").should have_value("2,000.00")
+    end
   end
 
 end

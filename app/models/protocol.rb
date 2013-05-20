@@ -128,6 +128,9 @@ class Protocol < ActiveRecord::Base
     arr
   end
 
+  def display_protocol_id_and_title
+    "#{self.id} - #{self.short_title}"
+  end
 
   def display_funding_source_value
     if funding_status == "funded"

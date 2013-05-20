@@ -1,20 +1,23 @@
 require 'net/ldap'
 
 class Directory
-  # Load the YAML file for ldap configuration and set constants
-  begin 
-    ldap_config   ||= YAML.load_file(Rails.root.join('config', 'ldap.yml'))[Rails.env]
-    LDAP_HOST       = ldap_config['ldap_host']
-    LDAP_PORT       = ldap_config['ldap_port']
-    LDAP_BASE       = ldap_config['ldap_base']
-    LDAP_ENCRYPTION = ldap_config['ldap_encryption'].to_sym
-    DOMAIN          = ldap_config['ldap_domain']
-    LDAP_UID        = ldap_config['ldap_uid']
-    LDAP_LAST_NAME  = ldap_config['ldap_last_name']
-    LDAP_FIRST_NAME = ldap_config['ldap_first_name']
-    LDAP_EMAIL      = ldap_config['ldap_email']
-  rescue
-    raise "ldap.yml not found, see config/ldap.yml.example"
+  # Only initialize LDAP if it is enabled
+  if USE_LDAP
+    # Load the YAML file for ldap configuration and set constants
+    begin 
+      ldap_config   ||= YAML.load_file(Rails.root.join('config', 'ldap.yml'))[Rails.env]
+      LDAP_HOST       = ldap_config['ldap_host']
+      LDAP_PORT       = ldap_config['ldap_port']
+      LDAP_BASE       = ldap_config['ldap_base']
+      LDAP_ENCRYPTION = ldap_config['ldap_encryption'].to_sym
+      DOMAIN          = ldap_config['ldap_domain']
+      LDAP_UID        = ldap_config['ldap_uid']
+      LDAP_LAST_NAME  = ldap_config['ldap_last_name']
+      LDAP_FIRST_NAME = ldap_config['ldap_first_name']
+      LDAP_EMAIL      = ldap_config['ldap_email']
+    rescue
+      raise "ldap.yml not found, see config/ldap.yml.example"
+    end
   end
 
   # Searches LDAP and the database for a given search string (can be
@@ -22,8 +25,12 @@ class Directory
   # LDAP that is not in the database, an Identity is created for it.
   # Returns an array of Identities that match the query.
   def self.search(term)
-    # Search ldap and the database
-    ldap_results = search_ldap(term)
+    # Search ldap (if enabled) and the database
+    if USE_LDAP
+      ldap_results = search_ldap(term)
+    else
+      ldap_results = []
+    end
     db_results = search_database(term)
 
     # If there are any entries returned from ldap that were not in the

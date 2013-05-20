@@ -3,13 +3,13 @@
 
 require 'csv'
 
-csv = CSV.new(STDIN, headers: true)
+csv = CSV.new(STDIN, headers: true, :row_sep => "\r\n")
 
 ActiveRecord::Base.transaction do
   csv.each do |row|
     p row
     protocol_id = row['id']
-    ldap_uid = row['billing/business manager netid']
+    ldap_uid = "#{row['billing/business manager netid']}@musc.edu"
 
     protocol = Protocol.find(protocol_id)
     identity = Identity.find_by_ldap_uid(ldap_uid)

@@ -44,7 +44,6 @@ $(document).ready ->
   )
 
   $(document).on('change', '.hidden_data', ->
-    console.log $(this).prop('checked')
     klass = getObjKlass(this)
     object_id = $(this).data("#{klass}_id")
     data = {'hidden': $(this).prop('checked')}

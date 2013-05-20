@@ -775,6 +775,8 @@ en:
       subject_tracker: "Subject Tracker"
       payments: "Payments"
       invoices: "Invoices"
+      template: "Template"
+      services: "Services"
 
 
   # Admin Root Page

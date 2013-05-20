@@ -43,17 +43,11 @@ $(document).ready ->
     put_attribute(object_id, klass, data)
   )
 
-  $(document).on('click', '.hidden_data', ->
+  $(document).on('change', '.hidden_data', ->
+    console.log $(this).prop('checked')
     klass = getObjKlass(this)
     object_id = $(this).data("#{klass}_id")
-    name = $(this).attr('name')
-    key = name.replace("#{klass}_", '')
-    if $(this).val() == 'true'
-      $(this).attr('value', 'false')
-    else 
-      $(this).attr('value', 'true')
-    data = {}
-    data[key] = $(this).val()
+    data = {'hidden': $(this).prop('checked')}
     put_attribute(object_id, klass, data)
   )
 

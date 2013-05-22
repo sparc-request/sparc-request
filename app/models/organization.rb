@@ -15,6 +15,7 @@ class Organization < ActiveRecord::Base
   has_many :identities, :through => :service_providers
 
   has_many :catalog_managers, :dependent => :destroy
+  has_many :clinical_providers, :dependent => :destroy
   has_many :identities, :through => :catalog_managers
   has_many :services, :dependent => :destroy
   has_many :subsidies, :dependent => :destroy

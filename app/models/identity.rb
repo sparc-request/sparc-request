@@ -25,6 +25,7 @@ class Identity < ActiveRecord::Base
   has_many :studies, :through => :project_roles, :source => :protocol, :conditions => "protocols.type = 'Study'"
   has_many :super_users, :dependent => :destroy
   has_many :catalog_managers, :dependent => :destroy
+  has_many :clinical_providers, :dependent => :destroy
   has_many :protocol_service_requests, :through => :protocols, :source => :service_requests
   has_many :requested_service_requests, :class_name => 'ServiceRequest', :foreign_key => 'service_requester_id'
   has_many :catalog_manager_rights, :class_name => 'CatalogManager'

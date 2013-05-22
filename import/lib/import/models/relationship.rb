@@ -339,6 +339,52 @@ class SuperUserOrganizationalUnit < Relationship
   end
 end
 
+class ClinicalProviderOrganizationalUnit < Relationship
+  type 'clinical_provider_organizational_unit'
+  from Identity
+  to   Organization
+
+  def self.from_relationships(identity)
+    return identity.clinical_providers.map { |clinical_provider| self.new(clinical_provider) }
+  end
+
+  def self.to_relationships(organization)
+    return organization.clinical_providers.map { |clinical_provider| self.new(clinical_provider) }
+  end
+
+  def initialize(clinical_provider)
+    @clinical_provider = clinical_provider
+  end
+
+  def as_json(options = nil)
+    return relationship(
+        from: @clinical_provider.identity,
+        to:   @clinical_provider.organization,
+        rid:  @clinical_provider.id)
+  end
+
+  def self.find_relationship(id)
+    clinical_provider = ClinicalProvider.find_by_id(id)
+    return self.new(clinical_provider)
+  end
+
+  def self.create_relationship(h)
+    clinical_provider = ClinicalProvider.create()
+    return self.new(clinical_provider)
+  end
+
+  def update_from_json(h, options = nil)
+    identity = Identity.find_by_obisid(h['from'])
+    organization = Organization.find_by_obisid(h['to'])
+    update_relationship(
+        h,
+        @clinical_provider,
+        has_timestamps:   true,
+        identity_id:      identity.id,
+        organization_id:  organization.id)
+  end
+end
+
 class ServiceProviderOrganizationalUnit < Relationship
   type 'service_provider_organizational_unit'
   from Identity

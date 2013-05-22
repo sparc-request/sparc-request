@@ -74,6 +74,12 @@
     %br
 
     %fieldset
+      %legend= t(:organization_form)[:clinical_providers]
+      #cm_info= render :partial => 'catalog_manager/shared/clinical_providers', :locals => {:entity => @provider}
+
+    %br
+
+    %fieldset
       %legend= t(:organization_form)[:auto_price_adj]
       = render :partial => 'catalog_manager/shared/increase_decrease_rates', :locals => {:entity => @provider, :can_edit_historical_data => @user.can_edit_historical_data_for?(@provider)}
     

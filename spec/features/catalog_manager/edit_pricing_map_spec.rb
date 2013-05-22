@@ -64,4 +64,21 @@ describe 'as a user on catalog page', :js => true do
     end
   end
 
+  describe 'one time fee' do
+
+    before :each do
+      page.execute_script("$('.ui-accordion > div:nth-of-type(2)').click()")
+    end
+
+    it "should set the one time fee attribute to true when clicked" do
+      pricing_map = PricingMap.find(3)
+      puts pricing_map.inspect
+      find("#pricing_maps_3_is_one_time_fee", :visible => true).click
+      puts pricing_map.inspect
+      page.execute_script %Q{ $(".save_button").click() }
+      wait_for_javascript_to_finish
+
+      pricing_map.is_one_time_fee.should eq(true)
+    end
+  end
 end

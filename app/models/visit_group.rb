@@ -1,4 +1,6 @@
 class VisitGroup < ActiveRecord::Base
+  audited
+
   belongs_to :arm
   has_many :visits, :dependent => :destroy
   attr_accessible :name

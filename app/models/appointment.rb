@@ -1,4 +1,6 @@
 class Appointment < ActiveRecord::Base
+  audited
+
   belongs_to :calendar
   belongs_to :visit_group
   belongs_to :service

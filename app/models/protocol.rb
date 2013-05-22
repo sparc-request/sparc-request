@@ -1,6 +1,5 @@
 class Protocol < ActiveRecord::Base
-  #Version.primary_key = 'id'
-  #has_paper_trail
+  audited
 
   has_many :study_types, :dependent => :destroy
   has_one :research_types_info, :dependent => :destroy

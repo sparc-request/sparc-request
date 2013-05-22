@@ -1,4 +1,6 @@
 class Arm < ActiveRecord::Base
+  audited
+
   belongs_to :service_request
 
   has_many :line_items_visits, :dependent => :destroy

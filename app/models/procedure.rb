@@ -1,4 +1,6 @@
 class Procedure < ActiveRecord::Base
+  audited
+
   belongs_to :appointment
   belongs_to :visit
   belongs_to :service

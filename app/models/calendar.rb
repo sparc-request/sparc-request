@@ -1,4 +1,6 @@
 class Calendar < ActiveRecord::Base
+  audited
+
   belongs_to :subject
   has_many :appointments
 

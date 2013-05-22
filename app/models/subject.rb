@@ -1,4 +1,6 @@
 class Subject < ActiveRecord::Base
+  audited
+
   belongs_to :arm
   has_one :calendar
 

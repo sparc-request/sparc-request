@@ -1,8 +1,7 @@
 require "bulk_creatable"
 
 class Visit < ActiveRecord::Base
-  #Version.primary_key = 'id'
-  #has_paper_trail
+  audited
 
   belongs_to :line_items_visit
   has_many :procedures

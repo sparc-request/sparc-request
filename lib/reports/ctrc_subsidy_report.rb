@@ -15,8 +15,12 @@ class CtrcSubsidyReport < Report
     end
   end
 
+  def output_file
+    return './ctrc_subsidies_report.csv'
+  end
+
   def run
-    CSV.open('./ctrc_subsidies_report.csv', 'wb') do |csv|
+    CSV.open(output_file, 'wb') do |csv|
       # Column Headers
       csv << ['SRID',
               'Total Cost',

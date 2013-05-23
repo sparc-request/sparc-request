@@ -75,6 +75,10 @@ class AprReport < Report
     ssr.service_request.submitted_at.nil? ? ssr.created_at : ssr.service_request.submitted_at
   end
 
+  def default_output_file
+    return './apr_reporting.csv'
+  end
+
   def run
     # ActiveRecord::Base.establish_connection(
     #   :adapter => 'mysql2',
@@ -82,7 +86,7 @@ class AprReport < Report
     #   :database => 'sparc_reporting'
     # )
 
-    CSV.open('./apr_reporting.csv', 'wb') do |csv|
+    CSV.open(output_file, 'wb') do |csv|
       # Column headers
       csv << ['Protocol ID',
               'PI Last Name',

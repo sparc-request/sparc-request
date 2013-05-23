@@ -1,8 +1,12 @@
 require 'csv'
 
 class CtrcServicesReport < Report
+  def default_output_file
+    return './ctrc_services_report.csv'
+  end
+
   def run
-    CSV.open('./ctrc_services_report.csv', 'wb') do |csv|
+    CSV.open(output_file, 'wb') do |csv|
       # Column Headers
       csv << ['Core',
               'Service',

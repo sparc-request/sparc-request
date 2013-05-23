@@ -85,7 +85,7 @@ describe "landing page", :js => true do
     it 'should allow user to view the service request' do
       find(".view-sub-service-request-button").click
       within ".project_information" do
-        find("td.protocol-id-td").should have_exact_text(service_request.protocol_id.to_s)
+        find("td.protocol-id-td").should have_exact_text(service_request.protocol_id.to_s + '-' + sub_service_request.ssr_id)
       end
     end
 

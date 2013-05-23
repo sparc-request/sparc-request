@@ -41,6 +41,8 @@ class CohrReport < Report
     # but this is fine for now
     Axlsx::Package.new do |p|
       p.workbook.add_worksheet(name: 'Report') do |sheet|
+        sheet.add_row(header)
+
         service_names.each do |service_name|
           service = Service.find_by_name(service_name)
 
@@ -51,7 +53,7 @@ class CohrReport < Report
 
           line_items = LineItem.where('service_id = ?', service.id)
 
-          line_items.each do |li|
+          line_items.each_with_index do |li, idx|
             ssr = li.sub_service_request
             sr = li.service_request
             protocol = sr.protocol
@@ -77,14 +79,12 @@ class CohrReport < Report
               srid,
               service,
               minutes,
-              '', # TODO: hours
-              '', # TODO: price per hour
+              "=E#{idx+2}/60",
+              price_per_minute * 60,
               total_cost,
             ]
 
-            p row
-
-            p sheet.add_row(row)
+            res = sheet.add_row(row)
           end
         end
       end

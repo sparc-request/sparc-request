@@ -71,14 +71,13 @@ describe 'as a user on catalog page', :js => true do
     end
 
     it "should set the one time fee attribute to true when clicked" do
-      pricing_map = PricingMap.find(3)
-      puts pricing_map.inspect
-      find("#pricing_maps_3_is_one_time_fee", :visible => true).click
-      puts pricing_map.inspect
+      service = Service.find_by_abbreviation("CDW")
+      find(".pricing_map_accordion > h3:nth-of-type(1)").click
+      find("td.is_one_time_fee > input", :visible => true).click
       page.execute_script %Q{ $(".save_button").click() }
       wait_for_javascript_to_finish
 
-      pricing_map.is_one_time_fee.should eq(true)
+      service.pricing_maps[1].is_one_time_fee.should eq(false)
     end
   end
 end

@@ -533,7 +533,7 @@ en:
   ssr_dialog:
     project_study_details:
       info: "Project/Study Information"
-      id: "Project/Study ID"
+      id: "SRID"
       short_title: "Short Title"
       project_title: "Project Title"
       sponsor_name: "Sponsor Name"

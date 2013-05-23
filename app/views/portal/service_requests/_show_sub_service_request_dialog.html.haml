@@ -5,7 +5,7 @@
     %tr
       %td.percent_30.highlight
         %strong= t(:ssr_dialog)[:project_study_details][:id]
-      %td.protocol-id-td.no-border-right= @protocol.id
+      %td.protocol-id-td.no-border-right= "#{@protocol.id}-#{@ssr_id}"
     %tr
       %td.percent_30.highlight
         %strong= t(:ssr_dialog)[:project_study_details][:short_title]

@@ -34,7 +34,7 @@ class CohrReport < Report
       'Unassisted microCT usage',
       'microCT scanning/analysis',
       'Digital imaging and analysis',
-      'Unassisted microscopy imaging',
+      'Unassisted microscope imaging',
     ]
 
     # TODO: ideally I'd write this all with joins (would run faster),

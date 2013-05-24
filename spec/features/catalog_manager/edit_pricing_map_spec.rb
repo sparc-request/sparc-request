@@ -75,9 +75,8 @@ describe 'as a user on catalog page', :js => true do
       find(".pricing_map_accordion > h3:nth-of-type(1)").click
       find("td.is_one_time_fee > input", :visible => true).click
       page.execute_script %Q{ $(".save_button").click() }
-      wait_for_javascript_to_finish
 
-      service.pricing_maps[1].is_one_time_fee.should eq(false)
+      retry_until { service.pricing_maps[1].is_one_time_fee.should eq(false) }
     end
   end
 end

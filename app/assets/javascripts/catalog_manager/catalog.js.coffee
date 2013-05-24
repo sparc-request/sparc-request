@@ -206,6 +206,21 @@ $ ->
       $.post '/catalog_manager/identities/disassociate_with_org_unit', {relationship: $(this).attr('id'), org_unit: $('#org_unit_id').val(), rel_type: "super_user_organizational_unit"}, (data) ->
         $('#su_info').html(data)
 
+  # clinical providers
+  $('input#new_cp').live 'focus', -> $(this).val('')
+  $('input#new_cp').live 'keydown.autocomplete', ->
+    $(this).autocomplete
+      source: "/catalog_manager/identities/search",
+      minLength: 3,
+      select: (event, ui) ->
+        $.post '/catalog_manager/identities/associate_with_org_unit', {identity: ui.item.value, org_unit: $('#org_unit_id').val(), rel_type: "clinical_provider_organizational_unit"}, (data) ->
+          $('#cp_info').html(data)
+
+  $('.cp_delete').live 'click', ->
+    if confirm 'Are you sure you want to remove this Clinical Provider?'
+      $.post '/catalog_manager/identities/disassociate_with_org_unit', {relationship: $(this).attr('id'), org_unit: $('#org_unit_id').val(), rel_type: "clinical_provider_organizational_unit"}, (data) ->
+        $('#cp_info').html(data)
+
   # service providers
   $('input#new_sp').live 'focus', -> $(this).val('')
   $('input#new_sp').live 'keydown.autocomplete', ->

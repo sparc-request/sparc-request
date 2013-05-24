@@ -293,6 +293,7 @@ en:
       new_related: "New Related Service"
       new_submission: "New Submission Email"
       new_super: "New Super User"
+      new_clinical_provider: "New Clinical Provider"
     title: "SPARC Request Services Catalog"
 
   # user search partial
@@ -613,6 +614,7 @@ en:
     new_sp: "New Service Provider"
     service_error: "There are no service providers anywhere on this tree."
     cm_rights: "Catalog Manager Rights"
+    clinical_providers: "Clinical Providers"
     new_cm: "New Catalog Manager"
     auto_price_adj: "Automatic Pricing Adjustment"
     change_rates: "Increase or Decrease Rates"

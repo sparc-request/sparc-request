@@ -16,9 +16,10 @@ describe 'as a user on catalog page', :js => true do
         effective_date:    '2000-01-01')
 
     click_link('MUSC Research Data Request (CDW)')
-    sleep 2
+    wait_for_javascript_to_finish
     
     page.execute_script("$('.ui-accordion-header:nth-of-type(2)').click()")
+    wait_for_javascript_to_finish
   end
 
   it 'should successfully update an existing pricing map' do
@@ -44,7 +45,7 @@ describe 'as a user on catalog page', :js => true do
       find("input[id$='unit_minimum']").set(2) ## change the unit minimum
       find("input[id$='units_per_qty_max']").set(2) ## change the units per qty max
       page.execute_script %Q{ $("input[id$='units_per_qty_max']").change() }
-
+      wait_for_javascript_to_finish
     end
 
     page.execute_script %Q{ $(".save_button").click() }
@@ -72,9 +73,15 @@ describe 'as a user on catalog page', :js => true do
 
     it "should set the one time fee attribute to true when clicked" do
       service = Service.find_by_abbreviation("CDW")
+
       find(".pricing_map_accordion > h3:nth-of-type(1)").click
+      wait_for_javascript_to_finish
+
       find("td.is_one_time_fee > input", :visible => true).click
+      wait_for_javascript_to_finish
+
       page.execute_script %Q{ $(".save_button").click() }
+      wait_for_javascript_to_finish
 
       retry_until { service.pricing_maps[1].is_one_time_fee.should eq(false) }
     end

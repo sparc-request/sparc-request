@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130514170908) do
+ActiveRecord::Schema.define(:version => 20130522145154) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -96,6 +96,15 @@ ActiveRecord::Schema.define(:version => 20130514170908) do
   end
 
   add_index "charges", ["service_request_id"], :name => "index_charges_on_service_request_id"
+
+  create_table "clinical_providers", :force => true do |t|
+    t.integer  "identity_id"
+    t.integer  "organization_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  add_index "clinical_providers", ["organization_id"], :name => "index_clinical_providers_on_organization_id"
 
   create_table "document_groupings", :force => true do |t|
     t.integer  "service_request_id"
@@ -259,6 +268,7 @@ ActiveRecord::Schema.define(:version => 20130514170908) do
     t.integer  "subject_count"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
+    t.boolean  "hidden"
   end
 
   create_table "lookups", :force => true do |t|

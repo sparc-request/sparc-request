@@ -93,7 +93,7 @@
                 %a.edit_service_request.btn{:href => "javascript:void(0);", :'data-permission' => rights.to_s, :'data-url' => "/service_requests/#{sr.id}/catalog?sub_service_request_id=#{ssr.id}&from_user_portal=true"}= t(:protocol_information)[:edit]
           %td
             %center
-              %a.view-sub-service-request-button.btn{:href => "javascript:void(0);", :'data-service_request_id' => ssr.service_request.id, :'data-protocol_id' => protocol.id, :'data-status' => ssr.status} View
+              %a.view-sub-service-request-button.btn{:href => "javascript:void(0);", :'data-service_request_id' => ssr.service_request.id, :'data-protocol_id' => protocol.id, :'data-status' => ssr.status, :'data-ssr_id' => ssr.ssr_id.to_s} View
           - if sr.sub_service_requests.size > 0 && first_ssr
             - first_ssr = false
             %td{:class => "edit-original-td", :rowspan => sr.sub_service_requests.size}

@@ -40,7 +40,7 @@ end
 
 # these are needed for the import script
 group :import do
-  gem 'alfresco_handler', :path => '../alfresco_handler'
+  # gem 'alfresco_handler', :path => '../alfresco_handler'
   gem 'progress_bar'
   gem 'mustache'
 end
@@ -96,6 +96,7 @@ end
 gem 'will_paginate'
 
 # requirements for excel export
+gem 'axlsx'
 gem 'axlsx_rails'
 
 # Deploy with Capistrano

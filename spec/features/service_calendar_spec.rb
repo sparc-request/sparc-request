@@ -8,7 +8,8 @@ describe "service calendar", :js => true do
 
   before :each do
     visit service_calendar_service_request_path service_request.id
-    #sleep 10
+    arm1.reload
+    arm2.reload
   end
 
   after :each do

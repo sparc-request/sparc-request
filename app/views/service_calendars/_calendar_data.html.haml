@@ -1,4 +1,3 @@
-= javascript_include_tag 'service_calendar_logic'
 = hidden_field_tag :indirect_rate, @service_request.protocol.indirect_cost_rate
 %table.service_calendar{:class => arm.id}
   %thead.ui-widget-header
@@ -24,6 +23,7 @@
         %th{:colspan => 5} &nbsp;
       - if @portal
         %th &nbsp;
+        %th Hide Service
       - else
         %th= t("calendar_page.headers.total_per_patient")
         %th= t("calendar_page.headers.total_per_study")
@@ -71,6 +71,7 @@
               %td &nbsp;
             - if @portal 
               %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-line_items_visit_id' => line_items_visit.id, :class => "delete_data")
+              %td= check_box_tag "hidden", true, line_items_visit.hidden, :'data-line_items_visit_id' => line_items_visit.id, :class => "hidden_data"
             - else
               %td{:class => "total_#{line_items_visit.id}"}= display_visit_based_direct_cost(line_items_visit)
               %td{:class => "total_#{line_items_visit.id}_per_study"}= display_visit_based_direct_cost_per_study(line_items_visit)

@@ -185,7 +185,7 @@ fieldset > legend {
   text-indent: 0px !important;
 }
 
-.su_delete, .se_delete, .sp_delete, .rs_delete { cursor: pointer; }
+.su_delete, .se_delete, .sp_delete, .rs_delete, .cp_delete { cursor: pointer; }
 
 #rate_info {
   table > thead > tr > th {
@@ -205,13 +205,13 @@ fieldset > legend {
   }
 }
 
-.sus, .sps, .ses, .cms {
+.sus, .sps, .ses, .cms, .cps {
   border-color: #f0f0f0 #000 #000 #f0f0f0;
   border-style: inset;
   border-width: 1px;
   width: 720px;
 
-  input#new_sp, input#new_se, input#new_su, input#new_cm {
+  input#new_sp, input#new_se, input#new_su, input#new_cm, input#new_cp {
     width: 703px !important;
     margin: 5px;
   }

@@ -181,6 +181,7 @@ a.save-option{
 
 #welcome_message #red_description {
   color: red;
+  font-size: 120%;
 }
 
 #welcome_message .section {
@@ -303,6 +304,14 @@ a.save-option{
 
 .program-view.selected a {
   color: red !important;
+}
+
+.even {
+  background: #FFFFFF;
+}
+
+.odd {
+  background: #E8E8E8;
 }
 
 /* Navy: #003366

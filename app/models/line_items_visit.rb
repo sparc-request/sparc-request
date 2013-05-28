@@ -7,6 +7,7 @@ class LineItemsVisit < ActiveRecord::Base
   attr_accessible :arm_id
   attr_accessible :line_item_id
   attr_accessible :subject_count  # number of subjects for this visit grouping
+  attr_accessible :hidden 
 
   # Find a LineItemsVisit for the given arm and line item.  If it does
   # not exist, create it first, then return it.

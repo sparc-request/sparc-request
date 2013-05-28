@@ -43,6 +43,13 @@ $(document).ready ->
     put_attribute(object_id, klass, data)
   )
 
+  $(document).on('change', '.hidden_data', ->
+    klass = getObjKlass(this)
+    object_id = $(this).data("#{klass}_id")
+    data = {'hidden': $(this).prop('checked')}
+    put_attribute(object_id, klass, data)
+  )
+
   $(document).on('click', '.delete_data', ->
     klass = getObjKlass(this)
     object_id = $(this).data("#{klass}_id")

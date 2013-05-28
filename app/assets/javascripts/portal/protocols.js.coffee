@@ -47,11 +47,12 @@ $(document).ready ->
         id = $(this).data('service_request_id')
         protocol_id = $(this).data('protocol_id')
         status = $(this).data('status')
+        ssr_id = $(this).attr('data-ssr_id')
         random_number = Math.floor(Math.random()*10101010101)
         $.ajax({
             method: 'get'
             url: "/portal/service_requests/#{id}?#{random_number}"
-            data: {protocol_id: protocol_id, status: status}
+            data: {protocol_id: protocol_id, status: status, ssr_id: ssr_id}
             success: ->
               $('.view-sub-service-request-dialog').dialog('open')
           })

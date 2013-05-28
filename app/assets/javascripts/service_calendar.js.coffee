@@ -61,7 +61,7 @@ $(document).ready ->
       $('.service_calendar_spinner').hide()
       $(this).val(0)
 
-  $('.visit_grouping_subject_count').live 'change', ->
+  $('.line_items_visit_subject_count').live 'change', ->
     $('.service_calendar_spinner').show()
     $.ajax
       type: 'PUT'

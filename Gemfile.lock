@@ -225,8 +225,6 @@ GEM
     rake (10.0.3)
     rdoc (3.12.2)
       json (~> 1.4)
-    rest-client (1.6.7)
-      mime-types (>= 1.16)
     rspec (2.13.0)
       rspec-core (~> 2.13.0)
       rspec-expectations (~> 2.13.0)
@@ -300,6 +298,7 @@ DEPENDENCIES
   acts-as-taggable-on (~> 2.3.1)
   acts_as_list (= 0.1.9)
   addressable (~> 2.3.2)
+  axlsx
   axlsx_rails
   cache_digests
   capistrano

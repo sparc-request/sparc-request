@@ -1,9 +1,12 @@
 require 'csv'
 
-class CtrcServicesReport
+class CtrcServicesReport < Report
+  def default_output_file
+    return './ctrc_services_report.csv'
+  end
 
-  def self.generate_report
-    CSV.open('./ctrc_services_report.csv', 'wb') do |csv|
+  def run
+    CSV.open(output_file, 'wb') do |csv|
       # Column Headers
       csv << ['Core',
               'Service',
@@ -25,12 +28,12 @@ class CtrcServicesReport
               row << service.organization.name
               row << service.name
               row << service.displayed_pricing_map.full_rate.to_f / 100.0
-              row << CtrcServicesReport.find_applicable_rate(service, 'college') / 100.0
-              row << CtrcServicesReport.find_applicable_rate(service, 'federal') / 100.0
-              row << CtrcServicesReport.find_applicable_rate(service, 'foundation') / 100.0
-              row << CtrcServicesReport.find_applicable_rate(service, 'industry') / 100.0
-              row << CtrcServicesReport.find_applicable_rate(service, 'investigator') / 100.0
-              row << CtrcServicesReport.find_applicable_rate(service, 'internal') / 100.0
+              row << find_applicable_rate(service, 'college') / 100.0
+              row << find_applicable_rate(service, 'federal') / 100.0
+              row << find_applicable_rate(service, 'foundation') / 100.0
+              row << find_applicable_rate(service, 'industry') / 100.0
+              row << find_applicable_rate(service, 'investigator') / 100.0
+              row << find_applicable_rate(service, 'internal') / 100.0
 
               csv << row
             end
@@ -40,7 +43,7 @@ class CtrcServicesReport
     end
   end
 
-  def self.find_applicable_rate service, funding_source
+  def find_applicable_rate service, funding_source
     pricing_map = service.displayed_pricing_map
     pricing_setup = service.organization.current_pricing_setup
     selected_rate_type = pricing_setup.rate_type(funding_source)
@@ -48,5 +51,5 @@ class CtrcServicesReport
     rate = pricing_map.applicable_rate(selected_rate_type, applied_percentage)
     return rate
   end
-
 end
+

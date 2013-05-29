@@ -1,23 +1,26 @@
 require 'csv'
 
-def helper
-  ActionController::Base.helpers
-end
-
-def two_decimal_places float
-  unless float.nan?
-    sprintf("%.2f", float * 100.0)
-  end
-end
-
-class CtrcSubsidyReport
-
-  def self.currency_converter cents
+class CtrcSubsidyReport < Report
+  def currency_converter cents
     helper.number_to_currency(Service.cents_to_dollars(cents))
   end
 
-  def self.generate_report
-    CSV.open('./ctrc_subsidies_report.csv', 'wb') do |csv|
+  def helper
+    ActionController::Base.helpers
+  end
+
+  def two_decimal_places float
+    unless float.nan?
+      sprintf("%.2f", float * 100.0)
+    end
+  end
+
+  def output_file
+    return './ctrc_subsidies_report.csv'
+  end
+
+  def run
+    CSV.open(output_file, 'wb') do |csv|
       # Column Headers
       csv << ['SRID',
               'Total Cost',
@@ -58,4 +61,7 @@ class CtrcSubsidyReport
 
 end
 
-CtrcSubsidyReport.generate_report
+if __FILE__ == $0 then
+  CtrcSubsidyReport.run
+end
+

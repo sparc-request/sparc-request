@@ -96,6 +96,7 @@ end
 gem 'will_paginate'
 
 # requirements for excel export
+gem 'axlsx'
 gem 'axlsx_rails'
 
 # Deploy with Capistrano

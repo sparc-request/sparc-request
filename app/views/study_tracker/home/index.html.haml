@@ -5,7 +5,7 @@
 
 .admin-right-dashboard
   .user-information-title.ui-corner-all
-    %h3= t(:admin_root)[:title]
+    %h3= t(:study_tracker)[:title]
   .user-information-body.ui-corner-bottom
     %p
       %strong= @user.display_name
@@ -13,4 +13,4 @@
         = link_to root_path do
           = image_tag 'portal/create_new_request.png', :class => 'create_new_request'
 
-= render :partial => 'ssr_list'
+= render :partial => 'portal/admin/ssr_list'

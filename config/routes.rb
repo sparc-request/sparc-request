@@ -114,6 +114,11 @@ SparcRails::Application.routes.draw do
     root :to => 'catalog#index'
   end
 
+  ##### Study Tracker/Clinical Work Fulfillment Portal#####
+  namespace :study_tracker do
+    root :to => 'home#index'
+  end
+  
   ##### sparc-user routes brought in and namespaced
   namespace :portal do
     

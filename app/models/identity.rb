@@ -277,9 +277,14 @@ class Identity < ActiveRecord::Base
   # Collects all sub service requests under this identity's admin_organizations and sorts that
   # list by the status of the sub service requests.
   # Used to populate the table (as selectable by the dropdown) in the admin index.
-  def admin_service_requests_by_status
-    ssrs = self.admin_organizations.map(&:sub_service_requests).flatten
-  
+  def admin_service_requests_by_status org_id = nil
+    ##Default to all ssrs, if we get an org_id, only get that organization's ssrs
+    if org_id
+      ssrs = Organization.find(org_id).sub_service_requests
+    else
+      ssrs = self.admin_organizations.map(&:sub_service_requests).flatten
+    end
+
     hash = {}
 
     ssrs.each do |ssr|

@@ -226,6 +226,9 @@ SparcRails::Application.routes.draw do
     root :to => 'home#index'
   end
 
+  #temporary routes to allow generation of reports
+  match '/reports/:id/research_project_summary' => 'reports#research_project_summary'
+
   root :to => 'service_requests#catalog'
 
 end

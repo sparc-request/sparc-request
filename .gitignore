@@ -50,3 +50,5 @@ import/*.json
 import/documents.tar.gz
 
 Gemfile.devel
+
+cert_file

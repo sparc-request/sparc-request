@@ -1,0 +1,108 @@
+def adjusted_row text, left_indent
+  row = []
+  left_indent.times { row << "" }
+  row << text
+  row
+end
+
+def smart_merge start_alpha, end_alpha, pos, sheet
+  sheet.merge_cells("#{start_alpha}#{pos}:#{end_alpha}#{pos}")
+end
+
+def visit_header_row visit_names, sheet, style
+  data = ["PID", "Status"] + visit_names + ["Totals"]
+  sheet.add_row data, :style => style
+end
+
+def subject_visit_row subjects, visit_count, sheet
+  subjects.each do |subject|
+    sheet.add_row [subject[:pid], subject[:status]] + subject[:visits] + [subject[:visits].sum]
+  end
+end
+
+visit_count = 5 # just putting a number here so we can make sure it renders correctly
+
+# alpha_array used to determine column position
+alpha_array = ("A".."Z").to_a
+additional_alpha_arrays_needed = (visit_count/26.0).ceil + 1 #add one since some columns get pushed over, safety.  doesn't matter if we have extra here
+
+additional_alpha_arrays = []
+additional_alpha_arrays_needed.times do |n|
+  additional_alpha_arrays << alpha_array.map{|char| alpha_array[n] + char}
+end
+ 
+alpha_array = alpha_array + additional_alpha_arrays.flatten
+
+wb = xlsx_package.workbook
+wb.use_autowidth = false
+
+# define styles
+info_box_style = wb.styles.add_style alignment: { horizontal: :center, vertical: :center}, sz: 12, b: true, bg_color: "0099FF", fg_color: "FFFFFF"
+header_style = wb.styles.add_style fg_color: "FFFFFF", bg_color: "0099FF", b: true
+
+wb.add_worksheet(name: "Summary") do |sheet|
+  # sctr logo
+  img = Rails.root.join("app/assets/images/sctr_logo.png").to_s
+  sheet.add_image(:image_src => img, :noSelect => true, :noMove => true, :hyperlink=>"http://sctr.musc.edu") do |image|
+    image.width = 479
+    image.height = 227
+    image.hyperlink.tooltip = "Click to visit SCTR website"
+    image.start_at 0, 0
+  end
+  
+  #start text below the image
+  16.times {sheet.add_row [""]}
+  
+  # display box in middle with project details
+  # visits + 3 should be the total columns we have
+  #left_indent = ((visit_count + 3)/2.0).ceil - 1
+  left_indent = 2
+
+  info_box_rows = []
+  info_box_rows << sheet.add_row(adjusted_row("SPARC ID: 5694", left_indent), :height => 22)
+  info_box_rows << sheet.add_row(adjusted_row("PI Name: Patrick Flume", left_indent), :height => 22)
+  info_box_rows << sheet.add_row(adjusted_row("The effectiveness of Buspar", left_indent), :height => 22)
+  info_box_rows << sheet.add_row(adjusted_row("Billing/Business Mgr: Royce Sampson", left_indent), :height => 22)
+  info_box_rows << sheet.add_row(adjusted_row("Routing: success@musc.edu", left_indent), :height => 22)
+
+  # merge info box rows and apply styling
+  info_box_rows.each do |row|
+    if visit_count > 1
+      sheet["#{alpha_array[left_indent]}#{row.index+1}"].style = info_box_style
+      smart_merge alpha_array[left_indent], alpha_array[left_indent+4], row.index+1, sheet
+    end
+  end
+
+  sheet.add_row [""]
+
+  #begin displaying visit information
+
+  #generating temporary data, this would be replaced with real data
+  visit_names = []
+  visit_count.times {|num| visit_names << "Visit #{num+1}"}
+
+  def generate_fake_visits(visit_count)
+    visits = []
+    visit_count.times do
+      visits << rand(0..200)
+    end 
+    visits
+  end
+
+  subjects = [
+              {:pid => '1224343', :status => 'Active', :visits => generate_fake_visits(visit_count)},
+              {:pid => 'XYZ3456', :status => 'Active', :visits => generate_fake_visits(visit_count)},
+              {:pid => '9ABCDDD', :status => 'Active', :visits => generate_fake_visits(visit_count)}
+             ]
+              
+  puts "#"*50
+  pp subjects
+  puts "#"*50
+  #visit information header
+  visit_header_row visit_names, sheet, header_style
+
+  #subject visit rows
+  subject_visit_row subjects, visit_count, sheet
+end
+
+

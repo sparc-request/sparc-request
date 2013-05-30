@@ -52,8 +52,11 @@
           - line_item = visit_grouping.line_item
           - next unless value[:line_items].include?(line_item)
           %tr.line_item{:class => cycle('odd', '', :name => 'pppvs')}
-            - if @portal 
-              %td= select_tag "line_item_service_id", options_for_select(candidate_service_options(@candidate_per_patient_per_visit, true), line_item.try(:service).try(:id)), :'data-line_item_id' => line_item.id, :class => 'fulfillment_data fulfillment_selecter' 
+            - if @portal
+              - if line_item.service.is_available
+                %td= select_tag "services_#{visit_grouping.id}", options_for_select(candidate_service_options(@candidate_per_patient_per_visit, true), line_item.try(:service).try(:id)), :'data-line_item_id' => line_item.id, :class => 'fulfillment_data fulfillment_selecter'
+              - else
+                %td= line_item.service.name + ' (Disabled)'
             - else
               %td.service_name= line_item.service.display_service_name
             - unless @portal

@@ -29,6 +29,7 @@ class SubServiceRequest < ActiveRecord::Base
   attr_accessible :src_approved
   attr_accessible :requester_contacted_date
   attr_accessible :subsidy_attributes
+  attr_accessible :in_work_fulfillment
 
   accepts_nested_attributes_for :subsidy
 

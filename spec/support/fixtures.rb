@@ -68,6 +68,7 @@ def build_service_request
   let!(:service_provider)    { FactoryGirl.create(:service_provider, organization_id: program.id, identity_id: jug2.id)}
   let!(:super_user)          { FactoryGirl.create(:super_user, organization_id: program.id, identity_id: jpl6.id)}
   let!(:catalog_manager)     { FactoryGirl.create(:catalog_manager, organization_id: program.id, identity_id: jpl6.id) }
+  let!(:clinical_provider)   { FactoryGirl.create(:clinical_provider, organization_id: program.id, identity_id: jug2.id) }
   let!(:available_status)    { FactoryGirl.create(:available_status, organization_id: program.id, status: 'submitted')}
   let!(:available_status2)   { FactoryGirl.create(:available_status, organization_id: program.id, status: 'draft')}
   let!(:subsidy)             { FactoryGirl.create(:subsidy, pi_contribution: 2500, sub_service_request_id: sub_service_request.id)}

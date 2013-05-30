@@ -34,7 +34,7 @@ class Notifier < ActionMailer::Base
     @portal_link = USER_PORTAL_LINK + "?default_protocol=#{@protocol.id}"
     @portal_text = "To VIEW and/or MAKE any changes to this request, please click here."
     
-    attachments["service_request_#{@service_request.id}.xls"] = xls 
+    attachments["service_request_#{@service_request.protocol.id}.xls"] = xls 
     
     # only send these to the correct person in the production env
     email = Rails.env == 'production' ? @identity.email : DEFAULT_MAIL_TO
@@ -52,7 +52,7 @@ class Notifier < ActionMailer::Base
     @portal_link = USER_PORTAL_LINK + "admin"
     @portal_text = "Administrators/Service Providers, Click Here"
     
-    attachments["service_request_#{@service_request.id}.xls"] = xls 
+    attachments["service_request_#{@service_request.protocol.id}.xls"] = xls 
     
     # only send these to the correct person in the production env
     email = Rails.env == 'production' ?  submission_email_address : DEFAULT_MAIL_TO

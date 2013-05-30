@@ -23,6 +23,7 @@ class CohrReport < Report
       'PI',
       'Requested by',
       'SRID#',
+      'Status',
       'Service',
       'Minutes',
       'Hours',
@@ -39,9 +40,15 @@ class CohrReport < Report
 
     # TODO: ideally I'd write this all with joins (would run faster),
     # but this is fine for now
+
+    idx = 1
+
     Axlsx::Package.new do |p|
       p.workbook.add_worksheet(name: 'Report') do |sheet|
+        currency = sheet.styles.add_style(format_code: '####.##')
+
         sheet.add_row(header)
+        idx += 1
 
         service_names.each do |service_name|
           service = Service.find_by_name(service_name)
@@ -53,7 +60,7 @@ class CohrReport < Report
 
           line_items = LineItem.where('service_id = ?', service.id)
 
-          line_items.each_with_index do |li, idx|
+          line_items.each do |li|
             ssr = li.sub_service_request
             sr = li.service_request
             protocol = sr.protocol
@@ -77,14 +84,28 @@ class CohrReport < Report
               pi_name,
               requester,
               srid,
+              ssr.status,
               service,
               minutes,
-              "=E#{idx+2}/60",
-              price_per_minute * 60,
-              total_cost,
+              "=F#{idx}/60",
+              price_per_minute * 60 / 100.0,
+              total_cost / 100.0,
             ]
 
-            res = sheet.add_row(row)
+            styles = [
+              nil,
+              nil,
+              nil,
+              nil,
+              nil,
+              nil,
+              nil,
+              currency,
+              currency,
+            ]
+
+            res = sheet.add_row(row, style: styles)
+            idx += 1
           end
         end
       end

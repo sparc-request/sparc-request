@@ -27,13 +27,56 @@ require 'selenium-webdriver'
 #
 
 profile = Selenium::WebDriver::Firefox::Profile.new
-profile["focusmanager.testmode"] = true
 
-Capybara.register_driver :selenium_firefox_focus do |app|
+# Ensure that the change event is fired for text fields when the browser
+# does not have the focus
+# https://github.com/jnicklas/capybara/pull/951
+profile['focusmanager.testmode'] = true
+
+# Increase the max script run time.  The default (20/30) can cause
+# failures on slow machines.  Disabling the check altogether (by setting
+# to -1 secs) can cause the browser to hang altogether.
+profile['dom.max_script_run_time'] = 60
+profile['dom.max_chrome_script_run_time'] = 60
+
+# Increase the amount of time before the page is re-rendered while the
+# page is being loaded; this will decrease the total load time but make
+# the rendering more "jumpy".
+# http://kb.mozillazine.org/Content.notify.interval
+# http://kb.mozillazine.org/Content.max.tokenizing.time
+# http://kb.mozillazine.org/Nglayout.initialpaint.delay
+profile['content.notify.ontimer'] = true
+profile['content.notify.interval'] = 1000000 # µs
+profile['content.max.tokenizing.time'] = 1000000 # µs
+profile['nglayout.initialpaint.delay'] = 1000 # ms
+
+# Enter low-frequency interrupt-handling mode more quickly (improves
+# javascript performance at the expense of UI responsiveness during page
+# load)
+# http://kb.mozillazine.org/Content.switch.threshold
+profile['content.switch.threshold'] = 100000 # µs
+
+# Disable prefetch and increase total number of connections per server
+# to improve page loading time
+profile['network.http.max-connections-per-server'] = 30
+profile['network.prefetch-next'] = false
+
+# Set sqlite disk sync mode for the browser to "risky sync mode"
+# (improves performance)
+# http://kb.mozillazine.org/About:config_entries
+profile['toolkit.storage.synchronous'] = 0
+
+# Disable smooth scrolling
+# http://kb.mozillazine.org/About:config_entries
+profile['toolkit.scrollbox.smoothScroll'] = false
+
+# TODO: try network.http.pipelining = true
+
+Capybara.register_driver :default do |app|
   Capybara::Selenium::Driver.new(app, :browser => :firefox, :profile => profile)
 end
 
-Capybara.javascript_driver = :selenium_firefox_focus
+Capybara.javascript_driver = :default
 Capybara.default_wait_time = 15
 
 # Requires supporting ruby files with custom matchers and macros, etc,

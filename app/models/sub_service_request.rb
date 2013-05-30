@@ -32,6 +32,10 @@ class SubServiceRequest < ActiveRecord::Base
 
   accepts_nested_attributes_for :subsidy
 
+  def display_id
+    return "#{service_request.protocol.id}-#{ssr_id}"
+  end
+
   def create_line_item(args)
     new_args = {
       service_request_id: self.service_request_id

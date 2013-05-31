@@ -90,6 +90,21 @@ describe "admin fulfillment tab", :js => true do
         page.find('#sub_service_request_requester_contacted_date_picker').should have_value sub_service_request.requester_contacted_date.strftime("%m/%d/%y")
       end
 
+      context "study cwf access" do
+        it "should disable the cwf access once it has been checked" do
+          find("#in_work_fulfillment").click
+          wait_for_javascript_to_finish
+          find("#in_work_fulfillment")['disabled'].should eq("true")
+        end
+        it "should add the cwf access to the sub service request" do
+          find("#in_work_fulfillment").click
+          wait_for_javascript_to_finish
+          sub_service_request.reload
+          sub_service_request.in_work_fulfillment.should eq(true)
+        end
+
+      end
+
       context "subsidy information" do
         before :each do
           find('.add_subsidy_link').click

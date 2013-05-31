@@ -5,3 +5,7 @@
 #service_request_owner{:style => @sub_service_request.status == 'draft' ? 'display:none;' : ''}
   %h3= t(:service_requests)[:info][:text2]
   = select_tag "sub_service_request_owner_id", owners_for_select(@sub_service_request), :prompt => '---Please Select---', :'data-sub_service_request_id' => @sub_service_request.id, :class => 'fulfillment_data'
+%br
+#study_tracker_access
+  %h3{:style => "float:left; margin-right:10px;"}= t(:service_requests)[:info][:text3]
+  %td= check_box_tag "in_work_fulfillment", true, @sub_service_request.in_work_fulfillment, :'data-sub_service_request_id' => @sub_service_request.id, :class => "cwf_data", :disabled => @sub_service_request.in_work_fulfillment?

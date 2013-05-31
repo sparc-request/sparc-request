@@ -455,6 +455,7 @@ en:
     info: 
       text1: "Service Request Status"
       text2: "Service Request Owner"
+      text3: "Ready for Clinical Fulfillment:"
 
   # Service Request review page
   sr_review:

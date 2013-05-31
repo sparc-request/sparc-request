@@ -70,14 +70,19 @@ class CohrReport < Report
               next
             end
 
+            if not li.units_per_package then
+              puts "Warning: no units per quantity for line item #{li.inspect}"
+              next
+            end
+
             # TODO: what do I do if there is more than one PI?
             pi = protocol.project_roles.find_by_role('pi')
-            pi_name = pi ? pi.identity.full_name : ''
+            pi_name = pi.try(:identity).try(:full_name)
             requester = sr.service_requester.full_name
             srid = ssr.display_id
             service = li.service.name
             minutes = li.quantity # TODO: only works for one-time-fee
-            price_per_minute = li.per_unit_cost
+            price_per_minute = li.applicable_rate / li.units_per_package # TODO: need to use units_per_quantity?
             total_cost = li.direct_costs_for_one_time_fee
 
             row = [

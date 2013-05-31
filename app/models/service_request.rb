@@ -21,12 +21,16 @@ class ServiceRequest < ActiveRecord::Base
     # TODO: Fix validations for this area
     # validates :visit_count, :numericality => { :greater_than => 0, :message => "You must specify the estimated total number of visits (greater than zero) before continuing.", :if => :has_per_patient_per_visit_services?}
     # validates :subject_count, :numericality => {:message => "You must specify the estimated total number of subjects before continuing.", :if => :has_per_patient_per_visit_services?}
+    validates :start_date, :presence => {:message => "You must specify the start date of the study."}
+    validates :end_date, :presence => {:message => "You must specify the end date of the study."}
   end
   
   validation_group :service_details_back do
     # TODO: Fix validations for this area
     # validates :visit_count, :numericality => { :greater_than => 0, :message => "You must specify the estimated total number of visits (greater than zero) before continuing.", :if => :has_visits?}
     # validates :subject_count, :numericality => {:message => "You must specify the estimated total number of subjects before continuing.", :if => :has_visits?}
+    validates :start_date, :presence => {:message => "You must specify the start date of the study."}
+    validates :end_date, :presence => {:message => "You must specify the end date of the study."}
   end
 
   validation_group :service_calendar do

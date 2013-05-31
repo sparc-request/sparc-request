@@ -63,11 +63,17 @@ module ApplicationHelper
       action = checked == true ? 'unselect_calendar_column' : 'select_calendar_column'
       icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
       visit_name = visit_groups[n - 1].name || "Visit Group #{n}"
+      visit = visit_groups[n - 1]
       
       if params[:action] == 'review' || params[:action] == 'show' || params[:action] == 'refresh_service_calendar'
         returning_html += content_tag(:th, content_tag(:span, visit_name), :width => 60, :class => 'visit_number')
       else
         returning_html += content_tag(:th,
+                                      label_tag("Day    +/-") +
+                                      tag(:br) +
+                                      text_field_tag("day", visit.day, :class => "visit_day day_#{n}", :size => 3, :'data-day' => n) +
+                                      text_field_tag("window", visit.window, :class => "visit_window window_#{n}", :size => 3, :'data-window' => n) +
+                                      tag(:br) +
                                       text_field_tag("arm_#{arm.id}_visit_name_#{n}", visit_name, :class => "visit_name", :size => 10, :update => "#{base_url}?visit_position=#{n-1}&arm_id=#{arm.id}") +
                                       tag(:br) + 
                                       link_to((content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')), 

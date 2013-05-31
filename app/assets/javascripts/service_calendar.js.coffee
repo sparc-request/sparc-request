@@ -84,6 +84,22 @@ $(document).ready ->
       show:
         ready: true
 
+  $('.visit_day').live 'change', ->
+    # Grab the day
+    day = $(this).data('day')
+    day_val = $(this).val()
+    # Compare to +- 1
+    before = $(".day_#{day - 1}").val()
+    after = $(".day_#{day + 1}").val()
+    # alert if bad
+    if before > day_val
+      alert "The days must be in order. This day falls before a previous visit."
+    else if day_val > after
+      alert "The days must be in order. This day falls after a later visit."
+    else
+      #change if good
+
+
 (exports ? this).calculate_max_rates = (arm_id) ->
   for num in [1..5]
     column = '.visit_column_' + num

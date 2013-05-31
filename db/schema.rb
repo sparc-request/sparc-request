@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130530190923) do
+ActiveRecord::Schema.define(:version => 20130530202334) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -683,9 +683,11 @@ ActiveRecord::Schema.define(:version => 20130530190923) do
   create_table "visit_groups", :force => true do |t|
     t.string   "name"
     t.integer  "arm_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
     t.integer  "position"
+    t.integer  "day"
+    t.integer  "window",     :default => 0
   end
 
   add_index "visit_groups", ["arm_id"], :name => "index_visit_groups_on_arm_id"

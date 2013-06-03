@@ -9,10 +9,10 @@ en:
 
   # sign in page
   signin:
-    message1: "Sign in using your institutional login"
-    message2: "(ie - MUSC netid and password)"
-    message3: "Sign in using your non-institutional login"
-    message4: "(ie - SPARC Request created account)"
+    message1: "MUSC Users- Sign in here"
+    message2: ""
+    message3: "Outside Users- Sign in here with your SPARC Request account"
+    message4: ""
     button1: "Continue to sign in page"
     button2: "Sign in"
   login_name: "Username:"
@@ -803,11 +803,11 @@ en:
     message2: "Click \"Add Services\" at the bottom of any service description to add it to your \"My Services\"."
     message3: "To delete a service from \"My Services\", use the red X beside any service."
     message4: "** Please Note: You may only select services applicable to ONE research study/project at a time.  Should you need to select services for multiple studies/projects you need to submit multiple \"Requests\"."
-    message5: "Please note that any studies/projects previously entered into SCTR SPARK (sctr.musc.edu/spark) have been migrated to the new SPARC Request system and are available on your new SPARC Request User Dashboard. To access, please visit"
-    message6: "Any service requests previously entered into SPARK have been archived and will continue to be fulfilled by SCTR staff as approved. You may continue to request new services under any existing study/project through SPARC Request."
-    message7: "Welcome to SPARC Request Version 4.0. We're happy to announce that Step 2 now includes the concept of clinical trial arms. You'll find other numerous enhancements and upgrades in Version 4.0. For more information and training documents, please visit our new website at"
+    message5: "Welcome to SPARC Request Version 4.0. We're happy to announce that Step 2 now includes the concept of clinical trial arms. You'll find other numerous enhancements and upgrades in Version 4.0. For more information and training documents, please visit our new website at"
     # <a>http://academicdepartments.musc.edu/sparc_request/</a>. 
-    message8: "Please contact the SUCCESS Center at 792-8300 with any questions or to set up a demonstration!"
+    message6: "Please contact the SUCCESS Center at 792-8300 with any questions or to set up a demonstration!"
+    message7: "Check out our SPARC Request Blog ("
+    message8: "). This feature allows you to follow our latest news and is a great way to ask questions of and leave feedback for the SPARC Request Team as well as communicate with both us and other SPARC Request Users."
     # message7: "Due to user feedback regarding the inclusion of Indirect Costs in the Grand Total of Study Costs, Indirect Costs (as a line item) have currently been removed from SPARC Request and will be reintroduced in the budget template tools in the Study Tracker Release. Please contact the SUCCESS Center at 792-8300 with any questions."
 
   # Identities Account Aproved/Disapproved

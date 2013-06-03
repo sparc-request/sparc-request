@@ -817,4 +817,11 @@ en:
 
   study_tracker:
     title: "Clinical Work Fulfillment"
+    dashboard:
+      tabs:
+        study_schedule: "Study Schedule"
+        subject_tracker: "Subject Tracker"
+        payments: "Payments"
+        services: "Services"
+        billing: "Billing"
 

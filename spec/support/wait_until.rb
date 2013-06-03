@@ -23,7 +23,8 @@ def wait_until(seconds=10, &block)
     raise WaitUntilTimedOut, "Timed out" if Time.now > end_time
     result = yield
     return result if result
-    sleep 0.01
+    sleep 0.05
+    Thread.pass
   end
 end
 
@@ -48,7 +49,8 @@ def retry_until(seconds=10, exception=StandardError)
       return result
     rescue exception => e
       last_exception = e
-      sleep 0.01
+      sleep 0.05
+      Thread.pass
     end
   end
 end

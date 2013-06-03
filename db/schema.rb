@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130530190923) do
+ActiveRecord::Schema.define(:version => 20130529163215) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -700,8 +700,6 @@ ActiveRecord::Schema.define(:version => 20130530190923) do
     t.integer  "insurance_billing_qty", :default => 0
     t.integer  "effort_billing_qty",    :default => 0
     t.integer  "line_items_visit_id"
-    t.integer  "day"
-    t.integer  "window",                :default => 0
     t.integer  "visit_group_id"
   end
 

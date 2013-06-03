@@ -331,6 +331,6 @@ describe 'fulfillment tab with disabled services', :js => true do
   it 'should not display dropdown' do
     arm1.reload
     find('.line_item.odd').should have_content "#{service2.name} (Disabled)"
-    find('.line_item.odd').should_not have_selector("#services_#{arm1.visit_groupings.first.id}")
+    find('.line_item.odd').should_not have_selector("#services_#{arm1.line_items_visits.first.id}")
   end
 end

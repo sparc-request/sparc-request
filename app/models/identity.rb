@@ -245,11 +245,14 @@ class Identity < ActiveRecord::Base
   # Collects all organizations that this identity has super user or service provider permissions
   # on, as well as any child (deep) of any of those organizations.
   # Returns an array of organizations.
-  def admin_organizations
+  # If you pass in "su_only" it only returns organizations for whom you are a super user.
+  def admin_organizations su_only = {:su_only => false}
     orgs = []
     arr = []
     arr << self.super_users.map(&:organization)
-    arr << self.service_providers.map(&:organization)
+    unless su_only[:su_only] == true
+      arr << self.service_providers.map(&:organization)
+    end
     arr = arr.flatten.compact.uniq
 
     arr.each do |org|

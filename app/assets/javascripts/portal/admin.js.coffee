@@ -25,6 +25,7 @@ $(document).ready ->
 
       Sparc.admin.sortify_tables()
       Sparc.admin.clickify_table_datas()
+      Sparc.admin.clickify_cwf_table_datas()
 
       $('.delete-ssr-button').button()
 
@@ -49,6 +50,11 @@ $(document).ready ->
       $("#title").append(linkHtml)
       $("#return_to_admin_portal").button()
 
+    show_return_to_study_tracker_button: () ->
+      linkHtml = "<a id='return_to_study_tracker' style='position:relative;left:635px;bottom:25px' href='/portal/admin'>Return to Clinical Work Fulfillment</a>"
+      $("#title").append(linkHtml)
+      $("#return_to_study_tracker").button()
+
     sortify_tables: () ->
       tables = $('#admin-tablesorter')
       tables.tablesorter()
@@ -63,4 +69,13 @@ $(document).ready ->
         document.location.href = url
       )
 
+    clickify_cwf_table_datas: () ->
+      $('.service_request_links_cwf').live("click", () ->
+        $('.admin_indicator').css('display', 'inline-block')
+        sr_id = $(this).data('sr_id')
+        ssr_id = $(this).attr('data-ssr_id')
+        url = "study_tracker/sub_service_requests/#{ssr_id}"
+
+        document.location.href = url
+      )
   }

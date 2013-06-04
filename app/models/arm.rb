@@ -10,6 +10,14 @@ class Arm < ActiveRecord::Base
 
   after_save :fix_visit_grouping_subject_counts
 
+  def valid_visit_count?
+    return !visit_count.nil? && visit_count > 0
+  end
+
+  def valid_subject_count?
+    return !subject_count.nil? && subject_count > 0
+  end
+
   def fix_visit_grouping_subject_counts
     if self.subject_count_changed?
       self.visit_groupings.each do |vg|

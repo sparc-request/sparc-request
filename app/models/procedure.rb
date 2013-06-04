@@ -8,4 +8,8 @@ class Procedure < ActiveRecord::Base
   attr_accessible :service_id
   attr_accessible :line_item_id
   attr_accessible :completed
+
+  def required?
+    self.visit.to_be_performed?
+  end
 end

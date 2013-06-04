@@ -71,6 +71,41 @@ describe 'SubServiceRequest' do
           line_item.quantity.should eq(50)
         end
       end
+
+      context 'adding a line item' do
+
+        before :each do
+          @fulfillment_service = FactoryGirl.create(:service, organization_id: program.id)
+          @fulfillment_service.pricing_maps.create(FactoryGirl.attributes_for(:pricing_map))
+          @fulfillment_service.reload
+        end
+
+        it 'should create the line item' do
+          li = sub_service_request.create_line_item(service_id: @fulfillment_service.id, sub_service_request_id: sub_service_request.id)
+          li.service_id.should eq(@fulfillment_service.id)
+          li.should_not be_new_record
+        end
+
+        context 'subject calendars exist' do
+
+          before :each do
+            add_visits
+            service_request.arms.each(&:populate_subjects)
+            sub_service_request.update_attribute(:in_work_fulfillment, true)
+          end
+
+          it 'should create procedures for the line item' do
+            puts '*'*100
+            puts Procedure.count
+            li = sub_service_request.create_line_item(service_id: @fulfillment_service.id, sub_service_request_id: sub_service_request.id)
+            puts Procedure.count
+          end
+
+          it 'should roll back if it fails'
+
+        end
+
+      end
     end
 
     describe "cost calculations" do

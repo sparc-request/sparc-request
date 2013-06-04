@@ -42,7 +42,25 @@ class SubServiceRequest < ActiveRecord::Base
       sub_service_request_id: self.service_request_id
     }
     new_args.update(args)
-    return service_request.create_line_item(new_args)
+    li = service_request.create_line_item(new_args)
+
+    # Update subject visit calendars if present
+    if self.in_work_fulfillment
+      self.service_request.arms.each do |arm|
+        visits = Visit.joins(:line_items_visit).where(visits: { visit_group_id: arm.visit_groups}, line_items_visits:{ line_item_id: li.id} )
+        visits.group_by{|v| v.visit_group_id}.each do |vg_id, group_visits|
+          Appointment.where(visit_group_id: vg_id).each do |appointment|
+            group_visits.each do |visit|
+              appointment.procedures.create(:line_item_id => li.id,
+                                           :visit_id => visit.id,
+                                           :service_id => li.service.id)
+            end
+          end
+        end
+      end
+    end
+
+    li
   end
 
   def one_time_fee_line_items

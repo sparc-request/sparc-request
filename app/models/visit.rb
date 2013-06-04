@@ -44,6 +44,6 @@ class Visit < ActiveRecord::Base
   end
 
   def to_be_performed?
-    self.research_billing_qty == 1
+    self.research_billing_qty > 0
   end
 end

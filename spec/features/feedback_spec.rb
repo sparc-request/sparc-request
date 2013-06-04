@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "Feedback", :js => true do
   before :each do
     visit root_path
-    click_link "Click here to proceed with your institutional/existing SPARC Request login"
+    click_link "MUSC Users + Outside Users with existing SPARC Request Accounts"
     find_by_id('feedback').click()
   end
 

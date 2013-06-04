@@ -81,7 +81,8 @@ class CohrReport < Report
             requester = sr.service_requester.full_name
             srid = ssr.display_id
             service = li.service.name
-            minutes = li.quantity # TODO: only works for one-time-fee
+            packages = (li.quantity.to_f / li.units_per_package.to_f).ceil # TODO: only works for one-time-fee
+            minutes = packages * li.units_per_package
             price_per_minute = li.applicable_rate / li.units_per_package # TODO: need to use units_per_quantity?
             total_cost = li.direct_costs_for_one_time_fee
 

@@ -49,6 +49,11 @@ class CdwCompletedReport < Report
               next
             end
 
+            if ssr.status != 'complete' then
+              # not complete, so skip this one
+              next
+            end
+
             row = [
               ssr.display_id,
               service.program.name,

@@ -135,6 +135,7 @@ SparcRails::Application.routes.draw do
     resources :protocols do
       member do
         get :add_user
+        get :view_full_calendar
       end
       resources :associated_users
     end

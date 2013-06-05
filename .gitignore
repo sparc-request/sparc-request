@@ -49,4 +49,6 @@ import/*.sql
 import/*.json
 import/documents.tar.gz
 
+reports/*
+
 Gemfile.devel

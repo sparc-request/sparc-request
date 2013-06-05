@@ -3,12 +3,23 @@ class StudyTracker::SubServiceRequestsController < StudyTracker::BaseController
 
   def show
     @sub_service_request = SubServiceRequest.find(params[:id])
-
     session[:sub_service_request_id] = @sub_service_request.id
     session[:service_request_id] = @sub_service_request.service_request_id
     @service_request = @sub_service_request.service_request
     @protocol = @sub_service_request.try(:service_request).try(:protocol)
     
+  end
+
+  def service_calendar
+    @sub_service_request = SubServiceRequest.find(params[:id])
+    @service_request = @sub_service_request.service_request
+
+    # #use session so we know what page to show when tabs are switched
+    # session[:service_calendar_pages] = params[:pages] if params[:pages]
+
+    # # TODO: why is @page not set here?  if it's not supposed to be set
+    # # then there should be a comment as to why it's set in #review but
+    # # not here
   end
 
   # def update_from_fulfillment

@@ -9,3 +9,5 @@
 #study_tracker_access
   %h3{:style => "float:left; margin-right:10px;"}= t(:service_requests)[:info][:text3]
   %td= check_box_tag "in_work_fulfillment", true, @sub_service_request.in_work_fulfillment, :'data-sub_service_request_id' => @sub_service_request.id, :class => "cwf_data", :disabled => @sub_service_request.in_work_fulfillment?
+  .ui-button.ui-state-default.ui-button-text-only{:style => "margin-top:5px; display: #{@sub_service_request.in_work_fulfillment? ? "inline-block" : "none"}"}
+    %span.ui-button-text= link_to "Clinical Work Fulfillment", study_tracker_sub_service_request_path(@sub_service_request.id)

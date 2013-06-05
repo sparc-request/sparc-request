@@ -1,5 +1,5 @@
 = hidden_field_tag :indirect_rate, @service_request.protocol.indirect_cost_rate
-%table.service_calendar{:class => arm.id}
+%table.service_calendar{:class => arm.id, :style => "width:#{@study_tracker ? "917px" : "860px"};"}
   %thead.ui-widget-header
     %tr.table_header
       %th{:rowspan => 2}= t("calendar_page.headers.services")
@@ -78,7 +78,7 @@
             - else
               %td{:class => "total_#{line_items_visit.id}"}= display_visit_based_direct_cost(line_items_visit)
               %td{:class => "total_#{line_items_visit.id}_per_study"}= display_visit_based_direct_cost_per_study(line_items_visit)
-      - unless @portal 
+      - unless @portal
         %tr.totals_section.begin_totals{:class => cycle('odd', '', :name => 'pppvs')}
           %td{:colspan => 5}= t("calendar_page.labels.maximum_direct")
           %td &nbsp;

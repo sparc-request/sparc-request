@@ -12,7 +12,6 @@ class Appointment < ActiveRecord::Base
       line_item = visit.line_items_visit.line_item
       service = line_item.service
       procedure = self.procedures.build(:line_item_id => line_item.id, :visit_id => visit.id, :service_id => service.id)
-      procedure.required = visit.to_be_performed?
       procedure.save
     end
   end

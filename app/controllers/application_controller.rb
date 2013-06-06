@@ -117,8 +117,14 @@ class ApplicationController < ActionController::Base
 
   def setup_navigation
     #TODO - this could definitely be done a better way
-    page = params[:action] == 'navigate' ? request.referrer.split('/').last.split('?').first : params[:action]
-    c = YAML.load_file(Rails.root.join('config', 'navigation.yml'))[page]
+    @page = if params[:action] == 'navigate'
+        params[:current_location] || request.referrer.split('/').last.split('?').first
+      else
+        params[:action]
+      end
+
+
+    c = YAML.load_file(Rails.root.join('config', 'navigation.yml'))[@page]
     unless c.nil?
       @step_text = c['step_text']
       @css_class = c['css_class']

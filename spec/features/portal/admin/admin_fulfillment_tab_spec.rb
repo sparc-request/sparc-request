@@ -294,5 +294,28 @@ describe "admin fulfillment tab", :js => true do
       arm1.line_items_visits.first.hidden.should eq(true)
     end
   end
+end
 
+describe 'fulfillment tab with disabled services', :js => true do
+  let_there_be_lane
+  let_there_be_j
+  fake_login_for_each_test
+  build_service_request_with_study
+
+  before :each do
+    add_visits
+    service2.update_attributes(is_available: false)
+    visit portal_admin_sub_service_request_path(sub_service_request)
+    wait_for_javascript_to_finish
+  end
+
+  after :each do
+    wait_for_javascript_to_finish
+  end
+
+  it 'should not display dropdown' do
+    arm1.reload
+    find('.line_item.odd').should have_content "#{service2.name} (Disabled)"
+    find('.line_item.odd').should_not have_selector("#services_#{arm1.visit_groupings.first.id}")
+  end
 end

@@ -1,12 +1,16 @@
 require 'csv'
 
+def helper
+  ActionController::Base.helpers
+end
+
 class CtrcSubsidyReport < Report
-  def currency_converter cents
+  def self.currency_converter cents
     helper.number_to_currency(Service.cents_to_dollars(cents))
   end
 
-  def helper
-    ActionController::Base.helpers
+  def default_output_file
+    return 'ctrc_subsidy_report.csv'
   end
 
   def two_decimal_places float

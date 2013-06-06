@@ -18,6 +18,9 @@ sr.sql
 /log/*.log
 /tmp
 
+# Ignore all reports
+reports/*
+
 .rspec
 .sass-cache/
 .DS_Store

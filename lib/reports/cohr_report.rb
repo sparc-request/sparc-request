@@ -18,6 +18,18 @@ class CohrReport < Report
     return 'cohr_report.xlsx'
   end
 
+  def initialize
+    super()
+    @from_date = nil
+    @to_date = nil
+  end
+
+  def add_options(opts)
+    super(opts)
+    opts.on('-f', '--from DATE') { |d| @from_date = d }
+    opts.on('-t', '--to DATE')   { |d| @to_date = d }
+  end
+
   def run
     header = [
       'PI',
@@ -25,10 +37,12 @@ class CohrReport < Report
       'SRID#',
       'Status',
       'Service',
+      'Submitted date',
+      'Completed date',
       'Minutes',
       'Hours',
       'Price per Hour',
-      'Total Cost'
+      'Total Cost',
     ]
 
     service_names = [
@@ -65,6 +79,11 @@ class CohrReport < Report
             sr = li.service_request
             protocol = sr.protocol
 
+            # complete_date = li.complete_date
+            # next if not complete_date
+            # next if @from_date and complete_date < @from_date
+            # next if @to_date   and complete_date > @to_date
+
             if not protocol or not ssr then
               puts "Warning: bad line item #{li.inspect}"
               next
@@ -92,6 +111,8 @@ class CohrReport < Report
               srid,
               ssr.status,
               service,
+              sr.submitted_at,
+              li.complete_date,
               minutes,
               "=F#{idx}/60",
               price_per_minute * 60 / 100.0,
@@ -99,6 +120,8 @@ class CohrReport < Report
             ]
 
             styles = [
+              nil,
+              nil,
               nil,
               nil,
               nil,

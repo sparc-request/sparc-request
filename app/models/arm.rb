@@ -142,4 +142,43 @@ class Arm < ActiveRecord::Base
       subject.calendar.populate(groups)
     end
   end
+
+  def update_visit_group_day day, position
+    before = self.visit_groups[position - 1] unless position == 0
+    current = self.visit_groups[position]
+    after = self.visit_groups[position + 1] unless position >= self.visit_groups.size - 1
+
+    current.day = day
+
+    if current.valid?
+      if !before.nil? && !before.day.nil?
+        if before > current
+          return "The days are out of order. This day appears to go before the previous day."
+        end
+      end
+
+      if !after.nil? && !after.day.nil?
+        if current > after
+          return "The days are out of order. This day appears to go after the next day."
+        end
+      end
+
+      current.save
+      return ''
+    else
+      return "You've entered an invalid number for the day. Please enter a valid number."
+    end
+  end
+
+  def update_visit_group_window window, position
+    visit_group = self.visit_groups[position]
+
+    visit_group.window = window
+    if visit_group.valid?
+      visit_group.save
+      return ''
+    else
+      return "You've entered an invalid number for the +/- window. Please enter a valid number"
+    end
+  end
 end

@@ -81,23 +81,61 @@ $(document).ready ->
     $(this).qtip
       overwrite: false
       content: "Click to rename your visits."
+      position:
+        corner:
+          target: 'bottomLeft'
       show:
         ready: true
 
   $('.visit_day').live 'change', ->
     # Grab the day
-    day = $(this).data('day')
+    position = $(this).data('position')
     day_val = $(this).val()
-    # Compare to +- 1
-    before = $(".day_#{day - 1}").val()
-    after = $(".day_#{day + 1}").val()
-    # alert if bad
-    if before > day_val
-      alert "The days must be in order. This day falls before a previous visit."
-    else if day_val > after
-      alert "The days must be in order. This day falls after a later visit."
-    else
-      #change if good
+    $('.service_calendar_spinner').show()
+    $.ajax
+      type: 'PUT'
+      url: $(this).attr('update')
+      data: {day: day_val, position: position}
+      error: (event, request, test) ->
+        alert(event.responseText)
+    .complete ->
+      $('.service_calendar_spinner').hide()
+
+  $('.visit_day').live 'mouseover', ->
+    $(this).qtip
+      overwrite: false
+      content: "Click to set the visits day. All days must be in numerical order. Ex. 1, 2, 4, 9"
+      position:
+        corner:
+          target: 'topLeft'
+          tooltip: 'bottomLeft'
+      show:
+        ready: true
+
+  $('.visit_window').live 'change', ->
+    # Grab the day
+    position = $(this).data('position')
+    window_val = $(this).val()
+    $('.service_calendar_spinner').show()
+    $.ajax
+      type: 'PUT'
+      url: $(this).attr('update')
+      data: {window: window_val, position: position}
+      error: (event, request, test) ->
+        alert(event.responseText)
+    .complete ->
+      $('.service_calendar_spinner').hide()
+
+  $('.visit_window').live 'mouseover', ->
+    $(this).qtip
+      overwrite: false
+      content: "Click to set the window period the visit can be completed."
+      position:
+        corner:
+          target: 'topLeft'
+          tooltip: 'bottomLeft'
+      show:
+        ready: true
 
 
 (exports ? this).calculate_max_rates = (arm_id) ->

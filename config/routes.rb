@@ -43,6 +43,8 @@ SparcRails::Application.routes.draw do
       end
       collection do
         put 'rename_visit'
+        put 'set_day'
+        put 'set_window'
       end
     end
 

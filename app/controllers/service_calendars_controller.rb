@@ -69,4 +69,32 @@ class ServiceCalendarsController < ApplicationController
 
     arm.visit_groups[position].update_attribute(:name, name)
   end
+
+  def set_day
+    day = params[:day]
+    position = params[:position].to_i
+    arm = Arm.find params[:arm_id]
+
+    case message = arm.update_visit_group_day(day, position)
+    when "" then return
+    else
+      respond_to do |format|
+        format.js { render :status => 418, :json => message.to_json }
+      end
+    end
+  end
+
+  def set_window
+    window = params[:window]
+    position = params[:position].to_i
+    arm = Arm.find params[:arm_id]
+
+    case message = arm.update_visit_group_window(window, position)
+    when "" then return
+    else
+      respond_to do |format|
+        format.js { render :status => 418, :json => message.to_json }
+      end
+    end
+  end
 end

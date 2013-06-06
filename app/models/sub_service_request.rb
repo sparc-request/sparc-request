@@ -52,9 +52,7 @@ class SubServiceRequest < ActiveRecord::Base
           visits.group_by{|v| v.visit_group_id}.each do |vg_id, group_visits|
             Appointment.where(visit_group_id: vg_id).each do |appointment|
               group_visits.each do |visit|
-                appointment.procedures.create(:line_item_id => li.id,
-                                             :visit_id => visit.id,
-                                             :service_id => li.service.id)
+                appointment.procedures.create(:line_item_id => li.id, :visit_id => visit.id)
               end
             end
           end

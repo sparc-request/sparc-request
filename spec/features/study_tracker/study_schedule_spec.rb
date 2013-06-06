@@ -7,8 +7,6 @@ describe "study schedule", :js => true do
   build_service_request_with_project()
 
   before :each do
-    # visit service_calendar_service_request_path service_request.id
-    # wait_for_javascript_to_finish
     create_visits
     visit study_tracker_sub_service_request_path sub_service_request.id
     arm1.reload
@@ -42,18 +40,20 @@ describe "study schedule", :js => true do
         it "should check all visits" do
           click_link "check_row_#{arm1.line_items_visits.first.id}_template"
           wait_for_javascript_to_finish
-          first(".total_#{arm1.line_items_visits.first.id}").should have_exact_text('$300.00') # Probably a better way to do this. But this should be the 10 visits added together.
+          arm1.line_items_visits.first.visits.each do |visit|
+            visit.research_billing_qty.should eq(1)
+          end
         end
 
         it "should uncheck all visits" do
           click_link "check_row_#{arm1.line_items_visits.first.id}_template"
           wait_for_javascript_to_finish
-          first(".total_#{arm1.line_items_visits.first.id}").should have_exact_text('$300.00') # this is here to wait for javascript to finish
 
-          remove_from_dom(".total_#{arm1.line_items_visits.first.id}")
           click_link "check_row_#{arm1.line_items_visits.first.id}_template"
           wait_for_javascript_to_finish
-          first(".total_#{arm1.line_items_visits.first.id}").should have_exact_text('$0.00') # Probably a better way to do this.
+          arm1.line_items_visits.first.visits.each do |visit|
+            visit.research_billing_qty.should eq(0)
+          end
         end
       end
 
@@ -81,18 +81,6 @@ describe "study schedule", :js => true do
           find("#visits_#{arm1.line_items_visits.first.visits[2].id}").checked?.should eq(false)
         end
       end
-
-      describe "changing subject count" do
-        before :each do
-          visit_id = arm1.line_items_visits.first.visits[1].id
-          page.check("visits_#{visit_id}")
-          select "2", :from => "line_items_visit_#{arm1.line_items_visits.first.id}_count"
-        end
-
-        it "should not change maximum totals" do
-          find(".pp_max_total_direct_cost.arm_#{arm1.id}").should have_exact_text("$30.00")
-        end
-      end
     end
 
     describe "billing strategy tab" do
@@ -113,11 +101,6 @@ describe "study schedule", :js => true do
       end
 
       describe "increasing the 'R' billing quantity" do
-
-        # before :each do
-        #   @visit_id = arm1.line_items_visits.first.visits[1].id
-        # end
-
         it "should increase the total cost" do
          
           find("#visits_#{@visit_id}_research_billing_qty").set("")
@@ -222,6 +205,16 @@ describe "study schedule", :js => true do
             x.should have_exact_text('30')
           end
         end
+      end
+    end
+
+    describe "hovering over visit name text box" do
+
+      it "should open up a qtip message" do
+        wait_for_javascript_to_finish
+        first('.visit_name').click
+        wait_for_javascript_to_finish
+        page.should have_content("Click to rename your visits.")
       end
     end
   end

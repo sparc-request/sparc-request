@@ -7,6 +7,7 @@ class StudyTracker::SubServiceRequestsController < StudyTracker::BaseController
     session[:service_request_id] = @sub_service_request.service_request_id
     @service_request = @sub_service_request.service_request
     @protocol = @sub_service_request.try(:service_request).try(:protocol)
+    @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
     
   end
 

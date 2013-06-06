@@ -95,13 +95,17 @@ describe 'SubServiceRequest' do
           end
 
           it 'should create procedures for the line item' do
-            puts '*'*100
-            puts Procedure.count
+            count = Procedure.count
             li = sub_service_request.create_line_item(service_id: @fulfillment_service.id, sub_service_request_id: sub_service_request.id)
-            puts Procedure.count
+            Procedure.count.should eq(count * 2)
           end
 
-          it 'should roll back if it fails'
+          it 'should roll back if it fails' do
+            lambda {
+              sub_service_request.stub(:in_work_fulfillment).and_raise('error')
+              sub_service_request.create_line_item(service_id: @fulfillment_service.id, sub_service_request_id: sub_service_request.id) rescue nil
+            }.should_not change(LineItem, :count)
+          end
 
         end
 

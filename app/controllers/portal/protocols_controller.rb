@@ -70,6 +70,24 @@ class Portal::ProtocolsController < Portal::BaseController
     end
   end
 
+  def view_full_calendar
+    @protocol = Protocol.find(params[:id])
+    @service_requests = @protocol.service_requests
+
+    arm_id = params[:arm_id] if params[:arm_id]
+    page = params[:page] if params[:page]
+    session[:service_calendar_pages] = params[:pages] if params[:pages]
+    session[:service_calendar_pages][arm_id] = page if page && arm_id
+    @tab = 'pricing'
+    @pages = {}
+    @service_requests.each do |service_request|
+      service_request.arms.each do |arm|
+        new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
+        @pages[arm.id] = service_request.set_visit_page new_page, arm
+      end
+    end
+  end
+
 
   private
   # TODO: Move this somewhere else. Short on time, though. - nb

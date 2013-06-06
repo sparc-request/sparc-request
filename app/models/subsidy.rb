@@ -16,14 +16,13 @@ class Subsidy < ActiveRecord::Base
       subsidy = total - self.pi_contribution
       subsidy = subsidy / total
     end
-    subsidy
+    subsidy.nan? ? nil : subsidy
   end
 
   def self.calculate_pi_contribution subsidy_percentage, total
     contribution = total * (subsidy_percentage.to_f / 100.0)
     contribution = total - contribution
     contribution.nan? ? contribution : contribution.ceil
-    
   end
 
   def fix_pi_contribution subsidy_percentage

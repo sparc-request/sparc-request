@@ -54,7 +54,7 @@
           %tr.line_item{:class => cycle('odd', '', :name => 'pppvs')}
             - if @portal
               - if line_item.service.is_available
-                %td= select_tag "services_#{line_items_visit.id}", options_for_select(candidate_service_options(@candidate_per_patient_per_visit, true), line_item.try(:service).try(:id)), :'data-line_item_id' => line_item.id, :class => 'fulfillment_data fulfillment_selecter'
+                %td= select_tag "line_item_service_id", options_for_select(candidate_service_options(@candidate_per_patient_per_visit, true), line_item.try(:service).try(:id)), :'data-line_item_id' => line_item.id, :class => 'fulfillment_data fulfillment_selecter'
               - else
                 %td= line_item.service.name + ' (Disabled)'
             - else
@@ -72,7 +72,7 @@
               %td.visit{:visit_column => index + 1, :class => "visit_column_#{index + 1} arm_#{arm.id}", :'data-cents' => (totals_hash["#{v.id}"] || 0), :style => (@tab == 'template' ? "text-align:center" : '')}= line_item_visit_input arm, line_item, v, @tab, totals_hash, unit_minimum, @portal
             - (5 - visits.size).times do
               %td &nbsp;
-            - if @portal 
+            - if @portal
               %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-line_items_visit_id' => line_items_visit.id, :class => "delete_data")
               %td= check_box_tag "hidden", true, line_items_visit.hidden, :'data-line_items_visit_id' => line_items_visit.id, :class => "hidden_data"
             - else

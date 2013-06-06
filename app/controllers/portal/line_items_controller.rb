@@ -8,6 +8,7 @@ class Portal::LineItemsController < Portal::BaseController
     @selected_arm = @service_request.arms.first
     @subsidy = @sub_service_request.subsidy
     percent = @subsidy.try(:percent_subsidy).try(:*, 100)
+    
 
     if @line_item.update_attributes(params[:line_item])
       # Have to reload the service request to get the correct direct cost total for the subsidy

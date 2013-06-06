@@ -68,6 +68,7 @@ profile['toolkit.storage.synchronous'] = 0
 
 # Disable smooth scrolling
 # http://kb.mozillazine.org/About:config_entries
+profile['general.smoothScroll'] = false
 profile['toolkit.scrollbox.smoothScroll'] = false
 
 # TODO: try network.http.pipelining = true

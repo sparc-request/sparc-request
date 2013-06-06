@@ -71,11 +71,8 @@ describe 'as a user on catalog page', :js => true do
       page.execute_script("$('.ui-accordion > div:nth-of-type(2)').click()")
     end
 
-    it "should set the one time fee attribute to true when clicked" do
+    it "should set the one time fee attribute to false when uncheckeds" do
       service = Service.find_by_abbreviation("CDW")
-
-      find(".pricing_map_accordion > h3:nth-of-type(1)").click
-      wait_for_javascript_to_finish
 
       find("td.is_one_time_fee > input", :visible => true).click
       wait_for_javascript_to_finish
@@ -83,7 +80,8 @@ describe 'as a user on catalog page', :js => true do
       page.execute_script %Q{ $(".save_button").click() }
       wait_for_javascript_to_finish
 
-      retry_until { service.pricing_maps[1].is_one_time_fee.should eq(false) }
+      service.reload
+      retry_until { service.is_one_time_fee?.should eq(false) }
     end
   end
 end

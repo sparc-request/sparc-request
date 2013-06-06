@@ -56,6 +56,7 @@ $(document).ready ->
     data = {'in_work_fulfillment': $(this).prop('checked')}
     put_attribute(object_id, klass, data)
     $(this).attr("disabled", "disabled")
+    $('#study_tracker_access div.ui-button').css("display", "inline-block")
   )
 
   $(document).on('click', '.delete_data', ->

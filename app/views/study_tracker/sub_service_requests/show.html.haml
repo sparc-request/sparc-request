@@ -27,16 +27,13 @@
     %li= link_to t(:study_tracker)[:dashboard][:tabs][:study_schedule], "#study_schedule", :class => 'study_schedule-tab'
     %li= link_to t(:study_tracker)[:dashboard][:tabs][:subject_tracker], "#subject_tracker", :class => 'subject_tracker-tab'
     %li= link_to t(:study_tracker)[:dashboard][:tabs][:payments], "#payments", :class => 'payments-tab'
-    %li= link_to t(:study_tracker)[:dashboard][:tabs][:services], "#services", :class => 'services-tab'
     %li= link_to t(:study_tracker)[:dashboard][:tabs][:billing], "#billing", :class => 'billing-tab'
 
   #study_schedule
-    -#= render 'study_schedule'
+    = render :partial => 'study_schedule'
   #subject_tracker
     -#= render :partial => 'subject_tracker'
   #payments
     -#= render 'payments'
-  #related_service_requests
-    -#= render 'services'
-  #associated_users
+  #billing
     -#= render 'billing'

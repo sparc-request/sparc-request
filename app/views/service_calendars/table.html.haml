@@ -1,7 +1,7 @@
 - @service_request.arms.each do |arm|
   .arm_calendar_container{:'data-arm_id' => arm.id}
     = render :partial => 'calendar_data', :locals => {:tab => @tab, :arm => arm}
-- if (@sub_service_request.nil? ? @service_request.has_one_time_fee_services? : @sub_service_request.has_one_time_fee_services?) and !@portal
+- if (@sub_service_request.nil? ? @service_request.has_one_time_fee_services? : @sub_service_request.has_one_time_fee_services?) and (!@portal && !@study_tracker)
   %table.service_calendar
     %thead.ui-widget-header
       %tr.table_header

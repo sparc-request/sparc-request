@@ -90,6 +90,29 @@ $(document).ready ->
           }
       })
 
+      $('.view-full-calendar-button').live('click', ->
+        protocol_id = $(this).data('protocol_id')
+        $.ajax({
+            method: 'get'
+            url: "/portal/protocols/#{protocol_id}/view_full_calendar"
+            success: ->
+              $('.view-full-calendar-dialog').dialog('open')
+          })
+      )
+
+      $('.view-full-calendar-dialog').dialog({
+          autoOpen: false
+          title: 'Study Information'
+          width: 715
+          height: 500
+          modal: true
+          buttons: {
+            "Ok": () ->
+              $(this).dialog('close')
+          }
+      })
+
+
       # Sparc.protocol.renderProjectAccordionList()
       load_Page = -> Sparc.protocol.renderProtocolAccordionList()
       setTimeout load_Page, 2000

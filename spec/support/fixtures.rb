@@ -87,6 +87,8 @@ def add_visits
 end
 
 def create_visits
+  service_request.reload
+  visit_names = ["I'm", "a", 'little', 'teapot', 'short', 'and', 'stout', 'visit', 'me', 'please']
   service_request.arms.each do |arm|
     service_request.per_patient_per_visit_line_items.each do |line_item|
       arm.create_line_items_visit(line_item)

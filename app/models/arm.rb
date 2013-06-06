@@ -11,11 +11,19 @@ class Arm < ActiveRecord::Base
   attr_accessible :visit_count
   attr_accessible :subject_count      # maximum number of subjects for any visit grouping
 
+  def valid_visit_count?
+    return !visit_count.nil? && visit_count > 0
+  end
+
+  def valid_subject_count?
+    return !subject_count.nil? && subject_count > 0
+  end
+
   def create_line_items_visit line_item
     if self.visit_groups.size < self.visit_count
       self.visit_groups.create until self.visit_groups.size == self.visit_count
     end
-
+    
     liv = LineItemsVisit.for(self, line_item)
     liv.create_visits
 

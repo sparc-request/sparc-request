@@ -144,7 +144,13 @@ class ServiceRequestsController < ApplicationController
       end
 
       session[:errors] = errors.compact.flatten.first # TODO I DON'T LIKE THIS AT ALL
-      redirect_to :back
+
+      if @page != 'navigate'
+        send @page.to_sym
+        render action: @page
+      else
+        redirect_to :back
+      end
     end
   end
 

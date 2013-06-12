@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130606193309) do
+ActiveRecord::Schema.define(:version => 20130612181133) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -262,7 +262,6 @@ ActiveRecord::Schema.define(:version => 20130606193309) do
     t.integer  "subject_count"
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
-    t.boolean  "hidden"
   end
 
   create_table "lookups", :force => true do |t|

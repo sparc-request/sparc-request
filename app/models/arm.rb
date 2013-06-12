@@ -20,8 +20,11 @@ class Arm < ActiveRecord::Base
   end
 
   def create_line_items_visit line_item
-    if self.visit_groups.size < self.visit_count
-      self.create_visit_group() until self.visit_groups.size == self.visit_count
+    while self.visit_groups.size < self.visit_count
+      vg = self.visit_groups.new
+      if not visit_group.save(validate: false) then
+        raise ActiveRecord::Rollback
+      end
     end
 
     liv = LineItemsVisit.for(self, line_item)

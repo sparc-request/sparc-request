@@ -1,0 +1,18 @@
+= javascript_include_tag 'service_calendar'
+= javascript_include_tag 'service_calendar_logic'
+//%h4= t(:fulfillments)[:services][:visits][:header]
+#fulfillment_services.ui-corner-all
+  #per_patient_services
+    #per_patient_per_visit_table{:style => "margin: 20px 0 0;"}
+      #service_calendar
+        %ul
+          %li= link_to t(:calendar_page)[:tabs][:template], table_service_request_service_calendars_path(@service_request, :tab => "template", :study_tracker => true, :portal => true) , :id => 'template_tab'
+          %li= link_to t(:calendar_page)[:tabs][:billing], table_service_request_service_calendars_path(@service_request, :tab => "billing_strategy", :study_tracker => true, :portal => true), :id => 'billing_strategy_tab'
+          %li= link_to t(:calendar_page)[:tabs][:quantity], table_service_request_service_calendars_path(@service_request, :tab => "quantity", :study_tracker => true, :portal => true), :id => 'quantity_tab'
+
+  %br
+
+  #add_ppv_service_container
+    = render :partial => 'portal/sub_service_requests/add_service', :locals => {:services => @candidate_per_patient_per_visit, :select_id => 'new_ppv_service_id'}
+  #remove_ppv_service_container
+    = render :partial => 'portal/sub_service_requests/remove_service', :locals => {:line_items => @sub_service_request.per_patient_per_visit_line_items, :select_id => 'delete_ppv_service_id'}

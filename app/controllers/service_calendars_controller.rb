@@ -11,6 +11,7 @@ class ServiceCalendarsController < ApplicationController
     session[:service_calendar_pages][arm_id] = page if page && arm_id
     @tab = params[:tab]
     @portal = params[:portal]
+    @study_tracker = params[:study_tracker]
     @pages = {}
     @service_request.arms.each do |arm|
       new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i

@@ -455,6 +455,7 @@ en:
     info: 
       text1: "Service Request Status"
       text2: "Service Request Owner"
+      text3: "Ready for Clinical Fulfillment:"
 
   # Service Request review page
   sr_review:
@@ -816,4 +817,11 @@ en:
 
   study_tracker:
     title: "Clinical Work Fulfillment"
+    dashboard:
+      tabs:
+        study_schedule: "Study Schedule"
+        subject_tracker: "Subject Tracker"
+        payments: "Payments"
+        services: "Services"
+        billing: "Billing"
 

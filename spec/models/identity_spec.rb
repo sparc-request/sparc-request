@@ -241,6 +241,11 @@ describe "Identity" do
           hash = user.admin_service_requests_by_status
           hash.should include('draft')
         end
+        it "should return a specific organization's sub service requests if givin an org id" do
+          sub_service_request.update_attributes(status: "submitted")
+          hash = user.admin_service_requests_by_status(institution.id)
+          hash.should include('submitted')
+        end
       end
     end
   end

@@ -29,6 +29,7 @@ class SubServiceRequest < ActiveRecord::Base
   attr_accessible :src_approved
   attr_accessible :requester_contacted_date
   attr_accessible :subsidy_attributes
+  attr_accessible :in_work_fulfillment
 
   accepts_nested_attributes_for :subsidy
 
@@ -37,11 +38,36 @@ class SubServiceRequest < ActiveRecord::Base
   end
 
   def create_line_item(args)
-    new_args = {
-      sub_service_request_id: self.service_request_id
-    }
-    new_args.update(args)
-    return service_request.create_line_item(new_args)
+    result = self.transaction do
+      new_args = {
+        sub_service_request_id: self.service_request_id
+      }
+      new_args.update(args)
+      li = service_request.create_line_item(new_args)
+
+      # Update subject visit calendars if present
+      if self.in_work_fulfillment
+        self.service_request.arms.each do |arm|
+          visits = Visit.joins(:line_items_visit).where(visits: { visit_group_id: arm.visit_groups}, line_items_visits:{ line_item_id: li.id} )
+          visits.group_by{|v| v.visit_group_id}.each do |vg_id, group_visits|
+            Appointment.where(visit_group_id: vg_id).each do |appointment|
+              group_visits.each do |visit|
+                appointment.procedures.create(:line_item_id => li.id, :visit_id => visit.id)
+              end
+            end
+          end
+        end
+      end
+
+      li
+    end
+
+    if result
+      return result
+    else
+      self.reload
+      return false
+    end
   end
 
   def one_time_fee_line_items

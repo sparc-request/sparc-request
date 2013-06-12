@@ -26,7 +26,7 @@ class Arm < ActiveRecord::Base
         raise ActiveRecord::Rollback
       end
     end
-
+    
     liv = LineItemsVisit.for(self, line_item)
     liv.create_visits
 

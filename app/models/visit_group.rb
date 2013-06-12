@@ -3,6 +3,7 @@ class VisitGroup < ActiveRecord::Base
 
   belongs_to :arm
   has_many :visits, :dependent => :destroy
+  has_many :appointments
   attr_accessible :name
   attr_accessible :position
   attr_accessible :arm_id

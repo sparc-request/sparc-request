@@ -42,6 +42,7 @@ feature 'automatic pricing adjustment' do
     click_link('MUSC Research Data Request (CDW)')
     
     increase_decrease_date = (Date.today + 1.month).strftime("%-m/#{numerical_day}/%Y")
+    wait_for_javascript_to_finish
     
     within('.pricing_map_accordion') do
       wait_for_javascript_to_finish

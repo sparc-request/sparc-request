@@ -9,8 +9,5 @@
   .user-information-body.ui-corner-bottom
     %p
       %strong= @user.display_name
-      .admin-buttons
-        = link_to root_path do
-          = image_tag 'portal/create_new_request.png', :class => 'create_new_request'
 
-= render :partial => 'portal/admin/ssr_list'
+= render :partial => 'ssr_list'

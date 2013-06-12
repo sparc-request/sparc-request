@@ -24,8 +24,8 @@ class Report
   #   CtrcServicesReport.run(ARGV)
   #
   def self.run(args)
-    report = self.new(args)
-    report.setup
+    report = self.new
+    report.setup(args)
     report.run
   end
 
@@ -43,27 +43,27 @@ class Report
 
   # Initialize a report class (running of the report is done with the
   # instance method #run).
-  def initialize(args)
+  def initialize
     @output_file = File.join(self.default_output_dir, self.default_output_file)
-    parse(args)
   end
 
-  # Parse run arguments passed in on the command line (called by
+  # Parse arguments passed in on the command line (called by
   # #initialize).
-  def parse(args)
-    opts = self.option_parser
+  def parse_options(args)
+    opts = OptionParser.new
+    add_options(opts)
     opts.parse(args)
   end
 
-  # Create the OptionParser; override this in the derived class to add
-  # new command-line options to a report.
-  def option_parser
-    opts = OptionParser.new
+  # Add options to the option parser; override this in the derived class
+  # to add new command-line options to a report.
+  def add_options(opts)
     opts.on('-o', '--output-file FILE') { |f| @output_file = f }
   end
 
   # Prepare to run a report (create output directory, etc.)
-  def setup
+  def setup(args)
+    parse_options(args)
     FileUtils.mkdir_p(File.dirname(@output_file))
   end
 

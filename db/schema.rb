@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130530202334) do
+ActiveRecord::Schema.define(:version => 20130606193309) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -372,9 +372,7 @@ ActiveRecord::Schema.define(:version => 20130530202334) do
   create_table "procedures", :force => true do |t|
     t.integer  "appointment_id"
     t.integer  "visit_id"
-    t.integer  "service_id"
     t.boolean  "completed"
-    t.boolean  "required"
     t.datetime "created_at",     :null => false
     t.datetime "updated_at",     :null => false
     t.integer  "line_item_id"

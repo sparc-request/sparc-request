@@ -68,6 +68,7 @@ def build_service_request
   let!(:service_provider)    { FactoryGirl.create(:service_provider, organization_id: program.id, identity_id: jug2.id)}
   let!(:super_user)          { FactoryGirl.create(:super_user, organization_id: program.id, identity_id: jpl6.id)}
   let!(:catalog_manager)     { FactoryGirl.create(:catalog_manager, organization_id: program.id, identity_id: jpl6.id) }
+  let!(:clinical_provider)   { FactoryGirl.create(:clinical_provider, organization_id: program.id, identity_id: jug2.id) }
   let!(:available_status)    { FactoryGirl.create(:available_status, organization_id: program.id, status: 'submitted')}
   let!(:available_status2)   { FactoryGirl.create(:available_status, organization_id: program.id, status: 'draft')}
   let!(:subsidy)             { FactoryGirl.create(:subsidy, pi_contribution: 2500, sub_service_request_id: sub_service_request.id)}
@@ -81,12 +82,22 @@ def build_service_request
 end
 
 def add_visits
+  create_visits
+  update_visits
+end
+
+def create_visits
   service_request.reload
   visit_names = ["I'm", "a", 'little', 'teapot', 'short', 'and', 'stout', 'visit', 'me', 'please']
   service_request.arms.each do |arm|
     service_request.per_patient_per_visit_line_items.each do |line_item|
       arm.create_line_items_visit(line_item)
     end
+  end
+end
+
+def update_visits
+  service_request.arms.each do |arm|
     arm.visits.each do |visit|
       visit.update_attributes(quantity: 15, research_billing_qty: 5, insurance_billing_qty: 5, effort_billing_qty: 5, billing: Faker::Lorem.word)
     end

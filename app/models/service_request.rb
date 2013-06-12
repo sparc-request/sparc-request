@@ -33,6 +33,7 @@ class ServiceRequest < ActiveRecord::Base
 
   validation_group :service_calendar do
     #insert group specific validation
+    validate :service_calendar_page
   end
 
   validation_group :calendar_totals do
@@ -114,6 +115,7 @@ class ServiceRequest < ActiveRecord::Base
       arm.visit_groups.each do |vg|
         if !vg.valid?
           errors.add(:visit_group, "You must specifiy a day for each visit. Please ensure they are all in order.")
+          return
         end
       end
     end

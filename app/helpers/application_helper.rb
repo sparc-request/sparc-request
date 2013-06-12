@@ -65,7 +65,7 @@ module ApplicationHelper
       checked = line_items_visits.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?
       action = checked == true ? 'unselect_calendar_column' : 'select_calendar_column'
       icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
-      visit_name = visit_groups[n - 1].name || "Visit Group #{n}"
+      visit_name = visit_groups[n - 1].name || "Visit #{n}"
       visit_group = visit_groups[n - 1]
       
       if params[:action] == 'review' || params[:action] == 'show' || params[:action] == 'refresh_service_calendar'
@@ -74,8 +74,8 @@ module ApplicationHelper
         returning_html += content_tag(:th,
                                       label_tag("Day    +/-") +
                                       tag(:br) +
-                                      text_field_tag("day", visit_group.day, :class => "visit_day position_#{n}", :size => 3, :'data-position' => n - 1, :update => "#{day_url}?arm_id=#{arm.id}") +
-                                      text_field_tag("window", visit_group.window, :class => "visit_window position_#{n}", :size => 3, :'data-position' => n - 1, :update => "#{window_url}?arm_id=#{arm.id}") +
+                                      text_field_tag("day", visit_group.day, :class => "visit_day position_#{n}", :size => 3, :'data-position' => n - 1, :'data-day' => visit_group.day, :update => "#{day_url}?arm_id=#{arm.id}") +
+                                      text_field_tag("window", visit_group.window, :class => "visit_window position_#{n}", :size => 3, :'data-position' => n - 1, :'data-window' => visit_group.window, :update => "#{window_url}?arm_id=#{arm.id}") +
                                       tag(:br) +
                                       text_field_tag("arm_#{arm.id}_visit_name_#{n}", visit_name, :class => "visit_name", :size => 10, :update => "#{rename_visit_url}?visit_position=#{n-1}&arm_id=#{arm.id}") +
                                       tag(:br) + 

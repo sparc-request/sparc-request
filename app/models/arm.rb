@@ -21,7 +21,7 @@ class Arm < ActiveRecord::Base
 
   def create_line_items_visit line_item
     while self.visit_groups.size < self.visit_count
-      vg = self.visit_groups.new
+      visit_group = self.visit_groups.new
       if not visit_group.save(validate: false) then
         raise ActiveRecord::Rollback
       end

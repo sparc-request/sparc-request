@@ -91,13 +91,17 @@ $(document).ready ->
     # Grab the day
     position = $(this).data('position')
     day_val = $(this).val()
+    original_val = $(this).data('day')
     $('.service_calendar_spinner').show()
     $.ajax
       type: 'PUT'
       url: $(this).attr('update')
       data: {day: day_val, position: position}
-      error: (event, request, test) ->
-        alert(event.responseText)
+      success: =>
+        $(this).data('day', day_val)
+    .error (event, request, test) =>
+      alert(event.responseText)
+      $(this).val(original_val)
     .complete ->
       $('.service_calendar_spinner').hide()
 
@@ -116,13 +120,17 @@ $(document).ready ->
     # Grab the day
     position = $(this).data('position')
     window_val = $(this).val()
+    original_val = $(this).data('window')
     $('.service_calendar_spinner').show()
     $.ajax
       type: 'PUT'
       url: $(this).attr('update')
       data: {window: window_val, position: position}
-      error: (event, request, test) ->
-        alert(event.responseText)
+      success: =>
+        $(this).data('window', window_val)
+    .error (event, request, test) =>
+      alert(event.responseText)
+      $(this).val(original_val)
     .complete ->
       $('.service_calendar_spinner').hide()
 

@@ -12,8 +12,8 @@ class VisitGroup < ActiveRecord::Base
 
   after_create :set_default_name
 
-  validates :day, :numericality => true
-  validates :window, :numericality => true
+  validates :day, :numericality => true, :presence => true
+  validates :window, :numericality => true, :presence => true
 
   def set_default_name
     if name.nil? || name == ""

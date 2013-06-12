@@ -109,6 +109,16 @@ class ServiceRequest < ActiveRecord::Base
     end
   end
 
+  def service_calendar_page
+    self.arms.each do |arm|
+      arm.visit_groups.each do |vg|
+        if !vg.valid?
+          errors.add(:visit_group, "You must specifiy a day for each visit. Please ensure they are all in order.")
+        end
+      end
+    end
+  end
+
   def create_arm(args)
     arm = self.arms.create(args)
     self.per_patient_per_visit_line_items.each do |li|

@@ -72,7 +72,7 @@ class Portal::ProtocolsController < Portal::BaseController
 
   def view_full_calendar
     @protocol = Protocol.find(params[:id])
-    @service_requests = @protocol.service_requests
+    @service_requests = @protocol.service_requests.select { |sr| sr.status == 'completed' }
 
     arm_id = params[:arm_id] if params[:arm_id]
     page = params[:page] if params[:page]

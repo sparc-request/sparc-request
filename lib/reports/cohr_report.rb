@@ -87,6 +87,7 @@ class CohrReport < Report
                 next if not complete_date
                 next if @from_date and complete_date < @from_date
                 next if @to_date   and complete_date > @to_date
+                next if not ssr.status == 'complete'
 
                 if not protocol or not ssr then
                   puts "Warning: bad line item #{li.inspect}"
@@ -118,7 +119,7 @@ class CohrReport < Report
                   sr.submitted_at,
                   complete_date,
                   minutes,
-                  "=F#{idx}/60",
+                  "=H#{idx}/60",
                   price_per_minute * 60 / 100.0,
                   total_cost / 100.0,
                 ]

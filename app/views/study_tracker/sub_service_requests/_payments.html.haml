@@ -1,0 +1,22 @@
+%ul#payments_list
+  %li#payments_list_headers
+    %ul
+      %li.date_submitted Date Submitted
+      %li.amount_invoiced Amount Invoiced
+      %li.amount_received Amount Received
+      %li.date_received Date Received
+      %li.payment_method Payment Method
+      %li.details Details
+      %li.documents Documents
+  = nested_form_for @sub_service_request, :url => study_tracker_sub_service_request_path do |f|
+    = f.fields_for :payments do |payment_fields|
+      %li
+        %ul
+          %li.date_submitted= payment_fields.text_field :date_submitted
+          %li.amount_invoiced = payment_fields.text_field :amount_invoiced
+          %li.amount_received= payment_fields.text_field :amount_received
+          %li.date_received= payment_fields.text_field :date_received
+          %li.payment_method= payment_fields.select :payment_method, []
+          %li.details= payment_fields.text_field :details
+          %li.documents
+    %p= f.link_to_add "Add a payment", :payments

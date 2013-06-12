@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130612181133) do
+ActiveRecord::Schema.define(:version => 20130612200823) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -326,6 +326,20 @@ ActiveRecord::Schema.define(:version => 20130612181133) do
   end
 
   add_index "past_statuses", ["sub_service_request_id"], :name => "index_past_statuses_on_sub_service_request_id"
+
+  create_table "payments", :force => true do |t|
+    t.integer  "sub_service_request_id"
+    t.date     "date_submitted"
+    t.decimal  "amount_invoiced",        :precision => 12, :scale => 4
+    t.decimal  "amount_received",        :precision => 12, :scale => 4
+    t.date     "date_received"
+    t.string   "payment_method"
+    t.text     "details"
+    t.datetime "created_at",                                            :null => false
+    t.datetime "updated_at",                                            :null => false
+  end
+
+  add_index "payments", ["sub_service_request_id"], :name => "index_payments_on_sub_service_request_id"
 
   create_table "pricing_maps", :force => true do |t|
     t.integer  "service_id"

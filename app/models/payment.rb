@@ -7,5 +7,8 @@ class Payment < ActiveRecord::Base
   attr_accessible :payment_method
   attr_accessible :details
 
+  validates :amount_invoiced, numericality: true
+  validates :amount_received, numericality: true
+
   belongs_to :sub_service_request
 end

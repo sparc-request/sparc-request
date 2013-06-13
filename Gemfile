@@ -14,6 +14,7 @@ group :development, :test, :profile do
   gem 'sqlite3'
   gem 'rspec'
   gem 'rspec-rails'
+  gem 'shoulda-matchers'
   gem 'launchy'
   gem 'capybara'
   gem 'database_cleaner'
@@ -78,6 +79,8 @@ gem 'omniauth-shibboleth'
 # yanked from sparc-services
 gem "nested_form"
 gem 'jquery-rails', "2.1.3"
+
+gem 'jquery_datepicker'
 
 group :development, :test do
   gem 'turn', :require => false

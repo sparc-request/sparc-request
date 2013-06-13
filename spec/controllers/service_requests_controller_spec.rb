@@ -7,7 +7,8 @@ def add_visits_to_arm_line_item(arm, line_item, n=arm.visit_count)
   n.times do |index|
     FactoryGirl.create(
         :visit_group,
-        arm_id:      arm.id)
+        arm_id:      arm.id,
+        day:         index, )
   end
 
   n.times do |index|

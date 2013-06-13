@@ -40,6 +40,7 @@ $(document).ready ->
     key = name.replace("#{klass}_", '')
     data = {}
     data[key] = $(this).val()
+    data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
     put_attribute(object_id, klass, data)
   )
 
@@ -62,9 +63,14 @@ $(document).ready ->
   $(document).on('click', '.delete_data', ->
     klass = getObjKlass(this)
     object_id = $(this).data("#{klass}_id")
+    data = {}
+    data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
     $.ajax
       type: 'DELETE'
       url:  "/portal/admin/#{klass}s/#{object_id}"
+      data: JSON.stringify(data)
+      dataType: "script"
+      contentType: 'application/json; charset=utf-8'
       success: ->
         $().toastmessage('showSuccessToast', "#{klass.humanize()} has been deleted.");
   )
@@ -203,6 +209,7 @@ $(document).ready ->
       'service_request_id': sr_id
       'visit_position': $('#visit_position').val()
       'arm_id': $('#arm_id').val()
+      'study_tracker': $('#study_tracker_hidden_field').val() || null
     $.ajax
       type: 'POST'
       url:   "/portal/admin/service_requests/#{sr_id}/add_per_patient_per_visit_visit"
@@ -227,6 +234,7 @@ $(document).ready ->
       'service_request_id': sr_id
       'visit_position': $('#delete_visit_position').val()
       'arm_id': $('#arm_id').val()
+      'study_tracker': $('#study_tracker_hidden_field').val() || null
     $.ajax
       type: 'DELETE'
       url:   "/portal/admin/service_requests/#{sr_id}/remove_per_patient_per_visit_visit"
@@ -251,6 +259,7 @@ $(document).ready ->
       'sub_service_request_id': ssr_id
       'new_service_id': $("##{new_service_id}").val()
       'arm_id': $('#arm_id').val()
+      'study_tracker': $('#study_tracker_hidden_field').val() || null
     $.ajax
       type:        'POST'
       url:         "/portal/admin/sub_service_requests/#{ssr_id}/add_line_item"
@@ -270,9 +279,14 @@ $(document).ready ->
 
   $(document).on('click', '#remove_service', ->
     object_id = $('#delete_ppv_service_id').val()
+    data = {}
+    data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
     $.ajax
       type: 'DELETE'
       url:  "/portal/admin/line_items/#{object_id}"
+      data: JSON.stringify(data)
+      dataType: "script"
+      contentType: 'application/json; charset=utf-8'
       success: ->
         $().toastmessage('showSuccessToast', "#{klass.humanize()} has been deleted.");
   )

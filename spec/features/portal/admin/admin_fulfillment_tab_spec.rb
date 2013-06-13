@@ -300,15 +300,6 @@ describe "admin fulfillment tab", :js => true do
       end
     end
   end
-
-  describe "hiding line items visits" do
-
-    it "should should set the hidden attribute to true when hidden" do
-      first('#hidden').click
-      wait_for_javascript_to_finish
-      arm1.line_items_visits.first.hidden.should eq(true)
-    end
-  end
 end
 
 describe 'fulfillment tab with disabled services', :js => true do

@@ -44,13 +44,6 @@ $(document).ready ->
     put_attribute(object_id, klass, data)
   )
 
-  $(document).on('change', '.hidden_data', ->
-    klass = getObjKlass(this)
-    object_id = $(this).data("#{klass}_id")
-    data = {'hidden': $(this).prop('checked')}
-    put_attribute(object_id, klass, data)
-  )
-
   $(document).on('change', '.cwf_data', ->
     klass = getObjKlass(this)
     object_id = $(this).data("#{klass}_id")

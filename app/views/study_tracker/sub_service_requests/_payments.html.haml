@@ -20,3 +20,4 @@
           %td.details= payment_form.text_area :details, cols: 20, rows: 2
           %td.documents
   %p= f.link_to_add "Add a payment", :payments, data: { target: '#payments_list tbody' }
+  %p= f.submit "Save"

@@ -29,6 +29,7 @@ class Portal::ServiceRequestsController < Portal::BaseController
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @service_request = ServiceRequest.find(params[:service_request_id]) # TODO: is this different from params[:id] ?
     @selected_arm = params[:arm_id] ? Arm.find(@arm_id) : @service_request.arms.first
+    @study_tracker = params[:study_tracker]
   end
 
   def add_arm
@@ -84,7 +85,7 @@ class Portal::ServiceRequestsController < Portal::BaseController
     @service_request = ServiceRequest.find(params[:id])
     @selected_arm = Arm.find(params[:arm_id])
     @study_tracker = params[:study_tracker]
-    
+
     if @selected_arm.remove_visit(params[:visit_position])
       @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
       @subsidy = @sub_service_request.subsidy

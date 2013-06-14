@@ -57,7 +57,7 @@ class EpicServlet < WEBrick::HTTPServlet::AbstractServlet
   # Handle a POST request.  All SOAP actions are done through HTTP POST.
   def do_POST(request, response)
     content_type, params = parse_content_type(request)
-    action = params['action']
+    action = request['SOAPAction'] || params['action']
 
     action = @actions[action]
 

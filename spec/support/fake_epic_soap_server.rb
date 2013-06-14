@@ -33,20 +33,23 @@ class EpicServlet < WEBrick::HTTPServlet::AbstractServlet
     end
   end
 
-  def retrieve_protocol_def_response(body, response)
+  def soap12_envelope(h)
     xml = Gyoku.xml(
-      'env:Envelope' => {
+      'soap:Envelope' => {
         '@xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
-        '@xmlns:env' => 'http://schemas.xmlsoap.org/soap/envelope',
-        'env:Body' => {
-          'n1:RetrieveProtocolDefResponseResponse' => {
-            '@env:encodingStyle' => 'http://schemas.xmlsoap.org/soap/encoding/',
-            '@xmlns:n1' => 'urn:ihe:qrph:rpe:2009',
-            'return' => {
-              '@xsi:type' => 'xsd:string',
-              :content! => 'Hello, blah blah blah.'
-            }
-          }
+        '@xmlns:soap' => 'http://schemas.xmlsoap.org/soap/envelope',
+        'soap:Header' => h[:header] || { },
+        'soap:Body' => h[:body],
+        }
+      )
+  end
+
+  def retrieve_protocol_def_response(body, response)
+    xml = soap12_envelope(
+      body: {
+        'RetrieveProtocolDefResponseResponse' => {
+          '@xmlns' => 'urn:ihe:qrph:rpe:2009',
+          'ResponseCode' => 'PROTOCOL_RECEIVED',
         }
       })
 

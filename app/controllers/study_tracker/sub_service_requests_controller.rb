@@ -8,7 +8,7 @@ class StudyTracker::SubServiceRequestsController < StudyTracker::BaseController
     @service_request = @sub_service_request.service_request
     @protocol = @sub_service_request.try(:service_request).try(:protocol)
     @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
-    @payments = @sub_service_request.try(:payments)
+    @payments = @sub_service_request.try(:payments) 
   end
 
   def service_calendar
@@ -21,6 +21,15 @@ class StudyTracker::SubServiceRequestsController < StudyTracker::BaseController
     # # TODO: why is @page not set here?  if it's not supposed to be set
     # # then there should be a comment as to why it's set in #review but
     # # not here
+  end
+
+  def update
+    @sub_service_request = SubServiceRequest.find(params[:id])
+    if @sub_service_request.update_attributes(params[:sub_service_request])
+      redirect_to study_tracker_sub_service_request_path(@sub_service_request)
+    else
+      # handle errors
+    end
   end
 
   # def update_from_fulfillment

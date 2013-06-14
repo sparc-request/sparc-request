@@ -34,7 +34,7 @@ class SubServiceRequest < ActiveRecord::Base
   attr_accessible :in_work_fulfillment
 
   accepts_nested_attributes_for :subsidy
-  accepts_nested_attributes_for :payments
+  accepts_nested_attributes_for :payments, allow_destroy: true
 
   def display_id
     return "#{service_request.protocol.id}-#{ssr_id}"

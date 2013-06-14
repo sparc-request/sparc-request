@@ -63,9 +63,9 @@ class EpicServlet < WEBrick::HTTPServlet::AbstractServlet
     # Savon sends SOAPAction (even though it's SOAP 1.2), so we need to
     # accept it.  That's okay, because it appears Epic InterConnect
     # (WCF) also will accept the SOAP 1.1 method.
-    action = request['SOAPAction'] || params['action']
+    action_name = request['SOAPAction'] || params['action']
 
-    action = @actions[action]
+    action = @actions[action_name]
 
     if not action then
       response.status = 400

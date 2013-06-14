@@ -105,5 +105,14 @@ describe "landing page", :js => true do
       find("div.protocol-information-#{service_request.protocol_id}").should be_visible
     end
 
+    context "create new request" do
+
+      it "should redirect to the sparc root url" do
+        new_id = service_request.id + 1
+        find(".portal_create_new_request").click
+        wait_for_javascript_to_finish
+        current_path.should eq("/service_requests/#{new_id}/catalog")
+      end
+    end
   end
 end

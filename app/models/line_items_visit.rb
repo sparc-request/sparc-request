@@ -7,7 +7,9 @@ class LineItemsVisit < ActiveRecord::Base
   attr_accessible :arm_id
   attr_accessible :line_item_id
   attr_accessible :subject_count  # number of subjects for this visit grouping
-  attr_accessible :hidden 
+  attr_accessible :hidden
+
+  after_destroy :remove_procedures
 
   # Find a LineItemsVisit for the given arm and line item.  If it does
   # not exist, create it first, then return it.
@@ -166,5 +168,16 @@ class LineItemsVisit < ActiveRecord::Base
   def remove_visit visit_group
     visit = self.visits.find_by_visit_group_id(visit_group.id)
     visit.delete
+  end
+
+  private
+
+  def remove_procedures
+    procedures = self.line_item.procedures.includes(:appointment => :visit_group)
+    procedures.delete_if {|pro| pro.appointment.visit_group.arm_id != self.arm_id}
+
+    procedures.each do |pro|
+      pro.destroy unless pro.completed
+    end
   end
 end

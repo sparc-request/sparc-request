@@ -57,6 +57,12 @@ class EpicServlet < WEBrick::HTTPServlet::AbstractServlet
   # Handle a POST request.  All SOAP actions are done through HTTP POST.
   def do_POST(request, response)
     content_type, params = parse_content_type(request)
+
+    # In SOAP 1.1, the action is sent in the SOAPAction header.  In
+    # SOAP 1.2, it's sent as a parameter to the Content-Type header.
+    # Savon sends SOAPAction (even though it's SOAP 1.2), so we need to
+    # accept it.  That's okay, because it appears Epic InterConnect
+    # (WCF) also will accept the SOAP 1.1 method.
     action = request['SOAPAction'] || params['action']
 
     action = @actions[action]

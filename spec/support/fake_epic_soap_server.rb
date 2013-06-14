@@ -153,6 +153,11 @@ class EpicServlet < WEBrick::HTTPServlet::AbstractServlet
     return xml
   end
 
+  # Given an http request, grab the content-type header and parse it.
+  # Returns a 2-tuple containing:
+  #
+  #   [ content_type, hash of extra params ]
+  #
   def parse_content_type(request)
     # Here's some real ruby-fu for you.  We can't call the methods in
     # the OpenURI::Meta module directly, so we pass in an empty string

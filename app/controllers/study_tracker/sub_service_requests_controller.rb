@@ -2,13 +2,16 @@ class StudyTracker::SubServiceRequestsController < StudyTracker::BaseController
   respond_to :js, :html
 
   def show
-    @sub_service_request = SubServiceRequest.find(params[:id])
+    # TODO it might be nice to move these into a separate method so that
+    # other methods (notably, update) can load up the necesary instance
+    # methods without having to call #show, in case we add unintended
+    # side-effects to #show
+    @sub_service_request ||= SubServiceRequest.find(params[:id])
     session[:sub_service_request_id] = @sub_service_request.id
     session[:service_request_id] = @sub_service_request.service_request_id
     @service_request = @sub_service_request.service_request
     @protocol = @sub_service_request.try(:service_request).try(:protocol)
     @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
-    @payments = @sub_service_request.try(:payments) 
   end
 
   def service_calendar
@@ -29,6 +32,8 @@ class StudyTracker::SubServiceRequestsController < StudyTracker::BaseController
       redirect_to study_tracker_sub_service_request_path(@sub_service_request)
     else
       # handle errors
+      show
+      render :show
     end
   end
 

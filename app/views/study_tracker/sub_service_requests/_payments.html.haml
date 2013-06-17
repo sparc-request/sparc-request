@@ -1,4 +1,13 @@
 = nested_form_for @sub_service_request, :url => study_tracker_sub_service_request_path do |f|
+
+  - if @sub_service_request.errors.any?
+    #error_explanation
+      %h2
+        = pluralize(@sub_service_request.errors.count, "error")
+        prohibited these payments from being saved:
+      %ul
+        - @sub_service_request.errors.full_messages.each do |msg|
+          %li= msg
   %table#payments_list
     %thead
       %tr

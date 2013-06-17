@@ -581,11 +581,11 @@ class ServiceRequestsController < ApplicationController
   end
 
   def ask_a_question
-    from = params['question_email'] || 'no-reply@musc.edu'
-    body = params['question_body'] || 'No question asked'
+    from = params['quick_question_email'] || 'no-reply@musc.edu'
+    body = params['quick_question_body'] || 'No question asked'
 
-    question = Question.create :to => DEFAULT_MAIL_TO, :from => from, :body => body
-    Notifier.ask_a_question(question).deliver
+    quick_question = QuickQuestion.create :to => DEFAULT_MAIL_TO, :from => from, :body => body
+    Notifier.ask_a_question(quick_question).deliver
   end
 
   def feedback

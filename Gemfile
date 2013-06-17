@@ -113,3 +113,5 @@ gem 'letter_opener'
 
 gem 'prawn'
 gem 'acts-as-taggable-on', '~> 2.3.1'
+
+#gem 'surveyor'

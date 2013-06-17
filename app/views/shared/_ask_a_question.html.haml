@@ -7,10 +7,10 @@
         %img.carat.down-carat(src="/assets/white_arrow_down.png")
     .ask-a-question-form-container
       .your-email       
-        %label(for="question-email") Your email:
-        = text_field_tag 'question_email'
+        %label(for="quick_question_email") Your email:
+        = text_field_tag 'quick_question_email'
       .your-question
-        %label(for="question-field") Your question:
-        = text_area_tag 'question_body', nil, :style => 'width:153px; height:75px'
+        %label(for="quick_question_body") Your question:
+        = text_area_tag 'quick_question_body', nil, :style => 'width:153px; height:75px'
       .question-submit.right-align
         %input.submit_question(type="submit" value="Ask Question")

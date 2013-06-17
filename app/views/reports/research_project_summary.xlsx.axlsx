@@ -14,13 +14,27 @@ def visit_header_row visit_names, sheet, style
   sheet.add_row data, :style => style
 end
 
-def subject_visit_row subjects, visit_count, sheet
+def subject_visit_row subjects, visit_count, sheet, styles
   subjects.each do |subject|
-    sheet.add_row [subject[:pid], subject[:status]] + subject[:visits] + [subject[:visits].sum]
+    styling = [nil, nil]
+    (subject[:visits].count+1).times{ styling << styles[:default] }
+
+    sheet.add_row [subject[:pid], subject[:status]] + subject[:visits] + [subject[:visits].sum]       #, :style => styling
   end
 end
 
-visit_count = 5 # just putting a number here so we can make sure it renders correctly
+def visit_subtotals_row subjects, visit_count, sheet, styles
+  totals = []
+  styling = [styles[:header], nil]
+  visit_count.times do |index|
+    totals[index] = subjects.sum{|subject| subject[:visits][index]}
+    styling << styles[:default]
+  end
+  styling << styles[:default]
+  sheet.add_row ["Visit Subtotals", ""] + totals + [totals.sum]       #, :style => styling
+end
+
+visit_count = 25 # just putting a number here so we can make sure it renders correctly
 
 # alpha_array used to determine column position
 alpha_array = ("A".."Z").to_a
@@ -34,11 +48,13 @@ end
 alpha_array = alpha_array + additional_alpha_arrays.flatten
 
 wb = xlsx_package.workbook
-wb.use_autowidth = false
+#wb.use_autowidth = false
 
 # define styles
-info_box_style = wb.styles.add_style alignment: { horizontal: :center, vertical: :center}, sz: 12, b: true, bg_color: "0099FF", fg_color: "FFFFFF"
-header_style = wb.styles.add_style fg_color: "FFFFFF", bg_color: "0099FF", b: true
+styles = {} 
+styles[:info_box] = wb.styles.add_style alignment: { horizontal: :center, vertical: :center}, sz: 12, b: true, bg_color: "0099FF", fg_color: "FFFFFF"
+styles[:header] = wb.styles.add_style fg_color: "FFFFFF", bg_color: "0099FF", b: true
+styles[:default] = wb.styles.add_style :border => Axlsx::STYLE_THIN_BORDER
 
 wb.add_worksheet(name: "Summary") do |sheet|
   # sctr logo
@@ -68,7 +84,7 @@ wb.add_worksheet(name: "Summary") do |sheet|
   # merge info box rows and apply styling
   info_box_rows.each do |row|
     if visit_count > 1
-      sheet["#{alpha_array[left_indent]}#{row.index+1}"].style = info_box_style
+      sheet["#{alpha_array[left_indent]}#{row.index+1}"].style = styles[:info_box]
       smart_merge alpha_array[left_indent], alpha_array[left_indent+4], row.index+1, sheet
     end
   end
@@ -95,14 +111,29 @@ wb.add_worksheet(name: "Summary") do |sheet|
               {:pid => '9ABCDDD', :status => 'Active', :visits => generate_fake_visits(visit_count)}
              ]
               
-  puts "#"*50
-  pp subjects
-  puts "#"*50
   #visit information header
-  visit_header_row visit_names, sheet, header_style
+  visit_header_row visit_names, sheet, styles[:header]
 
   #subject visit rows
-  subject_visit_row subjects, visit_count, sheet
+  subject_visit_row subjects, visit_count, sheet, styles
+  
+  sheet.add_row [""]
+
+  #visit subtotals row
+  visit_subtotals_row subjects, visit_count, sheet, styles
+  
+  sheet.add_row [""]
+
+  #one time fees
+  sheet.add_row ["One Time Fees"], :style => styles[:header]
+
+  @service_request.one_time_fee_line_items.each do |otf|
+    row = []
+    row << otf.service.name
+    (visit_count+1).times { row << "" }
+    row << Service.cents_to_dollars(otf.applicable_rate)
+    sheet.add_row row
+  end
 end
 
 

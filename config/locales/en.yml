@@ -694,7 +694,9 @@ en:
       approval_type: "Type"
       approved_by: "Approved By"
     service_button: "Add Service"
+    cwf_service_button: "Add Service to all patients"
     remove_service_button: "Remove Service"
+    cwf_remove_service_button: "Remove Service from all patients"
     core_approvals:
       header: "Core Approvals"
       nursing: "Nursing/Nutrition Approved"

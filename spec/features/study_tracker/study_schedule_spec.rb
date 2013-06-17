@@ -19,7 +19,7 @@ describe "study schedule", :js => true do
 
   describe "back link" do
     it "should take you back to study tracker landing page" do
-      click_link("Return to Clinical Work Fulfillment")
+      click_link("Return to Clinical Work Fulfillment Home")
       wait_for_javascript_to_finish
       current_path.should eq("/study_tracker")
     end

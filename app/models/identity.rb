@@ -261,6 +261,15 @@ class Identity < ActiveRecord::Base
     orgs.flatten.compact.uniq
   end
 
+  def clinical_provider_rights?
+    org = Organization.tagged_with("ctrc").first
+    if !self.clinical_providers.empty? or self.admin_organizations({:su_only => true}).include?(org)
+      return true
+    else
+      return false
+    end
+  end
+
   # Collects all workflow states that are available to the given user based on what organizations
   # they have permissions to.
   # Currently serves largely to insert CTRC statuses if this identity has permissions for the CTRC.

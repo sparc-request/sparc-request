@@ -51,7 +51,7 @@ $(document).ready ->
       $("#return_to_admin_portal").button()
 
     show_return_to_study_tracker_button: () ->
-      linkHtml = "<a id='return_to_study_tracker' style='position:relative;left:635px;bottom:25px' href='/study_tracker'>Return to Clinical Work Fulfillment</a>"
+      linkHtml = "<a id='return_to_study_tracker' style='position:relative;left:595px;bottom:25px' href='/study_tracker'>Return to Clinical Work Fulfillment Home</a>"
       $("#title").append(linkHtml)
       $("#return_to_study_tracker").button()
 

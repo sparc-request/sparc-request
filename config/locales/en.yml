@@ -789,10 +789,10 @@ en:
   # Rails Root Page Messages
   rails_root:
     welcome: "Welcome to the SPARC Request Services Catalog"
-    message1: "Please browse through the SPARC Request Services Catalog to view all available SPARC Request services.  Service providers are located on the left-hand side of the page.  Click on a provider to see available services."
-    message2: "Click \"Add Services\" at the bottom of any service description to add it to your \"My Services\"."
-    message3: "To delete a service from \"My Services\", use the red X beside any service."
-    message4: "** Please Note: You may only select services applicable to ONE research study/project at a time.  Should you need to select services for multiple studies/projects you need to submit multiple \"Requests\"."
+    message1: "Please browse through the SPARC Request Services Catalog to view all available SPARC Request services.  Service providers are located on the left-hand side of the page.  Click on a provider to see available services.  Alternatively use the search field located in the upper left hand corner."
+    # message2: "Click \"Add Services\" at the bottom of any service description to add it to your \"My Services\"."
+    # message3: "To delete a service from \"My Services\", use the red X beside any service."
+    message4: "** Please Note: You may only select services applicable to ONE research study/project at a time.**"
     message5: "Welcome to SPARC Request Version 4.0. We're happy to announce that Step 2 now includes the concept of clinical trial arms. You'll find other numerous enhancements and upgrades in Version 4.0. For more information and training documents, please visit our new website at"
     # <a>http://academicdepartments.musc.edu/sparc_request/</a>. 
     message6: "Please contact the SUCCESS Center at 792-8300 with any questions or to set up a demonstration!"

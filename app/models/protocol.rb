@@ -65,7 +65,6 @@ class Protocol < ActiveRecord::Base
   validates :funding_status, :presence => true  
   validate  :requester_included, :on => :create
   validate  :pi_exists
-  validate  :billing_manager_exists
   validate  :validate_funding_source
   validate  :validate_proxy_rights
 
@@ -99,10 +98,6 @@ class Protocol < ActiveRecord::Base
 
   def pi_exists
     errors.add(:base, "You must add a PI to the study/project") unless project_roles.map(&:role).include? 'pi'
-  end
-
-  def billing_manager_exists
-    errors.add(:base, "You must add a Billing/Business Manager to the study/project") unless project_roles.map(&:role).include? 'business-grants-manager'
   end
 
   def role_for identity

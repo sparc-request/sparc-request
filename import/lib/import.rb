@@ -1,3 +1,4 @@
+require 'pathname'
 require 'active_record'
 require 'active_support/core_ext/string/inflections'
 
@@ -8,17 +9,33 @@ require 'devise/orm/active_record'
 require 'grouped_validations'
 require 'acts_as_list'
 require 'paperclip'
+require 'acts-as-taggable-on'
 
 # TODO: these are required by application.rb.  is there any way to
 # require them by default?
 require 'bulk_creatable_list'
 require 'entity'
 
+# Wow what a hack.  I'm in a bad mood.  Sorry to whomever reads this code.
+class <<Rails
+  def root
+    return Pathname.new("#{File.dirname(__FILE__)}/../..")
+  end
+end
+
+require_relative '../../config/application'
+
+Dir["#{File.dirname(__FILE__)}/../../config/initializers/*.rb"].each do |model_file|
+  resource = "../../config/initializers/#{File.basename(model_file).gsub(/\.rb$/, '')}"
+  require_relative resource
+end
+
 # Load all the model files
 # TODO: rails "knows" what order to require all these files in.  how
 # does it do that?
 require 'models/organization'
 require 'models/protocol'
+
 Dir["#{File.dirname(__FILE__)}/../../app/models/*.rb"].each do |model_file|
   resource = "models/#{File.basename(model_file).gsub(/\.rb$/, '')}"
   require resource

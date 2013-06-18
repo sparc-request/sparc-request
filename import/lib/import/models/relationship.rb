@@ -1000,3 +1000,7 @@ class AssociatedService < Relationship
   end
 end
 
+if not defined?(RelationshipsSerializer) then
+  RelationshipsSerializer = Entity::RelationshipsSerializer
+end
+

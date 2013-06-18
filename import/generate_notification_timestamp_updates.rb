@@ -2,8 +2,8 @@ require 'pp'
 
 def update_timestamps(klass, table)
   klass.all.each do |notification|
-    puts "UPDATE #{table} SET created_at='#{notification.created_at.to_s}' WHERE id='#{notification.id}';"
-    puts "UPDATE #{table} SET updated_at='#{notification.updated_at.to_s}' WHERE id='#{notification.id}';"
+    puts "UPDATE #{table} SET created_at='#{notification.created_at.strftime("%Y-%m-%d %H:%M:%S")}' WHERE id='#{notification.id}';"
+    puts "UPDATE #{table} SET updated_at='#{notification.updated_at.strftime("%Y-%m-%d %H:%M:%S")}' WHERE id='#{notification.id}';"
   end
 end
 

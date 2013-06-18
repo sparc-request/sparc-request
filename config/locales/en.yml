@@ -112,10 +112,10 @@ en:
   # Project/Study assignment page
   study_assignment:
     instructions_1: "Please review the SPARC Request Services you are requesting below."
-    instructions_2: "Please note that any \"Professional Services\" listed below have UMA fees associated with them and cannot be removed from this screen."
+    instructions_2: "Please note that any \"Professional Services\" listed below have MUSC-P fees associated with them and cannot be removed from this screen."
     instructions_3: "If Professional Services are covered by % effort, you will have the opportunity to indicate this in Step 2."
-    instructions_4: "If you wish to add services, you must return to the \"Service Catalog\"."
-    instructions_center: "Before continuing to Step 2, please select a Research Study or Project to which the services selected are associated. Please note that only 1 Research Study/Project can be assigned to this request."
+    instructions_4: "If you wish to add services, click \"Back to Catalog\" to the right."
+    instructions_center: "Before continuing to Step 2, please select a Research Study or Project to which the services selected are associated."
     tied_to_study: "Is this request tied to a Research Study or a Research Project?"
     select_study: "Select a Study"
     select_study_long: "Select a Research Study:"

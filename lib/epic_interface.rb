@@ -5,6 +5,12 @@ require 'securerandom'
 # except via the global configuration.  This monkey patch allows adding
 # soap headers via local (per-message) configuration.
 module Savon
+  class LocalOptions < Options
+    def soap_header(header)
+      @options[:soap_header] = header
+    end
+  end
+
   class Header
     def header
       @header ||= build_header
@@ -26,17 +32,22 @@ end
 class EpicInterface
 
   # Create a new EpicInterface
-  def initialize
-    @config = YAML.load_file(Rails.root.join('config', 'epic.yml'))[Rails.env]
-    @namespace = 'urn:ihe:qrph:rpe:2009' # TODO: grab from WSDL
-    @endpoint = 'http://TODO' # TODO: grab from WSDL
+  def initialize(config = nil)
+    @config = config || YAML.load_file(Rails.root.join('config', 'epic.yml'))[Rails.env]
+
+    # TODO: grab these from the WSDL
+    @namespace = @config['namespace'] || 'urn:ihe:qrph:rpe:2009'
+    @endpoint = @config['endpoint'] 
+
     @root = @config['study_root']
     @client = Savon.client(
         soap_version: 2,
         pretty_print_xml: true,
         convert_request_keys_to: :none,
         namespace_identifier: 'rpe',
-        wsdl: @config['wsdl'],
+        namespace: @namespace,
+        endpoint: @endpoint,
+        # wsdl: @config['wsdl'],
         headers: {
         },
         soap_header: {

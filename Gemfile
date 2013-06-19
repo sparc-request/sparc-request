@@ -114,6 +114,6 @@ gem 'letter_opener'
 gem 'prawn'
 gem 'acts-as-taggable-on', '~> 2.3.1'
 
-gem 'savon'    # SOAP client
-gem 'gyoku'    # XML builder
-gem 'nori'     # XML parser
+gem 'savon', '~> 2.2.0'    # SOAP client
+gem 'gyoku'                # XML builder
+gem 'nori', '~> 2.1.0'     # XML parser

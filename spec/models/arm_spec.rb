@@ -20,7 +20,7 @@ describe Arm do
     describe "adding a visit" do
       it "should increase the visit count on the arm by one" do
         original_visit_count = arm1.visit_count
-        arm1.add_visit
+        arm1.add_visit nil, 20, 0
         arm1.visit_count.should eq(original_visit_count + 1)
       end
 
@@ -29,7 +29,7 @@ describe Arm do
         last_visit = arm1.line_items_visits.first.visits.last
         visit_count = arm1.visit_count
         #Add a visit to the end (hopefully)
-        arm1.add_visit
+        arm1.add_visit nil, 20, 0
         #Our count should have gone up, and there should be one more visit
         arm1.visit_count.should eq(visit_count + 1)
         arm1.line_items_visits.first.visits.count.should eq(visit_count + 1)
@@ -41,7 +41,7 @@ describe Arm do
         #Change something on last visit
         arm1.line_items_visits.first.visits.last.update_attribute(:research_billing_qty, 99)
         #Add visit in the middle-ish
-        arm1.add_visit(3).should eq true
+        arm1.add_visit(3, 3, 0).should eq true
         #There should now be an additional visit (10 originally from the fixtures)
         arm1.visit_count.should eq 11
         arm1.line_items_visits[0].visits.count.should eq 11

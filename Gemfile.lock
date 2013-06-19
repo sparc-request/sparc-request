@@ -110,6 +110,8 @@ GEM
       eventmachine (>= 0.12.0)
     ffi (1.4.0)
     grouped_validations (0.3.2)
+    gyoku (1.0.0)
+      builder (>= 2.1.2)
     haml (4.0.0)
       tilt
     hashery (2.1.0)
@@ -118,6 +120,8 @@ GEM
     hike (1.2.1)
     htmlentities (4.3.1)
     http_parser.rb (0.5.3)
+    httpi (2.0.2)
+      rack
     i18n (0.6.4)
     inflection-js-rails (0.1.1)
       railties (>= 3.2.0, < 5.0)
@@ -154,6 +158,7 @@ GEM
     net-ssh-gateway (1.2.0)
       net-ssh (>= 2.6.5)
     nokogiri (1.5.0)
+    nori (2.2.0)
     nyan-cat-formatter (0.5.0)
       rspec (>= 2.13)
     obis-net-ldap (0.4.0)
@@ -248,6 +253,12 @@ GEM
       railties (~> 3.2.0)
       sass (>= 3.1.10)
       tilt (~> 1.3)
+    savon (0.9.2)
+      builder (>= 2.1.2)
+      gyoku (>= 0.4.0)
+      httpi (>= 0.7.8)
+      nokogiri (>= 1.4.0)
+      nori (>= 0.2.0)
     selenium-webdriver (2.31.0)
       childprocess (>= 0.2.5)
       multi_json (~> 1.0)
@@ -312,6 +323,7 @@ DEPENDENCIES
   factory_girl
   faker
   grouped_validations
+  gyoku
   haml
   highline
   inflection-js-rails
@@ -323,6 +335,7 @@ DEPENDENCIES
   mustache
   mysql2
   nested_form
+  nori
   nyan-cat-formatter
   obis-net-ldap
   omniauth
@@ -340,6 +353,7 @@ DEPENDENCIES
   rvm-capistrano
   sass
   sass-rails (~> 3.2.3)
+  savon
   sinatra
   sqlite3
   thin

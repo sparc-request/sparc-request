@@ -76,11 +76,9 @@ class ServiceCalendarsController < ApplicationController
     position = params[:position].to_i
     arm = Arm.find params[:arm_id]
 
-    case message = arm.update_visit_group_day(day, position)
-    when "" then return
-    else
+    if !arm.update_visit_group_day(day, position)
       respond_to do |format|
-        format.js { render :status => 418, :json => message.to_json }
+        format.js { render :status => 418, :json => clean_messages(arm.errors.messages) }
       end
     end
   end
@@ -90,11 +88,9 @@ class ServiceCalendarsController < ApplicationController
     position = params[:position].to_i
     arm = Arm.find params[:arm_id]
 
-    case message = arm.update_visit_group_window(window, position)
-    when "" then return
-    else
+    if !arm.update_visit_group_window(window, position)
       respond_to do |format|
-        format.js { render :status => 418, :json => message.to_json }
+        format.js { render :status => 418, :json => clean_messages(arm.errors.messages) }
       end
     end
   end

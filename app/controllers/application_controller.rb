@@ -17,6 +17,14 @@ class ApplicationController < ActionController::Base
     render :partial => 'service_requests/authorization_error', :locals => {:error => error}
   end
 
+  def clean_errors errors
+    errors.to_a.map {|k,v| "#{k.humanize} #{v}".rstrip + '.'}
+  end
+
+  def clean_messages errors
+    errors.map {|k,v| v}.flatten
+  end
+
   def initialize_service_request
     @service_request = nil
     @sub_service_request = nil

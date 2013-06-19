@@ -41,6 +41,7 @@ class EpicInterface
 
     @root = @config['study_root']
     @client = Savon.client(
+        logger: Rails.logger,
         soap_version: 2,
         pretty_print_xml: true,
         convert_request_keys_to: :none,

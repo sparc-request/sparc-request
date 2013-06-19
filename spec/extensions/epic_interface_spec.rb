@@ -9,7 +9,11 @@ describe EpicInterface do
 
   before :all do
     require 'webrick'
-    server = WEBrick::HTTPServer.new(Port: 0)
+    server = WEBrick::HTTPServer.new(
+        Port: 0,               # automatically determine port
+        Logger: Rails.logger,  # send regular log to rails
+        AccessLog: [ ]         # disable access log
+        )
     server.mount('/', FakeEpicServlet)
     port = server.config[:Port]
     servlet = FakeEpicServlet.get_instance(server)

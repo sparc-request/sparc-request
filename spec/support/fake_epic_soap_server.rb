@@ -76,7 +76,6 @@ class FakeEpicServlet < WEBrick::HTTPServlet::AbstractServlet
     action_name = namespaced_action_name.gsub('"', '').split(':')[-1]
 
     action = @actions[action_name]
-    p namespaced_action_name, action_name, action
 
     if not action then
       # Unknown action; send back a 400

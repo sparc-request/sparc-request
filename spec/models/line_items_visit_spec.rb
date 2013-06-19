@@ -190,7 +190,7 @@ describe LineItemsVisit do
           procedures.delete_if {|pro| pro.appointment.visit_group.arm_id != liv.arm_id}
           procedures.should_not eq(nil)
 
-          liv.destroy
+          liv.remove_procedures
 
           procedures = line_item2.procedures.includes(:appointment => :visit_group)
           procedures.delete_if {|pro| pro.appointment.visit_group.arm_id != liv.arm_id}

@@ -15,7 +15,7 @@ require 'gyoku'  # xml construction
 #
 #   server.shutdown
 #
-class EpicServlet < WEBrick::HTTPServlet::AbstractServlet
+class FakeEpicServlet < WEBrick::HTTPServlet::AbstractServlet
   # If @keep_received is true, then every message received is stored in
   # @received.  A regression test can use this to verify that SPARC sent
   # in what was expected.  The message is stored as a Nori hash
@@ -42,16 +42,16 @@ class EpicServlet < WEBrick::HTTPServlet::AbstractServlet
   #
   # Inside this method all the dispatching is initialized.  You can add
   # new SOAP actions by appending to @actions.
-  def initialize(*args)
-    super(*args)
+  def initialize(server, args)
+    super(server, args)
 
     @actions = {
-      'urn:ihe:qrph:rpe:2009:RetrieveProtocolDefResponse' => method(:retrieve_protocol_def_response),
+      'RetrieveProtocolDefResponse' => method(:retrieve_protocol_def_response),
     }
 
-    @keep_received = false
-    @received = [ ]
-    @results = [ ]
+    @keep_received = args[:keep_received] || false
+    @received = args[:received] || [ ]
+    @results = args[:results] || [ ]
   end
 
   # Handle a POST request.  All SOAP actions are done through HTTP POST.
@@ -63,11 +63,13 @@ class EpicServlet < WEBrick::HTTPServlet::AbstractServlet
     # Savon sends SOAPAction (even though it's SOAP 1.2), so we need to
     # accept it.  That's okay, because it appears Epic InterConnect
     # (WCF) also will accept the SOAP 1.1 method.
-    action_name = request['SOAPAction'] || params['action']
+    namespaced_action_name = request['SOAPAction'] || params['action']
+    action_name = namespaced_action_name.gsub('"', '').split(':')[-1]
 
     action = @actions[action_name]
 
     if not action then
+      # Unknown action; send back a 400
       response.status = 400
 
     else
@@ -179,7 +181,8 @@ end
 
 if $0 == __FILE__ then
   server = WEBrick::HTTPServer.new(:Port => 1984)
-  server.mount "/", EpicServlet
+  server.mount "/", FakeEpicServlet
   trap "INT" do server.shutdown end
   server.start
 end
+

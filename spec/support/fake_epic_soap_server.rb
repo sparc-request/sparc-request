@@ -38,29 +38,20 @@ class FakeEpicServlet < WEBrick::HTTPServlet::AbstractServlet
     class Error < OpenStruct; end
   end
 
-  # Reuse the same instance.  This lets us access the servlet's
-  # received/results members from the regression tests.
-  def self.get_instance(server, *options)
-    Thread.exclusive do
-      @instance ||= self.new(server, *options)
-      return @instance
-    end
-  end
-
   # Create a new EpicServlet.  This method is called by WEBrick.
   #
   # Inside this method all the dispatching is initialized.  You can add
   # new SOAP actions by appending to @actions.
-  def initialize(server, *options)
-    super(server, *options)
+  def initialize(server, args)
+    super(server, args)
 
     @actions = {
       'RetrieveProtocolDefResponse' => method(:retrieve_protocol_def_response),
     }
 
-    @keep_received = false
-    @received = 
-    @results = [ ]
+    @keep_received = args[:keep_received] || false
+    @received = args[:received] || [ ]
+    @results = args[:results] || [ ]
   end
 
   # Handle a POST request.  All SOAP actions are done through HTTP POST.

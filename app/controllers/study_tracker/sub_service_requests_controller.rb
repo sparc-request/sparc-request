@@ -3,6 +3,9 @@ class StudyTracker::SubServiceRequestsController < StudyTracker::BaseController
 
   def show
     @sub_service_request = SubServiceRequest.find(params[:id])
+    unless @sub_service_request.in_work_fulfillment?
+      redirect_to root_path
+    end
 
     session[:sub_service_request_id] = @sub_service_request.id
     session[:service_request_id] = @sub_service_request.service_request_id

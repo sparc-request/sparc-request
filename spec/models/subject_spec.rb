@@ -16,8 +16,7 @@ describe 'Subject' do
     		arm1.subjects.size.should eq(1)
         arm1.subjects.first.calendar.appointments.size.should eq(arm1.visit_groups.size)
 
-        #Procedures size should equal the number of appointments, (one procedure for each appointment, per line item)
-        line_item2.procedures.size.should eq(arm1.subjects.first.calendar.appointments.size)
+        line_item2.procedures.size.should eq(15)
 
         li_id = line_item2.id
         line_item2.destroy

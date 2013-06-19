@@ -158,8 +158,10 @@ end
 
 def build_clinical_data
   ##Requires visit data to be created first.
-  subject = arm1.subjects.create(name: "Subject I")
-  subject.calendar.populate(arm1.visit_groups)
+  service_request.arms.each do |arm|
+    subject = arm.subjects.create(name: "Subject I")
+    subject.calendar.populate(arm.visit_groups)
+  end
 end
 
 def build_fake_notification

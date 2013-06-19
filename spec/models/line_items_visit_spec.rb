@@ -179,6 +179,26 @@ describe LineItemsVisit do
           @line_items_visit.visits.count.should eq(10)
         end
       end
+      describe "remove procedures" do
+        before :each do
+          build_clinical_data
+        end
+        it "should remove procedures when line_item_visit is destroyed" do
+          liv = line_item2.line_items_visits.first
+
+          procedures = line_item2.procedures.includes(:appointment => :visit_group)
+          procedures.delete_if {|pro| pro.appointment.visit_group.arm_id != liv.arm_id}
+          procedures.should_not eq(nil)
+
+          liv.destroy
+
+          procedures = line_item2.procedures.includes(:appointment => :visit_group)
+          procedures.delete_if {|pro| pro.appointment.visit_group.arm_id != liv.arm_id}
+          procedures.should eq([])
+          line_item2.procedures.should_not eq([])
+
+        end
+      end
     end
   end
 end

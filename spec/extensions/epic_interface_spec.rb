@@ -1,5 +1,6 @@
 require 'epic_interface'
 require 'spec_helper'
+require 'equivalent-xml'
 
 describe EpicInterface do
   server = nil
@@ -45,31 +46,46 @@ describe EpicInterface do
     it 'should do something' do
       # TODO: not sure how to handle namespaces...
       epic_interface.send_study(study)
-      # epic_received['env:Header']['wsa:Action'].should eq "urn:ihe:qrph:rpe:2009:RetrieveProtocolDefResponse"
-      # epic_received['env:Header']['wsa:MessageID'].should_not eq nil
-      # epic_received['env:Header']['wsa:To'].should_not eq nil
-      # epic_interface['env:Body']['rpe:RetrieveProtocolDefResponse'].should eq({
-      #    "rpe:RetrieveProtocolDefResponse"=> {
-      #      'protocolDef'=> {
-      #        'query' => {
-      #          '@root'=> '',
-      #          '@extension' => ''
-      #        },
-      #       'plannedStudy'=> {
-      #         'id'=> {
-      #           '@root' => '',
-      #           '@extension' => ''
-      #         },
-      #         '@classCode' => 'CLNTRL',
-      #         '@moodCode' => 'DEF',
-      #         'title' => study.title,
-      #         'text' => study.brief_description,
-      #   '@xmlns:xsd' => 'http://www.w3.org/2001/XMLSchema',
-      #   '@xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
-      #   '@xmlns:rpe' => 'urn:ihe:qrph:rpe:2009',
-      #   '@xmlns:env' => 'http://www.w3.org/2003/05/soap-envelope'}}]
-      # })
 
+      # <env:Body>
+      #   <rpe:RetrieveProtocolDefResponse>
+      #     <protocolDef>
+      #       <query root="" extension=""/>
+      #       <plannedStudy classCode="CLNTRL" moodCode="DEF">
+      #         <id root="" extension=""/>
+      #         <title>At nemo pariatur ducimus.</title>
+      #         <text>Consequuntur tenetur praesentium esse est pariatur maiores et. Dolor delectus iure accusantium sed.</text>
+      #       </plannedStudy>
+      #     </protocolDef>
+      #   </rpe:RetrieveProtocolDefResponse>
+      # </env:Body>
+
+      xml = Gyoku.xml(
+        'protocolDef' => {
+          'query' => {
+            '@root' => '',
+            '@extension' => '',
+          },
+          'plannedStudy' => {
+            '@classCode' => 'CLNTRL',
+            '@moodCode' => 'DEF',
+            'id' => {
+              '@xmlns:rpe' => 'urn:ihe:qrph:rpe:2009',
+              '@root' => '',
+              '@extension' => '',
+            },
+            'title' => study.title,
+            'text' => study.brief_description,
+          },
+        })
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+          '//env:Body/rpe:RetrieveProtocolDefResponse/protocolDef',
+          'env' => 'http://www.w3.org/2003/05/soap-envelope',
+          'rpe' => 'urn:ihe:qrph:rpe:2009')
+
+      node.should be_equivalent_to(expected)
     end
   end
 

@@ -4,7 +4,7 @@ class Arm < ActiveRecord::Base
   has_many :line_items_visits, :dependent => :destroy
   has_many :line_items, :through => :line_items_visits
   has_many :subjects
-  has_many :visit_groups
+  has_many :visit_groups, :order => "position"
   has_many :visits, :through => :line_items_visits
 
   attr_accessible :name
@@ -89,9 +89,19 @@ class Arm < ActiveRecord::Base
   # rename this method to add_visit! and make it raise exceptions; it
   # would be easier to read.  But I'm not sure how to get access to the
   # errors object in that case.
-  def add_visit position=nil
+  def add_visit position=nil, day=nil, window=0
     result = self.transaction do
-      self.create_visit_group(position)
+      if not self.create_visit_group(position) then
+        raise ActiveRecord::Rollback
+      end
+
+      if not self.update_visit_group_day(day, position) then
+        raise ActiveRecord::Rollback
+      end
+
+      if not self.update_visit_group_window(window, position) then
+        raise ActiveRecord::Rollback
+      end
 
       # Reload to force refresh of the visits
       self.reload
@@ -111,16 +121,15 @@ class Arm < ActiveRecord::Base
   end
 
   def create_visit_group position=nil
-    visit_group = self.visit_groups.new(position: position)
-    if not visit_group.save(validate: false) then
-      raise ActiveRecord::Rollback
+    if not visit_group = self.visit_groups.create(position: position) then
+      return false
     end
 
     # Add visits to each line item under the service request
     self.line_items_visits.each do |liv|
       if not liv.add_visit(visit_group) then
         self.errors.initialize_dup(liv.errors) # TODO: is this the right way to do this?
-        raise ActiveRecord::Rollback
+        return false
       end
     end
 
@@ -156,41 +165,44 @@ class Arm < ActiveRecord::Base
   end
 
   def update_visit_group_day day, position
+    position = position.blank? ? self.visit_groups.count - 1 : position.to_i
     before = self.visit_groups[position - 1] unless position == 0
     current = self.visit_groups[position]
     after = self.visit_groups[position + 1] unless position >= self.visit_groups.size - 1
 
-    current.day = day
-
-    if current.valid?
-      if !before.nil? && !before.day.nil?
-        if before > current
-          return "The days are out of order. This day appears to go before the previous day."
-        end
-      end
-
-      if !after.nil? && !after.day.nil?
-        if current > after
-          return "The days are out of order. This day appears to go after the next day."
-        end
-      end
-
-      current.save
-      return ''
-    else
-      return "You've entered an invalid number for the day. Please enter a valid number."
+    valid_day = Integer(day) rescue false
+    if !valid_day
+      self.errors.add(:invalid_day, "You've entered an invalid number for the day. Please enter a valid number.")
+      return false
     end
+
+    if !before.nil? && !before.day.nil?
+      if before.day > valid_day
+        self.errors.add(:out_of_order, "The days are out of order. This day appears to go before the previous day.")
+        return false
+      end
+    end
+
+    if !after.nil? && !after.day.nil?
+      if valid_day > after.day
+        self.errors.add(:out_of_order, "The days are out of order. This day appears to go after the next day.")
+        return false
+      end
+    end
+
+    return current.update_attributes(:day => valid_day)
   end
 
   def update_visit_group_window window, position
-    visit_group = self.visit_groups[position]
+    position = position.to_i || self.visit_groups.count
 
-    visit_group.window = window
-    if visit_group.valid?
-      visit_group.save
-      return ''
-    else
-      return "You've entered an invalid number for the +/- window. Please enter a valid number"
+    valid = Integer(window) rescue false
+    if !valid
+      self.errors.add(:invalid_window, "You've entered an invalid number for the +/- window. Please enter a valid number")
+      return false
     end
+
+    visit_group = self.visit_groups[position]
+    return visit_group.update_attributes(:window => window)
   end
 end

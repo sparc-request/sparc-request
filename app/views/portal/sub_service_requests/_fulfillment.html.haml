@@ -39,7 +39,7 @@
     = render 'per_patient_per_visit'
   #arm-form{:style => 'display: none', :title => 'Create a new ARM'}
     .label ARM Name:
-    = text_field_tag 'arm_name', "ARM #{@service_request.arms.count + 1}"
+    = text_field_tag 'arm_name', "ARM Name"
     %br
     %br
     .label Subject Count:
@@ -48,6 +48,17 @@
     %br
     .label Visit Count:
     = text_field_tag 'visit_count', 1
+  #visit-form{:style => 'display: none', :title => 'Add a new visit'}
+    .label Visit Name:
+    = text_field_tag 'visit_name', "Visit Name"
+    %br
+    %br
+    .label Day:
+    = text_field_tag 'visit_day'
+    %br
+    %br
+    .label +/-
+    = text_field_tag 'visit_window', 0
 
   %br
 

@@ -100,7 +100,8 @@ $(document).ready ->
       success: =>
         $(this).data('day', day_val)
     .error (event, request, test) =>
-      alert(event.responseText)
+      alertText = stack_errors_for_alert(JSON.parse(event.responseText))
+      alert(alertText)
       $(this).val(original_val)
     .complete ->
       $('.service_calendar_spinner').hide()
@@ -129,7 +130,8 @@ $(document).ready ->
       success: =>
         $(this).data('window', window_val)
     .error (event, request, test) =>
-      alert(event.responseText)
+      alertText = stack_errors_for_alert(JSON.parse(event.responseText))
+      alert(alertText)
       $(this).val(original_val)
     .complete ->
       $('.service_calendar_spinner').hide()
@@ -145,6 +147,11 @@ $(document).ready ->
       show:
         ready: true
 
+stack_errors_for_alert = (errors) ->
+  compiled = ''
+  for error in errors
+    compiled += error + '\n'
+  return compiled
 
 (exports ? this).calculate_max_rates = (arm_id) ->
   for num in [1..5]

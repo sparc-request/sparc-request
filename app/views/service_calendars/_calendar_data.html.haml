@@ -8,7 +8,7 @@
         %th{:rowspan => 2}= t("calendar_page.headers.qty_type")
       %th{:rowspan => 2}= t("calendar_page.headers.subjects")
       %th &nbsp;
-      %th{:colspan => 5, :height => 40, :width => 375} 
+      %th{:colspan => 5, :height => 40, :width => 375}
         = generate_visit_navigation arm, @service_request, @pages, @tab, @portal if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
       %th{:colspan => 2}= image_tag 'spinner.gif', :class => 'service_calendar_spinner'
 

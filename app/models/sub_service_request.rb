@@ -12,6 +12,7 @@ class SubServiceRequest < ActiveRecord::Base
   has_many :documents, :dependent => :destroy
   has_many :notes, :dependent => :destroy
   has_many :approvals, :dependent => :destroy
+  has_many :payments, :dependent => :destroy
   has_one :subsidy, :dependent => :destroy
 
   # These two ids together form a unique id for the sub service request
@@ -29,9 +30,11 @@ class SubServiceRequest < ActiveRecord::Base
   attr_accessible :src_approved
   attr_accessible :requester_contacted_date
   attr_accessible :subsidy_attributes
+  attr_accessible :payments_attributes
   attr_accessible :in_work_fulfillment
 
   accepts_nested_attributes_for :subsidy
+  accepts_nested_attributes_for :payments, allow_destroy: true
 
   def display_id
     return "#{service_request.protocol.id}-#{ssr_id}"

@@ -1,0 +1,34 @@
+= nested_form_for @sub_service_request, :url => study_tracker_sub_service_request_path do |f|
+
+  - if @sub_service_request.errors.any?
+    #error_explanation
+      %h2
+        = pluralize(@sub_service_request.errors.count, "error")
+        prohibited these payments from being saved:
+      %ul
+        - @sub_service_request.errors.full_messages.each do |msg|
+          %li= msg
+  %table#payments_list
+    %thead
+      %tr
+        %th.date_submitted Date Submitted
+        %th.amount_invoiced Amount Invoiced
+        %th.amount_received Amount Received
+        %th.date_received Date Received
+        %th.payment_method Payment Method
+        %th.details Details
+        %th.documents Documents
+        %th.remove
+    %tbody
+      = f.fields_for :payments, wrapper: false do |payment_form|
+        %tr.fields
+          %td.date_submitted= payment_form.datepicker :formatted_date_submitted, size: 10, dateFormat: "m/dd/yy"
+          %td.amount_invoiced= payment_form.text_field :amount_invoiced, size: 6
+          %td.amount_received= payment_form.text_field :amount_received, size: 6
+          %td.date_received= payment_form.datepicker :formatted_date_received, size: 10, dateFormat: "m/dd/yy"
+          %td.payment_method= payment_form.select :payment_method, Payment::PAYMENT_METHOD_OPTIONS, prompt: "Choose payment description"
+          %td.details= payment_form.text_area :details, cols: 20, rows: 2
+          %td.documents
+          %td.remove= payment_form.link_to_remove "Remove", confirm: "Are you sure you want to delete this payment?"
+  %p= f.link_to_add "Add a payment", :payments, data: { target: '#payments_list tbody' }
+  %p= f.submit "Save"

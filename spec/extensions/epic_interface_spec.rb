@@ -7,9 +7,16 @@ describe EpicInterface do
   port = nil
   thread = nil
 
+  # This array holds the messages received by the epic interface.
   epic_received = [ ]
+
+  # This array holds scripted results for the epic interface (tells the
+  # interface how to respond to soap actions).
   epic_results = [ ]
 
+  # Start up a web server with a soap endpoint for the fake epic
+  # interface; this server will stay running for all the tests in this
+  # block.
   before :all do
     require 'webrick'
     server = WEBrick::HTTPServer.new(
@@ -28,18 +35,20 @@ describe EpicInterface do
     timeout(10) { while server.status != :Running; end }
   end
 
+  # Shut down the server when we're done.
   after :all do
     server.shutdown
     thread.join
   end
 
+  # Clear out the received messages and the scripted results before the
+  # start of every test.
   before :each do
     epic_received.clear
     epic_results.clear
   end
 
   let!(:epic_interface) { EpicInterface.new('endpoint' => "http://localhost:#{port}/") }
-  # let!(:study) { Study.create(FactoryGirl.attributes_for(:protocol)) }
   let!(:study) { FactoryGirl.build(:study) }
 
   describe 'send_study' do

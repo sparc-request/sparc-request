@@ -48,7 +48,12 @@ describe EpicInterface do
     epic_results.clear
   end
 
-  let!(:epic_interface) { EpicInterface.new('endpoint' => "http://localhost:#{port}/") }
+  let!(:epic_interface) {
+    EpicInterface.new(
+        'endpoint' => "http://localhost:#{port}/",
+        'study_root' => '1.2.3.4')
+  }
+
   let!(:study) { FactoryGirl.build(:study) }
 
   describe 'send_study' do
@@ -71,14 +76,14 @@ describe EpicInterface do
       xml = Gyoku.xml(
         'protocolDef' => {
           'query' => {
-            '@root' => '',
+            '@root' => '1.2.3.4',
             '@extension' => '',
           },
           'plannedStudy' => {
             '@classCode' => 'CLNTRL',
             '@moodCode' => 'DEF',
             'id' => {
-              '@root' => '',
+              '@root' => '1.2.3.4',
               '@extension' => '',
             },
             'title' => study.title,

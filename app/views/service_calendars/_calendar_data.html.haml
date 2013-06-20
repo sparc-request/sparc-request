@@ -1,5 +1,5 @@
 = hidden_field_tag :indirect_rate, @service_request.protocol.indirect_cost_rate
-%table.service_calendar{:class => arm.id, :style => "width:#{@study_tracker ? "917px" : "860px"};"}
+%table.service_calendar{:class => arm.id, :style => @study_tracker ? "width:917px" : ''}
   %thead.ui-widget-header
     %tr.table_header
       %th{:rowspan => 2}= t("calendar_page.headers.services")

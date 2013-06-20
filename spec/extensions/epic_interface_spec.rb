@@ -44,7 +44,6 @@ describe EpicInterface do
 
   describe 'send_study' do
     it 'should do something' do
-      # TODO: not sure how to handle namespaces...
       epic_interface.send_study(study)
 
       # <env:Body>

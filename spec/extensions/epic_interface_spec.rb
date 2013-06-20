@@ -1,14 +1,22 @@
 require 'epic_interface'
 require 'spec_helper'
+require 'equivalent-xml'
 
 describe EpicInterface do
   server = nil
   port = nil
   thread = nil
 
+  # This array holds the messages received by the epic interface.
   epic_received = [ ]
+
+  # This array holds scripted results for the epic interface (tells the
+  # interface how to respond to soap actions).
   epic_results = [ ]
 
+  # Start up a web server with a soap endpoint for the fake epic
+  # interface; this server will stay running for all the tests in this
+  # block.
   before :all do
     require 'webrick'
     server = WEBrick::HTTPServer.new(
@@ -27,49 +35,64 @@ describe EpicInterface do
     timeout(10) { while server.status != :Running; end }
   end
 
+  # Shut down the server when we're done.
   after :all do
     server.shutdown
     thread.join
   end
 
+  # Clear out the received messages and the scripted results before the
+  # start of every test.
   before :each do
     epic_received.clear
     epic_results.clear
   end
 
   let!(:epic_interface) { EpicInterface.new('endpoint' => "http://localhost:#{port}/") }
-  # let!(:study) { Study.create(FactoryGirl.attributes_for(:protocol)) }
   let!(:study) { FactoryGirl.build(:study) }
 
   describe 'send_study' do
     it 'should do something' do
-      # TODO: not sure how to handle namespaces...
       epic_interface.send_study(study)
-      # epic_received['env:Header']['wsa:Action'].should eq "urn:ihe:qrph:rpe:2009:RetrieveProtocolDefResponse"
-      # epic_received['env:Header']['wsa:MessageID'].should_not eq nil
-      # epic_received['env:Header']['wsa:To'].should_not eq nil
-      # epic_interface['env:Body']['rpe:RetrieveProtocolDefResponse'].should eq({
-      #    "rpe:RetrieveProtocolDefResponse"=> {
-      #      'protocolDef'=> {
-      #        'query' => {
-      #          '@root'=> '',
-      #          '@extension' => ''
-      #        },
-      #       'plannedStudy'=> {
-      #         'id'=> {
-      #           '@root' => '',
-      #           '@extension' => ''
-      #         },
-      #         '@classCode' => 'CLNTRL',
-      #         '@moodCode' => 'DEF',
-      #         'title' => study.title,
-      #         'text' => study.brief_description,
-      #   '@xmlns:xsd' => 'http://www.w3.org/2001/XMLSchema',
-      #   '@xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
-      #   '@xmlns:rpe' => 'urn:ihe:qrph:rpe:2009',
-      #   '@xmlns:env' => 'http://www.w3.org/2003/05/soap-envelope'}}]
-      # })
 
+      # <env:Body>
+      #   <rpe:RetrieveProtocolDefResponse>
+      #     <protocolDef>
+      #       <query root="" extension=""/>
+      #       <plannedStudy classCode="CLNTRL" moodCode="DEF">
+      #         <id root="" extension=""/>
+      #         <title>At nemo pariatur ducimus.</title>
+      #         <text>Consequuntur tenetur praesentium esse est pariatur maiores et. Dolor delectus iure accusantium sed.</text>
+      #       </plannedStudy>
+      #     </protocolDef>
+      #   </rpe:RetrieveProtocolDefResponse>
+      # </env:Body>
+
+      xml = Gyoku.xml(
+        'protocolDef' => {
+          'query' => {
+            '@root' => '',
+            '@extension' => '',
+          },
+          'plannedStudy' => {
+            '@classCode' => 'CLNTRL',
+            '@moodCode' => 'DEF',
+            'id' => {
+              '@root' => '',
+              '@extension' => '',
+            },
+            'title' => study.title,
+            'text' => study.brief_description,
+          },
+        })
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+          '//env:Body/rpe:RetrieveProtocolDefResponse/protocolDef',
+          'env' => 'http://www.w3.org/2003/05/soap-envelope',
+          'rpe' => 'urn:ihe:qrph:rpe:2009')
+
+      node.should be_equivalent_to(expected)
     end
   end
 

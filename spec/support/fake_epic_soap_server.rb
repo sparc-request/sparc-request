@@ -1,8 +1,8 @@
 require 'webrick'
 require 'open-uri'
 require 'ostruct'
-require 'nori'   # xml parsing
-require 'gyoku'  # xml construction
+require 'nokogiri' # xml parsing
+require 'gyoku'    # xml construction
 
 # The EpicServlet class is a SOAP server that, to SPARC, looks just like
 # an Epic InterConnect server.  Start it up under WEBrick like this:
@@ -18,7 +18,7 @@ require 'gyoku'  # xml construction
 class FakeEpicServlet < WEBrick::HTTPServlet::AbstractServlet
   # If @keep_received is true, then every message received is stored in
   # @received.  A regression test can use this to verify that SPARC sent
-  # in what was expected.  The message is stored as a Nori hash
+  # in what was expected.  The message is stored as a Nokogiri document
   # representing the xml that was sent in.
   attr_accessor :keep_received
   attr_reader :received
@@ -73,8 +73,7 @@ class FakeEpicServlet < WEBrick::HTTPServlet::AbstractServlet
       response.status = 400
 
     else
-      parser = Nori.new
-      body = parser.parse(request.body)
+      body = Nokogiri::XML(request.body)
       @received << body if @keep_received
 
       xml = action.call(body, response)

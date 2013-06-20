@@ -52,6 +52,9 @@ class EpicInterface
         headers: {
         },
         soap_header: {
+        },
+        namespaces: {
+          'xmlns:wsa' => 'http://www.w3.org/2005/08/addressing',
         })
   end
 

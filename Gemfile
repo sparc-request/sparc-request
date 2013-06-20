@@ -24,6 +24,7 @@ group :development, :test, :profile do
   gem 'quiet_assets'
   gem 'connection_pool'
   gem 'thin'
+  gem 'equivalent-xml'
 
   # Add dependency on poltergeist.  If you want to use poltergeist, you
   # will need to configure Capybara to use it.  This particular

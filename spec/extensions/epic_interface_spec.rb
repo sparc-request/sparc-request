@@ -78,7 +78,6 @@ describe EpicInterface do
             '@classCode' => 'CLNTRL',
             '@moodCode' => 'DEF',
             'id' => {
-              '@xmlns:rpe' => 'urn:ihe:qrph:rpe:2009',
               '@root' => '',
               '@extension' => '',
             },

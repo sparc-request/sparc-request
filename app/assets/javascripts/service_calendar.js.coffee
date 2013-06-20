@@ -2,12 +2,6 @@
 #= require constants
 
 $(document).ready ->
-  $('#service_calendar').tabs
-    show: (event, ui) -> 
-      $(ui.panel).html('<div class="ui-corner-all" style = "border: 1px solid black; padding: 25px; width: 200px; margin: 30px auto; text-align: center">Loading data....<br /><img src="/assets/spinner.gif" /></div>')
-    select: (event, ui) ->
-      $(ui.panel).html('<div class="ui-corner-all" style = "border: 1px solid black; padding: 25px; width: 200px; margin: 30px auto; text-align: center">Loading data....<br /><img src="/assets/spinner.gif" /></div>')
-
   $('.visit_number a, .service_calendar_row').live 'click', ->
     $('.service_calendar_spinner').show()
   
@@ -87,7 +81,7 @@ $(document).ready ->
       show:
         ready: true
 
-  $('.visit_day').live 'change', ->
+  $(document).on('change', '.visit_day', ->
     # Grab the day
     position = $(this).data('position')
     day_val = $(this).val()
@@ -105,6 +99,7 @@ $(document).ready ->
       $(this).val(original_val)
     .complete ->
       $('.service_calendar_spinner').hide()
+  )
 
   $('.visit_day').live 'mouseover', ->
     $(this).qtip

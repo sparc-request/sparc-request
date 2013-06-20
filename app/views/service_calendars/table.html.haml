@@ -2,7 +2,7 @@
   .arm_calendar_container{:'data-arm_id' => arm.id}
     = render :partial => 'calendar_data', :locals => {:tab => @tab, :arm => arm}
 - if (@sub_service_request.nil? ? @service_request.has_one_time_fee_services? : @sub_service_request.has_one_time_fee_services?) and !@portal
-  %table.service_calendar
+  %table.service_calendar{:style => "width:860px"}
     %thead.ui-widget-header
       %tr.table_header
         %th{:rowspan => 2, :style => "height: 88px"}= t("calendar_page.headers.services")

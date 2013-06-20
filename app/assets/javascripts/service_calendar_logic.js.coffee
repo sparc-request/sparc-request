@@ -1,4 +1,10 @@
 $(document).ready ->
+  $('#service_calendar').tabs
+    show: (event, ui) -> 
+      $(ui.panel).html('<div class="ui-corner-all" style = "border: 1px solid black; padding: 25px; width: 200px; margin: 30px auto; text-align: center">Loading data....<br /><img src="/assets/spinner.gif" /></div>')
+    select: (event, ui) ->
+      $(ui.panel).html('<div class="ui-corner-all" style = "border: 1px solid black; padding: 25px; width: 200px; margin: 30px auto; text-align: center">Loading data....<br /><img src="/assets/spinner.gif" /></div>')
+
   $('.billing_type_list').qtip
     content: 'R = Research<br />T = Third Party (Patient Insurance)<br />% = % Effort'
     position:

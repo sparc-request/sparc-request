@@ -137,7 +137,7 @@ class EpicInterface
                   xml.sequenceNumber(value: arm_idx + 1) 
 
                   xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-                    xml.id(root: "#{study.id}.#{arm.id}.1")
+                    xml.id(root: @root, extension: "#{study.id}.#{arm.id}.1")
                     xml.title('Cycle 1')
                     xml.code(code: 'CYCLE', codeSystem: 'n/a')
 

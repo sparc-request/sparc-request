@@ -72,8 +72,10 @@ class EpicInterface
   # Send a study to the Epic InterConnect server.
   def send_study(study)
     xml = Builder::XmlMarkup.new
+
+    xml.query(root: @root, extension: study.id)
+
     xml.protocolDef {
-      xml.query(root: @root, extension: study.id)
       xml.plannedStudy(classCode: 'CLNTRL', moodCode: 'DEF') {
         xml.id(root: @root, extension: study.id)
         xml.title study.title
@@ -83,7 +85,7 @@ class EpicInterface
           xml.subjectOf(typeCode: 'SUBJ') {
             xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
               xml.code(code: project_role.role.upcase)
-              xml.value('xsi:type' => 'ST', value: project_role.identity.ldap_uid)
+              xml.value('xsi:type' => 'ST', value: project_role.identity.ldap_uid) # TODO: netid not ldap_uid
             }
           }
         end
@@ -93,7 +95,7 @@ class EpicInterface
     @client.call(
         'RetrieveProtocolDefResponse',
         soap_header: soap_header('RetrieveProtocolDefResponse'),
-        message: xml.target)
+        message: xml.target!)
 
     # TODO: handle response from the server
   end
@@ -103,8 +105,10 @@ class EpicInterface
   # calling this method.
   def send_billing_calendar(study)
     xml = Builder::XmlMarkup.new
+
+    xml.query(root: @root, extension: study.id)
+
     xml.protocolDef {
-      xml.query(root: @root, extension: study.id)
       xml.plannedStudy(classCode: 'CLNTRL', moodCode: 'DEF') {
         xml.id(root: @root, extension: study.id)
         xml.title study.title
@@ -210,7 +214,7 @@ class EpicInterface
     @client.call(
         'RetrieveProtocolDefResponse',
         soap_header: soap_header('RetrieveProtocolDefResponse'),
-        message: xml.target)
+        message: xml.target!)
 
     # TODO: handle response from the server
   end

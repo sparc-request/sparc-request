@@ -1,0 +1,2 @@
+module StudyTracker::ServiceRequestsHelper
+end

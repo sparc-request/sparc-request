@@ -1,43 +1,37 @@
-= nested_form_for @sub_service_request, :url => study_tracker_sub_service_request_path do |f|
-  - if @sub_service_request.errors.any?
-    #error_explanation
-      %h2
-        = pluralize(@sub_service_request.errors.count, "error")
-        prohibited these subjects from being saved:
-      %ul
-        - @sub_service_request.errors.full_messages.each do |msg|
-          %li= msg
-  #subjects
+#subjects
+  = nested_form_for @service_request, :url => study_tracker_service_request_path(@service_request) do |f|
+    = hidden_field_tag :sub_service_request_id, @sub_service_request.id
     / = instructions_for 'subjects'
-    - @service_request.arms.each do |arm|
-      %table#subjects_list
-        %thead
-          %tr
-            %th.subject_name Subject Name
-            %th.subject_mrn MRN
-            %th.subject_id Subject ID
-            %th.subject_dob Date of Birth
-            %th.subject_gender Gender
-            %th.subject_ethnicity Ethnicity
-            %th.subject_arm Arm
-            %th &nbsp;
-        %tbody
-          - arm.subjects.each_with_index do |subject, index|
-            = f.fields_for :subjects, wrapper: false do |subject_form|
-              %tr{:class => "subject_id_#{subject.id}"}
+    - if @service_request.errors.any?
+      #error_explanation
+        %h2
+          = pluralize(@service_request.errors.count, "error")
+          prohibited these subjects from being saved:
+        %ul
+          - @service_request.errors.full_messages.each do |msg|
+            %li= msg
+    .arm_container
+      = f.fields_for :arms, wrapper: false do |arm_form|
+        %table#subjects_list
+          %thead
+            %tr
+              %th.subject_name Subject Name
+              %th.subject_mrn MRN
+              %th.subject_id Subject ID
+              %th.subject_dob Date of Birth
+              %th.subject_gender Gender
+              %th.subject_ethnicity Ethnicity
+              %th.subject_arm Arm
+              %th &nbsp;
+          %tbody
+            = arm_form.fields_for :subjects, wrapper: false do |subject_form|
+              %tr{:class => "subject_id_#{subject_form.try(:object).try(:id)}"}
                 %td.subject_name= subject_form.text_field :name
                 %td.subject_mrn= subject_form.text_field :mrn
-                %td.subject_id= subject.id
+                %td.subject_id= subject_form.try(:object).try(:id)
                 %td.subject_dob= subject_form.text_field :dob
                 %td.subject_gender= subject_form.text_field :gender
                 %td.subject_ethnicity= subject_form.text_field :ethnicity
-                %td.subject_arm= arm.name
+                %td.subject_arm= arm_form.object.name
                 %td
-                  / = link_to image_tag('pencil.png') + ' Edit', edit_study_subject_path(@study, subject), :class => 'action_button', :style => 'float:left'
-                  / = link_to(image_tag('calendar.png') + ' Visit Schedule', edit_study_subject_calendar_path(@study, subject, subject.calendar), :class => 'action_button', :style => 'float:left') if @study.has_template?
-                  / = link_to image_tag('portal/cancel.png') + 'Delete', study_subject_path(@study, subject), :method => :delete, :confirm => 'Are you sure you want to remove this subject?', :class => 'action_button', :style => 'float:left'
-                  / = link_to 'Export to Excel', study_subject_calendar_path(@study, subject, subject.calendar, :format => :xls), :class => 'action_button'
-            / %tr{:class => cycle('even', 'odd')}
-            /   %td{:colspan => 4}
-            /     = form_for [@study, @subject] do |subject_form|
-            /       = subject_form.submit 'Add a Subject', :class => 'action_button'
+    %p= f.submit "Save"

@@ -176,41 +176,6 @@ describe "study schedule", :js => true do
         end
       end
 
-      describe "quantity tab" do
-
-        before :each do
-          @visit_id = arm1.line_items_visits.first.visits[1].id
-        end
-
-        it "should add all billing quantities together" do
-          click_link "billing_strategy_tab"
-          wait_for_javascript_to_finish
-
-          visit_id = @visit_id
-
-          fill_in "visits_#{visit_id}_research_billing_qty", :with => 10
-          find("#visits_#{visit_id}_insurance_billing_qty").click()
-          wait_for_javascript_to_finish
-
-          fill_in "visits_#{visit_id}_insurance_billing_qty", :with => 10
-          find("#visits_#{visit_id}_effort_billing_qty").click()
-          wait_for_javascript_to_finish
-
-          fill_in "visits_#{visit_id}_effort_billing_qty", :with => 10
-          find("#visits_#{visit_id}_research_billing_qty").click()
-          wait_for_javascript_to_finish
-
-          click_link "quantity_tab"
-          wait_for_javascript_to_finish
-
-          all(".visit.visit_column_2.arm_#{arm1.id}").each do |x|
-            if x.visible?
-              x.should have_exact_text('30')
-            end
-          end
-        end
-      end
-
       describe "hovering over visit name text box" do
 
         it "should open up a qtip message" do

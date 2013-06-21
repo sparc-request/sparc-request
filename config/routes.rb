@@ -119,6 +119,8 @@ SparcRails::Application.routes.draw do
     root :to => 'home#index'
     resources :sub_service_requests do
     end
+    resources :service_requests do
+    end
   end
   
   ##### sparc-user routes brought in and namespaced

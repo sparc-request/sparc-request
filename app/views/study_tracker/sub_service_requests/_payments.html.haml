@@ -34,9 +34,9 @@
                 = upload_form.file_field :file
               - else 
                 .file_attachment
-                  = link_to upload_form.object.file.original_filename, upload_form.object.file.url
-                  = upload_form.link_to_remove "Remove", confirm: "Are you sure you want to delete this document?"
-            = payment_form.link_to_add "Add a document", :uploads
-          %td.remove= payment_form.link_to_remove t(:study_tracker)[:payments][:remove], confirm: t(:study_tracker)[:payments][:confirm]
-  %p= f.link_to_add t(:study_tracker)[:payments][:add], :payments, data: { target: '#payments_list tbody' }
-  %p= f.submit t(:study_tracker)[:save]
+                  = link_to upload_form.object.file.original_filename, upload_form.object.file.url, class: "filename", target: "_blank"
+                  = upload_form.link_to_remove "Remove", confirm: "Are you sure you want to delete this document?", class: "uploads"
+            = payment_form.link_to_add "Add document", :uploads, class: "uploads"
+          %td.remove= payment_form.link_to_remove "Remove", confirm: "Are you sure you want to delete this payment?", class: "payments"
+  %p= f.link_to_add t(:study_tracker)[:payments][:add], :payments, data: { target: '#payments_list tbody' }, class: "payments"
+  %p.buttons= t(:study_tracker)[:save], class: 'ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover ui-state-active'

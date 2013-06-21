@@ -1,0 +1,100 @@
+form.edit_sub_service_request {
+  p{ margin-bottom: 1.5em; }
+}
+
+
+table#payments_list {
+  border-collapse:collapse;
+  td,th {
+    padding: 5px;
+  }
+
+  thead{
+    th {
+      vertical-align: bottom; 
+      border-bottom: 2px solid #000; 
+    }
+  }
+  tbody{ 
+    vertical-align:top;
+
+    td {
+      border-bottom: 1px solid #f3f3f3;
+    }
+
+    .date_submitted input,
+    .date_received input {
+      text-align: center;
+    }
+    .amount_received input,
+    .amount_invoiced input {
+      text-align: right;
+    }
+
+    input {
+      width: 100%;
+    }
+  }
+}
+
+
+.file_attachment {
+  position: relative;
+  border: 1px solid #EEE;
+  background: #fafafa;
+  padding: 2px;
+  margin-bottom: 2px;
+
+  .filename {
+    display: block;
+    margin-right: 16px;
+    white-space: nowrap;
+    text-overflow:ellipsis;
+    overflow: hidden;
+    width: 6em;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  .remove_nested_fields {
+    position: absolute;
+    right: 1px;
+    top: 4px;
+    width: 14px;
+    height: 14px;
+    text-indent: -1000em;
+    overflow: hidden;
+    background: url(../clear_icon.png);
+  }
+}
+
+.remove_nested_fields.payments {
+  display: block;
+  height: 16px;
+  width: 16px;
+  text-indent: -1000em;
+  overflow: hidden;
+  background: url(delete.png) no-repeat left top;
+}
+
+.add_nested_fields.payments {
+    background: url(add.png) no-repeat left center;
+    padding-left: 17px;
+    color: #3d8834;
+
+    &:hover {
+      text-decoration: underline;
+    } 
+}
+
+.add_nested_fields.uploads {
+    background: url(attach.png) no-repeat left center;
+    padding-left: 17px;
+    white-space: nowrap;
+
+    &:hover {
+      text-decoration: underline;
+    } 
+}

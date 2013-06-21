@@ -9,8 +9,9 @@ describe "payments", js: true do
 
   before :each do
     create_visits
-    sub_service_request.update_attributes(:in_work_fulfillment => true)
-    visit study_tracker_sub_service_request_path sub_service_request.id
+    
+    sub_service_request.update_attributes(in_work_fulfillment: true)
+    visit study_tracker_sub_service_request_path(sub_service_request.id)
     click_link("Payments")
   end
 

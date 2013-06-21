@@ -113,8 +113,8 @@ class ServiceRequest < ActiveRecord::Base
   def service_calendar_page
     self.arms.each do |arm|
       arm.visit_groups.each do |vg|
-        if !vg.valid?
-          errors.add(:visit_group, "You must specifiy a day for each visit. Please ensure they are all in order.")
+        if vg.day.blank?
+          errors.add(:visit_group, "You must specifiy a day for each visit. Please also ensure they are all in order.")
           return
         end
       end

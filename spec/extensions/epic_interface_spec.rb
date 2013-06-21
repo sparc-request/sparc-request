@@ -2,6 +2,15 @@ require 'epic_interface'
 require 'spec_helper'
 require 'equivalent-xml'
 
+def strip_xml_whitespace(root)
+  root.xpath('//text()').each do |n|
+    if n.content =~ /^\s+$/ then
+      # whitespace only
+      n.remove
+    end
+  end
+end
+
 describe EpicInterface do
   server = nil
   port = nil
@@ -54,37 +63,28 @@ describe EpicInterface do
         'study_root' => '1.2.3.4')
   }
 
-  let!(:study) { FactoryGirl.build(:study) }
+  let!(:study) {
+    study = FactoryGirl.build(:study)
+    study.save(validate: false)
+    study
+  }
 
   describe 'send_study' do
-    it 'should do something' do
+    it 'should work (smoke test)' do
       epic_interface.send_study(study)
-
-      # <env:Body>
-      #   <rpe:RetrieveProtocolDefResponse>
-      #     <protocolDef>
-      #       <query root="" extension=""/>
-      #       <plannedStudy classCode="CLNTRL" moodCode="DEF">
-      #         <id root="" extension=""/>
-      #         <title>At nemo pariatur ducimus.</title>
-      #         <text>Consequuntur tenetur praesentium esse est pariatur maiores et. Dolor delectus iure accusantium sed.</text>
-      #       </plannedStudy>
-      #     </protocolDef>
-      #   </rpe:RetrieveProtocolDefResponse>
-      # </env:Body>
 
       xml = Gyoku.xml(
         'protocolDef' => {
           'query' => {
             '@root' => '1.2.3.4',
-            '@extension' => '',
+            '@extension' => study.id,
           },
           'plannedStudy' => {
             '@classCode' => 'CLNTRL',
             '@moodCode' => 'DEF',
             'id' => {
               '@root' => '1.2.3.4',
-              '@extension' => '',
+              '@extension' => study.id,
             },
             'title' => study.title,
             'text' => study.brief_description,
@@ -98,6 +98,38 @@ describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009')
 
       node.should be_equivalent_to(expected)
+    end
+
+    it 'should emit a subjectOf for a PI' do
+      identity = FactoryGirl.create(:identity)
+
+      pi_role = FactoryGirl.create(
+          :project_role,
+          protocol_id:     study.id,
+          identity_id:     identity.id,
+          project_rights:  "approve",
+          role:            "pi")
+
+      epic_interface.send_study(study)
+
+      xml = <<-END
+        <subjectOf typeCode="SUBJ"
+                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+          <studyCharacteristic classCode="OBS" moodCode="EVN">
+            <code code="PI" />
+            <value xsi:type="ST" value="#{identity.ldap_uid}" />
+          </studyCharacteristic>
+        </subjectOf>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+          '//env:Body/rpe:RetrieveProtocolDefResponse/protocolDef/plannedStudy/subjectOf',
+          'env' => 'http://www.w3.org/2003/05/soap-envelope',
+          'rpe' => 'urn:ihe:qrph:rpe:2009')
+
+      node[0].should be_equivalent_to(expected.root)
     end
   end
 

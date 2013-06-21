@@ -1,5 +1,6 @@
 require 'savon'
 require 'securerandom'
+require 'builder'
 
 # The Savon client by default does not allow adding new soap headers
 # except via the global configuration.  This monkey patch allows adding
@@ -66,30 +67,31 @@ class EpicInterface
       'wsa:To' => @endpoint,
     }
 
-    message = {
-      'protocolDef' => {
-        'query' => {
-          '@root' => @root,
-          '@extension' => study.id, # TODO
-        },
-        'plannedStudy' => {
-          '@classCode' => 'CLNTRL',
-          '@moodCode' => 'DEF',
-          # TODO: ITSVersion?
-          'id' => {
-            '@root' => @root,
-            '@extension' => study.id, # TODO
-          },
-          'title' => study.title,
-          'text' => study.brief_description,
-        }
+    subject_ofs = [ ]
+
+    xml = Builder::XmlMarkup.new
+    xml.protocolDef {
+      xml.query(root: @root, extension: study.id)
+      xml.plannedStudy(classCode: 'CLNTRL', moodCode: 'DEF') {
+        xml.id(root: @root, extension: study.id)
+        xml.title study.title
+        xml.text study.brief_description
+
+        study.project_roles.each do |project_role|
+          xml.subjectOf(typeCode: 'SUBJ') {
+            xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
+              xml.code(code: project_role.role.upcase)
+              xml.value('xsi:type' => 'ST', value: project_role.identity.ldap_uid)
+            }
+          }
+        end
       }
     }
 
     @client.call(
         'RetrieveProtocolDefResponse',
         soap_header: soap_header,
-        message: message)
+        message: xml.target)
 
     # TODO: handle response from the server
   end

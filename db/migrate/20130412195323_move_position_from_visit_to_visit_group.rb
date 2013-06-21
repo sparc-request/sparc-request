@@ -11,6 +11,11 @@ class MovePositionFromVisitToVisitGroup < ActiveRecord::Migration
     belongs_to :visit_group
     belongs_to :line_items_visit
   end
+  class VisitGroup < ActiveRecord::Base
+    attr_accessible :arm_id
+    attr_accessible :name
+    acts_as_list :scope => :arm
+  end
   def up
   	add_column :visit_groups, :position, :integer
 
@@ -21,9 +26,10 @@ class MovePositionFromVisitToVisitGroup < ActiveRecord::Migration
         if arm.visit_count != visit_count
           arm.update_attributes(visit_count: visit_count)
         end
-
+        puts "Arm visit count: #{arm.visit_count}"
         (arm.visit_count || 0).times do |index|
-          VisitGroup.create(arm_id: arm.id)
+          puts "Index: #{index}"
+          VisitGroup.create(arm_id: arm.id, position: index + 1)
         end
         puts "Arm Id:"
         puts arm.id
@@ -33,6 +39,7 @@ class MovePositionFromVisitToVisitGroup < ActiveRecord::Migration
           visit_group = VisitGroup.where("arm_id = ? AND position = ?", arm.id, visit.position).first
           puts "Visit Group ID: #{visit_group.id}"
           visit.update_attributes(visit_group_id: visit_group.id)
+          visit_group.update_attributes(name: visit.name) unless visit.name.blank?
         end
       end
     end

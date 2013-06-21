@@ -64,7 +64,7 @@ def build_service_request
   let!(:arm1)                { FactoryGirl.create(:arm, name: "Arm", service_request_id: service_request.id, visit_count: 10, subject_count: 2)}
   let!(:arm2)                { FactoryGirl.create(:arm, name: "Arm2", service_request_id: service_request.id, visit_count: 5, subject_count: 4)}
 
-  let!(:visit_group)         { FactoryGirl.create(:visit_group, arm_id: arm1.id, position: 1)}
+  let!(:visit_group)         { FactoryGirl.create(:visit_group, arm_id: arm1.id, position: 1, day: 1)}
   let!(:service_provider)    { FactoryGirl.create(:service_provider, organization_id: program.id, identity_id: jug2.id)}
   let!(:super_user)          { FactoryGirl.create(:super_user, organization_id: program.id, identity_id: jpl6.id)}
   let!(:catalog_manager)     { FactoryGirl.create(:catalog_manager, organization_id: program.id, identity_id: jpl6.id) }
@@ -84,6 +84,7 @@ end
 def add_visits
   create_visits
   update_visits
+  update_visit_groups
 end
 
 def create_visits
@@ -100,6 +101,14 @@ def update_visits
   service_request.arms.each do |arm|
     arm.visits.each do |visit|
       visit.update_attributes(quantity: 15, research_billing_qty: 5, insurance_billing_qty: 5, effort_billing_qty: 5, billing: Faker::Lorem.word)
+    end
+  end
+end
+
+def update_visit_groups
+  service_request.arms.each do |arm|
+    arm.visit_groups.each do |vg|
+      vg.update_attributes(day: vg.position)
     end
   end
 end

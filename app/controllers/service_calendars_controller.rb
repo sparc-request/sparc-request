@@ -71,4 +71,28 @@ class ServiceCalendarsController < ApplicationController
 
     arm.visit_groups[position].update_attribute(:name, name)
   end
+
+  def set_day
+    day = params[:day]
+    position = params[:position].to_i
+    arm = Arm.find params[:arm_id]
+
+    if !arm.update_visit_group_day(day, position)
+      respond_to do |format|
+        format.js { render :status => 418, :json => clean_messages(arm.errors.messages) }
+      end
+    end
+  end
+
+  def set_window
+    window = params[:window]
+    position = params[:position].to_i
+    arm = Arm.find params[:arm_id]
+
+    if !arm.update_visit_group_window(window, position)
+      respond_to do |format|
+        format.js { render :status => 418, :json => clean_messages(arm.errors.messages) }
+      end
+    end
+  end
 end

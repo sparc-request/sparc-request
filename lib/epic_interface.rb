@@ -76,7 +76,7 @@ class EpicInterface
     xml.query(root: @root, extension: study.id)
 
     xml.protocolDef {
-      xml.plannedStudy(classCode: 'CLNTRL', moodCode: 'DEF') {
+      xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
         xml.id(root: @root, extension: study.id)
         xml.title study.title
         xml.text study.brief_description
@@ -109,7 +109,7 @@ class EpicInterface
     xml.query(root: @root, extension: study.id)
 
     xml.protocolDef {
-      xml.plannedStudy(classCode: 'CLNTRL', moodCode: 'DEF') {
+      xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
         xml.id(root: @root, extension: study.id)
         xml.title study.title
         xml.text study.brief_description

@@ -63,6 +63,7 @@ gem 'devise'
 gem 'omniauth'
 gem 'omniauth-shibboleth'
 gem "nested_form"
+gem 'jquery_datepicker'
 
 gem 'exception_notification'
 

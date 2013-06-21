@@ -103,7 +103,9 @@ describe EpicInterface do
     end
 
     it 'should emit a subjectOf for a PI' do
-      identity = FactoryGirl.create(:identity)
+      identity = FactoryGirl.create(
+          :identity,
+          ldap_uid: 'happyhappyjoyjoy@musc.edu')
 
       pi_role = FactoryGirl.create(
           :project_role,
@@ -120,7 +122,7 @@ describe EpicInterface do
                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
           <studyCharacteristic classCode="OBS" moodCode="EVN">
             <code code="PI" />
-            <value xsi:type="ST" value="#{identity.ldap_uid}" />
+            <value xsi:type="ST" value="#{identity.netid}" />
           </studyCharacteristic>
         </subjectOf>
       END

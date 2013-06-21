@@ -85,7 +85,7 @@ class EpicInterface
           xml.subjectOf(typeCode: 'SUBJ') {
             xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
               xml.code(code: project_role.role.upcase)
-              xml.value('xsi:type' => 'ST', value: project_role.identity.ldap_uid) # TODO: netid not ldap_uid
+              xml.value('xsi:type' => 'ST', value: project_role.identity.netid)
             }
           }
         end

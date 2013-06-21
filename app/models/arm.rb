@@ -11,7 +11,7 @@ class Arm < ActiveRecord::Base
   attr_accessible :visit_count
   attr_accessible :subject_count      # maximum number of subjects for any visit grouping
   attr_accessible :subjects_attributes
-  accepts_nested_attributes_for :subjects
+  accepts_nested_attributes_for :subjects, allow_destroy: true
 
   def valid_visit_count?
     return !visit_count.nil? && visit_count > 0

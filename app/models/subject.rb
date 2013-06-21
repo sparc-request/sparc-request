@@ -7,6 +7,7 @@ class Subject < ActiveRecord::Base
   attr_accessible :dob
   attr_accessible :gender
   attr_accessible :ethnicity
+  attr_accessible :external_subject_id
 
   after_create { self.create_calendar }
 end

@@ -59,20 +59,24 @@ class EpicInterface
         })
   end
 
-  # Send a study to the Epic InterConnect server.
-  def send_study(study)
+  def soap_header(msg_type)
     soap_header = {
-      'wsa:Action' => "#{@namespace}:RetrieveProtocolDefResponse",
+      'wsa:Action' => "#{@namespace}:#{msg_type}",
       'wsa:MessageID' => SecureRandom.uuid,
       'wsa:To' => @endpoint,
     }
 
-    subject_ofs = [ ]
+    return soap_header
+  end
 
+  # Send a study to the Epic InterConnect server.
+  def send_study(study)
     xml = Builder::XmlMarkup.new
+
+    xml.query(root: @root, extension: study.id)
+
     xml.protocolDef {
-      xml.query(root: @root, extension: study.id)
-      xml.plannedStudy(classCode: 'CLNTRL', moodCode: 'DEF') {
+      xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
         xml.id(root: @root, extension: study.id)
         xml.title study.title
         xml.text study.brief_description
@@ -81,7 +85,7 @@ class EpicInterface
           xml.subjectOf(typeCode: 'SUBJ') {
             xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
               xml.code(code: project_role.role.upcase)
-              xml.value('xsi:type' => 'ST', value: project_role.identity.ldap_uid)
+              xml.value('xsi:type' => 'ST', value: project_role.identity.netid)
             }
           }
         end
@@ -90,8 +94,126 @@ class EpicInterface
 
     @client.call(
         'RetrieveProtocolDefResponse',
-        soap_header: soap_header,
-        message: xml.target)
+        soap_header: soap_header('RetrieveProtocolDefResponse'),
+        message: xml.target!)
+
+    # TODO: handle response from the server
+  end
+
+  # Send a study's billing calendar to the Epic InterConnect server.
+  # The study must have already been created (via #send_study) before
+  # calling this method.
+  def send_billing_calendar(study)
+    xml = Builder::XmlMarkup.new
+
+    xml.query(root: @root, extension: study.id)
+
+    xml.protocolDef {
+      xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
+        xml.id(root: @root, extension: study.id)
+        xml.title study.title
+        xml.text study.brief_description
+
+        # component1 - One calendar event definition out of a sequence.
+        # Must contain a timePointEventDefinition tag.
+        #
+        # component2 - an event's clinical activity.
+        #
+        # component4 - One calendar event definition out of an unordered
+        # list.  used to define either the study structure (setup of
+        # Calendar, Cycles, and Days/Visits) or setup of specific visit
+        # (Procedures within a visit.  Also known as activities).
+
+        study.service_requests.each do |service_request|
+          service_request.arms.each_with_index do |arm, arm_idx|
+
+            xml.component4(typeCode: 'COMP') {
+              xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
+                xml.id(root: @root, extension: "STUDY#{study.id}.ARM#{arm.id}")
+                xml.title(arm.name)
+                xml.code(code: 'CELL', codeSystem: 'n/a')
+
+                xml.component1(typeCode: 'COMP') {
+                  xml.sequenceNumber(value: arm_idx + 1) 
+
+                  xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
+                    xml.id(root: @root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE1")
+                    xml.title('Cycle 1')
+                    xml.code(code: 'CYCLE', codeSystem: 'n/a')
+
+                    xml.effectiveTime {
+                      xml.low(value: service_request.start_date) # TODO Probably start date of service request
+                      xml.high(value: service_request.end_date) # TODO Probably end date of service request
+                    }
+
+                    xml.component1(typeCode: 'COMP') {
+                      xml.sequenceNumber(value: 'TODO') # TODO
+                      xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
+                        xml.id(root: @root, extension: 'TODO') # TODO
+                        xml.title('TODO') # TODO
+                      }
+                    }
+
+                  } # timePointEventDefinition
+                } # component1
+              } # timePointEventDefinition
+            } # component4
+          end
+        end
+
+        study.service_requests.each do |service_request|
+          service_request.arms.each do |arm|
+            arm.visit_groups.each do |visit_group|
+              # TODO: not sure if I'm iterating over the right things
+              # here...
+              xml.component4(typeCode: 'COMP') {
+                xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
+                  xml.id(root: @root, extension: "STUDY#{study.id}.ARM#{arm.id}.VISITGROUP#{visit_group.id}") # TODO Probably study_id.arm_id.visit_group_id
+                  xml.title(visit_group.name)
+                  xml.code(code: 'VISIT', codeSystem: 'n/a')
+
+                  arm.line_items.each do |line_item|
+                    xml.component1(typeCode: 'COMP') {
+                      xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
+                        xml.id(root: @root, extension: 'TODO') # TODO
+                        xml.code(code: 'PROC', codeSystem: 'n/a')
+
+                        xml.component2(typeCode: 'COMP') {
+                          xml.procedure(classCode: 'PROC', moodCode: 'EVN') {
+                            xml.code(code: 'TODO', codeSystem: 'n/a') # TODO: CPT code for service
+                          }
+                        }
+
+                      } # timePointEventDefinition
+                    } # component1
+                  end
+
+                  visit_group.visits.each do |visit| # TODO: is this right?
+                    xml.component2(typeCode: 'COMP') {
+                      xml.encounter(classCode: 'ENC', moodCode: 'DEF') {
+                        xml.effectiveTime {
+                          xml.low(value: 'TODO') # TODO Service Request start day + visit.day - visit.window
+                          xml.high(value: 'TODO') # TODO Service Request start day + visit.day + visit.window
+                        }
+                        xml.activityTime(value: 'TODO') # TODO Service Request start day + visit.day
+                      }
+                    }
+                  end
+
+                } # timePointEventDefinition
+              } # component4
+            end
+          end
+        end
+
+
+      }
+    }
+
+    @client.call(
+        'RetrieveProtocolDefResponse',
+        soap_header: soap_header('RetrieveProtocolDefResponse'),
+        message: xml.target!)
 
     # TODO: handle response from the server
   end

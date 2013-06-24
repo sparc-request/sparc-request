@@ -78,6 +78,15 @@ class Identity < ActiveRecord::Base
     "#{first_name.try(:humanize)} #{last_name.try(:humanize)} (#{email})".lstrip.rstrip
   end
 
+  # Return the netid (ldap_uid without the @musc.edu)
+  def netid
+    if USE_LDAP then
+      return ldap_uid.sub(/@#{Directory::DOMAIN}/, '')
+    else
+      return ldap_uid
+    end
+  end
+
   ###############################################################################
   ############################ ATTRIBUTE METHODS ################################
   ###############################################################################

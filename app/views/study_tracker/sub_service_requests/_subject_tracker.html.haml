@@ -10,7 +10,7 @@
         %ul
           - @service_request.errors.full_messages.each do |msg|
             %li= msg
-    = f.fields_for :arms, wrapper: false do |arm_form|
+    = f.fields_for :arms do |arm_form|
       .arm_container{:style => "padding:10px 5px;"}
         %h3= arm_form.object.name
         %table.service_calendar{:id => "subjects_list_#{arm_form.object.id}"}

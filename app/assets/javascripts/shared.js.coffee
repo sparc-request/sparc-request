@@ -1,6 +1,9 @@
 $(document).ready ->
   $(document).ajaxError (event, request, settings) ->
-    if request.statusText != 'abort' && settings.url != '/service_requests/feedback'
+    # If you're reading this and wondering why you are getting this message I can't help you
+    # What I can do is give you a way around it for custom errors
+    # Set your response status to 418 which can be found https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+    if request.status != 418 && request.statusText != 'abort' && settings.url != '/service_requests/feedback'
       alert("An error happened processing your request: " + settings.url)
 
   $('.edit_project_role').live 'click', ->

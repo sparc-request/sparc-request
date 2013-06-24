@@ -22,8 +22,11 @@ class Arm < ActiveRecord::Base
   end
 
   def create_line_items_visit line_item
-    if self.visit_groups.size < self.visit_count
-      self.visit_groups.create until self.visit_groups.size == self.visit_count
+    while self.visit_groups.size < self.visit_count
+      visit_group = self.visit_groups.new
+      if not visit_group.save(validate: false) then
+        raise ActiveRecord::Rollback
+      end
     end
     
     liv = LineItemsVisit.for(self, line_item)
@@ -88,9 +91,19 @@ class Arm < ActiveRecord::Base
   # rename this method to add_visit! and make it raise exceptions; it
   # would be easier to read.  But I'm not sure how to get access to the
   # errors object in that case.
-  def add_visit position=nil
+  def add_visit position=nil, day=nil, window=0
     result = self.transaction do
-      self.create_visit_group(position)
+      if not self.create_visit_group(position) then
+        raise ActiveRecord::Rollback
+      end
+
+      if not self.update_visit_group_day(day, position) then
+        raise ActiveRecord::Rollback
+      end
+
+      if not self.update_visit_group_window(window, position) then
+        raise ActiveRecord::Rollback
+      end
 
       # Reload to force refresh of the visits
       self.reload
@@ -111,14 +124,14 @@ class Arm < ActiveRecord::Base
 
   def create_visit_group position=nil
     if not visit_group = self.visit_groups.create(position: position) then
-      raise ActiveRecord::Rollback
+      return false
     end
 
     # Add visits to each line item under the service request
     self.line_items_visits.each do |liv|
       if not liv.add_visit(visit_group) then
         self.errors.initialize_dup(liv.errors) # TODO: is this the right way to do this?
-        raise ActiveRecord::Rollback
+        return false
       end
     end
 
@@ -151,5 +164,47 @@ class Arm < ActiveRecord::Base
       subject = self.subjects.create
       subject.calendar.populate(groups)
     end
+  end
+
+  def update_visit_group_day day, position
+    position = position.blank? ? self.visit_groups.count - 1 : position.to_i
+    before = self.visit_groups[position - 1] unless position == 0
+    current = self.visit_groups[position]
+    after = self.visit_groups[position + 1] unless position >= self.visit_groups.size - 1
+
+    valid_day = Integer(day) rescue false
+    if !valid_day
+      self.errors.add(:invalid_day, "You've entered an invalid number for the day. Please enter a valid number.")
+      return false
+    end
+
+    if !before.nil? && !before.day.nil?
+      if before.day > valid_day
+        self.errors.add(:out_of_order, "The days are out of order. This day appears to go before the previous day.")
+        return false
+      end
+    end
+
+    if !after.nil? && !after.day.nil?
+      if valid_day > after.day
+        self.errors.add(:out_of_order, "The days are out of order. This day appears to go after the next day.")
+        return false
+      end
+    end
+
+    return current.update_attributes(:day => valid_day)
+  end
+
+  def update_visit_group_window window, position
+    position = position.to_i || self.visit_groups.count
+
+    valid = Integer(window) rescue false
+    if !valid
+      self.errors.add(:invalid_window, "You've entered an invalid number for the +/- window. Please enter a valid number")
+      return false
+    end
+
+    visit_group = self.visit_groups[position]
+    return visit_group.update_attributes(:window => window)
   end
 end

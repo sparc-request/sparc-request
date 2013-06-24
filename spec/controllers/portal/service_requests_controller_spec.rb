@@ -42,6 +42,9 @@ describe Portal::ServiceRequestsController do
         arm_id: arm1.id,
         service_request_id: service_request.id,
         sub_service_request_id: sub_service_request.id,
+        visit_name: 'Test Name',
+        visit_day: 20,
+        visit_window: 10,
       }.with_indifferent_access
 
       assigns(:sub_service_request).should eq sub_service_request
@@ -64,6 +67,9 @@ describe Portal::ServiceRequestsController do
         arm_id: arm1.id,
         service_request_id: service_request.id,
         sub_service_request_id: sub_service_request.id,
+        visit_name: 'Test Name',
+        visit_day: 20,
+        visit_window: 10,
       }.with_indifferent_access
 
       LineItemsVisit.for(arm1, line_item).visits.count.should eq 0

@@ -25,6 +25,7 @@ group :development, :test, :profile do
   gem 'quiet_assets'
   gem 'connection_pool'
   gem 'thin'
+  gem 'equivalent-xml'
 
   # Add dependency on poltergeist.  If you want to use poltergeist, you
   # will need to configure Capybara to use it.  This particular
@@ -116,3 +117,7 @@ gem 'letter_opener'
 
 gem 'prawn'
 gem 'acts-as-taggable-on', '~> 2.3.1'
+
+gem 'savon', '~> 2.2.0'    # SOAP client
+gem 'gyoku'                # XML builder
+gem 'nori', '~> 2.1.0'     # XML parser

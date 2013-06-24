@@ -2,12 +2,6 @@
 #= require constants
 
 $(document).ready ->
-  $('#service_calendar').tabs
-    show: (event, ui) -> 
-      $(ui.panel).html('<div class="ui-corner-all" style = "border: 1px solid black; padding: 25px; width: 200px; margin: 30px auto; text-align: center">Loading data....<br /><img src="/assets/spinner.gif" /></div>')
-    select: (event, ui) ->
-      $(ui.panel).html('<div class="ui-corner-all" style = "border: 1px solid black; padding: 25px; width: 200px; margin: 30px auto; text-align: center">Loading data....<br /><img src="/assets/spinner.gif" /></div>')
-
   $('.visit_number a, .service_calendar_row').live 'click', ->
     $('.service_calendar_spinner').show()
   
@@ -77,12 +71,50 @@ $(document).ready ->
     .complete ->
       $('.service_calendar_spinner').hide()
 
-  $(".visit_name").live 'mouseover', ->
-    $(this).qtip
-      overwrite: false
-      content: "Click to rename your visits."
-      show:
-        ready: true
+  $(document).on('change', '.visit_day', ->
+    # Grab the day
+    position = $(this).data('position')
+    day_val = $(this).val()
+    original_val = $(this).data('day')
+    $('.service_calendar_spinner').show()
+    $.ajax
+      type: 'PUT'
+      url: $(this).attr('update')
+      data: {day: day_val, position: position}
+      success: =>
+        $(this).data('day', day_val)
+    .error (event, request, test) =>
+      alertText = stack_errors_for_alert(JSON.parse(event.responseText))
+      alert(alertText)
+      $(this).val(original_val)
+    .complete ->
+      $('.service_calendar_spinner').hide()
+  )
+
+  $('.visit_window').live 'change', ->
+    # Grab the day
+    position = $(this).data('position')
+    window_val = $(this).val()
+    original_val = $(this).data('window')
+    $('.service_calendar_spinner').show()
+    $.ajax
+      type: 'PUT'
+      url: $(this).attr('update')
+      data: {window: window_val, position: position}
+      success: =>
+        $(this).data('window', window_val)
+    .error (event, request, test) =>
+      alertText = stack_errors_for_alert(JSON.parse(event.responseText))
+      alert(alertText)
+      $(this).val(original_val)
+    .complete ->
+      $('.service_calendar_spinner').hide()
+
+stack_errors_for_alert = (errors) ->
+  compiled = ''
+  for error in errors
+    compiled += error + '\n'
+  return compiled
 
 (exports ? this).calculate_max_rates = (arm_id) ->
   for num in [1..5]

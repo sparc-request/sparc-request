@@ -34,7 +34,14 @@ service_calendar:
   catalog: catalog
   forward: calendar_totals
   validation_groups:
+    protocol:
+      - service_calendar
+    service_details:
+      - service_calendar
+    calendar_totals:
+      - service_calendar
     service_subsidy:
+      - service_calendar
 
 calendar_totals:
   step_text: 'STEP 2: Study Cost Totals'

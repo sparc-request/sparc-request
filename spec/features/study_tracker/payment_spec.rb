@@ -9,6 +9,7 @@ describe "payments", js: true do
 
   before :each do
     create_visits
+    sub_service_request.update_attributes(:in_work_fulfillment => true)
     visit study_tracker_sub_service_request_path sub_service_request.id
     click_link("Payments")
   end
@@ -49,8 +50,8 @@ describe "payments", js: true do
       it "takes you back to the payments tab with the new record rendered" do
         within('#payments') do
           find(".date_submitted input").should have_value("6/13/2013")
-          find(".amount_invoiced input").should have_value("500")
-          find(".amount_received input").should have_value("400")
+          find(".amount_invoiced input").should have_value("500.0")
+          find(".amount_received input").should have_value("400.0")
           find(".date_received input").should have_value("6/14/2013")
           find(".payment_method select").should have_value("Check")
           find(".details textarea").should have_value("Some details")

@@ -50,7 +50,10 @@ module ApplicationHelper
   end
 
   def generate_visit_header_row arm, service_request, page
-    base_url = "/service_requests/#{service_request.id}/service_calendars/rename_visit"
+    base_url = "/service_requests/#{service_request.id}/service_calendars"
+    rename_visit_url = base_url + "/rename_visit"
+    day_url = base_url + "/set_day"
+    window_url = base_url + "/set_window"
     page = page == 0 ? 1 : page
     beginning_visit = (page * 5) - 4
     ending_visit = (page * 5) > arm.visit_count ? arm.visit_count : (page * 5)
@@ -62,13 +65,19 @@ module ApplicationHelper
       checked = line_items_visits.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?
       action = checked == true ? 'unselect_calendar_column' : 'select_calendar_column'
       icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
-      visit_name = visit_groups[n - 1].name || "Visit Group #{n}"
+      visit_name = visit_groups[n - 1].name || "Visit #{n}"
+      visit_group = visit_groups[n - 1]
       
       if params[:action] == 'review' || params[:action] == 'show' || params[:action] == 'refresh_service_calendar'
         returning_html += content_tag(:th, content_tag(:span, visit_name), :width => 60, :class => 'visit_number')
       else
         returning_html += content_tag(:th,
-                                      text_field_tag("arm_#{arm.id}_visit_name_#{n}", visit_name, :class => "visit_name", :size => 10, :update => "#{base_url}?visit_position=#{n-1}&arm_id=#{arm.id}") +
+                                      label_tag("Day    +/-") +
+                                      tag(:br) +
+                                      text_field_tag("day", visit_group.day, :class => "visit_day position_#{n}", :size => 3, :'data-position' => n - 1, :'data-day' => visit_group.day, :update => "#{day_url}?arm_id=#{arm.id}") +
+                                      text_field_tag("window", visit_group.window, :class => "visit_window position_#{n}", :size => 3, :'data-position' => n - 1, :'data-window' => visit_group.window, :update => "#{window_url}?arm_id=#{arm.id}") +
+                                      tag(:br) +
+                                      text_field_tag("arm_#{arm.id}_visit_name_#{n}", visit_name, :class => "visit_name", :size => 10, :update => "#{rename_visit_url}?visit_position=#{n-1}&arm_id=#{arm.id}") +
                                       tag(:br) + 
                                       link_to((content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')), 
                                               "/service_requests/#{service_request.id}/#{action}/#{n}/#{arm.id}",

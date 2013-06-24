@@ -20,11 +20,11 @@
         %th.documents= t(:study_tracker)[:payments][:documents]
         %th.remove
     %tbody
-      = f.fields_for :payments, wrapper: false do |payment_form|
+      = f.fields_for :payments, wrapper: false, builder: SparcFormBuilder do |payment_form|
         %tr.fields
           %td.date_submitted= payment_form.datepicker :formatted_date_submitted, size: 10, dateFormat: "m/dd/yy"
-          %td.amount_invoiced= payment_form.text_field :amount_invoiced, size: 6
-          %td.amount_received= payment_form.text_field :amount_received, size: 6
+          %td.amount_invoiced= payment_form.currency_text_field :amount_invoiced, size: 6
+          %td.amount_received= payment_form.currency_text_field :amount_received, size: 6
           %td.date_received= payment_form.datepicker :formatted_date_received, size: 10, dateFormat: "m/dd/yy"
           %td.payment_method= payment_form.select :payment_method, Payment::PAYMENT_METHOD_OPTIONS, prompt: t(:study_tracker)[:payments][:prompt]
           %td.details= payment_form.text_area :details, cols: 20, rows: 2

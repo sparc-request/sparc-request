@@ -1,2 +1,0 @@
-module StudyTracker::CalendarsHelper
-end

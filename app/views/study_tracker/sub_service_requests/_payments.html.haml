@@ -9,7 +9,7 @@
         - @sub_service_request.errors.full_messages.each do |msg|
           %li= msg
   %table#payments_list
-    %thead
+    %thead.ui-widget-header
       %tr
         %th.date_submitted= t(:study_tracker)[:payments][:submitted]
         %th.amount_invoiced= t(:study_tracker)[:payments][:amt_invoiced]

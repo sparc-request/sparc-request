@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130614173518) do
+ActiveRecord::Schema.define(:version => 20130621185210) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -329,6 +329,18 @@ ActiveRecord::Schema.define(:version => 20130614173518) do
   end
 
   add_index "past_statuses", ["sub_service_request_id"], :name => "index_past_statuses_on_sub_service_request_id"
+
+  create_table "payment_uploads", :force => true do |t|
+    t.integer  "payment_id"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+    t.string   "file_file_name"
+    t.string   "file_content_type"
+    t.integer  "file_file_size"
+    t.datetime "file_updated_at"
+  end
+
+  add_index "payment_uploads", ["payment_id"], :name => "index_payment_uploads_on_payment_id"
 
   create_table "payments", :force => true do |t|
     t.integer  "sub_service_request_id"

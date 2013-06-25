@@ -8,11 +8,16 @@ class Payment < ActiveRecord::Base
   attr_accessible :formatted_date_received
   attr_accessible :payment_method
   attr_accessible :details
-
+  attr_accessible :uploads_attributes
+  
   validates :amount_invoiced, numericality: true
   validates :amount_received, numericality: true
 
+  has_many :uploads, class_name: 'PaymentUpload', dependent: :destroy
   belongs_to :sub_service_request
+
+  accepts_nested_attributes_for :uploads, allow_destroy: true
+
 
   PAYMENT_METHOD_OPTIONS = %w(Check Cash EFT IIT).freeze
 

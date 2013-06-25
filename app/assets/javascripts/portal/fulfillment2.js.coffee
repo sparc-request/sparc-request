@@ -50,7 +50,8 @@ $(document).ready ->
     klass = getObjKlass(this)
     object_id = $(this).data("#{klass}_id")
     data = {'in_work_fulfillment': $(this).prop('checked')}
-    put_attribute(object_id, klass, data)
+    $('#cwf_building_dialog').dialog('open')
+    put_attribute(object_id, klass, data, cwf_callback)
     $(this).attr("disabled", "disabled")
     $('#study_tracker_access div.ui-button').css("display", "inline-block")
   )
@@ -82,7 +83,20 @@ $(document).ready ->
           $().toastmessage('showSuccessToast', "#{klass.humanize()} has been deleted.");
   )
 
-  put_attribute = (id, klass, data) ->
+  $('#cwf_building_dialog').dialog
+    dialogClass: "no-close"
+    autoOpen: false
+    height: 80
+    width: 650
+    modal: true
+    resizable: false
+
+  cwf_callback = ->
+    $('#cwf_building_dialog').dialog('close')
+    
+
+  put_attribute = (id, klass, data, callback) ->
+    callback ?= -> return null;
     $.ajax
       type: 'PUT'
       url:  "/portal/admin/#{klass}s/#{id}/update_from_fulfillment"
@@ -91,6 +105,7 @@ $(document).ready ->
       contentType: 'application/json; charset=utf-8'
       success: ->
         $().toastmessage('showSuccessToast', "Service request has been saved.")
+        callback()
       error: (jqXHR, textStatus, errorThrown) ->
         if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
           errors = JSON.parse(jqXHR.responseText)

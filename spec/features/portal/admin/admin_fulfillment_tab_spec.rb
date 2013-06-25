@@ -91,11 +91,13 @@ describe "admin fulfillment tab", :js => true do
       end
 
       context "study cwf access" do
+
         it "should disable the cwf access once it has been checked" do
           find("#in_work_fulfillment").click
           wait_for_javascript_to_finish
           find("#in_work_fulfillment")['disabled'].should eq("true")
         end
+
         it "should add the cwf access to the sub service request" do
           find("#in_work_fulfillment").click
           wait_for_javascript_to_finish

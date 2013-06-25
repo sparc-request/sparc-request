@@ -216,6 +216,7 @@ describe "study schedule", :js => true do
         end
 
         a = page.driver.browser.switch_to.alert
+        sleep 5
         a.text.should eq "Are you sure that you want to remove this service from all subjects' visit calendars in this arm?"
         a.accept
       end
@@ -236,6 +237,7 @@ describe "study schedule", :js => true do
         click_button('Remove Service from all patients')
 
         a = page.driver.browser.switch_to.alert
+        sleep 5
         a.text.should eq "Are you sure that you want to remove this service from all subjects' visit calendars?"
         a.accept
       end

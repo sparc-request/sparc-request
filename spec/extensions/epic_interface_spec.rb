@@ -2,13 +2,15 @@ require 'epic_interface'
 require 'spec_helper'
 require 'equivalent-xml'
 
-def strip_xml_whitespace(root)
+def strip_xml_whitespace!(root)
   root.xpath('//text()').each do |n|
     if n.content =~ /^\s+$/ then
       # whitespace only
       n.remove
     end
   end
+
+  return root
 end
 
 describe EpicInterface do
@@ -73,35 +75,37 @@ describe EpicInterface do
     it 'should work (smoke test)' do
       epic_interface.send_study(study)
 
-      xml = Gyoku.xml(
-        'protocolDef' => {
-          'query' => {
-            '@root' => '1.2.3.4',
-            '@extension' => study.id,
-          },
-          'plannedStudy' => {
-            '@classCode' => 'CLNTRL',
-            '@moodCode' => 'DEF',
-            'id' => {
-              '@root' => '1.2.3.4',
-              '@extension' => study.id,
-            },
-            'title' => study.title,
-            'text' => study.brief_description,
-          },
-        })
+      xml = <<-END
+        <rpe:RetrieveProtocolDefResponse xmlns:rpe="urn:ihe:qrph:rpe:2009">
+          <query root="1.2.3.4" extension="#{study.id}" />
+          <protocolDef>
+            <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
+              <id root="1.2.3.4" extension="#{study.id}" />
+              <title>#{study.title}</title>
+              <text>#{study.brief_description}</text>
+            </plannedStudy>
+          </protocolDef>
+        </RetrieveProtocolDefResponse>
+      END
+
       expected = Nokogiri::XML(xml)
 
       node = epic_received[0].xpath(
-          '//env:Body/rpe:RetrieveProtocolDefResponse/protocolDef',
+          '//env:Body/rpe:RetrieveProtocolDefResponse',
           'env' => 'http://www.w3.org/2003/05/soap-envelope',
-          'rpe' => 'urn:ihe:qrph:rpe:2009')
+          'rpe' => 'urn:ihe:qrph:rpe:2009',
+          'hl7' => 'urn:hl7-org:v3')
 
-      node.should be_equivalent_to(expected)
+      # p strip_xml_whitespace!(expected.root)
+      # p strip_xml_whitespace!(node)
+
+      node.should be_equivalent_to(expected.root)
     end
 
     it 'should emit a subjectOf for a PI' do
-      identity = FactoryGirl.create(:identity)
+      identity = FactoryGirl.create(
+          :identity,
+          ldap_uid: 'happyhappyjoyjoy@musc.edu')
 
       pi_role = FactoryGirl.create(
           :project_role,
@@ -114,10 +118,11 @@ describe EpicInterface do
 
       xml = <<-END
         <subjectOf typeCode="SUBJ"
+                   xmlns='urn:hl7-org:v3'
                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
           <studyCharacteristic classCode="OBS" moodCode="EVN">
             <code code="PI" />
-            <value xsi:type="ST" value="#{identity.ldap_uid}" />
+            <value xsi:type="ST" value="#{identity.netid}" />
           </studyCharacteristic>
         </subjectOf>
       END
@@ -125,11 +130,12 @@ describe EpicInterface do
       expected = Nokogiri::XML(xml)
 
       node = epic_received[0].xpath(
-          '//env:Body/rpe:RetrieveProtocolDefResponse/protocolDef/plannedStudy/subjectOf',
+          '//env:Body/rpe:RetrieveProtocolDefResponse/protocolDef/hl7:plannedStudy/hl7:subjectOf',
           'env' => 'http://www.w3.org/2003/05/soap-envelope',
-          'rpe' => 'urn:ihe:qrph:rpe:2009')
+          'rpe' => 'urn:ihe:qrph:rpe:2009',
+          'hl7' => 'urn:hl7-org:v3')
 
-      node[0].should be_equivalent_to(expected.root)
+      node.should be_equivalent_to(expected)
     end
   end
 

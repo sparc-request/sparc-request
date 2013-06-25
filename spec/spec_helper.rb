@@ -13,6 +13,12 @@ require 'capybara/rails'
 require 'capybara/dsl'
 require 'selenium-webdriver'
 
+# Add testing support for Paperclip
+require 'paperclip/matchers'
+RSpec.configure do |config|
+  config.include Paperclip::Shoulda::Matchers
+end
+
 # Set default values for capybara; these can be overriden by a file in
 # the support directory (see below).  For example, to use poltergeist,
 # create file spec/support/poltergeist.rb that contains:

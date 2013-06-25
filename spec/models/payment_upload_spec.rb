@@ -1,5 +1,6 @@
 require 'spec_helper'
 
 describe PaymentUpload do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it{ should have_attached_file :file }
+  it{ should belong_to :payment }
 end

@@ -850,7 +850,7 @@ en:
       pay_method: "Payment Method"
       details: "Details"
       documents: "Documents"
-      prompt: "Choose payment description"
+      prompt: ""
       remove: "Remove"
       remove_confirm: "Are you sure you want to delete this payment?"
       add: "Add a payment"

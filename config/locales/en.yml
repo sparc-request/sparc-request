@@ -838,7 +838,7 @@ en:
       dob: "Date of Birth"
       gender: "Gender"
       ethinicity: "Ethnicity"
-      calendar: "Calender"
+      schedule: "Schedule"
       add: "Add a subject"
       delete: "Delete"
       confirm: "Are you sure you want to delete this subject?"

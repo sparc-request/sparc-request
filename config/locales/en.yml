@@ -823,6 +823,7 @@ en:
 
   study_tracker:
     title: "Clinical Work Fulfillment"
+    save: "Save"
     dashboard:
       tabs:
         study_schedule: "Study Schedule"
@@ -830,4 +831,28 @@ en:
         payments: "Payments"
         services: "Services"
         billing: "Billing"
+    subject_tracker:
+      name: "Subject Name"
+      mrn: "MRN"
+      id: "ID"
+      dob: "Date of Birth"
+      gender: "Gender"
+      ethinicity: "Ethnicity"
+      calendar: "Calender"
+      add: "Add a subject"
+      delete: "Delete"
+      confirm: "Are you sure you want to delete this subject?"
+    payments: 
+      submitted: "Date Submitted"
+      amt_invoiced: "Amount Invoiced"
+      amt_received: "Amount Received"
+      date_received: "Date Received"
+      pay_method: "Payment Method"
+      details: "Details"
+      documents: "Documents"
+      prompt: "Choose payment description"
+      remove: "Remove"
+      confirm: "Are you sure you want to delete this payment?"
+      add: "Add a payment"
+
 

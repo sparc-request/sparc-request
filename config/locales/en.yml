@@ -852,7 +852,11 @@ en:
       documents: "Documents"
       prompt: "Choose payment description"
       remove: "Remove"
-      confirm: "Are you sure you want to delete this payment?"
+      remove_confirm: "Are you sure you want to delete this payment?"
       add: "Add a payment"
+    payment_uploads:
+      add: "Add document"
+      remove: "Remove"
+      remove_confirm: "Are you sure you want to delete this document?"
 
 

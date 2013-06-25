@@ -58,7 +58,7 @@ describe EpicInterface do
 
   let!(:epic_interface) {
     EpicInterface.new(
-        'endpoint' => "http://localhost:#{server.port}/",
+        'wsdl' => "http://localhost:#{server.port}/wsdl",
         'study_root' => '1.2.3.4')
   }
 

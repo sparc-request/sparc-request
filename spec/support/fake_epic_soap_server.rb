@@ -220,13 +220,11 @@ class FakeEpicServer < WEBrick::HTTPServer
         </wsdl:output>
       </wsdl:operation>
     </wsdl:binding>
-    <!--
     <wsdl:service name="ProtocolExecutor">
         <wsdl:port name="IProtocolExecutor" binding="tns:IProtocolExecutor">
-            <soap12:address location="http://server/Interconnect-SPARC-Research/Wcf/Epic.EDI.IHEWcf.Services/ProtocolExecutor.svc"/>
+          <soap12:address location="#{endpoint}"/>
         </wsdl:port>
     </wsdl:service>
-    -->
 </wsdl:definitions>
     END
   end
@@ -240,15 +238,16 @@ class FakeEpicServer < WEBrick::HTTPServer
   def initialize(options)
     super(options)
 
-    puts "Mounting FakeEpicServlet on /"
     mount "/", FakeEpicServlet, options[:FakeEpicServlet] || { }
-    puts "Mounting wsdl on /wsdl"
     mount_proc "/wsdl", &method(:serve_wsdl)
-    puts "done"
   end
 
   def port
     return self.config[:Port]
+  end
+
+  def endpoint
+    return "http://localhost:#{port}"
   end
 
   def endpoint

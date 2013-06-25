@@ -6,6 +6,25 @@ describe Arm do
     arm.line_items.should eq [ ]
   end
 
+  context 'clinical work fulfillment' do
+    let_there_be_lane
+    let_there_be_j
+    build_service_request_with_study
+
+
+    before :each do
+      add_visits
+      sub_service_request.update_attribute(:in_work_fulfillment, true)
+      sub_service_request.reload
+    end
+
+    it 'should populate its subjects if it has a sub service request in cwf status' do
+      arm = service_request.create_arm(subject_count: 5, visit_count: 5, name: 'CWF ARM')
+      arm.subjects.count.should eq(5)
+    end
+
+  end
+
   context "methods" do
     let_there_be_lane
     let_there_be_j
@@ -15,6 +34,7 @@ describe Arm do
     before :each do
       service_request.protocol.update_attribute(:indirect_cost_rate, 200.0)
       add_visits
+      arm1.reload
     end
 
     describe "adding a visit" do

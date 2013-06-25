@@ -16,12 +16,12 @@
         %table.service_calendar{:id => "subjects_list_#{arm_form.object.id}"}
           %thead.ui-widget-header
             %tr
-              %th.subject_name{:style => "padding:6px 8px;"} Subject Name
-              %th.subject_mrn MRN
-              %th.subject_id ID
-              %th.subject_dob Date of Birth
-              %th.subject_gender Gender
-              %th.subject_ethnicity Ethnicity
+              %th.subject_name{:style => "padding:6px 8px;"}= t(:study_tracker)[:subject_tracker][:name]
+              %th.subject_mrn= t(:study_tracker)[:subject_tracker][:mrn]
+              %th.subject_id= t(:study_tracker)[:subject_tracker][:id]
+              %th.subject_dob= t(:study_tracker)[:subject_tracker][:dob]
+              %th.subject_gender= t(:study_tracker)[:subject_tracker][:gender]
+              %th.subject_ethnicity= t(:study_tracker)[:subject_tracker][:ethnicity]
               %th &nbsp;
           %tbody
             = arm_form.fields_for :subjects, wrapper: false do |subject_form|
@@ -34,7 +34,7 @@
                 %td.subject_ethnicity= subject_form.select :ethnicity, options_for_select(SUBJECT_ETHNICITIES, subject_form.try(:object).try(:gender)), id: "subject_#{subject_form.try(:object).try(:id)}_ethnicity"
                 %td.remove
                   %a{:href => "nothin", :class => "ui-button ui-state-default ui-button-text-only", :style => "margin:0px;"}
-                    %span.ui-button-text Calendar
-                  = subject_form.link_to_remove "Delete", confirm: "Are you sure you want to delete this subject?", :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;"
-        %p= arm_form.link_to_add "Add a subject", :subjects, data: { target: "#subjects_list_#{arm_form.object.id} tbody" }, :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;"
-    %p{:style => "text-align:center;"}= f.submit "Save", :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;"
+                    %span.ui-button-text= t(:study_tracker)[:subject_tracker][:calendar]
+                  = subject_form.link_to_remove t(:study_tracker)[:subject_tracker][:delete], confirm: t(:study_tracker)[:subject_tracker][:confirm], :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;"
+        %p= arm_form.link_to_add t(:study_tracker)[:subject_tracker][:add], :subjects, data: { target: "#subjects_list_#{arm_form.object.id} tbody" }, :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;"
+    %p{:style => "text-align:center;"}= f.submit t(:study_tracker)[:save], :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;"

@@ -11,13 +11,13 @@
   %table#payments_list
     %thead
       %tr
-        %th.date_submitted Date Submitted
-        %th.amount_invoiced Amount Invoiced
-        %th.amount_received Amount Received
-        %th.date_received Date Received
-        %th.payment_method Payment Method
-        %th.details Details
-        %th.documents Documents
+        %th.date_submitted= t(:study_tracker)[:payments][:submitted]
+        %th.amount_invoiced= t(:study_tracker)[:payments][:amt_invoiced]
+        %th.amount_received= t(:study_tracker)[:payments][:amt_received]
+        %th.date_received= t(:study_tracker)[:payments][:date_received]
+        %th.payment_method= t(:study_tracker)[:payments][:pay_method]
+        %th.details= t(:study_tracker)[:payments][:details]
+        %th.documents= t(:study_tracker)[:payments][:documents]
         %th.remove
     %tbody
       = f.fields_for :payments, wrapper: false do |payment_form|
@@ -26,9 +26,9 @@
           %td.amount_invoiced= payment_form.text_field :amount_invoiced, size: 6
           %td.amount_received= payment_form.text_field :amount_received, size: 6
           %td.date_received= payment_form.datepicker :formatted_date_received, size: 10, dateFormat: "m/dd/yy"
-          %td.payment_method= payment_form.select :payment_method, Payment::PAYMENT_METHOD_OPTIONS, prompt: "Choose payment description"
+          %td.payment_method= payment_form.select :payment_method, Payment::PAYMENT_METHOD_OPTIONS, prompt: t(:study_tracker)[:payments][:prompt]
           %td.details= payment_form.text_area :details, cols: 20, rows: 2
           %td.documents
-          %td.remove= payment_form.link_to_remove "Remove", confirm: "Are you sure you want to delete this payment?"
-  %p= f.link_to_add "Add a payment", :payments, data: { target: '#payments_list tbody' }
-  %p= f.submit "Save"
+          %td.remove= payment_form.link_to_remove t(:study_tracker)[:payments][:remove], confirm: t(:study_tracker)[:payments][:confirm]
+  %p= f.link_to_add t(:study_tracker)[:payments][:add], :payments, data: { target: '#payments_list tbody' }
+  %p= f.submit t(:study_tracker)[:save]

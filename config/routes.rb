@@ -120,6 +120,8 @@ SparcRails::Application.routes.draw do
   namespace :study_tracker do
     root :to => 'home#index'
     resources :sub_service_requests do
+      resources :calendars do
+      end
     end
     resources :service_requests do
     end

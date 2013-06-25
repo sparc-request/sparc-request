@@ -39,6 +39,7 @@ class EpicInterface
     # TODO: grab these from the WSDL
     @namespace = @config['namespace'] || 'urn:ihe:qrph:rpe:2009'
     @root = @config['study_root']
+    @epoch = @config['epoch'] || Date.new
 
     # TODO: I'm not really convinced that Savon is buying us very much
     # other than some added complexity, but it's working, so no point in
@@ -157,17 +158,19 @@ class EpicInterface
                     xml.code(code: 'CYCLE', codeSystem: 'n/a')
 
                     xml.effectiveTime {
-                      xml.low(value: service_request.start_date) # TODO Probably start date of service request
-                      xml.high(value: service_request.end_date) # TODO Probably end date of service request
+                      xml.low(value: service_request.start_date.strftime("%Y%m%d"))
+                      xml.high(value: service_request.end_date.strftime("%Y%m%d"))
                     }
 
-                    xml.component1(typeCode: 'COMP') {
-                      xml.sequenceNumber(value: 'TODO') # TODO
-                      xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-                        xml.id(root: @root, extension: 'TODO') # TODO
-                        xml.title('TODO') # TODO
+                    arm.visit_group.each do |visit_group|
+                      xml.component1(typeCode: 'COMP') {
+                        xml.sequenceNumber(value: visit_group.position)
+                        xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
+                          xml.id(root: @root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE1.DAY#{visit_group.position}")
+                          xml.title(visit_group.name)
+                        }
                       }
-                    }
+                    end
 
                   } # timePointEventDefinition
                 } # component1
@@ -179,23 +182,22 @@ class EpicInterface
         study.service_requests.each do |service_request|
           service_request.arms.each do |arm|
             arm.visit_groups.each do |visit_group|
-              # TODO: not sure if I'm iterating over the right things
-              # here...
+
               xml.component4(typeCode: 'COMP') {
                 xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-                  xml.id(root: @root, extension: "STUDY#{study.id}.ARM#{arm.id}.VISITGROUP#{visit_group.id}") # TODO Probably study_id.arm_id.visit_group_id
+                  xml.id(root: @root, extension: "STUDY#{study.id}.ARM#{arm.id}.DAY#{visit_group.position}")
                   xml.title(visit_group.name)
                   xml.code(code: 'VISIT', codeSystem: 'n/a')
 
                   arm.line_items.each do |line_item|
                     xml.component1(typeCode: 'COMP') {
                       xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-                        xml.id(root: @root, extension: 'TODO') # TODO
+                        xml.id(root: @root, extension: "STUDY#{study.id}.ARM#{arm.id}.DAY#{visit_group.position}.PROC#{line_item.id}")
                         xml.code(code: 'PROC', codeSystem: 'n/a')
 
                         xml.component2(typeCode: 'COMP') {
                           xml.procedure(classCode: 'PROC', moodCode: 'EVN') {
-                            xml.code(code: 'TODO', codeSystem: 'n/a') # TODO: CPT code for service
+                            xml.code(code: li.service.cpt_code, codeSystem: 'n/a')
                           }
                         }
 
@@ -203,17 +205,19 @@ class EpicInterface
                     } # component1
                   end
 
-                  visit_group.visits.each do |visit| # TODO: is this right?
-                    xml.component2(typeCode: 'COMP') {
-                      xml.encounter(classCode: 'ENC', moodCode: 'DEF') {
-                        xml.effectiveTime {
-                          xml.low(value: 'TODO') # TODO Service Request start day + visit.day - visit.window
-                          xml.high(value: 'TODO') # TODO Service Request start day + visit.day + visit.window
-                        }
-                        xml.activityTime(value: 'TODO') # TODO Service Request start day + visit.day
+                  xml.component2(typeCode: 'COMP') {
+                    xml.encounter(classCode: 'ENC', moodCode: 'DEF') {
+                      # TODO: assuming 1-based (but day might be 0-based; we don't know yet)
+                      day = visit_group.day || visit_group.position
+
+                      xml.effectiveTime {
+                        xml.low(value: relative_date(day - visit_group.window))
+                        xml.high(value: relative_date(day + visit_group.window))
                       }
+
+                      xml.activityTime(value: relative_date(day))
                     }
-                  end
+                  }
 
                 } # timePointEventDefinition
               } # component4
@@ -228,6 +232,21 @@ class EpicInterface
     call('RetrieveProtocolDefResponse', xml.target!)
 
     # TODO: handle response from the server
+  end
+
+  # A "relative date" is represented in YYYYMMDD format and is
+  # calculated as relative_date + EPOCH.  For example, day 45 would be
+  # represented as 20130214 (45th day starting with 20130101 as the
+  # epoch).
+  #
+  # Think this doesn't make much sense?  It doesn't.  I suspect it has
+  # to do with <effectiveTime> mapping in Epic to a Java class that MUST
+  # contain a valid date.
+  #
+  # The day passed in here is assumed to be 1-based.
+  def relative_date(day)
+    date = @epoch + day - 1
+    return date.strftime("%Y%m%d")
   end
 end
 

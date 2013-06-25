@@ -5,7 +5,7 @@ class StudyTracker::ServiceRequestsController < StudyTracker::BaseController
     @service_request.attributes = params[:service_request]
 
     if @service_request.save(:validate => false)
-      ##If we have deleted, or added a subject, update the arm.subject_count
+      ##Update the arm.subject_count, incase we have added, or deleted a subject
       @service_request.arms.each do |arm|
         arm.update_attribute(:subject_count, arm.subjects.count)
       end

@@ -42,6 +42,8 @@ begin
   USER_CREDENTIALS = config['user_credentials']
   AVAILABLE_STATUSES = config['available_statuses']
   DEFAULT_STATUSES = config['default_statuses']
+  SUBJECT_ETHNICITIES = config['subject_ethnicities']
+  SUBJECT_GENDERS = config['subject_genders']
 rescue
   raise "constants.yml not found"
 end

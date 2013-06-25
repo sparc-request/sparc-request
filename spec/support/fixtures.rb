@@ -165,11 +165,20 @@ def build_study
   }
 end
 
-def build_clinical_data
+def build_clinical_data all_subjects = nil
   ##Requires visit data to be created first.
-  service_request.arms.each do |arm|
-    subject = arm.subjects.create(name: "Subject I")
-    subject.calendar.populate(arm.visit_groups)
+  if all_subjects
+    service_request.arms.each do |arm|
+      arm.subject_count.times do
+        subject = arm.subjects.create(name: "Subject I")
+        subject.calendar.populate(arm.visit_groups)
+      end
+    end
+  else
+    service_request.arms.each do |arm|
+      subject = arm.subjects.create(name: "Subject I")
+      subject.calendar.populate(arm.visit_groups)
+    end
   end
 end
 

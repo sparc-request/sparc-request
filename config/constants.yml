@@ -5,6 +5,16 @@ impact_areas: { 'pediatrics': 'Pediatrics',
                'diabetes': 'Diabetes',
                'cancer': 'Cancer',
                'other': 'Other' }
+subject_ethnicities: { 'Caucasian': 'caucasian',
+                      'African American/Black': 'black',
+                      'Asian': 'asian',
+                      'Middle Eastern': 'middle_eastern',
+                      'Pacific Islander': 'pacific_islander',
+                      'Native American/Alaskan': 'native_american/alaskan',
+                      'Other': 'other' }
+subject_genders: { 'Male': 'male',
+                  'Female': 'female',
+                  'Other': 'other' }
 affiliations: { 'cancer_center': 'Cancer Center',
                 'lipidomics_cobre': 'Lipidomics COBRE',
                 'oral_health_cobre': 'Center for Oral Health Research',

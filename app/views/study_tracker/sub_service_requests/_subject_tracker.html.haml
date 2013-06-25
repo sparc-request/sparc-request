@@ -11,7 +11,7 @@
           - @service_request.errors.full_messages.each do |msg|
             %li= msg
     = f.fields_for :arms do |arm_form|
-      .arm_container{:style => "padding:10px 5px;"}
+      .arm_container{:style => "padding:10px 5px;", :id => "arm_#{arm_form.object.id}"}
         %h3= arm_form.object.name
         %table.service_calendar{:id => "subjects_list_#{arm_form.object.id}"}
           %thead.ui-widget-header
@@ -26,15 +26,15 @@
           %tbody
             = arm_form.fields_for :subjects, wrapper: false do |subject_form|
               %tr.fields{:class => "subject_id_#{subject_form.try(:object).try(:id)}"}
-                %td.subject_name= subject_form.text_field :name, size: 18
-                %td.subject_mrn= subject_form.text_field :mrn, size: 18
-                %td.subject_id= subject_form.text_field :external_subject_id, size: 10
-                %td.subject_dob= subject_form.text_field :dob, size: 18
-                %td.subject_gender= subject_form.select :gender, options_for_select(["Male", "Female", "Owl"], subject_form.try(:object).try(:gender))
-                %td.subject_ethnicity= subject_form.text_field :ethnicity, size: 18
+                %td.subject_name= subject_form.text_field :name, size: 18, id: "subject_#{subject_form.try(:object).try(:id)}_name"
+                %td.subject_mrn= subject_form.text_field :mrn, size: 12, id: "subject_#{subject_form.try(:object).try(:id)}_mrn"
+                %td.subject_id= subject_form.text_field :external_subject_id, size: 8, id: "subject_#{subject_form.try(:object).try(:id)}_id"
+                %td.subject_dob= subject_form.text_field :dob, size: 18, id: "subject_#{subject_form.try(:object).try(:id)}_dob"
+                %td.subject_gender= subject_form.select :gender, options_for_select(SUBJECT_GENDERS, subject_form.try(:object).try(:gender)), id: "subject_#{subject_form.try(:object).try(:id)}_gender"
+                %td.subject_ethnicity= subject_form.select :ethnicity, options_for_select(SUBJECT_ETHNICITIES, subject_form.try(:object).try(:gender)), id: "subject_#{subject_form.try(:object).try(:id)}_ethnicity"
                 %td.remove
                   %a{:href => "nothin", :class => "ui-button ui-state-default ui-button-text-only", :style => "margin:0px;"}
                     %span.ui-button-text Calendar
-                  = subject_form.link_to_remove "Delete", confirm: "Are you sure you want to delete this payment?", :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;"
+                  = subject_form.link_to_remove "Delete", confirm: "Are you sure you want to delete this subject?", :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;"
         %p= arm_form.link_to_add "Add a subject", :subjects, data: { target: "#subjects_list_#{arm_form.object.id} tbody" }, :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;"
     %p{:style => "text-align:center;"}= f.submit "Save", :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;"

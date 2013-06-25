@@ -38,9 +38,8 @@ class EpicInterface
 
     # TODO: grab these from the WSDL
     @namespace = @config['namespace'] || 'urn:ihe:qrph:rpe:2009'
-    @endpoint = @config['endpoint'] 
-
     @root = @config['study_root']
+
     @client = Savon.client(
         logger: Rails.logger,
         soap_version: 2,
@@ -48,8 +47,8 @@ class EpicInterface
         convert_request_keys_to: :none,
         namespace_identifier: 'rpe',
         namespace: @namespace,
-        endpoint: @endpoint,
-        # wsdl: @config['wsdl'],
+        endpoint: @config['endpoint'],
+        wsdl: @config['wsdl'],
         headers: {
         },
         soap_header: {
@@ -67,6 +66,22 @@ class EpicInterface
     }
 
     return soap_header
+  end
+
+  # Send the given SOAP action to the server along with the given
+  # message.  Automatically builds a header with the right WS-A
+  # elements.
+  def call(action, message)
+    # Wasabi (Savon's WSDL parser) turns CamelCase actions into
+    # snake_case.
+    if @config['wsdl'] then
+      action = action.snakecase.to_sym
+    end
+
+    return @client.call(
+        action,
+        soap_header: soap_header(action),
+        message: message)
   end
 
   # Send a study to the Epic InterConnect server.
@@ -92,10 +107,7 @@ class EpicInterface
       }
     }
 
-    @client.call(
-        'RetrieveProtocolDefResponse',
-        soap_header: soap_header('RetrieveProtocolDefResponse'),
-        message: xml.target!)
+    call('RetrieveProtocolDefResponse', xml.target!)
 
     # TODO: handle response from the server
   end
@@ -210,10 +222,7 @@ class EpicInterface
       }
     }
 
-    @client.call(
-        'RetrieveProtocolDefResponse',
-        soap_header: soap_header('RetrieveProtocolDefResponse'),
-        message: xml.target!)
+    call('RetrieveProtocolDefResponse', xml.target!)
 
     # TODO: handle response from the server
   end

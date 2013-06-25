@@ -40,6 +40,9 @@ class EpicInterface
     @namespace = @config['namespace'] || 'urn:ihe:qrph:rpe:2009'
     @root = @config['study_root']
 
+    # TODO: I'm not really convinced that Savon is buying us very much
+    # other than some added complexity, but it's working, so no point in
+    # pulling it out.
     @client = Savon.client(
         logger: Rails.logger,
         soap_version: 2,

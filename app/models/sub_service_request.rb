@@ -41,7 +41,9 @@ class SubServiceRequest < ActiveRecord::Base
   def work_fulfillment
     if self.in_work_fulfillment_changed?
       if self.in_work_fulfillment
-        self.service_request.arms.each {|arm| arm.populate_subjects}
+        self.service_request.arms.each do |arm|
+          arm.populate_subjects if arm.subjects.empty?
+        end
       end
     end
   end

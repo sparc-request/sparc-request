@@ -8,8 +8,8 @@ describe "Subject Tracker", :js => true do
 
   before :each do
     create_visits
-    sub_service_request.update_attributes(:in_work_fulfillment => true)
     build_clinical_data(all_subjects = true)
+    sub_service_request.update_attributes(:in_work_fulfillment => true)
     visit study_tracker_sub_service_request_path sub_service_request.id
     click_link("Subject Tracker")
     wait_for_javascript_to_finish

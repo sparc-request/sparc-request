@@ -36,6 +36,18 @@ class SubServiceRequest < ActiveRecord::Base
   accepts_nested_attributes_for :subsidy
   accepts_nested_attributes_for :payments, allow_destroy: true
 
+  after_save :work_fulfillment
+
+  def work_fulfillment
+    if self.in_work_fulfillment_changed?
+      if self.in_work_fulfillment
+        self.service_request.arms.each do |arm|
+          arm.populate_subjects if arm.subjects.empty?
+        end
+      end
+    end
+  end
+
   def display_id
     return "#{service_request.protocol.id}-#{ssr_id}"
   end

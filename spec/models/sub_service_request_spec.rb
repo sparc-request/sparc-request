@@ -6,6 +6,16 @@ describe 'SubServiceRequest' do
   let_there_be_j
   build_service_request_with_study
 
+  context 'clinical work fulfillment' do
+
+    it 'should populate the subjects when :in_work_fulfillment is set to true' do
+      sub_service_request.update_attributes(in_work_fulfillment: true)
+      arm1.subjects.count.should eq(2)
+      arm2.subjects.count.should eq(4)
+    end
+
+  end
+
   context 'fulfillment' do
 
     describe 'candidate_services' do

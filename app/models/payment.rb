@@ -10,8 +10,9 @@ class Payment < ActiveRecord::Base
   attr_accessible :details
   attr_accessible :uploads_attributes
   
+  validates :date_submitted, presence: true
   validates :amount_invoiced, numericality: true
-  validates :amount_received, numericality: true
+  validates :amount_received, numericality: true, allow_nil: true
 
   has_many :uploads, class_name: 'PaymentUpload', dependent: :destroy
   belongs_to :sub_service_request

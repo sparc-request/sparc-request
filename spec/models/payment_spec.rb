@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Payment do
   it{ should validate_numericality_of :amount_invoiced }
   it{ should validate_numericality_of :amount_received }
+  it{ should allow_value(nil).for(:amount_received) }
 
   describe '#formatted_date_recieved' do
   	let(:payment){ Payment.new( date_received: Date.new(2013, 12, 30) ) }

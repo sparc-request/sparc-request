@@ -3,6 +3,7 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
 
   def show
     @calendar = Calendar.find(params[:id])
+    @subject = @calendar.subject
   end
 
   private

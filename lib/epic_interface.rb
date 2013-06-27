@@ -102,8 +102,10 @@ class EpicInterface
 
         study.project_roles.each do |project_role|
           xml.subjectOf(typeCode: 'SUBJ') {
+            # TODO: only send primary PI as PI
             xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
               xml.code(code: project_role.role.upcase)
+              # TODO: 'CD' instead of 'ST' for PI and study coordinator
               xml.value('xsi:type' => 'ST', value: project_role.identity.netid)
             }
           }

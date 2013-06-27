@@ -19,6 +19,9 @@ class StudyTracker::SubServiceRequestsController < StudyTracker::BaseController
     @selected_arm = @service_request.arms.first
 
     @study_tracker = true
+
+    # "Preload" the intial view of the payments tab with a blank form row
+    @sub_service_request.payments.build if @sub_service_request.payments.blank?
   end
 
   def service_calendar

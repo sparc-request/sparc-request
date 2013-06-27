@@ -20,7 +20,6 @@ describe "payments", js: true do
     before(:each) do
       visit study_tracker_sub_service_request_path(sub_service_request.id)
       click_link "Payments"
-      click_link "Add a payment" 
     end
 
     context "with valid information" do

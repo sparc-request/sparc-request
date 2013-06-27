@@ -13,6 +13,22 @@ class Arm < ActiveRecord::Base
   attr_accessible :subjects_attributes
   accepts_nested_attributes_for :subjects, allow_destroy: true
 
+  after_create :populate_cwf_if_active
+
+  def populate_cwf_if_active
+    if self.service_request
+      unless self.service_request.sub_service_requests.empty?
+        # There is no direct link between sub service requests and arms
+        # Thus here we figure out if we are in CWF by establishing whether:
+        # 1 - There are any CTRC SSRS on the parent SR
+        # 2 - Are any of those CTRC SSRS (there should be only one) in CWF status?
+        if self.service_request.sub_service_requests.select {|x| x.ctrc?}.map(&:in_work_fulfillment).include?(true)
+          self.populate_subjects
+        end
+      end
+    end
+  end
+
   def valid_visit_count?
     return !visit_count.nil? && visit_count > 0
   end

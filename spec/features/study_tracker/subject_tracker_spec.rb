@@ -27,7 +27,7 @@ describe "Subject Tracker", :js => true do
       fill_in "subject_#{arm1.subjects.first.id}_name", :with => "Disco Stu"
       fill_in "subject_#{arm1.subjects.first.id}_mrn", :with => "1234"
       fill_in "subject_#{arm1.subjects.first.id}_id", :with => "5678"
-      fill_in "subject_#{arm1.subjects.first.id}_dob", :with => "2013-06-20"
+      ##fill_in "subject_#{arm1.subjects.first.id}_dob", :with => "2013-06-20"
       within("div#subject_tracker") do
         click_button("Save")
       end
@@ -36,7 +36,7 @@ describe "Subject Tracker", :js => true do
       arm1.subjects.first.name.should eq("Disco Stu")
       arm1.subjects.first.mrn.should eq("1234")
       arm1.subjects.first.external_subject_id.should eq("5678")
-      arm1.subjects.first.dob.to_s.should eq("2013-06-20")
+      ##arm1.subjects.first.dob.to_s.should eq("2013-06-20")
     end
   end
 

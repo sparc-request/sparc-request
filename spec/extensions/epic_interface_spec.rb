@@ -30,18 +30,15 @@ describe EpicInterface do
   # block.
   before :all do
     require 'webrick'
-    server = WEBrick::HTTPServer.new(
+    server = FakeEpicServer.new(
         Port: 0,               # automatically determine port
         Logger: Rails.logger,  # send regular log to rails
-        AccessLog: [ ]         # disable access log
-        )
-    server.mount(
-        '/',
-        FakeEpicServlet,
-        keep_received: true,
-        received: epic_received,
-        results: epic_results)
-    port = server.config[:Port]
+        AccessLog: [ ],        # disable access log
+        FakeEpicServlet: {
+          keep_received: true,
+          received: epic_received,
+          results: epic_results
+        })
     thread = Thread.new { server.start }
     timeout(10) { while server.status != :Running; end }
   end
@@ -61,7 +58,7 @@ describe EpicInterface do
 
   let!(:epic_interface) {
     EpicInterface.new(
-        'endpoint' => "http://localhost:#{port}/",
+        'wsdl' => "http://localhost:#{server.port}/wsdl",
         'study_root' => '1.2.3.4')
   }
 

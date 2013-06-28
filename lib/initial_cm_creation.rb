@@ -1,5 +1,15 @@
+# ----------------------------------------------------------------------
+# Script to initially set up a database when setting up a new instance
+# of SPARC
+#
+# Run it like this:
+# $ rails r initial_cm_creation
+# ----------------------------------------------------------------------
+
 require 'active_record'
 require 'mysql2'
+require 'highline'
+require 'highline/import'
 
 def opening_message
   print_breakline
@@ -54,37 +64,29 @@ end
 def create_identity
   system "clear"
   print_breakline
+
   puts "Please enter the following information:"
   print_breakline
-  args = {catalog_overlord: true, approved: true}
-  puts "Identity UID (login/username):"
-  args[:ldap_uid] = gets.chomp
-  puts "Identity Email:"
-  args[:email] = gets.chomp
-  puts "Identity First Name:"
-  args[:first_name] = gets.chomp
-  puts "Identity Last Name:"
-  args[:last_name] = gets.chomp
-  puts "Identity Password:"
-  args[:password] = gets.chomp
-  puts "Confirm Password:"
-  args[:password_confirmation] = gets.chomp
+
+  args = { catalog_overlord: true, approved: true }
+  args[:ldap_uid]   = ask("Identity UID (login/username): ")
+  args[:email]      = ask("Identity Email: ")
+  args[:first_name] = ask("Identity First Name: ")
+  args[:last_name]  = ask("Identity Last Name: ")
+  args[:password]   = ask("Identity password: ") { |q| q.echo = '*' }
+  args[:password_confirmation] = ask("Confirm password: ")
+
   print_breakline
   puts "Creating Identity..."
   print_breakline
+
   identity = Identity.create(args)
   print_breakline
-  puts "Is this user a catalog manager for an Institution?"
-  puts "1. Yes"
-  puts "2. No"
-  print_breakline
-  answer = gets.chomp
-  case answer
-  when "1"
-    create_catalog_manager(identity)
-  else
-    system "clear"
-    opening_menu()
+
+  choose do |menu|
+    menu.prompt = "Is this user a catalog manager for an Institution?"
+    menu.choice(:yes) { create_catalog_manager(identity) }
+    menu.choice(:no) { system("clear"); opening_menu() }
   end
 end
 

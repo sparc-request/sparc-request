@@ -89,11 +89,13 @@ class Arm < ActiveRecord::Base
   # rename this method to add_visit! and make it raise exceptions; it
   # would be easier to read.  But I'm not sure how to get access to the
   # errors object in that case.
-  def add_visit position=nil, day=nil, window=0
+  def add_visit position=nil, day=nil, window=0, name=''
     result = self.transaction do
-      if not self.create_visit_group(position) then
+      if not self.create_visit_group(position, name) then
         raise ActiveRecord::Rollback
       end
+
+      position = position.to_i - 1 unless position.blank?
 
       if not self.update_visit_group_day(day, position) then
         raise ActiveRecord::Rollback
@@ -120,8 +122,8 @@ class Arm < ActiveRecord::Base
     end
   end
 
-  def create_visit_group position=nil
-    if not visit_group = self.visit_groups.create(position: position) then
+  def create_visit_group position=nil, name=''
+    if not visit_group = self.visit_groups.create(position: position, name: name) then
       return false
     end
 
@@ -194,11 +196,11 @@ class Arm < ActiveRecord::Base
   end
 
   def update_visit_group_window window, position
-    position = position.to_i || self.visit_groups.count
+    position = position.blank? ? self.visit_groups.count - 1 : position.to_i
 
     valid = Integer(window) rescue false
-    if !valid
-      self.errors.add(:invalid_window, "You've entered an invalid number for the +/- window. Please enter a valid number")
+    if !valid || valid < 0
+      self.errors.add(:invalid_window, "You've entered an invalid number for the +/- window. Please enter a positive valid number")
       return false
     end
 

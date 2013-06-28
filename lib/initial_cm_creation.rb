@@ -83,6 +83,12 @@ def create_identity
   identity = Identity.create(args)
   print_breakline
 
+  if identity.errors then
+    puts "FAILED: #{identity.errors.inspect}"
+    gets
+    return
+  end
+
   choose do |menu|
     menu.prompt = "Is this user a catalog manager for an Institution?"
     menu.choice(:yes) { create_catalog_manager(identity) }
@@ -91,7 +97,7 @@ def create_identity
 end
 
 def create_catalog_manager identity=nil
-  if identity.nil?
+  while identity.nil?
     system "clear"
     print_breakline
     puts "Please select an Identity to associate:"
@@ -99,7 +105,13 @@ def create_catalog_manager identity=nil
     Identity.all.each do |iden|
       puts "#{iden.id}. #{iden.first_name} #{iden.last_name} #{iden.email}"
     end
-    identity = Identity.find(gets.chomp)
+    # identity = Identity.find(gets.chomp)
+    # ldap_uid = ask("Enter ldap uid: ")
+    # identity = Identity.find_by_ldap_uid(ldap_uid)
+    # if not identity then
+    #   puts "Identity not found.  Press <Enter>"
+    #   gets
+    # end
   end
   print_breakline
   puts "Please select an institution to attach this user to:"

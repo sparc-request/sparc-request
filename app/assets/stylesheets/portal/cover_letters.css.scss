@@ -3,8 +3,16 @@
   border: 1px dashed #84d1eb;
 }
 
-#cover_letter_content_editor {
-  p{ margin-bottom: 1.5em; }
+#new_cover_letter {
+    margin: 1em;
+
+    .buttons {
+      margin-top: 1.5em;
+    }
+}
+
+#cover_letter_content_editor {  
+  p{ margin-bottom: 0; }
   em{ 
     background-color: #fff7b7;
   }

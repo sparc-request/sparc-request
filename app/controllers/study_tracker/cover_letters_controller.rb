@@ -9,11 +9,18 @@ class StudyTracker::CoverLettersController < StudyTracker::BaseController
   end
 
   def create
-    
+    sanitizer = CoverLetterSanitizer.new
+    params[:cover_letter][:content] = sanitizer.sanitize(params[:cover_letter][:content])
+
+    if @cover_letter = @sub_service_request.cover_letters.create(params[:cover_letter])
+      redirect_to [:study_tracker, @sub_service_request]
+    else
+      render :new
+    end
   end
 
   def show
-    
+    @cover_letter = CoverLetter.find(params[:id])
   end
 
   private

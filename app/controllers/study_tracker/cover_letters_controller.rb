@@ -19,6 +19,7 @@ class StudyTracker::CoverLettersController < StudyTracker::BaseController
 
   def show
     @cover_letter = CoverLetter.find(params[:id])
+    render :layout => false # Used by PDFkit to avoid rendering the layout
   end
 
   def edit

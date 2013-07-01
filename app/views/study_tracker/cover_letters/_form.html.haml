@@ -1,0 +1,20 @@
+= form_for [:study_tracker, @cover_letter.sub_service_request, @cover_letter] do |f|
+  - if @cover_letter.errors.any?
+    #error_explanation
+      %h2
+        = pluralize(@cover_letter.errors.count, "error")
+        prohibited these payments from being saved:
+      %ul
+        - @cover_letter.errors.full_messages.each do |msg|
+          %li= msg
+
+  =f.hidden_field :content
+  #cover_letter_content_editor.contenteditable{ contenteditable: true}
+    - if @cover_letter.new_record? && @cover_letter.errors.blank?
+      = render partial:'template', locals:{date: Date.today, srid: @srid, short_title: @short_title}
+    - else
+      = @cover_letter.content.html_safe
+    
+  %p.buttons
+    = f.submit t(:study_tracker)[:save], class: 'ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover ui-state-active'
+    = link_to "Cancel", study_tracker_sub_service_request_path(@sub_service_request)

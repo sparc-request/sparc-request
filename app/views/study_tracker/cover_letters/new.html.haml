@@ -1,7 +1,7 @@
 %h1 Create a new cover letter
 = form_for [:study_tracker, @sub_service_request, @cover_letter] do |f|
   =f.hidden_field :content
-  #cover_letter_content_editor.editable{ contenteditable: true}
+  #cover_letter_content_editor.contenteditable{ contenteditable: true}
     = render partial:'template', locals:{date: Date.today, srid: @srid, short_title: @short_title}
     
   %p.buttons

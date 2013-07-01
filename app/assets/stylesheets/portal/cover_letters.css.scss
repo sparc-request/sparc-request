@@ -1,4 +1,4 @@
-.editable {
+.contenteditable {
   padding: 1em;
   border: 1px dashed #84d1eb;
 }
@@ -16,4 +16,13 @@
   em{ 
     background-color: #fff7b7;
   }
+}
+
+table#billings_list {
+  
+  td, th {
+    padding: 0.5em;
+  }
+
+  margin-bottom: 1.5em;
 }

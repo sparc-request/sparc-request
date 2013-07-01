@@ -7,7 +7,7 @@
       %th.actions
   %tbody
     - @sub_service_request.cover_letters.each do |cover_letter|
-      %tr
+      %tr{ class: cycle('even', 'odd') }
         %td Cover Letter
         %td= cover_letter.updated_at.to_s(:short)
         %td

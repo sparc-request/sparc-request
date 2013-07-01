@@ -1,4 +1,6 @@
 class Note < ActiveRecord::Base
+  audited
+
   belongs_to :identity
   belongs_to :sub_service_request
 

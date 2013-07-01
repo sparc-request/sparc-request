@@ -1,4 +1,6 @@
 class Notification < ActiveRecord::Base
+  audited
+
   belongs_to :originator, :class_name => "Identity"
   belongs_to :sub_service_request
 

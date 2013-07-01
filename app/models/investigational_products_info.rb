@@ -1,4 +1,6 @@
 class InvestigationalProductsInfo < ActiveRecord::Base
+  audited
+
   self.table_name = 'investigational_products_info'
 
   #Version.primary_key = 'id'

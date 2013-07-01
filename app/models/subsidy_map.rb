@@ -1,6 +1,5 @@
 class SubsidyMap < ActiveRecord::Base
-  #Version.primary_key = 'id'
-  #has_paper_trail
+  audited
 
   belongs_to :organization
   has_many :excluded_funding_sources

@@ -1,5 +1,6 @@
 class VisitGroup < ActiveRecord::Base
   include Comparable
+  audited
 
   belongs_to :arm
   has_many :visits, :dependent => :destroy

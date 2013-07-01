@@ -1,4 +1,6 @@
 class LineItemsVisit < ActiveRecord::Base
+  audited
+
   belongs_to :arm
   belongs_to :line_item
 

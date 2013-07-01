@@ -824,6 +824,7 @@ en:
   study_tracker:
     title: "Clinical Work Fulfillment"
     save: "Save"
+    create: "Create"
     dashboard:
       tabs:
         study_schedule: "Study Schedule"

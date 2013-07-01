@@ -17,4 +17,4 @@
     
   %p.buttons
     = f.submit t(:study_tracker)[:save], class: 'ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover ui-state-active'
-    = link_to "Cancel", study_tracker_sub_service_request_path(@sub_service_request)
+    = link_to t(:study_tracker)[:cancel], study_tracker_sub_service_request_path(@sub_service_request)

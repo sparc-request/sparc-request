@@ -65,10 +65,10 @@ describe ServiceRequestsController do
         session[:identity_id] = jug2.id
         session[:service_request_id] = service_request.id
         session[:sub_service_request_id] = sub_service_request.id
-        session[:saved_study_id] = study.id
+        session[:saved_protocol_id] = study.id
         get :protocol, :id => service_request.id
         assigns(:service_request).protocol.should eq study
-        session[:saved_study_id].should eq nil
+        session[:saved_protocol_id].should eq nil
       end
 
       it "should set studies to the service request's studies if there is a sub service request" do
@@ -88,10 +88,10 @@ describe ServiceRequestsController do
         session[:identity_id] = jug2.id
         session[:service_request_id] = service_request.id
         session[:sub_service_request_id] = sub_service_request.id
-        session[:saved_project_id] = project.id
+        session[:saved_protocol_id] = project.id
         get :protocol, :id => service_request.id
         assigns(:service_request).protocol.should eq project
-        session[:saved_project_id].should eq nil
+        session[:saved_protocol_id].should eq nil
       end
 
       it "should set projects to the service request's projects if there is a sub service request" do

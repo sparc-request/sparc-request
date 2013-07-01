@@ -1,58 +1,7 @@
-class StudiesController < ApplicationController
-  before_filter :initialize_service_request
-  before_filter :authorize_identity
-  before_filter :set_protocol_type
-  def new
-    @service_request = ServiceRequest.find session[:service_request_id]
-    @study = Study.new
-    @study.requester_id = current_user.id
-    @study.build_research_types_info
-    @study.build_human_subjects_info
-    @study.build_vertebrate_animals_info
-    @study.build_investigational_products_info
-    @study.build_ip_patents_info
-    @study.setup_study_types
-    @study.setup_impact_areas
-    @study.setup_affiliations
-  end
+class StudiesController < ProtocolsController
 
-  def create
-    @service_request = ServiceRequest.find session[:service_request_id]
-    @study = Study.new params[:study]
-
-    if @study.valid?
-      @study.save
-      session[:saved_study_id] = @study.id
-      flash[:notice] = "New study created"
-    else
-      @study.setup_study_types
-      @study.setup_impact_areas
-      @study.setup_affiliations
-    end
-  end
-
-  def edit
-    @service_request = ServiceRequest.find session[:service_request_id]
-    @study = current_user.studies.find params[:id]
-    @study.populate_for_edit
-  end
-
-  def update
-    @service_request = ServiceRequest.find session[:service_request_id]
-    @study = current_user.studies.find params[:id]
-
-    if @study.update_attributes params[:study]
-      session[:saved_study_id] = @study.id
-      flash[:notice] = "Study updated"
-    end
-      
-    @study.setup_study_types
-    @study.setup_impact_areas
-    @study.setup_affiliations
-  end
-
-  def destroy
-
+  def model_class
+    return Study
   end
 
   def set_protocol_type

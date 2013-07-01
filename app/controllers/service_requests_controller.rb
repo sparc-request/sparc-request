@@ -170,12 +170,9 @@ class ServiceRequestsController < ApplicationController
     @studies = @sub_service_request.nil? ? current_user.studies(:order => 'id') : @service_request.protocol.type == "Study" ? [@service_request.protocol] : []
     @projects = @sub_service_request.nil? ? current_user.projects(:order => 'id') : @service_request.protocol.type == "Project" ? [@service_request.protocol] : []
 
-    if session[:saved_study_id]
-      @service_request.protocol = Study.find session[:saved_study_id]
-      session.delete :saved_study_id
-    elsif session[:saved_project_id]
-      @service_request.protocol = Project.find session[:saved_project_id]
-      session.delete :saved_project_id
+    if session[:saved_protocol_id]
+      @service_request.protocol = Protocol.find session[:saved_protocol_id]
+      session.delete :saved_protocol_id
     end
   end
   

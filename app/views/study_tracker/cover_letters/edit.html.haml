@@ -1,5 +1,13 @@
 %h1 Edit cover letter
 = form_for [:study_tracker, @cover_letter.sub_service_request, @cover_letter] do |f|
+  - if @cover_letter.errors.any?
+    #error_explanation
+      %h2
+        = pluralize(@cover_letter.errors.count, "error")
+        prohibited these payments from being saved:
+      %ul
+        - @cover_letter.errors.full_messages.each do |msg|
+          %li= msg
   =f.hidden_field :content
   #cover_letter_content_editor.contenteditable{ contenteditable: true}
     = @cover_letter.content.html_safe

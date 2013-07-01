@@ -1,5 +1,13 @@
 %h1 Create a new cover letter
 = form_for [:study_tracker, @sub_service_request, @cover_letter] do |f|
+  - if @cover_letter.errors.any?
+      #error_explanation
+        %h2
+          = pluralize(@cover_letter.errors.count, "error")
+          prohibited these payments from being saved:
+        %ul
+          - @cover_letter.errors.full_messages.each do |msg|
+            %li= msg
   =f.hidden_field :content
   #cover_letter_content_editor.contenteditable{ contenteditable: true}
     = render partial:'template', locals:{date: Date.today, srid: @srid, short_title: @short_title}

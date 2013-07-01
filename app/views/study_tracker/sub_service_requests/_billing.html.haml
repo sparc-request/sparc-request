@@ -7,9 +7,9 @@
   %tbody
     - @sub_service_request.cover_letters.each do |cover_letter|
       %tr{ class: cycle('even', 'odd') }
-        %td Cover Letter
-        %td= cover_letter.updated_at.to_s(:short)
-        %td
+        %td.type Cover Letter
+        %td.created_on= cover_letter.updated_at.to_s(:short)
+        %td.actions
           = link_to image_tag('pdficon_small.png') + ' Download', study_tracker_sub_service_request_cover_letter_path(@sub_service_request, cover_letter, format: 'pdf'), class: "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", style: "padding:0.45em 1em 0.45em 0.45em;"
           = link_to 'Edit', edit_study_tracker_sub_service_request_cover_letter_path(@sub_service_request, cover_letter)
 

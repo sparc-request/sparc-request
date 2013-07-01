@@ -1,4 +1,5 @@
 class ProtocolsController < ApplicationController
+  respond_to :html, :js, :json
   before_filter :initialize_service_request
   before_filter :authorize_identity
   before_filter :set_protocol_type
@@ -49,4 +50,24 @@ class ProtocolsController < ApplicationController
   def set_protocol_type
     raise NotImplementedError
   end
+
+  def push_to_epic
+    @protocol = Protocol.find params[:id]
+    begin
+      EPIC_INTERFACE.send_study(@protocol)
+      EPIC_INTERFACE.send_billing_calendar(@protocol)
+      respond_to do |format|
+        format.js { render :status => 200 }
+      end
+    rescue Exception => e
+      begin
+        respond_to do |format|
+          format.js { render :status => 418, :json => 'Failure pushing study to Epic' }
+        end
+      ensure
+        raise e
+      end
+    end
+  end
+
 end

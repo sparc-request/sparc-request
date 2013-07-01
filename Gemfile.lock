@@ -192,6 +192,7 @@ GEM
       hashery (~> 2.0)
       ruby-rc4
       ttfunk
+    pdfkit (0.5.4)
     poltergeist (1.1.0)
       capybara (~> 2.0, >= 2.0.1)
       faye-websocket (~> 0.4, >= 0.4.4)
@@ -362,6 +363,7 @@ DEPENDENCIES
   omniauth
   omniauth-shibboleth
   paperclip
+  pdfkit
   poltergeist
   prawn
   progress_bar

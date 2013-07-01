@@ -113,6 +113,8 @@ group :profile do
   gem 'ruby-prof'
 end
 
+gem "pdfkit"
+
 gem 'exception_notification'
 gem 'letter_opener'
 

@@ -1,0 +1,11 @@
+development:
+  study_root: 1.1.1.1
+  endpoint: http://localhost:3001/
+  epoch: '2013-01-01'
+  namespace: 'urn:ihe:qrph:rpe:2009'
+
+test:
+  study_root: 1.1.1.1
+  endpoint: http://localhost:3001/
+  epoch: '2013-01-01'
+  namespace: 'urn:ihe:qrph:rpe:2009'

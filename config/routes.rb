@@ -1,4 +1,6 @@
 SparcRails::Application.routes.draw do
+  mount Surveyor::Engine => "/surveys", :as => "surveyor"
+
   devise_for :identities, :controllers => { :omniauth_callbacks => "identities/omniauth_callbacks" }
 
   resources :identities do

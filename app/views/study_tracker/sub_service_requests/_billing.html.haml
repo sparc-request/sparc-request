@@ -11,7 +11,8 @@
         %td Cover Letter
         %td= cover_letter.updated_at.to_s(:short)
         %td
-          =link_to 'View', [:study_tracker, @sub_service_request, cover_letter]
+          = link_to 'View', [:study_tracker, @sub_service_request, cover_letter]
+          = link_to 'Edit', edit_study_tracker_sub_service_request_cover_letter_path(@sub_service_request, cover_letter)
 
 %p.actions
   = link_to "New cover letter", new_study_tracker_sub_service_request_cover_letter_path(@sub_service_request), :class => "ui-button ui-state-default ui-button-text-only", style: "padding:0.45em 1em;"

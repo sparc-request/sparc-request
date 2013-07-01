@@ -3,7 +3,8 @@
   border: 1px dashed #84d1eb;
 }
 
-#new_cover_letter {
+form.new_cover_letter,
+form.edit_cover_letter {
     margin: 1em;
 
     .buttons {
@@ -19,10 +20,10 @@
 }
 
 table#billings_list {
-  
+  margin-bottom: 1.5em;
+  width: 100%;
+
   td, th {
     padding: 0.5em;
   }
-
-  margin-bottom: 1.5em;
 }

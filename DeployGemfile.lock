@@ -144,6 +144,7 @@ GEM
       hashery (~> 2.0)
       ruby-rc4
       ttfunk
+    pdfkit (0.5.4)
     polyglot (0.3.3)
     prawn (0.12.0)
       pdf-reader (>= 0.9.0)
@@ -264,6 +265,7 @@ DEPENDENCIES
   omniauth-shibboleth
   paper_trail (~> 2)
   paperclip
+  pdfkit
   prawn
   rails (= 3.2.11)
   rvm-capistrano

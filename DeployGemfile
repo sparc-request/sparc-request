@@ -65,6 +65,8 @@ gem 'omniauth-shibboleth'
 gem "nested_form"
 gem 'jquery_datepicker'
 
+gem "pdfkit"
+
 gem 'exception_notification'
 
 gem 'prawn'

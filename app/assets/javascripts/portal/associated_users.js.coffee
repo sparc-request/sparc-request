@@ -5,6 +5,7 @@ $(document).ready ->
   Sparc.associated_users = {
     display_dependencies :
       '#project_role_role' :
+        'primary-pi'              : ['.era_commons_name', '.subspecialty']
         pi                        : ['.era_commons_name', '.subspecialty']
         'co-investigator'         : ['.era_commons_name', '.subspecialty']
         'faculty-collaborator'    : ['.era_commons_name', '.subspecialty']
@@ -37,9 +38,9 @@ $(document).ready ->
       # and disable all other radio buttons if 'pi'
       $('#project_role_role').live('change', ->
         role = $(this).val()
-        if role == 'pi' or role == 'business-grants-manager'
+        if role == 'pi' or role == 'business-grants-manager' or roel == 'primary-pi'
           $('#project_role_project_rights_approve').attr('checked', true)
-          if role == 'pi'
+          if role == 'pi' or role == 'primary-pi'
             $('#project_role_project_rights_request').attr('disabled', true)
             $('#project_role_project_rights_view').attr('disabled', true)
             $('#project_role_project_rights_none').attr('disabled', true)
@@ -218,7 +219,7 @@ $(document).ready ->
     validatePiPresence: (role) ->
       pi_count = parseInt($('.edit-user #pi_count').val(), 10)
       pi_validation_message = $('.edit-user #pi-validation-message')
-      pi_count -= 1 if role != 'pi'
+      pi_count -= 1 if role != 'primary-pi'
       if pi_count <= 0
         pi_validation_message.show()
         Sparc.associated_users.disableSubmitButton("Submit", "Submit")

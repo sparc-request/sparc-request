@@ -1,4 +1,5 @@
 require 'epic_interface'
+require 'fake_epic_soap_server'
 require 'spec_helper'
 require 'equivalent-xml'
 

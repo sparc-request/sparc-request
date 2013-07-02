@@ -1,11 +1,14 @@
-development:
-  study_root: 1.1.1.1
-  endpoint: http://localhost:3001/
+production:
+  study_root: '1.2.3.4'
+  endpoint: 'http://TODO/'
   epoch: '2013-01-01'
   namespace: 'urn:ihe:qrph:rpe:2009'
 
+development:
+  study_root: '1.2.3.4'
+  test_mode: true
+
 test:
-  study_root: 1.1.1.1
-  endpoint: http://localhost:3001/
-  epoch: '2013-01-01'
-  namespace: 'urn:ihe:qrph:rpe:2009'
+  study_root: '1.2.3.4'
+  test_mode: true
+

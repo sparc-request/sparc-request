@@ -1,5 +1,3 @@
-require 'epic_interface'
-
 begin 
   application_config ||= YAML.load_file(Rails.root.join('config', 'application.yml'))[Rails.env]
   DEFAULT_MAIL_TO      = application_config['default_mail_to']
@@ -47,7 +45,3 @@ begin
 rescue
   raise "constants.yml not found"
 end
-
-# Instntalize EpicInterface object.
-epic_config = YAML.load_file(Rails.root.join('config', 'epic.yml'))[Rails.env]
-EPIC_INTERFACE = EpicInterface.new(epic_config)

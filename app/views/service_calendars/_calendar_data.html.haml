@@ -1,5 +1,5 @@
 = javascript_include_tag 'service_calendar_logic'
-= hidden_field_tag :indirect_rate, @service_request.protocol.indirect_cost_rate
+= hidden_field_tag :indirect_rate, service_request.protocol.indirect_cost_rate
 %table.service_calendar{:class => arm.id}
   %thead.ui-widget-header
     %tr.table_header
@@ -10,7 +10,7 @@
       %th{:rowspan => 2}= t("calendar_page.headers.subjects")
       %th &nbsp;
       %th{:colspan => 5, :height => 40, :width => 375} 
-        = generate_visit_navigation arm, @service_request, @pages, @tab, @portal if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
+        = generate_visit_navigation arm, service_request, @pages, @tab, @portal if (@sub_service_request.nil? ? service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
       %th{:colspan => 2}= image_tag 'spinner.gif', :class => 'service_calendar_spinner'
 
     %tr.table_header
@@ -18,8 +18,8 @@
         %th= t("calendar_page.headers.service_rate")
         %th= t("calendar_page.headers.your_cost")
       %th &nbsp;
-      - if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?) 
-        = generate_visit_header_row arm, @service_request, @pages[arm.id].to_i
+      - if (@sub_service_request.nil? ? service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?) 
+        = generate_visit_header_row arm, service_request, @pages[arm.id].to_i
       - else
         %th{:colspan => 5} &nbsp;
       - if @portal
@@ -29,10 +29,10 @@
         %th= t("calendar_page.headers.total_per_study")
 
   %tbody.cell-border
-    - if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?) 
+    - if (@sub_service_request.nil? ? service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?) 
       %tr.section_header
         %th{:colspan => @portal ? 11 : 13}= t("calendar_page.per_patient") + " -- " + arm.name
-      - @service_request.service_list(false).each do |key, value| # get only per patient/per visit services and group them
+      - service_request.service_list(false).each do |key, value| # get only per patient/per visit services and group them
         - next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
         - if @tab == 'billing_strategy'
           %tr.sub_section_header

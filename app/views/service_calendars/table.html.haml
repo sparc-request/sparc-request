@@ -1,6 +1,8 @@
-- @service_request.arms.each do |arm|
-  .arm_calendar_container{:'data-arm_id' => arm.id}
-    = render :partial => 'calendar_data', :locals => {:tab => @tab, :arm => arm}
+-@service_requests.each do |service_request|
+  - service_request.arms.each do |arm|
+    .arm_calendar_container{:'data-arm_id' => arm.id}
+      - next if arm.visit_groupings.empty?
+      = render :partial => 'calendar_data', :locals => {:tab => @tab, :arm => arm, :service_request => service_request}
 - if (@sub_service_request.nil? ? @service_request.has_one_time_fee_services? : @sub_service_request.has_one_time_fee_services?) and !@portal
   %table.service_calendar
     %thead.ui-widget-header

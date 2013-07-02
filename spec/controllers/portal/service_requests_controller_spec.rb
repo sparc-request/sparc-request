@@ -68,7 +68,7 @@ describe Portal::ServiceRequestsController do
 
       assigns(:protocol).should eq study
       assigns(:pages).should eq({ arm.id => 1 })
-      assigns(:tab).should eq 'pricing'
+      assigns(:tab).should eq 'calendar'
     end
   end
 

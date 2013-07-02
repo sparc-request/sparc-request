@@ -41,4 +41,5 @@
   #service_calendar_container
     -@service_requests.each do |service_request|
       - service_request.arms.each do |arm|
+        - next if arm.visit_groupings.empty?
         = render :partial => 'portal/protocols/calendar', :locals => {:arm => arm, :service_request => service_request}

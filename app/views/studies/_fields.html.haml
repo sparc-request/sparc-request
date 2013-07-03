@@ -22,12 +22,12 @@
       
       .field
         = f.label :funding_status, t(:protocol_shared)[:funding_status]
-        = f.select :funding_status, options_for_select(FUNDING_STATUSES, study.funding_status), :include_blank => t(:study_form)[:status_blank]
+        = f.select :funding_status, options_for_select(FUNDING_STATUSES, @protocol.funding_status), :include_blank => t(:study_form)[:status_blank]
 
       .pending_funding
         .field
           = f.label :potential_funding_source, t(:protocol_shared)[:potential_funding_source]
-          = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, study.potential_funding_source), :include_blank => t(:study_form)[:potential_blank]
+          = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, @protocol.potential_funding_source), :include_blank => t(:study_form)[:potential_blank]
 
         / Internal Funded Pilot Project selected
         .internal_potential_funded_pilot_project
@@ -37,7 +37,7 @@
       .funded
         .field
           = f.label :funding_source, t(:protocol_shared)[:funding_source]
-          = f.select :funding_source, options_for_select(FUNDING_SOURCES, study.funding_source), :include_blank => t(:study_form)[:funding_blank]
+          = f.select :funding_source, options_for_select(FUNDING_SOURCES, @protocol.funding_source), :include_blank => t(:study_form)[:funding_blank]
 
         .federal
           .field
@@ -46,18 +46,18 @@
 
           .field
             = f.label :federal_grant_code_id, t(:study_form)[:federal_grant_code_id]
-            = f.select :federal_grant_code_id, options_for_select(FEDERAL_GRANT_CODES, study.federal_grant_code_id), :include_blank => t(:study_form)[:code_blank]
+            = f.select :federal_grant_code_id, options_for_select(FEDERAL_GRANT_CODES, @protocol.federal_grant_code_id), :include_blank => t(:study_form)[:code_blank]
 
           .field
             = f.label :federal_phs_sponsor, t(:study_form)[:federal_phs_sponsor]
-            = f.select :federal_phs_sponsor, options_for_select(FEDERAL_GRANT_PHS_SPONSORS, study.federal_phs_sponsor), :include_blank => t(:study_form)[:phs_blank]
+            = f.select :federal_phs_sponsor, options_for_select(FEDERAL_GRANT_PHS_SPONSORS, @protocol.federal_phs_sponsor), :include_blank => t(:study_form)[:phs_blank]
           
           .field
             %span -OR-
       
           .field
             = f.label :federal_non_phs_sponsor, t(:study_form)[:federal_non_phs_sponsor]
-            = f.select :federal_non_phs_sponsor, options_for_select(FEDERAL_GRANT_NON_PHS_SPONSORS, study.federal_non_phs_sponsor), :include_blank => t(:study_form)[:phs_blank]
+            = f.select :federal_non_phs_sponsor, options_for_select(FEDERAL_GRANT_NON_PHS_SPONSORS, @protocol.federal_non_phs_sponsor), :include_blank => t(:study_form)[:phs_blank]
 
           .field
             = f.label :federal_grant_serial_number, t(:study_form)[:federal_grant_serial_number]
@@ -75,7 +75,7 @@
 
 .grid_5.box= render :partial => 'shared/user_search'
 
-- hide_user_details = (study.new_record? and study.project_roles.empty?) ? '' : 'display:none;'
+- hide_user_details = (@protocol.new_record? and @protocol.project_roles.empty?) ? '' : 'display:none;'
 
 .grid_5.box.user_added_message{:style => 'display:none;'}
   %p
@@ -84,7 +84,7 @@
 .grid_5.box.user-details.user-manager-view.add-user-details{:style => "#{hide_user_details}"}= render :partial => 'shared/user_details', :locals => {:identity => current_user, :project_role => ProjectRole.new, :can_edit => true}
 
 
-.grid_12= render :partial => 'shared/user_list', :locals => {:protocol => study}
+.grid_12= render :partial => 'shared/user_list', :locals => {:protocol => @protocol}
 
 .grid_7.box
   .info
@@ -102,7 +102,7 @@
       .funded
         .field
           = f.label :funding_start_date, t(:study_form)[:funding_start_date]
-          = text_field_tag :funding_start_date, (study.funding_start_date.strftime('%_m/%d/%Y') rescue nil)
+          = text_field_tag :funding_start_date, (@protocol.funding_start_date.strftime('%_m/%d/%Y') rescue nil)
           = f.hidden_field :funding_start_date
 
       .pending_funding
@@ -112,7 +112,7 @@
 
         .field
           = f.label :potential_funding_start_date, t(:study_form)[:potential_funding_start_date]
-          = text_field_tag :potential_funding_start_date, (study.potential_funding_start_date.strftime('%_m/%d/%Y') rescue nil)
+          = text_field_tag :potential_funding_start_date, (@protocol.potential_funding_start_date.strftime('%_m/%d/%Y') rescue nil)
           = f.hidden_field :potential_funding_start_date
 
     %fieldset
@@ -139,7 +139,7 @@
           .field.submission_type
             = hs.label :submission_type, t(:study_form)[:submission_type]
             %br
-            = hs.select :submission_type, options_for_select(SUBMISSION_TYPES, study.human_subjects_info.submission_type), :include_blank => t(:study_form)[:submission_blank]
+            = hs.select :submission_type, options_for_select(SUBMISSION_TYPES, @protocol.human_subjects_info.submission_type), :include_blank => t(:study_form)[:submission_blank]
 
           .field.approval_pending
             = hs.label :approval_pending, t(:study_form)[:approval_pending]
@@ -147,17 +147,17 @@
 
           .field.irb_approval_date
             = hs.label :irb_approval_date, t(:study_form)[:irb_approval_date]
-            = text_field_tag :irb_approval_date, (study.human_subjects_info.irb_approval_date.strftime('%_m/%d/%Y') rescue nil)
+            = text_field_tag :irb_approval_date, (@protocol.human_subjects_info.irb_approval_date.strftime('%_m/%d/%Y') rescue nil)
             = hs.hidden_field :irb_approval_date
 
           .field.irb_expiration_date
             = hs.label :irb_expiration_date, t(:study_form)[:irb_expiration_date]
-            = text_field_tag :irb_expiration_date, (study.human_subjects_info.irb_expiration_date.strftime('%_m/%d/%Y') rescue nil)
+            = text_field_tag :irb_expiration_date, (@protocol.human_subjects_info.irb_expiration_date.strftime('%_m/%d/%Y') rescue nil)
             = hs.hidden_field :irb_expiration_date
 
         .field.study_phase
           = f.label :study_phase, t(:study_form)[:study_phase]
-          = f.select :study_phase, options_for_select(STUDY_PHASES, study.study_phase), :include_blank => t(:study_form)[:phase_blank]
+          = f.select :study_phase, options_for_select(STUDY_PHASES, @protocol.study_phase), :include_blank => t(:study_form)[:phase_blank]
 
         = f.fields_for :research_types_info do |rt|
           .field.vertebrate_animals
@@ -175,12 +175,12 @@
 
           .field.iacuc_approval_date
             = va.label :iacuc_approval_date, t(:study_form)[:iacuc_approval_date]
-            = text_field_tag :iacuc_approval_date, (study.vertebrate_animals_info.iacuc_approval_date.strftime('%_m/%d/%Y') rescue nil)
+            = text_field_tag :iacuc_approval_date, (@protocol.vertebrate_animals_info.iacuc_approval_date.strftime('%_m/%d/%Y') rescue nil)
             = va.hidden_field :iacuc_approval_date
 
           .field.iacuc_expiration_date
             = va.label :iacuc_expiration_date, t(:study_form)[:iacuc_expiration_date]
-            = text_field_tag :iacuc_expiration_date, (study.vertebrate_animals_info.iacuc_expiration_date.strftime('%_m/%d/%Y') rescue nil)
+            = text_field_tag :iacuc_expiration_date, (@protocol.vertebrate_animals_info.iacuc_expiration_date.strftime('%_m/%d/%Y') rescue nil)
             = va.hidden_field :iacuc_expiration_date
         
         = f.fields_for :research_types_info do |rt|

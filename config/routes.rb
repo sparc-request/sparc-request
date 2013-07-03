@@ -50,10 +50,18 @@ SparcRails::Application.routes.draw do
 
   end
 
-  resources :projects
+  resources :projects do
+    member do
+      get :push_to_epic
+    end
+  end
 
   resources :studies do
     resources :identities
+
+    member do
+      get :push_to_epic
+    end
   end
 
   resources :catalogs do

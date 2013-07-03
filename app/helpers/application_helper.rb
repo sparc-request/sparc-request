@@ -72,7 +72,7 @@ module ApplicationHelper
         returning_html += content_tag(:th, content_tag(:span, visit_name), :width => 60, :class => 'visit_number')
       else
         returning_html += content_tag(:th,
-                                      label_tag("Day    +/-") +
+                                      label_tag("Day") + "&nbsp;&nbsp;&nbsp;".html_safe + label_tag("+/-") +
                                       tag(:br) +
                                       text_field_tag("day", visit_group.day, :class => "visit_day position_#{n}", :size => 3, :'data-position' => n - 1, :'data-day' => visit_group.day, :update => "#{day_url}?arm_id=#{arm.id}") +
                                       text_field_tag("window", visit_group.window, :class => "visit_window position_#{n}", :size => 3, :'data-position' => n - 1, :'data-window' => visit_group.window, :update => "#{window_url}?arm_id=#{arm.id}") +

@@ -65,10 +65,9 @@ class Portal::ServiceRequestsController < Portal::BaseController
     percent = @subsidy.try(:percent_subsidy).try(:*, 100)
     @service_request = ServiceRequest.find(params[:service_request_id]) # TODO: is this different from params[:id] ?
     @selected_arm = Arm.find(params[:arm_id])
-
     @study_tracker = params[:study_tracker]
-
-    if @selected_arm.add_visit(params[:visit_position], params[:visit_day], params[:visit_window])
+    
+    if @selected_arm.add_visit(params[:visit_position], params[:visit_day], params[:visit_window], params[:visit_name])
       @subsidy.try(:sub_service_request).try(:reload)
       @subsidy.try(:fix_pi_contribution, percent)
       @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}

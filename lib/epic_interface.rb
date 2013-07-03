@@ -33,13 +33,13 @@ end
 class EpicInterface
 
   # Create a new EpicInterface
-  def initialize(config = nil)
-    @config = config || YAML.load_file(Rails.root.join('config', 'epic.yml'))[Rails.env]
+  def initialize(config)
+    @config = config
 
     # TODO: grab these from the WSDL
     @namespace = @config['namespace'] || 'urn:ihe:qrph:rpe:2009'
     @root = @config['study_root']
-    @epoch = @config['epoch'] || Date.new
+    @epoch = Date.parse(@config['epoch'] || '2013-01-01')
 
     # TODO: I'm not really convinced that Savon is buying us very much
     # other than some added complexity, but it's working, so no point in

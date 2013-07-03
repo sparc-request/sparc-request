@@ -268,20 +268,12 @@ class ServiceRequestsController < ApplicationController
   end
 
   def obtain_research_pricing
-    # TODO: refactor into the ServiceRequest model
-    @service_request.update_attribute(:status, 'obtain_research_pricing')
+    @service_request.update_status('obtain_research_pricing')
     @service_request.update_attribute(:submitted_at, Time.now)
-    next_ssr_id = @service_request.protocol.next_ssr_id || 1
-    @service_request.sub_service_requests.each do |ssr|
-      ssr.update_attribute(:status, 'obtain_research_pricing')
-      ssr.update_attribute(:ssr_id, "%04d" % next_ssr_id) unless ssr.ssr_id
-      next_ssr_id += 1
-    end
+    @service_request.ensure_ssr_ids
     
     @protocol = @service_request.protocol
     @service_list = @service_request.service_list
-
-    @protocol.update_attribute(:next_ssr_id, next_ssr_id)
 
     # Does an approval need to be created, check that the user submitting has approve rights
     if @protocol.project_roles.detect{|pr| pr.identity_id == current_user.id}.project_rights != "approve"
@@ -350,20 +342,12 @@ class ServiceRequestsController < ApplicationController
   end
 
   def confirmation
-    # TODO: refactor into the ServiceRequest model
-    @service_request.update_attribute(:status, 'submitted')
+    @service_request.update_status('submitted')
     @service_request.update_attribute(:submitted_at, Time.now)
-    next_ssr_id = @service_request.protocol.next_ssr_id || 1
-    @service_request.sub_service_requests.each do |ssr|
-      ssr.update_attribute(:status, 'submitted')
-      ssr.update_attribute(:ssr_id, "%04d" % next_ssr_id) unless ssr.ssr_id
-      next_ssr_id += 1
-    end
+    @service_request.ensure_ssr_ids
     
     @protocol = @service_request.protocol
     @service_list = @service_request.service_list
-
-    @protocol.update_attribute(:next_ssr_id, next_ssr_id)
 
     # Does an approval need to be created, check that the user submitting has approve rights
     if @protocol.project_roles.detect{|pr| pr.identity_id == current_user.id}.project_rights != "approve"
@@ -444,20 +428,11 @@ class ServiceRequestsController < ApplicationController
   end
 
   def save_and_exit
-    # TODO: refactor into the ServiceRequest model
-    
     if @sub_service_request # if we are editing a sub service request we should just update it's status
       @sub_service_request.update_attribute(:status, 'draft')
     else
-      @service_request.update_attribute(:status, 'draft')
-      
-      next_ssr_id = @service_request.protocol.next_ssr_id || 1
-      @service_request.sub_service_requests.each do |ssr|
-        ssr.update_attribute(:status, 'draft')
-        ssr.update_attribute(:ssr_id, "%04d" % next_ssr_id) unless ssr.ssr_id
-        next_ssr_id += 1
-      end
-      @service_request.protocol.update_attribute(:next_ssr_id, next_ssr_id)
+      @service_request.update_status('draft')
+      @service_request.ensure_ssr_ids
     end
 
     redirect_to USER_PORTAL_LINK 

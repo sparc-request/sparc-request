@@ -366,4 +366,28 @@ class ServiceRequest < ActiveRecord::Base
     identities.flatten.uniq
   end
 
+  # Change the status of the service request and all the sub service
+  # requests to the given status.
+  def update_status(new_status)
+    self.update_attributes(status: new_status)
+
+    self.sub_service_requests.each do |ssr|
+      ssr.update_attributes(status: new_status)
+    end
+  end
+
+  # Make sure that all the sub service requests have an ssr id
+  def ensure_ssr_ids
+    next_ssr_id = self.protocol.next_ssr_id || 1
+
+    self.sub_service_requests.each do |ssr|
+      if not ssr.ssr_id then
+        ssr.update_attributes(ssr_id: "%04d" % next_ssr_id)
+        next_ssr_id += 1
+      end
+    end
+
+    self.protocol.update_attributes(next_ssr_id: next_ssr_id)
+  end
+
 end

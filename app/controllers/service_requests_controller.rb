@@ -275,69 +275,8 @@ class ServiceRequestsController < ApplicationController
     @protocol = @service_request.protocol
     @service_list = @service_request.service_list
 
-    # Does an approval need to be created, check that the user submitting has approve rights
-    if @protocol.project_roles.detect{|pr| pr.identity_id == current_user.id}.project_rights != "approve"
-      approval = @service_request.approvals.create
-    else
-      approval = false
-    end
+    send_notifications(@service_request, @sub_service_request)
 
-    # generate the excel for this service request
-    # xls = render_to_string :action => 'show', :formats => [:xlsx]
-    xls = render_to_string :action => 'show', :formats => [:xlsx]
-
-    # send e-mail to all folks with view and above
-    @protocol.project_roles.each do |project_role|
-      next if project_role.project_rights == 'none'
-      Notifier.notify_user(project_role, @service_request, xls, approval).deliver
-    end
-
-    # send e-mail to admins and service providers
-    if @sub_service_request # only notify the submission e-mails for this sub service request
-      @sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-        Notifier.notify_admin(@service_request, submission_email.email, xls).deliver
-      end
-    else # notify the submission e-mails for the service request
-      @service_request.sub_service_requests.each do |sub_service_request|
-        sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-          Notifier.notify_admin(@service_request, submission_email.email, xls).deliver
-        end
-      end
-    end
-
-    # send e-mail to all service providers
-    if @sub_service_request # only notify the service providers for this sub service request
-      @sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-        attachments = {}
-        attachments["service_request_#{@service_request.id}.xls"] = xls
-
-        #TODO this is not very multi-institutional
-        # generate the muha pdf if it's required
-        if @sub_service_request.organization.tag_list.include? 'muha'
-          request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf @service_request
-          attachments["request_for_grant_billing_#{@service_request.id}.pdf"] = request_for_grant_billing_form
-        end
-
-        Notifier.notify_service_provider(service_provider, @service_request, attachments).deliver
-      end
-    else
-      @service_request.sub_service_requests.each do |sub_service_request|
-        sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-          attachments = {}
-          attachments["service_request_#{@service_request.id}.xls"] = xls
-
-          #TODO this is not very multi-institutional
-          # generate the muha pdf if it's required
-          if sub_service_request.organization.tag_list.include? 'muha'
-            request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf @service_request
-            attachments["request_for_grant_billing_#{@service_request.id}.pdf"] = request_for_grant_billing_form
-          end
-
-          Notifier.notify_service_provider(service_provider, @service_request, attachments).deliver
-        end
-      end
-    end
-    
     render :formats => [:html]
   end
 
@@ -349,68 +288,7 @@ class ServiceRequestsController < ApplicationController
     @protocol = @service_request.protocol
     @service_list = @service_request.service_list
 
-    # Does an approval need to be created, check that the user submitting has approve rights
-    if @protocol.project_roles.detect{|pr| pr.identity_id == current_user.id}.project_rights != "approve"
-      approval = @service_request.approvals.create
-    else
-      approval = false
-    end
-
-    # generate the excel for this service request
-    # xls = render_to_string :action => 'show', :formats => [:xlsx]
-    xls = render_to_string :action => 'show', :formats => [:xlsx]
-
-    # send e-mail to all folks with view and above
-    @protocol.project_roles.each do |project_role|
-      next if project_role.project_rights == 'none'
-      Notifier.notify_user(project_role, @service_request, xls, approval).deliver
-    end
-
-    # send e-mail to admins and service providers
-    if @sub_service_request # only notify the submission e-mails for this sub service request
-      @sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-        Notifier.notify_admin(@service_request, submission_email.email, xls).deliver
-      end
-    else # notify the submission e-mails for the service request
-      @service_request.sub_service_requests.each do |sub_service_request|
-        sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-          Notifier.notify_admin(@service_request, submission_email.email, xls).deliver
-        end
-      end
-    end
-
-    # send e-mail to all service providers
-    if @sub_service_request # only notify the service providers for this sub service request
-      @sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-        attachments = {}
-        attachments["service_request_#{@service_request.id}.xls"] = xls
-
-        #TODO this is not very multi-institutional
-        # generate the muha pdf if it's required
-        if @sub_service_request.organization.tag_list.include? 'muha'
-          request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf @service_request
-          attachments["request_for_grant_billing_#{@service_request.id}.pdf"] = request_for_grant_billing_form
-        end
-
-        Notifier.notify_service_provider(service_provider, @service_request, attachments).deliver
-      end
-    else
-      @service_request.sub_service_requests.each do |sub_service_request|
-        sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-          attachments = {}
-          attachments["service_request_#{@service_request.id}.xls"] = xls
-
-          #TODO this is not very multi-institutional
-          # generate the muha pdf if it's required
-          if sub_service_request.organization.tag_list.include? 'muha'
-            request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf @service_request
-            attachments["request_for_grant_billing_#{@service_request.id}.pdf"] = request_for_grant_billing_form
-          end
-
-          Notifier.notify_service_provider(service_provider, @service_request, attachments).deliver
-        end
-      end
-    end
+    send_notifications(@service_request, @sub_service_request)
     
     render :formats => [:html]
   end
@@ -622,4 +500,84 @@ class ServiceRequestsController < ApplicationController
     
     render :partial => 'update_service_calendar'
   end
+
+  private
+
+  # Send notifications to all users.
+  def send_notifications(service_request, sub_service_request)
+    # generate the excel for this service request
+    xls = render_to_string :action => 'show', :formats => [:xlsx]
+
+    send_user_notifications(service_request, xls)
+
+    # send e-mail to admins and service providers
+    if sub_service_request # only notify the submission e-mails for this sub service request
+      send_admin_notifications_for_ssr(sub_service_request, xls)
+    else # notify the submission e-mails for the service request
+      send_admin_notifications(service_request, xls)
+    end
+
+    # send e-mail to all service providers
+    if sub_service_request # only notify the service providers for this sub service request
+      send_service_provider_notifications_for_ssr(sub_service_request, xls)
+    else
+      send_service_provider_notifications(service_request, xls)
+    end
+  end
+
+  def send_user_notifications(service_request, xls)
+    # Does an approval need to be created?  Check that the user
+    # submitting has approve rights.
+    if service_request.protocol.project_roles.detect{|pr| pr.identity_id == current_user.id}.project_rights != "approve"
+      approval = service_request.approvals.create
+    else
+      approval = false
+    end
+
+    # send e-mail to all folks with view and above
+    service_request.protocol.project_roles.each do |project_role|
+      next if project_role.project_rights == 'none'
+      Notifier.notify_user(project_role, service_request, xls, approval).deliver
+    end
+  end
+
+  def send_admin_notifications(service_request, xls)
+    # send e-mail to admins and service providers
+    service_request.sub_service_requests.each do |sub_service_request|
+      send_admin_notifications_for_ssr(sub_service_request, xls)
+    end
+  end
+
+  def send_admin_notifications_for_ssr(sub_service_request, xls)
+    sub_service_request.organization.submission_emails_lookup.each do |submission_email|
+      Notifier.notify_admin(sub_service_request.service_request, submission_email.email, xls).deliver
+    end
+  end
+
+  def send_service_provider_notifications(service_request, xls)
+    service_request.sub_service_requests.each do |sub_service_request|
+      send_service_provider_notifications_for_ssr(sub_service_request, xls)
+    end
+  end
+
+  def send_service_provider_notifications_for_ssr(sub_service_request, xls)
+    sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
+      send_individual_service_provider_notification(sub_service_request.service_request, sub_service_request, service_provider, xls)
+    end
+  end
+
+  def send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls)
+    attachments = {}
+    attachments["service_request_#{service_request.id}.xls"] = xls
+
+    #TODO this is not very multi-institutional
+    # generate the muha pdf if it's required
+    if sub_service_request.organization.tag_list.include? 'muha'
+      request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf service_request
+      attachments["request_for_grant_billing_#{service_request.id}.pdf"] = request_for_grant_billing_form
+    end
+
+    Notifier.notify_service_provider(service_provider, service_request, attachments).deliver
+  end
+
 end

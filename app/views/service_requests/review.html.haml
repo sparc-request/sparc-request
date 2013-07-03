@@ -1,8 +1,13 @@
 = javascript_include_tag 'review'
+
 = form_tag navigate_service_request_path(@service_request), {:id => 'navigation_form', :class => 'root-view', :multipart => true} do
   = hidden_field_tag :location, ''
   = hidden_field_tag :validates, ''
   = render :partial => 'steps'
+
+  #participate_in_survey{:title => 'System Satisfaction Survey'}
+    Would you like to participate in a brief 1 question system satisfaction survey?
+
   .grid_12
     .view-anchor
       .review-view
@@ -34,5 +39,7 @@
             .obtain-research-pricing
               = link_to image_tag( 'obtain_research_pricing.png'), obtain_research_pricing_service_request_path
             .submit-request
-              = link_to image_tag( 'confirm_request.png'), confirmation_service_request_path, :class => "save-and-continue"
+              = link_to image_tag( 'confirm_request.png'), confirmation_service_request_path, :class => "save-and-continue", :id => 'submit_services'
       .footer
+
+

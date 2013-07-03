@@ -1,0 +1,35 @@
+%p#push_to_epic_status
+
+:javascript
+  $(document).ready(function() {
+    // TODO: use coffeescript instead of javascript
+    // TODO: need to use locales here
+    // TODO: use a spinner
+    // TODO: need to style this a bit better
+    // TODO: we use /studies/:id/push_to_epic for both studies and
+    // projects; this works but it feels wrong
+    // TODO: if there is a 500 internal server error, then the global
+    // handler gets called and this one never gets called (so "Pushing
+    // to Epic..." is displayed forever)
+
+    console.log('Pushing to epic');
+    $('#push_to_epic_status').text('Pushing to Epic...');
+
+    console.log('making ajax call');
+    $.ajax({
+        method: 'get',
+        url: '/studies/#{@protocol.id}/push_to_epic',
+        data: JSON.stringify({ }),
+        dataType: "script",
+        contentType: 'application/json; charset=utf-8',
+        success: function() {
+          console.log('study has been pushed to epic');
+          $('#push_to_epic_status').text('Study has been pushed to Epic.');
+        },
+        failure: function() {
+          console.log('study could not be pushed to epic');
+          $('#push_to_epic_status').text('Unable to push study to Epic.');
+        }
+    });
+  });
+

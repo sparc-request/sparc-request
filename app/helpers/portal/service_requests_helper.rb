@@ -50,7 +50,7 @@ module Portal::ServiceRequestsHelper
   end
 
   def display_pi roles
-    role = roles.find{ |role| role['role'] == 'pi' }
+    role = roles.find{ |role| role['role'] == 'pi' || role['role'] == 'primary-pi' }
     "#{role['first_name']} #{role['last_name']}"
   end
 

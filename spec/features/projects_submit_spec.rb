@@ -37,7 +37,7 @@ describe "creating a new project " do
       fill_in "project_title", :with => "Dole"
       select "Funded", :from => "project_funding_status"
       select "Federal", :from => "project_funding_source"
-      select "PD/PI", :from => "project_role_role"
+      select "Primary PI", :from => "project_role_role"
       click_button "Add Authorized User"
       wait_for_javascript_to_finish
 

@@ -33,7 +33,7 @@
                 - srids << {:value => /(.*)-/.match(full_ssr_id(ssr))[1], :id => /(.*)-/.match(full_ssr_id(ssr))[1]}
 
                 %tr.admin_service_request{:class => "services #{pretty_tag(status[0])} all #{ssr.service_request.protocol.id} #{pretty_tag(ssr.try(:service_request).try(:service_requester).try(:full_name))} #{pretty_tag(ssr.try(:service_request).try(:protocol).try(:principal_investigators).try(:first).try(:full_name))}", :style => default_display(status[0]), :'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id}
-                  %td{:id => "service_request_ssr.id", :'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => "service_request_links"}= full_ssr_id(ssr)
+                  %td{:id => "service_request_ssr.id", :'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}= full_ssr_id(ssr)
                   %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}= ssr.service_request.protocol.try(:short_title)
                   %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}= ssr.service_request.submitted_at.try(:strftime, "%m/%d/%Y")
                   %td

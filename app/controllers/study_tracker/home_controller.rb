@@ -1,5 +1,6 @@
 class StudyTracker::HomeController < StudyTracker::BaseController
   def index
+    @study_tracker = true
     # TODO: admin_service_requests_by_status returns *sub* service
     # requests, so this is a misnomer
 

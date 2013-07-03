@@ -180,42 +180,41 @@ class ServiceRequestsController < ApplicationController
   end
 
   def service_calendar
-    if @service_request.arms.blank?
-      redirect_to "/service_requests/#{@service_request.id}/#{@forward}"
-    else
-      #use session so we know what page to show when tabs are switched
-      session[:service_calendar_pages] = params[:pages] if params[:pages]
+    # if @service_request.arms.blank?
+    #   redirect_to "/service_requests/#{@service_request.id}/#{@forward}"
+    # else
+    #use session so we know what page to show when tabs are switched
+    session[:service_calendar_pages] = params[:pages] if params[:pages]
 
-      # TODO: why is @page not set here?  if it's not supposed to be set
-      # then there should be a comment as to why it's set in #review but
-      # not here
+    # TODO: why is @page not set here?  if it's not supposed to be set
+    # then there should be a comment as to why it's set in #review but
+    # not here
 
-      @service_request.arms.each do |arm|
-        #check each ARM for line_items_visits (in other words, it's a new arm)
-        if arm.line_items_visits.empty?
-          #Create missing line_items_visits
-          @service_request.per_patient_per_visit_line_items.each do |line_item|
-            arm.create_line_items_visit(line_item)
+    @service_request.arms.each do |arm|
+      #check each ARM for line_items_visits (in other words, it's a new arm)
+      if arm.line_items_visits.empty?
+        #Create missing line_items_visits
+        @service_request.per_patient_per_visit_line_items.each do |line_item|
+          arm.create_line_items_visit(line_item)
+        end
+      else
+        #Check to see if ARM has been modified...
+        arm.line_items_visits.each do |liv|
+          #Update subject counts under certain conditions
+          if @service_request.status == 'first_draft' or liv.subject_count.nil? or liv.subject_count > arm.subject_count
+            liv.update_attribute(:subject_count, arm.subject_count)
           end
-        else
-          #Check to see if ARM has been modified...
-          arm.line_items_visits.each do |liv|
-            #Update subject counts under certain conditions
-            if @service_request.status == 'first_draft' or liv.subject_count.nil? or liv.subject_count > arm.subject_count
-              liv.update_attribute(:subject_count, arm.subject_count)
-            end
-            # if arm.visit_count > liv.visits.count
-            #   liv.create_visits
-            # end
-          end
-          #Arm.visit_count has benn increased, so create new visit group, and populate the visits
-          if arm.visit_count > arm.visit_groups.count
-            arm.create_visit_group until arm.visit_count == arm.visit_groups.count
-          end
-          #Arm.visit_count has been decreased, destroy visit group (and visits)
-          if arm.visit_count < arm.visit_groups.count
-            arm.visit_groups.last.destroy until arm.visit_count == arm.visit_groups.count
-          end
+          # if arm.visit_count > liv.visits.count
+          #   liv.create_visits
+          # end
+        end
+        #Arm.visit_count has benn increased, so create new visit group, and populate the visits
+        if arm.visit_count > arm.visit_groups.count
+          arm.create_visit_group until arm.visit_count == arm.visit_groups.count
+        end
+        #Arm.visit_count has been decreased, destroy visit group (and visits)
+        if arm.visit_count < arm.visit_groups.count
+          arm.visit_groups.last.destroy until arm.visit_count == arm.visit_groups.count
         end
       end
     end

@@ -1895,3 +1895,8 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 .document_upload_instructions ul {
   list-style: decimal inside;
 }
+
+#push_to_epic_status {
+  margin-top: 10px;
+}
+

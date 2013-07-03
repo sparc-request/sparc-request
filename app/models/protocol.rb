@@ -85,7 +85,7 @@ class Protocol < ActiveRecord::Base
   end
 
   def primary_principal_investigator
-    project_roles.detect { |pr| pr.role == 'primary-pi' }.identity
+    project_roles.detect { |pr| pr.role == 'primary-pi' }.try(:identity)
   end
 
   def billing_managers

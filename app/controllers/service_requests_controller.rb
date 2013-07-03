@@ -177,42 +177,38 @@ class ServiceRequestsController < ApplicationController
   end
 
   def service_calendar
-    if @service_request.arms.blank?
-      redirect_to "/service_requests/#{@service_request.id}/#{@forward}"
-    else
-      #use session so we know what page to show when tabs are switched
-      session[:service_calendar_pages] = params[:pages] if params[:pages]
+    #use session so we know what page to show when tabs are switched
+    session[:service_calendar_pages] = params[:pages] if params[:pages]
 
-      # TODO: why is @page not set here?  if it's not supposed to be set
-      # then there should be a comment as to why it's set in #review but
-      # not here
+    # TODO: why is @page not set here?  if it's not supposed to be set
+    # then there should be a comment as to why it's set in #review but
+    # not here
 
-      @service_request.arms.each do |arm|
-        #check each ARM for visit_groupings (in other words, it's a new arm)
-        if arm.visit_groupings.empty?
-          #Create missing visit_groupings
-          new_visit_groupings = Array.new
-          @service_request.per_patient_per_visit_line_items.each do |line_item|
-            vg = arm.visit_groupings.new
-            vg.line_item_id = line_item.id
-            vg.subject_count = arm.subject_count
-            vg.save
-            #push them to array, for easily looping over to create visits...
-            new_visit_groupings.push(vg)
+    @service_request.arms.each do |arm|
+      #check each ARM for visit_groupings (in other words, it's a new arm)
+      if arm.visit_groupings.empty?
+        #Create missing visit_groupings
+        new_visit_groupings = Array.new
+        @service_request.per_patient_per_visit_line_items.each do |line_item|
+          vg = arm.visit_groupings.new
+          vg.line_item_id = line_item.id
+          vg.subject_count = arm.subject_count
+          vg.save
+          #push them to array, for easily looping over to create visits...
+          new_visit_groupings.push(vg)
+        end
+        new_visit_groupings.each do |vg|
+          vg.create_or_destroy_visits
+        end
+      else
+        #Check to see if ARM has been modified...
+        arm.visit_groupings.each do |vg|
+          #Update subject counts under certain conditions
+          if vg.subject_count.nil? or vg.subject_count > arm.subject_count
+            vg.update_attribute(:subject_count, arm.subject_count)
           end
-          new_visit_groupings.each do |vg|
-            vg.create_or_destroy_visits
-          end
-        else
-          #Check to see if ARM has been modified...
-          arm.visit_groupings.each do |vg|
-            #Update subject counts under certain conditions
-            if vg.subject_count.nil? or vg.subject_count > arm.subject_count
-              vg.update_attribute(:subject_count, arm.subject_count)
-            end
 
-            vg.create_or_destroy_visits
-          end
+          vg.create_or_destroy_visits
         end
       end
     end

@@ -224,13 +224,20 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def calendar_totals
+  # do not delete.  Method will be needed if calendar totals page is
+  # used.
+  # def calendar_totals
+  #   if @service_request.arms.blank?
+  #     @back = 'service_details'
+  #   end
+  # end
+
+
+  def service_subsidy
+    # this is only if the calendar totals page is not going to be used.
     if @service_request.arms.blank?
       @back = 'service_details'
     end
-  end
-
-  def service_subsidy
     @subsidies = []
     @service_request.sub_service_requests.each do |ssr|
       if ssr.subsidy

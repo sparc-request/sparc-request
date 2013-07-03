@@ -180,6 +180,7 @@ GEM
     rake (10.0.3)
     rdoc (3.12)
       json (~> 1.4)
+    redcarpet (2.3.0)
     ruby-rc4 (0.1.5)
     rubyzip (0.9.9)
     rvm-capistrano (1.2.7)
@@ -273,6 +274,7 @@ DEPENDENCIES
   pdfkit
   prawn
   rails (= 3.2.11)
+  redcarpet
   rvm-capistrano
   sass
   sass-rails (~> 3.2.3)

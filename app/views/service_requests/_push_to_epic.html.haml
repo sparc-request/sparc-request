@@ -19,7 +19,7 @@
     $.ajax({
         method: 'get',
         url: '/studies/#{@protocol.id}/push_to_epic',
-        data: JSON.stringify({ }),
+        // data: JSON.stringify({ }), // TODO: causes 'bad request'
         dataType: "script",
         contentType: 'application/json; charset=utf-8',
         success: function() {

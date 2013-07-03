@@ -1,5 +1,5 @@
 class ProtocolsController < ApplicationController
-  respond_to :html, :js, :json
+  respond_to :json, :js, :html
   before_filter :initialize_service_request
   before_filter :authorize_identity
   before_filter :set_protocol_type
@@ -57,7 +57,7 @@ class ProtocolsController < ApplicationController
       EPIC_INTERFACE.send_study(@protocol)
       EPIC_INTERFACE.send_billing_calendar(@protocol)
       respond_to do |format|
-        format.js { render :status => 200 }
+        format.js { render :status => 200, :json => { } }
       end
     rescue Exception => e
       begin

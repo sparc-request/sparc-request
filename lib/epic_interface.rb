@@ -164,7 +164,7 @@ class EpicInterface
                       xml.high(value: service_request.end_date.strftime("%Y%m%d"))
                     }
 
-                    arm.visit_group.each do |visit_group|
+                    arm.visit_groups.each do |visit_group|
                       xml.component1(typeCode: 'COMP') {
                         xml.sequenceNumber(value: visit_group.position)
                         xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
@@ -199,7 +199,7 @@ class EpicInterface
 
                         xml.component2(typeCode: 'COMP') {
                           xml.procedure(classCode: 'PROC', moodCode: 'EVN') {
-                            xml.code(code: li.service.cpt_code, codeSystem: 'n/a')
+                            xml.code(code: line_item.service.cpt_code, codeSystem: 'n/a')
                           }
                         }
 

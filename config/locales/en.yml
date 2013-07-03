@@ -149,7 +149,7 @@ en:
       template: "Template Tab"
       billing: "Quantity/Billing Tab"
       quantity: "Quantity Display Tab"
-      pricing: "Pricing Display Tab"
+      pricing: "Full Calendar Tab"
     billing_legend:
       research: "R = Research"
       third_party: "T = Third Party (PT Insurance)"

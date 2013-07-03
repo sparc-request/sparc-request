@@ -78,7 +78,7 @@ class Portal::ProtocolsController < Portal::BaseController
     page = params[:page] if params[:page]
     session[:service_calendar_pages] = params[:pages] if params[:pages]
     session[:service_calendar_pages][arm_id] = page if page && arm_id
-    @tab = 'pricing'
+    @tab = 'calendar'
     @pages = {}
     @service_requests.each do |service_request|
       service_request.arms.each do |arm|

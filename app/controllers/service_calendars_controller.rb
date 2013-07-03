@@ -13,9 +13,13 @@ class ServiceCalendarsController < ApplicationController
     @portal = params[:portal]
     @study_tracker = params[:study_tracker]
     @pages = {}
-    @service_request.arms.each do |arm|
-      new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-      @pages[arm.id] = @service_request.set_visit_page new_page, arm
+    @protocol = @service_request.protocol
+    @service_requests = (@tab == 'calendar') ? @service_request.protocol.service_requests : [@service_request]
+    @service_requests.each do |service_request|
+      service_request.arms.each do |arm|
+        new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
+        @pages[arm.id] = @service_request.set_visit_page new_page, arm
+      end
     end
 
     # TODO: This needs to be changed for one time fees page in arms

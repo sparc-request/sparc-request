@@ -30,7 +30,7 @@ describe Portal::ServiceRequestsController do
 
       assigns(:protocol).should eq service_request.protocol
       assigns(:pages).should eq({ arm1.id => 1, arm2.id => 1 })
-      assigns(:tab).should eq 'pricing'
+      assigns(:tab).should eq 'calendar'
     end
   end
 

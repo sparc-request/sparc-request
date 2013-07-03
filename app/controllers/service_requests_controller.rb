@@ -267,7 +267,7 @@ class ServiceRequestsController < ApplicationController
       @pages[arm.id] = 1
     end
 
-    @tab = 'pricing'
+    @tab = 'calendar'
   end
 
   def obtain_research_pricing
@@ -477,7 +477,7 @@ class ServiceRequestsController < ApplicationController
       new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
       @pages[arm.id] = @service_request.set_visit_page new_page, arm
     end
-    @tab = 'pricing'
+    @tab = 'calendar'
   end
 
 

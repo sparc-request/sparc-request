@@ -63,7 +63,7 @@ class Protocol < ActiveRecord::Base
   validates :title, :presence => true
   validates :funding_status, :presence => true  
   validate  :requester_included, :on => :create
-  validate  :pi_exists
+  validate  :primary_pi_exists
   validate  :validate_funding_source
   validate  :validate_proxy_rights
 
@@ -80,7 +80,11 @@ class Protocol < ActiveRecord::Base
   end
 
   def principal_investigators
-    project_roles.reject{|pr| pr.role != 'pi'}.map(&:identity)
+    project_roles.reject{|pr| pr.role != 'pi' || pr.role != 'primary-pi'}.map(&:identity)
+  end
+
+  def primary_principal_investigator
+    project_roles.detect { |pr| pr.role == 'primary-pi' }.identity
   end
 
   def billing_managers
@@ -95,8 +99,9 @@ class Protocol < ActiveRecord::Base
     errors.add(:base, "You must add yourself as an authorized user") unless project_roles.map(&:identity_id).include?(requester_id.to_i)
   end
 
-  def pi_exists
-    errors.add(:base, "You must add a PI to the study/project") unless project_roles.map(&:role).include? 'pi'
+  def primary_pi_exists
+    errors.add(:base, "You must add a Primary PI to the study/project") unless project_roles.map(&:role).include? 'primary-pi'
+    errors.add(:base, "Only one Primary PI is allowed. Please ensure that only one exists") unless project_roles.select { |pr| pr.role == 'primary-pi'}.count == 1
   end
 
   def role_for identity

@@ -11,7 +11,7 @@ class Portal::ServiceRequestsController < Portal::BaseController
     @ssr_id = params[:ssr_id] if params[:ssr_id]
     @service_list = @service_request.service_list
     @protocol = @service_request.protocol
-    @tab = 'pricing'
+    @tab = 'calendar'
     @selected_arm = Arm.find arm_id if arm_id
     @pages = {}
     @service_request.arms.each do |arm|

@@ -52,7 +52,7 @@ SparcRails::Application.routes.draw do
 
   resources :projects do
     member do
-      get :push_to_epic
+      get :push_to_epic_status
     end
   end
 
@@ -60,7 +60,7 @@ SparcRails::Application.routes.draw do
     resources :identities
 
     member do
-      get :push_to_epic
+      get :push_to_epic_status
     end
   end
 

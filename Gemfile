@@ -43,7 +43,7 @@ gem 'savon', '~> 2.2.0'    # SOAP client
 gem 'gyoku'                # XML builder
 gem 'nori', '~> 2.1.0'     # XML parser
 
-gem 'delayed_job'
+gem 'spawnling'
 
 group :development, :test, :profile do
   gem "rails-erd"

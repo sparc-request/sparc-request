@@ -48,6 +48,9 @@ class Protocol < ActiveRecord::Base
   attr_accessible :project_roles_attributes
   attr_accessible :requester_id
 
+  attr_accessible :last_epic_push_time
+  attr_accessible :last_epic_push_status
+
   attr_accessor :requester_id
   
   accepts_nested_attributes_for :research_types_info
@@ -156,5 +159,30 @@ class Protocol < ActiveRecord::Base
       end
 
     return funding_source
+  end
+
+  def push_to_epic(epic_interface)
+    begin
+      update_attributes(
+          last_epic_push_time: Time.now,
+          last_epic_push_status: 'started')
+
+      Rails.logger.info("Sending study creation message to Epic")
+      epic_interface.send_study(self)
+
+      update_attributes(
+          last_epic_push_status: 'sent_study')
+
+      Rails.logger.info("Sending billing calendar to Epic")
+      epic_interface.send_billing_calendar(self)
+
+      update_attributes(
+          last_epic_push_status: 'complete')
+
+    rescue Exception => e
+      update_attributes(
+          last_epic_push_status: 'failed')
+      raise e
+    end
   end
 end

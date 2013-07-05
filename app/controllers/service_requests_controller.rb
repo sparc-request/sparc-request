@@ -289,7 +289,11 @@ class ServiceRequestsController < ApplicationController
     @service_list = @service_request.service_list
 
     send_notifications(@service_request, @sub_service_request)
-    
+ 
+    Spawnling.new do
+      @protocol.push_to_epic(EPIC_INTERFACE)
+    end
+
     render :formats => [:html]
   end
 

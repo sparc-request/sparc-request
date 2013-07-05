@@ -6,30 +6,38 @@
     // TODO: need to use locales here
     // TODO: use a spinner
     // TODO: need to style this a bit better
-    // TODO: we use /studies/:id/push_to_epic for both studies and
-    // projects; this works but it feels wrong
-    // TODO: if there is a 500 internal server error, then the global
-    // handler gets called and this one never gets called (so "Pushing
-    // to Epic..." is displayed forever)
+    // TODO: we use /studies/:id/push_to_epic_status for both studies
+    // and projects; this works but it feels wrong
 
-    console.log('Pushing to epic');
-    $('#push_to_epic_status').text('Pushing to Epic...');
+    $('#push_to_epic_status').text('Getting status of last push to Epic...');
 
-    console.log('making ajax call');
-    $.ajax({
-        method: 'get',
-        url: '/studies/#{@protocol.id}/push_to_epic',
-        // data: JSON.stringify({ }), // TODO: causes 'bad request'
-        dataType: "script",
-        contentType: 'application/json; charset=utf-8',
-        success: function() {
-          console.log('study has been pushed to epic');
-          $('#push_to_epic_status').text('Study has been pushed to Epic.');
-        },
-        error: function() {
-          console.log('study could not be pushed to epic');
-          $('#push_to_epic_status').text('Unable to push study to Epic.');
-        }
-    });
+    var get_epic_push_status = function() {
+      $.ajax({
+          method: 'get',
+          url: '/studies/#{@protocol.id}/push_to_epic_status.json',
+          data: JSON.stringify({ }),
+          contentType: 'application/json; charset=utf-8',
+          success: function(data, text, request) {
+            status = data['last_epic_push_status']
+
+            if(status == 'complete') {
+              // Success
+              $('#push_to_epic_status').text('Study has been pushed to Epic.');
+            } else if(status == 'failed') {
+              // Failure
+              $('#push_to_epic_status').text('Unable to push study to Epic.');
+            }
+            else {
+              // Not done yet; try again in 5 seconds
+              window.setTimer(get_epic_push_status, 5000);
+            }
+          },
+          error: function(request, text, error) {
+            $('#push_to_epic_status').text('Unable to get status for last push to Epic.');
+          }
+      });
+    }
+
+    get_epic_push_status();
   });
 

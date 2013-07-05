@@ -144,20 +144,6 @@ class Arm < ActiveRecord::Base
     return visit_group.destroy
   end
 
-  def insure_visit_count
-    if self.visit_count.nil? or self.visit_count <= 0
-      self.update_attribute(:visit_count, 1)
-      self.reload
-    end
-  end
-
-  def insure_subject_count
-    if subject_count.nil? or subject_count < 0
-      self.update_attribute(:subject_count, 1)
-      self.reload
-    end
-  end
-
   def populate_subjects
     groups = self.visit_groups
     subject_count.times do

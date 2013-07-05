@@ -26,7 +26,7 @@
           console.log('study has been pushed to epic');
           $('#push_to_epic_status').text('Study has been pushed to Epic.');
         },
-        failure: function() {
+        error: function() {
           console.log('study could not be pushed to epic');
           $('#push_to_epic_status').text('Unable to push study to Epic.');
         }

@@ -11,6 +11,10 @@ $(document).ready ->
     # We also check to see if a _local_ error handler was given, in
     # which case it's likely we don't need to pop up the alert box,
     # because the error is already handled.
+    #
+    # TODO: Now that we are checking for a local error handler, we might
+    # be able to remove some of these other conditions.
+    #
     if request.status != 418 &&
        request.statusText != 'abort' &&
        settings.url != '/service_requests/feedback' &&

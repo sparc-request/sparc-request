@@ -92,10 +92,10 @@ namespace :survey do
   task :parse do
     if ENV['FILE']
       transaction do
-        run "cd #{current_path} && rake survey:parse FILE=#{ENV['FILE']} RAILS_ENV=#{rails_env}"
+        run "cd #{current_path} && rake surveyor FILE=#{ENV['FILE']} RAILS_ENV=#{rails_env}"
       end
     else
-      raise "FILE must be specified (eg. rake survey:parse FILE=surveys/your_survey.rb)" 
+      raise "FILE must be specified (eg. cap survey:parse FILE=surveys/your_survey.rb)" 
     end
   end
 end

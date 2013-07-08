@@ -37,8 +37,7 @@ ul {
 #feedback {
   float: right;
   margin-right: 10px;
-  margin-bottom: 10px;
-  color: #FFFFFF;
+  margin-top: 114px;
   font-size: 14px;
   font-weight: bold;
   text-decoration: underline;
@@ -1900,3 +1899,15 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   margin: 5px;
   font-size: 15px;
 }
+
+#sparc_logo_header {
+  background: #FFF;
+  border-left: 1px solid #B2B2B2;
+  border-right: 1px solid #000;
+  display: block;
+  margin-top: 8px;
+  width: 960px;
+}
+
+#push_to_epic_status {
+  margin-top: 10px;

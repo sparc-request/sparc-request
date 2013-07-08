@@ -1,41 +1,7 @@
-class ProjectsController < ApplicationController
-  before_filter :initialize_service_request
-  before_filter :authorize_identity
-  before_filter :set_protocol_type
-  def new
-    @service_request = ServiceRequest.find session[:service_request_id]
-    @project = Project.new
-    @project.requester_id = current_user.id
-  end
+class ProjectsController < ProtocolsController
 
-  def create
-    @service_request = ServiceRequest.find session[:service_request_id]
-    @project = Project.new params[:project]
-
-    if @project.valid?
-      @project.save
-      session[:saved_project_id] = @project.id
-      flash[:notice] = "New project created"
-    end
-  end
-
-  def edit
-    @service_request = ServiceRequest.find session[:service_request_id]
-    @project = current_user.projects.find params[:id]
-  end
-
-  def update
-    @service_request = ServiceRequest.find session[:service_request_id]
-    @project = current_user.projects.find params[:id]
-
-    if @project.update_attributes params[:project]
-      session[:saved_project_id] = @project.id
-      flash[:notice] = "Project updated"
-    end
-  end
-
-  def destroy
-
+  def model_class
+    return Project
   end
 
   def set_protocol_type

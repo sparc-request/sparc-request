@@ -6,6 +6,25 @@ describe Arm do
     arm.line_items.should eq [ ]
   end
 
+  context 'clinical work fulfillment' do
+    let_there_be_lane
+    let_there_be_j
+    build_service_request_with_study
+
+
+    before :each do
+      add_visits
+      sub_service_request.update_attribute(:in_work_fulfillment, true)
+      sub_service_request.reload
+    end
+
+    it 'should populate its subjects if it has a sub service request in cwf status' do
+      arm = service_request.create_arm(subject_count: 5, visit_count: 5, name: 'CWF ARM')
+      arm.subjects.count.should eq(5)
+    end
+
+  end
+
   context "methods" do
     let_there_be_lane
     let_there_be_j
@@ -15,12 +34,13 @@ describe Arm do
     before :each do
       service_request.protocol.update_attribute(:indirect_cost_rate, 200.0)
       add_visits
+      arm1.reload
     end
 
     describe "adding a visit" do
       it "should increase the visit count on the arm by one" do
         original_visit_count = arm1.visit_count
-        arm1.add_visit
+        arm1.add_visit nil, 20, 0
         arm1.visit_count.should eq(original_visit_count + 1)
       end
 
@@ -29,7 +49,7 @@ describe Arm do
         last_visit = arm1.line_items_visits.first.visits.last
         visit_count = arm1.visit_count
         #Add a visit to the end (hopefully)
-        arm1.add_visit
+        arm1.add_visit nil, 20, 0
         #Our count should have gone up, and there should be one more visit
         arm1.visit_count.should eq(visit_count + 1)
         arm1.line_items_visits.first.visits.count.should eq(visit_count + 1)
@@ -41,7 +61,7 @@ describe Arm do
         #Change something on last visit
         arm1.line_items_visits.first.visits.last.update_attribute(:research_billing_qty, 99)
         #Add visit in the middle-ish
-        arm1.add_visit(3).should eq true
+        arm1.add_visit(3, 3, 0).should eq true
         #There should now be an additional visit (10 originally from the fixtures)
         arm1.visit_count.should eq 11
         arm1.line_items_visits[0].visits.count.should eq 11

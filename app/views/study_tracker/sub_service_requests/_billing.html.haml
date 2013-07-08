@@ -1,0 +1,17 @@
+%table#billings_list
+  %thead.ui-widget-header
+    %tr
+      %th.type Type
+      %th.created_on Created on
+      %th.actions
+  %tbody
+    - @sub_service_request.cover_letters.each do |cover_letter|
+      %tr{ class: cycle('even', 'odd') }
+        %td.type Cover Letter
+        %td.created_on= cover_letter.updated_at.to_s(:short)
+        %td.actions
+          = link_to image_tag('pdficon_small.png') + ' Download', study_tracker_sub_service_request_cover_letter_path(@sub_service_request, cover_letter, format: 'pdf'), class: "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", style: "padding:0.45em 1em 0.45em 0.45em;"
+          = link_to 'Edit', edit_study_tracker_sub_service_request_cover_letter_path(@sub_service_request, cover_letter)
+
+%p.actions
+  = link_to "New cover letter", new_study_tracker_sub_service_request_cover_letter_path(@sub_service_request), :class => "ui-button ui-state-default ui-button-text-only", style: "padding:0.45em 1em;"

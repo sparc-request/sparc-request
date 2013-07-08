@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130617182076) do
+ActiveRecord::Schema.define(:version => 20130701145818) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -83,6 +83,27 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.integer  "subject_count"
   end
 
+  create_table "audits", :force => true do |t|
+    t.integer  "auditable_id"
+    t.string   "auditable_type"
+    t.integer  "associated_id"
+    t.string   "associated_type"
+    t.integer  "user_id"
+    t.string   "user_type"
+    t.string   "username"
+    t.string   "action"
+    t.text     "audited_changes"
+    t.integer  "version",         :default => 0
+    t.string   "comment"
+    t.string   "remote_address"
+    t.datetime "created_at"
+  end
+
+  add_index "audits", ["associated_id", "associated_type"], :name => "associated_index"
+  add_index "audits", ["auditable_id", "auditable_type"], :name => "auditable_index"
+  add_index "audits", ["created_at"], :name => "index_audits_on_created_at"
+  add_index "audits", ["user_id", "user_type"], :name => "user_index"
+
   create_table "available_statuses", :force => true do |t|
     t.integer  "organization_id"
     t.string   "status"
@@ -129,6 +150,15 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
   end
 
   add_index "clinical_providers", ["organization_id"], :name => "index_clinical_providers_on_organization_id"
+
+  create_table "cover_letters", :force => true do |t|
+    t.text     "content"
+    t.integer  "sub_service_request_id"
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
+  end
+
+  add_index "cover_letters", ["sub_service_request_id"], :name => "index_cover_letters_on_sub_service_request_id"
 
   create_table "dependencies", :force => true do |t|
     t.integer  "question_id"
@@ -381,6 +411,32 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
   end
 
   add_index "past_statuses", ["sub_service_request_id"], :name => "index_past_statuses_on_sub_service_request_id"
+
+  create_table "payment_uploads", :force => true do |t|
+    t.integer  "payment_id"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+    t.string   "file_file_name"
+    t.string   "file_content_type"
+    t.integer  "file_file_size"
+    t.datetime "file_updated_at"
+  end
+
+  add_index "payment_uploads", ["payment_id"], :name => "index_payment_uploads_on_payment_id"
+
+  create_table "payments", :force => true do |t|
+    t.integer  "sub_service_request_id"
+    t.date     "date_submitted"
+    t.decimal  "amount_invoiced",        :precision => 12, :scale => 4
+    t.decimal  "amount_received",        :precision => 12, :scale => 4
+    t.date     "date_received"
+    t.string   "payment_method"
+    t.text     "details"
+    t.datetime "created_at",                                            :null => false
+    t.datetime "updated_at",                                            :null => false
+  end
+
+  add_index "payments", ["sub_service_request_id"], :name => "index_payments_on_sub_service_request_id"
 
   create_table "pricing_maps", :force => true do |t|
     t.integer  "service_id"
@@ -886,9 +942,11 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
   create_table "visit_groups", :force => true do |t|
     t.string   "name"
     t.integer  "arm_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
     t.integer  "position"
+    t.integer  "day"
+    t.integer  "window",     :default => 0
   end
 
   add_index "visit_groups", ["arm_id"], :name => "index_visit_groups_on_arm_id"

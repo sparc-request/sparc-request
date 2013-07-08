@@ -45,15 +45,25 @@ SparcRails::Application.routes.draw do
       end
       collection do
         put 'rename_visit'
+        put 'set_day'
+        put 'set_window'
       end
     end
 
   end
 
-  resources :projects
+  resources :projects do
+    member do
+      get :push_to_epic
+    end
+  end
 
   resources :studies do
     resources :identities
+
+    member do
+      get :push_to_epic
+    end
   end
 
   resources :catalogs do
@@ -122,6 +132,10 @@ SparcRails::Application.routes.draw do
   namespace :study_tracker do
     root :to => 'home#index'
     resources :sub_service_requests do
+      resources :calendars
+      resources :cover_letters
+    end
+    resources :service_requests do
     end
   end
   

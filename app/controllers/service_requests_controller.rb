@@ -170,12 +170,9 @@ class ServiceRequestsController < ApplicationController
     @studies = @sub_service_request.nil? ? current_user.studies(:order => 'id') : @service_request.protocol.type == "Study" ? [@service_request.protocol] : []
     @projects = @sub_service_request.nil? ? current_user.projects(:order => 'id') : @service_request.protocol.type == "Project" ? [@service_request.protocol] : []
 
-    if session[:saved_study_id]
-      @service_request.protocol = Study.find session[:saved_study_id]
-      session.delete :saved_study_id
-    elsif session[:saved_project_id]
-      @service_request.protocol = Project.find session[:saved_project_id]
-      session.delete :saved_project_id
+    if session[:saved_protocol_id]
+      @service_request.protocol = Protocol.find session[:saved_protocol_id]
+      session.delete :saved_protocol_id
     end
   end
   
@@ -183,54 +180,60 @@ class ServiceRequestsController < ApplicationController
   end
 
   def service_calendar
-    if @service_request.arms.blank?
-      redirect_to "/service_requests/#{@service_request.id}/#{@forward}"
-    else
-      #use session so we know what page to show when tabs are switched
-      session[:service_calendar_pages] = params[:pages] if params[:pages]
+    # if @service_request.arms.blank?
+    #   redirect_to "/service_requests/#{@service_request.id}/#{@forward}"
+    # else
+    #use session so we know what page to show when tabs are switched
+    session[:service_calendar_pages] = params[:pages] if params[:pages]
 
-      # TODO: why is @page not set here?  if it's not supposed to be set
-      # then there should be a comment as to why it's set in #review but
-      # not here
+    # TODO: why is @page not set here?  if it's not supposed to be set
+    # then there should be a comment as to why it's set in #review but
+    # not here
 
-      @service_request.arms.each do |arm|
-        #check each ARM for line_items_visits (in other words, it's a new arm)
-        if arm.line_items_visits.empty?
-          #Create missing line_items_visits
-          @service_request.per_patient_per_visit_line_items.each do |line_item|
-            arm.create_line_items_visit(line_item)
+    @service_request.arms.each do |arm|
+      #check each ARM for line_items_visits (in other words, it's a new arm)
+      if arm.line_items_visits.empty?
+        #Create missing line_items_visits
+        @service_request.per_patient_per_visit_line_items.each do |line_item|
+          arm.create_line_items_visit(line_item)
+        end
+      else
+        #Check to see if ARM has been modified...
+        arm.line_items_visits.each do |liv|
+          #Update subject counts under certain conditions
+          if @service_request.status == 'first_draft' or liv.subject_count.nil? or liv.subject_count > arm.subject_count
+            liv.update_attribute(:subject_count, arm.subject_count)
           end
-        else
-          #Check to see if ARM has been modified...
-          arm.line_items_visits.each do |liv|
-            #Update subject counts under certain conditions
-            if @service_request.status == 'first_draft' or liv.subject_count.nil? or liv.subject_count > arm.subject_count
-              liv.update_attribute(:subject_count, arm.subject_count)
-            end
-            # if arm.visit_count > liv.visits.count
-            #   liv.create_visits
-            # end
-          end
-          #Arm.visit_count has benn increased, so create new visit group, and populate the visits
-          if arm.visit_count > arm.visit_groups.count
-            arm.create_visit_group until arm.visit_count == arm.visit_groups.count
-          end
-          #Arm.visit_count has been decreased, destroy visit group (and visits)
-          if arm.visit_count < arm.visit_groups.count
-            arm.visit_groups.last.destroy until arm.visit_count == arm.visit_groups.count
-          end
+          # if arm.visit_count > liv.visits.count
+          #   liv.create_visits
+          # end
+        end
+        #Arm.visit_count has benn increased, so create new visit group, and populate the visits
+        if arm.visit_count > arm.visit_groups.count
+          arm.create_visit_group until arm.visit_count == arm.visit_groups.count
+        end
+        #Arm.visit_count has been decreased, destroy visit group (and visits)
+        if arm.visit_count < arm.visit_groups.count
+          arm.visit_groups.last.destroy until arm.visit_count == arm.visit_groups.count
         end
       end
     end
   end
 
-  def calendar_totals
+  # do not delete.  Method will be needed if calendar totals page is
+  # used.
+  # def calendar_totals
+  #   if @service_request.arms.blank?
+  #     @back = 'service_details'
+  #   end
+  # end
+
+
+  def service_subsidy
+    # this is only if the calendar totals page is not going to be used.
     if @service_request.arms.blank?
       @back = 'service_details'
     end
-  end
-
-  def service_subsidy
     @subsidies = []
     @service_request.sub_service_requests.each do |ssr|
       if ssr.subsidy
@@ -267,7 +270,7 @@ class ServiceRequestsController < ApplicationController
       @pages[arm.id] = 1
     end
 
-    @tab = 'pricing'
+    @tab = 'calendar'
   end
 
   def obtain_research_pricing
@@ -477,7 +480,7 @@ class ServiceRequestsController < ApplicationController
       new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
       @pages[arm.id] = @service_request.set_visit_page new_page, arm
     end
-    @tab = 'pricing'
+    @tab = 'calendar'
   end
 
 

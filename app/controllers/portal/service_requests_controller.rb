@@ -11,7 +11,7 @@ class Portal::ServiceRequestsController < Portal::BaseController
     @ssr_id = params[:ssr_id] if params[:ssr_id]
     @service_list = @service_request.service_list
     @protocol = @service_request.protocol
-    @tab = 'pricing'
+    @tab = 'calendar'
     @selected_arm = Arm.find arm_id if arm_id
     @pages = {}
     @service_request.arms.each do |arm|
@@ -66,8 +66,8 @@ class Portal::ServiceRequestsController < Portal::BaseController
     @service_request = ServiceRequest.find(params[:service_request_id]) # TODO: is this different from params[:id] ?
     @selected_arm = Arm.find(params[:arm_id])
     @study_tracker = params[:study_tracker]
-
-    if @selected_arm.add_visit(params[:visit_position])
+    
+    if @selected_arm.add_visit(params[:visit_position], params[:visit_day], params[:visit_window], params[:visit_name])
       @subsidy.try(:sub_service_request).try(:reload)
       @subsidy.try(:fix_pi_contribution, percent)
       @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
@@ -76,7 +76,7 @@ class Portal::ServiceRequestsController < Portal::BaseController
       end
     else
       respond_to do |format|
-        format.js { render :status => 500, :json => clean_errors(@service_request.errors) } 
+        format.js { render :status => 500, :json => clean_errors(@selected_arm.errors) }
       end
     end
   end

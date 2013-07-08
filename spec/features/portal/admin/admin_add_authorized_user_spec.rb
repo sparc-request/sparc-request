@@ -167,7 +167,7 @@ describe 'associated users tab', :js => true do
       wait_for_javascript_to_finish
       page.find('#project_role_role', :visible => true).select "Co-Investigator"
       click_button("edit_authorized_user_submit_button")
-      page.should have_text 'Must include one PI.'
+      page.should have_text 'Must include one Primary PI.'
     end
 
     it 'should open with the users information' do

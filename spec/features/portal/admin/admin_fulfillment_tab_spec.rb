@@ -91,11 +91,13 @@ describe "admin fulfillment tab", :js => true do
       end
 
       context "study cwf access" do
+
         it "should disable the cwf access once it has been checked" do
           find("#in_work_fulfillment").click
           wait_for_javascript_to_finish
           find("#in_work_fulfillment")['disabled'].should eq("true")
         end
+
         it "should add the cwf access to the sub service request" do
           find("#in_work_fulfillment").click
           wait_for_javascript_to_finish
@@ -257,6 +259,10 @@ describe "admin fulfillment tab", :js => true do
       it "should add visits" do
         click_link 'Add a Visit'
         wait_for_javascript_to_finish
+        fill_in "visit_name", :with => 'Pandas'
+        fill_in "visit_day", :with => 20
+        fill_in "visit_window", :with => 10
+        click_button "submit_visit"
         page.should have_content "Service request has been saved."
         page.should have_content 'Add Visit 12'
       end

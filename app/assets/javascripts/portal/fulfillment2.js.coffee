@@ -6,6 +6,8 @@
     altField: "#{selector.replace('_picker', '')}"
 
 $(document).ready ->
+  originalContent = null
+
   Sparc.datepicker = {
     ready: (selector) ->
       data = $(selector).siblings('.fulfillment_data')
@@ -48,7 +50,8 @@ $(document).ready ->
     klass = getObjKlass(this)
     object_id = $(this).data("#{klass}_id")
     data = {'in_work_fulfillment': $(this).prop('checked')}
-    put_attribute(object_id, klass, data)
+    $('#cwf_building_dialog').dialog('open')
+    put_attribute(object_id, klass, data, cwf_callback)
     $(this).attr("disabled", "disabled")
     $('#study_tracker_access div.ui-button').css("display", "inline-block")
   )
@@ -58,17 +61,42 @@ $(document).ready ->
     object_id = $(this).data("#{klass}_id")
     data = {}
     data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
-    $.ajax
-      type: 'DELETE'
-      url:  "/portal/admin/#{klass}s/#{object_id}"
-      data: JSON.stringify(data)
-      dataType: "script"
-      contentType: 'application/json; charset=utf-8'
-      success: ->
-        $().toastmessage('showSuccessToast', "#{klass.humanize()} has been deleted.");
+    confirm_message = "Are you sure that you want to remove this service from all subjects' visit calendars in this arm?"
+    if $(this).data("has_popup") == true
+      if confirm(confirm_message)
+        $.ajax
+          type: 'DELETE'
+          url:  "/portal/admin/#{klass}s/#{object_id}"
+          data: JSON.stringify(data)
+          dataType: "script"
+          contentType: 'application/json; charset=utf-8'
+          success: ->
+            $().toastmessage('showSuccessToast', "#{klass.humanize()} has been deleted.");
+    else
+      $.ajax
+        type: 'DELETE'
+        url:  "/portal/admin/#{klass}s/#{object_id}"
+        data: JSON.stringify(data)
+        dataType: "script"
+        contentType: 'application/json; charset=utf-8'
+        success: ->
+          $().toastmessage('showSuccessToast', "#{klass.humanize()} has been deleted.");
   )
 
-  put_attribute = (id, klass, data) ->
+  $('#cwf_building_dialog').dialog
+    dialogClass: "no-close"
+    autoOpen: false
+    height: 80
+    width: 650
+    modal: true
+    resizable: false
+
+  cwf_callback = ->
+    $('#cwf_building_dialog').dialog('close')
+    
+
+  put_attribute = (id, klass, data, callback) ->
+    callback ?= -> return null;
     $.ajax
       type: 'PUT'
       url:  "/portal/admin/#{klass}s/#{id}/update_from_fulfillment"
@@ -77,6 +105,7 @@ $(document).ready ->
       contentType: 'application/json; charset=utf-8'
       success: ->
         $().toastmessage('showSuccessToast', "Service request has been saved.")
+        callback()
       error: (jqXHR, textStatus, errorThrown) ->
         if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
           errors = JSON.parse(jqXHR.responseText)
@@ -122,7 +151,6 @@ $(document).ready ->
 
   $(document).on('click', '.add_arm_link', ->
     $('#arm-form').dialog('open')
-    console.log 'open dialog'
   )
 
   $('#arm-form').dialog
@@ -145,8 +173,10 @@ $(document).ready ->
         click: ->
           $(this).dialog('close')
       }]
+    open: ->
+      originalContent = $('#arm-form').html()
     close: ->
-        $(this).clearForm()
+      $('#arm-form').html(originalContent)
 
   $('#arm-form').submit ->
     sr_id = $('#arm_id').data('service_request_id')
@@ -197,13 +227,44 @@ $(document).ready ->
   )
   
   $(document).on('click', '.add_visit_link', ->
-    sr_id = $(this).data('service_request_id')
+    $('#visit-form').dialog('open')
+  )
+
+  $('#visit-form').dialog
+    autoOpen: false
+    height: 275
+    width: 300
+    modal: true
+    resizable: false
+    buttons: [
+      {
+        id: "submit_visit"
+        text: "Submit"
+        click: ->
+          $("#visit-form").submit()
+      },
+      {
+        id: "cancel_visit"
+        text: "Cancel"
+        click: ->
+          $(this).dialog('close')
+      }]
+    open: ->
+      originalContent = $('#visit-form').html()
+    close: ->
+      $('#visit-form').html(originalContent)
+
+  $('#visit-form').submit ->
+    sr_id = $('.add_visit_link').data('service_request_id')
     data =
-      'sub_service_request_id': $(this).data('sub_service_request_id')
+      'sub_service_request_id': $('.add_visit_link').data('sub_service_request_id')
       'service_request_id': sr_id
       'visit_position': $('#visit_position').val()
       'arm_id': $('#arm_id').val()
       'study_tracker': $('#study_tracker_hidden_field').val() || null
+      'visit_name': $('#visit_name').val()
+      'visit_day': $('#visit_day').val()
+      'visit_window': $('#visit_window').val()
     $.ajax
       type: 'POST'
       url:   "/portal/admin/service_requests/#{sr_id}/add_per_patient_per_visit_visit"
@@ -212,6 +273,7 @@ $(document).ready ->
       contentType: 'application/json; charset=utf-8'
       success: ->
         $().toastmessage('showSuccessToast', "Service request has been saved.")
+        $('#visit-form').dialog('close')
       error: (jqXHR, textStatus, errorThrown) ->
         if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
           errors = JSON.parse(jqXHR.responseText)
@@ -219,7 +281,6 @@ $(document).ready ->
           errors = [textStatus]
         for error in errors
           $().toastmessage('showErrorToast', "#{error.humanize()}.");
-  )
 
   $(document).on('click', '.delete_visit_link', ->
     sr_id = $(this).data('service_request_id')
@@ -237,6 +298,7 @@ $(document).ready ->
       contentType: 'application/json; charset=utf-8'
       success: ->
         $().toastmessage('showSuccessToast', "Service request has been saved.")
+
       error: (jqXHR, textStatus, errorThrown) ->
         if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
           errors = JSON.parse(jqXHR.responseText)
@@ -275,14 +337,16 @@ $(document).ready ->
     object_id = $('#delete_ppv_service_id').val()
     data = {}
     data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
-    $.ajax
-      type: 'DELETE'
-      url:  "/portal/admin/line_items/#{object_id}"
-      data: JSON.stringify(data)
-      dataType: "script"
-      contentType: 'application/json; charset=utf-8'
-      success: ->
-        $().toastmessage('showSuccessToast', "#{klass.humanize()} has been deleted.");
+    confirm_message = "Are you sure that you want to remove this service from all subjects' visit calendars?"
+    if confirm(confirm_message)
+      $.ajax
+        type: 'DELETE'
+        url:  "/portal/admin/line_items/#{object_id}"
+        data: JSON.stringify(data)
+        dataType: "script"
+        contentType: 'application/json; charset=utf-8'
+        success: ->
+          $().toastmessage('showSuccessToast', "#{klass.humanize()} has been deleted.");
   )
 
   $(document).on('click', '.expand_li', ->

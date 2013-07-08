@@ -1,0 +1,25 @@
+/*Some Stuff*/
+table.study_tracker_table {
+  width: 925px;
+}
+
+.study_tracker_table thead.left_headers th {
+  text-align:left;
+}
+
+.study_tracker_table tbody {
+}
+
+.study_tracker_table tr {
+}
+
+.study_tracker_table th {
+  padding:6px 8px;
+}
+
+.study_tracker_table td {
+}
+
+.arm_container {
+  padding:10px 5px;
+}

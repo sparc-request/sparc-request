@@ -1,6 +1,5 @@
 class SubServiceRequest < ActiveRecord::Base
-  #Version.primary_key = 'id'
-  #has_paper_trail
+  audited
 
   after_save :update_past_status
 
@@ -12,6 +11,8 @@ class SubServiceRequest < ActiveRecord::Base
   has_many :documents, :dependent => :destroy
   has_many :notes, :dependent => :destroy
   has_many :approvals, :dependent => :destroy
+  has_many :payments, :dependent => :destroy
+  has_many :cover_letters, :dependent => :destroy
   has_one :subsidy, :dependent => :destroy
 
   # These two ids together form a unique id for the sub service request
@@ -29,9 +30,23 @@ class SubServiceRequest < ActiveRecord::Base
   attr_accessible :src_approved
   attr_accessible :requester_contacted_date
   attr_accessible :subsidy_attributes
+  attr_accessible :payments_attributes
   attr_accessible :in_work_fulfillment
 
   accepts_nested_attributes_for :subsidy
+  accepts_nested_attributes_for :payments, allow_destroy: true
+
+  after_save :work_fulfillment
+
+  def work_fulfillment
+    if self.in_work_fulfillment_changed?
+      if self.in_work_fulfillment
+        self.service_request.arms.each do |arm|
+          arm.populate_subjects if arm.subjects.empty?
+        end
+      end
+    end
+  end
 
   def display_id
     return "#{service_request.protocol.id}-#{ssr_id}"

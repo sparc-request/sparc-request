@@ -1,6 +1,5 @@
 FactoryGirl.define do
   factory :line_item do
-    ssr_id                 { Faker::Lorem.word }
     optional               { false }
     quantity               { 5 }
   

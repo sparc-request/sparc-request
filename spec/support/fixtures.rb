@@ -64,7 +64,7 @@ def build_service_request
   let!(:arm1)                { FactoryGirl.create(:arm, name: "Arm", service_request_id: service_request.id, visit_count: 10, subject_count: 2)}
   let!(:arm2)                { FactoryGirl.create(:arm, name: "Arm2", service_request_id: service_request.id, visit_count: 5, subject_count: 4)}
 
-  let!(:visit_group)         { FactoryGirl.create(:visit_group, arm_id: arm1.id, position: 1)}
+  let!(:visit_group)         { FactoryGirl.create(:visit_group, arm_id: arm1.id, position: 1, day: 1)}
   let!(:service_provider)    { FactoryGirl.create(:service_provider, organization_id: program.id, identity_id: jug2.id)}
   let!(:super_user)          { FactoryGirl.create(:super_user, organization_id: program.id, identity_id: jpl6.id)}
   let!(:catalog_manager)     { FactoryGirl.create(:catalog_manager, organization_id: program.id, identity_id: jpl6.id) }
@@ -84,6 +84,7 @@ end
 def add_visits
   create_visits
   update_visits
+  update_visit_groups
 end
 
 def create_visits
@@ -104,6 +105,14 @@ def update_visits
   end
 end
 
+def update_visit_groups
+  service_request.arms.each do |arm|
+    arm.visit_groups.each do |vg|
+      vg.update_attributes(day: vg.position)
+    end
+  end
+end
+
 def build_project
   let!(:project) {
     protocol = Project.create(FactoryGirl.attributes_for(:protocol))
@@ -117,7 +126,7 @@ def build_project
         protocol_id:     protocol.id,
         identity_id:     identity.id,
         project_rights:  "approve",
-        role:            "pi")
+        role:            "primary-pi")
     identity2 = Identity.find_by_ldap_uid('jpl6')
     FactoryGirl.create(
         :project_role,
@@ -143,7 +152,7 @@ def build_study
         protocol_id:     protocol.id,
         identity_id:     identity.id,
         project_rights:  "approve",
-        role:            "pi")
+        role:            "primary-pi")
     identity2 = Identity.find_by_ldap_uid('jpl6')
     FactoryGirl.create(
         :project_role,
@@ -156,10 +165,21 @@ def build_study
   }
 end
 
-def build_clinical_data
+def build_clinical_data all_subjects = nil
   ##Requires visit data to be created first.
-  subject = arm1.subjects.create(name: "Subject I")
-  subject.calendar.populate(arm1.visit_groups)
+  if all_subjects
+    service_request.arms.each do |arm|
+      arm.subject_count.times do
+        subject = arm.subjects.create(name: "Subject I")
+        subject.calendar.populate(arm.visit_groups)
+      end
+    end
+  else
+    service_request.arms.each do |arm|
+      subject = arm.subjects.create(name: "Subject I")
+      subject.calendar.populate(arm.visit_groups)
+    end
+  end
 end
 
 def build_fake_notification

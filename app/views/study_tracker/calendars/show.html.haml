@@ -1,0 +1,34 @@
+%h2{:style => "margin:10px 5px;"}= @subject.arm.name
+
+%table.study_tracker_table{:style => "width:940px;"}
+  %thead.left_headers
+    %tr.ui-widget-header
+      %th
+        Study/Project ID:
+        = @sub_service_request.service_request.protocol.id
+      %th
+        Subject ID:
+        = @subject.external_subject_id
+    %tr.ui-widget-header
+      %th
+        Billing/Business Manager:
+        = @sub_service_request.service_request.protocol.billing_managers.first.full_name
+      %th
+        Subject Study Status:
+        = @sub_service_request.service_request.status
+
+.tabs
+  %ul
+    %li= link_to "Nutrition", "#nutrition", :class => 'nutrition-tab'
+    %li= link_to "Nursing", "#nursing", :class => 'nursing-tab'
+    %li= link_to "Laboratory", "#laboratory", :class => 'laboratory-tab'
+    %li= link_to "Imaging", "#imaging", :class => 'imaging-tab'
+
+  #nutrition
+    = render :partial => 'nutrition'
+  #nursing
+    = render :partial => 'nursing'
+  #laboratory
+    = render :partial => 'laboratory'
+  #imaging
+    = render :partial => 'imaging'

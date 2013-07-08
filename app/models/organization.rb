@@ -1,6 +1,5 @@
 class Organization < ActiveRecord::Base
-  #Version.primary_key = 'id'
-  #has_paper_trail
+  audited
   acts_as_taggable
 
   belongs_to :parent, :class_name => 'Organization'

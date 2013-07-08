@@ -188,4 +188,17 @@ describe "Line Item" do
       end
     end
   end
+  context "methods" do
+    before :each do
+      add_visits
+      build_clinical_data
+    end
+    describe "remove procedures" do
+      it "should destroy all procedures linked to this line_item" do
+        li_id = line_item2.id
+        line_item2.destroy
+        Procedure.find_by_line_item_id(li_id).should eq(nil)
+      end
+    end
+  end
 end

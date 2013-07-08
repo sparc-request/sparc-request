@@ -58,18 +58,10 @@ describe "landing page", :js => true do
 
       within(".Julia") do
         click_on("Delete")
-        page.driver.browser.switch_to.alert.accept
+        page.driver.browser.switch_to.alert.accept # Accept Delete
+        page.driver.browser.switch_to.alert.accept # Clear notification
       end
       page.should have_css('tr.Julia')
-    end
-
-    it 'should not delete the user if only billing/business manager' do
-
-      within(".Jason") do
-        click_on("Delete")
-        page.driver.browser.switch_to.alert.accept
-      end
-      page.should have_css('tr.Jason')
     end
 
     it 'should bring up the add user box' do

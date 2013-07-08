@@ -1,5 +1,4 @@
 class Study < Protocol
-
   validates :sponsor_name, :presence => true
 
   def classes

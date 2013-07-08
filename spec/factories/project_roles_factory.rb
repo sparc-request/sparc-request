@@ -4,7 +4,7 @@ FactoryGirl.define do
 
   factory :project_role do
     project_rights { Faker::Lorem.sentence(2) }
-    role           'pi'
+    role           'primary-pi'
     
   end
 end

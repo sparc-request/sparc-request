@@ -1,6 +1,5 @@
 class ServiceRequest < ActiveRecord::Base
-  #Version.primary_key = 'id'
-  #has_paper_trail
+  audited
 
   belongs_to :service_requester, :class_name => "Identity", :foreign_key => "service_requester_id"
   belongs_to :protocol
@@ -33,6 +32,7 @@ class ServiceRequest < ActiveRecord::Base
 
   validation_group :service_calendar do
     #insert group specific validation
+    validate :service_calendar_page
   end
 
   validation_group :calendar_totals do
@@ -105,6 +105,17 @@ class ServiceRequest < ActiveRecord::Base
       if arm.valid_subject_count? == false
         errors.add(:subject_count, "You must specify the estimated total number of subjects before continuing.")
         break
+      end
+    end
+  end
+
+  def service_calendar_page
+    self.arms.each do |arm|
+      arm.visit_groups.each do |vg|
+        if vg.day.blank?
+          errors.add(:visit_group, "You must specifiy a day for each visit. Please also ensure they are all in order.")
+          return
+        end
       end
     end
   end

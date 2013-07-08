@@ -13,9 +13,13 @@ class ServiceCalendarsController < ApplicationController
     @portal = params[:portal]
     @study_tracker = params[:study_tracker]
     @pages = {}
-    @service_request.arms.each do |arm|
-      new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-      @pages[arm.id] = @service_request.set_visit_page new_page, arm
+    @protocol = @service_request.protocol
+    @service_requests = (@tab == 'calendar') ? @service_request.protocol.service_requests : [@service_request]
+    @service_requests.each do |service_request|
+      service_request.arms.each do |arm|
+        new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
+        @pages[arm.id] = @service_request.set_visit_page new_page, arm
+      end
     end
 
     # TODO: This needs to be changed for one time fees page in arms
@@ -70,5 +74,29 @@ class ServiceCalendarsController < ApplicationController
     arm = Arm.find params[:arm_id]
 
     arm.visit_groups[position].update_attribute(:name, name)
+  end
+
+  def set_day
+    day = params[:day]
+    position = params[:position].to_i
+    arm = Arm.find params[:arm_id]
+
+    if !arm.update_visit_group_day(day, position)
+      respond_to do |format|
+        format.js { render :status => 418, :json => clean_messages(arm.errors.messages) }
+      end
+    end
+  end
+
+  def set_window
+    window = params[:window]
+    position = params[:position].to_i
+    arm = Arm.find params[:arm_id]
+
+    if !arm.update_visit_group_window(window, position)
+      respond_to do |format|
+        format.js { render :status => 418, :json => clean_messages(arm.errors.messages) }
+      end
+    end
   end
 end

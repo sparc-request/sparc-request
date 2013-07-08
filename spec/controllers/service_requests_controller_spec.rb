@@ -7,7 +7,8 @@ def add_visits_to_arm_line_item(arm, line_item, n=arm.visit_count)
   n.times do |index|
     FactoryGirl.create(
         :visit_group,
-        arm_id:      arm.id)
+        arm_id:      arm.id,
+        day:         index, )
   end
 
   n.times do |index|
@@ -64,10 +65,10 @@ describe ServiceRequestsController do
         session[:identity_id] = jug2.id
         session[:service_request_id] = service_request.id
         session[:sub_service_request_id] = sub_service_request.id
-        session[:saved_study_id] = study.id
+        session[:saved_protocol_id] = study.id
         get :protocol, :id => service_request.id
         assigns(:service_request).protocol.should eq study
-        session[:saved_study_id].should eq nil
+        session[:saved_protocol_id].should eq nil
       end
 
       it "should set studies to the service request's studies if there is a sub service request" do
@@ -87,10 +88,10 @@ describe ServiceRequestsController do
         session[:identity_id] = jug2.id
         session[:service_request_id] = service_request.id
         session[:sub_service_request_id] = sub_service_request.id
-        session[:saved_project_id] = project.id
+        session[:saved_protocol_id] = project.id
         get :protocol, :id => service_request.id
         assigns(:service_request).protocol.should eq project
-        session[:saved_project_id].should eq nil
+        session[:saved_protocol_id].should eq nil
       end
 
       it "should set projects to the service request's projects if there is a sub service request" do
@@ -128,10 +129,10 @@ describe ServiceRequestsController do
       assigns(:service_request).protocol.should eq service_request.protocol
     end
 
-    it "should set tab to pricing" do
+    it "should set tab to full calendar" do
       session[:service_request_id] = service_request.id
       get :review, :id => service_request.id
-      assigns(:tab).should eq 'pricing'
+      assigns(:tab).should eq 'calendar'
     end
   end
 
@@ -492,10 +493,10 @@ describe ServiceRequestsController do
       # TODO: check that set_visit_page is called?
     end
     
-    it 'should set tab to pricing' do
+    it 'should set tab to full calendar' do
       session[:service_request_id] = service_request.id
       get :refresh_service_calendar, :id => service_request.id, :arm_id => arm1.id, :format => :js
-      assigns(:tab).should eq 'pricing'
+      assigns(:tab).should eq 'calendar'
     end
   end
 

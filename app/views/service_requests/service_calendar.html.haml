@@ -1,8 +1,9 @@
 = javascript_include_tag 'service_calendar'
-
+= javascript_include_tag 'service_calendar_logic'
 = form_tag navigate_service_request_path(@service_request), :id => 'navigation_form' do
   = hidden_field_tag :location, ''
   = hidden_field_tag :validates, ''
+  = hidden_field_tag :current_location, @page
   = render :partial => 'steps'
   = render :partial => 'errors'
   %ul.billing-info
@@ -16,7 +17,7 @@
         %li= link_to t(:calendar_page)[:tabs][:template], table_service_request_service_calendars_path(@service_request, :tab => "template"), :id => 'template_tab'
         %li= link_to t(:calendar_page)[:tabs][:billing], table_service_request_service_calendars_path(@service_request, :tab => "billing_strategy"), :id => 'billing_strategy_tab'
         %li= link_to t(:calendar_page)[:tabs][:quantity], table_service_request_service_calendars_path(@service_request, :tab => "quantity"), :id => 'quantity_tab'
-        %li= link_to t(:calendar_page)[:tabs][:pricing], table_service_request_service_calendars_path(@service_request, :tab => "pricing"), :id => 'pricing_tab'
+        %li= link_to t(:calendar_page)[:tabs][:pricing], table_service_request_service_calendars_path(@service_request, :tab => "calendar"), :id => 'calendar_tab'
 
   .clear
   .continue= render :partial => 'service_requests/navigation'

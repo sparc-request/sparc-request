@@ -5,6 +5,7 @@ $(document).ready ->
   Sparc.associated_users = {
     display_dependencies :
       '#project_role_role' :
+        'primary-pi'              : ['.era_commons_name', '.subspecialty']
         pi                        : ['.era_commons_name', '.subspecialty']
         'co-investigator'         : ['.era_commons_name', '.subspecialty']
         'faculty-collaborator'    : ['.era_commons_name', '.subspecialty']
@@ -37,9 +38,9 @@ $(document).ready ->
       # and disable all other radio buttons if 'pi'
       $('#project_role_role').live('change', ->
         role = $(this).val()
-        if role == 'pi' or role == 'business-grants-manager'
+        if role == 'pi' or role == 'business-grants-manager' or roel == 'primary-pi'
           $('#project_role_project_rights_approve').attr('checked', true)
-          if role == 'pi'
+          if role == 'pi' or role == 'primary-pi'
             $('#project_role_project_rights_request').attr('disabled', true)
             $('#project_role_project_rights_view').attr('disabled', true)
             $('#project_role_project_rights_none').attr('disabled', true)
@@ -85,17 +86,12 @@ $(document).ready ->
           user_id = $(this).data('user_id')
           user_role = $(this).data('user_role')
           pi_count = parseInt($("#pi_count_#{protocol_id}").val(), 10)
-          bm_count = parseInt($("#billing_manager_count_#{protocol_id}").val(), 10)
           confirm_message = if current_user_id == user_id then 'This action will remove you from the project. Are you sure?' else 'Are you sure?'
           alert_message1 = 'Projects require a PI. Please add a new one before continuing.'
-          alert_message2 = 'Projects require a Billing/Business Manager. Please add a new one before continuing.'
           cannot_remove_pi = (current_user_role == 'pi' or user_role == 'pi') and pi_count == 1
-          cannot_remove_bm = (current_user_role == 'business-grants-manager' or user_role == 'business-grants-manager') and bm_count == 1
 
           if cannot_remove_pi
             alert(alert_message1)
-          else if cannot_remove_bm
-            alert(alert_message2)
           else
             if confirm(confirm_message)
               $.ajax
@@ -223,7 +219,7 @@ $(document).ready ->
     validatePiPresence: (role) ->
       pi_count = parseInt($('.edit-user #pi_count').val(), 10)
       pi_validation_message = $('.edit-user #pi-validation-message')
-      pi_count -= 1 if role != 'pi'
+      pi_count -= 1 if role != 'primary-pi'
       if pi_count <= 0
         pi_validation_message.show()
         Sparc.associated_users.disableSubmitButton("Submit", "Submit")

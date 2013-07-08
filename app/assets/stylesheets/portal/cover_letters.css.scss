@@ -1,0 +1,29 @@
+.contenteditable {
+  padding: 1em;
+  border: 1px dashed #84d1eb;
+}
+
+form.new_cover_letter,
+form.edit_cover_letter {
+    margin: 1em;
+
+    .buttons {
+      margin-top: 1.5em;
+    }
+}
+
+#cover_letter_content_editor {  
+  p{ margin-bottom: 1.5em; }
+  em{ 
+    background-color: #fff7b7;
+  }
+}
+
+table#billings_list {
+  margin-bottom: 1.5em;
+  width: 100%;
+
+  td, th {
+    padding: 0.5em;
+  }
+}

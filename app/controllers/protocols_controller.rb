@@ -51,22 +51,18 @@ class ProtocolsController < ApplicationController
     raise NotImplementedError
   end
 
-  def push_to_epic
+  def push_to_epic_status
     @protocol = Protocol.find params[:id]
-    begin
-      EPIC_INTERFACE.send_study(@protocol)
-      EPIC_INTERFACE.send_billing_calendar(@protocol)
-      respond_to do |format|
-        format.js { render :status => 200, :json => { } }
-      end
-    rescue Exception => e
-      begin
-        respond_to do |format|
-          format.js { render :status => 418, :json => 'Failure pushing study to Epic' }
-        end
-      ensure
-        raise e
-      end
+
+    respond_to do |format|
+      format.json {
+        render(
+            status: 200,
+            json: {
+              last_epic_push_time: @protocol.last_epic_push_time,
+              last_epic_push_status: @protocol.last_epic_push_status,
+            })
+      }
     end
   end
 

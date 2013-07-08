@@ -48,8 +48,6 @@ gem 'nori', '~> 2.1.0'     # XML parser
 
 gem "audited-activerecord", "~> 3.0"
 
-gem 'delayed_job'
-
 group :development, :test, :profile do
   gem "rails-erd"
   gem 'sqlite3'

@@ -1,9 +1,24 @@
 $(document).ready ->
-  $(document).ajaxError (event, request, settings) ->
-    # If you're reading this and wondering why you are getting this message I can't help you
-    # What I can do is give you a way around it for custom errors
-    # Set your response status to 418 which can be found https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
-    if request.status != 418 && request.statusText != 'abort' && settings.url != '/service_requests/feedback'
+  $(document).ajaxError (event, request, settings, error) ->
+    # If you're reading this and wondering why you are getting this
+    # message I can't help you.  What I can do is give you a way around
+    # it for custom errors. Set your response status to 418 which can be
+    # found at:
+    #   https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+    #
+    # Alternatively, you can set global: false in your call to $.ajax.
+    #
+    # We also check to see if a _local_ error handler was given, in
+    # which case it's likely we don't need to pop up the alert box,
+    # because the error is already handled.
+    #
+    # TODO: Now that we are checking for a local error handler, we might
+    # be able to remove some of these other conditions.
+    #
+    if request.status != 418 &&
+       request.statusText != 'abort' &&
+       settings.url != '/service_requests/feedback' &&
+       !settings.error
       alert("An error happened processing your request: " + settings.url)
 
   $('.edit_project_role').live 'click', ->

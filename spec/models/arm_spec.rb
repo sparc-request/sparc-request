@@ -148,36 +148,6 @@ describe Arm do
       end
     end
 
-    describe "insure subject count" do
-
-      it "should give the arm a subject count of 1 if the count is nil" do
-        arm1.update_attributes(subject_count: nil)
-        arm1.insure_subject_count
-        arm1.subject_count.should eq(1)
-      end
-
-      it "should give the arm a subject count of 1 if the count is negative" do
-        arm1.update_attributes(subject_count: -1)
-        arm1.insure_subject_count
-        arm1.subject_count.should eq(1)
-      end
-    end
-
-    describe "insure visit count" do
-
-      it "should give the arm a visit count of 1 if the count is nil" do
-        arm1.update_attributes(visit_count: nil)
-        arm1.insure_visit_count
-        arm1.visit_count.should eq(1)
-      end
-
-      it "should give the arm a visit count of 1 if the count is negative" do
-        arm1.update_attributes(visit_count: -1)
-        arm1.insure_visit_count
-        arm1.visit_count.should eq(1)
-      end
-    end
-
     describe 'create_line_items_visit' do
       before :each do
         @line_item3 = FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service2.id, sub_service_request_id: sub_service_request.id, quantity: 0)

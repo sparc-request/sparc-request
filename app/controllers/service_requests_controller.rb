@@ -290,8 +290,28 @@ class ServiceRequestsController < ApplicationController
 
     send_notifications(@service_request, @sub_service_request)
  
-    # TODO: we need to do this in a child process or thread
-    @protocol.push_to_epic(EPIC_INTERFACE)
+    # Run the push to epic call in a child thread, so that we can return
+    # the confirmation page right away without blocking (in testing, the
+    # push to epic can take as long as 20 seconds).  This call will
+    # write the status to the database, which will later be polled by
+    # the confirmation page.
+    #
+    # TODO: Ideally this would be better off done in another process,
+    # e.g. with delayed_job or resque.  Multithreaded code can be tricky
+    # to get right.  However, there is a bit of extra work involved in
+    # starting a separate job server, and it is not clear how (or if it
+    # is possible) to start the job server automatically.  Threads work
+    # well enough for now.
+    #
+    Thread.new do
+      begin
+        @protocol.push_to_epic(EPIC_INTERFACE)
+      rescue Exception => e
+        Rails.logger.error(e)
+      ensure
+        ActiveRecord::Base.connection.close
+      end
+    end
 
     render :formats => [:html]
   end

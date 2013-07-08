@@ -37,13 +37,14 @@ RSpec.configure do |config|
     # This works around the problem.  The assumption is that we have
     # only one connection to the database and it is accessible via
     # #shared_connection (see support/active_record.rb).
-    ActiveRecord::Base.shared_connection.with { |conn|
-      conn.instance_eval { @_current_transaction_records = [ [ ] ] }
-    }
+    if DatabaseCleaner.connections.any? { |conn| conn.strategy == :transaction } then
+      ObjectSpace.each_object(ActiveRecord::Base) do |conn|
+        conn.instance_eval { @_current_transaction_records = [ [ ] ] }
+      end
+    end
 
     # Run the garbage collector if it hasn't been run in over a second
-    if Time.now - last_gc_run > 1.0
-      # puts "Runnng garbage collector"
+    if Time.now - last_gc_run > 1.0 then
       GC.enable
       GC.start
       last_gc_run = Time.now

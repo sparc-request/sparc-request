@@ -69,4 +69,7 @@ SparcRails::Application.configure do
   config.middleware.use ExceptionNotifier,
     sender_address: 'no-reply@musc.edu',
     exception_recipients: ['catesa@musc.edu', 'scoma@musc.edu', 'kelsey@musc.edu', 'johstu@musc.edu', 'leonarjp@musc.edu', 'brannan@musc.edu']
+
+  # Will be default in Rails 4.0
+  config.threadsafe!
 end

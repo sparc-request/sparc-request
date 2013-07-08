@@ -78,3 +78,5 @@ gem 'gyoku'                # XML builder
 gem 'nori', '~> 2.1.0'     # XML parser
 
 gem "audited-activerecord", "~> 3.0"
+
+gem "surveyor"

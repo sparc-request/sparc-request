@@ -48,6 +48,8 @@ gem 'nori', '~> 2.1.0'     # XML parser
 
 gem "audited-activerecord", "~> 3.0"
 
+gem 'surveyor'
+
 group :development, :test, :profile do
   gem "rails-erd"
   gem 'sqlite3'
@@ -113,5 +115,3 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
   gem 'inflection-js-rails'
 end
-
-gem 'surveyor'

@@ -290,16 +290,8 @@ class ServiceRequestsController < ApplicationController
 
     send_notifications(@service_request, @sub_service_request)
  
-    # Fork a new process to push the protocol to epic, because the push
-    # process can take up to 20 seconds, and we don't want to delay
-    # sending the confirmation page back to the user.  The confirmation
-    # page will later poll for the results.
-    #
-    # We use Spawnling for this; forking a new process is fairly
-    # heaviweight, but lighter than something like delayed_job.
-    Spawnling.new do
-      @protocol.push_to_epic(EPIC_INTERFACE)
-    end
+    # TODO: we need to do this in a child process or thread
+    @protocol.push_to_epic(EPIC_INTERFACE)
 
     render :formats => [:html]
   end

@@ -126,5 +126,9 @@ RSpec.configure do |config|
   config.after(:each) { DatabaseCleaner.clean }
 
   config.color_enabled = true
+
+  config.after(:each) do
+    # TODO: wait on all the push to epic calls to finish
+  end
 end
 

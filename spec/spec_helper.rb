@@ -11,6 +11,7 @@ require 'faker'
 require 'capybara/rspec'
 require 'capybara/rails'
 require 'capybara/dsl'
+require 'capybara/firebug'
 require 'selenium-webdriver'
 
 # Add testing support for Paperclip
@@ -131,5 +132,9 @@ RSpec.configure do |config|
   config.after(:each) { DatabaseCleaner.clean }
 
   config.color_enabled = true
+
+  config.after(:each) do
+    # TODO: wait on all the push to epic calls to finish
+  end
 end
 

@@ -43,6 +43,7 @@ namespace :db do
     run "ln -nfs #{shared_path}/config/setup_load_paths.rb #{release_path}/config/setup_load_paths.rb"
     run "ln -nfs #{shared_path}/config/application.yml #{release_path}/config/application.yml"
     run "ln -nfs #{shared_path}/config/ldap.yml #{release_path}/config/ldap.yml"
+    run "ln -nfs #{shared_path}/config/epic.yml #{release_path}/config/epic.yml"
   end
 
   desc "seed the database for the rails environment"

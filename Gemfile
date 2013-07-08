@@ -43,8 +43,6 @@ gem 'savon', '~> 2.2.0'    # SOAP client
 gem 'gyoku'                # XML builder
 gem 'nori', '~> 2.1.0'     # XML parser
 
-gem 'spawnling'
-
 group :development, :test, :profile do
   gem "rails-erd"
   gem 'sqlite3'

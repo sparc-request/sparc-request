@@ -16,6 +16,10 @@ class MovePositionFromVisitToVisitGroup < ActiveRecord::Migration
     attr_accessible :name
     acts_as_list :scope => :arm
   end
+  class LineItemsVisit < ActiveRecord::Base
+    belongs_to :arm
+    has_many :visits, :dependent => :destroy, :include => :visit_group # Order doesn't matter for this migration
+  end
   def up
   	add_column :visit_groups, :position, :integer
 

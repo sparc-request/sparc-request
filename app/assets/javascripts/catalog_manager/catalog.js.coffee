@@ -72,6 +72,19 @@ $ ->
         $(".pricing_setup_error").show()
 
   verify_valid_pricing_setups()
+  
+  $('.associated_survey_delete').live 'click', ->
+    if confirm 'Are you sure you want to remove this Associated Survey?'
+      $.post '/catalog_manager/catalog/remove_associated_survey', {associated_survey_id: $(this).data('associated_survey_id')}, (data) ->
+        $('#associated_survey_info').html(data)
+
+  $('.add_associated_survey').live 'click', ->
+    if $('#new_associated_survey').val() == ''
+      alert "No survey selected"
+    else
+      $.post '/catalog_manager/catalog/add_associated_survey', {survey_id: $('#new_associated_survey').val(), surveyable_type: $(this).data('surveyable_type'), surveyable_id: $(this).data('surveyable_id')}, (data) ->
+        $('#associated_survey_info').html(data)
+    return false
 
   $('#program').live 'change', ->
     new_program_id = $(this).val()
@@ -166,7 +179,7 @@ $ ->
     if confirm 'Are you sure you want to remove this Related Service?'
       $.post '/catalog_manager/services/disassociate', {service_relation_id: $(this).data('service_relation_id')}, (data) ->
         $('#rs_info').html(data)
-
+  
   $('.optional').live 'click', ->
     $.post '/catalog_manager/services/set_optional', {service_relation_id: $(this).attr('id'), optional: $(this).val()}, (data) ->
         $('#rs_info').html(data)

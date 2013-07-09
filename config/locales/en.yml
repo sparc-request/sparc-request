@@ -294,6 +294,9 @@ en:
       new_submission: "New Submission Email"
       new_super: "New Super User"
       new_clinical_provider: "New Clinical Provider"
+      survey_name: "Survey"
+      new_associated_survey: "New Associated Survey"
+      select_survey: "Please select a survey"
     title: "SPARC Request Services Catalog"
 
   # user search partial
@@ -609,6 +612,7 @@ en:
     pricing_maps: "Pricing Maps"
     add_map: "Add Pricing Map"
     related_services: "Related Services"
+    associated_surveys: "Associated Surveys"
     submission_emails: "Submission E-mails"
     super_users: "Super Users"
     service_providers: "Service Providers"

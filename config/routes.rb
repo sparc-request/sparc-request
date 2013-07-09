@@ -103,6 +103,8 @@ SparcRails::Application.routes.draw do
       collection do
         post :add_excluded_funding_source
         delete :remove_excluded_funding_source
+        post :remove_associated_survey
+        post :add_associated_survey
       end
     end
 

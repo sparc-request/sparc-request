@@ -117,4 +117,27 @@ class CatalogManager::CatalogController < CatalogManager::AppController
     @excluded_funding_source.delete
     render :nothing => true
   end
+
+  def remove_associated_survey
+    associated_survey = AssociatedSurvey.find(params[:associated_survey_id])
+    entity = associated_survey.surveyable
+    associated_survey.delete
+
+    render :partial => 'catalog_manager/shared/associated_surveys', :locals => {:entity => entity}
+  end
+  
+  def add_associated_survey
+    entity = params[:surveyable_type].constantize.find params[:surveyable_id]
+    associated_survey = entity.associated_surveys.new :survey_id => params[:survey_id] 
+
+    #keep the same survey from being associated multiple times, this is also done via the associated_survey model
+    if associated_survey.valid?
+      associated_survey.save
+    else
+      message = "The survey you are trying to add is already associated with this #{entity.class.to_s}"
+    end
+    
+    entity.reload
+    render :partial => 'catalog_manager/shared/associated_surveys', :locals => {:entity => entity, :message => message}
+  end
 end

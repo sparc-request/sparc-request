@@ -2,6 +2,9 @@ class Provider < Organization
   belongs_to :institution, :class_name => "Organization", :foreign_key => "parent_id"
   has_many :programs, :dependent => :destroy, :foreign_key => "parent_id"
 
+  # Surveys associated with this service
+  has_many :associated_surveys, :as => :surveyable
+
   def populate_for_edit
     self.setup_available_statuses
   end

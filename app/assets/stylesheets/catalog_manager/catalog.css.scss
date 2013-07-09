@@ -294,6 +294,19 @@ fieldset > legend {
   }
 }
 
+.associated_surveys_table {
+  width: 100%;
+  font-size: 14px;
+}
+
+.associated_surveys_table thead tr th {
+  text-align: left !important;
+}
+
+.associated_surveys_table thead tr th.delete_button {
+  width: 50px !important;
+}
+
 .ui-autocomplete {
   max-height: 300px;
   width: 400px !important;

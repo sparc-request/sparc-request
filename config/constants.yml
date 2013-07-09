@@ -26,6 +26,8 @@ available_statuses: { 'draft': 'Draft',
                       'on_hold': 'On Hold',
                       'ctrc_review': 'CTRC Review',
                       'ctrc_approved': 'CTRC Approved',
+                      'administrative_review': 'Administrative Review',
+                      'committee_review': 'Committee Review',
                       'invoiced': 'Invoiced' }
 default_statuses : ["draft", "submitted", "obtain_research_pricing", "in_process", "complete", "awaiting_pi_approval", "on_hold"]
 accordion_color_options: { "blue": 'blue-provider',

@@ -35,7 +35,14 @@ service_calendar:
   catalog: catalog
   forward: service_subsidy
   validation_groups:
+    protocol:
+      - service_calendar
+    service_details:
+      - service_calendar
+    # calendar_totals:
+    #   - service_calendar
     service_subsidy:
+      - service_calendar
 
 # do not delete.  This page may be used for some institutions.
 # calendar_totals:

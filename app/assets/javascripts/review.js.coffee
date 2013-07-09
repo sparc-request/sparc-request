@@ -11,8 +11,9 @@ $(document).ready ->
       "Yes": ->
         survey_offered = true
         $(this).dialog("close")
+        service_request_id = $('#service_request_id').val()
         $('#content').load "/surveys/system-satisfaction-survey", {survey_version: 0}, ->
-          $('#survey_form').append("<input type='hidden' id='redirect_to' name='redirect_to' value='/service_requests/24685/confirmation'>")
+          $('#survey_form').append("<input type='hidden' id='redirect_to' name='redirect_to' value='/service_requests/#{service_request_id}/confirmation'>")
 
         $('#welcome_msg').hide()
         $('#feedback').hide()

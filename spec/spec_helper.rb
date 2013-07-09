@@ -124,7 +124,9 @@ FactoryGirl.find_definitions
 RSpec.configure do |config|
 
   config.before(:suite) do
-    DatabaseCleaner.strategy = :transaction
+    # We can't use the transaction strategy with multiple threads, so we
+    # use truncation instead.
+    DatabaseCleaner.strategy = :truncation
     DatabaseCleaner.clean_with(:truncation)
   end
 
@@ -134,7 +136,15 @@ RSpec.configure do |config|
   config.color_enabled = true
 
   config.after(:each) do
-    # TODO: wait on all the push to epic calls to finish
+    # wait on all the push to epic calls to finish
+    # TODO: ideally we should call Thread#join for all the 'push to
+    # epic' threads
+    Protocol.all.each do |protocol|
+      while protocol.push_to_epic_in_progress? do
+        sleep 0.1
+        protocol.reload
+      end
+    end
   end
 end
 

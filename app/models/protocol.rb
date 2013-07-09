@@ -160,6 +160,9 @@ class Protocol < ActiveRecord::Base
     return funding_source
   end
 
+  # Note: this method is called inside a child thread by the service
+  # requests controller.  Be careful adding code here that might not be
+  # thread-safe.
   def push_to_epic(epic_interface)
     begin
       update_attributes(
@@ -179,9 +182,25 @@ class Protocol < ActiveRecord::Base
           last_epic_push_status: 'complete')
 
     rescue Exception => e
+      Rails.logger.info("Push to Epic failed.")
+
       update_attributes(
           last_epic_push_status: 'failed')
       raise e
     end
+  end
+
+  # Returns true if there is a push to epic in progress, false
+  # otherwise.  If no push has been initiated, return false.
+  def push_to_epic_in_progress?
+    return self.last_epic_push_status == 'started' ||
+           self.last_epic_push_status == 'sent_study'
+  end
+
+  # Returns true if the most push to epic has completed.  Returns false
+  # if no push has been initiated.
+  def push_to_epic_complete?
+    return self.last_epic_push_status == 'complete' ||
+           self.last_epic_push_status == 'failed'
   end
 end

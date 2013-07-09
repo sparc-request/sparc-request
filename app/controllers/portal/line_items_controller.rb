@@ -8,7 +8,7 @@ class Portal::LineItemsController < Portal::BaseController
     @selected_arm = @service_request.arms.first
     @subsidy = @sub_service_request.subsidy
     percent = @subsidy.try(:percent_subsidy).try(:*, 100)
-    @study_tracker = params[:study_tracker]
+    @study_tracker = params[:study_tracker] == "true"
     
 
     if @line_item.update_attributes(params[:line_item])
@@ -33,7 +33,7 @@ class Portal::LineItemsController < Portal::BaseController
     @subsidy = @sub_service_request.subsidy
     percent = @subsidy.try(:percent_subsidy).try(:*, 100)
     @selected_arm = @service_request.arms.first
-    @study_tracker = params[:study_tracker]
+    @study_tracker = params[:study_tracker] == "true"
     
     if @line_item.destroy
       # Have to reload the service request to get the correct direct cost total for the subsidy

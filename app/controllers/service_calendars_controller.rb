@@ -11,7 +11,7 @@ class ServiceCalendarsController < ApplicationController
     session[:service_calendar_pages][arm_id] = page if page && arm_id
     @tab = params[:tab]
     @portal = params[:portal]
-    @study_tracker = params[:study_tracker]
+    @study_tracker = params[:study_tracker] == "true"
     @pages = {}
     @protocol = @service_request.protocol
     @service_requests = (@tab == 'calendar') ? @service_request.protocol.service_requests : [@service_request]
@@ -28,7 +28,7 @@ class ServiceCalendarsController < ApplicationController
 
   def update
     @portal = params[:portal]
-    @study_tracker = params[:study_tracker]
+    @study_tracker = params[:study_tracker] == "true"
     visit = Visit.find params[:visit] rescue nil
     @line_items_visit = LineItemsVisit.find params[:line_items_visit] rescue nil
     @line_item = LineItem.find params[:line_item] rescue nil

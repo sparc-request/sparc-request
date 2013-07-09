@@ -30,7 +30,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
 
   def update_from_fulfillment
     @sub_service_request = SubServiceRequest.find(params[:id])
-    @study_tracker = params[:study_tracker]
+    @study_tracker = params[:study_tracker] == "true"
 
     if @sub_service_request.update_attributes(params[:sub_service_request])
       @sub_service_request.generate_approvals(@user)
@@ -89,7 +89,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     @arm_id = params[:arm_id].to_i if params[:arm_id]
     @selected_arm = params[:arm_id] ? Arm.find(@arm_id) : @service_request.arms.first
     service = Service.find(params[:new_service_id])
-    @study_tracker = params[:study_tracker]
+    @study_tracker = params[:study_tracker] == "true"
     
     if @sub_service_request.create_line_item(
         service_id: params[:new_service_id],

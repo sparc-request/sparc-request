@@ -8,7 +8,7 @@ class Portal::LineItemsVisitsController < Portal::BaseController
     @selected_arm = @service_request.arms.first
     @subsidy = @sub_service_request.subsidy
     percent = @subsidy.try(:percent_subsidy).try(:*, 100)
-    @study_tracker = params[:study_tracker]
+    @study_tracker = params[:study_tracker] == "true"
 
     if @line_items_visit.update_attributes(params[:line_items_visit])
       # Have to reload the service request to get the correct direct cost total for the subsidy
@@ -33,7 +33,7 @@ class Portal::LineItemsVisitsController < Portal::BaseController
     percent = @subsidy.try(:percent_subsidy).try(:*, 100)
     @selected_arm = @service_request.arms.first
     line_item = @line_items_visit.line_item
-    @study_tracker = params[:study_tracker]
+    @study_tracker = params[:study_tracker] == "true"
 
     ActiveRecord::Base.transaction do
       @line_items_visit.remove_procedures

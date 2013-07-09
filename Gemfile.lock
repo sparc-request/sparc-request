@@ -51,6 +51,7 @@ GEM
       axlsx
       rails (>= 3.1)
     bcrypt-ruby (3.0.1)
+    bluecloth (2.2.0)
     builder (3.0.4)
     cache_digests (0.2.0)
       actionpack (>= 3.2)
@@ -342,6 +343,7 @@ DEPENDENCIES
   audited-activerecord (~> 3.0)
   axlsx
   axlsx_rails
+  bluecloth
   cache_digests
   capistrano
   capistrano-ext

@@ -29,7 +29,7 @@ class Portal::ServiceRequestsController < Portal::BaseController
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @service_request = ServiceRequest.find(params[:service_request_id]) # TODO: is this different from params[:id] ?
     @selected_arm = params[:arm_id] ? Arm.find(@arm_id) : @service_request.arms.first
-    @study_tracker = params[:study_tracker]
+    @study_tracker = params[:study_tracker] == "true"
   end
 
   def add_arm
@@ -65,7 +65,7 @@ class Portal::ServiceRequestsController < Portal::BaseController
     percent = @subsidy.try(:percent_subsidy).try(:*, 100)
     @service_request = ServiceRequest.find(params[:service_request_id]) # TODO: is this different from params[:id] ?
     @selected_arm = Arm.find(params[:arm_id])
-    @study_tracker = params[:study_tracker]
+    @study_tracker = params[:study_tracker] == "true"
     
     if @selected_arm.add_visit(params[:visit_position], params[:visit_day], params[:visit_window], params[:visit_name])
       @subsidy.try(:sub_service_request).try(:reload)
@@ -84,7 +84,7 @@ class Portal::ServiceRequestsController < Portal::BaseController
   def remove_per_patient_per_visit_visit
     @service_request = ServiceRequest.find(params[:id])
     @selected_arm = Arm.find(params[:arm_id])
-    @study_tracker = params[:study_tracker]
+    @study_tracker = params[:study_tracker] == "true"
 
     if @selected_arm.remove_visit(params[:visit_position])
       @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])

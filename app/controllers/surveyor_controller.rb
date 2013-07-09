@@ -30,9 +30,9 @@ module SurveyorControllerCustomMethods
     super
   end
 
-  def export_data
+  def export
     survey_version = params["survey_version"]
-    access_code = params["id"]
+    access_code = params["survey_code"]
 
     params_string = "code #{access_code}"
 

@@ -1,4 +1,5 @@
 SparcRails::Application.routes.draw do
+  match '/direct_link_to/:survey_code', :to => 'surveyor#create', :as => 'direct_link_survey', :via => :get
   mount Surveyor::Engine => "/surveys", :as => "surveyor"
   
   devise_for :identities, :controllers => { :omniauth_callbacks => "identities/omniauth_callbacks" }
@@ -88,8 +89,6 @@ SparcRails::Application.routes.draw do
   match 'service_requests/:id/delete_document_group/:document_group_id' => 'service_requests#delete_documents'
   match 'service_requests/:id/edit_document_group/:document_group_id' => 'service_requests#edit_documents'
   match 'rubyception' => 'rubyception/application#index'
-
-  match 'survey_admin/:id/export_data' => 'surveyor#export_data'
 
   ##### sparc-services routes brought in and namespaced
   namespace :catalog_manager do

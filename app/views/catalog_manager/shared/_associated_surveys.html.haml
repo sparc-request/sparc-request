@@ -8,7 +8,10 @@
       %tbody
         - entity.associated_surveys.each do |associated_survey|
           %tr
-            %td= "#{associated_survey.survey.title} - Version #{associated_survey.survey.survey_version}"
+            %td
+              = "#{associated_survey.survey.title} - Version #{associated_survey.survey.survey_version}"
+              %br
+              %span.associated_survey_link= direct_link_survey_url(associated_survey.survey.access_code, :survey_version => associated_survey.survey.survey_version) 
             %td= image_tag 'cancel.png', :"data-associated_survey_id" => associated_survey.id, :class => 'associated_survey_delete'
 
   %table

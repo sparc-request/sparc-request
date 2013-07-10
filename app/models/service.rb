@@ -76,6 +76,20 @@ class Service < ActiveRecord::Base
     org = organization if organization.type == 'Institution'
     org
   end
+
+  # do i have any available surveys, otherwise, look up tree and return first available surveys
+  def available_surveys
+    available = nil
+  
+    parents.each do |parent|
+      next if parent.type == 'Institution' # Institutions can't define associated surveys
+      available = parent.associated_surveys.map(&:survey) unless parent.associated_surveys.empty?
+    end
+    
+    available = associated_surveys.map(&:survey) unless associated_surveys.empty? # i have available surveys, use those instead
+
+    available
+  end
   
   # Given a dollar amount as a String, return an integer number of
   # cents.

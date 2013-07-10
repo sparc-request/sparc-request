@@ -63,7 +63,7 @@ module SurveyorControllerCustomMethods
   def surveyor_finish
     # the update action redirects to this method if given params[:finish]
     if not params['redirect_to'].blank?
-      Notifier.system_satisfaction_survey(@response_set).deliver
+      SurveyNotification.system_satisfaction_survey(@response_set).deliver
       params['redirect_to']
     else
       super # surveyor.available_surveys_path

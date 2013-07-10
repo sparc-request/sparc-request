@@ -13,7 +13,14 @@
     // load spinner and cancel images so they are cached
     = image_tag 'spinner.gif', :style => 'display:none'
     = image_tag 'cancel.png', :style => 'display:none'
+
     #container.container
+      #processing_request.ui-corner-all{:style => 'display:none'}
+        %br
+        = t(:cm_index)[:processing]
+        %br
+        = image_tag 'spinner.gif'
+
       #header
         #org_logo
           %a{:href => HEADER_LINK_1}

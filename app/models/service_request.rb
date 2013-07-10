@@ -27,7 +27,7 @@ class ServiceRequest < ActiveRecord::Base
     # TODO: Fix validations for this area
     # validates :visit_count, :numericality => { :greater_than => 0, :message => "You must specify the estimated total number of visits (greater than zero) before continuing.", :if => :has_visits?}
     # validates :subject_count, :numericality => {:message => "You must specify the estimated total number of subjects before continuing.", :if => :has_visits?}
-    validate :service_details_page
+    # validate :service_details_page
   end
 
   validation_group :service_calendar do

@@ -160,6 +160,8 @@ class EpicInterface
                     xml.code(code: 'CYCLE', codeSystem: 'n/a')
 
                     xml.effectiveTime {
+                      # TODO: what to do if start_date or end_date is
+                      # null?
                       xml.low(value: service_request.start_date.strftime("%Y%m%d"))
                       xml.high(value: service_request.end_date.strftime("%Y%m%d"))
                     }

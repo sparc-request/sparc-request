@@ -201,7 +201,7 @@ a.save-option{
 
 .right #services h3 {
   padding: 4px;
-  background: #0099ff;
+  background: #227BA5;
   font-size: 14px;
   color: #fff;
   font-weight: normal;
@@ -314,7 +314,7 @@ a.save-option{
 }
 
 /* Navy: #003366
- * Light Blue: #0099ff
+ * Light Blue: #227BA5
  * Orange: #ff9933
  * Red: #ff3333
  * Green: #339933
@@ -325,7 +325,7 @@ a.save-option{
 }
 
 .light-blue-provider {
-  background: #0099ff !important;
+  background: #227BA5 !important;
 }
 
 .orange-provider {

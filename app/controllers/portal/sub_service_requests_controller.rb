@@ -31,9 +31,11 @@ class Portal::SubServiceRequestsController < Portal::BaseController
   def update_from_fulfillment
     @sub_service_request = SubServiceRequest.find(params[:id])
     @study_tracker = params[:study_tracker] == "true"
+    saved_status = @sub_service_request.status
 
     if @sub_service_request.update_attributes(params[:sub_service_request])
       @sub_service_request.generate_approvals(@user)
+      @sub_service_request.distribute_surveys if @sub_service_request.status == 'complete' and @sub_service_request.status != saved_status #status is complete and it was something different before
       @service_request = @sub_service_request.service_request
       @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
       render 'portal/sub_service_requests/update_past_status'

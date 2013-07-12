@@ -5,6 +5,9 @@ class Program < Organization
   has_many :cores, :dependent => :destroy, :foreign_key => "parent_id"
   has_many :services, :dependent => :destroy, :foreign_key => "organization_id"
 
+  # Surveys associated with this service
+  has_many :associated_surveys, :as => :surveyable
+
   def populate_for_edit
     self.setup_available_statuses
   end

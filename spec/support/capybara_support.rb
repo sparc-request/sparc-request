@@ -151,6 +151,11 @@ module CapybaraSupport
 
     line_items_visit = FactoryGirl.create(:line_items_visit, arm_id: arm.id, subject_count: arm.subject_count)
 
+    survey = FactoryGirl.create(:survey, title: "System Satisfaction survey", description: nil, access_code: "system-satisfaction-survey", reference_identifier: nil, 
+                                         data_export_identifier: nil, common_namespace: nil, common_identifier: nil, active_at: nil, inactive_at: nil, css_url: nil, 
+                                         custom_class: nil, created_at: "2013-07-02 14:40:23", updated_at: "2013-07-02 14:40:23", display_order: 0, api_id: "4137bedf-40db-43e9-a411-932a5f6d77b7", 
+                                         survey_version: 0) 
+
   end
   
   def default_catalog_manager_setup

@@ -20,13 +20,13 @@ survey "System Satisfaction survey", :default_mandatory => false do
     answer_yes "Yes"
     answer_no "No"
 
-    question "If yes, please tell us why."
-    answer :text, :help_text => "Intuitive? User Friendly? Other? Have suggestions for us?"
+    question "If yes, please tell us why. (Intuitive? User Friendly? Other? Have suggestions for us?)"
+    answer :text
     dependency :rule => "Y"
     condition_Y :question_5, "==", :answer_yes
     
-    question "If no, please tell us why."
-    answer :text, :help_text => "Have suggestions for us to make it better?"
+    question "If no, please tell us why. (Have suggestions for us to make it better?)"
+    answer :text
     dependency :rule => "N"
     condition_N :question_5, "==", :answer_no
 

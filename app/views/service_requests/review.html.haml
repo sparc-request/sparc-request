@@ -5,8 +5,8 @@
   = hidden_field_tag :validates, ''
   = render :partial => 'steps'
 
-  #participate_in_survey{:title => 'System Satisfaction Survey'}
-    Would you like to participate in a brief 1 question system satisfaction survey?
+  #participate_in_survey{:title => t(:sr_review)[:participate_in_survey_title]} 
+    = t(:sr_review)[:participate_in_survey] 
 
   .grid_12
     .view-anchor

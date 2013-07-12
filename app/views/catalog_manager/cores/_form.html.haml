@@ -92,6 +92,13 @@
           = render 'catalog_manager/shared/excluded_funding_sources', :entity => @core
 
     %br
+      
+    %fieldset
+      %legend= t(:organization_form)[:associated_surveys]
+      #associated_survey_info= render :partial => 'catalog_manager/shared/associated_surveys', :locals => {:entity => @core}
+
+    %br
+
 
     %fieldset
       %legend= t(:organization_form)[:actions]

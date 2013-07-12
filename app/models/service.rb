@@ -20,6 +20,9 @@ class Service < ActiveRecord::Base
   has_many :depending_service_relations, :class_name => 'ServiceRelation', :foreign_key => 'related_service_id'
   has_many :depending_services, :through => :depending_service_relations, :source => :service
 
+  # Surveys associated with this service
+  has_many :associated_surveys, :as => :surveyable
+
   attr_accessible :obisid
   attr_accessible :name
   attr_accessible :abbreviation
@@ -72,6 +75,20 @@ class Service < ActiveRecord::Base
     org = provider.parent if organization.type == 'Provider'
     org = organization if organization.type == 'Institution'
     org
+  end
+
+  # do i have any available surveys, otherwise, look up tree and return first available surveys
+  def available_surveys
+    available = nil
+  
+    parents.each do |parent|
+      next if parent.type == 'Institution' # Institutions can't define associated surveys
+      available = parent.associated_surveys.map(&:survey) unless parent.associated_surveys.empty?
+    end
+    
+    available = associated_surveys.map(&:survey) unless associated_surveys.empty? # i have available surveys, use those instead
+
+    available
   end
   
   # Given a dollar amount as a String, return an integer number of

@@ -49,4 +49,42 @@ feature 'edit a service' do
     page.should have_content( 'MUSC Research Data Request (CDW) saved successfully' )
   end
 
+  scenario "successfully add/remove associated surveys", :js => true do
+    click_link('MUSC Research Data Request (CDW)')
+    
+    # Program Select should defalut to parent Program
+    within ('#service_program') do
+      page.should have_content('Office of Biomedical Informatics')
+    end
+
+    # Core Select should default to parent Core
+    within ('#service_core') do
+      page.should have_content('Clinical Data Warehouse')
+    end
+
+    within ('#associated_survey_info') do
+      #no survey selected 
+      
+      click_button 'New Associated Survey'
+      a = page.driver.browser.switch_to.alert
+      a.text.should eq "No survey selected"
+      a.accept
+
+      #select survey and add
+      select 'Version 0', :from => 'new_associated_survey'
+      click_button 'New Associated Survey'
+      wait_for_javascript_to_finish
+      page.should have_content('System Satisfaction survey - Version 0')
+
+      #remove survey
+      page.find('.associated_survey_delete').click
+      
+      a = page.driver.browser.switch_to.alert
+      a.text.should eq "Are you sure you want to remove this Associated Survey?"
+      a.accept
+
+      wait_for_javascript_to_finish
+      page.should_not have_content('System Satisfaction survey - Version 0')
+    end
+  end
 end

@@ -1,4 +1,5 @@
 # encoding: UTF-8
+require 'csv'
 module SurveyorControllerCustomMethods
   def self.included(base)
     base.send :before_filter, :set_current_user
@@ -30,9 +31,10 @@ module SurveyorControllerCustomMethods
     super
   end
 
-  def export_data
+  def export
     survey_version = params["survey_version"]
-    access_code = params["id"]
+    access_code = params["survey_code"]
+    pretty_print = params["pretty_print"]
 
     params_string = "code #{access_code}"
 
@@ -49,7 +51,16 @@ module SurveyorControllerCustomMethods
     FileUtils.mkpath(dir) # Create all non-existent directories
     full_path = File.join(dir,"#{survey.access_code}_v#{survey.survey_version}_#{Time.now.to_i}.csv")
     File.open(full_path, 'w') do |f|
-      survey.response_sets.each_with_index{|r,i| f.write(r.to_csv(true, i == 0)) } # print access code every time, print_header first time
+      if pretty_print
+        f.write(survey.response_sets.first.survey.sections.map{|section| section.questions.order(:display_order).map(&:text)}.flatten.to_csv) #header
+        question_ids = survey.sections.map{|section| section.questions.order(&:display_order).map(&:id)}.flatten
+        survey.response_sets.each do |response_set|
+          next if response_set.responses.empty?
+          f.write(question_ids.map{|q| response_set.responses.find_by_question_id(q).try(:to_formatted_s)}.to_csv)
+        end
+      else
+        survey.response_sets.each_with_index{|r,i| f.write(r.to_csv(true, i == 0)) } # print access code every time, print_header first time
+      end
     end
 
     send_file full_path    
@@ -63,7 +74,7 @@ module SurveyorControllerCustomMethods
   def surveyor_finish
     # the update action redirects to this method if given params[:finish]
     if not params['redirect_to'].blank?
-      Notifier.system_satisfaction_survey(@response_set).deliver
+      SurveyNotification.system_satisfaction_survey(@response_set).deliver
       params['redirect_to']
     else
       super # surveyor.available_surveys_path

@@ -85,6 +85,12 @@
         #rs_info= render :partial => 'catalog_manager/shared/related_services', :locals => {:entity => @service}
 
       %br
+      
+      %fieldset
+        %legend= t(:organization_form)[:associated_surveys]
+        #associated_survey_info= render :partial => 'catalog_manager/shared/associated_surveys', :locals => {:entity => @service}
+
+      %br
 
       / %fieldset
       /   %legend Service Providers

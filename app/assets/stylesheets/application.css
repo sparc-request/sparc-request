@@ -1918,6 +1918,7 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   border: 1px solid #000;
   left: 45%;
   padding: 3px;
+  top: 200px;
   position: fixed;
   text-align: center;
   width: 200px;

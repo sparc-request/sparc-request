@@ -6,7 +6,7 @@ module SurveyorControllerCustomMethods
     # base.send :before_filter, :authenticate_identity! # SPARC Request Authentication
     # base.send :before_filter, :require_user   # AuthLogic
     # base.send :before_filter, :login_required  # Restful Authentication
-    # base.send :layout, 'surveyor_custom'
+    base.send :layout, 'surveyor_custom'
   end
   
   def set_current_user
@@ -52,11 +52,12 @@ module SurveyorControllerCustomMethods
     full_path = File.join(dir,"#{survey.access_code}_v#{survey.survey_version}_#{Time.now.to_i}.csv")
     File.open(full_path, 'w') do |f|
       if pretty_print
-        f.write(survey.response_sets.first.survey.sections.map{|section| section.questions.order(:display_order).map(&:text)}.flatten.to_csv) #header
+        f.write(['Identity', survey.response_sets.first.survey.sections.map{|section| section.questions.order(:display_order).map(&:text)}].flatten.to_csv) #header
         question_ids = survey.sections.map{|section| section.questions.order(&:display_order).map(&:id)}.flatten
         survey.response_sets.each do |response_set|
           next if response_set.responses.empty?
-          f.write(question_ids.map{|q| response_set.responses.find_by_question_id(q).try(:to_formatted_s)}.to_csv)
+          identity = Identity.find(response_set.user_id).try(:full_name)
+          f.write([identity, question_ids.map{|q| response_set.responses.find_by_question_id(q).try(:to_formatted_s)}].flatten.to_csv)
         end
       else
         survey.response_sets.each_with_index{|r,i| f.write(r.to_csv(true, i == 0)) } # print access code every time, print_header first time

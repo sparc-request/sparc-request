@@ -12,6 +12,7 @@ development:
   use_indirect_cost: false
   use_shiboleth: true
   use_ldap: true
+  wkhtmltopdf_location: '/usr/local/bin/wkhtmltopdf'
   
 test:
   default_mail_to: catesa@musc.edu
@@ -27,3 +28,4 @@ test:
   use_indirect_cost: false
   use_shiboleth: true
   use_ldap: true
+  wkhtmltopdf_location: '/usr/local/bin/wkhtmltopdf'

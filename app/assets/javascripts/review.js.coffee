@@ -4,7 +4,7 @@ $(document).ready ->
   survey_offered = false
   $('#participate_in_survey').dialog
     resizable: false,
-    height: 140,
+    height: 220,
     modal: true,
     autoOpen: false,
     buttons:
@@ -25,7 +25,6 @@ $(document).ready ->
             width: 920
             title: 'SPARC Request Satisfaction Survey'
             closeOnEscape: false
-            open: -> $('.grid_12').hide()
 
           $('#surveyor').dialog('open')
           $('#processing_request').hide()

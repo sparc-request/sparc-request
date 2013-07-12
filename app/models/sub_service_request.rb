@@ -289,8 +289,8 @@ class SubServiceRequest < ActiveRecord::Base
     # do nothing if we don't have any available surveys
     
     if available_surveys
-      SurveyNotification.service_satisfaction_survey(available_surveys, primary_pi).deliver
-      SurveyNotification.service_satisfaction_survey(available_surveys, requester).deliver
+      SurveyNotification.service_survey(available_surveys, primary_pi, self).deliver
+      SurveyNotification.service_survey(available_surveys, requester, self).deliver
     end
   end
 

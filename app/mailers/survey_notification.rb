@@ -1,4 +1,5 @@
 class SurveyNotification < ActionMailer::Base
+  add_template_helper(ApplicationHelper)
   
   def system_satisfaction_survey response_set
     @response_set = response_set 
@@ -11,11 +12,12 @@ class SurveyNotification < ActionMailer::Base
     mail(:to => email, :cc => cc, :from => @identity.email, :subject => subject) 
   end
   
-  def service_satisfaction_survey surveys, identity
+  def service_survey surveys, identity, ssr
     @identity = identity
     @surveys = surveys
+    @ssr = ssr
     email = Rails.env == 'production' ? @identity.email : DEFAULT_MAIL_TO
-    subject = Rails.env == 'production' ? "Service satisfaction survey for #{I18n.t('application_title')}" : "[#{Rails.env.capitalize} - EMAIL TO #{ADMIN_MAIL_TO} AND CC TO #{SYSTEM_SATISFACTION_SURVEY_CC}] Service satisfaction survey for #{I18n.t('application_title')}"
+    subject = Rails.env == 'production' ? "#{I18n.t('application_title')} Survey Notification" : "[#{Rails.env.capitalize} - EMAIL TO #{ADMIN_MAIL_TO} AND CC TO #{SYSTEM_SATISFACTION_SURVEY_CC}] #{I18n.t('application_title')} Survey Notification"
     mail(:to => email, :from => 'no-reply@musc.edu', :subject => subject) 
   end
 

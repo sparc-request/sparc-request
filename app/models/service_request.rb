@@ -113,7 +113,7 @@ class ServiceRequest < ActiveRecord::Base
     self.arms.each do |arm|
       arm.visit_groups.each do |vg|
         if vg.day.blank?
-          errors.add(:visit_group, "You must specifiy a day for each visit. Please also ensure they are all in order.")
+          errors.add(:visit_group, "Please specify a study day for each visit.")
           return
         end
       end

@@ -38,5 +38,5 @@ SparcRails::Application.configure do
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
 
   # Will be default in Rails 4.0
-  config.threadsafe!
+  config.threadsafe! unless defined?($rails_rake_task) && $rails_rake_task
 end

@@ -3,8 +3,7 @@
   %head
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
     %title= t 'application_title'
-    = stylesheet_link_tag 'application', '960', 'jquery-ui', :media => 'all'
-    = javascript_include_tag "application"
+    = stylesheet_link_tag 'application', '960', :media => 'all'
     = surveyor_includes
     = csrf_meta_tags
   %body

@@ -32,25 +32,37 @@ class ServiceCalendarsController < ApplicationController
     qty = params[:qty].to_i
     column = params[:column]
 
-    if tab == 'template' and @line_items_visit
-      @line_items_visit.update_attribute(:subject_count, qty)
-    elsif tab == 'template' and visit.research_billing_qty.to_i <= 0 and checked == 'true'
-      # set quantity and research billing qty to 1
-      visit.update_attribute(:quantity, visit.line_items_visit.line_item.service.displayed_pricing_map.unit_minimum)
-      visit.update_attribute(:research_billing_qty, visit.line_items_visit.line_item.service.displayed_pricing_map.unit_minimum)
-    elsif tab == 'template' and checked == 'false'
-      visit.update_attribute(:quantity, 0)
-      visit.update_attribute(:research_billing_qty, 0)
-      visit.update_attribute(:insurance_billing_qty, 0)
-      visit.update_attribute(:effort_billing_qty, 0)
-    elsif tab == 'quantity'
+    case tab
+    when 'template'
+      if @line_items_visit
+        # TODO: not sure what's going on here (why is @line_items_visit
+        # set above, then set again below?  what are we doing here, and
+        # why do we not care about checked in this case?)
+        @line_items_visit.update_attribute(:subject_count, qty)
+      elsif visit.research_billing_qty.to_i <= 0 and checked == 'true'
+        # set quantity and research billing qty to 1
+        # TODO: why do we do this for research_billing_qty but not the
+        # other quantities?
+        line_item = visit.line_items_visit.line_item
+        service = line_item.service
+        visit.update_attribute(:quantity, service.displayed_pricing_map.unit_minimum)
+        visit.update_attribute(:research_billing_qty, service.displayed_pricing_map.unit_minimum)
+      elsif checked == false
+        visit.update_attribute(:quantity, 0)
+        visit.update_attribute(:research_billing_qty, 0)
+        visit.update_attribute(:insurance_billing_qty, 0)
+        visit.update_attribute(:effort_billing_qty, 0)
+      end
+
+    when 'quantity'
       @errors = "Quantity must be greater than zero" if qty < 0
       visit.update_attribute(:quantity, qty) unless qty < 0
-    elsif tab == 'billing_strategy'
+
+    when 'billing_strategy'
       @errors = "Quantity must be greater than zero" if qty < 0
       visit.update_attribute(column, qty) unless qty < 0
       #update the total quantity to reflect the 3 billing qty total
-      total = visit.research_billing_qty.to_i + visit.insurance_billing_qty.to_i + visit.effort_billing_qty.to_i
+      total = visit.quantity_total
       visit.update_attribute(:quantity, total) unless total < 0
     end
 

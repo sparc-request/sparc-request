@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'surveyor/parser'
 require 'rake'
 
 # TODO: I want to remove the sleeps from this page, but I can't because
@@ -58,14 +59,17 @@ describe "review page" do
 
       # select Yes to next question and you should see text area for Yes
       all("#r_5_answer_id_input input").first().click
+      wait_for_javascript_to_finish
       fill_in "r_6_text_value", :with => "I love it"
       
       # select No to next question and you should see text area for No
       all("#r_5_answer_id_input input").last().click
+      wait_for_javascript_to_finish
       fill_in "r_7_text_value", :with => "I hate it"
 
       within(:css, "div.next_section") do
         click_button 'Submit'
+        wait_for_javascript_to_finish
       end
     end
   end

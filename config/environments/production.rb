@@ -71,5 +71,5 @@ SparcRails::Application.configure do
     exception_recipients: ['catesa@musc.edu', 'scoma@musc.edu', 'kelsey@musc.edu', 'johstu@musc.edu', 'leonarjp@musc.edu', 'brannan@musc.edu']
 
   # Will be default in Rails 4.0
-  config.threadsafe!
+  config.threadsafe! unless $rails_rake_task
 end

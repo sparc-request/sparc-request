@@ -13,6 +13,13 @@ begin
   USE_INDIRECT_COST                      = application_config['use_indirect_cost']
   USE_SHIBOLETH                          = application_config['use_shiboleth']
   USE_LDAP                               = application_config['use_ldap']
+
+  if application_config.include?('wkhtmltopdf_location')
+    # Setup PDFKit
+    PDFKit.configure do |config|
+      config.wkhtmltopdf = application_config['wkhtmltopdf_location']
+    end
+  end
 rescue
   raise "application.yml not found, see config/application.yml.example"
 end

@@ -60,7 +60,6 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   attr_accessible :protocol_id
-  attr_accessible :obisid
   attr_accessible :status
   attr_accessible :service_requester_id
   attr_accessible :notes

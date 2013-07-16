@@ -44,9 +44,9 @@ end
 
 def build_service_request
   let!(:service_request)     { FactoryGirl.create(:service_request, status: "draft", start_date: Time.now, end_date: Time.now + 10.days) }
-  let!(:institution)         { FactoryGirl.create(:institution,name: 'Medical University of South Carolina', order: 1,obisid: '87d1220c5abf9f9608121672be000412',abbreviation: 'MUSC', is_available: 1)}
-  let!(:provider)            { FactoryGirl.create(:provider,parent_id:institution.id,name: 'South Carolina Clinical and Translational Institute (SCTR)',order: 1,css_class: 'blue-provider',obisid: '87d1220c5abf9f9608121672be0011ff',abbreviation: 'SCTR1',process_ssrs: 0,is_available: 1)}
-  let!(:program)             { FactoryGirl.create(:program,type:'Program',parent_id:provider.id,name:'Office of Biomedical Informatics',order:1,obisid:'87d1220c5abf9f9608121672be021963',abbreviation:'Informatics',process_ssrs:  0, is_available: 1)}
+  let!(:institution)         { FactoryGirl.create(:institution,name: 'Medical University of South Carolina', order: 1,abbreviation: 'MUSC', is_available: 1)}
+  let!(:provider)            { FactoryGirl.create(:provider,parent_id:institution.id,name: 'South Carolina Clinical and Translational Institute (SCTR)',order: 1,css_class: 'blue-provider',abbreviation: 'SCTR1',process_ssrs: 0,is_available: 1)}
+  let!(:program)             { FactoryGirl.create(:program,type:'Program',parent_id:provider.id,name:'Office of Biomedical Informatics',order:1,abbreviation:'Informatics',process_ssrs:  0, is_available: 1)}
   let!(:core)                { FactoryGirl.create(:core, parent_id: program.id)}
   let!(:sub_service_request) { FactoryGirl.create(:sub_service_request, ssr_id: "0001", service_request_id: service_request.id, organization_id: program.id,status: "draft")}
 

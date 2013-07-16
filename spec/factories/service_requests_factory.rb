@@ -3,7 +3,6 @@
 FactoryGirl.define do
   factory :service_request do
     protocol_id          { Random.rand(10000) }
-    obisid               { SecureRandom.hex(16) }
     status               { Faker::Lorem.sentence(3) }
     service_requester_id { Random.rand(1000) }
     notes                { Faker::Lorem.sentences(2) }

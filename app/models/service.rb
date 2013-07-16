@@ -21,7 +21,6 @@ class Service < ActiveRecord::Base
   has_many :depending_service_relations, :class_name => 'ServiceRelation', :foreign_key => 'related_service_id'
   has_many :depending_services, :through => :depending_service_relations, :source => :service
 
-  attr_accessible :obisid
   attr_accessible :name
   attr_accessible :abbreviation
   attr_accessible :order

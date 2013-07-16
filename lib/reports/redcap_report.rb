@@ -52,10 +52,10 @@ class RedcapReport < Report
 
             if ssr
               if li.sub_service_request.past_statuses.where(:status => 'submitted').count > 0
-                submitted_date = li.sub_service_request.past_statuses.where(:status => 'submitted').try(:last).try(:date)
+                submitted_date = li.sub_service_request.service_request.submitted_at
                 next if not submitted_date
-                next if @from_date and submitted_date < @from_date
-                next if @to_date   and submitted_date > @to_date
+                next if @from_date and submitted_date < Date.parse(@from_date)
+                next if @to_date   and submitted_date > Date.parse(@to_date)
 
                 if not protocol or not ssr then
                   puts "Warning: Bad line item #{li.inspect}"

@@ -26,70 +26,10 @@ module Savon
   end
 end
 
-# Use this class to send protocols (studies/projects) along with their
-# associated billing calendars to Epic via an InterConnect server.
-#
-# Configuration is stored in config/epic.yml.
-class EpicInterface
-
-  # Create a new EpicInterface
-  def initialize(config)
-    @config = config
-
-    # TODO: grab these from the WSDL
-    @namespace = @config['namespace'] || 'urn:ihe:qrph:rpe:2009'
-    @root = @config['study_root']
-    @epoch = Date.parse(@config['epoch'] || '2013-01-01')
-
-    # TODO: I'm not really convinced that Savon is buying us very much
-    # other than some added complexity, but it's working, so no point in
-    # pulling it out.
-    @client = Savon.client(
-        logger: Rails.logger,
-        soap_version: 2,
-        pretty_print_xml: true,
-        convert_request_keys_to: :none,
-        namespace_identifier: 'rpe',
-        namespace: @namespace,
-        endpoint: @config['endpoint'],
-        wsdl: @config['wsdl'],
-        headers: {
-        },
-        soap_header: {
-        },
-        namespaces: {
-          'xmlns:wsa' => 'http://www.w3.org/2005/08/addressing',
-        })
-  end
-
-  def soap_header(msg_type)
-    soap_header = {
-      'wsa:Action' => "#{@namespace}:#{msg_type}",
-      'wsa:MessageID' => SecureRandom.uuid,
-      'wsa:To' => @endpoint,
-    }
-
-    return soap_header
-  end
-
-  # Send the given SOAP action to the server along with the given
-  # message.  Automatically builds a header with the right WS-A
-  # elements.
-  def call(action, message)
-    # Wasabi (Savon's WSDL parser) turns CamelCase actions into
-    # snake_case.
-    if @config['wsdl'] then
-      action = action.snakecase.to_sym
-    end
-
-    return @client.call(
-        action,
-        soap_header: soap_header(action),
-        message: message)
-  end
-
-  # Send a study to the Epic InterConnect server.
-  def send_study(study)
+class Protocol < ActiveRecord::Base
+  # Build a study creation message to send to epic and return it as a
+  # string.
+  def epic_study_creation_message
     xml = Builder::XmlMarkup.new
 
     xml.query(root: @root, extension: study.id)
@@ -113,15 +53,12 @@ class EpicInterface
       }
     }
 
-    call('RetrieveProtocolDefResponse', xml.target!)
-
-    # TODO: handle response from the server
+    return xml.target!
   end
 
-  # Send a study's billing calendar to the Epic InterConnect server.
-  # The study must have already been created (via #send_study) before
-  # calling this method.
-  def send_billing_calendar(study)
+  # Bulid a study calendar definition message to send to epic and return
+  # it as a string.
+  def epic_study_calendar_definition_message
     xml = Builder::XmlMarkup.new
 
     xml.query(root: @root, extension: study.id)
@@ -228,12 +165,89 @@ class EpicInterface
             end
           end
         end
-
-
       }
     }
 
-    call('RetrieveProtocolDefResponse', xml.target!)
+    return xml.target!
+  end
+end
+
+# Use this class to send protocols (studies/projects) along with their
+# associated billing calendars to Epic via an InterConnect server.
+#
+# Configuration is stored in config/epic.yml.
+class EpicInterface
+
+  # Create a new EpicInterface
+  def initialize(config)
+    @config = config
+
+    # TODO: grab these from the WSDL
+    @namespace = @config['namespace'] || 'urn:ihe:qrph:rpe:2009'
+    @root = @config['study_root']
+    @epoch = Date.parse(@config['epoch'] || '2013-01-01')
+
+    # TODO: I'm not really convinced that Savon is buying us very much
+    # other than some added complexity, but it's working, so no point in
+    # pulling it out.
+    @client = Savon.client(
+        logger: Rails.logger,
+        soap_version: 2,
+        pretty_print_xml: true,
+        convert_request_keys_to: :none,
+        namespace_identifier: 'rpe',
+        namespace: @namespace,
+        endpoint: @config['endpoint'],
+        wsdl: @config['wsdl'],
+        headers: {
+        },
+        soap_header: {
+        },
+        namespaces: {
+          'xmlns:wsa' => 'http://www.w3.org/2005/08/addressing',
+        })
+  end
+
+  def soap_header(msg_type)
+    soap_header = {
+      'wsa:Action' => "#{@namespace}:#{msg_type}",
+      'wsa:MessageID' => SecureRandom.uuid,
+      'wsa:To' => @endpoint,
+    }
+
+    return soap_header
+  end
+
+  # Send the given SOAP action to the server along with the given
+  # message.  Automatically builds a header with the right WS-A
+  # elements.
+  def call(action, message)
+    # Wasabi (Savon's WSDL parser) turns CamelCase actions into
+    # snake_case.
+    if @config['wsdl'] then
+      action = action.snakecase.to_sym
+    end
+
+    return @client.call(
+        action,
+        soap_header: soap_header(action),
+        message: message)
+  end
+
+  # Send a study to the Epic InterConnect server.
+  def send_study(study)
+    message = study.epic_study_creation_message
+    call('RetrieveProtocolDefResponse', message)
+
+    # TODO: handle response from the server
+  end
+
+  # Send a study's billing calendar to the Epic InterConnect server.
+  # The study must have already been created (via #send_study) before
+  # calling this method.
+  def send_billing_calendar(study)
+    message = study.epic_study_calendar_definition_message
+    call('RetrieveProtocolDefResponse', message)
 
     # TODO: handle response from the server
   end

@@ -152,11 +152,11 @@ class Protocol < ActiveRecord::Base
                       day = visit_group.day || visit_group.position
 
                       xml.effectiveTime {
-                        xml.low(value: relative_date(day - visit_group.window))
-                        xml.high(value: relative_date(day + visit_group.window))
+                        xml.low(value: epic_relative_date(day - visit_group.window))
+                        xml.high(value: epic_relative_date(day + visit_group.window))
                       }
 
-                      xml.activityTime(value: relative_date(day))
+                      xml.activityTime(value: epic_relative_date(day))
                     }
                   }
 
@@ -169,6 +169,23 @@ class Protocol < ActiveRecord::Base
     }
 
     return xml.target!
+  end
+
+  private
+
+  # A "relative date" is represented in YYYYMMDD format and is
+  # calculated as relative_date + EPOCH.  For example, day 45 would be
+  # represented as 20130214 (45th day starting with 20130101 as the
+  # epoch).
+  #
+  # Think this doesn't make much sense?  It doesn't.  I suspect it has
+  # to do with <effectiveTime> mapping in Epic to a Java class that MUST
+  # contain a valid date.
+  #
+  # The day passed in here is assumed to be 1-based.
+  def epic_relative_date(day)
+    date = @epoch + day - 1
+    return date.strftime("%Y%m%d")
   end
 end
 
@@ -250,21 +267,6 @@ class EpicInterface
     call('RetrieveProtocolDefResponse', message)
 
     # TODO: handle response from the server
-  end
-
-  # A "relative date" is represented in YYYYMMDD format and is
-  # calculated as relative_date + EPOCH.  For example, day 45 would be
-  # represented as 20130214 (45th day starting with 20130101 as the
-  # epoch).
-  #
-  # Think this doesn't make much sense?  It doesn't.  I suspect it has
-  # to do with <effectiveTime> mapping in Epic to a Java class that MUST
-  # contain a valid date.
-  #
-  # The day passed in here is assumed to be 1-based.
-  def relative_date(day)
-    date = @epoch + day - 1
-    return date.strftime("%Y%m%d")
   end
 end
 

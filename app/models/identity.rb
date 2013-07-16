@@ -44,7 +44,6 @@ class Identity < ActiveRecord::Base
   # has_many :sub_service_requests, :foreign_key => 'owner_id'
 
   attr_accessible :ldap_uid
-  attr_accessible :obisid
   attr_accessible :email
   attr_accessible :last_name
   attr_accessible :first_name

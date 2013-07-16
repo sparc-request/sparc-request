@@ -14,7 +14,6 @@ class Protocol < ActiveRecord::Base
   has_many :affiliations, :dependent => :destroy
   has_many :impact_areas, :dependent => :destroy
 
-  attr_accessible :obisid
   attr_accessible :identity_id
   attr_accessible :next_ssr_id
   attr_accessible :short_title

@@ -1,7 +1,6 @@
 FactoryGirl.define do
 
   factory :protocol do
-    obisid                       { SecureRandom.hex(16) }
     next_ssr_id                  { Random.rand(10000) }
     short_title                  { Faker::Lorem.word }
     title                        { Faker::Lorem.sentence(3) }

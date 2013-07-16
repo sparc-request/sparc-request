@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130705192434) do
+ActiveRecord::Schema.define(:version => 20130716175901) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -168,7 +168,6 @@ ActiveRecord::Schema.define(:version => 20130705192434) do
 
   create_table "identities", :force => true do |t|
     t.string   "ldap_uid"
-    t.string   "obisid"
     t.string   "email"
     t.string   "last_name"
     t.string   "first_name"
@@ -202,7 +201,6 @@ ActiveRecord::Schema.define(:version => 20130705192434) do
   add_index "identities", ["email"], :name => "index_identities_on_email"
   add_index "identities", ["last_name"], :name => "index_identities_on_last_name"
   add_index "identities", ["ldap_uid"], :name => "index_identities_on_ldap_uid", :unique => true
-  add_index "identities", ["obisid"], :name => "index_identities_on_obisid", :unique => true
   add_index "identities", ["reset_password_token"], :name => "index_identities_on_reset_password_token", :unique => true
 
   create_table "impact_areas", :force => true do |t|
@@ -302,7 +300,6 @@ ActiveRecord::Schema.define(:version => 20130705192434) do
     t.integer  "order"
     t.string   "css_class"
     t.text     "description"
-    t.string   "obisid"
     t.integer  "parent_id"
     t.string   "abbreviation"
     t.text     "ack_language"
@@ -314,7 +311,6 @@ ActiveRecord::Schema.define(:version => 20130705192434) do
   end
 
   add_index "organizations", ["is_available"], :name => "index_organizations_on_is_available"
-  add_index "organizations", ["obisid"], :name => "index_organizations_on_obisid"
   add_index "organizations", ["parent_id"], :name => "index_organizations_on_parent_id"
 
   create_table "past_statuses", :force => true do |t|
@@ -393,7 +389,6 @@ ActiveRecord::Schema.define(:version => 20130705192434) do
 
   create_table "protocols", :force => true do |t|
     t.string   "type"
-    t.string   "obisid"
     t.integer  "next_ssr_id"
     t.string   "short_title"
     t.text     "title"
@@ -421,8 +416,6 @@ ActiveRecord::Schema.define(:version => 20130705192434) do
     t.datetime "last_epic_push_time"
     t.string   "last_epic_push_status"
   end
-
-  add_index "protocols", ["obisid"], :name => "index_protocols_on_obisid"
 
   create_table "questions", :force => true do |t|
     t.string   "to"
@@ -472,7 +465,6 @@ ActiveRecord::Schema.define(:version => 20130705192434) do
 
   create_table "service_requests", :force => true do |t|
     t.integer  "protocol_id"
-    t.string   "obisid"
     t.string   "status"
     t.integer  "service_requester_id"
     t.text     "notes"
@@ -490,13 +482,11 @@ ActiveRecord::Schema.define(:version => 20130705192434) do
     t.datetime "deleted_at"
   end
 
-  add_index "service_requests", ["obisid"], :name => "index_service_requests_on_obisid"
   add_index "service_requests", ["protocol_id"], :name => "index_service_requests_on_protocol_id"
   add_index "service_requests", ["service_requester_id"], :name => "index_service_requests_on_service_requester_id"
   add_index "service_requests", ["status"], :name => "index_service_requests_on_status"
 
   create_table "services", :force => true do |t|
-    t.string   "obisid"
     t.string   "name"
     t.string   "abbreviation"
     t.integer  "order"
@@ -513,7 +503,6 @@ ActiveRecord::Schema.define(:version => 20130705192434) do
   end
 
   add_index "services", ["is_available"], :name => "index_services_on_is_available"
-  add_index "services", ["obisid"], :name => "index_services_on_obisid"
   add_index "services", ["organization_id"], :name => "index_services_on_organization_id"
 
   create_table "sessions", :force => true do |t|

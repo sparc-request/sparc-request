@@ -47,7 +47,7 @@ class ServiceCalendarsController < ApplicationController
         service = line_item.service
         visit.update_attribute(:quantity, service.displayed_pricing_map.unit_minimum)
         visit.update_attribute(:research_billing_qty, service.displayed_pricing_map.unit_minimum)
-      elsif checked == false
+      elsif checked == 'false'
         visit.update_attribute(:quantity, 0)
         visit.update_attribute(:research_billing_qty, 0)
         visit.update_attribute(:insurance_billing_qty, 0)

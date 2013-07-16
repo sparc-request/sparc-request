@@ -210,6 +210,18 @@ describe "study schedule", :js => true do
         wait_for_javascript_to_finish
         arm1.line_items_visits.size.should eq(1)
       end
+
+      it "should warn user about deleting procedures" do
+        within("table.arm_id_#{arm1.id} tr.line_item.odd") do
+          find(:xpath, ".//a/img[@alt='Cancel']/..").click
+        end
+
+        a = page.driver.browser.switch_to.alert
+        
+        a.text.should eq "Are you sure that you want to remove this service from all subjects' visit calendars in this arm?"
+        a.accept
+        wait_for_javascript_to_finish
+      end
     end
 
     context "a line_item" do

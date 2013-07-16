@@ -14,7 +14,7 @@
       %tr.ui-widget-header
         %th
           Billing/Business Manager:
-          = @sub_service_request.service_request.protocol.billing_managers.first.full_name
+          = @sub_service_request.service_request.protocol.billing_managers.try(:first).try(:full_name)
         %th
           Subject Study Status:
           = f.select :status, options_for_select(["Active", "Completed", "Early Term", "Screen Fail"], f.try(:object).try(:status)), :include_blank => "--Choose a Status--"

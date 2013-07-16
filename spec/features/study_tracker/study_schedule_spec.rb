@@ -194,6 +194,7 @@ describe "study schedule", :js => true do
       create_visits
       visit study_tracker_sub_service_request_path sub_service_request.id
     end
+
     context "a line_item_visit" do
       it "should delete the line_items_visit" do
         arm1.line_items_visits.size.should eq(2)
@@ -216,9 +217,9 @@ describe "study schedule", :js => true do
         end
 
         a = page.driver.browser.switch_to.alert
-        sleep 5
         a.text.should eq "Are you sure that you want to remove this service from all subjects' visit calendars in this arm?"
         a.accept
+        wait_for_javascript_to_finish
       end
     end
 
@@ -228,8 +229,10 @@ describe "study schedule", :js => true do
         click_button('Remove Service from all patients')
 
         a = page.driver.browser.switch_to.alert
+        a.text.should eq "Are you sure that you want to remove this service from all subjects' visit calendars?"
         a.accept
-        sleep 5
+        
+        wait_for_javascript_to_finish
         arm1.line_items.size.should eq(1)
       end
 
@@ -237,7 +240,6 @@ describe "study schedule", :js => true do
         click_button('Remove Service from all patients')
 
         a = page.driver.browser.switch_to.alert
-        sleep 5
         a.text.should eq "Are you sure that you want to remove this service from all subjects' visit calendars?"
         a.accept
       end

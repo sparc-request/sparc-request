@@ -1,11 +1,5 @@
 survey "System Satisfaction survey", :default_mandatory => false do
   section "System Satisfaction" do
-    question "Last Name* (optional)"
-    answer :string
-
-    question "First Name* (optional)"
-    answer :string
-
     question "College", :pick => :one, :display_type => :dropdown
     COLLEGES.each do |k,v|
       answer k
@@ -29,6 +23,5 @@ survey "System Satisfaction survey", :default_mandatory => false do
     answer :text
     dependency :rule => "N"
     condition_N :question_5, "==", :answer_no
-
   end
 end

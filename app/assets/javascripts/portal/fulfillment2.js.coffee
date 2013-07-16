@@ -346,7 +346,7 @@ $(document).ready ->
         dataType: "script"
         contentType: 'application/json; charset=utf-8'
         success: ->
-          $().toastmessage('showSuccessToast', "#{klass.humanize()} has been deleted.");
+          $().toastmessage('showSuccessToast', "Service has been deleted.");
   )
 
   $(document).on('click', '.expand_li', ->

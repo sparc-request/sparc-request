@@ -93,11 +93,14 @@ describe "Identity" do
     let!(:provider)             {FactoryGirl.create(:provider, parent_id: institution.id)}
     let!(:program)              {FactoryGirl.create(:program, parent_id: provider.id)} 
     let!(:provider2)            {FactoryGirl.create(:provider, parent_id: institution.id)}
+    let!(:core)                 {FactoryGirl.create(:core, parent_id: provider.id)}
     let!(:user)                 {FactoryGirl.create(:identity)}
+    let!(:user2)                {FactoryGirl.create(:identity)}
     let!(:catalog_manager)      {FactoryGirl.create(:catalog_manager, identity_id: user.id, organization_id: institution2.id)}
     let!(:catalog_manager2)     {FactoryGirl.create(:catalog_manager, identity_id: user.id, organization_id: institution.id)}
     let!(:super_user)           {FactoryGirl.create(:super_user, identity_id: user.id, organization_id: institution.id)}
     let!(:service_provider)     {FactoryGirl.create(:service_provider, identity_id: user.id, organization_id: institution.id)}
+    let!(:clinical_provider)    {FactoryGirl.create(:clinical_provider, identity_id: user2.id, organization_id: core.id)}
     
     let!(:project) {
       project = Project.create(FactoryGirl.attributes_for(:protocol))
@@ -188,6 +191,17 @@ describe "Identity" do
         it "should return false if these conditions are not met" do
           user.can_edit_fulfillment?(institution2).should eq(false)
         end 
+      end
+
+      describe "can edit core" do
+
+        it "should return true if the user is a clinical provider on the given core" do
+          user2.can_edit_core?(core).should eq(true)
+        end
+
+        it "should return false if the user is not a clinical provider on a given core" do
+          user.can_edit_core?(core).should eq(false)
+        end
       end
     end
 

@@ -203,6 +203,11 @@ class Identity < ActiveRecord::Base
     self.catalog_manager_organizations.include?(organization) ? true : false
   end
 
+  # Used in clinical fulfillment to determine whether the user can edit a particular core.
+  def can_edit_core? organization
+    self.clinical_provider_organizations.include?(organization) ? true : false
+  end
+
   # Determines whether the user has permission to edit historical data for a given organization.
   # Returns true if the edit_historic_data flag is set to true on the relevant catalog_manager relationship.
   def can_edit_historical_data_for? organization
@@ -247,6 +252,17 @@ class Identity < ActiveRecord::Base
     orgs = []
 
     self.catalog_managers.map(&:organization).each do |org|
+      orgs << org.all_children
+    end
+
+    orgs.flatten.uniq
+  end
+
+  # Returns an array of organizations where the user has clinical provider rights.
+  def clinical_provider_organizations
+    orgs = []
+
+    self.clinical_providers.map(&:organization).each do |org|
       orgs << org.all_children
     end
 

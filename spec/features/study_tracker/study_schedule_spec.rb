@@ -194,6 +194,7 @@ describe "study schedule", :js => true do
       create_visits
       visit study_tracker_sub_service_request_path sub_service_request.id
     end
+
     context "a line_item_visit" do
       it "should delete the line_items_visit" do
         arm1.line_items_visits.size.should eq(2)
@@ -209,17 +210,6 @@ describe "study schedule", :js => true do
         wait_for_javascript_to_finish
         arm1.line_items_visits.size.should eq(1)
       end
-
-      it "should warn user about deleting procedures" do
-        within("table.arm_id_#{arm1.id} tr.line_item.odd") do
-          find(:xpath, ".//a/img[@alt='Cancel']/..").click
-        end
-
-        a = page.driver.browser.switch_to.alert
-        sleep 5
-        a.text.should eq "Are you sure that you want to remove this service from all subjects' visit calendars in this arm?"
-        a.accept
-      end
     end
 
     context "a line_item" do
@@ -228,18 +218,11 @@ describe "study schedule", :js => true do
         click_button('Remove Service from all patients')
 
         a = page.driver.browser.switch_to.alert
-        a.accept
-        sleep 5
-        arm1.line_items.size.should eq(1)
-      end
-
-      it "should warn user about deleting all procedures" do
-        click_button('Remove Service from all patients')
-
-        a = page.driver.browser.switch_to.alert
-        sleep 5
         a.text.should eq "Are you sure that you want to remove this service from all subjects' visit calendars?"
         a.accept
+        
+        wait_for_javascript_to_finish
+        arm1.line_items.size.should eq(1)
       end
     end
   end

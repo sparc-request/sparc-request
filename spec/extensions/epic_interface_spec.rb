@@ -74,11 +74,11 @@ describe EpicInterface do
       epic_interface.send_study(study)
 
       xml = <<-END
-        <rpe:RetrieveProtocolDefResponse xmlns:rpe="urn:ihe:qrph:rpe:2009">
-          <query root="1.2.3.4" extension="#{study.id}" />
+        <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
+          <query root="1.2.3.4" extension="#{study.id}"/>
           <protocolDef>
             <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
-              <id root="1.2.3.4" extension="#{study.id}" />
+              <id root="1.2.3.4" extension="#{study.id}"/>
               <title>#{study.title}</title>
               <text>#{study.brief_description}</text>
             </plannedStudy>
@@ -94,6 +94,9 @@ describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
+      # Uncomment these lines for debugging (sometimes the test output
+      # doesn't give you all the information you need to figure out what
+      # the difference is between actual and expected).
       # p strip_xml_whitespace!(expected.root)
       # p strip_xml_whitespace!(node)
 
@@ -110,7 +113,7 @@ describe EpicInterface do
           protocol_id:     study.id,
           identity_id:     identity.id,
           project_rights:  "approve",
-          role:            "pi")
+          role:            "primary-pi")
 
       epic_interface.send_study(study)
 
@@ -120,7 +123,7 @@ describe EpicInterface do
                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
           <studyCharacteristic classCode="OBS" moodCode="EVN">
             <code code="PI" />
-            <value xsi:type="ST" value="#{identity.netid}" />
+            <value xsi:type="CD" code="#{identity.netid.upcase}" codeSystem="netid" />
           </studyCharacteristic>
         </subjectOf>
       END
@@ -128,7 +131,7 @@ describe EpicInterface do
       expected = Nokogiri::XML(xml)
 
       node = epic_received[0].xpath(
-          '//env:Body/rpe:RetrieveProtocolDefResponse/protocolDef/hl7:plannedStudy/hl7:subjectOf',
+          '//env:Body/rpe:RetrieveProtocolDefResponse/protocolDef/rpe:plannedStudy/rpe:subjectOf',
           'env' => 'http://www.w3.org/2003/05/soap-envelope',
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')

@@ -1,7 +1,14 @@
-def adjusted_row text, left_indent
+def adjusted_row text, indent, direction="left"
   row = []
-  left_indent.times { row << "" }
-  row << text
+
+  if direction == 'left'
+    indent.times { row << "" }
+    row << text
+  elsif direction == 'right'
+    row << text
+    indent.times { row << "" }
+  end
+
   row
 end
 
@@ -28,13 +35,18 @@ def visit_subtotals_row subjects, visit_count, sheet, styles
   styling = [styles[:header], nil]
   visit_count.times do |index|
     totals[index] = subjects.sum{|subject| subject[:visits][index]}
-    styling << styles[:default]
+    #styling << styles[:default] # uncomment for border
   end
-  styling << styles[:default]
-  sheet.add_row ["Visit Subtotals", ""] + totals + [totals.sum]       #, :style => styling
+  sheet.add_row ["Visit Subtotals", ""] + totals + [totals.sum], :style => styling
+  totals.sum
 end
 
-visit_count = 25 # just putting a number here so we can make sure it renders correctly
+def visit_count_spanned_row header, header_style, data, visit_count, sheet, styles
+  styling = [styles[header_style], nil]
+  sheet.add_row adjusted_row(header, visit_count+1, 'right') + [data], :style => styling
+end
+
+visit_count = 5 # just putting a number here so we can make sure it renders correctly
 
 # alpha_array used to determine column position
 alpha_array = ("A".."Z").to_a
@@ -120,7 +132,7 @@ wb.add_worksheet(name: "Summary") do |sheet|
   sheet.add_row [""]
 
   #visit subtotals row
-  visit_subtotals_row subjects, visit_count, sheet, styles
+  visits_subtotal = visit_subtotals_row subjects, visit_count, sheet, styles
   
   sheet.add_row [""]
 
@@ -128,12 +140,41 @@ wb.add_worksheet(name: "Summary") do |sheet|
   sheet.add_row ["One Time Fees"], :style => styles[:header]
 
   @service_request.one_time_fee_line_items.each do |otf|
-    row = []
-    row << otf.service.name
-    (visit_count+1).times { row << "" }
-    row << Service.cents_to_dollars(otf.applicable_rate)
-    sheet.add_row row
+    visit_count_spanned_row otf.service.name, nil, Service.cents_to_dollars(otf.applicable_rate), visit_count, sheet, styles
   end
+
+  #fee subtotals
+  sheet.add_row [""]
+  visit_count_spanned_row "Fee Subtotals", :header, @service_request.total_indirect_costs_one_time, visit_count, sheet, styles
+  
+  #totals
+  sheet.add_row [""]
+  visit_count_spanned_row "Totals", :header, (@service_request.total_indirect_costs_one_time + visits_subtotal), visit_count, sheet, styles
+  
+  #payments
+  sheet.add_row [""]
+  visit_count_spanned_row "Payments", :header, 0, visit_count, sheet, styles
+  
+  #amount due
+  sheet.add_row [""]
+  visit_count_spanned_row "Amount Due", :header, 0, visit_count, sheet, styles
+  
+  #date submitted
+  sheet.add_row [""]
+  visit_count_spanned_row "Date Submitted", :header, 0, visit_count, sheet, styles
+  
+  #amount invoiced
+  sheet.add_row [""]
+  visit_count_spanned_row "Amount Invoiced", :header, 0, visit_count, sheet, styles
+  
+  #amount received
+  sheet.add_row [""]
+  visit_count_spanned_row "Amount Received", :header, 0, visit_count, sheet, styles
+  
+  #date received
+  sheet.add_row [""]
+  visit_count_spanned_row "Date Received", :header, 0, visit_count, sheet, styles
+  
 end
 
 

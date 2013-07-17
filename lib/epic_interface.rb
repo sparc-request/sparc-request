@@ -109,7 +109,7 @@ class EpicInterface
   # Build a study creation message to send to epic and return it as a
   # string.
   def self.study_creation_message(study)
-    xml = ::Builder::XmlMarkup.new
+    xml = Builder::XmlMarkup.new(indent: 2)
 
     xml.query(root: @root, extension: study.id)
 
@@ -143,7 +143,7 @@ class EpicInterface
   # Bulid a study calendar definition message to send to epic and return
   # it as a string.
   def self.study_calendar_definition_message(study)
-    xml = ::Builder::XmlMarkup.new
+    xml = Builder::XmlMarkup.new(indent: 2)
 
     xml.query(root: @root, extension: self.id)
 

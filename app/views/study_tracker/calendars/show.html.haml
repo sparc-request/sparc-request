@@ -19,7 +19,7 @@
           Subject Study Status:
           = f.select :status, options_for_select(["Active", "Completed", "Early Term", "Screen Fail"], f.try(:object).try(:status)), :include_blank => "--Choose a Status--"
 
-  = select_tag :visit, options_for_select(@appointments.map{|x| x.visit_group.name})
+  = select_tag :visit, options_for_select(@appointments.map{|x| x.visit_group.name}), :class => 'clinical_data'
 
   = f.fields_for :calendar do |calendar_form|
     .tabs

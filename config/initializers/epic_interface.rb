@@ -52,6 +52,7 @@ if epic_config['test_mode'] then
   # The fake epic server itself
   FAKE_EPIC_SERVER = start_fake_epic_server(EPIC_RECEIVED, EPIC_RESULTS)
   epic_config['wsdl'] = "http://localhost:#{FAKE_EPIC_SERVER.port}/wsdl"
+  epic_config['study_root'] ||= '1.2.3.4'
 end
 
 # Finally, construct the interface itself

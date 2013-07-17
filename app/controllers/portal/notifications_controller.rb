@@ -45,7 +45,7 @@ class Portal::NotificationsController < Portal::BaseController
       # (also, perhaps the name all_notifications is confusing?)
       @notifications = @user.all_notifications.where(:sub_service_request_id => @sub_service_request.id)
 
-      UserMailer.notification_received(@message.recipient).deliver
+      UserMailer.notification_received(@message.recipient).deliver unless @message.recipient.email.blank?
     end
     respond_to do |format|
       format.js
@@ -60,7 +60,7 @@ class Portal::NotificationsController < Portal::BaseController
     if @message = @notification.messages.create(params[:message])
       # TODO: this is not set if no message is created; is that correct?
       @notifications = @user.all_notifications
-      UserMailer.notification_received(@message.recipient).deliver
+      UserMailer.notification_received(@message.recipient).deliver unless @message.recipient.email.blank?
     end    
     respond_to do |format|
       format.js { render 'portal/notifications/create' }
@@ -74,7 +74,7 @@ class Portal::NotificationsController < Portal::BaseController
       # @notification.reload
       @sub_service_request = @notification.sub_service_request
       @notifications = @user.all_notifications.where(:sub_service_request_id => @sub_service_request.id)
-      UserMailer.notification_received(@message.recipient).deliver
+      UserMailer.notification_received(@message.recipient).deliver unless @message.recipient.email.blank?
     end
     respond_to do |format|
       format.js

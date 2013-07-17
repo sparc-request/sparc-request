@@ -58,12 +58,12 @@ class IdentitiesController < ApplicationController
   def approve_account
     @identity = Identity.find params[:id]
     @identity.update_attribute(:approved, true)
-    Notifier.account_status_change(@identity, true).deliver
+    Notifier.account_status_change(@identity, true).deliver unless @identity.email.blank?
   end
 
   def disapprove_account
     @identity = Identity.find params[:id]
     @identity.update_attribute(:approved, true)
-    Notifier.account_status_change(@identity, false).deliver
+    Notifier.account_status_change(@identity, false).deliver unless @identity.email.blank?
   end
 end

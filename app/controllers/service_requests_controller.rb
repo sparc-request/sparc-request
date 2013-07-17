@@ -297,7 +297,7 @@ class ServiceRequestsController < ApplicationController
     # send e-mail to all folks with view and above
     @protocol.project_roles.each do |project_role|
       next if project_role.project_rights == 'none'
-      Notifier.notify_user(project_role, @service_request, xls, approval).deliver
+      Notifier.notify_user(project_role, @service_request, xls, approval).deliver unless project_role.identity.email.blank? # ignore if email address is not available
     end
 
     # send e-mail to admins and service providers
@@ -379,7 +379,7 @@ class ServiceRequestsController < ApplicationController
     # send e-mail to all folks with view and above
     @protocol.project_roles.each do |project_role|
       next if project_role.project_rights == 'none'
-      Notifier.notify_user(project_role, @service_request, xls, approval).deliver
+      Notifier.notify_user(project_role, @service_request, xls, approval).deliver unless project_role.identity.email.blank? # ignore if email address is not available
     end
 
     # send e-mail to admins and service providers

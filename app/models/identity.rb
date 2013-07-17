@@ -11,7 +11,16 @@ class Identity < ActiveRecord::Base
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable, :omniauthable
+         :recoverable, :rememberable, :trackable, :omniauthableS
+
+  email_regexp = /\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/
+  password_length = 6..128
+
+  validates_format_of     :email, :with  => email_regexp, :allow_blank => true, :if => :email_changed?
+
+  validates_presence_of     :password, :if => :password_required?
+  validates_confirmation_of :password, :if => :password_required?
+  validates_length_of       :password, :within => password_length, :allow_blank => true
 
   # Setup accessible (or protected) attributes for your model
   attr_accessible :email, :password, :password_confirmation, :remember_me, :company, :reason, :approved
@@ -62,6 +71,19 @@ class Identity < ActiveRecord::Base
   validates_presence_of :last_name
   validates_presence_of :first_name
   validates_presence_of :ldap_uid
+
+
+  ###############################################################################
+  ############################## DEVISE OVERRIDES ###############################
+  ###############################################################################
+ 
+  def password_required?
+    !persisted? || !password.nil? || !password_confirmation.nil?
+  end
+ 
+  def email_required?
+    false
+  end
 
   ###############################################################################
   ############################## HELPER METHODS #################################

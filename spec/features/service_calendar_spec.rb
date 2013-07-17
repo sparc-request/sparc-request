@@ -214,14 +214,14 @@ describe "service calendar", :js => true do
       end
     end
 
-    describe "pricing tab" do
+    describe "calendar tab" do
 
       before :each do
         @visit_id = arm1.line_items_visits.first.visits[1].id
       end
 
       it "should be blank if the visit is not checked" do
-        click_link "pricing_tab"
+        click_link "calendar_tab"
         all('.visit.visit_column_2').each do |x|
           if x.visible?
             x.should have_exact_text('')
@@ -232,7 +232,7 @@ describe "service calendar", :js => true do
       it "should show total price for that visit" do
         click_link "billing_strategy_tab"
         fill_in "visits_#{@visit_id}_research_billing_qty", :with => 5
-        click_link "pricing_tab"
+        click_link "calendar_tab"
         all('.visit.visit_column_2').each do |x|
           if x.visible?
             x.should have_exact_text('150.00')

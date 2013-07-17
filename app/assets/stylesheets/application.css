@@ -37,8 +37,7 @@ ul {
 #feedback {
   float: right;
   margin-right: 10px;
-  margin-bottom: 10px;
-  color: #FFFFFF;
+  margin-top: 114px;
   font-size: 14px;
   font-weight: bold;
   text-decoration: underline;
@@ -202,7 +201,7 @@ a.save-option{
 
 .right #services h3 {
   padding: 4px;
-  background: #0099ff;
+  background: #227BA5;
   font-size: 14px;
   color: #fff;
   font-weight: normal;
@@ -315,7 +314,7 @@ a.save-option{
 }
 
 /* Navy: #003366
- * Light Blue: #0099ff
+ * Light Blue: #227BA5
  * Orange: #ff9933
  * Red: #ff3333
  * Green: #339933
@@ -326,7 +325,7 @@ a.save-option{
 }
 
 .light-blue-provider {
-  background: #0099ff !important;
+  background: #227BA5 !important;
 }
 
 .orange-provider {
@@ -1900,3 +1899,11 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   margin-top: 10px;
 }
 
+#sparc_logo_header {
+  background: #FFF;
+  border-left: 1px solid #B2B2B2;
+  border-right: 1px solid #000;
+  display: block;
+  margin-top: 8px;
+  width: 960px;
+}

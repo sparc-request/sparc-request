@@ -28,7 +28,7 @@
             - srids = []
             - @service_requests.each do |status|
               - status[1].each do |ssr|
-                - search_pis << {:value => ssr.try(:service_request).try(:protocol).try(:principal_investigators).try(:first).try(:full_name), :id => pretty_tag(ssr.try(:service_request).try(:protocol).try(:principal_investigators).try(:first).try(:full_name))}
+                - search_pis << {:value => ssr.try(:service_request).try(:protocol).try(:primary_principal_investigator).try(:full_name), :id => pretty_tag(ssr.try(:service_request).try(:protocol).try(:primary_principal_investigator).try(:full_name))}
                 - requesters << {:value => ssr.try(:service_request).try(:service_requester).try(:full_name), :id => pretty_tag(ssr.try(:service_request).try(:service_requester).try(:full_name))}
                 - srids << {:value => /(.*)-/.match(full_ssr_id(ssr))[1], :id => /(.*)-/.match(full_ssr_id(ssr))[1]}
 

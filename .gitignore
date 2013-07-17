@@ -56,3 +56,7 @@ import/documents.tar.gz
 reports/*
 
 Gemfile.devel
+
+cert_file
+
+fixit.sql

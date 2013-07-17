@@ -8,7 +8,7 @@
 
   %body
     - welcome_text = @service_request.status == "obtain_research_pricing" ? I18n.t('notifier.welcome_obtain_research_pricing') : I18n.t('notifier.welcome_submit')
-    -if @role == 'pi'
+    -if @role == 'pi' || @role == 'primary-pi'
       %p= I18n.t('notifier.body1', :full_name => @identity.full_name)
       %p= I18n.t('notifier.body2_pi', :welcome => welcome_text, :application_title => I18n.t('application_title'), :root_url => ROOT_URL, :protocol_type => @protocol.type.downcase)
     -else

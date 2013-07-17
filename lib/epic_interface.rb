@@ -46,12 +46,8 @@ class EpicInterface
 
     # TODO: grab these from the WSDL
     @namespace = @config['namespace'] || 'urn:ihe:qrph:rpe:2009'
-    @study_root = @config['study_root']
+    @study_root = @config['study_root'] || 'UNCONFIGURED'
     @epoch = Date.parse(@config['epoch'] || '2013-01-01')
-
-    if not @study_root then
-      raise "study_root not configured in epic.yml"
-    end
 
     # TODO: I'm not really convinced that Savon is buying us very much
     # other than some added complexity, but it's working, so no point in
@@ -141,7 +137,7 @@ class EpicInterface
           xml.subjectOf(typeCode: 'SUBJ') {
             xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
               role_code = case project_role.role
-              when 'primary_pi' then 'PI'
+              when 'primary-pi' then 'PI'
               else 'SC'
               end
               xml.code(code: role_code)

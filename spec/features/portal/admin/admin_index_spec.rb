@@ -43,7 +43,7 @@ describe "admin index page", :js => true do
 
       it "should search by PI" do
         new_pi = FactoryGirl.create(:identity, :last_name => 'Ketchum', :first_name => 'Ash')
-        FactoryGirl.create(:project_role, :protocol_id => service_request.protocol_id, :identity_id => new_pi.id, :role => 'pi')
+        FactoryGirl.create(:project_role, :protocol_id => service_request.protocol_id, :identity_id => new_pi.id, :role => 'primary-pi')
         ProjectRole.find_by_identity_id(jug2.id).update_attribute(:role, 'co-investigator')
         visit portal_admin_index_path
         find('.search-all-service-requests').set('ketchum')

@@ -14,6 +14,8 @@
   %br
   %br
   %input#search_box.search_protocols{:placeholder => 'Type here to search...', :style => "display:none;"}
+  = link_to root_path do
+    = image_tag 'portal/create_new_request.png', :class => 'portal_create_new_request'
   .loading_protocol.ui-corner-all{:style => "border: 1px solid black; padding: 3px; width: 200px; margin: 30px auto; text-align: center"}
     = t(:protocol_information)[:loading]
     %br

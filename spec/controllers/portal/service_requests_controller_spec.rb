@@ -27,10 +27,9 @@ describe Portal::ServiceRequestsController do
 
       # Not using assigns() here since it calls with_indifferent_access
       controller.instance_eval { @service_list }.should eq service_request.service_list
-
-      assigns(:protocol).should eq service_request.protocol
+      assigns(:protocol).should eq study
       assigns(:pages).should eq({ arm1.id => 1, arm2.id => 1 })
-      assigns(:tab).should eq 'pricing'
+      assigns(:tab).should eq 'calendar'
     end
   end
 

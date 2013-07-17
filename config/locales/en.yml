@@ -112,10 +112,10 @@ en:
   # Project/Study assignment page
   study_assignment:
     instructions_1: "Please review the SPARC Request Services you are requesting below."
-    instructions_2: "Please note that any \"Professional Services\" listed below have UMA fees associated with them and cannot be removed from this screen."
+    instructions_2: "Please note that any \"Professional Services\" listed below have MUSC-P fees associated with them and cannot be removed from this screen."
     instructions_3: "If Professional Services are covered by % effort, you will have the opportunity to indicate this in Step 2."
-    instructions_4: "If you wish to add services, you must return to the \"Service Catalog\"."
-    instructions_center: "Before continuing to Step 2, please select a Research Study or Project to which the services selected are associated. Please note that only 1 Research Study/Project can be assigned to this request."
+    instructions_4: "If you wish to add services, click \"Back to Catalog\" to the right."
+    instructions_center: "Before continuing to Step 2, please select a Research Study or Project to which the services selected are associated."
     tied_to_study: "Is this request tied to a Research Study or a Research Project?"
     select_study: "Select a Study"
     select_study_long: "Select a Research Study:"
@@ -149,7 +149,7 @@ en:
       template: "Template Tab"
       billing: "Quantity/Billing Tab"
       quantity: "Quantity Display Tab"
-      pricing: "Pricing Display Tab"
+      pricing: "Full Calendar Tab"
     billing_legend:
       research: "R = Research"
       third_party: "T = Third Party (PT Insurance)"
@@ -799,16 +799,20 @@ en:
   # Rails Root Page Messages
   rails_root:
     welcome: "Welcome to the SPARC Request Services Catalog"
-    message1: "Please browse through the SPARC Request Services Catalog to view all available SPARC Request services.  Service providers are located on the left-hand side of the page.  Click on a provider to see available services."
-    message2: "Click \"Add Services\" at the bottom of any service description to add it to your \"My Services\"."
-    message3: "To delete a service from \"My Services\", use the red X beside any service."
-    message4: "** Please Note: You may only select services applicable to ONE research study/project at a time.  Should you need to select services for multiple studies/projects you need to submit multiple \"Requests\"."
+    message1: "Please browse through the SPARC Request Services Catalog to view all available SPARC Request services.  Service providers are located on the left-hand side of the page.  Click on a provider to see available services.  Alternatively use the search field located in the upper left hand corner."
+    # message2: "Click \"Add Services\" at the bottom of any service description to add it to your \"My Services\"."
+    # message3: "To delete a service from \"My Services\", use the red X beside any service."
+    message4: "** Please Note: You may only select services applicable to ONE research study/project at a time.**"
     message5: "Welcome to SPARC Request Version 4.0. We're happy to announce that Step 2 now includes the concept of clinical trial arms. You'll find other numerous enhancements and upgrades in Version 4.0. For more information and training documents, please visit our new website at"
     # <a>http://academicdepartments.musc.edu/sparc_request/</a>. 
     message6: "Please contact the SUCCESS Center at 792-8300 with any questions or to set up a demonstration!"
     message7: "Check out our SPARC Request Blog ("
     message8: "). This feature allows you to follow our latest news and is a great way to ask questions of and leave feedback for the SPARC Request Team as well as communicate with both us and other SPARC Request Users."
     # message7: "Due to user feedback regarding the inclusion of Indirect Costs in the Grand Total of Study Costs, Indirect Costs (as a line item) have currently been removed from SPARC Request and will be reintroduced in the budget template tools in the Study Tracker Release. Please contact the SUCCESS Center at 792-8300 with any questions."
+    message9: "Website/Training: "
+    message9link: 'http://academicdepartments.musc.edu/sctr/sparc_request'
+    message10: "Blog: "
+    message10link: 'http://www.sparcrequestblog.com'
 
   # Identities Account Aproved/Disapproved
   identity:

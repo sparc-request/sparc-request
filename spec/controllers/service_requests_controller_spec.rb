@@ -129,10 +129,10 @@ describe ServiceRequestsController do
       assigns(:service_request).protocol.should eq service_request.protocol
     end
 
-    it "should set tab to pricing" do
+    it "should set tab to full calendar" do
       session[:service_request_id] = service_request.id
       get :review, :id => service_request.id
-      assigns(:tab).should eq 'pricing'
+      assigns(:tab).should eq 'calendar'
     end
   end
 
@@ -493,10 +493,10 @@ describe ServiceRequestsController do
       # TODO: check that set_visit_page is called?
     end
     
-    it 'should set tab to pricing' do
+    it 'should set tab to full calendar' do
       session[:service_request_id] = service_request.id
       get :refresh_service_calendar, :id => service_request.id, :arm_id => arm1.id, :format => :js
-      assigns(:tab).should eq 'pricing'
+      assigns(:tab).should eq 'calendar'
     end
   end
 

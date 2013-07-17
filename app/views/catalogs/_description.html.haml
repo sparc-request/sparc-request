@@ -23,21 +23,17 @@
   .section
     = t(:rails_root)[:message1]
   .section
-    = t(:rails_root)[:message2]
-  .section
-    = t(:rails_root)[:message3]
-  .section
     = t(:rails_root)[:message4]
     %br
     %br
     %br
+  .section
+    %strong= t(:rails_root)[:message9]
+    = link_to(t(:rails_root)[:message9link], t(:rails_root)[:message9link])
+    %br
+    %strong= t(:rails_root)[:message10]
+    = link_to(t(:rails_root)[:message10link], t(:rails_root)[:message10link])
+
     #red_description.section
-      = t(:rails_root)[:message5]
-      = link_to('http://academicdepartments.musc.edu/sctr/sparc_request', 'http://academicdepartments.musc.edu/sctr/sparc_request')
-      = t(:rails_root)[:message6]
     #blue_description.section 
-      %br
-      = t(:rails_root)[:message7]
-      = link_to('sparcrequestblog.com', 'http://sparcrequestblog.com')
-      = t(:rails_root)[:message8]
 

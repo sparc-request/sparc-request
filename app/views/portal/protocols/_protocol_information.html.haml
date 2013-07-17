@@ -101,8 +101,5 @@
                 %a.edit_service_request.btn{:href => "javascript:void(0);", :'data-permission' => rights.to_s, :'data-url' => "/service_requests/#{sr.id}/catalog?from_user_portal=true&edit_original=true"}= t(:protocol_information)[:edit_original]
     - reset_cycle('protocol')
 
-
-
-.service-request-button.ui-corner-top.add-services-button{:'data-url' => "/?protocol_id=#{protocol.id}", :'data-permission' => rights.to_s}= "+ ADD Additional Services to this #{protocol.type.capitalize}"
 %a.view-full-calendar-button.btn{:href => "javascript:void(0);", :'data-protocol_id' => protocol.id, :'data-url' => "/portal/protocols/#{protocol.id}/view_full_calendar"} View Full Calendar
 

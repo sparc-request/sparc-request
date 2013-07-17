@@ -126,7 +126,7 @@ def build_project
         protocol_id:     protocol.id,
         identity_id:     identity.id,
         project_rights:  "approve",
-        role:            "pi")
+        role:            "primary-pi")
     identity2 = Identity.find_by_ldap_uid('jpl6')
     FactoryGirl.create(
         :project_role,
@@ -152,7 +152,7 @@ def build_study
         protocol_id:     protocol.id,
         identity_id:     identity.id,
         project_rights:  "approve",
-        role:            "pi")
+        role:            "primary-pi")
     identity2 = Identity.find_by_ldap_uid('jpl6')
     FactoryGirl.create(
         :project_role,

@@ -25,9 +25,9 @@ class ProjectRole < ActiveRecord::Base
     return true
   end
 
-  def validate_one_pi
+  def validate_one_primary_pi
     unless self.has_minimum_pi?
-      errors.add(:must, "include one PI.") 
+      errors.add(:must, "include one Primary PI.")
       return false
     end
     return true
@@ -37,22 +37,13 @@ class ProjectRole < ActiveRecord::Base
     other_project_roles = self.protocol.project_roles.reject {|x| x == self}
     all_project_roles = other_project_roles.map {|x| x.role}
     all_project_roles << self.role
-    all_project_roles.include?('pi') ? true : false
+    all_project_roles.include?('primary-pi') ? true : false
   end
 
-  def is_only_pi?
-    if self.role == 'pi'
-      pi_project_roles = self.protocol.project_roles.select {|x| x.role == 'pi'}
+  def is_only_primary_pi?
+    if self.role == 'primary-pi'
+      pi_project_roles = self.protocol.project_roles.select {|x| x.role == 'primary-pi'}
       return true if pi_project_roles.size == 1
-    end
-
-    return false
-  end
-
-  def is_only_billing_manager?
-    if self.role == 'business-grants-manager'
-      bm_project_roles = self.protocol.project_roles.select {|x| x.role == 'business-grants-manager'}
-      return true if bm_project_roles.size == 1
     end
 
     return false
@@ -66,12 +57,12 @@ class ProjectRole < ActiveRecord::Base
         return false
       end
 
-      if right == 'request' and role != 'pi'
+      if right == 'request' and role != 'pi' and role != 'primary-pi'
         return true
       end
     end
 
-    if (right == 'none' or right == 'view' or right == 'request') and role == 'pi'
+    if (right == 'none' or right == 'view' or right == 'request') and (role == 'pi' || role == 'primary-pi')
       return false
     end
 
@@ -83,7 +74,7 @@ class ProjectRole < ActiveRecord::Base
       return true
     end
 
-    if role == 'pi' and right == 'approve'
+    if (role == 'pi' || role == 'primary-pi') and right == 'approve'
       return true
     end
 
@@ -91,7 +82,7 @@ class ProjectRole < ActiveRecord::Base
       return true
     end
 
-    if current_user == identity and role != 'pi' and right == 'request'
+    if current_user == identity and role != 'pi' and role != 'primary-pi' and right == 'request'
       return true
     end
 

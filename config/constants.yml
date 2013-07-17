@@ -26,6 +26,8 @@ available_statuses: { 'draft': 'Draft',
                       'on_hold': 'On Hold',
                       'ctrc_review': 'CTRC Review',
                       'ctrc_approved': 'CTRC Approved',
+                      'administrative_review': 'Administrative Review',
+                      'committee_review': 'Committee Review',
                       'invoiced': 'Invoiced' }
 default_statuses : ["draft", "submitted", "obtain_research_pricing", "in_process", "complete", "awaiting_pi_approval", "on_hold"]
 accordion_color_options: { "blue": 'blue-provider',
@@ -532,7 +534,8 @@ subspecialties: { "Predominantly Non-Clinical or Lab-Based Research Training (10
                    "Pediatric, Prematurity and Newborn (7340)": "7340",
                    "NURSING (7500)": "7500",
                    "VETERINARY MEDICINE (7700)": "7700" }
-user_roles: { 'PD/PI': 'pi',
+user_roles: { 'Primary PI': 'primary-pi',
+              'PD/PI': 'pi',
               'Co-Investigator': 'co-investigator',
               'Faculty Collaborator': 'faculty-collaborator',
               'Consultant': 'consultant',

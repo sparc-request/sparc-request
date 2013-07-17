@@ -13,7 +13,7 @@ class Identity < ActiveRecord::Base
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :omniauthableS
+         :recoverable, :rememberable, :trackable, :omniauthable
 
   email_regexp = /\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/
   password_length = 6..128

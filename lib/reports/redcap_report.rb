@@ -3,7 +3,7 @@
 
 class RedcapReport < Report
   def self.description
-    "Proived a list of Services submitted within specified dates under the REDCap Core."
+    "Provide a list of Services submitted within specified dates under the REDCap Core."
   end
 
   def default_output_file
@@ -51,7 +51,7 @@ class RedcapReport < Report
             protocol = sr.protocol
 
             if ssr
-              if li.sub_service_request.past_statuses.where(:status => 'submitted').count > 0
+              if li.sub_service_request.past_statuses.where(:status => 'submitted').count > 0 or ssr.status == 'submitted'
                 submitted_date = li.sub_service_request.service_request.submitted_at
                 next if not submitted_date
                 next if @from_date and submitted_date < Date.parse(@from_date)

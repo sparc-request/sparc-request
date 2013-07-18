@@ -18,30 +18,27 @@
         %th
           Subject Study Status:
           = f.select :status, options_for_select(["Active", "Completed", "Early Term", "Screen Fail"], f.try(:object).try(:status)), :include_blank => "--Choose a Status--"
-
-  = select_tag :visit, options_for_select(@appointments.map{|x| x.visit_group.name}), :class => 'clinical_data'
+  #controls
+    %p Please select a visit:
+    = select_tag :visit, options_for_select(@appointments.map{|x| ["##{x.visit_group.position}: #{x.visit_group.name}", {'data-appointment_id'=>x.id}]}, selected_key = "##{@default_appointment.visit_group.position}: #{@default_appointment.visit_group.name}"), :class => 'clinical_select_data'
 
   = f.fields_for :calendar do |calendar_form|
-    .tabs
-      %ul
-        %li= link_to "Nutrition", "#nutrition", :class => 'nutrition_core'
-        %li= link_to "Nursing", "#nursing", :class => 'nursing_core'
-        %li= link_to "Laboratory", "#laboratory", :class => 'laboratory_core'
-        %li= link_to "Imaging", "#imaging", :class => 'imaging_core'
-      #nutrition
-      #nursing
-      #laboratory
-      #imaging
+    .cwf_tabs.ui-tabs.ui-widget.ui-widget-content.ui-corner-all
+      %ul.ui-tabs-nav.ui-helper-reset.ui-helper-clearfix.ui-widget-header.ui-corner-all
+        %li.ui-state-default.ui-corner-top.ui-state-active= link_to "Nutrition", "#nutrition", :class => 'clinical_tab_data', :id => "core_17"
+        %li.ui-state-default.ui-corner-top= link_to "Nursing", "#nursing", :class => 'clinical_tab_data', :id => "core_13"
+        %li.ui-state-default.ui-corner-top= link_to "Laboratory", "#laboratory", :class => 'clinical_tab_data', :id => "core_16"
+        %li.ui-state-default.ui-corner-top= link_to "Imaging", "#imaging", :class => 'clinical_tab_data', :id => "core_15"
 
     #visit_form{:style => "padding: 10px 40px;"}
       = calendar_form.fields_for :appointments do |appointment_form|
-        %table.study_tracker_table{:style => "width:860px;", :id => appointment_form.object.visit_group.name}
+        %table.study_tracker_table{:style => appointment_form.object == @default_appointment ? "display:table;" : "display:none;", 'data-appointment_table' => appointment_form.object.id}
           %thead.left_headers
             %tr.ui-widget-header
               %th{:colspan => "2"}
                 Date of Visit (entering date signifies a completed visit)
               %th{:style => "text-align:center;"}
-                = appointment_form.datepicker :completed_at, size: 18, dateFormat: "m/dd/yy"
+                = appointment_form.datepicker :completed_at, size: 18, dateFormat: "yy-mm-dd"
             %tr.ui-widget-header
               %th
                 Procedure
@@ -51,9 +48,10 @@
                 Unit Cost
           %tbody
             = appointment_form.fields_for :procedures, :wrapper => false do |procedure_form|
-              %tr.fields{:style => "background-color:#C0C0C0;"}
+              %tr.fields{:style => "background-color:#C0C0C0;#{procedure_form.object.core.id == 17 ? 'display:table;' : 'display:none;'}", :class => "core_#{procedure_form.object.core.id}"}
                 %td= procedure_form.object.line_item.service.name
                 %td= procedure_form.check_box :completed
                 %td= procedure_form.object.line_item.per_unit_cost
-  %p{:style => "text-align:center;margin-bottom:12px;"}= f.submit "Save Appointments", :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;font-size:1.2em;"
--#= render :partial => "visit_form"
+      .spinner_wrapper
+        = image_tag 'spinner.gif'
+  %p{:style => "text-align:center; margin-bottom:12px;"}= f.submit "Save Appointments", :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;font-size:1.2em;"

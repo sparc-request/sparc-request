@@ -12,4 +12,8 @@ class Procedure < ActiveRecord::Base
   def required?
     self.visit.to_be_performed?
   end
+
+  def core
+    self.line_item.service.organization
+  end
 end

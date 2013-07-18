@@ -19,7 +19,7 @@ def let_there_be_j
   let!(:jpl6) { FactoryGirl.create(:identity, 
       last_name:             'Leonard',
       first_name:            'Jason',
-      ldap_uid:              'jpl6',
+      ldap_uid:              'jpl6@musc.edu',
       institution:           'medical_university_of_south_carolina',
       college:               'college_of_medecine',
       department:            'other',
@@ -127,7 +127,7 @@ def build_project
         identity_id:     identity.id,
         project_rights:  "approve",
         role:            "primary-pi")
-    identity2 = Identity.find_by_ldap_uid('jpl6')
+    identity2 = Identity.find_by_ldap_uid('jpl6@musc.edu')
     FactoryGirl.create(
         :project_role,
         protocol_id:     protocol.id,
@@ -153,7 +153,7 @@ def build_study
         identity_id:     identity.id,
         project_rights:  "approve",
         role:            "primary-pi")
-    identity2 = Identity.find_by_ldap_uid('jpl6')
+    identity2 = Identity.find_by_ldap_uid('jpl6@musc.edu')
     FactoryGirl.create(
         :project_role,
         protocol_id:     protocol.id,

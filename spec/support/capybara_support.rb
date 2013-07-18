@@ -3,7 +3,7 @@ module CapybaraSupport
     identity = Identity.create(
       last_name:             'Glenn',
       first_name:            'Julia',
-      ldap_uid:              'jug2',
+      ldap_uid:              'jug2@musc.edu',
       institution:           'medical_university_of_south_carolina',
       college:               'college_of_medecine',
       department:            'other',
@@ -145,7 +145,7 @@ module CapybaraSupport
 
     sub_service_request = FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id,status: "draft")
 
-    service_request.update_attribute(:service_requester_id, Identity.find_by_ldap_uid("jug2").id)
+    service_request.update_attribute(:service_requester_id, Identity.find_by_ldap_uid("jug2@musc.edu").id)
 
     arm = FactoryGirl.create(:arm, service_request_id: service_request.id, subject_count: 2, visit_count: 10)
 
@@ -160,7 +160,7 @@ module CapybaraSupport
   
   def default_catalog_manager_setup
     create_default_data
-    login_as(Identity.find_by_ldap_uid('jug2'))
+    login_as(Identity.find_by_ldap_uid('jug2@musc.edu'))
     ## Logs in the default identity.
     visit catalog_manager_root_path
     ## This is used to reveal all nodes in the js tree to make it easier to access during testing.

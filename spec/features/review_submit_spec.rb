@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'surveyor/parser'
 require 'rake'
 
 # TODO: I want to remove the sleeps from this page, but I can't because
@@ -51,21 +52,22 @@ describe "review page" do
       find(:xpath, "//button/span[text()='Yes']/..").click
       wait_for_javascript_to_finish
 
-      fill_in "r_1_string_value", :with => "Glenn"
-      fill_in "r_2_string_value", :with => "Lane"
-      select "Administration", :from => "r_3_answer_id"
-      select "Academic Affairs/Provost", :from => "r_4_answer_id"
+      select "Administration", :from => "r_1_answer_id"
+      select "Academic Affairs/Provost", :from => "r_2_answer_id"
 
       # select Yes to next question and you should see text area for Yes
-      all("#r_5_answer_id_input input").first().click
-      fill_in "r_6_text_value", :with => "I love it"
+      all("#r_3_answer_id_input input").first().click
+      wait_for_javascript_to_finish
+      fill_in "r_4_text_value", :with => "I love it"
       
       # select No to next question and you should see text area for No
-      all("#r_5_answer_id_input input").last().click
-      fill_in "r_7_text_value", :with => "I hate it"
+      all("#r_3_answer_id_input input").last().click
+      wait_for_javascript_to_finish
+      fill_in "r_5_text_value", :with => "I hate it"
 
       within(:css, "div.next_section") do
         click_button 'Submit'
+        wait_for_javascript_to_finish
       end
     end
   end

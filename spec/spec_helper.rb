@@ -123,6 +123,8 @@ FactoryGirl.find_definitions
 
 RSpec.configure do |config|
 
+  config.use_transactional_fixtures = false
+
   config.before(:suite) do
     # We can't use the transaction strategy with multiple threads, so we
     # use truncation instead.

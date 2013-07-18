@@ -1,4 +1,3 @@
-require 'ostruct'
 require 'spec_helper'
 
 describe 'Directory' do
@@ -8,6 +7,7 @@ describe 'Directory' do
 
   let!(:id1) { FactoryGirl.create(:identity, ldap_uid: 'mobama@musc.edu', email: 'mo_bama@whitehouse.gov', last_name: 'Obama', first_name: 'Mo') }
   let!(:id2) { FactoryGirl.create(:identity, ldap_uid: 'georgec@musc.edu', email: 'castanza@uranus.planet', last_name: 'Pluto', first_name: 'Isaplanettoo') }
+  let!(:id3) { FactoryGirl.create(:identity, ldap_uid: 'omally@musc.edu', email: 'omally@musc.edu', last_name: "O'Mally", first_name: 'Shameless') }
 
   describe 'search_database' do
     it 'should search the ldap uid field' do
@@ -28,6 +28,10 @@ describe 'Directory' do
 
     it 'should search case-independently' do
       Directory.search_database('WhItEhOuSe').should eq [ id1 ]
+    end
+
+    it "should search with single quote" do
+      Directory.search_database("O'Mally").should eq [ id3 ]
     end
   end
 
@@ -50,11 +54,11 @@ describe 'Directory' do
     end
 
     it 'should create identities that are not already there' do
-      r = OpenStruct.new(
-          uid:       [ 'foo' ],
-          mail:      [ 'foo@bar.com' ],
-          givenname: [ 'Foo' ],
-          sn:        [ 'Bar' ])
+      r = { 
+          "uid" =>       [ 'foo' ],
+          "mail" =>      [ 'foo@bar.com' ],
+          "givenname" => [ 'Foo' ],
+          "sn" =>        [ 'Bar' ]}
 
       orig_count = Identity.count
       Directory.create_or_update_database_from_ldap([r], Identity.all)
@@ -69,11 +73,11 @@ describe 'Directory' do
     end
 
     it 'should update identities that need to be updated' do
-      r = OpenStruct.new(
-          uid:       [ 'mobama' ],
-          mail:      [ 'bobama@whitehouse.gov' ],
-          givenname: [ 'Bo' ],
-          sn:        [ 'Bama' ])
+      r = { 
+          "uid" =>       [ 'mobama' ],
+          "mail" =>      [ 'bobama@whitehouse.gov' ],
+          "givenname" => [ 'Bo' ],
+          "sn" =>        [ 'Bama' ]}
 
       orig_count = Identity.count
       Directory.create_or_update_database_from_ldap([r], Identity.all)

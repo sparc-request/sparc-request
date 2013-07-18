@@ -7,17 +7,8 @@ table.study_tracker_table {
   text-align:left;
 }
 
-.study_tracker_table tbody {
-}
-
-.study_tracker_table tr {
-}
-
 .study_tracker_table th {
   padding:6px 8px;
-}
-
-.study_tracker_table td {
 }
 
 .arm_container {
@@ -26,4 +17,22 @@ table.study_tracker_table {
 
 #visit_form tr.fields td {
 	padding:6px 8px;
+}
+#visit_form table.study_tracker_table {
+  width:860px;
+}
+.spinner_wrapper {
+  text-align:center;
+  display:none;
+}
+#controls {
+  margin: 15px 0px 15px 15px;
+}
+#controls * {
+  font-size:1.2em;
+}
+#controls p {
+  float:left;
+  margin: 3px 10px 0 0;
+  font-weight:bold;
 }

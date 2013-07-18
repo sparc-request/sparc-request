@@ -46,11 +46,13 @@ describe "Identity" do
     before(:each) do
       ldap = double(port: 636, base: 'ou=people,dc=musc,dc=edu', encryption: :simple_tls)
       results = [
-        double(givenname: ["Ash"], sn: ["Ketchum"], mail: ["ash@theverybest.com"], uid: ["ash151"]),
-        double(givenname: ["Ash"], sn: ["Williams"], mail: ["ash@s-mart.com"], uid: ["ashley"])
+        { "givenname" => ["Ash"], "sn" => ["Ketchum"], "mail" => ["ash@theverybest.com"], "uid" => ["ash151"] },
+        { "givenname" => ["Ash"], "sn" => ["Williams"], "mail" => ["ash@s-mart.com"], "uid" => ["ashley"] },
+        { "givenname" => ["No"], "sn" => ["Email"], "uid" => ["iamabadldaprecord"] },
       ]
       ldap.stub(:search).with(filter: create_ldap_filter('ash151')).and_return([results[0]])
-      ldap.stub(:search).with(filter: create_ldap_filter('ash')).and_return(results)
+      ldap.stub(:search).with(filter: create_ldap_filter('ash')).and_return([results[0], results[1]])
+      ldap.stub(:search).with(filter: create_ldap_filter('iamabadldaprecord')).and_return([results[2]])
       ldap.stub(:search).with(filter: create_ldap_filter('gary')).and_return([])
       ldap.stub(:search).with(filter: create_ldap_filter('error')).and_raise('error')
       ldap.stub(:search).with(filter: create_ldap_filter('duplicate')).and_return()
@@ -76,6 +78,12 @@ describe "Identity" do
       # These search terms will cause ldap to raise an exception, however,
       # the search results will still return the 'error' identity.
       Identity.search('error').should_not be_empty()
+    end
+
+    it "should return identities without an e-mail address" do
+      Identity.all.count.should eq(1)
+      Identity.search('iamabadldaprecord').should_not be_empty()
+      Identity.all.count.should eq(2)
     end
 
     it "should still search the database if the identity creation fails for some reason" do

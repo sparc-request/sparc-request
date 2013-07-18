@@ -46,14 +46,7 @@ class Directory
   # Searches the database only for a given search string.  Returns an
   # array of Identities.
   def self.search_database(term)
-    subqueries = [
-      "ldap_uid LIKE '%#{term}%'",
-      "email LIKE '%#{term}%'",
-      "last_name LIKE '%#{term}%'",
-      "first_name LIKE '%#{term}%'",
-    ]
-    query = subqueries.join(' OR ')
-    identities = Identity.where(query)
+    identities = Identity.where("ldap_uid like ? OR email like ? OR last_name like ? OR first_name like ?", "%#{term}%", "%#{term}%", "%#{term}%", "%#{term}%")
     return identities
   end
 

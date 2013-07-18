@@ -36,7 +36,11 @@ class Portal::NotificationsController < Portal::BaseController
 
   def create
     @notification = Notification.create(params[:notification])
-    if @message = @notification.messages.create(params[:message])
+    @message = @notification.messages.create(params[:message])
+    
+    if @message.valid? 
+      @message.save
+
       @sub_service_request = @notification.sub_service_request
 
       # TODO: we created a new Notification, but all_notifications()
@@ -57,7 +61,10 @@ class Portal::NotificationsController < Portal::BaseController
     @notification = Notification.find(params[:id])
     
     # TODO: @message is not set here; is that correct?
-    if @message = @notification.messages.create(params[:message])
+    @message = @notification.messages.create(params[:message])
+
+    if @message.valid?
+      @message.save
       # TODO: this is not set if no message is created; is that correct?
       @notifications = @user.all_notifications
       UserMailer.notification_received(@message.recipient).deliver unless @message.recipient.email.blank?
@@ -69,8 +76,10 @@ class Portal::NotificationsController < Portal::BaseController
 
   def admin_update
     @notification = Notification.find(params[:id])
+    @message = @notification.messages.create(params[:message])
 
-    if @message = @notification.messages.create(params[:message])
+    if @message.valid?
+      @message.save
       # @notification.reload
       @sub_service_request = @notification.sub_service_request
       @notifications = @user.all_notifications.where(:sub_service_request_id => @sub_service_request.id)

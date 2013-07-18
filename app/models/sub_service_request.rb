@@ -284,11 +284,11 @@ class SubServiceRequest < ActiveRecord::Base
     requester = service_request.service_requester
 
     # send all available surveys at once
-    available_surveys = line_items.map{|li| li.service.available_surveys}.flatten.uniq
+    available_surveys = line_items.map{|li| li.service.available_surveys}.flatten.compact.uniq
 
     # do nothing if we don't have any available surveys
     
-    if available_surveys
+    unless available_surveys.blank?
       SurveyNotification.service_survey(available_surveys, primary_pi, self).deliver
       SurveyNotification.service_survey(available_surveys, requester, self).deliver
     end

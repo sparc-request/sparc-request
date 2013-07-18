@@ -12,6 +12,9 @@ class Message < ActiveRecord::Base
   attr_accessible :subject
   attr_accessible :body
 
+  validates :to, :presence => true
+  validates :from, :presence => true
+
   # Simple way to skip the after_save callback for the import process
   class << self
     @import = false

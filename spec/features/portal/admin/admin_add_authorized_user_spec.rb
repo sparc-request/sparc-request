@@ -1,5 +1,4 @@
 require 'spec_helper'
-require 'ostruct'
 
 describe 'associated users tab', :js => true do
   let_there_be_lane
@@ -32,13 +31,13 @@ describe 'associated users tab', :js => true do
       role:            "co-investigator")
     Directory.stub(:search_ldap) {
       [
-        OpenStruct.new(
-          dn: ["uid=bjk7,ou=people,dc=musc,dc=edu"],
-          givenname: [ 'Brian' ],
-          sn: [ 'Kelsey' ],
-          uid: [ 'bjk7' ],
-          mail: [ 'kelsey@musc.edu' ]
-        )
+        { 
+          "dn" => ["uid=bjk7,ou=people,dc=musc,dc=edu"],
+          "givenname" => [ 'Brian' ],
+          "sn" => [ 'Kelsey' ],
+          "uid" => [ 'bjk7' ],
+          "mail" => [ 'kelsey@musc.edu' ]
+        }
       ]
     }
     add_visits

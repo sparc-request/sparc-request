@@ -39,7 +39,9 @@ feature 'automatic pricing adjustment' do
     
     ## Check to see if a pricing_map was actually created under the service with the correct dates.
     click_link('South Carolina Clinical and Translational Institute (SCTR)')
+    wait_for_javascript_to_finish
     click_link('MUSC Research Data Request (CDW)')
+    wait_for_javascript_to_finish
     
     increase_decrease_date = (Date.today + 1.month).strftime("%-m/#{numerical_day}/%Y")
     

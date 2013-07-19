@@ -226,7 +226,8 @@ class Identity < ActiveRecord::Base
   end
 
   # Used in clinical fulfillment to determine whether the user can edit a particular core.
-  def can_edit_core? organization
+  def can_edit_core? org_id
+    organization = Organization.find(org_id)
     self.clinical_provider_organizations.include?(organization) ? true : false
   end
 

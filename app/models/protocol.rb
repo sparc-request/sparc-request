@@ -81,7 +81,7 @@ class Protocol < ActiveRecord::Base
   end
 
   def principal_investigators
-    project_roles.reject{|pr| pr.role != 'pi' || pr.role != 'primary-pi'}.map(&:identity)
+    project_roles.reject{|pr| !['pi', 'primary-pi'].include?(pr.role)}.map(&:identity)
   end
 
   def primary_principal_investigator

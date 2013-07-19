@@ -17,7 +17,6 @@ class Organization < ActiveRecord::Base
   has_many :catalog_managers, :dependent => :destroy
   has_many :identities, :through => :catalog_managers
   has_many :services, :dependent => :destroy
-  has_many :subsidies, :dependent => :destroy
   has_many :sub_service_requests, :dependent => :destroy
   has_many :available_statuses, :dependent => :destroy
 

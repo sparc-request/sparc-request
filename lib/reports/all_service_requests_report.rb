@@ -46,8 +46,8 @@ class AllServiceRequestsReport < Report
           submitted_date = sr.submitted_at
 
           next if not submitted_date
-          next if not @from_date and submitted_date < Date.parse(@from_date)
-          next if not @to_date   and submitted_date < Date.parse(@to_date)
+          next if @from_date and submitted_date < Date.parse(@from_date)
+          next if @to_date   and submitted_date < Date.parse(@to_date)
 
           
 
@@ -58,15 +58,16 @@ class AllServiceRequestsReport < Report
 
           requester = sr.service_requester
           pi = protocol.principal_investigators.first
+          puts protocol.project_roles.inspect
           srid = ssr.display_id
 
           row = [
             srid,
             submitted_date.strftime("%D"),
-            requester.full_name,
-            requester.department,
-            pi.full_name,
-            pi.department
+            requester.try(:full_name),
+            requester.try(:department),
+            pi.try(:full_name),
+            pi.try(:department)
           ]
 
           res = sheet.add_row(row)

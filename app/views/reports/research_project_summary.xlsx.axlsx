@@ -87,10 +87,10 @@ wb.add_worksheet(name: "Summary") do |sheet|
   left_indent = 2
 
   info_box_rows = []
-  info_box_rows << sheet.add_row(adjusted_row("SPARC ID: 5694", left_indent), :height => 22)
-  info_box_rows << sheet.add_row(adjusted_row("PI Name: Patrick Flume", left_indent), :height => 22)
-  info_box_rows << sheet.add_row(adjusted_row("The effectiveness of Buspar", left_indent), :height => 22)
-  info_box_rows << sheet.add_row(adjusted_row("Billing/Business Mgr: Royce Sampson", left_indent), :height => 22)
+  info_box_rows << sheet.add_row(adjusted_row("SPARC ID: #{@sub_service_request.display_id}", left_indent), :height => 22)
+  info_box_rows << sheet.add_row(adjusted_row("PI Name: #{@protocol.primary_principal_investigator.display_name}", left_indent), :height => 22)
+  info_box_rows << sheet.add_row(adjusted_row(@protocol.short_title, left_indent), :height => 22)
+  info_box_rows << sheet.add_row(adjusted_row("Billing/Business Mgr: #{@protocol.billing_managers.map(&:display_name).join(', ')}", left_indent), :height => 22)
   info_box_rows << sheet.add_row(adjusted_row("Routing: success@musc.edu", left_indent), :height => 22)
 
   # merge info box rows and apply styling
@@ -139,17 +139,17 @@ wb.add_worksheet(name: "Summary") do |sheet|
   #one time fees
   sheet.add_row ["One Time Fees"], :style => styles[:header]
 
-  @service_request.one_time_fee_line_items.each do |otf|
+  @sub_service_request.one_time_fee_line_items.each do |otf|
     visit_count_spanned_row otf.service.name, nil, Service.cents_to_dollars(otf.applicable_rate), visit_count, sheet, styles
   end
 
   #fee subtotals
   sheet.add_row [""]
-  visit_count_spanned_row "Fee Subtotals", :header, @service_request.total_indirect_costs_one_time, visit_count, sheet, styles
+  visit_count_spanned_row "Fee Subtotals", :header, @service_request.total_indirect_costs_one_time(@sub_service_request.line_items), visit_count, sheet, styles
   
   #totals
   sheet.add_row [""]
-  visit_count_spanned_row "Totals", :header, (@service_request.total_indirect_costs_one_time + visits_subtotal), visit_count, sheet, styles
+  visit_count_spanned_row "Totals", :header, (@service_request.total_indirect_costs_one_time(@sub_service_request.line_items) + visits_subtotal), visit_count, sheet, styles
   
   #payments
   sheet.add_row [""]
@@ -176,5 +176,3 @@ wb.add_worksheet(name: "Summary") do |sheet|
   visit_count_spanned_row "Date Received", :header, 0, visit_count, sheet, styles
   
 end
-
-

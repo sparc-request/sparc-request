@@ -138,6 +138,8 @@ SparcRails::Application.routes.draw do
     end
     resources :service_requests do
     end
+    resources :subjects do
+    end
   end
   
   ##### sparc-user routes brought in and namespaced

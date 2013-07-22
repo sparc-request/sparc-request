@@ -4,6 +4,9 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
   def show
     @calendar = Calendar.find(params[:id])
     @subject = @calendar.subject
+    @appointments = @calendar.appointments
+
+    #@default_visit = 
   end
 
   private

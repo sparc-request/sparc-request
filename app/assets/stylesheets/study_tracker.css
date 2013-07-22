@@ -23,3 +23,7 @@ table.study_tracker_table {
 .arm_container {
   padding:10px 5px;
 }
+
+#visit_form tr.fields td {
+	padding:6px 8px;
+}

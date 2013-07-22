@@ -19,7 +19,7 @@ funding_statuses: { 'Pending Funding': 'pending_funding',
                     'Funded': 'funded' }
 available_statuses: { 'draft': 'Draft',
                       'submitted': 'Submitted',
-                      'obtain_research_pricing': 'Obtain Research Pricing',
+                      'get_a_quote': 'Get a Quote',
                       'in_process': 'In Process',
                       'complete': 'Complete',
                       'awaiting_pi_approval': 'Awaiting PI Approval',
@@ -29,7 +29,7 @@ available_statuses: { 'draft': 'Draft',
                       'administrative_review': 'Administrative Review',
                       'committee_review': 'Committee Review',
                       'invoiced': 'Invoiced' }
-default_statuses : ["draft", "submitted", "obtain_research_pricing", "in_process", "complete", "awaiting_pi_approval", "on_hold"]
+default_statuses : ["draft", "submitted", "get_a_quote", "in_process", "complete", "awaiting_pi_approval", "on_hold"]
 accordion_color_options: { "blue": 'blue-provider',
                            "light-blue": 'light-blue-provider',
                            "orange": 'orange-provider',

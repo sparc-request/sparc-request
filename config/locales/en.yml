@@ -43,7 +43,7 @@ en:
   # Notifier
   notifier:
     service_request: "Service Request"
-    welcome_obtain_research_pricing: "A request has been made to obtain research pricing"
+    welcome_obtain_research_pricing: "A request has been made to get a quote"
     welcome_submit: "Services have been requested or changed"
     body1: "Dear %{full_name},"
     body2_pi: "%{welcome} in %{application_title} (%{root_url}) for your %{protocol_type} listed below. In addition, below is a list of users who have been granted access to this %{protocol_type} on your behalf."
@@ -486,7 +486,7 @@ en:
   # Service Request Confirmation Page and Obtain Research Pricing Page
   sr_confirmation:
     instructions: "Thank you for submitting a service request through SPARC Request. An email(s) has been submitted on your behalf, and we will respond to your service request shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
-    research_pricing_instructions : "You have successfully submitted a request to obtain research pricing. An email(s) has been submitted on your behalf, and we will respond to your request for research pricing shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
+    research_pricing_instructions : "You have successfully submitted a request to get a quote. An email(s) has been submitted on your behalf, and we will respond to your request for a quote shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
     download_button: "Download my Service Request"
     portal_button: "Go to SPARC Request User Portal"
     details:

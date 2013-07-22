@@ -38,9 +38,9 @@ describe "creating a new study " do
       click_button "Add Authorized User"
       wait_for_javascript_to_finish
 
-      fill_in "user_search_term", :with => "Leonard"
+      fill_in "user_search_term", :with => "bjk7"
       wait_for_javascript_to_finish
-      page.find('a', :text => "Jason Leonard (leonarjp@musc.edu)", :visible => true).click()
+      page.find('a', :text => "Brian Kelsey (kelsey@musc.edu)", :visible => true).click()
       wait_for_javascript_to_finish
       select "Billing/Business Manager", :from => "project_role_role"
       click_button "Add Authorized User"

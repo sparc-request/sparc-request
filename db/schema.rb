@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130723131743) do
+ActiveRecord::Schema.define(:version => 20130723182645) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -763,6 +763,7 @@ ActiveRecord::Schema.define(:version => 20130723131743) do
     t.boolean  "imaging_approved",           :default => false
     t.boolean  "src_approved",               :default => false
     t.boolean  "in_work_fulfillment"
+    t.string   "routing"
   end
 
   add_index "sub_service_requests", ["organization_id"], :name => "index_sub_service_requests_on_organization_id"

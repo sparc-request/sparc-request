@@ -91,7 +91,7 @@ wb.add_worksheet(name: "Summary") do |sheet|
   info_box_rows << sheet.add_row(adjusted_row("PI Name: #{@protocol.primary_principal_investigator.display_name}", left_indent), :height => 22)
   info_box_rows << sheet.add_row(adjusted_row(@protocol.short_title, left_indent), :height => 22)
   info_box_rows << sheet.add_row(adjusted_row("Billing/Business Mgr: #{@protocol.billing_managers.map(&:display_name).join(', ')}", left_indent), :height => 22)
-  info_box_rows << sheet.add_row(adjusted_row("Routing: success@musc.edu", left_indent), :height => 22)
+  info_box_rows << sheet.add_row(adjusted_row("Routing: #{@sub_service_request.routing}", left_indent), :height => 22)
 
   # merge info box rows and apply styling
   info_box_rows.each do |row|

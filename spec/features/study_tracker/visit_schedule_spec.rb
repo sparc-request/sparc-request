@@ -5,10 +5,12 @@ describe "visit schedule", :js => true do
   let_there_be_j
   fake_login_for_each_test
   build_service_request_with_project()
-  let!(:core_17){ FactoryGirl.create(:core, parent_id: program.id, id: 17)}
-  let!(:core_13){ FactoryGirl.create(:core, parent_id: program.id, id: 13)}
-  let!(:core_16){ FactoryGirl.create(:core, parent_id: program.id, id: 16)}
-  let!(:core_15){ FactoryGirl.create(:core, parent_id: program.id, id: 15)}
+  let!(:core_17)  { FactoryGirl.create(:core, parent_id: program.id, id: 17) }
+  let!(:core_13)  { FactoryGirl.create(:core, parent_id: program.id, id: 13) }
+  let!(:core_16)  { FactoryGirl.create(:core, parent_id: program.id, id: 16) }
+  let!(:core_15)  { FactoryGirl.create(:core, parent_id: program.id, id: 15) }
+  let!(:service3) { FactoryGirl.create(:service, organization_id: core_13.id, name: "Super Duper Service") }
+  let!(:service4) { FactoryGirl.create(:service, organization_id: core_15.id, name: "Organ Harvest Service") }
 
   context "updating a subject" do
 
@@ -39,6 +41,24 @@ describe "visit schedule", :js => true do
         check("subject_calendar_attributes_appointments_attributes_0_procedures_attributes_0_completed")
         click_button "Save Appointments"
         find("#subject_calendar_attributes_appointments_attributes_0_procedures_attributes_0_completed").should be_checked
+      end
+    end
+
+    describe "changing the visit" do
+
+      it "should change the visit" do
+        select("#2: Visit 2", from: "visit")
+        sleep 10
+        wait_for_javascript_to_finish
+        find("#visit").should have_value("#2: Visit 2")
+      end
+    end
+
+    describe "returning to clinical fulfillment" do
+
+      it "should return the user to clinical fulfillment" do
+        click_on "Return to Clinical Work Fulfillment"
+        page.should have_content("Add a subject")
       end
     end
   end

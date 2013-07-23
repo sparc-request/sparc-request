@@ -86,7 +86,7 @@ review:
     document_management:
 
 obtain_research_pricing:
-  step_text: 'STEP 5a: Obtain Research Pricing'
+  step_text: 'STEP 5a: Get a Quote'
   css_class: green-provider
   back: review 
   catalog: catalog

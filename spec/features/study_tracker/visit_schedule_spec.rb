@@ -53,5 +53,13 @@ describe "visit schedule", :js => true do
         find("#visit").should have_value("#2: Visit 2")
       end
     end
+
+    describe "returning to clinical fulfillment" do
+
+      it "should return the user to clinical fulfillment" do
+        click_on "Return to Clinical Work Fulfillment"
+        page.should have_content("Add a subject")
+      end
+    end
   end
 end

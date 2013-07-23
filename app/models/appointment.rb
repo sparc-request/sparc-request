@@ -7,6 +7,11 @@ class Appointment < ActiveRecord::Base
   has_many :procedures
   has_many :visits, :through => :procedures
   attr_accessible :visit_group_id
+  attr_accessible :completed_at
+
+  attr_accessible :procedures_attributes
+
+  accepts_nested_attributes_for :procedures
 
 
   def populate_procedures(visits)

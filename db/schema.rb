@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130708183519) do
+ActiveRecord::Schema.define(:version => 20130710183537) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -767,6 +767,7 @@ ActiveRecord::Schema.define(:version => 20130708183519) do
     t.date     "dob"
     t.string   "gender"
     t.string   "ethnicity"
+    t.string   "status"
   end
 
   create_table "submission_emails", :force => true do |t|

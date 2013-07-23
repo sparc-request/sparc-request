@@ -138,6 +138,8 @@ SparcRails::Application.routes.draw do
     end
     resources :service_requests do
     end
+    resources :subjects do
+    end
   end
   
   ##### sparc-user routes brought in and namespaced
@@ -253,8 +255,11 @@ SparcRails::Application.routes.draw do
     root :to => 'home#index'
   end
 
-  #temporary routes to allow generation of reports
-  match '/reports/:id/research_project_summary' => 'reports#research_project_summary'
+  resources :reports do
+    member do
+      get :research_project_summary
+    end
+  end
 
   root :to => 'service_requests#catalog'
 

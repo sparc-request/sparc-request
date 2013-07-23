@@ -1,34 +1,57 @@
 %h2{:style => "margin:10px 5px;"}= @subject.arm.name
 
-%table.study_tracker_table{:style => "width:940px;"}
-  %thead.left_headers
-    %tr.ui-widget-header
-      %th
-        Study/Project ID:
-        = @sub_service_request.service_request.protocol.id
-      %th
-        Subject ID:
-        = @subject.external_subject_id
-    %tr.ui-widget-header
-      %th
-        Billing/Business Manager:
-        = @sub_service_request.service_request.protocol.billing_managers.first.full_name
-      %th
-        Subject Study Status:
-        = @sub_service_request.service_request.status
+= nested_form_for @subject, :url => study_tracker_subject_path(@subject) do |f|
+  = hidden_field_tag :sub_service_request_id, @sub_service_request.id
+  %table.study_tracker_table{:style => "width:940px;"}
+    %thead.left_headers
+      %tr.ui-widget-header
+        %th
+          Study/Project ID:
+          = @sub_service_request.service_request.protocol.id
+        %th
+          Subject ID:
+          = @subject.external_subject_id
+      %tr.ui-widget-header
+        %th
+          Billing/Business Manager:
+          = @sub_service_request.service_request.protocol.billing_managers.try(:first).try(:full_name)
+        %th
+          Subject Study Status:
+          = f.select :status, options_for_select(["Active", "Completed", "Early Term", "Screen Fail"], f.try(:object).try(:status)), :include_blank => "--Choose a Status--"
+  #controls
+    %p Please select a visit:
+    = select_tag :visit, options_for_select(@appointments.map{|x| ["##{x.visit_group.position}: #{x.visit_group.name}", {'data-appointment_id'=>x.id}]}, selected_key = "##{@default_appointment.visit_group.position}: #{@default_appointment.visit_group.name}"), :class => 'clinical_select_data'
 
-.tabs
-  %ul
-    %li= link_to "Nutrition", "#nutrition", :class => 'nutrition-tab'
-    %li= link_to "Nursing", "#nursing", :class => 'nursing-tab'
-    %li= link_to "Laboratory", "#laboratory", :class => 'laboratory-tab'
-    %li= link_to "Imaging", "#imaging", :class => 'imaging-tab'
+  = f.fields_for :calendar do |calendar_form|
+    .cwf_tabs.ui-tabs.ui-widget.ui-widget-content.ui-corner-all
+      %ul.ui-tabs-nav.ui-helper-reset.ui-helper-clearfix.ui-widget-header.ui-corner-all
+        %li.ui-state-default.ui-corner-top.ui-state-active= link_to "Nutrition", "#nutrition", :class => 'clinical_tab_data', :id => "core_17", 'data-has_access' => @user.can_edit_core?(17) ? true : false
+        %li.ui-state-default.ui-corner-top= link_to "Nursing", "#nursing", :class => 'clinical_tab_data', :id => "core_13", 'data-has_access' => @user.can_edit_core?(13) ? true : false
+        %li.ui-state-default.ui-corner-top= link_to "Laboratory", "#laboratory", :class => 'clinical_tab_data', :id => "core_16", 'data-has_access' => @user.can_edit_core?(16) ? true : false
+        %li.ui-state-default.ui-corner-top= link_to "Imaging", "#imaging", :class => 'clinical_tab_data', :id => "core_15", 'data-has_access' => @user.can_edit_core?(15) ? true : false
 
-  #nutrition
-    = render :partial => 'nutrition'
-  #nursing
-    = render :partial => 'nursing'
-  #laboratory
-    = render :partial => 'laboratory'
-  #imaging
-    = render :partial => 'imaging'
+    #visit_form{:style => "padding: 10px 40px;"}
+      = calendar_form.fields_for :appointments do |appointment_form|
+        %table.study_tracker_table{:style => appointment_form.object == @default_appointment ? "display:table;" : "display:none;", 'data-appointment_table' => appointment_form.object.id}
+          %thead.left_headers
+            %tr.ui-widget-header
+              %th{:colspan => "2"}
+                Date of Visit (entering date signifies a completed visit)
+              %th{:style => "text-align:center;"}
+                = appointment_form.datepicker :completed_at, size: 18, dateFormat: "yy-mm-dd"
+            %tr.ui-widget-header
+              %th
+                Procedure
+              %th
+                = appointment_form.object.visit_group.name
+              %th
+                Unit Cost
+          %tbody
+            = appointment_form.fields_for :procedures, :wrapper => false do |procedure_form|
+              %tr.fields{:style => "background-color:#C0C0C0;#{procedure_form.object.core.id == 17 ? 'display:table;' : 'display:none;'}", :class => "core_#{procedure_form.object.core.id}"}
+                %td= procedure_form.object.line_item.service.name
+                %td= procedure_form.check_box :completed
+                %td= procedure_form.object.line_item.per_unit_cost
+      .spinner_wrapper
+        = image_tag 'spinner.gif'
+  %p{:style => "text-align:center; margin-bottom:12px;"}= f.submit "Save Appointments", :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;font-size:1.2em;"

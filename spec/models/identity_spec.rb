@@ -204,11 +204,11 @@ describe "Identity" do
       describe "can edit core" do
 
         it "should return true if the user is a clinical provider on the given core" do
-          user2.can_edit_core?(core).should eq(true)
+          user2.can_edit_core?(core.id).should eq(true)
         end
 
         it "should return false if the user is not a clinical provider on a given core" do
-          user.can_edit_core?(core).should eq(false)
+          user.can_edit_core?(core.id).should eq(false)
         end
       end
     end

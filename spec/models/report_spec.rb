@@ -1,5 +1,6 @@
 require 'spec_helper'
 
 describe Report do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it { should have_attached_file :xlsx }
+  it { should belong_to :sub_service_request }
 end

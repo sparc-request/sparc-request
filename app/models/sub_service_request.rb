@@ -14,6 +14,7 @@ class SubServiceRequest < ActiveRecord::Base
   has_many :payments, :dependent => :destroy
   has_many :cover_letters, :dependent => :destroy
   has_one :subsidy, :dependent => :destroy
+  has_many :reports, :dependent => :destroy
 
   # These two ids together form a unique id for the sub service request
   attr_accessible :service_request_id

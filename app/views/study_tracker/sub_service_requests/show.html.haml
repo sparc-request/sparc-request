@@ -27,7 +27,7 @@
     %li= link_to t(:study_tracker)[:dashboard][:tabs][:study_schedule], "#study_schedule", :class => 'study_schedule-tab'
     %li= link_to t(:study_tracker)[:dashboard][:tabs][:subject_tracker], "#subject_tracker", :class => 'subject_tracker-tab'
     %li= link_to t(:study_tracker)[:dashboard][:tabs][:payments], "#payments", :class => 'payments-tab'
-    %li= link_to t(:study_tracker)[:dashboard][:tabs][:billing], "#billing", :class => 'billing-tab'
+    %li= link_to t(:study_tracker)[:dashboard][:tabs][:billing], "#billing", :class => 'billing-tab', :id => 'billing-tab'
 
   #study_schedule
     = render :partial => 'study_schedule'

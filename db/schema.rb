@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130708183519) do
+ActiveRecord::Schema.define(:version => 20130723131743) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -594,6 +594,17 @@ ActiveRecord::Schema.define(:version => 20130708183519) do
     t.text     "body"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+  end
+
+  create_table "reports", :force => true do |t|
+    t.integer  "sub_service_request_id"
+    t.string   "xlsx_file_name"
+    t.string   "xlsx_content_type"
+    t.integer  "xlsx_file_size"
+    t.datetime "xlsx_updated_at"
+    t.string   "report_type"
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
   end
 
   create_table "research_types_info", :force => true do |t|

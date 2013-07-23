@@ -33,6 +33,7 @@ class SubServiceRequest < ActiveRecord::Base
   attr_accessible :subsidy_attributes
   attr_accessible :payments_attributes
   attr_accessible :in_work_fulfillment
+  attr_accessible :routing
 
   accepts_nested_attributes_for :subsidy
   accepts_nested_attributes_for :payments, allow_destroy: true

@@ -30,11 +30,19 @@ class StudyTracker::SubServiceRequestsController < StudyTracker::BaseController
 
   def update
     if @sub_service_request.update_attributes(params[:sub_service_request])
-      redirect_to study_tracker_sub_service_request_path(@sub_service_request)
+      respond_to do |format|
+        format.js { render :js => "$('.routing_message').removeClass('uncheck').addClass('check')" }
+        format.html { redirect_to study_tracker_sub_service_request_path(@sub_service_request) }
+      end
     else
-      # handle errors
-      show
-      render :show
+      respond_to do |format|
+        format.js { render :js => "$('.routing_message').removeClass('check').addClass('uncheck')" }
+        format.html do
+          # handle errors
+          show
+          render :show
+        end
+      end
     end
   end
 

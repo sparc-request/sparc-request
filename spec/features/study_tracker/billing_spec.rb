@@ -1,0 +1,37 @@
+require 'spec_helper'
+
+describe "payments", js: true do
+  let_there_be_lane
+  let_there_be_j
+  fake_login_for_each_test
+  build_service_request_with_project()
+
+  before :each do
+    create_visits    
+    sub_service_request.update_attributes(in_work_fulfillment: true)
+  end
+
+  after :each do
+    wait_for_javascript_to_finish
+  end
+
+  describe "Generate research project summary report" do
+    before(:each) do
+      visit study_tracker_sub_service_request_path(sub_service_request.id)
+      click_link "billing-tab"
+    end
+
+    it "should create a new report" do
+      sub_service_request.reports.size.should eq(0)
+      
+      click_link "Research project summary report"
+
+      within('#billings_list') do
+        page.should have_content("Research Project Summary Report")
+      end
+
+      sub_service_request.reload 
+      sub_service_request.reports.size.should eq(1)
+    end
+  end
+end

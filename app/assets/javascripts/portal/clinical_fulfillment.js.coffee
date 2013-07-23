@@ -17,7 +17,7 @@ $(document).ready ->
     setTimeout((->
       $('.cwf_tabs li.ui-state-active').removeClass('ui-state-active')
       clicked.parent('li').addClass('ui-state-active')
-      $('#visit_form .study_tracker_table tbody tr').hide()
+      $('#visit_form .study_tracker_table tbody tr.fields').hide()
       if clicked.attr('data-has_access') == "false"
         $("." + core_name).find('input').prop('disabled', true)
       $("." + core_name).css("display", "table-row")

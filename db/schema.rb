@@ -778,6 +778,7 @@ ActiveRecord::Schema.define(:version => 20130723131743) do
     t.date     "dob"
     t.string   "gender"
     t.string   "ethnicity"
+    t.string   "status"
   end
 
   create_table "submission_emails", :force => true do |t|

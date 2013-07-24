@@ -38,7 +38,7 @@ $(document).ready ->
       # and disable all other radio buttons if 'pi'
       $('#project_role_role').live('change', ->
         role = $(this).val()
-        if role == 'pi' or role == 'business-grants-manager' or roel == 'primary-pi'
+        if role == 'pi' or role == 'business-grants-manager' or role == 'primary-pi'
           $('#project_role_project_rights_approve').attr('checked', true)
           if role == 'pi' or role == 'primary-pi'
             $('#project_role_project_rights_request').attr('disabled', true)

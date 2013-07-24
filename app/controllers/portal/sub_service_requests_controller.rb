@@ -81,11 +81,19 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     @sub_service_request = SubServiceRequest.find(params[:id])
     @service_request = @sub_service_request.service_request
     @subsidy = @sub_service_request.subsidy
+    service = Service.find(params[:new_service_id])
     percent = @subsidy.try(:percent_subsidy).try(:*, 100)
     @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.is_one_time_fee?}
     @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
+
+    # we don't have arms and we are adding a new per patient per visit service
+    if @service_request.arms.empty? and not service.is_one_time_fee?
+      @service_request.arms.create(name: 'ARM 1', visit_count: 1, subject_count: 1)
+    end
+
     @arm_id = params[:arm_id].to_i if params[:arm_id]
     @selected_arm = params[:arm_id] ? Arm.find(@arm_id) : @service_request.arms.first
+    
     if @sub_service_request.create_line_item(
         service_id: params[:new_service_id],
         sub_service_request_id: @sub_service_request.id)

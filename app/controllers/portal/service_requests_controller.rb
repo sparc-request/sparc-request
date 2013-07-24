@@ -52,8 +52,13 @@ class Portal::ServiceRequestsController < Portal::BaseController
     @service_request = ServiceRequest.find(params[:service_request_id]) # TODO: is this different from params[:id] ?
 
     Arm.find(@arm_id).destroy
+    @service_request.reload
 
-    @selected_arm = @service_request.arms.first
+    if @service_request.arms.empty?
+      @service_request.per_patient_per_visit_line_items.each(&:destroy)
+    else
+      @selected_arm = @service_request.arms.first
+    end
 
     render 'portal/service_requests/add_per_patient_per_visit_visit'
   end

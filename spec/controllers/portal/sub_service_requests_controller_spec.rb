@@ -66,9 +66,10 @@ describe Portal::SubServiceRequestsController do
           :new_service_id  => service.id)
 
       service_request.reload
+      service_request.arms.count.should eq 1
       service_request.line_items.count.should eq 1
       service_request.line_items[0].quantity.should eq nil
-      service_request.line_items[0].line_items_visits.count.should eq 0
+      service_request.line_items[0].line_items_visits.count.should eq 1
     end
 
     it 'should create a new visit grouping for each arm' do

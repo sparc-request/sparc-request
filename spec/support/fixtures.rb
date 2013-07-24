@@ -34,28 +34,33 @@ end
 
 def build_service_request_with_project
   build_service_request()
+  build_one_time_fee_services()
+  build_per_patient_per_visit_services()
+  build_project()
+end
+
+def build_service_request_with_project_and_one_time_fees_only
+  build_service_request()
+  build_one_time_fee_services()
   build_project()
 end
 
 def build_service_request_with_study
   build_service_request()
+  build_one_time_fee_services()
+  build_per_patient_per_visit_services()
   build_study()
 end
 
-def build_service_request
-  let!(:service_request)     { FactoryGirl.create(:service_request, status: "draft", start_date: Time.now, end_date: Time.now + 10.days) }
-  let!(:institution)         { FactoryGirl.create(:institution,name: 'Medical University of South Carolina', order: 1,obisid: '87d1220c5abf9f9608121672be000412',abbreviation: 'MUSC', is_available: 1)}
-  let!(:provider)            { FactoryGirl.create(:provider,parent_id:institution.id,name: 'South Carolina Clinical and Translational Institute (SCTR)',order: 1,css_class: 'blue-provider',obisid: '87d1220c5abf9f9608121672be0011ff',abbreviation: 'SCTR1',process_ssrs: 0,is_available: 1)}
-  let!(:program)             { FactoryGirl.create(:program,type:'Program',parent_id:provider.id,name:'Office of Biomedical Informatics',order:1,obisid:'87d1220c5abf9f9608121672be021963',abbreviation:'Informatics',process_ssrs:  0, is_available: 1)}
-  let!(:core)                { FactoryGirl.create(:core, parent_id: program.id)}
-  let!(:sub_service_request) { FactoryGirl.create(:sub_service_request, ssr_id: "0001", service_request_id: service_request.id, organization_id: program.id,status: "draft")}
-
+def build_one_time_fee_services
   # One time fee service
   let!(:service)             { FactoryGirl.create(:service, organization_id: program.id, name: 'One Time Fee') }
   let!(:line_item)           { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service.id, sub_service_request_id: sub_service_request.id, quantity: 5, units_per_quantity: 1) }
   let!(:pricing_setup)       { FactoryGirl.create(:pricing_setup, organization_id: program.id, display_date: Time.now - 1.day, federal: 50, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal')}
   let!(:pricing_map)         { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service.id, is_one_time_fee: true, display_date: Time.now - 1.day, full_rate: 2000, units_per_qty_max: 20) }
+end
 
+def build_per_patient_per_visit_services
   # Per patient per visit service
   let!(:service2)            { FactoryGirl.create(:service, organization_id: program.id, name: 'Per Patient') }
   let!(:pricing_map2)        { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service2.id, is_one_time_fee: false, display_date: Time.now - 1.day, full_rate: 2000, federal_rate: 3000, units_per_qty_max: 20) }
@@ -73,6 +78,16 @@ def build_service_request
   let!(:available_status2)   { FactoryGirl.create(:available_status, organization_id: program.id, status: 'draft')}
   let!(:subsidy)             { FactoryGirl.create(:subsidy, pi_contribution: 2500, sub_service_request_id: sub_service_request.id)}
   let!(:subsidy_map)         { FactoryGirl.create(:subsidy_map, organization_id: program.id) }
+end
+
+def build_service_request
+  let!(:service_request)     { FactoryGirl.create(:service_request, status: "draft", start_date: Time.now, end_date: Time.now + 10.days) }
+  let!(:institution)         { FactoryGirl.create(:institution,name: 'Medical University of South Carolina', order: 1,obisid: '87d1220c5abf9f9608121672be000412',abbreviation: 'MUSC', is_available: 1)}
+  let!(:provider)            { FactoryGirl.create(:provider,parent_id:institution.id,name: 'South Carolina Clinical and Translational Institute (SCTR)',order: 1,css_class: 'blue-provider',obisid: '87d1220c5abf9f9608121672be0011ff',abbreviation: 'SCTR1',process_ssrs: 0,is_available: 1)}
+  let!(:program)             { FactoryGirl.create(:program,type:'Program',parent_id:provider.id,name:'Office of Biomedical Informatics',order:1,obisid:'87d1220c5abf9f9608121672be021963',abbreviation:'Informatics',process_ssrs:  0, is_available: 1)}
+  let!(:core)                { FactoryGirl.create(:core, parent_id: program.id)}
+  let!(:sub_service_request) { FactoryGirl.create(:sub_service_request, ssr_id: "0001", service_request_id: service_request.id, organization_id: program.id,status: "draft")}
+
 
   before :each do
     program.tag_list.add("ctrc")

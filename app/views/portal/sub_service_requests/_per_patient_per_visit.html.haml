@@ -1,7 +1,7 @@
 = javascript_include_tag 'service_calendar_logic'
 - unless @study_tracker
   %h4= t(:fulfillments)[:services][:visits][:header]
-- if !(@sub_service_request.per_patient_per_visit_line_items.length >= 1)
+- if !(@sub_service_request.per_patient_per_visit_line_items.length >= 1) or @service_request.arms.empty?
   .blank_requests
     = t(:fulfillments)[:services][:visits][:no_requests]
 - else

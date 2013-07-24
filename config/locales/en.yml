@@ -166,6 +166,8 @@ en:
       total_per_study: "Total Per Study"
       other_services: "Other Services"
       total_study: "Study Cost Totals"
+      number_of_units: "# Units"
+      qty_unit: "Qty/Unit"
     per_patient: "Per Patient/Visit Services"
     labels:
       maximum_direct: "Maximum Total Direct Costs Per Patient"

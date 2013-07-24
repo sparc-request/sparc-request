@@ -119,7 +119,6 @@ $(document).ready ->
 
       $('#productivity-accordion').accordion({
         heightStyle: 'content'
-        clearStyle: true
         event: 'mouseover'
         collapsible: true
       })

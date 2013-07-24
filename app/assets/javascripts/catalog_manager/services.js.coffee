@@ -13,7 +13,7 @@ $(document).ready ->
       if $(selector).hasClass('ui-accordion')
         $(selector).accordion("destroy")
       $(selector).accordion({
-        clearStyle: true,
+        heightStyle: 'content',
         collapsible: true,
         active: false
       })

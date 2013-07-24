@@ -1,8 +1,9 @@
-$('#protocol-accordion').accordion('destroy');
+if ($('#protocol-accordion').hasClass('ui-accordion')) {
+  $('#protocol-accordion').accordion('destroy');
+}
 $("#protocol-accordion").html("<%= escape_javascript(render(:partial => 'portal/protocols/protocol_list', :locals => {:protocols => @protocols})) %>");
 $('#protocol-accordion').accordion({
   heightStyle: 'content',
-  clearStyle: true,
   collapsible: true,
   active: false
 });

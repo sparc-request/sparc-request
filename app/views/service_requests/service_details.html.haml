@@ -15,7 +15,6 @@
               .instructions= t(:service_request_details)[:one_time_fee_instructions]
               .one-time-fee-details= render :partial => 'service_detail_list'
               %br
-          - if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
             #show-visit-calendar-details
               .visit-calendar-details 
                 - if @service_request.has_one_time_fee_services?
@@ -36,6 +35,7 @@
                       .arm-cell
                         = text_field_tag :end_date, (@service_request.end_date.strftime('%_m/%d/%Y') rescue nil) #only use for datepicker
                         = f.hidden_field :end_date
+              - if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
                 %div{:style => "height:25px;background-color:#FFFFFF; clear:both;"}
                 .arm-info
                   - @x = 0

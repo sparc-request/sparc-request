@@ -7,6 +7,7 @@ class Study < Protocol
   end
 
   def populate_for_edit
+    super
     self.build_research_types_info           unless self.research_types_info
     self.build_human_subjects_info           unless self.human_subjects_info
     self.build_vertebrate_animals_info       unless self.vertebrate_animals_info

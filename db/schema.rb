@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130716175901) do
+ActiveRecord::Schema.define(:version => 20130722153630) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -118,6 +118,13 @@ ActiveRecord::Schema.define(:version => 20130716175901) do
     t.datetime "document_updated_at"
     t.integer  "document_grouping_id"
     t.string   "doc_type_other"
+  end
+
+  create_table "epic_rights", :force => true do |t|
+    t.integer  "project_role_id"
+    t.string   "right"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
   end
 
   create_table "excluded_funding_sources", :force => true do |t|
@@ -379,10 +386,11 @@ ActiveRecord::Schema.define(:version => 20130716175901) do
     t.integer  "identity_id"
     t.string   "project_rights"
     t.string   "role"
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
     t.datetime "deleted_at"
     t.string   "role_other"
+    t.boolean  "epic_access",    :default => false
   end
 
   add_index "project_roles", ["protocol_id"], :name => "index_project_roles_on_protocol_id"

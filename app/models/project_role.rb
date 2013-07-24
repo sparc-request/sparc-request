@@ -5,11 +5,17 @@ class ProjectRole < ActiveRecord::Base
   belongs_to :protocol
   belongs_to :identity
 
+  has_many :epic_rights, :dependent => :destroy
+
   attr_accessible :protocol_id
   attr_accessible :identity_id
   attr_accessible :project_rights
   attr_accessible :role
   attr_accessible :role_other
+  attr_accessible :epic_access
+  attr_accessible :epic_rights_attributes
+
+  accepts_nested_attributes_for :epic_rights, :allow_destroy => true
 
   validates :role, :presence => true
   validates :project_rights, :presence => true
@@ -96,6 +102,21 @@ class ProjectRole < ActiveRecord::Base
     when "request" then "Request/Approve Services"
     when "approve" then "Authorize/Change Study Charges"
     end
+  end
+
+  def setup_epic_rights
+    position = 1
+    EPIC_RIGHTS.each do |right, description|
+      epic_right = epic_rights.detect{|obj| obj.right == right}
+      epic_right = epic_rights.build(:right => right, :new => true) unless epic_right
+      epic_right.position = position
+      position += 1
+    end
+    epic_rights.sort!{|a, b| a.position <=> b.position}
+  end
+
+  def populate_for_edit
+    setup_epic_rights
   end
 end
 

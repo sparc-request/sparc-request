@@ -53,6 +53,21 @@ $(document).ready ->
   $('.ask-us-button').click ->
     toggle_form_slide()
 
+  $(document).on('click', '.epic_access_radio_yes', ->
+    pr_id = $(this).attr('project_role_id')
+    console.log pr_id
+    console.log $(".epic_access_dialog#project_role_#{pr_id}")
+    $(".epic_access_dialog#project_role_#{pr_id}").dialog({
+      height: 425
+      width: 500
+      modal: true
+      title: 'Access Rights'
+      buttons:
+        Ok: ->
+          $(this).dialog('destroy')
+    })
+  )
+
 (exports ? this).toggle_form_slide = ->
   if $('.ask-a-question-form-container').is(":visible")
     $('.up-carat').show()

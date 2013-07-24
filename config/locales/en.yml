@@ -328,6 +328,7 @@ en:
     information: "Research Study/Project Authorized Users"
     proxy_rights: "Proxy Rights"
     message: "(Select appropriate level of study/project rights)"
+    epic_access: "Epic EMR Access?"
     actions: "Actions"
     rights1: "Member Only:"
     rights2: "View Rights:"

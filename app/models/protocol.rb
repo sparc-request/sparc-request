@@ -203,4 +203,10 @@ class Protocol < ActiveRecord::Base
     return self.last_epic_push_status == 'complete' ||
            self.last_epic_push_status == 'failed'
   end
+
+  def populate_for_edit
+    project_roles.each do |pr|
+      pr.populate_for_edit
+    end
+  end
 end

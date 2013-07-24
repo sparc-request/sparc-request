@@ -10,7 +10,8 @@ $(document).ready ->
       Sparc.config.displayDatesForUser($('.datepicker, .disabled_datepicker'))
 
     create_accordion: (selector=".pricing_map_accordion") ->
-      $(selector).accordion("destroy")
+      if $(selector).hasClass('ui-accordion')
+        $(selector).accordion("destroy")
       $(selector).accordion({
         clearStyle: true,
         collapsible: true,

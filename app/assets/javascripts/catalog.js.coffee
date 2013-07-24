@@ -8,17 +8,17 @@ loadDescription = (url) ->
 $(document).ready ->
 
   $('#institution_accordion').accordion
-    autoHeight: false
+    heightStyle: 'conetnt'
     collapsible: true
-    change: (event, ui)->
+    activate: (event, ui)->
       if url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))
         loadDescription(url)
 
   $('.provider_accordion').accordion
-    autoHeight: false
+    heightStyle: 'conetnt'
     collapsible: true
     active: false
-    change: (event, ui)->
+    activate: (event, ui)->
       if url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))
         loadDescription(url)
   

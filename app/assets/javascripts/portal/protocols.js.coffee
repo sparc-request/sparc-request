@@ -118,7 +118,7 @@ $(document).ready ->
       setTimeout load_Page, 2000
 
       $('#productivity-accordion').accordion({
-        autoHeight: false
+        heightStyle: 'content'
         clearStyle: true
         event: 'mouseover'
         collapsible: true

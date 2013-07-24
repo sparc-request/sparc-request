@@ -68,15 +68,15 @@ $(document).ready ->
       $('.catalog-search-spinner').remove()
       $('.catalog-search-clear-icon').remove()
 
-  .data("autocomplete")._renderItem = (ul, item) ->
+  .data("uiAutocomplete")._renderItem = (ul, item) ->
     if item.label == 'No Results'
       $("<li class='search_result'></li>")
-      .data("item.autocomplete", item)
+      .data("ui-autocomplete-item", item)
       .append("#{item.label}")
       .appendTo(ul)
     else
       $("<li class='search_result'></li>")
-      .data("item.autocomplete", item)
+      .data("ui-autocomplete-item", item)
       .append("#{item.parents}<br><span class='service-name' title='#{item.description}'>#{item.label}</span><br><button id='service-#{item.value}' sr_id='#{item.sr_id}' style='font-size: 11px;' class='add_service'>Add to Cart</button><span class='service-description'>#{item.description}</span>")
       .appendTo(ul)
   

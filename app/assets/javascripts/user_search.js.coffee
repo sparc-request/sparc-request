@@ -19,15 +19,15 @@ $(document).ready ->
       $('.add-user-details').show()
       return false
 
-  .data("autocomplete")._renderItem = (ul, item) ->
+  .data("uiAutocomplete")._renderItem = (ul, item) ->
     if item.label == 'No Results'
       $("<li class='search_result'></li>")
-      .data("item.autocomplete", item)
+      .data("ui-autocomplete-item", item)
       .append("#{item.label}")
       .appendTo(ul)
     else
       $("<li class='search_result'></li>")
-      .data("item.autocomplete", item)
+      .data("ui-autocomplete-item", item)
       .append("<a>" + item.label + "</a>")
       .appendTo(ul)
 

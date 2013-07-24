@@ -51,7 +51,9 @@
               %tr.fields{:style => "background-color:#C0C0C0;#{procedure_form.object.core.id == 17 ? 'display:table;' : 'display:none;'}", :class => "core_#{procedure_form.object.core.id}"}
                 %td= procedure_form.object.line_item.service.name
                 %td= procedure_form.check_box :completed
-                %td= procedure_form.object.line_item.per_unit_cost
+                %td.unit_cost_cell
+                  $
+                  %span= procedure_form.object.line_item.per_unit_cost
             %tr.subtotal_row
               %td Subtotal
               %td

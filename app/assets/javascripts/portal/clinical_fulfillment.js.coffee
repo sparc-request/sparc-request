@@ -28,7 +28,6 @@ $(document).ready ->
   )
  
   recalc_subtotal = () ->
-    console.log('Inside Function')
     subtotal = 0
     $('td.unit_cost_cell span:visible').each ->
       value = $(this).text()

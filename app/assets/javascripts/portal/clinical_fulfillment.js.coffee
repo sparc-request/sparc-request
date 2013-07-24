@@ -24,4 +24,14 @@ $(document).ready ->
       $('#visit_form .spinner_wrapper').hide()
     ), 250)
   )
+  
+  $('#ssr_save').button()
 
+  $('#ssr_save').on 'click', -> 
+    routing = $('#ssr_routing').val()
+    ssr_id = $('#ssr_routing').data('ssr_id')
+    $.ajax
+      type: "PUT"
+      url: "/study_tracker/sub_service_requests/#{ssr_id}"
+      data: { "sub_service_request[routing]": routing }
+    return false

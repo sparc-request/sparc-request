@@ -34,4 +34,22 @@ describe "payments", js: true do
       sub_service_request.reports.size.should eq(1)
     end
   end
+
+  describe "Setting routing for Sub Service Request" do
+    before(:each) do
+      visit study_tracker_sub_service_request_path(sub_service_request.id)
+      click_link "billing-tab"
+    end
+
+    it "should set the routing for a sub service request" do
+      sub_service_request.routing.should be_nil
+
+      fill_in 'ssr_routing', :with => 'Andrew'
+      click_link 'ssr_save'
+      wait_for_javascript_to_finish
+
+      sub_service_request.reload
+      sub_service_request.routing.should eq('Andrew')
+    end
+  end
 end

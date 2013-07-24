@@ -21,6 +21,12 @@
           %td= @protocol.try(:short_title)
           %td 
             .export_to_excel_button= link_to t(:admin_dashboard)[:export_link], service_request_path(@sub_service_request.service_request, :format => :xlsx)
+        %tr
+          %th= t(:admin_dashboard)[:routing]
+          %td{:colspan => 4}
+            = text_field_tag "sub_service_request[#{@sub_service_request.id}][routing]", @sub_service_request.routing, :id => 'ssr_routing', :"data-ssr_id" => @sub_service_request.id
+            = link_to t(:study_tracker)[:save], "javascript:void();", :id => 'ssr_save'
+            %span.routing_message.icon
 
 .tabs
   %ul

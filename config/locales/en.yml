@@ -768,6 +768,7 @@ en:
     title: "My Dashboard"
     id: "SRID"
     pi: "PI"
+    routing: "Routing"
     requester: "Requester"
     short_title: "Short Title"
     export: "Export to Excel"

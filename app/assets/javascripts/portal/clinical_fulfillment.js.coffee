@@ -7,6 +7,7 @@ $(document).ready ->
       $('#visit_form .study_tracker_table').hide()
       $("table[data-appointment_table=#{visit_name}]").css("display", "table")
       $('#visit_form .spinner_wrapper').hide()
+      recalc_subtotal()
     ), 250)
   )
 
@@ -17,14 +18,22 @@ $(document).ready ->
     setTimeout((->
       $('.cwf_tabs li.ui-state-active').removeClass('ui-state-active')
       clicked.parent('li').addClass('ui-state-active')
-      $('#visit_form .study_tracker_table tbody tr').hide()
+      $('#visit_form .study_tracker_table tbody tr.fields').hide()
       if clicked.attr('data-has_access') == "false"
         $("." + core_name).find('input').prop('disabled', true)
       $("." + core_name).css("display", "table-row")
       $('#visit_form .spinner_wrapper').hide()
+      recalc_subtotal()
     ), 250)
   )
-  
+ 
+  recalc_subtotal = () ->
+    subtotal = 0
+    $('td.unit_cost_cell span:visible').each ->
+      value = $(this).text()
+      subtotal += parseFloat(value)  if not isNaN(value) and value.length isnt 0
+    $('tr.subtotal_row td span').text(subtotal)
+
   $('#ssr_save').button()
 
   $('#ssr_save').on 'click', -> 

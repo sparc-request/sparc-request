@@ -18,7 +18,7 @@ class AllServiceRequestsReport < Report
   def add_options opts
     super(opts)
     opts.on('-f', '--from DATE') { |d| @from_date = d }
-    opts.on('-f', '--to DATE')   { |d| @to_date = d }
+    opts.on('-t', '--to DATE')   { |d| @to_date = d }
   end
 
   def run
@@ -47,9 +47,7 @@ class AllServiceRequestsReport < Report
 
           next if not submitted_date
           next if @from_date and submitted_date < Date.parse(@from_date)
-          next if @to_date   and submitted_date < Date.parse(@to_date)
-
-          
+          next if @to_date   and submitted_date > Date.parse(@to_date)
 
           if not protocol then
             puts "Warning: Bad Service Request #{protocol.inspect}"
@@ -58,7 +56,6 @@ class AllServiceRequestsReport < Report
 
           requester = sr.service_requester
           pi = protocol.principal_investigators.first
-          puts protocol.project_roles.inspect
           srid = ssr.display_id
 
           row = [

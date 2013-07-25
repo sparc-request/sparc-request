@@ -35,6 +35,7 @@
                     .arm-cell
                       = text_field_tag :end_date, (@service_request.end_date.strftime('%_m/%d/%Y') rescue nil) #only use for datepicker
                       = f.hidden_field :end_date
+                      
             - if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
               %div{:style => "height:25px;background-color:#FFFFFF; clear:both;"}
               .arm-info

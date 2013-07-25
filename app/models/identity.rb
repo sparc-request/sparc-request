@@ -288,6 +288,10 @@ class Identity < ActiveRecord::Base
       orgs << org.all_children
     end
 
+    self.admin_organizations({:su_only => true}).each do |org|
+      orgs << org
+    end 
+
     orgs.flatten.uniq
   end
 

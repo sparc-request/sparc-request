@@ -14,6 +14,7 @@ feature 'automatic pricing adjustment' do
 
     within('.increase_decrease_dialog') do
       page.execute_script %Q{ $(".percent_of_change").val("20") }
+      wait_for_javascript_to_finish
 
       find('.change_rate_display_date').click
       wait_for_javascript_to_finish
@@ -32,20 +33,21 @@ feature 'automatic pricing adjustment' do
     
     within('.ui-dialog-buttonset') do
       click_button('Submit')
+      wait_for_javascript_to_finish
     end
-    wait_for_javascript_to_finish
+
     page.should have_content('Successfully updated the pricing maps for all of the services under 
                               South Carolina Clinical and Translational Institute (SCTR).')
     
     ## Check to see if a pricing_map was actually created under the service with the correct dates.
     click_link('South Carolina Clinical and Translational Institute (SCTR)')
+    wait_for_javascript_to_finish
+
     click_link('MUSC Research Data Request (CDW)')
-    
-    increase_decrease_date = (Date.today + 1.month).strftime("%-m/#{numerical_day}/%Y")
     wait_for_javascript_to_finish
     
     within('.pricing_map_accordion') do
-      wait_for_javascript_to_finish
+      increase_decrease_date = (Date.today + 1.month).strftime("%-m/#{numerical_day}/%Y")
       page.should have_content("Effective on #{increase_decrease_date} - Display on #{increase_decrease_date}")
     end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130723182645) do
+ActiveRecord::Schema.define(:version => 20130724190046) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -49,6 +49,7 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
   end
 
   add_index "answers", ["api_id"], :name => "uq_answers_api_id", :unique => true
+  add_index "answers", ["question_id"], :name => "index_answers_on_question_id"
 
   create_table "appointments", :force => true do |t|
     t.integer  "calendar_id"
@@ -72,7 +73,9 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.integer  "sub_service_request_id"
   end
 
+  add_index "approvals", ["identity_id"], :name => "index_approvals_on_identity_id"
   add_index "approvals", ["service_request_id"], :name => "index_approvals_on_service_request_id"
+  add_index "approvals", ["sub_service_request_id"], :name => "index_approvals_on_sub_service_request_id"
 
   create_table "arms", :force => true do |t|
     t.string   "name"
@@ -83,6 +86,8 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.integer  "subject_count"
   end
 
+  add_index "arms", ["service_request_id"], :name => "index_arms_on_service_request_id"
+
   create_table "associated_surveys", :force => true do |t|
     t.integer  "surveyable_id"
     t.string   "surveyable_type"
@@ -90,6 +95,9 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
   end
+
+  add_index "associated_surveys", ["survey_id"], :name => "index_associated_surveys_on_survey_id"
+  add_index "associated_surveys", ["surveyable_id"], :name => "index_associated_surveys_on_surveyable_id"
 
   create_table "audits", :force => true do |t|
     t.integer  "auditable_id"
@@ -127,6 +135,8 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.datetime "updated_at", :null => false
   end
 
+  add_index "calendars", ["subject_id"], :name => "index_calendars_on_subject_id"
+
   create_table "catalog_managers", :force => true do |t|
     t.integer  "identity_id"
     t.integer  "organization_id"
@@ -148,6 +158,7 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.datetime "deleted_at"
   end
 
+  add_index "charges", ["service_id"], :name => "index_charges_on_service_id"
   add_index "charges", ["service_request_id"], :name => "index_charges_on_service_request_id"
 
   create_table "clinical_providers", :force => true do |t|
@@ -157,6 +168,7 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.datetime "updated_at",      :null => false
   end
 
+  add_index "clinical_providers", ["identity_id"], :name => "index_clinical_providers_on_identity_id"
   add_index "clinical_providers", ["organization_id"], :name => "index_clinical_providers_on_organization_id"
 
   create_table "cover_letters", :force => true do |t|
@@ -176,6 +188,9 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.datetime "updated_at",        :null => false
   end
 
+  add_index "dependencies", ["question_group_id"], :name => "index_dependencies_on_question_group_id"
+  add_index "dependencies", ["question_id"], :name => "index_dependencies_on_question_id"
+
   create_table "dependency_conditions", :force => true do |t|
     t.integer  "dependency_id"
     t.string   "rule_key"
@@ -193,11 +208,17 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.datetime "updated_at",     :null => false
   end
 
+  add_index "dependency_conditions", ["answer_id"], :name => "index_dependency_conditions_on_answer_id"
+  add_index "dependency_conditions", ["dependency_id"], :name => "index_dependency_conditions_on_dependency_id"
+  add_index "dependency_conditions", ["question_id"], :name => "index_dependency_conditions_on_question_id"
+
   create_table "document_groupings", :force => true do |t|
     t.integer  "service_request_id"
     t.datetime "created_at",         :null => false
     t.datetime "updated_at",         :null => false
   end
+
+  add_index "document_groupings", ["service_request_id"], :name => "index_document_groupings_on_service_request_id"
 
   create_table "documents", :force => true do |t|
     t.integer  "sub_service_request_id"
@@ -212,6 +233,9 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.integer  "document_grouping_id"
     t.string   "doc_type_other"
   end
+
+  add_index "documents", ["document_grouping_id"], :name => "index_documents_on_document_grouping_id"
+  add_index "documents", ["sub_service_request_id"], :name => "index_documents_on_sub_service_request_id"
 
   create_table "excluded_funding_sources", :force => true do |t|
     t.integer  "subsidy_map_id"
@@ -347,7 +371,10 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.integer  "units_per_quantity",     :default => 1
   end
 
+  add_index "line_items", ["service_id"], :name => "index_line_items_on_service_id"
   add_index "line_items", ["service_request_id"], :name => "index_line_items_on_service_request_id"
+  add_index "line_items", ["ssr_id"], :name => "index_line_items_on_ssr_id"
+  add_index "line_items", ["sub_service_request_id"], :name => "index_line_items_on_sub_service_request_id"
 
   create_table "line_items_visits", :force => true do |t|
     t.integer  "arm_id"
@@ -356,6 +383,9 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
   end
+
+  add_index "line_items_visits", ["arm_id"], :name => "index_line_items_visits_on_arm_id"
+  add_index "line_items_visits", ["line_item_id"], :name => "index_line_items_visits_on_line_item_id"
 
   create_table "lookups", :force => true do |t|
     t.integer "new_id"
@@ -373,6 +403,8 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.datetime "updated_at",      :null => false
   end
 
+  add_index "messages", ["notification_id"], :name => "index_messages_on_notification_id"
+
   create_table "notes", :force => true do |t|
     t.integer  "identity_id"
     t.integer  "sub_service_request_id"
@@ -381,12 +413,18 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.datetime "updated_at",             :null => false
   end
 
+  add_index "notes", ["identity_id"], :name => "index_notes_on_identity_id"
+  add_index "notes", ["sub_service_request_id"], :name => "index_notes_on_sub_service_request_id"
+
   create_table "notifications", :force => true do |t|
     t.integer  "sub_service_request_id"
     t.integer  "originator_id"
     t.datetime "created_at",             :null => false
     t.datetime "updated_at",             :null => false
   end
+
+  add_index "notifications", ["originator_id"], :name => "index_notifications_on_originator_id"
+  add_index "notifications", ["sub_service_request_id"], :name => "index_notifications_on_sub_service_request_id"
 
   create_table "organizations", :force => true do |t|
     t.string   "type"
@@ -487,6 +525,8 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.datetime "deleted_at"
   end
 
+  add_index "pricing_setups", ["organization_id"], :name => "index_pricing_setups_on_organization_id"
+
   create_table "procedures", :force => true do |t|
     t.integer  "appointment_id"
     t.integer  "visit_id"
@@ -511,6 +551,7 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.string   "role_other"
   end
 
+  add_index "project_roles", ["identity_id"], :name => "index_project_roles_on_identity_id"
   add_index "project_roles", ["protocol_id"], :name => "index_project_roles_on_protocol_id"
 
   create_table "protocols", :force => true do |t|
@@ -544,6 +585,7 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.string   "last_epic_push_status"
   end
 
+  add_index "protocols", ["next_ssr_id"], :name => "index_protocols_on_next_ssr_id"
   add_index "protocols", ["obisid"], :name => "index_protocols_on_obisid"
 
   create_table "question_groups", :force => true do |t|
@@ -587,6 +629,9 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
   end
 
   add_index "questions", ["api_id"], :name => "uq_questions_api_id", :unique => true
+  add_index "questions", ["correct_answer_id"], :name => "index_questions_on_correct_answer_id"
+  add_index "questions", ["question_group_id"], :name => "index_questions_on_question_group_id"
+  add_index "questions", ["survey_section_id"], :name => "index_questions_on_survey_section_id"
 
   create_table "quick_questions", :force => true do |t|
     t.string   "to"
@@ -633,6 +678,8 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
 
   add_index "response_sets", ["access_code"], :name => "response_sets_ac_idx", :unique => true
   add_index "response_sets", ["api_id"], :name => "uq_response_sets_api_id", :unique => true
+  add_index "response_sets", ["survey_id"], :name => "index_response_sets_on_survey_id"
+  add_index "response_sets", ["user_id"], :name => "index_response_sets_on_user_id"
 
   create_table "responses", :force => true do |t|
     t.integer  "response_set_id"
@@ -652,7 +699,10 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.string   "api_id"
   end
 
+  add_index "responses", ["answer_id"], :name => "index_responses_on_answer_id"
   add_index "responses", ["api_id"], :name => "uq_responses_api_id", :unique => true
+  add_index "responses", ["question_id"], :name => "index_responses_on_question_id"
+  add_index "responses", ["response_set_id"], :name => "index_responses_on_response_set_id"
   add_index "responses", ["survey_section_id"], :name => "index_responses_on_survey_section_id"
 
   create_table "service_providers", :force => true do |t|
@@ -666,6 +716,7 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.datetime "deleted_at"
   end
 
+  add_index "service_providers", ["identity_id"], :name => "index_service_providers_on_identity_id"
   add_index "service_providers", ["organization_id"], :name => "index_service_providers_on_organization_id"
   add_index "service_providers", ["service_id"], :name => "index_service_providers_on_service_id"
 
@@ -678,6 +729,7 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.datetime "deleted_at"
   end
 
+  add_index "service_relations", ["related_service_id"], :name => "index_service_relations_on_related_service_id"
   add_index "service_relations", ["service_id"], :name => "index_service_relations_on_service_id"
 
   create_table "service_requests", :force => true do |t|
@@ -767,7 +819,9 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
   end
 
   add_index "sub_service_requests", ["organization_id"], :name => "index_sub_service_requests_on_organization_id"
+  add_index "sub_service_requests", ["owner_id"], :name => "index_sub_service_requests_on_owner_id"
   add_index "sub_service_requests", ["service_request_id"], :name => "index_sub_service_requests_on_service_request_id"
+  add_index "sub_service_requests", ["ssr_id"], :name => "index_sub_service_requests_on_ssr_id"
 
   create_table "subjects", :force => true do |t|
     t.datetime "created_at",          :null => false
@@ -781,6 +835,8 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.string   "ethnicity"
     t.string   "status"
   end
+
+  add_index "subjects", ["arm_id"], :name => "index_subjects_on_arm_id"
 
   create_table "submission_emails", :force => true do |t|
     t.integer  "organization_id"
@@ -801,6 +857,8 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.integer  "sub_service_request_id"
   end
 
+  add_index "subsidies", ["sub_service_request_id"], :name => "index_subsidies_on_sub_service_request_id"
+
   create_table "subsidy_maps", :force => true do |t|
     t.integer  "organization_id"
     t.decimal  "max_dollar_cap",  :precision => 12, :scale => 4
@@ -820,6 +878,7 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.datetime "deleted_at"
   end
 
+  add_index "super_users", ["identity_id"], :name => "index_super_users_on_identity_id"
   add_index "super_users", ["organization_id"], :name => "index_super_users_on_organization_id"
 
   create_table "survey_sections", :force => true do |t|
@@ -836,6 +895,8 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.datetime "updated_at",             :null => false
   end
 
+  add_index "survey_sections", ["survey_id"], :name => "index_survey_sections_on_survey_id"
+
   create_table "survey_translations", :force => true do |t|
     t.integer  "survey_id"
     t.string   "locale"
@@ -843,6 +904,8 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
   end
+
+  add_index "survey_translations", ["survey_id"], :name => "index_survey_translations_on_survey_id"
 
   create_table "surveys", :force => true do |t|
     t.string   "title"
@@ -878,6 +941,7 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
 
   add_index "taggings", ["tag_id"], :name => "index_taggings_on_tag_id"
   add_index "taggings", ["taggable_id", "taggable_type", "context"], :name => "index_taggings_on_taggable_id_and_taggable_type_and_context"
+  add_index "taggings", ["tagger_id"], :name => "index_taggings_on_tagger_id"
 
   create_table "tags", :force => true do |t|
     t.string "name"
@@ -893,6 +957,8 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.datetime "updated_at",       :null => false
   end
 
+  add_index "toast_messages", ["sending_class_id"], :name => "index_toast_messages_on_sending_class_id"
+
   create_table "tokens", :force => true do |t|
     t.integer  "service_request_id"
     t.integer  "identity_id"
@@ -902,6 +968,7 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.datetime "deleted_at"
   end
 
+  add_index "tokens", ["identity_id"], :name => "index_tokens_on_identity_id"
   add_index "tokens", ["service_request_id"], :name => "index_tokens_on_service_request_id"
 
   create_table "user_notifications", :force => true do |t|
@@ -911,6 +978,9 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "user_notifications", ["identity_id"], :name => "index_user_notifications_on_identity_id"
+  add_index "user_notifications", ["notification_id"], :name => "index_user_notifications_on_notification_id"
 
   create_table "validation_conditions", :force => true do |t|
     t.integer  "validation_id"
@@ -930,6 +1000,10 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.datetime "updated_at",     :null => false
   end
 
+  add_index "validation_conditions", ["answer_id"], :name => "index_validation_conditions_on_answer_id"
+  add_index "validation_conditions", ["question_id"], :name => "index_validation_conditions_on_question_id"
+  add_index "validation_conditions", ["validation_id"], :name => "index_validation_conditions_on_validation_id"
+
   create_table "validations", :force => true do |t|
     t.integer  "answer_id"
     t.string   "rule"
@@ -937,6 +1011,8 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  add_index "validations", ["answer_id"], :name => "index_validations_on_answer_id"
 
   create_table "versions", :force => true do |t|
     t.string   "item_type",  :null => false
@@ -986,5 +1062,8 @@ ActiveRecord::Schema.define(:version => 20130723182645) do
     t.integer  "line_items_visit_id"
     t.integer  "visit_group_id"
   end
+
+  add_index "visits", ["line_items_visit_id"], :name => "index_visits_on_line_items_visit_id"
+  add_index "visits", ["visit_group_id"], :name => "index_visits_on_visit_group_id"
 
 end

@@ -140,4 +140,150 @@ describe EpicInterface do
     end
   end
 
+  describe 'send_billing_calendar' do
+    it 'should work (smoke test)' do
+      epic_interface.send_billing_calendar(study)
+
+      # With no line items, this message turns out to be the same as the
+      # base study creation message
+      xml = <<-END
+        <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
+          <query root="1.2.3.4" extension="#{study.id}"/>
+          <protocolDef>
+            <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
+              <id root="1.2.3.4" extension="#{study.id}"/>
+              <title>#{study.title}</title>
+              <text>#{study.brief_description}</text>
+            </plannedStudy>
+          </protocolDef>
+        </RetrieveProtocolDefResponse>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+          '//env:Body/rpe:RetrieveProtocolDefResponse',
+          'env' => 'http://www.w3.org/2003/05/soap-envelope',
+          'rpe' => 'urn:ihe:qrph:rpe:2009',
+          'hl7' => 'urn:hl7-org:v3')
+
+      # Uncomment these lines for debugging (sometimes the test output
+      # doesn't give you all the information you need to figure out what
+      # the difference is between actual and expected).
+      # p strip_xml_whitespace!(expected.root)
+      # p strip_xml_whitespace!(node)
+
+      node.should be_equivalent_to(expected.root)
+    end
+
+    it 'should not send PI or SC' do
+      identity = FactoryGirl.create(
+          :identity,
+          ldap_uid: 'happyhappyjoyjoy@musc.edu')
+
+      pi_role = FactoryGirl.create(
+          :project_role,
+          protocol_id:     study.id,
+          identity_id:     identity.id,
+          project_rights:  "approve",
+          role:            "primary-pi")
+
+      epic_interface.send_billing_calendar(study)
+
+      # With no line items, this message turns out to be the same as the
+      # base study creation message
+      xml = <<-END
+        <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
+          <query root="1.2.3.4" extension="#{study.id}"/>
+          <protocolDef>
+            <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
+              <id root="1.2.3.4" extension="#{study.id}"/>
+              <title>#{study.title}</title>
+              <text>#{study.brief_description}</text>
+            </plannedStudy>
+          </protocolDef>
+        </RetrieveProtocolDefResponse>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+          '//env:Body/rpe:RetrieveProtocolDefResponse',
+          'env' => 'http://www.w3.org/2003/05/soap-envelope',
+          'rpe' => 'urn:ihe:qrph:rpe:2009',
+          'hl7' => 'urn:hl7-org:v3')
+
+      node.should be_equivalent_to(expected.root)
+    end
+
+    it 'should send an arm as a cell' do
+      service_request = FactoryGirl.create(
+          :service_request,
+          protocol_id: study.id,
+          status: 'draft',
+          start_date: Time.now,
+          end_date: Time.now + 10.days)
+
+      arm1 = FactoryGirl.create(
+          :arm,
+          name: 'Arm',
+          service_request_id: service_request.id,
+          visit_count: 10,
+          subject_count: 2)
+
+      epic_interface.send_billing_calendar(study)
+
+      xml = <<-END
+        <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
+          <query root="1.2.3.4" extension="#{study.id}"/>
+          <protocolDef>
+            <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
+              <id root="1.2.3.4" extension="#{study.id}"/>
+              <title>#{study.title}</title>
+              <text>#{study.brief_description}</text>
+
+              <component4 typeCode="COMP">
+                <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                  <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm1.id}" />
+                  <title>Arm</title>
+                  <code code="CELL" codeSystem="n/a" />
+
+                  <component1 typeCode="COMP">
+                    <sequenceNumber value="1" />
+                    <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                    <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm1.id}.CYCLE1" />
+                    <title>Cycle 1</title>
+                    <code code="CYCLE" codeSystem="n/a" />
+                    <effectiveTime>
+                      <low value="#{service_request.start_date.strftime('%Y%m%d')}" />
+                      <high value="#{service_request.end_date.strftime('%Y%m%d')}" />
+                    </effectiveTime>
+                  </component1>
+
+                </timePointEventDefinition>
+              </component4>
+            </plannedStudy>
+
+          </protocolDef>
+        </RetrieveProtocolDefResponse>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+          '//env:Body/rpe:RetrieveProtocolDefResponse',
+          'env' => 'http://www.w3.org/2003/05/soap-envelope',
+          'rpe' => 'urn:ihe:qrph:rpe:2009',
+          'hl7' => 'urn:hl7-org:v3')
+
+      # Uncomment these lines for debugging (sometimes the test output
+      # doesn't give you all the information you need to figure out what
+      # the difference is between actual and expected).
+      # p strip_xml_whitespace!(expected.root)
+      # p strip_xml_whitespace!(node)
+
+      node.should be_equivalent_to(expected.root)
+    end
+  end
+
 end

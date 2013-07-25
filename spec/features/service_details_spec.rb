@@ -2,7 +2,7 @@ require 'spec_helper'
 
 ## need to test that smart forms work correctly
 ## if we only have one time fees we should still see the start and end date fields
-describe "visit service details page with one time fees only", :js => true do
+describe "visit service details page should always show start and end date for one time fee only service requests", :js => true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
@@ -13,6 +13,42 @@ describe "visit service details page with one time fees only", :js => true do
   end
   
   describe "entering dates" do
+
+    numerical_day = 10
+    it "should save the start date" do
+      old_date = service_request.start_date
+      find('#start_date').click
+      page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
+      wait_for_javascript_to_finish
+      find(:xpath, "//a/img[@alt='Savecontinue']/..").click
+      wait_for_javascript_to_finish
+      old_date.should_not eq(ServiceRequest.find(service_request.id).start_date)
+    end
+    it "should save the end date" do
+      old_date = service_request.end_date
+      find('#end_date').click
+      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # go forward one month
+      page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
+      wait_for_javascript_to_finish
+      find(:xpath, "//a/img[@alt='Savecontinue']/..").click
+      wait_for_javascript_to_finish
+      old_date.should_not eq(ServiceRequest.find(service_request.id).end_date)
+    end
+  end
+end
+
+describe "visit service details page should always show start and end date for per patient per visit only service requests", :js => true do
+  let_there_be_lane
+  let_there_be_j
+  fake_login_for_each_test
+  build_service_request_with_project_and_per_patient_per_visit_only
+
+  before :each do
+    visit service_details_service_request_path service_request.id
+  end
+  
+  describe "entering dates" do
+
     numerical_day = 10
     it "should save the start date" do
       old_date = service_request.start_date

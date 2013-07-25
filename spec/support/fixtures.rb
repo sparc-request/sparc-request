@@ -45,6 +45,12 @@ def build_service_request_with_project_and_one_time_fees_only
   build_project()
 end
 
+def build_service_request_with_project_and_per_patient_per_visit_only
+  build_service_request()
+  build_per_patient_per_visit_services() 
+  build_project()
+end
+
 def build_service_request_with_study
   build_service_request()
   build_one_time_fee_services()
@@ -63,6 +69,7 @@ end
 def build_per_patient_per_visit_services
   # Per patient per visit service
   let!(:service2)            { FactoryGirl.create(:service, organization_id: program.id, name: 'Per Patient') }
+  let!(:pricing_setup)       { FactoryGirl.create(:pricing_setup, organization_id: program.id, display_date: Time.now - 1.day, federal: 50, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal')}
   let!(:pricing_map2)        { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service2.id, is_one_time_fee: false, display_date: Time.now - 1.day, full_rate: 2000, federal_rate: 3000, units_per_qty_max: 20) }
   let!(:line_item2)          { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service2.id, sub_service_request_id: sub_service_request.id, quantity: 0) }
 

@@ -236,6 +236,7 @@ class EpicInterface
 
                         xml.component2(typeCode: 'COMP') {
                           xml.procedure(classCode: 'PROC', moodCode: 'EVN') {
+                            # TODO: should be CDM code, not CPT code
                             xml.code(code: line_item.service.cpt_code, codeSystem: 'n/a')
                           }
                         }

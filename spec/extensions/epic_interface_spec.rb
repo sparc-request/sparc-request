@@ -284,6 +284,13 @@ describe EpicInterface do
 
       node.should be_equivalent_to(expected.root)
     end
+
+    # TODO: add a test for when we have more than one arm
+    # TODO: add a test for when we have a line item
+    # TODO: add a test for when we have more than one line item
+    # TODO: add a test for when we have more than one service request
+    # TODO: add a test for visit group window
+    # TODO: add a test to ensure that we are using CDM code
   end
 
 end

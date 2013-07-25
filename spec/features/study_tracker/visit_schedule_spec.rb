@@ -5,16 +5,24 @@ describe "visit schedule", :js => true do
   let_there_be_j
   fake_login_for_each_test
   build_service_request_with_project()
-  let!(:core_17)  { FactoryGirl.create(:core, parent_id: program.id, id: 17) }
-  let!(:core_13)  { FactoryGirl.create(:core, parent_id: program.id, id: 13) }
-  let!(:core_16)  { FactoryGirl.create(:core, parent_id: program.id, id: 16) }
-  let!(:core_15)  { FactoryGirl.create(:core, parent_id: program.id, id: 15) }
+  let!(:core_17)  { FactoryGirl.create(:core, parent_id: program.id) }
+  let!(:core_13)  { FactoryGirl.create(:core, parent_id: program.id) }
+  let!(:core_16)  { FactoryGirl.create(:core, parent_id: program.id) }
+  let!(:core_15)  { FactoryGirl.create(:core, parent_id: program.id) }
   let!(:service3) { FactoryGirl.create(:service, organization_id: core_13.id, name: "Super Duper Service") }
   let!(:service4) { FactoryGirl.create(:service, organization_id: core_15.id, name: "Organ Harvest Service") }
 
   context "updating a subject" do
 
     before :each do
+      core_17.tag_list.add("nutrition")
+      core_13.tag_list.add("nursing")
+      core_16.tag_list.add("laboratory")
+      core_15.tag_list.add("imaging")
+      core_17.save
+      core_13.save
+      core_16.save
+      core_15.save
       service2.update_attributes(:organization_id => core_17.id)
       add_visits
       build_clinical_data(true)
@@ -48,7 +56,6 @@ describe "visit schedule", :js => true do
 
       it "should change the visit" do
         select("#2: Visit 2", from: "visit")
-        sleep 10
         wait_for_javascript_to_finish
         find("#visit").should have_value("#2: Visit 2")
       end

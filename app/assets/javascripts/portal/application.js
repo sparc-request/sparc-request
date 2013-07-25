@@ -7,8 +7,15 @@
 //= require jquery
 //= require jquery-ui
 //= require jquery_ujs
+//= require jquery.cookie
+//= require jquery.form
+//= require jquery.toastmessage
 //= require json2
 //= require inflection
+//= require underscore-min
+//= require assert
+//= require form_manager
+//= require form_fx_manager
 //= require_tree .
 
 window.Sparc = {}

@@ -5,4 +5,6 @@
  *= require_self
  *= require_tree . 
  *= require jquery-ui
+ *= require 960
+ *= require jquery.toastmessage
 */

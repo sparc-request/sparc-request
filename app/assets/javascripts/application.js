@@ -18,4 +18,4 @@
 //= require underscore-min
 //= require form_fx_manager
 //= require form_manager
-//= require utils
+//= require assert

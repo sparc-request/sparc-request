@@ -8,13 +8,13 @@
 //= require jquery
 //= require jquery_ujs
 //= require json2
-//= require catalog_manager/jquery.cookie
+//= require jquery.cookie
+//= require jquery.form
+//= require jquery.toastmessage
 //= require catalog_manager/jquery.jstree
-//= require catalog_manager/jquery.form
 //= require jquery-ui
 //= require jquery_nested_form
 //= require catalog_manager/jquery.formatCurrency-1.4.0.min
-//= require catalog_manager/jquery.toastmessage
 //= require catalog_manager/catalog
 //= require catalog_manager/services
 //= require catalog_manager/institutions

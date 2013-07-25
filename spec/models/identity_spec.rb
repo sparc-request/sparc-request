@@ -88,6 +88,7 @@ describe "Identity" do
     let!(:core)                 {FactoryGirl.create(:core, parent_id: provider.id)}
     let!(:user)                 {FactoryGirl.create(:identity)}
     let!(:user2)                {FactoryGirl.create(:identity)}
+    let!(:user3)                {FactoryGirl.create(:identity)}              
     let!(:catalog_manager)      {FactoryGirl.create(:catalog_manager, identity_id: user.id, organization_id: institution2.id)}
     let!(:catalog_manager2)     {FactoryGirl.create(:catalog_manager, identity_id: user.id, organization_id: institution.id)}
     let!(:super_user)           {FactoryGirl.create(:super_user, identity_id: user.id, organization_id: institution.id)}
@@ -191,8 +192,12 @@ describe "Identity" do
           user2.can_edit_core?(core.id).should eq(true)
         end
 
+        it "should return true if the user is a super user on the given core" do
+          user.can_edit_core?(core.id).should eq(true)
+        end
+
         it "should return false if the user is not a clinical provider on a given core" do
-          user.can_edit_core?(core.id).should eq(false)
+          user3.can_edit_core?(core.id).should eq(false)
         end
       end
     end

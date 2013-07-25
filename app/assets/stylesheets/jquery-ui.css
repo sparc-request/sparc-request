@@ -1163,7 +1163,7 @@ body .ui-tooltip {
 
 /* Overlays */
 .ui-widget-overlay {
-	background: #aaaaaa url(assets/jquery-ui/ui-bg_flat_75_aaaaaa_40x100.png) 50% 50% repeat-x;
+	background: #aaaaaa url(/assets/jquery-ui/ui-bg_flat_75_aaaaaa_40x100.png) 50% 50% repeat-x;
 	opacity: .3;
 	filter: Alpha(Opacity=30);
 }

@@ -435,12 +435,11 @@ describe EpicInterface do
       node.should be_equivalent_to(expected.root)
     end
 
-    # TODO: add a test for when we have a line item
-    # TODO: add a test for when we have more than one line item
+    # TODO: add a test for when we have a pppv line item
+    # TODO: add a test for when we have more than one pppv line item
     # TODO: add a test for when we have more than one service request
     # TODO: add a test for visit group window
     # TODO: add a test to ensure that we are using CDM code
-    # TODO: add a test for multiple service requests
   end
 
 end

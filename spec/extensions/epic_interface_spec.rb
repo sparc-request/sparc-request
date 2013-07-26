@@ -1,7 +1,6 @@
 require 'epic_interface'
 require 'fake_epic_soap_server'
 require 'spec_helper'
-require 'equivalent-xml'
 
 def strip_xml_whitespace!(root)
   root.xpath('//text()').each do |n|

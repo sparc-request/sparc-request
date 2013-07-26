@@ -68,6 +68,18 @@ describe EpicInterface do
     study
   }
 
+  let!(:program) {
+    FactoryGirl.create(
+        :program,
+        type: 'Program',
+        parent_id: nil,
+        name: 'A program',
+        order: 1,
+        abbreviation: 'PRGM',
+        process_ssrs:  0,
+        is_available: 1)
+  }
+
   describe 'send_study' do
     it 'should work (smoke test)' do
       epic_interface.send_study(study)
@@ -109,8 +121,8 @@ describe EpicInterface do
 
       pi_role = FactoryGirl.create(
           :project_role,
-          protocol_id:     study.id,
-          identity_id:     identity.id,
+          protocol:        study,
+          identity:        identity,
           project_rights:  "approve",
           role:            "primary-pi")
 
@@ -166,12 +178,6 @@ describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      # Uncomment these lines for debugging (sometimes the test output
-      # doesn't give you all the information you need to figure out what
-      # the difference is between actual and expected).
-      # p strip_xml_whitespace!(expected.root)
-      # p strip_xml_whitespace!(node)
-
       node.should be_equivalent_to(expected.root)
     end
 
@@ -182,8 +188,8 @@ describe EpicInterface do
 
       pi_role = FactoryGirl.create(
           :project_role,
-          protocol_id:     study.id,
-          identity_id:     identity.id,
+          protocol:        study,
+          identity:        identity,
           project_rights:  "approve",
           role:            "primary-pi")
 
@@ -218,7 +224,7 @@ describe EpicInterface do
     it 'should send an arm as a cell' do
       service_request = FactoryGirl.create(
           :service_request,
-          protocol_id: study.id,
+          protocol: study,
           status: 'draft',
           start_date: Time.now,
           end_date: Time.now + 10.days)
@@ -226,7 +232,7 @@ describe EpicInterface do
       arm1 = FactoryGirl.create(
           :arm,
           name: 'Arm',
-          service_request_id: service_request.id,
+          service_request: service_request,
           visit_count: 10,
           subject_count: 2)
 
@@ -276,19 +282,13 @@ describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      # Uncomment these lines for debugging (sometimes the test output
-      # doesn't give you all the information you need to figure out what
-      # the difference is between actual and expected).
-      # p strip_xml_whitespace!(expected.root)
-      # p strip_xml_whitespace!(node)
-
       node.should be_equivalent_to(expected.root)
     end
 
     it 'should send two arms as two cells' do
       service_request = FactoryGirl.create(
           :service_request,
-          protocol_id: study.id,
+          protocol: study,
           status: 'draft',
           start_date: Time.now,
           end_date: Time.now + 10.days)
@@ -296,14 +296,14 @@ describe EpicInterface do
       arm1 = FactoryGirl.create(
           :arm,
           name: 'Arm 1',
-          service_request_id: service_request.id,
+          service_request: service_request,
           visit_count: 10,
           subject_count: 2)
 
       arm2 = FactoryGirl.create(
           :arm,
           name: 'Arm 2',
-          service_request_id: service_request.id,
+          service_request: service_request,
           visit_count: 10,
           subject_count: 2)
 
@@ -376,21 +376,71 @@ describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      # Uncomment these lines for debugging (sometimes the test output
-      # doesn't give you all the information you need to figure out what
-      # the difference is between actual and expected).
-      # p strip_xml_whitespace!(expected.root)
-      # p strip_xml_whitespace!(node)
-
       node.should be_equivalent_to(expected.root).respecting_element_order
     end
 
-    # TODO: add a test for when we have more than one arm
+    it 'should not send line items that are not part of an arm' do
+      service_request = FactoryGirl.create(
+          :service_request,
+          protocol: study,
+          status: 'draft',
+          start_date: Time.now,
+          end_date: Time.now + 10.days)
+
+      sub_service_request = FactoryGirl.create(
+          :sub_service_request,
+          ssr_id: '0001',
+          service_request: service_request,
+          organization: program,
+          status: 'draft')
+
+      service = FactoryGirl.create(
+          :service,
+          organization: program,
+          name: 'A service')
+
+      line_item = FactoryGirl.create(
+          :line_item,
+          service_request: service_request,
+          service: service,
+          sub_service_request: sub_service_request,
+          quantity: 5,
+          units_per_quantity: 1)
+
+      epic_interface.send_billing_calendar(study)
+
+      # With no line items, this message turns out to be the same as the
+      # base study creation message
+      xml = <<-END
+        <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
+          <query root="1.2.3.4" extension="#{study.id}"/>
+          <protocolDef>
+            <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
+              <id root="1.2.3.4" extension="#{study.id}"/>
+              <title>#{study.title}</title>
+              <text>#{study.brief_description}</text>
+            </plannedStudy>
+          </protocolDef>
+        </RetrieveProtocolDefResponse>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+          '//env:Body/rpe:RetrieveProtocolDefResponse',
+          'env' => 'http://www.w3.org/2003/05/soap-envelope',
+          'rpe' => 'urn:ihe:qrph:rpe:2009',
+          'hl7' => 'urn:hl7-org:v3')
+
+      node.should be_equivalent_to(expected.root)
+    end
+
     # TODO: add a test for when we have a line item
     # TODO: add a test for when we have more than one line item
     # TODO: add a test for when we have more than one service request
     # TODO: add a test for visit group window
     # TODO: add a test to ensure that we are using CDM code
+    # TODO: add a test for multiple service requests
   end
 
 end

@@ -52,18 +52,48 @@ describe "review page" do
       find(:xpath, "//button/span[text()='Yes']/..").click
       wait_for_javascript_to_finish
 
-      select "Administration", :from => "r_1_answer_id"
-      select "Academic Affairs/Provost", :from => "r_2_answer_id"
-
       # select Yes to next question and you should see text area for Yes
-      all("#r_3_answer_id_input input").first().click
+      all("#r_1_answer_id_input input").first().click
       wait_for_javascript_to_finish
-      fill_in "r_4_text_value", :with => "I love it"
+      fill_in "r_2_text_value", :with => "I love it"
       
       # select No to next question and you should see text area for No
-      all("#r_3_answer_id_input input").last().click
+      all("#r_1_answer_id_input input").last().click
       wait_for_javascript_to_finish
-      fill_in "r_5_text_value", :with => "I hate it"
+      fill_in "r_3_text_value", :with => "I hate it"
+      
+      within(:css, "div.next_section") do
+        click_button 'Submit'
+        wait_for_javascript_to_finish
+      end
+    end
+  end
+  
+  describe "clicking get a quote and declining the system satisfaction survey" do
+    it 'Should submit the page', :js => true do
+      find(:xpath, "//a/img[@alt='Get_a_quote']/..").click
+      find(:xpath, "//button/span[text()='No']/..").click
+      wait_for_javascript_to_finish
+      service_request_test = ServiceRequest.find(service_request.id)
+      service_request_test.status.should eq("obtain_research_pricing")
+    end
+  end
+  
+  describe "clicking get a quote and accepting the system satisfaction survey" do
+    it 'Should submit the page', :js => true do
+      find(:xpath, "//a/img[@alt='Get_a_quote']/..").click
+      find(:xpath, "//button/span[text()='Yes']/..").click
+      wait_for_javascript_to_finish
+
+      # select Yes to next question and you should see text area for Yes
+      all("#r_1_answer_id_input input").first().click
+      wait_for_javascript_to_finish
+      fill_in "r_2_text_value", :with => "I love it"
+      
+      # select No to next question and you should see text area for No
+      all("#r_1_answer_id_input input").last().click
+      wait_for_javascript_to_finish
+      fill_in "r_3_text_value", :with => "I hate it"
 
       within(:css, "div.next_section") do
         click_button 'Submit'

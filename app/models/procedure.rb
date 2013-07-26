@@ -18,12 +18,15 @@ class Procedure < ActiveRecord::Base
     self.line_item.service.organization
   end
 
+  # This method is primarily for setting initial values on the visit calendar in 
+  # clinical work fulfillment.
   def default_quantity
-    default = self.quantity
-    default ||= self.visit.research_billing_qty
-    default
+    service_quantity = self.quantity
+    service_quantity ||= self.visit.research_billing_qty
+    service_quantity
   end
 
+  # Totals up a given row on the visit scheudule
   def total
     self.quantity * self.line_item.per_unit_cost
   end

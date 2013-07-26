@@ -52,12 +52,12 @@ module SurveyorControllerCustomMethods
     full_path = File.join(dir,"#{survey.access_code}_v#{survey.survey_version}_#{Time.now.to_i}.csv")
     File.open(full_path, 'w') do |f|
       if pretty_print
-        f.write(['Identity', survey.response_sets.first.survey.sections.map{|section| section.questions.order(:display_order).map(&:text)}].flatten.to_csv) #header
+        f.write(['Identity', 'College', 'Department', survey.response_sets.first.survey.sections.map{|section| section.questions.order(:display_order).map(&:text)}].flatten.to_csv) #header
         question_ids = survey.sections.map{|section| section.questions.order(&:display_order).map(&:id)}.flatten
         survey.response_sets.each do |response_set|
           next if response_set.responses.empty?
-          identity = Identity.find(response_set.user_id).try(:full_name)
-          f.write([identity, question_ids.map{|q| response_set.responses.find_by_question_id(q).try(:to_formatted_s)}].flatten.to_csv)
+          identity = Identity.find(response_set.user_id)
+          f.write([identity.try(:full_name), COLLEGES.key(identity.try(:college)), DEPARTMENTS.key(identity.try(:department)), question_ids.map{|q| response_set.responses.find_by_question_id(q).try(:to_formatted_s)}].flatten.to_csv)
         end
       else
         survey.response_sets.each_with_index{|r,i| f.write(r.to_csv(true, i == 0)) } # print access code every time, print_header first time

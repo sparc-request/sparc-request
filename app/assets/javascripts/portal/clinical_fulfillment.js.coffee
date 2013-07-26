@@ -29,10 +29,10 @@ $(document).ready ->
  
   recalc_subtotal = () ->
     subtotal = 0
-    $('td.unit_cost_cell span:visible').each ->
+    $('td.procedure_total_cell span:visible').each ->
       value = $(this).text()
       subtotal += parseFloat(value)  if not isNaN(value) and value.length isnt 0
-    $('tr.subtotal_row td span').text(subtotal)
+    $('tr.grand_total_row td span').text(subtotal)
 
   $('#ssr_save').button()
 

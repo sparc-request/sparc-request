@@ -40,26 +40,34 @@
               %th{:style => "text-align:center;"}
                 = appointment_form.datepicker :completed_at, size: 18, dateFormat: "yy-mm-dd"
               %th 
+              %th
             %tr.ui-widget-header
               %th
                 Procedure
               %th
                 = appointment_form.object.visit_group.name
               %th
+                Quantity
+              %th
                 Unit Cost
               %th
-                Quantity
+                Total
           %tbody
             = appointment_form.fields_for :procedures, :wrapper => false do |procedure_form|
               %tr.fields{:style => "background-color:#C0C0C0;#{procedure_form.object.core.id == @nutrition.id ? 'display:table-row;' : 'display:none;'}", :class => "core_#{procedure_form.object.core.id}"}
                 %td= procedure_form.object.line_item.service.name
                 %td= procedure_form.check_box :completed
+                %td= procedure_form.text_field :quantity, value: procedure_form.object.default_quantity, size: 5
                 %td.unit_cost_cell
                   $
                   %span= procedure_form.object.line_item.per_unit_cost
-                %td= procedure_form.text_field :quantity, value: procedure_form.object.default_quantity, size: 5
-            %tr.subtotal_row
-              %td Subtotal
+                %td.procedure_total_cell
+                  $
+                  %span= procedure_form.object.total
+            %tr.grand_total_row
+              %td Grand Total
+              %td
+              %td
               %td
               %td
                 $

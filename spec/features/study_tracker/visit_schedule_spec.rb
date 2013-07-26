@@ -5,17 +5,27 @@ describe "visit schedule", :js => true do
   let_there_be_j
   fake_login_for_each_test
   build_service_request_with_project()
-  let!(:core_17)  { FactoryGirl.create(:core, parent_id: program.id, id: 17) }
-  let!(:core_13)  { FactoryGirl.create(:core, parent_id: program.id, id: 13) }
-  let!(:core_16)  { FactoryGirl.create(:core, parent_id: program.id, id: 16) }
-  let!(:core_15)  { FactoryGirl.create(:core, parent_id: program.id, id: 15) }
-  let!(:service3) { FactoryGirl.create(:service, organization_id: core_13.id, name: "Super Duper Service") }
-  let!(:service4) { FactoryGirl.create(:service, organization_id: core_15.id, name: "Organ Harvest Service") }
+  let!(:core_17)      { FactoryGirl.create(:core, parent_id: program.id) }
+  let!(:core_13)      { FactoryGirl.create(:core, parent_id: program.id) }
+  let!(:core_16)      { FactoryGirl.create(:core, parent_id: program.id) }
+  let!(:core_15)      { FactoryGirl.create(:core, parent_id: program.id) }
+  let!(:service3)     { FactoryGirl.create(:service, organization_id: program.id, name: 'Super Awesome Terrific') }
+  let!(:pricing_map3) { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service3.id, is_one_time_fee: false, display_date: Time.now - 1.day, full_rate: 2000, federal_rate: 3000, units_per_qty_max: 20) }
+  let!(:line_item3)   { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service3.id, sub_service_request_id: sub_service_request.id, quantity: 0) }
 
   context "updating a subject" do
 
     before :each do
+      core_17.tag_list.add("nutrition")
+      core_13.tag_list.add("nursing")
+      core_16.tag_list.add("laboratory")
+      core_15.tag_list.add("imaging")
+      core_17.save
+      core_13.save
+      core_16.save
+      core_15.save
       service2.update_attributes(:organization_id => core_17.id)
+      service3.update_attributes(:organization_id => core_13.id)
       add_visits
       build_clinical_data(true)
       sub_service_request.update_attributes(:in_work_fulfillment => true)
@@ -48,7 +58,6 @@ describe "visit schedule", :js => true do
 
       it "should change the visit" do
         select("#2: Visit 2", from: "visit")
-        sleep 10
         wait_for_javascript_to_finish
         find("#visit").should have_value("#2: Visit 2")
       end
@@ -59,6 +68,17 @@ describe "visit schedule", :js => true do
       it "should return the user to clinical fulfillment" do
         click_on "Return to Clinical Work Fulfillment"
         page.should have_content("Add a subject")
+      end
+    end
+
+    describe "changing to a different core" do
+
+      it "should filter by that core's procedures when its tab is clicked" do
+        click_on "Nutrition"
+        page.should have_content("Per Patient")
+        click_on "Nursing" 
+        page.should_not have_content("Per Patient")
+        page.should have_content("Super Awesome Terrific")
       end
     end
   end

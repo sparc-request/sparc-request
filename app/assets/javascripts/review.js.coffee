@@ -2,6 +2,7 @@
 
 $(document).ready ->
   survey_offered = false
+  route_to = "" 
   $('#participate_in_survey').dialog
     resizable: false,
     height: 220,
@@ -14,7 +15,7 @@ $(document).ready ->
         $(this).dialog("close")
         service_request_id = $('#service_request_id').val()
         $('#participate_in_survey').load "/surveys/system-satisfaction-survey", {survey_version: ""}, ->
-          $('#survey_form').append("<input type='hidden' id='redirect_to' name='redirect_to' value='/service_requests/#{service_request_id}/confirmation'>")
+          $('#survey_form').append("<input type='hidden' id='redirect_to' name='redirect_to' value='#{route_to}'>")
           $('#surveyor').dialog
             position: 
               my: "left top"
@@ -35,11 +36,14 @@ $(document).ready ->
       "No": -> 
         survey_offered = true
         $(this).dialog("close")
-        $('#submit_services').click()
+        window.location.href = route_to
 
-  $('#submit_services').click ->
+  $('#submit_services, #get_a_quote').click ->
+    route_to = $(this).attr('href')
+
     if survey_offered == false
+      proceed_to = "#submit_services"
       $("#participate_in_survey").dialog("open")
       return false
     else
-      window.location.href = $(this).attr('href')
+      window.location.href = route_to

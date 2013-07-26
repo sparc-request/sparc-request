@@ -250,13 +250,14 @@ describe EpicInterface do
                   <component1 typeCode="COMP">
                     <sequenceNumber value="1" />
                     <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
-                    <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm1.id}.CYCLE1" />
-                    <title>Cycle 1</title>
-                    <code code="CYCLE" codeSystem="n/a" />
-                    <effectiveTime>
-                      <low value="#{service_request.start_date.strftime('%Y%m%d')}" />
-                      <high value="#{service_request.end_date.strftime('%Y%m%d')}" />
-                    </effectiveTime>
+                      <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm1.id}.CYCLE1" />
+                      <title>Cycle 1</title>
+                      <code code="CYCLE" codeSystem="n/a" />
+                      <effectiveTime>
+                        <low value="#{service_request.start_date.strftime('%Y%m%d')}" />
+                        <high value="#{service_request.end_date.strftime('%Y%m%d')}" />
+                      </effectiveTime>
+                    </timePointEventDefinition>
                   </component1>
 
                 </timePointEventDefinition>
@@ -282,6 +283,106 @@ describe EpicInterface do
       # p strip_xml_whitespace!(node)
 
       node.should be_equivalent_to(expected.root)
+    end
+
+    it 'should send two arms as two cells' do
+      service_request = FactoryGirl.create(
+          :service_request,
+          protocol_id: study.id,
+          status: 'draft',
+          start_date: Time.now,
+          end_date: Time.now + 10.days)
+
+      arm1 = FactoryGirl.create(
+          :arm,
+          name: 'Arm 1',
+          service_request_id: service_request.id,
+          visit_count: 10,
+          subject_count: 2)
+
+      arm2 = FactoryGirl.create(
+          :arm,
+          name: 'Arm 2',
+          service_request_id: service_request.id,
+          visit_count: 10,
+          subject_count: 2)
+
+      epic_interface.send_billing_calendar(study)
+
+      xml = <<-END
+        <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
+          <query root="1.2.3.4" extension="#{study.id}"/>
+          <protocolDef>
+            <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
+              <id root="1.2.3.4" extension="#{study.id}"/>
+              <title>#{study.title}</title>
+              <text>#{study.brief_description}</text>
+
+              <component4 typeCode="COMP" xmlns="urn:hl7-org:v3" >
+                <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                  <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm1.id}" />
+                  <title>Arm 1</title>
+                  <code code="CELL" codeSystem="n/a" />
+
+                  <component1 typeCode="COMP">
+                    <sequenceNumber value="1" />
+                    <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                      <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm1.id}.CYCLE1" />
+                      <title>Cycle 1</title>
+                      <code code="CYCLE" codeSystem="n/a" />
+                      <effectiveTime>
+                        <low value="#{service_request.start_date.strftime('%Y%m%d')}" />
+                        <high value="#{service_request.end_date.strftime('%Y%m%d')}" />
+                      </effectiveTime>
+                    </timePointEventDefinition>
+                  </component1>
+
+                </timePointEventDefinition>
+              </component4>
+
+              <component4 typeCode="COMP" xmlns="urn:hl7-org:v3" >
+                <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                  <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm2.id}" />
+                  <title>Arm 2</title>
+                  <code code="CELL" codeSystem="n/a" />
+
+                  <component1 typeCode="COMP">
+                    <sequenceNumber value="2" />
+                    <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                      <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm2.id}.CYCLE1" />
+                      <title>Cycle 1</title>
+                      <code code="CYCLE" codeSystem="n/a" />
+                      <effectiveTime>
+                        <low value="#{service_request.start_date.strftime('%Y%m%d')}" />
+                        <high value="#{service_request.end_date.strftime('%Y%m%d')}" />
+                      </effectiveTime>
+                    </timePointEventDefinition>
+                  </component1>
+
+                </timePointEventDefinition>
+              </component4>
+
+            </plannedStudy>
+
+          </protocolDef>
+        </RetrieveProtocolDefResponse>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+          '//env:Body/rpe:RetrieveProtocolDefResponse',
+          'env' => 'http://www.w3.org/2003/05/soap-envelope',
+          'rpe' => 'urn:ihe:qrph:rpe:2009',
+          'hl7' => 'urn:hl7-org:v3')
+
+      # Uncomment these lines for debugging (sometimes the test output
+      # doesn't give you all the information you need to figure out what
+      # the difference is between actual and expected).
+      # p strip_xml_whitespace!(expected.root)
+      # p strip_xml_whitespace!(node)
+
+      node.should be_equivalent_to(expected.root).respecting_element_order
     end
 
     # TODO: add a test for when we have more than one arm

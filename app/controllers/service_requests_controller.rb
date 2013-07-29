@@ -275,7 +275,7 @@ class ServiceRequestsController < ApplicationController
 
   def obtain_research_pricing
     # TODO: refactor into the ServiceRequest model
-    @service_request.update_attribute(:status, 'obtain_research_pricing')
+    @service_request.update_status('get_a_quote')
     @service_request.update_attribute(:submitted_at, Time.now)
     next_ssr_id = @service_request.protocol.next_ssr_id || 1
     @service_request.sub_service_requests.each do |ssr|

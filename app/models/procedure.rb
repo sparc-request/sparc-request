@@ -30,4 +30,12 @@ class Procedure < ActiveRecord::Base
   def total
     self.quantity * self.line_item.per_unit_cost
   end
+
+  def should_be_displayed
+    if (self.visit.research_billing_qty && self.visit.research_billing_qty > 0) or (self.visit.insurance_billing_qty && self.visit.insurance_billing_qty > 0)
+      return true
+    else
+      return false
+    end
+  end
 end

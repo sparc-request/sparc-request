@@ -16,7 +16,7 @@ table.study_tracker_table {
 }
 
 #visit_form tr.fields td,
-#visit_form tr.subtotal_row td {
+#visit_form tr.grand_total_row td {
 	padding:6px 8px;
 }
 #visit_form table.study_tracker_table {

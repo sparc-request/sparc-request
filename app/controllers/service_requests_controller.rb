@@ -274,7 +274,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def obtain_research_pricing
-    @service_request.update_status('obtain_research_pricing')
+    @service_request.update_status('get_a_quote')
     @service_request.update_attribute(:submitted_at, Time.now)
     @service_request.ensure_ssr_ids
     

@@ -135,6 +135,7 @@ def build_project
         project_rights:  "approve",
         role:            "business-grants-manager")
     service_request.update_attribute(:protocol_id, protocol.id)
+    protocol.reload
     protocol
   }
 end
@@ -161,6 +162,7 @@ def build_study
         project_rights:  "approve",
         role:            "business-grants-manager")
     service_request.update_attribute(:protocol_id, protocol.id)
+    protocol.reload
     protocol
   }
 end

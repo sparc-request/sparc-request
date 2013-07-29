@@ -16,7 +16,8 @@ epic_rights: { 'non_required': 'No access to Epic required',
                'view_rights': 'View Rights',
                'enter_data': 'Access to enter data at patient/visit level',
                'enter_orders': 'Authorized to enter orders',
-               'approve': 'Authorized to review and approve patient study charges'}
+               'approve': 'Authorized to review and approve patient study charges',
+               'complete': 'Authorized to complete study'}
 study_types: { 'clinical_trials': 'Clinical Trials',
                'basic_science': 'Basic Science',
                'translational_science': 'Translational Science' }

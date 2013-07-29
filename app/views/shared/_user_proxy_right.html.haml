@@ -24,9 +24,9 @@
       .epic_access
         = f.radio_button :epic_access, false, :checked => !project_role.epic_access, :project_role_id => project_role.id, :class => "epic_access_radio_no"
         = f.label :epic_access, 'No'
-        = f.radio_button :epic_access, true, :checked => project_role.epic_access, :project_role_id => project_role.id, :class => "epic_access_radio_yes"
+        = f.radio_button :epic_access, true, :checked => project_role.epic_access, :project_role_id => project_role.id, :class => "epic_access_radio_yes", :id => "epic_access_yes_#{project_role.id}"
         = f.label :epic_access, 'Yes'
-        = link_to image_tag('pencil.png'), 'javascript:void(0)', :identity_id => identity.id
+        = link_to image_tag('pencil.png'), 'javascript:void(0)', :project_role_id => project_role.id, :class => 'epic_access_edit'
     %td= f.radio_button :project_rights, 'none', :checked => project_role.should_select?('none', current_user), :disabled => !project_role.can_switch_to?('none', current_user)
     %td= f.radio_button :project_rights, 'view', :checked => project_role.should_select?('view', current_user), :disabled => !project_role.can_switch_to?('view', current_user)
     %td= f.radio_button :project_rights, 'request', :checked => project_role.should_select?('request', current_user), :disabled => !project_role.can_switch_to?('request', current_user)

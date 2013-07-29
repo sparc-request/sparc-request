@@ -1,11 +1,19 @@
 class ChangeStatusesFromRequestPricingToGetAQuote < ActiveRecord::Migration
   def up
-    ServiceRequest.where(status: 'obtain_research_pricing').update_attributes(:status => 'get_a_quote')
-    PastStatus.where(status: 'obtain_research_pricing').update_attributes(:status => 'get_a_quote')
+    ServiceRequest.where(status: 'obtain_research_pricing').each do |sr|
+      sr.update_attributes(:status => 'get_a_quote')
+    end
+    PastStatus.where(status: 'obtain_research_pricing').each do |ps|
+      ps.update_attributes(:status => 'get_a_quote')
+    end
   end
 
   def down
-    PastStatus.where(status: 'get_a_quote').update_attributes(:status => 'obtain_research_pricing')
-    ServiceRequest.where(status: 'get_a_quote').update_attributes(:status => 'obtain_research_pricing')
+    PastStatus.where(status: 'get_a_quote').each do |ps|
+      ps.update_attributes(:status => 'obtain_research_pricing')
+    end
+    ServiceRequest.where(status: 'get_a_quote').each do |sr|
+      sr.update_attributes(:status => 'obtain_research_pricing')
+    end
   end
 end

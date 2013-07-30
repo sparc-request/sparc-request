@@ -17,6 +17,11 @@ describe "service calendar", :js => true do
   end
   
   describe "one time fee form" do
+    before :each do
+      arm1.visit_groups.each {|vg| vg.update_attribute(:day, 1)}
+      arm2.visit_groups.each {|vg| vg.update_attribute(:day, 1)}
+    end
+
     describe "submitting form" do
       it "should save the new quantity" do
         fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", :with => 10
@@ -36,7 +41,7 @@ describe "service calendar", :js => true do
         it "Should throw errors" do
           sleep 5
           fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", :with => (line_item.service.current_pricing_map.unit_minimum - 1)
-          find(:xpath, "//a/img[@alt='Go_back']/..").click
+          fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", :with => 1
           wait_for_javascript_to_finish
           find("div#one_time_fee_errors").should have_content("is less than the unit minimum")
         end
@@ -44,7 +49,7 @@ describe "service calendar", :js => true do
       describe "units per quantity too high" do
         it "should throw js error" do
           fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", :with => (line_item.service.current_pricing_map.units_per_qty_max + 1)
-          find("table.one-time-fees").click
+          fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", :with => 1
           wait_for_javascript_to_finish
           find("div#unit_max_error").should have_content("more than the maximum allowed")
         end

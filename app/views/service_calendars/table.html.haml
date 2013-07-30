@@ -32,6 +32,10 @@
       %tr.section_header
         %th{:colspan => 12}
           = t("calendar_page.headers.other_services")
+          
+          #nan_error{:style => 'display:none;'}
+            = t(:service_requests)[:detail_list][:nan]
+
           #one_time_fee_errors{:style => 'display:none;'}
             = t(:service_requests)[:detail_list][:text1]
             %span#quantity
@@ -47,12 +51,13 @@
             %span#unit_max
             %br       
             = t(:service_requests)[:detail_list][:text6]
+
       - @service_request.service_list(true).each do |key, value| # get only one time fee services and group them
         - next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
         %tr.sub_section_header
           %th.otf{:colspan => 12}= value[:name]
           - value[:line_items].each do |line_item|
-            %tr.line_item.otfs{:class => cycle('odd', '', :name => 'otfs')}
+            %tr.line_item.otfs{:class => cycle('odd', '', :name => 'otfs'), :"data-unit_factor" => line_item.service.displayed_pricing_map.unit_factor}
               %td.service_name
                 = line_item.service.name
                 = hidden_field_tag "service_request[line_items_attributes][#{line_item.id}][id]", line_item.id
@@ -63,7 +68,7 @@
                    :unit_minimum => line_item.service.displayed_pricing_map.unit_minimum, :class => 'line_item_quantity', :current_quantity => line_item.quantity |
               -#
               %td= text_field_tag "service_request[line_items_attributes][#{line_item.id}][units_per_quantity]", line_item.units_per_quantity, | 
-                   "data-qty_max" => line_item.service.displayed_pricing_map.units_per_qty_max, :class => "units_per_quantity" |
+                   "data-qty_max" => line_item.service.displayed_pricing_map.units_per_qty_max, :class => "units_per_quantity", :current_units_per_quantity => line_item.units_per_quantity |
               %td{:colspan => 5}
               %td{:class => "otf_total total_#{line_item.id}"}= display_one_time_fee_direct_cost line_item
 

@@ -437,6 +437,7 @@ en:
   # Service Requests
   service_requests:
     detail_list:
+      nan  : "Please enter a valid number."
       text1: "Quantity of"
       text2: "is less than the unit minimum of"
       text3: "Quantity is being reset to the previous value."

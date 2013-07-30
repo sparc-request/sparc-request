@@ -292,28 +292,11 @@ class ServiceRequestsController < ApplicationController
     @service_list = @service_request.service_list
 
     send_notifications(@service_request, @sub_service_request)
- 
-    # Run the push to epic call in a child thread, so that we can return
-    # the confirmation page right away without blocking (in testing, the
-    # push to epic can take as long as 20 seconds).  This call will
-    # write the status to the database, which will later be polled by
-    # the confirmation page.
-    #
-    # TODO: Ideally this would be better off done in another process,
-    # e.g. with delayed_job or resque.  Multithreaded code can be tricky
-    # to get right.  However, there is a bit of extra work involved in
-    # starting a separate job server, and it is not clear how (or if it
-    # is possible) to start the job server automatically.  Threads work
-    # well enough for now.
-    #
-    Thread.new do
-      begin
-        @protocol.push_to_epic(EPIC_INTERFACE)
-      rescue Exception => e
-        Rails.logger.error(e)
-      ensure
-        ActiveRecord::Base.connection.close
-      end
+
+    if current_user == @protocol.primary_principal_investigator
+      push_protocol_to_epic
+    else
+      #send notification to Primary PI and Leila
     end
 
     render :formats => [:html]
@@ -536,19 +519,14 @@ class ServiceRequestsController < ApplicationController
 
     send_user_notifications(service_request, xls)
 
-    # send e-mail to admins and service providers
-    if sub_service_request # only notify the submission e-mails for this sub service request
-      send_admin_notifications_for_ssr(sub_service_request, xls)
-    else # notify the submission e-mails for the service request
-      send_admin_notifications(service_request, xls)
+    if sub_service_request then
+      sub_service_requests = [ sub_service_request ]
+    else
+      sub_service_requests = service_request.sub_service_requests
     end
 
-    # send e-mail to all service providers
-    if sub_service_request # only notify the service providers for this sub service request
-      send_service_provider_notifications_for_ssr(sub_service_request, xls)
-    else
-      send_service_provider_notifications(service_request, xls)
-    end
+    send_admin_notifications(sub_service_requests, xls)
+    send_service_provider_notifications(sub_service_requests, xls)
   end
 
   def send_user_notifications(service_request, xls)
@@ -567,28 +545,19 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def send_admin_notifications(service_request, xls)
-    # send e-mail to admins and service providers
-    service_request.sub_service_requests.each do |sub_service_request|
-      send_admin_notifications_for_ssr(sub_service_request, xls)
+  def send_admin_notifications(sub_service_requests, xls)
+    sub_service_requests.each do |sub_service_request|
+      sub_service_request.organization.submission_emails_lookup.each do |submission_email|
+        Notifier.notify_admin(sub_service_request.service_request, submission_email.email, xls).deliver
+      end
     end
   end
 
-  def send_admin_notifications_for_ssr(sub_service_request, xls)
-    sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-      Notifier.notify_admin(sub_service_request.service_request, submission_email.email, xls).deliver
-    end
-  end
-
-  def send_service_provider_notifications(service_request, xls)
-    service_request.sub_service_requests.each do |sub_service_request|
-      send_service_provider_notifications_for_ssr(sub_service_request, xls)
-    end
-  end
-
-  def send_service_provider_notifications_for_ssr(sub_service_request, xls)
-    sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-      send_individual_service_provider_notification(sub_service_request.service_request, sub_service_request, service_provider, xls)
+  def send_service_provider_notifications(sub_service_requests, xls)
+    sub_service_requests.each do |sub_service_request|
+      sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
+        send_individual_service_provider_notification(sub_service_request.service_request, sub_service_request, service_provider, xls)
+      end
     end
   end
 
@@ -604,6 +573,35 @@ class ServiceRequestsController < ApplicationController
     end
 
     Notifier.notify_service_provider(service_provider, service_request, attachments).deliver
+  end
+
+  def send_primary_pi_epic_notification()
+
+  end
+
+  def push_protocol_to_epic
+    # Run the push to epic call in a child thread, so that we can return
+    # the confirmation page right away without blocking (in testing, the
+    # push to epic can take as long as 20 seconds).  This call will
+    # write the status to the database, which will later be polled by
+    # the confirmation page.
+    #
+    # TODO: Ideally this would be better off done in another process,
+    # e.g. with delayed_job or resque.  Multithreaded code can be tricky
+    # to get right.  However, there is a bit of extra work involved in
+    # starting a separate job server, and it is not clear how (or if it
+    # is possible) to start the job server automatically.  Threads work
+    # well enough for now.
+    #
+    Thread.new do
+      begin
+        @protocol.push_to_epic(EPIC_INTERFACE)
+      rescue Exception => e
+        Rails.logger.error(e)
+      ensure
+        ActiveRecord::Base.connection.close
+      end
+    end
   end
 
 end

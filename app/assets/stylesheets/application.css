@@ -1925,3 +1925,23 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   width: 200px;
   z-index: 5;
 }
+
+.services_header {
+  width: 145px;
+}
+
+.service_rate_header, .your_cost_header {
+  width: 50px;
+}
+
+.qty_type_header {
+  width: 65px;
+}
+
+.number_of_subjects_header, .number_units_header {
+  width: 50px;
+}
+
+.line_item_quantity, .units_per_quantity {
+  width: 30px;
+}

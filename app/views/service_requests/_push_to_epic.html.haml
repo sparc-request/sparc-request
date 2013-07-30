@@ -18,26 +18,26 @@
           data: JSON.stringify({ }),
           contentType: 'application/json; charset=utf-8',
           success: function(data, text, request) {
-            status = data['last_epic_push_status']
-
+            status = data['last_epic_push_status'];
             if(status == 'complete') {
               // Success
               $('#push_to_epic_status').text('Study has been pushed to Epic.');
             } else if(status == 'failed') {
               // Failure
               $('#push_to_epic_status').text('Unable to push study to Epic.');
+            } else if(status == 'awaiting_approval') {
+              $('#push_to_epic_status').text('Awaiting approval from Primary PI to push to Epic');
             }
             else {
               // Not done yet; try again in 5 seconds
-              window.setTimer(get_epic_push_status, 5000);
+              window.setTimeout(get_epic_push_status, 5000);
             }
           },
           error: function(request, text, error) {
             $('#push_to_epic_status').text('Unable to get status for last push to Epic.');
           }
       });
-    }
-
+    };
     get_epic_push_status();
   });
 

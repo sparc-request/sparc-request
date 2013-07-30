@@ -165,29 +165,35 @@ class Protocol < ActiveRecord::Base
   # thread-safe.
   def push_to_epic(epic_interface)
     begin
-      update_attributes(
-          last_epic_push_time: Time.now,
-          last_epic_push_status: 'started')
+      self.last_epic_push_time = Time.now
+      self.last_epic_push_status = 'started'
+      save(validate: false)
 
       Rails.logger.info("Sending study creation message to Epic")
       epic_interface.send_study(self)
 
-      update_attributes(
-          last_epic_push_status: 'sent_study')
+      self.last_epic_push_status = 'sent_study'
+      save(validate: false)
 
       Rails.logger.info("Sending billing calendar to Epic")
       epic_interface.send_billing_calendar(self)
 
-      update_attributes(
-          last_epic_push_status: 'complete')
+      self.last_epic_push_status = 'complete'
+      save(validate: false)
 
     rescue Exception => e
       Rails.logger.info("Push to Epic failed.")
 
-      update_attributes(
-          last_epic_push_status: 'failed')
+      self.last_epic_push_status = 'failed'
+      save(validate: false)
       raise e
     end
+  end
+
+  def awaiting_approval_for_epic_push
+    self.last_epic_push_time = nil
+    self.last_epic_push_status = 'awaiting_approval'
+    save(validate: false)
   end
 
   # Returns true if there is a push to epic in progress, false

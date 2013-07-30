@@ -297,6 +297,8 @@ class ServiceRequestsController < ApplicationController
       push_protocol_to_epic
     else
       #send notification to Primary PI and Leila
+      @protocol.awaiting_approval_for_epic_push
+      send_primary_pi_epic_notification(@service_request)
     end
 
     render :formats => [:html]
@@ -575,8 +577,8 @@ class ServiceRequestsController < ApplicationController
     Notifier.notify_service_provider(service_provider, service_request, attachments).deliver
   end
 
-  def send_primary_pi_epic_notification()
-
+  def send_primary_pi_epic_notification(service_request)
+    Notifier.notify_primary_pi(service_request).deliver
   end
 
   def push_protocol_to_epic

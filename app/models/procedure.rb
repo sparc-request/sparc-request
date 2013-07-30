@@ -26,8 +26,8 @@ class Procedure < ActiveRecord::Base
     service_quantity
   end
 
-  # Totals up a given row on the visit scheudule
+  # Totals up a given row on the visit schedule
   def total
-    self.quantity * self.line_item.per_unit_cost
+    self.default_quantity * self.line_item.per_unit_cost
   end
 end

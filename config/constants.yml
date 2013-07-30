@@ -18,6 +18,7 @@ epic_rights: { 'non_required': 'No access to Epic required',
                'enter_orders': 'Authorized to enter orders',
                'approve': 'Authorized to review and approve patient study charges',
                'complete': 'Authorized to complete study'}
+epic_rights_tool_tip: 'Complete study tool tip'
 study_types: { 'clinical_trials': 'Clinical Trials',
                'basic_science': 'Basic Science',
                'translational_science': 'Translational Science' }

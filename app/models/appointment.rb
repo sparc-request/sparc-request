@@ -6,6 +6,7 @@ class Appointment < ActiveRecord::Base
   belongs_to :service
   has_many :procedures
   has_many :visits, :through => :procedures
+  has_many :notes
   attr_accessible :visit_group_id
   attr_accessible :completed_at
 

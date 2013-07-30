@@ -1,0 +1,14 @@
+%h2 Comments:
+#existing_comments
+  - appointment.notes.each do |note|
+    .comment
+      .body.left
+        %p= note.body
+      .name.right
+        %span.commentor
+          = note.identity.full_name
+          %br
+          = note.created_at.strftime('%-m/%d/%Y')
+.new_comment
+  = text_area_tag "notes", "", :class => "comment_box"
+  = link_to "Save Comment", 'javascript:void(0);', :'data-appointment_id' => appointment.id, :class => "add_comment_link ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;font-size:1.2em;"

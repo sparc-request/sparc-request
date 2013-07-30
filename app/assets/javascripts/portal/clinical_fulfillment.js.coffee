@@ -4,8 +4,8 @@ $(document).ready ->
     $('#visit_form .spinner_wrapper').show()
     visit_name = $('option:selected', this).attr('data-appointment_id')
     setTimeout((->
-      $('#visit_form .study_tracker_table').hide()
-      $("table[data-appointment_table=#{visit_name}]").css("display", "table")
+      $('#visit_form .appointment_wrapper').hide()
+      $("div[data-appointment_table=#{visit_name}]").css("display", "block")
       $('#visit_form .spinner_wrapper').hide()
       recalc_subtotal()
     ), 250)
@@ -18,7 +18,7 @@ $(document).ready ->
     setTimeout((->
       $('.cwf_tabs li.ui-state-active').removeClass('ui-state-active')
       clicked.parent('li').addClass('ui-state-active')
-      $('#visit_form .study_tracker_table tbody tr.fields').hide()
+      $('#visit_form .appointment_wrapper tbody tr.fields').hide()
       if clicked.attr('data-has_access') == "false"
         $("." + core_name).find('input').prop('disabled', true)
       $("." + core_name).css("display", "table-row")
@@ -44,3 +44,20 @@ $(document).ready ->
       url: "/study_tracker/sub_service_requests/#{ssr_id}"
       data: { "sub_service_request[routing]": routing }
     return false
+
+  $(document).on('click', '.add_comment_link', ->
+    app_id = $(this).data('appointment_id')
+    data =
+      'appointment_id': app_id
+      'body': $(".comment_box:visible").val()
+    $.ajax
+      type: 'POST'
+      url:   "/study_tracker/appointments/add_note"
+      data:  JSON.stringify(data)
+      dataType: 'html'
+      contentType: 'application/json; charset=utf-8'
+      success: (html) ->
+        console.log("In Success Function")
+        console.log(html)
+        $('.comments:visible').html(html)
+  )

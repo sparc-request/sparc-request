@@ -32,51 +32,56 @@
 
     #visit_form{:style => "padding: 10px 40px;"}
       = calendar_form.fields_for :appointments do |appointment_form|
-        %table.study_tracker_table{:style => appointment_form.object == @default_appointment ? "display:table;" : "display:none;", 'data-appointment_table' => appointment_form.object.id}
-          %thead.left_headers
-            %tr.ui-widget-header
-              %th{:colspan => "3"}
-                Date of Visit (entering date signifies a completed visit)
-              %th{:colspan => "2", :style => "text-align:center;"}
-                = appointment_form.datepicker :completed_at, size: 18, dateFormat: "yy-mm-dd"
-            %tr.ui-widget-header
-              %th
-                Procedure
-              %th
-                = appointment_form.object.visit_group.name
-              %th
-                Quantity
-              %th
-                Unit Cost
-              %th
-                Total
-          %tbody
-            = appointment_form.fields_for :procedures, :wrapper => false do |procedure_form|
-              - if procedure_form.object.should_be_displayed
-                %tr.fields{:style => "background-color:#C0C0C0;#{procedure_form.object.core.id == @nutrition.id ? 'display:table-row;' : 'display:none;'}", :class => "core_#{procedure_form.object.core.id}"}
-                  %td= procedure_form.object.line_item.service.name
-                  - if appointment_form.object.completed_at?
-                    %td{:style => "background-color:#FFEF8F;"}= procedure_form.check_box :completed
-                  -else
-                    %td{:style => "background-color:#FFEF8F;"}= procedure_form.check_box :completed, :checked => true
-                  %td= procedure_form.text_field :quantity, value: procedure_form.object.default_quantity, size: 5
-                  %td.unit_cost_cell
-                    $
-                    %span= procedure_form.object.line_item.per_unit_cost
-                  %td.procedure_total_cell
-                    $
-                    %span= procedure_form.object.total
-              - else
-                %tr.fields{:style => "display:false;"}
-            %tr.grand_total_row
-              %td Grand Total
-              %td
-              %td
-              %td
-              %td
-                $
-                %span= @default_subtotal
+        .appointment_wrapper{:style => appointment_form.object == @default_appointment ? "display:block;" : "display:none;", 'data-appointment_table' => appointment_form.object.id}
+          %table.study_tracker_table
+            %thead.left_headers
+              %tr.ui-widget-header
+                %th{:colspan => "3"}
+                  Date of Visit (entering date signifies a completed visit)
+                %th{:colspan => "2", :style => "text-align:center;"}
+                  = appointment_form.datepicker :completed_at, size: 18, dateFormat: "yy-mm-dd"
+              %tr.ui-widget-header
+                %th
+                  Procedure
+                %th
+                  = appointment_form.object.visit_group.name
+                %th
+                  Quantity
+                %th
+                  Unit Cost
+                %th
+                  Total
+            %tbody
+              = appointment_form.fields_for :procedures, :wrapper => false do |procedure_form|
+                - if procedure_form.object.should_be_displayed
+                  %tr.fields{:style => "background-color:#C0C0C0;#{procedure_form.object.core.id == @nutrition.id ? 'display:table-row;' : 'display:none;'}", :class => "core_#{procedure_form.object.core.id}"}
+                    %td= procedure_form.object.line_item.service.name
+                    - if appointment_form.object.completed_at?
+                      %td{:style => "background-color:#FFEF8F;"}= procedure_form.check_box :completed
+                    -else
+                      %td{:style => "background-color:#FFEF8F;"}= procedure_form.check_box :completed, :checked => true
+                    %td= procedure_form.text_field :quantity, value: procedure_form.object.default_quantity, size: 5
+                    %td.unit_cost_cell
+                      $
+                      %span= procedure_form.object.line_item.per_unit_cost
+                    %td.procedure_total_cell
+                      $
+                      %span= procedure_form.object.total
+                - else
+                  %tr.fields{:style => "display:false;"}
+              %tr.grand_total_row
+                %td Grand Total
+                %td
+                %td
+                %td
+                %td
+                  $
+                  %span= @default_subtotal
+          .comments
+            = render :partial => "notes", :locals => {:appointment => appointment_form.object}
+
       .spinner_wrapper
+
         = image_tag 'spinner.gif'
   %p{:style => "text-align:center; margin-bottom:12px;"}= f.submit "Save Appointments", :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;font-size:1.2em;"
   %p{:style => "text-align:center; margin-bottom:12px;"}= link_to "Return to Clinical Work Fulfillment", study_tracker_sub_service_request_path(@sub_service_request), :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;font-size:1.2em;"

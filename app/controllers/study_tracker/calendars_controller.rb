@@ -1,5 +1,5 @@
 class StudyTracker::CalendarsController < StudyTracker::BaseController
-  before_filter :check_work_fulfillment_status
+  before_filter :check_work_fulfillment_status, :except => :add_note
 
   def show
     # Get the cores
@@ -18,6 +18,18 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
     @default_subtotal = default_procedures.sum{|x| x.total}
 
     
+  end
+
+  def add_note
+    @appointment = Appointment.find(params[:appointment_id])
+    if @appointment.notes.create(:identity_id => @user.id, :body => params[:body])
+      @appointment.reload
+      render :partial => 'study_tracker/calendars/notes', :locals => {:appointment => @appointment}
+    else
+      respond_to do |format|
+        format.js { render :status => 500, :json => clean_errors(@appointment.errors) }
+      end
+    end
   end
 
   private

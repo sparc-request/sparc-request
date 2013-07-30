@@ -11,6 +11,7 @@
 //= require json2
 //= require inflection
 //= require_tree .
+//= require ../service_calendar
 
 window.Sparc = {}
 

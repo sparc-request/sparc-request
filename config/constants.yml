@@ -18,7 +18,7 @@ epic_rights: { 'non_required': 'No access to Epic required',
                'enter_orders': 'Authorized to enter orders',
                'approve': 'Authorized to review and approve patient study charges',
                'complete': 'Authorized to complete study'}
-epic_rights_tool_tip: 'Complete study tool tip'
+epic_rights_tool_tip: 'Once the study is "completed" in Epic, it cannot be moved back to "Active or Inactive" Completing the study will inhibit new participants to be enrolled and associated with the study.'
 study_types: { 'clinical_trials': 'Clinical Trials',
                'basic_science': 'Basic Science',
                'translational_science': 'Translational Science' }

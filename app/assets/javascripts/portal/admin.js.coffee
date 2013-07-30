@@ -74,7 +74,7 @@ $(document).ready ->
         $('.admin_indicator').css('display', 'inline-block')
         sr_id = $(this).data('sr_id')
         ssr_id = $(this).attr('data-ssr_id')
-        url = "study_tracker/sub_service_requests/#{ssr_id}"
+        url = "/study_tracker/sub_service_requests/#{ssr_id}"
 
         document.location.href = url
       )

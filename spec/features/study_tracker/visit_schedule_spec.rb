@@ -81,5 +81,14 @@ describe "visit schedule", :js => true do
         page.should have_content("Super Awesome Terrific")
       end
     end
+
+    describe "adding a message" do
+
+      it "should save the message and display it on the page" do
+        first("#notes").set("Messages all up in this place.")
+        first('.add_comment_link').click
+        page.should have_content("Messages all up in this place.")
+      end
+    end
   end
 end

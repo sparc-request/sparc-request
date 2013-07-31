@@ -54,3 +54,8 @@ table.study_tracker_table {
   width:100%;
   margin-bottom:5px;
 }
+
+.procedure_qty {
+  text-align: right;
+  size: 5;
+}

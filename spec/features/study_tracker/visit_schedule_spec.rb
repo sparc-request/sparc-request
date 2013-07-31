@@ -90,5 +90,19 @@ describe "visit schedule", :js => true do
         page.should have_content("Messages all up in this place.")
       end
     end
+
+    describe "changing the quantity" do
+
+      before :each do
+        line_item.stub!(:per_unit_cost) { 1000 }
+      end
+
+      it "should save the new quantity" do
+
+        first(".procedure_qty").set("10")
+        click_button "Save Appointments"
+        first(".procedure_qty").should have_value("10")
+      end
+    end
   end
 end

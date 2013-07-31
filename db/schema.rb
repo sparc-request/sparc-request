@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130730140807) do
+ActiveRecord::Schema.define(:version => 20130731164442) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -481,6 +481,7 @@ ActiveRecord::Schema.define(:version => 20130730140807) do
     t.text     "details"
     t.datetime "created_at",                                            :null => false
     t.datetime "updated_at",                                            :null => false
+    t.float    "percent_subsidy"
   end
 
   add_index "payments", ["sub_service_request_id"], :name => "index_payments_on_sub_service_request_id"

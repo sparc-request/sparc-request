@@ -61,3 +61,7 @@ $(document).ready ->
         console.log(html)
         $('.comments:visible').html(html)
   )
+
+  $(document).on "nested:fieldAdded:payments", (event) ->
+    default_percent_subsidy = $('.payments_add_button').data('default-percent-subsidy')
+    event.field.find(".new_percent_subsidy").val(default_percent_subsidy)

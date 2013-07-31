@@ -31,6 +31,8 @@ class Service < ActiveRecord::Base
   attr_accessible :charge_code
   attr_accessible :revenue_code
   attr_accessible :organization_id
+  attr_accessible :cdm_code
+  attr_accessible :send_to_epic
 
   validate :validate_pricing_maps_present
   

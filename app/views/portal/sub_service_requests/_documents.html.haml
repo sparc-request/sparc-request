@@ -23,7 +23,7 @@
       %br
 
       %div{:style => 'text-align:left;'}= t("documents.admin_instructions")
-      = text_area_tag 'service_request[notes]', @service_request.notes, :rows => 14, :cols => 117
+      = text_area_tag 'service_request_notes', @service_request.notes, :'data-service_request_id' => @service_request.id, :class => 'fulfillment_data', :rows => 14, :cols => 117
 
       %br
       %br

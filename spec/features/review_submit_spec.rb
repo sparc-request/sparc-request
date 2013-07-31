@@ -75,7 +75,7 @@ describe "review page" do
       find(:xpath, "//button/span[text()='No']/..").click
       wait_for_javascript_to_finish
       service_request_test = ServiceRequest.find(service_request.id)
-      service_request_test.status.should eq("obtain_research_pricing")
+      service_request_test.status.should eq("get_a_quote")
     end
   end
   

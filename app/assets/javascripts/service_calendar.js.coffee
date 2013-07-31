@@ -110,6 +110,75 @@ $(document).ready ->
     .complete ->
       $('.service_calendar_spinner').hide()
 
+  $('.units_per_quantity').live 'change', ->
+    intRegex = /^\d+$/
+    max = parseInt($(this).attr('data-qty_max'), 10)
+    prev_qty = $(this).attr('current_units_per_quantity')
+    user_input = parseInt($(this).val(), 10)
+    
+    unless intRegex.test user_input
+      $(this).css({'border': '2px solid red'})
+      $('#nan_error').fadeIn('fast').delay(5000).fadeOut(5000, => $(this).css('border', ''))
+      $(this).val(prev_qty)
+    else
+      if user_input > max
+        $(this).css({'border': '2px solid red'})
+        $('#unit_quantity').html(user_input)
+        $('#unit_max').html(max + ".")
+        $('#unit_max_error').fadeIn('fast').delay(5000).fadeOut(5000, => $(this).css('border', ''))
+        $(this).val(max)
+      else
+        $(this).attr('current_units_per_quantity', user_input)
+        $('#unit_max_error').hide()
+        $(this).css('border', '')
+    recalculate_one_time_fee_totals()
+    return false
+
+  $('.line_item_quantity').live 'change', -> 
+    intRegex = /^\d+$/
+    unit_min = parseInt($(this).attr('unit_minimum'), 10)
+    prev_qty = $(this).attr('current_quantity')
+    qty = parseInt($(this).val(), 10)
+    unless intRegex.test qty
+      $(this).css({'border': '2px solid red'})
+      $('#nan_error').fadeIn('fast').delay(5000).fadeOut(5000, => $(this).css('border', ''))
+      $(this).val(prev_qty)
+    else
+      if qty < unit_min
+        $(this).css({'border': '2px solid red'})
+        $('#quantity').html(qty)
+        $('#unit_minimum').html(unit_min + ".")
+        $('#one_time_fee_errors').fadeIn('fast').delay(5000).fadeOut(5000, => $(this).css('border', ''))
+        $(this).val(prev_qty)
+      else
+        $(this).attr('current_quantity', qty)
+        $('#one_time_fee_errors').hide()
+        $(this).css('border', '')
+    recalculate_one_time_fee_totals()
+    return false
+
+recalculate_one_time_fee_totals = ->
+  grand_total = 0
+  otfs = $('.otfs')
+
+  otfs.each (index, otf) =>
+    your_cost = $(otf).children('.your_cost').data('your_cost')
+    qty = $(otf).find('.line_item_quantity').val()
+    units_per_qty = $(otf).find('.units_per_quantity').val()
+    unit_factor = $(otf).data('unit_factor')
+
+    new_otf_total = Math.floor(Math.ceil(qty / unit_factor) * your_cost * units_per_qty) / 100.0
+    grand_total += new_otf_total
+    
+    $(otf).find('.otf_total').html('$' + commaSeparateNumber(new_otf_total.toFixed(2)))
+
+  $('.otf_total_direct_cost').html('$' + commaSeparateNumber(grand_total.toFixed(2)))
+
+commaSeparateNumber = (val) ->
+  while (/(\d+)(\d{3})/.test(val.toString()))
+    val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2')
+  return val;
+
 stack_errors_for_alert = (errors) ->
   compiled = ''
   for error in errors

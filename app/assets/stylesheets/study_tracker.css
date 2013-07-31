@@ -16,7 +16,7 @@ table.study_tracker_table {
 }
 
 #visit_form tr.fields td,
-#visit_form tr.subtotal_row td {
+#visit_form tr.grand_total_row td {
 	padding:6px 8px;
 }
 #visit_form table.study_tracker_table {
@@ -36,4 +36,21 @@ table.study_tracker_table {
   float:left;
   margin: 3px 10px 0 0;
   font-weight:bold;
+}
+.comments {
+  color:#362B36;
+}
+.comments .comment {
+  background-color: #E0E0E0;
+  margin: 10px 0;
+  overflow: auto;
+  padding: 10px;
+}
+.comments .comment .name {
+  color:#2779AA;
+}
+.comments .new_comment textarea {
+  height:100px;
+  width:100%;
+  margin-bottom:5px;
 }

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130726140633) do
+ActiveRecord::Schema.define(:version => 20130730140807) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -411,6 +411,7 @@ ActiveRecord::Schema.define(:version => 20130726140633) do
     t.string   "body"
     t.datetime "created_at",             :null => false
     t.datetime "updated_at",             :null => false
+    t.integer  "appointment_id"
   end
 
   add_index "notes", ["identity_id"], :name => "index_notes_on_identity_id"

@@ -2,11 +2,11 @@
 %table.service_calendar{:class => "arm_id_#{arm.id}", :style => @study_tracker ? "width:917px" : ''}
   %thead.ui-widget-header
     %tr.table_header
-      %th{:rowspan => 2}= t("calendar_page.headers.services")
+      %th.services_header{:rowspan => 2}= t("calendar_page.headers.services")
       - unless @portal 
-        %th{:colspan => 2}= t("calendar_page.headers.unit_costs")
-        %th{:rowspan => 2}= t("calendar_page.headers.qty_type")
-      %th{:rowspan => 2}= t("calendar_page.headers.subjects")
+        %th.unit_costs_header{:colspan => 2}= t("calendar_page.headers.unit_costs")
+        %th.qty_type_header{:rowspan => 2}= t("calendar_page.headers.qty_type")
+      %th.number_of_subjects_header{:rowspan => 2}= t("calendar_page.headers.subjects")
       %th &nbsp;
       %th{:colspan => 5, :height => 40, :width => 375} 
         = generate_visit_navigation arm, service_request, @pages, @tab, @portal if (@sub_service_request.nil? ? service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
@@ -14,8 +14,8 @@
 
     %tr.table_header
       - unless @portal
-        %th= t("calendar_page.headers.service_rate")
-        %th= t("calendar_page.headers.your_cost")
+        %th.service_rate_header= t("calendar_page.headers.service_rate")
+        %th.your_cost_header= t("calendar_page.headers.your_cost")
       %th &nbsp;
       - if (@sub_service_request.nil? ? service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?) 
         = generate_visit_header_row arm, service_request, @pages[arm.id].to_i
@@ -25,7 +25,7 @@
         %th &nbsp;
       - else
         %th= t("calendar_page.headers.total_per_patient")
-        %th= t("calendar_page.headers.total_per_study")
+        %th.total_per_study= t("calendar_page.headers.total_per_study")
 
   %tbody.cell-border
     - if (@sub_service_request.nil? ? service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?) 

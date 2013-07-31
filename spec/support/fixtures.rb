@@ -136,9 +136,7 @@ end
 def build_project
   let!(:project) {
     protocol = Project.create(FactoryGirl.attributes_for(:protocol))
-    protocol.update_attribute(:funding_status, "funded")
-    protocol.update_attribute(:funding_source, "federal")
-    protocol.update_attribute(:indirect_cost_rate, 50.0)
+    protocol.update_attributes(:funding_status => "funded", :funding_source => "federal", :indirect_cost_rate => 50.0)
     protocol.save :validate => false
     identity = Identity.find_by_ldap_uid('jug2')
     FactoryGirl.create(
@@ -162,9 +160,7 @@ end
 def build_study
   let!(:study) {
     protocol = Study.create(FactoryGirl.attributes_for(:protocol))
-    protocol.update_attribute(:funding_status, "funded")
-    protocol.update_attribute(:funding_source, "federal")
-    protocol.update_attribute(:indirect_cost_rate, 50.0)
+    protocol.update_attributes(:funding_status => "funded", :funding_source => "federal", :indirect_cost_rate => 50.0)
     protocol.save :validate => false
     identity = Identity.find_by_ldap_uid('jug2')
     FactoryGirl.create(

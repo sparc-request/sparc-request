@@ -61,7 +61,6 @@ td.text-center {
   margin-bottom:5px;
 }
 
-.procedure_qty {
+.procedure_r_qty, .procedure_t_qty {
   text-align: right;
-  size: 5;
 }

@@ -62,8 +62,8 @@
                       %td.highlighted.text-center= procedure_form.check_box :completed
                     -else
                       %td.highlighted.text-center= procedure_form.check_box :completed, :checked => true
-                    %td.text-center= procedure_form.text_field :r_quantity, value: procedure_form.object.default_r_quantity, size: 5, :class => 'procedure_qty'
-                    %td.text-center= procedure_form.text_field :t_quantity, value: procedure_form.object.default_t_quantity, size: 5, :class => 'procedure_qty'
+                    %td.text-center= procedure_form.text_field :r_quantity, value: procedure_form.object.default_r_quantity, size: 5, :class => 'procedure_r_qty'
+                    %td.text-center= procedure_form.text_field :t_quantity, value: procedure_form.object.default_t_quantity, size: 5, :class => 'procedure_t_qty'
                     %td.unit_cost_cell.text-center
                       $
                       %span= procedure_form.object.line_item.per_unit_cost

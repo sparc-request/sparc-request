@@ -8,7 +8,8 @@ class Procedure < ActiveRecord::Base
   attr_accessible :visit_id
   attr_accessible :line_item_id
   attr_accessible :completed
-  attr_accessible :quantity
+  attr_accessible :r_quantity
+  attr_accessible :t_quantity
 
   def required?
     self.visit.to_be_performed?
@@ -21,7 +22,7 @@ class Procedure < ActiveRecord::Base
   # This method is primarily for setting initial values on the visit calendar in 
   # clinical work fulfillment.
   def default_quantity
-    service_quantity = self.quantity
+    service_quantity = self.r_quantity
     service_quantity ||= self.visit.research_billing_qty
     service_quantity
   end

@@ -93,10 +93,6 @@ describe "visit schedule", :js => true do
 
     describe "changing the quantity" do
 
-      before :each do
-        line_item.stub!(:per_unit_cost) { 1000 }
-      end
-
       it "should save the new quantity" do
 
         first(".procedure_qty").set("10")

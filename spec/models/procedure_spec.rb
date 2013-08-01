@@ -19,7 +19,7 @@ describe "procedure" do
 			end
 
 			it "should return its own quantity if set" do
-				procedure.update_attributes(quantity: 5)
+				procedure.update_attributes(r_quantity: 5)
 				procedure.default_quantity.should eq(5)
 			end
 		end
@@ -36,7 +36,7 @@ describe "procedure" do
 
 			it "should return new total if quantity is changed" do
 				procedure.total.should eq(10000)
-				procedure.update_attributes(quantity: 5)
+				procedure.update_attributes(r_quantity: 5)
 				procedure.total.should eq(5000)
 			end
 		end

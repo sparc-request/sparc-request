@@ -46,7 +46,7 @@
                 %th
                   = appointment_form.object.visit_group.name
                 %th
-                  Quantity
+                  R Quantity
                 %th
                   Unit Cost
                 %th
@@ -60,7 +60,7 @@
                       %td{:style => "background-color:#FFEF8F;"}= procedure_form.check_box :completed
                     -else
                       %td{:style => "background-color:#FFEF8F;"}= procedure_form.check_box :completed, :checked => true
-                    %td= procedure_form.text_field :quantity, value: procedure_form.object.default_quantity, size: 5, :class => 'procedure_qty'
+                    %td= procedure_form.text_field :r_quantity, value: procedure_form.object.default_quantity, size: 5, :class => 'procedure_qty'
                     %td.unit_cost_cell
                       $
                       %span= procedure_form.object.line_item.per_unit_cost

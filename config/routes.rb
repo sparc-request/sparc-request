@@ -183,6 +183,7 @@ SparcRails::Application.routes.draw do
         member do
           put :update_from_fulfillment
           put :update_from_project_study_information
+          put :push_to_epic
           post :add_line_item
           post :new_document
           post :add_note

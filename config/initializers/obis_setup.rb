@@ -23,7 +23,7 @@ begin
   AFFILIATION_TYPES              = config['affiliations']
   IMPACT_AREAS                   = config['impact_areas']
   EPIC_RIGHTS                    = config['epic_rights']
-  EPIC_RIGHTS_TOOL_TIP           = config['epic_rights_tool_tip']
+  EPIC_RIGHTS_INFO               = config['epic_rights_info']
   STUDY_TYPES                    = config['study_types']
   FUNDING_STATUSES               = config['funding_statuses']
   ACCORDION_COLOR_OPTIONS        = config['accordion_color_options']

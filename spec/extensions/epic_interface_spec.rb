@@ -124,7 +124,8 @@ describe EpicInterface do
           protocol:        study,
           identity:        identity,
           project_rights:  "approve",
-          role:            "primary-pi")
+          role:            "primary-pi",
+          epic_access:     true, )
 
       epic_interface.send_study(study)
 
@@ -137,6 +138,72 @@ describe EpicInterface do
             <value xsi:type="CD" code="#{identity.netid.upcase}" codeSystem="netid" />
           </studyCharacteristic>
         </subjectOf>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+          '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+          'env' => 'http://www.w3.org/2003/05/soap-envelope',
+          'rpe' => 'urn:ihe:qrph:rpe:2009',
+          'hl7' => 'urn:hl7-org:v3')
+
+      node.should be_equivalent_to(expected)
+    end
+
+    it 'should emit a subjectOf for a Billing Business Manager with Epic Access Rights' do
+      identity = FactoryGirl.create(
+          :identity,
+          ldap_uid: 'happyhappyjoyjoy@musc.edu')
+
+      pi_role = FactoryGirl.create(
+          :project_role,
+          protocol:        study,
+          identity:        identity,
+          project_rights:  "approve",
+          role:            "business-grants-manager",
+          epic_access:     true, )
+
+      epic_interface.send_study(study)
+
+      xml = <<-END
+        <subjectOf typeCode="SUBJ"
+                   xmlns='urn:hl7-org:v3'
+                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+          <studyCharacteristic classCode="OBS" moodCode="EVN">
+            <code code="SC" />
+            <value xsi:type="CD" code="#{identity.netid.upcase}" codeSystem="netid" />
+          </studyCharacteristic>
+        </subjectOf>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+          '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+          'env' => 'http://www.w3.org/2003/05/soap-envelope',
+          'rpe' => 'urn:ihe:qrph:rpe:2009',
+          'hl7' => 'urn:hl7-org:v3')
+
+      node.should be_equivalent_to(expected)
+    end
+
+    it 'should not emit a subjectOf for a Billing Business Manager without Epic Access Rights' do
+      identity = FactoryGirl.create(
+          :identity,
+          ldap_uid: 'happyhappyjoyjoy@musc.edu')
+
+      pi_role = FactoryGirl.create(
+          :project_role,
+          protocol:        study,
+          identity:        identity,
+          project_rights:  "approve",
+          role:            "business-grants-manager",
+          epic_access:     false, )
+
+      epic_interface.send_study(study)
+
+      xml = <<-END
       END
 
       expected = Nokogiri::XML(xml)

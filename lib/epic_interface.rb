@@ -132,8 +132,10 @@ class EpicInterface
         xml.id(root: @study_root, extension: study.id)
         xml.title study.title
         xml.text study.brief_description
+        # TODO: Add NCT # and IRB #
 
         study.project_roles.each do |project_role|
+          next unless project_role.epic_access
           xml.subjectOf(typeCode: 'SUBJ') {
             xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
               role_code = case project_role.role

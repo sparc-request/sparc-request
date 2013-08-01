@@ -8,19 +8,30 @@ describe "procedure" do
 
 	context "visit schedule methods" do
 
-		let!(:visit)     { FactoryGirl.create(:visit, research_billing_qty: 10) }   
+		let!(:visit)     { FactoryGirl.create(:visit, research_billing_qty: 10, insurance_billing_qty: 10) }   
 		let!(:procedure) { FactoryGirl.create(:procedure, visit_id: visit.id, line_item_id: line_item.id) }
 
-		describe 'default quantity' do
+		describe 'default research quantity' do
 
 			it "should return the visit's research billing quantity if not set" do
-
-				procedure.default_quantity.should eq(10)
+				procedure.default_r_quantity.should eq(10)
 			end
 
 			it "should return its own quantity if set" do
 				procedure.update_attributes(r_quantity: 5)
-				procedure.default_quantity.should eq(5)
+				procedure.default_r_quantity.should eq(5)
+			end
+		end
+
+		describe 'default insurance quantity' do
+
+			it "should return the visit's insurance billing quantity if not set" do
+				procedure.default_t_quantity.should eq(10)
+			end
+
+			it "should return its own quantity if set" do
+				procedure.update_attributes(t_quantity: 5)
+				procedure.default_t_quantity.should eq(5)
 			end
 		end
 

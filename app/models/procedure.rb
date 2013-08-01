@@ -19,17 +19,25 @@ class Procedure < ActiveRecord::Base
     self.line_item.service.organization
   end
 
-  # This method is primarily for setting initial values on the visit calendar in 
+  # This method is primarily for setting the initial r_quantity values on the visit calendar in 
   # clinical work fulfillment.
-  def default_quantity
+  def default_r_quantity
     service_quantity = self.r_quantity
     service_quantity ||= self.visit.research_billing_qty
     service_quantity
   end
 
+  # This method is primarily for setting the initial t_quantity values on the visit calendar in 
+  # clinical work fulfillment.
+  def default_t_quantity
+    service_quantity = self.t_quantity
+    service_quantity ||= self.visit.insurance_billing_qty
+    service_quantity
+  end
+
   # Totals up a given row on the visit schedule
   def total
-    self.default_quantity * self.line_item.per_unit_cost
+    self.default_r_quantity * self.line_item.per_unit_cost
   end
 
   def should_be_displayed

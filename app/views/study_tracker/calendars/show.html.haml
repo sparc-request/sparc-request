@@ -36,7 +36,7 @@
           %table.study_tracker_table
             %thead
               %tr.ui-widget-header
-                %th{:colspan => "3"}
+                %th{:colspan => "4"}
                   Date of Visit (entering date signifies a completed visit)
                 %th{:colspan => "2", :style => "text-align:center;"}
                   = appointment_form.datepicker :completed_at, size: 18, dateFormat: "yy-mm-dd"
@@ -47,6 +47,8 @@
                   = appointment_form.object.visit_group.name
                 %th
                   R Quantity
+                %th
+                  T Quantity
                 %th
                   Unit Cost
                 %th
@@ -60,7 +62,8 @@
                       %td.highlighted.text-center= procedure_form.check_box :completed
                     -else
                       %td.highlighted.text-center= procedure_form.check_box :completed, :checked => true
-                    %td.text-center= procedure_form.text_field :r_quantity, value: procedure_form.object.default_quantity, size: 5, :class => 'procedure_qty'
+                    %td.text-center= procedure_form.text_field :r_quantity, value: procedure_form.object.default_r_quantity, size: 5, :class => 'procedure_qty'
+                    %td.text-center= procedure_form.text_field :t_quantity, value: procedure_form.object.default_t_quantity, size: 5, :class => 'procedure_qty'
                     %td.unit_cost_cell.text-center
                       $
                       %span= procedure_form.object.line_item.per_unit_cost

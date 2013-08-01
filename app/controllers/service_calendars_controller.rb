@@ -41,13 +41,9 @@ class ServiceCalendarsController < ApplicationController
       @line_items_visit.update_attribute(:subject_count, qty)
     elsif tab == 'template' and visit.research_billing_qty.to_i <= 0 and checked == 'true'
       # set quantity and research billing qty to 1
-      visit.update_attribute(:quantity, visit.line_items_visit.line_item.service.displayed_pricing_map.unit_minimum)
-      visit.update_attribute(:research_billing_qty, visit.line_items_visit.line_item.service.displayed_pricing_map.unit_minimum)
+      visit.update_attributes(:quantity => visit.line_items_visit.line_item.service.displayed_pricing_map.unit_minimum, :research_billing_qty => visit.line_items_visit.line_item.service.displayed_pricing_map.unit_minimum)
     elsif tab == 'template' and checked == 'false'
-      visit.update_attribute(:quantity, 0)
-      visit.update_attribute(:research_billing_qty, 0)
-      visit.update_attribute(:insurance_billing_qty, 0)
-      visit.update_attribute(:effort_billing_qty, 0)
+      visit.update_attributes(:quantity => 0, :research_billing_qty => 0, :insurance_billing_qty => 0, :effort_billing_qty => 0)
     elsif tab == 'quantity'
       @errors = "Quantity must be greater than zero" if qty < 0
       visit.update_attribute(:quantity, qty) unless qty < 0

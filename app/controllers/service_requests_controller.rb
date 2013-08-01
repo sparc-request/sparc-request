@@ -328,8 +328,7 @@ class ServiceRequestsController < ApplicationController
     @previously_approved = true
  
     if @approval and @approval.identity.nil?
-      @approval.update_attribute(:identity_id, current_user.id)
-      @approval.update_attribute(:approval_date, Time.now)
+      @approval.update_attributes(:identity_id => current_user.id, :approval_date => Time.now)
       @previously_approved = false 
     end
   end

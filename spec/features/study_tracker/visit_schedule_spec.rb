@@ -90,5 +90,23 @@ describe "visit schedule", :js => true do
         page.should have_content("Messages all up in this place.")
       end
     end
+
+    describe "changing the r quantity" do
+
+      it "should save the new quantity" do
+        first(".procedure_r_qty").set("10")
+        click_button "Save Appointments"
+        first(".procedure_r_qty").should have_value("10")
+      end
+    end
+
+    describe "changing the t quantity" do
+
+      it "should save the new quantity" do
+        first(".procedure_t_qty").set("10")
+        click_button "Save Appointments"
+        first(".procedure_t_qty").should have_value("10")
+      end
+    end
   end
 end

@@ -12,11 +12,6 @@ describe "procedure" do
 
 	context "visit schedule methods" do
 
-		# let!(:core)              { FactoryGirl.create(:core, name: 'Nursing Core') }
-		# let!(:service)           { FactoryGirl.create(:service, name: 'Procedural Service', organization_id: core.id) }
-		# let!(:service2)          { FactoryGirl.create(:service, name: 'Ad-Hoc Service', organization_id: core.id) }
-		# let!(:service_request)   { FactoryGirl.create(:service_request) }
-		# let!(:line_item)         { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id) }
 		let!(:visit)             { FactoryGirl.create(:visit, research_billing_qty: 10, insurance_billing_qty: 10) }  
 		let(:procedure)          { FactoryGirl.create(:procedure, visit_id: visit.id, line_item_id: line_item.id) }
 		let(:procedure2)         { FactoryGirl.create(:procedure, visit_id: visit.id, service_id: service2.id) }
@@ -58,15 +53,27 @@ describe "procedure" do
 			
 		end
 
-		describe 'default quantity' do
+		describe 'default research quantity' do
 
 			it "should return the visit's research billing quantity if not set" do
-				procedure.default_quantity.should eq(10)
+				procedure.default_r_quantity.should eq(10)
 			end
 
 			it "should return its own quantity if set" do
-				procedure.update_attributes(quantity: 5)
-				procedure.default_quantity.should eq(5)
+				procedure.update_attributes(r_quantity: 5)
+				procedure.default_r_quantity.should eq(5)
+			end
+		end
+
+		describe 'default insurance quantity' do
+
+			it "should return the visit's insurance billing quantity if not set" do
+				procedure.default_t_quantity.should eq(10)
+			end
+
+			it "should return its own quantity if set" do
+				procedure.update_attributes(t_quantity: 5)
+				procedure.default_t_quantity.should eq(5)
 			end
 
 		end
@@ -83,7 +90,7 @@ describe "procedure" do
 
 			it "should return new total if quantity is changed" do
 				procedure.total.should eq(10000)
-				procedure.update_attributes(quantity: 5)
+				procedure.update_attributes(r_quantity: 5)
 				procedure.total.should eq(5000)
 			end
 		end

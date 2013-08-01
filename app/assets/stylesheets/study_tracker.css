@@ -37,6 +37,12 @@ table.study_tracker_table {
   margin: 3px 10px 0 0;
   font-weight:bold;
 }
+td.highlighted {
+  background-color:#FFEF8F;
+}
+td.text-center {
+  text-align:center;
+}
 .comments {
   color:#362B36;
 }
@@ -53,4 +59,8 @@ table.study_tracker_table {
   height:100px;
   width:100%;
   margin-bottom:5px;
+}
+
+.procedure_r_qty, .procedure_t_qty {
+  text-align: right;
 }

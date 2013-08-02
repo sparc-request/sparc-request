@@ -4,10 +4,12 @@ class Procedure < ActiveRecord::Base
   belongs_to :appointment
   belongs_to :visit
   belongs_to :line_item
+  belongs_to :service
   attr_accessible :appointment_id
   attr_accessible :visit_id
   attr_accessible :line_item_id
   attr_accessible :completed
+  attr_accessible :service_id
   attr_accessible :r_quantity
   attr_accessible :t_quantity
 
@@ -15,8 +17,12 @@ class Procedure < ActiveRecord::Base
     self.visit.to_be_performed?
   end
 
+  def display_service_name
+    self.service ? self.try(:service).try(:name) : self.try(:line_item).try(:service).try(:name)
+  end
+
   def core
-    self.line_item.service.organization
+    self.service ? self.try(:service).try(:organization) : self.try(:line_item).try(:service).try(:organization)
   end
 
   # This method is primarily for setting the initial r_quantity values on the visit calendar in 

@@ -172,6 +172,14 @@ class Arm < ActiveRecord::Base
     end
   end
 
+  def populate_new_subjects
+    self.subjects.each do |subject|
+      if subject.calendar.appointments.empty?
+        subject.calendar.populate(self.visit_groups)
+      end
+    end
+  end
+
   def update_visit_group_day day, position
     position = position.blank? ? self.visit_groups.count - 1 : position.to_i
     before = self.visit_groups[position - 1] unless position == 0

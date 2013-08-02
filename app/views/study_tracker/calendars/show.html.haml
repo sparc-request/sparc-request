@@ -66,7 +66,7 @@
                     %td.text-center= procedure_form.text_field :t_quantity, value: procedure_form.object.default_t_quantity, size: 5, :class => 'procedure_t_qty'
                     %td.unit_cost_cell.text-center
                       $
-                      %span= procedure_form.object.line_item.per_unit_cost
+                      %span= procedure_form.object.cost
                     %td.procedure_total_cell.text-center
                       $
                       %span= procedure_form.object.total

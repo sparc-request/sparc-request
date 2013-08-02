@@ -85,7 +85,7 @@ describe "visit schedule", :js => true do
     describe "adding a message" do
 
       it "should save the message and display it on the page" do
-        first("#notes").set("Messages all up in this place.")
+        retry_until { first("#notes").set("Messages all up in this place.") }
         first('.add_comment_link').click
         page.should have_content("Messages all up in this place.")
       end
@@ -94,7 +94,7 @@ describe "visit schedule", :js => true do
     describe "changing the r quantity" do
 
       it "should save the new quantity" do
-        first(".procedure_r_qty").set("10")
+        retry_until { first(".procedure_r_qty").set("10") }
         click_button "Save Appointments"
         first(".procedure_r_qty").should have_value("10")
       end
@@ -103,7 +103,7 @@ describe "visit schedule", :js => true do
     describe "changing the t quantity" do
 
       it "should save the new quantity" do
-        first(".procedure_t_qty").set("10")
+        retry_until { first(".procedure_t_qty").set("10") }
         click_button "Save Appointments"
         first(".procedure_t_qty").should have_value("10")
       end

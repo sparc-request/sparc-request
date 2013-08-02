@@ -29,7 +29,11 @@ class Procedure < ActiveRecord::Base
   # clinical work fulfillment.
   def default_r_quantity
     service_quantity = self.r_quantity
-    service_quantity ||= self.visit.research_billing_qty
+    if self.service
+      service_quantity ||= 0
+    else
+      service_quantity ||= self.visit.research_billing_qty
+    end
     service_quantity
   end
 
@@ -37,20 +41,41 @@ class Procedure < ActiveRecord::Base
   # clinical work fulfillment.
   def default_t_quantity
     service_quantity = self.t_quantity
-    service_quantity ||= self.visit.insurance_billing_qty
+    if self.service
+      service_quantity ||= 0
+    else
+      service_quantity ||= self.visit.insurance_billing_qty
+    end
     service_quantity
+  end
+
+  def cost
+    if self.service
+      funding_source = self.appointment.calendar.subject.arm.service_request.protocol.funding_source_based_on_status #OHGOD
+      organization = service.organization
+      pricing_map = service.current_pricing_map
+      pricing_setup = organization.current_pricing_setup
+      rate_type = pricing_setup.rate_type(funding_source)
+      return (pricing_map.full_rate * (pricing_setup.applied_percentage(rate_type) / 100)).to_f
+    else
+      return (self.line_item.per_unit_cost(self.visit.research_billing_qty) / 100).to_f
+    end
   end
 
   # Totals up a given row on the visit schedule
   def total
-    self.default_r_quantity * self.line_item.per_unit_cost
+    self.default_r_quantity * self.cost
   end
 
   def should_be_displayed
-    if (self.visit.research_billing_qty && self.visit.research_billing_qty > 0) or (self.visit.insurance_billing_qty && self.visit.insurance_billing_qty > 0)
+    if self.service
       return true
     else
-      return false
+      if (self.visit.research_billing_qty && self.visit.research_billing_qty > 0) or (self.visit.insurance_billing_qty && self.visit.insurance_billing_qty > 0)
+        return true
+      else
+        return false
+      end
     end
   end
 end

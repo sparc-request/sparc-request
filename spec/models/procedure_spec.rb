@@ -55,25 +55,72 @@ describe "procedure" do
 
 		describe 'default research quantity' do
 
-			it "should return the visit's research billing quantity if not set" do
-				procedure.default_r_quantity.should eq(10)
+			context 'when attached to a line item' do
+			
+				it "should return the visit's research billing quantity if not set" do
+					procedure.default_r_quantity.should eq(10)
+				end
+
+				it "should return its own quantity if set" do
+					procedure.update_attributes(r_quantity: 5)
+					procedure.default_r_quantity.should eq(5)
+				end
+
 			end
 
-			it "should return its own quantity if set" do
-				procedure.update_attributes(r_quantity: 5)
-				procedure.default_r_quantity.should eq(5)
+			context 'when attached to a service' do
+
+				it "should return zero if quantity is not set" do
+					procedure2.default_r_quantity.should eq(0)
+				end
+
+				it "should return its own quantity if set" do
+					procedure2.update_attributes(r_quantity: 5)
+					procedure2.default_r_quantity.should eq(5)
+				end
+
 			end
+
 		end
 
 		describe 'default insurance quantity' do
 
-			it "should return the visit's insurance billing quantity if not set" do
-				procedure.default_t_quantity.should eq(10)
+			context "when attached to a line item" do
+
+				it "should return the visit's insurance billing quantity if not set" do
+					procedure.default_t_quantity.should eq(10)
+				end
+
+				it "should return its own quantity if set" do
+					procedure.update_attributes(t_quantity: 5)
+					procedure.default_t_quantity.should eq(5)
+				end
+
 			end
 
-			it "should return its own quantity if set" do
-				procedure.update_attributes(t_quantity: 5)
-				procedure.default_t_quantity.should eq(5)
+			context "when attached to a service" do
+
+				it "should return zero if quantity is not set" do
+					procedure2.default_t_quantity.should eq(0)
+				end
+
+				it "should return its own quantity if set" do
+					procedure2.update_attributes(t_quantity: 5)
+					procedure2.default_t_quantity.should eq(5)
+				end
+
+			end
+
+		end
+
+		describe "cost" do
+
+			it "should return the cost when attached to a line item" do
+				procedure.cost.should eq(10.0)
+			end
+
+			it "should return the cost when attached to a service" do
+				procedure.cost.should eq(10.0)
 			end
 
 		end
@@ -85,13 +132,13 @@ describe "procedure" do
       end
 
 			it "should return the correct total" do
-				procedure.total.should eq(10000)
+				procedure.total.should eq(100.0)
 			end
 
 			it "should return new total if quantity is changed" do
-				procedure.total.should eq(10000)
+				procedure.total.should eq(100.0)
 				procedure.update_attributes(r_quantity: 5)
-				procedure.total.should eq(5000)
+				procedure.total.should eq(50.0)
 			end
 		end
 	end

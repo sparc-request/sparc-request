@@ -294,13 +294,21 @@ class ServiceRequestsController < ApplicationController
     send_notifications(@service_request, @sub_service_request)
 
     if current_user == @protocol.primary_principal_investigator
-      push_protocol_to_epic
+      push_protocol_to_epic @protocol
     else
       #send notification to Primary PI and Leila
       @protocol.awaiting_approval_for_epic_push
       send_primary_pi_epic_notification(@service_request)
     end
 
+    render :formats => [:html]
+  end
+
+  def approve_epic_rights
+    @service_request = ServiceRequest.find params[:id]
+    @protocol = @service_request.protocol
+
+    push_protocol_to_epic @protocol
     render :formats => [:html]
   end
 
@@ -581,7 +589,7 @@ class ServiceRequestsController < ApplicationController
     Notifier.notify_primary_pi(service_request).deliver
   end
 
-  def push_protocol_to_epic
+  def push_protocol_to_epic protocol
     # Run the push to epic call in a child thread, so that we can return
     # the confirmation page right away without blocking (in testing, the
     # push to epic can take as long as 20 seconds).  This call will
@@ -597,7 +605,7 @@ class ServiceRequestsController < ApplicationController
     #
     Thread.new do
       begin
-        @protocol.push_to_epic(EPIC_INTERFACE)
+        protocol.push_to_epic(EPIC_INTERFACE)
       rescue Exception => e
         Rails.logger.error(e)
       ensure

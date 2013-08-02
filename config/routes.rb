@@ -30,6 +30,7 @@ SparcRails::Application.routes.draw do
       get 'refresh_service_calendar'
       get 'save_and_exit'
       get 'approve_changes'
+      get 'approve_epic_rights'
     end
 
     collection do

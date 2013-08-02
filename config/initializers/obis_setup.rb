@@ -2,6 +2,7 @@ begin
   application_config ||= YAML.load_file(Rails.root.join('config', 'application.yml'))[Rails.env]
   DEFAULT_MAIL_TO      = application_config['default_mail_to']
   ADMIN_MAIL_TO        = application_config['admin_mail_to']
+  EPIC_RIGHTS_MAIL_CC  = application_config['approve_epic_rights_mail_cc']
   FEEDBACK_MAIL_TO     = application_config['feedback_mail_to']
   NEW_USER_CC          = application_config['new_user_cc']
   ROOT_URL             = application_config['root_url']

@@ -173,7 +173,7 @@ class LineItem < ActiveRecord::Base
     procedures = self.procedures
     procedures.each do |pro|
       if pro.completed
-        pro.update_attributes(service_id: pro.line_item.service_id)
+        pro.update_attributes(service_id: self.service_id)
       else
         pro.destroy
       end

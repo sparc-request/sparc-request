@@ -859,6 +859,7 @@ en:
       amt_received: "Amount Received"
       date_received: "Date Received"
       pay_method: "Payment Method"
+      percent_subsidy: "Percent Subsidy"
       details: "Details"
       documents: "Documents"
       prompt: ""

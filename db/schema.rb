@@ -481,6 +481,7 @@ ActiveRecord::Schema.define(:version => 20130802132736) do
     t.text     "details"
     t.datetime "created_at",                                            :null => false
     t.datetime "updated_at",                                            :null => false
+    t.float    "percent_subsidy"
   end
 
   add_index "payments", ["sub_service_request_id"], :name => "index_payments_on_sub_service_request_id"

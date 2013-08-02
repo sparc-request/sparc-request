@@ -9,6 +9,7 @@ class Payment < ActiveRecord::Base
   attr_accessible :payment_method
   attr_accessible :details
   attr_accessible :uploads_attributes
+  attr_accessible :percent_subsidy
   
   validates :date_submitted, presence: true
   validates :amount_invoiced, numericality: true

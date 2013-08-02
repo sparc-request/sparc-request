@@ -45,6 +45,7 @@ describe "payments", js: true do
         p.amount_received.should == 400.0
         p.date_received.should == Date.new(2013, 6, 14)
         p.payment_method.should == "Check"
+        p.percent_subsidy.should == 50.0
         p.details.should == "Some details"
       end
 

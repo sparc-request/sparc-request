@@ -30,6 +30,7 @@ describe "study schedule", :js => true do
 
     describe "display rates" do
       it "should not show the full rate if your cost > full rate" do
+        sleep 15
         first(".service_rate_#{arm1.line_items_visits.first.id}").should have_exact_text("")
       end
     end

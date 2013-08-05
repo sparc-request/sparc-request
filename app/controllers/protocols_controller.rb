@@ -61,6 +61,7 @@ class ProtocolsController < ApplicationController
             json: {
               last_epic_push_time: @protocol.last_epic_push_time,
               last_epic_push_status: @protocol.last_epic_push_status,
+              last_epic_push_status_text: EPIC_PUSH_STATUS_TEXT[@protocol.last_epic_push_status],
             })
       }
     end

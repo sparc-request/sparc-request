@@ -131,11 +131,17 @@ describe "procedure" do
         line_item.stub!(:applicable_rate) { 100 }
       end
 
+      it 'should return zero if procedure is not completed' do
+      	procedure.total.should eq(0.00)
+    	end
+
 			it "should return the correct total" do
+				procedure.update_attribute(:completed, true)
 				procedure.total.should eq(100.0)
 			end
 
 			it "should return new total if quantity is changed" do
+				procedure.update_attribute(:completed, true)
 				procedure.total.should eq(100.0)
 				procedure.update_attributes(r_quantity: 5)
 				procedure.total.should eq(50.0)

@@ -67,7 +67,7 @@ class Procedure < ActiveRecord::Base
     if self.completed?
       return self.default_r_quantity * self.cost
     else
-      return 0.0
+      return 0.00
     end
   end
 

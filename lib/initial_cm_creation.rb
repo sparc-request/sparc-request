@@ -74,16 +74,21 @@ def create_identity
   args[:first_name] = ask("Identity First Name: ")
   args[:last_name]  = ask("Identity Last Name: ")
   args[:password]   = ask("Identity password: ") { |q| q.echo = '*' }
-  args[:password_confirmation] = ask("Confirm password: ")
+  args[:password_confirmation] = ask("Confirm password: ") { |q| q.echo = '*' }
 
   print_breakline
   puts "Creating Identity..."
   print_breakline
 
-  identity = Identity.create(args)
+  if identity = Identity.find_by_ldap_uid(args[:ldap_uid]) then
+    identity.update_attributes(args)
+  else
+    identity = Identity.create(args)
+  end
+
   print_breakline
 
-  if identity.errors then
+  if identity.errors.size > 0 then
     puts "FAILED: #{identity.errors.inspect}"
     gets
     return

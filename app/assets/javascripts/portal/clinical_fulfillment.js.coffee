@@ -1,7 +1,7 @@
 $(document).ready ->
 
 
-####Triggers:
+  ####Triggers:
   $(document).on('change', '.clinical_select_data', ->
     $('#visit_form .spinner_wrapper').show()
     visit_name = $('option:selected', this).attr('data-appointment_id')
@@ -44,26 +44,25 @@ $(document).ready ->
   )
 
 
-####Totals functions:
+  ####Totals functions:
   recalc_row_totals = () ->
     $('td.unit_cost_cell:visible').each ->
       if $(this).siblings("td.check_box_cell").children("input[type=checkbox]").prop('checked')
-        console.log("Is Checked...")
         #Do calculations, and set the correct totall
-        unit_cost = $(this).children('span').text()
+        unit_cost = $(this).text().replace('$', '')
         r_qty = $(this).siblings('td.r_qty_cell').children('input').val()
         total = unit_cost * r_qty
-        $(this).siblings('td.procedure_total_cell').children('span').text(total)
+        $(this).siblings('td.procedure_total_cell').text('$' + commaSeparateNumber(total.toFixed(2)))
       else
         #Set to zero
-        $(this).siblings('td.procedure_total_cell').children('span').text("0")
+        $(this).siblings('td.procedure_total_cell').text('$0.00')
 
   recalc_subtotal = () ->
     subtotal = 0
-    $('td.procedure_total_cell span:visible').each ->
-      value = $(this).text()
+    $('td.procedure_total_cell:visible').each ->
+      value = $(this).text().replace('$', '')
       subtotal += parseFloat(value)  if not isNaN(value) and value.length isnt 0
-    $('tr.grand_total_row td span').text(subtotal)
+    $('tr.grand_total_row td.grand_total_cell').text('$' + commaSeparateNumber(subtotal.toFixed(2)))
 
 
   ####Comments Logic:
@@ -102,3 +101,10 @@ $(document).ready ->
   $(document).on "nested:fieldAdded:payments", (event) ->
     default_percent_subsidy = $('.payments_add_button').data('default-percent-subsidy')
     event.field.find(".new_percent_subsidy").val(default_percent_subsidy)
+
+
+  ####Support Functions
+  commaSeparateNumber = (val) ->
+    while (/(\d+)(\d{3})/.test(val.toString()))
+      val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2')
+    return val;

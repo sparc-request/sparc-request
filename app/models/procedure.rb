@@ -64,7 +64,11 @@ class Procedure < ActiveRecord::Base
 
   # Totals up a given row on the visit schedule
   def total
-    self.default_r_quantity * self.cost
+    if self.completed?
+      return self.default_r_quantity * self.cost
+    else
+      return 0.0
+    end
   end
 
   def should_be_displayed

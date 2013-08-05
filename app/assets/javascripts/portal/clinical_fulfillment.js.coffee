@@ -1,5 +1,7 @@
 $(document).ready ->
 
+
+####Triggers:
   $(document).on('change', '.clinical_select_data', ->
     $('#visit_form .spinner_wrapper').show()
     visit_name = $('option:selected', this).attr('data-appointment_id')
@@ -26,7 +28,36 @@ $(document).ready ->
       recalc_subtotal()
     ), 250)
   )
- 
+
+  $(document).on('click', '.check_box_cell input', ->
+    recalc_row_totals()
+    recalc_subtotal()
+  )
+
+  $(document).on('change', '.r_qty_cell input', ->
+    recalc_row_totals()
+    recalc_subtotal()
+  )
+
+  $(document).on('change', 'form.edit_subject', ->
+    $('#save_alert').show()
+  )
+
+
+####Totals functions:
+  recalc_row_totals = () ->
+    $('td.unit_cost_cell:visible').each ->
+      if $(this).siblings("td.check_box_cell").children("input[type=checkbox]").prop('checked')
+        console.log("Is Checked...")
+        #Do calculations, and set the correct totall
+        unit_cost = $(this).children('span').text()
+        r_qty = $(this).siblings('td.r_qty_cell').children('input').val()
+        total = unit_cost * r_qty
+        $(this).siblings('td.procedure_total_cell').children('span').text(total)
+      else
+        #Set to zero
+        $(this).siblings('td.procedure_total_cell').children('span').text("0")
+
   recalc_subtotal = () ->
     subtotal = 0
     $('td.procedure_total_cell span:visible').each ->
@@ -34,17 +65,8 @@ $(document).ready ->
       subtotal += parseFloat(value)  if not isNaN(value) and value.length isnt 0
     $('tr.grand_total_row td span').text(subtotal)
 
-  $('#ssr_save').button()
 
-  $('#ssr_save').on 'click', -> 
-    routing = $('#ssr_routing').val()
-    ssr_id = $('#ssr_routing').data('ssr_id')
-    $.ajax
-      type: "PUT"
-      url: "/study_tracker/sub_service_requests/#{ssr_id}"
-      data: { "sub_service_request[routing]": routing }
-    return false
-
+  ####Comments Logic:
   $(document).on('click', '.add_comment_link', ->
     app_id = $(this).data('appointment_id')
     data =
@@ -62,6 +84,21 @@ $(document).ready ->
         $('.comments:visible').html(html)
   )
 
+
+  ####Sub Service Request Save button
+  $('#ssr_save').button()
+
+  $('#ssr_save').on 'click', -> 
+    routing = $('#ssr_routing').val()
+    ssr_id = $('#ssr_routing').data('ssr_id')
+    $.ajax
+      type: "PUT"
+      url: "/study_tracker/sub_service_requests/#{ssr_id}"
+      data: { "sub_service_request[routing]": routing }
+    return false
+
+
+  ####Payments logic (Andrew)
   $(document).on "nested:fieldAdded:payments", (event) ->
     default_percent_subsidy = $('.payments_add_button').data('default-percent-subsidy')
     event.field.find(".new_percent_subsidy").val(default_percent_subsidy)

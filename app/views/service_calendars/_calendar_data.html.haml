@@ -59,7 +59,7 @@
             - else
               %td.service_name= line_item.service.display_service_name
             - unless @portal
-              %td{:class => "service_rate_#{line_items_visit.id}"}= display_service_rate line_item
+              %td.service_rate{:class => "service_rate_#{line_items_visit.id}"}= display_service_rate line_item
               %td.your_cost= display_your_cost line_item
               %td.unit_type= line_item.service.displayed_pricing_map.unit_type
             %td.subject_count= select_tag "line_items_visit_#{line_items_visit.id}_count", options_for_select((1..arm.subject_count), line_items_visit.subject_count), :class => 'line_items_visit_subject_count', :update => "/service_requests/#{line_item.service_request_id}/service_calendars?line_items_visit=#{line_items_visit.id}&tab=template&portal=#{@portal}"
@@ -74,8 +74,8 @@
             - if @portal
               %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-line_items_visit_id' => line_items_visit.id, :'data-has_popup' => "true", :class => "delete_data")
             - else
-              %td{:class => "total_#{line_items_visit.id}"}= display_visit_based_direct_cost(line_items_visit)
-              %td{:class => "total_#{line_items_visit.id}_per_study"}= display_visit_based_direct_cost_per_study(line_items_visit)
+              %td.pp_line_item_total{:class => "total_#{line_items_visit.id}"}= display_visit_based_direct_cost(line_items_visit)
+              %td.pp_line_item_study_total{:class => "total_#{line_items_visit.id}_per_study"}= display_visit_based_direct_cost_per_study(line_items_visit)
       - unless @portal
         %tr.totals_section.begin_totals{:class => cycle('odd', '', :name => 'pppvs')}
           %td{:colspan => 5}= t("calendar_page.labels.maximum_direct")

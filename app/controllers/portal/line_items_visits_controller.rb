@@ -34,6 +34,7 @@ class Portal::LineItemsVisitsController < Portal::BaseController
     @selected_arm = @service_request.arms.first
     line_item = @line_items_visit.line_item
     @study_tracker = params[:study_tracker] == "true"
+    @line_items = @sub_service_request.line_items
 
     ActiveRecord::Base.transaction do
       @line_items_visit.remove_procedures

@@ -34,6 +34,7 @@ class Portal::LineItemsController < Portal::BaseController
     percent = @subsidy.try(:percent_subsidy).try(:*, 100)
     @selected_arm = @service_request.arms.first
     @study_tracker = params[:study_tracker] == "true"
+    @line_items = @sub_service_request.line_items
     
     if @line_item.destroy
       # Have to reload the service request to get the correct direct cost total for the subsidy

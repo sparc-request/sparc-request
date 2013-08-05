@@ -98,6 +98,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     @arm_id = params[:arm_id].to_i if params[:arm_id]
     @selected_arm = params[:arm_id] ? Arm.find(@arm_id) : @service_request.arms.first
     @study_tracker = params[:study_tracker] == "true"
+    @line_items = @sub_service_request.line_items
     
     if @sub_service_request.create_line_item(
         service_id: params[:new_service_id],

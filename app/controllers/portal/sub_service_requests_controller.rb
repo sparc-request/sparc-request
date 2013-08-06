@@ -231,4 +231,27 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     redirect_to "/portal/admin"
   end
 
+  def push_to_epic
+    sub_service_request = SubServiceRequest.find(params[:id])
+    begin
+      sub_service_request.service_request.protocol.push_to_epic(EPIC_INTERFACE)
+
+      respond_to do |format|
+        format.json {
+          render(
+              status: 200,
+              json: {})
+        }
+      end
+    rescue
+      respond_to do |format|
+        format.json {
+          render(
+              status: 500,
+              json: [$!.message])
+        }
+      end
+    end
+  end
+
 end

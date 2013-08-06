@@ -63,12 +63,12 @@ describe "editing a study" do
 
   before :each do
     visit protocol_service_request_path service_request.id
+    click_button("Edit Study")
   end
 
   describe "editing the short title", :js => true do
 
     it "should save the short title" do
-      click_button("Edit Study")
       select "Funded", :from => "study_funding_status"
       select "Federal", :from => "study_funding_source"
       fill_in "study_short_title", :with => "Bob"
@@ -77,6 +77,60 @@ describe "editing a study" do
       wait_for_javascript_to_finish
 
       find("#study_short_title").should have_value("Bob")
+    end
+  end
+
+  describe "setting epic access", :js => true do
+    it 'should default to no' do
+      find("#study_project_roles_attributes_#{jug2.id}_epic_access_false").should be_checked
+    end
+
+    context "selecting yes button" do
+      before :each do
+        @project_role = study.project_roles.first
+        choose "epic_access_yes_#{@project_role.id}"
+      end
+
+      it "should display the access rights pop up box" do
+        find(".epic_access_dialog#project_role_#{@project_role.id}").should be_visible
+      end
+
+      it "should save selected access rights" do
+        wait_for_javascript_to_finish
+        dialog = find(".epic_access_dialog#project_role_#{@project_role.id}")
+        check_boxes = dialog.all('.epic_access_check_box')
+        check_boxes[1].set(true)
+        check_boxes[3].set(true)
+        click_button "Ok"
+        find(:xpath, "//input[@alt='SaveAndContinue']").click
+
+        retry_until {
+          @project_role.reload
+          @project_role.epic_rights.count.should eq(2)
+        }
+
+        click_button "Edit Study"
+        dialog = find(".epic_access_dialog#project_role_#{@project_role.id}")
+        check_boxes = dialog.all('.epic_access_check_box')
+        check_boxes[1].should be_checked
+        check_boxes[3].should be_checked
+      end
+    end
+
+    context "selecting the edit button" do
+      before :each do
+        @project_role = study.project_roles.first
+        all(".epic_access_edit").first.click
+      end
+
+      it "should display the access rights pop up box" do
+        find(".epic_access_dialog#project_role_#{@project_role.id}").should be_visible
+      end
+
+      it "should select the yes button" do
+        click_button 'Ok'
+        find("#epic_access_yes_#{@project_role.id}").should be_checked
+      end
     end
   end
 end

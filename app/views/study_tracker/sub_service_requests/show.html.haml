@@ -28,7 +28,7 @@
             = link_to t(:study_tracker)[:save], "javascript:void();", :id => 'ssr_save'
             %span.routing_message.icon
 
-.tabs
+#study_tracker_tabs
   %ul
     %li= link_to t(:study_tracker)[:dashboard][:tabs][:study_schedule], "#study_schedule", :class => 'study_schedule-tab'
     %li= link_to t(:study_tracker)[:dashboard][:tabs][:subject_tracker], "#subject_tracker", :class => 'subject_tracker-tab'

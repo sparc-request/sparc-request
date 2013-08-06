@@ -23,7 +23,6 @@ class Service < ActiveRecord::Base
   # Surveys associated with this service
   has_many :associated_surveys, :as => :surveyable
 
-  attr_accessible :obisid
   attr_accessible :name
   attr_accessible :abbreviation
   attr_accessible :order
@@ -34,6 +33,8 @@ class Service < ActiveRecord::Base
   attr_accessible :charge_code
   attr_accessible :revenue_code
   attr_accessible :organization_id
+  attr_accessible :cdm_code
+  attr_accessible :send_to_epic
 
   validate :validate_pricing_maps_present
   

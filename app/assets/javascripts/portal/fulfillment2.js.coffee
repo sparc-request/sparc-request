@@ -455,10 +455,31 @@ $(document).ready ->
       type: 'DELETE'
       url:  "/portal/admin/delete_toast_message/#{toast_id}"
 
+  $('.send_to_epic_button').on('click', ->
+    ssr_id = $(this).attr('sub_service_request_id')
+    $(this).button('disable')
+    $.ajax
+      type: 'PUT'
+      url: "/portal/admin/sub_service_requests/#{ssr_id}/push_to_epic"
+      contentType: 'application/json; charset=utf-8'
+      success: ->
+        $().toastmessage('showSuccessToast', "Project/Study has been pushed to Epic")
+      error: (jqXHR, textStatus, errorThrown) ->
+        if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'application/json'
+          errors = JSON.parse(jqXHR.responseText)
+        else
+          errors = [textStatus]
+        for error in errors
+          $().toastmessage('showErrorToast', "#{error.humanize()}.");
+      complete: =>
+        $(this).button('enable')
+  )
+
   # INSTANTIATE HELPERS
   # set_percent_subsidy()
   $('.delete-ssr-button').button()
   $('.export_to_excel_button').button()
+  $('.send_to_epic_button').button()
   $('#approval_history_table').tablesorter()
   $('#status_history_table').tablesorter()
 

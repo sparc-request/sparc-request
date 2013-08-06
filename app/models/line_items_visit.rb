@@ -20,29 +20,7 @@ class LineItemsVisit < ActiveRecord::Base
         subject_count: arm.subject_count)
   end
 
-  # def create_or_destroy_visits(visit_count = self.arm.visit_count || 0)
-  #   if visit_count == self.visits.count
-  #     # if we already have the right number of visits, then do nothing
-  #     return
-  #   end
-
-  #   ActiveRecord::Base.transaction do
-  #     if visit_count > self.visits.count
-  #       # if we don't have enough visits, then create them
-  #       difference = visit_count - self.visits.count
-  #       Visit.bulk_create(difference, :line_items_visit_id => self.id)
-
-  #     elsif arm.visit_count < self.visits.count
-  #       # if we have too many visits, then delete some
-  #       self.visits.last(self.visits.count - visit_count).each do |visit|
-  #         visit.delete
-  #       end
-  #     end
-  #   end
-  # end
-
   def create_visits
-    # Visit.bulk_create(self.arm.visit_count, :line_items_visit_id => self.id)
     ActiveRecord::Base.transaction do
       self.arm.visit_groups.each do |vg|
         self.add_visit(vg)

@@ -1901,6 +1901,10 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   font-size: 15px;
 }
 
+#push_to_epic_status {
+  margin-top: 10px;
+}
+
 #sparc_logo_header {
   background: #FFF;
   border-left: 1px solid #B2B2B2;
@@ -1908,10 +1912,6 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   display: block;
   margin-top: 8px;
   width: 960px;
-}
-
-#push_to_epic_status {
-  margin-top: 10px;
 }
 
 #processing_request {
@@ -1944,4 +1944,8 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 
 .line_item_quantity, .units_per_quantity {
   width: 30px;
+}
+
+.epic_rights_info {
+  font-style: italic;
 }

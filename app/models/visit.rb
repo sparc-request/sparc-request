@@ -1,5 +1,3 @@
-require "bulk_creatable"
-
 class Visit < ActiveRecord::Base
   audited
 
@@ -7,8 +5,6 @@ class Visit < ActiveRecord::Base
   has_many :procedures
   has_many :appointments, :through => :procedures
   belongs_to :visit_group
-
-  include BulkCreateable
 
   attr_accessible :line_items_visit_id
   attr_accessible :visit_group_id
@@ -34,7 +30,7 @@ class Visit < ActiveRecord::Base
   end
 
   def quantity_total
-    self.research_billing_qty + self.insurance_billing_qty + self.effort_billing_qty
+    return research_billing_qty.to_i + insurance_billing_qty.to_i + effort_billing_qty.to_i
   end
 
   def position

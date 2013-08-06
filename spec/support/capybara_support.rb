@@ -19,7 +19,6 @@ module CapybaraSupport
     institution = FactoryGirl.create(:institution,
       name:                 'Medical University of South Carolina',
       order:                1,
-      obisid:               '87d1220c5abf9f9608121672be000412',
       abbreviation:         'MUSC', is_available:         1)
     institution.save!
 
@@ -34,7 +33,6 @@ module CapybaraSupport
       name:                 'South Carolina Clinical and Translational Institute (SCTR)',
       order:                1,
       css_class:            'blue-provider',
-      obisid:               '87d1220c5abf9f9608121672be0011ff',
       parent_id:            institution.id,
       abbreviation:         'SCTR1',
       process_ssrs:         0,
@@ -53,7 +51,6 @@ module CapybaraSupport
       name:                 'Office of Biomedical Informatics',
       order:                1,
       description:          'The Biomedical Informatics Programs goal is to integrate..',
-      obisid:               '87d1220c5abf9f9608121672be021963',
       parent_id:            provider.id,
       abbreviation:         'Informatics',
       process_ssrs:         0,
@@ -71,7 +68,6 @@ module CapybaraSupport
       type:                 'Core',
       name:                 'Clinical Data Warehouse',
       order:                1,
-      obisid:               '179eae3982ab1e4047051381fb7b1610',
       parent_id:            program.id,
       abbreviation:         'Clinical Data Warehouse')
     core.save!
@@ -96,7 +92,6 @@ module CapybaraSupport
     program_service_pricing_map.save!
 
     program_service = FactoryGirl.create(:service,
-      obisid:               '87d1220c5abf9f9608121672be093511',
       name:                 'Human Subject Review',
       abbreviation:         'HSR',
       order:                1,
@@ -119,7 +114,6 @@ module CapybaraSupport
     service_pricing_map.save!
     
     service = FactoryGirl.create(:service,
-      obisid:               '87d1220c5abf9f9608121672be03867a',
       name:                 'MUSC Research Data Request (CDW)',
       abbreviation:         'CDW',
       order:                1,

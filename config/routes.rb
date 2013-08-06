@@ -33,6 +33,7 @@ SparcRails::Application.routes.draw do
       get 'refresh_service_calendar'
       get 'save_and_exit'
       get 'approve_changes'
+      get 'approve_epic_rights'
     end
 
     collection do
@@ -196,6 +197,7 @@ SparcRails::Application.routes.draw do
         member do
           put :update_from_fulfillment
           put :update_from_project_study_information
+          put :push_to_epic
           post :add_line_item
           post :new_document
           post :add_note

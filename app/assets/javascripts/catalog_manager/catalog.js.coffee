@@ -95,8 +95,8 @@ $ ->
       core:
         initially_open: 'root'
       plugins: ['html_data', 'search', 'ui', 'crrm', 'themeroller']
-      themes:
-        theme: 'default'
+      themeroller:
+        item: null
   .bind 'loaded.jstree', () ->
     $.each( $('a'), (i, x) ->
       remove_class = false

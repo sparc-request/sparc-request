@@ -24,7 +24,6 @@ class Organization < ActiveRecord::Base
   attr_accessible :order
   attr_accessible :css_class
   attr_accessible :description
-  attr_accessible :obisid
   attr_accessible :parent_id
   attr_accessible :abbreviation
   attr_accessible :ack_language

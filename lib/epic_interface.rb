@@ -2,10 +2,10 @@ require 'savon'
 require 'securerandom'
 require 'builder'
 
-# The Savon client by default does not allow adding new soap headers
-# except via the global configuration.  This monkey patch allows adding
-# soap headers via local (per-message) configuration.
 module Savon
+  # The Savon client by default does not allow adding new soap headers
+  # except via the global configuration.  This monkey patch allows adding
+  # soap headers via local (per-message) configuration.
   class LocalOptions < Options
     def soap_header(header)
       @options[:soap_header] = header
@@ -24,6 +24,14 @@ module Savon
       return header
     end
   end
+
+  # We also need to be able to grab the configured endpoint and put it
+  # into the wsa:To header.
+  class Client
+    def endpoint
+      return @globals[:endpoint] || @wsdl.endpoint
+    end
+  end
 end
 
 # Use this class to send protocols (studies/projects) along with their
@@ -38,18 +46,24 @@ class EpicInterface
 
     # TODO: grab these from the WSDL
     @namespace = @config['namespace'] || 'urn:ihe:qrph:rpe:2009'
-    @root = @config['study_root']
+    @study_root = @config['study_root'] || 'UNCONFIGURED'
     @epoch = Date.parse(@config['epoch'] || '2013-01-01')
 
     # TODO: I'm not really convinced that Savon is buying us very much
     # other than some added complexity, but it's working, so no point in
     # pulling it out.
+    #
+    # We must set namespace_identifier to nil here, in order to prevent
+    # Savon from prepending a wsdl: prefix to the
+    # RetrieveProtocolDefResponse tag and to force it to set an xmlns
+    # attribute (ensuring that all the children of the
+    # RetrieveProtocolDefResponse element are in the right namespace).
     @client = Savon.client(
         logger: Rails.logger,
         soap_version: 2,
         pretty_print_xml: true,
         convert_request_keys_to: :none,
-        namespace_identifier: 'rpe',
+        namespace_identifier: nil,
         namespace: @namespace,
         endpoint: @config['endpoint'],
         wsdl: @config['wsdl'],
@@ -65,8 +79,8 @@ class EpicInterface
   def soap_header(msg_type)
     soap_header = {
       'wsa:Action' => "#{@namespace}:#{msg_type}",
-      'wsa:MessageID' => SecureRandom.uuid,
-      'wsa:To' => @endpoint,
+      'wsa:MessageID' => "uuid:#{SecureRandom.uuid}",
+      'wsa:To' => @client.endpoint,
     }
 
     return soap_header
@@ -90,30 +104,8 @@ class EpicInterface
 
   # Send a study to the Epic InterConnect server.
   def send_study(study)
-    xml = Builder::XmlMarkup.new
-
-    xml.query(root: @root, extension: study.id)
-
-    xml.protocolDef {
-      xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
-        xml.id(root: @root, extension: study.id)
-        xml.title study.title
-        xml.text study.brief_description
-
-        study.project_roles.each do |project_role|
-          xml.subjectOf(typeCode: 'SUBJ') {
-            # TODO: only send primary PI as PI
-            xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
-              xml.code(code: project_role.role.upcase)
-              # TODO: 'CD' instead of 'ST' for PI and study coordinator
-              xml.value('xsi:type' => 'ST', value: project_role.identity.netid)
-            }
-          }
-        end
-      }
-    }
-
-    call('RetrieveProtocolDefResponse', xml.target!)
+    message = study_creation_message(study)
+    call('RetrieveProtocolDefResponse', message)
 
     # TODO: handle response from the server
   end
@@ -122,13 +114,58 @@ class EpicInterface
   # The study must have already been created (via #send_study) before
   # calling this method.
   def send_billing_calendar(study)
-    xml = Builder::XmlMarkup.new
+    message = study_calendar_definition_message(study)
+    call('RetrieveProtocolDefResponse', message)
 
-    xml.query(root: @root, extension: study.id)
+    # TODO: handle response from the server
+  end
+
+  # Build a study creation message to send to epic and return it as a
+  # string.
+  def study_creation_message(study)
+    xml = Builder::XmlMarkup.new(indent: 2)
+
+    xml.query(root: @study_root, extension: study.id)
 
     xml.protocolDef {
       xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
-        xml.id(root: @root, extension: study.id)
+        xml.id(root: @study_root, extension: study.id)
+        xml.title study.title
+        xml.text study.brief_description
+        # TODO: Add NCT # and IRB #
+
+        study.project_roles.each do |project_role|
+          next unless project_role.epic_access
+          xml.subjectOf(typeCode: 'SUBJ') {
+            xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
+              role_code = case project_role.role
+              when 'primary-pi' then 'PI'
+              else 'SC'
+              end
+              xml.code(code: role_code)
+              xml.value(
+                  'xsi:type' => 'CD',
+                  code: project_role.identity.netid.upcase,
+                  codeSystem: 'netid')
+            }
+          }
+        end
+      }
+    }
+
+    return xml.target!
+  end
+
+  # Bulid a study calendar definition message to send to epic and return
+  # it as a string.
+  def study_calendar_definition_message(study)
+    xml = Builder::XmlMarkup.new(indent: 2)
+
+    xml.query(root: @study_root, extension: study.id)
+
+    xml.protocolDef {
+      xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
+        xml.id(root: @study_root, extension: study.id)
         xml.title study.title
         xml.text study.brief_description
 
@@ -147,7 +184,7 @@ class EpicInterface
 
             xml.component4(typeCode: 'COMP') {
               xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-                xml.id(root: @root, extension: "STUDY#{study.id}.ARM#{arm.id}")
+                xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}")
                 xml.title(arm.name)
                 xml.code(code: 'CELL', codeSystem: 'n/a')
 
@@ -155,11 +192,13 @@ class EpicInterface
                   xml.sequenceNumber(value: arm_idx + 1) 
 
                   xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-                    xml.id(root: @root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE1")
+                    xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE1")
                     xml.title('Cycle 1')
                     xml.code(code: 'CYCLE', codeSystem: 'n/a')
 
                     xml.effectiveTime {
+                      # TODO: what to do if start_date or end_date is
+                      # null?
                       xml.low(value: service_request.start_date.strftime("%Y%m%d"))
                       xml.high(value: service_request.end_date.strftime("%Y%m%d"))
                     }
@@ -168,7 +207,7 @@ class EpicInterface
                       xml.component1(typeCode: 'COMP') {
                         xml.sequenceNumber(value: visit_group.position)
                         xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-                          xml.id(root: @root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE1.DAY#{visit_group.position}")
+                          xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE1.DAY#{visit_group.position}")
                           xml.title(visit_group.name)
                         }
                       }
@@ -187,18 +226,19 @@ class EpicInterface
 
               xml.component4(typeCode: 'COMP') {
                 xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-                  xml.id(root: @root, extension: "STUDY#{study.id}.ARM#{arm.id}.DAY#{visit_group.position}")
+                  xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.DAY#{visit_group.position}")
                   xml.title(visit_group.name)
                   xml.code(code: 'VISIT', codeSystem: 'n/a')
 
                   arm.line_items.each do |line_item|
                     xml.component1(typeCode: 'COMP') {
                       xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-                        xml.id(root: @root, extension: "STUDY#{study.id}.ARM#{arm.id}.DAY#{visit_group.position}.PROC#{line_item.id}")
+                        xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.DAY#{visit_group.position}.PROC#{line_item.id}")
                         xml.code(code: 'PROC', codeSystem: 'n/a')
 
                         xml.component2(typeCode: 'COMP') {
                           xml.procedure(classCode: 'PROC', moodCode: 'EVN') {
+                            # TODO: should be CDM code, not CPT code
                             xml.code(code: line_item.service.cpt_code, codeSystem: 'n/a')
                           }
                         }
@@ -226,14 +266,10 @@ class EpicInterface
             end
           end
         end
-
-
       }
     }
 
-    call('RetrieveProtocolDefResponse', xml.target!)
-
-    # TODO: handle response from the server
+    return xml.target!
   end
 
   # A "relative date" is represented in YYYYMMDD format and is

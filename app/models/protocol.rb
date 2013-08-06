@@ -12,6 +12,7 @@ class Protocol < ActiveRecord::Base
   has_many :service_requests
   has_many :affiliations, :dependent => :destroy
   has_many :impact_areas, :dependent => :destroy
+  has_many :arms, :dependent => :destroy
 
   attr_accessible :identity_id
   attr_accessible :next_ssr_id
@@ -60,6 +61,7 @@ class Protocol < ActiveRecord::Base
   accepts_nested_attributes_for :impact_areas, :allow_destroy => true
   accepts_nested_attributes_for :affiliations, :allow_destroy => true
   accepts_nested_attributes_for :project_roles, :allow_destroy => true
+  accepts_nested_attributes_for :arms, :allow_destroy => true
 
   validates :short_title, :presence => true
   validates :title, :presence => true

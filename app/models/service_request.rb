@@ -10,7 +10,6 @@ class ServiceRequest < ActiveRecord::Base
   has_many :approvals, :dependent => :destroy
   has_many :documents, :through => :sub_service_requests
   has_many :document_groupings, :dependent => :destroy
-  has_many :arms, :dependent => :destroy
 
   validation_group :protocol do
     validates :protocol_id, :presence => {:message => "You must identify the service request with a study/project before continuing."} 
@@ -76,11 +75,15 @@ class ServiceRequest < ActiveRecord::Base
 
   accepts_nested_attributes_for :line_items
   accepts_nested_attributes_for :sub_service_requests
-  accepts_nested_attributes_for :arms, :allow_destroy => true
+  # accepts_nested_attributes_for :arms, :allow_destroy => true
 
   alias_attribute :service_request_id, :id
 
   #after_save :fix_missing_visits
+
+  def arms
+    self.protocol.arms
+  end
 
   def service_details_page
     if has_per_patient_per_visit_services?

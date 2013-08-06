@@ -1,7 +1,7 @@
 class Arm < ActiveRecord::Base
   audited
 
-  belongs_to :service_request
+  belongs_to :protocol
 
   has_many :line_items_visits, :dependent => :destroy
   has_many :line_items, :through => :line_items_visits

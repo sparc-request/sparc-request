@@ -67,6 +67,19 @@
                 %td
                 %td
                 %td.grand_total_cell.text-center= number_to_currency(@default_subtotal)
+          .add_service
+            %div{:class => "core_#{@nursing.id}", :style => "display:block;"}
+              = select_tag :service, options_for_select(@nursing.services.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
+              = button_tag "Add Service", :class => 'cwf_add_service_button'
+            %div{:class => "core_#{@lab.id}"}
+              = select_tag :service, options_for_select(@lab.services.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
+              = button_tag "Add Service", :class => 'cwf_add_service_button'
+            %div{:class => "core_#{@imaging.id}"}
+              = select_tag :service, options_for_select(@imaging.services.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
+              = button_tag "Add Service", :class => 'cwf_add_service_button'
+            %div{:class => "core_#{@nutrition.id}"}
+              = select_tag :service, options_for_select(@nutrition.services.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
+              = button_tag "Add Service", :class => 'cwf_add_service_button'
           .comments
             = render :partial => "notes", :locals => {:appointment => appointment_form.object}
 

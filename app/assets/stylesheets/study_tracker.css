@@ -64,3 +64,13 @@ td.text-center {
 .procedure_r_qty, .procedure_t_qty {
   text-align: right;
 }
+.add_service {
+  margin:15px 0px;
+}
+.add_service select {
+  float:left;
+  margin-right:5px;
+}
+.add_service div {
+  display:none;
+}

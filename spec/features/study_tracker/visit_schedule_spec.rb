@@ -44,15 +44,6 @@ describe "visit schedule", :js => true do
         find("#subject_status").should have_value("Active")
       end
     end
-    
-    describe "checking completed" do
-
-      it "should place the procedure in completed status" do
-        check("subject_calendar_attributes_appointments_attributes_0_procedures_attributes_0_completed")
-        click_button "Save Appointments"
-        find("#subject_calendar_attributes_appointments_attributes_0_procedures_attributes_0_completed").should be_checked
-      end
-    end
 
     describe "changing the visit" do
 
@@ -106,6 +97,36 @@ describe "visit schedule", :js => true do
         retry_until { first(".procedure_t_qty").set("10") }
         click_button "Save Appointments"
         first(".procedure_t_qty").should have_value("10")
+      end
+    end
+
+    context "changing the totals" do
+
+      describe "checking completed" do
+
+        it "should be defaulted to checked" do
+          first(".procedure_box").should be_checked
+        end
+
+        it "should place the procedure in completed status" do
+          first(:css, ".procedure_box").set(false)
+          first(".procedure_box").should_not be_checked
+          first(:css, ".procedure_box").set(true)
+          click_button "Save Appointments"
+          first(".procedure_box").should be_checked
+        end
+
+        it "should display procedure's total as zero if left unchecked" do
+          first(:css, ".procedure_box").set(false)
+          first(".procedure_total_cell").should have_text("$0.00")
+        end
+
+        it "should diplay the correct total if it is checked" do
+          wait_for_javascript_to_finish
+          first(:css, ".procedure_box").set(false)
+          first(:css, ".procedure_box").set(true)
+          first(".procedure_total_cell").should have_text("$150.00")
+        end
       end
     end
   end

@@ -195,6 +195,12 @@ class Protocol < ActiveRecord::Base
     save(validate: false)
   end
 
+  def awaiting_final_review_for_epic_push
+    self.last_epic_push_time = nil
+    self.last_epic_push_status = 'awaiting_final_review'
+    save(validate: false)
+  end
+
   # Returns true if there is a push to epic in progress, false
   # otherwise.  If no push has been initiated, return false.
   def push_to_epic_in_progress?

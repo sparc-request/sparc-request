@@ -446,60 +446,74 @@ describe EpicInterface do
       node.should be_equivalent_to(expected.root).respecting_element_order
     end
 
-    it 'should not send line items that are not part of an arm' do
-      service_request = FactoryGirl.create(
-          :service_request,
-          protocol: study,
-          status: 'draft',
-          start_date: Time.now,
-          end_date: Time.now + 10.days)
+    context 'with line items' do
 
-      sub_service_request = FactoryGirl.create(
-          :sub_service_request,
-          ssr_id: '0001',
-          service_request: service_request,
-          organization: program,
-          status: 'draft')
+      let!(:service_request) {
+        FactoryGirl.create(
+            :service_request,
+            protocol: study,
+            status: 'draft',
+            start_date: Time.now,
+            end_date: Time.now + 10.days)
+      }
 
-      service = FactoryGirl.create(
-          :service,
-          organization: program,
-          name: 'A service')
+      let!(:sub_service_request) {
+        FactoryGirl.create(
+            :sub_service_request,
+            ssr_id: '0001',
+            service_request: service_request,
+            organization: program,
+            status: 'draft')
+      }
 
-      line_item = FactoryGirl.create(
-          :line_item,
-          service_request: service_request,
-          service: service,
-          sub_service_request: sub_service_request,
-          quantity: 5,
-          units_per_quantity: 1)
+      let!(:service) {
+        FactoryGirl.create(
+            :service,
+            organization: program,
+            name: 'A service')
+      }
 
-      epic_interface.send_billing_calendar(study)
+      let!(:line_item) {
+        FactoryGirl.create(
+            :line_item,
+            service_request: service_request,
+            service: service,
+            sub_service_request: sub_service_request,
+            quantity: 5,
+            units_per_quantity: 1)
+      }
 
-      # With no line items, this message turns out to be the same as the
-      # base study creation message
-      xml = <<-END
-        <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
-          <query root="1.2.3.4" extension="#{study.id}"/>
-          <protocolDef>
-            <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
-              <id root="1.2.3.4" extension="#{study.id}"/>
-              <title>#{study.title}</title>
-              <text>#{study.brief_description}</text>
-            </plannedStudy>
-          </protocolDef>
-        </RetrieveProtocolDefResponse>
-      END
+      it 'should not send line items that are not part of an arm' do
+        epic_interface.send_billing_calendar(study)
 
-      expected = Nokogiri::XML(xml)
+        # With no line items, this message turns out to be the same as the
+        # base study creation message
+        xml = <<-END
+          <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
+            <query root="1.2.3.4" extension="#{study.id}"/>
+            <protocolDef>
+              <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
+                <id root="1.2.3.4" extension="#{study.id}"/>
+                <title>#{study.title}</title>
+                <text>#{study.brief_description}</text>
+              </plannedStudy>
+            </protocolDef>
+          </RetrieveProtocolDefResponse>
+        END
 
-      node = epic_received[0].xpath(
-          '//env:Body/rpe:RetrieveProtocolDefResponse',
-          'env' => 'http://www.w3.org/2003/05/soap-envelope',
-          'rpe' => 'urn:ihe:qrph:rpe:2009',
-          'hl7' => 'urn:hl7-org:v3')
+        expected = Nokogiri::XML(xml)
 
-      node.should be_equivalent_to(expected.root)
+        node = epic_received[0].xpath(
+            '//env:Body/rpe:RetrieveProtocolDefResponse',
+            'env' => 'http://www.w3.org/2003/05/soap-envelope',
+            'rpe' => 'urn:ihe:qrph:rpe:2009',
+            'hl7' => 'urn:hl7-org:v3')
+
+        node.should be_equivalent_to(expected.root)
+      end
+
+      it 'should send pppv line items as procedures' do
+      end
     end
 
     # TODO: add a test for when we have a pppv line item

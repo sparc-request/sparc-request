@@ -29,6 +29,12 @@ epic_rights: { 'non_required': 'No access to Epic required',
                'approve': 'Authorized to review and approve patient study charges',
                'complete': 'Authorized to complete study'}
 epic_rights_info: 'Once the study is "completed" in Epic, it cannot be moved back to "Active or Inactive" Completing the study will inhibit new participants to be enrolled and associated with the study.'
+epic_push_status_text: { 'started': '',
+                         'sent_study': '',
+                         'complete': 'Study has been pushed to Epic.',
+                         'failed': 'Unable to push study to Epic.',
+                         'awaiting_approval': 'Awaiting approval before pushing push to Epic',
+                         'awaiting_final_review': 'Awaiting final review before pushing push to Epic' }
 study_types: { 'clinical_trials': 'Clinical Trials',
                'basic_science': 'Basic Science',
                'translational_science': 'Translational Science' }

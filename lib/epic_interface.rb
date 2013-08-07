@@ -188,11 +188,13 @@ class EpicInterface
                 xml.title(arm.name)
                 xml.code(code: 'CELL', codeSystem: 'n/a')
 
+                cycle = 1
+
                 xml.component1(typeCode: 'COMP') {
                   xml.sequenceNumber(value: arm_idx + 1) 
 
                   xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-                    xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE1")
+                    xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}")
                     xml.title('Cycle 1')
                     xml.code(code: 'CYCLE', codeSystem: 'n/a')
 
@@ -207,7 +209,7 @@ class EpicInterface
                       xml.component1(typeCode: 'COMP') {
                         xml.sequenceNumber(value: visit_group.position)
                         xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-                          xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE1.DAY#{visit_group.position}")
+                          xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}.DAY#{visit_group.position}")
                           xml.title(visit_group.name)
                         }
                       }
@@ -222,24 +224,26 @@ class EpicInterface
 
         study.service_requests.each do |service_request|
           service_request.arms.each do |arm|
+
+            cycle = 1
+
             arm.visit_groups.each do |visit_group|
 
               xml.component4(typeCode: 'COMP') {
                 xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-                  xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.DAY#{visit_group.position}")
+                  xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}.DAY#{visit_group.position}")
                   xml.title(visit_group.name)
                   xml.code(code: 'VISIT', codeSystem: 'n/a')
 
                   arm.line_items.each do |line_item|
                     xml.component1(typeCode: 'COMP') {
                       xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-                        xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.DAY#{visit_group.position}.PROC#{line_item.id}")
+                        xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}.DAY#{visit_group.position}.PROC#{line_item.id}")
                         xml.code(code: 'PROC', codeSystem: 'n/a')
 
                         xml.component2(typeCode: 'COMP') {
                           xml.procedure(classCode: 'PROC', moodCode: 'EVN') {
-                            # TODO: should be CDM code, not CPT code
-                            xml.code(code: line_item.service.cpt_code, codeSystem: 'n/a')
+                            xml.code(code: line_item.service.cdm_code, codeSystem: 'n/a')
                           }
                         }
 

@@ -34,6 +34,7 @@ SparcRails::Application.routes.draw do
       get 'save_and_exit'
       get 'approve_changes'
       get 'approve_epic_rights'
+      get 'push_to_epic'
     end
 
     collection do

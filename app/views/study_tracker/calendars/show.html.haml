@@ -51,9 +51,9 @@
                   %tr.fields{:style => "background-color:#C0C0C0;#{procedure_form.object.core.id == @nutrition.id ? 'display:table-row;' : 'display:none;'}", :class => "core_#{procedure_form.object.core.id}"}
                     %td= procedure_form.object.display_service_name
                     - if procedure_form.object.completed != nil
-                      %td.check_box_cell.highlighted.text-center= procedure_form.check_box :completed
+                      %td.check_box_cell.highlighted.text-center= procedure_form.check_box :completed, :class => 'procedure_box'
                     -else
-                      %td.check_box_cell.highlighted.text-center= procedure_form.check_box :completed, :checked => true
+                      %td.check_box_cell.highlighted.text-center= procedure_form.check_box :completed, :checked => true, :class => 'procedure_box'
                     %td.r_qty_cell.text-center= procedure_form.text_field :r_quantity, value: procedure_form.object.default_r_quantity, size: 5, :class => 'procedure_r_qty'
                     %td.t_qty_cell.text-center= procedure_form.text_field :t_quantity, value: procedure_form.object.default_t_quantity, size: 5, :class => 'procedure_t_qty'
                     %td.unit_cost_cell.text-center= number_to_currency(procedure_form.object.cost)

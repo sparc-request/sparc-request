@@ -42,7 +42,6 @@ $(document).ready ->
     route_to = $(this).attr('href')
 
     if survey_offered == false
-      proceed_to = "#submit_services"
       $("#participate_in_survey").dialog("open")
       return false
     else

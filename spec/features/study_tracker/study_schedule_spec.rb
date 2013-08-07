@@ -28,12 +28,6 @@ describe "study schedule", :js => true do
       end
     end
 
-    describe "display rates" do
-      it "should not show the full rate if your cost > full rate" do
-        first(".service_rate_#{arm1.line_items_visits.first.id}").should have_exact_text("")
-      end
-    end
-
     describe "per patient per visit" do
 
       describe "template tab" do

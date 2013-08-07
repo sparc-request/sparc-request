@@ -1934,6 +1934,22 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   width: 50px;
 }
 
+.service_calendar .your_cost,
+.service_calendar .service_rate,
+.service_calendar .otf_total,
+.service_calendar .otf_total_direct_cost,
+.service_calendar .pp_max_total_direct_cost,
+.service_calendar .pp_max_total_indirect_cost,
+.service_calendar .pp_max_total,
+.service_calendar .pp_line_item_total,
+.service_calendar .pp_line_item_study_total,
+.service_calendar .pp_total,
+.service_calendar .max_direct_per_patient,
+.service_calendar .max_indirect_per_patient,
+.service_calendar .max_total_per_patient {
+  text-align: right;
+}
+
 .qty_type_header {
   width: 65px;
 }

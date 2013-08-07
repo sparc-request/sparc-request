@@ -36,40 +36,28 @@
           %table.study_tracker_table
             %thead
               %tr.ui-widget-header
-                %th{:colspan => "4"}
-                  Date of Visit (entering date signifies a completed visit)
-                %th{:colspan => "2", :style => "text-align:center;"}
-                  = appointment_form.datepicker :completed_at, size: 18, dateFormat: "yy-mm-dd"
+                %th{:colspan => "4"} Date of Visit (entering date signifies a completed visit)
+                %th{:colspan => "2", :style => "text-align:center;"}= appointment_form.datepicker :completed_at, size: 18, dateFormat: "yy-mm-dd"
               %tr.ui-widget-header
-                %th
-                  Procedure
-                %th
-                  = appointment_form.object.visit_group.name
-                %th
-                  R Quantity
-                %th
-                  T Quantity
-                %th
-                  Unit Cost
-                %th
-                  Total
+                %th Procedure
+                %th= appointment_form.object.visit_group.name
+                %th R Quantity
+                %th T Quantity
+                %th Unit Cost
+                %th Total
             %tbody
               = appointment_form.fields_for :procedures, :wrapper => false do |procedure_form|
                 - if procedure_form.object.should_be_displayed
                   %tr.fields{:style => "background-color:#C0C0C0;#{procedure_form.object.core.id == @nutrition.id ? 'display:table-row;' : 'display:none;'}", :class => "core_#{procedure_form.object.core.id}"}
                     %td= procedure_form.object.display_service_name
-                    - if appointment_form.object.completed_at?
-                      %td.highlighted.text-center= procedure_form.check_box :completed
+                    - if procedure_form.object.completed != nil
+                      %td.check_box_cell.highlighted.text-center= procedure_form.check_box :completed, :class => 'procedure_box'
                     -else
-                      %td.highlighted.text-center= procedure_form.check_box :completed, :checked => true
-                    %td.text-center= procedure_form.text_field :r_quantity, value: procedure_form.object.default_r_quantity, size: 5, :class => 'procedure_r_qty'
-                    %td.text-center= procedure_form.text_field :t_quantity, value: procedure_form.object.default_t_quantity, size: 5, :class => 'procedure_t_qty'
-                    %td.unit_cost_cell.text-center
-                      $
-                      %span= procedure_form.object.cost
-                    %td.procedure_total_cell.text-center
-                      $
-                      %span= procedure_form.object.total
+                      %td.check_box_cell.highlighted.text-center= procedure_form.check_box :completed, :checked => true, :class => 'procedure_box'
+                    %td.r_qty_cell.text-center= procedure_form.text_field :r_quantity, value: procedure_form.object.default_r_quantity, size: 5, :class => 'procedure_r_qty'
+                    %td.t_qty_cell.text-center= procedure_form.text_field :t_quantity, value: procedure_form.object.default_t_quantity, size: 5, :class => 'procedure_t_qty'
+                    %td.unit_cost_cell.text-center= number_to_currency(procedure_form.object.cost)
+                    %td.procedure_total_cell.text-center= number_to_currency(procedure_form.object.total)
                 - else
                   %tr.fields{:style => "display:false;"}
               %tr.grand_total_row
@@ -78,9 +66,7 @@
                 %td
                 %td
                 %td
-                %td.text-center
-                  $
-                  %span= @default_subtotal
+                %td.grand_total_cell.text-center= number_to_currency(@default_subtotal)
           .comments
             = render :partial => "notes", :locals => {:appointment => appointment_form.object}
 
@@ -88,4 +74,5 @@
 
         = image_tag 'spinner.gif'
   %p{:style => "text-align:center; margin-bottom:12px;"}= f.submit "Save Appointments", :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;font-size:1.2em;"
+  %p#save_alert{:style => "text-align:center; margin-bottom:12px; display:none; color:red; font-weight:bold;"} You must save this form for any changes to be commited.
   %p{:style => "text-align:center; margin-bottom:12px;"}= link_to "Return to Clinical Work Fulfillment", study_tracker_sub_service_request_path(@sub_service_request), :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;font-size:1.2em;"

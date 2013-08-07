@@ -15,6 +15,9 @@ class StudyTracker::SubServiceRequestsController < StudyTracker::BaseController
     @service_request = @sub_service_request.service_request
     @protocol = @sub_service_request.try(:service_request).try(:protocol)
     @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
+    @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.is_one_time_fee?}
+
+    @line_items = @sub_service_request.line_items
 
     @selected_arm = @service_request.arms.first
 

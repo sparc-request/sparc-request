@@ -63,7 +63,8 @@ describe EpicInterface do
   }
 
   let!(:study) {
-    study = FactoryGirl.build(:study)
+    human_subjects_info = FactoryGirl.build(:human_subjects_info, pro_number: nil, hr_number: nil)
+    study = FactoryGirl.build(:study, human_subjects_info: human_subjects_info)
     study.save(validate: false)
     study
   }
@@ -216,7 +217,90 @@ describe EpicInterface do
 
       node.should be_equivalent_to(expected)
     end
-  end
+
+    it 'should emit a subjectOf for a pro number' do
+      study.human_subjects_info.update_attributes(pro_number: '1234')
+
+      epic_interface.send_study(study)
+
+      xml = <<-END
+        <subjectOf typeCode="SUBJ"
+                   xmlns='urn:hl7-org:v3'
+                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+          <studyCharacteristic classCode="OBS" moodCode="EVN">
+            <code code="IRB" />
+            <value xsi:type="CD" value="1234" />
+          </studyCharacteristic>
+        </subjectOf>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+          '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+          'env' => 'http://www.w3.org/2003/05/soap-envelope',
+          'rpe' => 'urn:ihe:qrph:rpe:2009',
+          'hl7' => 'urn:hl7-org:v3')
+
+      node.should be_equivalent_to(expected)
+    end
+
+    it 'should emit a subjectOf for an hr number' do
+      study.human_subjects_info.update_attributes(hr_number: '5678')
+
+      epic_interface.send_study(study)
+
+      xml = <<-END
+        <subjectOf typeCode="SUBJ"
+                   xmlns='urn:hl7-org:v3'
+                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+          <studyCharacteristic classCode="OBS" moodCode="EVN">
+            <code code="IRB" />
+            <value xsi:type="CD" value="5678" />
+          </studyCharacteristic>
+        </subjectOf>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+          '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+          'env' => 'http://www.w3.org/2003/05/soap-envelope',
+          'rpe' => 'urn:ihe:qrph:rpe:2009',
+          'hl7' => 'urn:hl7-org:v3')
+
+      node.should be_equivalent_to(expected)
+    end
+
+    it 'should emit a subjectOf for a pro number if the study has both a pro number and an hr number' do
+      study.human_subjects_info.update_attributes(pro_number: '1234')
+      study.human_subjects_info.update_attributes(hr_number: '5678')
+
+      epic_interface.send_study(study)
+
+      xml = <<-END
+        <subjectOf typeCode="SUBJ"
+                   xmlns='urn:hl7-org:v3'
+                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+          <studyCharacteristic classCode="OBS" moodCode="EVN">
+            <code code="IRB" />
+            <value xsi:type="CD" value="1234" />
+          </studyCharacteristic>
+        </subjectOf>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+          '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+          'env' => 'http://www.w3.org/2003/05/soap-envelope',
+          'rpe' => 'urn:ihe:qrph:rpe:2009',
+          'hl7' => 'urn:hl7-org:v3')
+
+      node.should be_equivalent_to(expected)
+    end
+
+  end # send_study
 
   describe 'send_billing_calendar' do
     it 'should work (smoke test)' do

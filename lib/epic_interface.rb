@@ -132,7 +132,6 @@ class EpicInterface
         xml.id(root: @study_root, extension: study.id)
         xml.title study.title
         xml.text study.brief_description
-        # TODO: Add NCT # and IRB #
 
         study.project_roles.each do |project_role|
           next unless project_role.epic_access
@@ -150,6 +149,19 @@ class EpicInterface
             }
           }
         end
+
+        irb_number = study.human_subjects_info.try(:pro_number) || study.human_subjects_info.try(:hr_number)
+        if irb_number then
+          xml.subjectOf(typeCode: 'SUBJ') {
+            xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
+              xml.code(code: 'IRB')
+              xml.value(
+                  'xsi:type' => 'CD',
+                  value: irb_number)
+            }
+          }
+        end
+
       }
     }
 
@@ -195,7 +207,7 @@ class EpicInterface
 
                   xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
                     xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}")
-                    xml.title('Cycle 1')
+                    xml.title("Cycle #{cycle}")
                     xml.code(code: 'CYCLE', codeSystem: 'n/a')
 
                     xml.effectiveTime {

@@ -21,14 +21,14 @@ class ServiceRequest < ActiveRecord::Base
     # TODO: Fix validations for this area
     # validates :visit_count, :numericality => { :greater_than => 0, :message => "You must specify the estimated total number of visits (greater than zero) before continuing.", :if => :has_per_patient_per_visit_services?}
     # validates :subject_count, :numericality => {:message => "You must specify the estimated total number of subjects before continuing.", :if => :has_per_patient_per_visit_services?}
-    validate :service_details_page
+    validate :service_details_forward
   end
   
   validation_group :service_details_back do
     # TODO: Fix validations for this area
     # validates :visit_count, :numericality => { :greater_than => 0, :message => "You must specify the estimated total number of visits (greater than zero) before continuing.", :if => :has_visits?}
     # validates :subject_count, :numericality => {:message => "You must specify the estimated total number of subjects before continuing.", :if => :has_visits?}
-    validate :service_details_page
+    validate :service_details_back
   end
 
   validation_group :service_calendar do
@@ -83,8 +83,16 @@ class ServiceRequest < ActiveRecord::Base
 
   #after_save :fix_missing_visits
 
-  def service_details_page
-    if has_per_patient_per_visit_services?
+  def service_details_back
+    service_details_page('back')
+  end
+
+  def service_details_forward
+    service_details_page('forward')
+  end
+
+  def service_details_page(direction)
+    if has_per_patient_per_visit_services? and not (direction == 'back' and status == 'first_draft')
       if start_date.nil?
         errors.add(:start_date, "You must specify the start date of the study.")
       end
@@ -95,14 +103,14 @@ class ServiceRequest < ActiveRecord::Base
     end
 
     arms.each do |arm|
-      if arm.valid_visit_count? == false
+      if arm.valid_visit_count? == false and not (direction == 'back' and status == 'first_draft')
         errors.add(:visit_count, "You must specify the estimated total number of visits (greater than zero) before continuing.")
         break
       end
     end
 
     arms.each do |arm|
-      if arm.valid_subject_count? == false
+      if arm.valid_subject_count? == false and not (direction == 'back' and status == 'first_draft')
         errors.add(:subject_count, "You must specify the estimated total number of subjects before continuing.")
         break
       end

@@ -81,7 +81,7 @@ describe EpicInterface do
         is_available: 1)
   }
 
-  describe 'send_study' do
+  describe 'send_study_creation' do
     it 'should work (smoke test)' do
       epic_interface.send_study(study)
 
@@ -605,6 +605,10 @@ describe EpicInterface do
     # TODO: add a test for when we have more than one service request
     # TODO: add a test for visit group window
     # TODO: add a test to ensure that we are using CDM code
+  end
+
+  describe 'send_study' do
+    # TODO: add tests for the full study message
   end
 
 end

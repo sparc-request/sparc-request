@@ -25,10 +25,10 @@
   = f.fields_for :calendar do |calendar_form|
     .cwf_tabs.ui-tabs.ui-widget.ui-widget-content.ui-corner-all
       %ul.ui-tabs-nav.ui-helper-reset.ui-helper-clearfix.ui-widget-header.ui-corner-all
-        %li.ui-state-default.ui-corner-top.ui-state-active= link_to "Nutrition", "#nutrition", :class => 'clinical_tab_data', :id => "core_#{@nutrition.id}", 'data-has_access' => @user.can_edit_core?(@nutrition.id) ? true : false
-        %li.ui-state-default.ui-corner-top= link_to "Nursing", "#nursing", :class => 'clinical_tab_data', :id => "core_#{@nursing.id}", 'data-has_access' => @user.can_edit_core?(@nursing.id) ? true : false
+        %li.ui-state-default.ui-corner-top.ui-state-active= link_to "Nursing", "#nursing", :class => 'clinical_tab_data', :id => "core_#{@nursing.id}", 'data-has_access' => @user.can_edit_core?(@nursing.id) ? true : false
         %li.ui-state-default.ui-corner-top= link_to "Laboratory", "#laboratory", :class => 'clinical_tab_data', :id => "core_#{@lab.id}", 'data-has_access' => @user.can_edit_core?(@lab.id) ? true : false
         %li.ui-state-default.ui-corner-top= link_to "Imaging", "#imaging", :class => 'clinical_tab_data', :id => "core_#{@imaging.id}", 'data-has_access' => @user.can_edit_core?(@imaging.id) ? true : false
+        %li.ui-state-default.ui-corner-top= link_to "Nutrition", "#nutrition", :class => 'clinical_tab_data', :id => "core_#{@nutrition.id}", 'data-has_access' => @user.can_edit_core?(@nutrition.id) ? true : false
 
     #visit_form{:style => "padding: 10px 40px;"}
       = calendar_form.fields_for :appointments do |appointment_form|
@@ -48,7 +48,7 @@
             %tbody
               = appointment_form.fields_for :procedures, :wrapper => false do |procedure_form|
                 - if procedure_form.object.should_be_displayed
-                  %tr.fields{:style => "background-color:#C0C0C0;#{procedure_form.object.core.id == @nutrition.id ? 'display:table-row;' : 'display:none;'}", :class => "core_#{procedure_form.object.core.id}"}
+                  %tr.fields{:style => "background-color:#C0C0C0;#{procedure_form.object.core.id == @nursing.id ? 'display:table-row;' : 'display:none;'}", :class => "core_#{procedure_form.object.core.id}"}
                     %td= procedure_form.object.display_service_name
                     - if procedure_form.object.completed != nil
                       %td.check_box_cell.highlighted.text-center= procedure_form.check_box :completed, :class => 'procedure_box'

@@ -34,7 +34,7 @@
 }
 
 .toast-item-close {
-    background:url(close.gif);
+    background:url(/assets/toastmessage/close.gif);
     width:22px;
     height:22px;
     position: absolute;
@@ -52,19 +52,19 @@
 }
 
 .toast-item-image-notice {
-    background:url(notice.png);
+    background:url(/assets/toastmessage/notice.png);
 }
 
 .toast-item-image-success {
-    background:url(success.png);
+    background:url(/assets/toastmessage/success.png);
 }
 
 .toast-item-image-warning {
-    background:url(warning.png);
+    background:url(/assets/toastmessage/warning.png);
 }
 
 .toast-item-image-error {
-    background:url(error.png);
+    background:url(/assets/toastmessage/error.png);
 }
 
 

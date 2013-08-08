@@ -10,6 +10,6 @@ if "<%= @page %>" == 'service_details'
   if <%= @service_request.one_time_fee_line_items.size %> == 0
     $('#show-one-time-fee').hide()
   if <%= @service_request.per_patient_per_visit_line_items.size %> == 0
-    $('#show-visit-calendar-details').hide()
+    $('#show-visit-calendar-details').remove()
   if (<%= @service_request.one_time_fee_line_items.size %> == 0 && <%= @service_request.per_patient_per_visit_line_items.size %> == 0)
     $('.visit-calendar-details').show()

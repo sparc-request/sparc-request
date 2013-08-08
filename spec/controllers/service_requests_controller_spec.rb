@@ -450,10 +450,10 @@ describe ServiceRequestsController do
     it 'should call ask_a_question and then deliver' do
       deliverer = double()
       deliverer.should_receive(:deliver)
-      Notifier.stub!(:ask_a_question) { |question|
-        question.to.should eq DEFAULT_MAIL_TO
-        question.from.should eq 'no-reply@musc.edu'
-        question.body.should eq 'No question asked'
+      Notifier.stub!(:ask_a_question) { |quick_question|
+        quick_question.to.should eq DEFAULT_MAIL_TO
+        quick_question.from.should eq 'no-reply@musc.edu'
+        quick_question.body.should eq 'No question asked'
         deliverer
       }
       get :ask_a_question, {
@@ -465,13 +465,13 @@ describe ServiceRequestsController do
     it 'should use question_email if passed in' do
       deliverer = double()
       deliverer.should_receive(:deliver)
-      Notifier.stub!(:ask_a_question) { |question|
-        question.from.should eq 'billg@microsoft.com'
+      Notifier.stub!(:ask_a_question) { |quick_question|
+        quick_question.from.should eq 'billg@microsoft.com'
         deliverer
       }
       get :ask_a_question, {
         :id => service_request.id,
-        :question_email => 'billg@microsoft.com',
+        :quick_question_email => 'billg@microsoft.com',
         :format => :js
       }
     end
@@ -479,13 +479,13 @@ describe ServiceRequestsController do
     it 'should use question_body if passed in' do
       deliverer = double()
       deliverer.should_receive(:deliver)
-      Notifier.stub!(:ask_a_question) { |question|
-        question.body.should eq 'is this thing on?'
+      Notifier.stub!(:ask_a_question) { |quick_question|
+        quick_question.body.should eq 'is this thing on?'
         deliverer
       }
       get :ask_a_question, {
         :id => service_request.id,
-        :question_body => 'is this thing on?',
+        :quick_question_body => 'is this thing on?',
         :format => :js
       }
     end

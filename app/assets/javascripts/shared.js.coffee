@@ -40,8 +40,8 @@ $(document).ready ->
     $('.up-carat').show()
     $('.down-carat').hide()
   else
-    $('#question_email').val('')
-    $('#question_body').val('')
+    $('#quick_question_email').val('')
+    $('#quick_question_body').val('')
     $('.up-carat').hide()
     $('.down-carat').show()
 

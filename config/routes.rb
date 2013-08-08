@@ -1,4 +1,7 @@
 SparcRails::Application.routes.draw do
+  match '/direct_link_to/:survey_code', :to => 'surveyor#create', :as => 'direct_link_survey', :via => :get
+  mount Surveyor::Engine => "/surveys", :as => "surveyor"
+
   devise_for :identities, :controllers => { :omniauth_callbacks => "identities/omniauth_callbacks" }
 
   resources :identities do

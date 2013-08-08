@@ -83,7 +83,7 @@ describe EpicInterface do
 
   describe 'send_study_creation' do
     it 'should work (smoke test)' do
-      epic_interface.send_study(study)
+      epic_interface.send_study_creation(study)
 
       xml = <<-END
         <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
@@ -128,7 +128,7 @@ describe EpicInterface do
           role:            "primary-pi",
           epic_access:     true, )
 
-      epic_interface.send_study(study)
+      epic_interface.send_study_creation(study)
 
       xml = <<-END
         <subjectOf typeCode="SUBJ"
@@ -165,7 +165,7 @@ describe EpicInterface do
           role:            "business-grants-manager",
           epic_access:     true, )
 
-      epic_interface.send_study(study)
+      epic_interface.send_study_creation(study)
 
       xml = <<-END
         <subjectOf typeCode="SUBJ"
@@ -202,7 +202,7 @@ describe EpicInterface do
           role:            "business-grants-manager",
           epic_access:     false, )
 
-      epic_interface.send_study(study)
+      epic_interface.send_study_creation(study)
 
       xml = <<-END
       END
@@ -221,7 +221,7 @@ describe EpicInterface do
     it 'should emit a subjectOf for a pro number' do
       study.human_subjects_info.update_attributes(pro_number: '1234')
 
-      epic_interface.send_study(study)
+      epic_interface.send_study_creation(study)
 
       xml = <<-END
         <subjectOf typeCode="SUBJ"
@@ -248,7 +248,7 @@ describe EpicInterface do
     it 'should emit a subjectOf for an hr number' do
       study.human_subjects_info.update_attributes(hr_number: '5678')
 
-      epic_interface.send_study(study)
+      epic_interface.send_study_creation(study)
 
       xml = <<-END
         <subjectOf typeCode="SUBJ"
@@ -276,7 +276,7 @@ describe EpicInterface do
       study.human_subjects_info.update_attributes(pro_number: '1234')
       study.human_subjects_info.update_attributes(hr_number: '5678')
 
-      epic_interface.send_study(study)
+      epic_interface.send_study_creation(study)
 
       xml = <<-END
         <subjectOf typeCode="SUBJ"
@@ -300,7 +300,7 @@ describe EpicInterface do
       node.should be_equivalent_to(expected)
     end
 
-  end # send_study
+  end # send_study_creation
 
   describe 'send_billing_calendar' do
     it 'should work (smoke test)' do

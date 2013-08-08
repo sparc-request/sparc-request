@@ -15,7 +15,6 @@
       $.ajax({
           method: 'get',
           url: '/studies/#{@protocol.id}/push_to_epic_status.json',
-          data: JSON.stringify({ }),
           contentType: 'application/json; charset=utf-8',
           success: function(data, text, request) {
             status = data['last_epic_push_status'];

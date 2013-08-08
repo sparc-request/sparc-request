@@ -3,7 +3,7 @@ begin
 
   DEFAULT_MAIL_TO               = application_config['default_mail_to']
   ADMIN_MAIL_TO                 = application_config['admin_mail_to']
-  EPIC_RIGHTS_MAIL_CC           = application_config['approve_epic_rights_mail_cc']
+  EPIC_RIGHTS_MAIL_TO           = application_config['approve_epic_rights_mail_to']
   FEEDBACK_MAIL_TO              = application_config['feedback_mail_to']
   NEW_USER_CC                   = application_config['new_user_cc']
   SYSTEM_SATISFACTION_SURVEY_CC = application_config['system_satisfaction_survey_cc']

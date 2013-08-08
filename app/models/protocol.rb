@@ -169,14 +169,8 @@ class Protocol < ActiveRecord::Base
       self.last_epic_push_status = 'started'
       save(validate: false)
 
-      Rails.logger.info("Sending study creation message to Epic")
+      Rails.logger.info("Sending study message to Epic")
       epic_interface.send_study(self)
-
-      self.last_epic_push_status = 'sent_study'
-      save(validate: false)
-
-      Rails.logger.info("Sending billing calendar to Epic")
-      epic_interface.send_billing_calendar(self)
 
       self.last_epic_push_status = 'complete'
       save(validate: false)

@@ -301,41 +301,74 @@ class EpicInterface
               xml.title(visit_group.name)
               xml.code(code: 'VISIT', codeSystem: 'n/a')
 
-              arm.line_items.each do |line_item|
-                xml.component1(typeCode: 'COMP') {
-                  xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-                    xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}.DAY#{visit_group.position}.PROC#{line_item.id}")
-                    xml.code(code: 'PROC', codeSystem: 'n/a')
-
-                    xml.component2(typeCode: 'COMP') {
-                      xml.procedure(classCode: 'PROC', moodCode: 'EVN') {
-                        xml.code(code: line_item.service.cdm_code, codeSystem: 'n/a')
-                      }
-                    }
-
-                  } # timePointEventDefinition
-                } # component1
-              end
-
-              xml.component2(typeCode: 'COMP') {
-                xml.encounter(classCode: 'ENC', moodCode: 'DEF') {
-                  # TODO: assuming 1-based (but day might be 0-based; we don't know yet)
-                  day = visit_group.day || visit_group.position
-
-                  xml.effectiveTime {
-                    xml.low(value: relative_date(day - visit_group.window))
-                    xml.high(value: relative_date(day + visit_group.window))
-                  }
-
-                  xml.activityTime(value: relative_date(day))
-                }
-              }
+              emit_procedures(xml, arm, visit_group)
+              emit_encounter(xml, arm, visit_group)
 
             } # timePointEventDefinition
           } # component4
         end
       end
     end
+  end
+
+  def emit_procedures(xml, arm, visit_group)
+    arm.line_items.each do |line_item|
+      liv = LineItemsVisit.for(arm, line_item)
+      visit = Visit.for(liv, visit_group)
+
+      # TODO: we don't know if this is right or not
+      billing_modifiers = [
+        nil,  visit.research_billing_qty,
+        'Q0', visit.insurance_billing_qty,
+      ]
+
+      billing_modifiers.each do |modifier, qty|
+
+        next if qty == 0
+
+        # TODO: there's nowhere in this message to put the quantity
+        xml.component1(typeCode: 'COMP') {
+          xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
+            xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}.DAY#{visit_group.position}.PROC#{line_item.id}")
+            xml.code(code: 'PROC', codeSystem: 'n/a')
+
+            xml.component2(typeCode: 'COMP') {
+              xml.procedure(classCode: 'PROC', moodCode: 'EVN') {
+                xml.code(code: line_item.service.cdm_code, codeSystem: 'n/a')
+              }
+            }
+
+            if modifier then
+              xml.subjectOf {
+                xml.timePointEventCharacteristic {
+                  xml.code(code: 'BILL_MODIFIER', codeSystem: 'n/a')
+                  xml.value(code: modifier)
+                }
+              }
+            end
+
+          } # timePointEventDefinition
+        } # component1
+
+      end
+
+    end
+  end
+
+  def emit_encounter(xml, arm, visit_group)
+    xml.component2(typeCode: 'COMP') {
+      xml.encounter(classCode: 'ENC', moodCode: 'DEF') {
+        # TODO: assuming 1-based (but day might be 0-based; we don't know yet)
+        day = visit_group.day || visit_group.position
+
+        xml.effectiveTime {
+          xml.low(value: relative_date(day - visit_group.window))
+          xml.high(value: relative_date(day + visit_group.window))
+        }
+
+        xml.activityTime(value: relative_date(day))
+      }
+    }
   end
 
   # A "relative date" is represented in YYYYMMDD format and is

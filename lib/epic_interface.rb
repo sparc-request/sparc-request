@@ -194,7 +194,7 @@ class EpicInterface
 
   def emit_irb_number(xml, study)
     irb_number = study.human_subjects_info.try(:pro_number) || study.human_subjects_info.try(:hr_number)
-    if irb_number then
+    if !irb_number.blank? then
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'IRB')
@@ -301,8 +301,8 @@ class EpicInterface
               xml.title(visit_group.name)
               xml.code(code: 'VISIT', codeSystem: 'n/a')
 
-              emit_procedures(xml, arm, visit_group)
-              emit_encounter(xml, arm, visit_group)
+              emit_procedures(xml, study, arm, visit_group, cycle)
+              emit_encounter(xml, study, arm, visit_group)
 
             } # timePointEventDefinition
           } # component4
@@ -311,15 +311,15 @@ class EpicInterface
     end
   end
 
-  def emit_procedures(xml, arm, visit_group)
+  def emit_procedures(xml, study, arm, visit_group, cycle)
     arm.line_items.each do |line_item|
       liv = LineItemsVisit.for(arm, line_item)
       visit = Visit.for(liv, visit_group)
 
       # TODO: we don't know if this is right or not
       billing_modifiers = [
-        nil,  visit.research_billing_qty,
-        'Q0', visit.insurance_billing_qty,
+        [ nil,  visit.research_billing_qty ],
+        [ 'Q1', visit.insurance_billing_qty ],
       ]
 
       billing_modifiers.each do |modifier, qty|
@@ -355,7 +355,7 @@ class EpicInterface
     end
   end
 
-  def emit_encounter(xml, arm, visit_group)
+  def emit_encounter(xml, study, arm, visit_group)
     xml.component2(typeCode: 'COMP') {
       xml.encounter(classCode: 'ENC', moodCode: 'DEF') {
         # TODO: assuming 1-based (but day might be 0-based; we don't know yet)

@@ -40,7 +40,7 @@
                 %th{:colspan => "2", :style => "text-align:center;"}= appointment_form.datepicker :completed_at, size: 18, dateFormat: "yy-mm-dd"
               %tr.ui-widget-header
                 %th Procedure
-                %th= appointment_form.object.visit_group.name
+                %th Completed
                 %th R Quantity
                 %th T Quantity
                 %th Unit Cost
@@ -50,7 +50,7 @@
                 - if procedure_form.object.should_be_displayed
                   %tr.fields{:style => "background-color:#C0C0C0;#{procedure_form.object.core.id == @nursing.id ? 'display:table-row;' : 'display:none;'}", :class => "core_#{procedure_form.object.core.id}"}
                     %td= procedure_form.object.display_service_name
-                    - if procedure_form.object.completed == nil && !appointment_form.object.completed_at?
+                    - if procedure_form.object.should_be_checked?
                       %td.check_box_cell.highlighted.text-center= procedure_form.check_box :completed, :checked => true, :class => 'procedure_box'
                     -else
                       %td.check_box_cell.highlighted.text-center= procedure_form.check_box :completed, :class => 'procedure_box'

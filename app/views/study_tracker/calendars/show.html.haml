@@ -20,7 +20,8 @@
           = f.select :status, options_for_select(["Active", "Completed", "Early Term", "Screen Fail"], f.try(:object).try(:status)), :include_blank => "--Choose a Status--"
   #controls
     %p Please select a visit:
-    = select_tag :visit, options_for_select(@appointments.map{|x| ["##{x.visit_group.position}: #{x.visit_group.name}", {'data-appointment_id'=>x.id}]}, selected_key = "##{@default_appointment.visit_group.position}: #{@default_appointment.visit_group.name}"), :class => 'clinical_select_data'
+    = select_tag :visit, options_for_select(appointment_visits(@appointments), selected_key = "##{@default_appointment.visit_group.position}: #{@default_appointment.visit_group.name}"), :class => 'clinical_select_data'
+    = link_to "Dashboard", "javascript:void(0)", :class => "right ui-button ui-state-active ui-button-text-only", :style => "padding:0.45em 1em;margin:-3px 15px 0 0;"
 
   = f.fields_for :calendar do |calendar_form|
     .cwf_tabs.ui-tabs.ui-widget.ui-widget-content.ui-corner-all
@@ -54,6 +55,8 @@
                       %td.check_box_cell.highlighted.text-center= procedure_form.check_box :completed, :checked => true, :class => 'procedure_box'
                     -else
                       %td.check_box_cell.highlighted.text-center= procedure_form.check_box :completed, :class => 'procedure_box'
+                    -else
+                      %td.check_box_cell.highlighted.text-center= procedure_form.check_box :completed, :checked => true, :class => 'procedure_box'
                     %td.r_qty_cell.text-center= procedure_form.text_field :r_quantity, value: procedure_form.object.default_r_quantity, size: 5, :class => 'procedure_r_qty'
                     %td.t_qty_cell.text-center= procedure_form.text_field :t_quantity, value: procedure_form.object.default_t_quantity, size: 5, :class => 'procedure_t_qty'
                     %td.unit_cost_cell.text-center= number_to_currency(procedure_form.object.cost)

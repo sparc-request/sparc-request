@@ -319,7 +319,7 @@ class EpicInterface
       # TODO: we don't know if this is right or not
       billing_modifiers = [
         nil,  visit.research_billing_qty,
-        'Q0', visit.insurance_billing_qty,
+        'Q1', visit.insurance_billing_qty,
       ]
 
       billing_modifiers.each do |modifier, qty|

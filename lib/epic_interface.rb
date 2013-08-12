@@ -47,7 +47,6 @@ class EpicInterface
     # TODO: grab these from the WSDL
     @namespace = @config['namespace'] || 'urn:ihe:qrph:rpe:2009'
     @study_root = @config['study_root'] || 'UNCONFIGURED'
-    @epoch = Date.parse(@config['epoch'] || '2013-01-01')
 
     # TODO: I'm not really convinced that Savon is buying us very much
     # other than some added complexity, but it's working, so no point in
@@ -356,17 +355,19 @@ class EpicInterface
   end
 
   def emit_encounter(xml, study, arm, visit_group)
+    epoch = study.service_requests.minimum(:start_date)
+
     xml.component2(typeCode: 'COMP') {
       xml.encounter(classCode: 'ENC', moodCode: 'DEF') {
         # TODO: assuming 1-based (but day might be 0-based; we don't know yet)
         day = visit_group.day || visit_group.position
 
         xml.effectiveTime {
-          xml.low(value: relative_date(day - visit_group.window))
-          xml.high(value: relative_date(day + visit_group.window))
+          xml.low(value: relative_date(day - visit_group.window, epoch))
+          xml.high(value: relative_date(day + visit_group.window, epoch))
         }
 
-        xml.activityTime(value: relative_date(day))
+        xml.activityTime(value: relative_date(day, epoch))
       }
     }
   end
@@ -381,8 +382,8 @@ class EpicInterface
   # contain a valid date.
   #
   # The day passed in here is assumed to be 1-based.
-  def relative_date(day)
-    date = @epoch + day - 1
+  def relative_date(day, epoch)
+    date = epoch + day.days - 1.days
     return date.strftime("%Y%m%d")
   end
 end

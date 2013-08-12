@@ -1,7 +1,6 @@
 production:
   study_root: '1.2.3.4'
   endpoint: 'http://TODO/'
-  epoch: '2013-01-01'
   namespace: 'urn:ihe:qrph:rpe:2009'
 
 development:
@@ -12,7 +11,6 @@ development:
 #development:
 #  study_root: '1.2.5.2.3.4'
 #  endpoint: 'http://epintcon03t-v.clinlan.local/Interconnect-SPARC-Research/Wcf/Epic.EDI.IHEWcf.Services/ProtocolExecutor.svc'
-#  epoch: '2013-01-01'
 #  namespace: 'urn:ihe:qrph:rpe:2009'
 
 test:

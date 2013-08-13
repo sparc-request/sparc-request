@@ -64,7 +64,7 @@ class Procedure < ActiveRecord::Base
 
   # Totals up a given row on the visit schedule
   def total
-    if self.completed?
+    if self.completed? or self.should_be_checked?
       return self.default_r_quantity * self.cost
     else
       return 0.00
@@ -80,6 +80,13 @@ class Procedure < ActiveRecord::Base
       else
         return false
       end
+    end
+  end
+  def should_be_checked?
+    if self.completed == nil && !self.appointment.completed_at?
+      return true
+    else
+      return false
     end
   end
 end

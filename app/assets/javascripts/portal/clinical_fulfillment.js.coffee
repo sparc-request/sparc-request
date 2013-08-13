@@ -43,6 +43,25 @@ $(document).ready ->
     $('#save_alert').show()
   )
 
+  $(document).on('click', '.cwf_add_service_button', ->
+    box = $(this).siblings('select')
+    data =
+      'appointment_id': box.data('appointment_id')
+      'service_id': box.val()
+      'ssr_id': box.data('ssr_id')
+    $.ajax
+      type: "post"
+      url: "/study_tracker/appointments/add_service"
+      data: JSON.stringify(data)
+      dataType: 'html'
+      contentType: 'application/json; charset=utf-8'
+      success: (html) ->
+        newDoc = document.open("text/html", "replace")
+        newDoc.write html
+        newDoc.close()
+    return false
+  )
+
 
   ####Totals functions:
   recalc_row_totals = () ->
@@ -78,8 +97,6 @@ $(document).ready ->
       dataType: 'html'
       contentType: 'application/json; charset=utf-8'
       success: (html) ->
-        console.log("In Success Function")
-        console.log(html)
         $('.comments:visible').html(html)
   )
 

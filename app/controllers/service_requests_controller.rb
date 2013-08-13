@@ -292,7 +292,7 @@ class ServiceRequestsController < ApplicationController
     @protocol = @service_request.protocol
     @service_list = @service_request.service_list
 
-    # send_notifications(@service_request, @sub_service_request)
+    send_notifications(@service_request, @sub_service_request)
 
     # Send a notification to Lane et al to create users in Epic.  Once
     # that has been done, one of them will click a link which calls

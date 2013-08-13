@@ -3,7 +3,6 @@
 :javascript
   $(document).ready(function() {
     // TODO: use coffeescript instead of javascript
-    // TODO: need to use locales here
     // TODO: use a spinner
     // TODO: need to style this a bit better
     // TODO: we use /studies/:id/push_to_epic_status for both studies
@@ -15,7 +14,6 @@
       $.ajax({
           method: 'get',
           url: '/studies/#{@protocol.id}/push_to_epic_status.json',
-          data: JSON.stringify({ }),
           contentType: 'application/json; charset=utf-8',
           success: function(data, text, request) {
             status = data['last_epic_push_status'];
@@ -24,22 +22,6 @@
               window.setTimeout(get_epic_push_status, 5000);
             } else {
               $('#push_to_epic_status').text(data['last_epic_push_status_text']);
-            }
-
-            if(status == 'complete') {
-              // Success
-              $('#push_to_epic_status').text('Study has been pushed to Epic.');
-            } else if(status == 'failed') {
-              // Failure
-              $('#push_to_epic_status').text('Unable to push study to Epic.');
-            } else if(status == 'awaiting_approval') {
-              $('#push_to_epic_status').text('Awaiting approval from Primary PI to push to Epic');
-            }
-            else if(status == 'started' || status == 'sent_study') {
-              // Not done yet; try again in 5 seconds
-              window.setTimeout(get_epic_push_status, 5000);
-            } else {
-              $('#push_to_epic_status').text('Unknown epic status: ' + status);
             }
           },
           error: function(request, text, error) {

@@ -58,7 +58,7 @@ group :development, :test, :profile do
   gem 'rspec-rails'
   gem 'shoulda-matchers'
   gem 'launchy'
-  gem 'capybara'
+  gem 'capybara', '~> 2.0.2' # TODO: capybara 2.1 breaks our tests
   gem 'database_cleaner'
   gem 'factory_girl'
   gem 'faker'
@@ -69,10 +69,10 @@ group :development, :test, :profile do
   gem 'thin'
   gem 'equivalent-xml'
   gem 'turn', :require => false
-  gem 'jasmine'
   gem 'addressable', '~> 2.3.2'
   gem 'watchr'
   gem 'capybara-firebug'
+  gem 'selenium-webdriver', '~> 2.34.0'
 
   # You can put gems in here that you want to use for development but
   # don't want to force on other developers (e.g. rubyception).

@@ -47,7 +47,6 @@ class EpicInterface
     # TODO: grab these from the WSDL
     @namespace = @config['namespace'] || 'urn:ihe:qrph:rpe:2009'
     @study_root = @config['study_root'] || 'UNCONFIGURED'
-    @epoch = Date.parse(@config['epoch'] || '2013-01-01')
 
     # TODO: I'm not really convinced that Savon is buying us very much
     # other than some added complexity, but it's working, so no point in
@@ -102,8 +101,16 @@ class EpicInterface
         message: message)
   end
 
-  # Send a study to the Epic InterConnect server.
+  # Send a full study to the Epic InterConnect server.
   def send_study(study)
+    message = full_study_message(study)
+    call('RetrieveProtocolDefResponse', message)
+
+    # TODO: handle response from the server
+  end
+
+  # Send a study creation to the Epic InterConnect server.
+  def send_study_creation(study)
     message = study_creation_message(study)
     call('RetrieveProtocolDefResponse', message)
 
@@ -120,6 +127,29 @@ class EpicInterface
     # TODO: handle response from the server
   end
 
+  # Build a full study message (study creation and billing calendar) to
+  # send to epic and return it as a string.
+  def full_study_message(study)
+    xml = Builder::XmlMarkup.new(indent: 2)
+
+    xml.query(root: @study_root, extension: study.id)
+
+    xml.protocolDef {
+      xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
+        xml.id(root: @study_root, extension: study.id)
+        xml.title study.title
+        xml.text study.brief_description
+
+        emit_project_roles(xml, study)
+        emit_irb_number(xml, study)
+        emit_visits(xml, study)
+        emit_procedures_and_encounters(xml, study)
+      }
+    }
+
+    return xml.target!
+  end
+
   # Build a study creation message to send to epic and return it as a
   # string.
   def study_creation_message(study)
@@ -132,29 +162,49 @@ class EpicInterface
         xml.id(root: @study_root, extension: study.id)
         xml.title study.title
         xml.text study.brief_description
-        # TODO: Add NCT # and IRB #
 
-        study.project_roles.each do |project_role|
-          next unless project_role.epic_access
-          xml.subjectOf(typeCode: 'SUBJ') {
-            xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
-              role_code = case project_role.role
-              when 'primary-pi' then 'PI'
-              else 'SC'
-              end
-              xml.code(code: role_code)
-              xml.value(
-                  'xsi:type' => 'CD',
-                  code: project_role.identity.netid.upcase,
-                  codeSystem: 'netid')
-            }
-          }
-        end
+        emit_project_roles(xml, study)
+        emit_irb_number(xml, study)
+
       }
     }
 
     return xml.target!
   end
+
+  def emit_project_roles(xml, study)
+    study.project_roles.each do |project_role|
+      next unless project_role.epic_access
+      xml.subjectOf(typeCode: 'SUBJ') {
+        xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
+          role_code = case project_role.role
+          when 'primary-pi' then 'PI'
+          else 'SC'
+          end
+          xml.code(code: role_code)
+          xml.value(
+              'xsi:type' => 'CD',
+              code: project_role.identity.netid.upcase,
+              codeSystem: 'netid')
+        }
+      }
+    end
+  end
+
+  def emit_irb_number(xml, study)
+    irb_number = study.human_subjects_info.try(:pro_number) || study.human_subjects_info.try(:hr_number)
+    if !irb_number.blank? then
+      xml.subjectOf(typeCode: 'SUBJ') {
+        xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
+          xml.code(code: 'IRB')
+          xml.value(
+              'xsi:type' => 'CD',
+              value: irb_number)
+        }
+      }
+    end
+  end
+
 
   # Bulid a study calendar definition message to send to epic and return
   # it as a string.
@@ -179,101 +229,146 @@ class EpicInterface
         # Calendar, Cycles, and Days/Visits) or setup of specific visit
         # (Procedures within a visit.  Also known as activities).
 
-        study.service_requests.each do |service_request|
-          service_request.arms.each_with_index do |arm, arm_idx|
-
-            xml.component4(typeCode: 'COMP') {
-              xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-                xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}")
-                xml.title(arm.name)
-                xml.code(code: 'CELL', codeSystem: 'n/a')
-
-                cycle = 1
-
-                xml.component1(typeCode: 'COMP') {
-                  xml.sequenceNumber(value: arm_idx + 1) 
-
-                  xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-                    xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}")
-                    xml.title('Cycle 1')
-                    xml.code(code: 'CYCLE', codeSystem: 'n/a')
-
-                    xml.effectiveTime {
-                      # TODO: what to do if start_date or end_date is
-                      # null?
-                      xml.low(value: service_request.start_date.strftime("%Y%m%d"))
-                      xml.high(value: service_request.end_date.strftime("%Y%m%d"))
-                    }
-
-                    arm.visit_groups.each do |visit_group|
-                      xml.component1(typeCode: 'COMP') {
-                        xml.sequenceNumber(value: visit_group.position)
-                        xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-                          xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}.DAY#{visit_group.position}")
-                          xml.title(visit_group.name)
-                        }
-                      }
-                    end
-
-                  } # timePointEventDefinition
-                } # component1
-              } # timePointEventDefinition
-            } # component4
-          end
-        end
-
-        study.service_requests.each do |service_request|
-          service_request.arms.each do |arm|
-
-            cycle = 1
-
-            arm.visit_groups.each do |visit_group|
-
-              xml.component4(typeCode: 'COMP') {
-                xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-                  xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}.DAY#{visit_group.position}")
-                  xml.title(visit_group.name)
-                  xml.code(code: 'VISIT', codeSystem: 'n/a')
-
-                  arm.line_items.each do |line_item|
-                    xml.component1(typeCode: 'COMP') {
-                      xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-                        xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}.DAY#{visit_group.position}.PROC#{line_item.id}")
-                        xml.code(code: 'PROC', codeSystem: 'n/a')
-
-                        xml.component2(typeCode: 'COMP') {
-                          xml.procedure(classCode: 'PROC', moodCode: 'EVN') {
-                            xml.code(code: line_item.service.cdm_code, codeSystem: 'n/a')
-                          }
-                        }
-
-                      } # timePointEventDefinition
-                    } # component1
-                  end
-
-                  xml.component2(typeCode: 'COMP') {
-                    xml.encounter(classCode: 'ENC', moodCode: 'DEF') {
-                      # TODO: assuming 1-based (but day might be 0-based; we don't know yet)
-                      day = visit_group.day || visit_group.position
-
-                      xml.effectiveTime {
-                        xml.low(value: relative_date(day - visit_group.window))
-                        xml.high(value: relative_date(day + visit_group.window))
-                      }
-
-                      xml.activityTime(value: relative_date(day))
-                    }
-                  }
-
-                } # timePointEventDefinition
-              } # component4
-            end
-          end
-        end
+        emit_visits(xml, study)
+        emit_procedures_and_encounters(xml, study)
       }
     }
 
     return xml.target!
+  end
+
+  def emit_visits(xml, study)
+    seq = 0
+
+    study.service_requests.each do |service_request|
+      service_request.arms.each do |arm|
+
+        seq += 1
+
+        xml.component4(typeCode: 'COMP') {
+          xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
+            xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}")
+            xml.title(arm.name)
+            xml.code(code: 'CELL', codeSystem: 'n/a')
+
+            cycle = 1
+
+            xml.component1(typeCode: 'COMP') {
+              xml.sequenceNumber(value: seq)
+
+              xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
+                xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}")
+                xml.title("Cycle #{cycle}")
+                xml.code(code: 'CYCLE', codeSystem: 'n/a')
+
+                xml.effectiveTime {
+                  # TODO: what to do if start_date or end_date is
+                  # null?
+                  xml.low(value: service_request.start_date.strftime("%Y%m%d"))
+                  xml.high(value: service_request.end_date.strftime("%Y%m%d"))
+                }
+
+                arm.visit_groups.each do |visit_group|
+                  xml.component1(typeCode: 'COMP') {
+                    xml.sequenceNumber(value: visit_group.position)
+                    xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
+                      xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}.DAY#{visit_group.position}")
+                      xml.title(visit_group.name)
+                    }
+                  }
+                end
+
+              } # timePointEventDefinition
+            } # component1
+          } # timePointEventDefinition
+        } # component4
+      end
+    end
+  end
+
+  def emit_procedures_and_encounters(xml, study)
+    study.service_requests.each do |service_request|
+      service_request.arms.each do |arm|
+
+        cycle = 1
+
+        arm.visit_groups.each do |visit_group|
+
+          xml.component4(typeCode: 'COMP') {
+            xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
+              xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}.DAY#{visit_group.position}")
+              xml.title(visit_group.name)
+              xml.code(code: 'VISIT', codeSystem: 'n/a')
+
+              emit_procedures(xml, study, arm, visit_group, cycle)
+              emit_encounter(xml, study, arm, visit_group)
+
+            } # timePointEventDefinition
+          } # component4
+        end
+      end
+    end
+  end
+
+  def emit_procedures(xml, study, arm, visit_group, cycle)
+    arm.line_items.each do |line_item|
+      liv = LineItemsVisit.for(arm, line_item)
+      visit = Visit.for(liv, visit_group)
+
+      # TODO: we don't know if this is right or not
+      billing_modifiers = [
+        [ nil,  visit.research_billing_qty ],
+        [ 'Q1', visit.insurance_billing_qty ],
+      ]
+
+      billing_modifiers.each do |modifier, qty|
+
+        qty.times do 
+          # TODO: there's nowhere in this message to put the quantity
+          xml.component1(typeCode: 'COMP') {
+            xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
+              xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}.DAY#{visit_group.position}.PROC#{line_item.id}")
+              xml.code(code: 'PROC', codeSystem: 'n/a')
+
+              xml.component2(typeCode: 'COMP') {
+                xml.procedure(classCode: 'PROC', moodCode: 'EVN') {
+                  xml.code(code: line_item.service.cdm_code, codeSystem: 'n/a')
+                }
+              }
+
+              if modifier then
+                xml.subjectOf {
+                  xml.timePointEventCharacteristic {
+                    xml.code(code: 'BILL_MODIFIER', codeSystem: 'n/a')
+                    xml.value(value: modifier)
+                  }
+                }
+              end
+
+            } # timePointEventDefinition
+          } # component1
+        end
+      end
+
+    end
+  end
+
+  def emit_encounter(xml, study, arm, visit_group)
+    epoch = study.service_requests.minimum(:start_date)
+
+    xml.component2(typeCode: 'COMP') {
+      xml.encounter(classCode: 'ENC', moodCode: 'DEF') {
+        # TODO: assuming 1-based (but day might be 0-based; we don't know yet)
+        day = visit_group.day || visit_group.position
+
+        xml.effectiveTime {
+          xml.low(value: relative_date(day - visit_group.window, epoch))
+          xml.high(value: relative_date(day + visit_group.window, epoch))
+        }
+
+        xml.activityTime(value: relative_date(day, epoch))
+      }
+    }
   end
 
   # A "relative date" is represented in YYYYMMDD format and is
@@ -286,8 +381,8 @@ class EpicInterface
   # contain a valid date.
   #
   # The day passed in here is assumed to be 1-based.
-  def relative_date(day)
-    date = @epoch + day - 1
+  def relative_date(day, epoch)
+    date = epoch + day.days - 1.days
     return date.strftime("%Y%m%d")
   end
 end

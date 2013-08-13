@@ -33,6 +33,7 @@ end
 
 def add_catalog_manager
   click_link('Medical University of South Carolina')
+  wait_for_javascript_to_finish
   fill_in "new_cm", :with => "leonarjp"
   wait_for_javascript_to_finish
   page.find('a', :text => "Jason Leonard", :visible => true).click()

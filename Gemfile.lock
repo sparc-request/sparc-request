@@ -119,7 +119,7 @@ GEM
     fattr (2.2.1)
     faye-websocket (0.4.7)
       eventmachine (>= 0.12.0)
-    ffi (1.4.0)
+    ffi (1.9.0)
     formtastic (2.1.1)
       actionpack (~> 3.0)
     grouped_validations (0.3.2)
@@ -139,12 +139,6 @@ GEM
     inflection-js-rails (0.1.1)
       railties (>= 3.2.0, < 5.0)
       thor (~> 0.14)
-    jasmine (1.3.2)
-      jasmine-core (~> 1.3.1)
-      rack (~> 1.0)
-      rspec (>= 1.3.1)
-      selenium-webdriver (>= 0.1.3)
-    jasmine-core (1.3.1)
     journey (1.0.4)
     jquery-rails (2.1.3)
       railties (>= 3.1.0, < 5.0)
@@ -160,7 +154,7 @@ GEM
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
     mime-types (1.21)
-    multi_json (1.7.1)
+    multi_json (1.7.9)
     mustache (0.99.4)
     mysql2 (0.3.11)
     nested_form (0.3.2)
@@ -278,7 +272,7 @@ GEM
       nokogiri (>= 1.4.0)
       nori (~> 2.1.0)
       wasabi (~> 3.1.0)
-    selenium-webdriver (2.31.0)
+    selenium-webdriver (2.34.0)
       childprocess (>= 0.2.5)
       multi_json (~> 1.0)
       rubyzip
@@ -347,7 +341,7 @@ DEPENDENCIES
   cache_digests
   capistrano
   capistrano-ext
-  capybara
+  capybara (~> 2.0.2)
   capybara-firebug
   coffee-rails (~> 3.2.1)
   connection_pool
@@ -364,7 +358,6 @@ DEPENDENCIES
   haml
   highline
   inflection-js-rails
-  jasmine
   jquery-rails (= 2.1.3)
   jquery_datepicker
   json
@@ -393,6 +386,7 @@ DEPENDENCIES
   sass
   sass-rails (~> 3.2.3)
   savon (~> 2.2.0)
+  selenium-webdriver (~> 2.34.0)
   shoulda-matchers
   sinatra
   sqlite3

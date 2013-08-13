@@ -20,9 +20,11 @@ $(document).ready ->
     setTimeout((->
       $('.cwf_tabs li.ui-state-active').removeClass('ui-state-active')
       clicked.parent('li').addClass('ui-state-active')
-      $('#visit_form .appointment_wrapper tbody tr.fields').hide()
+      $('.hidden_by_tabs').hide()
+
       if clicked.attr('data-has_access') == "false"
         $("." + core_name).find('input').prop('disabled', true)
+
       $("." + core_name).css("display", "table-row")
       $('#visit_form .spinner_wrapper').hide()
       recalc_subtotal()
@@ -44,6 +46,7 @@ $(document).ready ->
   )
 
   $(document).on('click', '.cwf_add_service_button', ->
+    $('#visit_form .spinner_wrapper').show()
     box = $(this).siblings('select')
     data =
       'appointment_id': box.data('appointment_id')
@@ -55,10 +58,8 @@ $(document).ready ->
       data: JSON.stringify(data)
       dataType: 'html'
       contentType: 'application/json; charset=utf-8'
-      success: (html) ->
-        newDoc = document.open("text/html", "replace")
-        newDoc.write html
-        newDoc.close()
+      success: (response_html) ->
+        $('#patient_visit_calendar').html(response_html)
     return false
   )
 

@@ -24,7 +24,7 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
     @sub_service_request = SubServiceRequest.find(params[:ssr_id])
     if appointment.procedures.create(:service_id => params[:service_id])
       get_calendar_data(@calendar)
-      render :action => 'show'
+      render :partial => 'patient_visit_calendar'
     else
       respond_to do |format|
         format.js { render :status => 500, :json => clean_errors(appointment.errors) }

@@ -323,32 +323,31 @@ class EpicInterface
 
       billing_modifiers.each do |modifier, qty|
 
-        next if qty == 0
+        qty.times do 
+          # TODO: there's nowhere in this message to put the quantity
+          xml.component1(typeCode: 'COMP') {
+            xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
+              xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}.DAY#{visit_group.position}.PROC#{line_item.id}")
+              xml.code(code: 'PROC', codeSystem: 'n/a')
 
-        # TODO: there's nowhere in this message to put the quantity
-        xml.component1(typeCode: 'COMP') {
-          xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-            xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}.DAY#{visit_group.position}.PROC#{line_item.id}")
-            xml.code(code: 'PROC', codeSystem: 'n/a')
-
-            xml.component2(typeCode: 'COMP') {
-              xml.procedure(classCode: 'PROC', moodCode: 'EVN') {
-                xml.code(code: line_item.service.cdm_code, codeSystem: 'n/a')
-              }
-            }
-
-            if modifier then
-              xml.subjectOf {
-                xml.timePointEventCharacteristic {
-                  xml.code(code: 'BILL_MODIFIER', codeSystem: 'n/a')
-                  xml.value(code: modifier)
+              xml.component2(typeCode: 'COMP') {
+                xml.procedure(classCode: 'PROC', moodCode: 'EVN') {
+                  xml.code(code: line_item.service.cdm_code, codeSystem: 'n/a')
                 }
               }
-            end
 
-          } # timePointEventDefinition
-        } # component1
+              if modifier then
+                xml.subjectOf {
+                  xml.timePointEventCharacteristic {
+                    xml.code(code: 'BILL_MODIFIER', codeSystem: 'n/a')
+                    xml.value(value: modifier)
+                  }
+                }
+              end
 
+            } # timePointEventDefinition
+          } # component1
+        end
       end
 
     end

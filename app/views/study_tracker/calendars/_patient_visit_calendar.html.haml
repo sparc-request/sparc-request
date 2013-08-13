@@ -23,10 +23,10 @@
   = f.fields_for :calendar do |calendar_form|
     .cwf_tabs.ui-tabs.ui-widget.ui-widget-content.ui-corner-all
       %ul.ui-tabs-nav.ui-helper-reset.ui-helper-clearfix.ui-widget-header.ui-corner-all
-        %li.ui-state-default.ui-corner-top.ui-state-active= link_to "Nursing", "#nursing", :class => 'clinical_tab_data', :id => "core_#{@nursing.id}", 'data-has_access' => @user.can_edit_core?(@nursing.id) ? true : false
-        %li.ui-state-default.ui-corner-top= link_to "Laboratory", "#laboratory", :class => 'clinical_tab_data', :id => "core_#{@lab.id}", 'data-has_access' => @user.can_edit_core?(@lab.id) ? true : false
-        %li.ui-state-default.ui-corner-top= link_to "Imaging", "#imaging", :class => 'clinical_tab_data', :id => "core_#{@imaging.id}", 'data-has_access' => @user.can_edit_core?(@imaging.id) ? true : false
-        %li.ui-state-default.ui-corner-top= link_to "Nutrition", "#nutrition", :class => 'clinical_tab_data', :id => "core_#{@nutrition.id}", 'data-has_access' => @user.can_edit_core?(@nutrition.id) ? true : false
+        %li.ui-state-default.ui-corner-top{:class=> @nursing == @default_core ? 'ui-state-active' : ''}= link_to "Nursing", "#nursing", :class => "clinical_tab_data", :id => "core_#{@nursing.id}", 'data-has_access' => @user.can_edit_core?(@nursing.id) ? true : false
+        %li.ui-state-default.ui-corner-top{:class=> @lab == @default_core ? 'ui-state-active' : ''}= link_to "Laboratory", "#laboratory", :class => "clinical_tab_data", :id => "core_#{@lab.id}", 'data-has_access' => @user.can_edit_core?(@lab.id) ? true : false
+        %li.ui-state-default.ui-corner-top{:class=> @imaging == @default_core ? 'ui-state-active' : ''}= link_to "Imaging", "#imaging", :class => "clinical_tab_data", :id => "core_#{@imaging.id}", 'data-has_access' => @user.can_edit_core?(@imaging.id) ? true : false
+        %li.ui-state-default.ui-corner-top{:class=> @nutrition == @default_core ? 'ui-state-active' : ''}= link_to "Nutrition", "#nutrition", :class => "clinical_tab_data", :id => "core_#{@nutrition.id}", 'data-has_access' => @user.can_edit_core?(@nutrition.id) ? true : false
 
     #visit_form{:style => "padding: 10px 40px;"}
       = calendar_form.fields_for :appointments do |appointment_form|
@@ -46,7 +46,7 @@
             %tbody
               = appointment_form.fields_for :procedures, :wrapper => false do |procedure_form|
                 - if procedure_form.object.should_be_displayed
-                  %tr.fields{:style => "background-color:#C0C0C0;#{procedure_form.object.core.id == @nursing.id ? 'display:table-row;' : 'display:none;'}", :class => "core_#{procedure_form.object.core.id} hidden_by_tabs"}
+                  %tr.fields{:style => "background-color:#C0C0C0;#{procedure_form.object.core.id == @default_core.id ? 'display:table-row;' : 'display:none;'}", :class => "core_#{procedure_form.object.core.id} hidden_by_tabs"}
                     %td= procedure_form.object.display_service_name
                     - if procedure_form.object.should_be_checked?
                       %td.check_box_cell.highlighted.text-center= procedure_form.check_box :completed, :checked => true, :class => 'procedure_box'
@@ -66,16 +66,16 @@
                 %td
                 %td.grand_total_cell.text-center= number_to_currency(@default_subtotal)
           .add_service
-            %div{:class => "core_#{@nursing.id} hidden_by_tabs", :style => "display:block;"}
+            %div{:class => "core_#{@nursing.id} hidden_by_tabs", :style => @nursing == @default_core ? "display:block;" : ""}
               = select_tag :service, options_for_select(@nursing.services.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
               = button_tag "Add Service", :class => 'cwf_add_service_button'
-            %div{:class => "core_#{@lab.id} hidden_by_tabs"}
+            %div{:class => "core_#{@lab.id} hidden_by_tabs", :style => @lab == @default_core ? "display:block;" : ""}
               = select_tag :service, options_for_select(@lab.services.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
               = button_tag "Add Service", :class => 'cwf_add_service_button'
-            %div{:class => "core_#{@imaging.id} hidden_by_tabs"}
+            %div{:class => "core_#{@imaging.id} hidden_by_tabs", :style => @imaging == @default_core ? "display:block;" : ""}
               = select_tag :service, options_for_select(@imaging.services.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
               = button_tag "Add Service", :class => 'cwf_add_service_button'
-            %div{:class => "core_#{@nutrition.id} hidden_by_tabs"}
+            %div{:class => "core_#{@nutrition.id} hidden_by_tabs", :style => @nutrition == @default_core ? "display:block;" : ""}
               = select_tag :service, options_for_select(@nutrition.services.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
               = button_tag "Add Service", :class => 'cwf_add_service_button'
           .comments

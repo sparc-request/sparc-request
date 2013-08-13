@@ -17,6 +17,7 @@ $(document).ready ->
     clicked = $(this)
     $('#visit_form .spinner_wrapper').show()
     core_name = $(this).attr('id')
+    $.cookie('current_core', core_name.replace('core_', ''), {path: '/', expires: 1})
     setTimeout((->
       $('.cwf_tabs li.ui-state-active').removeClass('ui-state-active')
       clicked.parent('li').addClass('ui-state-active')

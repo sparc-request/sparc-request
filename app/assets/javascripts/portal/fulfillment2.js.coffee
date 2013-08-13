@@ -27,13 +27,22 @@ $(document).ready ->
   for datepicker in $('.datepicker')
     do_datepicker("##{$(datepicker).attr('id')}")
 
+  filterNonKeys = (arr) ->
+    filtered = []
+    i = arr.length
+    re = /^.*_id/
+    (filtered.push arr[i] if re.test(arr[i])) while i--
+    return filtered
+
   # WARNING: Object.keys(obj) does not work in IE 6,7,or 8.  Please do not use.
   getObjKlass = (obj) ->
     objData = $(obj).data()
     objKeys = $.map(objData, (val, key) ->
       key
     )
-    objKeys[0].replace('_id', '')
+    # Filter out anything that does not end with _id
+    filtered_keys = filterNonKeys(objKeys)
+    filtered_keys[0].replace('_id', '')
 
   $(document).on('change', '.fulfillment_data', ->
     klass = getObjKlass(this)

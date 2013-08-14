@@ -88,16 +88,16 @@ describe "editing a study" do
     context "selecting yes button" do
       before :each do
         @project_role = study.project_roles.first
-        choose "epic_access_yes_#{@project_role.id}"
+        choose "epic_access_yes_#{@project_role.identity.id}"
       end
 
       it "should display the access rights pop up box" do
-        find(".epic_access_dialog#project_role_#{@project_role.id}").should be_visible
+        find(".epic_access_dialog#project_role_identity_#{@project_role.identity.id}").should be_visible
       end
 
       it "should save selected access rights" do
         wait_for_javascript_to_finish
-        dialog = find(".epic_access_dialog#project_role_#{@project_role.id}")
+        dialog = find(".epic_access_dialog#project_role_identity_#{@project_role.identity.id}")
         check_boxes = dialog.all('.epic_access_check_box')
         check_boxes[1].set(true)
         check_boxes[3].set(true)
@@ -110,7 +110,7 @@ describe "editing a study" do
         }
 
         click_button "Edit Study"
-        dialog = find(".epic_access_dialog#project_role_#{@project_role.id}")
+        dialog = find(".epic_access_dialog#project_role_identity_#{@project_role.identity.id}")
         check_boxes = dialog.all('.epic_access_check_box')
         check_boxes[1].should be_checked
         check_boxes[3].should be_checked
@@ -124,12 +124,12 @@ describe "editing a study" do
       end
 
       it "should display the access rights pop up box" do
-        find(".epic_access_dialog#project_role_#{@project_role.id}").should be_visible
+        find(".epic_access_dialog#project_role_identity_#{@project_role.identity.id}").should be_visible
       end
 
       it "should select the yes button" do
         click_button 'Ok'
-        find("#epic_access_yes_#{@project_role.id}").should be_checked
+        find("#epic_access_yes_#{@project_role.identity.id}").should be_checked
       end
     end
   end

@@ -34,11 +34,13 @@ module Savon
   end
 end
 
+
 # Use this class to send protocols (studies/projects) along with their
 # associated billing calendars to Epic via an InterConnect server.
 #
 # Configuration is stored in config/epic.yml.
 class EpicInterface
+  class Error < RuntimeError; end
 
   # Create a new EpicInterface
   def initialize(config)
@@ -95,10 +97,17 @@ class EpicInterface
       action = action.snakecase.to_sym
     end
 
-    return @client.call(
-        action,
-        soap_header: soap_header(action),
-        message: message)
+    begin
+      return @client.call(
+          action,
+          soap_header: soap_header(action),
+          message: message)
+    rescue
+      h = $!.to_hash
+      fault = $!.nori.find(h, 'Fault')
+      msg = $!.nori.find(fault, "Reason", 'Text')
+      raise Error.new(msg)
+    end
   end
 
   # Send a full study to the Epic InterConnect server.
@@ -192,13 +201,14 @@ class EpicInterface
   end
 
   def emit_irb_number(xml, study)
-    irb_number = study.human_subjects_info.try(:pro_number) || study.human_subjects_info.try(:hr_number)
+    irb_number = study.human_subjects_info.try(:pro_number)
+    irb_number = study.human_subjects_info.try(:hr_number) if irb_number.blank?
     if !irb_number.blank? then
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'IRB')
           xml.value(
-              'xsi:type' => 'CD',
+              'xsi:type' => 'ST',
               value: irb_number)
         }
       }

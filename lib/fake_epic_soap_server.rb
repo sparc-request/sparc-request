@@ -2,7 +2,7 @@ require 'webrick'
 require 'open-uri'
 require 'ostruct'
 require 'nokogiri' # xml parsing
-require 'gyoku'    # xml construction
+require 'builder'  # xml construction
 
 # The EpicServlet class is a SOAP server that, to SPARC, looks just like
 # an Epic InterConnect server.  Start it up under WEBrick like this:
@@ -27,7 +27,7 @@ class FakeEpicServlet < WEBrick::HTTPServlet::AbstractServlet
   # default every message returns success.  You can force an error to be
   # sent back with:
   #
-  #   servlet.result << EpicServlet::Result::Error.new(
+  #   servlet.result << FakeEpicServlet::Result::Error.new(
   #       value: 'soap:Server',
   #       text: 'There was an error.')
   #
@@ -76,9 +76,9 @@ class FakeEpicServlet < WEBrick::HTTPServlet::AbstractServlet
       body = Nokogiri::XML(request.body)
       @received << body if @keep_received
 
-      xml = action.call(body, response)
+      xml, status = action.call(body, response)
 
-      response.status = 200
+      response.status = status
       response['Content-Type'] = 'text/xml'
       response.body = xml
     end
@@ -93,15 +93,16 @@ class FakeEpicServlet < WEBrick::HTTPServlet::AbstractServlet
   #
   # Returns a string containing the xml.
   def soap12_envelope(h)
-    xml = Gyoku.xml(
-      'soap:Envelope' => {
-        '@xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
-        '@xmlns:soap' => 'http://schemas.xmlsoap.org/soap/envelope',
-        '@xmlns:addressing' => 'http://www.w3.org/2005/08/addressing',
-        'soap:Header' => h[:header] || { },
-        'soap:Body' => h[:body],
-        }
-      )
+    xml = Builder::XmlMarkup.new(indent:2)
+
+    xml.tag!(
+        'soap:Envelope',
+        'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
+        'xmlns:soap' => 'http://schemas.xmlsoap.org/soap/envelope',
+        'xmlns:addressing' => 'http://www.w3.org/2005/08/addressing') {
+      xml.tag!('soap:Header') { h[:header].call(xml) if h[:header] }
+      xml.tag!('soap:Body') { h[:body].call(xml) if h[:body] }
+    }
   end
 
   # Generate a SOAP error that resembles the one sent back by the Epic
@@ -111,24 +112,19 @@ class FakeEpicServlet < WEBrick::HTTPServlet::AbstractServlet
     # header in addressing:RelatesTo
 
     xml = soap12_envelope(
-      header: {
-        'addressing:Action' => {
-          '@soap:mustUnderstand' => '1'
-        }
+      header: ->(xml) {
+        xml.tag!('addressing:Action', 'soap:mustUnderstand' => '1')
       },
-      body: {
-        'soap:Fault' => {
-          'soap:Code' => {
-            'soap:Value' => 'soap:Sender',
-            'soap:SubCode' => {
-              'soap:Value' => error.value
+      body: ->(xml) {
+        xml.tag!('soap:Fault') {
+          xml.tag!('soap:Code') {
+            xml.tag!('soap:Value', 'soap:Sender')
+            xml.tag!('soap:SubCode') {
+              xml.tag!('soap:Value', error.value)
             }
-          },
-          'soap:Reason' => {
-            'soap:Text' => {
-              '@xml:lang' => 'en-US',
-              'content!' => error.text
-            }
+          }
+          xml.tag!('soap:Reason') {
+            xml.tag!('soap:Text', error.text, 'xml:lang' => 'en-US')
           }
         }
       })
@@ -143,21 +139,22 @@ class FakeEpicServlet < WEBrick::HTTPServlet::AbstractServlet
     case result
     when Result::Error
       xml = soap12_error(body, result)
+      status = 500
 
     when Result::Success
-      xml = soap12_envelope(
-        body: {
-          'RetrieveProtocolDefResponseResponse' => {
-            '@xmlns' => 'urn:ihe:qrph:rpe:2009',
-            'ResponseCode' => 'PROTOCOL_RECEIVED',
-          }
+      xml= soap12_envelope(
+        body: ->(xml) {
+          xml.RetrieveProtocolDefResponse(xmlns: 'urn:ihe:qrph:rpe:2009') do
+            xml.ResponseCode('PROTOCOL_RECEIVED')
+          end
         })
+      status = 200
 
     else
       raise "Undefined result type #{result}"
     end
 
-    return xml
+    return xml, status
   end
 
   # Given an http request, grab the content-type header and parse it.

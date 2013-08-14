@@ -168,6 +168,10 @@ class LineItem < ActiveRecord::Base
     end
   end
 
+  def should_push_to_epic?
+    return self.service.send_to_epic
+  end
+
   private
 
   def remove_procedures

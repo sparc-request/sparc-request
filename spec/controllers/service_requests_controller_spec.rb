@@ -219,6 +219,46 @@ describe ServiceRequestsController do
         ssr1.reload
         ssr1.ssr_id.should eq '10042'
       end
+
+      it 'should send an email if services are set to send to epic' do
+        session[:identity_id] = jug2.id
+        session[:service_request_id] = service_request.id
+
+        service.update_attributes(send_to_epic: false)
+        service2.update_attributes(send_to_epic: true)
+
+        deliverer = double()
+        deliverer.should_receive(:deliver)
+        Notifier.stub!(:notify_for_epic_user_approval) { |sr|
+          sr.should eq(service_request)
+          deliverer
+        }
+
+        get :confirmation, {
+          :id => service_request.id,
+          :format => :js
+        }
+      end
+
+      it 'should not send an email if no services are set to send to epic' do
+        session[:identity_id] = jug2.id
+        session[:service_request_id] = service_request.id
+
+        service.update_attributes(send_to_epic: false)
+        service2.update_attributes(send_to_epic: false)
+
+        deliverer = double()
+        deliverer.should_not_receive(:deliver)
+        Notifier.stub!(:notify_for_epic_user_approval) { |sr|
+          sr.should eq(service_request)
+          deliverer
+        }
+
+        get :confirmation, {
+          :id => service_request.id,
+          :format => :js
+        }
+      end
     end
   end
 

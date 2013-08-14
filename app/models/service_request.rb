@@ -389,4 +389,8 @@ class ServiceRequest < ActiveRecord::Base
     self.protocol.update_attributes(next_ssr_id: next_ssr_id)
   end
 
+  def should_push_to_epic?
+    return self.line_items.any? { |li| li.should_push_to_epic? }
+  end
+
 end

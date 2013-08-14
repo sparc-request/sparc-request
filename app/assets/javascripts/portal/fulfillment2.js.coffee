@@ -212,7 +212,9 @@ $(document).ready ->
           $().toastmessage('showErrorToast', "#{error.humanize()}.");
 
   $(document).on('click', '.remove_arm_link', ->
-    if confirm("Are you sure you want to remove the ARM?")
+    if $(this).data('arm_count') <= 1
+      alert("You can't delete the last arm while Per-Patient/Per Visit services still exist.")
+    else if confirm("Are you sure you want to remove the ARM?")
       sr_id = $(this).data('service_request_id')
       data =
         'sub_service_request_id': $(this).data('sub_service_request_id')

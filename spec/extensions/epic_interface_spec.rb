@@ -229,7 +229,7 @@ describe EpicInterface do
                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
           <studyCharacteristic classCode="OBS" moodCode="EVN">
             <code code="IRB" />
-            <value xsi:type="CD" value="1234" />
+            <value xsi:type="ST" value="1234" />
           </studyCharacteristic>
         </subjectOf>
       END
@@ -256,7 +256,7 @@ describe EpicInterface do
                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
           <studyCharacteristic classCode="OBS" moodCode="EVN">
             <code code="IRB" />
-            <value xsi:type="CD" value="5678" />
+            <value xsi:type="ST" value="5678" />
           </studyCharacteristic>
         </subjectOf>
       END
@@ -284,7 +284,7 @@ describe EpicInterface do
                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
           <studyCharacteristic classCode="OBS" moodCode="EVN">
             <code code="IRB" />
-            <value xsi:type="CD" value="1234" />
+            <value xsi:type="ST" value="1234" />
           </studyCharacteristic>
         </subjectOf>
       END

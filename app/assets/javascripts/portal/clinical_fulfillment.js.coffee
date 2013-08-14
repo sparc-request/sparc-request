@@ -17,12 +17,15 @@ $(document).ready ->
     clicked = $(this)
     $('#visit_form .spinner_wrapper').show()
     core_name = $(this).attr('id')
+    $.cookie('current_core', core_name.replace('core_', ''), {path: '/', expires: 1})
     setTimeout((->
       $('.cwf_tabs li.ui-state-active').removeClass('ui-state-active')
       clicked.parent('li').addClass('ui-state-active')
-      $('#visit_form .appointment_wrapper tbody tr.fields').hide()
+      $('.hidden_by_tabs').hide()
+
       if clicked.attr('data-has_access') == "false"
         $("." + core_name).find('input').prop('disabled', true)
+
       $("." + core_name).css("display", "table-row")
       $('#visit_form .spinner_wrapper').hide()
       recalc_subtotal()
@@ -41,6 +44,24 @@ $(document).ready ->
 
   $(document).on('change', 'form.edit_subject', ->
     $('#save_alert').show()
+  )
+
+  $(document).on('click', '.cwf_add_service_button', ->
+    $('#visit_form .spinner_wrapper').show()
+    box = $(this).siblings('select')
+    data =
+      'appointment_id': box.data('appointment_id')
+      'service_id': box.val()
+      'ssr_id': box.data('ssr_id')
+    $.ajax
+      type: "post"
+      url: "/study_tracker/appointments/add_service"
+      data: JSON.stringify(data)
+      dataType: 'html'
+      contentType: 'application/json; charset=utf-8'
+      success: (response_html) ->
+        $('#patient_visit_calendar').html(response_html)
+    return false
   )
 
 
@@ -78,8 +99,6 @@ $(document).ready ->
       dataType: 'html'
       contentType: 'application/json; charset=utf-8'
       success: (html) ->
-        console.log("In Success Function")
-        console.log(html)
         $('.comments:visible').html(html)
   )
 

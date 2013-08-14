@@ -44,6 +44,9 @@ class EpicInterface
 
   # Create a new EpicInterface
   def initialize(config)
+    logfile = File.join(Rails.root, '/log/', "epic-#{Rails.env}.log")
+    logger = ActiveSupport::BufferedLogger.new(logfile)
+
     @config = config
 
     # TODO: grab these from the WSDL
@@ -60,7 +63,7 @@ class EpicInterface
     # attribute (ensuring that all the children of the
     # RetrieveProtocolDefResponse element are in the right namespace).
     @client = Savon.client(
-        logger: Rails.logger,
+        logger: logger,
         soap_version: 2,
         pretty_print_xml: true,
         convert_request_keys_to: :none,

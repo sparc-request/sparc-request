@@ -54,17 +54,17 @@ $(document).ready ->
     toggle_form_slide()
 
   $(document).on('click', '.epic_access_radio_yes', ->
-    pr_id = $(this).attr('project_role_id')
-    show_epic_access(pr_id)
+    identity_id = $(this).attr('identity_id')
+    show_epic_access(identity_id)
   )
 
   $(document).on('click', '.epic_access_edit', ->
-    pr_id = $(this).attr('project_role_id')
-    $("#epic_access_yes_#{pr_id}").click()
+    identity_id = $(this).attr('identity_id')
+    $("#epic_access_yes_#{identity_id}").click()
   )
 
-show_epic_access = (project_role_id) ->
-  $(".epic_access_dialog#project_role_#{project_role_id}").dialog({
+show_epic_access = (identity_id) ->
+  $(".epic_access_dialog#project_role_identity_#{identity_id}").dialog({
     height: 425
     width: 500
     modal: true

@@ -131,9 +131,11 @@ describe "procedure" do
         line_item.stub!(:applicable_rate) { 100 }
       end
 
-      it 'should return zero if procedure is not completed' do
-      	procedure.total.should eq(0.00)
-    	end
+      #This will be changed when appointment dates are added to each core.
+
+     #  it 'should return zero if procedure is not completed' do
+     #  	procedure.total.should eq(0.00)
+    	# end
 
 			it "should return the correct total" do
 				procedure.update_attribute(:completed, true)

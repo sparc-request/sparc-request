@@ -219,7 +219,7 @@ class EpicInterface
   end
 
 
-  # Bulid a study calendar definition message to send to epic and return
+  # Build a study calendar definition message to send to epic and return
   # it as a string.
   def study_calendar_definition_message(study)
     xml = Builder::XmlMarkup.new(indent: 2)

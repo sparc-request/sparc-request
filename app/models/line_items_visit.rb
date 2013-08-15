@@ -153,7 +153,7 @@ class LineItemsVisit < ActiveRecord::Base
 
     procedures.each do |pro|
       if pro.completed
-        pro.update_attributes(service_id: self.service_id, line_item_id: nil, visit_id: nil)
+        pro.update_attributes(service_id: self.line_item.service_id, line_item_id: nil, visit_id: nil)
       else
         pro.destroy if pro.appointment.visit_group.arm_id != self.arm_id
       end

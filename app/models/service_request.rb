@@ -32,7 +32,11 @@ class ServiceRequest < ActiveRecord::Base
 
   validation_group :service_calendar do
     #insert group specific validation
-    validate :service_calendar_page
+    validate :service_calendar_forward
+  end
+
+  validation_group :service_calendar_back do
+    validate :service_calendar_back
   end
 
   validation_group :calendar_totals do
@@ -116,7 +120,16 @@ class ServiceRequest < ActiveRecord::Base
     end
   end
 
-  def service_calendar_page
+  def service_calendar_back
+    service_calendar_page('back')
+  end
+
+  def service_calendar_forward
+    service_calendar_page('forward')
+  end
+
+  def service_calendar_page(direction)
+    return if direction == 'back' and status == 'first_draft'
     self.arms.each do |arm|
       arm.visit_groups.each do |vg|
         if vg.day.blank?

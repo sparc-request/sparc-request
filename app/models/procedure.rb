@@ -82,6 +82,7 @@ class Procedure < ActiveRecord::Base
       end
     end
   end
+
   def should_be_checked?
     if self.completed == nil && !self.appointment.completed_at?
       return true
@@ -89,4 +90,13 @@ class Procedure < ActiveRecord::Base
       return false
     end
   end
+
+  def has_been_completed
+    if self.appointment.completed? && self.completed
+      return true
+    else
+      return false
+    end
+  end
+  
 end

@@ -327,12 +327,25 @@ class EpicInterface
     arm.line_items.each do |line_item|
       liv = LineItemsVisit.for(arm, line_item)
       visit = Visit.for(liv, visit_group)
+      service = line_item.service
 
       # TODO: we don't know if this is right or not
       billing_modifiers = [
         [ nil,  visit.research_billing_qty ],
         [ 'Q1', visit.insurance_billing_qty ],
       ]
+
+      if service.cdm_code then
+        service_code = service.cdm_code
+        service_code_system = "CDM"
+      elsif service.cpt_code then
+        service_code = service.cpt_code
+        service_code_system = "CPT"
+      else
+        # Skip this service, since it has neither a CPT code nor a CDM
+        # code
+        next
+      end
 
       billing_modifiers.each do |modifier, qty|
 
@@ -345,7 +358,7 @@ class EpicInterface
 
               xml.component2(typeCode: 'COMP') {
                 xml.procedure(classCode: 'PROC', moodCode: 'EVN') {
-                  xml.code(code: line_item.service.cdm_code, codeSystem: 'n/a')
+                  xml.code(code: service_code, codeSystem: service_code_system)
                 }
               }
 

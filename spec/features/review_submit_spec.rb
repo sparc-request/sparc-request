@@ -77,6 +77,38 @@ describe "review page", :js => true do
         click_link "Send to Primary PI"
         page.should have_content "Thank you. An email has been sent to the primary PI for the final approval."
       end
+
+      context 'primary pi emails' do
+        before :each do
+          visit_email @email
+          clear_emails
+          click_link "Send to Primary PI"
+          @email = all_emails.find { |email| email.subject == "Epic Rights User Approval"}
+        end
+
+        it "should send an email to the Primary PI" do
+          @email.should have_content("The following SPARC Request users have requested access to Epic for your study ##{project.id}")
+        end
+
+        it "should have the correct users in the table" do
+          visit_email @email
+          project_role = project.project_roles.first
+
+          page.should_not have_content project.project_roles.last.identity.full_name
+
+          within("#project_role_#{project.project_roles.first.id}") do
+            find(".name").should have_content project_role.identity.full_name
+            find(".role").should have_content USER_ROLES.invert[project_role.role]
+            find(".epic_rights").should have_content(EPIC_RIGHTS["view_rights"])
+          end
+        end
+
+        it "should send the study to epic" do
+          visit_email @email
+          click_link "Send to Epic"
+          page.should have_content "Study has been sent to Epic"
+        end
+      end
     end
   end
 

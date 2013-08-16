@@ -12,6 +12,7 @@ require 'capybara/rspec'
 require 'capybara/rails'
 require 'capybara/dsl'
 require 'capybara/firebug'
+require 'capybara/email/rspec'
 require 'selenium-webdriver'
 
 # Set default values for capybara; these can be overriden by a file in

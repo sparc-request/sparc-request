@@ -5,7 +5,8 @@ RSpec.configure do |config|
   config.before :each do
     host = Capybara.current_session.server.host
     port = Capybara.current_session.server.port
-    Rails.configuration.action_mailer.default_url_options = "#{host}:#{port}"
-    ActionMailer::Base.default_url_options = "#{host}:#{port}"
+    default_url_options = { host: host, port: port }
+    Rails.configuration.action_mailer.default_url_options = default_url_options
+    ActionMailer::Base.default_url_options = default_url_options
   end
 end

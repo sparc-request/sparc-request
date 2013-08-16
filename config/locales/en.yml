@@ -503,7 +503,7 @@ en:
 
   # Service Request approve epic rights
   approve_epic_rights:
-    instructions: "Thank you.  An email has been sent to the primary PI for the final push to Epic."
+    instructions: "Thank you. An email has been sent to the primary PI for the final approval."
 
   # Portal Root/Information
   protocol_information:

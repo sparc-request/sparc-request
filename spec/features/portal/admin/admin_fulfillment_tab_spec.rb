@@ -318,7 +318,7 @@ describe "admin fulfillment tab", :js => true do
     it 'should display a toast message when push succeeds' do
       click_link 'Send To Epic'
       wait_for_javascript_to_finish
-      find('.toast-container').should have_content("Project/Study has been pushed to Epic")
+      find('.toast-container').should have_content("Project/Study has been sent to Epic")
     end
 
     it 'should display a toast message when push fails' do

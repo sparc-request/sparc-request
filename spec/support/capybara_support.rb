@@ -182,4 +182,10 @@ module CapybaraSupport
     find("#{delete}").click
     wait_for_javascript_to_finish
   end
+
+  def visit_email email
+    driver = Capybara::Email::Driver.new(email)
+    node = Capybara::Node::Email.new(Capybara.current_session, driver)
+    Capybara.current_session.driver.visit "file://#{node.save_page}"
+  end
 end

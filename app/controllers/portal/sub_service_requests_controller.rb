@@ -113,6 +113,24 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     end
   end
 
+  def add_otf_line_item
+    @sub_service_request = SubServiceRequest.find(params[:id])
+    @service_request = @sub_service_request.service_request
+    @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.is_one_time_fee?}
+
+    @study_tracker = params[:study_tracker] == "true"
+    @line_items = @sub_service_request.line_items
+    
+    if @sub_service_request.create_line_item(
+        service_id: params[:new_service_id],
+        sub_service_request_id: params[:sub_service_request_id])
+    else
+      respond_to do |format|
+        format.js { render :status => 500, :json => clean_errors(@sub_service_request.errors) }
+      end
+    end
+  end
+
   def new_document
     errors = []
     #### add logic to save data

@@ -198,6 +198,7 @@ SparcRails::Application.routes.draw do
           put :update_from_fulfillment
           put :update_from_project_study_information
           post :add_line_item
+          post :add_otf_line_item
           post :new_document
           post :add_note
         end

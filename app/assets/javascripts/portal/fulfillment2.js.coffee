@@ -385,6 +385,23 @@ $(document).ready ->
           $().toastmessage('showSuccessToast', "Service has been deleted.");
   )
 
+  $(document).on('click', '.cwf_delete_data', ->
+    klass = getObjKlass(this)
+    object_id = $(this).data("#{klass}_id")
+    data = {}
+    data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
+    confirm_message = "Are you sure that you want to remove this service?"
+    if confirm(confirm_message)
+      $.ajax
+        type: 'DELETE'
+        url:  "/portal/admin/line_items/#{object_id}"
+        data: JSON.stringify(data)
+        dataType: "script"
+        contentType: 'application/json; charset=utf-8'
+        success: ->
+          $().toastmessage('showSuccessToast', "Service has been deleted.");
+  )
+
   $(document).on('click', '.expand_li', ->
     $(this).children().first().toggleClass('ui-icon-triangle-1-s')
     li_id = $(this).data('line_item_id')

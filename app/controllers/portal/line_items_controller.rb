@@ -42,7 +42,11 @@ class Portal::LineItemsController < Portal::BaseController
       @service_request = @sub_service_request.service_request
       @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.is_one_time_fee?}
       @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
-      render 'portal/sub_service_requests/add_line_item'
+      unless @study_tracker
+        render 'portal/sub_service_requests/add_line_item'
+      else
+        render 'portal/sub_service_requests/add_otf_line_item'
+      end
     end
   end
 end

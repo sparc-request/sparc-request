@@ -1,0 +1,56 @@
+%table.service_calendar
+  %thead.ui-widget-header
+    %tr.table_header
+      %th.services_header{:colspan => 6, :style => "height: 88px"}= t("calendar_page.headers.services")
+      / %th.unit_costs_header{:colspan => 2}
+      %th.qty_type_header{:rowspan => 2}= t("calendar_page.headers.qty_type")
+      %th.number_of_units_header{:rowspan => 2}= t("calendar_page.headers.number_of_units")
+      %th.qty_unit_header{:rowspan => 2}= t("calendar_page.headers.qty_unit")
+      %th{:rowspan => 2, :colspan => 3, :height => 40, :width => 375}
+
+      %th= image_tag 'spinner.gif', :class => 'service_calendar_spinner'
+      %th{:rowspan => 2}
+
+  %tbody.cell-border
+    %tr.section_header
+      %th{:colspan => 14}
+        = t("calendar_page.headers.other_services")
+        
+        #nan_error{:style => 'display:none;'}
+          = t(:service_requests)[:detail_list][:nan]
+
+        #one_time_fee_errors{:style => 'display:none;'}
+          = t(:service_requests)[:detail_list][:text1]
+          %span#quantity
+          = t(:service_requests)[:detail_list][:text2]
+          %span#unit_minimum 
+          %br
+          = t(:service_requests)[:detail_list][:text3]
+          
+        #unit_max_error{:style => 'display:none;'}
+          = t(:service_requests)[:detail_list][:text4]
+          %span#unit_quantity
+          = t(:service_requests)[:detail_list][:text5]
+          %span#unit_max
+          %br       
+          = t(:service_requests)[:detail_list][:text6]
+
+    - @service_request.service_list(true).each do |key, value| # get only one time fee services and group them
+      - next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
+      %tr.sub_section_header
+        %th.otf{:colspan => 14}= value[:name]
+        - value[:line_items].each do |line_item|
+          %tr.line_item.otfs{:class => cycle('odd', '', :name => 'otfs'), :"data-unit_factor" => line_item.service.displayed_pricing_map.unit_factor}
+            %td.service_name{:colspan => 4}
+              = line_item.service.name
+              = hidden_field_tag "service_request[line_items_attributes][#{line_item.id}][id]", line_item.id
+            %td.service_rate
+            %td.your_cost
+            %td= line_item.service.try(:displayed_pricing_map).try(:unit_type).try(:humanize)
+            %td= text_field_tag "service_request[line_items_attributes][#{line_item.id}][quantity]", line_item.quantity, |
+                 :unit_minimum => line_item.service.displayed_pricing_map.unit_minimum, :class => 'line_item_quantity', :current_quantity => line_item.quantity |
+            -#
+            %td= text_field_tag "service_request[line_items_attributes][#{line_item.id}][units_per_quantity]", line_item.units_per_quantity, | 
+                 "data-qty_max" => line_item.service.displayed_pricing_map.units_per_qty_max, :class => "units_per_quantity", :current_units_per_quantity => line_item.units_per_quantity |
+            %td{:colspan => 4}
+            %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-line_item_id' => line_item.id, :class => 'delete_data')

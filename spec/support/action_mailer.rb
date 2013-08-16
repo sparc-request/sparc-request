@@ -3,8 +3,8 @@
 # localhost:3000, which is almost certainly wrong).
 RSpec.configure do |config|
   config.before :each do
-    host = Capybara.current_session.server.host
-    port = Capybara.current_session.server.port
+    host = Capybara.current_session.try(:server).try(:host) || 'localhost'
+    port = Capybara.current_session.try(:server).try(:port) || '0'
     default_url_options = { host: host, port: port }
     Rails.configuration.action_mailer.default_url_options = default_url_options
     ActionMailer::Base.default_url_options = default_url_options

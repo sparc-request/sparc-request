@@ -149,5 +149,35 @@ describe "procedure" do
 				procedure.total.should eq(50.0)
 			end
 		end
+
+		describe "complete indication" do
+
+			let!(:appointment) {Appointment.create()}
+
+			before :each do
+				procedure.update_attribute(:appointment_id, appointment.id)
+			end
+
+			it "should be completed if it is checked and its appointment is completed" do
+				procedure.update_attribute(:completed, true)
+				appointment.update_attribute(:completed_at, Date.today)
+				procedure.has_been_completed.should be_true
+			end
+
+			it "should not be completed if it is checked and its appointment is not completed" do
+				procedure.update_attribute(:completed, true)
+				procedure.has_been_completed.should be_false
+			end
+
+			it "should not be completed if it is unchecked and its appointment is completed" do
+				appointment.update_attribute(:completed_at, Date.today)
+				procedure.has_been_completed.should be_false
+			end
+
+			it "should not be completed if it is unchecked and its appointment is not completed" do
+				procedure.has_been_completed.should be_false
+			end
+
+		end
 	end
 end

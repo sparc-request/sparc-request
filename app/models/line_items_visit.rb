@@ -174,7 +174,7 @@ class LineItemsVisit < ActiveRecord::Base
     procedures = self.line_item.procedures.includes(:appointment => :visit_group)
 
     procedures.each do |pro|
-      if pro.completed
+      if pro.has_been_completed
         pro.update_attributes(service_id: self.line_item.service_id, line_item_id: nil, visit_id: nil)
       else
         pro.destroy if pro.appointment.visit_group.arm_id != self.arm_id

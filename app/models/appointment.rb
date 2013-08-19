@@ -22,4 +22,10 @@ class Appointment < ActiveRecord::Base
       procedure.save
     end
   end
+
+  # TODO
+  # Update this method when the new core specific completed dates are added
+  def completed?
+    self.completed_at?
+  end
 end

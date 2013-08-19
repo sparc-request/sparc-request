@@ -172,10 +172,14 @@ class LineItemsVisit < ActiveRecord::Base
 
   def remove_procedures
     procedures = self.line_item.procedures.includes(:appointment => :visit_group)
-    procedures.delete_if {|pro| pro.appointment.visit_group.arm_id != self.arm_id}
 
     procedures.each do |pro|
-      pro.destroy unless pro.completed
+      if pro.has_been_completed
+        pro.update_attributes(service_id: self.line_item.service_id, line_item_id: nil, visit_id: nil)
+      else
+        pro.destroy if pro.appointment.visit_group.arm_id != self.arm_id
+      end
     end
+
   end
 end

@@ -46,7 +46,7 @@ class CtrcSubsidyReport < Report
               if ssr.subsidy
                 row << CtrcSubsidyReport.currency_converter(ssr.subsidy.pi_contribution)
                 puts CtrcSubsidyReport.currency_converter(ssr.subsidy.pi_contribution)
-                row << two_decimal_places(ssr.subsidy.percent_subsidy)
+                row << two_decimal_places(ssr.try(:subsidy).try(:percent_subsidy)) rescue nil
                 puts ssr.subsidy.percent_subsidy
               else
                 row << ""

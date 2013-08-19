@@ -47,10 +47,10 @@
             %td.service_rate
             %td.your_cost
             %td= line_item.service.try(:displayed_pricing_map).try(:unit_type).try(:humanize)
-            %td= text_field_tag "service_request[line_items_attributes][#{line_item.id}][quantity]", line_item.quantity, |
-                 :unit_minimum => line_item.service.displayed_pricing_map.unit_minimum, :class => 'line_item_quantity', :current_quantity => line_item.quantity |
+            %td= text_field_tag "quantity", line_item.quantity, |
+                 :unit_minimum => line_item.service.displayed_pricing_map.unit_minimum, :class => 'line_item_quantity', :"data-line_item_id" => line_item.id, :"data-study_tracker" => true, :current_quantity => line_item.quantity |
             -#
-            %td= text_field_tag "service_request[line_items_attributes][#{line_item.id}][units_per_quantity]", line_item.units_per_quantity, | 
-                 "data-qty_max" => line_item.service.displayed_pricing_map.units_per_qty_max, :class => "units_per_quantity", :current_units_per_quantity => line_item.units_per_quantity |
+            %td= text_field_tag "units_per_quantity", line_item.units_per_quantity, | 
+                 "data-qty_max" => line_item.service.displayed_pricing_map.units_per_qty_max, :class => "units_per_quantity", :"data-line_item_id" => line_item.id, :"data-study_tracker" => true, :current_units_per_quantity => line_item.units_per_quantity |
             %td{:colspan => 4}
             %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-line_item_id' => line_item.id, :class => 'cwf_delete_data')

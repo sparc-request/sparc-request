@@ -2,7 +2,6 @@
   %thead.ui-widget-header
     %tr.table_header
       %th.services_header{:colspan => 6, :style => "height: 88px"}= t("calendar_page.headers.services")
-      / %th.unit_costs_header{:colspan => 2}
       %th.qty_type_header{:rowspan => 2}= t("calendar_page.headers.qty_type")
       %th.number_of_units_header{:rowspan => 2}= t("calendar_page.headers.number_of_units")
       %th.qty_unit_header{:rowspan => 2}= t("calendar_page.headers.qty_unit")
@@ -47,10 +46,7 @@
             %td.service_rate
             %td.your_cost
             %td= line_item.service.try(:displayed_pricing_map).try(:unit_type).try(:humanize)
-            %td= text_field_tag "quantity", line_item.quantity, |
-                 :unit_minimum => line_item.service.displayed_pricing_map.unit_minimum, :class => 'line_item_quantity', :"data-line_item_id" => line_item.id, :"data-study_tracker" => true, :current_quantity => line_item.quantity |
-            -#
-            %td= text_field_tag "units_per_quantity", line_item.units_per_quantity, | 
-                 "data-qty_max" => line_item.service.displayed_pricing_map.units_per_qty_max, :class => "units_per_quantity", :"data-line_item_id" => line_item.id, :"data-study_tracker" => true, :current_units_per_quantity => line_item.units_per_quantity |
+            %td= text_field_tag "quantity", line_item.quantity, :unit_minimum => line_item.service.displayed_pricing_map.unit_minimum, :class => 'line_item_quantity', :"data-line_item_id" => line_item.id, :"data-study_tracker" => true, :current_quantity => line_item.quantity
+            %td= text_field_tag "units_per_quantity", line_item.units_per_quantity, :"data-qty_max" => line_item.service.displayed_pricing_map.units_per_qty_max, :class => "units_per_quantity", :"data-line_item_id" => line_item.id, :"data-study_tracker" => true, :current_units_per_quantity => line_item.units_per_quantity 
             %td{:colspan => 4}
             %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-line_item_id' => line_item.id, :class => 'cwf_delete_data')

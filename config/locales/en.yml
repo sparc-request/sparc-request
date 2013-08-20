@@ -703,7 +703,7 @@ en:
       approval_type: "Type"
       approved_by: "Approved By"
     service_button: "Add Service"
-    otf_button: "Add One-Time Fee"
+    otf_button: "Add One-Time Fee Service"
     cwf_service_button: "Add Service to all patients"
     remove_service_button: "Remove Service"
     cwf_remove_service_button: "Remove Service from all patients"

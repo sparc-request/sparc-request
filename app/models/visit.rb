@@ -19,11 +19,10 @@ class Visit < ActiveRecord::Base
   validates :insurance_billing_qty, :numericality => {:only_integer => true}
   validates :effort_billing_qty, :numericality => {:only_integer => true}
 
-  # Find a Visit for the given "line items visit" and visit group.  Does
-  # not create the visit if it does not exist.
-  # TODO: perhaps it _should_ create the visit?
+  # Find a Visit for the given "line items visit" and visit group.  This
+  # creates the visit if it does not exist.
   def self.for(line_items_visit, visit_group)
-    return Visit.find_by_line_items_visit_id_and_visit_group_id(
+    return Visit.find_or_create_by_line_items_visit_id_and_visit_group_id(
         line_items_visit.id,
         visit_group.id)
   end

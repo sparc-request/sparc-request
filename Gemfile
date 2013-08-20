@@ -23,6 +23,7 @@ group :development, :test, :profile do
   gem 'quiet_assets'
   gem 'connection_pool'
   gem 'thin'
+  gem 'selenium-webdriver', '~> 2.34.0'
 
   # Add dependency on poltergeist.  If you want to use poltergeist, you
   # will need to configure Capybara to use it.  This particular
@@ -112,3 +113,4 @@ gem 'letter_opener'
 
 gem 'prawn'
 gem 'acts-as-taggable-on', '~> 2.3.1'
+gem 'surveyor'

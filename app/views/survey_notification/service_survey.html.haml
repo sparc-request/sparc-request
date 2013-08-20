@@ -1,0 +1,16 @@
+= "Dear #{@identity.full_name},"
+%br
+%br
+
+Thank you for requesting services from
+= "#{ssr_institution(@ssr.organization)} - #{ssr_provider(@ssr.organization)} - #{ssr_program_core(@ssr.organization)}."
+The service(s) you requested have now been completed. 
+%br
+Please click on the link(s) below to complete the following survey(s) regarding the service(s) you received. Your feedback is important and appreciated!
+
+%br
+%br
+
+%ul
+- @surveys.each do |survey|
+  %li= link_to survey.title, direct_link_survey_url(survey.access_code, :survey_version => survey.survey_version)

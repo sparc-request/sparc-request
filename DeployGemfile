@@ -68,3 +68,4 @@ gem 'exception_notification'
 
 gem 'prawn'
 gem 'acts-as-taggable-on', '~> 2.3.1'
+gem 'surveyor'

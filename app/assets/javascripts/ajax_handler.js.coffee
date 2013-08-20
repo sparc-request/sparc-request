@@ -15,7 +15,7 @@ $(document).ready ->
     defer_until_complete event, 'submit', '#navigation_form'
 
 defer_until_complete = (event, action, selector) ->
-  if not ajaxDefer.isResolved()
+  if not ajaxDefer.state() == "resolved"
     ajaxDefer.always ->
       if action == 'click'
         $(selector).click()

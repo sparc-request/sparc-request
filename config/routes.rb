@@ -225,6 +225,7 @@ SparcRails::Application.routes.draw do
       resources :line_items do
         member do
           put :update_from_fulfillment
+          put :update_from_cwf
         end
       end
 

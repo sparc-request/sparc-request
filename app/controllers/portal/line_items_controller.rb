@@ -26,6 +26,23 @@ class Portal::LineItemsController < Portal::BaseController
     end
   end
 
+  def update_from_cwf
+    @line_item = LineItem.find(params[:id])
+    @sub_service_request = @line_item.sub_service_request
+    @service_request = @sub_service_request.service_request
+    @study_tracker = params[:study_tracker] == "true"
+  
+    if @line_item.update_attributes(params[:line_item])
+      @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.is_one_time_fee?}
+      render 'portal/sub_service_requests/add_otf_line_item'
+    else
+      @line_item.reload
+      respond_to do |format|
+        format.js { render :status => 500, :json => clean_errors(@line_item.errors) } 
+      end
+    end
+  end
+
   def destroy
     @line_item = LineItem.find(params[:id])
     @sub_service_request = @line_item.sub_service_request

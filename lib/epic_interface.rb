@@ -354,7 +354,7 @@ class EpicInterface
           xml.component1(typeCode: 'COMP') {
             xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
               xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}.DAY#{visit_group.position}.PROC#{line_item.id}")
-              xml.code(code: 'PROC', codeSystem: 'n/a')
+              xml.code(code: 'PROC', codeSystem: service_code_system)
 
               xml.component2(typeCode: 'COMP') {
                 xml.procedure(classCode: 'PROC', moodCode: 'EVN') {

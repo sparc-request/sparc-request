@@ -25,73 +25,104 @@ class ApplicationController < ActionController::Base
     errors.map {|k,v| v}.flatten
   end
 
+  # Initialize the instance variables used with service requests:
+  #   @service_request
+  #   @sub_service_request
+  #   @line_items
+  #
+  # These variables are initialized from params (if set) or cookies.
   def initialize_service_request
     @service_request = nil
     @sub_service_request = nil
     @line_items = nil
 
     if params[:edit_original]
+      # If editing the original service request, we delete the sub
+      # service request id (remember, a sub service request is a service
+      # request that has been split out).
       session.delete(:sub_service_request_id)
     end
 
     if params[:controller] == 'service_requests'
       if params[:action] == 'catalog' and params[:id].nil?
+        # Catalog is the main service requests page; this is where the
+        # service request is first created.  We will create the service
+        # request in a moment.
+        #
+        # If the "go back" button is used, then params[:id] will be
+        # non-nil, and we will not create a new service request.
         session.delete(:service_request_id)
         session.delete(:sub_service_request_id)
       else
+        # For all other service request controller actions, we go ahead
+        # and set the cookie.
         session[:service_request_id] = params[:id] if params[:id]
+        session[:sub_service_request_id] = params[:sub_service_request_id] if params[:sub_service_request_id]
       end
 
       if session[:service_request_id]
-        @service_request = ServiceRequest.where(:id => session[:service_request_id]).first
-
-        if @service_request.nil?
-          authorization_error "The service request you are trying to access can not be found.", "SR#{params[:id]}"
-        else
-          @line_items = @service_request.line_items
-          
-          if params[:sub_service_request_id] or session[:sub_service_request_id]
-            session[:sub_service_request_id] = params[:sub_service_request_id] if params[:sub_service_request_id]
-            @sub_service_request = SubServiceRequest.where(:id => session[:sub_service_request_id]).first
-            
-            if @sub_service_request.nil?
-              authorization_error "The service request you are trying to access can not be found.", 
-                                  "SSR#{params[:sub_service_request_id]}"
-            else
-              @line_items = @sub_service_request.line_items
-            end
-          end
-        end
-      else # we need to create a new service request
-        @service_request = ServiceRequest.new :status => 'first_draft'
-        if params[:protocol_id] # we want to create a new service request that belongs to an existing protocol
-          if current_user and current_user.protocols.where(:id => params[:protocol_id]).empty? # this user doesn't have permission to create service request under this protocol
-            authorization_error "You are attempting to create a service request under a study/project that you do not have permissions to access.",
-                                "PROTOCOL#{params[:protocol_id]}"
-          else # otherwise associate the service request with this protocol
-            @service_request.protocol_id = params[:protocol_id]
-          end
-        end
-
-        # if the user has requested an account and it is pending approval we need to change the login message
-        signed_up_but_not_approved = false
-        if flash[:notice] == I18n.t("devise.registrations.identity.signed_up_but_not_approved") # use the local version of the text
-          signed_up_but_not_approved = true
-        end
-
-        @service_request.save :validate => false
-        session[:service_request_id] = @service_request.id
-        redirect_to catalog_service_request_path(@service_request, :signed_up_but_not_approved => signed_up_but_not_approved)
+        # If the cookie is non-nil, then lookup the service request.  If
+        # the service request is not found, display an error.
+        use_existing_service_request
+        validate_existing_service_request
+      else
+        # If the cookie is nil (as with visiting the main catalog for
+        # the first time), then create a new service request.
+        create_new_service_request
       end
     else
-      @service_request = ServiceRequest.find session[:service_request_id]
-      if session[:sub_service_request_id]
-        @sub_service_request = @service_request.sub_service_requests.find session[:sub_service_request_id]
-        @line_items = @sub_service_request.line_items
-      else
-        @line_items = @service_request.line_items
+      # For controllers other than the service requests controller, we
+      # look up the service request, but do not display any errors.
+      use_existing_service_request
+    end
+  end
+
+  # Set @service_request, @sub_service_request, and @line_items from the
+  # ids stored in the session.
+  def use_existing_service_request
+    @service_request = ServiceRequest.find session[:service_request_id]
+    if session[:sub_service_request_id]
+      @sub_service_request = @service_request.sub_service_requests.find session[:sub_service_request_id]
+      @line_items = @sub_service_request.try(:line_items)
+    else
+      @line_items = @service_request.try(:line_items)
+    end
+  end
+
+  # Validate @service_request and @sub_service_request (after having
+  # been set by use_existing_service_request).  Renders an error page if
+  # they were not found.
+  def validate_existing_service_request
+    if @service_request.nil?
+      authorization_error "The service request you are trying to access can not be found.",
+                          "SR#{params[:id]}"
+    elsif session[:sub_service_request_id] and @sub_service_request.nil?
+      authorization_error "The service request you are trying to access can not be found.", 
+                          "SSR#{params[:sub_service_request_id]}"
+    end
+  end
+
+  # Create a new service request and assign it to @service_request.
+  def create_new_service_request
+    @service_request = ServiceRequest.new :status => 'first_draft'
+    if params[:protocol_id] # we want to create a new service request that belongs to an existing protocol
+      if current_user and current_user.protocols.where(:id => params[:protocol_id]).empty? # this user doesn't have permission to create service request under this protocol
+        authorization_error "You are attempting to create a service request under a study/project that you do not have permissions to access.",
+                            "PROTOCOL#{params[:protocol_id]}"
+      else # otherwise associate the service request with this protocol
+        @service_request.protocol_id = params[:protocol_id]
       end
     end
+
+    # if the user has requested an account and it is pending approval we need to change the login message
+    signed_up_but_not_approved = false
+    if flash[:notice] == I18n.t("devise.registrations.identity.signed_up_but_not_approved") # use the local version of the text
+      signed_up_but_not_approved = true
+    end
+
+    @service_request.save :validate => false
+    session[:service_request_id] = @service_request.id
+    redirect_to catalog_service_request_path(@service_request, :signed_up_but_not_approved => signed_up_but_not_approved)
   end
 
   def authorize_identity

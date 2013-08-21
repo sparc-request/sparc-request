@@ -1,12 +1,10 @@
-%p The following SPARC Request users have requested access to Epic for study ##{@protocol.id} (#{@protocol.short_title.strip}).  Please ensure the users exist in epic before clicking "Approve" below.
+%p The following SPARC Request users have requested access to Epic for study ##{@protocol.id} (#{@protocol.short_title.strip}).  To approve the users and rights, please click "Approve."
 
 =render :partial => 'epic_access_rights'
 
 %br
 
-.accept_button= link_to "Approve", approve_epic_rights_service_request_url(@service_request)
-%br
-.edit_button=  link_to "Edit", portal_root_url(:default_protocol => @protocol.id)
+.accept_button= link_to "Send to Primary PI", approve_epic_rights_service_request_url(@service_request)
 
 %br
 

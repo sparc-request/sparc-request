@@ -214,4 +214,8 @@ class Protocol < ActiveRecord::Base
       pr.populate_for_edit
     end
   end
+
+  def should_push_to_epic?
+    return self.service_requests.any? { |sr| sr.should_push_to_epic? }
+  end
 end

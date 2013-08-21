@@ -567,6 +567,22 @@ describe EpicInterface do
             units_per_quantity: 1)
       }
 
+      let!(:arm) {
+        FactoryGirl.create(
+            :arm,
+            service_request: service_request,
+            name: 'Arm 1',
+            visit_count: 1,
+            subject_count: 1)
+      }
+
+      let!(:visit_group) {
+        FactoryGirl.create(
+            :visit_group,
+            arm: arm,
+            day: 1)
+      }
+
       it 'should not send line items that are not part of an arm' do
         epic_interface.send_billing_calendar(study)
 
@@ -596,15 +612,352 @@ describe EpicInterface do
         node.should be_equivalent_to(expected.root)
       end
 
-      it 'should send pppv line items as procedures' do
+      # TODO: Test CDM Code no CPT
+      it 'should send pppv line items with only CDM codes' do
+        liv = LineItemsVisit.for(arm, line_item)
+        visit = Visit.for(liv, visit_group)
+        visit.update_attributes(research_billing_qty: 1)
+        service.update_attributes(cdm_code: 1234)
+
+        epic_interface.send_billing_calendar(study)
+
+        low = epic_interface.relative_date(visit_group.day - visit_group.window, service_request.start_date)
+        high = epic_interface.relative_date(visit_group.day + visit_group.window, service_request.start_date)
+
+        xml = <<-END
+          <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
+           <query root="1.2.3.4" extension="#{study.id}"/>
+           <protocolDef>
+             <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
+               <id root="1.2.3.4" extension="#{study.id}"/>
+               <title>#{study.title}</title>
+               <text>#{study.brief_description}</text>
+               <component4 typeCode="COMP">
+                 <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                   <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}"/>
+                   <title>#{arm.name}</title>
+                   <code code="CELL" codeSystem="n/a"/>
+                   <component1 typeCode="COMP">
+                     <sequenceNumber value="1"/>
+                     <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                       <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}.CYCLE1"/>
+                       <title>Cycle 1</title>
+                       <code code="CYCLE" codeSystem="n/a"/>
+                       <effectiveTime>
+                         <low value="#{service_request.start_date.strftime('%Y%m%d')}"/>
+                         <high value="#{service_request.end_date.strftime('%Y%m%d')}"/>
+                       </effectiveTime>
+                       <component1 typeCode="COMP">
+                         <sequenceNumber value="1"/>
+                         <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                           <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}.CYCLE1.DAY#{visit_group.id}"/>
+                           <title>#{visit_group.name}</title>
+                         </timePointEventDefinition>
+                       </component1>
+                     </timePointEventDefinition>
+                   </component1>
+                 </timePointEventDefinition>
+               </component4>
+               <component4 typeCode="COMP">
+                 <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                   <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}.CYCLE1.DAY#{visit_group.id}"/>
+                   <title>#{visit_group.name}</title>
+                   <code code="VISIT" codeSystem="n/a"/>
+                   <component1 typeCode="COMP">
+                     <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                       <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}.CYCLE1.DAY#{visit_group.id}.PROC#{line_item.id}"/>
+                       <code code="PROC" codeSystem="n/a"/>
+                       <component2 typeCode="COMP">
+                         <procedure classCode="PROC" moodCode="EVN">
+                           <code code="1234" codeSystem="CDM"/>
+                         </procedure>
+                       </component2>
+                     </timePointEventDefinition>
+                   </component1>
+                   <component2 typeCode="COMP">
+                     <encounter classCode="ENC" moodCode="DEF">
+                       <effectiveTime>
+                         <low value="#{low}"/>
+                         <high value="#{high}"/>
+                       </effectiveTime>
+                       <activityTime value="#{service_request.start_date.strftime('%Y%m%d')}"/>
+                     </encounter>
+                   </component2>
+                 </timePointEventDefinition>
+               </component4>
+             </plannedStudy>
+           </protocolDef>
+          </RetrieveProtocolDefResponse>
+        END
+
+        expected = Nokogiri::XML(xml)
+
+        node = epic_received[0].xpath(
+            '//env:Body/rpe:RetrieveProtocolDefResponse',
+            'env' => 'http://www.w3.org/2003/05/soap-envelope',
+            'rpe' => 'urn:ihe:qrph:rpe:2009',
+            'hl7' => 'urn:hl7-org:v3')
+
+        node.should be_equivalent_to(expected.root)
+      end
+
+      # TODO: Test CPT Code no CDM
+      it 'should send pppv line items with only CPT codes' do
+        liv = LineItemsVisit.for(arm, line_item)
+        visit = Visit.for(liv, visit_group)
+        visit.update_attributes(research_billing_qty: 1)
+        service.update_attributes(cpt_code: 4321)
+
+        epic_interface.send_billing_calendar(study)
+
+        low = epic_interface.relative_date(visit_group.day - visit_group.window, service_request.start_date)
+        high = epic_interface.relative_date(visit_group.day + visit_group.window, service_request.start_date)
+
+        xml = <<-END
+          <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
+           <query root="1.2.3.4" extension="#{study.id}"/>
+           <protocolDef>
+             <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
+               <id root="1.2.3.4" extension="#{study.id}"/>
+               <title>#{study.title}</title>
+               <text>#{study.brief_description}</text>
+               <component4 typeCode="COMP">
+                 <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                   <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}"/>
+                   <title>#{arm.name}</title>
+                   <code code="CELL" codeSystem="n/a"/>
+                   <component1 typeCode="COMP">
+                     <sequenceNumber value="1"/>
+                     <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                       <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}.CYCLE1"/>
+                       <title>Cycle 1</title>
+                       <code code="CYCLE" codeSystem="n/a"/>
+                       <effectiveTime>
+                         <low value="#{service_request.start_date.strftime('%Y%m%d')}"/>
+                         <high value="#{service_request.end_date.strftime('%Y%m%d')}"/>
+                       </effectiveTime>
+                       <component1 typeCode="COMP">
+                         <sequenceNumber value="1"/>
+                         <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                           <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}.CYCLE1.DAY#{visit_group.id}"/>
+                           <title>#{visit_group.name}</title>
+                         </timePointEventDefinition>
+                       </component1>
+                     </timePointEventDefinition>
+                   </component1>
+                 </timePointEventDefinition>
+               </component4>
+               <component4 typeCode="COMP">
+                 <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                   <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}.CYCLE1.DAY#{visit_group.id}"/>
+                   <title>#{visit_group.name}</title>
+                   <code code="VISIT" codeSystem="n/a"/>
+                   <component1 typeCode="COMP">
+                     <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                       <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}.CYCLE1.DAY#{visit_group.id}.PROC#{line_item.id}"/>
+                       <code code="PROC" codeSystem="n/a"/>
+                       <component2 typeCode="COMP">
+                         <procedure classCode="PROC" moodCode="EVN">
+                           <code code="4321" codeSystem="CPT"/>
+                         </procedure>
+                       </component2>
+                     </timePointEventDefinition>
+                   </component1>
+                   <component2 typeCode="COMP">
+                     <encounter classCode="ENC" moodCode="DEF">
+                       <effectiveTime>
+                         <low value="#{low}"/>
+                         <high value="#{high}"/>
+                       </effectiveTime>
+                       <activityTime value="#{service_request.start_date.strftime('%Y%m%d')}"/>
+                     </encounter>
+                   </component2>
+                 </timePointEventDefinition>
+               </component4>
+             </plannedStudy>
+           </protocolDef>
+          </RetrieveProtocolDefResponse>
+        END
+
+        expected = Nokogiri::XML(xml)
+
+        node = epic_received[0].xpath(
+            '//env:Body/rpe:RetrieveProtocolDefResponse',
+            'env' => 'http://www.w3.org/2003/05/soap-envelope',
+            'rpe' => 'urn:ihe:qrph:rpe:2009',
+            'hl7' => 'urn:hl7-org:v3')
+
+        node.should be_equivalent_to(expected.root)
+      end
+
+      # TODO: Test CDM and CPT Code
+      it 'should send pppv line items with either CPT or CDM codes' do
+        liv = LineItemsVisit.for(arm, line_item)
+        visit = Visit.for(liv, visit_group)
+        visit.update_attributes(research_billing_qty: 1)
+        service.update_attributes(cpt_code: 4321)
+        service.update_attributes(cdm_code: 1234)
+
+        epic_interface.send_billing_calendar(study)
+
+        low = epic_interface.relative_date(visit_group.day - visit_group.window, service_request.start_date)
+        high = epic_interface.relative_date(visit_group.day + visit_group.window, service_request.start_date)
+
+        xml = <<-END
+          <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
+           <query root="1.2.3.4" extension="#{study.id}"/>
+           <protocolDef>
+             <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
+               <id root="1.2.3.4" extension="#{study.id}"/>
+               <title>#{study.title}</title>
+               <text>#{study.brief_description}</text>
+               <component4 typeCode="COMP">
+                 <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                   <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}"/>
+                   <title>#{arm.name}</title>
+                   <code code="CELL" codeSystem="n/a"/>
+                   <component1 typeCode="COMP">
+                     <sequenceNumber value="1"/>
+                     <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                       <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}.CYCLE1"/>
+                       <title>Cycle 1</title>
+                       <code code="CYCLE" codeSystem="n/a"/>
+                       <effectiveTime>
+                         <low value="#{service_request.start_date.strftime('%Y%m%d')}"/>
+                         <high value="#{service_request.end_date.strftime('%Y%m%d')}"/>
+                       </effectiveTime>
+                       <component1 typeCode="COMP">
+                         <sequenceNumber value="1"/>
+                         <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                           <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}.CYCLE1.DAY#{visit_group.id}"/>
+                           <title>#{visit_group.name}</title>
+                         </timePointEventDefinition>
+                       </component1>
+                     </timePointEventDefinition>
+                   </component1>
+                 </timePointEventDefinition>
+               </component4>
+               <component4 typeCode="COMP">
+                 <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                   <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}.CYCLE1.DAY#{visit_group.id}"/>
+                   <title>#{visit_group.name}</title>
+                   <code code="VISIT" codeSystem="n/a"/>
+                   <component1 typeCode="COMP">
+                     <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                       <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}.CYCLE1.DAY#{visit_group.id}.PROC#{line_item.id}"/>
+                       <code code="PROC" codeSystem="n/a"/>
+                       <component2 typeCode="COMP">
+                         <procedure classCode="PROC" moodCode="EVN">
+                           <code code="1234" codeSystem="CDM"/>
+                         </procedure>
+                       </component2>
+                     </timePointEventDefinition>
+                   </component1>
+                   <component2 typeCode="COMP">
+                     <encounter classCode="ENC" moodCode="DEF">
+                       <effectiveTime>
+                         <low value="#{low}"/>
+                         <high value="#{high}"/>
+                       </effectiveTime>
+                       <activityTime value="#{service_request.start_date.strftime('%Y%m%d')}"/>
+                     </encounter>
+                   </component2>
+                 </timePointEventDefinition>
+               </component4>
+             </plannedStudy>
+           </protocolDef>
+          </RetrieveProtocolDefResponse>
+        END
+
+        expected = Nokogiri::XML(xml)
+
+        node = epic_received[0].xpath(
+            '//env:Body/rpe:RetrieveProtocolDefResponse',
+            'env' => 'http://www.w3.org/2003/05/soap-envelope',
+            'rpe' => 'urn:ihe:qrph:rpe:2009',
+            'hl7' => 'urn:hl7-org:v3')
+
+        node.should be_equivalent_to(expected.root)
+      end
+
+      # TODO: Test neither CDM nor CPT Code.
+      it 'should not send pppv line items without a CPT or CDM code' do
+        liv = LineItemsVisit.for(arm, line_item)
+        visit = Visit.for(liv, visit_group)
+        visit.update_attributes(research_billing_qty: 1)
+
+        epic_interface.send_billing_calendar(study)
+
+        xml = <<-END
+          <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
+           <query root="1.2.3.4" extension="#{study.id}"/>
+           <protocolDef>
+             <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
+               <id root="1.2.3.4" extension="#{study.id}"/>
+               <title>#{study.title}</title>
+               <text>#{study.brief_description}</text>
+               <component4 typeCode="COMP">
+                 <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                   <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}"/>
+                   <title>#{arm.title}</title>
+                   <code code="CELL" codeSystem="n/a"/>
+                   <component1 typeCode="COMP">
+                     <sequenceNumber value="1"/>
+                     <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                       <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}.CYCLE1"/>
+                       <title>Cycle 1</title>
+                       <code code="CYCLE" codeSystem="n/a"/>
+                       <effectiveTime>
+                         <low value="#{service_request.start_date}"/>
+                         <high value="#{service_request.end_date}"/>
+                       </effectiveTime>
+                       <component1 typeCode="COMP">
+                         <sequenceNumber value="1"/>
+                         <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                           <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}.CYCLE1.DAY#{visit_group.id}"/>
+                           <title>#{visit_group.name}</title>
+                         </timePointEventDefinition>
+                       </component1>
+                     </timePointEventDefinition>
+                   </component1>
+                 </timePointEventDefinition>
+               </component4>
+               <component4 typeCode="COMP">
+                 <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                   <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}.CYCLE1.DAY#{visit_group.id}"/>
+                   <title>#{visit_group.name}</title>
+                   <code code="VISIT" codeSystem="n/a"/>
+                   <component2 typeCode="COMP">
+                     <encounter classCode="ENC" moodCode="DEF">
+                       <effectiveTime>
+                         <low value="#{service_request.start_date}"/>
+                         <high value="#{service_request.end_date}"/>
+                       </effectiveTime>
+                       <activityTime value="#{service_request.start_date}"/>
+                     </encounter>
+                   </component2>
+                 </timePointEventDefinition>
+               </component4>
+             </plannedStudy>
+           </protocolDef>
+          </RetrieveProtocolDefResponse>
+        END
+
+        expected = Nokogiri::XML(xml)
+
+        node = epic_received[0].xpath(
+            '//env:Body/rpe:RetrieveProtocolDefResponse',
+            'env' => 'http://www.w3.org/2003/05/soap-envelope',
+            'rpe' => 'urn:ihe:qrph:rpe:2009',
+            'hl7' => 'urn:hl7-org:v3')
+
+        node.should be_equivalent_to(expected.root)
       end
     end
 
-    # TODO: add a test for when we have a pppv line item
     # TODO: add a test for when we have more than one pppv line item
     # TODO: add a test for when we have more than one service request
     # TODO: add a test for visit group window
-    # TODO: add a test to ensure that we are using CDM code
   end
 
   describe 'send_study' do

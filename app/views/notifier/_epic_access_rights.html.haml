@@ -1,16 +1,14 @@
 %table
   %tr
     %th Name
-    %th Epic Access?
     %th Role
     %th Epic Responsibilities Requested
   - @protocol.project_roles.each do |pr|
     - next unless pr.epic_access
-    %tr
-      %td= pr.identity.full_name
-      %td Yes
-      %td= USER_ROLES.invert[pr.role]
-      %td
+    %tr{:id => "project_role_#{pr.id}"}
+      %td.name= pr.identity.full_name
+      %td.role= USER_ROLES.invert[pr.role]
+      %td.epic_rights
         %ul
           - pr.epic_rights.each do |er|
             %li= EPIC_RIGHTS[er.right]

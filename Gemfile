@@ -72,6 +72,7 @@ group :development, :test, :profile do
   gem 'addressable', '~> 2.3.2'
   gem 'watchr'
   gem 'capybara-firebug'
+  gem 'capybara-email'
   gem 'selenium-webdriver', '~> 2.34.0'
 
   # You can put gems in here that you want to use for development but

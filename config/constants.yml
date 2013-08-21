@@ -22,8 +22,7 @@ affiliations: { 'cancer_center': 'Cancer Center',
                 'cchp': 'CCHP',
                 'inbre': 'INBRE',
                 'reach': 'REACH' }
-epic_rights: { 'non_required': 'No access to Epic required',
-               'view_rights': 'View Rights',
+epic_rights: { 'view_rights': 'View Rights',
                'enter_data': 'Access to enter data at patient/visit level',
                'enter_orders': 'Authorized to enter orders',
                'approve': 'Authorized to review and approve patient study charges',
@@ -31,10 +30,10 @@ epic_rights: { 'non_required': 'No access to Epic required',
 epic_rights_info: 'Once the study is "completed" in Epic, it cannot be moved back to "Active or Inactive" Completing the study will inhibit new participants to be enrolled and associated with the study.'
 epic_push_status_text: { 'started': '',
                          'sent_study': '',
-                         'complete': 'Study has been pushed to Epic.',
-                         'failed': 'Unable to push study to Epic.',
-                         'awaiting_approval': 'Awaiting approval before pushing push to Epic',
-                         'awaiting_final_review': 'Awaiting final review before pushing push to Epic' }
+                         'complete': 'Study has been sent to Epic.',
+                         'failed': 'Unable to send study to Epic.',
+                         'awaiting_approval': 'Awaiting approval before sending to Epic',
+                         'awaiting_final_review': 'Awaiting final review before sending to Epic' }
 study_types: { 'clinical_trials': 'Clinical Trials',
                'basic_science': 'Basic Science',
                'translational_science': 'Translational Science' }

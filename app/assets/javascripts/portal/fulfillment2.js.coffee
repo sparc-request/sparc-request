@@ -516,7 +516,7 @@ $(document).ready ->
       url: "/portal/admin/sub_service_requests/#{ssr_id}/push_to_epic"
       contentType: 'application/json; charset=utf-8'
       success: ->
-        $().toastmessage('showSuccessToast', "Project/Study has been pushed to Epic")
+        $().toastmessage('showSuccessToast', "Project/Study has been sent to Epic")
       error: (jqXHR, textStatus, errorThrown) ->
         if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'application/json'
           errors = JSON.parse(jqXHR.responseText)

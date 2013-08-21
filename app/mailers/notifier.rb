@@ -118,7 +118,6 @@ class Notifier < ActionMailer::Base
     @service_request = service_request
     @primary_pi = @protocol.primary_principal_investigator
 
-    email_to = Rails.env == 'production' ? @primary_pi.email : DEFAULT_MAIL_TO
     subject = 'Epic Rights Approval'
 
     mail(:to => EPIC_RIGHTS_MAIL_TO, :from => 'no-reply@musc.edu', :subject => subject)
@@ -130,8 +129,8 @@ class Notifier < ActionMailer::Base
     @primary_pi = @protocol.primary_principal_investigator
 
     email_to = Rails.env == 'production' ? @primary_pi.email : DEFAULT_MAIL_TO
-    subject = 'Epic Rights Approval'
+    subject = 'Epic Rights User Approval'
 
-    mail(:to => email_to, :cc => EPIC_RIGHTS_MAIL_TO, :from => 'no-reply@musc.edu', :subject => subject)
+    mail(:to => email_to, :from => 'no-reply@musc.edu', :subject => subject)
   end
 end

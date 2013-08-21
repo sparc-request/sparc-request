@@ -42,6 +42,10 @@ $(document).ready ->
     recalc_subtotal()
   )
 
+  $(document).on('change', '.hasDatepicker', ->
+    recalc_subtotal()
+  )
+
   $(document).on('change', 'form.edit_subject', ->
     $('#save_alert').show()
   )
@@ -79,11 +83,14 @@ $(document).ready ->
         $(this).siblings('td.procedure_total_cell').text('$0.00')
 
   recalc_subtotal = () ->
-    subtotal = 0
-    $('td.procedure_total_cell:visible').each ->
-      value = $(this).text().replace('$', '')
-      subtotal += parseFloat(value)  if not isNaN(value) and value.length isnt 0
-    $('tr.grand_total_row td.grand_total_cell').text('$' + commaSeparateNumber(subtotal.toFixed(2)))
+    if $('.hasDatepicker:visible').val()
+      subtotal = 0
+      $('td.procedure_total_cell:visible').each ->
+        value = $(this).text().replace('$', '')
+        subtotal += parseFloat(value)  if not isNaN(value) and value.length isnt 0
+      $('tr.grand_total_row td.grand_total_cell').text('$' + commaSeparateNumber(subtotal.toFixed(2)))
+    else
+      $('tr.grand_total_row td.grand_total_cell').text('$0.00')
 
 
   ####Comments Logic:

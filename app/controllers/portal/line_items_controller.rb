@@ -34,7 +34,7 @@ class Portal::LineItemsController < Portal::BaseController
   
     if @line_item.update_attributes(params[:line_item])
       @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.is_one_time_fee?}
-      render 'portal/sub_service_requests/add_otf_line_item'
+      render 'portal/sub_service_requests/add_line_item'
     else
       @line_item.reload
       respond_to do |format|

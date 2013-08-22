@@ -107,6 +107,7 @@ describe "visit schedule", :js => true do
       describe "checking completed" do
 
         it "should be defaulted to checked" do
+          wait_for_javascript_to_finish
           first(".procedure_box").should be_checked
         end
 

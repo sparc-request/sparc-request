@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "creating a new study " do 
+describe "creating a new study ", :js => true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
@@ -16,16 +16,16 @@ describe "creating a new study " do
 
   describe "submitting a blank form" do
 
-    it "should show errors when submitting a blank form", :js => true do
+    it "should show errors when submitting a blank form" do
       find('#errorExplanation').visible?().should eq(true)
     end
 
-    it "should require a protocol title", :js => true do
+    it "should require a protocol title" do
       page.should have_content("Title can't be blank")
     end
   end
 
-  describe "submitting a filled form", :js => true do
+  describe "submitting a filled form" do
 
     it "should clear errors and submit the form" do
       fill_in "study_short_title", :with => "Bob"
@@ -54,7 +54,7 @@ describe "creating a new study " do
   end
 end
 
-describe "editing a study" do
+describe "editing a study", :js => true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
@@ -66,7 +66,7 @@ describe "editing a study" do
     click_button("Edit Study")
   end
 
-  describe "editing the short title", :js => true do
+  describe "editing the short title" do
 
     it "should save the short title" do
       select "Funded", :from => "study_funding_status"
@@ -80,9 +80,9 @@ describe "editing a study" do
     end
   end
 
-  describe "setting epic access", :js => true do
-    it 'should default to no' do
-      find("#study_project_roles_attributes_#{jug2.id}_epic_access_false").should be_checked
+  describe "setting epic access" do
+    it 'should default to no for non primary pis' do
+      find("#study_project_roles_attributes_#{jpl6.id}_epic_access_false").should be_checked
     end
 
     context "selecting yes button" do

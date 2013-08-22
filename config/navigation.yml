@@ -36,9 +36,11 @@ service_calendar:
   forward: service_subsidy
   validation_groups:
     protocol:
-      - service_calendar
+      - service_calendar_back
     service_details:
-      - service_calendar
+      - service_calendar_back
+    save_and_exit:
+      - service_calendar_back
     # calendar_totals:
     #   - service_calendar
     service_subsidy:

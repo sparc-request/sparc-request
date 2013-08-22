@@ -1,6 +1,6 @@
 $("#per_patient_services").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/per_patient_per_visit')) %>");
 <% if @study_tracker %>
-	$("#one_time_fees").html("<%= escape_javascript(render(:partial => 'service_calendars/one_time_fees')) %>");
+	$("#one_time_fees").html("<%= escape_javascript(render(:partial => 'study_tracker/sub_service_requests/one_time_fees')) %>");
 <% else %>
   $("#one_time_fees").html("<%= escape_javascript(render(:partial => 'portal/sub_service_requests/one_time_fees')) %>");
 <% end %>

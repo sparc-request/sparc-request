@@ -537,8 +537,8 @@ ActiveRecord::Schema.define(:version => 20130802132736) do
     t.datetime "updated_at",     :null => false
     t.integer  "line_item_id"
     t.integer  "r_quantity"
-    t.integer  "t_quantity"
     t.integer  "service_id"
+    t.integer  "t_quantity"
   end
 
   add_index "procedures", ["appointment_id"], :name => "index_procedures_on_appointment_id"

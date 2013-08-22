@@ -45,6 +45,7 @@ class Protocol < ActiveRecord::Base
   attr_accessible :impact_areas_attributes
   attr_accessible :affiliations_attributes
   attr_accessible :project_roles_attributes
+  attr_accessible :arms_attributes
   attr_accessible :requester_id
 
   attr_accessible :last_epic_push_time
@@ -216,4 +217,16 @@ class Protocol < ActiveRecord::Base
       pr.populate_for_edit
     end
   end
+
+  def create_arm(args)
+    arm = self.arms.create(args)
+    self.service_requests.each do |service_request|
+      service_request.per_patient_per_visit_line_items.each do |li|
+        arm.create_line_items_visit(li)
+      end
+    end
+    # Lets return this in case we need it for something else
+    arm
+  end
+  
 end

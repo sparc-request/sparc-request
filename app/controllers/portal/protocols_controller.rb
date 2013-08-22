@@ -88,6 +88,46 @@ class Portal::ProtocolsController < Portal::BaseController
     end
   end
 
+  def change_arm
+    @arm_id = params[:arm_id].to_i if params[:arm_id]
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    @service_request = @sub_service_request.service_request
+    @selected_arm = params[:arm_id] ? Arm.find(@arm_id) : @service_request.arms.first
+    @study_tracker = params[:study_tracker] == "true"
+  end
+
+  def add_arm
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    @service_request = @sub_service_request.service_request
+    name = params[:arm_name] ? params[:arm_name] : "ARM #{@service_request.arms.count + 1}"
+    visit_count = params[:visit_count] ? params[:visit_count].to_i : 1
+    subject_count = params[:subject_count] ? params[:subject_count].to_i : 1
+
+    @selected_arm = @service_request.protocol.create_arm(
+        name:          name,
+        visit_count:   visit_count,
+        subject_count: subject_count)
+
+    render 'portal/protocols/change_arm'
+  end
+
+  def remove_arm
+    @arm_id = params[:arm_id].to_i if params[:arm_id]
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    @service_request = @sub_service_request.service_request
+
+    Arm.find(@arm_id).destroy
+    @service_request.reload
+
+    if @service_request.arms.empty?
+      @service_request.per_patient_per_visit_line_items.each(&:destroy)
+    else
+      @selected_arm = @service_request.arms.first
+    end
+
+    render 'portal/service_requests/add_per_patient_per_visit_visit'
+  end
+
 
   private
   # TODO: Move this somewhere else. Short on time, though. - nb

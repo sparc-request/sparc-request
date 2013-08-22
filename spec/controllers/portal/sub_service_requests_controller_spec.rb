@@ -10,7 +10,7 @@ describe Portal::SubServiceRequestsController do
   let!(:program) { FactoryGirl.create(:program, parent_id: provider.id) }
   let!(:core) { FactoryGirl.create(:core, parent_id: program.id) }
 
-  let!(:study) { study = Study.create(FactoryGirl.attributes_for(:protocol)); study.save!(:validate => false); study }
+  let!(:study) { FactoryGirl.create_without_validation(:study) }
 
   let!(:service_request) {
     FactoryGirl.create(
@@ -53,8 +53,6 @@ describe Portal::SubServiceRequestsController do
     end
 
     it 'should work (smoke test)' do
-      service_request = FactoryGirl.create(
-          :service_request)
       sub_service_request = FactoryGirl.create(
           :sub_service_request,
           service_request_id: service_request.id,
@@ -73,11 +71,8 @@ describe Portal::SubServiceRequestsController do
     end
 
     it 'should create a new visit grouping for each arm' do
-      service_request = FactoryGirl.create(
-          :service_request)
-
-      service_request.create_arm(visit_count: 5)
-      service_request.create_arm(visit_count: 5)
+      service_request.protocol.create_arm(visit_count: 5)
+      service_request.protocol.create_arm(visit_count: 5)
 
       sub_service_request = FactoryGirl.create(
           :sub_service_request,

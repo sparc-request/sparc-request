@@ -92,7 +92,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
 
     # we don't have arms and we are adding a new per patient per visit service
     if @service_request.arms.empty? and not service.is_one_time_fee?
-      @service_request.arms.create(name: 'ARM 1', visit_count: 1, subject_count: 1)
+      @service_request.protocol.arms.create(name: 'ARM 1', visit_count: 1, subject_count: 1)
     end
 
     @arm_id = params[:arm_id].to_i if params[:arm_id]

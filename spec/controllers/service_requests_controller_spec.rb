@@ -107,6 +107,9 @@ describe ServiceRequestsController do
   end
 
   describe 'GET review' do
+    build_project
+    build_arms
+
     it "should set the page if page is passed in" do
       arm1.update_attribute(:visit_count, 500)
 
@@ -141,6 +144,7 @@ describe ServiceRequestsController do
   describe 'GET confirmation' do
     context 'with project' do
       build_project
+      build_arms
 
       it "should set the service request's status to submitted" do
         session[:identity_id] = jug2.id
@@ -227,6 +231,7 @@ describe ServiceRequestsController do
   describe 'GET save_and_exit' do
     context 'with project' do
       build_project
+      build_arms
 
       it "should set the service request's status to submitted" do
         session[:service_request_id] = service_request.id
@@ -315,6 +320,9 @@ describe ServiceRequestsController do
   end
 
   describe 'GET service_calendar' do
+    build_project
+    build_arms
+
     let!(:service) {
       service = FactoryGirl.create(:service, pricing_map_count: 1)
       service.pricing_maps[0].update_attributes(display_date: Date.today)
@@ -402,6 +410,9 @@ describe ServiceRequestsController do
       liv = LineItemsVisit.for(arm1, line_item)
       add_visits_to_arm_line_item(arm1, line_item, 0)
 
+      puts '#'*100
+      puts liv.visits.count
+
       session[:service_request_id] = service_request.id
       get :service_calendar, { :id => service_request.id, :pages => { arm1.id => 42 } }.with_indifferent_access
 
@@ -481,6 +492,9 @@ describe ServiceRequestsController do
   end
 
   describe 'GET refresh_service_calendar' do
+    build_project
+    build_arms
+
     it "should set the page if page is passed in" do
       arm1.update_attribute(:visit_count, 500)
 
@@ -825,7 +839,11 @@ describe ServiceRequestsController do
     let!(:line_item2) { FactoryGirl.create(:line_item, service_id: service2.id, service_request_id: service_request.id) }
     let!(:line_item3) { FactoryGirl.create(:line_item, service_id: service3.id, service_request_id: service_request.id) }
 
+    build_project
+    build_arms
+
     describe 'POST select_calendar_row' do
+      
       it 'should set line item' do
         liv = LineItemsVisit.for(arm1, line_item1)
 

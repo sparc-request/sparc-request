@@ -18,14 +18,16 @@ class Arm < ActiveRecord::Base
   after_create :populate_cwf_if_active
 
   def populate_cwf_if_active
-    if self.service_request
-      unless self.service_request.sub_service_requests.empty?
-        # There is no direct link between sub service requests and arms
-        # Thus here we figure out if we are in CWF by establishing whether:
-        # 1 - There are any CTRC SSRS on the parent SR
-        # 2 - Are any of those CTRC SSRS (there should be only one) in CWF status?
-        if self.service_request.sub_service_requests.select {|x| x.ctrc?}.map(&:in_work_fulfillment).include?(true)
-          self.populate_subjects
+    if self.protocol
+      self.protocol.service_requests.each do |service_request|
+        unless service_request.sub_service_requests.empty?
+          # There is no direct link between sub service requests and arms
+          # Thus here we figure out if we are in CWF by establishing whether:
+          # 1 - There are any CTRC SSRS on the parent SR
+          # 2 - Are any of those CTRC SSRS (there should be only one) in CWF status?
+          if service_request.sub_service_requests.select {|x| x.ctrc?}.map(&:in_work_fulfillment).include?(true)
+            self.populate_subjects
+          end
         end
       end
     end
@@ -72,7 +74,7 @@ class Arm < ActiveRecord::Base
 
   def maximum_indirect_costs_per_patient line_items_visits=self.line_items_visits
     if USE_INDIRECT_COST
-      self.maximum_direct_costs_per_patient(line_items_visits) * (self.service_request.protocol.indirect_cost_rate.to_f / 100)
+      self.maximum_direct_costs_per_patient(line_items_visits) * (self.protocol.indirect_cost_rate.to_f / 100)
     else
       return 0
     end

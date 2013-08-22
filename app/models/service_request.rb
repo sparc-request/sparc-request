@@ -10,6 +10,7 @@ class ServiceRequest < ActiveRecord::Base
   has_many :approvals, :dependent => :destroy
   has_many :documents, :through => :sub_service_requests
   has_many :document_groupings, :dependent => :destroy
+  has_many :arms, :through => :protocol
 
   validation_group :protocol do
     validates :protocol_id, :presence => {:message => "You must identify the service request with a study/project before continuing."} 
@@ -71,19 +72,15 @@ class ServiceRequest < ActiveRecord::Base
   attr_accessible :submitted_at
   attr_accessible :line_items_attributes
   attr_accessible :sub_service_requests_attributes
-  attr_accessible :arms_attributes
 
   accepts_nested_attributes_for :line_items
   accepts_nested_attributes_for :sub_service_requests
-  # accepts_nested_attributes_for :arms, :allow_destroy => true
 
   alias_attribute :service_request_id, :id
 
   #after_save :fix_missing_visits
 
-  def arms
-    self.protocol.arms
-  end
+
 
   def service_details_page
     if has_per_patient_per_visit_services?
@@ -120,15 +117,6 @@ class ServiceRequest < ActiveRecord::Base
         end
       end
     end
-  end
-
-  def create_arm(args)
-    arm = self.arms.create(args)
-    self.per_patient_per_visit_line_items.each do |li|
-      arm.create_line_items_visit(li)
-    end
-    # Lets return this in case we need it for something else
-    arm
   end
 
   # Given a service, create a line item for that service and for all
@@ -389,6 +377,25 @@ class ServiceRequest < ActiveRecord::Base
     end
 
     self.protocol.update_attributes(next_ssr_id: next_ssr_id)
+  end
+
+  def add_or_update_arms
+    p = self.protocol
+    if p.arms.empty?
+      arm = p.arms.create(
+        name: 'ARM 1',
+        visit_count: 1,
+        subject_count: 1)
+      self.line_items.each do |li|
+        arm.create_line_items_visit(li)
+      end
+    else
+      p.arms.each do |arm|
+        self.line_items.each do |li|
+          arm.create_line_items_visit(li) unless arm.line_items_visits.where(:line_item_id => li.id)
+        end
+      end
+    end
   end
 
 end

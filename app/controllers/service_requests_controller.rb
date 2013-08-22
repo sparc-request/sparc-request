@@ -49,6 +49,13 @@ class ServiceRequestsController < ApplicationController
 
     @service_request.update_attributes(params[:service_request])
 
+    #### if study/project attributes are available (step 2 arms nested form), update them
+    if params[:study]
+      @service_request.protocol.update_attributes(params[:study])
+    elsif params[:project]
+      @service_request.protocol.update_attributes(params[:project])
+    end
+
     #### save/update documents if we have them
     process_ssr_organization_ids = params[:process_ssr_organization_ids]
     document_grouping_id = params[:document_grouping_id]
@@ -177,6 +184,7 @@ class ServiceRequestsController < ApplicationController
   end
   
   def service_details
+    @service_request.add_or_update_arms
   end
 
   def service_calendar
@@ -201,9 +209,6 @@ class ServiceRequestsController < ApplicationController
           if @service_request.status == 'first_draft' or liv.subject_count.nil? or liv.subject_count > arm.subject_count
             liv.update_attribute(:subject_count, arm.subject_count)
           end
-          # if arm.visit_count > liv.visits.count
-          #   liv.create_visits
-          # end
         end
         #Arm.visit_count has benn increased, so create new visit group, and populate the visits
         if arm.visit_count > arm.visit_groups.count
@@ -362,15 +367,6 @@ class ServiceRequestsController < ApplicationController
     else
       service = Service.find id
 
-      unless service.is_one_time_fee?
-        if @service_request.arms.empty?
-          @service_request.arms.create(
-              name: 'ARM 1',
-              visit_count: 1,
-              subject_count: 1)
-        end
-      end
-
       @new_line_items = @service_request.create_line_items_for_service(
           service: service,
           optional: true,
@@ -421,13 +417,7 @@ class ServiceRequestsController < ApplicationController
       @service_request.sub_service_requests.find_by_organization_id(org_id).destroy
     end
 
-    # clean up arms
     @service_request.reload
-    @service_request.arms.each do |arm|
-      if arm.line_items_visits.empty?
-        arm.destroy
-      end
-    end
   end
 
   def delete_documents

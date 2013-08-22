@@ -35,7 +35,7 @@
               %div{:style => "height:25px;background-color:#FFFFFF; clear:both;"}
               .arm-info
                 - @x = 0
-                = nested_form_for @service_request, :method => :post do |f|
+                = nested_form_for @service_request.protocol, :method => :post do |f|
                   .arm-header
                     .arm-cell= t(:service_request_details)[:name]
                     .arm-cell= t(:service_request_details)[:number_of_subjects]

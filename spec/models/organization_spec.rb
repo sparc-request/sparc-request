@@ -4,9 +4,7 @@ require 'spec_helper'
 describe 'organization' do
   let_there_be_lane
   let_there_be_j
-  build_service_request
-  build_one_time_fee_services
-  build_per_patient_per_visit_services
+  build_service_request_with_project
 
   describe 'submission emails lookup' do
 

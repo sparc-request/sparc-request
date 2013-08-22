@@ -5,6 +5,7 @@ describe "VisitGroup" do
   let_there_be_lane
   let_there_be_j
   build_service_request_with_study
+  let!(:visit_group)         { FactoryGirl.create(:visit_group, arm_id: arm1.id, position: 1, day: 1)}
 
   context "setting the default name" do
 

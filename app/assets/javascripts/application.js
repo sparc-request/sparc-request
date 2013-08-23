@@ -19,3 +19,4 @@
 //= require form_fx_manager
 //= require form_manager
 //= require assert
+//= require ajax_handler

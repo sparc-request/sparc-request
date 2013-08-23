@@ -6,10 +6,10 @@ gem 'rails', '3.2.11'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'mysql2'
-gem 'haml'
+gem 'haml', '~> 4.0.0'
 gem 'redcarpet'
 gem 'bluecloth'
-gem 'sass'
+gem 'sass', '~> 3.2.7'
 
 # Gems used only for assets and not required
 # in production environments by default.

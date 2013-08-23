@@ -306,6 +306,24 @@ describe "admin fulfillment tab", :js => true do
       end
     end
   end
+
+  describe "push to epic" do
+    it 'should display a toast message when push succeeds' do
+      click_link 'Send To Epic'
+      wait_for_javascript_to_finish
+      find('.toast-container').should have_content("Project/Study has been sent to Epic")
+    end
+
+    it 'should display a toast message when push fails' do
+      EPIC_RESULTS << FakeEpicServlet::Result::Error.new(
+        value: 'soap:Server',
+        text: 'There was an error')
+
+      click_link 'Send To Epic'
+      wait_for_javascript_to_finish
+      find('.toast-container').should have_content("There was an error.")
+    end
+  end
 end
 
 describe 'fulfillment tab with disabled services', :js => true do

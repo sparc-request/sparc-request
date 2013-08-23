@@ -38,21 +38,23 @@ $(document).ready ->
     select: (event, ui) ->
       $(ui.panel).html('<div class="ui-corner-all" style = "border: 1px solid black; padding: 25px; width: 200px; margin: 30px auto; text-align: center">Loading data....<br /><img src="/assets/spinner.gif" /></div>')
 
-  $('.billing_type_list').qtip
-    content: 'R = Research<br />T = Third Party (Patient Insurance)<br />% = % Effort'
-    position:
-      corner:
-        target: "topRight"
-        tooltip: "bottomLeft"
-
-    style:
-      tip: true
-      border:
-        width: 0
-        radius: 4
-
-      name: "light"
-      width: 250
+  $('.billing_type_list').live 'mouseover', ->
+    $(this).qtip
+      overwrite: false
+      content: 'R = Research<br />T = Third Party (Patient Insurance)<br />% = % Effort'
+      position:
+        corner:
+          target: 'topMiddle'
+          tooltip: 'bottomLeft'
+      show:
+        ready: true
+      style:
+        tip: true
+        border:
+          width: 0
+          radius: 4
+        name: 'light'
+        width: 260
 
   changing_tabs_calculating_rates = ->
     arm_ids = []

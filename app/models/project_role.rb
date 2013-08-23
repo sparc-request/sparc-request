@@ -103,11 +103,11 @@ class ProjectRole < ActiveRecord::Base
     end
   end
 
-  def setup_epic_rights
+  def setup_epic_rights is_new=true
     position = 1
     EPIC_RIGHTS.each do |right, description|
       epic_right = epic_rights.detect{|obj| obj.right == right}
-      epic_right = epic_rights.build(:right => right, :new => true) unless epic_right
+      epic_right = epic_rights.build(:right => right, :new => is_new) unless epic_right
       epic_right.position = position
       position += 1
     end
@@ -116,6 +116,14 @@ class ProjectRole < ActiveRecord::Base
 
   def populate_for_edit
     setup_epic_rights
+  end
+
+  def set_epic_rights
+    if self.role == 'primary-pi'
+      rights = setup_epic_rights(false)
+      self.epic_access = true
+      self.epic_rights = rights
+    end
   end
 end
 

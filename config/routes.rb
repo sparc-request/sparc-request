@@ -34,6 +34,7 @@ SparcRails::Application.routes.draw do
       get 'save_and_exit'
       get 'approve_changes'
       get 'approve_epic_rights'
+      get 'push_to_epic'
     end
 
     collection do
@@ -133,6 +134,7 @@ SparcRails::Application.routes.draw do
   ##### Study Tracker/Clinical Work Fulfillment Portal#####
   namespace :study_tracker do
     match 'appointments/add_note' => 'calendars#add_note'
+    match 'appointments/add_service' => 'calendars#add_service'
 
     root :to => 'home#index'
     resources :sub_service_requests do
@@ -199,6 +201,7 @@ SparcRails::Application.routes.draw do
           put :update_from_project_study_information
           put :push_to_epic
           post :add_line_item
+          post :add_otf_line_item
           post :new_document
           post :add_note
         end
@@ -225,6 +228,7 @@ SparcRails::Application.routes.draw do
       resources :line_items do
         member do
           put :update_from_fulfillment
+          put :update_from_cwf
         end
       end
 

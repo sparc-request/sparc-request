@@ -70,7 +70,7 @@ describe 'Full service request' do
 
       find(:xpath, "//a/img[@alt='Savecontinue']/..").click
 
-      sleep 10000
+      # sleep 10000
     end
 
   end # context 'without existing arms'

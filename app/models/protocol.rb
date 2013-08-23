@@ -89,7 +89,11 @@ class Protocol < ActiveRecord::Base
   end
 
   def primary_principal_investigator
-    project_roles.detect { |pr| pr.role == 'primary-pi' }.try(:identity)
+    primary_pi_project_role.try(:identity)
+  end
+
+  def primary_pi_project_role
+    project_roles.detect { |pr| pr.role == 'primary-pi' }
   end
 
   def billing_managers
@@ -171,14 +175,8 @@ class Protocol < ActiveRecord::Base
       self.last_epic_push_status = 'started'
       save(validate: false)
 
-      Rails.logger.info("Sending study creation message to Epic")
+      Rails.logger.info("Sending study message to Epic")
       epic_interface.send_study(self)
-
-      self.last_epic_push_status = 'sent_study'
-      save(validate: false)
-
-      Rails.logger.info("Sending billing calendar to Epic")
-      epic_interface.send_billing_calendar(self)
 
       self.last_epic_push_status = 'complete'
       save(validate: false)
@@ -195,6 +193,12 @@ class Protocol < ActiveRecord::Base
   def awaiting_approval_for_epic_push
     self.last_epic_push_time = nil
     self.last_epic_push_status = 'awaiting_approval'
+    save(validate: false)
+  end
+
+  def awaiting_final_review_for_epic_push
+    self.last_epic_push_time = nil
+    self.last_epic_push_status = 'awaiting_final_review'
     save(validate: false)
   end
 
@@ -217,7 +221,7 @@ class Protocol < ActiveRecord::Base
       pr.populate_for_edit
     end
   end
-
+  
   def create_arm(args)
     arm = self.arms.create(args)
     self.service_requests.each do |service_request|
@@ -229,4 +233,7 @@ class Protocol < ActiveRecord::Base
     arm
   end
   
+  def should_push_to_epic?
+    return self.service_requests.any? { |sr| sr.should_push_to_epic? }
+  end
 end

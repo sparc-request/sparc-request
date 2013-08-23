@@ -28,12 +28,6 @@ describe "study schedule", :js => true do
       end
     end
 
-    describe "display rates" do
-      it "should not show the full rate if your cost > full rate" do
-        first(".service_rate_#{arm1.line_items_visits.first.id}").should have_exact_text("")
-      end
-    end
-
     describe "per patient per visit" do
 
       describe "template tab" do
@@ -186,7 +180,52 @@ describe "study schedule", :js => true do
         end
       end
     end
+
+    describe "one time fees" do
+
+      describe "changing the number of units" do
+
+        it "should save the new number of units" do
+          fill_in "quantity", :with => 20
+          find(".units_per_quantity").click()
+          find(".line_item_quantity").should have_value("20")
+        end
+      end
+
+      describe "changing the units per quantity" do
+
+        it "should save the new units per quantity" do
+          fill_in "units_per_quantity", :with => 5
+          find(".line_item_quantity").click()
+          find(".units_per_quantity").should have_value("5")
+        end
+      end
+
+      describe "adding a service" do
+
+        it "should successfully add and save a new service" do
+          click_on "Add One-Time Fee Service"
+          sleep 1
+          service.line_items.count.should eq(2)
+        end
+      end
+
+      describe "deleting a service" do
+
+        it "should successfully delete a service" do
+          within "#one_time_fees" do
+            click_on "Cancel"
+            a = page.driver.browser.switch_to.alert
+            a.text.should eq "Are you sure that you want to remove this service?"
+            a.accept
+            sleep 1
+            service.line_items.size.should eq(0)
+          end     
+        end
+      end
+    end
   end
+
   context "deleting" do
     before :each do
       sub_service_request.update_attributes(:in_work_fulfillment => true)

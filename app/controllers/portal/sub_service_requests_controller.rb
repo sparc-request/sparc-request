@@ -98,6 +98,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     @arm_id = params[:arm_id].to_i if params[:arm_id]
     @selected_arm = params[:arm_id] ? Arm.find(@arm_id) : @service_request.arms.first
     @study_tracker = params[:study_tracker] == "true"
+    @line_items = @sub_service_request.line_items
     
     if @sub_service_request.create_line_item(
         service_id: params[:new_service_id],
@@ -105,6 +106,24 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       # Have to reload the service request to get the correct direct cost total for the subsidy
       @subsidy.try(:sub_service_request).try(:reload)
       @subsidy.try(:fix_pi_contribution, percent)
+    else
+      respond_to do |format|
+        format.js { render :status => 500, :json => clean_errors(@sub_service_request.errors) }
+      end
+    end
+  end
+
+  def add_otf_line_item
+    @sub_service_request = SubServiceRequest.find(params[:id])
+    @service_request = @sub_service_request.service_request
+    @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.is_one_time_fee?}
+
+    @study_tracker = params[:study_tracker] == "true"
+    @line_items = @sub_service_request.line_items
+    
+    if @sub_service_request.create_line_item(
+        service_id: params[:new_service_id],
+        sub_service_request_id: params[:sub_service_request_id])
     else
       respond_to do |format|
         format.js { render :status => 500, :json => clean_errors(@sub_service_request.errors) }

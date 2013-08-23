@@ -3,7 +3,7 @@ begin
 
   DEFAULT_MAIL_TO               = application_config['default_mail_to']
   ADMIN_MAIL_TO                 = application_config['admin_mail_to']
-  EPIC_RIGHTS_MAIL_CC           = application_config['approve_epic_rights_mail_cc']
+  EPIC_RIGHTS_MAIL_TO           = application_config['approve_epic_rights_mail_to']
   FEEDBACK_MAIL_TO              = application_config['feedback_mail_to']
   NEW_USER_CC                   = application_config['new_user_cc']
   SYSTEM_SATISFACTION_SURVEY_CC = application_config['system_satisfaction_survey_cc']
@@ -22,6 +22,7 @@ begin
       config.wkhtmltopdf = application_config['wkhtmltopdf_location']
     end
   end
+
 rescue
   raise "application.yml not found, see config/application.yml.example"
 end
@@ -34,6 +35,7 @@ begin
   IMPACT_AREAS                   = config['impact_areas']
   EPIC_RIGHTS                    = config['epic_rights']
   EPIC_RIGHTS_INFO               = config['epic_rights_info']
+  EPIC_PUSH_STATUS_TEXT          = config['epic_push_status_text']
   STUDY_TYPES                    = config['study_types']
   FUNDING_STATUSES               = config['funding_statuses']
   ACCORDION_COLOR_OPTIONS        = config['accordion_color_options']

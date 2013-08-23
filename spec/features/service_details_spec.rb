@@ -109,21 +109,21 @@ describe "submitting a in form", :js => true do
 
   describe "editing an arm" do
     it "should save the new name" do
-      fill_in "service_request_arms_attributes_0_name", :with => "Test Rename"
+      fill_in "project_arms_attributes_0_name", :with => "Test Rename"
       find(:xpath, "//a/img[@alt='Savecontinue']/..").click
       wait_for_javascript_to_finish
       Arm.find_by_name("Test Rename").should_not eq(nil)
     end
     it "should save new subject count" do
       subject_count = (arm1.subject_count + 2)
-      fill_in "service_request_arms_attributes_0_subject_count", :with => subject_count
+      fill_in "project_arms_attributes_0_subject_count", :with => subject_count
       find(:xpath, "//a/img[@alt='Savecontinue']/..").click
       wait_for_javascript_to_finish
       Arm.find(arm1.id).subject_count.should eq(subject_count)
     end
     it "should save new visit count" do
       visit_count = (arm1.visit_count + 2)
-      fill_in "service_request_arms_attributes_0_visit_count", :with => visit_count
+      fill_in "project_arms_attributes_0_visit_count", :with => visit_count
       find(:xpath, "//a/img[@alt='Savecontinue']/..").click
       wait_for_javascript_to_finish
       Arm.find(arm1.id).visit_count.should eq(visit_count)

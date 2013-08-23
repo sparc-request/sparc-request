@@ -299,12 +299,12 @@ class ServiceRequestsController < ApplicationController
 
     send_notifications(@service_request, @sub_service_request)
 
-    if current_user == @protocol.primary_principal_investigator
-      push_protocol_to_epic @protocol
-    else
-      #send notification to Primary PI and Leila
+    # Send a notification to Lane et al to create users in Epic.  Once
+    # that has been done, one of them will click a link which calls
+    # approve_epic_rights.
+    if @protocol.should_push_to_epic?
       @protocol.awaiting_approval_for_epic_push
-      send_primary_pi_epic_notification(@service_request)
+      send_epic_notification_for_user_approval(@service_request)
     end
 
     render :formats => [:html]
@@ -314,7 +314,32 @@ class ServiceRequestsController < ApplicationController
     @service_request = ServiceRequest.find params[:id]
     @protocol = @service_request.protocol
 
-    push_protocol_to_epic @protocol
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # TODO: check to ensure that this user is one of the users which has
+    # epic user creation rights
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    # Send a notification to the primary PI for final review before
+    # pushing to epic.  The email will contain a link which calls
+    # push_to_epic.
+    @protocol.awaiting_final_review_for_epic_push
+    send_epic_notification_for_final_review(@service_request)
+
+    render :formats => [:html]
+  end
+
+  def push_to_epic
+    @service_request = ServiceRequest.find params[:id]
+    @protocol = @service_request.protocol
+
+    if current_user != @protocol.primary_principal_investigator then
+      raise ArgumentError, "User is not primary PI"
+    end
+
+    # Do the final push to epic in a separate thread.  The page which is
+    # rendered will 
+    push_protocol_to_epic(@protocol)
+
     render :formats => [:html]
   end
 
@@ -575,8 +600,12 @@ class ServiceRequestsController < ApplicationController
     Notifier.notify_service_provider(service_provider, service_request, attachments).deliver
   end
 
-  def send_primary_pi_epic_notification(service_request)
-    Notifier.notify_primary_pi(service_request).deliver
+  def send_epic_notification_for_user_approval(service_request)
+    Notifier.notify_for_epic_user_approval(service_request).deliver
+  end
+
+  def send_epic_notification_for_final_review(service_request)
+    Notifier.notify_primary_pi_for_epic_user_final_review(service_request).deliver
   end
 
   def push_protocol_to_epic protocol
@@ -595,10 +624,17 @@ class ServiceRequestsController < ApplicationController
     #
     Thread.new do
       begin
+        # Do the actual push.  This might take a while...
         protocol.push_to_epic(EPIC_INTERFACE)
+
       rescue Exception => e
+        # Log any errors, since they will not be caught by the main
+        # thread
         Rails.logger.error(e)
+
       ensure
+        # The connection MUST be closed when the thread completes to
+        # avoid leaking the connection.
         ActiveRecord::Base.connection.close
       end
     end

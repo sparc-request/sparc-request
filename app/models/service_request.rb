@@ -410,8 +410,10 @@ class ServiceRequest < ActiveRecord::Base
       end
     else
       p.arms.each do |arm|
-        self.line_items.each do |li|
-          arm.create_line_items_visit(li) unless arm.line_items_visits.where(:line_item_id => li.id)
+        p.service_requests.each do |sr|
+          sr.line_items.each do |li|
+            arm.create_line_items_visit(li) if arm.line_items_visits.where(:line_item_id => li.id).empty?
+          end
         end
       end
     end

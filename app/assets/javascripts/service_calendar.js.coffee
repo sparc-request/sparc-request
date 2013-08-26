@@ -110,12 +110,14 @@ $(document).ready ->
     .complete ->
       $('.service_calendar_spinner').hide()
 
+# Triggers for changing attributes on one time fee line items
   $('.units_per_quantity').live 'change', ->
     intRegex = /^\d+$/
     max = parseInt($(this).attr('data-qty_max'), 10)
     prev_qty = $(this).attr('current_units_per_quantity')
     user_input = parseInt($(this).val(), 10)
     
+    # Handle errors
     unless intRegex.test user_input
       $(this).css({'border': '2px solid red'})
       $('#nan_error').fadeIn('fast').delay(5000).fadeOut(5000, => $(this).css('border', ''))
@@ -131,6 +133,7 @@ $(document).ready ->
         $(this).attr('current_units_per_quantity', user_input)
         $('#unit_max_error').hide()
         $(this).css('border', '')
+        # If it passes validation and is within study tracker, save by ajax
         if $(this).data('study_tracker') == true
           save_line_item_by_ajax(this)
     recalculate_one_time_fee_totals()
@@ -141,6 +144,8 @@ $(document).ready ->
     unit_min = parseInt($(this).attr('unit_minimum'), 10)
     prev_qty = $(this).attr('current_quantity')
     qty = parseInt($(this).val(), 10)
+
+    # Handle errors
     unless intRegex.test qty
       $(this).css({'border': '2px solid red'})
       $('#nan_error').fadeIn('fast').delay(5000).fadeOut(5000, => $(this).css('border', ''))
@@ -156,36 +161,38 @@ $(document).ready ->
         $(this).attr('current_quantity', qty)
         $('#one_time_fee_errors').hide()
         $(this).css('border', '')
+        # If it passes validation and is within study tracker, save by ajax
         if $(this).data('study_tracker') == true
           save_line_item_by_ajax(this)
     recalculate_one_time_fee_totals()
     return false
 
-save_line_item_by_ajax = (obj) ->
-    object_id = $(obj).data("line_item_id")
-    name = $(obj).attr('name')
-    key = name.replace("line_item_", '')
-    data = {}
-    data[key] = $(obj).val()
-    put_attribute(object_id, data)
+# methods for saving one time fee attributes
+  save_line_item_by_ajax = (obj) ->
+      object_id = $(obj).data("line_item_id")
+      name = $(obj).attr('name')
+      key = name.replace("line_item_", '')
+      data = {}
+      data[key] = $(obj).val()
+      put_attribute(object_id, data)
 
 
-put_attribute = (id, data) ->
-  $.ajax
-    type: 'PUT'
-    url:  "/portal/admin/line_items/#{id}/update_from_cwf"
-    data: JSON.stringify(data)
-    dataType: "script"
-    contentType: 'application/json; charset=utf-8'
-    success: ->
-      $().toastmessage('showSuccessToast', "Service request has been saved.")
-    error: (jqXHR, textStatus, errorThrown) ->
-      if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
-        errors = JSON.parse(jqXHR.responseText)
-      else
-        errors = [textStatus]
-      for error in errors
-        $().toastmessage('showErrorToast', "#{error.humanize()}.");
+  put_attribute = (id, data) ->
+    $.ajax
+      type: 'PUT'
+      url:  "/portal/admin/line_items/#{id}/update_from_cwf"
+      data: JSON.stringify(data)
+      dataType: "script"
+      contentType: 'application/json; charset=utf-8'
+      success: ->
+        $().toastmessage('showSuccessToast', "Service request has been saved.")
+      error: (jqXHR, textStatus, errorThrown) ->
+        if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
+          errors = JSON.parse(jqXHR.responseText)
+        else
+          errors = [textStatus]
+        for error in errors
+          $().toastmessage('showErrorToast', "#{error.humanize()}.");
 
 recalculate_one_time_fee_totals = ->
   grand_total = 0

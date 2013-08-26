@@ -29,6 +29,8 @@ class ServiceCalendarsController < ApplicationController
   def update
     @portal = params[:portal]
     @study_tracker = params[:study_tracker] == "true"
+    @sub_service_request = SubServiceRequest.find(params[:id]) if (params[:id])
+    @subsidy = @sub_service_request.try(:subsidy)
     visit = Visit.find params[:visit] rescue nil
     @line_items_visit = LineItemsVisit.find params[:line_items_visit] rescue nil
     @line_item = LineItem.find params[:line_item] rescue nil

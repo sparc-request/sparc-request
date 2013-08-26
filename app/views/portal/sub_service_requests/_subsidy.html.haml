@@ -2,7 +2,7 @@
 - unless @subsidy
   %p.blank_requests
     = t(:fulfillments)[:subsidies][:no_subsidy]
-    = link_to t(:fulfillments)[:subsidies][:link], 'javascript:void(0);', :class => "add_subsidy_link", :'data-sub_service_request_id' => @sub_service_request.id
+    = link_to t(:fulfillments)[:subsidies][:link], 'javascript:void(0);', :class => "add_subsidy_link", :'data-sub_service_request_id' => @sub_service_request.try(:id)
 - else
   #subsidy_table
     %table

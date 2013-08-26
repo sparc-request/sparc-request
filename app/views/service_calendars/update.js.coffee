@@ -1,3 +1,5 @@
+if "<%= @subsidy %>"
+  $("#fulfillment_subsidy").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/subsidy')) %>");
 unless "<%= @errors %>" == ""
   alert "<%= @errors %>"
 
@@ -22,3 +24,5 @@ if "<%= @errors %>" == ""
     $(".pp_max_total<%= @arm_id %>").html("<%= display_max_total_cost_per_patient(@line_items_visit.arm) %>")
 
     $(".pp_total<%= @arm_id %>").html("<%= display_total_cost_per_arm(@line_items_visit.arm) %>")
+    $("#fulfillment_subsidy").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/subsidy')) %>");
+

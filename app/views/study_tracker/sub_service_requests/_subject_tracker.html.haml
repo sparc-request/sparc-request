@@ -1,5 +1,5 @@
 #subjects
-  = nested_form_for @service_request, :url => study_tracker_service_request_path(@service_request) do |f|
+  = nested_form_for @protocol, :url => study_tracker_protocol_path(@protocol) do |f|
     = hidden_field_tag :sub_service_request_id, @sub_service_request.id
     / = instructions_for 'subjects'
     - if @service_request.errors.any?

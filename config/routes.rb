@@ -145,6 +145,7 @@ SparcRails::Application.routes.draw do
     end
     resources :subjects do
     end
+    resources :protocols
   end
   
   ##### sparc-user routes brought in and namespaced

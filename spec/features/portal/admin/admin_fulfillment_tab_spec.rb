@@ -132,6 +132,25 @@ describe "admin fulfillment tab", :js => true do
           page.should have_content "Service request has been saved."
           find('#subsidy_pi_contribution').should have_value('%.1f' % [sub_service_request.grand_total / 100 / 2])
         end
+
+        it "should change the total cost if the calendar visits are edited" do
+          previous_direct_cost = find("#direct_cost_total").text
+          click_link "check_row_#{arm1.line_items_visits.first.id}_template"
+          wait_for_javascript_to_finish
+          find("#direct_cost_total").text.should_not eq(previous_direct_cost)
+        end
+
+        it "should change the total cost if a visit-based service is added and checked" do
+          previous_direct_cost = find("#direct_cost_total").text
+          within("#add_ppv_service_container") do
+            click_on "Add Service"
+          end
+          wait_for_javascript_to_finish
+          second_service = arm1.line_items_visits[1]
+          click_link "check_row_#{second_service.id}_template"
+          wait_for_javascript_to_finish
+          find("#direct_cost_total").text.should_not eq(previous_direct_cost)
+        end
       end
 
       context "checking approvals" do

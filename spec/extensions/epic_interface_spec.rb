@@ -87,10 +87,10 @@ describe EpicInterface do
 
       xml = <<-END
         <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
-          <query root="1.2.3.4" extension="#{study.id}"/>
+          <query root="1.2.3.4" extension="#{study.short_title}"/>
           <protocolDef>
             <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
-              <id root="1.2.3.4" extension="#{study.id}"/>
+              <id root="1.2.3.4" extension="#{study.short_title}"/>
               <title>#{study.title}</title>
               <text>#{study.brief_description}</text>
             </plannedStudy>
@@ -310,10 +310,10 @@ describe EpicInterface do
       # base study creation message
       xml = <<-END
         <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
-          <query root="1.2.3.4" extension="#{study.id}"/>
+          <query root="1.2.3.4" extension="#{study.short_title}"/>
           <protocolDef>
             <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
-              <id root="1.2.3.4" extension="#{study.id}"/>
+              <id root="1.2.3.4" extension="#{study.short_title}"/>
               <title>#{study.title}</title>
               <text>#{study.brief_description}</text>
             </plannedStudy>
@@ -350,10 +350,10 @@ describe EpicInterface do
       # base study creation message
       xml = <<-END
         <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
-          <query root="1.2.3.4" extension="#{study.id}"/>
+          <query root="1.2.3.4" extension="#{study.short_title}"/>
           <protocolDef>
             <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
-              <id root="1.2.3.4" extension="#{study.id}"/>
+              <id root="1.2.3.4" extension="#{study.short_title}"/>
               <title>#{study.title}</title>
               <text>#{study.brief_description}</text>
             </plannedStudy>
@@ -383,7 +383,7 @@ describe EpicInterface do
       arm1 = FactoryGirl.create(
           :arm,
           name: 'Arm',
-          service_request: service_request,
+          protocol: study,
           visit_count: 10,
           subject_count: 2)
 
@@ -391,10 +391,10 @@ describe EpicInterface do
 
       xml = <<-END
         <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
-          <query root="1.2.3.4" extension="#{study.id}"/>
+          <query root="1.2.3.4" extension="#{study.short_title}"/>
           <protocolDef>
             <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
-              <id root="1.2.3.4" extension="#{study.id}"/>
+              <id root="1.2.3.4" extension="#{study.short_title}"/>
               <title>#{study.title}</title>
               <text>#{study.brief_description}</text>
 
@@ -447,14 +447,14 @@ describe EpicInterface do
       arm1 = FactoryGirl.create(
           :arm,
           name: 'Arm 1',
-          service_request: service_request,
+          protocol: study,
           visit_count: 10,
           subject_count: 2)
 
       arm2 = FactoryGirl.create(
           :arm,
           name: 'Arm 2',
-          service_request: service_request,
+          protocol: study,
           visit_count: 10,
           subject_count: 2)
 
@@ -462,10 +462,10 @@ describe EpicInterface do
 
       xml = <<-END
         <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
-          <query root="1.2.3.4" extension="#{study.id}"/>
+          <query root="1.2.3.4" extension="#{study.short_title}"/>
           <protocolDef>
             <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
-              <id root="1.2.3.4" extension="#{study.id}"/>
+              <id root="1.2.3.4" extension="#{study.short_title}"/>
               <title>#{study.title}</title>
               <text>#{study.brief_description}</text>
 
@@ -574,10 +574,10 @@ describe EpicInterface do
         # base study creation message
         xml = <<-END
           <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
-            <query root="1.2.3.4" extension="#{study.id}"/>
+            <query root="1.2.3.4" extension="#{study.short_title}"/>
             <protocolDef>
               <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
-                <id root="1.2.3.4" extension="#{study.id}"/>
+                <id root="1.2.3.4" extension="#{study.short_title}"/>
                 <title>#{study.title}</title>
                 <text>#{study.brief_description}</text>
               </plannedStudy>
@@ -600,7 +600,7 @@ describe EpicInterface do
         let!(:arm) {
           FactoryGirl.create(
               :arm,
-              service_request: service_request,
+              protocol: study,
               name: 'Arm 1',
               visit_count: 1,
               subject_count: 1)
@@ -627,10 +627,10 @@ describe EpicInterface do
 
           xml = <<-END
             <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
-             <query root="1.2.3.4" extension="#{study.id}"/>
+             <query root="1.2.3.4" extension="#{study.short_title}"/>
              <protocolDef>
                <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
-                 <id root="1.2.3.4" extension="#{study.id}"/>
+                 <id root="1.2.3.4" extension="#{study.short_title}"/>
                  <title>#{study.title}</title>
                  <text>#{study.brief_description}</text>
                  <component4 typeCode="COMP">
@@ -716,10 +716,10 @@ describe EpicInterface do
 
           xml = <<-END
             <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
-             <query root="1.2.3.4" extension="#{study.id}"/>
+             <query root="1.2.3.4" extension="#{study.short_title}"/>
              <protocolDef>
                <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
-                 <id root="1.2.3.4" extension="#{study.id}"/>
+                 <id root="1.2.3.4" extension="#{study.short_title}"/>
                  <title>#{study.title}</title>
                  <text>#{study.brief_description}</text>
                  <component4 typeCode="COMP">
@@ -806,10 +806,10 @@ describe EpicInterface do
 
           xml = <<-END
             <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
-             <query root="1.2.3.4" extension="#{study.id}"/>
+             <query root="1.2.3.4" extension="#{study.short_title}"/>
              <protocolDef>
                <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
-                 <id root="1.2.3.4" extension="#{study.id}"/>
+                 <id root="1.2.3.4" extension="#{study.short_title}"/>
                  <title>#{study.title}</title>
                  <text>#{study.brief_description}</text>
                  <component4 typeCode="COMP">
@@ -894,10 +894,10 @@ describe EpicInterface do
 
           xml = <<-END
             <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
-             <query root="1.2.3.4" extension="#{study.id}"/>
+             <query root="1.2.3.4" extension="#{study.short_title}"/>
              <protocolDef>
                <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
-                 <id root="1.2.3.4" extension="#{study.id}"/>
+                 <id root="1.2.3.4" extension="#{study.short_title}"/>
                  <title>#{study.title}</title>
                  <text>#{study.brief_description}</text>
                  <component4 typeCode="COMP">

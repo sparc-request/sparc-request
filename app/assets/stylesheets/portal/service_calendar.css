@@ -1,3 +1,7 @@
+body .ui-tabs .ui-tabs-panel {
+  padding: 0px;
+}
+
 .service_calendar_spinner {
   width: 16px;
   height: 16px;

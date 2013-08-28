@@ -6,6 +6,10 @@ button {
   padding: 3px 6px;
 }
 
+body .ui-tabs .ui-tabs-panel {
+  padding: 0px;
+}
+
 body {
   background: white url("background_gradient.png") left top repeat-x;
   color: #222222;

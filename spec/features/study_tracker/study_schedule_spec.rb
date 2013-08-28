@@ -226,7 +226,8 @@ describe "study schedule", :js => true do
     end
   end
 
-  context "deleting" do
+  context "adding and deleting" do
+
     before :each do
       sub_service_request.update_attributes(:in_work_fulfillment => true)
       line_item3 = FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service2.id, sub_service_request_id: sub_service_request.id, quantity: 0)
@@ -234,46 +235,61 @@ describe "study schedule", :js => true do
       visit study_tracker_sub_service_request_path sub_service_request.id
     end
 
-    context "a line_item_visit" do
-      it "should delete the line_items_visit" do
-        arm1.line_items_visits.size.should eq(2)
+    describe "deleting" do
 
-        #Delete the new line_item_visit
-        within("table.arm_id_#{arm1.id} tr.line_item.odd") do
-          find(:xpath, ".//a/img[@alt='Cancel']/..").click
+      context "a line_item_visit" do
+
+        it "should delete the line_items_visit" do
+          arm1.line_items_visits.size.should eq(2)
+
+          #Delete the new line_item_visit
+          within("table.arm_id_#{arm1.id} tr.line_item.odd") do
+            click_on "Cancel"
+          end
+
+          a = page.driver.browser.switch_to.alert
+          a.accept
+
+          wait_for_javascript_to_finish
+          arm1.line_items_visits.size.should eq(1)
         end
 
-        a = page.driver.browser.switch_to.alert
-        a.accept
+        it "should warn user about deleting procedures" do
+          within("table.arm_id_#{arm1.id} tr.line_item.odd") do
+            click_on "Cancel"
+          end
 
-        wait_for_javascript_to_finish
-        arm1.line_items_visits.size.should eq(1)
+          a = page.driver.browser.switch_to.alert
+          
+          a.text.should eq "Are you sure that you want to remove this service from all subjects' visit calendars in this arm?"
+          a.accept
+          wait_for_javascript_to_finish
+        end
       end
 
-      it "should warn user about deleting procedures" do
-        within("table.arm_id_#{arm1.id} tr.line_item.odd") do
-          find(:xpath, ".//a/img[@alt='Cancel']/..").click
-        end
+      context "a line_item" do
 
-        a = page.driver.browser.switch_to.alert
-        
-        a.text.should eq "Are you sure that you want to remove this service from all subjects' visit calendars in this arm?"
-        a.accept
-        wait_for_javascript_to_finish
+        it "should delete the line_item" do
+          arm1.line_items.size.should eq(2)
+          click_button('Remove Service from all patients')
+
+          a = page.driver.browser.switch_to.alert
+          a.text.should eq "Are you sure that you want to remove this service from all subjects' visit calendars?"
+          a.accept
+          
+          wait_for_javascript_to_finish
+          arm1.line_items.size.should eq(1)
+        end
       end
     end
 
-    context "a line_item" do
-      it "should delete the line_item" do
-        arm1.line_items.size.should eq(2)
-        click_button('Remove Service from all patients')
+    describe "adding a service to all patients" do
 
-        a = page.driver.browser.switch_to.alert
-        a.text.should eq "Are you sure that you want to remove this service from all subjects' visit calendars?"
-        a.accept
-        
+      it "should add the service to the calendar" do
+        click_on "Add Service to all patients"
         wait_for_javascript_to_finish
-        arm1.line_items.size.should eq(1)
+        arm1.line_items_visits.size.should eq(3)
+        arm2.line_items_visits.size.should eq(3)
       end
     end
   end

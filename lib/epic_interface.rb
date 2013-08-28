@@ -144,11 +144,11 @@ class EpicInterface
   def full_study_message(study)
     xml = Builder::XmlMarkup.new(indent: 2)
 
-    xml.query(root: @study_root, extension: study.id)
+    xml.query(root: @study_root, extension: study.short_title)
 
     xml.protocolDef {
       xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
-        xml.id(root: @study_root, extension: study.id)
+        xml.id(root: @study_root, extension: study.short_title)
         xml.title study.title
         xml.text study.brief_description
 
@@ -167,11 +167,11 @@ class EpicInterface
   def study_creation_message(study)
     xml = Builder::XmlMarkup.new(indent: 2)
 
-    xml.query(root: @study_root, extension: study.id)
+    xml.query(root: @study_root, extension: study.short_title)
 
     xml.protocolDef {
       xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
-        xml.id(root: @study_root, extension: study.id)
+        xml.id(root: @study_root, extension: study.short_title)
         xml.title study.title
         xml.text study.brief_description
 
@@ -224,11 +224,11 @@ class EpicInterface
   def study_calendar_definition_message(study)
     xml = Builder::XmlMarkup.new(indent: 2)
 
-    xml.query(root: @study_root, extension: study.id)
+    xml.query(root: @study_root, extension: study.short_title)
 
     xml.protocolDef {
       xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
-        xml.id(root: @study_root, extension: study.id)
+        xml.id(root: @study_root, extension: study.short_title)
         xml.title study.title
         xml.text study.brief_description
 
@@ -253,72 +253,68 @@ class EpicInterface
   def emit_visits(xml, study)
     seq = 0
 
-    study.service_requests.each do |service_request|
-      service_request.arms.each do |arm|
+    study.arms.each do |arm|
 
-        seq += 1
+      seq += 1
 
-        xml.component4(typeCode: 'COMP') {
-          xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-            xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}")
-            xml.title(arm.name)
-            xml.code(code: 'CELL', codeSystem: 'n/a')
+      xml.component4(typeCode: 'COMP') {
+        xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
+          xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}")
+          xml.title(arm.name)
+          xml.code(code: 'CELL', codeSystem: 'n/a')
 
-            cycle = 1
+          cycle = 1
 
-            xml.component1(typeCode: 'COMP') {
-              xml.sequenceNumber(value: seq)
+          xml.component1(typeCode: 'COMP') {
+            xml.sequenceNumber(value: seq)
 
-              xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-                xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}")
-                xml.title("Cycle #{cycle}")
-                xml.code(code: 'CYCLE', codeSystem: 'n/a')
+            xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
+              xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}")
+              xml.title("Cycle #{cycle}")
+              xml.code(code: 'CYCLE', codeSystem: 'n/a')
 
-                xml.effectiveTime {
-                  # TODO: what to do if start_date or end_date is
-                  # null?
-                  xml.low(value: service_request.start_date.strftime("%Y%m%d"))
-                  xml.high(value: service_request.end_date.strftime("%Y%m%d"))
-                }
+              xml.effectiveTime {
+                # TODO: what to do if start_date or end_date is null?
+                # TODO: Need to change this to study.start/end_date
+                xml.low(value: study.service_requests.minimum(:start_date).strftime("%Y%m%d"))
+                xml.high(value: study.service_requests.maximum(:end_date).strftime("%Y%m%d"))
+              }
 
-                arm.visit_groups.each do |visit_group|
-                  xml.component1(typeCode: 'COMP') {
-                    xml.sequenceNumber(value: visit_group.position)
-                    xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-                      xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}.DAY#{visit_group.position}")
-                      xml.title(visit_group.name)
-                    }
+              arm.visit_groups.each do |visit_group|
+                xml.component1(typeCode: 'COMP') {
+                  xml.sequenceNumber(value: visit_group.position)
+                  xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
+                    xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}.DAY#{visit_group.position}")
+                    xml.title(visit_group.name)
                   }
-                end
+                }
+              end
 
-              } # timePointEventDefinition
-            } # component1
-          } # timePointEventDefinition
-        } # component4
-      end
+            } # timePointEventDefinition
+          } # component1
+        } # timePointEventDefinition
+      } # component4
     end
   end
 
   def emit_procedures_and_encounters(xml, study)
-    study.service_requests.each do |service_request|
-      service_request.arms.each do |arm|
+    study.arms.each do |arm|
 
-        cycle = 1
+      cycle = 1
 
-        arm.visit_groups.each do |visit_group|
+      arm.visit_groups.each do |visit_group|
 
-          xml.component4(typeCode: 'COMP') {
-            xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
-              xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}.DAY#{visit_group.position}")
-              xml.title(visit_group.name)
-              xml.code(code: 'VISIT', codeSystem: 'n/a')
+        xml.component4(typeCode: 'COMP') {
+          xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
+            xml.id(root: @study_root, extension: "STUDY#{study.id}.ARM#{arm.id}.CYCLE#{cycle}.DAY#{visit_group.position}")
+            xml.title(visit_group.name)
+            xml.code(code: 'VISIT', codeSystem: 'n/a')
 
-              emit_procedures(xml, study, arm, visit_group, cycle)
-              emit_encounter(xml, study, arm, visit_group)
+            emit_procedures(xml, study, arm, visit_group, cycle)
+            emit_encounter(xml, study, arm, visit_group)
 
-            } # timePointEventDefinition
-          } # component4
-        end
+          } # timePointEventDefinition
+        } # component4
       end
     end
   end
@@ -380,6 +376,7 @@ class EpicInterface
   end
 
   def emit_encounter(xml, study, arm, visit_group)
+    # TODO: Need to change this to study.start_date
     epoch = study.service_requests.minimum(:start_date)
 
     xml.component2(typeCode: 'COMP') {

@@ -53,10 +53,14 @@ $(document).ready ->
   $(document).on('click', '.cwf_add_service_button', ->
     $('#visit_form .spinner_wrapper').show()
     box = $(this).siblings('select')
+    appointment_index = $('.new_procedure_wrapper:visible').data('appointment_index')
+    procedure_index = $('.appointment_wrapper:visible tr.fields:visible').size()
     data =
       'appointment_id': box.data('appointment_id')
       'service_id': box.val()
-      'ssr_id': box.data('ssr_id')
+      'appointment_index': appointment_index
+      'procedure_index': procedure_index
+
     $.ajax
       type: "post"
       url: "/study_tracker/appointments/add_service"
@@ -64,7 +68,8 @@ $(document).ready ->
       dataType: 'html'
       contentType: 'application/json; charset=utf-8'
       success: (response_html) ->
-        $('#patient_visit_calendar').html(response_html)
+        $('.new_procedure_wrapper:visible').replaceWith(response_html)
+        $('#visit_form .spinner_wrapper').hide()
     return false
   )
 

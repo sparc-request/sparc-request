@@ -1,0 +1,10 @@
+%tr{:class => "core_#{@procedure.core.id} fields hidden_by_tabs", :style => "background-color:#C0C0C0;display:table-row;"}
+  = hidden_field_tag "subject[calendar_attributes][appointments_attributes][#{appointment_index}][procedures_attributes][#{procedure_index}][service_id]", @procedure.service.id
+  %td= @procedure.service.name
+  %td{:class => "check_box_cell text-center"}= check_box_tag "subject[calendar_attributes][appointments_attributes][#{appointment_index}][procedures_attributes][#{procedure_index}][completed]", 1, :checked => true
+  %td{:class => "r_qty_cell text-center"}= text_field_tag "subject[calendar_attributes][appointments_attributes][#{appointment_index}][procedures_attributes][#{procedure_index}][r_quantity]", 0, :size => 5, :class => "procedure_r_qty"
+  %td{:class => "t_qty_cell text-center"}= text_field_tag "subject[calendar_attributes][appointments_attributes][#{appointment_index}][procedures_attributes][#{procedure_index}][t_quantity]", 0, :size => 5, :class => "procedure_t_qty"
+  %td{:class => "unit_cost_cell text-center"}= number_to_currency(@procedure.cost)
+  %td{:class => "procedure_total_cell text-center"} $0.00
+
+= hidden_field_tag "subject[calendar_attributes][appointments_attributes][#{appointment_index}][procedures_attributes][#{procedure_index}][id]"

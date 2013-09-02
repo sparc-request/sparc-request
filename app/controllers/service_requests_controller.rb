@@ -282,6 +282,10 @@ class ServiceRequestsController < ApplicationController
     @service_request.ensure_ssr_ids
     
     @protocol = @service_request.protocol
+    # As the service request leaves draft, so too do the arms
+    @protocol.arms.each do |arm|
+      arm.update_attributes({:new_with_draft => false})
+    end
     @service_list = @service_request.service_list
 
     send_notifications(@service_request, @sub_service_request)
@@ -295,6 +299,10 @@ class ServiceRequestsController < ApplicationController
     @service_request.ensure_ssr_ids
     
     @protocol = @service_request.protocol
+    # As the service request leaves draft, so too do the arms
+    @protocol.arms.each do |arm|
+      arm.update_attributes({:new_with_draft => false})
+    end
     @service_list = @service_request.service_list
 
     send_notifications(@service_request, @sub_service_request)

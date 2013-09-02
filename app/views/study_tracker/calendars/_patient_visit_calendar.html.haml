@@ -29,7 +29,9 @@
         %li.ui-state-default.ui-corner-top{:class=> @nutrition == @default_core ? 'ui-state-active' : ''}= link_to "Nutrition", "#nutrition", :class => "clinical_tab_data", :id => "core_#{@nutrition.id}", 'data-has_access' => @user.can_edit_core?(@nutrition.id) ? true : false
 
     #visit_form{:style => "padding: 10px 40px;"}
+      - appointment_index = -1
       = calendar_form.fields_for :appointments do |appointment_form|
+        - appointment_index += 1
         .appointment_wrapper{:style => appointment_form.object == @default_appointment ? "display:block;" : "display:none;", 'data-appointment_table' => appointment_form.object.id}
           %table.study_tracker_table
             %thead
@@ -58,6 +60,7 @@
                     %td.procedure_total_cell.text-center= number_to_currency(procedure_form.object.total)
                 - else
                   %tr.fields{:style => "display:false;"}
+              %tr.new_procedure_wrapper{'data-appointment_index' => appointment_index}
               %tr.grand_total_row
                 %td{:style => "font-weight:bold;"} Grand Total
                 %td

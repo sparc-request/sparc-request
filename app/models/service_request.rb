@@ -404,7 +404,8 @@ class ServiceRequest < ActiveRecord::Base
       arm = p.arms.create(
         name: 'ARM 1',
         visit_count: 1,
-        subject_count: 1)
+        subject_count: 1,
+        new_with_draft: true)
       self.line_items.each do |li|
         arm.create_line_items_visit(li)
       end

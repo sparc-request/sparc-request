@@ -20,16 +20,9 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
 
   def add_service
     appointment = Appointment.find(params[:appointment_id])
-    @calendar = appointment.calendar
-    @sub_service_request = SubServiceRequest.find(params[:ssr_id])
-    if appointment.procedures.create(:service_id => params[:service_id])
-      get_calendar_data(@calendar)
-      render :partial => 'patient_visit_calendar'
-    else
-      respond_to do |format|
-        format.js { render :status => 500, :json => clean_errors(appointment.errors) }
-      end
-    end
+    @procedure = appointment.procedures.new(:service_id => params[:service_id])
+
+    render :partial => 'new_procedure', :locals => {:appointment_index => params[:appointment_index], :procedure_index => params[:procedure_index]}
   end
 
   private

@@ -321,9 +321,11 @@ class EpicInterface
 
   def emit_procedures(xml, study, arm, visit_group, cycle)
     arm.line_items.each do |line_item|
+      service = line_item.service
+      next unless service.send_to_epic
+
       liv = LineItemsVisit.for(arm, line_item)
       visit = Visit.for(liv, visit_group)
-      service = line_item.service
 
       # TODO: we don't know if this is right or not
       billing_modifiers = [

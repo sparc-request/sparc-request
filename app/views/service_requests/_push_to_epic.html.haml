@@ -21,7 +21,12 @@
               // Not done yet; try again in 5 seconds
               window.setTimeout(get_epic_push_status, 5000);
             } else {
-              $('#push_to_epic_status').text(data['last_epic_push_status_text']);
+              status_text = data['last_epic_push_status_text']
+              if(status_text == null) {
+                $('#push_to_epic_status').text('');
+              } else {
+                $('#push_to_epic_status').text(data['last_epic_push_status_text']);
+              }
             }
           },
           error: function(request, text, error) {

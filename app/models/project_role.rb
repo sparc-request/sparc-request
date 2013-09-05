@@ -115,14 +115,18 @@ class ProjectRole < ActiveRecord::Base
   end
 
   def populate_for_edit
-    setup_epic_rights
+    if USE_EPIC
+      setup_epic_rights
+    end
   end
 
   def set_epic_rights
-    if self.role == 'primary-pi'
-      rights = setup_epic_rights(false)
-      self.epic_access = true
-      self.epic_rights = rights
+    if USE_EPIC
+      if self.role == 'primary-pi'
+        rights = setup_epic_rights(false)
+        self.epic_access = true
+        self.epic_rights = rights
+      end
     end
   end
 end

@@ -15,6 +15,7 @@ begin
   USE_INDIRECT_COST             = application_config['use_indirect_cost']
   USE_SHIBOLETH                 = application_config['use_shiboleth']
   USE_LDAP                      = application_config['use_ldap']
+  USE_EPIC                      = application_config['use_epic']
 
   if application_config.include?('wkhtmltopdf_location')
     # Setup PDFKit

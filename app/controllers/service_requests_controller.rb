@@ -310,9 +310,11 @@ class ServiceRequestsController < ApplicationController
     # Send a notification to Lane et al to create users in Epic.  Once
     # that has been done, one of them will click a link which calls
     # approve_epic_rights.
-    if @protocol.should_push_to_epic?
-      @protocol.awaiting_approval_for_epic_push
-      send_epic_notification_for_user_approval(@service_request)
+    if USE_EPIC
+      if @protocol.should_push_to_epic?
+        @protocol.awaiting_approval_for_epic_push
+        send_epic_notification_for_user_approval(@service_request)
+      end
     end
 
     render :formats => [:html]

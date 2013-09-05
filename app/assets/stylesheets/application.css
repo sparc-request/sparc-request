@@ -41,7 +41,7 @@ ul {
 #feedback {
   float: right;
   margin-right: 10px;
-  margin-top: 114px;
+  margin-top: 86px;
   font-size: 14px;
   font-weight: bold;
   text-decoration: underline;
@@ -1916,6 +1916,10 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   display: block;
   margin-top: 8px;
   width: 960px;
+}
+
+#sparc_logo_header #right_header {
+  float: right;
 }
 
 #processing_request {

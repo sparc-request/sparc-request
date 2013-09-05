@@ -450,9 +450,6 @@ describe ServiceRequestsController do
       liv = LineItemsVisit.for(arm1, line_item)
       add_visits_to_arm_line_item(arm1, line_item, 0)
 
-      puts '#'*100
-      puts liv.visits.count
-
       session[:service_request_id] = service_request.id
       get :service_calendar, { :id => service_request.id, :pages => { arm1.id => 42 } }.with_indifferent_access
 

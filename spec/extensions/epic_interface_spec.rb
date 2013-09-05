@@ -618,7 +618,7 @@ describe EpicInterface do
           liv = LineItemsVisit.for(arm, line_item)
           visit = Visit.for(liv, visit_group)
           visit.update_attributes(research_billing_qty: 1)
-          service.update_attributes(cdm_code: 1234)
+          service.update_attributes(cdm_code: 1234, send_to_epic: true)
 
           epic_interface.send_billing_calendar(study)
 
@@ -707,7 +707,7 @@ describe EpicInterface do
           liv = LineItemsVisit.for(arm, line_item)
           visit = Visit.for(liv, visit_group)
           visit.update_attributes(research_billing_qty: 1)
-          service.update_attributes(cpt_code: 4321)
+          service.update_attributes(cpt_code: 4321, send_to_epic: true)
 
           epic_interface.send_billing_calendar(study)
 
@@ -796,8 +796,9 @@ describe EpicInterface do
           liv = LineItemsVisit.for(arm, line_item)
           visit = Visit.for(liv, visit_group)
           visit.update_attributes(research_billing_qty: 1)
-          service.update_attributes(cpt_code: 4321)
-          service.update_attributes(cdm_code: 1234)
+          service.update_attributes(cpt_code: 4321,
+                                    cdm_code: 1234,
+                                    send_to_epic: true)
 
           epic_interface.send_billing_calendar(study)
 

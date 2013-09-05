@@ -69,6 +69,7 @@ $(document).ready ->
       contentType: 'application/json; charset=utf-8'
       success: (response_html) ->
         $('.new_procedure_wrapper:visible').replaceWith(response_html)
+        $('tr.grand_total_row:visible').before("<tr class='new_procedure_wrapper' data-appointment_index='#{appointment_index}'></tr>")
         $('#visit_form .spinner_wrapper').hide()
     return false
   )

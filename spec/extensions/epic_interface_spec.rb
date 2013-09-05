@@ -610,7 +610,7 @@ describe EpicInterface do
           FactoryGirl.create(
               :visit_group,
               arm: arm,
-              day: 1)
+              day: -1)
         }
 
         # TODO: Test CDM Code no CPT
@@ -645,8 +645,8 @@ describe EpicInterface do
                          <title>Cycle 1</title>
                          <code code="CYCLE" codeSystem="n/a"/>
                          <effectiveTime>
-                           <low value="#{service_request.start_date.strftime('%Y%m%d')}"/>
-                           <high value="#{service_request.end_date.strftime('%Y%m%d')}"/>
+                           <low value="#{epic_interface.relative_date(visit_group.day, service_request.start_date)}"/>
+                           <high value="#{epic_interface.relative_date(visit_group.day, service_request.end_date)}"/>
                          </effectiveTime>
                          <component1 typeCode="COMP">
                            <sequenceNumber value="1"/>
@@ -681,7 +681,7 @@ describe EpicInterface do
                            <low value="#{low}"/>
                            <high value="#{high}"/>
                          </effectiveTime>
-                         <activityTime value="#{service_request.start_date.strftime('%Y%m%d')}"/>
+                         <activityTime value="#{epic_interface.relative_date(visit_group.day, service_request.start_date)}"/>
                        </encounter>
                      </component2>
                    </timePointEventDefinition>
@@ -734,8 +734,8 @@ describe EpicInterface do
                          <title>Cycle 1</title>
                          <code code="CYCLE" codeSystem="n/a"/>
                          <effectiveTime>
-                           <low value="#{service_request.start_date.strftime('%Y%m%d')}"/>
-                           <high value="#{service_request.end_date.strftime('%Y%m%d')}"/>
+                           <low value="#{epic_interface.relative_date(visit_group.day, service_request.start_date)}"/>
+                           <high value="#{epic_interface.relative_date(visit_group.day, service_request.end_date)}"/>
                          </effectiveTime>
                          <component1 typeCode="COMP">
                            <sequenceNumber value="1"/>
@@ -770,7 +770,7 @@ describe EpicInterface do
                            <low value="#{low}"/>
                            <high value="#{high}"/>
                          </effectiveTime>
-                         <activityTime value="#{service_request.start_date.strftime('%Y%m%d')}"/>
+                         <activityTime value="#{epic_interface.relative_date(visit_group.day, service_request.start_date)}"/>
                        </encounter>
                      </component2>
                    </timePointEventDefinition>
@@ -825,8 +825,8 @@ describe EpicInterface do
                          <title>Cycle 1</title>
                          <code code="CYCLE" codeSystem="n/a"/>
                          <effectiveTime>
-                           <low value="#{service_request.start_date.strftime('%Y%m%d')}"/>
-                           <high value="#{service_request.end_date.strftime('%Y%m%d')}"/>
+                           <low value="#{epic_interface.relative_date(visit_group.day, service_request.start_date)}"/>
+                           <high value="#{epic_interface.relative_date(visit_group.day, service_request.end_date)}"/>
                          </effectiveTime>
                          <component1 typeCode="COMP">
                            <sequenceNumber value="1"/>
@@ -861,7 +861,7 @@ describe EpicInterface do
                            <low value="#{low}"/>
                            <high value="#{high}"/>
                          </effectiveTime>
-                         <activityTime value="#{service_request.start_date.strftime('%Y%m%d')}"/>
+                         <activityTime value="#{epic_interface.relative_date(visit_group.day, service_request.start_date)}"/>
                        </encounter>
                      </component2>
                    </timePointEventDefinition>
@@ -913,8 +913,8 @@ describe EpicInterface do
                          <title>Cycle 1</title>
                          <code code="CYCLE" codeSystem="n/a"/>
                          <effectiveTime>
-                           <low value="#{service_request.start_date.strftime('%Y%m%d')}"/>
-                           <high value="#{service_request.end_date.strftime('%Y%m%d')}"/>
+                           <low value="#{epic_interface.relative_date(visit_group.day, service_request.start_date)}"/>
+                           <high value="#{epic_interface.relative_date(visit_group.day, service_request.end_date)}"/>
                          </effectiveTime>
                          <component1 typeCode="COMP">
                            <sequenceNumber value="1"/>
@@ -938,7 +938,7 @@ describe EpicInterface do
                            <low value="#{low}"/>
                            <high value="#{high}"/>
                          </effectiveTime>
-                         <activityTime value="#{service_request.start_date.strftime('%Y%m%d')}"/>
+                         <activityTime value="#{epic_interface.relative_date(visit_group.day, service_request.start_date)}"/>
                        </encounter>
                      </component2>
                    </timePointEventDefinition>

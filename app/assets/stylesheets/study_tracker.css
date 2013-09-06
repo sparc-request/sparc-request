@@ -74,3 +74,8 @@ td.text-center {
 .add_service div {
   display:none;
 }
+
+.dashboard_link {
+  margin: 15px 0px 15px 15px;
+  font-size:1.2em;
+}

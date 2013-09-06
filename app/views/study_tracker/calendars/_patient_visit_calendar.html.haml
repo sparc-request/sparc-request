@@ -19,6 +19,17 @@
   #controls
     %p Please select a visit:
     = select_tag :visit, options_for_select(appointment_visits(@appointments), selected_key = "##{@default_appointment.visit_group.position}: #{@default_appointment.visit_group.name}"), :class => 'clinical_select_data'
+  %p= link_to "Dashboard", 'javascript:void(0);', :class => "ui-button ui-state-default ui-button-text-only dashboard_link", :style => "padding:0.45em 1em;font-size:1.2em;"
+  #dashboard{:style => "display:none;"}
+    %table.study_tracker_table{:style => "width:940px;"}
+      %thead.left_headers
+        %tr.ui-widget-header
+          %th Completed Visits
+          %th Visit Totals
+        =render(:partial => 'total', :collection => @completed_appointments, :as => :appointment)
+        %tr.ui-widget-header
+          %th Subject Total
+          %th
 
   = f.fields_for :calendar do |calendar_form|
     .cwf_tabs.ui-tabs.ui-widget.ui-widget-content.ui-corner-all
@@ -60,7 +71,7 @@
                     %td.procedure_total_cell.text-center= number_to_currency(procedure_form.object.total)
                 - else
                   %tr.fields{:style => "display:false;"}
-              %tr.new_procedure_wrapper{'data-appointment_index' => appointment_index}
+              %tr.new_procedure_wrapper{:'data-appointment_index' => appointment_index}
               %tr.grand_total_row
                 %td{:style => "font-weight:bold;"} Grand Total
                 %td

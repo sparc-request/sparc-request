@@ -51,7 +51,7 @@ $(document).ready ->
   )
 
   $(document).on('click', '.dashboard_link', ->
-    $('#dashboard').toggle()
+    $('#dashboard').slideToggle()
   )
 
   $(document).on('click', '.cwf_add_service_button', ->

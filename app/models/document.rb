@@ -1,6 +1,5 @@
 class Document < ActiveRecord::Base
-  #Version.primary_key = 'id'
-  #has_paper_trail
+  audited
 
   include Paperclip::Glue
   belongs_to :sub_service_request

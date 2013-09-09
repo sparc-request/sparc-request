@@ -1,4 +1,6 @@
 class ToastMessage < ActiveRecord::Base
+  audited
+
   belongs_to :sender, :class_name => 'Identity', :foreign_key => 'from'
   belongs_to :recipient, :class_name => 'Identity', :foreign_key => 'to'
 

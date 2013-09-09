@@ -1,4 +1,5 @@
 class AvailableStatus < ActiveRecord::Base
+  audited
 
   belongs_to :organization
   

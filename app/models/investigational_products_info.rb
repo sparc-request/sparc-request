@@ -1,8 +1,7 @@
 class InvestigationalProductsInfo < ActiveRecord::Base
   self.table_name = 'investigational_products_info'
 
-  #Version.primary_key = 'id'
-  #has_paper_trail
+  audited
 
   belongs_to :protocol
 

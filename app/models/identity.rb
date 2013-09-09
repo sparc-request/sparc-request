@@ -1,6 +1,8 @@
 require 'directory'
 
 class Identity < ActiveRecord::Base
+  audited
+
   after_create :send_admin_mail
 
   #Version.primary_key = 'id'

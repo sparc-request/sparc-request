@@ -47,7 +47,8 @@ class Protocol < ActiveRecord::Base
   attr_accessible :project_roles_attributes
   attr_accessible :arms_attributes
   attr_accessible :requester_id
-
+  attr_accessible :start_date
+  attr_accessible :end_date
   attr_accessible :last_epic_push_time
   attr_accessible :last_epic_push_status
 

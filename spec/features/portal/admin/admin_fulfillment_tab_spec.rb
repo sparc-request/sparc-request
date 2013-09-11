@@ -65,8 +65,8 @@ describe "admin fulfillment tab", :js => true do
         
         visit portal_admin_sub_service_request_path(sub_service_request)
         service_request.reload
-        page.find('#service_request_start_date_picker').should have_value service_request.start_date.strftime("%m/%d/%y")
-        page.find('#service_request_end_date_picker').should have_value service_request.end_date.strftime("%m/%d/%y")
+        page.find('#service_request_start_date_picker').should have_value study.start_date.strftime("%m/%d/%y")
+        page.find('#service_request_end_date_picker').should have_value study.end_date.strftime("%m/%d/%y")
       end
     end
 

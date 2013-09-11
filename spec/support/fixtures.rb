@@ -86,7 +86,7 @@ def build_per_patient_per_visit_services
 end
 
 def build_service_request
-  let!(:service_request)     { FactoryGirl.create(:service_request, status: "draft", start_date: Time.now, end_date: Time.now + 10.days) }
+  let!(:service_request)     { FactoryGirl.create(:service_request, status: "draft") }
   let!(:institution)         { FactoryGirl.create(:institution,name: 'Medical University of South Carolina', order: 1, abbreviation: 'MUSC', is_available: 1)}
   let!(:provider)            { FactoryGirl.create(:provider,parent_id:institution.id,name: 'South Carolina Clinical and Translational Institute (SCTR)',order: 1,css_class: 'blue-provider', abbreviation: 'SCTR1',process_ssrs: 0,is_available: 1)}
   let!(:program)             { FactoryGirl.create(:program,type:'Program',parent_id:provider.id,name:'Office of Biomedical Informatics',order:1, abbreviation:'Informatics', process_ssrs:  0, is_available: 1)}
@@ -143,7 +143,7 @@ end
 def build_project
   let!(:project) {
     protocol = Project.create(FactoryGirl.attributes_for(:protocol))
-    protocol.update_attributes(:funding_status => "funded", :funding_source => "federal", :indirect_cost_rate => 50.0)
+    protocol.update_attributes(:funding_status => "funded", :funding_source => "federal", :indirect_cost_rate => 50.0, start_date: Time.now, end_date: Time.now + 2.month)
     protocol.save :validate => false
     identity = Identity.find_by_ldap_uid('jug2')
     FactoryGirl.create(
@@ -169,7 +169,7 @@ end
 def build_study
   let!(:study) {
     protocol = Study.create(FactoryGirl.attributes_for(:protocol))
-    protocol.update_attributes(:funding_status => "funded", :funding_source => "federal", :indirect_cost_rate => 50.0)
+    protocol.update_attributes(:funding_status => "funded", :funding_source => "federal", :indirect_cost_rate => 50.0, start_date: Time.now, end_date: Time.now + 2.month)
     protocol.save :validate => false
     identity = Identity.find_by_ldap_uid('jug2')
     FactoryGirl.create(

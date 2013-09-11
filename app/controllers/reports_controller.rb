@@ -19,4 +19,46 @@ class ReportsController < ApplicationController
 
     redirect_to study_tracker_sub_service_request_path(@sub_service_request)
   end
+
+  def cwf_audit
+    # changes to the following models
+    # protocol
+    #   affiliations 
+    #   study_types
+    #   research_types_info
+    #   human_subjects_info
+    #   vertebrate_animals_info
+    #   ip_patents_info
+    #   project_roles
+    #   impact_areas
+    #   arms
+    # arms
+    #   line_items_visits
+    #   subjects
+    #   visit_groups
+    # sub_service_request
+    #   owner
+    #   line_items
+    #   documents
+    #   notes
+    #   approvals
+    #   payments
+    #   cover_letters
+    #   subsidy
+    # calendars   
+    # appointments
+    # cover_letters
+    # 
+    
+    ssr = SubServiceRequest.find params[:id]
+    sr = ssr.service_request
+    protocol = sr.protocol
+
+    start_date = Date.today - 3.years
+    end_date = Date.today
+
+    audits = ssr.audits.where("created_at between ? and ?", start_date, end_date)
+
+    
+  end
 end

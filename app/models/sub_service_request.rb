@@ -295,16 +295,4 @@ class SubServiceRequest < ActiveRecord::Base
       SurveyNotification.service_survey(available_surveys, requester, self).deliver
     end
   end
-
-  def audit_trail(start_date, end_date)
-    start_date = Date.today - 3.years
-    end_date = Date.today + 1
-
-    audit_records = self.audits.where("created_at between ? and ?", start_date, end_date)
-    audit_records += self.line_items.map{|x| x.audits.where("created_at between ? and ?", start_date, end_date)}
-    audit_records += self.documents.map{|x| x.audits.where("created_at between ? and ?", start_date, end_date)}
-
-    audit_records.flatten.compact
-  end
-
 end

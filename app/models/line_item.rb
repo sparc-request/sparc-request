@@ -184,4 +184,3 @@ class LineItem < ActiveRecord::Base
     end
   end
 end
-#362

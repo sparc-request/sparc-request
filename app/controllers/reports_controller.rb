@@ -51,14 +51,7 @@ class ReportsController < ApplicationController
     # 
     
     ssr = SubServiceRequest.find params[:id]
-    sr = ssr.service_request
-    protocol = sr.protocol
-
-    start_date = Date.today - 3.years
-    end_date = Date.today
-
-    audits = ssr.audits.where("created_at between ? and ?", start_date, end_date)
-
+    
     
   end
 end

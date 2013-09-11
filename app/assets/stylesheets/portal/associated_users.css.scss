@@ -73,6 +73,7 @@
 	overflow-x: hidden;
 	/* add padding to account for vertical scrollbar */
 	padding-right: 20px;
+  z-index: 999999999 !important;
 }
 
 #user_form {

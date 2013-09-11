@@ -101,10 +101,9 @@ describe 'ServiceRequest' do
 
     before :each do
       add_visits
-      @protocol = Study.create(FactoryGirl.attributes_for(:protocol))
+      @protocol = service_request.protocol
       @protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 200)
       @protocol.save :validate => false
-      service_request.update_attributes(protocol_id: @protocol.id)
       service_request.reload
     end
 

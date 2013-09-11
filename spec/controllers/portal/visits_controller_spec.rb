@@ -17,8 +17,9 @@ describe Portal::VisitsController do
     service
   }
 
-  let!(:service_request) { FactoryGirl.create(:service_request) }
-  let!(:arm) { FactoryGirl.create(:arm, service_request_id: service_request.id, visit_count: 0, subject_count: 1) }
+  let!(:project) { FactoryGirl.create_without_validation(:project) }
+  let!(:service_request) { FactoryGirl.create(:service_request, protocol_id: project.id) }
+  let!(:arm) { FactoryGirl.create(:arm, protocol_id: project.id, visit_count: 0, subject_count: 1) }
 
   let!(:ssr) {
     FactoryGirl.create(

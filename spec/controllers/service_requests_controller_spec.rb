@@ -107,6 +107,9 @@ describe ServiceRequestsController do
   end
 
   describe 'GET review' do
+    build_project
+    build_arms
+
     it "should set the page if page is passed in" do
       arm1.update_attribute(:visit_count, 500)
 
@@ -141,6 +144,7 @@ describe ServiceRequestsController do
   describe 'GET confirmation' do
     context 'with project' do
       build_project
+      build_arms
 
       it "should set the service request's status to submitted" do
         session[:identity_id] = jug2.id
@@ -221,12 +225,53 @@ describe ServiceRequestsController do
         ssr1.reload
         ssr1.ssr_id.should eq '10042'
       end
+
+      it 'should send an email if services are set to send to epic' do
+        session[:identity_id] = jug2.id
+        session[:service_request_id] = service_request.id
+
+        service.update_attributes(send_to_epic: false)
+        service2.update_attributes(send_to_epic: true)
+
+        deliverer = double()
+        deliverer.should_receive(:deliver)
+        Notifier.stub!(:notify_for_epic_user_approval) { |sr|
+          sr.should eq(service_request)
+          deliverer
+        }
+
+        get :confirmation, {
+          :id => service_request.id,
+          :format => :js
+        }
+      end
+
+      it 'should not send an email if no services are set to send to epic' do
+        session[:identity_id] = jug2.id
+        session[:service_request_id] = service_request.id
+
+        service.update_attributes(send_to_epic: false)
+        service2.update_attributes(send_to_epic: false)
+
+        deliverer = double()
+        deliverer.should_not_receive(:deliver)
+        Notifier.stub!(:notify_for_epic_user_approval) { |sr|
+          sr.should eq(service_request)
+          deliverer
+        }
+
+        get :confirmation, {
+          :id => service_request.id,
+          :format => :js
+        }
+      end
     end
   end
 
   describe 'GET save_and_exit' do
     context 'with project' do
       build_project
+      build_arms
 
       it "should set the service request's status to submitted" do
         session[:service_request_id] = service_request.id
@@ -307,14 +352,17 @@ describe ServiceRequestsController do
     end
   end
 
-  describe 'GET service_details' do
-    it 'should do nothing?' do
-      session[:service_request_id] = service_request.id
-      get :service_details, :id => service_request.id
-    end
-  end
-
   describe 'GET service_calendar' do
+    build_project
+    build_arms
+
+    describe 'GET service_details' do
+      it 'should do nothing?' do
+        session[:service_request_id] = service_request.id
+        get :service_details, :id => service_request.id
+      end
+    end
+
     let!(:service) {
       service = FactoryGirl.create(:service, pricing_map_count: 1)
       service.pricing_maps[0].update_attributes(display_date: Date.today)
@@ -481,6 +529,9 @@ describe ServiceRequestsController do
   end
 
   describe 'GET refresh_service_calendar' do
+    build_project
+    build_arms
+
     it "should set the page if page is passed in" do
       arm1.update_attribute(:visit_count, 500)
 
@@ -825,7 +876,11 @@ describe ServiceRequestsController do
     let!(:line_item2) { FactoryGirl.create(:line_item, service_id: service2.id, service_request_id: service_request.id) }
     let!(:line_item3) { FactoryGirl.create(:line_item, service_id: service3.id, service_request_id: service_request.id) }
 
+    build_project
+    build_arms
+
     describe 'POST select_calendar_row' do
+      
       it 'should set line item' do
         liv = LineItemsVisit.for(arm1, line_item1)
 

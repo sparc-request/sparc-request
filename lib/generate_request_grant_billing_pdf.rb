@@ -54,11 +54,11 @@ class RequestGrantBillingPdf
     end
     
     # question 6
-    start_date = service_request.start_date.nil? ? "" : service_request.start_date.strftime('%m/%d/%Y')
+    start_date = service_request.protocol.start_date.nil? ? "" : service_request.protocol.start_date.strftime('%m/%d/%Y')
     pdf.text_box start_date, text_box_options(:at => [130, 486])
     
     # question 7
-    end_date = service_request.end_date.nil? ? "" : service_request.end_date.strftime('%m/%d/%Y')
+    end_date = service_request.protocol.end_date.nil? ? "" : service_request.protocol.end_date.strftime('%m/%d/%Y')
     pdf.text_box end_date, text_box_options(:at => [125, 463])
 
     # question 8

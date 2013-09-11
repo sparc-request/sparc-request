@@ -10,7 +10,7 @@ class ServiceRequest < ActiveRecord::Base
   has_many :approvals, :dependent => :destroy
   has_many :documents, :through => :sub_service_requests
   has_many :document_groupings, :dependent => :destroy
-  has_many :arms, :dependent => :destroy
+  has_many :arms, :through => :protocol
 
   validation_group :protocol do
     validates :protocol_id, :presence => {:message => "You must identify the service request with a study/project before continuing."} 
@@ -63,13 +63,10 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   attr_accessible :protocol_id
-  attr_accessible :obisid
   attr_accessible :status
   attr_accessible :service_requester_id
   attr_accessible :notes
   attr_accessible :approved
-  attr_accessible :start_date
-  attr_accessible :end_date
   attr_accessible :consult_arranged_date
   attr_accessible :pppv_complete_date
   attr_accessible :pppv_in_process_date
@@ -77,11 +74,9 @@ class ServiceRequest < ActiveRecord::Base
   attr_accessible :submitted_at
   attr_accessible :line_items_attributes
   attr_accessible :sub_service_requests_attributes
-  attr_accessible :arms_attributes
 
   accepts_nested_attributes_for :line_items
   accepts_nested_attributes_for :sub_service_requests
-  accepts_nested_attributes_for :arms, :allow_destroy => true
 
   alias_attribute :service_request_id, :id
 
@@ -97,11 +92,12 @@ class ServiceRequest < ActiveRecord::Base
 
   def service_details_page(direction)
     if has_per_patient_per_visit_services? and not (direction == 'back' and status == 'first_draft')
-      if start_date.nil?
+      #TODO why is this being called when you try to unset protocol (don't supply one)
+      if protocol and protocol.start_date.nil?
         errors.add(:start_date, "You must specify the start date of the study.")
       end
 
-      if end_date.nil?
+      if protocol and protocol.end_date.nil?
         errors.add(:end_date, "You must specify the end date of the study.")
       end
     end
@@ -139,15 +135,6 @@ class ServiceRequest < ActiveRecord::Base
         end
       end
     end
-  end
-
-  def create_arm(args)
-    arm = self.arms.create(args)
-    self.per_patient_per_visit_line_items.each do |li|
-      arm.create_line_items_visit(li)
-    end
-    # Lets return this in case we need it for something else
-    arm
   end
 
   # Given a service, create a line item for that service and for all
@@ -408,6 +395,32 @@ class ServiceRequest < ActiveRecord::Base
     end
 
     self.protocol.update_attributes(next_ssr_id: next_ssr_id)
+  end
+
+  def add_or_update_arms
+    p = self.protocol
+    if p.arms.empty?
+      arm = p.arms.create(
+        name: 'ARM 1',
+        visit_count: 1,
+        subject_count: 1,
+        new_with_draft: true)
+      self.line_items.each do |li|
+        arm.create_line_items_visit(li)
+      end
+    else
+      p.arms.each do |arm|
+        p.service_requests.each do |sr|
+          sr.line_items.each do |li|
+            arm.create_line_items_visit(li) if arm.line_items_visits.where(:line_item_id => li.id).empty?
+          end
+        end
+      end
+    end
+  end
+
+  def should_push_to_epic?
+    return self.line_items.any? { |li| li.should_push_to_epic? }
   end
 
 end

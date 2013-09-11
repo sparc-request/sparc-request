@@ -19,7 +19,7 @@ describe Arm do
     end
 
     it 'should populate its subjects if it has a sub service request in cwf status' do
-      arm = service_request.create_arm(subject_count: 5, visit_count: 5, name: 'CWF ARM')
+      arm = service_request.protocol.create_arm(subject_count: 5, visit_count: 5, name: 'CWF ARM')
       arm.subjects.count.should eq(5)
     end
 

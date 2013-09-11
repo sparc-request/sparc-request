@@ -54,8 +54,15 @@ $(document).ready ->
             spinner.remove()
   }
 
+  $('#study_tracker_tabs').tabs
+    active: ($.cookie("study_tracker_tab_name"))
+    activate: (event, ui) ->
+      idx = ui.newTab.parent().children().index(ui.newTab)
+      $.cookie("study_tracker_tab_name", idx, { expires: 1 })
+
+
   $('.tabs').tabs
-    cookie: { expires: 1 }
+    active: ($.cookie("admin_tab_name"))
     show: (event, ui) ->
       class_name = ui.tab.className
       switch class_name
@@ -74,3 +81,7 @@ $(document).ready ->
           Sparc.home.getInfo('service_request_information')
           Sparc.home.getInfo('one_time_fees')
           Sparc.home.getInfo('per_patient_services')
+    activate: (event, ui) ->
+      idx = ui.newTab.parent().children().index(ui.newTab)
+      $.cookie("admin_tab_name", idx, { expires: 1 })
+

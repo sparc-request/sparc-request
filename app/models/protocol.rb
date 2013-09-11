@@ -12,8 +12,8 @@ class Protocol < ActiveRecord::Base
   has_many :service_requests
   has_many :affiliations, :dependent => :destroy
   has_many :impact_areas, :dependent => :destroy
+  has_many :arms, :dependent => :destroy
 
-  attr_accessible :obisid
   attr_accessible :identity_id
   attr_accessible :next_ssr_id
   attr_accessible :short_title
@@ -45,8 +45,10 @@ class Protocol < ActiveRecord::Base
   attr_accessible :impact_areas_attributes
   attr_accessible :affiliations_attributes
   attr_accessible :project_roles_attributes
+  attr_accessible :arms_attributes
   attr_accessible :requester_id
-
+  attr_accessible :start_date
+  attr_accessible :end_date
   attr_accessible :last_epic_push_time
   attr_accessible :last_epic_push_status
 
@@ -61,6 +63,7 @@ class Protocol < ActiveRecord::Base
   accepts_nested_attributes_for :impact_areas, :allow_destroy => true
   accepts_nested_attributes_for :affiliations, :allow_destroy => true
   accepts_nested_attributes_for :project_roles, :allow_destroy => true
+  accepts_nested_attributes_for :arms, :allow_destroy => true
 
   validates :short_title, :presence => true
   validates :title, :presence => true
@@ -87,7 +90,11 @@ class Protocol < ActiveRecord::Base
   end
 
   def primary_principal_investigator
-    project_roles.detect { |pr| pr.role == 'primary-pi' }.try(:identity)
+    primary_pi_project_role.try(:identity)
+  end
+
+  def primary_pi_project_role
+    project_roles.detect { |pr| pr.role == 'primary-pi' }
   end
 
   def billing_managers
@@ -165,29 +172,35 @@ class Protocol < ActiveRecord::Base
   # thread-safe.
   def push_to_epic(epic_interface)
     begin
-      update_attributes(
-          last_epic_push_time: Time.now,
-          last_epic_push_status: 'started')
+      self.last_epic_push_time = Time.now
+      self.last_epic_push_status = 'started'
+      save(validate: false)
 
-      Rails.logger.info("Sending study creation message to Epic")
+      Rails.logger.info("Sending study message to Epic")
       epic_interface.send_study(self)
 
-      update_attributes(
-          last_epic_push_status: 'sent_study')
-
-      Rails.logger.info("Sending billing calendar to Epic")
-      epic_interface.send_billing_calendar(self)
-
-      update_attributes(
-          last_epic_push_status: 'complete')
+      self.last_epic_push_status = 'complete'
+      save(validate: false)
 
     rescue Exception => e
       Rails.logger.info("Push to Epic failed.")
 
-      update_attributes(
-          last_epic_push_status: 'failed')
+      self.last_epic_push_status = 'failed'
+      save(validate: false)
       raise e
     end
+  end
+
+  def awaiting_approval_for_epic_push
+    self.last_epic_push_time = nil
+    self.last_epic_push_status = 'awaiting_approval'
+    save(validate: false)
+  end
+
+  def awaiting_final_review_for_epic_push
+    self.last_epic_push_time = nil
+    self.last_epic_push_status = 'awaiting_final_review'
+    save(validate: false)
   end
 
   # Returns true if there is a push to epic in progress, false
@@ -202,5 +215,26 @@ class Protocol < ActiveRecord::Base
   def push_to_epic_complete?
     return self.last_epic_push_status == 'complete' ||
            self.last_epic_push_status == 'failed'
+  end
+
+  def populate_for_edit
+    project_roles.each do |pr|
+      pr.populate_for_edit
+    end
+  end
+  
+  def create_arm(args)
+    arm = self.arms.create(args)
+    self.service_requests.each do |service_request|
+      service_request.per_patient_per_visit_line_items.each do |li|
+        arm.create_line_items_visit(li)
+      end
+    end
+    # Lets return this in case we need it for something else
+    arm
+  end
+  
+  def should_push_to_epic?
+    return self.service_requests.any? { |sr| sr.should_push_to_epic? }
   end
 end

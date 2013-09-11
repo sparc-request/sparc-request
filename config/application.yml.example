@@ -13,6 +13,8 @@ development:
   use_shiboleth: true
   use_ldap: true
   wkhtmltopdf_location: '/usr/local/bin/wkhtmltopdf'
+  approve_epic_rights_mail_to: "glennj@musc.edu, forney@musc.edu, crossoml@musc.edu"
+  use_epic: true
   
 test:
   default_mail_to: catesa@musc.edu
@@ -29,3 +31,5 @@ test:
   use_shiboleth: true
   use_ldap: true
   wkhtmltopdf_location: '/usr/local/bin/wkhtmltopdf'
+  approve_epic_rights_mail_to: "glennj@musc.edu, forney@musc.edu, crossoml@musc.edu"
+  use_epic: true

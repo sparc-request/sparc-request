@@ -41,7 +41,7 @@ ul {
 #feedback {
   float: right;
   margin-right: 10px;
-  margin-top: 114px;
+  margin-top: 86px;
   font-size: 14px;
   font-weight: bold;
   text-decoration: underline;
@@ -1527,8 +1527,9 @@ li.organization-option {
   margin-left: 1px;
   margin-top : 28px;
   border     : 1px solid #999;
-  max-height     : 400px;
+  max-height : 400px;
   overflow-y : scroll;
+  z-index    : 999999999;
 }
 
 .ui-autocomplete li:nth-child(odd) {
@@ -1905,6 +1906,10 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   font-size: 15px;
 }
 
+#push_to_epic_status {
+  margin-top: 10px;
+}
+
 #sparc_logo_header {
   background: #FFF;
   border-left: 1px solid #B2B2B2;
@@ -1914,8 +1919,8 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   width: 960px;
 }
 
-#push_to_epic_status {
-  margin-top: 10px;
+#sparc_logo_header #right_header {
+  float: right;
 }
 
 #processing_request {
@@ -1964,4 +1969,8 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 
 .line_item_quantity, .units_per_quantity {
   width: 30px;
+}
+
+.epic_rights_info {
+  font-style: italic;
 }

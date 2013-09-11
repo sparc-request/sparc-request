@@ -70,6 +70,9 @@ GEM
       rack-test (>= 0.5.4)
       selenium-webdriver (~> 2.0)
       xpath (~> 1.0.0)
+    capybara-email (2.0.3)
+      capybara (~> 2.0.0)
+      mail
     capybara-firebug (1.3.0)
       capybara (>= 1.0, < 3.0)
     childprocess (0.3.9)
@@ -139,12 +142,6 @@ GEM
     inflection-js-rails (0.1.1)
       railties (>= 3.2.0, < 5.0)
       thor (~> 0.14)
-    jasmine (1.3.2)
-      jasmine-core (~> 1.3.1)
-      rack (~> 1.0)
-      rspec (>= 1.3.1)
-      selenium-webdriver (>= 0.1.3)
-    jasmine-core (1.3.1)
     journey (1.0.4)
     jquery-rails (2.1.3)
       railties (>= 3.1.0, < 5.0)
@@ -171,7 +168,7 @@ GEM
     net-ssh (2.6.6)
     net-ssh-gateway (1.2.0)
       net-ssh (>= 2.6.5)
-    nokogiri (1.5.5)
+    nokogiri (1.6.0)
     nori (2.1.0)
     obis-net-ldap (0.4.0)
     omniauth (1.1.3)
@@ -347,7 +344,8 @@ DEPENDENCIES
   cache_digests
   capistrano
   capistrano-ext
-  capybara
+  capybara (~> 2.0.2)
+  capybara-email
   capybara-firebug
   coffee-rails (~> 3.2.1)
   connection_pool
@@ -364,7 +362,6 @@ DEPENDENCIES
   haml
   highline
   inflection-js-rails
-  jasmine
   jquery-rails (= 2.1.3)
   jquery_datepicker
   json

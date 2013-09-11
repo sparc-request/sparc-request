@@ -5,3 +5,7 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+i = Identity.find_by_ldap_uid "jug2@musc.edu"
+i.password = "password"
+i.password_confirmation = "password"
+i.save

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130904135903) do
+ActiveRecord::Schema.define(:version => 20130905181839) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -89,14 +89,13 @@ ActiveRecord::Schema.define(:version => 20130904135903) do
 
   create_table "arms", :force => true do |t|
     t.string   "name"
-    t.integer  "visit_count"
-    t.integer  "service_request_id"
-    t.datetime "created_at",         :null => false
-    t.datetime "updated_at",         :null => false
-    t.integer  "subject_count"
+    t.integer  "visit_count",    :default => 1
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
+    t.integer  "subject_count",  :default => 1
+    t.integer  "protocol_id"
+    t.boolean  "new_with_draft", :default => false
   end
-
-  add_index "arms", ["service_request_id"], :name => "index_arms_on_service_request_id"
 
   create_table "associated_surveys", :force => true do |t|
     t.integer  "surveyable_id"
@@ -601,6 +600,8 @@ ActiveRecord::Schema.define(:version => 20130904135903) do
     t.string   "funding_source_other"
     t.datetime "last_epic_push_time"
     t.string   "last_epic_push_status"
+    t.datetime "start_date"
+    t.datetime "end_date"
   end
 
   add_index "protocols", ["next_ssr_id"], :name => "index_protocols_on_next_ssr_id"
@@ -755,8 +756,6 @@ ActiveRecord::Schema.define(:version => 20130904135903) do
     t.integer  "service_requester_id"
     t.text     "notes"
     t.boolean  "approved"
-    t.datetime "start_date"
-    t.datetime "end_date"
     t.integer  "subject_count"
     t.datetime "consult_arranged_date"
     t.datetime "pppv_complete_date"

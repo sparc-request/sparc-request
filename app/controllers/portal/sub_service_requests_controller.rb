@@ -92,7 +92,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
 
     # we don't have arms and we are adding a new per patient per visit service
     if @service_request.arms.empty? and not service.is_one_time_fee?
-      @service_request.arms.create(name: 'ARM 1', visit_count: 1, subject_count: 1)
+      @service_request.protocol.arms.create(name: 'ARM 1', visit_count: 1, subject_count: 1)
     end
 
     @arm_id = params[:arm_id].to_i if params[:arm_id]
@@ -248,6 +248,29 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     end
 
     redirect_to "/portal/admin"
+  end
+
+  def push_to_epic
+    sub_service_request = SubServiceRequest.find(params[:id])
+    begin
+      sub_service_request.service_request.protocol.push_to_epic(EPIC_INTERFACE)
+
+      respond_to do |format|
+        format.json {
+          render(
+              status: 200,
+              json: {})
+        }
+      end
+    rescue
+      respond_to do |format|
+        format.json {
+          render(
+              status: 500,
+              json: [$!.message])
+        }
+      end
+    end
   end
 
 end

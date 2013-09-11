@@ -14,6 +14,8 @@
           %th= t(:admin_dashboard)[:short_title]
           %th= t(:admin_dashboard)[:export]
           %th= t(:admin_dashboard)[:delete]
+          - if USE_EPIC
+            %th= t(:admin_dashboard)[:epic_interface]
       %tbody
         %tr
           %td= "#{@protocol.id}-#{@sub_service_request.ssr_id}"
@@ -24,6 +26,9 @@
             .export_to_excel_button= link_to t(:admin_dashboard)[:export_link], service_request_path(@sub_service_request.service_request, :format => :xlsx)
           %td
             .delete-ssr-button= link_to t(:admin_dashboard)[:delete_link], "/portal/admin/sub_service_requests/#{@sub_service_request.id}", :method => :delete, :confirm => t(:admin_dashboard)[:delete_confirm]
+          - if USE_EPIC
+            %td
+              .send_to_epic_button{:sub_service_request_id => @sub_service_request.id}= link_to t(:admin_dashboard)[:send_to_epic], 'javascript:void(0)'
 
 .tabs
   %ul

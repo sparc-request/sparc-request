@@ -10,7 +10,7 @@ class CatalogManager::CatalogController < CatalogManager::AppController
     effective_date = params[:effective_date]
     display_date = params[:display_date]    
     entity_id = params[:entity_id]
-    
+
     organization = Organization.find(entity_id)
     services = organization.all_child_services
     @entity = organization
@@ -31,7 +31,7 @@ class CatalogManager::CatalogController < CatalogManager::AppController
     else
       @rsp = "Successfully updated the pricing maps for all of the services under #{@entity.name} except for the following: #{services_not_updated.join(', ')}"
     end
-    
+
   end
   
   def update_rate(pricing_map, rate_type, percentage)

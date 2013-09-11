@@ -103,7 +103,7 @@ describe "subsidy page" do
         subsidy_map = FactoryGirl.create(:subsidy_map, organization_id: program.id, max_dollar_cap: (sub_service_request.direct_cost_total / 200), max_percentage: 50.00)
         program.update_attribute(:subsidy_map, subsidy_map)
 
-        program2 = FactoryGirl.create(:program,type:'Program',parent_id:provider.id,name:'Test',order:1,obisid:'87d1220c5abf9f9608121672be021963',abbreviation:'Informatics',process_ssrs:  0, is_available: 1)
+        program2 = FactoryGirl.create(:program,type:'Program',parent_id:provider.id,name:'Test',order:1,abbreviation:'Informatics',process_ssrs:  0, is_available: 1)
         pricing_setup2 = FactoryGirl.create(:pricing_setup, organization_id: program2.id, display_date: Time.now - 1.day, federal: 50, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal')
         service3 = FactoryGirl.create(:service, organization_id:program2.id, name: 'Per Patient')
         subsidy_map2 = FactoryGirl.create(:subsidy_map, organization_id: program2.id, max_dollar_cap: (sub_service_request.direct_cost_total / 200), max_percentage: 50.00)

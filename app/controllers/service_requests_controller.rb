@@ -49,6 +49,13 @@ class ServiceRequestsController < ApplicationController
 
     @service_request.update_attributes(params[:service_request])
 
+    #### if study/project attributes are available (step 2 arms nested form), update them
+    if params[:study]
+      @service_request.protocol.update_attributes(params[:study])
+    elsif params[:project]
+      @service_request.protocol.update_attributes(params[:project])
+    end
+
     #### save/update documents if we have them
     process_ssr_organization_ids = params[:process_ssr_organization_ids]
     document_grouping_id = params[:document_grouping_id]
@@ -177,12 +184,10 @@ class ServiceRequestsController < ApplicationController
   end
   
   def service_details
+    @service_request.add_or_update_arms
   end
 
   def service_calendar
-    # if @service_request.arms.blank?
-    #   redirect_to "/service_requests/#{@service_request.id}/#{@forward}"
-    # else
     #use session so we know what page to show when tabs are switched
     session[:service_calendar_pages] = params[:pages] if params[:pages]
 
@@ -204,9 +209,6 @@ class ServiceRequestsController < ApplicationController
           if @service_request.status == 'first_draft' or liv.subject_count.nil? or liv.subject_count > arm.subject_count
             liv.update_attribute(:subject_count, arm.subject_count)
           end
-          # if arm.visit_count > liv.visits.count
-          #   liv.create_visits
-          # end
         end
         #Arm.visit_count has benn increased, so create new visit group, and populate the visits
         if arm.visit_count > arm.visit_groups.count
@@ -280,6 +282,10 @@ class ServiceRequestsController < ApplicationController
     @service_request.ensure_ssr_ids
     
     @protocol = @service_request.protocol
+    # As the service request leaves draft, so too do the arms
+    @protocol.arms.each do |arm|
+      arm.update_attributes({:new_with_draft => false})
+    end
     @service_list = @service_request.service_list
 
     send_notifications(@service_request, @sub_service_request)
@@ -293,32 +299,56 @@ class ServiceRequestsController < ApplicationController
     @service_request.ensure_ssr_ids
     
     @protocol = @service_request.protocol
+    # As the service request leaves draft, so too do the arms
+    @protocol.arms.each do |arm|
+      arm.update_attributes({:new_with_draft => false})
+    end
     @service_list = @service_request.service_list
 
     send_notifications(@service_request, @sub_service_request)
- 
-    # Run the push to epic call in a child thread, so that we can return
-    # the confirmation page right away without blocking (in testing, the
-    # push to epic can take as long as 20 seconds).  This call will
-    # write the status to the database, which will later be polled by
-    # the confirmation page.
-    #
-    # TODO: Ideally this would be better off done in another process,
-    # e.g. with delayed_job or resque.  Multithreaded code can be tricky
-    # to get right.  However, there is a bit of extra work involved in
-    # starting a separate job server, and it is not clear how (or if it
-    # is possible) to start the job server automatically.  Threads work
-    # well enough for now.
-    #
-    Thread.new do
-      begin
-        @protocol.push_to_epic(EPIC_INTERFACE)
-      rescue Exception => e
-        Rails.logger.error(e)
-      ensure
-        ActiveRecord::Base.connection.close
+
+    # Send a notification to Lane et al to create users in Epic.  Once
+    # that has been done, one of them will click a link which calls
+    # approve_epic_rights.
+    if USE_EPIC
+      if @protocol.should_push_to_epic?
+        @protocol.awaiting_approval_for_epic_push
+        send_epic_notification_for_user_approval(@service_request)
       end
     end
+
+    render :formats => [:html]
+  end
+
+  def approve_epic_rights
+    @service_request = ServiceRequest.find params[:id]
+    @protocol = @service_request.protocol
+
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    # TODO: check to ensure that this user is one of the users which has
+    # epic user creation rights
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    # Send a notification to the primary PI for final review before
+    # pushing to epic.  The email will contain a link which calls
+    # push_to_epic.
+    @protocol.awaiting_final_review_for_epic_push
+    send_epic_notification_for_final_review(@service_request)
+
+    render :formats => [:html]
+  end
+
+  def push_to_epic
+    @service_request = ServiceRequest.find params[:id]
+    @protocol = @service_request.protocol
+
+    if current_user != @protocol.primary_principal_investigator then
+      raise ArgumentError, "User is not primary PI"
+    end
+
+    # Do the final push to epic in a separate thread.  The page which is
+    # rendered will 
+    push_protocol_to_epic(@protocol)
 
     render :formats => [:html]
   end
@@ -372,15 +402,6 @@ class ServiceRequestsController < ApplicationController
     else
       service = Service.find id
 
-      unless service.is_one_time_fee?
-        if @service_request.arms.empty?
-          @service_request.arms.create(
-              name: 'ARM 1',
-              visit_count: 1,
-              subject_count: 1)
-        end
-      end
-
       @new_line_items = @service_request.create_line_items_for_service(
           service: service,
           optional: true,
@@ -431,13 +452,7 @@ class ServiceRequestsController < ApplicationController
       @service_request.sub_service_requests.find_by_organization_id(org_id).destroy
     end
 
-    # clean up arms
     @service_request.reload
-    @service_request.arms.each do |arm|
-      if arm.line_items_visits.empty?
-        arm.destroy
-      end
-    end
   end
 
   def delete_documents
@@ -543,19 +558,14 @@ class ServiceRequestsController < ApplicationController
 
     send_user_notifications(service_request, xls)
 
-    # send e-mail to admins and service providers
-    if sub_service_request # only notify the submission e-mails for this sub service request
-      send_admin_notifications_for_ssr(sub_service_request, xls)
-    else # notify the submission e-mails for the service request
-      send_admin_notifications(service_request, xls)
+    if sub_service_request then
+      sub_service_requests = [ sub_service_request ]
+    else
+      sub_service_requests = service_request.sub_service_requests
     end
 
-    # send e-mail to all service providers
-    if sub_service_request # only notify the service providers for this sub service request
-      send_service_provider_notifications_for_ssr(sub_service_request, xls)
-    else
-      send_service_provider_notifications(service_request, xls)
-    end
+    send_admin_notifications(sub_service_requests, xls)
+    send_service_provider_notifications(sub_service_requests, xls)
   end
 
   def send_user_notifications(service_request, xls)
@@ -574,28 +584,19 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def send_admin_notifications(service_request, xls)
-    # send e-mail to admins and service providers
-    service_request.sub_service_requests.each do |sub_service_request|
-      send_admin_notifications_for_ssr(sub_service_request, xls)
+  def send_admin_notifications(sub_service_requests, xls)
+    sub_service_requests.each do |sub_service_request|
+      sub_service_request.organization.submission_emails_lookup.each do |submission_email|
+        Notifier.notify_admin(sub_service_request.service_request, submission_email.email, xls).deliver
+      end
     end
   end
 
-  def send_admin_notifications_for_ssr(sub_service_request, xls)
-    sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-      Notifier.notify_admin(sub_service_request.service_request, submission_email.email, xls).deliver
-    end
-  end
-
-  def send_service_provider_notifications(service_request, xls)
-    service_request.sub_service_requests.each do |sub_service_request|
-      send_service_provider_notifications_for_ssr(sub_service_request, xls)
-    end
-  end
-
-  def send_service_provider_notifications_for_ssr(sub_service_request, xls)
-    sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-      send_individual_service_provider_notification(sub_service_request.service_request, sub_service_request, service_provider, xls)
+  def send_service_provider_notifications(sub_service_requests, xls)
+    sub_service_requests.each do |sub_service_request|
+      sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
+        send_individual_service_provider_notification(sub_service_request.service_request, sub_service_request, service_provider, xls)
+      end
     end
   end
 
@@ -611,6 +612,46 @@ class ServiceRequestsController < ApplicationController
     end
 
     Notifier.notify_service_provider(service_provider, service_request, attachments).deliver
+  end
+
+  def send_epic_notification_for_user_approval(service_request)
+    Notifier.notify_for_epic_user_approval(service_request).deliver
+  end
+
+  def send_epic_notification_for_final_review(service_request)
+    Notifier.notify_primary_pi_for_epic_user_final_review(service_request).deliver
+  end
+
+  def push_protocol_to_epic protocol
+    # Run the push to epic call in a child thread, so that we can return
+    # the confirmation page right away without blocking (in testing, the
+    # push to epic can take as long as 20 seconds).  This call will
+    # write the status to the database, which will later be polled by
+    # the confirmation page.
+    #
+    # TODO: Ideally this would be better off done in another process,
+    # e.g. with delayed_job or resque.  Multithreaded code can be tricky
+    # to get right.  However, there is a bit of extra work involved in
+    # starting a separate job server, and it is not clear how (or if it
+    # is possible) to start the job server automatically.  Threads work
+    # well enough for now.
+    #
+    Thread.new do
+      begin
+        # Do the actual push.  This might take a while...
+        protocol.push_to_epic(EPIC_INTERFACE)
+
+      rescue Exception => e
+        # Log any errors, since they will not be caught by the main
+        # thread
+        Rails.logger.error(e)
+
+      ensure
+        # The connection MUST be closed when the thread completes to
+        # avoid leaking the connection.
+        ActiveRecord::Base.connection.close
+      end
+    end
   end
 
 end

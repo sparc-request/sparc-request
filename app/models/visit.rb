@@ -1,5 +1,3 @@
-require "bulk_creatable"
-
 class Visit < ActiveRecord::Base
   audited
 
@@ -8,19 +6,25 @@ class Visit < ActiveRecord::Base
   has_many :appointments, :through => :procedures
   belongs_to :visit_group
 
-  include BulkCreateable
-
   attr_accessible :line_items_visit_id
   attr_accessible :visit_group_id
   attr_accessible :quantity
   attr_accessible :billing
-  attr_accessible :research_billing_qty #qty billed to the study/project
-  attr_accessible :insurance_billing_qty #qty billed to the patients insurance or third party
-  attr_accessible :effort_billing_qty #qty billing to % effort
+  attr_accessible :research_billing_qty  # (R) qty billed to the study/project
+  attr_accessible :insurance_billing_qty # (T) qty billed to the patients insurance or third party
+  attr_accessible :effort_billing_qty    # (%) qty billing to % effort
 
   validates :research_billing_qty, :numericality => {:only_integer => true}
   validates :insurance_billing_qty, :numericality => {:only_integer => true}
   validates :effort_billing_qty, :numericality => {:only_integer => true}
+
+  # Find a Visit for the given "line items visit" and visit group.  This
+  # creates the visit if it does not exist.
+  def self.for(line_items_visit, visit_group)
+    return Visit.find_or_create_by_line_items_visit_id_and_visit_group_id(
+        line_items_visit.id,
+        visit_group.id)
+  end
 
   def cost(per_unit_cost = self.line_items_visit.per_unit_cost(self.line_items_visit.quantity_total))
     li = self.line_items_visit.line_item
@@ -34,7 +38,7 @@ class Visit < ActiveRecord::Base
   end
 
   def quantity_total
-    self.research_billing_qty + self.insurance_billing_qty + self.effort_billing_qty
+    return research_billing_qty.to_i + insurance_billing_qty.to_i + effort_billing_qty.to_i
   end
 
   def position

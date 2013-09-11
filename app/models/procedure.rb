@@ -51,7 +51,7 @@ class Procedure < ActiveRecord::Base
 
   def cost
     if self.service
-      funding_source = self.appointment.calendar.subject.arm.service_request.protocol.funding_source_based_on_status #OHGOD
+      funding_source = self.appointment.calendar.subject.arm.protocol.funding_source_based_on_status #OHGOD
       organization = service.organization
       pricing_map = service.current_pricing_map
       pricing_setup = organization.current_pricing_setup

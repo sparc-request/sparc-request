@@ -137,14 +137,16 @@ $(document).ready ->
     $("#visit_position").attr('disabled', 'disabled')
     $("#delete_visit_position").attr('disabled', 'disabled')
     sr_id = $(this).data('service_request_id')
+    protocol_id = $('#arm_id').data('protocol_id')
     data =
       'sub_service_request_id': $(this).data('sub_service_request_id')
       'service_request_id': sr_id
+      'protocol_id': protocol_id
       'arm_id': $('#arm_id').val()
       'study_tracker': $('#study_tracker_hidden_field').val() || null
     $.ajax
       type: 'GET'
-      url:  "/portal/admin/service_requests/#{sr_id}/change_arm"
+      url:  "/portal/admin/protocols/#{protocol_id}/change_arm"
       data:  data
       success: ->
         $("#visit_position").attr('disabled', false)
@@ -189,15 +191,17 @@ $(document).ready ->
 
   $('#arm-form').submit ->
     sr_id = $('#arm_id').data('service_request_id')
+    protocol_id = $('#arm_id').data('protocol_id')
     data =
       'sub_service_request_id': $('#arm_id').data('sub_service_request_id')
       'service_request_id': sr_id
+      'protocol_id': protocol_id
       'arm_name': $('#arm_name').val()
       'subject_count': $('#subject_count').val()
       'visit_count': $('#visit_count').val()
     $.ajax
       type: 'POST'
-      url:   "/portal/admin/service_requests/#{sr_id}/add_arm"
+      url:   "/portal/admin/protocols/#{protocol_id}/add_arm"
       data:  JSON.stringify(data)
       dataType: 'script'
       contentType: 'application/json; charset=utf-8'
@@ -216,13 +220,15 @@ $(document).ready ->
       alert("You can't delete the last arm while Per-Patient/Per Visit services still exist.")
     else if confirm("Are you sure you want to remove the ARM?")
       sr_id = $(this).data('service_request_id')
+      protocol_id = $('#arm_id').data('protocol_id')
       data =
         'sub_service_request_id': $(this).data('sub_service_request_id')
         'service_request_id': sr_id
+        'protocol_id': protocol_id
         'arm_id': $('#arm_id').val()
       $.ajax
         type: 'POST'
-        url:   "/portal/admin/service_requests/#{sr_id}/remove_arm"
+        url:   "/portal/admin/protocols/#{protocol_id}/remove_arm"
         data:  JSON.stringify(data)
         dataType: 'script'
         contentType: 'application/json; charset=utf-8'
@@ -508,10 +514,31 @@ $(document).ready ->
       type: 'DELETE'
       url:  "/portal/admin/delete_toast_message/#{toast_id}"
 
+  $('.send_to_epic_button').on('click', ->
+    ssr_id = $(this).attr('sub_service_request_id')
+    $(this).button('disable')
+    $.ajax
+      type: 'PUT'
+      url: "/portal/admin/sub_service_requests/#{ssr_id}/push_to_epic"
+      contentType: 'application/json; charset=utf-8'
+      success: ->
+        $().toastmessage('showSuccessToast', "Project/Study has been sent to Epic")
+      error: (jqXHR, textStatus, errorThrown) ->
+        if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'application/json'
+          errors = JSON.parse(jqXHR.responseText)
+        else
+          errors = [textStatus]
+        for error in errors
+          $().toastmessage('showErrorToast', "#{error.humanize()}.");
+      complete: =>
+        $(this).button('enable')
+  )
+
   # INSTANTIATE HELPERS
   # set_percent_subsidy()
   $('.delete-ssr-button').button()
   $('.export_to_excel_button').button()
+  $('.send_to_epic_button').button()
   $('#approval_history_table').tablesorter()
   $('#status_history_table').tablesorter()
 

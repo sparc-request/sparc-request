@@ -23,19 +23,19 @@
                   .clear
                 .clear
                 .arms
-                  = fields_for @service_request do |f|
+                  = fields_for @service_request.protocol do |f|
                     .arm-cell
-                      = text_field_tag :start_date, (@service_request.start_date.strftime('%_m/%d/%Y') rescue nil) # only used for datepicker
+                      = text_field_tag :start_date, (@service_request.protocol.start_date.strftime('%_m/%d/%Y') rescue nil) # only used for datepicker
                       = f.hidden_field :start_date
                     .arm-cell
-                      = text_field_tag :end_date, (@service_request.end_date.strftime('%_m/%d/%Y') rescue nil) #only use for datepicker
+                      = text_field_tag :end_date, (@service_request.protocol.end_date.strftime('%_m/%d/%Y') rescue nil) #only use for datepicker
                       = f.hidden_field :end_date
                       
             - if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
               %div{:style => "height:25px;background-color:#FFFFFF; clear:both;"}
               .arm-info
                 - @x = 0
-                = nested_form_for @service_request, :method => :post do |f|
+                = nested_form_for @service_request.protocol, :method => :post do |f|
                   .arm-header
                     .arm-cell= t(:service_request_details)[:name]
                     .arm-cell= t(:service_request_details)[:number_of_subjects]
@@ -44,10 +44,12 @@
                   .clear
                   .arms
                     = f.fields_for :arms do |arm|
-                      .arm-cell= arm.text_field :name
-                      .arm-cell.skinny_fields= arm.text_field :subject_count
-                      .arm-cell.skinny_fields= arm.text_field :visit_count
-                      .arm-cell{:id => "#{@x+=1}",:style => "padding:5px 0px 5px 0px; width:auto;"}= arm.link_to_remove "Remove Arm", {:class => "ui-state-default ui-corner-top ui-tabs-selected ui-state-active", :style => "padding: 3px 10px"}
+                      - arm.object.new_record? ? unlocked = true : unlocked = arm.object.new_with_draft
+                      = arm.hidden_field :new_with_draft, :value => unlocked
+                      .arm-cell= arm.text_field :name, :disabled => unlocked == false
+                      .arm-cell.skinny_fields= arm.text_field :subject_count, :class => 'arm_subject_count', :'data-subject_count' => arm.object.subject_count, :'data-unlocked' => unlocked
+                      .arm-cell.skinny_fields= arm.text_field :visit_count, :class => 'arm_visit_count', :'data-visit_count' => arm.object.visit_count, :'data-unlocked' => unlocked
+                      .arm-cell{:id => "#{@x+=1}",:style => "padding:5px 0px 5px 0px; width:auto;"}= arm.link_to_remove "Remove Arm", {:class => "ui-state-default ui-corner-top ui-tabs-selected ui-state-active", :style => "padding: 3px 10px"} unless unlocked == false
                       .clear
                     .clear
                   .add-arm= f.link_to_add "Add Arm", :arms, {:class => "ui-state-default ui-corner-top ui-tabs-selected ui-state-active" }

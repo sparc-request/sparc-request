@@ -1,0 +1,23 @@
+%p The following SPARC Request users have requested access to Epic for study ##{@protocol.id} (#{@protocol.short_title.strip}).  To approve the users and rights, please click "Approve."
+
+=render :partial => 'epic_access_rights'
+
+%br
+
+.accept_button= link_to "Send to Primary PI", approve_epic_rights_service_request_url(@service_request)
+
+%br
+
+Thank you! Please contact the SUCCESS Center at 792-8300 or 
+= link_to "success@musc.edu", "mailto:success@musc.edu"
+with any questions.
+
+:scss
+  table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+
+    th, td {
+      padding: 1px 5px;
+    }
+  }

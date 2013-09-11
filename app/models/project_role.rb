@@ -4,11 +4,17 @@ class ProjectRole < ActiveRecord::Base
   belongs_to :protocol
   belongs_to :identity
 
+  has_many :epic_rights, :dependent => :destroy
+
   attr_accessible :protocol_id
   attr_accessible :identity_id
   attr_accessible :project_rights
   attr_accessible :role
   attr_accessible :role_other
+  attr_accessible :epic_access
+  attr_accessible :epic_rights_attributes
+
+  accepts_nested_attributes_for :epic_rights, :allow_destroy => true
 
   validates :role, :presence => true
   validates :project_rights, :presence => true
@@ -94,6 +100,33 @@ class ProjectRole < ActiveRecord::Base
     when "view"    then "View Rights"
     when "request" then "Request/Approve Services"
     when "approve" then "Authorize/Change Study Charges"
+    end
+  end
+
+  def setup_epic_rights is_new=true
+    position = 1
+    EPIC_RIGHTS.each do |right, description|
+      epic_right = epic_rights.detect{|obj| obj.right == right}
+      epic_right = epic_rights.build(:right => right, :new => is_new) unless epic_right
+      epic_right.position = position
+      position += 1
+    end
+    epic_rights.sort!{|a, b| a.position <=> b.position}
+  end
+
+  def populate_for_edit
+    if USE_EPIC
+      setup_epic_rights
+    end
+  end
+
+  def set_epic_rights
+    if USE_EPIC
+      if self.role == 'primary-pi'
+        rights = setup_epic_rights(false)
+        self.epic_access = true
+        self.epic_rights = rights
+      end
     end
   end
 end

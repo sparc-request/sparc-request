@@ -74,3 +74,6 @@ td.text-center {
 .add_service div {
   display:none;
 }
+.appointment_wrapper .ui-widget-header th.hidden_by_tabs {
+  display:none;
+}

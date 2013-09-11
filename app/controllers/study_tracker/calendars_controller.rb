@@ -42,10 +42,12 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
     @subject = calendar.subject
     @appointments = calendar.appointments.includes(:visit_group).sort{|x,y| x.visit_group.position <=> y.visit_group.position }
 
-    @uncompleted_appointments = @appointments.reject{|x| x.completed_at? }
-    @default_appointment = @uncompleted_appointments.first || @appointments.first
     @default_core = (cookies['current_core'] ? Organization.find(cookies['current_core']) : @nursing)
+
+    @uncompleted_appointments = @appointments.reject{|x| x.completed?(@default_core.id) }
+    @default_appointment = @uncompleted_appointments.first || @appointments.first
+
     default_procedures = @default_appointment.procedures.select{|x| x.core == @nursing}
-    @default_subtotal = @default_appointment.completed_at ? default_procedures.sum{|x| x.total} : 0.00
+    @default_subtotal = @default_appointment.completed?(@default_core.id) ? default_procedures.sum{|x| x.total} : 0.00
   end
 end

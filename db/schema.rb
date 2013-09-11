@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130802132736) do
+ActiveRecord::Schema.define(:version => 20130904135903) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -51,9 +51,19 @@ ActiveRecord::Schema.define(:version => 20130802132736) do
   add_index "answers", ["api_id"], :name => "uq_answers_api_id", :unique => true
   add_index "answers", ["question_id"], :name => "index_answers_on_question_id"
 
+  create_table "appointment_completions", :force => true do |t|
+    t.datetime "completed_date"
+    t.integer  "appointment_id"
+    t.integer  "organization_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  add_index "appointment_completions", ["appointment_id"], :name => "index_appointment_completions_on_appointment_id"
+  add_index "appointment_completions", ["organization_id"], :name => "index_appointment_completions_on_organization_id"
+
   create_table "appointments", :force => true do |t|
     t.integer  "calendar_id"
-    t.datetime "completed_at"
     t.datetime "created_at",     :null => false
     t.datetime "updated_at",     :null => false
     t.integer  "visit_group_id"
@@ -237,6 +247,13 @@ ActiveRecord::Schema.define(:version => 20130802132736) do
   add_index "documents", ["document_grouping_id"], :name => "index_documents_on_document_grouping_id"
   add_index "documents", ["sub_service_request_id"], :name => "index_documents_on_sub_service_request_id"
 
+  create_table "epic_rights", :force => true do |t|
+    t.integer  "project_role_id"
+    t.string   "right"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
   create_table "excluded_funding_sources", :force => true do |t|
     t.integer  "subsidy_map_id"
     t.string   "funding_source"
@@ -285,7 +302,6 @@ ActiveRecord::Schema.define(:version => 20130802132736) do
 
   create_table "identities", :force => true do |t|
     t.string   "ldap_uid"
-    t.string   "obisid"
     t.string   "email"
     t.string   "last_name"
     t.string   "first_name"
@@ -319,7 +335,6 @@ ActiveRecord::Schema.define(:version => 20130802132736) do
   add_index "identities", ["email"], :name => "index_identities_on_email"
   add_index "identities", ["last_name"], :name => "index_identities_on_last_name"
   add_index "identities", ["ldap_uid"], :name => "index_identities_on_ldap_uid", :unique => true
-  add_index "identities", ["obisid"], :name => "index_identities_on_obisid", :unique => true
   add_index "identities", ["reset_password_token"], :name => "index_identities_on_reset_password_token", :unique => true
 
   create_table "impact_areas", :force => true do |t|
@@ -433,7 +448,6 @@ ActiveRecord::Schema.define(:version => 20130802132736) do
     t.integer  "order"
     t.string   "css_class"
     t.text     "description"
-    t.string   "obisid"
     t.integer  "parent_id"
     t.string   "abbreviation"
     t.text     "ack_language"
@@ -445,7 +459,6 @@ ActiveRecord::Schema.define(:version => 20130802132736) do
   end
 
   add_index "organizations", ["is_available"], :name => "index_organizations_on_is_available"
-  add_index "organizations", ["obisid"], :name => "index_organizations_on_obisid"
   add_index "organizations", ["parent_id"], :name => "index_organizations_on_parent_id"
 
   create_table "past_statuses", :force => true do |t|
@@ -550,10 +563,11 @@ ActiveRecord::Schema.define(:version => 20130802132736) do
     t.integer  "identity_id"
     t.string   "project_rights"
     t.string   "role"
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
     t.datetime "deleted_at"
     t.string   "role_other"
+    t.boolean  "epic_access",    :default => false
   end
 
   add_index "project_roles", ["identity_id"], :name => "index_project_roles_on_identity_id"
@@ -561,7 +575,6 @@ ActiveRecord::Schema.define(:version => 20130802132736) do
 
   create_table "protocols", :force => true do |t|
     t.string   "type"
-    t.string   "obisid"
     t.integer  "next_ssr_id"
     t.string   "short_title"
     t.text     "title"
@@ -591,7 +604,6 @@ ActiveRecord::Schema.define(:version => 20130802132736) do
   end
 
   add_index "protocols", ["next_ssr_id"], :name => "index_protocols_on_next_ssr_id"
-  add_index "protocols", ["obisid"], :name => "index_protocols_on_obisid"
 
   create_table "question_groups", :force => true do |t|
     t.text     "text"
@@ -739,7 +751,6 @@ ActiveRecord::Schema.define(:version => 20130802132736) do
 
   create_table "service_requests", :force => true do |t|
     t.integer  "protocol_id"
-    t.string   "obisid"
     t.string   "status"
     t.integer  "service_requester_id"
     t.text     "notes"
@@ -757,13 +768,11 @@ ActiveRecord::Schema.define(:version => 20130802132736) do
     t.datetime "deleted_at"
   end
 
-  add_index "service_requests", ["obisid"], :name => "index_service_requests_on_obisid"
   add_index "service_requests", ["protocol_id"], :name => "index_service_requests_on_protocol_id"
   add_index "service_requests", ["service_requester_id"], :name => "index_service_requests_on_service_requester_id"
   add_index "service_requests", ["status"], :name => "index_service_requests_on_status"
 
   create_table "services", :force => true do |t|
-    t.string   "obisid"
     t.string   "name"
     t.string   "abbreviation"
     t.integer  "order"
@@ -774,13 +783,14 @@ ActiveRecord::Schema.define(:version => 20130802132736) do
     t.string   "charge_code"
     t.string   "revenue_code"
     t.integer  "organization_id"
-    t.datetime "created_at",                                         :null => false
-    t.datetime "updated_at",                                         :null => false
+    t.datetime "created_at",                                                            :null => false
+    t.datetime "updated_at",                                                            :null => false
     t.datetime "deleted_at"
+    t.string   "cdm_code"
+    t.boolean  "send_to_epic",                                       :default => false
   end
 
   add_index "services", ["is_available"], :name => "index_services_on_is_available"
-  add_index "services", ["obisid"], :name => "index_services_on_obisid"
   add_index "services", ["organization_id"], :name => "index_services_on_organization_id"
 
   create_table "sessions", :force => true do |t|

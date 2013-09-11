@@ -37,7 +37,9 @@
             %thead
               %tr.ui-widget-header
                 %th{:colspan => "4"} Date of Visit (entering date signifies a completed visit)
-                %th{:colspan => "2", :style => "text-align:center;"}= appointment_form.datepicker :completed_at, size: 18, dateFormat: "yy-mm-dd"
+                = appointment_form.fields_for :appointment_completions do |ac_form|
+                  %th{:colspan => "2", :class => "core_#{ac_form.object.organization.id} hidden_by_tabs", :style => ac_form.object.organization == @default_core ? "display:table-cell;" : ""}
+                    = ac_form.datepicker :formatted_completed_date, size: 18, dateFormat: "m/dd/yy"
               %tr.ui-widget-header
                 %th Procedure
                 %th Completed
@@ -50,16 +52,13 @@
                 - if procedure_form.object.should_be_displayed
                   %tr.fields{:style => "background-color:#C0C0C0;#{procedure_form.object.core.id == @default_core.id ? 'display:table-row;' : 'display:none;'}", :class => "core_#{procedure_form.object.core.id} hidden_by_tabs"}
                     %td= procedure_form.object.display_service_name
-                    - if procedure_form.object.should_be_checked?
-                      %td.check_box_cell.text-center{:class => procedure_form.object.line_item ? "highlighted" : ''}= procedure_form.check_box :completed, :checked => true, :class => "procedure_box"
-                    -else
-                      %td.check_box_cell.text-center{:class => procedure_form.object.line_item ? "highlighted" : ''}= procedure_form.check_box :completed, :class => "procedure_box"
+                    %td.check_box_cell.text-center{:class => procedure_form.object.line_item ? "highlighted" : ''}= procedure_form.check_box :completed, :class => "procedure_box"
                     %td.r_qty_cell.text-center= procedure_form.text_field :r_quantity, value: procedure_form.object.default_r_quantity, size: 5, :class => 'procedure_r_qty'
                     %td.t_qty_cell.text-center= procedure_form.text_field :t_quantity, value: procedure_form.object.default_t_quantity, size: 5, :class => 'procedure_t_qty'
                     %td.unit_cost_cell.text-center= number_to_currency(procedure_form.object.cost)
                     %td.procedure_total_cell.text-center= number_to_currency(procedure_form.object.total)
                 - else
-                  %tr.fields{:style => "display:false;"}
+                  %tr.fields{:style => "display:none;"}
               %tr.new_procedure_wrapper{'data-appointment_index' => appointment_index}
               %tr.grand_total_row
                 %td{:style => "font-weight:bold;"} Grand Total

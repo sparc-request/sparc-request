@@ -275,9 +275,10 @@ class EpicInterface
 
               xml.effectiveTime {
                 # TODO: what to do if start_date or end_date is null?
-                # TODO: Need to change this to study.start/end_date
-                xml.low(value: study.service_requests.minimum(:start_date).strftime("%Y%m%d"))
-                xml.high(value: study.service_requests.maximum(:end_date).strftime("%Y%m%d"))
+                first_day = arm.visit_groups.first.day rescue 0
+                last_day = arm.visit_groups.last.day rescue 0
+                xml.low(value: relative_date(first_day, study.start_date))
+                xml.high(value: relative_date(last_day, study.end_date))
               }
 
               arm.visit_groups.each do |visit_group|
@@ -379,7 +380,7 @@ class EpicInterface
 
   def emit_encounter(xml, study, arm, visit_group)
     # TODO: Need to change this to study.start_date
-    epoch = study.service_requests.minimum(:start_date)
+    epoch = study.start_date
 
     xml.component2(typeCode: 'COMP') {
       xml.encounter(classCode: 'ENC', moodCode: 'DEF') {
@@ -407,7 +408,7 @@ class EpicInterface
   #
   # The day passed in here is assumed to be 1-based.
   def relative_date(day, epoch)
-    date = epoch + day.days - 1.days
+    date = epoch + day.days
     return date.strftime("%Y%m%d")
   end
 end

@@ -203,6 +203,17 @@ class Protocol < ActiveRecord::Base
     save(validate: false)
   end
 
+  def has_epic_users
+    unless self.project_roles.detect { |pr| pr.epic_access }
+      self.last_epic_push_time = nil
+      self.last_epic_push_status = 'no_users'
+      save(validate: false)
+      return false
+    end
+
+    return true
+  end
+
   # Returns true if there is a push to epic in progress, false
   # otherwise.  If no push has been initiated, return false.
   def push_to_epic_in_progress?

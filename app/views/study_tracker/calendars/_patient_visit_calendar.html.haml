@@ -19,9 +19,9 @@
   #controls
     %p Please select a visit:
     = select_tag :visit, options_for_select(appointment_visits(@appointments), selected_key = "##{@default_appointment.visit_group.position}: #{@default_appointment.visit_group.name}"), :class => 'clinical_select_data'
-  %p= link_to "Dashboard", 'javascript:void(0);', :class => "ui-button ui-state-default ui-button-text-only dashboard_link", :style => "padding:0.45em 1em;font-size:1.2em;"
+  %p= link_to "-- Show Dashboard --", 'javascript:void(0);', :class => "ui-state-active dashboard_link"
   #dashboard{:style => "display:none;"}
-    %table.study_tracker_table{:style => "width:940px;"}
+    %table.study_tracker_table{:style => "width:880px;"}
       %thead.left_headers
         %tr.ui-widget-header
           %th Completed Visits
@@ -31,72 +31,73 @@
           %th Subject Total
           %th
 
-  = f.fields_for :calendar do |calendar_form|
-    .cwf_tabs.ui-tabs.ui-widget.ui-widget-content.ui-corner-all
-      %ul.ui-tabs-nav.ui-helper-reset.ui-helper-clearfix.ui-widget-header.ui-corner-all
-        %li.ui-state-default.ui-corner-top{:class=> @nursing == @default_core ? 'ui-state-active' : ''}= link_to "Nursing", "#nursing", :class => "clinical_tab_data", :id => "core_#{@nursing.id}", 'data-has_access' => @user.can_edit_core?(@nursing.id) ? true : false
-        %li.ui-state-default.ui-corner-top{:class=> @lab == @default_core ? 'ui-state-active' : ''}= link_to "Laboratory", "#laboratory", :class => "clinical_tab_data", :id => "core_#{@lab.id}", 'data-has_access' => @user.can_edit_core?(@lab.id) ? true : false
-        %li.ui-state-default.ui-corner-top{:class=> @imaging == @default_core ? 'ui-state-active' : ''}= link_to "Imaging", "#imaging", :class => "clinical_tab_data", :id => "core_#{@imaging.id}", 'data-has_access' => @user.can_edit_core?(@imaging.id) ? true : false
-        %li.ui-state-default.ui-corner-top{:class=> @nutrition == @default_core ? 'ui-state-active' : ''}= link_to "Nutrition", "#nutrition", :class => "clinical_tab_data", :id => "core_#{@nutrition.id}", 'data-has_access' => @user.can_edit_core?(@nutrition.id) ? true : false
+  %div{:style => "margin: 25px 0px;"}
+    = f.fields_for :calendar do |calendar_form|
+      .cwf_tabs.ui-tabs.ui-widget.ui-widget-content.ui-corner-all
+        %ul.ui-tabs-nav.ui-helper-reset.ui-helper-clearfix.ui-widget-header.ui-corner-all
+          %li.ui-state-default.ui-corner-top{:class=> @nursing == @default_core ? 'ui-state-active' : ''}= link_to "Nursing", "#nursing", :class => "clinical_tab_data", :id => "core_#{@nursing.id}", 'data-has_access' => @user.can_edit_core?(@nursing.id) ? true : false
+          %li.ui-state-default.ui-corner-top{:class=> @lab == @default_core ? 'ui-state-active' : ''}= link_to "Laboratory", "#laboratory", :class => "clinical_tab_data", :id => "core_#{@lab.id}", 'data-has_access' => @user.can_edit_core?(@lab.id) ? true : false
+          %li.ui-state-default.ui-corner-top{:class=> @imaging == @default_core ? 'ui-state-active' : ''}= link_to "Imaging", "#imaging", :class => "clinical_tab_data", :id => "core_#{@imaging.id}", 'data-has_access' => @user.can_edit_core?(@imaging.id) ? true : false
+          %li.ui-state-default.ui-corner-top{:class=> @nutrition == @default_core ? 'ui-state-active' : ''}= link_to "Nutrition", "#nutrition", :class => "clinical_tab_data", :id => "core_#{@nutrition.id}", 'data-has_access' => @user.can_edit_core?(@nutrition.id) ? true : false
 
-    #visit_form{:style => "padding: 10px 40px;"}
-      - appointment_index = -1
-      = calendar_form.fields_for :appointments do |appointment_form|
-        - appointment_index += 1
-        .appointment_wrapper{:style => appointment_form.object == @default_appointment ? "display:block;" : "display:none;", 'data-appointment_table' => appointment_form.object.id}
-          %table.study_tracker_table
-            %thead
-              %tr.ui-widget-header
-                %th{:colspan => "4"} Date of Visit (entering date signifies a completed visit)
-                = appointment_form.fields_for :appointment_completions do |ac_form|
-                  %th{:colspan => "2", :class => "core_#{ac_form.object.organization.id} hidden_by_tabs", :style => ac_form.object.organization == @default_core ? "display:table-cell;" : ""}
-                    = ac_form.datepicker :formatted_completed_date, size: 18, dateFormat: "m/dd/yy"
-              %tr.ui-widget-header
-                %th Procedure
-                %th Completed
-                %th R Quantity
-                %th T Quantity
-                %th Unit Cost
-                %th Total
-            %tbody
-              = appointment_form.fields_for :procedures, :wrapper => false do |procedure_form|
-                - if procedure_form.object.should_be_displayed
-                  %tr.fields{:style => "background-color:#C0C0C0;#{procedure_form.object.core.id == @default_core.id ? 'display:table-row;' : 'display:none;'}", :class => "core_#{procedure_form.object.core.id} hidden_by_tabs"}
-                    %td= procedure_form.object.display_service_name
-                    %td.check_box_cell.text-center{:class => procedure_form.object.line_item ? "highlighted" : ''}= procedure_form.check_box :completed, :class => "procedure_box"
-                    %td.r_qty_cell.text-center= procedure_form.text_field :r_quantity, value: procedure_form.object.default_r_quantity, size: 5, :class => 'procedure_r_qty'
-                    %td.t_qty_cell.text-center= procedure_form.text_field :t_quantity, value: procedure_form.object.default_t_quantity, size: 5, :class => 'procedure_t_qty'
-                    %td.unit_cost_cell.text-center= number_to_currency(procedure_form.object.cost)
-                    %td.procedure_total_cell.text-center= number_to_currency(procedure_form.object.total)
-                - else
-                  %tr.fields{:style => "display:false;"}
-              %tr.new_procedure_wrapper{:'data-appointment_index' => appointment_index}
-              %tr.grand_total_row
-                %td{:style => "font-weight:bold;"} Grand Total
-                %td
-                %td
-                %td
-                %td
-                %td.grand_total_cell.text-center= number_to_currency(@default_subtotal)
-          .add_service
-            %div{:class => "core_#{@nursing.id} hidden_by_tabs", :style => @nursing == @default_core ? "display:block;" : ""}
-              = select_tag :service, options_for_select(@nursing.services.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
-              = button_tag "Add Service", :class => 'cwf_add_service_button'
-            %div{:class => "core_#{@lab.id} hidden_by_tabs", :style => @lab == @default_core ? "display:block;" : ""}
-              = select_tag :service, options_for_select(@lab.services.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
-              = button_tag "Add Service", :class => 'cwf_add_service_button'
-            %div{:class => "core_#{@imaging.id} hidden_by_tabs", :style => @imaging == @default_core ? "display:block;" : ""}
-              = select_tag :service, options_for_select(@imaging.services.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
-              = button_tag "Add Service", :class => 'cwf_add_service_button'
-            %div{:class => "core_#{@nutrition.id} hidden_by_tabs", :style => @nutrition == @default_core ? "display:block;" : ""}
-              = select_tag :service, options_for_select(@nutrition.services.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
-              = button_tag "Add Service", :class => 'cwf_add_service_button'
-          .comments
-            = render :partial => "notes", :locals => {:appointment => appointment_form.object}
+      #visit_form{:style => "padding: 10px 40px;"}
+        - appointment_index = -1
+        = calendar_form.fields_for :appointments do |appointment_form|
+          - appointment_index += 1
+          .appointment_wrapper{:style => appointment_form.object == @default_appointment ? "display:block;" : "display:none;", 'data-appointment_table' => appointment_form.object.id}
+            %table.study_tracker_table
+              %thead
+                %tr.ui-widget-header
+                  %th{:colspan => "4"} Date of Visit (entering date signifies a completed visit)
+                  = appointment_form.fields_for :appointment_completions do |ac_form|
+                    %th{:colspan => "2", :class => "core_#{ac_form.object.organization.id} hidden_by_tabs", :style => ac_form.object.organization == @default_core ? "display:table-cell;" : ""}
+                      = ac_form.datepicker :formatted_completed_date, size: 18, dateFormat: "m/dd/yy"
+                %tr.ui-widget-header
+                  %th Procedure
+                  %th Completed
+                  %th R Quantity
+                  %th T Quantity
+                  %th Unit Cost
+                  %th Total
+              %tbody
+                = appointment_form.fields_for :procedures, :wrapper => false do |procedure_form|
+                  - if procedure_form.object.should_be_displayed
+                    %tr.fields{:style => "background-color:#C0C0C0;#{procedure_form.object.core.id == @default_core.id ? 'display:table-row;' : 'display:none;'}", :class => "core_#{procedure_form.object.core.id} hidden_by_tabs"}
+                      %td= procedure_form.object.display_service_name
+                      %td.check_box_cell.text-center{:class => procedure_form.object.line_item ? "highlighted" : ''}= procedure_form.check_box :completed, :class => "procedure_box"
+                      %td.r_qty_cell.text-center= procedure_form.text_field :r_quantity, value: procedure_form.object.default_r_quantity, size: 5, :class => 'procedure_r_qty'
+                      %td.t_qty_cell.text-center= procedure_form.text_field :t_quantity, value: procedure_form.object.default_t_quantity, size: 5, :class => 'procedure_t_qty'
+                      %td.unit_cost_cell.text-center= number_to_currency(procedure_form.object.cost)
+                      %td.procedure_total_cell.text-center= number_to_currency(procedure_form.object.total)
+                  - else
+                    %tr.fields{:style => "display:false;"}
+                %tr.new_procedure_wrapper{:'data-appointment_index' => appointment_index}
+                %tr.grand_total_row
+                  %td{:style => "font-weight:bold;"} Grand Total
+                  %td
+                  %td
+                  %td
+                  %td
+                  %td.grand_total_cell.text-center= number_to_currency(@default_subtotal)
+            .add_service
+              %div{:class => "core_#{@nursing.id} hidden_by_tabs", :style => @nursing == @default_core ? "display:block;" : ""}
+                = select_tag :service, options_for_select(@nursing.services.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
+                = button_tag "Add Service", :class => 'cwf_add_service_button'
+              %div{:class => "core_#{@lab.id} hidden_by_tabs", :style => @lab == @default_core ? "display:block;" : ""}
+                = select_tag :service, options_for_select(@lab.services.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
+                = button_tag "Add Service", :class => 'cwf_add_service_button'
+              %div{:class => "core_#{@imaging.id} hidden_by_tabs", :style => @imaging == @default_core ? "display:block;" : ""}
+                = select_tag :service, options_for_select(@imaging.services.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
+                = button_tag "Add Service", :class => 'cwf_add_service_button'
+              %div{:class => "core_#{@nutrition.id} hidden_by_tabs", :style => @nutrition == @default_core ? "display:block;" : ""}
+                = select_tag :service, options_for_select(@nutrition.services.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
+                = button_tag "Add Service", :class => 'cwf_add_service_button'
+            .comments
+              = render :partial => "notes", :locals => {:appointment => appointment_form.object}
 
-      .spinner_wrapper
+        .spinner_wrapper
 
-        = image_tag 'spinner.gif'
+          = image_tag 'spinner.gif'
   %p{:style => "text-align:center; margin-bottom:12px;"}= f.submit "Save Appointments", :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;font-size:1.2em;"
   %p#save_alert{:style => "text-align:center; margin-bottom:12px; display:none; color:red; font-weight:bold;"} You must save this form for any changes to be commited.
   %p{:style => "text-align:center; margin-bottom:12px;"}= link_to "Return to Clinical Work Fulfillment", study_tracker_sub_service_request_path(@sub_service_request), :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;font-size:1.2em;"

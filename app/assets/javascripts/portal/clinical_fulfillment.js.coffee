@@ -52,6 +52,10 @@ $(document).ready ->
     $('#save_alert').show()
   )
 
+  $(document).on('click', '.dashboard_link', ->
+    $('#dashboard').slideToggle()
+  )
+
   $(document).on('click', '.cwf_add_service_button', ->
     $('#visit_form .spinner_wrapper').show()
     box = $(this).siblings('select')

@@ -21,7 +21,6 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
   def add_service
     appointment = Appointment.find(params[:appointment_id])
     @procedure = appointment.procedures.new(:service_id => params[:service_id])
-
     render :partial => 'new_procedure', :locals => {:appointment_index => params[:appointment_index], :procedure_index => params[:procedure_index]}
   end
 
@@ -42,9 +41,11 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
     @subject = calendar.subject
     @appointments = calendar.appointments.includes(:visit_group).sort{|x,y| x.visit_group.position <=> y.visit_group.position }
 
+    
     @default_core = (cookies['current_core'] ? Organization.find(cookies['current_core']) : @nursing)
 
     @uncompleted_appointments = @appointments.reject{|x| x.completed?(@default_core.id) }
+    @completed_appointments = @appointments.select{|x| x.completed?(@default_core.id) }
     @default_appointment = @uncompleted_appointments.first || @appointments.first
 
     default_procedures = @default_appointment.procedures.select{|x| x.core == @nursing}

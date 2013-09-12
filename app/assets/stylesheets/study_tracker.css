@@ -77,3 +77,8 @@ td.text-center {
 .appointment_wrapper .ui-widget-header th.hidden_by_tabs {
   display:none;
 }
+
+.dashboard_link {
+  margin: 15px 0px 15px 15px;
+  font-size:1.2em;
+}

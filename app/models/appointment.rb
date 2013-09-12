@@ -44,10 +44,10 @@ class Appointment < ActiveRecord::Base
 
   def create_appointment_completions
     cores = []
-    cores << nutrition = Organization.tagged_with("nutrition").first
-    cores << nursing   = Organization.tagged_with("nursing").first
-    cores << lab       = Organization.tagged_with("laboratory").first
-    cores << imaging   = Organization.tagged_with("imaging").first
+    cores << Organization.tagged_with("nutrition").first
+    cores << Organization.tagged_with("nursing").first
+    cores << Organization.tagged_with("laboratory").first
+    cores << Organization.tagged_with("imaging").first
 
     cores.each do |core|
       self.appointment_completions.create(:organization_id => core.id)

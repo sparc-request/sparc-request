@@ -51,9 +51,19 @@ ActiveRecord::Schema.define(:version => 20130905181839) do
   add_index "answers", ["api_id"], :name => "uq_answers_api_id", :unique => true
   add_index "answers", ["question_id"], :name => "index_answers_on_question_id"
 
+  create_table "appointment_completions", :force => true do |t|
+    t.datetime "completed_date"
+    t.integer  "appointment_id"
+    t.integer  "organization_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  add_index "appointment_completions", ["appointment_id"], :name => "index_appointment_completions_on_appointment_id"
+  add_index "appointment_completions", ["organization_id"], :name => "index_appointment_completions_on_organization_id"
+
   create_table "appointments", :force => true do |t|
     t.integer  "calendar_id"
-    t.datetime "completed_at"
     t.datetime "created_at",     :null => false
     t.datetime "updated_at",     :null => false
     t.integer  "visit_group_id"

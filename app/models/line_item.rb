@@ -176,7 +176,7 @@ class LineItem < ActiveRecord::Base
   def remove_procedures
     procedures = self.procedures
     procedures.each do |pro|
-      if pro.has_been_completed
+      if pro.completed?
         pro.update_attributes(service_id: self.service_id, line_item_id: nil, visit_id: nil)
       else
         pro.destroy

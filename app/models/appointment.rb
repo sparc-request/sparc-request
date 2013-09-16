@@ -4,7 +4,7 @@ class Appointment < ActiveRecord::Base
   belongs_to :calendar
   belongs_to :visit_group
   belongs_to :service
-  has_many :procedures
+  has_many :procedures, :dependent => :destroy
   has_many :visits, :through => :procedures
   has_many :notes
   has_many :appointment_completions, :dependent => :destroy

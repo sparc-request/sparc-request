@@ -1,4 +1,6 @@
 class AssociatedSurvey < ActiveRecord::Base
+  audited
+
   belongs_to :surveyable, :polymorphic => true
   belongs_to :survey
   

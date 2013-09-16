@@ -49,7 +49,7 @@ $(document).ready ->
   )
 
   $(document).on('change', 'form.edit_subject', ->
-    $('#save_alert').show()
+    $('.save_alert').show()
   )
 
   $(document).on('click', '.dashboard_link', ->

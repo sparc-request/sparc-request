@@ -39,7 +39,11 @@
 
   %br
   #service_calendar_container
-    -@service_requests.each do |service_request|
-      - service_request.arms.each do |arm|
+    / -@service_requests.each do |service_request|
+    /   - service_request.arms.each do |arm|
+    /     - next if arm.visit_groups.empty?
+    /     = render :partial => 'portal/protocols/calendar', :locals => {:arm => arm, :service_request => service_request}
+    - @protocol.arms.each do |arm|
+      .arm_calendar_container{:'data-arm_id' => arm.id}
         - next if arm.visit_groups.empty?
-        = render :partial => 'portal/protocols/calendar', :locals => {:arm => arm, :service_request => service_request}
+        = render :partial => '/service_calendars/merged_calendar_data', :locals => {:tab => 'pricing', :arm => arm, :service_request => @service_request}

@@ -1,13 +1,16 @@
 require 'spec_helper'
 
 describe ServiceCalendarsController do
-  stub_controller
-
+  
   let_there_be_lane
+  fake_login_for_each_test
   let_there_be_j
   build_service_request_with_project
-
+  stub_controller
+  stub_portal_controller
+  
   before(:each) do
+    session[:identity_id] = jug2
     add_visits
   end
 

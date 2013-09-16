@@ -133,7 +133,7 @@ describe "visit schedule", :js => true do
 
     context "completing an appointment" do
 
-      it "should complete the appointment do" do
+      it "should complete the appointment" do
         click_on "Nutrition"
       end
     end

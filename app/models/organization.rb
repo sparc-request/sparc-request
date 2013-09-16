@@ -108,7 +108,7 @@ class Organization < ActiveRecord::Base
     all_services = []
     self.all_children.each do |child|
       if child.services
-        all_services = all_services | child.services
+        all_services = all_services | child.services.sort_by{|x| x.name}
       end
     end
 

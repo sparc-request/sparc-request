@@ -1,7 +1,7 @@
 module Portal::SubServiceRequestsHelper
 
   def candidate_service_options(services, include_cpt=false)
-    services.sort_by{|x| x.name}.map do |service|
+    services.map do |service|
       n = include_cpt ? service.display_service_name : service.name
       [n, service.id]
     end

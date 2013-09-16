@@ -45,6 +45,7 @@ SparcRails::Application.routes.draw do
     resource :service_calendars do
       member do
         get 'table'
+        get 'merged_calendar'
       end
       collection do
         put 'rename_visit'

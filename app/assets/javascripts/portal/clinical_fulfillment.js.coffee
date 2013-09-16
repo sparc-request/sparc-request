@@ -1,6 +1,5 @@
 $(document).ready ->
 
-
   ####Triggers:
   $(document).on('change', '.clinical_select_data', ->
     $('#visit_form .spinner_wrapper').show()
@@ -26,7 +25,10 @@ $(document).ready ->
       if clicked.attr('data-has_access') == "false"
         $("." + core_name).find('input').prop('disabled', true)
 
-      $("." + core_name).css("display", "table-row")
+      $("tr." + core_name).css("display", "table-row")
+      $("th." + core_name).css("display", "table-cell")
+      $("div." + core_name).css("display", "block")
+
       $('#visit_form .spinner_wrapper').hide()
       recalc_subtotal()
     ), 250)
@@ -48,6 +50,17 @@ $(document).ready ->
 
   $(document).on('change', 'form.edit_subject', ->
     $('#save_alert').show()
+  )
+
+  $(document).on('click', '.dashboard_link', ->
+    if $(this).hasClass('active')
+      $(this).removeClass('active')
+      $(this).text("-- Show Dashboard --")
+    else
+      $(this).addClass('active')
+      $(this).text("-- Hide Dashboard --")
+
+    $('#dashboard').slideToggle()
   )
 
   $(document).on('click', '.cwf_add_service_button', ->

@@ -2,6 +2,7 @@ class ServiceCalendarsController < ApplicationController
   before_filter :initialize_service_request
   before_filter {|c| params[:portal] == 'true' ? true : c.send(:authorize_identity)}
   layout false
+
   def table
     #use session so we know what page to show when tabs are switched
     arm_id = params[:arm_id] if params[:arm_id]
@@ -114,6 +115,23 @@ class ServiceCalendarsController < ApplicationController
       respond_to do |format|
         format.js { render :status => 418, :json => clean_messages(arm.errors.messages) }
       end
+    end
+  end
+
+  def merged_calendar
+    arm_id = params[:arm_id] if params[:arm_id]
+    @arm = Arm.find arm_id if arm_id
+    page = params[:page] if params[:page]
+    session[:service_calendar_pages] = params[:pages] if params[:pages]
+    session[:service_calendar_pages][arm_id] = page if page && arm_id
+    @tab = params[:tab]
+    @portal = params[:portal]
+    @study_tracker = params[:study_tracker] == "true"
+    @pages = {}
+    @protocol = @service_request.protocol
+    @protocol.arms.each do |arm|
+      new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
+      @pages[arm.id] = @service_request.set_visit_page new_page, arm
     end
   end
 end

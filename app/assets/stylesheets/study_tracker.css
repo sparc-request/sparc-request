@@ -79,6 +79,31 @@ td.text-center {
 }
 
 .dashboard_link {
-  margin: 15px 0px 15px 15px;
-  font-size:1.2em;
+  margin: 15px auto 0px;
+  border-radius: 5px;
+  padding: 2px;
+  width:900px;
+  display:block;
+  text-align:center;
+  font-size:1.6em;"
 }
+
+#patient_visit_calendar #dashboard_container {
+  position:relative;
+}
+#patient_visit_calendar div#dashboard {
+  width: 880px;
+  border: 1px solid #A6C9E2;
+  border-top: 0px;
+  padding: 5px;
+  position: absolute;
+  background-color: white;
+  z-index: 10;
+  left: 25px;
+}
+
+#dashboard td {
+  padding: 6px 8px;
+  background-color: #C0C0C0;
+}
+

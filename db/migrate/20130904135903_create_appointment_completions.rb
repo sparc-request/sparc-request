@@ -12,5 +12,10 @@ class CreateAppointmentCompletions < ActiveRecord::Migration
 
     add_index :appointment_completions, :appointment_id
     add_index :appointment_completions, :organization_id
+
+    Appointment.all.each do |app|
+      app.create_appointment_completions
+    end
+    
   end
 end

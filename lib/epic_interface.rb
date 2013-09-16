@@ -278,7 +278,7 @@ class EpicInterface
                 first_day = arm.visit_groups.first.day rescue 0
                 last_day = arm.visit_groups.last.day rescue 0
                 xml.low(value: relative_date(first_day, study.start_date))
-                xml.high(value: relative_date(last_day, study.end_date))
+                xml.high(value: relative_date(last_day, study.start_date))
               }
 
               arm.visit_groups.each do |visit_group|

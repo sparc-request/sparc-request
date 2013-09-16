@@ -413,8 +413,8 @@ describe EpicInterface do
                       <title>Cycle 1</title>
                       <code code="CYCLE" codeSystem="n/a" />
                       <effectiveTime>
-                        <low value="#{study.start_date.strftime('%Y%m%d')}" />
-                        <high value="#{study.end_date.strftime('%Y%m%d')}" />
+                        <low value="#{epic_interface.relative_date(0, study.start_date)}"/>
+                        <high value="#{epic_interface.relative_date(0, study.start_date)}"/>
                       </effectiveTime>
                     </timePointEventDefinition>
                   </component1>
@@ -482,8 +482,8 @@ describe EpicInterface do
                       <title>Cycle 1</title>
                       <code code="CYCLE" codeSystem="n/a" />
                       <effectiveTime>
-                        <low value="#{study.start_date.strftime('%Y%m%d')}" />
-                        <high value="#{study.end_date.strftime('%Y%m%d')}" />
+                        <low value="#{epic_interface.relative_date(0, study.start_date)}"/>
+                        <high value="#{epic_interface.relative_date(0, study.start_date)}"/>
                       </effectiveTime>
                     </timePointEventDefinition>
                   </component1>
@@ -504,8 +504,8 @@ describe EpicInterface do
                       <title>Cycle 1</title>
                       <code code="CYCLE" codeSystem="n/a" />
                       <effectiveTime>
-                        <low value="#{study.start_date.strftime('%Y%m%d')}" />
-                        <high value="#{study.end_date.strftime('%Y%m%d')}" />
+                        <low value="#{epic_interface.relative_date(0, study.start_date)}"/>
+                        <high value="#{epic_interface.relative_date(0, study.start_date)}"/>
                       </effectiveTime>
                     </timePointEventDefinition>
                   </component1>
@@ -644,7 +644,7 @@ describe EpicInterface do
                          <code code="CYCLE" codeSystem="n/a"/>
                          <effectiveTime>
                            <low value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
-                           <high value="#{epic_interface.relative_date(visit_group.day, study.end_date)}"/>
+                           <high value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
                          </effectiveTime>
                          <component1 typeCode="COMP">
                            <sequenceNumber value="1"/>
@@ -733,7 +733,7 @@ describe EpicInterface do
                          <code code="CYCLE" codeSystem="n/a"/>
                          <effectiveTime>
                            <low value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
-                           <high value="#{epic_interface.relative_date(visit_group.day, study.end_date)}"/>
+                           <high value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
                          </effectiveTime>
                          <component1 typeCode="COMP">
                            <sequenceNumber value="1"/>
@@ -824,7 +824,7 @@ describe EpicInterface do
                          <code code="CYCLE" codeSystem="n/a"/>
                          <effectiveTime>
                            <low value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
-                           <high value="#{epic_interface.relative_date(visit_group.day, study.end_date)}"/>
+                           <high value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
                          </effectiveTime>
                          <component1 typeCode="COMP">
                            <sequenceNumber value="1"/>
@@ -912,7 +912,7 @@ describe EpicInterface do
                          <code code="CYCLE" codeSystem="n/a"/>
                          <effectiveTime>
                            <low value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
-                           <high value="#{epic_interface.relative_date(visit_group.day, study.end_date)}"/>
+                           <high value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
                          </effectiveTime>
                          <component1 typeCode="COMP">
                            <sequenceNumber value="1"/>

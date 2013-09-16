@@ -2,7 +2,7 @@ class Calendar < ActiveRecord::Base
   audited
 
   belongs_to :subject
-  has_many :appointments
+  has_many :appointments, :dependent => :destroy
 
   attr_accessible :appointments_attributes
 

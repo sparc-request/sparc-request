@@ -14,5 +14,12 @@ class Calendar < ActiveRecord::Base
       appt.populate_procedures(visit_group.visits)
     end
   end
+
+  def core_completed_total(core)
+    completed_appointments = self.appointments.select{|x| x.completed?(core)}
+    completed_procedures = completed_appointments.collect{|x| x.procedures.select{|y| y.core == core}}.flatten
+
+    return completed_procedures.sum{|x| x.total}
+  end
   
 end

@@ -3,7 +3,7 @@
     %tr.ui-widget-header
       %th Completed Visits
       %th Visit Totals
-    =render(:partial => 'total', :collection => completed_appointments, :as => :appointment, :locals => {:core_id => core_id})
+    =render(:partial => 'total', :collection => completed_appointments, :as => :appointment, :locals => {:core_id => core.id})
     %tr.ui-widget-header
-      %th Subject Total
-      %th
+      %th Subject Total:
+      %th= number_to_currency(@calendar.core_completed_total(core))

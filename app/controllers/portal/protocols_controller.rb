@@ -72,6 +72,7 @@ class Portal::ProtocolsController < Portal::BaseController
 
   def view_full_calendar
     @protocol = Protocol.find(params[:id])
+    @service_request = @protocol.service_requests.first
     @service_requests = @protocol.service_requests.select { |sr| sr.status != 'first_draft' && sr.status != 'draft'}
 
     arm_id = params[:arm_id] if params[:arm_id]

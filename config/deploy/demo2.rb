@@ -3,7 +3,7 @@ set :rvm_type, :system
 set :application, "sparc-rails-2"
 
 set :deploy_to, "#{deploy_root}/#{application}"
-set :rails_env, "testing"
+set :rails_env, "demo"
 set :domain, "sparc-demo.musc.edu"
 set :branch, "demo"
 

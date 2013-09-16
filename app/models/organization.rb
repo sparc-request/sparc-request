@@ -19,6 +19,7 @@ class Organization < ActiveRecord::Base
   has_many :services, :dependent => :destroy
   has_many :sub_service_requests, :dependent => :destroy
   has_many :available_statuses, :dependent => :destroy
+  has_many :appointment_completions
 
   attr_accessible :name
   attr_accessible :order

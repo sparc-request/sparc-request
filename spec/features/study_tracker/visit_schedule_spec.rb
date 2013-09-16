@@ -106,11 +106,6 @@ describe "visit schedule", :js => true do
 
       describe "checking completed" do
 
-        it "should be defaulted to checked" do
-          wait_for_javascript_to_finish
-          first(".procedure_box").should be_checked
-        end
-
         it "should place the procedure in completed status" do
           click_on "Nutrition"
           first(:css, ".procedure_box").set(false)
@@ -133,6 +128,13 @@ describe "visit schedule", :js => true do
           first(:css, ".procedure_box").set(true)
           first(".procedure_total_cell").should have_text("$150.00")
         end
+      end
+    end
+
+    context "completing an appointment" do
+
+      it "should complete the appointment do" do
+        click_on "Nutrition"
       end
     end
   end

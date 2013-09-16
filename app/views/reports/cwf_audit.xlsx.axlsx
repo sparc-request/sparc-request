@@ -1,0 +1,29 @@
+wb = xlsx_package.workbook
+
+wb.add_worksheet(name: "Audit report") do |sheet|
+  # sctr logo
+  img = Rails.root.join("app/assets/images/sctr_logo.png").to_s
+  sheet.add_image(:image_src => img, :noSelect => true, :noMove => true, :hyperlink=>"http://sctr.musc.edu") do |image|
+    image.width = 479
+    image.height = 227
+    image.hyperlink.tooltip = "Click to visit SCTR website"
+    image.start_at 0, 0
+  end
+  
+  #start text below the image
+  16.times {sheet.add_row [""]}
+  
+  @audit_trail.each do |audit|
+    audit.audited_changes.each do |field, values|
+      change = values
+
+      if values.is_a?(Array) 
+        from, to = values
+        next if from.blank? and to.blank? 
+        change = from.blank? ? to : "#{from} => #{to}"
+      end
+
+      sheet.add_row [audit.user.try(:full_name), audit.created_at.strftime("%m/%d/%Y"), audit.created_at.strftime("%I:%M %P"), "#{audit.auditable_type.humanize} #{audit.auditable_id}", audit.action.humanize, field.humanize.upcase, change]
+    end
+  end
+end

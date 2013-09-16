@@ -34,6 +34,8 @@
     %li= link_to t(:study_tracker)[:dashboard][:tabs][:subject_tracker], "#subject_tracker", :class => 'subject_tracker-tab'
     %li= link_to t(:study_tracker)[:dashboard][:tabs][:payments], "#payments", :class => 'payments-tab'
     %li= link_to t(:study_tracker)[:dashboard][:tabs][:billing], "#billing", :class => 'billing-tab', :id => 'billing-tab'
+    - if @user.admin_organizations({:su_only => true}).include? @sub_service_request.organization
+      %li= link_to t(:study_tracker)[:dashboard][:tabs][:audit_reporting], '#audit_reporting'
 
   #study_schedule
     = render :partial => 'study_schedule'
@@ -43,3 +45,6 @@
     = render 'payments'
   #billing
     = render 'billing'
+  - if @user.admin_organizations({:su_only => true}).include? @sub_service_request.organization
+    #audit_reporting
+      = render 'audit_reporting'

@@ -1,5 +1,7 @@
 $(document).ready ->
 
+  $("#cwf_audit_start_date_input").datepicker({altField: "#cwf_audit_start_date", altFormat: "yy-mm-dd"})
+  $("#cwf_audit_end_date_input").datepicker({altField: "#cwf_audit_end_date", altFormat: "yy-mm-dd"})
 
   ####Triggers:
   $(document).on('change', '.clinical_select_data', ->

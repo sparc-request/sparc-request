@@ -1,0 +1,18 @@
+#audit_form
+  = form_tag cwf_audit_report_path(@sub_service_request, :format => :xlsx) do
+
+    = label_tag :cwf_audit_start_date_input, "Start Date:"
+    = text_field_tag :cwf_audit_start_date_input, nil
+    = hidden_field_tag :cwf_audit_start_date
+
+    %br
+    %br
+
+    = label_tag :cwf_audit_end_date_input, "End Date:"
+    = text_field_tag :cwf_audit_end_date_input, nil
+    = hidden_field_tag :cwf_audit_end_date
+
+    %br
+    %br
+    
+    = submit_tag "Get report"

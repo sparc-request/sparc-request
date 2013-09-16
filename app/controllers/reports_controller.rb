@@ -50,8 +50,41 @@ class ReportsController < ApplicationController
     # cover_letters
     # 
     
-    ssr = SubServiceRequest.find params[:id]
-    
-    
+    @ssr = SubServiceRequest.find params[:id]
+
+    start_date = params[:cwf_audit_start_date] + " 00:00:00"
+    end_date = params[:cwf_audit_end_date] + " 23:59:59"
+
+    @audit_trail = @ssr.audit_trail start_date, end_date
+    @audit_trail += @ssr.past_statuses.map{|x| x.audit_trail start_date, end_date}
+    @audit_trail += @ssr.line_items.map{|x| x.audit_trail start_date, end_date}
+    @audit_trail += @ssr.notes.map{|x| x.audit_trail start_date, end_date}
+    @audit_trail += @ssr.approvals.map{|x| x.audit_trail start_date, end_date}
+    @audit_trail += @ssr.payments.map{|x| x.audit_trail start_date, end_date}
+    @audit_trail += @ssr.cover_letters.map{|x| x.audit_trail start_date, end_date}
+    @audit_trail += @ssr.subsidy.audit_trail start_date, end_date
+    @audit_trail += @ssr.reports.map{|x| x.audit_trail start_date, end_date}
+  
+    @ssr.service_request.protocol.arms.each do |arm|
+      @audit_trail += arm.audit_trail start_date, end_date
+      @audit_trail += arm.line_items_visits.map{|x| x.audit_trail start_date, end_date}
+      @audit_trail += arm.subjects.map{|x| x.audit_trail start_date, end_date}
+
+      arm.subjects.each do |subject|
+        @audit_trail += subject.calendar.audit_trail start_date, end_date
+        @audit_trail += subject.calendar.appointments.map{|x| x.audit_trail start_date, end_date}
+        
+        subject.calendar.appointments.each do |appointment|
+          @audit_trail += appointment.procedures.map{|x| x.audit_trail start_date, end_date}
+          @audit_trail += appointment.procedures.map{|x| x.audit_trail start_date, end_date}
+          @audit_trail += appointment.procedures.map{|x| x.audit_trail start_date, end_date}
+        end
+      end
+      @audit_trail += arm.visits.map{|x| x.audit_trail start_date, end_date}
+    end
+
+    @audit_trail.flatten!
+    @audit_trail.compact!
+    @audit_trail.sort_by!(&:created_at)
   end
 end

@@ -5,6 +5,7 @@ $("#per_patient_services").html("<%= escape_javascript(render(:partial =>'portal
   $("#one_time_fees").html("<%= escape_javascript(render(:partial => 'portal/sub_service_requests/one_time_fees')) %>");
 <% end %>
 $("#fulfillment_subsidy").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/subsidy')) %>");
+$("#request_cost_total").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/direct_cost_total')) %>");
 $("#add_ppv_service_container").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/add_service', :locals => {:select_id => 'new_ppv_service_id', :services => @candidate_per_patient_per_visit})) %>");
 $("#remove_ppv_service_container").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/remove_service', :locals => {:select_id => 'delete_ppv_service_id', :line_items => @sub_service_request.per_patient_per_visit_line_items})) %>");
 

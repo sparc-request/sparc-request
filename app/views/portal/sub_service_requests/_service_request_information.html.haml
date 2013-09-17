@@ -22,5 +22,9 @@
           = text_field_tag "sub_service_request_requester_contacted_date_picker", @sub_service_request.try(:requester_contacted_date).try(:strftime, '%D'), :class => 'date datepicker'
           = hidden_field_tag "sub_service_request_requester_contacted_date", @sub_service_request.try(:requester_contacted_date).try(:strftime, "%F"), :'data-sub_service_request_id' => @sub_service_request.id, :class => 'fulfillment_data'
 %br
+
+#request_cost_total
+  = render 'direct_cost_total'
+
 #fulfillment_subsidy
   = render 'subsidy'

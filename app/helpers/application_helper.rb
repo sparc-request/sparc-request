@@ -93,6 +93,35 @@ module ApplicationHelper
     raw(returning_html)
   end
 
+  def generate_merged_visit_header_row arm, service_request, page
+    page = page == 0 ? 1 : page
+    beginning_visit = (page * 5) - 4
+    ending_visit = (page * 5) > arm.visit_count ? arm.visit_count : (page * 5)
+    returning_html = ""
+    line_items_visits = arm.line_items_visits
+    visit_groups = arm.visit_groups
+
+    (beginning_visit .. ending_visit).each do |n|
+      visit_name = visit_groups[n - 1].name || "Visit #{n}"
+      visit_group = visit_groups[n - 1]
+      
+      returning_html += content_tag(:th,
+                                    label_tag("Day") + "&nbsp;&nbsp;&nbsp;".html_safe + label_tag("+/-") +
+                                    tag(:br) +
+                                    content_tag(:span, visit_group.day, :style => "display:inline-block;width:40px;") +
+                                    content_tag(:span, visit_group.window, :style => "display:inline-block;width:35px;") +
+                                    tag(:br) +
+                                    content_tag(:span, visit_name, :style => "display:inline-block;width:75px;") +
+                                    tag(:br))
+    end
+
+    ((page * 5) - arm.visit_count).times do
+      returning_html += content_tag(:th, "", :width => 60, :class => 'visit_number')
+    end
+
+    raw(returning_html)
+  end
+
   def generate_visit_navigation arm, service_request, pages, tab, portal=nil
     page = pages[arm.id].to_i == 0 ? 1 : pages[arm.id].to_i
     beginning_visit = (page * 5) - 4
@@ -109,6 +138,30 @@ module ApplicationHelper
 
     returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')), 
                               table_service_request_service_calendars_path(service_request, :page => page + 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal), 
+                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only') unless ((page + 1) * 5) - 4 > arm.visit_count
+    returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')), 
+                                  :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled', :disabled => true) if ((page + 1) * 5) - 4 > arm.visit_count
+    raw(returning_html)
+  end
+
+  # TODO
+  # Refactor this back in
+  def generate_merged_visit_navigation arm, service_request, pages, tab, portal=nil
+    page = pages[arm.id].to_i == 0 ? 1 : pages[arm.id].to_i
+    beginning_visit = (page * 5) - 4
+    ending_visit = (page * 5) > arm.visit_count ? arm.visit_count : (page * 5)
+    returning_html = ""
+    
+    returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')), 
+                              merged_calendar_service_request_service_calendars_path(service_request, :page => page - 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal), 
+                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only') unless page <= 1
+    returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')), 
+                                  :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled', :disabled => true) if page <= 1
+
+    returning_html += content_tag(:span, "Visits #{beginning_visit} - #{ending_visit} of #{arm.visit_count}", :class => 'visit_count')
+
+    returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')), 
+                              merged_calendar_service_request_service_calendars_path(service_request, :page => page + 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal), 
                               :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only') unless ((page + 1) * 5) - 4 > arm.visit_count
     returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')), 
                                   :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled', :disabled => true) if ((page + 1) * 5) - 4 > arm.visit_count

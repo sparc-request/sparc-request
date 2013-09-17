@@ -12,8 +12,4 @@
     %td= check_box_tag "in_work_fulfillment", true, @sub_service_request.in_work_fulfillment, :'data-sub_service_request_id' => @sub_service_request.id, :class => "cwf_data", :disabled => @sub_service_request.in_work_fulfillment?
     - if @user.clinical_provider_rights?
       .ui-button.ui-state-default.ui-button-text-only{:style => "margin-top:5px; display: #{@sub_service_request.in_work_fulfillment? ? "inline-block" : "none"}"}
-        %span.ui-button-text= link_to "Clinical Work Fulfillment", study_tracker_sub_service_request_path(@sub_service_request.id), :target => "_blank"
-#service_request_cost
-  %h3{:style => "margin-top:5px;"}= t(:service_requests)[:info][:text4]
-  %tr#direct_cost_total{:'data-direct_cost_total' => @sub_service_request.try(:direct_cost_total), :'data-max_dollar_cap' => @sub_service_request.organization.try(:subsidy_map).try(:max_dollar_cap), :'data-max_percentage' => @sub_service_request.organization.try(:subsidy_map).try(:max_percentage)}= number_to_currency(@sub_service_request.try(:direct_cost_total) / 100)
-
+        %span.ui-button-text= link_to "Clinical Work Fulfillment", study_tracker_sub_service_request_path(@sub_service_request.id)

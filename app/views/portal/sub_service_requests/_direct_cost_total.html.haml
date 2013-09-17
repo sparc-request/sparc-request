@@ -1,0 +1,8 @@
+#service_request_cost
+  %h3{:style => "margin-top:5px;"}= t(:service_requests)[:info][:text4]
+  %table
+    %thead
+      %tbody
+        %tr
+          %td{:'data-direct_cost_total' => @sub_service_request.try(:direct_cost_total), :'data-max_dollar_cap' => @sub_service_request.try(:organization).try(:subsidy_map).try(:max_dollar_cap), :'data-max_percentage' => @sub_service_request.try(:organization).try(:subsidy_map).try(:max_percentage)}
+            = number_to_currency(calculate_total)

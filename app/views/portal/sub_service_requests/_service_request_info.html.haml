@@ -1,19 +1,15 @@
 #service_request_status
   %h3= t(:service_requests)[:info][:text1]
-  = select_tag "sub_service_request_status", options_for_select(@sub_service_request ? @sub_service_request.try(:organization).try(:get_available_statuses).invert : [], @sub_service_request.try(:status)), :'data-sub_service_request_id' => @sub_service_request.try(:id), :class => 'fulfillment_data'
+  = select_tag "sub_service_request_status", options_for_select(@sub_service_request ? @sub_service_request.organization.get_available_statuses.invert : [], @sub_service_request.try(:status)), :'data-sub_service_request_id' => @sub_service_request.id, :class => 'fulfillment_data'
 %br
-#service_request_owner{:style => @sub_service_request.try(:status) == 'draft' ? 'display:none;' : ''}
+#service_request_owner{:style => @sub_service_request.status == 'draft' ? 'display:none;' : ''}
   %h3= t(:service_requests)[:info][:text2]
-  = select_tag "sub_service_request_owner_id", owners_for_select(@sub_service_request), :prompt => '---Please Select---', :'data-sub_service_request_id' => @sub_service_request.try(:id), :class => 'fulfillment_data'
+  = select_tag "sub_service_request_owner_id", owners_for_select(@sub_service_request), :prompt => '---Please Select---', :'data-sub_service_request_id' => @sub_service_request.id, :class => 'fulfillment_data'
 %br
-- if @sub_service_request.try(:organization).try(:tag_list).try(:include?, ('ctrc'))
+- if @sub_service_request.organization.tag_list.include?('ctrc')
   #study_tracker_access
     %h3{:style => "float:left; margin-right:10px;"}= t(:service_requests)[:info][:text3]
-    %td= check_box_tag "in_work_fulfillment", true, @sub_service_request.try(:in_work_fulfillment), :'data-sub_service_request_id' => @sub_service_request.try(:id), :class => "cwf_data", :disabled => @sub_service_request.try(:in_work_fulfillment?)
+    %td= check_box_tag "in_work_fulfillment", true, @sub_service_request.in_work_fulfillment, :'data-sub_service_request_id' => @sub_service_request.id, :class => "cwf_data", :disabled => @sub_service_request.in_work_fulfillment?
     - if @user.clinical_provider_rights?
       .ui-button.ui-state-default.ui-button-text-only{:style => "margin-top:5px; display: #{@sub_service_request.in_work_fulfillment? ? "inline-block" : "none"}"}
-        %span.ui-button-text= link_to "Clinical Work Fulfillment", study_tracker_sub_service_request_path(@sub_service_request.try(:id)), :target => "_blank"
-#service_request_cost
-  %h3{:style => "margin-top:5px;"}= t(:service_requests)[:info][:text4]
-  %tr#direct_cost_total{:'data-direct_cost_total' => @sub_service_request.try(:direct_cost_total), :'data-max_dollar_cap' => @sub_service_request.try(:organization).try(:subsidy_map).try(:max_dollar_cap), :'data-max_percentage' => @sub_service_request.try(:organization).try(:subsidy_map).try(:max_percentage)}= number_to_currency(calculate_total)
-
+        %span.ui-button-text= link_to "Clinical Work Fulfillment", study_tracker_sub_service_request_path(@sub_service_request.id)

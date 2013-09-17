@@ -463,7 +463,7 @@ en:
       text1: "Service Request Status"
       text2: "Service Request Owner"
       text3: "Ready for Clinical Fulfillment:"
-      text4: "Total Cost:"
+      text4: "Total Cost"
 
   # Service Request review page
   sr_review:

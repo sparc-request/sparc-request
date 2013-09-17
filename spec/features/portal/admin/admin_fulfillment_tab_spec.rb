@@ -137,7 +137,9 @@ describe "admin fulfillment tab", :js => true do
           previous_direct_cost = find("#direct_cost_total").text
           click_link "check_row_#{arm1.line_items_visits.first.id}_template"
           wait_for_javascript_to_finish
-          find("#direct_cost_total").text.should_not eq(previous_direct_cost)
+          within("#fulfillment_subsidy") do
+            find("#direct_cost_total").text.should_not eq(previous_direct_cost)
+          end
         end
 
         it "should change the total cost if a visit-based service is added and checked" do
@@ -149,7 +151,9 @@ describe "admin fulfillment tab", :js => true do
           second_service = arm1.line_items_visits[1]
           click_link "check_row_#{second_service.id}_template"
           wait_for_javascript_to_finish
-          find("#direct_cost_total").text.should_not eq(previous_direct_cost)
+          within("#fulfillment_subsidy") do
+            find("#direct_cost_total").text.should_not eq(previous_direct_cost)
+          end
         end
       end
 

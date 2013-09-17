@@ -224,4 +224,46 @@ class Arm < ActiveRecord::Base
     visit_group = self.visit_groups[position]
     return visit_group.update_attributes(:window => window)
   end
+
+  def service_list
+    items = self.line_items_visits.map do |liv|
+      liv.line_item.service.is_one_time_fee? ? nil : liv.line_item
+    end.compact
+
+    groupings = {}
+    items.each do |line_item|
+      service = line_item.service
+      name = []
+      acks = []
+      last_parent = nil
+      last_parent_name = nil
+      found_parent = false
+      service.parents.reverse.each do |parent|
+        next if !parent.process_ssrs? && !found_parent
+        found_parent = true
+        last_parent = last_parent || parent.id
+        last_parent_name = last_parent_name || parent.name
+        name << parent.abbreviation
+        acks << parent.ack_language unless parent.ack_language.blank?
+      end
+      if found_parent == false
+        service.parents.reverse.each do |parent|
+          name << parent.abbreviation
+          acks << parent.ack_language unless parent.ack_language.blank?
+        end
+        last_parent = service.organization.id
+        last_parent_name = service.organization.name
+      end
+      
+      if groupings.include? last_parent
+        g = groupings[last_parent]
+        g[:services] << service
+        g[:line_items] << line_item
+      else
+        groupings[last_parent] = {:process_ssr_organization_name => last_parent_name, :name => name.reverse.join(' -- '), :services => [service], :line_items => [line_item], :acks => acks.reverse.uniq.compact}
+      end
+    end
+
+    groupings
+  end
 end

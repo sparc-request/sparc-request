@@ -1974,3 +1974,7 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 .epic_rights_info {
   font-style: italic;
 }
+
+table.service_calendar tbody td.visit {
+  text-align: right;
+}

@@ -32,7 +32,7 @@ epic_push_status_text: { 'started': '',
                          'sent_study': '',
                          'complete': 'Study has been sent to Epic.',
                          'failed': 'Unable to send study to Epic.',
-                         'no_users': 'Unable to send study for approval. No users with Epic Access on Study.',
+                         'no_users': 'Unable to send study for approval. Primary PI does not have Epic Access on Study.',
                          'awaiting_approval': 'Awaiting approval before sending to Epic',
                          'awaiting_final_review': 'Awaiting final review before sending to Epic' }
 study_types: { 'clinical_trials': 'Clinical Trials',

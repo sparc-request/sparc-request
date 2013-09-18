@@ -1,7 +1,23 @@
 $(document).ready ->
 
-  $("#cwf_audit_start_date_input").datepicker({altField: "#cwf_audit_start_date", altFormat: "yy-mm-dd"})
-  $("#cwf_audit_end_date_input").datepicker({altField: "#cwf_audit_end_date", altFormat: "yy-mm-dd"})
+  $("#cwf_audit_start_date_input").datepicker
+    altField: "#cwf_audit_start_date"
+    altFormat: "yy-mm-dd"
+    minDate: new Date($('#min_start_date').val())
+    maxDate: new Date($('#max_end_date').val())
+    onClose: (selectedDate) ->
+      unless selectedDate == ''
+        $('#cwf_audit_end_date_input').datepicker("option", "minDate", selectedDate)
+
+
+  $("#cwf_audit_end_date_input").datepicker
+    altField: "#cwf_audit_end_date"
+    altFormat: "yy-mm-dd"
+    minDate: new Date($('#min_start_date').val())
+    maxDate: new Date($('#max_end_date').val())
+    onClose: (selectedDate) ->
+      unless selectedDate == ''
+        $('#cwf_audit_start_date_input').datepicker("option", "maxDate", selectedDate)
 
   ####Triggers:
   $(document).on('change', '.clinical_select_data', ->

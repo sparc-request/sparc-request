@@ -1,18 +1,44 @@
-#audit_form
-  = form_tag cwf_audit_report_path(@sub_service_request, :format => :xlsx) do
+.grid_12
+  %br
+  %br
+  #audit_form
+    = form_tag cwf_audit_report_path(@sub_service_request, :format => :xlsx) do
+      = label_tag :nursing_included, 'Nursing'
+      = check_box_tag :nursing_included, 1, true
+      %br
+      
+      = label_tag :laboratory_included, 'Laboratory'
+      = check_box_tag :laboratory_included, 1, true
+      %br
+     
+      = label_tag :imaging_included, 'Imaging'
+      = check_box_tag :imaging_included, 1, true
+      %br
+     
+      = label_tag :nutrition_included, 'Nutrition'
+      = check_box_tag :nutrition_included, 1, true
 
-    = label_tag :cwf_audit_start_date_input, "Start Date:"
-    = text_field_tag :cwf_audit_start_date_input, nil
-    = hidden_field_tag :cwf_audit_start_date
+      %br
+      %br
+     
+      = hidden_field_tag :min_start_date, @min_start_date.strftime('%B %d, %Y %H:%M:%S')
+      = hidden_field_tag :max_end_date, @max_end_date.strftime('%B %d, %Y %H:%M:%S')
 
-    %br
-    %br
+      = label_tag :cwf_audit_start_date_input, "Start Date:"
+      = text_field_tag :cwf_audit_start_date_input, nil
+      = hidden_field_tag :cwf_audit_start_date
 
-    = label_tag :cwf_audit_end_date_input, "End Date:"
-    = text_field_tag :cwf_audit_end_date_input, nil
-    = hidden_field_tag :cwf_audit_end_date
+      %br
+      %br
 
-    %br
-    %br
-    
-    = submit_tag "Get report"
+      = label_tag :cwf_audit_end_date_input, "End Date:"
+      = text_field_tag :cwf_audit_end_date_input, nil
+      = hidden_field_tag :cwf_audit_end_date
+
+      %br
+      %br
+      
+      = submit_tag "Get report"
+
+  %br
+  %br

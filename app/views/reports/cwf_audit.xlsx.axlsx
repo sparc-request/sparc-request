@@ -23,7 +23,21 @@ wb.add_worksheet(name: "Audit report") do |sheet|
         change = from.blank? ? to : "#{from} => #{to}"
       end
 
-      sheet.add_row [audit.user.try(:full_name), audit.created_at.strftime("%m/%d/%Y"), audit.created_at.strftime("%I:%M %P"), "#{audit.auditable_type.humanize} #{audit.auditable_id}", audit.action.humanize, field.humanize.upcase, change]
+      row = []
+      row << audit.user.try(:full_name)
+      row << audit.created_at.strftime("%m/%d/%Y")
+      row << audit.created_at.strftime("%I:%M %P")
+      
+      if audit.auditable.respond_to? :audit_label
+        row << audit.auditable.audit_label
+      else
+        row << "#{audit.auditable_type.humanize} #{audit.auditable_id}"
+      end
+
+      row << audit.action.humanize
+      row << field.humanize.upcase
+      row << change
+      sheet.add_row row
     end
   end
 end

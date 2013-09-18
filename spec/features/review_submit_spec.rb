@@ -199,6 +199,10 @@ describe "review page", :js => true do
       it "should not send emails for approval" do
         @email.should eq(nil)
       end
+
+      it "should display that the primary pi doesn't have access" do
+        page.should have_content "Unable to send study for approval. Primary PI does not have Epic Access on Study."
+      end
     end
   end
 end

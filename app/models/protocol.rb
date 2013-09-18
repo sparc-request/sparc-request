@@ -204,7 +204,7 @@ class Protocol < ActiveRecord::Base
   end
 
   def has_epic_users
-    unless self.project_roles.detect { |pr| pr.epic_access }
+    unless self.primary_pi_project_role.epic_access
       self.last_epic_push_time = nil
       self.last_epic_push_status = 'no_users'
       save(validate: false)

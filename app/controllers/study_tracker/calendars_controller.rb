@@ -44,15 +44,11 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
     
     @default_core = (cookies['current_core'] ? Organization.find(cookies['current_core']) : @nursing)
 
-    @uncompleted_appointments = @appointments.reject{|x| x.completed?(@default_core.id) }
+    @uncompleted_appointments = @appointments.reject{|x| x.completed_for_core(@default_core.id) }
+    @completed_appointments = @appointments.select{|x| x.completed?}
     @default_appointment = @uncompleted_appointments.first || @appointments.first
 
-    @completed_nursing = @appointments.select{|x| x.completed?(@nursing)}
-    @completed_lab = @appointments.select{|x| x.completed?(@lab)}
-    @completed_imaging = @appointments.select{|x| x.completed?(@imaging)}
-    @completed_nutrition = @appointments.select{|x| x.completed?(@nutrition)}
-
     default_procedures = @default_appointment.procedures.select{|x| x.core == @nursing}
-    @default_subtotal = @default_appointment.completed?(@default_core.id) ? default_procedures.sum{|x| x.total} : 0.00
+    @default_subtotal = @default_appointment.completed_for_core(@default_core.id) ? default_procedures.sum{|x| x.total} : 0.00
   end
 end

@@ -1,9 +1,9 @@
-%table.study_tracker_table{:style => "width:880px; margin-bottom:15px;"}
+%table.study_tracker_table{:style => "width:880px;"}
   %thead.left_headers
     %tr.ui-widget-header
       %th Completed Visits
       %th Visit Totals
-    =render(:partial => 'total', :collection => completed_appointments, :as => :appointment, :locals => {:core_id => core.id})
+    =render(:partial => 'total', :collection => completed_appointments, :as => :appointment)
     %tr.ui-widget-header
       %th Subject Total:
-      %th= number_to_currency(@calendar.core_completed_total(core))
+      %th= number_to_currency(@calendar.completed_total)

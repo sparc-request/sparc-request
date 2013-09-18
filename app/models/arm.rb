@@ -14,6 +14,7 @@ class Arm < ActiveRecord::Base
   attr_accessible :subject_count      # maximum number of subjects for any visit grouping
   attr_accessible :new_with_draft     # used for existing arm validations in sparc proper (should always be false unless in first draft)
   attr_accessible :subjects_attributes
+  attr_accessible :protocol_id
   accepts_nested_attributes_for :subjects, allow_destroy: true
 
   after_create :populate_cwf_if_active

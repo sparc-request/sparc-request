@@ -48,7 +48,10 @@
                       = ac_form.datepicker :formatted_completed_date, size: 18, dateFormat: "m/dd/yy"
                 %tr.ui-widget-header
                   %th Procedure
-                  %th Completed
+                  %th
+                    Completed
+                    %a.check_all.ui-button.ui-state-default.ui-corner-all.ui-button-icon-only{:style => "margin:3px auto 0;display:block;height:22px;"}
+                      %span.ui-icon.ui-icon-check
                   %th R Quantity
                   %th T Quantity
                   %th Unit Cost

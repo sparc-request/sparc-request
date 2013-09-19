@@ -52,6 +52,18 @@ $(document).ready ->
     $('.save_alert').show()
   )
 
+  $(document).on('click', 'a.check_all', ->
+    if $('a.check_all span').hasClass('ui-icon-check')
+      $('a.check_all span').removeClass('ui-icon-check').addClass('ui-icon-close')
+      $('td.check_box_cell:visible input[type=checkbox]').attr('checked', true)
+    else
+      $('a.check_all span').removeClass('ui-icon-close').addClass('ui-icon-check')
+      $('td.check_box_cell:visible input[type=checkbox]').attr('checked', false)
+    recalc_row_totals()
+    recalc_subtotal()
+    $('.save_alert').show()
+  )
+
   $(document).on('click', '.dashboard_link', ->
     if $(this).hasClass('active')
       $(this).removeClass('active')

@@ -51,7 +51,7 @@ $(document).ready ->
       $("#return_to_admin_portal").button()
 
     show_return_to_study_tracker_button: () ->
-      linkHtml = "<a id='return_to_study_tracker' style='position:relative;left:595px;bottom:25px' href='/study_tracker'>Return to Clinical Work Fulfillment Home</a>"
+      linkHtml = "<a id='return_to_study_tracker' style='position:relative;left:595px;bottom:25px' href='/clinical_work_fulfillment'>Return to Clinical Work Fulfillment Home</a>"
       $("#title").append(linkHtml)
       $("#return_to_study_tracker").button()
 
@@ -74,7 +74,7 @@ $(document).ready ->
         $('.admin_indicator').css('display', 'inline-block')
         sr_id = $(this).data('sr_id')
         ssr_id = $(this).attr('data-ssr_id')
-        url = "/study_tracker/sub_service_requests/#{ssr_id}"
+        url = "/clinical_work_fulfillment/sub_service_requests/#{ssr_id}"
 
         document.location.href = url
       )

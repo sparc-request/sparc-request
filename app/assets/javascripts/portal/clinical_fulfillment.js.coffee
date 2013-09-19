@@ -76,7 +76,7 @@ $(document).ready ->
 
     $.ajax
       type: "post"
-      url: "/study_tracker/appointments/add_service"
+      url: "/clinical_work_fulfillment/appointments/add_service"
       data: JSON.stringify(data)
       dataType: 'html'
       contentType: 'application/json; charset=utf-8'
@@ -120,7 +120,7 @@ $(document).ready ->
       'body': $(".comment_box:visible").val()
     $.ajax
       type: 'POST'
-      url:   "/study_tracker/appointments/add_note"
+      url:   "/clinical_work_fulfillment/appointments/add_note"
       data:  JSON.stringify(data)
       dataType: 'html'
       contentType: 'application/json; charset=utf-8'
@@ -137,7 +137,7 @@ $(document).ready ->
     ssr_id = $('#ssr_routing').data('ssr_id')
     $.ajax
       type: "PUT"
-      url: "/study_tracker/sub_service_requests/#{ssr_id}"
+      url: "/clinical_work_fulfillment/sub_service_requests/#{ssr_id}"
       data: { "sub_service_request[routing]": routing }
     return false
 

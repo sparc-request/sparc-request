@@ -3,7 +3,6 @@ class Appointment < ActiveRecord::Base
 
   belongs_to :calendar
   belongs_to :visit_group
-  belongs_to :service
   has_many :procedures, :dependent => :destroy
   has_many :visits, :through => :procedures
   has_many :notes
@@ -28,9 +27,16 @@ class Appointment < ActiveRecord::Base
     end
   end
 
+  def completed?
+    self.appointment_completions.each do |x|
+      return true if x.completed_date?
+    end
+    return false
+  end
+  
   # TODO
   # Update this method when the new core specific completed dates are added
-  def completed? (core_id)
+  def completed_for_core? (core_id)
     if self.completed_at(core_id).first.try(:completed_date)
       return true
     else

@@ -1,4 +1,6 @@
 class Payment < ActiveRecord::Base
+  audited
+
   attr_accessible :sub_service_request_id
   attr_accessible :date_submitted
   attr_accessible :formatted_date_submitted

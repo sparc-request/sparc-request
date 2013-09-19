@@ -1,4 +1,5 @@
 class Report < ActiveRecord::Base
+  audited
   belongs_to :sub_service_request
 
   has_attached_file :xlsx

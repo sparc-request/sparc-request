@@ -74,6 +74,13 @@ td.text-center {
 .add_service div {
   display:none;
 }
+
+#audit_form label {
+  display: block;
+  width: 90px;
+  float: left;
+}
+
 .appointment_wrapper .ui-widget-header th.hidden_by_tabs {
   display:none;
 }
@@ -85,7 +92,7 @@ td.text-center {
   width:900px;
   display:block;
   text-align:center;
-  font-size:1.6em;"
+  font-size:1.6em;
 }
 
 #patient_visit_calendar #dashboard_container {
@@ -106,4 +113,3 @@ td.text-center {
   padding: 6px 8px;
   background-color: #C0C0C0;
 }
-

@@ -1,5 +1,24 @@
 $(document).ready ->
 
+  $("#cwf_audit_start_date_input").datepicker
+    altField: "#cwf_audit_start_date"
+    altFormat: "yy-mm-dd"
+    minDate: new Date($('#min_start_date').val())
+    maxDate: new Date($('#max_end_date').val())
+    onClose: (selectedDate) ->
+      unless selectedDate == ''
+        $('#cwf_audit_end_date_input').datepicker("option", "minDate", selectedDate)
+
+
+  $("#cwf_audit_end_date_input").datepicker
+    altField: "#cwf_audit_end_date"
+    altFormat: "yy-mm-dd"
+    minDate: new Date($('#min_start_date').val())
+    maxDate: new Date($('#max_end_date').val())
+    onClose: (selectedDate) ->
+      unless selectedDate == ''
+        $('#cwf_audit_start_date_input').datepicker("option", "maxDate", selectedDate)
+
   ####Triggers:
   $(document).on('change', '.clinical_select_data', ->
     $('#visit_form .spinner_wrapper').show()
@@ -76,7 +95,7 @@ $(document).ready ->
 
     $.ajax
       type: "post"
-      url: "/study_tracker/appointments/add_service"
+      url: "/clinical_work_fulfillment/appointments/add_service"
       data: JSON.stringify(data)
       dataType: 'html'
       contentType: 'application/json; charset=utf-8'
@@ -120,7 +139,7 @@ $(document).ready ->
       'body': $(".comment_box:visible").val()
     $.ajax
       type: 'POST'
-      url:   "/study_tracker/appointments/add_note"
+      url:   "/clinical_work_fulfillment/appointments/add_note"
       data:  JSON.stringify(data)
       dataType: 'html'
       contentType: 'application/json; charset=utf-8'
@@ -137,7 +156,7 @@ $(document).ready ->
     ssr_id = $('#ssr_routing').data('ssr_id')
     $.ajax
       type: "PUT"
-      url: "/study_tracker/sub_service_requests/#{ssr_id}"
+      url: "/clinical_work_fulfillment/sub_service_requests/#{ssr_id}"
       data: { "sub_service_request[routing]": routing }
     return false
 
@@ -152,4 +171,4 @@ $(document).ready ->
   commaSeparateNumber = (val) ->
     while (/(\d+)(\d{3})/.test(val.toString()))
       val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2')
-    return val;
+    return val

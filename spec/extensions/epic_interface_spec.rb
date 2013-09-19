@@ -303,6 +303,10 @@ describe EpicInterface do
   end # send_study_creation
 
   describe 'send_billing_calendar' do
+    before :each do
+      study.update_attributes(start_date: Time.now, end_date: Time.now + 10.days)
+    end
+
     it 'should work (smoke test)' do
       epic_interface.send_billing_calendar(study)
 
@@ -376,9 +380,7 @@ describe EpicInterface do
       service_request = FactoryGirl.create(
           :service_request,
           protocol: study,
-          status: 'draft',
-          start_date: Time.now,
-          end_date: Time.now + 10.days)
+          status: 'draft')
 
       arm1 = FactoryGirl.create(
           :arm,
@@ -411,8 +413,8 @@ describe EpicInterface do
                       <title>Cycle 1</title>
                       <code code="CYCLE" codeSystem="n/a" />
                       <effectiveTime>
-                        <low value="#{service_request.start_date.strftime('%Y%m%d')}" />
-                        <high value="#{service_request.end_date.strftime('%Y%m%d')}" />
+                        <low value="#{epic_interface.relative_date(0, study.start_date)}"/>
+                        <high value="#{epic_interface.relative_date(0, study.start_date)}"/>
                       </effectiveTime>
                     </timePointEventDefinition>
                   </component1>
@@ -440,9 +442,7 @@ describe EpicInterface do
       service_request = FactoryGirl.create(
           :service_request,
           protocol: study,
-          status: 'draft',
-          start_date: Time.now,
-          end_date: Time.now + 10.days)
+          status: 'draft')
 
       arm1 = FactoryGirl.create(
           :arm,
@@ -482,8 +482,8 @@ describe EpicInterface do
                       <title>Cycle 1</title>
                       <code code="CYCLE" codeSystem="n/a" />
                       <effectiveTime>
-                        <low value="#{service_request.start_date.strftime('%Y%m%d')}" />
-                        <high value="#{service_request.end_date.strftime('%Y%m%d')}" />
+                        <low value="#{epic_interface.relative_date(0, study.start_date)}"/>
+                        <high value="#{epic_interface.relative_date(0, study.start_date)}"/>
                       </effectiveTime>
                     </timePointEventDefinition>
                   </component1>
@@ -504,8 +504,8 @@ describe EpicInterface do
                       <title>Cycle 1</title>
                       <code code="CYCLE" codeSystem="n/a" />
                       <effectiveTime>
-                        <low value="#{service_request.start_date.strftime('%Y%m%d')}" />
-                        <high value="#{service_request.end_date.strftime('%Y%m%d')}" />
+                        <low value="#{epic_interface.relative_date(0, study.start_date)}"/>
+                        <high value="#{epic_interface.relative_date(0, study.start_date)}"/>
                       </effectiveTime>
                     </timePointEventDefinition>
                   </component1>
@@ -536,9 +536,7 @@ describe EpicInterface do
         FactoryGirl.create(
             :service_request,
             protocol: study,
-            status: 'draft',
-            start_date: Time.now,
-            end_date: Time.now + 10.days)
+            status: 'draft')
       }
 
       let!(:sub_service_request) {
@@ -622,8 +620,8 @@ describe EpicInterface do
 
           epic_interface.send_billing_calendar(study)
 
-          low = epic_interface.relative_date(visit_group.day - visit_group.window, service_request.start_date)
-          high = epic_interface.relative_date(visit_group.day + visit_group.window, service_request.start_date)
+          low = epic_interface.relative_date(visit_group.day - visit_group.window, study.start_date)
+          high = epic_interface.relative_date(visit_group.day + visit_group.window, study.start_date)
 
           xml = <<-END
             <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
@@ -645,8 +643,8 @@ describe EpicInterface do
                          <title>Cycle 1</title>
                          <code code="CYCLE" codeSystem="n/a"/>
                          <effectiveTime>
-                           <low value="#{epic_interface.relative_date(visit_group.day, service_request.start_date)}"/>
-                           <high value="#{epic_interface.relative_date(visit_group.day, service_request.end_date)}"/>
+                           <low value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
+                           <high value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
                          </effectiveTime>
                          <component1 typeCode="COMP">
                            <sequenceNumber value="1"/>
@@ -681,7 +679,7 @@ describe EpicInterface do
                            <low value="#{low}"/>
                            <high value="#{high}"/>
                          </effectiveTime>
-                         <activityTime value="#{epic_interface.relative_date(visit_group.day, service_request.start_date)}"/>
+                         <activityTime value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
                        </encounter>
                      </component2>
                    </timePointEventDefinition>
@@ -711,8 +709,8 @@ describe EpicInterface do
 
           epic_interface.send_billing_calendar(study)
 
-          low = epic_interface.relative_date(visit_group.day - visit_group.window, service_request.start_date)
-          high = epic_interface.relative_date(visit_group.day + visit_group.window, service_request.start_date)
+          low = epic_interface.relative_date(visit_group.day - visit_group.window, study.start_date)
+          high = epic_interface.relative_date(visit_group.day + visit_group.window, study.start_date)
 
           xml = <<-END
             <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
@@ -734,8 +732,8 @@ describe EpicInterface do
                          <title>Cycle 1</title>
                          <code code="CYCLE" codeSystem="n/a"/>
                          <effectiveTime>
-                           <low value="#{epic_interface.relative_date(visit_group.day, service_request.start_date)}"/>
-                           <high value="#{epic_interface.relative_date(visit_group.day, service_request.end_date)}"/>
+                           <low value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
+                           <high value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
                          </effectiveTime>
                          <component1 typeCode="COMP">
                            <sequenceNumber value="1"/>
@@ -770,7 +768,7 @@ describe EpicInterface do
                            <low value="#{low}"/>
                            <high value="#{high}"/>
                          </effectiveTime>
-                         <activityTime value="#{epic_interface.relative_date(visit_group.day, service_request.start_date)}"/>
+                         <activityTime value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
                        </encounter>
                      </component2>
                    </timePointEventDefinition>
@@ -802,8 +800,8 @@ describe EpicInterface do
 
           epic_interface.send_billing_calendar(study)
 
-          low = epic_interface.relative_date(visit_group.day - visit_group.window, service_request.start_date)
-          high = epic_interface.relative_date(visit_group.day + visit_group.window, service_request.start_date)
+          low = epic_interface.relative_date(visit_group.day - visit_group.window, study.start_date)
+          high = epic_interface.relative_date(visit_group.day + visit_group.window, study.start_date)
 
           xml = <<-END
             <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
@@ -825,8 +823,8 @@ describe EpicInterface do
                          <title>Cycle 1</title>
                          <code code="CYCLE" codeSystem="n/a"/>
                          <effectiveTime>
-                           <low value="#{epic_interface.relative_date(visit_group.day, service_request.start_date)}"/>
-                           <high value="#{epic_interface.relative_date(visit_group.day, service_request.end_date)}"/>
+                           <low value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
+                           <high value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
                          </effectiveTime>
                          <component1 typeCode="COMP">
                            <sequenceNumber value="1"/>
@@ -861,7 +859,7 @@ describe EpicInterface do
                            <low value="#{low}"/>
                            <high value="#{high}"/>
                          </effectiveTime>
-                         <activityTime value="#{epic_interface.relative_date(visit_group.day, service_request.start_date)}"/>
+                         <activityTime value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
                        </encounter>
                      </component2>
                    </timePointEventDefinition>
@@ -890,8 +888,8 @@ describe EpicInterface do
 
           epic_interface.send_billing_calendar(study)
 
-          low = epic_interface.relative_date(visit_group.day - visit_group.window, service_request.start_date)
-          high = epic_interface.relative_date(visit_group.day + visit_group.window, service_request.start_date)
+          low = epic_interface.relative_date(visit_group.day - visit_group.window, study.start_date)
+          high = epic_interface.relative_date(visit_group.day + visit_group.window, study.start_date)
 
           xml = <<-END
             <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
@@ -913,8 +911,8 @@ describe EpicInterface do
                          <title>Cycle 1</title>
                          <code code="CYCLE" codeSystem="n/a"/>
                          <effectiveTime>
-                           <low value="#{epic_interface.relative_date(visit_group.day, service_request.start_date)}"/>
-                           <high value="#{epic_interface.relative_date(visit_group.day, service_request.end_date)}"/>
+                           <low value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
+                           <high value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
                          </effectiveTime>
                          <component1 typeCode="COMP">
                            <sequenceNumber value="1"/>
@@ -938,7 +936,7 @@ describe EpicInterface do
                            <low value="#{low}"/>
                            <high value="#{high}"/>
                          </effectiveTime>
-                         <activityTime value="#{epic_interface.relative_date(visit_group.day, service_request.start_date)}"/>
+                         <activityTime value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
                        </encounter>
                      </component2>
                    </timePointEventDefinition>

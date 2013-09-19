@@ -1527,8 +1527,9 @@ li.organization-option {
   margin-left: 1px;
   margin-top : 28px;
   border     : 1px solid #999;
-  max-height     : 400px;
+  max-height : 400px;
   overflow-y : scroll;
+  z-index    : 999999999;
 }
 
 .ui-autocomplete li:nth-child(odd) {
@@ -1972,4 +1973,8 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 
 .epic_rights_info {
   font-style: italic;
+}
+
+table.service_calendar tbody td.visit {
+  text-align: right;
 }

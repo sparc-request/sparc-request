@@ -11,4 +11,12 @@ module Portal::SubServiceRequestsHelper
     line_items.map { |line_item| [line_item.service.name, line_item.id]}
   end
 
+  def calculate_total
+    if @sub_service_request
+      total = @sub_service_request.direct_cost_total / 100
+    end
+
+    total
+  end
+
 end

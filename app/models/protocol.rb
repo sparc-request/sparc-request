@@ -47,7 +47,8 @@ class Protocol < ActiveRecord::Base
   attr_accessible :project_roles_attributes
   attr_accessible :arms_attributes
   attr_accessible :requester_id
-
+  attr_accessible :start_date
+  attr_accessible :end_date
   attr_accessible :last_epic_push_time
   attr_accessible :last_epic_push_status
 
@@ -200,6 +201,17 @@ class Protocol < ActiveRecord::Base
     self.last_epic_push_time = nil
     self.last_epic_push_status = 'awaiting_final_review'
     save(validate: false)
+  end
+
+  def has_epic_users
+    unless self.primary_pi_project_role.epic_access
+      self.last_epic_push_time = nil
+      self.last_epic_push_status = 'no_users'
+      save(validate: false)
+      return false
+    end
+
+    return true
   end
 
   # Returns true if there is a push to epic in progress, false

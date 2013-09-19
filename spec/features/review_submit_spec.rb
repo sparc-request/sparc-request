@@ -123,6 +123,7 @@ describe "review page", :js => true do
         find(:xpath, "//button/span[text()='No']/..").click
         wait_for_javascript_to_finish
         @email = all_emails.find { |email| email.subject == "Epic Rights Approval"}
+        service_request.update_attributes(status: 'submitted')
       end
 
       it 'should send an email to the Epic admins' do
@@ -180,6 +181,12 @@ describe "review page", :js => true do
           visit_email @email
           click_link "Send to Epic"
           page.should have_content "Study has been sent to Epic"
+        end
+
+        it "should not send services missing cpt and cdm codes" do
+          visit_email @email
+          click_link "Send to Epic"
+          page.should have_content "#{service2.name} does not have a CDM or CPT code."
         end
       end
     end

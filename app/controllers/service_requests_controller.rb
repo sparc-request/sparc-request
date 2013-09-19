@@ -638,22 +638,26 @@ class ServiceRequestsController < ApplicationController
     # is possible) to start the job server automatically.  Threads work
     # well enough for now.
     #
-    Thread.new do
-      begin
-        # Do the actual push.  This might take a while...
-        protocol.push_to_epic(EPIC_INTERFACE)
+    # Thread.new do
+    begin
+      # Do the actual push.  This might take a while...
+      protocol.push_to_epic(EPIC_INTERFACE)
 
-      rescue Exception => e
-        # Log any errors, since they will not be caught by the main
-        # thread
-        Rails.logger.error(e)
+      errors = EPIC_INTERFACE.errors
+      session[:errors] = errors unless errors.empty?
+      @epic_errors = true unless errors.empty?
 
-      ensure
-        # The connection MUST be closed when the thread completes to
-        # avoid leaking the connection.
-        ActiveRecord::Base.connection.close
-      end
+    rescue Exception => e
+      # Log any errors, since they will not be caught by the main
+      # thread
+      Rails.logger.error(e)
+
+      # ensure
+      # The connection MUST be closed when the thread completes to
+      # avoid leaking the connection.
+      # ActiveRecord::Base.connection.close
     end
+    # end
   end
 
 end

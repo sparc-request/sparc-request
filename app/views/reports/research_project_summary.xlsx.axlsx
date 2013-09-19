@@ -46,7 +46,7 @@ def visit_count_spanned_row header, header_style, data, visit_count, sheet, styl
   sheet.add_row adjusted_row(header, visit_count+1, 'right') + [data], :style => styling
 end
 
-visit_count = 5 # just putting a number here so we can make sure it renders correctly
+visit_count = @protocol.arms.max_by{|a| a.visit_count}.visit_count
 
 # alpha_array used to determine column position
 alpha_array = ("A".."Z").to_a
@@ -109,20 +109,25 @@ wb.add_worksheet(name: "Summary") do |sheet|
   visit_names = []
   visit_count.times {|num| visit_names << "Visit #{num+1}"}
 
-  def generate_fake_visits(visit_count)
-    visits = []
-    visit_count.times do
-      visits << rand(0..200)
-    end 
-    visits
+  def build_subject_data(arms)
+    subjects = []
+    arms.each do |arm|
+      arm.subjects.each do |subject|
+        visits = []
+        subject.calendar.appointments.each do |appointment|
+          subtotal = appointment.completed? ? appointment.procedures.sum{|x| x.total} : 0.00
+          visits << subtotal
+        end
+            
+        subjects << {:pid => subject.mrn, :status => subject.status, :visits => visits}
+      end
+    end
+
+    subjects
   end
 
-  subjects = [
-              {:pid => '1224343', :status => 'Active', :visits => generate_fake_visits(visit_count)},
-              {:pid => 'XYZ3456', :status => 'Active', :visits => generate_fake_visits(visit_count)},
-              {:pid => '9ABCDDD', :status => 'Active', :visits => generate_fake_visits(visit_count)}
-             ]
-              
+  subjects = build_subject_data(@protocol.arms)
+
   #visit information header
   visit_header_row visit_names, sheet, styles[:header]
 
@@ -145,34 +150,38 @@ wb.add_worksheet(name: "Summary") do |sheet|
 
   #fee subtotals
   sheet.add_row [""]
-  visit_count_spanned_row "Fee Subtotals", :header, @service_request.total_indirect_costs_one_time(@sub_service_request.line_items), visit_count, sheet, styles
+  visit_count_spanned_row "Fee Subtotals", :header, Service.cents_to_dollars(@service_request.total_direct_costs_one_time(@sub_service_request.line_items)), visit_count, sheet, styles
   
   #totals
   sheet.add_row [""]
-  visit_count_spanned_row "Totals", :header, (@service_request.total_indirect_costs_one_time(@sub_service_request.line_items) + visits_subtotal), visit_count, sheet, styles
+  total = Service.cents_to_dollars(@service_request.total_direct_costs_one_time(@sub_service_request.line_items) + visits_subtotal)
+  visit_count_spanned_row "Totals", :header, total, visit_count, sheet, styles
   
   #payments
   sheet.add_row [""]
   visit_count_spanned_row "Payments", :header, 0, visit_count, sheet, styles
+  @sub_service_request.payments.each do |payment|
+    visit_count_spanned_row payment.date_received, nil, payment.amount_received, visit_count, sheet, styles
+  end
   
   #amount due
   sheet.add_row [""]
   visit_count_spanned_row "Amount Due", :header, 0, visit_count, sheet, styles
   
   #date submitted
-  sheet.add_row [""]
-  visit_count_spanned_row "Date Submitted", :header, 0, visit_count, sheet, styles
+  #sheet.add_row [""]
+  #visit_count_spanned_row "Date Submitted", :header, 0, visit_count, sheet, styles
   
   #amount invoiced
-  sheet.add_row [""]
-  visit_count_spanned_row "Amount Invoiced", :header, 0, visit_count, sheet, styles
+  #sheet.add_row [""]
+  #visit_count_spanned_row "Amount Invoiced", :header, 0, visit_count, sheet, styles
   
   #amount received
-  sheet.add_row [""]
-  visit_count_spanned_row "Amount Received", :header, 0, visit_count, sheet, styles
+  #sheet.add_row [""]
+  #visit_count_spanned_row "Amount Received", :header, 0, visit_count, sheet, styles
   
   #date received
-  sheet.add_row [""]
-  visit_count_spanned_row "Date Received", :header, 0, visit_count, sheet, styles
+  #sheet.add_row [""]
+  #visit_count_spanned_row "Date Received", :header, 0, visit_count, sheet, styles
   
 end

@@ -17,6 +17,7 @@ class MoveArmsToProtocols < ActiveRecord::Migration
 
   def up
     add_column :arms, :protocol_id, :integer
+    Arm.reset_column_information
     Arm.all.each do |arm|
       arm.update_attribute(:protocol_id, arm.service_request.protocol_id)
     end

@@ -25,7 +25,7 @@ class LineItem < ActiveRecord::Base
   after_destroy :remove_procedures
 
   # TODO: order by date/id instead of just by date?
-  default_scope :order => 'id ASC'
+  default_scope :order => 'line_items.id ASC'
 
   def applicable_rate
     pricing_map         = self.service.displayed_pricing_map
@@ -184,4 +184,3 @@ class LineItem < ActiveRecord::Base
     end
   end
 end
-#362

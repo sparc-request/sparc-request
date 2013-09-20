@@ -114,15 +114,13 @@ describe "review page", :js => true do
     context 'epic emails' do
 
       before :each do
-        project.project_roles.first.update_attributes(epic_access: true)
-        EpicRight.create(:project_role_id => project.project_roles.first.id, :right => 'view_rights')
-
         service2.update_attributes(send_to_epic: true)
         clear_emails
         find(:xpath, "//a/img[@alt='Confirm_request']/..").click
         find(:xpath, "//button/span[text()='No']/..").click
         wait_for_javascript_to_finish
         @email = all_emails.find { |email| email.subject == "Epic Rights Approval"}
+        service_request.update_attributes(status: 'submitted')
       end
 
       it 'should send an email to the Epic admins' do
@@ -181,27 +179,12 @@ describe "review page", :js => true do
           click_link "Send to Epic"
           page.should have_content "Study has been sent to Epic"
         end
-      end
-    end
 
-    context 'with no epic user access' do
-      before :each do
-        project.project_roles.first.update_attributes(epic_access: false)
-        service2.update_attributes(send_to_epic: true)
-
-        clear_emails
-        find(:xpath, "//a/img[@alt='Confirm_request']/..").click
-        find(:xpath, "//button/span[text()='No']/..").click
-        wait_for_javascript_to_finish
-        @email = all_emails.find { |email| email.subject == "Epic Rights Approval"}
-      end
-
-      it "should not send emails for approval" do
-        @email.should eq(nil)
-      end
-
-      it "should display that the primary pi doesn't have access" do
-        page.should have_content "Unable to send study for approval. Primary PI does not have Epic Access on Study."
+        it "should not send services missing cpt and cdm codes" do
+          visit_email @email
+          click_link "Send to Epic"
+          page.should have_content "#{service2.name} does not have a CDM or CPT code."
+        end
       end
     end
   end

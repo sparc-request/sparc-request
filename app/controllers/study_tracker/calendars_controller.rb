@@ -39,20 +39,16 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
     @imaging   = Organization.tagged_with("imaging").first
 
     @subject = calendar.subject
-    @appointments = calendar.appointments.includes(:visit_group).sort{|x,y| x.visit_group.position <=> y.visit_group.position }
+    @appointments = calendar.appointments.sort{|x,y| x.position_switch <=> y.position_switch }
 
     
     @default_core = (cookies['current_core'] ? Organization.find(cookies['current_core']) : @nursing)
 
-    @uncompleted_appointments = @appointments.reject{|x| x.completed?(@default_core.id) }
+    @uncompleted_appointments = @appointments.reject{|x| x.completed_for_core?(@default_core.id) }
+    @completed_appointments = @appointments.select{|x| x.completed?}
     @default_appointment = @uncompleted_appointments.first || @appointments.first
 
-    @completed_nursing = @appointments.select{|x| x.completed?(@nursing)}
-    @completed_lab = @appointments.select{|x| x.completed?(@lab)}
-    @completed_imaging = @appointments.select{|x| x.completed?(@imaging)}
-    @completed_nutrition = @appointments.select{|x| x.completed?(@nutrition)}
-
     default_procedures = @default_appointment.procedures.select{|x| x.core == @nursing}
-    @default_subtotal = @default_appointment.completed?(@default_core.id) ? default_procedures.sum{|x| x.total} : 0.00
+    @default_subtotal = @default_appointment.completed_for_core?(@default_core.id) ? default_procedures.sum{|x| x.total} : 0.00
   end
 end

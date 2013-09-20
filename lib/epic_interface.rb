@@ -42,12 +42,15 @@ end
 class EpicInterface
   class Error < RuntimeError; end
 
+  attr_accessor :errors
+
   # Create a new EpicInterface
   def initialize(config)
     logfile = File.join(Rails.root, '/log/', "epic-#{Rails.env}.log")
     logger = ActiveSupport::BufferedLogger.new(logfile)
 
     @config = config
+    @errors = {}
 
     # TODO: grab these from the WSDL
     @namespace = @config['namespace'] || 'urn:ihe:qrph:rpe:2009'
@@ -322,8 +325,26 @@ class EpicInterface
 
   def emit_procedures(xml, study, arm, visit_group, cycle)
     arm.line_items.each do |line_item|
+      # We want to skip line items contained in a service request that is still in first draft
+      next if ['first_draft', 'draft'].include?(line_item.service_request.status)
       service = line_item.service
       next unless service.send_to_epic
+
+      #service_code_system = nil
+      if not service.cdm_code.blank? then
+        service_code = service.cdm_code
+        service_code_system = "CDM"
+      elsif not service.cpt_code.blank? then
+        service_code = service.cpt_code
+        service_code_system = "CPT"
+      else
+        # Skip this service, since it has neither a CPT code nor a CDM
+        # code and add to an error list to warn the user
+        error_string = "#{service.name} does not have a CDM or CPT code."
+        @errors[:no_code] = [] unless @errors[:no_code]
+        @errors[:no_code] << error_string unless @errors[:no_code].include?(error_string)
+        next
+      end
 
       liv = LineItemsVisit.for(arm, line_item)
       visit = Visit.for(liv, visit_group)
@@ -333,18 +354,6 @@ class EpicInterface
         [ nil,  visit.research_billing_qty ],
         [ 'Q1', visit.insurance_billing_qty ],
       ]
-
-      if service.cdm_code then
-        service_code = service.cdm_code
-        service_code_system = "CDM"
-      elsif service.cpt_code then
-        service_code = service.cpt_code
-        service_code_system = "CPT"
-      else
-        # Skip this service, since it has neither a CPT code nor a CDM
-        # code
-        next
-      end
 
       billing_modifiers.each do |modifier, qty|
 

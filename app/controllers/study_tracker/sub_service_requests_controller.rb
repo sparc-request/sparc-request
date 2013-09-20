@@ -25,6 +25,10 @@ class StudyTracker::SubServiceRequestsController < StudyTracker::BaseController
 
     # "Preload" the intial view of the payments tab with a blank form row
     @sub_service_request.payments.build if @sub_service_request.payments.blank?
+
+    # min start date and max end date
+    @min_start_date = @sub_service_request.audits.where(:audited_changes => YAML.dump({"in_work_fulfillment" => [nil, true]})).first.created_at.utc
+    @max_end_date = Time.now.utc
   end
 
   def service_calendar

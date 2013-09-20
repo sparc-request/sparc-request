@@ -18,19 +18,12 @@
           = f.select :status, options_for_select(["Active", "Completed", "Early Term", "Screen Fail"], f.try(:object).try(:status)), :include_blank => "--Choose a Status--"
   #controls
     %p Please select a visit:
-    = select_tag :visit, options_for_select(appointment_visits(@appointments), selected_key = "##{@default_appointment.visit_group.position}: #{@default_appointment.visit_group.name}"), :class => 'clinical_select_data'
+    = select_tag :visit, options_for_select(appointment_visits(@appointments), selected_key = "##{@default_appointment.position_switch}: #{@default_appointment.name_switch}"), :class => 'clinical_select_data'
   %p= link_to "-- Show Dashboard --", 'javascript:void(0);', :class => "ui-state-active dashboard_link"
   #dashboard_container
     #dashboard{:style => "display:none;"}
-      %p.save_alert{:style => "text-align:center; margin-bottom:-10px; display:none; color:red; font-weight:bold;"} You must save your changes for the dashboard to be updated.
-      %h3 Nursing:
-      = render :partial => "dashboard_table", :locals => {:completed_appointments => @completed_nursing, :core => @nursing}
-      %h3 Laboratory:
-      = render :partial => "dashboard_table", :locals => {:completed_appointments => @completed_lab, :core => @lab}
-      %h3 Imaging:
-      = render :partial => "dashboard_table", :locals => {:completed_appointments => @completed_imaging, :core => @imaging}
-      %h3 Nutrition:
-      = render :partial => "dashboard_table", :locals => {:completed_appointments => @completed_nutrition, :core => @nutrition}
+      %p.save_alert{:style => "text-align:center; margin-bottom:5px; display:none; color:red; font-weight:bold;"} You must save your changes for the dashboard to be updated.
+      = render :partial => "dashboard_table", :locals => {:completed_appointments => @completed_appointments}
 
   %div{:style => "margin: 25px 0px;"}
     = f.fields_for :calendar do |calendar_form|
@@ -55,7 +48,10 @@
                       = ac_form.datepicker :formatted_completed_date, size: 18, dateFormat: "m/dd/yy"
                 %tr.ui-widget-header
                   %th Procedure
-                  %th Completed
+                  %th
+                    Completed
+                    %a.check_all.ui-button.ui-state-default.ui-corner-all.ui-button-icon-only{:style => "margin:3px auto 0;display:block;height:22px;"}
+                      %span.ui-icon.ui-icon-check
                   %th R Quantity
                   %th T Quantity
                   %th Unit Cost
@@ -71,7 +67,7 @@
                       %td.unit_cost_cell.text-center= number_to_currency(procedure_form.object.cost)
                       %td.procedure_total_cell.text-center= number_to_currency(procedure_form.object.total)
                   - else
-                    %tr.fields{:style => "display:false;"}
+                    %tr.fields{:style => "display:none;"}
                 %tr.new_procedure_wrapper{:'data-appointment_index' => appointment_index}
                 %tr.grand_total_row
                   %td{:style => "font-weight:bold;"} Grand Total

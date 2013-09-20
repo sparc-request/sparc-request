@@ -295,5 +295,4 @@ class SubServiceRequest < ActiveRecord::Base
       SurveyNotification.service_survey(available_surveys, requester, self).deliver
     end
   end
-
 end

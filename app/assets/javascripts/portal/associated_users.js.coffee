@@ -34,6 +34,13 @@ $(document).ready ->
         Sparc.associated_users.redoCredentials()
       )
 
+      $(document).on('click', '.epic_access', ->
+        if $(this).val() == "true"
+          $('.epic_access_rights').show()
+        else
+          $('.epic_access_rights').hide()
+        )
+
       # Set the rights if the role is 'pi' or 'business-grants-manager'
       # and disable all other radio buttons if 'pi'
       $('#project_role_role').live('change', ->
@@ -249,5 +256,11 @@ $(document).ready ->
       else
         $('.user_credentials').attr('name', 'user[credentials]')
         $('#credentials_other').remove()
+
+    showEpicRights: (display) ->
+      if display == true
+        $('.epic_access_rights').show()
+      else
+        $('.epic_access_rights').hide()
 
   }

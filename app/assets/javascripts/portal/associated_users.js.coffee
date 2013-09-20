@@ -34,12 +34,8 @@ $(document).ready ->
         Sparc.associated_users.redoCredentials()
       )
 
-      $(document).on('click', '.epic_access', ->
-        if $(this).val() == "true"
-          $('.epic_access_rights').show()
-        else
-          $('.epic_access_rights').hide()
-        )
+      $(document).on 'click', '.epic_access', ->
+        Sparc.associated_users.showEpicRights($(this).val())
 
       # Set the rights if the role is 'pi' or 'business-grants-manager'
       # and disable all other radio buttons if 'pi'
@@ -70,6 +66,7 @@ $(document).ready ->
               data: {protocol_id: protocol_id, identity_id: user_id, sub_service_request_id: sub_service_request_id}
               success: ->
                 $('.edit-associated-user-dialog').dialog('open')
+                Sparc.associated_users.showEpicRights($('.epic_access:checked').val())
               error: (request, status, error) ->
                 $().toastmessage("showMessage", {
                   type: "error"
@@ -258,7 +255,7 @@ $(document).ready ->
         $('#credentials_other').remove()
 
     showEpicRights: (display) ->
-      if display == true
+      if display == "true"
         $('.epic_access_rights').show()
       else
         $('.epic_access_rights').hide()

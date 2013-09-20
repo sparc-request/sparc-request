@@ -203,15 +203,8 @@ class Protocol < ActiveRecord::Base
     save(validate: false)
   end
 
-  def has_epic_users
-    unless self.primary_pi_project_role.epic_access
-      self.last_epic_push_time = nil
-      self.last_epic_push_status = 'no_users'
-      save(validate: false)
-      return false
-    end
-
-    return true
+  def ensure_epic_user
+    self.primary_pi_project_role.set_epic_rights
   end
 
   # Returns true if there is a push to epic in progress, false

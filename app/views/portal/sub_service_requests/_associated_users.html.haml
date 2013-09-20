@@ -57,6 +57,7 @@
           url: "/portal/associated_users/new",
           data: {user_id: ui.item.value, protocol_id: $('.associated-user-button').data('protocol_id'), sub_service_request_id: sub_service_request_id},
           success: function() {
+            Sparc.associated_users.showEpicRights($('.epic_access:checked:visible').val());
           },
         })
       },

@@ -4,7 +4,7 @@ class VisitGroup < ActiveRecord::Base
 
   belongs_to :arm
   has_many :visits, :dependent => :destroy
-  has_many :appointments, :dependent => :destroy
+  has_many :appointments
   attr_accessible :name
   attr_accessible :position
   attr_accessible :arm_id
@@ -13,6 +13,7 @@ class VisitGroup < ActiveRecord::Base
   acts_as_list :scope => :arm
 
   after_create :set_default_name
+  before_destroy :remove_appointments
 
   def set_default_name
     if name.nil? || name == ""
@@ -22,6 +23,20 @@ class VisitGroup < ActiveRecord::Base
 
   def <=> (other_vg)
     return self.day <=> other_vg.day
+  end
+
+
+  private
+
+  def remove_appointments
+    appointments = self.appointments
+    appointments.each do |app|
+      if app.completed?
+        app.update_attributes(position: self.position, name: self.name, visit_group_id: nil)
+      else
+        app.destroy
+      end
+    end
   end
 
 end

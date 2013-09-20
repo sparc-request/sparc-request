@@ -74,6 +74,8 @@ class Procedure < ActiveRecord::Base
   def should_be_displayed
     if self.service
       return true
+    elsif self.appointment.visit_group_id.nil?
+      return true if self.completed
     else
       if (self.visit.research_billing_qty && self.visit.research_billing_qty > 0) or (self.visit.insurance_billing_qty && self.visit.insurance_billing_qty > 0)
         return true

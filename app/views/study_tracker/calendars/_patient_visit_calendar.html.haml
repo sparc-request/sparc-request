@@ -18,7 +18,7 @@
           = f.select :status, options_for_select(["Active", "Completed", "Early Term", "Screen Fail"], f.try(:object).try(:status)), :include_blank => "--Choose a Status--"
   #controls
     %p Please select a visit:
-    = select_tag :visit, options_for_select(appointment_visits(@appointments), selected_key = "##{@default_appointment.visit_group.position}: #{@default_appointment.visit_group.name}"), :class => 'clinical_select_data'
+    = select_tag :visit, options_for_select(appointment_visits(@appointments), selected_key = "##{@default_appointment.position_switch}: #{@default_appointment.name_switch}"), :class => 'clinical_select_data'
   %p= link_to "-- Show Dashboard --", 'javascript:void(0);', :class => "ui-state-active dashboard_link"
   #dashboard_container
     #dashboard{:style => "display:none;"}

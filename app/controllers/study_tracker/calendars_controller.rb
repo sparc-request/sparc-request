@@ -39,7 +39,7 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
     @imaging   = Organization.tagged_with("imaging").first
 
     @subject = calendar.subject
-    @appointments = calendar.appointments.includes(:visit_group).sort{|x,y| x.visit_group.position <=> y.visit_group.position }
+    @appointments = calendar.appointments.sort{|x,y| x.position_switch <=> y.position_switch }
 
     
     @default_core = (cookies['current_core'] ? Organization.find(cookies['current_core']) : @nursing)

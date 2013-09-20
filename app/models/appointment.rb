@@ -9,6 +9,8 @@ class Appointment < ActiveRecord::Base
   has_many :appointment_completions, :dependent => :destroy
   attr_accessible :visit_group_id
   attr_accessible :completed_at
+  attr_accessible :position
+  attr_accessible :name
 
   attr_accessible :procedures_attributes
   attr_accessible :appointment_completions_attributes
@@ -25,6 +27,14 @@ class Appointment < ActiveRecord::Base
       procedure = self.procedures.build(:line_item_id => line_item.id, :visit_id => visit.id)
       procedure.save
     end
+  end
+
+  def position_switch
+    self.visit_group ? self.visit_group.position : self.position
+  end
+
+  def name_switch
+    self.visit_group ? self.visit_group.name : self.name
   end
 
   def completed?

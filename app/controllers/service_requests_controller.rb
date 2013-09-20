@@ -312,10 +312,9 @@ class ServiceRequestsController < ApplicationController
     # approve_epic_rights.
     if USE_EPIC
       if @protocol.should_push_to_epic?
-        if @protocol.has_epic_users
-          @protocol.awaiting_approval_for_epic_push
-          send_epic_notification_for_user_approval(@service_request)
-        end
+        @protocol.ensure_epic_user
+        @protocol.awaiting_approval_for_epic_push
+        send_epic_notification_for_user_approval(@service_request)
       end
     end
 

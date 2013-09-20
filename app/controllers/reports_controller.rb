@@ -81,7 +81,9 @@ class ReportsController < ApplicationController
     @audit_trail += @ssr.notes.map{|x| x.audit_trail start_date, end_date}
     @audit_trail += @ssr.payments.map{|x| x.audit_trail start_date, end_date}
     @audit_trail += @ssr.cover_letters.map{|x| x.audit_trail start_date, end_date}
-    @audit_trail += @ssr.subsidy.audit_trail start_date, end_date
+    if @ssr.subsidy
+      @audit_trail += @ssr.subsidy.audit_trail start_date, end_date
+    end
     @audit_trail += @ssr.reports.map{|x| x.audit_trail start_date, end_date}
   
     @ssr.service_request.protocol.arms.each do |arm|
@@ -90,8 +92,10 @@ class ReportsController < ApplicationController
       @audit_trail += arm.subjects.map{|x| x.audit_trail start_date, end_date}
 
       arm.subjects.each do |subject|
-        @audit_trail += subject.calendar.audit_trail start_date, end_date
-        @audit_trail += subject.calendar.appointments.map{|x| x.audit_trail start_date, end_date}
+        if subject.calendar
+          @audit_trail += subject.calendar.audit_trail start_date, end_date
+          @audit_trail += subject.calendar.appointments.map{|x| x.audit_trail start_date, end_date}
+        end
         
         subject.calendar.appointments.each do |appointment|
           @audit_trail += appointment.procedures.includes(:service).where("services.organization_id IN (?)", included_cores).map{|x| x.audit_trail start_date, end_date}

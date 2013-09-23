@@ -15,7 +15,7 @@ set :user, "capistrano"
 set :use_sudo, false
 ssh_options[:forward_agent] = true
 
-set :stages, %w(testing demo staging production)
+set :stages, %w(testing demo demo2 staging production)
 set :default_stage, "testing"
 
 after "deploy:update_code", "db:symlink"

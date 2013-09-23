@@ -38,6 +38,25 @@
       .role_other
         = f.text_field :role_other
         %br
+
+      - if USE_EPIC
+        #epic_access
+          %strong= f.label :epic_access, t(:portal_user_form)[:epic_access]
+          %br
+          No
+          = f.radio_button :epic_access, false, :class => 'epic_access'
+          Yes
+          = f.radio_button :epic_access, true, :class => 'epic_access'
+
+        .epic_access_rights
+          Check All That Apply:
+          = f.fields_for :epic_rights do |fer|
+            .pair
+              = fer.check_box "_destroy", {:checked => !fer.object.new, :class => 'epic_access_check_box'}, false, true
+              = fer.hidden_field :right, :value => fer.object.right
+              = fer.label "_destroy", EPIC_RIGHTS[fer.object.right]
+
+
       .era_commons_name
         %strong
           = label_tag "identity[era_commons_name]", t(:portal_user_form)[:era]

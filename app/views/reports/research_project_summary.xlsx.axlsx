@@ -16,8 +16,15 @@ def smart_merge start_alpha, end_alpha, pos, sheet
   sheet.merge_cells("#{start_alpha}#{pos}:#{end_alpha}#{pos}")
 end
 
-def visit_header_row visit_names, sheet, style
-  data = ["PID", "Status"] + visit_names + ["Totals"]
+def visit_header_row visit_names, visit_count, sheet, style
+  data = ["PID", "Status"] 
+  data += visit_names 
+  
+  (visit_count - visit_names.count).times do
+    data += [' ']
+  end
+
+  data += ["Totals"]
   sheet.add_row data, :style => style
 end
 
@@ -26,7 +33,16 @@ def subject_visit_row subjects, visit_count, sheet, styles
     styling = [nil, nil]
     (subject[:visits].count+1).times{ styling << styles[:default] }
 
-    sheet.add_row [subject[:pid], subject[:status]] + subject[:visits] + [subject[:visits].sum]       #, :style => styling
+    row = [subject[:pid], subject[:status]]
+    row += subject[:visits]
+
+    (visit_count - subject[:visits].count).times do
+      row += [' ']
+    end
+
+    row += [subject[:visits].sum]
+    sheet.add_row row 
+    #sheet.add_row [subject[:pid], subject[:status]] + subject[:visits] + [subject[:visits].sum]       #, :style => styling
   end
 end
 
@@ -34,7 +50,7 @@ def visit_subtotals_row subjects, visit_count, sheet, styles
   totals = []
   styling = [styles[:header], nil]
   visit_count.times do |index|
-    totals[index] = subjects.sum{|subject| subject[:visits][index]}
+    totals[index] = subjects.sum{|subject| subject[:visits][index].nil? ? 0.0 : subject[:visits][index]}
     #styling << styles[:default] # uncomment for border
   end
   sheet.add_row ["Visit Subtotals", ""] + totals + [totals.sum], :style => styling
@@ -106,38 +122,41 @@ wb.add_worksheet(name: "Summary") do |sheet|
   #begin displaying visit information
 
   #generating temporary data, this would be replaced with real data
-  visit_names = []
-  visit_count.times {|num| visit_names << "Visit #{num+1}"}
+  #visit_names = []
+  #visit_count.times {|num| visit_names << "Visit #{num+1}"}
 
-  def build_subject_data(arms)
+  def build_subject_data(arm, visit_count)
     subjects = []
-    arms.each do |arm|
-      arm.subjects.each do |subject|
-        visits = []
-        subject.calendar.appointments.each do |appointment|
-          subtotal = appointment.completed? ? appointment.procedures.sum{|x| x.total} : 0.00
-          visits << subtotal
-        end
-            
-        subjects << {:pid => subject.mrn, :status => subject.status, :visits => visits}
+    arm.subjects.each do |subject|
+      visits = []
+      subject.calendar.appointments.each do |appointment|
+        subtotal = appointment.completed? ? appointment.procedures.sum{|x| x.total} : 0.00
+        visits << subtotal
       end
+
+      subjects << {:pid => subject.mrn, :status => subject.status, :visits => visits}
     end
 
     subjects
   end
 
-  subjects = build_subject_data(@protocol.arms)
+  all_subjects = []
+  @protocol.arms.each do |arm|
+    subjects = build_subject_data(arm, visit_count)
+    all_subjects << subjects
 
-  #visit information header
-  visit_header_row visit_names, sheet, styles[:header]
+    #visit information header
+    visit_names = arm.visit_groups.map(&:name)
+    visit_header_row visit_names, visit_count, sheet, styles[:header]
 
-  #subject visit rows
-  subject_visit_row subjects, visit_count, sheet, styles
+    #subject visit rows
+    subject_visit_row subjects, visit_count, sheet, styles
+  end
   
   sheet.add_row [""]
 
   #visit subtotals row
-  visits_subtotal = visit_subtotals_row subjects, visit_count, sheet, styles
+  visits_subtotal = visit_subtotals_row all_subjects.flatten, visit_count, sheet, styles
   
   sheet.add_row [""]
 

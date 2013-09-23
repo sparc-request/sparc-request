@@ -29,7 +29,7 @@ class Procedure < ActiveRecord::Base
   # clinical work fulfillment.
   def default_r_quantity
     service_quantity = self.r_quantity
-    if self.r_quantity.nil?
+    unless self.appointment.visit_group_id.nil?
       if self.service
         service_quantity ||= 0
       else
@@ -44,7 +44,7 @@ class Procedure < ActiveRecord::Base
   # clinical work fulfillment.
   def default_t_quantity
     service_quantity = self.t_quantity
-    if self.t_quantity.nil?
+    unless self.appointment.visit_group_id.nil?
       if self.service
         service_quantity ||= 0
       else

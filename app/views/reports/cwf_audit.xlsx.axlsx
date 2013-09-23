@@ -1,3 +1,5 @@
+field_replacements = {"external_subject_id" => "PARTICIPANT ID"}
+
 wb = xlsx_package.workbook
 
 wb.add_worksheet(name: "Audit report") do |sheet|
@@ -35,7 +37,13 @@ wb.add_worksheet(name: "Audit report") do |sheet|
       end
 
       row << audit.action.humanize
-      row << field.humanize.upcase
+
+      if field_replacements[field]
+        row << field_replacements[field]
+      else
+        row << field.humanize.upcase
+      end
+
       row << change
       sheet.add_row row
     end

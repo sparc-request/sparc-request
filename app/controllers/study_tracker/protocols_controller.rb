@@ -18,4 +18,18 @@ class StudyTracker::ProtocolsController < StudyTracker::BaseController
       redirect_to study_tracker_sub_service_request_path(@sub_service_request)
     end
   end
+
+  def update_billing_business_manager_static_email
+    @protocol = Protocol.find params[:id]
+
+    if @protocol.update_attributes(params[:protocol])
+      respond_to do |format|
+        format.js { render :js => "$('.billing_business_message').removeClass('uncheck').addClass('check')" }
+      end
+    else
+      respond_to do |format|
+        format.js { render :js => "$('.billing_business_message').removeClass('check').addClass('uncheck')" }
+      end
+    end
+  end
 end

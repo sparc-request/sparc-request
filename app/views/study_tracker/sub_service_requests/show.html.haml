@@ -23,10 +23,15 @@
             .export_to_excel_button= link_to t(:admin_dashboard)[:export_link], service_request_path(@sub_service_request.service_request, :format => :xlsx)
         %tr
           %th= t(:admin_dashboard)[:routing]
-          %td{:colspan => 4}
+          %td
             = text_field_tag "sub_service_request[#{@sub_service_request.id}][routing]", @sub_service_request.routing, :id => 'ssr_routing', :"data-ssr_id" => @sub_service_request.id
             = link_to t(:study_tracker)[:save], "javascript:void();", :id => 'ssr_save'
             %span.routing_message.icon
+          %th= t(:admin_dashboard)[:billing_business]
+          %td{:colspan => 2}
+            = text_field_tag "protocol[#{@protocol.id}][billing_business_manager_static_email]", @protocol.billing_business_manager_email, :id => "protocol_billing_business_manager_static_email", :"data-protocol_id" => @protocol.id
+            = link_to t(:study_tracker)[:save], "javascript:void();", :id => 'protocol_billing_business_manager_static_email_save'
+            %span.billing_business_message.icon
 
 #study_tracker_tabs
   %ul

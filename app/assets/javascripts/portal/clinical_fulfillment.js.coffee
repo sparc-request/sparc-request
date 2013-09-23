@@ -171,6 +171,18 @@ $(document).ready ->
       url: "/clinical_work_fulfillment/sub_service_requests/#{ssr_id}"
       data: { "sub_service_request[routing]": routing }
     return false
+  
+  ####Sub Service Request Save button
+  $('#protocol_billing_business_manager_static_email_save').button()
+
+  $('#protocol_billing_business_manager_static_email_save').on 'click', -> 
+    billing_business_manager_static_email = $('#protocol_billing_business_manager_static_email').val()
+    protocol_id = $('#protocol_billing_business_manager_static_email').data('protocol_id')
+    $.ajax
+      type: "PUT"
+      url: "/clinical_work_fulfillment/protocols/#{protocol_id}/update_billing_business_manager_static_email"
+      data: { "protocol[billing_business_manager_static_email]": billing_business_manager_static_email }
+    return false
 
 
   ####Payments logic (Andrew)

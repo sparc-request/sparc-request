@@ -15,6 +15,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
   def edit
     @identity = Identity.find params[:identity_id]
     @protocol_role = ProjectRole.find params[:id]
+    @protocol_role.populate_for_edit
     @sub_service_request = SubServiceRequest.find params[:sub_service_request_id] if params[:sub_service_request_id]
     respond_to do |format|
       format.js
@@ -26,6 +27,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
   def new
     @identity = Identity.find params[:user_id]
     @protocol_role = @protocol.project_roles.build(:identity_id => @identity.id)
+    @protocol_role.populate_for_edit
     if params[:sub_service_request_id]
       @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     end
@@ -64,6 +66,8 @@ class Portal::AssociatedUsersController < Portal::BaseController
     @identity = Identity.find @protocol_role.identity_id
     @identity.update_attributes params[:identity]
     @protocol_role.assign_attributes params[:project_role]
+    @protocol_role.populate_for_edit
+
     if @protocol_role.validate_one_primary_pi
       @protocol_role.save
       @protocol.emailed_associated_users.each do |project_role|

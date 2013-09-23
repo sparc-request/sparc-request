@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130902161348) do
+ActiveRecord::Schema.define(:version => 20130920184629) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -51,12 +51,24 @@ ActiveRecord::Schema.define(:version => 20130902161348) do
   add_index "answers", ["api_id"], :name => "uq_answers_api_id", :unique => true
   add_index "answers", ["question_id"], :name => "index_answers_on_question_id"
 
+  create_table "appointment_completions", :force => true do |t|
+    t.datetime "completed_date"
+    t.integer  "appointment_id"
+    t.integer  "organization_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  add_index "appointment_completions", ["appointment_id"], :name => "index_appointment_completions_on_appointment_id"
+  add_index "appointment_completions", ["organization_id"], :name => "index_appointment_completions_on_organization_id"
+
   create_table "appointments", :force => true do |t|
     t.integer  "calendar_id"
-    t.datetime "completed_at"
     t.datetime "created_at",     :null => false
     t.datetime "updated_at",     :null => false
     t.integer  "visit_group_id"
+    t.integer  "position"
+    t.string   "name"
   end
 
   add_index "appointments", ["calendar_id"], :name => "index_appointments_on_calendar_id"
@@ -365,12 +377,12 @@ ActiveRecord::Schema.define(:version => 20130902161348) do
     t.integer  "sub_service_request_id"
     t.integer  "service_id"
     t.string   "ssr_id"
-    t.boolean  "optional"
+    t.boolean  "optional",               :default => true
     t.integer  "quantity"
     t.datetime "complete_date"
     t.datetime "in_process_date"
-    t.datetime "created_at",                            :null => false
-    t.datetime "updated_at",                            :null => false
+    t.datetime "created_at",                               :null => false
+    t.datetime "updated_at",                               :null => false
     t.datetime "deleted_at"
     t.integer  "units_per_quantity",     :default => 1
   end
@@ -590,6 +602,8 @@ ActiveRecord::Schema.define(:version => 20130902161348) do
     t.string   "funding_source_other"
     t.datetime "last_epic_push_time"
     t.string   "last_epic_push_status"
+    t.datetime "start_date"
+    t.datetime "end_date"
   end
 
   add_index "protocols", ["next_ssr_id"], :name => "index_protocols_on_next_ssr_id"
@@ -744,8 +758,6 @@ ActiveRecord::Schema.define(:version => 20130902161348) do
     t.integer  "service_requester_id"
     t.text     "notes"
     t.boolean  "approved"
-    t.datetime "start_date"
-    t.datetime "end_date"
     t.integer  "subject_count"
     t.datetime "consult_arranged_date"
     t.datetime "pppv_complete_date"

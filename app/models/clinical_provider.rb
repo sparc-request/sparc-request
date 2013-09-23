@@ -1,4 +1,5 @@
 class ClinicalProvider < ActiveRecord::Base
+  audited
 
   belongs_to :organization
   belongs_to :identity

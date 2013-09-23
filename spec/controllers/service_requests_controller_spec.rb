@@ -232,6 +232,8 @@ describe ServiceRequestsController do
 
         service.update_attributes(send_to_epic: false)
         service2.update_attributes(send_to_epic: true)
+        protocol = service_request.protocol
+        protocol.project_roles.first.update_attributes(epic_access: true)
 
         deliverer = double()
         deliverer.should_receive(:deliver)

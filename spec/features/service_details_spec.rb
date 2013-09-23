@@ -16,23 +16,24 @@ describe "visit service details page should always show start and end date for o
 
     numerical_day = 10
     it "should save the start date" do
-      old_date = service_request.start_date
+      old_date = project.start_date
       find('#start_date').click
+      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # go forward one month
       page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
       wait_for_javascript_to_finish
       find(:xpath, "//a/img[@alt='Savecontinue']/..").click
       wait_for_javascript_to_finish
-      old_date.should_not eq(ServiceRequest.find(service_request.id).start_date)
+      old_date.should_not eq(Protocol.find(project.id).start_date)
     end
     it "should save the end date" do
-      old_date = service_request.end_date
+      old_date = project.end_date
       find('#end_date').click
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # go forward one month
       page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
       wait_for_javascript_to_finish
       find(:xpath, "//a/img[@alt='Savecontinue']/..").click
       wait_for_javascript_to_finish
-      old_date.should_not eq(ServiceRequest.find(service_request.id).end_date)
+      old_date.should_not eq(Protocol.find(project.id).end_date)
     end
   end
 end
@@ -51,23 +52,24 @@ describe "visit service details page should always show start and end date for p
 
     numerical_day = 10
     it "should save the start date" do
-      old_date = service_request.start_date
+      old_date = project.start_date
       find('#start_date').click
+      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # go forward one month
       page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
       wait_for_javascript_to_finish
       find(:xpath, "//a/img[@alt='Savecontinue']/..").click
       wait_for_javascript_to_finish
-      old_date.should_not eq(ServiceRequest.find(service_request.id).start_date)
+      old_date.should_not eq(Protocol.find(project.id).start_date)
     end
     it "should save the end date" do
-      old_date = service_request.end_date
+      old_date = project.end_date
       find('#end_date').click
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # go forward one month
       page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
       wait_for_javascript_to_finish
       find(:xpath, "//a/img[@alt='Savecontinue']/..").click
       wait_for_javascript_to_finish
-      old_date.should_not eq(ServiceRequest.find(service_request.id).end_date)
+      old_date.should_not eq(Protocol.find(project.id).end_date)
     end
   end
 end
@@ -87,23 +89,24 @@ describe "submitting a in form", :js => true do
   describe "entering dates" do
     numerical_day = 10
     it "should save the start date" do
-      old_date = service_request.start_date
+      old_date = project.start_date
       find('#start_date').click
+      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # go forward one month
       page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
       wait_for_javascript_to_finish
       find(:xpath, "//a/img[@alt='Savecontinue']/..").click
       wait_for_javascript_to_finish
-      old_date.should_not eq(ServiceRequest.find(service_request.id).start_date)
+      old_date.should_not eq(Protocol.find(project.id).start_date)
     end
     it "should save the end date" do
-      old_date = service_request.end_date
+      old_date = project.end_date
       find('#end_date').click
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # go forward one month
       page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
       wait_for_javascript_to_finish
       find(:xpath, "//a/img[@alt='Savecontinue']/..").click
       wait_for_javascript_to_finish
-      old_date.should_not eq(ServiceRequest.find(service_request.id).end_date)
+      old_date.should_not eq(Protocol.find(project.id).end_date)
     end
   end
 

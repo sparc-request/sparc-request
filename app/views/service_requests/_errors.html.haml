@@ -2,8 +2,11 @@
   .grid_12
     #errorExplanation
       %h2
-        = pluralize(session[:errors].count, "error")
-        prohibited this service request from being saved:
+        - if @epic_errors
+          The services below were not sent to Epic:
+        - else
+          = pluralize(session[:errors].count, "error")
+          prohibited this service request from being saved:
       %ul
         - session[:errors].each do |key, msgs|
           - msgs.each do |msg|

@@ -26,6 +26,10 @@ class Visit < ActiveRecord::Base
         visit_group.id)
   end
 
+  def audit_label
+    "#{line_items_visit.line_item.service.name} on #{visit_group.name}"
+  end
+
   def cost(per_unit_cost = self.line_items_visit.per_unit_cost(self.line_items_visit.quantity_total))
     li = self.line_items_visit.line_item
     if li.applicable_rate == "N/A"

@@ -19,6 +19,7 @@ class Organization < ActiveRecord::Base
   has_many :services, :dependent => :destroy
   has_many :sub_service_requests, :dependent => :destroy
   has_many :available_statuses, :dependent => :destroy
+  has_many :appointment_completions
 
   attr_accessible :name
   attr_accessible :order
@@ -107,7 +108,7 @@ class Organization < ActiveRecord::Base
     all_services = []
     self.all_children.each do |child|
       if child.services
-        all_services = all_services | child.services
+        all_services = all_services | child.services.sort_by{|x| x.name}
       end
     end
 

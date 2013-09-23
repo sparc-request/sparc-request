@@ -1,0 +1,3 @@
+%tr{:class => "appointment #{appointment.id}" }
+  %td= appointment.name_switch
+  %td= number_to_currency(appointment.procedures.sum{|x| x.total})

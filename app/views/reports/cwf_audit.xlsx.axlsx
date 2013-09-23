@@ -1,0 +1,51 @@
+field_replacements = {"external_subject_id" => "PARTICIPANT ID"}
+
+wb = xlsx_package.workbook
+
+wb.add_worksheet(name: "Audit report") do |sheet|
+  # sctr logo
+  img = Rails.root.join("app/assets/images/sctr_logo.png").to_s
+  sheet.add_image(:image_src => img, :noSelect => true, :noMove => true, :hyperlink=>"http://sctr.musc.edu") do |image|
+    image.width = 479
+    image.height = 227
+    image.hyperlink.tooltip = "Click to visit SCTR website"
+    image.start_at 0, 0
+  end
+  
+  #start text below the image
+  16.times {sheet.add_row [""]}
+  
+  @audit_trail.each do |audit|
+    audit.audited_changes.each do |field, values|
+      change = values
+
+      if values.is_a?(Array) 
+        from, to = values
+        next if from.blank? and to.blank? 
+        change = from.blank? ? to : "#{from} => #{to}"
+      end
+
+      row = []
+      row << audit.user.try(:full_name)
+      row << audit.created_at.strftime("%m/%d/%Y")
+      row << audit.created_at.strftime("%I:%M %P")
+      
+      if audit.auditable.respond_to? :audit_label
+        row << audit.auditable.audit_label
+      else
+        row << "#{audit.auditable_type.humanize} #{audit.auditable_id}"
+      end
+
+      row << audit.action.humanize
+
+      if field_replacements[field]
+        row << field_replacements[field]
+      else
+        row << field.humanize.upcase
+      end
+
+      row << change
+      sheet.add_row row
+    end
+  end
+end

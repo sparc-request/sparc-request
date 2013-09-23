@@ -67,8 +67,6 @@ class ServiceRequest < ActiveRecord::Base
   attr_accessible :service_requester_id
   attr_accessible :notes
   attr_accessible :approved
-  attr_accessible :start_date
-  attr_accessible :end_date
   attr_accessible :consult_arranged_date
   attr_accessible :pppv_complete_date
   attr_accessible :pppv_in_process_date
@@ -94,11 +92,12 @@ class ServiceRequest < ActiveRecord::Base
 
   def service_details_page(direction)
     if has_per_patient_per_visit_services? and not (direction == 'back' and status == 'first_draft')
-      if start_date.nil?
+      #TODO why is this being called when you try to unset protocol (don't supply one)
+      if protocol and protocol.start_date.nil?
         errors.add(:start_date, "You must specify the start date of the study.")
       end
 
-      if end_date.nil?
+      if protocol and protocol.end_date.nil?
         errors.add(:end_date, "You must specify the end date of the study.")
       end
     end

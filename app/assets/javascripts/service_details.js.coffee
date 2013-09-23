@@ -14,7 +14,7 @@ $ ->
     constrainInput: true,
     dateFormat: "m/dd/yy",
     showButtonPanel: true,
-    altField: '#service_request_start_date',
+    altField: '#project_start_date, #study_start_date',
     altFormat: 'yy-mm-dd',
 
     beforeShow: (input)->
@@ -36,7 +36,7 @@ $ ->
     constrainInput: true,
     dateFormat: "m/dd/yy",
     showButtonPanel: true,
-    altField: '#service_request_end_date',
+    altField: '#project_end_date, #study_end_date',
     altFormat: 'yy-mm-dd',
 
     beforeShow: (input)->

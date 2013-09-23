@@ -25,7 +25,7 @@ class LineItem < ActiveRecord::Base
   after_destroy :remove_procedures
 
   # TODO: order by date/id instead of just by date?
-  default_scope :order => 'id ASC'
+  default_scope :order => 'line_items.id ASC'
 
   def applicable_rate
     pricing_map         = self.service.displayed_pricing_map
@@ -176,7 +176,7 @@ class LineItem < ActiveRecord::Base
   def remove_procedures
     procedures = self.procedures
     procedures.each do |pro|
-      if pro.has_been_completed
+      if pro.completed?
         pro.update_attributes(service_id: self.service_id, line_item_id: nil, visit_id: nil)
       else
         pro.destroy
@@ -184,4 +184,3 @@ class LineItem < ActiveRecord::Base
     end
   end
 end
-#362

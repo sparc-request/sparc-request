@@ -45,6 +45,7 @@ SparcRails::Application.routes.draw do
     resource :service_calendars do
       member do
         get 'table'
+        get 'merged_calendar'
       end
       collection do
         put 'rename_visit'
@@ -132,7 +133,7 @@ SparcRails::Application.routes.draw do
   end
 
   ##### Study Tracker/Clinical Work Fulfillment Portal#####
-  namespace :study_tracker do
+  namespace :study_tracker, :path => "clinical_work_fulfillment" do
     match 'appointments/add_note' => 'calendars#add_note'
     match 'appointments/add_service' => 'calendars#add_service'
 
@@ -267,6 +268,7 @@ SparcRails::Application.routes.draw do
   resources :reports do
     member do
       get :research_project_summary
+      post :cwf_audit
     end
   end
 

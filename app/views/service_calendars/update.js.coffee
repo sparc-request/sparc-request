@@ -1,5 +1,7 @@
+$("#request_cost_total").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/direct_cost_total')) %>");
 if "<%= @subsidy %>"
   $("#fulfillment_subsidy").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/subsidy')) %>");
+  $("#request_cost_total").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/direct_cost_total')) %>");
 unless "<%= @errors %>" == ""
   alert "<%= @errors %>"
 
@@ -25,4 +27,5 @@ if "<%= @errors %>" == ""
 
     $(".pp_total<%= @arm_id %>").html("<%= display_total_cost_per_arm(@line_items_visit.arm) %>")
     $("#fulfillment_subsidy").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/subsidy')) %>");
+    $("#request_cost_total").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/direct_cost_total')) %>");
 

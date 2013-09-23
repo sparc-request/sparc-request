@@ -27,7 +27,8 @@ class StudyTracker::SubServiceRequestsController < StudyTracker::BaseController
     @sub_service_request.payments.build if @sub_service_request.payments.blank?
 
     # min start date and max end date
-    @min_start_date = @sub_service_request.audits.where(:audited_changes => YAML.dump({"in_work_fulfillment" => [nil, true]})).first.created_at.utc
+    cwf_audit = @sub_service_request.audits.where(:audited_changes => YAML.dump({"in_work_fulfillment" => [nil, true]})).first
+    @min_start_date = cwf_audit.nil? ? "N/A" : cwf_audit.created_at.utc
     @max_end_date = Time.now.utc
   end
 

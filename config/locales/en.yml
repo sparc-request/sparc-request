@@ -882,5 +882,14 @@ en:
       add: "Add document"
       remove: "Remove"
       remove_confirm: "Are you sure you want to delete this document?"
+    audits:
+      no_start_date: "Unable to determine when this request was put into Clinical Work Fulfillment"
+      nursing: "Nursing"
+      laboratory: "Laboratory"
+      imaging: "Imaging"
+      nutrition: "Nutrition"
+      start_date: "Start Date:"
+      end_date: "End Date:"
+      get_report: "Get Report"
 
 

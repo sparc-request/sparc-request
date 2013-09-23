@@ -2,43 +2,45 @@
   %br
   %br
   #audit_form
-    = form_tag cwf_audit_report_path(@sub_service_request, :format => :xlsx) do
-      = label_tag :nursing_included, 'Nursing'
-      = check_box_tag :nursing_included, 1, true
-      %br
-      
-      = label_tag :laboratory_included, 'Laboratory'
-      = check_box_tag :laboratory_included, 1, true
-      %br
-     
-      = label_tag :imaging_included, 'Imaging'
-      = check_box_tag :imaging_included, 1, true
-      %br
-     
-      = label_tag :nutrition_included, 'Nutrition'
-      = check_box_tag :nutrition_included, 1, true
+    - if @min_start_date == "N/A" # we don't know when it started
+      = t(:study_tracker)[:audits][:no_start_date] 
+    - else
+      = form_tag cwf_audit_report_path(@sub_service_request, :format => :xlsx) do
+        = label_tag :nursing_included, t(:study_tracker)[:audits][:nursing] 
+        = check_box_tag :nursing_included, 1, true
+        %br
+        
+        = label_tag :laboratory_included, t(:study_tracker)[:audits][:laboratory]
+        = check_box_tag :laboratory_included, 1, true
+        %br
+       
+        = label_tag :imaging_included, t(:study_tracker)[:audits][:imaging]
+        = check_box_tag :imaging_included, 1, true
+        %br
+       
+        = label_tag :nutrition_included, t(:study_tracker)[:audits][:nutrition]
+        = check_box_tag :nutrition_included, 1, true
 
-      %br
-      %br
-     
-      = hidden_field_tag :min_start_date, @min_start_date.strftime('%B %d, %Y %H:%M:%S')
-      = hidden_field_tag :max_end_date, @max_end_date.strftime('%B %d, %Y %H:%M:%S')
+        %br
+        %br
+       
+        = hidden_field_tag :min_start_date, @min_start_date.strftime('%B %d, %Y %H:%M:%S')
+        = hidden_field_tag :max_end_date, @max_end_date.strftime('%B %d, %Y %H:%M:%S')
 
-      = label_tag :cwf_audit_start_date_input, "Start Date:"
-      = text_field_tag :cwf_audit_start_date_input, nil
-      = hidden_field_tag :cwf_audit_start_date
+        = label_tag :cwf_audit_start_date_input, t(:study_tracker)[:audits][:start_date]
+        = text_field_tag :cwf_audit_start_date_input, nil
+        = hidden_field_tag :cwf_audit_start_date
 
-      %br
-      %br
+        %br
+        %br
 
-      = label_tag :cwf_audit_end_date_input, "End Date:"
-      = text_field_tag :cwf_audit_end_date_input, nil
-      = hidden_field_tag :cwf_audit_end_date
+        = label_tag :cwf_audit_end_date_input, t(:study_tracker)[:audits][:end_date]
+        = text_field_tag :cwf_audit_end_date_input, nil
+        = hidden_field_tag :cwf_audit_end_date
 
-      %br
-      %br
-      
-      = submit_tag "Get report"
-
+        %br
+        %br
+        
+        = submit_tag t(:study_tracker)[:audits][:get_report] 
   %br
   %br

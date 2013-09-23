@@ -29,11 +29,14 @@ class Procedure < ActiveRecord::Base
   # clinical work fulfillment.
   def default_r_quantity
     service_quantity = self.r_quantity
-    if self.service
-      service_quantity ||= 0
-    else
-      service_quantity ||= self.visit.research_billing_qty
+    if self.r_quantity.nil?
+      if self.service
+        service_quantity ||= 0
+      else
+        service_quantity ||= self.visit.research_billing_qty
+      end
     end
+
     service_quantity
   end
 
@@ -41,11 +44,14 @@ class Procedure < ActiveRecord::Base
   # clinical work fulfillment.
   def default_t_quantity
     service_quantity = self.t_quantity
-    if self.service
-      service_quantity ||= 0
-    else
-      service_quantity ||= self.visit.insurance_billing_qty
+    if self.t_quantity.nil?
+      if self.service
+        service_quantity ||= 0
+      else
+        service_quantity ||= self.visit.insurance_billing_qty
+      end
     end
+
     service_quantity
   end
 
@@ -58,14 +64,14 @@ class Procedure < ActiveRecord::Base
       rate_type = pricing_setup.rate_type(funding_source)
       return (pricing_map.full_rate * (pricing_setup.applied_percentage(rate_type) / 100)).to_f
     else
-      return (self.line_item.per_unit_cost(self.visit.research_billing_qty) / 100).to_f
+      return (self.line_item.per_unit_cost(self.r_quantity) / 100).to_f
     end
   end
 
   # Totals up a given row on the visit schedule
   def total
     if self.completed?
-      return self.default_r_quantity * self.cost
+      return self.r_quantity * self.cost
     else
       return 0.00
     end

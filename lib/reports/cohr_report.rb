@@ -87,6 +87,7 @@ class CohrReport < Report
 
               
               next if not ssr.status == 'complete' || ssr.past_statuses.where(:status => 'complete').count > 0
+              next if not ssr.status == 'complete'
               complete_date = li.sub_service_request.past_statuses.try(:last).try(:date)
               next if not complete_date
               next if @from_date and complete_date <= @from_date
@@ -103,7 +104,7 @@ class CohrReport < Report
               end
 
               # TODO: what do I do if there is more than one PI?
-              pi = protocol.project_roles.find_by_role('pi')
+              pi = protocol.project_roles.find_by_role('primary-pi')
               pi_name = pi.try(:identity).try(:full_name)
               requester = sr.service_requester.full_name
               srid = ssr.display_id

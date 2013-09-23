@@ -314,7 +314,7 @@ class ServiceRequestsController < ApplicationController
       if @protocol.should_push_to_epic?
         @protocol.ensure_epic_user
         @protocol.awaiting_approval_for_epic_push
-        send_epic_notification_for_user_approval(@service_request)
+        send_epic_notification_for_user_approval(@protocol)
       end
     end
 
@@ -322,8 +322,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def approve_epic_rights
-    @service_request = ServiceRequest.find params[:id]
-    @protocol = @service_request.protocol
+    @protocol = Protocol.find params[:id]
 
     # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     # TODO: check to ensure that this user is one of the users which has
@@ -334,14 +333,13 @@ class ServiceRequestsController < ApplicationController
     # pushing to epic.  The email will contain a link which calls
     # push_to_epic.
     @protocol.awaiting_final_review_for_epic_push
-    send_epic_notification_for_final_review(@service_request)
+    send_epic_notification_for_final_review(@protocol)
 
     render :formats => [:html]
   end
 
   def push_to_epic
-    @service_request = ServiceRequest.find params[:id]
-    @protocol = @service_request.protocol
+    @protocol = Protocol.find params[:id]
 
     if current_user != @protocol.primary_principal_investigator then
       raise ArgumentError, "User is not primary PI"
@@ -615,12 +613,12 @@ class ServiceRequestsController < ApplicationController
     Notifier.notify_service_provider(service_provider, service_request, attachments).deliver
   end
 
-  def send_epic_notification_for_user_approval(service_request)
-    Notifier.notify_for_epic_user_approval(service_request).deliver
+  def send_epic_notification_for_user_approval(protocol)
+    Notifier.notify_for_epic_user_approval(protocol).deliver
   end
 
-  def send_epic_notification_for_final_review(service_request)
-    Notifier.notify_primary_pi_for_epic_user_final_review(service_request).deliver
+  def send_epic_notification_for_final_review(protocol)
+    Notifier.notify_primary_pi_for_epic_user_final_review(protocol).deliver
   end
 
   def push_protocol_to_epic protocol

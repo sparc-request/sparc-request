@@ -536,7 +536,7 @@ describe EpicInterface do
         FactoryGirl.create(
             :service_request,
             protocol: study,
-            status: 'draft')
+            status: 'submitted')
       }
 
       let!(:sub_service_request) {
@@ -545,7 +545,7 @@ describe EpicInterface do
             ssr_id: '0001',
             service_request: service_request,
             organization: program,
-            status: 'draft')
+            status: 'submitted')
       }
 
       let!(:service) {

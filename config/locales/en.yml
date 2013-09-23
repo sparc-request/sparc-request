@@ -580,6 +580,7 @@ en:
     email: "E-mail:"
     phone: "Phone:"
     role: "Role:*"
+    epic_access: "Epic EMR Access?:"
     role_prompt: "Select a Role"
     era: "ERA Commons Name:"
     credentials: "Credentials:"

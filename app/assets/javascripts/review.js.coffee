@@ -42,7 +42,6 @@ $(document).ready ->
         window.location.href = route_to
 
   $('#submit_services, #get_a_quote').click (event)->
-    console.log "first click"
     event.preventDefault()
     route_to = $(this).attr('href')
 

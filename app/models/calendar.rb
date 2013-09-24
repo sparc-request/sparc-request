@@ -17,7 +17,7 @@ class Calendar < ActiveRecord::Base
 
   def completed_total
     completed_procedures = self.appointments.select{|x| x.completed?}.collect{|y| y.procedures}.flatten
-    return completed_procedures.sum{|x| x.total}
+    return completed_procedures.select{|x| x.appointment.completed_for_core?(x.core.id)}.sum{|x| x.total}
   end
   
 end

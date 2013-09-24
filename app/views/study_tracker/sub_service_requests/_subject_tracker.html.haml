@@ -34,9 +34,11 @@
                 %td.subject_ethnicity= subject_form.select :ethnicity, options_for_select(SUBJECT_ETHNICITIES, subject_form.try(:object).try(:gender)), id: "subject_#{subject_form.try(:object).try(:id)}_ethnicity"
                 %td.remove
                   - if subject_form.object.calendar
-                    %a{:href => study_tracker_sub_service_request_calendar_path(@sub_service_request, subject_form.object.calendar), :class => "ui-button ui-state-default ui-button-text-only", :style => "margin:0px;"}
-                      %span.ui-button-text{:id => "schedule_#{subject_form.object.id}"}= t(:study_tracker)[:subject_tracker][:schedule]
-                  = subject_form.link_to_remove t(:study_tracker)[:subject_tracker][:delete], confirm: t(:study_tracker)[:subject_tracker][:confirm], :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;"
+                    %a{:href => study_tracker_sub_service_request_calendar_path(@sub_service_request, subject_form.object.calendar), :style => "margin:0px;", :title => t(:study_tracker)[:subject_tracker][:schedule]}
+                      = image_tag 'calendar_edit.png', :id => "schedule_#{subject_form.object.id}"
+                    %a{:href => cwf_subject_report_path(subject_form.object.id, :format => :xlsx), :style => "margin:0px;", :title => t(:study_tracker)[:subject_tracker][:report]}
+                      = image_tag 'icon-excel-small.gif'
+                  = subject_form.link_to_remove image_tag('cancel.png'), confirm: t(:study_tracker)[:subject_tracker][:confirm], title: t(:study_tracker)[:subject_tracker][:delete]
         %p= arm_form.link_to_add t(:study_tracker)[:subject_tracker][:add], :subjects, data: { target: "#subjects_list_#{arm_form.object.id} tbody" }, :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;"
     %p{:style => "text-align:center;"}= f.submit t(:study_tracker)[:save], :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;"
 

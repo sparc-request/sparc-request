@@ -269,6 +269,7 @@ SparcRails::Application.routes.draw do
     member do
       get :research_project_summary
       post :cwf_audit
+      get :cwf_subject
     end
   end
 

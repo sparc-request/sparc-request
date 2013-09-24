@@ -36,13 +36,21 @@ $(document).ready ->
       "No": -> 
         survey_offered = true
         $(this).dialog("close")
+        $('#submit_services, #get_a_quote').unbind('click')
+        $('#submit_services, #get_a_quote').click ->
+          return false
         window.location.href = route_to
 
-  $('#submit_services, #get_a_quote').click ->
+  $('#submit_services, #get_a_quote').click (event)->
+    event.preventDefault()
     route_to = $(this).attr('href')
 
     if survey_offered == false
       $("#participate_in_survey").dialog("open")
       return false
     else
+      # this should never be the case but just in case some browser allows it let's just redirect to confirmation page
+      $(this).unbind('click')
+      $(this).click ->
+        return false
       window.location.href = route_to

@@ -155,6 +155,9 @@ class LineItemsVisit < ActiveRecord::Base
   def remove_procedures
     self.procedures.each do |pro|
       if pro.completed?
+        if pro.line_item.service.displayed_pricing_map.unit_factor > 1
+          pro.update_attributes(:unit_factor_cost => pro.cost * 100)
+        end
         pro.update_attributes(service_id: self.line_item.service_id, line_item_id: nil, visit_id: nil)
       else
         pro.destroy

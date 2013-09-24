@@ -64,7 +64,7 @@ class Procedure < ActiveRecord::Base
       rate_type = pricing_setup.rate_type(funding_source)
       return (pricing_map.full_rate * (pricing_setup.applied_percentage(rate_type) / 100)).to_f
     else
-      return (self.line_item.per_unit_cost(self.r_quantity) / 100).to_f
+      return (self.line_item.per_unit_cost(self.default_r_quantity) / 100).to_f
     end
   end
 

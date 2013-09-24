@@ -69,4 +69,9 @@ class Appointment < ActiveRecord::Base
       self.appointment_completions.create(:organization_id => core.id)
     end
   end
+
+  def display_name
+    self.name.nil? ? self.visit_group.name : self.name
+  end
+
 end

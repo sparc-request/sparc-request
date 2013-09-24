@@ -99,11 +99,13 @@ $(document).ready ->
     box = $(this).siblings('select')
     appointment_index = $('.new_procedure_wrapper:visible').data('appointment_index')
     procedure_index = $('.appointment_wrapper:visible tr.fields:visible').size()
+    ssr_id = $('#sub_service_request_id').val()
     data =
       'appointment_id': box.data('appointment_id')
       'service_id': box.val()
       'appointment_index': appointment_index
       'procedure_index': procedure_index
+      'sub_service_request_id': ssr_id
 
     $.ajax
       type: "post"

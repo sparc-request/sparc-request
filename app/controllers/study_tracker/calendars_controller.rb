@@ -21,6 +21,12 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
   def add_service
     appointment = Appointment.find(params[:appointment_id])
     @procedure = appointment.procedures.new(:service_id => params[:service_id])
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    @protocol = @procedure.appointment.calendar.subject.arm.protocol
+    associated_users = @protocol.emailed_associated_users << @protocol.primary_pi_project_role
+    associated_users.uniq.each do |user|
+      UserMailer.subject_procedure_notification(user.identity, @procedure, @sub_service_request).deliver
+    end
     render :partial => 'new_procedure', :locals => {:appointment_index => params[:appointment_index], :procedure_index => params[:procedure_index]}
   end
 

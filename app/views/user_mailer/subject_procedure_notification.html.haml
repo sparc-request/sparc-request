@@ -1,0 +1,20 @@
+%p= "Dear #{@send_to.try(:full_name)},"
+
+%p
+  A new SCTR Research Nexus
+  = "#{@procedure.try(:core).try(:name).try(:humanize)} "
+  service has been added to patient
+  = "#{@procedure.appointment.calendar.subject.external_subject_id} "
+  for Visit
+  = "#{@procedure.appointment.display_name}"
+  on your study
+  = "#{@sub_service_request.display_id}"
+  by SCTR Research Nexus Staff. To inquire about the changes, please contact the Research Nexus as appropriate below:
+
+%ul
+  %li Clinical Nurse Manager (Karen Packard) – 792-3258 (Nursing, Nutrition, and Imaging services)
+  %li Nexus Laboratory Manager (Amy Gandy) – 792-2595 (Lab services)
+%p
+  Thank you,
+  %br
+  SCTR Research Nexus

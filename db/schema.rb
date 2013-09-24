@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130920184629) do
+ActiveRecord::Schema.define(:version => 20130924191733) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -547,12 +547,13 @@ ActiveRecord::Schema.define(:version => 20130920184629) do
     t.integer  "appointment_id"
     t.integer  "visit_id"
     t.boolean  "completed"
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
+    t.datetime "created_at",                                      :null => false
+    t.datetime "updated_at",                                      :null => false
     t.integer  "line_item_id"
     t.integer  "r_quantity"
     t.integer  "service_id"
     t.integer  "t_quantity"
+    t.decimal  "unit_factor_cost", :precision => 12, :scale => 4
   end
 
   add_index "procedures", ["appointment_id"], :name => "index_procedures_on_appointment_id"

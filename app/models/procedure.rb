@@ -68,6 +68,8 @@ class Procedure < ActiveRecord::Base
       else
         return (pricing_map.full_rate * (pricing_setup.applied_percentage(rate_type) / 100)).to_f
       end
+    elsif self.default_r_quantity == 0
+      return (self.line_item.per_unit_cost(1) / 100).to_f
     else
       if self.line_item.service.displayed_pricing_map.unit_factor > 1
         subtotals = self.visit.line_items_visit.per_subject_subtotals

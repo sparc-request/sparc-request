@@ -64,7 +64,7 @@ class Procedure < ActiveRecord::Base
       pricing_setup = organization.current_pricing_setup
       rate_type = pricing_setup.rate_type(funding_source)
       if pricing_map.unit_factor > 1
-        return Service.cents_to_dollars(self.unit_factor_cost)
+        return Service.cents_to_dollars(self.unit_factor_cost / self.default_r_quantity)
       else
         return (pricing_map.full_rate * (pricing_setup.applied_percentage(rate_type) / 100)).to_f
       end
@@ -73,7 +73,7 @@ class Procedure < ActiveRecord::Base
     else
       if self.line_item.service.displayed_pricing_map.unit_factor > 1
         subtotals = self.visit.line_items_visit.per_subject_subtotals
-        return Service.cents_to_dollars(subtotals[self.visit_id.to_s])
+        return Service.cents_to_dollars(subtotals[self.visit_id.to_s] / self.default_r_quantity)
       else
         return (self.line_item.per_unit_cost(self.default_r_quantity) / 100).to_f
       end

@@ -582,7 +582,7 @@ ActiveRecord::Schema.define(:version => 20130924191733) do
     t.text     "title"
     t.string   "sponsor_name"
     t.text     "brief_description"
-    t.decimal  "indirect_cost_rate",             :precision => 5, :scale => 2
+    t.decimal  "indirect_cost_rate",                    :precision => 5, :scale => 2
     t.string   "study_phase"
     t.string   "udak_project_number"
     t.string   "funding_rfa"
@@ -596,8 +596,8 @@ ActiveRecord::Schema.define(:version => 20130924191733) do
     t.string   "federal_grant_code_id"
     t.string   "federal_non_phs_sponsor"
     t.string   "federal_phs_sponsor"
-    t.datetime "created_at",                                                   :null => false
-    t.datetime "updated_at",                                                   :null => false
+    t.datetime "created_at",                                                          :null => false
+    t.datetime "updated_at",                                                          :null => false
     t.datetime "deleted_at"
     t.string   "potential_funding_source_other"
     t.string   "funding_source_other"
@@ -605,6 +605,7 @@ ActiveRecord::Schema.define(:version => 20130924191733) do
     t.string   "last_epic_push_status"
     t.datetime "start_date"
     t.datetime "end_date"
+    t.string   "billing_business_manager_static_email"
   end
 
   add_index "protocols", ["next_ssr_id"], :name => "index_protocols_on_next_ssr_id"

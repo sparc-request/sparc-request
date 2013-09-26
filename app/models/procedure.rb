@@ -12,6 +12,7 @@ class Procedure < ActiveRecord::Base
   attr_accessible :service_id
   attr_accessible :r_quantity
   attr_accessible :t_quantity
+  attr_accessible :unit_factor_cost
 
   def required?
     self.visit.to_be_performed?
@@ -62,9 +63,20 @@ class Procedure < ActiveRecord::Base
       pricing_map = service.current_pricing_map
       pricing_setup = organization.current_pricing_setup
       rate_type = pricing_setup.rate_type(funding_source)
-      return (pricing_map.full_rate * (pricing_setup.applied_percentage(rate_type) / 100)).to_f
+      if pricing_map.unit_factor > 1
+        return Service.cents_to_dollars(self.unit_factor_cost / self.default_r_quantity)
+      else
+        return (pricing_map.full_rate * (pricing_setup.applied_percentage(rate_type) / 100)).to_f
+      end
+    elsif self.default_r_quantity == 0
+      return (self.line_item.per_unit_cost(1) / 100).to_f
     else
-      return (self.line_item.per_unit_cost(self.default_r_quantity) / 100).to_f
+      if self.line_item.service.displayed_pricing_map.unit_factor > 1
+        subtotals = self.visit.line_items_visit.per_subject_subtotals
+        return Service.cents_to_dollars(subtotals[self.visit_id.to_s] / self.default_r_quantity)
+      else
+        return (self.line_item.per_unit_cost(self.default_r_quantity) / 100).to_f
+      end
     end
   end
 

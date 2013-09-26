@@ -143,11 +143,15 @@ SparcRails::Application.routes.draw do
       resources :calendars
       resources :cover_letters
     end
-    resources :service_requests do
+    
+    resources :service_requests
+    resources :subjects
+    
+    resources :protocols do
+      member do
+        put :update_billing_business_manager_static_email
+      end
     end
-    resources :subjects do
-    end
-    resources :protocols
   end
   
   ##### sparc-user routes brought in and namespaced

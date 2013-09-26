@@ -782,6 +782,7 @@ en:
     id: "SRID"
     pi: "PI"
     routing: "Routing"
+    billing_business: "Billing/Business Manager"
     requester: "Requester"
     short_title: "Short Title"
     export: "Export to Excel"
@@ -861,9 +862,10 @@ en:
       id: "ID"
       dob: "Date of Birth"
       gender: "Gender"
-      ethinicity: "Ethnicity"
+      ethnicity: "Race" #this was change to race but the database still has it labeled as ethnicity
       schedule: "Schedule"
       add: "Add a subject"
+      report: "Report"
       delete: "Delete"
       confirm: "Are you sure you want to delete this subject?"
     payments: 

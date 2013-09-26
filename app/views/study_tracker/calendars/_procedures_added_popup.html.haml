@@ -1,0 +1,17 @@
+#procedures_added_popup{'data-calendar_id' => @calendar.id}
+  - if @procedures.size == 1
+    %p= "Attention - An assessment #{@procedures.first.display_service_name} has been added at #{@procedures.first.appointment.name_switch}. If subject is past visit, please refer to your IRB-approved protocol."
+
+  -else
+    %p Attention - Assessments have been added to the following visits. If subject is past visit, please refer to your IRB-approved protocol.
+    %br
+    %table
+      %thead
+        %tr.ui-widget-header
+          %th{:style => "padding:6px 8px;"} Visit Name:
+          %th{:style => "padding:6px 8px;"} Service/Assessment Name:
+      %tbody
+        - @procedures.each do |procedure|
+          %tr{:style => "background-color: #C0C0C0;"}
+            %td{:style => "padding:6px 8px;"}= procedure.appointment.name_switch
+            %td{:style => "padding:6px 8px;"}= procedure.display_service_name

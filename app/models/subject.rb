@@ -16,4 +16,9 @@ class Subject < ActiveRecord::Base
   accepts_nested_attributes_for :calendar
 
   after_create { self.create_calendar }
+
+  def procedures
+    appointments = Appointment.where("calendar_id = ?", self.calendar.id).includes(:procedures)
+    procedures = appointments.collect{|x| x.procedures}.flatten
+  end
 end

@@ -117,16 +117,16 @@ class Portal::AssociatedUsersController < Portal::BaseController
       render :js => "alert(\"Projects require a PI. Please add a new one before continuing.\")"
     else
       protocol = @protocol_role.protocol
+      epic_access = @protocol_role.epic_access
+      @protocol_role.destroy
+
       if USE_EPIC
         if protocol.should_push_to_epic?
-          if @protocol_role.epic_access
-            # TODO: Send message for removal
+          if epic_access
             Notifier.notify_for_epic_user_approval(protocol).deliver
           end
         end
       end
-
-      @protocol_role.destroy
 
       if params[:sub_service_request_id]
         @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])

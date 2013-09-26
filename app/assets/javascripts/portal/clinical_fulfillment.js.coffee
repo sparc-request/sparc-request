@@ -1,5 +1,24 @@
 $(document).ready ->
 
+  $('#procedures_added_popup').dialog
+    # dialogClass: "no-close"
+    autoOpen: true
+    # height: 80
+    width: 350
+    modal: true
+    resizable: false
+    close: -> delete_toast_message()
+
+  delete_toast_message = () ->
+    data =
+      'id': $("#procedures_added_popup").attr('data-calendar_id')
+    $.ajax
+      type: 'POST'
+      url:   "/clinical_work_fulfillment/calendars/delete_toast_messages"
+      data:  JSON.stringify(data)
+      dataType: 'html'
+      contentType: 'application/json; charset=utf-8'
+
   $("#cwf_audit_start_date_input").datepicker
     altField: "#cwf_audit_start_date"
     altFormat: "yy-mm-dd"

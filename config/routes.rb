@@ -135,6 +135,7 @@ SparcRails::Application.routes.draw do
   ##### Study Tracker/Clinical Work Fulfillment Portal#####
   namespace :study_tracker, :path => "clinical_work_fulfillment" do
     match 'appointments/add_note' => 'calendars#add_note'
+    match 'calendars/delete_toast_messages' => 'calendars#delete_toast_messages'
     match 'appointments/add_service' => 'calendars#add_service'
 
     root :to => 'home#index'

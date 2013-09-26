@@ -33,8 +33,6 @@ SparcRails::Application.routes.draw do
       get 'refresh_service_calendar'
       get 'save_and_exit'
       get 'approve_changes'
-      get 'approve_epic_rights'
-      get 'push_to_epic'
     end
 
     collection do
@@ -54,6 +52,13 @@ SparcRails::Application.routes.draw do
       end
     end
 
+  end
+
+  resources :protocols do
+    member do
+      get :approve_epic_rights
+      get :push_to_epic
+    end
   end
 
   resources :projects do

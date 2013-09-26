@@ -131,4 +131,24 @@ class Notifier < ActionMailer::Base
 
     mail(:to => email_to, :from => 'no-reply@musc.edu', :subject => subject)
   end
+
+  def notify_for_epic_access_removal protocol, project_role
+    @protocol = protocol
+    @project_role = project_role
+
+    subject = 'Remove Epic Access'
+
+    mail(:to => EPIC_RIGHTS_MAIL_TO, :from => 'no-reply@musc.edu', :subject => subject)
+  end
+
+  def notify_for_epic_rights_changes protocol, project_role, previous_rights
+    @protocol = protocol
+    @project_role = project_role
+    @added_rights = project_role.epic_rights - previous_rights
+    @removed_rights = previous_rights - project_role.epic_rights
+
+    subject = 'Update Epic Access'
+
+    mail(:to => EPIC_RIGHTS_MAIL_TO, :from => 'no-reply@musc.edu', :subject => subject)
+  end
 end

@@ -1,0 +1,29 @@
+%p The following SPARC Request user has requested access updates to Epic for study ##{@protocol.id} (#{@protocol.short_title.strip}).
+
+%table
+  %tr
+    %th Name
+    %th Role
+    %th Epic Responsibilities Added
+    %th Epic Responsibilities Removed
+  %tr{:id => "project_role_#{@project_role.id}"}
+    %td.name= @project_role.identity.full_name
+    %td.role= USER_ROLES.invert[@project_role.role]
+    %td.epic_rights_added
+      %ul
+        - @added_rights.each do |ar|
+          %li= EPIC_RIGHTS[ar.right]
+    %td.epic_rights_removed
+      %ul
+        - @removed_rights.each do |rr|
+          %li= EPIC_RIGHTS[rr.right]
+
+:scss
+  table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+
+    th, td {
+      padding: 1px 5px;
+    }
+  }

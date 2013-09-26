@@ -321,37 +321,6 @@ class ServiceRequestsController < ApplicationController
     render :formats => [:html]
   end
 
-  def approve_epic_rights
-    @protocol = Protocol.find params[:id]
-
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    # TODO: check to ensure that this user is one of the users which has
-    # epic user creation rights
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-    # Send a notification to the primary PI for final review before
-    # pushing to epic.  The email will contain a link which calls
-    # push_to_epic.
-    @protocol.awaiting_final_review_for_epic_push
-    send_epic_notification_for_final_review(@protocol)
-
-    render :formats => [:html]
-  end
-
-  def push_to_epic
-    @protocol = Protocol.find params[:id]
-
-    if current_user != @protocol.primary_principal_investigator then
-      raise ArgumentError, "User is not primary PI"
-    end
-
-    # Do the final push to epic in a separate thread.  The page which is
-    # rendered will 
-    push_protocol_to_epic(@protocol)
-
-    render :formats => [:html]
-  end
-
   def approve_changes
     @service_request = ServiceRequest.find params[:id]
     @approval = @service_request.approvals.where(:id => params[:approval_id]).first
@@ -615,46 +584,6 @@ class ServiceRequestsController < ApplicationController
 
   def send_epic_notification_for_user_approval(protocol)
     Notifier.notify_for_epic_user_approval(protocol).deliver
-  end
-
-  def send_epic_notification_for_final_review(protocol)
-    Notifier.notify_primary_pi_for_epic_user_final_review(protocol).deliver
-  end
-
-  def push_protocol_to_epic protocol
-    # Run the push to epic call in a child thread, so that we can return
-    # the confirmation page right away without blocking (in testing, the
-    # push to epic can take as long as 20 seconds).  This call will
-    # write the status to the database, which will later be polled by
-    # the confirmation page.
-    #
-    # TODO: Ideally this would be better off done in another process,
-    # e.g. with delayed_job or resque.  Multithreaded code can be tricky
-    # to get right.  However, there is a bit of extra work involved in
-    # starting a separate job server, and it is not clear how (or if it
-    # is possible) to start the job server automatically.  Threads work
-    # well enough for now.
-    #
-    # Thread.new do
-    begin
-      # Do the actual push.  This might take a while...
-      protocol.push_to_epic(EPIC_INTERFACE)
-
-      errors = EPIC_INTERFACE.errors
-      session[:errors] = errors unless errors.empty?
-      @epic_errors = true unless errors.empty?
-
-    rescue Exception => e
-      # Log any errors, since they will not be caught by the main
-      # thread
-      Rails.logger.error(e)
-
-      # ensure
-      # The connection MUST be closed when the thread completes to
-      # avoid leaking the connection.
-      # ActiveRecord::Base.connection.close
-    end
-    # end
   end
 
 end

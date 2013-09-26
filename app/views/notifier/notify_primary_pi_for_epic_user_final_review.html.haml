@@ -15,7 +15,7 @@
 
 %br
 
-.accept_button= link_to "Send to Epic", push_to_epic_service_request_url(@protocol)
+.accept_button= link_to "Send to Epic", push_to_epic_protocol_url(@protocol)
 %br
 .edit_button=  link_to "Edit", portal_root_url(:default_protocol => @protocol.id)
 

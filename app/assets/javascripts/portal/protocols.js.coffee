@@ -94,7 +94,7 @@ $(document).ready ->
         protocol_id = $(this).data('protocol_id')
         $.ajax({
             method: 'get'
-            url: "/portal/protocols/#{protocol_id}/view_full_calendar"
+            url: "/portal/protocols/#{protocol_id}/view_full_calendar?portal=true"
             success: ->
               $('.view-full-calendar-dialog').dialog('open')
           })

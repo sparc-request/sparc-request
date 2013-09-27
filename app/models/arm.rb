@@ -267,4 +267,12 @@ class Arm < ActiveRecord::Base
 
     groupings
   end
+  
+  ### audit reporting methods ###
+  
+  def audit_label audit
+    name
+  end
+
+  ### end audit reporting methods ###
 end

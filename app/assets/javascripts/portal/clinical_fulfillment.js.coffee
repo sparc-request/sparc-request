@@ -106,10 +106,10 @@ $(document).ready ->
   $(document).on('click', 'a.check_all', ->
     if $('a.check_all span').hasClass('ui-icon-check')
       $('a.check_all span').removeClass('ui-icon-check').addClass('ui-icon-close')
-      $('td.check_box_cell:visible input[type=checkbox]').attr('checked', true)
+      $('td.check_box_cell:visible input[type=checkbox]').not(":checked").click()
     else
       $('a.check_all span').removeClass('ui-icon-close').addClass('ui-icon-check')
-      $('td.check_box_cell:visible input[type=checkbox]').attr('checked', false)
+      $('td.check_box_cell:visible input[type=checkbox]').is(":checked").click()
     recalc_row_totals()
     recalc_subtotal()
     $('.save_alert').show()

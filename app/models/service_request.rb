@@ -446,4 +446,10 @@ class ServiceRequest < ActiveRecord::Base
     end
   end
 
+  def update_arm_minimum_counts
+    self.arms.each do |arm|
+      arm.update_minimum_counts
+    end
+  end
+
 end

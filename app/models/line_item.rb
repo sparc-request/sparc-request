@@ -170,6 +170,26 @@ class LineItem < ActiveRecord::Base
   def should_push_to_epic?
     return self.service.send_to_epic
   end
+  
+  ### audit reporting methods ###
+  
+  def audit_field_value_mapping
+    {"service_id" => "Service.find(ORIGINAL_VALUE).name"}
+  end
+  
+  def audit_excluded_fields
+    {'create' => ['service_request_id', 'sub_service_request_id', 'service_id', 'ssr_id', 'deleted_at', 'units_per_quantity']}
+  end
+  
+  def audit_label audit
+    if audit.action == 'create'
+      return "#{service.name} added to Service Request #{sub_service_request.display_id}"
+    else
+      return "#{service.name}"
+    end
+  end
+
+  ### end audit reporting methods ###
 
   private
 

@@ -102,4 +102,23 @@ class Procedure < ActiveRecord::Base
       end
     end
   end
+
+  ### audit reporting methods ###
+    
+  def audit_label audit
+    subject = appointment.calendar.subject
+    subject_label = subject.respond_to?(:audit_label) ? subject.audit_label(audit) : "Subject #{subject.id}"
+
+    if service
+      return "Procedure (#{service.name}) for #{subject_label} on #{appointment.visit_group.name}"
+    else
+      return "Procedure (#{line_item.service.name}) for #{subject_label}"
+    end
+  end
+ 
+  def audit_excluded_fields
+    {'create' => ['visit_id', 'service_id', 'appointment_id', 'line_item_id', 'unit_factor_cost']}
+  end
+
+  ### end audit reporting methods ###
 end

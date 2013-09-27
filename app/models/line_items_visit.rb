@@ -164,5 +164,12 @@ class LineItemsVisit < ActiveRecord::Base
       end
     end
   end
-  
+
+  ### audit reporting methods ###
+ 
+  def audit_excluded_actions 
+    ['create']
+  end
+
+  ### end audit reporting methods ###
 end

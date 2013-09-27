@@ -250,4 +250,14 @@ class Organization < ActiveRecord::Base
     statuses
   end
 
+  def has_tag? tag
+    if self.tag_list.include? tag
+      return true
+    elsif parent
+      self.parent.has_tag? tag
+    else
+      return false
+    end
+  end
+
 end

@@ -13,7 +13,8 @@ class ServiceRequest < ActiveRecord::Base
   has_many :arms, :through => :protocol
 
   validation_group :protocol do
-    validates :protocol_id, :presence => {:message => "You must identify the service request with a study/project before continuing."} 
+    # validates :protocol_id, :presence => {:message => "You must identify the service request with a study/project before continuing."} 
+    validate :protocol_page
   end
 
   validation_group :service_details do
@@ -81,6 +82,18 @@ class ServiceRequest < ActiveRecord::Base
   alias_attribute :service_request_id, :id
 
   #after_save :fix_missing_visits
+
+  def protocol_page
+    if self.protocol_id.blank?
+      errors.add(:protocol_id, "You must identify the service request with a study/project before continuing.")
+    else
+      if self.has_ctrc_services?
+        if self.protocol && self.protocol.has_ctrc_services?(self.id)
+          errors.add(:ctrc_services, "SCTR Research Nexus Services have been removed")
+        end
+      end
+    end
+  end
 
   def service_details_back
     service_details_page('back')
@@ -421,6 +434,16 @@ class ServiceRequest < ActiveRecord::Base
 
   def should_push_to_epic?
     return self.line_items.any? { |li| li.should_push_to_epic? }
+  end
+
+  def has_ctrc_services?
+    return self.line_items.any? { |li| li.service.is_ctrc? }
+  end
+
+  def remove_ctrc_services
+    self.line_items.each do |li|
+      li.destroy if li.service.is_ctrc?
+    end
   end
 
 end

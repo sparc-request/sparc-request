@@ -53,3 +53,10 @@
       .line-items= render :partial => 'catalogs/cart'
     .dashboard-button= navigation_link image_tag('back_to_catalog.png'), @back
 .continue= render :partial => 'service_requests/navigation'
+
+- if @ctrc_services
+  #ctrc_dialog
+    = "SCTR Research Nexus services have been found on another Service Request (##{@service_request_id}) pertaining to this Project/Study (#{@service_request.protocol.short_title}). The Nexus services have been removed. Please edit the original Service Request containing the Nexus services in your User Portal."
+    %br
+    %br
+    #redirect{:style => "float:right"}= link_to "Ok", protocol_service_request_path(@service_request)

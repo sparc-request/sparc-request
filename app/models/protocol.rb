@@ -246,4 +246,16 @@ class Protocol < ActiveRecord::Base
   def should_push_to_epic?
     return self.service_requests.any? { |sr| sr.should_push_to_epic? }
   end
+
+  def has_ctrc_services? current_service_request_id
+    self.service_requests.each do |sr|
+      next if sr.id == current_service_request_id
+      if sr.has_ctrc_services?
+        return sr.id
+      end
+    end
+
+    return nil
+  end
+
 end

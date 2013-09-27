@@ -18,7 +18,7 @@ class Subject < ActiveRecord::Base
   after_create { self.create_calendar }
 
   def label
-    label = "Subject #{id}"
+    label = nil
 
     if not mrn.blank?
       label = "Subject MRN:#{mrn}"
@@ -38,7 +38,7 @@ class Subject < ActiveRecord::Base
   end
 
   def audit_label audit
-    self.label
+    self.label || "Subject #{id}"
   end
 
   ### end audit reporting methods ###

@@ -187,7 +187,7 @@ class ServiceRequestsController < ApplicationController
       if session[:errors][:ctrc_services]
         @ctrc_services = true
         @service_request.remove_ctrc_services
-        @service_request_id = @service_request.protocol.has_ctrc_services?(@service_request.id)
+        @ssr_id = @service_request.protocol.find_sub_service_request_with_ctrc(@service_request.id)
       end
     end
   end
@@ -306,6 +306,7 @@ class ServiceRequestsController < ApplicationController
     @service_request.update_status('submitted')
     @service_request.update_attribute(:submitted_at, Time.now)
     @service_request.ensure_ssr_ids
+    @service_request.update_arm_minimum_counts
     
     @protocol = @service_request.protocol
     # As the service request leaves draft, so too do the arms

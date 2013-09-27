@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130927150226) do
+ActiveRecord::Schema.define(:version => 20130927180442) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -91,12 +91,14 @@ ActiveRecord::Schema.define(:version => 20130927150226) do
 
   create_table "arms", :force => true do |t|
     t.string   "name"
-    t.integer  "visit_count",    :default => 1
-    t.datetime "created_at",                        :null => false
-    t.datetime "updated_at",                        :null => false
-    t.integer  "subject_count",  :default => 1
+    t.integer  "visit_count",           :default => 1
+    t.datetime "created_at",                               :null => false
+    t.datetime "updated_at",                               :null => false
+    t.integer  "subject_count",         :default => 1
     t.integer  "protocol_id"
-    t.boolean  "new_with_draft", :default => false
+    t.boolean  "new_with_draft",        :default => false
+    t.integer  "minimum_visit_count",   :default => 0
+    t.integer  "minimum_subject_count", :default => 0
   end
 
   create_table "associated_surveys", :force => true do |t|
@@ -554,6 +556,7 @@ ActiveRecord::Schema.define(:version => 20130927150226) do
     t.integer  "service_id"
     t.integer  "t_quantity"
     t.decimal  "unit_factor_cost", :precision => 12, :scale => 4
+    t.boolean  "toasts_generated",                                :default => false
   end
 
   add_index "procedures", ["appointment_id"], :name => "index_procedures_on_appointment_id"

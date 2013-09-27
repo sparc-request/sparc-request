@@ -109,7 +109,7 @@ wb.add_worksheet(name: "Summary") do |sheet|
   # display box in middle with project details
   # visits + 3 should be the total columns we have
   #left_indent = ((visit_count + 3)/2.0).ceil - 1
-  left_indent = 2
+  left_indent = 0
 
   info_box_rows = []
   info_box_rows << sheet.add_row(adjusted_row("SPARC ID: #{@sub_service_request.display_id}", left_indent), :height => 22)

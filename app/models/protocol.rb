@@ -210,6 +210,7 @@ class Protocol < ActiveRecord::Base
 
   def ensure_epic_user
     self.primary_pi_project_role.set_epic_rights
+    self.primary_pi_project_role.save
   end
 
   # Returns true if there is a push to epic in progress, false
@@ -256,6 +257,16 @@ class Protocol < ActiveRecord::Base
     end
 
     return nil
+  end
+
+  def find_sub_service_request_with_ctrc current_service_request_id
+    id = has_ctrc_services? current_service_request_id
+    service_request = self.service_requests.find id
+    service_request.sub_service_requests.each do |ssr|
+      if ssr.ctrc?
+        return ssr.ssr_id
+      end
+    end
   end
 
 end

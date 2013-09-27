@@ -1,11 +1,17 @@
 $(document).ready ->
 
-  $('.procedure_r_qty, .procedure_t_qty').on 'change', ->
+  # only submit data that has changed or is required for calculations
+
+  $('.procedure_r_qty, .procedure_t_qty, .procedure_box').on 'change', ->
     $(this).addClass('changed_attr')
 
+  $('.procedure_box').on 'change', ->
+    $(this).parent('td').siblings().children('.procedure_r_qty').addClass('changed_attr')
+
   $("#save_appointments").click (event) ->
-    # disable r and t qty fields that have not changed
     $('.procedure_r_qty, .procedure_t_qty').not('.changed_attr').prop('disabled', true)
+
+  # end submit data for changes/requirements
 
   $('#procedures_added_popup').dialog
     # dialogClass: "no-close"
@@ -100,10 +106,10 @@ $(document).ready ->
   $(document).on('click', 'a.check_all', ->
     if $('a.check_all span').hasClass('ui-icon-check')
       $('a.check_all span').removeClass('ui-icon-check').addClass('ui-icon-close')
-      $('td.check_box_cell:visible input[type=checkbox]').attr('checked', true)
+      $('td.check_box_cell:visible input[type=checkbox]').not(":checked").click()
     else
       $('a.check_all span').removeClass('ui-icon-close').addClass('ui-icon-check')
-      $('td.check_box_cell:visible input[type=checkbox]').attr('checked', false)
+      $('td.check_box_cell:visible input[type=checkbox]').is(":checked").click()
     recalc_row_totals()
     recalc_subtotal()
     $('.save_alert').show()

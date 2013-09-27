@@ -1,3 +1,21 @@
+def adjusted_row text, indent, direction="left"
+  row = []
+
+  if direction == 'left'
+    indent.times { row << "" }
+    row << text
+  elsif direction == 'right'
+    row << text
+    indent.times { row << "" }
+  end
+
+  row
+end
+
+def smart_merge start_alpha, end_alpha, pos, sheet
+  sheet.merge_cells("#{start_alpha}#{pos}:#{end_alpha}#{pos}")
+end
+
 field_replacements = {"external_subject_id" => "PARTICIPANT ID"}
 
 wb = xlsx_package.workbook
@@ -14,6 +32,8 @@ wb.add_worksheet(name: "Subject report") do |sheet|
   
   #start text below the image
   16.times {sheet.add_row [""]}
+
+
   
 #  @audit_trail.each do |audit|
 #    audit.audited_changes.each do |field, values|

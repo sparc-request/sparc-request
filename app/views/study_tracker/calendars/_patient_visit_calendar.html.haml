@@ -1,3 +1,6 @@
+- unless @procedures.empty?
+  = render :partial => "procedures_added_popup"
+
 = nested_form_for @subject, :url => study_tracker_subject_path(@subject) do |f|
   = hidden_field_tag :sub_service_request_id, @sub_service_request.id
   %table.study_tracker_table{:style => "width:940px;"}
@@ -20,6 +23,7 @@
     %p Please select a visit:
     = select_tag :visit, options_for_select(appointment_visits(@appointments), selected_key = "##{@default_appointment.position_switch}: #{@default_appointment.name_switch}"), :class => 'clinical_select_data'
   %p= link_to "-- Show Dashboard --", 'javascript:void(0);', :class => "ui-state-active dashboard_link"
+
   #dashboard_container
     #dashboard{:style => "display:none;"}
       %p.save_alert{:style => "text-align:center; margin-bottom:5px; display:none; color:red; font-weight:bold;"} You must save your changes for the dashboard to be updated.

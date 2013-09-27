@@ -38,4 +38,9 @@ class Subject < ActiveRecord::Base
   end
 
   ### end audit reporting methods ###
+  
+  def procedures
+    appointments = Appointment.where("calendar_id = ?", self.calendar.id).includes(:procedures)
+    procedures = appointments.collect{|x| x.procedures}.flatten
+  end
 end

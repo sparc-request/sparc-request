@@ -109,6 +109,11 @@ class Portal::ProtocolsController < Portal::BaseController
         visit_count:   visit_count,
         subject_count: subject_count)
 
+    # If any sub service requests under this arm's protocol are in CWF we need to build patient calendars
+    if @service_request.protocol.service_requests.map {|x| x.sub_service_requests.map {|y| y.in_work_fulfillment}}.flatten.include?(true)
+      @selected_arm.populate_subjects
+    end
+
     render 'portal/protocols/change_arm'
   end
 

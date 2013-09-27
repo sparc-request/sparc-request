@@ -82,7 +82,7 @@ class Procedure < ActiveRecord::Base
 
   # Totals up a given row on the visit schedule
   def total
-    if self.completed?
+    if self.completed? and self.r_quantity
       return self.r_quantity * self.cost
     else
       return 0.00

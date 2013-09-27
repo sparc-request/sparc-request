@@ -1,11 +1,11 @@
 $(document).ready ->
 
-  $('.procedure_r_qty, .procedure_t_qty, .procedure_box').on 'change', ->
+  $('.procedure_r_qty, .procedure_t_qty').on 'change', ->
     $(this).addClass('changed_attr')
 
   $("#save_appointments").click (event) ->
     # disable r and t qty fields that have not changed
-    $('.procedure_r_qty, .procedure_t_qty, .procedure_box').not('.changed_attr').prop('disabled', true)
+    $('.procedure_r_qty, .procedure_t_qty').not('.changed_attr').prop('disabled', true)
 
   $('#procedures_added_popup').dialog
     # dialogClass: "no-close"

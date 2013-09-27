@@ -1,4 +1,6 @@
 class AppointmentCompletion < ActiveRecord::Base
+  audited
+
   belongs_to :appointment
   belongs_to :organization
   attr_accessible :completed_date
@@ -11,6 +13,20 @@ class AppointmentCompletion < ActiveRecord::Base
   def formatted_completed_date=(d)
     self.completed_date = parse_date(d)
   end
+  
+  ### audit reporting methods ###
+ 
+  def audit_field_value_mapping
+    {"completed_date" => "'ORIGINAL_VALUE'.to_time.strftime('%Y-%m-%d')"}
+  end
+
+  def audit_label audit
+    subject = appointment.calendar.subject
+    subject_label = subject.respond_to?(:audit_label) ? subject.audit_label(audit) : "Subject #{subject.id}"
+    "#{appointment.visit_group.name} #{organization.abbreviation} Appointment Completed for #{subject_label}"
+  end
+
+  ### end audit reporting methods ###
 
   private
 

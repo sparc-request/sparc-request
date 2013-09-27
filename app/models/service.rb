@@ -262,4 +262,8 @@ class Service < ActiveRecord::Base
   def has_service_providers?
     self.organization.process_ssrs_parent.service_providers.present? rescue true
   end
+
+  def is_ctrc?
+    self.organization.has_tag? 'ctrc'
+  end
 end

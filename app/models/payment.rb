@@ -40,6 +40,22 @@ class Payment < ActiveRecord::Base
   def formatted_date_submitted=(d)
     self.date_submitted= parse_date(d)
   end
+  
+  ### audit reporting methods ###
+  
+  def audit_excluded_fields
+    {'create' => ['sub_service_request_id']}
+  end
+  
+  def audit_label audit
+    if audit.action == 'create'
+      return "New Payment"
+    else
+      return "Editing Payment"
+    end
+  end
+
+  ### end audit reporting methods ###
 
   private
 

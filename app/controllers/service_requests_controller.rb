@@ -181,6 +181,15 @@ class ServiceRequestsController < ApplicationController
       @service_request.protocol = Protocol.find session[:saved_protocol_id]
       session.delete :saved_protocol_id
     end
+
+    @ctrc_services = false
+    if session[:errors]
+      if session[:errors][:ctrc_services]
+        @ctrc_services = true
+        @service_request.remove_ctrc_services
+        @service_request_id = @service_request.protocol.has_ctrc_services?(@service_request.id)
+      end
+    end
   end
   
   def service_details

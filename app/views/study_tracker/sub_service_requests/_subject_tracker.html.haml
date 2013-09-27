@@ -30,8 +30,8 @@
                 %td.subject_mrn= subject_form.text_field :mrn, size: 10, id: "subject_#{subject_form.try(:object).try(:id)}_mrn"
                 %td.subject_id= subject_form.text_field :external_subject_id, size: 8, id: "subject_#{subject_form.try(:object).try(:id)}_id"
                 %td.subject_dob= subject_form.datepicker :dob, size: 13, dateFormat: "yy-mm-dd", changeYear: true, changeMonth: true, yearRange: "-100:"
-                %td.subject_gender= subject_form.select :gender, options_for_select(SUBJECT_GENDERS, subject_form.try(:object).try(:gender)), id: "subject_#{subject_form.try(:object).try(:id)}_gender"
-                %td.subject_ethnicity= subject_form.select :ethnicity, options_for_select(SUBJECT_ETHNICITIES, subject_form.try(:object).try(:gender)), id: "subject_#{subject_form.try(:object).try(:id)}_ethnicity"
+                %td.subject_gender= subject_form.select :gender, options_for_select(SUBJECT_GENDERS, subject_form.try(:object).try(:gender)), :include_blank => "--Gender--", id: "subject_#{subject_form.try(:object).try(:id)}_gender"
+                %td.subject_ethnicity= subject_form.select :ethnicity, options_for_select(SUBJECT_ETHNICITIES, subject_form.try(:object).try(:gender)), :include_blank => "--Race--", id: "subject_#{subject_form.try(:object).try(:id)}_ethnicity"
                 %td.remove
                   - if subject_form.object.calendar
                     %a{:href => study_tracker_sub_service_request_calendar_path(@sub_service_request, subject_form.object.calendar), :style => "margin:0px;", :title => t(:study_tracker)[:subject_tracker][:schedule]}

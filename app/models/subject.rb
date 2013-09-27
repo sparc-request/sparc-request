@@ -16,4 +16,31 @@ class Subject < ActiveRecord::Base
   accepts_nested_attributes_for :calendar
 
   after_create { self.create_calendar }
+
+  ### audit reporting methods ###
+  
+  def audit_field_replacements
+    {"external_subject_id" => "PARTICIPANT ID"}
+  end
+
+  def audit_label audit
+    label = "Subject #{id}"
+
+    if not mrn.blank?
+      label = "Subject MRN:#{mrn}"
+    end
+
+    if not external_subject_id.blank?
+      label = "Subject ID:#{external_subject_id}"
+    end
+
+    label
+  end
+
+  ### end audit reporting methods ###
+  
+  def procedures
+    appointments = Appointment.where("calendar_id = ?", self.calendar.id).includes(:procedures)
+    procedures = appointments.collect{|x| x.procedures}.flatten
+  end
 end

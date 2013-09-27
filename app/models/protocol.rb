@@ -51,6 +51,7 @@ class Protocol < ActiveRecord::Base
   attr_accessible :end_date
   attr_accessible :last_epic_push_time
   attr_accessible :last_epic_push_status
+  attr_accessible :billing_business_manager_static_email
 
   attr_accessor :requester_id
   
@@ -99,6 +100,10 @@ class Protocol < ActiveRecord::Base
 
   def billing_managers
     project_roles.reject{|pr| pr.role != 'business-grants-manager'}.map(&:identity)
+  end
+
+  def billing_business_manager_email
+    billing_business_manager_static_email.blank? ?  billing_managers.map(&:email).try(:join, ', ') : billing_business_manager_static_email
   end
 
   def emailed_associated_users
@@ -241,4 +246,16 @@ class Protocol < ActiveRecord::Base
   def should_push_to_epic?
     return self.service_requests.any? { |sr| sr.should_push_to_epic? }
   end
+
+  def has_ctrc_services? current_service_request_id
+    self.service_requests.each do |sr|
+      next if sr.id == current_service_request_id
+      if sr.has_ctrc_services?
+        return sr.id
+      end
+    end
+
+    return nil
+  end
+
 end

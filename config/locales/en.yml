@@ -782,6 +782,7 @@ en:
     id: "SRID"
     pi: "PI"
     routing: "Routing"
+    billing_business: "Billing/Business Manager"
     requester: "Requester"
     short_title: "Short Title"
     export: "Export to Excel"

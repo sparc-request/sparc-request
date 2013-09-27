@@ -16,8 +16,15 @@ def smart_merge start_alpha, end_alpha, pos, sheet
   sheet.merge_cells("#{start_alpha}#{pos}:#{end_alpha}#{pos}")
 end
 
-def visit_header_row visit_names, sheet, style
-  data = ["PID", "Status"] + visit_names + ["Totals"]
+def visit_header_row visit_names, visit_count, sheet, style
+  data = ["PID", "Status"] 
+  data += visit_names 
+  
+  (visit_count - visit_names.count).times do
+    data += [' ']
+  end
+
+  data += ["Totals"]
   sheet.add_row data, :style => style
 end
 
@@ -26,7 +33,16 @@ def subject_visit_row subjects, visit_count, sheet, styles
     styling = [nil, nil]
     (subject[:visits].count+1).times{ styling << styles[:default] }
 
-    sheet.add_row [subject[:pid], subject[:status]] + subject[:visits] + [subject[:visits].sum]       #, :style => styling
+    row = [subject[:pid], subject[:status]]
+    row += subject[:visits]
+
+    (visit_count - subject[:visits].count).times do
+      row += [' ']
+    end
+
+    row += [subject[:visits].sum]
+    sheet.add_row row 
+    #sheet.add_row [subject[:pid], subject[:status]] + subject[:visits] + [subject[:visits].sum]       #, :style => styling
   end
 end
 
@@ -34,19 +50,22 @@ def visit_subtotals_row subjects, visit_count, sheet, styles
   totals = []
   styling = [styles[:header], nil]
   visit_count.times do |index|
-    totals[index] = subjects.sum{|subject| subject[:visits][index]}
+    totals[index] = subjects.sum{|subject| subject[:visits][index].nil? ? 0.0 : subject[:visits][index]}
     #styling << styles[:default] # uncomment for border
   end
   sheet.add_row ["Visit Subtotals", ""] + totals + [totals.sum], :style => styling
   totals.sum
 end
 
-def visit_count_spanned_row header, header_style, data, visit_count, sheet, styles
-  styling = [styles[header_style], nil]
+def visit_count_spanned_row header, header_style, data, data_style, visit_count, sheet, styles
+  styling = [styles[header_style]]
+  (visit_count+2).times do
+    styling << styles[data_style]
+  end
   sheet.add_row adjusted_row(header, visit_count+1, 'right') + [data], :style => styling
 end
 
-visit_count = 5 # just putting a number here so we can make sure it renders correctly
+visit_count = @protocol.arms.max_by{|a| a.visit_count}.visit_count
 
 # alpha_array used to determine column position
 alpha_array = ("A".."Z").to_a
@@ -90,7 +109,7 @@ wb.add_worksheet(name: "Summary") do |sheet|
   info_box_rows << sheet.add_row(adjusted_row("SPARC ID: #{@sub_service_request.display_id}", left_indent), :height => 22)
   info_box_rows << sheet.add_row(adjusted_row("PI Name: #{@protocol.primary_principal_investigator.display_name}", left_indent), :height => 22)
   info_box_rows << sheet.add_row(adjusted_row(@protocol.short_title, left_indent), :height => 22)
-  info_box_rows << sheet.add_row(adjusted_row("Billing/Business Mgr: #{@protocol.billing_managers.map(&:display_name).join(', ')}", left_indent), :height => 22)
+  info_box_rows << sheet.add_row(adjusted_row("Billing/Business Mgr: #{@protocol.billing_business_manager_email}", left_indent), :height => 22)
   info_box_rows << sheet.add_row(adjusted_row("Routing: #{@sub_service_request.routing}", left_indent), :height => 22)
 
   # merge info box rows and apply styling
@@ -106,73 +125,93 @@ wb.add_worksheet(name: "Summary") do |sheet|
   #begin displaying visit information
 
   #generating temporary data, this would be replaced with real data
-  visit_names = []
-  visit_count.times {|num| visit_names << "Visit #{num+1}"}
+  #visit_names = []
+  #visit_count.times {|num| visit_names << "Visit #{num+1}"}
 
-  def generate_fake_visits(visit_count)
-    visits = []
-    visit_count.times do
-      visits << rand(0..200)
-    end 
-    visits
+  def build_subject_data(arm, visit_count)
+    subjects = []
+    arm.subjects.each do |subject|
+      visits = []
+      subject.calendar.appointments.each do |appointment|
+        subtotal = appointment.completed? ? appointment.procedures.sum{|x| x.total} : 0.00
+        visits << subtotal
+      end
+
+      subjects << {:pid => subject.mrn, :status => subject.status, :visits => visits}
+    end
+
+    subjects
   end
 
-  subjects = [
-              {:pid => '1224343', :status => 'Active', :visits => generate_fake_visits(visit_count)},
-              {:pid => 'XYZ3456', :status => 'Active', :visits => generate_fake_visits(visit_count)},
-              {:pid => '9ABCDDD', :status => 'Active', :visits => generate_fake_visits(visit_count)}
-             ]
-              
-  #visit information header
-  visit_header_row visit_names, sheet, styles[:header]
+  all_subjects = []
+  @protocol.arms.each do |arm|
+    subjects = build_subject_data(arm, visit_count)
+    all_subjects << subjects
 
-  #subject visit rows
-  subject_visit_row subjects, visit_count, sheet, styles
+    visit_count_spanned_row arm.name, :header, nil, :header, visit_count, sheet, styles
+
+    #visit information header
+    visit_names = arm.visit_groups.map(&:name)
+    visit_header_row visit_names, visit_count, sheet, styles[:header]
+
+    #subject visit rows
+    subject_visit_row subjects, visit_count, sheet, styles
+    sheet.add_row [""]
+  end
   
   sheet.add_row [""]
 
   #visit subtotals row
-  visits_subtotal = visit_subtotals_row subjects, visit_count, sheet, styles
+  visits_subtotal = visit_subtotals_row all_subjects.flatten, visit_count, sheet, styles
   
   sheet.add_row [""]
 
   #one time fees
   sheet.add_row ["One Time Fees"], :style => styles[:header]
 
+  otf_totals = 0
   @sub_service_request.one_time_fee_line_items.each do |otf|
-    visit_count_spanned_row otf.service.name, nil, Service.cents_to_dollars(otf.applicable_rate), visit_count, sheet, styles
+    cost = otf.complete_date.nil? ? 0 : Service.cents_to_dollars(otf.direct_costs_for_one_time_fee)
+    otf_totals += cost
+    visit_count_spanned_row otf.service.name, nil, cost, nil, visit_count, sheet, styles
   end
 
   #fee subtotals
-  sheet.add_row [""]
-  visit_count_spanned_row "Fee Subtotals", :header, @service_request.total_indirect_costs_one_time(@sub_service_request.line_items), visit_count, sheet, styles
+  #sheet.add_row [""]
+  #visit_count_spanned_row "Fee Subtotals", :header, otf_totals, visit_count, sheet, styles
   
   #totals
   sheet.add_row [""]
-  visit_count_spanned_row "Totals", :header, (@service_request.total_indirect_costs_one_time(@sub_service_request.line_items) + visits_subtotal), visit_count, sheet, styles
+  total = otf_totals + visits_subtotal 
+  visit_count_spanned_row "Totals", :header, total, nil, visit_count, sheet, styles
   
   #payments
   sheet.add_row [""]
-  visit_count_spanned_row "Payments", :header, 0, visit_count, sheet, styles
+  visit_count_spanned_row "Payments", :header, nil, nil, visit_count, sheet, styles
+  payments_total = 0
+  @sub_service_request.payments.each do |payment|
+    payments_total += payment.amount_received
+    visit_count_spanned_row payment.date_received, nil, payment.amount_received, nil, visit_count, sheet, styles
+  end
   
   #amount due
   sheet.add_row [""]
-  visit_count_spanned_row "Amount Due", :header, 0, visit_count, sheet, styles
+  visit_count_spanned_row "Amount Due", :header, total - payments_total, nil, visit_count, sheet, styles
   
   #date submitted
-  sheet.add_row [""]
-  visit_count_spanned_row "Date Submitted", :header, 0, visit_count, sheet, styles
+  #sheet.add_row [""]
+  #visit_count_spanned_row "Date Submitted", :header, 0, visit_count, sheet, styles
   
   #amount invoiced
-  sheet.add_row [""]
-  visit_count_spanned_row "Amount Invoiced", :header, 0, visit_count, sheet, styles
+  #sheet.add_row [""]
+  #visit_count_spanned_row "Amount Invoiced", :header, 0, visit_count, sheet, styles
   
   #amount received
-  sheet.add_row [""]
-  visit_count_spanned_row "Amount Received", :header, 0, visit_count, sheet, styles
+  #sheet.add_row [""]
+  #visit_count_spanned_row "Amount Received", :header, 0, visit_count, sheet, styles
   
   #date received
-  sheet.add_row [""]
-  visit_count_spanned_row "Date Received", :header, 0, visit_count, sheet, styles
+  #sheet.add_row [""]
+  #visit_count_spanned_row "Date Received", :header, 0, visit_count, sheet, styles
   
 end

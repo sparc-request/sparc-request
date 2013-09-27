@@ -238,7 +238,7 @@ describe ServiceRequestsController do
         deliverer = double()
         deliverer.should_receive(:deliver)
         Notifier.stub!(:notify_for_epic_user_approval) { |sr|
-          sr.should eq(service_request)
+          sr.should eq(protocol)
           deliverer
         }
 

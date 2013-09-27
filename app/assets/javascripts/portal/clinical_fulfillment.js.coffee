@@ -1,5 +1,24 @@
 $(document).ready ->
 
+  $('#procedures_added_popup').dialog
+    # dialogClass: "no-close"
+    autoOpen: true
+    # height: 80
+    width: 350
+    modal: true
+    resizable: false
+    close: -> delete_toast_message()
+
+  delete_toast_message = () ->
+    data =
+      'id': $("#procedures_added_popup").attr('data-calendar_id')
+    $.ajax
+      type: 'POST'
+      url:   "/clinical_work_fulfillment/calendars/delete_toast_messages"
+      data:  JSON.stringify(data)
+      dataType: 'html'
+      contentType: 'application/json; charset=utf-8'
+
   $("#cwf_audit_start_date_input").datepicker
     altField: "#cwf_audit_start_date"
     altFormat: "yy-mm-dd"
@@ -172,6 +191,18 @@ $(document).ready ->
       type: "PUT"
       url: "/clinical_work_fulfillment/sub_service_requests/#{ssr_id}"
       data: { "sub_service_request[routing]": routing }
+    return false
+  
+  ####Sub Service Request Save button
+  $('#protocol_billing_business_manager_static_email_save').button()
+
+  $('#protocol_billing_business_manager_static_email_save').on 'click', -> 
+    billing_business_manager_static_email = $('#protocol_billing_business_manager_static_email').val()
+    protocol_id = $('#protocol_billing_business_manager_static_email').data('protocol_id')
+    $.ajax
+      type: "PUT"
+      url: "/clinical_work_fulfillment/protocols/#{protocol_id}/update_billing_business_manager_static_email"
+      data: { "protocol[billing_business_manager_static_email]": billing_business_manager_static_email }
     return false
 
 

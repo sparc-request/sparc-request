@@ -181,6 +181,15 @@ class ServiceRequestsController < ApplicationController
       @service_request.protocol = Protocol.find session[:saved_protocol_id]
       session.delete :saved_protocol_id
     end
+
+    @ctrc_services = false
+    if session[:errors]
+      if session[:errors][:ctrc_services]
+        @ctrc_services = true
+        @service_request.remove_ctrc_services
+        @service_request_id = @service_request.protocol.has_ctrc_services?(@service_request.id)
+      end
+    end
   end
   
   def service_details
@@ -302,6 +311,9 @@ class ServiceRequestsController < ApplicationController
     # As the service request leaves draft, so too do the arms
     @protocol.arms.each do |arm|
       arm.update_attributes({:new_with_draft => false})
+      if @protocol.service_requests.map {|x| x.sub_service_requests.map {|y| y.in_work_fulfillment}}.flatten.include?(true)
+        arm.populate_subjects_on_edit
+      end
     end
     @service_list = @service_request.service_list
 
@@ -314,42 +326,9 @@ class ServiceRequestsController < ApplicationController
       if @protocol.should_push_to_epic?
         @protocol.ensure_epic_user
         @protocol.awaiting_approval_for_epic_push
-        send_epic_notification_for_user_approval(@service_request)
+        send_epic_notification_for_user_approval(@protocol)
       end
     end
-
-    render :formats => [:html]
-  end
-
-  def approve_epic_rights
-    @service_request = ServiceRequest.find params[:id]
-    @protocol = @service_request.protocol
-
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    # TODO: check to ensure that this user is one of the users which has
-    # epic user creation rights
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-    # Send a notification to the primary PI for final review before
-    # pushing to epic.  The email will contain a link which calls
-    # push_to_epic.
-    @protocol.awaiting_final_review_for_epic_push
-    send_epic_notification_for_final_review(@service_request)
-
-    render :formats => [:html]
-  end
-
-  def push_to_epic
-    @service_request = ServiceRequest.find params[:id]
-    @protocol = @service_request.protocol
-
-    if current_user != @protocol.primary_principal_investigator then
-      raise ArgumentError, "User is not primary PI"
-    end
-
-    # Do the final push to epic in a separate thread.  The page which is
-    # rendered will 
-    push_protocol_to_epic(@protocol)
 
     render :formats => [:html]
   end
@@ -414,7 +393,7 @@ class ServiceRequestsController < ApplicationController
         line_items = values[:line_items]
         ssr = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
         unless @service_request.status.nil? and !ssr.status.nil?
-          ssr.update_attribute(:status, @service_request.status)
+          ssr.update_attribute(:status, @service_request.status) if ['first_draft', 'draft', nil].include?(ssr.status)
         end
 
         line_items.each do |li|
@@ -615,48 +594,8 @@ class ServiceRequestsController < ApplicationController
     Notifier.notify_service_provider(service_provider, service_request, attachments).deliver
   end
 
-  def send_epic_notification_for_user_approval(service_request)
-    Notifier.notify_for_epic_user_approval(service_request).deliver
-  end
-
-  def send_epic_notification_for_final_review(service_request)
-    Notifier.notify_primary_pi_for_epic_user_final_review(service_request).deliver
-  end
-
-  def push_protocol_to_epic protocol
-    # Run the push to epic call in a child thread, so that we can return
-    # the confirmation page right away without blocking (in testing, the
-    # push to epic can take as long as 20 seconds).  This call will
-    # write the status to the database, which will later be polled by
-    # the confirmation page.
-    #
-    # TODO: Ideally this would be better off done in another process,
-    # e.g. with delayed_job or resque.  Multithreaded code can be tricky
-    # to get right.  However, there is a bit of extra work involved in
-    # starting a separate job server, and it is not clear how (or if it
-    # is possible) to start the job server automatically.  Threads work
-    # well enough for now.
-    #
-    # Thread.new do
-    begin
-      # Do the actual push.  This might take a while...
-      protocol.push_to_epic(EPIC_INTERFACE)
-
-      errors = EPIC_INTERFACE.errors
-      session[:errors] = errors unless errors.empty?
-      @epic_errors = true unless errors.empty?
-
-    rescue Exception => e
-      # Log any errors, since they will not be caught by the main
-      # thread
-      Rails.logger.error(e)
-
-      # ensure
-      # The connection MUST be closed when the thread completes to
-      # avoid leaking the connection.
-      # ActiveRecord::Base.connection.close
-    end
-    # end
+  def send_epic_notification_for_user_approval(protocol)
+    Notifier.notify_for_epic_user_approval(protocol).deliver
   end
 
 end

@@ -17,24 +17,6 @@ class Arm < ActiveRecord::Base
   attr_accessible :protocol_id
   accepts_nested_attributes_for :subjects, allow_destroy: true
 
-  after_create :populate_cwf_if_active
-
-  def populate_cwf_if_active
-    if self.protocol
-      self.protocol.service_requests.each do |service_request|
-        unless service_request.sub_service_requests.empty?
-          # There is no direct link between sub service requests and arms
-          # Thus here we figure out if we are in CWF by establishing whether:
-          # 1 - There are any CTRC SSRS on the parent SR
-          # 2 - Are any of those CTRC SSRS (there should be only one) in CWF status?
-          if service_request.sub_service_requests.select {|x| x.ctrc?}.map(&:in_work_fulfillment).include?(true)
-            self.populate_subjects
-          end
-        end
-      end
-    end
-  end
-
   def valid_visit_count?
     return !visit_count.nil? && visit_count > 0
   end
@@ -159,6 +141,11 @@ class Arm < ActiveRecord::Base
       end
     end
 
+    # If in CWF, build the appointments for the visit group
+    if self.protocol.service_requests.map {|x| x.sub_service_requests.map {|y| y.in_work_fulfillment}}.flatten.include?(true)
+      populate_subjects_for_new_visit_group(visit_group)
+    end
+
     return visit_group
   end
 
@@ -176,11 +163,41 @@ class Arm < ActiveRecord::Base
     end
   end
 
+  def populate_subjects_on_edit
+    subject_difference = self.subject_count - self.subjects.count
+    if subject_difference > 0
+      subject_difference.times do
+        self.subjects.create
+      end
+    end
+    self.subjects.each do |subject|
+      # populate old appointments
+      subject.calendar.appointments.each do |appointment|
+        existing_liv_ids = appointment.procedures.map {|x| x.visit.line_items_visit.id}
+        new_livs = self.line_items_visits.reject {|x| existing_liv_ids.include?(x.id)}
+        new_livs.each do |new_liv|
+          visit = new_liv.visits.where("visit_group_id = ?", appointment.visit_group_id).first
+          appointment.procedures.create(:line_item_id => new_liv.line_item.id, :visit_id => visit.id)
+        end
+      end
+      # populate new appointments
+      existing_group_ids = subject.calendar.appointments.map(&:visit_group_id)
+      groups = self.visit_groups.reject {|x| existing_group_ids.include?(x.id)}
+      subject.calendar.populate(groups)
+    end
+  end
+
   def populate_new_subjects
     self.subjects.each do |subject|
       if subject.calendar.appointments.empty?
         subject.calendar.populate(self.visit_groups)
       end
+    end
+  end
+
+  def populate_subjects_for_new_visit_group visit_group
+    self.subjects.each do |subject|
+      subject.calendar.populate([visit_group])
     end
   end
 
@@ -267,4 +284,12 @@ class Arm < ActiveRecord::Base
 
     groupings
   end
+  
+  ### audit reporting methods ###
+  
+  def audit_label audit
+    name
+  end
+
+  ### end audit reporting methods ###
 end

@@ -13,6 +13,7 @@ class Procedure < ActiveRecord::Base
   attr_accessible :r_quantity
   attr_accessible :t_quantity
   attr_accessible :unit_factor_cost
+  attr_accessible :toasts_generated
 
   def required?
     self.visit.to_be_performed?

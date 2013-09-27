@@ -4,6 +4,8 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
   def show
     @calendar = Calendar.find(params[:id])
     get_calendar_data(@calendar)
+    new_procedures = procedures_added_after_appointment_completed
+    puts new_procedures.inspect
 
     @procedures = []
     # toast_messages = ToastMessage.where("to = ? AND sending_class = ? AND message = ?", current_user.id, "Procedure", @calendar.id.to_s)
@@ -29,6 +31,20 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
     appointment = Appointment.find(params[:appointment_id])
     @procedure = appointment.procedures.new(:service_id => params[:service_id])
     render :partial => 'new_procedure', :locals => {:appointment_index => params[:appointment_index], :procedure_index => params[:procedure_index]}
+  end
+
+  def procedures_added_after_appointment_completed
+    new_procedures = []
+    @completed_appointments.each do |appointment|
+      appointment.procedures.each do |procedure|
+        if procedure.created_at > appointment.created_at
+          new_procedures << procedure
+          procedure.update_attributes(:toasts_generated => true)
+        end
+      end
+    end
+
+    new_procedures
   end
 
   def delete_toast_messages

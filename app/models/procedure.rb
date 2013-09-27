@@ -113,7 +113,7 @@ class Procedure < ActiveRecord::Base
   def audit_label audit
     subject = appointment.calendar.subject
     subject_label = subject.respond_to?(:audit_label) ? subject.audit_label(audit) : "Subject #{subject.id}"
-    return "Procedure (#{procedure.display_service_name}) for #{subject_label} on #{appointment.visit_group.name}"
+    return "Procedure (#{display_service_name}) for #{subject_label} on #{appointment.visit_group.name}"
   end
  
   def audit_excluded_fields

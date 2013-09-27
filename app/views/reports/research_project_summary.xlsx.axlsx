@@ -46,14 +46,20 @@ def subject_visit_row subjects, visit_count, sheet, styles
   end
 end
 
-def visit_subtotals_row subjects, visit_count, sheet, styles
+def visit_subtotals_row arm, subjects, visit_count, sheet, styles
   totals = []
   styling = [styles[:header], nil]
-  visit_count.times do |index|
-    totals[index] = subjects.sum{|subject| subject[:visits][index].nil? ? 0.0 : subject[:visits][index]}
+  arm.visit_count.times do |index|
+    totals << subjects.sum{|subject| subject[:visits][index].nil? ? 0.0 : subject[:visits][index]}
     #styling << styles[:default] # uncomment for border
   end
-  sheet.add_row ["Visit Subtotals", ""] + totals + [totals.sum], :style => styling
+
+  padding_cells = []
+  (visit_count - arm.visit_count).times do
+    padding_cells << " "
+  end
+
+  sheet.add_row ["Visit Subtotals - #{arm.name}", ""] + totals + padding_cells + [totals.sum], :style => styling
   totals.sum
 end
 
@@ -137,13 +143,15 @@ wb.add_worksheet(name: "Summary") do |sheet|
         visits << subtotal
       end
 
-      subjects << {:pid => subject.mrn, :status => subject.status, :visits => visits}
+      subjects << {:pid => subject.label, :status => subject.status, :visits => visits}
     end
 
     subjects
   end
 
   all_subjects = []
+  visits_subtotal = 0
+
   @protocol.arms.each do |arm|
     subjects = build_subject_data(arm, visit_count)
     all_subjects << subjects
@@ -157,13 +165,13 @@ wb.add_worksheet(name: "Summary") do |sheet|
     #subject visit rows
     subject_visit_row subjects, visit_count, sheet, styles
     sheet.add_row [""]
+    
+    visits_subtotal += visit_subtotals_row arm, subjects.flatten, visit_count, sheet, styles
+    sheet.add_row [""]
   end
   
   sheet.add_row [""]
 
-  #visit subtotals row
-  visits_subtotal = visit_subtotals_row all_subjects.flatten, visit_count, sheet, styles
-  
   sheet.add_row [""]
 
   #one time fees
@@ -183,7 +191,7 @@ wb.add_worksheet(name: "Summary") do |sheet|
   #totals
   sheet.add_row [""]
   total = otf_totals + visits_subtotal 
-  visit_count_spanned_row "Totals", :header, total, nil, visit_count, sheet, styles
+  visit_count_spanned_row "Study Totals", :header, total, nil, visit_count, sheet, styles
   
   #payments
   sheet.add_row [""]

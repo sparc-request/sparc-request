@@ -24,6 +24,7 @@
     - arm.service_list.each do |key, value| # get only per patient/per visit services and group them
       - arm.line_items_visits.each do |line_items_visit|
         - line_item = line_items_visit.line_item
+        - next if ['first_draft', 'draft'].include?(line_item.service_request.status)
         - next unless value[:line_items].include?(line_item)
         %tr.line_item{:class => cycle('odd', '', :name => 'pppvs')}
           %td.service_name= line_item.service.display_service_name

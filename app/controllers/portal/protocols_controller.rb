@@ -73,7 +73,6 @@ class Portal::ProtocolsController < Portal::BaseController
   def view_full_calendar
     @protocol = Protocol.find(params[:id])
     @service_request = @protocol.service_requests.first
-    @service_requests = @protocol.service_requests.select { |sr| sr.status != 'first_draft' && sr.status != 'draft'}
 
     arm_id = params[:arm_id] if params[:arm_id]
     page = params[:page] if params[:page]
@@ -81,11 +80,9 @@ class Portal::ProtocolsController < Portal::BaseController
     session[:service_calendar_pages][arm_id] = page if page && arm_id
     @tab = 'calendar'
     @pages = {}
-    @service_requests.each do |service_request|
-      service_request.arms.each do |arm|
-        new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-        @pages[arm.id] = service_request.set_visit_page new_page, arm
-      end
+    @protocol.arms.each do |arm|
+      new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
+      @pages[arm.id] = @service_request.set_visit_page new_page, arm
     end
   end
 

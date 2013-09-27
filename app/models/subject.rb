@@ -17,13 +17,7 @@ class Subject < ActiveRecord::Base
 
   after_create { self.create_calendar }
 
-  ### audit reporting methods ###
-  
-  def audit_field_replacements
-    {"external_subject_id" => "PARTICIPANT ID"}
-  end
-
-  def audit_label audit
+  def label
     label = "Subject #{id}"
 
     if not mrn.blank?
@@ -35,6 +29,16 @@ class Subject < ActiveRecord::Base
     end
 
     label
+  end
+
+  ### audit reporting methods ###
+  
+  def audit_field_replacements
+    {"external_subject_id" => "PARTICIPANT ID"}
+  end
+
+  def audit_label audit
+    self.label
   end
 
   ### end audit reporting methods ###

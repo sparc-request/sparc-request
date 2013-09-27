@@ -18,7 +18,7 @@ class StudyTracker::SubjectsController < StudyTracker::BaseController
   private
   def calculate_new_procedures
     ##Creating array of new procedures, but only procedures with a completed appointment for that procedure's core.
-    # new_procedures = @subject.procedures - @procedures
+    new_procedures = @subject.procedures - @procedures
 
     @protocol = @subject.arm.protocol
     associated_users = @protocol.emailed_associated_users << @protocol.primary_pi_project_role

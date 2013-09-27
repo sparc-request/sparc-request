@@ -21,34 +21,6 @@ class ReportsController < ApplicationController
   end
 
   def cwf_audit
-    # changes to the following models
-    # protocol
-    #   affiliations 
-    #   study_types
-    #   research_types_info
-    #   human_subjects_info
-    #   vertebrate_animals_info
-    #   ip_patents_info
-    #   project_roles
-    #   impact_areas
-    #   arms
-    # arms
-    #   line_items_visits
-    #   subjects
-    #   visit_groups
-    # sub_service_request
-    #   owner
-    #   line_items
-    #   documents
-    #   notes
-    #   approvals
-    #   payments
-    #   cover_letters
-    #   subsidy
-    # calendars   
-    # appointments
-    # cover_letters
-    # 
     nursing    = Organization.tagged_with("nursing").first
     laboratory = Organization.tagged_with("laboratory").first
     imaging    = Organization.tagged_with("imaging").first
@@ -111,5 +83,13 @@ class ReportsController < ApplicationController
     @audit_trail.flatten!
     @audit_trail.compact!
     @audit_trail.sort_by!(&:created_at)
+  end
+
+  def cwf_subject
+    @subject = Subject.find params[:subject]
+    @arm = Arm.find params[:arm]
+    @sub_service_request = SubServiceRequest.find params[:id]
+    @service_request = @sub_service_request.service_request 
+    @protocol = @service_request.protocol
   end
 end

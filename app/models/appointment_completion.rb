@@ -20,6 +20,10 @@ class AppointmentCompletion < ActiveRecord::Base
     {"completed_date" => "'ORIGINAL_VALUE'.to_time.strftime('%Y-%m-%d')"}
   end
 
+  def audit_excluded_fields
+    {"create" => ['appointment_id', 'organization_id']}
+  end
+
   def audit_label audit
     subject = appointment.calendar.subject
     subject_label = subject.respond_to?(:audit_label) ? subject.audit_label(audit) : "Subject #{subject.id}"

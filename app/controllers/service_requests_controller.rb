@@ -302,6 +302,9 @@ class ServiceRequestsController < ApplicationController
     # As the service request leaves draft, so too do the arms
     @protocol.arms.each do |arm|
       arm.update_attributes({:new_with_draft => false})
+      if @protocol.service_requests.map {|x| x.sub_service_requests.map {|y| y.in_work_fulfillment}}.flatten.include?(true)
+        arm.populate_subjects_on_edit
+      end
     end
     @service_list = @service_request.service_list
 

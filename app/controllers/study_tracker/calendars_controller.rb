@@ -4,8 +4,7 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
   def show
     @calendar = Calendar.find(params[:id])
     get_calendar_data(@calendar)
-    new_procedures = procedures_added_after_appointment_completed
-    puts new_procedures.inspect
+    generate_toasts_for_new_procedures
 
     @procedures = []
     # toast_messages = ToastMessage.where("to = ? AND sending_class = ? AND message = ?", current_user.id, "Procedure", @calendar.id.to_s)
@@ -33,19 +32,7 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
     render :partial => 'new_procedure', :locals => {:appointment_index => params[:appointment_index], :procedure_index => params[:procedure_index]}
   end
 
-  def procedures_added_after_appointment_completed
-    new_procedures = []
-    @completed_appointments.each do |appointment|
-      appointment.procedures.each do |procedure|
-        if procedure.created_at > appointment.created_at
-          new_procedures << procedure
-          procedure.update_attributes(:toasts_generated => true)
-        end
-      end
-    end
 
-    new_procedures
-  end
 
   def delete_toast_messages
     toast_messages = ToastMessage.where(to: current_user.id, sending_class: "Procedure", message: params[:id])
@@ -54,12 +41,14 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
   end
 
   private
+
   def check_work_fulfillment_status
     @sub_service_request ||= SubServiceRequest.find(params[:sub_service_request_id])
     unless @sub_service_request.in_work_fulfillment?
       redirect_to root_path
     end
   end
+
   def get_calendar_data(calendar)
     # Get the cores
     @nutrition = Organization.tagged_with("nutrition").first
@@ -79,5 +68,33 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
 
     default_procedures = @default_appointment.procedures.select{|x| x.core == @nursing}
     @default_subtotal = @default_appointment.completed_for_core?(@default_core.id) ? default_procedures.sum{|x| x.total} : 0.00
+  end
+
+  def generate_toasts_for_new_procedures
+    new_procedures = []
+    @completed_appointments.each do |appointment|
+      appointment.procedures.each do |procedure|
+        if procedure.should_be_displayed
+          completion = appointment.appointment_completions.where("organization_id = ?", procedure.core.id).first.try(:completed_date)
+          if completion
+            if procedure.created_at > completion
+              unless procedure.toasts_generated
+                new_procedures << procedure
+                procedure.update_attributes(:toasts_generated => true)
+              end
+            end
+          end
+        end
+      end
+    end
+
+    clinical_users = ClinicalProvider.where("identity_id != ?", current_user.id).includes(:identity).collect{|x| x.identity}
+
+    new_procedures.each do |procedure|
+      # Add a notice ("toast message") for each new procedure
+      clinical_users.each do |user|
+        ToastMessage.create(:from => current_user.id, :to => user.id, :sending_class => 'Procedure', :sending_class_id => procedure.id, :message => procedure.appointment.calendar.id)
+      end
+    end
   end
 end

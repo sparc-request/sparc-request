@@ -441,8 +441,8 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def remove_ctrc_services
-    self.line_items.each do |li|
-      li.destroy if li.service.is_ctrc?
+    self.sub_service_requests.each do |ssr|
+      ssr.destroy if ssr.ctrc?
     end
   end
 

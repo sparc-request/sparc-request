@@ -259,4 +259,14 @@ class Protocol < ActiveRecord::Base
     return nil
   end
 
+  def find_sub_service_request_with_ctrc current_service_request_id
+    id = has_ctrc_services? current_service_request_id
+    service_request = self.service_requests.find id
+    service_request.sub_service_requests.each do |ssr|
+      if ssr.ctrc?
+        return ssr.ssr_id
+      end
+    end
+  end
+
 end

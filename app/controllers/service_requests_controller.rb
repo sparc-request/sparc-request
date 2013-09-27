@@ -187,7 +187,7 @@ class ServiceRequestsController < ApplicationController
       if session[:errors][:ctrc_services]
         @ctrc_services = true
         @service_request.remove_ctrc_services
-        @service_request_id = @service_request.protocol.has_ctrc_services?(@service_request.id)
+        @ssr_id = @service_request.protocol.find_sub_service_request_with_ctrc(@service_request.id)
       end
     end
   end

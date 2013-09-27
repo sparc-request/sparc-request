@@ -24,6 +24,14 @@ class VisitGroup < ActiveRecord::Base
   def <=> (other_vg)
     return self.day <=> other_vg.day
   end
+  
+  ### audit reporting methods ###
+  
+  def audit_label audit
+    "#{arm.name} #{name}"
+  end
+
+  ### end audit reporting methods ###
 
 
   private

@@ -118,12 +118,13 @@ class Portal::AssociatedUsersController < Portal::BaseController
     else
       protocol = @protocol_role.protocol
       epic_access = @protocol_role.epic_access
+      project_role_clone = @protocol_role.clone
       @protocol_role.destroy
 
       if USE_EPIC
         if protocol.should_push_to_epic?
           if epic_access
-            Notifier.notify_for_epic_user_approval(protocol).deliver
+            Notifier.notify_primary_pi_for_epic_user_removal(protocol, project_role_clone).deliver
           end
         end
       end

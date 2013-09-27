@@ -132,6 +132,16 @@ class Notifier < ActionMailer::Base
     mail(:to => email_to, :from => 'no-reply@musc.edu', :subject => subject)
   end
 
+  def notify_primary_pi_for_epic_user_removal protocol, project_role
+    @protocol = protocol
+    @primary_pi = @protocol.primary_principal_investigator
+    @project_role = project_role
+
+    subject = 'Epic User Removal'
+
+    mail(:to => EPIC_RIGHTS_MAIL_TO, :from => 'no-reply@musc.edu', :subject => subject)
+  end
+
   def notify_for_epic_access_removal protocol, project_role
     @protocol = protocol
     @project_role = project_role

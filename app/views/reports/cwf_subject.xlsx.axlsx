@@ -18,7 +18,26 @@ end
 
 field_replacements = {"external_subject_id" => "PARTICIPANT ID"}
 
+visit_count = @arm.visit_count
+
+# alpha_array used to determine column position
+alpha_array = ("A".."Z").to_a
+additional_alpha_arrays_needed = (visit_count/26.0).ceil + 1 #add one since some columns get pushed over, safety.  doesn't matter if we have extra here
+
+additional_alpha_arrays = []
+additional_alpha_arrays_needed.times do |n|
+  additional_alpha_arrays << alpha_array.map{|char| alpha_array[n] + char}
+end
+ 
+alpha_array = alpha_array + additional_alpha_arrays.flatten
+
 wb = xlsx_package.workbook
+
+# define styles
+styles = {} 
+styles[:info_box] = wb.styles.add_style alignment: { horizontal: :center, vertical: :center}, sz: 12, b: true, bg_color: "0099FF", fg_color: "FFFFFF"
+styles[:header] = wb.styles.add_style fg_color: "FFFFFF", bg_color: "0099FF", b: true, alignment: { horizontal: :left }
+styles[:default] = wb.styles.add_style(:alignment => {:horizontal => :left})
 
 wb.add_worksheet(name: "Subject report") do |sheet|
   # sctr logo
@@ -32,8 +51,96 @@ wb.add_worksheet(name: "Subject report") do |sheet|
   
   #start text below the image
   16.times {sheet.add_row [""]}
+  
+  left_indent = 0
 
+  subject_row = [@subject.label, "Status: #{@subject.status}"].join("; ")
+  info_box_rows = []
+  info_box_rows << sheet.add_row(adjusted_row("SPARC ID: #{@sub_service_request.display_id}", left_indent), :height => 22)
+  info_box_rows << sheet.add_row(adjusted_row(subject_row, left_indent), :height => 22)
+  info_box_rows << sheet.add_row(adjusted_row("PI Name: #{@protocol.primary_principal_investigator.display_name}", left_indent), :height => 22)
+  info_box_rows << sheet.add_row(adjusted_row(@protocol.short_title, left_indent), :height => 22)
+  info_box_rows << sheet.add_row(adjusted_row("Billing/Business Mgr: #{@protocol.billing_business_manager_email}", left_indent), :height => 22)
+  info_box_rows << sheet.add_row(adjusted_row("Routing: #{@sub_service_request.routing}", left_indent), :height => 22)
 
+  # merge info box rows and apply styling
+  info_box_rows.each do |row|
+    if visit_count > 1
+      sheet["#{alpha_array[left_indent]}#{row.index+1}"].style = styles[:info_box]
+      smart_merge alpha_array[left_indent], alpha_array[left_indent+4], row.index+1, sheet
+    end
+  end
+
+  sheet.add_row [""]
+
+  visit_completion_row = ["Visit Schedule", ""]
+  visit_name_row = ["Procedure", "Service Cost"]
+  procedures_rows = {}
+  visit_totals = {}
+
+  @subject.calendar.appointments.each do |appt|
+    if appt.appointment_completions
+      max_date = appt.appointment_completions.map(&:completed_date).compact.max.try(:strftime, "%m/%d/%y")
+      visit_completion_row << max_date || ""
+    else 
+      visit_completion_row << ""
+    end
+
+    visit_name_row << appt.visit_group.name
+
+    appt.procedures.each do |procedure|
+      sid = procedure.service ? procedure.service_id : procedure.line_item_id
+
+      #initialize with data
+      unless procedures_rows[sid]
+        procedures_rows[sid] = [procedure.display_service_name, procedure.cost]
+      end
+
+      procedure_total = (procedure.completed? and procedure.r_quantity) ? procedure.r_quantity * procedure.cost : nil
+
+      visit_totals[procedure.visit.visit_group_id] ||= []
+      visit_totals[procedure.visit.visit_group_id] << procedure_total
+
+      procedures_rows[sid] << procedure_total
+    end
+
+  end
+
+  visit_name_row << "Totals"
+
+  sheet.add_row visit_completion_row, :style => styles[:default] 
+  sheet.add_row visit_name_row, :style => styles[:header] 
+
+  procedures_rows.each do |k,v|
+    name,cost = v[0..1]
+    procedure_costs = v[2..v.size+1]
+    
+    procedure_total = ""
+
+    if procedure_costs
+      procedure_total = procedure_costs.compact.sum
+    end
+
+    v << procedure_total
+
+    sheet.add_row v, :style => styles[:default] 
+  end
+
+  sheet.add_row [""]
+
+  grand_total = 0
+  row = ["Total/visit", ""]
+  visit_totals.each do |k,v|
+    visit_total = v.compact.sum
+    grand_total += visit_total
+  
+    row << visit_total
+  end
+
+  row << grand_total
+  
+  sheet.add_row row, :style => styles[:default] 
+    
   
 #  @audit_trail.each do |audit|
 #    audit.audited_changes.each do |field, values|

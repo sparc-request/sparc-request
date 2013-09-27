@@ -86,6 +86,10 @@ class ReportsController < ApplicationController
   end
 
   def cwf_subject
-    @subject = Subject.find params[:id]
+    @subject = Subject.find params[:subject]
+    @arm = Arm.find params[:arm]
+    @sub_service_request = SubServiceRequest.find params[:id]
+    @service_request = @sub_service_request.service_request 
+    @protocol = @service_request.protocol
   end
 end

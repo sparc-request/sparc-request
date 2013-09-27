@@ -77,21 +77,19 @@ $ ->
   # Validations for existing arms
 
   $(document).on('change', '.arm_subject_count', ->
-    if $(this).data('unlocked') == false
-      new_count = $(this).val()
-      old_count = $(this).data('subject_count')
-      if new_count < old_count
-        alert("You can not reduce the subject count of a previously defined arm.")
-        $(this).val(old_count)
+    new_count = $(this).val()
+    min_count = $(this).data('minimum_subject_count')
+    if new_count < min_count
+      alert("You can not reduce the subject count below the count of a previously defined arm.")
+      $(this).val(min_count)
   )
 
   $(document).on('change', '.arm_visit_count', ->
-    if $(this).data('unlocked') == false
-      new_count = $(this).val()
-      old_count = $(this).data('visit_count')
-      if new_count < old_count
-        alert("You can not reduce the visit count of a previously defined arm.")
-        $(this).val(old_count)
+    new_count = $(this).val()
+    min_count = $(this).data('minimum_visit_count')
+    if new_count < min_count
+      alert("You can not reduce the visit count below the count of a previously defined arm.")
+      $(this).val(min_count)
   )
 
   $('#navigation_form').submit ->

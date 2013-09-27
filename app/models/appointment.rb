@@ -73,5 +73,13 @@ class Appointment < ActiveRecord::Base
   def display_name
     self.name.nil? ? self.visit_group.name : self.name
   end
+  
+  ### audit reporting methods ###
+    
+  def audit_excluded_actions
+    ['create']
+  end
+
+  ### end audit reporting methods ###
 
 end

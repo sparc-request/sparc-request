@@ -37,6 +37,10 @@ class Subject < ActiveRecord::Base
     {"external_subject_id" => "PARTICIPANT ID"}
   end
 
+  def audit_excluded_fields
+    {'create' => ['arm_id']}
+  end
+
   def audit_label audit
     self.label || "Subject #{id}"
   end

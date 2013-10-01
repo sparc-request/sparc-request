@@ -140,6 +140,7 @@ class ServiceRequest < ActiveRecord::Base
 
   def service_calendar_page(direction)
     return if direction == 'back' and status == 'first_draft'
+    return unless has_per_patient_per_visit_services?
     self.arms.each do |arm|
       arm.visit_groups.each do |vg|
         if vg.day.blank?

@@ -24,8 +24,10 @@ class Appointment < ActiveRecord::Base
   def populate_procedures(visits)
     visits.each do |visit|
       line_item = visit.line_items_visit.line_item
-      procedure = self.procedures.build(:line_item_id => line_item.id, :visit_id => visit.id)
-      procedure.save
+      if line_item.service.is_ctrc?
+        procedure = self.procedures.build(:line_item_id => line_item.id, :visit_id => visit.id, :toasts_generated => true)
+        procedure.save
+      end
     end
   end
 

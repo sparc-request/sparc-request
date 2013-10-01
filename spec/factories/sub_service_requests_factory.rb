@@ -1,7 +1,6 @@
 FactoryGirl.define do
   factory :sub_service_request do
     owner_id           { Random.rand(1000) }
-    status             { Faker::Lorem.sentence(5) }
     
     ignore do
       line_item_count 0

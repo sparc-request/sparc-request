@@ -269,4 +269,8 @@ class Protocol < ActiveRecord::Base
     end
   end
 
+  def any_service_requests_to_display?
+    return self.service_requests.detect { |sr| !['first_draft', 'draft'].include?(sr.status) }
+  end
+
 end

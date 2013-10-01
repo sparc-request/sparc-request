@@ -88,10 +88,9 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
       end
     end
 
-    clinical_users = ClinicalProvider.where("identity_id != ?", current_user.id).includes(:identity).collect{|x| x.identity}
-
     new_procedures.each do |procedure|
       # Add a notice ("toast message") for each new procedure
+      clinical_users = ClinicalProvider.where(organization_id: procedure.core.id).includes(:identity).map{|x| x.identity}
       clinical_users.each do |user|
         ToastMessage.create(:from => current_user.id, :to => user.id, :sending_class => 'Procedure', :sending_class_id => procedure.id, :message => procedure.appointment.calendar.id)
       end

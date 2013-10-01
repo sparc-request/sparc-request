@@ -187,6 +187,7 @@ describe "study schedule", :js => true do
 
         it "should save the new number of units" do
           fill_in "quantity", :with => 20
+          wait_for_javascript_to_finish
           find(".units_per_quantity").click()
           find(".line_item_quantity").should have_value("20")
         end
@@ -196,6 +197,7 @@ describe "study schedule", :js => true do
 
         it "should save the new units per quantity" do
           fill_in "units_per_quantity", :with => 5
+          wait_for_javascript_to_finish
           find(".line_item_quantity").click()
           find(".units_per_quantity").should have_value("5")
         end

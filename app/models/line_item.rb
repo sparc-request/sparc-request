@@ -191,6 +191,11 @@ class LineItem < ActiveRecord::Base
 
   ### end audit reporting methods ###
 
+  # Need this for filtering ssr's by user on the cfw home page
+  def core    
+    self.service.organization
+  end
+
   private
 
   def remove_procedures

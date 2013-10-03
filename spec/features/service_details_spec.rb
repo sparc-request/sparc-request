@@ -149,13 +149,6 @@ describe "submitting a in form", :js => true do
   describe "removing an arm" do
     it "should not delete an existing arm" do
       page.should have_no_link("Remove Arm")
-      # number_of_arms = Arm.find(:all).size
-      # within("div#1") do
-      #   click_link("Remove Arm")
-      # end
-      # find(:xpath, "//a/img[@alt='Savecontinue']/..").click
-      # wait_for_javascript_to_finish
-      # Arm.find(:all).size.should eq(number_of_arms - 1)
     end
 
     it "should delete a recently added arm" do

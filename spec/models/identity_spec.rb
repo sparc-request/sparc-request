@@ -94,6 +94,7 @@ describe "Identity" do
     let!(:super_user)           {FactoryGirl.create(:super_user, identity_id: user.id, organization_id: institution.id)}
     let!(:service_provider)     {FactoryGirl.create(:service_provider, identity_id: user.id, organization_id: institution.id)}
     let!(:clinical_provider)    {FactoryGirl.create(:clinical_provider, identity_id: user2.id, organization_id: core.id)}
+    let!(:ctrc_provider)        {FactoryGirl.create(:clinical_provider, identity_id: user2.id, organization_id: program.id)}
     
     let!(:project) {
       project = Project.create(FactoryGirl.attributes_for(:protocol))
@@ -198,6 +199,19 @@ describe "Identity" do
 
         it "should return false if the user is not a clinical provider on a given core" do
           user3.can_edit_core?(core.id).should eq(false)
+        end
+      end
+
+      describe "clinical provider for ctrc" do
+
+        it "should return true if the user is a clinical provider on the ctrc" do
+          program.tag_list.add("ctrc")
+          program.save
+          user2.clinical_provider_for_ctrc?.should eq(true)
+        end
+
+        it "should return false if the user is not a clinical provider on the ctrc" do
+          user.clinical_provider_for_ctrc?.should eq(false)
         end
       end
     end

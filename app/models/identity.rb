@@ -120,6 +120,14 @@ class Identity < ActiveRecord::Base
     self.catalog_overlord?
   end
 
+  def is_super_user?
+    if self.super_users.count > 0
+      return true
+    else
+      return false
+    end
+  end
+
   ###############################################################################
   ############################# SEARCH METHODS ##################################
   ###############################################################################
@@ -320,6 +328,17 @@ class Identity < ActiveRecord::Base
     else
       return false
     end
+  end
+
+  def clinical_provider_for_ctrc?
+    org = Organization.tagged_with("ctrc").first
+    self.clinical_providers.each do |provider|
+      if provider.organization_id == org.id
+        return true      
+      end
+    end
+
+    return false
   end
 
   # Collects all workflow states that are available to the given user based on what organizations

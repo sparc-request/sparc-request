@@ -127,6 +127,8 @@ def create_visits
       arm.create_line_items_visit(line_item)
     end
   end
+  arm1.reload
+  arm2.reload
 end
 
 def update_visits

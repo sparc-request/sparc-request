@@ -110,12 +110,9 @@ describe "submitting a in form", :js => true do
     end
   end
 
-  describe "editing an arm" do
-    it "should save the new name" do
-      fill_in "project_arms_attributes_0_name", :with => "Test Rename"
-      find(:xpath, "//a/img[@alt='Savecontinue']/..").click
-      wait_for_javascript_to_finish
-      Arm.find_by_name("Test Rename").should_not eq(nil)
+  describe "editing an existing arm" do
+    it "should not allow you to edit an existing arms name" do
+      page.should have_no_field("project_arms_attributes_0_name")
     end
     it "should save new subject count" do
       subject_count = (arm1.subject_count + 2)
@@ -133,7 +130,7 @@ describe "submitting a in form", :js => true do
     end
   end
 
-  describe "adding an arm" do
+  describe "adding and editing an arm" do
     it "should save the new arm" do
       click_link("Add Arm")
       within("div.add-arm") do
@@ -144,18 +141,33 @@ describe "submitting a in form", :js => true do
       find(:xpath, "//a/img[@alt='Savecontinue']/..").click
       wait_for_javascript_to_finish
       Arm.find_by_name("New Arm Test").should_not eq(nil)
+      Arm.find_by_name("New Arm Test").subject_count.should eq(2)
+      Arm.find_by_name("New Arm Test").visit_count.should eq(4)
     end
   end
 
   describe "removing an arm" do
-    it "should delete the arm" do
+    it "should not delete an existing arm" do
+      page.should have_no_link("Remove Arm")
+    end
+
+    it "should delete a recently added arm" do
       number_of_arms = Arm.find(:all).size
-      within("div#1") do
-        click_link("Remove Arm")
+      click_link("Add Arm")
+      within("div.add-arm") do
+        find("input[id*=name]").set("New Arm Test")
+        find("input[id*=subject_count]").set(2)
+        find("input[id*=visit_count]").set(4)
       end
       find(:xpath, "//a/img[@alt='Savecontinue']/..").click
       wait_for_javascript_to_finish
-      Arm.find(:all).size.should eq(number_of_arms - 1)
+      Arm.find(:all).size.should eq(number_of_arms + 1)
+
+      visit service_details_service_request_path service_request.id
+      click_link("Remove Arm")
+      find(:xpath, "//a/img[@alt='Savecontinue']/..").click
+      wait_for_javascript_to_finish
+      Arm.find(:all).size.should eq(number_of_arms)
     end
 
     it "should not allow you to delete the last arm" do

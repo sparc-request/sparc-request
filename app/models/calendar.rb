@@ -20,4 +20,12 @@ class Calendar < ActiveRecord::Base
     return completed_procedures.select{|x| x.appointment.completed_for_core?(x.core.id)}.sum{|x| x.total}
   end
   
+  ### audit reporting methods ###
+  
+  def audit_excluded_fields
+    {'create' => ['subject_id']}
+  end
+
+  ### end audit reporting methods ###
+  
 end

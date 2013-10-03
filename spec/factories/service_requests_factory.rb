@@ -1,5 +1,3 @@
-# The association with protocol must be set manually throught the id's
-# due to validations on protocol
 FactoryGirl.define do
   factory :service_request do
     protocol_id          { Random.rand(10000) }

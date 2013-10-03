@@ -186,10 +186,10 @@ describe "study schedule", :js => true do
       describe "changing the number of units" do
 
         it "should save the new number of units" do
-          fill_in "quantity", :with => 20
-          wait_for_javascript_to_finish
+          fill_in "quantity", with: "6"
+          sleep 1
           find(".units_per_quantity").click()
-          find(".line_item_quantity").should have_value("20")
+          find(".line_item_quantity").should have_value("6")
         end
       end
 

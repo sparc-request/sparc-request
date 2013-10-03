@@ -26,7 +26,7 @@ module Portal::SubServiceRequestsHelper
   def user_can_view_ssr?(study_tracker, ssr, user)
     can_view = false
 
-    if user.is_super_user? || (study_tracker == false) || user.clinical_provider_for_ctrc?
+    if user.is_super_user? || user.is_service_provider? || user.clinical_provider_for_ctrc? || (study_tracker == false)
       can_view = true
     else
       ssr.line_items.each do |line_item|

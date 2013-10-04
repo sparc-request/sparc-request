@@ -25,8 +25,7 @@ module Portal::SubServiceRequestsHelper
   #ctrc can see all ssr's.
   def user_can_view_ssr?(study_tracker, ssr, user)
     can_view = false
-
-    if user.is_super_user? || user.is_service_provider? || user.clinical_provider_for_ctrc? || (study_tracker == false)
+    if user.is_super_user? || user.clinical_provider_for_ctrc? || (user.is_service_provider? && (study_tracker == false)) 
       can_view = true
     else
       ssr.line_items.each do |line_item|

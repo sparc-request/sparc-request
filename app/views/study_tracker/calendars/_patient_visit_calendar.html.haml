@@ -7,26 +7,26 @@
     %thead.left_headers
       %tr.ui-widget-header
         %th
-          Study/Project ID:
+          = t(:study_tracker)[:visit_calendar][:header1]
           = @sub_service_request.service_request.protocol.id
         %th
-          Subject ID:
+          = t(:study_tracker)[:visit_calendar][:header2]
           = @subject.external_subject_id
       %tr.ui-widget-header
         %th
-          Billing/Business Manager:
+          = t(:study_tracker)[:visit_calendar][:header3]
           = @sub_service_request.service_request.protocol.billing_managers.try(:first).try(:full_name)
         %th
-          Subject Study Status:
+          = t(:study_tracker)[:visit_calendar][:header4]
           = f.select :status, options_for_select(["Active", "Completed", "Early Term", "Screen Fail"], f.try(:object).try(:status)), :include_blank => "--Choose a Status--"
   #controls
-    %p Please select a visit:
+    %p= t(:study_tracker)[:visit_calendar][:visit_selector]
     = select_tag :visit, options_for_select(appointment_visits(@appointments), selected_key = "##{@default_appointment.position_switch}: #{@default_appointment.name_switch}"), :class => 'clinical_select_data'
   %p= link_to "-- Show Dashboard --", 'javascript:void(0);', :class => "ui-state-active dashboard_link"
 
   #dashboard_container
     #dashboard{:style => "display:none;"}
-      %p.save_alert{:style => "text-align:center; margin-bottom:5px; display:none; color:red; font-weight:bold;"} You must save your changes for the dashboard to be updated.
+      %p.save_alert{:style => "text-align:center; margin-bottom:5px; display:none; color:red; font-weight:bold;"}= t(:study_tracker)[:visit_calendar][:save_alert]
       = render :partial => "dashboard_table", :locals => {:completed_appointments => @completed_appointments}
 
   %div{:style => "margin: 25px 0px;"}
@@ -46,20 +46,20 @@
             %table.study_tracker_table
               %thead
                 %tr.ui-widget-header
-                  %th{:colspan => "4"} Date of Visit (entering date signifies a completed visit)
+                  %th{:colspan => "4"}= t(:study_tracker)[:visit_calendar][:visit_complete]
                   = appointment_form.fields_for :appointment_completions do |ac_form|
                     %th{:colspan => "2", :class => "core_#{ac_form.object.organization.id} hidden_by_tabs", :style => ac_form.object.organization == @default_core ? "display:table-cell;" : ""}
                       = ac_form.datepicker :formatted_completed_date, size: 18, dateFormat: "m/dd/yy"
                 %tr.ui-widget-header
-                  %th Procedure
+                  %th= t(:study_tracker)[:visit_calendar][:header5]
                   %th
-                    Completed
+                    = t(:study_tracker)[:visit_calendar][:header6]
                     %a.check_all.ui-button.ui-state-default.ui-corner-all.ui-button-icon-only{:style => "margin:3px auto 0;display:block;height:22px;"}
                       %span.ui-icon.ui-icon-check
-                  %th R Quantity
-                  %th T Quantity
-                  %th Unit Cost
-                  %th Total
+                  %th= t(:study_tracker)[:visit_calendar][:header7]
+                  %th= t(:study_tracker)[:visit_calendar][:header8]
+                  %th= t(:study_tracker)[:visit_calendar][:header9]
+                  %th= t(:study_tracker)[:visit_calendar][:header10]
               %tbody
                 = appointment_form.fields_for :procedures, :wrapper => false do |procedure_form|
                   - if procedure_form.object.should_be_displayed
@@ -74,7 +74,7 @@
                     %tr.fields{:style => "display:none;"}
                 %tr.new_procedure_wrapper{:'data-appointment_index' => appointment_index}
                 %tr.grand_total_row
-                  %td{:style => "font-weight:bold;"} Grand Total
+                  %td{:style => "font-weight:bold;"}= t(:study_tracker)[:visit_calendar][:grand_total]
                   %td
                   %td
                   %td
@@ -83,22 +83,22 @@
             .add_service
               %div{:class => "core_#{@nursing.id} hidden_by_tabs", :style => @nursing == @default_core ? "display:block;" : ""}
                 = select_tag :service, options_for_select(@nursing.services.sort_by{|x| x.name}.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
-                = button_tag "Add Service", :class => 'cwf_add_service_button'
+                = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => 'cwf_add_service_button'
               %div{:class => "core_#{@lab.id} hidden_by_tabs", :style => @lab == @default_core ? "display:block;" : ""}
                 = select_tag :service, options_for_select(@lab.services.sort_by{|x| x.name}.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
-                = button_tag "Add Service", :class => 'cwf_add_service_button'
+                = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => 'cwf_add_service_button'
               %div{:class => "core_#{@imaging.id} hidden_by_tabs", :style => @imaging == @default_core ? "display:block;" : ""}
                 = select_tag :service, options_for_select(@imaging.services.sort_by{|x| x.name}.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
-                = button_tag "Add Service", :class => 'cwf_add_service_button'
+                = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => 'cwf_add_service_button'
               %div{:class => "core_#{@nutrition.id} hidden_by_tabs", :style => @nutrition == @default_core ? "display:block;" : ""}
                 = select_tag :service, options_for_select(@nutrition.services.sort_by{|x| x.name}.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
-                = button_tag "Add Service", :class => 'cwf_add_service_button'
+                = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => 'cwf_add_service_button'
             .comments
               = render :partial => "notes", :locals => {:appointment => appointment_form.object}
 
         .spinner_wrapper
 
           = image_tag 'spinner.gif'
-  %p{:style => "text-align:center; margin-bottom:12px;"}= f.submit "Save Appointments", :id => 'save_appointments', :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;font-size:1.2em;"
+  %p{:style => "text-align:center; margin-bottom:12px;"}= f.submit t(:study_tracker)[:visit_calendar][:submit], :id => 'save_appointments', :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;font-size:1.2em;"
   %p.save_alert{:style => "text-align:center; margin-bottom:12px; display:none; color:red; font-weight:bold;"} You must save this form for any changes to be commited.
-  %p{:style => "text-align:center; margin-bottom:12px;"}= link_to "Return to Clinical Work Fulfillment", study_tracker_sub_service_request_path(@sub_service_request), :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;font-size:1.2em;"
+  %p{:style => "text-align:center; margin-bottom:12px;"}= link_to t(:study_tracker)[:visit_calendar][:cwf_link], study_tracker_sub_service_request_path(@sub_service_request), :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;font-size:1.2em;"

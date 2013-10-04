@@ -897,6 +897,27 @@ en:
       start_date: "Start Date:"
       end_date: "End Date:"
       get_report: "Get Report"
+    notes: 
+      header: "Comments:"
+    visit_calendar:
+      header1: "Study/Project ID:"
+      header2: "Subject ID:"
+      header3: "Billing/Business Manager:"
+      header4: "Subject Study Status:"
+      visit_selector: "Please select a visit:"
+      save_alert: "You must save your changes for the dashboard to be updated."
+      visit_complete: "Date of Visit (entering date signifies a completed visit)"
+      header5: "Procedure"
+      header6: "Completed"
+      header7: "R Quantity"
+      header8: "T Quantity"
+      header9: "Unit Cost"
+      header10: "Total"
+      grand_total: "Grand Total"
+      add_service: "Add Service"
+      submit: "Save Appointments"
+      cwf_link: "Return to Clinical Work Fulfillment"
+
 
 
 

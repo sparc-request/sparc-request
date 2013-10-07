@@ -103,6 +103,11 @@ $(document).ready ->
     $('.save_alert').show()
   )
 
+  $('.clinical_tab_data').each ->
+    if $(this).attr('data-has_access') == "false"
+      core_name = $(this).attr('id')
+      $("." + core_name).find('input').prop('disabled', true)
+
   $(document).on('click', 'a.check_all', ->
     if $('a.check_all span').hasClass('ui-icon-check')
       $('a.check_all span').removeClass('ui-icon-check').addClass('ui-icon-close')

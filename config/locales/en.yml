@@ -899,6 +899,7 @@ en:
       get_report: "Get Report"
     notes: 
       header: "Comments:"
+      save: "Save Comment"
     visit_calendar:
       header1: "Study/Project ID:"
       header2: "Subject ID:"
@@ -917,6 +918,13 @@ en:
       add_service: "Add Service"
       submit: "Save Appointments"
       cwf_link: "Return to Clinical Work Fulfillment"
+      popup_message1: "Attention - An assessment" 
+      popup_message2: "has been added at"
+      popup_message3: "If subject is past visit, please refer to your IRB-approved protocol."
+      popup_message4: "Attention - Assessments have been added to the following visits. If subject is past visit, please refer to your IRB-approved protocol."
+      popup_header1: "Visit Name:"
+      popup_header2: "Service/Assessment Name:"
+
 
 
 

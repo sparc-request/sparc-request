@@ -1,4 +1,8 @@
 class ReportsController < ApplicationController
+  def index
+    layout :reporting
+  end
+
   def research_project_summary
     @sub_service_request = SubServiceRequest.find params[:id]
     @service_request = @sub_service_request.service_request 

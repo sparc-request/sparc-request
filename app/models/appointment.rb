@@ -66,9 +66,12 @@ class Appointment < ActiveRecord::Base
     cores << Organization.tagged_with("nursing").first
     cores << Organization.tagged_with("laboratory").first
     cores << Organization.tagged_with("imaging").first
+    cores << Organization.tagged_with("pft").first
 
     cores.each do |core|
-      self.appointment_completions.create(:organization_id => core.id)
+      if self.appointment_completions.where(:organization_id => core.id).empty?
+        self.appointment_completions.create(:organization_id => core.id) 
+      end
     end
   end
 

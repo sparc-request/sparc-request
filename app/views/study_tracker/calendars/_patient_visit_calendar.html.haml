@@ -37,6 +37,7 @@
           %li.ui-state-default.ui-corner-top{:class=> @lab == @default_core ? 'ui-state-active' : ''}= link_to "Laboratory", "#laboratory", :class => "clinical_tab_data", :id => "core_#{@lab.id}", 'data-has_access' => @user.can_edit_core?(@lab.id) ? true : false
           %li.ui-state-default.ui-corner-top{:class=> @imaging == @default_core ? 'ui-state-active' : ''}= link_to "Imaging", "#imaging", :class => "clinical_tab_data", :id => "core_#{@imaging.id}", 'data-has_access' => @user.can_edit_core?(@imaging.id) ? true : false
           %li.ui-state-default.ui-corner-top{:class=> @nutrition == @default_core ? 'ui-state-active' : ''}= link_to "Nutrition", "#nutrition", :class => "clinical_tab_data", :id => "core_#{@nutrition.id}", 'data-has_access' => @user.can_edit_core?(@nutrition.id) ? true : false
+          %li.ui-state-default.ui-corner-top{:class=> @pft == @default_core ? 'ui-state-active' : ''}= link_to "PFT Services", "#pft", :class => "clinical_tab_data", :id => "core_#{@pft.id}", 'data-has_access' => @user.can_edit_core?(@pft.id) ? true : false
 
       #visit_form{:style => "padding: 10px 40px;"}
         - appointment_index = -1
@@ -92,6 +93,9 @@
                 = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => 'cwf_add_service_button'
               %div{:class => "core_#{@nutrition.id} hidden_by_tabs", :style => @nutrition == @default_core ? "display:block;" : ""}
                 = select_tag :service, options_for_select(@nutrition.services.sort_by{|x| x.name}.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
+                = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => 'cwf_add_service_button'
+              %div{:class => "core_#{@pft.id} hidden_by_tabs", :style => @pft == @default_core ? "display:block;" : ""}
+                = select_tag :service, options_for_select(@pft.services.sort_by{|x| x.name}.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
                 = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => 'cwf_add_service_button'
             .comments
               = render :partial => "notes", :locals => {:appointment => appointment_form.object}

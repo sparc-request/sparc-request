@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130927180442) do
+ActiveRecord::Schema.define(:version => 20131007192150) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -553,8 +553,8 @@ ActiveRecord::Schema.define(:version => 20130927180442) do
     t.datetime "updated_at",                                                         :null => false
     t.integer  "line_item_id"
     t.integer  "r_quantity"
-    t.integer  "service_id"
     t.integer  "t_quantity"
+    t.integer  "service_id"
     t.decimal  "unit_factor_cost", :precision => 12, :scale => 4
     t.boolean  "toasts_generated",                                :default => false
   end

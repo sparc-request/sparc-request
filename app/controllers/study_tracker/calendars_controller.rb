@@ -55,6 +55,7 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
     @nursing   = Organization.tagged_with("nursing").first
     @lab       = Organization.tagged_with("laboratory").first
     @imaging   = Organization.tagged_with("imaging").first
+    @pft       = Organization.tagged_with("pft").first
 
     @subject = calendar.subject
     @appointments = calendar.appointments.sort{|x,y| x.position_switch <=> y.position_switch }
@@ -74,7 +75,7 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
     new_procedures = []
     @completed_appointments.each do |appointment|
       appointment.procedures.each do |procedure|
-        if procedure.should_be_displayed
+        if procedure.should_be_displayed && (procedure.service_id  == nil)
           completion = appointment.appointment_completions.where("organization_id = ?", procedure.core.id).first.try(:completed_date)
           if completion
             if procedure.created_at > completion

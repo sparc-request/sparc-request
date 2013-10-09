@@ -3,9 +3,8 @@
   %head
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
     %title= t 'application_title'
-    =# stylesheet_link_tag 'application', '960', 'jquery-ui', :media => 'all'
-    =# javascript_include_tag "application"
-    =# javascript_include_tag "feedback"
+    = stylesheet_link_tag 'application', '960', 'jquery-ui', :media => 'all'
+    = javascript_include_tag "application"
     = csrf_meta_tags
   %body
     // load spinner and cancel images so they are cached
@@ -23,6 +22,7 @@
         #institution_logo
           %a{:href => HEADER_LINK_3, :target => '_blank'}
             = image_tag '/assets/institution_logo_136x86.gif', :alt => 'institution_logo'
+      #welcome_msg= show_welcome_message(current_user)
       #sparc_logo_header
         = image_tag('sparc_request_header.jpg')
         #right_header

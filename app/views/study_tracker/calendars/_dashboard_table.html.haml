@@ -1,9 +1,9 @@
 %table.study_tracker_table{:style => "width:880px;"}
   %thead.left_headers
     %tr.ui-widget-header
-      %th Completed Visits
-      %th Visit Totals
+      %th= t(:study_tracker)[:dashboard][:header1]
+      %th= t(:study_tracker)[:dashboard][:header2]
     =render(:partial => 'total', :collection => completed_appointments, :as => :appointment)
     %tr.ui-widget-header
-      %th Subject Total:
+      %th= t(:study_tracker)[:dashboard][:header3]
       %th= number_to_currency(@calendar.completed_total)

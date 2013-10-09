@@ -128,6 +128,14 @@ class Identity < ActiveRecord::Base
     end
   end
 
+  def is_service_provider?
+    if self.service_providers.count > 0
+      return true
+    else
+      return false
+    end
+  end
+
   ###############################################################################
   ############################# SEARCH METHODS ##################################
   ###############################################################################

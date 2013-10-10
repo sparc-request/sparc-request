@@ -75,7 +75,7 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
     new_procedures = []
     @completed_appointments.each do |appointment|
       appointment.procedures.each do |procedure|
-        if procedure.should_be_displayed && (procedure.service_id  == nil)
+        if procedure.should_be_displayed && (procedure.service_id == nil)
           completion = appointment.appointment_completions.where("organization_id = ?", procedure.core.id).first.try(:completed_date)
           if completion
             if procedure.created_at > completion

@@ -35,6 +35,8 @@ class Organization < ActiveRecord::Base
   attr_accessible :submission_emails_attributes
   attr_accessible :available_statuses_attributes
   attr_accessible :tag_list
+  attr_accessible :position_in_cwf
+  attr_accessible :show_in_cwf
  
   accepts_nested_attributes_for :subsidy_map
   accepts_nested_attributes_for :pricing_setups

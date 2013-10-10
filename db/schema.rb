@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131007192150) do
+ActiveRecord::Schema.define(:version => 20131010153341) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -456,9 +456,11 @@ ActiveRecord::Schema.define(:version => 20131007192150) do
     t.text     "ack_language"
     t.boolean  "process_ssrs"
     t.boolean  "is_available"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
     t.datetime "deleted_at"
+    t.boolean  "show_in_cwf"
+    t.integer  "position_in_cwf"
   end
 
   add_index "organizations", ["is_available"], :name => "index_organizations_on_is_available"

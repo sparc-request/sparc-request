@@ -33,11 +33,8 @@
     = f.fields_for :calendar do |calendar_form|
       .cwf_tabs.ui-tabs.ui-widget.ui-widget-content.ui-corner-all
         %ul.ui-tabs-nav.ui-helper-reset.ui-helper-clearfix.ui-widget-header.ui-corner-all
-          %li.ui-state-default.ui-corner-top{:class=> @nursing == @default_core ? 'ui-state-active' : ''}= link_to "Nursing", "#nursing", :class => "clinical_tab_data", :id => "core_#{@nursing.id}", 'data-has_access' => @user.can_edit_core?(@nursing.id) ? true : false
-          %li.ui-state-default.ui-corner-top{:class=> @lab == @default_core ? 'ui-state-active' : ''}= link_to "Laboratory", "#laboratory", :class => "clinical_tab_data", :id => "core_#{@lab.id}", 'data-has_access' => @user.can_edit_core?(@lab.id) ? true : false
-          %li.ui-state-default.ui-corner-top{:class=> @imaging == @default_core ? 'ui-state-active' : ''}= link_to "Imaging", "#imaging", :class => "clinical_tab_data", :id => "core_#{@imaging.id}", 'data-has_access' => @user.can_edit_core?(@imaging.id) ? true : false
-          %li.ui-state-default.ui-corner-top{:class=> @nutrition == @default_core ? 'ui-state-active' : ''}= link_to "Nutrition", "#nutrition", :class => "clinical_tab_data", :id => "core_#{@nutrition.id}", 'data-has_access' => @user.can_edit_core?(@nutrition.id) ? true : false
-          %li.ui-state-default.ui-corner-top{:class=> @pft == @default_core ? 'ui-state-active' : ''}= link_to "PFT Services", "#pft", :class => "clinical_tab_data", :id => "core_#{@pft.id}", 'data-has_access' => @user.can_edit_core?(@pft.id) ? true : false
+          - Organization.get_cwf_organizations.each do |org|
+            %li.ui-state-default.ui-corner-top{:class=> org == @default_core ? 'ui-state-active' : ''}= link_to org.abbreviation, "##{org.abbreviation.downcase}", :class => "clinical_tab_data", :id => "core_#{org.id}", 'data-has_access' => @user.can_edit_core?(org.id) ? true : false
 
       #visit_form{:style => "padding: 10px 40px;"}
         - appointment_index = -1
@@ -82,21 +79,11 @@
                   %td
                   %td.grand_total_cell.text-center= number_to_currency(@default_subtotal)
             .add_service
-              %div{:class => "core_#{@nursing.id} hidden_by_tabs", :style => @nursing == @default_core ? "display:block;" : ""}
-                = select_tag :service, options_for_select(@nursing.services.sort_by{|x| x.name}.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
-                = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => "cwf_add_service_button core_#{@nursing.id}"
-              %div{:class => "core_#{@lab.id} hidden_by_tabs", :style => @lab == @default_core ? "display:block;" : ""}
-                = select_tag :service, options_for_select(@lab.services.sort_by{|x| x.name}.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
-                = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => "cwf_add_service_button core_#{@lab.id}"
-              %div{:class => "core_#{@imaging.id} hidden_by_tabs", :style => @imaging == @default_core ? "display:block;" : ""}
-                = select_tag :service, options_for_select(@imaging.services.sort_by{|x| x.name}.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
-                = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => "cwf_add_service_button core_#{@imaging.id}"
-              %div{:class => "core_#{@nutrition.id} hidden_by_tabs", :style => @nutrition == @default_core ? "display:block;" : ""}
-                = select_tag :service, options_for_select(@nutrition.services.sort_by{|x| x.name}.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
-                = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => "cwf_add_service_button core_#{@nutrition.id}"
-              %div{:class => "core_#{@pft.id} hidden_by_tabs", :style => @pft == @default_core ? "display:block;" : ""}
-                = select_tag :service, options_for_select(@pft.services.sort_by{|x| x.name}.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
-                = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => "cwf_add_service_button core_#{@pft.id}"
+              - Organization.get_cwf_organizations.each do |org|
+                %div{:class => "core_#{org.id} hidden_by_tabs", :style => org == @default_core ? "display:block;" : ""}
+                  = select_tag :service, options_for_select(org.services.sort_by{|x| x.name}.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
+                  = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => "cwf_add_service_button core_#{org.id}"
+           
             .comments
               = render :partial => "notes", :locals => {:appointment => appointment_form.object}
 

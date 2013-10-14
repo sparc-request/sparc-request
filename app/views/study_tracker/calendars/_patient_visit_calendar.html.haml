@@ -84,19 +84,19 @@
             .add_service
               %div{:class => "core_#{@nursing.id} hidden_by_tabs", :style => @nursing == @default_core ? "display:block;" : ""}
                 = select_tag :service, options_for_select(@nursing.services.sort_by{|x| x.name}.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
-                = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => 'cwf_add_service_button'
+                = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => "cwf_add_service_button core_#{@nursing.id}"
               %div{:class => "core_#{@lab.id} hidden_by_tabs", :style => @lab == @default_core ? "display:block;" : ""}
                 = select_tag :service, options_for_select(@lab.services.sort_by{|x| x.name}.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
-                = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => 'cwf_add_service_button'
+                = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => "cwf_add_service_button core_#{@lab.id}"
               %div{:class => "core_#{@imaging.id} hidden_by_tabs", :style => @imaging == @default_core ? "display:block;" : ""}
                 = select_tag :service, options_for_select(@imaging.services.sort_by{|x| x.name}.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
-                = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => 'cwf_add_service_button'
+                = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => "cwf_add_service_button core_#{@imaging.id}"
               %div{:class => "core_#{@nutrition.id} hidden_by_tabs", :style => @nutrition == @default_core ? "display:block;" : ""}
                 = select_tag :service, options_for_select(@nutrition.services.sort_by{|x| x.name}.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
-                = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => 'cwf_add_service_button'
+                = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => "cwf_add_service_button core_#{@nutrition.id}"
               %div{:class => "core_#{@pft.id} hidden_by_tabs", :style => @pft == @default_core ? "display:block;" : ""}
                 = select_tag :service, options_for_select(@pft.services.sort_by{|x| x.name}.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
-                = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => 'cwf_add_service_button'
+                = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => "cwf_add_service_button core_#{@pft.id}"
             .comments
               = render :partial => "notes", :locals => {:appointment => appointment_form.object}
 

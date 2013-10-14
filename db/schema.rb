@@ -555,8 +555,8 @@ ActiveRecord::Schema.define(:version => 20131014140710) do
     t.datetime "updated_at",                                                         :null => false
     t.integer  "line_item_id"
     t.integer  "r_quantity"
-    t.integer  "t_quantity"
     t.integer  "service_id"
+    t.integer  "t_quantity"
     t.decimal  "unit_factor_cost", :precision => 12, :scale => 4
     t.boolean  "toasts_generated",                                :default => false
   end

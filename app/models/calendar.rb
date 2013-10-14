@@ -27,5 +27,4 @@ class Calendar < ActiveRecord::Base
   end
 
   ### end audit reporting methods ###
-  
 end

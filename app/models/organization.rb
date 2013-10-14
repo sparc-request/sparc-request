@@ -262,4 +262,11 @@ class Organization < ActiveRecord::Base
     end
   end
 
+  def self.get_cwf_organizations
+    cwf_orgs = Organization.where(show_in_cwf: true)
+    cwf_orgs.sort! { |a,b| a.position_in_cwf <=> b.position_in_cwf }
+
+    cwf_orgs
+  end
+
 end

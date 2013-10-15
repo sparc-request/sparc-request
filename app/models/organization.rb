@@ -43,6 +43,8 @@ class Organization < ActiveRecord::Base
   accepts_nested_attributes_for :submission_emails
   accepts_nested_attributes_for :available_statuses, :allow_destroy => true
 
+  validates :position_in_cwf, :numericality => true, :allow_nil => true, :uniqueness => true
+
   ###############################################################################
   ############################# HIERARCHY METHODS ###############################
   ###############################################################################

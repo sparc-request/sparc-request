@@ -62,11 +62,7 @@ class Appointment < ActiveRecord::Base
 
   def create_appointment_completions
     cores = []
-    cores << Organization.tagged_with("nutrition").first
-    cores << Organization.tagged_with("nursing").first
-    cores << Organization.tagged_with("laboratory").first
-    cores << Organization.tagged_with("imaging").first
-    cores << Organization.tagged_with("pft").first
+    cores = Organization.where(show_in_cwf: true)
 
     cores.each do |core|
       if self.appointment_completions.where(:organization_id => core.id).empty?

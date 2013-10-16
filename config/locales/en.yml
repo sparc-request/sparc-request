@@ -649,6 +649,8 @@ en:
     default_statuses: "Default Statuses:"
     color_blank: "Select a Color"
     errors: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
+    show_in_cwf: "Show in Clinical Work Fulfillment"
+    position_in_cwf: "Position in Clinical Work Fulfillment"
 
   pricing_map_form:
     dates: "Dates"

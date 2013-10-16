@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131007192150) do
+ActiveRecord::Schema.define(:version => 20131016153506) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -456,9 +456,11 @@ ActiveRecord::Schema.define(:version => 20131007192150) do
     t.text     "ack_language"
     t.boolean  "process_ssrs"
     t.boolean  "is_available"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
     t.datetime "deleted_at"
+    t.boolean  "show_in_cwf"
+    t.integer  "position_in_cwf"
   end
 
   add_index "organizations", ["is_available"], :name => "index_organizations_on_is_available"
@@ -553,8 +555,8 @@ ActiveRecord::Schema.define(:version => 20131007192150) do
     t.datetime "updated_at",                                                         :null => false
     t.integer  "line_item_id"
     t.integer  "r_quantity"
-    t.integer  "t_quantity"
     t.integer  "service_id"
+    t.integer  "t_quantity"
     t.decimal  "unit_factor_cost", :precision => 12, :scale => 4
     t.boolean  "toasts_generated",                                :default => false
   end

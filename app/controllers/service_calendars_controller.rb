@@ -1,6 +1,6 @@
 class ServiceCalendarsController < ApplicationController
   before_filter :initialize_service_request
-  before_filter {|c| params[:portal] == 'true' ? true : c.send(:authorize_identity)}
+  before_filter(:except => [:merged_calendar]) {|c| params[:portal] == 'true' ? true : c.send(:authorize_identity)}
   layout false
 
   def table

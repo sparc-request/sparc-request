@@ -75,6 +75,7 @@ $(document).ready ->
 
       if clicked.attr('data-has_access') == "false"
         $("." + core_name).find('input').prop('disabled', true)
+        $("button." + core_name).prop('disabled', true)
 
       $("tr." + core_name).css("display", "table-row")
       $("th." + core_name).css("display", "table-cell")
@@ -102,6 +103,12 @@ $(document).ready ->
   $(document).on('change', 'form.edit_subject', ->
     $('.save_alert').show()
   )
+
+  $('.clinical_tab_data').each ->
+    if $(this).attr('data-has_access') == "false"
+      core_name = $(this).attr('id')
+      $("." + core_name).find('input').prop('disabled', true)
+      $("button." + core_name).prop('disabled', true)
 
   $(document).on('click', 'a.check_all', ->
     if $('a.check_all span').hasClass('ui-icon-check')

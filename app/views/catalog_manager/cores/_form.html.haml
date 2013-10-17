@@ -38,6 +38,12 @@
         %tr
           %th= t(:organization_form)[:tag_list]
           %td= f.text_field :tag_list
+        %tr.cwf
+          %td= t(:organization_form)[:show_in_cwf]
+          %td{:style => "float:left;"}= f.check_box :show_in_cwf
+        %tr.cwf.position_field{:style => @core.show_in_cwf ? "" : "display:none;"}
+          %td= t(:organization_form)[:position_in_cwf]
+          %td= f.text_field :position_in_cwf
 
     %br
 

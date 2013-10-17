@@ -1,0 +1,7 @@
+Strategy for hiding/showing ssr's
+
+- Make helper method that takes in @study_tracker, ssr, @user
+- If we're not in study tracker, just return true(show)
+- If we are, need to check if any of the line items under the ssr are under the same core as the user
+- If there are any, return true.  
+- Place this check in ssr list, within the ssr loop.

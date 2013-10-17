@@ -1,15 +1,20 @@
 #procedures_added_popup{'data-calendar_id' => @calendar.id}
   - if @procedures.size == 1
-    %p= "Attention - An assessment #{@procedures.first.display_service_name} has been added at #{@procedures.first.appointment.name_switch}. If subject is past visit, please refer to your IRB-approved protocol."
+    %p
+      = t(:study_tracker)[:visit_calendar][:popup_message1]
+      = @procedures.first.display_service_name
+      = t(:study_tracker)[:visit_calendar][:popup_message2]
+      = @procedures.first.appointment.name_switch + "."
+      = t(:study_tracker)[:visit_calendar][:popup_message3]
 
   -else
-    %p Attention - Assessments have been added to the following visits. If subject is past visit, please refer to your IRB-approved protocol.
+    %p= t(:study_tracker)[:visit_calendar][:popup_message4]
     %br
     %table
       %thead
         %tr.ui-widget-header
-          %th{:style => "padding:6px 8px;"} Visit Name:
-          %th{:style => "padding:6px 8px;"} Service/Assessment Name:
+          %th{:style => "padding:6px 8px;"}= t(:study_tracker)[:visit_calendar][:popup_header1]
+          %th{:style => "padding:6px 8px;"}= t(:study_tracker)[:visit_calendar][:popup_header2]
       %tbody
         - @procedures.each do |procedure|
           %tr{:style => "background-color: #C0C0C0;"}

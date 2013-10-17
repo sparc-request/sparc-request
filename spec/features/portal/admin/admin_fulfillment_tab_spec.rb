@@ -134,7 +134,10 @@ describe "admin fulfillment tab", :js => true do
         end
 
         it "should change the total cost if the calendar visits are edited" do
-          previous_direct_cost = find("#direct_cost_total").text
+          previous_direct_cost = ""
+          within("#fulfillment_subsidy") do
+            previous_direct_cost = find("#direct_cost_total").text
+          end
           click_link "check_row_#{arm1.line_items_visits.first.id}_template"
           wait_for_javascript_to_finish
           within("#fulfillment_subsidy") do

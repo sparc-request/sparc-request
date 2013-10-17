@@ -52,6 +52,7 @@ class Arm < ActiveRecord::Base
     end
     
     liv = LineItemsVisit.for(self, line_item)
+    
     liv.create_visits
 
     if line_items_visits.count > 1

@@ -649,6 +649,8 @@ en:
     default_statuses: "Default Statuses:"
     color_blank: "Select a Color"
     errors: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
+    show_in_cwf: "Show in Clinical Work Fulfillment"
+    position_in_cwf: "Position in Clinical Work Fulfillment"
 
   pricing_map_form:
     dates: "Dates"
@@ -849,6 +851,9 @@ en:
     save: "Save"
     cancel: "Cancel"
     dashboard:
+      header1: "Completed Visits"
+      header2: "Visit Totals"
+      header3: "Subject Total:"
       tabs:
         study_schedule: "Study Schedule"
         subject_tracker: "Subject Tracker"
@@ -894,5 +899,35 @@ en:
       start_date: "Start Date:"
       end_date: "End Date:"
       get_report: "Get Report"
+    notes: 
+      header: "Comments:"
+      save: "Save Comment"
+    visit_calendar:
+      header1: "Study/Project ID:"
+      header2: "Subject ID:"
+      header3: "Billing/Business Manager:"
+      header4: "Subject Study Status:"
+      visit_selector: "Please select a visit:"
+      save_alert: "You must save your changes for the dashboard to be updated."
+      visit_complete: "Date of Visit (entering date signifies a completed visit)"
+      header5: "Procedure"
+      header6: "Completed"
+      header7: "R Quantity"
+      header8: "T Quantity"
+      header9: "Unit Cost"
+      header10: "Total"
+      grand_total: "Grand Total"
+      add_service: "Add Service"
+      submit: "Save Appointments"
+      cwf_link: "Return to Clinical Work Fulfillment"
+      popup_message1: "Attention - An assessment" 
+      popup_message2: "has been added at"
+      popup_message3: "If subject is past visit, please refer to your IRB-approved protocol."
+      popup_message4: "Attention - Assessments have been added to the following visits. If subject is past visit, please refer to your IRB-approved protocol."
+      popup_header1: "Visit Name:"
+      popup_header2: "Service/Assessment Name:"
+
+
+
 
 

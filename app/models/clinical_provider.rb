@@ -6,4 +6,11 @@ class ClinicalProvider < ActiveRecord::Base
 
   attr_accessible :identity_id 
   attr_accessible :organization_id
+
+  def core
+    org = Organization.find(self.organization_id)
+
+    org
+  end
 end
+

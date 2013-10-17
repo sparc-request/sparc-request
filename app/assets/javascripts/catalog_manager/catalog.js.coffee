@@ -184,6 +184,13 @@ $ ->
     $.post '/catalog_manager/services/set_optional', {service_relation_id: $(this).attr('id'), optional: $(this).val()}, (data) ->
         $('#rs_info').html(data)
 
+  # clinical work fulfillment
+  $('.cwf input[type=checkbox]').live 'click', ->
+    if $(this).is(":checked")
+      $('.cwf.position_field').show()
+    else
+      $('.cwf.position_field').hide()
+      
   # submission e-mails
   $('input#new_se').live 'focus', -> $(this).val('')
   $('input#new_se').live 'keypress', (e) ->

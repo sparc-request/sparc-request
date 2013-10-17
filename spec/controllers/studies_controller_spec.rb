@@ -24,14 +24,14 @@ describe StudiesController do
 
         assigns(:protocol).class.should eq Study
         assigns(:protocol).requester_id.should eq identity.id
-        assigns(:protocol).research_types_info.should_not            eq nil
-        assigns(:protocol).human_subjects_info.should_not            eq nil
-        assigns(:protocol).vertebrate_animals_info.should_not        eq nil
-        assigns(:protocol).investigational_products_info.should_not  eq nil
-        assigns(:protocol).ip_patents_info.should_not                eq nil
-        assigns(:protocol).study_types.should_not                    eq nil
-        assigns(:protocol).impact_areas.should_not                   eq nil
-        assigns(:protocol).affiliations.should_not                   eq nil
+        assigns(:protocol).research_types_info.should_not eq nil
+        assigns(:protocol).human_subjects_info.should_not eq nil
+        assigns(:protocol).vertebrate_animals_info.should_not eq nil
+        assigns(:protocol).investigational_products_info.should_not eq nil
+        assigns(:protocol).ip_patents_info.should_not eq nil
+        assigns(:protocol).study_types.should_not eq nil
+        assigns(:protocol).impact_areas.should_not eq nil
+        assigns(:protocol).affiliations.should_not eq nil
       end
     end
 
@@ -70,13 +70,13 @@ describe StudiesController do
           :id => nil,
           :format => :js,
           :study => {
-            :short_title     => 'foo',
-            :title           => 'this is the title',
-            :funding_status  => 'not in a million years',
-            :funding_source  => 'God',
-            :sponsor_name    => 'Sam Gamgee',
-            :project_roles_attributes  => [ { :role => 'primary-pi', :project_rights => 'jack squat', :identity_id => identity.id }, { :role => 'business-grants-manager', :project_rights => 'approve', :identity_id => identity.id } ],
-            :requester_id    => identity.id,
+            :short_title => 'foo',
+            :title => 'this is the title',
+            :funding_status => 'not in a million years',
+            :funding_source => 'God',
+            :sponsor_name => 'Sam Gamgee',
+            :project_roles_attributes => [ { :role => 'primary-pi', :project_rights => 'jack squat', :identity_id => identity.id }, { :role => 'business-grants-manager', :project_rights => 'approve', :identity_id => identity.id } ],
+            :requester_id => identity.id,
           }
         }.with_indifferent_access
         assigns(:protocol).valid?.should eq true
@@ -155,12 +155,12 @@ describe StudiesController do
           :id => study.id,
           :format => :js,
           :study => {
-            :short_title     => 'foo',
-            :title           => 'this is the title',
-            :funding_status  => 'not in a million years',
-            :funding_source  => 'God',
-            :project_roles_attributes  => [ { :role => 'primary-pi', :project_rights => 'jack squat', :identity_id => identity.id }, { :role => 'business-grants-manager', :project_rights => 'approve', :identity_id => identity.id } ],
-            :requester_id    => identity.id,
+            :short_title => 'foo',
+            :title => 'this is the title',
+            :funding_status => 'not in a million years',
+            :funding_source => 'God',
+            :project_roles_attributes => [ { :role => 'primary-pi', :project_rights => 'jack squat', :identity_id => identity.id }, { :role => 'business-grants-manager', :project_rights => 'approve', :identity_id => identity.id } ],
+            :requester_id => identity.id,
           }
         }.with_indifferent_access
         assigns(:protocol).valid?.should eq true
@@ -185,4 +185,3 @@ describe StudiesController do
     end
   end
 end
-

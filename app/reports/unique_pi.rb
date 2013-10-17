@@ -2,6 +2,11 @@ class UniquePi < ReportingModule
   $canned_reports << name unless $canned_reports.include? name # update global variable so that we can populate the list, report won't show in the list without this, unless is necessary so we don't add on refresh in dev. mode
 
   ################## BEGIN REPORT SETUP #####################
+  
+  def self.title
+    "Unique PI"
+  end
+
   # example default options {MyClass => {:field_type => :select_tag, :field_label => "Something", :dependency => '#something_else_id', :dependency_id => "tables_uses_this_id'}
   # Key can be either string or ClassName
   # Value is hash of options
@@ -27,11 +32,35 @@ class UniquePi < ReportingModule
 
   # params are set during initialization
   # can be any method the primary table (defined in def table method) responds to
+  # attrs = {model or string => [id or method, conversion]}
+  # example attrs = {Institution => [params[:institution_id], :abbreviation], "College" => [:college, COLLEGES]}
   def column_attrs
-    attrs = {Institution => params[:institution_id], Provider => params[:provider_id], Program => params[:program_id], Core => params[:core_id], "Unique PI Last Name" => :last_name, "Unique PI First Name" => :first_name,
-             "College" => :college, "Department" => :department}
+    attrs = {}
 
+    if params[:institution_id]
+      attrs[Institution] = [params[:institution_id], :abbreviation]
+    end
+    
+    if params[:provider_id]
+      attrs[Provider] = [params[:provider_id], :abbreviation]
+    end
+    
+    if params[:program_id]
+      attrs[Program] = [params[:program_id], :abbreviation]
+    end
+    
+    if params[:core_id]
+      attrs[Core] = [params[:core_id], :abbreviation]
+    end
+
+    attrs["Unique PI Last Name"] = :last_name
+    attrs["Unique PI First Name"] = :first_name
+    attrs["College"] = [:college, COLLEGES.invert] # we invert since our hash is setup {"Bio Medical" => "bio_med"} for some crazy reason
+    attrs["Department"] = [:department, DEPARTMENTS.invert]
+
+    attrs
   end
+
   ################## END REPORT SETUP  #####################
   
   ################## BEGIN QUERY SETUP #####################
@@ -49,18 +78,34 @@ class UniquePi < ReportingModule
 
   # Other tables to include
   def includes
-    return :project_roles => {:protocol => {:service_requests => {:sub_service_requests => :organization}}}
+    return :project_roles => {:protocol => {:service_requests => {:line_items => :service, :sub_service_requests => :organization}}}
   end
 
   # Conditions
   def where args={}
-    organization_id = args[:core_id] || args[:program_id] || args[:provider_id] || args[:institution_id] # we want to go up the tree
+    selected_organization_id = args[:core_id] || args[:program_id] || args[:provider_id] || args[:institution_id] # we want to go up the tree, service_organization_ids plural because we might have child organizations to include
+
+    # get child organization that have services to related to them
+    service_organization_ids = [selected_organization_id]
+    if selected_organization_id
+      org = Organization.find(selected_organization_id)
+      service_organization_ids += org.all_children.map(&:id)
+      service_organization_ids.flatten!
+    end
+
+    ssr_organization_ids = [args[:core_id], args[:program_id], args[:provider_id], args[:institution_id]].compact
+
+    # get child organizations that have process_ssr
+    if not ssr_organization_ids.empty?
+      org = Organization.find(selected_organization_id)
+      ssr_organization_ids = [ssr_organization_ids, org.all_children.select{|x| x.process_ssrs?}.map(&:id)].flatten
+    end
 
     if args[:service_requests_submitted_at_from] and args[:service_requests_submitted_at_to]
       submitted_at = args[:service_requests_submitted_at_from].to_time.strftime("%Y-%m-%d 00:00:00")..args[:service_requests_submitted_at_to].to_time.strftime("%Y-%m-%d 23:59:59")
     end
 
-    return :organizations => {:id => organization_id}, :project_roles => {:role => ['pi', 'primary-pi']}, :service_requests => {:submitted_at => submitted_at}
+    return :organizations => {:id => ssr_organization_ids}, :project_roles => {:role => ['pi', 'primary-pi']}, :service_requests => {:submitted_at => submitted_at}, :services => {:organization_id => service_organization_ids}
   end
 
   # Return only uniq records for

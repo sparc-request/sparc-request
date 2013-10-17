@@ -23,7 +23,7 @@
         %select{:"data-dependency" => dependency, :class => [default_classes, check_dep_class].join(" "), :name => name_and_id, :id => name_and_id}
           %option{:value => ""} Select One
           - records.each do |record|
-            - next if record.respond_to?(:is_available) and not record.is_available?
+            - #next if record.respond_to?(:is_available) and not record.is_available?
             - option_class = nil
             - if dependency
               - dependency_id = options[:dependency_id] || dependency.sub(/^#/, "") # either an id is specified or we assume the dependency is the id

@@ -8,7 +8,7 @@
     #defined_reports_step_1
       #defined_reports_description= t(:reports)[:defined_reports_desc]
       = form_tag setup_reports_path, :method => :get, :remote => true do
-        = select_tag "report", options_for_select($canned_reports.map{|x| [x.titleize, x]})
+        = select_tag "report", options_for_select($canned_reports.map{|x| [x.constantize.title, x]})
         %br
         %br
         = submit_tag t(:reports)[:proceed] 

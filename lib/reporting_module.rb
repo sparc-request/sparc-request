@@ -3,9 +3,13 @@ require 'csv'
 class ReportingModule
   attr_reader :title, :options
   attr_accessor :params, :attrs
+  
+  def self.title
+    self.class.name.titleize
+  end
 
   def initialize params={}
-    @title = self.class.name.titleize
+    @title = self.class.title
     @options = default_options
     @params = params.delete_if {|k,v| v.blank?} 
     @attrs = column_attrs.delete_if {|k,v| v.blank?}
@@ -25,17 +29,33 @@ class ReportingModule
 
       self.records.each do |record|
         row = self.attrs.map do |k,v| 
+          # attribute is a class and not a string
           if k.is_a?(Class)
-            if v.is_a?(Array)
+            if v[1] == true # this is a static piece of data and has already been loaded
               display = v[0]
             else
-              obj = k.find(v.to_i)
-              display = obj.respond_to?(:abbreviation) ? obj.abbreviation : obj.name
+              obj = k.find(v[0].to_i)
+
+              if obj.respond_to?(v[1]) # this a method
+                display = obj.send(v[1])
+              elsif v[1].is_a? Hash
+                display = v[1][obj.id]
+              end
+              
+              #display = obj.respond_to?(v[1]) ? obj.abbreviation : obj.name
+              
               self.attrs[k] = [display, true]
             end
-            display
+
+            display # return value for class 
+
+          # attribute is a string and not a class
           else 
-            record.send(v)
+            if v[1].is_a? Hash
+              v[1][record.send(v[0])] # return value if hash lookup is provided
+            else
+              record.send(v) # otherwise assume value provided is what we want
+            end
           end
         end
 

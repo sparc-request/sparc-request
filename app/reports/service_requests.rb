@@ -1,10 +1,10 @@
-class UniquePiReport < ReportingModule
+class ServiceRequestReport < ReportingModule
   $canned_reports << name unless $canned_reports.include? name # update global variable so that we can populate the list, report won't show in the list without this, unless is necessary so we don't add on refresh in dev. mode
 
   ################## BEGIN REPORT SETUP #####################
   
   def self.title
-    "Unique PI"
+    "Service Requests"
   end
 
   # example default options {MyClass => {:field_type => :select_tag, :field_label => "Something", :dependency => '#something_else_id', :dependency_id => "tables_uses_this_id'}

@@ -1,5 +1,5 @@
 = form_tag generate_reports_path do
-  = hidden_field_tag :report, @report.class.name
+  = hidden_field_tag "report[type]", @report.class.name
   %h2= @report.title
 
   %br
@@ -17,10 +17,11 @@
         - dependency = options[:dependency]
         - default_classes = "reporting_field"
         - check_dep_class = dependency ? 'check_dep_class' : nil
-        - name_and_id = "#{field.name.underscore}_id"
+        - id = "#{field.name.underscore}_id"
+        - name = "report[#{field.name.underscore}_id]"
 
-        %label{:for => name_and_id}= field_label
-        %select{:"data-dependency" => dependency, :class => [default_classes, check_dep_class].join(" "), :name => name_and_id, :id => name_and_id}
+        %label{:for => id}= field_label
+        %select{:"data-dependency" => dependency, :class => [default_classes, check_dep_class].join(" "), :name => name, :id => id}
           %option{:value => ""} Select One
           - records.each do |record|
             - #next if record.respond_to?(:is_available) and not record.is_available?
@@ -40,13 +41,13 @@
 
       /* from information */
       - from_id = field.delete(" ").underscore + "_from"
-      - from_name = options[:for] ? options[:for] + "_from" : from_id
+      - from_name = options[:for] ? "report[" + options[:for] + "_from]" : "report[" + from_id + "]"
       - from_label = options[:from_label] || "From"
       - from_date = options[:from] ? options[:from].strftime('%B %d, %Y %H:%M:%S') : nil
 
       /* to information */
       - to_id = field.delete(" ").underscore + "_to"
-      - to_name = options[:for] ? options[:for] + "_to" : to_id
+      - to_name = options[:for] ? "report[" + options[:for] + "_to]" : "report[" + to_id + "]"
       - to_label = options[:to_label] || "To"
       - to_date = options[:to] ? options[:to].strftime('%B %d, %Y %H:%M:%S') : nil
 
@@ -66,6 +67,6 @@
 
   /* submit button */
   = submit_tag t(:reports)[:create_report]
-
-  %br
-  %br
+= button_to "Return to reports list", reports_path, :method => :get
+%br
+%br

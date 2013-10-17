@@ -25,10 +25,21 @@ class ReportsController < ApplicationController
   end
 
   def generate
-    report = params[:report]
-    @report = report.constantize.new params
+    report_params = params[:report]
+    report = report_params[:type]
+    @report = report.constantize.new report_params
 
-    send_data @report.to_csv, :type => 'text/csv', :disposition => 'inline', :filename => 'report.csv'
+    Rails.logger.info "#"*50
+    Rails.logger.info @report.params.inspect
+    Rails.logger.info "#"*50
+
+    # generate excel
+    #tempfile = @report.to_excel 
+    #send_file tempfile.path, :filename => 'report.xlsx', :disposition => 'inline', :type =>  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+    # generate csv
+    tempfile = @report.to_csv
+    send_file tempfile.path, :type => 'text/csv', :disposition => 'inline', :filename => 'report.csv'
   end
 
   def research_project_summary

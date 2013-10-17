@@ -1997,7 +1997,7 @@ table.service_calendar tbody td.visit {
 
 #reporting_tabs #defined_reports input, #reporting_tabs #defined_reports select {
   float: left;
-  margin-right: 65px;
+  margin-right: 5px;
 }
 
 #reporting_tabs #defined_reports #defined_reports_step_1 #defined_reports_description {

@@ -1,0 +1,4 @@
+$('#defined_reports_step_2').html("<%= raw escape_javascript(render(:partial => 'setup')) %>")
+$('#defined_reports_step_1').hide()
+window.check_deps()
+window.create_date_pickers()

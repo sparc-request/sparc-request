@@ -894,5 +894,10 @@ en:
       start_date: "Start Date:"
       end_date: "End Date:"
       get_report: "Get Report"
-
-
+  reports:
+    defined_reports: "Defined Reports"
+    defined_reports_desc: "Please select a report from list below and click to proceed with selecting options"
+    custom_report: "Custom Report"
+    proceed: "Proceed"
+    create_report: "Create Report"
+    

@@ -18,6 +18,19 @@ class ReportsController < ApplicationController
   def index
   end
 
+  def setup
+    report = params[:report]
+    @report = report.constantize.new
+    render :layout => false
+  end
+
+  def generate
+    report = params[:report]
+    @report = report.constantize.new params
+
+    send_data @report.to_csv, :type => 'text/csv', :disposition => 'inline', :filename => 'report.csv'
+  end
+
   def research_project_summary
     @sub_service_request = SubServiceRequest.find params[:id]
     @service_request = @sub_service_request.service_request 

@@ -276,6 +276,11 @@ SparcRails::Application.routes.draw do
   end
 
   resources :reports do
+    collection do
+      get :setup
+      post :generate
+    end
+
     member do
       get :research_project_summary
       post :cwf_audit

@@ -81,7 +81,7 @@
             .add_service
               - Organization.get_cwf_organizations.each do |org|
                 %div{:class => "core_#{org.id} hidden_by_tabs", :style => org == @default_core ? "display:block;" : ""}
-                  = select_tag :service, options_for_select(org.services.sort_by{|x| x.name}.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
+                  = select_tag :service, options_for_select(org.services.select{|x| x.is_available?}.sort_by{|x| x.name}.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
                   = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => "cwf_add_service_button core_#{org.id}"
            
             .comments

@@ -51,7 +51,7 @@ class SubServiceRequest < ActiveRecord::Base
   end
 
   def display_id
-    return "#{service_request.protocol.id}-#{ssr_id}"
+    return "#{service_request.try(:protocol).try(:id)}-#{ssr_id}"
   end
 
   def create_line_item(args)

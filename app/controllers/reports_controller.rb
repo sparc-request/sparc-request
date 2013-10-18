@@ -21,6 +21,7 @@ class ReportsController < ApplicationController
   def setup
     report = params[:report]
     @report = report.constantize.new
+    @date_ranges = @report.options.select{|k,v| v[:field_type] == :date_range} # select out the date ranges
     render :layout => false
   end
 
@@ -28,10 +29,6 @@ class ReportsController < ApplicationController
     report_params = params[:report]
     report = report_params[:type]
     @report = report.constantize.new report_params
-
-    Rails.logger.info "#"*50
-    Rails.logger.info @report.params.inspect
-    Rails.logger.info "#"*50
 
     # generate excel
     #tempfile = @report.to_excel 

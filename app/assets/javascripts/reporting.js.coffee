@@ -52,35 +52,35 @@ rewriteoption = (myfilter, res) ->
   if resultgood
     return optionlisting
 
-window.create_date_pickers = ->
-  $("#date_range_from").datepicker
+window.create_date_pickers = (from, to) ->
+  $("#{from}").datepicker
     changeMonth: true,
     changeYear: true,
     dateFormat: "yy-mm-dd",
     numberOfMonths: 3,
     onClose: (selectedDate) ->
       unless selectedDate == ""
-        $("#date_range_to").datepicker( "option", "minDate", selectedDate )
+        $("#{to}").datepicker( "option", "minDate", selectedDate )
 
-  $("#date_range_to").datepicker
+  $("#{to}").datepicker
     changeMonth: true,
     changeYear: true,
     dateFormat: "yy-mm-dd",
     numberOfMonths: 3,
     onClose: (selectedDate) ->
       unless selectedDate == ""
-        $("#date_range_from").datepicker( "option", "maxDate", selectedDate )
+        $("#{from}").datepicker( "option", "maxDate", selectedDate )
   
-  minDate = $("#date_range_from").data("from") 
-  maxDate = $("#date_range_to").data("to") 
+  minDate = $("#{from}").data("from")
+  maxDate = $("#{to}").data("to")
 
   if minDate
-    $("#date_range_from").datepicker("option", "minDate", new Date(minDate))
-    $("#date_range_to").datepicker("option", "minDate", new Date(minDate))
+    $("#{from}").datepicker("option", "minDate", new Date(minDate))
+    $("#{to}").datepicker("option", "minDate", new Date(minDate))
   
   if maxDate
-    $("#date_range_from").datepicker("option", "maxDate", new Date(maxDate))
-    $("#date_range_to").datepicker("option", "maxDate", new Date(maxDate))
+    $("#{from}").datepicker("option", "maxDate", new Date(maxDate))
+    $("#{to}").datepicker("option", "maxDate", new Date(maxDate))
 
   
 window.check_deps = ->

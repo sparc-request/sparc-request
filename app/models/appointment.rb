@@ -8,6 +8,7 @@ class Appointment < ActiveRecord::Base
   has_many :notes
   has_many :appointment_completions, :dependent => :destroy
   attr_accessible :visit_group_id
+  attr_accessible :organization_id
   attr_accessible :completed_at
   attr_accessible :position
   attr_accessible :name

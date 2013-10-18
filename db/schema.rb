@@ -64,14 +64,16 @@ ActiveRecord::Schema.define(:version => 20131016153506) do
 
   create_table "appointments", :force => true do |t|
     t.integer  "calendar_id"
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
     t.integer  "visit_group_id"
     t.integer  "position"
     t.string   "name"
+    t.integer  "organization_id"
   end
 
   add_index "appointments", ["calendar_id"], :name => "index_appointments_on_calendar_id"
+  add_index "appointments", ["organization_id"], :name => "index_appointments_on_organization_id"
   add_index "appointments", ["visit_group_id"], :name => "index_appointments_on_visit_group_id"
 
   create_table "approvals", :force => true do |t|

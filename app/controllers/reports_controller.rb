@@ -30,6 +30,9 @@ class ReportsController < ApplicationController
     report = report_params[:type]
     @report = report.constantize.new report_params
 
+    Rails.logger.info "#"*50
+    Rails.logger.info report_params.inspect
+    Rails.logger.info "#"*50
     # generate excel
     #tempfile = @report.to_excel 
     #send_file tempfile.path, :filename => 'report.xlsx', :disposition => 'inline', :type =>  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"

@@ -1,5 +1,5 @@
 class TestReport < ReportingModule
-  #$canned_reports << name unless $canned_reports.include? name # update global variable so that we can populate the list, report won't show in the list without this, unless is necessary so we don't add on refresh in dev. mode
+  $canned_reports << name unless $canned_reports.include? name # update global variable so that we can populate the list, report won't show in the list without this, unless is necessary so we don't add on refresh in dev. mode
 
   ################## BEGIN REPORT SETUP #####################
   
@@ -20,7 +20,8 @@ class TestReport < ReportingModule
   # :from_label => optional text (default is From)
   # :to => valid date, used with date range field_type, optional
   # :to_label => optional_text (default is To)
-  # :for => specifies the date column this range is for
+  # :for => specifies the name of the field (used to generate name attribute, if not specified the name is inferred from the Key)
+  # :multiple => method, string representation of method chain, hash
   def default_options
     {
       "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => "2012-03-01".to_date, :to => Date.today, :required => true},
@@ -28,6 +29,7 @@ class TestReport < ReportingModule
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
       Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
+      "Current Status" => {:field_type => :check_box_tag, :for => 'status', :multiple => AVAILABLE_STATUSES},
     }
   end
 
@@ -105,8 +107,14 @@ class TestReport < ReportingModule
     if args[:service_requests_submitted_at_from] and args[:service_requests_submitted_at_to]
       submitted_at = args[:service_requests_submitted_at_from].to_time.strftime("%Y-%m-%d 00:00:00")..args[:service_requests_submitted_at_to].to_time.strftime("%Y-%m-%d 23:59:59")
     end
+    
+    # default values if none are provided
+    service_organization_ids = Organization.all.map(&:id) if service_organization_ids.compact.empty? # use all if none are selected
+    ssr_organization_ids = Organization.all.map(&:id) if ssr_organization_ids.compact.empty? # use all if none are selected
+    submitted_at ||= self.default_options["Date Range"][:from]..self.default_options["Date Range"][:to]
+    statuses = args[:status] || AVAILABLE_STATUSES.keys # use all if none are selected
 
-    return :organizations => {:id => ssr_organization_ids}, :project_roles => {:role => ['pi', 'primary-pi']}, :service_requests => {:submitted_at => submitted_at}, :services => {:organization_id => service_organization_ids}
+    return :sub_service_requests => {:organization_id => ssr_organization_ids, :status => statuses}, :project_roles => {:role => ['pi', 'primary-pi']}, :service_requests => {:submitted_at => submitted_at}, :services => {:organization_id => service_organization_ids}
   end
 
   # Return only uniq records for

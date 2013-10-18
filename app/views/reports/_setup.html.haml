@@ -19,8 +19,8 @@
         - default_classes = "reporting_field"
         - default_classes += " required_field" if options[:required]
         - check_dep_class = dependency ? 'check_dep_class' : nil
-        - id = "#{field.name.underscore}_id"
-        - name = "report[#{field.name.underscore}_id]"
+        - id = options[:for] || "#{field.name.underscore}_id"
+        - name = options[:for] ? "report[#{options[:for]}]" : "report[#{field.name.underscore}_id]"
 
         %label{:for => id}= field_label
         %select{:"data-dependency" => dependency, :class => [default_classes, check_dep_class].join(" "), :name => name, :id => id}
@@ -57,15 +57,39 @@
       - to_date = options[:to] ? options[:to].strftime('%B %d, %Y %H:%M:%S') : nil
 
 
-      %label{:for => from_id}= from_label
+      %label{:for => from_id, :class => 'sub_label'}= from_label
       = text_field_tag from_name, nil, :id => from_id, :"data-from" => from_date, :class => default_classes
 
       %br
       %br
     
-      %label{:for => to_id}= to_label
+      %label{:for => to_id, :class => 'sub_label'}= to_label
       = text_field_tag to_name, nil, :id => to_id, :"data-to" => to_date, :class => default_classes
     /* end date_range */
+
+    /* check_box_tag */
+    - if field_type == :check_box_tag
+      - multiple = options[:multiple]
+      - default_classes = " required_field" if options[:required]
+      - name = options[:for] ? "report[#{options[:for]}]" : "report[#{field.name.underscore}_id]"
+      - name += "[]" if multiple
+      %label= field_label
+      %br
+      %br
+
+      - if multiple
+        - if multiple.is_a? Hash
+          - multiple.each do |k,v|
+            %label{:for => k, :class => 'sub_label'}= v
+            = check_box_tag name, k, false, :class => default_classes
+            %br
+            %br
+
+
+    /* end check_box_tag */
+
+
+
     
     %br
     %br

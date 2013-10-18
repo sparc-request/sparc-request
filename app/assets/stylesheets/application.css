@@ -1991,8 +1991,12 @@ table.service_calendar tbody td.visit {
 #reporting_tabs #defined_reports label{
   display: block;
   float: left;
-  min-width: 150px;
+  min-width: 200px;
   font-weight: bold;
+}
+
+#reporting_tabs #defined_reports label.sub_label {
+  padding-left: 25px;
 }
 
 #reporting_tabs #defined_reports input, #reporting_tabs #defined_reports select {

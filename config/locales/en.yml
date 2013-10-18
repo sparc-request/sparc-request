@@ -818,7 +818,7 @@ en:
     service: "Service"
     requester: "Requester"
     assigned: "Person Assigned"
-    orgs: "Program/Provider/Core"
+    orgs: "Provider/Program/Core"
 
   # Associated Users Tab
   associated_users:

@@ -46,7 +46,6 @@ rewriteoption = (myfilter, res) ->
   for i in [3..options.length] by 3
     regex = new RegExp(myfilterclass)
     if regex.test(options[i - 1]) #~= myfilterclass
-      console.log "adding:", options[i-1]
       optionlisting = optionlisting + '<option value="' + options[i - 2] + '" class="' + options[i - 1] + '">' + options[i] + '</option>'
       resultgood = true
   if resultgood

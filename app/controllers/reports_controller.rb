@@ -34,12 +34,12 @@ class ReportsController < ApplicationController
     Rails.logger.info report_params.inspect
     Rails.logger.info "#"*50
     # generate excel
-    #tempfile = @report.to_excel 
-    #send_file tempfile.path, :filename => 'report.xlsx', :disposition => 'inline', :type =>  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    tempfile = @report.to_excel 
+    send_file tempfile.path, :filename => 'report.xlsx', :disposition => 'inline', :type =>  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
     # generate csv
-    tempfile = @report.to_csv
-    send_file tempfile.path, :type => 'text/csv', :disposition => 'inline', :filename => 'report.csv'
+    #tempfile = @report.to_csv
+    #send_file tempfile.path, :type => 'text/csv', :disposition => 'inline', :filename => 'report.csv'
   end
 
   def research_project_summary

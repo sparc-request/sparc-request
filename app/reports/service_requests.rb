@@ -1,4 +1,4 @@
-class ServiceRequestReport < ReportingModule
+class ServiceRequestsReport < ReportingModule
   $canned_reports << name unless $canned_reports.include? name # update global variable so that we can populate the list, report won't show in the list without this, unless is necessary so we don't add on refresh in dev. mode
 
   ################## BEGIN REPORT SETUP #####################
@@ -7,33 +7,18 @@ class ServiceRequestReport < ReportingModule
     "Service Requests"
   end
 
-  # example default options {MyClass => {:field_type => :select_tag, :field_label => "Something", :dependency => '#something_else_id', :dependency_id => "tables_uses_this_id'}
-  # Key can be either string or ClassName
-  # Value is hash of options
-  # Options List #
-  # :field_type => :select_tag, :radio_button_tag, :check_box_tag, :text_field_tag, :date_range
-  # :field_label => key or optional text (default is key)
-  # :dependency => id of data element that must be selected before this option is enabled
-  # :dependency_id => default is dependency minus # but can be specified
-  # :from => valid date, used with date range field_type, optional
-  # :from_label => optional text (default is From)
-  # :to => valid date, used with date range field_type, optional
-  # :to_label => optional_text (default is To)
-  # :for => specifies the date column this range is for
+  # see app/reports/test_report.rb for all options
   def default_options
     {
-      "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => "2012-03-01".to_date, :to => Date.today},
-      Institution => {:field_type => :select_tag},
+      "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => "2012-03-01".to_date, :to => Date.today, :required => true},
+      Institution => {:field_type => :select_tag, :required => true},
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
       Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
     }
   end
 
-  # params are set during initialization
-  # can be any method the primary table (defined in def table method) responds to
-  # attrs = {model or string => [id or method, conversion]}
-  # example attrs = {Institution => [params[:institution_id], :abbreviation], "College" => [:college, COLLEGES]}
+  # see app/reports/test_report.rb for all options
   def column_attrs
     attrs = {}
 
@@ -53,10 +38,8 @@ class ServiceRequestReport < ReportingModule
       attrs[Core] = [params[:core_id], :abbreviation]
     end
 
-    attrs["Unique PI Last Name"] = :last_name
-    attrs["Unique PI First Name"] = :first_name
-    attrs["College"] = [:college, COLLEGES.invert] # we invert since our hash is setup {"Bio Medical" => "bio_med"} for some crazy reason
-    attrs["Department"] = [:department, DEPARTMENTS.invert]
+    attrs["SRID"] = :display_id
+    attrs["Date Submitted"] = "service_request.submitted_at.strftime('%Y-%m-%d')"
 
     attrs
   end
@@ -73,11 +56,12 @@ class ServiceRequestReport < ReportingModule
   # def order => order by these attributes (include table name is always a safe bet, ex. identities.id DESC, protocols.title ASC)
   # Primary table to query
   def table
-    Identity
+    SubServiceRequest 
   end
 
   # Other tables to include
   def includes
+    return :organization, :service_request => {:line_items => :service}
     return :project_roles => {:protocol => {:service_requests => {:line_items => :service, :sub_service_requests => :organization}}}
   end
 
@@ -105,28 +89,19 @@ class ServiceRequestReport < ReportingModule
       submitted_at = args[:service_requests_submitted_at_from].to_time.strftime("%Y-%m-%d 00:00:00")..args[:service_requests_submitted_at_to].to_time.strftime("%Y-%m-%d 23:59:59")
     end
 
-    return :organizations => {:id => ssr_organization_ids}, :project_roles => {:role => ['pi', 'primary-pi']}, :service_requests => {:submitted_at => submitted_at}, :services => {:organization_id => service_organization_ids}
+    return :organizations => {:id => ssr_organization_ids}, :service_requests => {:submitted_at => submitted_at}, :services => {:organization_id => service_organization_ids}
   end
 
   # Return only uniq records for
   def uniq
-    :identity
   end
 
   def group
   end
 
   def order
+    "service_requests.submitted_at ASC"
   end
 
   ##################  END QUERY SETUP   #####################
-  
-  ##################  BEGIN XLS EXPORT  #####################
-
-  def to_xls
-
-  end
-
-  ##################   END XLS EXPORT   #####################
-
 end

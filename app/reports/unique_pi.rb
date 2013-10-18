@@ -7,33 +7,18 @@ class UniquePiReport < ReportingModule
     "Unique PI"
   end
 
-  # example default options {MyClass => {:field_type => :select_tag, :field_label => "Something", :dependency => '#something_else_id', :dependency_id => "tables_uses_this_id'}
-  # Key can be either string or ClassName
-  # Value is hash of options
-  # Options List #
-  # :field_type => :select_tag, :radio_button_tag, :check_box_tag, :text_field_tag, :date_range
-  # :field_label => key or optional text (default is key)
-  # :dependency => id of data element that must be selected before this option is enabled
-  # :dependency_id => default is dependency minus # but can be specified
-  # :from => valid date, used with date range field_type, optional
-  # :from_label => optional text (default is From)
-  # :to => valid date, used with date range field_type, optional
-  # :to_label => optional_text (default is To)
-  # :for => specifies the date column this range is for
+  # see app/reports/test_report.rb for all options
   def default_options
     {
-      "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => "2012-03-01".to_date, :to => Date.today},
-      Institution => {:field_type => :select_tag},
+      "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => "2012-03-01".to_date, :to => Date.today, :required => true},
+      Institution => {:field_type => :select_tag, :required => true},
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
       Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
     }
   end
 
-  # params are set during initialization
-  # can be any method the primary table (defined in def table method) responds to
-  # attrs = {model or string => [id or method, conversion]}
-  # example attrs = {Institution => [params[:institution_id], :abbreviation], "College" => [:college, COLLEGES]}
+  # see app/reports/test_report.rb for all options
   def column_attrs
     attrs = {}
 
@@ -120,13 +105,4 @@ class UniquePiReport < ReportingModule
   end
 
   ##################  END QUERY SETUP   #####################
-  
-  ##################  BEGIN XLS EXPORT  #####################
-
-  def to_xls
-
-  end
-
-  ##################   END XLS EXPORT   #####################
-
 end

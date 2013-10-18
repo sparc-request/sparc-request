@@ -42,7 +42,6 @@ class ReportingModule
   def to_csv
     temp = Tempfile.new("report.csv")
     CSV.open(temp.path, "wb") do |csv|
-      report_params = self.params.except("type").map{|k,v| [k.titleize, v]}
       
       csv << ["Report Generated:", Date.today.strftime("%Y-%m-%d")] 
 
@@ -50,19 +49,12 @@ class ReportingModule
 
       csv << ["Report Parameters"]
       csv << ["Type:", self.title]
-      report_params.each do |k,v|
-        value = v
-        klass = k.safe_constantize
-
-        if self.attrs.keys.include? klass # we've matched a class in our attrs hash
-          value = klass.find(v).send(self.attrs[klass][1])
-        end
-           
-        csv << ["#{k}:", value]
+      report_params.each do |rp|
+        csv << extract_report_param_row(rp)
       end
       
       csv << [""]
-      csv << self.attrs.keys.map{|x| x.is_a?(Class) ? x.to_s.titleize : x}
+      csv << extract_header_row
 
       self.records.each do |record|
         csv << extract_row(record)
@@ -74,6 +66,40 @@ class ReportingModule
 
 private
 
+  def report_params
+    self.params.except("type").map{|k,v| [k.titleize, v]}
+  end
+
+  def extract_header_row
+    self.attrs.keys.map{|x| x.is_a?(Class) ? x.to_s.titleize : x}
+  end
+
+  def extract_report_param_row rp
+    k,v = rp
+
+    value = v
+    klass = k.safe_constantize
+
+    if self.attrs.keys.include? klass # we've matched a class in our attrs hash
+      obj = klass.find(v)
+     
+      m = self.attrs[klass][1]
+
+      if m.is_a? Hash
+        value = m[obj.id]
+      elsif obj.respond_to?(m) # this a method
+        value = obj.send(m)
+      else
+        method = m.split(".").first
+        if obj.respond_to? method # looks like we have a string representation of a chained method call, example: service_request.submitted_at
+          value = obj.instance_eval(m)
+        end
+      end
+    end
+    
+    return ["#{k}:", value]
+  end
+
   def extract_row record
     row = self.attrs.map do |k,v| 
       # attribute is a class and not a string
@@ -83,10 +109,15 @@ private
         else
           obj = k.find(v[0].to_i)
 
-          if obj.respond_to?(v[1]) # this a method
-            display = obj.send(v[1])
-          elsif v[1].is_a? Hash
+          if v[1].is_a? Hash
             display = v[1][obj.id]
+          elsif obj.respond_to?(v[1]) # this a method
+            display = obj.send(v[1])
+          else
+            method = v[1].split(".").first
+            if obj.respond_to? method # looks like we have a string representation of a chained method call, example: service_request.submitted_at
+              display = obj.instance_eval(v[1])
+            end
           end
           
           #display = obj.respond_to?(v[1]) ? obj.abbreviation : obj.name
@@ -101,7 +132,14 @@ private
         if v[1].is_a? Hash
           v[1][record.send(v[0])] # return value if hash lookup is provided
         else
-          record.send(v) # otherwise assume value provided is what we want
+          if record.respond_to? v
+            record.send(v) # object responds to this method
+          else
+            method = v.split(".").first
+            if record.respond_to? method # looks like we have a string representation of a chained method call, example: service_request.submitted_at
+              record.instance_eval(v)
+            end
+          end
         end
       end
     end

@@ -1,10 +1,10 @@
-class UniquePiReport < ReportingModule
-  $canned_reports << name unless $canned_reports.include? name # update global variable so that we can populate the list, report won't show in the list without this, unless is necessary so we don't add on refresh in dev. mode
+class TestReport < ReportingModule
+  #$canned_reports << name unless $canned_reports.include? name # update global variable so that we can populate the list, report won't show in the list without this, unless is necessary so we don't add on refresh in dev. mode
 
   ################## BEGIN REPORT SETUP #####################
   
   def self.title
-    "Unique PI"
+    "Test Report"
   end
 
   # example default options {MyClass => {:field_type => :select_tag, :field_label => "Something", :dependency => '#something_else_id', :dependency_id => "tables_uses_this_id'}
@@ -13,6 +13,7 @@ class UniquePiReport < ReportingModule
   # Options List #
   # :field_type => :select_tag, :radio_button_tag, :check_box_tag, :text_field_tag, :date_range
   # :field_label => key or optional text (default is key)
+  # :required => boolean (default if false)
   # :dependency => id of data element that must be selected before this option is enabled
   # :dependency_id => default is dependency minus # but can be specified
   # :from => valid date, used with date range field_type, optional
@@ -22,8 +23,8 @@ class UniquePiReport < ReportingModule
   # :for => specifies the date column this range is for
   def default_options
     {
-      "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => "2012-03-01".to_date, :to => Date.today},
-      Institution => {:field_type => :select_tag},
+      "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => "2012-03-01".to_date, :to => Date.today, :required => true},
+      Institution => {:field_type => :select_tag, :required => true},
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
       Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
@@ -120,13 +121,4 @@ class UniquePiReport < ReportingModule
   end
 
   ##################  END QUERY SETUP   #####################
-  
-  ##################  BEGIN XLS EXPORT  #####################
-
-  def to_xls
-
-  end
-
-  ##################   END XLS EXPORT   #####################
-
 end

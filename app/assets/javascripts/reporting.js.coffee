@@ -9,6 +9,14 @@ $(document).ready ->
       cattype = $(this).val()
       optionswitch(cattype, res)
 
+  $(document).on "submit", "#reporting_form", (event) ->
+    empty = $('.required_field').filter ->
+      this.value == ""
+
+    if empty.length
+      event.preventDefault()
+      alert "Please fill out all required fields"
+
 optionswitch = (myfilter, res) ->
   #Populate the optionstore if the first time through
   unless $(res).data("option_store")
@@ -36,8 +44,10 @@ rewriteoption = (myfilter, res) ->
   
   #first variable is always the value, second is always the class, third is always the text
   for i in [3..options.length] by 3
-    if options[i - 1] == myfilterclass
-      optionlisting = optionlisting + '<option value="' + options[i - 2] + '" class="sub-' + options[i - 1] + '">' + options[i] + '</option>'
+    regex = new RegExp(myfilterclass)
+    if regex.test(options[i - 1]) #~= myfilterclass
+      console.log "adding:", options[i-1]
+      optionlisting = optionlisting + '<option value="' + options[i - 2] + '" class="' + options[i - 1] + '">' + options[i] + '</option>'
       resultgood = true
   if resultgood
     return optionlisting
@@ -63,8 +73,6 @@ window.create_date_pickers = ->
   
   minDate = $("#date_range_from").data("from") 
   maxDate = $("#date_range_to").data("to") 
-
-  console.log minDate, maxDate
 
   if minDate
     $("#date_range_from").datepicker("option", "minDate", new Date(minDate))

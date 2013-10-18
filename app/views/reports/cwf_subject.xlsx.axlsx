@@ -98,8 +98,8 @@ wb.add_worksheet(name: "Subject report") do |sheet|
 
       procedure_total = (procedure.completed? and procedure.r_quantity) ? procedure.r_quantity * procedure.cost : nil
 
-      visit_totals[procedure.visit.visit_group_id] ||= []
-      visit_totals[procedure.visit.visit_group_id] << procedure_total
+      visit_totals[appt.visit_group_id] ||= []
+      visit_totals[appt.visit_group_id] << procedure_total
 
       procedures_rows[sid] << procedure_total
     end

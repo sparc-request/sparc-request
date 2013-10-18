@@ -896,7 +896,7 @@ en:
       get_report: "Get Report"
   reports:
     defined_reports: "Defined Reports"
-    defined_reports_desc: "Please select a report from list below and click to proceed with selecting options"
+    defined_reports_desc: "Please select a defined report below and click to proceed with report customizations."
     custom_report: "Custom Report"
     proceed: "Proceed"
     create_report: "Create Report"

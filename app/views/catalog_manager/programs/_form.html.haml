@@ -67,9 +67,18 @@
       #cm_info= render :partial => 'catalog_manager/shared/catalog_managers', :locals => {:entity => @program}
 
     %br
-
+      
     %fieldset
-      %legend= t(:organization_form)[:clinical_providers]
+      %legend= t(:organization_form)[:clinical_work_fulfillment]
+      %table
+        %tr.cwf
+          %th= t(:organization_form)[:show_in_cwf]
+          %td= f.check_box :show_in_cwf
+        %tr.cwf.position_field{:style => @program.show_in_cwf ? "" : "display:none;"}
+          %th= t(:organization_form)[:position_in_cwf]
+          %td= f.text_field :position_in_cwf
+        %tr
+          %th= t(:organization_form)[:clinical_providers]
       #cp_info= render :partial => 'catalog_manager/shared/clinical_providers', :locals => {:entity => @program}
     
     %br

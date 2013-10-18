@@ -114,13 +114,6 @@ a.add_new_excluded_funding_source {
   border-left: 2px dotted $background !important;
 }
 
-.cwf {
-  text-align: right;
-  width: 250px;
-  color: #1C94C4;
-  font-weight: bold;
-}
-
 fieldset {
   background: whitesmoke;
 }
@@ -231,6 +224,10 @@ fieldset > legend {
       }
     }
   }
+}
+
+input#new_cp {
+  width: 703px !important;
 }
 
 .sus, .sps, .ses, .cms, .cps {

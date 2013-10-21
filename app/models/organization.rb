@@ -254,6 +254,10 @@ class Organization < ActiveRecord::Base
     statuses
   end
 
+  def self.find_all_by_available_status status
+    Organization.all.select{|x| x.get_available_statuses.keys.include? status}
+  end
+
   def has_tag? tag
     if self.tag_list.include? tag
       return true

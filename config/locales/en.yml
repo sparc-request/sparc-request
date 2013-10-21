@@ -928,7 +928,10 @@ en:
       popup_header1: "Visit Name:"
       popup_header2: "Service/Assessment Name:"
 
-
-
-
+  reports:
+    defined_reports: "Defined Reports"
+    defined_reports_desc: "Please select a defined report below and click to proceed with report customizations."
+    custom_report: "Custom Report"
+    proceed: "Proceed"
+    create_report: "Create Report"
 

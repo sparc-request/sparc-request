@@ -68,7 +68,6 @@ class ServiceRequestsReport < ReportingModule
   # Other tables to include
   def includes
     return :organization, :service_request => {:line_items => :service}
-    return :project_roles => {:protocol => {:service_requests => {:line_items => :service, :sub_service_requests => :organization}}}
   end
 
   # Conditions

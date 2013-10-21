@@ -198,6 +198,7 @@ wb.add_worksheet(name: "Summary") do |sheet|
   visit_count_spanned_row "Payments", :header, nil, nil, visit_count, sheet, styles
   payments_total = 0
   @sub_service_request.payments.each do |payment|
+    next if payment.amount_received.blank? and payment.date_received.blank?
     payments_total += payment.amount_received
     visit_count_spanned_row payment.date_received, nil, payment.amount_received, nil, visit_count, sheet, styles
   end

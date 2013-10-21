@@ -91,13 +91,8 @@ private
 
       if m.is_a? Hash
         value = m[obj.id]
-      elsif obj.respond_to?(m) # this a method
-        value = obj.send(m)
       else
-        method = m.split(".").first
-        if obj.respond_to? method # looks like we have a string representation of a chained method call, example: service_request.submitted_at
-          value = obj.instance_eval(m)
-        end
+        value = obj.instance_eval(m.to_s)
       end
     end
     
@@ -115,13 +110,8 @@ private
 
           if v[1].is_a? Hash
             display = v[1][obj.id]
-          elsif obj.respond_to?(v[1]) # this a method
-            display = obj.send(v[1])
           else
-            method = v[1].split(".").first
-            if obj.respond_to? method # looks like we have a string representation of a chained method call, example: service_request.submitted_at
-              display = obj.instance_eval(v[1])
-            end
+            display = obj.instance_eval(v[1].to_s)
           end
           
           #display = obj.respond_to?(v[1]) ? obj.abbreviation : obj.name
@@ -134,16 +124,9 @@ private
       # attribute is a string and not a class
       else 
         if v[1].is_a? Hash
-          v[1][record.send(v[0])] # return value if hash lookup is provided
+          v[1][record.instance_eval(v[0].to_s)] # return value if hash lookup is provided
         else
-          if record.respond_to? v
-            record.send(v) # object responds to this method
-          else
-            method = v.split(".").first
-            if record.respond_to? method # looks like we have a string representation of a chained method call, example: service_request.submitted_at
-              record.instance_eval(v)
-            end
-          end
+          record.instance_eval(v.to_s)
         end
       end
     end

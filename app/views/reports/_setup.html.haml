@@ -70,26 +70,35 @@
     /* check_box_tag */
     - if field_type == :check_box_tag
       - multiple = options[:multiple]
+      - grouping = options[:grouping]
+      - selected = options[:selected] || []
       - default_classes = " required_field" if options[:required]
       - name = options[:for] ? "report[#{options[:for]}]" : "report[#{field.name.underscore}_id]"
       - name += "[]" if multiple
       %label= field_label
       %br
       %br
-
-      - if multiple
+      - if grouping and multiple # we have a defined grouping
+        - grouping.each do |k,v|
+          %fieldset
+            %legend= k
+            - v.each do |sv|
+              %label{:for => sv, :class => 'sub_label'}= multiple[sv]
+              = check_box_tag name, sv, selected.include?(sv), :class => default_classes
+              %br
+              %br
+          %br
+          %br
+      - elsif multiple
         - if multiple.is_a? Hash
           - multiple.each do |k,v|
             %label{:for => k, :class => 'sub_label'}= v
-            = check_box_tag name, k, false, :class => default_classes
+            = check_box_tag name, k, selected.include?(sv), :class => default_classes
             %br
             %br
         /* TODO define behavior if multiple is a method or string representation of method chain */
 
     /* end check_box_tag */
-
-
-
     
     %br
     %br

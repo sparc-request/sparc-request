@@ -1,5 +1,7 @@
 $('#defined_reports_step_2').html("<%= raw escape_javascript(render(:partial => 'setup')) %>");
-$('#defined_reports_step_1').hide();
+$('#report_selection').hide();
+$('#defined_reports, #defined_reports_step_2').show();
+$('#defined_reports_step_1').dialog('close');
 window.check_deps();
 
 <%- @date_ranges.each do |dr| -%>

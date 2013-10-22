@@ -10,6 +10,9 @@ $(document).ready ->
     $('#defined_reports_step_2').hide()
     $('#defined_reports_step_1').dialog("open")
 
+  $('#custom_report_link').click ->
+    alert "Coming soon!"
+
   $(document).on "click", "#reporting_return_to_list", (event) ->
     event.preventDefault()
     $('#defined_reports_step_2').hide()

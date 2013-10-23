@@ -122,12 +122,14 @@ class Arm < ActiveRecord::Base
 
       position = position.to_i - 1 unless position.blank?
 
-      if not self.update_visit_group_day(day, position) then
-        raise ActiveRecord::Rollback
-      end
+      if USE_EPIC
+        if not self.update_visit_group_day(day, position) then
+          raise ActiveRecord::Rollback
+        end
 
-      if not self.update_visit_group_window(window, position) then
-        raise ActiveRecord::Rollback
+        if not self.update_visit_group_window(window, position) then
+          raise ActiveRecord::Rollback
+        end
       end
 
       # Reload to force refresh of the visits

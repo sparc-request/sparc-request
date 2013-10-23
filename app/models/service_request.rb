@@ -141,11 +141,13 @@ class ServiceRequest < ActiveRecord::Base
   def service_calendar_page(direction)
     return if direction == 'back' and status == 'first_draft'
     return unless has_per_patient_per_visit_services?
-    self.arms.each do |arm|
-      arm.visit_groups.each do |vg|
-        if vg.day.blank?
-          errors.add(:visit_group, "Please specify a study day for each visit.")
-          return
+    if USE_EPIC
+      self.arms.each do |arm|
+        arm.visit_groups.each do |vg|
+          if vg.day.blank?
+            errors.add(:visit_group, "Please specify a study day for each visit.")
+            return
+          end
         end
       end
     end

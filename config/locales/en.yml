@@ -6,6 +6,13 @@ en:
   error_contact: "(843) 792-8300 or success@musc.edu"
   issue_contact: "Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have."
   feedback: "Feedback"
+  activerecord:
+    errors:
+      models:
+        organization:
+          attributes:
+            position_in_cwf:
+              blank: "is required if 'Show in Clinical Work Fulfillment' is checked."
 
   # sign in page
   signin:
@@ -633,7 +640,8 @@ en:
     new_sp: "New Service Provider"
     service_error: "There are no service providers anywhere on this tree."
     cm_rights: "Catalog Manager Rights"
-    clinical_providers: "Clinical Providers"
+    clinical_work_fulfillment: "Clinical Work Fulfillment"
+    clinical_providers: "Clinical Provider Rights:"
     new_cm: "New Catalog Manager"
     auto_price_adj: "Automatic Pricing Adjustment"
     change_rates: "Increase or Decrease Rates"
@@ -650,7 +658,7 @@ en:
     color_blank: "Select a Color"
     errors: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
     show_in_cwf: "Show in Clinical Work Fulfillment"
-    position_in_cwf: "Position in Clinical Work Fulfillment"
+    position_in_cwf: "Position"
 
   pricing_map_form:
     dates: "Dates"
@@ -817,7 +825,7 @@ en:
     service: "Service"
     requester: "Requester"
     assigned: "Person Assigned"
-    orgs: "Program/Provider/Core"
+    orgs: "Provider/Program/Core"
 
   # Associated Users Tab
   associated_users:

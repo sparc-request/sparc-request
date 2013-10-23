@@ -117,7 +117,7 @@ class Procedure < ActiveRecord::Base
   end
  
   def audit_excluded_fields
-    {'create' => ['visit_id', 'service_id', 'appointment_id', 'line_item_id', 'unit_factor_cost'], 'update' => ['toasts_generated']}
+    {'create' => ['toasts_generated', 'visit_id', 'service_id', 'appointment_id', 'line_item_id', 'unit_factor_cost'], 'update' => ['toasts_generated']}
   end
 
   ### end audit reporting methods ###

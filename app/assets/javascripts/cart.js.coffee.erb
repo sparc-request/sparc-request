@@ -23,6 +23,8 @@ $(document).ready ->
     ssr_id = $(this).attr('ssr_id')
     id = $(this).attr('id')
     li_count = $('#line_item_count').val()
+    $("#services .line-items").remove()
+    $("#services").append('<span class="spinner"><img src="/assets/spinner.gif"/></span>')
 
     if li_count == "1" and ssr_id != ''
       if confirm("This action will delete this service request and you will be redirected to your user portal. Click OK to proceed.")

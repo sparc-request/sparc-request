@@ -4,6 +4,7 @@ class ReportsController < ApplicationController
   helper_method :current_user
 
   before_filter :authenticate_identity!
+  before_filter :require_super_user, :only => [:index, :setup, :generate]
   before_filter :set_user
 
   def current_user
@@ -13,6 +14,10 @@ class ReportsController < ApplicationController
   def set_user
     @user = current_identity
     session['uid'] = @user.nil? ? nil : @user.id
+  end
+
+  def require_super_user
+    redirect_to root_path unless current_identity.is_super_user?
   end
 
   def index
@@ -30,9 +35,6 @@ class ReportsController < ApplicationController
     report = report_params[:type]
     @report = report.constantize.new report_params
 
-    Rails.logger.info "#"*50
-    Rails.logger.info report_params.inspect
-    Rails.logger.info "#"*50
     # generate excel
     tempfile = @report.to_excel 
     send_file tempfile.path, :filename => 'report.xlsx', :disposition => 'inline', :type =>  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"

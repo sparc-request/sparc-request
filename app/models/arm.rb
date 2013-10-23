@@ -107,13 +107,6 @@ class Arm < ActiveRecord::Base
     direct_costs_for_visit_based_service + indirect_costs_for_visit_based_service
   end
   
-  # Add a single visit.  Returns true upon success and false upon
-  # failure.  If there is a failure, any changes are rolled back.
-  # 
-  # TODO: I don't quite like the way this is written.  Perhaps we should
-  # rename this method to add_visit! and make it raise exceptions; it
-  # would be easier to read.  But I'm not sure how to get access to the
-  # errors object in that case.
   def add_visit position=nil, day=nil, window=0, name=''
     result = self.transaction do
       if not self.create_visit_group(position, name) then

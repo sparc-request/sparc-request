@@ -48,7 +48,6 @@ class Portal::AssociatedUsersController < Portal::BaseController
         UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver unless project_role.identity.email.blank?
       end
 
-      # TODO: Add creation message to lane and others here. Need to do the whole process.
       if USE_EPIC
         if @protocol.should_push_to_epic?
           Notifier.notify_for_epic_user_approval(@protocol).deliver

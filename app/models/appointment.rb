@@ -6,7 +6,6 @@ class Appointment < ActiveRecord::Base
   has_many :procedures, :dependent => :destroy
   has_many :visits, :through => :procedures
   has_many :notes
-  has_many :appointment_completions, :dependent => :destroy
   attr_accessible :visit_group_id
   attr_accessible :organization_id
   attr_accessible :completed_at
@@ -14,12 +13,18 @@ class Appointment < ActiveRecord::Base
   attr_accessible :name
 
   attr_accessible :procedures_attributes
-  attr_accessible :appointment_completions_attributes
 
   accepts_nested_attributes_for :procedures
-  accepts_nested_attributes_for :appointment_completions
 
-  after_create :create_appointment_completions
+  attr_accessible :formatted_completed_date
+
+  def formatted_completed_date
+    format_date self.completed_at
+  end
+
+  def formatted_completed_date=(d)
+    self.completed_at = parse_date(d)
+  end
 
 
   def populate_procedures(visits)
@@ -41,36 +46,29 @@ class Appointment < ActiveRecord::Base
   end
 
   def completed?
-    self.appointment_completions.each do |x|
-      return true if x.completed_date?
+    if self.completed_at
+      true
+    else
+      false
     end
-    return false
   end
   
   # TODO
   # Update this method when the new core specific completed dates are added
   def completed_for_core? (core_id)
-    if self.completed_at(core_id).first.try(:completed_date)
-      return true
-    else
-      return false
-    end
+    self.completed?
   end
 
-  def completed_at (core_id)
-    AppointmentCompletion.where("organization_id = ? AND appointment_id = ?", core_id, self.id)
-  end
+  # def create_appointment_completions
+  #   cores = []
+  #   cores = Organization.where(show_in_cwf: true)
 
-  def create_appointment_completions
-    cores = []
-    cores = Organization.where(show_in_cwf: true)
-
-    cores.each do |core|
-      if self.appointment_completions.where(:organization_id => core.id).empty?
-        self.appointment_completions.create(:organization_id => core.id) 
-      end
-    end
-  end
+  #   cores.each do |core|
+  #     if self.appointment_completions.where(:organization_id => core.id).empty?
+  #       self.appointment_completions.create(:organization_id => core.id) 
+  #     end
+  #   end
+  # end
 
   def display_name
     self.name.nil? ? self.visit_group.name : self.name
@@ -80,6 +78,20 @@ class Appointment < ActiveRecord::Base
     
   def audit_excluded_actions
     ['create']
+  end
+
+  private
+
+  def format_date(d)
+    d.try(:strftime, '%-m/%d/%Y')
+  end
+
+  def parse_date(str)
+    begin
+      Date.strptime(str.to_s.strip, '%m/%d/%Y')  
+    rescue ArgumentError => e
+      nil
+    end
   end
 
   ### end audit reporting methods ###

@@ -8,9 +8,8 @@
           %thead
             %tr.ui-widget-header
               %th{:colspan => "4"}= t(:study_tracker)[:visit_calendar][:visit_complete]
-              = appointment_form.fields_for :appointment_completions do |ac_form|
-                %th{:colspan => "2", :class => "core_#{ac_form.object.organization.id} hidden_by_tabs", :style => ac_form.object.organization == @default_core ? "display:table-cell;" : ""}
-                  = ac_form.datepicker :formatted_completed_date, size: 18, dateFormat: "m/dd/yy"
+              %th{:colspan => "2", :style => "display:table-cell;"}
+                = appointment_form.datepicker :formatted_completed_date, size: 18, dateFormat: "m/dd/yy"
             %tr.ui-widget-header
               %th= t(:study_tracker)[:visit_calendar][:header5]
               %th

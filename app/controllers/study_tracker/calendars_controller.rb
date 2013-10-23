@@ -5,6 +5,8 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
     @calendar = Calendar.find(params[:id])
     get_calendar_data(@calendar)
     generate_toasts_for_new_procedures
+    @default_appointment = @calendar.appointments_for_core(@default_core.id).reject{|x| x.completed_for_core?(@default_core.id) }.first
+    @default_visit_group_id = @default_appointment.visit_group_id
 
     @procedures = []
     # toast_messages = ToastMessage.where("to = ? AND sending_class = ? AND message = ?", current_user.id, "Procedure", @calendar.id.to_s)
@@ -40,6 +42,24 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
     render nothing: true
   end
 
+  def change_visit_group
+    visit_group = VisitGroup.find(params[:visit_group_id])
+    @calendar = Calendar.find(params[:calendar_id])
+    get_calendar_data(@calendar)
+    @default_visit_group_id = visit_group.id
+    @default_appointment = visit_group.appointments.first
+    # @default_appointment = @calendar.appointments_for_core(@default_core.id).reject{|x| x.completed_for_core?(@default_core.id) }.first || visit_group.appointments.first
+    generate_toasts_for_new_procedures
+
+    @procedures = []
+    # toast_messages = ToastMessage.where("to = ? AND sending_class = ? AND message = ?", current_user.id, "Procedure", @calendar.id.to_s)
+    toast_messages = ToastMessage.where(to: current_user.id, sending_class: "Procedure", message: @calendar.id.to_s)
+    toast_messages.each do |toast|
+      @procedures.push(Procedure.find(toast.sending_class_id))
+    end
+    # render :js => "window.location.pathname='#{study_tracker_sub_service_request_calendar_path(:sub_service_request_id => @sub_service_request, :id => params[:calendar_id])}'"
+  end
+
   private
 
   def check_work_fulfillment_status
@@ -65,6 +85,7 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
 
     default_procedures = @default_appointment.procedures.select{|x| x.core == @cwf_cores.first}
     @default_subtotal = @default_appointment.completed_for_core?(@default_core.id) ? default_procedures.sum{|x| x.total} : 0.00
+    @default_visit_group_id = @subject.arm.visit_groups.first.id
   end
 
   def generate_toasts_for_new_procedures
@@ -72,7 +93,7 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
     @completed_appointments.each do |appointment|
       appointment.procedures.each do |procedure|
         if procedure.should_be_displayed && (procedure.service_id == nil)
-          completion = appointment.appointment_completions.where("organization_id = ?", procedure.core.id).first.try(:completed_date)
+          completion = appointment.completed_at
           if completion
             if procedure.created_at > completion
               unless procedure.toasts_generated
@@ -93,4 +114,5 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
       end
     end
   end
+
 end

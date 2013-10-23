@@ -34,8 +34,6 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
     render :partial => 'new_procedure', :locals => {:appointment_index => params[:appointment_index], :procedure_index => params[:procedure_index]}
   end
 
-
-
   def delete_toast_messages
     toast_messages = ToastMessage.where(to: current_user.id, sending_class: "Procedure", message: params[:id])
     toast_messages.each{|toast| toast.destroy}
@@ -43,21 +41,25 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
   end
 
   def change_visit_group
-    visit_group = VisitGroup.find(params[:visit_group_id])
+    params[:visit_group_id].blank? ? visit_group = nil : visit_group = VisitGroup.find(params[:visit_group_id])
     @calendar = Calendar.find(params[:calendar_id])
     get_calendar_data(@calendar)
-    @default_visit_group_id = visit_group.id
-    @default_appointment = visit_group.appointments.first
-    # @default_appointment = @calendar.appointments_for_core(@default_core.id).reject{|x| x.completed_for_core?(@default_core.id) }.first || visit_group.appointments.first
-    generate_toasts_for_new_procedures
+    if visit_group
+      @default_visit_group_id = visit_group.id
+      @default_appointment = visit_group.appointments.first
+      # @default_appointment = @calendar.appointments_for_core(@default_core.id).reject{|x| x.completed_for_core?(@default_core.id) }.first || visit_group.appointments.first
+      generate_toasts_for_new_procedures
 
+      
+    else # no visit group because appointment was completed before vg was deleted
+
+    end
     @procedures = []
     # toast_messages = ToastMessage.where("to = ? AND sending_class = ? AND message = ?", current_user.id, "Procedure", @calendar.id.to_s)
     toast_messages = ToastMessage.where(to: current_user.id, sending_class: "Procedure", message: @calendar.id.to_s)
     toast_messages.each do |toast|
       @procedures.push(Procedure.find(toast.sending_class_id))
     end
-    # render :js => "window.location.pathname='#{study_tracker_sub_service_request_calendar_path(:sub_service_request_id => @sub_service_request, :id => params[:calendar_id])}'"
   end
 
   private

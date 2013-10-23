@@ -44,6 +44,8 @@ class Organization < ActiveRecord::Base
   accepts_nested_attributes_for :available_statuses, :allow_destroy => true
 
   validates :position_in_cwf, :numericality => true, :allow_nil => true, :uniqueness => true
+  validates :position_in_cwf, :presence => :true, :if => :show_in_cwf
+
 
   ###############################################################################
   ############################# HIERARCHY METHODS ###############################
@@ -266,6 +268,7 @@ class Organization < ActiveRecord::Base
 
   def self.get_cwf_organizations
     cwf_orgs = Organization.where(show_in_cwf: true)
+    cwf_orgs = cwf_orgs.reject{|x| x.position_in_cwf == nil}
     cwf_orgs.sort! { |a,b| a.position_in_cwf <=> b.position_in_cwf }
 
     cwf_orgs

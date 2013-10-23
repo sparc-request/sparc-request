@@ -33,7 +33,7 @@
     = f.fields_for :calendar do |calendar_form|
       .cwf_tabs.ui-tabs.ui-widget.ui-widget-content.ui-corner-all
         %ul.ui-tabs-nav.ui-helper-reset.ui-helper-clearfix.ui-widget-header.ui-corner-all
-          - Organization.get_cwf_organizations.each do |org|
+          - @cwf_cores.each do |org|
             %li.ui-state-default.ui-corner-top{:class=> org == @default_core ? 'ui-state-active' : ''}= link_to org.abbreviation, "##{org.abbreviation.downcase}", :class => "clinical_tab_data", :id => "core_#{org.id}", 'data-has_access' => @user.can_edit_core?(org.id) ? true : false
 
       #visit_form{:style => "padding: 10px 40px;"}
@@ -82,7 +82,7 @@
                   %td
                   %td.grand_total_cell.text-center= number_to_currency(@default_subtotal)
             .add_service
-              - Organization.get_cwf_organizations.each do |org|
+              - @cwf_cores.each do |org|
                 %div{:class => "core_#{org.id} hidden_by_tabs", :style => org == @default_core ? "display:block;" : ""}
                   = select_tag :service, options_for_select(org.services.select{|x| x.is_available?}.sort_by{|x| x.name}.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
                   = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => "cwf_add_service_button core_#{org.id}"

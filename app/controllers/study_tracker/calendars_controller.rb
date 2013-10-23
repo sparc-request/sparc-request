@@ -51,19 +51,19 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
 
   def get_calendar_data(calendar)
     # Get the cores
-    cwf_cores = Organization.get_cwf_organizations
+    @cwf_cores = Organization.get_cwf_organizations
 
     @subject = calendar.subject
     @appointments = calendar.appointments.sort{|x,y| x.position_switch <=> y.position_switch }
 
     
-    @default_core = (cookies['current_core'] ? Organization.find(cookies['current_core']) : cwf_cores.first)
+    @default_core = (cookies['current_core'] ? Organization.find(cookies['current_core']) : @cwf_cores.first)
 
     @uncompleted_appointments = @appointments.reject{|x| x.completed_for_core?(@default_core.id) }
     @completed_appointments = @appointments.select{|x| x.completed?}
     @default_appointment = @uncompleted_appointments.first || @appointments.first
 
-    default_procedures = @default_appointment.procedures.select{|x| x.core == cwf_cores.first}
+    default_procedures = @default_appointment.procedures.select{|x| x.core == @cwf_cores.first}
     @default_subtotal = @default_appointment.completed_for_core?(@default_core.id) ? default_procedures.sum{|x| x.total} : 0.00
   end
 

@@ -31,6 +31,10 @@ class VisitGroup < ActiveRecord::Base
     "#{arm.name} #{name}"
   end
 
+  def audit_field_value_mapping
+    {"arm_id" => "Arm.find(ORIGINAL_VALUE).name"}
+  end
+
   ### end audit reporting methods ###
 
 

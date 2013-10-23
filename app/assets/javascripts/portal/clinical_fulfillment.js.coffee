@@ -52,39 +52,39 @@ $(document).ready ->
         $('#cwf_audit_start_date_input').datepicker("option", "maxDate", selectedDate)
 
   ####Triggers:
-  $(document).on('change', '.clinical_select_data', ->
-    $('#visit_form .spinner_wrapper').show()
-    visit_name = $('option:selected', this).attr('data-appointment_id')
-    setTimeout((->
-      $('#visit_form .appointment_wrapper').hide()
-      $("div[data-appointment_table=#{visit_name}]").css("display", "block")
-      $('#visit_form .spinner_wrapper').hide()
-      recalc_subtotal()
-    ), 250)
-  )
+  # $(document).on('change', '.clinical_select_data', ->
+  #   $('#visit_form .spinner_wrapper').show()
+  #   visit_name = $('option:selected', this).attr('data-appointment_id')
+  #   setTimeout((->
+  #     $('#visit_form .appointment_wrapper').hide()
+  #     $("div[data-appointment_table=#{visit_name}]").css("display", "block")
+  #     $('#visit_form .spinner_wrapper').hide()
+  #     recalc_subtotal()
+  #   ), 250)
+  # )
 
-  $(document).on('click', '.clinical_tab_data', ->
-    clicked = $(this)
-    $('#visit_form .spinner_wrapper').show()
-    core_name = $(this).attr('id')
-    $.cookie('current_core', core_name.replace('core_', ''), {path: '/', expires: 1})
-    setTimeout((->
-      $('.cwf_tabs li.ui-state-active').removeClass('ui-state-active')
-      clicked.parent('li').addClass('ui-state-active')
-      $('.hidden_by_tabs').hide()
+  # $(document).on('click', '.clinical_tab_data', ->
+  #   clicked = $(this)
+  #   $('#visit_form .spinner_wrapper').show()
+  #   core_name = $(this).attr('id')
+  #   $.cookie('current_core', core_name.replace('core_', ''), {path: '/', expires: 1})
+  #   setTimeout((->
+  #     $('.cwf_tabs li.ui-state-active').removeClass('ui-state-active')
+  #     clicked.parent('li').addClass('ui-state-active')
+  #     $('.hidden_by_tabs').hide()
 
-      if clicked.attr('data-has_access') == "false"
-        $("." + core_name).find('input').prop('disabled', true)
-        $("button." + core_name).prop('disabled', true)
+  #     if clicked.attr('data-has_access') == "false"
+  #       $("." + core_name).find('input').prop('disabled', true)
+  #       $("button." + core_name).prop('disabled', true)
 
-      $("tr." + core_name).css("display", "table-row")
-      $("th." + core_name).css("display", "table-cell")
-      $("div." + core_name).css("display", "block")
+  #     $("tr." + core_name).css("display", "table-row")
+  #     $("th." + core_name).css("display", "table-cell")
+  #     $("div." + core_name).css("display", "block")
 
-      $('#visit_form .spinner_wrapper').hide()
-      recalc_subtotal()
-    ), 250)
-  )
+  #     $('#visit_form .spinner_wrapper').hide()
+  #     recalc_subtotal()
+  #   ), 250)
+  # )
 
   $(document).on('click', '.check_box_cell input', ->
     recalc_row_totals()
@@ -104,23 +104,23 @@ $(document).ready ->
     $('.save_alert').show()
   )
 
-  $('.clinical_tab_data').each ->
-    if $(this).attr('data-has_access') == "false"
-      core_name = $(this).attr('id')
-      $("." + core_name).find('input').prop('disabled', true)
-      $("button." + core_name).prop('disabled', true)
+  # $('.clinical_tab_data').each ->
+  #   if $(this).attr('data-has_access') == "false"
+  #     core_name = $(this).attr('id')
+  #     $("." + core_name).find('input').prop('disabled', true)
+  #     $("button." + core_name).prop('disabled', true)
 
-  $(document).on('click', 'a.check_all', ->
-    if $('a.check_all span').hasClass('ui-icon-check')
-      $('a.check_all span').removeClass('ui-icon-check').addClass('ui-icon-close')
-      $('td.check_box_cell:visible input[type=checkbox]').not(":checked").click()
-    else
-      $('a.check_all span').removeClass('ui-icon-close').addClass('ui-icon-check')
-      $('td.check_box_cell:visible input[type=checkbox]').is(":checked").click()
-    recalc_row_totals()
-    recalc_subtotal()
-    $('.save_alert').show()
-  )
+  # $(document).on('click', 'a.check_all', ->
+  #   if $('a.check_all span').hasClass('ui-icon-check')
+  #     $('a.check_all span').removeClass('ui-icon-check').addClass('ui-icon-close')
+  #     $('td.check_box_cell:visible input[type=checkbox]').not(":checked").click()
+  #   else
+  #     $('a.check_all span').removeClass('ui-icon-close').addClass('ui-icon-check')
+  #     $('td.check_box_cell:visible input[type=checkbox]').is(":checked").click()
+  #   recalc_row_totals()
+  #   recalc_subtotal()
+  #   $('.save_alert').show()
+  # )
 
   $(document).on('click', '.dashboard_link', ->
     if $(this).hasClass('active')

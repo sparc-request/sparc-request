@@ -23,6 +23,10 @@ class Procedure < ActiveRecord::Base
     self.service ? self.try(:service).try(:name) : self.try(:line_item).try(:service).try(:name)
   end
 
+  def direct_service
+    self.service ? self.service : self.line_item.service
+  end
+
   def core
     self.service ? self.try(:service).try(:organization) : self.try(:line_item).try(:service).try(:organization)
   end

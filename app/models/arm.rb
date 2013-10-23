@@ -107,13 +107,6 @@ class Arm < ActiveRecord::Base
     direct_costs_for_visit_based_service + indirect_costs_for_visit_based_service
   end
   
-  # Add a single visit.  Returns true upon success and false upon
-  # failure.  If there is a failure, any changes are rolled back.
-  # 
-  # TODO: I don't quite like the way this is written.  Perhaps we should
-  # rename this method to add_visit! and make it raise exceptions; it
-  # would be easier to read.  But I'm not sure how to get access to the
-  # errors object in that case.
   def add_visit position=nil, day=nil, window=0, name=''
     result = self.transaction do
       if not self.create_visit_group(position, name) then
@@ -122,12 +115,14 @@ class Arm < ActiveRecord::Base
 
       position = position.to_i - 1 unless position.blank?
 
-      if not self.update_visit_group_day(day, position) then
-        raise ActiveRecord::Rollback
-      end
+      if USE_EPIC
+        if not self.update_visit_group_day(day, position) then
+          raise ActiveRecord::Rollback
+        end
 
-      if not self.update_visit_group_window(window, position) then
-        raise ActiveRecord::Rollback
+        if not self.update_visit_group_window(window, position) then
+          raise ActiveRecord::Rollback
+        end
       end
 
       # Reload to force refresh of the visits
@@ -196,7 +191,7 @@ class Arm < ActiveRecord::Base
         new_livs = self.line_items_visits.reject {|x| existing_liv_ids.include?(x.id)}
         new_livs.each do |new_liv|
           visit = new_liv.visits.where("visit_group_id = ?", appointment.visit_group_id).first
-          appointment.procedures.create(:line_item_id => new_liv.line_item.id, :visit_id => visit.id)
+          appointment.procedures.create(:line_item_id => new_liv.line_item.id, :visit_id => visit.id) if new_liv.line_item.service.organization_id == appointment.organization_id
         end
       end
       # populate new appointments

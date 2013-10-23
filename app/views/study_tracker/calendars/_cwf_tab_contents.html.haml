@@ -1,0 +1,4 @@
+- @cwf_cores.each do |org|
+  - appointment = calendar_form.object.appointments_for_core(org.id).where(:visit_group_id => @default_visit_group_id)
+  - unless appointment.nil?
+    = render :partial => "individual_core_appointment", :locals => {:calendar_form => calendar_form, :org => org, :appointment => appointment}

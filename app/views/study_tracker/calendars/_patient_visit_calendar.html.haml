@@ -1,6 +1,7 @@
 - unless @procedures.empty?
   = render :partial => "procedures_added_popup"
 
+= hidden_field_tag :calendar_id, @calendar.id
 = nested_form_for @subject, :url => study_tracker_subject_path(@subject) do |f|
   = hidden_field_tag :sub_service_request_id, @sub_service_request.id
   %table.study_tracker_table{:style => "width:940px;"}
@@ -21,7 +22,7 @@
           = f.select :status, options_for_select(["Active", "Completed", "Early Term", "Screen Fail"], f.try(:object).try(:status)), :include_blank => "--Choose a Status--"
   #controls
     %p= t(:study_tracker)[:visit_calendar][:visit_selector]
-    = select_tag :visit, options_for_select(appointment_visits(@appointments), selected_key = "##{@default_appointment.position_switch}: #{@default_appointment.name_switch}"), :class => 'clinical_select_data'
+    = select_tag :visit, options_for_select(appointment_visits(@appointments), selected_key = "##{@default_appointment.position_switch}: #{@default_appointment.name_switch}"), :class => 'clinical_select_data', :autocomplete => 'off'
   %p= link_to "-- Show Dashboard --", 'javascript:void(0);', :class => "ui-state-active dashboard_link"
 
   #dashboard_container
@@ -31,65 +32,23 @@
 
   %div{:style => "margin: 25px 0px;"}
     = f.fields_for :calendar do |calendar_form|
-      .cwf_tabs.ui-tabs.ui-widget.ui-widget-content.ui-corner-all
-        %ul.ui-tabs-nav.ui-helper-reset.ui-helper-clearfix.ui-widget-header.ui-corner-all
-          - Organization.get_cwf_organizations.each do |org|
-            %li.ui-state-default.ui-corner-top{:class=> org == @default_core ? 'ui-state-active' : ''}= link_to org.abbreviation, "##{org.abbreviation.downcase}", :class => "clinical_tab_data", :id => "core_#{org.id}", 'data-has_access' => @user.can_edit_core?(org.id) ? true : false
+      .cwf_tabs
+        %ul
+          - @cwf_cores.each do |org|
+            %li{'data-core_id' => org.id}
+              %a{:href => "#tab-#{org.id}"}= org.abbreviation
+        #cwf_tab_contents
+          = render :partial => 'cwf_tab_contents', :locals => {:calendar_form => calendar_form}
 
-      #visit_form{:style => "padding: 10px 40px;"}
-        - appointment_index = -1
-        = calendar_form.fields_for :appointments do |appointment_form|
-          - appointment_index += 1
-          .appointment_wrapper{:style => appointment_form.object == @default_appointment ? "display:block;" : "display:none;", 'data-appointment_table' => appointment_form.object.id}
-            %table.study_tracker_table
-              %thead
-                %tr.ui-widget-header
-                  %th{:colspan => "4"}= t(:study_tracker)[:visit_calendar][:visit_complete]
-                  = appointment_form.fields_for :appointment_completions do |ac_form|
-                    %th{:colspan => "2", :class => "core_#{ac_form.object.organization.id} hidden_by_tabs", :style => ac_form.object.organization == @default_core ? "display:table-cell;" : ""}
-                      = ac_form.datepicker :formatted_completed_date, size: 18, dateFormat: "m/dd/yy"
-                %tr.ui-widget-header
-                  %th= t(:study_tracker)[:visit_calendar][:header5]
-                  %th
-                    = t(:study_tracker)[:visit_calendar][:header6]
-                    %a.check_all.ui-button.ui-state-default.ui-corner-all.ui-button-icon-only{:style => "margin:3px auto 0;display:block;height:22px;"}
-                      %span.ui-icon.ui-icon-check
-                  %th= t(:study_tracker)[:visit_calendar][:header7]
-                  %th= t(:study_tracker)[:visit_calendar][:header8]
-                  %th= t(:study_tracker)[:visit_calendar][:header9]
-                  %th= t(:study_tracker)[:visit_calendar][:header10]
-              %tbody
-                = appointment_form.fields_for :procedures, :wrapper => false do |procedure_form|
-                  - if procedure_form.object.should_be_displayed
-                    %tr.fields{:style => "background-color:#C0C0C0;#{procedure_form.object.core.id == @default_core.id ? 'display:table-row;' : 'display:none;'}", :class => "core_#{procedure_form.object.core.id} hidden_by_tabs"}
-                      %td= procedure_form.object.display_service_name
-                      %td.check_box_cell.text-center{:class => procedure_form.object.line_item ? "highlighted" : ''}= procedure_form.check_box :completed, :class => "procedure_box"
-                      %td.r_qty_cell.text-center= procedure_form.text_field :r_quantity, value: procedure_form.object.default_r_quantity, size: 5, :class => 'procedure_r_qty'
-                      %td.t_qty_cell.text-center= procedure_form.text_field :t_quantity, value: procedure_form.object.default_t_quantity, size: 5, :class => 'procedure_t_qty'
-                      %td.unit_cost_cell.text-center= number_to_currency(procedure_form.object.cost)
-                      %td.procedure_total_cell.text-center= number_to_currency(procedure_form.object.total)
-                  - else
-                    %tr.fields{:style => "display:none;"}
-                %tr.new_procedure_wrapper{:'data-appointment_index' => appointment_index}
-                %tr.grand_total_row
-                  %td{:style => "font-weight:bold;"}= t(:study_tracker)[:visit_calendar][:grand_total]
-                  %td
-                  %td
-                  %td
-                  %td
-                  %td.grand_total_cell.text-center= number_to_currency(@default_subtotal)
-            .add_service
-              - Organization.get_cwf_organizations.each do |org|
-                %div{:class => "core_#{org.id} hidden_by_tabs", :style => org == @default_core ? "display:block;" : ""}
-                  = select_tag :service, options_for_select(org.services.select{|x| x.is_available?}.sort_by{|x| x.name}.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
-                  = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => "cwf_add_service_button core_#{org.id}"
-           
-            .comments
-              = render :partial => "notes", :locals => {:appointment => appointment_form.object}
-
-        .spinner_wrapper
-
-          = image_tag 'spinner.gif'
   %p{:style => "text-align:center; margin-bottom:12px;"}= f.submit t(:study_tracker)[:visit_calendar][:submit], :id => 'save_appointments', :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;font-size:1.2em;"
   %p.save_alert{:style => "text-align:center; margin-bottom:12px; display:none; color:red; font-weight:bold;"} You must save this form for any changes to be commited.
   %p{:style => "text-align:center; margin-bottom:12px;"}= link_to t(:study_tracker)[:visit_calendar][:cwf_link], study_tracker_sub_service_request_path(@sub_service_request), :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;font-size:1.2em;"
+
+:coffeescript
+  $(".cwf_tabs").tabs(
+    active: ($.cookie("cwf_appointment_tab"))
+    activate: (event, ui) ->
+      $.cookie("cwf_appointment_tab", $(".cwf_tabs").tabs("option","active"))
+      core_id = $(ui.newTab).data("core_id")
+      $.cookie('current_core', core_id, {path: '/', expires: 1})
+  )

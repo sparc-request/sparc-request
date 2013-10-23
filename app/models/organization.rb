@@ -46,6 +46,9 @@ class Organization < ActiveRecord::Base
   validates :position_in_cwf, :numericality => true, :allow_nil => true, :uniqueness => true
   validates :position_in_cwf, :presence => :true, :if => :show_in_cwf
 
+  def label
+    abbreviation || name
+  end
 
   ###############################################################################
   ############################# HIERARCHY METHODS ###############################

@@ -6,21 +6,11 @@
       = t(:study_tracker)[:audits][:no_start_date] 
     - else
       = form_tag cwf_audit_report_path(@sub_service_request, :format => :xlsx) do
-        = label_tag :nursing_included, t(:study_tracker)[:audits][:nursing] 
-        = check_box_tag :nursing_included, 1, true
-        %br
+        - @cwf_organizations.each do |org|
+          = label_tag "organizations[#{org.id}]", org.label
+          = check_box_tag "organizations[]", org.id, true
+          %br
         
-        = label_tag :laboratory_included, t(:study_tracker)[:audits][:laboratory]
-        = check_box_tag :laboratory_included, 1, true
-        %br
-       
-        = label_tag :imaging_included, t(:study_tracker)[:audits][:imaging]
-        = check_box_tag :imaging_included, 1, true
-        %br
-       
-        = label_tag :nutrition_included, t(:study_tracker)[:audits][:nutrition]
-        = check_box_tag :nutrition_included, 1, true
-
         %br
         %br
        

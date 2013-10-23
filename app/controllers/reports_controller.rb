@@ -21,21 +21,7 @@ class ReportsController < ApplicationController
   end
 
   def cwf_audit
-    nursing    = Organization.tagged_with("nursing").first
-    laboratory = Organization.tagged_with("laboratory").first
-    imaging    = Organization.tagged_with("imaging").first
-    nutrition  = Organization.tagged_with("nutrition").first
-
-    nursing_included = params[:nursing_included] || false
-    laboratory_included = params[:laboratory_included] || false
-    imaging_included = params[:imaging_included] || false
-    nutrition_included = params[:nutrition_included] || false
-
-    included_cores = []
-    included_cores << nursing.id if nursing_included
-    included_cores << laboratory.id if laboratory_included
-    included_cores << imaging.id if imaging_included
-    included_cores << nutrition.id if nutrition_included
+    included_cores = params[:organizations] || []
     
     @ssr = SubServiceRequest.find params[:id]
 

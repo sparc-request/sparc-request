@@ -37,7 +37,6 @@
           - @cwf_cores.each do |org|
             %li{'data-core_id' => org.id}
               %a{:href => "#tab-#{org.id}"}= org.abbreviation
-
         #cwf_tab_contents
           = render :partial => 'cwf_tab_contents', :locals => {:calendar_form => calendar_form}
 

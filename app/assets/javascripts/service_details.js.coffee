@@ -3,7 +3,6 @@
 
 $ ->
   # handle removing an arm and clicking save & continue - set subjects and visits to 1 
-  #TODO this isn't the best way to do this, maybe we should default subjects and visits to 1
   $(document).on 'nested:fieldRemoved', (event) ->
     field = event.field
     field.find('.skinny_fields input').val('1')

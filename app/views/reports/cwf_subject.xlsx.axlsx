@@ -79,12 +79,7 @@ wb.add_worksheet(name: "Subject report") do |sheet|
   visit_totals = {}
 
   @subject.calendar.appointments.each do |appt|
-    if appt.appointment_completions
-      max_date = appt.appointment_completions.map(&:completed_date).compact.max.try(:strftime, "%m/%d/%y")
-      visit_completion_row << max_date || ""
-    else 
-      visit_completion_row << ""
-    end
+    visit_completion_row << appt.completed_at ? appt.completed_at.try(:strftime, "%m/%d/%y") : ""
 
     visit_name_row << appt.visit_group.name
 

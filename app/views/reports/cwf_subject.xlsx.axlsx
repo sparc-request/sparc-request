@@ -78,25 +78,28 @@ wb.add_worksheet(name: "Subject report") do |sheet|
   procedures_rows = {}
   visit_totals = {}
 
-  @subject.calendar.appointments.each do |appt|
-    visit_completion_row << appt.completed_at ? appt.completed_at.try(:strftime, "%m/%d/%y") : ""
+  @subject.calendar.appointments.group_by{|x| x.visit_group_id ? x.visit_group_id : "#{x.name} #{x.position}"}.each do |g,appts|
+    max_date = appts.map(&:completed_at).compact.max.try(:strftime, "%m/%d/%y")
+    visit_completion_row << max_date || ""
 
-    visit_name_row << appt.name_switch
+    visit_name_row << appts.first.name_switch
 
-    appt.procedures.each do |procedure|
-      sid = procedure.service ? procedure.service_id : procedure.line_item_id
+    appts.each do |appt|
+      appt.procedures.each do |procedure|
+        sid = procedure.service ? procedure.service_id : procedure.line_item_id
 
-      #initialize with data
-      unless procedures_rows[sid]
-        procedures_rows[sid] = [procedure.display_service_name, procedure.cost]
+        #initialize with data
+        unless procedures_rows[sid]
+          procedures_rows[sid] = [procedure.display_service_name, procedure.cost]
+        end
+
+        procedure_total = (procedure.completed? and procedure.r_quantity) ? procedure.r_quantity * procedure.cost : nil
+
+        visit_totals[g] ||= []
+        visit_totals[g] << procedure_total
+
+        procedures_rows[sid] << procedure_total
       end
-
-      procedure_total = (procedure.completed? and procedure.r_quantity) ? procedure.r_quantity * procedure.cost : nil
-
-      visit_totals[appt.visit_group_id] ||= []
-      visit_totals[appt.visit_group_id] << procedure_total
-
-      procedures_rows[sid] << procedure_total
     end
 
   end

@@ -75,10 +75,16 @@ class Appointment < ActiveRecord::Base
   end
   
   ### audit reporting methods ###
+  
+  def audit_field_value_mapping
+    {"completed_at" => "'ORIGINAL_VALUE'.to_time.strftime('%Y-%m-%d')"}
+  end
     
   def audit_excluded_actions
     ['create']
   end
+  
+  ### end audit reporting methods ###
 
   private
 
@@ -94,6 +100,5 @@ class Appointment < ActiveRecord::Base
     end
   end
 
-  ### end audit reporting methods ###
 
 end

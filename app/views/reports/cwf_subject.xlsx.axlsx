@@ -81,7 +81,7 @@ wb.add_worksheet(name: "Subject report") do |sheet|
   @subject.calendar.appointments.each do |appt|
     visit_completion_row << appt.completed_at ? appt.completed_at.try(:strftime, "%m/%d/%y") : ""
 
-    visit_name_row << appt.visit_group.name
+    visit_name_row << appt.name_switch
 
     appt.procedures.each do |procedure|
       sid = procedure.service ? procedure.service_id : procedure.line_item_id

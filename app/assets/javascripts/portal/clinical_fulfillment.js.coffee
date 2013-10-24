@@ -69,6 +69,7 @@ $(document).ready ->
       # 'procedure_index': procedure_index
       'sub_service_request_id': $('#sub_service_request_id').val()
       'calendar_id': $("#calendar_id").val()
+      'appointment_tag': $('option:selected', this).val()
     $.ajax
       type: 'POST'
       url: '/clinical_work_fulfillment/calendars/change_visit_group'
@@ -118,11 +119,11 @@ $(document).ready ->
     $('.save_alert').show()
   )
 
-  # $('.clinical_tab_data').each ->
-  #   if $(this).attr('data-has_access') == "false"
-  #     core_name = $(this).attr('id')
-  #     $("." + core_name).find('input').prop('disabled', true)
-  #     $("button." + core_name).prop('disabled', true)
+  $('.clinical_tab_data').each ->
+    if $(this).attr('data-has_access') == "false"
+      core_name = $(this).attr('id')
+      $("." + core_name).find('input').prop('disabled', true)
+      $("button." + core_name).prop('disabled', true)
 
   $(document).on('click', 'a.check_all', ->
     if $('a.check_all span').hasClass('ui-icon-check')

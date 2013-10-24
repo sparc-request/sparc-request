@@ -5,8 +5,9 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
     @calendar = Calendar.find(params[:id])
     get_calendar_data(@calendar)
     generate_toasts_for_new_procedures
-    @default_appointment = @calendar.appointments_for_core(@default_core.id).reject{|x| x.completed_for_core?(@default_core.id) }.first
-    @default_visit_group_id = @default_appointment.visit_group_id
+    @default_appointment = @calendar.appointments_for_core(@default_core.id).reject{|x| x.completed_for_core?(@default_core.id) }.first rescue @calendar.appointments.first
+    @default_visit_group_id = @default_appointment.try(:visit_group_id)
+    @selected_key = "##{@default_appointment.position_switch}: #{@default_appointment.name_switch}"
 
     @procedures = []
     # toast_messages = ToastMessage.where("to = ? AND sending_class = ? AND message = ?", current_user.id, "Procedure", @calendar.id.to_s)
@@ -47,12 +48,14 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
     if visit_group
       @default_visit_group_id = visit_group.id
       @default_appointment = visit_group.appointments.first
+      @selected_key = "##{@default_appointment.position_switch}: #{@default_appointment.name_switch}"
       # @default_appointment = @calendar.appointments_for_core(@default_core.id).reject{|x| x.completed_for_core?(@default_core.id) }.first || visit_group.appointments.first
       generate_toasts_for_new_procedures
 
       
     else # no visit group because appointment was completed before vg was deleted
-
+      @default_visit_group_id = nil
+      @selected_key = params[:appointment_tag]
     end
     @procedures = []
     # toast_messages = ToastMessage.where("to = ? AND sending_class = ? AND message = ?", current_user.id, "Procedure", @calendar.id.to_s)

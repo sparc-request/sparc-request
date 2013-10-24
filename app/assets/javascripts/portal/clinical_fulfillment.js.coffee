@@ -53,52 +53,20 @@ $(document).ready ->
 
   ##Triggers:
   $(document).on('change', '.clinical_select_data', ->
-    # $('#visit_form .spinner_wrapper').show()
-    # visit_name = $('option:selected', this).attr('data-appointment_id')
-    # setTimeout((->
-    #   $('#visit_form .appointment_wrapper').hide()
-    #   $("div[data-appointment_table=#{visit_name}]").css("display", "block")
-    #   $('#visit_form .spinner_wrapper').hide()
-    #   recalc_subtotal()
-    # ), 250)
     data =
       'visit_group_id': $('option:selected', this).data('visit_group_id')
-      # 'appointment_id': box.data('appointment_id')
-      # 'service_id': box.val()
-      # 'appointment_index': appointment_index
-      # 'procedure_index': procedure_index
       'sub_service_request_id': $('#sub_service_request_id').val()
       'calendar_id': $("#calendar_id").val()
+      'appointment_tag': $('option:selected', this).val()
     $.ajax
       type: 'POST'
       url: '/clinical_work_fulfillment/calendars/change_visit_group'
       data: JSON.stringify(data)
       dataType: 'script'
       contentType: 'application/json; charset=utf-8'
+      success: ->
+        recalc_subtotal()
   )
-
-  # $(document).on('click', '.clinical_tab_data', ->
-  #   clicked = $(this)
-  #   $('#visit_form .spinner_wrapper').show()
-  #   core_name = $(this).attr('id')
-  #   $.cookie('current_core', core_name.replace('core_', ''), {path: '/', expires: 1})
-  #   setTimeout((->
-  #     $('.cwf_tabs li.ui-state-active').removeClass('ui-state-active')
-  #     clicked.parent('li').addClass('ui-state-active')
-  #     $('.hidden_by_tabs').hide()
-
-  #     if clicked.attr('data-has_access') == "false"
-  #       $("." + core_name).find('input').prop('disabled', true)
-  #       $("button." + core_name).prop('disabled', true)
-
-  #     $("tr." + core_name).css("display", "table-row")
-  #     $("th." + core_name).css("display", "table-cell")
-  #     $("div." + core_name).css("display", "block")
-
-  #     $('#visit_form .spinner_wrapper').hide()
-  #     recalc_subtotal()
-  #   ), 250)
-  # )
 
   $(document).on('click', '.check_box_cell input', ->
     recalc_row_totals()
@@ -118,11 +86,11 @@ $(document).ready ->
     $('.save_alert').show()
   )
 
-  # $('.clinical_tab_data').each ->
-  #   if $(this).attr('data-has_access') == "false"
-  #     core_name = $(this).attr('id')
-  #     $("." + core_name).find('input').prop('disabled', true)
-  #     $("button." + core_name).prop('disabled', true)
+  $('.clinical_tab_data').each ->
+    if $(this).attr('data-has_access') == "false"
+      core_name = $(this).attr('href')
+      $(core_name).find('input').prop('disabled', true)
+      $(core_name).find('button').prop('disabled', true)
 
   $(document).on('click', 'a.check_all', ->
     if $('a.check_all span').hasClass('ui-icon-check')
@@ -130,7 +98,7 @@ $(document).ready ->
       $('td.check_box_cell:visible input[type=checkbox]').not(":checked").click()
     else
       $('a.check_all span').removeClass('ui-icon-close').addClass('ui-icon-check')
-      $('td.check_box_cell:visible input[type=checkbox]').is(":checked").click()
+      $('td.check_box_cell:visible input[type=checkbox]').filter(":checked").click()
     recalc_row_totals()
     recalc_subtotal()
     $('.save_alert').show()

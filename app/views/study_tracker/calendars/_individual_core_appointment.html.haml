@@ -1,8 +1,6 @@
 %div{:id => "tab-#{org.id}"}
   #visit_form{:style => "padding: 10px 40px;"}
-    - appointment_index = -1
     = calendar_form.fields_for :appointments, appointment do |appointment_form|
-      - appointment_index += 1
       .appointment_wrapper{'data-appointment_table' => appointment_form.object.id}
         %table.study_tracker_table
           %thead

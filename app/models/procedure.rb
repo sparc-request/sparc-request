@@ -15,6 +15,14 @@ class Procedure < ActiveRecord::Base
   attr_accessible :unit_factor_cost
   attr_accessible :toasts_generated
 
+  after_create :fix_toasts_if_uncompleted
+
+  def fix_toasts_if_uncompleted
+    unless self.appointment.completed?
+      self.update_attributes(toasts_generated: true)
+    end
+  end
+
   def required?
     self.visit.to_be_performed?
   end

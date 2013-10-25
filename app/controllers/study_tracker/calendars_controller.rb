@@ -57,11 +57,6 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
       @selected_key = params[:appointment_tag]
     end
     @procedures = []
-    # toast_messages = ToastMessage.where("to = ? AND sending_class = ? AND message = ?", current_user.id, "Procedure", @calendar.id.to_s)
-    toast_messages = ToastMessage.where(to: current_user.id, sending_class: "Procedure", message: @calendar.id.to_s)
-    toast_messages.each do |toast|
-      @procedures.push(Procedure.find(toast.sending_class_id))
-    end
   end
 
   private
@@ -99,11 +94,9 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
         if procedure.should_be_displayed && (procedure.service_id == nil)
           completion = appointment.completed_at
           if completion
-            if procedure.created_at > completion
-              unless procedure.toasts_generated
-                new_procedures << procedure
-                procedure.update_attributes(:toasts_generated => true)
-              end
+            unless procedure.toasts_generated
+              new_procedures << procedure
+              procedure.update_attributes(:toasts_generated => true)
             end
           end
         end

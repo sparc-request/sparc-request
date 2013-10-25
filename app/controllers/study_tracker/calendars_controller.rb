@@ -7,7 +7,7 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
     generate_toasts_for_new_procedures
     @default_appointment = @calendar.appointments_for_core(@default_core.id).reject{|x| x.completed_for_core?(@default_core.id) }.first rescue @calendar.appointments.first
     @default_visit_group_id = @default_appointment.try(:visit_group_id)
-    @selected_key = "##{@default_appointment.position_switch}: #{@default_appointment.name_switch}"
+    @selected_key = "##{@default_appointment.position_switch}: #{@default_appointment.name_switch}" rescue nil
 
     @procedures = []
     toast_messages = ToastMessage.where(to: current_user.id, sending_class: "Procedure", message: @calendar.id.to_s)

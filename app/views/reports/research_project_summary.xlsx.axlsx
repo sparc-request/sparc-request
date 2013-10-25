@@ -138,8 +138,11 @@ wb.add_worksheet(name: "Summary") do |sheet|
     subjects = []
     arm.subjects.each do |subject|
       visits = []
-      subject.calendar.appointments.each do |appointment|
-        subtotal = appointment.completed? ? appointment.procedures.sum{|x| x.total} : 0.00
+      subject.calendar.appointments.group_by{|x| x.visit_group_id ? x.visit_group_id : "#{x.name} #{x.position}"}.each do |g, appts|
+        subtotal = 0.00
+        appts.each do |appt|
+          subtotal += appt.completed? ? appt.procedures.sum{|x| x.total} : 0.00
+        end
         visits << subtotal
       end
 

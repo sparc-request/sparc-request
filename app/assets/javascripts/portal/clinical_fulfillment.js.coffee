@@ -147,7 +147,7 @@ $(document).ready ->
     $('td.unit_cost_cell:visible').each ->
       if $(this).siblings("td.check_box_cell").children("input[type=checkbox]").prop('checked')
         #Do calculations, and set the correct totall
-        unit_cost = $(this).text().replace('$', '')
+        unit_cost = $(this).text().replace('$', '').replace(',', '')
         r_qty = $(this).siblings('td.r_qty_cell').children('input').val()
         total = unit_cost * r_qty
         $(this).siblings('td.procedure_total_cell').text('$' + commaSeparateNumber(total.toFixed(2)))
@@ -159,7 +159,7 @@ $(document).ready ->
     if $('.hasDatepicker:visible').val()
       subtotal = 0
       $('td.procedure_total_cell:visible').each ->
-        value = $(this).text().replace('$', '')
+        value = $(this).text().replace('$', '').replace(',', '')
         subtotal += parseFloat(value)  if not isNaN(value) and value.length isnt 0
       $('tr.grand_total_row td.grand_total_cell').text('$' + commaSeparateNumber(subtotal.toFixed(2)))
     else

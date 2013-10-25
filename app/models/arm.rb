@@ -22,8 +22,11 @@ class Arm < ActiveRecord::Base
   after_save :update_liv_subject_counts
 
   def update_liv_subject_counts
+    
     self.line_items_visits.each do |liv|
-      liv.update_attributes(:subject_count => self.subject_count)
+      if ['first_draft', 'draft', nil].include?(liv.line_item.service_request.status)  
+        liv.update_attributes(:subject_count => self.subject_count)
+      end
     end
   end
 

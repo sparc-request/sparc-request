@@ -360,8 +360,8 @@ describe 'organization' do
 
     context "patient visit calendar" do
 
-      let!(:core1)    { FactoryGirl.create(:core, show_in_cwf: true, position_in_cwf: 2) }
-      let!(:core2)    { FactoryGirl.create(:core, show_in_cwf: true, position_in_cwf: 1) }
+      let!(:core1)    { FactoryGirl.create(:core, show_in_cwf: true, position_in_cwf: 6) }
+      let!(:core2)    { FactoryGirl.create(:core, show_in_cwf: true, position_in_cwf: 7) }
       describe "get cwf organizations" do
 
         it "should return an array of all organizations flagged to show in clinical work fulfillment" do
@@ -369,7 +369,7 @@ describe 'organization' do
         end
 
         it "should be sorted by its 'position_in_cwf' attribute" do
-          Organization.get_cwf_organizations.first.should eq(core2)          
+          Organization.get_cwf_organizations.first.should eq(core_13)          
         end
       end
     end

@@ -270,8 +270,7 @@ class Organization < ActiveRecord::Base
   end
 
   def self.get_cwf_organizations
-    cwf_orgs = Organization.where(show_in_cwf: true)
-    cwf_orgs = cwf_orgs.reject{|x| x.position_in_cwf == nil}
+    cwf_orgs = Organization.where(:show_in_cwf => true).reject {|x| x.position_in_cwf.nil? }
     cwf_orgs.sort! { |a,b| a.position_in_cwf <=> b.position_in_cwf }
 
     cwf_orgs

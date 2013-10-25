@@ -55,10 +55,9 @@ class ReportsController < ApplicationController
           @audit_trail += subject.calendar.appointments.map{|x| x.audit_trail start_date, end_date}
         end
         
-        subject.calendar.appointments.each do |appointment|
+        subject.calendar.appointments.where("organization_id IN (?)", included_cores).each do |appointment|
           @audit_trail += appointment.procedures.includes(:service).where("services.organization_id IN (?)", included_cores).map{|x| x.audit_trail start_date, end_date}
           @audit_trail += appointment.procedures.includes(:line_item => :service).where("services.organization_id IN (?)", included_cores).map{|x| x.audit_trail start_date, end_date}
-          @audit_trail += appointment.appointment_completions.where("organization_id IN (?)", included_cores).map{|x| x.audit_trail start_date, end_date}
           @audit_trail += appointment.notes.map{|x| x.audit_trail start_date, end_date}
         end
       end

@@ -1,0 +1,51 @@
+%div{:id => "tab-#{org.id}"}
+  #visit_form{:style => "padding: 10px 40px;"}
+    = calendar_form.fields_for :appointments, appointment do |appointment_form|
+      .appointment_wrapper{'data-appointment_table' => appointment_form.object.id}
+        %table.study_tracker_table
+          %thead
+            %tr.ui-widget-header
+              %th{:colspan => "4"}= t(:study_tracker)[:visit_calendar][:visit_complete]
+              %th{:colspan => "2", :style => "display:table-cell;"}
+                = appointment_form.datepicker :formatted_completed_date, size: 18, dateFormat: "m/dd/yy"
+            %tr.ui-widget-header
+              %th= t(:study_tracker)[:visit_calendar][:header5]
+              %th
+                = t(:study_tracker)[:visit_calendar][:header6]
+                %a.check_all.ui-button.ui-state-default.ui-corner-all.ui-button-icon-only{:style => "margin:3px auto 0;display:block;height:22px;"}
+                  %span.ui-icon.ui-icon-check
+              %th= t(:study_tracker)[:visit_calendar][:header7]
+              %th= t(:study_tracker)[:visit_calendar][:header8]
+              %th= t(:study_tracker)[:visit_calendar][:header9]
+              %th= t(:study_tracker)[:visit_calendar][:header10]
+          %tbody
+            = appointment_form.fields_for :procedures, :wrapper => false do |procedure_form|
+              - if procedure_form.object.should_be_displayed
+                %tr.fields{:style => "background-color:#C0C0C0;", :class => "core_#{procedure_form.object.core.id} hidden_by_tabs"}
+                  %td= procedure_form.object.display_service_name
+                  %td.check_box_cell.text-center{:class => procedure_form.object.line_item ? "highlighted" : ''}= procedure_form.check_box :completed, :class => "procedure_box"
+                  %td.r_qty_cell.text-center= procedure_form.text_field :r_quantity, value: procedure_form.object.default_r_quantity, size: 5, :class => 'procedure_r_qty'
+                  %td.t_qty_cell.text-center= procedure_form.text_field :t_quantity, value: procedure_form.object.default_t_quantity, size: 5, :class => 'procedure_t_qty'
+                  %td.unit_cost_cell.text-center= number_to_currency(procedure_form.object.cost)
+                  %td.procedure_total_cell.text-center= number_to_currency(procedure_form.object.total)
+              - else
+                %tr.fields{:style => "display:none;"}
+            %tr.new_procedure_wrapper{:'data-appointment_index' => appointment_index}
+            %tr.grand_total_row
+              %td{:style => "font-weight:bold;"}= t(:study_tracker)[:visit_calendar][:grand_total]
+              %td
+              %td
+              %td
+              %td
+              %td.grand_total_cell.text-center= number_to_currency(@default_subtotal)
+        .add_service
+          %div{:class => "core_#{org.id}"}
+            = select_tag :service, options_for_select(org.services.select{|x| x.is_available?}.sort_by{|x| x.name}.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id
+            = button_tag t(:study_tracker)[:visit_calendar][:add_service], :class => "cwf_add_service_button core_#{org.id}"
+       
+        .comments
+          = render :partial => "notes", :locals => {:appointment => appointment_form.object}
+
+    .spinner_wrapper
+
+      = image_tag 'spinner.gif'

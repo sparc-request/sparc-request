@@ -98,9 +98,6 @@ class LineItem < ActiveRecord::Base
 
   # Determine the direct costs for a visit-based service for one subject
   def direct_costs_for_visit_based_service_single_subject(line_items_visit)
-    # TODO: use sum() here
-    # totals_array = self.per_subject_subtotals(visits).values.select {|x| x.class == Float}
-    # subject_total = totals_array.empty? ? 0 : totals_array.inject(:+)
     result = line_items_visit.connection.execute("SELECT SUM(research_billing_qty) FROM visits WHERE line_items_visit_id=#{line_items_visit.id} AND research_billing_qty >= 1")
     research_billing_qty_total = result.to_a[0][0] || 0
     subject_total = research_billing_qty_total * per_unit_cost(quantity_total(line_items_visit))

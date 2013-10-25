@@ -13,10 +13,10 @@ describe 'Subject' do
 
     describe "populate" do
     	it "should populate calendar with appointments, and procedures" do
-    		arm1.subjects.size.should eq(1)
+    		arm1.subjects.size.should eq(2)
         arm1.subjects.first.calendar.appointments.size.should eq(arm1.visit_groups.size)
 
-        line_item2.procedures.size.should eq(15)
+        line_item2.line_items_visits.first.procedures.size.should eq(20)
 
         li_id = line_item2.id
         line_item2.destroy
@@ -30,7 +30,7 @@ describe 'Subject' do
         new_subject = arm1.subjects.create()
         arm1.populate_new_subjects
 
-        arm1.subjects.count.should eq(2)
+        arm1.subjects.count.should eq(3)
         new_subject.calendar.appointments.size.should eq(arm1.visit_groups.size)
         arm1.subjects.first.calendar.appointments.size.should eq(arm1.visit_groups.size)
         arm1.subjects.first.calendar.appointments.map {|x| x.procedures.count}.inject(:+).should eq(

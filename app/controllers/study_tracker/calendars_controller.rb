@@ -10,7 +10,6 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
     @selected_key = "##{@default_appointment.position_switch}: #{@default_appointment.name_switch}"
 
     @procedures = []
-    # toast_messages = ToastMessage.where("to = ? AND sending_class = ? AND message = ?", current_user.id, "Procedure", @calendar.id.to_s)
     toast_messages = ToastMessage.where(to: current_user.id, sending_class: "Procedure", message: @calendar.id.to_s)
     toast_messages.each do |toast|
       @procedures.push(Procedure.find(toast.sending_class_id))
@@ -113,7 +112,7 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
 
     new_procedures.each do |procedure|
       # Add a notice ("toast message") for each new procedure
-      clinical_users = ClinicalProvider.where(organization_id: procedure.core.id).includes(:identity).map{|x| x.identity}
+      clinical_users = ClinicalProvider.all.map{|x| x.identity} | SuperUser.all.map{|x| x.identity}
       clinical_users.each do |user|
         ToastMessage.create(:from => current_user.id, :to => user.id, :sending_class => 'Procedure', :sending_class_id => procedure.id, :message => procedure.appointment.calendar.id)
       end

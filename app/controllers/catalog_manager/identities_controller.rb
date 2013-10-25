@@ -32,6 +32,18 @@ class CatalogManager::IdentitiesController < CatalogManager::AppController
       end
 
       render :partial => 'catalog_manager/shared/super_users', :locals => {:entity => oe}
+
+    elsif rel_type == 'clinical_provider_organizational_unit'
+      if not oe.clinical_providers or (oe.clinical_providers and not oe.clinical_providers.map(&:id).include? identity_id)
+        # we have a new relationship to create
+        #identity.create_relationship_to oe.id, 'super_user_organizational_unit'
+        clinical_provider = oe.clinical_providers.new
+        clinical_provider.identity = identity
+        clinical_provider.save
+      end
+
+      render :partial => 'catalog_manager/shared/clinical_providers', :locals => {:entity => oe}
+
     elsif rel_type == 'catalog_manager_organizational_unit'
       if not oe.catalog_managers or (oe.catalog_managers and not oe.catalog_managers.map(&:id).include? identity_id)
         # we have a new relationship to create
@@ -59,6 +71,10 @@ class CatalogManager::IdentitiesController < CatalogManager::AppController
       super_user = SuperUser.find params["relationship"]
       super_user.destroy
       render :partial => 'catalog_manager/shared/super_users', :locals => {:entity => oe}
+    elsif rel_type == 'clinical_provider_organizational_unit'
+      clinical_provider = ClinicalProvider.find params["relationship"]
+      clinical_provider.destroy
+      render :partial => 'catalog_manager/shared/clinical_providers', :locals => {:entity => oe}
     elsif rel_type == 'catalog_manager_organizational_unit'
       catalog_manager = CatalogManager.find params["relationship"]
       catalog_manager.destroy

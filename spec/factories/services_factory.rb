@@ -1,7 +1,6 @@
 FactoryGirl.define do
 
   factory :service do
-    obisid              { SecureRandom.hex(16) }
     name                { Faker::Lorem.sentence(3) }
     abbreviation        { Faker::Lorem.words(1).first }
     description         { Faker::Lorem.paragraph(4) }

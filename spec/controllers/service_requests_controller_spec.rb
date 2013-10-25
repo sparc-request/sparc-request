@@ -1,55 +1,46 @@
 require 'spec_helper'
 require 'timecop'
 
+def add_visits_to_arm_line_item(arm, line_item, n=arm.visit_count)
+  line_items_visit = LineItemsVisit.for(arm, line_item)
+
+  n.times do |index|
+    FactoryGirl.create(
+        :visit_group,
+        arm_id:      arm.id,
+        day:         index, )
+  end
+
+  n.times do |index|
+     FactoryGirl.create(
+        :visit,
+        quantity:            0,
+        line_items_visit_id: line_items_visit.id,
+        visit_group_id:      arm.visit_groups[index].id)
+  end
+end
+
 describe ServiceRequestsController do
-  let!(:identity) { FactoryGirl.create(:identity) }
-  let!(:institution) { FactoryGirl.create(:institution) }
-  let!(:provider) { FactoryGirl.create(:provider, parent_id: institution.id) }
-  let!(:program) { FactoryGirl.create(:program, parent_id: provider.id) }
-  let!(:core) { FactoryGirl.create(:core, parent_id: program.id) }
-  let!(:core2) { FactoryGirl.create(:core, parent_id: program.id) }
-  let!(:service_provider)  {FactoryGirl.create(:service_provider, identity_id: identity.id, organization_id: core.id, hold_emails: false)}
-
-  let!(:institution_subsidy_map) { FactoryGirl.create(:subsidy_map, organization_id: institution.id) }
-  let!(:provider_subsidy_map)    { FactoryGirl.create(:subsidy_map, organization_id: provider.id) }
-  let!(:program_subsidy_map)     { FactoryGirl.create(:subsidy_map, organization_id: program.id) }
-  let!(:core_subsidy_map)        { FactoryGirl.create(:subsidy_map, organization_id: core.id) }
-  let!(:core2_subsidy_map)       { FactoryGirl.create(:subsidy_map, organization_id: core2.id) }
-
-  # TODO: shouldn't be bypassing validations...
-  let!(:study) { study = Study.create(FactoryGirl.attributes_for(:protocol)); study.save!(:validate => false); study }
-  let!(:project) { 
-    project = Project.create(FactoryGirl.attributes_for(:protocol))
-    project.save!(:validate => false)
-    project_role = FactoryGirl.create(
-        :project_role,
-        protocol_id: project.id,
-        identity_id: identity.id,
-        project_rights: "approve",
-        role: "pi")
-    project.reload
-    project
-  }
-
-  # TODO: assign service_list
-  let!(:service_request) { FactoryGirl.create(:service_request) }
-  let!(:service_request_with_study) { FactoryGirl.create(:service_request, :protocol_id => study.id) }
-  let!(:service_request_with_project) { FactoryGirl.create(:service_request, :protocol_id => project.id) }
-
-  let!(:arm) { FactoryGirl.create(:arm, service_request_id: service_request.id, visit_count: 0) }
-  let!(:arm_with_study) { FactoryGirl.create(:arm, service_request_id: service_request_with_study.id) }
-  let!(:arm_with_project) { FactoryGirl.create(:arm, service_request_id: service_request_with_project.id) }
-
-  let!(:sub_service_request) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id ) }
-
   stub_controller
+
+  let_there_be_lane
+  let_there_be_j
+  build_service_request_with_study
+  build_one_time_fee_services
+  build_per_patient_per_visit_services
+
+  before(:each) do
+    add_visits
+  end
+
+  let!(:core2) { FactoryGirl.create(:core, parent_id: program.id) }
 
   describe 'GET show' do
     it 'should set protocol and service_list' do
       session[:service_request_id] = service_request.id
       get :show, :id => service_request.id
       assigns(:protocol).should eq service_request.protocol
-      assigns(:service_list).should eq service_request.service_list
+      assigns(:service_list).should eq service_request.service_list.with_indifferent_access
     end
   end
 
@@ -69,52 +60,64 @@ describe ServiceRequestsController do
   end
 
   describe 'GET protocol' do
-    it "should set protocol to the service request's study" do
-      session[:identity_id] = identity.id
-      session[:service_request_id] = service_request_with_study.id
-      session[:sub_service_request_id] = sub_service_request.id
-      session[:saved_study_id] = study.id
-      get :protocol, :id => service_request_with_study.id
-      assigns(:service_request).protocol.should eq study
-      session[:saved_study_id].should eq nil
+    context 'with study' do
+      build_study
+
+      it "should set protocol to the service request's study" do
+        session[:identity_id] = jug2.id
+        session[:service_request_id] = service_request.id
+        session[:sub_service_request_id] = sub_service_request.id
+        session[:saved_protocol_id] = study.id
+        get :protocol, :id => service_request.id
+        assigns(:service_request).protocol.should eq study
+        session[:saved_protocol_id].should eq nil
+      end
+
+      it "should set studies to the service request's studies if there is a sub service request" do
+        # TODO
+      end
+
+      it "should set studies to the current user's studies if there is not a sub service request" do
+        # TODO
+      end
+
     end
 
-    it "should set protocol to the service request's project" do
-      session[:identity_id] = identity.id
-      session[:service_request_id] = service_request_with_project.id
-      session[:sub_service_request_id] = sub_service_request.id
-      session[:saved_project_id] = project.id
-      get :protocol, :id => service_request_with_project.id
-      assigns(:service_request).protocol.should eq project
-      session[:saved_project_id].should eq nil
-    end
+    context 'with project' do
+      build_project
 
-    it "should set studies to the service request's studies if there is a sub service request" do
-      # TODO
-    end
+      it "should set protocol to the service request's project" do
+        session[:identity_id] = jug2.id
+        session[:service_request_id] = service_request.id
+        session[:sub_service_request_id] = sub_service_request.id
+        session[:saved_protocol_id] = project.id
+        get :protocol, :id => service_request.id
+        assigns(:service_request).protocol.should eq project
+        session[:saved_protocol_id].should eq nil
+      end
 
-    it "should set projects to the service request's projects if there is a sub service request" do
-      # TODO
-    end
+      it "should set projects to the service request's projects if there is a sub service request" do
+        # TODO
+      end
 
-    it "should set studies to the current user's studies if there is not a sub service request" do
-      # TODO
-    end
-
-    it "should set projects to the current user's projects if there is not a sub service request" do
-      # TODO
+      it "should set projects to the current user's projects if there is not a sub service request" do
+        # TODO
+      end
     end
   end
 
   describe 'GET review' do
+    build_project
+    build_arms
+
     it "should set the page if page is passed in" do
-      arm.update_attribute(:visit_count, 500)
+      arm1.update_attribute(:visit_count, 500)
 
       session[:service_request_id] = service_request.id
-      get :review, { :id => service_request.id, :pages => { arm.id.to_s => 42 } }.with_indifferent_access
-      session[:service_calendar_pages].should eq({arm.id.to_s => '42'})
+      get :review, { :id => service_request.id, :pages => { arm1.id.to_s => 42 } }.with_indifferent_access
+      session[:service_calendar_pages].should eq({arm1.id.to_s => '42'})
 
-      assigns(:pages).should eq({arm.id => 1})
+      assigns(:pages).should eq({arm1.id => 1, arm2.id => 1})
 
       # TODO: check that set_visit_page is called?
     end
@@ -131,176 +134,237 @@ describe ServiceRequestsController do
       assigns(:service_request).protocol.should eq service_request.protocol
     end
 
-    it "should set tab to pricing" do
+    it "should set tab to full calendar" do
       session[:service_request_id] = service_request.id
       get :review, :id => service_request.id
-      assigns(:tab).should eq 'pricing'
+      assigns(:tab).should eq 'calendar'
     end
   end
 
   describe 'GET confirmation' do
-    it "should set the service request's status to submitted" do
-      session[:identity_id] = identity.id
-      session[:service_request_id] = service_request_with_project.id
-      get :confirmation, :id => service_request_with_project.id
-      assigns(:service_request).status.should eq 'submitted'
-    end
+    context 'with project' do
+      build_project
+      build_arms
 
-    it "should set the service request's submitted_at to Time.now" do
-      session[:identity_id] = identity.id
-      time = Time.parse('2012-06-01 12:34:56')
-      Timecop.freeze(time) do
-        service_request_with_project.update_attribute(:submitted_at, nil)
-        session[:service_request_id] = service_request_with_project.id
-        get :confirmation, :id => service_request_with_project.id
-        service_request_with_project.reload
-        service_request_with_project.submitted_at.should eq Time.now
+      it "should set the service request's status to submitted" do
+        session[:identity_id] = jug2.id
+        session[:service_request_id] = service_request.id
+        get :confirmation, :id => service_request.id
+        assigns(:service_request).status.should eq 'submitted'
       end
-    end
 
-    it 'should increment next_ssr_id' do
-      session[:identity_id] = identity.id
-      service_request_with_project.protocol.update_attribute(:next_ssr_id, 42)
-      ssr = FactoryGirl.create(
-          :sub_service_request,
-          service_request_id: service_request_with_project.id,
-          organization_id: core.id)
-      session[:service_request_id] = service_request_with_project.id
-      get :confirmation, :id => service_request_with_project.id
-      service_request_with_project.protocol.reload
-      service_request_with_project.protocol.next_ssr_id.should eq 43
-    end
+      it "should set the service request's submitted_at to Time.now" do
+        session[:identity_id] = jug2.id
+        time = Time.parse('2012-06-01 12:34:56')
+        Timecop.freeze(time) do
+          service_request.update_attribute(:submitted_at, nil)
+          session[:service_request_id] = service_request.id
+          get :confirmation, :id => service_request.id
+          service_request.reload
+          service_request.submitted_at.should eq Time.now
+        end
+      end
 
-    it 'should should set status and ssr_id on all the sub service request' do
-      session[:identity_id] = identity.id
-      service_request_with_project.protocol.update_attribute(:next_ssr_id, 42)
+      it 'should increment next_ssr_id' do
+        session[:identity_id] = jug2.id
+        service_request.protocol.update_attribute(:next_ssr_id, 42)
+        service_request.sub_service_requests.each { |ssr| ssr.destroy }
+        ssr = FactoryGirl.create(
+            :sub_service_request,
+            service_request_id: service_request.id,
+            organization_id: core.id)
+        session[:service_request_id] = service_request.id
+        get :confirmation, :id => service_request.id
+        service_request.protocol.reload
+        service_request.protocol.next_ssr_id.should eq 43
+      end
 
-      ssr1 = FactoryGirl.create(
-          :sub_service_request,
-          service_request_id: service_request_with_project.id,
-          ssr_id: nil,
-          organization_id: provider.id)
-      ssr2 = FactoryGirl.create(
-          :sub_service_request,
-          service_request_id: service_request_with_project.id,
-          ssr_id: nil,
-          organization_id: core.id)
+      it 'should should set status and ssr_id on all the sub service request' do
+        session[:identity_id] = jug2.id
+        service_request.protocol.update_attribute(:next_ssr_id, 42)
+        service_request.sub_service_requests.each { |ssr| ssr.destroy }
 
-      session[:service_request_id] = service_request_with_project.id
-      get :confirmation, :id => service_request_with_project.id
+        ssr1 = FactoryGirl.create(
+            :sub_service_request,
+            service_request_id: service_request.id,
+            ssr_id: nil,
+            organization_id: provider.id)
+        ssr2 = FactoryGirl.create(
+            :sub_service_request,
+            service_request_id: service_request.id,
+            ssr_id: nil,
+            organization_id: core.id)
 
-      ssr1.reload
-      ssr2.reload
+        session[:service_request_id] = service_request.id
+        get :confirmation, :id => service_request.id
 
-      ssr1.status.should eq 'submitted'
-      ssr2.status.should eq 'submitted'
+        ssr1.reload
+        ssr2.reload
 
-      ssr1.ssr_id.should eq '0042'
-      ssr2.ssr_id.should eq '0043'
-    end
+        ssr1.status.should eq 'submitted'
+        ssr2.status.should eq 'submitted'
 
-    it 'should set ssr_id correctly when next_ssr_id > 9999' do
-      session[:identity_id] = identity.id
-      service_request_with_project.protocol.update_attribute(:next_ssr_id, 10042)
+        ssr1.ssr_id.should eq '0042'
+        ssr2.ssr_id.should eq '0043'
+      end
 
-      ssr1 = FactoryGirl.create(
-          :sub_service_request,
-          service_request_id: service_request_with_project.id,
-          ssr_id: nil,
-          organization_id: core.id)
+      it 'should set ssr_id correctly when next_ssr_id > 9999' do
+        session[:identity_id] = jug2.id
+        service_request.protocol.update_attribute(:next_ssr_id, 10042)
+        service_request.sub_service_requests.each { |ssr| ssr.destroy }
 
-      session[:service_request_id] = service_request_with_project.id
-      get :confirmation, :id => service_request_with_project.id
+        ssr1 = FactoryGirl.create(
+            :sub_service_request,
+            service_request_id: service_request.id,
+            ssr_id: nil,
+            organization_id: core.id)
 
-      ssr1.reload
-      ssr1.ssr_id.should eq '10042'
+        session[:service_request_id] = service_request.id
+        get :confirmation, :id => service_request.id
+
+        ssr1.reload
+        ssr1.ssr_id.should eq '10042'
+      end
+
+      it 'should send an email if services are set to send to epic' do
+        session[:identity_id] = jug2.id
+        session[:service_request_id] = service_request.id
+
+        service.update_attributes(send_to_epic: false)
+        service2.update_attributes(send_to_epic: true)
+        protocol = service_request.protocol
+        protocol.project_roles.first.update_attributes(epic_access: true)
+
+        deliverer = double()
+        deliverer.should_receive(:deliver)
+        Notifier.stub!(:notify_for_epic_user_approval) { |sr|
+          sr.should eq(protocol)
+          deliverer
+        }
+
+        get :confirmation, {
+          :id => service_request.id,
+          :format => :js
+        }
+      end
+
+      it 'should not send an email if no services are set to send to epic' do
+        session[:identity_id] = jug2.id
+        session[:service_request_id] = service_request.id
+
+        service.update_attributes(send_to_epic: false)
+        service2.update_attributes(send_to_epic: false)
+
+        deliverer = double()
+        deliverer.should_not_receive(:deliver)
+        Notifier.stub!(:notify_for_epic_user_approval) { |sr|
+          sr.should eq(service_request)
+          deliverer
+        }
+
+        get :confirmation, {
+          :id => service_request.id,
+          :format => :js
+        }
+      end
     end
   end
 
   describe 'GET save_and_exit' do
-    it "should set the service request's status to submitted" do
-      session[:service_request_id] = service_request_with_project.id
-      get :save_and_exit, :id => service_request_with_project.id
-      assigns(:service_request).status.should eq 'draft'
-    end
+    context 'with project' do
+      build_project
+      build_arms
 
-    it "should NOT set the service request's submitted_at to Time.now" do
-      time = Time.parse('2012-06-01 12:34:56')
-      Timecop.freeze(time) do
-        service_request_with_project.update_attribute(:submitted_at, nil)
-        session[:service_request_id] = service_request_with_project.id
-        get :save_and_exit, :id => service_request_with_project.id
-        service_request_with_project.reload
-        service_request_with_project.submitted_at.should eq nil
+      it "should set the service request's status to submitted" do
+        session[:service_request_id] = service_request.id
+        get :save_and_exit, :id => service_request.id
+        assigns(:service_request).status.should eq 'draft'
       end
-    end
 
-    it 'should increment next_ssr_id' do
-      service_request_with_project.protocol.update_attribute(:next_ssr_id, 42)
-      ssr = FactoryGirl.create(
-          :sub_service_request,
-          service_request_id: service_request_with_project.id)
-      session[:service_request_id] = service_request_with_project.id
-      get :save_and_exit, :id => service_request_with_project.id
-      service_request_with_project.protocol.reload
-      service_request_with_project.protocol.next_ssr_id.should eq 43
-    end
+      it "should NOT set the service request's submitted_at to Time.now" do
+        time = Time.parse('2012-06-01 12:34:56')
+        Timecop.freeze(time) do
+          service_request.update_attribute(:submitted_at, nil)
+          session[:service_request_id] = service_request.id
+          get :save_and_exit, :id => service_request.id
+          service_request.reload
+          service_request.submitted_at.should eq nil
+        end
+      end
 
-    it 'should should set status and ssr_id on all the sub service request' do
-      service_request_with_project.protocol.update_attribute(:next_ssr_id, 42)
+      it 'should increment next_ssr_id' do
+        service_request.protocol.update_attribute(:next_ssr_id, 42)
+        service_request.sub_service_requests.each { |ssr| ssr.destroy }
+        ssr = FactoryGirl.create(
+            :sub_service_request,
+            service_request_id: service_request.id)
+        session[:service_request_id] = service_request.id
+        get :save_and_exit, :id => service_request.id
+        service_request.protocol.reload
+        service_request.protocol.next_ssr_id.should eq 43
+      end
 
-      ssr1 = FactoryGirl.create(
-          :sub_service_request,
-          service_request_id: service_request_with_project.id,
-          ssr_id: nil)
-      ssr2 = FactoryGirl.create(
-          :sub_service_request,
-          service_request_id: service_request_with_project.id,
-          ssr_id: nil)
+      it 'should should set status and ssr_id on all the sub service request' do
+        service_request.protocol.update_attribute(:next_ssr_id, 42)
 
-      session[:service_request_id] = service_request_with_project.id
-      get :save_and_exit, :id => service_request_with_project.id
+        service_request.sub_service_requests.each { |ssr| ssr.destroy }
+        ssr1 = FactoryGirl.create(
+            :sub_service_request,
+            service_request_id: service_request.id,
+            ssr_id: nil)
+        ssr2 = FactoryGirl.create(
+            :sub_service_request,
+            service_request_id: service_request.id,
+            ssr_id: nil)
 
-      ssr1.reload
-      ssr2.reload
+        session[:service_request_id] = service_request.id
+        get :save_and_exit, :id => service_request.id
 
-      ssr1.status.should eq 'draft'
-      ssr2.status.should eq 'draft'
+        ssr1.reload
+        ssr2.reload
 
-      ssr1.ssr_id.should eq '0042'
-      ssr2.ssr_id.should eq '0043'
-    end
+        ssr1.status.should eq 'draft'
+        ssr2.status.should eq 'draft'
 
-    it 'should set ssr_id correctly when next_ssr_id > 9999' do
-      service_request_with_project.protocol.update_attribute(:next_ssr_id, 10042)
+        ssr1.ssr_id.should eq '0042'
+        ssr2.ssr_id.should eq '0043'
+      end
 
-      ssr1 = FactoryGirl.create(
-          :sub_service_request,
-          service_request_id: service_request_with_project.id,
-          ssr_id: nil)
+      it 'should set ssr_id correctly when next_ssr_id > 9999' do
+        service_request.protocol.update_attribute(:next_ssr_id, 10042)
 
-      session[:service_request_id] = service_request_with_project.id
-      get :save_and_exit, :id => service_request_with_project.id
+        service_request.sub_service_requests.each { |ssr| ssr.destroy }
+        ssr1 = FactoryGirl.create(
+            :sub_service_request,
+            service_request_id: service_request.id,
+            ssr_id: nil)
 
-      ssr1.reload
-      ssr1.ssr_id.should eq '10042'
-    end
+        session[:service_request_id] = service_request.id
+        get :save_and_exit, :id => service_request.id
 
-    it 'should redirect the user to the user portal link' do
-      session[:service_request_id] = service_request_with_project.id
-      get :save_and_exit, :id => service_request_with_project.id
-      response.should redirect_to(USER_PORTAL_LINK)
-    end
-  end
+        ssr1.reload
+        ssr1.ssr_id.should eq '10042'
+      end
 
-  describe 'GET service_details' do
-    it 'should do nothing?' do
-      session[:service_request_id] = service_request.id
-      get :service_details, :id => service_request.id
+      it 'should redirect the user to the user portal link' do
+        session[:service_request_id] = service_request.id
+        get :save_and_exit, :id => service_request.id
+        response.should redirect_to(USER_PORTAL_LINK)
+      end
     end
   end
 
   describe 'GET service_calendar' do
+    build_project
+    build_arms
+
+    describe 'GET service_details' do
+      it 'should do nothing?' do
+        session[:service_request_id] = service_request.id
+        get :service_details, :id => service_request.id
+      end
+    end
+
     let!(:service) {
       service = FactoryGirl.create(:service, pricing_map_count: 1)
       service.pricing_maps[0].update_attributes(display_date: Date.today)
@@ -321,103 +385,78 @@ describe ServiceRequestsController do
     let!(:line_item) { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id) }
     let!(:one_time_fee_line_item) { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id) }
 
-    let!(:visit_grouping) { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item.id) }
-    let!(:one_time_fee_visit_grouping) { FactoryGirl.create(:visit_grouping, line_item_id: line_item.id) }
-
     it "should set the page if page is passed in" do
-      arm.update_attribute(:visit_count, 500)
+      arm1.update_attribute(:visit_count, 500)
 
       session[:service_request_id] = service_request.id
-      get :service_calendar, { :id => service_request.id, :pages => { arm.id.to_s => 42 } }.with_indifferent_access
-      session[:service_calendar_pages].should eq({arm.id.to_s => '42'})
+      get :service_calendar, { :id => service_request.id, :pages => { arm1.id.to_s => 42 } }.with_indifferent_access
+      session[:service_calendar_pages].should eq({arm1.id.to_s => '42'})
     end
 
     it 'should set subject count on the per patient per visit line items if it is not set' do
-      arm.update_attribute(:subject_count, 42)
-      visit_grouping.update_attribute(:subject_count, nil)
+      arm1.update_attribute(:subject_count, 42)
+
+      liv = LineItemsVisit.for(arm1, line_item)
+      liv.update_attribute(:subject_count, nil)
 
       session[:service_request_id] = service_request.id
-      get :service_calendar, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
+      get :service_calendar, { :id => service_request.id, :pages => { arm1.id => 42 } }.with_indifferent_access
 
-      visit_grouping.reload
-      visit_grouping.subject_count.should eq 42
+      liv.reload
+      liv.subject_count.should eq 42
     end
 
     it 'should set subject count on the per patient per visit line items if it is set and is higher than the visit grouping subject count' do
-      arm.update_attribute(:subject_count, 42)
-      visit_grouping.update_attribute(:subject_count, 500)
+      arm1.update_attribute(:subject_count, 42)
+
+      liv = LineItemsVisit.for(arm1, line_item)
+      liv.update_attribute(:subject_count, 500)
 
       session[:service_request_id] = service_request.id
-      get :service_calendar, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
+      get :service_calendar, { :id => service_request.id, :pages => { arm1.id => 42 } }.with_indifferent_access
 
-      visit_grouping.reload
-      visit_grouping.subject_count.should eq 42
+      liv.reload
+      liv.subject_count.should eq 42
     end
 
     it 'should NOT set subject count on the per patient per visit line items if it is set and is lower than the visit grouping subject count' do
-      arm.update_attribute(:subject_count, 42)
-      visit_grouping.update_attribute(:subject_count, 10)
+      arm1.update_attribute(:subject_count, 42)
+
+      liv = LineItemsVisit.for(arm1, line_item)
+      liv.update_attribute(:subject_count, 10)
 
       session[:service_request_id] = service_request.id
-      get :service_calendar, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
+      get :service_calendar, { :id => service_request.id, :pages => { arm1.id => 42 } }.with_indifferent_access
 
-      visit_grouping.reload
-      visit_grouping.subject_count.should eq 10
-    end
-
-    it 'should NOT set subject count on the one time fee line items' do
-      arm.update_attribute(:subject_count, 42)
-      one_time_fee_visit_grouping.update_attribute(:subject_count, nil)
-
-      session[:service_request_id] = service_request.id
-      get :service_calendar, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
-
-      one_time_fee_visit_grouping.reload
-      one_time_fee_visit_grouping.subject_count.should eq nil
+      liv.reload
+      liv.subject_count.should eq 10
     end
 
     it 'should delete extra visits on per patient per visit line items' do
-      arm.update_attribute(:visit_count, 10)
-      Visit.bulk_create(20, visit_grouping_id: visit_grouping.id)
+      arm1.update_attribute(:visit_count, 10)
+
+      liv = LineItemsVisit.for(arm1, line_item)
+      liv.visits.each { |visit| visit.destroy }
+      add_visits_to_arm_line_item(arm1, line_item, 20)
 
       session[:service_request_id] = service_request.id
-      get :service_calendar, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
+      get :service_calendar, { :id => service_request.id, :pages => { arm1.id => 42 } }.with_indifferent_access
 
-      visit_grouping.reload
-      visit_grouping.visits.count.should eq 10
+      liv.reload
+      liv.visits.count.should eq 10
     end
 
     it 'should create visits if too few on per patient per visit line items' do
-      arm.update_attribute(:visit_count, 10)
-      Visit.bulk_create(0, visit_grouping_id: visit_grouping.id)
+      arm1.update_attribute(:visit_count, 10)
+
+      liv = LineItemsVisit.for(arm1, line_item)
+      add_visits_to_arm_line_item(arm1, line_item, 0)
 
       session[:service_request_id] = service_request.id
-      get :service_calendar, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
+      get :service_calendar, { :id => service_request.id, :pages => { arm1.id => 42 } }.with_indifferent_access
 
-      visit_grouping.reload
-      visit_grouping.visits.count.should eq 10
-    end
-
-    it 'should NOT delete extra visits on one time fee line items' do
-      arm.update_attribute(:visit_count, 10)
-      Visit.bulk_create(20, visit_grouping_id: one_time_fee_visit_grouping.id)
-
-      session[:service_request_id] = service_request.id
-      get :service_calendar, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
-
-      one_time_fee_visit_grouping.reload
-      one_time_fee_visit_grouping.visits.count.should eq 20
-    end
-
-    it 'should NOT create visits if there are too few of them, on one time fee line items' do
-      arm.update_attribute(:visit_count, 10)
-      Visit.bulk_create(5, visit_grouping_id: one_time_fee_visit_grouping.id)
-
-      session[:service_request_id] = service_request.id
-      get :service_calendar, { :id => service_request.id, :pages => { arm.id => 42 } }.with_indifferent_access
-
-      one_time_fee_visit_grouping.reload
-      one_time_fee_visit_grouping.visits.count.should eq 5
+      liv.reload
+      liv.visits.count.should eq 10
     end
   end
 
@@ -492,49 +531,56 @@ describe ServiceRequestsController do
   end
 
   describe 'GET refresh_service_calendar' do
+    build_project
+    build_arms
+
     it "should set the page if page is passed in" do
-      arm.update_attribute(:visit_count, 500)
+      arm1.update_attribute(:visit_count, 500)
 
       session[:service_request_id] = service_request.id
-      get :refresh_service_calendar, { :id => service_request.id, :arm_id => arm.id, :pages => { arm.id.to_s => 42 }, :format => :js }.with_indifferent_access
-      session[:service_calendar_pages].should eq({arm.id.to_s => 42})
+      get :refresh_service_calendar, { :id => service_request.id, :arm_id => arm1.id, :pages => { arm1.id.to_s => 42 }, :format => :js }.with_indifferent_access
+      session[:service_calendar_pages].should eq({arm1.id.to_s => 42})
     
       # TODO: sometimes this is 1 and sometimes it is 42.  I don't know
       # why.
-      assigns(:pages).should eq({arm.id => 42})
+      assigns(:pages).should eq({arm1.id => 42, arm2.id => 1})
     
       # TODO: check that set_visit_page is called?
     end
     
-    it 'should set tab to pricing' do
+    it 'should set tab to full calendar' do
       session[:service_request_id] = service_request.id
-      get :refresh_service_calendar, :id => service_request.id, :arm_id => arm.id, :format => :js
-      assigns(:tab).should eq 'pricing'
+      get :refresh_service_calendar, :id => service_request.id, :arm_id => arm1.id, :format => :js
+      assigns(:tab).should eq 'calendar'
     end
   end
 
   describe 'POST add_service' do
-    let!(:service) {
+    let!(:new_service) {
       service = FactoryGirl.create(
           :service,
           pricing_map_count: 1,
           organization_id: core.id)
       service.pricing_maps[0].update_attributes(
           display_date: Date.today,
+          is_one_time_fee: true,
           unit_minimum: 42)
       service
     }
 
-    let!(:service2) {
+    let!(:new_service2) {
       service = FactoryGirl.create(
           :service,
           pricing_map_count: 1,
           organization_id: core.id)
-      service.pricing_maps[0].update_attributes(display_date: Date.today)
+      service.pricing_maps[0].update_attributes(
+          display_date: Date.today,
+          is_one_time_fee: true,
+          unit_minimum: 54)
       service
     }
 
-    let!(:service3) {
+    let!(:new_service3) {
       service = FactoryGirl.create(
           :service,
           pricing_map_count: 1,
@@ -546,92 +592,128 @@ describe ServiceRequestsController do
     it 'should give an error if the service request already has a line item for the service' do
       line_item = FactoryGirl.create(
           :line_item,
-          service_id: service.id,
+          service_id: new_service.id,
           service_request_id: service_request.id)
       session[:service_request_id] = service_request.id
-      post :add_service, { :id => service_request.id, :service_id => service.id, :format => :js }.with_indifferent_access
+      post :add_service, {
+        :id          => service_request.id,
+        :service_id  => new_service.id,
+        :format      => :js
+      }.with_indifferent_access
       response.body.should eq 'Service exists in line items'
     end
 
     it 'should create a line item for the service' do
+      orig_count = service_request.line_items.count
+
       session[:service_request_id] = service_request.id
-      post :add_service, { :id => service_request.id, :service_id => service.id, :format => :js }.with_indifferent_access
+      post :add_service, {
+        :id          => service_request.id,
+        :service_id  => new_service.id,
+        :format      => :js
+      }.with_indifferent_access
 
       service_request.reload
-      service_request.line_items.count.should eq 1
-      service_request.line_items[0].service.should eq service
-      service_request.line_items[0].optional.should eq true
-      service_request.line_items[0].quantity.should eq nil # always nil for pppv
+      service_request.line_items.count.should eq orig_count + 1
+      line_item = service_request.line_items.find_by_service_id(new_service.id)
+      line_item.service.should eq new_service
+      line_item.optional.should eq true
+      line_item.quantity.should eq 42
     end
 
     it 'should create a line item for a required service' do
+      orig_count = service_request.line_items.count
+
       FactoryGirl.create(
           :service_relation,
-          service_id: service.id,
-          related_service_id: service2.id,
+          service_id: new_service.id,
+          related_service_id: new_service2.id,
           optional: false)
 
       session[:service_request_id] = service_request.id
-      post :add_service, { :id => service_request.id, :service_id => service.id, :format => :js }.with_indifferent_access
+      post :add_service, { :id => service_request.id, :service_id => new_service.id, :format => :js }.with_indifferent_access
+
+      # there was one service and one line item already, then we added
+      # one
 
       service_request.reload
-      service_request.line_items.count.should eq 2
-      service_request.line_items[0].service.should eq service
-      service_request.line_items[0].optional.should eq true
-      service_request.line_items[0].quantity.should eq nil # always nil for pppv
-      service_request.line_items[1].service.should eq service2
-      service_request.line_items[1].optional.should eq false
-      service_request.line_items[1].quantity.should eq nil # always nil for pppv
+      service_request.line_items.count.should eq orig_count + 2
+      line_item = service_request.line_items.find_by_service_id(new_service2.id)
+      line_item.service.should eq new_service2
+      line_item.optional.should eq false
+      line_item.quantity.should eq 54
     end
 
     it 'should create a line item for an optional service' do
+      orig_count = service_request.line_items.count
+
       FactoryGirl.create(
           :service_relation,
-          service_id: service.id,
-          related_service_id: service2.id,
+          service_id: new_service.id,
+          related_service_id: new_service2.id,
           optional: true)
 
       session[:service_request_id] = service_request.id
-      post :add_service, { :id => service_request.id, :service_id => service.id, :format => :js }.with_indifferent_access
+      post :add_service, {
+        :id          => service_request.id,
+        :service_id  => new_service.id,
+        :format      => :js
+      }.with_indifferent_access
 
       service_request.reload
-      service_request.line_items.count.should eq 2
-      service_request.line_items[0].service.should eq service
-      service_request.line_items[0].optional.should eq true
-      service_request.line_items[0].quantity.should eq nil # always nil for pppv
-      service_request.line_items[1].service.should eq service2
-      service_request.line_items[1].optional.should eq true
-      service_request.line_items[1].quantity.should eq nil # always nil for pppv
+      service_request.line_items.count.should eq orig_count + 2
+
+      line_item = service_request.line_items.find_by_service_id(new_service.id)
+      line_item.service.should eq new_service
+      line_item.optional.should eq true
+      line_item.quantity.should eq 42
+
+      line_item = service_request.line_items.find_by_service_id(new_service2.id)
+      line_item.service.should eq new_service2
+      line_item.optional.should eq true
+      line_item.quantity.should eq 54
     end
 
     it 'should create a sub service request for each organization in the service list' do
+      orig_count = service_request.sub_service_requests.count
+
       session[:service_request_id] = service_request.id
 
-      [ service, service2, service3 ].each do |service_to_add|
-        post :add_service, { :id => service_request.id, :service_id => service_to_add.id, :format => :js }.with_indifferent_access
+      [ new_service, new_service2, new_service3 ].each do |service_to_add|
+        post :add_service, {
+          :id          => service_request.id,
+          :service_id  => service_to_add.id,
+          :format      => :js
+        }.with_indifferent_access
       end
 
       service_request.reload
-      service_request.sub_service_requests.count.should eq 2
-      service_request.sub_service_requests[0].organization.should eq core
-      service_request.sub_service_requests[1].organization.should eq core2
+      service_request.sub_service_requests.count.should eq orig_count + 2
+      service_request.sub_service_requests[-2].organization.should eq core
+      service_request.sub_service_requests[-1].organization.should eq core2
     end
 
     it 'should update each of the line items with the appropriate ssr id' do
+      orig_count = service_request.line_items.count
+
       session[:service_request_id] = service_request.id
 
-      [ service, service2, service3 ].each do |service_to_add|
-        post :add_service, { :id => service_request.id, :service_id => service_to_add.id, :format => :js }.with_indifferent_access
+      [ new_service, new_service2, new_service3 ].each do |service_to_add|
+        post :add_service, {
+          :id          => service_request.id,
+          :service_id  => service_to_add.id,
+          :format      => :js
+        }.with_indifferent_access
       end
 
       core_ssr = service_request.sub_service_requests.find_by_organization_id(core.id)
       core2_ssr = service_request.sub_service_requests.find_by_organization_id(core2.id)
 
       service_request.reload
-      service_request.line_items.count.should eq 3
-      service_request.line_items[0].sub_service_request.should eq core_ssr
-      service_request.line_items[1].sub_service_request.should eq core_ssr
-      service_request.line_items[2].sub_service_request.should eq core2_ssr
+      service_request.line_items.count.should eq(orig_count + 3)
+      service_request.line_items[-3].sub_service_request.should eq core_ssr
+      service_request.line_items[-2].sub_service_request.should eq core_ssr
+      service_request.line_items[-1].sub_service_request.should eq core2_ssr
     end
 
     # TODO: test for adding an already added service
@@ -796,91 +878,99 @@ describe ServiceRequestsController do
     let!(:line_item2) { FactoryGirl.create(:line_item, service_id: service2.id, service_request_id: service_request.id) }
     let!(:line_item3) { FactoryGirl.create(:line_item, service_id: service3.id, service_request_id: service_request.id) }
 
-    let!(:visit_grouping1) { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item1.id) }
-    let!(:visit_grouping2) { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item2.id) }
-    let!(:visit_grouping3) { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item3.id) }
+    build_project
+    build_arms
 
     describe 'POST select_calendar_row' do
+      
       it 'should set line item' do
+        liv = LineItemsVisit.for(arm1, line_item1)
+
         pricing_map1.update_attribute(:unit_minimum, 100)
-        Visit.bulk_create(3, visit_grouping_id: visit_grouping1.id)
+        add_visits_to_arm_line_item(arm1, line_item1, 3)
 
         session[:service_request_id] = service_request.id
         post :select_calendar_row, {
-          :id                 => service_request.id,
-          :visit_grouping_id  => visit_grouping1.id,
-          :format             => :js
+          :id                   => service_request.id,
+          :line_items_visit_id  => liv.id,
+          :format               => :js
         }.with_indifferent_access
 
-        assigns(:visit_grouping).should eq visit_grouping1
+        assigns(:line_items_visit).should eq liv
       end
 
       it "should update each of the line item's visits" do
+        liv = LineItemsVisit.for(arm1, line_item1)
+
         pricing_map1.update_attribute(:unit_minimum, 100)
-        Visit.bulk_create(3, visit_grouping_id: visit_grouping1.id)
+        add_visits_to_arm_line_item(arm1, line_item1, 3)
 
         session[:service_request_id] = service_request.id
         post :select_calendar_row, {
-          :id                 => service_request.id,
-          :visit_grouping_id  => visit_grouping1.id,
-          :format             => :js
+          :id                   => service_request.id,
+          :line_items_visit_id  => liv.id,
+          :format               => :js
         }.with_indifferent_access
 
-        visit_grouping1.visits.count.should eq 3
-        visit_grouping1.visits[0].quantity.should               eq 100
-        visit_grouping1.visits[0].research_billing_qty.should   eq 100
-        visit_grouping1.visits[0].insurance_billing_qty.should  eq 0
-        visit_grouping1.visits[0].effort_billing_qty.should     eq 0
-        visit_grouping1.visits[1].quantity.should               eq 100
-        visit_grouping1.visits[1].research_billing_qty.should   eq 100
-        visit_grouping1.visits[1].insurance_billing_qty.should  eq 0
-        visit_grouping1.visits[1].effort_billing_qty.should     eq 0
-        visit_grouping1.visits[2].quantity.should               eq 100
-        visit_grouping1.visits[2].research_billing_qty.should   eq 100
-        visit_grouping1.visits[2].insurance_billing_qty.should  eq 0
-        visit_grouping1.visits[2].effort_billing_qty.should     eq 0
+        liv.visits.count.should eq 3
+        liv.visits[0].quantity.should               eq 100
+        liv.visits[0].research_billing_qty.should   eq 100
+        liv.visits[0].insurance_billing_qty.should  eq 0
+        liv.visits[0].effort_billing_qty.should     eq 0
+        liv.visits[1].quantity.should               eq 100
+        liv.visits[1].research_billing_qty.should   eq 100
+        liv.visits[1].insurance_billing_qty.should  eq 0
+        liv.visits[1].effort_billing_qty.should     eq 0
+        liv.visits[2].quantity.should               eq 100
+        liv.visits[2].research_billing_qty.should   eq 100
+        liv.visits[2].insurance_billing_qty.should  eq 0
+        liv.visits[2].effort_billing_qty.should     eq 0
       end
     end
 
     describe 'GET unselect_calendar_row' do
       it 'should set line item' do
+        liv = LineItemsVisit.for(arm1, line_item1)
+
         pricing_map1.update_attribute(:unit_minimum, 100)
-        Visit.bulk_create(3, visit_grouping_id: visit_grouping1.id)
+        add_visits_to_arm_line_item(arm1, line_item1, 3)
 
         session[:service_request_id] = service_request.id
         post :unselect_calendar_row, {
-          :id                 => service_request.id,
-          :visit_grouping_id  => visit_grouping1.id,
-          :format             => :js
+          :id                   => service_request.id,
+          :line_items_visit_id  => liv.id,
+          :format               => :js
         }.with_indifferent_access
 
-        assigns(:visit_grouping).should eq visit_grouping1
+        assigns(:line_items_visit).should eq liv
       end
 
       it "should update each of the line item's visits" do
+        liv = LineItemsVisit.for(arm1, line_item1)
+
         pricing_map1.update_attribute(:unit_minimum, 100)
-        Visit.bulk_create(3, visit_grouping_id: visit_grouping1.id)
+        add_visits_to_arm_line_item(arm1, line_item1, 3)
 
         session[:service_request_id] = service_request.id
         post :unselect_calendar_row, {
-          :id                 => service_request.id,
-          :visit_grouping_id  => visit_grouping1.id,
-          :format             => :js
+          :id                   => service_request.id,
+          :line_items_visit_id  => liv.id,
+          :format               => :js
         }.with_indifferent_access
 
-        visit_grouping1.visits.count.should eq 3
-        visit_grouping1.visits[0].quantity.should               eq 0
-        visit_grouping1.visits[0].research_billing_qty.should   eq 0
-        visit_grouping1.visits[0].insurance_billing_qty.should  eq 0
-        visit_grouping1.visits[0].effort_billing_qty.should     eq 0
-        visit_grouping1.visits[1].quantity.should               eq 0
-        visit_grouping1.visits[1].research_billing_qty.should   eq 0
-        visit_grouping1.visits[1].insurance_billing_qty.should  eq 0
-        visit_grouping1.visits[1].effort_billing_qty.should     eq 0
-        visit_grouping1.visits[2].quantity.should               eq 0
-        visit_grouping1.visits[2].research_billing_qty.should   eq 0
-        visit_grouping1.visits[2].insurance_billing_qty.should  eq 0
-        visit_grouping1.visits[2].effort_billing_qty.should     eq 0
+        liv.visits.count.should eq 3
+        liv.visits[0].quantity.should               eq 0
+        liv.visits[0].research_billing_qty.should   eq 0
+        liv.visits[0].insurance_billing_qty.should  eq 0
+        liv.visits[0].effort_billing_qty.should     eq 0
+        liv.visits[1].quantity.should               eq 0
+        liv.visits[1].research_billing_qty.should   eq 0
+        liv.visits[1].insurance_billing_qty.should  eq 0
+        liv.visits[1].effort_billing_qty.should     eq 0
+        liv.visits[2].quantity.should               eq 0
+        liv.visits[2].research_billing_qty.should   eq 0
+        liv.visits[2].insurance_billing_qty.should  eq 0
+        liv.visits[2].effort_billing_qty.should     eq 0
       end
     end
 
@@ -890,30 +980,31 @@ describe ServiceRequestsController do
         pricing_map2.update_attribute(:unit_minimum, 100)
         pricing_map3.update_attribute(:unit_minimum, 100)
 
-        Visit.bulk_create(3, visit_grouping_id: visit_grouping1.id)
-        Visit.bulk_create(3, visit_grouping_id: visit_grouping2.id)
-        Visit.bulk_create(3, visit_grouping_id: visit_grouping3.id)
+        add_visits_to_arm_line_item(arm1, line_item1, 3)
+        add_visits_to_arm_line_item(arm1, line_item2, 3)
+        add_visits_to_arm_line_item(arm1, line_item3, 3)
 
         session[:service_request_id] = service_request.id
         post :select_calendar_column, {
           :id            => service_request.id,
           :column_id     => 2, # 1-based
-          :arm_id        => arm.id,
+          :arm_id        => arm1.id,
           :format        => :js,
         }.with_indifferent_access
 
-        visit_grouping1.visits[1].quantity.should               eq 100
-        visit_grouping1.visits[1].research_billing_qty.should   eq 100
-        visit_grouping1.visits[1].insurance_billing_qty.should  eq 0
-        visit_grouping1.visits[1].effort_billing_qty.should     eq 0
-        visit_grouping2.visits[1].quantity.should               eq 100
-        visit_grouping2.visits[1].research_billing_qty.should   eq 100
-        visit_grouping2.visits[1].insurance_billing_qty.should  eq 0
-        visit_grouping2.visits[1].effort_billing_qty.should     eq 0
-        visit_grouping3.visits[1].quantity.should               eq 100
-        visit_grouping3.visits[1].research_billing_qty.should   eq 100
-        visit_grouping3.visits[1].insurance_billing_qty.should  eq 0
-        visit_grouping3.visits[1].effort_billing_qty.should     eq 0
+        liv = LineItemsVisit.for(arm1, line_item1)
+        liv.visits[1].quantity.should               eq 100
+        liv.visits[1].research_billing_qty.should   eq 100
+        liv.visits[1].insurance_billing_qty.should  eq 0
+        liv.visits[1].effort_billing_qty.should     eq 0
+        liv.visits[1].quantity.should               eq 100
+        liv.visits[1].research_billing_qty.should   eq 100
+        liv.visits[1].insurance_billing_qty.should  eq 0
+        liv.visits[1].effort_billing_qty.should     eq 0
+        liv.visits[1].quantity.should               eq 100
+        liv.visits[1].research_billing_qty.should   eq 100
+        liv.visits[1].insurance_billing_qty.should  eq 0
+        liv.visits[1].effort_billing_qty.should     eq 0
       end
     end
 
@@ -923,30 +1014,31 @@ describe ServiceRequestsController do
         pricing_map2.update_attribute(:unit_minimum, 100)
         pricing_map3.update_attribute(:unit_minimum, 100)
 
-        Visit.bulk_create(3, visit_grouping_id: visit_grouping1.id)
-        Visit.bulk_create(3, visit_grouping_id: visit_grouping2.id)
-        Visit.bulk_create(3, visit_grouping_id: visit_grouping3.id)
+        add_visits_to_arm_line_item(arm1, line_item1, 3)
+        add_visits_to_arm_line_item(arm1, line_item2, 3)
+        add_visits_to_arm_line_item(arm1, line_item3, 3)
 
         session[:service_request_id] = service_request.id
         post :unselect_calendar_column, {
           :id            => service_request.id,
           :column_id     => 2, # 1-based
-          :arm_id        => arm.id,
+          :arm_id        => arm1.id,
           :format        => :js,
         }.with_indifferent_access
 
-        visit_grouping1.visits[1].quantity.should               eq 0
-        visit_grouping1.visits[1].research_billing_qty.should   eq 0
-        visit_grouping1.visits[1].insurance_billing_qty.should  eq 0
-        visit_grouping1.visits[1].effort_billing_qty.should     eq 0
-        visit_grouping2.visits[1].quantity.should               eq 0
-        visit_grouping2.visits[1].research_billing_qty.should   eq 0
-        visit_grouping2.visits[1].insurance_billing_qty.should  eq 0
-        visit_grouping2.visits[1].effort_billing_qty.should     eq 0
-        visit_grouping3.visits[1].quantity.should               eq 0
-        visit_grouping3.visits[1].research_billing_qty.should   eq 0
-        visit_grouping3.visits[1].insurance_billing_qty.should  eq 0
-        visit_grouping3.visits[1].effort_billing_qty.should     eq 0
+        liv = LineItemsVisit.for(arm1, line_item1)
+        liv.visits[1].quantity.should               eq 0
+        liv.visits[1].research_billing_qty.should   eq 0
+        liv.visits[1].insurance_billing_qty.should  eq 0
+        liv.visits[1].effort_billing_qty.should     eq 0
+        liv.visits[1].quantity.should               eq 0
+        liv.visits[1].research_billing_qty.should   eq 0
+        liv.visits[1].insurance_billing_qty.should  eq 0
+        liv.visits[1].effort_billing_qty.should     eq 0
+        liv.visits[1].quantity.should               eq 0
+        liv.visits[1].research_billing_qty.should   eq 0
+        liv.visits[1].insurance_billing_qty.should  eq 0
+        liv.visits[1].effort_billing_qty.should     eq 0
       end
     end
   end
@@ -1036,7 +1128,7 @@ describe ServiceRequestsController do
           :document_group_id       => docgroup.id,
           :format                  => :js,
         }.with_indifferent_access
-        assigns(:service_list).should eq service_request.service_list
+        assigns(:service_list).should eq service_request.service_list.with_indifferent_access
       end
     end
   end
@@ -1051,10 +1143,6 @@ describe ServiceRequestsController do
     end
 
     it 'should put the subsidy into subsidies if the ssr has a subsidy' do
-      subsidy = FactoryGirl.create(
-          :subsidy,
-          sub_service_request_id: sub_service_request.id)
-
       session[:service_request_id] = service_request.id
       get :service_subsidy, :id => service_request.id
       assigns(:subsidies).should eq [ subsidy ]
@@ -1071,26 +1159,45 @@ describe ServiceRequestsController do
       assigns(:subsidies).map { |s| s.class}.should eq [ Subsidy ]
     end
 
-    it 'should not create a new subsidy if the ssr does not have a subsidy and it not is eligible for subsidy' do
-      core.subsidy_map.update_attributes!(
-          max_dollar_cap: 0,
-          max_percentage: 0)
-      provider.subsidy_map.update_attributes!(
-          max_dollar_cap: 0,
-          max_percentage: 0)
-      program.subsidy_map.update_attributes!(
-          max_dollar_cap: 0,
-          max_percentage: 0)
+    context 'with subsidy maps' do
+      let!(:core_subsidy_map)     { FactoryGirl.create(:subsidy_map, organization_id: core.id) }
+      let!(:provider_subsidy_map) { FactoryGirl.create(:subsidy_map, organization_id: provider.id) }
+      let!(:program_subsidy_map)  { subsidy_map }
 
-      sub_service_request.eligible_for_subsidy?.should_not eq nil
+      it 'should not create a new subsidy if the ssr does not have a subsidy and it not is eligible for subsidy' do
+        # destroy the subsidy; we want to ensure that #service_subsidy
+        # doesn't create a subsidy
+        sub_service_request.subsidy.destroy
 
-      session[:service_request_id] = service_request.id
-      get :service_subsidy, :id => service_request.id
+        core.build_subsidy_map
+        provider.build_subsidy_map
+        program.build_subsidy_map
 
-      subsidy = sub_service_request.subsidy
-      subsidy.should eq nil
+        core.subsidy_map.update_attributes!(
+            max_dollar_cap: 0,
+            max_percentage: 0)
+        provider.subsidy_map.update_attributes!(
+            max_dollar_cap: 0,
+            max_percentage: 0)
+        program.subsidy_map.update_attributes!(
+            max_dollar_cap: 0,
+            max_percentage: 0)
 
-      assigns(:subsidies).should eq [ ]
+        # make sure before we start the test that the ssr is not
+        # eligible for subsidy
+        sub_service_request.eligible_for_subsidy?.should_not eq nil
+
+        # call service_subsidy
+        session[:service_request_id] = service_request.id
+        get :service_subsidy, :id => service_request.id
+
+        # Now the ssr should not have a subsidy
+        sub_service_request.reload
+        subsidy = sub_service_request.subsidy
+        subsidy.should eq nil
+
+        assigns(:subsidies).should eq [ ]
+      end
     end
   end
 

@@ -1,7 +1,6 @@
 FactoryGirl.define do
 
   factory :protocol do
-    obisid                       { SecureRandom.hex(16) }
     next_ssr_id                  { Random.rand(10000) }
     short_title                  { Faker::Lorem.word }
     title                        { Faker::Lorem.sentence(3) }
@@ -45,11 +44,11 @@ FactoryGirl.define do
     # end
 
     after(:build) do |protocol|
-      protocol.build_ip_patents_info(FactoryGirl.attributes_for(:ip_patents_info))
-      protocol.build_human_subjects_info(FactoryGirl.attributes_for(:human_subjects_info))
-      protocol.build_investigational_products_info(FactoryGirl.attributes_for(:investigational_products_info))
-      protocol.build_research_types_info(FactoryGirl.attributes_for(:research_types_info))
-      protocol.build_vertebrate_animals_info(FactoryGirl.attributes_for(:vertebrate_animals_info)) 
+      protocol.build_ip_patents_info(FactoryGirl.attributes_for(:ip_patents_info)) if not protocol.ip_patents_info
+      protocol.build_human_subjects_info(FactoryGirl.attributes_for(:human_subjects_info)) if not protocol.human_subjects_info
+      protocol.build_investigational_products_info(FactoryGirl.attributes_for(:investigational_products_info)) if not protocol.investigational_products_info
+      protocol.build_research_types_info(FactoryGirl.attributes_for(:research_types_info)) if not protocol.research_types_info
+      protocol.build_vertebrate_animals_info(FactoryGirl.attributes_for(:vertebrate_animals_info))  if not protocol.vertebrate_animals_info
     end
 
 

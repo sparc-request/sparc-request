@@ -4,11 +4,17 @@ class ProjectRole < ActiveRecord::Base
   belongs_to :protocol
   belongs_to :identity
 
+  has_many :epic_rights, :dependent => :destroy
+
   attr_accessible :protocol_id
   attr_accessible :identity_id
   attr_accessible :project_rights
   attr_accessible :role
   attr_accessible :role_other
+  attr_accessible :epic_access
+  attr_accessible :epic_rights_attributes
+
+  accepts_nested_attributes_for :epic_rights, :allow_destroy => true
 
   validates :role, :presence => true
   validates :project_rights, :presence => true
@@ -24,9 +30,9 @@ class ProjectRole < ActiveRecord::Base
     return true
   end
 
-  def validate_one_pi
+  def validate_one_primary_pi
     unless self.has_minimum_pi?
-      errors.add(:must, "include one PI.") 
+      errors.add(:must, "include one Primary PI.")
       return false
     end
     return true
@@ -36,12 +42,12 @@ class ProjectRole < ActiveRecord::Base
     other_project_roles = self.protocol.project_roles.reject {|x| x == self}
     all_project_roles = other_project_roles.map {|x| x.role}
     all_project_roles << self.role
-    all_project_roles.include?('pi') ? true : false
+    all_project_roles.include?('primary-pi') ? true : false
   end
 
-  def is_only_pi?
-    if self.role == 'pi'
-      pi_project_roles = self.protocol.project_roles.select {|x| x.role == 'pi'}
+  def is_only_primary_pi?
+    if self.role == 'primary-pi'
+      pi_project_roles = self.protocol.project_roles.select {|x| x.role == 'primary-pi'}
       return true if pi_project_roles.size == 1
     end
 
@@ -56,12 +62,12 @@ class ProjectRole < ActiveRecord::Base
         return false
       end
 
-      if right == 'request' and role != 'pi'
+      if right == 'request' and role != 'pi' and role != 'primary-pi'
         return true
       end
     end
 
-    if (right == 'none' or right == 'view' or right == 'request') and role == 'pi'
+    if (right == 'none' or right == 'view' or right == 'request') and (role == 'pi' || role == 'primary-pi')
       return false
     end
 
@@ -73,7 +79,7 @@ class ProjectRole < ActiveRecord::Base
       return true
     end
 
-    if role == 'pi' and right == 'approve'
+    if (role == 'pi' || role == 'primary-pi') and right == 'approve'
       return true
     end
 
@@ -81,7 +87,7 @@ class ProjectRole < ActiveRecord::Base
       return true
     end
 
-    if current_user == identity and role != 'pi' and right == 'request'
+    if current_user == identity and role != 'pi' and role != 'primary-pi' and right == 'request'
       return true
     end
 
@@ -94,6 +100,33 @@ class ProjectRole < ActiveRecord::Base
     when "view"    then "View Rights"
     when "request" then "Request/Approve Services"
     when "approve" then "Authorize/Change Study Charges"
+    end
+  end
+
+  def setup_epic_rights is_new=true
+    position = 1
+    EPIC_RIGHTS.each do |right, description|
+      epic_right = epic_rights.detect{|obj| obj.right == right}
+      epic_right = epic_rights.build(:right => right, :new => is_new) unless epic_right
+      epic_right.position = position
+      position += 1
+    end
+    epic_rights.sort!{|a, b| a.position <=> b.position}
+  end
+
+  def populate_for_edit
+    if USE_EPIC
+      setup_epic_rights
+    end
+  end
+
+  def set_epic_rights
+    if USE_EPIC
+      if self.role == 'primary-pi'
+        rights = setup_epic_rights(false)
+        self.epic_access = true
+        self.epic_rights = rights
+      end
     end
   end
 end

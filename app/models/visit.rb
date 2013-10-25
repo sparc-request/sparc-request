@@ -1,34 +1,33 @@
 class Visit < ActiveRecord::Base
   audited
 
-  belongs_to :visit_grouping
+  belongs_to :line_items_visit
+  has_many :procedures
+  has_many :appointments, :through => :procedures
+  belongs_to :visit_group
 
-  acts_as_list :scope => :visit_grouping
-  include BulkCreateableList
-
-  attr_accessible :visit_grouping_id
+  attr_accessible :line_items_visit_id
+  attr_accessible :visit_group_id
   attr_accessible :quantity
   attr_accessible :billing
-  attr_accessible :research_billing_qty #qty billed to the study/project
-  attr_accessible :insurance_billing_qty #qty billed to the patients insurance or third party
-  attr_accessible :effort_billing_qty #qty billing to % effort
-  attr_accessible :position
-  attr_accessible :name
+  attr_accessible :research_billing_qty  # (R) qty billed to the study/project
+  attr_accessible :insurance_billing_qty # (T) qty billed to the patients insurance or third party
+  attr_accessible :effort_billing_qty    # (%) qty billing to % effort
 
   validates :research_billing_qty, :numericality => {:only_integer => true}
   validates :insurance_billing_qty, :numericality => {:only_integer => true}
   validates :effort_billing_qty, :numericality => {:only_integer => true}
 
-  # Visits are ordered by their monotonically increasing id.  Be careful
-  # when inserting new visits!
-  # TODO: This is no longer true, since we're using acts_as_list.
-  # Should we remove default_scope?
-  # default_scope :order => 'id ASC'
+  # Find a Visit for the given "line items visit" and visit group.  This
+  # creates the visit if it does not exist.
+  def self.for(line_items_visit, visit_group)
+    return Visit.find_or_create_by_line_items_visit_id_and_visit_group_id(
+        line_items_visit.id,
+        visit_group.id)
+  end
 
-  after_create :set_default_name
-
-  def cost(per_unit_cost = self.visit_grouping.per_unit_cost(self.visit_grouping.quantity_total))
-    li = self.visit_grouping.line_item
+  def cost(per_unit_cost = self.line_items_visit.per_unit_cost(self.line_items_visit.quantity_total))
+    li = self.line_items_visit.line_item
     if li.applicable_rate == "N/A"
       return "N/A"
     elsif self.research_billing_qty >= 1
@@ -39,13 +38,27 @@ class Visit < ActiveRecord::Base
   end
 
   def quantity_total
-    self.research_billing_qty + self.insurance_billing_qty + self.effort_billing_qty
+    return research_billing_qty.to_i + insurance_billing_qty.to_i + effort_billing_qty.to_i
   end
 
-  def set_default_name
-    if name.nil? || name == ""
-      self.update_attributes(:name => "Visit #{self.position}")
-    end
-  end 
+  def position
+    ##get position from visit_group
+    return self.visit_group.position
+  end
 
+  def to_be_performed?
+    self.research_billing_qty > 0
+  end
+  
+  ### audit reporting methods ###
+    
+  def audit_label audit
+    "#{line_items_visit.line_item.service.name} on #{visit_group.name}"
+  end
+
+  def audit_excluded_actions
+    ['create']
+  end
+
+  ### end audit reporting methods ###
 end

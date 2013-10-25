@@ -1,7 +1,7 @@
 class VertebrateAnimalsInfo < ActiveRecord::Base
-  self.table_name = 'vertebrate_animals_info'
-
   audited
+
+  self.table_name = 'vertebrate_animals_info'
 
   belongs_to :protocol
 

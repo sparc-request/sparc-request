@@ -3,7 +3,7 @@ class Portal::VisitsController < Portal::BaseController
 
   def update_from_fulfillment
     @visit = Visit.find(params[:id])
-    line_item = @visit.visit_grouping.line_item
+    line_item = @visit.line_items_visit.line_item
     @sub_service_request = line_item.sub_service_request
     @service_request = @sub_service_request.service_request
     @subsidy = @sub_service_request.subsidy
@@ -24,13 +24,13 @@ class Portal::VisitsController < Portal::BaseController
   
   def destroy
     @visit = Visit.find(params[:id])
-    line_item = @visit.visit_grouping.line_item
+    line_item = @visit.line_items_visit.line_item
     @sub_service_request = line_item.sub_service_request
     @service_request = @sub_service_request.service_request
     @subsidy = @sub_service_request.subsidy
     percent = @subsidy.try(:percent_subsidy).try(:*, 100)
     position = @visit.position
-    arm = @visit.visit_grouping.arm
+    arm = @visit.line_items_visit.arm
 
     if arm.remove_visit(position) then
       # Change the pi_contribution on the subsidy in accordance with the new direct cost total

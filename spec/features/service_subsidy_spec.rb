@@ -10,6 +10,11 @@ describe "subsidy page" do
   describe "no subsidy available" do
     before :each do
       add_visits
+
+      #destroy pre-fabbed subsidies...
+      subsidy_map.destroy
+      subsidy.destroy
+
       visit service_subsidy_service_request_path service_request.id
       sleep 2
     end
@@ -21,13 +26,18 @@ describe "subsidy page" do
   describe "has subsidy" do
     before :each do
       add_visits
+
+      #destroy subsidies created in fixtures again...
+      subsidy_map.destroy
+      subsidy.destroy
+      
       subsidy_map = FactoryGirl.create(:subsidy_map, organization_id: program.id, max_dollar_cap: (sub_service_request.direct_cost_total / 200), max_percentage: 50.00)
       program.update_attribute(:subsidy_map, subsidy_map)
       visit service_subsidy_service_request_path service_request.id
     end
 
-    describe "Subsidy is not overridden" do
-      it 'Should allow PI Contribution to be set', :js => true do
+    describe "subsidy is not overridden" do
+      it 'should allow PI Contribution to be set', :js => true do
         page.should_not have_css("input.pi-contribution[disabled=disabled]")
       end
 
@@ -41,20 +51,19 @@ describe "subsidy page" do
       describe "filling in with wrong values" do
         it 'should reject to high an amount', :js => true do
           @total = (sub_service_request.direct_cost_total / 100)
-          find('.pi-contribution').set((@total - program.subsidy_map.max_dollar_cap) - 100)
+          find('.pi-contribution').set((@total - program.subsidy_map.max_dollar_cap) - 5)
           find('.select-project-view').click
           find(:xpath, "//a/img[@alt='Savecontinue']/..").click
           page.should have_text("cannot exceed maximum dollar amount")
         end
 
         it 'should reject too high a percentage', :js => true do
+          @total = (sub_service_request.direct_cost_total / 100)
           #Change values, and re-visit page, to independantly test the percentage, instead of max_dollar_cap
-          subsidy_map = FactoryGirl.create(:subsidy_map, organization_id: program.id, max_dollar_cap: ((sub_service_request.direct_cost_total / 100) - 100), max_percentage: 50.00)
+          subsidy_map = FactoryGirl.create(:subsidy_map, organization_id: program.id, max_dollar_cap: @total, max_percentage: 50.00)
           program.update_attribute(:subsidy_map, subsidy_map)
           visit service_subsidy_service_request_path service_request.id
-
-          @total = (sub_service_request.direct_cost_total / 100)
-          find('.pi-contribution').set((@total - program.subsidy_map.max_dollar_cap) + 100)
+          find('.pi-contribution').set(@total - program.subsidy_map.max_dollar_cap)
           find('.select-project-view').click
           find(:xpath, "//a/img[@alt='Savecontinue']/..").click
           page.should have_text("cannot exceed maximum percentage of")
@@ -70,7 +79,7 @@ describe "subsidy page" do
           wait_for_javascript_to_finish
         end
 
-        it 'Should save PI Contribution', :js => true do
+        it 'should save PI Contribution', :js => true do
           find(:xpath, "//a/img[@alt='Savecontinue']/..").click
           sub_service_request.subsidy.pi_contribution.should eq((@contribution * 100).to_i)
         end
@@ -94,7 +103,7 @@ describe "subsidy page" do
         subsidy_map = FactoryGirl.create(:subsidy_map, organization_id: program.id, max_dollar_cap: (sub_service_request.direct_cost_total / 200), max_percentage: 50.00)
         program.update_attribute(:subsidy_map, subsidy_map)
 
-        program2 = FactoryGirl.create(:program,type:'Program',parent_id:provider.id,name:'Test',order:1,obisid:'87d1220c5abf9f9608121672be021963',abbreviation:'Informatics',process_ssrs:  0, is_available: 1)
+        program2 = FactoryGirl.create(:program,type:'Program',parent_id:provider.id,name:'Test',order:1,abbreviation:'Informatics',process_ssrs:  0, is_available: 1)
         pricing_setup2 = FactoryGirl.create(:pricing_setup, organization_id: program2.id, display_date: Time.now - 1.day, federal: 50, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal')
         service3 = FactoryGirl.create(:service, organization_id:program2.id, name: 'Per Patient')
         subsidy_map2 = FactoryGirl.create(:subsidy_map, organization_id: program2.id, max_dollar_cap: (sub_service_request.direct_cost_total / 200), max_percentage: 50.00)

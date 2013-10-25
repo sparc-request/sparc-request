@@ -5,6 +5,7 @@ $(document).ready ->
   Sparc.associated_users = {
     display_dependencies :
       '#project_role_role' :
+        'primary-pi'              : ['.era_commons_name', '.subspecialty']
         pi                        : ['.era_commons_name', '.subspecialty']
         'co-investigator'         : ['.era_commons_name', '.subspecialty']
         'faculty-collaborator'    : ['.era_commons_name', '.subspecialty']
@@ -33,13 +34,16 @@ $(document).ready ->
         Sparc.associated_users.redoCredentials()
       )
 
+      $(document).on 'click', '.epic_access', ->
+        Sparc.associated_users.showEpicRights($(this).val())
+
       # Set the rights if the role is 'pi' or 'business-grants-manager'
       # and disable all other radio buttons if 'pi'
       $('#project_role_role').live('change', ->
         role = $(this).val()
-        if role == 'pi' or role == 'business-grants-manager'
+        if role == 'pi' or role == 'business-grants-manager' or role == 'primary-pi'
           $('#project_role_project_rights_approve').attr('checked', true)
-          if role == 'pi'
+          if role == 'pi' or role == 'primary-pi'
             $('#project_role_project_rights_request').attr('disabled', true)
             $('#project_role_project_rights_view').attr('disabled', true)
             $('#project_role_project_rights_none').attr('disabled', true)
@@ -62,6 +66,7 @@ $(document).ready ->
               data: {protocol_id: protocol_id, identity_id: user_id, sub_service_request_id: sub_service_request_id}
               success: ->
                 $('.edit-associated-user-dialog').dialog('open')
+                Sparc.associated_users.showEpicRights($('.epic_access:checked').val())
               error: (request, status, error) ->
                 $().toastmessage("showMessage", {
                   type: "error"
@@ -218,7 +223,7 @@ $(document).ready ->
     validatePiPresence: (role) ->
       pi_count = parseInt($('.edit-user #pi_count').val(), 10)
       pi_validation_message = $('.edit-user #pi-validation-message')
-      pi_count -= 1 if role != 'pi'
+      pi_count -= 1 if role != 'primary-pi'
       if pi_count <= 0
         pi_validation_message.show()
         Sparc.associated_users.disableSubmitButton("Submit", "Submit")
@@ -248,5 +253,11 @@ $(document).ready ->
       else
         $('.user_credentials').attr('name', 'user[credentials]')
         $('#credentials_other').remove()
+
+    showEpicRights: (display) ->
+      if display == "true"
+        $('.epic_access_rights').show()
+      else
+        $('.epic_access_rights').hide()
 
   }

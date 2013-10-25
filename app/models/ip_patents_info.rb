@@ -1,4 +1,5 @@
 class IpPatentsInfo < ActiveRecord::Base
+  audited
   self.table_name = 'ip_patents_info'
 
   audited

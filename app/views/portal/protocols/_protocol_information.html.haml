@@ -100,3 +100,5 @@
               - if @user.can_edit_service_request? sr
                 %a.edit_service_request.btn{:href => "javascript:void(0);", :'data-permission' => rights.to_s, :'data-url' => "/service_requests/#{sr.id}/catalog?from_user_portal=true&edit_original=true"}= t(:protocol_information)[:edit_original]
     - reset_cycle('protocol')
+
+%a.view-full-calendar-button.btn{:href => "javascript:void(0);", :'data-protocol_id' => protocol.id, :'data-url' => "/portal/protocols/#{protocol.id}/view_full_calendar"} View Full Calendar

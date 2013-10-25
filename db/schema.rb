@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130617182076) do
+ActiveRecord::Schema.define(:version => 20131023203211) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -49,6 +49,22 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
   end
 
   add_index "answers", ["api_id"], :name => "uq_answers_api_id", :unique => true
+  add_index "answers", ["question_id"], :name => "index_answers_on_question_id"
+
+  create_table "appointments", :force => true do |t|
+    t.integer  "calendar_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+    t.integer  "visit_group_id"
+    t.integer  "position"
+    t.string   "name"
+    t.integer  "organization_id"
+    t.date     "completed_at"
+  end
+
+  add_index "appointments", ["calendar_id"], :name => "index_appointments_on_calendar_id"
+  add_index "appointments", ["organization_id"], :name => "index_appointments_on_organization_id"
+  add_index "appointments", ["visit_group_id"], :name => "index_appointments_on_visit_group_id"
 
   create_table "approvals", :force => true do |t|
     t.integer  "service_request_id"
@@ -61,16 +77,32 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.integer  "sub_service_request_id"
   end
 
+  add_index "approvals", ["identity_id"], :name => "index_approvals_on_identity_id"
   add_index "approvals", ["service_request_id"], :name => "index_approvals_on_service_request_id"
+  add_index "approvals", ["sub_service_request_id"], :name => "index_approvals_on_sub_service_request_id"
 
   create_table "arms", :force => true do |t|
     t.string   "name"
-    t.integer  "visit_count"
-    t.integer  "service_request_id"
-    t.datetime "created_at",         :null => false
-    t.datetime "updated_at",         :null => false
-    t.integer  "subject_count"
+    t.integer  "visit_count",           :default => 1
+    t.datetime "created_at",                               :null => false
+    t.datetime "updated_at",                               :null => false
+    t.integer  "subject_count",         :default => 1
+    t.integer  "protocol_id"
+    t.boolean  "new_with_draft",        :default => false
+    t.integer  "minimum_visit_count",   :default => 0
+    t.integer  "minimum_subject_count", :default => 0
   end
+
+  create_table "associated_surveys", :force => true do |t|
+    t.integer  "surveyable_id"
+    t.string   "surveyable_type"
+    t.integer  "survey_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  add_index "associated_surveys", ["survey_id"], :name => "index_associated_surveys_on_survey_id"
+  add_index "associated_surveys", ["surveyable_id"], :name => "index_associated_surveys_on_surveyable_id"
 
   create_table "audits", :force => true do |t|
     t.integer  "auditable_id"
@@ -102,6 +134,14 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
 
   add_index "available_statuses", ["organization_id"], :name => "index_available_statuses_on_organization_id"
 
+  create_table "calendars", :force => true do |t|
+    t.integer  "subject_id"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "calendars", ["subject_id"], :name => "index_calendars_on_subject_id"
+
   create_table "catalog_managers", :force => true do |t|
     t.integer  "identity_id"
     t.integer  "organization_id"
@@ -123,7 +163,27 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.datetime "deleted_at"
   end
 
+  add_index "charges", ["service_id"], :name => "index_charges_on_service_id"
   add_index "charges", ["service_request_id"], :name => "index_charges_on_service_request_id"
+
+  create_table "clinical_providers", :force => true do |t|
+    t.integer  "identity_id"
+    t.integer  "organization_id"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
+  add_index "clinical_providers", ["identity_id"], :name => "index_clinical_providers_on_identity_id"
+  add_index "clinical_providers", ["organization_id"], :name => "index_clinical_providers_on_organization_id"
+
+  create_table "cover_letters", :force => true do |t|
+    t.text     "content"
+    t.integer  "sub_service_request_id"
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
+  end
+
+  add_index "cover_letters", ["sub_service_request_id"], :name => "index_cover_letters_on_sub_service_request_id"
 
   create_table "dependencies", :force => true do |t|
     t.integer  "question_id"
@@ -132,6 +192,9 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.datetime "created_at",        :null => false
     t.datetime "updated_at",        :null => false
   end
+
+  add_index "dependencies", ["question_group_id"], :name => "index_dependencies_on_question_group_id"
+  add_index "dependencies", ["question_id"], :name => "index_dependencies_on_question_id"
 
   create_table "dependency_conditions", :force => true do |t|
     t.integer  "dependency_id"
@@ -150,11 +213,17 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.datetime "updated_at",     :null => false
   end
 
+  add_index "dependency_conditions", ["answer_id"], :name => "index_dependency_conditions_on_answer_id"
+  add_index "dependency_conditions", ["dependency_id"], :name => "index_dependency_conditions_on_dependency_id"
+  add_index "dependency_conditions", ["question_id"], :name => "index_dependency_conditions_on_question_id"
+
   create_table "document_groupings", :force => true do |t|
     t.integer  "service_request_id"
     t.datetime "created_at",         :null => false
     t.datetime "updated_at",         :null => false
   end
+
+  add_index "document_groupings", ["service_request_id"], :name => "index_document_groupings_on_service_request_id"
 
   create_table "documents", :force => true do |t|
     t.integer  "sub_service_request_id"
@@ -168,6 +237,16 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.datetime "document_updated_at"
     t.integer  "document_grouping_id"
     t.string   "doc_type_other"
+  end
+
+  add_index "documents", ["document_grouping_id"], :name => "index_documents_on_document_grouping_id"
+  add_index "documents", ["sub_service_request_id"], :name => "index_documents_on_sub_service_request_id"
+
+  create_table "epic_rights", :force => true do |t|
+    t.integer  "project_role_id"
+    t.string   "right"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
   end
 
   create_table "excluded_funding_sources", :force => true do |t|
@@ -218,7 +297,6 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
 
   create_table "identities", :force => true do |t|
     t.string   "ldap_uid"
-    t.string   "obisid"
     t.string   "email"
     t.string   "last_name"
     t.string   "first_name"
@@ -252,7 +330,6 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
   add_index "identities", ["email"], :name => "index_identities_on_email"
   add_index "identities", ["last_name"], :name => "index_identities_on_last_name"
   add_index "identities", ["ldap_uid"], :name => "index_identities_on_ldap_uid", :unique => true
-  add_index "identities", ["obisid"], :name => "index_identities_on_obisid", :unique => true
   add_index "identities", ["reset_password_token"], :name => "index_identities_on_reset_password_token", :unique => true
 
   create_table "impact_areas", :force => true do |t|
@@ -294,17 +371,31 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.integer  "sub_service_request_id"
     t.integer  "service_id"
     t.string   "ssr_id"
-    t.boolean  "optional"
+    t.boolean  "optional",               :default => true
     t.integer  "quantity"
     t.datetime "complete_date"
     t.datetime "in_process_date"
-    t.datetime "created_at",                            :null => false
-    t.datetime "updated_at",                            :null => false
+    t.datetime "created_at",                               :null => false
+    t.datetime "updated_at",                               :null => false
     t.datetime "deleted_at"
     t.integer  "units_per_quantity",     :default => 1
   end
 
+  add_index "line_items", ["service_id"], :name => "index_line_items_on_service_id"
   add_index "line_items", ["service_request_id"], :name => "index_line_items_on_service_request_id"
+  add_index "line_items", ["ssr_id"], :name => "index_line_items_on_ssr_id"
+  add_index "line_items", ["sub_service_request_id"], :name => "index_line_items_on_sub_service_request_id"
+
+  create_table "line_items_visits", :force => true do |t|
+    t.integer  "arm_id"
+    t.integer  "line_item_id"
+    t.integer  "subject_count"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+  end
+
+  add_index "line_items_visits", ["arm_id"], :name => "index_line_items_visits_on_arm_id"
+  add_index "line_items_visits", ["line_item_id"], :name => "index_line_items_visits_on_line_item_id"
 
   create_table "lookups", :force => true do |t|
     t.integer "new_id"
@@ -322,13 +413,19 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.datetime "updated_at",      :null => false
   end
 
+  add_index "messages", ["notification_id"], :name => "index_messages_on_notification_id"
+
   create_table "notes", :force => true do |t|
     t.integer  "identity_id"
     t.integer  "sub_service_request_id"
     t.string   "body"
     t.datetime "created_at",             :null => false
     t.datetime "updated_at",             :null => false
+    t.integer  "appointment_id"
   end
+
+  add_index "notes", ["identity_id"], :name => "index_notes_on_identity_id"
+  add_index "notes", ["sub_service_request_id"], :name => "index_notes_on_sub_service_request_id"
 
   create_table "notifications", :force => true do |t|
     t.integer  "sub_service_request_id"
@@ -337,25 +434,28 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.datetime "updated_at",             :null => false
   end
 
+  add_index "notifications", ["originator_id"], :name => "index_notifications_on_originator_id"
+  add_index "notifications", ["sub_service_request_id"], :name => "index_notifications_on_sub_service_request_id"
+
   create_table "organizations", :force => true do |t|
     t.string   "type"
     t.string   "name"
     t.integer  "order"
     t.string   "css_class"
     t.text     "description"
-    t.string   "obisid"
     t.integer  "parent_id"
     t.string   "abbreviation"
     t.text     "ack_language"
     t.boolean  "process_ssrs"
     t.boolean  "is_available"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
     t.datetime "deleted_at"
+    t.boolean  "show_in_cwf"
+    t.integer  "position_in_cwf"
   end
 
   add_index "organizations", ["is_available"], :name => "index_organizations_on_is_available"
-  add_index "organizations", ["obisid"], :name => "index_organizations_on_obisid"
   add_index "organizations", ["parent_id"], :name => "index_organizations_on_parent_id"
 
   create_table "past_statuses", :force => true do |t|
@@ -368,6 +468,33 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
   end
 
   add_index "past_statuses", ["sub_service_request_id"], :name => "index_past_statuses_on_sub_service_request_id"
+
+  create_table "payment_uploads", :force => true do |t|
+    t.integer  "payment_id"
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+    t.string   "file_file_name"
+    t.string   "file_content_type"
+    t.integer  "file_file_size"
+    t.datetime "file_updated_at"
+  end
+
+  add_index "payment_uploads", ["payment_id"], :name => "index_payment_uploads_on_payment_id"
+
+  create_table "payments", :force => true do |t|
+    t.integer  "sub_service_request_id"
+    t.date     "date_submitted"
+    t.decimal  "amount_invoiced",        :precision => 12, :scale => 4
+    t.decimal  "amount_received",        :precision => 12, :scale => 4
+    t.date     "date_received"
+    t.string   "payment_method"
+    t.text     "details"
+    t.datetime "created_at",                                            :null => false
+    t.datetime "updated_at",                                            :null => false
+    t.float    "percent_subsidy"
+  end
+
+  add_index "payments", ["sub_service_request_id"], :name => "index_payments_on_sub_service_request_id"
 
   create_table "pricing_maps", :force => true do |t|
     t.integer  "service_id"
@@ -410,28 +537,49 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.datetime "deleted_at"
   end
 
+  add_index "pricing_setups", ["organization_id"], :name => "index_pricing_setups_on_organization_id"
+
+  create_table "procedures", :force => true do |t|
+    t.integer  "appointment_id"
+    t.integer  "visit_id"
+    t.boolean  "completed",                                       :default => false
+    t.datetime "created_at",                                                         :null => false
+    t.datetime "updated_at",                                                         :null => false
+    t.integer  "line_item_id"
+    t.integer  "r_quantity"
+    t.integer  "service_id"
+    t.integer  "t_quantity"
+    t.decimal  "unit_factor_cost", :precision => 12, :scale => 4
+    t.boolean  "toasts_generated",                                :default => false
+  end
+
+  add_index "procedures", ["appointment_id"], :name => "index_procedures_on_appointment_id"
+  add_index "procedures", ["line_item_id"], :name => "index_procedures_on_line_item_id"
+  add_index "procedures", ["visit_id"], :name => "index_procedures_on_visit_id"
+
   create_table "project_roles", :force => true do |t|
     t.integer  "protocol_id"
     t.integer  "identity_id"
     t.string   "project_rights"
     t.string   "role"
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
+    t.datetime "created_at",                        :null => false
+    t.datetime "updated_at",                        :null => false
     t.datetime "deleted_at"
     t.string   "role_other"
+    t.boolean  "epic_access",    :default => false
   end
 
+  add_index "project_roles", ["identity_id"], :name => "index_project_roles_on_identity_id"
   add_index "project_roles", ["protocol_id"], :name => "index_project_roles_on_protocol_id"
 
   create_table "protocols", :force => true do |t|
     t.string   "type"
-    t.string   "obisid"
     t.integer  "next_ssr_id"
     t.string   "short_title"
     t.text     "title"
     t.string   "sponsor_name"
     t.text     "brief_description"
-    t.decimal  "indirect_cost_rate",             :precision => 5, :scale => 2
+    t.decimal  "indirect_cost_rate",                    :precision => 5, :scale => 2
     t.string   "study_phase"
     t.string   "udak_project_number"
     t.string   "funding_rfa"
@@ -445,14 +593,19 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.string   "federal_grant_code_id"
     t.string   "federal_non_phs_sponsor"
     t.string   "federal_phs_sponsor"
-    t.datetime "created_at",                                                   :null => false
-    t.datetime "updated_at",                                                   :null => false
+    t.datetime "created_at",                                                          :null => false
+    t.datetime "updated_at",                                                          :null => false
     t.datetime "deleted_at"
     t.string   "potential_funding_source_other"
     t.string   "funding_source_other"
+    t.datetime "last_epic_push_time"
+    t.string   "last_epic_push_status"
+    t.datetime "start_date"
+    t.datetime "end_date"
+    t.string   "billing_business_manager_static_email"
   end
 
-  add_index "protocols", ["obisid"], :name => "index_protocols_on_obisid"
+  add_index "protocols", ["next_ssr_id"], :name => "index_protocols_on_next_ssr_id"
 
   create_table "question_groups", :force => true do |t|
     t.text     "text"
@@ -495,6 +648,9 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
   end
 
   add_index "questions", ["api_id"], :name => "uq_questions_api_id", :unique => true
+  add_index "questions", ["correct_answer_id"], :name => "index_questions_on_correct_answer_id"
+  add_index "questions", ["question_group_id"], :name => "index_questions_on_question_group_id"
+  add_index "questions", ["survey_section_id"], :name => "index_questions_on_survey_section_id"
 
   create_table "quick_questions", :force => true do |t|
     t.string   "to"
@@ -502,6 +658,17 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.text     "body"
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
+  end
+
+  create_table "reports", :force => true do |t|
+    t.integer  "sub_service_request_id"
+    t.string   "xlsx_file_name"
+    t.string   "xlsx_content_type"
+    t.integer  "xlsx_file_size"
+    t.datetime "xlsx_updated_at"
+    t.string   "report_type"
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
   end
 
   create_table "research_types_info", :force => true do |t|
@@ -530,6 +697,8 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
 
   add_index "response_sets", ["access_code"], :name => "response_sets_ac_idx", :unique => true
   add_index "response_sets", ["api_id"], :name => "uq_response_sets_api_id", :unique => true
+  add_index "response_sets", ["survey_id"], :name => "index_response_sets_on_survey_id"
+  add_index "response_sets", ["user_id"], :name => "index_response_sets_on_user_id"
 
   create_table "responses", :force => true do |t|
     t.integer  "response_set_id"
@@ -549,7 +718,10 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.string   "api_id"
   end
 
+  add_index "responses", ["answer_id"], :name => "index_responses_on_answer_id"
   add_index "responses", ["api_id"], :name => "uq_responses_api_id", :unique => true
+  add_index "responses", ["question_id"], :name => "index_responses_on_question_id"
+  add_index "responses", ["response_set_id"], :name => "index_responses_on_response_set_id"
   add_index "responses", ["survey_section_id"], :name => "index_responses_on_survey_section_id"
 
   create_table "service_providers", :force => true do |t|
@@ -563,6 +735,7 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.datetime "deleted_at"
   end
 
+  add_index "service_providers", ["identity_id"], :name => "index_service_providers_on_identity_id"
   add_index "service_providers", ["organization_id"], :name => "index_service_providers_on_organization_id"
   add_index "service_providers", ["service_id"], :name => "index_service_providers_on_service_id"
 
@@ -575,17 +748,15 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.datetime "deleted_at"
   end
 
+  add_index "service_relations", ["related_service_id"], :name => "index_service_relations_on_related_service_id"
   add_index "service_relations", ["service_id"], :name => "index_service_relations_on_service_id"
 
   create_table "service_requests", :force => true do |t|
     t.integer  "protocol_id"
-    t.string   "obisid"
     t.string   "status"
     t.integer  "service_requester_id"
     t.text     "notes"
     t.boolean  "approved"
-    t.datetime "start_date"
-    t.datetime "end_date"
     t.integer  "subject_count"
     t.datetime "consult_arranged_date"
     t.datetime "pppv_complete_date"
@@ -597,13 +768,11 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.datetime "deleted_at"
   end
 
-  add_index "service_requests", ["obisid"], :name => "index_service_requests_on_obisid"
   add_index "service_requests", ["protocol_id"], :name => "index_service_requests_on_protocol_id"
   add_index "service_requests", ["service_requester_id"], :name => "index_service_requests_on_service_requester_id"
   add_index "service_requests", ["status"], :name => "index_service_requests_on_status"
 
   create_table "services", :force => true do |t|
-    t.string   "obisid"
     t.string   "name"
     t.string   "abbreviation"
     t.integer  "order"
@@ -614,13 +783,14 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.string   "charge_code"
     t.string   "revenue_code"
     t.integer  "organization_id"
-    t.datetime "created_at",                                         :null => false
-    t.datetime "updated_at",                                         :null => false
+    t.datetime "created_at",                                                            :null => false
+    t.datetime "updated_at",                                                            :null => false
     t.datetime "deleted_at"
+    t.string   "cdm_code"
+    t.boolean  "send_to_epic",                                       :default => false
   end
 
   add_index "services", ["is_available"], :name => "index_services_on_is_available"
-  add_index "services", ["obisid"], :name => "index_services_on_obisid"
   add_index "services", ["organization_id"], :name => "index_services_on_organization_id"
 
   create_table "sessions", :force => true do |t|
@@ -659,10 +829,29 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.boolean  "lab_approved",               :default => false
     t.boolean  "imaging_approved",           :default => false
     t.boolean  "src_approved",               :default => false
+    t.boolean  "in_work_fulfillment"
+    t.string   "routing"
   end
 
   add_index "sub_service_requests", ["organization_id"], :name => "index_sub_service_requests_on_organization_id"
+  add_index "sub_service_requests", ["owner_id"], :name => "index_sub_service_requests_on_owner_id"
   add_index "sub_service_requests", ["service_request_id"], :name => "index_sub_service_requests_on_service_request_id"
+  add_index "sub_service_requests", ["ssr_id"], :name => "index_sub_service_requests_on_ssr_id"
+
+  create_table "subjects", :force => true do |t|
+    t.datetime "created_at",          :null => false
+    t.datetime "updated_at",          :null => false
+    t.integer  "arm_id"
+    t.string   "name"
+    t.string   "mrn"
+    t.string   "external_subject_id"
+    t.date     "dob"
+    t.string   "gender"
+    t.string   "ethnicity"
+    t.string   "status"
+  end
+
+  add_index "subjects", ["arm_id"], :name => "index_subjects_on_arm_id"
 
   create_table "submission_emails", :force => true do |t|
     t.integer  "organization_id"
@@ -683,6 +872,8 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.integer  "sub_service_request_id"
   end
 
+  add_index "subsidies", ["sub_service_request_id"], :name => "index_subsidies_on_sub_service_request_id"
+
   create_table "subsidy_maps", :force => true do |t|
     t.integer  "organization_id"
     t.decimal  "max_dollar_cap",  :precision => 12, :scale => 4
@@ -702,6 +893,7 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.datetime "deleted_at"
   end
 
+  add_index "super_users", ["identity_id"], :name => "index_super_users_on_identity_id"
   add_index "super_users", ["organization_id"], :name => "index_super_users_on_organization_id"
 
   create_table "survey_sections", :force => true do |t|
@@ -718,6 +910,8 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.datetime "updated_at",             :null => false
   end
 
+  add_index "survey_sections", ["survey_id"], :name => "index_survey_sections_on_survey_id"
+
   create_table "survey_translations", :force => true do |t|
     t.integer  "survey_id"
     t.string   "locale"
@@ -725,6 +919,8 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
   end
+
+  add_index "survey_translations", ["survey_id"], :name => "index_survey_translations_on_survey_id"
 
   create_table "surveys", :force => true do |t|
     t.string   "title"
@@ -760,6 +956,7 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
 
   add_index "taggings", ["tag_id"], :name => "index_taggings_on_tag_id"
   add_index "taggings", ["taggable_id", "taggable_type", "context"], :name => "index_taggings_on_taggable_id_and_taggable_type_and_context"
+  add_index "taggings", ["tagger_id"], :name => "index_taggings_on_tagger_id"
 
   create_table "tags", :force => true do |t|
     t.string "name"
@@ -775,6 +972,8 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.datetime "updated_at",       :null => false
   end
 
+  add_index "toast_messages", ["sending_class_id"], :name => "index_toast_messages_on_sending_class_id"
+
   create_table "tokens", :force => true do |t|
     t.integer  "service_request_id"
     t.integer  "identity_id"
@@ -784,6 +983,7 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.datetime "deleted_at"
   end
 
+  add_index "tokens", ["identity_id"], :name => "index_tokens_on_identity_id"
   add_index "tokens", ["service_request_id"], :name => "index_tokens_on_service_request_id"
 
   create_table "user_notifications", :force => true do |t|
@@ -793,6 +993,9 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "user_notifications", ["identity_id"], :name => "index_user_notifications_on_identity_id"
+  add_index "user_notifications", ["notification_id"], :name => "index_user_notifications_on_notification_id"
 
   create_table "validation_conditions", :force => true do |t|
     t.integer  "validation_id"
@@ -812,6 +1015,10 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.datetime "updated_at",     :null => false
   end
 
+  add_index "validation_conditions", ["answer_id"], :name => "index_validation_conditions_on_answer_id"
+  add_index "validation_conditions", ["question_id"], :name => "index_validation_conditions_on_question_id"
+  add_index "validation_conditions", ["validation_id"], :name => "index_validation_conditions_on_validation_id"
+
   create_table "validations", :force => true do |t|
     t.integer  "answer_id"
     t.string   "rule"
@@ -819,6 +1026,8 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
   end
+
+  add_index "validations", ["answer_id"], :name => "index_validations_on_answer_id"
 
   create_table "versions", :force => true do |t|
     t.string   "item_type",  :null => false
@@ -844,13 +1053,17 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
 
   add_index "vertebrate_animals_info", ["protocol_id"], :name => "index_vertebrate_animals_info_on_protocol_id"
 
-  create_table "visit_groupings", :force => true do |t|
+  create_table "visit_groups", :force => true do |t|
+    t.string   "name"
     t.integer  "arm_id"
-    t.integer  "line_item_id"
-    t.integer  "subject_count"
-    t.datetime "created_at",    :null => false
-    t.datetime "updated_at",    :null => false
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+    t.integer  "position"
+    t.integer  "day"
+    t.integer  "window",     :default => 0
   end
+
+  add_index "visit_groups", ["arm_id"], :name => "index_visit_groups_on_arm_id"
 
   create_table "visits", :force => true do |t|
     t.integer  "quantity",              :default => 0
@@ -861,9 +1074,12 @@ ActiveRecord::Schema.define(:version => 20130617182076) do
     t.integer  "research_billing_qty",  :default => 0
     t.integer  "insurance_billing_qty", :default => 0
     t.integer  "effort_billing_qty",    :default => 0
-    t.integer  "position"
-    t.string   "name"
-    t.integer  "visit_grouping_id"
+    t.integer  "line_items_visit_id"
+    t.integer  "visit_group_id"
   end
+
+  add_index "visits", ["line_items_visit_id"], :name => "index_visits_on_line_items_visit_id"
+  add_index "visits", ["research_billing_qty"], :name => "index_visits_on_research_billing_qty"
+  add_index "visits", ["visit_group_id"], :name => "index_visits_on_visit_group_id"
 
 end

@@ -58,7 +58,8 @@ describe "landing page", :js => true do
 
       within(".Julia") do
         click_on("Delete")
-        page.driver.browser.switch_to.alert.accept
+        page.driver.browser.switch_to.alert.accept # Accept Delete
+        page.driver.browser.switch_to.alert.accept # Clear notification
       end
       page.should have_css('tr.Julia')
     end

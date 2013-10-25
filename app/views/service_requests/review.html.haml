@@ -5,8 +5,8 @@
   = hidden_field_tag :validates, ''
   = render :partial => 'steps'
 
-  #participate_in_survey{:title => t(:sr_review)[:participate_in_survey_title]}
-    = t(:sr_review)[:participate_in_survey]
+  #participate_in_survey{:title => t(:sr_review)[:participate_in_survey_title]} 
+    = t(:sr_review)[:participate_in_survey] 
 
   .grid_12
     .view-anchor
@@ -37,7 +37,9 @@
               .return-to-previous= navigation_link image_tag('go_back.png'), @back
             .save-as-draft= navigation_link image_tag('wait_save_draft.png'), 'save_and_exit'
             .obtain-research-pricing
-              = link_to image_tag( 'obtain_research_pricing.png'), obtain_research_pricing_service_request_path
+              = link_to image_tag( 'get_a_quote.png'), obtain_research_pricing_service_request_path, :id => 'get_a_quote'
             .submit-request
               = link_to image_tag( 'confirm_request.png'), confirmation_service_request_path, :class => "save-and-continue", :id => 'submit_services'
       .footer
+
+

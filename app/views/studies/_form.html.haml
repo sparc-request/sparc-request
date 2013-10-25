@@ -4,7 +4,7 @@
 //
 /////////////////////////////////////////////
 
-= form_for study, :remote => true do |f|
+= form_for @protocol, :remote => true do |f|
   = f.hidden_field :requester_id
   = f.error_messages
   .edit-project-view= render :partial => 'studies/fields', :locals => {:study => study, :f => f}

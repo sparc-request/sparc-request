@@ -46,6 +46,21 @@
       %br
 
       %fieldset
+        %legend= 'Epic Interface'
+        %table
+          %tr
+            %th= f.label :cpt_code, t(:organization_form)[:cpt_code]
+            %td= f.text_field :cpt_code
+          %tr
+            %th= f.label :cdm_code, t(:organization_form)[:cdm_code]
+            %td= f.text_field :cdm_code
+          %tr
+            %th= f.label :send_to_epic, t(:organization_form)[:send_to_epic]
+            %td= f.check_box :send_to_epic
+
+      %br
+
+      %fieldset
         %legend= t(:organization_form)[:core_facility]
         %table
           %tr
@@ -57,10 +72,6 @@
       %fieldset
         %legend= t(:organization_form)[:hospital_based_services]
         %table
-          %tr
-            %th= f.label :cpt_code, t(:organization_form)[:cpt_code]
-            %td= f.text_field :cpt_code
-
           %tr
             %th= f.label :charge_code, t(:organization_form)[:charge_code]
             %td= f.text_field :charge_code
@@ -83,6 +94,12 @@
       %fieldset
         %legend= t(:organization_form)[:related_services]
         #rs_info= render :partial => 'catalog_manager/shared/related_services', :locals => {:entity => @service}
+
+      %br
+      
+      %fieldset
+        %legend= t(:organization_form)[:associated_surveys]
+        #associated_survey_info= render :partial => 'catalog_manager/shared/associated_surveys', :locals => {:entity => @service}
 
       %br
 

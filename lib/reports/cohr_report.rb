@@ -18,6 +18,18 @@ class CohrReport < Report
     return 'cohr_report.xlsx'
   end
 
+  def initialize
+    super()
+    @from_date = nil
+    @to_date = nil
+  end
+
+  def add_options(opts)
+    super(opts)
+    opts.on('-f', '--from DATE') { |d| @from_date = d }
+    opts.on('-t', '--to DATE')   { |d| @to_date = d }
+  end
+
   def run
     header = [
       'PI',
@@ -25,10 +37,12 @@ class CohrReport < Report
       'SRID#',
       'Status',
       'Service',
+      'Submitted date',
+      'Completed date',
       'Minutes',
       'Hours',
       'Price per Hour',
-      'Total Cost'
+      'Total Cost',
     ]
 
     service_names = [
@@ -50,6 +64,8 @@ class CohrReport < Report
         sheet.add_row(header)
         idx += 1
 
+        rows = []
+
         service_names.each do |service_name|
           service = Service.find_by_name(service_name)
 
@@ -65,52 +81,71 @@ class CohrReport < Report
             sr = li.service_request
             protocol = sr.protocol
 
-            if not protocol or not ssr then
-              puts "Warning: bad line item #{li.inspect}"
-              next
+            if ssr
+              # if li.sub_service_request.past_statuses.where(:status => 'complete').count > 0
+                
+
+              
+              next if not ssr.status == 'complete' || ssr.past_statuses.where(:status => 'complete').count > 0
+              next if not ssr.status == 'complete'
+              complete_date = li.sub_service_request.past_statuses.try(:last).try(:date)
+              next if not complete_date
+              next if @from_date and complete_date <= @from_date
+              next if @to_date   and complete_date >= @to_date
+
+              if not protocol or not ssr then
+                puts "Warning: bad line item #{li.inspect}"
+                next
+              end
+
+              if not li.units_per_package then
+                puts "Warning: no units per quantity for line item #{li.inspect}"
+                next
+              end
+
+              # TODO: what do I do if there is more than one PI?
+              pi = protocol.project_roles.find_by_role('primary-pi')
+              pi_name = pi.try(:identity).try(:full_name)
+              requester = sr.service_requester.full_name
+              srid = ssr.display_id
+              service = li.service.name
+              packages = (li.quantity.to_f / li.units_per_package.to_f).ceil # TODO: only works for one-time-fee
+              minutes = packages * li.units_per_package
+              price_per_minute = li.applicable_rate / li.units_per_package # TODO: need to use units_per_quantity?
+              total_cost = li.direct_costs_for_one_time_fee
+
+              row = [
+                pi_name,
+                requester,
+                srid,
+                ssr.status,
+                service,
+                sr.submitted_at,
+                complete_date,
+                minutes,
+                "=H#{idx}/60",
+                price_per_minute * 60 / 100.0,
+                total_cost / 100.0,
+              ]
+
+              styles = [
+                nil,
+                nil,
+                nil,
+                nil,
+                nil,
+                nil,
+                nil,
+                nil,
+                nil,
+                currency,
+                currency,
+              ]
+
+              res = sheet.add_row(row, style: styles)
+              idx += 1
+              # end
             end
-
-            if not li.units_per_package then
-              puts "Warning: no units per quantity for line item #{li.inspect}"
-              next
-            end
-
-            # TODO: what do I do if there is more than one PI?
-            pi = protocol.project_roles.find_by_role('pi')
-            pi_name = pi.try(:identity).try(:full_name)
-            requester = sr.service_requester.full_name
-            srid = ssr.display_id
-            service = li.service.name
-            minutes = li.quantity # TODO: only works for one-time-fee
-            price_per_minute = li.applicable_rate / li.units_per_package # TODO: need to use units_per_quantity?
-            total_cost = li.direct_costs_for_one_time_fee
-
-            row = [
-              pi_name,
-              requester,
-              srid,
-              ssr.status,
-              service,
-              minutes,
-              "=F#{idx}/60",
-              price_per_minute * 60 / 100.0,
-              total_cost / 100.0,
-            ]
-
-            styles = [
-              nil,
-              nil,
-              nil,
-              nil,
-              nil,
-              nil,
-              nil,
-              currency,
-              currency,
-            ]
-
-            res = sheet.add_row(row, style: styles)
-            idx += 1
           end
         end
       end

@@ -1,6 +1,9 @@
 SparcRails::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
+  # Will be default in Rails 4.0
+  config.threadsafe! unless defined?($rails_rake_task) && $rails_rake_task
+
   # Code is not reloaded between requests
   config.cache_classes = true
 
@@ -69,4 +72,7 @@ SparcRails::Application.configure do
   config.middleware.use ExceptionNotifier,
     sender_address: 'no-reply@musc.edu',
     exception_recipients: ['catesa@musc.edu', 'scoma@musc.edu', 'kelsey@musc.edu', 'johstu@musc.edu', 'leonarjp@musc.edu', 'brannan@musc.edu']
+
+  # Will be default in Rails 4.0
+  config.threadsafe! unless $rails_rake_task
 end

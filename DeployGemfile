@@ -6,8 +6,10 @@ gem 'rails', '3.2.11'
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
 gem 'mysql2'
-gem 'haml'
-gem 'sass'
+gem 'haml', '~> 4.0.0'
+gem 'redcarpet'
+gem 'bluecloth'
+gem 'sass', '~> 3.2.7'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -63,11 +65,19 @@ gem 'devise'
 gem 'omniauth'
 gem 'omniauth-shibboleth'
 gem "nested_form"
+gem 'jquery_datepicker'
+
+gem "pdfkit"
 
 gem 'exception_notification'
 
 gem 'prawn'
 gem 'acts-as-taggable-on', '~> 2.3.1'
-gem 'surveyor'
+
+gem 'savon', '~> 2.2.0'    # SOAP client
+gem 'gyoku'                # XML builder
+gem 'nori', '~> 2.1.0'     # XML parser
 
 gem "audited-activerecord", "~> 3.0"
+
+gem "surveyor"

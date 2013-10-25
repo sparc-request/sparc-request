@@ -10,7 +10,7 @@ describe Portal::SubServiceRequestsController do
   let!(:program) { FactoryGirl.create(:program, parent_id: provider.id) }
   let!(:core) { FactoryGirl.create(:core, parent_id: program.id) }
 
-  let!(:study) { study = Study.create(FactoryGirl.attributes_for(:protocol)); study.save!(:validate => false); study }
+  let!(:study) { FactoryGirl.create_without_validation(:study) }
 
   let!(:service_request) {
     FactoryGirl.create(
@@ -53,8 +53,6 @@ describe Portal::SubServiceRequestsController do
     end
 
     it 'should work (smoke test)' do
-      service_request = FactoryGirl.create(
-          :service_request)
       sub_service_request = FactoryGirl.create(
           :sub_service_request,
           service_request_id: service_request.id,
@@ -66,17 +64,15 @@ describe Portal::SubServiceRequestsController do
           :new_service_id  => service.id)
 
       service_request.reload
+      service_request.arms.count.should eq 1
       service_request.line_items.count.should eq 1
       service_request.line_items[0].quantity.should eq nil
-      service_request.line_items[0].visit_groupings.count.should eq 0
+      service_request.line_items[0].line_items_visits.count.should eq 1
     end
 
     it 'should create a new visit grouping for each arm' do
-      service_request = FactoryGirl.create(
-          :service_request)
-
-      service_request.create_arm(visit_count: 5)
-      service_request.create_arm(visit_count: 5)
+      service_request.protocol.create_arm(visit_count: 5)
+      service_request.protocol.create_arm(visit_count: 5)
 
       sub_service_request = FactoryGirl.create(
           :sub_service_request,
@@ -94,14 +90,14 @@ describe Portal::SubServiceRequestsController do
 
       line_items.count.should eq 1
       line_items[0].quantity.should eq nil
-      line_items[0].visit_groupings.count.should eq 2
-      line_items[0].visit_groupings[0].should eq arms[0].visit_groupings[0]
-      line_items[0].visit_groupings[1].should eq arms[1].visit_groupings[0]
-      line_items[0].visit_groupings[1].visits.count.should eq 5
-      arms[0].visit_groupings.count.should eq 1
-      arms[0].visit_groupings[0].visits.count.should eq 5
-      arms[1].visit_groupings.count.should eq 1
-      arms[1].visit_groupings[0].visits.count.should eq 5
+      line_items[0].line_items_visits.count.should eq 2
+      line_items[0].line_items_visits[0].should eq arms[0].line_items_visits[0]
+      line_items[0].line_items_visits[1].should eq arms[1].line_items_visits[0]
+      line_items[0].line_items_visits[1].visits.count.should eq 5
+      arms[0].line_items_visits.count.should eq 1
+      arms[0].line_items_visits[0].visits.count.should eq 5
+      arms[1].line_items_visits.count.should eq 1
+      arms[1].line_items_visits[0].visits.count.should eq 5
     end
   end
 

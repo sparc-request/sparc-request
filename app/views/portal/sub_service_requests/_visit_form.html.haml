@@ -1,0 +1,12 @@
+#visit-form{:style => 'display: none', :title => 'Add a new visit'}
+  .label Visit Name:
+  = text_field_tag 'visit_name', "Visit Name"
+  - if USE_EPIC
+    %br
+    %br
+    .label Day:
+    = text_field_tag 'visit_day'
+    %br
+    %br
+    .label +/-
+    = text_field_tag 'visit_window', 0

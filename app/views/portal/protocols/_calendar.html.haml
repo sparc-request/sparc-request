@@ -1,0 +1,34 @@
+%table.service_calendar{:class => arm.id}
+  %thead.ui-widget-header
+    %tr.table_header
+      %th.services{:rowspan => 2}= t(:ssr_dialog)[:calendar][:headers][:services]
+      %th.your_cost{:rowspan => 2}= t(:ssr_dialog)[:calendar][:headers][:cost]
+      %th.subjects{:rowspan => 2}= t(:ssr_dialog)[:calendar][:headers][:subjects]
+      %th.visits_header{:colspan => 5, :height => 40, :width => 375}
+        = generate_review_visit_navigation arm, service_request, @pages, @tab if service_request.has_per_patient_per_visit_services?
+        %th.total{:rowspan => 2}= t(:ssr_dialog)[:calendar][:headers][:total]
+        
+    %tr.table_header
+      = generate_visit_header_row arm, service_request, @pages[arm.id].to_i
+
+  %tbody.cell-border
+    %tr.section_header
+      %th{:colspan => 11}= t("calendar_page.per_patient") + " -- " + arm.name
+    - service_request.service_list(false).each do |key, value| # get only per patient/per visit services and group them
+      %tr.sub_section_header
+        %th{:colspan => 9}= value[:name]
+
+      - arm.line_items_visits.each do |line_items_visit|
+        - line_item = line_items_visit.line_item
+        - next unless value[:line_items].include?(line_item)
+        %tr.line_item
+          %td.service_name= line_item.service.name
+          %td.your_cost= display_your_cost line_item
+          %td.subject_count= line_items_visit.subject_count
+          - visits = line_items_visit.visits.paginate(:page => @pages[arm.id].to_i, :per_page => 5)
+          - totals_hash = line_items_visit.try(:per_subject_subtotals)
+          - visits.each_with_index do |v, index|
+            %td.visit{:visit_column => index + 1, :class => "visit_column_#{index + 1}", :'data-cents' => (totals_hash["#{v.id}"] || 0), :style => (@tab == 'template' ? "text-align:center" : '')}= line_item_visit_input arm, line_item, v, @tab, totals_hash
+          - (5 - visits.size).times do
+            %td &nbsp;
+          %td{:class => "total_#{line_item.id}"}= display_visit_based_direct_cost line_items_visit

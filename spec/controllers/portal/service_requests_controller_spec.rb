@@ -1,62 +1,24 @@
 require 'spec_helper'
 
 describe Portal::ServiceRequestsController do
+
+  let_there_be_lane
+  fake_login_for_each_test
+  let_there_be_j
+  build_service_request_with_study
   stub_portal_controller
 
-  let!(:institution) { FactoryGirl.create(:institution) }
-  let!(:provider) { FactoryGirl.create(:provider, parent_id: institution.id) }
-  let!(:program) { FactoryGirl.create(:program, parent_id: provider.id) }
-  let!(:core) { FactoryGirl.create(:core, parent_id: program.id) }
-
-  let!(:study) { study = Study.create(FactoryGirl.attributes_for(:protocol)); study.save!(:validate => false); study }
-
-  # TODO: assign service_list
-
-  let!(:service_request) {
-    FactoryGirl.create(
-      :service_request,
-      protocol_id: study.id)
-  }
-
-  let!(:arm) {
-    FactoryGirl.create(
-      :arm,
-      service_request_id: service_request.id,
-      visit_count: 5)
-  }
-
-  let!(:ssr) {
-    FactoryGirl.create(
-        :sub_service_request,
-        service_request_id: service_request.id,
-        organization_id: core.id)
-  }
-
-  let!(:subsidy) {
-    FactoryGirl.create(
-        :subsidy,
-        sub_service_request_id: ssr.id)
-  }
-
-  let!(:service) {
-    service = FactoryGirl.create(
-        :service,
-        organization: core,
-        pricing_map_count: 1)
-    service.pricing_maps[0].display_date = Date.today
-    service
-  }
-
-  let!(:line_item) { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id) }
-  let!(:visit_grouping) { FactoryGirl.create(:visit_grouping, arm_id: arm.id, line_item_id: line_item.id, subject_count: 10) }
-
+  before(:each) do
+    session[:identity_id] = jug2
+  end
+  
   describe 'GET show' do
     it 'should set instance variables' do
       session[:service_calendar_page] = 1
       get :show, {
         format: :js,
         id: service_request.id,
-        arm_id: arm.id,
+        arm_id: arm1.id,
       }.with_indifferent_access
 
       service_request.reload
@@ -65,10 +27,9 @@ describe Portal::ServiceRequestsController do
 
       # Not using assigns() here since it calls with_indifferent_access
       controller.instance_eval { @service_list }.should eq service_request.service_list
-
       assigns(:protocol).should eq study
-      assigns(:pages).should eq({ arm.id => 1 })
-      assigns(:tab).should eq 'pricing'
+      assigns(:pages).should eq({ arm1.id => 1, arm2.id => 1 })
+      assigns(:tab).should eq 'calendar'
     end
   end
 
@@ -77,30 +38,41 @@ describe Portal::ServiceRequestsController do
       post :add_per_patient_per_visit_visit, {
         format: :js,
         id: service_request.id,
-        arm_id: arm.id,
+        arm_id: arm1.id,
         service_request_id: service_request.id,
-        sub_service_request_id: ssr.id,
+        sub_service_request_id: sub_service_request.id,
+        visit_name: 'Test Name',
+        visit_day: 20,
+        visit_window: 10,
       }.with_indifferent_access
 
-      assigns(:sub_service_request).should eq ssr
+      assigns(:sub_service_request).should eq sub_service_request
       assigns(:subsidy).should eq subsidy
-      assigns(:candidate_per_patient_per_visit).should eq [ service ]
+      assigns(:candidate_per_patient_per_visit).should eq [ service2 ]
       assigns(:service_request).should eq service_request
     end
 
     # TODO: test candidate_per_patient_per_visit
 
     it 'should add a visit' do
+      # Ensure that the LineItemsVisits are created; the fixtures do not
+      # create them for us.  Only line_item2 is pppv, so it's the only
+      # one that should get a LineItemsVisit.
+      LineItemsVisit.for(arm1, line_item2)
+
       post :add_per_patient_per_visit_visit, {
         format: :js,
         id: service_request.id,
-        arm_id: arm.id,
+        arm_id: arm1.id,
         service_request_id: service_request.id,
-        sub_service_request_id: ssr.id,
+        sub_service_request_id: sub_service_request.id,
+        visit_name: 'Test Name',
+        visit_day: 20,
+        visit_window: 10,
       }.with_indifferent_access
 
-      visit_grouping.reload
-      visit_grouping.visits.count.should eq 1
+      LineItemsVisit.for(arm1, line_item).visits.count.should eq 0
+      LineItemsVisit.for(arm1, line_item2).visits.count.should eq 1
     end
 
     # TODO: test visit_position
@@ -116,38 +88,44 @@ describe Portal::ServiceRequestsController do
 
   describe 'POST remove_per_patient_per_visit_visit' do
     before(:each) do
-      arm.update_attributes(visit_count: 10)
-      Visit.bulk_create(10, visit_grouping_id: visit_grouping.id)
+      arm1.update_attributes(visit_count: 10)
+      add_visits
     end
 
     it 'should set instance variables' do
       post :remove_per_patient_per_visit_visit, {
         format: :js,
         id: service_request.id,
-        arm_id: arm.id,
+        arm_id: arm1.id,
         service_request_id: service_request.id,
-        sub_service_request_id: ssr.id,
-        visit_position: 5,
+        sub_service_request_id: sub_service_request.id,
+        visit_position: 2,
       }.with_indifferent_access
 
-      assigns(:sub_service_request).should eq ssr
+      assigns(:sub_service_request).should eq sub_service_request
       assigns(:subsidy).should eq subsidy
-      assigns(:candidate_per_patient_per_visit).should eq [ service ]
+      assigns(:candidate_per_patient_per_visit).should eq [ service2 ]
       assigns(:service_request).should eq service_request
     end
 
     it 'should remove the visit at the given position' do
+      # Ensure that the LineItemsVisits are created; the fixtures do not
+      # create them for us.  Only line_item2 is pppv, so it's the only
+      # one that should get a LineItemsVisit.
+      LineItemsVisit.for(arm1, line_item2)
+
+      visit_count = arm1.line_items_visits.first.visits.count
       post :remove_per_patient_per_visit_visit, {
         format: :js,
         id: service_request.id,
-        arm_id: arm.id,
+        arm_id: arm1.id,
         service_request_id: service_request.id,
-        sub_service_request_id: ssr.id,
-        visit_position: 5,
+        sub_service_request_id: sub_service_request.id,
+        visit_position: 2,
       }.with_indifferent_access
 
-      visit_grouping.reload
-      visit_grouping.visits.count.should eq 9
+      LineItemsVisit.for(arm1, line_item).visits.count.should eq(0)
+      LineItemsVisit.for(arm1, line_item2).visits.count.should eq(visit_count - 1)
       # TODO: test that the right visit was removed
     end
 

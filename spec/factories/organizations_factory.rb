@@ -3,7 +3,6 @@ FactoryGirl.define do
   factory :organization do
     name          { Faker::Lorem.sentence(3) }
     description   { Faker::Lorem.paragraph(4) }
-    obisid        { SecureRandom.hex(16) }
     abbreviation  { Faker::Lorem.word }
     ack_language  { Faker::Lorem.paragraph(4) }
     process_ssrs  { false }
@@ -56,7 +55,6 @@ FactoryGirl.define do
     id            
     name          { Faker::Lorem.sentence(3) }
     description   { Faker::Lorem.paragraph(4) }
-    obisid        { SecureRandom.hex(16) }
     abbreviation  { Faker::Lorem.word }
     ack_language  { Faker::Lorem.paragraph(4) }
     process_ssrs  { false }
@@ -85,7 +83,6 @@ FactoryGirl.define do
     id            
     name          { Faker::Lorem.sentence(3) }
     description   { Faker::Lorem.paragraph(4) }
-    obisid        { SecureRandom.hex(16) }
     abbreviation  { Faker::Lorem.word }
     ack_language  { Faker::Lorem.paragraph(4) }
     process_ssrs  { false }
@@ -134,7 +131,6 @@ FactoryGirl.define do
     id            
     name          { Faker::Lorem.sentence(3) }
     description   { Faker::Lorem.paragraph(4) }
-    obisid        { SecureRandom.hex(16) }
     abbreviation  { Faker::Lorem.word }
     ack_language  { Faker::Lorem.paragraph(4) }
     process_ssrs  { false }
@@ -187,7 +183,6 @@ FactoryGirl.define do
     id            
     name          { Faker::Lorem.sentence(3) }
     description   { Faker::Lorem.paragraph(4) }
-    obisid        { SecureRandom.hex(16) }
     abbreviation  { Faker::Lorem.word }
     ack_language  { Faker::Lorem.paragraph(4) }
     process_ssrs  { false }

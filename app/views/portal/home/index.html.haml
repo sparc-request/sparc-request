@@ -33,6 +33,7 @@
 
 .edit-associated-user-dialog
 .view-sub-service-request-dialog
+.view-full-calendar-dialog
 .permissions-dialog
   = t(:protocol_information)[:rights1]
   %b
@@ -59,6 +60,7 @@
           url: "/portal/associated_users/new",
           data: {user_id: ui.item.value, protocol_id: $('#add-user-form #protocol_id').val()},
           success: function() {
+            Sparc.associated_users.showEpicRights($('.epic_access:checked:visible').val());
           }
         })
       },

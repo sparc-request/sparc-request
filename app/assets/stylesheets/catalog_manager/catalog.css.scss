@@ -9,6 +9,27 @@ body {
   margin: 0;
 }
 
+a { 
+  background: url("ui-bg_glass_100_f6f6f6_1x400.png") repeat-x scroll 50% 50% #F6F6F6;
+  border: none !important;
+  font-weight: bold;
+}
+
+a:not(.viewable_node) {
+  color: #1C94C4 !important;
+}
+
+a:hover:not(.viewable_node) {
+  color: #EB8F00 !important;
+}
+
+a.add_new_excluded_funding_source {
+  color: #000000 !important;
+  font-weight: normal !important;
+}
+
+.ui-icon-document, .ui-icon-folder-open, .ui-icon-folder-collapsed {background-image: url(ui-icons_ef8c08_256x240.png) !important; }
+
 #search_box {
   background: $background;
   padding: 22px 0;
@@ -185,7 +206,7 @@ fieldset > legend {
   text-indent: 0px !important;
 }
 
-.su_delete, .se_delete, .sp_delete, .rs_delete { cursor: pointer; }
+.su_delete, .se_delete, .sp_delete, .rs_delete, .cp_delete { cursor: pointer; }
 
 #rate_info {
   table > thead > tr > th {
@@ -205,13 +226,17 @@ fieldset > legend {
   }
 }
 
-.sus, .sps, .ses, .cms {
+input#new_cp {
+  width: 703px !important;
+}
+
+.sus, .sps, .ses, .cms, .cps {
   border-color: #f0f0f0 #000 #000 #f0f0f0;
   border-style: inset;
   border-width: 1px;
   width: 720px;
 
-  input#new_sp, input#new_se, input#new_su, input#new_cm {
+  input#new_sp, input#new_se, input#new_su, input#new_cm, input#new_cp {
     width: 703px !important;
     margin: 5px;
   }
@@ -292,6 +317,19 @@ fieldset > legend {
       float: none !important;
     }
   }
+}
+
+.associated_surveys_table {
+  width: 100%;
+  font-size: 14px;
+}
+
+.associated_surveys_table thead tr th {
+  text-align: left !important;
+}
+
+.associated_surveys_table thead tr th.delete_button {
+  width: 50px !important;
 }
 
 .ui-autocomplete {

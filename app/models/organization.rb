@@ -14,17 +14,17 @@ class Organization < ActiveRecord::Base
   has_many :identities, :through => :service_providers
 
   has_many :catalog_managers, :dependent => :destroy
+  has_many :clinical_providers, :dependent => :destroy
   has_many :identities, :through => :catalog_managers
   has_many :services, :dependent => :destroy
-  has_many :subsidies, :dependent => :destroy
   has_many :sub_service_requests, :dependent => :destroy
   has_many :available_statuses, :dependent => :destroy
+  has_many :appointment_completions
 
   attr_accessible :name
   attr_accessible :order
   attr_accessible :css_class
   attr_accessible :description
-  attr_accessible :obisid
   attr_accessible :parent_id
   attr_accessible :abbreviation
   attr_accessible :ack_language
@@ -35,11 +35,17 @@ class Organization < ActiveRecord::Base
   attr_accessible :submission_emails_attributes
   attr_accessible :available_statuses_attributes
   attr_accessible :tag_list
+  attr_accessible :position_in_cwf
+  attr_accessible :show_in_cwf
  
   accepts_nested_attributes_for :subsidy_map
   accepts_nested_attributes_for :pricing_setups
   accepts_nested_attributes_for :submission_emails
   accepts_nested_attributes_for :available_statuses, :allow_destroy => true
+
+  validates :position_in_cwf, :numericality => true, :allow_nil => true, :uniqueness => true
+  validates :position_in_cwf, :presence => :true, :if => :show_in_cwf
+
 
   ###############################################################################
   ############################# HIERARCHY METHODS ###############################
@@ -108,7 +114,7 @@ class Organization < ActiveRecord::Base
     all_services = []
     self.all_children.each do |child|
       if child.services
-        all_services = all_services | child.services
+        all_services = all_services | child.services.sort_by{|x| x.name}
       end
     end
 
@@ -248,6 +254,24 @@ class Organization < ActiveRecord::Base
       statuses = AVAILABLE_STATUSES.select{|k,v| DEFAULT_STATUSES.include? k}
     end
     statuses
+  end
+
+  def has_tag? tag
+    if self.tag_list.include? tag
+      return true
+    elsif parent
+      self.parent.has_tag? tag
+    else
+      return false
+    end
+  end
+
+  def self.get_cwf_organizations
+    cwf_orgs = Organization.where(show_in_cwf: true)
+    cwf_orgs = cwf_orgs.reject{|x| x.position_in_cwf == nil}
+    cwf_orgs.sort! { |a,b| a.position_in_cwf <=> b.position_in_cwf }
+
+    cwf_orgs
   end
 
 end

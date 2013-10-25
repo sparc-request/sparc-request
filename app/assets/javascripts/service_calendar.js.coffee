@@ -2,12 +2,6 @@
 #= require constants
 
 $(document).ready ->
-  $('#service_calendar').tabs
-    show: (event, ui) -> 
-      $(ui.panel).html('<div class="ui-corner-all" style = "border: 1px solid black; padding: 25px; width: 200px; margin: 30px auto; text-align: center">Loading data....<br /><img src="/assets/spinner.gif" /></div>')
-    select: (event, ui) ->
-      $(ui.panel).html('<div class="ui-corner-all" style = "border: 1px solid black; padding: 25px; width: 200px; margin: 30px auto; text-align: center">Loading data....<br /><img src="/assets/spinner.gif" /></div>')
-
   $('.visit_number a, .service_calendar_row').live 'click', ->
     $('.service_calendar_spinner').show()
   
@@ -61,7 +55,7 @@ $(document).ready ->
       $('.service_calendar_spinner').hide()
       $(this).val(0)
 
-  $('.visit_grouping_subject_count').live 'change', ->
+  $('.line_items_visit_subject_count').live 'change', ->
     $('.service_calendar_spinner').show()
     $.ajax
       type: 'PUT'
@@ -77,12 +71,156 @@ $(document).ready ->
     .complete ->
       $('.service_calendar_spinner').hide()
 
-  $(".visit_name").live 'mouseover', ->
-    $(this).qtip
-      overwrite: false
-      content: "Click to rename your visits."
-      show:
-        ready: true
+  $(document).on('change', '.visit_day', ->
+    # Grab the day
+    position = $(this).data('position')
+    day_val = $(this).val()
+    original_val = $(this).data('day')
+    $('.service_calendar_spinner').show()
+    $.ajax
+      type: 'PUT'
+      url: $(this).attr('update')
+      data: {day: day_val, position: position}
+      success: =>
+        $(this).data('day', day_val)
+    .error (event, request, test) =>
+      alertText = stack_errors_for_alert(JSON.parse(event.responseText))
+      alert(alertText)
+      $(this).val(original_val)
+    .complete ->
+      $('.service_calendar_spinner').hide()
+  )
+
+  $('.visit_window').live 'change', ->
+    # Grab the day
+    position = $(this).data('position')
+    window_val = $(this).val()
+    original_val = $(this).data('window')
+    $('.service_calendar_spinner').show()
+    $.ajax
+      type: 'PUT'
+      url: $(this).attr('update')
+      data: {window: window_val, position: position}
+      success: =>
+        $(this).data('window', window_val)
+    .error (event, request, test) =>
+      alertText = stack_errors_for_alert(JSON.parse(event.responseText))
+      alert(alertText)
+      $(this).val(original_val)
+    .complete ->
+      $('.service_calendar_spinner').hide()
+
+# Triggers for changing attributes on one time fee line items
+  $('.units_per_quantity').live 'change', ->
+    intRegex = /^\d+$/
+    max = parseInt($(this).attr('data-qty_max'), 10)
+    prev_qty = $(this).attr('current_units_per_quantity')
+    user_input = parseInt($(this).val(), 10)
+    
+    # Handle errors
+    unless intRegex.test user_input
+      $(this).css({'border': '2px solid red'})
+      $('#nan_error').fadeIn('fast').delay(5000).fadeOut(5000, => $(this).css('border', ''))
+      $(this).val(prev_qty)
+    else
+      if user_input > max
+        $(this).css({'border': '2px solid red'})
+        $('#unit_quantity').html(user_input)
+        $('#unit_max').html(max + ".")
+        $('#unit_max_error').fadeIn('fast').delay(5000).fadeOut(5000, => $(this).css('border', ''))
+        $(this).val(max)
+      else
+        $(this).attr('current_units_per_quantity', user_input)
+        $('#unit_max_error').hide()
+        $(this).css('border', '')
+        # If it passes validation and is within study tracker, save by ajax
+        if $(this).data('study_tracker') == true
+          save_line_item_by_ajax(this)
+    recalculate_one_time_fee_totals()
+    return false
+
+  $('.line_item_quantity').live 'change', -> 
+    intRegex = /^\d+$/
+    unit_min = parseInt($(this).attr('unit_minimum'), 10)
+    prev_qty = $(this).attr('current_quantity')
+    qty = parseInt($(this).val(), 10)
+
+    # Handle errors
+    unless intRegex.test qty
+      $(this).css({'border': '2px solid red'})
+      $('#nan_error').fadeIn('fast').delay(5000).fadeOut(5000, => $(this).css('border', ''))
+      $(this).val(prev_qty)
+    else
+      if qty < unit_min
+        $(this).css({'border': '2px solid red'})
+        $('#quantity').html(qty)
+        $('#unit_minimum').html(unit_min + ".")
+        $('#one_time_fee_errors').fadeIn('fast').delay(5000).fadeOut(5000, => $(this).css('border', ''))
+        $(this).val(prev_qty)
+      else
+        $(this).attr('current_quantity', qty)
+        $('#one_time_fee_errors').hide()
+        $(this).css('border', '')
+        # If it passes validation and is within study tracker, save by ajax
+        if $(this).data('study_tracker') == true
+          save_line_item_by_ajax(this)
+    recalculate_one_time_fee_totals()
+    return false
+
+# methods for saving one time fee attributes
+  save_line_item_by_ajax = (obj) ->
+      object_id = $(obj).data("line_item_id")
+      name = $(obj).attr('name')
+      key = name.replace("line_item_", '')
+      data = {}
+      data[key] = $(obj).val()
+      put_attribute(object_id, data)
+
+
+  put_attribute = (id, data) ->
+    $.ajax
+      type: 'PUT'
+      url:  "/portal/admin/line_items/#{id}/update_from_cwf"
+      data: JSON.stringify(data)
+      dataType: "script"
+      contentType: 'application/json; charset=utf-8'
+      success: ->
+        $().toastmessage('showSuccessToast', "Service request has been saved.")
+      error: (jqXHR, textStatus, errorThrown) ->
+        if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
+          errors = JSON.parse(jqXHR.responseText)
+        else
+          errors = [textStatus]
+        for error in errors
+          $().toastmessage('showErrorToast', "#{error.humanize()}.");
+
+recalculate_one_time_fee_totals = ->
+  grand_total = 0
+  otfs = $('.otfs')
+
+  otfs.each (index, otf) =>
+    your_cost = $(otf).children('.your_cost').data('your_cost')
+    qty = $(otf).find('.line_item_quantity').val()
+    units_per_qty = $(otf).find('.units_per_quantity').val()
+    unit_factor = $(otf).data('unit_factor')
+
+    new_otf_total = Math.floor(Math.ceil(qty / unit_factor) * your_cost * units_per_qty) / 100.0
+    grand_total += new_otf_total
+    
+    $(otf).find('.otf_total').html('$' + commaSeparateNumber(new_otf_total.toFixed(2)))
+
+  $('.otf_total_direct_cost').html('$' + commaSeparateNumber(grand_total.toFixed(2)))
+
+commaSeparateNumber = (val) ->
+  while (/(\d+)(\d{3})/.test(val.toString()))
+    val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2')
+  return val;
+
+stack_errors_for_alert = (errors) ->
+  compiled = ''
+  for error in errors
+    compiled += error + '\n'
+  return compiled
 
 (exports ? this).calculate_max_rates = (arm_id) ->
   for num in [1..5]

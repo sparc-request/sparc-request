@@ -1,0 +1,50 @@
+.service_request_information
+  %table.project_information
+    %tr
+      %th.blue_header{:colspan => 2}= t(:ssr_dialog)[:project_study_details][:info]
+    %tr
+      %td.percent_30.highlight
+        %strong= t(:ssr_dialog)[:project_study_details][:id]
+      %td.protocol-id-td.no-border-right= "#{@protocol.id}"
+    %tr
+      %td.percent_30.highlight
+        %strong= t(:ssr_dialog)[:project_study_details][:short_title]
+      %td.no-border-right= @protocol.short_title
+    %tr
+      %td.percent_30.highlight
+        %strong= t(:ssr_dialog)[:project_study_details][:project_title] 
+      %td.no-border-right= @protocol.title
+    %tr
+      %td.percent_30.highlight
+        %strong= t(:ssr_dialog)[:project_study_details][:sponsor_name]  
+      %td.no-border-right= @protocol.sponsor_name
+    %tr
+      %td.percent_30.highlight
+        %strong= display_funding_source_title(@protocol)
+      %td.no-border-right= display_funding_source_or_potential(@protocol)
+
+  %br
+  %table.user_information
+    %tr
+      %th.blue_header{:colspan => 3} Users
+    %tr
+      %th.highlight{:colspan => 1}= t(:ssr_dialog)[:auth_users][:name]
+      %th.highlight{:colspan => 1}= t(:ssr_dialog)[:auth_users][:role] 
+      %th.highlight{:colspan => 1}= t(:ssr_dialog)[:auth_users][:proxy_rights]
+    - @protocol.project_roles.each do |pr|
+      %tr
+        %td.percent_30= pr.identity.full_name
+        %td.percent_30= USER_ROLES.key(pr.role)
+        %td.no-border-right= PROXY_RIGHTS.key(pr.project_rights)
+
+  %br
+  #service_calendar_container
+    / -@service_requests.each do |service_request|
+    /   - service_request.arms.each do |arm|
+    /     - next if arm.visit_groups.empty?
+    /     = render :partial => 'portal/protocols/calendar', :locals => {:arm => arm, :service_request => service_request}
+    - if @protocol.any_service_requests_to_display?
+      - @protocol.arms.each do |arm|
+        .arm_calendar_container{:'data-arm_id' => arm.id}
+          - next if arm.visit_groups.empty?
+          = render :partial => '/service_calendars/merged_calendar_data', :locals => {:tab => 'pricing', :arm => arm, :service_request => @service_request}

@@ -29,17 +29,6 @@ describe 'associated users tab', :js => true do
       identity_id:     identity.id,
       project_rights:  "approve",
       role:            "co-investigator")
-    Directory.stub(:search_ldap) {
-      [
-        { 
-          "dn" => ["uid=bjk7,ou=people,dc=musc,dc=edu"],
-          "givenname" => [ 'Brian' ],
-          "sn" => [ 'Kelsey' ],
-          "uid" => [ 'bjk7' ],
-          "mail" => [ 'kelsey@musc.edu' ]
-        }
-      ]
-    }
     add_visits
     visit portal_admin_sub_service_request_path sub_service_request.id
     page.find('a', :text => "Associated Users", :visible => true).click()
@@ -166,7 +155,7 @@ describe 'associated users tab', :js => true do
       wait_for_javascript_to_finish
       page.find('#project_role_role', :visible => true).select "Co-Investigator"
       click_button("edit_authorized_user_submit_button")
-      page.should have_text 'Must include one PI.'
+      page.should have_text 'Must include one Primary PI.'
     end
 
     it 'should open with the users information' do

@@ -36,6 +36,7 @@ class Identity < ActiveRecord::Base
   has_many :studies, :through => :project_roles, :source => :protocol, :conditions => "protocols.type = 'Study'"
   has_many :super_users, :dependent => :destroy
   has_many :catalog_managers, :dependent => :destroy
+  has_many :clinical_providers, :dependent => :destroy
   has_many :protocol_service_requests, :through => :protocols, :source => :service_requests
   has_many :requested_service_requests, :class_name => 'ServiceRequest', :foreign_key => 'service_requester_id'
   has_many :catalog_manager_rights, :class_name => 'CatalogManager'
@@ -54,7 +55,6 @@ class Identity < ActiveRecord::Base
   # has_many :sub_service_requests, :foreign_key => 'owner_id'
 
   attr_accessible :ldap_uid
-  attr_accessible :obisid
   attr_accessible :email
   attr_accessible :last_name
   attr_accessible :first_name
@@ -101,6 +101,15 @@ class Identity < ActiveRecord::Base
     "#{first_name.try(:humanize)} #{last_name.try(:humanize)} (#{email})".lstrip.rstrip
   end
 
+  # Return the netid (ldap_uid without the @musc.edu)
+  def netid
+    if USE_LDAP then
+      return ldap_uid.sub(/@#{Directory::DOMAIN}/, '')
+    else
+      return ldap_uid
+    end
+  end
+
   ###############################################################################
   ############################ ATTRIBUTE METHODS ################################
   ###############################################################################
@@ -109,6 +118,22 @@ class Identity < ActiveRecord::Base
   # jug2, anc63, mas244
   def is_overlord?
     self.catalog_overlord?
+  end
+
+  def is_super_user?
+    if self.super_users.count > 0
+      return true
+    else
+      return false
+    end
+  end
+
+  def is_service_provider?
+    if self.service_providers.count > 0
+      return true
+    else
+      return false
+    end
   end
 
   ###############################################################################
@@ -215,6 +240,11 @@ class Identity < ActiveRecord::Base
     self.catalog_manager_organizations.include?(organization) ? true : false
   end
 
+  # Used in clinical fulfillment to determine whether the user can edit a particular core.
+  def can_edit_core? org_id
+    self.clinical_provider_organizations.map{|x| x.id}.include?(org_id) ? true : false
+  end
+
   # Determines whether the user has permission to edit historical data for a given organization.
   # Returns true if the edit_historic_data flag is set to true on the relevant catalog_manager relationship.
   def can_edit_historical_data_for? organization
@@ -265,20 +295,58 @@ class Identity < ActiveRecord::Base
     orgs.flatten.uniq
   end
 
+  # Returns an array of organizations where the user has clinical provider rights.
+  def clinical_provider_organizations
+    orgs = []
+
+    self.clinical_providers.map(&:organization).each do |org|
+      orgs << org.all_children
+    end
+
+    self.admin_organizations({:su_only => true}).each do |org|
+      orgs << org
+    end 
+
+    orgs.flatten.uniq
+  end
+
   # Collects all organizations that this identity has super user or service provider permissions
   # on, as well as any child (deep) of any of those organizations.
   # Returns an array of organizations.
-  def admin_organizations
+  # If you pass in "su_only" it only returns organizations for whom you are a super user.
+  def admin_organizations su_only = {:su_only => false}
     orgs = []
     arr = []
     arr << self.super_users.map(&:organization)
-    arr << self.service_providers.map(&:organization)
+    unless su_only[:su_only] == true
+      arr << self.service_providers.map(&:organization)
+    end
     arr = arr.flatten.compact.uniq
 
     arr.each do |org|
       orgs << org.all_children
     end
     orgs.flatten.compact.uniq
+  end
+
+  def clinical_provider_rights?
+    org = Organization.tagged_with("ctrc").first
+    if !self.clinical_providers.empty? or self.admin_organizations({:su_only => true}).include?(org)
+      return true
+    else
+      return false
+    end
+  end
+
+  def clinical_provider_for_ctrc?
+    org = Organization.tagged_with("ctrc").first
+    self.clinical_providers.each do |provider|
+      if provider.organization_id == org.id
+        return true      
+      end
+    end
+
+    return false
   end
 
   # Collects all workflow states that are available to the given user based on what organizations
@@ -300,9 +368,14 @@ class Identity < ActiveRecord::Base
   # Collects all sub service requests under this identity's admin_organizations and sorts that
   # list by the status of the sub service requests.
   # Used to populate the table (as selectable by the dropdown) in the admin index.
-  def admin_service_requests_by_status
-    ssrs = self.admin_organizations.map(&:sub_service_requests).flatten
-  
+  def admin_service_requests_by_status org_id = nil
+    ##Default to all ssrs, if we get an org_id, only get that organization's ssrs
+    if org_id
+      ssrs = Organization.find(org_id).sub_service_requests
+    else
+      ssrs = self.admin_organizations.map(&:sub_service_requests).flatten
+    end
+
     hash = {}
 
     ssrs.each do |ssr|

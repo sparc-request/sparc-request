@@ -1,0 +1,13 @@
+:javascript
+  $(document).ready( function() {
+    Sparc.admin.ready();
+  });
+
+.admin-right-dashboard
+  .user-information-title.ui-corner-all
+    %h3= t(:study_tracker)[:title]
+  .user-information-body.ui-corner-bottom
+    %p
+      %strong= @user.display_name
+
+= render :partial => 'portal/admin/ssr_list'

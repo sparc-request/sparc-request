@@ -49,6 +49,13 @@ class ServiceRequestsController < ApplicationController
 
     @service_request.update_attributes(params[:service_request])
 
+    #### if study/project attributes are available (step 2 arms nested form), update them
+    if params[:study]
+      @service_request.protocol.update_attributes(params[:study])
+    elsif params[:project]
+      @service_request.protocol.update_attributes(params[:project])
+    end
+
     #### save/update documents if we have them
     process_ssr_organization_ids = params[:process_ssr_organization_ids]
     document_grouping_id = params[:document_grouping_id]
@@ -144,7 +151,13 @@ class ServiceRequestsController < ApplicationController
       end
 
       session[:errors] = errors.compact.flatten.first # TODO I DON'T LIKE THIS AT ALL
-      redirect_to :back
+
+      if @page != 'navigate'
+        send @page.to_sym
+        render action: @page
+      else
+        redirect_to :back
+      end
     end
   end
 
@@ -164,16 +177,23 @@ class ServiceRequestsController < ApplicationController
     @studies = @sub_service_request.nil? ? current_user.studies(:order => 'id') : @service_request.protocol.type == "Study" ? [@service_request.protocol] : []
     @projects = @sub_service_request.nil? ? current_user.projects(:order => 'id') : @service_request.protocol.type == "Project" ? [@service_request.protocol] : []
 
-    if session[:saved_study_id]
-      @service_request.protocol = Study.find session[:saved_study_id]
-      session.delete :saved_study_id
-    elsif session[:saved_project_id]
-      @service_request.protocol = Project.find session[:saved_project_id]
-      session.delete :saved_project_id
+    if session[:saved_protocol_id]
+      @service_request.protocol = Protocol.find session[:saved_protocol_id]
+      session.delete :saved_protocol_id
+    end
+
+    @ctrc_services = false
+    if session[:errors]
+      if session[:errors][:ctrc_services]
+        @ctrc_services = true
+        @service_request.remove_ctrc_services
+        @ssr_id = @service_request.protocol.find_sub_service_request_with_ctrc(@service_request.id)
+      end
     end
   end
   
   def service_details
+    @service_request.add_or_update_arms
   end
 
   def service_calendar
@@ -185,30 +205,29 @@ class ServiceRequestsController < ApplicationController
     # not here
 
     @service_request.arms.each do |arm|
-      #check each ARM for visit_groupings (in other words, it's a new arm)
-      if arm.visit_groupings.empty?
-        #Create missing visit_groupings
-        new_visit_groupings = Array.new
+      #check each ARM for line_items_visits (in other words, it's a new arm)
+      if arm.line_items_visits.empty?
+        #Create missing line_items_visits
         @service_request.per_patient_per_visit_line_items.each do |line_item|
-          vg = arm.visit_groupings.new
-          vg.line_item_id = line_item.id
-          vg.subject_count = arm.subject_count
-          vg.save
-          #push them to array, for easily looping over to create visits...
-          new_visit_groupings.push(vg)
-        end
-        new_visit_groupings.each do |vg|
-          vg.create_or_destroy_visits
+          arm.create_line_items_visit(line_item)
         end
       else
         #Check to see if ARM has been modified...
-        arm.visit_groupings.each do |vg|
+        arm.line_items_visits.each do |liv|
           #Update subject counts under certain conditions
-          if vg.subject_count.nil? or vg.subject_count > arm.subject_count
-            vg.update_attribute(:subject_count, arm.subject_count)
+          if @service_request.status == 'first_draft' or liv.subject_count.nil? or liv.subject_count > arm.subject_count
+            liv.update_attribute(:subject_count, arm.subject_count)
           end
 
           vg.create_or_destroy_visits
+        end
+        #Arm.visit_count has benn increased, so create new visit group, and populate the visits
+        if arm.visit_count > arm.visit_groups.count
+          arm.create_visit_group until arm.visit_count == arm.visit_groups.count
+        end
+        #Arm.visit_count has been decreased, destroy visit group (and visits)
+        if arm.visit_count < arm.visit_groups.count
+          arm.visit_groups.last.destroy until arm.visit_count == arm.visit_groups.count
         end
       end
     end
@@ -264,170 +283,55 @@ class ServiceRequestsController < ApplicationController
       @pages[arm.id] = 1
     end
 
-    @tab = 'pricing'
+    @tab = 'calendar'
   end
 
   def obtain_research_pricing
     # TODO: refactor into the ServiceRequest model
-    @service_request.update_attribute(:status, 'obtain_research_pricing')
+    @service_request.update_status('get_a_quote')
     @service_request.update_attribute(:submitted_at, Time.now)
-    next_ssr_id = @service_request.protocol.next_ssr_id || 1
-    @service_request.sub_service_requests.each do |ssr|
-      ssr.update_attribute(:status, 'obtain_research_pricing')
-      ssr.update_attribute(:ssr_id, "%04d" % next_ssr_id) unless ssr.ssr_id
-      next_ssr_id += 1
-    end
+    @service_request.ensure_ssr_ids
     
     @protocol = @service_request.protocol
+    # As the service request leaves draft, so too do the arms
+    @protocol.arms.each do |arm|
+      arm.update_attributes({:new_with_draft => false})
+    end
     @service_list = @service_request.service_list
+    send_notifications(@service_request, @sub_service_request)
 
-    @protocol.update_attribute(:next_ssr_id, next_ssr_id)
-
-    # Does an approval need to be created, check that the user submitting has approve rights
-    if @protocol.project_roles.detect{|pr| pr.identity_id == current_user.id}.project_rights != "approve"
-      approval = @service_request.approvals.create
-    else
-      approval = false
-    end
-
-    # generate the excel for this service request
-    # xls = render_to_string :action => 'show', :formats => [:xlsx]
-    xls = render_to_string :action => 'show', :formats => [:xlsx]
-
-    # send e-mail to all folks with view and above
-    @protocol.project_roles.each do |project_role|
-      next if project_role.project_rights == 'none'
-      Notifier.notify_user(project_role, @service_request, xls, approval).deliver unless project_role.identity.email.blank? # ignore if email address is not available
-    end
-
-    # send e-mail to admins and service providers
-    if @sub_service_request # only notify the submission e-mails for this sub service request
-      @sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-        Notifier.notify_admin(@service_request, submission_email.email, xls).deliver
-      end
-    else # notify the submission e-mails for the service request
-      @service_request.sub_service_requests.each do |sub_service_request|
-        sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-          Notifier.notify_admin(@service_request, submission_email.email, xls).deliver
-        end
-      end
-    end
-
-    # send e-mail to all service providers
-    if @sub_service_request # only notify the service providers for this sub service request
-      @sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-        attachments = {}
-        attachments["service_request_#{@service_request.id}.xls"] = xls
-
-        #TODO this is not very multi-institutional
-        # generate the muha pdf if it's required
-        if @sub_service_request.organization.tag_list.include? 'muha'
-          request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf @service_request
-          attachments["request_for_grant_billing_#{@service_request.id}.pdf"] = request_for_grant_billing_form
-        end
-
-        Notifier.notify_service_provider(service_provider, @service_request, attachments).deliver
-      end
-    else
-      @service_request.sub_service_requests.each do |sub_service_request|
-        sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-          attachments = {}
-          attachments["service_request_#{@service_request.id}.xls"] = xls
-
-          #TODO this is not very multi-institutional
-          # generate the muha pdf if it's required
-          if sub_service_request.organization.tag_list.include? 'muha'
-            request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf @service_request
-            attachments["request_for_grant_billing_#{@service_request.id}.pdf"] = request_for_grant_billing_form
-          end
-
-          Notifier.notify_service_provider(service_provider, @service_request, attachments).deliver
-        end
-      end
-    end
-    
     render :formats => [:html]
   end
 
   def confirmation
-    # TODO: refactor into the ServiceRequest model
-    @service_request.update_attribute(:status, 'submitted')
+    @service_request.update_status('submitted')
     @service_request.update_attribute(:submitted_at, Time.now)
-    next_ssr_id = @service_request.protocol.next_ssr_id || 1
-    @service_request.sub_service_requests.each do |ssr|
-      ssr.update_attribute(:status, 'submitted')
-      ssr.update_attribute(:ssr_id, "%04d" % next_ssr_id) unless ssr.ssr_id
-      next_ssr_id += 1
-    end
+    @service_request.ensure_ssr_ids
+    @service_request.update_arm_minimum_counts
     
     @protocol = @service_request.protocol
+    # As the service request leaves draft, so too do the arms
+    @protocol.arms.each do |arm|
+      arm.update_attributes({:new_with_draft => false})
+      if @protocol.service_requests.map {|x| x.sub_service_requests.map {|y| y.in_work_fulfillment}}.flatten.include?(true)
+        arm.populate_subjects_on_edit
+      end
+    end
     @service_list = @service_request.service_list
 
-    @protocol.update_attribute(:next_ssr_id, next_ssr_id)
+    send_notifications(@service_request, @sub_service_request)
 
-    # Does an approval need to be created, check that the user submitting has approve rights
-    if @protocol.project_roles.detect{|pr| pr.identity_id == current_user.id}.project_rights != "approve"
-      approval = @service_request.approvals.create
-    else
-      approval = false
-    end
-
-    # generate the excel for this service request
-    # xls = render_to_string :action => 'show', :formats => [:xlsx]
-    xls = render_to_string :action => 'show', :formats => [:xlsx]
-
-    # send e-mail to all folks with view and above
-    @protocol.project_roles.each do |project_role|
-      next if project_role.project_rights == 'none'
-      Notifier.notify_user(project_role, @service_request, xls, approval).deliver unless project_role.identity.email.blank? # ignore if email address is not available
-    end
-
-    # send e-mail to admins and service providers
-    if @sub_service_request # only notify the submission e-mails for this sub service request
-      @sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-        Notifier.notify_admin(@service_request, submission_email.email, xls).deliver
-      end
-    else # notify the submission e-mails for the service request
-      @service_request.sub_service_requests.each do |sub_service_request|
-        sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-          Notifier.notify_admin(@service_request, submission_email.email, xls).deliver
-        end
+    # Send a notification to Lane et al to create users in Epic.  Once
+    # that has been done, one of them will click a link which calls
+    # approve_epic_rights.
+    if USE_EPIC
+      if @protocol.should_push_to_epic?
+        @protocol.ensure_epic_user
+        @protocol.awaiting_approval_for_epic_push
+        send_epic_notification_for_user_approval(@protocol)
       end
     end
 
-    # send e-mail to all service providers
-    if @sub_service_request # only notify the service providers for this sub service request
-      @sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-        attachments = {}
-        attachments["service_request_#{@service_request.id}.xls"] = xls
-
-        #TODO this is not very multi-institutional
-        # generate the muha pdf if it's required
-        if @sub_service_request.organization.tag_list.include? 'muha'
-          request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf @service_request
-          attachments["request_for_grant_billing_#{@service_request.id}.pdf"] = request_for_grant_billing_form
-        end
-
-        Notifier.notify_service_provider(service_provider, @service_request, attachments).deliver
-      end
-    else
-      @service_request.sub_service_requests.each do |sub_service_request|
-        sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-          attachments = {}
-          attachments["service_request_#{@service_request.id}.xls"] = xls
-
-          #TODO this is not very multi-institutional
-          # generate the muha pdf if it's required
-          if sub_service_request.organization.tag_list.include? 'muha'
-            request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf @service_request
-            attachments["request_for_grant_billing_#{@service_request.id}.pdf"] = request_for_grant_billing_form
-          end
-
-          Notifier.notify_service_provider(service_provider, @service_request, attachments).deliver
-        end
-      end
-    end
-    
     render :formats => [:html]
   end
 
@@ -437,27 +341,17 @@ class ServiceRequestsController < ApplicationController
     @previously_approved = true
  
     if @approval and @approval.identity.nil?
-      @approval.update_attribute(:identity_id, current_user.id)
-      @approval.update_attribute(:approval_date, Time.now)
+      @approval.update_attributes(:identity_id => current_user.id, :approval_date => Time.now)
       @previously_approved = false 
     end
   end
 
   def save_and_exit
-    # TODO: refactor into the ServiceRequest model
-    
     if @sub_service_request # if we are editing a sub service request we should just update it's status
       @sub_service_request.update_attribute(:status, 'draft')
     else
-      @service_request.update_attribute(:status, 'draft')
-      
-      next_ssr_id = @service_request.protocol.next_ssr_id || 1
-      @service_request.sub_service_requests.each do |ssr|
-        ssr.update_attribute(:status, 'draft')
-        ssr.update_attribute(:ssr_id, "%04d" % next_ssr_id) unless ssr.ssr_id
-        next_ssr_id += 1
-      end
-      @service_request.protocol.update_attribute(:next_ssr_id, next_ssr_id)
+      @service_request.update_status('draft')
+      @service_request.ensure_ssr_ids
     end
 
     redirect_to USER_PORTAL_LINK 
@@ -474,7 +368,7 @@ class ServiceRequestsController < ApplicationController
       new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
       @pages[arm.id] = @service_request.set_visit_page new_page, arm
     end
-    @tab = 'pricing'
+    @tab = 'calendar'
   end
 
 
@@ -490,41 +384,18 @@ class ServiceRequestsController < ApplicationController
     else
       service = Service.find id
 
-      unless service.is_one_time_fee?
-        if @service_request.arms.empty?
-          @service_request.arms.create(:name => "ARM 1", :visit_count => 1, :subject_count => 1)
-        end
-      end
-
-      # add service to line items
-      @new_line_items << @service_request.create_line_item(
-          service_id: service.id,
+      @new_line_items = @service_request.create_line_items_for_service(
+          service: service,
           optional: true,
-          quantity: service.displayed_pricing_map.unit_minimum)
+          existing_service_ids: existing_service_ids)
 
-      # add required services to line items
-      service.required_services.each do |rs|
-        @new_line_items << @service_request.create_line_item(
-            service_id: rs.id,
-            optional: false,
-            quantity: service.displayed_pricing_map.unit_minimum) unless existing_service_ids.include?(rs.id)
-      end
-
-      # add optional services to line items
-      service.optional_services.each do |rs|
-        @new_line_items << @service_request.create_line_item(
-            service_id: rs.id,
-            optional: true,
-            quantity: service.displayed_pricing_map.unit_minimum) unless existing_service_ids.include?(rs.id)
-      end
-
-      # create sub_service_rquests
+      # create sub_service_requests
       @service_request.reload
       @service_request.service_list.each do |org_id, values|
         line_items = values[:line_items]
         ssr = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
         unless @service_request.status.nil? and !ssr.status.nil?
-          ssr.update_attribute(:status, @service_request.status)
+          ssr.update_attribute(:status, @service_request.status) if ['first_draft', 'draft', nil].include?(ssr.status)
         end
 
         line_items.each do |li|
@@ -563,13 +434,9 @@ class ServiceRequestsController < ApplicationController
       @service_request.sub_service_requests.find_by_organization_id(org_id).destroy
     end
 
-    # clean up arms
     @service_request.reload
-    @service_request.arms.each do |arm|
-      if arm.visit_groupings.empty?
-        arm.destroy
-      end
-    end
+
+    @line_items = @service_request.line_items
   end
 
   def delete_documents
@@ -612,9 +479,11 @@ class ServiceRequestsController < ApplicationController
   end
 
   def select_calendar_row
-    @visit_grouping = VisitGrouping.find params[:visit_grouping_id]
-    @service = @visit_grouping.line_item.service
-    @visit_grouping.visits.each do |visit|
+    @line_items_visit = LineItemsVisit.find params[:line_items_visit_id]
+    @service = @line_items_visit.line_item.service
+    @sub_service_request = @line_items_visit.line_item.sub_service_request
+    @subsidy = @sub_service_request.try(:subsidy)
+    @line_items_visit.visits.each do |visit|
       visit.update_attributes(
           quantity:              @service.displayed_pricing_map.unit_minimum,
           research_billing_qty:  @service.displayed_pricing_map.unit_minimum,
@@ -626,8 +495,10 @@ class ServiceRequestsController < ApplicationController
   end
   
   def unselect_calendar_row
-    @visit_grouping = VisitGrouping.find params[:visit_grouping_id]
-    @visit_grouping.visits.each do |visit|
+    @line_items_visit = LineItemsVisit.find params[:line_items_visit_id]
+    @sub_service_request = @line_items_visit.line_item.sub_service_request
+    @subsidy = @sub_service_request.try(:subsidy)
+    @line_items_visit.visits.each do |visit|
       visit.update_attributes({:quantity => 0, :research_billing_qty => 0, :insurance_billing_qty => 0, :effort_billing_qty => 0})
     end
 
@@ -638,11 +509,11 @@ class ServiceRequestsController < ApplicationController
     column_id = params[:column_id].to_i
     @arm = Arm.find params[:arm_id]
 
-    @arm.visit_groupings.each do |vg|
-      visit = vg.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
+    @arm.line_items_visits.each do |liv|
+      visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
       visit.update_attributes(
-          quantity:              vg.line_item.service.displayed_pricing_map.unit_minimum,
-          research_billing_qty:  vg.line_item.service.displayed_pricing_map.unit_minimum,
+          quantity:              liv.line_item.service.displayed_pricing_map.unit_minimum,
+          research_billing_qty:  liv.line_item.service.displayed_pricing_map.unit_minimum,
           insurance_billing_qty: 0,
           effort_billing_qty:    0)
     end
@@ -654,11 +525,81 @@ class ServiceRequestsController < ApplicationController
     column_id = params[:column_id].to_i
     @arm = Arm.find params[:arm_id]
 
-    @arm.visit_groupings.each do |vg|
-      visit = vg.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
+    @arm.line_items_visits.each do |liv|
+      visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
       visit.update_attributes({:quantity => 0, :research_billing_qty => 0, :insurance_billing_qty => 0, :effort_billing_qty => 0})
     end
     
     render :partial => 'update_service_calendar'
   end
+
+  private
+
+  # Send notifications to all users.
+  def send_notifications(service_request, sub_service_request)
+    # generate the excel for this service request
+    xls = render_to_string :action => 'show', :formats => [:xlsx]
+
+    send_user_notifications(service_request, xls)
+
+    if sub_service_request then
+      sub_service_requests = [ sub_service_request ]
+    else
+      sub_service_requests = service_request.sub_service_requests
+    end
+
+    send_admin_notifications(sub_service_requests, xls)
+    send_service_provider_notifications(sub_service_requests, xls)
+  end
+
+  def send_user_notifications(service_request, xls)
+    # Does an approval need to be created?  Check that the user
+    # submitting has approve rights.
+    if service_request.protocol.project_roles.detect{|pr| pr.identity_id == current_user.id}.project_rights != "approve"
+      approval = service_request.approvals.create
+    else
+      approval = false
+    end
+
+    # send e-mail to all folks with view and above
+    service_request.protocol.project_roles.each do |project_role|
+      next if project_role.project_rights == 'none'
+      Notifier.notify_user(project_role, service_request, xls, approval).deliver unless project_role.identity.email.blank?
+    end
+  end
+
+  def send_admin_notifications(sub_service_requests, xls)
+    sub_service_requests.each do |sub_service_request|
+      sub_service_request.organization.submission_emails_lookup.each do |submission_email|
+        Notifier.notify_admin(sub_service_request.service_request, submission_email.email, xls).deliver
+      end
+    end
+  end
+
+  def send_service_provider_notifications(sub_service_requests, xls)
+    sub_service_requests.each do |sub_service_request|
+      sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
+        send_individual_service_provider_notification(sub_service_request.service_request, sub_service_request, service_provider, xls)
+      end
+    end
+  end
+
+  def send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls)
+    attachments = {}
+    attachments["service_request_#{service_request.id}.xls"] = xls
+
+    #TODO this is not very multi-institutional
+    # generate the muha pdf if it's required
+    if sub_service_request.organization.tag_list.include? 'muha'
+      request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf service_request
+      attachments["request_for_grant_billing_#{service_request.id}.pdf"] = request_for_grant_billing_form
+    end
+
+    Notifier.notify_service_provider(service_provider, service_request, attachments).deliver
+  end
+
+  def send_epic_notification_for_user_approval(protocol)
+    Notifier.notify_for_epic_user_approval(protocol).deliver
+  end
+
 end

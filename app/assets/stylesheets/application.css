@@ -6,6 +6,10 @@ button {
   padding: 3px 6px;
 }
 
+body .ui-tabs .ui-tabs-panel {
+  padding: 0px;
+}
+
 body {
   background: white url("background_gradient.png") left top repeat-x;
   color: #222222;
@@ -37,7 +41,7 @@ ul {
 #feedback {
   float: right;
   margin-right: 10px;
-  margin-top: 114px;
+  margin-top: 86px;
   font-size: 14px;
   font-weight: bold;
   text-decoration: underline;
@@ -1523,8 +1527,9 @@ li.organization-option {
   margin-left: 1px;
   margin-top : 28px;
   border     : 1px solid #999;
-  max-height     : 400px;
+  max-height : 400px;
   overflow-y : scroll;
+  z-index    : 999999999;
 }
 
 .ui-autocomplete li:nth-child(odd) {
@@ -1740,9 +1745,10 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   font-weight: normal;
 }
 
-#one_time_fee_errors {
+#one_time_fee_errors, #unit_max_error, #nan_error {
   border: 2px solid red;
   padding: 5px;
+  margin-bottom: 5px;
 }
 
 .document-table tbody tr th {
@@ -1895,6 +1901,15 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   list-style: decimal inside;
 }
 
+#flash_notice {
+  margin: 5px;
+  font-size: 15px;
+}
+
+#push_to_epic_status {
+  margin-top: 10px;
+}
+
 #sparc_logo_header {
   background: #FFF;
   border-left: 1px solid #B2B2B2;
@@ -1902,6 +1917,10 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   display: block;
   margin-top: 8px;
   width: 960px;
+}
+
+#sparc_logo_header #right_header {
+  float: right;
 }
 
 #processing_request {
@@ -1914,4 +1933,48 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   text-align: center;
   width: 200px;
   z-index: 5;
+}
+
+.services_header {
+  width: 145px;
+}
+
+.service_rate_header, .your_cost_header {
+  width: 50px;
+}
+
+.service_calendar .your_cost,
+.service_calendar .service_rate,
+.service_calendar .otf_total,
+.service_calendar .otf_total_direct_cost,
+.service_calendar .pp_max_total_direct_cost,
+.service_calendar .pp_max_total_indirect_cost,
+.service_calendar .pp_max_total,
+.service_calendar .pp_line_item_total,
+.service_calendar .pp_line_item_study_total,
+.service_calendar .pp_total,
+.service_calendar .max_direct_per_patient,
+.service_calendar .max_indirect_per_patient,
+.service_calendar .max_total_per_patient {
+  text-align: right;
+}
+
+.qty_type_header {
+  width: 65px;
+}
+
+.number_of_subjects_header, .number_units_header {
+  width: 50px;
+}
+
+.line_item_quantity, .units_per_quantity {
+  width: 30px;
+}
+
+.epic_rights_info {
+  font-style: italic;
+}
+
+table.service_calendar tbody td.visit {
+  text-align: right;
 }

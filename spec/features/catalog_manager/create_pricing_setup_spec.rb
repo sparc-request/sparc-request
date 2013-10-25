@@ -125,9 +125,11 @@ describe 'as a user on catalog page' do
 
     ## Ensure pricing map copied over the content from the existing pricing map
     page.execute_script("$('.ui-accordion-header:last').click()")
+    wait_for_javascript_to_finish
 
     # Check the last pricing map.  The one at position -1 is blank (and
     # not visible); test the one prior to it instead.
+    # TODO: This returns nil on capybara 2.1 (why?)
     form = all(".pricing_map_form")[-2]
 
     form.find("input[id$='full_rate']").should have_value '45.00'

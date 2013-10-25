@@ -1,19 +1,18 @@
 require 'mysql2'
-require 'import'
+require 'active_record'
 
 db = Mysql2::Client.new(
+    :username => 'root',
     :host => 'localhost',
-    :database => 'notifications',
-    :username => 'notify',
-    :password => 'notify')
+    :database => 'notifications')
 
 ActiveRecord::Base.establish_connection(
+    :user => 'root',
     :adapter => 'mysql2',
     :host => 'localhost',   
-    :database => 'sparc_development',  
-    :username => 'sparc',
-    :password => 'sparc',
-) 
+    :database => 'sparc_rails_development')
+
+require 'import'
 
 Notification.all.each     { |m| m.destroy }
 Message.all.each          { |m| m.destroy }

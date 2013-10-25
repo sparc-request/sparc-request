@@ -71,7 +71,7 @@ describe 'as a user on catalog page', :js => true do
       page.execute_script("$('.ui-accordion > div:nth-of-type(2)').click()")
     end
 
-    it "should set the one time fee attribute to false when uncheckeds" do
+    it "should set the one time fee attribute to false when unchecked" do
       service = Service.find_by_abbreviation("CDW")
 
       find("td.is_one_time_fee > input", :visible => true).click

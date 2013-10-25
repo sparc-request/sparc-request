@@ -2,107 +2,98 @@ require 'date'
 require 'spec_helper'
 
 describe 'Service' do
+  let_there_be_lane
+  let_there_be_j
+  build_service_request_with_project
 
   describe 'parents' do
 
     it 'should return an array with only the organization if there are no parents' do
-      organization = FactoryGirl.create(:organization)
-      service = FactoryGirl.create(:service, :organization_id => organization.id)
-
-      service.parents.should eq [ organization ]
+      service.update_attributes(organization_id: institution.id)      
+      service.parents.should eq [ institution ]
     end
 
     it 'should return an array with the organization and its parent if there is a parent' do
-      parent = FactoryGirl.create(:organization)
-      child = FactoryGirl.create(:organization, :parent_id => parent.id)
-      service = FactoryGirl.create(:service, :organization_id => child.id)
-
-      service.parents.should eq [ parent, child ]
-    end
-
-    it 'should return an array with the grandparent, parent, and child if there is a grandparent' do
-      grandparent = FactoryGirl.create(:organization)
-      parent = FactoryGirl.create(:organization, :parent_id => grandparent.id)
-      child = FactoryGirl.create(:organization, :parent_id => parent.id)
-      service = FactoryGirl.create(:service, :organization_id => child.id)
-
-      service.parents.should eq [ grandparent, parent, child ]
+      service.parents.should include(program, provider, institution)
     end
   end
 
   describe "organization" do
-
-    let!(:institution)         { FactoryGirl.create(:institution) }
-    let!(:provider)            { FactoryGirl.create(:provider, parent_id: institution.id) }
-    let!(:program)             { FactoryGirl.create(:program, parent_id: provider.id) }
-    let!(:core)                { FactoryGirl.create(:core, parent_id: program.id) }
-    let!(:institution_service) { FactoryGirl.create(:service, organization_id: institution.id)}
-    let!(:provider_service)    { FactoryGirl.create(:service, organization_id: provider.id)}
-    let!(:program_service)     { FactoryGirl.create(:service, organization_id: program.id)}
-    let!(:core_service)        { FactoryGirl.create(:service, organization_id: core.id)}
-
-
+    
+    let!(:core) { FactoryGirl.create(:core, parent_id: program.id) }
+    
     context 'core' do
 
       it 'should return nil if the organization is not a core' do
-        program_service.core.should eq nil
+        service.core.should eq(nil)
       end
 
       it 'should return the organization if the organization is a core' do
-        core_service.core.should eq core
+        service.update_attributes(organization_id: core.id)
+        service.core.should eq(core)
       end
     end
 
     context 'program' do
 
       it 'should return nil if the organization is neither a core nor a program' do
-        institution_service.program.should eq nil
+        service.update_attributes(organization_id: institution.id)
+        service.program.should eq(nil)
       end
 
       it 'should return the program if the organization is a program' do
-        program_service.program.should eq program
+        service.program.should eq(program)
       end
 
       it 'should return the program the core belongs to if the organization is a core' do
-        core_service.program.should eq core.parent
+        service.update_attributes(organization_id: core.id)
+        service.program.should eq(program)
       end
     end
 
     context 'provider' do
 
-      it "should return nil if the organization is an institution" do
-        institution_service.provider.should eq nil
+      it "should return nil if the organization is an insitution" do
+        service.update_attributes(organization_id: institution.id)
+        service.provider.should eq nil
       end
 
       it "should return the provider if the organization is a provider" do
-        provider_service.provider.should eq(provider)
+        service.update_attributes(organization_id: provider.id)
+        service.provider.should eq(provider)
       end
 
-      it "should return the program if the organization is a program" do
-        program_service.provider.should eq(program.parent)
+      it "should return the provider if the organization is a program" do
+        service.update_attributes(organization_id: program.id)
+        service.provider.should eq(provider)
       end
 
       it "should return the provider the core belongs to if the organization is a core" do
-        core_service.provider.should eq(core.program.parent)
+        service.update_attributes(organization_id: core.id)
+        service.provider.should eq(provider)
       end
     end
 
     context 'institution' do
 
       it "should return the institution is the organization is an institution" do
-        institution_service.institution.should eq(institution)
+        service.update_attributes(organization_id: institution.id)
+        service.institution.should eq(institution)
       end
 
-      it "should return the provider if the organization is a provider" do
-        provider_service.institution.should eq(provider.parent)
+      it "should return the institution if the organization is a provider" do
+        service.update_attributes(organization_id: provider.id)
+        service.institution.should eq(institution)
       end
 
-      it "should return the program is the organization is a program" do
-        program_service.institution.should eq(program.provider.parent)
+      it "should return the institution is the organization is a program" do
+        service.update_attributes(organization_id: program.id)
+        service.institution.should eq(institution)
       end
 
-      it "should return the core is the organization is a core" do
-        core_service.institution.should eq(core.program.provider.parent)
+      it "should return the insitution if the organization is a core" do
+        service.update_attributes(organization_id: core.id)
+        service.institution.should eq(institution)
       end
     end
   end
@@ -134,9 +125,9 @@ describe 'Service' do
     end
   end
 
-  describe "is one time fee" do
+    describe "is one time fee" do
 
-    let!(:service)     { FactoryGirl.create(:service) }
+    let!(:service) { FactoryGirl.create(:service) }
     let!(:pricing_map) { service.pricing_maps[0] }
 
     it "should return false if the pricing map is not a one time fee" do
@@ -151,13 +142,13 @@ describe 'Service' do
 
   describe "display attribute" do
 
-    let!(:service)  { FactoryGirl.create(:service, name: "Foo", abbreviation: "abc") }
+    let!(:service) { FactoryGirl.create(:service, name: "Foo", abbreviation: "abc") }
 
     context "service name" do
       
       it "should return the service name" do
         service.display_service_name.should eq("Foo")
-      end 
+      end
 
       it "should concatenate cpt code to the name if it exists" do
         service.update_attributes(cpt_code: "Bar")
@@ -180,7 +171,7 @@ describe 'Service' do
 
   describe "displayed pricing map" do
 
-    let!(:service)             { FactoryGirl.create(:service) }
+    let!(:service) { FactoryGirl.create(:service) }
 
     it "should raise an exception if there are no pricing maps" do
       service.pricing_maps.delete_all
@@ -188,7 +179,7 @@ describe 'Service' do
     end
 
     it "should raise an exception if there are no current pricing maps" do
-      service.pricing_maps.delete_all      
+      service.pricing_maps.delete_all
       pricing_map = FactoryGirl.create(:pricing_map, service_id: service.id, display_date: Date.today + 1)
       lambda { service.displayed_pricing_map }.should raise_exception(ArgumentError)
     end
@@ -201,9 +192,10 @@ describe 'Service' do
   end
 
   describe 'current_pricing_map' do
+
     it 'should raise an exception if there are no pricing maps' do
       service = FactoryGirl.create(:service)
-      service.pricing_maps.delete_all      
+      service.pricing_maps.delete_all
       lambda { service.current_pricing_map }.should raise_exception(ArgumentError)
     end
 
@@ -229,9 +221,10 @@ describe 'Service' do
   end
 
   describe 'pricing_map_for_date' do
+
     it 'should raise an exception if there are no pricing maps' do
       service = FactoryGirl.create(:service)
-      service.pricing_maps.delete_all      
+      service.pricing_maps.delete_all
       lambda { service.current_pricing_map }.should raise_exception(ArgumentError)
     end
 
@@ -251,9 +244,10 @@ describe 'Service' do
   end
 
   describe 'current_effective_pricing_map' do
+
     it 'should raise an exception if there are no pricing maps' do
       service = FactoryGirl.create(:service)
-      service.pricing_maps.delete_all      
+      service.pricing_maps.delete_all
       lambda { service.current_effective_pricing_map }.should raise_exception(ArgumentError)
     end
 
@@ -301,6 +295,7 @@ describe 'Service' do
   end
   
   describe "can_edit_historical_data_on_new" do
+
     it "should return whether or not the user can edit historical data" do
       identity = FactoryGirl.create(:identity)
       parent = FactoryGirl.create(:organization)
@@ -331,9 +326,10 @@ describe 'Service' do
   end
   
   describe "get rate maps" do
-    let!(:core)          { FactoryGirl.create(:core) }
-    let!(:service)       { FactoryGirl.create(:service, organization_id: core.id) }
-    let!(:pricing_map)   { service.pricing_maps[0] }
+
+    let!(:core) { FactoryGirl.create(:core) }
+    let!(:service) { FactoryGirl.create(:service, organization_id: core.id) }
+    let!(:pricing_map) { service.pricing_maps[0] }
     let!(:pricing_setup) { FactoryGirl.create(:pricing_setup, display_date: Date.today - 1, federal: 25,
                            corporate: 25, other: 25, member: 25, organization_id: core.id)}
 
@@ -349,6 +345,31 @@ describe 'Service' do
       PricingMap.stub(:rates_from_full).and_return({ federal_rate: 25, corporate_rate: 25, other_rate: 25, member_rate: 25 })
       Service.stub(:fix_service_rate).and_return("0.25")
       service.get_rate_maps(pm.display_date, pm.full_rate).should eq(hash)
+    end
+  end
+
+  describe "available surveys" do
+    let!(:program) { FactoryGirl.create(:program)}
+    let!(:core)    { FactoryGirl.create(:core, parent_id: program.id) }
+    let!(:service) { FactoryGirl.create(:service, organization_id: core.id) }
+    let!(:survey)  { FactoryGirl.create(:survey, title: "System Satisfaction survey", description: nil, access_code: "system-satisfaction-survey", reference_identifier: nil, survey_version: 0) }
+    let!(:survey1) { FactoryGirl.create(:survey, title: "System Satisfaction survey", description: nil, access_code: "system-satisfaction-survey", reference_identifier: nil, survey_version: 1) }
+    let!(:survey2) { FactoryGirl.create(:survey, title: "System Satisfaction survey", description: nil, access_code: "system-satisfaction-survey", reference_identifier: nil, survey_version: 2) }
+
+    it "should return an array of available surveys for the service" do
+      # should find at the program level if this is the only one
+      program.associated_surveys.create :survey_id => survey2.id
+      service.available_surveys.should include(survey2)
+
+      # now that program and core both have an associated survey it should find the core one
+      core.associated_surveys.create :survey_id => survey1.id
+      service.reload
+      service.available_surveys.should include(survey1)
+
+      # lastly, if the service has an associated survey it should be returned
+      service.associated_surveys.create :survey_id => survey.id
+      service.reload
+      service.available_surveys.should include(survey)
     end
   end
 end

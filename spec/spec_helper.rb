@@ -11,7 +11,15 @@ require 'faker'
 require 'capybara/rspec'
 require 'capybara/rails'
 require 'capybara/dsl'
+require 'capybara/firebug'
+require 'capybara/email/rspec'
 require 'selenium-webdriver'
+
+# Add testing support for Paperclip
+require 'paperclip/matchers'
+RSpec.configure do |config|
+  config.include Paperclip::Shoulda::Matchers
+end
 
 # Set default values for capybara; these can be overriden by a file in
 # the support directory (see below).  For example, to use poltergeist,
@@ -68,6 +76,7 @@ profile['toolkit.storage.synchronous'] = 0
 
 # Disable smooth scrolling
 # http://kb.mozillazine.org/About:config_entries
+profile['general.smoothScroll'] = false
 profile['toolkit.scrollbox.smoothScroll'] = false
 
 # TODO: try network.http.pipelining = true
@@ -115,8 +124,12 @@ FactoryGirl.find_definitions
 
 RSpec.configure do |config|
 
+  config.use_transactional_fixtures = false
+
   config.before(:suite) do
-    DatabaseCleaner.strategy = :transaction
+    # We can't use the transaction strategy with multiple threads, so we
+    # use truncation instead.
+    DatabaseCleaner.strategy = :truncation
     DatabaseCleaner.clean_with(:truncation)
   end
 
@@ -124,5 +137,17 @@ RSpec.configure do |config|
   config.after(:each) { DatabaseCleaner.clean }
 
   config.color_enabled = true
+
+  config.after(:each) do
+    # wait on all the push to epic calls to finish
+    # TODO: ideally we should call Thread#join for all the 'push to
+    # epic' threads
+    Protocol.all.each do |protocol|
+      while protocol.push_to_epic_in_progress? do
+        sleep 0.1
+        protocol.reload
+      end
+    end
+  end
 end
 

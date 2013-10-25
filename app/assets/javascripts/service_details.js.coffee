@@ -2,13 +2,19 @@
 #= require navigation
 
 $ ->
+  # handle removing an arm and clicking save & continue - set subjects and visits to 1 
+  #TODO this isn't the best way to do this, maybe we should default subjects and visits to 1
+  $(document).on 'nested:fieldRemoved', (event) ->
+    field = event.field
+    field.find('.skinny_fields input').val('1')
+
   $("#start_date").datepicker(
     changeMonth: true,
     changeYear:true,
     constrainInput: true,
     dateFormat: "m/dd/yy",
     showButtonPanel: true,
-    altField: '#service_request_start_date',
+    altField: '#project_start_date, #study_start_date',
     altFormat: 'yy-mm-dd',
 
     beforeShow: (input)->
@@ -30,7 +36,7 @@ $ ->
     constrainInput: true,
     dateFormat: "m/dd/yy",
     showButtonPanel: true,
-    altField: '#service_request_end_date',
+    altField: '#project_end_date, #study_end_date',
     altFormat: 'yy-mm-dd',
 
     beforeShow: (input)->
@@ -48,6 +54,24 @@ $ ->
 
   $('#start_date').attr("readOnly", true)
   $('#end_date').attr("readOnly", true)
+
+  # Validations for existing arms
+
+  $(document).on('change', '.arm_subject_count', ->
+    new_count = $(this).val()
+    min_count = $(this).data('minimum_subject_count')
+    if new_count < min_count
+      alert("You can not reduce the subject count below the count of a previously defined arm.")
+      $(this).val(min_count)
+  )
+
+  $(document).on('change', '.arm_visit_count', ->
+    new_count = $(this).val()
+    min_count = $(this).data('minimum_visit_count')
+    if new_count < min_count
+      alert("You can not reduce the visit count below the count of a previously defined arm.")
+      $(this).val(min_count)
+  )
 
   $('#navigation_form').submit ->
     go = true

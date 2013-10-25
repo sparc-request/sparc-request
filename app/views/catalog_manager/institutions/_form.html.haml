@@ -56,7 +56,13 @@
       %legend= t(:organization_form)[:cm_rights]
       #cm_info= render :partial => 'catalog_manager/shared/catalog_managers', :locals => {:entity => @institution}
 
-    %br    
+    %br
+
+    %fieldset
+      %legend= t(:organization_form)[:clinical_providers]
+      #cp_info= render :partial => 'catalog_manager/shared/clinical_providers', :locals => {:entity => @institution}
+
+    %br  
 
     %fieldset
       %legend= t(:organization_form)[:actions]

@@ -35,7 +35,16 @@ service_calendar:
   catalog: catalog
   forward: service_subsidy
   validation_groups:
+    protocol:
+      - service_calendar_back
+    service_details:
+      - service_calendar_back
+    save_and_exit:
+      - service_calendar_back
+    # calendar_totals:
+    #   - service_calendar
     service_subsidy:
+      - service_calendar
 
 # do not delete.  This page may be used for some institutions.
 # calendar_totals:
@@ -79,7 +88,7 @@ review:
     document_management:
 
 obtain_research_pricing:
-  step_text: 'STEP 5a: Obtain Research Pricing'
+  step_text: 'STEP 5a: Get a Quote'
   css_class: green-provider
   back: review 
   catalog: catalog

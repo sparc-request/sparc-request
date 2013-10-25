@@ -1,2 +1,2 @@
 = select_tag select_id, options_for_select(candidate_service_options(services, true)), :'data-sub_service_request_id' => @sub_service_request.id
-%button#add_service{:'data-sub_service_request_id' => @sub_service_request.id, :'data-select_id' => select_id}= t(:fulfillments)[:service_button]
+%button#add_service{:'data-sub_service_request_id' => @sub_service_request.id, :'data-select_id' => select_id}= @study_tracker ? t(:fulfillments)[:cwf_service_button] : t(:fulfillments)[:service_button]

@@ -1,5 +1,5 @@
 class UserMailer < ActionMailer::Base
-  default :from => "no-reply@musc.edu"
+  default :from => "donotreply@musc.edu"
 
   def authorized_user_changed(user, protocol)
     @send_to = user
@@ -12,6 +12,14 @@ class UserMailer < ActionMailer::Base
     @send_to = user
 
     send_message("New #{I18n.t('application_title')} Notification")
+  end
+
+  def subject_procedure_notification(user, procedure, ssr)
+    @send_to = user
+    @procedure = procedure
+    @sub_service_request = ssr
+
+    send_message("New #{I18n.t('application_title')} Individual Subject Procedure Notification")
   end
 
   private

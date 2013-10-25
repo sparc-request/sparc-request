@@ -24,47 +24,15 @@ class Portal::ServiceRequestsController < Portal::BaseController
     end
   end
 
-  def change_arm
-    @arm_id = params[:arm_id].to_i if params[:arm_id]
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @service_request = ServiceRequest.find(params[:service_request_id]) # TODO: is this different from params[:id] ?
-    @selected_arm = params[:arm_id] ? Arm.find(@arm_id) : @service_request.arms.first
-  end
-
-  def add_arm
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @service_request = ServiceRequest.find(params[:service_request_id]) # TODO: is this different from params[:id] ?
-    name = params[:arm_name] ? params[:arm_name] : "ARM #{@service_request.arms.count + 1}"
-    visit_count = params[:visit_count] ? params[:visit_count].to_i : 1
-    subject_count = params[:subject_count] ? params[:subject_count].to_i : 1
-
-    @selected_arm = @service_request.create_arm(
-        name:          name,
-        visit_count:   visit_count,
-        subject_count: subject_count)
-
-    render 'portal/service_requests/change_arm'
-  end
-
-  def remove_arm
-    @arm_id = params[:arm_id].to_i if params[:arm_id]
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @service_request = ServiceRequest.find(params[:service_request_id]) # TODO: is this different from params[:id] ?
-
-    Arm.find(@arm_id).destroy
-
-    @selected_arm = @service_request.arms.first
-
-    render 'portal/service_requests/add_per_patient_per_visit_visit'
-  end
-
   def add_per_patient_per_visit_visit
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @subsidy = @sub_service_request.subsidy
     percent = @subsidy.try(:percent_subsidy).try(:*, 100)
     @service_request = ServiceRequest.find(params[:service_request_id]) # TODO: is this different from params[:id] ?
     @selected_arm = Arm.find(params[:arm_id])
-    if @selected_arm.add_visit(params[:visit_position])
+    @study_tracker = params[:study_tracker] == "true"
+    
+    if @selected_arm.add_visit(params[:visit_position], params[:visit_day], params[:visit_window], params[:visit_name])
       @subsidy.try(:sub_service_request).try(:reload)
       @subsidy.try(:fix_pi_contribution, percent)
       @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
@@ -73,7 +41,7 @@ class Portal::ServiceRequestsController < Portal::BaseController
       end
     else
       respond_to do |format|
-        format.js { render :status => 500, :json => clean_errors(@service_request.errors) } 
+        format.js { render :status => 500, :json => clean_errors(@selected_arm.errors) }
       end
     end
   end
@@ -81,6 +49,8 @@ class Portal::ServiceRequestsController < Portal::BaseController
   def remove_per_patient_per_visit_visit
     @service_request = ServiceRequest.find(params[:id])
     @selected_arm = Arm.find(params[:arm_id])
+    @study_tracker = params[:study_tracker] == "true"
+
     if @selected_arm.remove_visit(params[:visit_position])
       @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
       @subsidy = @sub_service_request.subsidy
@@ -93,7 +63,6 @@ class Portal::ServiceRequestsController < Portal::BaseController
       end
       render 'portal/service_requests/add_per_patient_per_visit_visit'
     else
-      p @service_request.errors
       respond_to do |format|
         format.js { render :status => 500, :json => clean_errors(@service_request.errors) }
       end
@@ -128,7 +97,7 @@ class Portal::ServiceRequestsController < Portal::BaseController
   def create_visit_change_toast identity, sub_service_request
     ToastMessage.create(
       :to => identity.id,
-      :from => @user.id,
+      :from => current_identity.id,
       :sending_class => 'SubServiceRequest',
       :sending_class_id => sub_service_request.id,
       :message => "The visit count on this service request has been changed"

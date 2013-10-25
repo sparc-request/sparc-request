@@ -1,6 +1,5 @@
 class Token < ActiveRecord::Base
-  #Version.primary_key = 'id'
-  #has_paper_trail
+  audited
 
   belongs_to :service_request
   belongs_to :identity

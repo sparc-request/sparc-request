@@ -1,6 +1,5 @@
 class Protocol < ActiveRecord::Base
-  #Version.primary_key = 'id'
-  #has_paper_trail
+  audited
 
   has_many :study_types, :dependent => :destroy
   has_one :research_types_info, :dependent => :destroy
@@ -13,8 +12,8 @@ class Protocol < ActiveRecord::Base
   has_many :service_requests
   has_many :affiliations, :dependent => :destroy
   has_many :impact_areas, :dependent => :destroy
+  has_many :arms, :dependent => :destroy
 
-  attr_accessible :obisid
   attr_accessible :identity_id
   attr_accessible :next_ssr_id
   attr_accessible :short_title
@@ -46,7 +45,13 @@ class Protocol < ActiveRecord::Base
   attr_accessible :impact_areas_attributes
   attr_accessible :affiliations_attributes
   attr_accessible :project_roles_attributes
+  attr_accessible :arms_attributes
   attr_accessible :requester_id
+  attr_accessible :start_date
+  attr_accessible :end_date
+  attr_accessible :last_epic_push_time
+  attr_accessible :last_epic_push_status
+  attr_accessible :billing_business_manager_static_email
 
   attr_accessor :requester_id
   
@@ -59,6 +64,7 @@ class Protocol < ActiveRecord::Base
   accepts_nested_attributes_for :impact_areas, :allow_destroy => true
   accepts_nested_attributes_for :affiliations, :allow_destroy => true
   accepts_nested_attributes_for :project_roles, :allow_destroy => true
+  accepts_nested_attributes_for :arms, :allow_destroy => true
 
   validates :short_title, :presence => true
   validates :title, :presence => true
@@ -85,11 +91,19 @@ class Protocol < ActiveRecord::Base
   end
 
   def primary_principal_investigator
-    project_roles.detect { |pr| pr.role == 'primary-pi' }.try(:identity)
+    primary_pi_project_role.try(:identity)
+  end
+
+  def primary_pi_project_role
+    project_roles.detect { |pr| pr.role == 'primary-pi' }
   end
 
   def billing_managers
     project_roles.reject{|pr| pr.role != 'business-grants-manager'}.map(&:identity)
+  end
+
+  def billing_business_manager_email
+    billing_business_manager_static_email.blank? ?  billing_managers.map(&:email).try(:join, ', ') : billing_business_manager_static_email
   end
 
   def emailed_associated_users
@@ -157,4 +171,106 @@ class Protocol < ActiveRecord::Base
 
     return funding_source
   end
+
+  # Note: this method is called inside a child thread by the service
+  # requests controller.  Be careful adding code here that might not be
+  # thread-safe.
+  def push_to_epic(epic_interface)
+    begin
+      self.last_epic_push_time = Time.now
+      self.last_epic_push_status = 'started'
+      save(validate: false)
+
+      Rails.logger.info("Sending study message to Epic")
+      epic_interface.send_study(self)
+
+      self.last_epic_push_status = 'complete'
+      save(validate: false)
+
+    rescue Exception => e
+      Rails.logger.info("Push to Epic failed.")
+
+      self.last_epic_push_status = 'failed'
+      save(validate: false)
+      raise e
+    end
+  end
+
+  def awaiting_approval_for_epic_push
+    self.last_epic_push_time = nil
+    self.last_epic_push_status = 'awaiting_approval'
+    save(validate: false)
+  end
+
+  def awaiting_final_review_for_epic_push
+    self.last_epic_push_time = nil
+    self.last_epic_push_status = 'awaiting_final_review'
+    save(validate: false)
+  end
+
+  def ensure_epic_user
+    self.primary_pi_project_role.set_epic_rights
+    self.primary_pi_project_role.save
+  end
+
+  # Returns true if there is a push to epic in progress, false
+  # otherwise.  If no push has been initiated, return false.
+  def push_to_epic_in_progress?
+    return self.last_epic_push_status == 'started' ||
+           self.last_epic_push_status == 'sent_study'
+  end
+
+  # Returns true if the most push to epic has completed.  Returns false
+  # if no push has been initiated.
+  def push_to_epic_complete?
+    return self.last_epic_push_status == 'complete' ||
+           self.last_epic_push_status == 'failed'
+  end
+
+  def populate_for_edit
+    project_roles.each do |pr|
+      pr.populate_for_edit
+    end
+  end
+  
+  def create_arm(args)
+    arm = self.arms.create(args)
+    self.service_requests.each do |service_request|
+      service_request.per_patient_per_visit_line_items.each do |li|
+        arm.create_line_items_visit(li)
+      end
+    end
+    # Lets return this in case we need it for something else
+    arm
+  end
+  
+  def should_push_to_epic?
+    return self.service_requests.any? { |sr| sr.should_push_to_epic? }
+  end
+
+  def has_ctrc_services? current_service_request_id
+    self.service_requests.each do |sr|
+      next if sr.id == current_service_request_id
+      if sr.has_ctrc_services?
+        return sr.id
+      end
+    end
+
+    return nil
+  end
+
+  def find_sub_service_request_with_ctrc current_service_request_id
+    id = has_ctrc_services? current_service_request_id
+    service_request = self.service_requests.find id
+    service_request.sub_service_requests.each do |ssr|
+      if ssr.ctrc?
+        return ssr.ssr_id
+      end
+    end
+  end
+
+  def any_service_requests_to_display?
+    return self.service_requests.detect { |sr| !['first_draft', 'draft'].include?(sr.status) }
+  end
+
 end

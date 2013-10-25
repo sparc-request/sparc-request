@@ -2,15 +2,15 @@
 #institution_accordion
   - institutions.each do |institution|
     - next unless institution.is_available? or institution.is_available.nil?
-    %h3
-      = link_to institution.name, update_description_catalog_path(institution), :class => institution.css_class
+    %h3{:class => institution.css_class}
+      = link_to institution.name, update_description_catalog_path(institution)
     %div.institution
       .provider_accordion
         - institution.providers.order('`order`').each do |provider|
           - next unless provider.is_available? or provider.is_available.nil?
           - next if @sub_service_request and (@sub_service_request.organization != provider and @sub_service_request.organization.parents.exclude?(provider))
-          %h3
-            = link_to provider.name, update_description_catalog_path(provider), :class => provider.css_class
+          %h3{:class => provider.css_class}
+            = link_to provider.name, update_description_catalog_path(provider)
           %div.provider
             - provider.programs.order('`order`').each do |program|
               - next unless program.is_available? or program.is_available.nil?

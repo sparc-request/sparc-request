@@ -10,7 +10,7 @@ class CatalogManager::CatalogController < CatalogManager::AppController
     effective_date = params[:effective_date]
     display_date = params[:display_date]    
     entity_id = params[:entity_id]
-    
+
     organization = Organization.find(entity_id)
     services = organization.all_child_services
     @entity = organization
@@ -31,7 +31,7 @@ class CatalogManager::CatalogController < CatalogManager::AppController
     else
       @rsp = "Successfully updated the pricing maps for all of the services under #{@entity.name} except for the following: #{services_not_updated.join(', ')}"
     end
-    
+
   end
   
   def update_rate(pricing_map, rate_type, percentage)
@@ -116,5 +116,28 @@ class CatalogManager::CatalogController < CatalogManager::AppController
     @excluded_funding_source = ExcludedFundingSource.find(params[:funding_source_id])
     @excluded_funding_source.delete
     render :nothing => true
+  end
+
+  def remove_associated_survey
+    associated_survey = AssociatedSurvey.find(params[:associated_survey_id])
+    entity = associated_survey.surveyable
+    associated_survey.delete
+
+    render :partial => 'catalog_manager/shared/associated_surveys', :locals => {:entity => entity}
+  end
+  
+  def add_associated_survey
+    entity = params[:surveyable_type].constantize.find params[:surveyable_id]
+    associated_survey = entity.associated_surveys.new :survey_id => params[:survey_id] 
+
+    #keep the same survey from being associated multiple times, this is also done via the associated_survey model
+    if associated_survey.valid?
+      associated_survey.save
+    else
+      message = "The survey you are trying to add is already associated with this #{entity.class.to_s}"
+    end
+    
+    entity.reload
+    render :partial => 'catalog_manager/shared/associated_surveys', :locals => {:entity => entity, :message => message}
   end
 end

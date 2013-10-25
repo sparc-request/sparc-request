@@ -1,4 +1,6 @@
 class ResearchTypesInfo < ActiveRecord::Base
+  audited
+
   self.table_name = 'research_types_info'
 
   belongs_to :protocol

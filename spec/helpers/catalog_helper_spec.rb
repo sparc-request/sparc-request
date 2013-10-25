@@ -7,7 +7,6 @@ describe CatalogManager::CatalogHelper do
       FactoryGirl.create(:institution,
         name:                 'Medical University of South Carolina',
         order:                1,
-        obisid:               '87d1220c5abf9f9608121672be000412',
         abbreviation:         'MUSC',
         is_available:         1
       )
@@ -18,7 +17,6 @@ describe CatalogManager::CatalogHelper do
         name:                 'South Carolina Clinical and Translational Institute (SCTR)',
         order:                1,
         css_class:            'blue-provider',
-        obisid:               '87d1220c5abf9f9608121672be0011ff',
         parent_id:            institution.id,
         abbreviation:         'SCTR1',
         process_ssrs:         0,
@@ -32,7 +30,6 @@ describe CatalogManager::CatalogHelper do
         name:                 'Office of Biomedical Informatics',
         order:                1,
         description:          'The Biomedical Informatics Programs goal is to integrate..',
-        obisid:               '87d1220c5abf9f9608121672be021963',
         parent_id:            provider.id,
         abbreviation:         'Informatics',
         process_ssrs:         0,

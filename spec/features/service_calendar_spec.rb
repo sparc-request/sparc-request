@@ -15,10 +15,51 @@ describe "service calendar", :js => true do
   after :each do
     wait_for_javascript_to_finish
   end
+  
+  describe "one time fee form" do
+    before :each do
+      arm1.visit_groups.each {|vg| vg.update_attribute(:day, 1)}
+      arm2.visit_groups.each {|vg| vg.update_attribute(:day, 1)}
+    end
+
+    describe "submitting form" do
+      it "should save the new quantity" do
+        fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", :with => 10
+        find(:xpath, "//a/img[@alt='Goback']/..").click
+        wait_for_javascript_to_finish
+        LineItem.find(line_item.id).quantity.should eq(10)
+      end
+      it "should save the new units per quantity" do
+        fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", :with => line_item.service.current_pricing_map.units_per_qty_max
+        find(:xpath, "//a/img[@alt='Goback']/..").click
+        wait_for_javascript_to_finish
+        LineItem.find(line_item.id).units_per_quantity.should eq(line_item.service.current_pricing_map.units_per_qty_max)
+      end
+    end
+    describe "validation" do
+      describe "unit minimum too low" do
+        it "Should throw errors" do
+          sleep 5
+          fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", :with => (line_item.service.current_pricing_map.unit_minimum - 1)
+          fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", :with => 1
+          wait_for_javascript_to_finish
+          find("div#one_time_fee_errors").should have_content("is less than the unit minimum")
+        end
+      end
+      describe "units per quantity too high" do
+        it "should throw js error" do
+          fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", :with => (line_item.service.current_pricing_map.units_per_qty_max + 1)
+          fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", :with => 1
+          wait_for_javascript_to_finish
+          find("div#unit_max_error").should have_content("more than the maximum allowed")
+        end
+      end
+    end
+  end
 
   describe "display rates" do
     it "should not show the full rate if your cost > full rate" do
-      first(".service_rate_#{arm1.visit_groupings.first.id}").should have_exact_text("")
+      first(".service_rate_#{arm1.line_items_visits.first.id}").should have_exact_text("")
     end
   end
 
@@ -29,20 +70,20 @@ describe "service calendar", :js => true do
       describe "selecting check row button" do
 
         it "should check all visits" do
-          click_link "check_row_#{arm1.visit_groupings.first.id}_template"
+          click_link "check_row_#{arm1.line_items_visits.first.id}_template"
           wait_for_javascript_to_finish
-          first(".total_#{arm1.visit_groupings.first.id}").should have_exact_text('$300.00') # Probably a better way to do this. But this should be the 10 visits added together.
+          first(".total_#{arm1.line_items_visits.first.id}").should have_exact_text('$300.00') # Probably a better way to do this. But this should be the 10 visits added together.
         end
 
         it "should uncheck all visits" do
-          click_link "check_row_#{arm1.visit_groupings.first.id}_template"
+          click_link "check_row_#{arm1.line_items_visits.first.id}_template"
           wait_for_javascript_to_finish
-          first(".total_#{arm1.visit_groupings.first.id}").should have_exact_text('$300.00') # this is here to wait for javascript to finish
+          first(".total_#{arm1.line_items_visits.first.id}").should have_exact_text('$300.00') # this is here to wait for javascript to finish
 
-          remove_from_dom(".total_#{arm1.visit_groupings.first.id}")
-          click_link "check_row_#{arm1.visit_groupings.first.id}_template"
+          remove_from_dom(".total_#{arm1.line_items_visits.first.id}")
+          click_link "check_row_#{arm1.line_items_visits.first.id}_template"
           wait_for_javascript_to_finish
-          first(".total_#{arm1.visit_groupings.first.id}").should have_exact_text('$0.00') # Probably a better way to do this.
+          first(".total_#{arm1.line_items_visits.first.id}").should have_exact_text('$0.00') # Probably a better way to do this.
         end
       end
 
@@ -53,7 +94,7 @@ describe "service calendar", :js => true do
           first("#check_all_column_3").click
           wait_for_javascript_to_finish
 
-          find("#visits_#{arm1.visit_groupings.first.visits[2].id}").checked?.should eq(true)
+          find("#visits_#{arm1.line_items_visits.first.visits[2].id}").checked?.should eq(true)
         end
 
         it "should uncheck all visits in the given column" do
@@ -62,20 +103,20 @@ describe "service calendar", :js => true do
           wait_for_javascript_to_finish
           
 
-          find("#visits_#{arm1.visit_groupings.first.visits[2].id}").checked?.should eq(true)
+          find("#visits_#{arm1.line_items_visits.first.visits[2].id}").checked?.should eq(true)
           wait_for_javascript_to_finish
           first("#check_all_column_3").click
           wait_for_javascript_to_finish
 
-          find("#visits_#{arm1.visit_groupings.first.visits[2].id}").checked?.should eq(false)
+          find("#visits_#{arm1.line_items_visits.first.visits[2].id}").checked?.should eq(false)
         end
       end
 
       describe "changing subject count" do
         before :each do
-          visit_id = arm1.visit_groupings.first.visits[1].id
+          visit_id = arm1.line_items_visits.first.visits[1].id
           page.check("visits_#{visit_id}")
-          select "2", :from => "visit_grouping_#{arm1.visit_groupings.first.id}_count"
+          select "2", :from => "line_items_visit_#{arm1.line_items_visits.first.id}_count"
         end
 
         it "should not change maximum totals" do
@@ -87,7 +128,7 @@ describe "service calendar", :js => true do
     describe "billing strategy tab" do
       before :each do
         click_link "billing_strategy_tab"
-        @visit_id = arm1.visit_groupings.first.visits[1].id
+        @visit_id = arm1.line_items_visits.first.visits[1].id
       end
 
       describe "selecting check all row button" do
@@ -95,7 +136,7 @@ describe "service calendar", :js => true do
         it "should overwrite the quantity in research billing box" do
           fill_in "visits_#{@visit_id}_research_billing_qty", :with => 10
           wait_for_javascript_to_finish
-          click_link "check_row_#{arm1.visit_groupings.first.id}_billing_strategy"
+          click_link "check_row_#{arm1.line_items_visits.first.id}_billing_strategy"
           wait_for_javascript_to_finish
           find("#visits_#{@visit_id}_research_billing_qty").should have_value("1")
         end
@@ -104,7 +145,7 @@ describe "service calendar", :js => true do
       describe "increasing the 'R' billing quantity" do
 
         # before :each do
-        #   @visit_id = arm1.visit_groupings.first.visits[1].id
+        #   @visit_id = arm1.line_items_visits.first.visits[1].id
         # end
 
         it "should increase the total cost" do
@@ -152,7 +193,7 @@ describe "service calendar", :js => true do
       describe "increasing the '%' or 'T' billing quantity" do
 
         before :each do
-          @visit_id = arm1.visit_groupings.first.visits[1].id
+          @visit_id = arm1.line_items_visits.first.visits[1].id
         end
 
         it "should not increase the total cost" do
@@ -182,7 +223,7 @@ describe "service calendar", :js => true do
     describe "quantity tab" do
 
       before :each do
-        @visit_id = arm1.visit_groupings.first.visits[1].id
+        @visit_id = arm1.line_items_visits.first.visits[1].id
       end
 
       it "should add all billing quantities together" do
@@ -217,7 +258,7 @@ describe "service calendar", :js => true do
     describe "calendar tab" do
 
       before :each do
-        @visit_id = arm1.visit_groupings.first.visits[1].id
+        @visit_id = arm1.line_items_visits.first.visits[1].id
       end
 
       it "should be blank if the visit is not checked" do

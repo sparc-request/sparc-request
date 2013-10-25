@@ -1,4 +1,6 @@
 class UserNotification < ActiveRecord::Base
+  audited
+
   belongs_to :notification
   belongs_to :user
 

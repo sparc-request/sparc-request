@@ -98,7 +98,12 @@ describe "editing a study", js: true do
     describe "editing the funding start date" do
 
       it "should change and save the date" do
+        todays_month = Integer(Date.today.strftime("%-m"))
+        study_month = Integer(study.funding_start_date.strftime("%-m"))
         find("#funding_start_date").click
+        if todays_month < study_month
+          page.execute_script %Q{ $('a.ui-datepicker-prev').trigger("click") }
+        end
         page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
         find("#funding_start_date").should have_value(Date.today.strftime('%-m/%d/%Y'))
       end
@@ -137,7 +142,7 @@ describe "editing a study", js: true do
       it "should change and save the date" do
         find("#potential_funding_start_date").click
         page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") }
-        find("#potential_funding_start_date").should have_value(Date.today.strftime('%-m/%d/%Y'))
+        find("#potential_funding_start_date").should have_value((Date.today + 1.year).strftime('%-m/%d/%Y'))
       end
     end
 

@@ -1,18 +1,17 @@
 class LineItem < ActiveRecord::Base
-  #Version.primary_key = 'id'
-  #has_paper_trail
+  audited
 
   belongs_to :service_request
   belongs_to :service, :include => [:pricing_maps, :organization]
   belongs_to :sub_service_request
   has_many :fulfillments, :dependent => :destroy
 
-  has_many :visit_groupings, :dependent => :destroy
-  has_many :arms, :through => :visit_groupings
+  has_many :line_items_visits, :dependent => :destroy
+  has_many :arms, :through => :line_items_visits
+  has_many :procedures
 
   attr_accessible :service_request_id
   attr_accessible :sub_service_request_id
-  attr_accessible :ssr_id
   attr_accessible :service_id
   attr_accessible :optional
   attr_accessible :quantity
@@ -23,8 +22,10 @@ class LineItem < ActiveRecord::Base
   validates :service_id, :numericality => true
   validates :service_request_id, :numericality => true
 
+  after_destroy :remove_procedures
+
   # TODO: order by date/id instead of just by date?
-  default_scope :order => 'id ASC'
+  default_scope :order => 'line_items.id ASC'
 
   def applicable_rate
     pricing_map         = self.service.displayed_pricing_map
@@ -74,9 +75,10 @@ class LineItem < ActiveRecord::Base
     return units_per_package
   end
 
-  def quantity_total(visit_grouping)
-    quantity_total = visit_grouping.visits.sum('research_billing_qty')
-    return quantity_total * visit_grouping.subject_count
+  def quantity_total(line_items_visit)
+    # quantity_total = self.visits.map {|x| x.research_billing_qty}.inject(:+) * self.subject_count
+    quantity_total = line_items_visit.visits.sum('research_billing_qty')
+    return quantity_total * line_items_visit.subject_count
   end
 
   # Returns a hash of subtotals for the visits in the line item.
@@ -95,13 +97,13 @@ class LineItem < ActiveRecord::Base
   end
 
   # Determine the direct costs for a visit-based service for one subject
-  def direct_costs_for_visit_based_service_single_subject(visit_grouping)
+  def direct_costs_for_visit_based_service_single_subject(line_items_visit)
     # TODO: use sum() here
     # totals_array = self.per_subject_subtotals(visits).values.select {|x| x.class == Float}
     # subject_total = totals_array.empty? ? 0 : totals_array.inject(:+)
-    result = visit_grouping.connection.execute("SELECT SUM(research_billing_qty) FROM visits WHERE visit_grouping_id=#{visit_grouping.id} AND research_billing_qty >= 1")
+    result = line_items_visit.connection.execute("SELECT SUM(research_billing_qty) FROM visits WHERE line_items_visit_id=#{line_items_visit.id} AND research_billing_qty >= 1")
     research_billing_qty_total = result.to_a[0][0] || 0
-    subject_total = research_billing_qty_total * per_unit_cost(quantity_total(visit_grouping))
+    subject_total = research_billing_qty_total * per_unit_cost(quantity_total(line_items_visit))
 
     subject_total
   end
@@ -109,8 +111,8 @@ class LineItem < ActiveRecord::Base
   # Determine the direct costs for a visit-based service
   def direct_costs_for_visit_based_service
     total = 0
-    self.visit_groupings.each do |visit_grouping|
-      total += visit_grouping.subject_count * self.direct_costs_for_visit_based_service_single_subject(visit_grouping)
+    self.line_items_visits.each do |line_items_visit|
+      total += line_items_visit.subject_count * self.direct_costs_for_visit_based_service_single_subject(line_items_visit)
     end
     total
   end
@@ -138,8 +140,8 @@ class LineItem < ActiveRecord::Base
   def indirect_costs_for_visit_based_service_single_subject
     if USE_INDIRECT_COST
       total = 0
-      self.visit_groupings.each do |visit_grouping|
-        total += self.direct_costs_for_visit_based_service_single_subject(visit_grouping) * self.indirect_cost_rate
+      self.line_items_visits.each do |line_items_visit|
+        total += self.direct_costs_for_visit_based_service_single_subject(line_items_visit) * self.indirect_cost_rate
       end
       return total
     else
@@ -164,5 +166,46 @@ class LineItem < ActiveRecord::Base
       self.direct_costs_for_one_time_fee * self.indirect_cost_rate
     end
   end
-end
 
+  def should_push_to_epic?
+    return self.service.send_to_epic
+  end
+  
+  ### audit reporting methods ###
+  
+  def audit_field_value_mapping
+    {"service_id" => "Service.find(ORIGINAL_VALUE).name"}
+  end
+  
+  def audit_excluded_fields
+    {'create' => ['service_request_id', 'sub_service_request_id', 'service_id', 'ssr_id', 'deleted_at', 'units_per_quantity']}
+  end
+  
+  def audit_label audit
+    if audit.action == 'create'
+      return "#{service.name} added to Service Request #{sub_service_request.display_id}"
+    else
+      return "#{service.name}"
+    end
+  end
+
+  ### end audit reporting methods ###
+
+  # Need this for filtering ssr's by user on the cfw home page
+  def core    
+    self.service.organization
+  end
+
+  private
+
+  def remove_procedures
+    procedures = self.procedures
+    procedures.each do |pro|
+      if pro.completed?
+        pro.update_attributes(service_id: self.service_id, line_item_id: nil, visit_id: nil)
+      else
+        pro.destroy
+      end
+    end
+  end
+end

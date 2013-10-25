@@ -45,7 +45,6 @@ class IdentitiesController < ApplicationController
     # insert logic to update identity
    
     # should check if this is an existing project role
-
     if params[:project_role][:id].blank?
       @project_role = ProjectRole.new params[:project_role]
       @project_role.identity = identity
@@ -53,17 +52,21 @@ class IdentitiesController < ApplicationController
       @project_role = ProjectRole.find params[:project_role][:id]
       @project_role.update_attributes params[:project_role]
     end
+
+    @project_role.set_epic_rights
+    @project_role.populate_for_edit
+
   end
 
   def approve_account
     @identity = Identity.find params[:id]
     @identity.update_attribute(:approved, true)
-    Notifier.account_status_change(@identity, true).deliver
+    Notifier.account_status_change(@identity, true).deliver unless @identity.email.blank?
   end
 
   def disapprove_account
     @identity = Identity.find params[:id]
     @identity.update_attribute(:approved, true)
-    Notifier.account_status_change(@identity, false).deliver
+    Notifier.account_status_change(@identity, false).deliver unless @identity.email.blank?
   end
 end

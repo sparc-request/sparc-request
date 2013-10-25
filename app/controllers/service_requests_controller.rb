@@ -218,8 +218,6 @@ class ServiceRequestsController < ApplicationController
           if @service_request.status == 'first_draft' or liv.subject_count.nil? or liv.subject_count > arm.subject_count
             liv.update_attribute(:subject_count, arm.subject_count)
           end
-
-          vg.create_or_destroy_visits
         end
         #Arm.visit_count has benn increased, so create new visit group, and populate the visits
         if arm.visit_count > arm.visit_groups.count

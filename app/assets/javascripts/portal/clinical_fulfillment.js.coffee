@@ -161,9 +161,9 @@ $(document).ready ->
       $('td.procedure_total_cell:visible').each ->
         value = $(this).text().replace('$', '').replace(/[ ,]/g, "")
         subtotal += parseFloat(value)  if not isNaN(value) and value.length isnt 0
-      $('tr.grand_total_row td.grand_total_cell').text('$' + commaSeparateNumber(subtotal.toFixed(2)))
+      $('tr.grand_total_row td.grand_total_cell:visible').text('$' + commaSeparateNumber(subtotal.toFixed(2)))
     else
-      $('tr.grand_total_row td.grand_total_cell').text('$0.00')
+      $('tr.grand_total_row td.grand_total_cell:visible').text('$0.00')
 
   ####Prevent enter key on study_tracker_table
   $('.study_tracker_table input').keypress (event) ->

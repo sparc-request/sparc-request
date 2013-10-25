@@ -156,14 +156,15 @@ $(document).ready ->
         $(this).siblings('td.procedure_total_cell').text('$0.00')
 
   recalc_subtotal = () ->
-    if $('.hasDatepicker:visible').val()
-      subtotal = 0
-      $('td.procedure_total_cell:visible').each ->
-        value = $(this).text().replace('$', '').replace(/[ ,]/g, "")
-        subtotal += parseFloat(value)  if not isNaN(value) and value.length isnt 0
-      $('tr.grand_total_row td.grand_total_cell:visible').text('$' + commaSeparateNumber(subtotal.toFixed(2)))
-    else
-      $('tr.grand_total_row td.grand_total_cell:visible').text('$0.00')
+    $('.study_tracker_table').each ->
+      if $(this).find('.hasDatepicker').val()
+        subtotal = 0
+        $(this).find('td.procedure_total_cell').each ->
+          value = $(this).text().replace('$', '').replace(/[ ,]/g, "")
+          subtotal += parseFloat(value)  if not isNaN(value) and value.length isnt 0
+        $(this).find('tr.grand_total_row td.grand_total_cell').text('$' + commaSeparateNumber(subtotal.toFixed(2)))
+      else
+        $(this).find('tr.grand_total_row td.grand_total_cell').text('$0.00')
 
   ####Prevent enter key on study_tracker_table
   $('.study_tracker_table input').keypress (event) ->

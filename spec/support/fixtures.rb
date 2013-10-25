@@ -89,7 +89,7 @@ def build_service_request
   let!(:service_request)     { FactoryGirl.create(:service_request, status: "draft") }
   let!(:institution)         { FactoryGirl.create(:institution,name: 'Medical University of South Carolina', order: 1, abbreviation: 'MUSC', is_available: 1)}
   let!(:provider)            { FactoryGirl.create(:provider,parent_id:institution.id,name: 'South Carolina Clinical and Translational Institute (SCTR)',order: 1,css_class: 'blue-provider', abbreviation: 'SCTR1',process_ssrs: 0,is_available: 1)}
-  let!(:program)             { FactoryGirl.create(:program,type:'Program',parent_id:provider.id,name:'Office of Biomedical Informatics',order:1, abbreviation:'Informatics', process_ssrs:  0, is_available: 1)}
+  let!(:program)             { FactoryGirl.create(:program,type:'Program',parent_id:provider.id,name:'Office of Biomedical Informatics',order:1, abbreviation:'Informatics', process_ssrs:  0, is_available: 1, show_in_cwf: true)}
   let!(:core)                { FactoryGirl.create(:core, parent_id: program.id)}
   let!(:core_17)             { FactoryGirl.create(:core, parent_id: program.id, abbreviation: "Nutrition", show_in_cwf: true, position_in_cwf: 4) }
   let!(:core_13)             { FactoryGirl.create(:core, parent_id: program.id, abbreviation: "Nursing", show_in_cwf: true, position_in_cwf: 1) }
@@ -199,19 +199,8 @@ def build_study
 end
 
 def build_clinical_data all_subjects = nil
-  ##Requires visit data to be created first.
-  if all_subjects
-    service_request.arms.each do |arm|
-      arm.subject_count.times do
-        subject = arm.subjects.create(name: "Subject I")
-        subject.calendar.populate(arm.visit_groups)
-      end
-    end
-  else
-    service_request.arms.each do |arm|
-      subject = arm.subjects.create(name: "Subject I")
-      subject.calendar.populate(arm.visit_groups)
-    end
+  service_request.arms.each do |arm|
+    arm.populate_subjects
   end
 end
 

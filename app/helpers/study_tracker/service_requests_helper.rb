@@ -1,8 +1,24 @@
 module StudyTracker::ServiceRequestsHelper
   def appointment_visits appointments
-    options_array = appointments.map{|x| ["##{x.position_switch}: #{x.name_switch}", {'data-appointment_id'=>x.id}]}
+    options_array = appointments.map{|x| ["##{x.position_switch}: #{x.name_switch}", {'data-visit_group_id' => x.try(:visit_group).try(:id)}]}.uniq
     
     options_array
+  end
+
+  def get_appointment_for_tab calendar_form, default_visit_group_id, org
+    if default_visit_group_id.nil?
+      appointment = calendar_form.object.appointments_for_core(org.id).detect {|x| "##{x.position_switch}: #{x.name_switch}" == @selected_key}
+    else
+      appointment = calendar_form.object.appointments_for_core(org.id).where(:visit_group_id => @default_visit_group_id).try(:first)
+    end
+
+    if appointment.nil?
+      if default_visit_group_id
+        appointment = calendar_form.object.appointments.create(:visit_group_id => default_visit_group_id, :organization_id => org.id)
+      end
+    end
+
+    appointment
   end
 
   def display_org_tree organization

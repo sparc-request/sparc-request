@@ -9,7 +9,6 @@ class Fulfillment < ActiveRecord::Base
   attr_accessible :time
   attr_accessible :date
 
-  # TODO: order by date/id instead of just by date?
   default_scope :order => 'fulfillments.id ASC'
 
   QUANTITY_TYPES = ['Min', 'Hours', 'Days', 'Each']

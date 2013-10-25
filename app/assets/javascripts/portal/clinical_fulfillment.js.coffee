@@ -165,6 +165,11 @@ $(document).ready ->
     else
       $('tr.grand_total_row td.grand_total_cell').text('$0.00')
 
+  ####Prevent enter key on study_tracker_table
+  $('.study_tracker_table input').keypress (event) ->
+    charCode = event.charCode || event.keyCode
+    if charCode == 13
+      return false
 
   ####Comments Logic:
   $(document).on('click', '.add_comment_link', ->

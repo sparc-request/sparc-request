@@ -9,7 +9,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     session[:service_calendar_pages] = params[:pages] if params[:pages]
 
     if @user.can_edit_fulfillment? @sub_service_request.organization
-      @user_toasts = @user.received_toast_messages.select {|x| x.sending_object.class == SubServiceRequest}.select {|y| y.sending_class_id == @sub_service_request.id}
+      @user_toasts = @user.received_toast_messages.select {|x| x.sending_class == 'SubServiceRequest'}.select {|y| y.sending_class_id == @sub_service_request.id}
       @service_request = @sub_service_request.service_request
       @protocol = @sub_service_request.try(:service_request).try(:protocol)
       if not @protocol then
@@ -55,7 +55,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     if @protocol.update_attributes attrs
       redirect_to "/portal/admin/sub_service_requests/#{@sub_service_request.id}"
     else
-      @user_toasts = @user.received_toast_messages.select {|x| x.sending_object.class == SubServiceRequest}
+      @user_toasts = @user.received_toast_messages.select {|x| x.sending_class == 'SubServiceRequest'}
       @service_request = @sub_service_request.service_request
       @protocol.populate_for_edit if @protocol.type == "Study"
       @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition {|x| x.is_one_time_fee?}

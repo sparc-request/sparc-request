@@ -41,7 +41,6 @@
               %td
               %td
               %td.grand_total_cell.text-center= number_to_currency(@default_subtotal)
-              %p= @default_subtotal
         .add_service
           %div{:class => "core_#{org.id}"}
             = select_tag :service, options_for_select(org.services.select{|x| x.is_available?}.sort_by{|x| x.name}.map{|x| [x.name, x.id]}), :"data-appointment_id" => appointment_form.object.id, :"data-ssr_id" => @sub_service_request.id

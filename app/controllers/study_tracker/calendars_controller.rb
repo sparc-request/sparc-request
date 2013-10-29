@@ -87,9 +87,9 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
       @default_appointment = completed_for_core.first
       @default_subtotal = @default_appointment.procedures.sum{|x| x.total}
     else
+      @default_appointment = @uncompleted_appointments.first || @appointments.first
       default_procedures = @default_appointment.procedures.select{|x| x.core == @cwf_cores.first}
       @default_subtotal = @default_appointment.completed_for_core?(@default_core.id) ? default_procedures.sum{|x| x.total} : 0.00
-      @default_appointment = @uncompleted_appointments.first || @appointments.first
     end
 
     @default_visit_group_id = @subject.arm.visit_groups.first.id

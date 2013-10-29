@@ -56,7 +56,11 @@ class Appointment < ActiveRecord::Base
   # TODO
   # Update this method when the new core specific completed dates are added
   def completed_for_core? (core_id)
-    self.completed?
+    if self.completed? && (self.organization_id == core_id)
+      return true
+    else
+      return false
+    end
   end
 
   # def create_appointment_completions

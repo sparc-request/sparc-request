@@ -8,6 +8,8 @@ describe "admin fulfillment tab", :js => true do
 
   before :each do
     add_visits
+    subsidy_map.destroy
+    subsidy.destroy
     visit portal_admin_sub_service_request_path(sub_service_request)
     wait_for_javascript_to_finish
   end
@@ -29,7 +31,7 @@ describe "admin fulfillment tab", :js => true do
       # More data checks here (more information probably needs to be put in the mocks)
       page.should_not have_content('#service_request_owner')
       page.should have_xpath("//option[@value='#{service.id}' and @selected='selected']")
-      page.find("#arm_#{arm1.id}_visit_name_4").should have_value 'teapot'
+      page.find("#arm_#{arm1.id}_visit_name_4").should have_value 'Visit 4'
       page.should have_xpath("//option[@value='#{service2.id}' and @selected='selected']")
     end
 
@@ -63,8 +65,8 @@ describe "admin fulfillment tab", :js => true do
         
         visit portal_admin_sub_service_request_path(sub_service_request)
         service_request.reload
-        page.find('#service_request_start_date_picker').should have_value service_request.start_date.strftime("%m/%d/%y")
-        page.find('#service_request_end_date_picker').should have_value service_request.end_date.strftime("%m/%d/%y")
+        page.find('#service_request_start_date_picker').should have_value study.start_date.strftime("%m/%d/%y")
+        page.find('#service_request_end_date_picker').should have_value study.end_date.strftime("%m/%d/%y")
       end
     end
 
@@ -86,6 +88,23 @@ describe "admin fulfillment tab", :js => true do
         sub_service_request.reload
         page.find('#sub_service_request_consult_arranged_date_picker').should have_value sub_service_request.consult_arranged_date.strftime("%m/%d/%y")
         page.find('#sub_service_request_requester_contacted_date_picker').should have_value sub_service_request.requester_contacted_date.strftime("%m/%d/%y")
+      end
+
+      context "study cwf access" do
+
+        it "should disable the cwf access once it has been checked" do
+          find("#in_work_fulfillment").click
+          wait_for_javascript_to_finish
+          find("#in_work_fulfillment")['disabled'].should eq("true")
+        end
+
+        it "should add the cwf access to the sub service request" do
+          find("#in_work_fulfillment").click
+          wait_for_javascript_to_finish
+          sub_service_request.reload
+          sub_service_request.in_work_fulfillment.should eq(true)
+        end
+
       end
 
       context "subsidy information" do
@@ -112,6 +131,32 @@ describe "admin fulfillment tab", :js => true do
           wait_for_javascript_to_finish
           page.should have_content "Service request has been saved."
           find('#subsidy_pi_contribution').should have_value('%.1f' % [sub_service_request.grand_total / 100 / 2])
+        end
+
+        it "should change the total cost if the calendar visits are edited" do
+          previous_direct_cost = ""
+          within("#fulfillment_subsidy") do
+            previous_direct_cost = find("#direct_cost_total").text
+          end
+          click_link "check_row_#{arm1.line_items_visits.first.id}_template"
+          wait_for_javascript_to_finish
+          within("#fulfillment_subsidy") do
+            find("#direct_cost_total").text.should_not eq(previous_direct_cost)
+          end
+        end
+
+        it "should change the total cost if a visit-based service is added and checked" do
+          previous_direct_cost = find("#direct_cost_total").text
+          within("#add_ppv_service_container") do
+            click_on "Add Service"
+          end
+          wait_for_javascript_to_finish
+          second_service = arm1.line_items_visits[1]
+          click_link "check_row_#{second_service.id}_template"
+          wait_for_javascript_to_finish
+          within("#fulfillment_subsidy") do
+            find("#direct_cost_total").text.should_not eq(previous_direct_cost)
+          end
         end
       end
 
@@ -234,12 +279,16 @@ describe "admin fulfillment tab", :js => true do
         fill_in "arm_#{arm1.id}_visit_name_1", :with => "HOLYCOW"
         find("#arm_#{arm1.id}_visit_name_2").click
         wait_for_javascript_to_finish
-        line_item2.visit_groupings[0].visits[0].name.should eq "HOLYCOW"
+        line_item2.line_items_visits[0].visits[0].visit_group.name.should eq "HOLYCOW"
       end
 
       it "should add visits" do
         click_link 'Add a Visit'
         wait_for_javascript_to_finish
+        fill_in "visit_name", :with => 'Pandas'
+        fill_in "visit_day", :with => 20
+        fill_in "visit_window", :with => 10
+        click_button "submit_visit"
         page.should have_content "Service request has been saved."
         page.should have_content 'Add Visit 12'
       end
@@ -283,6 +332,24 @@ describe "admin fulfillment tab", :js => true do
       end
     end
   end
+
+  describe "push to epic" do
+    it 'should display a toast message when push succeeds' do
+      click_link 'Send To Epic'
+      wait_for_javascript_to_finish
+      find('.toast-container').should have_content("Project/Study has been sent to Epic")
+    end
+
+    it 'should display a toast message when push fails' do
+      EPIC_RESULTS << FakeEpicServlet::Result::Error.new(
+        value: 'soap:Server',
+        text: 'There was an error')
+
+      click_link 'Send To Epic'
+      wait_for_javascript_to_finish
+      find('.toast-container').should have_content("There was an error.")
+    end
+  end
 end
 
 describe 'fulfillment tab with disabled services', :js => true do
@@ -305,6 +372,6 @@ describe 'fulfillment tab with disabled services', :js => true do
   it 'should not display dropdown' do
     arm1.reload
     find('.line_item.odd').should have_content "#{service2.name} (Disabled)"
-    find('.line_item.odd').should_not have_selector("#services_#{arm1.visit_groupings.first.id}")
+    find('.line_item.odd').should_not have_selector("#services_#{arm1.line_items_visits.first.id}")
   end
 end

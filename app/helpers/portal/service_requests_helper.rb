@@ -55,9 +55,9 @@ module Portal::ServiceRequestsHelper
   end
 
   def max_visit_count sub_service_request
-    visit_groupings = sub_service_request.line_items.map { |li| li.visit_groupings }
-    visit_groupings.flatten!
-    visit_counts = visit_groupings.map { |vg| vg.visits.count }
+    line_items_visits = sub_service_request.line_items.map { |li| li.line_items_visits }
+    line_items_visits.flatten!
+    visit_counts = line_items_visits.map { |vg| vg.visits.count }
 
     return visit_counts.max
   end
@@ -86,8 +86,8 @@ module Portal::ServiceRequestsHelper
 
   # This method is ugly
   def visits_for_select arm
-    unless arm.visit_groupings.empty?
-      vg = arm.visit_groupings.first
+    unless arm.line_items_visits.empty?
+      vg = arm.line_items_visits.first
       unless vg.visits.empty?
         # If there are position attributes set, use positon
         if vg.visits.last.position
@@ -102,7 +102,7 @@ module Portal::ServiceRequestsHelper
         end
         arr = [["Add Visit #{last_position + 1}", nil]]
         last_position.times do |visit|
-          visit_name = vg.visits[visit].name || "Visit #{visit}"
+          visit_name = vg.visits[visit].visit_group.name || "Visit #{visit}"
           arr << ["Insert before #{visit + 1} - #{visit_name}", visit + 1]
         end
       else
@@ -116,11 +116,11 @@ module Portal::ServiceRequestsHelper
   end
 
   def visits_for_delete arm
-    vg = arm.visit_groupings.first
+    vg = arm.line_items_visits.first
     visit_count = vg.visits.count
     arr = []
     visit_count.times do |visit|
-      visit_name = vg.visits[visit].name || "Visit #{visit}"
+      visit_name = vg.visits[visit].visit_group.name || "Visit #{visit}"
       arr << ["Delete Visit #{visit + 1} - #{visit_name}", visit + 1]
     end
 

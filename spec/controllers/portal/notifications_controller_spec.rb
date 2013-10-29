@@ -155,6 +155,13 @@ describe Portal::NotificationsController do
           sub_service_request_id: ssr.id,
           originator_id: identity2.id,
         },
+        message: {
+          from: identity1.id,
+          to:   identity2.id,
+          email:   'abe.lincoln@whitehouse.gov',
+          subject: 'Emancipation',
+          body:    'Four score and seven years ago...',
+        },
       }.with_indifferent_access
 
       assigns(:sub_service_request).should eq ssr
@@ -168,10 +175,17 @@ describe Portal::NotificationsController do
           sub_service_request_id: ssr.id,
           originator_id: identity1.id,
         },
+        message: {
+          from: identity1.id,
+          to:   identity2.id,
+          email:   'abe.lincoln@whitehouse.gov',
+          subject: 'Emancipation',
+          body:    'Four score and seven years ago...',
+        },
       }.with_indifferent_access
 
       new_notification = assigns(:notification)
-      assigns(:notifications).should eq [ ] # TODO: should new_notification be in the list?
+      assigns(:notifications).should eq [new_notification] # TODO: should new_notification be in the list?
     end
 
     it 'should deliver the notification via email' do

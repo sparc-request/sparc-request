@@ -1,6 +1,5 @@
 class Service < ActiveRecord::Base
-  #Version.primary_key = 'id'
-  #has_paper_trail
+  audited
 
   RATE_TYPES = [{:display => "Service Rate", :value => "full"}, {:display => "Federal Rate", :value => "federal"}, {:display => "Corporate Rate", :value => "corporate"}, {:display => "Other Rate", :value => "other"}, {:display => "Member Rate", :value => "member"}]
 
@@ -21,7 +20,9 @@ class Service < ActiveRecord::Base
   has_many :depending_service_relations, :class_name => 'ServiceRelation', :foreign_key => 'related_service_id'
   has_many :depending_services, :through => :depending_service_relations, :source => :service
 
-  attr_accessible :obisid
+  # Surveys associated with this service
+  has_many :associated_surveys, :as => :surveyable
+
   attr_accessible :name
   attr_accessible :abbreviation
   attr_accessible :order
@@ -32,6 +33,8 @@ class Service < ActiveRecord::Base
   attr_accessible :charge_code
   attr_accessible :revenue_code
   attr_accessible :organization_id
+  attr_accessible :cdm_code
+  attr_accessible :send_to_epic
 
   validate :validate_pricing_maps_present
   
@@ -73,6 +76,20 @@ class Service < ActiveRecord::Base
     org = provider.parent if organization.type == 'Provider'
     org = organization if organization.type == 'Institution'
     org
+  end
+
+  # do i have any available surveys, otherwise, look up tree and return first available surveys
+  def available_surveys
+    available = nil
+  
+    parents.each do |parent|
+      next if parent.type == 'Institution' # Institutions can't define associated surveys
+      available = parent.associated_surveys.map(&:survey) unless parent.associated_surveys.empty?
+    end
+    
+    available = associated_surveys.map(&:survey) unless associated_surveys.empty? # i have available surveys, use those instead
+
+    available
   end
   
   # Given a dollar amount as a String, return an integer number of
@@ -144,7 +161,7 @@ class Service < ActiveRecord::Base
       else
         pricing_map = current_maps.sort {|a,b| b.display_date <=> a.display_date}.first
       end
-
+      
       return pricing_map
     else
       raise ArgumentError, "Service has no pricing maps!"
@@ -244,5 +261,9 @@ class Service < ActiveRecord::Base
   
   def has_service_providers?
     self.organization.process_ssrs_parent.service_providers.present? rescue true
+  end
+
+  def is_ctrc?
+    self.organization.has_tag? 'ctrc'
   end
 end

@@ -1,0 +1,54 @@
+- unless @procedures.empty?
+  = render :partial => "procedures_added_popup"
+
+= hidden_field_tag :calendar_id, @calendar.id
+= nested_form_for @subject, :url => study_tracker_subject_path(@subject) do |f|
+  = hidden_field_tag :sub_service_request_id, @sub_service_request.id
+  %table.study_tracker_table{:style => "width:940px;"}
+    %thead.left_headers
+      %tr.ui-widget-header
+        %th
+          = t(:study_tracker)[:visit_calendar][:header1]
+          = @sub_service_request.service_request.protocol.id
+        %th
+          = t(:study_tracker)[:visit_calendar][:header2]
+          = @subject.external_subject_id
+      %tr.ui-widget-header
+        %th
+          = t(:study_tracker)[:visit_calendar][:header3]
+          = @sub_service_request.service_request.protocol.billing_managers.try(:first).try(:full_name)
+        %th
+          = t(:study_tracker)[:visit_calendar][:header4]
+          = f.select :status, options_for_select(["Active", "Completed", "Early Term", "Screen Fail"], f.try(:object).try(:status)), :include_blank => "--Choose a Status--"
+  #controls
+    %p= t(:study_tracker)[:visit_calendar][:visit_selector]
+    = select_tag :visit, options_for_select(appointment_visits(@appointments), selected_key = @selected_key), :class => 'clinical_select_data', :autocomplete => 'off'
+  %p= link_to "-- Show Dashboard --", 'javascript:void(0);', :class => "ui-state-active dashboard_link"
+
+  #dashboard_container
+    #dashboard{:style => "display:none;"}
+      %p.save_alert{:style => "text-align:center; margin-bottom:5px; display:none; color:red; font-weight:bold;"}= t(:study_tracker)[:visit_calendar][:save_alert]
+      = render :partial => "dashboard_table", :locals => {:completed_appointments => @completed_appointments}
+
+  %div{:style => "margin: 25px 0px;"}
+    = f.fields_for :calendar do |calendar_form|
+      .cwf_tabs
+        %ul
+          - @cwf_cores.each do |org|
+            %li{'data-core_id' => org.id}
+              %a.clinical_tab_data{:href => "#tab-#{org.id}", 'data-has_access' => @user.can_edit_core?(org.id) ? 'true' : 'false'}= org.abbreviation
+        #cwf_tab_contents
+          = render :partial => 'cwf_tab_contents', :locals => {:calendar_form => calendar_form}
+
+  %p{:style => "text-align:center; margin-bottom:12px;"}= f.submit t(:study_tracker)[:visit_calendar][:submit], :id => 'save_appointments', :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;font-size:1.2em;"
+  %p.save_alert{:style => "text-align:center; margin-bottom:12px; display:none; color:red; font-weight:bold;"} You must save this form for any changes to be commited.
+  %p{:style => "text-align:center; margin-bottom:12px;"}= link_to t(:study_tracker)[:visit_calendar][:cwf_link], study_tracker_sub_service_request_path(@sub_service_request), :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;font-size:1.2em;"
+
+:coffeescript
+  $(".cwf_tabs").tabs(
+    active: ($.cookie("cwf_appointment_tab"))
+    activate: (event, ui) ->
+      $.cookie("cwf_appointment_tab", $(".cwf_tabs").tabs("option","active"))
+      core_id = $(ui.newTab).data("core_id")
+      $.cookie('current_core', core_id, {path: '/', expires: 1})
+  )

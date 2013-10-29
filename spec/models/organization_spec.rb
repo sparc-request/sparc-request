@@ -1,15 +1,22 @@
 require 'date'
 require 'spec_helper'
 
-describe 'Organization' do
-  describe 'submission_emails_lookup' do
-      let!(:submission_email_1) {FactoryGirl.create(:submission_email)}
-      let!(:submission_email_2) {FactoryGirl.create(:submission_email)}
-      let!(:submission_email_3) {FactoryGirl.create(:submission_email)}
-      let!(:provider) {FactoryGirl.create(:provider, submission_emails: [submission_email_1])}
-      let!(:program) {FactoryGirl.create(:program, parent_id: provider.id, submission_emails: [submission_email_2])}
-      let!(:core) {FactoryGirl.create(:core, :process_ssrs, parent_id: program.id, submission_emails: [submission_email_3])}
-      let!(:sub_service_request) {FactoryGirl.create(:sub_service_request, organization_id: core.id)}
+describe 'organization' do
+  let_there_be_lane
+  let_there_be_j
+  build_service_request_with_project
+
+  describe 'submission emails lookup' do
+
+      let!(:submission_email_1) {FactoryGirl.create(:submission_email, organization_id: provider.id)}
+      let!(:submission_email_2) {FactoryGirl.create(:submission_email, organization_id: program.id)}
+      let!(:submission_email_3) {FactoryGirl.create(:submission_email, organization_id: core.id)}
+    
+      before :each do
+        provider.update_attributes(process_ssrs: 1)
+        core.update_attributes(process_ssrs: 1)
+        sub_service_request.update_attributes(organization_id: core.id)
+      end
 
       it "should return the first submission e-mails it finds" do
         sub_service_request.organization.submission_emails_lookup.should include(submission_email_3)
@@ -29,63 +36,35 @@ describe 'Organization' do
   end
 
   describe 'parent' do
+
     it "should return nil if there is no parent" do
-      organization = FactoryGirl.build(:organization)
-      organization.save!
-      organization.parent.should equal nil
+     institution.parent.should equal nil
     end
 
     it "should return the parent if there is a parent" do
-      parent = FactoryGirl.build(:organization)
-      parent.save!
-
-      child = FactoryGirl.build(:organization, :parent_id => parent.id)
-      child.save!
-
-      child.parent.should eq parent
+      provider.parent.should eq institution
     end
   end
 
   describe 'parents' do
+
     it 'should return an empty array if there is no parent' do
-      organization = FactoryGirl.build(:organization)
-      organization.save!
-      organization.parents.should eq []
+      institution.parents.should eq []
     end
 
     it 'should return a single parent if it has a parent and the parent has no parent' do
-      parent = FactoryGirl.build(:organization)
-      parent.save!
-
-      child = FactoryGirl.build(:organization, :parent_id => parent.id)
-      child.save!
-
-      child.parents.should eq [ parent ]
+      provider.parents.should eq [ institution ]
     end
 
     it 'should return the parent and grandparent if there is a grandparent' do
-      grandparent = FactoryGirl.build(:organization)
-      grandparent.save!
-
-      parent = FactoryGirl.build(:organization, :parent_id => grandparent.id)
-      parent.save!
-
-      child = FactoryGirl.build(:organization, :parent_id => parent.id)
-      child.save!
-
-      child.parents.should eq [ parent, grandparent ]
+      program.parents.should eq [ provider, institution ]
     end
   end
 
   describe 'heirarchy methods' do 
 
-    let!(:institution) { FactoryGirl.create(:institution) }
-    let!(:provider) { FactoryGirl.create(:provider, parent_id: institution.id) }
-    let!(:program) { FactoryGirl.create(:program, parent_id: provider.id) }
     let!(:program2) { FactoryGirl.create(:program, parent_id: provider.id) }
-    let!(:core) { FactoryGirl.create(:core, parent_id: program.id) }
     let!(:core2) { FactoryGirl.create(:core, parent_id: program2.id) }
-    
 
     describe 'process ssrs parent' do
                
@@ -136,6 +115,7 @@ describe 'Organization' do
     end
 
     describe 'all children' do
+
       it 'should return itself if it is a core' do
         core.all_children.should eq([core])
       end
@@ -155,12 +135,16 @@ describe 'Organization' do
     end
 
     describe 'all child services' do
-      let!(:service)  { FactoryGirl.create(:service, organization_id: core.id) }
+
       let!(:service2) { FactoryGirl.create(:service, organization_id: core2.id) }
       let!(:program3) { FactoryGirl.create(:program, parent_id: provider.id) }
       let!(:service3) { FactoryGirl.create(:service, organization_id: program3.id) }
       let!(:program4) { FactoryGirl.create(:program) }
       let!(:core3)    { FactoryGirl.create(:core, parent_id: program4.id) }
+
+      before :each do
+        service.update_attributes(organization_id: core.id)
+      end
 
       it 'should return the correct service for a core' do
         core.all_child_services.should eq([service])
@@ -194,6 +178,7 @@ describe 'Organization' do
 
 
   describe 'current_pricing_setup' do
+
     it 'should raise an exception if there are no pricing setups' do
       organization = FactoryGirl.build(:provider)
       organization.save!
@@ -243,7 +228,8 @@ describe 'Organization' do
     end
   end
 
-  describe 'pricing_setup_for_date' do
+  describe 'pricing setup for date' do
+    
     it 'should raise an exception if there are no pricing setups' do
       organization = FactoryGirl.create(:provider)
       lambda { organization.pricing_setup_for_date(Date.parse('2012-01-01')) }.should raise_exception(ArgumentError)
@@ -264,160 +250,127 @@ describe 'Organization' do
     # current_pricing_setup
   end
 
-  describe 'eligible_for_subsidy?' do
+  describe 'eligible for subsidy?' do
+
     it 'should return false if there is no subsidy map' do
-      organization = FactoryGirl.create(:organization)
-      organization.stub(:subsidy_map).and_return(nil)
-      organization.eligible_for_subsidy?.should eq false
+      program.stub(:subsidy_map).and_return(nil)
+      program.eligible_for_subsidy?.should eq false
     end
 
     it 'should return true if max dollar cap is greater than 0' do
-      organization = FactoryGirl.create(:organization)
-      organization.stub(:subsidy_map).and_return(double(
-          max_dollar_cap: 1,
-          max_percentage: 0))
-      organization.eligible_for_subsidy?.should eq true
+      program.stub(:subsidy_map).and_return(double(max_dollar_cap: 1, max_percentage: 0))
+      program.eligible_for_subsidy?.should eq true
     end
 
     it 'should return true if max percentage is greater than 0' do
-      organization = FactoryGirl.create(:organization)
-      organization.stub(:subsidy_map).and_return(double(
-          max_dollar_cap: 0,
-          max_percentage: 1))
-      organization.eligible_for_subsidy?.should eq true
+      program.stub(:subsidy_map).and_return(double(max_dollar_cap: 0, max_percentage: 1))
+      program.eligible_for_subsidy?.should eq true
     end
 
     it 'should return false if max dollar cap is 0 and max percentage is 0' do
-      organization = FactoryGirl.create(:organization)
-      organization.stub(:subsidy_map).and_return(double(
-          max_dollar_cap: 0,
-          max_percentage: 0))
-      organization.eligible_for_subsidy?.should eq false
+      program.stub(:subsidy_map).and_return(double(max_dollar_cap: 0, max_percentage: 0))
+      program.eligible_for_subsidy?.should eq false
     end
 
     it 'should return false if max dollar cap is nil and subsidy map is 0' do
-      organization = FactoryGirl.create(:organization)
-      organization.stub(:subsidy_map).and_return(double(
-          max_dollar_cap: nil,
-          max_percentage: 0))
-      organization.eligible_for_subsidy?.should eq false
+      program.stub(:subsidy_map).and_return(double(max_dollar_cap: nil, max_percentage: 0))
+      program.eligible_for_subsidy?.should eq false
     end
 
     it 'should return false if max dollar cap is 0 and subsidy map is nil' do
-      organization = FactoryGirl.create(:organization)
-      organization.stub(:subsidy_map).and_return(double(
-          max_dollar_cap: 0,
-          max_percentage: nil))
-      organization.eligible_for_subsidy?.should eq false
+      program.stub(:subsidy_map).and_return(double(max_dollar_cap: 0, max_percentage: nil))
+      program.eligible_for_subsidy?.should eq false
     end
 
     it 'should return true if max dollar cap is nil and subsidy map is 1' do
-      organization = FactoryGirl.create(:organization)
-      organization.stub(:subsidy_map).and_return(double(
-          max_dollar_cap: nil,
-          max_percentage: 1))
-      organization.eligible_for_subsidy?.should eq true
+      program.stub(:subsidy_map).and_return(double(max_dollar_cap: nil, max_percentage: 1))
+      program.eligible_for_subsidy?.should eq true
     end
 
     it 'should return true if max dollar cap is 1 and subsidy map is nil' do
-      organization = FactoryGirl.create(:organization)
-      organization.stub(:subsidy_map).and_return(double(
-          max_dollar_cap: 1,
-          max_percentage: nil))
-      organization.eligible_for_subsidy?.should eq true
+      program.stub(:subsidy_map).and_return(double(max_dollar_cap: 1, max_percentage: nil))
+      program.eligible_for_subsidy?.should eq true
     end
 
     it 'should return false if max dollar cap is nil and subsidy map is nil' do
-      organization = FactoryGirl.create(:organization)
-      organization.stub(:subsidy_map).and_return(double(
-          max_dollar_cap: nil,
-          max_percentage: nil))
-      organization.eligible_for_subsidy?.should eq false
+      program.stub(:subsidy_map).and_return(double(max_dollar_cap: nil, max_percentage: nil))
+      program.eligible_for_subsidy?.should eq false
     end
   end
 
   describe "relationship methods" do
 
-    let!(:institution)       {FactoryGirl.create(:institution)}
-    let!(:institution2)      {FactoryGirl.create(:institution, process_ssrs: true)}
-    let!(:provider)          {FactoryGirl.create(:provider, parent_id: institution.id)}
-    let!(:provider2)         {FactoryGirl.create(:provider, parent_id: institution2.id)}
-    let!(:program)           {FactoryGirl.create(:program, parent_id: provider2.id)}
-    let!(:program2)          {FactoryGirl.create(:program, parent_id: provider.id)}
-    let!(:program3)          {FactoryGirl.create(:program, parent_id: provider2.id)}
-    let!(:service_provider)  {FactoryGirl.create(:service_provider, identity_id: 1, organization_id: provider.id)}
-    let!(:service_provider2) {FactoryGirl.create(:service_provider, identity_id: 2, organization_id: institution2.id)}
-    let!(:service_provider3) {FactoryGirl.create(:service_provider, identity_id: 3, organization_id: program.id)}
-    let!(:service_provider4) {FactoryGirl.create(:service_provider, identity_id: 4, organization_id: institution.id)}
-    let!(:super_user)        {FactoryGirl.create(:super_user, identity_id: 1, organization_id: institution2.id)}
-    let!(:super_user2)       {FactoryGirl.create(:super_user, identity_id: 2, organization_id: provider2.id)}
-    let!(:super_user3)       {FactoryGirl.create(:super_user, identity_id: 3, organization_id: program.id)}
-    let!(:available_status)  {FactoryGirl.create(:available_status, organization_id: program3.id, status: 'submitted')}
-    let!(:available_status2) {FactoryGirl.create(:available_status, organization_id: provider2.id, status: 'draft')}
-    # let!(:available_status3) {FactoryGirl.create(:available_status, organization_id: program2.id)}
-
     describe "service providers lookup" do
 
       it "should return an organization's service providers if they exist" do
-        provider.service_providers_lookup.should eq([service_provider])
+        program.service_providers_lookup.should eq([service_provider])
       end
 
       it "should return parent organization's service provider if child organization does not have one" do
-        provider2.service_providers_lookup.should eq([service_provider2])
+        core.service_providers_lookup.should eq([service_provider])
       end
     end
 
     describe "all service providers" do
 
       it "should return an organization's own service providers" do
-        provider.all_service_providers.should include(service_provider)
+        program.all_service_providers.should include(service_provider)
       end
 
       it "should return the parent's service providers" do
-        provider.all_service_providers.should include(service_provider4)
+        core.all_service_providers.should include(service_provider)
       end
 
       it "should return the child's service providers if process ssrs is set" do
-        institution2.all_service_providers.should include(service_provider3)
-      end
-
-      it "should not include its own service provider more than once" do
-        institution2.all_service_providers.should eq([service_provider3, service_provider2])
+        provider.update_attributes(process_ssrs: 1)
+        provider.all_service_providers.should include(service_provider)
       end
     end
 
     describe "all super users" do
 
       it "should return an organization's own super users" do
-        provider2.all_super_users.should include(super_user2)
+        program.all_super_users.should include(super_user)
       end
 
       it "should return the parent's super users" do
-        provider2.all_super_users.should include(super_user)
+        core.all_super_users.should include(super_user)
       end
 
       it "should return the child's super users" do
-        institution2.all_super_users.should include(super_user3)
-      end
-
-      it "should not include its own super user more than once" do
-        institution2.all_super_users.should eq([super_user2, super_user3, super_user])
+        provider.update_attributes(process_ssrs: 1)
+        provider.all_super_users.should include(super_user)
       end
     end
 
     describe "get available statuses" do
 
       it "should set the status to the parent's status if there is one" do
-        program.available_statuses = []
-        program.get_available_statuses.should eq({"draft" => "Draft"})
+        core.get_available_statuses.should eq({"draft"=>"Draft", "submitted"=>"Submitted"})
       end
 
       it "should set the status to the default if there are no parent statuses" do
-        program2.get_available_statuses.should include("draft" => "Draft", "submitted" => "Submitted", "complete" => "Complete", "in_process" => "In Process", "awaiting_pi_approval" => "Awaiting PI Approval", "on_hold" => "On Hold")
+        provider.get_available_statuses.should include("draft" => "Draft", "submitted" => "Submitted", "complete" => "Complete", "in_process" => "In Process", "awaiting_pi_approval" => "Awaiting PI Approval", "on_hold" => "On Hold")
       end
 
       it "should not get the parent's status if it already has a status" do
-        program3.get_available_statuses.should eq({"submitted" => "Submitted"})
+        program.get_available_statuses.should eq({"draft"=>"Draft", "submitted"=>"Submitted"})
+      end
+    end
+
+    context "patient visit calendar" do
+
+      let!(:core1)    { FactoryGirl.create(:core, show_in_cwf: true, position_in_cwf: 6) }
+      let!(:core2)    { FactoryGirl.create(:core, show_in_cwf: true, position_in_cwf: 7) }
+      describe "get cwf organizations" do
+
+        it "should return an array of all organizations flagged to show in clinical work fulfillment" do
+          Organization.get_cwf_organizations.should include(core1, core2)
+        end
+
+        it "should be sorted by its 'position_in_cwf' attribute" do
+          Organization.get_cwf_organizations.first.should eq(core_13)          
+        end
       end
     end
   end

@@ -1,6 +1,5 @@
 class VertebrateAnimalsInfo < ActiveRecord::Base
-  #Version.primary_key = 'id'
-  #has_paper_trail
+  audited
 
   self.table_name = 'vertebrate_animals_info'
 

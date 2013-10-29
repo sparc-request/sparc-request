@@ -46,14 +46,7 @@ class Directory
   # Searches the database only for a given search string.  Returns an
   # array of Identities.
   def self.search_database(term)
-    subqueries = [
-      "ldap_uid LIKE '%#{term}%'",
-      "email LIKE '%#{term}%'",
-      "last_name LIKE '%#{term}%'",
-      "first_name LIKE '%#{term}%'",
-    ]
-    query = subqueries.join(' OR ')
-    identities = Identity.where(query)
+    identities = Identity.where("ldap_uid like ? OR email like ? OR last_name like ? OR first_name like ?", "%#{term}%", "%#{term}%", "%#{term}%", "%#{term}%")
     return identities
   end
 
@@ -98,13 +91,13 @@ class Directory
 
     ldap_results.each do |r|
       begin
-        uid         = "#{r.send(LDAP_UID).first.downcase}@#{DOMAIN}"
-        email       = r.send(LDAP_EMAIL).first
-        first_name  = r.send(LDAP_FIRST_NAME).first
-        last_name   = r.send(LDAP_LAST_NAME).first
+        uid         = "#{r[LDAP_UID].try(:first).try(:downcase)}@#{DOMAIN}"
+        email       = r[LDAP_EMAIL].try(:first)
+        first_name  = r[LDAP_FIRST_NAME].try(:first)
+        last_name   = r[LDAP_LAST_NAME].try(:first)
 
         # Check to see if the identity is already in the database
-        if (identity = identities[uid]) then
+        if (identity = identities[uid]) or (identity = Identity.find_by_ldap_uid uid) then
           # Do we need to update any of the fields?  Has someone's last
           # name changed due to getting married, etc.?
           if identity.email != email or

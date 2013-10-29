@@ -1,6 +1,5 @@
 class Fulfillment < ActiveRecord::Base
-  #Version.primary_key = 'id'
-  #has_paper_trail
+  audited
 
   belongs_to :line_item
 
@@ -10,8 +9,7 @@ class Fulfillment < ActiveRecord::Base
   attr_accessible :time
   attr_accessible :date
 
-  # TODO: order by date/id instead of just by date?
-  default_scope :order => 'id ASC'
+  default_scope :order => 'fulfillments.id ASC'
 
   QUANTITY_TYPES = ['Min', 'Hours', 'Days', 'Each']
 end

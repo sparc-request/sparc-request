@@ -1,4 +1,7 @@
 SparcRails::Application.routes.draw do
+  match '/direct_link_to/:survey_code', :to => 'surveyor#create', :as => 'direct_link_survey', :via => :get
+  mount Surveyor::Engine => "/surveys", :as => "surveyor"
+  
   devise_for :identities, :controllers => { :omniauth_callbacks => "identities/omniauth_callbacks" }
 
   resources :identities do
@@ -40,18 +43,36 @@ SparcRails::Application.routes.draw do
     resource :service_calendars do
       member do
         get 'table'
+        get 'merged_calendar'
       end
       collection do
         put 'rename_visit'
+        put 'set_day'
+        put 'set_window'
       end
     end
 
   end
 
-  resources :projects
+  resources :protocols do
+    member do
+      get :approve_epic_rights
+      get :push_to_epic
+    end
+  end
+
+  resources :projects do
+    member do
+      get :push_to_epic_status
+    end
+  end
 
   resources :studies do
     resources :identities
+
+    member do
+      get :push_to_epic_status
+    end
   end
 
   resources :catalogs do
@@ -69,8 +90,8 @@ SparcRails::Application.routes.draw do
 
   match 'service_requests/:id/add_service/:service_id' => 'service_requests#add_service'
   match 'service_requests/:id/remove_service/:line_item_id' => 'service_requests#remove_service'
-  match 'service_requests/:id/select_calendar_row/:visit_grouping_id' => 'service_requests#select_calendar_row'
-  match 'service_requests/:id/unselect_calendar_row/:visit_grouping_id' => 'service_requests#unselect_calendar_row'
+  match 'service_requests/:id/select_calendar_row/:line_items_visit_id' => 'service_requests#select_calendar_row'
+  match 'service_requests/:id/unselect_calendar_row/:line_items_visit_id' => 'service_requests#unselect_calendar_row'
   match 'service_requests/:id/select_calendar_column/:column_id/:arm_id' => 'service_requests#select_calendar_column'
   match 'service_requests/:id/unselect_calendar_column/:column_id/:arm_id' => 'service_requests#unselect_calendar_column'
   match 'service_requests/:id/delete_document_group/:document_group_id' => 'service_requests#delete_documents'
@@ -89,6 +110,8 @@ SparcRails::Application.routes.draw do
       collection do
         post :add_excluded_funding_source
         delete :remove_excluded_funding_source
+        post :remove_associated_survey
+        post :add_associated_survey
       end
     end
 
@@ -114,6 +137,29 @@ SparcRails::Application.routes.draw do
     root :to => 'catalog#index'
   end
 
+  ##### Study Tracker/Clinical Work Fulfillment Portal#####
+  namespace :study_tracker, :path => "clinical_work_fulfillment" do
+    match 'appointments/add_note' => 'calendars#add_note'
+    match 'calendars/delete_toast_messages' => 'calendars#delete_toast_messages'
+    match 'calendars/change_visit_group' => 'calendars#change_visit_group'
+    match 'appointments/add_service' => 'calendars#add_service'
+
+    root :to => 'home#index'
+    resources :sub_service_requests do
+      resources :calendars
+      resources :cover_letters
+    end
+    
+    resources :service_requests
+    resources :subjects
+    
+    resources :protocols do
+      member do
+        put :update_billing_business_manager_static_email
+      end
+    end
+  end
+  
   ##### sparc-user routes brought in and namespaced
   namespace :portal do
     
@@ -166,7 +212,9 @@ SparcRails::Application.routes.draw do
         member do
           put :update_from_fulfillment
           put :update_from_project_study_information
+          put :push_to_epic
           post :add_line_item
+          post :add_otf_line_item
           post :new_document
           post :add_note
         end
@@ -193,10 +241,11 @@ SparcRails::Application.routes.draw do
       resources :line_items do
         member do
           put :update_from_fulfillment
+          put :update_from_cwf
         end
       end
 
-      resources :visit_groupings do
+      resources :line_items_visits do
         member do
           put :update_from_fulfillment
         end
@@ -211,9 +260,9 @@ SparcRails::Application.routes.draw do
       collection do
         put "/visits/:id/update_from_fulfillment" => "visits#update_from_fulfillment"
         put "/service_requests/:id/update_from_fulfillment" => "service_requests#update_from_fulfillment"
-        get "/service_requests/:id/change_arm" => "service_requests#change_arm"
-        post "/service_requests/:id/add_arm" => "service_requests#add_arm"
-        post "/service_requests/:id/remove_arm" => "service_requests#remove_arm"
+        get "/protocols/:id/change_arm" => "protocols#change_arm"
+        post "/protocols/:id/add_arm" => "protocols#add_arm"
+        post "/protocols/:id/remove_arm" => "protocols#remove_arm"
         post "/service_requests/:id/add_per_patient_per_visit_visit" => "service_requests#add_per_patient_per_visit_visit"
         put "/subsidys/:id/update_from_fulfillment" => "subsidies#update_from_fulfillment"
         delete "/subsidys/:id" => "subsidies#destroy"
@@ -225,6 +274,14 @@ SparcRails::Application.routes.draw do
     match "/admin/sub_service_requests/:id/delete_document_group/:document_group_id" => "sub_service_requests#delete_documents"
     
     root :to => 'home#index'
+  end
+
+  resources :reports do
+    member do
+      get :research_project_summary
+      post :cwf_audit
+      get :cwf_subject
+    end
   end
 
   root :to => 'service_requests#catalog'

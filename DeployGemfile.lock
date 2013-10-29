@@ -33,7 +33,14 @@ GEM
       rails (~> 3.0)
     acts_as_list (0.1.9)
     afm (0.2.0)
+    akami (1.2.0)
+      gyoku (>= 0.4.0)
+      nokogiri (>= 1.4.0)
     arel (3.0.2)
+    audited (3.0.0)
+    audited-activerecord (3.0.0)
+      activerecord (~> 3.0)
+      audited (= 3.0.0)
     axlsx (1.3.4)
       htmlentities (~> 4.3.1)
       nokogiri (>= 1.4.1)
@@ -42,6 +49,7 @@ GEM
       axlsx
       rails (~> 3.1)
     bcrypt-ruby (3.0.1)
+    bluecloth (2.2.0)
     builder (3.0.4)
     cache_digests (0.2.0)
       actionpack (>= 3.2)
@@ -78,14 +86,22 @@ GEM
       multipart-post (~> 1.1)
     faraday_middleware (0.9.0)
       faraday (>= 0.7.4, < 0.9)
+    fastercsv (1.5.5)
+    formtastic (2.1.1)
+      actionpack (~> 3.0)
     grouped_validations (0.3.2)
-    haml (3.1.7)
+    gyoku (1.0.0)
+      builder (>= 2.1.2)
+    haml (4.0.0)
+      tilt
     hashery (2.1.0)
     hashie (1.2.0)
     highline (1.6.15)
     hike (1.2.1)
     htmlentities (4.3.1)
     http_parser.rb (0.5.3)
+    httpi (2.0.2)
+      rack
     i18n (0.6.1)
     inflection-js-rails (0.1.1)
       railties (>= 3.2.0, < 5.0)
@@ -94,6 +110,7 @@ GEM
     jquery-rails (2.1.3)
       railties (>= 3.1.0, < 5.0)
       thor (~> 0.14)
+    jquery_datepicker (0.4)
     json (1.7.6)
     libv8 (3.3.10.4)
     mail (2.4.4)
@@ -103,8 +120,9 @@ GEM
     mime-types (1.19)
     multi_json (1.5.0)
     multipart-post (1.1.5)
+    mustache (0.99.4)
     mysql2 (0.3.11)
-    nested_form (0.3.1)
+    nested_form (0.3.2)
     net-scp (1.0.4)
       net-ssh (>= 1.99.1)
     net-sftp (2.0.5)
@@ -113,6 +131,7 @@ GEM
     net-ssh-gateway (1.1.0)
       net-ssh (>= 1.99.1)
     nokogiri (1.5.6)
+    nori (2.1.0)
     obis-net-ldap (0.4.0)
     omniauth (1.1.1)
       hashie (~> 1.2)
@@ -135,10 +154,14 @@ GEM
       hashery (~> 2.0)
       ruby-rc4
       ttfunk
+    pdfkit (0.5.4)
     polyglot (0.3.3)
     prawn (0.12.0)
       pdf-reader (>= 0.9.0)
       ttfunk (~> 1.0.2)
+    rabl (0.6.14)
+      activesupport (>= 2.3.14)
+      multi_json (~> 1.0)
     rack (1.4.4)
     rack-cache (1.2)
       rack (>= 0.4)
@@ -166,15 +189,24 @@ GEM
     rake (10.0.3)
     rdoc (3.12)
       json (~> 1.4)
+    redcarpet (2.3.0)
     ruby-rc4 (0.1.5)
     rubyzip (0.9.9)
     rvm-capistrano (1.2.7)
       capistrano (>= 2.0.0)
-    sass (3.2.5)
+    sass (3.2.7)
     sass-rails (3.2.6)
       railties (~> 3.2.0)
       sass (>= 3.1.10)
       tilt (~> 1.3)
+    savon (2.2.0)
+      akami (~> 1.2.0)
+      builder (>= 2.1.2)
+      gyoku (~> 1.0.0)
+      httpi (~> 2.0.2)
+      nokogiri (>= 1.4.0)
+      nori (~> 2.1.0)
+      wasabi (~> 3.1.0)
     simple_oauth (0.1.9)
     sinatra (1.3.3)
       rack (~> 1.3, >= 1.3.6)
@@ -185,6 +217,15 @@ GEM
       multi_json (~> 1.0)
       rack (~> 1.0)
       tilt (~> 1.1, != 1.3.0)
+    surveyor (1.4.0)
+      fastercsv (~> 1.5.4)
+      formtastic (~> 2.1.0)
+      haml (>= 3.1.3, < 5.0)
+      mustache (= 0.99.4)
+      rabl (~> 0.6.13)
+      rails (~> 3.0)
+      sass
+      uuidtools (~> 2.1)
     therubyracer (0.10.2)
       libv8 (~> 3.3.10)
     thor (0.16.0)
@@ -210,8 +251,12 @@ GEM
     uglifier (1.3.0)
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
+    uuidtools (2.1.4)
     warden (1.2.1)
       rack (>= 1.0)
+    wasabi (3.1.0)
+      httpi (~> 2.0)
+      nokogiri (>= 1.4.0)
     will_paginate (3.0.4)
 
 PLATFORMS
@@ -220,7 +265,9 @@ PLATFORMS
 DEPENDENCIES
   acts-as-taggable-on (~> 2.3.1)
   acts_as_list
+  audited-activerecord (~> 3.0)
   axlsx_rails
+  bluecloth
   cache_digests
   capistrano
   capistrano-ext
@@ -230,23 +277,30 @@ DEPENDENCIES
   exception_notification
   execjs
   grouped_validations
-  haml
+  gyoku
+  haml (~> 4.0.0)
   inflection-js-rails
   jquery-rails (= 2.1.3)
+  jquery_datepicker
   json
   mysql2
   nested_form
+  nori (~> 2.1.0)
   obis-net-ldap
   omniauth
   omniauth-shibboleth
   paper_trail (~> 2)
   paperclip
+  pdfkit
   prawn
   rails (= 3.2.11)
+  redcarpet
   rvm-capistrano
-  sass
+  sass (~> 3.2.7)
   sass-rails (~> 3.2.3)
+  savon (~> 2.2.0)
   sinatra
+  surveyor
   therubyracer (= 0.10.2)
   uglifier (>= 1.0.3)
   will_paginate

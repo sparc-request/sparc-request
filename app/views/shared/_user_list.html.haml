@@ -1,7 +1,7 @@
 %table.authorized-users
   %thead
     %tr
-      %th.authorized-users-section{:colspan => 3}
+      %th.authorized-users-section{:colspan => (USE_EPIC) ? 4 : 3}
         = t(:user_list)[:information] + ":"
       %th.authorized-users-section{:colspan => 4}
         = t(:user_list)[:proxy_rights]
@@ -12,6 +12,8 @@
       %th= t(:user_details)[:name] + ":"
       %th= t(:user_list)[:actions] + ":"
       %th= t(:user_details)[:role] + ":"
+      - if USE_EPIC
+        %th= t(:user_list)[:epic_access]
       %th.proxy-rights= t(:user_list)[:rights1]
       %th.proxy-rights= t(:user_list)[:rights2]
       %th.proxy-rights= t(:user_list)[:rights3]

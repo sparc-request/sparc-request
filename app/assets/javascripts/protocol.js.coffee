@@ -64,3 +64,10 @@ $(document).ready ->
 
       name: "light"
       width: 250
+
+  $('#ctrc_dialog').dialog
+    modal: true
+    width: 375
+    height: 200
+
+  $('#redirect').button()

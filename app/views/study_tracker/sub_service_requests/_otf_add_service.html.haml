@@ -1,0 +1,2 @@
+= select_tag select_id, options_for_select(candidate_service_options(services, true)), :'data-sub_service_request_id' => @sub_service_request.id
+%button#add_otf_service{:'data-sub_service_request_id' => @sub_service_request.id, :'data-select_id' => select_id}= t(:fulfillments)[:otf_button]

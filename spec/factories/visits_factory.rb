@@ -6,6 +6,5 @@ FactoryGirl.define do
     research_billing_qty       { 5 }
     insurance_billing_qty      { 5 }
     effort_billing_qty         { 5 }
-    name                       { "" }
   end
 end

@@ -9,7 +9,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     session[:service_calendar_pages] = params[:pages] if params[:pages]
 
     if @user.can_edit_fulfillment? @sub_service_request.organization
-      @user_toasts = @user.received_toast_messages.select {|x| x.sending_object.class == SubServiceRequest}.select {|y| y.sending_class_id == @sub_service_request.id}
+      @user_toasts = @user.received_toast_messages.select {|x| x.sending_class == 'SubServiceRequest'}.select {|y| y.sending_class_id == @sub_service_request.id}
       @service_request = @sub_service_request.service_request
       @protocol = @sub_service_request.try(:service_request).try(:protocol)
       if not @protocol then
@@ -30,8 +30,12 @@ class Portal::SubServiceRequestsController < Portal::BaseController
 
   def update_from_fulfillment
     @sub_service_request = SubServiceRequest.find(params[:id])
+    @study_tracker = params[:study_tracker] == "true"
+    saved_status = @sub_service_request.status
+
     if @sub_service_request.update_attributes(params[:sub_service_request])
       @sub_service_request.generate_approvals(@user)
+      @sub_service_request.distribute_surveys if @sub_service_request.status == 'complete' and @sub_service_request.status != saved_status #status is complete and it was something different before
       @service_request = @sub_service_request.service_request
       @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
       render 'portal/sub_service_requests/update_past_status'
@@ -51,7 +55,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     if @protocol.update_attributes attrs
       redirect_to "/portal/admin/sub_service_requests/#{@sub_service_request.id}"
     else
-      @user_toasts = @user.received_toast_messages.select {|x| x.sending_object.class == SubServiceRequest}
+      @user_toasts = @user.received_toast_messages.select {|x| x.sending_class == 'SubServiceRequest'}
       @service_request = @sub_service_request.service_request
       @protocol.populate_for_edit if @protocol.type == "Study"
       @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition {|x| x.is_one_time_fee?}
@@ -81,17 +85,45 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     @sub_service_request = SubServiceRequest.find(params[:id])
     @service_request = @sub_service_request.service_request
     @subsidy = @sub_service_request.subsidy
+    service = Service.find(params[:new_service_id])
     percent = @subsidy.try(:percent_subsidy).try(:*, 100)
     @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.is_one_time_fee?}
     @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
+
+    # we don't have arms and we are adding a new per patient per visit service
+    if @service_request.arms.empty? and not service.is_one_time_fee?
+      @service_request.protocol.arms.create(name: 'ARM 1', visit_count: 1, subject_count: 1)
+    end
+
     @arm_id = params[:arm_id].to_i if params[:arm_id]
     @selected_arm = params[:arm_id] ? Arm.find(@arm_id) : @service_request.arms.first
+    @study_tracker = params[:study_tracker] == "true"
+    @line_items = @sub_service_request.line_items
+    
     if @sub_service_request.create_line_item(
         service_id: params[:new_service_id],
-        sub_service_request_id: @sub_service_request.id)
+        sub_service_request_id: params[:sub_service_request_id])
       # Have to reload the service request to get the correct direct cost total for the subsidy
       @subsidy.try(:sub_service_request).try(:reload)
       @subsidy.try(:fix_pi_contribution, percent)
+    else
+      respond_to do |format|
+        format.js { render :status => 500, :json => clean_errors(@sub_service_request.errors) }
+      end
+    end
+  end
+
+  def add_otf_line_item
+    @sub_service_request = SubServiceRequest.find(params[:id])
+    @service_request = @sub_service_request.service_request
+    @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.is_one_time_fee?}
+
+    @study_tracker = params[:study_tracker] == "true"
+    @line_items = @sub_service_request.line_items
+    
+    if @sub_service_request.create_line_item(
+        service_id: params[:new_service_id],
+        sub_service_request_id: params[:sub_service_request_id])
     else
       respond_to do |format|
         format.js { render :status => 500, :json => clean_errors(@sub_service_request.errors) }
@@ -206,7 +238,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       # notify users with view rights or above of deletion
       @sub_service_request.service_request.protocol.project_roles.each do |project_role|
         next if project_role.project_rights == 'none'
-        Notifier.sub_service_request_deleted(project_role.identity, @sub_service_request).deliver
+        Notifier.sub_service_request_deleted(project_role.identity, @sub_service_request).deliver unless project_role.identity.email.blank?
       end
 
       # notify service providers
@@ -216,6 +248,29 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     end
 
     redirect_to "/portal/admin"
+  end
+
+  def push_to_epic
+    sub_service_request = SubServiceRequest.find(params[:id])
+    begin
+      sub_service_request.service_request.protocol.push_to_epic(EPIC_INTERFACE)
+
+      respond_to do |format|
+        format.json {
+          render(
+              status: 200,
+              json: {})
+        }
+      end
+    rescue
+      respond_to do |format|
+        format.json {
+          render(
+              status: 500,
+              json: [$!.message])
+        }
+      end
+    end
   end
 
 end

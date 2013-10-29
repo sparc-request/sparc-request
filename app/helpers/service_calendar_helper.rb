@@ -1,17 +1,17 @@
 module ServiceCalendarHelper
 
-  def select_row visit_grouping, tab
-    checked = visit_grouping.visits.map{|v| v.research_billing_qty >= 1 ? true : false}.all?
+  def select_row line_items_visit, tab
+    checked = line_items_visit.visits.map{|v| v.research_billing_qty >= 1 ? true : false}.all?
     action = checked == true ? 'unselect_calendar_row' : 'select_calendar_row'
     icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
 
     link_to(
         (content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')), 
-        "/service_requests/#{visit_grouping.line_item.service_request.id}/#{action}/#{visit_grouping.id}", 
+        "/service_requests/#{line_items_visit.line_item.service_request.id}/#{action}/#{line_items_visit.id}", 
         :remote  => true,
         :role    => 'button',
         :class   => "ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only service_calendar_row",
-        :id      => "check_row_#{visit_grouping.id}_#{tab}")
+        :id      => "check_row_#{line_items_visit.id}_#{tab}")
   end
 
   def currency_converter cents
@@ -28,20 +28,20 @@ module ServiceCalendarHelper
     currency_converter(line_item.applicable_rate)
   end
 
-  def update_per_subject_subtotals visit_grouping
-    visit_grouping.per_subject_subtotals
+  def update_per_subject_subtotals line_items_visit
+    line_items_visit.per_subject_subtotals
   end
 
   #############################################
   # Visit Based Services
   #############################################
   # Displays line item totals
-  def display_visit_based_direct_cost(visit_grouping)
-    currency_converter(visit_grouping.direct_costs_for_visit_based_service_single_subject)
+  def display_visit_based_direct_cost(line_items_visit)
+    currency_converter(line_items_visit.direct_costs_for_visit_based_service_single_subject)
   end
 
-  def display_visit_based_direct_cost_per_study(visit_grouping)
-    currency_converter(visit_grouping.direct_costs_for_visit_based_service_single_subject * visit_grouping.subject_count)
+  def display_visit_based_direct_cost_per_study(line_items_visit)
+    currency_converter(line_items_visit.direct_costs_for_visit_based_service_single_subject * line_items_visit.subject_count)
   end
 
   # Displays max totals per patient

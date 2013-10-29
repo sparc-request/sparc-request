@@ -1,0 +1,35 @@
+#procedures_added_popup{'data-calendar_id' => @calendar.id}
+  - if @procedures.size == 1 
+    %p
+      = t(:study_tracker)[:visit_calendar][:popup_message1]
+      = @procedures.first.display_service_name
+      = t(:study_tracker)[:visit_calendar][:popup_message2]
+      = @procedures.first.appointment.name_switch + "."
+      = t(:study_tracker)[:visit_calendar][:popup_message3]
+
+  -elsif @procedures.size == 1 && @procedures.first.visits.size > 1
+    %p= t(:study_tracker)[:visit_calendar][:popup_message4]
+    %br
+    %table
+      %thead
+        %tr.ui-widget-header
+          %th{:style => "padding:6px 8px;"}= t(:study_tracker)[:visit_calendar][:popup_header1]
+          %th{:style => "padding:6px 8px;"}= t(:study_tracker)[:visit_calendar][:popup_header2]
+      %tbody
+        - @procedures.each do |procedure|
+          %tr{:style => "background-color: #C0C0C0;"}
+            %td{:style => "padding:6px 8px;"}= procedure.appointment.name_switch
+            %td{:style => "padding:6px 8px;"}= procedure.display_service_name
+  -else
+    %p= t(:study_tracker)[:visit_calendar][:popup_message4]
+    %br
+    %table
+      %thead
+        %tr.ui-widget-header
+          %th{:style => "padding:6px 8px;"}= t(:study_tracker)[:visit_calendar][:popup_header1]
+          %th{:style => "padding:6px 8px;"}= t(:study_tracker)[:visit_calendar][:popup_header2]
+      %tbody
+        - @procedures.each do |procedure|
+          %tr{:style => "background-color: #C0C0C0;"}
+            %td{:style => "padding:6px 8px;"}= procedure.appointment.name_switch
+            %td{:style => "padding:6px 8px;"}= procedure.display_service_name

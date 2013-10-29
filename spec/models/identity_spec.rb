@@ -43,20 +43,6 @@ describe "Identity" do
 
     let!(:identity) { FactoryGirl.create(:identity, first_name: "ash", last_name: "ketchum", email: "ash@theverybest.com", ldap_uid: 'ash151@musc.edu') }
 
-    before(:each) do
-      ldap = double(port: 636, base: 'ou=people,dc=musc,dc=edu', encryption: :simple_tls)
-      results = [
-        double(givenname: ["Ash"], sn: ["Ketchum"], mail: ["ash@theverybest.com"], uid: ["ash151"]),
-        double(givenname: ["Ash"], sn: ["Williams"], mail: ["ash@s-mart.com"], uid: ["ashley"])
-      ]
-      ldap.stub(:search).with(filter: create_ldap_filter('ash151')).and_return([results[0]])
-      ldap.stub(:search).with(filter: create_ldap_filter('ash')).and_return(results)
-      ldap.stub(:search).with(filter: create_ldap_filter('gary')).and_return([])
-      ldap.stub(:search).with(filter: create_ldap_filter('error')).and_raise('error')
-      ldap.stub(:search).with(filter: create_ldap_filter('duplicate')).and_return()
-      Net::LDAP.stub(:new).and_return(ldap)
-    end
-
     it "should find an existing identity" do
       Identity.search("ash151").should eq([identity])
     end
@@ -78,6 +64,12 @@ describe "Identity" do
       Identity.search('error').should_not be_empty()
     end
 
+    it "should return identities without an e-mail address" do
+      Identity.all.count.should eq(1)
+      Identity.search('iamabadldaprecord').should_not be_empty()
+      Identity.all.count.should eq(2)
+    end
+
     it "should still search the database if the identity creation fails for some reason" do
       FactoryGirl.create(:identity, first_name: "ash", last_name: "evil", email: "another_ash@s-mart.com", ldap_uid: 'ashley@musc.edu')
       Identity.search('ash')
@@ -93,11 +85,16 @@ describe "Identity" do
     let!(:provider)             {FactoryGirl.create(:provider, parent_id: institution.id)}
     let!(:program)              {FactoryGirl.create(:program, parent_id: provider.id)} 
     let!(:provider2)            {FactoryGirl.create(:provider, parent_id: institution.id)}
+    let!(:core)                 {FactoryGirl.create(:core, parent_id: provider.id)}
     let!(:user)                 {FactoryGirl.create(:identity)}
+    let!(:user2)                {FactoryGirl.create(:identity)}
+    let!(:user3)                {FactoryGirl.create(:identity)}              
     let!(:catalog_manager)      {FactoryGirl.create(:catalog_manager, identity_id: user.id, organization_id: institution2.id)}
     let!(:catalog_manager2)     {FactoryGirl.create(:catalog_manager, identity_id: user.id, organization_id: institution.id)}
     let!(:super_user)           {FactoryGirl.create(:super_user, identity_id: user.id, organization_id: institution.id)}
     let!(:service_provider)     {FactoryGirl.create(:service_provider, identity_id: user.id, organization_id: institution.id)}
+    let!(:clinical_provider)    {FactoryGirl.create(:clinical_provider, identity_id: user2.id, organization_id: core.id)}
+    let!(:ctrc_provider)        {FactoryGirl.create(:clinical_provider, identity_id: user2.id, organization_id: program.id)}
     
     let!(:project) {
       project = Project.create(FactoryGirl.attributes_for(:protocol))
@@ -189,6 +186,34 @@ describe "Identity" do
           user.can_edit_fulfillment?(institution2).should eq(false)
         end 
       end
+
+      describe "can edit core" do
+
+        it "should return true if the user is a clinical provider on the given core" do
+          user2.can_edit_core?(core.id).should eq(true)
+        end
+
+        it "should return true if the user is a super user on the given core" do
+          user.can_edit_core?(core.id).should eq(true)
+        end
+
+        it "should return false if the user is not a clinical provider on a given core" do
+          user3.can_edit_core?(core.id).should eq(false)
+        end
+      end
+
+      describe "clinical provider for ctrc" do
+
+        it "should return true if the user is a clinical provider on the ctrc" do
+          program.tag_list.add("ctrc")
+          program.save
+          user2.clinical_provider_for_ctrc?.should eq(true)
+        end
+
+        it "should return false if the user is not a clinical provider on the ctrc" do
+          user.clinical_provider_for_ctrc?.should eq(false)
+        end
+      end
     end
 
     describe "collection methods" do
@@ -240,6 +265,11 @@ describe "Identity" do
         it "should return all of a user's sub service requests under admin organizations sorted by status" do
           hash = user.admin_service_requests_by_status
           hash.should include('draft')
+        end
+        it "should return a specific organization's sub service requests if givin an org id" do
+          sub_service_request.update_attributes(status: "submitted")
+          hash = user.admin_service_requests_by_status(institution.id)
+          hash.should include('submitted')
         end
       end
     end

@@ -6,6 +6,13 @@ en:
   error_contact: "(843) 792-8300 or success@musc.edu"
   issue_contact: "Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have."
   feedback: "Feedback"
+  activerecord:
+    errors:
+      models:
+        organization:
+          attributes:
+            position_in_cwf:
+              blank: "is required if 'Show in Clinical Work Fulfillment' is checked."
 
   # sign in page
   signin:
@@ -43,7 +50,7 @@ en:
   # Notifier
   notifier:
     service_request: "Service Request"
-    welcome_obtain_research_pricing: "A request has been made to obtain research pricing"
+    welcome_obtain_research_pricing: "A request has been made to get a quote"
     welcome_submit: "Services have been requested or changed"
     body1: "Dear %{full_name},"
     body2_pi: "%{welcome} in %{application_title} (%{root_url}) for your %{protocol_type} listed below. In addition, below is a list of users who have been granted access to this %{protocol_type} on your behalf."
@@ -166,6 +173,8 @@ en:
       total_per_study: "Total Per Study"
       other_services: "Other Services"
       total_study: "Study Cost Totals"
+      number_of_units: "# Units"
+      qty_unit: "Qty/Unit"
     per_patient: "Per Patient/Visit Services"
     labels:
       maximum_direct: "Maximum Total Direct Costs Per Patient"
@@ -293,6 +302,10 @@ en:
       new_related: "New Related Service"
       new_submission: "New Submission Email"
       new_super: "New Super User"
+      new_clinical_provider: "New Clinical Provider"
+      survey_name: "Survey"
+      new_associated_survey: "New Associated Survey"
+      select_survey: "Please select a survey"
     title: "SPARC Request Services Catalog"
 
   # user search partial
@@ -327,6 +340,7 @@ en:
     information: "Research Study/Project Authorized Users"
     proxy_rights: "Proxy Rights"
     message: "(Select appropriate level of study/project rights)"
+    epic_access: "Epic EMR Access?"
     actions: "Actions"
     rights1: "Member Only:"
     rights2: "View Rights:"
@@ -431,6 +445,7 @@ en:
   # Service Requests
   service_requests:
     detail_list:
+      nan  : "Please enter a valid number."
       text1: "Quantity of"
       text2: "is less than the unit minimum of"
       text3: "Quantity is being reset to the previous value."
@@ -454,9 +469,13 @@ en:
     info: 
       text1: "Service Request Status"
       text2: "Service Request Owner"
+      text3: "Ready for Clinical Fulfillment:"
+      text4: "Total Cost"
 
   # Service Request review page
   sr_review:
+    participate_in_survey: "Would you like to participate in a brief 1 question SPARC Request satisfaction survey?"
+    participate_in_survey_title: "System Satisfaction Survey"
     instructions: "Please review the following information to ensure the accuracy of your request. If you need to make changes, click on the steps above or click \"Go Back\" at the bottom of the page. After you have reviewed your request, click \"Submit my Service Request.\" Alternatively, you may save your request as a draft for future submission. Please note: Draft requests are not reviewed by staff for approval."
     study_project_info:
       title: "Study/Project Information"
@@ -486,7 +505,7 @@ en:
   # Service Request Confirmation Page and Obtain Research Pricing Page
   sr_confirmation:
     instructions: "Thank you for submitting a service request through SPARC Request. An email(s) has been submitted on your behalf, and we will respond to your service request shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
-    research_pricing_instructions : "You have successfully submitted a request to obtain research pricing. An email(s) has been submitted on your behalf, and we will respond to your request for research pricing shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
+    research_pricing_instructions : "You have successfully submitted a request to get a quote. An email(s) has been submitted on your behalf, and we will respond to your request for a quote shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
     download_button: "Download my Service Request"
     portal_button: "Go to SPARC Request User Portal"
     details:
@@ -497,6 +516,10 @@ en:
       provider: "Provider:"
       program_core: "Program/Core:"
       contact: "Contact:"
+
+  # Service Request approve epic rights
+  approve_epic_rights:
+    instructions: "Thank you. An email has been sent to the primary PI for the final approval."
 
   # Portal Root/Information
   protocol_information:
@@ -564,6 +587,7 @@ en:
     email: "E-mail:"
     phone: "Phone:"
     role: "Role:*"
+    epic_access: "Epic EMR Access?:"
     role_prompt: "Select a Role"
     era: "ERA Commons Name:"
     credentials: "Credentials:"
@@ -602,17 +626,22 @@ en:
     service_center_cost: "Service Center Cost"
     hospital_based_services: "Hospital Based Services"
     cpt_code: "CPT Code"
+    cdm_code: "CDM Code"
+    send_to_epic: "Send To Epic"
     charge_code: "Charge Code"
     revenue_code: "Revenue Code"
     pricing_maps: "Pricing Maps"
     add_map: "Add Pricing Map"
     related_services: "Related Services"
+    associated_surveys: "Associated Surveys"
     submission_emails: "Submission E-mails"
     super_users: "Super Users"
     service_providers: "Service Providers"
     new_sp: "New Service Provider"
     service_error: "There are no service providers anywhere on this tree."
     cm_rights: "Catalog Manager Rights"
+    clinical_work_fulfillment: "Clinical Work Fulfillment"
+    clinical_providers: "Clinical Provider Rights:"
     new_cm: "New Catalog Manager"
     auto_price_adj: "Automatic Pricing Adjustment"
     change_rates: "Increase or Decrease Rates"
@@ -628,6 +657,8 @@ en:
     default_statuses: "Default Statuses:"
     color_blank: "Select a Color"
     errors: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
+    show_in_cwf: "Show in Clinical Work Fulfillment"
+    position_in_cwf: "Position"
 
   pricing_map_form:
     dates: "Dates"
@@ -691,7 +722,10 @@ en:
       approval_type: "Type"
       approved_by: "Approved By"
     service_button: "Add Service"
+    otf_button: "Add One-Time Fee Service"
+    cwf_service_button: "Add Service to all patients"
     remove_service_button: "Remove Service"
+    cwf_remove_service_button: "Remove Service from all patients"
     core_approvals:
       header: "Core Approvals"
       nursing: "Nursing/Nutrition Approved"
@@ -757,6 +791,8 @@ en:
     title: "My Dashboard"
     id: "SRID"
     pi: "PI"
+    routing: "Routing"
+    billing_business: "Billing/Business Manager"
     requester: "Requester"
     short_title: "Short Title"
     export: "Export to Excel"
@@ -764,6 +800,8 @@ en:
     export_link: "Export"
     delete_link: "Delete"
     delete_confirm: "Are you sure?"
+    epic_interface: "Epic Interface"
+    send_to_epic: "Send To Epic"
     tabs:
       fulfillment: "Fulfillment"
       protocol_info: "Project/Study Information"
@@ -771,6 +809,13 @@ en:
       related_srs: "Related Service Requests"
       users: "Associated Users"
       notifications: "Notifications"
+      cw_fulfillment: "Clinical Work Fulfillment"
+      subject_tracker: "Subject Tracker"
+      payments: "Payments"
+      invoices: "Invoices"
+      template: "Template"
+      services: "Services"
+
 
   # Admin Root Page
   admin_root:
@@ -780,7 +825,7 @@ en:
     service: "Service"
     requester: "Requester"
     assigned: "Person Assigned"
-    orgs: "Program/Provider/Core"
+    orgs: "Provider/Program/Core"
 
   # Associated Users Tab
   associated_users:
@@ -808,6 +853,89 @@ en:
   identity:
     approved: "Account approved"
     disapproved: "Account disapproved"
+
+  study_tracker:
+    title: "Clinical Work Fulfillment"
+    save: "Save"
+    cancel: "Cancel"
+    dashboard:
+      header1: "Completed Visits"
+      header2: "Visit Totals"
+      header3: "Subject Total:"
+      tabs:
+        study_schedule: "Study Schedule"
+        subject_tracker: "Subject Tracker"
+        payments: "Payments"
+        services: "Services"
+        billing: "Billing"
+        audit_reporting: "Audit Reporting"
+    subject_tracker:
+      name: "Subject Name"
+      mrn: "MRN"
+      id: "ID"
+      dob: "Date of Birth"
+      gender: "Gender"
+      ethnicity: "Race" #this was change to race but the database still has it labeled as ethnicity
+      schedule: "Schedule"
+      add: "Add a subject"
+      report: "Report"
+      delete: "Delete"
+      confirm: "Are you sure you want to delete this subject?"
+    payments: 
+      submitted: "Date Submitted"
+      amt_invoiced: "Amount Invoiced"
+      amt_received: "Amount Received"
+      date_received: "Date Received"
+      pay_method: "Payment Method"
+      percent_subsidy: "Percent Subsidy"
+      details: "Details"
+      documents: "Documents"
+      prompt: ""
+      remove: "Remove"
+      remove_confirm: "Are you sure you want to delete this payment?"
+      add: "Add a payment"
+    payment_uploads:
+      add: "Add document"
+      remove: "Remove"
+      remove_confirm: "Are you sure you want to delete this document?"
+    audits:
+      no_start_date: "Unable to determine when this request was put into Clinical Work Fulfillment"
+      nursing: "Nursing"
+      laboratory: "Laboratory"
+      imaging: "Imaging"
+      nutrition: "Nutrition"
+      start_date: "Start Date:"
+      end_date: "End Date:"
+      get_report: "Get Report"
+    notes: 
+      header: "Comments:"
+      save: "Save Comment"
+    visit_calendar:
+      header1: "Study/Project ID:"
+      header2: "Subject ID:"
+      header3: "Billing/Business Manager:"
+      header4: "Subject Study Status:"
+      visit_selector: "Please select a visit:"
+      save_alert: "You must save your changes for the dashboard to be updated."
+      visit_complete: "Date of Visit (entering date signifies a completed visit)"
+      header5: "Procedure"
+      header6: "Completed"
+      header7: "R Quantity"
+      header8: "T Quantity"
+      header9: "Unit Cost"
+      header10: "Total"
+      grand_total: "Grand Total"
+      add_service: "Add Service"
+      submit: "Save Appointments"
+      cwf_link: "Return to Clinical Work Fulfillment"
+      popup_message1: "Attention - An assessment" 
+      popup_message2: "has been added at"
+      popup_message3: "If subject is past visit, please refer to your IRB-approved protocol."
+      popup_message4: "Attention - Assessments have been added to the following visits. If subject is past visit, please refer to your IRB-approved protocol."
+      popup_header1: "Visit Name:"
+      popup_header2: "Service/Assessment Name:"
+
+
 
 
 

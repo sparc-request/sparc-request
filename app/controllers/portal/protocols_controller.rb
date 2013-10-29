@@ -72,7 +72,7 @@ class Portal::ProtocolsController < Portal::BaseController
 
   def view_full_calendar
     @protocol = Protocol.find(params[:id])
-    @service_requests = @protocol.service_requests
+    @service_request = @protocol.service_requests.first
 
     arm_id = params[:arm_id] if params[:arm_id]
     page = params[:page] if params[:page]
@@ -80,12 +80,58 @@ class Portal::ProtocolsController < Portal::BaseController
     session[:service_calendar_pages][arm_id] = page if page && arm_id
     @tab = 'calendar'
     @pages = {}
-    @service_requests.each do |service_request|
-      service_request.arms.each do |arm|
-        new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-        @pages[arm.id] = service_request.set_visit_page new_page, arm
-      end
+    @portal = params[:portal]
+    @protocol.arms.each do |arm|
+      new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
+      @pages[arm.id] = @service_request.set_visit_page new_page, arm
     end
+  end
+
+  def change_arm
+    @arm_id = params[:arm_id].to_i if params[:arm_id]
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    @service_request = @sub_service_request.service_request
+    @selected_arm = params[:arm_id] ? Arm.find(@arm_id) : @service_request.arms.first
+    @study_tracker = params[:study_tracker] == "true"
+  end
+
+  def add_arm
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    @service_request = @sub_service_request.service_request
+    name = params[:arm_name] ? params[:arm_name] : "ARM #{@service_request.arms.count + 1}"
+    visit_count = params[:visit_count] ? params[:visit_count].to_i : 1
+    subject_count = params[:subject_count] ? params[:subject_count].to_i : 1
+
+    @selected_arm = @service_request.protocol.create_arm(
+        name:          name,
+        visit_count:   visit_count,
+        subject_count: subject_count)
+
+    @selected_arm.reload
+
+    # If any sub service requests under this arm's protocol are in CWF we need to build patient calendars
+    if @service_request.protocol.service_requests.map {|x| x.sub_service_requests.map {|y| y.in_work_fulfillment}}.flatten.include?(true)
+      @selected_arm.populate_subjects
+    end
+
+    render 'portal/protocols/change_arm'
+  end
+
+  def remove_arm
+    @arm_id = params[:arm_id].to_i if params[:arm_id]
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    @service_request = @sub_service_request.service_request
+
+    Arm.find(@arm_id).destroy
+    @service_request.reload
+
+    if @service_request.arms.empty?
+      @service_request.per_patient_per_visit_line_items.each(&:destroy)
+    else
+      @selected_arm = @service_request.arms.first
+    end
+
+    render 'portal/service_requests/add_per_patient_per_visit_visit'
   end
 
 

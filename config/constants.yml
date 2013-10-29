@@ -5,6 +5,16 @@ impact_areas: { 'pediatrics': 'Pediatrics',
                'diabetes': 'Diabetes',
                'cancer': 'Cancer',
                'other': 'Other' }
+subject_ethnicities: { 'Caucasian': 'caucasian',
+                      'African American/Black': 'black',
+                      'Asian': 'asian',
+                      'Middle Eastern': 'middle_eastern',
+                      'Pacific Islander': 'pacific_islander',
+                      'Native American/Alaskan': 'native_american/alaskan',
+                      'Other': 'other' }
+subject_genders: { 'Male': 'male',
+                  'Female': 'female',
+                  'Other': 'other' }
 affiliations: { 'cancer_center': 'Cancer Center',
                 'lipidomics_cobre': 'Lipidomics COBRE',
                 'oral_health_cobre': 'Center for Oral Health Research',
@@ -12,6 +22,18 @@ affiliations: { 'cancer_center': 'Cancer Center',
                 'cchp': 'CCHP',
                 'inbre': 'INBRE',
                 'reach': 'REACH' }
+epic_rights: { 'view_rights': 'View Rights',
+               'enter_data': 'Access to enter data at patient/visit level',
+               'enter_orders': 'Authorized to enter orders',
+               'approve': 'Authorized to review and approve patient study charges',
+               'complete': 'Authorized to complete study'}
+epic_rights_info: 'Once the study is "completed" in Epic, it cannot be moved back to "Active or Inactive" Completing the study will inhibit new participants to be enrolled and associated with the study.'
+epic_push_status_text: { 'started': '',
+                         'sent_study': '',
+                         'complete': 'Study has been sent to Epic.',
+                         'failed': 'Unable to send study to Epic.',
+                         'awaiting_approval': 'Awaiting approval before sending to Epic',
+                         'awaiting_final_review': 'Awaiting final review before sending to Epic' }
 study_types: { 'clinical_trials': 'Clinical Trials',
                'basic_science': 'Basic Science',
                'translational_science': 'Translational Science' }
@@ -19,7 +41,7 @@ funding_statuses: { 'Pending Funding': 'pending_funding',
                     'Funded': 'funded' }
 available_statuses: { 'draft': 'Draft',
                       'submitted': 'Submitted',
-                      'obtain_research_pricing': 'Obtain Research Pricing',
+                      'get_a_quote': 'Get a Quote',
                       'in_process': 'In Process',
                       'complete': 'Complete',
                       'awaiting_pi_approval': 'Awaiting PI Approval',
@@ -29,7 +51,7 @@ available_statuses: { 'draft': 'Draft',
                       'administrative_review': 'Administrative Review',
                       'committee_review': 'Committee Review',
                       'invoiced': 'Invoiced' }
-default_statuses : ["draft", "submitted", "obtain_research_pricing", "in_process", "complete", "awaiting_pi_approval", "on_hold"]
+default_statuses : ["draft", "submitted", "get_a_quote", "in_process", "complete", "awaiting_pi_approval", "on_hold"]
 accordion_color_options: { "blue": 'blue-provider',
                            "light-blue": 'light-blue-provider',
                            "orange": 'orange-provider',

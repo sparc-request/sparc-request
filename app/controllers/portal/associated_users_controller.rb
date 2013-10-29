@@ -15,6 +15,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
   def edit
     @identity = Identity.find params[:identity_id]
     @protocol_role = ProjectRole.find params[:id]
+    @protocol_role.populate_for_edit
     @sub_service_request = SubServiceRequest.find params[:sub_service_request_id] if params[:sub_service_request_id]
     respond_to do |format|
       format.js
@@ -26,6 +27,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
   def new
     @identity = Identity.find params[:user_id]
     @protocol_role = @protocol.project_roles.build(:identity_id => @identity.id)
+    @protocol_role.populate_for_edit
     if params[:sub_service_request_id]
       @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     end
@@ -43,7 +45,13 @@ class Portal::AssociatedUsersController < Portal::BaseController
       @protocol_role.save
       @identity.update_attributes params[:identity]
       @protocol.emailed_associated_users.each do |project_role|
-        UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver
+        UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver unless project_role.identity.email.blank?
+      end
+
+      if USE_EPIC
+        if @protocol.should_push_to_epic?
+          Notifier.notify_for_epic_user_approval(@protocol).deliver
+        end
       end
     end
 
@@ -63,11 +71,30 @@ class Portal::AssociatedUsersController < Portal::BaseController
     @protocol_role = ProjectRole.find params[:id]    
     @identity = Identity.find @protocol_role.identity_id
     @identity.update_attributes params[:identity]
+
+    epic_access = @protocol_role.epic_access
+    epic_rights = @protocol_role.epic_rights.clone
     @protocol_role.assign_attributes params[:project_role]
+
     if @protocol_role.validate_one_primary_pi
       @protocol_role.save
       @protocol.emailed_associated_users.each do |project_role|
-        UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver
+        UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver unless project_role.identity.email.blank?
+      end
+
+      if USE_EPIC
+        if @protocol.should_push_to_epic?
+          if epic_access and not @protocol_role.epic_access
+            # Access has been removed
+            Notifier.notify_for_epic_access_removal(@protocol, @protocol_role).deliver
+          elsif @protocol_role.epic_access and not epic_access
+            # Access has been granted
+            Notifier.notify_for_epic_user_approval(@protocol).deliver
+          elsif epic_rights != @protocol_role.epic_rights
+            # Rights has been changed
+            Notifier.notify_for_epic_rights_changes(@protocol, @protocol_role, epic_rights).deliver
+          end
+        end
       end
     end
 
@@ -76,7 +103,6 @@ class Portal::AssociatedUsersController < Portal::BaseController
       @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
       render 'portal/admin/update_associated_users'
     else
-    
       respond_to do |format|
         format.js
         format.html
@@ -89,7 +115,19 @@ class Portal::AssociatedUsersController < Portal::BaseController
     if @protocol_role.is_only_primary_pi?
       render :js => "alert(\"Projects require a PI. Please add a new one before continuing.\")"
     else
+      protocol = @protocol_role.protocol
+      epic_access = @protocol_role.epic_access
+      project_role_clone = @protocol_role.clone
       @protocol_role.destroy
+
+      if USE_EPIC
+        if protocol.should_push_to_epic?
+          if epic_access
+            Notifier.notify_primary_pi_for_epic_user_removal(protocol, project_role_clone).deliver
+          end
+        end
+      end
+
       if params[:sub_service_request_id]
         @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
         @protocol = @sub_service_request.service_request.protocol

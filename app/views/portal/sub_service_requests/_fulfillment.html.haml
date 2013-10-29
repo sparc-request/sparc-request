@@ -37,17 +37,9 @@
   = javascript_include_tag 'jquery.qtip.min'
   #per_patient_services
     = render 'per_patient_per_visit'
-  #arm-form{:style => 'display: none', :title => 'Create a new ARM'}
-    .label ARM Name:
-    = text_field_tag 'arm_name', "ARM #{@service_request.arms.count + 1}"
-    %br
-    %br
-    .label Subject Count:
-    = text_field_tag 'subject_count', 1
-    %br
-    %br
-    .label Visit Count:
-    = text_field_tag 'visit_count', 1
+
+  = render :partial => 'arm_form'
+  = render :partial => 'visit_form'
 
   %br
 

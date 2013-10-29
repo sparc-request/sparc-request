@@ -54,16 +54,24 @@ $(document).ready ->
             spinner.remove()
   }
 
-  $('#tabs').tabs
-    cookie: { expires: 1 }
+  $('#study_tracker_tabs').tabs
+    active: ($.cookie("study_tracker_tab_name"))
+    activate: (event, ui) ->
+      idx = ui.newTab.parent().children().index(ui.newTab)
+      $.cookie("study_tracker_tab_name", idx, { expires: 1 })
+
+
+  $('.tabs').tabs
+    active: ($.cookie("admin_tab_name"))
     show: (event, ui) ->
       class_name = ui.tab.className
       switch class_name
-        when 'documents-tab'                then Sparc.home.getInfo('documents')
-        when 'associated_users-tab'         then Sparc.home.getInfo('associated_users')
-        when 'notifications-tab'            then Sparc.home.getInfo('notifications')
-        when 'project-tab'                  then Sparc.home.getInfo('project')
-        when 'related_service_requests-tab' then Sparc.home.getInfo('related_service_requests')
+        when 'documents-tab'                 then Sparc.home.getInfo('documents')
+        when 'associated_users-tab'          then Sparc.home.getInfo('associated_users')
+        when 'notifications-tab'             then Sparc.home.getInfo('notifications')
+        when 'project-tab'                   then Sparc.home.getInfo('project')
+        when 'related_service_requests-tab'  then Sparc.home.getInfo('related_service_requests')
+        when 'clinical_work_fulfillment-tab' then Sparc.home.getInfo('clinical_work_fulfillment')
         when 'fulfillment-tab'
           Sparc.home.getInfo('service_request_info')
           Sparc.home.getInfo('add_service')
@@ -73,3 +81,7 @@ $(document).ready ->
           Sparc.home.getInfo('service_request_information')
           Sparc.home.getInfo('one_time_fees')
           Sparc.home.getInfo('per_patient_services')
+    activate: (event, ui) ->
+      idx = ui.newTab.parent().children().index(ui.newTab)
+      $.cookie("admin_tab_name", idx, { expires: 1 })
+

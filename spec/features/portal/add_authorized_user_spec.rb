@@ -1,6 +1,4 @@
 require 'spec_helper'
-require 'ostruct'
-
 
 describe 'adding an authorized user', :js => true do
   let_there_be_lane
@@ -22,17 +20,6 @@ describe 'adding an authorized user', :js => true do
 
   describe 'searching for an user' do
     before :each do
-      Directory.stub(:search_ldap) {
-        [
-          OpenStruct.new(
-            dn: ["uid=bjk7,ou=people,dc=musc,dc=edu"],
-            givenname: [ 'Brian' ],
-            sn: [ 'Kelsey' ],
-            uid: [ 'bjk7' ],
-            mail: [ 'kelsey@musc.edu' ]
-          )
-        ]
-      }
       fill_in 'user_search', :with => 'bjk7'
       wait_for_javascript_to_finish
       page.find('a', :text => "Brian Kelsey", :visible => true).click()

@@ -1,13 +1,13 @@
 class Notifier < ActionMailer::Base
-  def ask_a_question question
-    @question = question
+  def ask_a_question quick_question
+    @quick_question = quick_question
 
     # TODO: this process needs to be moved to a helper method
     # it's repeated in each action with slightly different information
     email = Rails.env == 'production' ? ADMIN_MAIL_TO : DEFAULT_MAIL_TO
     subject = Rails.env == 'production' ? "New Question from #{I18n.t('application_title')}" : "[#{Rails.env.capitalize} - EMAIL TO #{ADMIN_MAIL_TO}] New Question from #{I18n.t('application_title')}"
 
-    mail(:to => email, :from => @question.from, :subject => subject)
+    mail(:to => email, :from => @quick_question.from, :subject => subject)
   end
 
   def new_identity_waiting_for_approval identity
@@ -111,5 +111,54 @@ class Notifier < ActionMailer::Base
     subject = Rails.env == 'production' ? "#{I18n.t('application_title')} - service request deleted" : "[#{Rails.env.capitalize} - EMAIL TO #{identity.email}] #{I18n.t('application_title')} - service request deleted"
 
     mail(:to => email_to, :from => 'no-reply@musc.edu', :subject => subject)
+  end
+
+  def notify_for_epic_user_approval protocol
+    @protocol = protocol
+    @primary_pi = @protocol.primary_principal_investigator
+
+    subject = 'Epic Rights Approval'
+
+    mail(:to => EPIC_RIGHTS_MAIL_TO, :from => 'no-reply@musc.edu', :subject => subject)
+  end
+
+  def notify_primary_pi_for_epic_user_final_review protocol
+    @protocol = protocol
+    @primary_pi = @protocol.primary_principal_investigator
+
+    email_to = Rails.env == 'production' ? @primary_pi.email : DEFAULT_MAIL_TO
+    subject = 'Epic Rights User Approval'
+
+    mail(:to => email_to, :from => 'no-reply@musc.edu', :subject => subject)
+  end
+
+  def notify_primary_pi_for_epic_user_removal protocol, project_role
+    @protocol = protocol
+    @primary_pi = @protocol.primary_principal_investigator
+    @project_role = project_role
+
+    subject = 'Epic User Removal'
+
+    mail(:to => EPIC_RIGHTS_MAIL_TO, :from => 'no-reply@musc.edu', :subject => subject)
+  end
+
+  def notify_for_epic_access_removal protocol, project_role
+    @protocol = protocol
+    @project_role = project_role
+
+    subject = 'Remove Epic Access'
+
+    mail(:to => EPIC_RIGHTS_MAIL_TO, :from => 'no-reply@musc.edu', :subject => subject)
+  end
+
+  def notify_for_epic_rights_changes protocol, project_role, previous_rights
+    @protocol = protocol
+    @project_role = project_role
+    @added_rights = project_role.epic_rights - previous_rights
+    @removed_rights = previous_rights - project_role.epic_rights
+
+    subject = 'Update Epic Access'
+
+    mail(:to => EPIC_RIGHTS_MAIL_TO, :from => 'no-reply@musc.edu', :subject => subject)
   end
 end

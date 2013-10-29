@@ -10,7 +10,7 @@ class CtrcSubsidyReport < Report
   end
 
   def default_output_file
-    return 'ctrc_subsidy_report.csv'
+    return "#{Time.now.strftime('%F')}_ctrc_subsidy_report.csv"
   end
 
   def two_decimal_places float
@@ -27,6 +27,7 @@ class CtrcSubsidyReport < Report
     CSV.open(output_file, 'wb') do |csv|
       # Column Headers
       csv << ['SRID',
+              'PI',
               'Total Cost',
               'PI Contribution',
               'Subsidy',
@@ -41,12 +42,13 @@ class CtrcSubsidyReport < Report
               puts '#'*100
               puts "#{ssr.service_request.protocol.id}-#{ssr.ssr_id}"
               row << "#{ssr.service_request.protocol.id}-#{ssr.ssr_id}"
+              row << "#{ssr.service_request.protocol.primary_principal_investigator.full_name}"
               row << CtrcSubsidyReport.currency_converter(ssr.direct_cost_total)
               puts CtrcSubsidyReport.currency_converter(ssr.direct_cost_total)
               if ssr.subsidy
                 row << CtrcSubsidyReport.currency_converter(ssr.subsidy.pi_contribution)
                 puts CtrcSubsidyReport.currency_converter(ssr.subsidy.pi_contribution)
-                row << two_decimal_places(ssr.subsidy.percent_subsidy)
+                row << two_decimal_places(ssr.try(:subsidy).try(:percent_subsidy)) rescue nil
                 puts ssr.subsidy.percent_subsidy
               else
                 row << ""

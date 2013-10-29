@@ -1,5 +1,13 @@
 $(document).ready ->
 
+  check_core_permissions = () ->
+    $('.clinical_tab_data').each ->
+      if $(this).attr('data-has_access') == "false" 
+        core_name = $(this).attr('href')
+        $(core_name).find('input').prop('disabled', true)
+        $(core_name).find('button').prop('disabled', true)
+
+  check_core_permissions()
   # only submit data that has changed or is required for calculations
 
   $('.procedure_r_qty, .procedure_t_qty, .procedure_box').on 'change', ->
@@ -66,6 +74,7 @@ $(document).ready ->
       contentType: 'application/json; charset=utf-8'
       success: ->
         recalc_subtotal()
+        check_core_permissions()
   )
 
   $(document).on('click', '.check_box_cell input', ->
@@ -86,11 +95,11 @@ $(document).ready ->
     $('.save_alert').show()
   )
 
-  $('.clinical_tab_data').each ->
-    if $(this).attr('data-has_access') == "false"
-      core_name = $(this).attr('href')
-      $(core_name).find('input').prop('disabled', true)
-      $(core_name).find('button').prop('disabled', true)
+  $(document).on('click', '.clinical_tab_data', ->
+    check_core_permissions()
+    recalc_subtotal()
+  )
+
 
   $(document).on('click', 'a.check_all', ->
     if $('a.check_all span').hasClass('ui-icon-check')

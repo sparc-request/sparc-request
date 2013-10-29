@@ -22,8 +22,11 @@ class Arm < ActiveRecord::Base
   after_save :update_liv_subject_counts
 
   def update_liv_subject_counts
+    
     self.line_items_visits.each do |liv|
-      liv.update_attributes(:subject_count => self.subject_count)
+      if ['first_draft', 'draft', nil].include?(liv.line_item.service_request.status)  
+        liv.update_attributes(:subject_count => self.subject_count)
+      end
     end
   end
 
@@ -187,11 +190,13 @@ class Arm < ActiveRecord::Base
     self.subjects.each do |subject|
       # populate old appointments
       subject.calendar.appointments.each do |appointment|
-        existing_liv_ids = appointment.procedures.map {|x| x.visit.line_items_visit.id}
-        new_livs = self.line_items_visits.reject {|x| existing_liv_ids.include?(x.id)}
-        new_livs.each do |new_liv|
-          visit = new_liv.visits.where("visit_group_id = ?", appointment.visit_group_id).first
-          appointment.procedures.create(:line_item_id => new_liv.line_item.id, :visit_id => visit.id) if new_liv.line_item.service.organization_id == appointment.organization_id
+        if appointment.visit_group_id
+          existing_liv_ids = appointment.procedures.map {|x| x.visit ? x.visit.line_items_visit.id : nil}.compact
+          new_livs = self.line_items_visits.reject {|x| existing_liv_ids.include?(x.id)}
+          new_livs.each do |new_liv|
+            visit = new_liv.visits.where("visit_group_id = ?", appointment.visit_group_id).first
+            appointment.procedures.create(:line_item_id => new_liv.line_item.id, :visit_id => visit.id) if new_liv.line_item.service.organization_id == appointment.organization_id
+          end
         end
       end
       # populate new appointments

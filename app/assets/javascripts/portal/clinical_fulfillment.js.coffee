@@ -1,5 +1,13 @@
 $(document).ready ->
 
+  check_core_permissions = () ->
+    $('.clinical_tab_data').each ->
+      if $(this).attr('data-has_access') == "false" 
+        core_name = $(this).attr('href')
+        $(core_name).find('input').prop('disabled', true)
+        $(core_name).find('button').prop('disabled', true)
+
+  check_core_permissions()
   # only submit data that has changed or is required for calculations
 
   $('.procedure_r_qty, .procedure_t_qty, .procedure_box').on 'change', ->
@@ -66,6 +74,7 @@ $(document).ready ->
       contentType: 'application/json; charset=utf-8'
       success: ->
         recalc_subtotal()
+        check_core_permissions()
   )
 
   $(document).on('click', '.check_box_cell input', ->
@@ -86,11 +95,11 @@ $(document).ready ->
     $('.save_alert').show()
   )
 
-  $('.clinical_tab_data').each ->
-    if $(this).attr('data-has_access') == "false"
-      core_name = $(this).attr('href')
-      $(core_name).find('input').prop('disabled', true)
-      $(core_name).find('button').prop('disabled', true)
+  $(document).on('click', '.clinical_tab_data', ->
+    check_core_permissions()
+    recalc_subtotal()
+  )
+
 
   $(document).on('click', 'a.check_all', ->
     if $('a.check_all span').hasClass('ui-icon-check')
@@ -147,7 +156,7 @@ $(document).ready ->
     $('td.unit_cost_cell:visible').each ->
       if $(this).siblings("td.check_box_cell").children("input[type=checkbox]").prop('checked')
         #Do calculations, and set the correct totall
-        unit_cost = $(this).text().replace('$', '')
+        unit_cost = $(this).text().replace('$', '').replace(/[ ,]/g, "")
         r_qty = $(this).siblings('td.r_qty_cell').children('input').val()
         total = unit_cost * r_qty
         $(this).siblings('td.procedure_total_cell').text('$' + commaSeparateNumber(total.toFixed(2)))
@@ -156,15 +165,21 @@ $(document).ready ->
         $(this).siblings('td.procedure_total_cell').text('$0.00')
 
   recalc_subtotal = () ->
-    if $('.hasDatepicker:visible').val()
-      subtotal = 0
-      $('td.procedure_total_cell:visible').each ->
-        value = $(this).text().replace('$', '')
-        subtotal += parseFloat(value)  if not isNaN(value) and value.length isnt 0
-      $('tr.grand_total_row td.grand_total_cell').text('$' + commaSeparateNumber(subtotal.toFixed(2)))
-    else
-      $('tr.grand_total_row td.grand_total_cell').text('$0.00')
+    $('.study_tracker_table').each ->
+      if $(this).find('.hasDatepicker').val()
+        subtotal = 0
+        $(this).find('td.procedure_total_cell').each ->
+          value = $(this).text().replace('$', '').replace(/[ ,]/g, "")
+          subtotal += parseFloat(value)  if not isNaN(value) and value.length isnt 0
+        $(this).find('tr.grand_total_row td.grand_total_cell').text('$' + commaSeparateNumber(subtotal.toFixed(2)))
+      else
+        $(this).find('tr.grand_total_row td.grand_total_cell').text('$0.00')
 
+  ####Prevent enter key on study_tracker_table
+  $('.study_tracker_table input').keypress (event) ->
+    charCode = event.charCode || event.keyCode
+    if charCode == 13
+      return false
 
   ####Comments Logic:
   $(document).on('click', '.add_comment_link', ->

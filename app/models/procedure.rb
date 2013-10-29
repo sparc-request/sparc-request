@@ -15,6 +15,14 @@ class Procedure < ActiveRecord::Base
   attr_accessible :unit_factor_cost
   attr_accessible :toasts_generated
 
+  after_create :fix_toasts_if_uncompleted
+
+  def fix_toasts_if_uncompleted
+    unless self.appointment.completed?
+      self.update_attributes(toasts_generated: true)
+    end
+  end
+
   def required?
     self.visit.to_be_performed?
   end
@@ -121,7 +129,7 @@ class Procedure < ActiveRecord::Base
   end
  
   def audit_excluded_fields
-    {'create' => ['toasts_generated', 'visit_id', 'service_id', 'appointment_id', 'line_item_id', 'unit_factor_cost'], 'update' => ['toasts_generated']}
+    {'create' => ['toasts_generated', 'visit_id', 'service_id', 'appointment_id', 'line_item_id', 'unit_factor_cost'], 'update' => ['toasts_generated', 'appointment_id', 'visit_id', 'line_item_id']}
   end
 
   ### end audit reporting methods ###

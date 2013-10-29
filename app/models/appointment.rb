@@ -71,11 +71,15 @@ class Appointment < ActiveRecord::Base
   # end
 
   def display_name
-    self.name.nil? ? self.visit_group.name : self.name
+    name_switch 
   end
   
   ### audit reporting methods ###
-  
+ 
+  def audit_label
+    name_switch
+  end
+
   def audit_field_value_mapping
     {"completed_at" => "'ORIGINAL_VALUE'.to_time.strftime('%Y-%m-%d')"}
   end

@@ -353,10 +353,28 @@ class Identity < ActiveRecord::Base
   # they have permissions to.
   # Currently serves largely to insert CTRC statuses if this identity has permissions for the CTRC.
   # Returns an array of statuses as strings.
-  def available_workflow_states
+  def available_workflow_states tag='ctrc', org_id=nil
     available_statuses = AVAILABLE_STATUSES.collect { |k, v| v }
-    ctrc_organizations = Organization.tagged_with 'ctrc'
-    if ctrc_organizations.map(&:service_providers).flatten.map(&:identity_id).include?(self.id) || ctrc_organizations.map(&:super_users).flatten.map(&:identity_id).include?(self.id)
+
+    if org_id # we are provided with an id to use as the parent
+      parents = Organization.where(:id => org_id)
+    else # default is to use CTRC tagged organization, this could be different in the future
+      parents = Organization.tagged_with(tag)
+    end
+
+    service_provider_identity_ids = []
+    super_user_identity_ids = []
+    cwf_provider_identity_ids = []
+
+    parents.each do |parent|
+      parent.all_children.each do |org| # check all children and get your available statuses
+        service_provider_identity_ids << org.service_providers.map(&:identity_id)
+        super_user_identity_ids << org.super_users.map(&:identity_id)
+        cwf_provider_identity_ids << org.clinical_providers.map(&:identity_id)
+      end
+    end
+    
+    if service_provider_identity_ids.flatten.include?(self.id) || super_user_identity_ids.flatten.include?(self.id) || cwf_provider_identity_ids.flatten.include?(self.id)
       available_statuses
     else
       available_statuses.delete('CTRC Review')

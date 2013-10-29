@@ -5,12 +5,11 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
     @calendar = Calendar.find(params[:id])
     get_calendar_data(@calendar)
     generate_toasts_for_new_procedures
-    @default_appointment = @calendar.appointments_for_core(@default_core.id).reject{|x| x.completed_for_core?(@default_core.id) }.first rescue @calendar.appointments.first
+    @default_appointment = (@calendar.appointments_for_core(@default_core.id).reject{|x| x.completed_for_core?(@default_core.id) }.first || @calendar.appointments.first) rescue @calendar.appointments.first
     @default_visit_group_id = @default_appointment.try(:visit_group_id)
-    @selected_key = "##{@default_appointment.position_switch}: #{@default_appointment.name_switch}"
+    @selected_key = "##{@default_appointment.position_switch}: #{@default_appointment.name_switch}" rescue nil
 
     @procedures = []
-    # toast_messages = ToastMessage.where("to = ? AND sending_class = ? AND message = ?", current_user.id, "Procedure", @calendar.id.to_s)
     toast_messages = ToastMessage.where(to: current_user.id, sending_class: "Procedure", message: @calendar.id.to_s)
     toast_messages.each do |toast|
       @procedures.push(Procedure.find(toast.sending_class_id))
@@ -58,11 +57,6 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
       @selected_key = params[:appointment_tag]
     end
     @procedures = []
-    # toast_messages = ToastMessage.where("to = ? AND sending_class = ? AND message = ?", current_user.id, "Procedure", @calendar.id.to_s)
-    toast_messages = ToastMessage.where(to: current_user.id, sending_class: "Procedure", message: @calendar.id.to_s)
-    toast_messages.each do |toast|
-      @procedures.push(Procedure.find(toast.sending_class_id))
-    end
   end
 
   private
@@ -100,11 +94,9 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
         if procedure.should_be_displayed && (procedure.service_id == nil)
           completion = appointment.completed_at
           if completion
-            if procedure.created_at > completion
-              unless procedure.toasts_generated
-                new_procedures << procedure
-                procedure.update_attributes(:toasts_generated => true)
-              end
+            unless procedure.toasts_generated
+              new_procedures << procedure
+              procedure.update_attributes(:toasts_generated => true)
             end
           end
         end
@@ -113,7 +105,7 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
 
     new_procedures.each do |procedure|
       # Add a notice ("toast message") for each new procedure
-      clinical_users = ClinicalProvider.where(organization_id: procedure.core.id).includes(:identity).map{|x| x.identity}
+      clinical_users = ClinicalProvider.all.map{|x| x.identity} | SuperUser.all.map{|x| x.identity}
       clinical_users.each do |user|
         ToastMessage.create(:from => current_user.id, :to => user.id, :sending_class => 'Procedure', :sending_class_id => procedure.id, :message => procedure.appointment.calendar.id)
       end

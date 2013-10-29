@@ -97,6 +97,7 @@ $(document).ready ->
 
   $(document).on('click', '.clinical_tab_data', ->
     check_core_permissions()
+    recalc_subtotal()
   )
 
 

@@ -251,7 +251,7 @@ class Protocol < ActiveRecord::Base
   def has_ctrc_services? current_service_request_id
     self.service_requests.each do |sr|
       next if sr.id == current_service_request_id
-      if sr.has_ctrc_services?
+      if sr.has_ctrc_services? and sr.status != 'first_draft'
         return sr.id
       end
     end

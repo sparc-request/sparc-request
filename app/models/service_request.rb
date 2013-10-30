@@ -87,8 +87,8 @@ class ServiceRequest < ActiveRecord::Base
     if self.protocol_id.blank?
       errors.add(:protocol_id, "You must identify the service request with a study/project before continuing.")
     else
-      if self.has_ctrc_services?
-        if self.protocol && self.protocol.has_ctrc_services?(self.id) && !self.status == 'first_draft'
+      if self.has_ctrc_clinical_services?
+        if self.protocol && self.protocol.has_ctrc_clinical_services?(self.id) && !self.status == 'first_draft'
           errors.add(:ctrc_services, "SCTR Research Nexus Services have been removed")
         end
       end
@@ -439,14 +439,14 @@ class ServiceRequest < ActiveRecord::Base
     return self.line_items.any? { |li| li.should_push_to_epic? }
   end
 
-  def has_ctrc_services?
-    return self.line_items.any? { |li| li.service.is_ctrc? }
+  def has_ctrc_clinical_services?
+    return self.line_items.any? { |li| li.service.is_ctrc_clinical_service? }
   end
 
   def remove_ctrc_services
-    self.sub_service_requests.each do |ssr|
-      ssr.destroy if ssr.ctrc?
-    end
+    self.line_items.each {|li| li.destroy if li.service.is_ctrc_clinical_service? }
+    self.reload
+    self.sub_service_requests.each {|sr| sr.destroy if sr.line_items.empty?}
   end
 
   def update_arm_minimum_counts

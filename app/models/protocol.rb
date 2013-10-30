@@ -248,10 +248,10 @@ class Protocol < ActiveRecord::Base
     return self.service_requests.any? { |sr| sr.should_push_to_epic? }
   end
 
-  def has_ctrc_services? current_service_request_id
+  def has_ctrc_clinical_services? current_service_request_id
     self.service_requests.each do |sr|
       next if sr.id == current_service_request_id
-      if sr.has_ctrc_services? and sr.status != 'first_draft'
+      if sr.has_ctrc_clinical_services? and sr.status != 'first_draft'
         return sr.id
       end
     end
@@ -260,7 +260,7 @@ class Protocol < ActiveRecord::Base
   end
 
   def find_sub_service_request_with_ctrc current_service_request_id
-    id = has_ctrc_services? current_service_request_id
+    id = has_ctrc_clinical_services? current_service_request_id
     service_request = self.service_requests.find id
     service_request.sub_service_requests.each do |ssr|
       if ssr.ctrc?

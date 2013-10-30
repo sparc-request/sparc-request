@@ -138,8 +138,11 @@ wb.add_worksheet(name: "Summary") do |sheet|
     subjects = []
     arm.subjects.each do |subject|
       visits = []
-      subject.calendar.appointments.each do |appointment|
-        subtotal = appointment.completed? ? appointment.procedures.sum{|x| x.total} : 0.00
+      subject.calendar.appointments.group_by{|x| x.visit_group_id ? x.visit_group_id : "#{x.name} #{x.position}"}.each do |g, appts|
+        subtotal = 0.00
+        appts.each do |appt|
+          subtotal += appt.completed? ? appt.procedures.sum{|x| x.total} : 0.00
+        end
         visits << subtotal
       end
 
@@ -198,6 +201,7 @@ wb.add_worksheet(name: "Summary") do |sheet|
   visit_count_spanned_row "Payments", :header, nil, nil, visit_count, sheet, styles
   payments_total = 0
   @sub_service_request.payments.each do |payment|
+    next if payment.amount_received.blank? and payment.date_received.blank?
     payments_total += payment.amount_received
     visit_count_spanned_row payment.date_received, nil, payment.amount_received, nil, visit_count, sheet, styles
   end

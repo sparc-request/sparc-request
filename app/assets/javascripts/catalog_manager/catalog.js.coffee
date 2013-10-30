@@ -112,7 +112,7 @@ $ ->
 
 
   .bind 'select_node.jstree', (node, node_ref) ->
-    $('.increase_decrease_dialog:first').dialog('destroy').remove()
+    $('.increase_decrease_dialog:first').dialog().dialog('destroy').remove() # calling dialog() to make sure it exists before we destroy, otherwise jquery ui complains if you click too fast
     click_text = node_ref.rslt.obj.context.textContent || node_ref.rslt.obj.context.innerText
     if click_text
 
@@ -184,6 +184,13 @@ $ ->
     $.post '/catalog_manager/services/set_optional', {service_relation_id: $(this).attr('id'), optional: $(this).val()}, (data) ->
         $('#rs_info').html(data)
 
+  # clinical work fulfillment
+  $('.cwf input[type=checkbox]').live 'click', ->
+    if $(this).is(":checked")
+      $('.cwf.position_field').show()
+    else
+      $('.cwf.position_field').hide()
+      
   # submission e-mails
   $('input#new_se').live 'focus', -> $(this).val('')
   $('input#new_se').live 'keypress', (e) ->

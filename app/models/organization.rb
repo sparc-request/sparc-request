@@ -35,11 +35,20 @@ class Organization < ActiveRecord::Base
   attr_accessible :submission_emails_attributes
   attr_accessible :available_statuses_attributes
   attr_accessible :tag_list
+  attr_accessible :position_in_cwf
+  attr_accessible :show_in_cwf
  
   accepts_nested_attributes_for :subsidy_map
   accepts_nested_attributes_for :pricing_setups
   accepts_nested_attributes_for :submission_emails
   accepts_nested_attributes_for :available_statuses, :allow_destroy => true
+
+  validates :position_in_cwf, :numericality => true, :allow_nil => true, :uniqueness => true
+  validates :position_in_cwf, :presence => :true, :if => :show_in_cwf
+
+  def label
+    abbreviation || name
+  end
 
   ###############################################################################
   ############################# HIERARCHY METHODS ###############################
@@ -262,6 +271,13 @@ class Organization < ActiveRecord::Base
     else
       return false
     end
+  end
+
+  def self.get_cwf_organizations
+    cwf_orgs = Organization.where(:show_in_cwf => true).reject {|x| x.position_in_cwf.nil? }
+    cwf_orgs.sort! { |a,b| a.position_in_cwf <=> b.position_in_cwf }
+
+    cwf_orgs
   end
 
 end

@@ -6,6 +6,13 @@ en:
   error_contact: "(843) 792-8300 or success@musc.edu"
   issue_contact: "Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have."
   feedback: "Feedback"
+  activerecord:
+    errors:
+      models:
+        organization:
+          attributes:
+            position_in_cwf:
+              blank: "is required if 'Show in Clinical Work Fulfillment' is checked."
 
   # sign in page
   signin:
@@ -633,7 +640,8 @@ en:
     new_sp: "New Service Provider"
     service_error: "There are no service providers anywhere on this tree."
     cm_rights: "Catalog Manager Rights"
-    clinical_providers: "Clinical Providers"
+    clinical_work_fulfillment: "Clinical Work Fulfillment"
+    clinical_providers: "Clinical Provider Rights:"
     new_cm: "New Catalog Manager"
     auto_price_adj: "Automatic Pricing Adjustment"
     change_rates: "Increase or Decrease Rates"
@@ -649,6 +657,8 @@ en:
     default_statuses: "Default Statuses:"
     color_blank: "Select a Color"
     errors: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
+    show_in_cwf: "Show in Clinical Work Fulfillment"
+    position_in_cwf: "Position"
 
   pricing_map_form:
     dates: "Dates"
@@ -815,7 +825,7 @@ en:
     service: "Service"
     requester: "Requester"
     assigned: "Person Assigned"
-    orgs: "Program/Provider/Core"
+    orgs: "Provider/Program/Core"
 
   # Associated Users Tab
   associated_users:
@@ -849,6 +859,9 @@ en:
     save: "Save"
     cancel: "Cancel"
     dashboard:
+      header1: "Completed Visits"
+      header2: "Visit Totals"
+      header3: "Subject Total:"
       tabs:
         study_schedule: "Study Schedule"
         subject_tracker: "Subject Tracker"
@@ -894,6 +907,33 @@ en:
       start_date: "Start Date:"
       end_date: "End Date:"
       get_report: "Get Report"
+    notes: 
+      header: "Comments:"
+      save: "Save Comment"
+    visit_calendar:
+      header1: "Study/Project ID:"
+      header2: "Subject ID:"
+      header3: "Billing/Business Manager:"
+      header4: "Subject Study Status:"
+      visit_selector: "Please select a visit:"
+      save_alert: "You must save your changes for the dashboard to be updated."
+      visit_complete: "Date of Visit (entering date signifies a completed visit)"
+      header5: "Procedure"
+      header6: "Completed"
+      header7: "R Quantity"
+      header8: "T Quantity"
+      header9: "Unit Cost"
+      header10: "Total"
+      grand_total: "Grand Total"
+      add_service: "Add Service"
+      submit: "Save Appointments"
+      cwf_link: "Return to Clinical Work Fulfillment"
+      popup_message1: "Attention - An assessment" 
+      popup_message2: "has been added at"
+      popup_message3: "If subject is past visit, please refer to your IRB-approved protocol."
+      popup_message4: "Attention - Assessments have been added to the following visits. If subject is past visit, please refer to your IRB-approved protocol."
+      popup_header1: "Visit Name:"
+      popup_header2: "Service/Assessment Name:"
   reports:
     intro: "Welcome to the SPARC Request Reporting Module. Please select a report type to proceed."
     defined_reports: "Defined Reports"
@@ -901,4 +941,3 @@ en:
     custom_report: "Custom Report"
     proceed: "Proceed"
     create_report: "Create Report"
-    

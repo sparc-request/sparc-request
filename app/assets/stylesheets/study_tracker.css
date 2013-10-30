@@ -72,13 +72,10 @@ td.text-center {
   float:left;
   margin-right:5px;
 }
-.add_service div {
-  display:none;
-}
 
 #audit_form label {
   display: block;
-  width: 90px;
+  min-width: 175px;
   float: left;
 }
 

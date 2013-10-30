@@ -88,7 +88,7 @@ class ServiceRequest < ActiveRecord::Base
       errors.add(:protocol_id, "You must identify the service request with a study/project before continuing.")
     else
       if self.has_ctrc_services?
-        if self.protocol && self.protocol.has_ctrc_services?(self.id)
+        if self.protocol && self.protocol.has_ctrc_services?(self.id) && !self.status == 'first_draft'
           errors.add(:ctrc_services, "SCTR Research Nexus Services have been removed")
         end
       end
@@ -141,11 +141,13 @@ class ServiceRequest < ActiveRecord::Base
   def service_calendar_page(direction)
     return if direction == 'back' and status == 'first_draft'
     return unless has_per_patient_per_visit_services?
-    self.arms.each do |arm|
-      arm.visit_groups.each do |vg|
-        if vg.day.blank?
-          errors.add(:visit_group, "Please specify a study day for each visit.")
-          return
+    if USE_EPIC
+      self.arms.each do |arm|
+        arm.visit_groups.each do |vg|
+          if vg.day.blank?
+            errors.add(:visit_group, "Please specify a study day for each visit.")
+            return
+          end
         end
       end
     end
@@ -442,8 +444,8 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def remove_ctrc_services
-    self.line_items.each do |li|
-      li.destroy if li.service.is_ctrc?
+    self.sub_service_requests.each do |ssr|
+      ssr.destroy if ssr.ctrc?
     end
   end
 

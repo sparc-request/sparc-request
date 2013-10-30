@@ -68,8 +68,10 @@ class SubServiceRequest < ActiveRecord::Base
           visits = Visit.joins(:line_items_visit).where(visits: { visit_group_id: arm.visit_groups}, line_items_visits:{ line_item_id: li.id} )
           visits.group_by{|v| v.visit_group_id}.each do |vg_id, group_visits|
             Appointment.where(visit_group_id: vg_id).each do |appointment|
-              group_visits.each do |visit|
-                appointment.procedures.create(:line_item_id => li.id, :visit_id => visit.id)
+              if appointment.organization_id == li.service.organization_id
+                group_visits.each do |visit|
+                  appointment.procedures.create(:line_item_id => li.id, :visit_id => visit.id)
+                end
               end
             end
           end

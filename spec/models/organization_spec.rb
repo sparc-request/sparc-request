@@ -357,6 +357,22 @@ describe 'organization' do
         program.get_available_statuses.should eq({"draft"=>"Draft", "submitted"=>"Submitted"})
       end
     end
+
+    context "patient visit calendar" do
+
+      let!(:core1)    { FactoryGirl.create(:core, show_in_cwf: true, position_in_cwf: 6) }
+      let!(:core2)    { FactoryGirl.create(:core, show_in_cwf: true, position_in_cwf: 7) }
+      describe "get cwf organizations" do
+
+        it "should return an array of all organizations flagged to show in clinical work fulfillment" do
+          Organization.get_cwf_organizations.should include(core1, core2)
+        end
+
+        it "should be sorted by its 'position_in_cwf' attribute" do
+          Organization.get_cwf_organizations.first.should eq(core_13)          
+        end
+      end
+    end
   end
 end
 

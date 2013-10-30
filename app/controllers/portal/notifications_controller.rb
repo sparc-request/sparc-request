@@ -27,7 +27,6 @@ class Portal::NotificationsController < Portal::BaseController
     @recipient = Identity.find(params[:identity_id])
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
 
-    # TODO: should #new create a new notification?
     respond_to do |format|
       format.js
       format.html
@@ -43,10 +42,6 @@ class Portal::NotificationsController < Portal::BaseController
 
       @sub_service_request = @notification.sub_service_request
 
-      # TODO: we created a new Notification, but all_notifications()
-      # searches for UserNotifications.  do we need to also create a
-      # UserNotification?
-      # (also, perhaps the name all_notifications is confusing?)
       @notifications = @user.all_notifications.where(:sub_service_request_id => @sub_service_request.id)
 
       UserMailer.notification_received(@message.recipient).deliver unless @message.recipient.email.blank?

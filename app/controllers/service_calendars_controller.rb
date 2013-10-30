@@ -1,6 +1,6 @@
 class ServiceCalendarsController < ApplicationController
   before_filter :initialize_service_request
-  before_filter {|c| params[:portal] == 'true' ? true : c.send(:authorize_identity)}
+  before_filter(:except => [:merged_calendar]) {|c| params[:portal] == 'true' ? true : c.send(:authorize_identity)}
   layout false
 
   def table
@@ -50,8 +50,6 @@ class ServiceCalendarsController < ApplicationController
         @line_items_visit.update_attribute(:subject_count, qty)
       elsif visit.research_billing_qty.to_i <= 0 and checked == 'true'
         # set quantity and research billing qty to 1
-        # TODO: why do we do this for research_billing_qty but not the
-        # other quantities?
         line_item = visit.line_items_visit.line_item
         service = line_item.service
         visit.update_attributes(

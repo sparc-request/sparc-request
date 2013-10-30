@@ -226,6 +226,10 @@ fieldset > legend {
   }
 }
 
+input#new_cp {
+  width: 703px !important;
+}
+
 .sus, .sps, .ses, .cms, .cps {
   border-color: #f0f0f0 #000 #000 #f0f0f0;
   border-style: inset;

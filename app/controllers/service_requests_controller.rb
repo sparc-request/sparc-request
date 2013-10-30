@@ -434,6 +434,8 @@ class ServiceRequestsController < ApplicationController
     end
 
     @service_request.reload
+
+    @line_items = @service_request.line_items
   end
 
   def delete_documents

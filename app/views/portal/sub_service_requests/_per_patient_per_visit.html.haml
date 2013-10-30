@@ -15,7 +15,6 @@
           %th{:colspan => 2}
         %tr
           %td{:colspan => 2}
-            / TODO: Add arms selector
             = select_tag "arm_id", arms_for_select(@service_request, @selected_arm), :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id, :'data-protocol_id' => @service_request.protocol.id
             %br
             - if @study_tracker
@@ -25,12 +24,10 @@
               %br
               = link_to t(:fulfillments)[:services][:visits][:remove_arm], 'javascript:void(0);', :class => "remove_arm_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id, :'data-arm_count' => @service_request.arms.count, :'data-protocol_id' => @service_request.protocol.id
           %td{:colspan => 2}
-            / TODO: Fix for arms
             = select_tag "visit_position", visits_for_select(@selected_arm)
             %br
             = link_to t(:fulfillments)[:services][:visits][:add_link], 'javascript:void(0);', :class => "add_visit_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id
           %td{:colspan => 2}
-            / TODO: Fix for arms
             = select_tag "delete_visit_position", visits_for_delete(@selected_arm)
             %br
             = link_to t(:fulfillments)[:services][:visits][:delete_link], 'javascript:void(0);', :class => "delete_visit_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id

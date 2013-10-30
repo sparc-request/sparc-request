@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130927180442) do
+ActiveRecord::Schema.define(:version => 20131023203211) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -51,27 +51,19 @@ ActiveRecord::Schema.define(:version => 20130927180442) do
   add_index "answers", ["api_id"], :name => "uq_answers_api_id", :unique => true
   add_index "answers", ["question_id"], :name => "index_answers_on_question_id"
 
-  create_table "appointment_completions", :force => true do |t|
-    t.datetime "completed_date"
-    t.integer  "appointment_id"
-    t.integer  "organization_id"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
-  end
-
-  add_index "appointment_completions", ["appointment_id"], :name => "index_appointment_completions_on_appointment_id"
-  add_index "appointment_completions", ["organization_id"], :name => "index_appointment_completions_on_organization_id"
-
   create_table "appointments", :force => true do |t|
     t.integer  "calendar_id"
-    t.datetime "created_at",     :null => false
-    t.datetime "updated_at",     :null => false
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
     t.integer  "visit_group_id"
     t.integer  "position"
     t.string   "name"
+    t.integer  "organization_id"
+    t.date     "completed_at"
   end
 
   add_index "appointments", ["calendar_id"], :name => "index_appointments_on_calendar_id"
+  add_index "appointments", ["organization_id"], :name => "index_appointments_on_organization_id"
   add_index "appointments", ["visit_group_id"], :name => "index_appointments_on_visit_group_id"
 
   create_table "approvals", :force => true do |t|
@@ -456,9 +448,11 @@ ActiveRecord::Schema.define(:version => 20130927180442) do
     t.text     "ack_language"
     t.boolean  "process_ssrs"
     t.boolean  "is_available"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
     t.datetime "deleted_at"
+    t.boolean  "show_in_cwf"
+    t.integer  "position_in_cwf"
   end
 
   add_index "organizations", ["is_available"], :name => "index_organizations_on_is_available"

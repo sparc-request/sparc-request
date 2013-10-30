@@ -5,10 +5,6 @@ describe "visit schedule", :js => true do
   let_there_be_j
   fake_login_for_each_test
   build_service_request_with_project()
-  let!(:core_17)      { FactoryGirl.create(:core, parent_id: program.id) }
-  let!(:core_13)      { FactoryGirl.create(:core, parent_id: program.id) }
-  let!(:core_16)      { FactoryGirl.create(:core, parent_id: program.id) }
-  let!(:core_15)      { FactoryGirl.create(:core, parent_id: program.id) }
   let!(:service3)     { FactoryGirl.create(:service, organization_id: program.id, name: 'Super Awesome Terrific') }
   let!(:pricing_map3) { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service3.id, is_one_time_fee: false, display_date: Time.now - 1.day, full_rate: 2000, federal_rate: 3000, units_per_qty_max: 20) }
   let!(:line_item3)   { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service3.id, sub_service_request_id: sub_service_request.id, quantity: 0) }
@@ -16,14 +12,6 @@ describe "visit schedule", :js => true do
   context "updating a subject" do
 
     before :each do
-      core_17.tag_list.add("nutrition")
-      core_13.tag_list.add("nursing")
-      core_16.tag_list.add("laboratory")
-      core_15.tag_list.add("imaging")
-      core_17.save
-      core_13.save
-      core_16.save
-      core_15.save
       service2.update_attributes(:organization_id => core_17.id)
       service3.update_attributes(:organization_id => core_13.id)
       add_visits
@@ -128,13 +116,6 @@ describe "visit schedule", :js => true do
           first(:css, ".procedure_box").set(true)
           first(".procedure_total_cell").should have_text("$150.00")
         end
-      end
-    end
-
-    context "completing an appointment" do
-
-      it "should complete the appointment" do
-        click_on "Nutrition"
       end
     end
   end

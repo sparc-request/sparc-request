@@ -411,7 +411,7 @@ class Identity < ActiveRecord::Base
 
       end
     end
-
+    
     hash
   end
 

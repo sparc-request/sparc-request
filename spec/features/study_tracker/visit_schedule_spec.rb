@@ -74,9 +74,9 @@ describe "visit schedule", :js => true do
 
       it "should save the new quantity" do
         click_on "Nutrition"
-        first(".procedure_r_qty").set("10")
+        find(".procedure_r_qty", :visible => true).set("10")
         click_button "Save Appointments"
-        first(".procedure_r_qty").should have_value("10")
+        find(".procedure_r_qty", :visible => true).should have_value("10")
       end
     end
 
@@ -84,9 +84,9 @@ describe "visit schedule", :js => true do
 
       it "should save the new quantity" do
         click_on "Nutrition"
-        retry_until { first(".procedure_t_qty").set("10") }
+        retry_until { find(".procedure_t_qty", :visible => true).set("10") }
         click_button "Save Appointments"
-        first(".procedure_t_qty").should have_value("10")
+        find(".procedure_t_qty", :visible => true).should have_value("10")
       end
     end
 
@@ -96,25 +96,25 @@ describe "visit schedule", :js => true do
 
         it "should place the procedure in completed status" do
           click_on "Nutrition"
-          first(:css, ".procedure_box").set(false)
-          first(".procedure_box").should_not be_checked
-          first(:css, ".procedure_box").set(true)
+          find(:css, ".procedure_box", :visible => true).set(false)
+          find(".procedure_box", :visible => true).should_not be_checked
+          find(:css, ".procedure_box", :visible => true).set(true)
           click_button "Save Appointments"
-          first(".procedure_box").should be_checked
+          find(".procedure_box", :visible => true).should be_checked
         end
 
         it "should display procedure's total as zero if left unchecked" do
           click_on "Nutrition"
-          first(:css, ".procedure_box").set(false)
-          first(".procedure_total_cell").should have_text("$0.00")
+          find(:css, ".procedure_box", :visible => true).set(false)
+          find(".procedure_total_cell", :visible => true).should have_text("$0.00")
         end
 
         it "should diplay the correct total if it is checked" do
           click_on "Nutrition"
           wait_for_javascript_to_finish
-          first(:css, ".procedure_box").set(false)
-          first(:css, ".procedure_box").set(true)
-          first(".procedure_total_cell").should have_text("$150.00")
+          find(:css, ".procedure_box", :visible => true).set(false)
+          find(:css, ".procedure_box", :visible => true).set(true)
+          find(".procedure_total_cell", :visible => true).should have_text("$150.00")
         end
       end
     end

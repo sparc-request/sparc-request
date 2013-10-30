@@ -44,5 +44,14 @@
         - flash.each do |name, msg|
           = content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String)
         = yield
+      #footer
+        .container_12
+          = link_to "Sign Up For the SPARC Request Listserv", "javascript:void(0);"
+          |
+          = link_to "SPARC Request Blog", "javascript:void(0);"
+          |
+          = link_to "SCTR", "javascript:void(0);"
+          |
+          = link_to "SPARC Request Home", root_path
       / = render :partial => 'shared/ask_a_question'
       = render :partial => 'shared/piwik_tracking' if Rails.env == 'production'

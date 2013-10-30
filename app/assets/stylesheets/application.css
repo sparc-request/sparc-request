@@ -112,6 +112,7 @@ a.save-option{
 
 #container #header {
   height: 102px;
+  background: white url("header_background_gradient.png") left top repeat-x;
 }
 
 #container #org_logo, #container #department_title, #container #institution_logo {
@@ -1978,7 +1979,8 @@ input.search-services {
 
 #welcome_msg {
   text-align: right;
-  margin-top: 6px;
+  padding: 6px;
+  background: white url("welcome_msg_background_gradient.png") left top repeat-x;
 }
 
 .acknowledge_approval_status_dialog {
@@ -2019,7 +2021,6 @@ input.search-services {
   border-left: 1px solid #B2B2B2;
   border-right: 1px solid #000;
   display: block;
-  margin-top: 8px;
   width: 960px;
 }
 

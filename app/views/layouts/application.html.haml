@@ -44,6 +44,7 @@
         - flash.each do |name, msg|
           = content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String)
         = yield
+      .clear
       #footer
         .container_12
           = link_to "Sign Up For the SPARC Request Listserv", "javascript:void(0);"

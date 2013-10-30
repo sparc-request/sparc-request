@@ -111,6 +111,7 @@ a.save-option{
 }
 
 #container #header {
+  padding-left: 10px;
   height: 102px;
   background: white url("header_background_gradient.png") left top repeat-x;
 }

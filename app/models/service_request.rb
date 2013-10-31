@@ -88,7 +88,7 @@ class ServiceRequest < ActiveRecord::Base
       errors.add(:protocol_id, "You must identify the service request with a study/project before continuing.")
     else
       if self.has_ctrc_clinical_services?
-        if self.protocol && self.protocol.has_ctrc_clinical_services?(self.id) && !self.status == 'first_draft'
+        if self.protocol && self.protocol.has_ctrc_clinical_services?(self.id) && self.status == 'first_draft'
           errors.add(:ctrc_services, "SCTR Research Nexus Services have been removed")
         end
       end

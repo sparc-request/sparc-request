@@ -84,7 +84,7 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
     completed_for_core = @completed_appointments.select{|x| x.completed_for_core?(@default_core.id) }
     number_of_core_appointments = @appointments.size.to_f / @cwf_cores.size.to_f
     
-    if number_of_core_appointments.to_i == completed_for_core.size.to_i
+    if number_of_core_appointments.to_f == completed_for_core.size.to_f
       @default_appointment = completed_for_core.first
       @default_subtotal = @default_appointment.procedures.sum{|x| x.total}
     else

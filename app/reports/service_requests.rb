@@ -42,10 +42,10 @@ class ServiceRequestsReport < ReportingModule
     attrs["SRID"] = :display_id
     attrs["Date Submitted"] = "service_request.submitted_at.strftime('%Y-%m-%d')"
 
-    attrs["Primary PI Last Name"] = "service_request.protocol.primary_principal_investigator.try(:last_name)"
-    attrs["Primary PI First Name"] = "service_request.protocol.primary_principal_investigator.try(:first_name)" 
-    attrs["Primary PI College"] = ["service_request.protocol.primary_principal_investigator.try(:college)", COLLEGES.invert] # we invert since our hash is setup {"Bio Medical" => "bio_med"} for some crazy reason
-    attrs["Primary PI Department"] = ["service_request.protocol.primary_principal_investigator.try(:department)", DEPARTMENTS.invert]
+    attrs["Primary PI Last Name"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:last_name)"
+    attrs["Primary PI First Name"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:first_name)" 
+    attrs["Primary PI College"] = ["service_request.try(:protocol).try(:primary_principal_investigator).try(:college)", COLLEGES.invert] # we invert since our hash is setup {"Bio Medical" => "bio_med"} for some crazy reason
+    attrs["Primary PI Department"] = ["service_request.try(:protocol).try(:primary_principal_investigator).try(:department)", DEPARTMENTS.invert]
 
     attrs
   end
@@ -68,7 +68,6 @@ class ServiceRequestsReport < ReportingModule
   # Other tables to include
   def includes
     return :organization, :service_request => {:line_items => :service}
-    return :project_roles => {:protocol => {:service_requests => {:line_items => :service, :sub_service_requests => :organization}}}
   end
 
   # Conditions

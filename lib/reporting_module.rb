@@ -16,11 +16,12 @@ class ReportingModule
   end
 
   def records
-    self.table.includes(self.includes)
-              .where(self.where(self.params))
-              .uniq(self.uniq)
-              .group(self.group)
-              .order(self.order)
+    records ||= self.table.includes(self.includes)
+                    .where(self.where(self.params))
+                    .uniq(self.uniq)
+                    .group(self.group)
+                    .order(self.order)
+    records
   end
 
   def to_excel
@@ -62,6 +63,7 @@ private
 
   def create_report_header obj
       obj.add_row ["Report Generated:", Date.today.strftime("%Y-%m-%d")] 
+      obj.add_row ["# of Records:", self.records.size]
 
       obj.add_row [""]
 

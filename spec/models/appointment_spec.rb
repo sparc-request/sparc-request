@@ -9,20 +9,19 @@ describe Appointment do
 
   context "clinical work fulfillment" do
 
-    let!(:appointment)  { FactoryGirl.create(:appointment) }
+    let!(:core_18)       { FactoryGirl.create(:core) }
+    let!(:appointment)  { FactoryGirl.create(:appointment, organization_id: core_18.id, completed_at: Date.today) }
 
-    # should already be 5 competions because of the 'before create' action
-    it 'should be possible to create an appointment' do
-      appt = Appointment.create!()
-      appt.appointment_completions.size.should eq(6)
-    end
+    describe "completed for core" do
 
-    describe "creating appointment completions" do
+      it "should return true if the appointment is completed for a particular core" do
+        appointment.completed_for_core?(core_18.id).should eq(true)
+      end
 
-      # should be 10 completions if the method is called again
-      it "should create a appointment completion for each cwf core" do
-        appointment.create_appointment_completions
-        appointment.appointment_completions.size.should eq(6)
+      it "should return false if this is not the case" do
+        appointment.completed_for_core?(core_17.id).should eq(false)
+        appointment.update_attributes(completed_at: nil)
+        appointment.completed_for_core?(core_18.id).should eq(false)
       end
     end
   end

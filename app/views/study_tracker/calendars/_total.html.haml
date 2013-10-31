@@ -1,5 +1,5 @@
-- procedures = appointment.procedures.select{|x| x.appointment.completed_for_core?(x.core.id)}
+- procedures = procedures_for_visit_group(appointments)
 
-%tr{:class => "appointment #{appointment.id}" }
-  %td= appointment.name_switch
+%tr{:class => "appointment #{appointments.first.visit_group.id}" }
+  %td= appointments.first.visit_group.name
   %td= number_to_currency(procedures.sum{|x| x.total})

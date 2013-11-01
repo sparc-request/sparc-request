@@ -79,7 +79,6 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
 
     # Used for listing grouped totals in the dashboard
     @completed_appointments_by_visit_group = completed_appointments_by_visit_group(@completed_appointments)
-    puts @completed_appointments_by_visit_group
 
     uncompleted_appointments = @appointments.reject{|x| x.completed_for_core?(@default_core.id) }
     completed_for_core = @completed_appointments.select{|x| x.completed_for_core?(@default_core.id) }

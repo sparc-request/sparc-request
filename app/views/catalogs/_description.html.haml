@@ -12,7 +12,7 @@
     - unless organization.cores.empty?
       .core-accordion
         - organization.cores.order('`order`').each do |core|
-          %h3{:class => css_class(organization)}
+          %h3{:class => "#{css_class(organization)} core-tab"}
             = link_to core.name, "#"
           .core_view
             - core.services.order('`order`').each do |service|

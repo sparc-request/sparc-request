@@ -68,7 +68,7 @@ class Appointment < ActiveRecord::Base
   
   ### audit reporting methods ###
  
-  def audit_label
+  def audit_label audit
     name_switch
   end
 

@@ -473,8 +473,8 @@ a.save-option{
 }
 
 #account img {
-  margin-top: 3px;
-  margin-left: 60px;
+  margin-top: 4px;
+  margin-left: 70px;
 }
 
 /* Navy: #003366
@@ -489,20 +489,20 @@ a.save-option{
 }
 
 .light-blue-provider {
-  background: #0775B0 !important;
+  background: #227ba5 !important;
 }
 
 .orange-provider {
-  background: #E09462 !important;
+  background: #f8993a !important;
 }
 
 .red-provider {
   color: #fff;
-  background: #C43149 !important;
+  background: #ff3333 !important;
 }
 
 .green-provider {
-  background: #06895E !important;
+  background: #2c9b4d !important;
 }
 
 .core-view {

@@ -66,7 +66,9 @@
         = t(:service_request_details)[:services]
         %span#cart-help= t(:service_request_details)[:help]
       .line-items= render :partial => 'catalogs/cart', :locals => {:service_request => @service_request}
-    .dashboard-button= navigation_link image_tag('back_to_catalog.png'), @catalog
+    .catalog-button= navigation_link t(:right_navigation)[:catalog], @catalog
+    = render :partial => 'right_navigation'
+
 
   .clear
 

@@ -105,13 +105,15 @@ a.save-option{
 }
 
 #container {
-  width: 962px;
+  width: 962px; /* width: 1202px; */
   height: 100%;
   margin: 0 auto;
 }
 
 #container #header {
+  padding-left: 10px;
   height: 102px;
+  background: white url("header_background_gradient.png") left top repeat-x;
 }
 
 #container #org_logo, #container #department_title, #container #institution_logo {
@@ -124,7 +126,7 @@ a.save-option{
 }
 
 #container #department_title {
-  width: 510px;
+  width: 510px; /* width: 750px; */
   margin: 22px 0 0 -4px;
 }
 
@@ -137,7 +139,7 @@ a.save-option{
 #container #content {
   background: #FFF;
   height: 100%;
-  width: 960px;
+  width: 960px; /* width: 1200; */
   border-left: outset 1px black;
   border-right: outset 1px black;
   padding-top: 10px;
@@ -173,6 +175,15 @@ a.save-option{
 
 /* RootView */
 
+.service-catalog {
+  background: #E8E8E8;
+  margin-top: -50px;
+}
+
+.institution {
+  background: #E8E8E8 !important;
+}
+
 #welcome_message h1 {
   font-size: 20px;
   color: #0099ff;
@@ -201,11 +212,12 @@ a.save-option{
 .right #services {
   margin: 10px auto;
   width: 92%;
+  border: 3px solid #000;
 }
 
 .right #services h3 {
   padding: 4px;
-  background: #227BA5;
+  background: #0099FF;
   font-size: 14px;
   color: #fff;
   font-weight: normal;
@@ -220,9 +232,35 @@ a.save-option{
   cursor: pointer;
 }
 
-.dashboard-button {
+.submit-request-button,
+.dashboard-button,
+.feedback-button,
+.ask-a-question-button,
+.faq-button {
   display: block;
   text-align: center;
+  background-size: 100% 100%;
+  font-size: 20px;
+  color: #FFF;
+  cursor: pointer;
+  margin: 10px;
+  padding: 5px 0px;
+}
+
+.dashboard-button,
+.feedback-button,
+.ask-a-question-button,
+.faq-button {
+  background-image: url("blue_button.png");
+}
+
+.submit-request-button {
+  background-image: url("green_button.png");
+}
+
+.submit-request-button,
+.dashboard-button {
+  width: 206px; /* width: 280px; */
 }
 
 #cart-help {
@@ -250,9 +288,36 @@ a.save-option{
   font-style: italic;
 }
 
+/* These are the catalog selector colors
+ * Light Blue: #8AB6CB
+ * Light Green: #7EAE8D
+ * Light Orange: #CAA27B
+*/
+
+#institution_accordion {
+  border: 1px #000;
+  padding: 0px 5px;
+}
+
+#institution_accordion h3 {
+  border-radius: 5px !important
+}
+
 .provider_accordion {
   width: 97% !important;
   float: right;
+}
+
+.green-provider-odd {
+  background: #7EAE8D;
+}
+
+.orange-provider-odd {
+  background: #CAA27B;
+}
+
+.light-blue-provider-odd {
+  background: #8AB6CB;
 }
 
 /* CatalogView */
@@ -271,10 +336,6 @@ a.save-option{
   margin-top: 30px;
 }
 
-.core-accordion {
-  width: 450px;
-}
-
 .catalog-view .left {
   width: 199px;
   float: left;
@@ -290,11 +351,10 @@ a.save-option{
 }
 
 .catalog-view-right {
-  background:  #003366;
-  min-height: 700px;
-  margin-top: -10px !important;
+  background:  #E8E8E8;
+  margin-top: -50px !important;
   margin-right: -10px !important;
-  width: 226px !important;
+  width: 226px !important; /* width: 300px !important; */
   padding: 2px !important;
 }
 
@@ -317,11 +377,47 @@ a.save-option{
   background: #E8E8E8;
 }
 
+#about {
+  width: 220px;
+  height: 50px;
+  background: #FFF;
+}
+
+#account {
+  width: 230px;
+  height: 50px;
+  background: #FFF;
+  margin: -2px 0 0 -2px;
+}
+
+#account img {
+  margin-top: 3px;
+  margin-left: 60px;
+}
+
+#calendar_blog {
+  margin-top: 30px;
+}
+
+#blog, #calendar {
+  height: 300px;
+  float: left;
+  width: 49%;
+}
+
+.vertical-line {
+  border-left: 1px solid #000;
+  height: 270px;
+  float: left;
+  margin-top: 15px;
+  padding: 0px 4px;
+}
+
 /* Navy: #003366
  * Light Blue: #227BA5
- * Orange: #ff9933
+ * Orange: #F8993A
  * Red: #ff3333
- * Green: #339933
+ * Green: #2C9B4D
 */
 
 .blue-provider {
@@ -341,7 +437,7 @@ a.save-option{
 }
 
 .green-provider {
-  background: #339933 !important;
+  background: #2C9B4D !important;
 }
 
 .core-view {
@@ -355,6 +451,7 @@ a.save-option{
 
 .provider-details-view .provider-name {
   color: white;
+  border-radius: 5px;
 }
 
 .program-details-view .program-name {
@@ -1510,7 +1607,7 @@ li.organization-option {
   display: none;
 }
 
-.search-services, .search-identities {
+.search-identities {
   float: left;
 }
 
@@ -1589,14 +1686,70 @@ li.organization-option {
   z-index      : 999;
 }
 
-input.search-services, input.search-identities{-webkit-transition:border linear 0.2s,box-shadow linear 0.2s;-moz-transition:border linear 0.2s,box-shadow linear 0.2s;-ms-transition:border linear 0.2s,box-shadow linear 0.2s;-o-transition:border linear 0.2s,box-shadow linear 0.2s;transition:border linear 0.2s,box-shadow linear 0.2s;-webkit-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1);-moz-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1);box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1);}
-input.search-services:focus, input.search-identities:focus{outline:0;border-color:rgba(82, 168, 236, 0.8);-webkit-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 8px rgba(82, 168, 236, 0.6);-moz-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 8px rgba(82, 168, 236, 0.6);box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 8px rgba(82, 168, 236, 0.6);}
-input.search-services, input.search-identities{font-size:100%;margin:0;vertical-align:baseline;*vertical-align:middle;}
-input.search-services, input.search-identities{line-height:normal;*overflow:visible;}
-input.search-services::-moz-focus-inner, input.search-identites::-moz-focus-inner{border:0;padding:0;}
-input.search-services, input.search-identities{font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;font-size:13px;font-weight:normal;line-height:normal;}
-input.search-services, input.search-identities{display:inline-block;width:209px;height:18px;padding:4px;font-size:13px;line-height:18px;color:#808080;border:1px solid #ccc;-webkit-border-radius:3px;-moz-border-radius:3px;border-radius:3px;}
+input.search-services, input.search-identities {
+  -webkit-transition:border linear 0.2s,box-shadow linear 0.2s;
+  -moz-transition:border linear 0.2s,box-shadow linear 0.2s;
+  -ms-transition:border linear 0.2s,box-shadow linear 0.2s;
+  -o-transition:border linear 0.2s,box-shadow linear 0.2s;
+  transition:border linear 0.2s,box-shadow linear 0.2s;
+  -webkit-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
 
+input.search-services:focus, input.search-identities:focus {
+  outline:0;border-color:rgba(82, 168, 236, 0.8);
+  -webkit-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 8px rgba(82, 168, 236, 0.6);
+  -moz-box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 8px rgba(82, 168, 236, 0.6);
+  box-shadow:inset 0 1px 3px rgba(0, 0, 0, 0.1),0 0 8px rgba(82, 168, 236, 0.6);
+}
+
+input.search-services, input.search-identities {
+  font-size:100%;
+  margin:0;
+  vertical-align:baseline;*vertical-align:middle;
+}
+
+input.search-services::-moz-focus-inner, input.search-identites::-moz-focus-inner {
+  border:0;
+  padding:0;
+}
+
+input.search-services, input.search-identities {
+  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size:13px;font-weight:normal;
+  line-height:normal;
+  display:inline-block;
+  padding:4px;
+  font-size:13px;
+  line-height:18px;
+  color:#808080;
+  border:1px solid #ccc;
+}
+
+input.search-identities {
+  width:209px;
+  height:18px;
+  -webkit-border-radius:3px;
+  -moz-border-radius:3px;
+}
+
+input.search-services {
+  width:381px;
+  height:20px;
+  -webkit-border-radius:14px 3px 3px 14px;
+  -moz-border-radius:14px 3px 3px 14px;
+  border-radius: 14px 3px 3px 14px;
+  margin-bottom:1px;
+  margin-left:7px;
+}
+
+#search {
+  background-image: url("search_bar.png");
+  background-size: 100% 100%;
+  padding: 5px 0px;
+  margin-bottom: 10px;
+}
 
 .search_result .service-name {
   font-weight: bold;
@@ -1874,7 +2027,8 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 
 #welcome_msg {
   text-align: right;
-  margin-top: 6px;
+  padding: 6px;
+  background: white url("welcome_msg_background_gradient.png") left top repeat-x;
 }
 
 .acknowledge_approval_status_dialog {
@@ -1915,8 +2069,12 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
   border-left: 1px solid #B2B2B2;
   border-right: 1px solid #000;
   display: block;
-  margin-top: 8px;
   width: 960px;
+  text-align: center;
+}
+
+#sparc_logo_header img {
+  margin-left: 10px;
 }
 
 #sparc_logo_header #right_header {
@@ -2117,4 +2275,19 @@ table.service_calendar tbody td.visit {
 
 #reporting_container #defined_reports #defined_reports_step_1 #defined_reports_description {
   margin-bottom: 10px;
+}
+
+#footer {
+  background: #003366;
+  text-align: center;
+  padding: 18px 0;
+  height: 18px;
+  font-size: 14px;
+  width: 100%;
+  color: #FFFFFF;
+}
+
+#footer a {
+  text-decoration: none;
+  color: #FFFFFF;
 }

@@ -40,23 +40,19 @@
           %span#sub_service_request_header
             &nbsp;
             = show_friendly_ssr_id(@sub_service_request) if @sub_service_request
-          %br
-          %span#feedback= t 'feedback'
       #content.container_12
         - flash.each do |name, msg|
           = content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String)
         = yield
-      = render :partial => 'shared/ask_a_question'
+      .clear
+      #footer
+        .container_12
+          = link_to "Sign Up For the SPARC Request Listserv", "javascript:void(0);"
+          |
+          = link_to "SPARC Request Blog", "javascript:void(0);"
+          |
+          = link_to "SCTR", "javascript:void(0);"
+          |
+          = link_to "SPARC Request Home", root_path
+      / = render :partial => 'shared/ask_a_question'
       = render :partial => 'shared/piwik_tracking' if Rails.env == 'production'
-
-      #feedback-form{:style => 'display: none', :title => 'Give Us Your Feedback!'}
-        = form_tag feedback_service_requests_path, :method => :post, :remote => true, :id => 'feedback_form' do
-          #errors
-            #error-text
-            %br
-          %p
-            = text_field_tag "feedback[email]", nil, {:placeholder => t(:notifications)[:email], :size => 35, :tabindex => -1}
-            %br
-            %br
-          %p
-            = text_area_tag "feedback[message]", nil, {:placeholder => t(:notifications)[:feedback], :cols => 65, :rows => 15, :tabindex => -1}

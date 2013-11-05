@@ -70,11 +70,6 @@ class ProtocolsController < ApplicationController
   def approve_epic_rights
     @protocol = Protocol.find params[:id]
 
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    # TODO: check to ensure that this user is one of the users which has
-    # epic user creation rights
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
     # Send a notification to the primary PI for final review before
     # pushing to epic.  The email will contain a link which calls
     # push_to_epic.

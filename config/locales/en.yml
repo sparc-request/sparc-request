@@ -142,7 +142,7 @@ en:
   # Subsidy Page
   subsidy_page:
     not_eligible: "None of the services you have selected are eligible for a subsidy."
-    eligible_html: "The services selected below may be eligible for a <b><i>funding award</i></b> or subsidy to cover some or all of the costs of the services. For example, SCTR (CTSA) provides funding awards for the CTRC."
+    eligible_html: "The services selected below may be eligible for a <b><i>funding award</i></b> or subsidy to cover some or all of the costs of the services. For example, SCTR (CTSA) provides funding awards for the Research Nexus."
     table:
       institution: "Institution/Provider/Program/Core"
       total_estimated: "Total Estimated Costs"

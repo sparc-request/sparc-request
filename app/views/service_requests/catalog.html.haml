@@ -24,10 +24,7 @@
       = t(:service_requests)[:catalog][:text1]
     = render :partial => 'catalogs/cart'
   = link_to "Submit Request", protocol_service_request_path(@service_request), :class => 'submit-request-button'
-  .ask-a-question-button Ask A Question
-  = link_to "Dashboard", USER_PORTAL_LINK, :class => "dashboard-button"
-  .faq-button FAQs
-  .feedback-button Feedback
+  = render :partial => 'right_navigation'
 
   #submit_error{:style => "display: none"}
     = t(:service_requests)[:catalog][:text3]

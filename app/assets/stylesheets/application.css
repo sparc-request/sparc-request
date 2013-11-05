@@ -202,6 +202,72 @@ a.save-option{
   margin-top: 10px;
 }
 
+#calendar-blog {
+  margin-top: 30px;
+  width: 100%;
+}
+
+#calendar-blog h1 {
+  color: #227BA5;
+}
+
+#calendar-blog th {
+  text-align: left;
+}
+
+#calendar-blog .half {
+  width: 50%;
+}
+
+#calendar-blog .full {
+  width: 100%;
+}
+
+#blog, #calendar {
+  height: 300px;
+  overflow: scroll;
+}
+
+#calendar .calendar-event .location,
+#calendar .calendar-event .date {
+  float: left;
+}
+
+#calendar .calendar-event .location {
+  padding-left: 5px;
+  width: 75%;
+}
+
+#calendar .date {
+  color: #FFF;
+  text-align: center;
+  width: 45px;
+  font-weight: bold;
+}
+
+#calendar .date .day {
+  font-size: 20px;
+}
+
+.vertical-line {
+  border-left: 1px solid #000;
+  height: 270px;
+  float: left;
+  margin-top: 15px;
+  padding: 0px 4px;
+}
+
+#calendar-blog .title,
+#calendar-blog .title a {
+  font-weight: bold;
+  color: #000;
+}
+
+#blog .date,
+#calendar .time {
+  font-style: italic;
+}
+
 /* CartView */
 .right {
   width: 243px;
@@ -407,24 +473,6 @@ a.save-option{
   margin-left: 60px;
 }
 
-#calendar_blog {
-  margin-top: 30px;
-}
-
-#blog, #calendar {
-  height: 300px;
-  float: left;
-  width: 49%;
-}
-
-.vertical-line {
-  border-left: 1px solid #000;
-  height: 270px;
-  float: left;
-  margin-top: 15px;
-  padding: 0px 4px;
-}
-
 /* Navy: #003366
  * Light Blue: #227BA5
  * Orange: #F8993A
@@ -437,20 +485,20 @@ a.save-option{
 }
 
 .light-blue-provider {
-  background: #227BA5 !important;
+  background: #0775B0 !important;
 }
 
 .orange-provider {
-  background: #ff9933 !important;
+  background: #E09462 !important;
 }
 
 .red-provider {
   color: #fff;
-  background: #ff3333 !important;
+  background: #C43149 !important;
 }
 
 .green-provider {
-  background: #2C9B4D !important;
+  background: #06895E !important;
 }
 
 .core-view {

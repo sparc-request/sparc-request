@@ -125,6 +125,9 @@ GEM
     ffi (1.9.0)
     formtastic (2.1.1)
       actionpack (~> 3.0)
+    google_calendar (0.3.1)
+      addressable (>= 2.2.2)
+      nokogiri (>= 1.4.4)
     grouped_validations (0.3.2)
     gyoku (1.0.0)
       builder (>= 2.1.2)
@@ -357,6 +360,7 @@ DEPENDENCIES
   exception_notification
   factory_girl
   faker
+  google_calendar
   grouped_validations
   gyoku
   haml

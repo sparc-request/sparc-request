@@ -51,6 +51,8 @@ gem "audited-activerecord", "~> 3.0"
 
 gem 'surveyor'
 
+gem 'google_calendar'
+
 group :development, :test, :profile do
   gem "rails-erd"
   gem 'sqlite3'

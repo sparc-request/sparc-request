@@ -1,4 +1,5 @@
 = javascript_include_tag "catalog"
+
 .grid_3.service-catalog
   #about
     = link_to image_tag("about.png"), "javascript:void(0);", :class => "about_sparc_request"
@@ -7,15 +8,53 @@
 .grid_6
   #search= render :partial => 'catalogs/service_search'
   #welcome_message= render :partial => 'catalogs/description', :locals => {:organization => @organization, :service_request => @service_request}
-  #calendar_blog
+  #calendar-blog
     %hr
-    #blog
-      %h1 News
-      = image_tag "about.png"
-    .vertical-line
-    #calendar
-      %h1 Calendar
-      = image_tag "account.png"
+    %table
+      %thead
+        - if USE_NEWS_FEED
+          %th{:class => (USE_GOOGLE_CALENDAR) ? 'half' : 'full'}
+            %h1 News
+        - if USE_GOOGLE_CALENDAR
+          %th{:class => (USE_NEWS_FEED) ? 'half' : 'full'}
+            %h1 Calendar
+      %body
+        - if USE_NEWS_FEED
+          %td{:class => (USE_GOOGLE_CALENDAR) ? 'half' : 'full'}
+            #blog
+              / TODO: Put loop here for blog links
+              .blog-link
+                .title= link_to "WOOOOOOOOOOO OOOOOOOOOOOOOOO OOOOOOOOOOOO OOO OOOOOOOOOO OOOOOOOO", "javascript:void(0)"
+                .date= Date.today.strftime("%B %d, %Y")
+              .blog-link
+                .title= link_to "WOOOOOOO", "javascript:void(0)"
+                .date= Date.today.strftime("%B %d, %Y")
+              .blog-link
+                .title= link_to "WOOOOOOO", "javascript:void(0)"
+                .date= Date.today.strftime("%B %d, %Y")
+        - if USE_GOOGLE_CALENDAR
+          %td{:class => (USE_NEWS_FEED) ? 'half' : 'full'}
+            #calendar
+              / TODO: Put loop here for calendar events
+              - @events.each do |event|
+                - startTime = Time.parse(event.start_time)
+                - endTime = Time.parse(event.end_time)
+                .calendar-event
+                  .date{ :class => cycle('light-blue-provider', 'green-provider', 'orange-provider')  }
+                    = startTime.strftime("%b")
+                    %br
+                    .day= startTime.day
+                  .location
+                    .title= event.title
+                    .time
+                      - if event.all_day?
+                        All Day
+                      - else
+                        = startTime.strftime("%l:%M %p") + ' - ' + endTime.strftime("%l:%M %p")
+                      = " - #{event.where}"
+                .clear
+                %br
+
 .grid_3.catalog-view-right.right
   #account
     = image_tag "account.png"

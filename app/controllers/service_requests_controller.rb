@@ -169,6 +169,16 @@ class ServiceRequestsController < ApplicationController
     else
       @institutions = Institution.order('`order`')
     end
+
+    if USE_GOOGLE_CALENDAR
+      curTime = Time.now
+      startMin = curTime
+      startMax  = (curTime + 7.days)
+
+      cal = Google::Calendar.new(:username => GOOGLE_USERNAME,
+                                 :password => GOOGLE_PASSWORD)
+      @events = cal.find_events_in_range(startMin, startMax).sort_by { |event| event.start_time }
+    end
   end
   
   def protocol

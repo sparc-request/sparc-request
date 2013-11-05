@@ -471,6 +471,7 @@ a.save-option{
 }
 
 .red-provider {
+  color: #fff;
   background: #ff3333 !important;
 }
 
@@ -1959,8 +1960,8 @@ input.search-services {
   background-color: #CCCCCC;
 }
 
-.subsidies {
-  width: 922px;
+.service-subsidy-view-right {
+  background: #E8E8E8;
 }
 
 .subsidies thead tr.table_header {

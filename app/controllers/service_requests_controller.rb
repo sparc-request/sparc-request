@@ -269,6 +269,10 @@ class ServiceRequestsController < ApplicationController
         @subsidies << ssr.subsidy
       end
     end
+
+    if @subsidies.empty?
+      redirect_to "/service_requests/#{@service_request.id}/document_management"
+    end
   end
   
   def document_management

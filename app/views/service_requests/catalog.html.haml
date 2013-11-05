@@ -1,7 +1,7 @@
 = javascript_include_tag "catalog"
 .grid_3.service-catalog
   #about
-    = image_tag "about.png"
+    = link_to image_tag("about.png"), "javascript:void(0);", :class => "about_sparc_request"
   %h3 Browse Services Catalog:
   = render :partial => 'catalogs/service_accordion', :locals => {:institutions => @institutions}
 .grid_6
@@ -52,3 +52,4 @@
         %br
       %p
         = text_area_tag "feedback[message]", nil, {:placeholder => t(:notifications)[:feedback], :cols => 65, :rows => 15, :tabindex => -1}
+  #about_sparc{:title => t(:about_title)}= t(:about_text)

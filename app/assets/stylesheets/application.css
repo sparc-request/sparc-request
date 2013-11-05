@@ -2139,6 +2139,7 @@ table.service_calendar tbody td.visit {
 }
 
 #footer {
+  margin-top: 15px;
   background: #003366;
   text-align: center;
   padding: 18px 0;
@@ -2151,4 +2152,48 @@ table.service_calendar tbody td.visit {
 #footer a {
   text-decoration: none;
   color: #FFFFFF;
+}
+
+.signup_form {
+  border-width: 15px !important;
+  border-color: #207ca5 !important;
+  border-radius: 25px !important;
+}
+
+.signup_form .ui-dialog-titlebar {
+  display: none;
+}
+
+#signup_form {
+  display: none;
+}
+
+#signup_form .description, #signup_form .logo {
+  text-align: center;
+  color: #207ca5;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+#signup_form label {
+  color: #207ca5;
+  font-size: 15px;
+  width: 200px;
+  float: left;
+  display: block;
+  text-align: right;
+  padding-right: 12px;
+}
+
+#signup_form .field {
+  margin-bottom: 5px;
+}
+
+#signup_form .create_user, #signup_form .links {
+  width: 650px;
+  text-align: center;
+}
+
+#signup_form .links a {
+  color: #207ca5 !important;
 }

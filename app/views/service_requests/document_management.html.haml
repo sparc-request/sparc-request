@@ -8,7 +8,7 @@
   = hidden_field_tag :validates, ''
   = render :partial => 'steps'
   = render :partial => 'errors'
-  .grid_12
+  .grid_9
     .document_upload_instructions= t("documents.upload_instructions_html")
     .document-management-container
       = render :partial => 'document_list', :locals => {:review => false}
@@ -26,14 +26,13 @@
 
       %div{:style => 'text-align: center'}
         = t("documents.notes_instructions")
-        = text_area_tag 'service_request[notes]', @service_request.notes, :rows => 14, :cols => 100 
+        = text_area_tag 'service_request[notes]', @service_request.notes, :rows => 14, :cols => 75
 
       %br
       %br
-
-      %div 
-        = t("documents.make_changes")
-        = navigation_link t("documents.here"), @catalog
+  .grid_3.document-mgmt-view-right.right
+    .catalog-button= navigation_link t(:right_navigation)[:catalog], @catalog
+    = render :partial => 'right_navigation'
 
   .clear
 

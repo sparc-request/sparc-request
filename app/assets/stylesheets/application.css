@@ -233,6 +233,7 @@ a.save-option{
 }
 
 .submit-request-button,
+.catalog-button,
 .dashboard-button,
 .feedback-button,
 .ask-a-question-button,
@@ -247,6 +248,16 @@ a.save-option{
   padding: 5px 0px;
 }
 
+.submit-request-button a,
+.catalog-button a,
+.dashboard-button a,
+.feedback-button a ,
+.ask-a-question-button a,
+.faq-button a {
+  color: #fff;
+  text-decoration: none;
+}
+
 .dashboard-button,
 .feedback-button,
 .ask-a-question-button,
@@ -254,7 +265,8 @@ a.save-option{
   background-image: url("blue_button.png");
 }
 
-.submit-request-button {
+.submit-request-button,
+.catalog-button {
   background-image: url("green_button.png");
 }
 
@@ -1922,7 +1934,7 @@ input.search-services {
   background-color: #CCCCCC;
 }
 
-.service-subsidy-view-right {
+.service-subsidy-view-right, .document-mgmt-view-right {
   background: #E8E8E8;
 }
 
@@ -2336,4 +2348,29 @@ table.service_calendar tbody td.visit {
 
 #signup_form .links a {
   color: #207ca5 !important;
+}
+
+.steps_table {
+  background: url("steps_no_text.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
+  height: 100px;
+  margin-left: -10px;
+  margin-top: -10px;
+  width: 959px;
+}
+
+.steps_table tr td { 
+  color: #FFFFFF;
+  font-size: 13px;
+  padding: 5px;
+  text-align: center;
+  width: 20%;
+  vertical-align: top;
+  padding-top: 22px;
+}
+
+.steps_table_link {
+  width: 100%;
+  height: 100%;
+  text-decoration: none;
+  color: #fff;
 }

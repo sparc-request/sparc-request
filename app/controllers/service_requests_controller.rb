@@ -177,7 +177,30 @@ class ServiceRequestsController < ApplicationController
 
       cal = Google::Calendar.new(:username => GOOGLE_USERNAME,
                                  :password => GOOGLE_PASSWORD)
-      @events = cal.find_events_in_range(startMin, startMax).sort_by { |event| event.start_time }
+      events_list = cal.find_events_in_range(startMin, startMax).sort_by { |event| event.start_time }
+      @events = []
+      events_list.each do |event|
+        startTime = Time.parse(event.start_time)
+        endTime = Time.parse(event.end_time)
+        @events << {:month => startTime.strftime("%b"),
+                    :day => startTime.day,
+                    :title => event.title,
+                    :all_day => event.all_day?,
+                    :start_time => startTime.strftime("%l:%M %p"),
+                    :end_time => endTime.strftime("%l:%M %p"),
+                    :where => event.where }
+      end
+    end
+
+    if USE_NEWS_FEED
+      page = Nokogiri::HTML(open("http://www.sparcrequestblog.com"))
+      headers = page.css('.entry-header').take(3)
+      @news = []
+      headers.each do |header|
+        @news << {:title => header.at_css('.entry-title').text,
+                  :link => header.at_css('.entry-title a')[:href],
+                  :date => header.at_css('.date').text }
+      end
     end
   end
   

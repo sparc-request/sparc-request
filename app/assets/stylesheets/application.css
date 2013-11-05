@@ -215,6 +215,10 @@ a.save-option{
   text-align: left;
 }
 
+#calendar-blog td {
+  padding: 0px 3px;
+}
+
 #calendar-blog .half {
   width: 50%;
 }

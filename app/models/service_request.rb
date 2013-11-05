@@ -445,7 +445,6 @@ class ServiceRequest < ActiveRecord::Base
 
   def remove_ctrc_services
     self.line_items.each {|li| li.destroy if li.service.is_ctrc_clinical_service? }
-    self.reload
     self.sub_service_requests.each {|sr| sr.destroy if sr.line_items.empty?}
   end
 

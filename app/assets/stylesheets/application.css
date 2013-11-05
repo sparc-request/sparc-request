@@ -204,16 +204,27 @@ a.save-option{
 
 #calendar-blog {
   margin-top: 30px;
+  width: 100%;
 }
 
 #calendar-blog h1 {
   color: #227BA5;
 }
 
+#calendar-blog th {
+  text-align: left;
+}
+
+#calendar-blog .half {
+  width: 50%;
+}
+
+#calendar-blog .full {
+  width: 100%;
+}
+
 #blog, #calendar {
   height: 300px;
-  float: left;
-  width: 49%;
   overflow: scroll;
 }
 
@@ -256,7 +267,6 @@ a.save-option{
 #calendar .time {
   font-style: italic;
 }
-
 
 /* CartView */
 .right {

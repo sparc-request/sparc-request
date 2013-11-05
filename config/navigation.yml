@@ -58,7 +58,7 @@ service_calendar:
 
 # change 'back' to 'calendar_totals' for that page to be used.
 service_subsidy:
-  step_text: 'STEP 2: Enter Subsidy Information'
+  step_text: 'STEP 2C: Enter Requested Subsidy Information'
   css_class: light-blue-provider
   back: service_calendar
   catalog: catalog

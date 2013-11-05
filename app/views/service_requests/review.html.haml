@@ -14,14 +14,14 @@
         .review-details
           %p.instructions= t(:sr_review)[:instructions]
           .project
-            = render :partial => 'service_requests/review/study_project_information', :locals => {:protocol => @protocol}
+            = render :partial => 'service_requests/review/study_project_information', :locals => {:protocol => @protocol, :provider_css => 'red-provider'}
           .documents
-            = render :partial => 'service_requests/document_list', :locals => {:service_list => @service_list, :review => true}
+            = render :partial => 'service_requests/document_list', :locals => {:service_list => @service_list, :review => true, :provider_css => 'red-provider'}
           .notes
             %table
               %thead
                 %tr
-                  %th.light-blue-provider= t(:sr_review)[:notes_header]
+                  %th.red-provider= t(:sr_review)[:notes_header]
               %tbody
                 %tr
                   %td= @service_request.notes

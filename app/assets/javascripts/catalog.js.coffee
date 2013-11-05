@@ -7,6 +7,13 @@ loadDescription = (url) ->
 
 $(document).ready ->
 
+  $('#about_sparc').dialog
+    autoOpen: false
+    modal: true
+
+  $(document).on 'click', '.about_sparc_request', ->
+    $('#about_sparc').dialog('open')
+
   $('#institution_accordion').accordion
     heightStyle: 'content'
     collapsible: true

@@ -1,4 +1,5 @@
 = javascript_include_tag "catalog"
+
 .grid_3.service-catalog
   #about
     = image_tag "about.png"
@@ -7,15 +8,40 @@
 .grid_6
   #search= render :partial => 'catalogs/service_search'
   #welcome_message= render :partial => 'catalogs/description', :locals => {:organization => @organization, :service_request => @service_request}
-  #calendar_blog
+  #calendar-blog
     %hr
     #blog
       %h1 News
-      = image_tag "about.png"
+      %br
+      / TODO: Put loop here for blog links
+      .blog-link
+        .title= link_to "WOOOOOOO", "javascript:void(0)"
+        .date= Date.today.strftime("%B %d, %Y")
     .vertical-line
-    #calendar
-      %h1 Calendar
-      = image_tag "account.png"
+    - if USE_GOOGLE_CALENDAR
+      #calendar
+        %h1 Calendar
+        %br
+        / TODO: Put loop here for calendar events
+        - @events.each do |event|
+          - startTime = Time.parse(event.start_time)
+          - endTime = Time.parse(event.end_time)
+          .calendar-event
+            .date{ :class => cycle('light-blue-provider', 'green-provider', 'orange-provider')  }
+              = startTime.strftime("%b")
+              %br
+              .day= startTime.day
+            .location
+              .title= event.title
+              .time
+                - if event.all_day?
+                  All Day
+                - else
+                  = startTime.strftime("%l:%M %p") + ' - ' + endTime.strftime("%l:%M %p")
+                = " - #{event.where}"
+          .clear
+          %br
+
 .grid_3.catalog-view-right.right
   #account
     = image_tag "account.png"

@@ -202,6 +202,62 @@ a.save-option{
   margin-top: 10px;
 }
 
+#calendar-blog {
+  margin-top: 30px;
+}
+
+#calendar-blog h1 {
+  color: #227BA5;
+}
+
+#blog, #calendar {
+  height: 300px;
+  float: left;
+  width: 49%;
+  overflow: scroll;
+}
+
+#calendar .calendar-event .location,
+#calendar .calendar-event .date {
+  float: left;
+}
+
+#calendar .calendar-event .location {
+  padding-left: 5px;
+  width: 75%;
+}
+
+#calendar .date {
+  color: #FFF;
+  text-align: center;
+  width: 45px;
+  font-weight: bold;
+}
+
+#calendar .date .day {
+  font-size: 20px;
+}
+
+.vertical-line {
+  border-left: 1px solid #000;
+  height: 270px;
+  float: left;
+  margin-top: 15px;
+  padding: 0px 4px;
+}
+
+#calendar-blog .title,
+#calendar-blog .title a {
+  font-weight: bold;
+  color: #000;
+}
+
+#blog .date,
+#calendar .time {
+  font-style: italic;
+}
+
+
 /* CartView */
 .right {
   width: 243px;
@@ -393,24 +449,6 @@ a.save-option{
 #account img {
   margin-top: 3px;
   margin-left: 60px;
-}
-
-#calendar_blog {
-  margin-top: 30px;
-}
-
-#blog, #calendar {
-  height: 300px;
-  float: left;
-  width: 49%;
-}
-
-.vertical-line {
-  border-left: 1px solid #000;
-  height: 270px;
-  float: left;
-  margin-top: 15px;
-  padding: 0px 4px;
 }
 
 /* Navy: #003366

@@ -105,6 +105,17 @@ $(document).ready ->
 
   # Form functions
 
+  $(document).on('click', '.new-portal-notification-button', ->
+    if $(this).hasClass('active')
+      $(this).removeClass('active')
+      $(this).text("Send Notification")
+    else
+      $(this).addClass('active')
+      $(this).text("Hide Notifications")
+
+    $('#portal_notifications').slideToggle()
+  )
+
   $(document).on('click', '.select_all', ->
     $('td.mark_unread input').prop('checked', true)
   )

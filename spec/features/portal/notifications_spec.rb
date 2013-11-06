@@ -31,4 +31,18 @@ describe "notifications page", :js => true do
     find("td.body_column").should have_text("Test Reply")
   end
 
+  describe "sending a new notification" do
+
+    before :each do
+      visit portal_root_path
+    end
+
+    it "should open up the dialog box" do
+      find(".new-portal-notification-button").click
+      first(".new_notification").click
+      wait_for_javascript_to_finish
+      page.should have_text("You can not send a message to yourself.")
+    end
+  end
+
 end

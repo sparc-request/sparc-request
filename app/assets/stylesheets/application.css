@@ -215,6 +215,10 @@ a.save-option{
   text-align: left;
 }
 
+#calendar-blog td {
+  padding: 0px 3px;
+}
+
 #calendar-blog .half {
   width: 50%;
 }
@@ -283,7 +287,7 @@ a.save-option{
 
 .right #services h3 {
   padding: 4px;
-  background: #0099FF;
+  background: #0775B0;
   font-size: 14px;
   color: #fff;
   font-weight: normal;
@@ -461,6 +465,10 @@ a.save-option{
   background: #FFF;
 }
 
+#about a {
+  padding-left: 18px;
+}
+
 #account {
   width: 230px;
   height: 50px;
@@ -469,8 +477,12 @@ a.save-option{
 }
 
 #account img {
-  margin-top: 3px;
-  margin-left: 60px;
+  margin-top: 4px;
+  margin-left: 40px;
+}
+
+.service-catalog .ui-accordion-content h4 {
+  padding: 4px 6px;
 }
 
 /* Navy: #003366

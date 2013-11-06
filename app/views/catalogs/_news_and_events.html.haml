@@ -1,0 +1,39 @@
+%hr
+  %table
+    %thead
+      - if USE_NEWS_FEED
+        %th{:class => (USE_GOOGLE_CALENDAR) ? 'half' : 'full'}
+          %h1 News
+      - if USE_GOOGLE_CALENDAR
+        %th{:class => (USE_NEWS_FEED) ? 'half' : 'full'}
+          %h1 Calendar
+    %body
+      - if USE_NEWS_FEED
+        %td{:class => (USE_GOOGLE_CALENDAR) ? 'half' : 'full'}
+          #blog
+            / TODO: Put loop here for blog links
+            - @news.each do |article|
+              .blog-link
+                .title= link_to article[:title], article[:link]
+                .date= article[:date]
+                %br
+      - if USE_GOOGLE_CALENDAR
+        %td{:class => (USE_NEWS_FEED) ? 'half' : 'full'}
+          #calendar
+            / TODO: Put loop here for calendar events
+            - @events.each do |event|
+              .calendar-event
+                .date{ :class => cycle('light-blue-provider', 'green-provider', 'orange-provider')  }
+                  = event[:month]
+                  %br
+                  .day= event[:day]
+                .location
+                  .title= event[:title]
+                  .time
+                    - if event[:all_day]
+                      All Day
+                    - else
+                      = event[:start_time] + ' - ' + event[:end_time]
+                    = " - #{event[:where]}"
+              .clear
+              %br

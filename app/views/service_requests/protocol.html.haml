@@ -51,7 +51,7 @@
         = t("study_assignment.sidebar_box.my_services")
         %span#cart-help= t("study_assignment.sidebar_box.help")
       .line-items= render :partial => 'catalogs/cart'
-    .dashboard-button= navigation_link image_tag('back_to_catalog.png'), @back
+    .catalog-button= navigation_link t(:right_navigation)[:catalog], @back
 .continue= render :partial => 'service_requests/navigation'
 
 - if @ctrc_services

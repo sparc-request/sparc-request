@@ -287,7 +287,7 @@ a.save-option{
 
 .right #services h3 {
   padding: 4px;
-  background: #0099FF;
+  background: #0775B0;
   font-size: 14px;
   color: #fff;
   font-weight: normal;
@@ -465,6 +465,10 @@ a.save-option{
   background: #FFF;
 }
 
+#about a {
+  padding-left: 18px;
+}
+
 #account {
   width: 230px;
   height: 50px;
@@ -474,7 +478,11 @@ a.save-option{
 
 #account img {
   margin-top: 4px;
-  margin-left: 70px;
+  margin-left: 40px;
+}
+
+.service-catalog .ui-accordion-content h4 {
+  padding: 4px 6px;
 }
 
 /* Navy: #003366
@@ -489,20 +497,20 @@ a.save-option{
 }
 
 .light-blue-provider {
-  background: #227ba5 !important;
+  background: #0775B0 !important;
 }
 
 .orange-provider {
-  background: #f8993a !important;
+  background: #E09462 !important;
 }
 
 .red-provider {
   color: #fff;
-  background: #ff3333 !important;
+  background: #C43149 !important;
 }
 
 .green-provider {
-  background: #2c9b4d !important;
+  background: #06895E !important;
 }
 
 .core-view {

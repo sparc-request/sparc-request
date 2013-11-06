@@ -3,7 +3,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
 
   def show
     @sub_service_request = SubServiceRequest.find(params[:id])
-
+    @admin = true
     session[:sub_service_request_id] = @sub_service_request.id
     session[:service_request_id] = @sub_service_request.service_request_id
     session[:service_calendar_pages] = params[:pages] if params[:pages]

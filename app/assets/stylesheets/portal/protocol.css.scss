@@ -66,3 +66,10 @@
         max-width: 100% !important;
     }
 }
+
+.fulfillment_notifications {
+  li:hover {
+    background-color: #ccc;
+    cursor: pointer;
+  }
+}

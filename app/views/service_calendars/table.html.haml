@@ -1,4 +1,4 @@
--@service_requests.each do |service_request|
+- @service_requests.each do |service_request|
   - if service_request.has_per_patient_per_visit_services?
     - service_request.arms.each do |arm|
       .arm_calendar_container{:'data-arm_id' => arm.id}

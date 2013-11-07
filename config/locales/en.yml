@@ -16,6 +16,15 @@ en:
             position_in_cwf:
               blank: "is required if 'Show in Clinical Work Fulfillment' is checked."
 
+  # bottom navigation
+  bottom_navigation:
+    go_back: "Go Back"
+    save_and_exit: "Save & Exit"
+    save_and_continue: "Save & Continue"
+    save_as_draft: "Save As Draft"
+    get_quote: "Get Quote"
+    submit_to_start: "Submit to Start Services"
+
   # right navigation
   right_navigation:
     ask_a_question: "Ask A Question"

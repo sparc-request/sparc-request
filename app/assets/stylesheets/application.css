@@ -742,6 +742,16 @@ tr.orange-provider th {
 }
 
 /* ReviewView */
+
+.review_instructions {
+  border: 1px solid #000;
+  list-style-type: decimal;
+  margin: -10px auto 10px auto;
+  font-weight: bold;
+  padding: 10px;
+  width: 50%;
+}
+
 .review-details {
   margin-left: 10px;
 }

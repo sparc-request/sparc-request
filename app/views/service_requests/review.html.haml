@@ -12,7 +12,7 @@
     .view-anchor
       .review-view
         .review-details
-          %p.instructions= t(:sr_review)[:instructions]
+          %p.instructions= raw(t(:sr_review)[:instructions])
           .project
             = render :partial => 'service_requests/review/study_project_information', :locals => {:protocol => @protocol, :provider_css => 'red-provider'}
           .documents

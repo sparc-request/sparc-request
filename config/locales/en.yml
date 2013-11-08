@@ -503,7 +503,7 @@ en:
   sr_review:
     participate_in_survey: "Would you like to participate in a brief 1 question SPARC Request satisfaction survey?"
     participate_in_survey_title: "System Satisfaction Survey"
-    instructions: "Please review the following information to ensure the accuracy of your request. If you need to make changes, click on the steps above or click \"Go Back\" at the bottom of the page. After you have reviewed your request, click \"Submit my Service Request.\" Alternatively, you may save your request as a draft for future submission. Please note: Draft requests are not reviewed by staff for approval."
+    instructions: "<ul class='review_instructions'><li>Review your request.</li><li>Makes changes (if needed).</li><li>Save as draft for later, get a quote, or submit to start services.</li></ul>"
     study_project_info:
       title: "Study/Project Information"
       id: "Study/Project ID:"

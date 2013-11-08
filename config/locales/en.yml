@@ -861,7 +861,7 @@ en:
   # Rails Root Page Messages
   rails_root:
     welcome: "Welcome to the SPARC Request Services Catalog"
-    message1: "Please browse through the SPARC Request Services Catalog to view all available SPARC Request services.  Service providers are located on the left-hand side of the page.  Click on a provider to see available services.  Alternatively use the search field located in the upper left hand corner."
+    message1: "Search for services above or browse the catalog to your left."
     # message2: "Click \"Add Services\" at the bottom of any service description to add it to your \"My Services\"."
     # message3: "To delete a service from \"My Services\", use the red X beside any service."
     message4: "** Please Note: You may only select services applicable to ONE research study/project at a time.**"

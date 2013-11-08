@@ -177,18 +177,17 @@ class ServiceRequestsController < ApplicationController
 
       cal = Google::Calendar.new(:username => GOOGLE_USERNAME,
                                  :password => GOOGLE_PASSWORD)
-      events_list = cal.find_events_in_range(startMin, startMax).sort_by { |event| event.start_time }
+      events_list = cal.find_events_in_range(startMin, startMax)
       @events = []
-      events_list.each do |event|
-        startTime = Time.parse(event.start_time)
-        endTime = Time.parse(event.end_time)
-        @events << {:month => startTime.strftime("%b"),
-                    :day => startTime.day,
-                    :title => event.title,
-                    :all_day => event.all_day?,
-                    :start_time => startTime.strftime("%l:%M %p"),
-                    :end_time => endTime.strftime("%l:%M %p"),
-                    :where => event.where }
+      begin
+        events_list.sort_by! { |event| event.start_time }
+        events_list.each do |event|
+          @events << create_calendar_event(event)
+        end
+      rescue
+        if events_list
+          @events << create_calendar_event(events_list)
+        end
       end
     end
 
@@ -636,6 +635,18 @@ class ServiceRequestsController < ApplicationController
 
   def send_epic_notification_for_user_approval(protocol)
     Notifier.notify_for_epic_user_approval(protocol).deliver
+  end
+
+  def create_calendar_event event
+    startTime = Time.parse(event.start_time)
+    endTime = Time.parse(event.end_time)
+    { :month => startTime.strftime("%b"),
+      :day => startTime.day,
+      :title => event.title,
+      :all_day => event.all_day?,
+      :start_time => startTime.strftime("%l:%M %p"),
+      :end_time => endTime.strftime("%l:%M %p"),
+      :where => event.where }
   end
 
 end

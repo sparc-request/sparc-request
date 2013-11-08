@@ -11,7 +11,7 @@
   .grid_9
     .document_upload_instructions= t("documents.upload_instructions_html")
     .document-management-container
-      = render :partial => 'document_list', :locals => {:review => false}
+      = render :partial => 'document_list', :locals => {:review => false, :provider_css => 'orange-provider'}
       .clear
       %br
       %br
@@ -19,7 +19,7 @@
       %td= link_to t("documents.add_button"), "javascript:void(0)", :class => "document_upload_button", :location => 'document_management'
 
       .document_upload{:style=>'display:none'}
-        = render :partial => 'document_form'
+        = render :partial => 'document_form', :locals => {:provider_css => 'orange-provider'}
       .clear
       %br
       %br

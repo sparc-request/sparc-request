@@ -1,5 +1,6 @@
+- thead_class ||= 'ui-widget-header'
 %table.service_calendar.review_totals
-  %thead.ui-widget-header
+  %thead{:class => thead_class}
     %tr.table_header
       %th{:rowspan => 2}= t(:sr_review)[:calendar][:headers][:services]
       %th{:rowspan => 2}= t(:sr_review)[:calendar][:headers][:cost]

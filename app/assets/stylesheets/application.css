@@ -673,6 +673,9 @@ a.save-option{
 
 .continue a{
   cursor:pointer;
+  text-decoration: none;
+  font-size: 18px;
+  color: #fff;
 }
 
 .continue div{
@@ -686,7 +689,15 @@ a.save-option{
 }
 
 .continue div.nav-backward{
-  width: 260px;
+  width: 252px;
+  margin-left: 12px;
+  vertical-align: bottom;
+}
+
+.continue div.nav-backward img {
+  vertical-align: middle;
+  padding-right: 5px;
+  padding-bottom: 2px;
 }
 
 .continue div.exit{
@@ -694,8 +705,23 @@ a.save-option{
   min-width: 405px;
 }
 
+.continue div.exit a {
+  vertical-align: 8px;
+  padding-left: 85px;
+}
+
 .continue div.nav-forward{
-  width: 260px;
+  width: 252px;
+  margin-right: 12px;
+  vertical-align: bottom;
+  text-align: right;
+
+}
+
+.continue div.nav-forward img {
+  vertical-align: middle;
+  padding-right: 5px;
+  padding-bottom: 2px;
 }
 
 /* ReviewView */
@@ -740,9 +766,34 @@ a.save-option{
   background-color: #ccc;
 }
 
-.return-to-step-3, .save-as-draft, .obtain-research-pricing {
+.review-bottom-navigation a {
+  color: #fff;
+  font-size: 18px;
+}
+
+.return-to-step-3, .save-as-draft, .obtain-research-pricing, .submit-request {
   float: left;
-  margin-right: 38px;
+  width: 232px;
+  height: 32px;
+}
+
+.return-to-step-3 {
+  padding-left: 12px;
+  width: 250px;
+}
+
+.save-as-draft, .obtain-research-pricing {
+  padding-top: 4px;
+  height: 28px;
+  width: 205px;
+}
+
+.return-to-step-3 .return-to-previous a img, .submit-request a img {
+  vertical-align: middle;
+}
+
+.submit-request {
+  width: 258px;
 }
 
 .review-details .notes {
@@ -774,7 +825,7 @@ a.save-option{
 
 .confirmation-button {
   display: inline-block;
-  background: #339933;
+  background: #06895E;
   margin: 20px;
   padding: 7px;
   border-radius: 5px;
@@ -790,7 +841,8 @@ a.save-option{
 }
 
 .confirmation-details th {
-  background: #EEE;
+  background: #06895E;
+  color: #fff;
 }
 
 .confirmation-details table {
@@ -807,7 +859,7 @@ a.save-option{
 
 /* ServiceRequestSetupView */
 .service-request-setup-view .service-details {
-  background: #E8E8E8;
+  background: #0775B0 !important;
   width: 670px;
   margin-left: 10px;
   height: 100%;
@@ -872,11 +924,12 @@ a.save-option{
 
 .service-request-setup-view .arm-info {
   width: 100%;
-  background: #E8E8E8 !important;
+  background: #0775B0 !important;
 }
 
 .service-request-setup-view .arm-info .arm-header {
   font-weight: bold;
+  color: #0775B0;
   background-color:#FFFFFF;
 }
 
@@ -2003,7 +2056,8 @@ input.search-services {
 }
 
 .subsidies tbody.subsidies-list {
-  background-color: #E8E8E8;
+  background: #0775B0;
+  color: #fff;
 }
 
 .subsidies tbody.subsidies-list tr td {

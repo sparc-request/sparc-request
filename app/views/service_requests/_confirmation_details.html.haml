@@ -1,10 +1,8 @@
 %table{cellpadding: 4}
   %tbody
     %tr
-      %th.date_submitted{colspan: 4}
+      %th.date_submitted{colspan: 6}
         = t(:sr_confirmation)[:details][:date_submitted] + @service_request.submitted_at.strftime('%m/%d/%Y')
-      %th.short_title{colspan: 2}
-        = t(:sr_confirmation)[:details][:short_title] + @service_request.protocol.short_title
     %tr
       %th= t(:sr_confirmation)[:details][:id]
       %th= t(:sr_confirmation)[:details][:institution]

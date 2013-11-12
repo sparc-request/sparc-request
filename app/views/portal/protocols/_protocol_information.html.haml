@@ -101,9 +101,11 @@
                 %a.edit_service_request.btn{:href => "javascript:void(0);", :'data-permission' => rights.to_s, :'data-url' => "/service_requests/#{sr.id}/catalog?from_user_portal=true&edit_original=true"}= t(:protocol_information)[:edit_original]
           %td
             %center
-              %a.new-portal-notification-button.btn Send Notification
-        #portal_notifications{:style => "display:none;"}
-          = render :partial => 'portal/sub_service_requests/notifications_area', :locals => {:service_request => sr, :protocol => protocol, :sub_service_request => ssr}
+              %a.new-portal-notification-button.btn{:'data-ssr_id' => ssr.ssr_id.to_s} Send Notification 
+        %tr
+          %td{:colspan => "9"}
+            %div{:style => "display:none;", :id => "portal_notifications_#{ssr.ssr_id.to_s}", :class => "portal_notifications"}
+              = render :partial => 'portal/sub_service_requests/notifications_area', :locals => {:service_request => sr, :protocol => protocol, :sub_service_request => ssr}
 
     - reset_cycle('protocol')
 

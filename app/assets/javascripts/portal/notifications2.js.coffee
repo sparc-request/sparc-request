@@ -106,14 +106,13 @@ $(document).ready ->
   # Form functions
 
   $(document).on('click', '.new-portal-notification-button', ->
+    ssr_id = $(this).attr('data-ssr_id')
     if $(this).hasClass('active')
       $(this).removeClass('active')
-      $(this).text("Send Notification")
     else
       $(this).addClass('active')
-      $(this).text("Hide Notifications")
 
-    $('#portal_notifications').slideToggle()
+    $("#portal_notifications_#{ssr_id}").slideToggle()
   )
 
   $(document).on('click', '.select_all', ->

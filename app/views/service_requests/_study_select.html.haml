@@ -1,5 +1,5 @@
 .inline
-  = t("study_assignment.select_study_long")
+  = t("study_assignment.select_protocol")
   = collection_select :service_request, :protocol_id, studies, :id, :display_protocol_id_and_title, {:include_blank => t("study_assignment.select_study")}, :class => 'edit_study_id'
   %button.edit-study= t("study_assignment.edit_study")
 - if @sub_service_request.nil?

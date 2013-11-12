@@ -6,11 +6,9 @@
 
 = javascript_include_tag 'studies'
 
-.description
-  = t(:study_form)[:description]
-.grid_7.box
+.grid_6.box
   .info
-    = t(:study_form)[:needed_info]
+    %h3= t(:study_form)[:needed_info]
     %fieldset
       .field
         = f.label :short_title, t(:protocol_shared)[:title]
@@ -73,22 +71,23 @@
         = f.label :sponsor_name, t(:study_form)[:sponsor_name]
         = f.text_field :sponsor_name
 
-.grid_5.box= render :partial => 'shared/user_search'
+/ .grid_5.box= render :partial => 'shared/user_search'
 
-- hide_user_details = (@protocol.new_record? and @protocol.project_roles.empty?) ? '' : 'display:none;'
+/ - hide_user_details = (@protocol.new_record? and @protocol.project_roles.empty?) ? '' : 'display:none;'
 
-.grid_5.box.user_added_message{:style => 'display:none;'}
-  %p
-    - t(:protocol_shared)[:add_user]
+/ .grid_5.box.user_added_message{:style => 'display:none;'}
+/   %p
+/     - t(:protocol_shared)[:add_user]
 
-.grid_5.box.user-details.user-manager-view.add-user-details{:style => "#{hide_user_details}"}= render :partial => 'shared/user_details', :locals => {:identity => current_user, :project_role => ProjectRole.new, :can_edit => true}
+/ .grid_5.box.user-details.user-manager-view.add-user-details{:style => "#{hide_user_details}"}= render :partial => 'shared/user_details', :locals => {:identity => current_user, :project_role => ProjectRole.new, :can_edit => true}
 
 
-.grid_12= render :partial => 'shared/user_list', :locals => {:protocol => @protocol}
+/ .grid_12= render :partial => 'shared/user_list', :locals => {:protocol => @protocol}
 
-.grid_7.box
+.grid_6.box
   .info
-    = t(:study_form)[:optional_text]
+    %h3= t(:study_form)[:optional_text]
+    %em= t(:study_form)[:optional_text2]
     %fieldset
       %legend= t(:study_form)[:options]
       .field
@@ -215,8 +214,12 @@
           .field.inventors
             = ip.label :inventors, t(:study_form)[:inventors]
             = ip.text_area :inventors
-.grid_5.box
-  .info.info2
+
+.clear
+%br
+
+.grid_6.box
+  .info
     %fieldset
       %legend= t(:study_form)[:affiliations]
       %div
@@ -234,6 +237,8 @@
             = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
             = rt.hidden_field :name, :value => rt.object.name
 
+.grid_6.box
+  .info
     %fieldset
       %legend= t(:study_form)[:impact]
       %div
@@ -246,4 +251,7 @@
               .field.impact_other
                 = rt.label :other_text, "Enter area:"
                 = rt.text_field :other_text, :id => "study_impact_areas_other"
+
+.clear
+%br
 

@@ -168,9 +168,19 @@ a.save-option{
   color: #fff;
 }
 
-.instructions {
+p.instructions {
   margin-bottom: 10px;
-  width: 95%;
+  width: 100%;
+  font-size:20px;
+  font-weight: bold;
+  color: #003366;
+}
+
+p.notice {
+  text-align: center;
+  width: 100%;
+  font-style: italic;
+  color: #C43149;
 }
 
 /* RootView */
@@ -582,6 +592,7 @@ tr.orange-provider th {
   padding-right: 22px;
   border-right-style: dotted;
   border-right-color: #ccc;
+  width: 680px;
 }
 
 .cart-view {
@@ -652,19 +663,22 @@ tr.orange-provider th {
 
 .service-list .provider-header {
   font-weight: bold;
-  font-size: 14px;
+  font-size: 17px;
 }
 
 .service-list .service-name {
   padding: 5px;
-  margin: 4px;
-  background: #E8E8E8;
+  margin: 4px 4px 4px 15px;
 }
 
 .project-details .project-select, .project-details .study-select, .project-details .type-select,
 .project-details .new-project, .project-details .new-study {
   margin: 20px;
   text-align: center;
+}
+
+#protocol_Research_Study {
+  margin-right: 20px;
 }
 
 .user-actions {
@@ -985,7 +999,6 @@ tr.orange-provider th {
 }
 
 .edit-project-view .box {
-  background: #B0E2FF;
   width: 100%;
   height: auto;
 }
@@ -1030,27 +1043,19 @@ legend {
 }
 
 .edit-project-view .info {
-  width: 520px;
+  width: 440px;
   padding: 10px;
   float: left;
-  border-right: 10px solid #FFF;
+  border: 3px solid #003366;
   height: 100%;
-  min-height: 491px;
-}
-
-.edit-project-view .info2 {
-  width: 360px;
-  padding: 10px;
-  float: left;
-  border-right: 10px solid #FFF;
-  height: 100%;
-  min-height: 491px;
+  min-height: 390px;
 }
 
 .edit-project-view .box .info fieldset {
   padding: 1px 7px 5px 7px;
   margin-top: 10px;
   margin-bottom: 5px;
+  border: 1px solid #003366;
 }
 
 .edit-project-view .box .info fieldset .field {

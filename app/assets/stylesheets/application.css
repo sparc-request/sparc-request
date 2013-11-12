@@ -168,9 +168,19 @@ a.save-option{
   color: #fff;
 }
 
-.instructions {
+p.instructions {
   margin-bottom: 10px;
-  width: 95%;
+  width: 100%;
+  font-size:20px;
+  font-weight: bold;
+  color: #003366;
+}
+
+p.notice {
+  text-align: center;
+  width: 100%;
+  font-style: italic;
+  color: #C43149;
 }
 
 /* RootView */
@@ -635,19 +645,22 @@ a.save-option{
 
 .service-list .provider-header {
   font-weight: bold;
-  font-size: 14px;
+  font-size: 17px;
 }
 
 .service-list .service-name {
   padding: 5px;
-  margin: 4px;
-  background: #E8E8E8;
+  margin: 4px 4px 4px 15px;
 }
 
 .project-details .project-select, .project-details .study-select, .project-details .type-select,
 .project-details .new-project, .project-details .new-study {
   margin: 20px;
   text-align: center;
+}
+
+#protocol_Research_Study {
+  margin-right: 20px;
 }
 
 .user-actions {

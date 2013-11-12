@@ -303,7 +303,7 @@ class ServiceRequest < ActiveRecord::Base
         g[:services] << service
         g[:line_items] << line_item
       else
-        groupings[last_parent] = {:process_ssr_organization_name => last_parent_name, :name => name.reverse.join(' -- '), :services => [service], :line_items => [line_item], :acks => acks.reverse.uniq.compact}
+        groupings[last_parent] = {:process_ssr_organization_name => last_parent_name, :name => name.reverse.join(' > '), :services => [service], :line_items => [line_item], :acks => acks.reverse.uniq.compact}
       end
     end
 

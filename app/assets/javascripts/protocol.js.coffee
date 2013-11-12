@@ -2,7 +2,7 @@
 #= require navigation
 
 $(document).ready ->
-  $('#select-type').change ->
+  $("input[name=protocol]:radio").change ->
     if $(this).val() == 'Research Study'
       $('.existing-study').show()
       $('.edit-study').show() unless $('.edit_study_id').val() == ""
@@ -16,7 +16,9 @@ $(document).ready ->
       $('#project-select #service_request_protocol_id').removeAttr('disabled')
       $('#study-select #service_request_protocol_id').attr('disabled', 'disabled')
 
-  $('#select-type').change()
+  $("input[name=protocol]:radio").each (index, element) =>
+    if $(element).is(':checked')
+      $(element).change()
 
   $('.edit-study').button()
   $('.edit-study').hide() unless $('.edit_study_id').val() != ""

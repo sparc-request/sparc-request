@@ -21,6 +21,8 @@
         %td{:class => (USE_NEWS_FEED) ? 'half' : 'full'}
           #calendar
             / TODO: Put loop here for calendar events
+            - if @events.empty?
+              = t(:service_requests)[:catalog][:event]
             - @events.each do |event|
               .calendar-event
                 .date{ :class => cycle('light-blue-provider', 'green-provider', 'orange-provider')  }

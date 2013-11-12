@@ -592,6 +592,7 @@ tr.orange-provider th {
   padding-right: 22px;
   border-right-style: dotted;
   border-right-color: #ccc;
+  width: 680px;
 }
 
 .cart-view {

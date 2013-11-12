@@ -16,9 +16,7 @@ $(document).ready ->
       $('#project-select #service_request_protocol_id').removeAttr('disabled')
       $('#study-select #service_request_protocol_id').attr('disabled', 'disabled')
 
-  $("input[name=protocol]:radio").each (index, element) =>
-    if $(element).is(':checked')
-      $(element).change()
+  $("input[name=protocol]:radio:checked").change()
 
   $('.edit-study').button()
   $('.edit-study').hide() unless $('.edit_study_id').val() != ""

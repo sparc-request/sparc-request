@@ -14,11 +14,15 @@ $('.new_notification_dialog').dialog({
       disableSubmitButton("Submit", "Please wait...");
       return $('.notification_notification_form').bind('ajax:success', function(data) {
         enableSubmitButton("Please wait...", "Submit");
+        $('#portal_notifications').removeClass('active');
+        $('#portal_notifications').slideToggle();
         return $('.new_notification_dialog').dialog('close');
       }).submit();
     },
     "Cancel": function() {
       enableSubmitButton("Please wait...", "Submit");
+      $('#portal_notifications').removeClass('active');
+      $('#portal_notifications').slideToggle();
       return $(this).dialog('close');
     }
   }

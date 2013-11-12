@@ -108,10 +108,8 @@ $(document).ready ->
   $(document).on('click', '.new-portal-notification-button', ->
     if $(this).hasClass('active')
       $(this).removeClass('active')
-      $(this).text("Send Notification")
     else
       $(this).addClass('active')
-      $(this).text("Hide Notifications")
 
     $('#portal_notifications').slideToggle()
   )

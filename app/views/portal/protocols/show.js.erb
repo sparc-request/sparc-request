@@ -11,18 +11,16 @@ $('.new_notification_dialog').dialog({
   modal: true,
   buttons: {
     "Submit": function() {
+      $('.portal_notifications:visible').slideToggle();
       disableSubmitButton("Submit", "Please wait...");
       return $('.notification_notification_form').bind('ajax:success', function(data) {
         enableSubmitButton("Please wait...", "Submit");
-        $('#portal_notifications').removeClass('active');
-        $('#portal_notifications').slideToggle();
         return $('.new_notification_dialog').dialog('close');
       }).submit();
     },
     "Cancel": function() {
+      $('.portal_notifications:visible').slideToggle();
       enableSubmitButton("Please wait...", "Submit");
-      $('#portal_notifications').removeClass('active');
-      $('#portal_notifications').slideToggle();
       return $(this).dialog('close');
     }
   }

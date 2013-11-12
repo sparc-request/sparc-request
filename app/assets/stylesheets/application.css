@@ -195,7 +195,7 @@ p.notice {
 }
 
 #welcome_message h1 {
-  font-size: 20px;
+  font-size: 19px;
   color: #0099ff;
 }
 
@@ -210,6 +210,10 @@ p.notice {
 
 #welcome_message .section {
   margin-top: 10px;
+}
+
+#welcome_message .large_section {
+  font-size: 14px;
 }
 
 #calendar-blog {
@@ -317,6 +321,7 @@ p.notice {
 .dashboard-button,
 .feedback-button,
 .ask-a-question-button,
+.document_upload_button,
 .faq-button {
   display: block;
   text-align: center;
@@ -333,6 +338,7 @@ p.notice {
 .dashboard-button a,
 .feedback-button a ,
 .ask-a-question-button a,
+.document_upload_button a,
 .faq-button a {
   color: #fff;
   text-decoration: none;
@@ -341,8 +347,15 @@ p.notice {
 .dashboard-button,
 .feedback-button,
 .ask-a-question-button,
+.document_upload_button,
 .faq-button {
   background-image: url("blue_button.png");
+}
+
+.document_upload_button {
+  width: 400px;
+  display: block;
+  margin: 0 auto;
 }
 
 .submit-request-button,
@@ -512,6 +525,10 @@ p.notice {
 
 .orange-provider {
   background: #E09462 !important;
+}
+
+tr.orange-provider th {
+  color: #fff;
 }
 
 .red-provider {
@@ -738,6 +755,16 @@ p.notice {
 }
 
 /* ReviewView */
+
+.review_instructions {
+  border: 1px solid #000;
+  list-style-type: decimal;
+  margin: -10px auto 10px auto;
+  font-weight: bold;
+  padding: 10px;
+  width: 50%;
+}
+
 .review-details {
   margin-left: 10px;
 }
@@ -1887,7 +1914,7 @@ input.search-services {
   background-image: url("search_bar.png");
   background-size: 100% 100%;
   padding: 5px 0px;
-  margin-bottom: 10px;
+  margin-bottom: 22px;
 }
 
 .search_result .service-name {

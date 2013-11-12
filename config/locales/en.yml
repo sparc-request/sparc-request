@@ -499,7 +499,7 @@ en:
   sr_review:
     participate_in_survey: "Would you like to participate in a brief 1 question SPARC Request satisfaction survey?"
     participate_in_survey_title: "System Satisfaction Survey"
-    instructions: "Please review the following information to ensure the accuracy of your request. If you need to make changes, click on the steps above or click \"Go Back\" at the bottom of the page. After you have reviewed your request, click \"Submit my Service Request.\" Alternatively, you may save your request as a draft for future submission. Please note: Draft requests are not reviewed by staff for approval."
+    instructions: "<ul class='review_instructions'><li>Review your request.</li><li>Makes changes (if needed).</li><li>Save as draft for later, get a quote, or submit to start services.</li></ul>"
     study_project_info:
       title: "Study/Project Information"
       id: "Study/Project ID:"
@@ -857,7 +857,7 @@ en:
   # Rails Root Page Messages
   rails_root:
     welcome: "Welcome to the SPARC Request Services Catalog"
-    message1: "Please browse through the SPARC Request Services Catalog to view all available SPARC Request services.  Service providers are located on the left-hand side of the page.  Click on a provider to see available services.  Alternatively use the search field located in the upper left hand corner."
+    message1: "Search for services above or browse the catalog to your left."
     # message2: "Click \"Add Services\" at the bottom of any service description to add it to your \"My Services\"."
     # message3: "To delete a service from \"My Services\", use the red X beside any service."
     message4: "** Please Note: You may only select services applicable to ONE research study/project at a time.**"

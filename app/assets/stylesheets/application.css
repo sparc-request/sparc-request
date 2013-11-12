@@ -999,7 +999,6 @@ tr.orange-provider th {
 }
 
 .edit-project-view .box {
-  background: #B0E2FF;
   width: 100%;
   height: auto;
 }
@@ -1044,27 +1043,19 @@ legend {
 }
 
 .edit-project-view .info {
-  width: 520px;
+  width: 440px;
   padding: 10px;
   float: left;
-  border-right: 10px solid #FFF;
+  border: 3px solid #003366;
   height: 100%;
-  min-height: 491px;
-}
-
-.edit-project-view .info2 {
-  width: 360px;
-  padding: 10px;
-  float: left;
-  border-right: 10px solid #FFF;
-  height: 100%;
-  min-height: 491px;
+  min-height: 390px;
 }
 
 .edit-project-view .box .info fieldset {
   padding: 1px 7px 5px 7px;
   margin-top: 10px;
   margin-bottom: 5px;
+  border: 1px solid #003366;
 }
 
 .edit-project-view .box .info fieldset .field {

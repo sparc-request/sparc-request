@@ -102,8 +102,10 @@
           %td
             %center
               %a.new-portal-notification-button.btn Send Notification
-        #portal_notifications{:style => "display:none;"}
-          = render :partial => 'portal/sub_service_requests/notifications_area', :locals => {:service_request => sr, :protocol => protocol, :sub_service_request => ssr}
+        %tr
+          %td{:colspan => "9"}
+            #portal_notifications{:style => "display:none;"}
+              = render :partial => 'portal/sub_service_requests/notifications_area', :locals => {:service_request => sr, :protocol => protocol, :sub_service_request => ssr}
 
     - reset_cycle('protocol')
 

@@ -440,6 +440,7 @@ en:
 
   # Study/Project Shared
   protocol_shared:
+    step_text: "STEP 1: Protocol Information"
     title: "Short Title:*"
     funding_source: "Funding Source:*"
     funding_status: "Proposal Funding Status:*"

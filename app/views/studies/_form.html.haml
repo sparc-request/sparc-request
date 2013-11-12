@@ -5,6 +5,8 @@
 /////////////////////////////////////////////
 
 = form_for @protocol, :remote => true do |f|
+  .grid_12
+    %h3.blue-provider.step-header.ui-corner-all= t(:protocol_shared)[:step_text]
   = f.hidden_field :requester_id
   = f.error_messages
   .edit-project-view= render :partial => 'studies/fields', :locals => {:study => study, :f => f}

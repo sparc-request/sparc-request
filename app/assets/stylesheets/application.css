@@ -1001,6 +1001,7 @@ tr.orange-provider th {
 .edit-project-view .box {
   width: 100%;
   height: auto;
+  margin-left: 8px;
 }
 
 .edit-project-view .user-details, .edit-project-view .user_added_message {

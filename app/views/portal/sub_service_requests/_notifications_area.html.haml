@@ -19,3 +19,6 @@
         = image_tag('portal/unread.png', :style => 'margin-bottom:-9px')
         = sp.identity.full_name
       .clear
+
+- if @admin
+  .new_notification_dialog

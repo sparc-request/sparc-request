@@ -1,0 +1,23 @@
+%h3 Send Notifications
+%ul.fulfillment_notifications
+  %li.new_portal_notification.ui-corner-all{:'data-identity_id' => service_request.try(:service_requester).try(:id), :'data-sub_service_request_id' => sub_service_request.id}
+    = image_tag('portal/unread.png', :style => 'margin-bottom:-9px')
+    = t(:notifications)[:requester] + service_request.try(:service_requester).try(:full_name)
+  .clear
+
+  - protocol.project_roles.each do |pr|
+    %li.new_portal_notification.ui-corner-all{:'data-identity_id' => pr.identity.id, :'data-sub_service_request_id' => sub_service_request.id, :'data-protocol_id' => protocol.id}
+      = image_tag('portal/unread.png', :style => 'margin-bottom:-9px')
+      = display_user_role(pr) + ': '
+      = pr.identity.full_name
+    .clear
+  %br
+  - unless @admin
+    %h4 Service Providers:
+    - sub_service_request.organization.service_providers.each do |sp|
+      %li.new_portal_notification.ui-corner-all{:'data-identity_id' => sp.identity.id, :'data-sub_service_request_id' => sub_service_request.id, :'data-protocol_id' => protocol.id}
+        = image_tag('portal/unread.png', :style => 'margin-bottom:-9px')
+        = sp.identity.full_name
+      .clear
+
+.new_portal_notification_dialog

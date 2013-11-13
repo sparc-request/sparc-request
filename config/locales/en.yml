@@ -672,6 +672,7 @@ en:
     member_rate: "Member Rate"
     rate_disclaimer: "*IF N/A, NO PRICING SET-UP IS DEFINED FOR THE CURRENT DATES"
     quantity_type: "Quantity Type"
+    otf_unit_type: "Unit Type"
     unit_factor: "Unit Factor"
     unit_minimum: "Unit Minimum"
     is_one_time_fee: "Is One Time Fee"

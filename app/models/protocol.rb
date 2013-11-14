@@ -69,8 +69,6 @@ class Protocol < ActiveRecord::Base
   validates :short_title, :presence => true
   validates :title, :presence => true
   validates :funding_status, :presence => true  
-  validate  :requester_included, :on => :create
-  validate  :primary_pi_exists
   validate  :validate_funding_source
   validate  :validate_proxy_rights
 

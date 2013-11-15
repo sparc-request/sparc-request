@@ -7,4 +7,19 @@ module CatalogManager::ServicesHelper
       content_tag(:h3, "Please contact your system administrator.", :style => 'color:#999')
     end
   end
+
+  def display_otf_attributes pricing_map
+    if pricing_map
+      attributes = ""
+      if pricing_map.is_one_time_fee
+        if pricing_map.otf_unit_type == "N/A"
+          attributes = "# " + pricing_map.quantity_type
+        else
+          attributes = "# " + pricing_map.quantity_type + " /  # " + pricing_map.otf_unit_type
+        end
+      end
+
+      attributes
+    end
+  end
 end

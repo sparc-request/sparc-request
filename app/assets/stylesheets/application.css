@@ -326,30 +326,24 @@ p.notice {
   display: block;
   text-align: center;
   background-size: 100% 100%;
+  color: #fff;
   font-size: 20px;
-  color: #FFF;
-  cursor: pointer;
   margin: 10px;
   padding: 5px 0px;
 }
 
 .submit-request-button a,
 .catalog-button a,
-.dashboard-button a,
-.feedback-button a ,
-.ask-a-question-button a,
-.document_upload_button a,
-.faq-button a {
+.document_upload_button a {
   color: #fff;
   text-decoration: none;
 }
 
-.dashboard-button,
-.feedback-button,
-.ask-a-question-button,
-.document_upload_button,
-.faq-button {
+.blue-button {
   background-image: url("blue_button.png");
+  cursor: pointer;
+  color: #fff;
+  text-decoration: none;
 }
 
 .document_upload_button {
@@ -423,6 +417,12 @@ p.notice {
 
 .light-blue-provider-odd {
   background: #8AB6CB;
+}
+
+.ui-accordion .ui-accordion-content h4.green-provider-odd a,
+.ui-accordion .ui-accordion-content h4.orange-provider-odd a,
+.ui-accordion .ui-accordion-content h4.light-blue-provider-odd a {
+  color: #FFF !important;
 }
 
 /* CatalogView */
@@ -510,7 +510,7 @@ p.notice {
 
 /* Navy: #003366
  * Light Blue: #227BA5
- * Orange: #F8993A
+ * Orange: #E09462
  * Red: #ff3333
  * Green: #2C9B4D
 */
@@ -524,7 +524,7 @@ p.notice {
 }
 
 .orange-provider {
-  background: #E09462 !important;
+  background: #FF7F50 !important;
 }
 
 tr.orange-provider th {
@@ -669,6 +669,9 @@ tr.orange-provider th {
 .service-list .service-name {
   padding: 5px;
   margin: 4px 4px 4px 15px;
+  color: #FFF;
+  opacity: 0.6;
+  background-color: #003366;
 }
 
 .project-details .project-select, .project-details .study-select, .project-details .type-select,
@@ -2351,6 +2354,16 @@ table.service_calendar tbody td.visit {
 #signup_form .create_user, #signup_form .links {
   width: 650px;
   text-align: center;
+}
+
+.create_user input[type=submit] {
+  background-color: #FFF;
+  background-image: url("blue_button.png");
+  background-size: 100%;
+  border: none;
+  color: #FFF;
+  width: 150px;
+  height: 25px;
 }
 
 #signup_form .links a {

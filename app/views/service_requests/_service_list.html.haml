@@ -2,4 +2,4 @@
   - next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
   .provider-header= value[:name]
   - value[:services].each do |service|
-    .service-name.light-blue-provider-odd= service.display_service_name
+    .service-name= service.display_service_name

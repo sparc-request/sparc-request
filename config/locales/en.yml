@@ -145,7 +145,7 @@ en:
 
   # Project/Study assignment page
   study_assignment:
-    instructions_1: "Please review the SPARC Request Services you are requesting below."
+    instructions_1: "Please review the services below."
     notice: "If Professional Services are covered by % effort, please indicate in Step 2."
     select_protocol: "Select a Research Study/Project"
     research_study: "Research Study"

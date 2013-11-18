@@ -88,6 +88,9 @@
             = pretty_program_core(ssr)
           %td
             = ssr.status
+          %td
+            %center
+              %a.new-portal-notification-button.btn{:'data-ssr_id' => ssr.ssr_id.to_s, :'data-sr_id' => sr.id}= t(:protocol_information)[:send_notification] 
           %td{:class => "edit-td"}
             - if @user.can_edit_sub_service_request? ssr
               %center
@@ -100,11 +103,6 @@
             %td{:class => "edit-original-td", :rowspan => sr.sub_service_requests.size}
               - if @user.can_edit_service_request? sr
                 %a.edit_service_request.btn{:href => "javascript:void(0);", :'data-permission' => rights.to_s, :'data-url' => "/service_requests/#{sr.id}/catalog?from_user_portal=true&edit_original=true"}= t(:protocol_information)[:edit_original]
-              - else
-                %td
-          %td
-            %center
-              %a.new-portal-notification-button.btn{:'data-ssr_id' => ssr.ssr_id.to_s, :'data-sr_id' => sr.id}= t(:protocol_information)[:send_notification] 
         %tr
           %td{:colspan => "9"}
             %div{:style => "display:none;", :id => "portal_notifications_#{ssr.ssr_id.to_s}_#{sr.id}", :class => "portal_notifications"}

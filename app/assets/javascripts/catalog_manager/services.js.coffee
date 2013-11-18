@@ -85,6 +85,8 @@ $(document).ready ->
   $('.pricing_map_display_date_hidden').live('change', ->
     Sparc.services.create_date_display(this, $(this).attr('date_type'), 'display')
   )
+
+  # $(document).on('input')
   
   $(".rate_field").live('change', ->
     unless $(this).hasClass('service_rate')

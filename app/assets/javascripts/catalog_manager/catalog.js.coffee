@@ -190,6 +190,17 @@ $ ->
       $('.cwf.position_field').show()
     else
       $('.cwf.position_field').hide()
+
+  # pricing maps one time fees
+  $('.otf input[type=checkbox]').live 'click', ->
+    if $(this).is(":checked")
+      $('.otf.quantity_type').show()
+      $('.otf.unit_type').show()
+      $('.otf.display_attributes').show()
+    else
+      $('.otf.quantity_type').hide()
+      $('.otf.unit_type').hide()
+      $('.otf.display_attributes').hide()
       
   # submission e-mails
   $('input#new_se').live 'focus', -> $(this).val('')

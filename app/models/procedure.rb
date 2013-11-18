@@ -80,10 +80,10 @@ class Procedure < ActiveRecord::Base
         if self.unit_factor_cost
           return Service.cents_to_dollars(self.unit_factor_cost / self.default_r_quantity)
         else
-          return cents_to_dollars(pricing_map.applicable_rate(rate_type, pricing_setup.applied_percentage(rate_type)))
+          return Service.cents_to_dollars(pricing_map.applicable_rate(rate_type, pricing_setup.applied_percentage(rate_type)))
         end
       else
-        return cents_to_dollars(pricing_map.applicable_rate(rate_type, pricing_setup.applied_percentage(rate_type)))
+        return Service.cents_to_dollars(pricing_map.applicable_rate(rate_type, pricing_setup.applied_percentage(rate_type)))
       end
     elsif self.default_r_quantity == 0
       return (self.line_item.per_unit_cost(1) / 100).to_f

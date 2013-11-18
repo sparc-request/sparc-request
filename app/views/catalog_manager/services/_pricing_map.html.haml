@@ -80,13 +80,13 @@
             = check_box_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][is_one_time_fee]", true, pricing_map.try(:[], 'is_one_time_fee'), :disabled => pricing_map_disabled, :readonly => pricing_map_disabled
         %tr.otf.quantity_type{:style => pricing_map.try(:is_one_time_fee) ? "" : "display:none;"}
           %th= t(:pricing_map_form)[:quantity_type]
-          %td.q_type{:colspan => 2}= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][quantity_type]", pricing_map.try(:[], 'quantity_type'), :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :class => 'service_unit_type validate'
+          %td.q_type{:colspan => 2}= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][quantity_type]", pricing_map.try(:[], 'quantity_type'), :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :class => 'otf_quantity_type', :'data-pricing_map_id' => pricing_map.try(:id), :id => "otf_quantity_type_#{pricing_map.try(:id)}"
         %tr.otf.unit_type{:style => pricing_map.try(:is_one_time_fee) ? "" : "display:none;"}
           %th= t(:pricing_map_form)[:otf_unit_type]
-          %td.u_type{:colspan => 2}= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][otf_unit_type]", pricing_map.try(:[], 'otf_unit_type'), :disabled => pricing_map_disabled, :readonly => pricing_map_disabled
+          %td.u_type{:colspan => 2}= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][otf_unit_type]", pricing_map.try(:[], 'otf_unit_type'), :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :class => 'otf_unit_type', :id => "otf_unit_type_#{pricing_map.try(:id)}", :'data-pricing_map_id' => pricing_map.try(:id)
         %tr.otf.unit_type{:style => pricing_map.try(:is_one_time_fee) ? "" : "display:none;"}
           %th
-            %td{:style => "text-align:center !important;"}= display_otf_attributes(pricing_map)
+            %td.otf_attributes{:style => "text-align:center !important;", :id => "otf_attributes_#{pricing_map.try(:id)}"}= display_otf_attributes(pricing_map)
                   
         - if USE_INDIRECT_COST
           %tr

@@ -201,6 +201,20 @@ $ ->
       $('.otf.quantity_type').hide()
       $('.otf.unit_type').hide()
       $('.otf.display_attributes').hide()
+
+  $('.otf_quantity_type').live 'change', ->
+    pricing_map_id = $(this).data('pricing_map_id') 
+    if $("#otf_unit_type_#{pricing_map_id}").val() == "N/A"
+      $("#otf_attributes_#{pricing_map_id}").html('# ' + $(this).val())
+    else
+      $("#otf_attributes_#{pricing_map_id}").html('# ' + $(this).val() + ' / ' + '# ' + $("#otf_unit_type_#{pricing_map_id}").val())
+
+  $('.otf_unit_type').live 'change', ->
+    pricing_map_id = $(this).data('pricing_map_id') 
+    if $(this).val() == "N/A"
+      $("#otf_attributes_#{pricing_map_id}").html('# ' + $("#otf_quantity_type_#{pricing_map_id}").val())
+    else
+      $("#otf_attributes_#{pricing_map_id}").html('# ' + $("#otf_quantity_type_#{pricing_map_id}").val() + ' / ' + '# ' + $(this).val())
       
   # submission e-mails
   $('input#new_se').live 'focus', -> $(this).val('')

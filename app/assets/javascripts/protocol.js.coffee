@@ -18,12 +18,8 @@ $(document).ready ->
 
   $("input[name=protocol]:radio:checked").change()
 
-  $('.edit-study').button()
   $('.edit-study').hide() unless $('.edit_study_id').val() != ""
-  $('.new-study').button()
-  $('.edit-project').button()
   $('.edit-project').hide() unless $('.edit_project_id').val() != ""
-  $('.new-project').button()
 
   $('.edit_study_id').change ->
     if ($(this).val() == "")

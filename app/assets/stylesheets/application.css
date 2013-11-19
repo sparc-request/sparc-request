@@ -13,7 +13,7 @@ body .ui-tabs .ui-tabs-panel {
 body {
   background: white url("background_gradient.png") left top repeat-x;
   color: #222222;
-  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+  font-family: "Calibri", "Helvetica Neue", Helvetica, sans-serif;
   font-size: 75%; }
 
 * {
@@ -324,15 +324,11 @@ p.notice {
 .document_upload_button,
 .faq-button {
   display: block;
-  text-align: center;
-  background-size: 100% 100%;
-  color: #fff;
   font-size: 20px;
   margin: 10px;
-  padding: 5px 0px;
 }
 
-.submit-request-button a,
+.submit-request-button,
 .catalog-button a,
 .document_upload_button a {
   color: #fff;
@@ -341,6 +337,10 @@ p.notice {
 
 .blue-button {
   background-image: url("blue_button.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  text-align: center;
+  padding: 5px 0px;
   cursor: pointer;
   color: #fff;
   text-decoration: none;
@@ -355,6 +355,9 @@ p.notice {
 .submit-request-button,
 .catalog-button {
   background-image: url("green_button.png");
+  background-size: 100% 100%;
+  text-align: center;
+  padding: 5px 0px;
 }
 
 .submit-request-button,
@@ -570,7 +573,7 @@ tr.orange-provider th {
 
 .service-description {
   font-size: 12px !important;
-  font-family: "Helvetica Neue",Arial,Helvetica,sans-serif !important;
+  font-family: "Calibri", "Helvetica Neue", Helvetica,sans-serif !important;
 }
 
 .row-edit {
@@ -645,7 +648,7 @@ tr.orange-provider th {
 .service-view .name a {
   color: #00E;
   font-size: 13.5px;
-  font-family: Verdana,Arial,sans-serif;
+  font-family: "Calibri",Arial,sans-serif;
 }
 
 .service-view .description {
@@ -678,6 +681,21 @@ tr.orange-provider th {
 .project-details .new-project, .project-details .new-study {
   margin: 20px;
   text-align: center;
+}
+
+#study.study-select .new-study,
+#study.study-select .edit-study,
+#project.project-select .new-project,
+#project.project-select .edit-project {
+  background-color: #FFF;
+  padding: 5px 20px;
+  font-size: 15px
+}
+
+#study.study-select .edit-study,
+#project.project-select .edit-project {
+  width: 80px;
+  display: inline;
 }
 
 #protocol_Research_Study {
@@ -990,11 +1008,15 @@ tr.orange-provider th {
   display: block;
 }
 
+.ui-widget {
+  font-family: "Calibri", Arial, sans-serif !important;
+}
+
 /* New Project View */
 
 .edit-project-view {
   font-size: 12px;
-  font-family: "Verdana", Arial, sans-serif;
+  font-family: "Calibri", Arial, sans-serif;
 }
 
 .edit-project-view .description {
@@ -1810,7 +1832,7 @@ li.organization-option {
 .search_result {
   font-size: 12px;
   color: #707070;
-  font-family: "Helvetica Neue",Arial,Helvetica,sans-serif;
+  font-family: "Calibri", "Helvetica Neue", Helvetica,sans-serif;
   padding: 5px;
 }
 
@@ -1878,7 +1900,7 @@ input.search-services::-moz-focus-inner, input.search-identites::-moz-focus-inne
 }
 
 input.search-services, input.search-identities {
-  font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-family:"Calibri", "Helvetica Neue", Helvetica,Arial,sans-serif;
   font-size:13px;font-weight:normal;
   line-height:normal;
   display:inline-block;
@@ -1934,7 +1956,7 @@ input.search-services {
   border: 4px solid red;
   margin: 10px;
   padding: 15px;
-  font-family: "Helvetica Neue",Arial,Helvetica,sans-serif;
+  font-family: "Calibri", "Helvetica Neue", Arial,Helvetica,sans-serif;
 }
 
 #errorExplanation h2, .errorExplanation h2 {

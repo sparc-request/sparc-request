@@ -352,6 +352,24 @@ p.notice {
   margin: 0 auto;
 }
 
+.document_upload .upload_button,
+.document_upload #cancel_upload {
+  padding: 5px;
+  font-size: 15px;
+  display: block;
+
+}
+
+.document_upload .upload_button {
+  margin-bottom: 5px;
+}
+
+.document .document_edit,
+.document .document_delete {
+  font-size: 15px;
+  padding: 5px 10px;
+}
+
 .submit-request-button,
 .catalog-button {
   background-image: url("green_button.png");
@@ -527,7 +545,7 @@ p.notice {
 }
 
 .orange-provider {
-  background: #E09462 !important;
+  background: #F79739 !important;
 }
 
 tr.orange-provider th {
@@ -540,7 +558,7 @@ tr.orange-provider th {
 }
 
 .green-provider {
-  background: #06895E !important;
+  background: #2C9A4D !important;
 }
 
 .core-view {
@@ -887,7 +905,7 @@ tr.orange-provider th {
 
 .confirmation-button {
   display: inline-block;
-  background: #06895E;
+  background: #2C9A4D;
   margin: 20px;
   padding: 7px;
   border-radius: 5px;
@@ -903,7 +921,7 @@ tr.orange-provider th {
 }
 
 .confirmation-details th {
-  background: #06895E;
+  background: #2C9A4D;
   color: #fff;
 }
 

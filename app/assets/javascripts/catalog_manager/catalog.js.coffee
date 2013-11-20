@@ -194,6 +194,8 @@ $ ->
   # pricing maps one time fees
   $('.otf input[type=checkbox]').live 'click', ->
     pricing_map_id = $(this).data('pricing_map_id')
+    if pricing_map_id == undefined
+      pricing_map_id = ""
     if $(this).is(":checked")
       show_otf_attributes()
       if ($("#otf_quantity_type_#{pricing_map_id}").val() == "") || ($("#otf_unit_type_#{pricing_map_id}").val() == "")

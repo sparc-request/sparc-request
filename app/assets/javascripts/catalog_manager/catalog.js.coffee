@@ -193,14 +193,18 @@ $ ->
 
   # pricing maps one time fees
   $('.otf input[type=checkbox]').live 'click', ->
+    pricing_map_id = $(this).data('pricing_map_id')
     if $(this).is(":checked")
       $('.otf.quantity_type').show()
       $('.otf.unit_type').show()
       $('.otf.display_attributes').show()
+      if ($("#otf_quantity_type_#{pricing_map_id}").val() == "") || ($("#otf_unit_type_#{pricing_map_id}").val() == "")
+        disable_otf_service_save()
     else
       $('.otf.quantity_type').hide()
       $('.otf.unit_type').hide()
       $('.otf.display_attributes').hide()
+      enable_otf_service_save()
 
   $('.otf_quantity_type').live 'change', ->
     pricing_map_id = $(this).data('pricing_map_id') 
@@ -357,12 +361,35 @@ $ ->
       $('.blank_field_errors').css('display', 'inline-block')
   )
 
+  # Need separate validations for one time fee pricing map attributes
+  $('.otf_quantity_type, .otf_unit_type').live('change', ->
+    blank_field = false
+    validates = $(this).closest('.service_form').find('.otf_validate')
+
+    for field in $(validates)
+      blank_field = true if (($(field).val() == "") && ($('.otf_checkbox').prop('checked')))
+
+    if blank_field == false
+      $('.save_button').removeAttr('disabled')
+      $('.otf_field_errors').hide()
+    else
+      $('.save_button').attr('disabled', true)
+      $('.otf_field_errors').css('display', 'inline-block')
+  )
 
   $('.remove_pricing_setup').live('click', ->
     $(this).parent().prevAll('h3:first').remove()
     $(this).parent().remove()
     validate_dates_and_rates()
   )
+
+  disable_otf_service_save = () ->
+    $('.save_button').attr('disabled', true)
+    $('.otf_field_errors').css('display', 'inline-block')
+
+  enable_otf_service_save = () ->
+    $('.save_button').removeAttr('disabled')
+    $('.otf_field_errors').hide()
 
   validate_dates_and_rates = () ->
     blank_field = false

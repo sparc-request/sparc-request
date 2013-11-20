@@ -181,9 +181,12 @@ class ServiceRequest < ActiveRecord::Base
     service = args[:service]
     optional = args[:optional]
     existing_service_ids = args[:existing_service_ids]
+    allow_duplicates = args[:allow_duplicates]
 
     # If this service has already been added, then do nothing
-    return if existing_service_ids.include?(service.id)
+    unless allow_duplicates
+      return if existing_service_ids.include?(service.id)
+    end
 
     line_items = [ ]
 

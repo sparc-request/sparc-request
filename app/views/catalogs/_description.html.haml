@@ -12,7 +12,8 @@
     - unless organization.cores.empty?
       .core-accordion
         - organization.cores.order('`order`').each do |core|
-          %h3{:class => css_class(organization)}
+          - next unless core.is_available? or core.is_available.nil?
+          %h3{:class => "#{css_class(organization)} core-tab"}
             = link_to core.name, "#"
           .core_view
             - core.services.order('`order`').each do |service|

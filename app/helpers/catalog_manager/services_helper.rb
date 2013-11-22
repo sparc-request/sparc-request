@@ -22,4 +22,19 @@ module CatalogManager::ServicesHelper
       attributes
     end
   end
+
+  #TODO May eventually use this to clean up the view
+  # def otf_display_style pricing_map
+  #   style = ""
+
+  #   if pricing_map
+  #     unless pricing_map.is_one_time_fee
+  #       style = "display:none;"
+  #     end
+  #   else
+  #     style = "display:none;"
+  #   end
+
+  #   style
+  # end
 end

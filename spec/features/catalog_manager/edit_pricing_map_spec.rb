@@ -61,7 +61,10 @@ describe 'as a user on catalog page', :js => true do
       find("input[id$='full_rate']").set(2000) 
       find("input[id$='full_rate']").native.send_keys(:return)
       wait_for_javascript_to_finish
+      page.execute_script("$('.ui-accordion-header:nth-of-type(2)').click()")
+      wait_for_javascript_to_finish
       find("input[id$='full_rate']").should have_value("2,000.00")
+   
     end
   end
 

@@ -8,7 +8,6 @@ describe 'as a user on catalog page' do
   it 'the user should create a pricing map', :js => true do
     core = Core.last
     click_link('MUSC Research Data Request (CDW)')
-
     click_button("Add Pricing Map")
 
     # page.execute_script("$('.ui-accordion-header').click()") 
@@ -52,7 +51,7 @@ describe 'as a user on catalog page' do
     click_link("MUSC Research Data Request (CDW)")
     click_button("Add Pricing Map")
     wait_for_javascript_to_finish
-    page.should have_content "Name and Order on the Service, and Quantity Type, Unit Factor, Unit Minimum, Units Per Qty Maximum, Effective Date, and Display Date on all Pricing Maps are required."
+    page.should have_content "Name and Order on the Service, and Clinical Quantity Type, Unit Factor, Unit Minimum, Units Per Qty Maximum, Effective Date, and Display Date on all Pricing Maps are required."
   end    
 
 end

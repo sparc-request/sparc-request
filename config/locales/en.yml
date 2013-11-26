@@ -441,6 +441,7 @@ en:
   # Study/Project Shared
   protocol_shared:
     step_text: "STEP 1: Protocol Information"
+    step_text_2: "STEP 1: Add Users"
     title: "Short Title:*"
     funding_source: "Funding Source:*"
     funding_status: "Proposal Funding Status:*"

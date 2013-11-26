@@ -66,11 +66,23 @@ class Protocol < ActiveRecord::Base
   accepts_nested_attributes_for :project_roles, :allow_destroy => true
   accepts_nested_attributes_for :arms, :allow_destroy => true
 
-  validates :short_title, :presence => true
-  validates :title, :presence => true
-  validates :funding_status, :presence => true  
-  validate  :validate_funding_source
-  validate  :validate_proxy_rights
+  validation_group :protocol do
+    validates :short_title, :presence => true
+    validates :title, :presence => true
+    validates :funding_status, :presence => true  
+    validate  :validate_funding_source
+    validates :sponsor_name, :presence => true, :if => :is_study?
+  end
+
+  validation_group :user_details do
+    validate :validate_proxy_rights
+    validate :requester_included, :on => :create
+    validate :primary_pi_exists
+  end
+
+  def is_study?
+    self.type == 'Study'
+  end
 
   def validate_funding_source
     if self.funding_status == "funded" && self.funding_source.blank?

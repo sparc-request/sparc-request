@@ -1,6 +1,7 @@
 $(document).ready ->
   user_details_dependencies=
     '#project_role_role' :
+      'primary-pi'              : ['.era_commons_name', '.subspecialty']
       pi                        : ['.era_commons_name', '.subspecialty']
       'co-investigator'         : ['.era_commons_name', '.subspecialty']
       'faculty-collaborator'    : ['.era_commons_name', '.subspecialty']
@@ -12,4 +13,4 @@ $(document).ready ->
     '#identity_credentials' :
       other          : ['.credentials_other']
 
-  FormFxManager.registerListeners($('.user-details'), user_details_dependencies)
+  FormFxManager.registerListeners($('.user-details-section'), user_details_dependencies)

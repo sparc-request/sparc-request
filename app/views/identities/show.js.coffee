@@ -1,2 +1,5 @@
-$('.user-details').html("<%= escape_javascript(render :partial => 'shared/user_details', :locals => {:identity => @identity, :project_role => @project_role, :can_edit => @can_edit}) %>")
-$('.user-details').show()
+$('.user-details-left').html("<%= escape_javascript(render :partial => 'shared/user_details_left', :locals => {:identity => @identity, :project_role => @project_role, :can_edit => @can_edit}) %>")
+$('.user-details-right').html("<%= escape_javascript(render :partial => 'shared/user_details_right', :locals => {:identity => @identity, :project_role => @project_role, :can_edit => @can_edit}) %>")
+$('.user-details-js').html("<%= escape_javascript(render :partial => 'shared/user_details') %>")
+$('.user-details-left').show()
+$('.user-details-right').show()

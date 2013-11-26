@@ -194,6 +194,7 @@ $ ->
   # pricing maps one time fees
   $('.otf input[type=checkbox]').live 'click', ->
     pricing_map_id = $(this).data('pricing_map_id')
+    qty_type = $(this).data('pricing_map_clinical_quantity_type')
     if pricing_map_id == undefined
       pricing_map_id = ""
     if $(this).is(":checked")
@@ -201,7 +202,7 @@ $ ->
       if ($("#otf_quantity_type_#{pricing_map_id}").val() == "") || ($("#otf_unit_type_#{pricing_map_id}").val() == "")
         disable_otf_service_save()
     else
-      hide_otf_attributes()
+      hide_otf_attributes(qty_type)
       enable_otf_service_save()
 
   $('.otf_quantity_type').live 'change', ->
@@ -236,11 +237,13 @@ $ ->
     $('.otf.quantity_type').show()
     $('.otf.unit_type').show()
     $('.otf.unit_maximum').show()
+    $('.service_unit_type').val("")
 
-  hide_otf_attributes = () ->
+  hide_otf_attributes = (qty_type) ->
     $('.otf.quantity_type').hide()
     $('.otf.unit_type').hide()
     $('.otf.unit_maximum').hide()
+    $('.service_unit_type').val(qty_type)
 
   disable_otf_service_save = () ->
     $('.save_button').attr('disabled', true)
@@ -379,16 +382,18 @@ $ ->
     .pricing_map_effective_date').live('change', ->
     blank_field = false
     validates = $(this).closest('.service_form').find('.validate')
+    one_time_fee = $('.otf_check_box')
 
-    for field in $(validates)
-      blank_field = true if $(field).val() == ""
+    unless one_time_fee.is(":checked")
+      for field in $(validates)
+        blank_field = true if $(field).val() == ""
 
-    if blank_field == false
-      $('.save_button').removeAttr('disabled')
-      $('.blank_field_errors').hide()
-    else
-      $('.save_button').attr('disabled', true)
-      $('.blank_field_errors').css('display', 'inline-block')
+      if blank_field == false
+        $('.save_button').removeAttr('disabled')
+        $('.blank_field_errors').hide()
+      else
+        $('.save_button').attr('disabled', true)
+        $('.blank_field_errors').css('display', 'inline-block')
   )
 
   $('.remove_pricing_setup').live('click', ->

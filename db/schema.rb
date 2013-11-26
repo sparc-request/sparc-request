@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131115153828) do
+ActiveRecord::Schema.define(:version => 20131126141638) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -517,6 +517,7 @@ ActiveRecord::Schema.define(:version => 20131115153828) do
     t.integer  "units_per_qty_max",                                         :default => 1
     t.string   "quantity_type"
     t.string   "otf_unit_type",                                             :default => "N/A"
+    t.integer  "quantity_minimum",                                          :default => 1
   end
 
   add_index "pricing_maps", ["service_id"], :name => "index_pricing_maps_on_service_id"

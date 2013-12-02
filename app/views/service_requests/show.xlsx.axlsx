@@ -72,9 +72,7 @@ wb.add_worksheet(name: "Review") do |sheet|
   @service_request.arms.each do |arm|
     services_row = ["Selected Services", "", "Your Cost", "# of Subjects"]
     num_visits = arm.visit_count
-    num_visits.times do |n|
-      services_row << "#{arm.line_items_visits.first.visits[n].visit_group.name}"
-    end
+    arm.visit_groups.each{|vg| services_row << "#{vg.name}"}
 
     (visit_count - num_visits).times do
       services_row << ""

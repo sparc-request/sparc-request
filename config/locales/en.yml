@@ -462,6 +462,8 @@ en:
     number_of_visits: "Estimated Total Number of Visits"
     study_start_date: "Estimated Study Start Date"
     study_end_date: "Estimated Study End Date"
+    recruitment_start_date: "Estimated Recruitment Start Date"
+    recruitment_end_date: "Estimated Recruitment End Date"
     services_required: "You can't continue unless you have services in your cart."
     name: "ARM Name"
     services: "My Services"

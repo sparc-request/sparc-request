@@ -54,6 +54,56 @@ $ ->
   $('#start_date').attr("readOnly", true)
   $('#end_date').attr("readOnly", true)
 
+
+  #Recruitment Date Stuff
+
+  $("#recruitment_start_date").datepicker(
+    changeMonth: true,
+    changeYear:true,
+    constrainInput: true,
+    dateFormat: "m/dd/yy",
+    showButtonPanel: true,
+    altField: '#project_recruitment_start_date, #study_recruitment_start_date',
+    altFormat: 'yy-mm-dd',
+
+    beforeShow: (input)->
+      callback = ->
+        buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane")
+        buttonPane.find('button.ui-datepicker-current').hide()
+        $("<button>", {
+          class: "ui-state-default ui-priority-primary ui-corner-all"
+          text: "Clear"
+          click: ->
+            $.datepicker._clearDate(input)
+        }).appendTo(buttonPane)
+      setTimeout( callback, 1)
+    ).addClass('date');
+  
+  $("#recruitment_end_date").datepicker(
+    changeMonth: true,
+    changeYear:true,
+    constrainInput: true,
+    dateFormat: "m/dd/yy",
+    showButtonPanel: true,
+    altField: '#project_recruitment_end_date, #study_recruitment_end_date',
+    altFormat: 'yy-mm-dd',
+
+    beforeShow: (input)->
+      callback = ->
+        buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane")
+        buttonPane.find('button.ui-datepicker-current').hide()
+        $("<button>", {
+          class: "ui-state-default ui-priority-primary ui-corner-all"
+          text: "Clear"
+          click: ->
+            $.datepicker._clearDate(input)
+        }).appendTo(buttonPane)
+      setTimeout( callback, 1)
+    ).addClass('date');
+
+  $('#recruitment_start_date').attr("readOnly", true)
+  $('#recruitment_end_date').attr("readOnly", true)
+
   # Validations for existing arms
 
   $(document).on('change', '.arm_subject_count', ->

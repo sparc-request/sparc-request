@@ -1060,6 +1060,16 @@ tr.orange-provider th {
   /* display: none; */
 }
 
+.user-details-left input,
+.user-details-right input {
+  width: 248px !important;
+}
+
+.user-details-left select,
+.user-details-right select {
+  width: 255px !important;
+}
+
 .user_added_message {
   background: yellow !important;
 }

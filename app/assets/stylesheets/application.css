@@ -301,7 +301,7 @@ p.notice {
 
 .right #services h3 {
   padding: 4px;
-  background: #0775B0;
+  background: #53B6E0;
   font-size: 14px;
   color: #fff;
   font-weight: normal;
@@ -1017,6 +1017,7 @@ tr.orange-provider th {
   width: 170px;
   float: left;
   padding: 5px 10px;
+  text-align: center;
 }
 
 .service-request-setup-view .arm-info .add-arm .add_nested_fields {
@@ -1024,6 +1025,13 @@ tr.orange-provider th {
   width: 50px;
   margin: 0px 10px;
   display: block;
+  background: #2C9A4D !important;
+  border: 0px !important;
+}
+
+.service-request-setup-view .arm-info .add-arm .remove_nested_fields {
+  background: #FF0000 !important;
+  border: 0px !important;
 }
 
 .ui-widget {

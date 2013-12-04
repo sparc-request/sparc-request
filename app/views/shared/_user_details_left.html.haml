@@ -1,0 +1,40 @@
+.user_name
+  = label_tag "identity[name]", t(:user_details)[:name] + ":"
+  = "#{identity.first_name} #{identity.last_name}"
+  = hidden_field_tag "identity[first_name]", identity.first_name
+  = hidden_field_tag "identity[last_name]", identity.last_name
+  %br
+  %br
+ 
+.user_email
+  = label_tag "identity[email]", t(:user_details)[:email] + ":"
+  = identity.email
+  = hidden_field_tag "identity[email]", identity.email
+  %br
+  %br
+
+.user_phone
+  = label_tag "identity[phone]", t(:user_details)[:phone] + ":"
+  = text_field_tag "identity[phone]", identity.phone
+  %br
+  %br
+
+.user_role
+  = label_tag "project_role[role]", t(:user_details)[:role] + ":*"
+  = select_tag "project_role[role]", options_for_select(USER_ROLES, project_role.role), :prompt => t(:user_details)[:role_select]
+
+  %br
+  %br
+
+.role_other
+  = label_tag "project_role[role_other]", "   "
+  = text_field_tag "project_role[role_other]", project_role.role_other
+  %br
+  %br
+
+.era_commons_name
+  = label_tag "identity[era_commons_name]", t(:user_details)[:ec_name] + ":"
+  = text_field_tag "identity[era_commons_name]", identity.era_commons_name
+  %br
+  %br
+

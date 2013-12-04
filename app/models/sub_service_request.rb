@@ -1,7 +1,7 @@
 class SubServiceRequest < ActiveRecord::Base
   audited
 
-  after_save :update_past_status
+  after_save :update_past_status, :update_org_tree
 
   belongs_to :owner, :class_name => 'Identity', :foreign_key => "owner_id"
   belongs_to :service_request
@@ -48,6 +48,19 @@ class SubServiceRequest < ActiveRecord::Base
         end
       end
     end
+  end
+
+  def update_org_tree
+    my_tree = nil
+    if organization.type == "Core"
+      my_tree = organization.parent.parent.try(:abbreviation) + "/" + organization.parent.try(:name) + "/" + organization.try(:name)
+    elsif organization.type == "Program"
+      my_tree = organization.parent.try(:abbreviation) + "/" + organization.try(:name)
+    else
+      my_tree = organization.try(:name)
+    end
+
+    self.update_column(:org_tree_display, my_tree)
   end
 
   def display_id

@@ -171,7 +171,7 @@ a.save-option{
 p.instructions {
   margin-bottom: 10px;
   width: 100%;
-  font-size:20px;
+  font-size:14px;
   font-weight: bold;
   color: #003366;
 }
@@ -192,6 +192,10 @@ p.notice {
 
 .institution {
   background: #E8E8E8 !important;
+}
+
+#welcome_message {
+  text-align: center;
 }
 
 #welcome_message h1 {
@@ -2451,4 +2455,8 @@ table.service_calendar tbody td.visit {
   height: 100%;
   text-decoration: none;
   color: #fff;
+}
+
+#service_request_protocol_id {
+  width: 300px;
 }

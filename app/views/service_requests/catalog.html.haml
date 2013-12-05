@@ -33,15 +33,4 @@
     #signed_up_but_not_approved{:style => "display: none"}
       = render :partial => 'catalogs/signed_up_but_not_approved_dialog_box'
 
-  #feedback-form{:style => 'display: none', :title => 'Give Us Your Feedback!'}
-    = form_tag feedback_service_requests_path, :method => :post, :remote => true, :id => 'feedback_form' do
-      #errors
-        #error-text
-        %br
-      %p
-        = text_field_tag "feedback[email]", nil, {:placeholder => t(:notifications)[:email], :size => 35, :tabindex => -1}
-        %br
-        %br
-      %p
-        = text_area_tag "feedback[message]", nil, {:placeholder => t(:notifications)[:feedback], :cols => 65, :rows => 15, :tabindex => -1}
   #about_sparc{:title => t(:about_title)}= t(:about_text)

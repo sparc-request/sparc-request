@@ -23,7 +23,6 @@
             %li
               = key.to_s.humanize unless key == :base # manually added errors should be ignored
               = msg
-
   .edit-project-view= render :partial => 'studies/fields', :locals => {:study => study, :f => f}
   .continue
     .grid_12

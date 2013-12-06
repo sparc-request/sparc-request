@@ -208,8 +208,10 @@ $ ->
       $(this).val('')
 
   $('.se_delete').live 'click', ->
-    $(this).parent().parent().remove()
-    $('#entity_form').submit()
+    # $(this).parent().parent().remove()
+    # $('#entity_form').submit()
+    $.post '/catalog_manager/catalog/remove_submission_email', {submission_email: $(this).attr('id'), org_unit: $('#org_unit_id').val()}, (data) ->
+      $('#se_info').html(data)
 
   # super users
   $('input#new_su').live 'focus', -> $(this).val('')

@@ -2,7 +2,7 @@
   = render 'service_request_info'
 
 #notifications_area
-  = render 'notifications_area'
+  = render :partial => 'notifications_area', :locals => {:service_request => @service_request, :protocol => @protocol, :sub_service_request => @sub_service_request}
 
 .clear
 

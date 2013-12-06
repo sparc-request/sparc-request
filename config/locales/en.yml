@@ -551,6 +551,7 @@ en:
     program: "Program/Core:"
     status: "Status:"
     edit_original: "Edit Original"
+    send_notification: "Send Notification"
 
   # Portal sub service request dialog
   ssr_dialog:

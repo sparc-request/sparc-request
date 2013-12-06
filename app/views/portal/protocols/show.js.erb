@@ -1,2 +1,42 @@
 id = "<%= @protocol.id %>"
 $(".protocol-information-" + id).html("<%= escape_javascript(render(:partial => 'portal/protocols/protocol_information', :locals => {:protocol => @protocol, :user => @user, :protocol_role => @protocol_role})) %>");
+
+// This needs to be here so it'll be loaded in the DOM upon page load.
+// Dialog will not open otherwise.
+$('.new_notification_dialog').dialog({
+  autoOpen: false,
+  title: 'Send notification',
+  width: 700,
+  height: 300,
+  modal: true,
+  buttons: {
+    "Submit": function() {
+      $('.portal_notifications:visible').slideToggle();
+      disableSubmitButton("Submit", "Please wait...");
+      return $('.notification_notification_form').bind('ajax:success', function(data) {
+        enableSubmitButton("Please wait...", "Submit");
+        return $('.new_notification_dialog').dialog('close');
+      }).submit();
+    },
+    "Cancel": function() {
+      $('.portal_notifications:visible').slideToggle();
+      enableSubmitButton("Please wait...", "Submit");
+      return $(this).dialog('close');
+    }
+  }
+});
+
+var disableSubmitButton, enableSubmitButton;
+
+disableSubmitButton = function(containing_text, change_to) {
+  var button;
+  button = $(".ui-dialog .ui-dialog-buttonpane button:contains(" + containing_text + ")");
+  return button.html("<span class='ui-button-text'>" + change_to + "</span>").attr('disabled', true).addClass('button-disabled');
+};
+
+enableSubmitButton = function(containing_text, change_to) {
+  var button;
+  button = $(".ui-dialog .ui-dialog-buttonpane button:contains(" + containing_text + ")");
+  button.html("<span class='ui-button-text'>" + change_to + "</span>").attr('disabled', false).removeClass('button-disabled');
+  return button.attr('disabled', false);
+};

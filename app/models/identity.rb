@@ -330,6 +330,7 @@ class Identity < ActiveRecord::Base
   end
 
   def clinical_provider_rights?
+    #TODO should look at all tagged with CTRC
     org = Organization.tagged_with("ctrc").first
     if !self.clinical_providers.empty? or self.admin_organizations({:su_only => true}).include?(org)
       return true
@@ -339,6 +340,7 @@ class Identity < ActiveRecord::Base
   end
 
   def clinical_provider_for_ctrc?
+    #TODO should look at all tagged with CTRC
     org = Organization.tagged_with("ctrc").first
     self.clinical_providers.each do |provider|
       if provider.organization_id == org.id
@@ -409,7 +411,7 @@ class Identity < ActiveRecord::Base
 
       end
     end
-
+    
     hash
   end
 

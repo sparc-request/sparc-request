@@ -52,8 +52,6 @@
                           %li= service
                     %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}= ssr.service_request.service_requester.try(:full_name)
                     %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}
-                      -# %ul.services_first
-                      -#   %li.ui-corner-top
                       - pis = ssr.service_request.protocol.try(:principal_investigators).try(:map, &:full_name) || []
                       - if pis.size > 1
                         - pis.each do |pi|
@@ -61,6 +59,6 @@
                       - else
                         = pis[0]
                     %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}= ssr.owner.try(:full_name)
-                    %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}= display_org_tree(ssr.organization)
+                    %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}= ssr.org_tree_display
 
           %input.values_test{:value => (search_pis + requesters + srids).uniq.to_json, :type => 'hidden'}

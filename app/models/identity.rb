@@ -117,23 +117,15 @@ class Identity < ActiveRecord::Base
   # Returns true if the user is a catalog overlord.  Should only be true for three uids:
   # jug2, anc63, mas244
   def is_overlord?
-    self.catalog_overlord?
+    @is_overlord ||= self.catalog_overlord?
   end
 
   def is_super_user?
-    if self.super_users.count > 0
-      return true
-    else
-      return false
-    end
+    @is_super_user ||= self.super_users.count > 0
   end
 
   def is_service_provider?
-    if self.service_providers.count > 0
-      return true
-    else
-      return false
-    end
+    @is_service_provider ||= self.service_providers.count > 0
   end
 
   ###############################################################################
@@ -388,10 +380,12 @@ class Identity < ActiveRecord::Base
   # Collects all sub service requests under this identity's admin_organizations and sorts that
   # list by the status of the sub service requests.
   # Used to populate the table (as selectable by the dropdown) in the admin index.
-  def admin_service_requests_by_status org_id = nil
+  def admin_service_requests_by_status org_id=nil, admin_orgs=nil
     ##Default to all ssrs, if we get an org_id, only get that organization's ssrs
     if org_id
       ssrs = Organization.find(org_id).sub_service_requests
+    elsif admin_orgs
+      ssrs = SubServiceRequest.where("sub_service_requests.organization_id in (#{admin_orgs.map(&:id).join(", ")})").includes(:owner, :line_items => :service, :service_request => [:service_requester, :protocol => {:project_roles => :identity}])
     else
       ssrs = self.admin_organizations.map(&:sub_service_requests).flatten
     end
@@ -402,13 +396,11 @@ class Identity < ActiveRecord::Base
       unless ssr.status.blank? or ssr.status == 'first_draft'
         if ssr.service_request
           if ssr.service_request.protocol
-            ssr_status = ssr.status.to_s.gsub(/\s/, "_").gsub(/[^-\w]/, "").downcase
+            ssr_status = ssr.status
             hash[ssr_status] = [] unless hash[ssr_status]
             hash[ssr_status] << ssr
           end
         end
-      else
-
       end
     end
     

@@ -74,7 +74,7 @@
                 %td= line_item.service.try(:displayed_pricing_map).try(:otf_unit_type).try(:humanize)
             - else
               %td= text_field_tag "service_request[line_items_attributes][#{line_item.id}][quantity]", line_item.quantity, |
-                   :unit_minimum => line_item.service.displayed_pricing_map.unit_minimum, :class => 'line_item_quantity', :current_quantity => line_item.quantity |
+                   :unit_minimum => line_item.service.displayed_pricing_map.quantity_minimum, :class => 'line_item_quantity', :current_quantity => line_item.quantity |
               %td= line_item.service.try(:displayed_pricing_map).try(:quantity_type).try(:humanize)
               -#
               - if line_item.service.try(:displayed_pricing_map).otf_unit_type == 'N/A'

@@ -112,6 +112,7 @@ SparcRails::Application.routes.draw do
         delete :remove_excluded_funding_source
         post :remove_associated_survey
         post :add_associated_survey
+        post :remove_submission_email
       end
     end
 

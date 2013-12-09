@@ -220,7 +220,7 @@ $ ->
       $("#otf_attributes_#{pricing_map_id}").html('# ' + $("#otf_quantity_type_#{pricing_map_id}").val() + ' / ' + '# ' + $(this).val())
 
   # Pricing map one time fee validations
-  $('.otf_quantity_type, .otf_unit_type, .otf_unit_max').live('change', ->
+  $('.otf_quantity_type, .otf_quantity_minimum, .otf_unit_type, .otf_unit_max').live('change', ->
     blank_field = false
     validates = $(this).closest('.service_form').find('.otf_validate')
 
@@ -235,12 +235,14 @@ $ ->
 
   show_otf_attributes = () ->
     $('.otf.quantity_type').show()
+    $('.otf.quantity_minimum').show()
     $('.otf.unit_type').show()
     $('.otf.unit_maximum').show()
     $('.service_unit_type').val("")
 
   hide_otf_attributes = (qty_type) ->
     $('.otf.quantity_type').hide()
+    $('.otf.quantity_minimum').hide()
     $('.otf.unit_type').hide()
     $('.otf.unit_maximum').hide()
     $('.service_unit_type').val(qty_type)
@@ -384,8 +386,9 @@ $ ->
     .pricing_map_display_date,
     .pricing_map_effective_date').live('change', ->
     blank_field = false
+    pricing_map_id = $(this).data('pricing_map_id')
     validates = $(this).closest('.service_form').find('.validate')
-    one_time_fee = $('.otf_check_box')
+    one_time_fee = $("#otf_checkbox_#{pricing_map_id}")
 
     unless one_time_fee.is(":checked")
       for field in $(validates)
@@ -397,6 +400,9 @@ $ ->
       else
         $('.save_button').attr('disabled', true)
         $('.blank_field_errors').css('display', 'inline-block')
+    else
+      $('.save_button').removeAttr('disabled')
+      $('.blank_field_errors').hide()
   )
 
   $('.remove_pricing_setup').live('click', ->

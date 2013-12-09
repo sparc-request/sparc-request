@@ -19,6 +19,7 @@ class PricingMap < ActiveRecord::Base
   attr_accessible :effective_date
   attr_accessible :display_date
   attr_accessible :quantity_type
+  attr_accessible :quantity_minimum
   attr_accessible :otf_unit_type
 
   before_save :upcase_otf_unit_type

@@ -654,7 +654,7 @@ en:
     submit_button: "Save"
     cancel_button: "Cancel"
     blank_field_errors: "Name and Order on the Service, and Clinical Quantity Type, Unit Factor, Unit Minimum, Units Per Qty Maximum, Effective Date, and Display Date on all Pricing Maps are required."
-    otf_field_errors: "If the Pricing Map is a one time fee (the box is checked), Quantity Type, Unit Type, and Unit Maximum are required."
+    otf_field_errors: "If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required."
     status_legend: "Status Options (Use default statuses below or click to create custom service request statuses)"
     default_statuses: "Default Statuses:"
     color_blank: "Select a Color"

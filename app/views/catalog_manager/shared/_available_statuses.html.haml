@@ -15,7 +15,7 @@
           %tr
           %tr
           %tr
-            - f.object.get_available_statuses.each do |k, v|
+            - AVAILABLE_STATUSES.select{|k,v| DEFAULT_STATUSES.include? k}.each do |k, v|
               %tr
                 %th= v
 

@@ -40,7 +40,7 @@
   Sparc.config.displayDatesForUser($('.datepicker, .disabled_datepicker'))
 
 - # re-render submission emails if entity is a core, program, or provider
-- if @entity.instance_of? Core or @entity.instance_of? Program or @entity.instance_of Provider
+- if @entity.instance_of? Core or @entity.instance_of? Program or @entity.instance_of? Provider
   :plain
     $('#se_info').html("#{escape_javascript(render :partial => 'catalog_manager/shared/submission_emails', :locals => {:entity => @entity})}")
 

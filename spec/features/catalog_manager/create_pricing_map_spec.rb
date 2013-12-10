@@ -29,7 +29,7 @@ describe 'as a user on catalog page', :js => true do
       wait_for_javascript_to_finish
 
       fill_in "pricing_maps_blank_pricing_map_full_rate", :with => 4321
-      fill_in "pricing_maps_blank_pricing_map_unit_type", :with => "Each"
+      fill_in "clinical_quantity_", :with => "Each"
 
       page.execute_script %Q{ $(".service_unit_factor").change() }
     end
@@ -60,12 +60,12 @@ describe 'as a user on catalog page', :js => true do
       click_link("MUSC Research Data Request (CDW)")
       click_button("Add Pricing Map")
       click_link("Effective on - Display on")
-      find("#pricing_maps_blank_pricing_map_is_one_time_fee").click
+      find("#otf_checkbox_").click
       wait_for_javascript_to_finish
     end
 
     it "should open up the one time fee section correctly and display error message" do
-      page.should have_content "If the Pricing Map is a one time fee (the box is checked), Quantity Type, Unit Type, and Unit Maximum are required."
+      page.should have_content "If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required."
     end
 
     it "should not allow save if one time fee fields are not filled in" do
@@ -75,7 +75,7 @@ describe 'as a user on catalog page', :js => true do
     end
 
     it "should remove the error message if one time fee is unchecked" do
-      find("#pricing_maps_blank_pricing_map_is_one_time_fee").click
+      find("#otf_checkbox_").click
       page.should_not have_content "If the Pricing Map is a one time fee (the box is checked), Quantity Type, Unit Type, and Unit Maximum are required."
     end
 

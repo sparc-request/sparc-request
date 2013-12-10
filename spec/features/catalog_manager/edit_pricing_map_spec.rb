@@ -41,8 +41,8 @@ describe 'as a user on catalog page', :js => true do
 
       ## using find('selector').set('value') was the only thing I could get to work with these fields.
       find("input[id$='full_rate']").set(3800) ## change the service rate
-      find("input[id$='unit_type']").set("Each") ## change the quantity type
-      find("input[id$='unit_minimum']").set(2) ## change the unit minimum
+      find(".service_unit_type").set("Each") ## change the quantity type
+      find(".service_unit_minimum").set(2) ## change the unit minimum
       find("input[id$='units_per_qty_max']").set(2) ## change the units per qty max
       page.execute_script %Q{ $("input[id$='units_per_qty_max']").change() }
       wait_for_javascript_to_finish
@@ -76,8 +76,11 @@ describe 'as a user on catalog page', :js => true do
 
     it "should set the one time fee attribute to false when unchecked" do
       service = Service.find_by_abbreviation("CDW")
-
-      find("td.is_one_time_fee > input", :visible => true).click
+      find(".otf_checkbox", :visible => true).click
+      wait_for_javascript_to_finish
+      find(".service_unit_type", :visible => true).set("Each")
+      wait_for_javascript_to_finish
+      find(".service_unit_minimum", :visible => true).click
       wait_for_javascript_to_finish
 
       page.execute_script %Q{ $(".save_button").click() }

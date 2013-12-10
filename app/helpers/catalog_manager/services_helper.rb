@@ -23,7 +23,7 @@ module CatalogManager::ServicesHelper
     end
   end
 
-  #TODO May eventually use this to clean up the view
+  #TODO May eventually use this to clean up the pricing map view
   # def otf_display_style pricing_map
   #   style = ""
 
@@ -37,4 +37,15 @@ module CatalogManager::ServicesHelper
 
   #   style
   # end
+
+  def validate_per_patient pricing_map
+    if pricing_map
+      validate = ""
+      unless pricing_map.is_one_time_fee
+        validate = "validate"
+      end
+
+      validate
+    end
+  end
 end

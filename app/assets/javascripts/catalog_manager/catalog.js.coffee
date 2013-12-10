@@ -191,6 +191,10 @@ $ ->
     else
       $('.cwf.position_field').hide()
 
+  ############################
+  # Begin pricing map logic
+  ############################
+
   # pricing maps one time fees
   $('.otf input[type=checkbox]').live 'click', ->
     pricing_map_id = $(this).data('pricing_map_id')
@@ -199,11 +203,13 @@ $ ->
       pricing_map_id = ""
     if $(this).is(":checked")
       show_otf_attributes()
+      remove_validate_from_per_patient(pricing_map_id)
       if ($("#otf_quantity_type_#{pricing_map_id}").val() == "") || ($("#otf_unit_type_#{pricing_map_id}").val() == "")
         disable_otf_service_save()
     else
       hide_otf_attributes(qty_type)
       enable_otf_service_save()
+      add_validate_to_per_patient(pricing_map_id)
 
   $('.otf_quantity_type').live 'change', ->
     pricing_map_id = $(this).data('pricing_map_id')
@@ -233,6 +239,7 @@ $ ->
       disable_otf_service_save()
   )
 
+  # pricing map methods
   show_otf_attributes = () ->
     $('.otf.quantity_type').show()
     $('.otf.quantity_minimum').show()
@@ -254,6 +261,23 @@ $ ->
   enable_otf_service_save = () ->
     $('.save_button').removeAttr('disabled')
     $('.otf_field_errors').hide()
+
+  remove_validate_from_per_patient = (pricing_map_id) ->
+    $("#clinical_quantity_#{pricing_map_id}").removeClass("validate")
+    $("#unit_factor_#{pricing_map_id}").removeClass("validate")
+    $("#unit_minimum_#{pricing_map_id}").removeClass("validate")
+    $('.save_button').removeAttr('disabled')
+    $('.blank_field_errors').hide()
+
+  add_validate_to_per_patient = (pricing_map_id) ->
+    $("#clinical_quantity_#{pricing_map_id}").addClass("validate")
+    $("#unit_factor_#{pricing_map_id}").addClass("validate")
+    $("#unit_minimum_#{pricing_map_id}").addClass("validate")
+    validate_dates_and_rates()
+
+  #######################
+  # End pricing map logic
+  #######################
       
   # submission e-mails
   $('input#new_se').live 'focus', -> $(this).val('')
@@ -390,19 +414,15 @@ $ ->
     validates = $(this).closest('.service_form').find('.validate')
     one_time_fee = $("#otf_checkbox_#{pricing_map_id}")
 
-    unless one_time_fee.is(":checked")
-      for field in $(validates)
-        blank_field = true if $(field).val() == ""
+    for field in $(validates)
+      blank_field = true if $(field).val() == ""
 
-      if blank_field == false
-        $('.save_button').removeAttr('disabled')
-        $('.blank_field_errors').hide()
-      else
-        $('.save_button').attr('disabled', true)
-        $('.blank_field_errors').css('display', 'inline-block')
-    else
+    if blank_field == false
       $('.save_button').removeAttr('disabled')
       $('.blank_field_errors').hide()
+    else
+      $('.save_button').attr('disabled', true)
+      $('.blank_field_errors').css('display', 'inline-block')
   )
 
   $('.remove_pricing_setup').live('click', ->

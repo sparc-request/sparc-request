@@ -60,13 +60,13 @@
       %tbody
         %tr
           %th= t(:pricing_map_form)[:clinical_quantity_type]
-          %td{:colspan => 2}= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][unit_type]", pricing_map.try(:[], 'unit_type'), :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :class => 'service_unit_type validate', :'data-pricing_map_id' => pricing_map.try(:id)
+          %td{:colspan => 2}= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][unit_type]", pricing_map.try(:[], 'unit_type'), :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :class => "service_unit_type #{validate_per_patient(pricing_map)}", :'data-pricing_map_id' => pricing_map.try(:id), :id => "clinical_quantity_#{pricing_map.try(:id)}"
         %tr
           %th= t(:pricing_map_form)[:unit_factor]
-          %td{:colspan => 2}= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][unit_factor]", pricing_map.try(:[], 'unit_factor') || 1, :class => 'unit_field service_unit_factor validate', :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :display => 'Unit Factor', :'data-pricing_map_id' => pricing_map.try(:id)
+          %td{:colspan => 2}= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][unit_factor]", pricing_map.try(:[], 'unit_factor') || 1, :class => "unit_field service_unit_factor #{validate_per_patient(pricing_map)}", :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :display => 'Unit Factor', :'data-pricing_map_id' => pricing_map.try(:id), :id => "unit_factor_#{pricing_map.try(:id)}"
         %tr
           %th= t(:pricing_map_form)[:unit_minimum]
-          %td{:colspan => 2}= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][unit_minimum]", pricing_map.try(:[], 'unit_minimum') || 1, :class => 'unit_field service_unit_minimum validate', :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :display => 'Unit Minimum', :'data-pricing_map_id' => pricing_map.try(:id)
+          %td{:colspan => 2}= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][unit_minimum]", pricing_map.try(:[], 'unit_minimum') || 1, :class => "unit_field service_unit_minimum #{validate_per_patient(pricing_map)}", :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :display => 'Unit Minimum', :'data-pricing_map_id' => pricing_map.try(:id), :id => "unit_minimum_#{pricing_map.try(:id)}"
             
   %fieldset
     %legend= t(:pricing_map_form)[:one_time_fee]

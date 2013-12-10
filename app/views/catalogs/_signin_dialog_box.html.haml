@@ -5,8 +5,8 @@
   %br
   .container_6
     #left_signin_button.proceed_with_shib.ui-button.ui-button-text.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only
-      = link_to(t(:proceed_to_login_link), "javascript:void(0);")
+      = link_to(t(:proceed_to_shibboleth), identity_omniauth_authorize_path(:shibboleth))
     %br
     %br
-    #right_signin_button.create_new_account.ui-button.ui-button-text.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only
-      = link_to(t(:create_new_account_link), "javascript:void(0);")
+    #right_signin_button.proceed_with_database.ui-button.ui-button-text.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only
+      = link_to(t(:proceed_to_database), "javascript:void(0);")

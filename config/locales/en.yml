@@ -64,6 +64,7 @@ en:
     confirm: "Password Confirmation:"
     reason: "Reason for account/login request:"
     submit: "Create New User"
+    cancel: "Cancel"
     not_approved: "Click here to proceed"
 
   # password reset
@@ -71,7 +72,8 @@ en:
 
   # sign in popup
   initial_signin_dialog: "You are not currently logged into SPARC Request. If you are affiliated with an institution and have an institutional login OR have created a SPARC Request account and have a SPARC Request login and password, please click the top button to proceed. If you are not currently affiliated with an institution OR do not have a SPARC Request login/password, please click the button on the bottom to proceed with creating a new account."
-  proceed_to_login_link: "MUSC Users + Outside Users with existing SPARC Request Accounts"
+  proceed_to_shibboleth: "MUSC Users"
+  proceed_to_database_login: "Outside Users with existing SPARC Request Accounts"
   create_new_account_link: "Outside Users: Don't have an account? Click here."
 
   # Notifier
@@ -145,7 +147,7 @@ en:
 
   # Project/Study assignment page
   study_assignment:
-    instructions_1: "Please review the services below."
+    instructions_1: "Please review your service request below."
     notice: "If Professional Services are covered by % effort, please indicate in Step 2."
     select_protocol: "Select a Research Study/Project"
     research_study: "Research Study"
@@ -166,9 +168,11 @@ en:
     table:
       institution: "Institution/Provider/Program/Core"
       total_estimated: "Total Estimated Costs"
-      pi_contribution: "PI Contribution"
+      pi_contribution: "Study Contribution"
       requested_funding: "Requested Funding"
-      subsidy: "% Subsidy"
+      subsidy: "% Requested Subsidy"
+      percent_of_cost: "percent of cost"
+      amount_of_funding: "amount of funding"
     request_additional: "To request additional research funding go to"
     additional_confirm: "Are you sure you want to leave? Any unsaved changes to this service request will be lost."
 
@@ -349,7 +353,7 @@ en:
     college: "College"
     college_select: "Select a College"
     department: "Department"
-    department_select: "select a Department"
+    department_select: "Select a Department"
     credentials: "Credentials"
     credentials_select: "Select a Credential"
     subspeciality: "Subspeciality"
@@ -373,7 +377,7 @@ en:
   # Edit Study form
   study_form:
     description: "Before you can complete a service request, please tell us more about your research study. This information will be used by our staff to decide the best way to process your request."
-    needed_info: "Information Needed to obtain correct pricing"
+    needed_info: "Information needed to obtain correct pricing"
     optional_text: "Optional Information"
     optional_text2: "(used for reporting purposes and saved for your future use)"
     options: "Optional"

@@ -44,7 +44,10 @@
 
       .create_user
         = f.submit t(:signup)[:submit]
+        = link_to t(:signup)[:cancel], 'javascript:void(0);', :id => 'cancel_registration'
 
       .clear
   .links.grid_7
-    = render "devise/shared/links"
+    = link_to "Sign in", new_session_path(resource_name)
+    |
+    = link_to "Forgot your password?", new_password_path(resource_name)

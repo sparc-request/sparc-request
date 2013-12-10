@@ -31,7 +31,11 @@
         #institution_logo
           %a{:href => HEADER_LINK_3, :target => '_blank'}
             = image_tag '/assets/institution_logo_136x86.gif', :alt => 'institution_logo'
-      #welcome_msg= show_welcome_message(current_user)
+      #welcome_msg
+        .flash
+          - flash.each do |name, msg|
+            = content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String)
+        .welcome= show_welcome_message(current_user)
       / #title
       / %h1= t 'application_title'
       #sparc_logo_header
@@ -41,8 +45,6 @@
             &nbsp;
             = show_friendly_ssr_id(@sub_service_request) if @sub_service_request
       #content.container_12
-        - flash.each do |name, msg|
-          = content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String)
         = yield
       .clear
       #footer

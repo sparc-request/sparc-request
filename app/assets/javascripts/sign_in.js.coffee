@@ -8,13 +8,3 @@ $(document).ready ->
 
   $('.proceed_with_shib').click ->
     $('#sign_in').dialog('close')
-
-  $('.create_new_account').click ->
-    $('#signup_form').dialog('open')
-
-  $('#signup_form').dialog
-    autoOpen: false
-    modal: true
-    width: 700
-    dialogClass: 'signup_form'
-

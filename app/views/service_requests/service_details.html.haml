@@ -20,33 +20,38 @@
                 .arm-info
                   .arm-header
                     .arm-cell= t(:service_request_details)[:study_start_date]
-                    .arm-cell= t(:service_request_details)[:study_end_date]
+                    .arm-cell.arm-cell-right= t(:service_request_details)[:study_end_date]
                     .clear
                   .clear
                   .arms
                     .arm-cell
                       = text_field_tag :start_date, (@service_request.protocol.start_date.strftime('%_m/%d/%Y') rescue nil) # only used for datepicker
+                      = image_tag 'calendar_edit.png'
                       = f.hidden_field :start_date
-                    .arm-cell
+                    .arm-cell.arm-cell-right
                       = text_field_tag :end_date, (@service_request.protocol.end_date.strftime('%_m/%d/%Y') rescue nil) #only use for datepicker
+                      = image_tag 'calendar_edit.png'
                       = f.hidden_field :end_date
                     .clear
                   .clear
-                .arm-info
-                  .arm-header{:style => "padding-top:30px;"}
-                    .arm-cell= t(:service_request_details)[:recruitment_start_date]
-                    .arm-cell= t(:service_request_details)[:recruitment_end_date]
+                - if @service_request.has_per_patient_per_visit_services?
+                  .arm-info
+                    .arm-header{:style => "padding-top:30px;"}
+                      .arm-cell= t(:service_request_details)[:recruitment_start_date]
+                      .arm-cell.arm-cell-right= t(:service_request_details)[:recruitment_end_date]
+                      .clear
                     .clear
-                  .clear
-                  .arms
-                    .arm-cell
-                      = text_field_tag :recruitment_start_date, (@service_request.protocol.recruitment_start_date.strftime('%_m/%d/%Y') rescue nil)
-                      = f.hidden_field :recruitment_start_date
-                    .arm-cell
-                      = text_field_tag :recruitment_end_date, (@service_request.protocol.recruitment_end_date.strftime('%_m/%d/%Y') rescue nil)
-                      = f.hidden_field :recruitment_end_date
+                    .arms
+                      .arm-cell
+                        = text_field_tag :recruitment_start_date, (@service_request.protocol.recruitment_start_date.strftime('%_m/%d/%Y') rescue nil)
+                        = image_tag 'calendar_edit.png'
+                        = f.hidden_field :recruitment_start_date
+                      .arm-cell.arm-cell-right
+                        = text_field_tag :recruitment_end_date, (@service_request.protocol.recruitment_end_date.strftime('%_m/%d/%Y') rescue nil)
+                        = image_tag 'calendar_edit.png'
+                        = f.hidden_field :recruitment_end_date
+                      .clear
                     .clear
-                  .clear
                       
             - if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
               %div{:style => "height:25px;background-color:#FFFFFF; clear:both;"}

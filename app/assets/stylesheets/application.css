@@ -171,7 +171,7 @@ a.save-option{
 p.instructions {
   margin-bottom: 10px;
   width: 100%;
-  font-size:20px;
+  font-size:14px;
   font-weight: bold;
   color: #003366;
 }
@@ -192,6 +192,10 @@ p.notice {
 
 .institution {
   background: #E8E8E8 !important;
+}
+
+#welcome_message {
+  text-align: center;
 }
 
 #welcome_message h1 {
@@ -305,6 +309,10 @@ p.notice {
   font-size: 14px;
   color: #fff;
   font-weight: normal;
+}
+
+h3.needed_info {
+  color: #C43149;
 }
 
 .submit-request-button {
@@ -521,8 +529,7 @@ p.notice {
 }
 
 #account img {
-  margin-top: 4px;
-  margin-left: 40px;
+  margin-left: 16px;
 }
 
 .service-catalog .ui-accordion-content h4 {
@@ -1020,6 +1027,18 @@ tr.orange-provider th {
   text-align: center;
 }
 
+.service-request-setup-view .arm-info .arm-cell-right {
+  float: right !important;
+}
+
+.service-request-setup-view .arm-info .arm-cell #start_date,
+.service-request-setup-view .arm-info .arm-cell #end_date,
+.service-request-setup-view .arm-info .arm-cell #recruitment_start_date,
+.service-request-setup-view .arm-info .arm-cell #recruitment_end_date {
+  width: 85%;
+  vertical-align: text-bottom;
+}
+
 .service-request-setup-view .arm-info .add-arm .add_nested_fields {
   padding: 5px 15px;
   width: 50px;
@@ -1029,7 +1048,7 @@ tr.orange-provider th {
   border: 0px !important;
 }
 
-.service-request-setup-view .arm-info .add-arm .remove_nested_fields {
+.service-request-setup-view .arm-info .remove_nested_fields {
   background: #FF0000 !important;
   border: 0px !important;
 }
@@ -1050,9 +1069,11 @@ tr.orange-provider th {
 }
 
 .edit-project-view .box {
+  vertical-align: top;
   width: 100%;
   height: auto;
   margin-left: 8px;
+  border: 3px solid #003366;
 }
 
 .edit-project-view .user-details, .edit-project-view .user_added_message {
@@ -1108,7 +1129,6 @@ legend {
   width: 440px;
   padding: 10px;
   float: left;
-  border: 3px solid #003366;
   height: 100%;
   min-height: 390px;
 }
@@ -2005,9 +2025,25 @@ input.search-services {
 }
 
 .service_calendar {
-  width: 922px;
+  width: 100%;
   border-collapse: collapse;
   border: 1px solid #ccc;
+}
+
+#service_calendar ul.ui-widget-header {
+  background: #CCCCCC !important;
+}
+
+#service_calendar ul li.ui-state-default {
+  background: #0775B0 !important;
+}
+
+#service_calendar ul li.ui-state-active {
+  background: #2C9A4D !important;
+}
+
+.service_calendar thead.ui-widget-header {
+  background: #0775B0 !important;
 }
 
 .review-details #service_calendar_container table td,
@@ -2026,10 +2062,6 @@ input.search-services {
 
 .tab_arrow {
   padding-left: 30px;
-}
-
-#service_calendar .ui-tabs-panel {
-  padding: 10px 5px;
 }
 
 .service_calendar .table_header {
@@ -2262,7 +2294,7 @@ input.search-services {
 
 .skinny_fields input {
   text-align: center;
-  width: 50px;
+  width: 140px;
 }
 
 .document_upload_instructions {
@@ -2276,9 +2308,12 @@ input.search-services {
   list-style: decimal inside;
 }
 
-#flash_notice {
-  margin: 5px;
-  font-size: 15px;
+.flash {
+  float: left;
+}
+
+.flash #flash_notice {
+  color: yellow;
 }
 
 #push_to_epic_status {
@@ -2592,3 +2627,9 @@ table.service_calendar tbody td.visit {
   text-decoration: none;
   color: #fff;
 }
+
+#service_request_protocol_id {
+  width: 300px;
+}
+
+

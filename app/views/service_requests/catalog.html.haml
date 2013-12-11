@@ -12,36 +12,24 @@
     = render :partial => 'catalogs/news_and_events'
 
 .grid_3.catalog-view-right.right
-  #account
-    = image_tag "account.png"
+  #account.create_new_account
+    = link_to(image_tag('account.png'), "javascript:void(0);")
   #services.ui-widget.ui-widget-content.cart-view
     %h3
       = t(:service_requests)[:catalog][:text1]
     = render :partial => 'catalogs/cart'
-  = link_to "Submit Request", protocol_service_request_path(@service_request), :class => 'submit-request-button'
+  = link_to "Submit Request", protocol_service_request_path(@service_request), :class => 'submit-request-button', :"data-signed-in" => identity_signed_in?
   = render :partial => 'right_navigation'
 
   #submit_error{:style => "display: none"}
     = t(:service_requests)[:catalog][:text3]
     = t(:service_requests)[:catalog][:text4]
-  - if current_user.nil? and not params[:signed_up_but_not_approved] == 'true'
-    = javascript_include_tag "sign_in"
-    #sign_in{:style => "display: none"}
-      = render :partial => 'catalogs/signin_dialog_box'
+  
   - if params[:signed_up_but_not_approved] == 'true'
     = javascript_include_tag "signed_up_but_not_approved"
     #signed_up_but_not_approved{:style => "display: none"}
       = render :partial => 'catalogs/signed_up_but_not_approved_dialog_box'
+  #sign_in{:style => "display: none"}
+    = render :partial => 'catalogs/signin_dialog_box'
 
-  #feedback-form{:style => 'display: none', :title => 'Give Us Your Feedback!'}
-    = form_tag feedback_service_requests_path, :method => :post, :remote => true, :id => 'feedback_form' do
-      #errors
-        #error-text
-        %br
-      %p
-        = text_field_tag "feedback[email]", nil, {:placeholder => t(:notifications)[:email], :size => 35, :tabindex => -1}
-        %br
-        %br
-      %p
-        = text_area_tag "feedback[message]", nil, {:placeholder => t(:notifications)[:feedback], :cols => 65, :rows => 15, :tabindex => -1}
   #about_sparc{:title => t(:about_title)}= t(:about_text)

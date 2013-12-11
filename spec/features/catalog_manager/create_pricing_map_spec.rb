@@ -1,14 +1,14 @@
 require 'spec_helper'
+Capybara.ignore_hidden_elements = true
 
-describe 'as a user on catalog page' do
+describe 'as a user on catalog page', :js => true do
   before :each do
     default_catalog_manager_setup
   end
 
-  it 'the user should create a pricing map', :js => true do
+  it 'the user should create a pricing map' do
     core = Core.last
     click_link('MUSC Research Data Request (CDW)')
-
     click_button("Add Pricing Map")
 
     # page.execute_script("$('.ui-accordion-header').click()") 
@@ -29,16 +29,15 @@ describe 'as a user on catalog page' do
       wait_for_javascript_to_finish
 
       fill_in "pricing_maps_blank_pricing_map_full_rate", :with => 4321
-      fill_in "pricing_maps_blank_pricing_map_unit_type", :with => "Each"
-      fill_in "pricing_maps_blank_pricing_map_units_per_qty_max", :with => "1"
-      
-      page.execute_script %Q{ $(".service_units_per_qty_max").change() }
+      fill_in "clinical_quantity_", :with => "Each"
+
+      page.execute_script %Q{ $(".service_unit_factor").change() }
     end
     page.execute_script %Q{ $(".save_button").click() }
     page.should have_content "MUSC Research Data Request (CDW) saved successfully"    
   end
   
-  it 'should not save if required fields are missing', :js => true do
+  it 'should not save if required fields are missing' do
     click_link("MUSC Research Data Request (CDW)")
     click_button("Add Pricing Map")
     
@@ -48,11 +47,38 @@ describe 'as a user on catalog page' do
     page.should_not have_content "MUSC Research Data Request (CDW) saved successfully"    
   end
   
-  it 'should display an error message when required fields are missing', :js => true do
+  it 'should display an error message when required fields are missing' do
     click_link("MUSC Research Data Request (CDW)")
     click_button("Add Pricing Map")
     wait_for_javascript_to_finish
-    page.should have_content "Name and Order on the Service, and Quantity Type, Unit Factor, Unit Minimum, Units Per Qty Maximum, Effective Date, and Display Date on all Pricing Maps are required."
+    page.should have_content "Name and Order on the Service, and Clinical Quantity Type, Unit Factor, Unit Minimum, Units Per Qty Maximum, Effective Date, and Display Date on all Pricing Maps are required."
+  end
+
+  describe 'one time fee checked' do
+
+    before :each do
+      click_link("MUSC Research Data Request (CDW)")
+      click_button("Add Pricing Map")
+      click_link("Effective on - Display on")
+      find("#otf_checkbox_").click
+      wait_for_javascript_to_finish
+    end
+
+    it "should open up the one time fee section correctly and display error message" do
+      page.should have_content "If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required."
+    end
+
+    it "should not allow save if one time fee fields are not filled in" do
+      page.execute_script %Q{ $(".save_button").click() }
+      wait_for_javascript_to_finish
+      page.should_not have_content "MUSC Research Data Request (CDW) saved successfully"  
+    end
+
+    it "should remove the error message if one time fee is unchecked" do
+      find("#otf_checkbox_").click
+      page.should_not have_content "If the Pricing Map is a one time fee (the box is checked), Quantity Type, Unit Type, and Unit Maximum are required."
+    end
+
   end    
 
 end

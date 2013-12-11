@@ -8,7 +8,7 @@
         %th.unit_costs_header{:colspan => 2}= t(:calendar_page)[:headers][:unit_costs]
         %th.qty_type_header{:rowspan => 2}= t(:calendar_page)[:headers][:number]
         %th.number_of_units_header{:rowspan => 2}= t(:calendar_page)[:headers][:qty_type]
-        %th.qty_unit_header{:rowspan => 2}= t(:calendar_page)[:headers][:number]
+        %th.qty_unit_header{:style => "width:50px;", :rowspan => 2}= t(:calendar_page)[:headers][:number]
         %th.unit_type_header{:rowspan => 2}= t(:calendar_page)[:headers][:unit_type]
         %th{:rowspan => 2, :colspan => 5, :height => 40, :width => 375}
 
@@ -64,11 +64,17 @@
             - if @tab == 'calendar'
               %td.line_item_quantity.center= line_item.quantity
               %td= line_item.service.try(:displayed_pricing_map).try(:quantity_type).try(:humanize)
-              %td.units_per_quantity.center= line_item.units_per_quantity
-              %td= line_item.service.try(:displayed_pricing_map).try(:otf_unit_type).try(:humanize)
+              - if line_item.service.try(:displayed_pricing_map).otf_unit_type == 'N/A'
+                %td
+                %td
+              - else
+                %td.units_per_quantity.center{:style => "width:50px;"}
+                  %span{:style => "padding-right:5px;"} /
+                  = line_item.units_per_quantity
+                %td= line_item.service.try(:displayed_pricing_map).try(:otf_unit_type).try(:humanize)
             - else
               %td= text_field_tag "service_request[line_items_attributes][#{line_item.id}][quantity]", line_item.quantity, |
-                   :unit_minimum => line_item.service.displayed_pricing_map.unit_minimum, :class => 'line_item_quantity', :current_quantity => line_item.quantity |
+                   :unit_minimum => line_item.service.displayed_pricing_map.quantity_minimum, :class => 'line_item_quantity', :current_quantity => line_item.quantity |
               %td= line_item.service.try(:displayed_pricing_map).try(:quantity_type).try(:humanize)
               -#
               - if line_item.service.try(:displayed_pricing_map).otf_unit_type == 'N/A'

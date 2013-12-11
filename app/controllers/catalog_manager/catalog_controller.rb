@@ -140,4 +140,12 @@ class CatalogManager::CatalogController < CatalogManager::AppController
     entity.reload
     render :partial => 'catalog_manager/shared/associated_surveys', :locals => {:entity => entity, :message => message}
   end
+
+  def remove_submission_email
+    entity = Organization.find(params["org_unit"])
+    submission_email = SubmissionEmail.find(params["submission_email"])
+
+    submission_email.destroy
+    render :partial => 'catalog_manager/shared/submission_emails', :locals => {:entity => entity}
+  end
 end

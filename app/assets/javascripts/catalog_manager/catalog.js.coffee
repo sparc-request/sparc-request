@@ -191,16 +191,93 @@ $ ->
     else
       $('.cwf.position_field').hide()
 
+  ############################
+  # Begin pricing map logic
+  ############################
+
   # pricing maps one time fees
   $('.otf input[type=checkbox]').live 'click', ->
+    pricing_map_id = $(this).data('pricing_map_id')
+    qty_type = $(this).data('pricing_map_clinical_quantity_type')
+    if pricing_map_id == undefined
+      pricing_map_id = ""
     if $(this).is(":checked")
-      $('.otf.quantity_type').show()
-      $('.otf.unit_type').show()
-      $('.otf.display_attributes').show()
+      show_otf_attributes()
+      remove_validate_from_per_patient(pricing_map_id)
+      if ($("#otf_quantity_type_#{pricing_map_id}").val() == "") || ($("#otf_unit_type_#{pricing_map_id}").val() == "")
+        disable_otf_service_save()
     else
-      $('.otf.quantity_type').hide()
-      $('.otf.unit_type').hide()
-      $('.otf.display_attributes').hide()
+      hide_otf_attributes(qty_type)
+      enable_otf_service_save()
+      add_validate_to_per_patient(pricing_map_id)
+
+  $('.otf_quantity_type').live 'change', ->
+    pricing_map_id = $(this).data('pricing_map_id')
+    if $("#otf_unit_type_#{pricing_map_id}").val() == "N/A"
+      $("#otf_attributes_#{pricing_map_id}").html('# ' + $(this).val())
+    else
+      $("#otf_attributes_#{pricing_map_id}").html('# ' + $(this).val() + ' / ' + '# ' + $("#otf_unit_type_#{pricing_map_id}").val())
+
+  $('.otf_unit_type').live 'change', ->
+    pricing_map_id = $(this).data('pricing_map_id') 
+    if $(this).val() == "N/A"
+      $("#otf_attributes_#{pricing_map_id}").html('# ' + $("#otf_quantity_type_#{pricing_map_id}").val())
+    else
+      $("#otf_attributes_#{pricing_map_id}").html('# ' + $("#otf_quantity_type_#{pricing_map_id}").val() + ' / ' + '# ' + $(this).val())
+
+  # Pricing map one time fee validations
+  $('.otf_quantity_type, .otf_quantity_minimum, .otf_unit_type, .otf_unit_max').live('change', ->
+    blank_field = false
+    validates = $(this).closest('.service_form').find('.otf_validate')
+
+    for field in $(validates)
+      blank_field = true if (($(field).val() == "") && ($('.otf_checkbox').prop('checked')))
+
+    if blank_field == false
+      enable_otf_service_save()
+    else
+      disable_otf_service_save()
+  )
+
+  # pricing map methods
+  show_otf_attributes = () ->
+    $('.otf.quantity_type').show()
+    $('.otf.quantity_minimum').show()
+    $('.otf.unit_type').show()
+    $('.otf.unit_maximum').show()
+    $('.service_unit_type').val("")
+
+  hide_otf_attributes = (qty_type) ->
+    $('.otf.quantity_type').hide()
+    $('.otf.quantity_minimum').hide()
+    $('.otf.unit_type').hide()
+    $('.otf.unit_maximum').hide()
+    $('.service_unit_type').val(qty_type)
+
+  disable_otf_service_save = () ->
+    $('.save_button').attr('disabled', true)
+    $('.otf_field_errors').css('display', 'inline-block')
+
+  enable_otf_service_save = () ->
+    $('.save_button').removeAttr('disabled')
+    $('.otf_field_errors').hide()
+
+  remove_validate_from_per_patient = (pricing_map_id) ->
+    $("#clinical_quantity_#{pricing_map_id}").removeClass("validate")
+    $("#unit_factor_#{pricing_map_id}").removeClass("validate")
+    $("#unit_minimum_#{pricing_map_id}").removeClass("validate")
+    $('.save_button').removeAttr('disabled')
+    $('.blank_field_errors').hide()
+
+  add_validate_to_per_patient = (pricing_map_id) ->
+    $("#clinical_quantity_#{pricing_map_id}").addClass("validate")
+    $("#unit_factor_#{pricing_map_id}").addClass("validate")
+    $("#unit_minimum_#{pricing_map_id}").addClass("validate")
+    validate_dates_and_rates()
+
+  #######################
+  # End pricing map logic
+  #######################
       
   # submission e-mails
   $('input#new_se').live 'focus', -> $(this).val('')
@@ -219,8 +296,11 @@ $ ->
       $(this).val('')
 
   $('.se_delete').live 'click', ->
-    $(this).parent().parent().remove()
-    $('#entity_form').submit()
+    if $(this).attr('id')
+      $.post '/catalog_manager/catalog/remove_submission_email', {submission_email: $(this).attr('id'), org_unit: $('#org_unit_id').val()}, (data) ->
+        $('#se_info').html(data)
+    else
+      $(this).parent().parent().remove()
 
   # super users
   $('input#new_su').live 'focus', -> $(this).val('')
@@ -320,17 +400,19 @@ $ ->
     validate_dates_and_rates()
   )
 
+  # Service and per patient Pricing map validations
   $('.service_name,
     .service_order,
     .service_rate,
     .service_unit_type,
     .service_unit_factor,
     .service_unit_minimum,
-    .service_units_per_qty_max,
     .pricing_map_display_date,
     .pricing_map_effective_date').live('change', ->
     blank_field = false
+    pricing_map_id = $(this).data('pricing_map_id')
     validates = $(this).closest('.service_form').find('.validate')
+    one_time_fee = $("#otf_checkbox_#{pricing_map_id}")
 
     for field in $(validates)
       blank_field = true if $(field).val() == ""
@@ -342,7 +424,6 @@ $ ->
       $('.save_button').attr('disabled', true)
       $('.blank_field_errors').css('display', 'inline-block')
   )
-
 
   $('.remove_pricing_setup').live('click', ->
     $(this).parent().prevAll('h3:first').remove()

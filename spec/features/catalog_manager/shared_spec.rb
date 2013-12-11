@@ -69,11 +69,9 @@ describe 'shared views', js: true do
         wait_for_javascript_to_finish
         first("#save_button").click
         wait_for_javascript_to_finish
-
         within('.se_table') do
           find(".se_delete").click
         end
-        
         wait_for_javascript_to_finish
         page.should_not have_content("franzferdinand@ww1.gov")
       end

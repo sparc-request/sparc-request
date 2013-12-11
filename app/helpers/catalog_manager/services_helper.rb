@@ -39,13 +39,15 @@ module CatalogManager::ServicesHelper
   # end
 
   def validate_per_patient pricing_map
+    validate = ""
     if pricing_map
-      validate = ""
       unless pricing_map.is_one_time_fee
         validate = "validate"
       end
+    else
+      validate = "validate"
 
-      validate
+    validate
     end
   end
 end

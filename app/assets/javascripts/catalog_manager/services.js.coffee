@@ -55,13 +55,19 @@ $(document).ready ->
     Sparc.services.create_accordion()
     Sparc.config.setDatePicker()
     $('.blank_field_errors').css('display', 'inline-block')
-    $('.save_button').attr('disabled', true)    
+    $('.per_patient_errors').css('display', 'inline-block')
+    $('.save_button').attr('disabled', true) 
+    $("#otf_unit_type_").val("N/A")   
   )
 
   $('.remove_pricing_map').live('click', ->
     div = $(this).closest('div')
     div.prevAll('h3:first').remove()
     div.remove()
+    $('.save_button').removeAttr('disabled')
+    $('.blank_field_errors').hide()
+    $('.per_patient_errors').hide()
+    $('.otf_field_errors').hide()
   )
 
   $('.add_pricing_setup').live('click', ->

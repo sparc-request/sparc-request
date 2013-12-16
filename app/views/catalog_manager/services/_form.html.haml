@@ -118,10 +118,13 @@
         %table
           %tr
             %td
-              .ui-corner-all.otf_field_errors= t(:organization_form)[:otf_field_errors]
+              .ui-corner-all.blank_field_errors= t(:organization_form)[:blank_field_errors]
           %tr
             %td
-              .ui-corner-all.blank_field_errors= t(:organization_form)[:blank_field_errors]
+              .ui-corner-all.per_patient_errors= t(:organization_form)[:per_patient_errors]
+          %tr
+            %td
+              .ui-corner-all.otf_field_errors= t(:organization_form)[:otf_field_errors]
 
 .blank_pricing_map
   = render 'pricing_map', :pricing_map_disabled => false, :can_edit_historical_data => @user.can_edit_historical_data_for?(@service.organization), :entity => @service

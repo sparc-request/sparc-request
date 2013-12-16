@@ -54,6 +54,15 @@ describe 'as a user on catalog page', :js => true do
     page.should have_content "Name and Order on the Service, and Clinical Quantity Type, Unit Factor, Unit Minimum, Units Per Qty Maximum, Effective Date, and Display Date on all Pricing Maps are required."
   end
 
+  it "should give the per patient fields a 'validate' class for a new map with one time fees unchecked" do
+    click_link("MUSC Research Data Request (CDW)")
+    click_button("Add Pricing Map")
+    click_link("Effective on - Display on")
+    wait_for_javascript_to_finish
+
+    find(".service_unit_type.validate").click #will fail if it doesn't have the validate class
+  end
+
   describe 'one time fee checked' do
 
     before :each do
@@ -77,6 +86,19 @@ describe 'as a user on catalog page', :js => true do
     it "should remove the error message if one time fee is unchecked" do
       find("#otf_checkbox_").click
       page.should_not have_content "If the Pricing Map is a one time fee (the box is checked), Quantity Type, Unit Type, and Unit Maximum are required."
+    end
+
+    it "should remove the error message if the fields are filled in" do
+      find(".otf_quantity_type").set("Each")
+      find(".otf_quantity_minimum").set(1)
+      find(".otf_unit_type").set("Week")
+      wait_for_javascript_to_finish
+
+      page.should_not have_content "If the Pricing Map is a one time fee (the box is checked), Quantity Type, Unit Type, and Unit Maximum are required."
+    end
+
+    it "should also not have any of the per patient errors on the page" do
+      page.should_not have_content "Name and Order on the Service, and Clinical Quantity Type, Unit Factor, Unit Minimum, Units Per Qty Maximum, Effective Date, and Display Date on all Pricing Maps are required."
     end
 
   end    

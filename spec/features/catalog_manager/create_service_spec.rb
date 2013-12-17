@@ -47,8 +47,9 @@ feature 'create new service' do
 
       fill_in "pricing_maps_blank_pricing_map_full_rate", :with => 4321
       fill_in "clinical_quantity_", :with => "Each"
-      
-      page.execute_script %Q{ $(".service_unit_type").change() }
+      wait_for_javascript_to_finish
+      find('#unit_factor_').click
+      wait_for_javascript_to_finish
     end    
 
     page.execute_script("$('#save_button').click();")
@@ -97,8 +98,9 @@ feature 'create new service' do
 
       fill_in "pricing_maps_blank_pricing_map_full_rate", :with => 4321
       fill_in "clinical_quantity_", :with => "Each"
-      
-      page.execute_script %Q{ $(".service_unit_type").change() }
+      wait_for_javascript_to_finish
+      find('#unit_factor_').click
+      wait_for_javascript_to_finish
     end      
 
     page.execute_script("$('#save_button').click();")

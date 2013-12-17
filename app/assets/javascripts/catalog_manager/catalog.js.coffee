@@ -198,21 +198,23 @@ $ ->
   # pricing maps one time fees
   $('.otf input[type=checkbox]').live 'click', ->
     pricing_map_id = $(this).data('pricing_map_id')
-    qty_type = $(this).data('pricing_map_clinical_quantity_type')
     if pricing_map_id == undefined
       pricing_map_id = ""
     if $(this).is(":checked")
+      enable_per_patient_save()
       show_otf_attributes()
-      remove_validate_from_per_patient(pricing_map_id)
-      if ($("#otf_quantity_type_#{pricing_map_id}").val() == "") || ($("#otf_unit_type_#{pricing_map_id}").val() == "")
+      if ($("#otf_quantity_type_#{pricing_map_id}").val() == "") || ($("#otf_unit_type_#{pricing_map_id}").val() == "") || ($("#otf_quantity_minimum_#{pricing_map_id}").val() == "") || ($("#otf_unit_max_#{pricing_map_id}").val() == "")
         disable_otf_service_save()
     else
-      hide_otf_attributes(qty_type)
+      hide_otf_attributes()
       enable_otf_service_save()
-      add_validate_to_per_patient(pricing_map_id)
+      if ($("#clinical_quantity_#{pricing_map_id}").val() == "") || ($("#unit_factor_#{pricing_map_id}").val() == "") || ($("#unit_minimum_#{pricing_map_id}").val() == "")
+        disable_per_patient_save()
 
   $('.otf_quantity_type').live 'change', ->
     pricing_map_id = $(this).data('pricing_map_id')
+    if pricing_map_id == undefined
+      pricing_map_id = ""
     if $("#otf_unit_type_#{pricing_map_id}").val() == "N/A"
       $("#otf_attributes_#{pricing_map_id}").html('# ' + $(this).val())
     else
@@ -220,6 +222,8 @@ $ ->
 
   $('.otf_unit_type').live 'change', ->
     pricing_map_id = $(this).data('pricing_map_id') 
+    if pricing_map_id == undefined
+      pricing_map_id = ""
     if $(this).val() == "N/A"
       $("#otf_attributes_#{pricing_map_id}").html('# ' + $("#otf_quantity_type_#{pricing_map_id}").val())
     else
@@ -228,15 +232,27 @@ $ ->
   # Pricing map one time fee validations
   $('.otf_quantity_type, .otf_quantity_minimum, .otf_unit_type, .otf_unit_max').live('change', ->
     blank_field = false
-    validates = $(this).closest('.service_form').find('.otf_validate')
-
-    for field in $(validates)
-      blank_field = true if (($(field).val() == "") && ($('.otf_checkbox').prop('checked')))
+    for field in $('.otf_validate')
+      blank_field = true if (($(field).val() == "") && $(field).is(":visible"))
 
     if blank_field == false
       enable_otf_service_save()
     else
       disable_otf_service_save()
+  )
+
+  # Pricing map per patient validations
+  # These need to be separate due to conditions presented by the checkbox
+  # for one time fees.
+  $('.service_unit_type, .service_unit_factor, .service_unit_minimum').live('change', ->
+    blank_field = false
+    for field in $('.per_patient_validate')
+      blank_field = true if (($(field).val() == "") && $(field).is(":visible"))
+
+    if blank_field == false
+      enable_per_patient_save()
+    else
+      disable_per_patient_save()
   )
 
   # pricing map methods
@@ -245,14 +261,14 @@ $ ->
     $('.otf.quantity_minimum').show()
     $('.otf.unit_type').show()
     $('.otf.unit_maximum').show()
-    $('.service_unit_type').val("")
+    $('.per_patient').hide()
 
-  hide_otf_attributes = (qty_type) ->
+  hide_otf_attributes = () ->
     $('.otf.quantity_type').hide()
     $('.otf.quantity_minimum').hide()
     $('.otf.unit_type').hide()
     $('.otf.unit_maximum').hide()
-    $('.service_unit_type').val(qty_type)
+    $('.per_patient').show()
 
   disable_otf_service_save = () ->
     $('.save_button').attr('disabled', true)
@@ -262,18 +278,13 @@ $ ->
     $('.save_button').removeAttr('disabled')
     $('.otf_field_errors').hide()
 
-  remove_validate_from_per_patient = (pricing_map_id) ->
-    $("#clinical_quantity_#{pricing_map_id}").removeClass("validate")
-    $("#unit_factor_#{pricing_map_id}").removeClass("validate")
-    $("#unit_minimum_#{pricing_map_id}").removeClass("validate")
-    $('.save_button').removeAttr('disabled')
-    $('.blank_field_errors').hide()
+  disable_per_patient_save = () ->
+    $('.save_button').attr('disabled', true)
+    $('.per_patient_errors').css('display', 'inline-block')
 
-  add_validate_to_per_patient = (pricing_map_id) ->
-    $("#clinical_quantity_#{pricing_map_id}").addClass("validate")
-    $("#unit_factor_#{pricing_map_id}").addClass("validate")
-    $("#unit_minimum_#{pricing_map_id}").addClass("validate")
-    validate_dates_and_rates()
+  enable_per_patient_save = () ->
+    $('.save_button').removeAttr('disabled')
+    $('.per_patient_errors').hide()
 
   #######################
   # End pricing map logic
@@ -400,19 +411,14 @@ $ ->
     validate_dates_and_rates()
   )
 
-  # Service and per patient Pricing map validations
+  # Service and general (not specific to per patient or one time fees) pricing map validations
   $('.service_name,
     .service_order,
     .service_rate,
-    .service_unit_type,
-    .service_unit_factor,
-    .service_unit_minimum,
     .pricing_map_display_date,
     .pricing_map_effective_date').live('change', ->
     blank_field = false
-    pricing_map_id = $(this).data('pricing_map_id')
     validates = $(this).closest('.service_form').find('.validate')
-    one_time_fee = $("#otf_checkbox_#{pricing_map_id}")
 
     for field in $(validates)
       blank_field = true if $(field).val() == ""

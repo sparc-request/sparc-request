@@ -127,7 +127,8 @@ describe 'as a user on catalog page', :js => true do
     ## Ensure pricing map copied over the content from the existing pricing map
     page.execute_script("$('.ui-accordion-header:last').click()")
     wait_for_javascript_to_finish
-
+    find('.otf_checkbox').click
+    wait_for_javascript_to_finish
     # Check the last pricing map.
     find('.service_rate').should have_value '45.00'
     find('.service_unit_type').should have_value 'self'

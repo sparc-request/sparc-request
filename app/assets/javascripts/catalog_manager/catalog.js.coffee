@@ -231,7 +231,11 @@ $ ->
 
   # Pricing map one time fee validations
   $('.otf_quantity_type, .otf_quantity_minimum, .otf_unit_type, .otf_unit_max').live('change', ->
-    unless $(this).val() == ""
+    blank_field = false
+    for field in $('.otf_validate')
+      blank_field = true if (($(field).val() == "") && $(field).is(":visible"))
+
+    if blank_field == false
       enable_otf_service_save()
     else
       disable_otf_service_save()
@@ -241,7 +245,11 @@ $ ->
   # These need to be separate due to conditions presented by the checkbox
   # for one time fees.
   $('.service_unit_type, .service_unit_factor, .service_unit_minimum').live('change', ->
-    unless $(this).val() == ""
+    blank_field = false
+    for field in $('.per_patient_validate')
+      blank_field = true if (($(field).val() == "") && $(field).is(":visible"))
+
+    if blank_field == false
       enable_per_patient_save()
     else
       disable_per_patient_save()

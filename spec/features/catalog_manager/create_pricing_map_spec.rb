@@ -51,16 +51,8 @@ describe 'as a user on catalog page', :js => true do
     click_link("MUSC Research Data Request (CDW)")
     click_button("Add Pricing Map")
     wait_for_javascript_to_finish
-    page.should have_content "Name and Order on the Service, and Clinical Quantity Type, Unit Factor, Unit Minimum, Units Per Qty Maximum, Effective Date, and Display Date on all Pricing Maps are required."
-  end
-
-  it "should give the per patient fields a 'validate' class for a new map with one time fees unchecked" do
-    click_link("MUSC Research Data Request (CDW)")
-    click_button("Add Pricing Map")
-    click_link("Effective on - Display on")
-    wait_for_javascript_to_finish
-
-    find(".service_unit_type.validate").click #will fail if it doesn't have the validate class
+    page.should have_content "Name and Order are required on the Service.  Effective Date, Display Date, and Service Rate are required on all Pricing Maps."
+    page.should have_content "Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps."
   end
 
   describe 'one time fee checked' do

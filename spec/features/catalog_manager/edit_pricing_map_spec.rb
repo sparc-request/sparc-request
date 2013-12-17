@@ -38,13 +38,14 @@ describe 'as a user on catalog page', :js => true do
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
       page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15    
       wait_for_javascript_to_finish            
+      find(".otf_checkbox", :visible => true).click # set to a per patient map so fields can be filled in
+      wait_for_javascript_to_finish 
 
       ## using find('selector').set('value') was the only thing I could get to work with these fields.
       find("input[id$='full_rate']").set(3800) ## change the service rate
       find(".service_unit_type").set("Each") ## change the quantity type
       find(".service_unit_minimum").set(2) ## change the unit minimum
-      find("input[id$='units_per_qty_max']").set(2) ## change the units per qty max
-      page.execute_script %Q{ $("input[id$='units_per_qty_max']").change() }
+      find("input[id$='full_rate']").click
       wait_for_javascript_to_finish
     end
 

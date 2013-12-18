@@ -2194,6 +2194,16 @@ input.search-services {
   width: 75%;
 }
 
+.subsidies tbody.subsidies-list tr.subsidy-item table.study-contribution .percent-of-cost,
+.subsidies tbody.subsidies-list tr.subsidy-item table.study-contribution .amount-of-funding {
+  width: 40%;
+}
+
+.subsidies tbody.subsidies-list tr.subsidy-item table.study-contribution .text {
+  width: 20%;
+  text-align: center;
+}
+
 .additional-funding {
   text-align: center;
 }

@@ -202,6 +202,9 @@ recalculate_one_time_fee_totals = ->
     your_cost = $(otf).children('.your_cost').data('your_cost')
     qty = $(otf).find('.line_item_quantity').val()
     units_per_qty = $(otf).find('.units_per_quantity').val()
+    if units_per_qty == undefined
+      units_per_qty = 1
+    console.log units_per_qty
     unit_factor = $(otf).data('unit_factor')
 
     new_otf_total = Math.floor(Math.ceil(qty / unit_factor) * your_cost * units_per_qty) / 100.0

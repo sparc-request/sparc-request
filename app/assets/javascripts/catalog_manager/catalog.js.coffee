@@ -202,11 +202,11 @@ $ ->
       pricing_map_id = ""
     if $(this).is(":checked")
       enable_per_patient_save()
-      show_otf_attributes()
+      show_otf_attributes(pricing_map_id)
       if ($("#otf_quantity_type_#{pricing_map_id}").val() == "") || ($("#otf_unit_type_#{pricing_map_id}").val() == "") || ($("#otf_quantity_minimum_#{pricing_map_id}").val() == "") || ($("#otf_unit_max_#{pricing_map_id}").val() == "")
         disable_otf_service_save()
     else
-      hide_otf_attributes()
+      hide_otf_attributes(pricing_map_id)
       enable_otf_service_save()
       if ($("#clinical_quantity_#{pricing_map_id}").val() == "") || ($("#unit_factor_#{pricing_map_id}").val() == "") || ($("#unit_minimum_#{pricing_map_id}").val() == "")
         disable_per_patient_save()
@@ -256,19 +256,13 @@ $ ->
   )
 
   # pricing map methods
-  show_otf_attributes = () ->
-    $('.otf.quantity_type').show()
-    $('.otf.quantity_minimum').show()
-    $('.otf.unit_type').show()
-    $('.otf.unit_maximum').show()
-    $('.per_patient').hide()
+  show_otf_attributes = (pricing_map_id) ->
+    $("#otf_fields_#{pricing_map_id}").show()
+    $("#pp_fields_#{pricing_map_id}").hide()
 
-  hide_otf_attributes = () ->
-    $('.otf.quantity_type').hide()
-    $('.otf.quantity_minimum').hide()
-    $('.otf.unit_type').hide()
-    $('.otf.unit_maximum').hide()
-    $('.per_patient').show()
+  hide_otf_attributes = (pricing_map_id) ->
+    $("#otf_fields_#{pricing_map_id}").hide()
+    $("#pp_fields_#{pricing_map_id}").show()
 
   disable_otf_service_save = () ->
     $('.save_button').attr('disabled', true)

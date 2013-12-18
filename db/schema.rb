@@ -508,15 +508,13 @@ ActiveRecord::Schema.define(:version => 20131203153135) do
     t.decimal  "federal_rate",               :precision => 12, :scale => 4
     t.decimal  "corporate_rate",             :precision => 12, :scale => 4
     t.date     "effective_date"
-    t.datetime "created_at",                                                                   :null => false
-    t.datetime "updated_at",                                                                   :null => false
+    t.datetime "created_at",                                                               :null => false
+    t.datetime "updated_at",                                                               :null => false
     t.datetime "deleted_at"
     t.date     "display_date"
     t.decimal  "other_rate",                 :precision => 12, :scale => 4
     t.decimal  "member_rate",                :precision => 12, :scale => 4
     t.integer  "units_per_qty_max",                                         :default => 1
-    t.string   "quantity_type"
-    t.string   "otf_unit_type",                                             :default => "N/A"
   end
 
   add_index "pricing_maps", ["service_id"], :name => "index_pricing_maps_on_service_id"

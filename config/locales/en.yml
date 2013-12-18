@@ -147,7 +147,7 @@ en:
 
   # Project/Study assignment page
   study_assignment:
-    instructions_1: "Please review your service request below."
+    instructions_1: "Please review services below."
     notice: "If Professional Services are covered by % effort, please indicate in Step 2."
     select_protocol: "Select a Research Study/Project"
     research_study: "Research Study"

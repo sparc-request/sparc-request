@@ -65,8 +65,26 @@ describe 'as a user on catalog page', :js => true do
       page.execute_script("$('.ui-accordion-header:nth-of-type(2)').click()")
       wait_for_javascript_to_finish
       find("input[id$='full_rate']").should have_value("2,000.00")
-   
     end
+  end
+
+  # describe 'per patient validations' do
+  #   before :each do
+  #     page.execute_script("$('.ui-accordion > div:nth-of-type(2)').click()")
+  #     # find(".otf_checkbox", :visible => true).click
+  #     wait_for_javascript_to_finish
+  #   end
+
+  #   it "should display the per patient validations" do
+  #     wait_for_javascript_to_finish
+  #     find(".otf_checkbox", :visible => true).click
+  #     wait_for_javascript_to_finish
+  #     find(".service_unit_factor", :visible => true).set("")
+  #     wait_for_javascript_to_finish
+  #     find(".service_unit_type", :visible => true).click
+  #     wait_for_javascript_to_finish
+  #     page.should have_content("Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps.")
+  #   end
   end
 
   describe 'one time fee' do

@@ -49,13 +49,13 @@
       .clear
       #footer
         .container_12
-          = link_to "Sign Up For the SPARC Request Listserv", "javascript:void(0);"
+          = mail_to 'hundc@musc.edu', "Sign Up For the SPARC Request Listserv", :subject => 'SPARC Request Listserv'
           |
-          = link_to "SPARC Request Blog", "javascript:void(0);"
+          = link_to "SPARC Request Blog", "http://sparcrequestblog.com/", :target => "_blank"
           |
-          = link_to "SCTR", "javascript:void(0);"
+          = link_to "SCTR", "http://sctr.musc.edu", :target => "_blank"
           |
-          = link_to "SPARC Request Home", root_path
+          = link_to "SPARC Request Home", "http://academicdepartments.musc.edu/sctr/sparc_request", :target => "_blank"
       = render :partial => 'shared/piwik_tracking' if Rails.env == 'production'
 
       #signup_form

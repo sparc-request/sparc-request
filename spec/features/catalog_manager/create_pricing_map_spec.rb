@@ -33,8 +33,9 @@ describe 'as a user on catalog page', :js => true do
 
       page.execute_script %Q{ $(".service_unit_factor").change() }
     end
+    
     page.execute_script %Q{ $(".save_button").click() }
-    page.should have_content "MUSC Research Data Request (CDW) saved successfully"    
+    page.should have_content "MUSC Research Data Request (CDW) saved successfully"   
   end
   
   it 'should not save if required fields are missing' do
@@ -53,6 +54,16 @@ describe 'as a user on catalog page', :js => true do
     wait_for_javascript_to_finish
     page.should have_content "Name and Order are required on the Service.  Effective Date, Display Date, and Service Rate are required on all Pricing Maps."
     page.should have_content "Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps."
+  end
+
+  it "should remove the errors if the pricing map is removed" do
+    click_link("MUSC Research Data Request (CDW)")
+    click_button("Add Pricing Map")
+    click_link("Effective on - Display on")
+    wait_for_javascript_to_finish
+    click_button("Remove Pricing Map")
+    page.should_not have_content "Name and Order are required on the Service.  Effective Date, Display Date, and Service Rate are required on all Pricing Maps."
+    page.should_not have_content "Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps."
   end
 
   describe 'one time fee checked' do

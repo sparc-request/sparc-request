@@ -298,6 +298,9 @@ class ServiceRequestsController < ApplicationController
   end
   
   def document_management
+    if @service_request.sub_service_requests.map(&:subsidy).compact.empty?
+      @back = 'service_calendar'
+    end
     @service_list = @service_request.service_list
   end
   

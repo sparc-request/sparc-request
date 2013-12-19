@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131023203211) do
+ActiveRecord::Schema.define(:version => 20131203153135) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -508,13 +508,16 @@ ActiveRecord::Schema.define(:version => 20131023203211) do
     t.decimal  "federal_rate",               :precision => 12, :scale => 4
     t.decimal  "corporate_rate",             :precision => 12, :scale => 4
     t.date     "effective_date"
-    t.datetime "created_at",                                                               :null => false
-    t.datetime "updated_at",                                                               :null => false
+    t.datetime "created_at",                                                                   :null => false
+    t.datetime "updated_at",                                                                   :null => false
     t.datetime "deleted_at"
     t.date     "display_date"
     t.decimal  "other_rate",                 :precision => 12, :scale => 4
     t.decimal  "member_rate",                :precision => 12, :scale => 4
     t.integer  "units_per_qty_max",                                         :default => 1
+    t.string   "quantity_type"
+    t.string   "otf_unit_type",                                             :default => "N/A"
+    t.integer  "quantity_minimum",                                          :default => 1
   end
 
   add_index "pricing_maps", ["service_id"], :name => "index_pricing_maps_on_service_id"
@@ -603,6 +606,8 @@ ActiveRecord::Schema.define(:version => 20131023203211) do
     t.datetime "start_date"
     t.datetime "end_date"
     t.string   "billing_business_manager_static_email"
+    t.datetime "recruitment_start_date"
+    t.datetime "recruitment_end_date"
   end
 
   add_index "protocols", ["next_ssr_id"], :name => "index_protocols_on_next_ssr_id"
@@ -831,12 +836,14 @@ ActiveRecord::Schema.define(:version => 20131023203211) do
     t.boolean  "src_approved",               :default => false
     t.boolean  "in_work_fulfillment"
     t.string   "routing"
+    t.text     "org_tree_display"
   end
 
   add_index "sub_service_requests", ["organization_id"], :name => "index_sub_service_requests_on_organization_id"
   add_index "sub_service_requests", ["owner_id"], :name => "index_sub_service_requests_on_owner_id"
   add_index "sub_service_requests", ["service_request_id"], :name => "index_sub_service_requests_on_service_request_id"
   add_index "sub_service_requests", ["ssr_id"], :name => "index_sub_service_requests_on_ssr_id"
+  add_index "sub_service_requests", ["status"], :name => "index_sub_service_requests_on_status"
 
   create_table "subjects", :force => true do |t|
     t.datetime "created_at",          :null => false

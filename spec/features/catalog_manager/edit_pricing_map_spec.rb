@@ -126,5 +126,39 @@ describe 'as a user on catalog page', :js => true do
       service.reload
       retry_until { service.is_one_time_fee?.should eq(false) }
     end
+
+    context 'validations' do
+
+      it "should display the one time fee error message if a field is blank" do
+        find(".otf_quantity_type", :visible => true).set("")
+        find(".otf_checkbox", :visible => true).click
+        find(".otf_checkbox", :visible => true).click
+        wait_for_javascript_to_finish
+        page.should have_content("If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.")
+      end
+
+      it "should hide the error message if that field is filled back in" do
+        find(".otf_quantity_type", :visible => true).set("")
+        find(".otf_checkbox", :visible => true).click
+        find(".otf_checkbox", :visible => true).click
+        wait_for_javascript_to_finish
+        page.should have_content("If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.")
+        find(".otf_quantity_type", :visible => true).set("Each")
+        find(".otf_quantity_minimum", :visible => true).click
+        wait_for_javascript_to_finish
+        page.should_not have_content("If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.")
+      end
+   
+      it "should hide the error message if the one time fee box is unchecked" do  
+        find(".otf_quantity_type", :visible => true).set("")
+        find(".otf_checkbox", :visible => true).click
+        find(".otf_checkbox", :visible => true).click
+        wait_for_javascript_to_finish
+        page.should have_content("If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.")
+        find(".otf_checkbox", :visible => true).click
+        wait_for_javascript_to_finish
+        page.should_not have_content("If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.")
+      end
+    end
   end
 end

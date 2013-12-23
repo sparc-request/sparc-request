@@ -145,6 +145,14 @@ SparcRails::Application.routes.draw do
     match 'appointments/add_service' => 'calendars#add_service'
 
     root :to => 'home#index'
+
+    resources :home do
+      collection do
+        get :billing_report_setup
+        post :billing_report
+      end
+    end
+
     resources :sub_service_requests do
       resources :calendars
       resources :cover_letters
@@ -163,14 +171,7 @@ SparcRails::Application.routes.draw do
   ##### sparc-user routes brought in and namespaced
   namespace :portal do
     
-    resources :services
-    
-    resources :admin do
-      collection do
-        get :billing_report_setup
-        post :billing_report
-      end
-    end
+    resources :services, :admin
 
     resources :associated_users do
       collection do

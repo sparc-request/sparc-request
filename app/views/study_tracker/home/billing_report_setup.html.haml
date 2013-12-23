@@ -2,7 +2,7 @@
   %br
   %br
   #audit_form
-  = form_tag billing_report_portal_admin_index_path(:format => :xlsx) do
+  = form_tag billing_report_study_tracker_home_index_path(:format => :xlsx) do
     - @cwf_organizations.each do |org|
       = label_tag "organizations[#{org.id}]", org.label
       = check_box_tag "organizations[]", org.id, true

@@ -1,8 +1,8 @@
 class ProtocolsController < ApplicationController
   respond_to :json, :js, :html
-  before_filter :initialize_service_request, :except => [:approve_epic_rights, :push_to_epic, :push_protocol_to_epic]
-  before_filter :authorize_identity, :except => [:approve_epic_rights, :push_to_epic, :push_protocol_to_epic]
-  before_filter :set_protocol_type, :except => [:approve_epic_rights, :push_to_epic, :push_protocol_to_epic]
+  before_filter :initialize_service_request, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
+  before_filter :authorize_identity, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
+  before_filter :set_protocol_type, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
 
   def new
     @service_request = ServiceRequest.find session[:service_request_id]

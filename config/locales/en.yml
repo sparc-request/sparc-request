@@ -815,6 +815,11 @@ en:
       invoices: "Invoices"
       template: "Template"
       services: "Services"
+    billing_report:
+      title: "Admin Billing Report"
+      start_date: "Start Date"
+      end_date: "End Date"
+      get_report: "Get Report"
 
 
   # Admin Root Page

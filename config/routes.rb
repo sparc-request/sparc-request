@@ -164,7 +164,14 @@ SparcRails::Application.routes.draw do
   ##### sparc-user routes brought in and namespaced
   namespace :portal do
     
-    resources :services, :admin
+    resources :services
+    
+    resources :admin do
+      collection do
+        get :billing_report_setup
+        post :billing_report
+      end
+    end
 
     resources :associated_users do
       collection do

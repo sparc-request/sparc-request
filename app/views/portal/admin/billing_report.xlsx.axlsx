@@ -1,0 +1,37 @@
+wb = xlsx_package.workbook
+
+wb.add_worksheet(name: "Admin Billing Report") do |sheet|
+  sheet.add_row ["From", @start, "To", @end]
+
+  sheet.add_row [""]
+  sheet.add_row [""]
+
+  sheet.add_row ["Protocol ID", "Patient Name", "Patient ID", "Visit", "Visit Date", "Nexus Core", "Service Due", "Research Quantity Due", "Full Quantity Completed?", "Quantity Completed", "New Service Added", "New Service Quantity Completed"]
+
+  @appointments.each do |appt|
+    visit_name = appt.name_switch
+    visit_date = appt.formatted_completed_date 
+    core = appt.organization.label
+    protocol = appt.visit_group.arm.protocol
+    subject = appt.calendar.subject
+
+    appt.procedures.each do |procedure|
+      service_name = procedure.try(:line_item).try(:service).try(:name)
+      added_service_name = procedure.try(:service).try(:name)
+      r_qty = procedure.r_quantity
+
+      service_qty = service_name.blank? ? "" : r_qty
+      service_added_qty = added_service_name.blank? ? "" : r_qty
+
+      quantity_due = procedure.try(:visit).try(:research_billing_qty)
+
+      full_quantity_completed = ""
+
+      if not r_qty.blank? and added_service_name.blank?
+        full_quantity_completed = quantity_due == r_qty ? "Y" : "N"
+      end
+
+      sheet.add_row [protocol.id, subject.name, subject.label, visit_name, visit_date, core, service_name, quantity_due, full_quantity_completed, service_qty, added_service_name, service_added_qty]
+    end
+  end
+end

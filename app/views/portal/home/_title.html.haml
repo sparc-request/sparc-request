@@ -1,1 +1,4 @@
-= link_to t(:admin_dashboard)[:title], portal_root_path, :class => "home_link"
+- if @admin_portal and @render_billing_report
+  = link_to t(:admin_dashboard)[:billing_report][:title], portal_root_path, :class => "home_link"
+- else
+  = link_to t(:admin_dashboard)[:title], portal_root_path, :class => "home_link"

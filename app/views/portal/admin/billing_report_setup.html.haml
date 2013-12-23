@@ -1,0 +1,30 @@
+.grid_12
+  %br
+  %br
+  #audit_form
+  = form_tag billing_report_portal_admin_index_path(:format => :xlsx) do
+    - @cwf_organizations.each do |org|
+      = label_tag "organizations[#{org.id}]", org.label
+      = check_box_tag "organizations[]", org.id, true
+      %br
+    
+    %br
+    %br
+   
+    = label_tag :admin_billing_report_start_date_input, t(:admin_dashboard)[:billing_report][:start_date]
+    = text_field_tag :admin_billing_report_start_date_input, nil
+    = hidden_field_tag :admin_billing_report_start_date
+
+    %br
+    %br
+
+    = label_tag :admin_billing_report_end_date_input, t(:admin_dashboard)[:billing_report][:end_date]
+    = text_field_tag :admin_billing_report_end_date_input, nil
+    = hidden_field_tag :admin_billing_report_end_date
+
+    %br
+    %br
+    
+    = submit_tag t(:admin_dashboard)[:billing_report][:get_report] 
+  %br
+  %br

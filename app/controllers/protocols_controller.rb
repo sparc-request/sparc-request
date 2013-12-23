@@ -100,9 +100,10 @@ class ProtocolsController < ApplicationController
   def push_to_epic
     @protocol = Protocol.find params[:id]
 
-    if current_user != @protocol.primary_principal_investigator then
-      raise ArgumentError, "User is not primary PI"
-    end
+    # removed 12/23/13 per request by Lane
+    #if current_user != @protocol.primary_principal_investigator then
+    #  raise ArgumentError, "User is not primary PI"
+    #end
 
     # Do the final push to epic in a separate thread.  The page which is
     # rendered will

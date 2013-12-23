@@ -16,4 +16,20 @@ class StudyTracker::HomeController < StudyTracker::BaseController
 
     #redirect_to root_path if @user.admin_organizations.empty?
   end
+
+  def billing_report_setup
+    @admin_portal = true
+    @render_billing_report = true
+    # get cwf organizations
+    @cwf_organizations = Organization.get_cwf_organizations
+  end
+
+  def billing_report
+    @start = params[:admin_billing_report_start_date]
+    @end = params[:admin_billing_report_end_date]
+    @organization_ids = params[:organizations]
+
+    @appointments = Appointment.where("organization_id IN (#{@organization_ids.join(', ')}) AND completed_at BETWEEN '#{@start}' AND '#{@end}'")
+  end
+
 end

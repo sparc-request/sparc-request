@@ -815,12 +815,6 @@ en:
       invoices: "Invoices"
       template: "Template"
       services: "Services"
-    billing_report:
-      title: "Admin Billing Report"
-      start_date: "Start Date"
-      end_date: "End Date"
-      get_report: "Get Report"
-
 
   # Admin Root Page
   admin_root:
@@ -939,8 +933,9 @@ en:
       popup_message4: "Attention - Assessments have been added to the following visits. If subject is past visit, please refer to your IRB-approved protocol."
       popup_header1: "Visit Name:"
       popup_header2: "Service/Assessment Name:"
-
-
-
-
-
+    billing_report:
+      title: "Admin Billing Report"
+      start_date: "Start Date"
+      end_date: "End Date"
+      protocols: "Protocol(s)"
+      get_report: "Get Report"

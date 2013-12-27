@@ -50,19 +50,19 @@ $(document).ready ->
         $('#cwf_audit_end_date_input').datepicker("option", "minDate", selectedDate)
 
 
-  $("#admin_billing_report_end_date_input").datepicker
-    altField: "#admin_billing_report_end_date"
+  $("#study_tracker_billing_report_end_date_input").datepicker
+    altField: "#study_tracker_billing_report_end_date"
     altFormat: "yy-mm-dd"
     onClose: (selectedDate) ->
       unless selectedDate == ''
-        $('#admin_billing_report_start_date_input').datepicker("option", "maxDate", selectedDate)
+        $('#study_tracker_billing_report_start_date_input').datepicker("option", "maxDate", selectedDate)
   
-  $("#admin_billing_report_start_date_input").datepicker
-    altField: "#admin_billing_report_start_date"
+  $("#study_tracker_billing_report_start_date_input").datepicker
+    altField: "#study_tracker_billing_report_start_date"
     altFormat: "yy-mm-dd"
     onClose: (selectedDate) ->
       unless selectedDate == ''
-        $('#admin_billing_report_end_date_input').datepicker("option", "minDate", selectedDate)
+        $('#study_tracker_billing_report_end_date_input').datepicker("option", "minDate", selectedDate)
 
 
   $("#cwf_audit_end_date_input").datepicker

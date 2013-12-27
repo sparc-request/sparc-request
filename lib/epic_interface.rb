@@ -52,7 +52,6 @@ class EpicInterface
     @config = config
     @errors = {}
 
-    # TODO: grab these from the WSDL
     @namespace = @config['namespace'] || 'urn:ihe:qrph:rpe:2009'
     @study_root = @config['study_root'] || 'UNCONFIGURED'
 
@@ -388,7 +387,6 @@ class EpicInterface
   end
 
   def emit_encounter(xml, study, arm, visit_group)
-    # TODO: Need to change this to study.start_date
     epoch = study.start_date
 
     xml.component2(typeCode: 'COMP') {

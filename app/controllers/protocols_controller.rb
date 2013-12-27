@@ -1,26 +1,34 @@
 class ProtocolsController < ApplicationController
   respond_to :json, :js, :html
-  before_filter :initialize_service_request, :except => [:approve_epic_rights, :push_to_epic]
-  before_filter :authorize_identity, :except => [:approve_epic_rights, :push_to_epic]
-  before_filter :set_protocol_type, :except => [:approve_epic_rights, :push_to_epic]
+  before_filter :initialize_service_request, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
+  before_filter :authorize_identity, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
+  before_filter :set_protocol_type, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
 
   def new
     @service_request = ServiceRequest.find session[:service_request_id]
     @protocol = self.model_class.new
     @protocol.requester_id = current_user.id
     @protocol.populate_for_edit
+    @errors = nil
+    @current_step = 'protocol'
   end
 
   def create
     @service_request = ServiceRequest.find session[:service_request_id]
+    @current_step = params[:current_step]
     @protocol = self.model_class.new(params[:study] || params[:project])
 
-    if @protocol.valid?
+    if @current_step == 'protocol' and @protocol.group_valid? :protocol
+      @current_step = 'user_details'
+      @protocol.populate_for_edit
+    elsif @current_step == 'user_details' and @protocol.valid?
       @protocol.save
+      @current_step = 'return_to_service_request'
       session[:saved_protocol_id] = @protocol.id
       flash[:notice] = "New #{@protocol.type.downcase} created"
     else
       # TODO: Is this neccessary?
+      @errors = @current_step == 'protocol' ? @protocol.grouped_errors[:protocol].messages : @protocol.grouped_errors[:user_details].messages
       @protocol.populate_for_edit
     end
   end
@@ -29,18 +37,28 @@ class ProtocolsController < ApplicationController
     @service_request = ServiceRequest.find session[:service_request_id]
     @protocol = current_user.protocols.find params[:id]
     @protocol.populate_for_edit
+    @current_step = 'protocol'
   end
 
   def update
     @service_request = ServiceRequest.find session[:service_request_id]
+    @current_step = params[:current_step]
     @protocol = current_user.protocols.find params[:id]
 
-    if @protocol.update_attributes(params[:study] || params[:project])
+    @protocol.assign_attributes(params[:study] || params[:project])
+
+    if @current_step == 'protocol' and @protocol.group_valid? :protocol 
+      @current_step = 'user_details'
+      @protocol.populate_for_edit
+    elsif @current_step == 'user_details' and @protocol.valid?
+      @protocol.save
+      @current_step = 'return_to_service_request'
       session[:saved_protocol_id] = @protocol.id
       flash[:notice] = "#{@protocol.type.humanize} updated"
+    else
+      @errors = @current_step == 'protocol' ? @protocol.grouped_errors[:protocol].messages : @protocol.grouped_errors[:user_details].messages
+      @protocol.populate_for_edit
     end
-      
-    @protocol.populate_for_edit
   end
 
   def destroy
@@ -70,11 +88,6 @@ class ProtocolsController < ApplicationController
   def approve_epic_rights
     @protocol = Protocol.find params[:id]
 
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    # TODO: check to ensure that this user is one of the users which has
-    # epic user creation rights
-    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
     # Send a notification to the primary PI for final review before
     # pushing to epic.  The email will contain a link which calls
     # push_to_epic.
@@ -87,9 +100,10 @@ class ProtocolsController < ApplicationController
   def push_to_epic
     @protocol = Protocol.find params[:id]
 
-    if current_user != @protocol.primary_principal_investigator then
-      raise ArgumentError, "User is not primary PI"
-    end
+    # removed 12/23/13 per request by Lane
+    #if current_user != @protocol.primary_principal_investigator then
+    #  raise ArgumentError, "User is not primary PI"
+    #end
 
     # Do the final push to epic in a separate thread.  The page which is
     # rendered will

@@ -49,6 +49,7 @@ SparcRails::Application.routes.draw do
         put 'rename_visit'
         put 'set_day'
         put 'set_window'
+        put 'update_otf_qty_and_units_per_qty'
       end
     end
 
@@ -286,6 +287,11 @@ SparcRails::Application.routes.draw do
   end
 
   resources :reports do
+    collection do
+      get :setup
+      post :generate
+    end
+
     member do
       get :research_project_summary
       post :cwf_audit

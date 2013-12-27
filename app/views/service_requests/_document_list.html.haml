@@ -1,9 +1,10 @@
+- provider_css ||= 'light-blue-provider'
 - if (@sub_service_request.nil? ? @service_request.documents.size >= 1 : @sub_service_request.documents.size >= 1)
   %table.document-table
     - if review
       %tr
-        %th.light-blue-provider{:colspan => 3}= t("documents.headers.uploads")
-    %tr.header
+        %th{:colspan => 3, :class => provider_css}= t("documents.headers.uploads")
+    %tr.header{:class => provider_css}
       %th= t("documents.headers.institution")
       %th= t("documents.headers.type")
       %th= t("documents.headers.title")
@@ -23,7 +24,14 @@
         %td= link_to doc.document_file_name, doc.document.url
         - if not review
           %td
-            = link_to t("documents.edit_button"), "/service_requests/#{@service_request.id}/edit_document_group/#{grouping_id}", :remote => true, :class => 'document_edit'
-            = link_to t("documents.delete_button"), "/service_requests/#{@service_request.id}/delete_document_group/#{grouping_id}", :remote => true, :class => 'document_delete'
+            = link_to t("documents.edit_button"), "/service_requests/#{@service_request.id}/edit_document_group/#{grouping_id}", :remote => true, :class => 'document_edit blue-button'
+            = link_to t("documents.delete_button"), "/service_requests/#{@service_request.id}/delete_document_group/#{grouping_id}", :remote => true, :class => 'document_delete blue-button'
 - else
-  %div= t("documents.no_documents")
+  - if review # let's show the table with the no documents text
+    %table.document-table
+      %tr
+        %th{:class => provider_css}= t("documents.headers.uploads")
+      %tr
+        %td= t("documents.no_documents")
+  - else
+    %div= t("documents.no_documents")

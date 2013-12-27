@@ -14,7 +14,6 @@
         %th= t("subsidy_page.table.institution")
         %th= t("subsidy_page.table.total_estimated")
         %th= t("subsidy_page.table.pi_contribution")
-        %th= t("subsidy_page.table.requested_funding")
         %th= t("subsidy_page.table.subsidy")
 
     %tbody.subsidies-list
@@ -33,8 +32,19 @@
               %td
                 = ssr_fields.hidden_field :id
                 = subsidy_fields.hidden_field :id
-                = subsidy_fields.text_field :pi_contribution, :value => (Service.cents_to_dollars(subsidy.pi_contribution.to_s) if not subsidy.pi_contribution.blank?), :"data-id" => subsidy.sub_service_request_id, :"data-max_dollar" => organization.subsidy_map.max_dollar_cap, :"data-max_percent" => organization.subsidy_map.max_percentage, :class => "pi-contribution ssr_#{sub_service_request.id}", :disabled => (subsidy.overridden or (direct_cost_total == 0.0)) ? true : false
-              %td{:class => "requested_funding_#{sub_service_request.id}"}= display_requested_funding direct_cost_total, pi_contribution
+                %table.study-contribution
+                  %tr
+                    %td.percent-of-cost
+                      = text_field_tag :percent_of_cost, sub_service_request.percent_of_cost, :"data-cost" => direct_cost_total, :"data-id" => subsidy.sub_service_request_id, :class => "percent_#{sub_service_request.id} percent_of_cost"
+                      \%
+                      %br
+                      = t("subsidy_page.table.percent_of_cost")
+                    %td.text OR
+                    %td.amount-of-funding
+                      $
+                      = subsidy_fields.text_field :pi_contribution, :value => (Service.cents_to_dollars(subsidy.pi_contribution.to_s) if not subsidy.pi_contribution.blank?), :"data-id" => subsidy.sub_service_request_id, :"data-max_dollar" => organization.subsidy_map.max_dollar_cap, :"data-max_percent" => organization.subsidy_map.max_percentage, :class => "pi-contribution ssr_#{sub_service_request.id}", :disabled => (subsidy.overridden or (direct_cost_total == 0.0)) ? true : false
+                      = t("subsidy_page.table.amount_of_funding")
+
               %td{:class => "subsidy_percent_#{sub_service_request.id}"}= "#{calculate_subsidy_percentage(direct_cost_total, pi_contribution)}%"
   %br
   .additional-funding

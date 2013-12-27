@@ -51,7 +51,7 @@ class SubServiceRequest < ActiveRecord::Base
   end
 
   def display_id
-    return "#{service_request.protocol.id}-#{ssr_id}"
+    return "#{service_request.try(:protocol).try(:id)}-#{ssr_id}"
   end
 
   def create_line_item(args)
@@ -118,6 +118,11 @@ class SubServiceRequest < ActiveRecord::Base
     end
 
     return total
+  end
+
+  # percent of cost
+  def percent_of_cost
+    subsidy.pi_contribution ? (subsidy.pi_contribution/direct_cost_total * 100).round(2) : nil
   end
 
   # Returns the total indirect costs of the sub-service-request

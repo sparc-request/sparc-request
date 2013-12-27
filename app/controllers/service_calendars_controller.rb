@@ -132,4 +132,14 @@ class ServiceCalendarsController < ApplicationController
       @pages[arm.id] = @service_request.set_visit_page new_page, arm
     end
   end
+
+  def update_otf_qty_and_units_per_qty
+    line_item = LineItem.find params[:line_item_id]
+    val = params[:val]
+    if params[:type] == 'qty'
+      line_item.update_attribute(:quantity, val)
+    elsif params[:type] == 'units_per_qty'
+      line_item.update_attribute(:units_per_quantity, val)
+    end
+  end
 end

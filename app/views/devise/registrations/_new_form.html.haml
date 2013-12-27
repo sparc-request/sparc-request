@@ -1,0 +1,53 @@
+.description= t(:signup)[:message]
+
+= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| 
+  = devise_error_messages!
+
+  %br
+  .grid_7.box
+    .info
+      .field
+        = f.label(:last_name, t(:signup)[:lname])
+        = f.text_field :last_name
+
+      .field
+        = f.label(:first_name, t(:signup)[:fname])
+        = f.text_field :first_name
+
+      .field
+        = f.label(:company, t(:signup)[:company])
+        = f.text_field :company
+
+      .field
+        = f.label(:email, t(:signup)[:mail])
+        = f.text_field :email
+
+      .field
+        = f.label(:phone, t(:signup)[:phone])
+        = f.text_field :phone
+
+      .field
+        = f.label(:ldap_uid, t(:login_name))
+        = f.text_field :ldap_uid
+      
+      .field
+        = f.label(:password, t(:login_password))
+        = f.password_field :password
+      
+      .field
+        = f.label(:password_confirmation, t(:signup)[:confirm])
+        = f.password_field :password_confirmation
+
+      .field
+        = f.label(:reason, t(:signup)[:reason])
+        = f.text_area :reason
+
+      .create_user
+        = f.submit t(:signup)[:submit]
+        = link_to t(:signup)[:cancel], 'javascript:void(0);', :id => 'cancel_registration'
+
+      .clear
+  .links.grid_7
+    = link_to "Sign in", new_session_path(resource_name)
+    |
+    = link_to "Forgot your password?", new_password_path(resource_name)

@@ -1,5 +1,7 @@
 en:
   application_title: "SPARC Request"
+  about_title: "About SPARC Request"
+  about_text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
   portal_title: "SPARC Request Portal"
   admin_portal_title: "SPARC Request Administration"
   catalog_manager_title: "SPARC Request Catalog Manager"
@@ -13,6 +15,31 @@ en:
           attributes:
             position_in_cwf:
               blank: "is required if 'Show in Clinical Work Fulfillment' is checked."
+
+  # bottom navigation
+  bottom_navigation:
+    go_back: "Go Back"
+    save_and_exit: "Save & Exit"
+    save_and_continue: "Save & Continue"
+    save_as_draft: "Save As Draft"
+    get_quote: "Get Quote"
+    submit_to_start: "Submit to Start Services"
+
+  # right navigation
+  right_navigation:
+    ask_a_question: "Ask A Question"
+    dashboard: "Dashboard"
+    faq: "Help"
+    feedback: "Feedback"
+    catalog: "Back to Catalog"
+
+  # steps navigation
+  step_navigation:
+    step_1: "STEP 1: <br /> Review Services & <br /> Assign Study or Project"
+    step_2: "STEP 2: <br /> Enter Service <br /> Details"
+    step_3: "STEP 3: <br /> Notes & <br /> Documents"
+    step_4: "STEP 4: <br /> Review Your <br /> Request"
+    step_5: "STEP 5: <br /> Submission <br /> Confirmation"
 
   # sign in page
   signin:
@@ -37,6 +64,7 @@ en:
     confirm: "Password Confirmation:"
     reason: "Reason for account/login request:"
     submit: "Create New User"
+    cancel: "Cancel"
     not_approved: "Click here to proceed"
 
   # password reset
@@ -44,7 +72,8 @@ en:
 
   # sign in popup
   initial_signin_dialog: "You are not currently logged into SPARC Request. If you are affiliated with an institution and have an institutional login OR have created a SPARC Request account and have a SPARC Request login and password, please click the top button to proceed. If you are not currently affiliated with an institution OR do not have a SPARC Request login/password, please click the button on the bottom to proceed with creating a new account."
-  proceed_to_login_link: "MUSC Users + Outside Users with existing SPARC Request Accounts"
+  proceed_to_shibboleth: "MUSC Users"
+  proceed_to_database_login: "Outside Users with existing SPARC Request Accounts"
   create_new_account_link: "Outside Users: Don't have an account? Click here."
 
   # Notifier
@@ -118,19 +147,14 @@ en:
 
   # Project/Study assignment page
   study_assignment:
-    instructions_1: "Please review the SPARC Request Services you are requesting below."
-    instructions_2: "Please note that any \"Professional Services\" listed below have MUSC-P fees associated with them and cannot be removed from this screen."
-    instructions_3: "If Professional Services are covered by % effort, you will have the opportunity to indicate this in Step 2."
-    instructions_4: "If you wish to add services, click \"Back to Catalog\" to the right."
-    instructions_center: "Before continuing to Step 2, please select a Research Study or Project to which the services selected are associated."
-    tied_to_study: "Is this request tied to a Research Study or a Research Project?"
-    select_study: "Select a Study"
-    select_study_long: "Select a Research Study:"
+    instructions_1: "Please review services below."
+    notice: "If Professional Services are covered by % effort, please indicate in Step 2."
+    select_protocol: "Select a Research Study/Project"
+    research_study: "Research Study"
+    research_project: "Research Project"
     edit_study: "Edit Study"
-    select_project: "Select a Project"
-    select_project_long: "Select a Research Project:"
     edit_project: "Edit Project"
-    or: "-- If not in list above, create NEW Study/Project Below --"
+    or: "If not in list above, create NEW Study/Project Below"
     new_study: "New Study"
     new_project: "New Project"
     sidebar_box:
@@ -140,13 +164,15 @@ en:
   # Subsidy Page
   subsidy_page:
     not_eligible: "None of the services you have selected are eligible for a subsidy."
-    eligible_html: "The services selected below may be eligible for a <b><i>funding award</i></b> or subsidy to cover some or all of the costs of the services. For example, SCTR (CTSA) provides funding awards for the CTRC."
+    eligible_html: "The services selected below may be eligible for a <b><i>funding award</i></b> or subsidy to cover some or all of the costs of the services. For example, SCTR (CTSA) provides funding awards for the Research Nexus."
     table:
       institution: "Institution/Provider/Program/Core"
       total_estimated: "Total Estimated Costs"
-      pi_contribution: "PI Contribution"
+      pi_contribution: "Study Contribution"
       requested_funding: "Requested Funding"
-      subsidy: "% Subsidy"
+      subsidy: "% Requested Subsidy"
+      percent_of_cost: "percent of cost"
+      amount_of_funding: "amount of funding"
     request_additional: "To request additional research funding go to"
     additional_confirm: "Are you sure you want to leave? Any unsaved changes to this service request will be lost."
 
@@ -166,6 +192,7 @@ en:
       unit_costs: "Unit Costs"
       service_rate: "Service Rate"
       your_cost: "Your Cost"
+      clinical_qty: "Clinical Qty Type"
       qty_type: "Qty Type"
       subjects: "# Subjects"
       total: "Total"
@@ -173,8 +200,8 @@ en:
       total_per_study: "Total Per Study"
       other_services: "Other Services"
       total_study: "Study Cost Totals"
-      number_of_units: "# Units"
-      qty_unit: "Qty/Unit"
+      number: "#"
+      unit_type: "Unit Type"
     per_patient: "Per Patient/Visit Services"
     labels:
       maximum_direct: "Maximum Total Direct Costs Per Patient"
@@ -327,7 +354,7 @@ en:
     college: "College"
     college_select: "Select a College"
     department: "Department"
-    department_select: "select a Department"
+    department_select: "Select a Department"
     credentials: "Credentials"
     credentials_select: "Select a Credential"
     subspeciality: "Subspeciality"
@@ -351,8 +378,9 @@ en:
   # Edit Study form
   study_form:
     description: "Before you can complete a service request, please tell us more about your research study. This information will be used by our staff to decide the best way to process your request."
-    needed_info: "Information Needed to obtain correct pricing"
-    optional_text: "Optional Information (Used for reporting purposes and saved for your future use)"
+    needed_info: "Information needed to obtain correct pricing"
+    optional_text: "Optional Information"
+    optional_text2: "(used for reporting purposes and saved for your future use)"
     options: "Optional"
     attributes: "Study Attributes"
     title: "Protocol Title:*"
@@ -417,6 +445,8 @@ en:
 
   # Study/Project Shared
   protocol_shared:
+    step_text: "STEP 1: Protocol Information"
+    step_text_2: "STEP 1: Add Users"
     title: "Short Title:*"
     funding_source: "Funding Source:*"
     funding_status: "Proposal Funding Status:*"
@@ -437,6 +467,8 @@ en:
     number_of_visits: "Estimated Total Number of Visits"
     study_start_date: "Estimated Study Start Date"
     study_end_date: "Estimated Study End Date"
+    recruitment_start_date: "Estimated Recruitment Start Date"
+    recruitment_end_date: "Estimated Recruitment End Date"
     services_required: "You can't continue unless you have services in your cart."
     name: "ARM Name"
     services: "My Services"
@@ -466,6 +498,7 @@ en:
       text2: "Help"
       text3: "Please ensure that you have added all necessary research services to your My Services cart before proceeding. For a listing of available services to add, click on any of the Programs listed on the left-hand side of the page. Services will appear in the middle of the screen. Add services by clicking \"Add\"."
       text4: "At least 1 service needs to be in cart first time through before clicking \"Submit request\" from catalog page."
+      event: "No events scheduled within a week from today."
     info: 
       text1: "Service Request Status"
       text2: "Service Request Owner"
@@ -476,7 +509,7 @@ en:
   sr_review:
     participate_in_survey: "Would you like to participate in a brief 1 question SPARC Request satisfaction survey?"
     participate_in_survey_title: "System Satisfaction Survey"
-    instructions: "Please review the following information to ensure the accuracy of your request. If you need to make changes, click on the steps above or click \"Go Back\" at the bottom of the page. After you have reviewed your request, click \"Submit my Service Request.\" Alternatively, you may save your request as a draft for future submission. Please note: Draft requests are not reviewed by staff for approval."
+    instructions: "<ul class='review_instructions'><li>Review your request.</li><li>Makes changes (if needed).</li><li>Save as draft for later, get a quote, or submit to start services.</li></ul>"
     study_project_info:
       title: "Study/Project Information"
       id: "Study/Project ID:"
@@ -551,6 +584,7 @@ en:
     program: "Program/Core:"
     status: "Status:"
     edit_original: "Edit Original"
+    send_notification: "Send Notification"
 
   # Portal sub service request dialog
   ssr_dialog:
@@ -652,7 +686,9 @@ en:
     actions: "Actions"
     submit_button: "Save"
     cancel_button: "Cancel"
-    blank_field_errors: "Name and Order on the Service, and Quantity Type, Unit Factor, Unit Minimum, Units Per Qty Maximum, Effective Date, and Display Date on all Pricing Maps are required."
+    blank_field_errors: "Name and Order are required on the Service.  Effective Date, Display Date, and Service Rate are required on all Pricing Maps."
+    per_patient_errors: "Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps."
+    otf_field_errors: "If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required."
     status_legend: "Status Options (Use default statuses below or click to create custom service request statuses)"
     default_statuses: "Default Statuses:"
     color_blank: "Select a Color"
@@ -671,11 +707,17 @@ en:
     other_rate: "Other Rate"
     member_rate: "Member Rate"
     rate_disclaimer: "*IF N/A, NO PRICING SET-UP IS DEFINED FOR THE CURRENT DATES"
-    quantity_type: "Quantity Type"
+    clinical_quantity_type: "Clinical Quantity Type (hours, each, slides, etc.)"
+    quantity_type: "Quantity Type (hours, each, slides, etc.)"
+    otf_unit_type: "Unit Type (weeks, days, samples, etc.)"
     unit_factor: "Unit Factor"
-    unit_minimum: "Unit Minimum"
+    unit_minimum: "Quantity Minimum"
+    unit_maximum: "Unit Maximum"
+    otf_quantity_minimum: "Quantity Minimum"
     is_one_time_fee: "Is One Time Fee"
     exclude_from_indirect_cost: "Exclude from Indirect Cost"
+    per_patient: "Per Patient"
+    one_time_fee: "One Time Fee"
 
   # Notifications
   notifications:
@@ -694,6 +736,8 @@ en:
     requester: "Requester: "
     feedback: "Please enter your feedback text here"
     email: "Enter Your Email (optional)"
+    ask_a_question_email: "Enter Your Email"
+    ask_a_question: "Please ask your question here"
 
   # Mailer
   mailer:
@@ -833,7 +877,7 @@ en:
   # Rails Root Page Messages
   rails_root:
     welcome: "Welcome to the SPARC Request Services Catalog"
-    message1: "Please browse through the SPARC Request Services Catalog to view all available SPARC Request services.  Service providers are located on the left-hand side of the page.  Click on a provider to see available services.  Alternatively use the search field located in the upper left hand corner."
+    message1: "Search for services above or browse the catalog to your left."
     # message2: "Click \"Add Services\" at the bottom of any service description to add it to your \"My Services\"."
     # message3: "To delete a service from \"My Services\", use the red X beside any service."
     message4: "** Please Note: You may only select services applicable to ONE research study/project at a time.**"
@@ -939,3 +983,10 @@ en:
       end_date: "End Date"
       protocols: "Protocol(s)"
       get_report: "Get Report"
+  reports:
+    intro: "Welcome to the SPARC Request Reporting Module. Please select a report type to proceed."
+    defined_reports: "Defined Reports"
+    defined_reports_desc: "Please select a defined report below and click to proceed with report customizations."
+    custom_report: "Custom Report"
+    proceed: "Proceed"
+    create_report: "Create Report"

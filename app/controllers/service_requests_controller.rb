@@ -169,6 +169,38 @@ class ServiceRequestsController < ApplicationController
     else
       @institutions = Institution.order('`order`')
     end
+
+    if USE_GOOGLE_CALENDAR
+      curTime = Time.now
+      startMin = curTime
+      startMax  = (curTime + 7.days)
+
+      cal = Google::Calendar.new(:username => GOOGLE_USERNAME,
+                                 :password => GOOGLE_PASSWORD)
+      events_list = cal.find_events_in_range(startMin, startMax)
+      @events = []
+      begin
+        events_list.sort_by! { |event| event.start_time }
+        events_list.each do |event|
+          @events << create_calendar_event(event)
+        end
+      rescue
+        if events_list
+          @events << create_calendar_event(events_list)
+        end
+      end
+    end
+
+    if USE_NEWS_FEED
+      page = Nokogiri::HTML(open("http://www.sparcrequestblog.com"))
+      headers = page.css('.entry-header').take(3)
+      @news = []
+      headers.each do |header|
+        @news << {:title => header.at_css('.entry-title').text,
+                  :link => header.at_css('.entry-title a')[:href],
+                  :date => header.at_css('.date').text }
+      end
+    end
   end
   
   def protocol
@@ -259,9 +291,16 @@ class ServiceRequestsController < ApplicationController
         @subsidies << ssr.subsidy
       end
     end
+
+    if @subsidies.empty?
+      redirect_to "/service_requests/#{@service_request.id}/document_management"
+    end
   end
   
   def document_management
+    if @service_request.sub_service_requests.map(&:subsidy).compact.empty?
+      @back = 'service_calendar'
+    end
     @service_list = @service_request.service_list
   end
   
@@ -458,8 +497,8 @@ class ServiceRequestsController < ApplicationController
   end
 
   def ask_a_question
-    from = params['quick_question_email'] || 'no-reply@musc.edu'
-    body = params['quick_question_body'] || 'No question asked'
+    from = params['quick_question']['email'].blank? ? 'no-reply@musc.edu' : params['quick_question']['email']
+    body = params['quick_question']['body'].blank? ? 'No question asked' : params['quick_question']['body']
 
     quick_question = QuickQuestion.create :to => DEFAULT_MAIL_TO, :from => from, :body => body
     Notifier.ask_a_question(quick_question).deliver
@@ -599,6 +638,18 @@ class ServiceRequestsController < ApplicationController
 
   def send_epic_notification_for_user_approval(protocol)
     Notifier.notify_for_epic_user_approval(protocol).deliver
+  end
+
+  def create_calendar_event event
+    startTime = Time.parse(event.start_time)
+    endTime = Time.parse(event.end_time)
+    { :month => startTime.strftime("%b"),
+      :day => startTime.day,
+      :title => event.title,
+      :all_day => event.all_day?,
+      :start_time => startTime.strftime("%l:%M %p"),
+      :end_time => endTime.strftime("%l:%M %p"),
+      :where => event.where }
   end
 
 end

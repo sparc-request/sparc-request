@@ -1,9 +1,6 @@
 #= require navigation
 
 $(document).ready ->
-  $(".document_delete").button()
-  $(".document_edit").button()
-  $(".document_upload_button").button()
 
   $(".document_upload_button").click ->
     $("#process_ssr_organization_ids").removeAttr('disabled')

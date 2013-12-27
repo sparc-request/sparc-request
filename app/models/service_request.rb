@@ -194,7 +194,7 @@ class ServiceRequest < ActiveRecord::Base
     line_items << create_line_item(
         service_id: service.id,
         optional: optional,
-        quantity: service.displayed_pricing_map.unit_minimum)
+        quantity: service.displayed_pricing_map.quantity_minimum)
 
     existing_service_ids << service.id
 
@@ -306,7 +306,7 @@ class ServiceRequest < ActiveRecord::Base
         g[:services] << service
         g[:line_items] << line_item
       else
-        groupings[last_parent] = {:process_ssr_organization_name => last_parent_name, :name => name.reverse.join(' -- '), :services => [service], :line_items => [line_item], :acks => acks.reverse.uniq.compact}
+        groupings[last_parent] = {:process_ssr_organization_name => last_parent_name, :name => name.reverse.join(' > '), :services => [service], :line_items => [line_item], :acks => acks.reverse.uniq.compact}
       end
     end
 

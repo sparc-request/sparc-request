@@ -405,7 +405,7 @@ td.footnote {
   font-style: italic;
 }
 
-.blank_field_errors {
+.blank_field_errors, .otf_field_errors, .per_patient_errors {
   background-color: salmon;
   padding: 3px 10px;
   width: 560px;

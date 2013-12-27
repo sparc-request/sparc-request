@@ -20,12 +20,12 @@ class Subject < ActiveRecord::Base
   def label
     label = nil
 
-    if not mrn.blank?
-      label = "Subject MRN:#{mrn}"
-    end
-
     if not external_subject_id.blank?
       label = "Subject ID:#{external_subject_id}"
+    end
+    
+    if not mrn.blank?
+      label = "Subject MRN:#{mrn}"
     end
 
     label

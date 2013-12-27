@@ -28,7 +28,7 @@ wb.add_worksheet(name: "Admin Billing Report") do |sheet|
       full_quantity_completed = ""
 
       if not r_qty.blank? and added_service_name.blank?
-        full_quantity_completed = quantity_due == r_qty ? "Y" : "N"
+        full_quantity_completed = (quantity_due == r_qty and procedure.completed?) ? "Y" : "N"
       end
 
       sheet.add_row [protocol.id, subject.name, subject.label, visit_name, visit_date, core, service_name, quantity_due, full_quantity_completed, service_qty, added_service_name, service_added_qty]

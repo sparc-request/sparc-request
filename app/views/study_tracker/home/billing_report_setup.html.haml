@@ -2,29 +2,34 @@
   %br
   %br
   #audit_form
-  = form_tag billing_report_study_tracker_home_index_path(:format => :xlsx) do
-    - @cwf_organizations.each do |org|
-      = label_tag "organizations[#{org.id}]", org.label
-      = check_box_tag "organizations[]", org.id, true
+    = form_tag billing_report_study_tracker_home_index_path(:format => :xlsx) do
+      = label_tag "study_tracker_billing_report_protocol_ids[]", t(:study_tracker)[:billing_report][:protocols]
+      = select_tag "study_tracker_billing_report_protocol_ids[]", options_from_collection_for_select(@protocols, "id", "display_protocol_id_and_title"), :multiple => true, :prompt => "All (default)"
       %br
-    
-    %br
-    %br
-   
-    = label_tag :admin_billing_report_start_date_input, t(:admin_dashboard)[:billing_report][:start_date]
-    = text_field_tag :admin_billing_report_start_date_input, nil
-    = hidden_field_tag :admin_billing_report_start_date
+      %br
 
-    %br
-    %br
+      - @cwf_organizations.each do |org|
+        = label_tag "organizations[#{org.id}]", org.label
+        = check_box_tag "organizations[]", org.id, true
+        %br
+      
+      %br
+      %br
+     
+      = label_tag :study_tracker_billing_report_start_date_input, t(:study_tracker)[:billing_report][:start_date]
+      = text_field_tag :study_tracker_billing_report_start_date_input, nil
+      = hidden_field_tag :study_tracker_billing_report_start_date
 
-    = label_tag :admin_billing_report_end_date_input, t(:admin_dashboard)[:billing_report][:end_date]
-    = text_field_tag :admin_billing_report_end_date_input, nil
-    = hidden_field_tag :admin_billing_report_end_date
+      %br
+      %br
 
-    %br
-    %br
-    
-    = submit_tag t(:admin_dashboard)[:billing_report][:get_report] 
+      = label_tag :study_tracker_billing_report_end_date_input, t(:study_tracker)[:billing_report][:end_date]
+      = text_field_tag :study_tracker_billing_report_end_date_input, nil
+      = hidden_field_tag :study_tracker_billing_report_end_date
+
+      %br
+      %br
+      
+      = submit_tag t(:study_tracker)[:billing_report][:get_report] 
   %br
   %br

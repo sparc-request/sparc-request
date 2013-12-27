@@ -22,14 +22,22 @@ class StudyTracker::HomeController < StudyTracker::BaseController
     @render_billing_report = true
     # get cwf organizations
     @cwf_organizations = Organization.get_cwf_organizations
+    @protocols = SubServiceRequest.where(:in_work_fulfillment => true).map{|x| x.service_request.protocol}.uniq
   end
 
   def billing_report
-    @start = params[:admin_billing_report_start_date]
-    @end = params[:admin_billing_report_end_date]
+    @start = params[:study_tracker_billing_report_start_date]
+    @end = params[:study_tracker_billing_report_end_date]
+    @protocol_ids = params[:study_tracker_billing_report_protocol_ids]
+    @protocol_ids.delete("")
     @organization_ids = params[:organizations]
 
-    @appointments = Appointment.where("organization_id IN (#{@organization_ids.join(', ')}) AND completed_at BETWEEN '#{@start}' AND '#{@end}'")
+    @appointments = Appointment.joins(:visit_group => :arm).where("organization_id IN (#{@organization_ids.join(', ')}) AND completed_at BETWEEN '#{@start}' AND '#{@end}'").order(:organization_id, "arms.protocol_id", :calendar_id, :completed_at)
+
+    unless @protocol_ids.blank?
+      @appointments = @appointments.where("arms.protocol_id IN (#{@protocol_ids.join(', ')})")
+    end
+
   end
 
 end

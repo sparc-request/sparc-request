@@ -161,7 +161,7 @@ class Service < ActiveRecord::Base
       else
         pricing_map = current_maps.sort {|a,b| b.display_date <=> a.display_date}.first
       end
-      
+   
       return pricing_map
     else
       raise ArgumentError, "Service has no pricing maps!"

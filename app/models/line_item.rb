@@ -68,10 +68,16 @@ class LineItem < ActiveRecord::Base
 
   # Get the number of units per package as specified in the pricing map.
   # Assumes 1 as the default, if the pricing map does not have a unit
-  # factor.
+  # factor.  If the pricing map is a one time fee, the units per package
+  # are one.
   def units_per_package
-    unit_factor = self.service.displayed_pricing_map.unit_factor
-    units_per_package = unit_factor || 1
+    unless self.service.displayed_pricing_map.is_one_time_fee
+      unit_factor = self.service.displayed_pricing_map.unit_factor
+      units_per_package = unit_factor || 1
+    else
+      units_per_package = 1
+    end
+
     return units_per_package
   end
 

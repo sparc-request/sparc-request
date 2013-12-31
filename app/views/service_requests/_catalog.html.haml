@@ -1,0 +1,35 @@
+= javascript_include_tag "catalog"
+
+.grid_3.service-catalog
+  #about
+    = link_to image_tag("about.png"), "javascript:void(0);", :class => "about_sparc_request"
+  %h3 Browse Services Catalog:
+  = render :partial => 'catalogs/service_accordion', :locals => {:institutions => @institutions}
+.grid_6
+  #search= render :partial => 'catalogs/service_search'
+  #welcome_message= render :partial => 'catalogs/description', :locals => {:organization => @organization, :service_request => @service_request}
+  #calendar-blog
+    = render :partial => 'catalogs/news_and_events'
+
+.grid_3.catalog-view-right.right
+  #account.create_new_account
+    = link_to(image_tag('account.png'), new_identity_registration_path)
+  #services.ui-widget.ui-widget-content.cart-view
+    %h3
+      = t(:service_requests)[:catalog][:text1]
+    = render :partial => 'catalogs/cart'
+  = link_to "Submit Request", protocol_service_request_path(@service_request), :class => 'submit-request-button', :"data-signed-in" => identity_signed_in?
+  = render :partial => 'service_requests/right_navigation'
+
+  #submit_error{:style => "display: none"}
+    = t(:service_requests)[:catalog][:text3]
+    = t(:service_requests)[:catalog][:text4]
+  
+  - if params[:signed_up_but_not_approved] == 'true'
+    = javascript_include_tag "signed_up_but_not_approved"
+    #signed_up_but_not_approved{:style => "display: none"}
+      = render :partial => 'catalogs/signed_up_but_not_approved_dialog_box'
+  #sign_in{:style => "display: none"}
+    = render :partial => 'catalogs/signin_dialog_box'
+
+  #about_sparc{:title => t(:about_title)}= t(:about_text)

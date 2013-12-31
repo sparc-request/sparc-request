@@ -67,5 +67,11 @@ module SparcRails
       margin_top: '2in', 
       margin_bottom: '1in', 
       print_media_type: true
+
+    config.to_prepare do
+      Devise::SessionsController.layout "custom_devise"
+      Devise::RegistrationsController.layout "custom_devise"
+      Devise::PasswordsController.layout "custom_devise"
+    end
   end
 end

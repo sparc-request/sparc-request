@@ -2559,28 +2559,33 @@ table.service_calendar tbody td.visit {
   color: #FFFFFF;
 }
 
-.signup_form {
+.devise_view {
   border-width: 15px !important;
   border-color: #207ca5 !important;
   border-radius: 25px !important;
 }
 
-.signup_form .ui-dialog-titlebar {
+.devise_view .ui-dialog-titlebar {
   display: none;
 }
 
-#signup_form {
+.devise_view .flash {
+  width: 100%;
+  text-align: center;
+}
+
+#devise_view {
   display: none;
 }
 
-#signup_form .description, #signup_form .logo {
+#devise_view .description, #devise_view .logo {
   text-align: center;
   color: #207ca5;
   font-size: 14px;
   margin-bottom: 5px;
 }
 
-#signup_form label {
+#devise_view label {
   color: #207ca5;
   font-size: 15px;
   width: 200px;
@@ -2590,11 +2595,11 @@ table.service_calendar tbody td.visit {
   padding-right: 12px;
 }
 
-#signup_form .field {
+#devise_view .field {
   margin-bottom: 5px;
 }
 
-#signup_form .create_user, #signup_form .links {
+#devise_view .create_user, #devise_view .links {
   width: 650px;
   text-align: center;
 }
@@ -2609,7 +2614,7 @@ table.service_calendar tbody td.visit {
   height: 25px;
 }
 
-#signup_form .links a {
+#devise_view .links a {
   color: #207ca5 !important;
 }
 
@@ -2642,4 +2647,15 @@ table.service_calendar tbody td.visit {
   width: 300px;
 }
 
+.sign_in_selection {
+  width: 650px;
+  padding-top: 10px;
+}
 
+.sign_in_options {
+  text-align: center;
+}
+
+#outside_sign_in_form {
+  display: none;
+}

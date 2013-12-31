@@ -8,6 +8,46 @@ class ApplicationController < ActionController::Base
   def current_user
     current_identity
   end
+
+  def prepare_catalog
+    if session['sub_service_request_id']
+      @institutions = @sub_service_request.organization.parents.select{|x| x.type == 'Institution'}
+    else
+      @institutions = Institution.order('`order`')
+    end
+
+    if USE_GOOGLE_CALENDAR
+      curTime = Time.now
+      startMin = curTime
+      startMax  = (curTime + 7.days)
+
+      cal = Google::Calendar.new(:username => GOOGLE_USERNAME,
+                                 :password => GOOGLE_PASSWORD)
+      events_list = cal.find_events_in_range(startMin, startMax)
+      @events = []
+      begin
+        events_list.sort_by! { |event| event.start_time }
+        events_list.each do |event|
+          @events << create_calendar_event(event)
+        end
+      rescue
+        if events_list
+          @events << create_calendar_event(events_list)
+        end
+      end
+    end
+
+    if USE_NEWS_FEED
+      page = Nokogiri::HTML(open("http://www.sparcrequestblog.com"))
+      headers = page.css('.entry-header').take(3)
+      @news = []
+      headers.each do |header|
+        @news << {:title => header.at_css('.entry-title').text,
+                  :link => header.at_css('.entry-title a')[:href],
+                  :date => header.at_css('.date').text }
+      end
+    end
+  end
   
   def authorization_error msg, ref
     error = msg

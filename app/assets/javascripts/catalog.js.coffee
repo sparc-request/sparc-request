@@ -107,14 +107,17 @@ $(document).ready ->
     #      modal: true
     #    return false
   
-  $('.create_new_account').click ->
-    $('#signup_form').dialog('open')
-
-  $('#signup_form').dialog
-    autoOpen: false
+  $('#devise_view').dialog
     modal: true
     width: 700
-    dialogClass: 'signup_form'
+    dialogClass: 'devise_view'
+
+  $('.toggle_outside_user_sign_in').button()
+  $('.toggle_outside_user_sign_in').click ->
+    $('#outside_sign_in_form').show()
+    $('#shibboleth_sign_in_button').hide()
+    $('.toggle_outside_user_sign_in').hide()
+    $('.sign_in_options').hide()
 
   $('#cancel_registration').click ->
     $('#signup_form').dialog('close')

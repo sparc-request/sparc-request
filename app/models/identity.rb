@@ -441,5 +441,4 @@ class Identity < ActiveRecord::Base
 
     notification_count
   end
-
 end

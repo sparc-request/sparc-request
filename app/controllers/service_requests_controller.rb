@@ -4,6 +4,7 @@ class ServiceRequestsController < ApplicationController
   before_filter :initialize_service_request, :except => [:approve_changes]
   before_filter :authorize_identity, :except => [:approve_changes, :show]
   before_filter :authenticate_identity!, :except => [:catalog, :add_service, :remove_service, :ask_a_question, :feedback]
+  before_filter :prepare_catalog, :only => :catalog
   layout false, :only => [:ask_a_question, :feedback]
   respond_to :js, :json, :html
 
@@ -164,43 +165,7 @@ class ServiceRequestsController < ApplicationController
   # service request wizard pages
 
   def catalog
-    if session['sub_service_request_id']
-      @institutions = @sub_service_request.organization.parents.select{|x| x.type == 'Institution'}
-    else
-      @institutions = Institution.order('`order`')
-    end
-
-    if USE_GOOGLE_CALENDAR
-      curTime = Time.now
-      startMin = curTime
-      startMax  = (curTime + 7.days)
-
-      cal = Google::Calendar.new(:username => GOOGLE_USERNAME,
-                                 :password => GOOGLE_PASSWORD)
-      events_list = cal.find_events_in_range(startMin, startMax)
-      @events = []
-      begin
-        events_list.sort_by! { |event| event.start_time }
-        events_list.each do |event|
-          @events << create_calendar_event(event)
-        end
-      rescue
-        if events_list
-          @events << create_calendar_event(events_list)
-        end
-      end
-    end
-
-    if USE_NEWS_FEED
-      page = Nokogiri::HTML(open("http://www.sparcrequestblog.com"))
-      headers = page.css('.entry-header').take(3)
-      @news = []
-      headers.each do |header|
-        @news << {:title => header.at_css('.entry-title').text,
-                  :link => header.at_css('.entry-title a')[:href],
-                  :date => header.at_css('.date').text }
-      end
-    end
+    # uses a before filter defined in application controller named 'prepare_catalog', extracted so that devise controllers could use as well
   end
   
   def protocol

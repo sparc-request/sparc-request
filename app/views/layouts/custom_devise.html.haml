@@ -45,7 +45,19 @@
             &nbsp;
             = show_friendly_ssr_id(@sub_service_request) if @sub_service_request
       #content.container_12
-        = yield
+        = render :partial => 'service_requests/catalog'
+        - auto_open_outside_user_login = false
+        #devise_view
+          .flash
+            - flash.each do |name, msg|
+              = content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String)
+              - auto_open_outside_user_login = (msg == t(:devise)[:failure][:invalid] and not auto_open_outside_user_login)
+          - if auto_open_outside_user_login
+            :javascript
+              $(document).ready(function() {
+                $('.toggle_outside_user_sign_in').click();
+              });
+          = yield
       .clear
       #footer
         .container_12

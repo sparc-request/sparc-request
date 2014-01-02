@@ -81,13 +81,13 @@
           %tbody
             %tr
               %th= t(:pricing_map_form)[:quantity_type]
-              %td.q_type{:colspan => 2}= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][quantity_type]", pricing_map.try(:[], 'quantity_type'), :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :class => 'otf_quantity_type otf_validate', :'data-pricing_map_id' => pricing_map.try(:id), :id => "otf_quantity_type_#{pricing_map.try(:id)}"
+              %td{:colspan => 2}= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][quantity_type]", pricing_map.try(:[], 'quantity_type'), :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :class => 'otf_quantity_type otf_validate', :'data-pricing_map_id' => pricing_map.try(:id), :id => "otf_quantity_type_#{pricing_map.try(:id)}"
             %tr
               %th= t(:pricing_map_form)[:otf_quantity_minimum]
-              %td.q_minimum{:colspan => 2}= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][quantity_minimum]", pricing_map.try(:[], 'quantity_minimum'), :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :class => 'unit_field otf_quantity_minimum otf_validate', :display => 'Quantity Minimum', :'data-pricing_map_id' => pricing_map.try(:id), :id => "otf_quantity_minimum_#{pricing_map.try(:id)}"
+              %td{:colspan => 2}= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][quantity_minimum]", pricing_map.try(:[], 'quantity_minimum') || 1, :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :class => 'unit_field otf_quantity_minimum otf_validate', :display => 'Quantity Minimum', :'data-pricing_map_id' => pricing_map.try(:id), :id => "otf_quantity_minimum_#{pricing_map.try(:id)}"
             %tr
               %th= t(:pricing_map_form)[:otf_unit_type]
-              %td.u_type{:colspan => 2}= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][otf_unit_type]", pricing_map.try(:[], 'otf_unit_type'), :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :class => 'otf_unit_type otf_validate', :id => "otf_unit_type_#{pricing_map.try(:id)}", :'data-pricing_map_id' => pricing_map.try(:id)
+              %td{:colspan => 2}= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][otf_unit_type]", pricing_map.try(:[], 'otf_unit_type') || 'N/A', :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :class => 'otf_unit_type otf_validate', :id => "otf_unit_type_#{pricing_map.try(:id)}", :'data-pricing_map_id' => pricing_map.try(:id)
             %tr
               %th
                 %td.otf_attributes{:style => "text-align:center !important;", :id => "otf_attributes_#{pricing_map.try(:id)}"}= display_otf_attributes(pricing_map)

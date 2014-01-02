@@ -47,7 +47,7 @@ en:
     message2: ""
     message3: "Outside Users- Sign in here with your SPARC Request account"
     message4: ""
-    button1: "Shibboleth Users Click Here"
+    button1: "MUSC Users Click Here"
     button2: "Outside Users Click Here"
     button3: "Sign In"
   login_name: "Username:"

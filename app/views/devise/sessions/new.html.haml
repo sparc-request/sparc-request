@@ -3,7 +3,7 @@
     .grid_6.prefix_3.suffix_3.box.sign_in_selection#shibboleth_sign_in_button
       .info
         .center
-          .blue-button= link_to t(:signin)[:button1], identity_omniauth_authorize_path(:shibboleth)
+          .blue-button.devise_option_button= link_to t(:signin)[:button1], identity_omniauth_authorize_path(:shibboleth)
   .clear
   .sign_in_options
     %br
@@ -14,7 +14,7 @@
   .grid_6.prefix_3.suffix_3.box.sign_in_selection
     .info
       .center
-        .blue-button= link_to t(:signin)[:button2], "javascript:void(0);", :class => 'toggle_outside_user_sign_in'
+        .blue-button.devise_option_button= link_to t(:signin)[:button2], "javascript:void(0);", :class => 'toggle_outside_user_sign_in'
 
       #outside_sign_in_form
         = form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|

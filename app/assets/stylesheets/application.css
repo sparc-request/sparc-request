@@ -2668,12 +2668,18 @@ table.service_calendar tbody td.visit {
   margin: 5px auto;
 }
 
-.devise_cancel_button {
+.devise_cancel_button, .devise_option_button {
   font-size: 15px;
+}
+
+.devise_option_button {
+  width: 300px;
+  margin: 0 auto;
 }
 
 .sign_in_selection {
   padding-top: 10px;
+  margin: 0 auto;
 }
 
 .sign_in_options {

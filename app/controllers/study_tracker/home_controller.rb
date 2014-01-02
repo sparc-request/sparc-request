@@ -28,10 +28,10 @@ class StudyTracker::HomeController < StudyTracker::BaseController
   def billing_report
     @start = params[:study_tracker_billing_report_start_date]
     @end = params[:study_tracker_billing_report_end_date]
-    @protocol_ids = params[:study_tracker_billing_report_protocol_ids]
-    @protocol_ids.delete("")
+    @protocol_ids = params[:study_tracker_billing_report_protocol_ids] || ["All"]
+    @protocol_ids.delete("All")
 
-    if @protocol_ids.blank?
+    if @protocol_ids.blank? or @protocol_ids = ["All"]
       @protocol_ids = SubServiceRequest.where(:in_work_fulfillment => true).map{|x| x.service_request.protocol.id}.uniq
     end
 

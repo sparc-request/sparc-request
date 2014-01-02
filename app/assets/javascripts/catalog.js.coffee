@@ -112,13 +112,15 @@ $(document).ready ->
     width: 700
     dialogClass: 'devise_view'
 
-  $('.toggle_outside_user_sign_in').button()
   $('.toggle_outside_user_sign_in').click ->
     $('#outside_sign_in_form').show()
     $('#shibboleth_sign_in_button').hide()
-    $('.toggle_outside_user_sign_in').hide()
+    $(this).parent('.blue-button').hide()
     $('.sign_in_options').hide()
 
   $('#cancel_registration').click ->
     $('#signup_form').dialog('close')
 
+  $('.devise_submit_button').click ->
+    $('.devise_form').find('form').submit()
+    

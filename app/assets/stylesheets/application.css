@@ -350,8 +350,12 @@ h3.needed_info {
   text-align: center;
   padding: 5px 0px;
   cursor: pointer;
-  color: #fff;
+  color: #fff !important;
   text-decoration: none;
+}
+
+.blue-button a {
+  color: #fff !important;
 }
 
 .document_upload_button {
@@ -2647,8 +2651,27 @@ table.service_calendar tbody td.visit {
   width: 300px;
 }
 
-.sign_in_selection {
+.sign_in_selection, .password_reset {
   width: 650px;
+}
+
+.password_reset {
+  padding-left: 0px;
+}
+
+.password_reset .box .info {
+  margin: 10px auto;
+  width: 350px;
+  text-align: center;
+}
+
+.devise_submit_button, .devise_cancel_button {
+  width: 200px;
+  margin: 0 auto;
+  margin-bottom: 5px;
+}
+
+.sign_in_selection {
   padding-top: 10px;
 }
 

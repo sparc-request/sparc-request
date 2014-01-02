@@ -3,7 +3,7 @@
     .grid_6.prefix_3.suffix_3.box.sign_in_selection#shibboleth_sign_in_button
       .info
         .center
-          = button_to t(:signin)[:button1], identity_omniauth_authorize_path(:shibboleth), :class => 'btn ui-button ui-widget ui-state-default ui-corner-all'
+          .blue-button= link_to t(:signin)[:button1], identity_omniauth_authorize_path(:shibboleth)
   .clear
   .sign_in_options
     %br
@@ -14,7 +14,7 @@
   .grid_6.prefix_3.suffix_3.box.sign_in_selection
     .info
       .center
-        = link_to t(:signin)[:button2], "javascript:void(0);", :class => 'toggle_outside_user_sign_in'
+        .blue-button= link_to t(:signin)[:button2], "javascript:void(0);", :class => 'toggle_outside_user_sign_in'
 
       #outside_sign_in_form
         = form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
@@ -29,7 +29,8 @@
               = f.check_box :remember_me
               = f.label(:remember_me, t(:remember_user))
           #button
-            = f.submit t(:signin)[:button3], {:class => 'btn ui-button ui-widget ui-state-default ui-corner-all'}
+            .blue-button.devise_submit_button= t(:signin)[:button3]
+            .blue-button.devise_cancel_button= link_to t(:devise)[:cancel], catalog_service_request_path(@service_request)
         .clear
         .links
           = render "devise/shared/links"

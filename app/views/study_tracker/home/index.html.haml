@@ -10,6 +10,6 @@
     %p
       %strong= @user.display_name
       .admin-buttons
-        = link_to "Billing Report", billing_report_setup_study_tracker_home_index_path
+        = link_to image_tag('portal/billing_button.png'), billing_report_setup_study_tracker_home_index_path
 
 = render :partial => 'portal/admin/ssr_list'

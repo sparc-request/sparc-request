@@ -219,7 +219,7 @@ recalculate_one_time_fee_totals = ->
       units_per_qty = 1
     unit_factor = $(otf).data('unit_factor')
 
-    new_otf_total = Math.floor(Math.ceil(qty / unit_factor) * your_cost * units_per_qty) / 100.0
+    new_otf_total = (qty * your_cost * units_per_qty) / 100.0
     grand_total += new_otf_total
     
     $(otf).find('.otf_total').html('$' + commaSeparateNumber(new_otf_total.toFixed(2)))

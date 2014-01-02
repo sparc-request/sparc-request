@@ -28,16 +28,17 @@ class StudyTracker::HomeController < StudyTracker::BaseController
   def billing_report
     @start = params[:study_tracker_billing_report_start_date]
     @end = params[:study_tracker_billing_report_end_date]
-    @protocol_ids = params[:study_tracker_billing_report_protocol_ids]
-    @protocol_ids.delete("")
-    @organization_ids = params[:organizations]
+    @protocol_ids = params[:study_tracker_billing_report_protocol_ids] || ["All"]
+    @protocol_ids.delete("All")
 
-    @appointments = Appointment.joins(:visit_group => :arm).where("organization_id IN (#{@organization_ids.join(', ')}) AND completed_at BETWEEN '#{@start}' AND '#{@end}'").order(:organization_id, "arms.protocol_id", :calendar_id, :completed_at)
-
-    unless @protocol_ids.blank?
-      @appointments = @appointments.where("arms.protocol_id IN (#{@protocol_ids.join(', ')})")
+    if @protocol_ids.blank? or @protocol_ids = ["All"]
+      @protocol_ids = SubServiceRequest.where(:in_work_fulfillment => true).map{|x| x.service_request.protocol.id}.uniq
     end
 
-  end
+    @organization_ids = params[:organizations]
 
+    @appointments = Appointment.joins(:visit_group => :arm)
+                               .where("organization_id IN (#{@organization_ids.join(', ')}) AND completed_at BETWEEN '#{@start}' AND '#{@end}' AND arms.protocol_id IN (#{@protocol_ids.join(', ')})")
+                               .order(:organization_id, "arms.protocol_id", :calendar_id, :completed_at)
+  end
 end

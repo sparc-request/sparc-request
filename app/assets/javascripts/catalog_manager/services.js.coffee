@@ -56,8 +56,7 @@ $(document).ready ->
     Sparc.config.setDatePicker()
     $('.blank_field_errors').css('display', 'inline-block')
     $('.per_patient_errors').css('display', 'inline-block')
-    $('.save_button').attr('disabled', true) 
-    $("#otf_unit_type_").val("N/A")   
+    $('.save_button').attr('disabled', true)  
   )
 
   $('.remove_pricing_map').live('click', ->

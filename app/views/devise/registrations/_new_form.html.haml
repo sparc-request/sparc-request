@@ -43,7 +43,7 @@
         = f.text_area :reason
 
       .create_user
-        .blue-button.devise_submit_button= t(:signup)[:submit]
+        .blue-button.devise_submit_button= f.submit t(:signup)[:submit]
         .blue-button.devise_cancel_button= link_to t(:devise)[:cancel], catalog_service_request_path(@service_request)
       
       .links

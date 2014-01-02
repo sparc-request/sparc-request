@@ -120,7 +120,3 @@ $(document).ready ->
 
   $('#cancel_registration').click ->
     $('#signup_form').dialog('close')
-
-  $('.devise_submit_button').click ->
-    $('.devise_form').find('form').submit()
-    

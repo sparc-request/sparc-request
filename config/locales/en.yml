@@ -66,10 +66,11 @@ en:
     reason: "Reason for account/login request:"
     submit: "Create New User"
     cancel: "Cancel"
-    not_approved: "Click here to proceed"
+    not_approved: "Close Window"
 
   # password reset
   password_reset_message: "Forgot your password?"
+  password_reset_submit: "Send password reset"
 
   # sign in popup
   initial_signin_dialog: "You are not currently logged into SPARC Request. If you are affiliated with an institution and have an institutional login OR have created a SPARC Request account and have a SPARC Request login and password, please click the top button to proceed. If you are not currently affiliated with an institution OR do not have a SPARC Request login/password, please click the button on the bottom to proceed with creating a new account."

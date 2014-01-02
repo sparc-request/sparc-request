@@ -358,6 +358,14 @@ h3.needed_info {
   color: #fff !important;
 }
 
+.blue-button button, .blue-button input[type=submit] {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #fff !important;
+  cursor: pointer;
+}
+
 .document_upload_button {
   width: 400px;
   display: block;
@@ -1053,7 +1061,7 @@ tr.orange-provider th {
 }
 
 .service-request-setup-view .arm-info .remove_nested_fields {
-  background: #FF0000 !important;
+  background: #C43149 !important;
   border: 0px !important;
 }
 
@@ -2608,16 +2616,6 @@ table.service_calendar tbody td.visit {
   text-align: center;
 }
 
-.create_user input[type=submit] {
-  background-color: #FFF;
-  background-image: url("blue_button.png");
-  background-size: 100%;
-  border: none;
-  color: #FFF;
-  width: 150px;
-  height: 25px;
-}
-
 #devise_view .links a {
   color: #207ca5 !important;
 }
@@ -2667,8 +2665,11 @@ table.service_calendar tbody td.visit {
 
 .devise_submit_button, .devise_cancel_button {
   width: 200px;
-  margin: 0 auto;
-  margin-bottom: 5px;
+  margin: 5px auto;
+}
+
+.devise_cancel_button {
+  font-size: 15px;
 }
 
 .sign_in_selection {

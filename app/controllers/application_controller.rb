@@ -110,6 +110,15 @@ class ApplicationController < ActionController::Base
         # the first time), then create a new service request.
         create_new_service_request
       end
+    elsif params[:controller] == 'devise/sessions'
+      if session[:service_request_id]
+        use_existing_service_request
+      else
+        @service_request = ServiceRequest.new :status => 'first_draft'
+        @service_request.save :validate => false
+        @line_items = []
+        session[:service_request_id] = @service_request.id
+      end
     else
       # For controllers other than the service requests controller, we
       # look up the service request, but do not display any errors.

@@ -23,12 +23,14 @@ describe "service calendar", :js => true do
     end
 
     describe "submitting form" do
+
       it "should save the new quantity" do
         fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", :with => 10
         find(:xpath, "//a/img[@alt='Goback']/..").click
         wait_for_javascript_to_finish
         LineItem.find(line_item.id).quantity.should eq(10)
       end
+
       it "should save the new units per quantity" do
         fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", :with => line_item.service.current_pricing_map.units_per_qty_max
         find(:xpath, "//a/img[@alt='Goback']/..").click
@@ -36,17 +38,21 @@ describe "service calendar", :js => true do
         LineItem.find(line_item.id).units_per_quantity.should eq(line_item.service.current_pricing_map.units_per_qty_max)
       end
     end
+
     describe "validation" do
+
       describe "unit minimum too low" do
+
         it "Should throw errors" do
-          sleep 5
-          fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", :with => (line_item.service.current_pricing_map.unit_minimum - 1)
           fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", :with => 1
+          fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", :with => 0
+          find("#service_request_line_items_attributes_#{line_item.id}_units_per_quantity").click
           wait_for_javascript_to_finish
           find("div#one_time_fee_errors").should have_content("is less than the unit minimum")
         end
       end
       describe "units per quantity too high" do
+
         it "should throw js error" do
           fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", :with => (line_item.service.current_pricing_map.units_per_qty_max + 1)
           fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", :with => 1
@@ -113,6 +119,7 @@ describe "service calendar", :js => true do
       end
 
       describe "changing subject count" do
+
         before :each do
           visit_id = arm1.line_items_visits.first.visits[1].id
           page.check("visits_#{visit_id}")
@@ -126,6 +133,7 @@ describe "service calendar", :js => true do
     end
 
     describe "billing strategy tab" do
+
       before :each do
         click_link "billing_strategy_tab"
         @visit_id = arm1.line_items_visits.first.visits[1].id

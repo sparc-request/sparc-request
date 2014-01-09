@@ -43,4 +43,6 @@ $(document).ready ->
       error: (event) ->
         $('#errors').show()
         $('#error-text').html("Message can't be blank")
+
+        
   

@@ -44,4 +44,5 @@
       %br
 
     .add-user
-      = button_tag @can_edit ? t(:user_details)[:update_button] : t(:user_details)[:add_button]
+      %div{:style => 'padding-left:185px;'}
+        .blue-button{:style => 'width:150px;'}= button_tag @can_edit ? t(:user_details)[:update_button] : t(:user_details)[:add_button]

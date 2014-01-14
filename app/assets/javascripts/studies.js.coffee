@@ -194,3 +194,7 @@ $(document).ready ->
     ).addClass('date');
 
   $('#iacuc_expiration_date').attr("readOnly", true)
+
+
+  $("form").submit ->
+    $('input[type=image]').attr('disabled', 'disabled')

@@ -221,7 +221,6 @@ class Identity < ActiveRecord::Base
 
   # Determines whether this identity (that is a user) can edit a given sub_service_request that is
   # a child of this service request.
-  # TODO: Not sure why this method is on the ServiceRequest rather than on the SubServiceRequest
   def can_edit_sub_service_request? sub_service_request
     # things to consider
     # 1. sub_service_requests statuses == draft or submitted or obtain_research_pricing
@@ -232,6 +231,19 @@ class Identity < ActiveRecord::Base
     end
 
     return false
+  end
+
+  # This is a special case just for the two edit buttons in user portal.  A request's status is no longer a factor on this page.  
+  # Only users with request or approve rights can edit.
+  def can_edit_request_from_user_portal? request
+    can_edit = false
+    if (request.class == ServiceRequest) && (!self.project_roles.select{|pr| pr.protocol_id == request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights}.empty?)
+      can_edit = true
+    elsif (request.class == SubServiceRequest) && (!self.project_roles.select{|pr| pr.protocol_id == request.service_request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights}.empty?)
+      can_edit = true
+    end
+
+    can_edit
   end
 
   # Determines whether this identity can edit a given organization's information in CatalogManager.

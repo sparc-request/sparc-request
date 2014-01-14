@@ -52,6 +52,7 @@ $(document).ready ->
     data = {}
     data[key] = $(this).val()
     data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
+    data['line_items_visit_id'] = $(this).data("line_items_visit_id") || null
     put_attribute(object_id, klass, data)
   )
 

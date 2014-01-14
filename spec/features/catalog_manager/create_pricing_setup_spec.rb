@@ -1,11 +1,12 @@
 require 'spec_helper'
+Capybara.ignore_hidden_elements = true
 
-describe 'as a user on catalog page' do
+describe 'as a user on catalog page', :js => true do
   before(:each) do
     default_catalog_manager_setup
   end
   
-  it 'the user should create a pricing setup', :js => true do
+  it 'the user should create a pricing setup' do
     provider = Organization.where(abbreviation: 'SCTR1').first
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
     click_button("Add Pricing Setup")
@@ -42,7 +43,7 @@ describe 'as a user on catalog page' do
     
   end
   
-  it 'should not save if required fields are missing', :js => true do
+  it 'should not save if required fields are missing' do
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
     click_button("Add Pricing Setup")
     
@@ -53,7 +54,7 @@ describe 'as a user on catalog page' do
     page.should_not have_content "South Carolina Clinical and Translational Institute (SCTR) saved successfully"    
   end
   
-  it 'should display an error message when required fields are missing', :js => true do
+  it 'should display an error message when required fields are missing' do
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
     click_button("Add Pricing Setup")
     
@@ -64,7 +65,7 @@ describe 'as a user on catalog page' do
     page.should have_content "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."        
   end
   
-  it 'should display an error when rates are less than the federal rate in the percent of fee section', :js => true do
+  it 'should display an error when rates are less than the federal rate in the percent of fee section' do
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
     click_button("Add Pricing Setup")
     
@@ -87,7 +88,7 @@ describe 'as a user on catalog page' do
     end
   end
   
-  it 'should create a pricing map with the same dates as the pricing setup', :js => true do
+  it 'should create a pricing map with the same dates as the pricing setup' do
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
     click_button("Add Pricing Setup")
     
@@ -126,14 +127,10 @@ describe 'as a user on catalog page' do
     ## Ensure pricing map copied over the content from the existing pricing map
     page.execute_script("$('.ui-accordion-header:last').click()")
     wait_for_javascript_to_finish
-
-    # Check the last pricing map.  The one at position -1 is blank (and
-    # not visible); test the one prior to it instead.
-    # TODO: This returns nil on capybara 2.1 (why?)
-    form = all(".pricing_map_form")[-2]
-
-    form.find("input[id$='full_rate']").should have_value '45.00'
-    form.find("input[id$='unit_type']").should have_value 'self'
+    find('.otf_checkbox').click
+    wait_for_javascript_to_finish
+    # Check the last pricing map.
+    find('.service_rate').should have_value '45.00'
+    find('.service_unit_type').should have_value 'self'
   end
-
 end

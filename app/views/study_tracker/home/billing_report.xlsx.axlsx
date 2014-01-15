@@ -22,17 +22,17 @@ wb.add_worksheet(name: "Admin Billing Report") do |sheet|
       added_service_name = procedure.try(:service).try(:name)
       r_qty = procedure.r_quantity
 
-      service_added_qty = added_service_name.blank? ? "" : r_qty
+      service_added_qty = added_service_name.blank? ? "" : (r_qty || 0)
 
       quantity_due = procedure.try(:visit).try(:research_billing_qty)
 
       full_quantity_completed = ""
 
-      if not r_qty.blank? and added_service_name.blank?
+      if added_service_name.blank?
         full_quantity_completed = (quantity_due == r_qty and procedure.completed?) ? "Y" : "N"
       end
       
-      service_qty = (service_name.blank? or full_quantity_completed == 'Y') ? "" : r_qty
+      service_qty = (service_name.blank? or full_quantity_completed == 'Y' or not procedure.completed?) ? "" : r_qty
 
       sheet.add_row [protocol.id, subject.name, subject.label, arm.name, visit_name, visit_date, core, service_name, quantity_due, full_quantity_completed, service_qty, added_service_name, service_added_qty]
     end

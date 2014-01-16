@@ -197,7 +197,11 @@ class SubServiceRequest < ActiveRecord::Base
   end
 
   def can_be_edited?
-    ['draft', 'submitted', nil, 'obtain_research_pricing'].include?(self.status) ? true : false
+    ['first_draft', 'draft', 'submitted', nil, 'obtain_research_pricing'].include?(self.status) ? true : false
+  end
+
+  def arms_editable?
+    self.can_be_edited?
   end
 
   def candidate_statuses

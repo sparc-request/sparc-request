@@ -457,4 +457,8 @@ class ServiceRequest < ActiveRecord::Base
     end
   end
 
+  def arms_editable?
+    ['first_draft', 'draft', 'submitted', nil, 'obtain_research_pricing'].include?(self.status) ? true : false
+  end
+
 end

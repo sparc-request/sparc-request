@@ -136,10 +136,12 @@ $(document).ready ->
         # If it passes validation and is within study tracker, save by ajax
         if $(this).data('study_tracker') == true
           save_line_item_by_ajax(this)
+        else
+          update_otf_line_item this
     recalculate_one_time_fee_totals()
     return false
 
-  $('.line_item_quantity').live 'change', -> 
+  $('.line_item_quantity').live 'change', ->
     intRegex = /^\d+$/
     unit_min = parseInt($(this).attr('unit_minimum'), 10)
     prev_qty = $(this).attr('current_quantity')
@@ -164,8 +166,19 @@ $(document).ready ->
         # If it passes validation and is within study tracker, save by ajax
         if $(this).data('study_tracker') == true
           save_line_item_by_ajax(this)
+        else
+          update_otf_line_item this
     recalculate_one_time_fee_totals()
     return false
+
+  update_otf_line_item = (obj) ->
+    $('.service_calendar_spinner').show()
+    $.ajax
+      type: 'PUT'
+      url: $(obj).attr('update') + "&val=#{$(obj).val()}"
+    .complete =>
+      $('.service_calendar_spinner').hide()
+
 
 # methods for saving one time fee attributes
   save_line_item_by_ajax = (obj) ->
@@ -202,9 +215,11 @@ recalculate_one_time_fee_totals = ->
     your_cost = $(otf).children('.your_cost').data('your_cost')
     qty = $(otf).find('.line_item_quantity').val()
     units_per_qty = $(otf).find('.units_per_quantity').val()
+    if units_per_qty == undefined
+      units_per_qty = 1
     unit_factor = $(otf).data('unit_factor')
 
-    new_otf_total = Math.floor(Math.ceil(qty / unit_factor) * your_cost * units_per_qty) / 100.0
+    new_otf_total = (qty * your_cost * units_per_qty) / 100.0
     grand_total += new_otf_total
     
     $(otf).find('.otf_total').html('$' + commaSeparateNumber(new_otf_total.toFixed(2)))

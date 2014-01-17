@@ -55,13 +55,18 @@ $(document).ready ->
     Sparc.services.create_accordion()
     Sparc.config.setDatePicker()
     $('.blank_field_errors').css('display', 'inline-block')
-    $('.save_button').attr('disabled', true)    
+    $('.per_patient_errors').css('display', 'inline-block')
+    $('.save_button').attr('disabled', true)  
   )
 
   $('.remove_pricing_map').live('click', ->
     div = $(this).closest('div')
     div.prevAll('h3:first').remove()
     div.remove()
+    $('.save_button').removeAttr('disabled')
+    $('.blank_field_errors').hide()
+    $('.per_patient_errors').hide()
+    $('.otf_field_errors').hide()
   )
 
   $('.add_pricing_setup').live('click', ->
@@ -85,6 +90,8 @@ $(document).ready ->
   $('.pricing_map_display_date_hidden').live('change', ->
     Sparc.services.create_date_display(this, $(this).attr('date_type'), 'display')
   )
+
+  # $(document).on('input')
   
   $(".rate_field").live('change', ->
     unless $(this).hasClass('service_rate')

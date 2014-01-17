@@ -131,16 +131,19 @@ describe "Line Item" do
        
       it "should select the correct pricing map based on display date" do
         pricing_map2.update_attributes(display_date: Time.now + 1.day)
-        pricing_map.update_attributes(unit_factor: 5)
         pricing_map2.update_attributes(unit_factor: 10)
-        line_item.units_per_package.should eq(5)
+        line_item.units_per_package.should eq(1)
+      end
+
+      it "should set units per package to 1 if the pricing map is a one time fee, regardless of unit factor" do
+        pricing_map.update_attributes(unit_factor: 200)
+        line_item.units_per_package.should eq(1)
       end
     end
 
     describe "cost calculations" do
 
       before :each do
-        pricing_map.update_attributes(unit_factor: 5)
         add_visits
       end
 
@@ -149,7 +152,7 @@ describe "Line Item" do
         it "should return the correct direct cost" do
           pricing_map.update_attributes(is_one_time_fee: true)
           line_item.update_attributes(quantity: 10)
-          line_item.direct_costs_for_one_time_fee.should eq(2000)          
+          line_item.direct_costs_for_one_time_fee.should eq(10000)          
         end
 
         it "should return zero if quantity is nil" do

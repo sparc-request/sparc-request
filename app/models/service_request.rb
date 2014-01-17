@@ -194,7 +194,7 @@ class ServiceRequest < ActiveRecord::Base
     line_items << create_line_item(
         service_id: service.id,
         optional: optional,
-        quantity: service.displayed_pricing_map.unit_minimum)
+        quantity: service.displayed_pricing_map.quantity_minimum)
 
     existing_service_ids << service.id
 

@@ -833,12 +833,14 @@ ActiveRecord::Schema.define(:version => 20131220165307) do
     t.boolean  "src_approved",               :default => false
     t.boolean  "in_work_fulfillment"
     t.string   "routing"
+    t.text     "org_tree_display"
   end
 
   add_index "sub_service_requests", ["organization_id"], :name => "index_sub_service_requests_on_organization_id"
   add_index "sub_service_requests", ["owner_id"], :name => "index_sub_service_requests_on_owner_id"
   add_index "sub_service_requests", ["service_request_id"], :name => "index_sub_service_requests_on_service_request_id"
   add_index "sub_service_requests", ["ssr_id"], :name => "index_sub_service_requests_on_ssr_id"
+  add_index "sub_service_requests", ["status"], :name => "index_sub_service_requests_on_status"
 
   create_table "subjects", :force => true do |t|
     t.datetime "created_at",          :null => false

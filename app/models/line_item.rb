@@ -104,10 +104,12 @@ class LineItem < ActiveRecord::Base
 
   # Determine the direct costs for a visit-based service for one subject
   def direct_costs_for_visit_based_service_single_subject(line_items_visit)
-    result = line_items_visit.connection.execute("SELECT SUM(research_billing_qty) FROM visits WHERE line_items_visit_id=#{line_items_visit.id} AND research_billing_qty >= 1")
-    research_billing_qty_total = result.to_a[0][0] || 0
+    # line items visit should also check that it's for the correct protocol
+    return 0.0 unless service_request.protocol_id == line_items_visit.arm.protocol_id
+    
+    research_billing_qty_total = line_items_visit.visits.sum(&:research_billing_qty)
+    
     subject_total = research_billing_qty_total * per_unit_cost(quantity_total(line_items_visit))
-
     subject_total
   end
 

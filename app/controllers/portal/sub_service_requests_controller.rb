@@ -101,21 +101,25 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     @study_tracker = params[:study_tracker] == "true"
     @line_items = @sub_service_request.line_items
 
-    if @new_line_items = @service_request.create_line_items_for_service(
-      service: Service.find(params[:new_service_id]),
-      optional: true,
-      existing_service_ids: existing_service_ids,
-      allow_duplicates: true)
+    ActiveRecord::Base.transaction do
+      if @new_line_items = @service_request.create_line_items_for_service(
+        service: Service.find(params[:new_service_id]),
+        optional: true,
+        existing_service_ids: existing_service_ids,
+        allow_duplicates: true)
 
-      @new_line_items.each do |line_item|
-        line_item.update_attribute(:sub_service_request_id, @sub_service_request.id)
-      end
-      # Have to reload the service request to get the correct direct cost total for the subsidy
-      @subsidy.try(:sub_service_request).try(:reload)
-      @subsidy.try(:fix_pi_contribution, percent)
-    else
-      respond_to do |format|
-        format.js { render :status => 500, :json => clean_errors(@service_request.errors) }
+        @new_line_items.each do |line_item|
+          line_item.update_attribute(:sub_service_request_id, @sub_service_request.id)
+          @sub_service_request.update_cwf_data_for_new_line_item(line_item)
+        end
+
+        # Have to reload the service request to get the correct direct cost total for the subsidy
+        @subsidy.try(:sub_service_request).try(:reload)
+        @subsidy.try(:fix_pi_contribution, percent)
+      else
+        respond_to do |format|
+          format.js { render :status => 500, :json => clean_errors(@service_request.errors) }
+        end
       end
     end
 

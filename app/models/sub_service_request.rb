@@ -63,20 +63,7 @@ class SubServiceRequest < ActiveRecord::Base
       li = service_request.create_line_item(new_args)
 
       # Update subject visit calendars if present
-      if self.in_work_fulfillment
-        self.service_request.arms.each do |arm|
-          visits = Visit.joins(:line_items_visit).where(visits: { visit_group_id: arm.visit_groups}, line_items_visits:{ line_item_id: li.id} )
-          visits.group_by{|v| v.visit_group_id}.each do |vg_id, group_visits|
-            Appointment.where(visit_group_id: vg_id).each do |appointment|
-              if appointment.organization_id == li.service.organization_id
-                group_visits.each do |visit|
-                  appointment.procedures.create(:line_item_id => li.id, :visit_id => visit.id)
-                end
-              end
-            end
-          end
-        end
-      end
+      update_cwf_data_for_new_line_item(li)
 
       li
     end
@@ -86,6 +73,23 @@ class SubServiceRequest < ActiveRecord::Base
     else
       self.reload
       return false
+    end
+  end
+
+  def update_cwf_data_for_new_line_item(li)
+    if self.in_work_fulfillment
+      self.service_request.arms.each do |arm|
+        visits = Visit.joins(:line_items_visit).where(visits: { visit_group_id: arm.visit_groups}, line_items_visits:{ line_item_id: li.id} )
+        visits.group_by{|v| v.visit_group_id}.each do |vg_id, group_visits|
+          Appointment.where(visit_group_id: vg_id).each do |appointment|
+            if appointment.organization_id == li.service.organization_id
+              group_visits.each do |visit|
+                appointment.procedures.create(:line_item_id => li.id, :visit_id => visit.id)
+              end
+            end
+          end
+        end
+      end
     end
   end
 

@@ -13,6 +13,7 @@
       #header
         = render :partial => 'layouts/portal/header'
         %input#current_user_id{:type => 'hidden', :value => @user.try(:id)}
+      #welcome_msg{:style => 'float:right;'}= show_welcome_message(@user)
       #main
         #title
           %h1= render :partial => 'portal/home/title'

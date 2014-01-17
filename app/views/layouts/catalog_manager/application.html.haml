@@ -6,6 +6,7 @@
     = javascript_include_tag "catalog_manager/application"
     = csrf_meta_tags
   %body
+    #welcome_msg.catalog_manager_welcome{:style => 'float:right;color:#000000 !important;'}= show_welcome_message(@user)
     #flash.ui-state-highlight.ui-corner-all{:style => 'display:none; position:fixed'}
     = yield
     = render :partial => 'shared/piwik_tracking' if Rails.env == 'production'

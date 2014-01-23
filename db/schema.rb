@@ -606,8 +606,6 @@ ActiveRecord::Schema.define(:version => 20131220165307) do
     t.datetime "start_date"
     t.datetime "end_date"
     t.string   "billing_business_manager_static_email"
-    t.datetime "recruitment_start_date"
-    t.datetime "recruitment_end_date"
   end
 
   add_index "protocols", ["next_ssr_id"], :name => "index_protocols_on_next_ssr_id"

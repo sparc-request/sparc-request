@@ -508,13 +508,16 @@ ActiveRecord::Schema.define(:version => 20131220165307) do
     t.decimal  "federal_rate",               :precision => 12, :scale => 4
     t.decimal  "corporate_rate",             :precision => 12, :scale => 4
     t.date     "effective_date"
-    t.datetime "created_at",                                                               :null => false
-    t.datetime "updated_at",                                                               :null => false
+    t.datetime "created_at",                                                                   :null => false
+    t.datetime "updated_at",                                                                   :null => false
     t.datetime "deleted_at"
     t.date     "display_date"
     t.decimal  "other_rate",                 :precision => 12, :scale => 4
     t.decimal  "member_rate",                :precision => 12, :scale => 4
     t.integer  "units_per_qty_max",                                         :default => 1
+    t.string   "quantity_type"
+    t.string   "otf_unit_type",                                             :default => "N/A"
+    t.integer  "quantity_minimum",                                          :default => 1
   end
 
   add_index "pricing_maps", ["service_id"], :name => "index_pricing_maps_on_service_id"
@@ -603,8 +606,6 @@ ActiveRecord::Schema.define(:version => 20131220165307) do
     t.datetime "start_date"
     t.datetime "end_date"
     t.string   "billing_business_manager_static_email"
-    t.datetime "recruitment_start_date"
-    t.datetime "recruitment_end_date"
   end
 
   add_index "protocols", ["next_ssr_id"], :name => "index_protocols_on_next_ssr_id"

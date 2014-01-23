@@ -940,3 +940,10 @@ en:
       end_date: "End Date"
       protocols: "Protocol(s)"
       get_report: "Get Report"
+  reports:
+    intro: "Welcome to the SPARC Request Reporting Module. Please select a report type to proceed."
+    defined_reports: "Defined Reports"
+    defined_reports_desc: "Please select a defined report below and click to proceed with report customizations."
+    custom_report: "Custom Report"
+    proceed: "Proceed"
+    create_report: "Create Report"

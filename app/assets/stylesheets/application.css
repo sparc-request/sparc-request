@@ -1978,3 +1978,145 @@ input.search-services, input.search-identities{display:inline-block;width:209px;
 table.service_calendar tbody td.visit {
   text-align: right;
 }
+
+#reporting_container {
+  width: 96%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.reporting_title {
+  -moz-box-shadow:inset 0px 1px 0px 0px #97c4fe;
+  -webkit-box-shadow:inset 0px 1px 0px 0px #97c4fe;
+  box-shadow:inset 0px 1px 0px 0px #97c4fe;
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #3d94f6), color-stop(1, #1e62d0) );
+  background:-moz-linear-gradient( center top, #3d94f6 5%, #1e62d0 100% );
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#3d94f6', endColorstr='#1e62d0');
+  background-color:#3d94f6;
+  -webkit-border-top-left-radius:6px;
+  -moz-border-radius-topleft:6px;
+  border-top-left-radius:6px;
+  -webkit-border-top-right-radius:6px;
+  -moz-border-radius-topright:6px;
+  border-top-right-radius:6px;
+  -webkit-border-bottom-right-radius:6px;
+  -moz-border-radius-bottomright:6px;
+  border-bottom-right-radius:6px;
+  -webkit-border-bottom-left-radius:6px;
+  -moz-border-radius-bottomleft:6px;
+  border-bottom-left-radius:6px;
+  text-indent:0;
+  border:1px solid #337fed;
+  display:inline-block;
+  color:#ffffff;
+  font-family:Arial;
+  font-size:20px;
+  font-weight:bold;
+  font-style:normal;
+  height:50px;
+  line-height:50px;
+  width:800px;
+  text-decoration:none;
+  text-align:center;
+  text-shadow:1px 1px 0px #1570cd;
+}
+
+.reporting_title:hover {
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #1e62d0), color-stop(1, #3d94f6) );
+  background:-moz-linear-gradient( center top, #1e62d0 5%, #3d94f6 100% );
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#1e62d0', endColorstr='#3d94f6');
+  background-color:#1e62d0;
+}
+
+.reporting_title:active {
+  position:relative;
+  top:1px;
+}
+
+.reporting_button {
+  -moz-box-shadow:inset 0px 1px 0px 0px #97c4fe;
+  -webkit-box-shadow:inset 0px 1px 0px 0px #97c4fe;
+  box-shadow:inset 0px 1px 0px 0px #97c4fe;
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #3d94f6), color-stop(1, #1e62d0) );
+  background:-moz-linear-gradient( center top, #3d94f6 5%, #1e62d0 100% );
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#3d94f6', endColorstr='#1e62d0');
+  background-color:#3d94f6;
+  -webkit-border-top-left-radius:6px;
+  -moz-border-radius-topleft:6px;
+  border-top-left-radius:6px;
+  -webkit-border-top-right-radius:6px;
+  -moz-border-radius-topright:6px;
+  border-top-right-radius:6px;
+  -webkit-border-bottom-right-radius:6px;
+  -moz-border-radius-bottomright:6px;
+  border-bottom-right-radius:6px;
+  -webkit-border-bottom-left-radius:6px;
+  -moz-border-radius-bottomleft:6px;
+  border-bottom-left-radius:6px;
+  text-indent:0;
+  border:1px solid #337fed;
+  display:inline-block;
+  color:#ffffff;
+  font-family:Arial;
+  font-size:20px;
+  font-weight:bold;
+  font-style:normal;
+  height:100px;
+  line-height:100px;
+  width:250px;
+  text-decoration:none;
+  text-align:center;
+  text-shadow:1px 1px 0px #1570cd;
+}
+
+.reporting_button:hover {
+  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #1e62d0), color-stop(1, #3d94f6) );
+  background:-moz-linear-gradient( center top, #1e62d0 5%, #3d94f6 100% );
+  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#1e62d0', endColorstr='#3d94f6');
+  background-color:#1e62d0;
+}
+
+.reporting_button:active {
+  position:relative;
+  top:1px;
+}
+#reporting_container #defined_reports {
+  padding: 10px;
+  display: none;
+}
+
+#reporting_container #defined_reports label{
+  display: block;
+  float: left;
+  min-width: 200px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+#reporting_container #defined_reports label.sub_label {
+  padding-left: 25px;
+  margin-right: -25px;
+  font-size: 12px;
+}
+
+#reporting_container #defined_reports fieldset {
+  margin-left: 58px;
+  width: 785px;
+  margin-top: -26px;
+}
+
+#reporting_container #defined_reports fieldset legend {
+  font-size: 14px;
+  padding: 10px;
+}
+
+#reporting_container #defined_reports input, #reporting_container #defined_reports select {
+  float: left;
+  margin-right: 5px;
+}
+
+#reporting_container #defined_reports #defined_reports_step_1 #defined_reports_description {
+  margin-bottom: 10px;
+}
+
+

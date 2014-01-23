@@ -50,7 +50,7 @@ class ProtocolsController < ApplicationController
     if @current_step == 'protocol' and @protocol.group_valid? :protocol 
       @current_step = 'user_details'
       @protocol.populate_for_edit
-    elsif @current_step == 'user_details' and @protocol.valid?
+    elsif (@current_step == 'user_details' and @protocol.valid?)
       @protocol.save
       @current_step = 'return_to_service_request'
       session[:saved_protocol_id] = @protocol.id

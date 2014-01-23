@@ -42,9 +42,9 @@
                     .arm-cell= t(:service_request_details)[:number_of_visits]
                     .clear
                   .clear
+                  - unlocked = (@sub_service_request.nil? ? @service_request.arms_editable? : @sub_service_request.arms_editable?)
                   .arms
                     = f.fields_for :arms do |arm|
-                      - unlocked = (@sub_service_request.nil? ? @service_request.arms_editable? : @sub_service_request.arms_editable?)
                       - #arm.object.new_record? ? unlocked = true : unlocked = arm.object.new_with_draft
                       = arm.hidden_field :new_with_draft, :value => unlocked
                       .arm-cell= arm.text_field :name, :disabled => unlocked == false
@@ -53,9 +53,10 @@
                       .arm-cell{:id => "#{@x+=1}",:style => "padding:5px 0px 5px 0px; width:auto;"}= arm.link_to_remove "Remove Arm", {:class => "ui-state-default ui-corner-top ui-tabs-selected ui-state-active", :style => "padding: 3px 10px"} unless unlocked == false
                       .clear
                     .clear
-                  .add-arm= f.link_to_add "Add Arm", :arms, {:class => "ui-state-default ui-corner-top ui-tabs-selected ui-state-active" }
-                  .clear
-                  %br
+                  - if unlocked
+                    .add-arm= f.link_to_add "Add Arm", :arms, {:class => "ui-state-default ui-corner-top ui-tabs-selected ui-state-active" }
+                    .clear
+                    %br
           
           .visit-calendar-details{:style => ((@sub_service_request.nil? ? @service_request.line_items.empty? : @sub_service_request.line_items.empty?) ? '' : 'display:none')}
             .instructions

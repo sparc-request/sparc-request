@@ -259,6 +259,7 @@ $(document).ready ->
         text: "Submit"
         click: ->
           $("#visit-form").submit()
+          $("#submit_visit").attr("disabled", true).addClass("ui-state-disabled")
       },
       {
         id: "cancel_visit"
@@ -289,6 +290,7 @@ $(document).ready ->
       dataType: 'script'
       contentType: 'application/json; charset=utf-8'
       success: ->
+        $("#submit_visit").attr("disabled", false).removeClass("ui-state-disabled")
         $().toastmessage('showSuccessToast', "Service request has been saved.")
         $('#visit-form').dialog('close')
       error: (jqXHR, textStatus, errorThrown) ->

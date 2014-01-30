@@ -32,6 +32,7 @@ GEM
     acts-as-taggable-on (2.3.3)
       rails (~> 3.0)
     acts_as_list (0.1.9)
+    addressable (2.3.5)
     afm (0.2.0)
     akami (1.2.0)
       gyoku (>= 0.4.0)
@@ -89,6 +90,9 @@ GEM
     fastercsv (1.5.5)
     formtastic (2.1.1)
       actionpack (~> 3.0)
+    google_calendar (0.3.1)
+      addressable (>= 2.2.2)
+      nokogiri (>= 1.4.4)
     grouped_validations (0.3.2)
     gyoku (1.0.0)
       builder (>= 2.1.2)
@@ -276,6 +280,7 @@ DEPENDENCIES
   dynamic_form
   exception_notification
   execjs
+  google_calendar
   grouped_validations
   gyoku
   haml (~> 4.0.0)

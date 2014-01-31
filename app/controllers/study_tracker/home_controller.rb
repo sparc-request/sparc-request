@@ -39,6 +39,6 @@ class StudyTracker::HomeController < StudyTracker::BaseController
 
     @appointments = Appointment.joins(:visit_group => :arm)
                                .where("organization_id IN (#{@organization_ids.join(', ')}) AND completed_at BETWEEN '#{@start}' AND '#{@end}' AND arms.protocol_id IN (#{@protocol_ids.join(', ')})")
-                               .order("arms.protocol_id", :organization_id, :calendar_id, :completed_at)
+                               .order("arms.protocol_id", :calendar_id, :organization_id, :completed_at)
   end
 end

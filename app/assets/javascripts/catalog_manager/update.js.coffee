@@ -17,9 +17,6 @@ $(document).ready ->
     
   cannot_contain_letters = (selector) ->
     $(selector).val().match(/^[0-9]\d*(\.\d+)?$/) || [null]
-
-  cannot_contain_letters_or_zero = (selector) ->
-    $(selector).val().match(/^[1-9]\d*(\.\d+)?$/) || [null]
   
   validate_numbers_only = (selector) ->
     unless $(selector).val() == ''
@@ -27,17 +24,10 @@ $(document).ready ->
       unless validated_number[0]
         add_error(selector, "#{$(selector).attr('display')} can only contain numbers.")
         $(selector).val('')
-  
-  validate_numbers_only_nonzero = (selector) ->
-    unless $(selector).val() == ''
-      validated_number = cannot_contain_letters_or_zero(selector) 
-      unless validated_number[0]
-        add_error(selector, "#{$(selector).attr('display')} can only contain non-zero numbers.")
-        $(selector).val('')
 
   validate_percentages_to_federal_percentage = (selector, federal) ->
     unless $(selector).val() == ''  
-      validated_number = cannot_contain_letters_or_zero(selector)
+      validated_number = cannot_contain_letters(selector)
       if parseFloat(validated_number[0]) < parseFloat(federal)
         add_error(selector, "#{$(selector).attr('display')} percentage must be >= to the Federal percentage.")
         $(selector).val('')        
@@ -48,7 +38,7 @@ $(document).ready ->
     unless $(this).hasClass('federal_percentage_field')
       federal_number = $(this).closest('tr').siblings('.federal_row').find('.federal_percentage_field').val()
     validate_percentages_to_federal_percentage(this, federal_number)
-    validate_numbers_only_nonzero(this)
+    validate_numbers_only(this)
   )
   
   $('.federal_percentage_field').live('change', ->
@@ -56,7 +46,7 @@ $(document).ready ->
     field = $(this).closest('fieldset').find('.percentage_field')
     for percentage in $(field)
       validate_percentages_to_federal_percentage(percentage, $(this).val())       
-      validate_numbers_only_nonzero(percentage)
+      validate_numbers_only(percentage)
   )
   
   $('.unit_field, .rate_field').live('change', ->

@@ -116,34 +116,15 @@ module Portal::ServiceRequestsHelper
   end
 
   def visits_for_delete arm
-    unless arm.line_items_visits.empty?
-      vg = arm.line_items_visits.first
-        unless vg.visits.empty?
-          visit_count = vg.visits.last.position
-          arr = []
-          visit_count.times do |visit|
-            visit_name = vg.visits[visit].visit_group.name || "Visit #{visit}"
-            arr << ["Delete Visit #{visit + 1} - #{visit_name}", visit + 1]
-          end
-        else
-          arr = [["No Visits", nil]]
-        end
-    else
-      arr = []
-      visit_count = 0
-    end
-
-    options_for_select(arr, visit_count)
-  end
-
-  def show_delete_visit_link? arm
-    show_link = false
     vg = arm.line_items_visits.first
-    unless vg.visits.empty?
-      show_link = true
+    visit_count = vg.visits.count
+    arr = []
+    visit_count.times do |visit|
+      visit_name = vg.visits[visit].visit_group.name || "Visit #{visit}"
+      arr << ["Delete Visit #{visit + 1} - #{visit_name}", visit + 1]
     end
 
-    show_link
+    options_for_select(arr, vg.visits.count)
   end
 
 

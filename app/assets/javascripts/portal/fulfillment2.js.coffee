@@ -290,7 +290,6 @@ $(document).ready ->
       dataType: 'script'
       contentType: 'application/json; charset=utf-8'
       success: ->
-        $("#submit_visit").attr("disabled", false).removeClass("ui-state-disabled")
         $().toastmessage('showSuccessToast', "Service request has been saved.")
         $('#visit-form').dialog('close')
       error: (jqXHR, textStatus, errorThrown) ->
@@ -300,6 +299,8 @@ $(document).ready ->
           errors = [textStatus]
         for error in errors
           $().toastmessage('showErrorToast', "#{error.humanize()}.");
+      complete: ->
+        $("#submit_visit").attr("disabled", false).removeClass("ui-state-disabled")
 
   $(document).on('click', '.delete_visit_link', ->
     sr_id = $(this).data('service_request_id')

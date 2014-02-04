@@ -1,3 +1,4 @@
+- line_items_visits = [] 
 = javascript_include_tag 'service_calendar_logic'
 = hidden_field_tag :indirect_rate, @service_request.protocol.indirect_cost_rate
 %table.service_calendar{:class => "arm_id_#{arm.id}", :style => @study_tracker ? "width:917px" : ''}
@@ -50,6 +51,7 @@
         - arm.line_items_visits.each do |line_items_visit|
           - line_item = line_items_visit.line_item
           - next unless value[:line_items].include?(line_item)
+          - line_items_visits << line_items_visit
           %tr.line_item{:'data-line_items_visit_id' => line_items_visit.id, :class => cycle('odd', '', :name => 'pppvs')}
             - if @portal
               - if line_item.service.is_available
@@ -82,7 +84,7 @@
           %td &nbsp;
           - 5.times do |i|
             %td{:class => "visit_column_#{i + 1} max_direct_per_patient arm_#{arm.id}"}
-          %td{:class => "pp_max_total_direct_cost arm_#{arm.id}"}= display_max_total_direct_cost_per_patient arm
+          %td{:class => "pp_max_total_direct_cost arm_#{arm.id}"}= display_max_total_direct_cost_per_patient arm, line_items_visits
         
         - if USE_INDIRECT_COST
           %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
@@ -90,17 +92,17 @@
             %td &nbsp;
             - 5.times do |i|
               %td{:class => "visit_column_#{i + 1} max_indirect_per_patient arm_#{arm.id}"}
-            %td{:class => "pp_max_total_indirect_cost arm_#{arm.id}"}= display_max_total_indirect_cost_per_patient arm
+            %td{:class => "pp_max_total_indirect_cost arm_#{arm.id}"}= display_max_total_indirect_cost_per_patient arm, line_items_visits
 
           %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
             %td{:colspan => 5}= t("calendar_page.labels.maximum_per")
             %td &nbsp;
             - 5.times do |i|
               %td{:class => "visit_column_#{i + 1} max_total_per_patient arm_#{arm.id}"}
-            %td{:class => "pp_max_total arm_#{arm.id}"}= display_max_total_cost_per_patient arm
+            %td{:class => "pp_max_total arm_#{arm.id}"}= display_max_total_cost_per_patient arm, line_items_visits
 
         %tr.totals_section.grand-totals{:class => cycle('odd', '', :name => 'pppvs')}
           %td{:colspan => 5}= t("calendar_page.labels.total_costs") + " -- " + arm.name
           %td &nbsp;
           %td{:colspan => 6}
-          %td{:class => "pp_total arm_#{arm.id}"}= display_total_cost_per_arm arm
+          %td{:class => "pp_total arm_#{arm.id}"}= display_total_cost_per_arm arm, line_items_visits

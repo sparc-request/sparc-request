@@ -111,9 +111,6 @@ describe "submitting a in form", :js => true do
   end
 
   describe "editing an existing arm" do
-    it "should not allow you to edit an existing arms name" do
-      page.should have_no_field("project_arms_attributes_0_name")
-    end
     it "should save new subject count" do
       subject_count = (arm1.subject_count + 2)
       fill_in "project_arms_attributes_0_subject_count", :with => subject_count
@@ -147,9 +144,6 @@ describe "submitting a in form", :js => true do
   end
 
   describe "removing an arm" do
-    it "should not delete an existing arm" do
-      page.should have_no_link("Remove Arm")
-    end
 
     it "should delete a recently added arm" do
       number_of_arms = Arm.find(:all).size
@@ -164,7 +158,7 @@ describe "submitting a in form", :js => true do
       Arm.find(:all).size.should eq(number_of_arms + 1)
 
       visit service_details_service_request_path service_request.id
-      click_link("Remove Arm")
+      first(".remove_arm").click
       find(:xpath, "//a/img[@alt='Savecontinue']/..").click
       wait_for_javascript_to_finish
       Arm.find(:all).size.should eq(number_of_arms)

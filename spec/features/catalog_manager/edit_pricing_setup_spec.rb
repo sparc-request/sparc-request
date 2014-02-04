@@ -1,16 +1,16 @@
 require 'spec_helper'
 
-feature 'edit a pricing setup' do
-  background do
+describe 'edit a pricing setup', :js => true do
+
+  before :each do
     default_catalog_manager_setup
-  end
-  
-  scenario 'a user can successfully update a pricing_setup', :js => true do
     click_link("Office of Biomedical Informatics")
     sleep 2
-    
     page.execute_script("$('.ui-accordion-header').click()") 
-    
+  end
+  
+  it 'should successfully update a pricing_setup' do
+        
     within('.ui-accordion') do
       
       find('.display_date').click
@@ -47,11 +47,7 @@ feature 'edit a pricing setup' do
   ## Need to create a test that will confirm that a dialog pops when changing a date of a pricing_setup that has a related pricing_map.
   ## Need to confirm that changing the pricing_map date to match the pricing_setup works.
 
-  scenario 'updating the date of a pricing_setup will update the date on the pricing_map', :js => true do
-    click_link("Office of Biomedical Informatics")
-    sleep 2
-    
-    page.execute_script("$('.ui-accordion-header').click()") 
+  it "should update the date of a pricing map if updated on pricing setup" do
     
     within('.ui-accordion') do
       
@@ -87,4 +83,37 @@ feature 'edit a pricing setup' do
     new_date.should eq(pricing_map_date)
   end
 
+  it "should not allow letters into the percentage fields" do
+
+    within('.ui-accordion') do
+
+      find('.corporate_percentage_field').set("Bob")
+      find('.other_percentage_field').click
+      page.should have_content "Corporate can only contain numbers."
+
+      find('.other_percentage_field').set("Wilfred")
+      find('.corporate_percentage_field').click
+      page.should have_content "Other can only contain numbers."
+
+      find('.member_percentage_field').set("Slappy")
+      find('.other_percentage_field').click
+      page.should have_content "Member can only contain numbers."
+    end
+  end
+
+  it "should allow zeros into the percentage fields" do
+
+    within('.ui-accordion') do
+
+      find('.federal_percentage_field').set(0)
+      find('.corporate_percentage_field').set(0)
+      find('.other_percentage_field').set(0)
+      find('.member_percentage_field').set(0)
+    end
+
+    find('.federal_percentage_field', :visible => true).should have_value('0')
+    find('.corporate_percentage_field', :visible => true).should have_value('0')
+    find('.other_percentage_field', :visible => true).should have_value('0')
+    find('.member_percentage_field', :visible => true).should have_value('0')
+  end
 end

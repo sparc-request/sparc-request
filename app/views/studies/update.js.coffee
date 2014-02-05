@@ -12,7 +12,7 @@ else
   $('#current_step').val("<%= @current_step %>")
   if <%= @protocol.valid? and @current_step == "user_details" %>
     $('.return-to-previous a').attr('href', "<%= edit_service_request_study_path(@service_request, @protocol) %>")
-    $('.return-to-previous a img').attr('src', '/assets/CancelAction.png')
+    $('.return-to-previous a span').text("Go Back")
     $('.save-and-continue input').attr('src', '/assets/SaveContinueOld.png')
     $('#errorExplanation').hide()
     $('.protocol_details_container').hide()

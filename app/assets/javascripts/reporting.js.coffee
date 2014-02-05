@@ -99,7 +99,13 @@ window.create_date_pickers = (from, to) ->
     $("#{from}").datepicker("option", "maxDate", new Date(maxDate))
     $("#{to}").datepicker("option", "maxDate", new Date(maxDate))
 
-  
+window.create_single_date_pickers = ->
+  $('.date_field').datepicker
+    changeMonth: true,
+    changeYear: true,
+    dateFormat: "yy-mm-dd",
+    numberOfMonths: 3,
+
 window.check_deps = ->
   $(".check_dep_class").each ->
     dep = $(this).data("dependency")

@@ -37,13 +37,22 @@
               %option{:value => record.id, :class => option_class}= record.name
       /* end select_tag */
 
+      /* date_field */
+      - if field_type == :date_field
+        - default_classes = "date_field"
+        - default_classes += " required_field" if options[:required]
+        - id = options[:for] ? options[:for] : field.delete(" ").underscore
+        - name = options[:for] ? "report[" + options[:for] + "]" : "report[" + id + "]"
+        %label{:for => id}= field_label
+        = text_field_tag name, nil, :id => id, :class => default_classes
+
       /* date_range */
       - if field_type == :date_range
-        - default_classes = " required_field" if options[:required]
+        - default_classes = "required_field" if options[:required]
         %label= field_label
         %br
         %br
-
+        
         /* from information */
         - from_id = options[:for] ? options[:for] + "_from" : field.delete(" ").underscore + "_from"
         - from_name = options[:for] ? "report[" + options[:for] + "_from]" : "report[" + from_id + "]"
@@ -74,7 +83,7 @@
         - multiple = options[:multiple]
         - grouping = options[:grouping]
         - selected = options[:selected] || []
-        - default_classes = " required_field" if options[:required]
+        - default_classes = "required_field" if options[:required]
         - name = options[:for] ? "report[#{options[:for]}]" : "report[#{field.name.underscore}_id]"
         - name += "[]" if multiple
         %label= field_label

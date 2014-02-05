@@ -11,7 +11,7 @@ class TestReport < ReportingModule
   # Key can be either string or ClassName
   # Value is hash of options
   # Options List #
-  # :field_type => :select_tag, :radio_button_tag, :check_box_tag, :text_field_tag, :date_range
+  # :field_type => :select_tag, :radio_button_tag, :check_box_tag, :text_field_tag, :date_range, :date_field
   # :field_label => key or optional text (default is key)
   # :required => boolean (default if false)
   # :dependency => id of data element that must be selected before this option is enabled
@@ -32,6 +32,7 @@ class TestReport < ReportingModule
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
       Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
       "Current Status" => {:field_type => :check_box_tag, :for => 'status', :multiple => AVAILABLE_STATUSES},
+      "One Date" => {:field_type => :date_field, :for => "service_requests_submitted_at"}
     }
   end
 

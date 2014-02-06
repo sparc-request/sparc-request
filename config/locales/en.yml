@@ -791,6 +791,7 @@ en:
   admin_dashboard:
     title: "My Dashboard"
     id: "SRID"
+    status: "Status"
     pi: "PI"
     routing: "Routing"
     billing_business: "Billing/Business Manager"

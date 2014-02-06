@@ -24,10 +24,11 @@ class StudyTracker::SubjectsController < StudyTracker::BaseController
     @protocol = @subject.arm.protocol
     associated_users = @protocol.emailed_associated_users << @protocol.primary_pi_project_role
 
-    new_procedures.each do |procedure|
-      associated_users.uniq.each do |user|
-        UserMailer.subject_procedure_notification(user.identity, procedure, @sub_service_request).deliver
-      end
-    end
+    # Disabled (potentially only temporary) as per Lane
+    # new_procedures.each do |procedure|
+    #   associated_users.uniq.each do |user|
+    #     UserMailer.subject_procedure_notification(user.identity, procedure, @sub_service_request).deliver
+    #   end
+    # end
   end
 end

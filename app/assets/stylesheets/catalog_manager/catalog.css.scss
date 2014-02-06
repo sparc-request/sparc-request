@@ -27,11 +27,7 @@ a {
 }
 
 a:not(.viewable_node) {
-  color: #1C94C4 !important;
-}
-
-a:hover:not(.viewable_node) {
-  color: #EB8F00 !important;
+  color: #0078AE !important;
 }
 
 a.add_new_excluded_funding_source {
@@ -90,6 +86,19 @@ a.add_new_excluded_funding_source {
     border: #fff !important;
     margin-top: 5px !important;
   }
+}
+
+#catalog a.institution {
+  color: #0078AE !important;
+}
+#catalog a.provider {
+  color: #339933 !important;
+}
+#catalog a.program {
+  color: #ff9933 !important;
+}
+#catalog a.core {
+  color: #003366 !important;
 }
 
 .ui-autocomplete-loading { background: white url('ui-anim_basic_16x16.gif') right center no-repeat; }

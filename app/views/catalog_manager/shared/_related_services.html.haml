@@ -5,6 +5,8 @@
         %tr
           %th= t("cm_shared.labels.service")
           %th= t("cm_shared.labels.required")
+          %th= label_tag "Linked Quantity?"
+          %th= label_tag "Linked Quantity Total"
           %th= t("cm_shared.lables.delete")
       %tbody
         - entity.service_relations.each do |service_relation|
@@ -12,6 +14,10 @@
           %tr
             %td= service.display_service_name
             %td= check_box_tag service_relation.id, !service_relation.optional, service_relation.optional == false, :class => 'optional'
+            %td= check_box_tag "linked_quantity_#{service_relation.id}", !service_relation.linked_quantity, service_relation.linked_quantity, :"data-service_relation_id" => service_relation.id, :class => "linked_quantity"
+            %td
+              - if service_relation.linked_quantity
+                = text_field_tag "linked_quantity_total_#{service_relation.id}", service_relation.linked_quantity_total, :"data-service_relation_id" => service_relation.id,  :class => "linked_quantity_total"
             %td= image_tag 'cancel.png', :"data-service_relation_id" => service_relation.id, :class => 'rs_delete'
 
   = text_field_tag 'new_rs', t("cm_shared.labels.new_related")

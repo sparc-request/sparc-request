@@ -1,6 +1,6 @@
 # sparc-rails #
 
-Rewrite of Backbone.js app to use Rails and MySQL
+SPARC Request
 
 # deployment steps, some of these may be slightly different
 

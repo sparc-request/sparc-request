@@ -139,8 +139,10 @@ module Portal::ServiceRequestsHelper
   def show_delete_visit_link? arm
     show_link = false
     vg = arm.line_items_visits.first
-    unless vg.visits.empty?
-      show_link = true
+    if vg
+      unless vg.visits.empty?
+        show_link = true
+      end
     end
 
     show_link

@@ -13,6 +13,19 @@
       - field_label += " *" if options[:required] and not field_type == :date_range
 
       /* TODO - extract these into either helpers or a custom form builder */
+      /* text_field_tag */
+      - if field_type == :text_field_tag
+        - dependency = options[:dependency]
+        - default_classes = "text_field"
+        - default_classes = " required_field" if options[:required]
+        - check_dep_class = dependency ? 'check_dep_class' : nil
+        - id = options[:for] ? options[:for] : field.delete(" ").underscore
+        - name = options[:for] ? "report[" + options[:for] + "]" : "report[" + id + "]"
+        
+        %label{:for => id}= field_label
+        = text_field_tag name, nil, :id => id, :class => default_classes
+      /* end text_field_tag */
+
       /* select_tag */
       - if field_type == :select_tag
         - if field.is_a? Class and field.respond_to?(:where) # we have a select tag that we need to get records for

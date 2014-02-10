@@ -46,22 +46,26 @@ class ServicePricingReport < ReportingModule
 
     attrs["Service"] = :name
 
-    if params[:full_rate]
-      attrs["Full Rate"] = "displayed_pricing_map(params[:services_pricing_date]).full_rate"
-    end
+    if params[:rate_types]
+      if params[:rate_types].include?("full_rate")
+        attrs["Full Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").full_rate.to_f)"
+      end
 
-    if params[:federal_rate]
+      if params[:rate_types].include?("federal_rate")
+        attrs["Federal Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", organization_id)[:federal_rate])"
+      end
 
-    end
+      if params[:rate_types].include?("corporate_rate")
+        attrs["Corporate Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", organization_id)[:corporate_rate])"
+      end
 
-    if params[:corporate_rate]
+      if params[:rate_types].include?("other_rate")
+        attrs["Other Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", organization_id)[:other_rate])"
+      end
 
-    end
-
-    if params[:_rate]
-
-    end
-    if params[:federal_rate]
+      if params[:rate_types].include?("member_rate")
+        attrs["Member Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", organization_id)[:member_rate])"
+      end
 
     end
 
@@ -93,6 +97,12 @@ class ServicePricingReport < ReportingModule
   def where args={}
     selected_organization_id = args[:core_id] || args[:program_id] || args[:provider_id] || args[:institution_id] # we want to go up the tree, service_organization_ids plural because we might have child organizations to include
 
+    if args[:tags]
+      tags = args[:tags].split(',')
+    else
+      tags = []
+    end
+
     # get child organization that have services to related to them
     service_organization_ids = [selected_organization_id]
     if selected_organization_id
@@ -104,12 +114,18 @@ class ServicePricingReport < ReportingModule
 
     service_organization_ids = Organization.all.map(&:id) if service_organization_ids.compact.empty? # use all if none are selected
 
+    service_organizations = Organization.find_all_by_id(service_organization_ids)
+
+    unless tags.empty?
+      tagged_organization_ids = service_organizations.reject {|x| (x.tags.map(&:name) & tags).empty?}.map(&:id)
+      service_organization_ids = service_organization_ids.reject {|x| !tagged_organization_ids.include?(x)}
+    end
+
     return :services => {:organization_id => service_organization_ids}
 
   end
 
   def uniq
-    :identity
   end
 
   def group

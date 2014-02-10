@@ -110,42 +110,8 @@ describe "Identity" do
 
     describe "permission methods" do
     
-      describe "can edit service request" do
 
-        it "should return true if service request is in 'draft' or 'submitted' status" do
-          user.can_edit_service_request?(service_request).should eq(true)
-          user.can_edit_service_request?(service_request2).should eq(true)
-        end
-
-        it "should return false if moved from 'draft' or 'submitted' status" do
-          service_request.update_attributes(status: 'approved')
-          user.can_edit_service_request?(service_request).should eq(false)
-        end
-
-        it "should return false if its sub service requests are not uniformly either 'draft' or 'submitted'" do
-          sub_service_request.update_attributes(status: 'submitted')
-          user.can_edit_service_request?(service_request).should eq(false)
-        end
-
-        it "should return false if the user's project rights are not either 'approve' or 'request'" do
-          project_role.update_attributes(project_rights: 'none')
-          user.can_edit_service_request?(service_request).should eq(false)
-        end
-      end
-
-      describe "can edit sub service request" do
-
-        it "should return true if the sub service request is in either 'draft' or 'submitted' status" do
-          user.can_edit_sub_service_request?(sub_service_request).should eq(true)
-        end
-
-        it "should return false if moved from 'draft' or 'submitted' status" do
-          sub_service_request.update_attributes(status: 'approved')
-          user.can_edit_sub_service_request?(sub_service_request).should eq(false)
-        end
-      end
-
-      describe "can edit request from user portal" do
+      describe "can edit request " do
 
         it "should accept either a ssr or sr as an argument" do
           user.can_edit_request_from_user_portal?(service_request).should eq(true)

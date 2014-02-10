@@ -201,6 +201,46 @@ class LineItem < ActiveRecord::Base
     self.service.organization
   end
 
+  def check_service_relations line_items
+    # Get the relations for this line item and others to this line item
+    service_relations = ServiceRelation.find_all_by_service_id(self.service_id)
+    related_service_relations = ServiceRelation.find_all_by_related_service_id(self.service_id)
+
+    # Narrow the list to those with linked quantities
+    service_relations = service_relations.reject { |sr| sr.linked_quantity == false }
+    related_service_relations = related_service_relations.reject { |sr| sr.linked_quantity == false }
+
+    # Check to see if this line item even has a relation
+    return true if service_relations.empty? && related_service_relations.empty?
+
+    # Check to see that the quanties are less than the max together
+    service_relations.each do |sr|
+      # Check to see if the request has the service in the relation
+      line_item = line_items.detect { |li| li.service_id == sr.related_service_id }
+      next unless line_item
+
+      if self.quantity + line_item.quantity > sr.linked_quantity_total
+        errors.add(:invalid_total, "The quantity between #{self.service.name} and #{line_item.service.name} is greater than linked quantity total which is #{sr.linked_quantity_total}")
+        return false
+      end
+    end
+
+    # Check to see that the quanties are less than the max together
+    related_service_relations.each do |sr|
+      # Check to see if the request has the service in the relation
+      line_item = line_items.detect { |li| li.service_id == sr.service_id }
+      next unless line_item
+
+      if self.quantity + line_item.quantity > sr.linked_quantity_total
+        errors.add(:invalid_total, "The quantity between #{self.service.name} and #{line_item.service.name} is greater than linked quantity total which is #{sr.linked_quantity_total}")
+        return false
+      end
+    end
+
+    return true
+
+  end
+
   private
 
   def remove_procedures

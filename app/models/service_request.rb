@@ -321,18 +321,22 @@ class ServiceRequest < ActiveRecord::Base
     per_patient_per_visit_line_items.count > 0
   end
 
-  def total_direct_costs_per_patient arms=self.arms
+  def total_direct_costs_per_patient arms=self.arms, line_items=nil
     total = 0.0
+    lids = line_items.map(&:id) unless line_items.nil?
     arms.each do |arm|
-      total += arm.direct_costs_for_visit_based_service
+      livs = line_items.nil? ? arm.line_items_visits : arm.line_items_visits.reject{|liv| !lids.include? liv.line_item_id}
+      total += arm.direct_costs_for_visit_based_service livs
     end
 
     total
   end
 
-  def total_indirect_costs_per_patient arms=self.arms
+  def total_indirect_costs_per_patient arms=self.arms, line_items=nil
     total = 0.0
+    lids = line_items.map(&:id) unless line_items.nil?
     arms.each do |arm|
+      livs = line_items.nil? ? arm.line_items_visits : arm.line_items_visits.reject{|liv| !lids.include? liv.line_item_id}
       total += arm.indirect_costs_for_visit_based_service
     end
 
@@ -366,11 +370,11 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def direct_cost_total line_items=self.line_items
-    self.total_direct_costs_one_time(line_items) + self.total_direct_costs_per_patient
+    self.total_direct_costs_one_time(line_items) + self.total_direct_costs_per_patient(self.arms, line_items)
   end
 
   def indirect_cost_total line_items=self.line_items
-    self.total_indirect_costs_one_time(line_items) + self.total_indirect_costs_per_patient
+    self.total_indirect_costs_one_time(line_items) + self.total_indirect_costs_per_patient(self.arms, line_items)
   end
 
   def grand_total line_items=self.line_items

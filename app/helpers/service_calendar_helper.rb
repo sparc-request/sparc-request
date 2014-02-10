@@ -45,24 +45,28 @@ module ServiceCalendarHelper
   end
 
   # Displays max totals per patient
-  def display_max_total_direct_cost_per_patient arm
-    sum = arm.maximum_direct_costs_per_patient
+  def display_max_total_direct_cost_per_patient arm, line_items_visits=nil
+    line_items_visits ||= arm.line_items_visits
+    sum = arm.maximum_direct_costs_per_patient line_items_visits
     currency_converter sum
   end
 
-  def display_max_total_indirect_cost_per_patient arm
-    sum = arm.maximum_indirect_costs_per_patient
+  def display_max_total_indirect_cost_per_patient arm, line_items_visits=nil
+    line_items_visits ||= arm.line_items_visits
+    sum = arm.maximum_indirect_costs_per_patient line_items_visits
     currency_converter sum
   end
 
-  def display_max_total_cost_per_patient arm
-    sum = arm.maximum_total_per_patient
+  def display_max_total_cost_per_patient arm, line_items_visits=nil
+    line_items_visits ||= arm.line_items_visits
+    sum = arm.maximum_total_per_patient line_items_visits
     currency_converter sum
   end
 
-  def display_total_cost_per_arm arm
+  def display_total_cost_per_arm arm, line_items_visits=nil
+    line_items_visits ||= arm.line_items_visits
     sum = 0
-    sum = arm.total_costs_for_visit_based_service
+    sum = arm.total_costs_for_visit_based_service(line_items_visits)
     currency_converter sum
   end
 

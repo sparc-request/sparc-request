@@ -23,7 +23,7 @@ $(document).ready ->
               of: $('#sparc_logo_header')
             autoOpen: false
             modal: true
-            width: 920
+            width: 980
             title: 'SPARC Request Satisfaction Survey'
             closeOnEscape: false
 

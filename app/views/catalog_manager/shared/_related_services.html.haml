@@ -5,8 +5,8 @@
         %tr
           %th= t("cm_shared.labels.service")
           %th= t("cm_shared.labels.required")
-          %th= label_tag "Linked Quantity?"
-          %th= label_tag "Linked Quantity Total"
+          %th= t("cm_shared.labels.linked_quantity")
+          %th= t("cm_shared.labels.linked_total")
           %th= t("cm_shared.lables.delete")
       %tbody
         - entity.service_relations.each do |service_relation|

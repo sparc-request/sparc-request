@@ -309,6 +309,8 @@ en:
       survey_name: "Survey"
       new_associated_survey: "New Associated Survey"
       select_survey: "Please select a survey"
+      linked_quantity: "Linked Quantity?"
+      linked_total: "Linked Quantity Total"
     title: "SPARC Request Services Catalog"
 
   # user search partial

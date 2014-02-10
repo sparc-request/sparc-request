@@ -220,7 +220,7 @@ class LineItem < ActiveRecord::Base
       next unless line_item
 
       if self.quantity + line_item.quantity > sr.linked_quantity_total
-        errors.add(:invalid_total, "The quantity between #{self.service.name} and #{line_item.service.name} is greater than linked quantity total which is #{sr.linked_quantity_total}")
+        errors.add(:invalid_total, "The quantity between #{self.service.name} and #{line_item.service.name} is greater than the total quantity amount allowed which is #{sr.linked_quantity_total}")
         return false
       end
     end
@@ -232,7 +232,7 @@ class LineItem < ActiveRecord::Base
       next unless line_item
 
       if self.quantity + line_item.quantity > sr.linked_quantity_total
-        errors.add(:invalid_total, "The quantity between #{self.service.name} and #{line_item.service.name} is greater than linked quantity total which is #{sr.linked_quantity_total}")
+        errors.add(:invalid_total, "The quantity between #{self.service.name} and #{line_item.service.name} is greater than the total quantity amount allowed which is #{sr.linked_quantity_total}")
         return false
       end
     end

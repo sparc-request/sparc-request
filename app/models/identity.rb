@@ -198,8 +198,12 @@ class Identity < ActiveRecord::Base
   # Based on a user's rights, determines whether an identity can edit a service request or a sub service request.
   def can_edit_request? request
     can_edit = false
-    if (request.class == ServiceRequest) && (!self.project_roles.select{|pr| pr.protocol_id == request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights}.empty?)
-      can_edit = true
+    if request.class == ServiceRequest 
+      if (request.service_requester_id == self.id or request.service_requester_id.nil?)
+        can_edit = true
+      elsif (!self.project_roles.select{|pr| pr.protocol_id == request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights}.empty?)
+        can_edit = true
+      end
     elsif (request.class == SubServiceRequest) && (!self.project_roles.select{|pr| pr.protocol_id == request.service_request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights}.empty?)
       can_edit = true
     end

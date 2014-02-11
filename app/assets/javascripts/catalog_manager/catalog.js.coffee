@@ -184,6 +184,14 @@ $ ->
     $.post '/catalog_manager/services/set_optional', {service_relation_id: $(this).attr('id'), optional: $(this).val()}, (data) ->
         $('#rs_info').html(data)
 
+  $('.linked_quantity').live 'click', ->
+    $.post '/catalog_manager/services/set_linked_quantity', {service_relation_id: $(this).data('service_relation_id'), linked_quantity: $(this).val()}, (data) ->
+        $('#rs_info').html(data)
+
+  $('.linked_quantity_total').live 'change', ->
+    $.post '/catalog_manager/services/set_linked_quantity_total', {service_relation_id: $(this).data('service_relation_id'), linked_quantity_total: $(this).val()}, (data) ->
+        $('#rs_info').html(data)
+
   # clinical work fulfillment
   $('.cwf input[type=checkbox]').live 'click', ->
     if $(this).is(":checked")

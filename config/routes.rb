@@ -105,6 +105,8 @@ SparcRails::Application.routes.draw do
     match 'services/associate' => 'services#associate'
     match 'services/disassociate' => 'services#disassociate'
     match 'services/set_optional' => 'services#set_optional'
+    match 'services/set_linked_quantity' => 'services#set_linked_quantity'
+    match 'services/set_linked_quantity_total' => 'services#set_linked_quantity_total'
     match 'services/get_updated_rate_maps' => 'services#get_updated_rate_maps'
 
     resources :catalog do

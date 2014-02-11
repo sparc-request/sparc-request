@@ -172,10 +172,24 @@ $(document).ready ->
     return false
 
   update_otf_line_item = (obj) ->
+    original_val = $(obj).attr('previous_quantity')
     $('.service_calendar_spinner').show()
     $.ajax
       type: 'PUT'
       url: $(obj).attr('update') + "&val=#{$(obj).val()}"
+      success: ->
+        $(obj).attr('previous_quantity', $(obj).val())
+      error: (jqXHR, textStatus, errorThrown) ->
+        if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
+          errors = JSON.parse(jqXHR.responseText)
+        else
+          errors = [textStatus]
+        for error in errors
+          # May need to include something to allow error.humanize like we do elsewhere
+          # if this gets weird looking.
+          alert(error);
+          $(obj).val(original_val)
+          $(obj).attr('current_quantity', original_val)
     .complete =>
       $('.service_calendar_spinner').hide()
 

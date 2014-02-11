@@ -36,14 +36,21 @@ class Portal::LineItemsController < Portal::BaseController
     @sub_service_request = @line_item.sub_service_request
     @service_request = @sub_service_request.service_request
     @study_tracker = params[:study_tracker] == "true"
+
+    updated_service_relations = true
+    if params[:quantity]
+      one_time_fees = @service_request.one_time_fee_line_items
+      @line_item.quantity = params[:quantity]
+      updated_service_relations = @line_item.check_service_relations(one_time_fees)
+    end
   
-    if @line_item.update_attributes(params[:line_item])
+    if updated_service_relations && @line_item.update_attributes(params[:line_item])
       @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.is_one_time_fee?}
       render 'portal/sub_service_requests/add_otf_line_item'
     else
       @line_item.reload
       respond_to do |format|
-        format.js { render :status => 500, :json => clean_errors(@line_item.errors) } 
+        format.js { render :status => 500, :json => clean_errors(@line_item.errors) }
       end
     end
   end
@@ -110,7 +117,14 @@ class Portal::LineItemsController < Portal::BaseController
 end
 
 def update_otf_line_item
-  if @line_item.update_attributes(params[:line_item])
+  updated_service_relations = true
+  if params[:quantity]
+    one_time_fees = @service_request.one_time_fee_line_items
+    @line_item.quantity = params[:quantity]
+    updated_service_relations = @line_item.check_service_relations(one_time_fees)
+  end
+
+  if updated_service_relations && @line_item.update_attributes(params[:line_item])
     # Have to reload the service request to get the correct direct cost total for the subsidy
     @subsidy.try(:sub_service_request).try(:reload)
     @subsidy.try(:fix_pi_contribution, @percent)

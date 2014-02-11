@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131220165307) do
+ActiveRecord::Schema.define(:version => 20140204201913) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -746,9 +746,11 @@ ActiveRecord::Schema.define(:version => 20131220165307) do
     t.integer  "service_id"
     t.integer  "related_service_id"
     t.boolean  "optional"
-    t.datetime "created_at",         :null => false
-    t.datetime "updated_at",         :null => false
+    t.datetime "created_at",                               :null => false
+    t.datetime "updated_at",                               :null => false
     t.datetime "deleted_at"
+    t.boolean  "linked_quantity",       :default => false
+    t.integer  "linked_quantity_total"
   end
 
   add_index "service_relations", ["related_service_id"], :name => "index_service_relations_on_related_service_id"

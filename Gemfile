@@ -51,6 +51,7 @@ gem "audited-activerecord", "~> 3.0"
 
 gem 'surveyor'
 
+gem 'simplecov', :require => false, :group => :test
 gem 'google_calendar'
 
 group :development, :test, :profile do

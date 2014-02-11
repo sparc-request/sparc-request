@@ -42,4 +42,9 @@ SparcRails::Application.configure do
   config.action_mailer.delivery_method = :letter_opener
 
   config.log_level = :debug
+
+  # Stuff to do on each request
+  config.to_prepare do
+    DeviseFilters.add_filters
+  end
 end

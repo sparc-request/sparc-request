@@ -90,7 +90,7 @@ class Arm < ActiveRecord::Base
     self.maximum_direct_costs_per_patient(line_items_visits) + maximum_indirect_costs_per_patient(line_items_visits)
   end
 
-  def direct_costs_for_visit_based_service
+  def direct_costs_for_visit_based_service line_items_visits=self.line_items_visits
     total = 0.0
     line_items_visits.each do |vg|
       total += vg.direct_costs_for_visit_based_service
@@ -98,7 +98,7 @@ class Arm < ActiveRecord::Base
     return total
   end
 
-  def indirect_costs_for_visit_based_service
+  def indirect_costs_for_visit_based_service line_items_visits=self.line_items_visits
     total = 0.0
     line_items_visits.each do |vg|
       total += vg.indirect_costs_for_visit_based_service
@@ -106,8 +106,8 @@ class Arm < ActiveRecord::Base
     return total
   end
 
-  def total_costs_for_visit_based_service
-    direct_costs_for_visit_based_service + indirect_costs_for_visit_based_service
+  def total_costs_for_visit_based_service line_items_visits=self.line_items_visits
+    direct_costs_for_visit_based_service(line_items_visits) + indirect_costs_for_visit_based_service(line_items_visits)
   end
   
   def add_visit position=nil, day=nil, window=0, name=''

@@ -3,6 +3,7 @@ class Appointment < ActiveRecord::Base
 
   belongs_to :calendar
   belongs_to :visit_group
+  belongs_to :organization
   has_many :procedures, :dependent => :destroy
   has_many :visits, :through => :procedures
   has_many :notes
@@ -53,8 +54,6 @@ class Appointment < ActiveRecord::Base
     end
   end
   
-  # TODO
-  # Update this method when the new core specific completed dates are added
   def completed_for_core? (core_id)
     if self.completed? && (self.organization_id == core_id)
       return true
@@ -63,16 +62,6 @@ class Appointment < ActiveRecord::Base
     end
   end
 
-  # def create_appointment_completions
-  #   cores = []
-  #   cores = Organization.where(show_in_cwf: true)
-
-  #   cores.each do |core|
-  #     if self.appointment_completions.where(:organization_id => core.id).empty?
-  #       self.appointment_completions.create(:organization_id => core.id) 
-  #     end
-  #   end
-  # end
 
   def display_name
     name_switch 
@@ -80,7 +69,7 @@ class Appointment < ActiveRecord::Base
   
   ### audit reporting methods ###
  
-  def audit_label
+  def audit_label audit
     name_switch
   end
 

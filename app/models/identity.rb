@@ -195,43 +195,21 @@ class Identity < ActiveRecord::Base
     end
   end
 
-  # Determines whether this identity (that is a user) can edit a service request based on its status.
-  # Users can only edit service requests (as a whole) if none of their constituent sub_service_requests
-  # have been moved out of 'draft' or 'submitted' status.
-  def can_edit_service_request? service_request
-    # things to consider
-    # service_request status == first_draft or draft or submitted or obtain_research_pricing
-    # if all sub_service_request statuses == all draft or all submitted, no mix and match
-    # identity project role, i believe only request and approve can edit
-    statuses = ['draft', 'submitted', 'obtain_research_pricing']
-
-    if service_request.status == 'first_draft' and (service_request.service_requester_id == self.id or service_request.service_requester_id.nil?)
-      return true
-    else
-      sub_service_requests_statuses = service_request.sub_service_requests.map(&:status)
-      if statuses.include?(service_request.status) and
-         (sub_service_requests_statuses.map{|s| s == 'draft'}.all? or sub_service_requests_statuses.map{|s| s == 'submitted'}.all? or sub_service_requests_statuses.map{|s| s == 'obtain_research_pricing'}.all?) and
-         !self.project_roles.select{|pr| pr.protocol_id == service_request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights}.empty?
-        return true
+  # As per Lane, a request's status is no longer a factor for editing. 
+  # Only users with request or approve rights can edit.
+  def can_edit_request? request
+    can_edit = false
+    if request.class == ServiceRequest
+      if request.service_requester_id == self.id or request.service_requester_id.nil?
+        can_edit = true
+      elsif !self.project_roles.select{|pr| pr.protocol_id == request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights}.empty?
+        can_edit = true
       end
+    elsif (request.class == SubServiceRequest) && (!self.project_roles.select{|pr| pr.protocol_id == request.service_request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights}.empty?)
+      can_edit = true
     end
 
-    return false
-  end
-
-  # Determines whether this identity (that is a user) can edit a given sub_service_request that is
-  # a child of this service request.
-  # TODO: Not sure why this method is on the ServiceRequest rather than on the SubServiceRequest
-  def can_edit_sub_service_request? sub_service_request
-    # things to consider
-    # 1. sub_service_requests statuses == draft or submitted or obtain_research_pricing
-    # 2. identity project role, i believe only request and approve can edit
-    if (sub_service_request.status == 'draft' or sub_service_request.status == 'submitted' or sub_service_request.status == 'obtain_research_pricing') and
-       self.project_roles.select{|pr| pr.protocol_id == sub_service_request.service_request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights}
-      return true
-    end
-
-    return false
+    can_edit
   end
 
   # Determines whether this identity can edit a given organization's information in CatalogManager.
@@ -330,6 +308,7 @@ class Identity < ActiveRecord::Base
   end
 
   def clinical_provider_rights?
+    #TODO should look at all tagged with CTRC
     org = Organization.tagged_with("ctrc").first
     if !self.clinical_providers.empty? or self.admin_organizations({:su_only => true}).include?(org)
       return true
@@ -339,6 +318,7 @@ class Identity < ActiveRecord::Base
   end
 
   def clinical_provider_for_ctrc?
+    #TODO should look at all tagged with CTRC
     org = Organization.tagged_with("ctrc").first
     self.clinical_providers.each do |provider|
       if provider.organization_id == org.id
@@ -409,7 +389,7 @@ class Identity < ActiveRecord::Base
 
       end
     end
-
+    
     hash
   end
 
@@ -439,5 +419,4 @@ class Identity < ActiveRecord::Base
 
     notification_count
   end
-
 end

@@ -4,6 +4,7 @@
 = form_tag navigate_service_request_path(@service_request), {:id => 'navigation_form', :class => 'service-request-setup-view'} do
   = hidden_field_tag :location, ''
   = hidden_field_tag :validates, ''
+  = hidden_field_tag :current_location, @page
   = render :partial => 'steps'
   = render :partial => 'errors'
   .grid_9

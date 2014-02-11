@@ -52,6 +52,7 @@ $(document).ready ->
     data = {}
     data[key] = $(this).val()
     data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
+    data['line_items_visit_id'] = $(this).parents("tr").data("line_items_visit_id") || null
     put_attribute(object_id, klass, data)
   )
 
@@ -259,6 +260,7 @@ $(document).ready ->
         text: "Submit"
         click: ->
           $("#visit-form").submit()
+          $("#submit_visit").attr("disabled", true).addClass("ui-state-disabled")
       },
       {
         id: "cancel_visit"
@@ -298,6 +300,9 @@ $(document).ready ->
           errors = [textStatus]
         for error in errors
           $().toastmessage('showErrorToast', "#{error.humanize()}.");
+      complete: ->
+        $("#submit_visit").attr("disabled", false).removeClass("ui-state-disabled")
+
 
   $(document).on('click', '.delete_visit_link', ->
     sr_id = $(this).data('service_request_id')

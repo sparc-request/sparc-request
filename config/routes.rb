@@ -49,6 +49,7 @@ SparcRails::Application.routes.draw do
         put 'rename_visit'
         put 'set_day'
         put 'set_window'
+        put 'update_otf_qty_and_units_per_qty'
       end
     end
 
@@ -104,6 +105,8 @@ SparcRails::Application.routes.draw do
     match 'services/associate' => 'services#associate'
     match 'services/disassociate' => 'services#disassociate'
     match 'services/set_optional' => 'services#set_optional'
+    match 'services/set_linked_quantity' => 'services#set_linked_quantity'
+    match 'services/set_linked_quantity_total' => 'services#set_linked_quantity_total'
     match 'services/get_updated_rate_maps' => 'services#get_updated_rate_maps'
 
     resources :catalog do
@@ -112,6 +115,7 @@ SparcRails::Application.routes.draw do
         delete :remove_excluded_funding_source
         post :remove_associated_survey
         post :add_associated_survey
+        post :remove_submission_email
       end
     end
 
@@ -145,6 +149,14 @@ SparcRails::Application.routes.draw do
     match 'appointments/add_service' => 'calendars#add_service'
 
     root :to => 'home#index'
+
+    resources :home do
+      collection do
+        get :billing_report_setup
+        post :billing_report
+      end
+    end
+
     resources :sub_service_requests do
       resources :calendars
       resources :cover_letters
@@ -277,6 +289,11 @@ SparcRails::Application.routes.draw do
   end
 
   resources :reports do
+    collection do
+      get :setup
+      post :generate
+    end
+
     member do
       get :research_project_summary
       post :cwf_audit

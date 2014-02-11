@@ -165,6 +165,22 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     render :partial => 'catalog_manager/shared/related_services', :locals => {:entity => service}
   end
 
+  def set_linked_quantity
+    service_relation = ServiceRelation.find params[:service_relation_id]
+    service = service_relation.service
+
+    service_relation.update_attributes(:linked_quantity => params[:linked_quantity], :linked_quantity_total => nil)
+    render :partial => 'catalog_manager/shared/related_services', :locals => {:entity => service}
+  end
+
+  def set_linked_quantity_total
+    service_relation = ServiceRelation.find params[:service_relation_id]
+    service = service_relation.service
+
+    service_relation.update_attribute(:linked_quantity_total, params[:linked_quantity_total])
+    render :partial => 'catalog_manager/shared/related_services', :locals => {:entity => service}
+  end
+
   def search
     term = params[:term].strip
     services = Service.where("name LIKE '%#{term}%' OR abbreviation LIKE '%#{term}%' OR cpt_code LIKE '%#{term}%'")

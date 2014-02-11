@@ -30,7 +30,8 @@
           %td{:colspan => 2}
             = select_tag "delete_visit_position", visits_for_delete(@selected_arm)
             %br
-            = link_to t(:fulfillments)[:services][:visits][:delete_link], 'javascript:void(0);', :class => "delete_visit_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id
+            - if show_delete_visit_link?(@selected_arm)
+              = link_to t(:fulfillments)[:services][:visits][:delete_link], 'javascript:void(0);', :class => "delete_visit_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id
           %td{:colspan => 2}
     #service_calendar
       - if @study_tracker

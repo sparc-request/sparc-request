@@ -68,10 +68,16 @@ class LineItem < ActiveRecord::Base
 
   # Get the number of units per package as specified in the pricing map.
   # Assumes 1 as the default, if the pricing map does not have a unit
-  # factor.
+  # factor.  If the pricing map is a one time fee, the units per package
+  # are one.
   def units_per_package
-    unit_factor = self.service.displayed_pricing_map.unit_factor
-    units_per_package = unit_factor || 1
+    unless self.service.displayed_pricing_map.is_one_time_fee
+      unit_factor = self.service.displayed_pricing_map.unit_factor
+      units_per_package = unit_factor || 1
+    else
+      units_per_package = 1
+    end
+
     return units_per_package
   end
 
@@ -98,10 +104,12 @@ class LineItem < ActiveRecord::Base
 
   # Determine the direct costs for a visit-based service for one subject
   def direct_costs_for_visit_based_service_single_subject(line_items_visit)
-    result = line_items_visit.connection.execute("SELECT SUM(research_billing_qty) FROM visits WHERE line_items_visit_id=#{line_items_visit.id} AND research_billing_qty >= 1")
-    research_billing_qty_total = result.to_a[0][0] || 0
+    # line items visit should also check that it's for the correct protocol
+    return 0.0 unless service_request.protocol_id == line_items_visit.arm.protocol_id
+    
+    research_billing_qty_total = line_items_visit.visits.sum(&:research_billing_qty)
+    
     subject_total = research_billing_qty_total * per_unit_cost(quantity_total(line_items_visit))
-
     subject_total
   end
 
@@ -191,6 +199,46 @@ class LineItem < ActiveRecord::Base
   # Need this for filtering ssr's by user on the cfw home page
   def core    
     self.service.organization
+  end
+
+  def check_service_relations line_items
+    # Get the relations for this line item and others to this line item
+    service_relations = ServiceRelation.find_all_by_service_id(self.service_id)
+    related_service_relations = ServiceRelation.find_all_by_related_service_id(self.service_id)
+
+    # Narrow the list to those with linked quantities
+    service_relations = service_relations.reject { |sr| sr.linked_quantity == false }
+    related_service_relations = related_service_relations.reject { |sr| sr.linked_quantity == false }
+
+    # Check to see if this line item even has a relation
+    return true if service_relations.empty? && related_service_relations.empty?
+
+    # Check to see that the quanties are less than the max together
+    service_relations.each do |sr|
+      # Check to see if the request has the service in the relation
+      line_item = line_items.detect { |li| li.service_id == sr.related_service_id }
+      next unless line_item
+
+      if self.quantity + line_item.quantity > sr.linked_quantity_total
+        errors.add(:invalid_total, "The quantity between #{self.service.name} and #{line_item.service.name} is greater than the total quantity amount allowed which is #{sr.linked_quantity_total}")
+        return false
+      end
+    end
+
+    # Check to see that the quanties are less than the max together
+    related_service_relations.each do |sr|
+      # Check to see if the request has the service in the relation
+      line_item = line_items.detect { |li| li.service_id == sr.service_id }
+      next unless line_item
+
+      if self.quantity + line_item.quantity > sr.linked_quantity_total
+        errors.add(:invalid_total, "The quantity between #{self.service.name} and #{line_item.service.name} is greater than the total quantity amount allowed which is #{sr.linked_quantity_total}")
+        return false
+      end
+    end
+
+    return true
+
   end
 
   private

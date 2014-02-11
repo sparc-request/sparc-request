@@ -38,13 +38,14 @@ describe 'as a user on catalog page', :js => true do
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
       page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15    
       wait_for_javascript_to_finish            
+      find(".otf_checkbox", :visible => true).click # set to a per patient map so fields can be filled in
+      wait_for_javascript_to_finish 
 
       ## using find('selector').set('value') was the only thing I could get to work with these fields.
       find("input[id$='full_rate']").set(3800) ## change the service rate
-      find("input[id$='unit_type']").set("Each") ## change the quantity type
-      find("input[id$='unit_minimum']").set(2) ## change the unit minimum
-      find("input[id$='units_per_qty_max']").set(2) ## change the units per qty max
-      page.execute_script %Q{ $("input[id$='units_per_qty_max']").change() }
+      find(".service_unit_type").set("Each") ## change the quantity type
+      find(".service_unit_minimum").set(2) ## change the unit minimum
+      find("input[id$='full_rate']").click
       wait_for_javascript_to_finish
     end
 
@@ -61,7 +62,46 @@ describe 'as a user on catalog page', :js => true do
       find("input[id$='full_rate']").set(2000) 
       find("input[id$='full_rate']").native.send_keys(:return)
       wait_for_javascript_to_finish
+      page.execute_script("$('.ui-accordion-header:nth-of-type(2)').click()")
+      wait_for_javascript_to_finish
       find("input[id$='full_rate']").should have_value("2,000.00")
+    end
+  end
+
+  describe 'per patient validations' do
+    before :each do
+      page.execute_script("$('.ui-accordion > div:nth-of-type(2)').click()")
+      find(".otf_checkbox", :visible => true).click
+      wait_for_javascript_to_finish
+    end
+
+    it "should display the per patient error message if a field is blank" do
+      find(".service_unit_type", :visible => true).set("")
+      find(".otf_checkbox", :visible => true).click
+      find(".otf_checkbox", :visible => true).click
+      wait_for_javascript_to_finish
+      page.should have_content("Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps.")
+    end
+
+    it "should hide the error message if one time fees is clicked" do
+      find(".service_unit_type", :visible => true).set("")
+      find(".otf_checkbox", :visible => true).click
+      find(".otf_checkbox", :visible => true).click
+      wait_for_javascript_to_finish
+      page.should have_content("Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps.")
+      find(".otf_checkbox", :visible => true).click
+      page.should_not have_content("Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps.")
+    end
+
+    it "should hide the error message if that field is filled back in" do
+      find(".service_unit_type", :visible => true).set("")
+      find(".otf_checkbox", :visible => true).click
+      find(".otf_checkbox", :visible => true).click
+      wait_for_javascript_to_finish
+      find(".service_unit_type", :visible => true).set("Each")
+      find(".service_unit_factor", :visible => true).click
+      wait_for_javascript_to_finish
+      page.should_not have_content("Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps.")
     end
   end
 
@@ -73,8 +113,11 @@ describe 'as a user on catalog page', :js => true do
 
     it "should set the one time fee attribute to false when unchecked" do
       service = Service.find_by_abbreviation("CDW")
-
-      find("td.is_one_time_fee > input", :visible => true).click
+      find(".otf_checkbox", :visible => true).click
+      wait_for_javascript_to_finish
+      find(".service_unit_type", :visible => true).set("Each")
+      wait_for_javascript_to_finish
+      find(".service_unit_minimum", :visible => true).click
       wait_for_javascript_to_finish
 
       page.execute_script %Q{ $(".save_button").click() }
@@ -82,6 +125,40 @@ describe 'as a user on catalog page', :js => true do
 
       service.reload
       retry_until { service.is_one_time_fee?.should eq(false) }
+    end
+
+    context 'validations' do
+
+      it "should display the one time fee error message if a field is blank" do
+        find(".otf_quantity_type", :visible => true).set("")
+        find(".otf_checkbox", :visible => true).click
+        find(".otf_checkbox", :visible => true).click
+        wait_for_javascript_to_finish
+        page.should have_content("If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.")
+      end
+
+      it "should hide the error message if that field is filled back in" do
+        find(".otf_quantity_type", :visible => true).set("")
+        find(".otf_checkbox", :visible => true).click
+        find(".otf_checkbox", :visible => true).click
+        wait_for_javascript_to_finish
+        page.should have_content("If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.")
+        find(".otf_quantity_type", :visible => true).set("Each")
+        find(".otf_quantity_minimum", :visible => true).click
+        wait_for_javascript_to_finish
+        page.should_not have_content("If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.")
+      end
+   
+      it "should hide the error message if the one time fee box is unchecked" do  
+        find(".otf_quantity_type", :visible => true).set("")
+        find(".otf_checkbox", :visible => true).click
+        find(".otf_checkbox", :visible => true).click
+        wait_for_javascript_to_finish
+        page.should have_content("If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.")
+        find(".otf_checkbox", :visible => true).click
+        wait_for_javascript_to_finish
+        page.should_not have_content("If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.")
+      end
     end
   end
 end

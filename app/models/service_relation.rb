@@ -7,5 +7,7 @@ class ServiceRelation < ActiveRecord::Base
   attr_accessible :service_id
   attr_accessible :related_service_id
   attr_accessible :optional
+  attr_accessible :linked_quantity
+  attr_accessible :linked_quantity_total
 end
 

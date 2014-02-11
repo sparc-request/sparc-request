@@ -1,40 +1,37 @@
 .devise_form#login{:style => "padding-left:0"}
   - if USE_SHIBOLETH
-    .grid_6.prefix_3.suffix_3.box
+    .grid_6.prefix_3.suffix_3.box.sign_in_selection#shibboleth_sign_in_button
       .info
-        %h2.center
-          = t(:signin)[:message1]
-          %br
-          = t(:signin)[:message2]
-        %br
         .center
-          = button_to t(:signin)[:button1], identity_omniauth_authorize_path(:shibboleth), :class => 'btn ui-button ui-widget ui-state-default ui-corner-all'
-
-        %br
-
+          .blue-button.devise_option_button= link_to t(:signin)[:button1], identity_omniauth_authorize_path(:shibboleth)
   .clear
-  %br
-  .grid_6.prefix_3.suffix_3.box
-    .info
-      %h2.center
-        = t(:signin)[:message3]
-        %br
-        = t(:signin)[:message4]
-
-      = form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
-        .field
-          = f.label(:ldap_uid, t(:login_name))
-          = f.text_field :ldap_uid, :size => '30', :style => 'width:auto'
-        .field
-          = f.label(:password, t(:login_password))
-          = f.password_field :password
-        - if devise_mapping.rememberable?
-          .field
-            = f.check_box :remember_me
-            = f.label(:remember_me, t(:remember_user))
-        #button
-          = f.submit t(:signin)[:button2], {:class => 'btn ui-button ui-widget ui-state-default ui-corner-all'}
-        .clear
-    .links
-      = render "devise/shared/links"
+  .sign_in_options
     %br
+    \- OR -
+    %br
+    %br
+  .clear
+  .grid_6.prefix_3.suffix_3.box.sign_in_selection
+    .info
+      .center
+        .blue-button.devise_option_button= link_to t(:signin)[:button2], "javascript:void(0);", :class => 'toggle_outside_user_sign_in'
+
+      #outside_sign_in_form
+        = form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
+          .field
+            = f.label(:ldap_uid, t(:login_name))
+            = f.text_field :ldap_uid, :size => '30', :style => 'width:auto'
+          .field
+            = f.label(:password, t(:login_password))
+            = f.password_field :password
+          - if devise_mapping.rememberable?
+            .field
+              = f.check_box :remember_me
+              = f.label(:remember_me, t(:remember_user))
+          #button
+            .blue-button.devise_submit_button= f.submit t(:signin)[:button3]
+            .blue-button.devise_cancel_button= link_to t(:devise)[:cancel], catalog_service_request_path(@service_request)
+        .clear
+        .links
+          = render "devise/shared/links"
+        %br

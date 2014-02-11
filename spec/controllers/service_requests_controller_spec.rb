@@ -564,7 +564,7 @@ describe ServiceRequestsController do
       service.pricing_maps[0].update_attributes(
           display_date: Date.today,
           is_one_time_fee: true,
-          unit_minimum: 42)
+          quantity_minimum: 42)
       service
     }
 
@@ -576,7 +576,7 @@ describe ServiceRequestsController do
       service.pricing_maps[0].update_attributes(
           display_date: Date.today,
           is_one_time_fee: true,
-          unit_minimum: 54)
+          quantity_minimum: 54)
       service
     }
 

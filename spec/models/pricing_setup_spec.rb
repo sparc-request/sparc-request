@@ -43,6 +43,12 @@ describe 'PricingSetup' do
     end
   end
 
+    it 'should return zero if the applied percentage is zero' do
+      pricing_setup = FactoryGirl.build(:pricing_setup)
+      pricing_setup.federal = 0
+      pricing_setup.applied_percentage('federal').should eq 0.0
+    end
+
   describe "create pricing maps" do
 
     let!(:program)       { FactoryGirl.create(:program) }

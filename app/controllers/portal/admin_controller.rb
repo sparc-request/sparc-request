@@ -7,7 +7,7 @@ class Portal::AdminController < Portal::BaseController
     
     redirect_to root_path if @user.admin_organizations.empty?
   end
-
+  
   def delete_toast_message
     @message = ToastMessage.find(params[:id])
     @message.destroy

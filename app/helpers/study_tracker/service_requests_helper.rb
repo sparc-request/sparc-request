@@ -30,4 +30,15 @@ module StudyTracker::ServiceRequestsHelper
       return organization.try(:name)
     end
   end
+
+  def procedures_for_visit_group appointments
+    procedures = []
+    if appointments
+      appointments.each do |app|
+        procedures << app.procedures.select{|x| x.appointment.completed_for_core?(x.core.id)}
+      end
+    end
+
+    procedures.flatten
+  end
 end

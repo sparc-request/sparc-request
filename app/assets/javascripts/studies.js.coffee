@@ -195,6 +195,6 @@ $(document).ready ->
 
   $('#iacuc_expiration_date').attr("readOnly", true)
 
-#This is to disabled the submit after you click once, so you can't fire multiple posts at once.
-$("form").submit ->
-   $('input[type=image]').attr('disabled', 'disabled')
+  #This is to disabled the submit after you click once, so you can't fire multiple posts at once.
+  $("form").submit ->
+    $('input[type=image]').attr('disabled', 'disabled')

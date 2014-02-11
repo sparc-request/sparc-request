@@ -71,15 +71,16 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
   def get_calendar_data(calendar)
     # Get the cores
     @cwf_cores = Organization.get_cwf_organizations
-
     @subject = calendar.subject
     @appointments = calendar.appointments.sort{|x,y| x.position_switch <=> y.position_switch }
-
-    
     @default_core = (cookies['current_core'] ? Organization.find(cookies['current_core']) : @cwf_cores.first)
 
-    @uncompleted_appointments = @appointments.reject{|x| x.completed_for_core?(@default_core.id) }
     @completed_appointments = @appointments.select{|x| x.completed?}
+
+    # Used for listing grouped totals in the dashboard
+    @completed_appointments_by_visit_group = completed_appointments_by_visit_group(@completed_appointments)
+
+    uncompleted_appointments = @appointments.reject{|x| x.completed_for_core?(@default_core.id) }
     completed_for_core = @completed_appointments.select{|x| x.completed_for_core?(@default_core.id) }
     number_of_core_appointments = @appointments.size.to_f / @cwf_cores.size.to_f
 
@@ -94,7 +95,14 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
       end
 
       @default_visit_group_id = @subject.arm.visit_groups.first.id
+    else
+      render :partial => 'study_tracker/calendars/subject_calendar_error'
     end
+  end
+
+  # Generates a hash with visit groups as keys and arrays of appointments as values
+  def completed_appointments_by_visit_group appointments
+    appointments.group_by(&:visit_group_id)
   end
 
   def generate_toasts_for_new_procedures

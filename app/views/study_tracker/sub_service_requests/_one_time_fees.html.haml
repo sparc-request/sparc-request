@@ -1,10 +1,11 @@
 %table.service_calendar
   %thead.ui-widget-header
     %tr.table_header
-      %th.services_header{:style => "height: 88px"}= t("calendar_page.headers.services")
-      %th.qty_type_header= t("calendar_page.headers.qty_type")
-      %th.number_of_units_header{:style => "width:130px;"}= t("calendar_page.headers.number_of_units")
-      %th.qty_unit_header{:style => "width:130px;"}= t("calendar_page.headers.qty_unit")
+      %th.services_header{:style => "height: 88px"}= t(:calendar_page)[:headers][:services]
+      %th.qty_type_header= t(:calendar_page)[:headers][:number]
+      %th.number_of_units_header{:style => "width:130px;"}= t(:calendar_page)[:headers][:qty_type]
+      %th.qty_unit_header{:style => "width:130px;"}= t(:calendar_page)[:headers][:number]
+      %th.qty_unit_header{:style => "width:130px;"}= t(:calendar_page)[:headers][:unit_type]
       %th
 
       / %th= image_tag 'spinner.gif', :class => 'service_calendar_spinner'
@@ -12,7 +13,7 @@
 
   %tbody.cell-border
     %tr.section_header
-      %th{:colspan => 5}
+      %th{:colspan => 6}
         = t("calendar_page.headers.other_services")
         
         #nan_error{:style => 'display:none;'}
@@ -37,13 +38,20 @@
     - @service_request.service_list(true).each do |key, value| # get only one time fee services and group them
       - next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
       %tr.sub_section_header
-        %th.otf{:colspan => 5}= value[:name]
+        %th.otf{:colspan => 6}= value[:name]
         - value[:line_items].each do |line_item|
           %tr.line_item.otfs{:class => cycle('odd', '', :name => 'otfs'), :"data-unit_factor" => line_item.service.displayed_pricing_map.unit_factor}
             %td.service_name
               = line_item.service.name
               = hidden_field_tag "service_request[line_items_attributes][#{line_item.id}][id]", line_item.id
-            %td= line_item.service.try(:displayed_pricing_map).try(:unit_type).try(:humanize)
             %td= text_field_tag "quantity", line_item.quantity, :unit_minimum => line_item.service.displayed_pricing_map.unit_minimum, :class => 'line_item_quantity', :"data-line_item_id" => line_item.id, :"data-study_tracker" => true, :current_quantity => line_item.quantity
-            %td= text_field_tag "units_per_quantity", line_item.units_per_quantity, :"data-qty_max" => line_item.service.displayed_pricing_map.units_per_qty_max, :class => "units_per_quantity", :"data-line_item_id" => line_item.id, :"data-study_tracker" => true, :current_units_per_quantity => line_item.units_per_quantity 
+            %td= line_item.service.try(:displayed_pricing_map).try(:quantity_type).try(:humanize)
+            - if line_item.service.try(:displayed_pricing_map).otf_unit_type == 'N/A'
+              %td
+              %td
+            - else
+              %td{:style => "white-space:nowrap; overflow:hidden;"}
+                %span{:style => "padding-right:5px;"} /
+                = text_field_tag "units_per_quantity", line_item.units_per_quantity, :"data-qty_max" => line_item.service.displayed_pricing_map.units_per_qty_max, :class => "units_per_quantity", :"data-line_item_id" => line_item.id, :"data-study_tracker" => true, :current_units_per_quantity => line_item.units_per_quantity 
+              %td= line_item.service.try(:displayed_pricing_map).try(:otf_unit_type).try(:humanize)
             %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-line_item_id' => line_item.id, :class => 'cwf_delete_data')

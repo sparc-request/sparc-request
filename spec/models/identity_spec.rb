@@ -145,6 +145,30 @@ describe "Identity" do
         end
       end
 
+      describe "can edit request from user portal" do
+
+        it "should accept either a ssr or sr as an argument" do
+          user.can_edit_request_from_user_portal?(service_request).should eq(true)
+          user.can_edit_request_from_user_portal?(sub_service_request).should eq(true)
+        end
+
+        it "should return false if the users rights are not 'approve' or request" do
+          project_role.update_attributes(project_rights: 'none')
+          user.can_edit_request_from_user_portal?(service_request).should eq(false)
+          user.can_edit_request_from_user_portal?(sub_service_request).should eq(false)
+        end
+
+        it "should return true no matter what the service request's status is" do
+          service_request.update_attributes(status: 'approved')
+          user.can_edit_request_from_user_portal?(service_request).should eq(true)
+        end
+
+        it "should return true no matter what the sub service request's status is" do
+          sub_service_request.update_attributes(status: 'approved')
+          user.can_edit_request_from_user_portal?(sub_service_request).should eq(true)
+        end
+      end
+
       describe "can edit entity" do
 
         it "should return true if the user is a catalog manager for a given organization" do

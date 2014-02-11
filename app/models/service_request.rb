@@ -87,8 +87,8 @@ class ServiceRequest < ActiveRecord::Base
     if self.protocol_id.blank?
       errors.add(:protocol_id, "You must identify the service request with a study/project before continuing.")
     else
-      if self.has_ctrc_services?
-        if self.protocol && self.protocol.has_ctrc_services?(self.id) && !self.status == 'first_draft'
+      if self.has_ctrc_clinical_services?
+        if self.protocol && self.protocol.has_ctrc_clinical_services?(self.id) && self.status == 'first_draft'
           errors.add(:ctrc_services, "SCTR Research Nexus Services have been removed")
         end
       end
@@ -181,9 +181,12 @@ class ServiceRequest < ActiveRecord::Base
     service = args[:service]
     optional = args[:optional]
     existing_service_ids = args[:existing_service_ids]
+    allow_duplicates = args[:allow_duplicates]
 
     # If this service has already been added, then do nothing
-    return if existing_service_ids.include?(service.id)
+    unless allow_duplicates
+      return if existing_service_ids.include?(service.id)
+    end
 
     line_items = [ ]
 
@@ -191,7 +194,7 @@ class ServiceRequest < ActiveRecord::Base
     line_items << create_line_item(
         service_id: service.id,
         optional: optional,
-        quantity: service.displayed_pricing_map.unit_minimum)
+        quantity: service.displayed_pricing_map.quantity_minimum)
 
     existing_service_ids << service.id
 
@@ -201,7 +204,7 @@ class ServiceRequest < ActiveRecord::Base
         service: rs,
         optional: false,
         existing_service_ids: existing_service_ids)
-      line_items.concat(rs_line_items)
+      rs_line_items.nil? ? line_items : line_items.concat(rs_line_items)
     end
 
     # add optional services to line items
@@ -318,18 +321,22 @@ class ServiceRequest < ActiveRecord::Base
     per_patient_per_visit_line_items.count > 0
   end
 
-  def total_direct_costs_per_patient arms=self.arms
+  def total_direct_costs_per_patient arms=self.arms, line_items=nil
     total = 0.0
+    lids = line_items.map(&:id) unless line_items.nil?
     arms.each do |arm|
-      total += arm.direct_costs_for_visit_based_service
+      livs = line_items.nil? ? arm.line_items_visits : arm.line_items_visits.reject{|liv| !lids.include? liv.line_item_id}
+      total += arm.direct_costs_for_visit_based_service livs
     end
 
     total
   end
 
-  def total_indirect_costs_per_patient arms=self.arms
+  def total_indirect_costs_per_patient arms=self.arms, line_items=nil
     total = 0.0
+    lids = line_items.map(&:id) unless line_items.nil?
     arms.each do |arm|
+      livs = line_items.nil? ? arm.line_items_visits : arm.line_items_visits.reject{|liv| !lids.include? liv.line_item_id}
       total += arm.indirect_costs_for_visit_based_service
     end
 
@@ -363,11 +370,11 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def direct_cost_total line_items=self.line_items
-    self.total_direct_costs_one_time(line_items) + self.total_direct_costs_per_patient
+    self.total_direct_costs_one_time(line_items) + self.total_direct_costs_per_patient(self.arms, line_items)
   end
 
   def indirect_cost_total line_items=self.line_items
-    self.total_indirect_costs_one_time(line_items) + self.total_indirect_costs_per_patient
+    self.total_indirect_costs_one_time(line_items) + self.total_indirect_costs_per_patient(self.arms, line_items)
   end
 
   def grand_total line_items=self.line_items
@@ -439,20 +446,23 @@ class ServiceRequest < ActiveRecord::Base
     return self.line_items.any? { |li| li.should_push_to_epic? }
   end
 
-  def has_ctrc_services?
-    return self.line_items.any? { |li| li.service.is_ctrc? }
+  def has_ctrc_clinical_services?
+    return self.line_items.any? { |li| li.service.is_ctrc_clinical_service? }
   end
 
   def remove_ctrc_services
-    self.sub_service_requests.each do |ssr|
-      ssr.destroy if ssr.ctrc?
-    end
+    self.line_items.each {|li| li.destroy if li.service.is_ctrc_clinical_service? }
+    self.sub_service_requests.each {|sr| sr.destroy if sr.line_items.empty?}
   end
 
   def update_arm_minimum_counts
     self.arms.each do |arm|
       arm.update_minimum_counts
     end
+  end
+
+  def arms_editable?
+    ['first_draft', 'draft', 'submitted', nil, 'obtain_research_pricing'].include?(self.status) ? true : false
   end
 
 end

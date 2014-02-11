@@ -28,7 +28,7 @@
   #dashboard_container
     #dashboard{:style => "display:none;"}
       %p.save_alert{:style => "text-align:center; margin-bottom:5px; display:none; color:red; font-weight:bold;"}= t(:study_tracker)[:visit_calendar][:save_alert]
-      = render :partial => "dashboard_table", :locals => {:completed_appointments => @completed_appointments}
+      = render :partial => "dashboard_table", :locals => {:completed_appointments => @completed_appointments_by_visit_group}
 
   %div{:style => "margin: 25px 0px;"}
     = f.fields_for :calendar do |calendar_form|

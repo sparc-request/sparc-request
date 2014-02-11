@@ -3,7 +3,8 @@
     %tr.ui-widget-header
       %th= t(:study_tracker)[:dashboard][:header1]
       %th= t(:study_tracker)[:dashboard][:header2]
-    =render(:partial => 'total', :collection => completed_appointments, :as => :appointment)
+    - completed_appointments.each do |key, array|
+      =render :partial => 'total', :locals => {:appointments => array}
     %tr.ui-widget-header
       %th= t(:study_tracker)[:dashboard][:header3]
       %th= number_to_currency(@calendar.completed_total)

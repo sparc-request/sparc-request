@@ -49,8 +49,9 @@ en:
     message2: ""
     message3: "Outside Users- Sign in here with your SPARC Request account"
     message4: ""
-    button1: "Continue to sign in page"
-    button2: "Sign in"
+    button1: "MUSC Users Click Here"
+    button2: "Outside Users Click Here"
+    button3: "Sign In"
   login_name: "Username:"
   login_password: "Password:"
   remember_user: "Remember me:"
@@ -67,10 +68,11 @@ en:
     reason: "Reason for account/login request:"
     submit: "Create New User"
     cancel: "Cancel"
-    not_approved: "Click here to proceed"
+    not_approved: "Close Window"
 
   # password reset
   password_reset_message: "Forgot your password?"
+  password_reset_submit: "Send password reset"
 
   # sign in popup
   initial_signin_dialog: "You are not currently logged into SPARC Request. If you are affiliated with an institution and have an institutional login OR have created a SPARC Request account and have a SPARC Request login and password, please click the top button to proceed. If you are not currently affiliated with an institution OR do not have a SPARC Request login/password, please click the button on the bottom to proceed with creating a new account."
@@ -194,15 +196,18 @@ en:
       unit_costs: "Unit Costs"
       service_rate: "Service Rate"
       your_cost: "Your Cost"
+      clinical_qty: "Clinical Qty Type"
+      number: "#"
       qty_type: "Qty Type"
+      unit_type: "Unit Type"
       subjects: "# Subjects"
       total: "Total"
       total_per_patient: "Total Per Patient"
       total_per_study: "Total Per Study"
       other_services: "Other Services"
       total_study: "Study Cost Totals"
-      number_of_units: "# Units"
-      qty_unit: "Qty/Unit"
+      number: "#"
+      unit_type: "Unit Type"
     per_patient: "Per Patient/Visit Services"
     labels:
       maximum_direct: "Maximum Total Direct Costs Per Patient"
@@ -334,6 +339,8 @@ en:
       survey_name: "Survey"
       new_associated_survey: "New Associated Survey"
       select_survey: "Please select a survey"
+      linked_quantity: "Linked Quantity?"
+      linked_total: "Linked Quantity Total"
     title: "SPARC Request Services Catalog"
 
   # user search partial
@@ -585,6 +592,7 @@ en:
     program: "Program/Core:"
     status: "Status:"
     edit_original: "Edit Original"
+    send_notification: "Send Notification"
 
   # Portal sub service request dialog
   ssr_dialog:
@@ -686,7 +694,9 @@ en:
     actions: "Actions"
     submit_button: "Save"
     cancel_button: "Cancel"
-    blank_field_errors: "Name and Order on the Service, and Quantity Type, Unit Factor, Unit Minimum, Units Per Qty Maximum, Effective Date, and Display Date on all Pricing Maps are required."
+    blank_field_errors: "Name and Order are required on the Service.  Effective Date, Display Date, and Service Rate are required on all Pricing Maps."
+    per_patient_errors: "Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps."
+    otf_field_errors: "If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required."
     status_legend: "Status Options (Use default statuses below or click to create custom service request statuses)"
     default_statuses: "Default Statuses:"
     color_blank: "Select a Color"
@@ -705,11 +715,17 @@ en:
     other_rate: "Other Rate"
     member_rate: "Member Rate"
     rate_disclaimer: "*IF N/A, NO PRICING SET-UP IS DEFINED FOR THE CURRENT DATES"
-    quantity_type: "Quantity Type"
+    clinical_quantity_type: "Clinical Quantity Type (hours, each, slides, etc.)"
+    quantity_type: "Quantity Type (hours, each, slides, etc.)"
+    otf_unit_type: "Unit Type (weeks, days, samples, etc.)"
     unit_factor: "Unit Factor"
-    unit_minimum: "Unit Minimum"
+    unit_minimum: "Quantity Minimum"
+    unit_maximum: "Unit Maximum"
+    otf_quantity_minimum: "Quantity Minimum"
     is_one_time_fee: "Is One Time Fee"
     exclude_from_indirect_cost: "Exclude from Indirect Cost"
+    per_patient: "Per Patient"
+    one_time_fee: "One Time Fee"
 
   # Notifications
   notifications:
@@ -799,9 +815,9 @@ en:
         no_requests: "There are no non per-patient/per-visit requests."
         selected: "Services Selected"
         code: "Charge Code"
-        quantity: "Quantity"
-        units: "Units Per Quantity"
-        type: "Type"
+        number: "#"
+        qty_type: "Qty Type"
+        otf_unit_type: "Unit Type"
         cost: "Cost"
         received: "Received"
         in_process: "In Process"
@@ -826,6 +842,7 @@ en:
   admin_dashboard:
     title: "My Dashboard"
     id: "SRID"
+    status: "Status"
     pi: "PI"
     routing: "Routing"
     billing_business: "Billing/Business Manager"
@@ -851,7 +868,6 @@ en:
       invoices: "Invoices"
       template: "Template"
       services: "Services"
-
 
   # Admin Root Page
   admin_root:
@@ -970,8 +986,16 @@ en:
       popup_message4: "Attention - Assessments have been added to the following visits. If subject is past visit, please refer to your IRB-approved protocol."
       popup_header1: "Visit Name:"
       popup_header2: "Service/Assessment Name:"
-
-
-
-
-
+    billing_report:
+      title: "Admin Billing Report"
+      start_date: "Start Date"
+      end_date: "End Date"
+      protocols: "Protocol(s)"
+      get_report: "Get Report"
+  reports:
+    intro: "Welcome to the SPARC Request Reporting Module. Please select a report type to proceed."
+    defined_reports: "Defined Reports"
+    defined_reports_desc: "Please select a defined report below and click to proceed with report customizations."
+    custom_report: "Custom Report"
+    proceed: "Proceed"
+    create_report: "Create Report"

@@ -1,8 +1,8 @@
 class ProtocolsController < ApplicationController
   respond_to :json, :js, :html
-  before_filter :initialize_service_request, :except => [:approve_epic_rights, :push_to_epic]
-  before_filter :authorize_identity, :except => [:approve_epic_rights, :push_to_epic]
-  before_filter :set_protocol_type, :except => [:approve_epic_rights, :push_to_epic]
+  before_filter :initialize_service_request, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
+  before_filter :authorize_identity, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
+  before_filter :set_protocol_type, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
 
   def new
     @service_request = ServiceRequest.find session[:service_request_id]
@@ -100,9 +100,10 @@ class ProtocolsController < ApplicationController
   def push_to_epic
     @protocol = Protocol.find params[:id]
 
-    if current_user != @protocol.primary_principal_investigator then
-      raise ArgumentError, "User is not primary PI"
-    end
+    # removed 12/23/13 per request by Lane
+    #if current_user != @protocol.primary_principal_investigator then
+    #  raise ArgumentError, "User is not primary PI"
+    #end
 
     # Do the final push to epic in a separate thread.  The page which is
     # rendered will

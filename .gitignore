@@ -54,6 +54,7 @@ import/*.json
 import/documents.tar.gz
 
 reports/*
+coverage/*
 
 Gemfile.devel
 

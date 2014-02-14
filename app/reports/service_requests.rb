@@ -15,8 +15,9 @@ class ServiceRequestsReport < ReportingModule
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
       Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
+      "Tags" => {:field_type => :text_field_tag},
       "Current Status" => {:field_type => :check_box_tag, :for => 'status', :multiple => AVAILABLE_STATUSES},
-      "Show IRB Data" => {:field_type => :check_box_tag, :for => 'irb_data'}
+      "Show APR Data" => {:field_type => :check_box_tag, :for => 'apr_data', :multiple => {"irb" => "IRB", "iacuc" => "IACUC"}}
     }
   end
 
@@ -41,6 +42,13 @@ class ServiceRequestsReport < ReportingModule
     end
 
     attrs["SRID"] = :display_id
+
+    if params[:apr_data]
+      if params[:apr_data].include?("irb") || params[:apr_data].include?("iacuc")
+        attrs["Full Protocol Title"] = "service_request.try(:protocol).try(:title)"
+      end
+    end
+
     attrs["Date Submitted"] = "service_request.submitted_at.strftime('%Y-%m-%d')"
 
     attrs["Primary PI Last Name"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:last_name)"
@@ -48,13 +56,17 @@ class ServiceRequestsReport < ReportingModule
     attrs["Primary PI College"] = ["service_request.try(:protocol).try(:primary_principal_investigator).try(:college)", COLLEGES.invert] # we invert since our hash is setup {"Bio Medical" => "bio_med"} for some crazy reason
     attrs["Primary PI Department"] = ["service_request.try(:protocol).try(:primary_principal_investigator).try(:department)", DEPARTMENTS.invert]
 
-    if params["irb_data"] == "true"
-      attrs["IRB Checked Y/N"] = "service_request.try(:protocol).try(:research_types_info).try(:human_subjects) ? \"Y\" : \"N\""
-      attrs["If true, IRB # (HR or PRO)"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_and_pro_numbers)"
-      attrs["IRB Approval Date"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_approval_date).try(:strftime, \"%D\")"
-      attrs["IACUC Checked Y/N"] = "service_request.try(:protocol).try(:research_types_info).try(:vertebrate_animals) ? \"Y\" : \"N\""
-      attrs["If true, IACUC #"] = "service_request.try(:protocol).try(:vertebrate_animals_info).try(:iacuc_number)"
-      attrs["IRB Approval Date"] = "service_request.try(:protocol).try(:vertebrate_animals_info).try(:iacuc_approval_date).try(:strftime, \"%D\")"
+    if params[:apr_data]
+      if params[:apr_data].include?("irb")
+        attrs["IRB Checked Y/N"] = "service_request.try(:protocol).try(:research_types_info).try(:human_subjects) ? \"Y\" : \"N\""
+        attrs["If true, IRB # (HR or PRO)"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_and_pro_numbers)"
+        attrs["IRB Approval Date"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_approval_date).try(:strftime, \"%D\")"
+      end
+      if params[:apr_data].include?("iacuc")
+        attrs["IACUC Checked Y/N"] = "service_request.try(:protocol).try(:research_types_info).try(:vertebrate_animals) ? \"Y\" : \"N\""
+        attrs["If true, IACUC #"] = "service_request.try(:protocol).try(:vertebrate_animals_info).try(:iacuc_number)"
+        attrs["IRB Approval Date"] = "service_request.try(:protocol).try(:vertebrate_animals_info).try(:iacuc_approval_date).try(:strftime, \"%D\")"
+      end
     end
 
     attrs
@@ -84,6 +96,12 @@ class ServiceRequestsReport < ReportingModule
   def where args={}
     selected_organization_id = args[:core_id] || args[:program_id] || args[:provider_id] || args[:institution_id] # we want to go up the tree, service_organization_ids plural because we might have child organizations to include
 
+    if args[:tags]
+      tags = args[:tags].split(',')
+    else
+      tags = []
+    end
+
     # get child organization that have services to related to them
     service_organization_ids = [selected_organization_id]
     if selected_organization_id
@@ -106,7 +124,23 @@ class ServiceRequestsReport < ReportingModule
 
     # default values if none are provided
     service_organization_ids = Organization.all.map(&:id) if service_organization_ids.compact.empty? # use all if none are selected
+
+    service_organizations = Organization.find_all_by_id(service_organization_ids)
+
+    unless tags.empty?
+      tagged_organization_ids = service_organizations.reject {|x| (x.tags.map(&:name) & tags).empty?}.map(&:id)
+      service_organization_ids = service_organization_ids.reject {|x| !tagged_organization_ids.include?(x)}
+    end
+
     ssr_organization_ids = Organization.all.map(&:id) if ssr_organization_ids.compact.empty? # use all if none are selected
+
+    # ssr_organizations = Organization.find_all_by_id(ssr_organization_ids)
+
+    # unless tags.empty?
+    #   tagged_organization_ids = ssr_organizations.reject {|x| (x.tags.map(&:name) & tags).empty?}.map(&:id)
+    #   ssr_organization_ids = ssr_organization_ids.reject {|x| !tagged_organization_ids.include?(x)}
+    # end
+
     submitted_at ||= self.default_options["Date Range"][:from]..self.default_options["Date Range"][:to]
     statuses = args[:status] || AVAILABLE_STATUSES.keys # use all if none are selected
 

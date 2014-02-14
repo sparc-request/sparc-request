@@ -110,7 +110,6 @@ $ ->
     $('.disabled_node').css("color", "lightgray")
     $('.viewable_node').css("color", "#FF6F60")
 
-
   .bind 'select_node.jstree', (node, node_ref) ->
     $('.increase_decrease_dialog:first').dialog().dialog('destroy').remove() # calling dialog() to make sure it exists before we destroy, otherwise jquery ui complains if you click too fast
     click_text = node_ref.rslt.obj.context.textContent || node_ref.rslt.obj.context.innerText
@@ -153,14 +152,12 @@ $ ->
     return unless node_ref.rslt.obj.context.attributes['object_type']
     
     $('#processing_request').dialog('open')
-
     cid = node_ref.rslt.obj.context.attributes['cid'].nodeValue
     obj_type = node_ref.rslt.obj.context.attributes['object_type'].nodeValue
 
     $(this).jstree('toggle_node')
     $('#details').load "/catalog_manager/#{obj_type}s/#{cid}", ->
       $('#processing_request').dialog('close')
-
   $('#search_button').click ->
     $('#catalog').jstree 'search', $('#search').val()
 

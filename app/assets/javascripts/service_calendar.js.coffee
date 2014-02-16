@@ -219,7 +219,7 @@ $(document).ready ->
         else
           errors = [textStatus]
         for error in errors
-          $().toastmessage('showErrorToast', "#{error.humanize()}.");
+          $().toastmessage('showErrorToast', "#{error.humanize()}.")
 
 recalculate_one_time_fee_totals = ->
   grand_total = 0

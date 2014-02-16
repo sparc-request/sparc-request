@@ -192,7 +192,7 @@ class Arm < ActiveRecord::Base
       subject.calendar.appointments.each do |appointment|
         if appointment.visit_group_id
           existing_liv_ids = appointment.procedures.map {|x| x.visit ? x.visit.line_items_visit.id : nil}.compact
-          new_livs = self.line_items_visits.reject {|x| existing_liv_ids.include?(x.id)}
+          new_livs = self.line_items_visits.reject {|x| existing_liv_ids.include?(x.id) or !x.line_item.attached_to_service_request}
           new_livs.each do |new_liv|
             visit = new_liv.visits.where("visit_group_id = ?", appointment.visit_group_id).first
             appointment.procedures.create(:line_item_id => new_liv.line_item.id, :visit_id => visit.id) if new_liv.line_item.service.organization_id == appointment.organization_id

@@ -37,6 +37,11 @@ class LineItem < ActiveRecord::Base
     return rate
   end
 
+  def attached_to_submitted_request
+    # it's been submitted as long as it's status is past nil, first_draft, or draft
+    ![nil, 'first_draft', 'draft'].include?(sub_service_request.status)
+  end
+
   # Returns the cost per unit based on a quantity (usually just the quantity on the line_item)
   def per_unit_cost quantity_total=self.quantity
     if quantity_total == 0 || quantity_total.nil?

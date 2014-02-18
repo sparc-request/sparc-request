@@ -195,47 +195,8 @@ class Identity < ActiveRecord::Base
     end
   end
 
-  # Determines whether this identity (that is a user) can edit a service request based on its status.
-  # Users can only edit service requests (as a whole) if none of their constituent sub_service_requests
-  # have been moved out of 'draft' or 'submitted' status.
-  def can_edit_service_request? service_request
-    # things to consider
-    # service_request status == first_draft or draft or submitted or obtain_research_pricing
-    # if all sub_service_request statuses == all draft or all submitted, no mix and match
-    # identity project role, i believe only request and approve can edit
-    statuses = ['draft', 'submitted', 'obtain_research_pricing']
-
-    if service_request.status == 'first_draft' and (service_request.service_requester_id == self.id or service_request.service_requester_id.nil?)
-      return true
-    else
-      sub_service_requests_statuses = service_request.sub_service_requests.map(&:status)
-      if statuses.include?(service_request.status) and
-         (sub_service_requests_statuses.map{|s| s == 'draft'}.all? or sub_service_requests_statuses.map{|s| s == 'submitted'}.all? or sub_service_requests_statuses.map{|s| s == 'obtain_research_pricing'}.all?) and
-         !self.project_roles.select{|pr| pr.protocol_id == service_request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights}.empty?
-        return true
-      end
-    end
-
-    return false
-  end
-
-  # Determines whether this identity (that is a user) can edit a given sub_service_request that is
-  # a child of this service request.
-  def can_edit_sub_service_request? sub_service_request
-    # things to consider
-    # 1. sub_service_requests statuses == draft or submitted or obtain_research_pricing
-    # 2. identity project role, i believe only request and approve can edit
-    if (sub_service_request.status == 'draft' or sub_service_request.status == 'submitted' or sub_service_request.status == 'obtain_research_pricing') and
-       self.project_roles.select{|pr| pr.protocol_id == sub_service_request.service_request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights}
-      return true
-    end
-
-    return false
-  end
-
-  # This is a special case just for the two edit buttons in user portal.  A request's status is no longer a factor on this page.  
-  # Only users with request or approve rights can edit.
-  def can_edit_request_from_user_portal? request
+  # Based on a user's rights, determines whether an identity can edit a service request or a sub service request.
+  def can_edit_request? request
     can_edit = false
     if (request.class == ServiceRequest) && (!self.project_roles.select{|pr| pr.protocol_id == request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights}.empty?)
       can_edit = true

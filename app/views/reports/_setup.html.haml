@@ -100,9 +100,10 @@
         - name = options[:for] ? "report[#{options[:for]}]" : "report[#{field.name.underscore}_id]"
         - name += "[]" if multiple
         %label= field_label
-        %br
-        %br
+        
         - if grouping and multiple # we have a defined grouping
+          %br
+          %br
           - grouping.each do |k,v|
             %fieldset
               %legend= k
@@ -114,12 +115,17 @@
             %br
             %br
         - elsif multiple
+          %br
+          %br
           - if multiple.is_a? Hash
             - multiple.each do |k,v|
               %label{:for => k, :class => 'sub_label'}= v
               = check_box_tag name, k, selected.include?(v), :class => default_classes
               %br
               %br
+        - else # for individual checkboxes that have true/false
+          / %label{:for => options[:for]}= field_label
+          = check_box_tag name, true, nil, :class => default_classes
           /* TODO define behavior if multiple is a method or string representation of method chain */
 
       /* end check_box_tag */

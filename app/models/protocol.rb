@@ -52,6 +52,8 @@ class Protocol < ActiveRecord::Base
   attr_accessible :last_epic_push_time
   attr_accessible :last_epic_push_status
   attr_accessible :billing_business_manager_static_email
+  attr_accessible :recruitment_start_date
+  attr_accessible :recruitment_end_date
 
   attr_accessor :requester_id
   
@@ -66,13 +68,23 @@ class Protocol < ActiveRecord::Base
   accepts_nested_attributes_for :project_roles, :allow_destroy => true
   accepts_nested_attributes_for :arms, :allow_destroy => true
 
-  validates :short_title, :presence => true
-  validates :title, :presence => true
-  validates :funding_status, :presence => true  
-  validate  :requester_included, :on => :create
-  validate  :primary_pi_exists
-  validate  :validate_funding_source
-  validate  :validate_proxy_rights
+  validation_group :protocol do
+    validates :short_title, :presence => true
+    validates :title, :presence => true
+    validates :funding_status, :presence => true  
+    validate  :validate_funding_source
+    validates :sponsor_name, :presence => true, :if => :is_study?
+  end
+
+  validation_group :user_details do
+    validate :validate_proxy_rights
+    validate :requester_included, :on => :create
+    validate :primary_pi_exists
+  end
+
+  def is_study?
+    self.type == 'Study'
+  end
 
   def validate_funding_source
     if self.funding_status == "funded" && self.funding_source.blank?

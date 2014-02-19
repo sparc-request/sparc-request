@@ -2,9 +2,8 @@ $(document).ready ->
 
   $('#errors').hide()
 
-  $('#feedback').live 'click', ->
+  $('.feedback-button').live 'click', ->
     $("#feedback-form").dialog( "open" )
-
 
   $("#feedback-form").dialog
     autoOpen: false
@@ -16,7 +15,7 @@ $(document).ready ->
         id: "submit_feedback"
         text: "Submit"
         click: ->
-          $("#feedback_form").submit()
+          $("#feedback-form").submit()
       },
       {
         id: "cancel_feedback"
@@ -29,7 +28,7 @@ $(document).ready ->
 
   $("#feedback-form").submit ->
     data =
-      'feedback': 
+      'feedback':
         'message': $("#feedback_message").val()
         'email': $("#feedback_email").val()
     $.ajax
@@ -44,3 +43,6 @@ $(document).ready ->
       error: (event) ->
         $('#errors').show()
         $('#error-text').html("Message can't be blank")
+
+        
+  

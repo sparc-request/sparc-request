@@ -1,0 +1,26 @@
+.ask-a-question-button.blue-button= t(:right_navigation)[:ask_a_question]
+= link_to t(:right_navigation)[:dashboard], USER_PORTAL_LINK, :class => "dashboard-button blue-button"
+.faq-button.blue-button= t(:right_navigation)[:faq]
+.feedback-button.blue-button= t(:right_navigation)[:feedback]
+
+#feedback-form{:style => 'display: none', :title => 'Give Us Your Feedback!'}
+  = form_tag feedback_service_requests_path, :method => :post, :remote => true do
+    #errors
+      #error-text
+      %br
+    %p
+      = text_field_tag "feedback[email]", nil, {:placeholder => t(:notifications)[:email], :size => 35, :tabindex => -1}
+      %br
+      %br
+    %p
+      = text_area_tag "feedback[message]", nil, {:placeholder => t(:notifications)[:feedback], :cols => 65, :rows => 15, :tabindex => -1}
+
+#ask-a-question-form{:style => 'display: none', :title => 'Ask a Question'}
+  = form_tag ask_a_question_service_requests_path, :method => :post, :remote => true do
+    %p
+      = text_field_tag "quick_question[email]", nil, {:placeholder => t(:notifications)[:ask_a_question_email], :size => 35, :tabindex => -1}
+      %br
+      %br
+    %p
+      = text_area_tag "quick_question[body]", nil, {:placeholder => t(:notifications)[:ask_a_question], :cols => 65, :rows => 15, :tabindex => -1}
+

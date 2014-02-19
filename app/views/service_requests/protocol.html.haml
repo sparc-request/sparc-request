@@ -9,39 +9,41 @@
   .grid_9
     .select-project-view
       .dotted-border.left
-        .instruction_area
-          %p.instructions= t("study_assignment.instructions_1")
-          %p.instructions
-            %span.red= t("study_assignment.instructions_2")
-            = t("study_assignment.instructions_3")
-          %p.instructions= t("study_assignment.instructions_4")
+        %p.instructions= t("study_assignment.instructions_1")
+
+        %br
 
         .service-list= render :partial => 'service_list'
   
         %br
         %br
 
-        %p.instructions.center= t("study_assignment.instructions_center")
+        %p.notice= t("study_assignment.notice")
+
+        %br
+        %hr
+        %br
 
         .type-select.center
           - if @sub_service_request.nil?
-            = t("study_assignment.tied_to_study")
-            = select_tag "select-type", options_for_select([["Research Study"], ["Research Project"]], (@service_request.protocol.try(:type) == 'Project' ? 'Research Project' : 'Research Study'))
-            %span#infotip= image_tag('information.png')
+            = t("study_assignment.research_study")
+            = radio_button_tag :protocol, "Research Study", (@service_request.protocol.try(:type) == 'Project' ? false : true)
+            = t("study_assignment.research_project")
+            = radio_button_tag :protocol, "Research Project", (@service_request.protocol.try(:type) == 'Project' ? true : false)
             %br
             %br
 
         .existing-study.center
           #study.study-select
             #study-select= render :partial => 'study_select', :locals => {:studies => @studies} unless @studies.empty?
-            = link_to(t("study_assignment.new_study"), new_service_request_study_path(@service_request), :class => 'new-study') if @sub_service_request.nil?
+            = link_to(t("study_assignment.new_study"), new_service_request_study_path(@service_request), :class => 'new-study blue-button') if @sub_service_request.nil?
             %br
             %br
 
         .existing-project.center
           #project.project-select
             #project-select= render :partial => 'project_select', :locals => {:projects => @projects} unless @projects.empty?
-            = link_to(t("study_assignment.new_project"), new_service_request_project_path(@service_request), :class => 'new-project') if @sub_service_request.nil?
+            = link_to(t("study_assignment.new_project"), new_service_request_project_path(@service_request), :class => 'new-project blue-button') if @sub_service_request.nil?
             %br
             %br
 
@@ -51,7 +53,8 @@
         = t("study_assignment.sidebar_box.my_services")
         %span#cart-help= t("study_assignment.sidebar_box.help")
       .line-items= render :partial => 'catalogs/cart'
-    .dashboard-button= navigation_link image_tag('back_to_catalog.png'), @back
+    .catalog-button= navigation_link t(:right_navigation)[:catalog], @back
+    = render :partial => 'right_navigation'
 .continue= render :partial => 'service_requests/navigation'
 
 - if @ctrc_services

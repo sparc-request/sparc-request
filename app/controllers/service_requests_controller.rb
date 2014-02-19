@@ -4,6 +4,7 @@ class ServiceRequestsController < ApplicationController
   before_filter :initialize_service_request, :except => [:approve_changes]
   before_filter :authorize_identity, :except => [:approve_changes, :show]
   before_filter :authenticate_identity!, :except => [:catalog, :add_service, :remove_service, :ask_a_question, :feedback]
+  before_filter :prepare_catalog, :only => :catalog
   layout false, :only => [:ask_a_question, :feedback]
   respond_to :js, :json, :html
 
@@ -79,11 +80,7 @@ class ServiceRequestsController < ApplicationController
   # service request wizard pages
 
   def catalog
-    if session['sub_service_request_id']
-      @institutions = @sub_service_request.organization.parents.select{|x| x.type == 'Institution'}
-    else
-      @institutions = Institution.order('`order`')
-    end
+    # uses a before filter defined in application controller named 'prepare_catalog', extracted so that devise controllers could use as well
   end
   
   def protocol
@@ -174,9 +171,16 @@ class ServiceRequestsController < ApplicationController
         @subsidies << ssr.subsidy
       end
     end
+
+    if @subsidies.empty?
+      redirect_to "/service_requests/#{@service_request.id}/document_management"
+    end
   end
   
   def document_management
+    if @service_request.sub_service_requests.map(&:subsidy).compact.empty?
+      @back = 'service_calendar'
+    end
     @service_list = @service_request.service_list
   end
   
@@ -373,8 +377,8 @@ class ServiceRequestsController < ApplicationController
   end
 
   def ask_a_question
-    from = params['quick_question_email'] || 'no-reply@musc.edu'
-    body = params['quick_question_body'] || 'No question asked'
+    from = params['quick_question']['email'].blank? ? 'no-reply@musc.edu' : params['quick_question']['email']
+    body = params['quick_question']['body'].blank? ? 'No question asked' : params['quick_question']['body']
 
     quick_question = QuickQuestion.create :to => DEFAULT_MAIL_TO, :from => from, :body => body
     Notifier.ask_a_question(quick_question).deliver
@@ -514,6 +518,18 @@ class ServiceRequestsController < ApplicationController
 
   def send_epic_notification_for_user_approval(protocol)
     Notifier.notify_for_epic_user_approval(protocol).deliver
+  end
+
+  def create_calendar_event event
+    startTime = Time.parse(event.start_time)
+    endTime = Time.parse(event.end_time)
+    { :month => startTime.strftime("%b"),
+      :day => startTime.day,
+      :title => event.title,
+      :all_day => event.all_day?,
+      :start_time => startTime.strftime("%l:%M %p"),
+      :end_time => endTime.strftime("%l:%M %p"),
+      :where => event.where }
   end
 
   # Navigate updates

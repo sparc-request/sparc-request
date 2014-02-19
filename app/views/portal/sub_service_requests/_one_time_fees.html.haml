@@ -37,11 +37,10 @@
               %td
               %td
             - else
-              %td.otf_text_field
-                = text_field_tag "line_item_units_per_quantity", otf.try(:units_per_quantity), :'data-line_item_id' => otf.id, :class => 'fulfillment_data'
-              %td{:style => "white-space:nowrap; overflow:hidden;"}
+              %td.otf_text_field{:style => "white-space:nowrap;overflow:hidden;"}
                 %span{:style => "padding-right:5px;"} /
-                = otf.try(:service).try(:displayed_pricing_map).try(:otf_unit_type)
+                = text_field_tag "line_item_units_per_quantity", otf.try(:units_per_quantity), :'data-line_item_id' => otf.id, :class => 'fulfillment_data'
+              %td= otf.try(:service).try(:displayed_pricing_map).try(:otf_unit_type)
             %td{:id => "line_item_#{otf.id}_cost"}= number_to_currency(otf.direct_costs_for_one_time_fee / 100)
             %td= otf.try(:created_at).try(:strftime, '%D')
             %td

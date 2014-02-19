@@ -13,5 +13,11 @@ class HumanSubjectsInfo < ActiveRecord::Base
   attr_accessible :irb_approval_date
   attr_accessible :irb_expiration_date
   attr_accessible :approval_pending
+
+  def irb_and_pro_numbers
+    string = ""
+    string += "HR # #{self.hr_number} " unless hr_number.blank?
+    string += "PRO # #{self.pro_number} " unless pro_number.blank?
+  end
 end
 

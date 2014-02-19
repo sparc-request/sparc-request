@@ -1,4 +1,4 @@
-.devise_form#reset
+.devise_form#reset.password_reset
   .grid_5.box
     .info
       %h2= t :password_reset_message
@@ -9,7 +9,9 @@
           = f.text_field :ldap_uid, :style => 'width:auto'
 
         #button
-          = f.submit "Send password reset", {:class => 'btn ui-button ui-widget ui-state-default ui-corner-all'}
-        .clear
-  .links.grid_5
-    = render "devise/shared/links"
+          .blue-button.devise_submit_button= f.submit t(:password_reset_submit)
+          .blue-button.devise_cancel_button= link_to t(:devise)[:cancel], catalog_service_request_path(@service_request)
+    .links
+      = render "devise/shared/links"
+    .clear
+    %br

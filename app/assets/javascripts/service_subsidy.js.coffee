@@ -3,10 +3,23 @@
 $(document).ready ->
 
   # Any time that Enter is pressed, emit a change event
-  $('.pi-contribution').keypress (event) ->
+  $('.pi-contribution, .percent_of_cost').keypress (event) ->
     if event.keyCode is 13
       event.preventDefault()
       $(this).change()
+
+  $('.percent_of_cost').live 'change', ->
+    id = $(this).attr('data-id')
+    direct_cost = $(this).data('cost')/100
+    pi_contribution_field = ".ssr_#{id}"
+    percent = parseFloat($(this).val())
+
+    new_pi_contribution = (direct_cost * (percent/100.0)).toFixed(2)
+    $(pi_contribution_field).val(new_pi_contribution)
+    
+    percent = calculate_subsidy_percent(direct_cost, new_pi_contribution)
+    percent_display = if percent != "" then percent.toFixed(2) + '%' else '0%'
+    $('.subsidy_percent_' + id).text(percent_display)
 
   # Recalculate requested funding and subsidy percentage whenever pi
   # contribution changes
@@ -17,6 +30,10 @@ $(document).ready ->
     if contribution > direct_cost
       contribution = direct_cost
       $(this).val(direct_cost)
+
+    percent_of_cost = (contribution/direct_cost * 100).toFixed(2)
+    percent_of_cost_field = ".percent_#{id}"
+    $(percent_of_cost_field).val(percent_of_cost)
 
     rf = calculate_requested_funding(direct_cost, contribution)
     rf_display = '$' + rf.toFixed(2)

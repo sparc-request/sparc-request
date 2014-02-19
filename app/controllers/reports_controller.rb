@@ -1,4 +1,49 @@
 class ReportsController < ApplicationController
+  layout "reporting"
+  protect_from_forgery
+  helper_method :current_user
+
+  before_filter :authenticate_identity!
+  before_filter :require_super_user, :only => [:index, :setup, :generate]
+  before_filter :set_user
+
+  def current_user
+    current_identity
+  end
+  
+  def set_user
+    @user = current_identity
+    session['uid'] = @user.nil? ? nil : @user.id
+  end
+
+  def require_super_user
+    redirect_to root_path unless current_identity.is_super_user?
+  end
+
+  def index
+  end
+
+  def setup
+    report = params[:report]
+    @report = report.constantize.new
+    @date_ranges = @report.options.select{|k,v| v[:field_type] == :date_range} # select out the date ranges
+    render :layout => false
+  end
+
+  def generate
+    report_params = params[:report]
+    report = report_params[:type]
+    @report = report.constantize.new report_params
+
+    # generate excel
+    tempfile = @report.to_excel 
+    send_file tempfile.path, :filename => 'report.xlsx', :disposition => 'inline', :type =>  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+    # generate csv
+    #tempfile = @report.to_csv
+    #send_file tempfile.path, :type => 'text/csv', :disposition => 'inline', :filename => 'report.csv'
+  end
+
   def research_project_summary
     @sub_service_request = SubServiceRequest.find params[:id]
     @service_request = @sub_service_request.service_request 

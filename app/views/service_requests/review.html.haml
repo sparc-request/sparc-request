@@ -12,34 +12,34 @@
     .view-anchor
       .review-view
         .review-details
-          %p.instructions= t(:sr_review)[:instructions]
+          %p.instructions= raw(t(:sr_review)[:instructions])
           .project
-            = render :partial => 'service_requests/review/study_project_information', :locals => {:protocol => @protocol}
+            = render :partial => 'service_requests/review/study_project_information', :locals => {:protocol => @protocol, :provider_css => 'red-provider'}
           .documents
-            = render :partial => 'service_requests/document_list', :locals => {:service_list => @service_list, :review => true}
+            = render :partial => 'service_requests/document_list', :locals => {:service_list => @service_list, :review => true, :provider_css => 'red-provider'}
           .notes
             %table
               %thead
                 %tr
-                  %th.light-blue-provider= t(:sr_review)[:notes_header]
+                  %th.red-provider= t(:sr_review)[:notes_header]
               %tbody
                 %tr
-                  %td= @service_request.notes
+                  %td= @service_request.notes.blank? ? "No notes found" : @service_request.notes
           #service_calendar_container
-            - @service_request.arms.each do |arm|
-              = render :partial => 'service_requests/review/calendar', :locals => {:arm => arm}
-            = render :partial => 'service_requests/review/review_totals'
+            - if @service_request.has_per_patient_per_visit_services?
+              - @service_request.arms.each do |arm|
+                = render :partial => 'service_requests/review/calendar', :locals => {:arm => arm, :thead_class => 'red-provider'}
+            = render :partial => 'service_requests/review/review_totals', :locals => {:thead_class => 'red-provider'}
           %br
           %br
           %br
-          %div
-            .return-to-step-3
-              .return-to-previous= navigation_link image_tag('go_back.png'), @back
-            .save-as-draft= navigation_link image_tag('wait_save_draft.png'), 'save_and_exit'
-            .obtain-research-pricing
-              = link_to image_tag( 'get_a_quote.png'), obtain_research_pricing_service_request_path, :id => 'get_a_quote'
-            .submit-request
-              = link_to image_tag( 'confirm_request.png'), confirmation_service_request_path, :class => "save-and-continue", :id => 'submit_services'
-      .footer
 
-
+          %div.review-bottom-navigation
+            .return-to-step-3.red-provider
+              .return-to-previous= navigation_link image_tag('GoBack.png') + t(:bottom_navigation)[:go_back], @back
+            .save-as-draft.red-provider= navigation_link t(:bottom_navigation)[:save_as_draft], 'save_and_exit'
+            .obtain-research-pricing.red-provider
+              = link_to t(:bottom_navigation)[:get_quote], obtain_research_pricing_service_request_path, :id => 'get_a_quote'
+            .submit-request.red-provider
+              = link_to t(:bottom_navigation)[:submit_to_start], confirmation_service_request_path, :class => "save-and-continue", :id => 'submit_services'
+              = link_to image_tag("SaveContinue.png"), confirmation_service_request_path, :class => "save-and-continue", :id => 'submit_services'

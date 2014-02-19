@@ -62,14 +62,15 @@
 .service_request-body
   %table.list{:style => 'font-size:10px;', :width => "100%"}
     %tr{:style => 'width:100%'}
-      %th{:style => 'width:16%'}= t(:protocol_information)[:srid]
-      %th{:style => 'width:16%'}= t(:protocol_information)[:date]
-      %th{:style => 'width:16%'}= t(:protocol_information)[:provider]
-      %th{:style => 'width:16%'}= t(:protocol_information)[:program]
-      %th{:style => 'width:9%'}= t(:protocol_information)[:status]
-      %th{:style => 'width:9%'}
-      %th{:style => 'width:9%'}
-      %th{:style => 'width:9%'}
+      %th{:style => 'width:15%'}= t(:protocol_information)[:srid]
+      %th{:style => 'width:15%'}= t(:protocol_information)[:date]
+      %th{:style => 'width:15%'}= t(:protocol_information)[:provider]
+      %th{:style => 'width:15%'}= t(:protocol_information)[:program]
+      %th{:style => 'width:8%'}= t(:protocol_information)[:status]
+      %th{:style => 'width:8%'}
+      %th{:style => 'width:8%'}
+      %th{:style => 'width:8%'}
+      %th{:style => 'width:8%'}
 
     - protocol.service_requests.each do |sr|
       - first_ssr = true
@@ -87,8 +88,11 @@
             = pretty_program_core(ssr)
           %td
             = ssr.status
+          %td
+            %center
+              %a.new-portal-notification-button.btn{:'data-ssr_id' => ssr.ssr_id.to_s, :'data-sr_id' => sr.id}= t(:protocol_information)[:send_notification] 
           %td{:class => "edit-td"}
-            - if @user.can_edit_request_from_user_portal? ssr
+            - if @user.can_edit_request? ssr
               %center
                 %a.edit_service_request.btn{:href => "javascript:void(0);", :'data-permission' => rights.to_s, :'data-url' => "/service_requests/#{sr.id}/catalog?sub_service_request_id=#{ssr.id}&from_user_portal=true"}= t(:protocol_information)[:edit]
           %td
@@ -97,13 +101,12 @@
           - if sr.sub_service_requests.size > 0 && first_ssr
             - first_ssr = false
             %td{:class => "edit-original-td", :rowspan => sr.sub_service_requests.size}
-              - if @user.can_edit_request_from_user_portal? sr
+              - if @user.can_edit_request? sr
                 %a.edit_service_request.btn{:href => "javascript:void(0);", :'data-permission' => rights.to_s, :'data-url' => "/service_requests/#{sr.id}/catalog?from_user_portal=true&edit_original=true"}= t(:protocol_information)[:edit_original]
-          %td
-            %center
-              %a.new-portal-notification-button.btn Send Notification
-        #portal_notifications{:style => "display:none;"}
-          = render :partial => 'portal/sub_service_requests/notifications_area', :locals => {:service_request => sr, :protocol => protocol, :sub_service_request => ssr}
+        %tr
+          %td{:colspan => "9"}
+            %div{:style => "display:none;", :id => "portal_notifications_#{ssr.ssr_id.to_s}_#{sr.id}", :class => "portal_notifications"}
+              = render :partial => 'portal/sub_service_requests/notifications_area', :locals => {:service_request => sr, :protocol => protocol, :sub_service_request => ssr}
 
     - reset_cycle('protocol')
 

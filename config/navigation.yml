@@ -12,7 +12,7 @@ protocol:
       - protocol
 
 service_details:
-  step_text: 'STEP 2: Enter Service Details'
+  step_text: 'STEP 2A: Enter Protocol Dates'
   css_class: light-blue-provider
   back: protocol
   catalog: catalog
@@ -29,7 +29,7 @@ service_details:
 
 # change 'forward' to 'calendar_totals' for that page to be used.
 service_calendar:
-  step_text: 'STEP 2: Visit Calendar'
+  step_text: 'STEP 2B: Visit Calendar'
   css_class: light-blue-provider
   back: service_details 
   catalog: catalog
@@ -58,7 +58,7 @@ service_calendar:
 
 # change 'back' to 'calendar_totals' for that page to be used.
 service_subsidy:
-  step_text: 'STEP 2: Enter Subsidy Information'
+  step_text: 'STEP 2C: Enter Requested Subsidy Information'
   css_class: light-blue-provider
   back: service_calendar
   catalog: catalog
@@ -68,7 +68,7 @@ service_subsidy:
       - service_subsidy
 
 document_management:
-  step_text: 'STEP 3: Additional Notes and Information'
+  step_text: 'STEP 3: Notes & Documents'
   css_class: orange-provider
   back: service_subsidy
   catalog: catalog

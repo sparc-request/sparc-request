@@ -3,10 +3,28 @@
 
 $ ->
   # handle removing an arm and clicking save & continue - set subjects and visits to 1 
-  #TODO this isn't the best way to do this, maybe we should default subjects and visits to 1
   $(document).on 'nested:fieldRemoved', (event) ->
     field = event.field
     field.find('.skinny_fields input').val('1')
+
+  # show/hide remove arm link depending on how many arms exist,  hide when on one arm remains
+  nested_field_count = $('form .fields:visible').length
+  $remove_link = $('a.remove_nested_fields')
+
+  toggleRemoveLink = ->
+    $('a.remove_nested_fields').toggle(nested_field_count > 1)
+
+  $(document).on 'nested:fieldAdded', ->
+    nested_field_count += 1
+    toggleRemoveLink()
+
+  $(document).on 'nested:fieldRemoved', ->
+    nested_field_count -= 1
+    toggleRemoveLink()
+
+  toggleRemoveLink()
+
+  # end code to show/hide remove arm link
 
   $("#start_date").datepicker(
     changeMonth: true,
@@ -28,7 +46,7 @@ $ ->
             $.datepicker._clearDate(input)
         }).appendTo(buttonPane)
       setTimeout( callback, 1)
-    ).addClass('date');
+    ).addClass('date')
   
   $("#end_date").datepicker(
     changeMonth: true,
@@ -50,10 +68,60 @@ $ ->
             $.datepicker._clearDate(input)
         }).appendTo(buttonPane)
       setTimeout( callback, 1)
-    ).addClass('date');
+    ).addClass('date')
 
   $('#start_date').attr("readOnly", true)
   $('#end_date').attr("readOnly", true)
+
+
+  #Recruitment Date Stuff
+
+  $("#recruitment_start_date").datepicker(
+    changeMonth: true,
+    changeYear:true,
+    constrainInput: true,
+    dateFormat: "m/dd/yy",
+    showButtonPanel: true,
+    altField: '#project_recruitment_start_date, #study_recruitment_start_date',
+    altFormat: 'yy-mm-dd',
+
+    beforeShow: (input)->
+      callback = ->
+        buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane")
+        buttonPane.find('button.ui-datepicker-current').hide()
+        $("<button>", {
+          class: "ui-state-default ui-priority-primary ui-corner-all"
+          text: "Clear"
+          click: ->
+            $.datepicker._clearDate(input)
+        }).appendTo(buttonPane)
+      setTimeout( callback, 1)
+    ).addClass('date');
+  
+  $("#recruitment_end_date").datepicker(
+    changeMonth: true,
+    changeYear:true,
+    constrainInput: true,
+    dateFormat: "m/dd/yy",
+    showButtonPanel: true,
+    altField: '#project_recruitment_end_date, #study_recruitment_end_date',
+    altFormat: 'yy-mm-dd',
+
+    beforeShow: (input)->
+      callback = ->
+        buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane")
+        buttonPane.find('button.ui-datepicker-current').hide()
+        $("<button>", {
+          class: "ui-state-default ui-priority-primary ui-corner-all"
+          text: "Clear"
+          click: ->
+            $.datepicker._clearDate(input)
+        }).appendTo(buttonPane)
+      setTimeout( callback, 1)
+    ).addClass('date');
+
+  $('#recruitment_start_date').attr("readOnly", true)
+  $('#recruitment_end_date').attr("readOnly", true)
 
   # Validations for existing arms
 

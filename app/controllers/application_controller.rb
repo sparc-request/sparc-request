@@ -8,6 +8,46 @@ class ApplicationController < ActionController::Base
   def current_user
     current_identity
   end
+
+  def prepare_catalog
+    if session['sub_service_request_id']
+      @institutions = @sub_service_request.organization.parents.select{|x| x.type == 'Institution'}
+    else
+      @institutions = Institution.order('`order`')
+    end
+
+    if USE_GOOGLE_CALENDAR
+      curTime = Time.now
+      startMin = curTime
+      startMax  = (curTime + 7.days)
+
+      cal = Google::Calendar.new(:username => GOOGLE_USERNAME,
+                                 :password => GOOGLE_PASSWORD)
+      events_list = cal.find_events_in_range(startMin, startMax)
+      @events = []
+      begin
+        events_list.sort_by! { |event| event.start_time }
+        events_list.each do |event|
+          @events << create_calendar_event(event)
+        end
+      rescue
+        if events_list
+          @events << create_calendar_event(events_list)
+        end
+      end
+    end
+
+    if USE_NEWS_FEED
+      page = Nokogiri::HTML(open("http://www.sparcrequestblog.com"))
+      headers = page.css('.entry-header').take(3)
+      @news = []
+      headers.each do |header|
+        @news << {:title => header.at_css('.entry-title').text,
+                  :link => header.at_css('.entry-title a')[:href],
+                  :date => header.at_css('.date').text }
+      end
+    end
+  end
   
   def authorization_error msg, ref
     error = msg
@@ -70,6 +110,15 @@ class ApplicationController < ActionController::Base
         # the first time), then create a new service request.
         create_new_service_request
       end
+    elsif params[:controller] == 'devise/sessions'
+      if session[:service_request_id]
+        use_existing_service_request
+      else
+        @service_request = ServiceRequest.new :status => 'first_draft'
+        @service_request.save :validate => false
+        @line_items = []
+        session[:service_request_id] = @service_request.id
+      end
     else
       # For controllers other than the service requests controller, we
       # look up the service request, but do not display any errors.
@@ -131,9 +180,9 @@ class ApplicationController < ActionController::Base
  
     # we have a current user
     if current_user
-      if @sub_service_request.nil? and current_user.can_edit_service_request? @service_request
+      if @sub_service_request.nil? and current_user.can_edit_request? @service_request
         return true
-      elsif @sub_service_request and current_user.can_edit_sub_service_request? @sub_service_request
+      elsif @sub_service_request and current_user.can_edit_request? @sub_service_request
         return true
       end
 

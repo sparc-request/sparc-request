@@ -1,0 +1,14 @@
+$('#defined_reports_step_2').html("<%= raw escape_javascript(render(:partial => 'setup')) %>");
+$('#report_selection').hide();
+$('#defined_reports, #defined_reports_step_2').show();
+$('#defined_reports_step_1').dialog('close');
+window.check_deps();
+
+<%- @date_ranges.each do |dr| -%>
+<%- field,options = dr -%>  
+<%- from_id = options[:for] ? options[:for] + "_from" : field.delete(" ").underscore + "_from" -%>
+<%- to_id = options[:for] ? options[:for] + "_to" : field.delete(" ").underscore + "_to" -%>
+window.create_date_pickers("#<%= from_id %>", "#<%= to_id %>");
+<%- end -%>
+
+window.create_single_date_pickers();

@@ -7,6 +7,13 @@ loadDescription = (url) ->
 
 $(document).ready ->
 
+  $('#about_sparc').dialog
+    autoOpen: false
+    modal: true
+
+  $(document).on 'click', '.about_sparc_request', ->
+    $('#about_sparc').dialog('open')
+
   $('#institution_accordion').accordion
     heightStyle: 'content'
     collapsible: true
@@ -85,6 +92,8 @@ $(document).ready ->
     $("#service_query").clearFields()
 
   $('.submit-request-button').click ->
+    signed_in = $(this).data('signed-in')
+
     if $('#line_item_count').val() <= 0
       $('#submit_error').dialog
         modal: true
@@ -92,3 +101,22 @@ $(document).ready ->
             Ok: ->
               $(this).dialog('close')
       return false
+    #else
+    #  if signed_in == false
+    #    $('#sign_in').dialog
+    #      modal: true
+    #    return false
+  
+  $('#devise_view').dialog
+    modal: true
+    width: 700
+    dialogClass: 'devise_view'
+
+  $('.toggle_outside_user_sign_in').click ->
+    $('#outside_sign_in_form').show()
+    $('#shibboleth_sign_in_button').hide()
+    $(this).parent('.blue-button').hide()
+    $('.sign_in_options').hide()
+
+  $('#cancel_registration').click ->
+    $('#signup_form').dialog('close')

@@ -107,6 +107,11 @@ class Service < ActiveRecord::Base
     cents.to_i / 100.0
   end
 
+  # Display pricing formatting for reporting
+  def report_pricing currency
+    '$' + sprintf("%.2f", currency.to_f / 100.0)
+  end
+
   # Checks if the service is currently a one-time-fee
   def is_one_time_fee?
     begin

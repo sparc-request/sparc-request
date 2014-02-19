@@ -75,6 +75,19 @@ class PricingMap < ActiveRecord::Base
     return rate_hash
   end
 
+  # Calculate the rate hash for a pricing map including overrides
+  # Used in reporting
+  def true_rate_hash date, organization_id
+    organization  = Organization.find(organization_id)
+    pricing_setup = organization.pricing_setup_for_date(date)
+    federal       = self.applicable_rate("federal", pricing_setup.federal / 100) #(full_rate * (pricing_setup.federal   / 100)).to_f
+    corporate     = self.applicable_rate("corporate", pricing_setup.corporate / 100) #(full_rate * (pricing_setup.corporate / 100)).to_f
+    other         = self.applicable_rate("other", pricing_setup.other / 100) #(full_rate * (pricing_setup.member    / 100)).to_f
+    member        = self.applicable_rate("member", pricing_setup.member / 100) #(full_rate * (pricing_setup.other     / 100)).to_f
+    rate_hash     = { federal_rate: federal, corporate_rate: corporate, member_rate: member,
+                      other_rate: other }
+  end
+
   private
 
   def upcase_otf_unit_type
@@ -82,4 +95,5 @@ class PricingMap < ActiveRecord::Base
       self.otf_unit_type.upcase!
     end
   end
+  
 end

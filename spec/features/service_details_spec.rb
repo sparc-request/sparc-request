@@ -163,5 +163,23 @@ describe "submitting a in form", :js => true do
       wait_for_javascript_to_finish
       Arm.find(:all).size.should eq(number_of_arms)
     end
+
+    it "should not allow you to delete the last arm" do
+      number_of_arms = Arm.find(:all).size
+
+      within("div#1") do
+        click_link("Remove Arm")
+      end
+
+      within("div#2") do
+        find_link("Remove Arm").should_not be_visible
+      end
+        
+      find(:xpath, "//a/img[@alt='Savecontinue']/..").click
+      wait_for_javascript_to_finish
+      Arm.find(:all).size.should eq(number_of_arms - 1)
+    end
   end
+
+
 end

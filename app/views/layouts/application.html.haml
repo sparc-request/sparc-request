@@ -31,7 +31,11 @@
         #institution_logo
           %a{:href => HEADER_LINK_3, :target => '_blank'}
             = image_tag '/assets/institution_logo_136x86.gif', :alt => 'institution_logo'
-      #welcome_msg= show_welcome_message(current_user)
+      #welcome_msg
+        .flash
+          - flash.each do |name, msg|
+            = content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String)
+        .welcome= show_welcome_message(current_user)
       / #title
       / %h1= t 'application_title'
       #sparc_logo_header
@@ -40,23 +44,16 @@
           %span#sub_service_request_header
             &nbsp;
             = show_friendly_ssr_id(@sub_service_request) if @sub_service_request
-          %br
-          %span#feedback= t 'feedback'
       #content.container_12
-        - flash.each do |name, msg|
-          = content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String)
         = yield
-      = render :partial => 'shared/ask_a_question'
+      .clear
+      #footer
+        .container_12
+          = mail_to 'hundc@musc.edu', "Sign Up For the SPARC Request Listserv", :subject => 'SPARC Request Listserv'
+          |
+          = link_to "SPARC Request Blog", "http://sparcrequestblog.com/", :target => "_blank"
+          |
+          = link_to "SCTR", "http://sctr.musc.edu", :target => "_blank"
+          |
+          = link_to "SPARC Request Home", "http://academicdepartments.musc.edu/sctr/sparc_request", :target => "_blank"
       = render :partial => 'shared/piwik_tracking' if Rails.env == 'production'
-
-      #feedback-form{:style => 'display: none', :title => 'Give Us Your Feedback!'}
-        = form_tag feedback_service_requests_path, :method => :post, :remote => true, :id => 'feedback_form' do
-          #errors
-            #error-text
-            %br
-          %p
-            = text_field_tag "feedback[email]", nil, {:placeholder => t(:notifications)[:email], :size => 35, :tabindex => -1}
-            %br
-            %br
-          %p
-            = text_area_tag "feedback[message]", nil, {:placeholder => t(:notifications)[:feedback], :cols => 65, :rows => 15, :tabindex => -1}

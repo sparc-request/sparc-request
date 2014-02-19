@@ -1,7 +1,8 @@
+- provider_css ||= 'light-blue-provider'
 %table.project-information
   %thead
     %tr
-      %th.light-blue-provider{:colspan=>2}
+      %th{:colspan=>2, :class => provider_css}
         %strong= t(:sr_review)[:study_project_info][:title]
   %tbody
     %tr
@@ -28,7 +29,7 @@
 %table.project-roles
   %thead
     %tr
-      %th.light-blue-provider{:colspan=>3}
+      %th{:colspan=>3, :class => provider_css}
         %strong Authorized Users
     %tr
       %th= t(:sr_review)[:auth_users][:name]

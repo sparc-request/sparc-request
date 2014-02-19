@@ -1,6 +1,4 @@
 $(document).ready ->
-  $(".upload_button").button()
-  $(".ui_close_button").button()
 
   $(".upload_button").click ->
     $(".upload_button").attr("disabled", "disabled")

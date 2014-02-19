@@ -182,6 +182,7 @@ class ServiceRequest < ActiveRecord::Base
     optional = args[:optional]
     existing_service_ids = args[:existing_service_ids]
     allow_duplicates = args[:allow_duplicates]
+    arm_id = args[:arm_id]
 
     # If this service has already been added, then do nothing
     unless allow_duplicates
@@ -194,7 +195,8 @@ class ServiceRequest < ActiveRecord::Base
     line_items << create_line_item(
         service_id: service.id,
         optional: optional,
-        quantity: service.displayed_pricing_map.quantity_minimum)
+        quantity: service.displayed_pricing_map.quantity_minimum,
+        arm_id: arm_id)
 
     existing_service_ids << service.id
 
@@ -203,8 +205,9 @@ class ServiceRequest < ActiveRecord::Base
       rs_line_items = create_line_items_for_service(
         service: rs,
         optional: false,
-        existing_service_ids: existing_service_ids)
-      line_items.concat(rs_line_items)
+        existing_service_ids: existing_service_ids,
+        arm_id: arm_id)
+      rs_line_items.nil? ? line_items : line_items.concat(rs_line_items)
     end
 
     # add optional services to line items
@@ -212,7 +215,8 @@ class ServiceRequest < ActiveRecord::Base
       rs_line_items = create_line_items_for_service(
         service: rs,
         optional: true,
-        existing_service_ids: existing_service_ids)
+        existing_service_ids: existing_service_ids,
+        arm_id: arm_id)
       rs_line_items.nil? ? line_items : line_items.concat(rs_line_items)
     end
 
@@ -221,6 +225,7 @@ class ServiceRequest < ActiveRecord::Base
 
   def create_line_item(args)
     quantity = args.delete(:quantity) || 1
+    arm_id = args.delete(:arm_id) || false
     if line_item = self.line_items.create(args)
 
       if line_item.service.is_one_time_fee?
@@ -229,8 +234,13 @@ class ServiceRequest < ActiveRecord::Base
 
       else
         # only per-patient per-visit have arms
-        self.arms.each do |arm|
+        if arm_id
+          arm = Arm.find(arm_id)
           arm.create_line_items_visit(line_item)
+        else
+          self.arms.each do |arm|
+            arm.create_line_items_visit(line_item)
+          end
         end
       end
 
@@ -306,7 +316,7 @@ class ServiceRequest < ActiveRecord::Base
         g[:services] << service
         g[:line_items] << line_item
       else
-        groupings[last_parent] = {:process_ssr_organization_name => last_parent_name, :name => name.reverse.join(' -- '), :services => [service], :line_items => [line_item], :acks => acks.reverse.uniq.compact}
+        groupings[last_parent] = {:process_ssr_organization_name => last_parent_name, :name => name.reverse.join(' > '), :services => [service], :line_items => [line_item], :acks => acks.reverse.uniq.compact}
       end
     end
 
@@ -321,18 +331,22 @@ class ServiceRequest < ActiveRecord::Base
     per_patient_per_visit_line_items.count > 0
   end
 
-  def total_direct_costs_per_patient arms=self.arms
+  def total_direct_costs_per_patient arms=self.arms, line_items=nil
     total = 0.0
+    lids = line_items.map(&:id) unless line_items.nil?
     arms.each do |arm|
-      total += arm.direct_costs_for_visit_based_service
+      livs = line_items.nil? ? arm.line_items_visits : arm.line_items_visits.reject{|liv| !lids.include? liv.line_item_id}
+      total += arm.direct_costs_for_visit_based_service livs
     end
 
     total
   end
 
-  def total_indirect_costs_per_patient arms=self.arms
+  def total_indirect_costs_per_patient arms=self.arms, line_items=nil
     total = 0.0
+    lids = line_items.map(&:id) unless line_items.nil?
     arms.each do |arm|
+      livs = line_items.nil? ? arm.line_items_visits : arm.line_items_visits.reject{|liv| !lids.include? liv.line_item_id}
       total += arm.indirect_costs_for_visit_based_service
     end
 
@@ -366,11 +380,11 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def direct_cost_total line_items=self.line_items
-    self.total_direct_costs_one_time(line_items) + self.total_direct_costs_per_patient
+    self.total_direct_costs_one_time(line_items) + self.total_direct_costs_per_patient(self.arms, line_items)
   end
 
   def indirect_cost_total line_items=self.line_items
-    self.total_indirect_costs_one_time(line_items) + self.total_indirect_costs_per_patient
+    self.total_indirect_costs_one_time(line_items) + self.total_indirect_costs_per_patient(self.arms, line_items)
   end
 
   def grand_total line_items=self.line_items

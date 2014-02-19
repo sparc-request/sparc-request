@@ -247,4 +247,22 @@ module ApplicationHelper
       render :partial => 'service', :locals => {:service => service, :service_request => service_request}
     end
   end
+
+  # devise helpers
+  def resource_name
+    :identity
+  end
+ 
+  def resource
+    @resource ||= Identity.new
+  end
+ 
+  def devise_mapping
+    @devise_mapping ||= Devise.mappings[:identity]
+  end 
+
+  def resource_class
+    devise_mapping.to
+  end
+
 end

@@ -11,32 +11,54 @@
       .dotted-border.left
         .service-details 
           #show-visit-calendar-details
-            .visit-calendar-details 
+            .visit-calendar-details
               - if @service_request.has_one_time_fee_services?
                 .instructions= t(:service_request_details)[:one_time_fee_and_per_patient_instructions]
               - else
                 .instructions= t(:service_request_details)[:per_patient_instructions]
-              .arm-info
-                .arm-header
-                  .arm-cell= t(:service_request_details)[:study_start_date]
-                  .arm-cell= t(:service_request_details)[:study_end_date]
+              = fields_for @service_request.protocol do |f|
+                .arm-info
+                  .arm-header
+                    .arm-cell= t(:service_request_details)[:study_start_date]
+                    .arm-cell.arm-cell-right= t(:service_request_details)[:study_end_date]
+                    .clear
                   .clear
-                .clear
-                .arms
-                  = fields_for @service_request.protocol do |f|
+                  .arms
                     .arm-cell
                       = text_field_tag :start_date, (@service_request.protocol.start_date.strftime('%_m/%d/%Y') rescue nil) # only used for datepicker
+                      = image_tag 'calendar_edit.png'
                       = f.hidden_field :start_date
-                    .arm-cell
+                    .arm-cell.arm-cell-right
                       = text_field_tag :end_date, (@service_request.protocol.end_date.strftime('%_m/%d/%Y') rescue nil) #only use for datepicker
+                      = image_tag 'calendar_edit.png'
                       = f.hidden_field :end_date
+                    .clear
+                  .clear
+                - if @service_request.has_per_patient_per_visit_services?
+                  .arm-info
+                    .arm-header{:style => "padding-top:30px;"}
+                      .arm-cell= t(:service_request_details)[:recruitment_start_date]
+                      .arm-cell.arm-cell-right= t(:service_request_details)[:recruitment_end_date]
+                      .clear
+                    .clear
+                    .arms
+                      .arm-cell
+                        = text_field_tag :recruitment_start_date, (@service_request.protocol.recruitment_start_date.strftime('%_m/%d/%Y') rescue nil)
+                        = image_tag 'calendar_edit.png'
+                        = f.hidden_field :recruitment_start_date
+                      .arm-cell.arm-cell-right
+                        = text_field_tag :recruitment_end_date, (@service_request.protocol.recruitment_end_date.strftime('%_m/%d/%Y') rescue nil)
+                        = image_tag 'calendar_edit.png'
+                        = f.hidden_field :recruitment_end_date
+                      .clear
+                    .clear
                       
             - if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
               %div{:style => "height:25px;background-color:#FFFFFF; clear:both;"}
               .arm-info
                 - @x = 0
                 = nested_form_for @service_request.protocol, :method => :post do |f|
-                  .arm-header
+                  .arm-header{:style => "padding-top:20px;"}
                     .arm-cell= t(:service_request_details)[:name]
                     .arm-cell= t(:service_request_details)[:number_of_subjects]
                     .arm-cell= t(:service_request_details)[:number_of_visits]
@@ -68,7 +90,9 @@
         = t(:service_request_details)[:services]
         %span#cart-help= t(:service_request_details)[:help]
       .line-items= render :partial => 'catalogs/cart', :locals => {:service_request => @service_request}
-    .dashboard-button= navigation_link image_tag('back_to_catalog.png'), @catalog
+    .catalog-button= navigation_link t(:right_navigation)[:catalog], @catalog
+    = render :partial => 'right_navigation'
+
 
   .clear
 

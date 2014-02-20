@@ -6,7 +6,7 @@
         %table
           = f.fields_for :available_statuses do |as|
             %tr
-              %th= as.label :status, "#{AvailableStatus::TYPES[as.object.status].gsub('CTRC', 'Nexus')}:"
+              %th= as.label :status, "#{AvailableStatus::TYPES[as.object.status]}:"
               %td= as.check_box "_destroy", {:checked => !as.object.new}, false, true
               = as.hidden_field :status, :value => as.object.status
       %td

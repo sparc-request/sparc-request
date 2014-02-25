@@ -171,6 +171,12 @@ $(document).ready ->
     recalculate_one_time_fee_totals()
     return false
 
+  # .move-visits-form dialog is declared in service_calendar_logic.js.coffee
+  $(document).on('click', '.move_visits', ->
+    arm_id = $(this).data('arm_id')
+    $(".move-visits-form.arm_id_#{arm_id}").dialog('open')
+  )
+
   update_otf_line_item = (obj) ->
     original_val = $(obj).attr('previous_quantity')
     $('.service_calendar_spinner').show()

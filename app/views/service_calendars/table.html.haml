@@ -3,6 +3,7 @@
     - service_request.arms.each do |arm|
       .arm_calendar_container{:'data-arm_id' => arm.id}
         - next if arm.visit_groups.empty?
+        .move-visits{:class => "arm_id_#{arm.id}"}= render :partial => 'move_visit_position', :locals => {:tab => @tab, :arm => arm, :service_request => service_request}
         = render :partial => 'calendar_data', :locals => {:tab => @tab, :arm => arm, :service_request => service_request}
 - if (@sub_service_request.nil? ? @service_request.has_one_time_fee_services? : @sub_service_request.has_one_time_fee_services?) and !@portal
   = render :partial => 'one_time_fees'

@@ -50,6 +50,7 @@ SparcRails::Application.routes.draw do
         put 'set_day'
         put 'set_window'
         put 'update_otf_qty_and_units_per_qty'
+        put 'move_visit_position'
       end
     end
 

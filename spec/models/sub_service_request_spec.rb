@@ -166,6 +166,20 @@ describe 'SubServiceRequest' do
         end
       end
 
+      context 'effective date for cost calculations' do
+
+        it "should use the effective pricing scheme if set" do
+          sub_service_request.set_effective_date_for_cost_calculations
+          sub_service_request.line_items.last.pricing_scheme.should eq('effective')
+        end
+
+        it "should use the display date if the pricing scheme is unset" do
+          sub_service_request.set_effective_date_for_cost_calculations
+          sub_service_request.unset_effective_date_for_cost_calculations
+          sub_service_request.line_items.last.pricing_scheme.should eq('displayed')
+        end
+      end
+
       context "subsidy percentage" do
 
         it "should return the correct subsidy percentage" do

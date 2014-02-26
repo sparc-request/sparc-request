@@ -1,8 +1,10 @@
 #service_request_cost
-  %h3{:style => "margin-top:5px;"}= t(:service_requests)[:info][:text4]
   %table
     %thead
-      %tbody
-        %tr
-          %td#direct_cost_total{:'data-direct_cost_total' => @sub_service_request.try(:direct_cost_total), :'data-max_dollar_cap' => @sub_service_request.try(:organization).try(:subsidy_map).try(:max_dollar_cap), :'data-max_percentage' => @sub_service_request.try(:organization).try(:subsidy_map).try(:max_percentage)}
-            = number_to_currency(calculate_total)
+      %tr
+        %th= t(:fulfillments)[:totals][:effective_current_total_cost]
+        %th= t(:fulfillments)[:totals][:user_display_total_cost]
+    %tbody
+      %tr
+        %td= number_to_currency(calculate_effective_current_total)
+        %td= number_to_currency(calculate_user_display_total)

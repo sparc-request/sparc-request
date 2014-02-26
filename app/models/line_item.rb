@@ -19,6 +19,12 @@ class LineItem < ActiveRecord::Base
   attr_accessible :in_process_date
   attr_accessible :units_per_quantity
 
+  attr_accessor :pricing_scheme
+
+  def pricing_scheme
+    @pricing_scheme || 'displayed'
+  end
+
   validates :service_id, :numericality => true
   validates :service_request_id, :numericality => true
 
@@ -28,8 +34,8 @@ class LineItem < ActiveRecord::Base
   default_scope :order => 'line_items.id ASC'
 
   def applicable_rate
-    pricing_map         = self.service.displayed_pricing_map
-    pricing_setup       = self.service.organization.current_pricing_setup
+    pricing_map         = self.pricing_scheme == 'displayed' ? self.service.displayed_pricing_map : self.service.current_effective_pricing_map
+    pricing_setup       = self.pricing_scheme == 'displayed' ? self.service.organization.current_pricing_setup : self.service.organization.effective_pricing_setup_for_date
     funding_source      = self.service_request.protocol.funding_source_based_on_status
     selected_rate_type  = pricing_setup.rate_type(funding_source)
     applied_percentage  = pricing_setup.applied_percentage(selected_rate_type)

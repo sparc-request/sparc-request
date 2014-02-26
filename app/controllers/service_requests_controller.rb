@@ -11,6 +11,7 @@ class ServiceRequestsController < ApplicationController
   def show
     @protocol = @service_request.protocol
     @service_list = @service_request.service_list
+    @admin_offset = params[:admin_offset]
 
     # TODO: this gives an error in the spec tests, because they think
     # it's trying to render html instead of xlsx

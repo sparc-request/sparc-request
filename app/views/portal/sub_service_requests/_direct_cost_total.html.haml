@@ -6,5 +6,5 @@
         %th= t(:fulfillments)[:totals][:user_display_total_cost]
     %tbody
       %tr
-        %td= number_to_currency(calculate_effective_current_total)
-        %td= number_to_currency(calculate_user_display_total)
+        %td.effective_cost= number_to_currency(calculate_effective_current_total)
+        %td.display_cost= number_to_currency(calculate_user_display_total)

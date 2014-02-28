@@ -115,8 +115,8 @@ wb.add_worksheet(name: "Review") do |sheet|
         service_row = [line_item.service.name, "", display_your_cost(line_item), line_items_visit.subject_count]
 
         line_items_visit.visits.each_with_index do |v, index|
-          service_row << (totals_hash["#{v.id}"].nil? ? '' : v.research_billing_qty)
-          service_row << (totals_hash["#{v.id}"].nil? ? '' : v.insurance_billing_qty)
+          service_row << (totals_hash["#{v.id}"].nil? ? 0 : v.research_billing_qty)
+          service_row << (v.insurance_billing_qty)
         end
 
         (visit_count - num_visits).times do

@@ -43,7 +43,11 @@
           %td= f.check_box :is_available, {:checked => (@provider.is_available.nil? ? false : !@provider.is_available) }, false, true
         %tr
           %th= t(:organization_form)[:tag_list]
-          %td= f.text_field :tag_list
+          %td
+            - Tag.all.each do |tag|
+              %span
+                %span= f.label tag.name.gsub("ctrc", "Nexus")
+                %span= f.check_box :tag_list, { :multiple => true }, tag.name, nil
 
     %br
 

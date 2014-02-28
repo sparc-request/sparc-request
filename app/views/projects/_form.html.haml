@@ -1,3 +1,10 @@
+:javascript
+  $(document).ready( function() {
+    $('a.continue_button').click(function() {
+      $('form.edit_project').submit();
+    });
+  })
+
 /////////////////////////////////////////////
 //
 // PROJECT - Form for New/Editing Projects
@@ -36,4 +43,6 @@
         .exit= image_tag('Filler.png')
         .nav-forward
           .save-and-continue
-            %input{:type => 'image', :src => '/assets/ContinueOld.png', :alt => "SaveAndContinue"}
+            %a{:href => "javascript:void(0)", :class => 'continue_button'}
+              %span= t(:bottom_navigation)[:continue]
+              = image_tag('right_arrow.png', :alt => "SaveAndContinue")

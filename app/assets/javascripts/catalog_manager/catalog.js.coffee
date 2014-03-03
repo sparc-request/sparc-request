@@ -94,6 +94,7 @@ $ ->
   $('#catalog').jstree
       core:
         initially_open: 'root'
+      "search" : {"show_only_matches" : true}
       plugins: ['html_data', 'search', 'ui', 'crrm', 'themeroller']
       themeroller:
         item: null
@@ -163,6 +164,15 @@ $ ->
 
   $('#search_button').click ->
     $('#catalog').jstree 'search', $('#search').val()
+    if $('#catalog li:visible').size() == 0
+      $('#no_results').show()
+    else
+      $('#no_results').hide()
+
+  $('#clear_search').click ->
+    $('#catalog').jstree 'clear_search'
+    $('#catalog').jstree 'close_all'
+    $('#no_results').hide()
 
   # related services
   $('input#new_rs').live 'focus', -> $(this).val('')

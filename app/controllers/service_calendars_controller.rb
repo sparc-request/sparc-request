@@ -154,6 +154,11 @@ class ServiceCalendarsController < ApplicationController
     end
   end
 
+  def show_move_visits
+    @arm = Arm.find params[:arm_id]
+    @tab = params[:tab]
+  end
+
   def move_visit_position
     @arm = Arm.find params[:arm_id]
     @tab = params[:tab]

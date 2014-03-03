@@ -8,9 +8,8 @@ if <%= @protocol.valid? and @current_step == 'return_to_service_request' %>
   window.location.href = "<%= protocol_service_request_path @service_request %>"
 else
   #This is to re-enable the submit, it is disabled to prevent multiple posts, if you click rapidly.
-  # $('input[type=image]').removeAttr("disabled")
   $('a.continue_button').click ->
-    $('form.edit_study').submit()
+    $('form').submit()
 
   $('#current_step').val("<%= @current_step %>")
   if <%= @protocol.valid? and @current_step == "user_details" %>

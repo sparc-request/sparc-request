@@ -76,6 +76,19 @@ a.add_new_excluded_funding_source {
   }
 }
 
+#catalog {
+  width: 531px;
+  min-height: 300px;
+}
+
+#no_results {
+  border: 2px solid #FF0000;
+  margin: 30px 5px;
+  padding: 0 15px;
+  width: 531px;
+  display: none;
+}
+
 #catalog, #details {
   padding-left: 20px;
   background: #fff;

@@ -316,7 +316,7 @@ en:
       self_defined: "Self Defined"
       charge_master: "Charge Master"
       percent_of_fee: "Percent of Fee"
-      federal: "Federal*"
+      federal: "Federal"
       apply_federal: "Apply Federal % to All"
       corporate: "Corporate*"
       other: "Other*"

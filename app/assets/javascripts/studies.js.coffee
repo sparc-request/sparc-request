@@ -197,4 +197,4 @@ $(document).ready ->
 
   #This is to disabled the submit after you click once, so you can't fire multiple posts at once.
   $("form").submit ->
-    $('input[type=image]').attr('disabled', 'disabled')
+    $('a.continue_button').unbind('click');

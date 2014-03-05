@@ -1,3 +1,10 @@
+:javascript
+  $(document).ready( function() {
+    $('a.continue_button').click(function() {
+      $('form').submit();
+    });
+  })
+
 /////////////////////////////////////////////
 //
 // PROJECT - Form for New/Editing Projects
@@ -29,11 +36,12 @@
       %div{:class => 'blue-provider'}
         .nav-backward
           .return-to-previous
-            - if @current_step == "user_details"
-              = link_to image_tag('GoBack.png') + t(:bottom_navigation)[:go_back], protocol_service_request_path(service_request), :alt => "Go Back"
-            -else
-              = link_to image_tag('GoBack.png') + t(:bottom_navigation)[:cancel], protocol_service_request_path(service_request), :alt => "Cancel"
+            %a{:href => "#{protocol_service_request_path(service_request)}"}
+              = image_tag('left_arrow.png', :alt => "Cancel")
+              %span= t(:bottom_navigation)[:cancel]
         .exit= image_tag('Filler.png')
         .nav-forward
           .save-and-continue
-            %input{:type => 'image', :src => '/assets/ContinueOld.png', :alt => "SaveAndContinue"}
+            %a{:href => "javascript:void(0)", :class => 'continue_button'}
+              %span= t(:bottom_navigation)[:continue]
+              = image_tag('right_arrow.png', :alt => "SaveAndContinue")

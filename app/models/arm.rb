@@ -173,10 +173,10 @@ class Arm < ActiveRecord::Base
   end
 
   def populate_subjects
-    groups = self.visit_groups
+    # groups = self.visit_groups
     subject_count.times do
-      subject = self.subjects.create
-      subject.calendar.populate(groups)
+      self.subjects.create
+      # subject.calendar.populate(groups)
     end
   end
 
@@ -189,20 +189,22 @@ class Arm < ActiveRecord::Base
     end
     self.subjects.each do |subject|
       # populate old appointments
-      subject.calendar.appointments.each do |appointment|
-        if appointment.visit_group_id
-          existing_liv_ids = appointment.procedures.map {|x| x.visit ? x.visit.line_items_visit.id : nil}.compact
-          new_livs = self.line_items_visits.reject {|x| existing_liv_ids.include?(x.id)}
-          new_livs.each do |new_liv|
-            visit = new_liv.visits.where("visit_group_id = ?", appointment.visit_group_id).first
-            appointment.procedures.create(:line_item_id => new_liv.line_item.id, :visit_id => visit.id) if new_liv.line_item.service.organization_id == appointment.organization_id
+      if subject.calendar
+        subject.calendar.appointments.each do |appointment|
+          if appointment.visit_group_id
+            existing_liv_ids = appointment.procedures.map {|x| x.visit ? x.visit.line_items_visit.id : nil}.compact
+            new_livs = self.line_items_visits.reject {|x| existing_liv_ids.include?(x.id)}
+            new_livs.each do |new_liv|
+              visit = new_liv.visits.where("visit_group_id = ?", appointment.visit_group_id).first
+              appointment.procedures.create(:line_item_id => new_liv.line_item.id, :visit_id => visit.id) if new_liv.line_item.service.organization_id == appointment.organization_id
+            end
           end
         end
+        # populate new appointments
+        existing_group_ids = subject.calendar.appointments.map(&:visit_group_id)
+        groups = self.visit_groups.reject {|x| existing_group_ids.include?(x.id)}
+        subject.calendar.populate(groups)
       end
-      # populate new appointments
-      existing_group_ids = subject.calendar.appointments.map(&:visit_group_id)
-      groups = self.visit_groups.reject {|x| existing_group_ids.include?(x.id)}
-      subject.calendar.populate(groups)
     end
   end
 

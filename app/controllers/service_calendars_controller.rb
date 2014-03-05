@@ -157,6 +157,7 @@ class ServiceCalendarsController < ApplicationController
   def show_move_visits
     @arm = Arm.find params[:arm_id]
     @tab = params[:tab]
+    @portal = params[:portal]
   end
 
   def move_visit_position
@@ -164,12 +165,14 @@ class ServiceCalendarsController < ApplicationController
     @tab = params[:tab]
 
     @portal = params[:portal]
-    @study_tracker = params[:study_tracker] == "true"
     @protocol = @service_request.protocol
 
     visit_to_move = params[:visit_to_move].to_i
     move_to_position = params[:move_to_position].to_i
 
+    if @portal
+      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
+    end
     setup_calendar_pages
 
     vg = @arm.visit_groups[visit_to_move - 1]

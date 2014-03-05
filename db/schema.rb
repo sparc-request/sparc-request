@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140204201913) do
+ActiveRecord::Schema.define(:version => 20140305150031) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -606,6 +606,8 @@ ActiveRecord::Schema.define(:version => 20140204201913) do
     t.datetime "start_date"
     t.datetime "end_date"
     t.string   "billing_business_manager_static_email"
+    t.datetime "recruitment_start_date"
+    t.datetime "recruitment_end_date"
   end
 
   add_index "protocols", ["next_ssr_id"], :name => "index_protocols_on_next_ssr_id"
@@ -836,14 +838,12 @@ ActiveRecord::Schema.define(:version => 20140204201913) do
     t.boolean  "src_approved",               :default => false
     t.boolean  "in_work_fulfillment"
     t.string   "routing"
-    t.text     "org_tree_display"
   end
 
   add_index "sub_service_requests", ["organization_id"], :name => "index_sub_service_requests_on_organization_id"
   add_index "sub_service_requests", ["owner_id"], :name => "index_sub_service_requests_on_owner_id"
   add_index "sub_service_requests", ["service_request_id"], :name => "index_sub_service_requests_on_service_request_id"
   add_index "sub_service_requests", ["ssr_id"], :name => "index_sub_service_requests_on_ssr_id"
-  add_index "sub_service_requests", ["status"], :name => "index_sub_service_requests_on_status"
 
   create_table "subjects", :force => true do |t|
     t.datetime "created_at",          :null => false

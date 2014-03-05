@@ -16,6 +16,10 @@ class CatalogManager::InstitutionsController < CatalogManager::AppController
 
   def update
     @institution = Institution.find(params[:id])
+
+    unless params[:institution][:tag_list]
+      params[:institution][:tag_list] = ""
+    end
     
     params[:institution].delete(:id)
     if @institution.update_attributes(params[:institution])

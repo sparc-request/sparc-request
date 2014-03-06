@@ -15,7 +15,7 @@ class Subject < ActiveRecord::Base
 
   accepts_nested_attributes_for :calendar
 
-  # after_create { self.create_calendar }
+  after_create { self.create_calendar }
 
   def label
     label = nil

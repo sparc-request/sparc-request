@@ -71,11 +71,9 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
   end
 
   def build_subject_data(calendar)
-    unless calendar.appointments.size > 0
-      subject = calendar.subject
-      groups = subject.arm.visit_groups
-      calendar.populate(groups)
-    end
+    subject = calendar.subject
+    groups = subject.arm.visit_groups
+    calendar.populate(groups)
   end
 
   def get_calendar_data(calendar)

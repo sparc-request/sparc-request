@@ -158,11 +158,6 @@ class Arm < ActiveRecord::Base
       end
     end
 
-    # If in CWF, build the appointments for the visit group
-    if self.protocol.service_requests.map {|x| x.sub_service_requests.map {|y| y.in_work_fulfillment}}.flatten.include?(true)
-      populate_subjects_for_new_visit_group(visit_group)
-    end
-
     return visit_group
   end
 
@@ -182,20 +177,14 @@ class Arm < ActiveRecord::Base
     end
   end
 
-  # TODO: Are these next two populate methods now needed?
-  def populate_new_subjects
-    self.subjects.each do |subject|
-      if subject.calendar.appointments.empty?
-        subject.calendar.populate(self.visit_groups)
-      end
-    end
-  end
-
-  def populate_subjects_for_new_visit_group visit_group
-    self.subjects.each do |subject|
-      subject.calendar.populate([visit_group])
-    end
-  end
+  # TODO: I don't think this one is needed. Think this case is covered by the other populate method
+  # def populate_new_subjects
+  #   self.subjects.each do |subject|
+  #     if subject.calendar.appointments.empty?
+  #       subject.calendar.populate(self.visit_groups)
+  #     end
+  #   end
+  # end
 
   def update_visit_group_day day, position
     position = position.blank? ? self.visit_groups.count - 1 : position.to_i

@@ -8,7 +8,7 @@ class StudyTracker::ServiceRequestsController < StudyTracker::BaseController
       ##Update the arm.subject_count, incase we have added, or deleted a subject
       @service_request.arms.each do |arm|
         arm.update_attribute(:subject_count, arm.subjects.count)
-        arm.populate_new_subjects
+        # arm.populate_new_subjects
       end
       redirect_to study_tracker_sub_service_request_path(@sub_service_request)
     else

@@ -19,6 +19,10 @@ class CatalogManager::ProvidersController < CatalogManager::AppController
   def update
     @provider = Provider.find(params[:id])
 
+    unless params[:provider][:tag_list]
+      params[:provider][:tag_list] = ""
+    end
+
     params[:provider].delete(:id)    
     if @provider.update_attributes(params[:provider])
       flash[:notice] = "#{@provider.name} saved correctly."

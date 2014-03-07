@@ -1,5 +1,4 @@
 $(document).ready ->
-
   # $(".visit_name").live 'mouseover', ->
   $(".visit_name").qtip
     overwrite: false

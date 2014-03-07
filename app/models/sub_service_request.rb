@@ -58,6 +58,11 @@ class SubServiceRequest < ActiveRecord::Base
     self.line_items.each{|li| li.pricing_scheme = 'displayed'}
   end
 
+  # get line_items_visits just for this sub_service_request
+  def line_items_visits
+    line_items.map(&:line_items_visits).flatten
+  end
+
   def display_id
     return "#{service_request.try(:protocol).try(:id)}-#{ssr_id}"
   end

@@ -171,6 +171,20 @@ $(document).ready ->
     recalculate_one_time_fee_totals()
     return false
 
+  $(document).on('click', '.move_visits', ->
+    sr_id = $(this).data('sr_id')
+    data =
+      'arm_id': $(this).data('arm_id')
+      'tab': $(this).data('tab')
+      'portal': $(this).data('portal')
+    $.ajax
+      type: 'PUT'
+      url: "/service_requests/#{sr_id}/service_calendars/show_move_visits"
+      data: JSON.stringify(data)
+      dataType: 'script'
+      contentType: 'application/json; charset=utf-8'
+  )
+
   update_otf_line_item = (obj) ->
     original_val = $(obj).attr('previous_quantity')
     $('.service_calendar_spinner').show()
@@ -219,7 +233,7 @@ $(document).ready ->
         else
           errors = [textStatus]
         for error in errors
-          $().toastmessage('showErrorToast', "#{error.humanize()}.");
+          $().toastmessage('showErrorToast', "#{error.humanize()}.")
 
 recalculate_one_time_fee_totals = ->
   grand_total = 0

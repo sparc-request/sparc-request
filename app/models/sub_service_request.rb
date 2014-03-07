@@ -50,6 +50,19 @@ class SubServiceRequest < ActiveRecord::Base
     end
   end
 
+  def update_org_tree
+    my_tree = nil
+    if organization.type == "Core"
+      my_tree = organization.parent.parent.try(:abbreviation) + "/" + organization.parent.try(:name) + "/" + organization.try(:name)
+    elsif organization.type == "Program"
+      my_tree = organization.parent.try(:abbreviation) + "/" + organization.try(:name)
+    else
+      my_tree = organization.try(:name)
+    end
+
+    self.update_column(:org_tree_display, my_tree)
+  end
+
   # get line_items_visits just for this sub_service_request
   def line_items_visits
     line_items.map(&:line_items_visits).flatten

@@ -173,12 +173,6 @@ class Arm < ActiveRecord::Base
   end
 
   def populate_subjects
-    subject_count.times do
-      self.subjects.create
-    end
-  end
-
-  def populate_subjects_on_edit
     subject_difference = self.subject_count - self.subjects.count
   
     if subject_difference > 0
@@ -186,31 +180,9 @@ class Arm < ActiveRecord::Base
         self.subjects.create
       end
     end
-    # self.subjects.each do |subject|
-
-
-    #   TODO: I think this logic is still needed and should be moved to the subject model, then triggered in the calendar controller. 
-    #   # populate old appointments
-    #   subject.calendar.appointments.each do |appointment|
-    #     if appointment.visit_group_id
-    #       existing_liv_ids = appointment.procedures.map {|x| x.visit ? x.visit.line_items_visit.id : nil}.compact
-    #       new_livs = self.line_items_visits.reject {|x| existing_liv_ids.include?(x.id)}
-    #       new_livs.each do |new_liv|
-    #         visit = new_liv.visits.where("visit_group_id = ?", appointment.visit_group_id).first
-    #         appointment.procedures.create(:line_item_id => new_liv.line_item.id, :visit_id => visit.id) if new_liv.line_item.service.organization_id == appointment.organization_id
-    #       end
-    #     end
-    #   end
-
-
-    #   TODO: I believe this is covered in the new method in the calendar controller. This data should populate when the calendar is clicked on.
-    #   # populate new appointments
-    #   existing_group_ids = subject.calendar.appointments.map(&:visit_group_id)
-    #   groups = self.visit_groups.reject {|x| existing_group_ids.include?(x.id)}
-    #   subject.calendar.populate(groups)
-    # end
   end
 
+  # TODO: Are these next two populate methods now needed?
   def populate_new_subjects
     self.subjects.each do |subject|
       if subject.calendar.appointments.empty?

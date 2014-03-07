@@ -3,6 +3,7 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
 
   def show
     @calendar = Calendar.find(params[:id])
+    @calendar.populate_on_request_edit
     build_subject_data(@calendar)
     get_calendar_data(@calendar)
     generate_toasts_for_new_procedures

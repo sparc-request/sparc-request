@@ -38,14 +38,14 @@
                         - if can_access_program
                           %li= link_to t(:cm_index)[:core], '#', :class => "core"
                           %li= link_to t(:cm_index)[:service], '#'
-                        - program.services.order("`order`").each do |service|
+                        - program.services.order("`order`").order(:name).each do |service|
                           %li{:id => 'SERVICE' + service.id.to_s}= node service
                     - else
                       %ul
                         - if can_access_program
                           %li= link_to t(:cm_index)[:core], '#', :class => "core"
                           %li= link_to t(:cm_index)[:service], '#'
-                        - program.services.order("`order`").each do |service|
+                        - program.services.order("`order`").order(:name).each do |service|
                           %li{:id => 'SERVICE' + service.id.to_s}= node service                            
                         - program.cores.order("`order`").each do |core|
                           %li{:id => 'CORE' + core.id.to_s}

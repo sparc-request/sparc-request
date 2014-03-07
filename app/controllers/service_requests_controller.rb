@@ -507,8 +507,8 @@ class ServiceRequestsController < ApplicationController
     attachments["service_request_#{service_request.id}.xls"] = xls
 
     #TODO this is not very multi-institutional
-    # generate the muha pdf if it's required
-    if sub_service_request.organization.tag_list.include? 'muha'
+    # generate the required forms pdf if it's required
+    if sub_service_request.organization.tag_list.include? 'required forms'
       request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf service_request
       attachments["request_for_grant_billing_#{service_request.id}.pdf"] = request_for_grant_billing_form
     end

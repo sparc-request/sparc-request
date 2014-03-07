@@ -186,6 +186,8 @@ describe LineItemsVisit do
         end
 
         it "should remove procedures when line_item_visit is destroyed" do
+          puts arm1.subjects.inspect
+          puts arm2.subjects.inspect
           liv = line_item2.line_items_visits.first
 
           liv.procedures.should_not eq(nil)

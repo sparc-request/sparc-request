@@ -23,20 +23,5 @@ describe 'Subject' do
         Procedure.find_by_line_item_id(li_id).should eq(nil)
     	end
     end
-
-    describe "populate new subjects" do
-
-      it "should populate the calendar of new subjects but not old ones" do
-        new_subject = arm1.subjects.create()
-        arm1.populate_new_subjects
-
-        arm1.subjects.count.should eq(3)
-        new_subject.calendar.appointments.size.should eq(arm1.visit_groups.size)
-        arm1.subjects.first.calendar.appointments.size.should eq(arm1.visit_groups.size)
-        arm1.subjects.first.calendar.appointments.map {|x| x.procedures.count}.inject(:+).should eq(
-          arm1.subjects.last.calendar.appointments.map {|x| x.procedures.count}.inject(:+))
-      end
-
-    end
   end
 end

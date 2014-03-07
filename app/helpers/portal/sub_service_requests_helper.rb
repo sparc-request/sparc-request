@@ -18,6 +18,24 @@ module Portal::SubServiceRequestsHelper
 
     total
   end
+  
+  def calculate_user_display_total
+    if @sub_service_request
+      total = @sub_service_request.direct_cost_total / 100
+    end
+
+    total
+  end
+  
+  def calculate_effective_current_total
+    if @sub_service_request
+      @sub_service_request.set_effective_date_for_cost_calculations
+      total = @sub_service_request.direct_cost_total / 100
+      @sub_service_request.unset_effective_date_for_cost_calculations
+    end
+
+    total
+  end
 
   #This is used to filter out ssr's on the cfw home page
   #so that clinical providers can only see ones that are

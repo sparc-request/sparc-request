@@ -23,7 +23,7 @@
           %td= @sub_service_request.try(:service_request).try(:service_requester).try(:display_name)
           %td= @protocol.try(:short_title)
           %td 
-            .export_to_excel_button= link_to t(:admin_dashboard)[:export_link], service_request_path(@sub_service_request.service_request, :format => :xlsx)
+            .export_to_excel_button= link_to t(:admin_dashboard)[:export_link], service_request_path(@sub_service_request.service_request, :format => :xlsx, :admin_offset => 1)
           %td
             .delete-ssr-button= link_to t(:admin_dashboard)[:delete_link], "/portal/admin/sub_service_requests/#{@sub_service_request.id}", :method => :delete, :confirm => t(:admin_dashboard)[:delete_confirm]
           - if USE_EPIC

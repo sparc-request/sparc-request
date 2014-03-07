@@ -18,6 +18,6 @@
         %li= link_to t(:calendar_page)[:tabs][:billing], table_service_request_service_calendars_path(@service_request, :tab => "billing_strategy"), :id => 'billing_strategy_tab'
         %li= link_to t(:calendar_page)[:tabs][:quantity], table_service_request_service_calendars_path(@service_request, :tab => "quantity"), :id => 'quantity_tab'
         %li= link_to t(:calendar_page)[:tabs][:pricing], merged_calendar_service_request_service_calendars_path(@service_request, :tab => "calendar"), :id => 'calendar_tab'
-
+    .move-visits
   .clear
   .continue= render :partial => 'service_requests/navigation'

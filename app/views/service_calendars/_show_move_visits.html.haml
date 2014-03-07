@@ -1,0 +1,15 @@
+= javascript_include_tag 'move_visits_logic'
+.move-visits-form{:style => "display:none;", :title => 'Move Visit Position', :'data-arm_id' => arm.id, :'data-portal' => portal, :'data-tab' => tab, :'data-service_request_id' => service_request.id}
+  / Select the position of the visit you want to move
+  .label Select Visit to move
+  = select_tag "visit_to_move_#{arm.id}", visits_to_move(arm)
+
+  %br
+  %br
+
+  / Select the position you want to move the visit to
+  / This might be slightly confusing because we're
+  / inserting before the position selected.
+  / See service_calendars_controller#move_visit_position
+  .label Select where to move
+  = select_tag "move_to_position_#{arm.id}", move_to_position(arm)

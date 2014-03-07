@@ -1,7 +1,7 @@
 class SubServiceRequest < ActiveRecord::Base
   audited
 
-  after_save :update_past_status
+  after_save :update_past_status, :update_org_tree
 
   belongs_to :owner, :class_name => 'Identity', :foreign_key => "owner_id"
   belongs_to :service_request

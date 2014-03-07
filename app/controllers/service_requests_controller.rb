@@ -215,7 +215,6 @@ class ServiceRequestsController < ApplicationController
       arm.update_attributes({:new_with_draft => false})
     end
     @service_list = @service_request.service_list
-
     send_notifications(@service_request, @sub_service_request)
 
     render :formats => [:html]
@@ -396,60 +395,6 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def select_calendar_row
-    @line_items_visit = LineItemsVisit.find params[:line_items_visit_id]
-    @service = @line_items_visit.line_item.service
-    @sub_service_request = @line_items_visit.line_item.sub_service_request
-    @subsidy = @sub_service_request.try(:subsidy)
-    @line_items_visit.visits.each do |visit|
-      visit.update_attributes(
-          quantity:              @service.displayed_pricing_map.unit_minimum,
-          research_billing_qty:  @service.displayed_pricing_map.unit_minimum,
-          insurance_billing_qty: 0,
-          effort_billing_qty:    0)
-    end
-    
-    render :partial => 'update_service_calendar'
-  end
-  
-  def unselect_calendar_row
-    @line_items_visit = LineItemsVisit.find params[:line_items_visit_id]
-    @sub_service_request = @line_items_visit.line_item.sub_service_request
-    @subsidy = @sub_service_request.try(:subsidy)
-    @line_items_visit.visits.each do |visit|
-      visit.update_attributes({:quantity => 0, :research_billing_qty => 0, :insurance_billing_qty => 0, :effort_billing_qty => 0})
-    end
-
-    render :partial => 'update_service_calendar'
-  end
-
-  def select_calendar_column
-    column_id = params[:column_id].to_i
-    @arm = Arm.find params[:arm_id]
-
-    @arm.line_items_visits.each do |liv|
-      visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
-      visit.update_attributes(
-          quantity:              liv.line_item.service.displayed_pricing_map.unit_minimum,
-          research_billing_qty:  liv.line_item.service.displayed_pricing_map.unit_minimum,
-          insurance_billing_qty: 0,
-          effort_billing_qty:    0)
-    end
-    
-    render :partial => 'update_service_calendar'
-  end
-  
-  def unselect_calendar_column
-    column_id = params[:column_id].to_i
-    @arm = Arm.find params[:arm_id]
-
-    @arm.line_items_visits.each do |liv|
-      visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
-      visit.update_attributes({:quantity => 0, :research_billing_qty => 0, :insurance_billing_qty => 0, :effort_billing_qty => 0})
-    end
-    
-    render :partial => 'update_service_calendar'
-  end
 
   private
 

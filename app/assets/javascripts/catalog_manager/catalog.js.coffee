@@ -94,6 +94,7 @@ $ ->
   $('#catalog').jstree
       core:
         initially_open: 'root'
+      "search" : {"show_only_matches" : true}
       plugins: ['html_data', 'search', 'ui', 'crrm', 'themeroller']
       themeroller:
         item: null
@@ -109,7 +110,6 @@ $ ->
     )
     $('.disabled_node').css("color", "lightgray")
     $('.viewable_node').css("color", "#FF6F60")
-
 
   .bind 'select_node.jstree', (node, node_ref) ->
     $('.increase_decrease_dialog:first').dialog().dialog('destroy').remove() # calling dialog() to make sure it exists before we destroy, otherwise jquery ui complains if you click too fast
@@ -153,16 +153,23 @@ $ ->
     return unless node_ref.rslt.obj.context.attributes['object_type']
     
     $('#processing_request').dialog('open')
-
     cid = node_ref.rslt.obj.context.attributes['cid'].nodeValue
     obj_type = node_ref.rslt.obj.context.attributes['object_type'].nodeValue
 
     $(this).jstree('toggle_node')
     $('#details').load "/catalog_manager/#{obj_type}s/#{cid}", ->
       $('#processing_request').dialog('close')
-
   $('#search_button').click ->
     $('#catalog').jstree 'search', $('#search').val()
+    if $('#catalog li:visible').size() == 0
+      $('#no_results').show()
+    else
+      $('#no_results').hide()
+
+  $('#clear_search').click ->
+    $('#catalog').jstree 'clear_search'
+    $('#catalog').jstree 'close_all'
+    $('#no_results').hide()
 
   # related services
   $('input#new_rs').live 'focus', -> $(this).val('')

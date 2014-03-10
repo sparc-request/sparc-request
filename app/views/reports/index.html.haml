@@ -1,6 +1,7 @@
 = javascript_include_tag 'reporting'
 %br
 #reporting_container
+
   #report_selection
     %h2= t(:reports)[:intro]
 
@@ -11,6 +12,11 @@
     %br
     %br
     = link_to t(:reports)[:custom_report], 'javascript:void(0);', :class => "reporting_button", :id => "custom_report_link"
+  
+  %br
+  %br
+    
+  = link_to t(:reports)[:return_to_admin_portal], portal_admin_index_path, :id => 'return_to_admin_portal'
 
   #defined_reports
     #defined_reports_step_1
@@ -26,3 +32,4 @@
     #defined_reports_step_2
 
   #custom_report
+    

@@ -73,8 +73,8 @@ class Procedure < ActiveRecord::Base
     if self.service
       funding_source = self.appointment.calendar.subject.arm.protocol.funding_source_based_on_status #OHGOD
       organization = service.organization
-      pricing_map = service.current_pricing_map
-      pricing_setup = organization.current_pricing_setup
+      pricing_map = service.effective_pricing_map_for_date
+      pricing_setup = organization.effective_pricing_setup_for_date
       rate_type = pricing_setup.rate_type(funding_source)
       if pricing_map.unit_factor > 1
         if self.unit_factor_cost
@@ -85,14 +85,17 @@ class Procedure < ActiveRecord::Base
       else
         return Service.cents_to_dollars(pricing_map.applicable_rate(rate_type, pricing_setup.applied_percentage(rate_type)))
       end
-    elsif self.default_r_quantity == 0
-      return (self.line_item.per_unit_cost(1) / 100).to_f
     else
-      if self.line_item.service.displayed_pricing_map.unit_factor > 1
-        subtotals = self.visit.line_items_visit.per_subject_subtotals
-        return Service.cents_to_dollars(subtotals[self.visit_id.to_s] / self.default_r_quantity)
+      self.line_item.pricing_scheme = 'effective'
+      if self.default_r_quantity == 0
+        return (self.line_item.per_unit_cost(1) / 100).to_f
       else
-        return (self.line_item.per_unit_cost(self.default_r_quantity) / 100).to_f
+        if self.line_item.service.displayed_pricing_map.unit_factor > 1
+          subtotals = self.visit.line_items_visit.per_subject_subtotals
+          return Service.cents_to_dollars(subtotals[self.visit_id.to_s] / self.default_r_quantity)
+        else
+          return (self.line_item.per_unit_cost(self.default_r_quantity) / 100).to_f
+        end
       end
     end
   end

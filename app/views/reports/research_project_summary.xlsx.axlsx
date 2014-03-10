@@ -71,6 +71,8 @@ def visit_count_spanned_row header, header_style, data, data_style, visit_count,
   sheet.add_row adjusted_row(header, visit_count+1, 'right') + [data], :style => styling
 end
 
+@sub_service_request.set_effective_date_for_cost_calculations
+
 visit_count = @protocol.arms.max_by{|a| a.visit_count}.visit_count
 
 # alpha_array used to determine column position
@@ -225,5 +227,7 @@ wb.add_worksheet(name: "Summary") do |sheet|
   #date received
   #sheet.add_row [""]
   #visit_count_spanned_row "Date Received", :header, 0, visit_count, sheet, styles
+
+@sub_service_request.unset_effective_date_for_cost_calculations
   
 end

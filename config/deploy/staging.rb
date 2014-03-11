@@ -5,7 +5,7 @@ set :rvm_install_with_sudo, true
 set :deploy_to, "#{deploy_root}/#{application}"
 set :rails_env, "staging"
 set :domain, "obis-sparc-stg.mdc.musc.edu"
-set :branch, "staging"
+set :branch, "31014_production_release"
 
 role :web, domain
 role :app, domain, :primary => true

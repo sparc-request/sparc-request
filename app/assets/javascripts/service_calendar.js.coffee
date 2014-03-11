@@ -201,6 +201,7 @@ $(document).ready ->
     data =
       'arm_id': $(this).data('arm_id')
       'tab': $(this).data('tab')
+      'portal': $(this).data('portal')
     $.ajax
       type: 'PUT'
       url: "/service_requests/#{sr_id}/service_calendars/show_move_visits"
@@ -257,7 +258,7 @@ $(document).ready ->
         else
           errors = [textStatus]
         for error in errors
-          $().toastmessage('showErrorToast', "#{error.humanize()}.");
+          $().toastmessage('showErrorToast', "#{error.humanize()}.")
 
 recalculate_one_time_fee_totals = ->
   grand_total = 0

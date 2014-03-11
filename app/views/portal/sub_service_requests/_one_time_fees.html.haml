@@ -20,6 +20,7 @@
           %th= t(:fulfillments)[:services][:no_visits][:complete]
           %th= t(:fulfillments)[:services][:no_visits][:delete]
       %tbody
+        - @sub_service_request.set_effective_date_for_cost_calculations
         - @sub_service_request.one_time_fee_line_items.each do |otf|
           %tr
             %td.expand_li{:'data-line_item_id' => otf.id}
@@ -32,15 +33,15 @@
             %td= otf.try(:service).try(:charge_code)
             %td.otf_text_field
               = text_field_tag "line_item_quantity", otf.try(:quantity), :'data-line_item_id' => otf.id, :class => 'fulfillment_data'
-            %td= otf.try(:service).try(:displayed_pricing_map).try(:quantity_type)
-            - if otf.try(:service).try(:displayed_pricing_map).otf_unit_type == 'N/A'
+            %td= otf.try(:service).try(:current_effective_pricing_map).try(:quantity_type)
+            - if otf.try(:service).try(:current_effective_pricing_map).otf_unit_type == 'N/A'
               %td
               %td
             - else
               %td.otf_text_field{:style => "white-space:nowrap;overflow:hidden;"}
                 %span{:style => "padding-right:5px;"} /
                 = text_field_tag "line_item_units_per_quantity", otf.try(:units_per_quantity), :'data-line_item_id' => otf.id, :class => 'fulfillment_data'
-              %td= otf.try(:service).try(:displayed_pricing_map).try(:otf_unit_type)
+              %td= otf.try(:service).try(:current_effective_pricing_map).try(:otf_unit_type)
             %td{:id => "line_item_#{otf.id}_cost"}= number_to_currency(otf.direct_costs_for_one_time_fee / 100)
             %td= otf.try(:created_at).try(:strftime, '%D')
             %td
@@ -71,6 +72,7 @@
           %tr.fulfillment{:class => "li_#{otf.id}"}
             %td{:colspan => 11}
               = link_to "Add a Fulfillment", 'javascript:void(0);', :class => "add_fulfillment_link", :'data-line_item_id' => otf.id 
+        - @sub_service_request.unset_effective_date_for_cost_calculations
 
 :javascript
   $(document).ready(function(){

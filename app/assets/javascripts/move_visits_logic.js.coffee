@@ -21,7 +21,7 @@ $(document).ready ->
       }]
 
   submit_visit_form = (obj) ->
-    sr_id = $("#service_request_id").val()
+    sr_id = $(obj).data('service_request_id')
     arm_id = $(obj).data('arm_id')
     data =
       'arm_id': arm_id
@@ -29,6 +29,7 @@ $(document).ready ->
       'service_request_id': sr_id
       'visit_to_move': $("#visit_to_move_#{arm_id}").val()
       'move_to_position': $("#move_to_position_#{arm_id}").val()
+      'portal': $(obj).data('portal')
     $.ajax
       type: 'PUT'
       url: "/service_requests/#{sr_id}/service_calendars/move_visit_position"

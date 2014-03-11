@@ -37,6 +37,19 @@ describe "admin fulfillment tab", :js => true do
 
   end
 
+  describe "total cost rows" do
+
+    it "should have both the diplayed and effective dates" do
+      page.should have_content('Current Cost')
+      page.should have_content("User Display Cost")
+    end
+
+    it "should have the correct costs for both displayed and effecive costs" do
+      find('.effective_cost').should have_text("$6,050.00")
+      find('.display_cost').should have_text("$4,050.00")
+    end
+  end
+
   describe "changing attributes" do
 
     context "service request attributes" do

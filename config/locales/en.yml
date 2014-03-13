@@ -691,7 +691,7 @@ en:
     subsidy_info: "Subsidy Information"
     subsidy_max_percent: "Max Percentage"
     subsidy_max_dollar: "Max Dollar Cap"
-    actions: "Actions"
+    actions: "Actions:"
     submit_button: "Save"
     cancel_button: "Cancel"
     blank_field_errors: "Name and Order are required on the Service.  Effective Date, Display Date, and Service Rate are required on all Pricing Maps."

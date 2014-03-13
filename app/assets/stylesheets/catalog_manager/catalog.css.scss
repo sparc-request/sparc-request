@@ -147,13 +147,40 @@ a.add_new_excluded_funding_source {
   border-left: 2px dotted $background !important;
 }
 
-fieldset {
+fieldset.parent,
+fieldset.actions {
   background: whitesmoke;
+  padding: 15px;
+  width: 748px;
+  cursor: pointer;
+}
+fieldset fieldset {
+  background-color: white;
+  display: none;
 }
 
-fieldset > legend {
-  color: #EB8F00;
+fieldset fieldset,
+div fieldset.actions {
+  cursor: auto;
+}
+
+.secondary_header {
+  color: #339933;
+  margin-bottom:10px;
+  border-bottom: 1px solid;
+}
+
+fieldset > .legend {
+  color: #FF9933;
   font-weight: bold;
+  font-size: 1.3em;
+  margin-top: 4px;
+}
+
+fieldset.actions .legend {
+  float: left;
+  margin-right: 10px;
+  margin-top: 4px;
 }
 
 #entity_description, #rates {
@@ -267,10 +294,10 @@ input#new_cp {
 }
 
 .sus, .sps, .ses, .cms, .cps {
-  border-color: #f0f0f0 #000 #000 #f0f0f0;
-  border-style: inset;
-  border-width: 1px;
-  width: 720px;
+  // border-color: #f0f0f0 #000 #000 #f0f0f0;
+  // border-style: inset;
+  // border-width: 1px;
+  width: 710px;
 
   input#new_sp, input#new_se, input#new_su, input#new_cm, input#new_cp {
     width: 703px !important;

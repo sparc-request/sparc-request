@@ -23,7 +23,7 @@ class Payment < ActiveRecord::Base
   accepts_nested_attributes_for :uploads, allow_destroy: true
 
 
-  PAYMENT_METHOD_OPTIONS = %w(Check Cash EFT IIT).freeze
+  PAYMENT_METHOD_OPTIONS = ['Check', 'Cash', 'EFT', 'IIT', 'SCTR Award'].freeze
 
   def formatted_date_received
     format_date self.date_received

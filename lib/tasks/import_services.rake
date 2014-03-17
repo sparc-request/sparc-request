@@ -100,7 +100,42 @@ namespace :data do
       puts "Starting import"
       input_file = Rails.root.join("db", "imports", file)
       CSV.foreach(input_file, :headers => true) do |row|
-        service = Organization  
+        service = Service.new(
+                            :cpt_code => row['CPT Code'],
+                            :cdm_code => row['CDM Code'],
+                            :send_to_epic => (row['Send to Epic'] == 'Y' ? true : false),
+                            :name => row['Procedure Name'],
+                            :abbreviation => row['Abbreviation'],
+                            :order => row['Order'],
+                            :organization_id => org.id)
+
+        pricing_map = service.pricing_maps.build(
+                                              :full_rate => Service.dollars_to_cents(row['Service Rate'].to_s.strip.gsub("$", "").gsub(",", "")),
+                                              :corporate_rate => Service.dollars_to_cents(row['Corporate Rate'].to_s.strip.gsub("$", "").gsub(",", "")),
+                                              :federal_rate => Service.dollars_to_cents(row['Federal Rate'].to_s.strip.gsub("$", "").gsub(",", "")),
+                                              :member_rate => Service.dollars_to_cents(row['Member Rate'].to_s.strip.gsub("$", "").gsub(",", "")),
+                                              :other_rate => Service.dollars_to_cents(row['Other Rate'].to_s.strip.gsub("$", "").gsub(",", "")),
+                                              :is_one_time_fee => (row['Is One Time Fee?'] == 'Y' ? true : false),
+                                              :unit_type => (row['Is One Time Fee?'] == 'Y' ? nil : row['Clinical Qty Type']),
+                                              :quantity_type => (row['Is One Time Fee?'] != 'Y' ? nil : row['Clinical Qty Type']),
+                                              :unit_factor => row['Unit Factor'],
+                                              :unit_minimum => (row['Is One Time Fee?'] == 'Y' ? nil : row['Qty Min']),
+                                              :quantity_minimum => (row['Is One Time Fee?'] != 'Y' ? nil : row['Qty Min']),
+                                              :display_date => Date.strptime(row['Display Date'], "%m/%d/%y"),
+                                              :effective_date => Date.strptime(row['Effective Date'], "%m/%d/%y")
+                                              )
+
+        if service.valid? and pricing_map.valid?
+          service.save
+          pricing_map.save
+        else
+          puts "#"*50
+          puts "Error importing service"
+          puts service.inspect
+          puts pricing_map.inspect
+          puts service.errors
+          puts pricing_map.errors
+        end
       end
     else
       puts "Import aborted, please start over"

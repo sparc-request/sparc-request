@@ -11,7 +11,7 @@
       %img.spinner{:src => '/assets/catalog_manager/spinner_small.gif'}
     %br
   
-    %fieldset.parent.active
+    %fieldset#gen_info.parent.active
       .legend= t(:organization_form)[:gen_info]
       %fieldset{:style => "display:block; margin-top:15px;"}
         %table
@@ -49,10 +49,8 @@
 
     %br
     
-    / = render :partial => 'catalog_manager/shared/available_statuses', :locals => {:f => f}
-
-    %fieldset.parent
-      .legend User Rights
+    %fieldset#user_rights.parent
+      .legend= t(:organization_form)[:user_rights]
       %fieldset{:style => "margin: 15px 0;"}
         .secondary_header= t(:organization_form)[:super_users]
         #su_info= render :partial => 'catalog_manager/shared/super_users', :locals => {:entity => @institution}
@@ -62,12 +60,6 @@
         #cm_info= render :partial => 'catalog_manager/shared/catalog_managers', :locals => {:entity => @institution}
 
     %br
-
-    / %fieldset
-    /   %legend= t(:organization_form)[:clinical_providers]
-    /   #cp_info= render :partial => 'catalog_manager/shared/clinical_providers', :locals => {:entity => @institution}
-
-    / %br  
 
     %fieldset.actions
       .legend= t(:organization_form)[:actions]

@@ -652,6 +652,7 @@ en:
   # Catalog Manager - Organization Form
   organization_form:
     gen_info: "General Information"
+    user_rights: "User Rights"
     program: "Program"
     core: "Core"
     name: "Name"

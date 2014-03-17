@@ -55,6 +55,7 @@ gem 'simplecov', :require => false, :group => :test
 gem 'google_calendar'
 
 group :development, :test, :profile do
+  gem 'bullet'
   gem "rails-erd"
   gem 'sqlite3'
   gem 'rspec'

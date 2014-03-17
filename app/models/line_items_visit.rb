@@ -77,6 +77,17 @@ class LineItemsVisit < ActiveRecord::Base
     return totals
   end
 
+  # Return visits with R and T quantities
+  # Used in service_request show.xlsx report
+  def per_subject_rt_indicated(visits=self.visits)
+    indicated_visits = {}
+    visits.each do |visit|
+      indicated_visits[visit.id.to_s] = visit.research_billing_qty + visit.insurance_billing_qty
+    end
+
+    return indicated_visits
+  end
+
   # Determine the direct costs for a visit-based service for one subject
   def direct_costs_for_visit_based_service_single_subject
     # TODO: use sum() here

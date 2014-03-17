@@ -111,12 +111,13 @@ wb.add_worksheet(name: "Review") do |sheet|
       arm.line_items_visits.each do |line_items_visit|
         line_item = line_items_visit.line_item
         next unless value[:line_items].include?(line_item)
-        totals_hash = line_items_visit.try(:per_subject_subtotals)
+        totals_hash = line_items_visit.try(:per_subject_rt_indicated)
+
         service_row = [line_item.service.name, "", display_your_cost(line_item), line_items_visit.subject_count]
 
         line_items_visit.visits.each_with_index do |v, index|
-          service_row << (totals_hash["#{v.id}"].nil? ? '' : v.research_billing_qty)
-          service_row << (totals_hash["#{v.id}"].nil? ? '' : v.insurance_billing_qty)
+          service_row << (totals_hash["#{v.id}"] == 0 ? '' : v.research_billing_qty)
+          service_row << (totals_hash["#{v.id}"] == 0 ? '' : v.insurance_billing_qty)
         end
 
         (visit_count - num_visits).times do

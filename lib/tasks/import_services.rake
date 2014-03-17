@@ -107,7 +107,8 @@ namespace :data do
                             :name => row['Procedure Name'],
                             :abbreviation => row['Abbreviation'],
                             :order => row['Order'],
-                            :organization_id => org.id)
+                            :organization_id => org.id,
+                            :is_available => true)
 
         pricing_map = service.pricing_maps.build(
                                               :full_rate => Service.dollars_to_cents(row['Service Rate'].to_s.strip.gsub("$", "").gsub(",", "")),

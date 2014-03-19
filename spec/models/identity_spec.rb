@@ -110,62 +110,29 @@ describe "Identity" do
 
     describe "permission methods" do
     
-      describe "can edit service request" do
 
-        it "should return true if service request is in 'draft' or 'submitted' status" do
-          user.can_edit_service_request?(service_request).should eq(true)
-          user.can_edit_service_request?(service_request2).should eq(true)
-        end
-
-        it "should return false if moved from 'draft' or 'submitted' status" do
-          service_request.update_attributes(status: 'approved')
-          user.can_edit_service_request?(service_request).should eq(false)
-        end
-
-        it "should return false if its sub service requests are not uniformly either 'draft' or 'submitted'" do
-          sub_service_request.update_attributes(status: 'submitted')
-          user.can_edit_service_request?(service_request).should eq(false)
-        end
-
-        it "should return false if the user's project rights are not either 'approve' or 'request'" do
-          project_role.update_attributes(project_rights: 'none')
-          user.can_edit_service_request?(service_request).should eq(false)
-        end
-      end
-
-      describe "can edit sub service request" do
-
-        it "should return true if the sub service request is in either 'draft' or 'submitted' status" do
-          user.can_edit_sub_service_request?(sub_service_request).should eq(true)
-        end
-
-        it "should return false if moved from 'draft' or 'submitted' status" do
-          sub_service_request.update_attributes(status: 'approved')
-          user.can_edit_sub_service_request?(sub_service_request).should eq(false)
-        end
-      end
-
-      describe "can edit request from user portal" do
+      describe "can edit request " do
 
         it "should accept either a ssr or sr as an argument" do
-          user.can_edit_request_from_user_portal?(service_request).should eq(true)
-          user.can_edit_request_from_user_portal?(sub_service_request).should eq(true)
+          user.can_edit_request?(service_request).should eq(true)
+          user.can_edit_request?(sub_service_request).should eq(true)
         end
 
         it "should return false if the users rights are not 'approve' or request" do
           project_role.update_attributes(project_rights: 'none')
-          user.can_edit_request_from_user_portal?(service_request).should eq(false)
-          user.can_edit_request_from_user_portal?(sub_service_request).should eq(false)
+          service_request.update_attributes(service_requester_id: user2.id)
+          user.can_edit_request?(service_request).should eq(false)
+          user.can_edit_request?(sub_service_request).should eq(false)
         end
 
         it "should return true no matter what the service request's status is" do
           service_request.update_attributes(status: 'approved')
-          user.can_edit_request_from_user_portal?(service_request).should eq(true)
+          user.can_edit_request?(service_request).should eq(true)
         end
 
         it "should return true no matter what the sub service request's status is" do
           sub_service_request.update_attributes(status: 'approved')
-          user.can_edit_request_from_user_portal?(sub_service_request).should eq(true)
+          user.can_edit_request?(sub_service_request).should eq(true)
         end
       end
 
@@ -280,7 +247,7 @@ describe "Identity" do
           organization.tag_list = "ctrc"
           organization.save
           super_user.update_attributes(organization_id: organization.id)
-          user.available_workflow_states.should include('CTRC Review', 'CTRC Approved')
+          user.available_workflow_states.should include('Nexus Review', 'Nexus Approved')
         end
       end
 

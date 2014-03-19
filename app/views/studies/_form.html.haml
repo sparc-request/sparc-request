@@ -1,3 +1,10 @@
+:javascript
+  $(document).ready( function() {
+    $('a.continue_button').click(function() {
+      $('form').submit();
+    });
+  })
+
 /////////////////////////////////////////////
 //
 // STUDY - Form for New/Editing Studies
@@ -28,8 +35,14 @@
     .grid_12
       %div{:class => 'blue-provider'}
         .nav-backward
-          .return-to-previous= link_to image_tag('CancelAction.png'), protocol_service_request_path(service_request)
+          .return-to-previous
+            %a{:href => "#{protocol_service_request_path(service_request)}"}
+              = image_tag('left_arrow.png', :alt => "Cancel")
+              %span= t(:bottom_navigation)[:cancel]
         .exit= image_tag('Filler.png')
         .nav-forward
           .save-and-continue
-            %input{:type => 'image', :src => '/assets/SaveContinueOld.png', :alt => "SaveAndContinue"}
+            %a{:href => "javascript:void(0)", :class => 'continue_button'}
+              %span= t(:bottom_navigation)[:continue]
+              = image_tag('right_arrow.png', :alt => "SaveAndContinue")
+            / %input{:type => 'image', :src => '/assets/ContinueOld.png', :alt => "SaveAndContinue"}

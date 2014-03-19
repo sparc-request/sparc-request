@@ -77,9 +77,9 @@ class RequestGrantBillingPdf
     # question 14
     
     # question 15, max 58 characters then put it on attached page
-    # get only MUHA studies
+    # get only 'required forms' studies
     muha_service_names = service_request.sub_service_requests
-                               .select{|x| x.organization.tag_list.include? 'muha'}
+                               .select{|x| x.organization.tag_list.include? 'required forms'}
                                .map(&:line_items)
                                .flatten
                                .uniq

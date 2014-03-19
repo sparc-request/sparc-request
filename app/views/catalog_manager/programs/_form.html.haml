@@ -38,7 +38,11 @@
           %td= f.check_box :is_available, {:checked => (@program.is_available.nil? ? false : !@program.is_available) }, false, true
         %tr
           %th= t(:organization_form)[:tag_list]
-          %td= f.text_field :tag_list
+          %td
+            - Tag.all.each do |tag|
+              %span{:style => "margin-left:10px;"}
+                %span= f.label tag.name.gsub("ctrc", "Nexus")
+                %span= f.check_box :tag_list, { :multiple => true }, tag.name, nil
 
     %br
 
@@ -67,21 +71,22 @@
       #cm_info= render :partial => 'catalog_manager/shared/catalog_managers', :locals => {:entity => @program}
 
     %br
-      
-    %fieldset
-      %legend= t(:organization_form)[:clinical_work_fulfillment]
-      %table
-        %tr.cwf
-          %th= t(:organization_form)[:show_in_cwf]
-          %td= f.check_box :show_in_cwf
-        %tr.cwf.position_field{:style => @program.show_in_cwf ? "" : "display:none;"}
-          %th= t(:organization_form)[:position_in_cwf]
-          %td= f.text_field :position_in_cwf
-        %tr
-          %th= t(:organization_form)[:clinical_providers]
-      #cp_info= render :partial => 'catalog_manager/shared/clinical_providers', :locals => {:entity => @program}
     
-    %br
+    - if @program.tag_list.include? "clinical work fulfillment"
+      %fieldset
+        %legend= t(:organization_form)[:clinical_work_fulfillment]
+        %table
+          %tr.cwf
+            %th= t(:organization_form)[:show_in_cwf]
+            %td= f.check_box :show_in_cwf
+          %tr.cwf.position_field{:style => @program.show_in_cwf ? "" : "display:none;"}
+            %th= t(:organization_form)[:position_in_cwf]
+            %td= f.text_field :position_in_cwf
+          %tr
+            %th= t(:organization_form)[:clinical_providers]
+        #cp_info= render :partial => 'catalog_manager/shared/clinical_providers', :locals => {:entity => @program}
+      
+      %br
     
     %fieldset
       %legend= t(:organization_form)[:auto_price_adj]

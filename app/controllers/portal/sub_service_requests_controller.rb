@@ -89,7 +89,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     percent = @subsidy.try(:percent_subsidy).try(:*, 100)
     @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.is_one_time_fee?}
     @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
-    existing_service_ids = @service_request.line_items.map(&:service_id)
+    # existing_service_ids = @service_request.line_items.map(&:service_id)
 
     # we don't have arms and we are adding a new per patient per visit service
     if @service_request.arms.empty? and not service.is_one_time_fee?
@@ -101,24 +101,28 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     @study_tracker = params[:study_tracker] == "true"
     @line_items = @sub_service_request.line_items
 
-    ActiveRecord::Base.transaction do
-      if @new_line_items = @service_request.create_line_items_for_service(
-        service: Service.find(params[:new_service_id]),
-        optional: true,
-        existing_service_ids: existing_service_ids,
-        allow_duplicates: true)
+    @service_request.arms.each do |arm|
+      existing_service_ids = arm.line_items.map(&:service_id)
+      ActiveRecord::Base.transaction do
+        if @new_line_items = @service_request.create_line_items_for_service(
+          service: Service.find(params[:new_service_id]),
+          optional: true,
+          existing_service_ids: existing_service_ids,
+          allow_duplicates: true,
+          arm_id: arm.id)
 
-        @new_line_items.each do |line_item|
-          line_item.update_attribute(:sub_service_request_id, @sub_service_request.id)
-          @sub_service_request.update_cwf_data_for_new_line_item(line_item)
-        end
+          @new_line_items.each do |line_item|
+            line_item.update_attribute(:sub_service_request_id, @sub_service_request.id)
+            @sub_service_request.update_cwf_data_for_new_line_item(line_item)
+          end
 
-        # Have to reload the service request to get the correct direct cost total for the subsidy
-        @subsidy.try(:sub_service_request).try(:reload)
-        @subsidy.try(:fix_pi_contribution, percent)
-      else
-        respond_to do |format|
-          format.js { render :status => 500, :json => clean_errors(@service_request.errors) }
+          # Have to reload the service request to get the correct direct cost total for the subsidy
+          @subsidy.try(:sub_service_request).try(:reload)
+          @subsidy.try(:fix_pi_contribution, percent)
+        else
+          respond_to do |format|
+            format.js { render :status => 500, :json => clean_errors(@service_request.errors) }
+          end
         end
       end
     end

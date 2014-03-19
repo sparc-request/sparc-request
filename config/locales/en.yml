@@ -21,9 +21,11 @@ en:
     go_back: "Go Back"
     save_and_exit: "Save & Exit"
     save_and_continue: "Save & Continue"
+    continue: "Continue"
     save_as_draft: "Save As Draft"
     get_quote: "Get Quote"
     submit_to_start: "Submit to Start Services"
+    cancel: "Cancel"
 
   # right navigation
   right_navigation:
@@ -314,7 +316,7 @@ en:
       self_defined: "Self Defined"
       charge_master: "Charge Master"
       percent_of_fee: "Percent of Fee"
-      federal: "Federal*"
+      federal: "Federal"
       apply_federal: "Apply Federal % to All"
       corporate: "Corporate*"
       other: "Other*"
@@ -657,10 +659,10 @@ en:
     description: "Description"
     ack_language: "Acknowledgement Language"
     order: "Order"
-    tag_list: "Tags (comma separated)"
+    tag_list: "Tags"
     is_ctrc: "Is CTRC?"
     split_notify: "Split/Notify Here"
-    css_class: "CSS Class"
+    css_class: "Color"
     disabled: "Disabled"
     core_facility: "Core/Facility Based Services"
     service_center_cost: "Service Center Cost"
@@ -798,12 +800,17 @@ en:
       end_date: "Proposed End Date"
       arranged_date: "Consult Arranged Date"
       contacted_date: "Requester Contacted Date"
+    totals:
+      user_display_total_cost: "User Display Cost"
+      effective_current_total_cost: "Current Cost"
     subsidies:
       header: "Subsidy Information"
       no_subsidy: "No subsidy has been requested for this service request."
       pi: "PI Contribution"
       percent: "% Subsidy"
       cost: "Total Cost"
+      user_display_total_cost: "Subsidy User Display Cost"
+      effective_current_total_cost: "Subsidy Current Cost"
       delete: "Delete Subsidy"
       link: "Add a Subsidy"
     services:
@@ -997,3 +1004,4 @@ en:
     custom_report: "Custom Report"
     proceed: "Proceed"
     create_report: "Create Report"
+    return_to_admin_portal: "Return to Admin Portal"

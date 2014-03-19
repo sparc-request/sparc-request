@@ -296,5 +296,4 @@ class Organization < ActiveRecord::Base
 
     cwf_orgs
   end
-
 end

@@ -185,6 +185,26 @@ $(document).ready ->
       contentType: 'application/json; charset=utf-8'
   )
 
+  $(document).on('change', '.jump_to_visit', ->
+    $('.service_calendar_spinner').show()
+    visit_count = parseInt($(this).attr('visit_count'))
+    visit = parseInt($(this).val())
+
+    if visit > visit_count
+      visit = visit_count
+    else if visit < 1
+      visit = 1
+
+    $.ajax
+      type: 'GET'
+      url: $(this).attr('url')
+      data: {"page": Math.ceil(visit/5)}
+      dataType: 'script'
+      success: ->
+        $('.service_calendar_spinner').hide()
+
+  )
+
   update_otf_line_item = (obj) ->
     original_val = $(obj).attr('previous_quantity')
     $('.service_calendar_spinner').show()

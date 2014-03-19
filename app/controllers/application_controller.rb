@@ -19,7 +19,7 @@ class ApplicationController < ActionController::Base
     if USE_GOOGLE_CALENDAR
       curTime = Time.now
       startMin = curTime
-      startMax  = (curTime + 7.days)
+      startMax  = (curTime + 1.month)
 
       cal = Google::Calendar.new(:username => GOOGLE_USERNAME,
                                  :password => GOOGLE_PASSWORD)

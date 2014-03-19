@@ -27,7 +27,7 @@
           %td.amount_invoiced= payment_form.currency_text_field :amount_invoiced, size: 6
           %td.amount_received= payment_form.currency_text_field :amount_received, size: 6
           %td.date_received= payment_form.datepicker :formatted_date_received, size: 10, dateFormat: "m/dd/yy"
-          %td.payment_method= payment_form.select :payment_method, Payment::PAYMENT_METHOD_OPTIONS, :selected => Payment::PAYMENT_METHOD_OPTIONS.find{|x| x == "IIT"}
+          %td.payment_method= payment_form.select :payment_method, options_for_select(Payment::PAYMENT_METHOD_OPTIONS, payment_form.object.payment_method), :include_blank => "-Choose Method-"
           %td.percent_subsidy
             - percent_subsidy = payment_form.object.new_record? ? default_percent_subsidy : payment_form.object.percent_subsidy
             - percent_subsidy_class = payment_form.object.new_record? ? 'new_percent_subsidy' : 'existing_percent_subsidy'

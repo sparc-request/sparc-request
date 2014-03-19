@@ -339,7 +339,7 @@ $(document).ready ->
       'arm_id': $('#arm_id').val()
       'study_tracker': $('#study_tracker_hidden_field').val() || null
     $.ajax
-      type:        'POST'
+      type:        'PUT'
       url:         "/portal/admin/sub_service_requests/#{ssr_id}/add_line_item"
       data:        JSON.stringify(data)
       dataType:    'script'
@@ -363,7 +363,7 @@ $(document).ready ->
       'new_service_id': $("##{new_service_id}").val()
       'study_tracker': $('#study_tracker_hidden_field').val() || null
     $.ajax
-      type:        'POST'
+      type:        'PUT'
       url:         "/portal/admin/sub_service_requests/#{ssr_id}/add_otf_line_item"
       data:        JSON.stringify(data)
       dataType:    'script'
@@ -425,7 +425,7 @@ $(document).ready ->
       'sub_service_request_id': ssr_id
       'body': $(".note_box").val()
     $.ajax
-      type: 'POST'
+      type: 'PUT'
       url:   "/portal/admin/sub_service_requests/#{ssr_id}/add_note"
       data:  JSON.stringify(data)
       dataType: 'script'

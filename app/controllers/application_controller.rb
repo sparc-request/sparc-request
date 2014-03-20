@@ -10,7 +10,7 @@ class ApplicationController < ActionController::Base
   end
 
   def prepare_catalog
-    if session['sub_service_request_id']
+    if session['sub_service_request_id'] and @sub_service_request
       @institutions = @sub_service_request.organization.parents.select{|x| x.type == 'Institution'}
     else
       @institutions = Institution.order('`order`')
@@ -48,6 +48,19 @@ class ApplicationController < ActionController::Base
       end
     end
   end
+  
+  def create_calendar_event event
+    startTime = Time.parse(event.start_time)
+    endTime = Time.parse(event.end_time)
+    { :month => startTime.strftime("%b"),
+      :day => startTime.day,
+      :title => event.title,
+      :all_day => event.all_day?,
+      :start_time => startTime.strftime("%l:%M %p"),
+      :end_time => endTime.strftime("%l:%M %p"),
+      :where => event.where }
+  end
+
   
   def authorization_error msg, ref
     error = msg

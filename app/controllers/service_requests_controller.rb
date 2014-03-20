@@ -521,18 +521,6 @@ class ServiceRequestsController < ApplicationController
     Notifier.notify_for_epic_user_approval(protocol).deliver
   end
 
-  def create_calendar_event event
-    startTime = Time.parse(event.start_time)
-    endTime = Time.parse(event.end_time)
-    { :month => startTime.strftime("%b"),
-      :day => startTime.day,
-      :title => event.title,
-      :all_day => event.all_day?,
-      :start_time => startTime.strftime("%l:%M %p"),
-      :end_time => endTime.strftime("%l:%M %p"),
-      :where => event.where }
-  end
-
   # Navigate updates
   # Subsidy saves/updates
   def subsidy_save_update errors

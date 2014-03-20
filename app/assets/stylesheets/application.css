@@ -2122,7 +2122,7 @@ input.search-services {
 }
 
 .visit_count {
-  width: 275px;
+  width: 225px;
   display: inline-table;
 }
 
@@ -2688,4 +2688,9 @@ table.service_calendar tbody td.visit {
 
 #outside_sign_in_form {
   display: none;
+}
+
+.move_visits img{
+  vertical-align: middle;
+  padding-right: 5px;
 }

@@ -13,7 +13,7 @@
   
     %fieldset#gen_info.parent.active
       .legend= t(:organization_form)[:gen_info]
-      %fieldset{:style => "display:block; margin-top:15px;"}
+      %fieldset.single_fieldset{:style => "display:block;"}
         %table
           %tr
             %th= f.label :name, t(:organization_form)[:name]
@@ -43,7 +43,7 @@
             %th= t(:organization_form)[:tag_list]
             %td
               - Tag.all.each do |tag|
-                %span{:style => "margin-left:10px;"}
+                %span{:style => "margin-right:10px;"}
                   %span= f.label tag.name.gsub("ctrc", "Nexus")
                   %span= f.check_box :tag_list, { :multiple => true }, tag.name, nil
 
@@ -51,7 +51,7 @@
     
     %fieldset#user_rights.parent
       .legend= t(:organization_form)[:user_rights]
-      %fieldset{:style => "margin: 15px 0;"}
+      %fieldset.sibling_fieldset
         .secondary_header= t(:organization_form)[:super_users]
         #su_info= render :partial => 'catalog_manager/shared/super_users', :locals => {:entity => @institution}
 

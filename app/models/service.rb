@@ -1,5 +1,6 @@
 class Service < ActiveRecord::Base
   audited
+  acts_as_taggable
 
   RATE_TYPES = [{:display => "Service Rate", :value => "full"}, {:display => "Federal Rate", :value => "federal"}, {:display => "Corporate Rate", :value => "corporate"}, {:display => "Other Rate", :value => "other"}, {:display => "Member Rate", :value => "member"}]
 
@@ -35,6 +36,7 @@ class Service < ActiveRecord::Base
   attr_accessible :organization_id
   attr_accessible :cdm_code
   attr_accessible :send_to_epic
+  attr_accessible :tag_list
 
   validate :validate_pricing_maps_present
   

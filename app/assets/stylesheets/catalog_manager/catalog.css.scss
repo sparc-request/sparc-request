@@ -158,16 +158,50 @@ fieldset fieldset {
   background-color: white;
   display: none;
 }
+fieldset fieldset fieldset {
+  display: block;
+}
 
 fieldset fieldset,
 div fieldset.actions {
   cursor: auto;
 }
 
+fieldset.sibling_fieldset {
+  margin: 15px 0;
+  padding: 15px;
+}
+fieldset.single_fieldset {
+  margin-top:15px;
+  padding: 15px;
+}
+
 .secondary_header {
   color: #339933;
   margin-bottom:10px;
   border-bottom: 1px solid;
+}
+
+.pricing_setup_form {
+  background: none !important;
+}
+
+div#details div.pricing_setup_accordion a {
+  padding-left: 30px;
+}
+
+div#details div.pricing_setup_accordion h3.ui-state-default,
+div#details div.pricing_setup_accordion h3.ui-state-hover {
+  border: 1px solid #0078AE !important;
+  background: none !important;
+}
+
+div#details div.pricing_setup_accordion a {
+  background: none !important;
+}
+
+div#details div.pricing_setup_accordion div.pricing_setup_form {
+  border: 1px solid #0078AE !important;
 }
 
 fieldset > .legend {

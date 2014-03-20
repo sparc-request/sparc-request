@@ -653,6 +653,8 @@ en:
   organization_form:
     gen_info: "General Information"
     user_rights: "User Rights"
+    pricing: "Pricing"
+    epic_info: "Epic Interface"
     program: "Program"
     core: "Core"
     name: "Name"
@@ -676,7 +678,7 @@ en:
     pricing_maps: "Pricing Maps"
     add_map: "Add Pricing Map"
     related_services: "Related Services"
-    associated_surveys: "Associated Surveys"
+    associated_surveys: "Surveys"
     submission_emails: "Submission E-mails"
     super_users: "Super Users"
     service_providers: "Service Providers"

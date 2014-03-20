@@ -63,6 +63,14 @@ class SubServiceRequest < ActiveRecord::Base
     self.update_column(:org_tree_display, my_tree)
   end
 
+  def set_effective_date_for_cost_calculations
+    self.line_items.each{|li| li.pricing_scheme = 'effective'}
+  end
+  
+  def unset_effective_date_for_cost_calculations
+    self.line_items.each{|li| li.pricing_scheme = 'displayed'}
+  end
+
   # get line_items_visits just for this sub_service_request
   def line_items_visits
     line_items.map(&:line_items_visits).flatten

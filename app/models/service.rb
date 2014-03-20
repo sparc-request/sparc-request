@@ -200,7 +200,7 @@ class Service < ActiveRecord::Base
 
   # Find a pricing map with an effective date corresponding to the given
   # date.
-  def effective_pricing_map_for_date(date)
+  def effective_pricing_map_for_date(date=Date.today)
     raise ArgumentError, "Service has no pricing maps" if self.pricing_maps.empty?
 
     # TODO: use #where? (warning: potential performance issue)

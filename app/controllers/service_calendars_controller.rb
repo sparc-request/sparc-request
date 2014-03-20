@@ -218,4 +218,59 @@ class ServiceCalendarsController < ApplicationController
       line_item.update_attributes(:units_per_quantity => val)
     end
   end
+
+  def show_move_visits
+    @arm = Arm.find params[:arm_id]
+    @tab = params[:tab]
+    @portal = params[:portal]
+  end
+
+  def move_visit_position
+    @arm = Arm.find params[:arm_id]
+    @tab = params[:tab]
+
+    @portal = params[:portal]
+    @protocol = @service_request.protocol
+
+    visit_to_move = params[:visit_to_move].to_i
+    move_to_position = params[:move_to_position].to_i
+
+    if @portal
+      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
+    end
+    setup_calendar_pages
+
+    vg = @arm.visit_groups[visit_to_move - 1]
+
+    # The way insert_at works is literal. It inserts at whatever position is given
+    # We want to insert before the position given depending on the visit we're moving.
+    # If the visit_to_move < move_to_position we need to decrement one to move it
+    # before the given position. Otherwise insert_at works as intended.
+    # Special case is if we want to move to the end. We want to insert it at that position.
+    if visit_to_move < move_to_position && move_to_position != @arm.visit_groups.count
+      vg.insert_at(move_to_position - 1)
+    else
+      vg.insert_at(move_to_position)
+    end
+
+    @arm.reload
+    @arm.visit_groups.reload
+  end
+
+  private
+
+  def setup_calendar_pages
+    @pages = {}
+    page = params[:page] if params[:page]
+    session[:service_calendar_pages] = params[:pages] if params[:pages]
+    session[:service_calendar_pages][arm_id] = page if page && arm_id
+    @service_requests = (@tab == 'calendar') ? @service_request.protocol.service_requests : [@service_request]
+    @service_requests.each do |service_request|
+      service_request.arms.each do |arm|
+        new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
+        @pages[arm.id] = @service_request.set_visit_page new_page, arm
+      end
+    end
+  end
+
 end

@@ -216,7 +216,6 @@ class ServiceRequestsController < ApplicationController
       arm.update_attributes({:new_with_draft => false})
     end
     @service_list = @service_request.service_list
-
     send_notifications(@service_request, @sub_service_request)
 
     render :formats => [:html]

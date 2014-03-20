@@ -86,6 +86,8 @@ class ServiceRequest < ActiveRecord::Base
   def protocol_page
     if self.protocol_id.blank?
       errors.add(:protocol_id, "You must identify the service request with a study/project before continuing.")
+    elsif not self.protocol.valid?
+      errors.add(:protocol, "Errors in the selected study/project have been detected.  Please click Edit Study/Project to correct")
     else
       if self.has_ctrc_clinical_services?
         if self.protocol && self.protocol.has_ctrc_clinical_services?(self.id) && self.status == 'first_draft'

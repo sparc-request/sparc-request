@@ -12,4 +12,3 @@ ActionController::Base.class_eval do
     end
   end
 end
-

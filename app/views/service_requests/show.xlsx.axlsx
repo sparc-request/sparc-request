@@ -114,7 +114,7 @@ wb.add_worksheet(name: "Review") do |sheet|
       arm.line_items_visits.each do |line_items_visit|
         line_item = line_items_visit.line_item
         next unless value[:line_items].include?(line_item)
-        totals_hash = line_items_visit.try(:per_subject_subtotals)
+        totals_hash = line_items_visit.try(:per_subject_rt_indicated)
         service_row = [line_item.service.name, ""]
 
         if @admin_offset

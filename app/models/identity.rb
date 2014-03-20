@@ -374,7 +374,7 @@ class Identity < ActiveRecord::Base
       unless ssr.status.blank? or ssr.status == 'first_draft'
         if ssr.service_request
           if ssr.service_request.protocol
-            ssr_status = ssr.status
+            ssr_status = ssr.status.to_s.gsub(/\s/, "_").gsub(/[^-\w]/, "").downcase
             hash[ssr_status] = [] unless hash[ssr_status]
             hash[ssr_status] << ssr
           end

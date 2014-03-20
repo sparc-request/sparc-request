@@ -70,6 +70,7 @@ SparcRails::Application.configure do
   config.action_mailer.default_url_options = { :host => 'sparc.musc.edu' }
 
   config.middleware.use ExceptionNotifier,
+    ignore_if: ->(env, exception) { ['128.23.150.107'].include?(env['REMOTE_ADDR']) },
     sender_address: 'no-reply@musc.edu',
     exception_recipients: ['catesa@musc.edu', 'scoma@musc.edu', 'kelsey@musc.edu', 'johstu@musc.edu', 'leonarjp@musc.edu', 'brannan@musc.edu']
 

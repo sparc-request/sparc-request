@@ -216,7 +216,6 @@ class ServiceRequestsController < ApplicationController
       arm.update_attributes({:new_with_draft => false})
     end
     @service_list = @service_request.service_list
-
     send_notifications(@service_request, @sub_service_request)
 
     render :formats => [:html]
@@ -519,18 +518,6 @@ class ServiceRequestsController < ApplicationController
 
   def send_epic_notification_for_user_approval(protocol)
     Notifier.notify_for_epic_user_approval(protocol).deliver
-  end
-
-  def create_calendar_event event
-    startTime = Time.parse(event.start_time)
-    endTime = Time.parse(event.end_time)
-    { :month => startTime.strftime("%b"),
-      :day => startTime.day,
-      :title => event.title,
-      :all_day => event.all_day?,
-      :start_time => startTime.strftime("%l:%M %p"),
-      :end_time => endTime.strftime("%l:%M %p"),
-      :where => event.where }
   end
 
   # Navigate updates

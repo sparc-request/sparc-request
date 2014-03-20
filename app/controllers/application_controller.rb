@@ -49,6 +49,19 @@ class ApplicationController < ActionController::Base
     end
   end
   
+  def create_calendar_event event
+    startTime = Time.parse(event.start_time)
+    endTime = Time.parse(event.end_time)
+    { :month => startTime.strftime("%b"),
+      :day => startTime.day,
+      :title => event.title,
+      :all_day => event.all_day?,
+      :start_time => startTime.strftime("%l:%M %p"),
+      :end_time => endTime.strftime("%l:%M %p"),
+      :where => event.where }
+  end
+
+  
   def authorization_error msg, ref
     error = msg
     error += "<br />If you believe this is in error please contact, #{I18n.t 'error_contact'}, and provide the following information:"

@@ -82,9 +82,11 @@ class ServiceCalendarsController < ApplicationController
     @line_item_total_td = ".total_#{@line_items_visit.id}"
     @line_item_total_study_td = ".total_#{@line_items_visit.id}_per_study"
     @arm_id = '.arm_' + @line_items_visit.arm.id.to_s
-    
-    if @sub_service_request or @service_request
-      @line_items_visits = @sub_service_request ? @sub_service_request.line_items_visits : @service_request.sub_service_requests.map(&:line_items_visits).flatten
+   
+    if @sub_service_request
+      @line_items_visits = @line_items_visit.arm.line_items_visits.reject{|x| x.line_item.sub_service_request_id != @sub_service_request.id }
+    elsif @service_request
+      @line_items_visits = @line_items_visit.arm.line_items_visits.reject{|x| x.line_item.service_request_id != @service_request.id }
     else
       @line_items_visits = @line_items_visit.arm.line_items_visits
     end

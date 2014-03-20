@@ -10,9 +10,10 @@
         %th.qty_type_header{:rowspan => 2}= t("calendar_page.headers.clinical_qty")
       %th.number_of_subjects_header{:rowspan => 2}= t("calendar_page.headers.subjects")
       %th
+        -#= select_tag "jump_to_visit_#{arm.id}", select_visits(arm, @pages)
+        -#= text_field_tag "jump_to_visit_#{arm.id}", nil, :class => 'jump_to_visit', :url => table_service_request_service_calendars_path(@service_request, :pages => @pages, :tab => @tab, :portal => @portal, :arm_id => arm.id), :visit_count => arm.visit_count
+      %th{:colspan => 5, :height => 40, :width => 375}
         = t("calendar_page.labels.jump_to_visit")
-        = text_field_tag "jump_to_visit_#{arm.id}", nil, :class => 'jump_to_visit', :url => table_service_request_service_calendars_path(@service_request, :pages => @pages, :tab => @tab, :portal => @portal, :arm_id => arm.id), :visit_count => arm.visit_count
-      %th{:colspan => 5, :height => 40, :width => 375} 
         = generate_visit_navigation arm, service_request, @pages, @tab, @portal if (@sub_service_request.nil? ? service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
       %th{:colspan => 2}= image_tag 'spinner.gif', :class => 'service_calendar_spinner'
 

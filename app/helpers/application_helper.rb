@@ -126,27 +126,53 @@ module ApplicationHelper
   end
 
   def generate_visit_navigation arm, service_request, pages, tab, portal=nil
-    page = pages[arm.id].to_i == 0 ? 1 : pages[arm.id].to_i
-    beginning_visit = (page * 5) - 4
-    ending_visit = (page * 5) > arm.visit_count ? arm.visit_count : (page * 5)
     returning_html = ""
-    
-    returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')), 
-                              table_service_request_service_calendars_path(service_request, :page => page - 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal), 
-                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only') unless page <= 1
-    returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')), 
-                                  :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled', :disabled => true) if page <= 1
+    num_pages = (arm.visit_count / 5.0).ceil
+    arr = []
+    selected = pages[arm.id].to_i == 0 ? 1 : pages[arm.id].to_i
 
-    returning_html += content_tag(:span, "Visits #{beginning_visit} - #{ending_visit} of #{arm.visit_count}", :class => 'visit_count')
+    num_pages.times do |x|
+      page = x + 1
+      beginning_visit = (page * 5) - 4
+      ending_visit = (page * 5) > arm.visit_count ? arm.visit_count : (page * 5)
+
+      option = ["Visits #{beginning_visit} - #{ending_visit} of #{arm.visit_count}", page, :style => "font-weight:bold;"]
+      arr << option
+
+      (beginning_visit..ending_visit).each do |y|
+        arr << ["&nbsp&nbsp&nbsp#{arm.visit_groups[y - 1].name}".html_safe, :parent_page => page]
+      end
+
+    end
+
+    returning_html += select_tag("jump_to_visit_#{arm.id}", options_for_select(arr, selected), :class => 'jump_to_visit', :url => table_service_request_service_calendars_path(service_request, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal))
 
     returning_html += link_to(image_tag('sort.png'), 'javascript:void(0)', :class => 'move_visits', :'data-arm_id' => arm.id, :'data-tab' => tab, :'data-sr_id' => service_request.id, :'data-portal' => portal) unless portal
 
-    returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')), 
-                              table_service_request_service_calendars_path(service_request, :page => page + 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal), 
-                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only') unless ((page + 1) * 5) - 4 > arm.visit_count
-    returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')), 
-                                  :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled', :disabled => true) if ((page + 1) * 5) - 4 > arm.visit_count
     raw(returning_html)
+
+
+    # page = pages[arm.id].to_i == 0 ? 1 : pages[arm.id].to_i
+    # beginning_visit = (page * 5) - 4
+    # ending_visit = (page * 5) > arm.visit_count ? arm.visit_count : (page * 5)
+    # returning_html = ""
+
+    # returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')), 
+    #                           table_service_request_service_calendars_path(service_request, :page => page - 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal), 
+    #                           :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only') unless page <= 1
+    # returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')), 
+    #                               :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled', :disabled => true) if page <= 1
+
+    # returning_html += content_tag(:span, "Visits #{beginning_visit} - #{ending_visit} of #{arm.visit_count}", :class => 'visit_count')
+
+    # returning_html += link_to(image_tag('sort.png'), 'javascript:void(0)', :class => 'move_visits', :'data-arm_id' => arm.id, :'data-tab' => tab, :'data-sr_id' => service_request.id, :'data-portal' => portal) unless portal
+
+    # returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')), 
+    #                           table_service_request_service_calendars_path(service_request, :page => page + 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal), 
+    #                           :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only') unless ((page + 1) * 5) - 4 > arm.visit_count
+    # returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')), 
+    #                               :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled', :disabled => true) if ((page + 1) * 5) - 4 > arm.visit_count
+    # raw(returning_html)
   end
 
   # TODO

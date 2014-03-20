@@ -210,7 +210,7 @@ en:
       unit_type: "Unit Type"
     per_patient: "Per Patient/Visit Services"
     labels:
-      jump_to_visit: "Jump To Visit"
+      jump_to_visit: "Jump To:"
       maximum_direct: "Maximum Total Direct Costs Per Patient"
       maximum_indirect: "Maximum Total Indirect Costs Per Patient"
       maximum_per: "Maximum Total Per Patient"

@@ -1,6 +1,6 @@
 namespace :data do
   desc "Import services from CSV"
-  task :import => :environment do
+  task :import_services => :environment do
     def header
       [
        "CPT Code",

@@ -135,6 +135,7 @@ end
 
 def update_visit_groups
   service_request.arms.each do |arm|
+    arm.populate_subjects
     arm.visit_groups.each do |vg|
       vg.update_attributes(day: vg.position)
     end
@@ -145,6 +146,8 @@ def build_arms
   let!(:protocol_for_service_request_id) {project.id rescue study.id}
   let!(:arm1)                { FactoryGirl.create(:arm, name: "Arm", protocol_id: protocol_for_service_request_id, visit_count: 10, subject_count: 2)}
   let!(:arm2)                { FactoryGirl.create(:arm, name: "Arm2", protocol_id: protocol_for_service_request_id, visit_count: 5, subject_count: 4)}
+  let!(:visit_group1)         { FactoryGirl.create(:visit_group, arm_id: arm1.id, position: 1, day: 1)}
+  let!(:visit_group2)         { FactoryGirl.create(:visit_group, arm_id: arm2.id, position: 1, day: 1)}
   # let!(:visit_group)         { FactoryGirl.create(:visit_group, arm_id: arm1.id, position: 1, day: 1)}
 end
 
@@ -201,7 +204,9 @@ end
 
 def build_clinical_data all_subjects = nil
   service_request.arms.each do |arm|
-    arm.populate_subjects
+    arm.subjects.each do |subject|
+      subject.calendar.populate(arm.visit_groups)
+    end
   end
 end
 

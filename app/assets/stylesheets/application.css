@@ -1217,9 +1217,14 @@ legend {
 }
 
 .edit-project-view .box .info input[type=text],
-.edit-project-view .box .info textarea,
 .edit-project-view .box .info select {
   width: 375px;
+}
+
+.edit-project-view .box .info textarea {
+  width: 375;
+  min-width: 100%;
+  max-width: 100%;
 }
 
 .edit-project-view .box .info textarea {

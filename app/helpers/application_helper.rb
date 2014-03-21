@@ -40,9 +40,9 @@ module ApplicationHelper
       content_tag(:div, (visit.research_billing_qty.to_i + visit.insurance_billing_qty.to_i + visit.effort_billing_qty.to_i), {:style => 'text-align:center', :class => "line_item_visit_quantity"}) 
     when 'billing_strategy'
       returning_html = ""
-      returning_html += text_field_tag "visits_#{visit.id}_research_billing_qty", visit.research_billing_qty, :"data-unit-minimum" => unit_minimum, :'data-arm_id' => arm.id, :class => "line_item_visit_research_billing_qty line_item_visit_billing visits_#{visit.id}", :update => "#{base_url}&tab=billing_strategy&column=research_billing_qty&portal=#{portal}"
-      returning_html += text_field_tag "visits_#{visit.id}_insurance_billing_qty", visit.insurance_billing_qty, :"data-unit-minimum" => unit_minimum, :'data-arm_id' => arm.id, :class => "line_item_visit_billing visits_#{visit.id}", :update => "#{base_url}&tab=billing_strategy&column=insurance_billing_qty&portal=#{portal}"
-      returning_html += text_field_tag "visits_#{visit.id}_effort_billing_qty", visit.effort_billing_qty, :"data-unit-minimum" => unit_minimum, :'data-arm_id' => arm.id, :class => "line_item_visit_billing visits_#{visit.id}", :update => "#{base_url}&tab=billing_strategy&column=effort_billing_qty&portal=#{portal}"
+      returning_html += text_field_tag "visits_#{visit.id}_research_billing_qty", visit.research_billing_qty, :current_quantity => visit.research_billing_qty, :previous_quantity => visit.research_billing_qty, :"data-unit-minimum" => unit_minimum, :'data-arm_id' => arm.id, :class => "line_item_visit_research_billing_qty line_item_visit_billing visits_#{visit.id}", :update => "#{base_url}&tab=billing_strategy&column=research_billing_qty&portal=#{portal}"
+      returning_html += text_field_tag "visits_#{visit.id}_insurance_billing_qty", visit.insurance_billing_qty, :current_quantity => visit.insurance_billing_qty, :previous_quantity => visit.insurance_billing_qty, :"data-unit-minimum" => unit_minimum, :'data-arm_id' => arm.id, :class => "line_item_visit_billing visits_#{visit.id}", :update => "#{base_url}&tab=billing_strategy&column=insurance_billing_qty&portal=#{portal}"
+      returning_html += text_field_tag "visits_#{visit.id}_effort_billing_qty", visit.effort_billing_qty, :current_quantity => visit.effort_billing_qty, :previous_quantity => visit.effort_billing_qty, :"data-unit-minimum" => unit_minimum, :'data-arm_id' => arm.id, :class => "line_item_visit_billing visits_#{visit.id}", :update => "#{base_url}&tab=billing_strategy&column=effort_billing_qty&portal=#{portal}"
       raw(returning_html)
     when 'calendar'
       label_tag nil, currency_converter(totals_hash["#{visit.id}"]), :class => "line_item_visit_pricing"
@@ -139,7 +139,7 @@ module ApplicationHelper
 
     returning_html += content_tag(:span, "Visits #{beginning_visit} - #{ending_visit} of #{arm.visit_count}", :class => 'visit_count')
 
-    returning_html += link_to('Button', 'javascript:void(0)', :class => 'move_visits', :'data-arm_id' => arm.id, :'data-tab' => tab, :'data-sr_id' => service_request.id, :'data-portal' => portal)
+    returning_html += link_to(image_tag('sort.png'), 'javascript:void(0)', :class => 'move_visits', :'data-arm_id' => arm.id, :'data-tab' => tab, :'data-sr_id' => service_request.id, :'data-portal' => portal) unless portal
 
     returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')), 
                               table_service_request_service_calendars_path(service_request, :page => page + 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal), 

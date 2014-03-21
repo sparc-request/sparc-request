@@ -31,8 +31,7 @@ describe 'as a user on catalog page' do
     click_link("Clinical and Translational Research Center (CTRC)")
     click_button("Add")
     wait_for_javascript_to_finish
-
-    find(:xpath, "//a/img[@alt='Submit_request']/..").click
+    find('.submit-request-button').click
   end
 
 end

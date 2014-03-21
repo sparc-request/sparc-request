@@ -158,11 +158,6 @@ class Arm < ActiveRecord::Base
       end
     end
 
-    # If in CWF, build the appointments for the visit group
-    if self.protocol.service_requests.map {|x| x.sub_service_requests.map {|y| y.in_work_fulfillment}}.flatten.include?(true)
-      populate_subjects_for_new_visit_group(visit_group)
-    end
-
     return visit_group
   end
 
@@ -173,50 +168,12 @@ class Arm < ActiveRecord::Base
   end
 
   def populate_subjects
-    groups = self.visit_groups
-    subject_count.times do
-      subject = self.subjects.create
-      subject.calendar.populate(groups)
-    end
-  end
-
-  def populate_subjects_on_edit
     subject_difference = self.subject_count - self.subjects.count
+  
     if subject_difference > 0
       subject_difference.times do
         self.subjects.create
       end
-    end
-    self.subjects.each do |subject|
-      # populate old appointments
-      subject.calendar.appointments.each do |appointment|
-        if appointment.visit_group_id
-          existing_liv_ids = appointment.procedures.map {|x| x.visit ? x.visit.line_items_visit.id : nil}.compact
-          new_livs = self.line_items_visits.reject {|x| existing_liv_ids.include?(x.id) or !x.line_item.attached_to_submitted_request}
-          new_livs.each do |new_liv|
-            visit = new_liv.visits.where("visit_group_id = ?", appointment.visit_group_id).first
-            appointment.procedures.create(:line_item_id => new_liv.line_item.id, :visit_id => visit.id) if new_liv.line_item.service.organization_id == appointment.organization_id
-          end
-        end
-      end
-      # populate new appointments
-      existing_group_ids = subject.calendar.appointments.map(&:visit_group_id)
-      groups = self.visit_groups.reject {|x| existing_group_ids.include?(x.id)}
-      subject.calendar.populate(groups)
-    end
-  end
-
-  def populate_new_subjects
-    self.subjects.each do |subject|
-      if subject.calendar.appointments.empty?
-        subject.calendar.populate(self.visit_groups)
-      end
-    end
-  end
-
-  def populate_subjects_for_new_visit_group visit_group
-    self.subjects.each do |subject|
-      subject.calendar.populate([visit_group])
     end
   end
 

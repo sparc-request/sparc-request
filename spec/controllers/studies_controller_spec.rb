@@ -62,38 +62,6 @@ describe StudiesController do
         get :create, { :id => nil, :format => :js }.with_indifferent_access
         session[:saved_study_id].should eq assigns(:protocol).id
       end
-
-      it 'should flash a notice to the user if it created a valid study' do
-        session[:service_request_id] = service_request.id
-        session[:identity_id] = identity.id
-        get :create, {
-          :id => nil,
-          :format => :js,
-          :study => {
-            :short_title => 'foo',
-            :title => 'this is the title',
-            :funding_status => 'not in a million years',
-            :funding_source => 'God',
-            :sponsor_name => 'Sam Gamgee',
-            :project_roles_attributes => [ { :role => 'primary-pi', :project_rights => 'jack squat', :identity_id => identity.id }, { :role => 'business-grants-manager', :project_rights => 'approve', :identity_id => identity.id } ],
-            :requester_id => identity.id,
-          }
-        }.with_indifferent_access
-        assigns(:protocol).valid?.should eq true
-        assigns(:protocol).errors.messages.should eq({ })
-        flash[:notice].should eq 'New study created'
-      end
-
-      it 'should not flash a notice to the user if it did not create a valid study' do
-        session[:service_request_id] = service_request.id
-        session[:identity_id] = identity.id
-        get :create, {
-          :id => nil,
-          :format => :js,
-        }.with_indifferent_access
-        assigns(:protocol).valid?.should eq false
-        flash[:notice].should eq nil
-      end
     end
   end
 
@@ -146,37 +114,6 @@ describe StudiesController do
         # TODO: check that setup_study_types was called
         # TODO: check that setup_impact_affiliations was called
         # TODO: check that setup_affiliations was called
-      end
-
-      it 'should flash a notice to the user if the study was valid' do
-        session[:service_request_id] = service_request.id
-        session[:identity_id] = identity.id
-        get :update, {
-          :id => study.id,
-          :format => :js,
-          :study => {
-            :short_title => 'foo',
-            :title => 'this is the title',
-            :funding_status => 'not in a million years',
-            :funding_source => 'God',
-            :project_roles_attributes => [ { :role => 'primary-pi', :project_rights => 'jack squat', :identity_id => identity.id }, { :role => 'business-grants-manager', :project_rights => 'approve', :identity_id => identity.id } ],
-            :requester_id => identity.id,
-          }
-        }.with_indifferent_access
-        assigns(:protocol).valid?.should eq true
-        assigns(:protocol).errors.messages.should eq({ })
-        flash[:notice].should eq 'Study updated'
-      end
-
-      it 'should not flash a notice to the user if the study was not valid' do
-        session[:service_request_id] = service_request.id
-        session[:identity_id] = identity.id
-        get :update, {
-          :id => study.id,
-          :format => :js,
-        }.with_indifferent_access
-        assigns(:protocol).valid?.should eq false
-        flash[:notice].should eq nil
       end
     end
 

@@ -74,7 +74,6 @@ def build_per_patient_per_visit_services
   let!(:service2)            { FactoryGirl.create(:service, organization_id: program.id, name: 'Per Patient') }
   let!(:pricing_setup)       { FactoryGirl.create(:pricing_setup, organization_id: program.id, display_date: Time.now - 1.day, federal: 50, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal')}
   let!(:pricing_map2)        { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service2.id, is_one_time_fee: false, display_date: Time.now - 1.day, full_rate: 2000, federal_rate: 3000, units_per_qty_max: 20) }
-  let!(:pricing_map3)        { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service2.id, is_one_time_fee: false, display_date: Time.now - 1.day, effective_date: Time.now + 10.days, full_rate: 1000, federal_rate: 2000, units_per_qty_max: 20) }
   let!(:line_item2)          { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service2.id, sub_service_request_id: sub_service_request.id, quantity: 0) }
   let!(:service_provider)    { FactoryGirl.create(:service_provider, organization_id: program.id, identity_id: jug2.id)}
   let!(:super_user)          { FactoryGirl.create(:super_user, organization_id: program.id, identity_id: jpl6.id)}
@@ -135,6 +134,7 @@ end
 
 def update_visit_groups
   service_request.arms.each do |arm|
+    arm.populate_subjects
     arm.visit_groups.each do |vg|
       vg.update_attributes(day: vg.position)
     end
@@ -145,6 +145,8 @@ def build_arms
   let!(:protocol_for_service_request_id) {project.id rescue study.id}
   let!(:arm1)                { FactoryGirl.create(:arm, name: "Arm", protocol_id: protocol_for_service_request_id, visit_count: 10, subject_count: 2)}
   let!(:arm2)                { FactoryGirl.create(:arm, name: "Arm2", protocol_id: protocol_for_service_request_id, visit_count: 5, subject_count: 4)}
+  let!(:visit_group1)         { FactoryGirl.create(:visit_group, arm_id: arm1.id, position: 1, day: 1)}
+  let!(:visit_group2)         { FactoryGirl.create(:visit_group, arm_id: arm2.id, position: 1, day: 1)}
   # let!(:visit_group)         { FactoryGirl.create(:visit_group, arm_id: arm1.id, position: 1, day: 1)}
 end
 
@@ -201,7 +203,9 @@ end
 
 def build_clinical_data all_subjects = nil
   service_request.arms.each do |arm|
-    arm.populate_subjects
+    arm.subjects.each do |subject|
+      subject.calendar.populate(arm.visit_groups)
+    end
   end
 end
 

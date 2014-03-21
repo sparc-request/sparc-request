@@ -1,7 +1,7 @@
 class SubServiceRequest < ActiveRecord::Base
   audited
 
-  after_save :update_past_status
+  after_save :update_past_status, :update_org_tree
 
   belongs_to :owner, :class_name => 'Identity', :foreign_key => "owner_id"
   belongs_to :service_request
@@ -48,6 +48,19 @@ class SubServiceRequest < ActiveRecord::Base
         end
       end
     end
+  end
+
+  def update_org_tree
+    my_tree = nil
+    if organization.type == "Core"
+      my_tree = organization.parent.parent.try(:abbreviation) + "/" + organization.parent.try(:name) + "/" + organization.try(:name)
+    elsif organization.type == "Program"
+      my_tree = organization.parent.try(:abbreviation) + "/" + organization.try(:name)
+    else
+      my_tree = organization.try(:name)
+    end
+
+    self.update_column(:org_tree_display, my_tree)
   end
 
   def set_effective_date_for_cost_calculations
@@ -107,11 +120,14 @@ class SubServiceRequest < ActiveRecord::Base
   end
 
   def one_time_fee_line_items
-    self.line_items.select {|li| li.service.is_one_time_fee?}
+    line_items = LineItem.where(:sub_service_request_id => self.id).includes(:service)
+    line_items.select {|li| li.service.is_one_time_fee?}
   end
 
   def per_patient_per_visit_line_items
-    self.line_items.select {|li| !li.service.is_one_time_fee?}    
+    line_items = LineItem.where(:sub_service_request_id => self.id).includes(:service)
+    puts self.line_items
+    line_items.select {|li| !li.service.is_one_time_fee?}    
   end
   
   def has_one_time_fee_services?

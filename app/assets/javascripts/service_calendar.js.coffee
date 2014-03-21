@@ -7,9 +7,18 @@ $(document).ready ->
   
   $('.line_item_visit_template').live 'change', ->
     $('.service_calendar_spinner').show()
+    obj = $(this)
     $.ajax
       type: 'PUT'
       url: $(this).attr('update') + "&checked=#{$(this).is(':checked')}"
+      error: (jqXHR, textStatus, errorThrown) ->
+        if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
+          errors = JSON.parse(jqXHR.responseText)
+        else
+          errors = [textStatus]
+        for error in errors
+          alert(error);
+          obj.prop('checked', false)
     .complete =>
       $('.service_calendar_spinner').hide()
       arm_id = $(this).data("arm_id")
@@ -42,10 +51,26 @@ $(document).ready ->
         my_qty = unit_minimum - sibling_qty
         $(this).val(my_qty)
 
+      obj = $(this)
+      original_val = obj.attr('previous_quantity')
+
       $('.service_calendar_spinner').show()
       $.ajax
         type: 'PUT'
         url: $(this).attr('update') + "&qty=#{my_qty}"
+        success: ->
+          $(obj).attr('previous_quantity', $(obj).val())
+        error: (jqXHR, textStatus, errorThrown) ->
+          if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
+            errors = JSON.parse(jqXHR.responseText)
+          else
+            errors = [textStatus]
+          for error in errors
+            # May need to include something to allow error.humanize like we do elsewhere
+            # if this gets weird looking.
+            alert(error);
+            $(obj).val(original_val)
+            $(obj).attr('current_quantity', original_val)
       .complete =>
         $('.service_calendar_spinner').hide()
         arm_id = $(this).data("arm_id")
@@ -247,7 +272,9 @@ recalculate_one_time_fee_totals = ->
       units_per_qty = 1
     unit_factor = $(otf).data('unit_factor')
 
-    new_otf_total = (qty * your_cost * units_per_qty) / 100.0
+    number_of_kits = (qty * units_per_qty) / unit_factor
+    number_of_kits = Math.ceil(number_of_kits)
+    new_otf_total = (number_of_kits * your_cost) / 100.0
     grand_total += new_otf_total
     
     $(otf).find('.otf_total').html('$' + commaSeparateNumber(new_otf_total.toFixed(2)))

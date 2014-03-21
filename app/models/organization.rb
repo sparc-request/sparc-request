@@ -95,7 +95,7 @@ class Organization < ActiveRecord::Base
 
   # Returns the immediate children of this organization (shallow search)
   def children
-    return Organization.find_all_by_parent_id(self.id)
+    return Organization.where(:parent_id => self.id).includes(:services)
   end
 
   # Returns an array of all children (and children of children) of this organization (deep search).
@@ -115,9 +115,11 @@ class Organization < ActiveRecord::Base
   # deep children.
   def all_child_services
     all_services = []
-    self.all_children.each do |child|
+    children = self.all_children
+    children.each do |child|
       if child.services
-        all_services = all_services | child.services.sort_by{|x| x.name}
+        services = Service.where(:organization_id => child.id).includes(:pricing_maps)
+        all_services = all_services | services.sort_by{|x| x.name}
       end
     end
 

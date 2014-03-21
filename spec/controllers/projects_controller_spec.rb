@@ -45,37 +45,6 @@ describe ProjectsController do
         get :create, { :id => nil, :format => :js }.with_indifferent_access
         session[:saved_protocol_id].should eq assigns(:protocol).id
       end
-
-      it 'should flash a notice to the user if it created a valid project' do
-        session[:service_request_id] = service_request.id
-        session[:identity_id] = identity.id
-        get :create, {
-          :id => nil,
-          :format => :js,
-          :project => {
-            :short_title     => 'foo',
-            :title           => 'this is the title',
-            :funding_status  => 'not in a million years',
-            :funding_source  => 'God',
-            :project_roles_attributes  => [ { :role => 'primary-pi', :project_rights => 'jack squat', :identity_id => identity.id }, { :role => 'business-grants-manager', :project_rights => 'approve', :identity_id => identity.id } ],
-            :requester_id    => identity.id,
-          }
-        }.with_indifferent_access
-        assigns(:protocol).valid?.should eq true
-        assigns(:protocol).errors.messages.should eq({ })
-        flash[:notice].should eq 'New project created'
-      end
-
-      it 'should not flash a notice to the user if it did not create a valid project' do
-        session[:service_request_id] = service_request.id
-        session[:identity_id] = identity.id
-        get :create, {
-          :id => nil,
-          :format => :js,
-        }.with_indifferent_access
-        assigns(:protocol).valid?.should eq false
-        flash[:notice].should eq nil
-      end
     end
   end
 
@@ -122,38 +91,6 @@ describe ProjectsController do
         session[:identity_id] = identity.id
         get :update, { :id => project.id, :format => :js }.with_indifferent_access
         assigns(:protocol).class.should eq Project
-      end
-
-      it 'should flash a notice to the user if the project was valid' do
-        session[:service_request_id] = service_request.id
-        session[:identity_id] = identity.id
-        get :update, {
-          :id => project.id,
-          :format => :js,
-          :project => {
-            :short_title     => 'foo',
-            :title           => 'this is the title',
-            :funding_status  => 'not in a million years',
-            :funding_source  => 'God',
-            :project_roles_attributes  => [ { :role => 'primary-pi', :project_rights => 'jack squat', :identity_id => identity.id }, { :role => 'business-grants-manager', :project_rights => 'approve', :identity_id => identity.id } ],
-            :requester_id    => identity.id,
-          }
-        }.with_indifferent_access
-        assigns(:protocol).valid?.should eq true
-        assigns(:protocol).errors.messages.should eq({ })
-        flash[:notice].should eq 'Project updated'
-      end
-
-      it 'should not flash a notice to the user if the project was not valid' do
-        session[:service_request_id] = service_request.id
-        session[:identity_id] = identity.id
-        project.update_attribute(:title, nil)
-        get :update, {
-          :id => project.id,
-          :format => :js,
-        }.with_indifferent_access
-        assigns(:protocol).valid?.should eq false
-        flash[:notice].should eq nil
       end
     end
 

@@ -36,7 +36,7 @@ namespace :data do
 
         inst.providers.order(:name).each do |prov|
           puts "--- #{prov.name} => #{prov.id}"
-          
+
           prov.programs.order(:name).each do |prog|
             puts "----- #{prog.name} => #{prog.id}"
 
@@ -56,12 +56,12 @@ namespace :data do
       file = prompt "Please specify the file name to import from db/imports (must be a CSV, see db/imports/example.csv for formatting): "
 
       while file.blank? or not File.exists?(Rails.root.join("db", "imports", file))
-        file = get_file(true) 
+        file = get_file(true)
       end
 
       file
     end
-    
+
     def get_org_id(error=false)
       puts "ID specified is blank or does not exist" if error
       parent_org_id = prompt "Please specify the ID for the organization which these services should fall under (type List to see available options): "

@@ -6,6 +6,8 @@ describe "admin fulfillment tab", :js => true do
   fake_login_for_each_test
   build_service_request_with_study
 
+  let!(:pricing_map3)        { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service2.id, is_one_time_fee: false, display_date: Time.now - 1.day, effective_date: Time.now + 10.days, full_rate: 1000, federal_rate: 2000, units_per_qty_max: 20) }
+  
   before :each do
     add_visits
     subsidy_map.destroy

@@ -10,7 +10,6 @@ class StudyTracker::ProtocolsController < StudyTracker::BaseController
     if @protocol.save(:validate => false)
       @protocol.arms.each do |arm|
         arm.update_attribute(:subject_count, arm.subjects.count)
-        arm.populate_new_subjects
       end
       redirect_to study_tracker_sub_service_request_path(@sub_service_request)
     else

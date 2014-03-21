@@ -86,6 +86,8 @@ class ServiceRequest < ActiveRecord::Base
   def protocol_page
     if self.protocol_id.blank?
       errors.add(:protocol_id, "You must identify the service request with a study/project before continuing.")
+    elsif not self.protocol.valid?
+      errors.add(:protocol, "Errors in the selected study/project have been detected.  Please click Edit Study/Project to correct")
     else
       if self.has_ctrc_clinical_services?
         if self.protocol && self.protocol.has_ctrc_clinical_services?(self.id) && self.status == 'first_draft'
@@ -182,7 +184,6 @@ class ServiceRequest < ActiveRecord::Base
     optional = args[:optional]
     existing_service_ids = args[:existing_service_ids]
     allow_duplicates = args[:allow_duplicates]
-    arm_id = args[:arm_id]
 
     # If this service has already been added, then do nothing
     unless allow_duplicates
@@ -195,8 +196,7 @@ class ServiceRequest < ActiveRecord::Base
     line_items << create_line_item(
         service_id: service.id,
         optional: optional,
-        quantity: service.displayed_pricing_map.quantity_minimum,
-        arm_id: arm_id)
+        quantity: service.displayed_pricing_map.quantity_minimum)
 
     existing_service_ids << service.id
 
@@ -205,9 +205,8 @@ class ServiceRequest < ActiveRecord::Base
       rs_line_items = create_line_items_for_service(
         service: rs,
         optional: false,
-        existing_service_ids: existing_service_ids,
-        arm_id: arm_id)
-      rs_line_items.nil? ? line_items : line_items.concat(rs_line_items)
+        existing_service_ids: existing_service_ids)
+      line_items.concat(rs_line_items)
     end
 
     # add optional services to line items
@@ -215,8 +214,7 @@ class ServiceRequest < ActiveRecord::Base
       rs_line_items = create_line_items_for_service(
         service: rs,
         optional: true,
-        existing_service_ids: existing_service_ids,
-        arm_id: arm_id)
+        existing_service_ids: existing_service_ids)
       rs_line_items.nil? ? line_items : line_items.concat(rs_line_items)
     end
 
@@ -225,7 +223,6 @@ class ServiceRequest < ActiveRecord::Base
 
   def create_line_item(args)
     quantity = args.delete(:quantity) || 1
-    arm_id = args.delete(:arm_id) || false
     if line_item = self.line_items.create(args)
 
       if line_item.service.is_one_time_fee?
@@ -234,13 +231,8 @@ class ServiceRequest < ActiveRecord::Base
 
       else
         # only per-patient per-visit have arms
-        if arm_id
-          arm = Arm.find(arm_id)
+        self.arms.each do |arm|
           arm.create_line_items_visit(line_item)
-        else
-          self.arms.each do |arm|
-            arm.create_line_items_visit(line_item)
-          end
         end
       end
 

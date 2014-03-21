@@ -2067,6 +2067,10 @@ input.search-services {
   border: 1px solid #ccc;
 }
 
+.jump_to_visit {
+  width: 25px;
+}
+
 .billing-info {
   float: right;
   padding-right: 10px;

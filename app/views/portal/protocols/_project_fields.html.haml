@@ -30,7 +30,7 @@
 
       .field
         = f.label :brief_description, t(:project_form)[:description]
-        = f.text_area :brief_description
+        = f.text_area :brief_description, :cols => '115'
 
       .indirect_cost_rate
         = f.label :indirect_cost_rate, t(:project_form)[:rate]

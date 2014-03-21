@@ -215,7 +215,7 @@ $(document).ready ->
 
     page = $(this).find('option:selected').attr('parent_page')
 
-    if page == 'undefined' || page == false
+    if page == undefined || page == false
       page = $(this).val()
 
     $.ajax

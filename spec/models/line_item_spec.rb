@@ -135,8 +135,7 @@ describe "Line Item" do
         line_item.units_per_package.should eq(1)
       end
 
-      it "should set units per package to 1 if the pricing map is a one time fee, regardless of unit factor" do
-        pricing_map.update_attributes(unit_factor: 200)
+      it "should set units per package to 1 if the pricing map does not have a unit factor" do
         line_item.units_per_package.should eq(1)
       end
     end
@@ -149,10 +148,16 @@ describe "Line Item" do
 
       context "direct costs for one time fee" do
 
-        it "should return the correct direct cost" do
+        it "should return the correct direct cost with a unit factor of 1" do
           pricing_map.update_attributes(is_one_time_fee: true)
           line_item.update_attributes(quantity: 10)
           line_item.direct_costs_for_one_time_fee.should eq(10000)          
+        end
+
+        it "should return the correct direct cost with a unit factor other than 1" do
+          pricing_map.update_attributes(unit_factor: 6)
+          line_item.update_attributes(quantity: 10)
+          line_item.direct_costs_for_one_time_fee.should eq(2000.0)
         end
 
         it "should return zero if quantity is nil" do

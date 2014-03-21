@@ -120,11 +120,14 @@ class SubServiceRequest < ActiveRecord::Base
   end
 
   def one_time_fee_line_items
-    self.line_items.select {|li| li.service.is_one_time_fee?}
+    line_items = LineItem.where(:sub_service_request_id => self.id).includes(:service)
+    line_items.select {|li| li.service.is_one_time_fee?}
   end
 
   def per_patient_per_visit_line_items
-    self.line_items.select {|li| !li.service.is_one_time_fee?}    
+    line_items = LineItem.where(:sub_service_request_id => self.id).includes(:service)
+    puts self.line_items
+    line_items.select {|li| !li.service.is_one_time_fee?}    
   end
   
   def has_one_time_fee_services?

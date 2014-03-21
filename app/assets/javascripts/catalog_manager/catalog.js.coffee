@@ -492,3 +492,8 @@ $ ->
         success: ->
           remove_this.remove()
 
+  $('fieldset.parent:not(.active)').live 'click', ->
+    $('fieldset.parent.active').removeClass('active').children('fieldset').hide('blind')
+    $(this).children('fieldset').show('blind')
+    $(this).addClass('active')
+

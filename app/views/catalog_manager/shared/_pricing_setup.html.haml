@@ -5,7 +5,8 @@
   - if pricing_setup_disabled
     %input{:name => "diabled_fields_present", :value => 'true', :type => 'hidden'} 
   - unless pricing_setup
-    %a.button.remove_pricing_setup{:href => 'javascript:void(0);'} Remove Pricing Setup
+    %input.remove_pricing_setup{:type => 'button', :value => 'Remove Pricing Setup', :style => 'width:auto; margin-bottom:12px;'} 
+    / %a.button.remove_pricing_setup{:href => 'javascript:void(0);'} Remove Pricing Setup
   %fieldset
     %legend= t("cm_shared.labels.dates")
     %table

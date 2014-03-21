@@ -7,22 +7,6 @@ describe "subsidy page" do
   fake_login_for_each_test
   build_service_request_with_project
 
-  describe "no subsidy available" do
-    before :each do
-      add_visits
-
-      #destroy pre-fabbed subsidies...
-      subsidy_map.destroy
-      subsidy.destroy
-
-      visit service_subsidy_service_request_path service_request.id
-      sleep 2
-    end
-    it 'should not have any subsidies', :js => true do
-      page.should have_text("None of the services you have selected are eligible for a subsidy")
-    end
-  end
-
   describe "has subsidy" do
     before :each do
       add_visits
@@ -36,7 +20,7 @@ describe "subsidy page" do
       visit service_subsidy_service_request_path service_request.id
     end
 
-    describe "subsidy is not overridden" do
+    describe "is not overridden" do
       it 'should allow PI Contribution to be set', :js => true do
         page.should_not have_css("input.pi-contribution[disabled=disabled]")
       end
@@ -85,15 +69,11 @@ describe "subsidy page" do
         end
 
         it 'should adjust requested funding correctly', :js => true do
-          retry_until do
-            find(".requested_funding_#{sub_service_request.id}").text.gsub!('$', '').to_f.should eq(@total - @contribution)
-          end
+          find(".pi-contribution").value.should eq((@total - @contribution).to_s)
         end
 
         it 'should adjust subsidy percent correctly', :js => true do
-          retry_until do
-            find(".subsidy_percent_#{sub_service_request.id}").text.gsub!('%', '').to_f.should eq (((@total - @contribution) / @total) * 100).round(1)
-          end
+          find(".subsidy_percent_#{sub_service_request.id}").text.gsub!('%', '').to_f.should eq(((@total - @contribution) / @total) * 100)
         end
       end
     end

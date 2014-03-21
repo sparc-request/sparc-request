@@ -17,6 +17,8 @@ feature 'create new core', :js => true do
       click_link('Par for the Core')
 
       # General Information fields
+      sleep 20
+      
       fill_in 'core_abbreviation', :with => 'PTP'
       fill_in 'core_order', :with => '2'
       fill_in 'core_description', :with => 'Description'

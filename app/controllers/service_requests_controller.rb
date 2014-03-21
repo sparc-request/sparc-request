@@ -232,7 +232,7 @@ class ServiceRequestsController < ApplicationController
     @protocol.arms.each do |arm|
       arm.update_attributes({:new_with_draft => false})
       if @protocol.service_requests.map {|x| x.sub_service_requests.map {|y| y.in_work_fulfillment}}.flatten.include?(true)
-        arm.populate_subjects_on_edit
+        arm.populate_subjects
       end
     end
     @service_list = @service_request.service_list
@@ -401,13 +401,30 @@ class ServiceRequestsController < ApplicationController
     @service = @line_items_visit.line_item.service
     @sub_service_request = @line_items_visit.line_item.sub_service_request
     @subsidy = @sub_service_request.try(:subsidy)
+    line_items = @sub_service_request.per_patient_per_visit_line_items
+    line_item = @line_items_visit.line_item
+    has_service_relation = line_item.has_service_relation
+    failed_visit_list = ''
     @line_items_visit.visits.each do |visit|
-      visit.update_attributes(
+      visit.attributes = {
           quantity:              @service.displayed_pricing_map.unit_minimum,
           research_billing_qty:  @service.displayed_pricing_map.unit_minimum,
           insurance_billing_qty: 0,
-          effort_billing_qty:    0)
+          effort_billing_qty:    0 }
+
+      if has_service_relation
+        if line_item.check_service_relations(line_items, true, visit)
+          visit.save
+        else
+          failed_visit_list << "#{visit.visit_group.name}, "
+          visit.reload
+        end
+      else
+        visit.save
+      end
     end
+
+    @errors = "The follow visits for #{@service.name} were not checked because they exceeded the linked quantity limit: #{failed_visit_list}" if failed_visit_list.empty? == false
     
     render :partial => 'update_service_calendar'
   end

@@ -60,3 +60,5 @@ Gemfile.devel
 
 cert_file
 fixit.sql
+
+db/imports/*

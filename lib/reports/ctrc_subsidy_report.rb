@@ -35,7 +35,8 @@ class CtrcSubsidyReport < Report
 
       # Get all sub service requests belonging to the CTRC
       SubServiceRequest.all.select {|x| x.ctrc?}.each do |ssr|
-        unless ["draft", "first_draft"].include? ssr.status
+        #unless ["draft", "first_draft"].include? ssr.status
+        if ["in_process", "ctrc_review", "ctrc_approved"].include? ssr.status # per request by Lane we only want this report to include these statuses
           if ssr.service_request
             if ssr.service_request.protocol
               row = []

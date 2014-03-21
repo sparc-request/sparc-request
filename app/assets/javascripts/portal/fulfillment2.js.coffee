@@ -303,7 +303,6 @@ $(document).ready ->
       complete: ->
         $("#submit_visit").attr("disabled", false).removeClass("ui-state-disabled")
 
-
   $(document).on('click', '.delete_visit_link', ->
     sr_id = $(this).data('service_request_id')
     data =

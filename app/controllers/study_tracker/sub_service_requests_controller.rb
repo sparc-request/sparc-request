@@ -13,7 +13,7 @@ class StudyTracker::SubServiceRequestsController < StudyTracker::BaseController
     session[:service_calendar_pages] = params[:pages] if params[:pages]
 
     @service_request = @sub_service_request.service_request
-    @protocol = Protocol.includes(:subjects).find(@service_request.protocol_id)
+    @protocol = Protocol.find(@service_request.protocol_id)
     @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
     @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.is_one_time_fee?}
 

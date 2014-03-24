@@ -11,97 +11,108 @@
   #entity_description
     .service_form
 
-      %fieldset
-        %legend= t(:organization_form)[:actions]
+      %fieldset.actions
+        .legend= t(:organization_form)[:actions]
         = f.submit t(:organization_form)[:submit_button], :id => 'save_button', :class => 'save_button btn'
         %img.spinner{:src => '/assets/catalog_manager/spinner_small.gif'}      
+      %br
+
+      %fieldset#gen_info.parent.active
+        .legend= t(:organization_form)[:gen_info]
+        %fieldset.single_fieldset{:style => "display:block;"}
+          %table
+            %tr
+              %th= f.label :program, t(:organization_form)[:program]
+              %td= f.select :program, options_for_select(@programs.map{|p| [p.name, p.id]}, @service.program.id)
+            %tr
+              %th= f.label :core, t(:organization_form)[:core]
+              %td#core_list= f.select :core, options_for_select(@cores.map{|c| [c.name, c.id]}.insert(0, ['None', 0]), (@service.core.id if @service.core))
+            %tr
+              %th= f.label :name, t(:organization_form)[:name]
+              %td= f.text_field :name, :class => "service_name validate"
+            %tr
+              %th= f.label :abbreviation, t(:organization_form)[:abbreviation]
+              %td= f.text_field :abbreviation
+            %tr
+              %th= f.label :description, t(:organization_form)[:description]
+              %td= f.text_area :description, :rows => 8
+            %tr
+              %th= f.label :order, t(:organization_form)[:order]
+              %td= f.text_field :order, :class => 'service_order validate'
+            %tr
+              %th= f.label :disabled, t(:organization_form)[:disabled]
+              %td= f.check_box :is_available, {:checked => (@service.is_available.nil? ? false : !@service.is_available) }, false, true
+            %tr
+              %th= t(:organization_form)[:tag_list]
+              %td
+                - Tag.all.each do |tag|
+                  %span{:style => "margin-right:10px;"}
+                    %span= f.label tag.name.gsub("ctrc", "Nexus")
+                    %span= f.check_box :tag_list, { :multiple => true }, tag.name, nil
 
       %br
 
-      %fieldset
-        %legend= t(:organization_form)[:gen_info]
-        %table
-          %tr
-            %th= f.label :program, t(:organization_form)[:program]
-            %td= f.select :program, options_for_select(@programs.map{|p| [p.name, p.id]}, @service.program.id)
-          %tr
-            %th= f.label :core, t(:organization_form)[:core]
-            %td#core_list= f.select :core, options_for_select(@cores.map{|c| [c.name, c.id]}.insert(0, ['None', 0]), (@service.core.id if @service.core))
-          %tr
-            %th= f.label :name, t(:organization_form)[:name]
-            %td= f.text_field :name, :class => "service_name validate"
-          %tr
-            %th= f.label :abbreviation, t(:organization_form)[:abbreviation]
-            %td= f.text_field :abbreviation
-          %tr
-            %th= f.label :description, t(:organization_form)[:description]
-            %td= f.text_area :description, :rows => 8
-          %tr
-            %th= f.label :order, t(:organization_form)[:order]
-            %td= f.text_field :order, :class => 'service_order validate'
-          %tr
-            %th= f.label :disabled, t(:organization_form)[:disabled]
-            %td= f.check_box :is_available, {:checked => (@service.is_available.nil? ? false : !@service.is_available) }, false, true
+      - if @service.tag_list.include? "epic"
+        %fieldset.parent
+          .legend= t(:organization_form)[:epic_info]
+          %fieldset.single_fieldset
+            %table
+              %tr
+                %th= f.label :cpt_code, t(:organization_form)[:cpt_code]
+                %td= f.text_field :cpt_code
+              %tr
+                %th= f.label :cdm_code, t(:organization_form)[:cdm_code]
+                %td= f.text_field :cdm_code
+              %tr
+                %th= f.label :send_to_epic, t(:organization_form)[:send_to_epic]
+                %td= f.check_box :send_to_epic
 
       %br
 
-      %fieldset
-        %legend= 'Epic Interface'
-        %table
-          %tr
-            %th= f.label :cpt_code, t(:organization_form)[:cpt_code]
-            %td= f.text_field :cpt_code
-          %tr
-            %th= f.label :cdm_code, t(:organization_form)[:cdm_code]
-            %td= f.text_field :cdm_code
-          %tr
-            %th= f.label :send_to_epic, t(:organization_form)[:send_to_epic]
-            %td= f.check_box :send_to_epic
+      / %fieldset
+      /   %legend= t(:organization_form)[:core_facility]
+      /   %table
+      /     %tr
+      /       %th= f.label :service_center_cost, t(:organization_form)[:service_center_cost]
+      /       %td= f.text_field :service_center_cost
+
+      / %br
+
+      / %fieldset
+      /   %legend= t(:organization_form)[:hospital_based_services]
+      /   %table
+      /     %tr
+      /       %th= f.label :charge_code, t(:organization_form)[:charge_code]
+      /       %td= f.text_field :charge_code
+
+      /     %tr
+      /       %th= f.label :revenue_code, t(:organization_form)[:revenue_code]
+      /       %td= f.text_field :revenue_code
+
+      / %br
+
+      %fieldset.parent
+        .legend= t(:organization_form)[:pricing]
+        %fieldset.single_fieldset
+          .secondary_header= t(:organization_form)[:pricing_maps]
+          %input.add_pricing_map{:type => 'button', :value => t(:organization_form)[:add_map]}
+          .pricing_map_accordion
+            - @service.pricing_maps.each do |pricing_map|
+              = render 'pricing_map', :pricing_map => pricing_map, :pricing_map_disabled => disable_pricing_map(pricing_map, @user.can_edit_historical_data_for?(@service.organization)), :can_edit_historical_data => @user.can_edit_historical_data_for?(@service.organization), :entity => @service
 
       %br
 
-      %fieldset
-        %legend= t(:organization_form)[:core_facility]
-        %table
-          %tr
-            %th= f.label :service_center_cost, t(:organization_form)[:service_center_cost]
-            %td= f.text_field :service_center_cost
+      / %fieldset
+      /   %legend= t(:organization_form)[:related_services]
+      /   #rs_info= render :partial => 'catalog_manager/shared/related_services', :locals => {:entity => @service}
 
-      %br
-
-      %fieldset
-        %legend= t(:organization_form)[:hospital_based_services]
-        %table
-          %tr
-            %th= f.label :charge_code, t(:organization_form)[:charge_code]
-            %td= f.text_field :charge_code
-
-          %tr
-            %th= f.label :revenue_code, t(:organization_form)[:revenue_code]
-            %td= f.text_field :revenue_code
-
-      %br
-
-      %fieldset
-        %legend= t(:organization_form)[:pricing_maps]
-        %input.add_pricing_map{:type => 'button', :value => t(:organization_form)[:add_map]}
-        .pricing_map_accordion
-          - @service.pricing_maps.each do |pricing_map|
-            = render 'pricing_map', :pricing_map => pricing_map, :pricing_map_disabled => disable_pricing_map(pricing_map, @user.can_edit_historical_data_for?(@service.organization)), :can_edit_historical_data => @user.can_edit_historical_data_for?(@service.organization), :entity => @service
-
-      %br
-
-      %fieldset
-        %legend= t(:organization_form)[:related_services]
-        #rs_info= render :partial => 'catalog_manager/shared/related_services', :locals => {:entity => @service}
-
-      %br
+      / %br
       
-      %fieldset
-        %legend= t(:organization_form)[:associated_surveys]
-        #associated_survey_info= render :partial => 'catalog_manager/shared/associated_surveys', :locals => {:entity => @service}
+      / %fieldset
+      /   %legend= t(:organization_form)[:associated_surveys]
+      /   #associated_survey_info= render :partial => 'catalog_manager/shared/associated_surveys', :locals => {:entity => @service}
 
-      %br
+      / %br
 
       / %fieldset
       /   %legend Service Providers
@@ -110,8 +121,8 @@
       / %br
 
 
-      %fieldset
-        %legend= t(:organization_form)[:actions]
+      %fieldset.actions
+        .legend= t(:organization_form)[:actions]
         = f.submit t(:organization_form)[:submit_button], :id => 'save_button', :class => 'save_button btn'
         %img.spinner{:src => '/assets/catalog_manager/spinner_small.gif'}      
         

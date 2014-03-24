@@ -653,6 +653,9 @@ en:
   # Catalog Manager - Organization Form
   organization_form:
     gen_info: "General Information"
+    user_rights: "User Rights"
+    pricing: "Pricing"
+    epic_info: "Epic Interface"
     program: "Program"
     core: "Core"
     name: "Name"
@@ -676,7 +679,7 @@ en:
     pricing_maps: "Pricing Maps"
     add_map: "Add Pricing Map"
     related_services: "Related Services"
-    associated_surveys: "Associated Surveys"
+    associated_surveys: "Surveys"
     submission_emails: "Submission E-mails"
     super_users: "Super Users"
     service_providers: "Service Providers"
@@ -692,7 +695,7 @@ en:
     subsidy_info: "Subsidy Information"
     subsidy_max_percent: "Max Percentage"
     subsidy_max_dollar: "Max Dollar Cap"
-    actions: "Actions"
+    actions: "Actions:"
     submit_button: "Save"
     cancel_button: "Cancel"
     blank_field_errors: "Name and Order are required on the Service.  Effective Date, Display Date, and Service Rate are required on all Pricing Maps."

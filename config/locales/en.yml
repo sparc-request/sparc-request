@@ -926,6 +926,7 @@ en:
       tabs:
         study_schedule: "Study Schedule"
         subject_tracker: "Subject Tracker"
+        study_level_charges: "Study Level Charges"
         payments: "Payments"
         services: "Services"
         billing: "Billing"

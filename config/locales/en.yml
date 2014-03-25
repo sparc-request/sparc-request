@@ -825,6 +825,8 @@ en:
         selected: "Services Selected"
         code: "Charge Code"
         number: "#"
+        requested: "Requested"
+        fulfilled: "Fulfilled"
         qty_type: "Qty Type"
         otf_unit_type: "Unit Type"
         cost: "Cost"

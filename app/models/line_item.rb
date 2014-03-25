@@ -14,10 +14,15 @@ class LineItem < ActiveRecord::Base
   attr_accessible :sub_service_request_id
   attr_accessible :service_id
   attr_accessible :optional
-  attr_accessible :quantity
   attr_accessible :complete_date
   attr_accessible :in_process_date
   attr_accessible :units_per_quantity
+  # Quantity also acts as 'R Quantity' and 'Requested R Quantity' in Clinical Work Fulfillment
+  attr_accessible :quantity
+  attr_accessible :requested_t_quantity
+  attr_accessible :fulfilled_r_quantity
+  attr_accessible :fulfilled_t_quantity
+
 
   attr_accessor :pricing_scheme
 

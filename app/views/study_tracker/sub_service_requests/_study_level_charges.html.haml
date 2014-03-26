@@ -10,9 +10,7 @@
             %th.top= t(:fulfillments)[:services][:no_visits][:selected]
             %th.top{:colspan => 2}= t(:fulfillments)[:services][:no_visits][:requested]
             %th.top{:colspan => 2}= t(:fulfillments)[:services][:no_visits][:fulfilled]
-            %th.top= t(:fulfillments)[:services][:no_visits][:received]
-            %th.top= t(:fulfillments)[:services][:no_visits][:in_process]
-            %th.top= t(:fulfillments)[:services][:no_visits][:complete]
+            %th.top Date
           %tr.bottom
             %th
             %th.bottom R
@@ -23,11 +21,4 @@
           = f.fields_for :line_items, @sub_service_request.one_time_fee_line_items, wrapper: false do |otf_form|
             %tr.fields{:class => cycle('odd', '', :name => 'otfs')}
               %td.otf_service_select= otf_form.object.service.name
-              %td.cwf_otf_text_field= otf_form.text_field :quantity
-              %td.cwf_otf_text_field= otf_form.text_field :requested_t_quantity
-              %td.cwf_otf_text_field= otf_form.text_field :fulfilled_r_quantity
-              %td.cwf_otf_text_field= otf_form.text_field :fulfilled_t_quantity
-              %td= otf_form.object.try(:created_at).try(:strftime, '%D')
-              %td= otf_form.datepicker :in_process_date, size: 10, dateFormat: "yy/mm/dd"
-              %td= otf_form.datepicker :complete_date, size: 10, dateFormat: "yy/mm/dd"
     %p.buttons= f.submit t(:study_tracker)[:save], class: 'ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover ui-state-active'

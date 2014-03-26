@@ -53,7 +53,7 @@
       %br
 
       - if @service.tag_list.include? "epic"
-        %fieldset.parent
+        %fieldset#epic_fieldset.parent
           .legend= t(:organization_form)[:epic_info]
           %fieldset.single_fieldset
             %table

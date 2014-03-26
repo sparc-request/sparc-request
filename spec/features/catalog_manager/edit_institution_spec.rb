@@ -2,16 +2,16 @@ require 'spec_helper'
 
 describe 'edit an institution', :js => true do
 
+
   before :each do
     default_catalog_manager_setup
     Tag.create(:name => "ctrc")
     click_link('Medical University of South Carolina')
   end
 
+
   context 'successfully update an existing institution' do
-    
     it "should successfully edit and save the institution" do
-      
       # General Information fields
       fill_in 'institution_abbreviation', :with => 'GreatestInstitution'
       fill_in 'institution_description', :with => 'Description'
@@ -24,8 +24,8 @@ describe 'edit an institution', :js => true do
       page.should have_content( 'Medical University of South Carolina saved successfully' )
     end
 
-    context "adding and removing tags" do
 
+    context "adding and removing tags" do
       before :each do
         @institution = Organization.where(abbreviation: "MUSC").first
         wait_for_javascript_to_finish
@@ -43,6 +43,7 @@ describe 'edit an institution', :js => true do
         @institution.tag_list.should eq(['ctrc'])
       end
     end
+
 
     context "viewing user rights section" do
       it "should show user rights section" do

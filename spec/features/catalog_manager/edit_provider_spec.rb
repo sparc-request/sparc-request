@@ -98,6 +98,9 @@ describe 'edit a provider', :js => true do
         # Subsidy Information fields
         fill_in 'provider_subsidy_map_attributes_max_percentage', :with => '55.5'
         fill_in 'provider_subsidy_map_attributes_max_dollar_cap', :with => '65'
+
+        first('#save_button').click
+        page.should have_content( 'South Carolina Clinical and Translational Institute (SCTR) saved successfully' )
       end
     end
   end

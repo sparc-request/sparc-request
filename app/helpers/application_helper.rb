@@ -55,7 +55,6 @@ module ApplicationHelper
     day_url = base_url + "/set_day"
     window_url = base_url + "/set_window"
     page = page == 0 ? 1 : page
-    portal = params[:portal] || 'false' # needed so these work in admin and user portal
     beginning_visit = (page * 5) - 4
     ending_visit = (page * 5) > arm.visit_count ? arm.visit_count : (page * 5)
     returning_html = ""
@@ -76,14 +75,14 @@ module ApplicationHelper
                                       ((USE_EPIC) ?
                                       label_tag("Day") + "&nbsp;&nbsp;&nbsp;".html_safe + label_tag("+/-") +
                                       tag(:br) +
-                                      text_field_tag("day", visit_group.day, :class => "visit_day position_#{n}", :size => 3, :'data-position' => n - 1, :'data-day' => visit_group.day, :update => "#{day_url}?arm_id=#{arm.id}&portal=#{portal}") +
-                                      text_field_tag("window", visit_group.window, :class => "visit_window position_#{n}", :size => 3, :'data-position' => n - 1, :'data-window' => visit_group.window, :update => "#{window_url}?arm_id=#{arm.id}&portal=#{portal}") +
+                                      text_field_tag("day", visit_group.day, :class => "visit_day position_#{n}", :size => 3, :'data-position' => n - 1, :'data-day' => visit_group.day, :update => "#{day_url}?arm_id=#{arm.id}") +
+                                      text_field_tag("window", visit_group.window, :class => "visit_window position_#{n}", :size => 3, :'data-position' => n - 1, :'data-window' => visit_group.window, :update => "#{window_url}?arm_id=#{arm.id}") +
                                       tag(:br)
                                       : label_tag('')) +
-                                      text_field_tag("arm_#{arm.id}_visit_name_#{n}", visit_name, :class => "visit_name", :size => 10, :update => "#{rename_visit_url}?visit_position=#{n-1}&arm_id=#{arm.id}&portal=#{portal}") +
+                                      text_field_tag("arm_#{arm.id}_visit_name_#{n}", visit_name, :class => "visit_name", :size => 10, :update => "#{rename_visit_url}?visit_position=#{n-1}&arm_id=#{arm.id}") +
                                       tag(:br) + 
                                       link_to((content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')), 
-                                              "/service_requests/#{service_request.id}/service_calendars/#{action}?column_id=#{n}&arm_id=#{arm.id}&portal=#{portal}",
+                                              "/service_requests/#{service_request.id}/#{action}/#{n}/#{arm.id}",
                                               :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only', :id => "check_all_column_#{n}"),
                                       :width => 60, :class => 'visit_number')
       end
@@ -139,6 +138,8 @@ module ApplicationHelper
                                   :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled', :disabled => true) if page <= 1
 
     returning_html += content_tag(:span, "Visits #{beginning_visit} - #{ending_visit} of #{arm.visit_count}", :class => 'visit_count')
+
+    returning_html += link_to(image_tag('sort.png'), 'javascript:void(0)', :class => 'move_visits', :'data-arm_id' => arm.id, :'data-tab' => tab, :'data-sr_id' => service_request.id, :'data-portal' => portal) unless portal
 
     returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')), 
                               table_service_request_service_calendars_path(service_request, :page => page + 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal), 

@@ -2,30 +2,33 @@
   %span.search= t(:cm_index)[:search]
   = text_field_tag 'search'
   = submit_tag t(:cm_index)[:submit], :class => 'custom_button', :id => 'search_button'
+  %button#clear_search.custom_button Clear Search
 
   %span.ui-corner-all.pricing_setup_error
     %p 
 %br
 
+#no_results
+  %p There were no results matching your search criteria. Please search again, or clear the search, and browse manually.
 #catalog
   %ul
     - can_create_institution = @user.is_overlord?
     - if can_create_institution
-      %li= link_to t(:cm_index)[:institution], '#'
+      %li= link_to t(:cm_index)[:institution], '#', :class => "institution"
     - @institutions.each do |institution|
       %li{:id => 'INSTITUTION' + institution.id.to_s}
         - can_access_institution = @user.can_edit_entity? institution
         = node institution, can_access_institution, 'root'
         %ul
           - if can_access_institution
-            %li= link_to t(:cm_index)[:provider], '#'
+            %li= link_to t(:cm_index)[:provider], '#', :class => "provider"
           - institution.providers.order("`order`").each do |provider|
             %li{:id => 'PROVIDER' + provider.id.to_s}
               - can_access_provider = @user.can_edit_entity? provider
               = node provider, can_access_provider
               %ul
                 - if can_access_provider
-                  %li= link_to t(:cm_index)[:program], '#'
+                  %li= link_to t(:cm_index)[:program], '#', :class => "program"
                 - provider.programs.order("`order`").each do |program|
                   %li{:id => 'PROGRAM' + program.id.to_s}
                     - can_access_program = @user.can_edit_entity? program
@@ -33,16 +36,16 @@
                     - if program.cores.empty?
                       %ul
                         - if can_access_program
-                          %li= link_to t(:cm_index)[:core], '#'
+                          %li= link_to t(:cm_index)[:core], '#', :class => "core"
                           %li= link_to t(:cm_index)[:service], '#'
-                        - program.services.order("`order`").each do |service|
+                        - program.services.order("`order`").order(:name).each do |service|
                           %li{:id => 'SERVICE' + service.id.to_s}= node service
                     - else
                       %ul
                         - if can_access_program
-                          %li= link_to t(:cm_index)[:core], '#'
+                          %li= link_to t(:cm_index)[:core], '#', :class => "core"
                           %li= link_to t(:cm_index)[:service], '#'
-                        - program.services.order("`order`").each do |service|
+                        - program.services.order("`order`").order(:name).each do |service|
                           %li{:id => 'SERVICE' + service.id.to_s}= node service                            
                         - program.cores.order("`order`").each do |core|
                           %li{:id => 'CORE' + core.id.to_s}

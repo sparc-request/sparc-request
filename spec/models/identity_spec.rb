@@ -247,7 +247,7 @@ describe "Identity" do
           organization.tag_list = "ctrc"
           organization.save
           super_user.update_attributes(organization_id: organization.id)
-          user.available_workflow_states.should include('CTRC Review', 'CTRC Approved')
+          user.available_workflow_states.should include('Nexus Review', 'Nexus Approved')
         end
       end
 

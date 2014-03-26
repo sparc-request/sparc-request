@@ -235,7 +235,7 @@ describe 'organization' do
       lambda { organization.pricing_setup_for_date(Date.parse('2012-01-01')) }.should raise_exception(ArgumentError)
     end
 
-    it 'should return the pricing setup for the given date if there is a pricing setup with a display date of that date' do
+    it 'should return the displayed pricing setup for the given date if there is a pricing setup with a display date of that date' do
       organization = FactoryGirl.build(:provider, :pricing_setup_count => 5)
       base_date = Date.parse('2012-01-01')
       organization.pricing_setups[0].display_date = base_date + 1
@@ -248,6 +248,21 @@ describe 'organization' do
 
     # most of these tests would be duplicates of those for
     # current_pricing_setup
+  end
+
+  describe 'effective pricing setup for date' do
+
+    it 'should return the pricing setup that is effective on a given date' do
+      organization = FactoryGirl.build(:provider, :pricing_setup_count => 5)
+      organization = FactoryGirl.build(:provider, :pricing_setup_count => 5)
+      base_date = Date.parse('2012-01-01')
+      organization.pricing_setups[0].display_date = base_date + 1
+      organization.pricing_setups[1].display_date = base_date
+      organization.pricing_setups[2].display_date = base_date - 1
+      organization.pricing_setups[3].display_date = base_date - 2
+      organization.pricing_setups[4].display_date = base_date - 3
+      organization.pricing_setup_for_date(base_date).should eq organization.pricing_setups[1]
+    end 
   end
 
   describe 'eligible for subsidy?' do

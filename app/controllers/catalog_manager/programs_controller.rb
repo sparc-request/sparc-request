@@ -20,6 +20,10 @@ class CatalogManager::ProgramsController < CatalogManager::AppController
   def update
     @program = Program.find(params[:id])
 
+    unless params[:program][:tag_list]
+      params[:program][:tag_list] = ""
+    end
+
     params[:program].delete(:id)
 
     if @program.update_attributes(params[:program])

@@ -326,7 +326,7 @@ class Identity < ActiveRecord::Base
   # Currently serves largely to insert CTRC statuses if this identity has permissions for the CTRC.
   # Returns an array of statuses as strings.
   def available_workflow_states tag='ctrc', org_id=nil
-    available_statuses = AVAILABLE_STATUSES.collect { |k, v| v }
+    available_statuses = AVAILABLE_STATUSES.clone
 
     if org_id # we are provided with an id to use as the parent
       parents = Organization.where(:id => org_id)
@@ -345,13 +345,13 @@ class Identity < ActiveRecord::Base
         cwf_provider_identity_ids << org.clinical_providers.map(&:identity_id)
       end
     end
-    
+
     if service_provider_identity_ids.flatten.include?(self.id) || super_user_identity_ids.flatten.include?(self.id) || cwf_provider_identity_ids.flatten.include?(self.id)
-      available_statuses
+      available_statuses.values
     else
-      available_statuses.delete('CTRC Review')
-      available_statuses.delete('CTRC Approved')
-      available_statuses
+      available_statuses.delete('ctrc_review')
+      available_statuses.delete('ctrc_approved')
+      available_statuses.values
     end
   end  
   
@@ -374,7 +374,7 @@ class Identity < ActiveRecord::Base
       unless ssr.status.blank? or ssr.status == 'first_draft'
         if ssr.service_request
           if ssr.service_request.protocol
-            ssr_status = ssr.status
+            ssr_status = ssr.status.to_s.gsub(/\s/, "_").gsub(/[^-\w]/, "").downcase
             hash[ssr_status] = [] unless hash[ssr_status]
             hash[ssr_status] << ssr
           end

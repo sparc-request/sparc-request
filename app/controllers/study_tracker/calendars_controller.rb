@@ -83,7 +83,7 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
     uncompleted_appointments = @appointments.reject{|x| x.completed_for_core?(@default_core.id) }
     completed_for_core = @completed_appointments.select{|x| x.completed_for_core?(@default_core.id) }
     number_of_core_appointments = @appointments.size.to_f / @cwf_cores.size.to_f
-    
+
     unless number_of_core_appointments.to_f == 0.0
       if number_of_core_appointments.to_f == completed_for_core.size.to_f
         @default_appointment = completed_for_core.first

@@ -1,6 +1,4 @@
 class InvestigationalProductsInfo < ActiveRecord::Base
-  audited
-
   self.table_name = 'investigational_products_info'
 
   audited

@@ -18,6 +18,8 @@ class ProtocolsController < ApplicationController
     @current_step = params[:current_step]
     @protocol = self.model_class.new(params[:study] || params[:project])
 
+    # @protocol.assign_attributes(params[:study] || params[:project])
+
     if @current_step == 'protocol' and @protocol.group_valid? :protocol
       @current_step = 'user_details'
       @protocol.populate_for_edit

@@ -11,6 +11,7 @@ class ServiceRequestsController < ApplicationController
   def show
     @protocol = @service_request.protocol
     @service_list = @service_request.service_list
+    @admin_offset = params[:admin_offset]
 
     # TODO: this gives an error in the spec tests, because they think
     # it's trying to render html instead of xlsx
@@ -395,6 +396,60 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
+  def select_calendar_row
+    @line_items_visit = LineItemsVisit.find params[:line_items_visit_id]
+    @service = @line_items_visit.line_item.service
+    @sub_service_request = @line_items_visit.line_item.sub_service_request
+    @subsidy = @sub_service_request.try(:subsidy)
+    @line_items_visit.visits.each do |visit|
+      visit.update_attributes(
+          quantity:              @service.displayed_pricing_map.unit_minimum,
+          research_billing_qty:  @service.displayed_pricing_map.unit_minimum,
+          insurance_billing_qty: 0,
+          effort_billing_qty:    0)
+    end
+    
+    render :partial => 'update_service_calendar'
+  end
+  
+  def unselect_calendar_row
+    @line_items_visit = LineItemsVisit.find params[:line_items_visit_id]
+    @sub_service_request = @line_items_visit.line_item.sub_service_request
+    @subsidy = @sub_service_request.try(:subsidy)
+    @line_items_visit.visits.each do |visit|
+      visit.update_attributes({:quantity => 0, :research_billing_qty => 0, :insurance_billing_qty => 0, :effort_billing_qty => 0})
+    end
+
+    render :partial => 'update_service_calendar'
+  end
+
+  def select_calendar_column
+    column_id = params[:column_id].to_i
+    @arm = Arm.find params[:arm_id]
+
+    @arm.line_items_visits.each do |liv|
+      visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
+      visit.update_attributes(
+          quantity:              liv.line_item.service.displayed_pricing_map.unit_minimum,
+          research_billing_qty:  liv.line_item.service.displayed_pricing_map.unit_minimum,
+          insurance_billing_qty: 0,
+          effort_billing_qty:    0)
+    end
+    
+    render :partial => 'update_service_calendar'
+  end
+  
+  def unselect_calendar_column
+    column_id = params[:column_id].to_i
+    @arm = Arm.find params[:arm_id]
+
+    @arm.line_items_visits.each do |liv|
+      visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
+      visit.update_attributes({:quantity => 0, :research_billing_qty => 0, :insurance_billing_qty => 0, :effort_billing_qty => 0})
+    end
+    
+    render :partial => 'update_service_calendar'
+  end
 
   private
 
@@ -452,8 +507,8 @@ class ServiceRequestsController < ApplicationController
     attachments["service_request_#{service_request.id}.xls"] = xls
 
     #TODO this is not very multi-institutional
-    # generate the muha pdf if it's required
-    if sub_service_request.organization.tag_list.include? 'muha'
+    # generate the required forms pdf if it's required
+    if sub_service_request.organization.tag_list.include? 'required forms'
       request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf service_request
       attachments["request_for_grant_billing_#{service_request.id}.pdf"] = request_for_grant_billing_form
     end

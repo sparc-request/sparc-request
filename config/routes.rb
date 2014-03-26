@@ -46,14 +46,12 @@ SparcRails::Application.routes.draw do
         get 'merged_calendar'
       end
       collection do
-        get 'select_calendar_row'
-        get 'unselect_calendar_row'
-        get 'select_calendar_column'
-        get 'unselect_calendar_column'
         put 'rename_visit'
         put 'set_day'
         put 'set_window'
         put 'update_otf_qty_and_units_per_qty'
+        put 'move_visit_position'
+        put 'show_move_visits'
       end
     end
 
@@ -95,6 +93,10 @@ SparcRails::Application.routes.draw do
 
   match 'service_requests/:id/add_service/:service_id' => 'service_requests#add_service'
   match 'service_requests/:id/remove_service/:line_item_id' => 'service_requests#remove_service'
+  match 'service_requests/:id/select_calendar_row/:line_items_visit_id' => 'service_requests#select_calendar_row'
+  match 'service_requests/:id/unselect_calendar_row/:line_items_visit_id' => 'service_requests#unselect_calendar_row'
+  match 'service_requests/:id/select_calendar_column/:column_id/:arm_id' => 'service_requests#select_calendar_column'
+  match 'service_requests/:id/unselect_calendar_column/:column_id/:arm_id' => 'service_requests#unselect_calendar_column'
   match 'service_requests/:id/delete_document_group/:document_group_id' => 'service_requests#delete_documents'
   match 'service_requests/:id/edit_document_group/:document_group_id' => 'service_requests#edit_documents'
   match 'rubyception' => 'rubyception/application#index'

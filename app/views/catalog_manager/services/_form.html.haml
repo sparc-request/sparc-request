@@ -102,11 +102,12 @@
 
       %br
 
-      / %fieldset
-      /   %legend= t(:organization_form)[:related_services]
-      /   #rs_info= render :partial => 'catalog_manager/shared/related_services', :locals => {:entity => @service}
+      %fieldset.parent
+        .legend= t(:organization_form)[:related_services]
+        %fieldset.single_fieldset
+          #rs_info= render :partial => 'catalog_manager/shared/related_services', :locals => {:entity => @service}
 
-      / %br
+      %br
       
       / %fieldset
       /   %legend= t(:organization_form)[:associated_surveys]

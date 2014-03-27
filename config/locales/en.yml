@@ -823,6 +823,7 @@ en:
         header: "Non Per-Patient/Per-Visit"
         no_requests: "There are no non per-patient/per-visit requests."
         selected: "Services Selected"
+        service: "Service"
         code: "Charge Code"
         number: "#"
         requested: "Requested"
@@ -945,6 +946,10 @@ en:
       report: "Report"
       delete: "Delete"
       confirm: "Are you sure you want to delete this subject?"
+    otf_charges: 
+      add: "Add a Fulfillment"
+      remove: "Remove"
+      date: "Date"
     payments: 
       submitted: "Date Submitted"
       amt_invoiced: "Amount Invoiced"

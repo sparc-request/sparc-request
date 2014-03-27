@@ -17,14 +17,13 @@ class LineItem < ActiveRecord::Base
   attr_accessible :complete_date
   attr_accessible :in_process_date
   attr_accessible :units_per_quantity
-  # Quantity also acts as 'R Quantity' and 'Requested R Quantity' in Clinical Work Fulfillment
   attr_accessible :quantity
-  attr_accessible :requested_t_quantity
-  attr_accessible :fulfilled_r_quantity
-  attr_accessible :fulfilled_t_quantity
+  attr_accessible :fulfillments_attributes
 
-
+ 
   attr_accessor :pricing_scheme
+
+  accepts_nested_attributes_for :fulfillments, :allow_destroy => true
 
   def pricing_scheme
     @pricing_scheme || 'displayed'

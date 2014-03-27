@@ -2,23 +2,32 @@
   .blank_requests
     = t(:fulfillments)[:services][:no_visits][:no_requests]
 - else
-  = nested_form_for @sub_service_request, :url => study_tracker_sub_service_request_path do |f|
-    #cwf_one_time_fee_table
-      %table
-        %thead
-          %tr.ui-widget-header
-            %th.top= t(:fulfillments)[:services][:no_visits][:selected]
-            %th.top{:colspan => 2}= t(:fulfillments)[:services][:no_visits][:requested]
-            %th.top{:colspan => 2}= t(:fulfillments)[:services][:no_visits][:fulfilled]
-            %th.top Date
-          %tr.bottom
-            %th
-            %th.bottom R
-            %th.bottom T
-            %th.bottom R
-            %th.bottom T
-        %tbody
-          = f.fields_for :line_items, @sub_service_request.one_time_fee_line_items, wrapper: false do |otf_form|
-            %tr.fields{:class => cycle('odd', '', :name => 'otfs')}
-              %td.otf_service_select= otf_form.object.service.name
+  = nested_form_for @sub_service_request, :url => study_tracker_sub_service_request_path do |f|      
+    = f.fields_for :line_items, @sub_service_request.one_time_fee_line_items do |otf_form|
+      #cwf_one_time_fee_table
+        %table{ id: "cwf_fulfillment_#{otf_form.object.id}"}
+          %thead
+            %tr.ui-widget-header
+              %th.top= t(:fulfillments)[:services][:no_visits][:service]
+              %th.top{:colspan => 2}= t(:fulfillments)[:services][:no_visits][:requested]
+              %th.top{:colspan => 2}= t(:fulfillments)[:services][:no_visits][:fulfilled]
+              %th.top= t(:study_tracker)[:otf_charges][:date]
+              %th
+            %tr.bottom
+              %th.cwf_otf_service= otf_form.object.service.name + ":"
+              %th.bottom R
+              %th.bottom T
+              %th.bottom R
+              %th.bottom T
+          %tbody
+            = otf_form.fields_for :fulfillments, wrapper: false do |fulfillment_form|
+              %tr.fields
+                %td
+                %td.cwf_otf_text_field= fulfillment_form.text_field :requested_r_quantity
+                %td.cwf_otf_text_field= fulfillment_form.text_field :requested_t_quantity
+                %td.cwf_otf_text_field= fulfillment_form.text_field :fulfilled_r_quantity
+                %td.cwf_otf_text_field= fulfillment_form.text_field :fulfilled_t_quantity
+                %td= fulfillment_form.datepicker :date, size: 10, dateFormat: "yy/mm/dd"
+                %td= fulfillment_form.link_to_remove t(:study_tracker)[:otf_charges][:remove], class: "cwf_fulfillments fulfillments"
+        %p= otf_form.link_to_add t(:study_tracker)[:otf_charges][:add], :fulfillments, data: { target: "#cwf_fulfillment_#{otf_form.object.id}"}, class: "fulfillments cwf_fulfillments"
     %p.buttons= f.submit t(:study_tracker)[:save], class: 'ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover ui-state-active'

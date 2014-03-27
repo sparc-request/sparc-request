@@ -26,7 +26,7 @@
           %td.your_cost= display_your_cost line_item
           %td.subject_count= line_items_visit.subject_count
           - visits = line_items_visit.visits.paginate(:page => @pages[arm.id].to_i, :per_page => 5)
-          - totals_hash = line_items_visit.try(:per_subject_subtotals)
+          - totals_hash = line_items_visit.try(:per_subject_subtotals, visits)
           - visits.each_with_index do |v, index|
             %td.visit{:visit_column => index + 1, :class => "visit_column_#{index + 1}", :'data-cents' => (totals_hash["#{v.id}"] || 0), :style => (@tab == 'template' ? "text-align:center" : '')}= line_item_visit_input arm, line_item, v, @tab, totals_hash
           - (5 - visits.size).times do

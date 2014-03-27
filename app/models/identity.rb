@@ -332,7 +332,9 @@ class Identity < ActiveRecord::Base
   # they have permissions to.
   # Currently serves largely to insert CTRC statuses if this identity has permissions for the CTRC.
   # Returns an array of statuses as strings.
-  def available_workflow_states tag='ctrc', org_id=nil
+  def available_workflow_states tag='ctrc', org_id=nil, return_hash=false
+    #added return_keys so you can pass back the keys instead of the values
+    #this is necessary when you want to change the value in constants.yml
     available_statuses = AVAILABLE_STATUSES.clone
 
     if org_id # we are provided with an id to use as the parent
@@ -353,11 +355,14 @@ class Identity < ActiveRecord::Base
       end
     end
 
-    if service_provider_identity_ids.flatten.include?(self.id) || super_user_identity_ids.flatten.include?(self.id) || cwf_provider_identity_ids.flatten.include?(self.id)
-      available_statuses.values
-    else
+    unless service_provider_identity_ids.flatten.include?(self.id) || super_user_identity_ids.flatten.include?(self.id) || cwf_provider_identity_ids.flatten.include?(self.id)
       available_statuses.delete('ctrc_review')
       available_statuses.delete('ctrc_approved')
+    end
+
+    if return_hash
+      available_statuses
+    else
       available_statuses.values
     end
   end  

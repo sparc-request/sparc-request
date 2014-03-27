@@ -144,7 +144,7 @@ module CapybaraSupport
 
     project = FactoryGirl.create_without_validation(:project)
 
-    service_request = FactoryGirl.create(:service_request, protocol_id: project.id, status: "draft", subject_count: 2)
+    service_request = FactoryGirl.create_without_validation(:service_request, protocol_id: project.id, status: "draft", subject_count: 2)
 
     sub_service_request = FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id,status: "draft")
 

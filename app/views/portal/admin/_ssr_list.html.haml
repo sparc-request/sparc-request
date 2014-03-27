@@ -3,8 +3,8 @@
     %input.search-all-service-requests{:type => 'text', :placeholder => t(:admin_root)[:search_placeholder]}
     %br
     %select#service_request_workflow_states
-      - @user.available_workflow_states.each do |workflow_state|
-        %option{:value => pretty_tag(workflow_state), :selected => (pretty_tag(workflow_state) == "submitted")} #{workflow_state} (#{@service_requests[pretty_tag(workflow_state)].try(:length) || 0})
+      - @user.available_workflow_states('ctrc', nil, true).each do |key, value|
+        %option{:value => key, :selected => (key == "submitted")} #{value} (#{@service_requests[key].try(:length) || 0})
 
     .admin_indicator
       = image_tag 'portal/spinner.gif'

@@ -32,7 +32,8 @@ class Calendar < ActiveRecord::Base
   # This will fix and populate old appointments if a request is edited
   def populate_on_request_edit
     arm = self.subject.arm
-    self.appointments.each do |appointment|
+    appointments = Appointment.where(calendar_id: self.id).includes(procedures: :visit)
+    appointments.each do |appointment|
       if appointment.visit_group_id
         existing_liv_ids = appointment.procedures.map {|x| x.visit ? x.visit.line_items_visit.id : nil}.compact
         new_livs = arm.line_items_visits.reject {|x| existing_liv_ids.include?(x.id)}

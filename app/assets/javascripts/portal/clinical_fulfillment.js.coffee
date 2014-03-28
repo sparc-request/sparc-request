@@ -249,3 +249,22 @@ $(document).ready ->
     while (/(\d+)(\d{3})/.test(val.toString()))
       val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2')
     return val
+
+  ####Subject search logic
+  if $('.search-all-subjects').length > 0
+    $('.search-all-subjects').autocomplete({
+      source: JSON.parse($('.values_test').val())
+      select: (event, ui) ->
+        $('.subject').hide()
+        $(".#{ui.item.id}").show()
+      })
+
+  $('.search-all-subjects').focus ->
+    $(this).val('')
+
+  $('.search-all-subjects').live('keyup', ->
+    $('.subject').show() if $(this).val() is ''
+  ).live('click', ->
+    $('.subject').show() if $(this).val() is ''
+  )
+

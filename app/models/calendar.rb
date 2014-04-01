@@ -31,17 +31,20 @@ class Calendar < ActiveRecord::Base
 
   # This will fix and populate old appointments if a request is edited
   def populate_on_request_edit
-    arm = self.subject.arm
-    appointments = Appointment.where(calendar_id: self.id).includes(procedures: :visit)
-    appointments.each do |appointment|
-      if appointment.visit_group_id
-        existing_liv_ids = appointment.procedures.map {|x| x.visit ? x.visit.line_items_visit.id : nil}.compact
-        new_livs = arm.line_items_visits.reject {|x| existing_liv_ids.include?(x.id)}
-        new_livs.each do |new_liv|
-          visit = new_liv.visits.where("visit_group_id = ?", appointment.visit_group_id).first
-          appointment.procedures.create(:line_item_id => new_liv.line_item.id, :visit_id => visit.id) if new_liv.line_item.service.organization_id == appointment.organization_id
+    if self.subject.arm_edited
+      arm = self.subject.arm
+      appointments = Appointment.where(calendar_id: self.id).includes(procedures: :visit)
+      appointments.each do |appointment|
+        if appointment.visit_group_id
+          existing_liv_ids = appointment.procedures.map {|x| x.visit ? x.visit.line_items_visit.id : nil}.compact
+          new_livs = arm.line_items_visits.reject {|x| existing_liv_ids.include?(x.id)}
+          new_livs.each do |new_liv|
+            visit = new_liv.visits.where("visit_group_id = ?", appointment.visit_group_id).first
+            appointment.procedures.create(:line_item_id => new_liv.line_item.id, :visit_id => visit.id) if new_liv.line_item.service.organization_id == appointment.organization_id
+          end
         end
       end
+      self.subject.update_attributes(arm_edited: false)
     end
   end
 

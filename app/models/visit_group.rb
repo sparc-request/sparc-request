@@ -13,6 +13,9 @@ class VisitGroup < ActiveRecord::Base
   acts_as_list :scope => :arm
 
   after_create :set_default_name
+  after_save do
+    self.arm.set_arm_edited_flag_on_subjects
+  end
   before_destroy :remove_appointments
 
   def set_default_name

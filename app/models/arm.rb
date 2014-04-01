@@ -177,6 +177,11 @@ class Arm < ActiveRecord::Base
     end
   end
 
+  def set_arm_edited_flag_on_subjects
+    subjects = Subject.where(arm_id: self.id)
+    subjects.update_all(arm_edited: true)
+  end
+
   def update_visit_group_day day, position
     position = position.blank? ? self.visit_groups.count - 1 : position.to_i
     before = self.visit_groups[position - 1] unless position == 0

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140326184754) do
+ActiveRecord::Schema.define(:version => 20140328131723) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -272,9 +272,13 @@ ActiveRecord::Schema.define(:version => 20140326184754) do
     t.text     "notes"
     t.string   "time"
     t.datetime "date"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at",           :null => false
+    t.datetime "updated_at",           :null => false
     t.datetime "deleted_at"
+    t.integer  "requested_r_quantity"
+    t.integer  "requested_t_quantity"
+    t.integer  "fulfilled_r_quantity"
+    t.integer  "fulfilled_t_quantity"
   end
 
   add_index "fulfillments", ["line_item_id"], :name => "index_fulfillments_on_line_item_id"
@@ -858,6 +862,7 @@ ActiveRecord::Schema.define(:version => 20140326184754) do
     t.string   "gender"
     t.string   "ethnicity"
     t.string   "status"
+    t.boolean  "arm_edited"
   end
 
   add_index "subjects", ["arm_id"], :name => "index_subjects_on_arm_id"

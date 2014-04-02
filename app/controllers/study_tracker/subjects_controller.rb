@@ -1,6 +1,6 @@
 class StudyTracker::SubjectsController < StudyTracker::BaseController
   def update
-    @subject = Subject.find(params[:id]).includes(:calendar)
+    @subject = Subject.includes(:calendar).find(params[:id])
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @procedures = @subject.procedures
 

@@ -497,3 +497,6 @@ $ ->
     $(this).children('fieldset').show('blind')
     $(this).addClass('active')
 
+  $('#service_tag_list_epic').live 'click', ->
+    $('#epic_wrapper').toggle()
+

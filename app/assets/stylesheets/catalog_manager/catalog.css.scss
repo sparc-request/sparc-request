@@ -182,25 +182,31 @@ fieldset.single_fieldset {
   border-bottom: 1px solid;
 }
 
-.pricing_setup_form {
+.pricing_setup_form,
+.pricing_map_form {
   background: none !important;
 }
 
-div#details div.pricing_setup_accordion a {
+div#details div.pricing_setup_accordion a,
+div#details div.pricing_map_accordion a {
   padding-left: 30px;
 }
 
 div#details div.pricing_setup_accordion h3.ui-state-default,
-div#details div.pricing_setup_accordion h3.ui-state-hover {
+div#details div.pricing_setup_accordion h3.ui-state-hover,
+div#details div.pricing_map_accordion h3.ui-state-default,
+div#details div.pricing_map_accordion h3.ui-state-hover {
   border: 1px solid #0078AE !important;
   background: none !important;
 }
 
-div#details div.pricing_setup_accordion a {
+div#details div.pricing_setup_accordion a,
+div#details div.pricing_map_accordion a {
   background: none !important;
 }
 
-div#details div.pricing_setup_accordion div.pricing_setup_form {
+div#details div.pricing_setup_accordion div.pricing_setup_form,
+div#details div.pricing_map_accordion div.pricing_map_form {
   border: 1px solid #0078AE !important;
 }
 

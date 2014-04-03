@@ -27,17 +27,13 @@ describe 'A Happy Test' do
   it 'should make you feel happy', :js => true do
     visit root_path
 
-    #puts '#' * 50
-    #puts pricing_map.service_id
-    #puts pricing_map2.service_id
-    #puts '#' * 50
-
     #**Submit a service request**#
+
+    page.should_not have_xpath("//div[@id='submit_error' and @style!='display: none']")
     find('.submit-request-button').click #Submit with no services
     wait_for_javascript_to_finish
-    sleep 100
-    #page.driver.browser.switch_to.alert.text.should_not eq("") #Alert should popup and not be empty
-    #page.driver.browser.switch_to.alert.accept #accept alert
+    page.should have_xpath("//div[@id='submit_error' and @style!='display: none']") #should have error dialog
+    click_button('Ok') 
 
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
     find(".provider-name").should have_text("South Carolina Clinical and Translational Institute (SCTR)")
@@ -52,75 +48,171 @@ describe 'A Happy Test' do
     click_button("Add")
     wait_for_javascript_to_finish
 
-    find(:xpath, "//input[@id='line_item_count']")['value'].should eq('2')#should display 2 services
-    find(:xpath,"//a[@id='line_item-1' and @class='remove-button']").click #remove first service
+    find(:xpath, "//input[@id='line_item_count']")['value'].should eq('2') #should display 2 services
+    find(:xpath,"//a[@id='line_item-1' and @class='remove-button']").click  #remove first service
     wait_for_javascript_to_finish
-    find(:xpath, "//input[@id='line_item_count']")['value'].should eq('1')#should display 1 service
+    find(:xpath, "//input[@id='line_item_count']")['value'].should eq('1') #should display 1 service
     find(:xpath,"//a[@id='line_item-2' and @class='remove-button']").click #remove last service
     wait_for_javascript_to_finish
-    find(:xpath, "//input[@id='line_item_count']")['value'].should eq('0')#should display no services
+    find(:xpath, "//input[@id='line_item_count']")['value'].should eq('0') #should display no services
 
     click_link("Office of Biomedical Informatics")
     wait_for_javascript_to_finish
-    click_button("Add")#re-add first service
+    click_button("Add") #re-add first service
     wait_for_javascript_to_finish
 
     click_link("Clinical and Translational Research Center (CTRC)")
     wait_for_javascript_to_finish
-    click_button("Add")#re-add last service
+    click_button("Add") #re-add last service
     wait_for_javascript_to_finish
-    find(:xpath, "//input[@id='line_item_count']")['value'].should eq('2')#should display 2 services
+    find(:xpath, "//input[@id='line_item_count']")['value'].should eq('2') #should display 2 services
 
-    click_button("Add")#add last service a second time
+    click_button("Add") #add last service a second time
     wait_for_javascript_to_finish
-    find(:xpath, "//input[@id='line_item_count']")['value'].should eq('2')#should only display 2 services
+    find(:xpath, "//input[@id='line_item_count']")['value'].should eq('2') #should only display 2 services
 
-    #sleep 10
     find('.submit-request-button').click
     wait_for_javascript_to_finish
+
     #**END Submit a service request END**#
 
-    #puts '*' * 50
-    #puts ServiceRequest.find(1).has_one_time_fee_services?
-    #puts '*' * 50
-
-    ServiceRequest.find(1).line_items.count.should eq(2)#Should have 2 Services
+    ServiceRequest.find(1).line_items.count.should eq(2) #Should have 2 Services
     
-    #Create a new Study
+    #**Create a new Study**#
+
+    #should not have any errors displayed
+    page.should_not have_xpath("//div[@id='errorExplanation']")
+
+    click_link("Save & Continue") #click continue without study/project selected
+    wait_for_javascript_to_finish
+
+    #should only have 1 error, with specific text
+    page.should have_xpath("//div[@id='errorExplanation']/ul/li[text()='You must identify the service request with a study/project before continuing.']")
+    page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[text()!='You must identify the service request with a study/project before continuing.']")
+
     click_link("New Study")
     wait_for_javascript_to_finish
 
-    fill_in "study_short_title", :with => "Bob"
-    fill_in "study_title", :with => "Dole"
-    fill_in "study_sponsor_name", :with => "Captain Kurt 'Hotdog' Zanzibar"
-    select "Funded", :from => "study_funding_status"
-    select "Federal", :from => "study_funding_source"
+    find('.continue_button').click #click continue with no form info
+    wait_for_javascript_to_finish
+
+    #should display error div with 4 errors
+    page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Short title')]")
+    page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Title')]")
+    page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding status')]")
+    page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Sponsor name')]")
+    #should display field_with_errors divs near fields without info
+    page.should have_xpath("//div[@class='field_with_errors']/label[text()='Short Title:*']")
+    page.should have_xpath("//div[@class='field_with_errors']/label[text()='Protocol Title:*']")
+    page.should have_xpath("//div[@class='field_with_errors']/label[text()='Proposal Funding Status:*']")
+    page.should have_xpath("//div[@class='field_with_errors']/label[text()='Sponsor Name:*']")
+
+
+    fill_in "study_short_title", :with => "Bob" #fill in short title
+    find('.continue_button').click #click continue without Title, Funding Status, Sponsor Name
+    wait_for_javascript_to_finish
+
+    #should not display error div for field with info
+    page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Short title')]")
+    #should display error div with 3 errors
+    page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Title')]")
+    page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding status')]")
+    page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Sponsor name')]")
+    #should not display field_with_errors divs near field with info
+    page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Short Title:*']")
+    #should display field_with_errors divs near fields without info
+    page.should have_xpath("//div[@class='field_with_errors']/label[text()='Protocol Title:*']")
+    page.should have_xpath("//div[@class='field_with_errors']/label[text()='Proposal Funding Status:*']")
+    page.should have_xpath("//div[@class='field_with_errors']/label[text()='Sponsor Name:*']")
+
+    fill_in "study_title", :with => "Dole" #fill in title
+    find('.continue_button').click #click continue without Funding Status, Sponsor Name
+    wait_for_javascript_to_finish
+
+    #should not display error div for filled in info
+    page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Short title')]")
+    page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Title')]")
+    #should display error div with 2 errors for missing info
+    page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding status')]")
+    page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Sponsor name')]")
+    #should not display field_with_errors divs near fields with info
+    page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Short Title:*']")
+    page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Protocol Title:*']")
+    #should display field_with_errors divs near fields without info
+    page.should have_xpath("//div[@class='field_with_errors']/label[text()='Proposal Funding Status:*']")
+    page.should have_xpath("//div[@class='field_with_errors']/label[text()='Sponsor Name:*']")
+
+    fill_in "study_sponsor_name", :with => "Captain Kurt 'Hotdog' Zanzibar" #fill in sponsor name
+    find('.continue_button').click #click continue without Funding Status
+    wait_for_javascript_to_finish
+
+    #should not display error divs for filled in info
+    page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Short title')]")
+    page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Title')]")
+    page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Sponsor name')]")
+    #should display funding status missing error
+    page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding status')]")
+    #should not display field_with_errors divs near fields with info
+    page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Short Title:*']")
+    page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Protocol Title:*']")
+    page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Sponsor Name:*']")
+    #should display field_with_errors divs near field without info
+    page.should have_xpath("//div[@class='field_with_errors']/label[text()='Proposal Funding Status:*']")
+
+    select "Funded", :from => "study_funding_status" #select funding status
+    find('.continue_button').click #click continue without Funding Source
+    wait_for_javascript_to_finish   
+
+    #should not display error divs for filled in info
+    page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Short title')]")
+    page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Title')]")
+    page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding status')]")
+    page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Sponsor name')]")
+    #should display funding source missing error
+    page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding source')]")
+    #should not display field_with_errors divs near fields with info
+    page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Short Title:*']")
+    page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Protocol Title:*']")
+    page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Proposal Funding Status:*']")
+    page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Sponsor Name:*']")   
+    #should display field_with_errors divs near field without info
+    page.should have_xpath("//div[@class='field_with_errors']/label[text()='Funding Source:*']") 
+     
+    select "Federal", :from => "study_funding_source" #select funding source
 
     find('.continue_button').click
     wait_for_javascript_to_finish
 
-    #Select Users
+    #**END Create a new Study END**#
+
+    #**Select Users**#
+    click_button "Add Authorized User"
+    #should have 'Role can't be blank' error
+    page.should have_xpath("//div[@id='user_detail_errors']/ul/li[contains(text(),'Role can')]")
+    page.should have_xpath("//div[@class='field_with_errors']/label[text()='Role:*']")
+
     select "Primary PI", :from => "project_role_role"
     click_button "Add Authorized User"
     wait_for_javascript_to_finish
-
     fill_in "user_search_term", :with => "bjk7"
     wait_for_javascript_to_finish
     page.find('a', :text => "Brian Kelsey (kelsey@musc.edu)", :visible => true).click()
     wait_for_javascript_to_finish
+    sleep 100
     select "Billing/Business Manager", :from => "project_role_role"
     click_button "Add Authorized User"
     wait_for_javascript_to_finish
 
     find('.continue_button').click
     wait_for_javascript_to_finish
+    #**END Select Users END**#
 
     click_link("Save & Continue")
     wait_for_javascript_to_finish
 
     #Select start and end date
-    strtDay = Time.now.strftime("%-d")# Today's Day
-    endDay = (Time.now + 7.days).strftime("%-d")# 7 days from today
+    strtDay = Time.now.strftime("%-d") # Today's Day
+    endDay = (Time.now + 7.days).strftime("%-d") # 7 days from today
 
     page.execute_script %Q{ $('#start_date').trigger("focus") }
     page.execute_script %Q{ $("a.ui-state-default:contains('#{strtDay}')").filter(function(){return $(this).text()==='#{strtDay}';}).trigger("click") } # click on start day

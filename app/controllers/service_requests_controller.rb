@@ -138,8 +138,7 @@ class ServiceRequestsController < ApplicationController
         end
         #Arm.visit_count has been decreased, destroy visit group (and visits)
         if arm.visit_count < arm.visit_groups.count
-          # arm.mass_destroy_visit_group
-          arm.visit_groups.last.destroy until arm.visit_count == arm.visit_groups.count
+          arm.mass_destroy_visit_group
         end
       end
     end

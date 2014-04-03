@@ -110,12 +110,13 @@ class Procedure < ActiveRecord::Base
   end
 
   def should_be_displayed
-    if self.service
+    procedure = Procedure.includes(:appointment, :visit).find(self.id)
+    if procedure.service
       return true
-    elsif self.appointment.visit_group_id.nil?
+    elsif procedure.appointment.visit_group_id.nil?
       return true if self.completed
     else
-      if (self.visit.research_billing_qty && self.visit.research_billing_qty > 0) or (self.visit.insurance_billing_qty && self.visit.insurance_billing_qty > 0)
+      if (procedure.visit.research_billing_qty && procedure.visit.research_billing_qty > 0) or (procedure.visit.insurance_billing_qty && procedure.visit.insurance_billing_qty > 0)
         return true
       else
         return false

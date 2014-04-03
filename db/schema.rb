@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140326184754) do
+ActiveRecord::Schema.define(:version => 20140328131723) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -862,6 +862,7 @@ ActiveRecord::Schema.define(:version => 20140326184754) do
     t.string   "gender"
     t.string   "ethnicity"
     t.string   "status"
+    t.boolean  "arm_edited"
   end
 
   add_index "subjects", ["arm_id"], :name => "index_subjects_on_arm_id"

@@ -12,6 +12,7 @@ class Subject < ActiveRecord::Base
   attr_accessible :external_subject_id
   attr_accessible :calendar_attributes
   attr_accessible :status
+  attr_accessible :arm_edited
 
   accepts_nested_attributes_for :calendar
 

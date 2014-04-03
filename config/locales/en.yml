@@ -1,7 +1,7 @@
 en:
   application_title: "SPARC Request"
   about_title: "About SPARC Request"
-  about_text: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+  about_text: "SPARC Request (Services, Pricing, & Application for Research Centers) is a web-based research management system that provides a central portal (one-stop shop) to researchers and their study teams to browse for research services and resources, as well as submit service and pricing requests with a focus on billing compliance and proposal/budget development. The free software is open to MUSC affiliates and CTSA institutions to adopt and capitalize on efficiencies."
   portal_title: "SPARC Request Portal"
   admin_portal_title: "SPARC Request Administration"
   catalog_manager_title: "SPARC Request Catalog Manager"

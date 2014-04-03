@@ -67,29 +67,7 @@
                 %th= f.label :send_to_epic, t(:organization_form)[:send_to_epic]
                 %td= f.check_box :send_to_epic
 
-      %br
-
-      / %fieldset
-      /   %legend= t(:organization_form)[:core_facility]
-      /   %table
-      /     %tr
-      /       %th= f.label :service_center_cost, t(:organization_form)[:service_center_cost]
-      /       %td= f.text_field :service_center_cost
-
-      / %br
-
-      / %fieldset
-      /   %legend= t(:organization_form)[:hospital_based_services]
-      /   %table
-      /     %tr
-      /       %th= f.label :charge_code, t(:organization_form)[:charge_code]
-      /       %td= f.text_field :charge_code
-
-      /     %tr
-      /       %th= f.label :revenue_code, t(:organization_form)[:revenue_code]
-      /       %td= f.text_field :revenue_code
-
-      / %br
+        %br
 
       %fieldset.parent
         .legend= t(:organization_form)[:pricing]
@@ -108,19 +86,6 @@
           #rs_info= render :partial => 'catalog_manager/shared/related_services', :locals => {:entity => @service}
 
       %br
-      
-      / %fieldset
-      /   %legend= t(:organization_form)[:associated_surveys]
-      /   #associated_survey_info= render :partial => 'catalog_manager/shared/associated_surveys', :locals => {:entity => @service}
-
-      / %br
-
-      / %fieldset
-      /   %legend Service Providers
-      /   #sp_info= render :partial => 'catalog_manager/shared/service_providers', :locals => {:entity => @service}
-      /
-      / %br
-
 
       %fieldset.actions
         .legend= t(:organization_form)[:actions]

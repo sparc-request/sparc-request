@@ -243,7 +243,15 @@ $(document).ready ->
     default_percent_subsidy = $('.payments_add_button').data('default-percent-subsidy')
     event.field.find(".new_percent_subsidy").val(default_percent_subsidy)
 
-
+  #Study level charges tab
+  $('#cwf_one_time_fee_table .remove_nested_fields.fulfillments').qtip
+    content:
+      text: "Remove this fulfillment"
+    position:
+        corner:
+          target: "topMiddle"
+          tooltip: "bottomMiddle"
+          
   ####Support Functions
   commaSeparateNumber = (val) ->
     while (/(\d+)(\d{3})/.test(val.toString()))

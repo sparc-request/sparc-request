@@ -11,6 +11,10 @@ class LineItemsVisit < ActiveRecord::Base
   attr_accessible :subject_count  # number of subjects for this visit grouping
   attr_accessible :hidden
 
+  after_save do
+    self.arm.set_arm_edited_flag_on_subjects
+  end
+
   # Find a LineItemsVisit for the given arm and line item.  If it does
   # not exist, create it first, then return it.
   def self.for(arm, line_item)

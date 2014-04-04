@@ -3,7 +3,7 @@ class VisitGroup < ActiveRecord::Base
   audited
 
   belongs_to :arm
-  has_many :visits, :dependent => :destroy
+  has_many :visits, :dependent => :delete_all
   has_many :appointments
   attr_accessible :name
   attr_accessible :position
@@ -13,6 +13,9 @@ class VisitGroup < ActiveRecord::Base
   acts_as_list :scope => :arm
 
   after_create :set_default_name
+  after_save do
+    self.arm.set_arm_edited_flag_on_subjects
+  end
   before_destroy :remove_appointments
 
   def set_default_name

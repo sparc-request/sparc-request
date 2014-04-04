@@ -93,6 +93,12 @@ td.text-center {
   font-size:1.6em;
 }
 
+#subject_tracker_add {
+  padding:0.45em 1em;
+  margin-left:83px;
+  margin-top:5px;
+} 
+
 #patient_visit_calendar #dashboard_container {
   position:relative;
 }

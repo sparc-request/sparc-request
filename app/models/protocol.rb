@@ -128,7 +128,7 @@ class Protocol < ActiveRecord::Base
 
   def primary_pi_exists
     errors.add(:base, "You must add a Primary PI to the study/project") unless project_roles.map(&:role).include? 'primary-pi'
-    errors.add(:base, "Only one Primary PI is allowed. Please ensure that only one exists") unless project_roles.select { |pr| pr.role == 'primary-pi'}.count == 1
+    errors.add(:base, "Only one Primary PI is allowed. Please ensure that only one exists") if project_roles.select { |pr| pr.role == 'primary-pi'}.count > 1
   end
 
   def role_for identity

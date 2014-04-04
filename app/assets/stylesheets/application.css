@@ -1217,9 +1217,14 @@ legend {
 }
 
 .edit-project-view .box .info input[type=text],
-.edit-project-view .box .info textarea,
 .edit-project-view .box .info select {
   width: 375px;
+}
+
+.edit-project-view .box .info textarea {
+  width: 375;
+  min-width: 100%;
+  max-width: 100%;
 }
 
 .edit-project-view .box .info textarea {
@@ -2065,10 +2070,6 @@ input.search-services {
 
 .service_calendar thead tr th {
   border: 1px solid #ccc;
-}
-
-.jump_to_visit {
-  width: 25px;
 }
 
 .billing-info {

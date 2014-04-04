@@ -71,9 +71,11 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
   end
 
   def build_subject_data(calendar)
-    subject = calendar.subject
-    groups = subject.arm.visit_groups
-    calendar.populate(groups)
+    if calendar.appointments.empty?
+      subject = calendar.subject
+      groups = VisitGroup.where(arm_id: subject.arm.id).includes(visits: { line_items_visit: :line_item })
+      calendar.populate(groups)
+    end
   end
 
   def get_calendar_data(calendar)

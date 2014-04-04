@@ -12,7 +12,7 @@ else
     $('form').submit()
 
   $('#current_step').val("<%= @current_step %>")
-  if <%= @protocol.group_valid? :protocol and @current_step == "user_details" %>
+  if <%= @protocol.group_valid? :user_details and @current_step == "user_details" %>
     $('.return-to-previous a').attr('href', "<%= new_service_request_study_path(@service_request, @protocol) %>")
     $('.return-to-previous a span').text("Go Back")
     $('.save-and-continue span').text("Save & Continue")

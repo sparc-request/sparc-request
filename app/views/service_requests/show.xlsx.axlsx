@@ -100,7 +100,11 @@ wb.add_worksheet(name: "Review") do |sheet|
       service_rows = []
       services_sub_header_rows << sheet.add_row([arm.name], :style => name_header_style)
 
-      r_t_row = ["", "", "", ""]
+      if @admin_offset
+        r_t_row = ["", "", "", "", ""]
+      else
+        r_t_row = ["", "", "", ""]
+      end
       
       num_visits.times do 
         r_t_row << "R"
@@ -305,8 +309,13 @@ wb.add_worksheet(name: "Review") do |sheet|
   merge_services_row.each do |services_row|
     sheet.merge_cells("A#{services_row.index+1}:B#{services_row.index+1}")
     visit_count.times do |idx|
-      start_idx = 2*idx+4
-      end_idx = 2*idx+5
+      if @admin_offset
+        start_idx = 2*idx+5
+        end_idx = 2*idx+6
+      else
+        start_idx = 2*idx+4
+        end_idx = 2*idx+5
+      end
       sheet.merge_cells("#{alpha_array[start_idx]}#{services_row.index+1}:#{alpha_array[end_idx]}#{services_row.index+1}")
       sheet["#{alpha_array[start_idx]}#{services_row.index+1}"].style = header_centered_style
     end

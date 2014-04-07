@@ -1,5 +1,18 @@
 require 'spec_helper'
 
+=begin
+describe 'Catalog Manager' do
+  let_there_be_lane
+  fake_login_for_each_test
+
+  it 'Should create crap', :js => true do
+    visit catalog_manager_root_path
+    click_link 'Create new Institution'
+    page.should have_content "Create new institution"
+  end  
+end
+=end
+
 describe 'A Happy Test' do
   let_there_be_lane
   fake_login_for_each_test
@@ -98,11 +111,12 @@ describe 'A Happy Test' do
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Title')]")
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding status')]")
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Sponsor name')]")
+
         #should display field_with_errors divs near fields without info
-    page.should have_xpath("//div[@class='field_with_errors']/label[text()='Short Title:*']")
-    page.should have_xpath("//div[@class='field_with_errors']/label[text()='Protocol Title:*']")
-    page.should have_xpath("//div[@class='field_with_errors']/label[text()='Proposal Funding Status:*']")
-    page.should have_xpath("//div[@class='field_with_errors']/label[text()='Sponsor Name:*']")
+    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Short Title:*']")
+    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Protocol Title:*']")
+    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Proposal Funding Status:*']")
+    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Sponsor Name:*']")
 
 
     fill_in "study_short_title", :with => "Bob" #fill in short title
@@ -115,12 +129,13 @@ describe 'A Happy Test' do
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Title')]")
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding status')]")
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Sponsor name')]")
+
         #should not display field_with_errors divs near field with info
-    page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Short Title:*']")
+    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Short Title:*']")
         #should display field_with_errors divs near fields without info
-    page.should have_xpath("//div[@class='field_with_errors']/label[text()='Protocol Title:*']")
-    page.should have_xpath("//div[@class='field_with_errors']/label[text()='Proposal Funding Status:*']")
-    page.should have_xpath("//div[@class='field_with_errors']/label[text()='Sponsor Name:*']")
+    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Protocol Title:*']")
+    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Proposal Funding Status:*']")
+    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Sponsor Name:*']")
 
     fill_in "study_title", :with => "Dole" #fill in title
     find('.continue_button').click #click continue without Funding Status, Sponsor Name
@@ -132,12 +147,13 @@ describe 'A Happy Test' do
         #should display error div with 2 errors for missing info
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding status')]")
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Sponsor name')]")
+
         #should not display field_with_errors divs near fields with info
-    page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Short Title:*']")
-    page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Protocol Title:*']")
+    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Short Title:*']")
+    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Protocol Title:*']")
         #should display field_with_errors divs near fields without info
-    page.should have_xpath("//div[@class='field_with_errors']/label[text()='Proposal Funding Status:*']")
-    page.should have_xpath("//div[@class='field_with_errors']/label[text()='Sponsor Name:*']")
+    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Proposal Funding Status:*']")
+    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Sponsor Name:*']")
 
     fill_in "study_sponsor_name", :with => "Captain Kurt 'Hotdog' Zanzibar" #fill in sponsor name
     find('.continue_button').click #click continue without Funding Status
@@ -149,12 +165,13 @@ describe 'A Happy Test' do
     page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Sponsor name')]")
         #should display funding status missing error
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding status')]")
+
         #should not display field_with_errors divs near fields with info
-    page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Short Title:*']")
-    page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Protocol Title:*']")
-    page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Sponsor Name:*']")
+    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Short Title:*']")
+    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Protocol Title:*']")
+    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Sponsor Name:*']")
         #should display field_with_errors divs near field without info
-    page.should have_xpath("//div[@class='field_with_errors']/label[text()='Proposal Funding Status:*']")
+    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Proposal Funding Status:*']")
 
     select "Funded", :from => "study_funding_status" #select funding status
     find('.continue_button').click #click continue without Funding Source
@@ -167,13 +184,14 @@ describe 'A Happy Test' do
     page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Sponsor name')]")
         #should display funding source missing error
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding source')]")
+
         #should not display field_with_errors divs near fields with info
-    page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Short Title:*']")
-    page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Protocol Title:*']")
-    page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Proposal Funding Status:*']")
-    page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Sponsor Name:*']")   
+    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Short Title:*']")
+    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Protocol Title:*']")
+    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Proposal Funding Status:*']")
+    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Sponsor Name:*']")   
         #should display field_with_errors divs near field without info
-    page.should have_xpath("//div[@class='field_with_errors']/label[text()='Funding Source:*']") 
+    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Funding Source:*']") 
      
     select "Federal", :from => "study_funding_source" #select funding source
 
@@ -269,42 +287,89 @@ describe 'A Happy Test' do
     wait_for_javascript_to_finish
 
     click_link("Save & Continue")
-    wait_for_javascript_to_finish
+    #wait_for_javascript_to_finish
     #**END Enter Protocol Dates END**#
 
     #**Completing Visit Calender**#
-      #set days in increasing order
-    first(:xpath, "//input[@id='day' and @class='visit_day position_1']").set("1")
-    first(:xpath, "//input[@id='day' and @class='visit_day position_2']").set("2")
-    first(:xpath, "//input[@id='day' and @class='visit_day position_3']").set("3")
-    first(:xpath, "//input[@id='day' and @class='visit_day position_4']").set("4")
-    first(:xpath, "//input[@id='day' and @class='visit_day position_5']").set("5")
-      #check 1st, 3rd, and 5th visit
-    check('visits_1')
-    check('visits_5')
-    check('visits_9')
-      #set CDW quantity to 3
-    first(:xpath, "//input[@class='line_item_quantity']").set("3")
+        #save unit prices
+    arm1UnitPrice = find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='your_cost']").text[1..-1].to_f
+    arm2UnitPrice = find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//td[@class='your_cost']").text[1..-1].to_f
+    otfUnitPrice = find(:xpath, "//td[contains(text(),'CDW')]/ancestor::table//td[@class='your_cost']").text[1..-1].to_f
+        #total per study should be $0.00
+    find(:xpath, "//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(0.0) #arm1
+    find(:xpath, "//td[@class='pp_line_item_study_total total_3_per_study']").text[1..-1].to_f.should eq(0.0) #arm2
+        #total per patient should be $0.00
+    find(:xpath, "//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq(0.0) #arm1
+    find(:xpath, "//td[@class='pp_line_item_total total_3']").text[1..-1].to_f.should eq(0.0) #arm2
+        #set days in increasing order on ARM 1
+    find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//input[@id='day' and @class='visit_day position_1']").set("1")
+    find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//input[@id='day' and @class='visit_day position_2']").set("2")
+    find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//input[@id='day' and @class='visit_day position_3']").set("3")
+    find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//input[@id='day' and @class='visit_day position_4']").set("4")
+    find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//input[@id='day' and @class='visit_day position_5']").set("5")
+
+    check('visits_1') #1st checkbox ARM 1
+    wait_for_javascript_to_finish
+    totPerStudy = (arm1UnitPrice * 1 * find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
+    find(:xpath, "//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 per patient total should eq (unitprice * 1 * #patients)
+    find(:xpath, "//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm1UnitPrice * 1).round(2)) #ARM1 per patient total should eq (unitprice * 1)
+    
+    check('visits_5') #3rd checkbox ARM 1
+    wait_for_javascript_to_finish
+    totPerStudy = (arm1UnitPrice * 2 * find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
+    find(:xpath, "//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 per patient total should eq (unitprice * 2 * #patients)
+    find(:xpath, "//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm1UnitPrice * 2).round(2)) #ARM1 per patient total should eq (unitprice * 2)
+    
+    check('visits_9') #5th checkbox ARM 1
+    wait_for_javascript_to_finish
+    totPerStudy = (arm1UnitPrice * 3 * find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
+    find(:xpath, "//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 per patient total should eq (unitprice * 3 * #patients)
+    find(:xpath, "//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm1UnitPrice * 3).round(2)) #ARM1 per patient total should eq (unitprice * 3)
+    
+        #set days in increasing order on ARM 2
+    find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//input[@id='day' and @class='visit_day position_1']").set("1")
+    find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//input[@id='day' and @class='visit_day position_2']").set("2")
+    find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//input[@id='day' and @class='visit_day position_3']").set("3")
+    find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//input[@id='day' and @class='visit_day position_4']").set("4")
+    find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//input[@id='day' and @class='visit_day position_5']").set("5")
+      
+    check('visits_12') #2nd checkbox ARM 2
+    wait_for_javascript_to_finish
+    totPerStudy = (arm2UnitPrice * 1 * find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
+    find(:xpath, "//td[@class='pp_line_item_study_total total_3_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM2 per patient total should eq (unitprice * 1 * #patients)
+    find(:xpath, "//td[@class='pp_line_item_total total_3']").text[1..-1].to_f.should eq((arm2UnitPrice * 1).round(2)) #ARM2 per patient total should eq (unitprice * 1)
+
+    check('visits_14') #4th checkbox ARM 2
+    wait_for_javascript_to_finish
+    totPerStudy = (arm2UnitPrice * 2 * find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
+    find(:xpath, "//td[@class='pp_line_item_study_total total_3_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM2 per patient total should eq (unitprice * 2 * #patients)
+    find(:xpath, "//td[@class='pp_line_item_total total_3']").text[1..-1].to_f.should eq((arm2UnitPrice * 2).round(2)) #ARM2 per patient total should eq (unitprice * 2)
+
+    first(:xpath, "//input[@class='line_item_quantity']").set("3") #set CDW quantity to 3
+    find(:xpath, "//td[contains(@class,'otf_total total')]").text[1..-1].to_f.should eq((otfUnitPrice*3).round(2)) #otf total should eq (unitprice * 3)
+    
     click_link("Save & Continue")
     wait_for_javascript_to_finish
     #**END Completing Visit Calender ENDß**#
 
-    #Documents page
-
+    #**Documents page**#
     #click_link("Add a New Document")
     #all('process_ssr_organization_ids_').each {|a| check(a)}
     #select "Other", :from => "doc_type"
 
     click_link("Save & Continue")
     wait_for_javascript_to_finish
+    #**END Documents page END**#
 
-    #Review Page
+    #**Review Page**#
     click_link("Submit to Start Services")
     wait_for_javascript_to_finish
+    #**END Review Page END**#
 
-    #Submission Confirmation Page
+    #**Submission Confirmation Page**#
     click_link("Go to SPARC Request User Portal")
     wait_for_javascript_to_finish
+    #**END Submission Confirmation Page END**#
 
 
     #sleep 5
@@ -318,3 +383,4 @@ describe 'A Happy Test' do
   end
 
 end
+

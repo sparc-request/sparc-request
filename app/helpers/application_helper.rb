@@ -183,9 +183,9 @@ module ApplicationHelper
 
     returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')),
                               merged_calendar_service_request_service_calendars_path(service_request, :page => page - 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal),
-                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only') unless page <= 1
+                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only left-arrow') unless page <= 1
     returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')),
-                                  :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled', :disabled => true) if page <= 1
+                                  :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled left-arrow', :disabled => true) if page <= 1
 
     returning_html += content_tag(:span, t("calendar_page.labels.jump_to_visit"))
 
@@ -193,9 +193,9 @@ module ApplicationHelper
 
     returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')),
                               merged_calendar_service_request_service_calendars_path(service_request, :page => page + 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal),
-                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only') unless ((page + 1) * 5) - 4 > arm.visit_count
+                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only right-arrow') unless ((page + 1) * 5) - 4 > arm.visit_count
     returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')),
-                                  :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled', :disabled => true) if ((page + 1) * 5) - 4 > arm.visit_count
+                                  :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled right-arrow', :disabled => true) if ((page + 1) * 5) - 4 > arm.visit_count
 
     raw(returning_html)
   end
@@ -207,9 +207,9 @@ module ApplicationHelper
 
     returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')),
                               refresh_service_calendar_service_request_path(service_request, :page => page - 1, :pages => pages, :arm_id => arm.id, :tab => tab),
-                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only') unless page <= 1
+                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only left-arrow') unless page <= 1
     returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')),
-                                  :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled', :disabled => true) if page <= 1
+                                  :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled left-arrow', :disabled => true) if page <= 1
 
     returning_html += content_tag(:span, t("calendar_page.labels.jump_to_visit"))
 
@@ -217,9 +217,9 @@ module ApplicationHelper
 
     returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')),
                               refresh_service_calendar_service_request_path(service_request, :page => page + 1, :pages => pages, :arm_id => arm.id, :tab => tab),
-                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only') unless ((page + 1) * 5) - 4 > arm.visit_count
+                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only right-arrow') unless ((page + 1) * 5) - 4 > arm.visit_count
     returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')),
-                                  :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled', :disabled => true) if ((page + 1) * 5) - 4 > arm.visit_count
+                                  :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled right-arrow', :disabled => true) if ((page + 1) * 5) - 4 > arm.visit_count
 
     raw(returning_html)
   end

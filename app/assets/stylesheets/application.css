@@ -2699,3 +2699,11 @@ table.service_calendar tbody td.visit {
   vertical-align: middle;
   padding-right: 5px;
 }
+
+.left-arrow {
+  margin: 0px 30px 0px -50px !important;
+}
+
+.right-arrow {
+  margin: 0px -50px 0px 30px !important;
+}

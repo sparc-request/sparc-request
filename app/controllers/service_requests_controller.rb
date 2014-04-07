@@ -134,11 +134,11 @@ class ServiceRequestsController < ApplicationController
         end
         #Arm.visit_count has benn increased, so create new visit group, and populate the visits
         if arm.visit_count > arm.visit_groups.count
-          arm.create_visit_group until arm.visit_count == arm.visit_groups.count
+          arm.mass_create_visit_group
         end
         #Arm.visit_count has been decreased, destroy visit group (and visits)
         if arm.visit_count < arm.visit_groups.count
-          arm.visit_groups.last.destroy until arm.visit_count == arm.visit_groups.count
+          arm.mass_destroy_visit_group
         end
       end
     end

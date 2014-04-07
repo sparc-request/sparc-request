@@ -22,24 +22,18 @@
         %table.study_tracker_table{:id => "subjects_list_#{arm_form.object.id}"}
           %thead.ui-widget-header
             %tr
+              %th &nbsp;
               %th.subject_name= t(:study_tracker)[:subject_tracker][:name]
               %th.subject_mrn= t(:study_tracker)[:subject_tracker][:mrn]
               %th.subject_id= t(:study_tracker)[:subject_tracker][:id]
               %th.subject_dob= t(:study_tracker)[:subject_tracker][:dob]
               %th.subject_gender= t(:study_tracker)[:subject_tracker][:gender]
               %th.subject_ethnicity= t(:study_tracker)[:subject_tracker][:ethnicity]
-              %th &nbsp;
           %tbody
             = arm_form.fields_for :subjects, wrapper: false do |subject_form|
               - search_names << {:value => subject_form.try(:object).try(:name), :id => pretty_tag(subject_form.try(:object).try(:name))}
               - search_mrns << {:value => subject_form.try(:object).try(:mrn), :id => subject_form.try(:object).try(:mrn)}
               %tr{:class => "fields subject #{subject_form.try(:object).try(:mrn)} #{pretty_tag(subject_form.try(:object).try(:name))} subject_id_#{subject_form.try(:object).try(:id)}"}
-                %td.subject_name= subject_form.text_field :name, size: 18, id: "subject_#{subject_form.try(:object).try(:id)}_name"
-                %td.subject_mrn= subject_form.text_field :mrn, size: 10, id: "subject_#{subject_form.try(:object).try(:id)}_mrn"
-                %td.subject_id= subject_form.text_field :external_subject_id, size: 8, id: "subject_#{subject_form.try(:object).try(:id)}_id"
-                %td.subject_dob= subject_form.datepicker :dob, size: 13, dateFormat: "yy-mm-dd", changeYear: true, changeMonth: true, yearRange: "-100:"
-                %td.subject_gender= subject_form.select :gender, options_for_select(SUBJECT_GENDERS, subject_form.try(:object).try(:gender)), :include_blank => "--Gender--", id: "subject_#{subject_form.try(:object).try(:id)}_gender"
-                %td.subject_ethnicity= subject_form.select :ethnicity, options_for_select(SUBJECT_ETHNICITIES, subject_form.try(:object).try(:ethnicity)), :include_blank => "--Race--", id: "subject_#{subject_form.try(:object).try(:id)}_ethnicity"
                 %td.remove
                   - if subject_form.object.calendar
                     %a{:href => study_tracker_sub_service_request_calendar_path(@sub_service_request, subject_form.object.calendar), :style => "margin:0px;", :title => t(:study_tracker)[:subject_tracker][:schedule]}
@@ -47,7 +41,13 @@
                     %a{:href => cwf_subject_report_path(@sub_service_request.id, :arm => arm_form.object.id, :subject => subject_form.object.id, :format => :xlsx), :style => "margin:0px;", :title => t(:study_tracker)[:subject_tracker][:report]}
                       = image_tag 'icon-excel-small.gif'
                   = subject_form.link_to_remove image_tag('cancel.png'), confirm: t(:study_tracker)[:subject_tracker][:confirm], title: t(:study_tracker)[:subject_tracker][:delete]
-        %p= arm_form.link_to_add t(:study_tracker)[:subject_tracker][:add], :subjects, data: { target: "#subjects_list_#{arm_form.object.id} tbody" }, :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;"
+                %td.subject_name.text-center= subject_form.text_field :name, size: 18, id: "subject_#{subject_form.try(:object).try(:id)}_name"
+                %td.subject_mrn.text-center= subject_form.text_field :mrn, size: 10, id: "subject_#{subject_form.try(:object).try(:id)}_mrn"
+                %td.subject_id.text-center= subject_form.text_field :external_subject_id, size: 8, id: "subject_#{subject_form.try(:object).try(:id)}_id"
+                %td.subject_dob.text-center= subject_form.datepicker :dob, size: 13, dateFormat: "yy-mm-dd", changeYear: true, changeMonth: true, yearRange: "-100:"
+                %td.subject_gender.text-center= subject_form.select :gender, options_for_select(SUBJECT_GENDERS, subject_form.try(:object).try(:gender)), :include_blank => "--Gender--", id: "subject_#{subject_form.try(:object).try(:id)}_gender"
+                %td.subject_ethnicity.text-center= subject_form.select :ethnicity, options_for_select(SUBJECT_ETHNICITIES, subject_form.try(:object).try(:ethnicity)), :include_blank => "--Race--", id: "subject_#{subject_form.try(:object).try(:id)}_ethnicity"
+        %p= arm_form.link_to_add t(:study_tracker)[:subject_tracker][:add], :subjects, data: { target: "#subjects_list_#{arm_form.object.id} tbody" }, :class => "ui-button ui-state-default ui-button-text-only", :id => "subject_tracker_add"
     %p{:style => "text-align:center;"}= f.submit t(:study_tracker)[:save], :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;"
 
     %input.values_test{:value => (search_names + search_mrns).uniq.to_json, :type => 'hidden'}

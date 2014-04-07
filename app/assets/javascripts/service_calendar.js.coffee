@@ -212,18 +212,16 @@ $(document).ready ->
 
   $(document).on('change', '.jump_to_visit', ->
     $('.service_calendar_spinner').show()
-    visit_count = parseInt($(this).attr('visit_count'))
-    visit = parseInt($(this).val())
 
-    if visit > visit_count
-      visit = visit_count
-    else if visit < 1
-      visit = 1
+    page = $(this).find('option:selected').attr('parent_page')
+
+    if page == undefined || page == false
+      page = $(this).val()
 
     $.ajax
       type: 'GET'
       url: $(this).attr('url')
-      data: {"page": Math.ceil(visit/5)}
+      data: {"page": page}
       dataType: 'script'
       success: ->
         $('.service_calendar_spinner').hide()

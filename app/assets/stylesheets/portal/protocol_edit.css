@@ -85,9 +85,9 @@
 }
 
 .user-edit-protocol-view .box .info input[type=text],
-.user-edit-protocol-view .box .info textarea,
 .user-edit-protocol-view .box .info select {
   width: 715px !important;
+
 }
 
 .user-edit-protocol-view .box .info textarea {

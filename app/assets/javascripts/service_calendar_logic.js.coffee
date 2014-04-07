@@ -33,7 +33,7 @@ $(document).ready ->
 
   $('.jump_to_visit').qtip
     overwrite: false
-    content: "Enter the visit you would like to view."
+    content: "Select the visit you would like to view."
     position:
       corner:
         target: 'topLeft'

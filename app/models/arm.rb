@@ -161,6 +161,32 @@ class Arm < ActiveRecord::Base
     return visit_group
   end
 
+  def mass_create_visit_group
+    arc = ActiveRecord::Base.connection
+    first = self.visit_groups.count
+    last = self.visit_count
+
+    # Create all the visit groups
+    (last - first).times { self.visit_groups.create() }
+
+    vs = []
+    # Create visits for the new visit groups
+    self.line_items_visits.each do |liv|
+      # Since arrays start at 0 we need to go to the last - 1
+      (first..last-1).each do |index|
+        # Store the values for the new visits [line_items_visit_id, visit_group_id]
+        vs.push "(#{liv.id}, #{self.visit_groups[index].id})"
+      end
+    end
+
+    sql = "INSERT INTO visits (`line_items_visit_id`, `visit_group_id`) VALUES #{vs.join(", ")}"
+    arc.execute sql
+  end
+
+  def mass_destroy_visit_group
+    self.visit_groups.where("position > #{self.visit_count}").destroy_all
+  end
+
   def remove_visit position
     self.update_attribute(:visit_count, (self.visit_count - 1))
     visit_group = self.visit_groups.find_by_position(position)
@@ -175,6 +201,11 @@ class Arm < ActiveRecord::Base
         self.subjects.create
       end
     end
+  end
+
+  def set_arm_edited_flag_on_subjects
+    subjects = Subject.where(arm_id: self.id)
+    subjects.update_all(arm_edited: true)
   end
 
   def update_visit_group_day day, position

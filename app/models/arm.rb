@@ -170,7 +170,7 @@ class Arm < ActiveRecord::Base
     (last - first).times { self.visit_groups.create() }
 
     vs = []
-    now = Time.now.utc.to_s
+    now = Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')
     # Create visits for the new visit groups
     self.line_items_visits.each do |liv|
       # Since arrays start at 0 we need to go to the last - 1

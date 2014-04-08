@@ -204,8 +204,10 @@ class Arm < ActiveRecord::Base
   end
 
   def set_arm_edited_flag_on_subjects
-    subjects = Subject.where(arm_id: self.id)
-    subjects.update_all(arm_edited: true)
+    if self.subjects
+      subjects = Subject.where(arm_id: self.id)
+      subjects.update_all(arm_edited: true)
+    end
   end
 
   def update_visit_group_day day, position

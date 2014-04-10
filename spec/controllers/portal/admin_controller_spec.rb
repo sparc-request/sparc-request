@@ -6,9 +6,6 @@ describe Portal::AdminController, :type => :controller do
   let!(:identity)             { FactoryGirl.create(:identity) }
   let!(:core)                 { FactoryGirl.create(:core, parent_id: nil) }
   let!(:service_provider)     { FactoryGirl.create(:service_provider, identity_id: identity.id, organization_id: core.id, hold_emails: false) }
-  # let!(:project)              { FactoryGirl.create_without_validation(:protocol) }
-  
-  # let!(:service_request)      { FactoryGirl.create_without_validation(:service_request, protocol_id: project.id) }
   let!(:message) { ToastMessage.create(from: 'CmdrTaco@slashdot.org', to: 'esr@fsf.org', message: 'happy birthday!') }
 
   before :each do

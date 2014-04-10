@@ -3,33 +3,24 @@ require 'spec_helper'
 describe Portal::AdminController, :type => :controller do
   stub_portal_controller
 
-  let!(:identity) { FactoryGirl.create(:identity) }
-  let!(:core) { FactoryGirl.create(:core, parent_id: nil) }
-  let!(:service_provider)  {FactoryGirl.create(:service_provider, identity_id: identity.id, organization_id: core.id, hold_emails: false)}
-  let!(:project) {
-    project = Project.create(FactoryGirl.attributes_for(:protocol))
-    project.save!(validate: false)
-    project_role = FactoryGirl.create(
-        :project_role,
-        protocol_id: project.id,
-        identity_id: identity.id,
-        project_rights: "approve",
-        role: "pi")
-    project.reload
-    project
-  }
-  let!(:service_request) { FactoryGirl.create(:service_request, protocol_id: project.id) }
-  let!(:sub_service_request1) { FactoryGirl.create(:sub_service_request, status: 'yo_mama', service_request_id: service_request.id, organization_id: core.id ) }
-  let!(:sub_service_request2) { FactoryGirl.create(:sub_service_request, status: 'his_mama', service_request_id: service_request.id, organization_id: core.id ) }
+  let!(:identity)             { FactoryGirl.create(:identity) }
+  let!(:core)                 { FactoryGirl.create(:core, parent_id: nil) }
+  let!(:service_provider)     { FactoryGirl.create(:service_provider, identity_id: identity.id, organization_id: core.id, hold_emails: false) }
+  # let!(:project)              { FactoryGirl.create_without_validation(:protocol) }
   
+  # let!(:service_request)      { FactoryGirl.create_without_validation(:service_request, protocol_id: project.id) }
+  let!(:message) { ToastMessage.create(from: 'CmdrTaco@slashdot.org', to: 'esr@fsf.org', message: 'happy birthday!') }
 
-  let!(:message) {
-    ToastMessage.create(
-      from:    'CmdrTaco@slashdot.org',
-      to:      'esr@fsf.org',
-      message: 'happy birthday!')
-  }
-
+  before :each do
+    @project = Protocol.new(FactoryGirl.attributes_for(:protocol))
+    @project.save(:validate => false)
+    @service_request = ServiceRequest.new(FactoryGirl.attributes_for(:service_request, :protocol_id => @project.id))
+    @service_request.save(:validate => false)
+    @project_role = FactoryGirl.create(:project_role, protocol_id: @project.id, identity_id: identity.id, project_rights: "approve", role: "primary_pi") 
+    @sub_service_request1 = FactoryGirl.create(:sub_service_request, status: 'yo_mama', service_request_id: @service_request.id, organization_id: core.id ) 
+    @sub_service_request2 = FactoryGirl.create(:sub_service_request, status: 'his_mama', service_request_id: @service_request.id, organization_id: core.id ) 
+  end
+  
   describe 'GET index' do
     it 'should set service_requests' do  
       session[:identity_id] = identity.id

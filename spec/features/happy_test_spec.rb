@@ -1,18 +1,126 @@
 require 'spec_helper'
 
-=begin
+#=begin
 describe 'Catalog Manager' do
   let_there_be_lane
   fake_login_for_each_test
 
+  def create_new_institution(name)
+    click_link 'Create New Institution'
+    a = page.driver.browser.switch_to.alert
+    a.send_keys(name)
+    a.accept
+    click_link name
+    wait_for_javascript_to_finish
+    first(:xpath, "//input[@id='save_button']").click
+    click_link name
+  end
+  def create_new_provider(name,under)
+    click_link under
+    click_link 'Create New Provider'
+    a = page.driver.browser.switch_to.alert
+    a.send_keys(name)
+    a.accept
+    click_link name
+    wait_for_javascript_to_finish
+
+    find(:xpath, "//div[text()='Pricing']").click
+    find(:xpath, "//input[@class='add_pricing_setup']").click
+    first(:xpath, "//a[@href='#' and contains(text(),'Effective on')]").click
+    stDay = Time.now.strftime("%-d") # Today's Day
+    first(:xpath, "//th[contains(text(),'Display Date')]/following-sibling::td/input[@type='text']").click
+    page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
+    first(:xpath, "//th[contains(text(),'Effective Date')]/following-sibling::td/input[@type='text']").click
+    page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
+    first(:xpath, "//input[@id='pricing_setups_blank_pricing_setup_federal']").set("20")
+    first(:xpath,"//a[contains(text(),'Apply Federal % to All')]").click
+    first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_college_rate_type']/option[contains(text(),'Federal Rate')]").select_option
+    first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_federal_rate_type']/option[contains(text(),'Federal Rate')]").select_option
+    first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_foundation_rate_type']/option[contains(text(),'Federal Rate')]").select_option
+    first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_industry_rate_type']/option[contains(text(),'Federal Rate')]").select_option
+    first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_investigator_rate_type']/option[contains(text(),'Federal Rate')]").select_option
+    first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_internal_rate_type']/option[contains(text(),'Federal Rate')]").select_option
+    first(:xpath, "//input[@id='save_button']").click
+    click_link name
+  end
+  def create_new_program(name,under)
+    click_link under
+    click_link 'Create New Program'
+    a = page.driver.browser.switch_to.alert
+    a.send_keys(name)
+    a.accept
+    click_link name
+    wait_for_javascript_to_finish
+
+    find(:xpath, "//div[text()='Pricing']").click
+    find(:xpath, "//input[@class='add_pricing_setup']").click
+    first(:xpath, "//a[@href='#' and contains(text(),'Effective on')]").click
+    #stDay = (Time.now+1.day).strftime("%-d") # Tomorrow's Day
+    stDay = (Time.now).strftime("%-d") # Today's Day
+    first(:xpath, "//th[contains(text(),'Display Date')]/following-sibling::td/input[@type='text']").click
+    page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
+    first(:xpath, "//th[contains(text(),'Effective Date')]/following-sibling::td/input[@type='text']").click
+    page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
+    first(:xpath, "//input[@id='pricing_setups_blank_pricing_setup_federal']").set("20")
+    first(:xpath,"//a[contains(text(),'Apply Federal % to All')]").click
+    first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_college_rate_type']/option[contains(text(),'Federal Rate')]").select_option
+    first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_federal_rate_type']/option[contains(text(),'Federal Rate')]").select_option
+    first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_foundation_rate_type']/option[contains(text(),'Federal Rate')]").select_option
+    first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_industry_rate_type']/option[contains(text(),'Federal Rate')]").select_option
+    first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_investigator_rate_type']/option[contains(text(),'Federal Rate')]").select_option
+    first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_internal_rate_type']/option[contains(text(),'Federal Rate')]").select_option
+    first(:xpath, "//input[@id='save_button']").click
+    click_link name
+  end    
+  def create_new_core(name,under)
+    click_link under
+    click_link 'Create New Core'
+    a = page.driver.browser.switch_to.alert
+    a.send_keys(name)
+    a.accept
+    click_link name
+    wait_for_javascript_to_finish
+    first(:xpath, "//input[@id='save_button']").click
+    click_link name
+  end
+  def create_new_service(name,under)
+    click_link under
+    find(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[text()='Create New Service']").click
+    fill_in 'service_name', :with => 'someService'
+    fill_in 'service_abbreviation', :with => 'SS'
+    fill_in 'service_order', :with => '1'
+    find(:xpath, "//div[text()='Pricing']").click
+    find(:xpath, "//input[@class='add_pricing_map']").click
+    first(:xpath, "//a[@href='#' and contains(text(),'Effective on')]").click
+    first(:xpath, "//th[text()='Display Dates']/following-sibling::td/input[@type='text']").click
+    #stDay = (Time.now+2.days).strftime("%-d") # Day after Tomorrow's Day
+    stDay = (Time.now).strftime("%-d") # Today's Day
+    page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
+    first(:xpath, "//th[text()='Effective Date']/following-sibling::td/input[@type='text']").click
+    page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
+    first(:xpath, "//input[@id='pricing_maps_blank_pricing_map_full_rate']").set('25.00')
+    first(:xpath, "//input[@id='clinical_quantity_']").set('slides')
+    first(:xpath, "//input[@id='save_button']").click
+    #click_link name
+  end
+
+
+
   it 'Should create crap', :js => true do
     visit catalog_manager_root_path
-    click_link 'Create new Institution'
-    page.should have_content "Create new institution"
+
+    create_new_institution 'someInst'
+    create_new_provider 'someProv', 'someInst'
+    create_new_program 'someProg', 'someProv'
+    create_new_core 'someCore', 'someProg'
+    create_new_service 'someService', 'someCore'
+    #visit root_path
+    sleep 120
   end  
 end
-=end
+#=end
 
+=begin
 describe 'A Happy Test' do
   let_there_be_lane
   fake_login_for_each_test
@@ -383,4 +491,6 @@ describe 'A Happy Test' do
   end
 
 end
+=end
+
 

@@ -21,4 +21,19 @@
           = link_to image_tag('icon-excel-small.gif') + ' Download', research_project_summary_report.xlsx.url, id: "report_#{research_project_summary_report.id}", class: "ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only", style: "padding:0.45em 1em 0.45em 0.45em;"
 %p.actions
   = link_to "New cover letter", new_study_tracker_sub_service_request_cover_letter_path(@sub_service_request), :class => "ui-button ui-state-default ui-button-text-only", style: "padding:0.45em 1em;"
-  = link_to "Research project summary report", research_project_summary_report_path(@sub_service_request, format: 'xlsx'), :class => "ui-button ui-state-default ui-button-text-only", style: "padding:0.45em 1em;"
+  = link_to "Research project summary report", research_project_summary_report_path(@sub_service_request, format: 'xlsx'), :class => "ui-button ui-state-default ui-button-text-only", :id => 'research_project_summary_report_in_cwf', style: "padding:0.45em 1em;"
+
+#research_project_summary_report_date_range{:title => "Select a date range"}
+  Start
+  %br
+  = text_field_tag :rps_start_date
+  %br
+  %br
+
+  End
+  %br
+  = text_field_tag :rps_end_date
+  %br
+  %br
+
+  = submit_tag "Continue", :id => :rps_continue

@@ -119,6 +119,9 @@ wb.add_worksheet(name: "Summary") do |sheet|
   info_box_rows << sheet.add_row(adjusted_row(@protocol.short_title, left_indent), :height => 22)
   info_box_rows << sheet.add_row(adjusted_row("Billing/Business Mgr: #{@protocol.billing_business_manager_email}", left_indent), :height => 22)
   info_box_rows << sheet.add_row(adjusted_row("Routing: #{@sub_service_request.routing}", left_indent), :height => 22)
+  info_box_rows << sheet.add_row(adjusted_row("Appointment Start Date Filter: #{@start_date}", left_indent), :height => 22)
+  info_box_rows << sheet.add_row(adjusted_row("Appointment End Date Filter: #{@end_date}", left_indent), :height => 22)
+
 
   # merge info box rows and apply styling
   info_box_rows.each do |row|
@@ -140,10 +143,31 @@ wb.add_worksheet(name: "Summary") do |sheet|
     subjects = []
     arm.subjects.each do |subject|
       visits = []
-      subject.calendar.appointments.group_by{|x| x.visit_group_id ? x.visit_group_id : "#{x.name} #{x.position}"}.each do |g, appts|
+      s_appts = subject.calendar.appointments
+      #s_appts = s_appts.where("completed_at >= '#{@start_date}'") unless @start_date.blank?
+      #s_appts = s_appts.where("completed_at <= '#{@end_date}'") unless @end_date.blank?
+
+      s_appts.group_by{|x| x.visit_group_id ? x.visit_group_id : "#{x.name} #{x.position}"}.each do |g, appts|
         subtotal = 0.00
         appts.each do |appt|
-          subtotal += appt.completed? ? appt.procedures.sum{|x| x.total} : 0.00
+          if not appt.completed?
+            subtotal += 0.00
+          else
+            appt_sum = appt.procedures.sum{|x| x.total}
+            subtotal += case
+            when (@start_date.blank? and @end_date.blank?)
+              appt_sum 
+            when (@start_date.blank? and not @end_date.blank?)
+              appt.completed_at <= @end_date ? appt_sum : 0.0
+            when (@end_date.blank? and not @start_date.blank?)
+              appt.completed_at >= @start_date ? appt_sum : 0.0
+            when (not @start_date.blank? and not @end_date.blank?)
+              (appt.completed_at >= @start_date and appt.completed_at <= @end_date) ? appt_sum : 0.0
+            else
+              0.00
+            end
+          end
+          #subtotal += appt.completed? ? appt.procedures.sum{|x| x.total} : 0.00
         end
         visits << subtotal
       end

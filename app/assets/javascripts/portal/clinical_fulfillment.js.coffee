@@ -249,3 +249,31 @@ $(document).ready ->
     while (/(\d+)(\d{3})/.test(val.toString()))
       val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2')
     return val
+
+  #Research project summary report start and end date
+  $("#rps_start_date").datepicker(dateFormat: "yy-mm-dd")
+  $("#rps_end_date").datepicker(dateFormat: "yy-mm-dd")
+
+  continue_with_research_project_summary_report = false
+  $("#research_project_summary_report_date_range").dialog(autoOpen: false)
+  $(document).on 'click', '#research_project_summary_report_in_cwf', (event) ->
+    console.log continue_with_research_project_summary_report
+    if continue_with_research_project_summary_report == false
+      $("#research_project_summary_report_date_range").dialog("open")
+      event.preventDefault()
+  
+  $(document).on 'click', '#rps_continue', ->
+    continue_with_research_project_summary_report = true
+    start_date = $('#rps_start_date').val()
+    end_date = $('#rps_end_date').val()
+    href = $("#research_project_summary_report_in_cwf").attr("href")
+    href = href + "?start_date=#{start_date}&end_date=#{end_date}"
+    $("#research_project_summary_report_date_range").dialog("close")
+    window.location.href = href
+
+    
+
+
+
+
+

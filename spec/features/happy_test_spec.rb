@@ -12,7 +12,9 @@ describe 'Catalog Manager' do
     a.accept
     click_link name
     wait_for_javascript_to_finish
+    first(:xpath, "//input[@id='institution_is_available']").click
     first(:xpath, "//input[@id='save_button']").click
+    wait_for_javascript_to_finish
     click_link name
   end
   def create_new_provider(name,under)
@@ -41,6 +43,7 @@ describe 'Catalog Manager' do
     first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_investigator_rate_type']/option[contains(text(),'Federal Rate')]").select_option
     first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_internal_rate_type']/option[contains(text(),'Federal Rate')]").select_option
     first(:xpath, "//input[@id='save_button']").click
+    wait_for_javascript_to_finish
     click_link name
   end
   def create_new_program(name,under)
@@ -70,6 +73,7 @@ describe 'Catalog Manager' do
     first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_investigator_rate_type']/option[contains(text(),'Federal Rate')]").select_option
     first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_internal_rate_type']/option[contains(text(),'Federal Rate')]").select_option
     first(:xpath, "//input[@id='save_button']").click
+    wait_for_javascript_to_finish
     click_link name
   end    
   def create_new_core(name,under)
@@ -81,13 +85,17 @@ describe 'Catalog Manager' do
     click_link name
     wait_for_javascript_to_finish
     first(:xpath, "//input[@id='save_button']").click
+    wait_for_javascript_to_finish
     click_link name
   end
-  def create_new_service(name,under)
+  def create_new_service(name, under, options = {})
+    defaults = {
+        :otf => false
+    }
+    options = defaults.merge(options)
     click_link under
     find(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[text()='Create New Service']").click
-    fill_in 'service_name', :with => 'someService'
-    fill_in 'service_abbreviation', :with => 'SS'
+    fill_in 'service_name', :with => name
     fill_in 'service_order', :with => '1'
     find(:xpath, "//div[text()='Pricing']").click
     find(:xpath, "//input[@class='add_pricing_map']").click
@@ -99,9 +107,14 @@ describe 'Catalog Manager' do
     first(:xpath, "//th[text()='Effective Date']/following-sibling::td/input[@type='text']").click
     page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
     first(:xpath, "//input[@id='pricing_maps_blank_pricing_map_full_rate']").set('25.00')
-    first(:xpath, "//input[@id='clinical_quantity_']").set('slides')
+    #sleep 30
+    if options[:otf] then 
+        first(:xpath, "//input[@id='otf_checkbox_']").click 
+        first(:xpath, "//input[@id='otf_quantity_type_']").set('slides')
+    else first(:xpath, "//input[@id='clinical_quantity_']").set('slides') end
     first(:xpath, "//input[@id='save_button']").click
     #click_link name
+    wait_for_javascript_to_finish
   end
 
 
@@ -113,7 +126,8 @@ describe 'Catalog Manager' do
     create_new_provider 'someProv', 'someInst'
     create_new_program 'someProg', 'someProv'
     create_new_core 'someCore', 'someProg'
-    create_new_service 'someService', 'someCore'
+    create_new_service 'someService', 'someCore', :otf => false
+    create_new_service 'someService2', 'someCore', :otf => true
     #visit root_path
     sleep 120
   end  

@@ -102,8 +102,8 @@ describe "Identity" do
       project
     }
     let!(:project_role)         {FactoryGirl.create(:project_role, identity_id: user.id, protocol_id: project.id, project_rights: 'approve')}
-    let!(:service_request)      {FactoryGirl.create(:service_request, status: 'draft', service_requester_id: user.id, protocol_id: project.id)}
-    let!(:service_request2)     {FactoryGirl.create(:service_request, status: 'submitted', service_requester_id: user.id, protocol_id: project.id)}
+    let!(:service_request)      {service_request = ServiceRequest.create(FactoryGirl.attributes_for(:service_request, status: 'draft', service_requester_id: user.id, protocol_id: project.id)); service_request.save!(:validate => false); service_request }
+    let!(:service_request2)     {service_request = ServiceRequest.create(FactoryGirl.attributes_for(:service_request, status: 'submitted', service_requester_id: user.id, protocol_id: project.id)); service_request.save!(:validate => false); service_request }
     let!(:sub_service_request)  {FactoryGirl.create(:sub_service_request, status: 'draft', service_request_id: service_request.id,
                                                     organization_id: institution.id)}
     let!(:sub_service_request2) {FactoryGirl.create(:sub_service_request, status: 'draft', service_request_id: service_request.id)}

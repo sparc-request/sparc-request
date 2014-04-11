@@ -8,7 +8,7 @@ describe 'ServiceRequest' do
 
   describe "set visit page" do
 
-    let!(:service_request)  { FactoryGirl.create(:service_request) }
+    let!(:service_request)  { FactoryGirl.create_without_validation(:service_request) }
     let!(:arm)              { FactoryGirl.create(:arm, :visit_count => 10)}
 
     it "should return 1 if arm visit count <= 5" do

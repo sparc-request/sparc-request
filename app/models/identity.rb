@@ -297,7 +297,9 @@ class Identity < ActiveRecord::Base
     arr.each do |org|
       orgs << org.all_children
     end
-    orgs.flatten!.compact.uniq
+
+    ##In case orgs is empty, return an empty array, instead of crapping itself.
+    orgs.flatten!.compact.uniq rescue return []
    
     orgs.each do |org|
       attached_array << Organization.includes(:sub_service_requests).find(org.id)
@@ -375,7 +377,7 @@ class Identity < ActiveRecord::Base
     ssrs = []
     if org_id
       ssrs = Organization.find(org_id).sub_service_requests
-    elsif admin_orgs
+    elsif admin_orgs && !admin_orgs.empty?
       ssrs = SubServiceRequest.where("sub_service_requests.organization_id in (#{admin_orgs.map(&:id).join(", ")})").includes(:owner, :line_items => :service, :service_request => [:service_requester, :protocol => {:project_roles => :identity}])
     else
       self.admin_organizations.each do |org|

@@ -20,6 +20,10 @@ feature 'create new provider' do
       fill_in 'provider_description', :with => 'Description'
 
       # Subsidy Information fields
+      within '#pricing' do
+        find('.legend').click
+        wait_for_javascript_to_finish
+      end
       fill_in 'provider_subsidy_map_attributes_max_percentage', :with => '55.5'
       fill_in 'provider_subsidy_map_attributes_max_dollar_cap', :with => '65'
 

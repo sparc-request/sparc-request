@@ -27,6 +27,10 @@ feature 'create new service' do
     fill_in 'service_description', :with => 'Description'
     
     ## Create a Pricing Map
+    within '#pricing' do
+      find('.legend').click
+      wait_for_javascript_to_finish
+    end
     click_button('Add Pricing Map')
     
     within('.ui-accordion') do
@@ -48,7 +52,7 @@ feature 'create new service' do
       fill_in "pricing_maps_blank_pricing_map_full_rate", :with => 4321
       fill_in "clinical_quantity_", :with => "Each"
       wait_for_javascript_to_finish
-      find('#unit_factor_').click
+      find('#unit_factor_', visible: true).click
       wait_for_javascript_to_finish
     end    
 
@@ -78,6 +82,10 @@ feature 'create new service' do
     fill_in 'service_description', :with => 'Description'
     
     ## Create a Pricing Map
+    within '#pricing' do
+      find('.legend').click
+      wait_for_javascript_to_finish
+    end
     click_button('Add Pricing Map')
     
     within('.ui-accordion') do
@@ -99,7 +107,7 @@ feature 'create new service' do
       fill_in "pricing_maps_blank_pricing_map_full_rate", :with => 4321
       fill_in "clinical_quantity_", :with => "Each"
       wait_for_javascript_to_finish
-      find('#unit_factor_').click
+      find('#unit_factor_', visible: true).click
       wait_for_javascript_to_finish
     end      
 

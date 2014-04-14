@@ -15,7 +15,6 @@ describe 'edit a core', :js => true do
       # General Information fields
       fill_in 'core_abbreviation', :with => 'PTP'
       fill_in 'core_order', :with => '2'
-      fill_in 'core_description', :with => 'Description'
 
       first("#save_button").click
       page.should have_content('Clinical Data Warehouse')
@@ -83,7 +82,7 @@ describe 'edit a core', :js => true do
       end
 
       it "should display cwf if tagged with cwf" do
-        find('#core_tag_list_clinical_work_fulfillment').click
+        first('#core_tag_list_clinical_work_fulfillment').click
         first("#save_button").click
         wait_for_javascript_to_finish
         page.should have_content('Clinical Data Warehouse saved successfully')
@@ -103,7 +102,7 @@ describe 'edit a core', :js => true do
         sleep 3
       end
 
-      it "shoulld show the pricing section" do
+      it "should show the pricing section" do
         first('#pricing fieldset').should be_visible
       end
 

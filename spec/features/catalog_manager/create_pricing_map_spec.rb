@@ -9,9 +9,12 @@ describe 'as a user on catalog page', :js => true do
   it 'the user should create a pricing map' do
     core = Core.last
     click_link('MUSC Research Data Request (CDW)')
+    within '#pricing' do
+      find('.legend').click
+      wait_for_javascript_to_finish
+    end
     click_button("Add Pricing Map")
 
-    # page.execute_script("$('.ui-accordion-header').click()") 
     within('.ui-accordion') do
       page.execute_script %Q{ $('.ui-accordion-header:last').click() }
       page.execute_script %Q{ $('.pricing_map_display_date:visible').focus() }
@@ -40,6 +43,10 @@ describe 'as a user on catalog page', :js => true do
   
   it 'should not save if required fields are missing' do
     click_link("MUSC Research Data Request (CDW)")
+    within '#pricing' do
+      find('.legend').click
+      wait_for_javascript_to_finish
+    end
     click_button("Add Pricing Map")
     
     page.execute_script("$('.ui-accordion-header:last').click()")
@@ -50,6 +57,10 @@ describe 'as a user on catalog page', :js => true do
   
   it 'should display an error message when required fields are missing' do
     click_link("MUSC Research Data Request (CDW)")
+    within '#pricing' do
+      find('.legend').click
+      wait_for_javascript_to_finish
+    end
     click_button("Add Pricing Map")
     wait_for_javascript_to_finish
     page.should have_content "Name and Order are required on the Service.  Effective Date, Display Date, and Service Rate are required on all Pricing Maps."
@@ -58,6 +69,10 @@ describe 'as a user on catalog page', :js => true do
 
   it "should remove the errors if the pricing map is removed" do
     click_link("MUSC Research Data Request (CDW)")
+    within '#pricing' do
+      find('.legend').click
+      wait_for_javascript_to_finish
+    end
     click_button("Add Pricing Map")
     click_link("Effective on - Display on")
     wait_for_javascript_to_finish
@@ -70,6 +85,10 @@ describe 'as a user on catalog page', :js => true do
 
     before :each do
       click_link("MUSC Research Data Request (CDW)")
+      within '#pricing' do
+        find('.legend').click
+        wait_for_javascript_to_finish
+      end
       click_button("Add Pricing Map")
       click_link("Effective on - Display on")
       find("#otf_checkbox_").click

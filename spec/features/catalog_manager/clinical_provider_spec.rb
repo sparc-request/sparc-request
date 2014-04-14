@@ -31,7 +31,7 @@ def add_clinical_provider
     find('.legend').click
     wait_for_javascript_to_finish
   end
-  sleep 5
+  sleep 3
   fill_in "new_cp", :with => "Julia"
   wait_for_javascript_to_finish
   page.find('a', :text => "Julia Glenn", :visible => true).click()

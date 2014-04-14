@@ -5,18 +5,11 @@ feature 'clinical providers' do
     default_catalog_manager_setup
   end 
   
-  scenario 'user adds a new clinical provider to institution', :js => true do
+  scenario 'user adds and a clinical provider from an organization', :js => true do
     add_clinical_provider
 
     within "#cp_info" do
       page.should have_text("Julia Glenn (glennj@musc.edu)")
-    end
-  end
-  
-  scenario 'user deletes a clinical provider from institution', :js => true do
-    add_clinical_provider
-
-    within "#cp_info" do
       find("img.cp_delete").click
     end
 
@@ -32,7 +25,13 @@ end
 
 
 def add_clinical_provider
-  click_link('Medical University of South Carolina')
+  wait_for_javascript_to_finish
+  click_link('Office of Biomedical Informatics')
+  within '#cwf_fieldset' do
+    find('.legend').click
+    wait_for_javascript_to_finish
+  end
+  sleep 3
   fill_in "new_cp", :with => "Julia"
   wait_for_javascript_to_finish
   page.find('a', :text => "Julia Glenn", :visible => true).click()

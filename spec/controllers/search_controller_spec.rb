@@ -12,7 +12,7 @@ describe SearchController do
     let!(:core2) { FactoryGirl.create(:core, parent_id: program.id) }
     let!(:unavailable_core) { FactoryGirl.create(:core, parent_id: program.id, is_available: false) }
 
-    let!(:service_request) { FactoryGirl.create(:service_request) }
+    let!(:service_request) { FactoryGirl.create_without_validation(:service_request) }
 
     let!(:core_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
     let!(:core2_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }

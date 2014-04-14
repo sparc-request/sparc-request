@@ -6,8 +6,17 @@ feature 'automatic pricing adjustment' do
   end
   
   scenario 'successfully creates pricing map with adjusted rates and dates', :js => true do
- 
+
+    wait_for_javascript_to_finish
     click_link('South Carolina Clinical and Translational Institute (SCTR)')
+
+    sleep 3
+
+    within '#pricing' do
+      find('.legend').click
+      wait_for_javascript_to_finish
+    end
+    wait_for_javascript_to_finish
     click_button('Increase or Decrease Rates')
     wait_for_javascript_to_finish
     
@@ -46,6 +55,10 @@ feature 'automatic pricing adjustment' do
     wait_for_javascript_to_finish
     click_link('MUSC Research Data Request (CDW)')
     wait_for_javascript_to_finish
+    within '#pricing' do
+      find('.legend').click
+      wait_for_javascript_to_finish
+    end
     within('.pricing_map_accordion') do
       increase_decrease_date = (Date.today + 1.month).strftime("%-m/#{numerical_day}/%Y")
       page.should have_content("Effective on #{increase_decrease_date} - Display on #{increase_decrease_date}")

@@ -50,11 +50,12 @@ describe "calender totals" do
       first(".total_#{arm1.line_items_visits.first.id}").should have_exact_text("$30.00")
     end
 
-    it "should change visits when -> is clicked", :js => true do
-      click_link("->")
-      retry_until {
-        find("#arm_#{arm1.id}_visit_name_6").should have_value("Visit 6")
-      }
-    end
+    # Not sure if we're keeping the arrows. Commenting this out for now.
+    # it "should change visits when -> is clicked", :js => true do
+    #   click_link("->")
+    #   retry_until {
+    #     find("#arm_#{arm1.id}_visit_name_6").should have_value("Visit 6")
+    #   }
+    # end
   end
 end

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-#=begin
-describe 'Catalog Manager' do
+
+describe 'A Happy Test' do
   let_there_be_lane
   fake_login_for_each_test
 
@@ -13,7 +13,7 @@ describe 'Catalog Manager' do
         :color => 'blue'
     }
     options = defaults.merge(options)
-    click_link 'Create New Institution'
+    first(:xpath, "//a[contains(text(),'Create New Institution')]").click
     a = page.driver.browser.switch_to.alert
     a.send_keys(name)
     a.accept
@@ -54,7 +54,7 @@ describe 'Catalog Manager' do
     }
     options = defaults.merge(options)
     click_link under
-    click_link 'Create New Provider'
+    first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Provider')]").click
     a = page.driver.browser.switch_to.alert
     a.send_keys(name)
     a.accept
@@ -115,7 +115,7 @@ describe 'Catalog Manager' do
     }
     options = defaults.merge(options)
     click_link under
-    click_link 'Create New Program'
+    first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Program')]").click
     a = page.driver.browser.switch_to.alert
     a.send_keys(name)
     a.accept
@@ -163,7 +163,7 @@ describe 'Catalog Manager' do
     }
     options = defaults.merge(options)
     click_link under
-    click_link 'Create New Core'
+    first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Core')]").click
     a = page.driver.browser.switch_to.alert
     a.send_keys(name)
     a.accept
@@ -217,31 +217,10 @@ describe 'Catalog Manager' do
         first(:xpath, "//table[@id='pp_fields_']//input[@id='unit_factor_']").set(options[:unit_factor])
     end
     wait_for_javascript_to_finish
+    first(:xpath, "//fieldset[@class='actions']").click
     first(:xpath, "//input[@id='save_button']").click
     wait_for_javascript_to_finish
   end
-
-
-
-  it 'Should create crap', :js => true do
-    visit catalog_manager_root_path
-
-    create_new_institution 'someInst'
-    create_new_provider 'someProv', 'someInst'
-    create_new_program 'someProg', 'someProv'
-    create_new_core 'someCore', 'someProg'
-    create_new_service 'someService', 'someCore', :otf => false
-    create_new_service 'someService2', 'someCore', :otf => true
-    visit root_path
-    sleep 120
-  end  
-end
-#=end
-
-=begin
-describe 'A Happy Test' do
-  let_there_be_lane
-  fake_login_for_each_test
 
   let!(:institution)  {FactoryGirl.create(:institution,id: 53,name: 'Medical University of South Carolina', order: 1,abbreviation: 'MUSC', is_available: 1)}
   let!(:provider) {FactoryGirl.create(:provider,id: 10,name: 'South Carolina Clinical and Translational Institute (SCTR)',order: 1,css_class: 'blue-provider',parent_id: institution.id,abbreviation: 'SCTR1',process_ssrs: 0,is_available: 1)}
@@ -255,15 +234,28 @@ describe 'A Happy Test' do
   let!(:pricing_setup2) { FactoryGirl.create(:pricing_setup, organization_id: program2.id, display_date: Time.now - 1.day, federal: 50, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal')}
   let!(:pricing_map) {FactoryGirl.create(:pricing_map,service_id:service.id, unit_type: 'Per Query', unit_factor: 1, is_one_time_fee: 1, display_date: Time.now - 1.day, full_rate: 200, exclude_from_indirect_cost: 0, unit_minimum:1)}
   let!(:pricing_map2) {FactoryGirl.create(:pricing_map, service_id: service2.id, unit_type: 'Per patient/visit', unit_factor: 1, is_one_time_fee: 0, display_date: Time.now - 1.day, full_rate: 636, exclude_from_indirect_cost: 0, unit_minimum: 1)}
+  let!(:service_provider)    { FactoryGirl.create(:service_provider, organization_id: 54, identity_id: jug2.id)}
   let!(:service_provider)    { FactoryGirl.create(:service_provider, organization_id: program.id, identity_id: jug2.id)}
   let!(:service_provider2)    { FactoryGirl.create(:service_provider, organization_id: program2.id, identity_id: jug2.id)}
-  # let!(:pricing_map2)       { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service2.id, is_one_time_fee: false, display_date: Time.now - 1.day, full_rate: 2000, federal_rate: 3000, units_per_qty_max: 20) }
+  let!(:service_provider2)    { FactoryGirl.create(:service_provider, organization_id: 5, identity_id: jug2.id)}
+  let!(:pricing_map2)       { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service2.id, is_one_time_fee: false, display_date: Time.now - 1.day, full_rate: 2000, federal_rate: 3000, units_per_qty_max: 20) }
 
     #after :each do
     #  wait_for_javascript_to_finish
     #end
 
   it 'should make you feel happy', :js => true do
+    visit catalog_manager_root_path
+=begin
+    create_new_institution 'Medical University of South Carolina', {:abbreviation => 'MUSC'}
+    create_new_provider 'South Carolina Clinical and Translational Institute (SCTR)', 'Medical University of South Carolina', {:abbreviation => 'SCTR1'}
+    create_new_program 'Office of Biomedical Informatics', 'South Carolina Clinical and Translational Institute (SCTR)', {:abbreviation => 'Informatics'}
+    create_new_program 'Clinical and Translational Research Center (CTRC)', 'South Carolina Clinical and Translational Institute (SCTR)', {:abbreviation => 'Informatics'}
+    create_new_core 'Clinical Data Warehouse', 'Office of Biomedical Informatics'
+    create_new_core 'Nursing Services', 'Clinical and Translational Research Center (CTRC)'
+    create_new_service 'MUSC Research Data Request (CDW)', 'Clinical Data Warehouse', {:otf => true, :unit_type => 'Per Query', :unit_factor => 1, :rate => '2.00', :unit_minimum => 1}
+    create_new_service 'Breast Milk Collection', 'Nursing Services', {:otf => false, :unit_type => 'Per patient/visit', :unit_factor => 1, :rate => '6.36', :unit_minimum => 1}
+=end
     visit root_path
 
     #**Submit a service request**#
@@ -609,6 +601,6 @@ describe 'A Happy Test' do
   end
 
 end
-=end
+
 
 

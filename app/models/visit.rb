@@ -15,7 +15,9 @@ class Visit < ActiveRecord::Base
   attr_accessible :effort_billing_qty    # (%) qty billing to % effort
 
   after_save do
-    self.visit_group.arm.set_arm_edited_flag_on_subjects
+    if self.visit_group && self.visit_group.arm
+      self.visit_group.arm.set_arm_edited_flag_on_subjects
+    end
   end
 
   validates :research_billing_qty, :numericality => {:only_integer => true}

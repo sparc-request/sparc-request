@@ -170,16 +170,17 @@ class Arm < ActiveRecord::Base
     (last - first).times { self.visit_groups.create() }
 
     vs = []
+    now = Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')
     # Create visits for the new visit groups
     self.line_items_visits.each do |liv|
       # Since arrays start at 0 we need to go to the last - 1
       (first..last-1).each do |index|
         # Store the values for the new visits [line_items_visit_id, visit_group_id]
-        vs.push "(#{liv.id}, #{self.visit_groups[index].id})"
+        vs.push "(#{liv.id}, #{self.visit_groups[index].id}, '#{now}', '#{now}')"
       end
     end
 
-    sql = "INSERT INTO visits (`line_items_visit_id`, `visit_group_id`) VALUES #{vs.join(", ")}"
+    sql = "INSERT INTO visits (`line_items_visit_id`, `visit_group_id`, `created_at`, `updated_at`) VALUES #{vs.join(", ")}"
     arc.execute sql
   end
 
@@ -204,8 +205,10 @@ class Arm < ActiveRecord::Base
   end
 
   def set_arm_edited_flag_on_subjects
-    subjects = Subject.where(arm_id: self.id)
-    subjects.update_all(arm_edited: true)
+    if self.subjects
+      subjects = Subject.where(arm_id: self.id)
+      subjects.update_all(arm_edited: true)
+    end
   end
 
   def update_visit_group_day day, position

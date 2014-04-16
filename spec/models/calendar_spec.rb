@@ -17,6 +17,7 @@ describe Calendar do
   describe 'populate' do
 
     it "should populate a subject with appointments and procedures" do
+      sub_service_request.update_attribute(:status, 'submitted')
       arm1.populate_subjects
       calendar = arm1.subjects.first.calendar
       calendar.populate(arm1.visit_groups)

@@ -14,7 +14,7 @@ describe "Line Item" do
       service.save!(validate: false)
       project = Project.create(FactoryGirl.attributes_for(:protocol), :validate => false)
       # service_request = ServiceRequest.create(FactoryGirl.attributes_for(:service_request), protocol_id: project.id, :validate => false)
-      service_request = ServiceRequest.create(FactoryGirl.attributes_for(:service_request, status: 'draft', service_requester_id: user.id, protocol_id: project.id)); service_request.save!(:validate => false); service_request
+      service_request = ServiceRequest.create(FactoryGirl.attributes_for(:service_request, protocol_id: project.id)); service_request.save!(:validate => false); service_request
       line_item = FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id)
       lambda { line_item.applicable_rate }.should raise_exception(ArgumentError)
     end
@@ -24,7 +24,7 @@ describe "Line Item" do
       service = FactoryGirl.create(:service, :organization_id => organization.id, :pricing_map_count => 1)
       service.pricing_maps[0].update_attributes(display_date: Date.today - 1)
       project = Project.create(FactoryGirl.attributes_for(:protocol))
-      service_request = ServiceRequest.create(FactoryGirl.attributes_for(:service_request), protocol_id: project.id, :validate => false)
+      service_request = ServiceRequest.create(FactoryGirl.attributes_for(:service_request, protocol_id: project.id)); service_request.save!(:validate => false); service_request
       line_item = FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id)
       lambda { line_item.applicable_rate }.should raise_exception(ArgumentError)
     end
@@ -43,7 +43,7 @@ describe "Line Item" do
       service = FactoryGirl.create(:service, :organization_id => organization.id, :pricing_map_count => 1)
       service.pricing_maps[0].update_attributes(display_date: Date.today)
 
-      service_request = FactoryGirl.build(:service_request, protocol_id: project.id)
+      service_request = ServiceRequest.create(FactoryGirl.attributes_for(:service_request, protocol_id: project.id)); service_request.save!(:validate => false); service_request
       service_request.save(:validate => false)
       line_item = FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id)
       line_item.service_request.protocol.stub(:funding_status).and_return('funded')

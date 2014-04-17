@@ -262,23 +262,13 @@ describe 'Catalog Manager' do
 
   it 'Should create crap', :js => true do
     visit catalog_manager_root_path
-=begin
+
     create_new_institution 'someInst'
     create_new_provider 'someProv', 'someInst'
     create_new_program 'someProg', 'someProv'
     create_new_core 'someCore', 'someProg'
     create_new_service 'someService', 'someCore', :otf => false
     create_new_service 'someService2', 'someCore', :otf => true
-=end
-    create_new_institution 'Medical University of South Carolina', {:abbreviation => 'MUSC'}
-    create_new_provider 'South Carolina Clinical and Translational Institute (SCTR)', 'Medical University of South Carolina', {:abbreviation => 'SCTR1'}
-    create_new_program 'Office of Biomedical Informatics', 'South Carolina Clinical and Translational Institute (SCTR)', {:abbreviation => 'Informatics'}
-    create_new_program 'Clinical and Translational Research Center (CTRC)', 'South Carolina Clinical and Translational Institute (SCTR)', {:abbreviation => 'Informatics'}
-    create_new_core 'Clinical Data Warehouse', 'Office of Biomedical Informatics'
-    create_new_core 'Nursing Services', 'Clinical and Translational Research Center (CTRC)'
-    create_new_service 'MUSC Research Data Request (CDW)', 'Clinical Data Warehouse', {:otf => true, :unit_type => 'Per Query', :unit_factor => 1, :rate => '2.00', :unit_minimum => 1}
-    create_new_service 'Breast Milk Collection', 'Nursing Services', {:otf => false, :unit_type => 'Per patient/visit', :unit_factor => 1, :rate => '6.36', :unit_minimum => 1}
-
     visit root_path
     sleep 120
   end  

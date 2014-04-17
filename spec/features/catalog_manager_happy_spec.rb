@@ -212,7 +212,8 @@ describe 'Catalog Manager' do
         :rate => '25.00',
         :order => 1,
         :abbreviation => name,
-        :unit_type => 'slides',
+        :unit_type => 'samples',
+        :quantity_type => 'slides',
         :unit_factor => 1,
         :display_date => Time.now,
         :unit_minimum => 1,
@@ -220,7 +221,7 @@ describe 'Catalog Manager' do
     }
     options = defaults.merge(options)
 
-    cnsLink = find(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[text()='Create New Service']")
+    cnsLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[text()='Create New Service']")
     if cnsLink.visible? then
         cnsLink.click
     else
@@ -243,7 +244,7 @@ describe 'Catalog Manager' do
     if options[:otf] then 
         first(:xpath, "//input[@id='otf_checkbox_']").click 
         wait_for_javascript_to_finish
-        first(:xpath, "//input[@id='otf_quantity_type_']").set(options[:unit_type])
+        first(:xpath, "//input[@id='otf_quantity_type_']").set(options[:quantity_type])
         first(:xpath, "//input[@id='otf_unit_type_']").set(options[:unit_type])
         first(:xpath, "//table[@id='otf_fields_']//input[@id='unit_factor_']").set(options[:unit_factor])
         first(:xpath, "//input[@id='otf_unit_max_']").set(options[:unit_max])
@@ -262,14 +263,14 @@ describe 'Catalog Manager' do
 
   it 'Should create crap', :js => true do
     visit catalog_manager_root_path
-=begin
+
     create_new_institution 'someInst'
     create_new_provider 'someProv', 'someInst'
     create_new_program 'someProg', 'someProv'
     create_new_core 'someCore', 'someProg'
     create_new_service 'someService', 'someCore', :otf => false
     create_new_service 'someService2', 'someCore', :otf => true
-=end
+
     create_new_institution 'Medical University of South Carolina', {:abbreviation => 'MUSC'}
     create_new_provider 'South Carolina Clinical and Translational Institute (SCTR)', 'Medical University of South Carolina', {:abbreviation => 'SCTR1'}
     create_new_program 'Office of Biomedical Informatics', 'South Carolina Clinical and Translational Institute (SCTR)', {:abbreviation => 'Informatics'}
@@ -279,7 +280,10 @@ describe 'Catalog Manager' do
     create_new_service 'MUSC Research Data Request (CDW)', 'Clinical Data Warehouse', {:otf => true, :unit_type => 'Per Query', :unit_factor => 1, :rate => '2.00', :unit_minimum => 1}
     create_new_service 'Breast Milk Collection', 'Nursing Services', {:otf => false, :unit_type => 'Per patient/visit', :unit_factor => 1, :rate => '6.36', :unit_minimum => 1}
 
-    visit root_path
+    create_new_service 'SuperService 1', 'Office of Biomedical Informatics',{:otf => false, :rate => '500000.00', :unit_minimum => 5}
+    create_new_service 'SuperService 2', 'Clinical and Translational Research Center (CTRC)',{:otf => true, :rate => '500000.00', :unit_minimum => 5}
+    
     sleep 120
+    visit root_path
   end  
 end

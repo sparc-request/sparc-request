@@ -178,11 +178,13 @@ describe "submitting a in form", :js => true do
         number_of_arms = Arm.find(:all).size
 
         within("div#1") do
+          sleep 3
           click_link("Remove Arm")
         end
 
         within("div#2") do
-          find_link("Remove Arm").should_not be_visible
+          sleep 3
+          page.should_not have_content("Remove Arm")
         end
           
         find(:xpath, "//a/img[@alt='Savecontinue']/..").click

@@ -117,3 +117,8 @@ td.text-center {
   padding: 6px 8px;
   background-color: #C0C0C0;
 }
+
+#research_project_summary_report_date_range {
+  display: none;
+}
+

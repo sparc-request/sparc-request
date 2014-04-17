@@ -41,7 +41,7 @@ describe 'as a user on catalog page', :js => true do
     end
   
     page.execute_script %Q{ $(".save_button").click() }
-    wait_for_javascript_to_finish
+    sleep 3
     
     provider.pricing_setups.first.federal.should eq(150)
     

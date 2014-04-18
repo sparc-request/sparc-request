@@ -61,6 +61,7 @@ feature 'automatic pricing adjustment' do
     end
     within('.pricing_map_accordion') do
       increase_decrease_date = (Date.today + 1.month).strftime("%-m/#{numerical_day}/%Y")
+      sleep 3
       page.should have_content("Effective on #{increase_decrease_date} - Display on #{increase_decrease_date}")
     end
 

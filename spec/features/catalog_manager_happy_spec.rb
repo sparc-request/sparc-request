@@ -53,7 +53,7 @@ describe 'Catalog Manager' do
         :foundation_rate_type => 'Federal Rate'
     }
     options = defaults.merge(options)
-
+    wait_for_javascript_to_finish
     cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Provider')]")
     if cnpLink.visible? then
         cnpLink.click
@@ -129,7 +129,7 @@ describe 'Catalog Manager' do
         :foundation_rate_type => 'Federal Rate'
     }
     options = defaults.merge(options)
-
+    wait_for_javascript_to_finish
     cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Program')]")
     if cnpLink.visible? then
         cnpLink.click
@@ -184,7 +184,7 @@ describe 'Catalog Manager' do
         :order => 1
     }
     options = defaults.merge(options)
-
+    wait_for_javascript_to_finish
     cncLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Core')]")
     if cncLink.visible? then
         cncLink.click
@@ -220,7 +220,7 @@ describe 'Catalog Manager' do
         :unit_max => 1
     }
     options = defaults.merge(options)
-
+    wait_for_javascript_to_finish
     cnsLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[text()='Create New Service']")
     if cnsLink.visible? then
         cnsLink.click

@@ -56,7 +56,12 @@ describe 'Catalog Manager' do
     wait_for_javascript_to_finish
     cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Provider')]")
     if cnpLink.visible? then
-        cnpLink.click
+        begin
+            cnpLink.click
+        rescue
+            click_link under
+            cnpLink.click
+        end
     else
         click_link under
         cnpLink.click
@@ -132,7 +137,12 @@ describe 'Catalog Manager' do
     wait_for_javascript_to_finish
     cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Program')]")
     if cnpLink.visible? then
-        cnpLink.click
+        begin
+            cnpLink.click
+        rescue
+            click_link under
+            cnpLink.click
+        end
     else
         click_link under
         cnpLink.click
@@ -187,7 +197,12 @@ describe 'Catalog Manager' do
     wait_for_javascript_to_finish
     cncLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Core')]")
     if cncLink.visible? then
-        cncLink.click
+        begin
+            cncLink.click
+        rescue
+            click_link under
+            cncLink.click
+        end
     else
         click_link under
         cncLink.click
@@ -223,7 +238,12 @@ describe 'Catalog Manager' do
     wait_for_javascript_to_finish
     cnsLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[text()='Create New Service']")
     if cnsLink.visible? then
-        cnsLink.click
+        begin
+            cnsLink.click
+        rescue
+            click_link under
+            cnsLink.click
+        end
     else
         click_link under
         cnsLink.click
@@ -283,7 +303,22 @@ describe 'Catalog Manager' do
     create_new_service 'SuperService 1', 'Office of Biomedical Informatics',{:otf => false, :rate => '500000.00', :unit_minimum => 5}
     create_new_service 'SuperService 2', 'Clinical and Translational Research Center (CTRC)',{:otf => true, :rate => '500000.00', :unit_minimum => 5}
     
-    sleep 120
     visit root_path
+    #sleep 30
+
+    click_link("Medical University of South Carolina")
+    wait_for_javascript_to_finish
+    click_link("South Carolina Clinical and Translational Institute (SCTR)")
+    wait_for_javascript_to_finish
+    click_link("Office of Biomedical Informatics")
+    wait_for_javascript_to_finish
+    page.should have_xpath("//a[text()='MUSC Research Data Request (CDW)']")
+    page.should have_xpath("//a[text()='SuperService 1']")
+    click_link("Clinical and Translational Research Center (CTRC)")
+    wait_for_javascript_to_finish
+    page.should have_xpath("//a[text()='SuperService 2']")
+    page.should have_xpath("//a[text()='Breast Milk Collection']")
+
+    #sleep 120
   end  
 end

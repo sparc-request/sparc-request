@@ -338,6 +338,55 @@ describe 'A Happy Test' do
     find(:xpath, "//td[contains(@class,'otf_total total')]").click #allow to focus and recalculate
     find(:xpath, "//td[contains(@class,'otf_total total')]").text[1..-1].to_f.should eq((otfUnitPrice*3).round(2)) #otf total should eq (unitprice * 3)
     
+        #Switch to Quantity and Billing Tab
+    click_link("Quantity/Billing Tab")
+    wait_for_javascript_to_finish
+
+        #check totals of ARM 1
+    sumOfQuantities = 0
+    [1,3,4,5,6].each do |n|
+        sumOfQuantities += find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_#{n}_research_billing_qty']").value.to_i
+    end
+    #sleep 300
+    totPerStudy = (arm2UnitPrice * 1 * first(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 per patient total should eq (unitprice * sum of quantities * #patients)
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm2UnitPrice * sumOfQuantities).round(2)) #ARM1 per patient total should eq (unitprice * sum of quantities)
+
+
+    find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_3_research_billing_qty']").set(5)#change second visit research quantity to 5
+        #recheck totals of ARM 1 with second visit quantity now = 5
+    sumOfQuantities = 0
+    [1,3,4,5,6].each do |n|
+        sumOfQuantities += find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_#{n}_research_billing_qty']").value.to_i
+    end
+    totPerStudy = (arm2UnitPrice * 1 * first(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 per patient total should eq (unitprice * sum of quantities * #patients)
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm2UnitPrice * sumOfQuantities).round(2)) #ARM1 per patient total should eq (unitprice * sum of quantities)    
+    
+
+    find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_4_insurance_billing_qty']").set(5)#change third visit insurance quantity to 5, should not change totals
+        #recheck totals of ARM 1 with third visit insurance quantity now = 5
+    sumOfQuantities = 0
+    [1,3,4,5,6].each do |n|
+        sumOfQuantities += find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_#{n}_research_billing_qty']").value.to_i
+    end
+    totPerStudy = (arm2UnitPrice * 1 * first(:xpath, "//div[@id='ui-tabs-2']//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 per patient total should eq (unitprice * sum of quantities * #patients)
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm2UnitPrice * sumOfQuantities).round(2)) #ARM1 per patient total should eq (unitprice * sum of quantities)    
+
+
+    find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_5_effort_billing_qty']").set(5)#change fourth visit effort quantity to 5, should not change totals
+        #recheck totals of ARM 1 with fourth visit effort quantity now = 5
+    sumOfQuantities = 0
+    [1,3,4,5,6].each do |n|
+        sumOfQuantities += find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_#{n}_research_billing_qty']").value.to_i
+    end
+    totPerStudy = (arm2UnitPrice * 1 * first(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 per patient total should eq (unitprice * sum of quantities * #patients)
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm2UnitPrice * sumOfQuantities).round(2)) #ARM1 per patient total should eq (unitprice * sum of quantities)    
+
+
+    sleep 2400
     click_link("Save & Continue")
     wait_for_javascript_to_finish
     #**END Completing Visit Calender ENDß**#

@@ -53,10 +53,15 @@ describe 'Catalog Manager' do
         :foundation_rate_type => 'Federal Rate'
     }
     options = defaults.merge(options)
-
+    wait_for_javascript_to_finish
     cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Provider')]")
     if cnpLink.visible? then
-        cnpLink.click
+        begin
+            cnpLink.click
+        rescue
+            click_link under
+            cnpLink.click
+        end
     else
         click_link under
         cnpLink.click
@@ -129,10 +134,15 @@ describe 'Catalog Manager' do
         :foundation_rate_type => 'Federal Rate'
     }
     options = defaults.merge(options)
-
+    wait_for_javascript_to_finish
     cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Program')]")
     if cnpLink.visible? then
-        cnpLink.click
+        begin
+            cnpLink.click
+        rescue
+            click_link under
+            cnpLink.click
+        end
     else
         click_link under
         cnpLink.click
@@ -184,10 +194,15 @@ describe 'Catalog Manager' do
         :order => 1
     }
     options = defaults.merge(options)
-
+    wait_for_javascript_to_finish
     cncLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Core')]")
     if cncLink.visible? then
-        cncLink.click
+        begin
+            cncLink.click
+        rescue
+            click_link under
+            cncLink.click
+        end
     else
         click_link under
         cncLink.click
@@ -212,17 +227,23 @@ describe 'Catalog Manager' do
         :rate => '25.00',
         :order => 1,
         :abbreviation => name,
-        :unit_type => 'slides',
+        :unit_type => 'samples',
+        :quantity_type => 'slides',
         :unit_factor => 1,
         :display_date => Time.now,
         :unit_minimum => 1,
         :unit_max => 1
     }
     options = defaults.merge(options)
-
-    cnsLink = find(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[text()='Create New Service']")
+    wait_for_javascript_to_finish
+    cnsLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[text()='Create New Service']")
     if cnsLink.visible? then
-        cnsLink.click
+        begin
+            cnsLink.click
+        rescue
+            click_link under
+            cnsLink.click
+        end
     else
         click_link under
         cnsLink.click
@@ -243,7 +264,7 @@ describe 'Catalog Manager' do
     if options[:otf] then 
         first(:xpath, "//input[@id='otf_checkbox_']").click 
         wait_for_javascript_to_finish
-        first(:xpath, "//input[@id='otf_quantity_type_']").set(options[:unit_type])
+        first(:xpath, "//input[@id='otf_quantity_type_']").set(options[:quantity_type])
         first(:xpath, "//input[@id='otf_unit_type_']").set(options[:unit_type])
         first(:xpath, "//table[@id='otf_fields_']//input[@id='unit_factor_']").set(options[:unit_factor])
         first(:xpath, "//input[@id='otf_unit_max_']").set(options[:unit_max])

@@ -1,304 +1,10 @@
 require 'spec_helper'
+include CapybaraCatalogManager
 
 
 describe 'A Happy Test' do
   let_there_be_lane
   fake_login_for_each_test
-
-  def create_new_institution(name, options = {})
-    defaults = {
-        :abbreviation => name,
-        :order => 1,
-        :is_available => true,
-        :color => 'blue'
-    }
-    options = defaults.merge(options)
-    first(:xpath, "//a[contains(text(),'Create New Institution')]").click
-    a = page.driver.browser.switch_to.alert
-    a.send_keys(name)
-    a.accept
-    click_link name
-    wait_for_javascript_to_finish
-    fill_in 'institution_name', :with => name
-    fill_in 'institution_abbreviation', :with => options[:abbreviation]
-    select options[:color], :from => 'institution_css_class'
-    fill_in 'institution_order', :with => options[:order]
-    hideAvailableCheck = first(:xpath, "//input[@id='institution_is_available']")
-    if options[:is_available] and hideAvailableCheck.checked? then #if desired available and hide is checked then uncheck
-        hideAvailableCheck.click
-    elsif not options[:is_available] and not hideAvailableCheck.checked? then #if not desired available and hide is not checked then check
-        hideAvailableCheck.click
-    end
-    first(:xpath, "//input[@id='save_button']").click
-    wait_for_javascript_to_finish
-    click_link name
-  end
-
-  def create_new_provider(name,under, options = {})
-    defaults = {
-        :abbreviation => name,
-        :order => 1,
-        :is_available => true,
-        :color => 'blue',
-        :display_date => Time.now,
-        :federal => 50,
-        :corporate => 50,
-        :other => 50,
-        :member => 50,
-        :college_rate_type => 'Federal Rate',
-        :federal_rate_type => 'Federal Rate',
-        :industry_rate_type => 'Federal Rate',
-        :investigator_rate_type => 'Federal Rate',
-        :internal_rate_type => 'Federal Rate',
-        :foundation_rate_type => 'Federal Rate'
-    }
-    options = defaults.merge(options)
-    wait_for_javascript_to_finish
-    cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Provider')]")
-    if cnpLink.visible? then
-        begin
-            cnpLink.click
-        rescue
-            click_link under
-            cnpLink.click
-        end
-    else
-        click_link under
-        cnpLink.click
-    end
-
-    a = page.driver.browser.switch_to.alert
-    a.send_keys(name)
-    a.accept
-    click_link name
-    wait_for_javascript_to_finish
-
-    fill_in 'provider_name', :with => name
-    fill_in 'provider_abbreviation', :with => options[:abbreviation]
-    select options[:color], :from => 'provider_css_class'
-    fill_in 'provider_order', :with => options[:order]
-    hideAvailableCheck = first(:xpath, "//input[@id='provider_is_available']")
-    if options[:is_available] and hideAvailableCheck.checked? then #if desired available and hide is checked then uncheck
-        hideAvailableCheck.click
-    elsif not options[:is_available] and not hideAvailableCheck.checked? then #if not desired available and hide is not checked then check
-        hideAvailableCheck.click
-    end
-
-    find(:xpath, "//div[text()='Pricing']").click
-    find(:xpath, "//input[@class='add_pricing_setup']").click
-    first(:xpath, "//a[@href='#' and contains(text(),'Effective on')]").click
-    stDay = (options[:display_date]).strftime("%-d") # Today's Day
-    first(:xpath, "//th[contains(text(),'Display Date')]/following-sibling::td/input[@type='text']").click
-    page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
-    first(:xpath, "//th[contains(text(),'Effective Date')]/following-sibling::td/input[@type='text']").click
-    page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
-    first(:xpath, "//input[@id='pricing_setups_blank_pricing_setup_federal']").set(options[:federal])
-    first(:xpath, "//input[@id='pricing_setups_blank_pricing_setup_corporate']").set(options[:corporate])
-    first(:xpath, "//input[@id='pricing_setups_blank_pricing_setup_other']").set(options[:other])
-    first(:xpath, "//input[@id='pricing_setups_blank_pricing_setup_member']").set(options[:member])
-    #first(:xpath,"//a[contains(text(),'Apply Federal % to All')]").click
-    first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_college_rate_type']/option[contains(text(),'#{options[:college_rate_type]}')]").select_option
-    first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_federal_rate_type']/option[contains(text(),'#{options[:federal_rate_type]}')]").select_option
-    first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_foundation_rate_type']/option[contains(text(),'#{options[:foundation_rate_type]}')]").select_option
-    first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_industry_rate_type']/option[contains(text(),'#{options[:industry_rate_type]}')]").select_option
-    first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_investigator_rate_type']/option[contains(text(),'#{options[:investigator_rate_type]}')]").select_option
-    first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_internal_rate_type']/option[contains(text(),'#{options[:internal_rate_type]}')]").select_option
-    
-=begin    Add service provider, not available, as testdb does not include identities to choose from
-    find(:xpath, "//div[text()='User Rights']").click
-    spInput = find(:xpath, "//input[@id='new_sp']")
-    spInput.native.send_keys('glennj@musc.edu')
-    sleep 60
-=end  
-
-    first(:xpath, "//input[@id='save_button']").click
-    wait_for_javascript_to_finish
-    click_link name
-  end
-
-  def create_new_program(name,under, options = {})
-    defaults = {
-        :abbreviation => name,
-        :order => 1,
-        :is_available => true,
-        :display_date => Time.now,
-        :federal => 50,
-        :corporate => 50,
-        :other => 50,
-        :member => 50,
-        :college_rate_type => 'Federal Rate',
-        :federal_rate_type => 'Federal Rate',
-        :industry_rate_type => 'Federal Rate',
-        :investigator_rate_type => 'Federal Rate',
-        :internal_rate_type => 'Federal Rate',
-        :foundation_rate_type => 'Federal Rate'
-    }
-    options = defaults.merge(options)
-    wait_for_javascript_to_finish
-    cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Program')]")
-    if cnpLink.visible? then
-        begin
-            cnpLink.click
-        rescue
-            click_link under
-            cnpLink.click
-        end
-    else
-        click_link under
-        cnpLink.click
-    end
-
-    a = page.driver.browser.switch_to.alert
-    a.send_keys(name)
-    a.accept
-    click_link name
-    wait_for_javascript_to_finish
-
-    fill_in 'program_name', :with => name
-    fill_in 'program_abbreviation', :with => options[:abbreviation]
-    fill_in 'program_order', :with => options[:order]
-    hideAvailableCheck = first(:xpath, "//input[@id='program_is_available']")
-    if options[:is_available] and hideAvailableCheck.checked? then #if desired available and hide is checked then uncheck
-        hideAvailableCheck.click
-    elsif not options[:is_available] and not hideAvailableCheck.checked? then #if not desired available and hide is not checked then check
-        hideAvailableCheck.click
-    end
-
-    find(:xpath, "//div[text()='Pricing']").click
-    find(:xpath, "//input[@class='add_pricing_setup']").click
-    first(:xpath, "//a[@href='#' and contains(text(),'Effective on')]").click
-    stDay = (options[:display_date]).strftime("%-d") # Today's Day
-    first(:xpath, "//th[contains(text(),'Display Date')]/following-sibling::td/input[@type='text']").click
-    page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
-    first(:xpath, "//th[contains(text(),'Effective Date')]/following-sibling::td/input[@type='text']").click
-    page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
-    first(:xpath, "//input[@id='pricing_setups_blank_pricing_setup_federal']").set(options[:federal])
-    first(:xpath, "//input[@id='pricing_setups_blank_pricing_setup_corporate']").set(options[:corporate])
-    first(:xpath, "//input[@id='pricing_setups_blank_pricing_setup_other']").set(options[:other])
-    first(:xpath, "//input[@id='pricing_setups_blank_pricing_setup_member']").set(options[:member])
-    #first(:xpath,"//a[contains(text(),'Apply Federal % to All')]").click
-    first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_college_rate_type']/option[contains(text(),'#{options[:college_rate_type]}')]").select_option
-    first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_federal_rate_type']/option[contains(text(),'#{options[:federal_rate_type]}')]").select_option
-    first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_foundation_rate_type']/option[contains(text(),'#{options[:foundation_rate_type]}')]").select_option
-    first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_industry_rate_type']/option[contains(text(),'#{options[:industry_rate_type]}')]").select_option
-    first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_investigator_rate_type']/option[contains(text(),'#{options[:investigator_rate_type]}')]").select_option
-    first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_internal_rate_type']/option[contains(text(),'#{options[:internal_rate_type]}')]").select_option
-    first(:xpath, "//input[@id='save_button']").click
-    wait_for_javascript_to_finish
-    click_link name
-  end    
-
-  def create_new_core(name,under, options = {})
-    defaults = {
-        :abbreviation => name,
-        :order => 1
-    }
-    options = defaults.merge(options)
-    wait_for_javascript_to_finish
-    cncLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Core')]")
-    if cncLink.visible? then
-        begin
-            cncLink.click
-        rescue
-            click_link under
-            cncLink.click
-        end
-    else
-        click_link under
-        cncLink.click
-    end
-
-    a = page.driver.browser.switch_to.alert
-    a.send_keys(name)
-    a.accept
-    click_link name
-    wait_for_javascript_to_finish
-    fill_in 'core_name', :with => name
-    fill_in 'core_abbreviation', :with => options[:abbreviation]
-    fill_in 'core_order', :with => options[:order]
-    first(:xpath, "//input[@id='save_button']").click
-    wait_for_javascript_to_finish
-    click_link name
-  end
-
-  def create_new_service(name, under, options = {})
-    defaults = {
-        :otf => false,
-        :rate => '25.00',
-        :order => 1,
-        :abbreviation => name,
-        :unit_type => 'samples',
-        :quantity_type => 'slides',
-        :unit_factor => 1,
-        :display_date => Time.now,
-        :unit_minimum => 1,
-        :unit_max => 1
-    }
-    options = defaults.merge(options)
-    wait_for_javascript_to_finish
-    cnsLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[text()='Create New Service']")
-    if cnsLink.visible? then
-        begin
-            cnsLink.click
-        rescue
-            click_link under
-            cnsLink.click
-        end
-    else
-        click_link under
-        cnsLink.click
-    end
-
-    fill_in 'service_name', :with => name
-    fill_in 'service_abbreviation', :with => options[:abbreviation]
-    fill_in 'service_order', :with => options[:order]
-    find(:xpath, "//div[text()='Pricing']").click
-    find(:xpath, "//input[@class='add_pricing_map']").click
-    first(:xpath, "//a[@href='#' and contains(text(),'Effective on')]").click
-    first(:xpath, "//th[text()='Display Dates']/following-sibling::td/input[@type='text']").click
-    stDay = (options[:display_date]).strftime("%-d") # Today's Day
-    page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
-    first(:xpath, "//th[text()='Effective Date']/following-sibling::td/input[@type='text']").click
-    page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
-    first(:xpath, "//input[@id='pricing_maps_blank_pricing_map_full_rate']").set(options[:rate])
-    if options[:otf] then 
-        first(:xpath, "//input[@id='otf_checkbox_']").click 
-        wait_for_javascript_to_finish
-        first(:xpath, "//input[@id='otf_quantity_type_']").set(options[:quantity_type])
-        first(:xpath, "//input[@id='otf_unit_type_']").set(options[:unit_type])
-        first(:xpath, "//table[@id='otf_fields_']//input[@id='unit_factor_']").set(options[:unit_factor])
-        first(:xpath, "//input[@id='otf_unit_max_']").set(options[:unit_max])
-    else 
-        first(:xpath, "//input[@id='clinical_quantity_']").set(options[:unit_type]) 
-        first(:xpath, "//input[@id='unit_minimum_']").set(options[:unit_minimum])
-        first(:xpath, "//table[@id='pp_fields_']//input[@id='unit_factor_']").set(options[:unit_factor])
-    end
-    wait_for_javascript_to_finish
-    first(:xpath, "//fieldset[@class='actions']").click
-    first(:xpath, "//input[@id='save_button']").click
-    wait_for_javascript_to_finish
-  end
-
-=begin FactoryGirl Catalog Creation
-  let!(:institution)  {FactoryGirl.create(:institution,id: 53,name: 'Medical University of South Carolina', order: 1,abbreviation: 'MUSC', is_available: 1)}
-  let!(:provider) {FactoryGirl.create(:provider,id: 10,name: 'South Carolina Clinical and Translational Institute (SCTR)',order: 1,css_class: 'blue-provider',parent_id: institution.id,abbreviation: 'SCTR1',process_ssrs: 0,is_available: 1)}
-  let!(:program) {FactoryGirl.create(:program,id:54,type:'Program',name:'Office of Biomedical Informatics',order:1,parent_id:provider.id,abbreviation:'Informatics',process_ssrs:  0,is_available: 1)}
-  let!(:program2) {FactoryGirl.create(:program,id:5,type:'Program',name:'Clinical and Translational Research Center (CTRC)',order:2,parent_id:provider.id,abbreviation:'Informatics',process_ssrs:0,is_available:1)}
-  let!(:core) {FactoryGirl.create(:core,id:33,type:'Core',name:'Clinical Data Warehouse',order:1,parent_id:program.id,abbreviation:'Clinical Data Warehouse')}
-  let!(:core2) {FactoryGirl.create(:core,id:8,type:'Core',name:'Nursing Services',abbreviation:'Nursing Services',order:1,parent_id:program2.id)}
-  let!(:service) {FactoryGirl.create(:service,id:67,name:'MUSC Research Data Request (CDW)',abbreviation:'CDW',order:1,cpt_code:'',organization_id:core.id)}
-  let!(:service2) {FactoryGirl.create(:service,id:16,name:'Breast Milk Collection',abbreviation:'Breast Milk Collection',order:1,cpt_code:'',organization_id:core2.id)}
-  let!(:pricing_setup) { FactoryGirl.create(:pricing_setup, organization_id: program.id, display_date: Time.now - 1.day, federal: 50, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal')}
-  let!(:pricing_setup2) { FactoryGirl.create(:pricing_setup, organization_id: program2.id, display_date: Time.now - 1.day, federal: 50, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal')}
-  let!(:pricing_map) {FactoryGirl.create(:pricing_map,service_id:service.id, unit_type: 'Per Query', unit_factor: 1, is_one_time_fee: 1, display_date: Time.now - 1.day, full_rate: 200, exclude_from_indirect_cost: 0, unit_minimum:1)}
-  let!(:pricing_map2) {FactoryGirl.create(:pricing_map, service_id: service2.id, unit_type: 'Per patient/visit', unit_factor: 1, is_one_time_fee: 0, display_date: Time.now - 1.day, full_rate: 636, exclude_from_indirect_cost: 0, unit_minimum: 1)}
-  let!(:service_provider)    { FactoryGirl.create(:service_provider, organization_id: program.id, identity_id: jug2.id)}
-  let!(:service_provider2)    { FactoryGirl.create(:service_provider, organization_id: program2.id, identity_id: jug2.id)}
-  #let!(:pricing_map2)       { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service2.id, is_one_time_fee: false, display_date: Time.now - 1.day, full_rate: 2000, federal_rate: 3000, units_per_qty_max: 20) }
-=end
-    #after :each do
-    #  wait_for_javascript_to_finish
-    #end
 
   it 'should make you feel happy', :js => true do
  
@@ -386,12 +92,6 @@ describe 'A Happy Test' do
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding status')]")
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Sponsor name')]")
 
-        #should display field_with_errors divs near fields without info
-    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Short Title:*']")
-    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Protocol Title:*']")
-    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Proposal Funding Status:*']")
-    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Sponsor Name:*']")
-
 
     fill_in "study_short_title", :with => "Bob" #fill in short title
     find('.continue_button').click #click continue without Title, Funding Status, Sponsor Name
@@ -404,12 +104,6 @@ describe 'A Happy Test' do
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding status')]")
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Sponsor name')]")
 
-        #should not display field_with_errors divs near field with info
-    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Short Title:*']")
-        #should display field_with_errors divs near fields without info
-    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Protocol Title:*']")
-    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Proposal Funding Status:*']")
-    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Sponsor Name:*']")
 
     fill_in "study_title", :with => "Dole" #fill in title
     find('.continue_button').click #click continue without Funding Status, Sponsor Name
@@ -422,12 +116,6 @@ describe 'A Happy Test' do
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding status')]")
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Sponsor name')]")
 
-        #should not display field_with_errors divs near fields with info
-    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Short Title:*']")
-    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Protocol Title:*']")
-        #should display field_with_errors divs near fields without info
-    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Proposal Funding Status:*']")
-    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Sponsor Name:*']")
 
     fill_in "study_sponsor_name", :with => "Captain Kurt 'Hotdog' Zanzibar" #fill in sponsor name
     find('.continue_button').click #click continue without Funding Status
@@ -440,12 +128,6 @@ describe 'A Happy Test' do
         #should display funding status missing error
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding status')]")
 
-        #should not display field_with_errors divs near fields with info
-    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Short Title:*']")
-    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Protocol Title:*']")
-    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Sponsor Name:*']")
-        #should display field_with_errors divs near field without info
-    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Proposal Funding Status:*']")
 
     select "Funded", :from => "study_funding_status" #select funding status
     find('.continue_button').click #click continue without Funding Source
@@ -459,13 +141,6 @@ describe 'A Happy Test' do
         #should display funding source missing error
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding source')]")
 
-        #should not display field_with_errors divs near fields with info
-    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Short Title:*']")
-    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Protocol Title:*']")
-    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Proposal Funding Status:*']")
-    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Sponsor Name:*']")   
-        #should display field_with_errors divs near field without info
-    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Funding Source:*']") 
      
     select "Federal", :from => "study_funding_source" #select funding source
 
@@ -585,19 +260,19 @@ describe 'A Happy Test' do
     check('visits_1') #1st checkbox ARM 1
     wait_for_javascript_to_finish
     totPerStudy = (arm1UnitPrice * 1 * find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
-    find(:xpath, "//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 per patient total should eq (unitprice * 1 * #patients)
+    find(:xpath, "//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 study total should eq (unitprice * 1 * #patients)
     find(:xpath, "//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm1UnitPrice * 1).round(2)) #ARM1 per patient total should eq (unitprice * 1)
     
     check('visits_4') #3rd checkbox ARM 1
     wait_for_javascript_to_finish
     totPerStudy = (arm1UnitPrice * 2 * find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
-    find(:xpath, "//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 per patient total should eq (unitprice * 2 * #patients)
+    find(:xpath, "//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 study total should eq (unitprice * 2 * #patients)
     find(:xpath, "//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm1UnitPrice * 2).round(2)) #ARM1 per patient total should eq (unitprice * 2)
     
     check('visits_6') #5th checkbox ARM 1
     wait_for_javascript_to_finish
     totPerStudy = (arm1UnitPrice * 3 * find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
-    find(:xpath, "//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 per patient total should eq (unitprice * 3 * #patients)
+    find(:xpath, "//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 study total should eq (unitprice * 3 * #patients)
     find(:xpath, "//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm1UnitPrice * 3).round(2)) #ARM1 per patient total should eq (unitprice * 3)
     
         #set days in increasing order on ARM 2
@@ -610,24 +285,100 @@ describe 'A Happy Test' do
     check('visits_12') #2nd checkbox ARM 2
     wait_for_javascript_to_finish
     totPerStudy = (arm2UnitPrice * 1 * find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
-    find(:xpath, "//td[@class='pp_line_item_study_total total_3_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM2 per patient total should eq (unitprice * 1 * #patients)
+    find(:xpath, "//td[@class='pp_line_item_study_total total_3_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM2 study total should eq (unitprice * 1 * #patients)
     find(:xpath, "//td[@class='pp_line_item_total total_3']").text[1..-1].to_f.should eq((arm2UnitPrice * 1).round(2)) #ARM2 per patient total should eq (unitprice * 1)
 
     check('visits_14') #4th checkbox ARM 2
     wait_for_javascript_to_finish
     totPerStudy = (arm2UnitPrice * 2 * find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
-    find(:xpath, "//td[@class='pp_line_item_study_total total_3_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM2 per patient total should eq (unitprice * 2 * #patients)
+    find(:xpath, "//td[@class='pp_line_item_study_total total_3_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM2 study total should eq (unitprice * 2 * #patients)
     find(:xpath, "//td[@class='pp_line_item_total total_3']").text[1..-1].to_f.should eq((arm2UnitPrice * 2).round(2)) #ARM2 per patient total should eq (unitprice * 2)
 
     first(:xpath, "//input[@class='line_item_quantity']").set("3") #set CDW quantity to 3
     find(:xpath, "//td[contains(@class,'otf_total total')]").click #allow to focus and recalculate
     find(:xpath, "//td[contains(@class,'otf_total total')]").text[1..-1].to_f.should eq((otfUnitPrice*3).round(2)) #otf total should eq (unitprice * 3)
     
+        #**Switch to Quantity and Billing Tab**#
+    click_link("Quantity/Billing Tab")
+    wait_for_javascript_to_finish
+
+        #check totals of ARM 1
+    sumOfQuantities = 0
+    [1,3,4,5,6].each do |n|
+        sumOfQuantities += find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_#{n}_research_billing_qty']").value.to_i
+    end
+    #sleep 300
+    patientsNum = first(:xpath, "//div[@id='ui-tabs-2']//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i
+    totPerStudy = (arm1UnitPrice * sumOfQuantities * patientsNum).round(2)
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 study total should eq (unitprice * sum of quantities * #patients)
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm2UnitPrice * sumOfQuantities).round(2)) #ARM1 per patient total should eq (unitprice * sum of quantities)
+
+
+    find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_3_research_billing_qty']").set(5)#change second visit research quantity to 5
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").click #click off input to refocus and recalculate
+        #recheck totals of ARM 1 with second visit quantity now = 5
+    sumOfQuantities = 0
+    [1,3,4,5,6].each do |n|
+        sumOfQuantities += find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_#{n}_research_billing_qty']").value.to_i
+    end
+    patientsNum = first(:xpath, "//div[@id='ui-tabs-2']//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i
+    totPerStudy = (arm1UnitPrice * sumOfQuantities * patientsNum).round(2)
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 study total should eq (unitprice * sum of quantities * #patients)
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm2UnitPrice * sumOfQuantities).round(2)) #ARM1 per patient total should eq (unitprice * sum of quantities)    
+    
+
+    find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_4_insurance_billing_qty']").set(5)#change third visit insurance quantity to 5, should not change totals
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").click #click off input to refocus and recalculate
+        #recheck totals of ARM 1 with third visit insurance quantity now = 5
+    sumOfQuantities = 0
+    [1,3,4,5,6].each do |n|
+        sumOfQuantities += find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_#{n}_research_billing_qty']").value.to_i
+    end
+    patientsNum = first(:xpath, "//div[@id='ui-tabs-2']//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i
+    totPerStudy = (arm1UnitPrice * sumOfQuantities * patientsNum).round(2)
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 study total should eq (unitprice * sum of quantities * #patients)
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm2UnitPrice * sumOfQuantities).round(2)) #ARM1 per patient total should eq (unitprice * sum of quantities)    
+
+
+    find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_5_effort_billing_qty']").set(5)#change fourth visit effort quantity to 5, should not change totals
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").click #click off input to refocus and recalculate
+        #recheck totals of ARM 1 with fourth visit effort quantity now = 5
+    sumOfQuantities = 0
+    [1,3,4,5,6].each do |n|
+        sumOfQuantities += find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_#{n}_research_billing_qty']").value.to_i
+    end
+    patientsNum = first(:xpath, "//div[@id='ui-tabs-2']//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i
+    totPerStudy = (arm1UnitPrice * sumOfQuantities * patientsNum).round(2)
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 study total should eq (unitprice * sum of quantities * #patients)
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm2UnitPrice * sumOfQuantities).round(2)) #ARM1 per patient total should eq (unitprice * sum of quantities)    
+
+    find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_15_effort_billing_qty']").set(5)#change arm2 fifth visit effort quantity to 5, should not change totals
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_3_per_study']").click #click off input to refocus and recalculate
+        #recheck totals of ARM 2 with fifth visit research quantity now = 5
+    sumOfQuantities = 0
+    [11,12,13,14,15].each do |n|
+        sumOfQuantities += find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_#{n}_research_billing_qty']").value.to_i
+    end
+    patientsNum = first(:xpath, "//div[@id='ui-tabs-2']//th[contains(text(),'ARM 2')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i
+    totPerStudy = (arm1UnitPrice * sumOfQuantities * patientsNum).round(2)
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_3_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM2 study total should eq (unitprice * sum of quantities * #patients)
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_total total_3']").text[1..-1].to_f.should eq((arm2UnitPrice * sumOfQuantities).round(2)) #ARM2 per patient total should eq (unitprice * sum of quantities)    
+
+    first(:xpath, "//div[@id='ui-tabs-2']//input[@class='line_item_quantity']").set("6") #set CDW quantity to 6
+    find(:xpath, "//div[@id='ui-tabs-2']//td[contains(@class,'otf_total total')]").click #allow to focus and recalculate
+    find(:xpath, "//div[@id='ui-tabs-2']//td[contains(@class,'otf_total total')]").text[1..-1].to_f.should eq((otfUnitPrice*6).round(2)) #otf total should eq (unitprice * 6)
+
+
+    arm1TotalPrice = first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f
+    arm2TotalPrice = first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_3_per_study']").text[1..-1].to_f
+    otfTotalPrice = find(:xpath, "//div[@id='ui-tabs-2']//td[contains(@class,'otf_total total')]").text[1..-1].to_f
+
     click_link("Save & Continue")
     wait_for_javascript_to_finish
     #**END Completing Visit Calender ENDß**#
 
     #**Documents page**#
+    #sleep 2400
     #click_link("Add a New Document")
     #all('process_ssr_organization_ids_').each {|a| check(a)}
     #select "Other", :from => "doc_type"
@@ -637,11 +388,18 @@ describe 'A Happy Test' do
     #**END Documents page END**#
 
     #**Review Page**#
+        #Checking Totals... 
+    first(:xpath, "//td[@class='total_1_per_study']").text[1..-1].to_f.should eq(arm1TotalPrice)
+    first(:xpath, "//td[@class='total_3_per_study']").text[1..-1].to_f.should eq(arm2TotalPrice)
+    first(:xpath, "//td[text()='MUSC Research Data Request (CDW)']/following-sibling::td[not(@colspan='6') and not(@class='your_cost')]").text[1..-1].to_f.should eq(otfTotalPrice)
+    first(:xpath, "//td[@id='grand_total']").text[1..-1].to_f.should eq(arm1TotalPrice+arm2TotalPrice+otfTotalPrice)
+
     click_link("Submit to Start Services")
     wait_for_javascript_to_finish
     #**END Review Page END**#
 
     #**Submission Confirmation Page**#
+    #sleep 2400
     click_link("Go to SPARC Request User Portal")
     wait_for_javascript_to_finish
     #**END Submission Confirmation Page END**#

@@ -101,12 +101,6 @@ describe 'A Happy Test' do
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding status')]")
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Sponsor name')]")
 
-        #should display field_with_errors divs near fields without info
-    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Short Title:*']")
-    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Protocol Title:*']")
-    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Proposal Funding Status:*']")
-    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Sponsor Name:*']")
-
 
     fill_in "study_short_title", :with => "Bob" #fill in short title
     find('.continue_button').click #click continue without Title, Funding Status, Sponsor Name
@@ -119,12 +113,6 @@ describe 'A Happy Test' do
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding status')]")
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Sponsor name')]")
 
-        #should not display field_with_errors divs near field with info
-    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Short Title:*']")
-        #should display field_with_errors divs near fields without info
-    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Protocol Title:*']")
-    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Proposal Funding Status:*']")
-    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Sponsor Name:*']")
 
     fill_in "study_title", :with => "Dole" #fill in title
     find('.continue_button').click #click continue without Funding Status, Sponsor Name
@@ -137,12 +125,6 @@ describe 'A Happy Test' do
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding status')]")
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Sponsor name')]")
 
-        #should not display field_with_errors divs near fields with info
-    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Short Title:*']")
-    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Protocol Title:*']")
-        #should display field_with_errors divs near fields without info
-    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Proposal Funding Status:*']")
-    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Sponsor Name:*']")
 
     fill_in "study_sponsor_name", :with => "Captain Kurt 'Hotdog' Zanzibar" #fill in sponsor name
     find('.continue_button').click #click continue without Funding Status
@@ -155,12 +137,6 @@ describe 'A Happy Test' do
         #should display funding status missing error
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding status')]")
 
-        #should not display field_with_errors divs near fields with info
-    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Short Title:*']")
-    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Protocol Title:*']")
-    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Sponsor Name:*']")
-        #should display field_with_errors divs near field without info
-    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Proposal Funding Status:*']")
 
     select "Funded", :from => "study_funding_status" #select funding status
     find('.continue_button').click #click continue without Funding Source
@@ -174,13 +150,6 @@ describe 'A Happy Test' do
         #should display funding source missing error
     page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding source')]")
 
-        #should not display field_with_errors divs near fields with info
-    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Short Title:*']")
-    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Protocol Title:*']")
-    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Proposal Funding Status:*']")
-    #page.should_not have_xpath("//div[@class='field_with_errors']/label[text()='Sponsor Name:*']")   
-        #should display field_with_errors divs near field without info
-    #page.should have_xpath("//div[@class='field_with_errors']/label[text()='Funding Source:*']") 
      
     select "Federal", :from => "study_funding_source" #select funding source
 
@@ -300,19 +269,19 @@ describe 'A Happy Test' do
     check('visits_1') #1st checkbox ARM 1
     wait_for_javascript_to_finish
     totPerStudy = (arm1UnitPrice * 1 * find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
-    find(:xpath, "//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 per patient total should eq (unitprice * 1 * #patients)
+    find(:xpath, "//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 study total should eq (unitprice * 1 * #patients)
     find(:xpath, "//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm1UnitPrice * 1).round(2)) #ARM1 per patient total should eq (unitprice * 1)
     
     check('visits_4') #3rd checkbox ARM 1
     wait_for_javascript_to_finish
     totPerStudy = (arm1UnitPrice * 2 * find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
-    find(:xpath, "//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 per patient total should eq (unitprice * 2 * #patients)
+    find(:xpath, "//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 study total should eq (unitprice * 2 * #patients)
     find(:xpath, "//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm1UnitPrice * 2).round(2)) #ARM1 per patient total should eq (unitprice * 2)
     
     check('visits_6') #5th checkbox ARM 1
     wait_for_javascript_to_finish
     totPerStudy = (arm1UnitPrice * 3 * find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
-    find(:xpath, "//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 per patient total should eq (unitprice * 3 * #patients)
+    find(:xpath, "//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 study total should eq (unitprice * 3 * #patients)
     find(:xpath, "//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm1UnitPrice * 3).round(2)) #ARM1 per patient total should eq (unitprice * 3)
     
         #set days in increasing order on ARM 2
@@ -325,13 +294,13 @@ describe 'A Happy Test' do
     check('visits_12') #2nd checkbox ARM 2
     wait_for_javascript_to_finish
     totPerStudy = (arm2UnitPrice * 1 * find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
-    find(:xpath, "//td[@class='pp_line_item_study_total total_3_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM2 per patient total should eq (unitprice * 1 * #patients)
+    find(:xpath, "//td[@class='pp_line_item_study_total total_3_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM2 study total should eq (unitprice * 1 * #patients)
     find(:xpath, "//td[@class='pp_line_item_total total_3']").text[1..-1].to_f.should eq((arm2UnitPrice * 1).round(2)) #ARM2 per patient total should eq (unitprice * 1)
 
     check('visits_14') #4th checkbox ARM 2
     wait_for_javascript_to_finish
     totPerStudy = (arm2UnitPrice * 2 * find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
-    find(:xpath, "//td[@class='pp_line_item_study_total total_3_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM2 per patient total should eq (unitprice * 2 * #patients)
+    find(:xpath, "//td[@class='pp_line_item_study_total total_3_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM2 study total should eq (unitprice * 2 * #patients)
     find(:xpath, "//td[@class='pp_line_item_total total_3']").text[1..-1].to_f.should eq((arm2UnitPrice * 2).round(2)) #ARM2 per patient total should eq (unitprice * 2)
 
     first(:xpath, "//input[@class='line_item_quantity']").set("3") #set CDW quantity to 3
@@ -350,7 +319,7 @@ describe 'A Happy Test' do
     #sleep 300
     patientsNum = first(:xpath, "//div[@id='ui-tabs-2']//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i
     totPerStudy = (arm1UnitPrice * sumOfQuantities * patientsNum).round(2)
-    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 per patient total should eq (unitprice * sum of quantities * #patients)
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 study total should eq (unitprice * sum of quantities * #patients)
     first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm2UnitPrice * sumOfQuantities).round(2)) #ARM1 per patient total should eq (unitprice * sum of quantities)
 
 
@@ -363,7 +332,7 @@ describe 'A Happy Test' do
     end
     patientsNum = first(:xpath, "//div[@id='ui-tabs-2']//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i
     totPerStudy = (arm1UnitPrice * sumOfQuantities * patientsNum).round(2)
-    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 per patient total should eq (unitprice * sum of quantities * #patients)
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 study total should eq (unitprice * sum of quantities * #patients)
     first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm2UnitPrice * sumOfQuantities).round(2)) #ARM1 per patient total should eq (unitprice * sum of quantities)    
     
 
@@ -376,7 +345,7 @@ describe 'A Happy Test' do
     end
     patientsNum = first(:xpath, "//div[@id='ui-tabs-2']//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i
     totPerStudy = (arm1UnitPrice * sumOfQuantities * patientsNum).round(2)
-    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 per patient total should eq (unitprice * sum of quantities * #patients)
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 study total should eq (unitprice * sum of quantities * #patients)
     first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm2UnitPrice * sumOfQuantities).round(2)) #ARM1 per patient total should eq (unitprice * sum of quantities)    
 
 
@@ -389,7 +358,7 @@ describe 'A Happy Test' do
     end
     patientsNum = first(:xpath, "//div[@id='ui-tabs-2']//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i
     totPerStudy = (arm1UnitPrice * sumOfQuantities * patientsNum).round(2)
-    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 per patient total should eq (unitprice * sum of quantities * #patients)
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 study total should eq (unitprice * sum of quantities * #patients)
     first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm2UnitPrice * sumOfQuantities).round(2)) #ARM1 per patient total should eq (unitprice * sum of quantities)    
 
     find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_15_effort_billing_qty']").set(5)#change arm2 fifth visit effort quantity to 5, should not change totals
@@ -401,19 +370,24 @@ describe 'A Happy Test' do
     end
     patientsNum = first(:xpath, "//div[@id='ui-tabs-2']//th[contains(text(),'ARM 2')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i
     totPerStudy = (arm1UnitPrice * sumOfQuantities * patientsNum).round(2)
-    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_3_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM2 per patient total should eq (unitprice * sum of quantities * #patients)
+    first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_3_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM2 study total should eq (unitprice * sum of quantities * #patients)
     first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_total total_3']").text[1..-1].to_f.should eq((arm2UnitPrice * sumOfQuantities).round(2)) #ARM2 per patient total should eq (unitprice * sum of quantities)    
 
     first(:xpath, "//div[@id='ui-tabs-2']//input[@class='line_item_quantity']").set("6") #set CDW quantity to 6
     find(:xpath, "//div[@id='ui-tabs-2']//td[contains(@class,'otf_total total')]").click #allow to focus and recalculate
     find(:xpath, "//div[@id='ui-tabs-2']//td[contains(@class,'otf_total total')]").text[1..-1].to_f.should eq((otfUnitPrice*6).round(2)) #otf total should eq (unitprice * 6)
 
-    #sleep 2400
+
+    arm1TotalPrice = first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f
+    arm2TotalPrice = first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_3_per_study']").text[1..-1].to_f
+    otfTotalPrice = find(:xpath, "//div[@id='ui-tabs-2']//td[contains(@class,'otf_total total')]").text[1..-1].to_f
+
     click_link("Save & Continue")
     wait_for_javascript_to_finish
     #**END Completing Visit Calender ENDß**#
 
     #**Documents page**#
+    #sleep 2400
     #click_link("Add a New Document")
     #all('process_ssr_organization_ids_').each {|a| check(a)}
     #select "Other", :from => "doc_type"
@@ -423,11 +397,18 @@ describe 'A Happy Test' do
     #**END Documents page END**#
 
     #**Review Page**#
+        #Checking Totals... 
+    first(:xpath, "//td[@class='total_1_per_study']").text[1..-1].to_f.should eq(arm1TotalPrice)
+    first(:xpath, "//td[@class='total_3_per_study']").text[1..-1].to_f.should eq(arm2TotalPrice)
+    first(:xpath, "//td[text()='MUSC Research Data Request (CDW)']/following-sibling::td[not(@colspan='6') and not(@class='your_cost')]").text[1..-1].to_f.should eq(otfTotalPrice)
+    first(:xpath, "//td[@id='grand_total']").text[1..-1].to_f.should eq(arm1TotalPrice+arm2TotalPrice+otfTotalPrice)
+
     click_link("Submit to Start Services")
     wait_for_javascript_to_finish
     #**END Review Page END**#
 
     #**Submission Confirmation Page**#
+    #sleep 2400
     click_link("Go to SPARC Request User Portal")
     wait_for_javascript_to_finish
     #**END Submission Confirmation Page END**#

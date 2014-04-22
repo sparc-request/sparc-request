@@ -6,7 +6,7 @@ unless "<%= @errors %>" == ""
   alert "<%= @errors %>"
 
 if "<%= @errors %>" == ""
-  unless "<%= @portal %>" == "true"
+  unless "<%= @portal %>"
     if <%= @line_item.service.displayed_pricing_map.unit_factor %> > 1
       "<%= update_per_subject_subtotals(@line_items_visit) %>"
 

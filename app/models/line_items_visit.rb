@@ -12,9 +12,7 @@ class LineItemsVisit < ActiveRecord::Base
   attr_accessible :hidden
 
   after_save do
-    if self.arm
-      self.arm.set_arm_edited_flag_on_subjects
-    end
+    self.arm.set_arm_edited_flag_on_subjects
   end
 
   # Find a LineItemsVisit for the given arm and line item.  If it does

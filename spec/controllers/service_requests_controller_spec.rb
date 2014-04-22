@@ -288,9 +288,7 @@ describe ServiceRequestsController do
       it 'should increment next_ssr_id' do
         service_request.protocol.update_attribute(:next_ssr_id, 42)
         service_request.sub_service_requests.each { |ssr| ssr.destroy }
-        ssr = FactoryGirl.create(
-            :sub_service_request,
-            service_request_id: service_request.id)
+        ssr = FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id)
         session[:service_request_id] = service_request.id
         get :save_and_exit, :id => service_request.id
         service_request.protocol.reload
@@ -301,14 +299,8 @@ describe ServiceRequestsController do
         service_request.protocol.update_attribute(:next_ssr_id, 42)
 
         service_request.sub_service_requests.each { |ssr| ssr.destroy }
-        ssr1 = FactoryGirl.create(
-            :sub_service_request,
-            service_request_id: service_request.id,
-            ssr_id: nil)
-        ssr2 = FactoryGirl.create(
-            :sub_service_request,
-            service_request_id: service_request.id,
-            ssr_id: nil)
+        ssr1 = FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, ssr_id: nil, organization_id: core.id)
+        ssr2 = FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, ssr_id: nil, organization_id: core.id)
 
         session[:service_request_id] = service_request.id
         get :save_and_exit, :id => service_request.id
@@ -327,10 +319,7 @@ describe ServiceRequestsController do
         service_request.protocol.update_attribute(:next_ssr_id, 10042)
 
         service_request.sub_service_requests.each { |ssr| ssr.destroy }
-        ssr1 = FactoryGirl.create(
-            :sub_service_request,
-            service_request_id: service_request.id,
-            ssr_id: nil)
+        ssr1 = FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, ssr_id: nil, organization_id: core.id)
 
         session[:service_request_id] = service_request.id
         get :save_and_exit, :id => service_request.id

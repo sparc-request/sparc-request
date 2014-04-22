@@ -3,17 +3,18 @@ require 'spec_helper'
 describe Portal::AdminController, :type => :controller do
   stub_portal_controller
 
+  let_there_be_lane
+  let_there_be_j
+  build_service_request_with_project
+
   let!(:identity)             { FactoryGirl.create(:identity) }
-  let!(:core)                 { FactoryGirl.create(:core, parent_id: nil) }
   let!(:service_provider)     { FactoryGirl.create(:service_provider, identity_id: identity.id, organization_id: core.id, hold_emails: false) }
   let!(:message) { ToastMessage.create(from: 'CmdrTaco@slashdot.org', to: 'esr@fsf.org', message: 'happy birthday!') }
 
   before :each do
-    @project = Protocol.new(FactoryGirl.attributes_for(:protocol))
-    @project.save(:validate => false)
-    @service_request = ServiceRequest.new(FactoryGirl.attributes_for(:service_request, :protocol_id => @project.id))
+    @service_request = ServiceRequest.new(FactoryGirl.attributes_for(:service_request, :protocol_id => project.id))
     @service_request.save(:validate => false)
-    @project_role = FactoryGirl.create(:project_role, protocol_id: @project.id, identity_id: identity.id, project_rights: "approve", role: "primary_pi") 
+    @project_role = FactoryGirl.create(:project_role, protocol_id: project.id, identity_id: identity.id, project_rights: "approve", role: "primary_pi") 
     @sub_service_request1 = FactoryGirl.create(:sub_service_request, status: 'yo_mama', service_request_id: @service_request.id, organization_id: core.id ) 
     @sub_service_request2 = FactoryGirl.create(:sub_service_request, status: 'his_mama', service_request_id: @service_request.id, organization_id: core.id ) 
   end

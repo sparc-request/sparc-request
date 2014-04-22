@@ -22,8 +22,6 @@ describe Arm do
 
   #   it 'should populate its subjects if it has a sub service request in cwf status' do
   #     arm = service_request.protocol.create_arm(subject_count: 5, visit_count: 5, name: 'CWF ARM')
-  #     puts arm.inspect
-  #     puts arm.subjects.inspect
   #     arm.subjects.count.should eq(5)
   #   end
 
@@ -161,10 +159,6 @@ describe Arm do
         arm1.update_attributes(subject_count: 42)
         arm1.create_line_items_visit(@line_item3)
         arm1.line_items_visits.count.should eq 2
-        puts '#' * 50
-        puts service_request.status
-        puts '#' * 50
-        
         arm1.line_items_visits.last.subject_count.should eq(arm1.subject_count)
       end
 

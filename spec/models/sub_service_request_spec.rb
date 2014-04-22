@@ -65,7 +65,7 @@ describe 'SubServiceRequest' do
 
     describe 'fulfillment line item manipulation' do
 
-      let!(:sub_service_request2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id) }
+      let!(:sub_service_request2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
  
       context 'updating a line item' do
 

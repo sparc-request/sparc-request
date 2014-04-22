@@ -188,6 +188,7 @@ module CapybaraCatalogManager
   def create_new_core(name,under, options = {})
     defaults = {
         :abbreviation => name,
+        :is_available => true,
         :order => 1
     }
     options = defaults.merge(options)
@@ -213,6 +214,12 @@ module CapybaraCatalogManager
     fill_in 'core_name', :with => name
     fill_in 'core_abbreviation', :with => options[:abbreviation]
     fill_in 'core_order', :with => options[:order]
+    hideAvailableCheck = first(:xpath, "//input[@id='core_is_available']")
+    if options[:is_available] and hideAvailableCheck.checked? then #if desired available and hide is checked then uncheck
+        hideAvailableCheck.click
+    elsif not options[:is_available] and not hideAvailableCheck.checked? then #if not desired available and hide is not checked then check
+        hideAvailableCheck.click
+    end
     first(:xpath, "//input[@id='save_button']").click
     wait_for_javascript_to_finish
     click_link name
@@ -223,6 +230,7 @@ module CapybaraCatalogManager
   def create_new_service(name, under, options = {})
     defaults = {
         :otf => false,
+        :is_available => true,
         :rate => '25.00',
         :order => 1,
         :abbreviation => name,
@@ -251,6 +259,12 @@ module CapybaraCatalogManager
     fill_in 'service_name', :with => name
     fill_in 'service_abbreviation', :with => options[:abbreviation]
     fill_in 'service_order', :with => options[:order]
+    hideAvailableCheck = first(:xpath, "//input[@id='service_is_available']")
+    if options[:is_available] and hideAvailableCheck.checked? then #if desired available and hide is checked then uncheck
+        hideAvailableCheck.click
+    elsif not options[:is_available] and not hideAvailableCheck.checked? then #if not desired available and hide is not checked then check
+        hideAvailableCheck.click
+    end
     find(:xpath, "//div[text()='Pricing']").click
     find(:xpath, "//input[@class='add_pricing_map']").click
     first(:xpath, "//a[@href='#' and contains(text(),'Effective on')]").click

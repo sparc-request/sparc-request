@@ -27,6 +27,19 @@ describe 'Catalog Manager' do
     create_new_service 'SuperService 1', 'Office of Biomedical Informatics',{:otf => false, :rate => '500000.00', :unit_minimum => 5}
     create_new_service 'SuperService 2', 'Clinical and Translational Research Center (CTRC)',{:otf => true, :rate => '500000.00', :unit_minimum => 5}
     
+    create_new_institution 'invisibleInstitution', :is_available => false
+    create_new_institution 'Institute of Invisibility'
+    create_new_provider 'invisibleProv', 'Institute of Invisibility', :is_available => false
+    create_new_provider 'Provider of Invisibility', 'Institute of Invisibility'
+    create_new_program 'invisibleProg', 'Provider of Invisibility', :is_available => false
+    create_new_program 'Program of Invisibility','Provider of Invisibility'
+    create_new_core 'invisibleCore','Program of Invisibility', :is_available => false
+    create_new_core 'Core of Invisibility','Program of Invisibility'
+    create_new_service 'invisibleService', 'Core of Invisibility', :is_available => false
+    create_new_service 'Service of Visibility','Core of Invisibility'
+
+
+
     visit root_path
     #sleep 30
 
@@ -42,7 +55,18 @@ describe 'Catalog Manager' do
     wait_for_javascript_to_finish
     page.should have_xpath("//a[text()='SuperService 2']")
     page.should have_xpath("//a[text()='Breast Milk Collection']")
+    click_link("Medical University of South Carolina")
 
+    page.should_not have_xpath("//a[text()='invisibleInstitution']")
+    click_link('Institute of Invisibility')
+    page.should_not have_xpath("//a[text()='invisibleProv']")
+    click_link('Provider of Invisibility')
+    page.should_not have_xpath("//a[text()='invisibleProg']")
+    click_link('Program of Invisibility')
+    page.should_not have_xpath("//a[text()='invisibleCore']")
+    click_link('Core of Invisibility')
+    page.should_not have_xpath("//a[text()='invisibleService']")
+    page.should have_xpath("//a[text()='Service of Visibility']")
     #sleep 120
   end  
 end

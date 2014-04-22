@@ -7,8 +7,19 @@ describe 'A Happy Test' do
   fake_login_for_each_test
 
   it 'should make you feel happy', :js => true do
- 
     visit catalog_manager_root_path
+
+    create_new_institution 'invisibleInstitution', :is_available => false
+    create_new_institution 'Institute of Invisibility', :order =>2
+    create_new_provider 'invisibleProv', 'Institute of Invisibility', :is_available => false
+    create_new_provider 'Provider of Invisibility', 'Institute of Invisibility'
+    create_new_program 'invisibleProg', 'Provider of Invisibility', :is_available => false
+    create_new_program 'Program of Invisibility','Provider of Invisibility'
+    create_new_core 'invisibleCore','Program of Invisibility', :is_available => false
+    create_new_core 'Core of Invisibility','Program of Invisibility'
+    create_new_service 'invisibleService', 'Core of Invisibility', :is_available => false
+    create_new_service 'Service of Visibility','Core of Invisibility'
+
     create_new_institution 'Medical University of South Carolina', {:abbreviation => 'MUSC'}
     create_new_provider 'South Carolina Clinical and Translational Institute (SCTR)', 'Medical University of South Carolina', {:abbreviation => 'SCTR1'}
     create_new_program 'Office of Biomedical Informatics', 'South Carolina Clinical and Translational Institute (SCTR)', {:abbreviation => 'Informatics'}
@@ -17,8 +28,23 @@ describe 'A Happy Test' do
     create_new_core 'Nursing Services', 'Clinical and Translational Research Center (CTRC)'
     create_new_service 'MUSC Research Data Request (CDW)', 'Clinical Data Warehouse', {:otf => true, :unit_type => 'Per Query', :unit_factor => 1, :rate => '2.00', :unit_minimum => 1}
     create_new_service 'Breast Milk Collection', 'Nursing Services', {:otf => false, :unit_type => 'Per patient/visit', :unit_factor => 1, :rate => '6.36', :unit_minimum => 1}
-    #sleep 60
     visit root_path
+
+    #**Check visibility conditions**#
+    click_link('Institute of Invisibility')
+    wait_for_javascript_to_finish
+    page.should_not have_xpath("//a[text()='invisibleInstitution']")
+    page.should_not have_xpath("//a[text()='invisibleProv']")
+    click_link('Provider of Invisibility')
+    wait_for_javascript_to_finish
+    first(:xpath, "//a[text()='Program of Invisibility']").click
+#    click_link('Program of Invisibility')
+    wait_for_javascript_to_finish
+    page.should_not have_xpath("//a[text()='invisibleProg']")
+    page.should_not have_xpath("//a[text()='invisibleCore']") 
+    page.should_not have_xpath("//a[text()='invisibleService']")
+    page.should have_xpath("//a[text()='Service of Visibility']")
+    #**END Check visibility conditions END**#
 
     #**Submit a service request**#
     page.should_not have_xpath("//div[@id='submit_error' and @style!='display: none']")
@@ -27,6 +53,8 @@ describe 'A Happy Test' do
     page.should have_xpath("//div[@id='submit_error' and @style!='display: none']") #should have error dialog
     click_button('Ok') 
 
+    click_link('Medical University of South Carolina')
+    wait_for_javascript_to_finish
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
     find(".provider-name").should have_text("South Carolina Clinical and Translational Institute (SCTR)")
 
@@ -258,18 +286,21 @@ describe 'A Happy Test' do
     find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//input[@id='day' and @class='visit_day position_5']").set("5")
 
     check('visits_1') #1st checkbox ARM 1
+    find(:xpath, "//td[contains(@class,'otf_total total')]").click #allow to focus and recalculate
     wait_for_javascript_to_finish
     totPerStudy = (arm1UnitPrice * 1 * find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
     find(:xpath, "//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 study total should eq (unitprice * 1 * #patients)
     find(:xpath, "//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm1UnitPrice * 1).round(2)) #ARM1 per patient total should eq (unitprice * 1)
     
     check('visits_4') #3rd checkbox ARM 1
+    find(:xpath, "//td[contains(@class,'otf_total total')]").click #allow to focus and recalculate
     wait_for_javascript_to_finish
     totPerStudy = (arm1UnitPrice * 2 * find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
     find(:xpath, "//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 study total should eq (unitprice * 2 * #patients)
     find(:xpath, "//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm1UnitPrice * 2).round(2)) #ARM1 per patient total should eq (unitprice * 2)
     
     check('visits_6') #5th checkbox ARM 1
+    find(:xpath, "//td[contains(@class,'otf_total total')]").click #allow to focus and recalculate
     wait_for_javascript_to_finish
     totPerStudy = (arm1UnitPrice * 3 * find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
     find(:xpath, "//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 study total should eq (unitprice * 3 * #patients)
@@ -283,12 +314,14 @@ describe 'A Happy Test' do
     find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//input[@id='day' and @class='visit_day position_5']").set("5")
       
     check('visits_12') #2nd checkbox ARM 2
+    find(:xpath, "//td[contains(@class,'otf_total total')]").click #allow to focus and recalculate
     wait_for_javascript_to_finish
     totPerStudy = (arm2UnitPrice * 1 * find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
     find(:xpath, "//td[@class='pp_line_item_study_total total_3_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM2 study total should eq (unitprice * 1 * #patients)
     find(:xpath, "//td[@class='pp_line_item_total total_3']").text[1..-1].to_f.should eq((arm2UnitPrice * 1).round(2)) #ARM2 per patient total should eq (unitprice * 1)
 
     check('visits_14') #4th checkbox ARM 2
+    find(:xpath, "//td[contains(@class,'otf_total total')]").click #allow to focus and recalculate
     wait_for_javascript_to_finish
     totPerStudy = (arm2UnitPrice * 2 * find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
     find(:xpath, "//td[@class='pp_line_item_study_total total_3_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM2 study total should eq (unitprice * 2 * #patients)
@@ -316,6 +349,7 @@ describe 'A Happy Test' do
 
     find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_3_research_billing_qty']").set(5)#change second visit research quantity to 5
     first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").click #click off input to refocus and recalculate
+    wait_for_javascript_to_finish
         #recheck totals of ARM 1 with second visit quantity now = 5
     sumOfQuantities = 0
     [1,3,4,5,6].each do |n|
@@ -329,6 +363,7 @@ describe 'A Happy Test' do
 
     find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_4_insurance_billing_qty']").set(5)#change third visit insurance quantity to 5, should not change totals
     first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").click #click off input to refocus and recalculate
+    wait_for_javascript_to_finish
         #recheck totals of ARM 1 with third visit insurance quantity now = 5
     sumOfQuantities = 0
     [1,3,4,5,6].each do |n|
@@ -342,6 +377,7 @@ describe 'A Happy Test' do
 
     find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_5_effort_billing_qty']").set(5)#change fourth visit effort quantity to 5, should not change totals
     first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").click #click off input to refocus and recalculate
+    wait_for_javascript_to_finish
         #recheck totals of ARM 1 with fourth visit effort quantity now = 5
     sumOfQuantities = 0
     [1,3,4,5,6].each do |n|
@@ -354,6 +390,7 @@ describe 'A Happy Test' do
 
     find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_15_effort_billing_qty']").set(5)#change arm2 fifth visit effort quantity to 5, should not change totals
     first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_3_per_study']").click #click off input to refocus and recalculate
+    wait_for_javascript_to_finish
         #recheck totals of ARM 2 with fifth visit research quantity now = 5
     sumOfQuantities = 0
     [11,12,13,14,15].each do |n|
@@ -410,7 +447,6 @@ describe 'A Happy Test' do
     #a.accept
 
     #sleep 15
-
 
 
   end

@@ -298,7 +298,7 @@ class Identity < ActiveRecord::Base
       orgs << org.all_children
     end
 
-    ##In case orgs is empty, return an empty array, instead of crapping itself.
+    ##In case orgs is empty, return an empty array, instead of crashing.
     orgs.flatten!.compact.uniq rescue return []
    
     orgs.each do |org|

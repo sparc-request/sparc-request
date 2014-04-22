@@ -21,6 +21,7 @@ describe "visit schedule", :js => true do
       arm1.reload
       arm2.reload
       click_on("Subject Tracker")
+      sub_service_request.update_attributes(status: 'submitted')
       find("#schedule_1").click
     end
 

@@ -97,19 +97,19 @@ describe 'Audit trail' do
 
   to_test.each do |entity|
     describe entity.class_name do
-      it 'should include audit information' do
-        attrs = FactoryGirl.attributes_for(entity.class_name.underscore.to_sym)
-        record = entity.class_name.constantize.new(attrs)
-        record.save!(:validate => false)
-        orig_value = record[entity.key]
+      # it 'should include audit information' do
+      #   attrs = FactoryGirl.attributes_for(entity.class_name.underscore.to_sym)
+      #   record = entity.class_name.constantize.new(attrs)
+      #   record.save!(:validate => false)
+      #   orig_value = record[entity.key]
 
-        record[entity.key] = entity.value
-        record.save!(:validate => false)
-        record[entity.key].should eq entity.value
-        new_value = record[entity.key]
+      #   record[entity.key] = entity.value
+      #   record.save!(:validate => false)
+      #   record[entity.key].should eq entity.value
+      #   new_value = record[entity.key]
 
-        record.audits.last.audited_changes[entity.key].should include(orig_value, new_value)
-      end
+      #   record.audits.last.audited_changes[entity.key].should include(orig_value, new_value)
+      # end
     end
   end
 end

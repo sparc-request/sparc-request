@@ -2,16 +2,16 @@ require 'spec_helper'
 
 describe LineItemsVisit do
 
-  it 'should be possible to create a line items visit' do
-    line_items_visit = LineItemsVisit.create!()
-    line_items_visit.arm.should eq nil
-    line_items_visit.line_item.should eq nil
-    line_items_visit.visits.should eq [ ]
-  end
-
   let_there_be_lane
   let_there_be_j
   build_service_request_with_study
+
+  it 'should be possible to create a line items visit' do
+    arm = FactoryGirl.create(:arm)
+    line_items_visit = FactoryGirl.create(:line_items_visit, arm_id: arm.id)
+    line_items_visit.line_item.should eq nil
+    line_items_visit.visits.should eq [ ]
+  end
 
   describe "methods" do
 

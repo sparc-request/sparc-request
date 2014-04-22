@@ -17,12 +17,15 @@ feature 'create new core', :js => true do
       click_link('Par for the Core')
 
       # General Information fields
-      sleep 20
+      wait_for_javascript_to_finish
       
       fill_in 'core_abbreviation', :with => 'PTP'
       fill_in 'core_order', :with => '2'
-      fill_in 'core_description', :with => 'Description'
       # Subsidy Information fields
+      within '#pricing' do
+        find('.legend').click
+        wait_for_javascript_to_finish
+      end
       fill_in 'core_subsidy_map_attributes_max_percentage', :with => '55.5'
       fill_in 'core_subsidy_map_attributes_max_dollar_cap', :with => '65'
 

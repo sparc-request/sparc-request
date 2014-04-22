@@ -120,29 +120,6 @@ describe ServiceCalendarsController do
       line_items_visit.subject_count.should eq 240
     end
 
-    it 'should set quantity and research billing quantity on the visit if on the template tab and there is no line item, research billing quantity is 0, and checked is true' do
-      LineItem.any_instance.stub_chain(:service, :displayed_pricing_map, :unit_minimum) { 120 }
-
-      visit = arm1.visits[0]
-      visit.update_attributes(:research_billing_qty => 0)
-
-      session[:service_request_id] = service_request.id
-
-      get :update, {
-        :format              => :js,
-        :service_request_id  => service_request.id,
-        :line_item           => nil,
-        :visit               => visit.id,
-        :tab                 => 'template',
-        :checked             => 'true',
-      }.with_indifferent_access
-
-      visit.reload
-
-      visit.quantity.should eq 120
-      visit.research_billing_qty.should eq 120
-    end
-
     it 'should set all the quantities to 0 if on the template tab and there is no line item and checked is false' do
       visit = arm1.visits[0]
       visit.update_attributes(:research_billing_qty => 0)
@@ -308,7 +285,7 @@ describe ServiceCalendarsController do
 
       visit.reload
 
-      visit.quantity.should eq(8 + 17 + 100)
+      visit.quantity.should eq(8 + 17 + 42)
     end
   end
 end

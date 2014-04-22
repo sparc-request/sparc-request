@@ -5,18 +5,11 @@ def add_visits_to_arm_line_item(arm, line_item, n=arm.visit_count)
   line_items_visit = LineItemsVisit.for(arm, line_item)
 
   n.times do |index|
-    FactoryGirl.create(
-        :visit_group,
-        arm_id:      arm.id,
-        day:         index, )
+    FactoryGirl.create(:visit_group, arm_id: arm.id, day: index )
   end
 
   n.times do |index|
-     FactoryGirl.create(
-        :visit,
-        quantity:            0,
-        line_items_visit_id: line_items_visit.id,
-        visit_group_id:      arm.visit_groups[index].id)
+     FactoryGirl.create(:visit, quantity: 0, line_items_visit_id: line_items_visit.id, visit_group_id: arm.visit_groups[index].id)
   end
 end
 
@@ -295,9 +288,7 @@ describe ServiceRequestsController do
       it 'should increment next_ssr_id' do
         service_request.protocol.update_attribute(:next_ssr_id, 42)
         service_request.sub_service_requests.each { |ssr| ssr.destroy }
-        ssr = FactoryGirl.create(
-            :sub_service_request,
-            service_request_id: service_request.id)
+        ssr = FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id)
         session[:service_request_id] = service_request.id
         get :save_and_exit, :id => service_request.id
         service_request.protocol.reload
@@ -308,14 +299,8 @@ describe ServiceRequestsController do
         service_request.protocol.update_attribute(:next_ssr_id, 42)
 
         service_request.sub_service_requests.each { |ssr| ssr.destroy }
-        ssr1 = FactoryGirl.create(
-            :sub_service_request,
-            service_request_id: service_request.id,
-            ssr_id: nil)
-        ssr2 = FactoryGirl.create(
-            :sub_service_request,
-            service_request_id: service_request.id,
-            ssr_id: nil)
+        ssr1 = FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, ssr_id: nil, organization_id: core.id)
+        ssr2 = FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, ssr_id: nil, organization_id: core.id)
 
         session[:service_request_id] = service_request.id
         get :save_and_exit, :id => service_request.id
@@ -334,10 +319,7 @@ describe ServiceRequestsController do
         service_request.protocol.update_attribute(:next_ssr_id, 10042)
 
         service_request.sub_service_requests.each { |ssr| ssr.destroy }
-        ssr1 = FactoryGirl.create(
-            :sub_service_request,
-            service_request_id: service_request.id,
-            ssr_id: nil)
+        ssr1 = FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, ssr_id: nil, organization_id: core.id)
 
         session[:service_request_id] = service_request.id
         get :save_and_exit, :id => service_request.id
@@ -837,25 +819,19 @@ describe ServiceRequestsController do
   context('calendar methods') do
     let!(:service1) {
       service = FactoryGirl.create(:service, pricing_map_count: 1)
-      service.pricing_maps[0].update_attributes(
-          display_date: Date.today,
-          is_one_time_fee: false)
+      service.pricing_maps[0].update_attributes(display_date: Date.today, is_one_time_fee: false)
       service
     }
 
     let!(:service2) {
       service = FactoryGirl.create(:service, pricing_map_count: 1)
-      service.pricing_maps[0].update_attributes(
-          display_date: Date.today,
-          is_one_time_fee: false)
+      service.pricing_maps[0].update_attributes(display_date: Date.today, is_one_time_fee: false)
       service
     }
 
     let!(:service3) {
       service = FactoryGirl.create(:service, pricing_map_count: 1)
-      service.pricing_maps[0].update_attributes(
-          display_date: Date.today,
-          is_one_time_fee: false)
+      service.pricing_maps[0].update_attributes(display_date: Date.today, is_one_time_fee: false)
       service
     }
 
@@ -863,9 +839,9 @@ describe ServiceRequestsController do
     let!(:pricing_map2) { service2.pricing_maps[0] }
     let!(:pricing_map3) { service3.pricing_maps[0] }
 
-    let!(:line_item1) { FactoryGirl.create(:line_item, service_id: service1.id, service_request_id: service_request.id) }
-    let!(:line_item2) { FactoryGirl.create(:line_item, service_id: service2.id, service_request_id: service_request.id) }
-    let!(:line_item3) { FactoryGirl.create(:line_item, service_id: service3.id, service_request_id: service_request.id) }
+    let!(:line_item1) { FactoryGirl.create(:line_item, service_id: service1.id, service_request_id: service_request.id, sub_service_request_id: sub_service_request.id) }
+    let!(:line_item2) { FactoryGirl.create(:line_item, service_id: service2.id, service_request_id: service_request.id, sub_service_request_id: sub_service_request.id) }
+    let!(:line_item3) { FactoryGirl.create(:line_item, service_id: service3.id, service_request_id: service_request.id, sub_service_request_id: sub_service_request.id) }
 
     build_project
     build_arms

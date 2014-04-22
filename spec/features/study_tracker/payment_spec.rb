@@ -55,7 +55,7 @@ describe "payments", js: true do
           find(".amount_invoiced input").should have_value("500.00")
           find(".amount_received input").should have_value("400.00")
           find(".date_received input").should have_value("6/14/2013")
-          find(".payment_method select").should have_value("IIT")
+          find(".payment_method select").should have_value("Check")
           find(".details textarea").should have_value("Some details")
         end
       end

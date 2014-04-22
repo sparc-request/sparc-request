@@ -2,7 +2,7 @@ require 'spec_helper'
 require './app/controllers/identities_controller'
 
 describe IdentitiesController do
-  let!(:service_request) { FactoryGirl.create(:service_request) }
+  let!(:service_request) { FactoryGirl.create_without_validation(:service_request) }
   let!(:identity) { FactoryGirl.create(:identity) }
 
   let!(:study) {

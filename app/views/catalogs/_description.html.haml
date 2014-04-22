@@ -6,7 +6,7 @@
   - if organization.type == "Program"
     - unless organization.services.empty?
       .program-services
-        - organization.services.order('`order`').each do |service|
+        - organization.services.order('`order`, `name`').each do |service|
           = display_service_in_catalog service, service_request
     %br
     - unless organization.cores.empty?
@@ -16,7 +16,7 @@
           %h3{:class => "#{css_class(organization)} core-tab"}
             = link_to core.name, "#"
           .core_view
-            - core.services.order('`order`').each do |service|
+            - core.services.order('`order`, `name`').each do |service|
               = display_service_in_catalog service, service_request
 
 - else

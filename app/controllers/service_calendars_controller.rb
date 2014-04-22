@@ -5,23 +5,12 @@ class ServiceCalendarsController < ApplicationController
 
   def table
     #use session so we know what page to show when tabs are switched
-    arm_id = params[:arm_id] if params[:arm_id]
-    @arm = Arm.find arm_id if arm_id
-    page = params[:page] if params[:page]
-    session[:service_calendar_pages] = params[:pages] if params[:pages]
-    session[:service_calendar_pages][arm_id] = page if page && arm_id
     @tab = params[:tab]
     @portal = params[:portal]
     @study_tracker = params[:study_tracker] == "true"
-    @pages = {}
     @protocol = @service_request.protocol
-    @service_requests = (@tab == 'calendar') ? @service_request.protocol.service_requests : [@service_request]
-    @service_requests.each do |service_request|
-      service_request.arms.each do |arm|
-        new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-        @pages[arm.id] = @service_request.set_visit_page new_page, arm
-      end
-    end
+
+    setup_calendar_pages
 
     # TODO: This needs to be changed for one time fees page in arms
     @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition {|x| x.is_one_time_fee?} if @sub_service_request
@@ -216,14 +205,13 @@ class ServiceCalendarsController < ApplicationController
   def setup_calendar_pages
     @pages = {}
     page = params[:page] if params[:page]
+    arm_id = params[:arm_id] if params[:arm_id]
+    @arm = Arm.find(arm_id) if arm_id
     session[:service_calendar_pages] = params[:pages] if params[:pages]
     session[:service_calendar_pages][arm_id] = page if page && arm_id
-    @service_requests = (@tab == 'calendar') ? @service_request.protocol.service_requests : [@service_request]
-    @service_requests.each do |service_request|
-      service_request.arms.each do |arm|
-        new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-        @pages[arm.id] = @service_request.set_visit_page new_page, arm
-      end
+    @service_request.arms.each do |arm|
+      new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
+      @pages[arm.id] = @service_request.set_visit_page new_page, arm
     end
   end
 

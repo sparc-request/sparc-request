@@ -23,8 +23,9 @@ class StudyTracker::SubServiceRequestsController < StudyTracker::BaseController
 
     @study_tracker = true
 
-    # "Preload" the intial view of the payments tab with a blank form row
+    # "Preload" the intial view of the payments and study level charges tabs with a blank form row
     @sub_service_request.payments.build if @sub_service_request.payments.blank?
+    build_fulfillments
 
     # get cwf organizations
     @cwf_organizations = Organization.get_cwf_organizations
@@ -62,6 +63,12 @@ class StudyTracker::SubServiceRequestsController < StudyTracker::BaseController
     @sub_service_request ||= SubServiceRequest.find(params[:id])
     unless @sub_service_request.in_work_fulfillment?
       redirect_to root_path
+    end
+  end
+
+  def build_fulfillments
+    @sub_service_request.one_time_fee_line_items.each do |line_item|
+      line_item.fulfillments.build if line_item.fulfillments.blank?
     end
   end
 end

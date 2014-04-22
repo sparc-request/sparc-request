@@ -30,12 +30,14 @@ class SubServiceRequest < ActiveRecord::Base
   attr_accessible :imaging_approved
   attr_accessible :src_approved
   attr_accessible :requester_contacted_date
+  attr_accessible :line_items_attributes
   attr_accessible :subsidy_attributes
   attr_accessible :payments_attributes
   attr_accessible :in_work_fulfillment
   attr_accessible :routing
 
   accepts_nested_attributes_for :subsidy
+  accepts_nested_attributes_for :line_items, allow_destroy: true
   accepts_nested_attributes_for :payments, allow_destroy: true
 
   after_save :work_fulfillment
@@ -126,7 +128,6 @@ class SubServiceRequest < ActiveRecord::Base
 
   def per_patient_per_visit_line_items
     line_items = LineItem.where(:sub_service_request_id => self.id).includes(:service)
-    puts self.line_items
     line_items.select {|li| !li.service.is_one_time_fee?}    
   end
   

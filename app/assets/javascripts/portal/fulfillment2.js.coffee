@@ -106,7 +106,6 @@ $(document).ready ->
     
 
   put_attribute = (id, klass, data, callback) ->
-    console.log data
     callback ?= -> return null;
     $.ajax
       type: 'PUT'
@@ -447,7 +446,6 @@ $(document).ready ->
   )
 
   $(document).on('change', '#subsidy_pi_contribution', ->
-    console.log "Here"
     pi_contribution = parseFloat($('#subsidy_pi_contribution').val()) * 100
     total = $('#direct_cost_total').data('direct_cost_total')
     subsidy = total - pi_contribution

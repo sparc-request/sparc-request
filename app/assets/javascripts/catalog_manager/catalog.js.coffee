@@ -497,6 +497,15 @@ $ ->
     $(this).children('fieldset').show('blind')
     $(this).addClass('active')
 
-  $('#service_tag_list_epic').live 'click', ->
+  $(document).on('change', 'input[id*="_tag_list_epic"]', ->
     $('#epic_wrapper').toggle()
+    $('#epic_wrapper input').val('')
+    $("#epic_wrapper input[type='checkbox']").attr('checked', false)
+  )
+
+  $(document).on('change', 'input[id*="_tag_list_clinical_work_fulfillment"]', ->
+    $('#cwf_wrapper').toggle()
+    $('#cwf_wrapper input').val('')
+    $("#cwf_wrapper input[type='checkbox']").attr('checked', false)
+  )
 

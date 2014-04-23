@@ -65,7 +65,7 @@
 
     %br
 
-    - if @core.tag_list.include? "clinical work fulfillment"
+    #cwf_wrapper{:style => @core.tag_list.include?("clinical work fulfillment") ? "display: block;" : "display: none;"}
       %fieldset#cwf_fieldset.parent
         .legend= t(:organization_form)[:clinical_work_fulfillment]
         %fieldset.single_fieldset

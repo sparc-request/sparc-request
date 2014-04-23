@@ -8,10 +8,6 @@ class Fulfillment < ActiveRecord::Base
   attr_accessible :notes
   attr_accessible :time
   attr_accessible :date
-  attr_accessible :requested_r_quantity
-  attr_accessible :requested_t_quantity
-  attr_accessible :fulfilled_r_quantity
-  attr_accessible :fulfilled_t_quantity
 
   default_scope :order => 'fulfillments.id ASC'
 

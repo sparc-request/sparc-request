@@ -110,6 +110,8 @@ namespace :data do
                             :organization_id => org.id,
                             :is_available => true)
 
+        service.tag_list = "epic" if row['Send to Epic'] == 'Y'
+
         pricing_map = service.pricing_maps.build(
                                               :full_rate => Service.dollars_to_cents(row['Service Rate'].to_s.strip.gsub("$", "").gsub(",", "")),
                                               :corporate_rate => Service.dollars_to_cents(row['Corporate Rate'].to_s.strip.gsub("$", "").gsub(",", "")),

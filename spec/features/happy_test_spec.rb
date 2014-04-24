@@ -30,21 +30,7 @@ describe 'A Happy Test' do
     create_new_service 'Breast Milk Collection', 'Nursing Services', {:otf => false, :unit_type => 'Per patient/visit', :unit_factor => 1, :rate => '6.36', :unit_minimum => 1}
     visit root_path
 
-    #**Check visibility conditions**#
-    click_link('Institute of Invisibility')
-    wait_for_javascript_to_finish
-    page.should_not have_xpath("//a[text()='invisibleInstitution']")
-    page.should_not have_xpath("//a[text()='invisibleProv']")
-    click_link('Provider of Invisibility')
-    wait_for_javascript_to_finish
-    first(:xpath, "//a[text()='Program of Invisibility']").click
-#    click_link('Program of Invisibility')
-    wait_for_javascript_to_finish
-    page.should_not have_xpath("//a[text()='invisibleProg']")
-    page.should_not have_xpath("//a[text()='invisibleCore']") 
-    page.should_not have_xpath("//a[text()='invisibleService']")
-    page.should have_xpath("//a[text()='Service of Visibility']")
-    #**END Check visibility conditions END**#
+
 
     #**Submit a service request**#
     page.should_not have_xpath("//div[@id='submit_error' and @style!='display: none']")
@@ -53,7 +39,7 @@ describe 'A Happy Test' do
     page.should have_xpath("//div[@id='submit_error' and @style!='display: none']") #should have error dialog
     click_button('Ok') 
 
-    click_link('Medical University of South Carolina')
+    #click_link('Medical University of South Carolina')
     wait_for_javascript_to_finish
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
     find(".provider-name").should have_text("South Carolina Clinical and Translational Institute (SCTR)")
@@ -90,6 +76,24 @@ describe 'A Happy Test' do
     click_button("Add") #add last service a second time
     wait_for_javascript_to_finish
     find(:xpath, "//input[@id='line_item_count']")['value'].should eq('2') #should only display 2 services
+
+        #**Check visibility conditions**#
+    #sleep 360
+    click_link('Institute of Invisibility')
+    wait_for_javascript_to_finish
+    page.should_not have_xpath("//a[text()='invisibleInstitution']")
+    page.should_not have_xpath("//a[text()='invisibleProv']")
+    click_link('Provider of Invisibility')
+    wait_for_javascript_to_finish
+    click_link('Program of Invisibility')#For some reason, this doesn't work
+    click_link('Program of Invisibility')#If you only click it one time.
+    click_link('Program of Invisibility')#Selenium issue-not sparc I believe.
+    wait_for_javascript_to_finish
+    page.should_not have_xpath("//a[text()='invisibleProg']")
+    page.should_not have_xpath("//a[text()='invisibleCore']") 
+    page.should_not have_xpath("//a[text()='invisibleService']")
+    page.should have_xpath("//a[text()='Service of Visibility']")
+        #**END Check visibility conditions END**#
 
     find('.submit-request-button').click
     wait_for_javascript_to_finish

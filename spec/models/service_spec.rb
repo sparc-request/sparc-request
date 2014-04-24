@@ -349,14 +349,16 @@ describe 'Service' do
   end
 
   describe "available surveys" do
-    let!(:program) { FactoryGirl.create(:program)}
-    let!(:core)    { FactoryGirl.create(:core, parent_id: program.id) }
-    let!(:service) { FactoryGirl.create(:service, organization_id: core.id) }
+    # let!(:program) { FactoryGirl.create(:program)}
+    # let!(:core)    { FactoryGirl.create(:core, parent_id: program.id) }
+    # let!(:service) { FactoryGirl.create(:service, organization_id: core.id) }
     let!(:survey)  { FactoryGirl.create(:survey, title: "System Satisfaction survey", description: nil, access_code: "system-satisfaction-survey", reference_identifier: nil, survey_version: 0) }
     let!(:survey1) { FactoryGirl.create(:survey, title: "System Satisfaction survey", description: nil, access_code: "system-satisfaction-survey", reference_identifier: nil, survey_version: 1) }
     let!(:survey2) { FactoryGirl.create(:survey, title: "System Satisfaction survey", description: nil, access_code: "system-satisfaction-survey", reference_identifier: nil, survey_version: 2) }
 
     it "should return an array of available surveys for the service" do
+      service.update_attributes(organization_id: core.id)
+      service.reload
       # should find at the program level if this is the only one
       program.associated_surveys.create :survey_id => survey2.id
       service.available_surveys.should include(survey2)

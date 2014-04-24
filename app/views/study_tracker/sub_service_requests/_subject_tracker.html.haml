@@ -1,5 +1,11 @@
 #subjects
+  %br
+  %input.search-all-subjects{:type => 'text', :placeholder => "Search Subjects"}
+  %br
+
   = nested_form_for @protocol, :url => study_tracker_protocol_path(@protocol) do |f|
+    - search_names = []
+    - search_mrns = []
     = hidden_field_tag :sub_service_request_id, @sub_service_request.id
     / = instructions_for 'subjects'
     - if @service_request.errors.any?
@@ -25,7 +31,9 @@
               %th.subject_ethnicity= t(:study_tracker)[:subject_tracker][:ethnicity]
           %tbody
             = arm_form.fields_for :subjects, wrapper: false do |subject_form|
-              %tr.fields{:class => "subject_id_#{subject_form.try(:object).try(:id)}"}
+              - search_names << {:value => subject_form.try(:object).try(:name), :id => pretty_tag(subject_form.try(:object).try(:name))}
+              - search_mrns << {:value => subject_form.try(:object).try(:mrn), :id => subject_form.try(:object).try(:mrn)}
+              %tr{:class => "fields subject #{subject_form.try(:object).try(:mrn)} #{pretty_tag(subject_form.try(:object).try(:name))} subject_id_#{subject_form.try(:object).try(:id)}"}
                 %td.remove
                   - if subject_form.object.calendar
                     %a{:href => study_tracker_sub_service_request_calendar_path(@sub_service_request, subject_form.object.calendar), :style => "margin:0px;", :title => t(:study_tracker)[:subject_tracker][:schedule]}
@@ -41,6 +49,8 @@
                 %td.subject_ethnicity.text-center= subject_form.select :ethnicity, options_for_select(SUBJECT_ETHNICITIES, subject_form.try(:object).try(:ethnicity)), :include_blank => "--Race--", id: "subject_#{subject_form.try(:object).try(:id)}_ethnicity"
         %p= arm_form.link_to_add t(:study_tracker)[:subject_tracker][:add], :subjects, data: { target: "#subjects_list_#{arm_form.object.id} tbody" }, :class => "ui-button ui-state-default ui-button-text-only", :id => "subject_tracker_add"
     %p{:style => "text-align:center;"}= f.submit t(:study_tracker)[:save], :class => "ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;"
+
+    %input.values_test{:value => (search_names + search_mrns).uniq.to_json, :type => 'hidden'}
 
 
 

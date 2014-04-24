@@ -36,12 +36,12 @@ $(document).ready ->
       "No": -> 
         survey_offered = true
         $(this).dialog("close")
-        $('#submit_services, #get_a_quote').unbind('click')
-        $('#submit_services, #get_a_quote').click ->
+        $('#submit_services1, #submit_services2, #get_a_quote').unbind('click')
+        $('#submit_services1, #submit_services2, #get_a_quote').click ->
           return false
         window.location.href = route_to
 
-  $('#submit_services, #get_a_quote').click (event)->
+  $('#submit_services1, #submit_services2, #get_a_quote').click (event)->
     event.preventDefault()
     route_to = $(this).attr('href')
 

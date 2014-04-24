@@ -38,27 +38,27 @@ describe CatalogManager::CatalogHelper do
     }
     
     it 'should return a organization node for js.tree' do
-      helper.node(institution).should eq "<a href=\"#\" cid=\"#{institution.id}\" class=\"\" object_type=\"institution\">Medical University of South Carolina</a>"
+      helper.node(institution).should eq "<a href=\"#\" cid=\"#{institution.id}\" class=\"institution\" object_type=\"institution\">Medical University of South Carolina</a>"
     end
 
     it 'should return a organization node for js.tree' do
-      helper.node(institution, false).should eq "<a href=\"#\" cid=\"#{institution.id}\" class=\"disabled_node\" object_type=\"institution\">Medical University of South Carolina</a>"
+      helper.node(institution, false).should eq "<a href=\"#\" cid=\"#{institution.id}\" class=\"institution disabled_node\" object_type=\"institution\">Medical University of South Carolina</a>"
     end
 
     it 'should return a organization node for js.tree' do
-      helper.node(provider).should eq "<a href=\"#\" cid=\"#{provider.id}\" class=\"\" object_type=\"provider\">South Carolina Clinical and Translational Institute (SCTR)</a>"
+      helper.node(provider).should eq "<a href=\"#\" cid=\"#{provider.id}\" class=\"provider\" object_type=\"provider\">South Carolina Clinical and Translational Institute (SCTR)</a>"
     end
 
     it 'should return a organization node for js.tree' do
-      helper.node(provider, false).should eq "<a href=\"#\" cid=\"#{provider.id}\" class=\"disabled_node\" object_type=\"provider\">South Carolina Clinical and Translational Institute (SCTR)</a>"
+      helper.node(provider, false).should eq "<a href=\"#\" cid=\"#{provider.id}\" class=\"provider disabled_node\" object_type=\"provider\">South Carolina Clinical and Translational Institute (SCTR)</a>"
     end
 
     it 'should return a organization node for js.tree' do
-      helper.node(program).should eq "<a href=\"#\" cid=\"#{program.id}\" class=\"\" object_type=\"program\">Office of Biomedical Informatics</a>"
+      helper.node(program).should eq "<a href=\"#\" cid=\"#{program.id}\" class=\"program\" object_type=\"program\">Office of Biomedical Informatics</a>"
     end    
 
     it 'should return a organization node for js.tree' do
-      helper.node(program, false).should eq "<a href=\"#\" cid=\"#{program.id}\" class=\"disabled_node\" object_type=\"program\">Office of Biomedical Informatics</a>"
+      helper.node(program, false).should eq "<a href=\"#\" cid=\"#{program.id}\" class=\"program disabled_node\" object_type=\"program\">Office of Biomedical Informatics</a>"
     end
   end
   

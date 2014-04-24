@@ -103,6 +103,7 @@ def build_service_request
     program.tag_list.add("ctrc")
     program.save
     service_request.update_attribute(:service_requester_id, Identity.find_by_ldap_uid("jug2").id)
+    service_request.update_attribute(:status, 'draft')
   end
 end
 

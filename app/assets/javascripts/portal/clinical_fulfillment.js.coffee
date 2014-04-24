@@ -258,6 +258,26 @@ $(document).ready ->
       val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2')
     return val
 
+
+  ####Subject search logic
+  if $('.search-all-subjects').length > 0
+    $('.search-all-subjects').autocomplete({
+      source: JSON.parse($('.values_test').val())
+      select: (event, ui) ->
+        $('.subject').hide()
+        $(".#{ui.item.id}").show()
+      })
+
+  $('.search-all-subjects').focus ->
+    $(this).val('')
+
+  $('.search-all-subjects').live('keyup', ->
+    $('.subject').show() if $(this).val() is ''
+  ).live('click', ->
+    $('.subject').show() if $(this).val() is ''
+  )
+
+
   #Research project summary report start and end date
   $("#rps_start_date").datepicker(dateFormat: "yy-mm-dd")
   $("#rps_end_date").datepicker(dateFormat: "yy-mm-dd")
@@ -278,10 +298,4 @@ $(document).ready ->
     href = href + "?start_date=#{start_date}&end_date=#{end_date}"
     $("#research_project_summary_report_date_range").dialog("close")
     window.location.href = href
-
-    
-
-
-
-
 

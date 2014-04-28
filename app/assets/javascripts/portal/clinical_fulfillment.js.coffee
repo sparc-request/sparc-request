@@ -299,3 +299,18 @@ $(document).ready ->
     $("#research_project_summary_report_date_range").dialog("close")
     window.location.href = href
 
+  #Methods for hiding and displaying the fulfillment headers in the Study Level Charges tab
+  $(document).on 'click', 'a.remove_nested_fields', ->
+    otf_id = $(this).data('otf_id')
+    nested_field_count = $(this).closest('#cwf_one_time_fee_table').find('a.remove_nested_fields:visible').length
+    if nested_field_count == 0
+      $(".fulfillments_#{otf_id}").toggle()
+
+  #Because of how nested forms work, the data attribute needs to be given here to get the correct id
+  $(document).on 'click', 'a.add_nested_fields', ->
+    otf_id = $(this).data('otf_id')
+    $(this).closest('#cwf_one_time_fee_table').find('a.remove_nested_fields').attr('data-otf_id', otf_id)
+
+  #End of Study Charges methods
+
+

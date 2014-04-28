@@ -36,7 +36,7 @@ describe 'A Happy Test' do
     removeServices
     enterProtocolDates
     readdServices
-    chooseArmPreferences
+    chooseArmPreferences("5","5")
     arm1TotalPrice,arm2TotalPrice,otfTotalPrice = completeVisitCalender
     documentsPage
     reviewPage(arm1TotalPrice,arm2TotalPrice,otfTotalPrice)

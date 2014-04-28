@@ -217,17 +217,17 @@ module CapybaraProper
     end
 
 
-    def chooseArmPreferences()
+    def chooseArmPreferences(subjects, visits)
             #edit Arm 1
-        fill_in "study_arms_attributes_0_subject_count", :with => "5" # 5 subjects
-        fill_in "study_arms_attributes_0_visit_count", :with => "5" # 5 visits
+        fill_in "study_arms_attributes_0_subject_count", :with => subjects # of subjects
+        fill_in "study_arms_attributes_0_visit_count", :with => visits # of visits
         wait_for_javascript_to_finish
             #add Arm 2
         click_link("Add Arm")
         wait_for_javascript_to_finish
         find(:xpath, "//div[@class='add-arm']/div/div[@class='arm-cell']/input[@type!='hidden']").set("ARM 2") #name arm2
-        find(:xpath, "//div[@class='add-arm']/div/div[@class='arm-cell skinny_fields']/input[contains(@name,'subject_count')]").set("5") # 5 subjects
-        find(:xpath, "//div[@class='add-arm']/div/div[@class='arm-cell skinny_fields']/input[contains(@name,'visit_count')]").set("5") # 5 visits
+        find(:xpath, "//div[@class='add-arm']/div/div[@class='arm-cell skinny_fields']/input[contains(@name,'subject_count')]").set(subjects) # 5 subjects
+        find(:xpath, "//div[@class='add-arm']/div/div[@class='arm-cell skinny_fields']/input[contains(@name,'visit_count')]").set(visits) # 5 visits
         wait_for_javascript_to_finish
 
         click_link("Save & Continue")
@@ -310,7 +310,7 @@ module CapybaraProper
         [1,3,4,5,6].each do |n|
             sumOfQuantities += find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_#{n}_research_billing_qty']").value.to_i
         end
-        #sleep 300
+        wait_for_javascript_to_finish
         patientsNum = first(:xpath, "//div[@id='ui-tabs-2']//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i
         totPerStudy = (arm1UnitPrice * sumOfQuantities * patientsNum).round(2)
         first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 study total should eq (unitprice * sum of quantities * #patients)
@@ -324,6 +324,7 @@ module CapybaraProper
         [1,3,4,5,6].each do |n|
             sumOfQuantities += find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_#{n}_research_billing_qty']").value.to_i
         end
+        wait_for_javascript_to_finish
         patientsNum = first(:xpath, "//div[@id='ui-tabs-2']//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i
         totPerStudy = (arm1UnitPrice * sumOfQuantities * patientsNum).round(2)
         first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 study total should eq (unitprice * sum of quantities * #patients)
@@ -337,6 +338,7 @@ module CapybaraProper
         [1,3,4,5,6].each do |n|
             sumOfQuantities += find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_#{n}_research_billing_qty']").value.to_i
         end
+        wait_for_javascript_to_finish
         patientsNum = first(:xpath, "//div[@id='ui-tabs-2']//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i
         totPerStudy = (arm1UnitPrice * sumOfQuantities * patientsNum).round(2)
         first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 study total should eq (unitprice * sum of quantities * #patients)
@@ -350,6 +352,7 @@ module CapybaraProper
         [1,3,4,5,6].each do |n|
             sumOfQuantities += find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_#{n}_research_billing_qty']").value.to_i
         end
+        wait_for_javascript_to_finish
         patientsNum = first(:xpath, "//div[@id='ui-tabs-2']//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i
         totPerStudy = (arm1UnitPrice * sumOfQuantities * patientsNum).round(2)
         first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 study total should eq (unitprice * sum of quantities * #patients)
@@ -362,6 +365,7 @@ module CapybaraProper
         [11,12,13,14,15].each do |n|
             sumOfQuantities += find(:xpath, "//div[@id='ui-tabs-2']//input[@id='visits_#{n}_research_billing_qty']").value.to_i
         end
+        wait_for_javascript_to_finish
         patientsNum = first(:xpath, "//div[@id='ui-tabs-2']//th[contains(text(),'ARM 2')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i
         totPerStudy = (arm1UnitPrice * sumOfQuantities * patientsNum).round(2)
         first(:xpath, "//div[@id='ui-tabs-2']//td[@class='pp_line_item_study_total total_3_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM2 study total should eq (unitprice * sum of quantities * #patients)
@@ -407,6 +411,10 @@ module CapybaraProper
 
         click_link("Submit to Start Services")
         wait_for_javascript_to_finish
+        if have_xpath("//div[@aria-describedby='participate_in_survey' and @display!='none']") then
+            first(:xpath, "//button/span[text()='No']").click
+            wait_for_javascript_to_finish
+        end
         #**END Review Page END**#        
     end
 

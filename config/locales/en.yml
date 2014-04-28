@@ -818,7 +818,7 @@ en:
       delete: "Delete Subsidy"
       link: "Add a Subsidy"
     services:
-      header: "Services"
+      header: "Service"
       no_visits:
         header: "Non Per-Patient/Per-Visit"
         no_requests: "There are no non per-patient/per-visit requests."
@@ -833,7 +833,7 @@ en:
         in_process: "In Process"
         complete: "Complete"
         delete: "Delete"
-        date: "Date"
+        date: "Fulfillment Dates"
         timeframe: "Timeframe"
         time: "Time"
         notes: "Notes"

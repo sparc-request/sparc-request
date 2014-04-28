@@ -1,5 +1,6 @@
 require 'spec_helper'
 include CapybaraCatalogManager
+include CapybaraProper
 
 
 describe 'A Happy Test' do

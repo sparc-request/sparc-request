@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140328131723) do
+ActiveRecord::Schema.define(:version => 20140429174401) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -295,6 +295,7 @@ ActiveRecord::Schema.define(:version => 20140328131723) do
     t.datetime "updated_at",          :null => false
     t.datetime "deleted_at"
     t.boolean  "approval_pending"
+    t.string   "nct_number"
   end
 
   add_index "human_subjects_info", ["protocol_id"], :name => "index_human_subjects_info_on_protocol_id"
@@ -879,11 +880,12 @@ ActiveRecord::Schema.define(:version => 20140328131723) do
 
   create_table "subsidies", :force => true do |t|
     t.integer  "pi_contribution"
-    t.datetime "created_at",             :null => false
-    t.datetime "updated_at",             :null => false
+    t.datetime "created_at",                              :null => false
+    t.datetime "updated_at",                              :null => false
     t.datetime "deleted_at"
     t.boolean  "overridden"
     t.integer  "sub_service_request_id"
+    t.float    "admin_percent_subsidy",  :default => 0.0
   end
 
   add_index "subsidies", ["sub_service_request_id"], :name => "index_subsidies_on_sub_service_request_id"

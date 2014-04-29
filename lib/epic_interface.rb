@@ -155,6 +155,7 @@ class EpicInterface
         xml.text study.brief_description
 
         emit_project_roles(xml, study)
+        emit_nct_number(xml, study)
         emit_irb_number(xml, study)
         emit_visits(xml, study)
         emit_procedures_and_encounters(xml, study)
@@ -178,6 +179,7 @@ class EpicInterface
         xml.text study.brief_description
 
         emit_project_roles(xml, study)
+        emit_nct_number(xml, study)
         emit_irb_number(xml, study)
 
       }
@@ -205,9 +207,25 @@ class EpicInterface
     end
   end
 
+  def emit_nct_number(xml, study)
+    nct_number = study.human_subjects_info.try(:nct_number)
+
+    if !nct_number.blank? then
+      xml.subjectOf(typeCode: 'SUBJ') {
+        xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
+          xml.code(code: 'NCT')
+          xml.value(
+            'xsi:type' => 'ST',
+            value: nct_number)
+        }
+      }
+    end
+  end
+
   def emit_irb_number(xml, study)
     irb_number = study.human_subjects_info.try(:pro_number)
     irb_number = study.human_subjects_info.try(:hr_number) if irb_number.blank?
+
     if !irb_number.blank? then
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {

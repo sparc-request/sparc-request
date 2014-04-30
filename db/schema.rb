@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140328131723) do
+ActiveRecord::Schema.define(:version => 20140424124647) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -272,13 +272,13 @@ ActiveRecord::Schema.define(:version => 20140328131723) do
     t.text     "notes"
     t.string   "time"
     t.datetime "date"
-    t.datetime "created_at",           :null => false
-    t.datetime "updated_at",           :null => false
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
     t.datetime "deleted_at"
-    t.integer  "requested_r_quantity"
-    t.integer  "requested_t_quantity"
-    t.integer  "fulfilled_r_quantity"
-    t.integer  "fulfilled_t_quantity"
+    t.string   "unit_type"
+    t.string   "quantity_type"
+    t.integer  "quantity"
+    t.integer  "unit_quantity"
   end
 
   add_index "fulfillments", ["line_item_id"], :name => "index_fulfillments_on_line_item_id"
@@ -794,11 +794,11 @@ ActiveRecord::Schema.define(:version => 20140328131723) do
     t.string   "charge_code"
     t.string   "revenue_code"
     t.integer  "organization_id"
-    t.datetime "created_at",                                                            :null => false
-    t.datetime "updated_at",                                                            :null => false
+    t.datetime "created_at",                                         :null => false
+    t.datetime "updated_at",                                         :null => false
     t.datetime "deleted_at"
     t.string   "cdm_code"
-    t.boolean  "send_to_epic",                                       :default => false
+    t.boolean  "send_to_epic"
   end
 
   add_index "services", ["is_available"], :name => "index_services_on_is_available"
@@ -879,11 +879,12 @@ ActiveRecord::Schema.define(:version => 20140328131723) do
 
   create_table "subsidies", :force => true do |t|
     t.integer  "pi_contribution"
-    t.datetime "created_at",             :null => false
-    t.datetime "updated_at",             :null => false
+    t.datetime "created_at",                              :null => false
+    t.datetime "updated_at",                              :null => false
     t.datetime "deleted_at"
     t.boolean  "overridden"
     t.integer  "sub_service_request_id"
+    t.float    "admin_percent_subsidy",  :default => 0.0
   end
 
   add_index "subsidies", ["sub_service_request_id"], :name => "index_subsidies_on_sub_service_request_id"

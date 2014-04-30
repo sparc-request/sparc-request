@@ -1,4 +1,4 @@
-#cwf_one_time_fee_table
+.cwf_one_time_fee_service
   table
     border-collapse:collapse
     width: 100%
@@ -9,8 +9,8 @@
     tr
       height: 40px
       th.top
-        vertical-align: bottom 
         border: 1px solid #ccc
+        font-size: 1.2em
       th.bottom
         vertical-align: bottom 
       td
@@ -26,9 +26,7 @@
 
 .cwf_otf_service
   width: 250px
-  font-weight: bold
   font-size: 1em
-  text-decoration: underline
 
 .remove_nested_fields.cwf_fulfillments
   display: block
@@ -46,3 +44,16 @@
 
   &:hover 
     text-decoration: underline
+
+.service_tr td
+  background-color: #CCC
+  font-weight: bold
+  font-size: 1.1em
+
+.cwf_one_time_fee_service table tr.fulfillment_fields
+  height: 23px
+  th
+    padding: 0px
+
+tr.fields td
+  background-color: #EEE

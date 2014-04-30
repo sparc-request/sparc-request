@@ -7,7 +7,7 @@ class Portal::ProtocolsController < Portal::BaseController
     #@projects = Project.remove_projects_due_to_permission(@projects, @user)
 
     # params[:default_project] = '0f6a4d750fd369ff4ae409373000ba69'
-    if params[:default_protocol]
+    if params[:default_protocol] && @protocols.map(&:id).include?(params[:default_protocol])
       protocol = @protocols.select{ |p| p.id == params[:default_protocol].to_i}[0]
       @protocols.delete(protocol)
       @protocols.insert(0, protocol)

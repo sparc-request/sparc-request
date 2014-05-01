@@ -45,7 +45,7 @@
                       = subsidy_fields.text_field :pi_contribution, :value => (Service.cents_to_dollars(subsidy.pi_contribution.to_s) if not subsidy.pi_contribution.blank?), :"data-id" => subsidy.sub_service_request_id, :"data-max_dollar" => organization.subsidy_map.max_dollar_cap, :"data-max_percent" => organization.subsidy_map.max_percentage, :class => "pi-contribution ssr_#{sub_service_request.id}", :disabled => (subsidy.overridden or (direct_cost_total == 0.0)) ? true : false
                       = t("subsidy_page.table.amount_of_funding")
 
-              %td{:class => "subsidy_percent_#{sub_service_request.id}"}= subsidy_fields.text_field :admin_percent_subsidy, :value => calculate_subsidy_percentage(direct_cost_total, pi_contribution), :disabled => true
+              %td{:class => "subsidy_percent_#{sub_service_request.id}"}= subsidy_fields.text_field :admin_percent_subsidy, :value => calculate_subsidy_percentage(direct_cost_total, pi_contribution), :disabled => true, :style => 'width:35px;'
   %br
   .additional-funding
     = t("subsidy_page.request_additional")

@@ -52,7 +52,7 @@
 
       %br
 
-      - if @service.tag_list.include? "epic"
+      #epic_wrapper{:style => @service.tag_list.include?("epic") ? "display: block;" : "display: none;"}
         %fieldset#epic_fieldset.parent
           .legend= t(:organization_form)[:epic_info]
           %fieldset.single_fieldset
@@ -66,8 +66,8 @@
               %tr
                 %th= f.label :send_to_epic, t(:organization_form)[:send_to_epic]
                 %td= f.check_box :send_to_epic
-
         %br
+
 
       %fieldset#pricing.parent
         .legend= t(:organization_form)[:pricing]

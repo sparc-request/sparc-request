@@ -65,7 +65,7 @@
 
     %br
 
-    - if @core.tag_list.include? "clinical work fulfillment"
+    #cwf_wrapper{:style => @core.tag_list.include?("clinical work fulfillment") ? "display: block;" : "display: none;"}
       %fieldset#cwf_fieldset.parent
         .legend= t(:organization_form)[:clinical_work_fulfillment]
         %fieldset.single_fieldset
@@ -75,7 +75,7 @@
               %td= f.check_box :show_in_cwf
             %tr.cwf.position_field{:style => @core.show_in_cwf ? "" : "display:none;"}
               %th= t(:organization_form)[:position_in_cwf]
-              %td= f.text_field :position_in_cwf
+              %td= f.text_field :position_in_cwf, :class => "cwf_clear"
             %tr
               %th= t(:organization_form)[:clinical_providers]
           #cp_info= render :partial => 'catalog_manager/shared/clinical_providers', :locals => {:entity => @core}

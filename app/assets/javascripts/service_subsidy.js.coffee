@@ -65,7 +65,6 @@ $(document).ready ->
         buttons:
           Ok: ->
             $(this).dialog('close')
-
     return pass
 
   # Validate the PI contribution for a subsidy.  Returns a 2-tuple

@@ -310,8 +310,6 @@ $(document).ready ->
   $(document).on 'click', 'a.remove_nested_fields', ->
     otf_id = $(this).data('otf_id')
     nested_field_count = $(this).closest('.otf_service_tbody').find('a.remove_nested_fields:visible').length
-    console.log(nested_field_count)
-    console.log(otf_id)
     if nested_field_count == 0
       $(".fulfillments_#{otf_id}").toggle()
 

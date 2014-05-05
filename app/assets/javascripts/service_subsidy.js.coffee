@@ -18,7 +18,10 @@ $(document).ready ->
     $(pi_contribution_field).val(new_pi_contribution)
     
     percent = calculate_subsidy_percent(direct_cost, new_pi_contribution)
-    percent_display = if percent != "" then percent.toFixed(2) + '%' else '0%'
+    if direct_cost == 0
+      percent_display = '0%'
+    else
+      percent_display = if percent != "" then percent.toFixed(2) + '%' else '0%'
     $('.subsidy_percent_' + id).text(percent_display)
 
   # Recalculate requested funding and subsidy percentage whenever pi

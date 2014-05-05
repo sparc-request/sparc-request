@@ -5,23 +5,12 @@ class ServiceCalendarsController < ApplicationController
 
   def table
     #use session so we know what page to show when tabs are switched
-    arm_id = params[:arm_id] if params[:arm_id]
-    @arm = Arm.find arm_id if arm_id
-    page = params[:page] if params[:page]
-    session[:service_calendar_pages] = params[:pages] if params[:pages]
-    session[:service_calendar_pages][arm_id] = page if page && arm_id
     @tab = params[:tab]
     @portal = params[:portal]
     @study_tracker = params[:study_tracker] == "true"
-    @pages = {}
     @protocol = @service_request.protocol
-    @service_requests = (@tab == 'calendar') ? @service_request.protocol.service_requests : [@service_request]
-    @service_requests.each do |service_request|
-      service_request.arms.each do |arm|
-        new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-        @pages[arm.id] = @service_request.set_visit_page new_page, arm
-      end
-    end
+
+    setup_calendar_pages
 
     # TODO: This needs to be changed for one time fees page in arms
     @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition {|x| x.is_one_time_fee?} if @sub_service_request
@@ -52,9 +41,13 @@ class ServiceCalendarsController < ApplicationController
         # set quantity and research billing qty to 1
         line_item = visit.line_items_visit.line_item
         service = line_item.service
-        visit.update_attributes(
-          quantity: service.displayed_pricing_map.unit_minimum,
-          research_billing_qty: service.displayed_pricing_map.unit_minimum)
+        line_items = @service_request.per_patient_per_visit_line_items
+
+        visit.attributes = {
+          :quantity => service.displayed_pricing_map.unit_minimum,
+          :research_billing_qty => service.displayed_pricing_map.unit_minimum }
+
+        check_service_relations(visit)
       elsif checked == 'false'
         visit.update_attributes(
           quantity: 0,
@@ -68,11 +61,18 @@ class ServiceCalendarsController < ApplicationController
       visit.update_attribute(:quantity, qty) unless qty < 0
 
     when 'billing_strategy'
-      @errors = "Quantity must be greater than zero" if qty < 0
-      visit.update_attribute(column, qty) unless qty < 0
-      #update the total quantity to reflect the 3 billing qty total
-      total = visit.quantity_total
-      visit.update_attribute(:quantity, total) unless total < 0
+      if qty < 0
+        @errors = "Quantity must be greater than zero"
+      else
+        #update the total quantity to reflect the 3 billing qty total
+        total = visit.quantity_total
+
+        visit.attributes = {
+          column => qty,
+          :quantity => total }
+
+        check_service_relations(visit)
+      end
     end
 
     @visit = visit
@@ -205,13 +205,26 @@ class ServiceCalendarsController < ApplicationController
   def setup_calendar_pages
     @pages = {}
     page = params[:page] if params[:page]
+    arm_id = params[:arm_id] if params[:arm_id]
+    @arm = Arm.find(arm_id) if arm_id
     session[:service_calendar_pages] = params[:pages] if params[:pages]
     session[:service_calendar_pages][arm_id] = page if page && arm_id
-    @service_requests = (@tab == 'calendar') ? @service_request.protocol.service_requests : [@service_request]
-    @service_requests.each do |service_request|
-      service_request.arms.each do |arm|
-        new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-        @pages[arm.id] = @service_request.set_visit_page new_page, arm
+    @service_request.arms.each do |arm|
+      new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
+      @pages[arm.id] = @service_request.set_visit_page new_page, arm
+    end
+  end
+
+  def check_service_relations visit
+    line_item = visit.line_items_visit.line_item
+    line_items = @service_request.per_patient_per_visit_line_items
+
+    if line_item.check_service_relations(line_items, true, visit)
+      visit.save
+    else
+      visit.reload
+      respond_to do |format|
+        format.js { render :status => 500, :json => clean_errors(line_item.errors) }
       end
     end
   end

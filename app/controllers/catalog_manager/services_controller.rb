@@ -80,6 +80,10 @@ class CatalogManager::ServicesController < CatalogManager::AppController
   def update
     @service = Service.find(params[:id])
     saved = false
+
+    unless params[:service][:tag_list]
+      params[:service][:tag_list] = ""
+    end
     
     program = params[:service][:program]
     core = params[:service][:core]

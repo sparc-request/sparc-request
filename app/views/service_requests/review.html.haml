@@ -1,4 +1,5 @@
 = javascript_include_tag 'review'
+= javascript_include_tag 'service_calendar.js'
 
 = form_tag navigate_service_request_path(@service_request), {:id => 'navigation_form', :class => 'root-view', :multipart => true} do
   = hidden_field_tag :location, ''
@@ -41,5 +42,5 @@
             .obtain-research-pricing.red-provider
               = link_to t(:bottom_navigation)[:get_quote], obtain_research_pricing_service_request_path, :id => 'get_a_quote'
             .submit-request.red-provider
-              = link_to t(:bottom_navigation)[:submit_to_start], confirmation_service_request_path, :class => "save-and-continue", :id => 'submit_services'
-              = link_to image_tag("SaveContinue.png"), confirmation_service_request_path, :class => "save-and-continue", :id => 'submit_services'
+              = link_to t(:bottom_navigation)[:submit_to_start], confirmation_service_request_path, :class => "save-and-continue", :id => 'submit_services1'
+              = link_to image_tag("SaveContinue.png"), confirmation_service_request_path, :class => "save-and-continue", :id => 'submit_services2'

@@ -287,6 +287,7 @@ class Identity < ActiveRecord::Base
   def admin_organizations su_only = {:su_only => false}
     orgs = []
     arr = []
+    attached_array = []
     arr << self.super_users.map(&:organization)
     unless su_only[:su_only] == true
       arr << self.service_providers.map(&:organization)
@@ -296,7 +297,13 @@ class Identity < ActiveRecord::Base
     arr.each do |org|
       orgs << org.all_children
     end
-    orgs.flatten.compact.uniq
+    orgs.flatten!.compact.uniq
+   
+    orgs.each do |org|
+      attached_array << Organization.includes(:sub_service_requests).find(org.id)
+    end
+
+    attached_array
   end
 
   def clinical_provider_rights?
@@ -365,12 +372,16 @@ class Identity < ActiveRecord::Base
   # Used to populate the table (as selectable by the dropdown) in the admin index.
   def admin_service_requests_by_status org_id=nil, admin_orgs=nil
     ##Default to all ssrs, if we get an org_id, only get that organization's ssrs
+    ssrs = []
     if org_id
       ssrs = Organization.find(org_id).sub_service_requests
     elsif admin_orgs
       ssrs = SubServiceRequest.where("sub_service_requests.organization_id in (#{admin_orgs.map(&:id).join(", ")})").includes(:owner, :line_items => :service, :service_request => [:service_requester, :protocol => {:project_roles => :identity}])
     else
-      ssrs = self.admin_organizations.map(&:sub_service_requests).flatten
+      self.admin_organizations.each do |org|
+        ssrs << SubServiceRequest.where(:organization_id => org.id).includes(:line_items => :service, :service_request => :protocol).to_a
+      end
+      ssrs.flatten!
     end
 
     hash = {}

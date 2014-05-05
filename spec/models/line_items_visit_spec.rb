@@ -179,14 +179,21 @@ describe LineItemsVisit do
           @line_items_visit.visits.count.should eq(10)
         end
       end
+
       describe "remove procedures" do
 
+        let!(:sub_service_request2) { FactoryGirl.create(:sub_service_request, ssr_id: "0002", service_request_id: service_request.id, organization_id: program.id, status: "submitted") }
+        let!(:service3)             { FactoryGirl.create(:service, organization_id: program.id, name: 'Per Patient') }
+        let!(:line_item3)           { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service3.id, sub_service_request_id: sub_service_request2.id, quantity: 0) }
+
         before :each do
+          add_visits
           build_clinical_data
         end
 
         it "should remove procedures when line_item_visit is destroyed" do
-          liv = line_item2.line_items_visits.first
+
+          liv = line_item3.line_items_visits.first
 
           liv.procedures.should_not eq(nil)
 
@@ -194,7 +201,7 @@ describe LineItemsVisit do
           liv.reload
 
           liv.procedures.should eq([])
-          line_item2.procedures.should_not eq([])
+          line_item3.procedures.should_not eq([])
         end
 
       end

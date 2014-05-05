@@ -13,18 +13,19 @@ class StudyTracker::SubServiceRequestsController < StudyTracker::BaseController
     session[:service_calendar_pages] = params[:pages] if params[:pages]
 
     @service_request = @sub_service_request.service_request
-    @protocol = @sub_service_request.try(:service_request).try(:protocol)
+    @protocol = Protocol.find(@service_request.protocol_id)
     @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
     @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.is_one_time_fee?}
 
-    @line_items = @sub_service_request.line_items
+    @line_items = LineItem.where(:sub_service_request_id => @sub_service_request.id)
 
     @selected_arm = @service_request.arms.first
 
     @study_tracker = true
 
-    # "Preload" the intial view of the payments tab with a blank form row
+    # "Preload" the intial view of the payments and study level charges tabs with a blank form row
     @sub_service_request.payments.build if @sub_service_request.payments.blank?
+    build_fulfillments
 
     # get cwf organizations
     @cwf_organizations = Organization.get_cwf_organizations
@@ -62,6 +63,12 @@ class StudyTracker::SubServiceRequestsController < StudyTracker::BaseController
     @sub_service_request ||= SubServiceRequest.find(params[:id])
     unless @sub_service_request.in_work_fulfillment?
       redirect_to root_path
+    end
+  end
+
+  def build_fulfillments
+    @sub_service_request.one_time_fee_line_items.each do |line_item|
+      line_item.fulfillments.build if line_item.fulfillments.blank?
     end
   end
 end

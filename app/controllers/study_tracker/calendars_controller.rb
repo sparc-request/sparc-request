@@ -3,6 +3,8 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
 
   def show
     @calendar = Calendar.find(params[:id])
+    @calendar.populate_on_request_edit
+    build_subject_data(@calendar)
     get_calendar_data(@calendar)
     generate_toasts_for_new_procedures
     @default_appointment = (@calendar.appointments_for_core(@default_core.id).reject{|x| x.completed_for_core?(@default_core.id) }.first || @calendar.appointments.first) rescue @calendar.appointments.first
@@ -65,6 +67,14 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
     @sub_service_request ||= SubServiceRequest.find(params[:sub_service_request_id])
     unless @sub_service_request.in_work_fulfillment?
       redirect_to root_path
+    end
+  end
+
+  def build_subject_data(calendar)
+    if calendar.appointments.empty?
+      subject = calendar.subject
+      groups = VisitGroup.where(arm_id: subject.arm.id).includes(visits: { line_items_visit: :line_item })
+      calendar.populate(groups)
     end
   end
 

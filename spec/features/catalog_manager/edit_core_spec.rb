@@ -4,30 +4,49 @@ describe 'edit a core', :js => true do
 
   before :each do
     default_catalog_manager_setup
+    Tag.create(:name => "ctrc")
+    Tag.create(:name => "clinical work fulfillment")
     click_link('Clinical Data Warehouse')
+    wait_for_javascript_to_finish
   end
 
   context 'successfully update an existing core' do
-   
-    before :each do
-      @core = Organization.where(abbreviation: "Clinical Data Warehouse").first
-      wait_for_javascript_to_finish
-    end
-
     it "should successfully edit and save the core" do  
       # General Information fields
       fill_in 'core_abbreviation', :with => 'PTP'
       fill_in 'core_order', :with => '2'
       fill_in 'core_description', :with => 'Description'
-      # Subsidy Information fields
-      fill_in 'core_subsidy_map_attributes_max_percentage', :with => '55.5'
-      fill_in 'core_subsidy_map_attributes_max_dollar_cap', :with => '65'
 
-      page.execute_script("$('#save_button').click();")
-      page.should have_content( 'Clinical Data Warehouse' )
+      first("#save_button").click
+      page.should have_content('Clinical Data Warehouse')
+    end
+
+    context "adding and removing tags" do
+      before :each do
+        @core = Organization.where(abbreviation: "Clinical Data Warehouse").first
+        wait_for_javascript_to_finish
+      end
+
+      it "should list the tags" do
+        page.should have_css('#core_tag_list_ctrc')
+      end
+
+      it "should be able to check a tag box" do
+        find('#core_tag_list_ctrc').click
+        first('#save_button').click
+        page.should have_content('Clinical Data Warehouse')
+        find('#core_tag_list_ctrc').should be_checked
+        @core.tag_list.should eq(['ctrc'])
+      end
     end
 
     context "editing status options" do
+      before :each do
+        @core = Organization.where(abbreviation: "Clinical Data Warehouse").first
+        wait_for_javascript_to_finish
+        find('#available_statuses_fieldset').click
+        sleep 3
+      end
 
       it "should get the default statuses" do
         @core.get_available_statuses.should eq( {"draft" => "Draft", "submitted" => "Submitted", "get_a_quote" => "Get a Quote", "in_process" => "In Process", "complete" => "Complete", "awaiting_pi_approval" => "Awaiting PI Approval", "on_hold" => "On Hold"} )
@@ -50,33 +69,51 @@ describe 'edit a core', :js => true do
       end
     end
 
-    context "adding and removing tags" do
+    context "viewing user rights section" do
+      it "should show user rights section" do
+        find('#user_rights').click
+        sleep 3
+        find('#su_info').should be_visible
+      end
+    end
 
-      it "should get the tag that is entered" do
-        fill_in 'core_tag_list', :with => 'The Doctor'
-        first("#save_button").click
-        wait_for_javascript_to_finish
-
-        @core.tag_list.should eq(["The Doctor"])
+    context "viewing cwf section" do
+      it "should not display cwf by default" do
+        page.should_not have_css('#cwf_fieldset')
       end
 
-      it "should delete the tag once the field is cleared and saved" do
-        fill_in 'core_tag_list', :with => 'The Doctor'
+      it "should display cwf if tagged with cwf" do
+        find('#core_tag_list_clinical_work_fulfillment').click
         first("#save_button").click
         wait_for_javascript_to_finish
-        fill_in 'core_tag_list', :with => ''
-        first("#save_button").click
+        page.should have_content('Clinical Data Warehouse saved successfully')
+        click_link('Clinical Data Warehouse')
         wait_for_javascript_to_finish
 
-        @core.tag_list.should eq([])
+        find('#cwf_fieldset').should be_visible
+        find('#cwf_fieldset').click
+        sleep 3
+        first('#cwf_fieldset fieldset').should be_visible
+      end
+    end
+
+    context "pricing section" do
+      before :each do
+        find('#pricing').click
+        sleep 3
       end
 
-      it "should create an array of tags if more than one is entered" do
-        fill_in 'core_tag_list', :with => 'The Doctor, Dalek, Amy Pond'
-        first("#save_button").click
-        wait_for_javascript_to_finish
+      it "shoulld show the pricing section" do
+        first('#pricing fieldset').should be_visible
+      end
 
-        @core.tag_list.should eq(['The Doctor', 'Dalek', 'Amy Pond'])
+      it "should have a functional subsidy section" do
+        # Subsidy Information fields
+        fill_in 'core_subsidy_map_attributes_max_percentage', :with => '55.5'
+        fill_in 'core_subsidy_map_attributes_max_dollar_cap', :with => '65'
+
+        first("#save_button").click
+        page.should have_content('Clinical Data Warehouse saved successfully')
       end
     end
   end

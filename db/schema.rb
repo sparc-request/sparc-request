@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140305162451) do
+ActiveRecord::Schema.define(:version => 20140328131723) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -272,9 +272,13 @@ ActiveRecord::Schema.define(:version => 20140305162451) do
     t.text     "notes"
     t.string   "time"
     t.datetime "date"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.datetime "created_at",           :null => false
+    t.datetime "updated_at",           :null => false
     t.datetime "deleted_at"
+    t.integer  "requested_r_quantity"
+    t.integer  "requested_t_quantity"
+    t.integer  "fulfilled_r_quantity"
+    t.integer  "fulfilled_t_quantity"
   end
 
   add_index "fulfillments", ["line_item_id"], :name => "index_fulfillments_on_line_item_id"
@@ -838,12 +842,14 @@ ActiveRecord::Schema.define(:version => 20140305162451) do
     t.boolean  "src_approved",               :default => false
     t.boolean  "in_work_fulfillment"
     t.string   "routing"
+    t.text     "org_tree_display"
   end
 
   add_index "sub_service_requests", ["organization_id"], :name => "index_sub_service_requests_on_organization_id"
   add_index "sub_service_requests", ["owner_id"], :name => "index_sub_service_requests_on_owner_id"
   add_index "sub_service_requests", ["service_request_id"], :name => "index_sub_service_requests_on_service_request_id"
   add_index "sub_service_requests", ["ssr_id"], :name => "index_sub_service_requests_on_ssr_id"
+  add_index "sub_service_requests", ["status"], :name => "index_sub_service_requests_on_status"
 
   create_table "subjects", :force => true do |t|
     t.datetime "created_at",          :null => false
@@ -856,6 +862,7 @@ ActiveRecord::Schema.define(:version => 20140305162451) do
     t.string   "gender"
     t.string   "ethnicity"
     t.string   "status"
+    t.boolean  "arm_edited"
   end
 
   add_index "subjects", ["arm_id"], :name => "index_subjects_on_arm_id"

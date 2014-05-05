@@ -7,9 +7,18 @@ $(document).ready ->
   
   $('.line_item_visit_template').live 'change', ->
     $('.service_calendar_spinner').show()
+    obj = $(this)
     $.ajax
       type: 'PUT'
       url: $(this).attr('update') + "&checked=#{$(this).is(':checked')}"
+      error: (jqXHR, textStatus, errorThrown) ->
+        if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
+          errors = JSON.parse(jqXHR.responseText)
+        else
+          errors = [textStatus]
+        for error in errors
+          alert(error);
+          obj.prop('checked', false)
     .complete =>
       $('.service_calendar_spinner').hide()
       arm_id = $(this).data("arm_id")
@@ -42,10 +51,26 @@ $(document).ready ->
         my_qty = unit_minimum - sibling_qty
         $(this).val(my_qty)
 
+      obj = $(this)
+      original_val = obj.attr('previous_quantity')
+
       $('.service_calendar_spinner').show()
       $.ajax
         type: 'PUT'
         url: $(this).attr('update') + "&qty=#{my_qty}"
+        success: ->
+          $(obj).attr('previous_quantity', $(obj).val())
+        error: (jqXHR, textStatus, errorThrown) ->
+          if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
+            errors = JSON.parse(jqXHR.responseText)
+          else
+            errors = [textStatus]
+          for error in errors
+            # May need to include something to allow error.humanize like we do elsewhere
+            # if this gets weird looking.
+            alert(error);
+            $(obj).val(original_val)
+            $(obj).attr('current_quantity', original_val)
       .complete =>
         $('.service_calendar_spinner').hide()
         arm_id = $(this).data("arm_id")
@@ -183,6 +208,24 @@ $(document).ready ->
       data: JSON.stringify(data)
       dataType: 'script'
       contentType: 'application/json; charset=utf-8'
+  )
+
+  $(document).on('change', '.jump_to_visit', ->
+    $('.service_calendar_spinner').show()
+
+    page = $(this).find('option:selected').attr('parent_page')
+
+    if page == undefined || page == false
+      page = $(this).val()
+
+    $.ajax
+      type: 'GET'
+      url: $(this).attr('url')
+      data: {"page": page}
+      dataType: 'script'
+      success: ->
+        $('.service_calendar_spinner').hide()
+
   )
 
   update_otf_line_item = (obj) ->

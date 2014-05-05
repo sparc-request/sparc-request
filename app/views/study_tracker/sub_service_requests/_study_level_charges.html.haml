@@ -39,7 +39,7 @@
                   %td= fulfillment_form.datepicker :date, size: 10, dateFormat: "yy/mm/dd", :class => "fulfillment_date"
                   %td.cwf_otf_text_field= fulfillment_form.text_field :quantity, :class => 'fulfillment_quantity'
                   %td.cwf_otf_text_field
-                    = fulfillment_form.select :quantity_type, options_for_select(Fulfillment::QUANTITY_TYPES, fulfillment_form.object.quantity_type), :class => 'fulfillment_quantity_type'
+                    = fulfillment_form.select :quantity_type, options_for_select(Fulfillment::CWF_QUANTITY_TYPES, fulfillment_form.object.quantity_type), :class => 'fulfillment_quantity_type'
                   %td.cwf_otf_text_field= fulfillment_form.text_field :unit_quantity, :class => 'fulfillment_unit_quantity'
                   %td.cwf_otf_text_field= fulfillment_form.select :unit_type, options_for_select(Fulfillment::UNIT_TYPES, fulfillment_form.object.unit_type), :class => 'fulfillment_unit_type'
                   %td.cwf_otf_text_field= fulfillment_form.text_area  :notes, :cols => 25, :rows => 1, :class => 'fulfillment_notes'

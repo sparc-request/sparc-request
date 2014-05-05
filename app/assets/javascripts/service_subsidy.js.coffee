@@ -20,6 +20,8 @@ $(document).ready ->
     percent = calculate_subsidy_percent(direct_cost, new_pi_contribution)
     percent_display = if percent != "" then percent.toFixed(2) + '%' else '0%'
     $('.subsidy_percent_' + id).text(percent_display)
+    $('.admin_percent_subsidy_' + id).val(percent)
+
 
   # Recalculate requested funding and subsidy percentage whenever pi
   # contribution changes

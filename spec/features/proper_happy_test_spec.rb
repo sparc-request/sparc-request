@@ -30,18 +30,17 @@ describe 'A Happy Test' do
   it 'should make you feel happy', :js => true do
     visit root_path
 
-    tester = SparcTester.new(page)
-    tester.submitServiceRequest
-    tester.createNewStudy
-    tester.selectStudyUsers
-    tester.removeServices
-    tester.enterProtocolDates
-    tester.readdServices
-    tester.chooseArmPreferences("5","5")
-    tester.completeVisitCalender
-    tester.documentsPage
-    tester.reviewPage
-    tester.submissionConfirm
+    submitServiceRequest
+    createNewStudy
+    selectStudyUsers
+    removeServices
+    enterProtocolDates
+    readdServices
+    chooseArmPreferences("5","5")
+    arm1TotalPrice,arm2TotalPrice,otfTotalPrice = completeVisitCalender
+    documentsPage
+    reviewPage(arm1TotalPrice,arm2TotalPrice,otfTotalPrice)
+    submissionConfirm
     
   end
 

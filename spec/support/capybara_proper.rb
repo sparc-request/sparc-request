@@ -1,5 +1,20 @@
 module CapybaraProper
 
+    def addService(serviceName)
+        #clicks add button next to specified serviceName
+        find(:xpath,"//a[contains(text(),'#{serviceName}')]/parent::span/parent::span//button[text()='Add']").click
+    end
+
+    def removeService(serviceName)
+        #clicks the (red X) next to service names in the 'My Services' box to remove them
+        find(:xpath,"//div[@class='line_item']/div[contains(text(),'#{serviceName}')]/following-sibling::a[@class='remove-button']").click
+    end
+
+    def findService(serviceName, via='search', address=[])
+        #navigates to the service in the catalog
+        #either via the dropdowns or searchbox
+        
+    end
 
     def submitServiceRequest()
         #**Submit a service request**#

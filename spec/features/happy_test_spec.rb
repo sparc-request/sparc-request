@@ -20,6 +20,7 @@ describe 'A Happy Test' do
     create_new_core 'Core of Invisibility','Program of Invisibility'
     create_new_service 'invisibleService', 'Core of Invisibility', :is_available => false
     create_new_service 'Service of Visibility','Core of Invisibility'
+    create_new_service 'Linked Service of Visibility','Core of Invisibility',:linked => {:on? => true, :service => 'Service of Visibility', :required? => true, :quantity? => true, :quantityNum => 5}
 
     create_new_institution 'Medical University of South Carolina', {:abbreviation => 'MUSC'}
     create_new_provider 'South Carolina Clinical and Translational Institute (SCTR)', 'Medical University of South Carolina', {:abbreviation => 'SCTR1'}
@@ -47,6 +48,8 @@ describe 'A Happy Test' do
     page.should_not have_xpath("//a[text()='invisibleCore']") 
     page.should_not have_xpath("//a[text()='invisibleService']")
     page.should have_xpath("//a[text()='Service of Visibility']")
+    page.should have_xpath("//a[text()='Linked Service of Visibility']")
+
         #**END Check visibility conditions END**#
 
     submitServiceRequest

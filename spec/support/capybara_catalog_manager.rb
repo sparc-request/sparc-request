@@ -239,7 +239,8 @@ module CapybaraCatalogManager
         :unit_factor => 1,
         :display_date => Time.now,
         :unit_minimum => 1,
-        :unit_max => 1
+        :unit_max => 1,
+        :linked => {:on? => false, :service => name+'', :required? => false, :quantity? => false, :quantityNum => 5}
     }
     options = defaults.merge(options)
     wait_for_javascript_to_finish
@@ -285,6 +286,29 @@ module CapybaraCatalogManager
         first(:xpath, "//input[@id='clinical_quantity_']").set(options[:unit_type]) 
         first(:xpath, "//input[@id='unit_minimum_']").set(options[:unit_minimum])
         first(:xpath, "//table[@id='pp_fields_']//input[@id='unit_factor_']").set(options[:unit_factor])
+    end
+    if options[:linked][:on?] then 
+        wait_for_javascript_to_finish
+        first(:xpath, "//fieldset[@class='actions']").click
+        first(:xpath, "//input[@id='save_button']").click
+        wait_for_javascript_to_finish
+        first(:xpath, "//div[text()='Related Services']").click # click_link "Related Services"
+        wait_for_javascript_to_finish
+        fill_in "new_rs", :with => options[:linked][:service]
+        wait_until{first(:xpath, "//ul[contains(@class,'ui-autocomplete')]/li[@class='ui-menu-item']/a[contains(text(),'#{options[:linked][:service]}')]")}.click
+        wait_for_javascript_to_finish
+
+        requiredCheck = wait_until{first(:xpath, "//td[text()='#{options[:linked][:service]}']/following-sibling::td/input[@class='optional']")}
+        if not requiredCheck.checked? and options[:linked][:required?] then requiredCheck.click end
+        wait_for_javascript_to_finish
+
+        quantityCheck = wait_until{first(:xpath, "//td[text()='#{options[:linked][:service]}']/following-sibling::td/input[contains(@class,'linked_quantity')]")}
+        if not quantityCheck.checked? and options[:linked][:quantity?] then 
+            quantityCheck.click
+            wait_until{first(:xpath, "//td[text()='#{options[:linked][:service]}']/following-sibling::td/input[contains(@class,'linked_quantity_total')]")}.set(options[:linked][:quantityNum])
+        end
+        wait_for_javascript_to_finish
+
     end
     wait_for_javascript_to_finish
     first(:xpath, "//fieldset[@class='actions']").click

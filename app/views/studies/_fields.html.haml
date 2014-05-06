@@ -115,6 +115,10 @@
                 = rt.check_box :human_subjects
 
             = f.fields_for :human_subjects_info do |hs|
+              .field.nct_number
+                = hs.label :nct_number, t(:study_form)[:nct_number]
+                = hs.text_field :nct_number
+
               .field.hr_number
                 = hs.label :hr_number, t(:study_form)[:hr_number]
                 = hs.text_field :hr_number

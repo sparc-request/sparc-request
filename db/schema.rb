@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140501152256) do
+ActiveRecord::Schema.define(:version => 20140505135256) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -446,15 +446,15 @@ ActiveRecord::Schema.define(:version => 20140501152256) do
     t.string   "type"
     t.string   "name"
     t.integer  "order"
-    t.string   "css_class"
+    t.string   "css_class",       :default => ""
     t.text     "description"
     t.integer  "parent_id"
     t.string   "abbreviation"
     t.text     "ack_language"
     t.boolean  "process_ssrs"
     t.boolean  "is_available"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
     t.datetime "deleted_at"
     t.boolean  "show_in_cwf"
     t.integer  "position_in_cwf"
@@ -795,10 +795,11 @@ ActiveRecord::Schema.define(:version => 20140501152256) do
     t.string   "charge_code"
     t.string   "revenue_code"
     t.integer  "organization_id"
-    t.datetime "created_at",                                                            :null => false
-    t.datetime "updated_at",                                                            :null => false
+    t.datetime "created_at",                                         :null => false
+    t.datetime "updated_at",                                         :null => false
     t.datetime "deleted_at"
-    t.boolean  "send_to_epic",                                       :default => false
+    t.string   "cdm_code"
+    t.boolean  "send_to_epic"
   end
 
   add_index "services", ["is_available"], :name => "index_services_on_is_available"

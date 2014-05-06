@@ -6,6 +6,7 @@ class HumanSubjectsInfo < ActiveRecord::Base
   belongs_to :protocol
 
   attr_accessible :protocol_id
+  attr_accessible :nct_number
   attr_accessible :hr_number
   attr_accessible :pro_number
   attr_accessible :irb_of_record

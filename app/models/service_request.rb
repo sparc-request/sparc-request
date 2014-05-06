@@ -206,7 +206,7 @@ class ServiceRequest < ActiveRecord::Base
         service: rs,
         optional: false,
         existing_service_ids: existing_service_ids)
-      line_items.concat(rs_line_items)
+      rs_line_items.nil? ? line_items : line_items.concat(rs_line_items)
     end
 
     # add optional services to line items

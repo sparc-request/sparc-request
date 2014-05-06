@@ -16,5 +16,6 @@ class Fulfillment < ActiveRecord::Base
   default_scope :order => 'fulfillments.id ASC'
 
   QUANTITY_TYPES = ['Min', 'Hours', 'Days', 'Each']
-  UNIT_TYPES = ['Slide', 'Sample']
+  CWF_QUANTITY_TYPES = ['Qty fees', 'Each', 'Sample', 'Aliquot', '3kg unit']
+  UNIT_TYPES = ['N/A', 'Qty fees', 'Each', 'Sample', 'Aliquot', '3kg unit']
 end

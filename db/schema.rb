@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140424124647) do
+ActiveRecord::Schema.define(:version => 20140505135256) do
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -295,6 +295,7 @@ ActiveRecord::Schema.define(:version => 20140424124647) do
     t.datetime "updated_at",          :null => false
     t.datetime "deleted_at"
     t.boolean  "approval_pending"
+    t.string   "nct_number"
   end
 
   add_index "human_subjects_info", ["protocol_id"], :name => "index_human_subjects_info_on_protocol_id"
@@ -445,15 +446,15 @@ ActiveRecord::Schema.define(:version => 20140424124647) do
     t.string   "type"
     t.string   "name"
     t.integer  "order"
-    t.string   "css_class"
+    t.string   "css_class",       :default => ""
     t.text     "description"
     t.integer  "parent_id"
     t.string   "abbreviation"
     t.text     "ack_language"
     t.boolean  "process_ssrs"
     t.boolean  "is_available"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
     t.datetime "deleted_at"
     t.boolean  "show_in_cwf"
     t.integer  "position_in_cwf"

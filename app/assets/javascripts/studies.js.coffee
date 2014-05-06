@@ -9,7 +9,7 @@ $(document).ready ->
       federal            : ['.federal']
       internal           : ['.internal_funded_pilot_project']
     '#study_research_types_info_attributes_human_subjects' :
-      'true'             : ['.hr_number', '.pro_number', '.irb_of_record', '.submission_type',
+      'true'             : ['.nct_number', '.hr_number', '.pro_number', '.irb_of_record', '.submission_type',
                             '.irb_approval_date', '.irb_expiration_date', '.approval_pending',
                             '.study_phase']
     '#study_research_types_info_attributes_vertebrate_animals' :

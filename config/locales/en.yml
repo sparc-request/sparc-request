@@ -673,7 +673,6 @@ en:
     service_center_cost: "Service Center Cost"
     hospital_based_services: "Hospital Based Services"
     cpt_code: "CPT Code"
-    cdm_code: "CDM Code"
     send_to_epic: "Send To Epic"
     charge_code: "Charge Code"
     revenue_code: "Revenue Code"

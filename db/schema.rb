@@ -295,6 +295,7 @@ ActiveRecord::Schema.define(:version => 20140505135256) do
     t.datetime "updated_at",          :null => false
     t.datetime "deleted_at"
     t.boolean  "approval_pending"
+    t.string   "nct_number"
   end
 
   add_index "human_subjects_info", ["protocol_id"], :name => "index_human_subjects_info_on_protocol_id"

@@ -30,7 +30,7 @@ describe 'A Happy Test' do
   it 'should make you feel happy', :js => true do
     visit root_path
 
-    submitServiceRequest
+    submitServiceRequest2
     createNewStudy
     selectStudyUsers
     removeServices

@@ -1,19 +1,135 @@
 module CapybaraProper
 
+    def clickOffAndWait
+        #allows javascript to complete
+        #by clicking in a nonactive part of the page
+        #then calls wait for javascript to finish method.
+        first(:xpath, "//div[@class='welcome']").click
+        wait_for_javascript_to_finish
+    end    
+
     def addService(serviceName)
-        #clicks add button next to specified serviceName
-        find(:xpath,"//a[contains(text(),'#{serviceName}')]/parent::span/parent::span//button[text()='Add']").click
+        #if service is visible on screen,
+        #clicks add button next to specified serviceName.
+        #otherwise, searches for the service in the searchbox
+        #and adds it from there
+        wait_for_javascript_to_finish
+        serviceVisible = first(:xpath, "//a[contains(text(),'#{serviceName}')]/parent::span/parent::span//button[text()='Add']")
+        if not serviceVisible.nil? then
+            serviceVisible.click
+            wait_for_javascript_to_finish
+        else
+            fill_in 'service_query', :with => serviceName
+            wait_for_javascript_to_finish
+            first(:xpath, "//li[@class='search_result']/span[@class='service-name' and text()='#{serviceName}']/following-sibling::button[@class='add_service']").click
+            wait_for_javascript_to_finish
+        end
     end
+
 
     def removeService(serviceName)
         #clicks the (red X) next to service names in the 'My Services' box to remove them
+        #problem here where short names are not same as long names of services...
         find(:xpath,"//div[@class='line_item']/div[contains(text(),'#{serviceName}')]/following-sibling::a[@class='remove-button']").click
+        wait_for_javascript_to_finish
     end
 
-    def findService(serviceName, via='search', address=[])
-        #navigates to the service in the catalog
-        #either via the dropdowns or searchbox
-        
+
+    def navigateCatalog(instit = false, prov = false, prog = false, core = false)
+        #navigates through the catalog
+        #can navigate from an institution to a core
+        #if a field is left false, then stop navigating at that field
+
+        if instit #if institution is not false
+            institLink = wait_until {first(:xpath,"//h3/a[contains(text(),'#{instit}')]/preceding-sibling::span[contains(@class,'triangle-1')]")}
+            if institLink['class'].include? "triangle-1-e"
+                institLink.click #if dropdown not expanded then expand
+                clickOffAndWait
+            end
+
+            if prov #if institution and provider are not false
+                provLink = wait_until {first(:xpath,"//h3/a[contains(text(),'#{prov}')]/preceding-sibling::span[contains(@class,'triangle-1')]")}
+                if provLink['class'].include? "triangle-1-e"
+                    provLink.click #if dropdown not expanded then expand
+                    clickOffAndWait
+                end
+
+                if prog #if institution, provider, and program are not false
+                    click_link prog #click program link
+                    clickOffAndWait
+
+                    if core #if institution, provider, program, and core are not false
+                        coreLink = wait_until {first(:xpath,"//h3/a[contains(text(),'#{core}')]/preceding-sibling::span[contains(@class,'triangle-1')]")}
+                        if coreLink['class'].include? "triangle-1-e"
+                            coreLink.click #if dropdown not expanded then expand
+                            clickOffAndWait
+                        end
+                    end
+
+                else return #if program is not provided (still false) end method 
+                end
+
+            else return #if provider is not provided (still false) end method
+            end
+
+        else return #if institution is not provided (still false) end method
+        end
+
+    end
+
+    def submitExpectError
+        #submits the service request and
+        #asserts that an error is expected.
+        #this is intended to be used before adding services 
+        #to check that an error is given for a request that 
+        #is submitted with no services added.
+        page.should_not have_xpath("//div[@id='submit_error' and @style!='display: none']") #should not have error
+        find('.submit-request-button').click #Submit click
+        wait_for_javascript_to_finish
+        page.should have_xpath("//div[@id='submit_error' and @style!='display: none']") #should have error dialog
+        click_button('Ok') #acknowledge error 
+        wait_for_javascript_to_finish
+    end
+
+    def checkLineItemsNumber(numberExpected)
+        #asserts that the line item count
+        #shoud equal the number expected.
+        wait_until {find(:xpath, "//input[@id='line_item_count']")}['value'].should eq(numberExpected)
+    end 
+
+    def submitServiceRequest2
+        #**Submit a service request**#
+        submitExpectError
+
+        navigateCatalog("Medical University of South Carolina",
+            "South Carolina Clinical and Translational Institute (SCTR)",
+            "Office of Biomedical Informatics",
+            "Clinical Data Warehouse")
+        addService "MUSC Research Data Request (CDW)"
+
+        navigateCatalog("Medical University of South Carolina",
+            "South Carolina Clinical and Translational Institute (SCTR)",
+            "Clinical and Translational Research Center (CTRC)",
+            "Nursing Services")
+        addService  'Breast Milk Collection'
+
+        checkLineItemsNumber '2' #should display 2 services
+        removeService "CDW"
+        checkLineItemsNumber '1' #should display 1 service
+        removeService 'Breast Milk Collection'
+        checkLineItemsNumber '0' #should display no services
+
+        addService "MUSC Research Data Request (CDW)" #readd first service
+        addService  'Breast Milk Collection' #readd second service
+
+        checkLineItemsNumber '2' #should display 2 services
+        addService  'Breast Milk Collection' #add last service a second time
+        checkLineItemsNumber '2' #should still display 2 services
+
+        find('.submit-request-button').click
+        wait_for_javascript_to_finish
+        #**END Submit a service request END**#
+        ServiceRequest.find(1).line_items.count.should eq(2) #Should have 2 Services
     end
 
     def submitServiceRequest()

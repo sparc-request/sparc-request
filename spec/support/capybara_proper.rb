@@ -8,15 +8,16 @@ module CapybaraProper
         wait_for_javascript_to_finish
     end    
 
+
     def addService(serviceName)
         #if service is visible on screen,
         #clicks add button next to specified serviceName.
         #otherwise, searches for the service in the searchbox
         #and adds it from there
         wait_for_javascript_to_finish
-        serviceVisible = first(:xpath, "//a[contains(text(),'#{serviceName}')]/parent::span/parent::span//button[text()='Add']")
-        if not serviceVisible.nil? then
-            serviceVisible.click
+        addServiceButton = first(:xpath, "//a[contains(text(),'#{serviceName}')]/parent::span/parent::span//button[text()='Add']")
+        if not addServiceButton.nil? then
+            addServiceButton.click
             wait_for_javascript_to_finish
         else
             fill_in 'service_query', :with => serviceName
@@ -31,7 +32,7 @@ module CapybaraProper
         #clicks the (red X) next to service names in the 'My Services' box to remove them
         #problem here where short names are not same as long names of services...
         find(:xpath,"//div[@class='line_item']/div[contains(text(),'#{serviceName}')]/following-sibling::a[@class='remove-button']").click
-        wait_for_javascript_to_finish
+        clickOffAndWait
     end
 
 
@@ -57,6 +58,10 @@ module CapybaraProper
                 if prog #if institution, provider, and program are not false
                     click_link prog #click program link
                     clickOffAndWait
+                    if first(:xpath, "//div[@class='provider-details-view']/div[contains(text(),'#{prog}')]").nil?
+                        click_link prog #sometimes first click doesn't take hold, gives it another try.
+                        clickOffAndWait
+                    end
 
                     if core #if institution, provider, program, and core are not false
                         coreLink = wait_until {first(:xpath,"//h3/a[contains(text(),'#{core}')]/preceding-sibling::span[contains(@class,'triangle-1')]")}
@@ -77,6 +82,7 @@ module CapybaraProper
 
     end
 
+
     def submitExpectError
         #submits the service request and
         #asserts that an error is expected.
@@ -91,109 +97,87 @@ module CapybaraProper
         wait_for_javascript_to_finish
     end
 
+
     def checkLineItemsNumber(numberExpected)
         #asserts that the line item count
         #shoud equal the number expected.
         wait_until {find(:xpath, "//input[@id='line_item_count']")}['value'].should eq(numberExpected)
     end 
 
-    def submitServiceRequest2
-        #**Submit a service request**#
-        submitExpectError
 
-        navigateCatalog("Medical University of South Carolina",
-            "South Carolina Clinical and Translational Institute (SCTR)",
-            "Office of Biomedical Informatics",
-            "Clinical Data Warehouse")
-        addService "MUSC Research Data Request (CDW)"
-
-        navigateCatalog("Medical University of South Carolina",
-            "South Carolina Clinical and Translational Institute (SCTR)",
-            "Clinical and Translational Research Center (CTRC)",
-            "Nursing Services")
-        addService  'Breast Milk Collection'
-
-        checkLineItemsNumber '2' #should display 2 services
-        removeService "CDW"
-        checkLineItemsNumber '1' #should display 1 service
-        removeService 'Breast Milk Collection'
-        checkLineItemsNumber '0' #should display no services
-
-        addService "MUSC Research Data Request (CDW)" #readd first service
-        addService  'Breast Milk Collection' #readd second service
-
-        checkLineItemsNumber '2' #should display 2 services
-        addService  'Breast Milk Collection' #add last service a second time
-        checkLineItemsNumber '2' #should still display 2 services
-
-        find('.submit-request-button').click
-        wait_for_javascript_to_finish
-        #**END Submit a service request END**#
-        ServiceRequest.find(1).line_items.count.should eq(2) #Should have 2 Services
-    end
-
-    def submitServiceRequest()
-        #**Submit a service request**#
-        page.should_not have_xpath("//div[@id='submit_error' and @style!='display: none']")
-        find('.submit-request-button').click #Submit with no services
-        wait_for_javascript_to_finish
-        page.should have_xpath("//div[@id='submit_error' and @style!='display: none']") #should have error dialog
-        click_button('Ok') 
-
-        wait_for_javascript_to_finish
-        begin
-            click_link("South Carolina Clinical and Translational Institute (SCTR)")
-        rescue
-            click_link("Medical University of South Carolina")
-            wait_for_javascript_to_finish
-            click_link("South Carolina Clinical and Translational Institute (SCTR)")
+    def addAllServices(services = [])
+        #expects list of ServiceWithAddress objects
+        if services.empty? 
+            return #if no services passed in, end method here.
         end
 
-        find(".provider-name").should have_text("South Carolina Clinical and Translational Institute (SCTR)")
+        services.each do |s| #iterates over services
+            navigateCatalog(s.instit,s.prov,s.prog,s.core) #navigates to each service
+            addService s.name #adds service
+        end
+        checkLineItemsNumber "#{services.length}" #check if correct number of services displayed
+    end  
 
-        click_link("Office of Biomedical Informatics")
-        wait_for_javascript_to_finish
-        click_button("Add")
-        wait_for_javascript_to_finish
 
-        click_link("Clinical and Translational Research Center (CTRC)")
-        wait_for_javascript_to_finish
-        click_button("Add")
-        wait_for_javascript_to_finish
+    def removeAllServices()
+        #finds all line item remove buttons and clicks them
+        servicesLeft = find(:xpath, "//input[@id='line_item_count']")['value']
+        while servicesLeft.to_i > 0 do
+            first(:xpath, "//div[@class='line_item']//a[@class='remove-button']").click
+            wait_for_javascript_to_finish
+            servicesLeft = find(:xpath, "//input[@id='line_item_count']")['value']
+        end
+        checkLineItemsNumber '0'
+    end
 
-        find(:xpath, "//input[@id='line_item_count']")['value'].should eq('2') #should display 2 services
-        find(:xpath,"//a[@id='line_item-1' and @class='remove-button']").click  #remove first service
-        wait_for_javascript_to_finish
-        find(:xpath, "//input[@id='line_item_count']")['value'].should eq('1') #should display 1 service
-        find(:xpath,"//a[@id='line_item-2' and @class='remove-button']").click #remove last service
-        wait_for_javascript_to_finish
-        find(:xpath, "//input[@id='line_item_count']")['value'].should eq('0') #should display no services
 
-        click_link("Office of Biomedical Informatics")
-        wait_for_javascript_to_finish
-        click_button("Add") #re-add first service
-        wait_for_javascript_to_finish
+    class ServiceWithAddress
+        def initialize(options = {})
+            defaults = {
+                :instit => false,
+                :prov => false,
+                :prog => false,
+                :core => false,
+                :name => false,
+                :short => false
+            }
+            options = defaults.merge(options)
+            if not options[:short] then options[:short] = options[:name] end
+            @instit = options[:instit]
+            @prov = options[:prov]
+            @prog = options[:prog]
+            @core = options[:core]
+            @name = options[:name]
+            @short = options[:short]
+        end
+        attr_reader :instit, :prov, :prog, :core, :name, :short
+    end
 
-        fill_in 'service_query', :with => "Breast Milk"
-        wait_for_javascript_to_finish
-        page.should have_xpath("//li[@class='search_result']/span[@class='service-name' and text()='Breast Milk Collection']")
-        first(:xpath, "//li[@class='search_result']/span[@class='service-name' and text()='Breast Milk Collection']/following-sibling::button[@class='add_service']").click
-        wait_for_javascript_to_finish
 
-        click_link("Clinical and Translational Research Center (CTRC)")
-        # wait_for_javascript_to_finish
-        # click_button("Add") #re-add last service
-        # wait_for_javascript_to_finish
+    def submitServiceRequest (services = [])
+        #expects a list of ServiceWithAddress objects
+        submitExpectError #checks submit with no services error display
 
-        find(:xpath, "//input[@id='line_item_count']")['value'].should eq('2') #should display 2 services
-        find(:xpath, "//span[@class='title']/button[@class='add_service' and @sr_id='1']").click #add last service a second time
-        wait_for_javascript_to_finish
-        find(:xpath, "//input[@id='line_item_count']")['value'].should eq('2') #should only display 2 services
+        addAllServices(services)#adds all services in 'services' list
 
-        find('.submit-request-button').click
+        count = services.length #saves total number of services into count variable
+        services.each do |s| #iterates over services
+            checkLineItemsNumber "#{count}" #checks if correct number of services displayed
+            removeService s.short #removes service
+            count -= 1 #reduces expected number of services displayed by 1
+        end
+
+        services.each do |s|
+            addService s.name #readd each service
+        end
+
+        checkLineItemsNumber "#{services.length}" #check if correct number of services displayed
+        addService  services[0].name #add first service a second time 
+        checkLineItemsNumber "#{services.length}" #should still display same number of services
+
+        find('.submit-request-button').click #submit request
         wait_for_javascript_to_finish
-        #**END Submit a service request END**#
-        ServiceRequest.find(1).line_items.count.should eq(2) #Should have 2 Services
+        ServiceRequest.find(1).line_items.count.should eq(services.length) #Should have correct # of services
     end
 
 
@@ -309,19 +293,6 @@ module CapybaraProper
     end 
 
 
-    def removeServices()
-        #**Select Study**#
-            #Remove services
-        find(:xpath,"//a[@id='line_item-3' and @class='remove-button']").click
-        find(:xpath, "//input[@id='line_item_count']")['value'].should eq('1') #should display 1 service
-        find(:xpath,"//a[@id='line_item-4' and @class='remove-button']").click
-        find(:xpath, "//input[@id='line_item_count']")['value'].should eq('0') #should display 0 services
-        click_link("Save & Continue")
-        wait_for_javascript_to_finish
-        #**END Select Study END**#        
-    end
-
-
     def enterProtocolDates()
         #**Enter Protocol Dates**#
             #Select start and end date
@@ -338,24 +309,18 @@ module CapybaraProper
         page.execute_script %Q{ $("a.ui-state-default:contains('#{endDay}')").filter(function(){return $(this).text()==='#{endDay}';}).trigger("click") } # click on end day
         wait_for_javascript_to_finish
     end
+  
 
+    def readdServices(services = [])
+        #expects list of ServiceWithAddress objects
 
-    def readdServices()
-            #Should have no services and instruct to add some
+        #Should have no services and instruct to add some
         page.should have_xpath("//div[@class='instructions' and contains(text(),'continue unless you have services in your cart.')]")
-            #re-adding services
         click_link("Back to Catalog")
-        click_link("South Carolina Clinical and Translational Institute (SCTR)")
-        find(".provider-name").should have_text("South Carolina Clinical and Translational Institute (SCTR)")
-        click_link("Office of Biomedical Informatics")
-        wait_for_javascript_to_finish
-        click_button("Add")
-        wait_for_javascript_to_finish
-        click_link("Clinical and Translational Research Center (CTRC)")
-        wait_for_javascript_to_finish
-        click_button("Add")
-        wait_for_javascript_to_finish
-        find(:xpath, "//input[@id='line_item_count']")['value'].should eq('2') #should only display 2 services
+
+        #re-adds all services
+        addAllServices(services)     
+
         find('.submit-request-button').click
         wait_for_javascript_to_finish
         click_link("Save & Continue")

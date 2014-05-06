@@ -30,12 +30,31 @@ describe 'A Happy Test' do
   it 'should make you feel happy', :js => true do
     visit root_path
 
-    submitServiceRequest2
+    service1 = ServiceWithAddress.new(
+        :instit => "Medical University of South Carolina",
+        :prov => "South Carolina Clinical and Translational Institute (SCTR)",
+        :prog => "Office of Biomedical Informatics",
+        :core => "Clinical Data Warehouse",
+        :name => "MUSC Research Data Request (CDW)",
+        :short => "CDW"
+        )
+    service2 = ServiceWithAddress.new(
+        :instit => "Medical University of South Carolina",
+        :prov => "South Carolina Clinical and Translational Institute (SCTR)",
+        :prog => "Clinical and Translational Research Center (CTRC)",
+        :core => "Nursing Services",
+        :name => 'Breast Milk Collection'
+        )
+    services = [service1,service2]
+
+    submitServiceRequest (services)
     createNewStudy
     selectStudyUsers
-    removeServices
+    removeAllServices
+    click_link("Save & Continue")
+    wait_for_javascript_to_finish 
     enterProtocolDates
-    readdServices
+    readdServices (services)
     chooseArmPreferences("5","5")
     arm1TotalPrice,arm2TotalPrice,otfTotalPrice = completeVisitCalender
     documentsPage

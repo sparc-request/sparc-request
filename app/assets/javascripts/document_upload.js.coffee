@@ -1,15 +1,18 @@
 $(document).ready ->
 
-  $(".upload_button").click ->
-    $(".upload_button").attr("disabled", "disabled")
-    $(".upload_button span").html('Wait...')
-
-    #TODO code below is duplicated from app/assets/javascripts/navigation.js.coffee because for some reason it doesn't work otherwise
-    location = $(this).attr('location')
-    validates = $(this).attr('validates')
-    $('#location').val(location)
-    $('#validates').val(validates)
-    $('#navigation_form').submit()
+  $(".upload_button").click (event)->
+    if $("#new_document input[type='checkbox']:checked").size() >= 1
+        $(".upload_button").attr("disabled", "disabled")
+        $(".upload_button span").html('Wait...')
+        #TODO code below is duplicated from app/assets/javascripts/navigation.js.coffee because for some reason it doesn't work otherwise
+        location = $(this).attr('location')
+        validates = $(this).attr('validates')
+        $('#location').val(location)
+        $('#validates').val(validates)
+        $('#navigation_form').submit()
+    else
+        event.stopImmediatePropagation()
+        alert("You must select at least one recipient for access")
 
   $(".ui_close_button").click ->
     $("input#document_grouping_id").remove()

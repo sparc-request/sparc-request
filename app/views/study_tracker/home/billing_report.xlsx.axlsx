@@ -6,7 +6,7 @@ wb.add_worksheet(name: "Admin Billing Report") do |sheet|
   sheet.add_row [""]
   sheet.add_row [""]
 
-  sheet.add_row ["Protocol ID", "Patient Name", "Patient ID", "Arm", "Visit", "Visit Date", "Nexus Core", "Service Due", "Research Quantity Due", "Full Quantity Completed?", "Other Quantity Completed", "New Service Added", "New Service Quantity Completed"]
+  sheet.add_row ["Protocol ID", "Primary PI", "Patient Name", "Patient ID", "Arm", "Visit", "Visit Date", "Nexus Core", "Service Due", "Research Quantity Due", "Full Quantity Completed?", "Other Quantity Completed", "New Service Added", "New Service Quantity Completed", "Unit Cost"]
 
   @appointments.each do |appt|
     visit_name = appt.name_switch
@@ -34,7 +34,7 @@ wb.add_worksheet(name: "Admin Billing Report") do |sheet|
       
       service_qty = (service_name.blank? or full_quantity_completed == 'Y' or not procedure.completed?) ? "" : r_qty
 
-      sheet.add_row [protocol.id, subject.name, subject.label, arm.name, visit_name, visit_date, core, service_name, quantity_due, full_quantity_completed, service_qty, added_service_name, service_added_qty]
+      sheet.add_row [protocol.id, protocol.try(:primary_principal_investigator).try(:full_name), subject.name, subject.label, arm.name, visit_name, visit_date, core, service_name, quantity_due, full_quantity_completed, service_qty, added_service_name, service_added_qty, procedure.cost]
     end
   end
 end

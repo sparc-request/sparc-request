@@ -452,11 +452,6 @@ class ServiceRequest < ActiveRecord::Base
     return self.line_items.any? { |li| li.service.is_ctrc_clinical_service? }
   end
 
-  def remove_ctrc_services
-    self.line_items.each {|li| li.destroy if li.service.is_ctrc_clinical_service? }
-    self.sub_service_requests.each {|sr| sr.destroy if sr.line_items.empty?}
-  end
-
   def update_arm_minimum_counts
     self.arms.each do |arm|
       arm.update_minimum_counts

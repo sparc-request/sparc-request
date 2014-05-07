@@ -1,5 +1,38 @@
 module CapybaraProper
 
+    class ServiceWithAddress
+        def initialize(options = {})
+            defaults = {
+                :instit => false,
+                :prov => false,
+                :prog => false,
+                :core => false,
+                :name => false,
+                :short => false,
+                :otf => false,
+                :unitPrice => 0
+            }
+            options = defaults.merge(options)
+            if not options[:short] then options[:short] = options[:name] end
+            @instit = options[:instit]
+            @prov = options[:prov]
+            @prog = options[:prog]
+            @core = options[:core]
+            @name = options[:name]
+            @short = options[:short]
+            @otf = options[:otf]
+            @unitPrice = options[:unitPrice]
+            @totalPrice = 0
+            @checked = 0
+            @subjects = 0
+        end
+        attr_reader :instit, :prov, :prog, :core, :name, :short, :otf, :unitPrice
+        attr_accessor :totalPrice, :checked, :subjects
+    end
+
+
+
+
     def clickOffAndWait
         #allows javascript to complete
         #by clicking in a nonactive part of the page
@@ -14,15 +47,15 @@ module CapybaraProper
         #clicks add button next to specified serviceName.
         #otherwise, searches for the service in the searchbox
         #and adds it from there
-        wait_for_javascript_to_finish
+        clickOffAndWait
         addServiceButton = first(:xpath, "//a[contains(text(),'#{serviceName}')]/parent::span/parent::span//button[text()='Add']")
-        if not addServiceButton.nil? then
+        if not addServiceButton.nil? then #if service is on screen then add it
             addServiceButton.click
             wait_for_javascript_to_finish
-        else
-            fill_in 'service_query', :with => serviceName
+        else #else use the search box to find the service then add it
+            wait_until {first(:xpath, "//input[@id='service_query']")}.set(serviceName)
             wait_for_javascript_to_finish
-            first(:xpath, "//li[@class='search_result']/span[@class='service-name' and text()='#{serviceName}']/following-sibling::button[@class='add_service']").click
+            wait_until {first(:xpath, "//li[@class='search_result']/button[@class='add_service']")}.click
             wait_for_javascript_to_finish
         end
     end
@@ -119,7 +152,7 @@ module CapybaraProper
     end  
 
 
-    def removeAllServices()
+    def removeAllServices
         #finds all line item remove buttons and clicks them
         servicesLeft = find(:xpath, "//input[@id='line_item_count']")['value']
         while servicesLeft.to_i > 0 do
@@ -131,27 +164,6 @@ module CapybaraProper
     end
 
 
-    class ServiceWithAddress
-        def initialize(options = {})
-            defaults = {
-                :instit => false,
-                :prov => false,
-                :prog => false,
-                :core => false,
-                :name => false,
-                :short => false
-            }
-            options = defaults.merge(options)
-            if not options[:short] then options[:short] = options[:name] end
-            @instit = options[:instit]
-            @prov = options[:prov]
-            @prog = options[:prog]
-            @core = options[:core]
-            @name = options[:name]
-            @short = options[:short]
-        end
-        attr_reader :instit, :prov, :prog, :core, :name, :short
-    end
 
 
     def submitServiceRequest (services = [])
@@ -168,11 +180,12 @@ module CapybaraProper
         end
 
         services.each do |s|
-            addService s.name #readd each service
+            addService s.short #readd each service
         end
 
         checkLineItemsNumber "#{services.length}" #check if correct number of services displayed
-        addService  services[0].name #add first service a second time 
+
+        addAllServices(services)#adds all services in 'services' list a second time 
         checkLineItemsNumber "#{services.length}" #should still display same number of services
 
         find('.submit-request-button').click #submit request
@@ -181,7 +194,7 @@ module CapybaraProper
     end
 
 
-    def createNewStudy()
+    def createNewStudy
         #**Create a new Study**#
             #should not have any errors displayed
         page.should_not have_xpath("//div[@id='errorExplanation']")
@@ -263,7 +276,7 @@ module CapybaraProper
     end
 
 
-    def selectStudyUsers()
+    def selectStudyUsers
         #**Select Users**#
         click_button "Add Authorized User"
             #should have 'Role can't be blank' error
@@ -293,7 +306,7 @@ module CapybaraProper
     end 
 
 
-    def enterProtocolDates()
+    def enterProtocolDates
         #**Enter Protocol Dates**#
             #Select start and end date
         strtDay = Time.now.strftime("%-d") # Today's Day
@@ -328,43 +341,125 @@ module CapybaraProper
     end
 
 
-    def chooseArmPreferences(subjects, visits)
+    def chooseArmPreferences(arms)
+        #Expects a list of ASingleArm objects
+        if arms.empty? then return end#If arms list is empty then end method here
             #edit Arm 1
-        fill_in "study_arms_attributes_0_subject_count", :with => subjects # of subjects
-        fill_in "study_arms_attributes_0_visit_count", :with => visits # of visits
+        fill_in "study_arms_attributes_0_name", :with => arms[0].name
+        fill_in "study_arms_attributes_0_subject_count", :with => arms[0].subjects # of subjects
+        fill_in "study_arms_attributes_0_visit_count", :with => arms[0].visits # of visits
         wait_for_javascript_to_finish
-            #add Arm 2
-        click_link("Add Arm")
-        wait_for_javascript_to_finish
-        find(:xpath, "//div[@class='add-arm']/div/div[@class='arm-cell']/input[@type!='hidden']").set("ARM 2") #name arm2
-        find(:xpath, "//div[@class='add-arm']/div/div[@class='arm-cell skinny_fields']/input[contains(@name,'subject_count')]").set(subjects) # 5 subjects
-        find(:xpath, "//div[@class='add-arm']/div/div[@class='arm-cell skinny_fields']/input[contains(@name,'visit_count')]").set(visits) # 5 visits
-        wait_for_javascript_to_finish
+            #edit rest of arms
+        (1..arms.length-1).each do |i|
+            click_link("Add Arm")
+            wait_for_javascript_to_finish
+            find(:xpath, "//div[@class='add-arm']/div[@class='fields'][last()]//input[contains(@name,'[name]')]").set(arms[i].name)
+            find(:xpath, "//div[@class='add-arm']/div[@class='fields'][last()]//input[contains(@name,'[subject_count]')]").set(arms[i].subjects)
+            find(:xpath, "//div[@class='add-arm']/div[@class='fields'][last()]//input[contains(@name,'[visit_count]')]").set(arms[i].visits)
+            wait_for_javascript_to_finish
+        end
 
         click_link("Save & Continue")
-        #wait_for_javascript_to_finish
-        #**END Enter Protocol Dates END**#       
+        wait_for_javascript_to_finish
+    end
+
+    class ASingleArm
+        def initialize(options = {})
+            defaults = {
+                :name => "ARM",
+                :subjects => 1,
+                :visits => 5,
+                :services => []
+            }
+            options = defaults.merge(options)
+            @name = options[:name]
+            @subjects = options[:subjects]
+            @visits = options[:visits]
+            @services = options[:services]
+            @otfServices = []
+            @ppServices = []
+
+            @services.each do |service|
+                service.subjects = @subjects
+                if service.otf then @otfServices << service.clone
+                else @ppServices << service.clone end
+            end
+        end
+
+        attr_reader :name, :subjects, :visits, :services, :ppServices, :otfServices
+    end
+
+    def armTable(arm)
+        find(:xpath, "//tr/th[contains(text(),'#{arm.name}')]/parent::tr/parent::tbody/parent::table")
+    end
+
+    def checkServiceVisit (arm, service, number)
+        if number>arm.visits then return end #if number if greater than #vists, impossible, quit here
+        column = (number%5)
+        if column==0 then column=5 end
+        armTable(arm).first(:xpath, "//select[@class='jump_to_visit']/option[contains(text(),'Visit #{number}')]").click
+        # within armTable(arm) do select "Visit #{number}", :from => "jump_to_visit" end
+        wait_for_javascript_to_finish
+        box = armTable(arm).first(:xpath, "//tr/td[text()='#{service.name}']/parent::tr/td[@visit_column='#{column}']/input[@type='checkbox']")
+        if not box.checked? then 
+            box.click
+            service.checked += 1
+            wait_for_javascript_to_finish
+        end
+    end
+
+    def setVisitDays(arm)
+        #sets all visit days by incrementing from 1 up
+        (0..(arm.visits-1)).each do |i|
+            if i>0 and i%5==0 then #if all visit days are set in current view and 5 more need to be moved into view
+                armTable(arm).first(:xpath, "//span[@class='ui-button-icon-primary ui-icon ui-icon-circle-arrow-e']").click
+                wait_for_javascript_to_finish
+            end
+            armTable(arm).first(:xpath, "//th[@class='visit_number']/input[@id='day' and @data-position='#{i}']").set(i+1)
+            wait_for_javascript_to_finish
+        end
+    end
+
+    def checkStudyTotals(arm)
+        #checks if study total is correct for each per patient service on arm
+        clickOffAndWait
+        arm.ppServices.each do |ppservice|
+            expected = (ppservice.unitPrice * ppservice.checked * ppservice.subjects)
+            total = find(:xpath, "//tr/th[contains(text(),'#{arm.name}')]/parent::tr/following-sibling::tr/td[text()='#{ppservice.name}']/parent::tr/td[contains(@class, 'pp_line_item_study_total')]").text[1..-1].to_f
+            total.should eq(expected)
+        end
+    end
+
+    def checkPPTotals(arm)
+        #checks if per patient total is correct for each per patient service on arm
+        clickOffAndWait
+        arm.ppServices.each do |ppservice|
+            expected = (ppservice.unitPrice * ppservice.checked * ppservice.subjects)
+            total = find(:xpath, "//tr/th[contains(text(),'#{arm.name}')]/parent::tr/following-sibling::tr/td[text()='#{ppservice.name}']/parent::tr/td[contains(@class, 'pp_line_item_total')]").text[1..-1].to_f
+            total.should eq(expected)
+        end            
+    end
+
+    def checkTotals(arm)
+        checkStudyTotals(arm)
+        checkPPTotals(arm)
     end
 
 
-    def completeVisitCalender()
+
+    def completeVisitCalender(arms)
         #**Completing Visit Calender**#
             #save unit prices
-        arm1UnitPrice = find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='your_cost']").text[1..-1].to_f
-        arm2UnitPrice = find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//td[@class='your_cost']").text[1..-1].to_f
-        otfUnitPrice = find(:xpath, "//td[contains(text(),'CDW')]/ancestor::table//td[@class='your_cost']").text[1..-1].to_f
-            #total per study should be $0.00
-        find(:xpath, "//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(0.0) #arm1
-        find(:xpath, "//td[@class='pp_line_item_study_total total_3_per_study']").text[1..-1].to_f.should eq(0.0) #arm2
-            #total per patient should be $0.00
-        find(:xpath, "//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq(0.0) #arm1
-        find(:xpath, "//td[@class='pp_line_item_total total_3']").text[1..-1].to_f.should eq(0.0) #arm2
-            #set days in increasing order on ARM 1
-        find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//input[@id='day' and @class='visit_day position_1']").set("1")
-        find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//input[@id='day' and @class='visit_day position_2']").set("2")
-        find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//input[@id='day' and @class='visit_day position_3']").set("3")
-        find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//input[@id='day' and @class='visit_day position_4']").set("4")
-        find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//input[@id='day' and @class='visit_day position_5']").set("5")
+        arms.each do |arm|
+            setVisitDays(arm)
+            checkTotals(arm)
+            puts "before checkbox"
+            checkServiceVisit(arm,arm.ppServices[0],2)
+            puts "after checkbox"
+            # sleep 120
+        end
+
+        sleep 600
 
         check('visits_1') #1st checkbox ARM 1
         find(:xpath, "//td[contains(@class,'otf_total total')]").click #allow to focus and recalculate
@@ -388,11 +483,11 @@ module CapybaraProper
         find(:xpath, "//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm1UnitPrice * 3).round(2)) #ARM1 per patient total should eq (unitprice * 3)
         
             #set days in increasing order on ARM 2
-        find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//input[@id='day' and @class='visit_day position_1']").set("1")
-        find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//input[@id='day' and @class='visit_day position_2']").set("2")
-        find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//input[@id='day' and @class='visit_day position_3']").set("3")
-        find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//input[@id='day' and @class='visit_day position_4']").set("4")
-        find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//input[@id='day' and @class='visit_day position_5']").set("5")
+        # find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//input[@id='day' and @class='visit_day position_1']").set("1")
+        # find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//input[@id='day' and @class='visit_day position_2']").set("2")
+        # find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//input[@id='day' and @class='visit_day position_3']").set("3")
+        # find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//input[@id='day' and @class='visit_day position_4']").set("4")
+        # find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//input[@id='day' and @class='visit_day position_5']").set("5")
           
         check('visits_12') #2nd checkbox ARM 2
         find(:xpath, "//td[contains(@class,'otf_total total')]").click #allow to focus and recalculate

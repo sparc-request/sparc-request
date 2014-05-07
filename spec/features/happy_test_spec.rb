@@ -58,16 +58,33 @@ describe 'A Happy Test' do
         :prog => "Office of Biomedical Informatics",
         :core => "Clinical Data Warehouse",
         :name => "MUSC Research Data Request (CDW)",
-        :short => "CDW"
+        :short => "CDW",
+        :otf => true,
+        :unitPrice => 2.00
         )
     service2 = ServiceWithAddress.new(
         :instit => "Medical University of South Carolina",
         :prov => "South Carolina Clinical and Translational Institute (SCTR)",
         :prog => "Clinical and Translational Research Center (CTRC)",
         :core => "Nursing Services",
-        :name => 'Breast Milk Collection'
+        :name => 'Breast Milk Collection',
+        :unitPrice => 6.36
         )
     services = [service1,service2]
+
+    arm1 = ASingleArm.new(
+        :name => "ARM 1",
+        :subjects => 5,
+        :visits => 7,
+        :services => services
+        )
+    arm2 = ASingleArm.new(
+        :name => "ARM 2",
+        :subjects => 5,
+        :visits => 3,
+        :services => services
+        )
+    arms = [arm1,arm2]
 
     submitServiceRequest (services)
     createNewStudy
@@ -77,8 +94,8 @@ describe 'A Happy Test' do
     wait_for_javascript_to_finish 
     enterProtocolDates
     readdServices (services)
-    chooseArmPreferences("5","5")
-    arm1TotalPrice,arm2TotalPrice,otfTotalPrice = completeVisitCalender
+    chooseArmPreferences(arms)
+    arm1TotalPrice,arm2TotalPrice,otfTotalPrice = completeVisitCalender (arms)
     documentsPage
     reviewPage(arm1TotalPrice,arm2TotalPrice,otfTotalPrice)
     submissionConfirm

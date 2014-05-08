@@ -72,19 +72,11 @@ describe 'A Happy Test' do
         )
     services = [service1,service2]
 
-    arm1 = ASingleArm.new(
-        :name => "ARM 1",
-        :subjects => 5,
-        :visits => 7,
-        :services => services
-        )
-    arm2 = ASingleArm.new(
-        :name => "ARM 2",
-        :subjects => 5,
-        :visits => 3,
-        :services => services
-        )
+    arm1 = ASingleArm.new(:name => "ARM 1",:subjects => 5,:visits => 7)
+    arm2 = ASingleArm.new(:name => "ARM 2",:subjects => 5,:visits => 3)
     arms = [arm1,arm2]
+
+    request = ServiceRequestForComparison.new(services,arms)
 
     submitServiceRequest (services)
     createNewStudy
@@ -95,10 +87,11 @@ describe 'A Happy Test' do
     enterProtocolDates
     readdServices (services)
     chooseArmPreferences(arms)
-    arm1TotalPrice,arm2TotalPrice,otfTotalPrice = completeVisitCalender (arms)
+    arm1TotalPrice,arm2TotalPrice,otfTotalPrice = completeVisitCalender (request)
     documentsPage
     reviewPage(arm1TotalPrice,arm2TotalPrice,otfTotalPrice)
     submissionConfirm
+    
 
   end
 

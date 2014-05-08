@@ -1,5 +1,31 @@
 module CapybaraProper
 
+    class ServiceRequestForComparison
+        def initialize(services,arms)
+            @services = services
+            @arms = arms
+
+            @otfServices = []
+            @ppServices = []
+
+            @services.each do |service|
+                if service.otf then @otfServices << service.clone
+                else @ppServices << service.clone end
+            end
+
+            @arms.each do |arm|
+                @ppServices.each do |service|
+                    armService = service.clone
+                    armService.subjects = arm.subjects
+                    arm.services << armService
+                end
+            end
+
+        end
+
+        attr_accessor :services, :arms, :otfServices, :ppServices
+    end
+
     class ServiceWithAddress
         def initialize(options = {})
             defaults = {
@@ -23,15 +49,30 @@ module CapybaraProper
             @otf = options[:otf]
             @unitPrice = options[:unitPrice]
             @totalPrice = 0
-            @checked = 0
+            @quantity = 0
             @subjects = 0
         end
         attr_reader :instit, :prov, :prog, :core, :name, :short, :otf, :unitPrice
-        attr_accessor :totalPrice, :checked, :subjects
+        attr_accessor :totalPrice, :quantity, :subjects
     end
 
+    class ASingleArm
+        def initialize(options = {})
+            defaults = {
+                :name => "ARM",
+                :subjects => 1,
+                :visits => 5
+            }
+            options = defaults.merge(options)
+            @name = options[:name]
+            @subjects = options[:subjects]
+            @visits = options[:visits]
+            @services = []
+        end
 
-
+        attr_reader :name, :subjects, :visits
+        attr_accessor :services
+    end
 
     def clickOffAndWait
         #allows javascript to complete
@@ -138,7 +179,7 @@ module CapybaraProper
     end 
 
 
-    def addAllServices(services = [])
+    def addAllServices(services)
         #expects list of ServiceWithAddress objects
         if services.empty? 
             return #if no services passed in, end method here.
@@ -164,9 +205,134 @@ module CapybaraProper
     end
 
 
+    def armTable(armName)
+        #expects string of arm's name as input
+        #returns the table node element of the template tab in the service calender
+        find(:xpath, "//tr/th[contains(text(),'#{armName}')]/parent::tr/parent::tbody/parent::table")
+    end
+
+    def setVisitDays(armName,numVisits)
+        #expects string of arm's name,
+        #and total number of visits on arm as input
+        #sets all visit days by incrementing from 1 up
+        currentArmTable = armTable(armName)
+        (0..(numVisits-1)).each do |i|
+            if i>0 and i%5==0 then #if all visit days are set in current view and 5 more need to be moved into view
+                currentArmTable.first(:xpath, "./thead/tr/th/a/span[@class='ui-button-icon-primary ui-icon ui-icon-circle-arrow-e']").click
+                wait_for_javascript_to_finish
+            end
+            currentArmTable.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='#{i}']").set(i+1)
+            wait_for_javascript_to_finish
+        end
+    end
+
+    def checkStudyTotal(armName, serviceName, expected)
+        #expects string of arm's name, serviceName, and expected total as input
+        #checks if study total is correct for specified per patient service on arm
+        clickOffAndWait
+        currentArmTable = armTable(armName)
+        total = currentArmTable.find(:xpath, "./tbody/tr/td[contains(text(),'#{serviceName}')]/parent::tr/td[contains(@class, 'pp_line_item_study_total')]").text[1..-1].to_f
+        total.should eq(expected)
+    end
+
+    def checkPPTotal(armName, serviceName, expected)
+        #expects string of arm's name, serviceName, and expected total as input
+        #checks if per patient total is correct for specified per patient service on arm
+        clickOffAndWait
+        currentArmTable = armTable(armName)
+        total = currentArmTable.find(:xpath, "./tbody/tr/td[contains(text(),'#{serviceName}')]/parent::tr/td[contains(@class, 'pp_line_item_total')]").text[1..-1].to_f
+        total.should eq(expected)          
+    end     
+
+    def checkArmTotals(arm)
+        #expects instance of ASingleArm as input
+        #checks the arm totals are correct in the template tab of the service calender
+        arm.services.each do |service|
+
+            expectedStudyTotal = (service.unitPrice/2 * service.quantity * service.subjects)
+            checkStudyTotal(arm.name,service.name,expectedStudyTotal)
+
+            expectedPPTotal = (service.unitPrice/2 * service.quantity)
+            checkPPTotal(arm.name,service.name,expectedPPTotal)
+
+        end
+    end
+
+    def checkOTFTotal(serviceName)
+        #expects instance of ServiceWithAddress as input
+        #checks if total is correct for specified otf service
+        clickOffAndWait
+        currentArmTable = armTable("Other Services")
+        quantity = currentArmTable.first(:xpath, "./tbody/tr/td[contains(text(),'#{serviceName}')]/parent::tr/td/input[@class='line_item_quantity']")['value'].to_i
+        yourCost = currentArmTable.first(:xpath, "./tbody/tr/td[@class='your_cost']").text[1..-1].to_f
+        otfExpected = (yourCost * quantity)
+        total = currentArmTable.find(:xpath, "./tbody/tr/td[contains(text(),'#{serviceName}')]/parent::tr/td[contains(@class, 'otf_total')]").text[1..-1].to_f
+        total.should eq(otfExpected)
+        # end            
+    end   
+
+    def checkTotals(serviceRequestFC)
+        #for entire service request, checks 
+        #both pp services and otf services for correct totals.
+        serviceRequestFC.arms.each do |arm|
+            checkArmTotals(arm)
+        end
+        serviceRequestFC.otfServices.each do |service|
+            checkOTFTotal(service.name)
+        end
+    end
+
+    def markServiceVisit (arm, serviceName, number)
+        #expects instance of ASingleArm,
+        #instance of ServiceWithAddress,
+        #and visit number desired to be marked for input.
+        #checks a checkbox in the template tab of the service calender
+        if number>arm.visits or number<=0 then return end #if number is greater than #vists, impossible, quit here
+        
+        armService = nil
+        arm.services.each do |service|
+            if service.name == serviceName then 
+                armService=service
+                break
+            end
+        end
+        if armService.nil? then return end #if arm does not have service desired, impossible, quit here
+
+        column = (number%5)
+        if column==0 then column=5 end
+        currentArmTable = armTable(arm.name)
+
+        visitInView = currentArmTable.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@class='visit_name' and value='Visit #{number}']")
+        if visitInView.nil? then
+            currentArmTable.find(:xpath, "./thead/tr/th/select[@class='jump_to_visit']/option[contains(text(),'Visit #{number}')]").click
+            wait_for_javascript_to_finish
+        end
+
+        box = currentArmTable.find(:xpath, "./tbody/tr/td[text()='#{serviceName}']/parent::tr/td[@visit_column='#{column}']/input[@type='checkbox']")
+        if not box.checked? then 
+            box.click
+            armService.quantity += 1 #in order to keep correct quantity count,
+            #the service object passed in must be the object kept in the arm's services list
+            wait_for_javascript_to_finish
+        end
+    end
+
+    def setOTFQuantity (serviceName, quantity) 
+        #changes the quantity for the specified OTF service
+        #in the template tab of the service calender
+        currentArmTable = armTable("Other Services")
+        currentArmTable.first(:xpath, "./tbody/tr/td[contains(text(),'#{serviceName}')]/parent::tr/td/input[@class='line_item_quantity']").set(quantity)
+    end
 
 
-    def submitServiceRequest (services = [])
+
+
+
+
+
+
+
+    def submitServiceRequest (services)
         #expects a list of ServiceWithAddress objects
         submitExpectError #checks submit with no services error display
 
@@ -305,26 +471,7 @@ module CapybaraProper
         #**END Select Users END**#        
     end 
 
-
-    def enterProtocolDates
-        #**Enter Protocol Dates**#
-            #Select start and end date
-        strtDay = Time.now.strftime("%-d") # Today's Day
-        endDay = (Time.now + 7.days).strftime("%-d") # 7 days from today
-        page.execute_script %Q{ $('#start_date').trigger("focus") }
-        page.execute_script %Q{ $("a.ui-state-default:contains('#{strtDay}')").filter(function(){return $(this).text()==='#{strtDay}';}).trigger("click") } # click on start day
-        wait_for_javascript_to_finish
-        page.execute_script %Q{ $('#end_date').trigger("focus") }
-        if endDay.to_i < strtDay.to_i then
-          page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-          wait_for_javascript_to_finish
-        end
-        page.execute_script %Q{ $("a.ui-state-default:contains('#{endDay}')").filter(function(){return $(this).text()==='#{endDay}';}).trigger("click") } # click on end day
-        wait_for_javascript_to_finish
-    end
-  
-
-    def readdServices(services = [])
+    def readdServices(services)
         #expects list of ServiceWithAddress objects
 
         #Should have no services and instruct to add some
@@ -339,7 +486,6 @@ module CapybaraProper
         click_link("Save & Continue")
         wait_for_javascript_to_finish        
     end
-
 
     def chooseArmPreferences(arms)
         #Expects a list of ASingleArm objects
@@ -363,149 +509,43 @@ module CapybaraProper
         wait_for_javascript_to_finish
     end
 
-    class ASingleArm
-        def initialize(options = {})
-            defaults = {
-                :name => "ARM",
-                :subjects => 1,
-                :visits => 5,
-                :services => []
-            }
-            options = defaults.merge(options)
-            @name = options[:name]
-            @subjects = options[:subjects]
-            @visits = options[:visits]
-            @services = options[:services]
-            @otfServices = []
-            @ppServices = []
-
-            @services.each do |service|
-                service.subjects = @subjects
-                if service.otf then @otfServices << service.clone
-                else @ppServices << service.clone end
-            end
-        end
-
-        attr_reader :name, :subjects, :visits, :services, :ppServices, :otfServices
-    end
-
-    def armTable(arm)
-        find(:xpath, "//tr/th[contains(text(),'#{arm.name}')]/parent::tr/parent::tbody/parent::table")
-    end
-
-    def checkServiceVisit (arm, service, number)
-        if number>arm.visits then return end #if number if greater than #vists, impossible, quit here
-        column = (number%5)
-        if column==0 then column=5 end
-        armTable(arm).first(:xpath, "//select[@class='jump_to_visit']/option[contains(text(),'Visit #{number}')]").click
-        # within armTable(arm) do select "Visit #{number}", :from => "jump_to_visit" end
+    def enterProtocolDates
+        #**Enter Protocol Dates**#
+            #Select start and end date
+        strtDay = Time.now.strftime("%-d") # Today's Day
+        endDay = (Time.now + 7.days).strftime("%-d") # 7 days from today
+        page.execute_script %Q{ $('#start_date').trigger("focus") }
+        page.execute_script %Q{ $("a.ui-state-default:contains('#{strtDay}')").filter(function(){return $(this).text()==='#{strtDay}';}).trigger("click") } # click on start day
         wait_for_javascript_to_finish
-        box = armTable(arm).first(:xpath, "//tr/td[text()='#{service.name}']/parent::tr/td[@visit_column='#{column}']/input[@type='checkbox']")
-        if not box.checked? then 
-            box.click
-            service.checked += 1
-            wait_for_javascript_to_finish
+        page.execute_script %Q{ $('#end_date').trigger("focus") }
+        if endDay.to_i < strtDay.to_i then
+          page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
+          wait_for_javascript_to_finish
         end
+        page.execute_script %Q{ $("a.ui-state-default:contains('#{endDay}')").filter(function(){return $(this).text()==='#{endDay}';}).trigger("click") } # click on end day
+        wait_for_javascript_to_finish
     end
 
-    def setVisitDays(arm)
-        #sets all visit days by incrementing from 1 up
-        (0..(arm.visits-1)).each do |i|
-            if i>0 and i%5==0 then #if all visit days are set in current view and 5 more need to be moved into view
-                armTable(arm).first(:xpath, "//span[@class='ui-button-icon-primary ui-icon ui-icon-circle-arrow-e']").click
-                wait_for_javascript_to_finish
-            end
-            armTable(arm).first(:xpath, "//th[@class='visit_number']/input[@id='day' and @data-position='#{i}']").set(i+1)
-            wait_for_javascript_to_finish
-        end
-    end
-
-    def checkStudyTotals(arm)
-        #checks if study total is correct for each per patient service on arm
-        clickOffAndWait
-        arm.ppServices.each do |ppservice|
-            expected = (ppservice.unitPrice * ppservice.checked * ppservice.subjects)
-            total = find(:xpath, "//tr/th[contains(text(),'#{arm.name}')]/parent::tr/following-sibling::tr/td[text()='#{ppservice.name}']/parent::tr/td[contains(@class, 'pp_line_item_study_total')]").text[1..-1].to_f
-            total.should eq(expected)
-        end
-    end
-
-    def checkPPTotals(arm)
-        #checks if per patient total is correct for each per patient service on arm
-        clickOffAndWait
-        arm.ppServices.each do |ppservice|
-            expected = (ppservice.unitPrice * ppservice.checked * ppservice.subjects)
-            total = find(:xpath, "//tr/th[contains(text(),'#{arm.name}')]/parent::tr/following-sibling::tr/td[text()='#{ppservice.name}']/parent::tr/td[contains(@class, 'pp_line_item_total')]").text[1..-1].to_f
-            total.should eq(expected)
-        end            
-    end
-
-    def checkTotals(arm)
-        checkStudyTotals(arm)
-        checkPPTotals(arm)
-    end
-
-
-
-    def completeVisitCalender(arms)
+    def completeVisitCalender(request)
+        #expects instance of ServiceRequestForComparison as input
         #**Completing Visit Calender**#
-            #save unit prices
-        arms.each do |arm|
-            setVisitDays(arm)
-            checkTotals(arm)
-            puts "before checkbox"
-            checkServiceVisit(arm,arm.ppServices[0],2)
-            puts "after checkbox"
-            # sleep 120
+        checkTotals(request)
+        request.arms.each do |arm|
+            puts arm.name
+            setVisitDays(arm.name,arm.visits)
+            markServiceVisit(arm,arm.services[0].name,2)
+            markServiceVisit(arm,arm.services[0].name,3)
+            markServiceVisit(arm,arm.services[0].name,5)
+            markServiceVisit(arm,arm.services[0].name,7)
+            checkArmTotals(arm)
         end
+        request.otfServices.each do |otfservice|
+            setOTFQuantity(otfservice.name,5)
+            checkOTFTotal(otfservice.name)
+        end
+        checkTotals(request)
 
         sleep 600
-
-        check('visits_1') #1st checkbox ARM 1
-        find(:xpath, "//td[contains(@class,'otf_total total')]").click #allow to focus and recalculate
-        wait_for_javascript_to_finish
-        totPerStudy = (arm1UnitPrice * 1 * find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
-        find(:xpath, "//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 study total should eq (unitprice * 1 * #patients)
-        find(:xpath, "//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm1UnitPrice * 1).round(2)) #ARM1 per patient total should eq (unitprice * 1)
-        
-        check('visits_4') #3rd checkbox ARM 1
-        find(:xpath, "//td[contains(@class,'otf_total total')]").click #allow to focus and recalculate
-        wait_for_javascript_to_finish
-        totPerStudy = (arm1UnitPrice * 2 * find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
-        find(:xpath, "//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 study total should eq (unitprice * 2 * #patients)
-        find(:xpath, "//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm1UnitPrice * 2).round(2)) #ARM1 per patient total should eq (unitprice * 2)
-        
-        check('visits_6') #5th checkbox ARM 1
-        find(:xpath, "//td[contains(@class,'otf_total total')]").click #allow to focus and recalculate
-        wait_for_javascript_to_finish
-        totPerStudy = (arm1UnitPrice * 3 * find(:xpath, "//th[contains(text(),'ARM 1')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
-        find(:xpath, "//td[@class='pp_line_item_study_total total_1_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM1 study total should eq (unitprice * 3 * #patients)
-        find(:xpath, "//td[@class='pp_line_item_total total_1']").text[1..-1].to_f.should eq((arm1UnitPrice * 3).round(2)) #ARM1 per patient total should eq (unitprice * 3)
-        
-            #set days in increasing order on ARM 2
-        # find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//input[@id='day' and @class='visit_day position_1']").set("1")
-        # find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//input[@id='day' and @class='visit_day position_2']").set("2")
-        # find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//input[@id='day' and @class='visit_day position_3']").set("3")
-        # find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//input[@id='day' and @class='visit_day position_4']").set("4")
-        # find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//input[@id='day' and @class='visit_day position_5']").set("5")
-          
-        check('visits_12') #2nd checkbox ARM 2
-        find(:xpath, "//td[contains(@class,'otf_total total')]").click #allow to focus and recalculate
-        wait_for_javascript_to_finish
-        totPerStudy = (arm2UnitPrice * 1 * find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
-        find(:xpath, "//td[@class='pp_line_item_study_total total_3_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM2 study total should eq (unitprice * 1 * #patients)
-        find(:xpath, "//td[@class='pp_line_item_total total_3']").text[1..-1].to_f.should eq((arm2UnitPrice * 1).round(2)) #ARM2 per patient total should eq (unitprice * 1)
-
-        check('visits_14') #4th checkbox ARM 2
-        find(:xpath, "//td[contains(@class,'otf_total total')]").click #allow to focus and recalculate
-        wait_for_javascript_to_finish
-        totPerStudy = (arm2UnitPrice * 2 * find(:xpath, "//th[contains(text(),'ARM 2')]/ancestor::table//td[@class='subject_count']/select/option[@selected='selected']").text.to_i).round(2)
-        find(:xpath, "//td[@class='pp_line_item_study_total total_3_per_study']").text[1..-1].to_f.should eq(totPerStudy) #ARM2 study total should eq (unitprice * 2 * #patients)
-        find(:xpath, "//td[@class='pp_line_item_total total_3']").text[1..-1].to_f.should eq((arm2UnitPrice * 2).round(2)) #ARM2 per patient total should eq (unitprice * 2)
-
-        first(:xpath, "//input[@class='line_item_quantity']").set("3") #set CDW quantity to 3
-        find(:xpath, "//td[contains(@class,'otf_total total')]").click #allow to focus and recalculate
-        find(:xpath, "//td[contains(@class,'otf_total total')]").text[1..-1].to_f.should eq((otfUnitPrice*3).round(2)) #otf total should eq (unitprice * 3)
         
             #**Switch to Quantity and Billing Tab**#
         click_link("Quantity/Billing Tab")

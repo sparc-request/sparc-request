@@ -65,7 +65,8 @@ describe 'A Happy Test' do
     enterProtocolDates
     readdServices (services)
     chooseArmPreferences(arms)
-    arm1TotalPrice,arm2TotalPrice,otfTotalPrice = completeVisitCalender (request)
+    completeTemplateTab(request)
+    arm1TotalPrice,arm2TotalPrice,otfTotalPrice = completeQuantityBillingTab (request)
     documentsPage
     reviewPage(arm1TotalPrice,arm2TotalPrice,otfTotalPrice)
     submissionConfirm

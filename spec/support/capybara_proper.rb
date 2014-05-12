@@ -88,6 +88,9 @@ module CapybaraProper
         #clicks add button next to specified serviceName.
         #otherwise, searches for the service in the searchbox
         #and adds it from there
+        #beware of services with a '(' in the name, capybara does 
+        #not want to send that character in, thus causing
+        #autocomplete of the searchbox to fail at times. 
         clickOffAndWait
         addServiceButton = first(:xpath, "//a[contains(text(),'#{serviceName}')]/parent::span/parent::span//button[text()='Add']")
         if not addServiceButton.nil? then #if service is on screen then add it
@@ -326,7 +329,7 @@ module CapybaraProper
 
 
 
-
+        ######END TOOLS START SCRIPTS######
 
 
 
@@ -526,9 +529,10 @@ module CapybaraProper
         wait_for_javascript_to_finish
     end
 
-    def completeVisitCalender(request)
+    def completeTemplateTab(request)
         #expects instance of ServiceRequestForComparison as input
-        #**Completing Visit Calender**#
+        #tests the template tab of the service calender
+        #checks the totals of
         checkTotals(request)
         request.arms.each do |arm|
             puts arm.name
@@ -544,6 +548,16 @@ module CapybaraProper
             checkOTFTotal(otfservice.name)
         end
         checkTotals(request)
+    end
+
+    def switchToBillingTab
+        click_link("Quantity/Billing Tab")
+        wait_for_javascript_to_finish
+    end
+    
+    def completeQuantityBillingTab(request)
+        #expects instance of ServiceRequestForComparison as input
+        #tests the quantity and billing tab of the service calender
 
         sleep 600
         

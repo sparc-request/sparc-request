@@ -136,6 +136,10 @@ describe 'A Happy Test' do
     #**Review Page**#
     click_link("Submit to Start Services")
     wait_for_javascript_to_finish
+    if have_xpath("//div[@aria-describedby='participate_in_survey' and @display!='none']") then
+        first(:xpath, "//button/span[text()='No']").click
+        wait_for_javascript_to_finish
+    end  
     #**END Review Page END**#
 
     #**Submission Confirmation Page**#

@@ -82,14 +82,14 @@ describe 'A Happy Test' do
     createNewStudy
     selectStudyUsers
     removeAllServices
-    click_link("Save & Continue")
-    wait_for_javascript_to_finish 
+    saveAndContinue
     enterProtocolDates
     readdServices (services)
     chooseArmPreferences(arms)
-    arm1TotalPrice,arm2TotalPrice,otfTotalPrice = completeVisitCalender (request)
+    completeTemplateTab(request)
+    completeQuantityBillingTab(request)
     documentsPage
-    reviewPage(arm1TotalPrice,arm2TotalPrice,otfTotalPrice)
+    reviewPage(request)
     submissionConfirm
     
 

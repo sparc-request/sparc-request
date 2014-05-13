@@ -50,14 +50,14 @@ namespace :data do
       proper_header = verify_header(file)
 
       continue = prompt("Are you sure you want to continue importing? (Yes/No) ")
+      skipped_rows ={"couldn't locate" => [], "multiple found" => [], "nil" => []}
+      error_rows = {}
 
       if continue == 'Yes'
         puts ""
         puts "#"*50
         puts "Starting import"
 
-        skipped_rows ={"couldn't locate" => [], "multiple found" => [], "nil" => []}
-        error_rows = {}
         input_file = Rails.root.join("db", "imports", file)
 
         CSV.foreach(input_file, :headers => true, :encoding => 'windows-1251:utf-8') do |row|

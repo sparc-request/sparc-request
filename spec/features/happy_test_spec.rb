@@ -78,19 +78,13 @@ describe 'A Happy Test' do
 
     request = ServiceRequestForComparison.new(services,arms)
 
-    submitServiceRequest (services)
-    createNewStudy
-    selectStudyUsers
-    removeAllServices
-    saveAndContinue
-    enterProtocolDates
-    readdServices (services)
-    chooseArmPreferences(arms)
-    completeTemplateTab(request)
-    completeQuantityBillingTab(request)
+    submitServiceRequestPage (services)
+    selectStudyPage
+    selectDatesAndArmsPage(request)
+    serviceCalendarPage(request)
     documentsPage
     reviewPage(request)
-    submissionConfirm
+    submissionConfirmationPage
     
 
   end

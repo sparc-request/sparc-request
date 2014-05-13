@@ -1,5 +1,8 @@
 module CapybaraProper
 
+    #******************************************************************#
+    #####################vvvv NECESSARY CLASSES vvvv####################
+
     class ServiceRequestForComparison
         def initialize(services,arms)
             @services = services
@@ -74,6 +77,12 @@ module CapybaraProper
         attr_reader :name, :subjects, :visits
         attr_accessor :services, :totalPrice
     end
+
+#####################^^^^ NECESSARY CLASSES ^^^^####################
+#******************************************************************#
+#####################vvvv NECESSARY TOOLS vvvv######################
+
+
 
     def clickOffAndWait
         #allows javascript to complete
@@ -297,12 +306,12 @@ module CapybaraProper
         end
     end
 
-    def markServiceVisit (arm, serviceName, number)
+    def markServiceVisit (arm, serviceName, visitNumber)
         #expects instance of ASingleArm,
         #instance of ServiceWithAddress,
         #and visit number desired to be marked for input.
         #checks a checkbox in the template tab of the service calendar
-        if number>arm.visits or number<=0 then return end #if number is greater than #vists, impossible, quit here
+        if visitNumber>arm.visits or visitNumber<=0 then return end #if number is greater than #vists, impossible, quit here
         
         armService = nil
         arm.services.each do |service|
@@ -313,13 +322,13 @@ module CapybaraProper
         end
         if armService.nil? then return end #if arm does not have service desired, impossible, quit here
 
-        column = (number%5)
+        column = (visitNumber%5)
         if column==0 then column=5 end
         currentArmTable = armTable(arm.name)
 
-        visitInView = currentArmTable.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@class='visit_name' and value='Visit #{number}']")
+        visitInView = currentArmTable.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@class='visit_name' and value='Visit #{visitNumber}']")
         if visitInView.nil? then
-            currentArmTable.find(:xpath, "./thead/tr/th/select[@class='jump_to_visit']/option[contains(text(),'Visit #{number}')]").click
+            currentArmTable.find(:xpath, "./thead/tr/th/select[@class='jump_to_visit']/option[contains(text(),'Visit #{visitNumber}')]").click
             wait_for_javascript_to_finish
         end
 
@@ -433,54 +442,32 @@ module CapybaraProper
         currentArmTable.first(:xpath, "./tbody/tr/td[contains(text(),'#{serviceName}')]/parent::tr/td/input[@class='line_item_quantity']").set(quantity)
     end
 
-
-
-        ######END TOOLS START SCRIPTS######
-
-
-
-
-
-    def submitServiceRequest (services)
-        #expects a list of ServiceWithAddress objects
-        submitExpectError #checks submit with no services error display
-
-        addAllServices(services)#adds all services in 'services' list
-
-        count = services.length #saves total number of services into count variable
-        services.each do |s| #iterates over services
-            checkLineItemsNumber "#{count}" #checks if correct number of services displayed
-            removeService s.short #removes service
-            count -= 1 #reduces expected number of services displayed by 1
+    def checkReviewTotals(request)
+        #expects instance of ServiceRequestForComparison as input 
+        grandTotal = 0
+        calendarContainer = first(:xpath,"//div[@id='service_calendar_container']")
+        request.arms.each do |arm|
+            armTab = calendarContainer.first(:xpath,"./table/tbody/tr/th[contains(text(),'#{arm.name}')]/parent::tr/parent::tbody/parent::table")
+            arm.services.each do |service|
+                reflectedTotal = armTab.first(:xpath,"./tbody/tr[@class='line_item']/td[contains(@class,'per_study')]").text[1..-1].to_f
+                reflectedTotal.should eq(service.totalPrice)
+                grandTotal += reflectedTotal
+            end
         end
-
-        services.each do |s|
-            addService s.short #readd each service
+        request.otfServices.each do |otfservice|
+            table = calendarContainer.first(:xpath,"./table/tbody/tr/th[contains(text(),'Other Services')]/parent::tr/parent::tbody/parent::table")
+            reflectedTotal = table.first(:xpath,"./tbody/tr[@class='line_item']/td[not(@class) and contains(text(),'$')]").text[1..-1].to_f
+            reflectedTotal.should eq(otfservice.totalPrice)
+            grandTotal += reflectedTotal
         end
-
-        checkLineItemsNumber "#{services.length}" #check if correct number of services displayed
-
-        addAllServices(services)#adds all services in 'services' list a second time 
-        checkLineItemsNumber "#{services.length}" #should still display same number of services
-
-        find('.submit-request-button').click #submit request
-        wait_for_javascript_to_finish
-        ServiceRequest.find(1).line_items.count.should eq(services.length) #Should have correct # of services
+        first(:xpath, "//td[@id='grand_total']").text[1..-1].to_f.should eq(grandTotal)        
     end
 
+    #####################^^^^ NECESSARY TOOLS ^^^^######################
+    #******************************************************************#
+    ##################vvvv NECESSARY COMPONENTS vvvv####################
 
     def createNewStudy
-        #**Create a new Study**#
-            #should not have any errors displayed
-        page.should_not have_xpath("//div[@id='errorExplanation']")
-
-        click_link("Save & Continue") #click continue without study/project selected
-        wait_for_javascript_to_finish
-
-            #should only have 1 error, with specific text
-        page.should have_xpath("//div[@id='errorExplanation']/ul/li[text()='You must identify the service request with a study/project before continuing.']")
-        page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[text()!='You must identify the service request with a study/project before continuing.']")
-
         click_link("New Study")
         wait_for_javascript_to_finish
 
@@ -547,7 +534,6 @@ module CapybaraProper
 
         find('.continue_button').click
         wait_for_javascript_to_finish
-        #**END Create a new Study END**#     
     end
 
 
@@ -580,21 +566,7 @@ module CapybaraProper
         #**END Select Users END**#        
     end 
 
-    def readdServices(services)
-        #expects list of ServiceWithAddress objects
 
-        #Should have no services and instruct to add some
-        page.should have_xpath("//div[@class='instructions' and contains(text(),'continue unless you have services in your cart.')]")
-        click_link("Back to Catalog")
-
-        #re-adds all services
-        addAllServices(services)     
-
-        find('.submit-request-button').click
-        wait_for_javascript_to_finish
-
-        saveAndContinue       
-    end
 
     def chooseArmPreferences(arms)
         #Expects a list of ASingleArm objects
@@ -613,8 +585,6 @@ module CapybaraProper
             find(:xpath, "//div[@class='add-arm']/div[@class='fields'][last()]//input[contains(@name,'[visit_count]')]").set(arms[i].visits)
             wait_for_javascript_to_finish
         end
-
-        saveAndContinue
     end
 
     def enterProtocolDates
@@ -663,41 +633,114 @@ module CapybaraProper
         #expects instance of ServiceRequestForComparison as input
         #tests the quantity and billing tab of the service calendar
         
-        switchToBillingTab
         checkTotals(request)
 
-        request.arms.each do |arm|
+        request.arms.each do |arm|#set 1st visit research qty of all services on all arms to 3
             arm.services.each do |service|
                 changeResearchBillingQty(arm, service.name, 1, 3)
             end
         end
         checkTotals(request)
         
-        request.arms.each do |arm|
+        request.arms.each do |arm|#set 1st visit insurance qty of all services on all arms to 5
             arm.services.each do |service|
                 changeInsuranceBillingQty(arm, service.name, 1, 5)
             end
         end
         checkTotals(request)
 
-        request.arms.each do |arm|
+        request.arms.each do |arm|#set 1st visit effort qty of all services on all arms to 8
             arm.services.each do |service|
                 changeEffortBillingQty(arm, service.name, 1, 8)
             end
         end
         checkTotals(request)
 
-        request.otfServices.each do |otfservice|
+        request.otfServices.each do |otfservice|#set all otf service quantities to 6
             setOTFQuantity(otfservice.name,6)
             checkOTFTotal(otfservice)
         end
         checkTotals(request)
+    end
+
+
+    ##################^^^^ NECESSARY COMPONENTS ^^^^####################
+    #******************************************************************#
+    ###################vvvv NECESSARY SCRIPTS vvvv######################
+
+    def submitServiceRequestPage (services)
+        #expects a list of ServiceWithAddress objects
+        submitExpectError #checks submit with no services error display
+
+        addAllServices(services)#adds all services in 'services' list
+
+        count = services.length #saves total number of services into count variable
+        services.each do |s| #iterates over services
+            checkLineItemsNumber "#{count}" #checks if correct number of services displayed
+            removeService s.short #removes service
+            count -= 1 #reduces expected number of services displayed by 1
+        end
+
+        services.each do |s|
+            addService s.short #readd each service
+        end
+
+        checkLineItemsNumber "#{services.length}" #check if correct number of services displayed
+
+        addAllServices(services)#adds all services in 'services' list a second time 
+        checkLineItemsNumber "#{services.length}" #should still display same number of services
+
+        find('.submit-request-button').click #submit request
+        wait_for_javascript_to_finish
+        ServiceRequest.find(1).line_items.count.should eq(services.length) #Should have correct # of services
+    end
+
+    def selectStudyPage
+
+        page.should_not have_xpath("//div[@id='errorExplanation']")#should not have any errors displayed
+        saveAndContinue #click continue without study/project selected
+            #should only have 1 error, with specific text
+        page.should have_xpath("//div[@id='errorExplanation']/ul/li[text()='You must identify the service request with a study/project before continuing.']")
+        page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[text()!='You must identify the service request with a study/project before continuing.']")
+
+        createNewStudy
+
+        selectStudyUsers
+
+        removeAllServices
+
+        saveAndContinue  
+    end
+
+    def selectDatesAndArmsPage(request)
+        #expects instance of ServiceRequestForComparison as input 
+
+        enterProtocolDates
+
+        #Should have no services and instruct to add some
+        page.should have_xpath("//div[@class='instructions' and contains(text(),'continue unless you have services in your cart.')]")
+        click_link("Back to Catalog")
+        addAllServices(request.services) #re-adds all services   
+        find('.submit-request-button').click #submit service request
+        wait_for_javascript_to_finish
+        saveAndContinue  
+
+        chooseArmPreferences(request.arms)
+        saveAndContinue
+    end
+
+    def serviceCalendarPage(request)
+        #expects instance of ServiceRequestForComparison as input 
+        completeTemplateTab(request)
+
+        switchToBillingTab
+        completeQuantityBillingTab(request)
 
         saveAndContinue   
     end
 
-
-    def documentsPage()
+    def documentsPage
+        # sleep 1200
         #click_link("Add a New Document")
         #all('process_ssr_organization_ids_').each {|a| check(a)}
         #select "Other", :from => "doc_type"
@@ -705,30 +748,8 @@ module CapybaraProper
         saveAndContinue      
     end
 
-    def checkReviewTotals(request)
-        #expects instance of ServiceRequestForComparison as input 
-        grandTotal = 0
-        calendarContainer = first(:xpath,"//div[@id='service_calendar_container']")
-        request.arms.each do |arm|
-            armTab = calendarContainer.first(:xpath,"./table/tbody/tr/th[contains(text(),'#{arm.name}')]/parent::tr/parent::tbody/parent::table")
-            arm.services.each do |service|
-                reflectedTotal = armTab.first(:xpath,"./tbody/tr[@class='line_item']/td[contains(@class,'per_study')]").text[1..-1].to_f
-                reflectedTotal.should eq(service.totalPrice)
-                grandTotal += reflectedTotal
-            end
-        end
-        request.otfServices.each do |otfservice|
-            table = calendarContainer.first(:xpath,"./table/tbody/tr/th[contains(text(),'Other Services')]/parent::tr/parent::tbody/parent::table")
-            reflectedTotal = table.first(:xpath,"./tbody/tr[@class='line_item']/td[not(@class) and contains(text(),'$')]").text[1..-1].to_f
-            reflectedTotal.should eq(otfservice.totalPrice)
-            grandTotal += reflectedTotal
-        end
-        first(:xpath, "//td[@id='grand_total']").text[1..-1].to_f.should eq(grandTotal)        
-    end
-
     def reviewPage(request)
         #expects instance of ServiceRequestForComparison as input 
-        # sleep 600
         checkReviewTotals(request)
 
         click_link("Submit to Start Services")
@@ -740,12 +761,12 @@ module CapybaraProper
     end
 
 
-    def submissionConfirm()
-        #**Submission Confirmation Page**#
-        #sleep 2400
+    def submissionConfirmationPage
         click_link("Go to SPARC Request User Portal")
         wait_for_javascript_to_finish
-        #**END Submission Confirmation Page END**#        
     end
-    # end
+
+    ###################^^^^ NECESSARY SCRIPTS ^^^^######################
+    #******************************************************************#
+
 end

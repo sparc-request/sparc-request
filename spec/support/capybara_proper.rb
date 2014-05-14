@@ -4,9 +4,13 @@ module CapybaraProper
     #####################vvvv NECESSARY CLASSES vvvv####################
 
     class ServiceRequestForComparison
-        def initialize(services,arms)
+        def initialize(services,arms,study)
+            #expects a list of ServiceWithAddress objects,
+            #a list of ASingleArm objects, and
+            #an object of CustomStudy
             @services = services
             @arms = arms
+            @study = study
 
             @otfServices = []
             @ppServices = []
@@ -26,7 +30,7 @@ module CapybaraProper
 
         end
 
-        attr_accessor :services, :arms, :otfServices, :ppServices
+        attr_accessor :services, :arms, :otfServices, :ppServices, :study
     end
 
     class ServiceWithAddress
@@ -78,6 +82,25 @@ module CapybaraProper
         attr_accessor :services, :totalPrice
     end
 
+    class CustomStudy
+        def initialize(options = {})
+            defaults = {
+                :short => "Study Short Title",
+                :title => "Study Long Title",
+                :fundingStatus => "Funded",
+                :fundingSource => "Federal",
+                :sponsorName => "Super Sponsor"
+            }
+            options = defaults.merge(options)
+            @short = options[:short]
+            @title = options[:title]
+            @fundingStatus = options[:fundingStatus]
+            @fundingSource = options[:fundingSource]
+            @sponsorName = options[:sponsorName]
+        end
+        attr_accessor :short, :title, :fundingStatus, :sponsorName, :fundingSource
+    end
+
 #####################^^^^ NECESSARY CLASSES ^^^^####################
 #******************************************************************#
 #####################vvvv NECESSARY TOOLS vvvv######################
@@ -95,6 +118,11 @@ module CapybaraProper
     def saveAndContinue
         click_link("Save & Continue")
         wait_for_javascript_to_finish 
+    end
+
+    def clickContinueButton
+        find('.continue_button').click
+        wait_for_javascript_to_finish
     end
 
     def addService(serviceName)
@@ -467,73 +495,71 @@ module CapybaraProper
     #******************************************************************#
     ##################vvvv NECESSARY COMPONENTS vvvv####################
 
-    def createNewStudy
+    def createNewStudy(request)
+        #expects instance of ServiceRequestForComparison as input 
+        study = request.study
+
+        def have_error_on(field)
+            #expects a string describing the field the error is expected to be on
+            have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'#{field}')]")
+        end
+
         click_link("New Study")
         wait_for_javascript_to_finish
 
-        find('.continue_button').click #click continue with no form info
-        wait_for_javascript_to_finish
+        sleep 600
+        clickContinueButton #click continue with no form info
 
-            #should display error div with 4 errors
-        page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Short title')]")
-        page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Title')]")
-        page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding status')]")
-        page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Sponsor name')]")
+        #should display error div with 4 errors
+        page.should have_error_on "Short title"
+        page.should have_error_on "Title"
+        page.should have_error_on "Funding status"
+        page.should have_error_on "Sponsor name"
 
+        fill_in "study_short_title", :with => study.short #fill in short title
+        clickContinueButton #click continue without Title, Funding Status, Sponsor Name
 
-        fill_in "study_short_title", :with => "Bob" #fill in short title
-        find('.continue_button').click #click continue without Title, Funding Status, Sponsor Name
-        wait_for_javascript_to_finish
+        #should not display error div for field with info
+        page.should_not have_error_on "Short title"
+        #should display error div with 3 errors
+        page.should have_error_on "Title"
+        page.should have_error_on "Funding status"
+        page.should have_error_on "Sponsor name"
 
-            #should not display error div for field with info
-        page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Short title')]")
-            #should display error div with 3 errors
-        page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Title')]")
-        page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding status')]")
-        page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Sponsor name')]")
+        fill_in "study_title", :with => study.title #fill in title
+        clickContinueButton #click continue without Funding Status, Sponsor Name
 
+        #should not display error div for filled in info
+        page.should_not have_error_on "Short title"
+        page.should_not have_error_on "Title"
+        #should display error div with 2 errors for missing info
+        page.should have_error_on "Funding status"
+        page.should have_error_on "Sponsor name"
 
-        fill_in "study_title", :with => "Dole" #fill in title
-        find('.continue_button').click #click continue without Funding Status, Sponsor Name
-        wait_for_javascript_to_finish
+        fill_in "study_sponsor_name", :with => study.sponsorName #fill in sponsor name
+        clickContinueButton #click continue without Funding Status
 
-            #should not display error div for filled in info
-        page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Short title')]")
-        page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Title')]")
-            #should display error div with 2 errors for missing info
-        page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding status')]")
-        page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Sponsor name')]")
+        #should not display error divs for filled in info
+        page.should_not have_error_on "Short title"
+        page.should_not have_error_on "Title"
+        page.should_not have_error_on "Sponsor name"
+        #should display funding status missing error
+        page.should have_error_on "Funding status"
 
+        select study.fundingStatus, :from => "study_funding_status" #select funding status
+        clickContinueButton #click continue without Funding Source  
 
-        fill_in "study_sponsor_name", :with => "Captain Kurt 'Hotdog' Zanzibar" #fill in sponsor name
-        find('.continue_button').click #click continue without Funding Status
-        wait_for_javascript_to_finish
-
-            #should not display error divs for filled in info
-        page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Short title')]")
-        page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Title')]")
-        page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Sponsor name')]")
-            #should display funding status missing error
-        page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding status')]")
-
-
-        select "Funded", :from => "study_funding_status" #select funding status
-        find('.continue_button').click #click continue without Funding Source
-        wait_for_javascript_to_finish   
-
-            #should not display error divs for filled in info
-        page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Short title')]")
-        page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Title')]")
-        page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding status')]")
-        page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Sponsor name')]")
-            #should display funding source missing error
-        page.should have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'Funding source')]")
-
+        #should not display error divs for filled in info
+        page.should_not have_error_on "Short title"
+        page.should_not have_error_on "Title"
+        page.should_not have_error_on "Sponsor name"
+        page.should_not have_error_on "Funding status"
+        #should display funding source missing error
+        page.should have_error_on "Funding source"
          
-        select "Federal", :from => "study_funding_source" #select funding source
+        select study.fundingSource, :from => "study_funding_source" #select funding source
 
-        find('.continue_button').click
-        wait_for_javascript_to_finish
+        clickContinueButton
     end
 
 
@@ -668,10 +694,11 @@ module CapybaraProper
     #******************************************************************#
     ###################vvvv NECESSARY SCRIPTS vvvv######################
 
-    def submitServiceRequestPage (services)
-        #expects a list of ServiceWithAddress objects
+    def submitServiceRequestPage (request)
+        #expects instance of ServiceRequestForComparison as input 
         submitExpectError #checks submit with no services error display
 
+        services = request.services
         addAllServices(services)#adds all services in 'services' list
 
         count = services.length #saves total number of services into count variable
@@ -695,7 +722,8 @@ module CapybaraProper
         ServiceRequest.find(1).line_items.count.should eq(services.length) #Should have correct # of services
     end
 
-    def selectStudyPage
+    def selectStudyPage(request)
+        #expects instance of ServiceRequestForComparison as input 
 
         page.should_not have_xpath("//div[@id='errorExplanation']")#should not have any errors displayed
         saveAndContinue #click continue without study/project selected
@@ -703,7 +731,7 @@ module CapybaraProper
         page.should have_xpath("//div[@id='errorExplanation']/ul/li[text()='You must identify the service request with a study/project before continuing.']")
         page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[text()!='You must identify the service request with a study/project before continuing.']")
 
-        createNewStudy
+        createNewStudy(request)
 
         selectStudyUsers
 

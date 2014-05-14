@@ -54,10 +54,12 @@ describe 'A Happy Test' do
     arm2 = ASingleArm.new(:name => "ARM 2",:subjects => 5,:visits => 3)
     arms = [arm1,arm2]
 
-    request = ServiceRequestForComparison.new(services,arms)
+    study = CustomStudy.new
 
-    submitServiceRequestPage (services)
-    selectStudyPage
+    request = ServiceRequestForComparison.new(services,arms,study)
+
+    submitServiceRequestPage (request)
+    selectStudyPage(request)
     selectDatesAndArmsPage(request)
     serviceCalendarPage(request)
     documentsPage

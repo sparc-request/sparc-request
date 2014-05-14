@@ -15,6 +15,7 @@
     %tr.section_header
       %th{:colspan => 11}= t("calendar_page.per_patient") + " -- " + arm.name
     - @service_request.service_list(false).each do |key, value| # get only per patient/per visit services and group them
+      - next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
       %tr.sub_section_header
         %th{:colspan => 9}= value[:name]
 

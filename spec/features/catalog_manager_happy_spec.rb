@@ -1,5 +1,7 @@
 require 'spec_helper'
 include CapybaraCatalogManager
+include CapybaraProper
+
 
 describe 'Catalog Manager' do
   let_there_be_lane
@@ -37,36 +39,59 @@ describe 'Catalog Manager' do
     create_new_core 'Core of Invisibility','Program of Invisibility'
     create_new_service 'invisibleService', 'Core of Invisibility', :is_available => false
     create_new_service 'Service of Visibility','Core of Invisibility'
+    create_new_service 'Linked Service of Visibility','Core of Invisibility',:linked => {:on? => true, :service => 'Service of Visibility', :required? => true, :quantity? => true, :quantityNum => 5}
 
 
 
     visit root_path
     #sleep 30
 
-    click_link("Medical University of South Carolina")
-    wait_for_javascript_to_finish
-    click_link("South Carolina Clinical and Translational Institute (SCTR)")
-    wait_for_javascript_to_finish
-    click_link("Office of Biomedical Informatics")
-    wait_for_javascript_to_finish
+    navigateCatalog "Medical University of South Carolina", "South Carolina Clinical and Translational Institute (SCTR)", "Office of Biomedical Informatics"
+    # click_link("Medical University of South Carolina")
+    # wait_for_javascript_to_finish
+    # click_link("South Carolina Clinical and Translational Institute (SCTR)")
+    # wait_for_javascript_to_finish
+    # click_link("Office of Biomedical Informatics")
+    # wait_for_javascript_to_finish
     page.should have_xpath("//a[text()='MUSC Research Data Request (CDW)']")
     page.should have_xpath("//a[text()='SuperService 1']")
-    click_link("Clinical and Translational Research Center (CTRC)")
-    wait_for_javascript_to_finish
+    navigateCatalog "Medical University of South Carolina", "South Carolina Clinical and Translational Institute (SCTR)", "Clinical and Translational Research Center (CTRC)"
+    # click_link("Clinical and Translational Research Center (CTRC)")
+    # wait_for_javascript_to_finish
     page.should have_xpath("//a[text()='SuperService 2']")
     page.should have_xpath("//a[text()='Breast Milk Collection']")
     click_link("Medical University of South Carolina")
 
-    page.should_not have_xpath("//a[text()='invisibleInstitution']")
+    #**Check visibility conditions**#
     click_link('Institute of Invisibility')
+    wait_for_javascript_to_finish
+    page.should_not have_xpath("//a[text()='invisibleInstitution']")
     page.should_not have_xpath("//a[text()='invisibleProv']")
     click_link('Provider of Invisibility')
+    wait_for_javascript_to_finish
+    click_link('Program of Invisibility')#For some reason, this doesn't work
+    click_link('Program of Invisibility')#If you only click it one time.
+    click_link('Program of Invisibility')#Selenium issue-not sparc I believe.
+    wait_for_javascript_to_finish
     page.should_not have_xpath("//a[text()='invisibleProg']")
-    click_link('Program of Invisibility')
-    page.should_not have_xpath("//a[text()='invisibleCore']")
-    click_link('Core of Invisibility')
+    page.should_not have_xpath("//a[text()='invisibleCore']") 
     page.should_not have_xpath("//a[text()='invisibleService']")
     page.should have_xpath("//a[text()='Service of Visibility']")
-    #sleep 120
+    wait_for_javascript_to_finish
+    page.should have_xpath("//a[text()='Linked Service of Visibility']")
+    #**END Check visibility conditions END**#
+
+    #**Check linked service adding**#
+    addService "Linked Service of Visibility"
+    checkLineItemsNumber("2")
+    removeService "Linked Service of Visibility"
+    checkLineItemsNumber("1")
+    removeService "Service of Visibility"
+    checkLineItemsNumber("0")
+    addService "Service of Visibility"
+    checkLineItemsNumber("1")
+    removeService "Service of Visibility"
+    #**END Check linked service adding END**#
+
   end  
 end

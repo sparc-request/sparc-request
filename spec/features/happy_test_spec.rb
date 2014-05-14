@@ -32,8 +32,7 @@ describe 'A Happy Test' do
     create_new_service 'Breast Milk Collection', 'Nursing Services', {:otf => false, :unit_type => 'Per patient/visit', :unit_factor => 1, :rate => '6.36', :unit_minimum => 1}
     visit root_path
 
-        #**Check visibility conditions**#
-    #sleep 360
+    #**Check visibility conditions**#
     click_link('Institute of Invisibility')
     wait_for_javascript_to_finish
     page.should_not have_xpath("//a[text()='invisibleInstitution']")
@@ -49,8 +48,20 @@ describe 'A Happy Test' do
     page.should_not have_xpath("//a[text()='invisibleService']")
     page.should have_xpath("//a[text()='Service of Visibility']")
     page.should have_xpath("//a[text()='Linked Service of Visibility']")
+    #**END Check visibility conditions END**#
 
-        #**END Check visibility conditions END**#
+    #**Check linked service adding**#
+    addService "Linked Service of Visibility"
+    checkLineItemsNumber("2")
+    removeService "Linked Service of Visibility"
+    checkLineItemsNumber("1")
+    removeService "Service of Visibility"
+    checkLineItemsNumber("0")
+    addService "Service of Visibility"
+    checkLineItemsNumber("1")
+    removeService "Service of Visibility"
+    #**END Check linked service adding END**#
+
 
     service1 = ServiceWithAddress.new(
         :instit => "Medical University of South Carolina",
@@ -76,10 +87,18 @@ describe 'A Happy Test' do
     arm2 = ASingleArm.new(:name => "ARM 2",:subjects => 5,:visits => 3)
     arms = [arm1,arm2]
 
-    request = ServiceRequestForComparison.new(services,arms)
+    study = CustomStudy.new(
+        :short => "Bob",
+        :title => "Dole",
+        :fundingStatus => "Funded",
+        :fundingSource => "Federal",
+        :sponsorName => "Charles Thiry"
+        )
 
-    submitServiceRequestPage (services)
-    selectStudyPage
+    request = ServiceRequestForComparison.new(services,arms,study)
+
+    submitServiceRequestPage (request)
+    selectStudyPage(request)
     selectDatesAndArmsPage(request)
     serviceCalendarPage(request)
     documentsPage

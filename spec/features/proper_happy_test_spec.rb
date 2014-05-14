@@ -54,7 +54,13 @@ describe 'A Happy Test' do
     arm2 = ASingleArm.new(:name => "ARM 2",:subjects => 5,:visits => 3)
     arms = [arm1,arm2]
 
-    study = CustomStudy.new
+    study = CustomStudy.new(
+        :short => "Bob",
+        :title => "Dole",
+        :fundingStatus => "Funded",
+        :fundingSource => "Federal",
+        :sponsorName => "Charles Thiry"
+        )
 
     request = ServiceRequestForComparison.new(services,arms,study)
 

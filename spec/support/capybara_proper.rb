@@ -134,7 +134,17 @@ module CapybaraProper
         #not want to send that character in, thus causing
         #autocomplete of the searchbox to fail at times. 
         clickOffAndWait
-        addServiceButton = first(:xpath, "//a[contains(text(),'#{serviceName}')]/parent::span/parent::span//button[text()='Add']")
+
+        begin  #ensure the correct service is selected, though portions of names of some services may be the same as others. 
+            addServiceButton = find(:xpath, "//a[text()='#{serviceName}']/parent::span/parent::span//button[text()='Add']")
+        rescue
+            begin
+                addServiceButton = find(:xpath, "//a[contains(text(),'#{serviceName}')]/parent::span/parent::span//button[text()='Add']")
+            rescue
+                addServiceButton = first(:xpath, "//a[text()='#{serviceName}']/parent::span/parent::span//button[text()='Add']")
+            end
+        end
+
         if not addServiceButton.nil? then #if service is on screen then add it
             addServiceButton.click
             wait_for_javascript_to_finish
@@ -249,6 +259,25 @@ module CapybaraProper
         checkLineItemsNumber '0'
     end
 
+    def have_error_on(field)
+        #expects a string describing the field the error is expected to be on
+        #to be used in study creation pages that have the errorExplanation div
+        have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'#{field}')]")
+    end
+
+    def removeUser(user)
+        #expects a string with the name of the user desired to be removed
+        #to be used on add users page in study creation
+        find(:xpath, "//tr[contains(@class,'project_role')]/td[contains(text(),'#{user}')]/following-sibling::td/div/a[@class='remove_project_role']").click
+        wait_for_javascript_to_finish
+    end
+
+    def clickUpdateUserButtonFor(user)
+        #expects a string with the name of the user desired to be edited
+        #to be used on add users page in study creation
+        find(:xpath, "//tr[contains(@class,'project_role')]/td[contains(text(),'#{user}')]/following-sibling::td/div/a[@class='edit_project_role']").click
+        wait_for_javascript_to_finish
+    end
 
     def armTable(armName)
         #expects string of arm's name as input and a string describing tab
@@ -257,10 +286,25 @@ module CapybaraProper
         tab.find(:xpath, ".//table/tbody/tr/th[contains(text(),'#{armName}')]/parent::tr/parent::tbody/parent::table")
     end
 
+    def testVisitDaysValidation(armName,numVisits)
+        saveAndContinue
+        page.should have_error_on "study day for each visit" #Please specify a study day for each visit.
+        if numVisits <2 then return end #if there are less than 2 visits, then ascending visit days validation can not be tested: quit here.
+        
+        table = armTable(armName)
+        #set visit days in descending order, should cause immediate error response
+        table.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='0']").set(3)
+        table.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='1']").set(2)
+        first(:xpath, "//div[@class='welcome']").click #allows for refocus by clicking out of the input box
+        page.driver.browser.switch_to.alert.accept #accepts the error dialog box. will cause test to fail if no dialog appears.
+        wait_for_javascript_to_finish
+    end
+
     def setVisitDays(armName,numVisits)
         #expects string of arm's name,
         #and total number of visits on arm as input
         #sets all visit days by incrementing from 1 up
+        testVisitDaysValidation(armName,numVisits)
         currentArmTable = armTable(armName)
         (0..(numVisits-1)).each do |i|
             if i>0 and i%5==0 then #if all visit days are set in current view and 5 more need to be moved into view
@@ -499,15 +543,9 @@ module CapybaraProper
         #expects instance of ServiceRequestForComparison as input 
         study = request.study
 
-        def have_error_on(field)
-            #expects a string describing the field the error is expected to be on
-            have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'#{field}')]")
-        end
-
         click_link("New Study")
         wait_for_javascript_to_finish
 
-        sleep 600
         clickContinueButton #click continue with no form info
 
         #should display error div with 4 errors
@@ -558,38 +596,52 @@ module CapybaraProper
         page.should have_error_on "Funding source"
          
         select study.fundingSource, :from => "study_funding_source" #select funding source
-
         clickContinueButton
     end
 
 
     def selectStudyUsers
-        #**Select Users**#
-        click_button "Add Authorized User"
-            #should have 'Role can't be blank' error
+        clickContinueButton #click continue with no users added
+        page.should have_error_on "must add yourself" #You must add yourself as an authorized user
+        page.should have_error_on "Primary PI" #You must add a Primary PI to the study/project
+
+        click_button "Add Authorized User" #add the user without a role
+        #should have 'Role can't be blank' error
         page.should have_xpath("//div[@id='user_detail_errors']/ul/li[contains(text(),'Role can')]")
         page.should have_xpath("//div[@class='field_with_errors']/label[text()='Role:*']")
 
         select "Primary PI", :from => "project_role_role"
         click_button "Add Authorized User"
         wait_for_javascript_to_finish
+
         fill_in "user_search_term", :with => "bjk7"
         wait_for_javascript_to_finish
         page.find('a', :text => "Brian Kelsey (kelsey@musc.edu)", :visible => true).click()
         wait_for_javascript_to_finish
 
-        click_button "Add Authorized User"
-            #should have 'Role can't be blank' error
+        click_button "Add Authorized User" #add the user without a role
+        #should have 'Role can't be blank' error
         page.should have_xpath("//div[@id='user_detail_errors']/ul/li[contains(text(),'Role can')]")
         page.should have_xpath("//div[@class='field_with_errors']/label[text()='Role:*']")
 
-        select "Billing/Business Manager", :from => "project_role_role"
-        click_button "Add Authorized User"
+        select "Primary PI", :from => "project_role_role"
+        click_button "Add Authorized User" #Add second Primary PI
         wait_for_javascript_to_finish
 
-        find('.continue_button').click
+        clickContinueButton
+        page.should have_error_on "Primary PI" #should reject multiple Primary PIs
+
+        clickUpdateUserButtonFor "Brian Kelsey"
+        select "Other", :from => "project_role_role" #set role to other
+        fill_in "project_role_role_other", :with => "Primary PI" #set name of other role to Primary PI
+        click_button "Update Authorized User"
+
+        clickUpdateUserButtonFor "Brian Kelsey"
+        select "Billing/Business Manager", :from => "project_role_role"
+        click_button "Update Authorized User"
         wait_for_javascript_to_finish
-        #**END Select Users END**#        
+
+        clickContinueButton
     end 
 
 

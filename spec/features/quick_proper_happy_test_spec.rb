@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'A Happy Test' do
+describe 'A Happy Test on Sparc Proper' do
   let_there_be_lane
   fake_login_for_each_test
 

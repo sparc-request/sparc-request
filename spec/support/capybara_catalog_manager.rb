@@ -256,7 +256,7 @@ module CapybaraCatalogManager
         click_link under
         cnsLink.click
     end
-
+    wait_for_javascript_to_finish
     fill_in 'service_name', :with => name
     fill_in 'service_abbreviation', :with => options[:abbreviation]
     fill_in 'service_order', :with => options[:order]

@@ -95,6 +95,10 @@ class ServiceRequest < ActiveRecord::Base
         end
       end
     end
+
+    if self.line_items.empty?
+      errors.add(:no_services, "Your cart is empty. Please return to the Catalog to add services to continue.")
+    end
   end
 
   def service_details_back
@@ -103,6 +107,10 @@ class ServiceRequest < ActiveRecord::Base
 
   def service_details_forward
     service_details_page('forward')
+
+    if self.line_items.empty?
+      errors.add(:no_services, "Your cart is empty. Please return to the Catalog to add services to continue.")
+    end
   end
 
   def service_details_page(direction)

@@ -297,11 +297,13 @@ module CapybaraCatalogManager
         fill_in "new_rs", :with => options[:linked][:service]
         wait_until{first(:xpath, "//ul[contains(@class,'ui-autocomplete')]/li[@class='ui-menu-item']/a[contains(text(),'#{options[:linked][:service]}')]")}.click
         wait_for_javascript_to_finish
+        wait_until{find(:xpath, "//td[text()='#{options[:linked][:service]}']")}
 
-        requiredCheck = wait_until{first(:xpath, "//td[text()='#{options[:linked][:service]}']/following-sibling::td/input[@class='optional']")}
+        requiredCheck = wait_until{find(:xpath, "//td[text()='#{options[:linked][:service]}']/following-sibling::td/input[@class='optional']")}
         if not requiredCheck.checked? and options[:linked][:required?] then requiredCheck.click end
         wait_for_javascript_to_finish
-
+        
+        wait_until{first(:xpath, "//td[text()='#{options[:linked][:service]}']/following-sibling::td/input[contains(@class,'linked_quantity')]")}
         quantityCheck = wait_until{first(:xpath, "//td[text()='#{options[:linked][:service]}']/following-sibling::td/input[contains(@class,'linked_quantity')]")}
         if not quantityCheck.checked? and options[:linked][:quantity?] then 
             quantityCheck.click

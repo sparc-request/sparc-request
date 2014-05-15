@@ -135,14 +135,10 @@ module CapybaraProper
         #autocomplete of the searchbox to fail at times. 
         clickOffAndWait
 
-        begin  #ensure the correct service is selected, though portions of names of some services may be the same as others. 
-            addServiceButton = find(:xpath, "//a[text()='#{serviceName}']/parent::span/parent::span//button[text()='Add']")
-        rescue
-            begin
-                addServiceButton = find(:xpath, "//a[contains(text(),'#{serviceName}')]/parent::span/parent::span//button[text()='Add']")
-            rescue
-                addServiceButton = first(:xpath, "//a[text()='#{serviceName}']/parent::span/parent::span//button[text()='Add']")
-            end
+        #ensure the correct service is selected, though portions of names of some services may be the same as others. 
+        addServiceButton = first(:xpath, "//a[text()='#{serviceName}']/parent::span/parent::span//button[text()='Add']")
+        if addServiceButton.nil? then 
+            addServiceButton = first(:xpath, "//a[contains(text(),'#{serviceName}')]/parent::span/parent::span//button[text()='Add']")
         end
 
         if not addServiceButton.nil? then #if service is on screen then add it
@@ -286,18 +282,32 @@ module CapybaraProper
         tab.find(:xpath, ".//table/tbody/tr/th[contains(text(),'#{armName}')]/parent::tr/parent::tbody/parent::table")
     end
 
+    def moveVisitDayTo(armName,day,beforeWhere)
+        clickOffAndWait
+        armTable(armName).find(:xpath, ".//img[@src='/assets/sort.png']").click
+        find(:xpath, "//select[contains(@id,'visit_to_move')]/option[text()='Visit #{day.to_s}']").select_option
+        find(:xpath, "//select[contains(@id,'move_to_position')]/option[contains(text(),'Visit #{beforeWhere}')]").select_option
+        click_button "submit_move"
+        wait_for_javascript_to_finish
+    end
+
     def testVisitDaysValidation(armName,numVisits)
         saveAndContinue
         page.should have_error_on "study day for each visit" #Please specify a study day for each visit.
-        if numVisits <2 then return end #if there are less than 2 visits, then ascending visit days validation can not be tested: quit here.
+        if numVisits <3 then return end #if there are less than 3 visits, then ascending visit days validation can not be tested: quit here.
         
         table = armTable(armName)
         #set visit days in descending order, should cause immediate error response
-        table.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='0']").set(3)
-        table.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='1']").set(2)
+        table.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='0']").set(2)
+        table.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='1']").set(1)
         first(:xpath, "//div[@class='welcome']").click #allows for refocus by clicking out of the input box
         page.driver.browser.switch_to.alert.accept #accepts the error dialog box. will cause test to fail if no dialog appears.
         wait_for_javascript_to_finish
+
+        table.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='1']").set(3)
+        moveVisitDayTo(armName,1,3)
+        table.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='0']").set("")
+        table.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='1']").set("")
     end
 
     def setVisitDays(armName,numVisits)
@@ -398,7 +408,7 @@ module CapybaraProper
         if column==0 then column=5 end
         currentArmTable = armTable(arm.name)
 
-        visitInView = currentArmTable.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@class='visit_name' and value='Visit #{visitNumber}']")
+        visitInView = currentArmTable.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@class='visit_name' and @value='Visit #{visitNumber}']")
         if visitInView.nil? then
             currentArmTable.find(:xpath, "./thead/tr/th/select[@class='jump_to_visit']/option[contains(text(),'Visit #{visitNumber}')]").click
             wait_for_javascript_to_finish
@@ -795,6 +805,11 @@ module CapybaraProper
     def selectDatesAndArmsPage(request)
         #expects instance of ServiceRequestForComparison as input 
 
+        #VALIDATION ERROR IN APP, UNCOMMENT WHEN ERROR IS REPAIRED.
+        # saveAndContinue #save and continue with no start or end date
+        # page.should have_error_on "start date" #should complain about not having a start date
+        # page.should have_error_on "end date" #should complain about not having an end date
+
         enterProtocolDates
 
         #Should have no services and instruct to add some
@@ -820,10 +835,17 @@ module CapybaraProper
     end
 
     def documentsPage
-        # sleep 1200
-        #click_link("Add a New Document")
-        #all('process_ssr_organization_ids_').each {|a| check(a)}
-        #select "Other", :from => "doc_type"
+        click_link "Add a New Document"
+        first(:xpath,"//input[@id='document']").set("/Users/charlie/Documents/GitHub/sparc-rails/spec/features/quick_happy_test_spec.rb")
+        select "Other", :from => "doc_type"
+        first(:xpath,"//input[@id='process_ssr_organization_ids_']").click
+        click_link "Upload"
+        wait_for_javascript_to_finish
+        
+        click_link "Edit"
+        wait_for_javascript_to_finish
+        click_link "Update"
+        wait_for_javascript_to_finish
 
         saveAndContinue      
     end

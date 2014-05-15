@@ -50,8 +50,8 @@ describe 'A Happy Test' do
         )
     services = [service1,service2]
 
-    arm1 = ASingleArm.new(:name => "ARM 1",:subjects => 5,:visits => 7)
-    arm2 = ASingleArm.new(:name => "ARM 2",:subjects => 5,:visits => 3)
+    arm1 = ASingleArm.new(:name => "ARM 1",:subjects => 5,:visitNumber => 7)
+    arm2 = ASingleArm.new(:name => "ARM 2",:subjects => 5,:visitNumber => 3)
     arms = [arm1,arm2]
 
     study = CustomStudy.new(

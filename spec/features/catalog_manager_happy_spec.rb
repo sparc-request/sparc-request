@@ -77,7 +77,7 @@ describe 'Catalog Manager' do
     page.should_not have_xpath("//a[text()='invisibleCore']") 
     page.should_not have_xpath("//a[text()='invisibleService']")
     page.should have_xpath("//a[text()='Service of Visibility']")
-    wait_for_javascript_to_finish
+    clickOffAndWait
     page.should have_xpath("//a[text()='Linked Service of Visibility']")
     #**END Check visibility conditions END**#
 

@@ -1,19 +1,11 @@
-.user-information-title.ui-corner-all
-  %h3= t(:protocol_information)[:greeting]
 .user-information-body.ui-corner-bottom
   %p
-    %strong= @user.display_name
-    %br
+    = @user.display_name
+    |
     = @user.email
-    %br
-.notifications-link
-  = link_to portal_notifications_path do
-    - if @user.unread_notification_count(@user) >= 1
-      = image_tag 'portal/email_64.png', :class => 'left'
-    - else
-      = image_tag 'portal/email_open_64.png', :class => 'left'
-    .notifications-text.left
-      = t(:protocol_information)[:notes]
-      %br
-      = pluralize(@user.unread_notification_count(@user), t(:protocol_information)[:note_count])
+
+= link_to portal_notifications_path, :class => "notifications-link" do
+  = image_tag @user.unread_notification_count(@user) >= 1 ? 'portal/notification_white.png' : 'portal/unreadnotification_white.png', :class => 'left'
+  .notifications-text.left
+    = pluralize(@user.unread_notification_count(@user), t(:protocol_information)[:note_count])
 .clear

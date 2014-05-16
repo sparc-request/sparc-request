@@ -569,7 +569,7 @@ en:
     greeting: "Welcome!"
     notes: "Notifications:"
     note_count: "Unread Message"
-    message1: "Within your dashboard, you can view (and/or edit, submit) service requests currently in SPARC Request, as well as all of those still in 'draft' status. To edit any study/project specific information, click on the 'Edit' button located under the 'Study/Project Information' heading. To add or edit users, click on the 'Edit Authorized Users' button located under the 'Authorized Users' heading."
+    message1: "Within your dashboard, you can view (and/or edit and submit) service requests currently in SPARC Request, as well as all of those still in 'draft' status."
     message2: "Please note that studies/projects are listed in descending order."
     loading: "Loading your project/studies"
     rights1: "You do not have appropriate rights to"
@@ -586,7 +586,7 @@ en:
     edit: "Edit"
     delete: "Delete"
     no_authorized_users: "Currently no authorized users"
-    add_authorized_user: "+ ADD An Authorized User"
+    add_authorized_user: "Add An Authorized User"
     service_requests: "Service Requests:"
     srid: "SRID:"
     date: "Submitted Date:"
@@ -850,7 +850,7 @@ en:
 
   # Admin Dashboard
   admin_dashboard:
-    title: "My Dashboard"
+    title: "Dashboard <span>|</span> Welcome"
     id: "SRID"
     status: "Status"
     pi: "PI"

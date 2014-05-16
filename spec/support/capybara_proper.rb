@@ -789,9 +789,7 @@ module CapybaraProper
 
         page.should_not have_xpath("//div[@id='errorExplanation']")#should not have any errors displayed
         saveAndContinue #click continue without study/project selected
-            #should only have 1 error, with specific text
-        page.should have_xpath("//div[@id='errorExplanation']/ul/li[text()='You must identify the service request with a study/project before continuing.']")
-        page.should_not have_xpath("//div[@id='errorExplanation']/ul/li[text()!='You must identify the service request with a study/project before continuing.']")
+        page.should have_error_on "You must identify the service request with a study/project before continuing."
 
         createNewStudy(request)
 

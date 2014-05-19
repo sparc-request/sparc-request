@@ -2,6 +2,8 @@ require 'spec_helper'
 include CapybaraCatalogManager
 include CapybaraProper
 
+include CapybaraAdminPortal #remove after admin portal development
+
 
 describe 'A Happy Test' do
   let_there_be_lane
@@ -105,6 +107,7 @@ describe 'A Happy Test' do
     reviewPage(request)
     submissionConfirmationPage
     
+    adminPortal(request)
 
   end
 

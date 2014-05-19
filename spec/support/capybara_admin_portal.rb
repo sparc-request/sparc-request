@@ -1,8 +1,34 @@
 module CapybaraAdminPortal
 
+    def goToSparcProper
+        visit root_path
+        wait_for_javascript_to_finish
+        if have_xpath("//div[@class='welcome']/span[text()='Not Logged In']") then
+            login("jug2@musc.edu","password")
+        end
+    end
+
     def goToAdminPortal
         #navigates to admin portal
         visit "/portal/admin"
+        wait_for_javascript_to_finish
+    end
+
+    def login(un,pwd)
+        currentUrl = page.current_url
+        visit "/identities/sign_in"
+        wait_for_javascript_to_finish
+        loginDiv = first(:xpath,"//div[@id='login']")
+        if loginDiv.nil? then 
+            if not currentUrl==page.current_url then visit "#{currentUrl}" end
+            wait_for_javascript_to_finish
+            return #if the login dialog is not displayed quit here.
+        end 
+        click_link "Outside Users Click Here"
+        wait_for_javascript_to_finish
+        fill_in "identity_ldap_uid", :with => un
+        fill_in "identity_password", :with => pwd
+        first(:xpath, "//input[@type='submit' and @value='Sign In']").click
         wait_for_javascript_to_finish
     end
 
@@ -64,19 +90,27 @@ module CapybaraAdminPortal
     end
 
     def testOTFService(service,quantity)
-        #expects instance of ServiceRequestForComparison as input 
+        #expects instance of ServiceWithAddress, and integer quantity as input
+        #quantity will round down if not integer and will be input to service quantity box.
+        #the cost will then 
         if not service.otf then return end #if service sent in was not one time fee, stop here.
         unitPrice = service.unitPrice
         fill_in "line_item_quantity", :with => quantity
         expectToastMessage
         waitAndClickOff
-        expectedCost = (unitPrice*quantity).round(2)
-        first(:xpath, "//div[@id='one_time_fee_table']/tbody/tr/td[contains(@id,'_cost')]").text[1..-1].to_f.should eq(expectedCost)
+        quantity = quantity.floor
+        expectedCost = (unitPrice/2*quantity).round(2) #divided by 2 here because the effective percentage is 50
+        #this makes this method only effective for the SR of the happy_test suite until effective percentage is
+        #pulled out from either the SR or service. 
+        first(:xpath, "//div[@id='one_time_fee_table']/table/tbody/tr/td[contains(@id,'_cost')]").text[1..-1].to_f.should eq(expectedCost)
         wait_for_javascript_to_finish
     end
 
     def adminPortal(request)
         #expects instance of ServiceRequestForComparison as input 
+        goToSparcProper
+        puts 'sp over'
+        sleep 600
         goToAdminPortal
         enterServiceRequest(request.study.short,request.services[0].name)
 
@@ -95,7 +129,7 @@ module CapybaraAdminPortal
         testOTFService(request.services[0],3)
         testOTFService(request.services[0],request.services[0].quantity)
 
-        sleep 2400  
+        # sleep 2400  
     end
 
 end

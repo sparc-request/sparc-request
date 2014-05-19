@@ -16,7 +16,7 @@ module CapybaraProper
             @ppServices = []
 
             @services.each do |service|
-                if service.otf then @otfServices << service.clone
+                if service.otf then @otfServices << service
                 else @ppServices << service.clone end
             end
 
@@ -851,7 +851,6 @@ module CapybaraProper
     def reviewPage(request)
         #expects instance of ServiceRequestForComparison as input 
         checkReviewTotals(request)
-
         click_link("Submit to Start Services")
         wait_for_javascript_to_finish
         if have_xpath("//div[@aria-describedby='participate_in_survey' and @display!='none']") then
@@ -865,6 +864,7 @@ module CapybaraProper
         click_link("Go to SPARC Request User Portal")
         wait_for_javascript_to_finish
     end
+
 
     ###################^^^^ NECESSARY SCRIPTS ^^^^######################
     #******************************************************************#

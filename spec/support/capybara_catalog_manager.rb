@@ -256,7 +256,7 @@ module CapybaraCatalogManager
         click_link under
         cnsLink.click
     end
-    wait_for_javascript_to_finish
+    wait_until{first(:xpath, "//td/input[@id='service_name']")}
     fill_in 'service_name', :with => name
     fill_in 'service_abbreviation', :with => options[:abbreviation]
     fill_in 'service_order', :with => options[:order]
@@ -297,6 +297,7 @@ module CapybaraCatalogManager
         fill_in "new_rs", :with => options[:linked][:service]
         wait_until{first(:xpath, "//ul[contains(@class,'ui-autocomplete')]/li[@class='ui-menu-item']/a[contains(text(),'#{options[:linked][:service]}')]")}.click
         wait_for_javascript_to_finish
+        sleep 30
         wait_until{find(:xpath, "//td[text()='#{options[:linked][:service]}']")}
 
         requiredCheck = wait_until{find(:xpath, "//td[text()='#{options[:linked][:service]}']/following-sibling::td/input[@class='optional']")}

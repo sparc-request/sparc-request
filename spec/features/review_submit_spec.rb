@@ -30,6 +30,8 @@ describe "review page", :js => true do
     it 'Should submit the page', :js => true do
       find("#submit_services2").click
       wait_for_javascript_to_finish
+      click_button("No")
+      wait_for_javascript_to_finish
       service_request_test = ServiceRequest.find(service_request.id)
       service_request_test.status.should eq("submitted")
     end
@@ -74,6 +76,8 @@ describe "review page", :js => true do
       service2.update_attributes(send_to_epic: true)
       clear_emails
       find("#submit_services2").click
+      wait_for_javascript_to_finish
+      click_button("No")
       wait_for_javascript_to_finish
       @email = all_emails.find { |email| email.subject == "Epic Rights Approval"}
       service_request.update_attributes(status: 'submitted')
@@ -136,10 +140,10 @@ describe "review page", :js => true do
         page.should have_content "Study has been sent to Epic"
       end
 
-      it "should not send services missing cpt and cdm codes" do
+      it "should not send services missing cpt code" do
         visit_email @email
         click_link "Send to Epic"
-        page.should have_content "#{service2.name} does not have a CDM or CPT code."
+        page.should have_content "#{service2.name} does not have a CPT code."
       end
     end
   end

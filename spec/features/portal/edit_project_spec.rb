@@ -31,7 +31,8 @@ describe "editing a project", js: true do
 
     it "should redirect back to the main portal page" do
       click_on "Cancel"
-      page.should have_content("Welcome!")
+      page.should have_content('Dashboard')
+      page.should have_content('Welcome')
     end
   end
 

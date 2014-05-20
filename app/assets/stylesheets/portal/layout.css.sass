@@ -215,6 +215,51 @@ div.associated-user-button
   background: url(yellowbutton_add.png) no-repeat
 .associated-user-button:hover, .service-request-button:hover
   cursor: pointer
+div.add_user_dialog_box
+  padding: 0px
+  border: 0px
+  background: none !important
+  div.ui-dialog-content
+    background-color: white
+    .user-search-container
+      margin: 15px 10px 5px
+      padding-bottom: 20px
+      border-bottom: 1px solid #CCC
+    .user_info
+      input
+        margin-top: 7px
+  div.ui-dialog-titlebar
+    background: #F79739 !important
+    border: 0px
+    border-radius: 25px 25px 0 0
+    font-size: 1.4em
+    padding: 10px 18px
+    button.ui-dialog-titlebar-close
+      background: url(close_white.png) no-repeat
+      height: 47px
+      width: 47px
+      border: 0px
+      margin: 0px
+      top: 0px
+      padding: 0px
+      span
+        background: none
+  div.ui-dialog-buttonpane
+    margin: 0px !important
+    border: 0px !important
+    #add_authorized_user_submit_button,
+    #add_authorized_user_cancel_button
+      background: url(yellowbutton_small.png) no-repeat
+      border: 0px
+      height: 40px
+      width: 93px
+      font-size: 1.5em
+      .ui-button-text
+        padding: 0px
+    #add_authorized_user_submit_button.ui-state-hover,
+    #add_authorized_user_cancel_button
+      .ui-button-text
+        color: white !important
 .service-request-title
   color: white
   padding: 7px 7px 7px 15px
@@ -315,22 +360,20 @@ div.associated-user-button
   fieldset
     border: 1px solid $dark_gray
     margin-top: 10px
-    margin-right: 8px
     fieldset
       margin-top: 10px
       margin-left: 8px
-      margin-right: 8px
       width: 650px
       legend
         background: $sexy_blue
   legend
-    border: 1px solid $sexy_blue
-    padding: 3px 10px 3px 10px
+    padding: 6px 10px
     margin-left: 10px
-    background: #73B9D7
+    background: #F79739
     color: #FFF
+    border-radius: 5px
   div
-    padding: 3px 20px 6px 20px
+    padding: 3px 10px 6px
     input[type="text"], select
       width: 200px
     select

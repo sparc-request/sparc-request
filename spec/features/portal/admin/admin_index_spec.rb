@@ -16,7 +16,8 @@ describe "admin index page", :js => true do
     end
 
     it "should allow access to the admin page if the user is a service provider" do
-      page.should have_content 'My Dashboard'
+      page.should have_content 'Dashboard'
+      page.should have_content 'Welcome'
     end
 
     it "should have a service request listed in draft status" do
@@ -101,7 +102,8 @@ describe "admin index page", :js => true do
       it "should allow access to the admin page if the user is a super user" do
         FactoryGirl.create(:super_user, identity_id: jug2.id, organization_id: provider.id)
         visit portal_admin_index_path
-        page.should have_content 'My Dashboard'
+        page.should have_content 'Dashboard'
+        page.should have_content 'Welcome'
       end
     end
 

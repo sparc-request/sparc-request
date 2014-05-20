@@ -12,7 +12,7 @@ describe "landing page", :js => true do
   describe "notifications link" do
     it 'should work' do
       visit portal_root_path
-      find(".notifications-link a").click
+      find("a.notifications-link").click
       page.should have_css("div#notifications")
     end
   end
@@ -38,10 +38,10 @@ describe "landing page", :js => true do
 
     it 'should bring up the edit user box' do
       within(".Julia") do
-        click_on("Edit")
+        find("a.edit-associated-user-button").click
         wait_for_javascript_to_finish
       end
-      page.should have_text("Edit An Authorized User")
+      page.should have_text("Edit an Authorized User")
     end
 
     it 'should allow user to delete users' do
@@ -57,7 +57,7 @@ describe "landing page", :js => true do
     it 'should not delete the user if only pi' do
 
       within(".Julia") do
-        click_on("Delete")
+        find("a.delete-associated-user-button").click
         page.driver.browser.switch_to.alert.accept # Accept Delete
         page.driver.browser.switch_to.alert.accept # Clear notification
       end

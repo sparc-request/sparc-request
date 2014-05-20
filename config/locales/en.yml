@@ -440,7 +440,7 @@ en:
     type: "Study Type (Check all that apply)"
     impact: "Impact Areas"
     affiliations: "Affiliations, Collaborations, and Memberships"
-    save: "Save Study"
+    save: "Save"
 
   # Edit Project Form
   project_form:
@@ -451,7 +451,7 @@ en:
     dropdown_default3: "Select a Potential Funding Source"
     description: "Brief Description:"
     rate: "Indirect Cost Rate:"
-    save: "Save Project"
+    save: "Save"
 
   # Study/Project Shared
   protocol_shared:

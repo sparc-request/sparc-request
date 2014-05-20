@@ -21,13 +21,19 @@
                 %td= otf_form.object.try(:quantity)
                 %td= otf_form.object.try(:service).try(:current_effective_pricing_map).try(:quantity_type)
                 - if otf_form.object.try(:service).try(:current_effective_pricing_map).otf_unit_type == 'N/A'
-                  %td{:colspan => "4"}
+                  %td
+                  %td
+                  %td{:colspan => 2}
                 - else
                   %td{:style => "white-space:nowrap;overflow:hidden;"}
                     %span{:style => "padding-right:5px;"} /
                     = otf_form.object.try(:units_per_quantity)
                   %td= otf_form.object.try(:service).try(:current_effective_pricing_map).try(:otf_unit_type)
-              %tr.fulfillment_fields.ui-widget-header{:style => "#{'display:none;' if otf_form.object.fulfillments.empty?}", :class => "fulfillments_#{otf_form.object.id}"}
+              %tr.fulfillment_fields.fulfillment_header{:style => "#{'display:none;' if otf_form.object.fulfillments.empty?}", :class => "fulfillments_#{otf_form.object.id}"}
+                %th{:colspan => 7, :class => 'ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-accordion-header-active ui-state-active ui-corner-top'}
+                  %span.ui-accordion-header-icon.ui-icon.ui-icon-triangle-1-s 
+                  Fulfillment
+              %tr.fulfillment_fields.ui-widget-header.study_level_charges{:style => "#{'display:none;' if otf_form.object.fulfillments.empty?}", :class => "fulfillments_#{otf_form.object.id}"}
                 %th= t(:fulfillments)[:services][:no_visits][:date]
                 %th= t(:fulfillments)[:services][:no_visits][:number]
                 %th= t(:fulfillments)[:services][:no_visits][:qty_type]
@@ -35,8 +41,8 @@
                 %th= t(:fulfillments)[:services][:no_visits][:otf_unit_type]
                 %th{:colspan => "2"}= t(:fulfillments)[:services][:no_visits][:notes]
               = otf_form.fields_for :fulfillments, wrapper: false do |fulfillment_form|
-                %tr.fields
-                  %td= fulfillment_form.datepicker :date, size: 10, dateFormat: "yy/mm/dd", :class => "fulfillment_date"
+                %tr.fields.study_level_charges
+                  %td= fulfillment_form.datepicker :formatted_date, size: 10, dateFormat: "m/dd/yy"
                   %td.cwf_otf_text_field= fulfillment_form.text_field :quantity, :class => 'fulfillment_quantity'
                   %td.cwf_otf_text_field
                     = fulfillment_form.select :quantity_type, options_for_select(Fulfillment::CWF_QUANTITY_TYPES, fulfillment_form.object.quantity_type), :class => 'fulfillment_quantity_type'

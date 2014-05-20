@@ -107,7 +107,8 @@ describe 'A Happy Test' do
     reviewPage(request)
     submissionConfirmationPage
     
-    adminPortal(request)
+    adminPortal(request,true)
+    adminPortal(request,false)
 
   end
 

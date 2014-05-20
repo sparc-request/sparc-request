@@ -1,5 +1,22 @@
 module CapybaraCatalogManager
 
+  def add_service_provider(id="leonarjp")
+    find(:xpath, "//div[text()='User Rights']").click
+    wait_for_javascript_to_finish
+    # sleep 200
+    fill_in "new_sp", with: "#{id}"
+    wait_for_javascript_to_finish
+
+    response = wait_until{first(:xpath, "//a[contains(text(),'#{id}') and contains(text(),'@musc.edu')]")}
+    if not response.nil? then response.click 
+    else first(:xpath, "//a[contains(text(),'#{id}') and contains(text(),'@musc.edu')]").click end
+    wait_for_javascript_to_finish
+
+    first("#save_button").click
+    wait_for_javascript_to_finish
+  end
+
+
   def create_new_institution(name, options = {})
     defaults = {
         :abbreviation => name,
@@ -101,8 +118,7 @@ module CapybaraCatalogManager
     first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_investigator_rate_type']/option[contains(text(),'#{options[:investigator_rate_type]}')]").select_option
     first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_internal_rate_type']/option[contains(text(),'#{options[:internal_rate_type]}')]").select_option
     
-    find(:xpath, "//div[text()='User Rights']").click
-    add_identity_to_organization("new_sp")  
+    add_service_provider "Julia"
     first(:xpath, "//input[@id='save_button']").click
     wait_for_javascript_to_finish
     click_link name
@@ -244,19 +260,19 @@ module CapybaraCatalogManager
     }
     options = defaults.merge(options)
     wait_for_javascript_to_finish
-    cnsLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[text()='Create New Service']")
+    cnsLink = first(:xpath, "//a[contains(text(),'#{under}')]/following-sibling::ul//a[contains(text(),'Create New Service')]")
     if cnsLink.visible? then
-        begin
-            cnsLink.click
-        rescue
-            click_link under
-            cnsLink.click
-        end
+        cnsLink.click
+        wait_for_javascript_to_finish
     else
         click_link under
+        wait_for_javascript_to_finish
         cnsLink.click
+        wait_for_javascript_to_finish
     end
-    wait_until{first(:xpath, "//td/input[@id='service_name']")}
+    wait_for_javascript_to_finish
+
+    wait_until(20){first(:xpath, "//td/input[@id='service_name']")}
     fill_in 'service_name', :with => name
     fill_in 'service_abbreviation', :with => options[:abbreviation]
     fill_in 'service_order', :with => options[:order]
@@ -297,8 +313,9 @@ module CapybaraCatalogManager
         fill_in "new_rs", :with => options[:linked][:service]
         wait_until{first(:xpath, "//ul[contains(@class,'ui-autocomplete')]/li[@class='ui-menu-item']/a[contains(text(),'#{options[:linked][:service]}')]")}.click
         wait_for_javascript_to_finish
-        sleep 30
-        wait_until{find(:xpath, "//td[text()='#{options[:linked][:service]}']")}
+
+        serviceAdded = first(:xpath, "//td[contains(text(),'#{options[:linked][:service]}')]")
+        if serviceAdded.nil? then wait_until{find(:xpath, "//td[contains(text(),'#{options[:linked][:service]}')]")} end
 
         requiredCheck = wait_until{find(:xpath, "//td[text()='#{options[:linked][:service]}']/following-sibling::td/input[@class='optional']")}
         if not requiredCheck.checked? and options[:linked][:required?] then requiredCheck.click end

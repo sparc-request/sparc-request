@@ -102,14 +102,19 @@ $(document).ready ->
 
       $('.view-full-calendar-dialog').dialog({
           autoOpen: false
+          dialogClass: "full_calendar_dialog_box"
           title: 'Study Information'
           width: 715
           height: 500
           modal: true
-          buttons: {
-            "Ok": () ->
+          buttons: [
+            {
+            id: "ok_button"
+            text: "Ok"
+            click: ->
               $(this).dialog('close')
-          }
+            }
+          ]
       })
 
 

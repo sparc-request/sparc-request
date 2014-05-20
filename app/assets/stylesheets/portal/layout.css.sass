@@ -139,7 +139,6 @@ h2.title
   margin: 0 auto 25px
 .dashboard-view
   float: left
-  margin: 14px 8px 8px 8px
 .protocol-accordion-title
   width: 630px
 .protocol-short-title
@@ -215,7 +214,8 @@ div.associated-user-button
   background: url(yellowbutton_add.png) no-repeat
 .associated-user-button:hover, .service-request-button:hover
   cursor: pointer
-div.add_user_dialog_box
+div.add_user_dialog_box,
+div.full_calendar_dialog_box
   padding: 0px
   border: 0px
   background: none !important
@@ -247,8 +247,10 @@ div.add_user_dialog_box
   div.ui-dialog-buttonpane
     margin: 0px !important
     border: 0px !important
+    background: white !important
     #add_authorized_user_submit_button,
-    #add_authorized_user_cancel_button
+    #add_authorized_user_cancel_button,
+    #ok_button
       background: url(yellowbutton_small.png) no-repeat
       border: 0px
       height: 40px
@@ -257,7 +259,11 @@ div.add_user_dialog_box
       .ui-button-text
         padding: 0px
     #add_authorized_user_submit_button.ui-state-hover,
-    #add_authorized_user_cancel_button
+    #add_authorized_user_cancel_button.ui-state-hover,
+    #ok_button.ui-state-hover,
+    #add_authorized_user_submit_button.ui-state-focus,
+    #add_authorized_user_cancel_button.ui-state-focus,
+    #ok_button.ui-state-focus
       .ui-button-text
         color: white !important
 .service-request-title
@@ -1163,7 +1169,7 @@ div.add_user_dialog_box
   border-top-left-radius: 3px
 
 .blue_header
-  background: $sexy_blue
+  background: #0775B0
   color: $white
   padding: 2px
 

@@ -38,7 +38,7 @@ module CapybaraAdminPortal
         #then calls wait for javascript to finish method.
         #equivalent of clickOffAndWait in CapybaraProper, 
         #however a different part of the page is clicked as
-        #the CapybaraProper xpath is unavailable in the Admin Portal.
+        #the xpath used in CapybaraProper is unavailable in the Admin Portal.
         first(:xpath, "//div[@id='welcome_msg']/span").click
         wait_for_javascript_to_finish
     end    
@@ -122,12 +122,13 @@ module CapybaraAdminPortal
 
         click_link "Add a Subsidy"
         wait_for_javascript_to_finish
+        decimal = (percentage.to_f/100.0)
 
         currentCost = first(:xpath, "//td[@class='effective_cost']").text[1..-1].to_f
         userDisplayCost = first(:xpath, "//td[@class='display_cost']").text[1..-1].to_f
-        piContribution = (currentCost-((currentCost*percentage)/100)).round(2)
-        subCurrentCost = ((currentCost*percentage)/100).round(2)
-        subDisplayCost = ((userDisplayCost*percentage)/100).round(2)
+        piContribution = (currentCost*(1-decimal)).round(2)
+        subCurrentCost = (currentCost*decimal).round(2)
+        subDisplayCost = (userDisplayCost*decimal).round(2)
 
         fill_in "subsidy_percent_subsidy", :with => "#{percentage}"
         waitAndClickOff
@@ -186,7 +187,6 @@ module CapybaraAdminPortal
         select "Delete #{visitText} - #{visitText}", :from => 'delete_visit_position'
         click_link "Delete a Visit"
         wait_for_javascript_to_finish
-        sleep 600
     end
 
     def onTab(tabName)
@@ -228,8 +228,8 @@ module CapybaraAdminPortal
 
         addNote ("This is a Note")
         testSubsidy(50)
+        testSubsidy(40)
         testSubsidy(30)
-        testSubsidy(20)
 
         if otf then 
             testOTFService(request.otfServices[0],20)

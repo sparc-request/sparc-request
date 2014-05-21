@@ -11,6 +11,7 @@
       %th{:colspan => 12}= t("calendar_page.headers.other_services")
     %tr.section_header
     - @service_request.service_list(true).each do |key, value| # get only one time fee services and group them
+      - next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
       %tr.sub_section_header
         %th{:colspan => 9}= value[:name]
         - value[:line_items].each do |line_item|

@@ -95,6 +95,10 @@ class ServiceRequest < ActiveRecord::Base
         end
       end
     end
+
+    if self.line_items.empty?
+      errors.add(:no_services, "Your cart is empty. Please return to the Catalog to add services to continue.")
+    end
   end
 
   def service_details_back
@@ -106,6 +110,12 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def service_details_page(direction)
+    if direction == 'forward'
+      if self.line_items.empty?
+        errors.add(:no_services, "Your cart is empty. Please return to the Catalog to add services to continue.")
+      end
+    end
+
     if has_per_patient_per_visit_services? and not (direction == 'back' and status == 'first_draft')
       #TODO why is this being called when you try to unset protocol (don't supply one)
       if protocol and protocol.start_date.nil?

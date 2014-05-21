@@ -595,6 +595,7 @@ en:
     status: "Status:"
     edit_original: "Edit Original"
     send_notification: "Send Notification"
+    full_calendar: "View Consolidated Request"
 
   # Portal sub service request dialog
   ssr_dialog:

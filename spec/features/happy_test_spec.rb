@@ -109,8 +109,6 @@ describe 'A Happy Test' do
     
     adminPortal(request,true)
     adminPortal(request,false)
-    sleep 2400  
-
   end
 
 end

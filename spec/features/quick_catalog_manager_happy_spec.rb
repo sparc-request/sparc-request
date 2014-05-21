@@ -16,6 +16,5 @@ describe 'Catalog Manager' do
     create_new_service 'someService', 'someCore', :otf => false
     create_new_service 'someService2', 'someCore', :otf => true
     visit root_path
-    sleep 120
   end  
 end

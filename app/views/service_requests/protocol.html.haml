@@ -59,7 +59,7 @@
 
 - if @ctrc_services
   #ctrc_dialog
-    = "SCTR Research Nexus services have been found on another Service Request (##{@service_request.protocol.id}-#{@ssr_id}) pertaining to this Project/Study (#{@service_request.protocol.short_title}). Please edit the original Service Request containing the Nexus services in your User Portal."
+    = I18n.t('protocol_information.ctrc_services_exist', :protocol_id => @service_request.protocol.id, :ssr_id => @ssr_id, :short_title => @service_request.protocol.short_title)
     %br
     %br
     #redirect{:style => "float:right"}= link_to "Ok", protocol_service_request_path(@service_request)

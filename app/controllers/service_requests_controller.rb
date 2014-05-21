@@ -605,7 +605,7 @@ class ServiceRequestsController < ApplicationController
         
         if document and not params[:doc_type].empty?
           sub_service_request = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
-          sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other], :document_grouping_id => document_grouping.id #if document
+          sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other], :document_grouping_id => document_grouping.id
           sub_service_request.save
         else
           doc_errors = {}

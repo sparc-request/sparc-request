@@ -99,7 +99,6 @@ class ServiceRequestsController < ApplicationController
     if session[:errors]
       if session[:errors][:ctrc_services]
         @ctrc_services = true
-        @service_request.remove_ctrc_services
         @ssr_id = @service_request.protocol.find_sub_service_request_with_ctrc(@service_request.id)
       end
     end
@@ -245,8 +244,10 @@ class ServiceRequestsController < ApplicationController
     if USE_EPIC
       if @protocol.should_push_to_epic?
         @protocol.ensure_epic_user
-        @protocol.awaiting_approval_for_epic_push
-        send_epic_notification_for_user_approval(@protocol)
+        #temporarily disabled for production only
+        #@protocol.awaiting_approval_for_epic_push
+        #send_epic_notification_for_user_approval(@protocol)
+        EpicQueue.create(:protocol_id => @protocol.id) unless EpicQueue.where(:protocol_id => @protocol.id).size == 1
       end
     end
 
@@ -513,6 +514,8 @@ class ServiceRequestsController < ApplicationController
 
   def send_service_provider_notifications(sub_service_requests, xls)
     sub_service_requests.each do |sub_service_request|
+      #disable service provider e-mails if a line items is flagged to send to epic, temporary fix
+      next if sub_service_request.line_items.any? { |li| li.should_push_to_epic? }
       sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
         send_individual_service_provider_notification(sub_service_request.service_request, sub_service_request, service_provider, xls)
       end
@@ -534,7 +537,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def send_epic_notification_for_user_approval(protocol)
-    Notifier.notify_for_epic_user_approval(protocol).deliver
+    #Notifier.notify_for_epic_user_approval(protocol).deliver
   end
 
   # Navigate updates

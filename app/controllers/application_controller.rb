@@ -219,7 +219,7 @@ class ApplicationController < ActionController::Base
   def setup_navigation
     #TODO - this could definitely be done a better way
     @page = if params[:action] == 'navigate'
-        params[:current_location] || request.referrer.split('/').last.split('?').first
+        params[:action] = params[:current_location] || request.referrer.split('/').last.split('?').first
       else
         params[:action]
       end

@@ -464,6 +464,6 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def arms_editable?
-    self.sub_service_requests.empty? ? false : true #self.sub_service_requests.all?{|ssr| ssr.arms_editable?}
+    true #self.sub_service_requests.all?{|ssr| ssr.arms_editable?}
   end
 end

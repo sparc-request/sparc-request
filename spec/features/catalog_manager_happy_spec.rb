@@ -44,7 +44,6 @@ describe 'Catalog Manager' do
 
 
     visit root_path
-    #sleep 30
 
     navigateCatalog "Medical University of South Carolina", "South Carolina Clinical and Translational Institute (SCTR)", "Office of Biomedical Informatics"
     # click_link("Medical University of South Carolina")

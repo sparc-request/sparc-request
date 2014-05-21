@@ -321,6 +321,7 @@ class Identity < ActiveRecord::Base
   def clinical_provider_for_ctrc?
     #TODO should look at all tagged with CTRC
     org = Organization.tagged_with("ctrc").first
+    if org.nil? then return false end###
     self.clinical_providers.each do |provider|
       if provider.organization_id == org.id
         return true      

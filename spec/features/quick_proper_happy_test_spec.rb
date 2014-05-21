@@ -148,7 +148,6 @@ describe 'A Happy Test on Sparc Proper' do
     #**END Submission Confirmation Page END**#
 
 
-    #sleep 15
 
 
   end

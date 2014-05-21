@@ -74,9 +74,7 @@ describe 'A Happy Test on Sparc Proper' do
     reviewPage(request)
     submissionConfirmationPage
 
-    adminPortal(request,true)#remove after admin portal development
-    adminPortal(request,false)#remove after admin portal development
-
+    goToSparcProper
     
   end
 

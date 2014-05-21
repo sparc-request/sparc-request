@@ -217,7 +217,6 @@ module CapybaraAdminPortal
         #expects instance of ServiceRequestForComparison as input 
         #and boolean otf to test either one time fee or per patient/per visit
 
-        # goToSparcProper
         goToAdminPortal
         if otf then
             enterServiceRequest(request.study.short,request.otfServices[0].name)

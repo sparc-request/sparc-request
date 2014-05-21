@@ -4,6 +4,8 @@ module CapybaraProper
     #####################vvvv NECESSARY CLASSES vvvv####################
 
     class ServiceRequestForComparison
+        #intended as service request testing data structure for comparison with app's data structure
+        #should organized arms, services, and study in somewhat the same manner as the app's.
         def initialize(services,arms,study)
             #expects a list of ServiceWithAddress objects,
             #a list of ASingleArm objects, and
@@ -34,6 +36,8 @@ module CapybaraProper
     end
 
     class ServiceWithAddress
+        #intended as service testing data structure that also contains 
+        # "address" of its core, program, provider, and institution
         def initialize(options = {})
             defaults = {
                 :instit => false,
@@ -64,6 +68,7 @@ module CapybaraProper
     end
 
     class ASingleArm
+        #Intended as arm testing data structure
         def initialize(options = {})
             defaults = {
                 :name => "ARM",
@@ -83,6 +88,7 @@ module CapybaraProper
     end
 
     class CustomStudy
+        #Intended as study testing data structure
         def initialize(options = {})
             defaults = {
                 :short => "Study Short Title",
@@ -798,25 +804,24 @@ module CapybaraProper
         removeAllServices
 
         saveAndContinue  
+        wait_for_javascript_to_finish
+        #Should have no services and instruct to add some
+        page.should have_error_on 'Your cart is empty.'
+        click_link("Back to Catalog")
+        addAllServices(request.services) #re-adds all services   
+        find('.submit-request-button').click #submit service request and go to Select Study page
+        wait_for_javascript_to_finish
+        saveAndContinue #Continue past select study page
     end
 
     def selectDatesAndArmsPage(request)
         #expects instance of ServiceRequestForComparison as input 
 
-        #VALIDATION ERROR IN APP, UNCOMMENT WHEN ERROR IS REPAIRED.
-        # saveAndContinue #save and continue with no start or end date
-        # page.should have_error_on "start date" #should complain about not having a start date
-        # page.should have_error_on "end date" #should complain about not having an end date
+        saveAndContinue #save and continue with no start or end date
+        page.should have_error_on "start date" #should complain about not having a start date
+        page.should have_error_on "end date" #should complain about not having an end date
 
         enterProtocolDates
-
-        #Should have no services and instruct to add some
-        page.should have_xpath("//div[@class='instructions' and contains(text(),'continue unless you have services in your cart.')]")
-        click_link("Back to Catalog")
-        addAllServices(request.services) #re-adds all services   
-        find('.submit-request-button').click #submit service request
-        wait_for_javascript_to_finish
-        saveAndContinue  
 
         chooseArmPreferences(request.arms)
         saveAndContinue

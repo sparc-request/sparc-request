@@ -16,10 +16,47 @@ module CapybaraCatalogManager
     wait_for_javascript_to_finish
   end
 
+  def fillOutCWF
+    wait_for_javascript_to_finish
+    find(:xpath, "//div[text()='Clinical Work Fulfillment']").click
+    wait_for_javascript_to_finish
+    cwfCheckBox = first(:xpath, "//input[@id='program_show_in_cwf']")
+    if not cwfCheckBox.checked? then cwfCheckBox.click end
+    wait_for_javascript_to_finish
+
+    i = 1
+    first(:xpath, "//input[@id='program_position_in_cwf']").set(i)
+    first("#save_button").click
+    wait_for_javascript_to_finish    
+    while not first(:xpath, "//div[@id='errorExplanation']/ul/li[contains(text(),'Position_in_cwf')]").nil? do
+        i+=1
+        first(:xpath, "//input[@id='program_position_in_cwf']").set(i)
+        first("#save_button").click
+        wait_for_javascript_to_finish
+    end
+
+    fill_in "new_cp", with: "Julia"
+    wait_for_javascript_to_finish
+    response = wait_until{first(:xpath, "//a[contains(text(),'Julia') and contains(text(),'@musc.edu')]")}
+    if not response.nil? then response.click 
+    else first(:xpath, "//a[contains(text(),'Julia') and contains(text(),'@musc.edu')]").click end
+    wait_for_javascript_to_finish   
+  end
+
+  def createTags
+    Tag.create(:name => "ctrc") # Displays as "Nexus"
+    Tag.create(:name => "required forms") # Displays as "Required forms"
+    Tag.create(:name => "clinical work fulfillment") # Displays as "Clinical work fulfillment"
+    Tag.create(:name => "epic") # Displays as "Epic"
+  end
+
+
   def setTag(name)
+    wait_for_javascript_to_finish
     tagExist = first(:xpath, "//span[@style='margin-right:10px;']/span/label[contains(text(),'#{name}')]")
     if tagExist.nil? then return end #if tag does not exist, quit here. 
-    find(:xpath, "//span[@style='margin-right:10px;']/span/label[contains(text(),'#{name}')]/parent::span/following-sibling::span/input[@type='checkbox']").click
+    checkBox = find(:xpath, "//span[@style='margin-right:10px;']/span/label[contains(text(),'#{name}')]/parent::span/following-sibling::span/input[@type='checkbox']")
+    if not checkBox.checked? then checkBox.click end
   end 
 
 
@@ -64,6 +101,7 @@ module CapybaraCatalogManager
         :order => 1,
         :is_available => true,
         :color => 'blue',
+        :process_ssrs => false,
         :display_date => Time.now,
         :federal => 50,
         :corporate => 50,
@@ -108,7 +146,10 @@ module CapybaraCatalogManager
     elsif not options[:is_available] and not hideAvailableCheck.checked? then #if not desired available and hide is not checked then check
         hideAvailableCheck.click
     end
-
+    if options[:process_ssrs] then 
+        splitCheckBox = find(:xpath, "//input[@id='program_process_ssrs']")
+        if not splitCheckBox.checked? then splitCheckBox.click end
+    end
     options[:tags].each do |tagName| setTag tagName end
 
     find(:xpath, "//div[text()='Pricing']").click
@@ -145,6 +186,7 @@ module CapybaraCatalogManager
         :abbreviation => name,
         :order => 1,
         :is_available => true,
+        :process_ssrs => false,
         :display_date => Time.now,
         :federal => 50,
         :corporate => 50,
@@ -188,8 +230,13 @@ module CapybaraCatalogManager
     elsif not options[:is_available] and not hideAvailableCheck.checked? then #if not desired available and hide is not checked then check
         hideAvailableCheck.click
     end
-
+    if options[:process_ssrs] then 
+        splitCheckBox = find(:xpath, "//input[@id='program_process_ssrs']")
+        if not splitCheckBox.checked? then splitCheckBox.click end
+    end
     options[:tags].each do |tagName| setTag tagName end
+
+    if options[:tags].include? "Clinical work fulfillment" then fillOutCWF end
 
     find(:xpath, "//div[text()='Pricing']").click
     find(:xpath, "//input[@class='add_pricing_setup']").click
@@ -253,9 +300,13 @@ module CapybaraCatalogManager
     elsif not options[:is_available] and not hideAvailableCheck.checked? then #if not desired available and hide is not checked then check
         hideAvailableCheck.click
     end
-
+    if options[:process_ssrs] then 
+        splitCheckBox = find(:xpath, "//input[@id='program_process_ssrs']")
+        if not splitCheckBox.checked? then splitCheckBox.click end
+    end
     options[:tags].each do |tagName| setTag tagName end
-    sleep 2400
+
+
     first(:xpath, "//input[@id='save_button']").click
     wait_for_javascript_to_finish
     click_link name
@@ -303,7 +354,10 @@ module CapybaraCatalogManager
     elsif not options[:is_available] and not hideAvailableCheck.checked? then #if not desired available and hide is not checked then check
         hideAvailableCheck.click
     end
-
+    if options[:process_ssrs] then 
+        splitCheckBox = find(:xpath, "//input[@id='program_process_ssrs']")
+        if not splitCheckBox.checked? then splitCheckBox.click end
+    end
     options[:tags].each do |tagName| setTag tagName end
 
     find(:xpath, "//div[text()='Pricing']").click

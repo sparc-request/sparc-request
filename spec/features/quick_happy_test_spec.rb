@@ -143,7 +143,6 @@ describe 'A Happy Test' do
     #**END Submission Confirmation Page END**#
 
 
-    #sleep 15
 
 
   end

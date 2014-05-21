@@ -285,4 +285,8 @@ class Protocol < ActiveRecord::Base
     return self.service_requests.detect { |sr| !['first_draft', 'draft'].include?(sr.status) }
   end
 
+  def has_one_time_fees?
+    return self.service_requests.detect { |sr| sr.has_one_time_fee_services? && !['first_draft', 'draft'].include?(sr.status)}
+  end
+
 end

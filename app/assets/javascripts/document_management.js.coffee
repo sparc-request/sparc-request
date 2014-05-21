@@ -14,10 +14,12 @@ $(document).ready ->
     $("#document").removeAttr('disabled')
     $(".document_upload_button").hide()
     $('.document_edit span').html('Loading...')
+    $('.document_delete').hide()
 
   $("#cancel_upload").live 'click', ->
     $("#process_ssr_organization_ids").attr('disabled', 'disabled')
     $("#document").attr('disabled', 'disabled')
+    $('.document_delete').show()
 
   $(document).on('change', '#doc_type', ->
     if $(this).val() == 'other'

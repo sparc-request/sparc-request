@@ -139,6 +139,32 @@ $(document).ready ->
     $('#dashboard').slideToggle()
   )
 
+  $(document).on('nested:fieldRemoved:fulfillments', (event) ->
+    field = event.field
+    field.addClass("deleted_by_nested_form")
+  )
+
+  $(document).on('nested:fieldAdded:fulfillments', (event) ->
+    field = event.field
+    field.siblings('.study_level_charges').not('.deleted_by_nested_form').show()
+    field.siblings('.fulfillment_header').children('th').children('span').removeClass('ui-icon-triangle-1-e')
+    field.siblings('.fulfillment_header').children('th').children('span').addClass('ui-icon-triangle-1-s')
+    field.siblings('.fulfillment_header').removeClass('collapsed')
+  )
+
+  $(document).on('click', '.fulfillment_header', ->
+    if $(this).hasClass('collapsed')
+      $(this).siblings('.study_level_charges').not('.deleted_by_nested_form').show()
+      $(this).removeClass('collapsed')
+      $(this).children('th').children('span').removeClass('ui-icon-triangle-1-e')
+      $(this).children('th').children('span').addClass('ui-icon-triangle-1-s')
+    else
+      $(this).siblings('.study_level_charges').hide()
+      $(this).addClass('collapsed')
+      $(this).children('th').children('span').removeClass('ui-icon-triangle-1-s')
+      $(this).children('th').children('span').addClass('ui-icon-triangle-1-e')
+  )
+
   $(document).on('click', '.cwf_add_service_button', ->
     $('#visit_form .spinner_wrapper').show()
     box = $(this).siblings('select')
@@ -211,8 +237,7 @@ $(document).ready ->
       success: (html) ->
         $('.comments:visible').html(html)
   )
-
-
+  
   ####Sub Service Request Save button
   $('#ssr_save').button()
 

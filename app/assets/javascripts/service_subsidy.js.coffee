@@ -83,10 +83,10 @@ $(document).ready ->
     pass = true
     message = ''
 
+    overridden = pi.attr('data-overridden')
     # if the pi contribution field is empty, then ignore it altogether
-    if pi.val() == ''
+    if pi.val() == '' or overridden == 'true'
       pass = true
-
     else
       id = pi.attr('data-id')
       direct_cost = $('.estimated_cost_' + id).data('cost') / 100

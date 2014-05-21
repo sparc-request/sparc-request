@@ -317,6 +317,31 @@ describe "admin fulfillment tab", :js => true do
     end
   end
 
+  describe 'adding an arm' do
+    before :each do
+      click_link 'Add an Arm'
+      wait_for_javascript_to_finish
+      fill_in "arm_name", :with => 'Another Arm'
+      fill_in "subject_count", :with => 5
+      fill_in "visit_count", :with => 20
+      find('#submit_arm').click()
+      wait_for_javascript_to_finish
+      study.reload
+    end
+
+    it 'should add all arm information' do
+      new_arm = study.arms.last
+      within(".arm_id_#{new_arm.id}") do
+        page.should have_content 'Another Arm'
+        find(".visit_day.position_1").value.should eq("1")
+        find(".visit_day.position_5").value.should eq("5")
+        find('#line_item_service_id').find('option[selected]').text.should eq("Per Patient")
+        find('.line_items_visit_subject_count').find('option[selected]').text.should eq("5")
+      end
+
+    end
+  end
+
   describe "notes" do
     before :each do
       @notes = "And Shepherds we shall be For thee, my Lord, for thee. Power hath descended forth from Thy hand Our feet may swiftly carry out Thy commands. So we shall flow a river forth to Thee And teeming with souls shall it ever be."

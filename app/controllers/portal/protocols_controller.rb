@@ -107,6 +107,8 @@ class Portal::ProtocolsController < Portal::BaseController
         visit_count:   visit_count,
         subject_count: subject_count)
 
+    @selected_arm.default_visit_days
+
     @selected_arm.reload
 
     # If any sub service requests under this arm's protocol are in CWF we need to build patient calendars

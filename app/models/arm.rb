@@ -298,6 +298,12 @@ class Arm < ActiveRecord::Base
   def update_minimum_counts
     self.update_attributes(:minimum_visit_count => self.visit_count, :minimum_subject_count => self.subject_count)
   end
+
+  def default_visit_days
+    self.visit_groups.each do |vg|
+      vg.update_attribute(:day, vg.position)
+    end
+  end
   
   ### audit reporting methods ###
   

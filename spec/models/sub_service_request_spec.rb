@@ -22,15 +22,13 @@ describe 'SubServiceRequest' do
 
       context 'single core' do
 
-        before :each do
-          program = FactoryGirl.create(:program)
-          core = FactoryGirl.create(:core, :process_ssrs, parent_id: program.id)
-          
+        before :each do          
           @ppv = FactoryGirl.create(:service, organization_id: core.id) # PPV Service
           @otf = FactoryGirl.create(:service, organization_id: core.id) # OTF Service
           @otf.pricing_maps.build(FactoryGirl.attributes_for(:pricing_map, :is_one_time_fee))
+          sub_service_request.update_attributes(organization_id: core.id)
 
-          @ssr = FactoryGirl.create(:sub_service_request, organization_id: core.id)
+          @ssr = sub_service_request
         end
 
         it 'should return a list of available services' do
@@ -47,19 +45,18 @@ describe 'SubServiceRequest' do
       context 'multiple cores' do
 
         it 'should climb the org tree to get services' do
-          program = FactoryGirl.create(:program, :process_ssrs)
           core = FactoryGirl.create(:core, parent_id: program.id)
           core2 = FactoryGirl.create(:core, parent_id: program.id)
           core3 = FactoryGirl.create(:core, parent_id: program.id)
           
-          ppv = FactoryGirl.create(:service, organization_id: core.id) # PPV Service
+          ppv = FactoryGirl.create(:service, organization_id: core.id, name: "Per Patient Service") # PPV Service
           ppv2 = FactoryGirl.create(:service, :disabled, organization_id: core3.id) # Disabled PPV Service
-          otf = FactoryGirl.create(:service, organization_id: core2.id) # OTF Service
+          otf = FactoryGirl.create(:service, organization_id: core2.id, name: "OTF Service") # OTF Service
           otf.pricing_maps.build(FactoryGirl.attributes_for(:pricing_map, :is_one_time_fee))
 
-          ssr = FactoryGirl.create(:sub_service_request, organization_id: core.id)
+          # ssr = FactoryGirl.create(:sub_service_request, organization_id: core.id)
 
-          ssr.candidate_services.should include(ppv, otf)
+          sub_service_request.candidate_services.should include(ppv, otf)
         end
 
       end
@@ -68,7 +65,7 @@ describe 'SubServiceRequest' do
 
     describe 'fulfillment line item manipulation' do
 
-      let!(:sub_service_request2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id) }
+      let!(:sub_service_request2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
  
       context 'updating a line item' do
 

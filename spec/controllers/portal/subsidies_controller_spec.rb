@@ -7,33 +7,10 @@ describe Portal::SubsidiesController do
   let!(:provider) { FactoryGirl.create(:provider, parent_id: institution.id) }
   let!(:program) { FactoryGirl.create(:program, parent_id: provider.id) }
   let!(:core) { FactoryGirl.create(:core, parent_id: program.id) }
-
-  let!(:study) {
-    study = Study.create(FactoryGirl.attributes_for(:protocol));
-    study.save!(:validate => false);
-    study
-  }
-
-  # TODO: assign service_list
-
-  let!(:service_request) {
-    FactoryGirl.create(
-      :service_request,
-      protocol_id: study.id)
-  }
-
-  let!(:ssr) {
-    FactoryGirl.create(
-        :sub_service_request,
-        service_request_id: service_request.id,
-        organization_id: core.id)
-  }
-
-  let!(:subsidy) {
-    FactoryGirl.create(
-        :subsidy,
-        sub_service_request_id: ssr.id)
-  }
+  let!(:study) { study = Study.create(FactoryGirl.attributes_for(:protocol)); study.save!(:validate => false); study }
+  let!(:service_request) { service_request = ServiceRequest.create(FactoryGirl.attributes_for(:service_request, protocol_id: study.id)); service_request.save!(:validate => false); service_request }
+  let!(:ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
+  let!(:subsidy) { FactoryGirl.create(:subsidy, sub_service_request_id: ssr.id) }
 
   describe 'POST update_from_fulfillment' do
     it 'should set subsidy' do

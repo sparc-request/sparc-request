@@ -3,25 +3,14 @@ require 'spec_helper'
 describe Portal::AssociatedUsersController do
   stub_portal_controller
 
+  let_there_be_lane
+  let_there_be_j
+  build_service_request_with_project
+
   let!(:identity) { FactoryGirl.create(:identity) }
   let!(:identity2) { FactoryGirl.create(:identity) }
-
-  let!(:core) { FactoryGirl.create(:core, parent_id: nil) }
-
-  let!(:project) {
-    project = Project.create(FactoryGirl.attributes_for(:protocol))
-    project.save!(validate: false)
-    project_role = FactoryGirl.create(
-        :project_role,
-        protocol_id: project.id,
-        identity_id: identity.id,
-        project_rights: "approve",
-        role: "pi")
-    project.reload
-    project
-  }
-
-  let!(:service_request) { FactoryGirl.create(:service_request) }
+  let!(:project_role) { FactoryGirl.create(:project_role, protocol_id: project.id, identity_id: identity.id, project_rights: "approve", role: "pi") }
+  let!(:service_request) { FactoryGirl.create_without_validation(:service_request) }
   let!(:sub_service_request) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id ) }
 
   describe 'GET show' do

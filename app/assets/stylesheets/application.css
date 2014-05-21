@@ -443,6 +443,11 @@ h3.needed_info {
   border-radius: 5px !important
 }
 
+div#institution_accordion h3.provider_header {
+  background: url("/assets/jquery-ui/ui-bg_glass_45_0078ae_1x400.png") repeat-x scroll 50% 50% #0078AE;
+  border: 1px solid #77D5F7;
+}
+
 .provider_accordion {
   width: 97% !important;
   float: right;
@@ -2698,4 +2703,12 @@ table.service_calendar tbody td.visit {
 .move_visits img{
   vertical-align: middle;
   padding-right: 5px;
+}
+
+.left-arrow {
+  margin: 0px 30px 0px -50px !important;
+}
+
+.right-arrow {
+  margin: 0px -50px 0px 30px !important;
 }

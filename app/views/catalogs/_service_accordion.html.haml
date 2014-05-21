@@ -9,7 +9,7 @@
         - institution.providers.order('`order`').each do |provider|
           - next unless provider.is_available? or provider.is_available.nil?
           - next if @sub_service_request and (@sub_service_request.organization != provider and @sub_service_request.organization.parents.exclude?(provider))
-          %h3{:class => provider.css_class}
+          %h3{:class => "#{provider.css_class} provider_header"}
             = link_to provider.name, update_description_catalog_path(provider)
           %div.provider
             - provider.programs.order('`order`').each do |program|

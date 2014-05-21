@@ -17,7 +17,6 @@ class Portal::FulfillmentsController < Portal::BaseController
       @sub_service_request = @fulfillment.line_item.sub_service_request
       @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.is_one_time_fee?}
       @active = @fulfillment.line_item.id
-      @fulfillment.update_attributes(fulfilled_r_quantity: 1, requested_r_quantity: @fulfillment.line_item.quantity)
       render 'create'
     else
       respond_to do |format|

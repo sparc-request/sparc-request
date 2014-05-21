@@ -18,8 +18,13 @@ $(document).ready ->
     $(pi_contribution_field).val(new_pi_contribution)
     
     percent = calculate_subsidy_percent(direct_cost, new_pi_contribution)
-    percent_display = if percent != "" then percent.toFixed(2) + '%' else '0%'
+    if direct_cost == 0
+      percent_display = '0%'
+    else
+      percent_display = if percent != "" then percent.toFixed(2) + '%' else '0%'
     $('.subsidy_percent_' + id).text(percent_display)
+    $('.admin_percent_subsidy_' + id).val(percent)
+
 
   # Recalculate requested funding and subsidy percentage whenever pi
   # contribution changes
@@ -65,7 +70,6 @@ $(document).ready ->
         buttons:
           Ok: ->
             $(this).dialog('close')
-
     return pass
 
   # Validate the PI contribution for a subsidy.  Returns a 2-tuple
@@ -79,10 +83,10 @@ $(document).ready ->
     pass = true
     message = ''
 
+    overridden = pi.attr('data-overridden')
     # if the pi contribution field is empty, then ignore it altogether
-    if pi.val() == ''
+    if pi.val() == '' or overridden == 'true'
       pass = true
-
     else
       id = pi.attr('data-id')
       direct_cost = $('.estimated_cost_' + id).data('cost') / 100

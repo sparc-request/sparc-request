@@ -9,6 +9,10 @@ describe 'as a user on catalog page', :js => true do
   it 'the user should create a pricing setup' do
     provider = Organization.where(abbreviation: 'SCTR1').first
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
+    within '#pricing' do
+      find('.legend').click
+      wait_for_javascript_to_finish
+    end
     click_button("Add Pricing Setup")
     wait_for_javascript_to_finish
     
@@ -37,7 +41,7 @@ describe 'as a user on catalog page', :js => true do
     end
   
     page.execute_script %Q{ $(".save_button").click() }
-    wait_for_javascript_to_finish
+    sleep 3
     
     provider.pricing_setups.first.federal.should eq(150)
     
@@ -45,6 +49,10 @@ describe 'as a user on catalog page', :js => true do
   
   it 'should not save if required fields are missing' do
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
+    within '#pricing' do
+      find('.legend').click
+      wait_for_javascript_to_finish
+    end
     click_button("Add Pricing Setup")
     
     page.execute_script("$('.ui-accordion-header').click()")
@@ -56,6 +64,10 @@ describe 'as a user on catalog page', :js => true do
   
   it 'should display an error message when required fields are missing' do
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
+    within '#pricing' do
+      find('.legend').click
+      wait_for_javascript_to_finish
+    end
     click_button("Add Pricing Setup")
     
     page.execute_script("$('.ui-accordion-header').click()")
@@ -67,6 +79,10 @@ describe 'as a user on catalog page', :js => true do
   
   it 'should display an error when rates are less than the federal rate in the percent of fee section' do
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
+    within '#pricing' do
+      find('.legend').click
+      wait_for_javascript_to_finish
+    end
     click_button("Add Pricing Setup")
     
     page.execute_script("$('.ui-accordion-header').click()")
@@ -90,6 +106,10 @@ describe 'as a user on catalog page', :js => true do
   
   it 'should create a pricing map with the same dates as the pricing setup' do
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
+    within '#pricing' do
+      find('.legend').click
+      wait_for_javascript_to_finish
+    end
     click_button("Add Pricing Setup")
     
     page.execute_script("$('.ui-accordion-header').click()") 
@@ -120,6 +140,11 @@ describe 'as a user on catalog page', :js => true do
     ## Check to verify pricing map was created.
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
     click_link("MUSC Research Data Request (CDW)")
+    wait_for_javascript_to_finish
+    within '#pricing' do
+      find('.legend').click
+      wait_for_javascript_to_finish
+    end
     
     increase_decrease_date = (Date.today + 2.month).strftime("%-m/15/%Y")
     page.should have_content("Effective on #{increase_decrease_date} - Display on #{increase_decrease_date}")

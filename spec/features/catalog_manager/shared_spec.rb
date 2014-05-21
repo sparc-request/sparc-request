@@ -13,6 +13,10 @@ describe 'shared views', js: true do
     before :each do
       @program = Organization.where(abbreviation: "Informatics").first
       wait_for_javascript_to_finish
+      within '#user_rights' do
+        find('.legend').click
+        wait_for_javascript_to_finish
+      end
     end
 
     describe "catalog managers" do
@@ -57,6 +61,7 @@ describe 'shared views', js: true do
     context "submission emails" do
 
       it "should add an email to the program" do
+        sleep 2
         fill_in "new_se", with: "franzferdinand@ww1.gov"
         find('#new_se').native.send_keys(:return)
         wait_for_javascript_to_finish
@@ -64,6 +69,7 @@ describe 'shared views', js: true do
       end
 
       it "should delete an email from the program" do
+        sleep 2
         fill_in "new_se", with: "franzferdinand@ww1.gov"
         find('#new_se').native.send_keys(:return)
         wait_for_javascript_to_finish

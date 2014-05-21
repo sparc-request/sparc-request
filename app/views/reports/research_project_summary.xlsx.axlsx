@@ -42,20 +42,18 @@ def subject_visit_row subjects, visit_count, sheet, styles
 
     row += [subject[:visits].sum]
     sheet.add_row row 
-    #sheet.add_row [subject[:pid], subject[:status]] + subject[:visits] + [subject[:visits].sum]       #, :style => styling
   end
 end
 
 def visit_subtotals_row arm, subjects, visit_count, sheet, styles
   totals = []
   styling = [styles[:header], nil]
-  arm.visit_count.times do |index|
+  arm.visit_groups.size.times do |index|
     totals << subjects.sum{|subject| subject[:visits][index].nil? ? 0.0 : subject[:visits][index]}
-    #styling << styles[:default] # uncomment for border
   end
 
   padding_cells = []
-  (visit_count - arm.visit_count).times do
+  (visit_count - arm.visit_groups.size).times do
     padding_cells << " "
   end
 
@@ -73,7 +71,7 @@ end
 
 @sub_service_request.set_effective_date_for_cost_calculations
 
-visit_count = @protocol.arms.max_by{|a| a.visit_count}.visit_count
+visit_count = @protocol.arms.max_by{|a| a.visit_groups}.visit_groups.count
 
 # alpha_array used to determine column position
 alpha_array = ("A".."Z").to_a
@@ -135,17 +133,11 @@ wb.add_worksheet(name: "Summary") do |sheet|
 
   #begin displaying visit information
 
-  #generating temporary data, this would be replaced with real data
-  #visit_names = []
-  #visit_count.times {|num| visit_names << "Visit #{num+1}"}
-
   def build_subject_data(arm, visit_count)
     subjects = []
     arm.subjects.each do |subject|
       visits = []
       s_appts = subject.calendar.appointments
-      #s_appts = s_appts.where("completed_at >= '#{@start_date}'") unless @start_date.blank?
-      #s_appts = s_appts.where("completed_at <= '#{@end_date}'") unless @end_date.blank?
 
       s_appts.group_by{|x| x.visit_group_id ? x.visit_group_id : "#{x.name} #{x.position}"}.each do |g, appts|
         subtotal = 0.00
@@ -167,7 +159,6 @@ wb.add_worksheet(name: "Summary") do |sheet|
               0.00
             end
           end
-          #subtotal += appt.completed? ? appt.procedures.sum{|x| x.total} : 0.00
         end
         visits << subtotal
       end

@@ -8,7 +8,7 @@ describe CatalogsController do
   let!(:program) { FactoryGirl.create(:program, parent_id: provider.id) }
   let!(:core) { FactoryGirl.create(:core, parent_id: program.id) }
 
-  let!(:service_request) { FactoryGirl.create(:service_request) }
+  let!(:service_request) { FactoryGirl.create_without_validation(:service_request) }
 
   describe 'POST update_description' do
     it 'should set organization and service_request' do

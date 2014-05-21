@@ -20,7 +20,7 @@ describe Portal::NotificationsController do
   let!(:program) { FactoryGirl.create(:program, parent_id: provider.id) }
   let!(:core) { FactoryGirl.create(:core, parent_id: program.id) }
 
-  let!(:service_request) { FactoryGirl.create(:service_request) }
+  let!(:service_request) { FactoryGirl.create_without_validation(:service_request) }
   let!(:ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
 
   let!(:notification_with_ssr) { Notification.create(sub_service_request_id: ssr.id) }

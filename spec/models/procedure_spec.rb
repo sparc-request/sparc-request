@@ -11,9 +11,9 @@ describe "procedure" do
 	end
 
 	context "visit schedule methods" do
-
-		let!(:visit)             { FactoryGirl.create(:visit, research_billing_qty: 10, insurance_billing_qty: 10) }  
-		let!(:visit_group)       { FactoryGirl.create(:visit_group)}
+		let!(:arm)							 { FactoryGirl.create(:arm, name: "Arm IV", protocol_id: protocol_for_service_request_id, visit_count: 1, subject_count: 1)}
+		let!(:visit_group)       { FactoryGirl.create(:visit_group, arm_id: arm.id)}
+		let!(:visit)             { FactoryGirl.create(:visit, research_billing_qty: 10, insurance_billing_qty: 10, visit_group_id: visit_group.id) }  
 		let!(:appointment)       { FactoryGirl.create(:appointment, visit_group_id: visit_group.id) }
 		let(:procedure)          { FactoryGirl.create(:procedure, appointment_id: appointment.id, visit_id: visit.id, line_item_id: line_item.id) }
 		let(:procedure2)         { FactoryGirl.create(:procedure, appointment_id: appointment.id, visit_id: visit.id, service_id: service2.id) }

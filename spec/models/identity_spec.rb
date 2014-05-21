@@ -2,6 +2,9 @@ require 'spec_helper'
 require 'net/ldap' # TODO: not sure why this is necessary
 
 describe "Identity" do
+  let_there_be_lane
+  let_there_be_j
+  build_service_request_with_project
   
 
   describe "helper methods" do
@@ -48,9 +51,9 @@ describe "Identity" do
     end
 
     it "should create an identity for a non-existing ldap_uid" do
-      Identity.all.count.should eq(1)
+      Identity.all.count.should eq(3)
       Identity.search("ash")
-      Identity.all.count.should eq(2)
+      Identity.all.count.should eq(4)
     end
 
     it "should return an empty array if it cannot find anything" do
@@ -65,9 +68,9 @@ describe "Identity" do
     end
 
     it "should return identities without an e-mail address" do
-      Identity.all.count.should eq(1)
+      Identity.all.count.should eq(3)
       Identity.search('iamabadldaprecord').should_not be_empty()
-      Identity.all.count.should eq(2)
+      Identity.all.count.should eq(4)
     end
 
     it "should still search the database if the identity creation fails for some reason" do
@@ -79,34 +82,14 @@ describe "Identity" do
 
   describe "rights" do
 
-    let!(:institution)          {FactoryGirl.create(:institution)}
-    let!(:institution2)         {FactoryGirl.create(:institution)}
-    let!(:institution3)         {FactoryGirl.create(:institution)}
-    let!(:provider)             {FactoryGirl.create(:provider, parent_id: institution.id)}
-    let!(:program)              {FactoryGirl.create(:program, parent_id: provider.id)} 
-    let!(:provider2)            {FactoryGirl.create(:provider, parent_id: institution.id)}
-    let!(:core)                 {FactoryGirl.create(:core, parent_id: provider.id)}
     let!(:user)                 {FactoryGirl.create(:identity)}
-    let!(:user2)                {FactoryGirl.create(:identity)}
-    let!(:user3)                {FactoryGirl.create(:identity)}              
-    let!(:catalog_manager)      {FactoryGirl.create(:catalog_manager, identity_id: user.id, organization_id: institution2.id)}
-    let!(:catalog_manager2)     {FactoryGirl.create(:catalog_manager, identity_id: user.id, organization_id: institution.id)}
+    let!(:user2)                {FactoryGirl.create(:identity)}           
+    let!(:catalog_manager)      {FactoryGirl.create(:catalog_manager, identity_id: user.id, organization_id: institution.id)}
     let!(:super_user)           {FactoryGirl.create(:super_user, identity_id: user.id, organization_id: institution.id)}
     let!(:service_provider)     {FactoryGirl.create(:service_provider, identity_id: user.id, organization_id: institution.id)}
     let!(:clinical_provider)    {FactoryGirl.create(:clinical_provider, identity_id: user2.id, organization_id: core.id)}
     let!(:ctrc_provider)        {FactoryGirl.create(:clinical_provider, identity_id: user2.id, organization_id: program.id)}
-    
-    let!(:project) {
-      project = Project.create(FactoryGirl.attributes_for(:protocol))
-      project.save!(validate: false)
-      project
-    }
     let!(:project_role)         {FactoryGirl.create(:project_role, identity_id: user.id, protocol_id: project.id, project_rights: 'approve')}
-    let!(:service_request)      {FactoryGirl.create(:service_request, status: 'draft', service_requester_id: user.id, protocol_id: project.id)}
-    let!(:service_request2)     {FactoryGirl.create(:service_request, status: 'submitted', service_requester_id: user.id, protocol_id: project.id)}
-    let!(:sub_service_request)  {FactoryGirl.create(:sub_service_request, status: 'draft', service_request_id: service_request.id,
-                                                    organization_id: institution.id)}
-    let!(:sub_service_request2) {FactoryGirl.create(:sub_service_request, status: 'draft', service_request_id: service_request.id)}
 
     describe "permission methods" do
     
@@ -143,14 +126,15 @@ describe "Identity" do
         end
 
         it "should return false if the user is not a catalog manager for a given organization" do
-          user.can_edit_entity?(institution3).should eq(false)
+          random_user = FactoryGirl.create(:identity)
+          random_user.can_edit_entity?(institution).should eq(false)
         end
       end
 
       describe "can edit historical data for" do
 
         it "should return true if 'edit historic data' flag is set for the user's catalog manager relationship" do
-          catalog_manager2.update_attributes(edit_historic_data: true)
+          catalog_manager.update_attributes(edit_historic_data: true)
           user.can_edit_historical_data_for?(institution).should eq(true)
         end
 
@@ -161,7 +145,7 @@ describe "Identity" do
 
       describe "can edit fulfillment" do
 
-        it "should return true if the user is a super user for a given organization" do
+        it "should return true if the user is a super user for an organization's parent" do
           user.can_edit_fulfillment?(provider).should eq(true)
         end
 
@@ -169,12 +153,9 @@ describe "Identity" do
           user.can_edit_fulfillment?(institution).should eq(true)
         end
 
-        it "should return true if the user is either a super user or a service provider for any of its parents" do
-          user.can_edit_fulfillment?(provider2).should eq(true)
-        end
-
         it "should return false if these conditions are not met" do
-          user.can_edit_fulfillment?(institution2).should eq(false)
+          random_user = FactoryGirl.create(:identity)
+          random_user.can_edit_fulfillment?(institution).should eq(false)
         end 
       end
 
@@ -189,7 +170,8 @@ describe "Identity" do
         end
 
         it "should return false if the user is not a clinical provider on a given core" do
-          user3.can_edit_core?(core.id).should eq(false)
+          random_user = FactoryGirl.create(:identity)
+          random_user.can_edit_core?(core.id).should eq(false)
         end
       end
 
@@ -212,7 +194,7 @@ describe "Identity" do
       describe "catalog manager organizations" do
 
         it "should collect all organizations that the user has catalog manager permissions on" do
-          user.catalog_manager_organizations.should include(institution, institution2)
+          user.catalog_manager_organizations.should include(institution)
         end
 
         it "should also collect all child organizations" do
@@ -258,7 +240,7 @@ describe "Identity" do
           hash.should include('draft')
         end
         it "should return a specific organization's sub service requests if givin an org id" do
-          sub_service_request.update_attributes(status: "submitted")
+          sub_service_request.update_attributes(status: "submitted", organization_id: institution.id)
           hash = user.admin_service_requests_by_status(institution.id)
           hash.should include('submitted')
         end

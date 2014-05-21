@@ -38,6 +38,7 @@
           .document_type_other{:style => first_doc_type == 'other' ? '' : 'display:none;'}
             = text_field_tag :doc_type_other, first_doc_type_other
         %td#file{:rowspan => @service_list.size}
+          = hidden_field_tag "upload_clicked", 0
           - if @grouping
             = first_doc.document_file_name
             %br

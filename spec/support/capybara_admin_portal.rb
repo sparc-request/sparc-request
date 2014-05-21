@@ -245,7 +245,6 @@ module CapybaraAdminPortal
 
         switchTabTo "Fulfillment"
 
-        # sleep 2400  
     end
 
 end

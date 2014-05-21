@@ -16,13 +16,20 @@ module CapybaraCatalogManager
     wait_for_javascript_to_finish
   end
 
+  def setTag(name)
+    tagExist = first(:xpath, "//span[@style='margin-right:10px;']/span/label[contains(text(),'#{name}')]")
+    if tagExist.nil? then return end #if tag does not exist, quit here. 
+    find(:xpath, "//span[@style='margin-right:10px;']/span/label[contains(text(),'#{name}')]/parent::span/following-sibling::span/input[@type='checkbox']").click
+  end 
+
 
   def create_new_institution(name, options = {})
     defaults = {
         :abbreviation => name,
         :order => 1,
         :is_available => true,
-        :color => 'blue'
+        :color => 'blue',
+        :tags => []
     }
     options = defaults.merge(options)
     first(:xpath, "//a[contains(text(),'Create New Institution')]").click
@@ -41,6 +48,9 @@ module CapybaraCatalogManager
     elsif not options[:is_available] and not hideAvailableCheck.checked? then #if not desired available and hide is not checked then check
         hideAvailableCheck.click
     end
+
+    options[:tags].each do |tagName| setTag tagName end
+
     first(:xpath, "//input[@id='save_button']").click
     wait_for_javascript_to_finish
     click_link name
@@ -64,7 +74,8 @@ module CapybaraCatalogManager
         :industry_rate_type => 'Federal Rate',
         :investigator_rate_type => 'Federal Rate',
         :internal_rate_type => 'Federal Rate',
-        :foundation_rate_type => 'Federal Rate'
+        :foundation_rate_type => 'Federal Rate',
+        :tags => []
     }
     options = defaults.merge(options)
     wait_for_javascript_to_finish
@@ -97,6 +108,8 @@ module CapybaraCatalogManager
     elsif not options[:is_available] and not hideAvailableCheck.checked? then #if not desired available and hide is not checked then check
         hideAvailableCheck.click
     end
+
+    options[:tags].each do |tagName| setTag tagName end
 
     find(:xpath, "//div[text()='Pricing']").click
     find(:xpath, "//input[@class='add_pricing_setup']").click
@@ -142,7 +155,8 @@ module CapybaraCatalogManager
         :industry_rate_type => 'Federal Rate',
         :investigator_rate_type => 'Federal Rate',
         :internal_rate_type => 'Federal Rate',
-        :foundation_rate_type => 'Federal Rate'
+        :foundation_rate_type => 'Federal Rate',
+        :tags => []
     }
     options = defaults.merge(options)
     wait_for_javascript_to_finish
@@ -175,6 +189,8 @@ module CapybaraCatalogManager
         hideAvailableCheck.click
     end
 
+    options[:tags].each do |tagName| setTag tagName end
+
     find(:xpath, "//div[text()='Pricing']").click
     find(:xpath, "//input[@class='add_pricing_setup']").click
     first(:xpath, "//a[@href='#' and contains(text(),'Effective on')]").click
@@ -205,7 +221,8 @@ module CapybaraCatalogManager
     defaults = {
         :abbreviation => name,
         :is_available => true,
-        :order => 1
+        :order => 1,
+        :tags => []
     }
     options = defaults.merge(options)
     wait_for_javascript_to_finish
@@ -236,6 +253,9 @@ module CapybaraCatalogManager
     elsif not options[:is_available] and not hideAvailableCheck.checked? then #if not desired available and hide is not checked then check
         hideAvailableCheck.click
     end
+
+    options[:tags].each do |tagName| setTag tagName end
+    sleep 2400
     first(:xpath, "//input[@id='save_button']").click
     wait_for_javascript_to_finish
     click_link name
@@ -256,7 +276,8 @@ module CapybaraCatalogManager
         :display_date => Time.now,
         :unit_minimum => 1,
         :unit_max => 1,
-        :linked => {:on? => false, :service => name+'', :required? => false, :quantity? => false, :quantityNum => 5}
+        :linked => {:on? => false, :service => name+'', :required? => false, :quantity? => false, :quantityNum => 5},
+        :tags => []
     }
     options = defaults.merge(options)
     wait_for_javascript_to_finish
@@ -282,6 +303,9 @@ module CapybaraCatalogManager
     elsif not options[:is_available] and not hideAvailableCheck.checked? then #if not desired available and hide is not checked then check
         hideAvailableCheck.click
     end
+
+    options[:tags].each do |tagName| setTag tagName end
+
     find(:xpath, "//div[text()='Pricing']").click
     find(:xpath, "//input[@class='add_pricing_map']").click
     first(:xpath, "//a[@href='#' and contains(text(),'Effective on')]").click

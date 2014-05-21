@@ -81,8 +81,8 @@ $(document).ready ->
       $('.view-sub-service-request-dialog').dialog({
           autoOpen: false
           title: 'Service Information'
-          width: 715
-          height: 500
+          width: 900
+          height: 700
           modal: true
           buttons: {
             "Ok": () ->
@@ -103,8 +103,8 @@ $(document).ready ->
       $('.view-full-calendar-dialog').dialog({
           autoOpen: false
           title: 'Study Information'
-          width: 715
-          height: 500
+          width: 900
+          height: 700
           modal: true
           buttons: {
             "Ok": () ->

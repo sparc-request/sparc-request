@@ -469,7 +469,6 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def arms_editable?
-    ['first_draft', 'draft', 'submitted', nil, 'obtain_research_pricing'].include?(self.status) ? true : false
+    true #self.sub_service_requests.all?{|ssr| ssr.arms_editable?}
   end
-
 end

@@ -99,7 +99,6 @@ class ServiceRequestsController < ApplicationController
     if session[:errors]
       if session[:errors][:ctrc_services]
         @ctrc_services = true
-        @service_request.remove_ctrc_services
         @ssr_id = @service_request.protocol.find_sub_service_request_with_ctrc(@service_request.id)
       end
     end
@@ -544,7 +543,6 @@ class ServiceRequestsController < ApplicationController
     if params[:service_request] && params[:service_request][:sub_service_requests_attributes]
       params[:service_request][:sub_service_requests_attributes].each do |key, values|
         dollars = values[:subsidy_attributes][:pi_contribution]
-
         if dollars.blank? # we don't want to create a subsidy if it's blank
           values.delete(:subsidy_attributes)
           ssr = @service_request.sub_service_requests.find values[:id]

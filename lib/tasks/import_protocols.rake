@@ -50,6 +50,8 @@ namespace :data do
       proper_header = verify_header(file)
 
       continue = prompt("Are you sure you want to continue importing? (Yes/No) ")
+      skipped_rows ={"couldn't locate" => [], "multiple found" => [], "nil" => []}
+      error_rows = {}
 
       if continue == 'Yes'
         ActiveRecord::Base.transaction do

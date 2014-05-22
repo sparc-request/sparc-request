@@ -214,8 +214,21 @@ div.associated-user-button
   background: url(yellowbutton_add.png) no-repeat
 .associated-user-button:hover, .service-request-button:hover
   cursor: pointer
+div.send_notification_dialog_box.ui-dialog
+  div.ui-dialog-titlebar
+    background-color: #00B741 !important
+  div.ui-dialog-buttonset
+    button.ui-button
+      background: url(greenbutton_small.png) no-repeat !important
+      border: 0px
+      height: 40px
+      width: 93px
+      font-size: 1.5em
+      .ui-button-text
+        padding: 0px
 div.add_user_dialog_box,
-div.full_calendar_dialog_box
+div.full_calendar_dialog_box,
+div.send_notification_dialog_box
   padding: 0px
   border: 0px
   background: none !important
@@ -229,7 +242,7 @@ div.full_calendar_dialog_box
       input
         margin-top: 7px
   div.ui-dialog-titlebar
-    background: #F79739 !important
+    background: #F79739
     border: 0px
     border-radius: 25px 25px 0 0
     font-size: 1.4em
@@ -248,24 +261,28 @@ div.full_calendar_dialog_box
     margin: 0px !important
     border: 0px !important
     background: white !important
-    #add_authorized_user_submit_button,
-    #add_authorized_user_cancel_button,
-    #ok_button
-      background: url(yellowbutton_small.png) no-repeat
-      border: 0px
-      height: 40px
-      width: 93px
-      font-size: 1.5em
-      .ui-button-text
-        padding: 0px
-    #add_authorized_user_submit_button.ui-state-hover,
-    #add_authorized_user_cancel_button.ui-state-hover,
-    #ok_button.ui-state-hover,
-    #add_authorized_user_submit_button.ui-state-focus,
-    #add_authorized_user_cancel_button.ui-state-focus,
-    #ok_button.ui-state-focus
-      .ui-button-text
-        color: white !important
+    // #add_authorized_user_submit_button,
+    // #add_authorized_user_cancel_button,
+    // #ok_button
+    div.ui-dialog-buttonset
+      button.ui-button
+        background: url(yellowbutton_small.png) no-repeat
+        border: 0px
+        height: 40px
+        width: 93px
+        font-size: 1.5em
+        .ui-button-text
+          padding: 0px
+      // #add_authorized_user_submit_button.ui-state-hover,
+      // #add_authorized_user_cancel_button.ui-state-hover,
+      // #ok_button.ui-state-hover,
+      // #add_authorized_user_submit_button.ui-state-focus,
+      // #add_authorized_user_cancel_button.ui-state-focus,
+      // #ok_button.ui-state-focus
+      button.ui-button.ui-state-hover,
+      button.ui-button.ui-state-focus
+        .ui-button-text
+          color: white !important
 .service-request-title
   color: white
   padding: 7px 7px 7px 15px
@@ -305,6 +322,22 @@ div.full_calendar_dialog_box
       font-size: 19px
       height: 37px
       padding-top: 12px
+  td.notification_td
+    padding: 0px
+    .portal_notifications
+      background-color: #D6E4D2
+      padding: 15px
+      margin-top: 10px
+      .border_top_container
+        border-top: 1px solid black
+      li.new_notification
+        height: 40px
+        padding: 9px 0 0 50px
+        margin: 20px 75px 0 10px
+        list-style: none
+        float: left
+        font-weight: bold
+        background: url(notification_green_small.png) no-repeat
 .service-request-button
   color: $white
   text-align: center
@@ -354,7 +387,7 @@ div.full_calendar_dialog_box
   width: 230px
   height: 26px
   padding: 9px 9px 9px 15px
-  margin-left: 10px
+  margin: 10px 0 0 10px
   text-align: center
   color: white !important
   display: block

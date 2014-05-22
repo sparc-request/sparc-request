@@ -63,19 +63,20 @@ $(document).ready ->
 
   $('.new_notification_dialog').dialog({
     autoOpen: false
-    title: 'Send notification'
+    dialogClass: "send_notification_dialog_box"
+    title: 'Send Notification'
     width: 700
     height: 300
     modal: true
     buttons: {
-      "Submit": () ->
-        disableSubmitButton("Submit", "Please wait...")
+      "Send": () ->
+        disableSubmitButton("Send", "Please wait...")
         $('.notification_notification_form').bind('ajax:success', (data) ->
-          enableSubmitButton("Please wait...", "Submit")
+          enableSubmitButton("Please wait...", "Send")
           $('.new_notification_dialog').dialog('close')
         ).submit()
       "Cancel": () ->
-        enableSubmitButton("Please wait...", "Submit")
+        enableSubmitButton("Please wait...", "Send")
         $(this).dialog('close')
     }
   })

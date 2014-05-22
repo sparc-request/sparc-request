@@ -20,11 +20,20 @@ class LineItem < ActiveRecord::Base
   attr_accessible :units_per_quantity
   attr_accessible :quantity
   attr_accessible :fulfillments_attributes
+  attr_accessible :displayed_cost
 
  
   attr_accessor :pricing_scheme
 
   accepts_nested_attributes_for :fulfillments, :allow_destroy => true
+
+  def displayed_cost
+    applicable_rate
+  end
+
+  def displayed_cost=(dollars)
+    admin_rates.new :admin_cost => dollars.blank? ? nil : Service.dollars_to_cents(dollars)
+  end
 
   def pricing_scheme
     @pricing_scheme || 'displayed'
@@ -39,12 +48,18 @@ class LineItem < ActiveRecord::Base
   default_scope :order => 'line_items.id ASC'
 
   def applicable_rate
-    pricing_map         = self.pricing_scheme == 'displayed' ? self.service.displayed_pricing_map : self.service.current_effective_pricing_map
-    pricing_setup       = self.pricing_scheme == 'displayed' ? self.service.organization.current_pricing_setup : self.service.organization.effective_pricing_setup_for_date
-    funding_source      = self.service_request.protocol.funding_source_based_on_status
-    selected_rate_type  = pricing_setup.rate_type(funding_source)
-    applied_percentage  = pricing_setup.applied_percentage(selected_rate_type)
-    rate                = pricing_map.applicable_rate(selected_rate_type, applied_percentage)
+    rate = if (!self.admin_rates.empty? and !self.admin_rates.last.admin_cost.blank?)
+      self.admin_rates.last.admin_cost
+    else
+      pricing_map         = self.pricing_scheme == 'displayed' ? self.service.displayed_pricing_map : self.service.current_effective_pricing_map
+      pricing_setup       = self.pricing_scheme == 'displayed' ? self.service.organization.current_pricing_setup : self.service.organization.effective_pricing_setup_for_date
+      funding_source      = self.service_request.protocol.funding_source_based_on_status
+      selected_rate_type  = pricing_setup.rate_type(funding_source)
+      applied_percentage  = pricing_setup.applied_percentage(selected_rate_type)
+    
+      pricing_map.applicable_rate(selected_rate_type, applied_percentage)
+    end
+
     return rate
   end
 

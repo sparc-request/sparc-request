@@ -306,7 +306,6 @@ module CapybaraCatalogManager
     end
     options[:tags].each do |tagName| setTag tagName end
 
-
     first(:xpath, "//input[@id='save_button']").click
     wait_for_javascript_to_finish
     click_link name

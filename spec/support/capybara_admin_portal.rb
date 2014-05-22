@@ -1,6 +1,7 @@
 module CapybaraAdminPortal
 
     def goToSparcProper
+        #navigates to sparc proper catalog and logs in if not already logged in.
         visit root_path
         wait_for_javascript_to_finish
         if have_xpath("//div[@class='welcome']/span[text()='Not Logged In']") then
@@ -15,6 +16,7 @@ module CapybaraAdminPortal
     end
 
     def login(un,pwd)
+        #logs the user in the custom username and password.
         currentUrl = page.current_url
         visit "/identities/sign_in"
         wait_for_javascript_to_finish
@@ -145,7 +147,6 @@ module CapybaraAdminPortal
         #expects instance of ServiceWithAddress, and integer quantity as input
         #quantity will round down if not integer and will be input to service quantity box.
         #the cost will then 
-        switchTabTo "Fulfillment"
 
         if not service.otf then return end #if service sent in was not one time fee, stop here.
         unitPrice = service.unitPrice
@@ -161,8 +162,6 @@ module CapybaraAdminPortal
     end
 
     def testPPService(service)
-        switchTabTo "Fulfillment"
-
         click_link "Add an Arm"
         wait_for_javascript_to_finish
         currentBox = find(:xpath, "//div[contains(@class,'ui-dialog') and contains(@style,'display: block;')]")
@@ -173,10 +172,10 @@ module CapybaraAdminPortal
         page.driver.browser.switch_to.alert.accept
         wait_for_javascript_to_finish
 
-        click_link "Add a Visit"
         visitText = find(:xpath, "//select[@id='visit_position']/option[@value='']").text[4..-1]
         visitDay = visitText[6..-1]
-        currentBox = find(:xpath, "//div[contains(@class,'ui-dialog') and contains(@style,'display: block;')]")
+        click_link "Add a Visit"
+        currentBox = find(:xpath, "//div[contains(@class,'ui-dialog ') and contains(@style,'display: block;')]")
         within currentBox do
             fill_in 'visit_name', :with => visitText
             fill_in 'visit_day', :with => visitDay
@@ -190,10 +189,12 @@ module CapybaraAdminPortal
     end
 
     def onTab(tabName)
+        #returns boolean for condition: if on tab of tabName string arg.
         return first(:xpath, "//li[@role='tab' and @aria-selected='true']/a[text()='#{tabName}']").present?
     end
 
     def statusChangeTest
+        #changes the status, expects toast messages, and checks history for status change.
         switchTabTo "Fulfillment"
 
         select "Get a Quote", :from => "sub_service_request_status"
@@ -213,29 +214,44 @@ module CapybaraAdminPortal
         end
     end
 
-    def adminPortal(request,otf)
+    def sendToCWF
+        #checks "Ready for Clinical Work Fulfillment" checkbox
+        find(:xpath, "//input[@id='in_work_fulfillment' and @class='cwf_data']").click
+        wait_for_javascript_to_finish
+    end
+
+    def adminPortal(request,options={})
         #expects instance of ServiceRequestForComparison as input 
-        #and boolean otf to test either one time fee or per patient/per visit
-
+        #Intended as full admin portal happy test.
+        defaults = {
+            :otf => false,
+            :cwf => false
+        }
+        options = defaults.merge(options)
         goToAdminPortal
-        if otf then
-            enterServiceRequest(request.study.short,request.otfServices[0].name)
-        else 
-            enterServiceRequest(request.study.short,request.ppServices[0].name)
-        end
-        statusChangeTest
 
+        if options[:otf] then
+            service = request.otfServices[0]
+            enterServiceRequest(request.study.short,service.name)
+        else 
+            service = request.ppServices[0]
+            enterServiceRequest(request.study.short,service.name)
+        end
+
+        statusChangeTest
         addNote ("This is a Note")
+
         testSubsidy(50)
         testSubsidy(40)
         testSubsidy(30)
 
-        if otf then 
-            testOTFService(request.otfServices[0],20)
-            testOTFService(request.otfServices[0],3)
-            testOTFService(request.otfServices[0],request.otfServices[0].quantity)
+        switchTabTo "Fulfillment"
+        if options[:otf] then 
+            testOTFService(service,20)
+            testOTFService(service,3)
+            testOTFService(service,service.quantity)
         else 
-            testPPService(request.ppServices[0])
+            testPPService(service)
         end
 
         notificationTest
@@ -243,6 +259,11 @@ module CapybaraAdminPortal
         associatedUsersTest("bjk7", "Brian Kelsey")
 
         switchTabTo "Fulfillment"
+
+        if options[:cwf] then 
+            sendToCWF 
+            return service #returns the service sent to CWF to continue the test in CWF
+        end
 
     end
 

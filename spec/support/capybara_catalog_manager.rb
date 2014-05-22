@@ -3,7 +3,6 @@ module CapybaraCatalogManager
   def add_service_provider(id="leonarjp")
     find(:xpath, "//div[text()='User Rights']").click
     wait_for_javascript_to_finish
-    # sleep 200
     fill_in "new_sp", with: "#{id}"
     wait_for_javascript_to_finish
 
@@ -269,6 +268,7 @@ module CapybaraCatalogManager
         :abbreviation => name,
         :is_available => true,
         :order => 1,
+        :process_ssrs => false,
         :tags => []
     }
     options = defaults.merge(options)
@@ -319,6 +319,7 @@ module CapybaraCatalogManager
         :otf => false,
         :is_available => true,
         :rate => '25.00',
+        :process_ssrs => false,
         :order => 1,
         :abbreviation => name,
         :unit_type => 'samples',

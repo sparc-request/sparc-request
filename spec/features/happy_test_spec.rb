@@ -2,8 +2,8 @@ require 'spec_helper'
 include CapybaraCatalogManager
 include CapybaraProper
 
-include CapybaraAdminPortal #remove after admin portal development
-
+include CapybaraAdminPortal 
+include CapybaraClinical 
 
 describe 'A Happy Test' do
   let_there_be_lane
@@ -28,7 +28,7 @@ describe 'A Happy Test' do
     create_new_institution 'Medical University of South Carolina', {:abbreviation => 'MUSC', :tags => ['Clinical work fulfillment']}
     create_new_provider 'South Carolina Clinical and Translational Institute (SCTR)', 'Medical University of South Carolina', {:abbreviation => 'SCTR1', :tags => ['Clinical work fulfillment']}
     create_new_program 'Office of Biomedical Informatics', 'South Carolina Clinical and Translational Institute (SCTR)', {:abbreviation => 'Informatics', :tags => ['Clinical work fulfillment']}
-    create_new_program 'Clinical and Translational Research Center (CTRC)', 'South Carolina Clinical and Translational Institute (SCTR)', {:abbreviation => 'Informatics', :tags => ['Clinical work fulfillment','Nexus']}
+    create_new_program 'Clinical and Translational Research Center (CTRC)', 'South Carolina Clinical and Translational Institute (SCTR)', {:abbreviation => 'Informatics', :process_ssrs => true, :tags => ['Clinical work fulfillment','Nexus']}
     create_new_core 'Clinical Data Warehouse', 'Office of Biomedical Informatics', {:tags => ['Clinical work fulfillment']}
     create_new_core 'Nursing Services', 'Clinical and Translational Research Center (CTRC)', {:tags => ['Clinical work fulfillment']}
     create_new_service 'MUSC Research Data Request (CDW)', 'Clinical Data Warehouse', {:otf => true, :unit_type => 'Per Query', :unit_factor => 1, :rate => '2.00', :unit_minimum => 1, :tags => ['Clinical work fulfillment']}
@@ -109,8 +109,9 @@ describe 'A Happy Test' do
     submissionConfirmationPage
     
     goToSparcProper
-    adminPortal(request,true)
-    adminPortal(request,false)
+    adminPortal(request, :otf => true, :cwf => false)
+    cwfService = adminPortal(request, :otf => false, :cwf => true)
+    clinicalWorkFulfillment(request.study, cwfService)
     sleep 2400  
 
   end

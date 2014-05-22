@@ -6,10 +6,7 @@ class StudyTracker::HomeController < StudyTracker::BaseController
 
     ##Passing in ctrc organization id, in order to only get ctrc ssrs back (method defaults to all ssrs)
     @org = Organization.tagged_with("ctrc").first
-    puts @org
-    puts @org.id
     @service_requests = @user.admin_service_requests_by_status(@org.id)
-    puts @service_requests.inspect
 
     ##Remove ssrs that are not flagged for study tracker/work fulfillment
     @service_requests.each_value do |status|

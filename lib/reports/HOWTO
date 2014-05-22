@@ -1,0 +1,2 @@
+rails r report list # shows the available reports
+rails r report run name_of_report # runs the report

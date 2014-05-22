@@ -95,6 +95,10 @@ class ServiceRequest < ActiveRecord::Base
         end
       end
     end
+
+    if self.line_items.empty?
+      errors.add(:no_services, "Your cart is empty. Please return to the Catalog to add services to continue.")
+    end
   end
 
   def service_details_back
@@ -106,6 +110,12 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def service_details_page(direction)
+    if direction == 'forward'
+      if self.line_items.empty?
+        errors.add(:no_services, "Your cart is empty. Please return to the Catalog to add services to continue.")
+      end
+    end
+
     if has_per_patient_per_visit_services? and not (direction == 'back' and status == 'first_draft')
       #TODO why is this being called when you try to unset protocol (don't supply one)
       if protocol and protocol.start_date.nil?
@@ -452,11 +462,6 @@ class ServiceRequest < ActiveRecord::Base
     return self.line_items.any? { |li| li.service.is_ctrc_clinical_service? }
   end
 
-  def remove_ctrc_services
-    self.line_items.each {|li| li.destroy if li.service.is_ctrc_clinical_service? }
-    self.sub_service_requests.each {|sr| sr.destroy if sr.line_items.empty?}
-  end
-
   def update_arm_minimum_counts
     self.arms.each do |arm|
       arm.update_minimum_counts
@@ -464,7 +469,6 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def arms_editable?
-    ['first_draft', 'draft', 'submitted', nil, 'obtain_research_pricing'].include?(self.status) ? true : false
+    true #self.sub_service_requests.all?{|ssr| ssr.arms_editable?}
   end
-
 end

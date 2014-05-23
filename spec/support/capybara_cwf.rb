@@ -122,6 +122,14 @@ module CapybaraClinical
 
     end
 
+    def billingTab
+        click_link "New cover letter"
+        wait_for_javascript_to_finish
+        find(:xpath, "//input[@type='submit']").click
+        wait_for_javascript_to_finish
+        page.should have_xpath "//table[@id='billings_list']/tbody/tr/td[@class='type' and text()='Cover Letter']"
+    end
+
     def clinicalWorkFulfillment(study, service)
         #expects instance of CustomStudy as input
         #expects instance of ServiceWithAddress as input
@@ -138,6 +146,9 @@ module CapybaraClinical
 
         switchTabTo "Payments"
         paymentsTab
+
+        switchTabTo "Billing"
+        billingTab
     end
 
 end

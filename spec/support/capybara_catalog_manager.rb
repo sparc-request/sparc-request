@@ -3,7 +3,7 @@ module CapybaraCatalogManager
   def add_service_provider(id="leonarjp")
     find(:xpath, "//div[text()='User Rights']").click
     wait_for_javascript_to_finish
-    fill_in "new_sp", with: "#{id}"
+    fill_in "new_sp", :with => "#{id}"
     wait_for_javascript_to_finish
 
     response = wait_until{first(:xpath, "//a[contains(text(),'#{id}') and contains(text(),'@musc.edu')]")}
@@ -34,7 +34,7 @@ module CapybaraCatalogManager
         wait_for_javascript_to_finish
     end
 
-    fill_in "new_cp", with: "Julia"
+    fill_in "new_cp", :with => "Julia"
     wait_for_javascript_to_finish
     response = wait_until{first(:xpath, "//a[contains(text(),'Julia') and contains(text(),'@musc.edu')]")}
     if not response.nil? then response.click 

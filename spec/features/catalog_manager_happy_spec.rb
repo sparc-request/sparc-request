@@ -69,7 +69,9 @@ describe 'Catalog Manager' do
     click_link('Provider of Invisibility')
     wait_for_javascript_to_finish
     click_link('Program of Invisibility')#For some reason, this doesn't work
+    wait_for_javascript_to_finish
     click_link('Program of Invisibility')#If you only click it one time.
+    wait_for_javascript_to_finish
     click_link('Program of Invisibility')#Selenium issue-not sparc I believe.
     wait_for_javascript_to_finish
     page.should_not have_xpath("//a[text()='invisibleProg']")

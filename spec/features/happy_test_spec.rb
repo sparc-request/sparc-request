@@ -4,6 +4,7 @@ include CapybaraProper
 
 include CapybaraAdminPortal 
 include CapybaraClinical 
+include CapybaraUserPortal
 
 describe 'A Happy Test' do
   let_there_be_lane
@@ -112,6 +113,7 @@ describe 'A Happy Test' do
     adminPortal(request, :otf => true, :cwf => false)
     cwfService = adminPortal(request, :otf => false, :cwf => true)
     clinicalWorkFulfillment(request.study, cwfService)
+    userPortal(request)
     sleep 2400  
 
   end

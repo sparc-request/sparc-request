@@ -3,9 +3,9 @@ module CapybaraCatalogManager
   def add_service_provider(id="leonarjp")
     find(:xpath, "//div[text()='User Rights']").click
     wait_for_javascript_to_finish
+    sleep 2
     fill_in "new_sp", :with => "#{id}"
     wait_for_javascript_to_finish
-
     response = wait_until{first(:xpath, "//a[contains(text(),'#{id}') and contains(text(),'@musc.edu')]")}
     if not response.nil? then response.click 
     else first(:xpath, "//a[contains(text(),'#{id}') and contains(text(),'@musc.edu')]").click end
@@ -155,6 +155,7 @@ module CapybaraCatalogManager
     find(:xpath, "//input[@class='add_pricing_setup']").click
     first(:xpath, "//a[@href='#' and contains(text(),'Effective on')]").click
     stDay = (options[:display_date]).strftime("%-d") # Today's Day
+    wait_for_javascript_to_finish
     first(:xpath, "//th[contains(text(),'Display Date')]/following-sibling::td/input[@type='text']").click
     page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
     first(:xpath, "//th[contains(text(),'Effective Date')]/following-sibling::td/input[@type='text']").click
@@ -388,6 +389,7 @@ module CapybaraCatalogManager
         wait_for_javascript_to_finish
         first(:xpath, "//div[text()='Related Services']").click # click_link "Related Services"
         wait_for_javascript_to_finish
+        sleep 2
         fill_in "new_rs", :with => options[:linked][:service]
         wait_until{first(:xpath, "//ul[contains(@class,'ui-autocomplete')]/li[@class='ui-menu-item']/a[contains(text(),'#{options[:linked][:service]}')]")}.click
         wait_for_javascript_to_finish

@@ -114,7 +114,7 @@ describe 'A Happy Test' do
     cwfService = adminPortal(request, :otf => false, :cwf => true)
     clinicalWorkFulfillment(request.study, cwfService)
     userPortal(request)
-    sleep 2400  
+    # sleep 2400  
 
   end
 

@@ -64,15 +64,15 @@
                     .arm-cell= t(:service_request_details)[:number_of_visits]
                     .clear
                   .clear
-                  - unlocked = (@sub_service_request.nil? ? @service_request.arms_editable? : @sub_service_request.arms_editable?)
+                  - unlocked = @service_request.arms_editable?
                   .arms
                     = f.fields_for :arms do |arm|
                       - #arm.object.new_record? ? unlocked = true : unlocked = arm.object.new_with_draft
                       = arm.hidden_field :new_with_draft, :value => unlocked
-                      .arm-cell= arm.text_field :name, :disabled => unlocked == false
-                      .arm-cell.skinny_fields= arm.text_field :subject_count, :disabled => unlocked == false # :'data-subject_count' => arm.object.subject_count, :'data-minimum_subject_count' => arm.object.minimum_subject_count
-                      .arm-cell.skinny_fields= arm.text_field :visit_count, :disabled => unlocked == false # :'data-visit_count' => arm.object.visit_count, :'data-minimum_visit_count' => arm.object.minimum_visit_count
-                      .arm-cell{:id => "#{@x+=1}",:style => "padding:5px 0px 5px 0px; width:auto;"}= arm.link_to_remove "Remove Arm", {:class => "remove_arm ui-state-default ui-corner-top ui-tabs-selected ui-state-active", :style => "padding: 3px 10px"} unless unlocked == false
+                      .arm-cell= arm.text_field :name, :disabled => !unlocked
+                      .arm-cell.skinny_fields= arm.text_field :subject_count, :disabled => !unlocked
+                      .arm-cell.skinny_fields= arm.text_field :visit_count, :disabled => !unlocked
+                      .arm-cell{:id => "#{@x+=1}",:style => "padding:5px 0px 5px 0px; width:auto;"}= arm.link_to_remove "Remove Arm", {:class => "remove_arm ui-state-default ui-corner-top ui-tabs-selected ui-state-active", :style => "padding: 3px 10px"} unless !unlocked
                       .clear
                     .clear
                   - if unlocked

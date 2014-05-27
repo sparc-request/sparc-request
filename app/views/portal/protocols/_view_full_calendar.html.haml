@@ -48,3 +48,5 @@
         .arm_calendar_container{:'data-arm_id' => arm.id}
           - next if arm.visit_groups.empty?
           = render :partial => '/service_calendars/merged_calendar_data', :locals => {:tab => 'pricing', :arm => arm, :service_request => @service_request}
+    - if @protocol.has_one_time_fees?
+      = render :partial => '/service_calendars/merged_one_time_fees'

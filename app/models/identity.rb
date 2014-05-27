@@ -197,8 +197,12 @@ class Identity < ActiveRecord::Base
       elsif !self.project_roles.select{|pr| pr.protocol_id == request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights}.empty?
         can_edit = true
       end
-    elsif (request.class == SubServiceRequest) && (!self.project_roles.select{|pr| pr.protocol_id == request.service_request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights}.empty?)
-      can_edit = true
+    elsif (request.class == SubServiceRequest)
+      if (!self.project_roles.select{|pr| pr.protocol_id == request.service_request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights}.empty?)
+        can_edit = true
+      elsif self.is_service_provider?
+        can_edit = true
+      end
     end
 
     can_edit

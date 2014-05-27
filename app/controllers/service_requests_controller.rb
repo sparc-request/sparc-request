@@ -564,15 +564,18 @@ class ServiceRequestsController < ApplicationController
     process_ssr_organization_ids = params[:process_ssr_organization_ids]
     document_grouping_id = params[:document_grouping_id]
     document = params[:document]
+    upload_clicked = params[:upload_clicked]
 
     if document_grouping_id and not process_ssr_organization_ids
       # we are deleting this grouping, this is essentially the same as clicking delete next to a grouping
       document_grouping = @service_request.document_groupings.find document_grouping_id
-      document_grouping.destroy
-    elsif process_ssr_organization_ids and (!document or params[:doc_type].empty?) and not document_grouping_id # new document but we didn't provide either the document or document type
+      errors << {:recipients => ["You must select at least one recipient"]}
+      # document_grouping.destroy
+    elsif upload_clicked == "1" and (!document or params[:doc_type].empty? or !process_ssr_organization_ids) and not document_grouping_id # new document but we didn't provide either the document or document type
       # we did not provide a document
       #[{:visit_count=>["You must specify the estimated total number of visits (greater than zero) before continuing."], :subject_count=>["You must specify the estimated total number of subjects before continuing."]}]
       doc_errors = {}
+      doc_errors[:recipients] = ["You must select at least one recipient"] if !process_ssr_organization_ids
       doc_errors[:document] = ["You must select a document to upload"] if !document
       doc_errors[:doc_type] = ["You must provide a document type"] if params[:doc_type].empty?
       errors << doc_errors
@@ -605,12 +608,13 @@ class ServiceRequestsController < ApplicationController
       to_add.each do |org_id|
         document = params[:document] || document_grouping.documents.first.document
         
-        if document and not params[:doc_type].empty?
+        if document and not params[:doc_type].empty? and process_ssr_organization_ids
           sub_service_request = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
           sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other], :document_grouping_id => document_grouping.id
           sub_service_request.save
         else
           doc_errors = {}
+          doc_errors[:recipients] = ["You must select at least one recipient"] if !process_ssr_organization_ids
           doc_errors[:document] = ["You must select a document to upload"] if !document
           doc_errors[:doc_type] = ["You must provide a document type"] if params[:doc_type].empty?
           errors << doc_errors

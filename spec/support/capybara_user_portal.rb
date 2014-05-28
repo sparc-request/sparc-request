@@ -1,5 +1,5 @@
 module CapybaraUserPortal
-    require 'spec_helper'
+    include CapybaraAdminPortal
 
     def goToUserPortal
         #navigates to user portal
@@ -21,6 +21,17 @@ module CapybaraUserPortal
         #  displays the study information, users, and SRs.
         find(:xpath, "//div[@aria-expanded='true']")
     end
+
+    def createNotification
+        authorizedUsersTest("jpl6", "Jason Leonard")
+        click_link "logout"
+        goToSparcProper("jpl6","p4ssword")
+        goToUserPortal
+        within accordionInfoBox do
+            first(:xpath, "//span[@class='ui-button-text' and text()='Send Notification']").click
+            wait_for_javascript_to_finish
+        end
+        
 
     def notificationsTest
         #no notifications available, test later.
@@ -292,7 +303,6 @@ module CapybaraUserPortal
         findStudy(request.study.short)
         editStudyInformation
         authorizedUsersTest("bjk7", "Brian Kelsey")
-        authorizedUsersTest("jpl6", "Jason Leonard")
         # notificationsTest
     end
 

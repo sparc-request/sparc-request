@@ -1,12 +1,13 @@
 module CapybaraAdminPortal
 
-    def goToSparcProper
+    def goToSparcProper(un='jug2',pwd='p4ssword')
         #navigates to sparc proper catalog and logs in if not already logged in.
         visit root_path
         wait_for_javascript_to_finish
         if have_xpath("//div[@class='welcome']/span[text()='Not Logged In']") then
-            login("jug2","p4ssword")
+            login("#{un}","#{pwd}")
         end
+        wait_for_javascript_to_finish
     end
 
     def goToAdminPortal

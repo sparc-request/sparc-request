@@ -1,0 +1,52 @@
+.blue-button {
+  background-image: none !important;
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader( src='/assets/blue_button.png', sizingMethod='scale') !important;
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader( src='/assets/blue_button.png', sizingMethod='scale')" !important;
+}
+
+.submit-request-button,
+.catalog-button {
+  background-image: none !important;
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader( src='/assets/green_button.png', sizingMethod='scale') !important;
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader( src='/assets/green_button.png', sizingMethod='scale')" !important;
+}
+
+#study.study-select .new-study,
+#study.study-select .edit-study,
+#project.project-select .new-project,
+#project.project-select .edit-project {
+  display: inline-block;
+  *display: inline;
+  zoom: 1;
+  width: 80px;
+}
+
+.protocol-view-right {
+  position: relative;
+  top: -380px;
+  left: -20px;
+  float: right !important;
+}
+  
+
+
+#search {
+  background-image: none !important;
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader( src='/assets/search_bar.png', sizingMethod='scale') !important;
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader( src='/assets/search_bar.png', sizingMethod='scale')" !important;
+  width: 470px !important;
+
+  input {
+    margin-left: 14px !important;
+  }
+}
+
+.submit-request-button,
+.catalog-button,
+.dashboard-button,
+.feedback-button,
+.ask-a-question-button,
+.document_upload_button,
+.faq-button {
+  width: 206px !important;
+}

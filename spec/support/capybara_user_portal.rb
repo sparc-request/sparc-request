@@ -292,6 +292,7 @@ module CapybaraUserPortal
         findStudy(request.study.short)
         editStudyInformation
         authorizedUsersTest("bjk7", "Brian Kelsey")
+        authorizedUsersTest("jpl6", "Jason Leonard")
         # notificationsTest
     end
 

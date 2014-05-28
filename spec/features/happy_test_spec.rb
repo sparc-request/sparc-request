@@ -8,6 +8,7 @@ include CapybaraUserPortal
 
 describe 'A Happy Test' do
   let_there_be_lane
+  let_there_be_j
   fake_login_for_each_test
 
   it 'should make you feel happy', :js => true do

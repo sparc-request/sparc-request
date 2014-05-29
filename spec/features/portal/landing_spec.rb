@@ -12,8 +12,9 @@ describe "landing page", :js => true do
   describe "notifications link" do
     it 'should work' do
       visit portal_root_path
-      find("a.notifications-link").click
-      page.should have_css("div#notifications")
+      find("notifications-link a.hyperlink").click
+      wait_for_javascript_to_finish
+      find("notifications_popup").should be_visible
     end
   end
 

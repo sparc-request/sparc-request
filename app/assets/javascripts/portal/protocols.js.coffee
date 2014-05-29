@@ -80,6 +80,7 @@ $(document).ready ->
 
       $('.view-sub-service-request-dialog').dialog({
           autoOpen: false
+          dialogClass: "view_request_dialog_box"
           title: 'Service Information'
           width: 900
           height: 700

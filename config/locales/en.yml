@@ -853,6 +853,8 @@ en:
   # Admin Dashboard
   admin_dashboard:
     title: "Dashboard <span>|</span> Welcome"
+    notifications_title: "Dashboard <span>|</span> Notifications"
+    edit_protocol_title: "Dashboard <span>|</span> Edit Protocol Information"
     id: "SRID"
     status: "Status"
     pi: "PI"

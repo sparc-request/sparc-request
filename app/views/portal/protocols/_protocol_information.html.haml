@@ -63,17 +63,17 @@
 
 .service-request-title.ui-corner-top= t(:protocol_information)[:service_requests]
 .service_request-body
-  %table.list{:style => 'font-size:10px;', :width => "100%"}
+  %table.list{:style => 'font-size:12px;', :width => "845px;"}
     %tr{:style => 'width:100%'}
       %th{:style => 'width:15%'}= t(:protocol_information)[:srid]
       %th{:style => 'width:15%'}= t(:protocol_information)[:date]
       %th{:style => 'width:15%'}= t(:protocol_information)[:provider]
       %th{:style => 'width:15%'}= t(:protocol_information)[:program]
       %th{:style => 'width:8%'}= t(:protocol_information)[:status]
-      %th{:style => 'width:8%'}
-      %th{:style => 'width:8%'}
-      %th{:style => 'width:8%'}
-      %th{:style => 'width:8%'}
+      %th
+      %th
+      %th
+      %th
 
     - protocol.service_requests.each do |sr|
       - first_ssr = true

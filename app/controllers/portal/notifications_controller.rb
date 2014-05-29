@@ -3,6 +3,7 @@ class Portal::NotificationsController < Portal::BaseController
   before_filter :find_notification, :only => [:show]
 
   def index
+    @notification_index = true
     @notifications = @user.all_notifications
     respond_with @user, @notifications
   end

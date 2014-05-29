@@ -137,8 +137,11 @@ h2.title
   border: 0
   width: auto
   margin: 0 auto 25px
+  min-height: 400px
 .dashboard-view
   float: left
+  h3.blue-provider.ui-accordion-header
+    border: 0px !important
 .protocol-accordion-title
   width: 630px
 .protocol-short-title
@@ -226,9 +229,16 @@ div.send_notification_dialog_box.ui-dialog
       font-size: 1.5em
       .ui-button-text
         padding: 0px
+div.new_message_dialog.ui-dialog
+  div.ui-dialog-titlebar
+    background-color: #ff0000 !important
+  div.ui-dialog-buttonset
+    button.ui-button
+      background: url(redbutton.png) no-repeat !important
 div.add_user_dialog_box,
 div.full_calendar_dialog_box,
-div.send_notification_dialog_box
+div.send_notification_dialog_box,
+div.new_message_dialog
   padding: 0px
   border: 0px
   background: none !important
@@ -245,7 +255,8 @@ div.send_notification_dialog_box
     background: #F79739
     border: 0px
     border-radius: 25px 25px 0 0
-    font-size: 1.4em
+    font-size: 1.5em
+    font-weight: normal
     padding: 10px 18px
     button.ui-dialog-titlebar-close
       background: url(close_white.png) no-repeat
@@ -355,7 +366,12 @@ div.send_notification_dialog_box
   width: 230px
   height: 60px
   background: #FF0000
-  font-weight: bold
+  position: relative
+  a.hyperlink
+    display: block
+    font-weight: bold
+    height: 60px
+    width: 230px
   a:link, a:visited, a:hover
     color: #000
   .notifications-text
@@ -363,6 +379,59 @@ div.send_notification_dialog_box
     margin-top: 20px
     font-size: 1.2em
     color: white
+  .notifications_popup
+    background-color: white
+    border: 3px solid #FF0000
+    display: none
+    left: -221px
+    padding: 10px 1px 1px
+    position: absolute
+    top: 57px
+    width: 443px
+    z-index: 2
+    table
+      border-collapse: collapse
+      width: 100%
+    tr:hover
+      cursor: pointer
+    tr.read_notification
+      .image_placeholder div
+        background: url(unreadnotification_white_small.png) no-repeat
+    tr.unread_notification
+      background-color: #fabea6
+      font-weight: bold
+      td
+        border-color: #fabea6
+      .image_placeholder div
+        background: url(notification_red_small.png) no-repeat
+    th
+      font-size: 1.2em
+      padding-bottom: 15px
+    td,
+    th
+      text-align: left
+    td
+      padding: 20px 0
+    td.sender div
+      width: 130px
+    td.subject div
+      width: 170px
+    .image_placeholder
+      padding: 0px
+      div
+        height: 40px
+        width: 40px
+        margin: 0 5px
+    .view_all_link
+      background-color: #FF0000
+      color: white
+      display: block
+      font-size: 1.4em
+      height: 31px
+      margin-top: 20px
+      padding-top: 9px
+      text-align: center
+      width: 100%
 .user-information-title
   color: $white
   padding: 10px 0 10px 10px

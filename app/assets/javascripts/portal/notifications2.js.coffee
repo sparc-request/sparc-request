@@ -1,10 +1,14 @@
 $(document).ready ->
 
+  $('.notifications-link .hyperlink').live('click', ->
+    $('.notifications-link .notifications_popup').toggle('blind')
+  )
+
   $('.notification_dialog').dialog
     autoOpen: false
-    title: 'Notification'
+    dialogClass: "new_message_dialog"
+    title: 'Send Notification'
     width: 720
-    height: 495
     modal: true
     buttons:
       "Submit": () ->
@@ -18,7 +22,7 @@ $(document).ready ->
         enableSubmitButton("Please wait...", "Submit")
         $(this).dialog('close')
 
-  $(document).on('click', 'tr.notification_row td.notification_icon, td.from_column, td.subject_column, td.body_column, td.received_column', ->
+  $(document).on('click', 'tr.notification_row td.notification_icon, td.from_column, td.subject_column, td.body_column, td.received_column, .notifications_popup tr', ->
     id = $(this).data('notification_id')
     sub_service_request_id = $(this).data('sub_service_request_id')
     # The following data hash assembly refuses to work on one line -_-
@@ -66,7 +70,6 @@ $(document).ready ->
     dialogClass: "send_notification_dialog_box"
     title: 'Send Notification'
     width: 700
-    height: 300
     modal: true
     buttons: {
       "Send": () ->

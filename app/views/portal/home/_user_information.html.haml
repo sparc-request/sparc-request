@@ -1,11 +1,32 @@
+.notification_dialog
 .user-information-body.ui-corner-bottom
   %p
     = @user.display_name
     |
     = @user.email
 
-= link_to portal_notifications_path, :class => "notifications-link" do
-  = image_tag @user.unread_notification_count(@user) >= 1 ? 'portal/notification_white.png' : 'portal/unreadnotification_white.png', :class => 'left'
-  .notifications-text.left
-    = pluralize(@user.unread_notification_count(@user), t(:protocol_information)[:note_count])
+.notifications-link
+  = link_to 'javascript:void(0)', :class => "hyperlink" do
+    = image_tag @user.unread_notification_count(@user) >= 1 ? 'portal/notification_white.png' : 'portal/unreadnotification_white.png', :class => 'left'
+    .notifications-text.left
+      = pluralize(@user.unread_notification_count(@user), t(:protocol_information)[:note_count])
+  .notifications_popup
+    %table
+      %thead
+        %tr
+          %th
+          %th From:
+          %th Subject:
+          %th Time:
+      %tbody
+        - @user.all_notifications.reverse.first(3).each do |notification|
+          %tr{:'data-notification_id' => notification.id, :'data-sub_service_request_id' => @sub_service_request.try(:id), :class => notification.try(:user_notifications_for_current_user, @user).try(:last).try(:read) ? "read_notification" : "unread_notification"}
+            %td.image_placeholder
+              %div
+            %td.sender
+              %div= notification.try(:messages).try(:last).try(:sender).try(:full_name)
+            %td.subject
+              %div= notification.try(:messages).try(:last).try(:subject)
+            %td= received_at(notification)
+    = link_to "View All", portal_notifications_path, :class => "view_all_link"
 .clear

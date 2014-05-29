@@ -7,33 +7,35 @@ table.admin_notifications
   width: 100%
   border-collapse: collapse
 
+  tr:hover
+    cursor: pointer
+
   th, td
     text-align: left
-    &.notification_icon
-      width: 4%
-    &.from_column
-      width: 28%
-    &.subject_column 
-      width: 13%
-    &.body_column
-      width: 32%
-    &.received_column
-      width: 9%
+    // &.notification_icon
+    //   width: 4%
+    // &.from_column
+    //   width: 28%
+    // &.subject_column 
+    //   width: 13%
+    // &.body_column
+    //   width: 32%
+    // &.received_column
+    //   width: 9%
     &.mark_unread
+      width: 20px
       text-align: center
+  td
+    padding: 5px 5px 2px
+  th
+    font-size: 1.6em
+    padding-bottom: 10px
 
 .user_portal_notifications
   width: 100%
-  margin: 14px 8px 8px 
   float: left
   .admin-notifications
     width: auto
-
-
-
-
-
-
 
 .notifications
   width: 670px
@@ -48,14 +50,22 @@ table.admin_notifications
 
 .admin-notifications
   width: 870px
-  padding-right: 10px
-  margin: 14px 8px 8px 8px
+  margin: 14px 0 8px
   .notification-action-bar
+    border-radius: 0px
     color: #fff
-    margin-bottom: 5px
-    padding: 5px 8px
-    background: #0099ff !important
-
+    background: #FF0000 !important
+    .right
+      border-left: 2px solid white
+    a.white_link
+      display: block
+      float: left
+      border-left: 1px solid white
+      height: 40px
+  .admin_notifications_content
+    border: 2px solid #FF0000
+    border-top: 0px
+    padding: 10px
 .notifications-header
   margin-left: -3px
 
@@ -120,7 +130,8 @@ table.admin_notifications
   width: 15px
 
 .unread
-  background: #fbf7bd
+  background: #FABEA6
+  font-weight: bold
   .icon-column
     width: 32px
     height: 26px
@@ -130,10 +141,10 @@ table.admin_notifications
       padding-bottom: 10px
       background: url(unread.png)
 
-.unread:hover
-  background-color: #F6EE79
-.read:hover
-  background-color: #E8E8E8
+// .unread:hover
+//   background-color: #F6EE79
+// .read:hover
+//   background-color: #E8E8E8
 .read
   .icon-column
     width: 32px

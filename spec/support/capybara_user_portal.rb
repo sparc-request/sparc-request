@@ -59,8 +59,10 @@ module CapybaraUserPortal
         wait_for_javascript_to_finish
         find("td.body_column").should have_text("Test Reply")
         goToUserPortal
-        find(".new-portal-notification-button").click
-        wait_for_javascript_to_finish
+        within accordionInfoBox do
+            first(:xpath, "//span[@class='ui-button-text' and text()='Send Notification']").click
+            wait_for_javascript_to_finish
+        end
         first(".new_notification").click
         wait_for_javascript_to_finish
         page.should have_text("You can not send a message to yourself.")

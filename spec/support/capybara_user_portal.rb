@@ -22,19 +22,29 @@ module CapybaraUserPortal
         find(:xpath, "//div[@aria-expanded='true']")
     end
 
-    def createNotification
-        authorizedUsersTest("jpl6", "Jason Leonard")
+    def createNotification(studyName)
+        authorizedUsersTest("leonarjp", "Jason Leonard")
         click_link "logout"
-        goToSparcProper("jpl6","p4ssword")
+        goToSparcProper("jpl6@musc.edu","p4ssword")
         goToUserPortal
+        findStudy studyName
         within accordionInfoBox do
             first(:xpath, "//span[@class='ui-button-text' and text()='Send Notification']").click
             wait_for_javascript_to_finish
         end
-        
+        first(".new_notification").click
+        wait_for_javascript_to_finish
+        currentBox = find(:xpath, "//div[contains(@class,'ui-dialog ') and contains(@style,'display: block;')]")
+        within currentBox do click_button("Submit") end
+        wait_for_javascript_to_finish
+        click_link "logout"
+        goToSparcProper
+        goToUserPortal
+        findStudy studyName
+    end
 
-    def notificationsTest
-        #no notifications available, test later.
+    def notificationsTest(studyName)
+        createNotification studyName
         visit "/portal/notifications"
         wait_for_javascript_to_finish
         if not have_css("tr.notification_row.unread") then
@@ -286,7 +296,11 @@ module CapybaraUserPortal
         addBox = find(:xpath, "//div[contains(@class,'ui-dialog') and contains(@style,'display: block;')]")
         addBox.find(:xpath, ".//input[@id='user_search']").set(usersID)
         wait_for_javascript_to_finish
-        find(:xpath, "//ul[contains(@class,'ui-autocomplete')]/li/a[contains(text(),'#{usersName}')]").click
+        begin
+            find(:xpath, "//ul[contains(@class,'ui-autocomplete')]/li/a[contains(text(),'#{usersName}')]").click
+        rescue
+            first(:xpath, "//ul[contains(@class,'ui-autocomplete')]/li/a[contains(text(),'#{usersName}')]").click
+        end
         wait_for_javascript_to_finish
         select "Other", :from => 'project_role_role'
         find(:xpath, "//input[@id='project_role_project_rights_approve']").click
@@ -303,7 +317,7 @@ module CapybaraUserPortal
         findStudy(request.study.short)
         editStudyInformation
         authorizedUsersTest("bjk7", "Brian Kelsey")
-        # notificationsTest
+        notificationsTest request.study.short
     end
 
 end

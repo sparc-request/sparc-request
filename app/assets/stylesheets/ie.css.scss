@@ -21,14 +21,58 @@
   width: 80px;
 }
 
-.protocol-view-right {
-  position: relative;
-  top: -380px;
-  left: -20px;
-  float: right !important;
+.visit_day, .visit_window{
+  width: 23.5px;
+  margin-left: 3px;
 }
-  
 
+#container{
+  height: auto !important;
+}
+
+.steps_table{
+  background-image: none !important;
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader( src='/assets/steps_no_text.png', sizingMethod='scale') !important;
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader( src='/assets/steps_no_text.png', sizingMethod='scale')" !important;
+}
+
+.navigation_link{
+  cursor: pointer;
+}
+
+.confirmation-button{
+  width: 350px !important;
+}
+
+TABLE#payments_list > TBODY > TR > TD.documents{
+  width: 115px;
+}
+
+P.buttons > INPUT.ui-button, P > A.ui-button#subject_tracker_add{
+  position: static !important;
+}
+
+.user-edit-protocol-view .box .info LABEL{
+  padding-right: 5px !important;
+}
+
+UL.fulfillment_notifications > LI.new_notification.ui-corner-all{
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
+#fulfillment UL LI DIV.clear{
+  height: 0px !important;
+  padding: 0px !important;
+}
+
+.service_calendar .section_header, .service_calendar .sub_section_header {
+  text-align: left;
+}
+
+.review-details #service_calendar_container TABLE TH{
+  width: auto !important;
+}
 
 #search {
   background-image: none !important;

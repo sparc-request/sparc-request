@@ -27,11 +27,15 @@ module CapybaraClinical
         wait_for_javascript_to_finish
     end
 
+
+
     def subjectVisitCalendarTest(subjectName)
-        sleep 2400
         find(:xpath, "//input[@value='#{subjectName}']/parent::td/preceding-sibling::td/a[@title='Schedule']").click
         wait_for_javascript_to_finish
+        #**************CONTINUE HERE*************
     end
+    
+
     
     def subjectTracker
         #tests the subject tracker tab
@@ -65,7 +69,7 @@ module CapybaraClinical
         find(:xpath, "//div[@id='subjects']/form/p/input[@value='Save']").click
         wait_for_javascript_to_finish
 
-        # subjectVisitCalendarTest("Bobby Cancerpatient")
+        subjectVisitCalendarTest("Bobby Cancerpatient")
 
         #test add subject
         subjectsNum = all(:xpath, "//div/h3[text()='ARM 1']/following-sibling::table[contains(@id,'subjects_list')]/tbody/tr").length

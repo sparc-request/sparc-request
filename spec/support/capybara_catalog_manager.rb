@@ -15,21 +15,24 @@ module CapybaraCatalogManager
     wait_for_javascript_to_finish
   end
 
-  def fillOutCWF
+  def fillOutCWF(org)
     wait_for_javascript_to_finish
     find(:xpath, "//div[text()='Clinical Work Fulfillment']").click
     wait_for_javascript_to_finish
-    cwfCheckBox = first(:xpath, "//input[@id='program_show_in_cwf']")
+    if org=='program' then cwfCheckBox = first(:xpath, "//input[@id='program_show_in_cwf']")
+    else cwfCheckBox = first(:xpath, "//input[@id='core_show_in_cwf']") end 
     if not cwfCheckBox.checked? then cwfCheckBox.click end
     wait_for_javascript_to_finish
 
     i = 1
-    first(:xpath, "//input[@id='program_position_in_cwf']").set(i)
+    inputID = 'program_position_in_cwf'
+    if org=='core' then inputID = 'core_position_in_cwf' end
+    first(:xpath, "//input[@id='#{inputID}']").set(i)
     first("#save_button").click
     wait_for_javascript_to_finish    
     while not first(:xpath, "//div[@id='errorExplanation']/ul/li[contains(text(),'Position_in_cwf')]").nil? do
         i+=1
-        first(:xpath, "//input[@id='program_position_in_cwf']").set(i)
+        first(:xpath, "//input[@id='#{inputID}']").set(i)
         first("#save_button").click
         wait_for_javascript_to_finish
     end
@@ -236,7 +239,7 @@ module CapybaraCatalogManager
     end
     options[:tags].each do |tagName| setTag tagName end
 
-    if options[:tags].include? "Clinical work fulfillment" then fillOutCWF end
+    if options[:tags].include? "Clinical work fulfillment" then fillOutCWF('program') end
 
     find(:xpath, "//div[text()='Pricing']").click
     find(:xpath, "//input[@class='add_pricing_setup']").click
@@ -306,6 +309,7 @@ module CapybaraCatalogManager
         if not splitCheckBox.checked? then splitCheckBox.click end
     end
     options[:tags].each do |tagName| setTag tagName end
+    if options[:tags].include? "Clinical work fulfillment" then fillOutCWF('core') end
 
     first(:xpath, "//input[@id='save_button']").click
     wait_for_javascript_to_finish

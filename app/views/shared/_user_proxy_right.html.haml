@@ -35,7 +35,7 @@
 
     - if USE_EPIC
       %td.epic_access_dialog{:id => "project_role_identity_#{project_role.identity.id}", :style => "display:none"}
-        Check All That Apply:
+        = t(:user_list)[:check_apply]
         = f.fields_for :epic_rights do |fer|
           .pair
             = fer.check_box "_destroy", {:checked => !fer.object.new, :class => 'epic_access_check_box'}, false, true

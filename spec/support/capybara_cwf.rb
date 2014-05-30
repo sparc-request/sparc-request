@@ -8,6 +8,9 @@ module CapybaraClinical
     end
 
     def testService(service)
+        #expects instance of ServiceWithAddress as input
+        #adds a visit then deletes the same visit in the visit calendar
+        switchTabTo "Study Schedule"
         visitText = find(:xpath, "//select[@id='visit_position']/option[@value='']").text[4..-1]
         visitDay = visitText[6..-1]
         click_link "Add a Visit"
@@ -24,7 +27,15 @@ module CapybaraClinical
         wait_for_javascript_to_finish
     end
 
+    def subjectVisitCalendarTest(subjectName)
+        sleep 2400
+        find(:xpath, "//input[@value='#{subjectName}']/parent::td/preceding-sibling::td/a[@title='Schedule']").click
+        wait_for_javascript_to_finish
+    end
+    
     def subjectTracker
+        #tests the subject tracker tab
+        switchTabTo "Subject Tracker"
         if first(:xpath, "//tr[contains(@class, 'fields subject')]").nil? then #if no subjects available add one
             click_link "Add a subject"
         end
@@ -54,6 +65,8 @@ module CapybaraClinical
         find(:xpath, "//div[@id='subjects']/form/p/input[@value='Save']").click
         wait_for_javascript_to_finish
 
+        # subjectVisitCalendarTest("Bobby Cancerpatient")
+
         #test add subject
         subjectsNum = all(:xpath, "//div/h3[text()='ARM 1']/following-sibling::table[contains(@id,'subjects_list')]/tbody/tr").length
         find(:xpath, "//div/h3[text()='ARM 1']/following-sibling::p/a[text()='Add a subject']").click
@@ -73,6 +86,8 @@ module CapybaraClinical
     end
 
     def paymentsTab
+        #tests the payments tab
+        switchTabTo "Payments"
         paymentsNum = all(:xpath, "//table[@id='payments_list']/tbody/tr[not(@style)]").length
         if paymentsNum == 0 then 
             click_link "Add a payment"
@@ -123,6 +138,8 @@ module CapybaraClinical
     end
 
     def billingTab
+        #tests the billing tab by adding a new cover letter then confirming that it exists on the SR
+        switchTabTo "Billing"
         click_link "New cover letter"
         wait_for_javascript_to_finish
         find(:xpath, "//input[@type='submit']").click
@@ -137,17 +154,9 @@ module CapybaraClinical
         goToCWF
 
         enterServiceRequest(study.short,service.name)
-
-        switchTabTo "Study Schedule"
         testService(service)
-
-        switchTabTo "Subject Tracker"
         subjectTracker
-
-        switchTabTo "Payments"
         paymentsTab
-
-        switchTabTo "Billing"
         billingTab
     end
 

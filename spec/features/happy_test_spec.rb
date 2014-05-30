@@ -109,11 +109,17 @@ describe 'A Happy Test' do
     documentsPage
     reviewPage(request)
     submissionConfirmationPage
-    
     goToSparcProper
-    adminPortal(request, :otf => true, :cwf => false)
-    cwfService = adminPortal(request, :otf => false, :cwf => true)
-    clinicalWorkFulfillment(request.study, cwfService)
+
+    if request.otfServices.length!=0 then 
+        adminPortal(request.study, request.otfServices[0]) 
+    end
+
+    if request.ppServices.length!=0 then 
+        adminPortal(request.study, request.ppServices[0]) 
+        clinicalWorkFulfillment(request.study, request.ppServices[0])
+    end
+
     userPortal(request)
     # sleep 2400  
 

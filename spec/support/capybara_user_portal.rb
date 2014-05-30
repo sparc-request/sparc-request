@@ -7,7 +7,28 @@ module CapybaraUserPortal
         wait_for_javascript_to_finish
     end
 
+    def createNewRequestTest
+        #clicks on the Create New Request button and 
+        #checks that it takes the browser to sparc proper
+        find(:xpath, "//a/img[@class='portal_create_new_request']").click
+        wait_for_javascript_to_finish
+        page.should have_xpath "//div[@id='institution_accordion']"
+        goToUserPortal
+    end
+
+    def editOriginalTest(request)
+        #expects instance of ServiceRequestForComparison as input 
+        find(:xpath, "//a[@role='button']/span[@class='ui-button-text' and text()='Edit Original']").click
+        wait_for_javascript_to_finish
+        page.should have_xpath "//input[@id='line_item_count' and @value='#{request.services.length}']"
+        goToUserPortal
+        findStudy(request.study.short)
+    end
+
     def findStudy(studyName)
+        #expects string of the study in question's name
+        #searches for the study, finds it, and clicks on it to expand its accordion
+        searchBoxTest(true, studyName)
         accordion = find(:xpath, "//div[@id='protocol-accordion' and @role='tablist']")
         within accordion do
             studyTitle = find(:xpath, "./h3[@role='tab']/a/div[contains(text(),'#{studyName}')]/parent::a/parent::h3")
@@ -23,6 +44,11 @@ module CapybaraUserPortal
     end
 
     def createNotification(studyName)
+        #expects string of the study in question's name
+        #adds Jason Leonard as an authorized user, 
+        #logs in as Jason and goes to his user portal
+        #sends a notification to Julia as Jason
+        #logs in as Julia again and returns to study in Julia's User Portal
         authorizedUsersTest("leonarjp", "Jason Leonard")
         click_link "logout"
         goToSparcProper("jpl6@musc.edu","p4ssword")
@@ -44,6 +70,10 @@ module CapybaraUserPortal
     end
 
     def notificationsTest(studyName)
+        #expects string of the study in question's name
+        #creates a notification, goes to notifications center
+        #replies to notification, goes to UP, attempts to send notification to self
+        #checks for error response about sending notification to self.
         createNotification studyName
         visit "/portal/notifications"
         wait_for_javascript_to_finish
@@ -82,6 +112,7 @@ module CapybaraUserPortal
     end
 
     def editStudyInformation
+        #tests the edit study information page
         numerical_day = Time.now.strftime("%-d") # Today's Day
         studyID = accordionInfoBox.find(:xpath, "./div[@class='protocol-information-body ui-corner-bottom']/ul/li[contains(text(),'Study ID:')]").text.strip[9..-1].strip
        
@@ -285,6 +316,8 @@ module CapybaraUserPortal
     end
 
     def authorizedUsersTest(usersID, usersName)
+        #expects the strings of the user's ID and Name in order to search for them and add them.
+        #adds an authorized user to the project and checks that the user has been added.
         usersFirstName = usersName.split[0]
         if not accordionInfoBox.first(:xpath, "./div[@class='protocol-information-table']/table/tbody/tr/td[contains(text(), '#{usersFirstName}')]").nil? then
             accordionInfoBox.first(:xpath, "./div[@class='protocol-information-table']/table/tbody/tr/td[contains(text(), '#{usersFirstName}')]/following-sibling::td/a/span[text()='Delete']").click
@@ -299,8 +332,10 @@ module CapybaraUserPortal
         addBox.find(:xpath, ".//input[@id='user_search']").set(usersID)
         wait_for_javascript_to_finish
         begin
+            #if there is more than one response with the same name, this will fail.
             find(:xpath, "//ul[contains(@class,'ui-autocomplete')]/li/a[contains(text(),'#{usersName}')]").click
         rescue
+            #choose the first response with the user's name if the above fails.
             first(:xpath, "//ul[contains(@class,'ui-autocomplete')]/li/a[contains(text(),'#{usersName}')]").click
         end
         wait_for_javascript_to_finish
@@ -315,8 +350,12 @@ module CapybaraUserPortal
     end
 
     def userPortal(request)
+        #expects instance of ServiceRequestForComparison as input 
+        #Intended as full UP happy test.
         goToUserPortal
+        createNewRequestTest
         findStudy(request.study.short)
+        editOriginalTest(request)
         editStudyInformation
         authorizedUsersTest("bjk7", "Brian Kelsey")
         notificationsTest request.study.short

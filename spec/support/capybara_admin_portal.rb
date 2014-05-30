@@ -66,8 +66,24 @@ module CapybaraAdminPortal
         wait_for_javascript_to_finish
     end
 
+    def searchBoxTest(upBoolean, searchText)
+        #Expects a boolean whether the search is being done in User Portal or not
+        #If not, assumes test is in admin portal or CWF
+        #also expects a string of text to enter into the search box and expects that
+        #that string will appear in one of the responses as well. 
+        #types searchText into search box then if a response exists with the searchText in it,
+        #clicks on that response.
+        if upBoolean then searchBox = find(:xpath, "//input[@id='search_box']")
+        else searchBox = find(:xpath, "//input[@class='search-all-service-requests ui-autocomplete-input']") end 
+        searchBox.set(searchText)
+        wait_for_javascript_to_finish
+        response = first(:xpath, "//ul/li[@role='presentation']/a[contains(text(),'#{searchText}')]")
+        if not response.nil? then response.click end
+    end        
+
     def enterServiceRequest(studyShortName, serviceName)
         #clicks on a specific row in the admin portal display table
+        searchBoxTest(false, "Julia Glenn")
         find(:xpath, "//table[@id='admin-tablesorter']/tbody/tr/td/ul/span[text()='#{serviceName}']/ancestor::tr/td[text()='#{studyShortName}']").click
         wait_for_javascript_to_finish
     end
@@ -221,23 +237,14 @@ module CapybaraAdminPortal
         wait_for_javascript_to_finish
     end
 
-    def adminPortal(request,options={})
+    def adminPortal(study, service)
         #expects instance of ServiceRequestForComparison as input 
+        #also expects booleans to tell if the service desired to be tested 
+        #is a one time fee service or a per patient per visit service
         #Intended as full admin portal happy test.
-        defaults = {
-            :otf => false,
-            :cwf => false
-        }
-        options = defaults.merge(options)
+        #SWITCH TO STUDY, SERVICE
         goToAdminPortal
-
-        if options[:otf] then
-            service = request.otfServices[0]
-            enterServiceRequest(request.study.short,service.name)
-        else 
-            service = request.ppServices[0]
-            enterServiceRequest(request.study.short,service.name)
-        end
+        enterServiceRequest(study.short,service.name)
 
         statusChangeTest
         addNote ("This is a Note")
@@ -247,7 +254,7 @@ module CapybaraAdminPortal
         testSubsidy(30)
 
         switchTabTo "Fulfillment"
-        if options[:otf] then 
+        if service.otf then 
             testOTFService(service,20)
             testOTFService(service,3)
             testOTFService(service,service.quantity)
@@ -261,9 +268,8 @@ module CapybaraAdminPortal
 
         switchTabTo "Fulfillment"
 
-        if options[:cwf] then 
+        if not service.otf then 
             sendToCWF 
-            return service #returns the service sent to CWF to continue the test in CWF
         end
 
     end

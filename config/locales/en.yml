@@ -383,6 +383,7 @@ en:
     rights3: "Request/Approve Services:"
     rights4: "Authorize/Change"
     rights5: "Study Charges:"
+    check_apply: "Check the appropriate securities for Epic access:"
 
   # Edit Study form
   study_form:

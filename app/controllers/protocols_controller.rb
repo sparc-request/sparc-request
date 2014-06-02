@@ -117,7 +117,7 @@ class ProtocolsController < ApplicationController
   private
 
   def send_epic_notification_for_final_review(protocol)
-    Notifier.notify_primary_pi_for_epic_user_final_review(protocol).deliver
+    #Notifier.notify_primary_pi_for_epic_user_final_review(protocol).deliver
   end
 
   def push_protocol_to_epic protocol

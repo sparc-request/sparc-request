@@ -236,7 +236,7 @@ class SubServiceRequest < ActiveRecord::Base
   end
 
   def arms_editable?
-    self.can_be_edited?
+    !self.in_work_fulfillment?
   end
 
   def candidate_statuses

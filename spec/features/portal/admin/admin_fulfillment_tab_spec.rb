@@ -150,18 +150,18 @@ describe "admin fulfillment tab", :js => true do
 
         it "should change the total cost if the calendar visits are edited" do
           previous_direct_cost = ""
-          within("#fulfillment_subsidy") do
-            previous_direct_cost = find("#direct_cost_total").text
+          within("#service_request_cost") do
+            previous_direct_cost = find(".effective_cost").text
           end
           click_link "check_row_#{arm1.line_items_visits.first.id}_template"
           wait_for_javascript_to_finish
-          within("#fulfillment_subsidy") do
-            find("#direct_cost_total").text.should_not eq(previous_direct_cost)
+          within("#service_request_cost") do
+            find(".effective_cost").text.should_not eq(previous_direct_cost)
           end
         end
 
         it "should change the total cost if a visit-based service is added and checked" do
-          previous_direct_cost = find("#direct_cost_total").text
+          previous_direct_cost = find(".effective_cost").text
           within("#add_ppv_service_container") do
             click_on "Add Service"
           end
@@ -169,8 +169,8 @@ describe "admin fulfillment tab", :js => true do
           second_service = arm1.line_items_visits[1]
           click_link "check_row_#{second_service.id}_template"
           wait_for_javascript_to_finish
-          within("#fulfillment_subsidy") do
-            find("#direct_cost_total").text.should_not eq(previous_direct_cost)
+          within("#service_request_cost") do
+            find(".effective_cost").text.should_not eq(previous_direct_cost)
           end
         end
       end
@@ -314,6 +314,31 @@ describe "admin fulfillment tab", :js => true do
         page.should have_content 'Service request has been saved.'
         page.should_not have_content 'Delete Visit 10'
       end
+    end
+  end
+
+  describe 'adding an arm' do
+    before :each do
+      click_link 'Add an Arm'
+      wait_for_javascript_to_finish
+      fill_in "arm_name", :with => 'Another Arm'
+      fill_in "subject_count", :with => 5
+      fill_in "visit_count", :with => 20
+      find('#submit_arm').click()
+      wait_for_javascript_to_finish
+      study.reload
+    end
+
+    it 'should add all arm information' do
+      new_arm = study.arms.last
+      within(".arm_id_#{new_arm.id}") do
+        page.should have_content 'Another Arm'
+        find(".visit_day.position_1").value.should eq("1")
+        find(".visit_day.position_5").value.should eq("5")
+        find('#line_item_service_id').find('option[selected]').text.should eq("Per Patient")
+        find('.line_items_visit_subject_count').find('option[selected]').text.should eq("5")
+      end
+
     end
   end
 

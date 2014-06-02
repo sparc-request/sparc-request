@@ -193,6 +193,24 @@ module CapybaraClinical
 
     end
 
+    def checkTabsCWF
+        #runs through each tab
+        switchTabTo 'Subject Tracker'
+        wait_for_javascript_to_finish
+
+        switchTabTo 'Study Level Charges'
+        wait_for_javascript_to_finish
+        
+        switchTabTo 'Payments'
+        wait_for_javascript_to_finish
+        
+        switchTabTo 'Billing'
+        wait_for_javascript_to_finish
+        
+        switchTabTo 'Study Schedule'
+        wait_for_javascript_to_finish
+    end
+
     def billingTab
         #tests the billing tab by adding a new cover letter then confirming that it exists on the SR
         switchTabTo "Billing"

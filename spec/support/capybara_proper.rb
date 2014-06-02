@@ -839,7 +839,7 @@ module CapybaraProper
 
     def documentsPage
         click_link "Add a New Document"
-        first(:xpath,"//input[@id='document']").set("/Users/charlie/Documents/GitHub/sparc-rails/spec/features/quick_happy_test_spec.rb")
+        first(:xpath,"//input[@id='document']").set("/quick_happy_test_spec.rb")
         select "Other", :from => "doc_type"
         first(:xpath,"//input[@id='process_ssr_organization_ids_']").click
         click_link "Upload"

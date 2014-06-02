@@ -233,16 +233,36 @@ module CapybaraAdminPortal
 
     def sendToCWF
         #checks "Ready for Clinical Work Fulfillment" checkbox
+        switchTabTo 'Fulfillment'
         find(:xpath, "//input[@id='in_work_fulfillment' and @class='cwf_data']").click
         wait_for_javascript_to_finish
     end
 
+    def checkTabsAP
+        #runs through each tab
+        switchTabTo 'Project/Study Information'
+        wait_for_javascript_to_finish
+
+        switchTabTo 'Documents'
+        wait_for_javascript_to_finish
+        
+        switchTabTo 'Related Service Requests'
+        wait_for_javascript_to_finish
+        
+        switchTabTo 'Associated Users'
+        wait_for_javascript_to_finish
+        
+        switchTabTo 'Notifications'
+        wait_for_javascript_to_finish
+        
+        switchTabTo 'Fulfillment'
+        wait_for_javascript_to_finish
+    end
+
     def adminPortal(study, service)
+        #expects instance of CustomStudy as input 
         #expects instance of ServiceRequestForComparison as input 
-        #also expects booleans to tell if the service desired to be tested 
-        #is a one time fee service or a per patient per visit service
         #Intended as full admin portal happy test.
-        #SWITCH TO STUDY, SERVICE
         goToAdminPortal
         enterServiceRequest(study.short,service.name)
 

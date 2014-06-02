@@ -37,14 +37,14 @@
                       %ul
                         - if can_access_program
                           %li= link_to t(:cm_index)[:core], '#', :class => "core"
-                          %li= link_to t(:cm_index)[:service], '#'
+                          %li= link_to t(:cm_index)[:service], '#', :"data-service-providers-size" => program.all_service_providers(false).size
                         - program.services.order("`order`, `name`").each do |service|
                           %li{:id => 'SERVICE' + service.id.to_s}= node service
                     - else
                       %ul
                         - if can_access_program
                           %li= link_to t(:cm_index)[:core], '#', :class => "core"
-                          %li= link_to t(:cm_index)[:service], '#'
+                          %li= link_to t(:cm_index)[:service], '#', :"data-service-providers-size" => program.all_service_providers(false).size
                         - program.services.order("`order`, `name`").each do |service|
                           %li{:id => 'SERVICE' + service.id.to_s}= node service                            
                         - program.cores.order("`order`").each do |core|
@@ -53,7 +53,7 @@
                             = node core, can_access_core
                             %ul
                               - if can_access_core
-                                %li= link_to t(:cm_index)[:service], '#'
+                                %li= link_to t(:cm_index)[:service], '#', :"data-service-providers-size" => core.all_service_providers(false).size
                               - unless core.services.empty?
                                 - core.services.order("`order`, `name`").each do |service|
                                   %li{:id => 'SERVICE' + service.id.to_s}= node service

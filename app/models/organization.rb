@@ -212,11 +212,11 @@ class Organization < ActiveRecord::Base
   # Returns all *relevant* service providers for an organization.  Returns this organization's
   # service providers, as well as the service providers on all parents.  If the process_ssrs flag
   # is true at this organization, also returns the service providers of all children.
-  def all_service_providers
+  def all_service_providers(:include_children => true)
     all_service_providers = []
     
     # If process_ssrs is true, we need to also get our children's service providers
-    if self.process_ssrs
+    if self.process_ssrs and include_children
       self.all_children.each do |child|
         all_service_providers << child.service_providers
       end

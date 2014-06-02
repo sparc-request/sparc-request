@@ -5,3 +5,4 @@
 - unless @study_tracker
   - if @service_request.has_one_time_fee_services?
     = render :partial => 'one_time_fees'
+= render :partial => 'merged_grand_totals', :locals => {:service_request => @service_request}

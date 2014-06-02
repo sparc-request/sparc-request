@@ -153,6 +153,24 @@ module ServiceCalendarHelper
     currency_converter sum
   end
 
+  def display_study_grand_total_direct_costs protocol, service_request
+    sum = 0
+    sum = protocol.direct_cost_total service_request
+    currency_converter sum
+  end
+
+  def display_study_grand_total_indirect_costs protocol, service_request
+    sum = 0
+    sum = protocol.indirect_cost_total service_request
+    currency_converter sum
+  end
+
+  def display_study_grand_total protocol, service_request
+    sum = 0
+    sum = protocol.grand_total service_request
+    currency_converter sum
+  end
+
   #############################################
   # Other
   #############################################

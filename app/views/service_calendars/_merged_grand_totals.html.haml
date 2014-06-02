@@ -1,0 +1,18 @@
+%table.service_calendar
+  %thead.ui-widget-header
+    %tr.table_header
+      %th.services_header{:rowspan => 2, :colspan => @portal ? 10 : 12, :style => "height: 88px"}= t(:calendar_page)[:headers][:total_study]
+
+  %tbody.cell-border
+    - if USE_INDIRECT_COST
+      %tr.totals_section.begin_totals{:class => cycle('odd', '', :name => 'otfs')}
+        %td{:colspan => 9}= t("calendar_page.labels.grand_total_direct")
+        %td.otf_total_direct_cost= display_study_grand_total_direct_costs @protocol, service_request
+
+      %tr.totals_section.begin_totals{:class => cycle('odd', '', :name => 'otfs')}
+        %td{:colspan => 9}= t("calendar_page.labels.grand_total_indirect")
+        %td.otf_total_direct_cost= display_study_grand_total_indirect_costs @protocol, service_request
+
+    %tr.totals_section.begin_totals{:class => cycle('odd', '', :name => 'otfs')}
+      %td{:colspan => 9}= t("calendar_page.labels.grand_total")
+      %td.otf_total_direct_cost= display_study_grand_total @protocol, service_request

@@ -27,18 +27,69 @@ module CapybaraClinical
         wait_for_javascript_to_finish
     end
 
+    def check_subject_tracker_totals(service)
+        #expects instance of ServiceWithAddress as input
+        #meant to be ran on the subject tracker page where 
+        #the service passed in is in view and available
+        completedBox = find(:xpath, "//div[@aria-hidden='false']//td[text()='#{service.name}']/following-sibling::td[contains(@class, 'check_box_cell')]/input[@type='checkbox']")
+        unit = find(:xpath, "//div[@aria-hidden='false']//td[text()='#{service.name}']/following-sibling::td[contains(@class,'unit_cost_cell')]").text[1..-1].to_f
+        rQuantity = find(:xpath, "//div[@aria-hidden='false']//td[text()='#{service.name}']/following-sibling::td[contains(@class, 'r_qty_cell')]/input")['value'].to_f
+        actualTotal = find(:xpath, "//div[@aria-hidden='false']//td[text()='#{service.name}']/following-sibling::td[contains(@class, 'procedure_total_cell')]").text[1..-1].to_f
 
+        expectedTotal = completedBox.checked? ? unit*rQuantity : 0.0
+        actualTotal.should eq(expectedTotal)
+    end        
 
-    def subjectVisitCalendarTest(subjectName)
+    def save_validation_check
+        #will check if save warning occurs
+        #then save the page
+        #then make sure save warning disappears.
+        page.should have_content "You must save this form for any changes to be commited."
+        find("#save_appointments").click
+        wait_for_javascript_to_finish
+        page.should_not have_content "You must save this form for any changes to be commited."
+    end
+
+    def subjectVisitCalendarTest(subjectName, service)
+        #expects string of subject's name as input
+        #expects instance of ServiceWithAddress as input
         find(:xpath, "//input[@value='#{subjectName}']/parent::td/preceding-sibling::td/a[@title='Schedule']").click
         wait_for_javascript_to_finish
-        # sleep 2400
-        #**************CONTINUE HERE*************
+
+        commentBox = find(:xpath, "//div[@aria-hidden='false']//textarea[@class='comment_box']")
+        commentBox.set("This is a fresh comment. Fresh comments smell nice.")
+        find(:xpath, "//div[@aria-hidden='false']//a[contains(@class, 'add_comment_link')]").click
+        wait_for_javascript_to_finish
+        page.should have_content "This is a fresh comment. Fresh comments smell nice."
+        
+        click_link service.core
+        #it is assumed here that the service sent in
+        #is checked for fulfillment in the first visit available.
+        page.should have_xpath "//div[@aria-hidden='false']//td[text()='#{service.name}']"
+        check_subject_tracker_totals(service)
+        
+        completedBox = find(:xpath, "//div[@aria-hidden='false']//td[text()='#{service.name}']/following-sibling::td[contains(@class, 'check_box_cell')]/input[@type='checkbox']")
+        completedBox.click
+        wait_for_javascript_to_finish
+        check_subject_tracker_totals(service)
+        save_validation_check
+
+        select 'Active', :from => 'subject_status'
+        wait_for_javascript_to_finish
+        save_validation_check
+        
+        select '--Choose a Status--', :from => 'subject_status'
+        wait_for_javascript_to_finish
+        save_validation_check
+
+        click_link "Return to Clinical Work Fulfillment"
+        wait_for_javascript_to_finish
     end
     
 
 
-    def subjectTracker
+    def subjectTracker(service)
+        #expects instance of ServiceWithAddress as input
         #tests the subject tracker tab
         switchTabTo "Subject Tracker"
         if first(:xpath, "//tr[contains(@class, 'fields subject')]").nil? then #if no subjects available add one
@@ -70,7 +121,7 @@ module CapybaraClinical
         find(:xpath, "//div[@id='subjects']/form/p/input[@value='Save']").click
         wait_for_javascript_to_finish
 
-        subjectVisitCalendarTest("Bobby Cancerpatient")
+        subjectVisitCalendarTest("Bobby Cancerpatient",service)
 
         #test add subject
         subjectsNum = all(:xpath, "//div/h3[text()='ARM 1']/following-sibling::table[contains(@id,'subjects_list')]/tbody/tr").length
@@ -103,7 +154,7 @@ module CapybaraClinical
         wait_for_javascript_to_finish
         dateSubmittedBox = find(:xpath, "//div[@id='ui-datepicker-div']")
         within dateSubmittedBox do
-            click_link Time.now.strftime("%-d")
+            find(:xpath, ".//td[contains(@class,'ui-datepicker-today')]/a").click
         end
 
         first(:xpath, "//td[@class='amount_invoiced']/input").set("1000.00")
@@ -113,7 +164,7 @@ module CapybaraClinical
         wait_for_javascript_to_finish
         dateSubmittedBox = find(:xpath, "//div[@id='ui-datepicker-div']")
         within dateSubmittedBox do
-            click_link Time.now.strftime("%-d")
+            find(:xpath, ".//td[contains(@class,'ui-datepicker-today')]/a").click
         end
 
         first(:xpath, "//td[@class='payment_method']/select/option[text()='Check']").select_option
@@ -160,7 +211,7 @@ module CapybaraClinical
 
         enterServiceRequest(study.short,service.name)
         testService(service)
-        subjectTracker
+        subjectTracker(service)
         paymentsTab
         billingTab
     end

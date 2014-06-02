@@ -549,7 +549,6 @@ ActiveRecord::Schema.define(:version => 20140515150850) do
     t.string   "internal_rate_type"
     t.string   "foundation_rate_type"
     t.datetime "deleted_at"
-    t.string   "other_rate_type"
   end
 
   add_index "pricing_setups", ["organization_id"], :name => "index_pricing_setups_on_organization_id"
@@ -677,19 +676,6 @@ ActiveRecord::Schema.define(:version => 20140515150850) do
     t.datetime "updated_at", :null => false
   end
 
-  create_table "rails_admin_histories", :force => true do |t|
-    t.text     "message"
-    t.string   "username"
-    t.integer  "item"
-    t.string   "table"
-    t.integer  "month",      :limit => 2
-    t.integer  "year",       :limit => 8
-    t.datetime "created_at",              :null => false
-    t.datetime "updated_at",              :null => false
-  end
-
-  add_index "rails_admin_histories", ["item", "table", "month", "year"], :name => "index_rails_admin_histories"
-
   create_table "reports", :force => true do |t|
     t.integer  "sub_service_request_id"
     t.string   "xlsx_file_name"
@@ -815,11 +801,11 @@ ActiveRecord::Schema.define(:version => 20140515150850) do
     t.string   "charge_code"
     t.string   "revenue_code"
     t.integer  "organization_id"
-    t.datetime "created_at",                                         :null => false
-    t.datetime "updated_at",                                         :null => false
+    t.datetime "created_at",                                                            :null => false
+    t.datetime "updated_at",                                                            :null => false
     t.datetime "deleted_at"
     t.string   "cdm_code"
-    t.boolean  "send_to_epic"
+    t.boolean  "send_to_epic",                                       :default => false
   end
 
   add_index "services", ["is_available"], :name => "index_services_on_is_available"

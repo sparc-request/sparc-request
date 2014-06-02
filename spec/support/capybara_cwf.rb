@@ -32,11 +32,12 @@ module CapybaraClinical
     def subjectVisitCalendarTest(subjectName)
         find(:xpath, "//input[@value='#{subjectName}']/parent::td/preceding-sibling::td/a[@title='Schedule']").click
         wait_for_javascript_to_finish
+        # sleep 2400
         #**************CONTINUE HERE*************
     end
     
 
-    
+
     def subjectTracker
         #tests the subject tracker tab
         switchTabTo "Subject Tracker"

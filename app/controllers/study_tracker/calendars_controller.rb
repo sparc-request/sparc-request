@@ -80,7 +80,6 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
 
   def get_calendar_data(calendar)
     # Get the cores
-    puts calendar.inspect
     @cwf_cores = Organization.get_cwf_organizations
     @subject = calendar.subject
     @appointments = calendar.appointments.sort{|x,y| x.position_switch <=> y.position_switch }

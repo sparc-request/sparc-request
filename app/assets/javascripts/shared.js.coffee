@@ -26,8 +26,9 @@ $(document).ready ->
     identity_id = $(this).attr('identity_id')
     data = $(".#{parent} input").serialize()
     $.ajax
-      url: "/identities/#{identity_id}?#{data}"
-      type: 'GET'
+      url: "/identities/#{identity_id}"
+      type: 'POST'
+      data: data
 
   $('.add-user button').live 'click', ->
     $.ajax

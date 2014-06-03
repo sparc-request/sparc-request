@@ -9,8 +9,8 @@
         .confirmation-details
           %p.instructions= t(:sr_confirmation)[:instructions]
           = render :partial => 'confirmation_details'
-          - if USE_EPIC
-            =# render :partial => 'protocols/push_to_epic'
+          - if USE_EPIC and not QUEUE_EPIC
+            = render :partial => 'protocols/push_to_epic'
           .links
             .confirmation-button
               = link_to t(:sr_confirmation)[:download_button], service_request_path(:format => :xlsx)

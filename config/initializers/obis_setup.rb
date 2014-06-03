@@ -16,6 +16,7 @@ begin
   USE_SHIBOLETH                 = application_config['use_shiboleth']
   USE_LDAP                      = application_config['use_ldap']
   USE_EPIC                      = application_config['use_epic']
+  QUEUE_EPIC                    = application_config['queue_epic']
   USE_GOOGLE_CALENDAR           = application_config['use_google_calendar']
   USE_NEWS_FEED                 = application_config['use_news_feed']
   GOOGLE_USERNAME               = application_config['google_username']

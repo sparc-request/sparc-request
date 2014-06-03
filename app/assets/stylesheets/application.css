@@ -336,6 +336,11 @@ h3.needed_info {
   margin: 10px;
 }
 
+.quick_question_email_error {
+  display: none;
+  color: red;
+}
+
 .submit-request-button,
 .catalog-button a,
 .document_upload_button a {

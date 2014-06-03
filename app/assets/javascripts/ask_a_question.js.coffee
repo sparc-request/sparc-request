@@ -13,7 +13,7 @@ $(document).ready ->
         id: "submit_question"
         text: "Submit"
         click: ->
-          $("#ask-a-question-form").submit()
+          send_question()
       },
       {
         id: "cancel_question"
@@ -24,7 +24,19 @@ $(document).ready ->
     close: ->
         $(this).clearForm()
 
-  $("#ask-a-question-form").submit ->
+  $("#ask-a-question-form form").submit (event)->
+    send_question()
+    event.preventDefault()
+    return false
+
+send_question = ->
+  email_input = $('#quick_question_email').val()
+  email_regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/i
+
+  if (email_input == "") || (!email_regex.test(email_input))
+    $('.quick_question_email_error').show()
+  else
+    $('.quick_question_email_error').hide()
     data =
       'quick_question':
         'body': $("#quick_question_body").val()
@@ -37,3 +49,4 @@ $(document).ready ->
       contentType: 'application/json; charset=utf-8'
       success: ->
         $('#ask-a-question-form').dialog 'close'
+

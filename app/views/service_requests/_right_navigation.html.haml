@@ -19,6 +19,7 @@
   = form_tag ask_a_question_service_requests_path, :method => :post, :remote => true do
     %p
       = text_field_tag "quick_question[email]", nil, {:placeholder => t(:notifications)[:ask_a_question_email], :size => 35, :tabindex => -1}
+      %span.quick_question_email_error= t(:notifications)[:ask_a_question_email_error]
       %br
       %br
     %p

@@ -373,6 +373,21 @@ describe "admin fulfillment tab", :js => true do
     end
   end
 
+  describe 'admin rate' do
+
+    it 'should display the default line item applicable rate' do
+      first('.fulfillment_your_cost').should have_value("20.00")
+    end
+
+    it 'should use the new admin cost is the field is edited' do
+      first('.fulfillment_your_cost').set(50)
+      wait_for_javascript_to_finish
+      first('.fulfillment_selecter').click
+      wait_for_javascript_to_finish
+      first('.fulfillment_your_cost').should have_value("50.00")
+    end
+  end
+
   describe "push to epic" do
     it 'should display a toast message when push succeeds' do
       click_link 'Send To Epic'

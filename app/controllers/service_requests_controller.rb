@@ -596,15 +596,6 @@ class ServiceRequestsController < ApplicationController
       to_add = process_ssr_organization_ids - grouping_org_ids
       to_update = process_ssr_organization_ids & grouping_org_ids
 
-      to_delete.each do |org_id|
-        document_grouping.documents.each do |doc|
-          doc.destroy if doc.organization.id == org_id.to_i
-        end
-
-        document_grouping.reload
-        document_grouping.destroy if document_grouping.documents.empty?
-      end
-
       to_add.each do |org_id|
         document = params[:document] || document_grouping.documents.first.document
         
@@ -619,6 +610,15 @@ class ServiceRequestsController < ApplicationController
           doc_errors[:doc_type] = ["You must provide a document type"] if params[:doc_type].empty?
           errors << doc_errors
         end
+      end
+
+      to_delete.each do |org_id|
+        document_grouping.documents.each do |doc|
+          doc.destroy if doc.organization.id == org_id.to_i
+        end
+
+        document_grouping.reload
+        document_grouping.destroy if document_grouping.documents.empty?
       end
 
       # updating sub_service_request documents should create a new grouping unless the grouping only contains documents for that sub_service_request

@@ -4,12 +4,10 @@
   });
 
 .admin-right-dashboard
-  .user-information-title.ui-corner-all
-    %h3= t(:study_tracker)[:title]
   .user-information-body.ui-corner-bottom
     %p
       %strong= @user.display_name
-      .admin-buttons
-        = link_to image_tag('portal/billing_button.png'), billing_report_setup_study_tracker_home_index_path
+.admin-buttons
+  = link_to image_tag('portal/billing_button.png'), billing_report_setup_study_tracker_home_index_path
 
 = render :partial => 'portal/admin/ssr_list'

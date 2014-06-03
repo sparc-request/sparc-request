@@ -32,16 +32,16 @@
         = f.label :brief_description, t(:project_form)[:description]
         = f.text_area :brief_description, :cols => '115'
 
-      .indirect_cost_rate
+      .field.indirect_cost_rate
         = f.label :indirect_cost_rate, t(:project_form)[:rate]
         = f.text_field :indirect_cost_rate
   
   %br.clear
   #actions
     = submit_tag t(:project_form)[:save]
-    or
     - if admin
       = link_to "Cancel", "/portal/admin/sub_service_requests/#{@sub_service_request.id}", :class => "admin_cancel_link"
     - else
       = link_to t(:protocol_shared)[:cancel], portal_root_path
+    .clear
     

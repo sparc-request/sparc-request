@@ -116,26 +116,32 @@ h2.title
   text-align: right
 
 #container #main
-  box-shadow: 0px 0px 6px #113967
   width: 941px
 #title
   color: #00346A
-  margin-top: 31px
-  background: white url(banner.png) no-repeat
-  height: 58px
-  padding: 23px 0 0 23px
+  margin-top: 50px
+  background: white url(puzzle_pieces.png) no-repeat
+  height: 92px
+  h1
+    padding: 10px 25px 0
+    a
+      color: white
+      font-weight: normal
+      font-size: 1.6em
+      span
+        font-size: 1.2em
 #content
+  box-shadow: 0px 0px 15px -4px #113967
   background: #FFF
   overflow: auto
   border: 0
   width: auto
-  margin: 5px auto 0 auto
+  margin: 0 auto 25px
+  min-height: 400px
 .dashboard-view
   float: left
-  padding-right: 10px
-  margin: 14px 8px 8px 8px
-  border-right: 1px solid $dark_gray
-
+  h3.blue-provider.ui-accordion-header
+    border: 0px !important
 .protocol-accordion-title
   width: 630px
 .protocol-short-title
@@ -145,45 +151,206 @@ h2.title
   border: none
 .protocol-information-title
   color: $white
-  padding: 3px 0 3px 5px
-  background: #0099ff !important
+  padding: 7px 7px 7px 15px
+  background: #0775B0 !important
+  border-radius: 10px !important
+  font-weight: bold
 .protocol-information-body
   padding: 3px 0 3px 5px
   background: #d8d8d8 !important
-  margin-bottom: 1px
+  width: 840px
+  margin: 0 auto
+  border-radius: 0px !important
   ul
     list-style: none
     margin: 0 5px 15px 5px
     li
       margin: 1px
+      font-size: 12px
+  .info_left
+    float: left
+  .info_right
+    float: right
+    margin: 35px 20px 0 0
+.protocol-information #spacer
+  height: 15px
+  background-color: #0775B0
+  margin: 0 auto 25px
+  width: 845px
+  clear: both
 .protocol-information-table
   background: $white !important
-  margin-bottom: 1px
+  width: 845px
+  margin: 0 auto
   table
     text-align: center
     th
+      padding: 3px
+      font-size: 12px
+    td
       background: #d8d8d8
-      padding: 0 3px 3px 3px
-      font-size: 8px
-      td
-        background: #d8d8d8
-        padding: 3px
-        font-size: 13px
+      padding: 0 10px
+      font-size: 12px
+      border: 1px solid white
+    td.no_background
+      background: none
+      padding: 0px
+      a
+        width: 34px
+        height: 34px
+        display: block
+        margin: 0 auto
+      .edit-associated-user-button
+        background: url(edit_blue.png) no-repeat
+      .delete-associated-user-button
+        background: url(delete_red.png) no-repeat
 
-.protocol-information-button, .associated-user-button
-  width: 98.5%
-  color: $white
+.protocol-information-button,
+.associated-user-button
+  width: 230px
+  height: 26px
+  padding-top: 9px
+  color: white
   cursor: pointer
   text-align: center
-  padding: 3px 0 3px 5px
-  background: #0099ff !important
-  border: 2px outset #80CCFF
+  background: url(yellowbutton_blank.png) no-repeat
+div.associated-user-button
+  margin: 10px
+  background: url(yellowbutton_add.png) no-repeat
 .associated-user-button:hover, .service-request-button:hover
   cursor: pointer
+div.send_notification_dialog_box.ui-dialog
+  div.ui-dialog-titlebar
+    background-color: #00B741 !important
+  div.ui-dialog-buttonset
+    button.ui-button
+      background: url(greenbutton_small.png) no-repeat !important
+      border: 0px
+      height: 40px
+      width: 93px
+      font-size: 1.5em
+      .ui-button-text
+        padding: 0px
+div.new_message_dialog.ui-dialog
+  div.ui-dialog-titlebar
+    background-color: #ff0000 !important
+  div.ui-dialog-buttonset
+    button.ui-button
+      background: url(redbutton.png) no-repeat !important
+div.add_user_dialog_box,
+div.full_calendar_dialog_box,
+div.send_notification_dialog_box,
+div.new_message_dialog,
+div.view_request_dialog_box
+  padding: 0px
+  border: 0px
+  background: none !important
+  div.ui-dialog-content
+    background-color: white
+    .user-search-container
+      margin: 15px 10px 5px
+      padding-bottom: 20px
+      border-bottom: 1px solid #CCC
+    .user_info
+      input
+        margin-top: 7px
+  div.ui-dialog-titlebar
+    background: #F79739
+    border: 0px
+    border-radius: 25px 25px 0 0
+    font-size: 1.5em
+    font-weight: normal
+    padding: 10px 18px
+    button.ui-dialog-titlebar-close
+      background: url(close_white.png) no-repeat
+      height: 47px
+      width: 47px
+      border: 0px
+      margin: 0px
+      top: 0px
+      padding: 0px
+      span
+        background: none
+  div.ui-dialog-buttonpane
+    margin: 0px !important
+    border: 0px !important
+    background: white !important
+    // #add_authorized_user_submit_button,
+    // #add_authorized_user_cancel_button,
+    // #ok_button
+    div.ui-dialog-buttonset
+      button.ui-button
+        background: url(yellowbutton_small.png) no-repeat
+        border: 0px
+        height: 40px
+        width: 93px
+        font-size: 1.5em
+        .ui-button-text
+          padding: 0px
+      // #add_authorized_user_submit_button.ui-state-hover,
+      // #add_authorized_user_cancel_button.ui-state-hover,
+      // #ok_button.ui-state-hover,
+      // #add_authorized_user_submit_button.ui-state-focus,
+      // #add_authorized_user_cancel_button.ui-state-focus,
+      // #ok_button.ui-state-focus
+      button.ui-button.ui-state-hover,
+      button.ui-button.ui-state-focus
+        .ui-button-text
+          color: white !important
 .service-request-title
-  color: $white
-  padding: 3px 0 3px 5px
+  color: white
+  padding: 7px 7px 7px 15px
+  font-weight: bold
   background: #00B741 !important
+  border-radius: 10px !important
+.service_request-body
+  width: 845px
+  margin: 0 auto
+  th
+    padding: 3px
+  td
+    border: 1px solid white
+    padding: 0 10px
+  td.edit-original-td a.edit_service_request
+    height: 33px
+    line-height: 100%
+    padding-top: 2px
+  td.no_background
+    background: white
+    padding: 0px
+    a
+      display: block
+      cursor: pointer
+      height: 35px
+      color: white
+    .new-portal-notification-button
+      background: url(notification_green.png) no-repeat
+      width: 34px
+    .view-sub-service-request-button
+      background: url(view_green.png) no-repeat
+      width: 35px
+    .edit_service_request
+      background: url(greenbutton.png) no-repeat
+      height: 28px
+      padding-top: 7px
+      width: 81px
+      font-size: 14px
+  td.notification_td
+    padding: 0px
+    .portal_notifications
+      background-color: #D6E4D2
+      padding: 15px
+      margin-top: 10px
+      .border_top_container
+        border-top: 1px solid black
+      li.new_notification
+        height: 40px
+        padding: 9px 0 0 50px
+        margin: 20px 75px 0 10px
+        list-style: none
+        float: left
+        font-weight: bold
+        background: url(notification_green_small.png) no-repeat
 .service-request-button
   color: $white
   text-align: center
@@ -200,31 +367,102 @@ h2.title
   float: left
   width: 230px
   height: 60px
-  background: #FDF57C
-  font-weight: bold
+  background: #FF0000
+  position: relative
+  a.hyperlink
+    display: block
+    font-weight: bold
+    height: 60px
+    width: 230px
   a:link, a:visited, a:hover
     color: #000
   .notifications-text
     display: inline-block
-    margin-top: 12px
+    margin-top: 20px
+    font-size: 1.2em
+    color: white
+  .notifications_popup
+    background-color: white
+    border: 3px solid #FF0000
+    display: none
+    left: -221px
+    padding: 10px 1px 1px
+    position: absolute
+    top: 57px
+    width: 443px
+    z-index: 2
+    table
+      border-collapse: collapse
+      width: 100%
+    tr:hover
+      cursor: pointer
+    tr.read_notification
+      .image_placeholder div
+        background: url(unreadnotification_white_small.png) no-repeat
+    tr.unread_notification
+      background-color: #fabea6
+      font-weight: bold
+      td
+        border-color: #fabea6
+      .image_placeholder div
+        background: url(notification_red_small.png) no-repeat
+    th
+      font-size: 1.2em
+      padding-bottom: 15px
+    td,
+    th
+      text-align: left
+    td
+      padding: 20px 0
+    td.sender div
+      width: 130px
+    td.subject div
+      width: 170px
+    .image_placeholder
+      padding: 0px
+      div
+        height: 40px
+        width: 40px
+        margin: 0 5px
+    .view_all_link
+      background-color: #FF0000
+      color: white
+      display: block
+      font-size: 1.4em
+      height: 31px
+      margin-top: 20px
+      padding-top: 9px
+      text-align: center
+      width: 100%
 .user-information-title
   color: $white
   padding: 10px 0 10px 10px
   margin: 0 14px 0 0
   background: #0099ff !important
 .user-information-body
+  border-radius: 0 !important
   float: left
-  height: 46px
-  width: 645px
-  padding: 10px 10px 5px 10px
+  height: 40px
+  width: 640px
+  padding: 20px 25px 0px
   margin: 0 5px 0 0
-  background: #d8d8d8 !important
+  background: #0775B0 !important
+  p
+    color: white
+    font-size: 1.4em
 .my_navigation
   margin-top: 3px
 .user-buttons
   margin: 8px auto auto 10px
 .view-full-calendar-button
-  width: 100%
+  width: 230px
+  height: 26px
+  padding: 9px 9px 9px 15px
+  margin: 10px 0 0 10px
+  text-align: center
+  color: white !important
+  display: block
+  background: url(yellowbutton_calendar.png) no-repeat
 
 // Dialog form styles
 
@@ -232,22 +470,20 @@ h2.title
   fieldset
     border: 1px solid $dark_gray
     margin-top: 10px
-    margin-right: 8px
     fieldset
       margin-top: 10px
       margin-left: 8px
-      margin-right: 8px
       width: 650px
       legend
         background: $sexy_blue
   legend
-    border: 1px solid $sexy_blue
-    padding: 3px 10px 3px 10px
+    padding: 6px 10px
     margin-left: 10px
-    background: #73B9D7
+    background: #F79739
     color: #FFF
+    border-radius: 5px
   div
-    padding: 3px 20px 6px 20px
+    padding: 3px 10px 6px
     input[type="text"], select
       width: 200px
     select
@@ -412,7 +648,7 @@ h2.title
 
 // End Productivity
 .odd
-  background: #CCC
+  background: #d8d8d8
 .even
   background: #FFF
 
@@ -506,7 +742,7 @@ h2.title
 
 
 .blue-provider
-  background: #003366 !important
+  background: #0775B0 !important
 
 .orange-provider
   background: #ff9933 !important
@@ -976,8 +1212,8 @@ h2.title
 // Dashboard View
 
 .dash-instructions
-  margin-bottom: 10px
-  padding: 0 6px 6px 6px
+  margin-top: 15px
+  padding: 0 10px
 
 
 // Document Mgmt View
@@ -1037,7 +1273,7 @@ h2.title
   border-top-left-radius: 3px
 
 .blue_header
-  background: $sexy_blue
+  background: #0775B0
   color: $white
   padding: 2px
 

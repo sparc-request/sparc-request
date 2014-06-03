@@ -22,6 +22,7 @@
         #title
           %h1= render :partial => 'portal/home/title'
         #content
+          .notification_dialog
           = yield
   %footer
     = render :partial => 'shared/piwik_tracking' if Rails.env == 'production'

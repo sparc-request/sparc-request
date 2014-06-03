@@ -110,6 +110,21 @@ class Organization < ActiveRecord::Base
     all_children.uniq
   end
 
+  # Looks down through all child services. It looks back up through each service's parent organizations
+  # and returns false if any of them do not have a service provider. Self is excluded.
+  def service_provider_for_child_services?
+    has_provider = true
+    if !self.all_child_services.empty?
+      self.all_child_services.each do |service|
+        service_providers = service.organization.service_provider_lookup.reject{|x| x.id == self.id}
+        if service_providers == []
+          has_provider = false
+        end
+      end
+
+      has_provider
+    end
+  end
 
   # Returns an array of all services that are offered by this organization as well of all of its
   # deep children.
@@ -212,7 +227,7 @@ class Organization < ActiveRecord::Base
   # Returns all *relevant* service providers for an organization.  Returns this organization's
   # service providers, as well as the service providers on all parents.  If the process_ssrs flag
   # is true at this organization, also returns the service providers of all children.
-  def all_service_providers(:include_children => true)
+  def all_service_providers(include_children=true)
     all_service_providers = []
     
     # If process_ssrs is true, we need to also get our children's service providers

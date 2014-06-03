@@ -29,7 +29,7 @@ describe 'A Happy Test on Sparc Proper' do
     #  wait_for_javascript_to_finish
     #end
 
-  it 'should make you feel happy', :js => true do
+  it 'should properly make you feel happy', :js => true do
     visit root_path
 
     service1 = ServiceWithAddress.new(
@@ -74,9 +74,7 @@ describe 'A Happy Test on Sparc Proper' do
     reviewPage(request)
     submissionConfirmationPage
 
-    adminPortal(request,true)#remove after admin portal development
-    adminPortal(request,false)#remove after admin portal development
-
+    goToSparcProper
     
   end
 

@@ -68,7 +68,7 @@ show_epic_access = (identity_id) ->
     height: 425
     width: 500
     modal: true
-    title: 'Access Rights'
+    title: 'Epic User Access'
     buttons:
       Ok: ->
         $(this).dialog('destroy')

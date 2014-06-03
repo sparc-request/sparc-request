@@ -811,7 +811,6 @@ ActiveRecord::Schema.define(:version => 20140520183412) do
     t.datetime "created_at",                                                            :null => false
     t.datetime "updated_at",                                                            :null => false
     t.datetime "deleted_at"
-    t.string   "cdm_code"
     t.boolean  "send_to_epic",                                       :default => false
   end
 

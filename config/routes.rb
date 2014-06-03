@@ -10,6 +10,7 @@ SparcRails::Application.routes.draw do
     end
 
     member do
+      post 'show'
       get 'approve_account'
       get 'disapprove_account'
     end

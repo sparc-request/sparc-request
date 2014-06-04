@@ -25,6 +25,19 @@ describe "payments", js: true do
       sub_service_request.reports.size.should eq(0)
       
       click_link "Research project summary report"
+      wait_for_javascript_to_finish
+
+      page.execute_script %Q{ $('a.ui-datepicker-prev').trigger("click") } # go back one month
+      wait_for_javascript_to_finish
+      page.execute_script %Q{ $("td.ui-datepicker-week-end:first").trigger("click") } # click on day
+      wait_for_javascript_to_finish
+      find("#rps_end_date").click
+      wait_for_javascript_to_finish
+      page.execute_script %Q{ $("td.ui-datepicker-week-end:first").trigger("click") } # click on day
+      wait_for_javascript_to_finish
+
+      find("#rps_continue").click
+      wait_for_javascript_to_finish
 
       within('#billings_list') do
         page.should have_content("Research Project Summary Report")

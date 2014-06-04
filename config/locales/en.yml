@@ -103,7 +103,8 @@ en:
     link: "HERE"
     triggered_by: "Current Identity:"
     sr_id: "Service Request ID:"
-    ssr_id: "Sub Service Request IDs:"
+    ssr_ids: "Sub Service Request IDs:"
+    ssr_id: "Sub Service Request ID:"
     notice:
       body1: "Request for new SPARC Request account submitted and awaiting approval"
       body2: "A new SPARC Request account is waiting for approval."

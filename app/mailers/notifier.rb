@@ -23,7 +23,7 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :cc => cc, :from => @identity.email, :subject => subject) 
   end
 
-  def notify_user project_role, service_request, xls, approval
+  def notify_user project_role, service_request, xls, approval, user_current
     @identity = project_role.identity
     @role = project_role.role 
 
@@ -37,6 +37,12 @@ class Notifier < ActionMailer::Base
     @portal_link = USER_PORTAL_LINK + "?default_protocol=#{@protocol.id}"
     @portal_text = "To VIEW and/or MAKE any changes to this request, please click here."
     
+    @triggered_by = user_current.id
+    @ssr_ids = ""
+    service_request.sub_service_requests.each do |ssr|
+      @ssr_ids += ssr.id.to_s + " "
+    end
+
     attachments["service_request_#{@service_request.protocol.id}.xls"] = xls 
     
     # only send these to the correct person in the production env
@@ -46,7 +52,7 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => "no-reply@musc.edu", :subject => subject)
   end
 
-  def notify_admin service_request, submission_email_address, xls, user
+  def notify_admin service_request, submission_email_address, xls, user_current
     @protocol = service_request.protocol
     @service_request = service_request
     @role == 'none'
@@ -54,7 +60,7 @@ class Notifier < ActionMailer::Base
     @portal_link = USER_PORTAL_LINK + "admin"
     @portal_text = "Administrators/Service Providers, Click Here"
     
-    @triggered_by = user.id
+    @triggered_by = user_current.id
     @ssr_ids = ""
     service_request.sub_service_requests.each do |ssr|
       @ssr_ids += ssr.id.to_s + " "
@@ -69,7 +75,7 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => "no-reply@musc.edu", :subject => subject)
   end
   
-  def notify_service_provider service_provider, service_request, attachments_to_add
+  def notify_service_provider service_provider, service_request, attachments_to_add, user_current
     @protocol = service_request.protocol
     @service_request = service_request
     @role == 'none'
@@ -78,6 +84,12 @@ class Notifier < ActionMailer::Base
     @portal_link = USER_PORTAL_LINK + "admin"
     @portal_text = "Administrators/Service Providers, Click Here"
     
+    @triggered_by = user_current.id
+    @ssr_ids = ""
+    service_request.sub_service_requests.each do |ssr|
+      @ssr_ids += ssr.id.to_s + " "
+    end
+
     attachments_to_add.each do |file_name, document|
       attachments[file_name] = document
     end
@@ -112,8 +124,12 @@ class Notifier < ActionMailer::Base
     mail(:to => email_to, :from => email_from, :subject => "Feedback")
   end
 
-  def sub_service_request_deleted identity, sub_service_request
+  def sub_service_request_deleted identity, sub_service_request, user_current
     @ssr_id = "#{sub_service_request.service_request.protocol.id}-#{sub_service_request.ssr_id}"
+
+    @triggered_by = user_current.id
+    @service_request = sub_service_request.service_request
+    @ssr = sub_service_request
 
     email_to = Rails.env == 'production' ? identity.email : DEFAULT_MAIL_TO
     subject = Rails.env == 'production' ? "#{I18n.t('application_title')} - service request deleted" : "[#{Rails.env.capitalize} - EMAIL TO #{identity.email}] #{I18n.t('application_title')} - service request deleted"

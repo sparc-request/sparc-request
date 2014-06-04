@@ -33,7 +33,7 @@
 .user-edit-protocol-view .box .info fieldset .field {
   padding: 2px;
   margin-bottom: 20px;
-  height: 23px;
+  min-height: 23px;
 }
 
 .user-edit-protocol-view .box .info .research-type {

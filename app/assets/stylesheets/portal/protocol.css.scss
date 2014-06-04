@@ -31,14 +31,7 @@
     }
 
     input[type=submit] {
-        width: 92px;
-        height: 40px;
-        color: white;
-        border: 0px;
-        font-size: 1.5em;
-        background: url(bluebutton.png) no-repeat;
-        float: left;
-        cursor: pointer;
+        width: auto;
     }
 
     select {
@@ -49,6 +42,16 @@
         text-align: center;
         margin: 15px auto 0;
         width: 250px;
+        input[type=submit] {
+            width: 92px;
+            height: 40px;
+            color: white;
+            border: 0px;
+            font-size: 1.5em;
+            background: url(bluebutton.png) no-repeat;
+            float: left;
+            cursor: pointer;
+        }
 
         span {
             margin: 0 10px;
@@ -75,13 +78,20 @@
         float: left;
     }
     input {
-        margin-left: 10px;
+        margin: 7px 0 0 10px;
     }
     select {
         width: 60% !important;
     }
     option {
         max-width: 100% !important;
+    }
+}
+
+#protocol .user-edit-protocol-view .field.inventors {
+    height: auto;
+    textarea {
+        height: auto;
     }
 }
 

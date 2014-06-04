@@ -126,7 +126,6 @@
   
             .field.submission_type
               = hs.label :submission_type, t(:study_form)[:submission_type]
-              %br
               = hs.select :submission_type, options_for_select(SUBMISSION_TYPES, study.human_subjects_info.submission_type), :include_blank => t(:study_form)[:submission_type]
 
             .field.approval_pending
@@ -199,6 +198,7 @@
             .field.inventors
               = ip.label :inventors, t(:study_form)[:inventors]
               = ip.text_area :inventors
+              .clear
   
       %fieldset
         %legend= t(:study_form)[:type] 

@@ -169,4 +169,9 @@ class Notifier < ActionMailer::Base
 
     mail(:to => EPIC_RIGHTS_MAIL_TO, :from => 'no-reply@musc.edu', :subject => subject)
   end
+
+  def epic_queue_error protocol
+    @protocol = protocol
+    mail(:to => QUEUE_EPIC_LOAD_ERROR_TO, :from => 'no-reply@musc.edu', :subject => "Error batch loading protocol to Epic")
+  end
 end

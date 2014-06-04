@@ -99,24 +99,24 @@ class Organization < ActiveRecord::Base
   end
 
   # Returns an array of all children (and children of children) of this organization (deep search).
-  # !!!INCLUDES SELF!!!
-  def all_children all_children=[]
+  # Optionally includes self
+  def all_children all_children=[], include_self=true
     self.children.each do |child|
       all_children << child
       child.all_children(all_children)
     end
-    all_children << self
+    all_children << self if include_self
 
     all_children.uniq
   end
 
   # Looks down through all child services. It looks back up through each service's parent organizations
   # and returns false if any of them do not have a service provider. Self is excluded.
-  def service_provider_for_child_services?
+  def service_providers_for_child_services?
     has_provider = true
     if !self.all_child_services.empty?
-      self.all_child_services.each do |service|
-        service_providers = service.organization.service_provider_lookup.reject{|x| x.id == self.id}
+      self.all_child_services(false).each do |service|
+        service_providers = service.organization.service_provider_lookup
         if service_providers == []
           has_provider = false
         end
@@ -128,9 +128,9 @@ class Organization < ActiveRecord::Base
 
   # Returns an array of all services that are offered by this organization as well of all of its
   # deep children.
-  def all_child_services
+  def all_child_services include_self=true
     all_services = []
-    children = self.all_children
+    children = self.all_children [], include_self
     children.each do |child|
       if child.services
         services = Service.where(:organization_id => child.id).includes(:pricing_maps)

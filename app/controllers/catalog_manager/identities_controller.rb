@@ -78,8 +78,7 @@ class CatalogManager::IdentitiesController < CatalogManager::AppController
       #     service_provider.destroy
       #     oe.reload
       #   end
-      if oe.services.empty? && 
-      elsif oe.all_service_providers(false).size > 1
+      if (oe.services.empty? and oe.service_providers_for_child_services?) or (oe.all_service_providers(false).size > 1)
         service_provider.destroy
         oe.reload
       else

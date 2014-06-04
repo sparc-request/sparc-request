@@ -115,6 +115,21 @@ $(document).ready ->
     recalc_subtotal()
   )
 
+  # $(document).on('change', '#subjects form.edit_study', ->
+  #   $(window).unload (event) ->
+  #     event.stopImmediatePropagation()
+  #     $("#dialog_confirm").dialog
+  #       autoOpen: true
+  #       width: 350
+  #       modal: true
+  #       resizable: false
+  #       buttons:
+  #         "Save Changes": () ->
+  #           $("#subjects form.edit_study").submit()
+  #         "Delete": () ->
+  #           $(this).dialog('close')
+  # )
+
 
   $(document).on('click', 'a.check_all', ->
     if $('a.check_all span').hasClass('ui-icon-check')

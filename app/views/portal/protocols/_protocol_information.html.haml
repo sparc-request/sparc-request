@@ -103,7 +103,7 @@
                 %a.edit_service_request{:href => "javascript:void(0);", :'data-permission' => rights.to_s, :'data-url' => "/service_requests/#{sr.id}/catalog?sub_service_request_id=#{ssr.id}&from_user_portal=true"}= t(:protocol_information)[:edit]
           - if sr.sub_service_requests.size > 0 && first_ssr
             - first_ssr = false
-            %td.no_background.edit-original-td{:rowspan => sr.sub_service_requests.size}
+            %td.no_background.edit-original-td
               - if @user.can_edit_request? sr
                 %a.edit_service_request{:href => "javascript:void(0);", :'data-permission' => rights.to_s, :'data-url' => "/service_requests/#{sr.id}/catalog?from_user_portal=true&edit_original=true"}= t(:protocol_information)[:edit_original]
         %tr

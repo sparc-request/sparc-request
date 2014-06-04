@@ -101,6 +101,9 @@ en:
     body6: "A list of requested services is attached."
     body7: "To approve the charges associated with the selected services please click"
     link: "HERE"
+    triggered_by: "Current Identity:"
+    sr_id: "Service Request ID:"
+    ssr_id: "Sub Service Request IDs:"
     notice:
       body1: "Request for new SPARC Request account submitted and awaiting approval"
       body2: "A new SPARC Request account is waiting for approval."

@@ -1,4 +1,7 @@
+
 class Notifier < ActionMailer::Base
+  helper ApplicationHelper
+
   def ask_a_question quick_question
     @quick_question = quick_question
 
@@ -43,15 +46,20 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => "no-reply@musc.edu", :subject => subject)
   end
 
-  def notify_admin service_request, submission_email_address, xls
+  def notify_admin service_request, submission_email_address, xls, user
     @protocol = service_request.protocol
     @service_request = service_request
     @role == 'none'
     @approval_link = nil
-
     @portal_link = USER_PORTAL_LINK + "admin"
     @portal_text = "Administrators/Service Providers, Click Here"
     
+    @triggered_by = user.id
+    @ssr_ids = ""
+    service_request.sub_service_requests.each do |ssr|
+      @ssr_ids += ssr.id.to_s + " "
+    end
+
     attachments["service_request_#{@service_request.protocol.id}.xls"] = xls 
     
     # only send these to the correct person in the production env

@@ -509,7 +509,7 @@ class ServiceRequestsController < ApplicationController
   def send_admin_notifications(sub_service_requests, xls)
     sub_service_requests.each do |sub_service_request|
       sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-        Notifier.notify_admin(sub_service_request.service_request, submission_email.email, xls).deliver
+        Notifier.notify_admin(sub_service_request.service_request, submission_email.email, xls, current_user).deliver
       end
     end
   end

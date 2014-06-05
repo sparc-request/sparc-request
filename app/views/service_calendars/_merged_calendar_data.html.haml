@@ -11,7 +11,7 @@
       %th.qty_type_header{:rowspan => 2}= t("calendar_page.headers.clinical_qty")
       %th.number_of_subjects_header{:rowspan => 2}= t("calendar_page.headers.subjects")
       %th{:colspan => 5, :height => 40, :width => 375}
-        = generate_merged_visit_navigation arm, @service_request, @pages, @tab, false
+        = generate_merged_visit_navigation arm, @service_request, @pages, @tab, @portal
       - if @portal
         %th{:rowspan => 2}= t("calendar_page.headers.total_per_patient")
         %th.total_per_study{:rowspan => 2}= t("calendar_page.headers.total_per_study")
@@ -33,8 +33,10 @@
     - arm.service_list.each do |key, value| # get only per patient/per visit services and group them
       - arm.line_items_visits.each do |line_items_visit|
         - line_item = line_items_visit.line_item
-        - next if @portal && ['first_draft', 'draft'].include?(line_item.service_request.status)
         - next unless value[:line_items].include?(line_item)
+        - if ['first_draft', 'draft'].include?(line_item.service_request.status)
+          - next if @portal
+          - next if service_request != line_item.service_request
         %tr.line_item{:class => cycle('odd', '', :name => 'pppvs')}
           %td.service_name= line_item.service.display_service_name
           - unless @portal
@@ -58,6 +60,7 @@
       - 5.times do |i|
         %td{:class => "visit_column_#{i + 1} max_direct_per_patient arm_#{arm.id}"}
       %td{:class => "pp_max_total_direct_cost arm_#{arm.id}"}= display_max_total_direct_cost_per_patient arm
+      %td
 
     - if USE_INDIRECT_COST
       %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
@@ -65,12 +68,14 @@
         - 5.times do |i|
           %td{:class => "visit_column_#{i + 1} max_indirect_per_patient arm_#{arm.id}"}
         %td{:class => "pp_max_total_indirect_cost arm_#{arm.id}"}= display_max_total_indirect_cost_per_patient arm
+        %td
 
     %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
       %td{:colspan => colspan}= t("calendar_page.labels.maximum_per")
       - 5.times do |i|
         %td{:class => "visit_column_#{i + 1} max_total_per_patient arm_#{arm.id}"}
       %td{:class => "pp_max_total arm_#{arm.id}"}= display_max_total_cost_per_patient arm
+      %td
 
     %tr.totals_section.grand-totals{:class => cycle('odd', '', :name => 'pppvs')}
       %td{:colspan => colspan}= t("calendar_page.labels.total_costs") + " -- " + arm.name

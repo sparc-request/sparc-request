@@ -38,10 +38,7 @@ class Notifier < ActionMailer::Base
     @portal_text = "To VIEW and/or MAKE any changes to this request, please click here."
     
     @triggered_by = user_current.id
-    @ssr_ids = ""
-    service_request.sub_service_requests.each do |ssr|
-      @ssr_ids += ssr.id.to_s + " "
-    end
+    @ssr_ids = service_request.sub_service_requests.map{ |ssr| ssr.id }.join(", ")
 
     attachments["service_request_#{@service_request.protocol.id}.xls"] = xls 
     
@@ -61,11 +58,8 @@ class Notifier < ActionMailer::Base
     @portal_text = "Administrators/Service Providers, Click Here"
     
     @triggered_by = user_current.id
-    @ssr_ids = ""
-    service_request.sub_service_requests.each do |ssr|
-      @ssr_ids += ssr.id.to_s + " "
-    end
-
+    @ssr_ids = service_request.sub_service_requests.map{ |ssr| ssr.id }.join(", ")
+    
     attachments["service_request_#{@service_request.protocol.id}.xls"] = xls 
     
     # only send these to the correct person in the production env
@@ -85,10 +79,7 @@ class Notifier < ActionMailer::Base
     @portal_text = "Administrators/Service Providers, Click Here"
     
     @triggered_by = user_current.id
-    @ssr_ids = ""
-    service_request.sub_service_requests.each do |ssr|
-      @ssr_ids += ssr.id.to_s + " "
-    end
+    @ssr_ids = service_request.sub_service_requests.map{ |ssr| ssr.id }.join(", ")
 
     attachments_to_add.each do |file_name, document|
       attachments[file_name] = document

@@ -160,8 +160,10 @@ module CapybaraCatalogManager
     stDay = (options[:display_date]).strftime("%-d") # Today's Day
     wait_for_javascript_to_finish
     first(:xpath, "//th[contains(text(),'Display Date')]/following-sibling::td/input[@type='text']").click
+    wait_for_javascript_to_finish
     page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
     first(:xpath, "//th[contains(text(),'Effective Date')]/following-sibling::td/input[@type='text']").click
+    wait_for_javascript_to_finish
     page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
     first(:xpath, "//input[@id='pricing_setups_blank_pricing_setup_federal']").set(options[:federal])
     first(:xpath, "//input[@id='pricing_setups_blank_pricing_setup_corporate']").set(options[:corporate])
@@ -246,8 +248,10 @@ module CapybaraCatalogManager
     first(:xpath, "//a[@href='#' and contains(text(),'Effective on')]").click
     stDay = (options[:display_date]).strftime("%-d") # Today's Day
     first(:xpath, "//th[contains(text(),'Display Date')]/following-sibling::td/input[@type='text']").click
+    wait_for_javascript_to_finish
     page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
     first(:xpath, "//th[contains(text(),'Effective Date')]/following-sibling::td/input[@type='text']").click
+    wait_for_javascript_to_finish
     page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
     first(:xpath, "//input[@id='pricing_setups_blank_pricing_setup_federal']").set(options[:federal])
     first(:xpath, "//input[@id='pricing_setups_blank_pricing_setup_corporate']").set(options[:corporate])
@@ -370,8 +374,10 @@ module CapybaraCatalogManager
     first(:xpath, "//a[@href='#' and contains(text(),'Effective on')]").click
     first(:xpath, "//th[text()='Display Dates']/following-sibling::td/input[@type='text']").click
     stDay = (options[:display_date]).strftime("%-d") # Today's Day
+    wait_for_javascript_to_finish
     page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
     first(:xpath, "//th[text()='Effective Date']/following-sibling::td/input[@type='text']").click
+    wait_for_javascript_to_finish
     page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
     first(:xpath, "//input[@id='pricing_maps_blank_pricing_map_full_rate']").set(options[:rate])
     if options[:otf] then 

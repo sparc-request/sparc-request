@@ -44,5 +44,5 @@
         %ul
           %li= link_to t(:calendar_page)[:tabs][:template], table_service_request_service_calendars_path(@service_request, :tab => "template", :portal => true) , :id => 'template_tab'
           %li= link_to t(:calendar_page)[:tabs][:billing], table_service_request_service_calendars_path(@service_request, :tab => "billing_strategy", :portal => true), :id => 'billing_strategy_tab'
-          %li= link_to t(:calendar_page)[:tabs][:pricing], merged_calendar_service_request_service_calendars_path(@service_request, :tab => "calendar"), :id => 'calendar_tab'
+          %li= link_to t(:calendar_page)[:tabs][:pricing], merged_calendar_service_request_service_calendars_path(@service_request, :tab => "calendar", :portal => true), :id => 'calendar_tab'
         .move-visits

@@ -222,6 +222,7 @@ en:
       total_costs_arm: "Total Costs (Per Patient/Visit Services) All ARMs"
       total_direct_other: "Total Direct Costs (Other Services) Per Study"
       total_indirect_other: "Total Indirect Costs (Other Services) Per Study"
+      totals_costs_other: "Total Costs (Other Services) Per Study"
       total_costs_other: "Total Costs (Other Services) Per Study"
       grand_total_direct: "Grand Total: Direct Costs"
       grand_total_indirect: "Grand Total: Indirect Costs"

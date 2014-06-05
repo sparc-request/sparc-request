@@ -161,7 +161,13 @@ class ServiceRequestsController < ApplicationController
     @service_request.sub_service_requests.each do |ssr|
       if ssr.subsidy
         # we already have a subsidy; add it to the list
-        @subsidies << ssr.subsidy
+        subsidy = ssr.subsidy
+        unless subsidy.admin_percent_subsidy.nil?
+          dct = subsidy.sub_service_request.direct_cost_total
+          subsidy.update_attribute(:pi_contribution, Subsidy.calculate_pi_contribution(subsidy.admin_percent_subsidy, dct))
+        end
+
+        @subsidies << subsidy
       elsif ssr.eligible_for_subsidy?
         # we don't have a subsidy yet; add it to the list but don't save
         # it yet

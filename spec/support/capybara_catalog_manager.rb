@@ -120,15 +120,11 @@ module CapybaraCatalogManager
     options = defaults.merge(options)
     wait_for_javascript_to_finish
     cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Provider')]")
-    if cnpLink.visible? then
-        begin
-            cnpLink.click
-        rescue
-            click_link under
-            cnpLink.click
-        end
+    if not(cnpLink.nil?) and cnpLink.visible? then 
+        cnpLink.click
     else
         click_link under
+        cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Provider')]")
         cnpLink.click
     end
 
@@ -208,15 +204,11 @@ module CapybaraCatalogManager
     options = defaults.merge(options)
     wait_for_javascript_to_finish
     cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Program')]")
-    if cnpLink.visible? then
-        begin
-            cnpLink.click
-        rescue
-            click_link under
-            cnpLink.click
-        end
+    if not(cnpLink.nil?) and cnpLink.visible? then 
+        cnpLink.click
     else
         click_link under
+        cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Program')]")
         cnpLink.click
     end
 
@@ -281,16 +273,13 @@ module CapybaraCatalogManager
     }
     options = defaults.merge(options)
     wait_for_javascript_to_finish
+
     cncLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Core')]")
-    if cncLink.visible? then
-        begin
-            cncLink.click
-        rescue
-            click_link under
-            cncLink.click
-        end
+    if not(cncLink.nil?) and cncLink.visible? then 
+        cncLink.click
     else
         click_link under
+        cncLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Core')]")
         cncLink.click
     end
 

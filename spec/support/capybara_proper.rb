@@ -152,8 +152,8 @@ module CapybaraProper
             wait_for_javascript_to_finish
         else #else use the search box to find the service then add it
             wait_until {first(:xpath, "//input[@id='service_query']")}.set(serviceName)
-            wait_for_javascript_to_finish
-            wait_until {first(:xpath, "//li[@class='search_result']/button[@class='add_service']")}.click
+            wait_until {first(:xpath, "//li[@class='search_result']/button[@class='add_service']")}
+            first(:xpath, "//li[@class='search_result']/button[@class='add_service']").click
             wait_for_javascript_to_finish
         end
     end
@@ -232,7 +232,7 @@ module CapybaraProper
     def checkLineItemsNumber(numberExpected)
         #asserts that the line item count
         #shoud equal the number expected.
-        wait_until {find(:xpath, "//input[@id='line_item_count']")}['value'].should eq(numberExpected)
+        wait_until {first(:xpath, "//input[@id='line_item_count']")}['value'].should eq(numberExpected)
     end 
 
 

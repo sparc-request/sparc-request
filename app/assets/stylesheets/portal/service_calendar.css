@@ -14,7 +14,8 @@ body .ui-tabs .ui-tabs-panel {
   border: 1px solid #ccc;
 }
 
-.service_calendar thead tr th {
+.service_calendar thead tr th,
+.service_calendar tbody tr td {
   border: 1px solid #ccc;
 }
 
@@ -36,13 +37,13 @@ body .ui-tabs .ui-tabs-panel {
   background: #ccc;
 }
 
-.service_calendar .section_header,
-.service_calendar .totals_section,
-.service_calendar .sub_section_header {
+#service_calendar .service_calendar .section_header,
+#service_calendar .service_calendar .totals_section,
+#service_calendar .service_calendar .sub_section_header {
   text-align: left;
 }
 
-.service_calendar .line_item .service_name {
+#service_calendar .service_calendar .line_item .service_name {
   text-align: left;
 }
 
@@ -52,14 +53,42 @@ body .ui-tabs .ui-tabs-panel {
   border-top: 1px solid #adadad;
 }
 
+#service_calendar .table_header th {
+  text-align: center;
+}
+
 .service_calendar .line_item td.subject_count {
   text-align: center;
 }
 
-.service_calendar .section_header th,
-.service_calendar .sub_section_header th,
-.service_calendar .totals_section td,
-.service_calendar .line_item td {
+#service_calendar .service_calendar tbody td.visit {
+  text-align: right;
+}
+
+#service_calendar .totals_section td {
+  text-align: left;
+}
+
+#service_calendar .service_calendar .your_cost,
+#service_calendar .service_calendar .service_rate,
+#service_calendar .service_calendar .otf_total,
+#service_calendar .service_calendar .otf_total_direct_cost,
+#service_calendar .service_calendar .pp_max_total_direct_cost,
+#service_calendar .service_calendar .pp_max_total_indirect_cost,
+#service_calendar .service_calendar .pp_max_total,
+#service_calendar .service_calendar .pp_line_item_total,
+#service_calendar .service_calendar .pp_line_item_study_total,
+#service_calendar .service_calendar .pp_total,
+#service_calendar .service_calendar .max_direct_per_patient,
+#service_calendar .service_calendar .max_indirect_per_patient,
+#service_calendar .service_calendar .max_total_per_patient {
+  text-align: right;
+}
+
+#service_calendar .service_calendar .section_header th,
+#service_calendar .service_calendar .sub_section_header th,
+#service_calendar .service_calendar .totals_section td,
+#service_calendar .service_calendar .line_item td {
   padding: 5px;
 }
 
@@ -76,10 +105,10 @@ body .ui-tabs .ui-tabs-panel {
   text-align: center;
 }
 
-.service_calendar .your_cost,
-.service_calendar .service_rate,
-.service_calendar .otf_total,
-.service_calendar .otf_total_direct_cost {
+#service_calendar .service_calendar .your_cost,
+#service_calendar .service_calendar .service_rate,
+#service_calendar .service_calendar .otf_total,
+#service_calendar .service_calendar .otf_total_direct_cost {
   text-align: right;
 }
 

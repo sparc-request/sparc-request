@@ -38,15 +38,15 @@
         %td.no-border-right= PROXY_RIGHTS.key(pr.project_rights)
 
   %br
-  #service_calendar_container
+  #service_calendar
     / -@service_requests.each do |service_request|
     /   - service_request.arms.each do |arm|
     /     - next if arm.visit_groups.empty?
     /     = render :partial => 'portal/protocols/calendar', :locals => {:arm => arm, :service_request => service_request}
-    - if @protocol.any_service_requests_to_display?
+    - if @protocol.has_per_patient_per_visit? @service_request, @portal
       - @protocol.arms.each do |arm|
         .arm_calendar_container{:'data-arm_id' => arm.id}
           - next if arm.visit_groups.empty?
           = render :partial => '/service_calendars/merged_calendar_data', :locals => {:tab => 'pricing', :arm => arm, :service_request => @service_request}
-    - if @protocol.has_one_time_fees?
-      = render :partial => '/service_calendars/merged_one_time_fees'
+    - if @protocol.has_one_time_fees? @service_request, @portal
+      = render :partial => '/service_calendars/merged_one_time_fees', :locals => {:current_request => @service_request}

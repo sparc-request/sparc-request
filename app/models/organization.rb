@@ -110,22 +110,6 @@ class Organization < ActiveRecord::Base
     all_children.uniq
   end
 
-  # Looks down through all child services. It looks back up through each service's parent organizations
-  # and returns false if any of them do not have a service provider. Self is excluded.
-  def service_providers_for_child_services?
-    has_provider = true
-    if !self.all_child_services.empty?
-      self.all_child_services(false).each do |service|
-        service_providers = service.organization.service_provider_lookup
-        if service_providers == []
-          has_provider = false
-        end
-      end
-
-      has_provider
-    end
-  end
-
   # Returns an array of all services that are offered by this organization as well of all of its
   # deep children.
   def all_child_services include_self=true
@@ -218,10 +202,29 @@ class Organization < ActiveRecord::Base
   # parent organization which has service providers and returns the service providers of that parent.
   def service_providers_lookup
     if !service_providers.empty?
-      return service_providers
-    else 
-      return self.parents.select {|x| !x.service_providers.empty?}.first.service_providers
+      return self.service_providers
+    elsif !self.parents.empty? 
+      parent = self.parents.select {|x| !x.service_providers.empty?}.first
+      return parent.nil? ? [] : parent.service_providers
+    else
+      return []
     end
+  end
+
+  # Looks down through all child services. It looks back up through each service's parent organizations
+  # and returns false if any of them do not have a service provider. Self is excluded.
+  def service_providers_for_child_services?
+    has_provider = true
+    if !self.all_child_services.empty?
+      self.all_child_services(false).each do |service|
+        service_providers = service.organization.service_providers_lookup.reject{|x| x.organization_id == self.id}
+        if service_providers == []
+          has_provider = false
+        end
+      end
+    end
+
+    has_provider
   end
 
   # Returns all *relevant* service providers for an organization.  Returns this organization's

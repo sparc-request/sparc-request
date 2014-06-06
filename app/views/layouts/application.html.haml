@@ -4,6 +4,11 @@
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
     %title= t 'application_title'
     = stylesheet_link_tag 'application', '960', 'jquery-ui', :media => 'all'
+    /[if IE]
+      = stylesheet_link_tag 'ie'
+    /[if gt IE 7]
+      = stylesheet_link_tag 'ie8_plus'
+      
     = javascript_include_tag "application"
     = javascript_include_tag "feedback"
     = csrf_meta_tags

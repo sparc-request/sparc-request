@@ -39,7 +39,7 @@ table.study_tracker_table {
   font-weight:bold;
 }
 td.highlighted {
-  background-color:#FFEF8F;
+  background-color:#FFEF8F !important;
 }
 td.text-center {
   text-align:center;

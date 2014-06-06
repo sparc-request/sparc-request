@@ -15,6 +15,8 @@ development:
   wkhtmltopdf_location: '/usr/local/bin/wkhtmltopdf'
   approve_epic_rights_mail_to: "glennj@musc.edu, forney@musc.edu, crossoml@musc.edu"
   use_epic: true
+  queue_epic: true
+  queue_epic_load_error_to: 'glennj@musc.edu, hundc@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu'
   use_google_calendar: true
   use_news_feed: true
   google_username: sparcrequest@gmail.com
@@ -37,6 +39,8 @@ test:
   wkhtmltopdf_location: '/usr/local/bin/wkhtmltopdf'
   approve_epic_rights_mail_to: "glennj@musc.edu, forney@musc.edu, crossoml@musc.edu"
   use_epic: true
+  queue_epic: true
+  queue_epic_load_error_to: 'glennj@musc.edu, hundc@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu'
   use_google_calendar: true
   use_news_feed: true
   google_username: sparcrequest@gmail.com

@@ -32,6 +32,7 @@ class Portal::ProtocolsController < Portal::BaseController
   end
 
   def edit
+    @edit_protocol = true
     @protocol = Protocol.find(params[:id])
     @protocol.populate_for_edit if @protocol.type == "Study"
     respond_to do |format|
@@ -72,18 +73,20 @@ class Portal::ProtocolsController < Portal::BaseController
 
   def view_full_calendar
     @protocol = Protocol.find(params[:id])
-    @service_request = @protocol.service_requests.first
+    @service_request = @protocol.any_service_requests_to_display?
 
     arm_id = params[:arm_id] if params[:arm_id]
     page = params[:page] if params[:page]
     session[:service_calendar_pages] = params[:pages] if params[:pages]
     session[:service_calendar_pages][arm_id] = page if page && arm_id
     @tab = 'calendar'
-    @pages = {}
     @portal = params[:portal]
-    @protocol.arms.each do |arm|
-      new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-      @pages[arm.id] = @service_request.set_visit_page new_page, arm
+    if @service_request
+      @pages = {}
+      @protocol.arms.each do |arm|
+        new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
+        @pages[arm.id] = @service_request.set_visit_page new_page, arm
+      end
     end
   end
 

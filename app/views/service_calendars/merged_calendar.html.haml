@@ -1,8 +1,9 @@
-- @protocol.arms.each do |arm|
-  .arm_calendar_container{:'data-arm_id' => arm.id}
-    - next if arm.visit_groups.empty?
-    = render :partial => 'merged_calendar_data', :locals => {:tab => @tab, :arm => arm, :service_request => @service_request}
+- if @protocol.has_per_patient_per_visit? @service_request, @portal
+  - @protocol.arms.each do |arm|
+    .arm_calendar_container{:'data-arm_id' => arm.id}
+      - next if arm.visit_groups.empty?
+      = render :partial => 'merged_calendar_data', :locals => {:tab => @tab, :arm => arm, :service_request => @service_request}
 - unless @study_tracker
-  - if @service_request.has_one_time_fee_services?
-    = render :partial => 'one_time_fees'
+  - if @protocol.has_one_time_fees? @service_request, @portal
+    = render :partial => 'merged_one_time_fees', :locals => {:current_request => @service_request}
 = render :partial => 'merged_grand_totals', :locals => {:service_request => @service_request}

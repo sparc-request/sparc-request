@@ -21,7 +21,7 @@ describe "admin portal notifications", :js => true do
     page.fill_in "message_subject", :with => "Test Subject"
     page.fill_in "message_body", :with => "Test Body"
     within "div.ui-dialog-buttonpane", :visible => true do
-      click_button("Submit")
+      click_button("Send")
     end
     wait_for_javascript_to_finish
     Message.find_by_subject("Test Subject").body.should eq("Test Body")

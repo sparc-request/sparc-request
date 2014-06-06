@@ -9,7 +9,7 @@
         = hidden_field_tag('message_email', @recipient.try(:email), :name => 'message[email]')
         = hidden_field_tag('notification_sub_service_request_id', @sub_service_request.id, :name => 'notification[sub_service_request_id]')
 
-        = t(:notifications)[:recipient]
+        %strong= t(:notifications)[:recipient]
         = @recipient.try(:full_name)
         %br
         %br

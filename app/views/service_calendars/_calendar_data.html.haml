@@ -5,8 +5,8 @@
   %thead.ui-widget-header
     %tr.table_header
       %th.services_header{:rowspan => 2}= t("calendar_page.headers.services")
+      %th.unit_costs_header{:colspan => 2}= t("calendar_page.headers.unit_costs")
       - unless @portal 
-        %th.unit_costs_header{:colspan => 2}= t("calendar_page.headers.unit_costs")
         %th.qty_type_header{:rowspan => 2}= t("calendar_page.headers.clinical_qty")
       %th.number_of_subjects_header{:rowspan => 2}= t("calendar_page.headers.subjects")
       %th
@@ -16,12 +16,11 @@
         = generate_visit_navigation arm, service_request, @pages, @tab, @portal if (@sub_service_request.nil? ? service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
       %th{:colspan => 2}= image_tag 'spinner.gif', :class => 'service_calendar_spinner'
     %tr.table_header
-      - unless @portal
-        %th.service_rate_header= t("calendar_page.headers.service_rate")
-        %th.your_cost_header= t("calendar_page.headers.your_cost")
+      %th.service_rate_header= t("calendar_page.headers.service_rate")
+      %th.your_cost_header= t("calendar_page.headers.your_cost")
       %th &nbsp;
       - if (@sub_service_request.nil? ? service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?) 
-        = generate_visit_header_row arm, service_request, @pages[arm.id].to_i
+        = generate_visit_header_row arm, service_request, @pages[arm.id].to_i, @portal
       - else
         %th{:colspan => 5} &nbsp;
       - if @portal
@@ -60,9 +59,15 @@
                 %td= select_tag "line_item_service_id", options_for_select(candidate_service_options(@candidate_per_patient_per_visit, true), line_item.try(:service).try(:id)), :'data-line_item_id' => line_item.id, :class => 'fulfillment_data fulfillment_selecter'
               - else
                 %td= line_item.service.name + ' (Disabled)'
+              %td.service_rate{:class => "service_rate_#{line_items_visit.id}"}= display_service_rate line_item
+              - if @study_tracker
+                %td.your_cost= currency_converter line_item.applicable_rate
+              -else 
+                %td.your_cost{:style => "white-space:nowrap;overflow:hidden;"}
+                  %span= "$"
+                  = text_field_tag 'line_item_displayed_cost', number_with_precision(Service.cents_to_dollars(line_item.applicable_rate), :precision => 2), :'data-line_item_id' => line_item.id, :class => 'fulfillment_data fulfillment_your_cost'
             - else
               %td.service_name= line_item.service.display_service_name
-            - unless @portal
               %td.service_rate{:class => "service_rate_#{line_items_visit.id}"}= display_service_rate line_item
               %td.your_cost= display_your_cost line_item
               %td.unit_type= pricing_map.unit_type

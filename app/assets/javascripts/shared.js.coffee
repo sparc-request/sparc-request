@@ -26,8 +26,9 @@ $(document).ready ->
     identity_id = $(this).attr('identity_id')
     data = $(".#{parent} input").serialize()
     $.ajax
-      url: "/identities/#{identity_id}?#{data}"
-      type: 'GET'
+      url: "/identities/#{identity_id}"
+      type: 'POST'
+      data: data
 
   $('.add-user button').live 'click', ->
     $.ajax
@@ -68,7 +69,7 @@ show_epic_access = (identity_id) ->
     height: 425
     width: 500
     modal: true
-    title: 'Access Rights'
+    title: 'Epic User Access'
     buttons:
       Ok: ->
         $(this).dialog('destroy')

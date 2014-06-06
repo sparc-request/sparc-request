@@ -8,7 +8,6 @@
 }
 
 .user-edit-protocol-view .box {
-  background: #E8E8E8;
   width: 100% !important;
   height: auto;
 }
@@ -21,16 +20,20 @@
 
 .user-edit-protocol-view .box .info fieldset {
   padding: 1px 7px 5px 7px;
-  margin-top: 10px;
+  margin-top: 25px;
   margin-bottom: 5px;
+  border: 2px solid black;
+  width: 850px;
 }
 
 .user-edit-protocol-view .box .info fieldset legend {
-  font-size: 12px;
+  font-size: 14px;
 }
 
 .user-edit-protocol-view .box .info fieldset .field {
   padding: 2px;
+  margin-bottom: 20px;
+  min-height: 23px;
 }
 
 .user-edit-protocol-view .box .info .research-type {
@@ -71,11 +74,20 @@
 }
 
 .user-edit-protocol-view .box .info label {
-  width: 125px !important;
+  width: 150px !important;
   display: block;
   float: left;
-  margin-right: 10px;
+  margin: 4px 10px 0 0;
   padding: 2px;
+  font-size: 1.2em;
+}
+.user-edit-protocol-view label[for='study_funding_status'],
+.user-edit-protocol-view label[for='study_udak_project_number'],
+.user-edit-protocol-view label[for='study_funding_rfa'],
+.user-edit-protocol-view label[for='study_potential_funding_start_date'],
+.user-edit-protocol-view label[for='study_potential_funding_source']
+ {
+  margin-top: -6px !important;
 }
 
 .user-edit-protocol-view .box .info input {
@@ -86,8 +98,15 @@
 
 .user-edit-protocol-view .box .info input[type=text],
 .user-edit-protocol-view .box .info select {
-  width: 715px !important;
-
+  width: 662px !important;
+  margin-top: 2px;
+  padding: 6px 0 6px 6px;
+  border: 1px solid black;
+  font-size: 1.1em;
+}
+.user-edit-protocol-view .box .info select {
+  width: 670px !important;
+  padding-right: 6px;
 }
 
 .user-edit-protocol-view .box .info textarea {
@@ -95,9 +114,11 @@
 }
 
 .user-edit-protocol-view .box .info input[type=checkbox] {
-  margin-top: 2px;
+  margin-top: 9px;
 }
 
 .user-edit-protocol-view .box .info option {
   max-width: 375px !important;
 }
+
+

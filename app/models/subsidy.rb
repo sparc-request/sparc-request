@@ -5,7 +5,7 @@ class Subsidy < ActiveRecord::Base
 
   attr_accessible :sub_service_request_id
   attr_accessible :pi_contribution
-  attr_accessible :admin_percent_subsidy
+  attr_accessible :stored_percent_subsidy
   attr_accessible :overridden
 
   def percent_subsidy

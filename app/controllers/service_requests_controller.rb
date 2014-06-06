@@ -162,9 +162,9 @@ class ServiceRequestsController < ApplicationController
       if ssr.subsidy
         # we already have a subsidy; add it to the list
         subsidy = ssr.subsidy
-        unless subsidy.admin_percent_subsidy.nil?
+        unless subsidy.stored_percent_subsidy.nil?
           dct = subsidy.sub_service_request.direct_cost_total
-          subsidy.update_attribute(:pi_contribution, Subsidy.calculate_pi_contribution(subsidy.admin_percent_subsidy, dct))
+          subsidy.update_attribute(:pi_contribution, Subsidy.calculate_pi_contribution(subsidy.stored_percent_subsidy, dct))
         end
 
         @subsidies << subsidy

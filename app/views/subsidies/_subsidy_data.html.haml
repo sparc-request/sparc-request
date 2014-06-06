@@ -48,7 +48,7 @@
                         = subsidy_fields.hidden_field :pi_contribution, :value => (Service.cents_to_dollars(subsidy.pi_contribution.to_s) if not subsidy.pi_contribution.blank?)
                       = t("subsidy_page.table.amount_of_funding")
                       - if subsidy_disabled
-                        = subsidy_fields.hidden_field :admin_percent_subsidy, :class => "admin_percent_subsidy_#{subsidy.sub_service_request_id}"
+                        = subsidy_fields.hidden_field :stored_percent_subsidy, :class => "stored_percent_subsidy_#{subsidy.sub_service_request_id}"
               %td{:class => "subsidy_percent_#{sub_service_request.id}"}= "#{calculate_subsidy_percentage(direct_cost_total, pi_contribution)}%"
   %br
   .additional-funding

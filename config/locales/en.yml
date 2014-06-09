@@ -222,6 +222,7 @@ en:
       total_costs_arm: "Total Costs (Per Patient/Visit Services) All ARMs"
       total_direct_other: "Total Direct Costs (Other Services) Per Study"
       total_indirect_other: "Total Indirect Costs (Other Services) Per Study"
+      totals_costs_other: "Total Costs (Other Services) Per Study"
       total_costs_other: "Total Costs (Other Services) Per Study"
       grand_total_direct: "Grand Total: Direct Costs"
       grand_total_indirect: "Grand Total: Indirect Costs"
@@ -383,6 +384,7 @@ en:
     rights3: "Request/Approve Services:"
     rights4: "Authorize/Change"
     rights5: "Study Charges:"
+    check_apply: "Check the appropriate securities for Epic access:"
 
   # Edit Study form
   study_form:
@@ -440,7 +442,7 @@ en:
     type: "Study Type (Check all that apply)"
     impact: "Impact Areas"
     affiliations: "Affiliations, Collaborations, and Memberships"
-    save: "Save Study"
+    save: "Save"
 
   # Edit Project Form
   project_form:
@@ -451,7 +453,7 @@ en:
     dropdown_default3: "Select a Potential Funding Source"
     description: "Brief Description:"
     rate: "Indirect Cost Rate:"
-    save: "Save Project"
+    save: "Save"
 
   # Study/Project Shared
   protocol_shared:
@@ -569,7 +571,7 @@ en:
     greeting: "Welcome!"
     notes: "Notifications:"
     note_count: "Unread Message"
-    message1: "Within your dashboard, you can view (and/or edit, submit) service requests currently in SPARC Request, as well as all of those still in 'draft' status. To edit any study/project specific information, click on the 'Edit' button located under the 'Study/Project Information' heading. To add or edit users, click on the 'Edit Authorized Users' button located under the 'Authorized Users' heading."
+    message1: "Within your dashboard, you can view (and/or edit and submit) service requests currently in SPARC Request, as well as all of those still in 'draft' status."
     message2: "Please note that studies/projects are listed in descending order."
     loading: "Loading your project/studies"
     rights1: "You do not have appropriate rights to"
@@ -586,7 +588,7 @@ en:
     edit: "Edit"
     delete: "Delete"
     no_authorized_users: "Currently no authorized users"
-    add_authorized_user: "+ ADD An Authorized User"
+    add_authorized_user: "Add An Authorized User"
     service_requests: "Service Requests:"
     srid: "SRID:"
     date: "Submitted Date:"
@@ -743,14 +745,15 @@ en:
     deselect: "Deselect All"
     read: "Mark as Read"
     unread: "Mark as Unread"
-    from: "Message Last Sent From:"
+    from: "From:"
     about: "Subject:"
     preview: "Preview:"
-    received: "Received:"
+    received: "Time:"
     requester: "Requester: "
     feedback: "Please enter your feedback text here"
     email: "Enter Your Email (optional)"
     ask_a_question_email: "Enter Your Email"
+    ask_a_question_email_error: "Valid email address required."
     ask_a_question: "Please ask your question here"
 
   # Mailer
@@ -852,7 +855,9 @@ en:
 
   # Admin Dashboard
   admin_dashboard:
-    title: "My Dashboard"
+    title: "Dashboard <span>|</span> Welcome"
+    notifications_title: "Dashboard <span>|</span> Notifications"
+    edit_protocol_title: "Dashboard <span>|</span> Edit Protocol Information"
     id: "SRID"
     status: "Status"
     pi: "PI"

@@ -2,10 +2,8 @@
 = f.hidden_field :identity_id
 - if @sub_service_request
   = hidden_field_tag :sub_service_request_id, @sub_service_request.id
-%br
 .details
   .errorExplanation#errorExplanation{:style => 'display:none;'}
-  %br
   %fieldset.user_info
     %legend#edit_legend 
       - if type == "add"

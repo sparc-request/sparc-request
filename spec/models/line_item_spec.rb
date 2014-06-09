@@ -101,6 +101,32 @@ describe "Line Item" do
 
       line_item.applicable_rate
     end
+
+    context "admin rate" do
+
+      before :each do
+        @admin_rate = FactoryGirl.create(:admin_rate, :line_item_id => line_item2.id, :admin_cost => 500)
+      end
+
+      it "should return the admin rate if there is an admin_rate object with a valid cost" do
+        line_item2.applicable_rate.should eq(500)
+      end
+
+      it "should return the last admin cost if there are multiple admin rates" do
+        admin_rate2 = FactoryGirl.create(:admin_rate, :line_item_id => line_item2.id, :admin_cost => 1000)
+        line_item2.applicable_rate.should eq(1000)
+      end
+
+      it "should return the pricing map cost if the last admin rate's cost id nil" do
+        admin_rate2 = FactoryGirl.create(:admin_rate, :line_item_id => line_item2.id)
+        line_item2.applicable_rate.should eq(3000)
+      end
+
+      it "should return the pricing map cost if there are no admin rate's" do
+        @admin_rate.update_attributes(:line_item_id => line_item.id)
+        line_item2.applicable_rate.should eq(3000)
+      end
+    end
   end
 
   context "business methods" do

@@ -11,7 +11,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140515150850) do
+ActiveRecord::Schema.define(:version => 20140520183412) do
+
+  create_table "admin_rates", :force => true do |t|
+    t.integer  "line_item_id"
+    t.integer  "admin_cost"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -804,7 +811,6 @@ ActiveRecord::Schema.define(:version => 20140515150850) do
     t.datetime "created_at",                                                            :null => false
     t.datetime "updated_at",                                                            :null => false
     t.datetime "deleted_at"
-    t.string   "cdm_code"
     t.boolean  "send_to_epic",                                       :default => false
   end
 

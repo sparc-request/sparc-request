@@ -137,9 +137,9 @@ $(document).ready ->
     create_add_associated_user_dialog: () ->
       $('.add-associated-user-dialog').dialog({
         autoOpen: false
-        title: 'Add An Authorized User'
+        dialogClass: "add_user_dialog_box"
+        title: 'Add an Authorized User'
         width: 750
-        height: 495
         modal: true
         resizable: false
         buttons: [
@@ -159,7 +159,6 @@ $(document).ready ->
               $("#errorExplanation").remove()
           }]
         open: ->
-          Sparc.associated_users.createShield()
           $('.dialog-form input,.dialog-form select').attr('disabled',true)
           # $('.ui-dialog .ui-dialog-buttonpane button:contains(Submit)').filter(":visible").attr('disabled',true).addClass('button-disabled')
       })
@@ -167,7 +166,8 @@ $(document).ready ->
     create_edit_associated_user_dialog: () ->
       $('.edit-associated-user-dialog').dialog({
           autoOpen: false
-          title: 'Edit An Authorized User'
+          dialogClass: "edit_user_dialog_box"
+          title: 'Edit an Authorized User'
           width: 750
           height: 485
           modal: true
@@ -191,13 +191,6 @@ $(document).ready ->
           open: ->
             $('#associated_user_role').change()
       })
-
-    createShield: () ->
-      if ($('#shield').length == 0) then $('<div>')
-        .html('<span>Please search for a user via the autocomplete above.</span>')
-        .attr('id', 'shield')
-        .prependTo('.ui-dialog #add-user-form:visible fieldset').fadeIn(500)
-      else null
 
     createTip: (element) ->
       if ($('#tip').length == 0) then $('<div>')

@@ -1,5 +1,4 @@
 #protocol {
-    background-color: #EEEEEE;
     table {
         font-size: 14px;
         width: 100%;
@@ -40,11 +39,33 @@
     }
 
     #actions {
-        margin-top: 15px;
         text-align: center;
+        margin: 15px auto 0;
+        width: 250px;
+        input[type=submit] {
+            width: 92px;
+            height: 40px;
+            color: white;
+            border: 0px;
+            font-size: 1.5em;
+            background: url(bluebutton.png) no-repeat;
+            float: left;
+            cursor: pointer;
+        }
 
         span {
             margin: 0 10px;
+        }
+        a {
+            background: url(bluebutton.png) no-repeat;
+            display: block;
+            width: 92px;
+            height: 33px;
+            color: white;
+            border: 0px;
+            font-size: 1.5em;
+            padding-top: 7px;
+            float: right;
         }
     }
 }
@@ -57,13 +78,20 @@
         float: left;
     }
     input {
-        margin-left: 10px;
+        margin: 7px 0 0 10px;
     }
     select {
         width: 60% !important;
     }
     option {
         max-width: 100% !important;
+    }
+}
+
+#protocol .user-edit-protocol-view .field.inventors {
+    height: auto;
+    textarea {
+        height: auto;
     }
 }
 

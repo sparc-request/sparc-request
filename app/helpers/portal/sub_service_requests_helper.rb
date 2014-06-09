@@ -62,7 +62,6 @@ module Portal::SubServiceRequestsHelper
         end
       end
     end
-
     can_view
   end
 

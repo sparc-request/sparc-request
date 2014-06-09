@@ -122,7 +122,6 @@ describe 'A Happy Test' do
     end
 
     userPortal(request)
-    # sleep 2400  
 
   end
 

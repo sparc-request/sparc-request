@@ -45,6 +45,37 @@ module CapybaraCatalogManager
     wait_for_javascript_to_finish   
   end
 
+  def subsidyInfo(org='provider')   
+    #Subsidy Information
+    first(:xpath, "//input[@id='#{org}_subsidy_map_attributes_max_percentage']").set("50") #max percentage
+    first(:xpath, "//input[@id='#{org}_subsidy_map_attributes_max_dollar_cap']").set("500") #max dollar cap
+    first(:xpath, "//select[@class='new_excluded_funding_source']/option[text()='Federal']").select_option #exclude federal
+    first(:xpath, "//a[@class='add_new_excluded_funding_source btn']").click #click exclude button
+    wait_for_javascript_to_finish
+    page.should have_xpath "//ul[@class='excluded_funding_sources']/li[text()='Federal']" #should have Federal excluded
+  end
+
+  def autoPriceAdjust
+    #Increase/Decrease Rates
+    first(:xpath, "//input[@class='increase_decrease_rates']").click
+    wait_for_javascript_to_finish
+    numerical_day = Time.now.strftime("%-d") # Today's Day
+    currentBox = find(:xpath, "//div[contains(@class,'ui-dialog ') and contains(@style,'display: block;')]")
+    within currentBox do
+        first(:xpath, ".//input[contains(@class, 'percent_of_change')]").set("20") #percent change
+        first(:xpath, ".//input[@display='display_date']").click #display date
+        wait_for_javascript_to_finish
+        page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } #today
+        wait_for_javascript_to_finish
+        first(:xpath, ".//input[@display='effective_date']").click #effective date
+        wait_for_javascript_to_finish
+        page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } #today
+        wait_for_javascript_to_finish     
+        first(:xpath, ".//span[@class='ui-button-text' and text()='Submit']").click   
+        wait_for_javascript_to_finish     
+    end
+  end
+
   def createTags
     Tag.create(:name => "ctrc") # Displays as "Nexus"
     Tag.create(:name => "required forms") # Displays as "Required forms"
@@ -121,6 +152,7 @@ module CapybaraCatalogManager
     wait_for_javascript_to_finish
     cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Provider')]")
     if not(cnpLink.nil?) and cnpLink.visible? then 
+        cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Provider')]")
         cnpLink.click
     else
         click_link under
@@ -173,6 +205,10 @@ module CapybaraCatalogManager
     first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_investigator_rate_type']/option[contains(text(),'#{options[:investigator_rate_type]}')]").select_option
     first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_internal_rate_type']/option[contains(text(),'#{options[:internal_rate_type]}')]").select_option
     
+    autoPriceAdjust
+
+    subsidyInfo
+
     add_service_provider "Julia"
     first(:xpath, "//input[@id='save_button']").click
     wait_for_javascript_to_finish
@@ -205,6 +241,7 @@ module CapybaraCatalogManager
     wait_for_javascript_to_finish
     cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Program')]")
     if not(cnpLink.nil?) and cnpLink.visible? then 
+        cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Program')]")
         cnpLink.click
     else
         click_link under
@@ -256,6 +293,11 @@ module CapybaraCatalogManager
     first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_industry_rate_type']/option[contains(text(),'#{options[:industry_rate_type]}')]").select_option
     first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_investigator_rate_type']/option[contains(text(),'#{options[:investigator_rate_type]}')]").select_option
     first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_internal_rate_type']/option[contains(text(),'#{options[:internal_rate_type]}')]").select_option
+    
+    autoPriceAdjust
+
+    subsidyInfo 'program'
+
     first(:xpath, "//input[@id='save_button']").click
     wait_for_javascript_to_finish
     click_link name
@@ -276,6 +318,7 @@ module CapybaraCatalogManager
 
     cncLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Core')]")
     if not(cncLink.nil?) and cncLink.visible? then 
+        cncLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Core')]")
         cncLink.click
     else
         click_link under
@@ -332,6 +375,7 @@ module CapybaraCatalogManager
     wait_for_javascript_to_finish
     cnsLink = first(:xpath, "//a[contains(text(),'#{under}')]/following-sibling::ul//a[contains(text(),'Create New Service')]")
     if cnsLink.visible? then
+        cnsLink = first(:xpath, "//a[contains(text(),'#{under}')]/following-sibling::ul//a[contains(text(),'Create New Service')]")
         cnsLink.click
         wait_for_javascript_to_finish
     else

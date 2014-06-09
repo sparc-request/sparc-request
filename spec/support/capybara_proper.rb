@@ -267,6 +267,12 @@ module CapybaraProper
         have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'#{field}')]")
     end
 
+    def have_error_on_user_field(field)
+        #expects a string describing the field the error is expected to be on
+        #to be used in study creation pages that have the errorExplanation div
+        have_xpath("//div[@id='error_explanation']/ul/li[contains(text(),'#{field}')]")
+    end
+
     def removeUser(user)
         #expects a string with the name of the user desired to be removed
         #to be used on add users page in study creation
@@ -757,6 +763,119 @@ module CapybaraProper
         checkTotals(request)
     end
 
+    def askAQuestionTest
+        #tests the "Ask A Question" button on the sparc proper catalog page
+        find('.ask-a-question-button').click
+        wait_for_javascript_to_finish
+        find('#ask-a-question-form').visible?.should eq(true)
+        find('#submit_question').click
+        wait_for_javascript_to_finish
+        find('#ask-a-question-form').visible?.should eq(true)
+        page.should have_content("Valid email address required.")
+
+        find('#quick_question_email').set('Pappy')
+        find('#submit_question').click
+        wait_for_javascript_to_finish
+        find('#ask-a-question-form').visible?.should eq(true)
+        page.should have_content("Valid email address required.")
+
+        find('#quick_question_email').set('juan@gmail.com')
+        find('#submit_question').click
+        wait_for_javascript_to_finish
+        find_by_id('ask-a-question-form').visible?.should eq(false)
+    end
+
+    def feedbackTest
+        #tests the "Feedback" button on the sparc proper catalog page
+        find('.feedback-button').click
+        wait_for_javascript_to_finish
+        find('#feedback-form').visible?.should eq(true)
+        find('#submit_feedback').click
+        wait_for_javascript_to_finish
+        find('#error-text').text.should eq("Message can't be blank")
+
+        within("#feedback-form") do
+          fill_in 'feedback_message', :with => "Testing 123"
+          wait_for_javascript_to_finish
+        end
+        find('#submit_feedback').click
+        wait_for_javascript_to_finish
+        find('#feedback-form').visible?.should eq(false)
+    end
+
+    def helpTest
+        #tests the "Help" button on the sparc proper catalog page
+        find('.faq-button').click
+        wait_for_javascript_to_finish
+        first('.help_question').click
+        wait_for_javascript_to_finish
+        first(:xpath, "//span[@class='help_answer']").visible?.should eq(true)
+        find('.qtip-button').click
+        wait_for_javascript_to_finish
+    end
+
+    def login(un,pwd)
+        #logs the user in the custom username and password.
+        currentUrl = page.current_url
+        visit "/identities/sign_in"
+        wait_for_javascript_to_finish
+        loginDiv = first(:xpath,"//div[@id='login']")
+        if loginDiv.nil? then 
+            if not currentUrl==page.current_url then visit "#{currentUrl}" end
+            wait_for_javascript_to_finish
+            return #if the login dialog is not displayed quit here.
+        end 
+        click_link "Outside Users Click Here"
+        wait_for_javascript_to_finish
+        fill_in "identity_ldap_uid", :with => un
+        fill_in "identity_password", :with => pwd
+        first(:xpath, "//input[@type='submit' and @value='Sign In']").click
+        wait_for_javascript_to_finish
+    end
+
+    def newUserTest
+        #tests the "Create an Account" button on the sparc proper catalog page
+        click_link "logout"
+        wait_for_javascript_to_finish
+        find(:xpath, "//div[@class='create_new_account']/a").click
+        wait_for_javascript_to_finish
+        currentBox = find(:xpath, "//div[contains(@class,'ui-dialog') and contains(@style,'display: block;') and not(@id)]")
+        within currentBox do 
+            find(:xpath, ".//input[@value='Create New User']").click
+            wait_for_javascript_to_finish
+            page.should have_error_on_user_field "Password"
+            page.should have_error_on_user_field "Ldap uid"
+            page.should have_error_on_user_field "First name"
+            page.should have_error_on_user_field "Last name"
+
+            fill_in 'identity_last_name', :with => 'Jingleheimerschmidt'
+            fill_in 'identity_first_name', :with => 'John'
+            fill_in 'identity_ldap_uid', :with => 'JJJ123'
+            fill_in 'identity_password', :with => 'Jacob'
+            find(:xpath, ".//input[@value='Create New User']").click
+            wait_for_javascript_to_finish
+            page.should have_error_on_user_field "Password doesn't match confirmation"
+            page.should have_error_on_user_field "Password is too short"
+
+            fill_in 'identity_password', :with => 'Jacob1'
+            fill_in 'identity_password_confirmation', :with => 'Jacob1'
+            find(:xpath, ".//input[@value='Create New User']").click
+            wait_for_javascript_to_finish
+        end
+        page.should have_content "New account created"
+        click_link "Close Window"
+        wait_for_javascript_to_finish
+        login("jug2", "p4ssword")
+    end
+
+    def aboutSparcTest
+        #tests the "About SPARC Request" button on the sparc proper catalog page
+        find('a.about_sparc_request').click
+        wait_for_javascript_to_finish
+        page.should have_content "is a web-based research management system that provides a central portal"
+        find(:xpath, "//span[text()='About SPARC Request']/following-sibling::button[@title='close']").click
+        wait_for_javascript_to_finish
+    end
 
     ##################^^^^ NECESSARY COMPONENTS ^^^^####################
     #******************************************************************#
@@ -765,6 +884,12 @@ module CapybaraProper
     def submitServiceRequestPage (request)
         #expects instance of ServiceRequestForComparison as input 
         submitExpectError #checks submit with no services error display
+
+        aboutSparcTest
+        askAQuestionTest
+        feedbackTest
+        helpTest
+        newUserTest
 
         services = request.services
         addAllServices(services)#adds all services in 'services' list

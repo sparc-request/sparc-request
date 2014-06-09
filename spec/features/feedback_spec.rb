@@ -26,7 +26,7 @@ describe "Feedback", :js => true do
         end
         find_by_id('submit_feedback').click()
         wait_for_javascript_to_finish
-        find_by_id('feedback-form').visible?.should eq(false)
+        find('#feedback-form', :visible => false).visible?.should eq(false)
       end
     end
   end

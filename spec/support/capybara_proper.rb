@@ -854,8 +854,8 @@ module CapybaraProper
             fill_in 'identity_password', :with => 'Jacob'
             find(:xpath, ".//input[@value='Create New User']").click
             wait_for_javascript_to_finish
-            page.should have_error_on_user_field "Password doesn't match confirmation"
-            page.should have_error_on_user_field "Password is too short"
+            page.should have_error_on_user_field "confirmation"
+            page.should have_error_on_user_field "short"
 
             fill_in 'identity_password', :with => 'Jacob1'
             fill_in 'identity_password_confirmation', :with => 'Jacob1'
@@ -877,6 +877,21 @@ module CapybaraProper
         wait_for_javascript_to_finish
     end
 
+    def createProject
+        find('input#protocol_Research_Project').click
+        wait_for_javascript_to_finish
+        find('a.new-project').click
+        wait_for_javascript_to_finish
+        fill_in 'project_short_title', :with => 'You Jelly?'
+        fill_in 'project_title', :with => 'The Jelly Project'
+        select 'Funded', :from => 'project_funding_status'
+        wait_for_javascript_to_finish
+        select 'Federal', :from => 'project_funding_source'
+        clickContinueButton
+        selectStudyUsers
+        find('input#protocol_Research_Study').click
+        wait_for_javascript_to_finish
+    end
     ##################^^^^ NECESSARY COMPONENTS ^^^^####################
     #******************************************************************#
     ###################vvvv NECESSARY SCRIPTS vvvv######################
@@ -912,7 +927,6 @@ module CapybaraProper
 
         find('.submit-request-button').click #submit request
         wait_for_javascript_to_finish
-        ServiceRequest.find(1).line_items.count.should eq(services.length) #Should have correct # of services
     end
 
     def selectStudyPage(request)
@@ -921,9 +935,10 @@ module CapybaraProper
         page.should_not have_xpath("//div[@id='errorExplanation']")#should not have any errors displayed
         saveAndContinue #click continue without study/project selected
         page.should have_error_on "You must identify the service request with a study/project before continuing."
+        
+        createProject
 
         createNewStudy(request)
-
         selectStudyUsers
 
         removeAllServices

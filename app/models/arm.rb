@@ -19,6 +19,8 @@ class Arm < ActiveRecord::Base
   attr_accessible :minimum_subject_count
   accepts_nested_attributes_for :subjects, allow_destroy: true
 
+  # validates_presence_of :name, :visit_count, :subject_count
+
   after_save :update_liv_subject_counts
 
   def update_liv_subject_counts
@@ -36,6 +38,10 @@ class Arm < ActiveRecord::Base
 
   def valid_subject_count?
     return !subject_count.nil? && subject_count > 0
+  end
+
+  def valid_name?
+    return !name.nil? && name.length > 0
   end
 
   # def valid_minimum_visit_count?

@@ -673,3 +673,5 @@ user_credentials: { "MD": 'md',
                     "ADN": 'adn',
                     "BA": 'ba',
                     "Other": 'other' }
+audit_actions: { 'create': 'Added',
+                 'destroy': 'Removed'}

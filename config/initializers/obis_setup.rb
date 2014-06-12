@@ -65,6 +65,7 @@ begin
   DEFAULT_STATUSES               = config['default_statuses']
   SUBJECT_ETHNICITIES            = config['subject_ethnicities']
   SUBJECT_GENDERS                = config['subject_genders']
+  AUDIT_ACTIONS                  = config['audit_actions']
 rescue
   raise "constants.yml not found"
 end

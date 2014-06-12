@@ -222,6 +222,7 @@ class ServiceRequestsController < ApplicationController
 
   def confirmation
     @service_request.update_status('submitted')
+    @service_request.previous_submitted_at = @service_request.submitted_at
     @service_request.update_attribute(:submitted_at, Time.now)
     @service_request.ensure_ssr_ids
     @service_request.update_arm_minimum_counts
@@ -487,7 +488,7 @@ class ServiceRequestsController < ApplicationController
     end
 
     send_admin_notifications(sub_service_requests, xls)
-    send_service_provider_notifications(sub_service_requests, xls)
+    send_service_provider_notifications(service_request, sub_service_requests, xls)
   end
 
   def send_user_notifications(service_request, xls)
@@ -514,11 +515,11 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def send_service_provider_notifications(sub_service_requests, xls)
+  def send_service_provider_notifications(service_request, sub_service_requests, xls)
     sub_service_requests.each do |sub_service_request|
       next if QUEUE_EPIC and sub_service_request.line_items.any? { |li| li.should_push_to_epic? }
       sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-        send_individual_service_provider_notification(sub_service_request.service_request, sub_service_request, service_provider, xls)
+        send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls)
       end
     end
   end
@@ -534,7 +535,7 @@ class ServiceRequestsController < ApplicationController
       attachments["request_for_grant_billing_#{service_request.id}.pdf"] = request_for_grant_billing_form
     end
 
-    Notifier.notify_service_provider(service_provider, service_request, attachments).deliver
+    Notifier.notify_service_provider(service_provider, service_request, attachments, sub_service_request.audit_trail(current_user, service_request.previous_submitted_at.utc, Time.now.utc)).deliver
   end
 
   def send_epic_notification_for_user_approval(protocol)

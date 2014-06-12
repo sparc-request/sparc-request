@@ -118,6 +118,8 @@ en:
       body3: "request using your newly created"
       body4: "username and password."
       body5: "Your request for a new SPARC Request account has NOT been approved."
+    service: "Service"
+    action: "Action"
 
   # Tooltip help dialogs
   cart_help:

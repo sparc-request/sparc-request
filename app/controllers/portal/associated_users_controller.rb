@@ -44,8 +44,10 @@ class Portal::AssociatedUsersController < Portal::BaseController
     if @protocol_role.validate_one_primary_pi && @protocol_role.validate_uniqueness_within_protocol
       @protocol_role.save
       @identity.update_attributes params[:identity]
-      @protocol.emailed_associated_users.each do |project_role|
-        UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver unless project_role.identity.email.blank?
+      if SEND_AUTHORIZED_USER_EMAILS
+        @protocol.emailed_associated_users.each do |project_role|
+          UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver unless project_role.identity.email.blank?
+        end
       end
 
       if USE_EPIC
@@ -78,8 +80,10 @@ class Portal::AssociatedUsersController < Portal::BaseController
 
     if @protocol_role.validate_one_primary_pi
       @protocol_role.save
-      @protocol.emailed_associated_users.each do |project_role|
-        UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver unless project_role.identity.email.blank?
+      if SEND_AUTHORIZED_USER_EMAILS
+        @protocol.emailed_associated_users.each do |project_role|
+          UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver unless project_role.identity.email.blank?
+        end
       end
 
       if USE_EPIC

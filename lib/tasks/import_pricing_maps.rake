@@ -3,7 +3,7 @@ namespace :data do
   task :import_pricing_maps => :environment do
     def header
       [
-       "ID"
+       "ID",
        "Procedure Name",
        "Service Rate",
        "Corporate Rate",

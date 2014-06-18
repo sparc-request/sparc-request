@@ -2,6 +2,10 @@
   = link_to t(:study_tracker)[:billing_report][:title], portal_root_path, :class => "home_link"
 - elsif @notification_index
   = link_to raw(t(:admin_dashboard)[:notifications_title]), portal_root_path, :class => "home_link"
+- elsif @admin
+  = link_to raw(t(:admin_dashboard)[:title]), portal_admin_index_path, :class => "home_link"
+- elsif @study_tracker
+  = link_to raw(t(:admin_dashboard)[:title]), study_tracker_root_path, :class => "home_link"
 - elsif @edit_protocol
   = link_to raw(t(:admin_dashboard)[:edit_protocol_title]), portal_root_path, :class => "home_link"
 - else

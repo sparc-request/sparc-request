@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140520183412) do
+ActiveRecord::Schema.define(:version => 20140610154654) do
 
   create_table "admin_rates", :force => true do |t|
     t.integer  "line_item_id"
@@ -808,11 +808,11 @@ ActiveRecord::Schema.define(:version => 20140520183412) do
     t.string   "charge_code"
     t.string   "revenue_code"
     t.integer  "organization_id"
-    t.datetime "created_at",                                                            :null => false
-    t.datetime "updated_at",                                                            :null => false
+    t.datetime "created_at",                                         :null => false
+    t.datetime "updated_at",                                         :null => false
     t.datetime "deleted_at"
     t.string   "cdm_code"
-    t.boolean  "send_to_epic",                                       :default => false
+    t.boolean  "send_to_epic"
   end
 
   add_index "services", ["is_available"], :name => "index_services_on_is_available"

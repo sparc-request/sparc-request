@@ -119,7 +119,10 @@ describe "editing a study", :js => true do
 
         find('.edit-study').click
         wait_for_javascript_to_finish
-        sleep 5
+        find('.continue_button').click
+        wait_for_javascript_to_finish
+        choose "epic_access_yes_#{@project_role.identity.id}"
+        wait_for_javascript_to_finish
         dialog = find(".epic_access_dialog#project_role_identity_#{@project_role.identity.id}")
         check_boxes = dialog.all('.epic_access_check_box')
         check_boxes[1].should be_checked

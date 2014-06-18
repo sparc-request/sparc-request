@@ -20,7 +20,7 @@ describe "Ask a question", :js => true do
       page.find('#quick_question_email').set 'juan@gmail.com'
       find('#submit_question').click()
       wait_for_javascript_to_finish
-      find_by_id('ask-a-question-form').visible?.should eq(false)
+      find('#ask-a-question-form', :visible => false).visible?.should eq(false)
     end
 
     it "should require an email" do

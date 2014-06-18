@@ -2,6 +2,7 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
   before_filter :check_work_fulfillment_status, :except => [:add_note, :add_service, :delete_toast_messages]
 
   def show
+    @study_tracker = true
     @calendar = Calendar.find(params[:id])
     @calendar.populate_on_request_edit
     build_subject_data(@calendar)

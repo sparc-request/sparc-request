@@ -103,7 +103,11 @@ class Procedure < ActiveRecord::Base
   # Totals up a given row on the visit schedule
   def total
     if self.completed? and self.r_quantity
-      return self.r_quantity * self.cost
+      unit_factor = self.line_item ? self.line_item.service.displayed_pricing_map.unit_factor : self.service.displayed_pricing_map.unit_factor
+      kits = self.r_quantity / unit_factor
+      kits = kits.ceil
+
+      return kits * self.cost
     else
       return 0.00
     end

@@ -41,4 +41,8 @@ module StudyTracker::ServiceRequestsHelper
 
     procedures.flatten
   end
+
+  def current_number_of_kits procedure
+    procedure.line_item ? procedure.line_item.service.displayed_pricing_map.unit_factor : procedure.service.displayed_pricing_map.unit_factor
+  end
 end

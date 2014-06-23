@@ -165,11 +165,11 @@ $(document).ready ->
 
     create_edit_associated_user_dialog: () ->
       $('.edit-associated-user-dialog').dialog({
+          dialogClass: "edit_user_dialog_box"
           autoOpen: false
           dialogClass: "edit_user_dialog_box"
           title: 'Edit an Authorized User'
           width: 750
-          height: 485
           modal: true
           resizable: false
           buttons: [

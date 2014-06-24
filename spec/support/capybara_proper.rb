@@ -151,9 +151,14 @@ module CapybaraProper
             addServiceButton.click
             wait_for_javascript_to_finish
         else #else use the search box to find the service then add it
-            wait_until {first(:xpath, "//input[@id='service_query']")}.set(serviceName)
-            wait_until {first(:xpath, "//li[@class='search_result']/button[@class='add_service']")}
-            first(:xpath, "//li[@class='search_result']/button[@class='add_service']").click
+            wait_for_javascript_to_finish
+            find(:xpath, "//input[@id='service_query']").set(serviceName)
+            sleep 2
+            response = first(:xpath, "//li[@class='search_result']/button[@class='add_service']")
+            if response.nil? or not(response.visible?)
+                wait_for_javascript_to_finish
+                first(:xpath, "//li[@class='search_result']/button[@class='add_service']").click
+            else response.click end
             wait_for_javascript_to_finish
         end
     end
@@ -232,7 +237,8 @@ module CapybaraProper
     def checkLineItemsNumber(numberExpected)
         #asserts that the line item count
         #shoud equal the number expected.
-        wait_until {first(:xpath, "//input[@id='line_item_count']")}['value'].should eq(numberExpected)
+        # wait_until {first(:xpath, "//input[@id='line_item_count']")}['value'].should eq(numberExpected)
+        assert_selector(:xpath, "//div[@class='line-items']/div[@class]", :count => numberExpected)
     end 
 
 
@@ -252,11 +258,13 @@ module CapybaraProper
 
     def removeAllServices
         #finds all line item remove buttons and clicks them
-        servicesLeft = find(:xpath, "//input[@id='line_item_count']")['value']
+        servicesLeft = all(:xpath, "//div[@class='line-items']/div[@class]").count
+        # servicesLeft = find(:xpath, "//input[@id='line_item_count']")['value']
         while servicesLeft.to_i > 0 do
             first(:xpath, "//div[@class='line_item']//a[@class='remove-button']").click
             wait_for_javascript_to_finish
-            servicesLeft = find(:xpath, "//input[@id='line_item_count']")['value']
+            servicesLeft = all(:xpath, "//div[@class='line-items']/div[@class]").count
+            # servicesLeft = find(:xpath, "//input[@id='line_item_count']")['value']
         end
         checkLineItemsNumber '0'
     end
@@ -624,10 +632,12 @@ module CapybaraProper
 
     def selectStudyUsers
         clickContinueButton #click continue with no users added
+        wait_for_javascript_to_finish
         page.should have_error_on "must add yourself" #You must add yourself as an authorized user
         page.should have_error_on "Primary PI" #You must add a Primary PI to the study/project
 
         click_button "Add Authorized User" #add the user without a role
+        wait_for_javascript_to_finish
         #should have 'Role can't be blank' error
         page.should have_xpath("//div[@id='user_detail_errors']/ul/li[contains(text(),'Role can')]")
         page.should have_xpath("//div[@class='field_with_errors']/label[text()='Role:*']")
@@ -642,6 +652,7 @@ module CapybaraProper
         wait_for_javascript_to_finish
 
         click_button "Add Authorized User" #add the user without a role
+        wait_for_javascript_to_finish
         #should have 'Role can't be blank' error
         page.should have_xpath("//div[@id='user_detail_errors']/ul/li[contains(text(),'Role can')]")
         page.should have_xpath("//div[@class='field_with_errors']/label[text()='Role:*']")
@@ -765,31 +776,34 @@ module CapybaraProper
 
     def askAQuestionTest
         #tests the "Ask A Question" button on the sparc proper catalog page
+        def assertFormVisible
+            assert_selector('#ask-a-question-form')
+        end
         find('.ask-a-question-button').click
         wait_for_javascript_to_finish
-        find('#ask-a-question-form').visible?.should eq(true)
+        assert_selector('#ask-a-question-form', :visible => true)
         find('#submit_question').click
         wait_for_javascript_to_finish
-        find('#ask-a-question-form').visible?.should eq(true)
+        assert_selector('#ask-a-question-form', :visible => true)
         page.should have_content("Valid email address required.")
 
         find('#quick_question_email').set('Pappy')
         find('#submit_question').click
         wait_for_javascript_to_finish
-        find('#ask-a-question-form').visible?.should eq(true)
+        assert_selector('#ask-a-question-form', :visible => true)
         page.should have_content("Valid email address required.")
 
         find('#quick_question_email').set('juan@gmail.com')
         find('#submit_question').click
         wait_for_javascript_to_finish
-        find_by_id('ask-a-question-form').visible?.should eq(false)
+        assert_no_selector('#ask-a-question-form', :visible => true)
     end
 
     def feedbackTest
         #tests the "Feedback" button on the sparc proper catalog page
         find('.feedback-button').click
         wait_for_javascript_to_finish
-        find('#feedback-form').visible?.should eq(true)
+        assert_selector('#feedback-form', :visible => true)
         find('#submit_feedback').click
         wait_for_javascript_to_finish
         find('#error-text').text.should eq("Message can't be blank")
@@ -800,16 +814,17 @@ module CapybaraProper
         end
         find('#submit_feedback').click
         wait_for_javascript_to_finish
-        find('#feedback-form').visible?.should eq(false)
+        assert_no_selector('#feedback-form', :visible => true)
     end
 
     def helpTest
         #tests the "Help" button on the sparc proper catalog page
         find('.faq-button').click
         wait_for_javascript_to_finish
-        first('.help_question').click
+        assert_selector(:xpath, "//span[@class='help_question']", :visible => true)
+        first(:xpath, "//span[@class='help_question']").click
         wait_for_javascript_to_finish
-        first(:xpath, "//span[@class='help_answer']").visible?.should eq(true)
+        assert_selector(:xpath, "//span[@class='help_answer']", :visible => true)
         find('.qtip-button').click
         wait_for_javascript_to_finish
     end
@@ -849,9 +864,13 @@ module CapybaraProper
             page.should have_error_on_user_field "Last name"
 
             fill_in 'identity_last_name', :with => 'Jingleheimerschmidt'
+            wait_for_javascript_to_finish
             fill_in 'identity_first_name', :with => 'John'
+            wait_for_javascript_to_finish
             fill_in 'identity_ldap_uid', :with => 'JJJ123'
+            wait_for_javascript_to_finish
             fill_in 'identity_password', :with => 'Jacob'
+            wait_for_javascript_to_finish
             find(:xpath, ".//input[@value='Create New User']").click
             wait_for_javascript_to_finish
             page.should have_error_on_user_field "confirmation"

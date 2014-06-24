@@ -73,8 +73,10 @@ module CapybaraAdminPortal
         #that string will appear in one of the responses as well. 
         #types searchText into search box then if a response exists with the searchText in it,
         #clicks on that response.
+        sleep 3
+        wait_for_javascript_to_finish
         if upBoolean then searchBox = find(:xpath, "//input[@id='search_box']")
-        else searchBox = find(:xpath, "//input[@class='search-all-service-requests ui-autocomplete-input']") end 
+        else searchBox = find(:xpath, "//input[contains(@class,'search-all-service-requests')]") end 
         searchBox.set(searchText)
         wait_for_javascript_to_finish
         response = first(:xpath, "//ul/li[@role='presentation']/a[contains(text(),'#{searchText}')]")
@@ -234,6 +236,8 @@ module CapybaraAdminPortal
     def sendToCWF
         #checks "Ready for Clinical Work Fulfillment" checkbox
         switchTabTo 'Fulfillment'
+        # puts "SEND TO CWF!"
+        # sleep 360
         find(:xpath, "//input[@id='in_work_fulfillment' and @class='cwf_data']").click
         wait_for_javascript_to_finish
     end

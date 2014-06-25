@@ -73,13 +73,13 @@ class Procedure < ActiveRecord::Base
     if self.service
       funding_source = self.appointment.calendar.subject.arm.protocol.funding_source_based_on_status #OHGOD
       organization = service.organization
-		  if self.appointment.completed_at?
-		  	pricing_map = service.effective_pricing_map_for_date(appointment.completed_at)
-		  	pricing_setup = organization.effective_pricing_setup_for_date(appointment.completed_at)
-		  else
-		  	pricing_map = service.effective_pricing_map_for_date
-		  	pricing_setup = organization.effective_pricing_setup_for_date
-		  end
+      if self.appointment.completed_at?
+        pricing_map = service.effective_pricing_map_for_date(appointment.completed_at)
+        pricing_setup = organization.effective_pricing_setup_for_date(appointment.completed_at)
+      else
+        pricing_map = service.effective_pricing_map_for_date
+        pricing_setup = organization.effective_pricing_setup_for_date
+      end
 				
       rate_type = pricing_setup.rate_type(funding_source)
       if pricing_map.unit_factor > 1

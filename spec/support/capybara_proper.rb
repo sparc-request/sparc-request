@@ -881,6 +881,7 @@ module CapybaraProper
             find(:xpath, ".//input[@value='Create New User']").click
             wait_for_javascript_to_finish
         end
+        wait_for_javascript_to_finish
         page.should have_content "New account created"
         click_link "Close Window"
         wait_for_javascript_to_finish

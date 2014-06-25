@@ -3,14 +3,13 @@ module CapybaraCatalogManager
   def add_service_provider(id="leonarjp")
     find(:xpath, "//div[text()='User Rights']").click
     wait_for_javascript_to_finish
-    sleep 2
     fill_in "new_sp", :with => "#{id}"
-    wait_for_javascript_to_finish
+    sleep 2
     response = first(:xpath, "//a[contains(text(),'#{id}') and contains(text(),'@musc.edu')]")
-    if not response.nil? then response.click 
-    else wait_until(20) {first(:xpath, "//a[contains(text(),'#{id}') and contains(text(),'@musc.edu')]")}.click end
-    wait_for_javascript_to_finish
-
+    if response.nil? or not(response.visible?)
+        wait_for_javascript_to_finish
+        first(:xpath, "//a[contains(text(),'#{id}') and contains(text(),'@musc.edu')]").click 
+    else response.click end
     first("#save_button").click
     wait_for_javascript_to_finish
   end
@@ -38,13 +37,12 @@ module CapybaraCatalogManager
     end
 
     fill_in "new_cp", :with => "Julia"
-    wait_for_javascript_to_finish
-    begin
-        wait_until{first(:xpath, "//a[contains(text(),'Julia') and contains(text(),'@musc.edu')]")}
-    rescue WaitUntilTimedOut
-        wait_for_javascript_to_finish   
+    sleep 2
+    response = first(:xpath, "//a[contains(text(),'Julia') and contains(text(),'@musc.edu')]")
+    if response.nil? or not(response.visible?) 
+        wait_for_javascript_to_finish
         first(:xpath, "//a[contains(text(),'Julia') and contains(text(),'@musc.edu')]").click
-    end
+    else response.click end
     wait_for_javascript_to_finish   
   end
 
@@ -303,6 +301,7 @@ module CapybaraCatalogManager
 
     subsidyInfo 'program'
 
+    add_service_provider "Julia"
     first(:xpath, "//input[@id='save_button']").click
     wait_for_javascript_to_finish
     click_link name

@@ -49,18 +49,18 @@ class LineItem < ActiveRecord::Base
 
   def applicable_rate(appointment_completed_date=nil)
 
-		if (!self.admin_rates.empty? and !self.admin_rates.last.admin_cost.blank?)
+	  if (!self.admin_rates.empty? and !self.admin_rates.last.admin_cost.blank?)
       unless appointment_completed_date
-  			rate = self.admin_rates.last.admin_cost
+    		rate = self.admin_rates.last.admin_cost
       else
         rate = admin_rate_for_date(appointment_completed_date).last.admin_cost
       end
 
     return rate
-		else 
+	  else 
       unless appointment_completed_date
-  			pricing_map         = self.pricing_scheme == 'displayed' ? self.service.displayed_pricing_map : self.service.current_effective_pricing_map
-  			pricing_setup       = self.pricing_scheme == 'displayed' ? self.service.organization.current_pricing_setup : self.service.organization.effective_pricing_setup_for_date
+    		pricing_map         = self.pricing_scheme == 'displayed' ? self.service.displayed_pricing_map : self.service.current_effective_pricing_map
+    		pricing_setup       = self.pricing_scheme == 'displayed' ? self.service.organization.current_pricing_setup : self.service.organization.effective_pricing_setup_for_date
       else
         pricing_map         = self.pricing_scheme == 'displayed' ? self.service.displayed_pricing_map : self.service.effective_pricing_map_for_date(appointment_completed_date)
         pricing_setup       = self.pricing_scheme == 'displayed' ? self.service.organization.current_pricing_setup : self.service.organization.effective_pricing_setup_for_date(appointment_completed_date)
@@ -74,7 +74,6 @@ class LineItem < ActiveRecord::Base
   end
 
   def admin_rate_for_date appointment_completed_date
-    puts appointment_completed_date
     sorted_rates = self.admin_rates.order(:id).reverse
     sorted_rates.each do |rate|
       if rate.created_at <= appointment_completed_date

@@ -64,12 +64,12 @@ class LineItem < ActiveRecord::Base
         pricing_map         = self.pricing_scheme == 'displayed' ? self.service.displayed_pricing_map : self.service.effective_pricing_map_for_date(appointment_completed_date)
         pricing_setup       = self.pricing_scheme == 'displayed' ? self.service.organization.current_pricing_setup : self.service.organization.effective_pricing_setup_for_date(appointment_completed_date)
       end
-			funding_source      = self.service_request.protocol.funding_source_based_on_status
-			selected_rate_type  = pricing_setup.rate_type(funding_source)
-			applied_percentage  = pricing_setup.applied_percentage(selected_rate_type)
+      funding_source      = self.service_request.protocol.funding_source_based_on_status
+      selected_rate_type  = pricing_setup.rate_type(funding_source)
+      applied_percentage  = pricing_setup.applied_percentage(selected_rate_type)
 		
-			pricing_map.applicable_rate(selected_rate_type, applied_percentage)
-		end
+      pricing_map.applicable_rate(selected_rate_type, applied_percentage)
+    end
   end
 
   def admin_rate_for_date appointment_completed_date

@@ -178,6 +178,7 @@ $(document).ready ->
               text: 'Submit'
               click: ->
                 form = $(".edit-associated-user-dialog").children('form')
+                $('#edit_authorized_user_submit_button').attr('disabled', true)
                 form.submit()
             },
             {
@@ -189,6 +190,7 @@ $(document).ready ->
             }
           ]
           open: ->
+            $('#edit_authorized_user_submit_button').attr('disabled', false)
             $('#associated_user_role').change()
       })
 

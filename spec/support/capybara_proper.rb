@@ -156,7 +156,7 @@ module CapybaraProper
             sleep 2
             response = first(:xpath, "//li[@class='search_result']/button[@class='add_service']")
             if response.nil? or not(response.visible?)
-                wait_for_javascript_to_finish
+                sleep 2
                 first(:xpath, "//li[@class='search_result']/button[@class='add_service']").click
             else response.click end
             wait_for_javascript_to_finish
@@ -250,7 +250,7 @@ module CapybaraProper
 
         services.each do |s| #iterates over services
             navigateCatalog(s.instit,s.prov,s.prog,s.core) #navigates to each service
-            addService s.name #adds service
+            addService s.short #adds service
         end
         checkLineItemsNumber "#{services.length}" #check if correct number of services displayed
     end  
@@ -648,7 +648,12 @@ module CapybaraProper
 
         fill_in "user_search_term", :with => "bjk7"
         wait_for_javascript_to_finish
-        page.find('a', :text => "Brian Kelsey (kelsey@musc.edu)", :visible => true).click()
+        sleep 2
+        response = find('a', :text => "Brian Kelsey (kelsey@musc.edu)")
+        if response.nil? or not(response.visible?)
+            wait_for_javascript_to_finish
+            find('a', :text => "Brian Kelsey (kelsey@musc.edu)").click
+        else response.click end
         wait_for_javascript_to_finish
 
         click_button "Add Authorized User" #add the user without a role

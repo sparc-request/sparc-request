@@ -20,7 +20,7 @@ module CapybaraUserPortal
         #expects instance of ServiceRequestForComparison as input 
         find(:xpath, "//a[@class='edit_service_request' and text()='Edit Original']").click
         wait_for_javascript_to_finish
-        page.should have_xpath "//input[@id='line_item_count' and @value='#{request.services.length}']"
+        assert_selector(:xpath, "//div[@class='line-items']/div[@class]", :count => request.services.length)
         goToUserPortal
         findStudy(request.study.short)
     end

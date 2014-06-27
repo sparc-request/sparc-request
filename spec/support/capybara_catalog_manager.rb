@@ -130,7 +130,7 @@ module CapybaraCatalogManager
 
     first(:xpath, "//input[@id='save_button']").click
     wait_for_javascript_to_finish
-    click_link name
+    # click_link name
   end
 
   def isCollapsed?(under)
@@ -167,9 +167,17 @@ module CapybaraCatalogManager
     cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Provider')]")
     if not(cnpLink.nil?) and cnpLink.visible?
         wait_for_javascript_to_finish
-        begin cnpLink.click
+        begin 
+            cnpLink.click
         rescue
-            first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Provider')]").click
+            wait_for_javascript_to_finish
+            begin 
+                first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Provider')]").click
+            rescue
+                click_link under
+                wait_for_javascript_to_finish
+                first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Provider')]").click
+            end
         end
     else
         click_link under
@@ -230,7 +238,7 @@ module CapybaraCatalogManager
     add_service_provider "Julia"
     first(:xpath, "//input[@id='save_button']").click
     wait_for_javascript_to_finish
-    click_link name
+    # click_link name
 
   end
 
@@ -262,9 +270,17 @@ module CapybaraCatalogManager
     cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Program')]")
     if not(cnpLink.nil?) and cnpLink.visible?
         wait_for_javascript_to_finish
-        begin cnpLink.click
+        begin 
+            cnpLink.click
         rescue 
-            first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Program')]").click
+            wait_for_javascript_to_finish
+            begin 
+                first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Program')]").click
+            rescue
+                click_link under
+                wait_for_javascript_to_finish
+                first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Program')]").click
+            end
         end
     else
         click_link under
@@ -325,7 +341,7 @@ module CapybaraCatalogManager
     add_service_provider "Julia"
     first(:xpath, "//input[@id='save_button']").click
     wait_for_javascript_to_finish
-    click_link name
+    # click_link name
   end    
 
 
@@ -346,9 +362,17 @@ module CapybaraCatalogManager
     cncLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Core')]")
     if not(cncLink.nil?) and cncLink.visible? 
         wait_for_javascript_to_finish
-        begin cncLink.click
+        begin 
+            cncLink.click
         rescue 
-            first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Core')]").click
+            wait_for_javascript_to_finish
+            begin 
+                first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Core')]").click
+            rescue
+                click_link under
+                wait_for_javascript_to_finish
+                first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Core')]").click
+            end
         end
     else
         click_link under
@@ -380,7 +404,7 @@ module CapybaraCatalogManager
 
     first(:xpath, "//input[@id='save_button']").click
     wait_for_javascript_to_finish
-    click_link name
+    # click_link name
   end
 
 
@@ -409,9 +433,17 @@ module CapybaraCatalogManager
     cnsLink = first(:xpath, "//a[contains(text(),'#{under}')]/following-sibling::ul//a[contains(text(),'Create New Service')]")
     if not(cnsLink.nil?) and cnsLink.visible? 
         wait_for_javascript_to_finish
-        begin cnsLink.click
+        begin 
+            cnsLink.click
         rescue
-            first(:xpath, "//a[contains(text(),'#{under}')]/following-sibling::ul//a[contains(text(),'Create New Service')]").click
+            wait_for_javascript_to_finish
+            begin 
+                first(:xpath, "//a[contains(text(),'#{under}')]/following-sibling::ul//a[contains(text(),'Create New Service')]").click
+            rescue
+                click_link under
+                wait_for_javascript_to_finish
+                first(:xpath, "//a[contains(text(),'#{under}')]/following-sibling::ul//a[contains(text(),'Create New Service')]").click
+            end
         end
     else
         click_link under

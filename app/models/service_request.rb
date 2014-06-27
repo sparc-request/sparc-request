@@ -151,16 +151,18 @@ class ServiceRequest < ActiveRecord::Base
       invalid_day_errors = false
       
       unless days.all?{|x| !x.blank?}
-        errors.add(:visit_group, "Please specify a study day for each visit on #{arm.name}.")
+        errors.add(:visit_group, "Please specify a study day for each visit on (#{arm.name}).")
         visit_group_errors = true
       end
       
       unless days.all?{|day| day.is_a? Fixnum}
-        errors.add(:invalid_day, "Please enter a valid number for each study day on #{arm.name}.")
+        errors.add(:invalid_day, "Please enter a valid number for each study day (#{arm.name}).")
         invalid_day_errors = true
       end
 
-      errors.add(:out_of_order, "Please make sure study days are in sequential order on #{arm.name}.") unless visit_group_errors or invalid_day_errors or days.each_cons(2).all?{|i,j| i < j} 
+      errors.add(:out_of_order, "Please make sure study days are in sequential order (#{arm.name}).") unless visit_group_errors or invalid_day_errors or days.each_cons(2).all?{|i,j| i <= j}
+      errors.add(:duplicate_days, "Visits can not have the same study day (#{arm.name}).") unless visit_group_errors or invalid_day_errors or days.each_cons(2).all?{|i,j| i == j}
+
     end
   end
 

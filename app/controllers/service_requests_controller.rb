@@ -96,7 +96,7 @@ class ServiceRequestsController < ApplicationController
     end
 
     @ctrc_services = false
-    if session[:errors]
+    if session[:errors] and session[:errors] != []
       if session[:errors][:ctrc_services]
         @ctrc_services = true
         @ssr_id = @service_request.protocol.find_sub_service_request_with_ctrc(@service_request.id)

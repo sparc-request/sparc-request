@@ -160,7 +160,7 @@ class ServiceRequest < ActiveRecord::Base
         invalid_day_errors = true
       end
 
-      errors.add(:out_of_order, "Please make sure study days are in sequential order on #{arm.name}.") unless visit_group_errors or invalid_day_errors or days.each_cons(2).all?{|i,j| i <= j} 
+      errors.add(:out_of_order, "Please make sure study days are in sequential order on #{arm.name}.") unless visit_group_errors or invalid_day_errors or days.each_cons(2).all?{|i,j| i < j} 
     end
   end
 

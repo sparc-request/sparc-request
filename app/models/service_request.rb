@@ -171,7 +171,15 @@ class ServiceRequest < ActiveRecord::Base
       end
 
       errors.add(:out_of_order, "Please make sure study days are in sequential order (#{arm.name}).") unless visit_group_errors or invalid_day_errors or days.each_cons(2).all?{|i,j| i <= j}
-      errors.add(:duplicate_days, "Visits can not have the same study day (#{arm.name}).") unless visit_group_errors or invalid_day_errors or days.each_cons(2).all?{|i,j| i == j}
+
+      unless visit_group_errors
+        day_entries = Hash.new(0)
+        days.each do |day|
+          day_entries[day] += 1
+        end
+
+        errors.add(:duplicate_days, "Visits can not have the same study day (#{arm.name}).") unless day_entries.values.all?{|count| count == 1}
+      end
 
     end
   end

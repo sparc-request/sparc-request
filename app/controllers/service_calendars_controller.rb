@@ -104,8 +104,9 @@ class ServiceCalendarsController < ApplicationController
     day = params[:day]
     position = params[:position].to_i
     arm = Arm.find params[:arm_id]
+    portal = params[:portal]
 
-    if !arm.update_visit_group_day(day, position)
+    if !arm.update_visit_group_day(day, position, portal)
       respond_to do |format|
         format.js { render :status => 418, :json => clean_messages(arm.errors.messages) }
       end

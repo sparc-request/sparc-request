@@ -237,7 +237,10 @@ div.new_message_dialog.ui-dialog
   div.ui-dialog-buttonset
     button.ui-button
       background: url(redbutton.png) no-repeat !important
+      span.ui-button-text
+        line-height: 18px
 div.add_user_dialog_box,
+div.edit_user_dialog_box,
 div.full_calendar_dialog_box,
 div.send_notification_dialog_box,
 div.new_message_dialog,
@@ -285,7 +288,7 @@ div.view_request_dialog_box
         border: 0px
         height: 40px
         width: 93px
-        font-size: 1.5em
+        font-size: 1.4em
         .ui-button-text
           padding: 0px
       // #add_authorized_user_submit_button.ui-state-hover,
@@ -347,11 +350,14 @@ div.view_request_dialog_box
       li.new_notification
         height: 40px
         padding: 9px 0 0 50px
-        margin: 20px 75px 0 10px
+        margin: 20px 15px 0 10px
         list-style: none
         float: left
         font-weight: bold
         background: url(notification_green_small.png) no-repeat
+        width: 125px
+      li.new_notification.roles
+        width: 325px
 .service-request-button
   color: $white
   text-align: center

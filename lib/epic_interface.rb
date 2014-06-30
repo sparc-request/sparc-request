@@ -146,11 +146,11 @@ class EpicInterface
   def full_study_message(study)
     xml = Builder::XmlMarkup.new(indent: 2)
 
-    xml.query(root: @study_root, extension: study.short_title)
+    xml.query(root: @study_root, extension: "STUDY#{study.id}")
 
     xml.protocolDef {
       xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
-        xml.id(root: @study_root, extension: study.short_title)
+        xml.id(root: @study_root, extension: "STUDY#{study.id}")
         xml.title study.title
         xml.text study.brief_description
 
@@ -170,11 +170,11 @@ class EpicInterface
   def study_creation_message(study)
     xml = Builder::XmlMarkup.new(indent: 2)
 
-    xml.query(root: @study_root, extension: study.short_title)
+    xml.query(root: @study_root, extension: "STUDY#{study.id}")
 
     xml.protocolDef {
       xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
-        xml.id(root: @study_root, extension: study.short_title)
+        xml.id(root: @study_root, extension: "STUDY#{study.id}")
         xml.title study.title
         xml.text study.brief_description
 
@@ -244,11 +244,11 @@ class EpicInterface
   def study_calendar_definition_message(study)
     xml = Builder::XmlMarkup.new(indent: 2)
 
-    xml.query(root: @study_root, extension: study.short_title)
+    xml.query(root: @study_root, extension: "STUDY#{study.id}")
 
     xml.protocolDef {
       xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
-        xml.id(root: @study_root, extension: study.short_title)
+        xml.id(root: @study_root, extension: "STUDY#{study.id}")
         xml.title study.title
         xml.text study.brief_description
 

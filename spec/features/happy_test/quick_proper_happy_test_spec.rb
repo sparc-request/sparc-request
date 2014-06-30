@@ -25,7 +25,7 @@ describe 'A Quick Happy Test on Sparc Proper' do
     visit root_path
 
     #**Submit a service request**#
-    addService 'MUSC Research Data Request (CDW)'
+    addService 'CDW'
     addService 'Breast Milk Collection'
     find('.submit-request-button').click
     wait_for_javascript_to_finish

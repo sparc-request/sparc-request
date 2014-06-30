@@ -226,7 +226,6 @@ module CapybaraClinical
         #expects instance of ServiceWithAddress as input
         #Intended as full CWF happy test.
         goToCWF
-
         enterServiceRequest(study.short,service.name)
         testService(service)
         subjectTracker(service)

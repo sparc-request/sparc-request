@@ -20,7 +20,7 @@ module CapybaraUserPortal
         #expects instance of ServiceRequestForComparison as input 
         find(:xpath, "//a[@class='edit_service_request' and text()='Edit Original']").click
         wait_for_javascript_to_finish
-        page.should have_xpath "//input[@id='line_item_count' and @value='#{request.services.length}']"
+        assert_selector(:xpath, "//div[@class='line-items']/div[@class]", :count => request.services.length)
         goToUserPortal
         findStudy(request.study.short)
     end
@@ -95,7 +95,8 @@ module CapybaraUserPortal
         find("td.body_column").should have_text("Test Reply")
         goToUserPortal
         within accordionInfoBox do
-            first(:xpath, ".//a[contains(@class,'new-portal-notification-button')]").click
+            sleep 2
+            first(:xpath, ".//a[@class='new-portal-notification-button']").click
             wait_for_javascript_to_finish
         end
         first(".new_notification").click
@@ -182,6 +183,7 @@ module CapybaraUserPortal
         select("Funded", :from => "Proposal Funding Status")
         find("#funding_start_date").click
         page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
+        wait_for_javascript_to_finish
         find("#funding_start_date").should have_value(Date.today.strftime('%-m/%d/%Y'))
 
         # it "should change the indirect cost rate when a source is selected" do

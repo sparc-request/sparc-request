@@ -13,19 +13,19 @@ describe 'A Quick Happy Test' do
     createTags
     visit catalog_manager_root_path
 
-    create_new_institution 'Medical University of South Carolina', {:abbreviation => 'MUSC', :tags => ['Clinical work fulfillment']}
-    create_new_provider 'South Carolina Clinical and Translational Institute (SCTR)', 'Medical University of South Carolina', {:abbreviation => 'SCTR1', :tags => ['Clinical work fulfillment']}
-    create_new_program 'Office of Biomedical Informatics', 'South Carolina Clinical and Translational Institute (SCTR)', {:abbreviation => 'Informatics', :tags => ['Clinical work fulfillment']}
-    create_new_program 'Clinical and Translational Research Center (CTRC)', 'South Carolina Clinical and Translational Institute (SCTR)', {:abbreviation => 'Informatics', :process_ssrs => true, :tags => ['Clinical work fulfillment','Nexus']}
-    create_new_core 'Clinical Data Warehouse', 'Office of Biomedical Informatics', {:tags => ['Clinical work fulfillment']}
-    create_new_core 'Nursing Services', 'Clinical and Translational Research Center (CTRC)', {:tags => ['Clinical work fulfillment']}
-    create_new_service 'MUSC Research Data Request (CDW)', 'Clinical Data Warehouse', {:otf => true, :unit_type => 'Per Query', :unit_factor => 1, :rate => '2.00', :unit_minimum => 1, :tags => ['Clinical work fulfillment']}
-    create_new_service 'Breast Milk Collection', 'Nursing Services', {:otf => false, :unit_type => 'Per patient/visit', :unit_factor => 1, :rate => '6.36', :unit_minimum => 1, :tags => ['Clinical work fulfillment']}
+    create_new_institution 'Medical University of South Carolina', {:abbreviation => 'MUSC'}
+    create_new_provider 'South Carolina Clinical and Translational Institute (SCTR)', 'Medical University of South Carolina', {:abbreviation => 'SCTR1'}
+    create_new_program 'Office of Biomedical Informatics', 'South Carolina Clinical and Translational Institute (SCTR)', {:abbreviation => 'Informatics'}
+    create_new_program 'Clinical and Translational Research Center (CTRC)', 'South Carolina Clinical and Translational Institute (SCTR)', {:abbreviation => 'Informatics', :process_ssrs => true, :tags => ['Clinical work fulfillment', 'Nexus']}
+    create_new_core 'Clinical Data Warehouse', 'Office of Biomedical Informatics'
+    create_new_core 'Nursing Services', 'Clinical and Translational Research Center (CTRC)', :tags => ['Clinical work fulfillment']
+    create_new_service 'MUSC Research Data Request (CDW)', 'Clinical Data Warehouse', {:otf => true, :unit_type => 'Per Query', :unit_factor => 1, :rate => '2.00', :unit_minimum => 1}
+    create_new_service 'Breast Milk Collection', 'Nursing Services', {:otf => false, :unit_type => 'Per patient/visit', :unit_factor => 1, :rate => '6.36', :unit_minimum => 1}
 
     visit root_path
 
     #**Submit a service request**#
-    addService 'MUSC Research Data Request (CDW)'
+    addService 'CDW'
     addService 'Breast Milk Collection'
     find('.submit-request-button').click
     wait_for_javascript_to_finish

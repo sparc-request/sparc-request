@@ -151,7 +151,7 @@ class EpicInterface
     xml.protocolDef {
       xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
         xml.id(root: @study_root, extension: "STUDY#{study.id}")
-        xml.title study.title
+        xml.title study.epic_title
         xml.text study.brief_description
 
         emit_project_roles(xml, study)
@@ -175,7 +175,7 @@ class EpicInterface
     xml.protocolDef {
       xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
         xml.id(root: @study_root, extension: "STUDY#{study.id}")
-        xml.title study.title
+        xml.title study.epic_title
         xml.text study.brief_description
 
         emit_project_roles(xml, study)
@@ -249,7 +249,7 @@ class EpicInterface
     xml.protocolDef {
       xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
         xml.id(root: @study_root, extension: "STUDY#{study.id}")
-        xml.title study.title
+        xml.title study.epic_title
         xml.text study.brief_description
 
         # component1 - One calendar event definition out of a sequence.

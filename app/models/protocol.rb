@@ -158,6 +158,11 @@ class Protocol < ActiveRecord::Base
     "#{self.id} - #{self.short_title}"
   end
 
+  def epic_title
+    epic_title = "#{self.short_title} - #{self.title}"
+    epic_title.truncate(195)
+  end
+
   def display_funding_source_value
     if funding_status == "funded"
       if funding_source == "internal"

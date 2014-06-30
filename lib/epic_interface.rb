@@ -146,12 +146,12 @@ class EpicInterface
   def full_study_message(study)
     xml = Builder::XmlMarkup.new(indent: 2)
 
-    xml.query(root: @study_root, extension: study.short_title)
+    xml.query(root: @study_root, extension: "STUDY#{study.id}")
 
     xml.protocolDef {
       xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
-        xml.id(root: @study_root, extension: study.short_title)
-        xml.title study.title
+        xml.id(root: @study_root, extension: "STUDY#{study.id}")
+        xml.title study.epic_title
         xml.text study.brief_description
 
         emit_project_roles(xml, study)
@@ -170,12 +170,12 @@ class EpicInterface
   def study_creation_message(study)
     xml = Builder::XmlMarkup.new(indent: 2)
 
-    xml.query(root: @study_root, extension: study.short_title)
+    xml.query(root: @study_root, extension: "STUDY#{study.id}")
 
     xml.protocolDef {
       xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
-        xml.id(root: @study_root, extension: study.short_title)
-        xml.title study.title
+        xml.id(root: @study_root, extension: "STUDY#{study.id}")
+        xml.title study.epic_title
         xml.text study.brief_description
 
         emit_project_roles(xml, study)
@@ -244,12 +244,12 @@ class EpicInterface
   def study_calendar_definition_message(study)
     xml = Builder::XmlMarkup.new(indent: 2)
 
-    xml.query(root: @study_root, extension: study.short_title)
+    xml.query(root: @study_root, extension: "STUDY#{study.id}")
 
     xml.protocolDef {
       xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
-        xml.id(root: @study_root, extension: study.short_title)
-        xml.title study.title
+        xml.id(root: @study_root, extension: "STUDY#{study.id}")
+        xml.title study.epic_title
         xml.text study.brief_description
 
         # component1 - One calendar event definition out of a sequence.

@@ -402,6 +402,10 @@ module CapybaraCatalogManager
     options[:tags].each do |tagName| setTag tagName end
     if options[:tags].include? "Clinical work fulfillment" then fillOutCWF('core') end
 
+    find(:xpath, "//div[text()='Pricing']").click
+    wait_for_javascript_to_finish
+    subsidyInfo 'core'
+
     first(:xpath, "//input[@id='save_button']").click
     wait_for_javascript_to_finish
     # click_link name

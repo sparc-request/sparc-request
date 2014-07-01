@@ -69,6 +69,29 @@ describe 'A Happy Test' do
     #**END Check linked service adding END**#
 
 
+    def happyTest(request)
+        visit root_path
+        submitServiceRequestPage (request)
+        selectStudyPage(request)
+        selectDatesAndArmsPage(request)
+        serviceCalendarPage(request)
+        documentsPage
+        reviewPage(request)
+        submissionConfirmationPage
+        goToSparcProper
+
+        if request.otfServices.length!=0 then 
+            adminPortal(request.study, request.otfServices[0]) 
+        end
+
+        if request.ppServices.length!=0 then 
+            adminPortal(request.study, request.ppServices[0]) 
+            clinicalWorkFulfillment(request.study, request.ppServices[0])
+        end
+
+        userPortal(request)
+    end
+
     service1 = ServiceWithAddress.new(
         :instit => "Medical University of South Carolina",
         :prov => "South Carolina Clinical and Translational Institute (SCTR)",
@@ -103,26 +126,7 @@ describe 'A Happy Test' do
 
     request = ServiceRequestForComparison.new(services,arms,study)
 
-    submitServiceRequestPage (request)
-    selectStudyPage(request)
-    selectDatesAndArmsPage(request)
-    serviceCalendarPage(request)
-    documentsPage
-    reviewPage(request)
-    submissionConfirmationPage
-    goToSparcProper
-
-    if request.otfServices.length!=0 then 
-        adminPortal(request.study, request.otfServices[0]) 
-    end
-
-    if request.ppServices.length!=0 then 
-        adminPortal(request.study, request.ppServices[0]) 
-        clinicalWorkFulfillment(request.study, request.ppServices[0])
-    end
-
-    userPortal(request)
-
+    happyTest(request) 
   end
 
 end

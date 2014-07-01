@@ -115,8 +115,8 @@ $ ->
     $('.increase_decrease_dialog:first').dialog().dialog('destroy').remove() # calling dialog() to make sure it exists before we destroy, otherwise jquery ui complains if you click too fast
     click_text = node_ref.rslt.obj.context.textContent || node_ref.rslt.obj.context.innerText
     if click_text
-      console.log( '"' + click_text + '"')
       click_text = click_text.trim()
+      
       # create an institution
       if /^Create New Institution$/.test click_text
         institution_name = prompt("Please enter the name of the institution to be created")

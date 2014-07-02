@@ -8,6 +8,8 @@
       = stylesheet_link_tag 'ie'
     = javascript_include_tag "application"
     = javascript_include_tag "feedback"
+    /[if lt IE 8]
+      = javascript_include_tag "ie7_warning"
     = csrf_meta_tags
   %body
     // add the service_request_id for easy access to it
@@ -15,6 +17,11 @@
     // load spinner and cancel images so they are cached
     = image_tag 'spinner.gif', :style => 'display:none'
     = image_tag 'cancel.png', :style => 'display:none'
+
+    #ie7_warning{:style => 'display: none'}
+      %p= t('ie_warning.text1')
+      %br
+      %p= t('ie_warning.text2')
 
     #container.container
       #processing_request.ui-corner-all{:style => 'display:none'}

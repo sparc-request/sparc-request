@@ -2,3 +2,9 @@
   filter: progid:DXImageTransform.Microsoft.AlphaImageLoader( src='/assets/search_bar.png', sizingMethod='scale') !important;
   -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader( src='/assets/search_bar.png', sizingMethod='scale')" !important;
 }
+
+.steps_table{
+  background-image: none !important;
+  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader( src='/assets/steps_no_text.png', sizingMethod='scale') !important;
+  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader( src='/assets/steps_no_text.png', sizingMethod='scale')" !important;
+}

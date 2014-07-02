@@ -342,7 +342,7 @@ h3.needed_info {
 }
 
 .submit-request-button,
-.catalog-button a,
+a.catalog-button,
 .document_upload_button a {
   color: #fff;
   text-decoration: none;
@@ -2643,7 +2643,7 @@ table.service_calendar tbody td.visit {
   width: 959px;
 }
 
-.steps_table tr td { 
+.steps_table tr td {
   color: #FFFFFF;
   font-size: 13px;
   padding: 5px;

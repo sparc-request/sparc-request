@@ -33,7 +33,7 @@
       %br
       %br
   .grid_3.document-mgmt-view-right.right
-    .catalog-button= navigation_link t(:right_navigation)[:catalog], @catalog
+    = navigation_link t(:right_navigation)[:catalog], @catalog, 'catalog-button'
     = render :partial => 'right_navigation'
 
   .clear

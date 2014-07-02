@@ -479,6 +479,11 @@ module CapybaraCatalogManager
     first(:xpath, "//th[text()='Display Dates']/following-sibling::td/input[@type='text']").click
     stDay = (options[:display_date]).strftime("%-d") # Today's Day
     wait_for_javascript_to_finish
+    # datePickerBox = find(:xpath, "//div[@id='ui-datepicker-div']")
+    # within datePickerBox do
+    #     find(:xpath, "./div/div/select[@class='ui-datepicker-year']/option[text()='1945']").select_option
+    #     click_link "22"
+    # end
     page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
     first(:xpath, "//th[text()='Effective Date']/following-sibling::td/input[@type='text']").click
     wait_for_javascript_to_finish
@@ -505,6 +510,7 @@ module CapybaraCatalogManager
         wait_for_javascript_to_finish
         sleep 2
         fill_in "new_rs", :with => options[:linked][:service]
+        sleep 1
         wait_until{first(:xpath, "//ul[contains(@class,'ui-autocomplete')]/li[@class='ui-menu-item']/a[contains(text(),'#{options[:linked][:service]}')]")}.click
         wait_for_javascript_to_finish
 

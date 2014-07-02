@@ -918,6 +918,7 @@ module CapybaraProper
             page.should have_error_on_user_field "Ldap uid"
             page.should have_error_on_user_field "First name"
             page.should have_error_on_user_field "Last name"
+            wait_for_javascript_to_finish
 
             fill_in 'identity_last_name', :with => 'Jingleheimerschmidt'
             wait_for_javascript_to_finish
@@ -931,9 +932,12 @@ module CapybaraProper
             wait_for_javascript_to_finish
             page.should have_error_on_user_field "confirmation"
             page.should have_error_on_user_field "short"
+            wait_for_javascript_to_finish
 
             fill_in 'identity_password', :with => 'Jacob1'
+            wait_for_javascript_to_finish
             fill_in 'identity_password_confirmation', :with => 'Jacob1'
+            wait_for_javascript_to_finish
             find(:xpath, ".//input[@value='Create New User']").click
             wait_for_javascript_to_finish
         end

@@ -241,6 +241,7 @@ module CapybaraAdminPortal
 
     def checkTabsAP
         #runs through each tab
+        wait_for_javascript_to_finish
         switchTabTo 'Project/Study Information'
         wait_for_javascript_to_finish
 

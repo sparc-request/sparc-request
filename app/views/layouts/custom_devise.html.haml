@@ -6,6 +6,8 @@
     = stylesheet_link_tag 'application', '960', 'jquery-ui', :media => 'all'
     /[if IE]
       = stylesheet_link_tag 'ie'
+    /[if lte IE 8]
+      = stylesheet_link_tag 'ie8_less'
     = javascript_include_tag "application"
     = javascript_include_tag "feedback"
     /[if lt IE 8]

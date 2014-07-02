@@ -83,8 +83,8 @@
           .visit-calendar-details{:style => ((@sub_service_request.nil? ? @service_request.line_items.empty? : @sub_service_request.line_items.empty?) ? '' : 'display:none')}
             .instructions
               = t(:service_request_details)[:services_required]
-
-  .grid_3.protocol-details-view-right.right
+  - has_per_patient = @sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?
+  .grid_3.protocol-details-view-right.right{:class => (has_per_patient ? 'force_up' : '')}
     #services.ui-widget.ui-widget-content.cart-view
       %h3
         = t(:service_request_details)[:services]

@@ -343,7 +343,7 @@ class EpicInterface
   def emit_procedures(xml, study, arm, visit_group, cycle)
     arm.line_items.each do |line_item|
       # We want to skip line items contained in a service request that is still in first draft
-      next if ['first_draft', 'draft'].include?(line_item.service_request.status)
+      next if ['first_draft', 'draft'].include?(line_item.sub_service_request.status)
       service = line_item.service
       next unless service.send_to_epic
 

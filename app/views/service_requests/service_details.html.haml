@@ -83,14 +83,14 @@
           .visit-calendar-details{:style => ((@sub_service_request.nil? ? @service_request.line_items.empty? : @sub_service_request.line_items.empty?) ? '' : 'display:none')}
             .instructions
               = t(:service_request_details)[:services_required]
-
-  .grid_3.protocol-details-view-right.right
+  - has_per_patient = @sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?
+  .grid_3.protocol-details-view-right.right{:class => (has_per_patient ? 'force_up' : '')}
     #services.ui-widget.ui-widget-content.cart-view
       %h3
         = t(:service_request_details)[:services]
         %span#cart-help= t(:service_request_details)[:help]
       .line-items= render :partial => 'catalogs/cart', :locals => {:service_request => @service_request}
-    .catalog-button= navigation_link t(:right_navigation)[:catalog], @catalog
+    = navigation_link t(:right_navigation)[:catalog], @catalog, 'catalog-button'
     = render :partial => 'right_navigation'
 
 

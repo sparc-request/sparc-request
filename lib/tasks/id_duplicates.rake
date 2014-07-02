@@ -20,9 +20,16 @@ namespace :data do
       end
       model = prompt "Enter the name of the model (EpicRight) : "
       group = prompt "Enter how data should be grouped (project_role_id): "
+      uniq_group_id = prompt "Enter a unique #{group} (leave blank for all): "
       field = prompt "Enter the name of the field to inspect (right): "
 
-      model_data = model.classify.constantize.all#.group_by(&:project_role_id) #epic_rights_id.to_i
+      model_data = []
+      if uniq_group_id.to_i >= 1
+        model_data = model.classify.constantize.where("#{group}" => uniq_group_id)
+      else	
+        model_data = model.classify.constantize.all
+      end
+
       dups = Hash.new(0)
       #h = {"1234" => [pr1, pr2]}
       model_data.each do |e|
@@ -45,7 +52,7 @@ namespace :data do
       dups.each do |k, count|
         id, text = k.split (" ")
         if count > 1 
-          to_delete << model.classify.constantize.where("#{group}" => id, "#{field}" => text)
+          to_delete << model.classify.constantize.where("#{group}" => id, "#{field}" => text).limit(count - 1)
         end
       
       end

@@ -629,6 +629,57 @@ module CapybaraProper
         clickContinueButton
     end
 
+    def createNewProject(request)
+        #expects instance of ServiceRequestForComparison as input 
+        project = request.study
+
+        find('input#protocol_Research_Project').click
+        wait_for_javascript_to_finish
+
+        find('a.new-project').click
+        wait_for_javascript_to_finish
+
+        clickContinueButton #click continue with no form info
+
+        #should display error div with 3 errors
+        page.should have_error_on "Short title"
+        page.should have_error_on "Title"
+        page.should have_error_on "Funding status"
+
+        fill_in "project_short_title", :with => 'Carl' #fill in short title
+        clickContinueButton #click continue without Title, Funding Status, Sponsor Name
+
+        #should not display error div for field with info
+        page.should_not have_error_on "Short title"
+        #should display error div with 2 errors
+        page.should have_error_on "Title"
+        page.should have_error_on "Funding status"
+
+        fill_in "project_title", :with => project.title+'2' #fill in title
+        clickContinueButton #click continue without Funding Status, Sponsor Name
+
+        #should not display error div for filled in info
+        page.should_not have_error_on "Short title"
+        page.should_not have_error_on "Title"
+        #should display error div with 1 error for missing info
+        page.should have_error_on "Funding status"
+
+        select project.fundingStatus, :from => "project_funding_status" #select funding status
+        clickContinueButton #click continue without Funding Source  
+
+        #should not display error divs for filled in info
+        page.should_not have_error_on "Short title"
+        page.should_not have_error_on "Title"
+        page.should_not have_error_on "Funding status"
+        #should display funding source missing error
+        page.should have_error_on "Funding source"
+         
+        select project.fundingSource, :from => "project_funding_source" #select funding source
+        clickContinueButton
+        selectStudyUsers
+        find('input#protocol_Research_Study').click
+        wait_for_javascript_to_finish
+    end
 
     def selectStudyUsers
         clickContinueButton #click continue with no users added
@@ -867,6 +918,7 @@ module CapybaraProper
             page.should have_error_on_user_field "Ldap uid"
             page.should have_error_on_user_field "First name"
             page.should have_error_on_user_field "Last name"
+            wait_for_javascript_to_finish
 
             fill_in 'identity_last_name', :with => 'Jingleheimerschmidt'
             wait_for_javascript_to_finish
@@ -880,9 +932,12 @@ module CapybaraProper
             wait_for_javascript_to_finish
             page.should have_error_on_user_field "confirmation"
             page.should have_error_on_user_field "short"
+            wait_for_javascript_to_finish
 
             fill_in 'identity_password', :with => 'Jacob1'
+            wait_for_javascript_to_finish
             fill_in 'identity_password_confirmation', :with => 'Jacob1'
+            wait_for_javascript_to_finish
             find(:xpath, ".//input[@value='Create New User']").click
             wait_for_javascript_to_finish
         end
@@ -902,21 +957,7 @@ module CapybaraProper
         wait_for_javascript_to_finish
     end
 
-    def createProject
-        find('input#protocol_Research_Project').click
-        wait_for_javascript_to_finish
-        find('a.new-project').click
-        wait_for_javascript_to_finish
-        fill_in 'project_short_title', :with => 'You Jelly?'
-        fill_in 'project_title', :with => 'The Jelly Project'
-        select 'Funded', :from => 'project_funding_status'
-        wait_for_javascript_to_finish
-        select 'Federal', :from => 'project_funding_source'
-        clickContinueButton
-        selectStudyUsers
-        find('input#protocol_Research_Study').click
-        wait_for_javascript_to_finish
-    end
+
     ##################^^^^ NECESSARY COMPONENTS ^^^^####################
     #******************************************************************#
     ###################vvvv NECESSARY SCRIPTS vvvv######################
@@ -961,7 +1002,7 @@ module CapybaraProper
         saveAndContinue #click continue without study/project selected
         page.should have_error_on "You must identify the service request with a study/project before continuing."
         
-        createProject
+        createNewProject(request)
 
         createNewStudy(request)
         selectStudyUsers

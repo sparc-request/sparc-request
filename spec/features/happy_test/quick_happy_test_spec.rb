@@ -108,6 +108,7 @@ describe 'A Quick Happy Test' do
     goToAdminPortal
     enterServiceRequest('Bob', 'Breast Milk Collection')
     checkTabsAP
+    wait_for_javascript_to_finish
     sendToCWF 
     #**END Admin Portal END**#
 

@@ -7,10 +7,24 @@ module CapybaraClinical
         wait_for_javascript_to_finish
     end
 
+    def upperInputTest
+        ##routing##
+        fill_in 'ssr_routing', :with => 'HWY 17S'
+        find(:xpath, "//a[@id='ssr_save']/span[text()='Save']").click
+        wait_for_javascript_to_finish
+        page.should have_xpath "//span[@class='routing_message icon check']"
+        ##billing/business manager##
+        fill_in 'protocol_billing_business_manager_static_email', :with => 'elhombre@thefeds.gov'
+        find(:xpath, "//a[@id='protocol_billing_business_manager_static_email_save']/span[text()='Save']").click
+        wait_for_javascript_to_finish
+        page.should have_xpath "//span[@class='billing_business_message icon check']"
+    end
+
     def testService(service)
         #expects instance of ServiceWithAddress as input
         #adds a visit then deletes the same visit in the visit calendar
         switchTabTo "Study Schedule"
+        upperInputTest
         visitText = find(:xpath, "//select[@id='visit_position']/option[@value='']").text[4..-1]
         visitDay = visitText[6..-1]
         click_link "Add a Visit"

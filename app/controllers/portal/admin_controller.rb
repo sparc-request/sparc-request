@@ -7,6 +7,7 @@ class Portal::AdminController < Portal::BaseController
     
     @service_requests = @user.admin_service_requests_by_status(nil, admin_orgs)
     @study_tracker = false
+    @admin = true
   end
   
   def delete_toast_message

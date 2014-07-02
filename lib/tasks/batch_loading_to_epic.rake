@@ -8,9 +8,12 @@ namespace :epic do
 
     confirm = prompt("Are you sure you want to batch load from the Epic Queue? (Yes/No) ")
 
+    sent = []
+    failed = []
     if confirm == "Yes"
       if EpicQueue.all.size > 0
         protocol_ids = EpicQueue.all.map(&:protocol_id)
+        puts "Queue => #{protocol_ids.inspect.to_s}"
 
         protocol_ids.each do |id|
           begin
@@ -23,18 +26,29 @@ namespace :epic do
               p.reload
               sleep 1
             end
-  
-            if p.last_epic_push_status == 'failed'
+
+
+            if p.last_epic_push_status == 'failed' # i'm 99% sure this will never happen as failures get caught in the rescue block
               puts "#{p.short_title} (#{p.id}) failed to send to Epic"
+              failed << p.id
               Notifier.epic_queue_error(p).deliver
             else
               puts "#{p.short_title} (#{p.id}) sent to Epic"
-              EpicQueue.find_by_protocol_id(p.id).destroy
+              sent << p.id
+              q = EpicQueue.find_by_protocol_id(p.id) rescue false
+              q.destroy if q
             end
           rescue Exception => e
+            failed << p.id
+            puts "#{p.short_title} (#{p.id}) failed to send to Epic with an exception"
+            puts "Sent => #{sent.inspect.to_s}"
+            puts "Failed => #{failed.inspect.to_s}"
+            Notifier.epic_queue_error(p).deliver
             puts e
           end
         end
+        puts "Sent => #{sent.inspect.to_s}"
+        puts "Failed => #{failed.inspect.to_s}"
       else
         puts "Epic Queue is empty"
       end

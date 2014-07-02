@@ -146,12 +146,12 @@ class EpicInterface
   def full_study_message(study)
     xml = Builder::XmlMarkup.new(indent: 2)
 
-    xml.query(root: @study_root, extension: study.short_title)
+    xml.query(root: @study_root, extension: "STUDY#{study.id}")
 
     xml.protocolDef {
       xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
-        xml.id(root: @study_root, extension: study.short_title)
-        xml.title study.title
+        xml.id(root: @study_root, extension: "STUDY#{study.id}")
+        xml.title study.epic_title
         xml.text study.brief_description
 
         emit_project_roles(xml, study)
@@ -170,12 +170,12 @@ class EpicInterface
   def study_creation_message(study)
     xml = Builder::XmlMarkup.new(indent: 2)
 
-    xml.query(root: @study_root, extension: study.short_title)
+    xml.query(root: @study_root, extension: "STUDY#{study.id}")
 
     xml.protocolDef {
       xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
-        xml.id(root: @study_root, extension: study.short_title)
-        xml.title study.title
+        xml.id(root: @study_root, extension: "STUDY#{study.id}")
+        xml.title study.epic_title
         xml.text study.brief_description
 
         emit_project_roles(xml, study)
@@ -244,12 +244,12 @@ class EpicInterface
   def study_calendar_definition_message(study)
     xml = Builder::XmlMarkup.new(indent: 2)
 
-    xml.query(root: @study_root, extension: study.short_title)
+    xml.query(root: @study_root, extension: "STUDY#{study.id}")
 
     xml.protocolDef {
       xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
-        xml.id(root: @study_root, extension: study.short_title)
-        xml.title study.title
+        xml.id(root: @study_root, extension: "STUDY#{study.id}")
+        xml.title study.epic_title
         xml.text study.brief_description
 
         # component1 - One calendar event definition out of a sequence.
@@ -343,7 +343,7 @@ class EpicInterface
   def emit_procedures(xml, study, arm, visit_group, cycle)
     arm.line_items.each do |line_item|
       # We want to skip line items contained in a service request that is still in first draft
-      next if ['first_draft', 'draft'].include?(line_item.service_request.status)
+      next if ['first_draft', 'draft'].include?(line_item.sub_service_request.status)
       service = line_item.service
       next unless service.send_to_epic
 

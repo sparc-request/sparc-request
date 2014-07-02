@@ -9,8 +9,8 @@
           = f.text_field :ldap_uid, :style => 'width:auto'
 
         #button
-          .blue-button.devise_submit_button= f.submit t(:password_reset_submit)
-          .blue-button.devise_cancel_button= link_to t(:devise)[:cancel], catalog_service_request_path(@service_request)
+          = f.submit t(:password_reset_submit), :class => 'blue-button devise_submit_button'
+          = link_to t(:devise)[:cancel], catalog_service_request_path(@service_request), :class => 'blue-button devise_cancel_button'
     .links
       = render "devise/shared/links"
     .clear

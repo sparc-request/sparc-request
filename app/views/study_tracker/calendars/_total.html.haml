@@ -1,5 +1,8 @@
 - procedures = procedures_for_visit_group(appointments)
+- appointment = appointments.first
+- vg_name = appointment.visit_group ? appointment.visit_group.name : appointment.name
+- vg_id = appointment.visit_group ? appointment.visit_group_id : appointment.position
 
-%tr{:class => "appointment #{appointments.first.visit_group.id}" }
-  %td= appointments.first.visit_group.name
+%tr{:class => "appointment #{vg_id}" }
+  %td= vg_name
   %td= number_to_currency(procedures.sum{|x| x.total})

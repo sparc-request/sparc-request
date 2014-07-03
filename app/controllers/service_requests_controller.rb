@@ -516,7 +516,6 @@ class ServiceRequestsController < ApplicationController
 
   def send_service_provider_notifications(sub_service_requests, xls)
     sub_service_requests.each do |sub_service_request|
-      next if QUEUE_EPIC and sub_service_request.line_items.any? { |li| li.should_push_to_epic? }
       sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
         send_individual_service_provider_notification(sub_service_request.service_request, sub_service_request, service_provider, xls)
       end

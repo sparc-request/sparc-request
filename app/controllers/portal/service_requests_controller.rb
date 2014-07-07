@@ -11,6 +11,7 @@ class Portal::ServiceRequestsController < Portal::BaseController
     @ssr_id = params[:ssr_id] if params[:ssr_id]
     @sub_service_request = @service_request.sub_service_requests.find_by_ssr_id(@ssr_id) if @ssr_id
     @service_list = @service_request.service_list
+    @line_items = @sub_service_request.line_items
     @protocol = @service_request.protocol
     @tab = 'calendar'
     @portal = true

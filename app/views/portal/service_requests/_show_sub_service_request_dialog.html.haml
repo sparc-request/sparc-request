@@ -55,4 +55,4 @@
       - @service_request.arms.each do |arm|
         = render :partial => 'service_requests/review/calendar', :locals => {:tab => @tab, :arm => arm, :portal => @portal, :thead_class => @thead_class}
     - if @sub_service_request.has_one_time_fee_services?
-      = render :partial => 'portal/service_requests/one_time_fees'
+      = render :partial => 'service_requests/review/review_totals', :locals => {:thead_class => @thead_class}

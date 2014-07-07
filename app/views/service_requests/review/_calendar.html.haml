@@ -1,4 +1,3 @@
-- thead_class ||= 'ui-widget-header'
 %table.service_calendar{:class => arm.id}
   %thead{:class => thead_class}
     %tr.table_header
@@ -6,7 +5,7 @@
       %th{:rowspan => 2}= t(:sr_review)[:calendar][:headers][:cost]
       %th{:rowspan => 2}= t(:sr_review)[:calendar][:headers][:subjects]
       %th{:colspan => 5, :height => 40, :width => 375} 
-        = generate_review_visit_navigation arm, @service_request, @pages, @tab if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
+        = generate_review_visit_navigation arm, @service_request, @pages, tab, portal if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
       %th{:rowspan => 2}= t(:sr_review)[:calendar][:headers][:total_per_patient] 
       %th{:rowspan => 2}= t(:sr_review)[:calendar][:headers][:total_per_study] 
         

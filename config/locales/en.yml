@@ -19,7 +19,7 @@ en:
   # bottom navigation
   bottom_navigation:
     go_back: "Go Back"
-    save_and_exit: "Save & Exit"
+    save_and_exit: "Save as Draft"
     save_and_continue: "Save & Continue"
     continue: "Continue"
     save_as_draft: "Save As Draft"

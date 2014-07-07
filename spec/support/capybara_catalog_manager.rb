@@ -72,10 +72,12 @@ module CapybaraCatalogManager
         first(:xpath, ".//input[contains(@class, 'percent_of_change')]").set("20") #percent change
         first(:xpath, ".//input[@display='display_date']").click #display date
         wait_for_javascript_to_finish
+        # find(:xpath, "//div/table/tbody/tr/td[@data-handler='selectDay']/a[text()='#{numerical_day}']").click
         page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } #today
         wait_for_javascript_to_finish
         first(:xpath, ".//input[@display='effective_date']").click #effective date
         wait_for_javascript_to_finish
+        # find(:xpath, "//div/table/tbody/tr/td[@data-handler='selectDay']/a[text()='#{numerical_day}']").click
         page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } #today
         wait_for_javascript_to_finish     
         first(:xpath, ".//span[@class='ui-button-text' and text()='Submit']").click   
@@ -215,9 +217,11 @@ module CapybaraCatalogManager
     wait_for_javascript_to_finish
     first(:xpath, "//th[contains(text(),'Display Date')]/following-sibling::td/input[@type='text']").click
     wait_for_javascript_to_finish
+    # find(:xpath, "//div/table/tbody/tr/td[@data-handler='selectDay']/a[text()='#{stDay}']").click
     page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
     first(:xpath, "//th[contains(text(),'Effective Date')]/following-sibling::td/input[@type='text']").click
     wait_for_javascript_to_finish
+    # find(:xpath, "//div/table/tbody/tr/td[@data-handler='selectDay']/a[text()='#{stDay}']").click
     page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
     first(:xpath, "//input[@id='pricing_setups_blank_pricing_setup_federal']").set(options[:federal])
     first(:xpath, "//input[@id='pricing_setups_blank_pricing_setup_corporate']").set(options[:corporate])
@@ -318,9 +322,11 @@ module CapybaraCatalogManager
     stDay = (options[:display_date]).strftime("%-d") # Today's Day
     first(:xpath, "//th[contains(text(),'Display Date')]/following-sibling::td/input[@type='text']").click
     wait_for_javascript_to_finish
+    # find(:xpath, "//div/table/tbody/tr/td[@data-handler='selectDay']/a[text()='#{stDay}']").click
     page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
     first(:xpath, "//th[contains(text(),'Effective Date')]/following-sibling::td/input[@type='text']").click
     wait_for_javascript_to_finish
+    # find(:xpath, "//div/table/tbody/tr/td[@data-handler='selectDay']/a[text()='#{stDay}']").click
     page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
     first(:xpath, "//input[@id='pricing_setups_blank_pricing_setup_federal']").set(options[:federal])
     first(:xpath, "//input[@id='pricing_setups_blank_pricing_setup_corporate']").set(options[:corporate])
@@ -476,18 +482,17 @@ module CapybaraCatalogManager
     find(:xpath, "//div[text()='Pricing']").click
     find(:xpath, "//input[@class='add_pricing_map']").click
     first(:xpath, "//a[@href='#' and contains(text(),'Effective on')]").click
-    first(:xpath, "//th[text()='Display Dates']/following-sibling::td/input[@type='text']").click
+
     stDay = (options[:display_date]).strftime("%-d") # Today's Day
+    first(:xpath, "//th[text()='Display Dates']/following-sibling::td/input[@type='text']").click #Trigger datepicker on Display Date input
     wait_for_javascript_to_finish
-    # datePickerBox = find(:xpath, "//div[@id='ui-datepicker-div']")
-    # within datePickerBox do
-    #     find(:xpath, "./div/div/select[@class='ui-datepicker-year']/option[text()='1945']").select_option
-    #     click_link "22"
-    # end
+    # find(:xpath, "//div/table/tbody/tr/td[@data-handler='selectDay']/a[text()='#{stDay}']").click
     page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
-    first(:xpath, "//th[text()='Effective Date']/following-sibling::td/input[@type='text']").click
+    first(:xpath, "//th[text()='Effective Date']/following-sibling::td/input[@type='text']").click #Trigger datepicker on Effective Date input
     wait_for_javascript_to_finish
+    # find(:xpath, "//div/table/tbody/tr/td[@data-handler='selectDay']/a[text()='#{stDay}']").click
     page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
+
     first(:xpath, "//input[@id='pricing_maps_blank_pricing_map_full_rate']").set(options[:rate])
     if options[:otf] then 
         first(:xpath, "//input[@id='otf_checkbox_']").click 

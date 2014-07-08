@@ -2,11 +2,11 @@ require 'spec_helper'
 include CapybaraCatalogManager
 
 
-describe 'Catalog Manager' do
+describe 'Quick Catalog Manager' do
   let_there_be_lane
   fake_login_for_each_test
 
-  it 'Should create a functional catalog', :js => true do
+  it 'Should create a small functional catalog', :js => true do
     visit catalog_manager_root_path
 
     create_new_institution 'someInst'

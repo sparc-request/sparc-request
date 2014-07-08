@@ -33,13 +33,14 @@ describe "study level charges", js: true do
       wait_for_javascript_to_finish
       within('.cwf_one_time_fee_service') do
         within('.fields', visible: true) do
-          find('.fulfillment_date').set("14/5/1")
+          find('.fulfillment_date').set("5/1/2014")
           find('.fulfillment_quantity').set(1)
           find('.fulfillment_unit_quantity').set(1)
           find('.fulfillment_notes').set("You're darn tootin'!")
         end
       end
-      within('.study_level_charges', visible: true) do
+
+      within('p.buttons', visible: true) do
         click_button("Save")
         wait_for_javascript_to_finish
       end

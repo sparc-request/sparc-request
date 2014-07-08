@@ -2,6 +2,7 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
   before_filter :check_work_fulfillment_status, :except => [:add_note, :add_service, :delete_toast_messages]
 
   def show
+    @study_tracker = true
     @calendar = Calendar.find(params[:id])
     @calendar.populate_on_request_edit
     build_subject_data(@calendar)
@@ -71,7 +72,7 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
   end
 
   def build_subject_data(calendar)
-    if calendar.appointments.empty?
+    if calendar.appointments.empty? || (calendar.subject.arm.visits.count > calendar.appointments.count)
       subject = calendar.subject
       groups = VisitGroup.where(arm_id: subject.arm.id).includes(visits: { line_items_visit: :line_item })
       calendar.populate(groups)

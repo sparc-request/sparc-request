@@ -8,14 +8,11 @@
 
 .dashboard-view
   = render 'user_information'
-  %p.dash-instructions
-  = t(:protocol_information)[:message1]
+  %p.dash-instructions= t(:protocol_information)[:message1]
+  %p.dash-instructions= t(:protocol_information)[:message2]
   %br
-  %br
-  = t(:protocol_information)[:message2]
-  %br
-  %br
-  %input#search_box.search_protocols{:placeholder => 'Type here to search...', :style => "display:none;"}
+
+  %input#search_box.search_protocols{:placeholder => 'Search...', :style => "display:none;"}
   = link_to root_path do
     = image_tag 'portal/create_new_request.png', :class => 'portal_create_new_request'
   .loading_protocol.ui-corner-all{:style => "border: 1px solid black; padding: 3px; width: 200px; margin: 30px auto; text-align: center"}
@@ -27,11 +24,11 @@
 
 .add-associated-user-dialog
   .user-search-container
-    = label_tag 'user_search', 'Search for a user:'
-    = text_field_tag 'user_search'
+    = text_field_tag 'user_search', nil, placeholder: "Search For A User"
     = image_tag('portal/spinner.gif', :style => "display:none; vertical-align:middle;", :id => 'search-spinner')
   #add-user-form
     =render :partial => "portal/associated_users/new", :locals => {:protocol => @protocol, :protocol_role => ProjectRole.new, :identity => Identity.new}
+  .clear
 
 .edit-associated-user-dialog
 .view-sub-service-request-dialog

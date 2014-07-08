@@ -336,8 +336,13 @@ h3.needed_info {
   margin: 10px;
 }
 
+.quick_question_email_error {
+  display: none;
+  color: red;
+}
+
 .submit-request-button,
-.catalog-button a,
+a.catalog-button,
 .document_upload_button a {
   color: #fff;
   text-decoration: none;
@@ -2638,7 +2643,7 @@ table.service_calendar tbody td.visit {
   width: 959px;
 }
 
-.steps_table tr td { 
+.steps_table tr td {
   color: #FFFFFF;
   font-size: 13px;
   padding: 5px;
@@ -2676,6 +2681,11 @@ table.service_calendar tbody td.visit {
 .devise_submit_button, .devise_cancel_button {
   width: 200px;
   margin: 5px auto;
+  display: block;
+}
+
+input.devise_submit_button {
+  border: none;
 }
 
 .devise_cancel_button, .devise_option_button {
@@ -2685,6 +2695,7 @@ table.service_calendar tbody td.visit {
 .devise_option_button {
   width: 200px;
   margin: 0 auto;
+  display: block;
 }
 
 .sign_in_selection {

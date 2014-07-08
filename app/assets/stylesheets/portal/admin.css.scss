@@ -1,6 +1,9 @@
 // Place all the styles related to the admin controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+#content {
+  padding: 14px 8px 8px;
+}
 #admin-tablesorter {
   table {
     table-layout: fixed;
@@ -102,6 +105,7 @@ background-color: #8dbdd8;
 
 .admin-buttons {
   float: right;
+  margin: 10px 10px -45px;
 }
 
 .portal_create_new_request {

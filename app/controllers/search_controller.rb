@@ -3,7 +3,7 @@ class SearchController < ApplicationController
   before_filter :authorize_identity
   def services
     term = params[:term].strip
-    results = Service.where("(name LIKE '%#{term}%' OR abbreviation LIKE '%#{term}%' OR cpt_code LIKE '%#{term}%') AND is_available != 0")
+    results = Service.where("name LIKE ? OR abbreviation LIKE ? OR cpt_code LIKE ? AND is_available != ?", "%#{term}%", "%#{term}%", "%#{term}%", "0")
                      .reject{|s| (s.parents.map(&:is_available).compact.all? == false) or ((s.current_pricing_map rescue false) == false)}
     
     unless @sub_service_request.nil?

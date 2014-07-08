@@ -103,7 +103,7 @@ module Portal::ServiceRequestsHelper
         arr = [["Add Visit #{last_position + 1}", nil]]
         visits = Visit.where(:line_items_visit_id => vg.id).includes(:visit_group)
         last_position.times do |visit|
-          visit_name = visits[visit].visit_group.name || "Visit #{visit}"
+          visit_name = visits[visit].try(:visit_group).try(:name) || visits[visit].try(:name) || "Visit #{visit}" 
           arr << ["Insert before #{visit + 1} - #{visit_name}", visit + 1]
         end
       else
@@ -124,7 +124,7 @@ module Portal::ServiceRequestsHelper
           arr = []
           visits = Visit.where(:line_items_visit_id => vg.id).includes(:visit_group)
           visit_count.times do |visit|
-            visit_name = visits[visit].visit_group.name || "Visit #{visit}"
+            visit_name = visits[visit].try(:visit_group).try(:name) || visits[visit].try(:name) || "Visit #{visit}" 
             arr << ["Delete Visit #{visit + 1} - #{visit_name}", visit + 1]
           end
         else

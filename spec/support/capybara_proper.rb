@@ -918,7 +918,7 @@ module CapybaraProper
             page.should have_error_on_user_field "Ldap uid"
             page.should have_error_on_user_field "First name"
             page.should have_error_on_user_field "Last name"
-            wait_for_javascript_to_finish
+            sleep 2
 
             fill_in 'identity_last_name', :with => 'Jingleheimerschmidt'
             wait_for_javascript_to_finish

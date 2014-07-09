@@ -6,12 +6,35 @@ namespace :epic do
       STDIN.gets.strip
     end
 
+    def send_epic_queue_report
+      eq = EpicQueue.all
+
+      CSV.open("tmp/epic_queue_report.csv", "wb") do |csv|
+        csv << [Time.now.strftime('%m/%d/%Y')]
+        eq.each do |epic_queue|
+          protocol = epic_queue.protocol
+
+          csv << [protocol.id, protocol.short_title, protocol.funding_source]
+          csv << ["First Name", "Last Name", "Email Address", "LDAP UID", "Role"]
+          protocol.project_roles.each do |pr|
+            csv << [pr.identity.first_name, pr.identity.last_name, pr.identity.email, pr.identity.ldap_uid, pr.role]
+          end
+          csv << []
+          csv << []
+        end
+      end
+      Notifier.epic_queue_report.deliver
+    end
+
     confirm = prompt("Are you sure you want to batch load from the Epic Queue? (Yes/No) ")
 
     sent = []
     failed = []
     if confirm == "Yes"
       if EpicQueue.all.size > 0
+
+        send_epic_queue_report
+
         protocol_ids = EpicQueue.all.map(&:protocol_id)
         puts "Queue => #{protocol_ids.inspect.to_s}"
 

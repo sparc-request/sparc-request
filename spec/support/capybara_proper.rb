@@ -312,29 +312,33 @@ module CapybaraProper
     end
 
     def testVisitDaysValidation(armName,numVisits)
+        #expects browser to be on step 2b visit calendar for first time with no visit info filled in.
         saveAndContinue
         page.should have_error_on "study day for each visit" #Please specify a study day for each visit.
         if numVisits <3 then return end #if there are less than 3 visits, then ascending visit days validation can not be tested: quit here.
         
         table = armTable(armName)
+        setVisitDays(armName, numVisits)
         #set visit days in descending order, should cause immediate error response
         table.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='0']").set(2)
         table.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='1']").set(1)
-        first(:xpath, "//div[@class='welcome']").click #allows for refocus by clicking out of the input box
-        page.driver.browser.switch_to.alert.accept #accepts the error dialog box. will cause test to fail if no dialog appears.
+        saveAndContinue
+        page.should have_error_on "Please make sure study days are in sequential order" 
+        # first(:xpath, "//div[@class='welcome']").click #allows for refocus by clicking out of the input box
+        # page.driver.browser.switch_to.alert.accept #accepts the error dialog box. will cause test to fail if no dialog appears.
         wait_for_javascript_to_finish
 
         table.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='1']").set(3)
         moveVisitDayTo(armName,1,3)
-        table.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='0']").set("")
-        table.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='1']").set("")
+        #clear days
+        table.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='0']").set("1")
+        table.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='1']").set("2")
     end
 
     def setVisitDays(armName,numVisits)
         #expects string of arm's name,
         #and total number of visits on arm as input
         #sets all visit days by incrementing from 1 up
-        testVisitDaysValidation(armName,numVisits)
         currentArmTable = armTable(armName)
         (0..(numVisits-1)).each do |i|
             if i>0 and i%5==0 then #if all visit days are set in current view and 5 more need to be moved into view
@@ -342,6 +346,11 @@ module CapybaraProper
                 wait_for_javascript_to_finish
             end
             currentArmTable.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='#{i}']").set(i+1)
+            wait_for_javascript_to_finish
+        end
+        #bring first visit set back into view
+        while !(currentArmTable.first(:xpath, "./thead/tr/th/a/span[@class='ui-button-icon-primary ui-icon ui-icon-circle-arrow-w']", :visible => true).nil?)
+            currentArmTable.first(:xpath, "./thead/tr/th/a/span[@class='ui-button-icon-primary ui-icon ui-icon-circle-arrow-w']", :visible => true).click
             wait_for_javascript_to_finish
         end
     end
@@ -776,6 +785,7 @@ module CapybaraProper
         #tests the template tab of the service calendar
         #checks the totals of
         checkTotals(request)
+        testVisitDaysValidation(request.arms[0].name,request.arms[0].visits)
         request.arms.each do |arm|
             setVisitDays(arm.name,arm.visits)
             markServiceVisit(arm,arm.services[0].name,2)

@@ -22,6 +22,7 @@ begin
   USE_NEWS_FEED                 = application_config['use_news_feed']
   GOOGLE_USERNAME               = application_config['google_username']
   GOOGLE_PASSWORD               = application_config['google_password']
+  SEND_AUTHORIZED_USER_EMAILS   = application_config['send_authorized_user_emails']
 
   if application_config.include?('wkhtmltopdf_location')
     # Setup PDFKit

@@ -47,6 +47,10 @@ class Arm < ActiveRecord::Base
   # end
 
   def create_line_items_visit line_item
+    # if visit_count is nil then set it to 1
+    self.visit_count.update_attribute(:visit_count, 1) if self.visit_count.nil?
+
+    # loop until visit_groups catches up to visit_count
     while self.visit_groups.size < self.visit_count
       visit_group = self.visit_groups.new
       if not visit_group.save(validate: false) then
@@ -211,33 +215,35 @@ class Arm < ActiveRecord::Base
     end
   end
 
-  def update_visit_group_day day, position
+  def update_visit_group_day day, position, portal=false
     position = position.blank? ? self.visit_groups.count - 1 : position.to_i
     before = self.visit_groups[position - 1] unless position == 0
     current = self.visit_groups[position]
     after = self.visit_groups[position + 1] unless position >= self.visit_groups.size - 1
-
-    valid_day = Integer(day) rescue false
-    if !valid_day
-      self.errors.add(:invalid_day, "You've entered an invalid number for the day. Please enter a valid number.")
-      return false
-    end
-
-    if !before.nil? && !before.day.nil?
-      if before.day > valid_day
-        self.errors.add(:out_of_order, "The days are out of order. This day appears to go before the previous day.")
+    
+    if portal == 'true'
+      valid_day = Integer(day) rescue false
+      if !valid_day
+        self.errors.add(:invalid_day, "You've entered an invalid number for the day. Please enter a valid number.")
         return false
+      end
+
+      if !before.nil? && !before.day.nil?
+        if before.day > valid_day
+          self.errors.add(:out_of_order, "The days are out of order. This day appears to go before the previous day.")
+          return false
+        end
+      end
+
+      if !after.nil? && !after.day.nil?
+        if valid_day > after.day
+          self.errors.add(:out_of_order, "The days are out of order. This day appears to go after the next day.")
+          return false
+        end
       end
     end
 
-    if !after.nil? && !after.day.nil?
-      if valid_day > after.day
-        self.errors.add(:out_of_order, "The days are out of order. This day appears to go after the next day.")
-        return false
-      end
-    end
-
-    return current.update_attributes(:day => valid_day)
+    return current.update_attributes(:day => day)
   end
 
   def update_visit_group_window window, position

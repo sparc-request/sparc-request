@@ -104,8 +104,9 @@ class ServiceCalendarsController < ApplicationController
     day = params[:day]
     position = params[:position].to_i
     arm = Arm.find params[:arm_id]
+    portal = params[:portal]
 
-    if !arm.update_visit_group_day(day, position)
+    if !arm.update_visit_group_day(day, position, portal)
       respond_to do |format|
         format.js { render :status => 418, :json => clean_messages(arm.errors.messages) }
       end
@@ -183,7 +184,7 @@ class ServiceCalendarsController < ApplicationController
     end
     setup_calendar_pages
 
-    vg = @arm.visit_groups[visit_to_move - 1]
+    vg = @arm.visit_groups.find_by_position visit_to_move
 
     # The way insert_at works is literal. It inserts at whatever position is given
     # We want to insert before the position given depending on the visit we're moving.

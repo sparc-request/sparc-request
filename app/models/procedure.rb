@@ -113,6 +113,8 @@ class Procedure < ActiveRecord::Base
     procedure = Procedure.includes(:appointment, :visit).find(self.id)
     if procedure.service
       return true
+    elsif procedure.line_item.service.is_one_time_fee?
+      return false
     elsif procedure.appointment.visit_group_id.nil?
       return true if self.completed
     else

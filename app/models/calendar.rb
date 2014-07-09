@@ -40,7 +40,9 @@ class Calendar < ActiveRecord::Base
           new_livs = arm.line_items_visits.reject {|x| existing_liv_ids.include?(x.id)}
           new_livs.each do |new_liv|
             visit = new_liv.visits.where("visit_group_id = ?", appointment.visit_group_id).first
-            appointment.procedures.create(:line_item_id => new_liv.line_item.id, :visit_id => visit.id) if new_liv.line_item.service.organization_id == appointment.organization_id
+            if (new_liv.line_item.service.organization_id == appointment.organization_id) && !new_liv.line_item.service.is_one_time_fee?
+              appointment.procedures.create(:line_item_id => new_liv.line_item.id, :visit_id => visit.id)
+            end
           end
         end
       end

@@ -38,7 +38,8 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       @sub_service_request.distribute_surveys if @sub_service_request.status == 'complete' and @sub_service_request.status != saved_status #status is complete and it was something different before
       @service_request = @sub_service_request.service_request
       @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
-      render 'portal/sub_service_requests/update_past_status'
+      email_users @sub_service_request if params[:status] == 'submitted'
+      render 'portal/sub_service_requests/update_past_status', :formats => [:js]
     else
       respond_to do |format|
         format.js { render :status => 500, :json => clean_errors(@sub_service_request.errors) }
@@ -293,6 +294,29 @@ class Portal::SubServiceRequestsController < Portal::BaseController
               status: 500,
               json: [$!.message])
         }
+      end
+    end
+  end
+
+  def email_users sub_service_request
+    @service_request = sub_service_request.service_request
+    @protocol = @service_request.protocol
+    @line_items = sub_service_request.line_items
+
+    # generate the excel for this service request
+    xls = render_to_string "/service_requests/show", :formats => [:xlsx]
+
+    # send e-mail to all folks with view and above
+    @protocol.project_roles.each do |project_role|
+      next if project_role.project_rights == 'none'
+      Notifier.notify_user(project_role, @service_request, xls, false).deliver unless project_role.identity.email.blank?
+    end
+
+    # Check to see if we need to send notifications for epic.
+    if USE_EPIC
+      if @protocol.should_push_to_epic?
+        @protocol.awaiting_approval_for_epic_push
+        Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
       end
     end
   end

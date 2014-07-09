@@ -336,8 +336,13 @@ h3.needed_info {
   margin: 10px;
 }
 
+.quick_question_email_error {
+  display: none;
+  color: red;
+}
+
 .submit-request-button,
-.catalog-button a,
+a.catalog-button,
 .document_upload_button a {
   color: #fff;
   text-decoration: none;
@@ -441,6 +446,11 @@ h3.needed_info {
 
 #institution_accordion h3 {
   border-radius: 5px !important
+}
+
+div#institution_accordion h3.provider_header {
+  background: url("/assets/jquery-ui/ui-bg_glass_45_0078ae_1x400.png") repeat-x scroll 50% 50% #0078AE;
+  border: 1px solid #77D5F7;
 }
 
 .provider_accordion {
@@ -2633,7 +2643,7 @@ table.service_calendar tbody td.visit {
   width: 959px;
 }
 
-.steps_table tr td { 
+.steps_table tr td {
   color: #FFFFFF;
   font-size: 13px;
   padding: 5px;
@@ -2671,6 +2681,11 @@ table.service_calendar tbody td.visit {
 .devise_submit_button, .devise_cancel_button {
   width: 200px;
   margin: 5px auto;
+  display: block;
+}
+
+input.devise_submit_button {
+  border: none;
 }
 
 .devise_cancel_button, .devise_option_button {
@@ -2680,6 +2695,7 @@ table.service_calendar tbody td.visit {
 .devise_option_button {
   width: 200px;
   margin: 0 auto;
+  display: block;
 }
 
 .sign_in_selection {
@@ -2698,4 +2714,12 @@ table.service_calendar tbody td.visit {
 .move_visits img{
   vertical-align: middle;
   padding-right: 5px;
+}
+
+.left-arrow {
+  margin: 0px 30px 0px -50px !important;
+}
+
+.right-arrow {
+  margin: 0px -50px 0px 30px !important;
 }

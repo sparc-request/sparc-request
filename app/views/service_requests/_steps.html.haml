@@ -1,31 +1,64 @@
+/[if IE 8]
+  %img(src="/assets/steps_no_text.png"){:class => 'steps_banner_ie'}
+  .test_table
+    %table.steps_table{:id => 'steps_banner', :usemap => '#steps_banner'}
+      %tr
+        %td
+          - if @service_request.group_valid? :protocol
+            = link_to "javascript:void(0);", :location => 'protocol', :validates => params[:action], :class => 'navigation_link' do
+              .steps_table_link= raw(t(:step_navigation)[:step_1])
+          - else
+            = raw(t(:step_navigation)[:step_1])
+        %td
+          - if @service_request.group_valid?(:service_details, :service_calendar, :service_subsidy)
+            = link_to "javascript:void(0);", :location => 'service_details', :validates => params[:action], :class => 'navigation_link' do
+              .steps_table_link= raw(t(:step_navigation)[:step_2])
+          - else
+            = raw(t(:step_navigation)[:step_2])
+        %td
+          - if @service_request.group_valid? :document_management
+            = link_to "javascript:void(0);", :location => 'document_management', :validates => params[:action], :class => 'navigation_link' do
+              .steps_table_link= raw(t(:step_navigation)[:step_3])
+          - else
+            = raw(t(:step_navigation)[:step_3])
+        %td
+          - if @service_request.group_valid? :document_management
+            = link_to "javascript:void(0);", :location => 'review', :validates => params[:action], :class => 'navigation_link' do
+              .steps_table_link= raw(t(:step_navigation)[:step_4])
+          - else
+            = raw(t(:step_navigation)[:step_4])
+        %td= raw(t(:step_navigation)[:step_5])
 .grid_12
-  %table.steps_table{:id => 'steps_banner', :usemap => '#steps_banner'}
-    %tr
-      %td
-        - if @service_request.group_valid? :protocol
-          = link_to "javascript:void(0);", :location => 'protocol', :validates => params[:action], :class => 'navigation_link' do
-            .steps_table_link= raw(t(:step_navigation)[:step_1])
-        - else
-          = raw(t(:step_navigation)[:step_1])
-      %td
-        - if @service_request.group_valid?(:service_details, :service_calendar, :service_subsidy)
-          = link_to "javascript:void(0);", :location => 'service_details', :validates => params[:action], :class => 'navigation_link' do
-            .steps_table_link= raw(t(:step_navigation)[:step_2])
-        - else
-          = raw(t(:step_navigation)[:step_2])
-      %td
-        - if @service_request.group_valid? :document_management
-          = link_to "javascript:void(0);", :location => 'document_management', :validates => params[:action], :class => 'navigation_link' do
-            .steps_table_link= raw(t(:step_navigation)[:step_3])
-        - else
-          = raw(t(:step_navigation)[:step_3])
-      %td
-        - if @service_request.group_valid? :document_management
-          = link_to "javascript:void(0);", :location => 'review', :validates => params[:action], :class => 'navigation_link' do
-            .steps_table_link= raw(t(:step_navigation)[:step_4])
-        - else
-          = raw(t(:step_navigation)[:step_4])
-      %td= raw(t(:step_navigation)[:step_5])
+  <!--[if !IE 8]> -->
+  .test_table
+    %table.steps_table{:id => 'steps_banner', :usemap => '#steps_banner'}
+      %tr
+        %td
+          - if @service_request.group_valid? :protocol
+            = link_to "javascript:void(0);", :location => 'protocol', :validates => params[:action], :class => 'navigation_link' do
+              .steps_table_link= raw(t(:step_navigation)[:step_1])
+          - else
+            = raw(t(:step_navigation)[:step_1])
+        %td
+          - if @service_request.group_valid?(:service_details, :service_calendar, :service_subsidy)
+            = link_to "javascript:void(0);", :location => 'service_details', :validates => params[:action], :class => 'navigation_link' do
+              .steps_table_link= raw(t(:step_navigation)[:step_2])
+          - else
+            = raw(t(:step_navigation)[:step_2])
+        %td
+          - if @service_request.group_valid? :document_management
+            = link_to "javascript:void(0);", :location => 'document_management', :validates => params[:action], :class => 'navigation_link' do
+              .steps_table_link= raw(t(:step_navigation)[:step_3])
+          - else
+            = raw(t(:step_navigation)[:step_3])
+        %td
+          - if @service_request.group_valid? :document_management
+            = link_to "javascript:void(0);", :location => 'review', :validates => params[:action], :class => 'navigation_link' do
+              .steps_table_link= raw(t(:step_navigation)[:step_4])
+          - else
+            = raw(t(:step_navigation)[:step_4])
+        %td= raw(t(:step_navigation)[:step_5])
+  <!-- <![endif]-->
 
   %h3.step-header.ui-corner-all{:class => @css_class}= @step_text
   %br

@@ -26,10 +26,6 @@ describe 'adding an authorized user', :js => true do
       wait_for_javascript_to_finish
     end
 
-    it 'should remove the black shield' do
-      page.should_not have_selector('#shield')
-    end
-
     it 'should display the users information' do
       find('#full_name').should have_value 'Brian Kelsey'
     end

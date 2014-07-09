@@ -38,7 +38,10 @@ describe "notifications page", :js => true do
     end
 
     it "should open up the dialog box" do
+      wait_for_javascript_to_finish
       find(".new-portal-notification-button").click
+      wait_for_javascript_to_finish
+      sleep 5
       first(".new_notification").click
       wait_for_javascript_to_finish
       page.should have_text("You can not send a message to yourself.")

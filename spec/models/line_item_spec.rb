@@ -13,7 +13,8 @@ describe "Line Item" do
       service = FactoryGirl.build(:service, :organization_id => organization.id, :pricing_map_count => 0)
       service.save!(validate: false)
       project = Project.create(FactoryGirl.attributes_for(:protocol), :validate => false)
-      service_request = ServiceRequest.create(FactoryGirl.attributes_for(:service_request), protocol_id: project.id, :validate => false)
+      # service_request = ServiceRequest.create(FactoryGirl.attributes_for(:service_request), protocol_id: project.id, :validate => false)
+      service_request = ServiceRequest.create(FactoryGirl.attributes_for(:service_request, protocol_id: project.id)); service_request.save!(:validate => false); service_request
       line_item = FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id)
       lambda { line_item.applicable_rate }.should raise_exception(ArgumentError)
     end
@@ -23,7 +24,7 @@ describe "Line Item" do
       service = FactoryGirl.create(:service, :organization_id => organization.id, :pricing_map_count => 1)
       service.pricing_maps[0].update_attributes(display_date: Date.today - 1)
       project = Project.create(FactoryGirl.attributes_for(:protocol))
-      service_request = ServiceRequest.create(FactoryGirl.attributes_for(:service_request), protocol_id: project.id, :validate => false)
+      service_request = ServiceRequest.create(FactoryGirl.attributes_for(:service_request, protocol_id: project.id)); service_request.save!(:validate => false); service_request
       line_item = FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id)
       lambda { line_item.applicable_rate }.should raise_exception(ArgumentError)
     end
@@ -42,7 +43,7 @@ describe "Line Item" do
       service = FactoryGirl.create(:service, :organization_id => organization.id, :pricing_map_count => 1)
       service.pricing_maps[0].update_attributes(display_date: Date.today)
 
-      service_request = FactoryGirl.build(:service_request, protocol_id: project.id)
+      service_request = ServiceRequest.create(FactoryGirl.attributes_for(:service_request, protocol_id: project.id)); service_request.save!(:validate => false); service_request
       service_request.save(:validate => false)
       line_item = FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id)
       line_item.service_request.protocol.stub(:funding_status).and_return('funded')
@@ -99,6 +100,32 @@ describe "Line Item" do
         with('federal', 0.42)
 
       line_item.applicable_rate
+    end
+
+    context "admin rate" do
+
+      before :each do
+        @admin_rate = FactoryGirl.create(:admin_rate, :line_item_id => line_item2.id, :admin_cost => 500)
+      end
+
+      it "should return the admin rate if there is an admin_rate object with a valid cost" do
+        line_item2.applicable_rate.should eq(500)
+      end
+
+      it "should return the last admin cost if there are multiple admin rates" do
+        admin_rate2 = FactoryGirl.create(:admin_rate, :line_item_id => line_item2.id, :admin_cost => 1000)
+        line_item2.applicable_rate.should eq(1000)
+      end
+
+      it "should return the pricing map cost if the last admin rate's cost id nil" do
+        admin_rate2 = FactoryGirl.create(:admin_rate, :line_item_id => line_item2.id)
+        line_item2.applicable_rate.should eq(3000)
+      end
+
+      it "should return the pricing map cost if there are no admin rate's" do
+        @admin_rate.update_attributes(:line_item_id => line_item.id)
+        line_item2.applicable_rate.should eq(3000)
+      end
     end
   end
 

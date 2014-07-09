@@ -56,6 +56,7 @@ module CapybaraSupport
       abbreviation:         'Informatics',
       process_ssrs:         0,
       is_available:         1)
+    program.tag_list.add("clinical work fulfillment")
     program.save!
     
     subsidy_map = SubsidyMap.create(
@@ -233,6 +234,7 @@ module CapybaraSupport
 
   # Following two methods used for adding and deleting catalog managers, service providers, etc. in spec/features/catalog_manger/shared_spec.rb
   def add_identity_to_organization(field)
+    sleep 2
     fill_in "#{field}", with: "leonarjp"
     wait_for_javascript_to_finish
     page.find('a', text: "Jason Leonard (leonarjp@musc.edu)", visible: true).click()
@@ -242,6 +244,7 @@ module CapybaraSupport
   end
 
   def delete_identity_from_organization(field, delete)
+    sleep 3
     add_identity_to_organization("#{field}")
     # This overrides the javascript confirm dialog
     page.evaluate_script('window.confirm = function() { return true; }')

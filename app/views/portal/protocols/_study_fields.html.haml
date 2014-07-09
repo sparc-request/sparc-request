@@ -64,8 +64,9 @@
             .field
               = f.label :funding_source_other, t(:study_form)[:funding_source_other]
               = f.text_field :funding_source_other
-    
-        .indirect_cost_rate
+
+        .clear
+        .field.indirect_cost_rate
           = f.label :indirect_cost_rate, t(:study_form)[:rate]
           = f.text_field :indirect_cost_rate
     
@@ -125,7 +126,6 @@
   
             .field.submission_type
               = hs.label :submission_type, t(:study_form)[:submission_type]
-              %br
               = hs.select :submission_type, options_for_select(SUBMISSION_TYPES, study.human_subjects_info.submission_type), :include_blank => t(:study_form)[:submission_type]
 
             .field.approval_pending
@@ -198,6 +198,7 @@
             .field.inventors
               = ip.label :inventors, t(:study_form)[:inventors]
               = ip.text_area :inventors
+              .clear
   
       %fieldset
         %legend= t(:study_form)[:type] 
@@ -233,8 +234,8 @@
   %br.clear
   #actions
     = submit_tag(t(:study_form)[:save])
-    or
     - if admin
       = link_to "Cancel", "/portal/admin/sub_service_requests/#{@sub_service_request.id}", :class => "admin_cancel_link"
     - else
       = link_to t(:protocol_shared)[:cancel], portal_root_path
+    .clear

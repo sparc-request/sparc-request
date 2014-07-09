@@ -11,7 +11,14 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140429174401) do
+ActiveRecord::Schema.define(:version => 20140520183412) do
+
+  create_table "admin_rates", :force => true do |t|
+    t.integer  "line_item_id"
+    t.integer  "admin_cost"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -242,6 +249,12 @@ ActiveRecord::Schema.define(:version => 20140429174401) do
   add_index "documents", ["document_grouping_id"], :name => "index_documents_on_document_grouping_id"
   add_index "documents", ["sub_service_request_id"], :name => "index_documents_on_sub_service_request_id"
 
+  create_table "epic_queues", :force => true do |t|
+    t.integer  "protocol_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
+
   create_table "epic_rights", :force => true do |t|
     t.integer  "project_role_id"
     t.string   "right"
@@ -272,13 +285,13 @@ ActiveRecord::Schema.define(:version => 20140429174401) do
     t.text     "notes"
     t.string   "time"
     t.datetime "date"
-    t.datetime "created_at",           :null => false
-    t.datetime "updated_at",           :null => false
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
     t.datetime "deleted_at"
-    t.integer  "requested_r_quantity"
-    t.integer  "requested_t_quantity"
-    t.integer  "fulfilled_r_quantity"
-    t.integer  "fulfilled_t_quantity"
+    t.string   "unit_type"
+    t.string   "quantity_type"
+    t.integer  "quantity"
+    t.integer  "unit_quantity"
   end
 
   add_index "fulfillments", ["line_item_id"], :name => "index_fulfillments_on_line_item_id"
@@ -446,15 +459,15 @@ ActiveRecord::Schema.define(:version => 20140429174401) do
     t.string   "type"
     t.string   "name"
     t.integer  "order"
-    t.string   "css_class"
+    t.string   "css_class",       :default => ""
     t.text     "description"
     t.integer  "parent_id"
     t.string   "abbreviation"
     t.text     "ack_language"
     t.boolean  "process_ssrs"
     t.boolean  "is_available"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
     t.datetime "deleted_at"
     t.boolean  "show_in_cwf"
     t.integer  "position_in_cwf"

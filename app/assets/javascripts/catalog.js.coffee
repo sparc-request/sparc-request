@@ -115,7 +115,7 @@ $(document).ready ->
   $('.toggle_outside_user_sign_in').click ->
     $('#outside_sign_in_form').show()
     $('#shibboleth_sign_in_button').hide()
-    $(this).parent('.blue-button').hide()
+    $(this).hide()
     $('.sign_in_options').hide()
 
   $('#cancel_registration').click ->

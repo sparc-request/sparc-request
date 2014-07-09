@@ -6,6 +6,10 @@
     = stylesheet_link_tag 'study_tracker'
     = javascript_include_tag 'portal/application'
     = javascript_include_tag 'jquery.qtip.min.js'
+    /[if IE]
+      = stylesheet_link_tag 'ie'
+    /[if gt IE 7]
+      = stylesheet_link_tag 'ie8_plus'
     = csrf_meta_tags
 
   %body
@@ -18,6 +22,7 @@
         #title
           %h1= render :partial => 'portal/home/title'
         #content
+          .notification_dialog
           = yield
   %footer
     = render :partial => 'shared/piwik_tracking' if Rails.env == 'production'

@@ -73,37 +73,12 @@ describe "service calendar", :js => true do
 
     describe "template tab" do
 
-      describe "jumping to a visit" do
-        it "should display the visit entered" do
-          fill_in "jump_to_visit_#{arm1.id}", :with => 10
-          first(".number_of_subjects_header").click()
+      describe 'selecting visits' do
+
+        it 'should jump to the selected visits' do
+          select("Visits 6 - 10 of 10", from: "jump_to_visit_#{arm1.id}")
           wait_for_javascript_to_finish
-
-          first('.visit_count').should have_content("Visits 6 - 10 of 10")
-        end
-
-        it "should show the last page when the number is greater than the visits count" do
-          fill_in "jump_to_visit_#{arm1.id}", :with => 10000
-          first(".number_of_subjects_header").click()
-          wait_for_javascript_to_finish
-
-          first('.visit_count').should have_content("Visits 6 - 10 of 10")
-        end
-
-        it "should show the first page if the number is less than 1" do
-          fill_in "jump_to_visit_#{arm1.id}", :with => -1000
-          first(".number_of_subjects_header").click()
-          wait_for_javascript_to_finish
-
-          first('.visit_count').should have_content("Visits 1 - 5 of 10")
-        end
-
-        it "should show the first page if anything else but a number is entered" do
-          fill_in "jump_to_visit_#{arm1.id}", :with => "test"
-          first(".number_of_subjects_header").click()
-          wait_for_javascript_to_finish
-
-          first('.visit_count').should have_content("Visits 1 - 5 of 10")
+          page.should have_content("Visit 6")
         end
       end
 

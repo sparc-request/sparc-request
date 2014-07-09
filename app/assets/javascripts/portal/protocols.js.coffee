@@ -80,9 +80,10 @@ $(document).ready ->
 
       $('.view-sub-service-request-dialog').dialog({
           autoOpen: false
+          dialogClass: "view_request_dialog_box"
           title: 'Service Information'
-          width: 715
-          height: 500
+          width: 900
+          height: 700
           modal: true
           buttons: {
             "Ok": () ->
@@ -102,14 +103,19 @@ $(document).ready ->
 
       $('.view-full-calendar-dialog').dialog({
           autoOpen: false
+          dialogClass: "full_calendar_dialog_box"
           title: 'Study Information'
-          width: 715
-          height: 500
+          width: 900
+          height: 700
           modal: true
-          buttons: {
-            "Ok": () ->
+          buttons: [
+            {
+            id: "ok_button"
+            text: "Ok"
+            click: ->
               $(this).dialog('close')
-          }
+            }
+          ]
       })
 
 

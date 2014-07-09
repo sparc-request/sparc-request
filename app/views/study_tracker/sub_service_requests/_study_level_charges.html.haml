@@ -2,32 +2,56 @@
   .blank_requests
     = t(:fulfillments)[:services][:no_visits][:no_requests]
 - else
-  = nested_form_for @sub_service_request, :url => study_tracker_sub_service_request_path do |f|      
-    = f.fields_for :line_items, @sub_service_request.one_time_fee_line_items do |otf_form|
-      #cwf_one_time_fee_table
-        %table{ id: "cwf_fulfillment_#{otf_form.object.id}"}
+  .study_level_charges
+    = nested_form_for @sub_service_request, :url => study_tracker_sub_service_request_path do |f|
+      .cwf_one_time_fee_service
+        %table
           %thead
             %tr.ui-widget-header
               %th.top= t(:fulfillments)[:services][:no_visits][:service]
-              %th.top{:colspan => 2}= t(:fulfillments)[:services][:no_visits][:requested]
-              %th.top{:colspan => 2}= t(:fulfillments)[:services][:no_visits][:fulfilled]
-              %th.top= t(:study_tracker)[:otf_charges][:date]
-              %th
-            %tr.bottom
-              %th.cwf_otf_service= otf_form.object.service.name + ":"
-              %th.bottom R
-              %th.bottom T
-              %th.bottom R
-              %th.bottom T
-          %tbody
-            = otf_form.fields_for :fulfillments, wrapper: false do |fulfillment_form|
-              %tr.fields
-                %td
-                %td.cwf_otf_text_field= fulfillment_form.text_field :requested_r_quantity
-                %td.cwf_otf_text_field= fulfillment_form.text_field :requested_t_quantity
-                %td.cwf_otf_text_field= fulfillment_form.text_field :fulfilled_r_quantity
-                %td.cwf_otf_text_field= fulfillment_form.text_field :fulfilled_t_quantity
-                %td= fulfillment_form.datepicker :date, size: 10, dateFormat: "yy/mm/dd"
-                %td= fulfillment_form.link_to_remove t(:study_tracker)[:otf_charges][:remove], class: "cwf_fulfillments fulfillments"
-        %p= otf_form.link_to_add t(:study_tracker)[:otf_charges][:add], :fulfillments, data: { target: "#cwf_fulfillment_#{otf_form.object.id}"}, class: "fulfillments cwf_fulfillments"
-    %p.buttons= f.submit t(:study_tracker)[:save], class: 'ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover ui-state-active'
+              %th.top= t(:fulfillments)[:services][:no_visits][:number]
+              %th.top= t(:fulfillments)[:services][:no_visits][:qty_type]
+              %th.top= t(:fulfillments)[:services][:no_visits][:number]
+              %th.top= t(:fulfillments)[:services][:no_visits][:otf_unit_type]
+              %th{:colspan => 2}
+          = f.fields_for :line_items, @sub_service_request.one_time_fee_line_items do |otf_form|
+            %tbody.otf_service_tbody{id: "cwf_fulfillment_#{otf_form.object.id}"}
+              %tr{:class => "service_tr"}
+                %td.cwf_otf_service= otf_form.object.try(:service).name
+                %td= otf_form.object.try(:quantity)
+                %td= otf_form.object.try(:service).try(:current_effective_pricing_map).try(:quantity_type)
+                - if otf_form.object.try(:service).try(:current_effective_pricing_map).otf_unit_type == 'N/A'
+                  %td
+                  %td
+                  %td{:colspan => 2}
+                - else
+                  %td{:style => "white-space:nowrap;overflow:hidden;"}
+                    %span{:style => "padding-right:5px;"} /
+                    = otf_form.object.try(:units_per_quantity)
+                  %td= otf_form.object.try(:service).try(:current_effective_pricing_map).try(:otf_unit_type)
+              %tr.fulfillment_fields.fulfillment_header{:style => "#{'display:none;' if otf_form.object.fulfillments.empty?}", :class => "fulfillments_#{otf_form.object.id}"}
+                %th{:colspan => 7, :class => 'ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-accordion-header-active ui-state-active ui-corner-top'}
+                  %span.ui-accordion-header-icon.ui-icon.ui-icon-triangle-1-s 
+                  Fulfillment
+              %tr.fulfillment_fields.ui-widget-header.study_level_charges{:style => "#{'display:none;' if otf_form.object.fulfillments.empty?}", :class => "fulfillments_#{otf_form.object.id}"}
+                %th= t(:fulfillments)[:services][:no_visits][:date]
+                %th= t(:fulfillments)[:services][:no_visits][:number]
+                %th= t(:fulfillments)[:services][:no_visits][:qty_type]
+                %th= t(:fulfillments)[:services][:no_visits][:number]
+                %th= t(:fulfillments)[:services][:no_visits][:otf_unit_type]
+                %th{:colspan => "2"}= t(:fulfillments)[:services][:no_visits][:notes]
+              = otf_form.fields_for :fulfillments, wrapper: false do |fulfillment_form|
+                %tr.fields.study_level_charges
+                  %td= fulfillment_form.datepicker :formatted_date, size: 10, dateFormat: "m/dd/yy", :class => "fulfillment_date"
+                  %td.cwf_otf_text_field= fulfillment_form.text_field :quantity, :class => 'fulfillment_quantity'
+                  %td.cwf_otf_text_field
+                    = fulfillment_form.select :quantity_type, options_for_select(Fulfillment::CWF_QUANTITY_TYPES, fulfillment_form.object.quantity_type), :class => 'fulfillment_quantity_type'
+                  %td.cwf_otf_text_field= fulfillment_form.text_field :unit_quantity, :class => 'fulfillment_unit_quantity'
+                  %td.cwf_otf_text_field= fulfillment_form.select :unit_type, options_for_select(Fulfillment::UNIT_TYPES, fulfillment_form.object.unit_type), :class => 'fulfillment_unit_type'
+                  %td.cwf_otf_text_field= fulfillment_form.text_area  :notes, :cols => 25, :rows => 1, :class => 'fulfillment_notes'
+                  %td= fulfillment_form.link_to_remove t(:study_tracker)[:otf_charges][:remove], :class => "cwf_fulfillments fulfillments"
+            %tbody
+              %tr
+                %td= otf_form.link_to_add t(:study_tracker)[:otf_charges][:add], :fulfillments, data: { target: "#cwf_fulfillment_#{otf_form.object.id}"}, class: "fulfillments cwf_fulfillments", :'data-otf_id' => otf_form.object.id, onclick: "$('.fulfillments_#{otf_form.object.id}').show()"
+              %tr
+      %p.buttons= f.submit t(:study_tracker)[:save], class: 'ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover ui-state-active'

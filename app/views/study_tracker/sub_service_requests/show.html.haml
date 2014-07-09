@@ -37,7 +37,7 @@
   %ul
     %li= link_to t(:study_tracker)[:dashboard][:tabs][:study_schedule], "#study_schedule", :class => 'study_schedule-tab'
     %li= link_to t(:study_tracker)[:dashboard][:tabs][:subject_tracker], "#subject_tracker", :class => 'subject_tracker-tab'
-    / %li= link_to t(:study_tracker)[:dashboard][:tabs][:study_level_charges], "#study_level_charges", :class => 'study_level_charges-tab'
+    %li= link_to t(:study_tracker)[:dashboard][:tabs][:study_level_charges], "#study_level_charges", :class => 'study_level_charges-tab'
     %li= link_to t(:study_tracker)[:dashboard][:tabs][:payments], "#payments", :class => 'payments-tab'
     %li= link_to t(:study_tracker)[:dashboard][:tabs][:billing], "#billing", :class => 'billing-tab', :id => 'billing-tab'
     - if @user.admin_organizations({:su_only => true}).include? @sub_service_request.organization
@@ -47,8 +47,8 @@
     = render :partial => 'study_schedule'
   #subject_tracker
     = render :partial => 'subject_tracker'
-  / #study_level_charges
-  /   = render :partial => 'study_level_charges'
+  #study_level_charges
+    = render :partial => 'study_level_charges'
   #payments
     = render 'payments'
   #billing

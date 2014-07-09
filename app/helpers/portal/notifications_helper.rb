@@ -12,7 +12,12 @@ module Portal::NotificationsHelper
   end
 
   def received_at notification
-    notification.user_notifications_for_current_user(@user).order('created_at DESC').first.created_at.strftime('%D')
+    timestamp = notification.user_notifications_for_current_user(@user).order('created_at DESC').first.created_at
+    if timestamp.strftime('%D') == Date.today.strftime('%D')
+      timestamp.strftime('%l:%M%p')
+    else
+      timestamp.strftime('%D')
+    end
   end
 
   def link_to_notification notification

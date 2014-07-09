@@ -39,7 +39,7 @@ describe 'edit a program', :js => true do
         first("#save_button").click
         page.should have_content('Office of Biomedical Informatics saved successfully')
         find('#program_tag_list_ctrc').should be_checked
-        @program.tag_list.should eq(['ctrc'])
+        @program.tag_list.should eq(['clinical work fulfillment', 'ctrc'])
       end
     end
 
@@ -80,12 +80,12 @@ describe 'edit a program', :js => true do
     end
 
     context "viewing cwf section" do
-      it "should not display cwf by default" do
-        page.should_not have_css('#cwf_fieldset')
+      it "should display cwf by default" do
+        page.should have_css('#cwf_fieldset')
       end
 
       it "should display cwf if tagged with cwf" do
-        find('#program_tag_list_clinical_work_fulfillment').click
+        first('#program_tag_list_clinical_work_fulfillment').click
         first("#save_button").click
         wait_for_javascript_to_finish
         page.should have_content('Office of Biomedical Informatics saved successfully')

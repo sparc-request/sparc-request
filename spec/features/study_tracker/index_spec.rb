@@ -18,7 +18,7 @@ describe "study tracker index page", :js => true do
     end
 
     it "should allow access to the study tracker page if the user is a clinical provider" do
-      page.should have_content 'Clinical Work Fulfillment'
+      page.should have_content 'Dashboard'
     end
 
     it "should have a service request listed in draft status" do
@@ -105,7 +105,7 @@ describe "study tracker index page", :js => true do
         provider.tag_list = "ctrc"
         provider.save
         visit study_tracker_root_path
-        page.should have_content 'Clinical Work Fulfillment'
+        page.should have_content 'Dashboard'
       end
     end
 

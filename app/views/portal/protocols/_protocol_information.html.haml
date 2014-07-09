@@ -5,25 +5,28 @@
 %input{:type => 'hidden', :value => "#{billing_manager_count_var}", :id => "billing_manager_count_#{protocol.id}"}
 .protocol-information-title.ui-corner-top= t(:protocol_information)[:information]
 .protocol-information-body.ui-corner-bottom
-  %ul
-    %li
-      = "#{protocol.type.capitalize} ID:"
-      = protocol.try(:id)
-    %li
-      = t(:protocol_information)[:title]
-      = protocol.try(:title)
-    %li
-      = t(:protocol_information)[:short_title]
-      = protocol.try(:short_title)
-    - if protocol.type == 'Study'
+  .info_left
+    %ul
       %li
-        = t(:protocol_information)[:funding]
-        = protocol.try(:sponsor_name)
-    %li
-      = display_funding_source(protocol)
-
-.protocol-information-button.ui-corner-all{:'data-permission' => rights.to_s, :'data-protocol_id' => protocol.id}
-  = "EDIT #{protocol.type.capitalize} Information"
+        = "#{protocol.type.capitalize} ID:"
+        = protocol.try(:id)
+      %li
+        = t(:protocol_information)[:title]
+        = protocol.try(:title)
+      %li
+        = t(:protocol_information)[:short_title]
+        = protocol.try(:short_title)
+      - if protocol.type == 'Study'
+        %li
+          = t(:protocol_information)[:funding]
+          = protocol.try(:sponsor_name)
+      %li
+        = display_funding_source(protocol)
+  .info_right
+    .protocol-information-button.ui-corner-all{:'data-permission' => rights.to_s, :'data-protocol_id' => protocol.id}
+      = "EDIT #{protocol.type.capitalize} Information"
+  .clear
+#spacer
 
 %br
 .protocol-information-title.ui-corner-top= t(:protocol_information)[:authorized_users]
@@ -42,17 +45,17 @@
           = u.last_name
         %td= USER_ROLES.detect{|k,v| v == pr.role}.first
         %td= PROXY_RIGHTS.key(pr.project_rights)
-        %td
-          %a.edit-associated-user-button.btn{:href => "javascript:void(0)", :style => 'font-size:10px', :'data-protocol_id' => protocol.id, :'data-user_id' => u.id, :'data-permission' => rights.to_s, :'data-pr_id' => pr.id}= t(:protocol_information)[:edit]
-        %td
+        %td.no_background
+          %a.edit-associated-user-button{:href => "javascript:void(0)", :'data-protocol_id' => protocol.id, :'data-user_id' => u.id, :'data-permission' => rights.to_s, :'data-pr_id' => pr.id}
+        %td.no_background
           /%a.delete-associated-user-button.btn{:href => "javascript:void(0)", :style => 'font-size:10px', :'data-protocol_id' => protocol.id, :'data-current_user_role' => user.role, :'data-pr_id' => u.id, :'data-user_id' => u.id, :'data-user_role' => pr.role, :'data-permission' => rights.to_s} Delete
-          %a.delete-associated-user-button.btn{:href => "javascript:void(0)", :style => 'font-size:10px', :'data-protocol_id' => protocol.id, :'data-current_user_role' => pr.role, :'data-pr_id' => pr.id, :'data-user_id' => u.id, :'data-user_role' => pr.role, :'data-permission' => rights.to_s}= t(:protocol_information)[:delete]
+          %a.delete-associated-user-button{:href => "javascript:void(0)", :style => 'font-size:10px', :'data-protocol_id' => protocol.id, :'data-current_user_role' => pr.role, :'data-pr_id' => pr.id, :'data-user_id' => u.id, :'data-user_role' => pr.role, :'data-permission' => rights.to_s}
 
 
     - if protocol.project_roles.count == 0
       = t(:protocol_information)[:no_authorized_users]
 
-.associated-user-button.ui-corner-all{:'data-protocol_id' => protocol.id, :'data-permission' => rights.to_s}
+.associated-user-button{:'data-protocol_id' => protocol.id, :'data-permission' => rights.to_s}
   = t(:protocol_information)[:add_authorized_user]
 
 %br
@@ -60,17 +63,17 @@
 
 .service-request-title.ui-corner-top= t(:protocol_information)[:service_requests]
 .service_request-body
-  %table.list{:style => 'font-size:10px;', :width => "100%"}
+  %table.list{:style => 'font-size:12px;', :width => "845px;"}
     %tr{:style => 'width:100%'}
       %th{:style => 'width:15%'}= t(:protocol_information)[:srid]
       %th{:style => 'width:15%'}= t(:protocol_information)[:date]
       %th{:style => 'width:15%'}= t(:protocol_information)[:provider]
       %th{:style => 'width:15%'}= t(:protocol_information)[:program]
       %th{:style => 'width:8%'}= t(:protocol_information)[:status]
-      %th{:style => 'width:8%'}
-      %th{:style => 'width:8%'}
-      %th{:style => 'width:8%'}
-      %th{:style => 'width:8%'}
+      %th
+      %th
+      %th
+      %th
 
     - protocol.service_requests.each do |sr|
       - first_ssr = true
@@ -88,26 +91,26 @@
             = pretty_program_core(ssr)
           %td
             = ssr.status
-          %td
+          %td.no_background
             %center
-              %a.new-portal-notification-button.btn{:'data-ssr_id' => ssr.ssr_id.to_s, :'data-sr_id' => sr.id}= t(:protocol_information)[:send_notification] 
-          %td{:class => "edit-td"}
+              %a.new-portal-notification-button{:'data-ssr_id' => ssr.ssr_id.to_s, :'data-sr_id' => sr.id}
+          %td.no_background
+            %center
+              %a.view-sub-service-request-button{:href => "javascript:void(0);", :'data-service_request_id' => ssr.service_request.id, :'data-protocol_id' => protocol.id, :'data-status' => ssr.status, :'data-ssr_id' => ssr.ssr_id.to_s}
+          %td.no_background.edit-td
             - if @user.can_edit_request? ssr
               %center
-                %a.edit_service_request.btn{:href => "javascript:void(0);", :'data-permission' => rights.to_s, :'data-url' => "/service_requests/#{sr.id}/catalog?sub_service_request_id=#{ssr.id}&from_user_portal=true"}= t(:protocol_information)[:edit]
-          %td
-            %center
-              %a.view-sub-service-request-button.btn{:href => "javascript:void(0);", :'data-service_request_id' => ssr.service_request.id, :'data-protocol_id' => protocol.id, :'data-status' => ssr.status, :'data-ssr_id' => ssr.ssr_id.to_s} View
+                %a.edit_service_request{:href => "javascript:void(0);", :'data-permission' => rights.to_s, :'data-url' => "/service_requests/#{sr.id}/catalog?sub_service_request_id=#{ssr.id}&from_user_portal=true"}= t(:protocol_information)[:edit]
           - if sr.sub_service_requests.size > 0 && first_ssr
             - first_ssr = false
-            %td{:class => "edit-original-td", :rowspan => sr.sub_service_requests.size}
+            %td.no_background.edit-original-td
               - if @user.can_edit_request? sr
-                %a.edit_service_request.btn{:href => "javascript:void(0);", :'data-permission' => rights.to_s, :'data-url' => "/service_requests/#{sr.id}/catalog?from_user_portal=true&edit_original=true"}= t(:protocol_information)[:edit_original]
+                %a.edit_service_request{:href => "javascript:void(0);", :'data-permission' => rights.to_s, :'data-url' => "/service_requests/#{sr.id}/catalog?from_user_portal=true&edit_original=true"}= t(:protocol_information)[:edit_original]
         %tr
-          %td{:colspan => "9"}
+          %td.notification_td{:colspan => "9"}
             %div{:style => "display:none;", :id => "portal_notifications_#{ssr.ssr_id.to_s}_#{sr.id}", :class => "portal_notifications"}
               = render :partial => 'portal/sub_service_requests/notifications_area', :locals => {:service_request => sr, :protocol => protocol, :sub_service_request => ssr}
 
     - reset_cycle('protocol')
 
-%a.view-full-calendar-button.btn{:href => "javascript:void(0);", :'data-protocol_id' => protocol.id, :'data-url' => "/portal/protocols/#{protocol.id}/view_full_calendar"} View Full Calendar
+%a.view-full-calendar-button{:href => "javascript:void(0);", :'data-protocol_id' => protocol.id, :'data-url' => "/portal/protocols/#{protocol.id}/view_full_calendar"}= t(:protocol_information)[:full_calendar]

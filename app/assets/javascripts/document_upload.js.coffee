@@ -1,6 +1,7 @@
 $(document).ready ->
 
-  $(".upload_button").click ->
+  $(".upload_button").click (event)->
+    $("#upload_clicked").val(1)
     $(".upload_button").attr("disabled", "disabled")
     $(".upload_button span").html('Wait...')
 

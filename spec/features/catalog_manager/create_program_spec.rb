@@ -17,6 +17,10 @@ feature 'create new program', :js => true do
       fill_in 'program_order', :with => '2'
       fill_in 'program_description', :with => 'Description'
       # Subsidy Information fields
+      within '#pricing' do
+        find('.legend').click
+        wait_for_javascript_to_finish
+      end
       fill_in 'program_subsidy_map_attributes_max_percentage', :with => '55.5'
       fill_in 'program_subsidy_map_attributes_max_dollar_cap', :with => '65'
 

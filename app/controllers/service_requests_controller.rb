@@ -99,7 +99,6 @@ class ServiceRequestsController < ApplicationController
     if session[:errors]
       if session[:errors][:ctrc_services]
         @ctrc_services = true
-        @service_request.remove_ctrc_services
         @ssr_id = @service_request.protocol.find_sub_service_request_with_ctrc(@service_request.id)
       end
     end
@@ -565,15 +564,18 @@ class ServiceRequestsController < ApplicationController
     process_ssr_organization_ids = params[:process_ssr_organization_ids]
     document_grouping_id = params[:document_grouping_id]
     document = params[:document]
+    upload_clicked = params[:upload_clicked]
 
     if document_grouping_id and not process_ssr_organization_ids
       # we are deleting this grouping, this is essentially the same as clicking delete next to a grouping
       document_grouping = @service_request.document_groupings.find document_grouping_id
-      document_grouping.destroy
-    elsif process_ssr_organization_ids and (!document or params[:doc_type].empty?) and not document_grouping_id # new document but we didn't provide either the document or document type
+      errors << {:recipients => ["You must select at least one recipient"]}
+      # document_grouping.destroy
+    elsif upload_clicked == "1" and (!document or params[:doc_type].empty? or !process_ssr_organization_ids) and not document_grouping_id # new document but we didn't provide either the document or document type
       # we did not provide a document
       #[{:visit_count=>["You must specify the estimated total number of visits (greater than zero) before continuing."], :subject_count=>["You must specify the estimated total number of subjects before continuing."]}]
       doc_errors = {}
+      doc_errors[:recipients] = ["You must select at least one recipient"] if !process_ssr_organization_ids
       doc_errors[:document] = ["You must select a document to upload"] if !document
       doc_errors[:doc_type] = ["You must provide a document type"] if params[:doc_type].empty?
       errors << doc_errors
@@ -589,9 +591,27 @@ class ServiceRequestsController < ApplicationController
       # we need to update an existing grouping
       document_grouping = @service_request.document_groupings.find document_grouping_id
       grouping_org_ids = document_grouping.documents.map{|d| d.sub_service_request.organization_id.to_s}
+
       to_delete = grouping_org_ids - process_ssr_organization_ids
       to_add = process_ssr_organization_ids - grouping_org_ids
       to_update = process_ssr_organization_ids & grouping_org_ids
+
+      to_add.each do |org_id|
+        document = params[:document] || document_grouping.documents.first.document
+        
+        if document and not params[:doc_type].empty? and process_ssr_organization_ids
+          sub_service_request = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
+          sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other], :document_grouping_id => document_grouping.id
+          sub_service_request.save
+        else
+          doc_errors = {}
+          doc_errors[:recipients] = ["You must select at least one recipient"] if !process_ssr_organization_ids
+          doc_errors[:document] = ["You must select a document to upload"] if !document
+          doc_errors[:doc_type] = ["You must provide a document type"] if params[:doc_type].empty?
+          errors << doc_errors
+        end
+      end
+
       to_delete.each do |org_id|
         document_grouping.documents.each do |doc|
           doc.destroy if doc.organization.id == org_id.to_i
@@ -599,19 +619,6 @@ class ServiceRequestsController < ApplicationController
 
         document_grouping.reload
         document_grouping.destroy if document_grouping.documents.empty?
-      end
-
-      to_add.each do |org_id|
-        if document and not params[:doc_type].empty?
-          sub_service_request = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
-          sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other], :document_grouping_id => document_grouping.id
-          sub_service_request.save
-        else
-          doc_errors = {}
-          doc_errors[:document] = ["You must select a document to upload"] if !document
-          doc_errors[:doc_type] = ["You must provide a document type"] if params[:doc_type].empty?
-          errors << doc_errors
-        end
       end
 
       # updating sub_service_request documents should create a new grouping unless the grouping only contains documents for that sub_service_request

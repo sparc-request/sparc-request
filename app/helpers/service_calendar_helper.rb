@@ -121,6 +121,20 @@ module ServiceCalendarHelper
     currency_converter sum
   end
 
+  # Display protocol total
+  def display_protocol_total_otfs protocol, current_request, portal
+    sum = 0
+    protocol.service_requests.each do |service_request|
+      if ['first_draft', 'draft'].include?(service_request.status)
+        next if portal
+        next if service_request != current_request
+      end
+      next unless service_request.has_one_time_fee_services?
+      sum += service_request.total_costs_one_time
+    end
+    currency_converter sum
+  end
+
   #############################################
   # Grand Totals
   #############################################

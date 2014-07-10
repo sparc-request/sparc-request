@@ -690,6 +690,11 @@ module CapybaraProper
         wait_for_javascript_to_finish
     end
 
+    def editEpicUserAccess
+        find(:xpath, "//a[@class='epic_access_edit']").click
+        wait_for_javascript_to_finish
+    end
+
     def selectStudyUsers
         clickContinueButton #click continue with no users added
         wait_for_javascript_to_finish

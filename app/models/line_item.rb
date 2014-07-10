@@ -46,20 +46,38 @@ class LineItem < ActiveRecord::Base
   # TODO: order by date/id instead of just by date?
   default_scope :order => 'line_items.id ASC'
 
-  def applicable_rate
-    rate = if (!self.admin_rates.empty? and !self.admin_rates.last.admin_cost.blank?)
-      self.admin_rates.last.admin_cost
-    else
-      pricing_map         = self.pricing_scheme == 'displayed' ? self.service.displayed_pricing_map : self.service.current_effective_pricing_map
-      pricing_setup       = self.pricing_scheme == 'displayed' ? self.service.organization.current_pricing_setup : self.service.organization.effective_pricing_setup_for_date
+  def applicable_rate(appointment_completed_date=nil)
+    if (!self.admin_rates.empty? and !self.admin_rates.last.admin_cost.blank?)
+      unless appointment_completed_date
+        rate = self.admin_rates.last.admin_cost
+      else
+        rate = admin_rate_for_date(appointment_completed_date).last.admin_cost
+      end
+
+    return rate
+    else 
+      unless appointment_completed_date
+        pricing_map         = self.pricing_scheme == 'displayed' ? self.service.displayed_pricing_map : self.service.current_effective_pricing_map
+        pricing_setup       = self.pricing_scheme == 'displayed' ? self.service.organization.current_pricing_setup : self.service.organization.effective_pricing_setup_for_date
+      else
+        pricing_map         = self.pricing_scheme == 'displayed' ? self.service.displayed_pricing_map : self.service.effective_pricing_map_for_date(appointment_completed_date)
+        pricing_setup       = self.pricing_scheme == 'displayed' ? self.service.organization.current_pricing_setup : self.service.organization.effective_pricing_setup_for_date(appointment_completed_date)
+      end
       funding_source      = self.service_request.protocol.funding_source_based_on_status
       selected_rate_type  = pricing_setup.rate_type(funding_source)
       applied_percentage  = pricing_setup.applied_percentage(selected_rate_type)
-    
+		
       pricing_map.applicable_rate(selected_rate_type, applied_percentage)
     end
+  end
 
-    return rate
+  def admin_rate_for_date appointment_completed_date
+    sorted_rates = self.admin_rates.order(:id).reverse
+    sorted_rates.each do |rate|
+      if rate.created_at <= appointment_completed_date
+        return rate.admin_cost
+      end
+    end
   end
 
   def attached_to_submitted_request
@@ -68,7 +86,7 @@ class LineItem < ActiveRecord::Base
   end
 
   # Returns the cost per unit based on a quantity (usually just the quantity on the line_item)
-  def per_unit_cost quantity_total=self.quantity
+  def per_unit_cost(quantity_total=self.quantity, appointment_completed_date=nil)
     if quantity_total == 0 || quantity_total.nil?
       0
     else
@@ -79,7 +97,7 @@ class LineItem < ActiveRecord::Base
       packages_we_have_to_get = (quantity_total.to_f / self.units_per_package.to_f).ceil
 
       # The total cost is the number of packages times the rate
-      total_cost = packages_we_have_to_get.to_f * self.applicable_rate.to_f
+      total_cost = packages_we_have_to_get.to_f * self.applicable_rate(appointment_completed_date).to_f
 
       # And the cost per quantity is the total cost divided by the
       # quantity.  The result here may not be a whole number if the
@@ -91,7 +109,6 @@ class LineItem < ActiveRecord::Base
       unless self.units_per_quantity.blank?
         ret_cost = ret_cost * self.units_per_quantity
       end
-
       return ret_cost
     end
   end

@@ -38,6 +38,10 @@ class Arm < ActiveRecord::Base
     return !subject_count.nil? && subject_count > 0
   end
 
+  def valid_name?
+    return !name.nil? && name.length > 0
+  end
+
   # def valid_minimum_visit_count?
   #   return !visit_count.nil? && visit_count >= minimum_visit_count
   # end

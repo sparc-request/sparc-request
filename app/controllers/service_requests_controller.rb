@@ -46,6 +46,10 @@ class ServiceRequestsController < ApplicationController
       @service_request.protocol.update_attributes(params[:project])
     end
 
+    if params[:current_location] == 'service_details'
+      @service_request.reload
+    end
+
     # Save/Update any document info we may have
     document_save_update(errors)
 

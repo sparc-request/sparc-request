@@ -115,6 +115,30 @@ $(document).ready ->
     recalc_subtotal()
   )
 
+  # Save Alert popups
+
+  #Subject Calendars:
+  $(document).on('change', '#patient_visit_calendar form.edit_subject', ->
+    confirmExit = ->
+      "Changes to patient calendars need to be saved, click 'Stay on page' and save the form to save the calendar, or click 'Leave page' to leave the page and dismiss your changes."
+    window.onbeforeunload = confirmExit
+  )
+
+  $(document).on('click', '#patient_visit_calendar form.edit_subject input#save_appointments', ->
+    window.onbeforeunload = null
+  )
+
+  #Subject Info
+  $(document).on('change', '#subjects form.edit_study', ->
+    confirmExit = ->
+      "Changes to subjects need to be saved. Click 'Cancel' to return to the page and save the form, or 'OK' to leave the page and dismiss your changes."
+    window.onbeforeunload = confirmExit
+  )
+
+  $(document).on('click', 'form.edit_study input[type=submit]', ->
+    window.onbeforeunload = null
+  )
+
 
   $(document).on('click', 'a.check_all', ->
     if $('a.check_all span').hasClass('ui-icon-check')

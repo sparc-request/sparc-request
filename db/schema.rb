@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140520183412) do
+ActiveRecord::Schema.define(:version => 20140610154654) do
 
   create_table "admin_rates", :force => true do |t|
     t.integer  "line_item_id"

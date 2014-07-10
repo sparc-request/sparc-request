@@ -29,7 +29,7 @@ namespace :epic do
     if EpicQueue.all.size > 0
       single = prompt("Enter a single protocol ID or leave blank for all: ")
 
-      if single.nil?
+      if single.blank?
         protocol_ids = EpicQueue.all.map(&:protocol_id)
       else
         protocol_ids = [single.to_i]

@@ -27,7 +27,14 @@ namespace :epic do
     end
 
     if EpicQueue.all.size > 0
-      protocol_ids = EpicQueue.all.map(&:protocol_id)
+      single = prompt("Enter a single protocol ID or leave blank for all: ")
+
+      if single.nil?
+        protocol_ids = EpicQueue.all.map(&:protocol_id)
+      else
+        protocol_ids = [single.to_i]
+      end
+
       confirm = prompt("Are you sure you want to batch load #{protocol_ids.inspect}? (Yes/No) ")
 
       sent = []
@@ -59,7 +66,7 @@ namespace :epic do
               puts "#{p.short_title} (#{p.id}) sent to Epic"
               sent << p.id
               q = EpicQueue.find_by_protocol_id(p.id) rescue false
-              q.destroy if q
+              #q.destroy if q
             end
           rescue Exception => e
             failed << p.id

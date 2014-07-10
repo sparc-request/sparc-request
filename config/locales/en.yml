@@ -691,6 +691,7 @@ en:
     submission_emails: "Submission E-mails"
     super_users: "Super Users"
     service_providers: "Service Providers"
+    service_provider_required_message: "You must have at least one service provider either at the provider, program, or core level"
     new_sp: "New Service Provider"
     service_error: "There are no service providers anywhere on this tree."
     cm_rights: "Catalog Manager Rights"

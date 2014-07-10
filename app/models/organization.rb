@@ -56,11 +56,11 @@ class Organization < ActiveRecord::Base
 
   # Returns an array of organizations, the current organization's parents, in order of climbing
   # the tree backwards (thus if called on a core it will return => [program, provider, institution]).
-  def parents
+  def parents id_only=false
     my_parents = []
     if parent
-      my_parents << parent
-      my_parents.concat(parent.parents)
+      my_parents << (id_only ? parent.id : parent)
+      my_parents.concat(parent.parents id_only)
     end
 
     my_parents
@@ -99,23 +99,22 @@ class Organization < ActiveRecord::Base
   end
 
   # Returns an array of all children (and children of children) of this organization (deep search).
-  # !!!INCLUDES SELF!!!
-  def all_children all_children=[]
+  # Optionally includes self
+  def all_children all_children=[], include_self=true
     self.children.each do |child|
       all_children << child
       child.all_children(all_children)
     end
-    all_children << self
+    all_children << self if include_self
 
     all_children.uniq
   end
 
-
   # Returns an array of all services that are offered by this organization as well of all of its
   # deep children.
-  def all_child_services
+  def all_child_services include_self=true
     all_services = []
-    children = self.all_children
+    children = self.all_children [], include_self
     children.each do |child|
       if child.services
         services = Service.where(:organization_id => child.id).includes(:pricing_maps)
@@ -203,20 +202,39 @@ class Organization < ActiveRecord::Base
   # parent organization which has service providers and returns the service providers of that parent.
   def service_providers_lookup
     if !service_providers.empty?
-      return service_providers
-    else 
-      return self.parents.select {|x| !x.service_providers.empty?}.first.service_providers
+      return self.service_providers
+    elsif !self.parents.empty? 
+      parent = self.parents.select {|x| !x.service_providers.empty?}.first
+      return parent.nil? ? [] : parent.service_providers
+    else
+      return []
     end
+  end
+
+  # Looks down through all child services. It looks back up through each service's parent organizations
+  # and returns false if any of them do not have a service provider. Self is excluded.
+  def service_providers_for_child_services?
+    has_provider = true
+    if !self.all_child_services.empty?
+      self.all_child_services(false).each do |service|
+        service_providers = service.organization.service_providers_lookup.reject{|x| x.organization_id == self.id}
+        if service_providers == []
+          has_provider = false
+        end
+      end
+    end
+
+    has_provider
   end
 
   # Returns all *relevant* service providers for an organization.  Returns this organization's
   # service providers, as well as the service providers on all parents.  If the process_ssrs flag
   # is true at this organization, also returns the service providers of all children.
-  def all_service_providers
+  def all_service_providers(include_children=true)
     all_service_providers = []
     
     # If process_ssrs is true, we need to also get our children's service providers
-    if self.process_ssrs
+    if self.process_ssrs and include_children
       self.all_children.each do |child|
         all_service_providers << child.service_providers
       end

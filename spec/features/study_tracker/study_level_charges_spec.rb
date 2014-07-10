@@ -15,35 +15,42 @@ describe "study level charges", js: true do
     wait_for_javascript_to_finish
   end
 
+  def save_form 
+    within('p.buttons', visible: true) do
+      click_button("Save")
+      wait_for_javascript_to_finish
+    end
+  end
+
+  def add_fulfillment
+    find('.add_nested_fields', visible: true).click
+    wait_for_javascript_to_finish
+  end
+
   describe "entering fulfillment information" do
 
     before(:each) do
       visit study_tracker_sub_service_request_path(sub_service_request.id)
       click_link "Study Level Charges"
+      add_fulfillment
     end
 
-    it 'should successfully add a subsidy' do
-      find('.add_nested_fields', visible: true).click
-      wait_for_javascript_to_finish
+    it 'should successfully add a fulfillment' do
       page.should have_content('Date')
     end
 
     it 'should set and save the fields' do
-      find('.add_nested_fields', visible: true).click
-      wait_for_javascript_to_finish
       within('.cwf_one_time_fee_service') do
         within('.fields', visible: true) do
           find('.fulfillment_date').set("5/1/2014")
           find('.fulfillment_quantity').set(1)
+          find('.fulfillment_quantity_type').select("Each")
           find('.fulfillment_unit_quantity').set(1)
           find('.fulfillment_notes').set("You're darn tootin'!")
         end
       end
 
-      within('p.buttons', visible: true) do
-        click_button("Save")
-        wait_for_javascript_to_finish
-      end
+      save_form
 
       otf = sub_service_request.one_time_fee_line_items.first
       fulfillment = otf.fulfillments.first
@@ -51,6 +58,72 @@ describe "study level charges", js: true do
       fulfillment.quantity.should eq(1)
       fulfillment.unit_quantity.should eq(1)
       fulfillment.notes.should eq("You're darn tootin'!")
+    end
+
+    context "validations" do
+
+      it "should not allow the fulfillment to save if all fields are left blank" do
+        save_form
+
+        page.should have_content("Date, quantity, and unit quantity are required fields.")
+        page.should have_content("Please select a quantity type from the dropdown.")
+      end
+
+      it "should validate for the presence of the date" do
+        find('.fulfillment_quantity').set(1)
+        find('.fulfillment_quantity_type').select("Each")
+        find('.fulfillment_unit_quantity').set(1)
+
+        save_form
+
+        page.should have_content("Date, quantity, and unit quantity are required fields.")
+        page.should_not have_content("Please select a quantity type from the dropdown.")
+      end
+
+      it "should validate for a quantity" do
+        find('.fulfillment_date').set("5/1/2014")
+        find('.fulfillment_unit_quantity').set(1)
+        find('.fulfillment_quantity_type').select("Each")
+
+        save_form
+
+        page.should have_content("Date, quantity, and unit quantity are required fields.")
+        page.should_not have_content("Please select a quantity type from the dropdown.")
+      end
+
+      it "should require the user to select a quantity type" do
+        find('.fulfillment_date').set("5/1/2014")
+        find('.fulfillment_quantity').set(1)
+        find('.fulfillment_unit_quantity').set(1)
+
+        save_form
+
+        page.should have_content("Please select a quantity type from the dropdown.")
+        page.should_not have_content("Date, quantity, and unit quantity are required fields.")
+      end
+
+      it "should validate for a unit quantity" do
+        find('.fulfillment_date').set("5/1/2014")
+        find('.fulfillment_quantity').set(1)
+        find('.fulfillment_quantity_type').select("Each")
+        
+        save_form
+
+        page.should have_content("Date, quantity, and unit quantity are required fields.")
+        page.should_not have_content("Please select a quantity type from the dropdown.")
+      end
+
+      it "should not require that the notes field is filled in" do
+        find('.fulfillment_date').set("5/1/2014")
+        find('.fulfillment_quantity').set(1)
+        find('.fulfillment_quantity_type').select("Each")
+        find('.fulfillment_unit_quantity').set(1)
+
+        save_form
+
+        page.should_not have_content("Date, quantity, and unit quantity are required fields.")
+        page.should_not have_content("Please select a quantity type from the dropdown.")
+      end
     end
   end
 end

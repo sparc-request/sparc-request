@@ -144,7 +144,9 @@ describe "editing a study", js: true do
 
       it "should change and save the date" do
         find("#potential_funding_start_date").click
+        wait_for_javascript_to_finish
         page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") }
+        wait_for_javascript_to_finish
         find("#potential_funding_start_date").should have_value((Date.today).strftime('%-m/%d/%Y'))
       end
     end

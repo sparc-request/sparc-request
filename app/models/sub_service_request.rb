@@ -156,7 +156,11 @@ class SubServiceRequest < ActiveRecord::Base
 
   # percent of cost
   def percent_of_cost
-    subsidy.pi_contribution ? (subsidy.pi_contribution/direct_cost_total * 100).round(2) : nil
+    unless subsidy.stored_percent_subsidy.nil?
+      100 - subsidy.stored_percent_subsidy
+    else
+      subsidy.pi_contribution ? (subsidy.pi_contribution/direct_cost_total * 100).round(2) : nil
+    end
   end
 
   # Returns the total indirect costs of the sub-service-request
@@ -347,5 +351,31 @@ class SubServiceRequest < ActiveRecord::Base
     "Service Request #{display_id}"
   end
 
+  # filtered audit trail based off service requests and only return data that we need
+  # in future may want to return full filtered audit trail, currently this is only used in e-mailing service providers
+  def audit_trail identity, start_date, end_date=Time.now.utc
+    filtered_audit_trail = {:line_items => []}
+
+    full_trail = service_request.audit_trail(identity, start_date, end_date)
+    full_line_items_audits = full_trail[:line_items] 
+
+    full_line_items_audits.each do |k, audits|
+      # if line item was created and destroyed in the same session we don't care to see it because it wasn't submitted
+      actions = audits.map(&:action).to_set
+      test_actions = Set['create', 'destroy']
+      next if test_actions.subset? actions
+
+      audit = audits.sort_by(&:created_at).last
+      # create action
+      if audit.audited_changes["sub_service_request_id"].nil?
+        filtered_audit_trail[:line_items] << audit if LineItem.find(audit.auditable_id).sub_service_request_id == self.id
+      # destroy action
+      else
+        filtered_audit_trail[:line_items] << audit if audit.audited_changes["sub_service_request_id"] == self.id
+      end 
+    end
+    
+    filtered_audit_trail
+  end
   ### end audit reporting methods ###
 end

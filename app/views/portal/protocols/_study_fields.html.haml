@@ -20,25 +20,12 @@
         .field
           = f.label :funding_status, t(:protocol_shared)[:funding_status]
           = f.select :funding_status, options_for_select(FUNDING_STATUSES, study.funding_status), :include_blank => t(:study_form)[:status_blank]
-        
-        .field
-          = f.label :udak_project_number, t(:study_form)[:udak_project_number]
-          = f.text_field :udak_project_number
           
         .field
           = f.label :sponsor_name, t(:study_form)[:sponsor_name]
           = f.text_field :sponsor_name
     
-        #pending_funding
-          .field
-            = f.label :funding_rfa, t(:study_form)[:funding_rfa]
-            = f.text_field :funding_rfa
-    
-          .field
-            = f.label :potential_funding_start_date, t(:study_form)[:potential_funding_start_date]
-            = text_field_tag :potential_funding_start_date, (study.potential_funding_start_date.strftime('%_m/%d/%Y') rescue nil)
-            = f.hidden_field :potential_funding_start_date
-    
+        .pending_funding    
           .field
             = f.label :potential_funding_source, t(:protocol_shared)[:potential_funding_source]
             = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, study.potential_funding_source), :include_blank => t(:study_form)[:potential_blank]
@@ -49,12 +36,7 @@
               = f.label :potential_funding_source_other, t(:study_form)[:potential_funding_source_other]
               = f.text_field :potential_funding_source_other
         
-        .funded
-          .field
-            = f.label :funding_start_date, t(:study_form)[:funding_start_date]
-            = text_field_tag :funding_start_date, (study.funding_start_date.strftime('%_m/%d/%Y') rescue nil)
-            = f.hidden_field :funding_start_date
-          
+        .funded          
           .field
             = f.label :funding_source, t(:protocol_shared)[:funding_source]
             = f.select :funding_source, options_for_select(FUNDING_SOURCES, study.funding_source), :include_blank => t(:study_form)[:funding_blank]
@@ -66,9 +48,6 @@
               = f.text_field :funding_source_other
 
         .clear
-        .field.indirect_cost_rate
-          = f.label :indirect_cost_rate, t(:study_form)[:rate]
-          = f.text_field :indirect_cost_rate
     
         .funded
           .federal
@@ -99,7 +78,36 @@
         .field
           = f.label :study_phase, t(:study_form)[:study_phase]
           = f.select :study_phase, options_for_select(STUDY_PHASES, study.study_phase), :include_blank => t(:study_form)[:phase_blank]
-  
+
+      %fieldset
+        %legend= t(:study_form)[:optional_text]
+        .sub_text= t(:study_form)[:optional_text2]
+        .clear
+        .field
+          = f.label :udak_project_number, t(:study_form)[:udak_project_number]
+          = f.text_field :udak_project_number
+
+        .field.indirect_cost_rate
+          = f.label :indirect_cost_rate, t(:study_form)[:rate]
+          = f.text_field :indirect_cost_rate
+
+        .pending_funding
+          .field
+            = f.label :funding_rfa, t(:study_form)[:funding_rfa]
+            = f.text_field :funding_rfa
+
+          .field
+            = f.label :potential_funding_start_date, t(:study_form)[:potential_funding_start_date]
+            = text_field_tag :potential_funding_start_date, (study.potential_funding_start_date.strftime('%_m/%d/%Y') rescue nil)
+            = f.hidden_field :potential_funding_start_date
+
+        .funded
+          .field
+            = f.label :funding_start_date, t(:study_form)[:funding_start_date]
+            = text_field_tag :funding_start_date, (study.funding_start_date.strftime('%_m/%d/%Y') rescue nil)
+            = f.hidden_field :funding_start_date
+
+
       %fieldset
         %legend= t(:study_form)[:research]
         %div

@@ -4,8 +4,14 @@
     %title= t(:cm_shared)[:title]
     = stylesheet_link_tag    "catalog_manager/application"
     = javascript_include_tag "catalog_manager/application"
+    /[if lt IE 8]
+      = javascript_include_tag "ie7_warning"
     = csrf_meta_tags
   %body
+    #ie7_warning{:style => 'display: none'}
+      %p= t('ie_warning.text1')
+      %br
+      %p= t('ie_warning.text2')
     #welcome_msg.catalog_manager_welcome{:style => 'float:right;color:#000000 !important;'}= show_welcome_message(@user)
     #flash.ui-state-highlight.ui-corner-all{:style => 'display:none; position:fixed'}
     = yield

@@ -87,6 +87,14 @@ describe Arm do
         new_first_visit = arm1.line_items_visits.first.visits.first
         new_first_visit.billing.should_not eq("your mom")
       end
+
+      it "should not remove a visit if there is a completed appointment associated with the visit" do
+        visit_count = arm1.visit_count
+        appointment = FactoryGirl.create(:appointment, :visit_group_id => arm1.visit_groups.first.id, :completed_at => Date.today)
+        arm1.remove_visit(1)
+        arm1.visit_count.should_not eq(visit_count - 1)
+        arm1.errors.messages.should eq({:completed_appointment=>["exists for this visit."]})
+      end
     end
 
     describe "per patient per visit" do

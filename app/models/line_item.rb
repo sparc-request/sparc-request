@@ -21,7 +21,6 @@ class LineItem < ActiveRecord::Base
   attr_accessible :quantity
   attr_accessible :fulfillments_attributes
   attr_accessible :displayed_cost
-
  
   attr_accessor :pricing_scheme
 

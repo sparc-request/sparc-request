@@ -286,6 +286,20 @@ $(document).ready ->
       data: { "protocol[billing_business_manager_static_email]": billing_business_manager_static_email }
     return false
 
+  ####Validations for fulfillment fields within the Study Level Charges tab
+  $(document).on('click', '.study_charges_submit', (event) ->
+    $('.fulfillment_quantity:visible, .fulfillment_date:visible, .fulfillment_unit_quantity:visible').each (index, field) ->
+      if ($(field).val() == "")
+        event.preventDefault()
+        $().toastmessage('showWarningToast', 'Date, quantity, and unit quantity are required fields.')
+        return false
+    $('.fulfillment_quantity_type:visible').each (index, field) ->
+      if ($(field).val() == "")
+        event.preventDefault()
+        $().toastmessage('showWarningToast', 'Please select a quantity type from the dropdown.')
+        return false
+  )
+
 
   ####Payments logic (Andrew)
   $(document).on "nested:fieldAdded:payments", (event) ->

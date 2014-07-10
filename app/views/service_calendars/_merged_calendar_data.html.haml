@@ -1,3 +1,4 @@
+- line_items_visits = []
 = javascript_include_tag 'service_calendar_logic'
 = hidden_field_tag :indirect_rate, @protocol.try(:indirect_cost_rate)
 %table.service_calendar{:class => "arm_id_#{arm.id}", :style => @study_tracker ? "width:917px" : ''}
@@ -37,6 +38,7 @@
         - if ['first_draft', 'draft'].include?(line_item.service_request.status)
           - next if @portal
           - next if service_request != line_item.service_request
+        - line_items_visits << line_items_visit
         %tr.line_item{:class => cycle('odd', '', :name => 'pppvs')}
           %td.service_name= line_item.service.display_service_name
           - unless @portal
@@ -80,4 +82,4 @@
     %tr.totals_section.grand-totals{:class => cycle('odd', '', :name => 'pppvs')}
       %td{:colspan => colspan}= t("calendar_page.labels.total_costs") + " -- " + arm.name
       %td{:colspan => 6}
-      %td{:class => "pp_total arm_#{arm.id}"}= display_total_cost_per_arm arm
+      %td{:class => "pp_total arm_#{arm.id}"}= display_total_cost_per_arm arm, line_items_visits

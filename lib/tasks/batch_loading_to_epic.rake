@@ -1,6 +1,8 @@
 namespace :epic do
   desc "Batch load from Epic Queue"
-  task :batch_load => :environment do
+  task :batch_load, [:automate] => [:environment] do |t, args|
+    args.with_defaults(:automate => false)
+
     def prompt(*args)
       print(*args)
       STDIN.gets.strip
@@ -27,15 +29,23 @@ namespace :epic do
     end
 
     if EpicQueue.all.size > 0
-      single = prompt("Enter a single protocol ID or leave blank for all: ")
+      confirm = "No"
+      protocol_ids = []
 
-      if single.blank?
+      if args.automate
+        confirm = "Yes"
         protocol_ids = EpicQueue.all.map(&:protocol_id)
       else
-        protocol_ids = [single.to_i]
-      end
+        single = prompt("Enter a single protocol ID or leave blank for all: ")
 
-      confirm = prompt("Are you sure you want to batch load #{protocol_ids.inspect}? (Yes/No) ")
+        if single.blank?
+          protocol_ids = EpicQueue.all.map(&:protocol_id)
+        else
+          protocol_ids = [single.to_i]
+        end
+
+        confirm = prompt("Are you sure you want to batch load #{protocol_ids.inspect}? (Yes/No) ")
+      end
 
       sent = []
       failed = []
@@ -66,7 +76,7 @@ namespace :epic do
               puts "#{p.short_title} (#{p.id}) sent to Epic"
               sent << p.id
               q = EpicQueue.find_by_protocol_id(p.id) rescue false
-              #q.destroy if q
+              q.destroy if q
             end
           rescue Exception => e
             failed << p.id
@@ -85,7 +95,10 @@ namespace :epic do
         puts "Batch load aborted"
       end
     else
+      sent = []
+      failed = []
       puts "Epic Queue is empty"
+      Notifier.epic_queue_complete(sent, failed).deliver
     end
   end
 end

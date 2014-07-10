@@ -80,6 +80,10 @@ en:
   proceed_to_database_login: "Outside Users with existing SPARC Request Accounts"
   create_new_account_link: "Outside Users: Don't have an account? Click here."
 
+  ie_warning:
+    text1: "Your browser version is out of date. SPARC Request does not support Internet Explorer versions older than version 8."
+    text2: "Using versions lower than 8 can cause data curruption, and other serious problems using this tool."
+
   # Notifier
   notifier:
     service_request: "Service Request"

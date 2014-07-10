@@ -26,16 +26,16 @@ namespace :epic do
       Notifier.epic_queue_report.deliver
     end
 
-    confirm = prompt("Are you sure you want to batch load from the Epic Queue? (Yes/No) ")
+    if EpicQueue.all.size > 0
+      protocol_ids = EpicQueue.all.map(&:protocol_id)
+      confirm = prompt("Are you sure you want to batch load #{protocol_ids.inspect}? (Yes/No) ")
 
-    sent = []
-    failed = []
-    if confirm == "Yes"
-      if EpicQueue.all.size > 0
+      sent = []
+      failed = []
+      if confirm == "Yes"
 
         send_epic_queue_report
 
-        protocol_ids = EpicQueue.all.map(&:protocol_id)
         puts "Queue => #{protocol_ids.inspect.to_s}"
 
         protocol_ids.each do |id|
@@ -66,17 +66,19 @@ namespace :epic do
             puts "#{p.short_title} (#{p.id}) failed to send to Epic with an exception"
             puts "Sent => #{sent.inspect.to_s}"
             puts "Failed => #{failed.inspect.to_s}"
-            Notifier.epic_queue_error(p).deliver
+            Notifier.epic_queue_error(p, e).deliver
             puts e
           end
         end
         puts "Sent => #{sent.inspect.to_s}"
         puts "Failed => #{failed.inspect.to_s}"
+        
+        Notifier.epic_queue_complete(sent, failed).deliver
       else
-        puts "Epic Queue is empty"
+        puts "Batch load aborted"
       end
     else
-      puts "Batch load aborted"
+      puts "Epic Queue is empty"
     end
   end
 end

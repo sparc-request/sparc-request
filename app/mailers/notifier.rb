@@ -162,8 +162,9 @@ class Notifier < ActionMailer::Base
     mail(:to => EPIC_RIGHTS_MAIL_TO, :from => 'no-reply@musc.edu', :subject => subject)
   end
 
-  def epic_queue_error protocol
+  def epic_queue_error protocol, error=nil
     @protocol = protocol
+    @error = error
     mail(:to => QUEUE_EPIC_LOAD_ERROR_TO, :from => 'no-reply@musc.edu', :subject => "Error batch loading protocol to Epic")
   end
 
@@ -171,4 +172,11 @@ class Notifier < ActionMailer::Base
     attachments["epic_queue_report.csv"] = File.read(Rails.root.join("tmp", "epic_queue_report.csv"))
     mail(:to => EPIC_QUEUE_REPORT_TO, :from => 'no-reply@musc.edu', :subject => "Epic Queue Report")
   end
+
+  def epic_queue_complete sent, failed
+    @sent = sent
+    @failed = failed
+    mail(:to => EPIC_QUEUE_REPORT_TO, :from => 'no-reply@musc.edu', :subject => "Epic Queue Complete")
+  end
+
 end

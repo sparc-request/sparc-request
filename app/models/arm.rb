@@ -104,8 +104,10 @@ class Arm < ActiveRecord::Base
 
   def indirect_costs_for_visit_based_service line_items_visits=self.line_items_visits
     total = 0.0
-    line_items_visits.each do |vg|
-      total += vg.indirect_costs_for_visit_based_service
+    if USE_INDIRECT_COST
+      line_items_visits.each do |vg|
+        total += vg.indirect_costs_for_visit_based_service
+      end
     end
     return total
   end

@@ -125,11 +125,11 @@ module ServiceCalendarHelper
   def display_protocol_total_otfs protocol, current_request, portal
     sum = 0
     protocol.service_requests.each do |service_request|
+      next unless service_request.has_one_time_fee_services?
       if ['first_draft', 'draft'].include?(service_request.status)
         next if portal
         next if service_request != current_request
       end
-      next unless service_request.has_one_time_fee_services?
       sum += service_request.total_costs_one_time
     end
     currency_converter sum
@@ -153,6 +153,24 @@ module ServiceCalendarHelper
   def display_grand_total service_request, line_items
     sum = 0
     sum = service_request.grand_total line_items
+    currency_converter sum
+  end
+
+  def display_study_grand_total_direct_costs protocol, service_request
+    sum = 0
+    sum = protocol.direct_cost_total service_request
+    currency_converter sum
+  end
+
+  def display_study_grand_total_indirect_costs protocol, service_request
+    sum = 0
+    sum = protocol.indirect_cost_total service_request
+    currency_converter sum
+  end
+
+  def display_study_grand_total protocol, service_request
+    sum = 0
+    sum = protocol.grand_total service_request
     currency_converter sum
   end
 

@@ -1,0 +1,41 @@
+%table.service_calendar
+  %thead.ui-widget-header
+    %tr.table_header
+      %th.services_header{:rowspan => 2, :colspan => @portal ? 10 : 12, :style => "height: 88px"}= t(:calendar_page)[:headers][:total_study]
+
+  %tbody.cell-border
+    - @protocol.arms.each do |arm|
+      - line_items_visits = []
+      - arm.service_list.each do |key, value| # get only per patient/per visit services and group them
+        - arm.line_items_visits.each do |line_items_visit|
+          - line_item = line_items_visit.line_item
+          - if ['first_draft', 'draft'].include?(line_item.service_request.status)
+            - next if @portal
+            - next if line_item.service_request != @service_request
+          - next unless value[:line_items].include?(line_item)
+          - line_items_visits << line_items_visit
+
+      %tr.totals_section.begin_totals{:class => cycle('odd', '', :name => 'grand')}
+        %td{:colspan => 9}= t("calendar_page.labels.total_costs") + " -- " + arm.name
+        %td{:class => "pp_total arm_#{arm.id}"}= display_total_cost_per_arm arm, line_items_visits
+
+    %tr.totals_section.begin_totals{:class => cycle('odd', '', :name => 'grand')}
+      %td{:colspan => 9}= t("calendar_page.labels.total_costs_other")
+      %td.otf_total_direct_cost= display_protocol_total_otfs @protocol, service_request, @portal
+
+    %tr.totals_section{:class => cycle('odd', '', :name => 'grand')}
+      %td{:colspan => 9} &nbsp;
+      %td
+
+    - if USE_INDIRECT_COST
+      %tr.totals_section.grand-totals{:class => cycle('odd', '', :name => 'grand')}
+        %td{:colspan => 9}= t("calendar_page.labels.grand_total_direct")
+        %td.otf_total_direct_cost= display_study_grand_total_direct_costs @protocol, service_request
+
+      %tr.totals_section.grand-totals{:class => cycle('odd', '', :name => 'grand')}
+        %td{:colspan => 9}= t("calendar_page.labels.grand_total_indirect")
+        %td.otf_total_direct_cost= display_study_grand_total_indirect_costs @protocol, service_request
+
+    %tr.totals_section.grand-totals{:class => cycle('odd', '', :name => 'grand')}
+      %td{:colspan => 9}= t("calendar_page.labels.grand_total")
+      %td.otf_total_direct_cost= display_study_grand_total @protocol, service_request

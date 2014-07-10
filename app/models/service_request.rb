@@ -365,10 +365,12 @@ class ServiceRequest < ActiveRecord::Base
 
   def total_indirect_costs_per_patient arms=self.arms, line_items=nil
     total = 0.0
-    lids = line_items.map(&:id) unless line_items.nil?
-    arms.each do |arm|
-      livs = line_items.nil? ? arm.line_items_visits : arm.line_items_visits.reject{|liv| !lids.include? liv.line_item_id}
-      total += arm.indirect_costs_for_visit_based_service
+    if USE_INDIRECT_COST
+      lids = line_items.map(&:id) unless line_items.nil?
+      arms.each do |arm|
+        livs = line_items.nil? ? arm.line_items_visits : arm.line_items_visits.reject{|liv| !lids.include? liv.line_item_id}
+        total += arm.indirect_costs_for_visit_based_service
+      end
     end
 
     total
@@ -389,8 +391,10 @@ class ServiceRequest < ActiveRecord::Base
 
   def total_indirect_costs_one_time line_items=self.line_items
     total = 0.0
-    line_items.select {|x| x.service.is_one_time_fee?}.each do |li|
-      total += li.indirect_costs_for_one_time_fee
+    if USE_INDIRECT_COST
+      line_items.select {|x| x.service.is_one_time_fee?}.each do |li|
+        total += li.indirect_costs_for_one_time_fee
+      end
     end
 
     total

@@ -6,3 +6,4 @@
 - unless @study_tracker
   - if @protocol.has_one_time_fees? @service_request, @portal
     = render :partial => 'merged_one_time_fees', :locals => {:current_request => @service_request}
+= render :partial => 'merged_grand_totals', :locals => {:service_request => @service_request}

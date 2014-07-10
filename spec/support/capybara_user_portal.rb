@@ -18,7 +18,7 @@ module CapybaraUserPortal
 
     def editOriginalTest(request)
         #expects instance of ServiceRequestForComparison as input 
-        find(:xpath, "//a[@role='button']/span[@class='ui-button-text' and text()='Edit Original']").click
+        find(:xpath, "//a[@class='edit_service_request' and text()='Edit Original']").click
         wait_for_javascript_to_finish
         page.should have_xpath "//input[@id='line_item_count' and @value='#{request.services.length}']"
         goToUserPortal
@@ -55,13 +55,17 @@ module CapybaraUserPortal
         goToUserPortal
         findStudy studyName
         within accordionInfoBox do
-            first(:xpath, "//span[@class='ui-button-text' and text()='Send Notification']").click
+            first(:xpath, ".//a[contains(@class,'new-portal-notification-button')]").click
             wait_for_javascript_to_finish
         end
         first(".new_notification").click
         wait_for_javascript_to_finish
         currentBox = find(:xpath, "//div[contains(@class,'ui-dialog ') and contains(@style,'display: block;')]")
-        within currentBox do click_button("Submit") end
+        within currentBox do 
+            find("#message_body").set("This text sent to Julia.")
+            first(:xpath, ".//button/span[text()='Send']").click
+            wait_for_javascript_to_finish
+        end
         wait_for_javascript_to_finish
         click_link "logout"
         goToSparcProper
@@ -81,6 +85,7 @@ module CapybaraUserPortal
             goToUserPortal
             return
         end
+        page.should have_content "This text sent to Julia"
         find("td.subject_column").click
         wait_for_javascript_to_finish
         find("div.shown-message-body").should be_visible
@@ -90,7 +95,7 @@ module CapybaraUserPortal
         find("td.body_column").should have_text("Test Reply")
         goToUserPortal
         within accordionInfoBox do
-            first(:xpath, "//span[@class='ui-button-text' and text()='Send Notification']").click
+            first(:xpath, ".//a[contains(@class,'new-portal-notification-button')]").click
             wait_for_javascript_to_finish
         end
         first(".new_notification").click
@@ -100,7 +105,8 @@ module CapybaraUserPortal
     end
 
     def saveStudy
-        click_button "Save Study"
+        find(:xpath, "//input[@value='Save']").click
+        # click_button "Save Study"
         wait_for_javascript_to_finish
     end        
 
@@ -113,11 +119,12 @@ module CapybaraUserPortal
 
     def editStudyInformation
         #tests the edit study information page
+        wait_for_javascript_to_finish
         numerical_day = Time.now.strftime("%-d") # Today's Day
-        studyID = accordionInfoBox.find(:xpath, "./div[@class='protocol-information-body ui-corner-bottom']/ul/li[contains(text(),'Study ID:')]").text.strip[9..-1].strip
+        studyID = accordionInfoBox.find(:xpath, "./div[@class='protocol-information-body ui-corner-bottom']/div/ul/li[contains(text(),'Study ID:')]").text.strip[9..-1].strip
        
         within accordionInfoBox do
-            editInfoButton = find(:xpath, "./div[@class='protocol-information-button ui-corner-all']")
+            editInfoButton = find(:xpath, "./div/div/div[@class='protocol-information-button ui-corner-all']")
             editInfoButton.click
         end
         # it "should raise an error message if study's status is pending and no potential funding source is selected" do
@@ -134,7 +141,7 @@ module CapybaraUserPortal
         # it "should redirect to the main portal page" do
         select("Federal", :from => "study_funding_source")
         saveStudy
-        page.should have_content("Welcome!")
+        page.should have_content("Welcome")
 
         # it "should save the new short title" do
         goToEditStudy(studyID)
@@ -320,12 +327,12 @@ module CapybaraUserPortal
         #adds an authorized user to the project and checks that the user has been added.
         usersFirstName = usersName.split[0]
         if not accordionInfoBox.first(:xpath, "./div[@class='protocol-information-table']/table/tbody/tr/td[contains(text(), '#{usersFirstName}')]").nil? then
-            accordionInfoBox.first(:xpath, "./div[@class='protocol-information-table']/table/tbody/tr/td[contains(text(), '#{usersFirstName}')]/following-sibling::td/a/span[text()='Delete']").click
+            accordionInfoBox.first(:xpath, "./div[@class='protocol-information-table']/table/tbody/tr/td[contains(text(), '#{usersFirstName}')]/following-sibling::td/a[@class='delete-associated-user-button']").click
             page.driver.browser.switch_to.alert.accept
             wait_for_javascript_to_finish
         end
 
-        accordionInfoBox.find(:xpath, "./div[@class='associated-user-button ui-corner-all']").click
+        accordionInfoBox.find(:xpath, "./div[@class='associated-user-button']").click
         wait_for_javascript_to_finish
 
         addBox = find(:xpath, "//div[contains(@class,'ui-dialog') and contains(@style,'display: block;')]")

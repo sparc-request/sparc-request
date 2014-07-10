@@ -502,14 +502,14 @@ class ServiceRequestsController < ApplicationController
     # send e-mail to all folks with view and above
     service_request.protocol.project_roles.each do |project_role|
       next if project_role.project_rights == 'none'
-      Notifier.notify_user(project_role, service_request, xls, approval).deliver unless project_role.identity.email.blank?
+      Notifier.notify_user(project_role, service_request, xls, approval, current_user).deliver unless project_role.identity.email.blank?
     end
   end
 
   def send_admin_notifications(sub_service_requests, xls)
     sub_service_requests.each do |sub_service_request|
       sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-        Notifier.notify_admin(sub_service_request.service_request, submission_email.email, xls).deliver
+        Notifier.notify_admin(sub_service_request.service_request, submission_email.email, xls, current_user).deliver
       end
     end
   end
@@ -533,7 +533,7 @@ class ServiceRequestsController < ApplicationController
       attachments["request_for_grant_billing_#{service_request.id}.pdf"] = request_for_grant_billing_form
     end
 
-    Notifier.notify_service_provider(service_provider, service_request, attachments).deliver
+    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user).deliver
   end
 
   def send_epic_notification_for_user_approval(protocol)

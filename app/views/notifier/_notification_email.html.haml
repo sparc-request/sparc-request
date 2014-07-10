@@ -62,7 +62,22 @@
         ="."
     %p
       %a{:style => "color: blue; font-weight: bold;", :href => @portal_link}=@portal_text
-    
     - @service_request.service_list.map{|k, v| v[:acks]}.flatten.uniq.each do |ack|
       %p{:style => 'font-size: small;'}=ack
-
+      
+    %hr
+    %table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
+      %thead
+        %tr{:style => 'border: 1px solid black;'}
+          %td{:colspan => 2}
+            %strong= "Admin Information"
+      %tbody
+        %tr{:style => 'border: 1px solid black;'}
+          %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:triggered_by]
+          %td{:style => 'border: 1px solid black;'}= @triggered_by
+        %tr{:style => 'border: 1px solid black;'}
+          %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:sr_id]
+          %td{:style => 'border: 1px solid black;'}= @service_request.id
+        %tr{:style => 'border: 1px solid black;'}
+          %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:ssr_ids]
+          %td{:style => 'border: 1px solid black;'}= @ssr_ids

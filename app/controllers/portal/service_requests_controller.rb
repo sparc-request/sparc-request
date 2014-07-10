@@ -65,7 +65,7 @@ class Portal::ServiceRequestsController < Portal::BaseController
       render 'portal/service_requests/add_per_patient_per_visit_visit'
     else
       respond_to do |format|
-        format.js { render :status => 500, :json => clean_errors(@service_request.errors) }
+        format.js { render :status => 500, :json => clean_errors(@selected_arm.errors) }
       end
     end
   end

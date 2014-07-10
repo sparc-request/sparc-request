@@ -314,6 +314,25 @@ describe "admin fulfillment tab", :js => true do
         page.should have_content 'Service request has been saved.'
         page.should_not have_content 'Delete Visit 10'
       end
+
+      context 'removing a visit on a request that is in clinical work fulfillment' do
+
+        before :each do
+          add_visits
+          sub_service_request.update_attributes(:in_work_fulfillment => true, :status => "submitted")
+          build_clinical_data(all_subjects = true)
+          arm1.reload
+          arm2.reload
+        end
+
+        it "should not allow a visit to be deleted if any of a visit's appointments are completed" do
+          arm1.visit_groups.last.appointments.first.update_attributes(:completed_at => Date.today)
+          click_link 'Delete a Visit'
+          wait_for_javascript_to_finish
+          page.should have_content 'Completed appointment exists for this visit...'
+          page.should have_content 'Delete Visit 10'
+        end
+      end
     end
   end
 

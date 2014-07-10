@@ -56,11 +56,11 @@ class Organization < ActiveRecord::Base
 
   # Returns an array of organizations, the current organization's parents, in order of climbing
   # the tree backwards (thus if called on a core it will return => [program, provider, institution]).
-  def parents
+  def parents id_only=false
     my_parents = []
     if parent
-      my_parents << parent
-      my_parents.concat(parent.parents)
+      my_parents << (id_only ? parent.id : parent)
+      my_parents.concat(parent.parents id_only)
     end
 
     my_parents

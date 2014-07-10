@@ -75,6 +75,7 @@ class ServiceRequest < ActiveRecord::Base
   attr_accessible :submitted_at
   attr_accessible :line_items_attributes
   attr_accessible :sub_service_requests_attributes
+  attr_accessor   :previous_submitted_at
 
   accepts_nested_attributes_for :line_items
   accepts_nested_attributes_for :sub_service_requests
@@ -498,5 +499,14 @@ class ServiceRequest < ActiveRecord::Base
 
   def arms_editable?
     true #self.sub_service_requests.all?{|ssr| ssr.arms_editable?}
+  end
+
+  def audit_trail identity, start_date=self.previous_submitted_at.utc, end_date=Time.now.utc
+    line_item_audits = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{self.id}%' AND 
+                                      auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('create', 'destroy') AND
+                                      created_at BETWEEN '#{start_date}' AND '#{end_date}'")
+                                    .group_by(&:auditable_id)
+
+    {:line_items => line_item_audits}
   end
 end

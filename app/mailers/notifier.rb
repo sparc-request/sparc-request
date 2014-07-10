@@ -52,7 +52,7 @@ class Notifier < ActionMailer::Base
   def notify_admin service_request, submission_email_address, xls, user_current
     @protocol = service_request.protocol
     @service_request = service_request
-    @role == 'none'
+    @role = 'none'
     @approval_link = nil
     @portal_link = USER_PORTAL_LINK + "admin"
     @portal_text = "Administrators/Service Providers, Click Here"
@@ -69,11 +69,12 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => "no-reply@musc.edu", :subject => subject)
   end
   
-  def notify_service_provider service_provider, service_request, attachments_to_add, user_current
+  def notify_service_provider service_provider, service_request, attachments_to_add, user_current, audit_trail=nil
     @protocol = service_request.protocol
     @service_request = service_request
-    @role == 'none'
+    @role = 'none'
     @approval_link = nil
+    @audit_trail = audit_trail
 
     @portal_link = USER_PORTAL_LINK + "admin"
     @portal_text = "Administrators/Service Providers, Click Here"

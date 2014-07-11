@@ -898,7 +898,7 @@ ActiveRecord::Schema.define(:version => 20140610154654) do
     t.datetime "deleted_at"
     t.boolean  "overridden"
     t.integer  "sub_service_request_id"
-    t.float    "admin_percent_subsidy",  :default => 0.0
+    t.float    "stored_percent_subsidy", :default => 0.0
   end
 
   add_index "subsidies", ["sub_service_request_id"], :name => "index_subsidies_on_sub_service_request_id"

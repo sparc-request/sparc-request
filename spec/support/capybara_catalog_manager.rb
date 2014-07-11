@@ -118,14 +118,6 @@ module CapybaraCatalogManager
         link.click
     end
 
-    #Condition created just to circumvent a specific bug and continue testing. 
-    if orgType == "Service" and first(:xpath, "//input[@id='service_name']").nil?
-        puts "#{under} - SAY CHEESE"
-        visit page.current_url
-        sleep 20
-    end
-    #Remove above condition once bug is fixed, or test will not fail for this type of system failure.
-
   end
 
   def setAlertNameTo name

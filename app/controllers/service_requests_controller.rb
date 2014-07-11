@@ -548,7 +548,7 @@ class ServiceRequestsController < ApplicationController
       attachments["request_for_grant_billing_#{service_request.id}.pdf"] = request_for_grant_billing_form
     end
 
-    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, sub_service_request.audit_trail(current_user, service_request.previous_submitted_at.utc, Time.now.utc)).deliver
+    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, sub_service_request.audit_trail(current_user, service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc, Time.now.utc)).deliver
   end
 
   def send_epic_notification_for_user_approval(protocol)

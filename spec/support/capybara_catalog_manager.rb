@@ -85,6 +85,56 @@ module CapybaraCatalogManager
     end
   end
 
+  def isCollapsed?(under)
+    if have_xpath("//a[text()='#{under}']/preceding-sibling::ins[contains(@class,'triangle-1-se')]", :visible => true)
+        return false
+    end
+    return true
+  end
+
+  def clickCreateNew orgType, under
+    wait_for_javascript_to_finish
+    if isCollapsed? under then click_link under end
+    wait_for_javascript_to_finish
+    link = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New #{orgType}')]", :visible => true)
+    if not(link.nil?) and link.visible?
+        wait_for_javascript_to_finish
+        begin 
+            link.click
+        rescue
+            wait_for_javascript_to_finish
+            begin 
+                first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New #{orgType}')]", :visible => true).click
+            rescue
+                click_link under
+                wait_for_javascript_to_finish
+                first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New #{orgType}')]", :visible => true).click
+            end
+        end
+    else
+        click_link under
+        wait_for_javascript_to_finish
+        link = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New #{orgType}')]", :visible => true)
+        link.click
+    end
+
+    #Condition created just to circumvent a specific bug and continue testing. 
+    if orgType == "Service" and first(:xpath, "//input[@id='service_name']").nil?
+        puts "#{under} - SAY CHEESE"
+        visit page.current_url
+        sleep 20
+    end
+    #Remove above condition once bug is fixed, or test will not fail for this type of system failure.
+
+  end
+
+  def setAlertNameTo name
+    a = page.driver.browser.switch_to.alert
+    a.send_keys(name)
+    a.accept
+    click_link name
+  end
+
   def createTags
     Tag.create(:name => "ctrc") # Displays as "Nexus"
     Tag.create(:name => "required forms") # Displays as "Required forms"
@@ -112,10 +162,9 @@ module CapybaraCatalogManager
     }
     options = defaults.merge(options)
     first(:xpath, "//a[contains(text(),'Create New Institution')]").click
-    a = page.driver.browser.switch_to.alert
-    a.send_keys(name)
-    a.accept
-    click_link name
+
+    setAlertNameTo name
+    
     wait_for_javascript_to_finish
     fill_in 'institution_name', :with => name
     fill_in 'institution_abbreviation', :with => options[:abbreviation]
@@ -135,13 +184,9 @@ module CapybaraCatalogManager
     # click_link name
   end
 
-  def isCollapsed?(under)
-    if have_xpath "//a[text()='#{under}']/preceding-sibling::ins[contains(@class,'triangle-1-e')]" then return true
-    elsif have_xpath "//a[text()='#{under}']/preceding-sibling::ins[contains(@class,'triangle-1-se')]" then return false
-    else return true end
-  end
 
-  def create_new_provider(name,under, options = {})
+
+  def create_new_provider(name, under, options = {})
     defaults = {
         :abbreviation => name,
         :order => 1,
@@ -162,36 +207,10 @@ module CapybaraCatalogManager
         :tags => []
     }
     options = defaults.merge(options)
-    wait_for_javascript_to_finish
 
-    if isCollapsed? under then click_link under end
-    wait_for_javascript_to_finish
-    cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Provider')]")
-    if not(cnpLink.nil?) and cnpLink.visible?
-        wait_for_javascript_to_finish
-        begin 
-            cnpLink.click
-        rescue
-            wait_for_javascript_to_finish
-            begin 
-                first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Provider')]").click
-            rescue
-                click_link under
-                wait_for_javascript_to_finish
-                first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Provider')]").click
-            end
-        end
-    else
-        click_link under
-        wait_for_javascript_to_finish
-        cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Provider')]")
-        cnpLink.click
-    end
+    clickCreateNew "Provider", under
 
-    a = page.driver.browser.switch_to.alert
-    a.send_keys(name)
-    a.accept
-    click_link name
+    setAlertNameTo name
     wait_for_javascript_to_finish
 
     fill_in 'provider_name', :with => name
@@ -248,7 +267,7 @@ module CapybaraCatalogManager
 
 
 
-  def create_new_program(name,under, options = {})
+  def create_new_program(name, under, options = {})
     defaults = {
         :abbreviation => name,
         :order => 1,
@@ -268,35 +287,10 @@ module CapybaraCatalogManager
         :tags => []
     }
     options = defaults.merge(options)
-    wait_for_javascript_to_finish
-    if isCollapsed? under then click_link under end
-    wait_for_javascript_to_finish
-    cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Program')]")
-    if not(cnpLink.nil?) and cnpLink.visible?
-        wait_for_javascript_to_finish
-        begin 
-            cnpLink.click
-        rescue 
-            wait_for_javascript_to_finish
-            begin 
-                first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Program')]").click
-            rescue
-                click_link under
-                wait_for_javascript_to_finish
-                first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Program')]").click
-            end
-        end
-    else
-        click_link under
-        wait_for_javascript_to_finish
-        cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Program')]")
-        cnpLink.click
-    end
 
-    a = page.driver.browser.switch_to.alert
-    a.send_keys(name)
-    a.accept
-    click_link name
+    clickCreateNew "Program", under
+
+    setAlertNameTo name
     wait_for_javascript_to_finish
 
     fill_in 'program_name', :with => name
@@ -352,7 +346,7 @@ module CapybaraCatalogManager
 
 
 
-  def create_new_core(name,under, options = {})
+  def create_new_core(name, under, options = {})
     defaults = {
         :abbreviation => name,
         :is_available => true,
@@ -361,37 +355,12 @@ module CapybaraCatalogManager
         :tags => []
     }
     options = defaults.merge(options)
+
+    clickCreateNew "Core", under
+
+    setAlertNameTo name
     wait_for_javascript_to_finish
 
-    if isCollapsed? under then click_link under end
-    wait_for_javascript_to_finish
-    cncLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Core')]")
-    if not(cncLink.nil?) and cncLink.visible? 
-        wait_for_javascript_to_finish
-        begin 
-            cncLink.click
-        rescue 
-            wait_for_javascript_to_finish
-            begin 
-                first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Core')]").click
-            rescue
-                click_link under
-                wait_for_javascript_to_finish
-                first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Core')]").click
-            end
-        end
-    else
-        click_link under
-        wait_for_javascript_to_finish
-        cncLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Core')]")
-        cncLink.click
-    end
-
-    a = page.driver.browser.switch_to.alert
-    a.send_keys(name)
-    a.accept
-    click_link name
-    wait_for_javascript_to_finish
     fill_in 'core_name', :with => name
     fill_in 'core_abbreviation', :with => options[:abbreviation]
     fill_in 'core_order', :with => options[:order]
@@ -437,33 +406,13 @@ module CapybaraCatalogManager
         :tags => []
     }
     options = defaults.merge(options)
-    wait_for_javascript_to_finish
-    if isCollapsed? under then click_link under end
-    wait_for_javascript_to_finish
-    cnsLink = first(:xpath, "//a[contains(text(),'#{under}')]/following-sibling::ul//a[contains(text(),'Create New Service')]")
-    if not(cnsLink.nil?) and cnsLink.visible? 
-        wait_for_javascript_to_finish
-        begin 
-            cnsLink.click
-        rescue
-            wait_for_javascript_to_finish
-            begin 
-                first(:xpath, "//a[contains(text(),'#{under}')]/following-sibling::ul//a[contains(text(),'Create New Service')]").click
-            rescue
-                click_link under
-                wait_for_javascript_to_finish
-                first(:xpath, "//a[contains(text(),'#{under}')]/following-sibling::ul//a[contains(text(),'Create New Service')]").click
-            end
-        end
-    else
-        click_link under
-        wait_for_javascript_to_finish
-        cnsLink = first(:xpath, "//a[contains(text(),'#{under}')]/following-sibling::ul//a[contains(text(),'Create New Service')]")
-        cnsLink.click
-    end
+
+    clickCreateNew "Service", under
     wait_for_javascript_to_finish
 
-    wait_until(20){first(:xpath, "//td/input[@id='service_name']")}
+
+
+    # wait_until(20){first(:xpath, "//td/input[@id='service_name']", :visible => true)}
     fill_in 'service_name', :with => name
     fill_in 'service_abbreviation', :with => options[:abbreviation]
     fill_in 'service_order', :with => options[:order]

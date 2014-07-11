@@ -1,0 +1,6 @@
+- if @sent.empty? and @failed.empty?
+  Epic Queue is empty, nothing to report.
+- else
+  = "Sent => #{@sent.inspect}"
+  %br
+  = "Failed => #{@failed.inspect}"

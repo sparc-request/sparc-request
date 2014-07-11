@@ -206,6 +206,16 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     render :json => new_rate.to_json
   end
 
+  def verify_parent_service_provider
+    if params[:parent_object_type] == 'program'
+      @org = Program.find params[:parent_id]
+    elsif params[:parent_object_type] == 'core'
+      @org = Core.find params[:parent_id]
+    end
+
+    render :text => @org.all_service_providers(false).size
+  end
+
   private
 
   

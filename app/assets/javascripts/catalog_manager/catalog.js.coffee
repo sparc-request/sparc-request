@@ -145,15 +145,19 @@ $ ->
 
       # create a service
       if /Create New Service/.test click_text
-        number_of_providers = node_ref.rslt.obj.context.attributes['data-service-providers-size'].nodeValue
-        if number_of_providers == '0'
-          alert("There needs to be at least one service provider on a parent organization to create a new service.")
-        else
-          parent_id = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('cid')
-          parent_object_type = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('object_type')
-          $.get("/catalog_manager/services/new", {parent_id: parent_id, parent_object_type: parent_object_type},
-                (data)-> $('#details').html(data) )
-
+        parent_id = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('cid')
+        parent_object_type = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('object_type')
+        
+        $.get "/catalog_manager/services/verify_parent_service_provider", {parent_id: parent_id, parent_object_type: parent_object_type}, (data)-> 
+          service_providers_size = data
+          
+          if service_providers_size > 0
+            $.get("/catalog_manager/services/new", {parent_id: parent_id, parent_object_type: parent_object_type}, (data)-> 
+              $('#details').html(data) )
+          else
+            alert("There needs to be at least one service provider on a parent organization to create a new service.")
+        
+        
     return unless node_ref.rslt.obj.context.attributes['object_type']
     
     $('#processing_request').dialog('open')

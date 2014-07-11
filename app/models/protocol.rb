@@ -158,6 +158,11 @@ class Protocol < ActiveRecord::Base
     "#{self.id} - #{self.short_title}"
   end
 
+  def epic_title
+    epic_title = "#{self.short_title} - #{self.title}"
+    epic_title.truncate(195)
+  end
+
   def display_funding_source_value
     if funding_status == "funded"
       if funding_source == "internal"
@@ -315,6 +320,30 @@ class Protocol < ActiveRecord::Base
         end
       end
     end
+  end
+
+  def direct_cost_total service_request
+    total = 0
+    self.service_requests.each do |sr|
+      next if ['first_draft', 'draft'].include?(sr.status) && sr != service_request
+      total += sr.direct_cost_total
+    end
+    return total
+  end
+
+  def indirect_cost_total service_request
+    total = 0
+    if USE_INDIRECT_COST
+      self.service_requests.each do |sr|
+        next if ['first_draft', 'draft'].include?(sr.status) && sr != service_request
+        total += sr.indirect_cost_total
+      end
+    end
+    return total
+  end
+
+  def grand_total service_request
+    return direct_cost_total(service_request) + indirect_cost_total(service_request)
   end
 
 end

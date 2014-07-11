@@ -35,7 +35,8 @@ namespace :epic do
             else
               puts "#{p.short_title} (#{p.id}) sent to Epic"
               sent << p.id
-              EpicQueue.find_by_protocol_id(p.id).destroy
+              q = EpicQueue.find_by_protocol_id(p.id) rescue false
+              q.destroy if q
             end
           rescue Exception => e
             failed << p.id

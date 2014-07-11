@@ -1,6 +1,6 @@
 module CatalogManager::ServicesHelper
   def display_service_user_rights user, form_name, organization
-    if user.can_edit_entity? organization
+    if user.can_edit_entity? organization, true
       render form_name
     else
       content_tag(:h1, "Sorry, you are not allowed to access this page.") +

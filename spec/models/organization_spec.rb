@@ -134,6 +134,29 @@ describe 'organization' do
       end
     end
 
+    describe 'service providers for services' do
+
+      let!(:provider_organization)       { FactoryGirl.create(:provider) }
+      let!(:program_organization)        { FactoryGirl.create(:program, parent_id: provider_organization.id) }
+      let!(:core_organization)           { FactoryGirl.create(:core, parent_id: program_organization.id) }
+      let!(:program_service)             { FactoryGirl.create(:service, organization_id: program_organization.id) }
+      let!(:core_service)                { FactoryGirl.create(:service, organization_id: core_organization.id) }
+
+      it "should return true if a service has a service provider in the tree" do
+        service_provider = FactoryGirl.create(:service_provider, organization_id: provider_organization.id)
+        program_organization.service_providers_for_child_services?.should eq(true)
+      end
+
+      it "should return false if a service does not have a service provider in the tree" do
+        program_organization.service_providers_for_child_services?.should eq(false)
+      end
+
+      it "should return false if there is a service provider, but it's only on the current organization" do
+        service_provider = FactoryGirl.create(:service_provider, organization_id: program_organization.id)
+        program_organization.service_providers_for_child_services?.should eq(false)
+      end
+    end
+
     describe 'all child services' do
 
       let!(:service2) { FactoryGirl.create(:service, organization_id: core2.id) }

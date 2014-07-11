@@ -22,6 +22,7 @@ begin
   USE_NEWS_FEED                 = application_config['use_news_feed']
   GOOGLE_USERNAME               = application_config['google_username']
   GOOGLE_PASSWORD               = application_config['google_password']
+  SEND_AUTHORIZED_USER_EMAILS   = application_config['send_authorized_user_emails']
 
   if application_config.include?('wkhtmltopdf_location')
     # Setup PDFKit
@@ -65,6 +66,7 @@ begin
   DEFAULT_STATUSES               = config['default_statuses']
   SUBJECT_ETHNICITIES            = config['subject_ethnicities']
   SUBJECT_GENDERS                = config['subject_genders']
+  AUDIT_ACTIONS                  = config['audit_actions']
 rescue
   raise "constants.yml not found"
 end

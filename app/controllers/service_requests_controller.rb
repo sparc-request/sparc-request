@@ -46,6 +46,10 @@ class ServiceRequestsController < ApplicationController
       @service_request.protocol.update_attributes(params[:project])
     end
 
+    if params[:current_location] == 'service_details'
+      @service_request.reload
+    end
+
     # Save/Update any document info we may have
     document_save_update(errors)
 
@@ -96,7 +100,7 @@ class ServiceRequestsController < ApplicationController
     end
 
     @ctrc_services = false
-    if session[:errors]
+    if session[:errors] and session[:errors] != []
       if session[:errors][:ctrc_services]
         @ctrc_services = true
         @ssr_id = @service_request.protocol.find_sub_service_request_with_ctrc(@service_request.id)
@@ -161,7 +165,13 @@ class ServiceRequestsController < ApplicationController
     @service_request.sub_service_requests.each do |ssr|
       if ssr.subsidy
         # we already have a subsidy; add it to the list
-        @subsidies << ssr.subsidy
+        subsidy = ssr.subsidy
+        unless subsidy.stored_percent_subsidy.nil?
+          dct = subsidy.sub_service_request.direct_cost_total
+          subsidy.update_attribute(:pi_contribution, Subsidy.calculate_pi_contribution(subsidy.stored_percent_subsidy, dct))
+        end
+
+        @subsidies << subsidy
       elsif ssr.eligible_for_subsidy?
         # we don't have a subsidy yet; add it to the list but don't save
         # it yet
@@ -189,7 +199,8 @@ class ServiceRequestsController < ApplicationController
     page = params[:page] if params[:page]
     session[:service_calendar_pages] = params[:pages] if params[:pages]
     session[:service_calendar_pages][arm_id] = page if page && arm_id
-
+    @thead_class = 'red-provider'
+    @portal = false
     @service_list = @service_request.service_list
     @protocol = @service_request.protocol
     
@@ -222,6 +233,7 @@ class ServiceRequestsController < ApplicationController
 
   def confirmation
     @service_request.update_status('submitted')
+    @service_request.previous_submitted_at = @service_request.submitted_at
     @service_request.update_attribute(:submitted_at, Time.now)
     @service_request.ensure_ssr_ids
     @service_request.update_arm_minimum_counts
@@ -281,6 +293,8 @@ class ServiceRequestsController < ApplicationController
   def refresh_service_calendar
     arm_id = params[:arm_id].to_s if params[:arm_id]
     @arm = Arm.find arm_id if arm_id
+    @portal = params[:portal] if params[:portal]
+    @thead_class = @portal == 'true' ? 'ui-widget-header' : 'red-provider'
     page = params[:page] if params[:page]
     session[:service_calendar_pages] = params[:pages] if params[:pages]
     session[:service_calendar_pages][arm_id] = page if page && arm_id
@@ -317,6 +331,7 @@ class ServiceRequestsController < ApplicationController
         ssr = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
         unless @service_request.status.nil? and !ssr.status.nil?
           ssr.update_attribute(:status, @service_request.status) if ['first_draft', 'draft', nil].include?(ssr.status)
+          @service_request.ensure_ssr_ids unless ['first_draft', 'draft'].include?(@service_request.status)
         end
 
         line_items.each do |li|
@@ -487,7 +502,7 @@ class ServiceRequestsController < ApplicationController
     end
 
     send_admin_notifications(sub_service_requests, xls)
-    send_service_provider_notifications(sub_service_requests, xls)
+    send_service_provider_notifications(service_request, sub_service_requests, xls)
   end
 
   def send_user_notifications(service_request, xls)
@@ -502,23 +517,22 @@ class ServiceRequestsController < ApplicationController
     # send e-mail to all folks with view and above
     service_request.protocol.project_roles.each do |project_role|
       next if project_role.project_rights == 'none'
-      Notifier.notify_user(project_role, service_request, xls, approval).deliver unless project_role.identity.email.blank?
+      Notifier.notify_user(project_role, service_request, xls, approval, current_user).deliver unless project_role.identity.email.blank?
     end
   end
 
   def send_admin_notifications(sub_service_requests, xls)
     sub_service_requests.each do |sub_service_request|
       sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-        Notifier.notify_admin(sub_service_request.service_request, submission_email.email, xls).deliver
+        Notifier.notify_admin(sub_service_request.service_request, submission_email.email, xls, current_user).deliver
       end
     end
   end
 
-  def send_service_provider_notifications(sub_service_requests, xls)
+  def send_service_provider_notifications(service_request, sub_service_requests, xls)
     sub_service_requests.each do |sub_service_request|
-      next if QUEUE_EPIC and sub_service_request.line_items.any? { |li| li.should_push_to_epic? }
       sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-        send_individual_service_provider_notification(sub_service_request.service_request, sub_service_request, service_provider, xls)
+        send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls)
       end
     end
   end
@@ -534,7 +548,7 @@ class ServiceRequestsController < ApplicationController
       attachments["request_for_grant_billing_#{service_request.id}.pdf"] = request_for_grant_billing_form
     end
 
-    Notifier.notify_service_provider(service_provider, service_request, attachments).deliver
+    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, sub_service_request.audit_trail(current_user, service_request.previous_submitted_at.utc, Time.now.utc)).deliver
   end
 
   def send_epic_notification_for_user_approval(protocol)

@@ -40,6 +40,7 @@ describe "visit schedule", :js => true do
         select("#2: Visit 2", from: "visit")
         wait_for_javascript_to_finish
         find("#visit").should have_value("#2: Visit 2")
+        click_button "Save Appointments"
       end
     end
 
@@ -47,6 +48,7 @@ describe "visit schedule", :js => true do
 
       it "should return the user to clinical fulfillment" do
         click_on "Return to Clinical Work Fulfillment"
+        wait_for_javascript_to_finish
         page.should have_content("Add a subject")
       end
     end
@@ -68,6 +70,7 @@ describe "visit schedule", :js => true do
         retry_until { first("#notes").set("Messages all up in this place.") }
         first('.add_comment_link').click
         page.should have_content("Messages all up in this place.")
+        click_button "Save Appointments"
       end
     end
 
@@ -116,6 +119,7 @@ describe "visit schedule", :js => true do
           find(:css, ".procedure_box", :visible => true).set(false)
           find(:css, ".procedure_box", :visible => true).set(true)
           find(".procedure_total_cell", :visible => true).should have_text("$150.00")
+          click_button "Save Appointments"
         end
       end
     end

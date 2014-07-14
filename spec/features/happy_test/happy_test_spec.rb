@@ -26,14 +26,14 @@ describe 'A Happy Test' do
     create_new_service 'Service of Visibility','Core of Invisibility'
     create_new_service 'Linked Service of Visibility','Core of Invisibility',:linked => {:on? => true, :service => 'Service of Visibility', :required? => true, :quantity? => true, :quantityNum => 5}
 
-    create_new_institution 'Medical University of South Carolina', {:abbreviation => 'MUSC', :tags => ['Clinical work fulfillment']}
-    create_new_provider 'South Carolina Clinical and Translational Institute (SCTR)', 'Medical University of South Carolina', {:abbreviation => 'SCTR1', :tags => ['Clinical work fulfillment']}
-    create_new_program 'Office of Biomedical Informatics', 'South Carolina Clinical and Translational Institute (SCTR)', {:abbreviation => 'Informatics', :tags => ['Clinical work fulfillment']}
-    create_new_program 'Clinical and Translational Research Center (CTRC)', 'South Carolina Clinical and Translational Institute (SCTR)', {:abbreviation => 'Informatics', :process_ssrs => true, :tags => ['Clinical work fulfillment','Nexus']}
-    create_new_core 'Clinical Data Warehouse', 'Office of Biomedical Informatics', {:tags => ['Clinical work fulfillment']}
-    create_new_core 'Nursing Services', 'Clinical and Translational Research Center (CTRC)', {:tags => ['Clinical work fulfillment']}
-    create_new_service 'MUSC Research Data Request (CDW)', 'Clinical Data Warehouse', {:otf => true, :unit_type => 'Per Query', :unit_factor => 1, :rate => '2.00', :unit_minimum => 1, :tags => ['Clinical work fulfillment']}
-    create_new_service 'Breast Milk Collection', 'Nursing Services', {:otf => false, :unit_type => 'Per patient/visit', :unit_factor => 1, :rate => '6.36', :unit_minimum => 1, :tags => ['Clinical work fulfillment']}
+    create_new_institution 'Medical University of South Carolina', {:abbreviation => 'MUSC'}
+    create_new_provider 'South Carolina Clinical and Translational Institute (SCTR)', 'Medical University of South Carolina', {:abbreviation => 'SCTR1'}
+    create_new_program 'Office of Biomedical Informatics', 'South Carolina Clinical and Translational Institute (SCTR)', {:abbreviation => 'Informatics'}
+    create_new_program 'Clinical and Translational Research Center (CTRC)', 'South Carolina Clinical and Translational Institute (SCTR)', {:abbreviation => 'Informatics', :process_ssrs => true, :tags => ['Clinical work fulfillment', 'Nexus']}
+    create_new_core 'Clinical Data Warehouse', 'Office of Biomedical Informatics'
+    create_new_core 'Nursing Services', 'Clinical and Translational Research Center (CTRC)', :tags => ['Clinical work fulfillment']
+    create_new_service 'MUSC Research Data Request (CDW)', 'Clinical Data Warehouse', {:otf => true, :unit_type => 'Per Query', :unit_factor => 1, :rate => '2.00', :unit_minimum => 1}
+    create_new_service 'Breast Milk Collection', 'Nursing Services', {:otf => false, :unit_type => 'Per patient/visit', :unit_factor => 1, :rate => '6.36', :unit_minimum => 1}
     visit root_path
 
     #**Check visibility conditions**#
@@ -69,6 +69,29 @@ describe 'A Happy Test' do
     #**END Check linked service adding END**#
 
 
+    def happyTest(request)
+        visit root_path
+        submitServiceRequestPage (request)
+        selectStudyPage(request)
+        selectDatesAndArmsPage(request)
+        serviceCalendarPage(request)
+        documentsPage
+        reviewPage(request)
+        submissionConfirmationPage
+        goToSparcProper
+
+        if request.otfServices.length!=0 then 
+            adminPortal(request.study, request.otfServices[0]) 
+        end
+
+        if request.ppServices.length!=0 then 
+            adminPortal(request.study, request.ppServices[0]) 
+            clinicalWorkFulfillment(request.study, request.ppServices[0])
+        end
+
+        userPortal(request)
+    end
+
     service1 = ServiceWithAddress.new(
         :instit => "Medical University of South Carolina",
         :prov => "South Carolina Clinical and Translational Institute (SCTR)",
@@ -103,27 +126,7 @@ describe 'A Happy Test' do
 
     request = ServiceRequestForComparison.new(services,arms,study)
 
-    submitServiceRequestPage (request)
-    selectStudyPage(request)
-    selectDatesAndArmsPage(request)
-    serviceCalendarPage(request)
-    documentsPage
-    reviewPage(request)
-    submissionConfirmationPage
-    goToSparcProper
-
-    if request.otfServices.length!=0 then 
-        adminPortal(request.study, request.otfServices[0]) 
-    end
-
-    if request.ppServices.length!=0 then 
-        adminPortal(request.study, request.ppServices[0]) 
-        clinicalWorkFulfillment(request.study, request.ppServices[0])
-    end
-
-    userPortal(request)
-    # sleep 2400  
-
+    happyTest(request) 
   end
 
 end

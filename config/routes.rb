@@ -126,7 +126,11 @@ SparcRails::Application.routes.draw do
     resources :providers
     resources :programs
     resources :cores
-    resources :services
+    resources :services do
+      collection do
+        get :verify_parent_service_provider
+      end
+    end
 
     match 'identities/associate_with_org_unit' => 'identities#associate_with_org_unit'
     match 'identities/disassociate_with_org_unit' => 'identities#disassociate_with_org_unit'

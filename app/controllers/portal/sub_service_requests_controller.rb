@@ -262,12 +262,12 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       # notify users with view rights or above of deletion
       @sub_service_request.service_request.protocol.project_roles.each do |project_role|
         next if project_role.project_rights == 'none'
-        Notifier.sub_service_request_deleted(project_role.identity, @sub_service_request).deliver unless project_role.identity.email.blank?
+        Notifier.sub_service_request_deleted(project_role.identity, @sub_service_request, current_user).deliver unless project_role.identity.email.blank?
       end
 
       # notify service providers
       @sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-        Notifier.sub_service_request_deleted(service_provider.identity, @sub_service_request).deliver
+        Notifier.sub_service_request_deleted(service_provider.identity, @sub_service_request, current_user).deliver
       end
     end
 

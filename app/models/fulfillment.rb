@@ -17,8 +17,8 @@ class Fulfillment < ActiveRecord::Base
   default_scope :order => 'fulfillments.id ASC'
 
   QUANTITY_TYPES = ['Min', 'Hours', 'Days', 'Each']
-  CWF_QUANTITY_TYPES = ['Qty Type', 'Each', 'Sample', 'Aliquot', '3kg unit']
-  UNIT_TYPES = ['N/A', 'Qty Type', 'Each', 'Sample', 'Aliquot', '3kg unit']
+  CWF_QUANTITY_TYPES = ['Each', 'Sample', 'Aliquot', '3kg unit']
+  UNIT_TYPES = ['N/A', 'Each', 'Sample', 'Aliquot', '3kg unit']
 
   def formatted_date
     format_date self.date

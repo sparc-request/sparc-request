@@ -29,7 +29,7 @@ module Portal::SubServiceRequestsHelper
 
   def calculate_admin_pi_contribution
     if @sub_service_request && @subsidy
-      pi_contribution = @sub_service_request.subsidy.fix_pi_contribution(@subsidy.admin_percent_subsidy)
+      pi_contribution = @sub_service_request.subsidy.fix_pi_contribution(@subsidy.stored_percent_subsidy)
     end
 
     pi_contribution

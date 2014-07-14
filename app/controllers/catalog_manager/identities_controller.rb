@@ -65,8 +65,20 @@ class CatalogManager::IdentitiesController < CatalogManager::AppController
 
     if rel_type == 'service_provider_organizational_unit'
       service_provider = ServiceProvider.find params["relationship"]
-      service_provider.destroy
+      @service_provider_error_message = nil
+      
+      # we need to have more than just this one service provider in the tree in order to delete
+      # if we have services we only need to verify that a service provider exists above us
+      # otherwise we look in the entire tree for at least one service provider
+      if (oe.services.empty? and oe.service_providers_for_child_services?) or (oe.all_service_providers(false).size > 1)
+        service_provider.destroy
+        oe.reload
+      else
+        @service_provider_error_message = I18n.t("organization_form.service_provider_required_message") 
+      end
+      
       render :partial => 'catalog_manager/shared/service_providers', :locals => {:entity => oe}
+
     elsif rel_type == 'super_user_organizational_unit'
       super_user = SuperUser.find params["relationship"]
       super_user.destroy

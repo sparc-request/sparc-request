@@ -73,8 +73,9 @@ module CapybaraAdminPortal
         #that string will appear in one of the responses as well. 
         #types searchText into search box then if a response exists with the searchText in it,
         #clicks on that response.
+        wait_for_javascript_to_finish
         if upBoolean then searchBox = find(:xpath, "//input[@id='search_box']")
-        else searchBox = find(:xpath, "//input[@class='search-all-service-requests ui-autocomplete-input']") end 
+        else searchBox = find(:xpath, "//input[contains(@class,'search-all-service-requests')]") end 
         searchBox.set(searchText)
         wait_for_javascript_to_finish
         response = first(:xpath, "//ul/li[@role='presentation']/a[contains(text(),'#{searchText}')]")
@@ -240,6 +241,7 @@ module CapybaraAdminPortal
 
     def checkTabsAP
         #runs through each tab
+        wait_for_javascript_to_finish
         switchTabTo 'Project/Study Information'
         wait_for_javascript_to_finish
 

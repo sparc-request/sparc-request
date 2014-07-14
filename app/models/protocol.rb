@@ -322,4 +322,28 @@ class Protocol < ActiveRecord::Base
     end
   end
 
+  def direct_cost_total service_request
+    total = 0
+    self.service_requests.each do |sr|
+      next if ['first_draft', 'draft'].include?(sr.status) && sr != service_request
+      total += sr.direct_cost_total
+    end
+    return total
+  end
+
+  def indirect_cost_total service_request
+    total = 0
+    if USE_INDIRECT_COST
+      self.service_requests.each do |sr|
+        next if ['first_draft', 'draft'].include?(sr.status) && sr != service_request
+        total += sr.indirect_cost_total
+      end
+    end
+    return total
+  end
+
+  def grand_total service_request
+    return direct_cost_total(service_request) + indirect_cost_total(service_request)
+  end
+
 end

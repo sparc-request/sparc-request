@@ -3,14 +3,13 @@ module CapybaraCatalogManager
   def add_service_provider(id="leonarjp")
     find(:xpath, "//div[text()='User Rights']").click
     wait_for_javascript_to_finish
-    sleep 2
     fill_in "new_sp", :with => "#{id}"
-    wait_for_javascript_to_finish
-    response = wait_until{first(:xpath, "//a[contains(text(),'#{id}') and contains(text(),'@musc.edu')]")}
-    if not response.nil? then response.click 
-    else first(:xpath, "//a[contains(text(),'#{id}') and contains(text(),'@musc.edu')]").click end
-    wait_for_javascript_to_finish
-
+    sleep 2
+    response = first(:xpath, "//a[contains(text(),'#{id}') and contains(text(),'@musc.edu')]")
+    if response.nil? or not(response.visible?)
+        wait_for_javascript_to_finish
+        first(:xpath, "//a[contains(text(),'#{id}') and contains(text(),'@musc.edu')]").click 
+    else response.click end
     first("#save_button").click
     wait_for_javascript_to_finish
   end
@@ -38,11 +37,52 @@ module CapybaraCatalogManager
     end
 
     fill_in "new_cp", :with => "Julia"
-    wait_for_javascript_to_finish
-    response = wait_until{first(:xpath, "//a[contains(text(),'Julia') and contains(text(),'@musc.edu')]")}
-    if not response.nil? then response.click 
-    else first(:xpath, "//a[contains(text(),'Julia') and contains(text(),'@musc.edu')]").click end
+    sleep 2
+    response = first(:xpath, "//a[contains(text(),'Julia') and contains(text(),'@musc.edu')]")
+    if not(response.nil?) and response.visible? then response.click
+    else
+        sleep 1
+        wait_for_javascript_to_finish
+        first(:xpath, "//a[contains(text(),'Julia') and contains(text(),'@musc.edu')]").click
+    end
+    # if response.nil? or not(response.visible?) 
+        # wait_for_javascript_to_finish
+        # first(:xpath, "//a[contains(text(),'Julia') and contains(text(),'@musc.edu')]").click
+    # else response.click end
     wait_for_javascript_to_finish   
+  end
+
+  def subsidyInfo(org='provider')   
+    #Subsidy Information
+    first(:xpath, "//input[@id='#{org}_subsidy_map_attributes_max_percentage']").set("50") #max percentage
+    first(:xpath, "//input[@id='#{org}_subsidy_map_attributes_max_dollar_cap']").set("500") #max dollar cap
+    first(:xpath, "//select[@class='new_excluded_funding_source']/option[text()='Federal']").select_option #exclude federal
+    first(:xpath, "//a[@class='add_new_excluded_funding_source btn']").click #click exclude button
+    wait_for_javascript_to_finish
+    page.should have_xpath "//ul[@class='excluded_funding_sources']/li[text()='Federal']" #should have Federal excluded
+  end
+
+  def autoPriceAdjust
+    #Increase/Decrease Rates
+    first(:xpath, "//input[@class='increase_decrease_rates']").click
+    wait_for_javascript_to_finish
+    numerical_day = Time.now.strftime("%-d") # Today's Day
+    currentBox = find(:xpath, "//div[contains(@class,'ui-dialog ') and contains(@style,'display: block;')]")
+    within currentBox do
+        first(:xpath, ".//input[contains(@class, 'percent_of_change')]").set("20") #percent change
+        first(:xpath, ".//input[@display='display_date']").click #display date
+        wait_for_javascript_to_finish
+        # find(:xpath, "//div/table/tbody/tr/td[@data-handler='selectDay']/a[text()='#{numerical_day}']").click
+        page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } #today
+        wait_for_javascript_to_finish
+        first(:xpath, ".//input[@display='effective_date']").click #effective date
+        wait_for_javascript_to_finish
+        # find(:xpath, "//div/table/tbody/tr/td[@data-handler='selectDay']/a[text()='#{numerical_day}']").click
+        page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } #today
+        wait_for_javascript_to_finish     
+        first(:xpath, ".//span[@class='ui-button-text' and text()='Submit']").click   
+        wait_for_javascript_to_finish     
+    end
   end
 
   def createTags
@@ -92,10 +132,14 @@ module CapybaraCatalogManager
 
     first(:xpath, "//input[@id='save_button']").click
     wait_for_javascript_to_finish
-    click_link name
+    # click_link name
   end
 
-
+  def isCollapsed?(under)
+    if have_xpath "//a[text()='#{under}']/preceding-sibling::ins[contains(@class,'triangle-1-e')]" then return true
+    elsif have_xpath "//a[text()='#{under}']/preceding-sibling::ins[contains(@class,'triangle-1-se')]" then return false
+    else return true end
+  end
 
   def create_new_provider(name,under, options = {})
     defaults = {
@@ -119,16 +163,28 @@ module CapybaraCatalogManager
     }
     options = defaults.merge(options)
     wait_for_javascript_to_finish
+
+    if isCollapsed? under then click_link under end
+    wait_for_javascript_to_finish
     cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Provider')]")
-    if cnpLink.visible? then
-        begin
+    if not(cnpLink.nil?) and cnpLink.visible?
+        wait_for_javascript_to_finish
+        begin 
             cnpLink.click
         rescue
-            click_link under
-            cnpLink.click
+            wait_for_javascript_to_finish
+            begin 
+                first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Provider')]").click
+            rescue
+                click_link under
+                wait_for_javascript_to_finish
+                first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Provider')]").click
+            end
         end
     else
         click_link under
+        wait_for_javascript_to_finish
+        cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Provider')]")
         cnpLink.click
     end
 
@@ -160,8 +216,12 @@ module CapybaraCatalogManager
     stDay = (options[:display_date]).strftime("%-d") # Today's Day
     wait_for_javascript_to_finish
     first(:xpath, "//th[contains(text(),'Display Date')]/following-sibling::td/input[@type='text']").click
+    wait_for_javascript_to_finish
+    # find(:xpath, "//div/table/tbody/tr/td[@data-handler='selectDay']/a[text()='#{stDay}']").click
     page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
     first(:xpath, "//th[contains(text(),'Effective Date')]/following-sibling::td/input[@type='text']").click
+    wait_for_javascript_to_finish
+    # find(:xpath, "//div/table/tbody/tr/td[@data-handler='selectDay']/a[text()='#{stDay}']").click
     page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
     first(:xpath, "//input[@id='pricing_setups_blank_pricing_setup_federal']").set(options[:federal])
     first(:xpath, "//input[@id='pricing_setups_blank_pricing_setup_corporate']").set(options[:corporate])
@@ -175,10 +235,14 @@ module CapybaraCatalogManager
     first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_investigator_rate_type']/option[contains(text(),'#{options[:investigator_rate_type]}')]").select_option
     first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_internal_rate_type']/option[contains(text(),'#{options[:internal_rate_type]}')]").select_option
     
+    autoPriceAdjust
+
+    subsidyInfo
+
     add_service_provider "Julia"
     first(:xpath, "//input[@id='save_button']").click
     wait_for_javascript_to_finish
-    click_link name
+    # click_link name
 
   end
 
@@ -205,16 +269,27 @@ module CapybaraCatalogManager
     }
     options = defaults.merge(options)
     wait_for_javascript_to_finish
+    if isCollapsed? under then click_link under end
+    wait_for_javascript_to_finish
     cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Program')]")
-    if cnpLink.visible? then
-        begin
+    if not(cnpLink.nil?) and cnpLink.visible?
+        wait_for_javascript_to_finish
+        begin 
             cnpLink.click
-        rescue
-            click_link under
-            cnpLink.click
+        rescue 
+            wait_for_javascript_to_finish
+            begin 
+                first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Program')]").click
+            rescue
+                click_link under
+                wait_for_javascript_to_finish
+                first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Program')]").click
+            end
         end
     else
         click_link under
+        wait_for_javascript_to_finish
+        cnpLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Program')]")
         cnpLink.click
     end
 
@@ -246,8 +321,12 @@ module CapybaraCatalogManager
     first(:xpath, "//a[@href='#' and contains(text(),'Effective on')]").click
     stDay = (options[:display_date]).strftime("%-d") # Today's Day
     first(:xpath, "//th[contains(text(),'Display Date')]/following-sibling::td/input[@type='text']").click
+    wait_for_javascript_to_finish
+    # find(:xpath, "//div/table/tbody/tr/td[@data-handler='selectDay']/a[text()='#{stDay}']").click
     page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
     first(:xpath, "//th[contains(text(),'Effective Date')]/following-sibling::td/input[@type='text']").click
+    wait_for_javascript_to_finish
+    # find(:xpath, "//div/table/tbody/tr/td[@data-handler='selectDay']/a[text()='#{stDay}']").click
     page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
     first(:xpath, "//input[@id='pricing_setups_blank_pricing_setup_federal']").set(options[:federal])
     first(:xpath, "//input[@id='pricing_setups_blank_pricing_setup_corporate']").set(options[:corporate])
@@ -260,9 +339,15 @@ module CapybaraCatalogManager
     first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_industry_rate_type']/option[contains(text(),'#{options[:industry_rate_type]}')]").select_option
     first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_investigator_rate_type']/option[contains(text(),'#{options[:investigator_rate_type]}')]").select_option
     first(:xpath, "//select[@id='pricing_setups_blank_pricing_setup_internal_rate_type']/option[contains(text(),'#{options[:internal_rate_type]}')]").select_option
+    
+    autoPriceAdjust
+
+    subsidyInfo 'program'
+
+    add_service_provider "Julia"
     first(:xpath, "//input[@id='save_button']").click
     wait_for_javascript_to_finish
-    click_link name
+    # click_link name
   end    
 
 
@@ -277,16 +362,28 @@ module CapybaraCatalogManager
     }
     options = defaults.merge(options)
     wait_for_javascript_to_finish
+
+    if isCollapsed? under then click_link under end
+    wait_for_javascript_to_finish
     cncLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Core')]")
-    if cncLink.visible? then
-        begin
+    if not(cncLink.nil?) and cncLink.visible? 
+        wait_for_javascript_to_finish
+        begin 
             cncLink.click
-        rescue
-            click_link under
-            cncLink.click
+        rescue 
+            wait_for_javascript_to_finish
+            begin 
+                first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Core')]").click
+            rescue
+                click_link under
+                wait_for_javascript_to_finish
+                first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Core')]").click
+            end
         end
     else
         click_link under
+        wait_for_javascript_to_finish
+        cncLink = first(:xpath, "//a[text()='#{under}']/following-sibling::ul//a[contains(text(),'Create New Core')]")
         cncLink.click
     end
 
@@ -311,9 +408,13 @@ module CapybaraCatalogManager
     options[:tags].each do |tagName| setTag tagName end
     if options[:tags].include? "Clinical work fulfillment" then fillOutCWF('core') end
 
+    find(:xpath, "//div[text()='Pricing']").click
+    wait_for_javascript_to_finish
+    subsidyInfo 'core'
+
     first(:xpath, "//input[@id='save_button']").click
     wait_for_javascript_to_finish
-    click_link name
+    # click_link name
   end
 
 
@@ -337,15 +438,28 @@ module CapybaraCatalogManager
     }
     options = defaults.merge(options)
     wait_for_javascript_to_finish
+    if isCollapsed? under then click_link under end
+    wait_for_javascript_to_finish
     cnsLink = first(:xpath, "//a[contains(text(),'#{under}')]/following-sibling::ul//a[contains(text(),'Create New Service')]")
-    if cnsLink.visible? then
-        cnsLink.click
+    if not(cnsLink.nil?) and cnsLink.visible? 
         wait_for_javascript_to_finish
+        begin 
+            cnsLink.click
+        rescue
+            wait_for_javascript_to_finish
+            begin 
+                first(:xpath, "//a[contains(text(),'#{under}')]/following-sibling::ul//a[contains(text(),'Create New Service')]").click
+            rescue
+                click_link under
+                wait_for_javascript_to_finish
+                first(:xpath, "//a[contains(text(),'#{under}')]/following-sibling::ul//a[contains(text(),'Create New Service')]").click
+            end
+        end
     else
         click_link under
         wait_for_javascript_to_finish
+        cnsLink = first(:xpath, "//a[contains(text(),'#{under}')]/following-sibling::ul//a[contains(text(),'Create New Service')]")
         cnsLink.click
-        wait_for_javascript_to_finish
     end
     wait_for_javascript_to_finish
 
@@ -368,11 +482,17 @@ module CapybaraCatalogManager
     find(:xpath, "//div[text()='Pricing']").click
     find(:xpath, "//input[@class='add_pricing_map']").click
     first(:xpath, "//a[@href='#' and contains(text(),'Effective on')]").click
-    first(:xpath, "//th[text()='Display Dates']/following-sibling::td/input[@type='text']").click
+
     stDay = (options[:display_date]).strftime("%-d") # Today's Day
+    first(:xpath, "//th[text()='Display Dates']/following-sibling::td/input[@type='text']").click #Trigger datepicker on Display Date input
+    wait_for_javascript_to_finish
+    # find(:xpath, "//div/table/tbody/tr/td[@data-handler='selectDay']/a[text()='#{stDay}']").click
     page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
-    first(:xpath, "//th[text()='Effective Date']/following-sibling::td/input[@type='text']").click
+    first(:xpath, "//th[text()='Effective Date']/following-sibling::td/input[@type='text']").click #Trigger datepicker on Effective Date input
+    wait_for_javascript_to_finish
+    # find(:xpath, "//div/table/tbody/tr/td[@data-handler='selectDay']/a[text()='#{stDay}']").click
     page.execute_script %Q{ $("a.ui-state-default:contains('#{stDay}')").filter(function(){return $(this).text()==='#{stDay}';}).trigger("click") } # click on start day
+
     first(:xpath, "//input[@id='pricing_maps_blank_pricing_map_full_rate']").set(options[:rate])
     if options[:otf] then 
         first(:xpath, "//input[@id='otf_checkbox_']").click 
@@ -395,6 +515,7 @@ module CapybaraCatalogManager
         wait_for_javascript_to_finish
         sleep 2
         fill_in "new_rs", :with => options[:linked][:service]
+        sleep 1
         wait_until{first(:xpath, "//ul[contains(@class,'ui-autocomplete')]/li[@class='ui-menu-item']/a[contains(text(),'#{options[:linked][:service]}')]")}.click
         wait_for_javascript_to_finish
 

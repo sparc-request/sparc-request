@@ -188,14 +188,18 @@ class ServiceRequestsController < ApplicationController
   end
 
   def subsidies_for_ssr subsidies
-    has_match = false
-    subsidies.each do |subsidy|
-      if subsidy.sub_service_request_id == @sub_service_request.id
-        has_match = true
+    if @sub_service_request
+      has_match = false
+      subsidies.each do |subsidy|
+        if subsidy.sub_service_request_id == @sub_service_request.id
+          has_match = true
+        end
       end
-    end
 
-    has_match
+      return has_match
+    else
+      return true
+    end
   end
   
   def document_management

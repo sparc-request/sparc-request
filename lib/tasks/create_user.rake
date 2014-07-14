@@ -4,6 +4,29 @@ task :create_user => :environment do
       print(*args)
       STDIN.gets.strip
   end
+    
+  def list_orgs
+    puts "#"*50
+    institutions = Institution.order(:name)
+    institutions.each do |inst|
+      puts "- #{inst.name} => #{inst.id}"
+
+      inst.providers.order(:name).each do |prov|
+        puts "--- #{prov.name} => #{prov.id}"
+
+        prov.programs.order(:name).each do |prog|
+          puts "----- #{prog.name} => #{prog.id}"
+
+          prog.cores.order(:name).each do |core|
+            puts "------- #{core.name} => #{core.id}"
+          end
+        end
+      end
+
+      puts ""
+    end
+    puts "#"*50
+  end
 
   users = Identity.all
   puts "This task will create a user with all rights for a given organization, for testing and development purposes."
@@ -14,10 +37,7 @@ task :create_user => :environment do
     end
   end
 
-  orgs = Organization.all
-  orgs.each do |org|
-    printf "%-10s %s\n", org.id, org.name
-  end
+  list_orgs
 
   puts ""
   puts ""

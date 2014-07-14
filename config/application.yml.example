@@ -17,6 +17,7 @@ development:
   use_epic: true
   queue_epic: true
   queue_epic_load_error_to: 'glennj@musc.edu, hundc@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu'
+  epic_users_team: 'longman@musc.edu, crossoml@musc.edu'
   use_google_calendar: true
   use_news_feed: true
   google_username: sparcrequest@gmail.com

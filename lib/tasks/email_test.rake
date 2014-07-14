@@ -41,9 +41,13 @@ namespace :email do
     attachments = {}
     attachments["doc.xls"] = xls
 
+    sr.previous_submitted_at = sr.submitted_at
+    # sr.previous_submitted_at = (Time.now - 1.day)
+
+    previously_submitted_at = sr.previous_submitted_at.nil? ? Time.now.utc : sr.previous_submitted_at.utc
     sr.sub_service_requests.each do |sub_service_request|
       sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-        Notifier.notify_service_provider(service_provider, sr, attachments, identity).deliver
+        Notifier.notify_service_provider(service_provider, sr, attachments, identity, sub_service_request.audit_trail(identity, previously_submitted_at, Time.now.utc)).deliver
       end
     end
     

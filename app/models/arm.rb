@@ -51,20 +51,10 @@ class Arm < ActiveRecord::Base
   # end
 
   def create_line_items_visit line_item
-<<<<<<< HEAD
-<<<<<<< Updated upstream
-=======
     # if visit_count is nil then set it to 1
     self.update_attribute(:visit_count, 1) if self.visit_count.nil?
 
     # loop until visit_groups catches up to visit_count
->>>>>>> Stashed changes
-=======
-    # if visit_count is nil then set it to 1
-    self.visit_count.update_attribute(:visit_count, 1) if self.visit_count.nil?
-
-    # loop until visit_groups catches up to visit_count
->>>>>>> d247ec4a16d0260721f84db9f3eee6e1a67dea87
     while self.visit_groups.size < self.visit_count
       visit_group = self.visit_groups.new
       if not visit_group.save(validate: false) then

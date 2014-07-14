@@ -182,9 +182,20 @@ class ServiceRequestsController < ApplicationController
       end
     end
 
-    if @subsidies.empty?
+    if @subsidies.empty? || !subsidies_for_ssr(@subsidies)
       redirect_to "/service_requests/#{@service_request.id}/document_management"
     end
+  end
+
+  def subsidies_for_ssr subsidies
+    has_match = false
+    subsidies.each do |subsidy|
+      if subsidy.sub_service_request_id == @sub_service_request.id
+        has_match = true
+      end
+    end
+
+    has_match
   end
   
   def document_management

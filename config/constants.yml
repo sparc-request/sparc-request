@@ -24,7 +24,7 @@ affiliations: { 'cancer_center': 'Cancer Center',
                 'reach': 'REACH' }
 epic_rights: { 'view_rights': 'View Research Studies',
                'enter_data': 'Access to input/edit data at patient/encounter level',
-               'schedule_research': 'Schedule research-related encounters - aditional training required',
+               'schedule_research': 'Schedule research-related encounters - additional training required',
                'enter_orders': 'Place Orders - valid medical license required',
                'process_orders': 'Process standing orders for research protocols - additional training required',
                'approve': 'Review and approve research-related patient charges',
@@ -673,3 +673,5 @@ user_credentials: { "MD": 'md',
                     "ADN": 'adn',
                     "BA": 'ba',
                     "Other": 'other' }
+audit_actions: { 'create': 'Added',
+                 'destroy': 'Removed'}

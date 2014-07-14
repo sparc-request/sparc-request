@@ -1,4 +1,10 @@
 class PopulateFulfillmentsRQuantities < ActiveRecord::Migration
+
+  class Fulfillment < ActiveRecord::Base
+    belongs_to :line_item
+    attr_accessible :requested_r_quantity
+  end
+
   def up
     fulfillments = Fulfillment.find(:all)
     fulfillments.each do |fulfillment|

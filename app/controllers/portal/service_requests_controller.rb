@@ -11,8 +11,11 @@ class Portal::ServiceRequestsController < Portal::BaseController
     @ssr_id = params[:ssr_id] if params[:ssr_id]
     @sub_service_request = @service_request.sub_service_requests.find_by_ssr_id(@ssr_id) if @ssr_id
     @service_list = @service_request.service_list
+    @line_items = @sub_service_request.line_items
     @protocol = @service_request.protocol
     @tab = 'calendar'
+    @portal = true
+    @thead_class = 'ui-widget-header'
     @selected_arm = Arm.find arm_id if arm_id
     @pages = {}
     @service_request.arms.each do |arm|
@@ -65,7 +68,7 @@ class Portal::ServiceRequestsController < Portal::BaseController
       render 'portal/service_requests/add_per_patient_per_visit_visit'
     else
       respond_to do |format|
-        format.js { render :status => 500, :json => clean_errors(@service_request.errors) }
+        format.js { render :status => 500, :json => clean_errors(@selected_arm.errors) }
       end
     end
   end

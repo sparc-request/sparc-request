@@ -30,12 +30,6 @@
   height: auto !important;
 }
 
-.steps_table{
-  background-image: none !important;
-  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader( src='/assets/steps_no_text.png', sizingMethod='scale') !important;
-  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader( src='/assets/steps_no_text.png', sizingMethod='scale')" !important;
-}
-
 .navigation_link{
   cursor: pointer;
 }
@@ -76,8 +70,6 @@ UL.fulfillment_notifications > LI.new_notification.ui-corner-all{
 
 #search {
   background-image: none !important;
-  filter: progid:DXImageTransform.Microsoft.AlphaImageLoader( src='/assets/search_bar.png', sizingMethod='scale') !important;
-  -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader( src='/assets/search_bar.png', sizingMethod='scale')" !important;
   width: 470px !important;
 
   input {
@@ -93,4 +85,9 @@ UL.fulfillment_notifications > LI.new_notification.ui-corner-all{
 .document_upload_button,
 .faq-button {
   width: 206px !important;
+}
+
+input.devise_submit_button,
+input.add-authorized-user {
+  background: none;
 }

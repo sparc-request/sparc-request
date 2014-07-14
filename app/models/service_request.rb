@@ -75,6 +75,7 @@ class ServiceRequest < ActiveRecord::Base
   attr_accessible :submitted_at
   attr_accessible :line_items_attributes
   attr_accessible :sub_service_requests_attributes
+  attr_accessor   :previous_submitted_at
 
   accepts_nested_attributes_for :line_items
   accepts_nested_attributes_for :sub_service_requests
@@ -158,15 +159,34 @@ class ServiceRequest < ActiveRecord::Base
   def service_calendar_page(direction)
     return if direction == 'back' and status == 'first_draft'
     return unless has_per_patient_per_visit_services?
-    if USE_EPIC
-      self.arms.each do |arm|
-        arm.visit_groups.each do |vg|
-          if vg.day.blank?
-            errors.add(:visit_group, "Please specify a study day for each visit.")
-            return
-          end
-        end
+    
+    self.arms.each do |arm|
+      days = arm.visit_groups.map(&:day)
+
+      visit_group_errors = false
+      invalid_day_errors = false
+      
+      unless days.all?{|x| !x.blank?}
+        errors.add(:visit_group, "Please specify a study day for each visit on (#{arm.name}).")
+        visit_group_errors = true
       end
+      
+      unless days.all?{|day| day.is_a? Fixnum}
+        errors.add(:invalid_day, "Please enter a valid number for each study day (#{arm.name}).")
+        invalid_day_errors = true
+      end
+
+      errors.add(:out_of_order, "Please make sure study days are in sequential order (#{arm.name}).") unless visit_group_errors or invalid_day_errors or days.each_cons(2).all?{|i,j| i <= j}
+
+      unless visit_group_errors
+        day_entries = Hash.new(0)
+        days.each do |day|
+          day_entries[day] += 1
+        end
+
+        errors.add(:duplicate_days, "Visits can not have the same study day (#{arm.name}).") unless day_entries.values.all?{|count| count == 1}
+      end
+
     end
   end
 
@@ -351,10 +371,12 @@ class ServiceRequest < ActiveRecord::Base
 
   def total_indirect_costs_per_patient arms=self.arms, line_items=nil
     total = 0.0
-    lids = line_items.map(&:id) unless line_items.nil?
-    arms.each do |arm|
-      livs = line_items.nil? ? arm.line_items_visits : arm.line_items_visits.reject{|liv| !lids.include? liv.line_item_id}
-      total += arm.indirect_costs_for_visit_based_service
+    if USE_INDIRECT_COST
+      lids = line_items.map(&:id) unless line_items.nil?
+      arms.each do |arm|
+        livs = line_items.nil? ? arm.line_items_visits : arm.line_items_visits.reject{|liv| !lids.include? liv.line_item_id}
+        total += arm.indirect_costs_for_visit_based_service
+      end
     end
 
     total
@@ -375,8 +397,10 @@ class ServiceRequest < ActiveRecord::Base
 
   def total_indirect_costs_one_time line_items=self.line_items
     total = 0.0
-    line_items.select {|x| x.service.is_one_time_fee?}.each do |li|
-      total += li.indirect_costs_for_one_time_fee
+    if USE_INDIRECT_COST
+      line_items.select {|x| x.service.is_one_time_fee?}.each do |li|
+        total += li.indirect_costs_for_one_time_fee
+      end
     end
 
     total
@@ -475,5 +499,14 @@ class ServiceRequest < ActiveRecord::Base
 
   def arms_editable?
     true #self.sub_service_requests.all?{|ssr| ssr.arms_editable?}
+  end
+
+  def audit_trail identity, start_date=self.previous_submitted_at.utc, end_date=Time.now.utc
+    line_item_audits = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{self.id}%' AND 
+                                      auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('create', 'destroy') AND
+                                      created_at BETWEEN '#{start_date}' AND '#{end_date}'")
+                                    .group_by(&:auditable_id)
+
+    {:line_items => line_item_audits}
   end
 end

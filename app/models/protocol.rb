@@ -158,6 +158,11 @@ class Protocol < ActiveRecord::Base
     "#{self.id} - #{self.short_title}"
   end
 
+  def epic_title
+    epic_title = "#{self.short_title} - #{self.title}"
+    epic_title.truncate(195)
+  end
+
   def display_funding_source_value
     if funding_status == "funded"
       if funding_source == "internal"
@@ -182,6 +187,11 @@ class Protocol < ActiveRecord::Base
       end
 
     return funding_source
+  end
+
+  def should_queue_epic(user_role, service_request)
+    queue_size = EpicQueue.where(:protocol_id => service_request.protocol_id).size
+    return QUEUE_EPIC && (queue_size < 1) && (user_role == 'primary-pi') && service_request.should_push_to_epic?
   end
 
   # Note: this method is called inside a child thread by the service
@@ -315,6 +325,30 @@ class Protocol < ActiveRecord::Base
         end
       end
     end
+  end
+
+  def direct_cost_total service_request
+    total = 0
+    self.service_requests.each do |sr|
+      next if ['first_draft', 'draft'].include?(sr.status) && sr != service_request
+      total += sr.direct_cost_total
+    end
+    return total
+  end
+
+  def indirect_cost_total service_request
+    total = 0
+    if USE_INDIRECT_COST
+      self.service_requests.each do |sr|
+        next if ['first_draft', 'draft'].include?(sr.status) && sr != service_request
+        total += sr.indirect_cost_total
+      end
+    end
+    return total
+  end
+
+  def grand_total service_request
+    return direct_cost_total(service_request) + indirect_cost_total(service_request)
   end
 
 end

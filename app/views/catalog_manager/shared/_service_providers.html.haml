@@ -1,5 +1,7 @@
 .sps
   - if entity.service_providers
+    - if @service_provider_error_message
+      .service_provider_error= @service_provider_error_message
     %table
       %thead
         %tr

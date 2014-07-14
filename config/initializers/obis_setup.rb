@@ -19,6 +19,7 @@ begin
   QUEUE_EPIC                    = application_config['queue_epic']
   QUEUE_EPIC_LOAD_ERROR_TO      = application_config['queue_epic_load_error_to']
   EPIC_QUEUE_REPORT_TO          = application_config['epic_queue_report_to']
+  EPIC_USERS_TEAM               = application_config['epic_users_team']
   USE_GOOGLE_CALENDAR           = application_config['use_google_calendar']
   USE_NEWS_FEED                 = application_config['use_news_feed']
   GOOGLE_USERNAME               = application_config['google_username']

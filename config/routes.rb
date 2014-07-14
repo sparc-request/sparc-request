@@ -62,6 +62,7 @@ SparcRails::Application.routes.draw do
     member do
       get :approve_epic_rights
       get :push_to_epic
+      get :add_to_epic_queue
     end
   end
 

@@ -39,18 +39,43 @@
     %br
     %br
 
+    - if @protocol.should_queue_epic(@role, @service_request)
+      %p
+        The following SPARC Request users have requested access to Epic for
+        your study ##{@protocol.id} (#{@protocol.short_title.strip}). Each
+        individual is listed below with the Epic responsibilities requested.
+        Please review carefully. When ready, please click the #{t(:notifier)[:add_to_epic_queue]} link.
+        This will send your study information to Epic automatically. If you
+        need to make any changes to the personnel/responsibilities below,
+        please click the “Edit” link which will redirect you to your SPARC
+        Request user portal. Here, under your study’s “User” section, you can
+        add/delete/edit any listed personnel as needed."
+
     %table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
       %thead
         %tr{:style => 'border: 1px solid black;'}
           %th{:style => 'border: 1px solid black; text-align: left;'}= t(:notifier)[:name]
           %th{:style => 'border: 1px solid black;'}= t(:notifier)[:role]
           %th{:style => 'border: 1px solid black;'}= t(:notifier)[:proxy]
+          - if @protocol.should_queue_epic(@role, @service_request) 
+            %th{:style => 'border: 1px solid black;'}= t(:notifier)[:epic_rights]
       %tbody
         - @protocol.project_roles.each do |pr|
           %tr{:style => 'border: 1px solid black;'}
             %td{:style => 'border: 1px solid black;'}= pr.identity.full_name
             %td{:style => 'border: 1px solid black; text-align: center;'}= pr.role.upcase
-            %td{:style => 'border: 1px solid black; text-align: center;'}= {"approve"=>"Authorize/Change Study Charges", "request"=>"Request/Approve Services", "view"=>"View Rights", "none"=>"Member Only"}[pr.project_rights]
+            %td{:style => 'border: 1px solid black; text-align: center;'}= PROXY_RIGHTS.invert[pr.project_rights]
+            - if @protocol.should_queue_epic(@role, @service_request) 
+              %td{:style => 'border: 1px solid black; text-align: center;'}
+                %ul
+                  - pr.epic_rights.each do |er|
+                    %li= EPIC_RIGHTS[er.right]
+    - if @protocol.should_queue_epic(@role, @service_request) 
+      %br
+
+      .accept_button= link_to t(:notifier)[:add_to_epic_queue], add_to_epic_queue_protocol_url(@protocol)
+
+      %br
 
     %p= t(:issue_contact)
 

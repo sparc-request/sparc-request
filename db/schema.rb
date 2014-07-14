@@ -822,11 +822,11 @@ ActiveRecord::Schema.define(:version => 20140520183412) do
     t.string   "charge_code"
     t.string   "revenue_code"
     t.integer  "organization_id"
-    t.datetime "created_at",                                         :null => false
-    t.datetime "updated_at",                                         :null => false
+    t.datetime "created_at",                                                            :null => false
+    t.datetime "updated_at",                                                            :null => false
     t.datetime "deleted_at"
     t.string   "cdm_code"
-    t.boolean  "send_to_epic"
+    t.boolean  "send_to_epic",                                       :default => false
   end
 
   add_index "services", ["is_available"], :name => "index_services_on_is_available"
@@ -912,7 +912,7 @@ ActiveRecord::Schema.define(:version => 20140520183412) do
     t.datetime "deleted_at"
     t.boolean  "overridden"
     t.integer  "sub_service_request_id"
-    t.float    "admin_percent_subsidy",  :default => 0.0
+    t.float    "stored_percent_subsidy", :default => 0.0
   end
 
   add_index "subsidies", ["sub_service_request_id"], :name => "index_subsidies_on_sub_service_request_id"

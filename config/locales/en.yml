@@ -98,6 +98,8 @@ en:
     name: "Name:"
     role: "Role:"
     proxy: "Proxy Rights:"
+    epic_rights: "Epic Responsibilities Requested"
+    add_to_epic_queue: "Send to Epic Queue"
     body6: "A list of requested services is attached."
     body7: "To approve the charges associated with the selected services please click"
     link: "HERE"

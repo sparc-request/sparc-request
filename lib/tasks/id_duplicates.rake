@@ -25,9 +25,9 @@ namespace :data do
 
       model_data = []
       if uniq_group_id.to_i >= 1
-        model_data = model.classify.constantize.where("#{group}" => uniq_group_id)
+        model_data = model.constantize.where("#{group}" => uniq_group_id)
       else	
-        model_data = model.classify.constantize.all
+        model_data = model.constantize.all
       end
 
       dups = Hash.new(0)
@@ -52,7 +52,7 @@ namespace :data do
       dups.each do |k, count|
         id, text = k.split (" ")
         if count > 1 
-          to_delete << model.classify.constantize.where("#{group}" => id, "#{field}" => text).limit(count - 1)
+          to_delete << model.constantize.where("#{group}" => id, "#{field}" => text).limit(count - 1)
         end
       
       end
@@ -61,7 +61,7 @@ namespace :data do
       if answer2 == "Y"
         dups.each do |k, count|
           id, text = k.split (" ")
-          records = model.classify.constantize.where("#{group}" => id, "#{field}" => text)
+          records = model.constantize.where("#{group}" => id, "#{field}" => text)
           if count > 1 
             count -=1
             

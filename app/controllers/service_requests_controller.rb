@@ -263,7 +263,7 @@ class ServiceRequestsController < ApplicationController
     end
     @service_list = @service_request.service_list
 
-    send_notifications(@service_request, @sub_service_request)
+    send_confirmation_notifications
 
     # Send a notification to Lane et al to create users in Epic.  Onc
     # that has been done, one of them will click a link which calls
@@ -279,6 +279,19 @@ class ServiceRequestsController < ApplicationController
     end
 
     render :formats => [:html]
+  end
+
+  def send_confirmation_notifications
+    unless service_request_has_changed_ssr? @service_request
+      send_notifications(@service_request, @sub_service_request)
+    else
+      xls = render_to_string :action => 'show', :formats => [:xlsx]
+      @service_request.sub_service_requests.each do |ssr|
+        if ssr_has_changed?(@service_request, ssr)
+          send_ssr_service_provider_notifications(@service_request, ssr, xls)
+        end
+      end
+    end
   end
 
   def approve_changes
@@ -542,12 +555,34 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def send_service_provider_notifications(service_request, sub_service_requests, xls)
+  def send_service_provider_notifications(service_request, sub_service_requests, xls) #all sub-service requests on service request
     sub_service_requests.each do |sub_service_request|
-      sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-        send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls)
+      send_ssr_service_provider_notifications(service_request, sub_service_request, xls)
+    end
+  end
+
+  def send_ssr_service_provider_notifications(service_request, sub_service_request, xls) #single sub-service request
+    previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
+    sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
+      send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls)
+    end
+  end
+
+  def ssr_has_changed?(service_request, sub_service_request) #specific ssr has changed?
+    previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
+    unless sub_service_request.audit_trail(current_user, previously_submitted_at, Time.now.utc)[:line_items].empty?
+      return true
+    end
+    return false
+  end
+
+  def service_request_has_changed_ssr?(service_request) #any ssr on sr has changed?
+    service_request.sub_service_requests.each do |ssr|
+      if ssr_has_changed?(service_request, ssr)
+        return true
       end
     end
+    return false
   end
 
   def send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls)

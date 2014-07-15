@@ -562,7 +562,6 @@ class ServiceRequestsController < ApplicationController
   end
 
   def send_ssr_service_provider_notifications(service_request, sub_service_request, xls) #single sub-service request
-    previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
     sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
       send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls)
     end

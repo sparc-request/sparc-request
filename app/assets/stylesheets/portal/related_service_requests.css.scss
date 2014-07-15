@@ -7,8 +7,6 @@
     background-color: #FFF;
     padding: 10px;
     margin: 10px auto;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
   }
 
   table {
@@ -18,8 +16,6 @@
       text-align: left;
       background-color: #EEE;
       padding: 8px;
-      -moz-border-radius: 4px;
-      -webkit-border-radius: 4px;
     }
   }
 
@@ -34,11 +30,20 @@
 }
 
 .delete-ssr-button {
-  float: left;
+  background: url("delete_red.png") no-repeat;
+  display: block;
+  height: 34px;
+  width: 34px;
+  margin: 0 auto;
 }
 
-.delete-ssr-indicator {
-  display: none;
-  float: left;
+.export_to_excel_button,
+.send_to_epic_button {
+  background: url("bluebutton.png") no-repeat;
+  color: white;
+  display: block;
+  height: 25px;
+  padding-top: 5px;
+  width: 92px;
+  margin: 0 auto;
 }
-

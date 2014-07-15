@@ -12,8 +12,6 @@
     background-color: #FFF;
     padding: 10px;
     margin: 10px auto;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
   }
 
   .document-management-container {
@@ -39,8 +37,6 @@
     th, td {
       text-align: left;
       padding: 8px;
-      -moz-border-radius: 4px;
-      -webkit-border-radius: 4px;
     }
 
     .document_date {
@@ -161,11 +157,6 @@
 #information {
   width: 892px;
   margin: 0 auto;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-  background-color: #EEEEEE;
-  border: 1px solid #DDDDDD;
-  color: #333333;
   margin-bottom: 5px;
   font-family: Trebuchet MS,Tahoma,Verdana,Arial,sans-serif;
   font-size: 14px;
@@ -175,19 +166,17 @@
     background-color: #FFF;
     padding: 2px;
     margin: 2px auto;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
   }
 
   table {
     width: 100%;
     
     th, td {
-      text-align: left;
-      background-color: #EEE;
+      text-align: center;
+      background-color: #d7d7d7;
+      font-weight: normal;
+      border: 1px solid white;
       padding: 8px;
-      -moz-border-radius: 4px;
-      -webkit-border-radius: 4px;   
     }
   }
 }

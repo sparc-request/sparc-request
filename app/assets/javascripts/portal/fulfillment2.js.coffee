@@ -520,7 +520,7 @@ $(document).ready ->
 
   $('.send_to_epic_button').on('click', ->
     ssr_id = $(this).attr('sub_service_request_id')
-    $(this).button('disable')
+    # $(this).button('disable')
     $.ajax
       type: 'PUT'
       url: "/portal/admin/sub_service_requests/#{ssr_id}/push_to_epic"
@@ -540,9 +540,6 @@ $(document).ready ->
 
   # INSTANTIATE HELPERS
   # set_percent_subsidy()
-  $('.delete-ssr-button').button()
-  $('.export_to_excel_button').button()
-  $('.send_to_epic_button').button()
   $('#approval_history_table').tablesorter()
   $('#status_history_table').tablesorter()
 
@@ -550,9 +547,4 @@ $(document).ready ->
     if $(this).val() == ''
       $(this).val(0).change()
   )
-
-  show_return_to_portal_button = () ->
-    linkHtml = "<a id='return_to_admin_portal' style='position:relative;left:700px;bottom:25px' href='/portal/admin'>Return to Admin Portal</a>"
-    $("#title").append(linkHtml)
-    $("#return_to_admin_portal").button()
 

@@ -75,6 +75,7 @@ class ServiceRequest < ActiveRecord::Base
   attr_accessible :submitted_at
   attr_accessible :line_items_attributes
   attr_accessible :sub_service_requests_attributes
+  attr_accessor :last_deleted_ssr_data
   attr_accessor   :previous_submitted_at
 
   accepts_nested_attributes_for :line_items
@@ -508,5 +509,30 @@ class ServiceRequest < ActiveRecord::Base
                                     .group_by(&:auditable_id)
 
     {:line_items => line_item_audits}
+  end
+
+  def get_ssr_audit_trail ssr_id, identity, start_date, end_date=Time.now.utc
+    filtered_audit_trail = {:line_items => []}
+
+    full_trail = self.audit_trail(identity, start_date, end_date)
+    full_line_items_audits = full_trail[:line_items] 
+
+    full_line_items_audits.each do |k, audits|
+      # if line item was created and destroyed in the same session we don't care to see it because it wasn't submitted
+      actions = audits.map(&:action).to_set
+      test_actions = Set['create', 'destroy']
+      next if test_actions.subset? actions
+
+      audit = audits.sort_by(&:created_at).last
+      # create action
+      if audit.audited_changes["sub_service_request_id"].nil?
+        filtered_audit_trail[:line_items] << audit if LineItem.find(audit.auditable_id).sub_service_request_id == ssr_id
+      # destroy action
+      else
+        filtered_audit_trail[:line_items] << audit if audit.audited_changes["sub_service_request_id"] == ssr_id
+      end 
+    end
+    
+    filtered_audit_trail
   end
 end

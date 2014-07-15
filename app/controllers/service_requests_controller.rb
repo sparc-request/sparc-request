@@ -282,17 +282,31 @@ class ServiceRequestsController < ApplicationController
   end
 
   def send_confirmation_notifications
-    unless service_request_has_changed_ssr? @service_request
-      send_notifications(@service_request, @sub_service_request)
-    else
+    if service_request_has_changed_ssr?(@service_request) and @service_request.last_deleted_ssr_data.nil?
       xls = render_to_string :action => 'show', :formats => [:xlsx]
       @service_request.sub_service_requests.each do |ssr|
         if ssr_has_changed?(@service_request, ssr)
           send_ssr_service_provider_notifications(@service_request, ssr, xls)
         end
       end
+    elsif not @service_request.last_deleted_ssr_data.nil?
+      @service_request.last_deleted_ssr_data[:organization].service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
+        attachments = {}
+        attachments["service_request_#{service_request.id}.xls"] = xls
+        #TODO this is not very multi-institutional generate the required forms pdf if it's required
+        if @service_request.last_deleted_ssr_data[:organization].tag_list.include? 'required forms'
+          request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf service_request
+          attachments["request_for_grant_billing_#{service_request.id}.pdf"] = request_for_grant_billing_form
+        end
+        previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
+        audit_trail = @service_request.get_ssr_audit_trail(@service_request.last_deleted_ssr_data[:id], current_user, previously_submitted_at, Time.now.utc)
+        Notifier.notify_service_provider(service_provider, @service_request, attachments, current_user, audit_trail).deliver
+      end
+    else
+      send_notifications(@service_request, @sub_service_request)
     end
   end
+
 
   def approve_changes
     @service_request = ServiceRequest.find params[:id]

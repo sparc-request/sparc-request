@@ -41,6 +41,7 @@ class SubServiceRequest < ActiveRecord::Base
   accepts_nested_attributes_for :payments, allow_destroy: true
 
   after_save :work_fulfillment
+  before_destroy :inform_service_request
 
   def work_fulfillment
     if self.in_work_fulfillment_changed?
@@ -50,6 +51,12 @@ class SubServiceRequest < ActiveRecord::Base
         end
       end
     end
+  end
+
+  def inform_service_request
+    self.service_request.last_deleted_ssr_data = {}
+    self.service_request.last_deleted_ssr_data[:organization] = self.organization
+    self.service_request.last_deleted_ssr_data[:id] = self.id
   end
 
   def update_org_tree

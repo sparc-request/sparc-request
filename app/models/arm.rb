@@ -52,7 +52,7 @@ class Arm < ActiveRecord::Base
 
   def create_line_items_visit line_item
     # if visit_count is nil then set it to 1
-    self.visit_count.update_attribute(:visit_count, 1) if self.visit_count.nil?
+    self.update_attribute(:visit_count, 1) if self.visit_count.nil?
 
     # loop until visit_groups catches up to visit_count
     while self.visit_groups.size < self.visit_count

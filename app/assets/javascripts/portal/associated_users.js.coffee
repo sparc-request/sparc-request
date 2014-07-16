@@ -43,14 +43,14 @@ $(document).ready ->
         role = $(this).val()
         if role == 'pi' or role == 'business-grants-manager' or role == 'primary-pi'
           $('#project_role_project_rights_approve').attr('checked', true)
-          if role == 'pi' or role == 'primary-pi'
-            $('#project_role_project_rights_request').attr('disabled', true)
-            $('#project_role_project_rights_view').attr('disabled', true)
-            $('#project_role_project_rights_none').attr('disabled', true)
-          else
-            $('#project_role_project_rights_request').attr('disabled', false)
-            $('#project_role_project_rights_view').attr('disabled', false)
-            $('#project_role_project_rights_none').attr('disabled', false)
+        if role == 'pi' or role == 'primary-pi'
+          $('#project_role_project_rights_request').attr('disabled', true)
+          $('#project_role_project_rights_view').attr('disabled', true)
+          $('#project_role_project_rights_none').attr('disabled', true)
+        else
+          $('#project_role_project_rights_request').attr('disabled', false)
+          $('#project_role_project_rights_view').attr('disabled', false)
+          $('#project_role_project_rights_none').attr('disabled', false)
 
       )
 

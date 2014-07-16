@@ -12,6 +12,8 @@ class ServiceRequestsController < ApplicationController
     @protocol = @service_request.protocol
     @service_list = @service_request.service_list
     @admin_offset = params[:admin_offset]
+    # generate the excel for this service request
+    @xls = render_to_string :action => 'show', :formats => [:xlsx]
 
     # TODO: this gives an error in the spec tests, because they think
     # it's trying to render html instead of xlsx
@@ -282,28 +284,14 @@ class ServiceRequestsController < ApplicationController
   end
 
   def send_confirmation_notifications
-    if service_request_has_changed_ssr?(@service_request) and @service_request.last_deleted_ssr_data.nil?
-      xls = render_to_string :action => 'show', :formats => [:xlsx]
+    if @service_request.previous_submitted_at.nil?
+      send_notifications(@service_request, @sub_service_request)
+    elsif service_request_has_changed_ssr?(@service_request)
       @service_request.sub_service_requests.each do |ssr|
         if ssr_has_changed?(@service_request, ssr)
-          send_ssr_service_provider_notifications(@service_request, ssr, xls)
+          send_ssr_service_provider_notifications(@service_request, ssr, @xls)
         end
       end
-    elsif not @service_request.last_deleted_ssr_data.nil?
-      @service_request.last_deleted_ssr_data[:organization].service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-        attachments = {}
-        attachments["service_request_#{service_request.id}.xls"] = xls
-        #TODO this is not very multi-institutional generate the required forms pdf if it's required
-        if @service_request.last_deleted_ssr_data[:organization].tag_list.include? 'required forms'
-          request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf service_request
-          attachments["request_for_grant_billing_#{service_request.id}.pdf"] = request_for_grant_billing_form
-        end
-        previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
-        audit_trail = @service_request.get_ssr_audit_trail(@service_request.last_deleted_ssr_data[:id], current_user, previously_submitted_at, Time.now.utc)
-        Notifier.notify_service_provider(service_provider, @service_request, attachments, current_user, audit_trail).deliver
-      end
-    else
-      send_notifications(@service_request, @sub_service_request)
     end
   end
 
@@ -407,7 +395,11 @@ class ServiceRequestsController < ApplicationController
     @service_request.reload
     to_delete = @service_request.sub_service_requests.map(&:organization_id) - @service_request.service_list.keys
     to_delete.each do |org_id|
-      @service_request.sub_service_requests.find_by_organization_id(org_id).destroy
+      ssr = @service_request.sub_service_requests.find_by_organization_id(org_id)
+      unless ['first_draft', 'draft'].include?(@service_request.status)
+        send_ssr_service_provider_notifications(@service_request, ssr, @xls)
+      end
+      ssr.destroy
     end
 
     @service_request.reload
@@ -530,10 +522,7 @@ class ServiceRequestsController < ApplicationController
 
   # Send notifications to all users.
   def send_notifications(service_request, sub_service_request)
-    # generate the excel for this service request
-    xls = render_to_string :action => 'show', :formats => [:xlsx]
-
-    send_user_notifications(service_request, xls)
+    send_user_notifications(service_request, @xls)
 
     if sub_service_request then
       sub_service_requests = [ sub_service_request ]
@@ -541,8 +530,8 @@ class ServiceRequestsController < ApplicationController
       sub_service_requests = service_request.sub_service_requests
     end
 
-    send_admin_notifications(sub_service_requests, xls)
-    send_service_provider_notifications(service_request, sub_service_requests, xls)
+    send_admin_notifications(sub_service_requests, @xls)
+    send_service_provider_notifications(service_request, sub_service_requests, @xls)
   end
 
   def send_user_notifications(service_request, xls)

@@ -38,7 +38,7 @@
           - if USE_EPIC
             %td= link_to t(:admin_dashboard)[:send_to_epic], 'javascript:void(0)', :class => "send_to_epic_button", :sub_service_request_id => @sub_service_request.id
 
-.tabs
+.tabs.plain_class
   %ul
     %li= link_to t(:admin_dashboard)[:tabs][:fulfillment], "#fulfillment", :class => 'fulfillment-tab'
     %li= link_to t(:admin_dashboard)[:tabs][:protocol_info], "#protocol", :class => 'project-tab'

@@ -6,7 +6,6 @@
   
 
   font-size: 14px;
-  background-color: #EEEEEE;
 
   .documents {
     background-color: #FFF;
@@ -63,9 +62,8 @@
   /*DOCUMENT MANAGEMENT STYLES*/
 
   .document-management-container {
-    margin: 10px;
-    margin-right: 0px;
-    padding: 10px;
+    margin: 15px 0px 0px;
+    padding: 0px;
     min-height: 50px;
     text-align: center;
   }
@@ -77,24 +75,23 @@
   }
 
   .document-management-container table td {
-    border: 1px solid #CCC;
-    padding: 5px;
+    border: 1px solid black;
+    padding: 12px;
   }
 
   .document-management-container table tr.header {
     text-align: center;
-    background-color: #CCC;
-    width: 630px;
+    background-color: #D7D7D7;
   }
 
   .document-management-container table th {
     font-weight: bold;
-    padding: 5px;
-    border: 1px solid #CCC;
+    padding: 12px;
+    border: 1px solid #D7D7D7;
   }
 
   .document-management-container table tr.document:nth-child(odd) {
-    background-color: #EEE;
+    background-color: #D7D7D7;
   }
 
   .document-edit-container {
@@ -116,7 +113,6 @@
   }
 
   .document-upload {
-    width: 250px;
   }
 
   .document-save {
@@ -124,23 +120,26 @@
     text-align: right;
   }
 
-  .document-delete {
-    width: 30px;
-    text-align: right;
+  .actions_container {
+    width: 95px;
+  }
+
+  .document_edit {
+    padding-right: 20px;
+  }
+
+  .document_delete {
   }
 
   .upload-document-type {
     padding-top: 2px;
-    width: 140px;
   }
 
   .upload-document-upload {
-    width: 220px;
   }
 
   .upload-document-save {
     padding-top: 2px;
-    width: 70px;
     text-align: right;
   }
 

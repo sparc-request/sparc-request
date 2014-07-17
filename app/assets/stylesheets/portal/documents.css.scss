@@ -60,6 +60,34 @@
   }
 
   /*DOCUMENT MANAGEMENT STYLES*/
+  .document-management-container table#new_document a.upload_button,
+  .document-management-container table#new_document a.ui_close_button {
+    background: url("blue_button_short.png") no-repeat;
+    border: 0 none;
+    height: 30px;
+    width: 92px;
+  }
+
+  .document-management-container table#new_document a.upload_button.ui-state-hover,
+  .document-management-container table#new_document a.upload_button.ui-state-focus,
+  .document-management-container table#new_document a.ui_close_button.ui-state-hover,
+  .document-management-container table#new_document a.ui_close_button.ui-state-focus {
+    color: white;
+  }
+
+  .document-management-container a.document_upload_button {
+    background: url("yellowbutton_blank.png") no-repeat;
+    border: 0 none;
+    font-size: 1.2em;
+    height: 33px;
+    padding-top: 2px;
+    width: 230px;
+  }
+
+  .document-management-container a.document_upload_button.ui-state-hover,
+  .document-management-container a.document_upload_button.ut-state-focus {
+    color: white;
+  }
 
   .document-management-container {
     margin: 15px 0px 0px;
@@ -82,6 +110,12 @@
   .document-management-container table tr.header {
     text-align: center;
     background-color: #D7D7D7;
+  }
+
+  .document-management-container table th.center,
+  .document-management-container table td.center {
+    text-align: center;
+    width: auto !important;
   }
 
   .document-management-container table th {
@@ -122,6 +156,7 @@
 
   .actions_container {
     width: 95px;
+    margin: 0 auto;
   }
 
   .document_edit {

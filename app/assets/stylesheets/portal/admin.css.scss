@@ -131,7 +131,7 @@ background-color: #8dbdd8;
 
 .admin-buttons {
   float: right;
-  margin-top: -7px;
+  margin-top: -4px;
 }
 
 .admin-buttons .header_button {
@@ -155,14 +155,34 @@ background-color: #8dbdd8;
   width: 213px;
   background: url(portal_header_button_large.png) no-repeat;
 }
-.admin-buttons .return_link {
+.admin-buttons .return_link,
+.admin-buttons .cwf_return_link {
   background: url("blue_button_long.png") no-repeat;
   color: white;
   display: block;
-  height: 25px;
-  padding: 5px 0 0 38px;
+  height: 24px;
+  padding: 6px 0 0 38px;
   width: 179px;
   margin: 0 auto;
+}
+.admin-buttons a.cwf_return_link {
+  padding: 6px 0 0 11px;
+  width: 206px;
+}
+
+#information a#ssr_save.ui-button,
+#information a#protocol_billing_business_manager_static_email_save.ui-button {
+  background: url("blue_button_short.png") no-repeat;
+  border: 0 none;
+  height: 30px;
+  width: 92px;
+}
+
+#information a#ssr_save.ui-state-hover,
+#information a#protocol_billing_business_manager_static_email_save.ui-state-hover,
+#information a#ssr_save.ui-state-focus,
+#information a#protocol_billing_business_manager_static_email_save.ui-state-focus {
+  color: white;
 }
 
 .portal_create_new_request {

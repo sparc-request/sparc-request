@@ -7,7 +7,7 @@
       |
       = @user.email
     .admin-buttons
-      = link_to "Return to Clinical Work Fulfillment", study_tracker_root_path, :class => "return_link"
+      = link_to "Back to Clinical Work Fulfillment", study_tracker_root_path, :class => "cwf_return_link"
 
 #information
   #wrapper
@@ -22,8 +22,7 @@
       %tbody
         %tr
           %td
-            = "#{@protocol.id}-"
-            = @sub_service_request.ssr_id
+            = "#{@protocol.id}-#{@sub_service_request.ssr_id}"
           %td= @protocol.try(:principal_investigators).try(:first).try(:display_name)
           %td= @sub_service_request.try(:service_request).try(:service_requester).try(:display_name)
           %td= @protocol.try(:short_title)

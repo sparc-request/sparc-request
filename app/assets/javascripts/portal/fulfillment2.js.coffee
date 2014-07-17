@@ -520,7 +520,7 @@ $(document).ready ->
 
   $('.send_to_epic_button').on('click', ->
     ssr_id = $(this).attr('sub_service_request_id')
-    # $(this).button('disable')
+    $(this).unbind('click')
     $.ajax
       type: 'PUT'
       url: "/portal/admin/sub_service_requests/#{ssr_id}/push_to_epic"
@@ -535,7 +535,7 @@ $(document).ready ->
         for error in errors
           $().toastmessage('showErrorToast', "#{error.humanize()}.");
       complete: =>
-        $(this).button('enable')
+        $(this).bind('click')
   )
 
   # INSTANTIATE HELPERS

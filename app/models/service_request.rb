@@ -160,8 +160,6 @@ class ServiceRequest < ActiveRecord::Base
     has_cwf_ssrs = false
     self.sub_service_requests.each do |ssr|
       if ssr.in_work_fulfillment
-        puts "<>"*1000
-        puts ssr.inspect
         has_cwf_ssrs = true
       end
     end

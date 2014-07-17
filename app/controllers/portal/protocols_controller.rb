@@ -30,7 +30,17 @@ class Portal::ProtocolsController < Portal::BaseController
       format.html
     end
   end
-
+  #update_from_fulfillment change everywhere it says @service request to @protocol
+   def update_from_fulfillment
+    @protocol = Protocol.find(params[:id])
+    if @protocol.update_attributes(params[:protocol])
+      render :nothing => true
+    else
+      respond_to do |format|
+        format.js { render :status => 500, :json => clean_errors(@protocol.errors) } 
+      end
+    end
+  end
   def edit
     @edit_protocol = true
     @protocol = Protocol.find(params[:id])

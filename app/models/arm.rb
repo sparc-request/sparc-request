@@ -203,7 +203,7 @@ class Arm < ActiveRecord::Base
       self.errors.add(:completed_appointment, "exists for this visit.")
       return false
     else
-      # self.update_attribute(:visit_count, (self.visit_count - 1))
+      self.update_attributes(:visit_count => self.visit_count - 1)
       return visit_group.destroy
     end
   end

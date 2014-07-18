@@ -16,16 +16,27 @@ $(document).ready ->
         dateFormat: 'm/dd/yy'
         altFormat: 'yy-mm-dd'
         altField: data
-      
   }
-
+  
   $(document).on('change', '.datepicker', ->
     selector = "##{$(this).attr("id").replace('_picker', '')}"
     $("#{selector}").change()
-  )
+    )
+  original = 'hello'
+  $(document).on('click', '.datepicker', ->
+    original = $(this).val()
+    )
 
   for datepicker in $('.datepicker')
     do_datepicker("##{$(datepicker).attr('id')}")
+
+  validateDate = (start,end) ->
+    if start == 'Enter valid date' or end =='Enter valid date'
+      return true 
+    if start > end 
+      return false
+    else 
+      return true
 
   filterNonKeys = (arr) ->
     filtered = []
@@ -53,7 +64,16 @@ $(document).ready ->
     data[key] = $(this).val()
     data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
     data['line_items_visit_id'] = $(this).parents("tr").data("line_items_visit_id") || null
-    put_attribute(object_id, klass, data)
+    if $(this).attr('name') == 'protocol_start_date' or $(this).attr('name') == 'protocol_end_date'
+      start = $('#protocol_start_date_picker').val()
+      end = $('#protocol_end_date_picker').val()
+      if validateDate(start,end)
+        put_attribute(object_id, klass, data)
+      else
+        $().toastmessage('showErrorToast', "Please enter a start date before the end date")
+        $("##{$(this).attr("name")}_picker").val(original)
+    else  
+      put_attribute(object_id, klass, data)
   )
 
   $(document).on('change', '.cwf_data', ->

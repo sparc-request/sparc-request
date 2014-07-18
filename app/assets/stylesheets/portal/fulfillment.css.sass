@@ -4,10 +4,18 @@
     tr
       th
         font-size: 12px
+        font-weight: normal
+        padding: 0 15px
+        white-space: nowrap
       td
         text-align: center
+        padding: 0 15px
         input
+          border: 1px solid black
+          padding: 3px
           width: auto !important
+        input.datepicker
+          background: url("yellow_callendar.png") no-repeat scroll 0 0 #FFFFFF
 
 #subsidy_table
   table
@@ -252,17 +260,80 @@
     padding: 10px
     select
       width: 200px
+      border: 1px solid black
 
   #notifications_area
-    background-color: #FFF
+    background-color: #f3f4f4
     float: right
     width: 380px
-    padding: 10px
+    padding: 20px
+    margin-bottom: 10px
+    h3
+      text-align: center
+      margin-bottom: 10px
     ul
       display-style: none
       li
-        background: url(unread.png) no-repeat
-        padding: 9px 5px 9px 35px
+        background: url("notification_green_small.png") no-repeat
+        padding: 11px 5px 12px 45px
+        margin-bottom: 8px
+
+  #service_request_core_approvals
+    padding: 15px
+    background-color: #f3f4f4
+    #core_approvals
+      padding-top: 15px
+      .approval
+        width: 288px
+        float: left
+        text-align: center
+
+  #service_request_src_approval
+    padding: 15px
+    background-color: #f3f4f4
+    .approval
+      text-align: center
+
+  #service_request_status_changes,
+  #service_request_approval_changes
+    h3
+      margin: 25px 0 0 15px
+    table
+      border-collapse: collapse
+      th,
+      td
+        border: 1px solid black
+        font-size: 1.2em
+        height: auto
+        padding: 8px
+
+  #service_request_information
+    #timeline,
+    #request_cost_total
+      background-color: #f3f4f4
+      margin-bottom: 20px
+      padding: 15px
+    #service_request_cost
+      #current_cost,
+      #user_display_cost
+        float: left
+        margin-right: 150px
+        label
+          font-size: 1.1em
+        span
+          font-size: 1.1em
+          font-weight: bold
+    #fulfillment_subsidy
+      h3
+        margin: 0 15px 6px
+      #subsidy_table
+        padding: 15px
+        background-color: #f3f4f4
+
+  #fulfillment_services
+    #one_time_fee_table
+      background-color: #f3f4f4
+      padding: 15px
 
   #fulfillment_services, #fulfillment_info, #fulfillment_notes
     background-color: #FFF
@@ -362,17 +433,6 @@ input.in_process, input.complete
   background: #FFFFFF url(calendar_edit.png) left no-repeat
   text-align: right !important
   width: 84px
-
-#core_approvals
-  width: 70%
-  margin: 5px auto 20px
-  th
-    text-align: right
-    padding-right: 5px
-
-  td
-    padding-right: 10px
-    text-align: left
 
 #cwf_building_dialog
   h3

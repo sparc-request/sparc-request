@@ -10,6 +10,30 @@
   background: none;
 }
 
+.tabs.plain_class ul.ui-tabs-nav {
+  background: #3883A9 !important;
+  padding-top: 15px;
+  border-radius: 0px;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+}
+.tabs.plain_class ul.ui-tabs-nav li {
+  background: #3e9f5a !important;
+  border: none;
+  border-radius: 0px;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+}
+
+.tabs.plain_class ul.ui-tabs-nav li.ui-tabs-active {
+  background: #f89c50 !important;
+}
+
+.tabs.plain_class ul.ui-tabs-nav li.ui-state-hover a,
+.tabs.plain_class ul.ui-tabs-nav li.ui-state-focus a {
+  color: white;
+}
+
 #admin-tablesorter {
   table {
     table-layout: fixed;
@@ -156,7 +180,8 @@ background-color: #8dbdd8;
   background: url(portal_header_button_large.png) no-repeat;
 }
 .admin-buttons .return_link,
-.admin-buttons .cwf_return_link {
+.admin-buttons .cwf_return_link,
+#study_tracker_access div.ui-button {
   background: url("blue_button_long.png") no-repeat;
   color: white;
   display: block;
@@ -168,6 +193,14 @@ background-color: #8dbdd8;
 .admin-buttons a.cwf_return_link {
   padding: 6px 0 0 11px;
   width: 206px;
+}
+#study_tracker_access div.ui-button {
+  border: 0 none;
+  padding: 6px 0 0;
+  width: 217px;
+}
+#study_tracker_access div.ui-button .ui-button-text {
+  padding: 0px;
 }
 
 #information a#ssr_save.ui-button,
@@ -196,29 +229,9 @@ background-color: #8dbdd8;
                  margin-left: 19px;
                  }
 
-#admin_src_approval {
-  text-align: center;
-  font-weight: bold;
-}
 
 .admin_service_request:hover {
   cursor: pointer
-}
-
-#service_request_status_changes {
-  table {
-    th, td {
-      width: 33%;
-    }
-  }
-}
-
-#service_request_approval_changes {
-  table {
-    th, td {
-      width: 33%;
-    }
-  }
 }
 
 .fulfillment-spinner, .documents-spinner, .associated_users-spinner,

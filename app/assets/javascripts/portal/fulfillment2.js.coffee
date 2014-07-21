@@ -22,7 +22,7 @@ $(document).ready ->
     selector = "##{$(this).attr("id").replace('_picker', '')}"
     $("#{selector}").change()
     )
-  original = 'hello'
+  original = ''
   $(document).on('click', '.datepicker', ->
     original = $(this).val()
     )
@@ -31,7 +31,7 @@ $(document).ready ->
     do_datepicker("##{$(datepicker).attr('id')}")
 
   validateDate = (start,end) ->
-    if start == 'Enter valid date' or end =='Enter valid date'
+    if start == '' or end ==''
       return true 
     if start > end 
       return false

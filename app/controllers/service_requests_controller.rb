@@ -336,7 +336,7 @@ class ServiceRequestsController < ApplicationController
           service: service,
           optional: true,
           existing_service_ids: existing_service_ids,
-          recursion: false)
+          recursive_call: false)
 
       # create sub_service_requests
       @service_request.reload

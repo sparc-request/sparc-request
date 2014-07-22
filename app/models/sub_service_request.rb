@@ -374,7 +374,7 @@ class SubServiceRequest < ActiveRecord::Base
         filtered_audit_trail[:line_items] << audit if audit.audited_changes["sub_service_request_id"] == self.id
       end 
     end
-    
+    filtered_audit_trail[:sub_service_request_id] = self.id
     filtered_audit_trail
   end
   ### end audit reporting methods ###

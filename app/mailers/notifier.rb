@@ -71,13 +71,14 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => "no-reply@musc.edu", :subject => subject)
   end
   
-  def notify_service_provider service_provider, service_request, attachments_to_add, user_current, audit_trail=nil
+  def notify_service_provider service_provider, service_request, attachments_to_add, user_current, audit_trail=nil, ssr_deleted=false
     @protocol = service_request.protocol
     @service_request = service_request
     @role = 'none'
     @approval_link = nil
     @audit_trail = audit_trail
     @provide_arm_info = audit_trail.nil? ? true : SubServiceRequest.find(@audit_trail[:sub_service_request_id]).has_per_patient_per_visit_services?
+    @ssr_deleted = ssr_deleted
 
     @portal_link = USER_PORTAL_LINK + "admin"
     @portal_text = "Administrators/Service Providers, Click Here"

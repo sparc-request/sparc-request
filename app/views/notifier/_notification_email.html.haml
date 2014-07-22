@@ -77,7 +77,16 @@
 
       %br
 
-    - if @audit_trail and not @audit_trail[:line_items].empty?
+    - if @ssr_deleted
+      %br
+      %br
+
+      %table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
+        %tbody
+          %tr{:style => 'border: 1px solid black;'}
+            %td{:style => 'border: 1px solid black; font-weight: bold;'}= t(:notifier)[:all_on_request]
+
+    - elsif @audit_trail and not @audit_trail[:line_items].empty?
       %br
       %br
 
@@ -94,7 +103,6 @@
               %td{:style => 'border: 1px solid black;'}= service.name
               %td{:style => 'border: 1px solid black; text-align: center;'}= AUDIT_ACTIONS[last_change.action]
  
-
     %p= t(:issue_contact)
 
     %p= t(:notifier)[:body6]

@@ -135,6 +135,7 @@ en:
       body5: "Your request for a new SPARC Request account has NOT been approved."
     service: "Service"
     action: "Action"
+    all_on_request: "All Services on Request Have Been Deleted"
 
   # Tooltip help dialogs
   cart_help:

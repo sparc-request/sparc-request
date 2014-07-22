@@ -234,6 +234,7 @@ class ServiceRequestsController < ApplicationController
   def obtain_research_pricing
     # TODO: refactor into the ServiceRequest model
     @service_request.update_status('get_a_quote')
+    @service_request.previous_submitted_at = @service_request.submitted_at
     @service_request.update_attribute(:submitted_at, Time.now)
     @service_request.ensure_ssr_ids
     
@@ -243,7 +244,8 @@ class ServiceRequestsController < ApplicationController
       arm.update_attributes({:new_with_draft => false})
     end
     @service_list = @service_request.service_list
-    send_notifications(@service_request, @sub_service_request)
+
+    send_confirmation_notifications
 
     render :formats => [:html]
   end
@@ -397,7 +399,7 @@ class ServiceRequestsController < ApplicationController
     to_delete.each do |org_id|
       ssr = @service_request.sub_service_requests.find_by_organization_id(org_id)
       unless ['first_draft', 'draft'].include?(@service_request.status)
-        send_ssr_service_provider_notifications(@service_request, ssr, @xls)
+        send_ssr_service_provider_notifications(@service_request, ssr, @xls, ssr_deleted=true)
       end
       ssr.destroy
     end
@@ -564,12 +566,12 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def send_ssr_service_provider_notifications(service_request, sub_service_request, xls) #single sub-service request
+  def send_ssr_service_provider_notifications(service_request, sub_service_request, xls, ssr_deleted=false) #single sub-service request
     previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
     audit_trail = sub_service_request.audit_trail(current_user, previously_submitted_at, Time.now.utc)
 
     sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-      send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls, audit_trail)
+      send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls, audit_trail, ssr_deleted)
     end
   end
 
@@ -590,7 +592,7 @@ class ServiceRequestsController < ApplicationController
     return false
   end
 
-  def send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls, audit_trail=nil)
+  def send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls, audit_trail=nil, ssr_deleted=false)
     attachments = {}
     attachments["service_request_#{service_request.id}.xls"] = xls
 
@@ -606,7 +608,7 @@ class ServiceRequestsController < ApplicationController
       audit_trail = sub_service_request.audit_trail(current_user, previously_submitted_at, Time.now.utc)
     end
 
-    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, audit_trail).deliver
+    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, audit_trail, ssr_deleted).deliver
   end
 
   def send_epic_notification_for_user_approval(protocol)

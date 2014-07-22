@@ -16,6 +16,7 @@ $(document).ready ->
         dateFormat: 'm/dd/yy'
         altFormat: 'yy-mm-dd'
         altField: data
+  
   }
   
   $(document).on('change', '.datepicker', ->

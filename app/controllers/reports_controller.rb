@@ -81,7 +81,7 @@ class ReportsController < ApplicationController
     end_date = params[:cwf_audit_end_date] + " 23:59:59"
 
     @audit_trail = @ssr.audit_trail start_date, end_date
-    @audit_trail += @ssr.past_statuses.map{|x| x.audit_trail, start_date, end_date}
+    @audit_trail += @ssr.past_statuses.map{|x| x.audit_trail start_date, end_date}
     @audit_trail += @ssr.line_items.includes(:service).where("services.organization_id IN (?)", included_cores).map{|x| x.audit_trail start_date, end_date}
     @audit_trail += @ssr.notes.map{|x| x.audit_trail start_date, end_date}
     @audit_trail += @ssr.payments.map{|x| x.audit_trail start_date, end_date}

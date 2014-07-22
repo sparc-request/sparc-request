@@ -156,7 +156,7 @@ class SubServiceRequest < ActiveRecord::Base
 
   # percent of cost
   def percent_of_cost
-    unless subsidy.stored_percent_subsidy.nil?
+    unless subsidy.stored_percent_subsidy.nil? || subsidy.stored_percent_subsidy == 0
       100 - subsidy.stored_percent_subsidy
     else
       subsidy.pi_contribution ? (subsidy.pi_contribution/direct_cost_total * 100).round(2) : nil

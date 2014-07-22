@@ -92,7 +92,7 @@ $(document).ready ->
           pi_count = parseInt($("#pi_count_#{protocol_id}").val(), 10)
           confirm_message = if current_user_id == user_id then 'This action will remove you from the project. Are you sure?' else 'Are you sure?'
           alert_message1 = 'Projects require a PI. Please add a new one before continuing.'
-          cannot_remove_pi = (current_user_role == 'pi' or user_role == 'pi') and pi_count == 1
+          cannot_remove_pi = (current_user_role == 'primary-pi' or user_role == 'primary-pi') and pi_count == 1
 
           if cannot_remove_pi
             alert(alert_message1)

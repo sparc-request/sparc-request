@@ -86,7 +86,7 @@
           %tr{:style => 'border: 1px solid black;'}
             %td{:style => 'border: 1px solid black; font-weight: bold;'}= t(:notifier)[:all_on_request]
 
-    - elsif @audit_trail and not @audit_trail[:line_items].empty?
+    - elsif @audit_report and not @audit_report[:line_items].empty?
       %br
       %br
 
@@ -97,7 +97,7 @@
             %th{:style => 'border: 1px solid black;'}= t(:notifier)[:action]
 
         %tbody
-          - @audit_trail[:line_items].each do |last_change|
+          - @audit_report[:line_items].each do |last_change|
             - service = Service.find(last_change.audited_changes["service_id"])
             %tr{:style => 'border: 1px solid black;'}
               %td{:style => 'border: 1px solid black;'}= service.name

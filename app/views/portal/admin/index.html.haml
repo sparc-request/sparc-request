@@ -4,14 +4,14 @@
   });
 
 .admin-right-dashboard
-  .user-information-body.ui-corner-bottom
+  .user-information-body
     %p
-      %strong= @user.display_name
-.admin-buttons
-  = link_to root_path do
-    = image_tag 'portal/create_new_request.png', :class => 'create_new_request'
-  - if @user.is_super_user?
-    = link_to reports_path do
-      = image_tag 'portal/reporting.png', :class => 'reporting'
+      = @user.full_name
+      |
+      = @user.email
+    .admin-buttons
+      = link_to "Create A Request", root_path, :class => 'create_new_request header_button'
+      - if @user.is_super_user?
+        = link_to "Reporting", reports_path, :class => 'reporting header_button'
 
 = render :partial => 'ssr_list'

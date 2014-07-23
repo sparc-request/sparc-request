@@ -293,12 +293,6 @@ $(document).ready ->
         event.preventDefault()
         $().toastmessage('showWarningToast', 'Date, quantity, and unit quantity are required fields.')
         return false
-    # Currently defaulting this field to 'each'. This may change so leaving this in for now
-    # $('.fulfillment_quantity_type:visible').each (index, field) ->
-    #   if ($(field).val() == "")
-    #     event.preventDefault()
-    #     $().toastmessage('showWarningToast', 'Please select a quantity type from the dropdown.')
-    #     return false
   )
 
 

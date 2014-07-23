@@ -1686,11 +1686,6 @@ table.document-edit-table tr td, th {
   text-align: right;
 }
 
-.document-delete {
-  width: 30px;
-  text-align: right;
-}
-
 .upload-document-type {
   padding-top: 2px;
   width: 140px;

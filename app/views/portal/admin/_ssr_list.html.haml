@@ -57,7 +57,7 @@
                     %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}= ssr.status.humanize
                     %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}= ssr.service_request.protocol.try(:short_title)
                     %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}= ssr.service_request.submitted_at.try(:strftime, "%m/%d/%Y")
-                    %td
+                    %td{:style => "max-width: 135px; word-wrap: break-word;"}
                       %ul.services_first
                         %li.ui-corner-top
                           - services = ssr.line_items.map(&:service).sort_by{|srv| srv.name}.map(&:name)

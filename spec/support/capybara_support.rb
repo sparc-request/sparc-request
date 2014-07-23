@@ -257,4 +257,35 @@ module CapybaraSupport
     node = Capybara::Node::Email.new(Capybara.current_session, driver)
     Capybara.current_session.driver.visit "file://#{node.save_page}"
   end
+
+  def get_mail sr_id, ssr_id, role = 'service provider'
+    sr =  ServiceRequest.find(service_request.id)
+    ssr = SubServiceRequest.find(sub_service_request.id)
+    user = Identity.find(1)
+
+    case role
+    when 'service provider'
+      xls = []
+      previously_submitted_at = sr.previous_submitted_at.nil? ? Time.now.utc : sr.previous_submitted_at.utc
+      audit =  ssr.audit_report(user, previously_submitted_at, Time.now.utc)
+      sp = ssr.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)")[0]
+      return Notifier.notify_service_provider(sp,sr,xls,user,audit).deliver
+
+    when 'user'
+      xls = " "
+      project_role = sr.protocol.project_roles.select{ |role| role.project_rights != 'none' and !role.identity.email.blank? }[0]
+      if sr.protocol.project_roles.detect{|pr| pr.identity_id == user.id}.project_rights != "approve"
+        approval = service_request.approvals.create
+      else
+        approval = false
+      end
+      return Notifier.notify_user(project_role,sr,xls,approval,user).deliver
+
+    when 'admin'
+      xls = " "
+      sub_email = ssr.organization.submission_emails_lookup[0].email
+      return Notifier.notify_admin(sr,sub_email,xls,user).deliver
+    end
+    return nil
+  end
 end

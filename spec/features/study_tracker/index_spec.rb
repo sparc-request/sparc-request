@@ -78,7 +78,7 @@ describe "study tracker index page", :js => true do
       it "should open a sub service request if I click that sub service request" do
         find('td', :text => "#{service_request.protocol.id}-").click
         wait_for_javascript_to_finish
-        page.should have_content('Return to Clinical Work Fulfillment Home')
+        page.should have_content('Back to Clinical Work Fulfillment')
       end
 
     end

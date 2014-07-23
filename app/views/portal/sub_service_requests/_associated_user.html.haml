@@ -8,7 +8,7 @@
     %td= pr.try(:display_rights)
     %td.edit
       %a.edit-associated-user-button{:href => "javascript:void(0)", :style => 'font-size:10px', :'data-protocol_id' => pr.protocol_id, :'data-user_id' => identity.id, :'data-pr_id' => pr.id, :'data-permission' => "true", :'data-sub_service_request_id' => @sub_service_request.id}
-        = image_tag('portal/application_form_edit.png')
+        = image_tag('portal/edit_blue.png')
     %td.delete
       %a.delete-associated-user-button{:href => "javascript:void(0)", :'data-protocol_id' => pr.protocol_id, :'data-user_id' => identity.id, :'data-pr_id' => pr.id, :'data-permission' => "true", :'data-sub_service_request_id' => @sub_service_request.id}
-        = image_tag('portal/delete.png')
+        = image_tag('portal/delete_red.png')

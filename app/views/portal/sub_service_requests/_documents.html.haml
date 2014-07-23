@@ -7,7 +7,7 @@
   = hidden_field_tag :location, ''
   = hidden_field_tag :validates, ''
   = render :partial => "errors"
-  .grid_12
+  %div
     .document-management-container
       = render :partial => 'portal/sub_service_requests/document_list', :locals => {:review => false}
       .clear
@@ -22,7 +22,7 @@
       %br
       %br
 
-      %div{:style => 'text-align:left;'}= t("documents.admin_instructions")
+      %div{:style => 'text-align:left; margin: 0 0 10px 45px;'}= t("documents.admin_instructions")
       = text_area_tag 'service_request_notes', @service_request.notes, :'data-service_request_id' => @service_request.id, :class => 'fulfillment_data', :rows => 14, :cols => 117
 
       %br

@@ -6,14 +6,11 @@
 #associated_users {
   
   font-size: 12px;
-  background-color: #EEEEEE;
 
   #users {
     background-color: #FFF;
     padding: 10px;
     margin: 10px auto;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
   }
 
   table {
@@ -21,22 +18,12 @@
     
     th, td {
       text-align: left;
-      background-color: #EEE;
-      padding: 8px;
-      -moz-border-radius: 4px;
-      -webkit-border-radius: 4px;   
+      background-color: #D7D7D7;
+      padding: 15px;
+      font-weight: normal;
     }
-     
-    .name {
-      width: 150px;
-    }
-    
-    .phone {
-      width: 100px;
-    }
-
-    .role {
-      width: 150px;
+    tr.true_header th {
+      font-size: 1.4em;
     }
 
     .rights {
@@ -45,11 +32,10 @@
 
     .actions {
       text-align: center;
-      width: 60px;
+      font-size: 1.4em;
     }
 
     .edit, .delete {
-      width: 30px;
       text-align: center;
     }
     
@@ -63,6 +49,9 @@
       padding-left: 0;
       padding-right: 10px;
     }
+  }
+  .associated-user-button {
+    margin: 0px 10px 20px
   }
 }
 

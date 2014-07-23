@@ -20,10 +20,6 @@
         .field
           = f.label :funding_status, t(:protocol_shared)[:funding_status]
           = f.select :funding_status, options_for_select(FUNDING_STATUSES, study.funding_status), :include_blank => t(:study_form)[:status_blank]
-          
-        .field
-          = f.label :sponsor_name, t(:study_form)[:sponsor_name]
-          = f.text_field :sponsor_name
     
         .pending_funding    
           .field
@@ -78,6 +74,10 @@
         .field
           = f.label :study_phase, t(:study_form)[:study_phase]
           = f.select :study_phase, options_for_select(STUDY_PHASES, study.study_phase), :include_blank => t(:study_form)[:phase_blank]
+          
+        .field
+          = f.label :sponsor_name, t(:study_form)[:sponsor_name]
+          = f.text_field :sponsor_name
 
       %fieldset
         %legend= t(:study_form)[:optional_text]

@@ -1,5 +1,5 @@
-- if @admin_portal and @render_billing_report
-  = link_to t(:study_tracker)[:billing_report][:title], portal_root_path, :class => "home_link"
+- if @study_tracker and @render_billing_report
+  = link_to t(:study_tracker)[:billing_report][:title], study_tracker_root_path, :class => "home_link"
 - elsif @notification_index
   = link_to raw(t(:admin_dashboard)[:notifications_title]), portal_root_path, :class => "home_link"
 - elsif @admin

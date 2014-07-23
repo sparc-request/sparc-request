@@ -7,6 +7,7 @@ $(document).ready ->
     ready: ->
       $(".rsr-dialog").dialog(
         autoOpen: false
+        dialogClass: "rsr_dialog"
         modal: true
         minWidth: 325
         title: "Related Service Request Information"

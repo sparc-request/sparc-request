@@ -298,7 +298,8 @@ describe "admin fulfillment tab", :js => true do
       end
 
       it "should add visits" do
-        click_link 'Add a Visit'
+        find('.add_visit_link').click
+        # click_link 'Add a Visit'
         wait_for_javascript_to_finish
         fill_in "visit_name", :with => 'Pandas'
         fill_in "visit_day", :with => 20
@@ -309,7 +310,8 @@ describe "admin fulfillment tab", :js => true do
       end
 
       it 'should remove visits' do
-        click_link 'Delete a Visit'
+        find('.delete_visit_link').click
+        # click_link 'Delete a Visit'
         wait_for_javascript_to_finish
         page.should have_content 'Service request has been saved.'
         page.should_not have_content 'Delete Visit 10'
@@ -327,7 +329,8 @@ describe "admin fulfillment tab", :js => true do
 
         it "should not allow a visit to be deleted if any of a visit's appointments are completed" do
           arm1.visit_groups.last.appointments.first.update_attributes(:completed_at => Date.today)
-          click_link 'Delete a Visit'
+          find('.delete_visit_link').click
+          # click_link 'Delete a Visit'
           wait_for_javascript_to_finish
           page.should have_content 'Completed appointment exists for this visit...'
           page.should have_content 'Delete Visit 10'
@@ -338,7 +341,8 @@ describe "admin fulfillment tab", :js => true do
 
   describe 'adding an arm' do
     before :each do
-      click_link 'Add an Arm'
+      find('.add_arm_link').click
+      # click_link 'Add an Arm'
       wait_for_javascript_to_finish
       fill_in "arm_name", :with => 'Another Arm'
       fill_in "subject_count", :with => 5

@@ -1,5 +1,5 @@
-%h3= t(:fulfillments)[:notes][:header]
-#notes
+#notes_container
+  %h3= t(:fulfillments)[:notes][:header]
   #notes_table
     %table
       %thead
@@ -11,6 +11,6 @@
               .note_name= note.try(:identity).try(:full_name)
           %tr.space
         %tr
-          %td= text_area_tag "notes", "", :class => "note_box" 
-        %tr
-          %td= link_to t(:fulfillments)[:notes][:link], 'javascript:void(0);', :class => "add_note_link", :'data-sub_service_request_id' => @sub_service_request.id
+          %td= text_area_tag "notes", "", :class => "note_box"
+
+= link_to t(:fulfillments)[:notes][:link], 'javascript:void(0);', :class => "add_note_link", :'data-sub_service_request_id' => @sub_service_request.id

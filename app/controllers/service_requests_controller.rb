@@ -393,12 +393,13 @@ class ServiceRequestsController < ApplicationController
 
     # clean up sub_service_requests
     @service_request.reload
-    xls = render_to_string :action => 'show', :formats => [:xlsx]
 
     to_delete = @service_request.sub_service_requests.map(&:organization_id) - @service_request.service_list.keys
     to_delete.each do |org_id|
       ssr = @service_request.sub_service_requests.find_by_organization_id(org_id)
-      unless ['first_draft', 'draft'].include?(@service_request.status)
+      if !['first_draft', 'draft'].include?(@service_request.status) and !@service_request.submitted_at.nil? and @service_request.submitted_at > ssr.created_at
+        @protocol = @service_request.protocol
+        xls = @protocol.nil? ? nil : render_to_string(:action => 'show', :formats => [:xlsx])
         send_ssr_service_provider_notifications(@service_request, ssr, xls)
       end
       ssr.destroy
@@ -407,6 +408,7 @@ class ServiceRequestsController < ApplicationController
     @service_request.reload
 
     @line_items = @service_request.line_items
+    render :formats => [:js]
   end
 
   def delete_documents

@@ -119,39 +119,42 @@ class ServiceRequest < ActiveRecord::Base
 
     unless (direction == 'back' and status == 'first_draft')
       #validate start date and end date
-      if has_per_patient_per_visit_services?
-        #TODO why is this being called when you try to unset protocol (don't supply one)
-        if protocol and protocol.start_date.nil?
+      if protocol
+        if protocol.start_date.nil?
           errors.add(:start_date, "You must specify the start date of the study.")
         end
-
-        if protocol and protocol.end_date.nil?
+        if protocol.end_date.nil?
           errors.add(:end_date, "You must specify the end date of the study.")
+        end
+        if protocol.start_date and protocol.end_date and protocol.start_date > protocol.end_date
+          errors.add(:invalid_date, "You must chose a start date before the end date.")
         end
       end
 
       #validate arm name, subjects, and visits
-      visitError = false
-      subjectError = false
-      nameError = false
-      validate_for_cwf_visits = false
-      validate_for_cwf_subjects = false
-      arms.each do |arm|
-        unless arm.valid_visit_count? then visitError = true end
-        unless arm.valid_subject_count? then subjectError = true end
-        unless arm.valid_name? then nameError = true end
-        if service_request_has_cwf_ssrs?
-          unless arm.valid_minimum_visit_count? then validate_for_cwf_visits = true end
-          unless arm.valid_minimum_subject_count? then validate_for_cwf_subjects = true end
+      if has_per_patient_per_visit_services?
+        visitError = false
+        subjectError = false
+        nameError = false
+        validate_for_cwf_visits = false
+        validate_for_cwf_subjects = false
+        arms.each do |arm|
+          unless arm.valid_visit_count? then visitError = true end
+          unless arm.valid_subject_count? then subjectError = true end
+          unless arm.valid_name? then nameError = true end
+          if service_request_has_cwf_ssrs?
+            unless arm.valid_minimum_visit_count? then validate_for_cwf_visits = true end
+            unless arm.valid_minimum_subject_count? then validate_for_cwf_subjects = true end
+          end
+          if visitError and subjectError and nameError then break end
         end
-        if visitError and subjectError and nameError then break end
-      end
 
-      if visitError then errors.add(:visit_count, "You must specify the estimated total number of visits (greater than zero) before continuing.") end
-      if subjectError then errors.add(:subject_count, "You must specify the estimated total number of subjects before continuing.") end
-      if nameError then errors.add(:name, "You must specify a name for each arm before continuing.") end
-      if validate_for_cwf_visits then errors.add(:visit_count, "A request associated with this arm is in Clinical Work Fulfillment. The visit count cannot be decreased.") end
-      if validate_for_cwf_subjects then errors.add(:subject_count, "A request associated with this arm is in Clinical Work Fulfillment. The subject count cannot be decreased.") end
+        if visitError then errors.add(:visit_count, "You must specify the estimated total number of visits (greater than zero) before continuing.") end
+        if subjectError then errors.add(:subject_count, "You must specify the estimated total number of subjects before continuing.") end
+        if nameError then errors.add(:name, "You must specify a name for each arm before continuing.") end
+        if validate_for_cwf_visits then errors.add(:visit_count, "A request associated with this arm is in Clinical Work Fulfillment. The visit count cannot be decreased.") end
+        if validate_for_cwf_subjects then errors.add(:subject_count, "A request associated with this arm is in Clinical Work Fulfillment. The subject count cannot be decreased.") end
+      end
     end
 
   end

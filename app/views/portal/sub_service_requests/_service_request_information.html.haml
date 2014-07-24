@@ -11,18 +11,17 @@
       %tbody
         %tr
           %td
-            = text_field_tag "service_request_start_date_picker", @protocol.try(:start_date).try(:strftime, '%D'), :class => 'date datepicker'
-            = hidden_field_tag "service_request_start_date", @protocol.try(:start_date).try(:strftime, "%F"), :'data-service_request_id' => @service_request.id, :class => 'fulfillment_data'
+            = text_field_tag "protocol_start_date_picker", @protocol.try(:start_date).try(:strftime, '%D'), :class => 'date datepicker', :readonly => true
+            = hidden_field_tag "protocol_start_date", @protocol.try(:start_date).try(:strftime, "%F"), :'data-protocol_id' => @protocol.id, :class => 'fulfillment_data'
           %td
-            = text_field_tag "service_request_end_date_picker", @protocol.try(:end_date).try(:strftime, '%D'), :class => 'date datepicker'
-            = hidden_field_tag "service_request_end_date", @protocol.try(:end_date).try(:strftime, "%F"), :'data-service_request_id' => @service_request.id, :class => 'fulfillment_data'
+            = text_field_tag "protocol_end_date_picker", @protocol.try(:end_date).try(:strftime, '%D'), :class => 'date datepicker', :readonly => true
+            = hidden_field_tag "protocol_end_date", @protocol.try(:end_date).try(:strftime, "%F"), :'data-protocol_id' => @protocol.id, :class => 'fulfillment_data'
           %td
             = text_field_tag "sub_service_request_consult_arranged_date_picker", @sub_service_request.try(:consult_arranged_date).try(:strftime, '%D'), :class => 'date datepicker'
             = hidden_field_tag "sub_service_request_consult_arranged_date", @sub_service_request.try(:consult_arranged_date).try(:strftime, "%F"), :'data-sub_service_request_id' => @sub_service_request.id, :class => 'fulfillment_data'
           %td
             = text_field_tag "sub_service_request_requester_contacted_date_picker", @sub_service_request.try(:requester_contacted_date).try(:strftime, '%D'), :class => 'date datepicker'
             = hidden_field_tag "sub_service_request_requester_contacted_date", @sub_service_request.try(:requester_contacted_date).try(:strftime, "%F"), :'data-sub_service_request_id' => @sub_service_request.id, :class => 'fulfillment_data'
-
 
 #request_cost_total
   = render 'direct_cost_total'

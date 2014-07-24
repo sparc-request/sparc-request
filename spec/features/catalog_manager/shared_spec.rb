@@ -64,7 +64,7 @@ describe 'shared views', js: true do
     context "submission emails" do
 
       it "should add an email to the program" do
-        sleep 2
+        wait_for_javascript_to_finish
         fill_in "new_se", with: "franzferdinand@ww1.gov"
         find('#new_se').native.send_keys(:return)
         wait_for_javascript_to_finish
@@ -72,7 +72,7 @@ describe 'shared views', js: true do
       end
 
       it "should delete an email from the program" do
-        sleep 2
+        wait_for_javascript_to_finish
         fill_in "new_se", with: "franzferdinand@ww1.gov"
         find('#new_se').native.send_keys(:return)
         wait_for_javascript_to_finish

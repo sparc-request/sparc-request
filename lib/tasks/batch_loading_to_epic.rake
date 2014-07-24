@@ -8,13 +8,11 @@ namespace :epic do
       STDIN.gets.strip
     end
 
-    def send_epic_queue_report
-      eq = EpicQueue.all
-
+    def send_epic_queue_report protocol_ids
       CSV.open("tmp/epic_queue_report.csv", "wb") do |csv|
         csv << [Time.now.strftime('%m/%d/%Y')]
-        eq.each do |epic_queue|
-          protocol = epic_queue.protocol
+        protocol_ids.each do |pid|
+          protocol = Protocol.find pid
 
           csv << [protocol.id, protocol.short_title, protocol.funding_source]
           csv << ["First Name", "Last Name", "Email Address", "LDAP UID", "Role"]
@@ -28,7 +26,9 @@ namespace :epic do
       Notifier.epic_queue_report.deliver
     end
 
-    if EpicQueue.all.size > 0
+    manual_protocol_ids = prompt("Enter a single or comma separated list of protocol ids (leave blank to use the EPIC queue): ") unless args.automate
+
+    if EpicQueue.all.size > 0 or not manual_protocols_ids.blank?
       confirm = "No"
       protocol_ids = []
 
@@ -36,12 +36,10 @@ namespace :epic do
         confirm = "Yes"
         protocol_ids = EpicQueue.all.map(&:protocol_id)
       else
-        single = prompt("Enter a single protocol ID or leave blank for all: ")
-
-        if single.blank?
+        if manual_protocol_ids.blank?
           protocol_ids = EpicQueue.all.map(&:protocol_id)
         else
-          protocol_ids = [single.to_i]
+          protocol_ids = manual_protocol_ids.gsub(/\s+/, "").split(",").map(&:to_i)
         end
 
         confirm = prompt("Are you sure you want to batch load #{protocol_ids.inspect}? (Yes/No) ")
@@ -51,7 +49,7 @@ namespace :epic do
       failed = []
       if confirm == "Yes"
 
-        send_epic_queue_report
+        send_epic_queue_report(protocol_ids)
 
         puts "Queue => #{protocol_ids.inspect.to_s}"
 

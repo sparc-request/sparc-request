@@ -61,7 +61,6 @@ describe "landing page", :js => true do
       within(".Julia") do
         find("a.delete-associated-user-button").click
         page.driver.browser.switch_to.alert.accept # Accept Delete
-        page.driver.browser.switch_to.alert.accept # Clear notification
       end
       page.should have_css('tr.Julia')
     end

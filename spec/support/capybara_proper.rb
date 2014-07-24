@@ -1060,17 +1060,17 @@ module CapybaraProper
 
     def documentsPage
         click_link "Add a New Document"
-        first(:xpath,"//input[@id='document']").set("/quick_happy_test_spec.rb")
+        File.new 'doc.txt','w+'
+        first(:xpath,"//input[@id='document']").set(Dir.pwd + "/doc.txt")
         select "Other", :from => "doc_type"
         first(:xpath,"//input[@id='process_ssr_organization_ids_']").click
         click_link "Upload"
         wait_for_javascript_to_finish
-        
         click_link "Edit"
         wait_for_javascript_to_finish
         click_link "Update"
         wait_for_javascript_to_finish
-
+        File.delete 'doc.txt'
         saveAndContinue      
     end
 

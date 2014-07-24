@@ -302,6 +302,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     @service_request = sub_service_request.service_request
     @protocol = @service_request.protocol
     @line_items = sub_service_request.line_items
+    @service_list = @service_request.service_list
 
     # generate the excel for this service request
     xls = render_to_string "/service_requests/show", :formats => [:xlsx]

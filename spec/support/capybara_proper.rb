@@ -1060,7 +1060,8 @@ module CapybaraProper
 
     def documentsPage
         click_link "Add a New Document"
-        first(:xpath,"//input[@id='document']").set("/quick_happy_test_spec.rb")
+        file = TempFile.new 'doc'
+        first(:xpath,"//input[@id='document']").set(file.path)
         select "Other", :from => "doc_type"
         first(:xpath,"//input[@id='process_ssr_organization_ids_']").click
         click_link "Upload"
@@ -1070,7 +1071,7 @@ module CapybaraProper
         wait_for_javascript_to_finish
         click_link "Update"
         wait_for_javascript_to_finish
-
+        file.unlink
         saveAndContinue      
     end
 

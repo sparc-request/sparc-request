@@ -104,7 +104,8 @@
             %li= f.label :project_rights_request, t(:portal_user_form)[:rights][:request]
             %li= f.label :project_rights_approve, t(:portal_user_form)[:rights][:approve]
           %ul.rights_radios
-            %li= f.radio_button :project_rights, 'none'
-            %li= f.radio_button :project_rights, 'view'
-            %li= f.radio_button :project_rights, 'request'
+            - disable = (f.object.role == 'pi' or f.object.role == 'primary-pi') ? true : false
+            %li= f.radio_button :project_rights, 'none', :disabled =>  disable
+            %li= f.radio_button :project_rights, 'view', :disabled => disable
+            %li= f.radio_button :project_rights, 'request', :disabled => disable
             %li= f.radio_button :project_rights, 'approve'

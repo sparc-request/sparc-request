@@ -63,14 +63,14 @@ describe "admin fulfillment tab", :js => true do
       end
 
       it 'should save the proposed start and end date' do
-        page.execute_script %Q{ $('#service_request_start_date_picker:visible').focus() }
+        page.execute_script %Q{ $('#protocol_end_date_picker:visible').focus() }
         page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
         page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
         page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-        page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15    
+        page.execute_script %Q{ $("a.ui-state-default:contains('16')").trigger("click") } # click on day 15    
         wait_for_javascript_to_finish
 
-        page.execute_script %Q{ $('#service_request_end_date_picker:visible').focus() }
+        page.execute_script %Q{ $('#protocol_start_date_picker:visible').focus() }
         page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
         page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
         page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
@@ -79,9 +79,9 @@ describe "admin fulfillment tab", :js => true do
         page.should have_content("Service request has been saved.")
         
         visit portal_admin_sub_service_request_path(sub_service_request)
-        service_request.reload
-        page.find('#service_request_start_date_picker').should have_value study.start_date.strftime("%m/%d/%y")
-        page.find('#service_request_end_date_picker').should have_value study.end_date.strftime("%m/%d/%y")
+        study.reload
+        page.find('#protocol_start_date_picker').should have_value study.start_date.strftime("%m/%d/%y")
+        page.find('#protocol_end_date_picker').should have_value study.end_date.strftime("%m/%d/%y")
       end
     end
 

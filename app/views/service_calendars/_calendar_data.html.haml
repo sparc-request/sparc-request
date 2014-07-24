@@ -38,11 +38,15 @@
         - if @tab == 'billing_strategy'
           %tr.sub_section_header
             %th{:colspan => @portal ? 3 : 6}= value[:name]
+            -if @portal
+              %th{:colspan => 2}
             -5.times do
               %th.billing_type_list
                 %span.billing_type R
                 %span.billing_type T
                 %span.billing_type %
+            - unless @portal
+              %th &nbsp;
             %th &nbsp;
         - else
           %tr.sub_section_header

@@ -87,6 +87,7 @@ class Notifier < ActionMailer::Base
     @ssr_ids = service_request.sub_service_requests.map{ |ssr| ssr.id }.join(", ")
 
     attachments_to_add.each do |file_name, document|
+      next if document.nil?
       attachments[file_name] = document
     end
     

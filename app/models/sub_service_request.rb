@@ -353,10 +353,10 @@ class SubServiceRequest < ActiveRecord::Base
 
   # filtered audit trail based off service requests and only return data that we need
   # in future may want to return full filtered audit trail, currently this is only used in e-mailing service providers
-  def audit_trail identity, start_date, end_date=Time.now.utc
+  def audit_report identity, start_date, end_date=Time.now.utc
     filtered_audit_trail = {:line_items => []}
 
-    full_trail = service_request.audit_trail(identity, start_date, end_date)
+    full_trail = service_request.audit_report(identity, start_date, end_date)
     full_line_items_audits = full_trail[:line_items] 
 
     full_line_items_audits.each do |k, audits|
@@ -373,8 +373,8 @@ class SubServiceRequest < ActiveRecord::Base
       else
         filtered_audit_trail[:line_items] << audit if audit.audited_changes["sub_service_request_id"] == self.id
       end 
-    end
-    
+    end 
+    filtered_audit_trail[:sub_service_request_id] = self.id
     filtered_audit_trail
   end
   ### end audit reporting methods ###

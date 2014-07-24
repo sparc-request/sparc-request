@@ -1,8 +1,14 @@
-:javascript
-  $(document).ready( function() {
-    Sparc.admin.show_return_to_study_tracker_button();
-  });
 = javascript_include_tag 'jquery.qtip.min'
+
+.admin-right-dashboard
+  .user-information-body
+    %p
+      = @user.full_name
+      |
+      = @user.email
+    .admin-buttons
+      = link_to "Back to Clinical Work Fulfillment", study_tracker_root_path, :class => "cwf_return_link"
+
 #information
   #wrapper
     %table#ssr_info
@@ -15,12 +21,12 @@
           %th= t(:admin_dashboard)[:export]
       %tbody
         %tr
-          %td= "#{@protocol.id}-#{@sub_service_request.ssr_id}"
+          %td
+            = "#{@protocol.id}-#{@sub_service_request.ssr_id}"
           %td= @protocol.try(:principal_investigators).try(:first).try(:display_name)
           %td= @sub_service_request.try(:service_request).try(:service_requester).try(:display_name)
           %td= @protocol.try(:short_title)
-          %td 
-            .export_to_excel_button= link_to t(:admin_dashboard)[:export_link], service_request_path(@sub_service_request.service_request, :format => :xlsx)
+          %td= link_to t(:admin_dashboard)[:export_link], service_request_path(@sub_service_request.service_request, :format => :xlsx), :class => "export_to_excel_button"
         %tr
           %th= t(:admin_dashboard)[:routing]
           %td

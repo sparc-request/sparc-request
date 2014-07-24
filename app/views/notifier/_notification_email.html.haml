@@ -77,7 +77,7 @@
 
       %br
 
-    - if @audit_trail and not @audit_trail[:line_items].empty?
+    - if @audit_report and not @audit_report[:line_items].empty?
       %br
       %br
 
@@ -88,7 +88,7 @@
             %th{:style => 'border: 1px solid black;'}= t(:notifier)[:action]
 
         %tbody
-          - @audit_trail[:line_items].each do |last_change|
+          - @audit_report[:line_items].each do |last_change|
             - service = Service.find(last_change.audited_changes["service_id"])
             %tr{:style => 'border: 1px solid black;'}
               %td{:style => 'border: 1px solid black;'}= service.name
@@ -113,7 +113,7 @@
       %thead
         %tr{:style => 'border: 1px solid black;'}
           %td{:colspan => 2}
-            %strong= "Admin Information"
+            %strong= t(:notifier)[:admin_data]
       %tbody
         %tr{:style => 'border: 1px solid black;'}
           %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:triggered_by]
@@ -124,3 +124,20 @@
         %tr{:style => 'border: 1px solid black;'}
           %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:ssr_ids]
           %td{:style => 'border: 1px solid black;'}= @ssr_ids
+    %br
+    - if @service_request.has_per_patient_per_visit_services? and @service_request.arms.count >0 and @provide_arm_info
+      %table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
+        %thead
+          %tr{:style => 'border: 1px solid black;'}
+            %td{:colspan => 3}
+              %strong= t(:notifier)[:arm_data]
+          %tr{:style => 'border: 1px solid black;'}
+            %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:arm_name]
+            %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:arm_subject_count]
+            %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:arm_visit_count]
+        %tbody
+          - @service_request.arms.each do |arm|
+            %tr{:style => 'border: 1px solid black;'}
+              %td{:style => 'border: 1px solid black;'}= arm.name
+              %td{:style => 'border: 1px solid black;'}= arm.subject_count
+              %td{:style => 'border: 1px solid black;'}= arm.visit_count

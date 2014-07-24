@@ -23,8 +23,7 @@
             = link_to '', 'javascript:void(0);', :class => "add_visit_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id
           %td
             = select_tag "delete_visit_position", visits_for_delete(@selected_arm)
-            - if show_delete_visit_link?(@selected_arm)
-              = link_to '', 'javascript:void(0);', :class => "delete_visit_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id
+            = link_to '', 'javascript:void(0);', :class => "delete_visit_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id, :'data-visit_count' => visit_size_for_arm(@selected_arm)
     #service_calendar
       - if @study_tracker
         = hidden_field_tag('study_tracker', true, :id => "study_tracker_hidden_field")

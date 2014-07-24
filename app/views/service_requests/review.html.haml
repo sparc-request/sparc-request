@@ -29,8 +29,8 @@
           #service_calendar_container
             - if @service_request.has_per_patient_per_visit_services?
               - @service_request.arms.each do |arm|
-                = render :partial => 'service_requests/review/calendar', :locals => {:arm => arm, :thead_class => 'red-provider'}
-            = render :partial => 'service_requests/review/review_totals', :locals => {:thead_class => 'red-provider'}
+                = render :partial => 'service_requests/review/calendar', :locals =>  {:tab => @tab, :arm => arm, :portal => @portal, :thead_class => @thead_class}
+            = render :partial => 'service_requests/review/review_totals', :locals => {:thead_class => @thead_class}
           %br
           %br
           %br

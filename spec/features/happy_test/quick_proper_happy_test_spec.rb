@@ -25,7 +25,7 @@ describe 'A Quick Happy Test on Sparc Proper' do
     visit root_path
 
     #**Submit a service request**#
-    addService 'MUSC Research Data Request (CDW)'
+    addService 'CDW'
     addService 'Breast Milk Collection'
     find('.submit-request-button').click
     wait_for_javascript_to_finish
@@ -53,6 +53,11 @@ describe 'A Quick Happy Test on Sparc Proper' do
     select "Billing/Business Manager", :from => "project_role_role"
     click_button "Add Authorized User"
     wait_for_javascript_to_finish
+
+    #test edit epic rights here
+    # editEpicUserAccess
+    #end test epic rights
+
     clickContinueButton
     saveAndContinue
     #**END Select Users END**#

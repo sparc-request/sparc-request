@@ -15,7 +15,7 @@ class Portal::SubsidiesController < Portal::BaseController
     data[:overridden] = true
     if @subsidy.update_attributes(data)
       @sub_service_request = @subsidy.sub_service_request
-      @subsidy.update_attributes(:admin_percent_subsidy => params[:percent_subsidy])
+      @subsidy.update_attributes(:stored_percent_subsidy => params[:percent_subsidy])
       render 'portal/sub_service_requests/add_subsidy'
     else
       respond_to do |format|
@@ -28,7 +28,7 @@ class Portal::SubsidiesController < Portal::BaseController
     if @subsidy = Subsidy.create(params[:subsidy])
       @sub_service_request = @subsidy.sub_service_request
       @subsidy.update_attribute(:pi_contribution, @sub_service_request.direct_cost_total)
-      @subsidy.update_attributes(:admin_percent_subsidy => @subsidy.percent_subsidy)
+      @subsidy.update_attributes(:stored_percent_subsidy => @subsidy.percent_subsidy)
       render 'portal/sub_service_requests/add_subsidy'
     else
       respond_to do |format|

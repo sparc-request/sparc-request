@@ -114,5 +114,4 @@ feature 'create new service' do
     page.execute_script("$('#save_button').click();")
     page.should have_content( 'Core Test Service created successfully' )
   end
-
-end
+end 

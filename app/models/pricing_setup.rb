@@ -38,6 +38,7 @@ class PricingSetup < ActiveRecord::Base
     when 'corporate' then self.corporate
     when 'other' then self.other
     when 'member' then self.member
+    when 'full' then 100
     else raise ArgumentError, "Could not find applied percentage for rate type #{rate_type}"
     end
 

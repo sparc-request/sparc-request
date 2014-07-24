@@ -3,7 +3,7 @@ class VisitGroup < ActiveRecord::Base
   audited
 
   belongs_to :arm
-  has_many :visits, :dependent => :delete_all
+  has_many :visits, :dependent => :destroy
   has_many :appointments
   attr_accessible :name
   attr_accessible :position

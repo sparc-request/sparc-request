@@ -1,18 +1,56 @@
 namespace :epic do
   desc "Batch load from Epic Queue"
-  task :batch_load => :environment do
+  task :batch_load, [:automate] => [:environment] do |t, args|
+    args.with_defaults(:automate => false)
+
     def prompt(*args)
       print(*args)
       STDIN.gets.strip
     end
 
-    confirm = prompt("Are you sure you want to batch load from the Epic Queue? (Yes/No) ")
+    def send_epic_queue_report protocol_ids
+      CSV.open("tmp/epic_queue_report.csv", "wb") do |csv|
+        csv << [Time.now.strftime('%m/%d/%Y')]
+        protocol_ids.each do |pid|
+          protocol = Protocol.find pid
 
-    sent = []
-    failed = []
-    if confirm == "Yes"
-      if EpicQueue.all.size > 0
+          csv << [protocol.id, protocol.short_title, protocol.funding_source]
+          csv << ["First Name", "Last Name", "Email Address", "LDAP UID", "Role"]
+          protocol.project_roles.each do |pr|
+            csv << [pr.identity.first_name, pr.identity.last_name, pr.identity.email, pr.identity.ldap_uid, pr.role]
+          end
+          csv << []
+          csv << []
+        end
+      end
+      Notifier.epic_queue_report.deliver
+    end
+
+    manual_protocol_ids = prompt("Enter a single or comma separated list of protocol ids (leave blank to use the EPIC queue): ") unless args.automate
+
+    if EpicQueue.all.size > 0 or not manual_protocols_ids.blank?
+      confirm = "No"
+      protocol_ids = []
+
+      if args.automate
+        confirm = "Yes"
         protocol_ids = EpicQueue.all.map(&:protocol_id)
+      else
+        if manual_protocol_ids.blank?
+          protocol_ids = EpicQueue.all.map(&:protocol_id)
+        else
+          protocol_ids = manual_protocol_ids.gsub(/\s+/, "").split(",").map(&:to_i)
+        end
+
+        confirm = prompt("Are you sure you want to batch load #{protocol_ids.inspect}? (Yes/No) ")
+      end
+
+      sent = []
+      failed = []
+      if confirm == "Yes"
+
+        send_epic_queue_report(protocol_ids)
+
         puts "Queue => #{protocol_ids.inspect.to_s}"
 
         protocol_ids.each do |id|
@@ -43,17 +81,22 @@ namespace :epic do
             puts "#{p.short_title} (#{p.id}) failed to send to Epic with an exception"
             puts "Sent => #{sent.inspect.to_s}"
             puts "Failed => #{failed.inspect.to_s}"
-            Notifier.epic_queue_error(p).deliver
+            Notifier.epic_queue_error(p, e).deliver
             puts e
           end
         end
         puts "Sent => #{sent.inspect.to_s}"
         puts "Failed => #{failed.inspect.to_s}"
+        
+        Notifier.epic_queue_complete(sent, failed).deliver
       else
-        puts "Epic Queue is empty"
+        puts "Batch load aborted"
       end
     else
-      puts "Batch load aborted"
+      sent = []
+      failed = []
+      puts "Epic Queue is empty"
+      Notifier.epic_queue_complete(sent, failed).deliver
     end
   end
 end

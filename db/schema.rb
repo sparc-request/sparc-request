@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140520183412) do
+ActiveRecord::Schema.define(:version => 20140610154654) do
 
   create_table "admin_rates", :force => true do |t|
     t.integer  "line_item_id"
@@ -811,6 +811,7 @@ ActiveRecord::Schema.define(:version => 20140520183412) do
     t.datetime "created_at",                                                            :null => false
     t.datetime "updated_at",                                                            :null => false
     t.datetime "deleted_at"
+    t.string   "cdm_code"
     t.boolean  "send_to_epic",                                       :default => false
   end
 
@@ -897,7 +898,7 @@ ActiveRecord::Schema.define(:version => 20140520183412) do
     t.datetime "deleted_at"
     t.boolean  "overridden"
     t.integer  "sub_service_request_id"
-    t.float    "admin_percent_subsidy",  :default => 0.0
+    t.float    "stored_percent_subsidy", :default => 0.0
   end
 
   add_index "subsidies", ["sub_service_request_id"], :name => "index_subsidies_on_sub_service_request_id"

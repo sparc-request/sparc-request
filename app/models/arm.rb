@@ -38,17 +38,21 @@ class Arm < ActiveRecord::Base
     return !subject_count.nil? && subject_count > 0
   end
 
-  # def valid_minimum_visit_count?
-  #   return !visit_count.nil? && visit_count >= minimum_visit_count
-  # end
+  def valid_name?
+    return !name.nil? && name.length > 0
+  end
 
-  # def valid_minimum_subject_count?
-  #   return !subject_count.nil? && subject_count >= minimum_subject_count
-  # end
+  def valid_minimum_visit_count?
+    return !visit_count.nil? && visit_count >= minimum_visit_count
+  end
+
+  def valid_minimum_subject_count?
+    return !subject_count.nil? && subject_count >= minimum_subject_count
+  end
 
   def create_line_items_visit line_item
     # if visit_count is nil then set it to 1
-    self.visit_count.update_attribute(:visit_count, 1) if self.visit_count.nil?
+    self.update_attribute(:visit_count, 1) if self.visit_count.nil?
 
     # loop until visit_groups catches up to visit_count
     while self.visit_groups.size < self.visit_count
@@ -104,8 +108,10 @@ class Arm < ActiveRecord::Base
 
   def indirect_costs_for_visit_based_service line_items_visits=self.line_items_visits
     total = 0.0
-    line_items_visits.each do |vg|
-      total += vg.indirect_costs_for_visit_based_service
+    if USE_INDIRECT_COST
+      line_items_visits.each do |vg|
+        total += vg.indirect_costs_for_visit_based_service
+      end
     end
     return total
   end
@@ -193,9 +199,14 @@ class Arm < ActiveRecord::Base
   end
 
   def remove_visit position
-    self.update_attribute(:visit_count, (self.visit_count - 1))
     visit_group = self.visit_groups.find_by_position(position)
-    return visit_group.destroy
+    unless visit_group.appointments.reject{|x| !x.completed_at?}.empty?
+      self.errors.add(:completed_appointment, "exists for this visit.")
+      return false
+    else
+      self.update_attributes(:visit_count => self.visit_count - 1)
+      return visit_group.destroy
+    end
   end
 
   def populate_subjects

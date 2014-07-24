@@ -16,16 +16,28 @@ $(document).ready ->
         dateFormat: 'm/dd/yy'
         altFormat: 'yy-mm-dd'
         altField: data
-      
+  
   }
-
+  
   $(document).on('change', '.datepicker', ->
     selector = "##{$(this).attr("id").replace('_picker', '')}"
     $("#{selector}").change()
-  )
+    )
+  original = ''
+  $(document).on('click', '.datepicker', ->
+    original = $(this).val()
+    )
 
   for datepicker in $('.datepicker')
     do_datepicker("##{$(datepicker).attr('id')}")
+
+  validateDate = (start,end) ->
+    if start == '' or end ==''
+      return true 
+    if start > end 
+      return false
+    else 
+      return true
 
   filterNonKeys = (arr) ->
     filtered = []
@@ -53,7 +65,16 @@ $(document).ready ->
     data[key] = $(this).val()
     data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
     data['line_items_visit_id'] = $(this).parents("tr").data("line_items_visit_id") || null
-    put_attribute(object_id, klass, data)
+    if $(this).attr('name') == 'protocol_start_date' or $(this).attr('name') == 'protocol_end_date'
+      start = $('#protocol_start_date_picker').val()
+      end = $('#protocol_end_date_picker').val()
+      if validateDate(start,end)
+        put_attribute(object_id, klass, data)
+      else
+        $().toastmessage('showErrorToast', "Please enter a start date before the end date")
+        $("##{$(this).attr("name")}_picker").val(original)
+    else  
+      put_attribute(object_id, klass, data)
   )
 
   $(document).on('change', '.cwf_data', ->
@@ -520,7 +541,7 @@ $(document).ready ->
 
   $('.send_to_epic_button').on('click', ->
     ssr_id = $(this).attr('sub_service_request_id')
-    $(this).button('disable')
+    $(this).unbind('click')
     $.ajax
       type: 'PUT'
       url: "/portal/admin/sub_service_requests/#{ssr_id}/push_to_epic"
@@ -535,14 +556,11 @@ $(document).ready ->
         for error in errors
           $().toastmessage('showErrorToast', "#{error.humanize()}.");
       complete: =>
-        $(this).button('enable')
+        $(this).bind('click')
   )
 
   # INSTANTIATE HELPERS
   # set_percent_subsidy()
-  $('.delete-ssr-button').button()
-  $('.export_to_excel_button').button()
-  $('.send_to_epic_button').button()
   $('#approval_history_table').tablesorter()
   $('#status_history_table').tablesorter()
 
@@ -550,9 +568,4 @@ $(document).ready ->
     if $(this).val() == ''
       $(this).val(0).change()
   )
-
-  show_return_to_portal_button = () ->
-    linkHtml = "<a id='return_to_admin_portal' style='position:relative;left:700px;bottom:25px' href='/portal/admin'>Return to Admin Portal</a>"
-    $("#title").append(linkHtml)
-    $("#return_to_admin_portal").button()
 

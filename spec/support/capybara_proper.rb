@@ -1066,7 +1066,6 @@ module CapybaraProper
         first(:xpath,"//input[@id='process_ssr_organization_ids_']").click
         click_link "Upload"
         wait_for_javascript_to_finish
-        
         click_link "Edit"
         wait_for_javascript_to_finish
         click_link "Update"

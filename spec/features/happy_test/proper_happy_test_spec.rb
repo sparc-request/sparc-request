@@ -1,5 +1,6 @@
 require 'spec_helper'
 include CapybaraProper
+include CapybaraAdminPortal
 
 describe 'A Happy Test on Sparc Proper' do
   let_there_be_lane
@@ -70,7 +71,6 @@ describe 'A Happy Test on Sparc Proper' do
     documentsPage
     reviewPage(request)
     submissionConfirmationPage
-
     goToSparcProper
     
   end

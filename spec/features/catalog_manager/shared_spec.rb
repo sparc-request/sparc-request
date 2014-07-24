@@ -48,13 +48,18 @@ describe 'shared views', js: true do
     context "service providers" do
 
       it "should add a new service provider" do
+        add_first_identity_to_organization("new_sp")
         add_identity_to_organization("new_sp")
+        sleep(600)
         page.should have_content("Jason Leonard")
+        page.should have_content("Julia Glenn")
       end
 
-      it "should delete a service provider" do
+      it "should delete a service provider but not all" do
         delete_identity_from_organization("new_sp", ".sp_delete")
+        sleep(60)
         page.should_not have_content("Jason Leonard")
+        page.should have_content("Julia Glenn")
       end
     end
 

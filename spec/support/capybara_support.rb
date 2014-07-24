@@ -233,8 +233,18 @@ module CapybaraSupport
   end
 
   # Following two methods used for adding and deleting catalog managers, service providers, etc. in spec/features/catalog_manger/shared_spec.rb
+  def add_first_identity_to_organization(field)
+    wait_for_javascript_to_finish
+    fill_in "#{field}", with: "bjk7"
+    wait_for_javascript_to_finish
+    sleep 20
+    page.find('a', text: "Brian Kelsey (kelsey@musc.edu)", visible: true).click()
+    wait_for_javascript_to_finish
+    first("#save_button").click
+    wait_for_javascript_to_finish
+  end
   def add_identity_to_organization(field)
-    sleep 2
+    wait_for_javascript_to_finish
     fill_in "#{field}", with: "leonarjp"
     wait_for_javascript_to_finish
     page.find('a', text: "Jason Leonard (leonarjp@musc.edu)", visible: true).click()

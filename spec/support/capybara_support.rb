@@ -40,6 +40,11 @@ module CapybaraSupport
       is_available:         1)
     provider.save!
 
+    service_provider = FactoryGirl.create(:service_provider,
+      identity_id:          identity.id,
+      organization_id:               provider.id)
+    service_provider.save!
+
     provider_subsidy_map = SubsidyMap.create(
       organization_id:      provider.id,
       max_dollar_cap:       121.0000,

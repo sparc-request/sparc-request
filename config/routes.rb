@@ -243,6 +243,7 @@ SparcRails::Application.routes.draw do
       resources :protocols do
         member do
           put :update_protocol_type
+          put :update_from_fulfillment
         end
       end
 

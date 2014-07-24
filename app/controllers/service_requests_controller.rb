@@ -12,8 +12,6 @@ class ServiceRequestsController < ApplicationController
     @protocol = @service_request.protocol
     @service_list = @service_request.service_list
     @admin_offset = params[:admin_offset]
-    # generate the excel for this service request
-    @xls = render_to_string :action => 'show', :formats => [:xlsx]
 
     # TODO: this gives an error in the spec tests, because they think
     # it's trying to render html instead of xlsx
@@ -287,9 +285,10 @@ class ServiceRequestsController < ApplicationController
     if @service_request.previous_submitted_at.nil?
       send_notifications(@service_request, @sub_service_request)
     elsif service_request_has_changed_ssr?(@service_request)
+      xls = render_to_string :action => 'show', :formats => [:xlsx]
       @service_request.sub_service_requests.each do |ssr|
         if ssr_has_changed?(@service_request, ssr)
-          send_ssr_service_provider_notifications(@service_request, ssr, @xls)
+          send_ssr_service_provider_notifications(@service_request, ssr, xls)
         end
       end
     end
@@ -394,11 +393,13 @@ class ServiceRequestsController < ApplicationController
 
     # clean up sub_service_requests
     @service_request.reload
+    xls = render_to_string :action => 'show', :formats => [:xlsx]
+
     to_delete = @service_request.sub_service_requests.map(&:organization_id) - @service_request.service_list.keys
     to_delete.each do |org_id|
       ssr = @service_request.sub_service_requests.find_by_organization_id(org_id)
       unless ['first_draft', 'draft'].include?(@service_request.status)
-        send_ssr_service_provider_notifications(@service_request, ssr, @xls)
+        send_ssr_service_provider_notifications(@service_request, ssr, xls)
       end
       ssr.destroy
     end
@@ -523,7 +524,8 @@ class ServiceRequestsController < ApplicationController
 
   # Send notifications to all users.
   def send_notifications(service_request, sub_service_request)
-    send_user_notifications(service_request, @xls)
+    xls = render_to_string :action => 'show', :formats => [:xlsx]
+    send_user_notifications(service_request, xls)
 
     if sub_service_request then
       sub_service_requests = [ sub_service_request ]
@@ -531,8 +533,8 @@ class ServiceRequestsController < ApplicationController
       sub_service_requests = service_request.sub_service_requests
     end
 
-    send_admin_notifications(sub_service_requests, @xls)
-    send_service_provider_notifications(service_request, sub_service_requests, @xls)
+    send_admin_notifications(sub_service_requests, xls)
+    send_service_provider_notifications(service_request, sub_service_requests, xls)
   end
 
   def send_user_notifications(service_request, xls)

@@ -309,7 +309,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     # send e-mail to all folks with view and above
     @protocol.project_roles.each do |project_role|
       next if project_role.project_rights == 'none'
-      Notifier.notify_user(project_role, @service_request, xls, false).deliver unless project_role.identity.email.blank?
+      Notifier.notify_user(project_role, @service_request, xls, false, current_user).deliver unless project_role.identity.email.blank?
     end
 
     # Check to see if we need to send notifications for epic.

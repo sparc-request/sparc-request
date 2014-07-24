@@ -237,7 +237,6 @@ module CapybaraSupport
     wait_for_javascript_to_finish
     fill_in "#{field}", with: "bjk7"
     wait_for_javascript_to_finish
-    sleep 20
     page.find('a', text: "Brian Kelsey (kelsey@musc.edu)", visible: true).click()
     wait_for_javascript_to_finish
     first("#save_button").click
@@ -254,11 +253,14 @@ module CapybaraSupport
   end
 
   def delete_identity_from_organization(field, delete)
-    sleep 3
+    wait_for_javascript_to_finish
     add_identity_to_organization("#{field}")
+    if field == "new_sp"
+      add_first_identity_to_organization("#{field}")
+    end
     # This overrides the javascript confirm dialog
     page.evaluate_script('window.confirm = function() { return true; }')
-    find("#{delete}").click
+    first("#{delete}").click
     wait_for_javascript_to_finish
   end
 

@@ -4,11 +4,11 @@ module CapybaraCatalogManager
     find(:xpath, "//div[text()='User Rights']").click
     wait_for_javascript_to_finish
     fill_in "new_sp", :with => "#{id}"
-    sleep 2
-    response = first(:xpath, "//a[contains(text(),'#{id}') and contains(text(),'@musc.edu')]")
+    sleep 3
+    response = first(:xpath, "//a[contains(text(),'#{id}') and contains(text(),'@musc.edu')]", :visible => true)
     if response.nil? or not(response.visible?)
         wait_for_javascript_to_finish
-        first(:xpath, "//a[contains(text(),'#{id}') and contains(text(),'@musc.edu')]").click 
+        first(:xpath, "//a[contains(text(),'#{id}') and contains(text(),'@musc.edu')]", :visible => true).click 
     else response.click end
     first("#save_button").click
     wait_for_javascript_to_finish

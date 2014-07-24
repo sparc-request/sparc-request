@@ -1060,7 +1060,7 @@ module CapybaraProper
 
     def documentsPage
         click_link "Add a New Document"
-        file = TempFile.new 'doc'
+        file = Tempfile.new 'doc'
         first(:xpath,"//input[@id='document']").set(file.path)
         select "Other", :from => "doc_type"
         first(:xpath,"//input[@id='process_ssr_organization_ids_']").click

@@ -350,7 +350,8 @@ class ServiceRequestsController < ApplicationController
       @new_line_items = @service_request.create_line_items_for_service(
           service: service,
           optional: true,
-          existing_service_ids: existing_service_ids)
+          existing_service_ids: existing_service_ids,
+          recursive_call: false)
 
       # create sub_service_requests
       @service_request.reload

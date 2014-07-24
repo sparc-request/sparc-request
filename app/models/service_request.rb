@@ -238,6 +238,7 @@ class ServiceRequest < ActiveRecord::Base
     optional = args[:optional]
     existing_service_ids = args[:existing_service_ids]
     allow_duplicates = args[:allow_duplicates]
+    recursive_call = args[:recursive_call]
 
     # If this service has already been added, then do nothing
     unless allow_duplicates
@@ -259,17 +260,22 @@ class ServiceRequest < ActiveRecord::Base
       rs_line_items = create_line_items_for_service(
         service: rs,
         optional: false,
-        existing_service_ids: existing_service_ids)
+        existing_service_ids: existing_service_ids,
+        recursive_call: true)
       rs_line_items.nil? ? line_items : line_items.concat(rs_line_items)
     end
 
     # add optional services to line items
-    service.optional_services.each do |rs|
-      rs_line_items = create_line_items_for_service(
-        service: rs,
-        optional: true,
-        existing_service_ids: existing_service_ids)
-      rs_line_items.nil? ? line_items : line_items.concat(rs_line_items)
+    # if were in a recursive call, we don't want to add optional services
+    unless recursive_call
+      service.optional_services.each do |rs|
+        rs_line_items = create_line_items_for_service(
+          service: rs,
+          optional: true,
+          existing_service_ids: existing_service_ids,
+          recursive_call: true)
+        rs_line_items.nil? ? line_items : line_items.concat(rs_line_items)
+      end
     end
 
     return line_items

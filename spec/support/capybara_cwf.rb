@@ -139,7 +139,7 @@ module CapybaraClinical
 
         #test add subject
         subjectsNum = all(:xpath, "//div/h3[text()='ARM 1']/following-sibling::table[contains(@id,'subjects_list')]/tbody/tr").length
-        find(:xpath, "//div/h3[text()='ARM 1']/following-sibling::p/a[text()='Add a subject']").click
+        find(:xpath,"//a[@class='subject_tracker_add']",:visible => true).click
         wait_for_javascript_to_finish
         newSubjectsNum = all(:xpath, "//div/h3[text()='ARM 1']/following-sibling::table[contains(@id,'subjects_list')]/tbody/tr").length
         newSubjectsNum.should eq(subjectsNum+1)

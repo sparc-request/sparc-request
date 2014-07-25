@@ -50,6 +50,14 @@ class Calendar < ActiveRecord::Base
     end
   end
 
+  def build_subject_data
+    if self.appointments.empty? || (self.subject.arm.visits.count > self.appointments.count)
+      subject = self.subject
+      groups = VisitGroup.where(arm_id: subject.arm.id).includes(visits: { line_items_visit: :line_item })
+      self.populate(groups)
+    end
+  end
+
   def completed_total
     completed_procedures = self.appointments.select{|x| x.completed?}.collect{|y| y.procedures}.flatten
     return completed_procedures.select{|x| x.appointment.completed_for_core?(x.core.id)}.sum{|x| x.total}

@@ -71,22 +71,23 @@
   .document-management-container table#new_document a.upload_button.ui-state-hover,
   .document-management-container table#new_document a.upload_button.ui-state-focus,
   .document-management-container table#new_document a.ui_close_button.ui-state-hover,
-  .document-management-container table#new_document a.ui_close_button.ui-state-focus {
+  .document-management-container table#new_document a.ui_close_button.ui-state-focus,
+  .document-management-container a.document_upload_button.ui-state-hover span,
+  .document-management-container a.document_upload_button.ui-state-focus span {
     color: white;
   }
 
   .document-management-container a.document_upload_button {
     background: url("yellowbutton_blank.png") no-repeat;
     border: 0 none;
+    display: inline-block;
     font-size: 1.2em;
-    height: 33px;
-    padding-top: 2px;
-    width: 230px;
-  }
-
-  .document-management-container a.document_upload_button.ui-state-hover,
-  .document-management-container a.document_upload_button.ut-state-focus {
-    color: white;
+    height: 28px;
+    padding-top: 7px;
+    min-width: 230px;
+    .ui-button-text {
+      padding: 0px;
+    }
   }
 
   .document-management-container {

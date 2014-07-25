@@ -43,7 +43,7 @@ module CapybaraCatalogManager
     else
         sleep 1
         wait_for_javascript_to_finish
-        first(:xpath, "//a[contains(text(),'Julia') and contains(text(),'@musc.edu')]").click
+        first(:xpath, "//a[contains(text(),'Julia') and contains(text(),'@musc.edu')]",:vsisible => true).click
     end
     # if response.nil? or not(response.visible?) 
         # wait_for_javascript_to_finish

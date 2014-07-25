@@ -162,11 +162,6 @@ class Notifier < ActionMailer::Base
     mail(:to => EPIC_RIGHTS_MAIL_TO, :from => 'no-reply@musc.edu', :subject => subject)
   end
 
-  def notify_epic_users_team protocol
-    @protocol = protocol
-    mail(:to => EPIC_USERS_TEAM, :from => 'no-reply@musc.edu', :subject => 'A new research protocol has been sent to Epic')
-  end
-
   def epic_queue_error protocol, error=nil
     @protocol = protocol
     @error = error

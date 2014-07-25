@@ -189,11 +189,6 @@ class Protocol < ActiveRecord::Base
     return funding_source
   end
 
-  def should_queue_epic(user_role, service_request)
-    queue_size = EpicQueue.where(:protocol_id => service_request.protocol_id).size
-    return QUEUE_EPIC && (queue_size < 1) && (user_role == 'primary-pi') && service_request.should_push_to_epic?
-  end
-
   # Note: this method is called inside a child thread by the service
   # requests controller.  Be careful adding code here that might not be
   # thread-safe.

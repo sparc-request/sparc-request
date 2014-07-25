@@ -1,38 +1,30 @@
 = javascript_include_tag 'service_calendar_logic'
 - unless @study_tracker
-  %h4= t(:fulfillments)[:services][:visits][:header]
+  %h3= t(:fulfillments)[:services][:visits][:header]
 - if !(@sub_service_request.per_patient_per_visit_line_items.length >= 1) or @service_request.arms.empty?
   .blank_requests
     = t(:fulfillments)[:services][:visits][:no_requests]
 - else
   #per_patient_per_visit_table{:style => "margin: 20px 0 0;"}
-    %table
+    %table.arm_stuff
       %thead
         %tr
-          %th{:colspan => 2}= t(:fulfillments)[:services][:visits][:arm]
-          %th{:colspan => 2}= t(:fulfillments)[:services][:visits][:add]
-          %th{:colspan => 2}= t(:fulfillments)[:services][:visits][:delete]
-          %th{:colspan => 2}
+          %th= t(:fulfillments)[:services][:visits][:arm]
+          %th= t(:fulfillments)[:services][:visits][:add]
+          %th= t(:fulfillments)[:services][:visits][:delete]
         %tr
-          %td{:colspan => 2}
+          %td
             = select_tag "arm_id", arms_for_select(@service_request, @selected_arm), :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id, :'data-protocol_id' => @service_request.protocol.id
-            %br
-            - if @study_tracker
-              %span{:style => "margin: 0 20px;"}
-            - else
-              = link_to t(:fulfillments)[:services][:visits][:add_arm], 'javascript:void(0);', :class => "add_arm_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id, :'data-protocol_id' => @service_request.protocol.id
-              %br
-              = link_to t(:fulfillments)[:services][:visits][:remove_arm], 'javascript:void(0);', :class => "remove_arm_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id, :'data-arm_count' => @service_request.arms.count, :'data-protocol_id' => @service_request.protocol.id
-          %td{:colspan => 2}
+            - unless @study_tracker
+              = link_to '', 'javascript:void(0);', :class => "add_arm_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id, :'data-protocol_id' => @service_request.protocol.id
+              = link_to '', 'javascript:void(0);', :class => "remove_arm_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id, :'data-arm_count' => @service_request.arms.count, :'data-protocol_id' => @service_request.protocol.id
+          %td
             = select_tag "visit_position", visits_for_select(@selected_arm)
-            %br
-            = link_to t(:fulfillments)[:services][:visits][:add_link], 'javascript:void(0);', :class => "add_visit_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id
-          %td{:colspan => 2}
+            = link_to '', 'javascript:void(0);', :class => "add_visit_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id
+          %td
             = select_tag "delete_visit_position", visits_for_delete(@selected_arm)
-            %br
             - if show_delete_visit_link?(@selected_arm)
-              = link_to t(:fulfillments)[:services][:visits][:delete_link], 'javascript:void(0);', :class => "delete_visit_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id
-          %td{:colspan => 2}
+              = link_to '', 'javascript:void(0);', :class => "delete_visit_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id
     #service_calendar
       - if @study_tracker
         = hidden_field_tag('study_tracker', true, :id => "study_tracker_hidden_field")

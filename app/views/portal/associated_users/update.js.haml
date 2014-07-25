@@ -1,8 +1,9 @@
-/ Used in User Portal Associated User update
+-# Used in User Portal Associated User update
 - if !@protocol_role.errors.messages.empty? || !@identity.errors.messages.empty?
   - @protocol_role.errors.messages.merge!(@identity.errors.messages)
   - @entity_errors = @protocol_role.errors.to_json
   :plain
+    $('#edit_authorized_user_submit_button').attr('disabled', false)
     Sparc.home.handle_ajax_errors("#{escape_javascript(@entity_errors)}", "Authorized User")
 - else
   :plain

@@ -13,7 +13,7 @@
 -# ugly but working
 
 %table#new_document
-  %tr.ui-dialog-titlebar.ui-widget-header
+  %tr.header
     %th= t("documents.headers.type")
     %th= t("documents.headers.file")
     %th &nbsp;
@@ -30,6 +30,6 @@
         = first_doc.document_file_name
         %br
       = file_field_tag :document
-    %td{:style => "width:165px;"}
+    %td{:style => "width:195px;"}
       = link_to button_text, "javascript:void(0)", :class => "upload_button", :location => 'document_management'
       = link_to t("documents.cancel_button"), "javascript:void(0)", :class => "ui_close_button", :location => 'document_management'

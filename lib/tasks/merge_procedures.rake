@@ -30,7 +30,7 @@ namespace :data do
 
       row << r_quantity
       row << t_quantity
-      
+
       row += prev_quantity_data
 
       csv << row if prev_quantity_data.inject(:+) > 0
@@ -85,8 +85,8 @@ namespace :data do
       # now that we've merged let's make sure everyones calendar is built out correctly
       arm.subjects.each do |subject|
         calendar = subject.calendar
-        calendar.populate_on_request_edit                                                                                                  
-        calendar.build_subject_data   
+        calendar.populate_on_request_edit
+        calendar.build_subject_data
       end
     elsif answer == 'No dups found'
       puts 'No duplicates found'

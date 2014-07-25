@@ -27,7 +27,7 @@ module CapybaraClinical
         upperInputTest
         visitText = find(:xpath, "//select[@id='visit_position']/option[@value='']").text[4..-1]
         visitDay = visitText[6..-1]
-        click_link "Add a Visit"
+        find(:xpath, "//a[@class='add_visit_link']").click
         currentBox = first(:xpath, "//div[contains(@class,'ui-dialog ') and contains(@style,'display: block;')]")
         within currentBox do
             fill_in 'visit_name', :with => visitText
@@ -37,7 +37,7 @@ module CapybaraClinical
         end
 
         select "Delete #{visitText} - #{visitText}", :from => 'delete_visit_position'
-        click_link "Delete a Visit"
+        find(:xpath, "//a[@class='delete_visit_link']").click
         wait_for_javascript_to_finish
     end
 
@@ -139,7 +139,7 @@ module CapybaraClinical
 
         #test add subject
         subjectsNum = all(:xpath, "//div/h3[text()='ARM 1']/following-sibling::table[contains(@id,'subjects_list')]/tbody/tr").length
-        find(:xpath, "//div/h3[text()='ARM 1']/following-sibling::p/a[text()='Add a subject']").click
+        find(:xpath,"//a[@class='subject_tracker_add']",:visible => true).click
         wait_for_javascript_to_finish
         newSubjectsNum = all(:xpath, "//div/h3[text()='ARM 1']/following-sibling::table[contains(@id,'subjects_list')]/tbody/tr").length
         newSubjectsNum.should eq(subjectsNum+1)

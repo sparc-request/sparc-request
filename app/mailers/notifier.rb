@@ -26,6 +26,7 @@ class Notifier < ActionMailer::Base
   def notify_user project_role, service_request, xls, approval, user_current
     @identity = project_role.identity
     @role = project_role.role 
+    @project_role = project_role
 
     @approval_link = nil
     if approval and project_role.project_rights == 'approve'
@@ -53,6 +54,7 @@ class Notifier < ActionMailer::Base
   def notify_admin service_request, submission_email_address, xls, user_current
     @protocol = service_request.protocol
     @service_request = service_request
+    @project_role = nil
     @role = 'none'
     @approval_link = nil
     @portal_link = USER_PORTAL_LINK + "admin"
@@ -75,6 +77,7 @@ class Notifier < ActionMailer::Base
     @protocol = service_request.protocol
     @service_request = service_request
     @role = 'none'
+    @project_role =  nil
     @approval_link = nil
     @audit_report = audit_report
     @provide_arm_info = audit_report.nil? ? true : SubServiceRequest.find(@audit_report[:sub_service_request_id]).has_per_patient_per_visit_services?

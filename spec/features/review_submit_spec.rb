@@ -73,6 +73,8 @@ describe "review page", :js => true do
   context 'epic emails' do
 
     before :each do
+      stub_const("QUEUE_EPIC", false) 
+      stub_const("USE_EPIC", true) 
       service2.update_attributes(send_to_epic: true)
       clear_emails
       find("#submit_services2").click

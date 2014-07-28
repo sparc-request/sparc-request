@@ -136,17 +136,18 @@ module CapybaraClinical
         wait_for_javascript_to_finish
 
         subjectVisitCalendarTest("Bobby Cancerpatient",service)
-
+        first(:xpath,'//*[@id="service_request_ssr.id"]').click
+        wait_for_javascript_to_finish
         #test add subject
         subjectsNum = all(:xpath, "//div/h3[text()='ARM 1']/following-sibling::table[contains(@id,'subjects_list')]/tbody/tr").length
-        find(:xpath,"//a[@class='subject_tracker_add']",:visible => true).click
+        first(:xpath, "//a[@id='subject_tracker_add']").click
         wait_for_javascript_to_finish
         newSubjectsNum = all(:xpath, "//div/h3[text()='ARM 1']/following-sibling::table[contains(@id,'subjects_list')]/tbody/tr").length
         newSubjectsNum.should eq(subjectsNum+1)
         subjectsNum = newSubjectsNum
 
         #test remove subject
-        first(:xpath, "//img [@src='/assets/cancel.png']").click
+        first(:xpath, "//img[@src='/assets/cancel.png']").click
         page.driver.browser.switch_to.alert.accept
         wait_for_javascript_to_finish
         find(:xpath, "//div[@id='subjects']/form/p/input[@value='Save']").click

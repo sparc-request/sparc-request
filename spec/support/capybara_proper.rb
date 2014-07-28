@@ -713,7 +713,7 @@ module CapybaraProper
 
         fill_in "user_search_term", :with => "bjk7"
         wait_for_javascript_to_finish
-        sleep 2
+        sleep 4
         response = find('a', :text => "Brian Kelsey (kelsey@musc.edu)")
         if response.nil? or not(response.visible?)
             wait_for_javascript_to_finish

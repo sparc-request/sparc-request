@@ -19,6 +19,7 @@ describe Portal::ServiceRequestsController do
         format: :js,
         id: service_request.id,
         arm_id: arm1.id,
+        ssr_id: "0001",
       }.with_indifferent_access
 
       service_request.reload

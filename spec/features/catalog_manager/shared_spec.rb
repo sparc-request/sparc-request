@@ -48,34 +48,46 @@ describe 'shared views', js: true do
     context "service providers" do
 
       it "should add a new service provider" do
+        add_first_identity_to_organization("new_sp")
         add_identity_to_organization("new_sp")
         page.should have_content("Jason Leonard")
+        page.should have_content("Brian Kelsey")
       end
 
-      it "should delete a service provider" do
+      it "should delete a service provider but not all" do
         delete_identity_from_organization("new_sp", ".sp_delete")
         page.should_not have_content("Jason Leonard")
+        page.should have_content("Brian Kelsey")
       end
     end
 
     context "submission emails" do
 
       it "should add an email to the program" do
-        sleep 2
+        sleep 3
         fill_in "new_se", with: "franzferdinand@ww1.gov"
         find('#new_se').native.send_keys(:return)
         wait_for_javascript_to_finish
+
+        find('#user_rights').click
+        wait_for_javascript_to_finish
+
         page.should have_content("franzferdinand@ww1.gov")
       end
 
       it "should delete an email from the program" do
-        sleep 2
+        sleep 3
         fill_in "new_se", with: "franzferdinand@ww1.gov"
         find('#new_se').native.send_keys(:return)
         wait_for_javascript_to_finish
+
         first("#save_button").click
         wait_for_javascript_to_finish
-        within('.se_table') do
+
+        find('#user_rights').click
+        wait_for_javascript_to_finish
+
+        within(".se_table") do
           find(".se_delete").click
         end
         wait_for_javascript_to_finish

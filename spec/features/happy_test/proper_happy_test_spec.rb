@@ -1,5 +1,6 @@
 require 'spec_helper'
 include CapybaraProper
+include CapybaraAdminPortal
 
 include CapybaraAdminPortal #remove after admin portal development
 
@@ -73,7 +74,6 @@ describe 'A Happy Test on Sparc Proper' do
     documentsPage
     reviewPage(request)
     submissionConfirmationPage
-
     goToSparcProper
     
   end

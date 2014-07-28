@@ -6,19 +6,20 @@
     %tr.header
       %th= t("documents.headers.type")
       %th= t("documents.headers.title")
-      %th= t("documents.headers.uploaded")
+      %th.center= t("documents.headers.uploaded")
       - if not review
-        %th= t("documents.headers.actions")
+        %th.center= t("documents.headers.actions")
 
     - @sub_service_request.documents.group_by(&:document_grouping_id).each do |grouping_id, docs|
       - doc = docs.first
       %tr.document{:id => "document_grouping_#{grouping_id}"}
-        %td{:style => "width:212px;"}= doc.display_document_type
+        %td= doc.display_document_type
         %td= link_to doc.document_file_name, doc.document.url
-        %td= doc.created_at.strftime("%m/%d/%Y")
+        %td.center= doc.created_at.strftime("%m/%d/%Y")
         - if not review
-          %td{:style => "width:165px;"}
-            = link_to "Edit", "/portal/admin/sub_service_requests/#{@sub_service_request.id}/edit_document_group/#{grouping_id}", :remote => true, :class => 'document_edit'
-            = link_to "Delete", "/portal/admin/sub_service_requests/#{@sub_service_request.id}/delete_document_group/#{grouping_id}", :remote => true, :class => 'document_delete'
+          %td
+            .actions_container
+              = link_to image_tag('portal/edit_blue.png'), "/portal/admin/sub_service_requests/#{@sub_service_request.id}/edit_document_group/#{grouping_id}", :remote => true, :class => 'document_edit'
+              = link_to image_tag('portal/delete_red.png'), "/portal/admin/sub_service_requests/#{@sub_service_request.id}/delete_document_group/#{grouping_id}", :remote => true, :class => 'document_delete'
 - else
   %div= t("documents.no_documents")

@@ -12,8 +12,6 @@ class ServiceRequestsController < ApplicationController
     @protocol = @service_request.protocol
     @service_list = @service_request.service_list
     @admin_offset = params[:admin_offset]
-    # generate the excel for this service request
-    @xls = render_to_string :action => 'show', :formats => [:xlsx]
 
     # TODO: this gives an error in the spec tests, because they think
     # it's trying to render html instead of xlsx
@@ -287,9 +285,10 @@ class ServiceRequestsController < ApplicationController
     if @service_request.previous_submitted_at.nil?
       send_notifications(@service_request, @sub_service_request)
     elsif service_request_has_changed_ssr?(@service_request)
+      xls = render_to_string :action => 'show', :formats => [:xlsx]
       @service_request.sub_service_requests.each do |ssr|
         if ssr_has_changed?(@service_request, ssr)
-          send_ssr_service_provider_notifications(@service_request, ssr, @xls)
+          send_ssr_service_provider_notifications(@service_request, ssr, xls)
         end
       end
     end
@@ -350,7 +349,8 @@ class ServiceRequestsController < ApplicationController
       @new_line_items = @service_request.create_line_items_for_service(
           service: service,
           optional: true,
-          existing_service_ids: existing_service_ids)
+          existing_service_ids: existing_service_ids,
+          recursive_call: false)
 
       # create sub_service_requests
       @service_request.reload
@@ -393,11 +393,14 @@ class ServiceRequestsController < ApplicationController
 
     # clean up sub_service_requests
     @service_request.reload
+
     to_delete = @service_request.sub_service_requests.map(&:organization_id) - @service_request.service_list.keys
     to_delete.each do |org_id|
       ssr = @service_request.sub_service_requests.find_by_organization_id(org_id)
-      unless ['first_draft', 'draft'].include?(@service_request.status)
-        send_ssr_service_provider_notifications(@service_request, ssr, @xls)
+      if !['first_draft', 'draft'].include?(@service_request.status) and !@service_request.submitted_at.nil? and @service_request.submitted_at > ssr.created_at
+        @protocol = @service_request.protocol
+        xls = @protocol.nil? ? nil : render_to_string(:action => 'show', :formats => [:xlsx])
+        send_ssr_service_provider_notifications(@service_request, ssr, xls)
       end
       ssr.destroy
     end
@@ -405,6 +408,7 @@ class ServiceRequestsController < ApplicationController
     @service_request.reload
 
     @line_items = @service_request.line_items
+    render :formats => [:js]
   end
 
   def delete_documents
@@ -522,7 +526,8 @@ class ServiceRequestsController < ApplicationController
 
   # Send notifications to all users.
   def send_notifications(service_request, sub_service_request)
-    send_user_notifications(service_request, @xls)
+    xls = render_to_string :action => 'show', :formats => [:xlsx]
+    send_user_notifications(service_request, xls)
 
     if sub_service_request then
       sub_service_requests = [ sub_service_request ]
@@ -530,8 +535,8 @@ class ServiceRequestsController < ApplicationController
       sub_service_requests = service_request.sub_service_requests
     end
 
-    send_admin_notifications(sub_service_requests, @xls)
-    send_service_provider_notifications(service_request, sub_service_requests, @xls)
+    send_admin_notifications(sub_service_requests, xls)
+    send_service_provider_notifications(service_request, sub_service_requests, xls)
   end
 
   def send_user_notifications(service_request, xls)
@@ -566,16 +571,16 @@ class ServiceRequestsController < ApplicationController
 
   def send_ssr_service_provider_notifications(service_request, sub_service_request, xls) #single sub-service request
     previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
-    audit_trail = sub_service_request.audit_trail(current_user, previously_submitted_at, Time.now.utc)
+    audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)
 
     sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-      send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls, audit_trail)
+      send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls, audit_report)
     end
   end
 
   def ssr_has_changed?(service_request, sub_service_request) #specific ssr has changed?
     previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
-    unless sub_service_request.audit_trail(current_user, previously_submitted_at, Time.now.utc)[:line_items].empty?
+    unless sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)[:line_items].empty?
       return true
     end
     return false
@@ -590,7 +595,7 @@ class ServiceRequestsController < ApplicationController
     return false
   end
 
-  def send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls, audit_trail=nil)
+  def send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls, audit_report=nil)
     attachments = {}
     attachments["service_request_#{service_request.id}.xls"] = xls
 
@@ -601,12 +606,12 @@ class ServiceRequestsController < ApplicationController
       attachments["request_for_grant_billing_#{service_request.id}.pdf"] = request_for_grant_billing_form
     end
 
-    if audit_trail.nil?
+    if audit_report.nil?
       previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
-      audit_trail = sub_service_request.audit_trail(current_user, previously_submitted_at, Time.now.utc)
+      audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)
     end
 
-    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, audit_trail).deliver
+    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, audit_report).deliver
   end
 
   def send_epic_notification_for_user_approval(protocol)

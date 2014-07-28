@@ -40,15 +40,16 @@ describe "study level charges", js: true do
     end
 
     it 'should set and save the fields' do
-      within('.cwf_one_time_fee_service') do
-        within('.fields', visible: true) do
-          find('.fulfillment_date').set("5/1/2014")
-          find('.fulfillment_quantity').set(1)
-          find('.fulfillment_quantity_type').select("Each")
-          find('.fulfillment_unit_quantity').set(1)
-          find('.fulfillment_notes').set("You're darn tootin'!")
-        end
-      end
+  
+
+      find('.fulfillment_date').set("5/1/2014")
+      find('.fulfillment_quantity').set(1)
+      find('.fulfillment_quantity_type').select("Sample")
+      find('.fulfillment_unit_quantity').set(1)
+      find('.fulfillment_unit_type').select("Aliquot")
+      find('.fulfillment_notes').set("You're darn tootin'!")
+ 
+
 
       save_form
 
@@ -56,7 +57,9 @@ describe "study level charges", js: true do
       fulfillment = otf.fulfillments.first
       fulfillment.date.should eq("Thu, 01 May 2014 00:00:00 EDT -04:00")
       fulfillment.quantity.should eq(1)
+      fulfillment.quantity_type.should eq("Sample")
       fulfillment.unit_quantity.should eq(1)
+      fulfillment.unit_type.should eq("Aliquot")
       fulfillment.notes.should eq("You're darn tootin'!")
     end
 
@@ -66,63 +69,43 @@ describe "study level charges", js: true do
         save_form
 
         page.should have_content("Date, quantity, and unit quantity are required fields.")
-        page.should have_content("Please select a quantity type from the dropdown.")
       end
 
       it "should validate for the presence of the date" do
         find('.fulfillment_quantity').set(1)
-        find('.fulfillment_quantity_type').select("Each")
         find('.fulfillment_unit_quantity').set(1)
 
         save_form
 
         page.should have_content("Date, quantity, and unit quantity are required fields.")
-        page.should_not have_content("Please select a quantity type from the dropdown.")
       end
 
       it "should validate for a quantity" do
         find('.fulfillment_date').set("5/1/2014")
         find('.fulfillment_unit_quantity').set(1)
-        find('.fulfillment_quantity_type').select("Each")
 
         save_form
 
         page.should have_content("Date, quantity, and unit quantity are required fields.")
-        page.should_not have_content("Please select a quantity type from the dropdown.")
-      end
-
-      it "should require the user to select a quantity type" do
-        find('.fulfillment_date').set("5/1/2014")
-        find('.fulfillment_quantity').set(1)
-        find('.fulfillment_unit_quantity').set(1)
-
-        save_form
-
-        page.should have_content("Please select a quantity type from the dropdown.")
-        page.should_not have_content("Date, quantity, and unit quantity are required fields.")
       end
 
       it "should validate for a unit quantity" do
         find('.fulfillment_date').set("5/1/2014")
         find('.fulfillment_quantity').set(1)
-        find('.fulfillment_quantity_type').select("Each")
         
         save_form
 
         page.should have_content("Date, quantity, and unit quantity are required fields.")
-        page.should_not have_content("Please select a quantity type from the dropdown.")
       end
 
       it "should not require that the notes field is filled in" do
         find('.fulfillment_date').set("5/1/2014")
         find('.fulfillment_quantity').set(1)
-        find('.fulfillment_quantity_type').select("Each")
         find('.fulfillment_unit_quantity').set(1)
 
         save_form
 
         page.should_not have_content("Date, quantity, and unit quantity are required fields.")
-        page.should_not have_content("Please select a quantity type from the dropdown.")
       end
     end
   end

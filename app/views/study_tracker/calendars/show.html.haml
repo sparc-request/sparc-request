@@ -1,3 +1,12 @@
+.admin-right-dashboard
+  .user-information-body
+    %p
+      = @user.full_name
+      |
+      = @user.email
+    .admin-buttons
+      = link_to "Back to Clinical Work Fulfillment", study_tracker_root_path, :class => "cwf_return_link"
+
 %h2{:style => "margin:10px 5px;"}= @subject.arm.name
 
 #patient_visit_calendar

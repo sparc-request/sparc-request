@@ -16,21 +16,20 @@ namespace :data do
           line_item_ids = arm.line_items.map(&:id)
           arm.subjects.each do |subject|
             calendar = subject.calendar
-            csv << [subject.audit_label(nil)]
             
-            vg_row = [""]
+            row = [subject.audit_label(nil)]
             arm.visit_groups.each do |visit_group|
-              vg_row << "#{visit_group.name} R Qty"
-              vg_row << "#{visit_group.name} T Qty"
+              row << "#{visit_group.name} (R Qty)"
+              row << "#{visit_group.name} (T Qty)"
             end
             
-            csv << vg_row
+            csv << row
 
             line_item_ids.each do |lid|
               subject_procedures = Procedure.joins(:appointment => :visit_group).where(:line_item_id => lid, :appointments => {:calendar_id => calendar.id}).order("visit_groups.position")
               
               line_item = LineItem.find lid
-              subject_procedure_row = [line_item.service.name]
+              subject_procedure_row = ["#{line_item.service.name} - LID##{line_item.id}"]
 
               subject_procedures.each do |procedure|
                 subject_procedure_row << procedure.r_quantity
@@ -39,6 +38,24 @@ namespace :data do
 
               csv << subject_procedure_row
             end
+
+            individual_subject_procedures = Procedure.joins(:appointment => :visit_group).where(:line_item_id => nil, :appointments => {:calendar_id => calendar.id}).order("visit_groups.position")
+
+            individual_subject_procedures.each do |procedure|
+              vg_position = procedure.appointment.visit_group.position
+              row = ["#{procedure.service.name} - SID##{procedure.service_id}"]
+              (vg_position - 1).times do
+                row << ""
+                row << ""
+              end
+
+              row << procedure.r_quantity
+              row << procedure.t_quantity
+
+              csv << row
+            end
+
+            csv << [""]
           end
         end
       end

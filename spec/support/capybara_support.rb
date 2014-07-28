@@ -276,6 +276,7 @@ module CapybaraSupport
   end
 
   def get_mail sr_id, ssr_id, role = 'service provider'
+    #returns email from notifier based on situation provided/desired.
     sr =  ServiceRequest.find(service_request.id)
     ssr = SubServiceRequest.find(sub_service_request.id)
     user = Identity.find(1)
@@ -283,26 +284,50 @@ module CapybaraSupport
     case role
     when 'service provider'
       xls = []
-      previously_submitted_at = sr.previous_submitted_at.nil? ? Time.now.utc : sr.previous_submitted_at.utc
+      previously_submitted_at = sr.submitted_at.nil? ? Time.now.utc : sr.submitted_at.utc
       audit =  ssr.audit_report(user, previously_submitted_at, Time.now.utc)
       sp = ssr.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)")[0]
-      return Notifier.notify_service_provider(sp,sr,xls,user,audit).deliver
+      return Notifier.notify_service_provider(sp,sr,xls,user,audit)
 
     when 'user'
       xls = " "
       project_role = sr.protocol.project_roles.select{ |role| role.project_rights != 'none' and !role.identity.email.blank? }[0]
-      if sr.protocol.project_roles.detect{|pr| pr.identity_id == user.id}.project_rights != "approve"
-        approval = service_request.approvals.create
-      else
-        approval = false
-      end
-      return Notifier.notify_user(project_role,sr,xls,approval,user).deliver
+      approval = service_request.approvals.create
+      return Notifier.notify_user(project_role,sr,xls,approval,user)
 
     when 'admin'
       xls = " "
-      sub_email = ssr.organization.submission_emails_lookup[0].email
-      return Notifier.notify_admin(sr,sub_email,xls,user).deliver
+      sub_email = 'success@musc.edu'
+      return Notifier.notify_admin(sr,sub_email,xls,user)
     end
     return nil
+  end
+
+  def visit_mail_for role
+    #role options include ['service provider', 'admin', 'user']
+    email = get_mail(service_request.id, sub_service_request.id, role)
+    if email.multipart?
+      visit_email email.html_part
+    else
+      visit_email email
+    end
+  end
+
+  def assert_email_project_information
+    #assert correct protocol information in notification email
+    page.should have_xpath "//table//strong[text()='Project Information']"
+    page.should have_xpath "//th[text()='Project ID:']/following-sibling::td[text()='#{service_request.protocol.id}']"
+    page.should have_xpath "//th[text()='Short Title:']/following-sibling::td[text()='#{service_request.protocol.short_title}']"
+    page.should have_xpath "//th[text()='Project Title:']/following-sibling::td[text()='#{service_request.protocol.title}']"
+    page.should have_xpath "//th[text()='Sponsor Name:']/following-sibling::td[text()='#{service_request.protocol.sponsor_name}']"
+    page.should have_xpath "//th[text()='Funding Source:']/following-sibling::td[text()='#{service_request.protocol.funding_source.capitalize}']"
+  end
+
+  def assert_email_project_roles
+    #assert correct project roles information in notification email
+    page.should have_xpath "//table//th[text()='Name:']/following-sibling::th[text()='Role:']/following-sibling::th[text()='Proxy Rights:']"
+    service_request.protocol.project_roles.each do |role|
+      page.should have_xpath "//td[text()='#{role.identity.full_name}']/following-sibling::td[text()='#{role.role.upcase}']/following-sibling::td[text()='#{PROXY_RIGHTS.invert[role.project_rights]}']"
+    end
   end
 end

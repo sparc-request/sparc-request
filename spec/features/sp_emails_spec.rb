@@ -12,7 +12,6 @@ describe "Emails", :js => true do
   let!(:pricing_setup)       { FactoryGirl.create(:pricing_setup, organization_id: program.id, display_date: Time.now - 1.day, federal: 50, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal')}
   let!(:pricing_map)         { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service3.id, is_one_time_fee: true, quantity_type: "Each", quantity_minimum: 5, otf_unit_type: "Week", display_date: Time.now - 1.day, full_rate: 2000, units_per_qty_max: 20) }
 
-
   before :each do
     add_visits
   end
@@ -80,6 +79,7 @@ describe "Emails", :js => true do
     end
 
     it "when removing a line item from the service_request", :js => true do
+      #Submit SR and then remove line item as jug2
       Audited.audit_class.as_user(Identity.find(1)) do
         service_request.update_status('submitted')
         service_request.update_attribute(:submitted_at, Time.now)
@@ -92,6 +92,33 @@ describe "Emails", :js => true do
       #should have audited information table
       page.should have_xpath "//th[text()='Service']/following-sibling::th[text()='Action']"
       page.should have_xpath "//td[text()='#{service2.name}']/following-sibling::td[text()='Removed']"
+    end
+  end
+
+  describe "should not have arm information if there are no PPPV services on SSR and there is an audit_report" do
+    it "for service provider emails", :js => true do
+      #Submit SR and then remove line item as jug2
+      Audited.audit_class.as_user(Identity.find(1)) do
+        service_request.update_status('submitted')
+        service_request.update_attribute(:submitted_at, Time.now)
+        existing_service_ids = service_request.line_items.map(&:service_id)
+        service_request.create_line_items_for_service(service: service3, optional: true, existing_service_ids: existing_service_ids, recursive_call: false)
+        service_request.line_items.find_by_service_id(service2.id).destroy
+        service_request.line_items.find_by_service_id(service.id).destroy
+        service_request.line_items.reload
+        service_request.reload
+        service_request.line_items.each do |li|
+          li.update_attribute(:sub_service_request_id, sub_service_request.id)
+        end
+      end
+      visit_mail_for 'service provider'
+
+      page.should_not have_xpath "//table//strong[text()='Protocol Arm Information']"
+      #should have audited information table
+      page.should have_xpath "//th[text()='Service']/following-sibling::th[text()='Action']"
+      page.should have_xpath "//td[text()='#{service2.name}']/following-sibling::td[text()='Removed']"      
+      page.should have_xpath "//td[text()='#{service3.name}']/following-sibling::td[text()='Added']"
+      page.should have_xpath "//td[text()='#{service.name}']/following-sibling::td[text()='Removed']"      
     end
   end
 end

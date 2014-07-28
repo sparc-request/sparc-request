@@ -39,7 +39,7 @@
     %br
     %br
 
-    - if @protocol.should_queue_epic(@role, @service_request)
+    - if @project_role and @protocol.should_queue_epic(@project_role, @service_request)
       %p
         The following SPARC Request users have requested access to Epic for
         your study ##{@protocol.id} (#{@protocol.short_title.strip}). Each
@@ -57,7 +57,7 @@
           %th{:style => 'border: 1px solid black; text-align: left;'}= t(:notifier)[:name]
           %th{:style => 'border: 1px solid black;'}= t(:notifier)[:role]
           %th{:style => 'border: 1px solid black;'}= t(:notifier)[:proxy]
-          - if @protocol.should_queue_epic(@role, @service_request) 
+          - if @project_role and @protocol.should_queue_epic(@project_role, @service_request)
             %th{:style => 'border: 1px solid black;'}= t(:notifier)[:epic_rights]
       %tbody
         - @protocol.project_roles.each do |pr|
@@ -65,12 +65,12 @@
             %td{:style => 'border: 1px solid black;'}= pr.identity.full_name
             %td{:style => 'border: 1px solid black; text-align: center;'}= pr.role.upcase
             %td{:style => 'border: 1px solid black; text-align: center;'}= PROXY_RIGHTS.invert[pr.project_rights]
-            - if @protocol.should_queue_epic(@role, @service_request) 
+            - if @project_role and @protocol.should_queue_epic(@project_role, @service_request)
               %td{:style => 'border: 1px solid black; text-align: center;'}
                 %ul
                   - pr.epic_rights.each do |er|
                     %li= EPIC_RIGHTS[er.right]
-    - if @protocol.should_queue_epic(@role, @service_request) 
+    - if @project_role and @protocol.should_queue_epic(@project_role, @service_request)
       %br
 
       .accept_button= link_to t(:notifier)[:add_to_epic_queue], add_to_epic_queue_protocol_url(@protocol)

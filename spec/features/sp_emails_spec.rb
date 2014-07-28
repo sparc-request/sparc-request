@@ -59,7 +59,7 @@ describe "Emails", :js => true do
     end
   end
 
-  describe "should have audited information" do
+  describe "should have audited information for SPs" do
     it "when adding a line item to the service request", :js => true do
       #Submit SR and then add line item as jug2
       Audited.audit_class.as_user(Identity.find(1)) do
@@ -76,6 +76,22 @@ describe "Emails", :js => true do
       visit_mail_for 'service provider'
       #should have audited information table
       page.should have_xpath "//th[text()='Service']/following-sibling::th[text()='Action']"
+      page.should have_xpath "//td[text()='#{service3.name}']/following-sibling::td[text()='Added']"
+    end
+
+    it "when removing a line item from the service_request", :js => true do
+      Audited.audit_class.as_user(Identity.find(1)) do
+        service_request.update_status('submitted')
+        service_request.update_attribute(:submitted_at, Time.now)
+        service_request.line_items.find_by_service_id(service2.id).destroy
+        service_request.line_items.reload
+        service_request.reload
+      end
+
+      visit_mail_for 'service provider'
+      #should have audited information table
+      page.should have_xpath "//th[text()='Service']/following-sibling::th[text()='Action']"
+      page.should have_xpath "//td[text()='#{service2.name}']/following-sibling::td[text()='Removed']"
     end
   end
 end

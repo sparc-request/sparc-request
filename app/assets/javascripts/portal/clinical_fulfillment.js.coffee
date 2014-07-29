@@ -373,4 +373,9 @@ $(document).ready ->
 
   #End of Study Level Charges Methods
 
+  #Validation for deleting a subject with completed appointments
+  $(document).on 'click', '.cwf_subject_delete', (event)->
+    alert("This subject has one or more completed appointments and can't be deleted.")
+
+
 

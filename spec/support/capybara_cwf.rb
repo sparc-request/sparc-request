@@ -27,7 +27,7 @@ module CapybaraClinical
         upperInputTest
         visitText = find(:xpath, "//select[@id='visit_position']/option[@value='']").text[4..-1]
         visitDay = visitText[6..-1]
-        click_link "Add a Visit"
+        find(:xpath, "//a[@class='add_visit_link']").click
         currentBox = first(:xpath, "//div[contains(@class,'ui-dialog ') and contains(@style,'display: block;')]")
         within currentBox do
             fill_in 'visit_name', :with => visitText
@@ -37,7 +37,7 @@ module CapybaraClinical
         end
 
         select "Delete #{visitText} - #{visitText}", :from => 'delete_visit_position'
-        click_link "Delete a Visit"
+        find(:xpath, "//a[@class='delete_visit_link']").click
         wait_for_javascript_to_finish
     end
 
@@ -96,7 +96,7 @@ module CapybaraClinical
         wait_for_javascript_to_finish
         save_validation_check
 
-        click_link "Back to Clinical Work Fulfillment"
+        # click_link "Back to Clinical Work Fulfillment"
         wait_for_javascript_to_finish
     end
     
@@ -136,17 +136,18 @@ module CapybaraClinical
         wait_for_javascript_to_finish
 
         subjectVisitCalendarTest("Bobby Cancerpatient",service)
-
+        first(:xpath,'//*[@id="service_request_ssr.id"]').click
+        wait_for_javascript_to_finish
         #test add subject
         subjectsNum = all(:xpath, "//div/h3[text()='ARM 1']/following-sibling::table[contains(@id,'subjects_list')]/tbody/tr").length
-        find(:xpath, "//div/h3[text()='ARM 1']/following-sibling::p/a[text()='Add a subject']").click
+        first(:xpath, "//a[@id='subject_tracker_add']").click
         wait_for_javascript_to_finish
         newSubjectsNum = all(:xpath, "//div/h3[text()='ARM 1']/following-sibling::table[contains(@id,'subjects_list')]/tbody/tr").length
         newSubjectsNum.should eq(subjectsNum+1)
         subjectsNum = newSubjectsNum
 
         #test remove subject
-        first(:xpath, "//img [@src='/assets/cancel.png']").click
+        first(:xpath, "//img[@src='/assets/cancel.png']").click
         page.driver.browser.switch_to.alert.accept
         wait_for_javascript_to_finish
         find(:xpath, "//div[@id='subjects']/form/p/input[@value='Save']").click

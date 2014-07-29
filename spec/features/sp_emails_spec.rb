@@ -19,8 +19,7 @@ describe "Emails", :js => true do
   describe "should render correctly for" do
     it "service providers", :js => true do
       visit_mail_for 'service provider'
-      assert_email_project_information
-      assert_email_project_roles
+      assert_notification_email_tables
 
       #with no changes, should not have audited information table
       page.should_not have_xpath "//th[text()='Service']/following-sibling::th[text()='Action']"
@@ -39,8 +38,8 @@ describe "Emails", :js => true do
 
     it "users", :js => true do
       visit_mail_for 'user'
-      assert_email_project_information
-      assert_email_project_roles
+      assert_notification_email_tables
+
       #users should not have audited information table
       page.should_not have_xpath "//th[text()='Service']/following-sibling::th[text()='Action']"
       #users should not have arm information table
@@ -49,8 +48,8 @@ describe "Emails", :js => true do
 
     it "admins", :js => true do
       visit_mail_for 'admin'
-      assert_email_project_information
-      assert_email_project_roles
+      assert_notification_email_tables
+
       #admins should not have audited information table
       page.should_not have_xpath "//th[text()='Service']/following-sibling::th[text()='Action']"
       #admins should not have arm information table
@@ -73,6 +72,8 @@ describe "Emails", :js => true do
       end
 
       visit_mail_for 'service provider'
+      assert_notification_email_tables
+      
       #should have audited information table
       page.should have_xpath "//th[text()='Service']/following-sibling::th[text()='Action']"
       page.should have_xpath "//td[text()='#{service3.name}']/following-sibling::td[text()='Added']"
@@ -89,14 +90,16 @@ describe "Emails", :js => true do
       end
 
       visit_mail_for 'service provider'
+      assert_notification_email_tables
+
       #should have audited information table
       page.should have_xpath "//th[text()='Service']/following-sibling::th[text()='Action']"
       page.should have_xpath "//td[text()='#{service2.name}']/following-sibling::td[text()='Removed']"
     end
   end
 
-  describe "should not have arm information if there are no PPPV services on SSR and there is an audit_report" do
-    it "for service provider emails", :js => true do
+  describe "should not have arm information for service provider emails" do
+    it "if there are no PPPV services on SSR and there is an audit_report", :js => true do
       #Submit SR and then remove line item as jug2
       Audited.audit_class.as_user(Identity.find(1)) do
         service_request.update_status('submitted')
@@ -112,6 +115,7 @@ describe "Emails", :js => true do
         end
       end
       visit_mail_for 'service provider'
+      assert_notification_email_tables
 
       page.should_not have_xpath "//table//strong[text()='Protocol Arm Information']"
       #should have audited information table
@@ -119,6 +123,27 @@ describe "Emails", :js => true do
       page.should have_xpath "//td[text()='#{service2.name}']/following-sibling::td[text()='Removed']"      
       page.should have_xpath "//td[text()='#{service3.name}']/following-sibling::td[text()='Added']"
       page.should have_xpath "//td[text()='#{service.name}']/following-sibling::td[text()='Removed']"      
+    end
+
+    it "if there are no PPPV services on SSR and there is NO audit_report", :js => true do
+      #remove line item then Submit SR
+      existing_service_ids = service_request.line_items.map(&:service_id)
+      service_request.create_line_items_for_service(service: service3, optional: true, existing_service_ids: existing_service_ids, recursive_call: false)
+      service_request.line_items.find_by_service_id(service2.id).destroy
+      service_request.line_items.find_by_service_id(service.id).destroy
+      service_request.line_items.reload
+      service_request.reload
+      service_request.line_items.each do |li|
+        li.update_attribute(:sub_service_request_id, sub_service_request.id)
+      end
+      service_request.update_status('submitted')
+      service_request.update_attribute(:submitted_at, Time.now)
+
+      visit_mail_for 'service provider'
+      assert_notification_email_tables
+
+      page.should_not have_xpath "//table//strong[text()='Protocol Arm Information']"  
+      page.should_not have_xpath "//th[text()='Service']/following-sibling::th[text()='Action']"
     end
   end
 end

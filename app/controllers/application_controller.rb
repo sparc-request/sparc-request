@@ -21,18 +21,27 @@ class ApplicationController < ActionController::Base
       startMin = curTime
       startMax  = (curTime + 1.month)
 
-      cal = Google::Calendar.new(:username => GOOGLE_USERNAME,
-                                 :password => GOOGLE_PASSWORD)
-      events_list = cal.find_events_in_range(startMin, startMax)
-      @events = []
+      cal = nil
       begin
-        events_list.sort_by! { |event| event.start_time }
-        events_list.each do |event|
-          @events << create_calendar_event(event)
-        end
-      rescue
-        if events_list
-          @events << create_calendar_event(events_list)
+        cal = Google::Calendar.new(:username => GOOGLE_USERNAME,
+                                   :password => GOOGLE_PASSWORD)
+      rescue Exception => e
+        ExceptionNotifier::Notifier.exception_notification(request.env, e).deliver
+      end
+
+      @events = []
+
+      unless cal.nil?
+        events_list = cal.find_events_in_range(startMin, startMax)
+        begin
+          events_list.sort_by! { |event| event.start_time }
+          events_list.each do |event|
+            @events << create_calendar_event(event)
+          end
+        rescue
+          if events_list
+            @events << create_calendar_event(events_list)
+          end
         end
       end
     end

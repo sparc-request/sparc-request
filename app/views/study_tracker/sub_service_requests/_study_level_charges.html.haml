@@ -46,7 +46,7 @@
                           %th{:colspan => "2"}= t(:fulfillments)[:services][:no_visits][:notes]
                         = otf_form.fields_for :fulfillments, wrapper: false do |fulfillment_form|
                           %tr.fields.study_level_charges
-                            %td= fulfillment_form.datepicker :formatted_date, size: 10, dateFormat: "m/dd/yy", :class => "fulfillment_date", :readonly => true
+                            %td= fulfillment_form.datepicker :formatted_date, size: 10, dateFormat: "m/dd/yy", :class => "fulfillment_date"
                             %td.cwf_otf_text_field= fulfillment_form.text_field :quantity, :class => 'fulfillment_quantity'
                             %td.cwf_otf_text_field
                               = fulfillment_form.select :quantity_type, options_for_select(Fulfillment::CWF_QUANTITY_TYPES, fulfillment_form.object.quantity_type), {}, :class => 'fulfillment_quantity_type'

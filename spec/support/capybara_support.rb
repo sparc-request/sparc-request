@@ -307,7 +307,9 @@ module CapybaraSupport
   def visit_mail_for role
     #role options include ['service provider', 'admin', 'user']
     email = get_mail(service_request.id, sub_service_request.id, role)
-    if email.multipart?
+    if email.nil?
+      return nil
+    elsif email.multipart?
       visit_email email.html_part
     else
       visit_email email

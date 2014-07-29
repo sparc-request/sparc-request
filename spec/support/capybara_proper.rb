@@ -713,7 +713,7 @@ module CapybaraProper
 
         fill_in "user_search_term", :with => "bjk7"
         wait_for_javascript_to_finish
-        sleep 2
+        sleep 4
         response = find('a', :text => "Brian Kelsey (kelsey@musc.edu)")
         if response.nil? or not(response.visible?)
             wait_for_javascript_to_finish
@@ -955,9 +955,10 @@ module CapybaraProper
             wait_for_javascript_to_finish
             find(:xpath, ".//input[@value='Create New User']").click
             wait_for_javascript_to_finish
+            wait_for_javascript_to_finish
+            page.should have_content "New account created"
         end
-        wait_for_javascript_to_finish
-        page.should have_content "New account created"
+
         click_link "Close Window"
         wait_for_javascript_to_finish
         login("jug2", "p4ssword")
@@ -1060,8 +1061,8 @@ module CapybaraProper
 
     def documentsPage
         click_link "Add a New Document"
-        File.new 'doc.txt','w+'
-        first(:xpath,"//input[@id='document']").set(Dir.pwd + "/doc.txt")
+        file = Tempfile.new 'doc'
+        first(:xpath,"//input[@id='document']").set(file.path)
         select "Other", :from => "doc_type"
         first(:xpath,"//input[@id='process_ssr_organization_ids_']").click
         click_link "Upload"
@@ -1070,7 +1071,7 @@ module CapybaraProper
         wait_for_javascript_to_finish
         click_link "Update"
         wait_for_javascript_to_finish
-        File.delete 'doc.txt'
+        file.unlink
         saveAndContinue      
     end
 

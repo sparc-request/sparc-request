@@ -220,6 +220,9 @@ describe ServiceRequestsController do
       end
 
       it 'should send an email if services are set to send to epic' do
+        stub_const("QUEUE_EPIC", false)
+        stub_const("USE_EPIC", true)
+
         session[:identity_id] = jug2.id
         session[:service_request_id] = service_request.id
 

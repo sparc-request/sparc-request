@@ -8,8 +8,22 @@ $ ->
       )
 
       Sparc.config.setDatePicker("with button image")
+    
 
     setDatePicker: (button_image=null) ->
+      today_button_callback = (input) ->
+        # the 'Today' button makes the Clear button disappear when clicked
+        # since we are hacking jQuery UI anyway, we're just hiding this
+        # button to prevent the issue.
+        buttonPane = $(input).datepicker( "widget" ).find( ".ui-datepicker-buttonpane" )
+        buttonPane.find('button.ui-datepicker-current').hide()
+        $( "<button>", {
+          class: "ui-state-default ui-priority-primary ui-corner-all"
+          text: "Clear"
+          click: ->
+            $.datepicker._clearDate(input)
+        }).appendTo(buttonPane)
+
       datepicker_attributes = {
         constrainInput: true
         dateFormat: "m/dd/yy"
@@ -20,20 +34,10 @@ $ ->
 
         nextText: ""
         prevText: ""
+        onChangeMonthYear: (year, month, input) ->
+          setTimeout( today_button_callback, 1, [input])
         beforeShow: (input) ->
-          # the 'Today' button makes the Clear button disappear when clicked
-          # since we are hacking jQuery UI anyway, we're just hiding this
-          # button to prevent the issue.
-          callback = ->
-            buttonPane = $(input).datepicker( "widget" ).find( ".ui-datepicker-buttonpane" )
-            buttonPane.find('button.ui-datepicker-current').hide()
-            $( "<button>", {
-              class: "ui-state-default ui-priority-primary ui-corner-all"
-              text: "Clear"
-              click: ->
-                $.datepicker._clearDate(input)
-            }).appendTo(buttonPane)
-          setTimeout( callback, 1)
+          setTimeout( today_button_callback, 1, [input])
       }
       if button_image
         datepicker_attributes.showOn = "both"
@@ -50,8 +54,6 @@ $ ->
         
 
       $('.datepicker').attr("readOnly", true)
-
-
 
     readyMyDate: (date_string, action) ->
       try
@@ -79,3 +81,5 @@ $ ->
         $(date).val(Sparc.config.readyMyDate($(date).val(), 'view'))
 
   }
+
+

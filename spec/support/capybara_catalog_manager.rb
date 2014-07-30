@@ -251,6 +251,7 @@ module CapybaraCatalogManager
     subsidyInfo
 
     add_service_provider "Julia"
+    wait_for_javascript_to_finish
     first(:xpath, "//input[@id='save_button']").click
     wait_for_javascript_to_finish
     # click_link name
@@ -369,7 +370,11 @@ module CapybaraCatalogManager
     options[:tags].each do |tagName| setTag tagName end
     if options[:tags].include? "Clinical work fulfillment" then fillOutCWF('core') end
 
-    find(:xpath, "//div[text()='Pricing']").click
+    within '#pricing' do
+      find('.legend').click
+      wait_for_javascript_to_finish
+    end 
+    
     wait_for_javascript_to_finish
     subsidyInfo 'core'
 

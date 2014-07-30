@@ -279,6 +279,7 @@ module CapybaraSupport
     #returns email from notifier based on situation provided/desired.
     sr =  ServiceRequest.find(service_request.id)
     ssr = SubServiceRequest.find(sub_service_request.id)
+    #Assumes current identity is id=1
     user = Identity.find(1)
 
     case role
@@ -306,7 +307,9 @@ module CapybaraSupport
   def visit_mail_for role
     #role options include ['service provider', 'admin', 'user']
     email = get_mail(service_request.id, sub_service_request.id, role)
-    if email.multipart?
+    if email.nil?
+      return nil
+    elsif email.multipart?
       visit_email email.html_part
     else
       visit_email email
@@ -314,7 +317,7 @@ module CapybaraSupport
   end
 
   def assert_email_project_information
-    #assert correct protocol information in notification email
+    #assert correct protocol information is included in notification email
     page.should have_xpath "//table//strong[text()='Project Information']"
     page.should have_xpath "//th[text()='Project ID:']/following-sibling::td[text()='#{service_request.protocol.id}']"
     page.should have_xpath "//th[text()='Short Title:']/following-sibling::td[text()='#{service_request.protocol.short_title}']"
@@ -324,10 +327,25 @@ module CapybaraSupport
   end
 
   def assert_email_project_roles
-    #assert correct project roles information in notification email
+    #assert correct project roles information is included in notification email
     page.should have_xpath "//table//th[text()='Name:']/following-sibling::th[text()='Role:']/following-sibling::th[text()='Proxy Rights:']"
     service_request.protocol.project_roles.each do |role|
       page.should have_xpath "//td[text()='#{role.identity.full_name}']/following-sibling::td[text()='#{role.role.upcase}']/following-sibling::td[text()='#{PROXY_RIGHTS.invert[role.project_rights]}']"
     end
+  end
+
+  def assert_email_admin_information
+    #assert correct admin information is included in notification email
+    #Assumes current identity is id=1
+    page.should have_xpath "//table//strong[text()='Admin Information']"
+    page.should have_xpath "//th[text()='Current Identity:']/following-sibling::td[text()='1']"
+    page.should have_xpath "//th[text()='Service Request ID:']/following-sibling::td[text()='#{service_request.id}']"
+    page.should have_xpath "//th[text()='Sub Service Request IDs:']/following-sibling::td[text()='#{service_request.sub_service_requests.map{ |ssr| ssr.id }.join(", ")}']"
+  end
+
+  def assert_notification_email_tables
+    assert_email_project_information
+    assert_email_project_roles
+    assert_email_admin_information
   end
 end

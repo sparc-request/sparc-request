@@ -96,7 +96,7 @@ module CapybaraClinical
         wait_for_javascript_to_finish
         save_validation_check
 
-        # click_link "Back to Clinical Work Fulfillment"
+        click_link "Back to Clinical Work Fulfillment"
         wait_for_javascript_to_finish
     end
     
@@ -136,8 +136,9 @@ module CapybaraClinical
         wait_for_javascript_to_finish
 
         subjectVisitCalendarTest("Bobby Cancerpatient",service)
-        first(:xpath,'//*[@id="service_request_ssr.id"]').click
+        first(:xpath,"//*[@id='service_request_ssr.id']").click
         wait_for_javascript_to_finish
+
         #test add subject
         subjectsNum = all(:xpath, "//div/h3[text()='ARM 1']/following-sibling::table[contains(@id,'subjects_list')]/tbody/tr").length
         first(:xpath, "//a[@id='subject_tracker_add']").click

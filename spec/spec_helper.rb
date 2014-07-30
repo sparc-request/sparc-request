@@ -89,6 +89,7 @@ end
 
 Capybara.javascript_driver = :default
 Capybara.default_wait_time = 15
+Capybara.ignore_hidden_elements = true
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.

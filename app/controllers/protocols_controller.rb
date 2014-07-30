@@ -1,8 +1,8 @@
 class ProtocolsController < ApplicationController
   respond_to :json, :js, :html
-  before_filter :initialize_service_request, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status, :add_to_epic_queue]
-  before_filter :authorize_identity, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status, :add_to_epic_queue]
-  before_filter :set_protocol_type, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status, :add_to_epic_queue]
+  before_filter :initialize_service_request, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
+  before_filter :authorize_identity, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
+  before_filter :set_protocol_type, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
 
   def new
     @service_request = ServiceRequest.find session[:service_request_id]
@@ -112,15 +112,6 @@ class ProtocolsController < ApplicationController
     push_protocol_to_epic(@protocol)
 
     render :formats => [:html]
-  end
-
-  def add_to_epic_queue
-    @protocol = Protocol.find params[:id]
-    # only add to queue and send e-mail if it hasn't already been done
-    unless EpicQueue.where(:protocol_id => @protocol.id).size == 1
-      EpicQueue.create(:protocol_id => @protocol.id) 
-      Notifier.notify_epic_users_team(@protocol).deliver
-    end
   end
 
   private

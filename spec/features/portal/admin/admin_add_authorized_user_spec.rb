@@ -177,7 +177,6 @@ describe 'associated users tab', :js => true do
       within("#user_#{bob.id}") do
         page.should have_text "Technician"
       end
-      sleep 10
     end
   end
 end

@@ -97,6 +97,11 @@ td.text-center {
 #audit_form .org {
   padding: 5px;
 }
+#audit_form .org label {
+  width: 200px;
+  text-align: left;
+  display: inline-block;
+}
 #audit_form .field {
   padding: 5px;
 }

@@ -265,14 +265,16 @@ class ServiceRequestsController < ApplicationController
 
     send_confirmation_notifications
 
-    # Send a notification to Lane et al to create users in Epic.  Onc
+    # Send a notification to Lane et al to create users in Epic.  Once
     # that has been done, one of them will click a link which calls
     # approve_epic_rights.
     if USE_EPIC
       if @protocol.should_push_to_epic?
         @protocol.ensure_epic_user
-        @protocol.awaiting_approval_for_epic_push
-        unless QUEUE_EPIC
+        if QUEUE_EPIC
+          EpicQueue.create(:protocol_id => @protocol.id) unless EpicQueue.where(:protocol_id => @protocol.id).size == 1
+        else
+          @protocol.awaiting_approval_for_epic_push
           send_epic_notification_for_user_approval(@protocol)
         end
       end

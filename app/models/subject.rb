@@ -33,11 +33,7 @@ class Subject < ActiveRecord::Base
   end
 
   def has_appointments?
-    if !self.calendar.appointments.empty?
-      return true
-    else
-      return false
-    end
+    !self.calendar.appointments.empty?
   end
 
   ### audit reporting methods ###

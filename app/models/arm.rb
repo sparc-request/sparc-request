@@ -132,7 +132,6 @@ class Arm < ActiveRecord::Base
         if not self.update_visit_group_day(day, position) then
           raise ActiveRecord::Rollback
         end
-
         if not self.update_visit_group_window(window, position) then
           raise ActiveRecord::Rollback
         end
@@ -231,26 +230,23 @@ class Arm < ActiveRecord::Base
     before = self.visit_groups[position - 1] unless position == 0
     current = self.visit_groups[position]
     after = self.visit_groups[position + 1] unless position >= self.visit_groups.size - 1
-    
-    if portal == 'true'
-      valid_day = Integer(day) rescue false
-      if !valid_day
-        self.errors.add(:invalid_day, "You've entered an invalid number for the day. Please enter a valid number.")
+    valid_day = Integer(day) rescue false
+    if !valid_day
+      self.errors.add(:invalid_day, "You've entered an invalid number for the day. Please enter a valid number.")
+      return false
+    end
+
+    if !before.nil? && !before.day.nil?
+      if before.day > valid_day
+        self.errors.add(:out_of_order, "The days are out of order. This day appears to go before the previous day.")
         return false
       end
+    end
 
-      if !before.nil? && !before.day.nil?
-        if before.day > valid_day
-          self.errors.add(:out_of_order, "The days are out of order. This day appears to go before the previous day.")
-          return false
-        end
-      end
-
-      if !after.nil? && !after.day.nil?
-        if valid_day > after.day
-          self.errors.add(:out_of_order, "The days are out of order. This day appears to go after the next day.")
-          return false
-        end
+    if !after.nil? && !after.day.nil?
+      if valid_day > after.day
+        self.errors.add(:out_of_order, "The days are out of order. This day appears to go after the next day.")
+        return false
       end
     end
 

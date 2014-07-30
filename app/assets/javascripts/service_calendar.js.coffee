@@ -108,6 +108,7 @@ $(document).ready ->
       data: {day: day_val, position: position}
       success: =>
         $(this).data('day', day_val)
+        $().toastmessage('showSuccessToast', "Service request has been saved.");
     .error (event, request, test) =>
       alertText = stack_errors_for_alert(JSON.parse(event.responseText))
       alert(alertText)
@@ -128,6 +129,7 @@ $(document).ready ->
       data: {window: window_val, position: position}
       success: =>
         $(this).data('window', window_val)
+        $().toastmessage('showSuccessToast', "Service request has been saved.");
     .error (event, request, test) =>
       alertText = stack_errors_for_alert(JSON.parse(event.responseText))
       alert(alertText)

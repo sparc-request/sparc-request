@@ -1,36 +1,31 @@
-.grid_12
-  %br
-  %br
-  #audit_form
-    - if @min_start_date == "N/A" # we don't know when it started
-      = t(:study_tracker)[:audits][:no_start_date] 
-    - else
-      = form_tag cwf_audit_report_path(@sub_service_request, :format => :xlsx) do
-        - @cwf_organizations.each do |org|
-          = label_tag "organizations[#{org.id}]", org.label
-          = check_box_tag "organizations[]", org.id, true
-          %br
+#audit_form
+  - if @min_start_date == "N/A" # we don't know when it started
+    = t(:study_tracker)[:audits][:no_start_date] 
+  - else
+    = form_tag cwf_audit_report_path(@sub_service_request, :format => :xlsx) do
+      %table
+        %thead
+          %tr
+            %th Select Organizations
+            %th Select Date Range
+        %tbody
+          %tr
+            %td
+              - @cwf_organizations.each do |org|
+                .org
+                  = label_tag "organizations[#{org.id}]", org.label
+                  = check_box_tag "organizations[]", org.id, true
+            %td
+              = hidden_field_tag :min_start_date, @min_start_date.strftime('%B %d, %Y %H:%M:%S')
+              = hidden_field_tag :max_end_date, @max_end_date.strftime('%B %d, %Y %H:%M:%S')
+
+              .field
+                = label_tag :cwf_audit_start_date_input, t(:study_tracker)[:audits][:start_date]
+                = text_field_tag :cwf_audit_start_date_input, nil
+                = hidden_field_tag :cwf_audit_start_date
+              .field
+                = label_tag :cwf_audit_end_date_input, t(:study_tracker)[:audits][:end_date]
+                = text_field_tag :cwf_audit_end_date_input, nil
+                = hidden_field_tag :cwf_audit_end_date
         
-        %br
-        %br
-       
-        = hidden_field_tag :min_start_date, @min_start_date.strftime('%B %d, %Y %H:%M:%S')
-        = hidden_field_tag :max_end_date, @max_end_date.strftime('%B %d, %Y %H:%M:%S')
-
-        = label_tag :cwf_audit_start_date_input, t(:study_tracker)[:audits][:start_date]
-        = text_field_tag :cwf_audit_start_date_input, nil
-        = hidden_field_tag :cwf_audit_start_date
-
-        %br
-        %br
-
-        = label_tag :cwf_audit_end_date_input, t(:study_tracker)[:audits][:end_date]
-        = text_field_tag :cwf_audit_end_date_input, nil
-        = hidden_field_tag :cwf_audit_end_date
-
-        %br
-        %br
-        
-        = submit_tag t(:study_tracker)[:audits][:get_report] 
-  %br
-  %br
+      = submit_tag t(:study_tracker)[:audits][:get_report], :id => "audit_submit_button"

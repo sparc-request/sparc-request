@@ -153,10 +153,10 @@
 
 .saved_note
   background-color: #FFF
-  width: 892px
+  width: 870px
 
 .note_box
-  width: 892px 
+  width: 870px 
   height: 100px !important
 
 .note_date
@@ -169,7 +169,6 @@
   padding: 4px
 
 .note_body
-  width: 878px
   whitespace: none
   overflow: auto
   word-wrap: break-word
@@ -288,7 +287,7 @@
     float: right
     width: 380px
     padding: 20px
-    margin-bottom: 10px
+    margin: 0 10px 10px 0
     h3
       text-align: center
       margin-bottom: 10px
@@ -355,17 +354,14 @@
         margin-bottom: 10px
 
 #fulfillment_services
-  #one_time_fee_table
-    background-color: #f3f4f4
-    padding: 15px
-
   #per_patient_services
     #service_calendar.ui-widget-content
       border: 0 none
+      padding: 0px
       .ui-tabs-panel
-        padding: 5px 0 0
+        padding: 5px 0px
         table
-          width: 894px
+          width: 905px
     #per_patient_per_visit_table
       table.arm_stuff
         margin-bottom: 25px
@@ -379,6 +375,8 @@
             width: 140px
             text-align: center
   #one_time_fee_table
+    background-color: #f3f4f4
+    padding: 15px
     input,
     select
       border: 1px solid black
@@ -392,6 +390,7 @@
         background: url('yellow_arrow_down.png') no-repeat
 
   #add_otf_service_container,
+  #add_one_time_fee_container,
   #add_ppv_service_container,
   #remove_ppv_service_container
     margin: 10px 0px
@@ -407,6 +406,18 @@
       height: 35px
       width: 149px
 
+#study_tracker_tabs
+  #fulfillment_services
+    #add_one_time_fee_container,
+    #add_ppv_service_container,
+    #remove_ppv_service_container
+      button
+        background: url("yellowbutton_blank.png") no-repeat
+        width: 230px
+  #one_time_fees
+    table
+      width: 905px
+
 #fulfillment_services, #fulfillment_info, #fulfillment_notes
   background-color: #FFF
   padding: 10px
@@ -421,6 +432,7 @@
     cursor: pointer
 
 #ssr_notes
+  padding: 10px
   #notes_container
     background-color: #f3f4f4
     margin-bottom: 20px

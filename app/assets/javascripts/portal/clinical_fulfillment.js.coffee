@@ -341,7 +341,7 @@ $(document).ready ->
   $("#rps_end_date").datepicker(dateFormat: "yy-mm-dd")
 
   continue_with_research_project_summary_report = false
-  $("#research_project_summary_report_date_range").dialog(autoOpen: false)
+  $("#research_project_summary_report_date_range").dialog(autoOpen: false, dialogClass: "report_date_range")
   $(document).on 'click', '#research_project_summary_report_in_cwf', (event) ->
     console.log continue_with_research_project_summary_report
     if continue_with_research_project_summary_report == false

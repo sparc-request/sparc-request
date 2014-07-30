@@ -16,5 +16,5 @@
       = @cover_letter.content.html_safe
     
   %p.buttons
-    = f.submit t(:study_tracker)[:save], class: 'ui-button ui-widget ui-state-default ui-corner-all ui-button-text-only ui-state-hover ui-state-active'
-    = link_to t(:study_tracker)[:cancel], study_tracker_sub_service_request_path(@sub_service_request)
+    = f.submit t(:study_tracker)[:save], :id => "cover_letter_save"
+    = link_to t(:study_tracker)[:cancel], study_tracker_sub_service_request_path(@sub_service_request), :id => "cover_letter_cancel"

@@ -9,6 +9,26 @@ form.edit_cover_letter {
 
     .buttons {
       margin-top: 1.5em;
+      a {
+        background: url("yellowbutton_smaller.png") no-repeat;
+        border: 0 none;
+        color: #FFFFFF;
+        cursor: pointer;
+        height: 27px;
+        width: 149px;
+        padding: 9px 0 0;
+        display: inline-block;
+        text-align: center;
+      }
+      input {
+        background: url("yellowbutton_smaller.png") no-repeat;
+        border: 0 none;
+        color: #FFFFFF;
+        cursor: pointer;
+        height: 35px;
+        width: 149px;
+        font-size: 12px;
+      }
     }
 }
 
@@ -22,8 +42,38 @@ form.edit_cover_letter {
 table#billings_list {
   margin-bottom: 1.5em;
   width: 100%;
+  thead {
+    tr {
+      background-color: #0775B0;
+      color: white;
+    }
+  }
 
   td, th {
     padding: 0.5em;
+  }
+  td {
+    background-color: #E8E8E8;
+  }
+}
+
+#billing {
+  padding: 10px;
+  .actions, .action {
+    a {
+      background: url("yellowbutton_smaller.png") no-repeat;
+      border: 0 none;
+      color: #FFFFFF;
+      cursor: pointer;
+      height: 27px;
+      width: 149px;
+      padding: 8px 0 0;
+      display: inline-block;
+      text-align: center;
+    }
+    a#research_project_summary_report_in_cwf {
+      background: url("yellowbutton_blank.png") no-repeat;
+      width: 230px;
+    }
   }
 }

@@ -32,6 +32,14 @@ class Subject < ActiveRecord::Base
     label
   end
 
+  def has_appointments?
+    if !self.calendar.appointments.empty?
+      return true
+    else
+      return false
+    end
+  end
+
   ### audit reporting methods ###
   
   def audit_field_replacements

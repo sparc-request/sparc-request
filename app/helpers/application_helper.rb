@@ -296,4 +296,16 @@ module ApplicationHelper
     devise_mapping.to
   end
 
+  #Determines if an arm can be deleted in sparc proper, based on whether the request is in CWF and has patient data
+  def can_be_deleted? arm
+    if !arm.subjects.empty?
+      arm.subjects.each do |subject|
+        if subject.has_appointments?
+          return false
+        end
+      end
+    end
+
+    return true
+  end
 end

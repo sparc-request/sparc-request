@@ -1,10 +1,9 @@
 #service_request_cost
-  %table
-    %thead
-      %tr
-        %th= t(:fulfillments)[:totals][:effective_current_total_cost]
-        %th= t(:fulfillments)[:totals][:user_display_total_cost]
-    %tbody
-      %tr
-        %td.effective_cost= number_to_currency(calculate_effective_current_total)
-        %td.display_cost= number_to_currency(calculate_user_display_total)
+  #current_cost
+    %label= t(:fulfillments)[:totals][:effective_current_total_cost]
+    %span.effective_cost= number_to_currency(calculate_effective_current_total)
+
+  #user_display_cost
+    %label= t(:fulfillments)[:totals][:user_display_total_cost]
+    %span.display_cost= number_to_currency(calculate_user_display_total)
+  .clear

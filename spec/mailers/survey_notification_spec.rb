@@ -13,7 +13,7 @@ describe SurveyNotification do
     
     #ensure that the subject is correct
     it 'renders the subject' do
-      mail.subject.should == '[Test - EMAIL TO success@musc.edu AND CC TO amcates@gmail.com, catesa@musc.edu] System satisfaction survey completed in SPARC Request'
+      mail.subject.should == "[Test - EMAIL TO #{ADMIN_MAIL_TO} AND CC TO amcates@gmail.com, catesa@musc.edu] System satisfaction survey completed in SPARC Request"
     end
  
     #ensure that the receiver is correct
@@ -23,7 +23,7 @@ describe SurveyNotification do
  
     #ensure that the sender is correct
     it 'renders the sender email' do
-      mail.to.should == [identity.email]
+      mail.to.should == [DEFAULT_MAIL_TO]
     end
  
     #ensure that the e-mail body is correct
@@ -43,12 +43,12 @@ describe SurveyNotification do
 
     #ensure that the subject is correct
     it 'renders the subject' do
-      mail.subject.should == '[Test - EMAIL TO success@musc.edu AND CC TO amcates@gmail.com, catesa@musc.edu] SPARC Request Survey Notification'
+      mail.subject.should == "[Test - EMAIL TO #{ADMIN_MAIL_TO} AND CC TO amcates@gmail.com, catesa@musc.edu] SPARC Request Survey Notification"
     end
  
     #ensure that the receiver is correct
     it 'renders the receiver email' do
-      mail.to.should == [identity.email]
+      mail.to.should == [DEFAULT_MAIL_TO]
     end
  
     #ensure that the sender is correct

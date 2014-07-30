@@ -34,6 +34,8 @@ In the production environment ExceptionNotifier is setup, and its options will n
 	config.middleware.use ExceptionNotifier,
     	sender_address: 'no-reply@example.com',
     	exception_recipients: ['user@example.com']
+
+
 ###Configuration Settings
 ####2.1 application.yml
 Several important settings can be found in config/application.yml.  There is an example file found at config/application.yml.example in the repo which shows available settings with example inputs.  They are explained as follows:
@@ -42,11 +44,26 @@ Several important settings can be found in config/application.yml.  There is an 
 - admin_mail_to: Same as above except for admin emails.
 - feedback_mail_to: Same as above except for the recipients of feedback emails.
 - new_user_cc: Same as above except for users cc'd when a new user request is submitted.
+- system_satisfaction_survey_cc: Sames as above except for users cc'd when a system satisfaction survey is submitted 
+- root_url: This is the root url for the application 
 - user_portal_link: This setting will soon be deprecated.  Sets the location of the user portal.
+- header_link_1: This is the url for the first image in the header 
+- header_link_2: This is the url for the second image in the header
+- header_link_3: This is the url for the third image in the header 
 - use_indirect_cost: This is a true/false setting which determines whether the application will display indirect costs to the users.  If true, than in addition to direct costs and direct cost subtotals, users will also see indirect costs and indirect cost subtotals, and indirect costs will also be included in the grand total.  If set to false, indirect costs will not be displayed, and they will not be included in the totals.
-- header_link_1, header_link_2, header_link_3: This is a url for where you want the three image links in the header to go, from right to left, respectively.
 - use_shiboleth: This option controls whether the single user sign on option will be displayed in the application.  Currently this is only shibboleth, if you would like to use another oAuth module, this will need to be set to true.
-- use_ldap: This option controls whether the associated user search will attempt to connec to an LDAP server.  If false, it will simply search the database. NOTE: Even if this is set to false at least a blank ldap.yml is required.
+- use_ldap: This option controls whether the associated user search will attempt to connect to an LDAP server.  If false, it will simply search the database. NOTE: Even if this is set to false at least a blank ldap.yml is required.
+- wkhtmltopdf_location: Optional location for wkhtmltopdf if not using one supplied by gem eg. '/usr/local/bin/wkhtmltopdf'
+- approve_epic_rights_mail_to: Email addresses of users who are e-mailed for EPIC rights approval
+- use_epic: This option controls whether or not EPIC integration will be used, true/false
+- queue_epic: This options controls whether EPIC pushes will be queued or not, true/false, emptying the queue is done via rake epic:batch_load, this can setup as a cronjob to run at a certain interval
+- queue_epic_load_error_to: This is a list of users who will receive messages about the status of EPIC loads via queue
+- epic_users_team: This is a list of email addresses to send notifications to after a protocol has been added to the EPIC queue 
+- use_google_calendar: This options controls whether or not to show a google calendar on the home page, true/false
+- use_news_feed: This options controls whether or not to pull a news feed, true/false, should be set to false for all except MUSC
+- google_username: The username used to login to retrieve calendar data 
+- google_password: The password used to login to retrieve calendar data
+- send_authorized_user_emails: This options controls whether authorized user changes should send a notification, true/false
 
 
 ####2.2 constants.yml
@@ -117,7 +134,14 @@ This would mean that on the service details page, when navigating to the catalog
 
 PLEASE NOTE: Even if you do not intend to use LDAP you will need an empty ldap.yml file.
 
-####2.5 obis_setup.rb
+####2.5 epic.yml
+Settings relevant to your institution's EPIC setup. There is an example file found at config/epic.yml.example
+  
+- study_root: eg. '1.2.3.4'
+- endpoint: eg. 'http://TODO/'
+- namespace: eg. 'urn:ihe:qrph:rpe:2009'
+
+####2.6 obis_setup.rb
 This file (in config/initializers/obis_setup.rb) reads in the YAML files that have been described above and turns them into ruby constants so that they can be accessed in the application.  This file generally should not need to be changed unless you have changed the names of attributes in the YAML files or you need to add/remove constants from the application.
 
 ###HTML Content

@@ -22,7 +22,7 @@ $(document).ready ->
       date = Date.parse($(changed_element).val())
       arr = $(selector)
       same_date = false
-      date_warning = false  
+      date_warning = false
       for index in arr
         old_date = Date.parse($(index).val())
         if date == old_date && index != changed_element
@@ -34,7 +34,7 @@ $(document).ready ->
         div = $(changed_element).closest('div')
         display_date = Sparc.config.readyMyDate(div.find('.submitted_date:first').val())
         effective_date = Sparc.config.readyMyDate(div.find('.submitted_date:last').val())
-        div.prevAll('h3:first').find('a').html("Effective On #{effective_date} - Display On #{display_date}")    
+        div.prevAll('h3:first').find('a').html("Effective On #{effective_date} - Display On #{display_date}")
       else if same_date == true
         alert "You can't have two #{str} dates on the same day!"
         $(changed_element).val('')
@@ -43,7 +43,7 @@ $(document).ready ->
       if date_warning == true
         if (confirm "You have selected a #{str} date before an existing #{str} date, are you sure you want to do this?") == false
           $(changed_element).val('')
-          $(changed_element).siblings().val('')          
+          $(changed_element).siblings().val('')
         else if (confirm "Are you sure?") == false
           $(changed_element).val('')
           $(changed_element).siblings().val('')
@@ -56,7 +56,7 @@ $(document).ready ->
     Sparc.config.setDatePicker()
     $('.blank_field_errors').css('display', 'inline-block')
     $('.per_patient_errors').css('display', 'inline-block')
-    $('.save_button').attr('disabled', true)  
+    $('.save_button').attr('disabled', true)
   )
 
   $('.remove_pricing_map').live('click', ->

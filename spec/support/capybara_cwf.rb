@@ -7,13 +7,27 @@ module CapybaraClinical
         wait_for_javascript_to_finish
     end
 
+    def upperInputTest
+        ##routing##
+        fill_in 'ssr_routing', :with => 'HWY 17S'
+        find(:xpath, "//a[@id='ssr_save']/span[text()='Save']").click
+        wait_for_javascript_to_finish
+        page.should have_xpath "//span[@class='routing_message icon check']"
+        ##billing/business manager##
+        fill_in 'protocol_billing_business_manager_static_email', :with => 'elhombre@thefeds.gov'
+        find(:xpath, "//a[@id='protocol_billing_business_manager_static_email_save']/span[text()='Save']").click
+        wait_for_javascript_to_finish
+        page.should have_xpath "//span[@class='billing_business_message icon check']"
+    end
+
     def testService(service)
         #expects instance of ServiceWithAddress as input
         #adds a visit then deletes the same visit in the visit calendar
         switchTabTo "Study Schedule"
+        upperInputTest
         visitText = find(:xpath, "//select[@id='visit_position']/option[@value='']").text[4..-1]
         visitDay = visitText[6..-1]
-        click_link "Add a Visit"
+        find(:xpath, "//a[@class='add_visit_link']").click
         currentBox = first(:xpath, "//div[contains(@class,'ui-dialog ') and contains(@style,'display: block;')]")
         within currentBox do
             fill_in 'visit_name', :with => visitText
@@ -23,7 +37,7 @@ module CapybaraClinical
         end
 
         select "Delete #{visitText} - #{visitText}", :from => 'delete_visit_position'
-        click_link "Delete a Visit"
+        find(:xpath, "//a[@class='delete_visit_link']").click
         wait_for_javascript_to_finish
     end
 
@@ -82,7 +96,7 @@ module CapybaraClinical
         wait_for_javascript_to_finish
         save_validation_check
 
-        click_link "Return to Clinical Work Fulfillment"
+        click_link "Back to Clinical Work Fulfillment"
         wait_for_javascript_to_finish
     end
     
@@ -122,17 +136,19 @@ module CapybaraClinical
         wait_for_javascript_to_finish
 
         subjectVisitCalendarTest("Bobby Cancerpatient",service)
+        first(:xpath,"//*[@id='service_request_ssr.id']").click
+        wait_for_javascript_to_finish
 
         #test add subject
         subjectsNum = all(:xpath, "//div/h3[text()='ARM 1']/following-sibling::table[contains(@id,'subjects_list')]/tbody/tr").length
-        find(:xpath, "//div/h3[text()='ARM 1']/following-sibling::p/a[text()='Add a subject']").click
+        first(:xpath, "//a[@id='subject_tracker_add']").click
         wait_for_javascript_to_finish
         newSubjectsNum = all(:xpath, "//div/h3[text()='ARM 1']/following-sibling::table[contains(@id,'subjects_list')]/tbody/tr").length
         newSubjectsNum.should eq(subjectsNum+1)
         subjectsNum = newSubjectsNum
 
         #test remove subject
-        first(:xpath, "//img [@src='/assets/cancel.png']").click
+        first(:xpath, "//img[@src='/assets/cancel.png']").click
         page.driver.browser.switch_to.alert.accept
         wait_for_javascript_to_finish
         find(:xpath, "//div[@id='subjects']/form/p/input[@value='Save']").click
@@ -226,7 +242,6 @@ module CapybaraClinical
         #expects instance of ServiceWithAddress as input
         #Intended as full CWF happy test.
         goToCWF
-
         enterServiceRequest(study.short,service.name)
         testService(service)
         subjectTracker(service)

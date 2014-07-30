@@ -108,8 +108,10 @@ class Arm < ActiveRecord::Base
 
   def indirect_costs_for_visit_based_service line_items_visits=self.line_items_visits
     total = 0.0
-    line_items_visits.each do |vg|
-      total += vg.indirect_costs_for_visit_based_service
+    if USE_INDIRECT_COST
+      line_items_visits.each do |vg|
+        total += vg.indirect_costs_for_visit_based_service
+      end
     end
     return total
   end
@@ -197,7 +199,6 @@ class Arm < ActiveRecord::Base
   end
 
   def remove_visit position
-    self.update_attribute(:visit_count, (self.visit_count - 1))
     visit_group = self.visit_groups.find_by_position(position)
     unless visit_group.appointments.reject{|x| !x.completed_at?}.empty?
       self.errors.add(:completed_appointment, "exists for this visit.")

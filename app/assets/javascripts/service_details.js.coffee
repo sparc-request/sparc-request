@@ -3,23 +3,30 @@
 
 $ ->
   # handle removing an arm and clicking save & continue - set subjects and visits to 1 
-  $(document).on 'nested:fieldRemoved', (event) ->
-    field = event.field
-    field.find('.skinny_fields input').val('1')
-
   # show/hide remove arm link depending on how many arms exist,  hide when on one arm remains
   nested_field_count = $('form .fields:visible').length
   $remove_link = $('a.remove_nested_fields')
 
   toggleRemoveLink = ->
     $('a.remove_nested_fields').toggle(nested_field_count > 1)
+  
+  $(document).on 'nested:fieldRemoved:arms', (event) ->
+    field = event.field
+    button = field.find('.remove_arm')
 
-  $(document).on 'nested:fieldAdded', ->
+    if button.hasClass('cannot_remove')
+      button.show()
+      field.show()
+      hiddenField = button.prev('input[type=hidden]')
+      hiddenField.val('0')
+      alert("This arm has subject data and cannot be removed")
+    else
+      field.find('.skinny_fields input').val('1')
+      nested_field_count -= 1
+      toggleRemoveLink()
+
+  $(document).on 'nested:fieldAdded:arms', ->
     nested_field_count += 1
-    toggleRemoveLink()
-
-  $(document).on 'nested:fieldRemoved', ->
-    nested_field_count -= 1
     toggleRemoveLink()
 
   toggleRemoveLink()

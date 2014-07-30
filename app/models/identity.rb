@@ -72,7 +72,7 @@ class Identity < ActiveRecord::Base
 
   validates_presence_of :last_name
   validates_presence_of :first_name
-  validates_presence_of :ldap_uid
+  validates :ldap_uid, uniqueness: {case_sensitive: false}, presence: true
 
 
   ###############################################################################
@@ -206,8 +206,14 @@ class Identity < ActiveRecord::Base
 
   # Determines whether this identity can edit a given organization's information in CatalogManager.
   # Returns true if this identity's catalog_manager_organizations includes the given organization.
-  def can_edit_entity? organization
-    self.catalog_manager_organizations.include?(organization) ? true : false
+  def can_edit_entity? organization, deep_search=false
+    cm_org_ids = self.catalog_managers.map(&:organization_id)
+    if deep_search 
+      org_ids = [organization.id].concat(organization.parents(true))
+      org_ids -  cm_org_ids != org_ids
+    else
+      cm_org_ids.include?(organization.id)
+    end
   end
 
   # Used in clinical fulfillment to determine whether the user can edit a particular core.

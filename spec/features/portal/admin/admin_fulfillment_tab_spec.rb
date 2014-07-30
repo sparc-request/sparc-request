@@ -63,14 +63,14 @@ describe "admin fulfillment tab", :js => true do
       end
 
       it 'should save the proposed start and end date' do
-        page.execute_script %Q{ $('#service_request_start_date_picker:visible').focus() }
+        page.execute_script %Q{ $('#protocol_end_date_picker:visible').focus() }
         page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
         page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
         page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-        page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15    
+        page.execute_script %Q{ $("a.ui-state-default:contains('16')").trigger("click") } # click on day 15    
         wait_for_javascript_to_finish
 
-        page.execute_script %Q{ $('#service_request_end_date_picker:visible').focus() }
+        page.execute_script %Q{ $('#protocol_start_date_picker:visible').focus() }
         page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
         page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
         page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
@@ -79,9 +79,9 @@ describe "admin fulfillment tab", :js => true do
         page.should have_content("Service request has been saved.")
         
         visit portal_admin_sub_service_request_path(sub_service_request)
-        service_request.reload
-        page.find('#service_request_start_date_picker').should have_value study.start_date.strftime("%m/%d/%y")
-        page.find('#service_request_end_date_picker').should have_value study.end_date.strftime("%m/%d/%y")
+        study.reload
+        page.find('#protocol_start_date_picker').should have_value study.start_date.strftime("%m/%d/%y")
+        page.find('#protocol_end_date_picker').should have_value study.end_date.strftime("%m/%d/%y")
       end
     end
 
@@ -298,7 +298,8 @@ describe "admin fulfillment tab", :js => true do
       end
 
       it "should add visits" do
-        click_link 'Add a Visit'
+        find('.add_visit_link').click
+        # click_link 'Add a Visit'
         wait_for_javascript_to_finish
         fill_in "visit_name", :with => 'Pandas'
         fill_in "visit_day", :with => 20
@@ -309,17 +310,39 @@ describe "admin fulfillment tab", :js => true do
       end
 
       it 'should remove visits' do
-        click_link 'Delete a Visit'
+        find('.delete_visit_link').click
+        # click_link 'Delete a Visit'
         wait_for_javascript_to_finish
         page.should have_content 'Service request has been saved.'
         page.should_not have_content 'Delete Visit 10'
+      end
+
+      context 'removing a visit on a request that is in clinical work fulfillment' do
+
+        before :each do
+          add_visits
+          sub_service_request.update_attributes(:in_work_fulfillment => true, :status => "submitted")
+          build_clinical_data(all_subjects = true)
+          arm1.reload
+          arm2.reload
+        end
+
+        it "should not allow a visit to be deleted if any of a visit's appointments are completed" do
+          arm1.visit_groups.last.appointments.first.update_attributes(:completed_at => Date.today)
+          find('.delete_visit_link').click
+          # click_link 'Delete a Visit'
+          wait_for_javascript_to_finish
+          page.should have_content 'Completed appointment exists for this visit...'
+          page.should have_content 'Delete Visit 10'
+        end
       end
     end
   end
 
   describe 'adding an arm' do
     before :each do
-      click_link 'Add an Arm'
+      find('.add_arm_link').click
+      # click_link 'Add an Arm'
       wait_for_javascript_to_finish
       fill_in "arm_name", :with => 'Another Arm'
       fill_in "subject_count", :with => 5

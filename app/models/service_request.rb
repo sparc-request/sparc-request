@@ -75,6 +75,7 @@ class ServiceRequest < ActiveRecord::Base
   attr_accessible :submitted_at
   attr_accessible :line_items_attributes
   attr_accessible :sub_service_requests_attributes
+  attr_accessor   :previous_submitted_at
 
   accepts_nested_attributes_for :line_items
   accepts_nested_attributes_for :sub_service_requests
@@ -118,39 +119,42 @@ class ServiceRequest < ActiveRecord::Base
 
     unless (direction == 'back' and status == 'first_draft')
       #validate start date and end date
-      if has_per_patient_per_visit_services?
-        #TODO why is this being called when you try to unset protocol (don't supply one)
-        if protocol and protocol.start_date.nil?
+      if protocol
+        if protocol.start_date.nil?
           errors.add(:start_date, "You must specify the start date of the study.")
         end
-
-        if protocol and protocol.end_date.nil?
+        if protocol.end_date.nil?
           errors.add(:end_date, "You must specify the end date of the study.")
+        end
+        if protocol.start_date and protocol.end_date and protocol.start_date > protocol.end_date
+          errors.add(:invalid_date, "You must chose a start date before the end date.")
         end
       end
 
       #validate arm name, subjects, and visits
-      visitError = false
-      subjectError = false
-      nameError = false
-      validate_for_cwf_visits = false
-      validate_for_cwf_subjects = false
-      arms.each do |arm|
-        unless arm.valid_visit_count? then visitError = true end
-        unless arm.valid_subject_count? then subjectError = true end
-        unless arm.valid_name? then nameError = true end
-        if service_request_has_cwf_ssrs?
-          unless arm.valid_minimum_visit_count? then validate_for_cwf_visits = true end
-          unless arm.valid_minimum_subject_count? then validate_for_cwf_subjects = true end
+      if has_per_patient_per_visit_services?
+        visitError = false
+        subjectError = false
+        nameError = false
+        validate_for_cwf_visits = false
+        validate_for_cwf_subjects = false
+        arms.each do |arm|
+          unless arm.valid_visit_count? then visitError = true end
+          unless arm.valid_subject_count? then subjectError = true end
+          unless arm.valid_name? then nameError = true end
+          if service_request_has_cwf_ssrs?
+            unless arm.valid_minimum_visit_count? then validate_for_cwf_visits = true end
+            unless arm.valid_minimum_subject_count? then validate_for_cwf_subjects = true end
+          end
+          if visitError and subjectError and nameError then break end
         end
-        if visitError and subjectError and nameError then break end
-      end
 
-      if visitError then errors.add(:visit_count, "You must specify the estimated total number of visits (greater than zero) before continuing.") end
-      if subjectError then errors.add(:subject_count, "You must specify the estimated total number of subjects before continuing.") end
-      if nameError then errors.add(:name, "You must specify a name for each arm before continuing.") end
-      if validate_for_cwf_visits then errors.add(:visit_count, "A request associated with this arm is in Clinical Work Fulfillment. The visit count cannot be decreased.") end
-      if validate_for_cwf_subjects then errors.add(:subject_count, "A request associated with this arm is in Clinical Work Fulfillment. The subject count cannot be decreased.") end
+        if visitError then errors.add(:visit_count, "You must specify the estimated total number of visits (greater than zero) before continuing.") end
+        if subjectError then errors.add(:subject_count, "You must specify the estimated total number of subjects before continuing.") end
+        if nameError then errors.add(:name, "You must specify a name for each arm before continuing.") end
+        if validate_for_cwf_visits then errors.add(:visit_count, "A request associated with this arm is in Clinical Work Fulfillment. The visit count cannot be decreased.") end
+        if validate_for_cwf_subjects then errors.add(:subject_count, "A request associated with this arm is in Clinical Work Fulfillment. The subject count cannot be decreased.") end
+      end
     end
 
   end
@@ -237,6 +241,7 @@ class ServiceRequest < ActiveRecord::Base
     optional = args[:optional]
     existing_service_ids = args[:existing_service_ids]
     allow_duplicates = args[:allow_duplicates]
+    recursive_call = args[:recursive_call]
 
     # If this service has already been added, then do nothing
     unless allow_duplicates
@@ -258,17 +263,22 @@ class ServiceRequest < ActiveRecord::Base
       rs_line_items = create_line_items_for_service(
         service: rs,
         optional: false,
-        existing_service_ids: existing_service_ids)
+        existing_service_ids: existing_service_ids,
+        recursive_call: true)
       rs_line_items.nil? ? line_items : line_items.concat(rs_line_items)
     end
 
     # add optional services to line items
-    service.optional_services.each do |rs|
-      rs_line_items = create_line_items_for_service(
-        service: rs,
-        optional: true,
-        existing_service_ids: existing_service_ids)
-      rs_line_items.nil? ? line_items : line_items.concat(rs_line_items)
+    # if were in a recursive call, we don't want to add optional services
+    unless recursive_call
+      service.optional_services.each do |rs|
+        rs_line_items = create_line_items_for_service(
+          service: rs,
+          optional: true,
+          existing_service_ids: existing_service_ids,
+          recursive_call: true)
+        rs_line_items.nil? ? line_items : line_items.concat(rs_line_items)
+      end
     end
 
     return line_items
@@ -389,10 +399,12 @@ class ServiceRequest < ActiveRecord::Base
 
   def total_indirect_costs_per_patient arms=self.arms, line_items=nil
     total = 0.0
-    lids = line_items.map(&:id) unless line_items.nil?
-    arms.each do |arm|
-      livs = line_items.nil? ? arm.line_items_visits : arm.line_items_visits.reject{|liv| !lids.include? liv.line_item_id}
-      total += arm.indirect_costs_for_visit_based_service
+    if USE_INDIRECT_COST
+      lids = line_items.map(&:id) unless line_items.nil?
+      arms.each do |arm|
+        livs = line_items.nil? ? arm.line_items_visits : arm.line_items_visits.reject{|liv| !lids.include? liv.line_item_id}
+        total += arm.indirect_costs_for_visit_based_service
+      end
     end
 
     total
@@ -413,8 +425,10 @@ class ServiceRequest < ActiveRecord::Base
 
   def total_indirect_costs_one_time line_items=self.line_items
     total = 0.0
-    line_items.select {|x| x.service.is_one_time_fee?}.each do |li|
-      total += li.indirect_costs_for_one_time_fee
+    if USE_INDIRECT_COST
+      line_items.select {|x| x.service.is_one_time_fee?}.each do |li|
+        total += li.indirect_costs_for_one_time_fee
+      end
     end
 
     total
@@ -512,6 +526,15 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def arms_editable?
-    true #self.sub_service_requests.empty? ? false : self.sub_service_requests.all?{|ssr| ssr.arms_editable?}
+    true #self.sub_service_requests.all?{|ssr| ssr.arms_editable?}
+  end
+
+  def audit_report identity, start_date=self.previous_submitted_at.utc, end_date=Time.now.utc
+    line_item_audits = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{self.id}%' AND 
+                                      auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('create', 'destroy') AND
+                                      created_at BETWEEN '#{start_date}' AND '#{end_date}'")
+                                    .group_by(&:auditable_id)
+
+    {:line_items => line_item_audits}
   end
 end

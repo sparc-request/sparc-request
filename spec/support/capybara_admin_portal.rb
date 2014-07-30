@@ -73,8 +73,9 @@ module CapybaraAdminPortal
         #that string will appear in one of the responses as well. 
         #types searchText into search box then if a response exists with the searchText in it,
         #clicks on that response.
+        wait_for_javascript_to_finish
         if upBoolean then searchBox = find(:xpath, "//input[@id='search_box']")
-        else searchBox = find(:xpath, "//input[@class='search-all-service-requests ui-autocomplete-input']") end 
+        else searchBox = find(:xpath, "//input[contains(@class,'search-all-service-requests')]") end 
         searchBox.set(searchText)
         wait_for_javascript_to_finish
         response = first(:xpath, "//ul/li[@role='presentation']/a[contains(text(),'#{searchText}')]")
@@ -95,7 +96,7 @@ module CapybaraAdminPortal
 
     def expectStatusChangeRecord(changedFrom, changedTo)
         #checks for presence of record in Status Changes table
-        page.should have_xpath("//table[@id='status_history_table']/tbody/tr/td[2][text()='#{changedFrom}']/following-sibling::td[text()='#{changedTo}']")
+        page.should have_xpath("//table[@id='status_history_table']/tbody/tr/td[contains(text(),'#{changedFrom}')]/following-sibling::td[contains(text(),'#{changedTo}')]")
     end
 
     def addNote(text)
@@ -142,9 +143,8 @@ module CapybaraAdminPortal
         click_link "Add a Subsidy"
         wait_for_javascript_to_finish
         decimal = (percentage.to_f/100.0)
-
-        currentCost = first(:xpath, "//td[@class='effective_cost']").text[1..-1].to_f
-        userDisplayCost = first(:xpath, "//td[@class='display_cost']").text[1..-1].to_f
+        currentCost = first(:xpath, "//span[@class='effective_cost']").text[1..-1].to_f
+        userDisplayCost = first(:xpath, "//span[@class='display_cost']").text[1..-1].to_f
         piContribution = (currentCost*(1-decimal)).round(2)
         subCurrentCost = (currentCost*decimal).round(2)
         subDisplayCost = (userDisplayCost*decimal).round(2)
@@ -179,19 +179,19 @@ module CapybaraAdminPortal
     end
 
     def testPPService(service)
-        click_link "Add an Arm"
+        find(:xpath, "//a[@class='add_arm_link']").click
         wait_for_javascript_to_finish
         currentBox = find(:xpath, "//div[contains(@class,'ui-dialog') and contains(@style,'display: block;')]")
         currentBox.find(:xpath, ".//button/span[text()='Submit']").click
         wait_for_javascript_to_finish
 
-        click_link "Remove an Arm"
+        find(:xpath, "//a[@class='remove_arm_link']").click
         page.driver.browser.switch_to.alert.accept
         wait_for_javascript_to_finish
 
         visitText = find(:xpath, "//select[@id='visit_position']/option[@value='']").text[4..-1]
         visitDay = visitText[6..-1]
-        click_link "Add a Visit"
+        find(:xpath, "//a[@class='add_visit_link']").click
         currentBox = find(:xpath, "//div[contains(@class,'ui-dialog ') and contains(@style,'display: block;')]")
         within currentBox do
             fill_in 'visit_name', :with => visitText
@@ -201,7 +201,7 @@ module CapybaraAdminPortal
         end
 
         select "Delete #{visitText} - #{visitText}", :from => 'delete_visit_position'
-        click_link "Delete a Visit"
+        find(:xpath, "//a[@class='delete_visit_link']").click
         wait_for_javascript_to_finish
     end
 
@@ -240,6 +240,7 @@ module CapybaraAdminPortal
 
     def checkTabsAP
         #runs through each tab
+        wait_for_javascript_to_finish
         switchTabTo 'Project/Study Information'
         wait_for_javascript_to_finish
 

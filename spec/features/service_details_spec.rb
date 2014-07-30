@@ -191,6 +191,25 @@ describe "submitting a in form", :js => true do
         wait_for_javascript_to_finish
         Arm.find(:all).size.should eq(number_of_arms - 1)
       end
+
+      it "should not allow you to delete an arm that has patient data" do
+        number_of_arms = Arm.find(:all).size
+        subject = FactoryGirl.create(:subject, :arm_id => arm1.id)
+        appointment = FactoryGirl.create(:appointment, :calendar_id => subject.calendar.id)
+        visit service_details_service_request_path service_request.id
+        within("div#1") do
+          sleep 3
+          click_link("Remove Arm")
+        end
+
+        a = page.driver.browser.switch_to.alert
+        a.text.should eq "This arm has subject data and cannot be removed"
+        a.accept
+
+        find(:xpath, "//a/img[@alt='Savecontinue']/..").click
+        wait_for_javascript_to_finish
+        Arm.find(:all).size.should eq(number_of_arms)
+      end
     end
   end
 

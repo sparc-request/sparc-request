@@ -255,6 +255,8 @@ GEM
     rspec-core (2.13.1)
     rspec-expectations (2.13.0)
       diff-lcs (>= 1.1.3, < 2.0)
+    rspec-instafail (0.2.5)
+      rspec
     rspec-mocks (2.13.0)
     rspec-rails (2.13.0)
       actionpack (>= 3.0)
@@ -298,6 +300,9 @@ GEM
       rack (~> 1.4)
       rack-protection (~> 1.3)
       tilt (~> 1.3, >= 1.3.3)
+    spring (1.1.3)
+    spring-commands-rspec (1.0.2)
+      spring (>= 0.9.1)
     sprockets (2.2.2)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -399,6 +404,7 @@ DEPENDENCIES
   rails-erd
   redcarpet
   rspec
+  rspec-instafail
   rspec-rails
   ruby-prof
   rvm-capistrano
@@ -409,6 +415,8 @@ DEPENDENCIES
   shoulda-matchers
   simplecov
   sinatra
+  spring
+  spring-commands-rspec
   sqlite3
   surveyor
   thin

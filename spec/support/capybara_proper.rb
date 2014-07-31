@@ -156,7 +156,7 @@ module CapybaraProper
             sleep 2
             response = first(:xpath, "//li[@class='search_result']/button[@class='add_service']")
             if response.nil? or not(response.visible?)
-                sleep 2
+                sleep 3
                 first(:xpath, "//li[@class='search_result']/button[@class='add_service']").click
             else response.click end
             wait_for_javascript_to_finish

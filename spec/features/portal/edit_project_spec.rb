@@ -16,6 +16,7 @@ describe "editing a project", js: true do
       select("Pending Funding", from: "Proposal Funding Status")
       select("Select a Potential Funding Source", from: "Potential Funding Source")
       click_button "Save"
+      wait_for_javascript_to_finish
       page.should have_content("1 error prohibited this project from being saved")
     end
 
@@ -23,6 +24,7 @@ describe "editing a project", js: true do
       select("Funded", from: "Proposal Funding Status")
       select("Select a Funding Source", from: "project_funding_source")
       click_button "Save"
+      wait_for_javascript_to_finish
       page.should have_content("1 error prohibited this project from being saved")
     end
   end
@@ -31,6 +33,8 @@ describe "editing a project", js: true do
 
     it "should redirect back to the main portal page" do
       click_on "Cancel"
+      wait_for_javascript_to_finish
+      sleep 1
       page.should have_content('Dashboard')
       page.should have_content('Welcome')
     end
@@ -60,6 +64,7 @@ describe "editing a project", js: true do
 
     it "should cause the field 'funding source' to be visible" do
       select("Funded", from: "Proposal Funding Status")
+      wait_for_javascript_to_finish
       find("#project_funding_source").should be_visible
     end
   end
@@ -68,6 +73,7 @@ describe "editing a project", js: true do
 
     it "should cause the field 'potential funding source' to be visible" do
       select("Pending Funding", from: "Proposal Funding Status")
+      wait_for_javascript_to_finish
       find("#project_potential_funding_source").should be_visible
     end
   end
@@ -77,12 +83,14 @@ describe "editing a project", js: true do
     it "should save the new funding source" do
       select("Funded", from: "Proposal Funding Status")
       select("Federal", from: "project_funding_source")
+      wait_for_javascript_to_finish
       find("#project_funding_source").should have_value("federal")
     end
 
     it "should save the new pending funding source" do
       select("Pending Funding", from: "Proposal Funding Status")
       select("Federal", from: "Potential Funding Source")
+      wait_for_javascript_to_finish
       find("#project_potential_funding_source").should have_value("federal")
     end
   end

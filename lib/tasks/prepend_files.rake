@@ -23,7 +23,6 @@ namespace :file do
   task :prepend_files => :environment do
     
     def file_prepend(file, str, prefix, postfix)
-      
       f = File.open(file, "r+")
       lines = f.readlines
       f.close
@@ -38,6 +37,8 @@ namespace :file do
       output.close
     end
 
+    # The copyright header needed for each file
+    # # and ~ are keys to replace for different comment styles
     header = "# Copyright 2011 MUSC Foundation for Research Development~\n"
     header += "# All rights reserved.~\n\n"
     header += "# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~\n\n"
@@ -53,8 +54,10 @@ namespace :file do
     header += "# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~\n"
     header += "# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~\n\n"
 
+    # Grab all files in application
     all = File.join('**', '*.*')
 
+    # A list of files and folders to ignore
     files_to_ignore = ['tmp/', 'import/', '.png', '.gif', '.jpeg', '.jpg', 'jquery', '.xcf', '.svg', '.pdf', '.cur', '.md',
                        'schema', '.csv', '.log', 'public/', '.doc', '.sql', '.lock', '.xml']
 
@@ -71,34 +74,42 @@ namespace :file do
     # .sass //
     # .css /* */
 
+    # Get the list of all ignored files
     ignored_files = Dir.glob(all).select { |x| files_to_ignore.detect { |y| x.include? y } }
     puts 'These files were ignored'
     puts ignored_files
     puts ignored_files.count
     puts "Above are ignored files"
 
+    # Get a list of all files that could need the copyright information
     file_list = Dir.glob(all).reject { |x| files_to_ignore.detect { |y| x.include? y } }
     file_types = ['.rb', '.coffee', '.xlsx', '.yml', '.rake', '.haml', '.js', '.erb', '.scss', '.sass', '.css', '.ru', '.txt']
     prefixes =   ['#',   '#',       '#',     '#',    '#',     '-#',    '//',  '<%#',  '//',    '//',    '/*',   '#',   '']
     postfixes =  ['',    '',        '',      '',     '',      '',      '',    '%>',   '',      '',      '*/',   '',    '']
 
+    # Loop over each file type and pass in the comment style for each file
     file_types.each_with_index do |type, index|
+      # Grab the list of files that match the type we're currently looking at
       subset_list = file_list.select { |file| file.include? type }
-   
+
+      # Add copyright info to the top of each file
       subset_list.each do |file|
         file_prepend(file, header, prefixes[index], postfixes[index])
       end
 
+      # To prevent adding the copyright to a file more than once, clean out the ones we just did.
       file_list.reject! { |file| file.include? type }
 
+      # Print out of the files that were changed with their corresponding type and comment style
       puts subset_list
       puts "File Type: #{type}"
       puts "Prefix: #{prefixes[index]}"
       puts "Postfix: #{postfixes[index]}"
-      puts file_list.count
+      puts subset_list.count
       puts ''
     end
 
+    # In case something was missed, print out any files that were found but not changed.
     puts "These files need to be changed"
     puts file_list
 

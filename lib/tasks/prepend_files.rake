@@ -21,6 +21,11 @@
 namespace :file do
   desc "Add text to the top of a file"
   task :prepend_files => :environment do
+
+    def prompt(*args)
+      print(*args)
+      STDIN.gets.strip
+    end
     
     def file_prepend(file, str, prefix, postfix)
       f = File.open(file, "r+")
@@ -35,6 +40,21 @@ namespace :file do
       output = File.new(file, "w")
       lines.each { |line| output.write line }
       output.close
+    end
+
+    def check_for_copyright files
+      missing_copyright = []
+
+      files.each do |f|
+        file = File.open(f, "r")
+        lines = file.readlines
+
+        if lines.grep(/Copyright 2011 MUSC Foundation for Research Development/).empty?
+          missing_copyright << f
+        end
+      end
+
+      missing_copyright
     end
 
     # The copyright header needed for each file
@@ -61,57 +81,61 @@ namespace :file do
     files_to_ignore = ['tmp/', 'import/', '.png', '.gif', '.jpeg', '.jpg', 'jquery', '.xcf', '.svg', '.pdf', '.cur', '.md',
                        'schema', '.csv', '.log', 'public/', '.doc', '.sql', '.lock', '.xml']
 
-    # Comment Styles
-    # .rb #
-    # .coffee #
-    # .xlsx #
-    # .yml #
-    # .rake #
-    # .haml -#
-    # .js //
-    # .erb <%# %>
-    # .scss //
-    # .sass //
-    # .css /* */
-
-    # Get the list of all ignored files
-    ignored_files = Dir.glob(all).select { |x| files_to_ignore.detect { |y| x.include? y } }
-    puts 'These files were ignored'
-    puts ignored_files
-    puts ignored_files.count
-    puts "Above are ignored files"
-
     # Get a list of all files that could need the copyright information
     file_list = Dir.glob(all).reject { |x| files_to_ignore.detect { |y| x.include? y } }
+
+    puts "Checking for files missing copyright"
+    file_list = check_for_copyright file_list
+
+    answer = nil
+    if file_list.size > 0
+      answer = prompt "Files found missing copyright. Would you like to add copyright? [Y/N]: "
+    else
+      puts "All files contain copyright"
+    end
+
+    # List of all file types and their comment styles
     file_types = ['.rb', '.coffee', '.xlsx', '.yml', '.rake', '.haml', '.js', '.erb', '.scss', '.sass', '.css', '.ru', '.txt']
     prefixes =   ['#',   '#',       '#',     '#',    '#',     '-#',    '//',  '<%#',  '//',    '//',    '/*',   '#',   '']
     postfixes =  ['',    '',        '',      '',     '',      '',      '',    '%>',   '',      '',      '*/',   '',    '']
 
-    # Loop over each file type and pass in the comment style for each file
-    file_types.each_with_index do |type, index|
-      # Grab the list of files that match the type we're currently looking at
-      subset_list = file_list.select { |file| file.include? type }
+    if answer == 'Y' || answer == 'Yes'
+      # Loop over each file type and pass in the comment style for each file
+      file_types.each_with_index do |type, index|
+        # Grab the list of files that match the type we're currently looking at
+        subset_list = file_list.select { |file| file.include? type }
 
-      # Add copyright info to the top of each file
-      subset_list.each do |file|
-        file_prepend(file, header, prefixes[index], postfixes[index])
+        # Add copyright info to the top of each file
+        subset_list.each do |file|
+          file_prepend(file, header, prefixes[index], postfixes[index])
+        end
+
+        # To prevent adding the copyright to a file more than once, clean out the ones we just did.
+        file_list.reject! { |file| file.include? type }
+
+        # Print out of the files that were changed with their corresponding type and comment style
+        puts subset_list
+        puts "File Type: #{type}"
+        puts "Prefix: #{prefixes[index]}"
+        puts "Postfix: #{postfixes[index]}"
+        puts subset_list.count
+        puts ''
       end
 
-      # To prevent adding the copyright to a file more than once, clean out the ones we just did.
-      file_list.reject! { |file| file.include? type }
+      # In case something was missed, print out any files that were found but not changed.
+      puts "These files need to be changed"
+      puts file_list
 
-      # Print out of the files that were changed with their corresponding type and comment style
-      puts subset_list
-      puts "File Type: #{type}"
-      puts "Prefix: #{prefixes[index]}"
-      puts "Postfix: #{postfixes[index]}"
-      puts subset_list.count
-      puts ''
+      answer = prompt "Would you like to view the list of ignored files? [Y/N]: "
+
+      if answer == 'Y' || answer == 'Yes'
+        # Get the list of all ignored files
+        ignored_files = Dir.glob(all).select { |x| files_to_ignore.detect { |y| x.include? y } }
+        puts 'These files were ignored'
+        puts ignored_files
+        puts ignored_files.count
+        puts "Above are ignored files"
+      end
     end
-
-    # In case something was missed, print out any files that were found but not changed.
-    puts "These files need to be changed"
-    puts file_list
-
   end
 end

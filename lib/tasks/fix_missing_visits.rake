@@ -2,7 +2,7 @@ namespace :data do
   desc "Fix missing visits"
   task :fix_missing_visits => :environment do
     $arms_with_issues = []
-    
+
     def prompt(*args)
       print(*args)
       STDIN.gets.strip

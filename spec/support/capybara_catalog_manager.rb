@@ -7,7 +7,10 @@ module CapybaraCatalogManager
     sleep 3
     response = first(:xpath, "//a[contains(text(),'#{id}') and contains(text(),'@musc.edu')]", :visible => true)
     if response.nil? or not(response.visible?)
-        wait_for_javascript_to_finish
+        fill_in "new_sp", :with => ""
+        sleep 2
+        fill_in "new_sp", :with => "#{id}"
+        sleep 4
         first(:xpath, "//a[contains(text(),'#{id}') and contains(text(),'@musc.edu')]", :visible => true).click 
     else response.click end
     first("#save_button").click
@@ -16,10 +19,11 @@ module CapybaraCatalogManager
 
   def fillOutCWF(org)
     wait_for_javascript_to_finish
-    find(:xpath, "//div[text()='Clinical Work Fulfillment']").click
+    find("div#cwf_wrapper #cwf_fieldset", :visible => true).click
     wait_for_javascript_to_finish
-    if org=='program' then cwfCheckBox = first(:xpath, "//input[@id='program_show_in_cwf']")
-    else cwfCheckBox = first(:xpath, "//input[@id='core_show_in_cwf']") end 
+    sleep 3
+    if org=='program' then cwfCheckBox = first("input#program_show_in_cwf")
+    else cwfCheckBox = first("input#core_show_in_cwf") end 
     if not cwfCheckBox.checked? then cwfCheckBox.click end
     wait_for_javascript_to_finish
 
@@ -43,7 +47,7 @@ module CapybaraCatalogManager
     else
         sleep 1
         wait_for_javascript_to_finish
-        first(:xpath, "//a[contains(text(),'Julia') and contains(text(),'@musc.edu')]",:vsisible => true).click
+        first(:xpath, "//a[contains(text(),'Julia') and contains(text(),'@musc.edu')]",:visible => true).click
     end
     # if response.nil? or not(response.visible?) 
         # wait_for_javascript_to_finish
@@ -54,12 +58,18 @@ module CapybaraCatalogManager
 
   def subsidyInfo(org='provider')   
     #Subsidy Information
-    first(:xpath, "//input[@id='#{org}_subsidy_map_attributes_max_percentage']").set("50") #max percentage
-    first(:xpath, "//input[@id='#{org}_subsidy_map_attributes_max_dollar_cap']").set("500") #max dollar cap
-    first(:xpath, "//select[@class='new_excluded_funding_source']/option[text()='Federal']").select_option #exclude federal
-    first(:xpath, "//a[@class='add_new_excluded_funding_source btn']").click #click exclude button
+    sleep 3
+    first("#pricing .subsidy_percentage").set("50") #max percentage
+    first("#pricing .subsidy_dollar").set("500") #max dollar cap
+    select "Federal", :from => "funding_source"
+    # find(".excluded_funding_td select").click
+    # wait_for_javascript_to_finish
+    # find(".excluded_funding_td option[value='Federal']").select_option #exclude federal
+    first(".add_new_excluded_funding_source").click
     wait_for_javascript_to_finish
-    page.should have_xpath "//ul[@class='excluded_funding_sources']/li[text()='Federal']" #should have Federal excluded
+    within ("ul.excluded_funding_sources") do
+        page.should have_content("Federal") #should have Federal excluded
+    end
   end
 
   def autoPriceAdjust
@@ -315,7 +325,9 @@ module CapybaraCatalogManager
     first(:xpath, "//a[@href='#' and contains(text(),'Effective on')]").click
 
     stDay = (options[:display_date]).strftime("%-d") # Today's Day
-    first(:xpath, "//th[contains(text(),'Display Date')]/following-sibling::td/input[@type='text']").click
+    wait_for_javascript_to_finish
+    first("input.datepicker.display_date").click
+    # first(:xpath, "//th[contains(text(),'Display Date')]/following-sibling::td/input[@type='text']").click
     wait_for_javascript_to_finish
     selectDatepickerDay stDay
     first(:xpath, "//th[contains(text(),'Effective Date')]/following-sibling::td/input[@type='text']").click
@@ -437,7 +449,8 @@ module CapybaraCatalogManager
     first(:xpath, "//a[@href='#' and contains(text(),'Effective on')]").click
 
     stDay = (options[:display_date]).strftime("%-d") # Today's Day
-    first(:xpath, "//th[text()='Display Dates']/following-sibling::td/input[@type='text']").click #Trigger datepicker on Display Date input
+    wait_for_javascript_to_finish
+    first("input.datepicker.pricing_map_display_date").click #Trigger datepicker on Display Date input
     wait_for_javascript_to_finish
     selectDatepickerDay stDay
     first(:xpath, "//th[text()='Effective Date']/following-sibling::td/input[@type='text']").click #Trigger datepicker on Effective Date input

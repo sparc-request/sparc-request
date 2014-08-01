@@ -51,11 +51,13 @@ class Calendar < ActiveRecord::Base
   end
 
   def build_subject_data
-    if self.appointments.empty? || (self.subject.arm.visits.count > self.appointments.count)
-      subject = self.subject
-      groups = VisitGroup.where(arm_id: subject.arm.id).includes(visits: { line_items_visit: :line_item })
-      self.populate(groups)
-    end
+    #TODO: Need to figure out how to get this to run conditionally on when visits are added to the calendar
+    # num_cores = Core.find_all_by_show_in_cwf(true).count
+    # if self.appointments.empty? || (self.subject.arm.visit_groups.count > (self.appointments.count / num_cores))
+    subject = self.subject
+    groups = VisitGroup.where(arm_id: subject.arm.id).includes(visits: { line_items_visit: :line_item })
+    self.populate(groups)
+    # end
   end
 
   def completed_total

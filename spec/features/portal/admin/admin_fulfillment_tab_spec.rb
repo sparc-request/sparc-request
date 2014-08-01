@@ -58,6 +58,7 @@ describe "admin fulfillment tab", :js => true do
       it 'should save the service request status' do
         select 'Submitted', :from => 'sub_service_request_status'
         visit portal_admin_sub_service_request_path(sub_service_request)
+        wait_for_javascript_to_finish
         page.should have_xpath("//option[@value='submitted' and @selected='selected']")
         page.find('#sub_service_request_owner_id').should have_value ""
       end

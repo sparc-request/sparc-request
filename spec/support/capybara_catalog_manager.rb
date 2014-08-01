@@ -7,7 +7,10 @@ module CapybaraCatalogManager
     sleep 3
     response = first(:xpath, "//a[contains(text(),'#{id}') and contains(text(),'@musc.edu')]", :visible => true)
     if response.nil? or not(response.visible?)
-        wait_for_javascript_to_finish
+        fill_in "new_sp", :with => ""
+        sleep 2
+        fill_in "new_sp", :with => "#{id}"
+        sleep 4
         first(:xpath, "//a[contains(text(),'#{id}') and contains(text(),'@musc.edu')]", :visible => true).click 
     else response.click end
     first("#save_button").click

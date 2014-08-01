@@ -40,7 +40,8 @@ module CapybaraUserPortal
     def accordionInfoBox
         #returns currently expanded study information div that
         #  displays the study information, users, and SRs.
-        find(:xpath, "//div[@aria-expanded='true']")
+        # find(:xpath, "//div[@aria-expanded='true']")
+        find("div.protocol-information.ui-accordion-content-active")
     end
 
     def createNotification(studyName)
@@ -55,7 +56,8 @@ module CapybaraUserPortal
         goToUserPortal
         findStudy studyName
         within accordionInfoBox do
-            first(:xpath, ".//a[contains(@class,'new-portal-notification-button')]").click
+            first("a.new-portal-notification-button").click
+            # first(:xpath, ".//a[contains(@class,'new-portal-notification-button')]").click
             wait_for_javascript_to_finish
         end
         first(".new_notification").click

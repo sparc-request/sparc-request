@@ -152,12 +152,16 @@ module CapybaraProper
             wait_for_javascript_to_finish
         else #else use the search box to find the service then add it
             wait_for_javascript_to_finish
-            find(:xpath, "//input[@id='service_query']").set(serviceName)
-            sleep 2
-            response = first(:xpath, "//li[@class='search_result']/button[@class='add_service']")
+            find("input#service_query").set(serviceName)
+            sleep 3
+            response = first("li.search_result button.add_service")
             if response.nil? or not(response.visible?)
+                find("input#service_query").set('')
+                sleep 2
+                find("input#service_query").set(serviceName)
                 sleep 3
-                first(:xpath, "//li[@class='search_result']/button[@class='add_service']").click
+                first("li.search_result button.add_service").click
+                # first(:xpath, "//li[@class='search_result']/button[@class='add_service']").click
             else response.click end
             wait_for_javascript_to_finish
         end

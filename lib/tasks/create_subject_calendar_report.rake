@@ -5,29 +5,29 @@ namespace :data do
       print(*args)
       STDIN.gets.strip
     end
-  
+
     protocol_id = prompt("Please enter a protocol id: ")
 
     unless protocol_id.blank?
       protocol = Protocol.find protocol_id
-      
+
       CSV.open("tmp/protocol_#{protocol_id}_subject_calendar_report.csv", "wb") do |csv|
         protocol.arms.each do |arm|
           line_item_ids = arm.line_items.map(&:id)
           arm.subjects.each do |subject|
             calendar = subject.calendar
-            
+
             row = [subject.audit_label(nil)]
             arm.visit_groups.each do |visit_group|
               row << "#{visit_group.name} (R Qty)"
               row << "#{visit_group.name} (T Qty)"
             end
-            
+
             csv << row
 
             line_item_ids.each do |lid|
               subject_procedures = Procedure.joins(:appointment => :visit_group).where(:line_item_id => lid, :appointments => {:calendar_id => calendar.id}).order("visit_groups.position")
-              
+
               line_item = LineItem.find lid
               subject_procedure_row = ["#{line_item.service.name} - LID##{line_item.id}"]
 

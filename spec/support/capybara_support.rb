@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 module CapybaraSupport
   def create_default_data
     identity = Identity.create(
@@ -239,7 +259,7 @@ module CapybaraSupport
 
   # Following two methods used for adding and deleting catalog managers, service providers, etc. in spec/features/catalog_manger/shared_spec.rb
   def add_first_identity_to_organization(field)
-    wait_for_javascript_to_finish
+    sleep 3
     fill_in "#{field}", with: "bjk7"
     wait_for_javascript_to_finish
     page.find('a', text: "Brian Kelsey (kelsey@musc.edu)", visible: true).click()
@@ -248,7 +268,7 @@ module CapybaraSupport
     wait_for_javascript_to_finish
   end
   def add_identity_to_organization(field)
-    wait_for_javascript_to_finish
+    sleep 3
     fill_in "#{field}", with: "leonarjp"
     wait_for_javascript_to_finish
     page.find('a', text: "Jason Leonard (leonarjp@musc.edu)", visible: true).click()
@@ -273,5 +293,79 @@ module CapybaraSupport
     driver = Capybara::Email::Driver.new(email)
     node = Capybara::Node::Email.new(Capybara.current_session, driver)
     Capybara.current_session.driver.visit "file://#{node.save_page}"
+  end
+
+  def get_mail sr_id, ssr_id, role = 'service provider'
+    #returns email from notifier based on situation provided/desired.
+    sr =  ServiceRequest.find(service_request.id)
+    ssr = SubServiceRequest.find(sub_service_request.id)
+    #Assumes current identity is id=1
+    user = Identity.find(1)
+
+    case role
+    when 'service provider'
+      xls = []
+      previously_submitted_at = sr.submitted_at.nil? ? Time.now.utc : sr.submitted_at.utc
+      audit =  ssr.audit_report(user, previously_submitted_at, Time.now.utc)
+      sp = ssr.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)")[0]
+      return Notifier.notify_service_provider(sp,sr,xls,user,audit)
+
+    when 'user'
+      xls = " "
+      project_role = sr.protocol.project_roles.select{ |role| role.project_rights != 'none' and !role.identity.email.blank? }[0]
+      approval = service_request.approvals.create
+      return Notifier.notify_user(project_role,sr,xls,approval,user)
+
+    when 'admin'
+      xls = " "
+      sub_email = 'success@musc.edu'
+      return Notifier.notify_admin(sr,sub_email,xls,user)
+    end
+    return nil
+  end
+
+  def visit_mail_for role
+    #role options include ['service provider', 'admin', 'user']
+    email = get_mail(service_request.id, sub_service_request.id, role)
+    if email.nil?
+      return nil
+    elsif email.multipart?
+      visit_email email.html_part
+    else
+      visit_email email
+    end
+  end
+
+  def assert_email_project_information
+    #assert correct protocol information is included in notification email
+    page.should have_xpath "//table//strong[text()='Project Information']"
+    page.should have_xpath "//th[text()='Project ID:']/following-sibling::td[text()='#{service_request.protocol.id}']"
+    page.should have_xpath "//th[text()='Short Title:']/following-sibling::td[text()='#{service_request.protocol.short_title}']"
+    page.should have_xpath "//th[text()='Project Title:']/following-sibling::td[text()='#{service_request.protocol.title}']"
+    page.should have_xpath "//th[text()='Sponsor Name:']/following-sibling::td[text()='#{service_request.protocol.sponsor_name}']"
+    page.should have_xpath "//th[text()='Funding Source:']/following-sibling::td[text()='#{service_request.protocol.funding_source.capitalize}']"
+  end
+
+  def assert_email_project_roles
+    #assert correct project roles information is included in notification email
+    page.should have_xpath "//table//th[text()='Name:']/following-sibling::th[text()='Role:']/following-sibling::th[text()='Proxy Rights:']"
+    service_request.protocol.project_roles.each do |role|
+      page.should have_xpath "//td[text()='#{role.identity.full_name}']/following-sibling::td[text()='#{role.role.upcase}']/following-sibling::td[text()='#{PROXY_RIGHTS.invert[role.project_rights]}']"
+    end
+  end
+
+  def assert_email_admin_information
+    #assert correct admin information is included in notification email
+    #Assumes current identity is id=1
+    page.should have_xpath "//table//strong[text()='Admin Information']"
+    page.should have_xpath "//th[text()='Current Identity:']/following-sibling::td[text()='1']"
+    page.should have_xpath "//th[text()='Service Request ID:']/following-sibling::td[text()='#{service_request.id}']"
+    page.should have_xpath "//th[text()='Sub Service Request IDs:']/following-sibling::td[text()='#{service_request.sub_service_requests.map{ |ssr| ssr.id }.join(", ")}']"
+  end
+
+  def assert_notification_email_tables
+    assert_email_project_information
+    assert_email_project_roles
+    assert_email_admin_information
   end
 end

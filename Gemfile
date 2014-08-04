@@ -96,6 +96,9 @@ end
 
 group :development do
   gem 'highline'
+  gem 'spring'
+  gem "spring-commands-rspec"
+  gem "rspec-instafail"
 end
 
 group :profile do

@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 module CapybaraProper
 
     #******************************************************************#
@@ -713,7 +733,7 @@ module CapybaraProper
 
         fill_in "user_search_term", :with => "bjk7"
         wait_for_javascript_to_finish
-        sleep 2
+        sleep 4
         response = find('a', :text => "Brian Kelsey (kelsey@musc.edu)")
         if response.nil? or not(response.visible?)
             wait_for_javascript_to_finish
@@ -955,9 +975,10 @@ module CapybaraProper
             wait_for_javascript_to_finish
             find(:xpath, ".//input[@value='Create New User']").click
             wait_for_javascript_to_finish
+            wait_for_javascript_to_finish
+            page.should have_content "New account created"
         end
-        wait_for_javascript_to_finish
-        page.should have_content "New account created"
+
         click_link "Close Window"
         wait_for_javascript_to_finish
         login("jug2", "p4ssword")
@@ -1060,8 +1081,8 @@ module CapybaraProper
 
     def documentsPage
         click_link "Add a New Document"
-        File.new 'doc.txt','w+'
-        first(:xpath,"//input[@id='document']").set(Dir.pwd + "/doc.txt")
+        file = Tempfile.new 'doc'
+        first(:xpath,"//input[@id='document']").set(file.path)
         select "Other", :from => "doc_type"
         first(:xpath,"//input[@id='process_ssr_organization_ids_']").click
         click_link "Upload"
@@ -1070,7 +1091,7 @@ module CapybaraProper
         wait_for_javascript_to_finish
         click_link "Update"
         wait_for_javascript_to_finish
-        File.delete 'doc.txt'
+        file.unlink
         saveAndContinue      
     end
 

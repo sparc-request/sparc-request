@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 module CapybaraAdminPortal
 
     def goToSparcProper(un='jug2',pwd='p4ssword')
@@ -96,7 +116,7 @@ module CapybaraAdminPortal
 
     def expectStatusChangeRecord(changedFrom, changedTo)
         #checks for presence of record in Status Changes table
-        page.should have_xpath("//table[@id='status_history_table']/tbody/tr/td[2][text()='#{changedFrom}']/following-sibling::td[text()='#{changedTo}']")
+        page.should have_xpath("//table[@id='status_history_table']/tbody/tr/td[contains(text(),'#{changedFrom}')]/following-sibling::td[contains(text(),'#{changedTo}')]")
     end
 
     def addNote(text)
@@ -143,9 +163,8 @@ module CapybaraAdminPortal
         click_link "Add a Subsidy"
         wait_for_javascript_to_finish
         decimal = (percentage.to_f/100.0)
-
-        currentCost = first(:xpath, "//td[@class='effective_cost']").text[1..-1].to_f
-        userDisplayCost = first(:xpath, "//td[@class='display_cost']").text[1..-1].to_f
+        currentCost = first(:xpath, "//span[@class='effective_cost']").text[1..-1].to_f
+        userDisplayCost = first(:xpath, "//span[@class='display_cost']").text[1..-1].to_f
         piContribution = (currentCost*(1-decimal)).round(2)
         subCurrentCost = (currentCost*decimal).round(2)
         subDisplayCost = (userDisplayCost*decimal).round(2)
@@ -180,19 +199,19 @@ module CapybaraAdminPortal
     end
 
     def testPPService(service)
-        click_link "Add an Arm"
+        find(:xpath, "//a[@class='add_arm_link']").click
         wait_for_javascript_to_finish
         currentBox = find(:xpath, "//div[contains(@class,'ui-dialog') and contains(@style,'display: block;')]")
         currentBox.find(:xpath, ".//button/span[text()='Submit']").click
         wait_for_javascript_to_finish
 
-        click_link "Remove an Arm"
+        find(:xpath, "//a[@class='remove_arm_link']").click
         page.driver.browser.switch_to.alert.accept
         wait_for_javascript_to_finish
 
         visitText = find(:xpath, "//select[@id='visit_position']/option[@value='']").text[4..-1]
         visitDay = visitText[6..-1]
-        click_link "Add a Visit"
+        find(:xpath, "//a[@class='add_visit_link']").click
         currentBox = find(:xpath, "//div[contains(@class,'ui-dialog ') and contains(@style,'display: block;')]")
         within currentBox do
             fill_in 'visit_name', :with => visitText
@@ -202,7 +221,7 @@ module CapybaraAdminPortal
         end
 
         select "Delete #{visitText} - #{visitText}", :from => 'delete_visit_position'
-        click_link "Delete a Visit"
+        find(:xpath, "//a[@class='delete_visit_link']").click
         wait_for_javascript_to_finish
     end
 

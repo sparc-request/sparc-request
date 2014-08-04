@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 # Place all the behaviors and hooks related to the matching controller here.
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
@@ -22,7 +42,7 @@ $(document).ready ->
       date = Date.parse($(changed_element).val())
       arr = $(selector)
       same_date = false
-      date_warning = false  
+      date_warning = false
       for index in arr
         old_date = Date.parse($(index).val())
         if date == old_date && index != changed_element
@@ -34,7 +54,7 @@ $(document).ready ->
         div = $(changed_element).closest('div')
         display_date = Sparc.config.readyMyDate(div.find('.submitted_date:first').val())
         effective_date = Sparc.config.readyMyDate(div.find('.submitted_date:last').val())
-        div.prevAll('h3:first').find('a').html("Effective On #{effective_date} - Display On #{display_date}")    
+        div.prevAll('h3:first').find('a').html("Effective On #{effective_date} - Display On #{display_date}")
       else if same_date == true
         alert "You can't have two #{str} dates on the same day!"
         $(changed_element).val('')
@@ -43,7 +63,7 @@ $(document).ready ->
       if date_warning == true
         if (confirm "You have selected a #{str} date before an existing #{str} date, are you sure you want to do this?") == false
           $(changed_element).val('')
-          $(changed_element).siblings().val('')          
+          $(changed_element).siblings().val('')
         else if (confirm "Are you sure?") == false
           $(changed_element).val('')
           $(changed_element).siblings().val('')
@@ -56,7 +76,7 @@ $(document).ready ->
     Sparc.config.setDatePicker()
     $('.blank_field_errors').css('display', 'inline-block')
     $('.per_patient_errors').css('display', 'inline-block')
-    $('.save_button').attr('disabled', true)  
+    $('.save_button').attr('disabled', true)
   )
 
   $('.remove_pricing_map').live('click', ->

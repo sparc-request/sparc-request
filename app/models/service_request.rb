@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 class ServiceRequest < ActiveRecord::Base
   audited
 
@@ -182,33 +202,34 @@ class ServiceRequest < ActiveRecord::Base
     return if direction == 'back' and status == 'first_draft'
     return unless has_per_patient_per_visit_services?
     
-    self.arms.each do |arm|
-      days = arm.visit_groups.map(&:day)
+    if USE_EPIC
+      self.arms.each do |arm|
+        days = arm.visit_groups.map(&:day)
 
-      visit_group_errors = false
-      invalid_day_errors = false
-      
-      unless days.all?{|x| !x.blank?}
-        errors.add(:visit_group, "Please specify a study day for each visit on (#{arm.name}).")
-        visit_group_errors = true
-      end
-      
-      unless days.all?{|day| day.is_a? Fixnum}
-        errors.add(:invalid_day, "Please enter a valid number for each study day (#{arm.name}).")
-        invalid_day_errors = true
-      end
-
-      errors.add(:out_of_order, "Please make sure study days are in sequential order (#{arm.name}).") unless visit_group_errors or invalid_day_errors or days.each_cons(2).all?{|i,j| i <= j}
-
-      unless visit_group_errors
-        day_entries = Hash.new(0)
-        days.each do |day|
-          day_entries[day] += 1
+        visit_group_errors = false
+        invalid_day_errors = false
+        
+        unless days.all?{|x| !x.blank?}
+          errors.add(:visit_group, "Please specify a study day for each visit on (#{arm.name}).")
+          visit_group_errors = true
+        end
+        
+        unless days.all?{|day| day.is_a? Fixnum}
+          errors.add(:invalid_day, "Please enter a valid number for each study day (#{arm.name}).")
+          invalid_day_errors = true
         end
 
-        errors.add(:duplicate_days, "Visits can not have the same study day (#{arm.name}).") unless day_entries.values.all?{|count| count == 1}
-      end
+        errors.add(:out_of_order, "Please make sure study days are in sequential order (#{arm.name}).") unless visit_group_errors or invalid_day_errors or days.each_cons(2).all?{|i,j| i <= j}
 
+        unless visit_group_errors
+          day_entries = Hash.new(0)
+          days.each do |day|
+            day_entries[day] += 1
+          end
+
+          errors.add(:duplicate_days, "Visits can not have the same study day (#{arm.name}).") unless day_entries.values.all?{|count| count == 1}
+        end
+      end
     end
   end
 

@@ -49,8 +49,6 @@ describe "study level charges", js: true do
       find('.fulfillment_unit_type').select("Aliquot")
       find('.fulfillment_notes').set("You're darn tootin'!")
  
-
-
       save_form
 
       otf = sub_service_request.one_time_fee_line_items.first
@@ -106,6 +104,12 @@ describe "study level charges", js: true do
         save_form
 
         page.should_not have_content("Date, quantity, and unit quantity are required fields.")
+      end
+
+      it "should hide the fulfilment if the fulfillment header is clicked" do
+        find('.fulfillment_header').click
+        wait_for_javascript_to_finish
+        page.should_not have_selector('.fulfillment_date')
       end
     end
   end

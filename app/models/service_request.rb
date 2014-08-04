@@ -182,33 +182,34 @@ class ServiceRequest < ActiveRecord::Base
     return if direction == 'back' and status == 'first_draft'
     return unless has_per_patient_per_visit_services?
     
-    self.arms.each do |arm|
-      days = arm.visit_groups.map(&:day)
+    if USE_EPIC
+      self.arms.each do |arm|
+        days = arm.visit_groups.map(&:day)
 
-      visit_group_errors = false
-      invalid_day_errors = false
-      
-      unless days.all?{|x| !x.blank?}
-        errors.add(:visit_group, "Please specify a study day for each visit on (#{arm.name}).")
-        visit_group_errors = true
-      end
-      
-      unless days.all?{|day| day.is_a? Fixnum}
-        errors.add(:invalid_day, "Please enter a valid number for each study day (#{arm.name}).")
-        invalid_day_errors = true
-      end
-
-      errors.add(:out_of_order, "Please make sure study days are in sequential order (#{arm.name}).") unless visit_group_errors or invalid_day_errors or days.each_cons(2).all?{|i,j| i <= j}
-
-      unless visit_group_errors
-        day_entries = Hash.new(0)
-        days.each do |day|
-          day_entries[day] += 1
+        visit_group_errors = false
+        invalid_day_errors = false
+        
+        unless days.all?{|x| !x.blank?}
+          errors.add(:visit_group, "Please specify a study day for each visit on (#{arm.name}).")
+          visit_group_errors = true
+        end
+        
+        unless days.all?{|day| day.is_a? Fixnum}
+          errors.add(:invalid_day, "Please enter a valid number for each study day (#{arm.name}).")
+          invalid_day_errors = true
         end
 
-        errors.add(:duplicate_days, "Visits can not have the same study day (#{arm.name}).") unless day_entries.values.all?{|count| count == 1}
-      end
+        errors.add(:out_of_order, "Please make sure study days are in sequential order (#{arm.name}).") unless visit_group_errors or invalid_day_errors or days.each_cons(2).all?{|i,j| i <= j}
 
+        unless visit_group_errors
+          day_entries = Hash.new(0)
+          days.each do |day|
+            day_entries[day] += 1
+          end
+
+          errors.add(:duplicate_days, "Visits can not have the same study day (#{arm.name}).") unless day_entries.values.all?{|count| count == 1}
+        end
+      end
     end
   end
 

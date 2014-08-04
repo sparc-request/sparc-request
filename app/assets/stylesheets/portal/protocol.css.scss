@@ -1,0 +1,123 @@
+// Copyright © 2011 MUSC Foundation for Research Development
+// All rights reserved.
+
+// Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+// 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+// 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+// disclaimer in the documentation and/or other materials provided with the distribution.
+
+// 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+// derived from this software without specific prior written permission.
+
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+// BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+// SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+// TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+#protocol {
+    table {
+        font-size: 14px;
+        width: 100%;
+
+        th {
+            width: 25%;
+            padding: 4px;
+            text-align: left;
+        }
+
+        td {
+            padding: 4px;
+
+            div {
+                min-height: 25px;
+            }
+        }
+    }
+
+    input {
+        width: 98%;
+    }
+
+    input[type="checkbox"] {
+        width: auto;
+    }
+
+    input.protocol_date, .form-date {
+        width: 15%;
+    }
+
+    input[type=submit] {
+        width: auto;
+    }
+
+    select {
+        width: 99%;
+    }
+
+    #actions {
+        text-align: center;
+        margin: 15px auto 0;
+        width: 250px;
+        input[type=submit] {
+            width: 92px;
+            height: 40px;
+            color: white;
+            border: 0px;
+            font-size: 1.5em;
+            background: url(yellowbutton_small.png) no-repeat;
+            float: left;
+            cursor: pointer;
+        }
+
+        span {
+            margin: 0 10px;
+        }
+        a {
+            background: url(yellowbutton_small.png) no-repeat;
+            display: block;
+            width: 92px;
+            height: 33px;
+            color: white;
+            border: 0px;
+            font-size: 1.5em;
+            padding-top: 7px;
+            float: right;
+        }
+    }
+}
+
+#change_protocol_type_area {
+    .info {
+        width: 95%;
+    }
+    input, select {
+        float: left;
+    }
+    input {
+        margin: 7px 0 0 10px;
+    }
+    select {
+        width: 60% !important;
+    }
+    option {
+        max-width: 100% !important;
+    }
+}
+
+#protocol .user-edit-protocol-view .field.inventors {
+    height: auto;
+    textarea {
+        height: auto;
+    }
+}
+
+.fulfillment_notifications {
+  li:hover {
+    background-color: #ccc;
+    cursor: pointer;
+  }
+}

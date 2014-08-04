@@ -1,0 +1,1060 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+en:
+  application_title: "SPARC Request"
+  about_title: "About SPARC Request"
+  about_text: "SPARC Request (Services, Pricing, & Application for Research Centers) is a web-based research management system that provides a central portal (one-stop shop) to researchers and their study teams to browse for research services and resources, as well as submit service and pricing requests with a focus on billing compliance and proposal/budget development. The free software is open to MUSC affiliates and CTSA institutions to adopt and capitalize on efficiencies."
+  portal_title: "SPARC Request Portal"
+  admin_portal_title: "SPARC Request Administration"
+  catalog_manager_title: "SPARC Request Catalog Manager"
+  error_contact: "(843) 792-8300 or success@musc.edu"
+  issue_contact: "Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have."
+  feedback: "Feedback"
+  activerecord:
+    errors:
+      models:
+        organization:
+          attributes:
+            position_in_cwf:
+              blank: "is required if 'Show in Clinical Work Fulfillment' is checked."
+
+  # bottom navigation
+  bottom_navigation:
+    go_back: "Go Back"
+    save_and_exit: "Save as Draft"
+    save_and_continue: "Save & Continue"
+    continue: "Continue"
+    save_as_draft: "Save As Draft"
+    get_quote: "Get Quote"
+    submit_to_start: "Submit to Start Services"
+    cancel: "Cancel"
+
+  # right navigation
+  right_navigation:
+    ask_a_question: "Ask A Question"
+    dashboard: "Dashboard"
+    faq: "Help"
+    feedback: "Feedback"
+    catalog: "Back to Catalog"
+
+  # steps navigation
+  step_navigation:
+    step_1: "STEP 1: <br /> Review Services & <br /> Assign Study or Project"
+    step_2: "STEP 2: <br /> Enter Service <br /> Details"
+    step_3: "STEP 3: <br /> Notes & <br /> Documents"
+    step_4: "STEP 4: <br /> Review Your <br /> Request"
+    step_5: "STEP 5: <br /> Submission <br /> Confirmation"
+
+  # sign in page
+  signin:
+    message1: "MUSC Users- Sign in here"
+    message2: ""
+    message3: "Outside Users- Sign in here with your SPARC Request account"
+    message4: ""
+    button1: "MUSC Users Click Here"
+    button2: "Outside Users Click Here"
+    button3: "Sign In"
+  login_name: "Username:"
+  login_password: "Password:"
+  remember_user: "Remember me:"
+
+  # new user sign up
+  signup:
+    message: "To create an account for the utilization of the SPARC Request application, please provide the following information:"
+    lname: "Last Name:"
+    fname: "First Name:"
+    company: "Company:"
+    mail: "Email:"
+    phone: "Telephone Number:"
+    confirm: "Password Confirmation:"
+    reason: "Reason for account/login request:"
+    submit: "Create New User"
+    cancel: "Cancel"
+    not_approved: "Close Window"
+
+  # password reset
+  password_reset_message: "Forgot your password?"
+  password_reset_submit: "Send password reset"
+
+  # sign in popup
+  initial_signin_dialog: "You are not currently logged into SPARC Request. If you are affiliated with an institution and have an institutional login OR have created a SPARC Request account and have a SPARC Request login and password, please click the top button to proceed. If you are not currently affiliated with an institution OR do not have a SPARC Request login/password, please click the button on the bottom to proceed with creating a new account."
+  proceed_to_shibboleth: "MUSC Users"
+  proceed_to_database_login: "Outside Users with existing SPARC Request Accounts"
+  create_new_account_link: "Outside Users: Don't have an account? Click here."
+
+  ie_warning:
+    text1: "Your browser version is out of date. SPARC Request does not support Internet Explorer versions older than version 8."
+    text2: "Using versions lower than 8 can cause data curruption, and other serious problems using this tool."
+
+  # Notifier
+  notifier:
+    service_request: "Service Request"
+    welcome_obtain_research_pricing: "A request has been made to get a quote"
+    welcome_submit: "Services have been requested or changed"
+    body1: "Dear %{full_name},"
+    body2_pi: "%{welcome} in %{application_title} (%{root_url}) for your %{protocol_type} listed below. In addition, below is a list of users who have been granted access to this %{protocol_type} on your behalf."
+    body2_non_pi: "%{welcome} in %{application_title} (%{root_url}) for a %{protocol_type} to which you have been granted access."
+    p_title: "Project Title:"
+    p_info: "Project Information"
+    p_id: "Project ID:"
+    title1: "Short Title:"
+    title2: "Project Title:"
+    s_name: "Sponsor Name:"
+    source: "Funding Source:"
+    name: "Name:"
+    role: "Role:"
+    proxy: "Proxy Rights:"
+    body6: "A list of requested services is attached."
+    body7: "To approve the charges associated with the selected services please click"
+    link: "HERE"
+    admin_data: "Admin Information"
+    triggered_by: "Current Identity:"
+    sr_id: "Service Request ID:"
+    ssr_ids: "Sub Service Request IDs:"
+    ssr_id: "Sub Service Request ID:"
+    arm_data: "Protocol Arm Information"
+    arm_name: "Arm Name"
+    arm_subject_count: "Subject Count"
+    arm_visit_count: "Visit Count"
+    notice:
+      body1: "Request for new SPARC Request account submitted and awaiting approval"
+      body2: "A new SPARC Request account is waiting for approval."
+      last: "Last Name"
+      first: "First Name"
+      company: "Company"
+      email: "Email"
+      number: "Telephone Number"
+      reason: "Reason for account/login request"
+      approve: "Approve Account"
+      disapprove: "Disapprove Account"
+    status_change:
+      body1: "Request for new SPARC Request account status change"
+      body2: "Your request for a new SPARC Request account has been approved.  You may proceed with your service "
+      body3: "request using your newly created"
+      body4: "username and password."
+      body5: "Your request for a new SPARC Request account has NOT been approved."
+    service: "Service"
+    action: "Action"
+
+  # Tooltip help dialogs
+  cart_help:
+    questions:
+      - question_text: "May I submit a request for services for multiple research studies/projects simultaneously?"
+        answer_text: "No. Please browse and select services for only one research study/project at a time."
+      - question_text: "May I select and add services from multiple Service Providers and Programs at one time?"
+        answer_text: "Yes. Please feel free to browse, select, and add services from any Service Provider, Program, and/or Core displayed in the system for any given research study/project."
+      - question_text: "How many Authorized Users can I add?"
+        answer_text: "Add as many Authorized Users as you feel is pertinent. There is no limit."
+      - question_text: "What is the difference  between a Research Study and a Research Project?"
+        answer_text: "A Research Study is an individual research protocol with defined aims and outcomes."
+      - question_text: "How is SPARC Request calculating my indirect costs?"
+        answer_text: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARC Request uses this data to calculate your total overall indirect costs."
+      - question_text: "I\\'m stuck! Who can I contact for assistance with SPARC Request?"
+        answer_text: "The SUCCESS Center is happy to assist you! Please contact us at <a href=\"mailto:success@musc.edu\">success@musc.edu</a> or (843) 792-3357."
+
+  # new/editing projects
+  sr_project:
+    message: "Before you can complete a service request, please tell us more about your research project.  This information will be used by our staff to decide the best way to process your request."
+    title1: "Short Title:*"
+    title2: "Project Title:*"
+    funding_status: "Proposal Funding Status:*"
+    dropdown_default1: "Select a Funding Status"
+    funding_source: "Funding Source:*"
+    potential_funding_source: "Potential Funding Source:*"
+    dropdown_default2: "Select a Funding Source"
+    dropdown_default3: "Select a Potential Funding Source"
+    description: "Brief Description:"
+    rate: "Indirect Cost Rate:"
+
+  # Project/Study assignment page
+  study_assignment:
+    instructions_1: "Please review services below."
+    notice: "If Professional Services are covered by % effort, please indicate in Step 2."
+    select_protocol: "Select a Research Study/Project"
+    research_study: "Research Study"
+    research_project: "Research Project"
+    edit_study: "Edit Study"
+    edit_project: "Edit Project"
+    or: "If not in list above, create NEW Study/Project Below"
+    new_study: "New Study"
+    new_project: "New Project"
+    sidebar_box:
+      my_services: "My Services"
+      help: "Help"
+
+  # Subsidy Page
+  subsidy_page:
+    not_eligible: "None of the services you have selected are eligible for a subsidy."
+    eligible_html: "The services selected below may be eligible for a <b><i>funding award</i></b> or subsidy to cover some or all of the costs of the services. For example, SCTR (CTSA) provides funding awards for the Research Nexus."
+    table:
+      institution: "Institution/Provider/Program/Core"
+      total_estimated: "Total Estimated Costs"
+      pi_contribution: "Study Contribution"
+      requested_funding: "Requested Funding"
+      subsidy: "% Requested Subsidy"
+      percent_of_cost: "percent of cost"
+      amount_of_funding: "amount of funding"
+    request_additional: "To request additional research funding go to"
+    additional_confirm: "Are you sure you want to leave? Any unsaved changes to this service request will be lost."
+
+  # Calendar Page
+  calendar_page:
+    tabs:
+      template: "Template Tab"
+      billing: "Quantity/Billing Tab"
+      quantity: "Quantity Display Tab"
+      pricing: "Consolidated Request Tab"
+    billing_legend:
+      research: "R = Research"
+      third_party: "T = Third Party (PT Insurance)"
+      effort: "% = % Effort"
+    headers:
+      services: "Services"
+      unit_costs: "Unit Costs"
+      service_rate: "Service Rate"
+      your_cost: "Your Cost"
+      clinical_qty: "Clinical Qty Type"
+      number: "#"
+      qty_type: "Qty Type"
+      unit_type: "Unit Type"
+      subjects: "# Subjects"
+      total: "Total"
+      total_per_patient: "Total Per Patient"
+      total_per_study: "Total Per Study"
+      other_services: "Other Services"
+      total_study: "Study Cost Totals"
+      number: "#"
+      unit_type: "Unit Type"
+    per_patient: "Per Patient/Visit Services"
+    labels:
+      jump_to_visit: "Jump To:"
+      maximum_direct: "Maximum Total Direct Costs Per Patient"
+      maximum_indirect: "Maximum Total Indirect Costs Per Patient"
+      maximum_per: "Maximum Total Per Patient"
+      total_direct: "Total Direct Costs (Per Patient/Visit Services) Per Study"
+      total_indirect: "Total Indirect Costs (Per Patient/Visit Services) Per Study"
+      total_costs: "Total Costs (Per Patient/Visit Services) Per Study"
+      total_direct_arm: "Total Direct Costs (Per Patient/Visit Services) All ARMs"
+      total_indirect_arm: "Total Indirect Costs (Per Patient/Visit Services) All ARMs"
+      total_costs_arm: "Total Costs (Per Patient/Visit Services) All ARMs"
+      total_direct_other: "Total Direct Costs (Other Services) Per Study"
+      total_indirect_other: "Total Indirect Costs (Other Services) Per Study"
+      totals_costs_other: "Total Costs (Other Services) Per Study"
+      total_costs_other: "Total Costs (Other Services) Per Study"
+      grand_total_direct: "Grand Total: Direct Costs"
+      grand_total_indirect: "Grand Total: Indirect Costs"
+      grand_total: "Grand Total:"
+
+  # Documents Page
+  documents:
+    message: "Your file is uploading.  Please be patient as this may take a while with large files."
+    no_documents: "No documents found"
+    upload_instructions_html: "<ul><li>Click Add New Document.</li><li>Check the service providers you wish to receive the document in the Allow Access column.</li><li>Select the file you wish to upload and click Upload.</li></ul>"
+    notes_instructions: "Please add any additional information that may be helpful to service providers."
+    admin_instructions: "Additional Notes -- If specific to service, please specify in text:"
+    upload_message: "Your file is uploading.  Please be patient as this may take a while with large files."
+    make_changes: "To make changes to selected services please click"
+    here: "here"
+    add_button: "Add a New Document"
+    headers:
+      recipients: "Recipients"
+      allow: "Allow Access"
+      type: "Type"
+      file: "File"
+      institution: "Institution/Provider/Program/Core"
+      title: "Title"
+      actions: "Actions"
+      uploads: "Document Uploads"
+      uploaded: "Uploaded"
+    upload_button: "Upload"
+    update_button: "Update"
+    cancel_button: "Cancel"
+    edit_button: "Edit"
+    delete_button: "Delete"
+    select_prompt: "Select a Type"
+
+  # Related Service Requests (portal/admin/)
+  related:
+    headers:
+      srid: "SRID"
+      date_submitted: "Date Submitted"
+      requester: "Requester"
+      pi: "PI"
+      program_core: "Program/Core"
+      service: "Service"
+
+  # Catalog Manager Index Page
+  cm_index:
+    search: "Search"
+    submit: "Submit"
+    institution: "Create New Institution"
+    provider: "Create New Provider"
+    program: "Create New Program"
+    core: "Create New Core"
+    service: "Create New Service"
+    processing: "Processing request"
+    pricing_map1: "No Pricing Map Changes"
+    pricing_map2: "Save and Apply to Pricing Maps"
+
+  # Catalog Manager Shared Stuff
+  cm_shared:
+    headers:
+      actions: "Actions"
+      save: "Save"
+      general: "General Information"
+      submission: "Submission E-mails"
+      super: "Super Users"
+      service: "Service Providers"
+      catalog_rights: "Catalog Manager Rights"
+      automatic: "Automatic Pricing Adjustment"
+      pricing: "Pricing Setup"
+      subsidy: "Subsidy Information"
+    labels:
+      name_email: "Name/Email"
+      delete: "Delete"
+      primary: "Primary Contact"
+      hold: "Hold Emails"
+      can_edit: "Can Edit Historical Data"
+      increase_decrease: "Increase or Decrease Rates"
+      add_pricing: "Add Pricing Setup"
+      max_percentage: "Max Percentage"
+      max_dollar: "Max Dollar Cap"
+      exclude_funding: "Exclude These Funding Sources"
+      exclude_button: "Exclude"
+      exclude_instructions: "(college, federal, foundation, industry, investigator, internal, unfunded)"
+      email: "Email"
+      clone: "clone only"
+      required_list: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
+      percent_of_change: "Percent of Change"
+      negative_to_change: "Enter a negative percent to decrease."
+      display_date: "Display Date"
+      effective_date: "Effective Date"
+      dates: "Dates"
+      required_field: "*Required Field."
+      source_of_price: "Source of Price / Rate"
+      self_defined: "Self Defined"
+      charge_master: "Charge Master"
+      percent_of_fee: "Percent of Fee"
+      federal: "Federal"
+      apply_federal: "Apply Federal % to All"
+      corporate: "Corporate*"
+      other: "Other*"
+      member: "Member*"
+      must_be_greater: "*Must be greater than or equal to Federal Percent."
+      rates: "Rates"
+      source: "Funding Source"
+      rate: "Rate"
+      college: "College*"
+      foundation: "Foundation*"
+      industry: "Industry*"
+      investigator: "Investigator*"
+      internal: "Internal*"
+      service: "Service"
+      required: "Required"
+      new_related: "New Related Service"
+      new_submission: "New Submission Email"
+      new_super: "New Super User"
+      new_clinical_provider: "New Clinical Provider"
+      survey_name: "Survey"
+      new_associated_survey: "New Associated Survey"
+      select_survey: "Please select a survey"
+      linked_quantity: "Linked Quantity?"
+      linked_total: "Linked Quantity Total"
+    title: "SPARC Request Services Catalog"
+
+  # user search partial
+  user_search:
+    message: "To begin to search and add authorized users to this study/project, type in the first or last name of the user.  Select as appropriate."
+    search_box_header: "User Search"
+    search_placeholder: "Search for user..."
+
+  # user details partial
+  user_details:
+    name: "Name"
+    email: "Email"
+    phone: "Phone"
+    role: "Role"
+    role_select: "Select a Role"
+    ec_name: "ERA Commons Name"
+    institution: "Institution"
+    institution_select: "Select an Institution"
+    college: "College"
+    college_select: "Select a College"
+    department: "Department"
+    department_select: "Select a Department"
+    credentials: "Credentials"
+    credentials_select: "Select a Credential"
+    subspeciality: "Subspeciality"
+    subspeciality_select: "Select a Subspeciality"
+    update_button: "Update Authorized User"
+    add_button: "Add Authorized User"
+
+  # user list partial
+  user_list:
+    information: "Research Study/Project Authorized Users"
+    proxy_rights: "Proxy Rights"
+    message: "(Select appropriate level of study/project rights)"
+    epic_access: "Epic EMR Access?"
+    actions: "Actions"
+    rights1: "Member Only:"
+    rights2: "View Rights:"
+    rights3: "Request/Approve Services:"
+    rights4: "Authorize/Change"
+    rights5: "Study Charges:"
+    check_apply: "Check the appropriate securities for Epic access:"
+
+  # Edit Study form
+  study_form:
+    description: "Before you can complete a service request, please tell us more about your research study. This information will be used by our staff to decide the best way to process your request."
+    needed_info: "Information needed to obtain correct pricing"
+    optional_text: "Optional Information"
+    optional_text2: "(used for reporting purposes and saved for your future use)"
+    options: "Optional"
+    attributes: "Study Attributes"
+    title: "Protocol Title:*"
+    status_blank: "Select a Funding Status"
+    udak_project_number: "Financial Account (UDAK#):"
+    sponsor_name: "Sponsor Name:*"
+    rate: "Indirect Cost Rate:"
+    funding_rfa: "Funding Opportunity #/RFA:"
+    potential_funding_start_date: "Potential Funding Start Date:"
+    potential_blank: "Select a Potential Funding Source"
+    potential_funding_source_other: "Please Specify"
+    funding_blank: "Select a Funding Source"
+    funding_start_date: "Funding Start Date:"
+    funding_source_other: "Please Specify"
+    indirect_cost_rate: "Indirect Cost Rate"
+    federal_grant_title: "Federal Grant Title:"
+    federal_grant_code_id: "Federal Grant Code:"
+    code_blank: "Select a Federal Grant Code"
+    federal_phs_sponsor: "Federal Grant PHS Sponsor:"
+    phs_blank: "Please Select if Applicable"
+    federal_non_phs_sponsor: "Federal Grant Non-PHS Sponsor:"
+    federal_grant_serial_number: "Federal Grant Serial Number:"
+    study_phase: "Study Phase:"
+    phase_blank: "Select a Study Phase"
+    research: "Research Involving (Check all that apply)"
+    human_subjects: "Human Subjects:"
+    nct_number: "NCT #:"
+    hr_number: "HR #:"
+    pro_number: "Pro #:"
+    irb_of_record: "IRB of Record:"
+    submission_type: "Submission Type:"
+    submission_blank: "Pick a Submission Type"
+    approval_pending: "Application/Approval Pending:"
+    irb_approval_date: "IRB Approval Date:"
+    irb_expiration_date: "IRB Expiration Date:"
+    vertebrate_animals: "Vertebrate Animals:"
+    iacuc_number: "IACUC #:"
+    name_of_iacuc: "Name of IACUC:"
+    iacuc_approval_date: "IACUC Approval Date:"
+    iacuc_expiration_date: "IACUC Expiration Date:"
+    investigational_products: "Investigational Products:"
+    ind_number: "IND#:"
+    ind_on_hold: "IND on Hold?"
+    ide_number: "IDE#:"
+    ip_patents: "IP/Patents:"
+    patent_number: "Patent Number:"
+    inventors: "Inventors:"
+    type: "Study Type (Check all that apply)"
+    impact: "Impact Areas"
+    affiliations: "Affiliations, Collaborations, and Memberships"
+    save: "Save"
+
+  # Edit Project Form
+  project_form:
+    message: "Before you can complete a service request, please tell us more about your research project.  This information will be used by our staff to decide the best way to process your request."
+    title: "Project Title:*"
+    dropdown_default1: "Select a Funding Status"
+    dropdown_default2: "Select a Funding Source"
+    dropdown_default3: "Select a Potential Funding Source"
+    description: "Brief Description:"
+    rate: "Indirect Cost Rate:"
+    save: "Save"
+
+  # Study/Project Shared
+  protocol_shared:
+    step_text: "STEP 1: Protocol Information"
+    step_text_2: "STEP 1: Add Users"
+    title: "Short Title:*"
+    funding_source: "Funding Source:*"
+    funding_status: "Proposal Funding Status:*"
+    potential_funding_source: "Potential Funding Source:*"
+    cancel: "Cancel"
+    change: "Project/Study Type:"
+    button: "Change Type"
+    confirm: "This will change the type of this Project/Study.  Are you sure?"
+    add_user: "User added!  See table below to set proxy rights."
+    update_user: 'User updated!  See table below to set proxy rights.'
+
+  # Service Request Details form
+  service_request_details:
+    one_time_fee_instructions: "Please enter service details for SPARC Request Services that you selected"
+    one_time_fee_and_per_patient_instructions: "Next, please enter the following information specific to your research study/project. This information will help us generate applicable service fees for your review."
+    per_patient_instructions: "Please enter the following information specific to your research study/project. This information will help us generate applicable service fees for your review."
+    number_of_subjects: "Estimated Total Number of Subjects"
+    number_of_visits: "Estimated Total Number of Visits"
+    study_start_date: "Estimated Study Start Date"
+    study_end_date: "Estimated Study End Date"
+    recruitment_start_date: "Estimated Recruitment Start Date"
+    recruitment_end_date: "Estimated Recruitment End Date"
+    services_required: "You can't continue unless you have services in your cart."
+    name: "ARM Name"
+    services: "My Services"
+    help: "Help"
+
+  # Service Requests
+  service_requests:
+    detail_list:
+      nan  : "Please enter a valid number."
+      text1: "Quantity of"
+      text2: "is less than the unit minimum of"
+      text3: "Quantity is being reset to the previous value."
+      text4: "Units Per Quantity of"
+      text5: "is more than the maximum allowed of"
+      text6: "Units Per Quantity is being set to the maximum allowed value."
+      service: "Service"
+      quantity: "Quantity"
+      description1: "(Samples, hours, etc...)"
+      up_quantity: "Units Per Quantity"
+      description2: "(Slides, etc...)"
+      q_type: "Quantity Type"
+    approve_changes:
+      text1: "has already approved these changes"
+      text2: "You have successfully approved the changes requested."
+    catalog:
+      text1: "My Services"
+      text2: "Help"
+      text3: "Please ensure that you have added all necessary research services to your My Services cart before proceeding. For a listing of available services to add, click on any of the Programs listed on the left-hand side of the page. Services will appear in the middle of the screen. Add services by clicking \"Add\"."
+      text4: "At least 1 service needs to be in cart first time through before clicking \"Submit request\" from catalog page."
+      event: "No events scheduled within a month from today."
+    info: 
+      text1: "Service Request Status"
+      text2: "Service Request Owner"
+      text3: "Ready for Clinical Fulfillment:"
+      text4: "Total Cost"
+
+  # Service Request review page
+  sr_review:
+    participate_in_survey: "Would you like to participate in a brief 1 question SPARC Request satisfaction survey?"
+    participate_in_survey_title: "System Satisfaction Survey"
+    instructions: "<ul class='review_instructions'><li>Review your request.</li><li>Makes changes (if needed).</li><li>Save as draft for later, get a quote, or submit to start services.</li></ul>"
+    study_project_info:
+      title: "Study/Project Information"
+      id: "Study/Project ID:"
+      short_title: "Short Title"
+      title: "Study/Project Title:"
+      sponsor_name: "Sponsor Name:"
+      funding_source: "Funding Source:"
+    auth_users:
+      name: "Name:"
+      role: "Role:"
+      proxy_rights: "Proxy Rights:"
+    notes_header: "Service Request Notes"
+    calendar:
+      headers:
+        services: "Services"
+        cost: "Your Cost"
+        subjects: "# Subjects"
+        total: "Service Total"
+        total_per_patient: "Total Per Patient"
+        total_per_study: "Total Per Study"
+      totals:
+        direct_cost: "Total Direct Cost"
+        indirect_cost: "Total Indirect Costs"
+        grand: "Grand Total:"
+
+  # Service Request Confirmation Page and Obtain Research Pricing Page
+  sr_confirmation:
+    instructions: "Thank you for submitting a service request through SPARC Request. An email(s) has been submitted on your behalf, and we will respond to your service request shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
+    research_pricing_instructions : "You have successfully submitted a request to get a quote. An email(s) has been submitted on your behalf, and we will respond to your request for a quote shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
+    download_button: "Download my Service Request"
+    portal_button: "Go to SPARC Request User Portal"
+    details:
+      date_submitted: "Date Submitted: "
+      short_title: "Short Title: "
+      id: "Service Request ID:"
+      institution: "Institution:"
+      provider: "Provider:"
+      program_core: "Program/Core:"
+      contact: "Contact:"
+
+  # Service Request approve epic rights
+  approve_epic_rights:
+    instructions: "Thank you. An email has been sent to the primary PI for the final approval."
+
+  # Portal Root/Information
+  protocol_information:
+    greeting: "Welcome!"
+    notes: "Notifications:"
+    note_count: "Unread Message"
+    message1: "Within your dashboard, you can view (and/or edit and submit) service requests currently in SPARC Request, as well as all of those still in 'draft' status."
+    message2: "Please note that studies/projects are listed in descending order."
+    loading: "Loading your project/studies"
+    rights1: "You do not have appropriate rights to"
+    rights2: "Should you need this right, please contact your PI or Authorized Users"
+    information: "Information:"
+    title: "Title:"
+    short_title: "Short Title:"
+    funding: "Funding Source:"
+    authorized_users: "Authorized Users:"
+    name: "Name:"
+    role: "Role:"
+    proxy: "Proxy Rights:"
+    actions: "Actions"
+    edit: "Edit"
+    delete: "Delete"
+    no_authorized_users: "Currently no authorized users"
+    add_authorized_user: "Add An Authorized User"
+    service_requests: "Service Requests:"
+    srid: "SRID:"
+    date: "Submitted Date:"
+    provider: "Provider:"
+    program: "Program/Core:"
+    status: "Status:"
+    edit_original: "Edit Original"
+    send_notification: "Send Notification"
+    ctrc_services_exist: "SCTR Research Nexus services have been found on another Service Request %{protocol_id}-%{ssr_id} pertaining to this Project/Study %{short_title}. Please edit the original Service Request containing the Nexus services in your User Portal."
+    full_calendar: "View Consolidated Request"
+
+  # Portal sub service request dialog
+  ssr_dialog:
+    project_study_details:
+      info: "Project/Study Information"
+      id: "SRID"
+      short_title: "Short Title"
+      project_title: "Project Title"
+      sponsor_name: "Sponsor Name"
+    auth_users:
+      name: "Name"
+      role: "Role"
+      proxy_rights: "Proxy Rights:"
+    docs:
+      uploads: "Uploads"
+      file_name: "File Name"
+      program_core: "Program/Core"
+    calendar:
+      headers:
+        services: "Services"
+        cost: "Your Cost"
+        subjects: "# Subjects"
+        total: "Service Total"
+      totals:
+        direct_cost: "Total Direct Cost"
+        indirect_cost: "Total Indirect Costs"
+        grand: "Grand Total:"
+
+  # Portal Editing user for study/project
+  portal_user_form:
+    add_user: "Add User"
+    edit_user: "Edit User"
+    name: "Name:"
+    email: "E-mail:"
+    phone: "Phone:"
+    role: "Role:*"
+    epic_access: "Epic EMR Access?:"
+    role_prompt: "Select a Role"
+    era: "ERA Commons Name:"
+    credentials: "Credentials:"
+    credentials_prompt: "Select a Credential"
+    institution: "Institution:"
+    institution_prompt: "Select an Institution"
+    college: "College:"
+    college_prompt: "Select a College"
+    department: "Department:"
+    department_prompt: "Select a Department"
+    subspeciality: "Subspecialty:"
+    subspeciality_prompt: "Select a Subspecialty"
+    rights:
+      header: "User Rights:"
+      none: 'Study/Project Member Only'
+      view: 'View Rights'
+      request: 'Request/Approve Services'
+      approve: 'Authorize/Change Study Charges'
+
+  # Catalog Manager - Organization Form
+  organization_form:
+    gen_info: "General Information"
+    user_rights: "User Rights"
+    pricing: "Pricing"
+    epic_info: "Epic Interface"
+    program: "Program"
+    core: "Core"
+    name: "Name"
+    abbreviation: "Abbreviation"
+    description: "Description"
+    ack_language: "Acknowledgement Language"
+    order: "Order"
+    tag_list: "Tags"
+    is_ctrc: "Is CTRC?"
+    split_notify: "Split/Notify Here"
+    css_class: "Color"
+    disabled: "Do not display in SPARC"
+    core_facility: "Core/Facility Based Services"
+    service_center_cost: "Service Center Cost"
+    hospital_based_services: "Hospital Based Services"
+    cpt_code: "CPT Code"
+    send_to_epic: "Send To Epic"
+    charge_code: "Charge Code"
+    revenue_code: "Revenue Code"
+    pricing_maps: "Pricing Maps"
+    add_map: "Add Pricing Map"
+    related_services: "Related Services"
+    associated_surveys: "Surveys"
+    submission_emails: "Submission E-mails"
+    super_users: "Super Users"
+    service_providers: "Service Providers"
+    service_provider_required_message: "You must have at least one service provider either at the provider, program, or core level"
+    new_sp: "New Service Provider"
+    service_error: "There are no service providers anywhere on this tree."
+    cm_rights: "Catalog Manager Rights"
+    clinical_work_fulfillment: "Clinical Work Fulfillment"
+    clinical_providers: "Clinical Provider Rights:"
+    new_cm: "New Catalog Manager"
+    auto_price_adj: "Automatic Pricing Adjustment"
+    change_rates: "Increase or Decrease Rates"
+    pricing_setup: "Pricing Setup"
+    subsidy_info: "Subsidy Information"
+    subsidy_max_percent: "Max Percentage"
+    subsidy_max_dollar: "Max Dollar Cap"
+    actions: "Actions:"
+    submit_button: "Save"
+    cancel_button: "Cancel"
+    blank_field_errors: "Name and Order are required on the Service.  Effective Date, Display Date, and Service Rate are required on all Pricing Maps."
+    per_patient_errors: "Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps."
+    otf_field_errors: "If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required."
+    status_legend: "Status Options (Use default statuses below or click to create custom service request statuses)"
+    default_statuses: "Default Statuses:"
+    color_blank: "Select a Color"
+    errors: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
+    show_in_cwf: "Show in Clinical Work Fulfillment"
+    position_in_cwf: "Position"
+
+  pricing_map_form:
+    dates: "Dates"
+    display_date: "Display Dates"
+    effective_date: "Effective Date"
+    rates: "Rates"
+    service_rate: "Service Rate"
+    federal_rate: "Federal Rate"
+    corporate_rate: "Corporate Rate"
+    other_rate: "Other Rate"
+    member_rate: "Member Rate"
+    rate_disclaimer: "*IF N/A, NO PRICING SET-UP IS DEFINED FOR THE CURRENT DATES"
+    clinical_quantity_type: "Clinical Quantity Type (hours, each, slides, etc.)"
+    quantity_type: "Quantity Type (hours, each, slides, etc.)"
+    otf_unit_type: "Unit Type (weeks, days, samples, etc.)"
+    unit_factor: "Unit Factor"
+    unit_minimum: "Quantity Minimum"
+    unit_maximum: "Unit Maximum"
+    otf_quantity_minimum: "Quantity Minimum"
+    is_one_time_fee: "Is One Time Fee"
+    exclude_from_indirect_cost: "Exclude from Indirect Cost"
+    per_patient: "Per Patient"
+    one_time_fee: "One Time Fee"
+
+  # Notifications
+  notifications:
+    recipient: "Recipient:"
+    subject: "Subject"
+    message: "Please enter notification text here"
+    warning: "You can not send a message to yourself."
+    select: "Select All"
+    deselect: "Deselect All"
+    read: "Mark as Read"
+    unread: "Mark as Unread"
+    from: "From:"
+    about: "Subject:"
+    preview: "Preview:"
+    received: "Time:"
+    requester: "Requester: "
+    feedback: "Please enter your feedback text here"
+    email: "Enter Your Email (optional)"
+    ask_a_question_email: "Enter Your Email"
+    ask_a_question_email_error: "Valid email address required."
+    ask_a_question: "Please ask your question here"
+
+  # Mailer
+  mailer:
+    header1: "Authorized Users have been edited or added in"
+    header2: "for your"
+    header3: "listed below."
+    body1: "To VIEW and/or MAKE any changes to this request,"
+    link1: "SPARC Request"
+    link2: "please click here."
+    p_info: "Protocol Information"
+    p_id: "Protocol ID:"
+    title1: "Short Title:"
+    title2: "Project Title:"
+    s_name: "Sponsor Name"
+    user_info: "User Information:"
+    name: "Name:"
+    role: "Role:"
+    proxy: "Proxy Rights"
+    received: "You have received a new notification on your SPARC Request User Dashboard. Please login  @ %{portal_root_url} to retrieve it. Thank you."
+
+  # Fulfillment tab
+  fulfillments:
+    approval_history: 
+      header: "Approval History"
+      date_approved: "Date Approved"
+      approval_type: "Type"
+      approved_by: "Approved By"
+    service_button: "Add Service"
+    otf_button: "Add One-Time Fee Service"
+    cwf_service_button: "Add Service to all patients"
+    remove_service_button: "Remove Service"
+    cwf_remove_service_button: "Remove Service from all patients"
+    core_approvals:
+      header: "Core Approvals"
+      nursing: "Nursing/Nutrition Approved"
+      lab: "Lab Approved"
+      imaging: "Imaging Approved"
+    src_approval:
+      headar: "SRC Approval"
+      label: "SRC Approved"
+    status_changes:
+      header: "Status Changes"
+      date: "Date Changed"
+      from: "Status Changed From"
+      to: "Status Changed To"
+    notes:
+      header: "Notes"
+      link:  "Add Note"
+    timeline:
+      header: "Timeline"
+      start_date: "Proposed Start Date"
+      end_date: "Proposed End Date"
+      arranged_date: "Consult Arranged Date"
+      contacted_date: "Requester Contacted Date"
+    totals:
+      user_display_total_cost: "User Display Cost"
+      effective_current_total_cost: "Current Cost"
+    subsidies:
+      header: "Subsidy Information"
+      no_subsidy: "No subsidy has been requested for this service request."
+      pi: "PI Contribution"
+      percent: "% Subsidy"
+      cost: "Total Cost"
+      user_display_total_cost: "Subsidy User Display Cost"
+      effective_current_total_cost: "Subsidy Current Cost"
+      delete: "Delete Subsidy"
+      link: "Add a Subsidy"
+    services:
+      header: "Service"
+      no_visits:
+        header: "Non Per-Patient/Per-Visit"
+        no_requests: "There are no non per-patient/per-visit requests."
+        selected: "Services Selected"
+        service: "Services"
+        code: "Charge Code"
+        number: "#"
+        qty_type: "Qty Type"
+        otf_unit_type: "Unit Type"
+        cost: "Cost"
+        received: "Received"
+        in_process: "In Process"
+        complete: "Complete"
+        delete: "Delete"
+        date: "Fulfillment Dates"
+        timeframe: "Timeframe"
+        time: "Time"
+        notes: "Notes"
+      visits:
+        header: "Per-Patient/Per-Visit"
+        no_requests: "There are no per-patient/per-visit requests."
+        arm: "Select Arm"
+        add_arm: "Add an Arm"
+        remove_arm: "Remove an Arm"
+        add: "Add a Visit"
+        delete: "Delete a Visit"
+        add_link: "Add a Visit"
+        delete_link: "Delete a Visit"
+
+  # Admin Dashboard
+  admin_dashboard:
+    title: "Dashboard <span>|</span> Welcome"
+    notifications_title: "Dashboard <span>|</span> Notifications"
+    edit_protocol_title: "Dashboard <span>|</span> Edit Protocol Information"
+    id: "SRID"
+    status: "Status"
+    pi: "Principle Investigator"
+    routing: "Routing"
+    billing_business: "Billing/Business Manager"
+    requester: "Requester"
+    short_title: "Short Title"
+    export: "Export to Excel"
+    delete: "Delete This Request"
+    export_link: "Export"
+    delete_link: "Delete"
+    delete_confirm: "Are you sure?"
+    epic_interface: "Epic Interface"
+    send_to_epic: "Send To Epic"
+    tabs:
+      fulfillment: "Fulfillment"
+      protocol_info: "Project/Study Information"
+      docs: "Documents"
+      related_srs: "Related Service Requests"
+      users: "Associated Users"
+      notifications: "Notifications"
+      cw_fulfillment: "Clinical Work Fulfillment"
+      subject_tracker: "Subject Tracker"
+      payments: "Payments"
+      invoices: "Invoices"
+      template: "Template"
+      services: "Services"
+
+  # Admin Root Page
+  admin_root:
+    title: "My Profile"
+    search_placeholder: "Search all service requests..." 
+    date: "Date Submitted"
+    service: "Service"
+    requester: "Requester"
+    assigned: "Person Assigned"
+    orgs: "Provider/Program/Core"
+
+  # Associated Users Tab
+  associated_users:
+    add: "Add a new Associated User"
+
+  # Rails Root Page Messages
+  rails_root:
+    welcome: "Welcome to the SPARC Request Services Catalog"
+    message1: "Search for services above or browse the catalog to your left."
+    # message2: "Click \"Add Services\" at the bottom of any service description to add it to your \"My Services\"."
+    # message3: "To delete a service from \"My Services\", use the red X beside any service."
+    message4: "** Please Note: You may only select services applicable to ONE research study/project at a time.**"
+    message5: "Welcome to SPARC Request Version 4.0. We're happy to announce that Step 2 now includes the concept of clinical trial arms. You'll find other numerous enhancements and upgrades in Version 4.0. For more information and training documents, please visit our new website at"
+    # <a>http://academicdepartments.musc.edu/sparc_request/</a>. 
+    message6: "Please contact the SUCCESS Center at 792-8300 with any questions or to set up a demonstration!"
+    message7: "Check out our SPARC Request Blog ("
+    message8: "). This feature allows you to follow our latest news and is a great way to ask questions of and leave feedback for the SPARC Request Team as well as communicate with both us and other SPARC Request Users."
+    # message7: "Due to user feedback regarding the inclusion of Indirect Costs in the Grand Total of Study Costs, Indirect Costs (as a line item) have currently been removed from SPARC Request and will be reintroduced in the budget template tools in the Study Tracker Release. Please contact the SUCCESS Center at 792-8300 with any questions."
+    message9: "Website/Training: "
+    message9link: 'http://academicdepartments.musc.edu/sctr/sparc_request'
+    message10: "Blog: "
+    message10link: 'http://www.sparcrequestblog.com'
+
+  # Identities Account Aproved/Disapproved
+  identity:
+    approved: "Account approved"
+    disapproved: "Account disapproved"
+
+  study_tracker:
+    title: "Clinical Work Fulfillment"
+    save: "Save"
+    cancel: "Cancel"
+    dashboard:
+      header1: "Completed Visits"
+      header2: "Visit Totals"
+      header3: "Subject Total:"
+      tabs:
+        study_schedule: "Study Schedule"
+        subject_tracker: "Subject Tracker"
+        study_level_charges: "Study Level Charges"
+        payments: "Payments"
+        services: "Services"
+        billing: "Billing"
+        audit_reporting: "Audit Reporting"
+    subject_tracker:
+      name: "Subject Name"
+      mrn: "MRN"
+      id: "ID"
+      dob: "Date of Birth"
+      gender: "Gender"
+      ethnicity: "Race" #this was change to race but the database still has it labeled as ethnicity
+      schedule: "Schedule"
+      add: "Add a subject"
+      report: "Report"
+      delete: "Delete"
+      confirm: "Are you sure you want to delete this subject?"
+    otf_charges: 
+      add: "Add a Fulfillment"
+      remove: "Remove"
+      date: "Date"
+    payments: 
+      submitted: "Date Submitted"
+      amt_invoiced: "Amount Invoiced"
+      amt_received: "Amount Received"
+      date_received: "Date Received"
+      pay_method: "Payment Method"
+      percent_subsidy: "Percent Subsidy"
+      details: "Details"
+      documents: "Documents"
+      prompt: ""
+      remove: "Remove"
+      remove_confirm: "Are you sure you want to delete this payment?"
+      add: "Add a payment"
+    payment_uploads:
+      add: "Add document"
+      remove: "Remove"
+      remove_confirm: "Are you sure you want to delete this document?"
+    audits:
+      no_start_date: "Unable to determine when this request was put into Clinical Work Fulfillment"
+      nursing: "Nursing"
+      laboratory: "Laboratory"
+      imaging: "Imaging"
+      nutrition: "Nutrition"
+      start_date: "Start Date:"
+      end_date: "End Date:"
+      get_report: "Get Report"
+    notes: 
+      header: "Comments:"
+      save: "Save Comment"
+    visit_calendar:
+      header1: "Study/Project ID:"
+      header2: "Subject ID:"
+      header3: "Billing/Business Manager:"
+      header4: "Subject Study Status:"
+      visit_selector: "Please select a visit:"
+      save_alert: "You must save your changes for the dashboard to be updated."
+      visit_complete: "Date of Visit (entering date signifies a completed visit)"
+      header5: "Procedure"
+      header6: "Completed"
+      header7: "R Quantity"
+      header8: "T Quantity"
+      header9: "Unit Cost"
+      header10: "Total"
+      grand_total: "Grand Total"
+      add_service: "Add Service"
+      submit: "Save Appointments"
+      cwf_link: "Return to Clinical Work Fulfillment"
+      popup_message1: "Attention - An assessment" 
+      popup_message2: "has been added at"
+      popup_message3: "If subject is past visit, please refer to your IRB-approved protocol."
+      popup_message4: "Attention - Assessments have been added to the following visits. If subject is past visit, please refer to your IRB-approved protocol."
+      popup_header1: "Visit Name:"
+      popup_header2: "Service/Assessment Name:"
+    billing_report:
+      title: "Admin Billing Report"
+      start_date: "Start Date"
+      end_date: "End Date"
+      protocols: "Protocol(s)"
+      get_report: "Get Report"
+  reports:
+    intro: "Welcome to the SPARC Request Reporting Module. Please select a report type to proceed."
+    defined_reports: "Defined Reports"
+    defined_reports_desc: "Please select a defined report below and click to proceed with report customizations."
+    custom_report: "Custom Report"
+    proceed: "Proceed"
+    create_report: "Create Report"
+    return_to_admin_portal: "Return to Admin Portal"

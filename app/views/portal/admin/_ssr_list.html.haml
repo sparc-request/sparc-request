@@ -1,0 +1,104 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+:javascript
+  $(document).ready(function() { 
+      $("table#admin-tablesorter").bind("sortStart",function() { 
+        //Do Nothing
+      }).bind("sortEnd",function() { 
+          Sparc.admin.stripify_table()
+      }); 
+  });
+
+.admin-index-ssr-list
+  .admin-index-ssr-table
+    %input.search-all-service-requests{:type => 'text', :placeholder => t(:admin_root)[:search_placeholder]}
+    %select#service_request_workflow_states
+      - @user.available_workflow_states('ctrc', nil, true).each do |key, value|
+        %option{:value => key, :selected => (key == "submitted")} #{value} (#{@service_requests[key].try(:length) || 0})
+
+    .admin_indicator
+      = image_tag 'portal/spinner.gif'
+    #admin_tabs
+      %div
+        %table#admin-tablesorter.tablesorter
+          %colgroup
+            %col
+            %col
+            %col
+            %col
+            %col
+            %col
+            %col
+            %col
+            %col.last
+          %thead
+            %tr
+              %th= t(:admin_dashboard)[:id]
+              %th= t(:admin_dashboard)[:status]
+              %th= t(:admin_dashboard)[:short_title]
+              %th= t(:admin_root)[:date]
+              %th= t(:admin_root)[:service]
+              %th= t(:admin_root)[:requester]
+              %th= t(:admin_dashboard)[:pi]
+              %th= t(:admin_root)[:assigned]
+              %th.last= t(:admin_root)[:orgs]
+          %tbody
+            - pis = []
+            - search_pis = []
+            - requesters = []
+            - srids = []
+            - @service_requests.each do |status, ssrs|
+              - ssrs.each do |ssr|
+                - if user_can_view_ssr?(@study_tracker, ssr, @user)
+                  - search_pis << {:value => ssr.try(:service_request).try(:protocol).try(:primary_principal_investigator).try(:full_name), :id => pretty_tag(ssr.try(:service_request).try(:protocol).try(:primary_principal_investigator).try(:full_name))}
+                  - requesters << {:value => ssr.try(:service_request).try(:service_requester).try(:full_name), :id => pretty_tag(ssr.try(:service_request).try(:service_requester).try(:full_name))}
+                  - srids << {:value => /(.*)-/.match(full_ssr_id(ssr))[1], :id => /(.*)-/.match(full_ssr_id(ssr))[1]}
+
+                  %tr.admin_service_request{:class => "services #{pretty_tag(status)} all #{ssr.service_request.protocol.id} #{pretty_tag(ssr.try(:service_request).try(:service_requester).try(:full_name))} #{pretty_tag(ssr.try(:service_request).try(:protocol).try(:principal_investigators).try(:first).try(:full_name))}", :style => default_display(status), :'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id}
+                    %td{:id => "service_request_ssr.id", :'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}= full_ssr_id(ssr)
+                    %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}= ssr.status.humanize
+                    %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}= ssr.service_request.protocol.try(:short_title)
+                    %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}= ssr.service_request.submitted_at.try(:strftime, "%m/%d/%Y")
+                    %td{:style => "max-width: 135px; word-wrap: break-word;"}
+                      %ul.services_first
+                        %li.ui-corner-top
+                          - services = ssr.line_items.map(&:service).sort_by{|srv| srv.name}.map(&:name)
+                
+                        - if services.size > 1
+                          %span.ui-icon.ui-icon-triangle-1-e.open_close_services{:style => 'display:inline-block'}
+                          %span.ui-icon.ui-icon-triangle-1-s.open_close_services{:style => 'display:none'}
+                
+                        %span= services.shift
+                      %ul.services_rest{:style => 'display:none'}
+                        - services.each do |service|
+                          %li= service
+                    %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}= ssr.service_request.service_requester.try(:full_name)
+                    %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}
+                      - pis = ssr.service_request.protocol.try(:principal_investigators).try(:map, &:full_name) || []
+                      - if pis.size > 1
+                        - pis.each do |pi|
+                          = pi
+                      - else
+                        = pis[0]
+                    %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}= ssr.owner.try(:full_name)
+                    %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}= ssr.org_tree_display
+
+          %input.values_test{:value => (search_pis + requesters + srids).uniq.to_json, :type => 'hidden'}

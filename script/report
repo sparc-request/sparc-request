@@ -1,0 +1,10 @@
+#!/usr/bin/env ruby
+
+if not defined?(Rails) then
+  exec("rails", "runner", __FILE__, *ARGV)
+end
+
+require 'reports'
+
+run_report_command(ARGV)
+

@@ -1,0 +1,94 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+addService = (sr_id, id) ->
+  $.ajax
+    type: 'POST'
+    url: "/service_requests/#{sr_id}/add_service/#{id}"
+
+removeService = (sr_id, id, move_on) ->
+  $.ajax
+    type: 'POST'
+    url: "/service_requests/#{sr_id}/remove_service/#{id}"
+    success: (data, textStatus, jqXHR) ->
+      if move_on
+        window.location.replace($("#user_portal_link").val())
+
+$(document).ready ->
+  
+  $('.add_service').live 'click', ->
+    sr_id = $(this).attr('sr_id')
+    id = $(this).attr('id')
+    addService(sr_id, id)
+
+  $('.remove-button').live 'click', ->
+    sr_id = $(this).attr('sr_id')
+    ssr_id = $(this).attr('ssr_id')
+    id = $(this).attr('id')
+    li_count = $('#line_item_count').val()
+    $("#services .line-items").remove()
+    $("#services").append('<span class="spinner"><img src="/assets/spinner.gif"/></span>')
+
+    if li_count == "1" and ssr_id != ''
+      if confirm("This action will delete this service request and you will be redirected to your user portal. Click OK to proceed.")
+        $(this).hide()
+        removeService(sr_id, id, true)
+    else
+      $(this).hide()
+      removeService(sr_id, id, false)
+
+  # Build out cart FAQ from i18n yaml file.  Pretty hackish to get HTML temlating done. CEA
+  helpList = "<ul>"
+  <% I18n.translate(:cart_help)[:questions].each_with_index do |question, idx| %>
+    <% answer_id = "help_answer_#{idx + 1}" %>
+      <% q_span = "<span onclick=\"$(\\'##{answer_id}\\').toggle();\" class=\"help_question\">#{question['question_text']}</span>" %>
+    <% a_span = "<span id=\"#{answer_id}\" class=\"help_answer\" style=\"display:none;\">#{question['answer_text']}</span>" %>
+    <% faq_li = "<li>" + q_span + a_span + "</li>" %>
+  helpList += '<%= faq_li %>'
+  <% end %>
+  helpList += "</ul>"
+
+  $('.faq-button').qtip
+    content:
+      text: helpList
+      title:
+        text: "Help"
+        button: "X"
+
+    position:
+      corner:
+        target: "topRight"
+        tooltip: "bottomLeft"
+
+      adjust: screen: true
+
+    show:
+      when: "click"
+      solo: true
+
+    hide: false
+    style:
+      tip: true
+      border:
+        width: 0
+        radius: 4
+
+      name: "light"
+      width: 250

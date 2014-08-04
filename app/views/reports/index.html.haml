@@ -1,0 +1,54 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+= javascript_include_tag 'reporting'
+%br
+#reporting_container
+
+  #report_selection
+    %h2= t(:reports)[:intro]
+
+    %br
+    %br
+    = link_to t(:reports)[:defined_reports], 'javascript:void(0);', :class => "reporting_button", :id => "defined_report_link"
+    %br
+    %br
+    %br
+    = link_to t(:reports)[:custom_report], 'javascript:void(0);', :class => "reporting_button", :id => "custom_report_link"
+  
+  %br
+  %br
+    
+  = link_to t(:reports)[:return_to_admin_portal], portal_admin_index_path, :id => 'return_to_admin_portal'
+
+  #defined_reports
+    #defined_reports_step_1
+      #defined_reports_description= t(:reports)[:defined_reports_desc]
+      %br
+      = form_tag setup_reports_path, :method => :get, :remote => true do
+        = select_tag "report", options_for_select($canned_reports.map{|x| [x.constantize.title, x]})
+        %br
+        %br
+        = submit_tag t(:reports)[:proceed] 
+        %br
+        %br
+    #defined_reports_step_2
+
+  #custom_report

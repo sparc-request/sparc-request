@@ -1,0 +1,54 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+= form_tag(mark_as_read_portal_notifications_path, :method => :put, :remote => true, :class => 'notifications-form') do
+  %input.read_or_unread_field{:type => 'hidden', :name => 'read_or_unread', :value => "unread"}
+  .admin-notifications
+    .notification-action-bar.ui-corner-all
+      .right
+        %a.white_link.read_unread_link{:title => "Mark selected messages as read", :href => 'javascript:void(0)', :'data-read' => 'true', :'data-sub_service_request_id' => @sub_service_request.try(:id)}= image_tag("portal/read_small.png")
+        %a.white_link.read_unread_link{:title => "Mark selected messages as unread", :href => 'javascript:void(0)', :'data-read' => 'false', :'data-sub_service_request_id' => @sub_service_request.try(:id)}= image_tag("portal/unread_small.png")
+        %a.white_link.deselect_all{:title => "Deselect all messages", :href => 'javascript:void(0)'}= image_tag("portal/delete_white_small.png")
+        %a.white_link.select_all{:title => "Select all messages", :href => 'javascript:void(0)'}= image_tag("portal/select_small.png")
+      .clear
+
+    .admin_notifications_content
+      %table.admin_notifications
+        %thead
+          %tr
+            %th.notification_icon
+            %th.from_column= t(:notifications)[:from]
+            %th.subject_column= t(:notifications)[:about]
+            %th.body_column= t(:notifications)[:preview]
+            %th.received_column= t(:notifications)[:received]
+            %th
+        %tbody
+          - @notifications.each do |notification|
+            %tr{:class => "#{notification.try(:user_notifications_for_current_user, @user).try(:last).try(:read) ? '' : 'unread'} notification_row"}
+              %td.notification_icon{:'data-notification_id' => notification.id, :'data-sub_service_request_id' => @sub_service_request.try(:id)}
+                - if notification.try(:user_notifications_for_current_user, @user).try(:last).try(:read)
+                  = image_tag("portal/unreadnotification_white_small.png")
+                - else
+                  = image_tag("portal/notification_red_small.png")
+              %td.from_column{:'data-notification_id' => notification.id, :'data-sub_service_request_id' => @sub_service_request.try(:id)}= notification.try(:messages).try(:last).try(:sender).try(:full_name)
+              %td.subject_column{:'data-notification_id' => notification.id, :'data-sub_service_request_id' => @sub_service_request.try(:id)}= notification.try(:messages).try(:last).try(:subject)
+              %td.body_column{:'data-notification_id' => notification.id, :'data-sub_service_request_id' => @sub_service_request.try(:id)}= notification.try(:messages).try(:last).try(:body)
+              %td.received_column{:'data-notification_id' => notification.id, :'data-sub_service_request_id' => @sub_service_request.try(:id)}= received_at(notification)
+              %td.mark_unread{:'data-notification_id' => notification.id}= check_box_tag 'mark_as_unread', 0

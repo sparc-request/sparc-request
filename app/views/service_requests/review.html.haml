@@ -1,0 +1,66 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+= javascript_include_tag 'review'
+= javascript_include_tag 'service_calendar.js'
+
+= form_tag navigate_service_request_path(@service_request), {:id => 'navigation_form', :class => 'root-view', :multipart => true} do
+  = hidden_field_tag :location, ''
+  = hidden_field_tag :validates, ''
+  = render :partial => 'steps'
+
+  #participate_in_survey{:title => t(:sr_review)[:participate_in_survey_title]} 
+    = t(:sr_review)[:participate_in_survey] 
+
+  .grid_12
+    .view-anchor
+      .review-view
+        .review-details
+          %p.instructions= raw(t(:sr_review)[:instructions])
+          .project
+            = render :partial => 'service_requests/review/study_project_information', :locals => {:protocol => @protocol, :provider_css => 'red-provider'}
+          .documents
+            = render :partial => 'service_requests/document_list', :locals => {:service_list => @service_list, :review => true, :provider_css => 'red-provider'}
+          .notes
+            %table
+              %thead
+                %tr
+                  %th.red-provider= t(:sr_review)[:notes_header]
+              %tbody
+                %tr
+                  %td= @service_request.notes.blank? ? "No notes found" : @service_request.notes
+          #service_calendar_container
+            - if @service_request.has_per_patient_per_visit_services?
+              - @service_request.arms.each do |arm|
+                = render :partial => 'service_requests/review/calendar', :locals =>  {:tab => @tab, :arm => arm, :portal => @portal, :thead_class => @thead_class}
+            = render :partial => 'service_requests/review/review_totals', :locals => {:thead_class => @thead_class}
+          %br
+          %br
+          %br
+
+          %div.review-bottom-navigation
+            .return-to-step-3.red-provider
+              .return-to-previous= navigation_link image_tag('GoBack.png') + t(:bottom_navigation)[:go_back], @back
+            .save-as-draft.red-provider= navigation_link t(:bottom_navigation)[:save_as_draft], 'save_and_exit'
+            .obtain-research-pricing.red-provider
+              = link_to t(:bottom_navigation)[:get_quote], obtain_research_pricing_service_request_path, :id => 'get_a_quote'
+            .submit-request.red-provider
+              = link_to t(:bottom_navigation)[:submit_to_start], confirmation_service_request_path, :class => "save-and-continue", :id => 'submit_services1'
+              = link_to image_tag("SaveContinue.png"), confirmation_service_request_path, :class => "save-and-continue", :id => 'submit_services2'

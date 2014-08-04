@@ -1,0 +1,39 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+.clear
+#institution_accordion
+  - institutions.each do |institution|
+    - next unless institution.is_available? or institution.is_available.nil?
+    %h3{:class => institution.css_class}
+      = link_to institution.name, update_description_catalog_path(institution)
+    %div.institution
+      .provider_accordion
+        - institution.providers.order('`order`').each do |provider|
+          - next unless provider.is_available? or provider.is_available.nil?
+          - next if @sub_service_request and (@sub_service_request.organization != provider and @sub_service_request.organization.parents.exclude?(provider))
+          %h3{:class => "#{provider.css_class} provider_header"}
+            = link_to provider.name, update_description_catalog_path(provider)
+          %div.provider
+            - provider.programs.order('`order`').each do |program|
+              - next unless program.is_available? or program.is_available.nil?
+              - next if @sub_service_request and (@sub_service_request.organization != program and @sub_service_request.organization.parents.exclude?(program))
+              %h4{ :class => "#{cycle('even', provider.css_class + '-odd')}"  }
+                = link_to program.name, update_description_catalog_path(program, :sub_service_request_id => (@sub_service_request ? @sub_service_request.id : nil)), :remote => true, :method => :post

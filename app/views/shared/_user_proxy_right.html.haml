@@ -1,0 +1,66 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-# TODO - should these be defined in the view
+- identity = project_role.identity
+- field_name = "#{session[:protocol_type]}[project_roles_attributes][#{identity.id}]"
+- parent_class = "project_role_#{identity.id}"
+
+= fields_for field_name, project_role do |f|
+  %tr{:class => parent_class}
+    %td
+      = "#{identity.first_name} #{identity.last_name}"
+      = f.hidden_field "_destroy"
+      = f.hidden_field :id
+      = f.hidden_field :identity_id
+      = f.hidden_field :role 
+      = f.hidden_field :role_other
+      = f.hidden_field :protocol_id
+    %td 
+      .actions
+        = link_to image_tag('pencil.png'), 'javascript:void(0)', :class => 'edit_project_role', :parent => parent_class, :identity_id => identity.id
+        = link_to image_tag('cancel.png'), 'javascript:void(0)', :class => 'remove_project_role', :parent => parent_class unless identity == current_user
+      .restore{:style => 'display:none;'}
+        = link_to image_tag('arrow_undo.png'), 'javascript:void(0)', :class => 'restore_project_role', :parent => parent_class
+    %td= USER_ROLES.invert[project_role.role]
+    - if USE_EPIC
+      %td
+        .epic_access
+          = f.radio_button :epic_access, false, :checked => !project_role.epic_access, :project_role_id => project_role.id, :class => "epic_access_radio_no"
+          = f.label :epic_access, 'No'
+          = f.radio_button :epic_access, true, :checked => project_role.epic_access, :identity_id => project_role.identity.id, :class => "epic_access_radio_yes", :id => "epic_access_yes_#{project_role.identity.id}"
+          = f.label :epic_access, 'Yes'
+          = link_to image_tag('pencil.png'), 'javascript:void(0)', :identity_id => project_role.identity.id, :class => 'epic_access_edit'
+    %td= f.radio_button :project_rights, 'none', :checked => project_role.should_select?('none', current_user), :disabled => !project_role.can_switch_to?('none', current_user)
+    %td= f.radio_button :project_rights, 'view', :checked => project_role.should_select?('view', current_user), :disabled => !project_role.can_switch_to?('view', current_user)
+    %td= f.radio_button :project_rights, 'request', :checked => project_role.should_select?('request', current_user), :disabled => !project_role.can_switch_to?('request', current_user)
+    %td= f.radio_button :project_rights, 'approve', :checked => project_role.should_select?('approve', current_user), :disabled => !project_role.can_switch_to?('approve', current_user)
+
+    - if USE_EPIC
+      %td.epic_access_dialog{:id => "project_role_identity_#{project_role.identity.id}", :style => "display:none"}
+        = t(:user_list)[:check_apply]
+        = f.fields_for :epic_rights do |fer|
+          .pair
+            = fer.check_box "_destroy", {:checked => !fer.object.new, :class => 'epic_access_check_box'}, false, true
+            = fer.hidden_field :right, :value => fer.object.right
+            = fer.label "_destroy", EPIC_RIGHTS[fer.object.right]
+
+        %br
+        %div.epic_rights_info= "#{EPIC_RIGHTS_INFO}"

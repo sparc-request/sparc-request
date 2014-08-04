@@ -1,0 +1,78 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+.service_request_information
+  %table.project_information
+    %tr
+      %th.blue_header{:colspan => 2}= t(:ssr_dialog)[:project_study_details][:info]
+    %tr
+      %td.percent_30.highlight
+        %strong= t(:ssr_dialog)[:project_study_details][:id]
+      %td.protocol-id-td.no-border-right= "#{@protocol.id}-#{@ssr_id}"
+    %tr
+      %td.percent_30.highlight
+        %strong= t(:ssr_dialog)[:project_study_details][:short_title]
+      %td.no-border-right= @protocol.short_title
+    %tr
+      %td.percent_30.highlight
+        %strong= t(:ssr_dialog)[:project_study_details][:project_title] 
+      %td.no-border-right= @protocol.title
+    %tr
+      %td.percent_30.highlight
+        %strong= t(:ssr_dialog)[:project_study_details][:sponsor_name]  
+      %td.no-border-right= @protocol.sponsor_name
+    %tr
+      %td.percent_30.highlight
+        %strong= display_funding_source_title(@protocol)
+      %td.no-border-right= display_funding_source_or_potential(@protocol)
+
+  %br
+  %table.user_information
+    %tr
+      %th.blue_header{:colspan => 3} Users
+    %tr
+      %th.highlight{:colspan => 1}= t(:ssr_dialog)[:auth_users][:name]
+      %th.highlight{:colspan => 1}= t(:ssr_dialog)[:auth_users][:role] 
+      %th.highlight{:colspan => 1}= t(:ssr_dialog)[:auth_users][:proxy_rights]
+    - @protocol.project_roles.each do |pr|
+      %tr
+        %td.percent_30= pr.identity.full_name
+        %td.percent_30= USER_ROLES.key(pr.role)
+        %td.no-border-right= PROXY_RIGHTS.key(pr.project_rights)
+
+  %br
+  %table.uploads_information
+    %tr
+      %th.blue_header{:colspan => 2}= t(:ssr_dialog)[:docs][:uploads]
+    %tr
+      %th.highlight{:colspan => 1}= t(:ssr_dialog)[:docs][:file_name] 
+      %th.highlight{:colspan => 1}= t(:ssr_dialog)[:docs][:program_core] 
+    - @service_request.documents.each do |document|
+      %tr
+        %td.percent_30.document_download_link= link_to document.document_file_name, document.document.url
+        %td.no-border-right= @service_list[document.sub_service_request.organization_id][:name] 
+        
+  %br
+  #service_calendar_container
+    - if @sub_service_request.has_per_patient_per_visit_services?
+      - @service_request.arms.each do |arm|
+        = render :partial => 'service_requests/review/calendar', :locals => {:tab => @tab, :arm => arm, :portal => @portal, :thead_class => @thead_class}
+    - if @sub_service_request.has_one_time_fee_services?
+      = render :partial => 'service_requests/review/review_totals', :locals => {:thead_class => @thead_class}

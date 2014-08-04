@@ -1,0 +1,104 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+#search_box
+  %span.search= t(:cm_index)[:search]
+  = text_field_tag 'search'
+  = submit_tag t(:cm_index)[:submit], :class => 'custom_button', :id => 'search_button'
+  %button#clear_search.custom_button Clear Search
+
+  %span.ui-corner-all.pricing_setup_error
+    %p 
+%br
+
+#no_results
+  %p There were no results matching your search criteria. Please search again, or clear the search, and browse manually.
+#catalog
+  %ul
+    - can_create_institution = @user.is_overlord?
+    - if can_create_institution
+      %li= link_to t(:cm_index)[:institution], '#', :class => "institution"
+    - @institutions.each do |institution|
+      %li{:id => 'INSTITUTION' + institution.id.to_s}
+        - can_access_institution = @user.can_edit_entity? institution
+        = node institution, can_access_institution, 'root'
+        %ul
+          - if can_access_institution
+            %li= link_to t(:cm_index)[:provider], '#', :class => "provider"
+          - institution.providers.order("`order`").each do |provider|
+            %li{:id => 'PROVIDER' + provider.id.to_s}
+              - can_access_provider = can_access_institution or @user.can_edit_entity? provider
+              = node provider, can_access_provider
+              %ul
+                - if can_access_provider
+                  %li= link_to t(:cm_index)[:program], '#', :class => "program"
+                - provider.programs.order("`order`").each do |program|
+                  %li{:id => 'PROGRAM' + program.id.to_s}
+                    - can_access_program = can_access_provider or @user.can_edit_entity? program
+                    = node program, can_access_program
+                    - if program.cores.empty?
+                      %ul
+                        - if can_access_program
+                          %li= link_to t(:cm_index)[:core], '#', :class => "core"
+                          %li= link_to t(:cm_index)[:service], '#'
+                        - program.services.order("`order`, `name`").each do |service|
+                          %li{:id => 'SERVICE' + service.id.to_s}= node service
+                    - else
+                      %ul
+                        - if can_access_program
+                          %li= link_to t(:cm_index)[:core], '#', :class => "core"
+                          %li= link_to t(:cm_index)[:service], '#'
+                        - program.services.order("`order`, `name`").each do |service|
+                          %li{:id => 'SERVICE' + service.id.to_s}= node service                            
+                        - program.cores.order("`order`").each do |core|
+                          %li{:id => 'CORE' + core.id.to_s}
+                            - can_access_core = can_access_program or @user.can_edit_entity? core
+                            = node core, can_access_core
+                            %ul
+                              - if can_access_core
+                                %li= link_to t(:cm_index)[:service], '#'
+                              - unless core.services.empty?
+                                - core.services.order("`order`, `name`").each do |service|
+                                  %li{:id => 'SERVICE' + service.id.to_s}= node service
+#details
+
+#processing_request.ui-corner-all{:style => "border: 1px solid black; padding: 3px; width: 200px; margin: 30px auto; text-align: center"}
+  %br
+  = t(:cm_index)[:processing]
+  %br
+  = image_tag 'spinner.gif'
+
+#fix_pricing_maps_dialog
+  %input.fix_pricing_maps_entity_id{:type => 'hidden'}
+  %input.fix_pricing_maps_old_value{:type => 'hidden'}
+  %input.fix_pricing_maps_old_value_type{:type => 'hidden'}
+  %input.fix_pricing_maps_new_value{:type => 'hidden'}  
+
+  .fix_pricing_maps_dialog_content
+  
+  %br
+  %center
+    %button.dont_fix_pricing_maps_button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only{:type => "button", :role => "button"}
+      %span.ui-button-text= t(:cm_index)[:pricing_map1]
+    %button.fix_pricing_maps_button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only{:type => "button", :role => "button"}
+      %span.ui-button-text= t(:cm_index)[:pricing_map2]
+    %img.pricing_map_fix_spinner{:src => '/assets/catalog_manager/spinner_small.gif'}  
+  
+    

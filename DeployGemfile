@@ -1,0 +1,85 @@
+source 'https://rubygems.org'
+
+gem 'rails', '3.2.11'
+
+# Bundle edge Rails instead:
+# gem 'rails', :git => 'git://github.com/rails/rails.git'
+
+gem 'mysql2'
+gem 'haml', '~> 4.0.0'
+gem 'redcarpet'
+gem 'bluecloth'
+gem 'sass', '~> 3.2.7'
+
+# Gems used only for assets and not required
+# in production environments by default.
+gem 'sass-rails',   '~> 3.2.3'
+gem 'coffee-rails', '~> 3.2.1'
+
+# See https://github.com/sstephenson/execjs#readme for more supported runtimes
+gem 'execjs'
+gem 'therubyracer', '0.10.2', :platforms => :ruby
+
+gem 'uglifier', '>= 1.0.3'
+
+gem 'jquery-rails', "2.1.3"
+gem 'cache_digests'
+gem 'dynamic_form'
+gem 'inflection-js-rails'
+
+# gem 'obis-bridge', :git => 'git@github.com:HSSC/obis-bridge.git'
+
+gem 'will_paginate'
+
+# requirements for excel export
+gem 'axlsx_rails'
+
+# To use ActiveModel has_secure_password
+# gem 'bcrypt-ruby', '~> 3.0.0'
+
+# To use Jbuilder templates for JSON
+# gem 'jbuilder'
+
+# Use unicorn as the app server
+# gem 'unicorn'
+
+# Deploy with Capistrano
+gem 'capistrano'
+gem 'capistrano-ext'
+gem 'rvm-capistrano'
+
+#gem 'exception_notification', :require => 'exception_notifier'
+
+# To use debugger
+# gem 'debugger'
+#
+
+gem 'json'
+gem 'sinatra'
+gem 'grouped_validations'
+gem 'obis-net-ldap'
+gem 'paperclip'
+gem 'acts_as_list'
+gem "paper_trail", "~> 2"
+gem 'devise'
+gem 'omniauth'
+gem 'omniauth-shibboleth'
+gem "nested_form"
+gem 'jquery_datepicker'
+
+gem "pdfkit"
+
+gem 'exception_notification'
+
+gem 'prawn'
+gem 'acts-as-taggable-on', '~> 2.3.1'
+
+gem 'savon', '~> 2.2.0'    # SOAP client
+gem 'gyoku'                # XML builder
+gem 'nori', '~> 2.1.0'     # XML parser
+
+gem "audited-activerecord", "~> 3.0"
+
+gem "surveyor"
+
+gem 'google_calendar'

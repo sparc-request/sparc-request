@@ -1,0 +1,53 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+.notifications{:style => 'border-right:0px;'}
+  %ul.message-list{:style => 'list-style:none;margin-top:5px'}
+    - @notification.messages.each_with_index do |message, i|
+      - style_class = i == 0 ? 'first_message' : ''
+      %li{:class => "#{message_hide_or_show(@notification, i)}-message #{style_class}", :'data-message_id' => message.id}
+        %div.message-header
+          .right
+            = message.created_at.localtime.strftime('%l:%M%P on %m/%d/%Y')
+          %strong= message.try(:sender).try(:full_name)
+          .message_recipients{:class => "#{message_hide_or_show(@notification, i)}"}
+            %p{:style => 'color:#777784;'}
+              to
+              = message.try(:recipient).try(:full_name)
+        %div{:style => 'width:550px;margin-top: 5px;', :class => message_hide_or_show(@notification, i) == 'shown' ? 'shown-message-body' : 'truncated-message-body'}
+          = message.body.html_safe
+
+      - unless i == (@notification.messages.count - 1)
+        %div{:style => 'text-align:center;margin-top:-7px', :class => "gray_arrow_down_#{message.id}"}
+          = image_tag 'portal/gray_arrow_down.png'
+        %div{:style => 'text-align:center;margin-top:-10px;display:none', :class => "white_arrow_up_#{message.id}"}
+          = image_tag 'portal/white_arrow_up.png'
+  - message = @notification.messages.last
+  .reply
+    - update_notification = @sub_service_request ? admin_update_portal_notification_path(@notification.id) : user_portal_update_portal_notification_path(@notification.id)
+    = form_tag(update_notification, :method => :put, :remote => true, :class => 'notification-dialog-form') do
+      - from = @user.id == message.to ? Identity.find(message.from) : Identity.find(message.to)
+      = hidden_field_tag('message_notification_id', @notification.id, :name => 'message[notification_id]')
+      = hidden_field_tag('message_from', @user.id, :name => 'message[from]')
+      = hidden_field_tag('message_to', from.id, :name => 'message[to]')
+      = hidden_field_tag('message_email', from.email, :name => 'message[email]')
+      = hidden_field_tag('message_subject', "RE: #{@notification.try(:messages).try(:first).try(:subject)}", :name => 'message[subject]')
+      = text_area_tag("message_body", '', :placeholder => "Please enter text to begin a reply", :name => 'message[body]')
+.clear

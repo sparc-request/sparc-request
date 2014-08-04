@@ -97,10 +97,10 @@
           = f.fields_for :subsidy_map do |f_subsidy_map|
             %tr
               %th= t(:organization_form)[:subsidy_max_percent]
-              %td= f_subsidy_map.text_field :max_percentage
+              %td.subsidy_percentage= f_subsidy_map.text_field :max_percentage
             %tr
               %th= t(:organization_form)[:subsidy_max_dollar]
-              %td= f_subsidy_map.text_field :max_dollar_cap
+              %td.subsidy_dollar= f_subsidy_map.text_field :max_dollar_cap
             = render 'catalog_manager/shared/excluded_funding_sources', :entity => @provider
     %br
       

@@ -37,7 +37,7 @@
             = select_tag "arm_id", arms_for_select(@service_request, @selected_arm), :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id, :'data-protocol_id' => @service_request.protocol.id
             - unless @study_tracker
               = link_to '', 'javascript:void(0);', :class => "add_arm_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id, :'data-protocol_id' => @service_request.protocol.id
-              = link_to '', 'javascript:void(0);', :class => "remove_arm_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id, :'data-arm_count' => @service_request.arms.count, :'data-protocol_id' => @service_request.protocol.id
+              = link_to '', 'javascript:void(0);', :class => "remove_arm_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id, :'data-arm_count' => @service_request.arms.count, :'data-protocol_id' => @service_request.protocol.id, :'data-can_be_deleted' => can_be_deleted?(@selected_arm)
           %td
             = select_tag "visit_position", visits_for_select(@selected_arm)
             = link_to '', 'javascript:void(0);', :class => "add_visit_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id

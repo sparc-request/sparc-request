@@ -260,6 +260,8 @@ $(document).ready ->
   $(document).on('click', '.remove_arm_link', ->
     if $(this).data('arm_count') <= 1
       alert("You can't delete the last arm while Per-Patient/Per Visit services still exist.")
+    else if $(this).data('can_be_deleted') == false
+      alert("This arm has subject data and can not be deleted.")
     else if confirm("Are you sure you want to remove the ARM?")
       sr_id = $(this).data('service_request_id')
       protocol_id = $('#arm_id').data('protocol_id')

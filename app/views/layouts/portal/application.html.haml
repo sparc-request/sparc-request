@@ -41,6 +41,11 @@
       %p= t('ie_warning.text2')
 
     #container.container
+      #processing_request.ui-corner-all{:style => 'display:none'}
+        %br
+        = t(:cm_index)[:processing]
+        %br
+        = image_tag 'spinner.gif'
       #header
         = render :partial => 'layouts/portal/header'
         %input#current_user_id{:type => 'hidden', :value => @user.try(:id)}

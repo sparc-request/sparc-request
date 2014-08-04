@@ -96,6 +96,7 @@ $(document).ready ->
 
   ##Triggers:
   $(document).on('change', '.clinical_select_data', ->
+    $('#processing_request').show()
     data =
       'visit_group_id': $('option:selected', this).data('visit_group_id')
       'sub_service_request_id': $('#sub_service_request_id').val()
@@ -108,6 +109,7 @@ $(document).ready ->
       dataType: 'script'
       contentType: 'application/json; charset=utf-8'
       success: ->
+        $('#processing_request').hide()
         recalc_subtotal()
         check_core_permissions()
   )
@@ -210,7 +212,7 @@ $(document).ready ->
   )
 
   $(document).on('click', '.cwf_add_service_button', ->
-    $('#visit_form .spinner_wrapper').show()
+    $('#processing_request').show()
     box = $(this).siblings('select')
     appointment_index = $('.new_procedure_wrapper:visible').data('appointment_index')
     procedure_index = $('.appointment_wrapper:visible tr.fields:visible').size()
@@ -231,7 +233,7 @@ $(document).ready ->
       success: (response_html) ->
         $('.new_procedure_wrapper:visible').replaceWith(response_html)
         $('tr.grand_total_row:visible').before("<tr class='new_procedure_wrapper' data-appointment_index='#{appointment_index}'></tr>")
-        $('#visit_form .spinner_wrapper').hide()
+        $('#processing_request').hide()
     return false
   )
 
@@ -363,7 +365,6 @@ $(document).ready ->
   continue_with_research_project_summary_report = false
   $("#research_project_summary_report_date_range").dialog(autoOpen: false)
   $(document).on 'click', '#research_project_summary_report_in_cwf', (event) ->
-    console.log continue_with_research_project_summary_report
     if continue_with_research_project_summary_report == false
       $("#research_project_summary_report_date_range").dialog("open")
       event.preventDefault()
@@ -375,6 +376,7 @@ $(document).ready ->
     href = $("#research_project_summary_report_in_cwf").attr("href")
     href = href + "?start_date=#{start_date}&end_date=#{end_date}"
     $("#research_project_summary_report_date_range").dialog("close")
+    $('#processing_request').show()
     window.location.href = href
 
   #Methods for hiding and displaying the fulfillment headers in the Study Level Charges tab

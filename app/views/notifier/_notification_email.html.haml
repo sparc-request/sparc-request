@@ -72,7 +72,16 @@
             %td{:style => 'border: 1px solid black; text-align: center;'}= pr.role.upcase
             %td{:style => 'border: 1px solid black; text-align: center;'}= {"approve"=>"Authorize/Change Study Charges", "request"=>"Request/Approve Services", "view"=>"View Rights", "none"=>"Member Only"}[pr.project_rights]
 
-    - if @audit_report and not @audit_report[:line_items].empty?
+    - if @ssr_deleted
+      %br
+      %br
+
+      %table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
+        %tbody
+          %tr{:style => 'border: 1px solid black;'}
+            %td{:style => 'border: 1px solid black; font-weight: bold;'}= t(:notifier)[:all_on_request]
+
+    - elsif @audit_report and not @audit_report[:line_items].empty?
       %br
       %br
 
@@ -89,7 +98,6 @@
               %td{:style => 'border: 1px solid black;'}= service.name
               %td{:style => 'border: 1px solid black; text-align: center;'}= AUDIT_ACTIONS[last_change.action]
  
-
     %p= t(:issue_contact)
 
     %p= t(:notifier)[:body6]

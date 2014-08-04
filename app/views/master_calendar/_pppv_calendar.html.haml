@@ -1,0 +1,10 @@
+= javascript_include_tag 'service_calendar_logic'
+- if @merged
+  = hidden_field_tag :indirect_rate, @protocol.try(:indirect_cost_rate)
+- else
+  = hidden_field_tag :indirect_rate, @service_request.protocol.indirect_cost_rate
+%table.service_calendar{:class => "arm_id_#{arm.id}", :style => @study_tracker ? "width:917px" : ''}
+  %thead.ui-widget-header= render :partial => "master_calendar/pppv_header", :locals => {:service_request => service_request, :arm => arm}
+  %tbody.cell-border
+    = render :partial => "master_calendar/pppv_line_items", :locals => {:service_request => service_request, :arm => arm}
+    = render :partial => "master_calendar/pppv_totals", :locals => {:service_request => service_request, :arm => arm}

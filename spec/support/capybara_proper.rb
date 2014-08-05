@@ -131,6 +131,14 @@ module CapybaraProper
         wait_for_javascript_to_finish
     end
 
+    def fill_in_search_box(field, search_term, result_html)
+        find(field).click
+        sleep 2
+        find(field).native.send_keys(search_term)
+        sleep 3
+        return first(result_html)
+    end
+
     def addService(serviceName)
         #if service is visible on screen,
         #clicks add button next to specified serviceName.
@@ -152,17 +160,8 @@ module CapybaraProper
             wait_for_javascript_to_finish
         else #else use the search box to find the service then add it
             wait_for_javascript_to_finish
-            find("input#service_query").set(serviceName)
-            sleep 3
-            response = first("li.search_result button.add_service")
-            if response.nil? or not(response.visible?)
-                find("input#service_query").set('')
-                sleep 2
-                find("input#service_query").set(serviceName)
-                sleep 3
-                first("li.search_result button.add_service").click
-                # first(:xpath, "//li[@class='search_result']/button[@class='add_service']").click
-            else response.click end
+            response = fill_in_search_box("input#service_query", serviceName, "li.search_result button.add_service")
+            response.click
             wait_for_javascript_to_finish
         end
     end

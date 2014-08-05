@@ -55,6 +55,7 @@ module CapybaraUserPortal
         goToSparcProper("jpl6@musc.edu","p4ssword")
         goToUserPortal
         findStudy studyName
+        sleep 3
         within accordionInfoBox do
             first("a.new-portal-notification-button").click
             # first(:xpath, ".//a[contains(@class,'new-portal-notification-button')]").click
@@ -97,8 +98,8 @@ module CapybaraUserPortal
         find("td.body_column").should have_text("Test Reply")
         goToUserPortal
         within accordionInfoBox do
-            sleep 2
-            first(:xpath, ".//a[@class='new-portal-notification-button']").click
+            sleep 6
+            first("a.new-portal-notification-button").click
             wait_for_javascript_to_finish
         end
         first(".new_notification").click

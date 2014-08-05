@@ -1,18 +1,19 @@
 module CapybaraCatalogManager
 
+  def search_for_person(field, search_term, result_html)
+    find(field).click
+    sleep 2
+    find(field).native.send_keys(search_term)
+    sleep 3
+
+    return first(:xpath, result_html, :visible => true)
+  end
+
   def add_service_provider(id="leonarjp")
     find(:xpath, "//div[text()='User Rights']").click
-    wait_for_javascript_to_finish
-    fill_in "new_sp", :with => "#{id}"
-    sleep 3
-    response = first(:xpath, "//a[contains(text(),'#{id}') and contains(text(),'@musc.edu')]", :visible => true)
-    if response.nil? or not(response.visible?)
-        fill_in "new_sp", :with => ""
-        sleep 2
-        fill_in "new_sp", :with => "#{id}"
-        sleep 4
-        first(:xpath, "//a[contains(text(),'#{id}') and contains(text(),'@musc.edu')]", :visible => true).click 
-    else response.click end
+    sleep 4
+    response = search_for_person("#new_sp", id, "//a[contains(text(),'#{id}') and contains(text(),'@musc.edu')]")
+    response.click
     first("#save_button").click
     wait_for_javascript_to_finish
   end

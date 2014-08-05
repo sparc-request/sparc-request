@@ -1,0 +1,28 @@
+-if @merged
+  %table.service_calendar
+    %thead.ui-widget-header
+      = render :partial => "master_calendar/otf_header"
+    %tbody.cell-border
+      = render :partial => "master_calendar/otf_line_items", :locals =>{:current_request => current_request}
+      = render :partial => "master_calendar/otf_totals", :locals =>{:current_request => current_request}
+-elsif @review
+  %table.service_calendar.review_totals
+    - if (@sub_service_request.nil? ? @service_request.has_one_time_fee_services? : @sub_service_request.has_one_time_fee_services?)
+      %thead{:class => thead_class}
+        = render :partial => "master_calendar/otf_header"
+    %tbody.cell-border
+      = render :partial => "master_calendar/otf_line_items"
+      = render :partial => "master_calendar/otf_totals"
+-elsif @study_tracker
+  %table.service_calendar
+    %thead.ui-widget-header
+      = render :partial => "master_calendar/otf_header"
+    %tbody.cell-border
+      = render :partial => "master_calendar/otf_line_items"
+-else
+  %table.service_calendar
+    %thead.ui-widget-header
+      = render :partial => "master_calendar/otf_header"
+    %tbody.cell-border
+      = render :partial => "master_calendar/otf_line_items"
+      = render :partial => "master_calendar/otf_totals"

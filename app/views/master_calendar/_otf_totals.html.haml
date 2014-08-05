@@ -1,0 +1,29 @@
+-if @merged
+  %tr.totals_section.grand-totals{:class => cycle('odd', '', :name => 'otfs')}
+    %td{:colspan => 3}= t("calendar_page.labels.total_costs_other")
+    %td{:colspan => @portal ? 6 : 9}
+    %td.otf_total_direct_cost= display_protocol_total_otfs @protocol, current_request, @portal
+-elsif @review
+  %tr.section_header
+    %tr.totals_section
+      %td{:colspan => 7}
+      %td.total_cell= t(:sr_review)[:calendar][:totals][:direct_cost]
+      %td.total_cell{:id => 'grand_total_direct'}= display_grand_total_direct_costs @service_request, @line_items
+
+    - if USE_INDIRECT_COST
+      %tr.totals_section
+        %td{:colspan => 7}
+        %td.total_cell= t(:sr_review)[:calendar][:totals][:indirect_cost]
+        %td.total_cell{:id => 'grand_total_indirect'}= display_grand_total_indirect_costs @service_request, @line_items
+
+    %tr.totals_section
+      %td{:colspan => 7}
+      %td.total_cell= t(:sr_review)[:calendar][:totals][:grand]
+      %td.total_cell{:id => 'grand_total'}= display_grand_total @service_request, @line_items
+-else
+  %tr.totals_section.begin_totals{:class => cycle('odd', '', :name => 'otfs')}
+    %td{:colspan => 5}= t("calendar_page.labels.total_direct_other")
+    %td{:colspan => 7}
+    %td.otf_total_direct_cost= display_total_direct_cost_per_study_otfs @service_request, @line_items
+    - if @study_tracker
+      %td

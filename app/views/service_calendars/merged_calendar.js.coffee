@@ -1,1 +1,1 @@
-$(".arm_id_<%= @arm.id %>.service_calendar").replaceWith("<%= escape_javascript(render :partial => 'merged_calendar_data', :locals => {:tab => @tab, :arm => @arm, :service_request => @service_request}) %>")
+$(".arm_id_<%= @arm.id %>.service_calendar").replaceWith("<%= escape_javascript(render :partial => 'master_calendar/pppv_calendar', :locals => {:tab => @tab, :arm => @arm, :service_request => @service_request, :@merged => true}) %>")

@@ -27,10 +27,11 @@
                 %tr
                   %td= @service_request.notes.blank? ? "No notes found" : @service_request.notes
           #service_calendar_container
+            -@review = true
             - if @service_request.has_per_patient_per_visit_services?
               - @service_request.arms.each do |arm|
-                = render :partial => 'service_requests/review/calendar', :locals =>  {:tab => @tab, :arm => arm, :portal => @portal, :thead_class => @thead_class}
-            = render :partial => 'service_requests/review/review_totals', :locals => {:thead_class => @thead_class}
+                = render :partial => 'master_calendar/pppv_calendar', :locals =>  {:service_request => @service_request, :tab => @tab, :arm => arm, :portal => @portal, :thead_class => @thead_class}
+            = render :partial => 'master_calendar/otf_calendar', :locals => {:thead_class => @thead_class}
           %br
           %br
           %br

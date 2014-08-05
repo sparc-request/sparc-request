@@ -18,20 +18,19 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-form.edit_sub_service_request {
-  p{ margin-bottom: 1.5em; }
+#payments {
+  padding: 10px;
 }
 
 table#payments_list {
-  border-collapse:collapse;
   td,th {
     padding: 5px;
   }
 
   thead{
     th {
-      vertical-align: bottom; 
-      border: 1px solid #ccc
+      background-color: #0775B0;
+      color: white;
     }
   }
   tbody{ 
@@ -92,27 +91,36 @@ table#payments_list {
   display: block;
   height: 16px;
   width: 16px;
-  text-indent: -1000em;
-  overflow: hidden;
-  background: url(delete.png) no-repeat left top;
+  margin-top: 10px;
+  background: url(cancel.png) no-repeat;
 }
 
-.add_nested_fields.payments {
-    background: url(add.png) no-repeat left center;
-    padding-left: 17px;
-    color: #3d8834;
-
-    &:hover {
-      text-decoration: underline;
-    } 
+.buttons {
+  text-align: center;
 }
 
+.add_nested_fields.payments,
 .add_nested_fields.uploads {
-    background: url(attach.png) no-repeat left center;
-    padding-left: 17px;
-    white-space: nowrap;
-
-    &:hover {
-      text-decoration: underline;
-    } 
+  background: url("yellowbutton_smaller.png") no-repeat;
+  color: #FFFFFF;
+  display: block;
+  height: 27px;
+  padding: 8px 0 0;
+  text-align: center;
+  width: 149px;
+  margin: 10px auto;
 }
+
+a.add_nested_fields.uploads {
+  margin: 0px;
+}
+
+.buttons input#save_payments {
+  background: url("yellowbutton_smaller.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+  border: 0 none;
+  color: #FFFFFF;
+  cursor: pointer;
+  height: 35px;
+  width: 149px;
+}
+

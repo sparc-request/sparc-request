@@ -21,7 +21,7 @@
 - line_items_visits = []
 = javascript_include_tag 'service_calendar_logic'
 = hidden_field_tag :indirect_rate, @protocol.try(:indirect_cost_rate)
-%table.service_calendar{:class => "arm_id_#{arm.id}", :style => @study_tracker ? "width:917px" : ''}
+%table.service_calendar{:class => "arm_id_#{arm.id}"}
   %thead.ui-widget-header
     %tr.table_header
       %th.services_header{:rowspan => 2}= t("calendar_page.headers.services")

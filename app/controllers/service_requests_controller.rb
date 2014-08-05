@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 require 'generate_request_grant_billing_pdf'
 
 class ServiceRequestsController < ApplicationController
@@ -232,6 +252,7 @@ class ServiceRequestsController < ApplicationController
   def obtain_research_pricing
     # TODO: refactor into the ServiceRequest model
     @service_request.update_status('get_a_quote')
+    @service_request.previous_submitted_at = @service_request.submitted_at
     @service_request.update_attribute(:submitted_at, Time.now)
     @service_request.ensure_ssr_ids
     
@@ -241,7 +262,8 @@ class ServiceRequestsController < ApplicationController
       arm.update_attributes({:new_with_draft => false})
     end
     @service_list = @service_request.service_list
-    send_notifications(@service_request, @sub_service_request)
+
+    send_confirmation_notifications
 
     render :formats => [:html]
   end
@@ -402,7 +424,7 @@ class ServiceRequestsController < ApplicationController
       if !['first_draft', 'draft'].include?(@service_request.status) and !@service_request.submitted_at.nil? and @service_request.submitted_at > ssr.created_at
         @protocol = @service_request.protocol
         xls = @protocol.nil? ? nil : render_to_string(:action => 'show', :formats => [:xlsx])
-        send_ssr_service_provider_notifications(@service_request, ssr, xls)
+        send_ssr_service_provider_notifications(@service_request, ssr, xls, ssr_deleted=true)
       end
       ssr.destroy
     end
@@ -571,12 +593,12 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def send_ssr_service_provider_notifications(service_request, sub_service_request, xls) #single sub-service request
+  def send_ssr_service_provider_notifications(service_request, sub_service_request, xls, ssr_deleted=false) #single sub-service request
     previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
     audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)
 
     sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-      send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls, audit_report)
+      send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls, audit_report, ssr_deleted)
     end
   end
 
@@ -597,7 +619,7 @@ class ServiceRequestsController < ApplicationController
     return false
   end
 
-  def send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls, audit_report=nil)
+  def send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls, audit_report=nil, ssr_deleted=false)
     attachments = {}
     attachments["service_request_#{service_request.id}.xls"] = xls
 
@@ -613,7 +635,7 @@ class ServiceRequestsController < ApplicationController
       audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)
     end
 
-    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, audit_report).deliver
+    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, audit_report, ssr_deleted).deliver
   end
 
   def send_epic_notification_for_user_approval(protocol)

@@ -1,3 +1,23 @@
+// Copyright © 2011 MUSC Foundation for Research Development
+// All rights reserved.
+
+// Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+// 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+// 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+// disclaimer in the documentation and/or other materials provided with the distribution.
+
+// 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+// derived from this software without specific prior written permission.
+
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+// BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+// SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+// TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 // Place all the styles related to the admin controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
@@ -5,19 +25,20 @@
   padding: 14px 8px 8px;
 }
 
-.tabs.plain_class {
+.ui-tabs.plain_class {
   border: 0px;
   background: none;
+  padding: 0px
 }
 
-.tabs.plain_class ul.ui-tabs-nav {
+.ui-tabs.plain_class ul.ui-tabs-nav {
   background: #3883A9 !important;
   padding-top: 15px;
   border-radius: 0px;
   -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
 }
-.tabs.plain_class ul.ui-tabs-nav li {
+.ui-tabs.plain_class ul.ui-tabs-nav li {
   background: #3e9f5a !important;
   border: none;
   border-radius: 0px;
@@ -25,12 +46,12 @@
   -webkit-border-radius: 0px;
 }
 
-.tabs.plain_class ul.ui-tabs-nav li.ui-tabs-active {
+.ui-tabs.plain_class ul.ui-tabs-nav li.ui-tabs-active {
   background: #f89c50 !important;
 }
 
-.tabs.plain_class ul.ui-tabs-nav li.ui-state-hover a,
-.tabs.plain_class ul.ui-tabs-nav li.ui-state-focus a {
+.ui-tabs.plain_class ul.ui-tabs-nav li.ui-state-hover a,
+.ui-tabs.plain_class ul.ui-tabs-nav li.ui-state-focus a {
   color: white;
 }
 

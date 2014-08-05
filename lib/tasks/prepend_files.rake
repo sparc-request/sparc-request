@@ -1,4 +1,4 @@
-# Copyright 2011 MUSC Foundation for Research Development
+# Copyright © 2011 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,6 +17,9 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+#!/bin/env ruby
+# encoding: utf-8
 
 namespace :file do
   desc "Add text to the top of a file"
@@ -46,10 +49,7 @@ namespace :file do
       missing_copyright = []
 
       files.each do |f|
-        file = File.open(f, "r")
-        lines = file.readlines
-
-        if lines.grep(/Copyright 2011 MUSC Foundation for Research Development/).empty?
+        if File.readlines(f, :encoding => 'ISO-8859-1').grep(/2011 MUSC Foundation for Research Development/).empty?
           missing_copyright << f
         end
       end
@@ -59,7 +59,7 @@ namespace :file do
 
     # The copyright header needed for each file
     # # and ~ are keys to replace for different comment styles
-    header = "# Copyright 2011 MUSC Foundation for Research Development~\n"
+    header = "# Copyright \u00A9 2011 MUSC Foundation for Research Development~\n"
     header += "# All rights reserved.~\n\n"
     header += "# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~\n\n"
     header += "# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~\n\n"

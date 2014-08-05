@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 $(document).ready ->
 
   check_core_permissions = () ->
@@ -76,6 +96,7 @@ $(document).ready ->
 
   ##Triggers:
   $(document).on('change', '.clinical_select_data', ->
+    $('#processing_request').show()
     data =
       'visit_group_id': $('option:selected', this).data('visit_group_id')
       'sub_service_request_id': $('#sub_service_request_id').val()
@@ -88,6 +109,7 @@ $(document).ready ->
       dataType: 'script'
       contentType: 'application/json; charset=utf-8'
       success: ->
+        $('#processing_request').hide()
         recalc_subtotal()
         check_core_permissions()
   )
@@ -190,7 +212,7 @@ $(document).ready ->
   )
 
   $(document).on('click', '.cwf_add_service_button', ->
-    $('#visit_form .spinner_wrapper').show()
+    $('#processing_request').show()
     box = $(this).siblings('select')
     appointment_index = $('.new_procedure_wrapper:visible').data('appointment_index')
     procedure_index = $('.appointment_wrapper:visible tr.fields:visible').size()
@@ -211,7 +233,7 @@ $(document).ready ->
       success: (response_html) ->
         $('.new_procedure_wrapper:visible').replaceWith(response_html)
         $('tr.grand_total_row:visible').before("<tr class='new_procedure_wrapper' data-appointment_index='#{appointment_index}'></tr>")
-        $('#visit_form .spinner_wrapper').hide()
+        $('#processing_request').hide()
     return false
   )
 
@@ -341,9 +363,8 @@ $(document).ready ->
   $("#rps_end_date").datepicker(dateFormat: "yy-mm-dd")
 
   continue_with_research_project_summary_report = false
-  $("#research_project_summary_report_date_range").dialog(autoOpen: false)
+  $("#research_project_summary_report_date_range").dialog(autoOpen: false, dialogClass: "report_date_range")
   $(document).on 'click', '#research_project_summary_report_in_cwf', (event) ->
-    console.log continue_with_research_project_summary_report
     if continue_with_research_project_summary_report == false
       $("#research_project_summary_report_date_range").dialog("open")
       event.preventDefault()
@@ -355,6 +376,7 @@ $(document).ready ->
     href = $("#research_project_summary_report_in_cwf").attr("href")
     href = href + "?start_date=#{start_date}&end_date=#{end_date}"
     $("#research_project_summary_report_date_range").dialog("close")
+    $('#processing_request').show()
     window.location.href = href
 
   #Methods for hiding and displaying the fulfillment headers in the Study Level Charges tab
@@ -372,5 +394,10 @@ $(document).ready ->
       $(".fulfillments_#{otf_id}").toggle()
 
   #End of Study Level Charges Methods
+
+  #Validation for deleting a subject with completed appointments
+  $(document).on 'click', '.cwf_subject_delete', (event)->
+    alert("This subject has one or more completed appointments and can't be deleted.")
+
 
 

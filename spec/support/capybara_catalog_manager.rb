@@ -21,8 +21,10 @@
 module CapybaraCatalogManager
 
   def search_for_person(field, search_term, result_html)
+    find(field).set('')
+    find("body").click
     find(field).click
-    sleep 2
+    sleep 3
     find(field).native.send_keys(search_term)
     sleep 3
 
@@ -265,10 +267,12 @@ module CapybaraCatalogManager
 
     stDay = (options[:display_date]).strftime("%-d") # Today's Day
     wait_for_javascript_to_finish
-    first(:xpath, "//th[contains(text(),'Display Date')]/following-sibling::td/input[@type='text']").click
+    sleep 3
+    first(:xpath, "//th[contains(text(),'Display Date')]/following-sibling::td/input[@type='text']", :visible => true).click
     wait_for_javascript_to_finish
     selectDatepickerDay stDay
-    first(:xpath, "//th[contains(text(),'Effective Date')]/following-sibling::td/input[@type='text']").click
+    sleep 3
+    first(:xpath, "//th[contains(text(),'Effective Date')]/following-sibling::td/input[@type='text']", :visible => true).click
     wait_for_javascript_to_finish
     selectDatepickerDay stDay
 

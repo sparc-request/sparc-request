@@ -122,6 +122,7 @@ module CapybaraUserPortal
             first("a.new-portal-notification-button").click
             wait_for_javascript_to_finish
         end
+        sleep 4
         first(".new_notification").click
         wait_for_javascript_to_finish
         page.should have_text("You can not send a message to yourself.")

@@ -152,8 +152,10 @@ module CapybaraProper
     end
 
     def fill_in_search_box(field, search_term, result_html)
+        find(field).set('')
+        find("body").click
         find(field).click
-        sleep 2
+        sleep 3
         find(field).native.send_keys(search_term)
         sleep 3
         return first(result_html)
@@ -1021,6 +1023,9 @@ module CapybaraProper
             removeService s.short #removes service
             count -= 1 #reduces expected number of services displayed by 1
         end
+
+        visit(root_path)
+        wait_for_javascript_to_finish
 
         services.each do |s|
             addService s.short #readd each service

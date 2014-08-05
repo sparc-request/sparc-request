@@ -61,4 +61,14 @@ module StudyTracker::ServiceRequestsHelper
 
     procedures.flatten
   end
+
+  def subject_has_completed_appointment? subject
+    if subject.calendar
+      if !subject.calendar.appointments.reject{|x| !x.completed_at?}.empty?
+        return true
+      else
+        return false
+      end
+    end
+  end
 end

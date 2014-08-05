@@ -44,8 +44,6 @@ module StudyTracker::ServiceRequestsHelper
 
   def subject_has_completed_appointment? subject
     if subject.calendar
-      puts "-"*100
-      puts subject.calendar.appointments.inspect
       if !subject.calendar.appointments.reject{|x| !x.completed_at?}.empty?
         return true
       else

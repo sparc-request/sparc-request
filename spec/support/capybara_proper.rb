@@ -545,6 +545,7 @@ module CapybaraProper
             wait_for_javascript_to_finish
         end
 
+        wait_for_javascript_to_finish
         currentArmTable.find(:xpath, "./tbody/tr/td[text()='#{serviceName}']/parent::tr/td[@visit_column='#{column}']/input[contains(@id,'effort_billing_qty')]").set(qty)
         wait_for_javascript_to_finish
     end

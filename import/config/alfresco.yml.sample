@@ -1,6 +1,0 @@
-development: &development
-  alfresco_url: "localhost:8080/alfresco/service/"
-  alfresco_user: "frodo"
-  alfresco_password: "baggins"
-test:
-  <<: *development

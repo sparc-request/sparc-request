@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 class Arm < ActiveRecord::Base
   audited
 
@@ -120,19 +140,18 @@ class Arm < ActiveRecord::Base
     direct_costs_for_visit_based_service(line_items_visits) + indirect_costs_for_visit_based_service(line_items_visits)
   end
   
-  def add_visit position=nil, day=nil, window=0, name=''
+  def add_visit position=nil, day=nil, window=0, name='', portal=false
     result = self.transaction do
       if not self.create_visit_group(position, name) then
         raise ActiveRecord::Rollback
       end
-
       position = position.to_i - 1 unless position.blank?
 
       if USE_EPIC
-        if not self.update_visit_group_day(day, position) then
+        if not self.update_visit_group_day(day, position, portal) then
           raise ActiveRecord::Rollback
         end
-        if not self.update_visit_group_window(window, position) then
+        if not self.update_visit_group_window(window, position, portal) then
           raise ActiveRecord::Rollback
         end
       end
@@ -225,35 +244,37 @@ class Arm < ActiveRecord::Base
     end
   end
 
-  def update_visit_group_day day, position, portal=false
+  def update_visit_group_day day, position, portal= false
     position = position.blank? ? self.visit_groups.count - 1 : position.to_i
     before = self.visit_groups[position - 1] unless position == 0
     current = self.visit_groups[position]
     after = self.visit_groups[position + 1] unless position >= self.visit_groups.size - 1
-    valid_day = Integer(day) rescue false
-    if !valid_day
-      self.errors.add(:invalid_day, "You've entered an invalid number for the day. Please enter a valid number.")
-      return false
-    end
 
-    if !before.nil? && !before.day.nil?
-      if before.day > valid_day
-        self.errors.add(:out_of_order, "The days are out of order. This day appears to go before the previous day.")
+    if portal == 'true' and USE_EPIC
+      valid_day = Integer(day) rescue false
+      if !valid_day
+        self.errors.add(:invalid_day, "You've entered an invalid number for the day. Please enter a valid number.")
         return false
       end
-    end
+      if !before.nil? && !before.day.nil?
+        if before.day > valid_day
+          self.errors.add(:out_of_order, "The days are out of order. This day appears to go before the previous day.")
+          return false
+        end
+      end
 
-    if !after.nil? && !after.day.nil?
-      if valid_day > after.day
-        self.errors.add(:out_of_order, "The days are out of order. This day appears to go after the next day.")
-        return false
+      if !after.nil? && !after.day.nil?
+        if valid_day > after.day
+          self.errors.add(:out_of_order, "The days are out of order. This day appears to go after the next day.")
+          return false
+        end
       end
     end
 
     return current.update_attributes(:day => day)
   end
 
-  def update_visit_group_window window, position
+  def update_visit_group_window window, position, portal = false
     position = position.blank? ? self.visit_groups.count - 1 : position.to_i
 
     valid = Integer(window) rescue false

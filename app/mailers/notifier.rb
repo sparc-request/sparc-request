@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 
 class Notifier < ActionMailer::Base
   helper ApplicationHelper
@@ -26,7 +46,6 @@ class Notifier < ActionMailer::Base
   def notify_user project_role, service_request, xls, approval, user_current
     @identity = project_role.identity
     @role = project_role.role 
-    @project_role = project_role
 
     @approval_link = nil
     if approval and project_role.project_rights == 'approve'
@@ -54,7 +73,6 @@ class Notifier < ActionMailer::Base
   def notify_admin service_request, submission_email_address, xls, user_current
     @protocol = service_request.protocol
     @service_request = service_request
-    @project_role = nil
     @role = 'none'
     @approval_link = nil
     @portal_link = USER_PORTAL_LINK + "admin"
@@ -73,14 +91,14 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => "no-reply@musc.edu", :subject => subject)
   end
   
-  def notify_service_provider service_provider, service_request, attachments_to_add, user_current, audit_report=nil
+  def notify_service_provider service_provider, service_request, attachments_to_add, user_current, audit_report=nil, ssr_deleted=false
     @protocol = service_request.protocol
     @service_request = service_request
     @role = 'none'
-    @project_role =  nil
     @approval_link = nil
     @audit_report = audit_report
     @provide_arm_info = audit_report.nil? ? true : SubServiceRequest.find(@audit_report[:sub_service_request_id]).has_per_patient_per_visit_services?
+    @ssr_deleted = ssr_deleted
 
     @portal_link = USER_PORTAL_LINK + "admin"
     @portal_text = "Administrators/Service Providers, Click Here"
@@ -183,11 +201,6 @@ class Notifier < ActionMailer::Base
     subject = 'Update Epic Access'
 
     mail(:to => EPIC_RIGHTS_MAIL_TO, :from => 'no-reply@musc.edu', :subject => subject)
-  end
-
-  def notify_epic_users_team protocol
-    @protocol = protocol
-    mail(:to => EPIC_USERS_TEAM, :from => 'no-reply@musc.edu', :subject => 'A new research protocol has been sent to Epic')
   end
 
   def epic_queue_error protocol, error=nil

@@ -263,6 +263,8 @@ en:
       grand_total_direct: "Grand Total: Direct Costs"
       grand_total_indirect: "Grand Total: Indirect Costs"
       grand_total: "Grand Total:"
+      direct_cost: "Total Direct Cost"
+      indirect_cost: "Total Indirect Cost"
 
   # Documents Page
   documents:

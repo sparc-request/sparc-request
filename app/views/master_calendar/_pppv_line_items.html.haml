@@ -21,7 +21,7 @@
 - line_items_visits = [] 
 - if @merged
   %tr.section_header
-    %th{:colspan => 13}= t("calendar_page.per_patient") + " -- " + arm.name
+    %th{:colspan => 13}= t(:calendar_page)[:per_patient] + " -- " + arm.name
   - arm.service_list.each do |key, value| # get only per patient/per visit services and group them
     - arm.line_items_visits.each do |line_items_visit|
       - line_item = line_items_visit.line_item
@@ -46,10 +46,11 @@
           %td &nbsp;
         %td.pp_line_item_total{:class => "total_#{line_items_visit.id}"}= display_visit_based_direct_cost(line_items_visit)
         %td.pp_line_item_study_total{:class => "total_#{line_items_visit.id}_per_study"}= display_visit_based_direct_cost_per_study(line_items_visit)
+
 -elsif @review
   - if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?) 
     %tr.section_header
-      %th{:colspan => @portal ? 11 : 13}= t("calendar_page.per_patient") + " -- " + arm.name
+      %th{:colspan => @portal ? 11 : 13}= t(:calendar_page)[:per_patient] + " -- " + arm.name
     - @service_request.service_list(false).each do |key, value| # get only per patient/per visit services and group them
       - next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
       %tr.sub_section_header
@@ -70,10 +71,11 @@
             %td &nbsp;
           %td{:class => "total_#{line_items_visit.id}"}= display_visit_based_direct_cost line_items_visit
           %td{:class => "total_#{line_items_visit.id}_per_study"}= display_visit_based_direct_cost_per_study line_items_visit
+
 -else
   - if (@sub_service_request.nil? ? service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?) 
     %tr.section_header
-      %th{:colspan => @portal ? 11 : 13}= t("calendar_page.per_patient") + " -- " + arm.name
+      %th{:colspan => @portal ? 11 : 13}= t(:calendar_page)[:per_patient] + " -- " + arm.name
     - service_request.service_list(false).each do |key, value| # get only per patient/per visit services and group them
       - next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
       - if @tab == 'billing_strategy'

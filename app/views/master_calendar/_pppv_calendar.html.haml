@@ -24,6 +24,7 @@
       = render :partial => "master_calendar/pppv_header", :locals => {:service_request => @service_request, :arm => arm, :tab => tab, :portal => portal}
     %tbody.cell-border
       = render :partial => "master_calendar/pppv_line_items", :locals => {:service_request => @service_request, :arm => arm, :tab => tab, :portal => portal}
+
 -else
   = javascript_include_tag 'service_calendar_logic'
   - if @merged

@@ -17,14 +17,13 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
--if @merged
-  %tr.table_header
+%tr.table_header
+  -if @merged
     %th.services_header{:rowspan => 2, :style => "height: 88px"}= t(:calendar_page)[:headers][:services]
     - if @portal
-      %th.your_cost_header{:rowspan => 2}= t("calendar_page.headers.your_cost")
+      %th.your_cost_header{:rowspan => 2}= t(:calendar_page)[:headers][:your_cost]
       %th{:rowspan => 2, :colspan => 7, :height => 40, :width => 375}
-      %th.total_per_study{:rowspan => 2}= t("calendar_page.headers.total_per_study")
+      %th.total_per_study{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_study]
     -else
       %th.unit_costs_header{:colspan => 2}= t(:calendar_page)[:headers][:unit_costs]
       %th.qty_type_header{:rowspan => 2}= t(:calendar_page)[:headers][:number]
@@ -32,20 +31,20 @@
       %th.qty_unit_header{:style => "width:50px;", :rowspan => 2}= t(:calendar_page)[:headers][:number]
       %th.unit_type_header{:rowspan => 2}= t(:calendar_page)[:headers][:unit_type]
       %th{:rowspan => 2, :colspan => 5, :height => 40, :width => 375}
-      %th.total_per_study{:rowspan => 2}= t("calendar_page.headers.total_per_study")
+      %th.total_per_study{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_study]
 
-  %tr.table_header
-    - unless @portal || @study_tracker
-      %th.service_rate_header= t("calendar_page.headers.service_rate")
-      %th.your_cost_header= t("calendar_page.headers.your_cost")
--elsif @review
-  %tr.table_header
-    %th{:rowspan => 2}= t(:sr_review)[:calendar][:headers][:services]
-    %th{:rowspan => 2}= t(:sr_review)[:calendar][:headers][:cost]
+    %tr.table_header
+      - unless @portal || @study_tracker
+        %th.service_rate_header= t(:calendar_page)[:headers][:service_rate]
+        %th.your_cost_header= t(:calendar_page)[:headers][:your_cost]
+
+  -elsif @review
+    %th{:rowspan => 2}= t(:calendar_page)[:headers][:services]
+    %th{:rowspan => 2}= t(:calendar_page)[:headers][:your_cost]
     %th{:colspan => 6}
-    %th{:rowspan => 2}= t(:sr_review)[:calendar][:headers][:total_per_study]
--elsif @study_tracker
-  %tr.table_header
+    %th{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_study]
+
+  -elsif @study_tracker
     %th.services_header{:style => "height: 88px"}= t(:calendar_page)[:headers][:services]
     %th.qty_type_header= t(:calendar_page)[:headers][:number]
     %th.number_of_units_header{:style => "width:130px;"}= t(:calendar_page)[:headers][:qty_type]
@@ -53,10 +52,7 @@
     %th.qty_unit_header{:style => "width:130px;"}= t(:calendar_page)[:headers][:unit_type]
     %th
 
-    / %th= image_tag 'spinner.gif', :class => 'service_calendar_spinner'
-    / %th
--else
-  %tr.table_header
+  -else
     %th.services_header{:rowspan => 2, :style => "height: 88px"}= t(:calendar_page)[:headers][:services]
     - if @portal
       %th{:rowspan => 2, :colspan => 7, :height => 40, :width => 375}
@@ -72,11 +68,11 @@
     - if @study_tracker
       %th{:rowspan => 2}
 
-  %tr.table_header
-    - unless @portal || @study_tracker
-      %th.service_rate_header= t("calendar_page.headers.service_rate")
-      %th.your_cost_header= t("calendar_page.headers.your_cost")
-    - if @portal || @study_tacker
-      %th &nbsp;
-    - else
-      %th.total_per_study= t("calendar_page.headers.total_per_study")
+    %tr.table_header
+      - unless @portal || @study_tracker
+        %th.service_rate_header= t(:calendar_page)[:headers][:service_rate]
+        %th.your_cost_header= t(:calendar_page)[:headers][:your_cost]
+      - if @portal || @study_tacker
+        %th &nbsp;
+      - else
+        %th.total_per_study= t(:calendar_page)[:headers][:total_per_study]

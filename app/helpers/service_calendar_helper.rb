@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 module ServiceCalendarHelper
 
   def select_row line_items_visit, tab
@@ -125,11 +145,11 @@ module ServiceCalendarHelper
   def display_protocol_total_otfs protocol, current_request, portal
     sum = 0
     protocol.service_requests.each do |service_request|
+      next unless service_request.has_one_time_fee_services?
       if ['first_draft', 'draft'].include?(service_request.status)
         next if portal
         next if service_request != current_request
       end
-      next unless service_request.has_one_time_fee_services?
       sum += service_request.total_costs_one_time
     end
     currency_converter sum
@@ -153,6 +173,24 @@ module ServiceCalendarHelper
   def display_grand_total service_request, line_items
     sum = 0
     sum = service_request.grand_total line_items
+    currency_converter sum
+  end
+
+  def display_study_grand_total_direct_costs protocol, service_request
+    sum = 0
+    sum = protocol.direct_cost_total service_request
+    currency_converter sum
+  end
+
+  def display_study_grand_total_indirect_costs protocol, service_request
+    sum = 0
+    sum = protocol.indirect_cost_total service_request
+    currency_converter sum
+  end
+
+  def display_study_grand_total protocol, service_request
+    sum = 0
+    sum = protocol.grand_total service_request
     currency_converter sum
   end
 

@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 require 'spec_helper'
 
 describe "visit schedule", :js => true do
@@ -40,6 +60,7 @@ describe "visit schedule", :js => true do
         select("#2: Visit 2", from: "visit")
         wait_for_javascript_to_finish
         find("#visit").should have_value("#2: Visit 2")
+        click_button "Save Appointments"
       end
     end
 
@@ -47,6 +68,7 @@ describe "visit schedule", :js => true do
 
       it "should return the user to clinical fulfillment" do
         click_on "Return to Clinical Work Fulfillment"
+        wait_for_javascript_to_finish
         page.should have_content("Add a subject")
       end
     end
@@ -68,6 +90,7 @@ describe "visit schedule", :js => true do
         retry_until { first("#notes").set("Messages all up in this place.") }
         first('.add_comment_link').click
         page.should have_content("Messages all up in this place.")
+        click_button "Save Appointments"
       end
     end
 
@@ -116,6 +139,7 @@ describe "visit schedule", :js => true do
           find(:css, ".procedure_box", :visible => true).set(false)
           find(:css, ".procedure_box", :visible => true).set(true)
           find(".procedure_total_cell", :visible => true).should have_text("$150.00")
+          click_button "Save Appointments"
         end
       end
     end

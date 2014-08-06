@@ -1,7 +1,35 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+:javascript
+  $(document).ready(function() { 
+      $("table#admin-tablesorter").bind("sortStart",function() { 
+        //Do Nothing
+      }).bind("sortEnd",function() { 
+          Sparc.admin.stripify_table()
+      }); 
+  });
+
 .admin-index-ssr-list
   .admin-index-ssr-table
     %input.search-all-service-requests{:type => 'text', :placeholder => t(:admin_root)[:search_placeholder]}
-    %br
     %select#service_request_workflow_states
       - @user.available_workflow_states('ctrc', nil, true).each do |key, value|
         %option{:value => key, :selected => (key == "submitted")} #{value} (#{@service_requests[key].try(:length) || 0})
@@ -11,6 +39,16 @@
     #admin_tabs
       %div
         %table#admin-tablesorter.tablesorter
+          %colgroup
+            %col
+            %col
+            %col
+            %col
+            %col
+            %col
+            %col
+            %col
+            %col.last
           %thead
             %tr
               %th= t(:admin_dashboard)[:id]
@@ -21,7 +59,7 @@
               %th= t(:admin_root)[:requester]
               %th= t(:admin_dashboard)[:pi]
               %th= t(:admin_root)[:assigned]
-              %th= t(:admin_root)[:orgs]
+              %th.last= t(:admin_root)[:orgs]
           %tbody
             - pis = []
             - search_pis = []
@@ -39,7 +77,7 @@
                     %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}= ssr.status.humanize
                     %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}= ssr.service_request.protocol.try(:short_title)
                     %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}= ssr.service_request.submitted_at.try(:strftime, "%m/%d/%Y")
-                    %td
+                    %td{:style => "max-width: 135px; word-wrap: break-word;"}
                       %ul.services_first
                         %li.ui-corner-top
                           - services = ssr.line_items.map(&:service).sort_by{|srv| srv.name}.map(&:name)

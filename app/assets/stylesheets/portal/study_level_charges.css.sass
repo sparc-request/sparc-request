@@ -1,15 +1,43 @@
+// Copyright © 2011 MUSC Foundation for Research Development
+// All rights reserved.
+
+// Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+// 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+// 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+// disclaimer in the documentation and/or other materials provided with the distribution.
+
+// 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+// derived from this software without specific prior written permission.
+
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+// BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+// SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+// TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+#study_level_charges
+  padding: 10px
+
 .cwf_one_time_fee_service
   table
     border-collapse:collapse
     width: 100%
     td, th
-      padding: 5px
+      padding: 15px 5px
     tr.bottom
       height: 20px
+    tr.top_header
+      background-color: #0775B0
+      color: white
+    tr.fields
+      height: 30px
     tr
       height: 40px
       th.top
-        border: 1px solid #ccc
+        border: 1px solid white
         font-size: 1.2em
       th.bottom
         vertical-align: bottom 
@@ -32,34 +60,67 @@
   display: block
   height: 16px
   width: 16px
-  text-indent: -1000em
-  overflow: hidden
-  margin: 0 auto
-  background: url(delete.png) no-repeat left top
+  background: url(cancel.png) no-repeat
 
 .add_nested_fields.cwf_fulfillments
-  background: url(add.png) no-repeat left center
-  padding-left: 17px
-  color: #3d8834
+  background: url("yellowbutton_smaller.png") no-repeat
+  color: #FFFFFF
+  display: block
+  height: 27px
+  padding: 8px 0 0
+  text-align: center
+  width: 149px
 
   &:hover 
     text-decoration: underline
 
 .service_tr td
-  background-color: #CCC
+  background-color: #CCCCCC
   font-weight: bold
   font-size: 1.1em
 
 .cwf_one_time_fee_service table tr.fulfillment_fields
-  height: 23px
+  height: 30px
   th
-    padding: 0px
+    background-color: #0775B0
+    color: white
+    padding: 0px 5px
+  th.ui-accordion-header
+    background: #3E9F5A
+    border: 0 none
+    border-radius: 0px
+
+.cwf_one_time_fee_service table tr.fulfillment_fields.study_level_charges
+  height: 22px
+  th
+    padding-bottom: 2px
 
 tr.fields td
-  background-color: #EEE
+  background-color: #E8E8E8
 
 .fulfillment_header
   font-size: 15px
   text-align: left
   th span
     display: inline-block
+
+.service_otf_header
+  width: 250px
+.number_otf_header
+  width: 40px
+.otf_type_header
+  width: 125px
+.quantity_otf_header
+  width: 47px
+.quantity_typ_otf_header
+  width: 131px
+
+.buttons
+  .study_charges_submit
+    background: url("yellowbutton_smaller.png") no-repeat
+    border: 0 none
+    color: #FFFFFF
+    cursor: pointer
+    height: 35px
+    width: 149px
+

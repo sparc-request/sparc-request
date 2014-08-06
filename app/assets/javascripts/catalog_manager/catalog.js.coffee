@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 # Place all the behaviors and hooks related to the matching controller here.
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
@@ -115,41 +135,50 @@ $ ->
     $('.increase_decrease_dialog:first').dialog().dialog('destroy').remove() # calling dialog() to make sure it exists before we destroy, otherwise jquery ui complains if you click too fast
     click_text = node_ref.rslt.obj.context.textContent || node_ref.rslt.obj.context.innerText
     if click_text
-
+      click_text = $.trim(click_text)
+      
       # create an institution
-      if /Create New Institution/.test click_text
+      if /^Create New Institution$/.test click_text
         institution_name = prompt("Please enter the name of the institution to be created")
         if institution_name and institution_name.length > 0
           $.post '/catalog_manager/institutions', {name: institution_name}
 
       # create a provider
-      if /Create New Provider/.test click_text
+      if /^Create New Provider$/.test click_text
         institution_id = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('cid')
         provider_name = prompt("Please enter the name of the provider you would like to create")
         if provider_name and provider_name.length > 0
           $.post '/catalog_manager/providers', {name: provider_name, institution_id: institution_id}
 
       # create a program
-      if /Create New Program/.test click_text
+      if /^Create New Program$/.test click_text
         provider_id = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('cid')
         program_name = prompt("Please enter the name of the program you would like to create")
         if program_name and program_name.length > 0
           $.post '/catalog_manager/programs', {name: program_name, provider_id: provider_id}
 
       # create a core
-      if /Create New Core/.test click_text
+      if /^Create New Core$/.test click_text
         program_id = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('cid')
         core_name = prompt("Please enter the name of the core you would like to create")
         if core_name and core_name.length > 0
           $.post '/catalog_manager/cores', {name: core_name, program_id: program_id}
 
       # create a service
-      if /Create New Service/.test click_text
+      if /^Create New Service$/.test click_text
         parent_id = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('cid')
         parent_object_type = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('object_type')
-        $.get("/catalog_manager/services/new", {parent_id: parent_id, parent_object_type: parent_object_type},
-              (data)-> $('#details').html(data) )
-
+        
+        $.get "/catalog_manager/services/verify_parent_service_provider", {parent_id: parent_id, parent_object_type: parent_object_type}, (data)-> 
+          service_providers_size = data
+          
+          if service_providers_size > 0
+            $.get("/catalog_manager/services/new", {parent_id: parent_id, parent_object_type: parent_object_type}, (data)-> 
+              $('#details').html(data) )
+          else
+            alert("There needs to be at least one service provider on a parent organization to create a new service.")
+        
+        
     return unless node_ref.rslt.obj.context.attributes['object_type']
     
     $('#processing_request').dialog('open')
@@ -170,6 +199,7 @@ $ ->
     $('#catalog').jstree 'clear_search'
     $('#catalog').jstree 'close_all'
     $('#no_results').hide()
+    $('#search_box input#search').val('')
 
   # related services
   $('input#new_rs').live 'focus', -> $(this).val('')

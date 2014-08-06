@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 require 'date'
 require 'spec_helper'
 
@@ -131,6 +151,29 @@ describe 'organization' do
 
       it 'should return everything if it is an institution' do
         institution.all_children.should include(core, core2, program, program2, provider)
+      end
+    end
+
+    describe 'service providers for services' do
+
+      let!(:provider_organization)       { FactoryGirl.create(:provider) }
+      let!(:program_organization)        { FactoryGirl.create(:program, parent_id: provider_organization.id) }
+      let!(:core_organization)           { FactoryGirl.create(:core, parent_id: program_organization.id) }
+      let!(:program_service)             { FactoryGirl.create(:service, organization_id: program_organization.id) }
+      let!(:core_service)                { FactoryGirl.create(:service, organization_id: core_organization.id) }
+
+      it "should return true if a service has a service provider in the tree" do
+        service_provider = FactoryGirl.create(:service_provider, organization_id: provider_organization.id)
+        program_organization.service_providers_for_child_services?.should eq(true)
+      end
+
+      it "should return false if a service does not have a service provider in the tree" do
+        program_organization.service_providers_for_child_services?.should eq(false)
+      end
+
+      it "should return false if there is a service provider, but it's only on the current organization" do
+        service_provider = FactoryGirl.create(:service_provider, organization_id: program_organization.id)
+        program_organization.service_providers_for_child_services?.should eq(false)
       end
     end
 

@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 class Organization < ActiveRecord::Base
   audited
   acts_as_taggable
@@ -56,11 +76,11 @@ class Organization < ActiveRecord::Base
 
   # Returns an array of organizations, the current organization's parents, in order of climbing
   # the tree backwards (thus if called on a core it will return => [program, provider, institution]).
-  def parents
+  def parents id_only=false
     my_parents = []
     if parent
-      my_parents << parent
-      my_parents.concat(parent.parents)
+      my_parents << (id_only ? parent.id : parent)
+      my_parents.concat(parent.parents id_only)
     end
 
     my_parents
@@ -99,23 +119,22 @@ class Organization < ActiveRecord::Base
   end
 
   # Returns an array of all children (and children of children) of this organization (deep search).
-  # !!!INCLUDES SELF!!!
-  def all_children all_children=[]
+  # Optionally includes self
+  def all_children all_children=[], include_self=true
     self.children.each do |child|
       all_children << child
       child.all_children(all_children)
     end
-    all_children << self
+    all_children << self if include_self
 
     all_children.uniq
   end
 
-
   # Returns an array of all services that are offered by this organization as well of all of its
   # deep children.
-  def all_child_services
+  def all_child_services include_self=true
     all_services = []
-    children = self.all_children
+    children = self.all_children [], include_self
     children.each do |child|
       if child.services
         services = Service.where(:organization_id => child.id).includes(:pricing_maps)
@@ -203,20 +222,39 @@ class Organization < ActiveRecord::Base
   # parent organization which has service providers and returns the service providers of that parent.
   def service_providers_lookup
     if !service_providers.empty?
-      return service_providers
-    else 
-      return self.parents.select {|x| !x.service_providers.empty?}.first.service_providers
+      return self.service_providers
+    elsif !self.parents.empty? 
+      parent = self.parents.select {|x| !x.service_providers.empty?}.first
+      return parent.nil? ? [] : parent.service_providers
+    else
+      return []
     end
+  end
+
+  # Looks down through all child services. It looks back up through each service's parent organizations
+  # and returns false if any of them do not have a service provider. Self is excluded.
+  def service_providers_for_child_services?
+    has_provider = true
+    if !self.all_child_services.empty?
+      self.all_child_services(false).each do |service|
+        service_providers = service.organization.service_providers_lookup.reject{|x| x.organization_id == self.id}
+        if service_providers == []
+          has_provider = false
+        end
+      end
+    end
+
+    has_provider
   end
 
   # Returns all *relevant* service providers for an organization.  Returns this organization's
   # service providers, as well as the service providers on all parents.  If the process_ssrs flag
   # is true at this organization, also returns the service providers of all children.
-  def all_service_providers
+  def all_service_providers(include_children=true)
     all_service_providers = []
     
     # If process_ssrs is true, we need to also get our children's service providers
-    if self.process_ssrs
+    if self.process_ssrs and include_children
       self.all_children.each do |child|
         all_service_providers << child.service_providers
       end

@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 class Arm < ActiveRecord::Base
   audited
 
@@ -38,15 +58,23 @@ class Arm < ActiveRecord::Base
     return !subject_count.nil? && subject_count > 0
   end
 
-  # def valid_minimum_visit_count?
-  #   return !visit_count.nil? && visit_count >= minimum_visit_count
-  # end
+  def valid_name?
+    return !name.nil? && name.length > 0
+  end
 
-  # def valid_minimum_subject_count?
-  #   return !subject_count.nil? && subject_count >= minimum_subject_count
-  # end
+  def valid_minimum_visit_count?
+    return !visit_count.nil? && visit_count >= minimum_visit_count
+  end
+
+  def valid_minimum_subject_count?
+    return !subject_count.nil? && subject_count >= minimum_subject_count
+  end
 
   def create_line_items_visit line_item
+    # if visit_count is nil then set it to 1
+    self.update_attribute(:visit_count, 1) if self.visit_count.nil?
+
+    # loop until visit_groups catches up to visit_count
     while self.visit_groups.size < self.visit_count
       visit_group = self.visit_groups.new
       if not visit_group.save(validate: false) then
@@ -100,8 +128,10 @@ class Arm < ActiveRecord::Base
 
   def indirect_costs_for_visit_based_service line_items_visits=self.line_items_visits
     total = 0.0
-    line_items_visits.each do |vg|
-      total += vg.indirect_costs_for_visit_based_service
+    if USE_INDIRECT_COST
+      line_items_visits.each do |vg|
+        total += vg.indirect_costs_for_visit_based_service
+      end
     end
     return total
   end
@@ -189,9 +219,14 @@ class Arm < ActiveRecord::Base
   end
 
   def remove_visit position
-    self.update_attribute(:visit_count, (self.visit_count - 1))
     visit_group = self.visit_groups.find_by_position(position)
-    return visit_group.destroy
+    unless visit_group.appointments.reject{|x| !x.completed_at?}.empty?
+      self.errors.add(:completed_appointment, "exists for this visit.")
+      return false
+    else
+      self.update_attributes(:visit_count => self.visit_count - 1)
+      return visit_group.destroy
+    end
   end
 
   def populate_subjects
@@ -211,33 +246,35 @@ class Arm < ActiveRecord::Base
     end
   end
 
-  def update_visit_group_day day, position
+  def update_visit_group_day day, position, portal=false
     position = position.blank? ? self.visit_groups.count - 1 : position.to_i
     before = self.visit_groups[position - 1] unless position == 0
     current = self.visit_groups[position]
     after = self.visit_groups[position + 1] unless position >= self.visit_groups.size - 1
-
-    valid_day = Integer(day) rescue false
-    if !valid_day
-      self.errors.add(:invalid_day, "You've entered an invalid number for the day. Please enter a valid number.")
-      return false
-    end
-
-    if !before.nil? && !before.day.nil?
-      if before.day > valid_day
-        self.errors.add(:out_of_order, "The days are out of order. This day appears to go before the previous day.")
+    
+    if portal == 'true' and USE_EPIC
+      valid_day = Integer(day) rescue false
+      if !valid_day
+        self.errors.add(:invalid_day, "You've entered an invalid number for the day. Please enter a valid number.")
         return false
+      end
+
+      if !before.nil? && !before.day.nil?
+        if before.day > valid_day
+          self.errors.add(:out_of_order, "The days are out of order. This day appears to go before the previous day.")
+          return false
+        end
+      end
+
+      if !after.nil? && !after.day.nil?
+        if valid_day > after.day
+          self.errors.add(:out_of_order, "The days are out of order. This day appears to go after the next day.")
+          return false
+        end
       end
     end
 
-    if !after.nil? && !after.day.nil?
-      if valid_day > after.day
-        self.errors.add(:out_of_order, "The days are out of order. This day appears to go after the next day.")
-        return false
-      end
-    end
-
-    return current.update_attributes(:day => valid_day)
+    return current.update_attributes(:day => day)
   end
 
   def update_visit_group_window window, position

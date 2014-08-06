@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 (exports ? this).do_datepicker = (selector) ->
   $(selector).datepicker
     constrainInput: true
@@ -16,16 +36,28 @@ $(document).ready ->
         dateFormat: 'm/dd/yy'
         altFormat: 'yy-mm-dd'
         altField: data
-      
+  
   }
-
+  
   $(document).on('change', '.datepicker', ->
     selector = "##{$(this).attr("id").replace('_picker', '')}"
     $("#{selector}").change()
-  )
+    )
+  original = ''
+  $(document).on('click', '.datepicker', ->
+    original = $(this).val()
+    )
 
   for datepicker in $('.datepicker')
     do_datepicker("##{$(datepicker).attr('id')}")
+
+  validateDate = (start,end) ->
+    if start == '' or end ==''
+      return true 
+    if start > end 
+      return false
+    else 
+      return true
 
   filterNonKeys = (arr) ->
     filtered = []
@@ -53,7 +85,16 @@ $(document).ready ->
     data[key] = $(this).val()
     data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
     data['line_items_visit_id'] = $(this).parents("tr").data("line_items_visit_id") || null
-    put_attribute(object_id, klass, data)
+    if $(this).attr('name') == 'protocol_start_date' or $(this).attr('name') == 'protocol_end_date'
+      start = $('#protocol_start_date_picker').val()
+      end = $('#protocol_end_date_picker').val()
+      if validateDate(start,end)
+        put_attribute(object_id, klass, data)
+      else
+        $().toastmessage('showErrorToast', "Please enter a start date before the end date")
+        $("##{$(this).attr("name")}_picker").val(original)
+    else  
+      put_attribute(object_id, klass, data)
   )
 
   $(document).on('change', '.cwf_data', ->
@@ -219,6 +260,8 @@ $(document).ready ->
   $(document).on('click', '.remove_arm_link', ->
     if $(this).data('arm_count') <= 1
       alert("You can't delete the last arm while Per-Patient/Per Visit services still exist.")
+    else if $(this).data('can_be_deleted') == false
+      alert("This arm has subject data and can not be deleted.")
     else if confirm("Are you sure you want to remove the ARM?")
       sr_id = $(this).data('service_request_id')
       protocol_id = $('#arm_id').data('protocol_id')
@@ -304,29 +347,32 @@ $(document).ready ->
         $("#submit_visit").attr("disabled", false).removeClass("ui-state-disabled")
 
   $(document).on('click', '.delete_visit_link', ->
-    sr_id = $(this).data('service_request_id')
-    data =
-      'sub_service_request_id': $(this).data('sub_service_request_id')
-      'service_request_id': sr_id
-      'visit_position': $('#delete_visit_position').val()
-      'arm_id': $('#arm_id').val()
-      'study_tracker': $('#study_tracker_hidden_field').val() || null
-    $.ajax
-      type: 'DELETE'
-      url:   "/portal/admin/service_requests/#{sr_id}/remove_per_patient_per_visit_visit"
-      data:  JSON.stringify(data)
-      dataType: 'script'
-      contentType: 'application/json; charset=utf-8'
-      success: ->
-        $().toastmessage('showSuccessToast', "Service request has been saved.")
+    if $(this).data('visit_count') <= 1
+      alert("You can't delete the last visit. Please delete the arm if visits are no longer required.")
+    else
+      sr_id = $(this).data('service_request_id')
+      data =
+        'sub_service_request_id': $(this).data('sub_service_request_id')
+        'service_request_id': sr_id
+        'visit_position': $('#delete_visit_position').val()
+        'arm_id': $('#arm_id').val()
+        'study_tracker': $('#study_tracker_hidden_field').val() || null
+      $.ajax
+        type: 'DELETE'
+        url:   "/portal/admin/service_requests/#{sr_id}/remove_per_patient_per_visit_visit"
+        data:  JSON.stringify(data)
+        dataType: 'script'
+        contentType: 'application/json; charset=utf-8'
+        success: ->
+          $().toastmessage('showSuccessToast', "Service request has been saved.")
 
-      error: (jqXHR, textStatus, errorThrown) ->
-        if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
-          errors = JSON.parse(jqXHR.responseText)
-        else
-          errors = [textStatus]
-        for error in errors
-          $().toastmessage('showErrorToast', "#{error.humanize()}.");
+        error: (jqXHR, textStatus, errorThrown) ->
+          if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
+            errors = JSON.parse(jqXHR.responseText)
+          else
+            errors = [textStatus]
+          for error in errors
+            $().toastmessage('showErrorToast', "#{error.humanize()}.");
   )
 
   $(document).on('click', '#add_service', ->
@@ -520,7 +566,7 @@ $(document).ready ->
 
   $('.send_to_epic_button').on('click', ->
     ssr_id = $(this).attr('sub_service_request_id')
-    $(this).button('disable')
+    $(this).unbind('click')
     $.ajax
       type: 'PUT'
       url: "/portal/admin/sub_service_requests/#{ssr_id}/push_to_epic"
@@ -535,14 +581,11 @@ $(document).ready ->
         for error in errors
           $().toastmessage('showErrorToast', "#{error.humanize()}.");
       complete: =>
-        $(this).button('enable')
+        $(this).bind('click')
   )
 
   # INSTANTIATE HELPERS
   # set_percent_subsidy()
-  $('.delete-ssr-button').button()
-  $('.export_to_excel_button').button()
-  $('.send_to_epic_button').button()
   $('#approval_history_table').tablesorter()
   $('#status_history_table').tablesorter()
 
@@ -550,9 +593,4 @@ $(document).ready ->
     if $(this).val() == ''
       $(this).val(0).change()
   )
-
-  show_return_to_portal_button = () ->
-    linkHtml = "<a id='return_to_admin_portal' style='position:relative;left:700px;bottom:25px' href='/portal/admin'>Return to Admin Portal</a>"
-    $("#title").append(linkHtml)
-    $("#return_to_admin_portal").button()
 

@@ -1,3 +1,23 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 !!!
 %html{ :xmlns => "http://www.w3.org/1999/xhtml", :"xml:lang" => "en", :lang => "en" }
 
@@ -8,10 +28,10 @@
 
   %body
     - welcome_text = @service_request.status == "obtain_research_pricing" ? I18n.t('notifier.welcome_obtain_research_pricing') : I18n.t('notifier.welcome_submit')
-    -if @role == 'pi' || @role == 'primary-pi'
+    - if @role == 'pi' || @role == 'primary-pi'
       %p= I18n.t('notifier.body1', :full_name => @identity.full_name)
       %p= I18n.t('notifier.body2_pi', :welcome => welcome_text, :application_title => I18n.t('application_title'), :root_url => ROOT_URL, :protocol_type => @protocol.type.downcase)
-    -else
+    - else
       %p= I18n.t('notifier.body2_non_pi', :welcome => welcome_text, :application_title => I18n.t('application_title'), :root_url => ROOT_URL, :protocol_type => @protocol.type.downcase)
 
     %table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
@@ -52,6 +72,32 @@
             %td{:style => 'border: 1px solid black; text-align: center;'}= pr.role.upcase
             %td{:style => 'border: 1px solid black; text-align: center;'}= {"approve"=>"Authorize/Change Study Charges", "request"=>"Request/Approve Services", "view"=>"View Rights", "none"=>"Member Only"}[pr.project_rights]
 
+    - if @ssr_deleted
+      %br
+      %br
+
+      %table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
+        %tbody
+          %tr{:style => 'border: 1px solid black;'}
+            %td{:style => 'border: 1px solid black; font-weight: bold;'}= t(:notifier)[:all_on_request]
+
+    - elsif @audit_report and not @audit_report[:line_items].empty?
+      %br
+      %br
+
+      %table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
+        %thead
+          %tr{:style => 'border: 1px solid black;'}
+            %th{:style => 'border: 1px solid black; text-align: left;'}= t(:notifier)[:service]
+            %th{:style => 'border: 1px solid black;'}= t(:notifier)[:action]
+
+        %tbody
+          - @audit_report[:line_items].each do |last_change|
+            - service = Service.find(last_change.audited_changes["service_id"])
+            %tr{:style => 'border: 1px solid black;'}
+              %td{:style => 'border: 1px solid black;'}= service.name
+              %td{:style => 'border: 1px solid black; text-align: center;'}= AUDIT_ACTIONS[last_change.action]
+ 
     %p= t(:issue_contact)
 
     %p= t(:notifier)[:body6]
@@ -62,7 +108,39 @@
         ="."
     %p
       %a{:style => "color: blue; font-weight: bold;", :href => @portal_link}=@portal_text
-    
     - @service_request.service_list.map{|k, v| v[:acks]}.flatten.uniq.each do |ack|
       %p{:style => 'font-size: small;'}=ack
-
+      
+    %hr
+    %table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
+      %thead
+        %tr{:style => 'border: 1px solid black;'}
+          %td{:colspan => 2}
+            %strong= t(:notifier)[:admin_data]
+      %tbody
+        %tr{:style => 'border: 1px solid black;'}
+          %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:triggered_by]
+          %td{:style => 'border: 1px solid black;'}= @triggered_by
+        %tr{:style => 'border: 1px solid black;'}
+          %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:sr_id]
+          %td{:style => 'border: 1px solid black;'}= @service_request.id
+        %tr{:style => 'border: 1px solid black;'}
+          %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:ssr_ids]
+          %td{:style => 'border: 1px solid black;'}= @ssr_ids
+    %br
+    - if @service_request.has_per_patient_per_visit_services? and @service_request.arms.count >0 and @provide_arm_info
+      %table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
+        %thead
+          %tr{:style => 'border: 1px solid black;'}
+            %td{:colspan => 3}
+              %strong= t(:notifier)[:arm_data]
+          %tr{:style => 'border: 1px solid black;'}
+            %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:arm_name]
+            %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:arm_subject_count]
+            %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:arm_visit_count]
+        %tbody
+          - @service_request.arms.each do |arm|
+            %tr{:style => 'border: 1px solid black;'}
+              %td{:style => 'border: 1px solid black;'}= arm.name
+              %td{:style => 'border: 1px solid black;'}= arm.subject_count
+              %td{:style => 'border: 1px solid black;'}= arm.visit_count

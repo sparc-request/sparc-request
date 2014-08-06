@@ -1,7 +1,27 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 - line_items_visits = [] 
 = javascript_include_tag 'service_calendar_logic'
 = hidden_field_tag :indirect_rate, @service_request.protocol.indirect_cost_rate
-%table.service_calendar{:class => "arm_id_#{arm.id}", :style => @study_tracker ? "width:917px" : ''}
+%table.service_calendar{:class => "arm_id_#{arm.id}"}
   %thead.ui-widget-header
     %tr.table_header
       %th.services_header{:rowspan => 2}= t("calendar_page.headers.services")
@@ -38,11 +58,15 @@
         - if @tab == 'billing_strategy'
           %tr.sub_section_header
             %th{:colspan => @portal ? 3 : 6}= value[:name]
+            -if @portal
+              %th{:colspan => 2}
             -5.times do
-              %th.billing_type_list
+              %th.billing_type_list{:style => "text-align:center"}
                 %span.billing_type R
                 %span.billing_type T
                 %span.billing_type %
+            - unless @portal
+              %th &nbsp;
             %th &nbsp;
         - else
           %tr.sub_section_header
@@ -77,7 +101,7 @@
             - unit_minimum = pricing_map.unit_minimum
             - totals_hash = line_items_visit.try(:per_subject_subtotals, visits)
             - visits.each_with_index do |v, index|
-              %td.visit{:visit_column => index + 1, :class => "visit_column_#{index + 1} arm_#{arm.id}", :'data-cents' => (totals_hash["#{v.id}"] || 0), :style => (@tab == 'template' ? "text-align:center" : '')}= line_item_visit_input arm, line_item, v, @tab, totals_hash, unit_minimum, @portal
+              %td.visit{:visit_column => index + 1, :class => "visit_column_#{index + 1} arm_#{arm.id}", :'data-cents' => (totals_hash["#{v.id}"] || 0), :style => (['template', 'billing_strategy'].include?(@tab) ? "text-align:center" : '')}= line_item_visit_input arm, line_item, v, @tab, totals_hash, unit_minimum, @portal
             - (5 - visits.size).times do
               %td &nbsp;
             - if @portal

@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 class CatalogManager::IdentitiesController < CatalogManager::AppController
   respond_to :json
   layout false
@@ -65,8 +85,20 @@ class CatalogManager::IdentitiesController < CatalogManager::AppController
 
     if rel_type == 'service_provider_organizational_unit'
       service_provider = ServiceProvider.find params["relationship"]
-      service_provider.destroy
+      @service_provider_error_message = nil
+      
+      # we need to have more than just this one service provider in the tree in order to delete
+      # if we have services we only need to verify that a service provider exists above us
+      # otherwise we look in the entire tree for at least one service provider
+      if (oe.services.empty? and oe.service_providers_for_child_services?) or (oe.all_service_providers(false).size > 1)
+        service_provider.destroy
+        oe.reload
+      else
+        @service_provider_error_message = I18n.t("organization_form.service_provider_required_message") 
+      end
+      
       render :partial => 'catalog_manager/shared/service_providers', :locals => {:entity => oe}
+
     elsif rel_type == 'super_user_organizational_unit'
       super_user = SuperUser.find params["relationship"]
       super_user.destroy

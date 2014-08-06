@@ -1,3 +1,23 @@
+// Copyright © 2011 MUSC Foundation for Research Development
+// All rights reserved.
+
+// Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+// 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+// 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+// disclaimer in the documentation and/or other materials provided with the distribution.
+
+// 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+// derived from this software without specific prior written permission.
+
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+// BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+// SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+// TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 // Place all the styles related to the Documents controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
@@ -6,14 +26,11 @@
   
 
   font-size: 14px;
-  background-color: #EEEEEE;
 
   .documents {
     background-color: #FFF;
     padding: 10px;
     margin: 10px auto;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
   }
 
   .document-management-container {
@@ -39,8 +56,6 @@
     th, td {
       text-align: left;
       padding: 8px;
-      -moz-border-radius: 4px;
-      -webkit-border-radius: 4px;
     }
 
     .document_date {
@@ -65,11 +80,39 @@
   }
 
   /*DOCUMENT MANAGEMENT STYLES*/
+  .document-management-container table#new_document a.upload_button,
+  .document-management-container table#new_document a.ui_close_button {
+    background: url("blue_button_short.png") no-repeat;
+    border: 0 none;
+    height: 30px;
+    width: 92px;
+  }
+
+  .document-management-container table#new_document a.upload_button.ui-state-hover,
+  .document-management-container table#new_document a.upload_button.ui-state-focus,
+  .document-management-container table#new_document a.ui_close_button.ui-state-hover,
+  .document-management-container table#new_document a.ui_close_button.ui-state-focus,
+  .document-management-container a.document_upload_button.ui-state-hover span,
+  .document-management-container a.document_upload_button.ui-state-focus span {
+    color: white;
+  }
+
+  .document-management-container a.document_upload_button {
+    background: url("yellowbutton_blank.png") no-repeat;
+    border: 0 none;
+    display: inline-block;
+    font-size: 1.2em;
+    height: 28px;
+    padding-top: 7px;
+    min-width: 230px;
+    .ui-button-text {
+      padding: 0px;
+    }
+  }
 
   .document-management-container {
-    margin: 10px;
-    margin-right: 0px;
-    padding: 10px;
+    margin: 15px 0px 0px;
+    padding: 0px;
     min-height: 50px;
     text-align: center;
   }
@@ -81,24 +124,29 @@
   }
 
   .document-management-container table td {
-    border: 1px solid #CCC;
-    padding: 5px;
+    border: 1px solid black;
+    padding: 12px;
   }
 
   .document-management-container table tr.header {
     text-align: center;
-    background-color: #CCC;
-    width: 630px;
+    background-color: #D7D7D7;
+  }
+
+  .document-management-container table th.center,
+  .document-management-container table td.center {
+    text-align: center;
+    width: auto !important;
   }
 
   .document-management-container table th {
     font-weight: bold;
-    padding: 5px;
-    border: 1px solid #CCC;
+    padding: 12px;
+    border: 1px solid #D7D7D7;
   }
 
   .document-management-container table tr.document:nth-child(odd) {
-    background-color: #EEE;
+    background-color: #D7D7D7;
   }
 
   .document-edit-container {
@@ -120,7 +168,6 @@
   }
 
   .document-upload {
-    width: 250px;
   }
 
   .document-save {
@@ -128,23 +175,27 @@
     text-align: right;
   }
 
-  .document-delete {
-    width: 30px;
-    text-align: right;
+  .actions_container {
+    width: 95px;
+    margin: 0 auto;
+  }
+
+  .document_edit {
+    padding-right: 20px;
+  }
+
+  .document_delete {
   }
 
   .upload-document-type {
     padding-top: 2px;
-    width: 140px;
   }
 
   .upload-document-upload {
-    width: 220px;
   }
 
   .upload-document-save {
     padding-top: 2px;
-    width: 70px;
     text-align: right;
   }
 
@@ -161,11 +212,6 @@
 #information {
   width: 892px;
   margin: 0 auto;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-  background-color: #EEEEEE;
-  border: 1px solid #DDDDDD;
-  color: #333333;
   margin-bottom: 5px;
   font-family: Trebuchet MS,Tahoma,Verdana,Arial,sans-serif;
   font-size: 14px;
@@ -175,19 +221,17 @@
     background-color: #FFF;
     padding: 2px;
     margin: 2px auto;
-    -moz-border-radius: 4px;
-    -webkit-border-radius: 4px;
   }
 
   table {
     width: 100%;
     
     th, td {
-      text-align: left;
-      background-color: #EEE;
+      text-align: center;
+      background-color: #d7d7d7;
+      font-weight: normal;
+      border: 1px solid white;
       padding: 8px;
-      -moz-border-radius: 4px;
-      -webkit-border-radius: 4px;   
     }
   }
 }

@@ -1,3 +1,23 @@
+/* Copyright © 2011 MUSC Foundation for Research Development*/
+/* All rights reserved.*/
+
+/* Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:*/
+
+/* 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.*/
+
+/* 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following*/
+/* disclaimer in the documentation and/or other materials provided with the distribution.*/
+
+/* 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products*/
+/* derived from this software without specific prior written permission.*/
+
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,*/
+/* BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT*/
+/* SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL*/
+/* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS*/
+/* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
+/* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
+
 html, body {
   height: 100%;
 }
@@ -342,7 +362,7 @@ h3.needed_info {
 }
 
 .submit-request-button,
-.catalog-button a,
+a.catalog-button,
 .document_upload_button a {
   color: #fff;
   text-decoration: none;
@@ -1686,11 +1706,6 @@ table.document-edit-table tr td, th {
   text-align: right;
 }
 
-.document-delete {
-  width: 30px;
-  text-align: right;
-}
-
 .upload-document-type {
   padding-top: 2px;
   width: 140px;
@@ -2643,7 +2658,7 @@ table.service_calendar tbody td.visit {
   width: 959px;
 }
 
-.steps_table tr td { 
+.steps_table tr td {
   color: #FFFFFF;
   font-size: 13px;
   padding: 5px;
@@ -2681,6 +2696,11 @@ table.service_calendar tbody td.visit {
 .devise_submit_button, .devise_cancel_button {
   width: 200px;
   margin: 5px auto;
+  display: block;
+}
+
+input.devise_submit_button {
+  border: none;
 }
 
 .devise_cancel_button, .devise_option_button {
@@ -2690,6 +2710,7 @@ table.service_calendar tbody td.visit {
 .devise_option_button {
   width: 200px;
   margin: 0 auto;
+  display: block;
 }
 
 .sign_in_selection {

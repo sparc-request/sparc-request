@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 class ApplicationController < ActionController::Base
   protect_from_forgery
   helper :all
@@ -21,18 +41,27 @@ class ApplicationController < ActionController::Base
       startMin = curTime
       startMax  = (curTime + 1.month)
 
-      cal = Google::Calendar.new(:username => GOOGLE_USERNAME,
-                                 :password => GOOGLE_PASSWORD)
-      events_list = cal.find_events_in_range(startMin, startMax)
-      @events = []
+      cal = nil
       begin
-        events_list.sort_by! { |event| event.start_time }
-        events_list.each do |event|
-          @events << create_calendar_event(event)
-        end
-      rescue
-        if events_list
-          @events << create_calendar_event(events_list)
+        cal = Google::Calendar.new(:username => GOOGLE_USERNAME,
+                                   :password => GOOGLE_PASSWORD)
+      rescue Exception => e
+        ExceptionNotifier::Notifier.exception_notification(request.env, e).deliver unless request.remote_ip == '128.23.150.107' # this is an ignored IP address, MUSC security causes issues when they pressure test,  this should be extracted/configurable
+      end
+
+      @events = []
+
+      unless cal.nil?
+        events_list = cal.find_events_in_range(startMin, startMax)
+        begin
+          events_list.sort_by! { |event| event.start_time }
+          events_list.each do |event|
+            @events << create_calendar_event(event)
+          end
+        rescue
+          if events_list
+            @events << create_calendar_event(events_list)
+          end
         end
       end
     end

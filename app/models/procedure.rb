@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 class Procedure < ActiveRecord::Base
   audited
 
@@ -73,8 +93,14 @@ class Procedure < ActiveRecord::Base
     if self.service
       funding_source = self.appointment.calendar.subject.arm.protocol.funding_source_based_on_status #OHGOD
       organization = service.organization
-      pricing_map = service.effective_pricing_map_for_date
-      pricing_setup = organization.effective_pricing_setup_for_date
+      if self.appointment.completed_at?
+        pricing_map = service.effective_pricing_map_for_date(appointment.completed_at)
+        pricing_setup = organization.effective_pricing_setup_for_date(appointment.completed_at)
+      else
+        pricing_map = service.effective_pricing_map_for_date
+        pricing_setup = organization.effective_pricing_setup_for_date
+      end
+				
       rate_type = pricing_setup.rate_type(funding_source)
       if pricing_map.unit_factor > 1
         if self.unit_factor_cost
@@ -94,7 +120,7 @@ class Procedure < ActiveRecord::Base
           subtotals = self.visit.line_items_visit.per_subject_subtotals
           return Service.cents_to_dollars(subtotals[self.visit_id.to_s] / self.default_r_quantity)
         else
-          return (self.line_item.per_unit_cost(self.default_r_quantity) / 100).to_f
+          return (self.line_item.per_unit_cost(self.default_r_quantity, self.appointment.completed_at) / 100).to_f
         end
       end
     end
@@ -117,14 +143,20 @@ class Procedure < ActiveRecord::Base
     procedure = Procedure.includes(:appointment, :visit).find(self.id)
     if procedure.service
       return true
-    elsif procedure.appointment.visit_group_id.nil?
-      return true if self.completed
-    else
-      if (procedure.visit.research_billing_qty && procedure.visit.research_billing_qty > 0) or (procedure.visit.insurance_billing_qty && procedure.visit.insurance_billing_qty > 0)
-        return true
-      else
+    elsif procedure.visit
+      if procedure.line_item.service.is_one_time_fee?
         return false
+      elsif procedure.appointment.visit_group_id.nil?
+        return true if self.completed
+      else
+        if (procedure.visit.research_billing_qty && procedure.visit.research_billing_qty > 0) or (procedure.visit.insurance_billing_qty && procedure.visit.insurance_billing_qty > 0)
+          return true
+        else
+          return false
+        end
       end
+    else
+      return false
     end
   end
 

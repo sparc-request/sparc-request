@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 class Protocol < ActiveRecord::Base
   audited
 
@@ -158,6 +178,11 @@ class Protocol < ActiveRecord::Base
     "#{self.id} - #{self.short_title}"
   end
 
+  def epic_title
+    epic_title = "#{self.short_title} - #{self.title}"
+    epic_title.truncate(195)
+  end
+
   def display_funding_source_value
     if funding_status == "funded"
       if funding_source == "internal"
@@ -315,6 +340,30 @@ class Protocol < ActiveRecord::Base
         end
       end
     end
+  end
+
+  def direct_cost_total service_request
+    total = 0
+    self.service_requests.each do |sr|
+      next if ['first_draft', 'draft'].include?(sr.status) && sr != service_request
+      total += sr.direct_cost_total
+    end
+    return total
+  end
+
+  def indirect_cost_total service_request
+    total = 0
+    if USE_INDIRECT_COST
+      self.service_requests.each do |sr|
+        next if ['first_draft', 'draft'].include?(sr.status) && sr != service_request
+        total += sr.indirect_cost_total
+      end
+    end
+    return total
+  end
+
+  def grand_total service_request
+    return direct_cost_total(service_request) + indirect_cost_total(service_request)
   end
 
 end

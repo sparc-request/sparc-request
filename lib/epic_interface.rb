@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 require 'savon'
 require 'securerandom'
 require 'builder'
@@ -146,12 +166,12 @@ class EpicInterface
   def full_study_message(study)
     xml = Builder::XmlMarkup.new(indent: 2)
 
-    xml.query(root: @study_root, extension: study.short_title)
+    xml.query(root: @study_root, extension: "STUDY#{study.id}")
 
     xml.protocolDef {
       xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
-        xml.id(root: @study_root, extension: study.short_title)
-        xml.title study.title
+        xml.id(root: @study_root, extension: "STUDY#{study.id}")
+        xml.title study.epic_title
         xml.text study.brief_description
 
         emit_project_roles(xml, study)
@@ -170,12 +190,12 @@ class EpicInterface
   def study_creation_message(study)
     xml = Builder::XmlMarkup.new(indent: 2)
 
-    xml.query(root: @study_root, extension: study.short_title)
+    xml.query(root: @study_root, extension: "STUDY#{study.id}")
 
     xml.protocolDef {
       xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
-        xml.id(root: @study_root, extension: study.short_title)
-        xml.title study.title
+        xml.id(root: @study_root, extension: "STUDY#{study.id}")
+        xml.title study.epic_title
         xml.text study.brief_description
 
         emit_project_roles(xml, study)
@@ -244,12 +264,12 @@ class EpicInterface
   def study_calendar_definition_message(study)
     xml = Builder::XmlMarkup.new(indent: 2)
 
-    xml.query(root: @study_root, extension: study.short_title)
+    xml.query(root: @study_root, extension: "STUDY#{study.id}")
 
     xml.protocolDef {
       xml.plannedStudy(xmlns: 'urn:hl7-org:v3', classCode: 'CLNTRL', moodCode: 'DEF') {
-        xml.id(root: @study_root, extension: study.short_title)
-        xml.title study.title
+        xml.id(root: @study_root, extension: "STUDY#{study.id}")
+        xml.title study.epic_title
         xml.text study.brief_description
 
         # component1 - One calendar event definition out of a sequence.
@@ -343,7 +363,7 @@ class EpicInterface
   def emit_procedures(xml, study, arm, visit_group, cycle)
     arm.line_items.each do |line_item|
       # We want to skip line items contained in a service request that is still in first draft
-      next if ['first_draft', 'draft'].include?(line_item.service_request.status)
+      next if ['first_draft', 'draft'].include?(line_item.sub_service_request.status)
       service = line_item.service
       next unless service.send_to_epic
 

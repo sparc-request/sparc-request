@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 module CapybaraProper
 
     #******************************************************************#
@@ -151,9 +171,14 @@ module CapybaraProper
             addServiceButton.click
             wait_for_javascript_to_finish
         else #else use the search box to find the service then add it
-            wait_until {first(:xpath, "//input[@id='service_query']")}.set(serviceName)
             wait_for_javascript_to_finish
-            wait_until {first(:xpath, "//li[@class='search_result']/button[@class='add_service']")}.click
+            find(:xpath, "//input[@id='service_query']").set(serviceName)
+            sleep 2
+            response = first(:xpath, "//li[@class='search_result']/button[@class='add_service']")
+            if response.nil? or not(response.visible?)
+                sleep 2
+                first(:xpath, "//li[@class='search_result']/button[@class='add_service']").click
+            else response.click end
             wait_for_javascript_to_finish
         end
     end
@@ -232,7 +257,8 @@ module CapybaraProper
     def checkLineItemsNumber(numberExpected)
         #asserts that the line item count
         #shoud equal the number expected.
-        wait_until {find(:xpath, "//input[@id='line_item_count']")}['value'].should eq(numberExpected)
+        # wait_until {first(:xpath, "//input[@id='line_item_count']")}['value'].should eq(numberExpected)
+        assert_selector(:xpath, "//div[@class='line-items']/div[@class]", :count => numberExpected)
     end 
 
 
@@ -244,7 +270,7 @@ module CapybaraProper
 
         services.each do |s| #iterates over services
             navigateCatalog(s.instit,s.prov,s.prog,s.core) #navigates to each service
-            addService s.name #adds service
+            addService s.short #adds service
         end
         checkLineItemsNumber "#{services.length}" #check if correct number of services displayed
     end  
@@ -252,11 +278,13 @@ module CapybaraProper
 
     def removeAllServices
         #finds all line item remove buttons and clicks them
-        servicesLeft = find(:xpath, "//input[@id='line_item_count']")['value']
+        servicesLeft = all(:xpath, "//div[@class='line-items']/div[@class]").count
+        # servicesLeft = find(:xpath, "//input[@id='line_item_count']")['value']
         while servicesLeft.to_i > 0 do
             first(:xpath, "//div[@class='line_item']//a[@class='remove-button']").click
             wait_for_javascript_to_finish
-            servicesLeft = find(:xpath, "//input[@id='line_item_count']")['value']
+            servicesLeft = all(:xpath, "//div[@class='line-items']/div[@class]").count
+            # servicesLeft = find(:xpath, "//input[@id='line_item_count']")['value']
         end
         checkLineItemsNumber '0'
     end
@@ -265,6 +293,12 @@ module CapybaraProper
         #expects a string describing the field the error is expected to be on
         #to be used in study creation pages that have the errorExplanation div
         have_xpath("//div[@id='errorExplanation']/ul/li[contains(text(),'#{field}')]")
+    end
+
+    def have_error_on_user_field(field)
+        #expects a string describing the field the error is expected to be on
+        #to be used in study creation pages that have the errorExplanation div
+        have_xpath("//div[@id='error_explanation']/ul/li[contains(text(),'#{field}')]")
     end
 
     def removeUser(user)
@@ -298,29 +332,33 @@ module CapybaraProper
     end
 
     def testVisitDaysValidation(armName,numVisits)
+        #expects browser to be on step 2b visit calendar for first time with no visit info filled in.
         saveAndContinue
         page.should have_error_on "study day for each visit" #Please specify a study day for each visit.
         if numVisits <3 then return end #if there are less than 3 visits, then ascending visit days validation can not be tested: quit here.
         
         table = armTable(armName)
+        setVisitDays(armName, numVisits)
         #set visit days in descending order, should cause immediate error response
         table.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='0']").set(2)
         table.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='1']").set(1)
-        first(:xpath, "//div[@class='welcome']").click #allows for refocus by clicking out of the input box
-        page.driver.browser.switch_to.alert.accept #accepts the error dialog box. will cause test to fail if no dialog appears.
+        saveAndContinue
+        page.should have_error_on "Please make sure study days are in sequential order" 
+        # first(:xpath, "//div[@class='welcome']").click #allows for refocus by clicking out of the input box
+        # page.driver.browser.switch_to.alert.accept #accepts the error dialog box. will cause test to fail if no dialog appears.
         wait_for_javascript_to_finish
 
         table.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='1']").set(3)
         moveVisitDayTo(armName,1,3)
-        table.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='0']").set("")
-        table.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='1']").set("")
+        #clear days
+        table.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='0']").set("1")
+        table.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='1']").set("2")
     end
 
     def setVisitDays(armName,numVisits)
         #expects string of arm's name,
         #and total number of visits on arm as input
         #sets all visit days by incrementing from 1 up
-        testVisitDaysValidation(armName,numVisits)
         currentArmTable = armTable(armName)
         (0..(numVisits-1)).each do |i|
             if i>0 and i%5==0 then #if all visit days are set in current view and 5 more need to be moved into view
@@ -328,6 +366,11 @@ module CapybaraProper
                 wait_for_javascript_to_finish
             end
             currentArmTable.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='#{i}']").set(i+1)
+            wait_for_javascript_to_finish
+        end
+        #bring first visit set back into view
+        while !(currentArmTable.first(:xpath, "./thead/tr/th/a/span[@class='ui-button-icon-primary ui-icon ui-icon-circle-arrow-w']", :visible => true).nil?)
+            currentArmTable.first(:xpath, "./thead/tr/th/a/span[@class='ui-button-icon-primary ui-icon ui-icon-circle-arrow-w']", :visible => true).click
             wait_for_javascript_to_finish
         end
     end
@@ -615,13 +658,71 @@ module CapybaraProper
         clickContinueButton
     end
 
+    def createNewProject(request)
+        #expects instance of ServiceRequestForComparison as input 
+        project = request.study
+
+        find('input#protocol_Research_Project').click
+        wait_for_javascript_to_finish
+
+        find('a.new-project').click
+        wait_for_javascript_to_finish
+
+        clickContinueButton #click continue with no form info
+
+        #should display error div with 3 errors
+        page.should have_error_on "Short title"
+        page.should have_error_on "Title"
+        page.should have_error_on "Funding status"
+
+        fill_in "project_short_title", :with => 'Carl' #fill in short title
+        clickContinueButton #click continue without Title, Funding Status, Sponsor Name
+
+        #should not display error div for field with info
+        page.should_not have_error_on "Short title"
+        #should display error div with 2 errors
+        page.should have_error_on "Title"
+        page.should have_error_on "Funding status"
+
+        fill_in "project_title", :with => project.title+'2' #fill in title
+        clickContinueButton #click continue without Funding Status, Sponsor Name
+
+        #should not display error div for filled in info
+        page.should_not have_error_on "Short title"
+        page.should_not have_error_on "Title"
+        #should display error div with 1 error for missing info
+        page.should have_error_on "Funding status"
+
+        select project.fundingStatus, :from => "project_funding_status" #select funding status
+        clickContinueButton #click continue without Funding Source  
+
+        #should not display error divs for filled in info
+        page.should_not have_error_on "Short title"
+        page.should_not have_error_on "Title"
+        page.should_not have_error_on "Funding status"
+        #should display funding source missing error
+        page.should have_error_on "Funding source"
+         
+        select project.fundingSource, :from => "project_funding_source" #select funding source
+        clickContinueButton
+        selectStudyUsers
+        find('input#protocol_Research_Study').click
+        wait_for_javascript_to_finish
+    end
+
+    def editEpicUserAccess
+        find(:xpath, "//a[@class='epic_access_edit']").click
+        wait_for_javascript_to_finish
+    end
 
     def selectStudyUsers
         clickContinueButton #click continue with no users added
+        wait_for_javascript_to_finish
         page.should have_error_on "must add yourself" #You must add yourself as an authorized user
         page.should have_error_on "Primary PI" #You must add a Primary PI to the study/project
 
         click_button "Add Authorized User" #add the user without a role
+        wait_for_javascript_to_finish
         #should have 'Role can't be blank' error
         page.should have_xpath("//div[@id='user_detail_errors']/ul/li[contains(text(),'Role can')]")
         page.should have_xpath("//div[@class='field_with_errors']/label[text()='Role:*']")
@@ -632,10 +733,16 @@ module CapybaraProper
 
         fill_in "user_search_term", :with => "bjk7"
         wait_for_javascript_to_finish
-        page.find('a', :text => "Brian Kelsey (kelsey@musc.edu)", :visible => true).click()
+        sleep 4
+        response = find('a', :text => "Brian Kelsey (kelsey@musc.edu)")
+        if response.nil? or not(response.visible?)
+            wait_for_javascript_to_finish
+            find('a', :text => "Brian Kelsey (kelsey@musc.edu)").click
+        else response.click end
         wait_for_javascript_to_finish
 
         click_button "Add Authorized User" #add the user without a role
+        wait_for_javascript_to_finish
         #should have 'Role can't be blank' error
         page.should have_xpath("//div[@id='user_detail_errors']/ul/li[contains(text(),'Role can')]")
         page.should have_xpath("//div[@class='field_with_errors']/label[text()='Role:*']")
@@ -703,6 +810,7 @@ module CapybaraProper
         #tests the template tab of the service calendar
         #checks the totals of
         checkTotals(request)
+        testVisitDaysValidation(request.arms[0].name,request.arms[0].visits)
         request.arms.each do |arm|
             setVisitDays(arm.name,arm.visits)
             markServiceVisit(arm,arm.services[0].name,2)
@@ -757,6 +865,134 @@ module CapybaraProper
         checkTotals(request)
     end
 
+    def askAQuestionTest
+        #tests the "Ask A Question" button on the sparc proper catalog page
+        def assertFormVisible
+            assert_selector('#ask-a-question-form')
+        end
+        find('.ask-a-question-button').click
+        wait_for_javascript_to_finish
+        assert_selector('#ask-a-question-form', :visible => true)
+        find('#submit_question').click
+        wait_for_javascript_to_finish
+        assert_selector('#ask-a-question-form', :visible => true)
+        page.should have_content("Valid email address required.")
+
+        find('#quick_question_email').set('Pappy')
+        find('#submit_question').click
+        wait_for_javascript_to_finish
+        assert_selector('#ask-a-question-form', :visible => true)
+        page.should have_content("Valid email address required.")
+
+        find('#quick_question_email').set('juan@gmail.com')
+        find('#submit_question').click
+        wait_for_javascript_to_finish
+        assert_no_selector('#ask-a-question-form', :visible => true)
+    end
+
+    def feedbackTest
+        #tests the "Feedback" button on the sparc proper catalog page
+        find('.feedback-button').click
+        wait_for_javascript_to_finish
+        assert_selector('#feedback-form', :visible => true)
+        find('#submit_feedback').click
+        wait_for_javascript_to_finish
+        find('#error-text').text.should eq("Message can't be blank")
+
+        within("#feedback-form") do
+          fill_in 'feedback_message', :with => "Testing 123"
+          wait_for_javascript_to_finish
+        end
+        find('#submit_feedback').click
+        wait_for_javascript_to_finish
+        assert_no_selector('#feedback-form', :visible => true)
+    end
+
+    def helpTest
+        #tests the "Help" button on the sparc proper catalog page
+        find('.faq-button').click
+        wait_for_javascript_to_finish
+        assert_selector(:xpath, "//span[@class='help_question']", :visible => true)
+        first(:xpath, "//span[@class='help_question']").click
+        wait_for_javascript_to_finish
+        assert_selector(:xpath, "//span[@class='help_answer']", :visible => true)
+        find('.qtip-button').click
+        wait_for_javascript_to_finish
+    end
+
+    def login(un,pwd)
+        #logs the user in the custom username and password.
+        currentUrl = page.current_url
+        visit "/identities/sign_in"
+        wait_for_javascript_to_finish
+        loginDiv = first(:xpath,"//div[@id='login']")
+        if loginDiv.nil? then 
+            if not currentUrl==page.current_url then visit "#{currentUrl}" end
+            wait_for_javascript_to_finish
+            return #if the login dialog is not displayed quit here.
+        end 
+        click_link "Outside Users Click Here"
+        wait_for_javascript_to_finish
+        fill_in "identity_ldap_uid", :with => un
+        fill_in "identity_password", :with => pwd
+        first(:xpath, "//input[@type='submit' and @value='Sign In']").click
+        wait_for_javascript_to_finish
+    end
+
+    def newUserTest
+        #tests the "Create an Account" button on the sparc proper catalog page
+        click_link "logout"
+        wait_for_javascript_to_finish
+        find(:xpath, "//div[@class='create_new_account']/a").click
+        wait_for_javascript_to_finish
+        currentBox = find(:xpath, "//div[contains(@class,'ui-dialog') and contains(@style,'display: block;') and not(@id)]")
+        within currentBox do 
+            find(:xpath, ".//input[@value='Create New User']").click
+            wait_for_javascript_to_finish
+            page.should have_error_on_user_field "Password"
+            page.should have_error_on_user_field "Ldap uid"
+            page.should have_error_on_user_field "First name"
+            page.should have_error_on_user_field "Last name"
+            sleep 2
+
+            fill_in 'identity_last_name', :with => 'Jingleheimerschmidt'
+            wait_for_javascript_to_finish
+            fill_in 'identity_first_name', :with => 'John'
+            wait_for_javascript_to_finish
+            fill_in 'identity_ldap_uid', :with => 'JJJ123'
+            wait_for_javascript_to_finish
+            fill_in 'identity_password', :with => 'Jacob'
+            wait_for_javascript_to_finish
+            find(:xpath, ".//input[@value='Create New User']").click
+            wait_for_javascript_to_finish
+            page.should have_error_on_user_field "confirmation"
+            page.should have_error_on_user_field "short"
+            wait_for_javascript_to_finish
+
+            fill_in 'identity_password', :with => 'Jacob1'
+            wait_for_javascript_to_finish
+            fill_in 'identity_password_confirmation', :with => 'Jacob1'
+            wait_for_javascript_to_finish
+            find(:xpath, ".//input[@value='Create New User']").click
+            wait_for_javascript_to_finish
+            wait_for_javascript_to_finish
+            page.should have_content "New account created"
+        end
+
+        click_link "Close Window"
+        wait_for_javascript_to_finish
+        login("jug2", "p4ssword")
+    end
+
+    def aboutSparcTest
+        #tests the "About SPARC Request" button on the sparc proper catalog page
+        find('a.about_sparc_request').click
+        wait_for_javascript_to_finish
+        page.should have_content "is a web-based research management system that provides a central portal"
+        find(:xpath, "//span[text()='About SPARC Request']/following-sibling::button[@title='close']").click
+        wait_for_javascript_to_finish
+    end
+
 
     ##################^^^^ NECESSARY COMPONENTS ^^^^####################
     #******************************************************************#
@@ -765,6 +1001,12 @@ module CapybaraProper
     def submitServiceRequestPage (request)
         #expects instance of ServiceRequestForComparison as input 
         submitExpectError #checks submit with no services error display
+
+        aboutSparcTest
+        askAQuestionTest
+        feedbackTest
+        helpTest
+        newUserTest
 
         services = request.services
         addAllServices(services)#adds all services in 'services' list
@@ -787,7 +1029,6 @@ module CapybaraProper
 
         find('.submit-request-button').click #submit request
         wait_for_javascript_to_finish
-        ServiceRequest.find(1).line_items.count.should eq(services.length) #Should have correct # of services
     end
 
     def selectStudyPage(request)
@@ -796,9 +1037,10 @@ module CapybaraProper
         page.should_not have_xpath("//div[@id='errorExplanation']")#should not have any errors displayed
         saveAndContinue #click continue without study/project selected
         page.should have_error_on "You must identify the service request with a study/project before continuing."
+        
+        createNewProject(request)
 
         createNewStudy(request)
-
         selectStudyUsers
 
         removeAllServices
@@ -839,17 +1081,17 @@ module CapybaraProper
 
     def documentsPage
         click_link "Add a New Document"
-        first(:xpath,"//input[@id='document']").set("/quick_happy_test_spec.rb")
+        file = Tempfile.new 'doc'
+        first(:xpath,"//input[@id='document']").set(file.path)
         select "Other", :from => "doc_type"
         first(:xpath,"//input[@id='process_ssr_organization_ids_']").click
         click_link "Upload"
         wait_for_javascript_to_finish
-        
         click_link "Edit"
         wait_for_javascript_to_finish
         click_link "Update"
         wait_for_javascript_to_finish
-
+        file.unlink
         saveAndContinue      
     end
 

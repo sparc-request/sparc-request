@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 # Place all the behaviors and hooks related to the matching controller here.
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
@@ -43,14 +63,14 @@ $(document).ready ->
         role = $(this).val()
         if role == 'pi' or role == 'business-grants-manager' or role == 'primary-pi'
           $('#project_role_project_rights_approve').attr('checked', true)
-          if role == 'pi' or role == 'primary-pi'
-            $('#project_role_project_rights_request').attr('disabled', true)
-            $('#project_role_project_rights_view').attr('disabled', true)
-            $('#project_role_project_rights_none').attr('disabled', true)
-          else
-            $('#project_role_project_rights_request').attr('disabled', false)
-            $('#project_role_project_rights_view').attr('disabled', false)
-            $('#project_role_project_rights_none').attr('disabled', false)
+        if role == 'pi' or role == 'primary-pi'
+          $('#project_role_project_rights_request').attr('disabled', true)
+          $('#project_role_project_rights_view').attr('disabled', true)
+          $('#project_role_project_rights_none').attr('disabled', true)
+        else
+          $('#project_role_project_rights_request').attr('disabled', false)
+          $('#project_role_project_rights_view').attr('disabled', false)
+          $('#project_role_project_rights_none').attr('disabled', false)
 
       )
 
@@ -92,7 +112,7 @@ $(document).ready ->
           pi_count = parseInt($("#pi_count_#{protocol_id}").val(), 10)
           confirm_message = if current_user_id == user_id then 'This action will remove you from the project. Are you sure?' else 'Are you sure?'
           alert_message1 = 'Projects require a PI. Please add a new one before continuing.'
-          cannot_remove_pi = (current_user_role == 'pi' or user_role == 'pi') and pi_count == 1
+          cannot_remove_pi = (current_user_role == 'primary-pi' or user_role == 'primary-pi') and pi_count == 1
 
           if cannot_remove_pi
             alert(alert_message1)
@@ -165,11 +185,11 @@ $(document).ready ->
 
     create_edit_associated_user_dialog: () ->
       $('.edit-associated-user-dialog').dialog({
+          dialogClass: "edit_user_dialog_box"
           autoOpen: false
           dialogClass: "edit_user_dialog_box"
           title: 'Edit an Authorized User'
           width: 750
-          height: 485
           modal: true
           resizable: false
           buttons: [
@@ -178,6 +198,7 @@ $(document).ready ->
               text: 'Submit'
               click: ->
                 form = $(".edit-associated-user-dialog").children('form')
+                $('#edit_authorized_user_submit_button').attr('disabled', true)
                 form.submit()
             },
             {
@@ -189,6 +210,7 @@ $(document).ready ->
             }
           ]
           open: ->
+            $('#edit_authorized_user_submit_button').attr('disabled', false)
             $('#associated_user_role').change()
       })
 

@@ -520,13 +520,18 @@ class ServiceRequestsController < ApplicationController
     column_id = params[:column_id].to_i
     @arm = Arm.find params[:arm_id]
 
-    @arm.line_items_visits.each do |liv|
-      visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
-      visit.update_attributes(
-          quantity:              liv.line_item.service.displayed_pricing_map.unit_minimum,
-          research_billing_qty:  liv.line_item.service.displayed_pricing_map.unit_minimum,
-          insurance_billing_qty: 0,
-          effort_billing_qty:    0)
+    @service_request.service_list(false).each do |key, value|
+      next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
+
+      @arm.line_items_visits.each do |liv|
+        next unless value[:line_items].include?(liv.line_item)
+        visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
+        visit.update_attributes(
+            quantity:              liv.line_item.service.displayed_pricing_map.unit_minimum,
+            research_billing_qty:  liv.line_item.service.displayed_pricing_map.unit_minimum,
+            insurance_billing_qty: 0,
+            effort_billing_qty:    0)
+      end
     end
     
     render :partial => 'update_service_calendar'
@@ -536,11 +541,15 @@ class ServiceRequestsController < ApplicationController
     column_id = params[:column_id].to_i
     @arm = Arm.find params[:arm_id]
 
-    @arm.line_items_visits.each do |liv|
-      visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
-      visit.update_attributes({:quantity => 0, :research_billing_qty => 0, :insurance_billing_qty => 0, :effort_billing_qty => 0})
+    @service_request.service_list(false).each do |key, value|
+      next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
+
+      @arm.line_items_visits.each do |liv|
+        next unless value[:line_items].include?(liv.line_item)
+        visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
+        visit.update_attributes({:quantity => 0, :research_billing_qty => 0, :insurance_billing_qty => 0, :effort_billing_qty => 0})
+      end
     end
-    
     render :partial => 'update_service_calendar'
   end
 

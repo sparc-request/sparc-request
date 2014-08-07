@@ -18,13 +18,13 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
--if @merged
+- if @merged
   %tr.totals_section.grand-totals{:class => cycle('odd', '', :name => 'otfs')}
     %td{:colspan => 3}= t(:calendar_page)[:labels][:total_costs_other]
     %td{:colspan => @portal ? 6 : 9}
     %td.otf_total_direct_cost= display_protocol_total_otfs @protocol, current_request, @portal
 
--elsif @review
+- elsif @review
   %tr.section_header
     %tr.totals_section
       %td{:colspan => 7}
@@ -42,7 +42,7 @@
       %td.total_cell= t(:calendar_page)[:labels][:grand_total]
       %td.total_cell{:id => 'grand_total'}= display_grand_total @service_request, @line_items
 
--else
+- else
   %tr.totals_section.begin_totals{:class => cycle('odd', '', :name => 'otfs')}
     %td{:colspan => 5}= t(:calendar_page)[:labels][:total_direct_other]
     %td{:colspan => 7}

@@ -20,24 +20,21 @@
 %tr.table_header
   %th.services_header{:rowspan => 2}= t(:calendar_page)[:headers][:services]
 
-  -if @review
+  - if @review
     %th.your_cost_header{:rowspan => 2}= t(:calendar_page)[:headers][:your_cost]
     %th.number_of_subjects_header{:rowspan => 2}= t(:calendar_page)[:headers][:subjects]
     %th{:colspan => 5, :height => 40, :width => 375}
-      = generate_review_visit_navigation arm, @service_request, @pages, tab, portal if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
+      = generate_review_visit_navigation arm, @service_request, @pages, tab, portal 
     %th{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_patient]
     %th.total_per_study{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_study]
 
     %tr.table_header
-      - if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?) 
-        = generate_visit_header_row arm, @service_request, @pages[arm.id].to_i
-      - else
-        %th{:colspan => 6} &nbsp;
+      = generate_visit_header_row arm, @service_request, @pages[arm.id].to_i
 
-  -elsif @merged
-    -if @portal
+  - elsif @merged
+    - if @portal
       %th.your_cost_header{:rowspan => 2}= t(:calendar_page)[:headers][:your_cost]
-    -else
+    - else
       %th.unit_costs_header{:colspan => 2}= t(:calendar_page)[:headers][:unit_costs]
     %th.qty_type_header{:rowspan => 2}= t(:calendar_page)[:headers][:clinical_qty]
     %th.number_of_subjects_header{:rowspan => 2}= t(:calendar_page)[:headers][:subjects]
@@ -47,34 +44,28 @@
     %th.total_per_study{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_study]
 
     %tr.table_header
-      -unless @portal
+      - unless @portal
         %th.service_rate_header= t(:calendar_page)[:headers][:service_rate]
         %th.your_cost_header= t(:calendar_page)[:headers][:your_cost]
-      - if (@sub_service_request.nil? ? service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?) 
-        = generate_merged_visit_header_row(arm, @service_request, @pages[arm.id].to_i)
-      - else
-        %th{:colspan => @portal ? 6 : 5} &nbsp;
+      = generate_merged_visit_header_row(arm, @service_request, @pages[arm.id].to_i)
 
-  -else
+  - else
     %th.unit_costs_header{:colspan => 2}= t(:calendar_page)[:headers][:unit_costs]
-    -unless @portal
+    - unless @portal
       %th.qty_type_header{:rowspan => 2}= t(:calendar_page)[:headers][:clinical_qty]
     %th.number_of_subjects_header{:rowspan => 2}= t(:calendar_page)[:headers][:subjects]
     %th
     %th{:colspan => 5, :height => 40, :width => 375}
-      = generate_visit_navigation arm, service_request, @pages, @tab, @portal if (@sub_service_request.nil? ? service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
+      = generate_visit_navigation arm, service_request, @pages, @tab, @portal
     %th{:colspan => 2}= image_tag 'spinner.gif', :class => 'service_calendar_spinner'
 
     %tr.table_header
       %th.service_rate_header= t(:calendar_page)[:headers][:service_rate]
       %th.your_cost_header= t(:calendar_page)[:headers][:your_cost]
       %th &nbsp;
-      - if (@sub_service_request.nil? ? service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?) 
-        = generate_visit_header_row arm, service_request, @pages[arm.id].to_i, @portal
-      - else
-        %th{:colspan => 5} &nbsp;
-      -if @portal
+      = generate_visit_header_row arm, service_request, @pages[arm.id].to_i, @portal
+      - if @portal
         %th &nbsp;
-      -else
+      - else
         %th= t(:calendar_page)[:headers][:total_per_patient]
         %th.total_per_study= t(:calendar_page)[:headers][:total_per_study]

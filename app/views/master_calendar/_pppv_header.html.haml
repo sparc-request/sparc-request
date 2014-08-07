@@ -24,7 +24,7 @@
     %th.your_cost_header{:rowspan => 2}= t(:calendar_page)[:headers][:your_cost]
     %th.number_of_subjects_header{:rowspan => 2}= t(:calendar_page)[:headers][:subjects]
     %th{:colspan => 5, :height => 40, :width => 375}
-      = generate_review_visit_navigation arm, @service_request, @pages, tab, portal 
+      = generate_visit_navigation arm, @service_request, @pages, tab, portal 
     %th{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_patient]
     %th.total_per_study{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_study]
 
@@ -39,7 +39,7 @@
     %th.qty_type_header{:rowspan => 2}= t(:calendar_page)[:headers][:clinical_qty]
     %th.number_of_subjects_header{:rowspan => 2}= t(:calendar_page)[:headers][:subjects]
     %th{:colspan => 5, :height => 40, :width => 375}
-      = generate_merged_visit_navigation arm, @service_request, @pages, @tab, @portal
+      = generate_visit_navigation arm, @service_request, @pages, @tab, @portal
     %th{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_patient]
     %th.total_per_study{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_study]
 
@@ -47,7 +47,7 @@
       - unless @portal
         %th.service_rate_header= t(:calendar_page)[:headers][:service_rate]
         %th.your_cost_header= t(:calendar_page)[:headers][:your_cost]
-      = generate_merged_visit_header_row(arm, @service_request, @pages[arm.id].to_i)
+      = generate_visit_header_row(arm, @service_request, @pages[arm.id].to_i)
 
   - else
     %th.unit_costs_header{:colspan => 2}= t(:calendar_page)[:headers][:unit_costs]

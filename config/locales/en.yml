@@ -572,18 +572,6 @@ en:
       role: "Role:"
       proxy_rights: "Proxy Rights:"
     notes_header: "Service Request Notes"
-    calendar:
-      headers:
-        services: "Services"
-        cost: "Your Cost"
-        subjects: "# Subjects"
-        total: "Service Total"
-        total_per_patient: "Total Per Patient"
-        total_per_study: "Total Per Study"
-      totals:
-        direct_cost: "Total Direct Cost"
-        indirect_cost: "Total Indirect Costs"
-        grand: "Grand Total:"
 
   # Service Request Confirmation Page and Obtain Research Pricing Page
   sr_confirmation:

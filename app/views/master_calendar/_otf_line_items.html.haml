@@ -110,7 +110,7 @@
           %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-line_item_id' => line_item.id, :class => 'cwf_delete_data')
 
   -else
-    %th{:colspan => (@study_tracker) ? 13 : 14}
+    %th{:colspan => 14}
       = t(:calendar_page)[:headers][:other_services]
 
       #nan_error{:style => 'display:none;'}
@@ -173,5 +173,3 @@
                 %td= line_item.service.try(:displayed_pricing_map).try(:otf_unit_type).try(:humanize)
             %td{:colspan => 5}
             %td{:class => "otf_total total_#{line_item.id}"}= display_one_time_fee_direct_cost line_item
-            - if @study_tracker
-              %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-line_item_id' => line_item.id, :class => 'delete_data')

@@ -52,8 +52,9 @@
 
     - unless @merged
       %th= image_tag 'spinner.gif', :class => 'service_calendar_spinner'
-
+    -unless @portal
       %tr.table_header
         %th.service_rate_header= t(:calendar_page)[:headers][:service_rate]
         %th.your_cost_header= t(:calendar_page)[:headers][:your_cost]
-        %th.total_per_study{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_study]
+        -unless @merged
+          %th.total_per_study{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_study]

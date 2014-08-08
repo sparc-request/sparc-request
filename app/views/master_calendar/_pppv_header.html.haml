@@ -20,7 +20,8 @@
 %tr.table_header
   %th.services_header{:rowspan => 2}= t(:calendar_page)[:headers][:services]
 
-  - if @review
+
+  - if @review #display review calendar pppv header
     %th.your_cost_header{:rowspan => 2}= t(:calendar_page)[:headers][:your_cost]
     %th.number_of_subjects_header{:rowspan => 2}= t(:calendar_page)[:headers][:subjects]
     %th{:colspan => 5, :height => 40, :width => 375}
@@ -31,7 +32,8 @@
     %tr.table_header
       = generate_visit_header_row arm, @service_request, @pages[arm.id].to_i
 
-  - elsif @merged
+
+  - elsif @merged #display merged calendar pppv header
     - if @portal
       %th.your_cost_header{:rowspan => 2}= t(:calendar_page)[:headers][:your_cost]
     - else
@@ -49,7 +51,8 @@
         %th.your_cost_header= t(:calendar_page)[:headers][:your_cost]
       = generate_visit_header_row(arm, @service_request, @pages[arm.id].to_i)
 
-  - else
+
+  - else #display default calendar pppv header
     %th.unit_costs_header{:colspan => 2}= t(:calendar_page)[:headers][:unit_costs]
     - unless @portal
       %th.qty_type_header{:rowspan => 2}= t(:calendar_page)[:headers][:clinical_qty]

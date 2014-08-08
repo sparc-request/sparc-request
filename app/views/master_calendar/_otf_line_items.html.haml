@@ -19,7 +19,8 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 %tr.section_header
-  -if @merged
+
+  -if @merged #display merged calendar otf line items
     %th{:colspan => 13}= t(:calendar_page)[:headers][:other_services]
 
     - @protocol.service_requests.each do |service_request|
@@ -53,7 +54,8 @@
             - if @study_tracker
               %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-line_item_id' => line_item.id, :class => 'delete_data')
 
-  -elsif @review
+
+  -elsif @review #display review calendar otf line items
     - if (@sub_service_request.nil? ? @service_request.has_one_time_fee_services? : @sub_service_request.has_one_time_fee_services?)
       %tr.section_header
         %th{:colspan => @portal ? 11 : 12}= t(:calendar_page)[:headers][:other_services]
@@ -68,7 +70,8 @@
               %td{:colspan => 6}
               %td= display_one_time_fee_direct_cost line_item
 
-  -elsif @study_tracker
+
+  -elsif @study_tracker #display study tracker calendar otf line items
     %th{:colspan => 6}
       = t(:calendar_page)[:headers][:other_services]
 
@@ -109,7 +112,8 @@
             %td= line_item.service.try(:displayed_pricing_map).try(:otf_unit_type).try(:humanize)
           %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-line_item_id' => line_item.id, :class => 'cwf_delete_data')
 
-  -else
+
+  -else #display default calendar otf line items
     %th{:colspan => 14}
       = t(:calendar_page)[:headers][:other_services]
 

@@ -83,8 +83,12 @@ class Calendar < ActiveRecord::Base
     if self.appointments.empty? || (self.subject.arm.visit_groups.count > self.visit_group_count)
       subject = self.subject
       groups = VisitGroup.where(arm_id: subject.arm.id).includes(visits: { line_items_visit: :line_item })
-
-      self.populate(groups)
+      filtered_groups = groups.select{|x| x.appointments.empty?}
+      if filtered_groups == []
+        self.populate(groups)
+      else
+        self.populate(filtered_groups)
+      end
     end
   end 
 

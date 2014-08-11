@@ -214,11 +214,6 @@ class LineItem < ActiveRecord::Base
     else
       total = 0.0
       self.fulfillments.each do |fulfillment|
-        puts "+"*10
-        puts fulfillment.quantity
-        puts units_per_package
-        puts fulfillment.inspect
-        puts "+"*10
         total += (fulfillment.quantity / units_per_package).ceil * self.per_unit_cost
       end
       return total

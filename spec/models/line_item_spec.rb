@@ -244,27 +244,19 @@ describe "Line Item" do
 
       context "direct costs for one time fees with fulfillments" do
 
-        let!(:fulfillment1) { FactoryGirl.create(:fulfillment, :quantity => 5, :line_item_id => line_item.id) }
-        let!(:fulfillment2) { FactoryGirl.create(:fulfillment, :quantity => 5, :line_item_id => line_item.id) }
+        let!(:otf_line_item) { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service.id, sub_service_request_id: sub_service_request.id, quantity: 5, units_per_quantity: 1) }
+        let!(:fulfillment1)  { FactoryGirl.create(:fulfillment, :quantity => 5, :line_item_id => otf_line_item.id) }
+        let!(:fulfillment2)  { FactoryGirl.create(:fulfillment, :quantity => 5, :line_item_id => otf_line_item.id) }
 
         it "should correctly calculate a line item's cost that has multiple fulfillments" do
-          pricing_map.update_attributes(is_one_time_fee: true)
-
-          line_item.direct_cost_for_one_time_fee_with_fulfillments.should eq(10000.0)
+          otf_line_item.direct_cost_for_one_time_fee_with_fulfillments.should eq(10000.0)
         end
 
         it "should correctly calculate a line item's cost that has a unit factor greater than one" do
-          pricing_map.update_attributes(is_one_time_fee: true, unit_factor: 5)
-
-          line_item.direct_cost_for_one_time_fee_with_fulfillments.should eq(400.0)
-
-          fulfillment1.update_attributes(quantity: 6)
-          fulfillment2.update_attributes(quantity: 6)
-          puts "<"*10
-          puts fulfillment1.quantity
-          puts fulfillment1.inspect
-          puts fulfillment2.inspect
-          line_item.direct_cost_for_one_time_fee_with_fulfillments.should eq(800.0)
+          pricing_map.update_attributes(unit_factor: 5)
+          fulfillment3 = FactoryGirl.create(:fulfillment, quantity: 6, :line_item_id => otf_line_item.id)
+          
+          otf_line_item.direct_cost_for_one_time_fee_with_fulfillments.should eq(800.0)
         end
       end
     end

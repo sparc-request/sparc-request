@@ -73,8 +73,6 @@ describe "study level charges", js: true do
 
       otf = sub_service_request.one_time_fee_line_items.first
       fulfillment = otf.fulfillments.first
-      puts fulfillment.date
-      sleep 20
       fulfillment.date.should eq("Thu, 01 May 2014 00:00:00 EDT -04:00")
       fulfillment.quantity.should eq(1)
       fulfillment.quantity_type.should eq("Sample")

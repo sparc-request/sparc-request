@@ -897,7 +897,7 @@ en:
     edit_protocol_title: "Dashboard <span>|</span> Edit Protocol Information"
     id: "SRID"
     status: "Status"
-    pi: "Principle Investigator"
+    pi: "Principal Investigator"
     routing: "Routing"
     billing_business: "Billing/Business Manager"
     requester: "Requester"

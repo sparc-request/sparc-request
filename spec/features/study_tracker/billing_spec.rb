@@ -43,8 +43,8 @@ describe "payments", js: true do
 
     it "should create a new report" do
       sub_service_request.reports.size.should eq(0)
-      
-      click_link "Research project summary report"
+
+      click_link "Project summary report"
       wait_for_javascript_to_finish
 
       page.execute_script %Q{ $('a.ui-datepicker-prev').trigger("click") } # go back one month

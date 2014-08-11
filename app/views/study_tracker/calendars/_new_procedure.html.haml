@@ -37,4 +37,4 @@
       $().toastmessage('showNoticeToast', "This procedure is already scheduled for this appointment");
     })
 
-= hidden_field_tag "subject[calendar_attributes][appointments_attributes][#{appointment_index}][procedures_attributes][#{procedure_index}][id]"
+= hidden_field_tag "subject[calendar_attributes][appointments_attributes][#{appointment_index}][procedures_attributes][#{procedure_index - 1}][id]"

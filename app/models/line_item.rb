@@ -206,6 +206,25 @@ class LineItem < ActiveRecord::Base
     num * self.per_unit_cost
   end
 
+  # This determines the complete cost for a line item with fulfillments
+  # taking into account the possibility for a unit factor greater than 1
+  def direct_cost_for_one_time_fee_with_fulfillments
+    if self.fulfillments.empty?
+      return 0.0
+    else
+      total = 0.0
+      self.fulfillments.each do |fulfillment|
+        puts "+"*10
+        puts fulfillment.quantity
+        puts units_per_package
+        puts fulfillment.inspect
+        puts "+"*10
+        total += (fulfillment.quantity / units_per_package).ceil * self.per_unit_cost
+      end
+      return total
+    end
+  end
+
   # Determine the indirect cost rate related to a particular line item
   def indirect_cost_rate
     if USE_INDIRECT_COST

@@ -48,7 +48,7 @@ $(document).ready ->
   $('#procedures_added_popup').dialog
     # dialogClass: "no-close"
     autoOpen: true
-    # height: 80
+    # height: 80 
     width: 350
     modal: true
     resizable: false
@@ -379,17 +379,19 @@ $(document).ready ->
 
 
   #Research project summary report start and end date
-  $("#rps_start_date").datepicker(dateFormat: "yy-mm-dd")
-  $("#rps_end_date").datepicker(dateFormat: "yy-mm-dd")
-
+  $(document).on('click','#research_project_summary_report_in_cwf', ->
+    $('#project_summary_report').dialog('open')
+    $("#rps_start_date").datepicker(dateFormat: "yy-mm-dd")
+    $("#rps_end_date").datepicker(dateFormat: "yy-mm-dd")
+    )
   continue_with_research_project_summary_report = false
-  $("#research_project_summary_report_date_range").dialog(autoOpen: false, dialogClass: "report_date_range")
+  $("#research_project_summary_report_date_range").dialog(autoOpen: false, dialogClass: "report_date_range", modal: true)
   $(document).on 'click', '#research_project_summary_report_in_cwf', (event) ->
     if continue_with_research_project_summary_report == false
       $("#research_project_summary_report_date_range").dialog("open")
       event.preventDefault()
   
-  $(document).on 'click', '#rps_continue', ->
+  $(document).on 'click', '#rps_continue', -> 
     continue_with_research_project_summary_report = true
     start_date = $('#rps_start_date').val()
     end_date = $('#rps_end_date').val()

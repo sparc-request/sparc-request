@@ -235,6 +235,12 @@ $(document).ready ->
       dataType: 'html'
       contentType: 'application/json; charset=utf-8'
       success: (response_html) ->
+        ##This needs to be first, or it won't get overridden by the view javascript, which hides these if no procedure was added.
+        confirmExit = ->
+          "Changes to patient calendars need to be saved, click 'Stay on page' and save the form to save the calendar, or click 'Leave page' to leave the page and dismiss your changes."
+        window.onbeforeunload = confirmExit
+        
+        $('.save_alert').show()
         $('.new_procedure_wrapper:visible').replaceWith(response_html)
         $('tr.grand_total_row:visible').before("<tr class='new_procedure_wrapper' data-appointment_index='#{appointment_index}'></tr>")
         $('#processing_request').hide()

@@ -310,10 +310,10 @@ $(document).ready ->
 
   ####Validations for fulfillment fields within the Study Level Charges tab
   $(document).on('click', '.study_charges_submit', (event) ->
-    $('.fulfillment_quantity:visible, .fulfillment_date:visible, .fulfillment_unit_quantity:visible').each (index, field) ->
+    $('.fulfillment_quantity:visible, .fulfillment_date:visible').each (index, field) ->
       if ($(field).val() == "")
         event.preventDefault()
-        $().toastmessage('showWarningToast', 'Date, quantity, and unit quantity are required fields.')
+        $().toastmessage('showWarningToast', 'Date and quantity are required fields.')
         return false
   )
 

@@ -214,7 +214,11 @@ class LineItem < ActiveRecord::Base
     else
       total = 0.0
       self.fulfillments.each do |fulfillment|
-        total += (fulfillment.quantity / units_per_package).ceil * self.per_unit_cost
+        if fulfillment.unit_quantity?
+          total += ((fulfillment.quantity * fulfillment.unit_quantity) / units_per_package).ceil * self.per_unit_cost
+        else
+          total += (fulfillment.quantity / units_per_package).ceil * self.per_unit_cost
+        end
       end
       return total
     end

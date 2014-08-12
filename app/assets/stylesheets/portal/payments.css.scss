@@ -1,17 +1,36 @@
-form.edit_sub_service_request {
-  p{ margin-bottom: 1.5em; }
+// Copyright © 2011 MUSC Foundation for Research Development
+// All rights reserved.
+
+// Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+// 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+// 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+// disclaimer in the documentation and/or other materials provided with the distribution.
+
+// 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+// derived from this software without specific prior written permission.
+
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+// BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+// SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+// TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+#payments {
+  padding: 10px;
 }
 
 table#payments_list {
-  border-collapse:collapse;
   td,th {
     padding: 5px;
   }
 
   thead{
     th {
-      vertical-align: bottom; 
-      border: 1px solid #ccc
+      background-color: #0775B0;
+      color: white;
     }
   }
   tbody{ 
@@ -72,27 +91,36 @@ table#payments_list {
   display: block;
   height: 16px;
   width: 16px;
-  text-indent: -1000em;
-  overflow: hidden;
-  background: url(delete.png) no-repeat left top;
+  margin-top: 10px;
+  background: url(cancel.png) no-repeat;
 }
 
-.add_nested_fields.payments {
-    background: url(add.png) no-repeat left center;
-    padding-left: 17px;
-    color: #3d8834;
-
-    &:hover {
-      text-decoration: underline;
-    } 
+.buttons {
+  text-align: center;
 }
 
+.add_nested_fields.payments,
 .add_nested_fields.uploads {
-    background: url(attach.png) no-repeat left center;
-    padding-left: 17px;
-    white-space: nowrap;
-
-    &:hover {
-      text-decoration: underline;
-    } 
+  background: url("yellowbutton_smaller.png") no-repeat;
+  color: #FFFFFF;
+  display: block;
+  height: 27px;
+  padding: 8px 0 0;
+  text-align: center;
+  width: 149px;
+  margin: 10px auto;
 }
+
+a.add_nested_fields.uploads {
+  margin: 0px;
+}
+
+.buttons input#save_payments {
+  background: url("yellowbutton_smaller.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+  border: 0 none;
+  color: #FFFFFF;
+  cursor: pointer;
+  height: 35px;
+  width: 149px;
+}
+

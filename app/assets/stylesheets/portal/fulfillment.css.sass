@@ -1,3 +1,23 @@
+// Copyright © 2011 MUSC Foundation for Research Development
+// All rights reserved.
+
+// Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+// 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+// 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+// disclaimer in the documentation and/or other materials provided with the distribution.
+
+// 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+// derived from this software without specific prior written permission.
+
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+// BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+// SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+// INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+// TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 #timeline_table, #subsidy_table
   table
     width: 100%
@@ -153,10 +173,10 @@
 
 .saved_note
   background-color: #FFF
-  width: 892px
+  width: 870px
 
 .note_box
-  width: 892px 
+  width: 870px 
   height: 100px !important
 
 .note_date
@@ -169,7 +189,6 @@
   padding: 4px
 
 .note_body
-  width: 878px
   whitespace: none
   overflow: auto
   word-wrap: break-word
@@ -288,7 +307,7 @@
     float: right
     width: 380px
     padding: 20px
-    margin-bottom: 10px
+    margin: 0 10px 10px 0
     h3
       text-align: center
       margin-bottom: 10px
@@ -354,79 +373,92 @@
       h3
         margin-bottom: 10px
 
+#fulfillment_services
+  #per_patient_services
+    #service_calendar.ui-widget-content
+      border: 0 none
+      padding: 0px
+      .ui-tabs-panel
+        padding: 5px 0px
+        table
+          width: 905px
+    #per_patient_per_visit_table
+      table.arm_stuff
+        margin-bottom: 25px
+        th
+          font-size: 1.2em
+        td
+          select
+            border: 1px solid black
+            margin-right: 5px
+            padding: 3px
+            width: 140px
+            text-align: center
+  #one_time_fee_table
+    background-color: #f3f4f4
+    padding: 15px
+    input,
+    select
+      border: 1px solid black
+      padding: 3px
+    input.datepicker
+      background: url("yellow_callendar.png") no-repeat scroll 0 0 #FFFFFF
+    td.expand_li
+      div.ui-icon-triangle-1-e
+        background: url('yellow_arrow.png') no-repeat
+      div.ui-icon-triangle-1-s
+        background: url('yellow_arrow_down.png') no-repeat
+
+  #add_otf_service_container,
+  #add_one_time_fee_container,
+  #add_ppv_service_container,
+  #remove_ppv_service_container
+    margin: 10px 0px
+    select
+      border: 1px solid black
+      padding: 7px
+      width: 550px
+    button
+      background: url("yellowbutton_smaller.png") no-repeat
+      border: 0 none
+      color: #FFFFFF
+      cursor: pointer
+      height: 35px
+      width: 149px
+
+#study_tracker_tabs
   #fulfillment_services
-    #one_time_fee_table
-      background-color: #f3f4f4
-      padding: 15px
-
-    #per_patient_services
-      #service_calendar.ui-widget-content
-        border: 0 none
-        .ui-tabs-panel
-          padding: 5px 0 0
-          table
-            width: 894px
-      #per_patient_per_visit_table
-        table.arm_stuff
-          margin-bottom: 25px
-          th
-            font-size: 1.2em
-          td
-            select
-              border: 1px solid black
-              margin-right: 5px
-              padding: 3px
-              width: 140px
-              text-align: center
-    #one_time_fee_table
-      input,
-      select
-        border: 1px solid black
-        padding: 3px
-      input.datepicker
-        background: url("yellow_callendar.png") no-repeat scroll 0 0 #FFFFFF
-      td.expand_li
-        div.ui-icon-triangle-1-e
-          background: url('yellow_arrow.png') no-repeat
-        div.ui-icon-triangle-1-s
-          background: url('yellow_arrow_down.png') no-repeat
-
-    #add_otf_service_container,
+    #add_one_time_fee_container,
     #add_ppv_service_container,
     #remove_ppv_service_container
-      margin: 10px 0px
-      select
-        border: 1px solid black
-        padding: 7px
-        width: 550px
       button
-        background: url("yellowbutton_smaller.png") no-repeat
-        border: 0 none
-        color: #FFFFFF
-        cursor: pointer
-        height: 35px
-        width: 149px
+        background: url("yellowbutton_blank.png") no-repeat
+        width: 230px
+  #one_time_fees
+    table
+      width: 905px
 
-  #fulfillment_services, #fulfillment_info, #fulfillment_notes
-    background-color: #FFF
-    padding: 10px
-    margin: 10px auto
+#fulfillment_services, #fulfillment_info, #fulfillment_notes
+  background-color: #FFF
+  padding: 10px
+  margin: 10px auto
 
-  #visit_position, #delete_visit_position
-    width: 130px
+#visit_position, #delete_visit_position
+  width: 130px
 
-  .fulfillment_notifications
-    li:hover
-      background-color: #ccc !important
-      cursor: pointer
+.fulfillment_notifications
+  li:hover
+    background-color: #ccc !important
+    cursor: pointer
 
-  #ssr_notes
-    #notes_container
-      background-color: #f3f4f4
-      margin-bottom: 20px
-      padding: 15px
-      h3
-        margin-bottom: 10px
+#ssr_notes
+  padding: 10px
+  #notes_container
+    background-color: #f3f4f4
+    margin-bottom: 20px
+    padding: 15px
+    h3
+      margin-bottom: 10px
 
 .new_notification
   padding: 5px

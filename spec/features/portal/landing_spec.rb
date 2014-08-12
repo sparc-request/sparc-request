@@ -108,6 +108,13 @@ describe "landing page", :js => true do
       page.should_not have_text("Editing ID: #{service_request.protocol_id}")
     end
 
+    it 'should allow user to add additional services to request' do
+      find(".add-services-button").click
+      page.should have_text("Welcome to the SPARC Request Services Catalog")
+      page.should_not have_text("Editing ID: #{service_request.protocol_id}")
+      page.should_not have_css("div#services div.line_item")
+    end
+
     it 'should be able to search' do
       wait_for_javascript_to_finish
       find("h3#blue-provider-#{service_request.protocol_id} a").click

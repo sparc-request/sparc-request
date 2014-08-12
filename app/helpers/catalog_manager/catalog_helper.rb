@@ -44,6 +44,5 @@ module CatalogManager::CatalogHelper
   end
 end
 def display_name object
-  # (object.respond_to?(:cpt_code) && object.cpt_code) ? "#{object.name} (#{object.cpt_code})" : object.name
   object.respond_to?(:cpt_code) ? object.display_service_name : object.name
 end

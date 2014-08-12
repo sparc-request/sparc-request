@@ -1059,3 +1059,11 @@ en:
     proceed: "Proceed"
     create_report: "Create Report"
     return_to_admin_portal: "Return to Admin Portal"
+
+  # Javascript localizations
+  cart:
+    remove_request_confirm: "This action will delete this service request and you will be redirected to your user portal. Click OK to proceed."
+  feedback: 
+    message_error: "Message can't be blank" 
+  service_request_toasts:
+    success: "Service request has been saved, sucka!"

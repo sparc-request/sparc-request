@@ -289,7 +289,7 @@ $(document).ready ->
       dataType: "script"
       contentType: 'application/json; charset=utf-8'
       success: ->
-        $().toastmessage('showSuccessToast', "Service request has been saved.")
+        $().toastmessage('showSuccessToast', I18n["service_request_toasts"]["success"])
       error: (jqXHR, textStatus, errorThrown) ->
         if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
           errors = JSON.parse(jqXHR.responseText)

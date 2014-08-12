@@ -33,6 +33,8 @@
     /[if lt IE 8]
       = javascript_include_tag "ie7_warning"
     = csrf_meta_tags
+    :javascript
+      window.I18n = #{current_translations.to_json.html_safe};
   %body
     // add the service_request_id for easy access to it
     = hidden_field_tag(:service_request_id, @service_request.id) if @service_request

@@ -47,7 +47,7 @@ $(document).ready ->
     $("#services").append('<span class="spinner"><img src="/assets/spinner.gif"/></span>')
 
     if li_count == "1" and ssr_id != ''
-      if confirm("This action will delete this service request and you will be redirected to your user portal. Click OK to proceed.")
+      if confirm(I18n["cart"]["remove_request_confirm"])
         $(this).hide()
         removeService(sr_id, id, true)
     else

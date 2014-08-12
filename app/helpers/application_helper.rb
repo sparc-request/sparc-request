@@ -320,4 +320,9 @@ module ApplicationHelper
   def can_be_deleted? arm
     arm.subjects.empty? ? true : arm.subjects.none?{|x| x.has_appointments?}
   end
+
+  def current_translations
+    @translations ||= I18n.backend.send(:translations)
+    @translations[I18n.locale].with_indifferent_access
+  end
 end

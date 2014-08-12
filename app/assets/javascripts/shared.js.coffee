@@ -39,7 +39,7 @@ $(document).ready ->
        request.statusText != 'abort' &&
        settings.url != '/service_requests/feedback' &&
        !settings.error
-      alert("An error happened processing your request: " + settings.url)
+      alert(I18n["ajax_error"] + settings.url)
 
   $('.edit_project_role').live 'click', ->
     parent = $(this).attr('parent')

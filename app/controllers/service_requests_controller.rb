@@ -431,7 +431,7 @@ class ServiceRequestsController < ApplicationController
 
     @service_request.reload
 
-    @line_items = @service_request.line_items
+    @line_items = (@sub_service_request.nil? ? @service_request.line_items : @sub_service_request.line_items)
     render :formats => [:js]
   end
 

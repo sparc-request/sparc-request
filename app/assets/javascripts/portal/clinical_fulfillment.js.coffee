@@ -36,8 +36,12 @@ $(document).ready ->
   $('.procedure_box').on 'change', ->
     $(this).parent('td').siblings().children('.procedure_r_qty').addClass('changed_attr')
 
-  $("#save_appointments").click (event) ->
+  $(document).on('click', '#save_appointments', (event) ->
     $('.procedure_r_qty, .procedure_t_qty').not('.changed_attr').prop('disabled', true)
+    if $('.hasDatepicker:visible').val() == ""
+      event.preventDefault()
+      alert('Please select a date for this visit before saving.')
+  )
 
   # end submit data for changes/requirements
 

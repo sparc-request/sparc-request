@@ -431,7 +431,7 @@ class ServiceRequestsController < ApplicationController
 
     @service_request.reload
 
-    @line_items = @service_request.line_items
+    @line_items = (@sub_service_request.nil? ? @service_request.line_items : @sub_service_request.line_items)
     render :formats => [:js]
   end
 
@@ -472,78 +472,6 @@ class ServiceRequestsController < ApplicationController
         format.js { render :status => 403, :json => feedback.errors.to_a.map {|k,v| "#{k.humanize} #{v}".rstrip + '.'} }
       end
     end
-  end
-
-  def select_calendar_row
-    @line_items_visit = LineItemsVisit.find params[:line_items_visit_id]
-    @service = @line_items_visit.line_item.service
-    @sub_service_request = @line_items_visit.line_item.sub_service_request
-    @subsidy = @sub_service_request.try(:subsidy)
-    line_items = @sub_service_request.per_patient_per_visit_line_items
-    line_item = @line_items_visit.line_item
-    has_service_relation = line_item.has_service_relation
-    failed_visit_list = ''
-    @line_items_visit.visits.each do |visit|
-      visit.attributes = {
-          quantity:              @service.displayed_pricing_map.unit_minimum,
-          research_billing_qty:  @service.displayed_pricing_map.unit_minimum,
-          insurance_billing_qty: 0,
-          effort_billing_qty:    0 }
-
-      if has_service_relation
-        if line_item.check_service_relations(line_items, true, visit)
-          visit.save
-        else
-          failed_visit_list << "#{visit.visit_group.name}, "
-          visit.reload
-        end
-      else
-        visit.save
-      end
-    end
-
-    @errors = "The follow visits for #{@service.name} were not checked because they exceeded the linked quantity limit: #{failed_visit_list}" if failed_visit_list.empty? == false
-    
-    render :partial => 'update_service_calendar'
-  end
-  
-  def unselect_calendar_row
-    @line_items_visit = LineItemsVisit.find params[:line_items_visit_id]
-    @sub_service_request = @line_items_visit.line_item.sub_service_request
-    @subsidy = @sub_service_request.try(:subsidy)
-    @line_items_visit.visits.each do |visit|
-      visit.update_attributes({:quantity => 0, :research_billing_qty => 0, :insurance_billing_qty => 0, :effort_billing_qty => 0})
-    end
-
-    render :partial => 'update_service_calendar'
-  end
-
-  def select_calendar_column
-    column_id = params[:column_id].to_i
-    @arm = Arm.find params[:arm_id]
-
-    @arm.line_items_visits.each do |liv|
-      visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
-      visit.update_attributes(
-          quantity:              liv.line_item.service.displayed_pricing_map.unit_minimum,
-          research_billing_qty:  liv.line_item.service.displayed_pricing_map.unit_minimum,
-          insurance_billing_qty: 0,
-          effort_billing_qty:    0)
-    end
-    
-    render :partial => 'update_service_calendar'
-  end
-  
-  def unselect_calendar_column
-    column_id = params[:column_id].to_i
-    @arm = Arm.find params[:arm_id]
-
-    @arm.line_items_visits.each do |liv|
-      visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
-      visit.update_attributes({:quantity => 0, :research_billing_qty => 0, :insurance_billing_qty => 0, :effort_billing_qty => 0})
-    end
-    
-    render :partial => 'update_service_calendar'
   end
 
   private

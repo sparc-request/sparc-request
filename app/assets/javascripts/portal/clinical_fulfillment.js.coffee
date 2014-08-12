@@ -36,8 +36,12 @@ $(document).ready ->
   $('.procedure_box').on 'change', ->
     $(this).parent('td').siblings().children('.procedure_r_qty').addClass('changed_attr')
 
-  $("#save_appointments").click (event) ->
+  $(document).on('click', '#save_appointments', (event) ->
     $('.procedure_r_qty, .procedure_t_qty').not('.changed_attr').prop('disabled', true)
+    if $('.hasDatepicker:visible').val() == ""
+      event.preventDefault()
+      alert('Please select a date for this visit before saving.')
+  )
 
   # end submit data for changes/requirements
 
@@ -311,9 +315,15 @@ $(document).ready ->
   ####Validations for fulfillment fields within the Study Level Charges tab
   $(document).on('click', '.study_charges_submit', (event) ->
     $('.fulfillment_quantity:visible, .fulfillment_date:visible').each (index, field) ->
+      has_errors = false
       if ($(field).val() == "")
+        has_errors = true
+      else if !$(field).hasClass('fulfillment_date') and not $.isNumeric($(field).val())
+        has_errors = true
+
+      if has_errors
         event.preventDefault()
-        $().toastmessage('showWarningToast', 'Date and quantity are required fields.')
+        $().toastmessage('showWarningToast', 'Date and quantity are required fields and must be entered with appropriate values')
         return false
   )
 

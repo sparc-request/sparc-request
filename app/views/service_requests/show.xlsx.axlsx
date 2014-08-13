@@ -79,8 +79,11 @@ wb.add_worksheet(name: "Review") do |sheet|
   @service_request.documents.group_by(&:document_grouping_id).each do |grouping_id, docs|
     next unless @sub_service_request.nil? or docs.map(&:sub_service_request_id).include?(@sub_service_request.id)
     doc = docs.first
-    parents = docs.map{|d| @service_list[d.sub_service_request.organization_id][:name]}
-    parents = parents.select{|name| name == @service_list[@sub_service_request.organization_id][:name]} unless @sub_service_request.nil?
+    parents = []
+    docs.each do |d|
+      next unless @service_request.service_list.keys.include?(d.sub_service_request.organization_id)
+      parents << @service_request.service_list[d.sub_service_request.organization_id][:name]
+    end
     sheet.add_row [doc.document_file_name, DOCUMENT_TYPES.key(doc.doc_type), "", parents.first], :style => default
     parents.shift #remove first and iterate over remaining
     parents.each do |p|

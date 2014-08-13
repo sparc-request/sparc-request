@@ -62,11 +62,6 @@ module StudyTracker::ServiceRequestsHelper
     procedures.flatten
   end
 
-
-  def current_number_of_kits procedure
-    procedure.line_item ? procedure.line_item.service.displayed_pricing_map.unit_factor : procedure.service.displayed_pricing_map.unit_factor
-  end
-
   def subject_has_completed_appointment? subject
     if subject.calendar
       if !subject.calendar.appointments.reject{|x| !x.completed_at?}.empty?

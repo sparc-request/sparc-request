@@ -1066,7 +1066,7 @@ en:
   feedback: 
     message_error: "Message can't be blank" 
   service_request_toasts:
-    success: "Service request has been saved, sucka!"
+    success: "Service request has been saved."
   service_calendar_toasts:
     visit_name: "Click to rename your visits."
     visit_day: "Click to set the visits day. All days must be in numerical order. Ex. 1, 2, 4, 9"
@@ -1078,5 +1078,23 @@ en:
   ajax_error: "An error happened processing your request: "
   sign_in_dialog: "Please select one of the options below:"
   signed_up_dialog: "New account created:"
+  js_confirm: "Are you sure?"
   catalog_manager_js:
+    same_display_date: "A pricing map already exists with that display date.  Please choose another date."
+    same_effective_date: "A pricing map already exists with that effective date.  Please choose another date."
+    later_display_date: "This display date is before the display date of existing pricing maps, are you sure you want to do this?"
+    later_effective_date: "This effective date is before the effective date of existing pricing maps, are you sure you want to do this?"
+    survey_delete: "Are you sure you want to remove this Associated Survey?"
+    institution_prompt: "Please enter the name of the institution you would like to create"
+    provider_prompt: "Please enter the name of the provider you would like to create"
+    program_prompt: "Please enter the name of the program you would like to create"
+    core_prompt: "Please enter the name of the core you would like to create"
+    service_alert: "There needs to be at least one service provider on a parent organization to create a new service."
+    service_remove: "Are you sure you want to remove this Related Service?"
+    super_user_remove: "Are you sure you want to remove this Super User?"
+    clinical_provider_remove: "Are you sure you want to remove this Clinical Provider?"
+    service_provider_remove: "Are you sure you want to remove this Service Provider?"
+    cm_rights_remove: "Are you sure you want to remove rights for this user from the Catalog Manager?"
+    permission_change: "You are changing your own permissions. Your page will refresh automatically when this window closes."
+
 

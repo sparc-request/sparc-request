@@ -625,6 +625,7 @@ en:
     send_notification: "Send Notification"
     ctrc_services_exist: "SCTR Research Nexus services have been found on another Service Request %{protocol_id}-%{ssr_id} pertaining to this Project/Study %{short_title}. Please edit the original Service Request containing the Nexus services in your User Portal."
     full_calendar: "View Consolidated Request"
+    add_services: "Add Services"
 
   # Portal sub service request dialog
   ssr_dialog:
@@ -887,7 +888,7 @@ en:
     edit_protocol_title: "Dashboard <span>|</span> Edit Protocol Information"
     id: "SRID"
     status: "Status"
-    pi: "Principle Investigator"
+    pi: "Principal Investigator"
     routing: "Routing"
     billing_business: "Billing/Business Manager"
     requester: "Requester"

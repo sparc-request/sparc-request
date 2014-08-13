@@ -18,31 +18,25 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module CatalogManager::CatalogHelper
-  def node object, can_access=true, id=nil
-    link_to display_name(object), '#', :id => id, :cid => object.id, :object_type => object.class.to_s.downcase, :class => can_access ? "#{object.class.to_s.downcase}" : "#{object.class.to_s.downcase} disabled_node"
+require 'spec_helper'
+
+describe 'adding an additional service', js: true do
+
+  let_there_be_lane
+  let_there_be_j
+  fake_login_for_each_test
+  build_service_request_with_project
+
+  before :each do
+    visit portal_root_path
+    wait_for_javascript_to_finish
   end
   
-  def disable_pricing_setup(pricing_setup, can_edit_historical_data)
-    begin
-      if can_edit_historical_data == false
-        (pricing_setup.effective_date <= Date.today) || (pricing_setup.display_date <= Date.today) ? true : false
-      else
-        false
-      end
-    rescue
-      false
+  describe 'clicking the button' do
+    it "should redirect to the application root page" do
+      find('.add-services-button').click
+      wait_for_javascript_to_finish
+      page.should have_content("Welcome to the SPARC Request Services Catalog")
     end
   end
-
-  def disable_pricing_map(pricing_map, can_edit_historical_data)
-    if can_edit_historical_data == false
-      (pricing_map.effective_date <= Date.today) || (pricing_map.display_date <= Date.today) ? true : false
-    else
-      false
-    end
-  end
-end
-def display_name object
-  object.respond_to?(:cpt_code) ? object.display_service_name : object.name
 end

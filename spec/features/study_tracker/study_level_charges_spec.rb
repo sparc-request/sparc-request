@@ -86,7 +86,7 @@ describe "study level charges", js: true do
       it "should not allow the fulfillment to save if all fields are left blank" do
         save_form
 
-        page.should have_content("Date, quantity, and unit quantity are required fields.")
+        page.should have_content("Date, quantity, and unit quantity are required fields and must be entered with appropriate values")
       end
 
       it "should validate for the presence of the date" do
@@ -95,7 +95,7 @@ describe "study level charges", js: true do
 
         save_form
 
-        page.should have_content("Date, quantity, and unit quantity are required fields.")
+        page.should have_content("Date, quantity, and unit quantity are required fields and must be entered with appropriate values")
       end
 
       it "should validate for a quantity" do
@@ -104,7 +104,7 @@ describe "study level charges", js: true do
 
         save_form
 
-        page.should have_content("Date, quantity, and unit quantity are required fields.")
+        page.should have_content("Date, quantity, and unit quantity are required fields and must be entered with appropriate values")
       end
 
       it "should validate for a unit quantity" do
@@ -113,7 +113,7 @@ describe "study level charges", js: true do
         
         save_form
 
-        page.should have_content("Date, quantity, and unit quantity are required fields.")
+        page.should have_content("Date, quantity, and unit quantity are required fields and must be entered with appropriate values")
       end
 
       it "should not require that the notes field is filled in" do
@@ -123,7 +123,7 @@ describe "study level charges", js: true do
 
         save_form
 
-        page.should_not have_content("Date, quantity, and unit quantity are required fields.")
+        page.should_not have_content("Date, quantity, and unit quantity are required fields and must be entered with appropriate values")
       end
 
       it "should hide the fulfilment if the fulfillment header is clicked" do

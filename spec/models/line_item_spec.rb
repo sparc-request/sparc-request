@@ -241,6 +241,24 @@ describe "Line Item" do
           line_item.indirect_costs_for_one_time_fee.should eq(0)
         end
       end
+
+      context "direct costs for one time fees with fulfillments" do
+
+        let!(:otf_line_item) { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service.id, sub_service_request_id: sub_service_request.id, quantity: 5, units_per_quantity: 1) }
+        let!(:fulfillment1)  { FactoryGirl.create(:fulfillment, :quantity => 5, :line_item_id => otf_line_item.id) }
+        let!(:fulfillment2)  { FactoryGirl.create(:fulfillment, :quantity => 5, :line_item_id => otf_line_item.id) }
+
+        it "should correctly calculate a line item's cost that has multiple fulfillments" do
+          otf_line_item.direct_cost_for_one_time_fee_with_fulfillments.should eq(10000.0)
+        end
+
+        it "should correctly calculate a line item's cost that has a unit factor greater than one" do
+          pricing_map.update_attributes(unit_factor: 5)
+          fulfillment3 = FactoryGirl.create(:fulfillment, quantity: 6, :line_item_id => otf_line_item.id)
+          
+          otf_line_item.direct_cost_for_one_time_fee_with_fulfillments.should eq(800.0)
+        end
+      end
     end
   end
   context "methods" do

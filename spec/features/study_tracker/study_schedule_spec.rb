@@ -47,10 +47,83 @@ describe "study schedule", :js => true do
         current_path.should eq("/clinical_work_fulfillment")
       end
     end
-
     describe "per patient per visit" do
 
       describe "template tab" do
+        describe "changing a visit day" do
+          it "should not allow invalid days to be entered" do
+            wait_for_javascript_to_finish
+            elements = all("#day.visit_day")
+            #set visit days on either side 
+            elements[0].set '1'
+            elements[2].set '5'
+            first('th.service_rate_header').click #clicking off randomly on the page to prompt submission for validation 
+            wait_for_javascript_to_finish
+            page.should have_content("Service request has been saved.")
+            elements[1].set("1000")
+            first('th.service_rate_header').click 
+            a = page.driver.browser.switch_to.alert
+            a.text.should eq "The days are out of order. This day appears to go after the next day.\n"
+            a.accept
+            wait_for_javascript_to_finish
+            elements[1].set '0'
+            first('th.service_rate_header').click 
+            a = page.driver.browser.switch_to.alert
+            a.text.should eq "The days are out of order. This day appears to go before the previous day.\n"
+            a.accept
+          end
+          it "should not allow invalid day ranges to be entered" do 
+            wait_for_javascript_to_finish
+            first("#window.visit_window").set '-1'
+            first('th.service_rate_header').click 
+            a = page.driver.browser.switch_to.alert
+            a.text.should eq "You've entered an invalid number for the +/- window. Please enter a positive valid number\n"
+            a.accept
+          end 
+        end
+        describe "adding a new visit" do 
+          it "should render a pop up in which you can change the visit successfully with valid input" do
+            wait_for_javascript_to_finish
+            select "Insert before 3 - Visit 3", :from => "visit_position"
+            find(:xpath,"//a[@class='add_visit_link']").click
+            page.should have_content ("Add a new visit")#checks that pop up is rendered 
+            fill_in 'visit_name', :with => 'test visit name' #checks that name is changed 
+            fill_in 'visit_day', :with => 2 #must set a value for visit 1 and visit 2 in order to test it 
+            click_button 'submit_visit'
+            page.should have_content 'Service request has been saved'
+            wait_for_javascript_to_finish
+
+            select "Insert before 2 - Visit 2", :from => "visit_position"
+            find(:xpath,"//a[@class='add_visit_link']").click
+            fill_in "visit_day", :with => 1
+            click_button "submit_visit"
+            page.should have_content 'Service request has been saved'
+            wait_for_javascript_to_finish
+
+            select "Insert before 3 - Visit 3", :from => "visit_position"
+            find(:xpath,"//a[@class='add_visit_link']").click
+            fill_in "visit_day", :with => -30
+            click_button "submit_visit"
+            page.should have_content "Out of order the days are out of order. this day appears to go before the previous day..."
+            fill_in "visit_day", :with => 2
+            fill_in "visit_window", :with => -20
+            click_button "submit_visit"
+            page.should have_content "Invalid window you've entered an invalid number for the +/- window. please enter a positive valid number.."
+            fill_in "visit_window", :with =>1
+            click_button "submit_visit"
+            wait_for_javascript_to_finish
+
+            select "Insert before 2 - Visit 2", :from => "visit_position"
+            find(:xpath,"//a[@class='add_visit_link']").click
+            fill_in "visit_day", :with => -20
+            click_button "submit_visit" 
+            page.should have_content "Out of order the days are out of order. this day appears to go before the previous day..."
+            fill_in "visit_day", :with => 30002
+            click_button "submit_visit"
+            page.should have_content "Out of order the days are out of order. this day appears to go after the next day.\n"
+          end 
+        end
+
 
         describe "selecting check row button" do
 
@@ -205,25 +278,26 @@ describe "study schedule", :js => true do
 
       #TODO: These two are randomly failing due to something with capybara.  Both
       # have been thoroughly manualy tested. 
-      # describe "changing the number of units" do
+       describe "changing the number of units" do
 
-      #   it "should save the new number of units" do
-      #     fill_in "quantity", with: "6"
-      #     sleep 1
-      #     find(".units_per_quantity").click()
-      #     find(".line_item_quantity").should have_value("6")
-      #   end
-      # end
+        it "should save the new number of units" do
+          fill_in "quantity", with: "6"
+          sleep 1
+          find(".units_per_quantity").click()
+          find(".line_item_quantity").should have_value("6")
+        end
+      end
 
-      # describe "changing the units per quantity" do
+      describe "changing the units per quantity" do
 
-      #   it "should save the new units per quantity" do
-      #     fill_in "units_per_quantity", :with => 5
-      #     wait_for_javascript_to_finish
-      #     find(".line_item_quantity").click()
-      #     find(".units_per_quantity").should have_value("5")
-      #   end
-      # end
+        it "should save the new units per quantity" do
+          fill_in "units_per_quantity", :with => 5
+          wait_for_javascript_to_finish
+          sleep 3
+          find(".line_item_quantity").click()
+          find(".units_per_quantity").should have_value("5")
+        end
+      end
 
       describe "adding a service" do
 
@@ -315,6 +389,6 @@ describe "study schedule", :js => true do
         arm1.line_items_visits.size.should eq(3)
         arm2.line_items_visits.size.should eq(3)
       end
-    end
-  end
-end
+    end 
+  end 
+end 

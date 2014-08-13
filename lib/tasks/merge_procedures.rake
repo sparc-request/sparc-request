@@ -137,6 +137,14 @@ namespace :data do
       end
       puts 'Report has been created'
       merge_data protocol
+    elsif answer == 'N' || answer == 'No'
+      csv = []
+      dups = dups.reject { |k, c| c == 1 }
+      dups.each do |k, count|
+        app_id, line_item_id = k.split(" ")
+        collect_procedures app_id, line_item_id, csv
+      end
+      merge_data protocol
     elsif answer == 'No dups found'
       puts 'No duplicates found'
     else

@@ -32,12 +32,10 @@
           %tr.line_item.otfs{:class => cycle('odd', '', :name => 'otfs'), :"data-unit_factor" => line_item.service.displayed_pricing_map.unit_factor}
             %td.service_name
               = line_item.service.name
-              - unless @tab == 'calendar'
-                = hidden_field_tag "service_request[line_items_attributes][#{line_item.id}][id]", line_item.id
-            - unless @portal
+            - unless @portal or @study_tracker
               %td.service_rate{:class => "service_rate_#{line_item.id}"}= display_service_rate line_item
             %td.your_cost{:"data-your_cost" => line_item.applicable_rate}= display_your_cost line_item
-            - unless @portal
+            - unless @portal or @study_tracker
               %td.line_item_quantity.center= line_item.quantity
               %td= line_item.service.try(:displayed_pricing_map).try(:quantity_type).try(:humanize)
               - if line_item.service.try(:displayed_pricing_map).otf_unit_type == 'N/A'
@@ -49,10 +47,8 @@
                   = line_item.units_per_quantity
                 %td= line_item.service.try(:displayed_pricing_map).try(:otf_unit_type).try(:humanize)
 
-            %td{:colspan => @portal ? 7 : 5}
+            %td{:colspan => (@portal or @study_tracker) ? 7 : 5}
             %td{:class => "otf_total total_#{line_item.id}"}= display_one_time_fee_direct_cost line_item
-            - if @study_tracker
-              %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-line_item_id' => line_item.id, :class => 'delete_data')
 
 
   -elsif @review #display review calendar otf line items

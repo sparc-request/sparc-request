@@ -430,5 +430,16 @@ $(document).ready ->
   $(document).on 'click', '.cwf_subject_delete', (event)->
     alert("This subject has one or more completed appointments and can't be deleted.")
 
-
-
+  # In Study Schedule, allows calendar to hide and show add/remove services and extra otfs when on consolidated calendar tab
+  $("li#pricing_tab").click ->
+    $("#add_ppv_service_container").hide()
+    $("#remove_ppv_service_container").hide()
+    $("#one_time_fees").hide()
+    $("#add_one_time_fee_container").hide()
+    $("#remove_one_time_fee_container").hide()
+  $("li#other_tab").click ->
+    $("#add_ppv_service_container").show()
+    $("#remove_ppv_service_container").show()
+    $("#one_time_fees").show()
+    $("#add_one_time_fee_container").show()
+    $("#remove_one_time_fee_container").show()

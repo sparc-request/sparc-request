@@ -48,12 +48,12 @@
       - if @study_tracker
         = hidden_field_tag('study_tracker', true, :id => "study_tracker_hidden_field")
         %ul
-          %li= link_to t(:calendar_page)[:tabs][:template], table_service_request_service_calendars_path(@service_request, :tab => "template", :study_tracker => true, :portal => true) , :id => 'template_tab'
-          %li= link_to t(:calendar_page)[:tabs][:billing], table_service_request_service_calendars_path(@service_request, :tab => "billing_strategy", :study_tracker => true, :portal => true), :id => 'billing_strategy_tab'
-          %li= link_to t(:calendar_page)[:tabs][:pricing], merged_calendar_service_request_service_calendars_path(@service_request, :tab => "calendar", :study_tracker => true), :id => 'calendar_tab'
+          %li#other_tab= link_to t(:calendar_page)[:tabs][:template], table_service_request_service_calendars_path(@service_request, :tab => "template", :study_tracker => true, :portal => true) , :id => 'template_tab'
+          %li#other_tab= link_to t(:calendar_page)[:tabs][:billing], table_service_request_service_calendars_path(@service_request, :tab => "billing_strategy", :study_tracker => true, :portal => true), :id => 'billing_strategy_tab'
+          %li#pricing_tab= link_to t(:calendar_page)[:tabs][:pricing], merged_calendar_service_request_service_calendars_path(@service_request, :tab => "calendar", :study_tracker => true), :id => 'calendar_tab'
       - else
         %ul
-          %li= link_to t(:calendar_page)[:tabs][:template], table_service_request_service_calendars_path(@service_request, :tab => "template", :portal => true) , :id => 'template_tab'
-          %li= link_to t(:calendar_page)[:tabs][:billing], table_service_request_service_calendars_path(@service_request, :tab => "billing_strategy", :portal => true), :id => 'billing_strategy_tab'
-          %li= link_to t(:calendar_page)[:tabs][:pricing], merged_calendar_service_request_service_calendars_path(@service_request, :tab => "calendar", :portal => true), :id => 'calendar_tab'
+          %li#other_tab= link_to t(:calendar_page)[:tabs][:template], table_service_request_service_calendars_path(@service_request, :tab => "template", :portal => true) , :id => 'template_tab'
+          %li#other_tab= link_to t(:calendar_page)[:tabs][:billing], table_service_request_service_calendars_path(@service_request, :tab => "billing_strategy", :portal => true), :id => 'billing_strategy_tab'
+          %li#pricing_tab= link_to t(:calendar_page)[:tabs][:pricing], merged_calendar_service_request_service_calendars_path(@service_request, :tab => "calendar", :portal => true), :id => 'calendar_tab'
         .move-visits

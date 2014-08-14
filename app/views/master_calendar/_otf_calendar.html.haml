@@ -24,5 +24,5 @@
       = render :partial => "master_calendar/otf_header"
     %tbody.cell-border
       = render :partial => "master_calendar/otf_line_items", :locals =>{:current_request => @service_request}
-      - unless @study_tracker
+      - unless @study_tracker and !@merged
         = render :partial => "master_calendar/otf_totals", :locals =>{:current_request => @service_request}

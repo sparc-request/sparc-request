@@ -21,7 +21,7 @@
   %th{:rowspan => 2, :style => @review ? '' : 'height: 88px', :class => @review ? '' : 'services_header'}= t(:calendar_page)[:headers][:services]
 
 
-  - if @study_tracker #display study tracker otf header
+  - if @study_tracker and !@merged #display study tracker otf header
     %th.qty_type_header= t(:calendar_page)[:headers][:number]
     %th.number_of_units_header{:style => "width:130px;"}= t(:calendar_page)[:headers][:qty_type]
     %th.qty_unit_header{:style => "width:130px;"}= t(:calendar_page)[:headers][:number]
@@ -36,7 +36,7 @@
 
 
   - else #display default or merged otf header
-    - if @portal and @merged
+    - if (@portal or @study_tracker) and @merged
       %th.your_cost_header{:rowspan => 2}= t(:calendar_page)[:headers][:your_cost]
       %th{:rowspan => 2, :colspan => 7, :height => 40, :width => 375}
       %th.total_per_study{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_study]
@@ -52,7 +52,7 @@
 
     - unless @merged
       %th= image_tag 'spinner.gif', :class => 'service_calendar_spinner'
-    -unless @portal
+    -unless (@portal or @study_tracker)
       %tr.table_header
         %th.service_rate_header= t(:calendar_page)[:headers][:service_rate]
         %th.your_cost_header= t(:calendar_page)[:headers][:your_cost]

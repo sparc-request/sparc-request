@@ -20,7 +20,7 @@
 
 /*Some Stuff*/
 table.study_tracker_table {
-  width: 925px;
+  width: 905px;
 }
 
 .study_tracker_table thead.left_headers th {
@@ -29,10 +29,16 @@ table.study_tracker_table {
 
 .study_tracker_table th {
   padding:6px 8px;
+  background-color:#0775B0;
+  color:white;
 }
 
 .arm_container {
-  padding:10px 5px;
+  padding:15px 0px;
+}
+
+#subject_tracker #subjects {
+  padding: 10px;
 }
 
 #visit_form tr.fields td,
@@ -100,13 +106,48 @@ td.text-center {
   margin-right:5px;
 }
 
-#audit_form label {
+#audit_form {
+  padding: 10px;
+}
+#audit_form table thead tr {
+  background-color: #0775B0;
+  color: white;
+}
+#audit_form table thead tr th {
+  width: 450px;
+  padding: 7px 0px;
+}
+#audit_form table tbody td {
+  background-color: #E8E8E8;
+  text-align: center;
+}
+#audit_form .org {
+  padding: 5px;
+}
+#audit_form .org label {
+  width: 200px;
+  text-align: left;
+  display: inline-block;
+}
+#audit_form .field {
+  padding: 5px;
+}
+#audit_form .field label {
+  display: inline-block;
+  width: 80px;
+}
+#audit_form #audit_submit_button {
+  background: url("portal/yellowbutton_smaller.png") no-repeat;
+  border: 0 none;
+  color: #FFFFFF;
+  cursor: pointer;
   display: block;
-  min-width: 175px;
-  float: left;
+  height: 35px;
+  margin: 10px auto;
+  width: 149px;
 }
 
-.appointment_wrapper .ui-widget-header th.hidden_by_tabs {
+.appointment_wrapper .ui-widget-header .hidden_by_tabs {
   display:none;
 }
 
@@ -121,10 +162,24 @@ td.text-center {
 }
 
 #subject_tracker_add {
-  padding:0.45em 1em;
-  margin-left:83px;
-  margin-top:5px;
-} 
+  background: url("portal/yellowbutton_smaller.png") no-repeat;
+  color: #FFFFFF;
+  display: block;
+  height: 27px;
+  margin: 10px auto;
+  padding: 8px 0 0;
+  text-align: center;
+  width: 149px;
+}
+
+#subject_tracker_save {
+  background: url("portal/yellowbutton_smaller.png") no-repeat;
+  border: 0 none;
+  color: #FFFFFF;
+  cursor: pointer;
+  height: 35px;
+  width: 149px;
+}
 
 #patient_visit_calendar #dashboard_container {
   position:relative;

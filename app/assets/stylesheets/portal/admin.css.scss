@@ -25,19 +25,20 @@
   padding: 14px 8px 8px;
 }
 
-.tabs.plain_class {
+.ui-tabs.plain_class {
   border: 0px;
   background: none;
+  padding: 0px
 }
 
-.tabs.plain_class ul.ui-tabs-nav {
+.ui-tabs.plain_class ul.ui-tabs-nav {
   background: #3883A9 !important;
   padding-top: 15px;
   border-radius: 0px;
   -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
 }
-.tabs.plain_class ul.ui-tabs-nav li {
+.ui-tabs.plain_class ul.ui-tabs-nav li {
   background: #3e9f5a !important;
   border: none;
   border-radius: 0px;
@@ -45,12 +46,12 @@
   -webkit-border-radius: 0px;
 }
 
-.tabs.plain_class ul.ui-tabs-nav li.ui-tabs-active {
+.ui-tabs.plain_class ul.ui-tabs-nav li.ui-tabs-active {
   background: #f89c50 !important;
 }
 
-.tabs.plain_class ul.ui-tabs-nav li.ui-state-hover a,
-.tabs.plain_class ul.ui-tabs-nav li.ui-state-focus a {
+.ui-tabs.plain_class ul.ui-tabs-nav li.ui-state-hover a,
+.ui-tabs.plain_class ul.ui-tabs-nav li.ui-state-focus a {
   color: white;
 }
 

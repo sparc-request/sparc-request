@@ -77,7 +77,7 @@ end
 
 # Wait up to the specified amount of time for all ajax requests on the
 # page to complete.
-def wait_for_javascript_to_finish(seconds=10)
+def wait_for_javascript_to_finish(seconds=15)
   wait_until(seconds) { page.evaluate_script('$.active') == 0 }
   # page.should have_content ''
 end

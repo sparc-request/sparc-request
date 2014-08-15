@@ -423,7 +423,7 @@ describe "admin fulfillment tab", :js => true do
     it 'should not allow you to delete an arm that has patient data' do
       number_of_arms = Arm.find(:all).size
       subject = arm1.subjects.first
-      appointment = FactoryGirl.create(:appointment, :calendar_id => subject.calendar.id)
+      # appointment = FactoryGirl.create(:appointment, :calendar_id => subject.calendar.id)
       sub_service_request.update_attributes(:in_work_fulfillment => true)
       visit study_tracker_sub_service_request_path sub_service_request.id
       click_link("Subject Tracker")

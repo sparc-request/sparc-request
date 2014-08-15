@@ -47,7 +47,7 @@
                   -else
                     %td= procedure_form.object.display_service_name + ' (Disabled)'
                   %td.check_box_cell.text-center{:class => procedure_form.object.line_item ? "highlighted" : ''}= procedure_form.check_box :completed, :class => "procedure_box"
-                  %td.r_qty_cell.text-center= procedure_form.text_field :r_quantity, value: procedure_form.object.default_r_quantity, size: 5, :class => 'procedure_r_qty', :'data-unit_factor' => current_number_of_kits(procedure_form.object)
+                  %td.r_qty_cell.text-center= procedure_form.text_field :r_quantity, value: procedure_form.object.default_r_quantity, size: 5, :class => 'procedure_r_qty'
                   %td.t_qty_cell.text-center= procedure_form.text_field :t_quantity, value: procedure_form.object.default_t_quantity, size: 5, :class => 'procedure_t_qty'
                   %td.unit_cost_cell.text-center= number_to_currency(procedure_form.object.cost)
                   %td.procedure_total_cell.text-center= number_to_currency(procedure_form.object.total)

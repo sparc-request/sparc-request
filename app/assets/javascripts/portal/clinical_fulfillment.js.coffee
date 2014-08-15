@@ -119,14 +119,12 @@ $(document).ready ->
   )
 
   $(document).on('click', '.check_box_cell input', ->
-    unit_factor = $(this).data('unit_factor')
-    recalc_row_totals(unit_factor)
+    recalc_row_totals()
     recalc_subtotal()
   )
 
   $(document).on('change', '.r_qty_cell input', ->
-    unit_factor = $(this).data('unit_factor')
-    recalc_row_totals(unit_factor)
+    recalc_row_totals()
     recalc_subtotal()
   )
 
@@ -251,15 +249,13 @@ $(document).ready ->
 
 
   ####Totals functions:
-  recalc_row_totals = (unit_factor) ->
+  recalc_row_totals = () ->
     $('td.unit_cost_cell:visible').each ->
       if $(this).siblings("td.check_box_cell").children("input[type=checkbox]").prop('checked')
         #Do calculations, and set the correct totall
         unit_cost = $(this).text().replace('$', '').replace(/[ ,]/g, "")
         r_qty = $(this).siblings('td.r_qty_cell').children('input').val()
-        kits = r_qty / unit_factor
-        kits = Math.ceil(kits)
-        total = unit_cost * kits
+        total = unit_cost * r_qty
         $(this).siblings('td.procedure_total_cell').text('$' + commaSeparateNumber(total.toFixed(2)))
       else
         #Set to zero

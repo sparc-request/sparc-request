@@ -324,13 +324,22 @@ $(document).ready ->
 
   ####Validations for fulfillment fields within the Study Level Charges tab
   $(document).on('click', '.study_charges_submit', (event) ->
+    $('.fulfillment_unit_quantity:visible').each (index, field) ->
+      has_errors = false
+      if ($(field).val() != "")
+        if not $.isNumeric($(field).val())
+          has_errors = true
+      if has_errors
+        event.preventDefault()
+        $().toastmessage('showWarningToast', 'Unit quantity must be a number')
+        return false 
+        
     $('.fulfillment_quantity:visible, .fulfillment_date:visible').each (index, field) ->
       has_errors = false
       if ($(field).val() == "")
         has_errors = true
       else if !$(field).hasClass('fulfillment_date') and not $.isNumeric($(field).val())
         has_errors = true
-
       if has_errors
         event.preventDefault()
         $().toastmessage('showWarningToast', 'Date and quantity are required fields and must be entered with appropriate values')

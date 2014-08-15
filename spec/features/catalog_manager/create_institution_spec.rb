@@ -37,7 +37,7 @@ feature 'create new institution', :js => true do
       fill_in 'institution_order', :with => '1'
       fill_in 'institution_description', :with => ''
       
-      page.execute_script("$('#save_button').click();")
+      first("#save_button").click
       page.should have_content( 'Greatest Institution saved successfully' )
     end
   end

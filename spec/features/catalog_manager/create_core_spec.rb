@@ -49,7 +49,8 @@ feature 'create new core', :js => true do
       fill_in 'core_subsidy_map_attributes_max_percentage', :with => '55.5'
       fill_in 'core_subsidy_map_attributes_max_dollar_cap', :with => '65'
 
-      page.execute_script("$('#save_button').click();")
+      first("#save_button").click
+      wait_for_javascript_to_finish
       page.should have_content( 'Par for the Core saved successfully' )
     end
   end

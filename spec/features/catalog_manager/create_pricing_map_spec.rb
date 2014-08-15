@@ -57,7 +57,7 @@ describe 'as a user on catalog page', :js => true do
       page.execute_script %Q{ $(".service_unit_factor").change() }
     end
     
-    page.execute_script %Q{ $(".save_button").click() }
+    first(".save_button").click
     page.should have_content "MUSC Research Data Request (CDW) saved successfully"   
   end
   
@@ -70,7 +70,7 @@ describe 'as a user on catalog page', :js => true do
     click_button("Add Pricing Map")
     
     page.execute_script("$('.ui-accordion-header:last').click()")
-    page.execute_script %Q{ $(".save_button").click() }
+    first(".save_button").click
     wait_for_javascript_to_finish
     page.should_not have_content "MUSC Research Data Request (CDW) saved successfully"    
   end
@@ -120,7 +120,7 @@ describe 'as a user on catalog page', :js => true do
     end
 
     it "should not allow save if one time fee fields are not filled in" do
-      page.execute_script %Q{ $(".save_button").click() }
+      first(".save_button").click
       wait_for_javascript_to_finish
       page.should_not have_content "MUSC Research Data Request (CDW) saved successfully"  
     end

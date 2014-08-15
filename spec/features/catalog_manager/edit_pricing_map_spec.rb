@@ -69,7 +69,7 @@ describe 'as a user on catalog page', :js => true do
       wait_for_javascript_to_finish
     end
 
-    page.execute_script %Q{ $(".save_button").click() }
+    first(".save_button").click
     wait_for_javascript_to_finish
     
     page.should have_content "MUSC Research Data Request (CDW) saved successfully"        
@@ -140,7 +140,7 @@ describe 'as a user on catalog page', :js => true do
       find(".service_unit_minimum", :visible => true).click
       wait_for_javascript_to_finish
 
-      page.execute_script %Q{ $(".save_button").click() }
+      first(".save_button").click
       wait_for_javascript_to_finish
 
       service.reload

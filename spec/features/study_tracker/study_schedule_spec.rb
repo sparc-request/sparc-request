@@ -59,7 +59,6 @@ describe "study schedule", :js => true do
             elements[2].set '5'
             first('th.service_rate_header').click #clicking off randomly on the page to prompt submission for validation 
             wait_for_javascript_to_finish
-            page.should have_content("Service request has been saved.")
             elements[1].set("1000")
             first('th.service_rate_header').click 
             a = page.driver.browser.switch_to.alert

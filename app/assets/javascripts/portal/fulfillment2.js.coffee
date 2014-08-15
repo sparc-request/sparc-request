@@ -54,7 +54,7 @@ $(document).ready ->
   validateDate = (start,end) ->
     if start == '' or end ==''
       return true 
-    if start > end 
+    if start > end
       return false
     else 
       return true
@@ -86,8 +86,8 @@ $(document).ready ->
     data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
     data['line_items_visit_id'] = $(this).parents("tr").data("line_items_visit_id") || null
     if $(this).attr('name') == 'protocol_start_date' or $(this).attr('name') == 'protocol_end_date'
-      start = $('#protocol_start_date_picker').val()
-      end = $('#protocol_end_date_picker').val()
+      start = $('#protocol_start_date_picker').datepicker("getDate")
+      end = $('#protocol_end_date_picker').datepicker("getDate")
       if validateDate(start,end)
         put_attribute(object_id, klass, data)
       else

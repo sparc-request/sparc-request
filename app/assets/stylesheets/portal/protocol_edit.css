@@ -131,6 +131,7 @@
 
 .user-edit-protocol-view .box .info textarea {
   height: 300px;
+  width: 670px;
 }
 
 .user-edit-protocol-view .box .info input[type=checkbox] {

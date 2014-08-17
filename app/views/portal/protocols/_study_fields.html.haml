@@ -28,7 +28,7 @@
   .grid_7.box
     .info
       %fieldset
-        %legend= t(:study_form)[:attributes]
+        %legend= t(:study_form)[:needed_info]
         .field
           = f.label :short_title, t(:protocol_shared)[:title]
           = f.text_field :short_title
@@ -62,7 +62,6 @@
             .field
               = f.label :funding_source_other, t(:study_form)[:funding_source_other]
               = f.text_field :funding_source_other
-
         .clear
     
         .funded
@@ -98,6 +97,10 @@
         .field
           = f.label :sponsor_name, t(:study_form)[:sponsor_name]
           = f.text_field :sponsor_name
+
+        .field
+          = f.label :selected_for_epic, t(:study_form)[:push_to_epic]
+          = f.check_box :selected_for_epic
 
       %fieldset
         %legend= t(:study_form)[:optional_text]

@@ -62,9 +62,9 @@ describe "study level charges", js: true do
     it 'should set and save the fields' do
   
       find('.fulfillment_date').click
-      wait_for_javascript_to_finish
+      sleep 2
       first('a.ui-state-default.ui-state-highlight').click
-      wait_for_javascript_to_finish
+      sleep 2
       find('.fulfillment_quantity').set(1)
       find('.fulfillment_quantity_type').select("Sample")
       find('.fulfillment_unit_quantity').set(1)
@@ -100,7 +100,10 @@ describe "study level charges", js: true do
       end
 
       it "should validate for a quantity" do
-        find('.fulfillment_date').set("5/1/2014")
+        find('.fulfillment_date').click
+        sleep 2
+        first('a.ui-state-default.ui-state-highlight').click
+        sleep 2
         find('.fulfillment_unit_quantity').set(1)
 
         save_form
@@ -108,17 +111,11 @@ describe "study level charges", js: true do
         page.should have_content("Date and quantity are required fields and must be entered with appropriate values")
       end
 
-      it "should validate for a unit quantity" do
-        find('.fulfillment_date').set("5/1/2014")
-        find('.fulfillment_quantity').set(1)
-        
-        save_form
-
-        page.should have_content("Date and quantity are required fields and must be entered with appropriate values")
-      end
-
       it "should not require that the notes field is filled in" do
-        find('.fulfillment_date').set("5/1/2014")
+        find('.fulfillment_date').click
+        sleep 2
+        first('a.ui-state-default.ui-state-highlight').click
+        sleep 2
         find('.fulfillment_quantity').set(1)
         find('.fulfillment_unit_quantity').set(1)
 

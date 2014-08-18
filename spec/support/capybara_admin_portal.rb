@@ -254,7 +254,7 @@ module CapybaraAdminPortal
     def sendToCWF
         #checks "Ready for Clinical Work Fulfillment" checkbox
         switchTabTo 'Fulfillment'
-        find(:xpath, "//input[@id='in_work_fulfillment' and @class='cwf_data']").click
+        find('input#in_work_fulfillment.cwf_data').click
         wait_for_javascript_to_finish
     end
 

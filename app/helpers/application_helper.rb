@@ -320,4 +320,15 @@ module ApplicationHelper
   def can_be_deleted? arm
     arm.subjects.empty? ? true : arm.subjects.none?{|x| x.has_appointments?}
   end
+
+  #Will find a particular one time fee line item by its id, then determine if it has any associated fulfillments
+  def one_time_fee_fulfillments? line_item_id
+    has_fulfillments = false
+    otf = LineItem.find(line_item_id)
+    if !otf.fulfillments.empty?
+      has_fulfillments = true
+    end
+
+    has_fulfillments
+  end
 end

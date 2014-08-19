@@ -111,7 +111,7 @@
             %td{:colspan => 5}
             %td{:class => "otf_total total_#{line_item.id}"}= display_one_time_fee_direct_cost line_item
             - if @study_tracker
-              %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-line_item_id' => line_item.id, :class => 'delete_data')
+              %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-line_item_id' => line_item.id, :'data-has_fulfillments' => one_time_fee_fulfillments?(line_item.id), :class => 'delete_data')
 
     %tr.totals_section.begin_totals{:class => cycle('odd', '', :name => 'otfs')}
       %td{:colspan => 5}= t("calendar_page.labels.total_direct_other")

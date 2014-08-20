@@ -22,7 +22,7 @@ require 'spec_helper'
 include CapybaraCatalogManager
 
 
-describe 'Quick Catalog Manager' do
+describe 'Quick Catalog Manager', :happy_test do
   let_there_be_lane
   fake_login_for_each_test
 

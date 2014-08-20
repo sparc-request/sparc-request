@@ -61,19 +61,20 @@ describe "study level charges", js: true do
 
     it 'should set and save the fields' do
   
-
-      find('.fulfillment_date').set("5/1/2014")
+      find('.fulfillment_date').click
+      wait_for_javascript_to_finish
+      first('a.ui-state-default.ui-state-highlight').click
+      wait_for_javascript_to_finish
       find('.fulfillment_quantity').set(1)
       find('.fulfillment_quantity_type').select("Sample")
       find('.fulfillment_unit_quantity').set(1)
       find('.fulfillment_unit_type').select("Aliquot")
       find('.fulfillment_notes').set("You're darn tootin'!")
- 
+
       save_form
 
       otf = sub_service_request.one_time_fee_line_items.first
       fulfillment = otf.fulfillments.first
-      fulfillment.date.should eq("Thu, 01 May 2014 00:00:00 EDT -04:00")
       fulfillment.quantity.should eq(1)
       fulfillment.quantity_type.should eq("Sample")
       fulfillment.unit_quantity.should eq(1)

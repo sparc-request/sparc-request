@@ -63,7 +63,7 @@ class Portal::LineItemsController < Portal::BaseController
     @line_item = LineItem.find(params[:id])
     @sub_service_request = @line_item.sub_service_request
     @service_request = @sub_service_request.service_request
-    @study_tracker = params[:study_tracker] == "true"
+    @study_tracker = true
 
     updated_service_relations = true
     if params[:quantity]

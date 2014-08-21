@@ -22,7 +22,7 @@ require 'spec_helper'
 include CapybaraProper
 include CapybaraAdminPortal
 
-describe 'A Happy Test on Sparc Proper' do
+describe 'A Happy Test on Sparc Proper', :happy_test do
   let_there_be_lane
   fake_login_for_each_test
 

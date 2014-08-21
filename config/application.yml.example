@@ -40,7 +40,7 @@ development:
   use_google_calendar: true
   use_news_feed: true
   google_username: sparcrequest@gmail.com
-  google_password: MUSCsparcrequest
+  google_password: MUSC2014
   send_authorized_user_emails: true
   
 test:
@@ -65,5 +65,5 @@ test:
   use_google_calendar: true
   use_news_feed: true
   google_username: sparcrequest@gmail.com
-  google_password: MUSCsparcrequest
+  google_password: MUSC2014
   send_authorized_user_emails: true

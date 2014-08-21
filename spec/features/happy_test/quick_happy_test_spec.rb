@@ -140,7 +140,7 @@ describe 'A Quick Happy Test', :happy_test do
 
     #**User Portal**#
     goToUserPortal
-    createNewRequestTest
+    createNewStudyTest
     findStudy('Bob')
     authorizedUsersTest("bjk7", "Brian Kelsey")
     #**END User Portal END**#

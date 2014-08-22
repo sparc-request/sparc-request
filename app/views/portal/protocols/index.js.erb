@@ -30,9 +30,11 @@ $('#protocol-accordion').accordion({
 
 <% @source = [] %>
 <% @protocols.each do |protocol| %>
-  <% default_label = "#{protocol.type.capitalize}: " + protocol.id.to_s + " - " + protocol.short_title %>
+  <% default_display = "#{protocol.type.capitalize}: " + protocol.id.to_s + " - " + protocol.short_title %>
   <% default_desc = "PI(s): #{protocol.principal_investigators.map(&:display_name).join(', ')}" if protocol.principal_investigators %>
-  <% @source << {:label => default_label, :desc => default_desc, :id => protocol.id } %>
+  <% default_label = default_display %>
+  <% default_label += " - " + default_desc if protocol.principal_investigators %>
+  <% @source << {:label => default_label, :display => default_display, :desc => default_desc, :id => protocol.id } %>
 <% end %>
 
 var protocol_autocomplete_values = <%= @source.to_json.html_safe %>;
@@ -49,7 +51,7 @@ $('.search_protocols').autocomplete({
 .data("uiAutocomplete")._renderItem = function(ul, item) {
   return $( "<li>" )
         .data( "ui-autocomplete-item", item )
-        .append( "<a>" + item.label + "<br>" + item.desc + "</a>" )
+        .append( "<a>" + item.display + "<br />" + item.desc + "</a>" )
         .appendTo( ul );
 };
 

@@ -140,20 +140,18 @@ class Arm < ActiveRecord::Base
     direct_costs_for_visit_based_service(line_items_visits) + indirect_costs_for_visit_based_service(line_items_visits)
   end
   
-  def add_visit position=nil, day=nil, window=0, name=''
+  def add_visit position=nil, day=nil, window=0, name='', portal=false
     result = self.transaction do
       if not self.create_visit_group(position, name) then
         raise ActiveRecord::Rollback
       end
-
       position = position.to_i - 1 unless position.blank?
 
       if USE_EPIC
-        if not self.update_visit_group_day(day, position) then
+        if not self.update_visit_group_day(day, position, portal) then
           raise ActiveRecord::Rollback
         end
-
-        if not self.update_visit_group_window(window, position) then
+        if not self.update_visit_group_window(window, position, portal) then
           raise ActiveRecord::Rollback
         end
       end
@@ -246,19 +244,18 @@ class Arm < ActiveRecord::Base
     end
   end
 
-  def update_visit_group_day day, position, portal=false
+  def update_visit_group_day day, position, portal= false
     position = position.blank? ? self.visit_groups.count - 1 : position.to_i
     before = self.visit_groups[position - 1] unless position == 0
     current = self.visit_groups[position]
     after = self.visit_groups[position + 1] unless position >= self.visit_groups.size - 1
-    
+
     if portal == 'true' and USE_EPIC
       valid_day = Integer(day) rescue false
       if !valid_day
         self.errors.add(:invalid_day, "You've entered an invalid number for the day. Please enter a valid number.")
         return false
       end
-
       if !before.nil? && !before.day.nil?
         if before.day > valid_day
           self.errors.add(:out_of_order, "The days are out of order. This day appears to go before the previous day.")
@@ -277,7 +274,7 @@ class Arm < ActiveRecord::Base
     return current.update_attributes(:day => day)
   end
 
-  def update_visit_group_window window, position
+  def update_visit_group_window window, position, portal = false
     position = position.blank? ? self.visit_groups.count - 1 : position.to_i
 
     valid = Integer(window) rescue false

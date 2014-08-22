@@ -52,8 +52,13 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
   end
 
   def add_service
+    service = Service.find(params[:service_id])
     appointment = Appointment.find(params[:appointment_id])
-    @procedure = appointment.procedures.new(:service_id => params[:service_id])
+
+    #This adds the id's ONLY if they are indicated on the calendar, not just if they exist.
+    existing_service_ids = appointment.procedures.select{|procedure| procedure.should_be_displayed}.collect{|procedure| procedure.direct_service.id}
+    @procedures = add_individual_procedure(service, appointment, existing_service_ids, false)
+
     render :partial => 'new_procedure', :locals => {:appointment_index => params[:appointment_index], :procedure_index => params[:procedure_index]}
   end
 
@@ -83,6 +88,28 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
   end
 
   private
+
+  def add_individual_procedure(service, appointment, existing_service_ids, recursive = true)
+    return if existing_service_ids.include?(service.id)
+
+    procedures = []
+    procedures << appointment.procedures.new(:service_id => service.id)
+    existing_service_ids << service.id
+
+    service.required_services.each do |rs|
+      rs_procedures = add_individual_procedure(rs, appointment, existing_service_ids)
+      rs_procedures.nil? ? procedures : procedures.concat(rs_procedures)
+    end
+
+    unless recursive == true
+      service.optional_services.each do |os|
+        os_procedures = add_individual_procedure(os, appointment, existing_service_ids)
+        os_procedures.nil? ? procedures : procedures.concat(os_procedures)
+      end
+    end
+
+    return procedures
+  end
 
   def check_work_fulfillment_status
     @sub_service_request ||= SubServiceRequest.find(params[:sub_service_request_id])

@@ -52,6 +52,8 @@ describe "editing a study", js: true do
 
     it "should redirect to the main portal page" do
       click_button "Save"
+      wait_for_javascript_to_finish
+      sleep 1
       page.should have_content('Dashboard')
       page.should have_content('Welcome')
     end

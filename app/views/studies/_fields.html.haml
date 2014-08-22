@@ -93,6 +93,10 @@
             = f.label :sponsor_name, t(:study_form)[:sponsor_name]
             = f.text_field :sponsor_name
 
+          .field
+            = f.label :selected_for_epic, t(:study_form)[:push_to_epic]
+            = f.check_box :selected_for_epic
+
     %td.box-padding
       &nbsp;
 

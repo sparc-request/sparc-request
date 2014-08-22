@@ -58,12 +58,14 @@ class Portal::ProtocolsController < Portal::BaseController
     @errors = nil
     @portal = true
     @current_step = 'protocol'
+    session[:protocol_type] = 'study'
   end
 
   def create
     @current_step = params[:current_step]
     @protocol = Study.new(params[:study])
     @portal = true
+    session[:protocol_type] = 'study'
 
     # @protocol.assign_attributes(params[:study] || params[:project])
     if @current_step == 'protocol' and @protocol.group_valid? :protocol

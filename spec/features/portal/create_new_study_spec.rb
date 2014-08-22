@@ -69,7 +69,6 @@ describe "creating a new study from user portal", :js => true do
         wait_for_javascript_to_finish
         find('.continue_button').click
         wait_for_javascript_to_finish
-        sleep 1000
         page.should have_content "Bob"
       end
     end

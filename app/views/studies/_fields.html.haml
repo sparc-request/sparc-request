@@ -290,7 +290,7 @@
   %table.user-details-section#identity_details
     %tr
       %td.box
-        #user_detail_errors.errorExplanation
+        #user_detail_errors.errorExplanation{:style => 'display:none'}
         .info
           = render :partial => 'shared/user_search'
           - hide_user_details = (@protocol.new_record? and @protocol.project_roles.empty?) ? '' : 'display:none;'
@@ -303,7 +303,7 @@
 
       %td.box
         .info
-          .user-details-right{:style => "#{hide_user_details}"}= render :partial => 'shared/user_details_right', :locals => {:identity => current_user, :project_role => ProjectRole.new, :can_edit => true}
+          .user-details-right{:style => "#{hide_user_details}"}= render :partial => 'shared/user_details_right', :locals => {:identity => current_user, :project_role => ProjectRole.new, :can_edit => true, :portal => portal}
 
   .clear
   %br

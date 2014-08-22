@@ -71,7 +71,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
       end
 
       if USE_EPIC
-        if @protocol.should_push_to_epic?
+        if @protocol.selected_for_epic
           Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
         end
       end
@@ -107,7 +107,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
       end
 
       if USE_EPIC
-        if @protocol.should_push_to_epic?
+        if @protocol.selected_for_epic
           if epic_access and not @protocol_role.epic_access
             # Access has been removed
             Notifier.notify_for_epic_access_removal(@protocol, @protocol_role).deliver unless QUEUE_EPIC
@@ -145,7 +145,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
       @protocol_role.destroy
 
       if USE_EPIC
-        if protocol.should_push_to_epic?
+        if protocol.selected_for_epic
           if epic_access
             Notifier.notify_primary_pi_for_epic_user_removal(protocol, project_role_clone).deliver unless QUEUE_EPIC
           end

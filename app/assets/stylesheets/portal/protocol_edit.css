@@ -131,6 +131,7 @@
 
 .user-edit-protocol-view .box .info textarea {
   height: 300px;
+  width: 670px;
 }
 
 .user-edit-protocol-view .box .info input[type=checkbox] {
@@ -141,4 +142,345 @@
   max-width: 375px !important;
 }
 
+/* New Project View */
 
+.edit-project-view {
+  font-size: 12px;
+  font-family: "Calibri", Arial, sans-serif;
+}
+
+.edit-project-view .description {
+  padding: 0 12px 12px;
+}
+
+.edit-project-view .box {
+  vertical-align: top;
+  height: auto;
+  margin-left: 8px;
+  border: 3px solid #003366;
+}
+
+.edit-project-view .user-details, .edit-project-view .user_added_message {
+  margin-top: 10px;
+  /* display: none; */
+}
+
+.user-details-left input,
+.user-details-right input {
+  width: 248px !important;
+}
+
+.user-details-left select,
+.user-details-right select {
+  width: 255px !important;
+}
+
+.user_added_message {
+  background: yellow !important;
+}
+
+.user_added_message p {
+ padding: 10px;
+}
+
+.edit-project-view .user-details label {
+  width: 100px;
+  float: left;
+}
+
+.edit-project-view .user-details select {
+  width: 250px;
+}
+
+.edit-project-view .user-details .details {
+  padding: 10px;
+}
+
+.edit-project-view .box .search_container {
+  padding: 10px;
+  margin-bottom: 40px;
+}
+
+legend {
+  font-weight: bold;
+}
+
+.study_phase {
+  margin-bottom: 5px;
+}
+
+.edit-project-view .info {
+  width: 430px;
+  padding: 10px;
+  float: left;
+  height: 100%;
+  min-height: 390px;
+}
+
+.edit-project-view .box .info fieldset {
+  padding: 1px 7px 5px 7px;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  border: 1px solid #003366;
+}
+
+.edit-project-view .box .info fieldset .field {
+  padding: 2px;
+}
+
+.edit-project-view .box .info .research-type {
+  display: block;
+  float: left;
+  width: 100%;
+}
+
+.edit-project-view .box .info .human-subjects,
+.edit-project-view .box .info .vertebrate-animals {
+  padding-left: 40px;
+}
+
+.edit-project-view .box .info .human-subjects input[type=text],
+.edit-project-view .box .info .vertebrate-animals input[type=text] {
+  width: 335px;
+}
+
+.edit-project-view .box .info .human-subjects select {
+  width: 335px;
+}
+
+.approval_pending {
+  margin-top: 10px;
+}
+
+.edit-project-view .box .info .study-type {
+  display: block;
+  float: left;
+  width: 100%;
+}
+
+.edit-project-view .box .info hr {
+  color: #fff;
+}
+
+.edit-project-view .box .info .study-type .study-type-fields{
+  padding-left: 40px;
+}
+
+.edit-project-view .box .info .field {
+  display: block;
+  float: left;
+  clear: both;
+  margin-top: 4px;
+  width: 100%;
+}
+
+.edit-project-view .box .info label {
+  width: 125px;
+  display: block;
+  float: left;
+  margin-right: 10px;
+  padding: 2px;
+}
+
+.edit-project-view .box .info input {
+  width: auto;
+  display: block;
+  float: left;
+}
+
+.edit-project-view .box .info input[type=text],
+.edit-project-view .box .info select {
+  width: 375px;
+}
+
+.edit-project-view .box .info textarea {
+  width: 375;
+  min-width: 100%;
+  max-width: 100%;
+}
+
+.edit-project-view .box .info textarea {
+  height: 300px;
+}
+
+.edit-project-view .box .info input[type=checkbox] {
+  margin-top: 2px;
+}
+
+.edit-project-view .box .info option {
+  max-width: 375px;
+}
+
+.edit-project-view .add-user-details {
+  float: right;
+  height: 100%;
+}
+
+.edit-project-view .search-container {
+  border-bottom: 10px solid #fff;
+  padding: 8px;
+  width: 340px !important;
+}
+
+.edit-project-view .user-d {
+  padding: 8px;
+  width: 340px !important;
+  margin-left: -5px;
+}
+
+.edit-project-view .add-user-details .user-manager-view .user-details {
+  border: 1px solid #ECECEC;
+  width: 100%;
+}
+
+.edit-project-view .add-user-details .user-manager-view .user-details {
+  height: 30px;
+}
+
+.edit-project-view .add-user-details .center .add-user {
+  margin-top: 10px;
+}
+
+.edit-project-view .add-user-details label {
+  width: 130px;
+  font-weight: bold;
+  padding: 1px 1px 1px 10px;
+}
+
+.edit-project-view .add-user-details input {
+  width: 190px;
+}
+
+.edit-project-view .add-user-details select {
+  width: 195px;
+}
+
+.edit-project-view .add-user-details label,
+.edit-project-view .add-user-details input {
+  float: left;
+}
+
+.edit-project-view .authorized-users {
+  margin-top: 10px;
+  border: 1px solid #fff;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.edit-project-view .authorized-users th.authorized-users-section {
+  width: 50%;
+  text-align: center;
+}
+
+.edit-project-view .authorized-users th.proxy-rights {
+  font-size: 10px;
+  text-align: center;
+}
+
+.edit-project-view .authorized-users .authorized-users-section,
+.edit-project-view .authorized-users th {
+  background: #E8E8E8;
+}
+
+.edit-project-view .authorized-users th,
+.edit-project-view .authorized-users td {
+  border: 1px solid #fff;
+  text-align: left;
+  height: 35px;
+}
+
+.edit-project-view .search-results {
+  height: 185px;
+  overflow: auto;
+  margin-bottom: 20px;
+}
+
+.edit-project-view .search-results .user {
+  border: 1px solid #E8E8E8;
+  border-bottom: none;
+  padding: 3px;
+  background: #fff;
+}
+
+.edit-project-view .search-results .user:hover {
+  background-color: #AAE;
+  cursor: pointer;
+}
+
+/* Navigation Bar */
+
+.continue{
+  margin-top: 15px;
+  clear: both;
+}
+
+.continue a{
+  cursor:pointer;
+  text-decoration: none;
+  font-size: 18px;
+  color: #fff;
+}
+
+.continue div{
+  display: inline-block;
+  zoom: 1;
+  *display:inline;
+}
+
+.continue div.exit a{
+  margin: 0 0 0 60px;
+}
+
+.continue div.nav-backward{
+  margin-left: 12px;
+  vertical-align: bottom;
+}
+
+.continue div.nav-backward img {
+  vertical-align: middle;
+  padding-right: 5px;
+  padding-bottom: 2px;
+}
+
+.continue div.exit{
+  width: 605px;
+}
+
+.continue div.exit a {
+  vertical-align: 8px;
+  padding-left: 85px;
+}
+
+.continue div.nav-forward{
+  margin-right: 12px;
+  vertical-align: bottom;
+  text-align: right;
+
+}
+
+.continue div.nav-forward img {
+  vertical-align: middle;
+  padding-right: 5px;
+  padding-bottom: 2px;
+}
+
+/* Override/Extra */
+
+#error_explanation, .error_explanation, #errorExplanation, .errorExplanation {
+  width: auto !important;
+}
+
+.portal_container .grid_12 {
+  width: 905px;
+}
+
+.blue-button {
+  background-image: url("/assets/blue_button.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  text-align: center;
+  padding: 5px 0px;
+  cursor: pointer;
+  color: #fff !important;
+  text-decoration: none;
+}

@@ -43,18 +43,21 @@ $(document).ready ->
     ssr_id = $(this).attr('ssr_id')
     id = $(this).attr('id')
     li_count = $('#line_item_count').val()
-
-    if li_count == "1" and ssr_id != ''
-      if confirm("This action will delete this service request and you will be redirected to your user portal. Click OK to proceed.")
+    has_fulfillments = $(this).data('has_fulfillments') || null
+    if has_fulfillments
+      alert("This line item has one or more fulfillments associated with it and can not be deleted.")
+    else
+      if li_count == "1" and ssr_id != ''
+        if confirm("This action will delete this service request and you will be redirected to your user portal. Click OK to proceed.")
+          $("#services .line-items").remove()
+          $("#services").append('<span class="spinner"><img src="/assets/spinner.gif"/></span>')
+          $(this).hide()
+          removeService(sr_id, id, true)
+      else
         $("#services .line-items").remove()
         $("#services").append('<span class="spinner"><img src="/assets/spinner.gif"/></span>')
         $(this).hide()
-        removeService(sr_id, id, true)
-    else
-      $("#services .line-items").remove()
-      $("#services").append('<span class="spinner"><img src="/assets/spinner.gif"/></span>')
-      $(this).hide()
-      removeService(sr_id, id, false)
+        removeService(sr_id, id, false)
 
   # Build out cart FAQ from i18n yaml file.  Pretty hackish to get HTML temlating done. CEA
   helpList = "<ul>"

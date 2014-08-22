@@ -18,27 +18,18 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+# /////////////////////////////////////////////
+# //
+# // STUDY - Create.js for New Studies
+# //
+# /////////////////////////////////////////////
 
-feature 'create new institution', :js => true do
-  before :each do
-    default_catalog_manager_setup
-  end
+if <%= @protocol.valid? and @current_step == 'return_to_portal' %>
+  window.location.href = "<%= portal_root_path %>"
+else
+  #This is to re-enable the submit, it is disabled to prevent multiple posts, if you click rapidly.
+  $('a.continue_button').click ->
+    $('form').submit()
 
-  scenario 'user creates a new institution' do
-    click_link('Create New Institution')
-    get_alert_window do |prompt|
-      prompt.send_keys("Greatest Institution")
-      prompt.accept
-
-      click_link( 'Greatest Institution' )
-      
-      fill_in 'institution_abbreviation', :with => 'GreatestInstitution'
-      fill_in 'institution_order', :with => '1'
-      fill_in 'institution_description', :with => ''
-      
-      first("#save_button").click
-      page.should have_content( 'Greatest Institution saved successfully' )
-    end
-  end
-end
+  $('#current_step').val("<%= @current_step %>")
+  $('.new_study').html("<%= escape_javascript(render :partial => 'studies/form', :locals => {:study => @protocol, :portal => @portal}) %>")

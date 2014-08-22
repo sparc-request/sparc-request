@@ -166,12 +166,12 @@ module CapybaraProper
         #clicks add button next to specified serviceName.
         #otherwise, searches for the service in the searchbox
         #and adds it from there
-        #beware of services with a '(' in the name, capybara does 
+        #beware of services with a '(' in the name, capybara does
         #not want to send that character in, thus causing
         #autocomplete of the searchbox to fail at times. 
         clickOffAndWait
 
-        #ensure the correct service is selected, though portions of names of some services may be the same as others. 
+        #ensure the correct service is selected, though portions of names of some services may be the same as others.
         addServiceButton = first(:xpath, "//a[text()='#{serviceName}']/parent::span/parent::span//button[text()='Add']")
         if addServiceButton.nil? then 
             addServiceButton = first(:xpath, "//a[contains(text(),'#{serviceName}')]/parent::span/parent::span//button[text()='Add']")

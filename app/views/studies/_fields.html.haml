@@ -93,6 +93,10 @@
             = f.label :sponsor_name, t(:study_form)[:sponsor_name]
             = f.text_field :sponsor_name
 
+          .field
+            = f.label :selected_for_epic, t(:study_form)[:push_to_epic]
+            = f.check_box :selected_for_epic
+
     %td.box-padding
       &nbsp;
 
@@ -286,7 +290,7 @@
   %table.user-details-section#identity_details
     %tr
       %td.box
-        #user_detail_errors.errorExplanation
+        #user_detail_errors.errorExplanation{:style => 'display:none'}
         .info
           = render :partial => 'shared/user_search'
           - hide_user_details = (@protocol.new_record? and @protocol.project_roles.empty?) ? '' : 'display:none;'
@@ -299,7 +303,7 @@
 
       %td.box
         .info
-          .user-details-right{:style => "#{hide_user_details}"}= render :partial => 'shared/user_details_right', :locals => {:identity => current_user, :project_role => ProjectRole.new, :can_edit => true}
+          .user-details-right{:style => "#{hide_user_details}"}= render :partial => 'shared/user_details_right', :locals => {:identity => current_user, :project_role => ProjectRole.new, :can_edit => true, :portal => portal}
 
   .clear
   %br

@@ -57,7 +57,7 @@ describe 'edit a pricing setup', :js => true do
       page.execute_script %Q{ $(".rate").change() }
     end
   
-    page.execute_script %Q{ $(".save_button").click() }
+    first(".save_button").click
     wait_for_javascript_to_finish
     
     page.should have_content "Office of Biomedical Informatics saved successfully"
@@ -92,7 +92,7 @@ describe 'edit a pricing setup', :js => true do
       wait_for_javascript_to_finish      
     end
   
-    page.execute_script %Q{ $(".save_button").click() }
+    first(".save_button").click
     wait_for_javascript_to_finish
     
     page.should have_content "Office of Biomedical Informatics saved successfully"

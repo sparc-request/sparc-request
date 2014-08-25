@@ -436,6 +436,7 @@ en:
     status_blank: "Select a Funding Status"
     udak_project_number: "Financial Account (UDAK#):"
     sponsor_name: "Sponsor Name:*"
+    push_to_epic: "Publish Study in Epic:"
     rate: "Indirect Cost Rate:"
     funding_rfa: "Funding Opportunity #/RFA:"
     potential_funding_start_date: "Potential Funding Start Date:"
@@ -492,6 +493,7 @@ en:
     description: "Brief Description:"
     rate: "Indirect Cost Rate:"
     save: "Save"
+    push_to_epic: "Publish Project to Epic:"
 
   # Study/Project Shared
   protocol_shared:

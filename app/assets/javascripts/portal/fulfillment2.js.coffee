@@ -54,7 +54,7 @@ $(document).ready ->
   validateDate = (start,end) ->
     if start == '' or end ==''
       return true 
-    if start > end 
+    if start > end
       return false
     else 
       return true
@@ -86,8 +86,8 @@ $(document).ready ->
     data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
     data['line_items_visit_id'] = $(this).parents("tr").data("line_items_visit_id") || null
     if $(this).attr('name') == 'protocol_start_date' or $(this).attr('name') == 'protocol_end_date'
-      start = $('#protocol_start_date_picker').val()
-      end = $('#protocol_end_date_picker').val()
+      start = $('#protocol_start_date_picker').datepicker("getDate")
+      end = $('#protocol_end_date_picker').datepicker("getDate")
       if validateDate(start,end)
         put_attribute(object_id, klass, data)
       else
@@ -110,11 +110,24 @@ $(document).ready ->
   $(document).on('click', '.delete_data', ->
     klass = getObjKlass(this)
     object_id = $(this).data("#{klass}_id")
-    data = {}
-    data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
-    confirm_message = "Are you sure that you want to remove this service from all subjects' visit calendars in this arm?"
-    if $(this).data("has_popup") == true
-      if confirm(confirm_message)
+    has_fulfillments = $(this).data("has_fulfillments") || null
+    if has_fulfillments
+      alert("This line item has one or more fulfillments associated with it and can not be deleted.")
+    else
+      data = {}
+      data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
+      confirm_message = "Are you sure that you want to remove this service from all subjects' visit calendars in this arm?"
+      if $(this).data("has_popup") == true
+        if confirm(confirm_message)
+          $.ajax
+            type: 'DELETE'
+            url:  "/portal/admin/#{klass}s/#{object_id}"
+            data: JSON.stringify(data)
+            dataType: "script"
+            contentType: 'application/json; charset=utf-8'
+            success: ->
+              $().toastmessage('showSuccessToast', "#{klass.humanize()} has been deleted.");
+      else
         $.ajax
           type: 'DELETE'
           url:  "/portal/admin/#{klass}s/#{object_id}"
@@ -123,15 +136,6 @@ $(document).ready ->
           contentType: 'application/json; charset=utf-8'
           success: ->
             $().toastmessage('showSuccessToast', "#{klass.humanize()} has been deleted.");
-    else
-      $.ajax
-        type: 'DELETE'
-        url:  "/portal/admin/#{klass}s/#{object_id}"
-        data: JSON.stringify(data)
-        dataType: "script"
-        contentType: 'application/json; charset=utf-8'
-        success: ->
-          $().toastmessage('showSuccessToast', "#{klass.humanize()} has been deleted.");
   )
 
   $('#cwf_building_dialog').dialog
@@ -444,18 +448,22 @@ $(document).ready ->
   $(document).on('click', '.cwf_delete_data', ->
     klass = getObjKlass(this)
     object_id = $(this).data("#{klass}_id")
-    data = {}
-    data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
-    confirm_message = "Are you sure that you want to remove this service?"
-    if confirm(confirm_message)
-      $.ajax
-        type: 'DELETE'
-        url:  "/portal/admin/line_items/#{object_id}"
-        data: JSON.stringify(data)
-        dataType: "script"
-        contentType: 'application/json; charset=utf-8'
-        success: ->
-          $().toastmessage('showSuccessToast', "Service has been deleted.");
+    has_fulfillments = $(this).data("has_fulfillments") || null
+    if has_fulfillments
+      alert("This line item has one or more fulfillments associated with it and can not be deleted.")
+    else
+      data = {}
+      data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
+      confirm_message = "Are you sure that you want to remove this service?"
+      if confirm(confirm_message)
+        $.ajax
+          type: 'DELETE'
+          url:  "/portal/admin/line_items/#{object_id}"
+          data: JSON.stringify(data)
+          dataType: "script"
+          contentType: 'application/json; charset=utf-8'
+          success: ->
+            $().toastmessage('showSuccessToast', "Service has been deleted.");
   )
 
   $(document).on('click', '.expand_li', ->

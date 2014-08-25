@@ -103,11 +103,15 @@ profile['toolkit.scrollbox.smoothScroll'] = false
 
 # TODO: try network.http.pipelining = true
 
-Capybara.register_driver :default do |app|
-  Capybara::Selenium::Driver.new(app, :browser => :firefox, :profile => profile)
+# Capybara.register_driver :default do |app|
+#   Capybara::Selenium::Driver.new(app, :browser => :firefox, :profile => profile)
+# end
+
+Capybara.register_driver :selenium do |app|
+  Capybara::Driver::Selenium.new app, :browser => :firefox, :profile => profile
 end
 
-Capybara.javascript_driver = :default
+Capybara.javascript_driver = :selenium_with_firebug
 Capybara.default_wait_time = 15
 Capybara.ignore_hidden_elements = true
 

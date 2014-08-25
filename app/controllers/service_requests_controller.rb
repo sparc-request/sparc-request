@@ -292,7 +292,7 @@ class ServiceRequestsController < ApplicationController
     # that has been done, one of them will click a link which calls
     # approve_epic_rights.
     if USE_EPIC
-      if @protocol.should_push_to_epic?
+      if @protocol.selected_for_epic
         @protocol.ensure_epic_user
         if QUEUE_EPIC
           EpicQueue.create(:protocol_id => @protocol.id) unless EpicQueue.where(:protocol_id => @protocol.id).size == 1

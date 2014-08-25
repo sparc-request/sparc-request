@@ -27,12 +27,12 @@ module CapybaraUserPortal
         wait_for_javascript_to_finish
     end
 
-    def createNewRequestTest
+    def createNewStudyTest
         #clicks on the Create New Request button and 
         #checks that it takes the browser to sparc proper
-        find(:xpath, "//a/img[@class='portal_create_new_request']").click
+        find(:xpath, "//a/img[@class='portal_create_new_study']").click
         wait_for_javascript_to_finish
-        page.should have_xpath "//div[@id='institution_accordion']"
+        page.should have_content "Short Title"
         goToUserPortal
     end
 
@@ -386,7 +386,7 @@ module CapybaraUserPortal
         #expects instance of ServiceRequestForComparison as input 
         #Intended as full UP happy test.
         goToUserPortal
-        createNewRequestTest
+        createNewStudyTest
         findStudy(request.study.short)
         editOriginalTest(request)
         editStudyInformation

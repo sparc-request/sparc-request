@@ -43,7 +43,7 @@ module CapybaraClinical
     def testService(service)
         #expects instance of ServiceWithAddress as input
         #adds a visit then deletes the same visit in the visit calendar
-        switchTabTo "Study Schedule"
+        switchTabTo "study_schedule"
         upperInputTest
         visitText = find(:xpath, "//select[@id='visit_position']/option[@value='']").text[4..-1]
         visitDay = visitText[6..-1]
@@ -79,6 +79,12 @@ module CapybaraClinical
         #then save the page
         #then make sure save warning disappears.
         page.should have_content "You must save this form for any changes to be commited."
+        find("#save_appointments").click
+        page.driver.browser.switch_to.alert.accept
+        find(".hasDatepicker").click
+        sleep 2
+        first("a.ui-state-default.ui-state-highlight").click
+        sleep 2
         find("#save_appointments").click
         wait_for_javascript_to_finish
         page.should_not have_content "You must save this form for any changes to be commited."
@@ -125,7 +131,7 @@ module CapybaraClinical
     def subjectTracker(service)
         #expects instance of ServiceWithAddress as input
         #tests the subject tracker tab
-        switchTabTo "Subject Tracker"
+        switchTabTo "subject_tracker"
         if first(:xpath, "//tr[contains(@class, 'fields subject')]").nil? then #if no subjects available add one
             click_link "Add a subject"
         end
@@ -168,10 +174,10 @@ module CapybaraClinical
         subjectsNum = newSubjectsNum
 
         #test remove subject
-        first(:xpath, "//img[@src='/assets/cancel.png']").click
+        all(:xpath, "//img[@src='/assets/cancel.png']")[1].click
         page.driver.browser.switch_to.alert.accept
         wait_for_javascript_to_finish
-        find(:xpath, "//div[@id='subjects']/form/p/input[@value='Save']").click
+        find("#subject_tracker_save").click
         wait_for_javascript_to_finish
         newSubjectsNum = all(:xpath, "//div/h3[text()='ARM 1']/following-sibling::table[contains(@id,'subjects_list')]/tbody/tr").length
         newSubjectsNum.should eq(subjectsNum-1)
@@ -179,7 +185,7 @@ module CapybaraClinical
 
     def paymentsTab
         #tests the payments tab
-        switchTabTo "Payments"
+        switchTabTo "payments"
         paymentsNum = all(:xpath, "//table[@id='payments_list']/tbody/tr[not(@style)]").length
         if paymentsNum == 0 then 
             click_link "Add a payment"
@@ -231,25 +237,25 @@ module CapybaraClinical
 
     def checkTabsCWF
         #runs through each tab
-        switchTabTo 'Subject Tracker'
+        switchTabTo 'subject_tracker'
         wait_for_javascript_to_finish
 
-        switchTabTo 'Study Level Charges'
+        switchTabTo 'study_level_charges'
         wait_for_javascript_to_finish
         
-        switchTabTo 'Payments'
+        switchTabTo 'payments'
         wait_for_javascript_to_finish
         
-        switchTabTo 'Billing'
+        switchTabTo 'billing'
         wait_for_javascript_to_finish
         
-        switchTabTo 'Study Schedule'
+        switchTabTo 'study_schedule'
         wait_for_javascript_to_finish
     end
 
     def billingTab
         #tests the billing tab by adding a new cover letter then confirming that it exists on the SR
-        switchTabTo "Billing"
+        switchTabTo "billing"
         click_link "New cover letter"
         wait_for_javascript_to_finish
         find(:xpath, "//input[@type='submit']").click

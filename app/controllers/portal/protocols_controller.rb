@@ -50,9 +50,38 @@ class Portal::ProtocolsController < Portal::BaseController
       format.html
     end
   end
-  
-  
-   def update_from_fulfillment
+
+  def new
+    @protocol = Study.new
+    @protocol.requester_id = current_user.id
+    @protocol.populate_for_edit
+    @errors = nil
+    @portal = true
+    @current_step = 'protocol'
+    session[:protocol_type] = 'study'
+  end
+
+  def create
+    @current_step = params[:current_step]
+    @protocol = Study.new(params[:study])
+    @portal = true
+    session[:protocol_type] = 'study'
+
+    # @protocol.assign_attributes(params[:study] || params[:project])
+    if @current_step == 'protocol' and @protocol.group_valid? :protocol
+      @current_step = 'user_details'
+      @protocol.populate_for_edit
+    elsif @current_step == 'user_details' and @protocol.valid?
+      @protocol.save
+      @current_step = 'return_to_portal'
+    else
+      # TODO: Is this neccessary?
+      @errors = @current_step == 'protocol' ? @protocol.grouped_errors[:protocol].messages : @protocol.grouped_errors[:user_details].messages
+      @protocol.populate_for_edit
+    end
+  end
+
+  def update_from_fulfillment
     @protocol = Protocol.find(params[:id])
     if @protocol.update_attributes(params[:protocol])
       render :nothing => true
@@ -62,6 +91,7 @@ class Portal::ProtocolsController < Portal::BaseController
       end
     end
   end
+
   def edit
     @edit_protocol = true
     @protocol = Protocol.find(params[:id])

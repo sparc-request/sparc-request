@@ -21,8 +21,8 @@
 - if (@sub_service_request.nil? ? @service_request.has_one_time_fee_services? : @sub_service_request.has_one_time_fee_services?) or @merged
   %table.service_calendar{:class => @review ? 'review_totals' : ''}
     %thead{:class => @review ? thead_class : 'ui-widget-header'}
-      = render :partial => "master_calendar/otf_header"
+      = render :partial => "/service_calendars/master_calendar/otf_header"
     %tbody.cell-border
-      = render :partial => "master_calendar/otf_line_items", :locals =>{:current_request => @service_request}
+      = render :partial => "/service_calendars/master_calendar/otf_line_items", :locals =>{:current_request => @service_request}
       - unless @study_tracker and !@merged
-        = render :partial => "master_calendar/otf_totals", :locals =>{:current_request => @service_request}
+        = render :partial => "/service_calendars/master_calendar/otf_totals", :locals =>{:current_request => @service_request}

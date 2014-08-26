@@ -22,7 +22,7 @@
   - @protocol.arms.each do |arm|
     .arm_calendar_container{:'data-arm_id' => arm.id}
       - next if arm.visit_groups.empty?
-      = render :partial => "master_calendar/pppv_calendar", :locals => {:service_request => @service_request, :arm => arm}
+      = render :partial => "/service_calendars/master_calendar/pppv_calendar", :locals => {:service_request => @service_request, :arm => arm}
 - if @protocol.has_one_time_fees? @service_request, @portal
-  = render :partial => "master_calendar/otf_calendar", :locals =>{:current_request => @service_request}
+  = render :partial => "/service_calendars/master_calendar/otf_calendar", :locals =>{:current_request => @service_request}
 = render :partial => 'merged_grand_totals', :locals => {:service_request => @service_request}

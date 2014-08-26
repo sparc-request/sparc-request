@@ -116,6 +116,18 @@
   float: left;
 }
 
+.user-edit-protocol-view .box .info span.non_standard_usage_of_radio_buttons label,
+.user-edit-protocol-view .box .info span.non_standard_usage_of_radio_buttons input {
+  width: auto !important;
+  display: inline-block;
+  float: none;
+  margin: 3px 0px 0px;
+  padding: 0px;
+}
+.user-edit-protocol-view .box .info span.non_standard_usage_of_radio_buttons label {
+  margin-right: 10px;
+}
+
 .user-edit-protocol-view .box .info input[type=text],
 .user-edit-protocol-view .box .info select {
   width: 662px !important;

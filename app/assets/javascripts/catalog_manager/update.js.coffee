@@ -82,8 +82,10 @@ $(document).ready ->
     remove_all_errors()
   )
     
-  $('.save_button').live('click', ->
+  $('.save_button').live('click', (e) ->
+    e.preventDefault()
     $(this).attr('disabled', 'disabled')
+    $(this).parents('form').submit()
     $('.spinner').show()
 
     $(document).ajaxStop ->

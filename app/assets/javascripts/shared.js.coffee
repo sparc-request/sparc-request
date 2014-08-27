@@ -45,16 +45,19 @@ $(document).ready ->
     parent = $(this).attr('parent')
     identity_id = $(this).attr('identity_id')
     data = $(".#{parent} input").serialize()
+    data += '&portal=' + $('#portal').val()
     $.ajax
       url: "/identities/#{identity_id}"
       type: 'POST'
       data: data
 
   $('.add-user button').live 'click', ->
+    data = $('#identity_details :input').serialize()
+    data += '&portal=' + $("#portal").val()
     $.ajax
       url: '/identities/add_to_protocol'
       type: 'POST'
-      data: $('#identity_details :input').serialize()
+      data: data
     return false
 
   $('.restore_project_role').live 'click', ->

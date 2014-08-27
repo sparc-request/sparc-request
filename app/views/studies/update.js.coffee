@@ -40,4 +40,4 @@ else
     $('.protocol_details_container').hide()
     $('.user-details-container').show()
   else
-    $('.edit_study').html("<%= escape_javascript(render :partial => 'studies/form', :locals => {:study => @study, :service_request => @service_request, :portal => false}) %>")
+    $('.edit_study').html("<%= escape_javascript(render :partial => 'studies/form', :locals => {:study => @study, :service_request => @service_request, :portal => @portal}) %>")

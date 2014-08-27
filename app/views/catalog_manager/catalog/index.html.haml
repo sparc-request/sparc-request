@@ -24,14 +24,14 @@
             %li= link_to t(:cm_index)[:provider], '#', :class => "provider"
           - institution.providers.order("`order`").each do |provider|
             %li{:id => 'PROVIDER' + provider.id.to_s}
-              - can_access_provider = can_access_institution or @user.can_edit_entity? provider
+              - can_access_provider = can_access_institution || (@user.can_edit_entity? provider)
               = node provider, can_access_provider
               %ul
                 - if can_access_provider
                   %li= link_to t(:cm_index)[:program], '#', :class => "program"
                 - provider.programs.order("`order`").each do |program|
                   %li{:id => 'PROGRAM' + program.id.to_s}
-                    - can_access_program = can_access_provider or @user.can_edit_entity? program
+                    - can_access_program = can_access_provider || (@user.can_edit_entity? program)
                     = node program, can_access_program
                     - if program.cores.empty?
                       %ul
@@ -49,7 +49,7 @@
                           %li{:id => 'SERVICE' + service.id.to_s}= node service                            
                         - program.cores.order("`order`").each do |core|
                           %li{:id => 'CORE' + core.id.to_s}
-                            - can_access_core = can_access_program or @user.can_edit_entity? core
+                            - can_access_core = can_access_program || (@user.can_edit_entity? core)
                             = node core, can_access_core
                             %ul
                               - if can_access_core

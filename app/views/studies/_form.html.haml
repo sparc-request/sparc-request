@@ -22,15 +22,12 @@
   :javascript
     $(document).ready( function(e) {
       $('a.continue_button').click(function() {
-        if ($('input#study_selected_for_epic').is(':checked')) {
+        if ($('#study_selected_for_epic_true').is(':checked')) {
           $('form').submit();
         }
         else {
           if (confirm("You have chosen services that are orderable in Epic. Please confirm that you do NOT want your study to be published in Epic. You will not be able to associate encounters or orders to the study without publishing.")) {
             $('form').submit();
-          }
-          else {
-            e.stopImmediatePropagation(); 
           }
         }
       });

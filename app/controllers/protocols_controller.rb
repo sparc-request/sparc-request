@@ -32,12 +32,14 @@ class ProtocolsController < ApplicationController
     @protocol.populate_for_edit
     @errors = nil
     @current_step = 'protocol'
+    @portal = false
   end
 
   def create
     @service_request = ServiceRequest.find session[:service_request_id]
     @current_step = params[:current_step]
     @protocol = self.model_class.new(params[:study] || params[:project])
+    @portal = params[:portal]
 
     # @protocol.assign_attributes(params[:study] || params[:project])
 
@@ -62,12 +64,14 @@ class ProtocolsController < ApplicationController
     @protocol = current_user.protocols.find params[:id]
     @protocol.populate_for_edit
     @current_step = 'protocol'
+    @portal = false
   end
 
   def update
     @service_request = ServiceRequest.find session[:service_request_id]
     @current_step = params[:current_step]
     @protocol = current_user.protocols.find params[:id]
+    @portal = params[:portal]
 
     @protocol.assign_attributes(params[:study] || params[:project])
 

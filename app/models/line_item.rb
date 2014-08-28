@@ -208,19 +208,21 @@ class LineItem < ActiveRecord::Base
 
   # This determines the complete cost for a line item with fulfillments
   # taking into account the possibility for a unit factor greater than 1
-  def direct_cost_for_one_time_fee_with_fulfillments
+  def direct_cost_for_one_time_fee_with_fulfillments start_date, end_date
     if self.fulfillments.empty?
       return 0.0
     else
       total = 0.0
       self.fulfillments.each do |fulfillment|
-        if fulfillment.unit_quantity?
-          total += ((fulfillment.quantity * fulfillment.unit_quantity) / units_per_package).ceil * self.per_unit_cost
-        else
-          total += (fulfillment.quantity / units_per_package).ceil * self.per_unit_cost
+        if fulfillment.within_date_range?(start_date, end_date)
+          if fulfillment.unit_quantity?
+            total += fulfillment.quantity * fulfillment.unit_quantity
+          else
+            total += fulfillment.quantity
+          end
         end
       end
-      return total
+      return ((total / units_per_package).ceil * self.applicable_rate)
     end
   end
 

@@ -20,25 +20,23 @@
 
 require 'spec_helper'
 
-feature 'create new institution', :js => true do
+describe 'adding an additional service', js: true do
+
+  let_there_be_lane
+  let_there_be_j
+  fake_login_for_each_test
+  build_service_request_with_project
+
   before :each do
-    default_catalog_manager_setup
+    visit portal_root_path
+    wait_for_javascript_to_finish
   end
-
-  scenario 'user creates a new institution' do
-    click_link('Create New Institution')
-    get_alert_window do |prompt|
-      prompt.send_keys("Greatest Institution")
-      prompt.accept
-
-      click_link( 'Greatest Institution' )
-      
-      fill_in 'institution_abbreviation', :with => 'GreatestInstitution'
-      fill_in 'institution_order', :with => '1'
-      fill_in 'institution_description', :with => ''
-      
-      first("#save_button").click
-      page.should have_content( 'Greatest Institution saved successfully' )
+  
+  describe 'clicking the button' do
+    it "should redirect to the application root page" do
+      find('.add-services-button').click
+      wait_for_javascript_to_finish
+      page.should have_content("Welcome to the SPARC Request Services Catalog")
     end
   end
 end

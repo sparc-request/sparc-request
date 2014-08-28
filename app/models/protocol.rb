@@ -74,6 +74,7 @@ class Protocol < ActiveRecord::Base
   attr_accessible :billing_business_manager_static_email
   attr_accessible :recruitment_start_date
   attr_accessible :recruitment_end_date
+  attr_accessible :selected_for_epic
 
   attr_accessor :requester_id
   

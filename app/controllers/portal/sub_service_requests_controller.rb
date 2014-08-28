@@ -335,7 +335,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
 
     # Check to see if we need to send notifications for epic.
     if USE_EPIC
-      if @protocol.should_push_to_epic?
+      if @protocol.selected_for_epic
         @protocol.awaiting_approval_for_epic_push
         Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
       end

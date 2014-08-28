@@ -193,6 +193,8 @@ describe "service calendar", :js => true do
           find("#visits_#{@visit_id}_insurance_billing_qty").click()
           wait_for_javascript_to_finish
 
+          sleep 3 # TODO: ugh: I got rid of all the sleeps, but I can't get rid of this one
+
           all(".pp_max_total_direct_cost.arm_#{arm1.id}").each do |x|
             if x.visible?
               x.should have_exact_text("$300.00")

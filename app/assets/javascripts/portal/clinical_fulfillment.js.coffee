@@ -36,15 +36,19 @@ $(document).ready ->
   $('.procedure_box').on 'change', ->
     $(this).parent('td').siblings().children('.procedure_r_qty').addClass('changed_attr')
 
-  $("#save_appointments").click (event) ->
+  $(document).on('click', '#save_appointments', (event) ->
     $('.procedure_r_qty, .procedure_t_qty').not('.changed_attr').prop('disabled', true)
+    if $('.hasDatepicker:visible').val() == ""
+      event.preventDefault()
+      alert('Please select a date for this visit before saving.')
+  )
 
   # end submit data for changes/requirements
 
   $('#procedures_added_popup').dialog
     # dialogClass: "no-close"
     autoOpen: true
-    # height: 80
+    # height: 80 
     width: 350
     modal: true
     resizable: false
@@ -231,6 +235,12 @@ $(document).ready ->
       dataType: 'html'
       contentType: 'application/json; charset=utf-8'
       success: (response_html) ->
+        ##This needs to be first, or it won't get overridden by the view javascript, which hides these if no procedure was added.
+        confirmExit = ->
+          "Changes to patient calendars need to be saved, click 'Stay on page' and save the form to save the calendar, or click 'Leave page' to leave the page and dismiss your changes."
+        window.onbeforeunload = confirmExit
+        
+        $('.save_alert').show()
         $('.new_procedure_wrapper:visible').replaceWith(response_html)
         $('tr.grand_total_row:visible').before("<tr class='new_procedure_wrapper' data-appointment_index='#{appointment_index}'></tr>")
         $('#processing_request').hide()
@@ -310,10 +320,25 @@ $(document).ready ->
 
   ####Validations for fulfillment fields within the Study Level Charges tab
   $(document).on('click', '.study_charges_submit', (event) ->
-    $('.fulfillment_quantity:visible, .fulfillment_date:visible, .fulfillment_unit_quantity:visible').each (index, field) ->
-      if ($(field).val() == "")
+    $('.fulfillment_unit_quantity:visible').each (index, field) ->
+      has_errors = false
+      if ($(field).val() != "")
+        if not $.isNumeric($(field).val())
+          has_errors = true
+      if has_errors
         event.preventDefault()
-        $().toastmessage('showWarningToast', 'Date, quantity, and unit quantity are required fields.')
+        $().toastmessage('showWarningToast', 'Unit quantity must be a number')
+        return false 
+        
+    $('.fulfillment_quantity:visible, .fulfillment_date:visible').each (index, field) ->
+      has_errors = false
+      if ($(field).val() == "")
+        has_errors = true
+      else if !$(field).hasClass('fulfillment_date') and not $.isNumeric($(field).val())
+        has_errors = true
+      if has_errors
+        event.preventDefault()
+        $().toastmessage('showWarningToast', 'Date and quantity are required fields and must be entered with appropriate values')
         return false
   )
 
@@ -359,17 +384,19 @@ $(document).ready ->
 
 
   #Research project summary report start and end date
-  $("#rps_start_date").datepicker(dateFormat: "yy-mm-dd")
-  $("#rps_end_date").datepicker(dateFormat: "yy-mm-dd")
-
+  $(document).on('click','#research_project_summary_report_in_cwf', ->
+    $('#project_summary_report').dialog('open')
+    $("#rps_start_date").datepicker(dateFormat: "yy-mm-dd")
+    $("#rps_end_date").datepicker(dateFormat: "yy-mm-dd")
+    )
   continue_with_research_project_summary_report = false
-  $("#research_project_summary_report_date_range").dialog(autoOpen: false, dialogClass: "report_date_range")
+  $("#research_project_summary_report_date_range").dialog(autoOpen: false, dialogClass: "report_date_range", modal: true)
   $(document).on 'click', '#research_project_summary_report_in_cwf', (event) ->
     if continue_with_research_project_summary_report == false
       $("#research_project_summary_report_date_range").dialog("open")
       event.preventDefault()
   
-  $(document).on 'click', '#rps_continue', ->
+  $(document).on 'click', '#rps_continue', -> 
     continue_with_research_project_summary_report = true
     start_date = $('#rps_start_date').val()
     end_date = $('#rps_end_date').val()

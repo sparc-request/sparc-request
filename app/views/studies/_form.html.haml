@@ -18,12 +18,28 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-:javascript
-  $(document).ready( function() {
-    $('a.continue_button').click(function() {
-      $('form').submit();
-    });
-  })
+- if USE_EPIC && @epic_services
+  :javascript
+    $(document).ready( function(e) {
+      $('a.continue_button').click(function() {
+        if ($('#study_selected_for_epic_true').is(':checked')) {
+          $('form').submit();
+        }
+        else {
+          if (confirm("You have chosen services that are orderable in Epic. Please confirm that you do NOT want your study to be published in Epic. You will not be able to associate encounters or orders to the study without publishing.")) {
+            $('form').submit();
+          }
+        }
+      });
+    })
+
+- else
+  :javascript
+    $(document).ready( function() {
+      $('a.continue_button').click(function() {
+        $('form').submit();
+      });
+    })
 
 /////////////////////////////////////////////
 //
@@ -31,9 +47,17 @@
 //
 /////////////////////////////////////////////
 
-= form_for @protocol, :remote => true do |f|
-  .grid_12
-    %h3.blue-provider.step-header.ui-corner-all= @current_step == 'protocol' ? t(:protocol_shared)[:step_text] : t(:protocol_shared)[:step_text_2]
+-#
+- options = {:remote => true}
+- if portal.to_s == 'true'
+  - options[:url] = portal_studies_path (study)
+
+= form_for @protocol, options do |f|
+  = hidden_field_tag "portal", portal
+
+  -if not portal
+    .grid_12
+      %h3.blue-provider.step-header.ui-corner-all= @current_step == 'protocol' ? t(:protocol_shared)[:step_text] : t(:protocol_shared)[:step_text_2]
   = f.hidden_field :requester_id
   = hidden_field_tag :current_step, @current_step
   .clear
@@ -50,13 +74,13 @@
             %li
               = key.to_s.humanize unless key == :base # manually added errors should be ignored
               = msg
-  .edit-project-view= render :partial => 'studies/fields', :locals => {:study => study, :f => f}
-  .continue
+  .edit-project-view.portal_container= render :partial => 'studies/fields', :locals => {:study => study, :f => f, :portal => portal}
+  .continue.portal_container
     .grid_12
       %div{:class => 'blue-provider'}
         .nav-backward
           .return-to-previous
-            %a{:href => "#{protocol_service_request_path(service_request)}"}
+            %a{:href => portal.to_s == 'true' ? "#{portal_root_path}" : "#{protocol_service_request_path(service_request)}"}
               = image_tag('left_arrow.png', :alt => "Cancel")
               %span= t(:bottom_navigation)[:cancel]
         .exit= image_tag('Filler.png')
@@ -65,4 +89,3 @@
             %a{:href => "javascript:void(0)", :class => 'continue_button'}
               %span= t(:bottom_navigation)[:continue]
               = image_tag('right_arrow.png', :alt => "SaveAndContinue")
-            / %input{:type => 'image', :src => '/assets/ContinueOld.png', :alt => "SaveAndContinue"}

@@ -27,12 +27,12 @@ module CapybaraUserPortal
         wait_for_javascript_to_finish
     end
 
-    def createNewRequestTest
+    def createNewStudyTest
         #clicks on the Create New Request button and 
         #checks that it takes the browser to sparc proper
-        find(:xpath, "//a/img[@class='portal_create_new_request']").click
+        find(:xpath, "//a/img[@class='portal_create_new_study']").click
         wait_for_javascript_to_finish
-        page.should have_xpath "//div[@id='institution_accordion']"
+        page.should have_content "Short Title"
         goToUserPortal
     end
 
@@ -60,7 +60,8 @@ module CapybaraUserPortal
     def accordionInfoBox
         #returns currently expanded study information div that
         #  displays the study information, users, and SRs.
-        find(:xpath, "//div[@aria-expanded='true']")
+        # find(:xpath, "//div[@aria-expanded='true']")
+        find("div.protocol-information.ui-accordion-content-active")
     end
 
     def createNotification(studyName)
@@ -74,8 +75,10 @@ module CapybaraUserPortal
         goToSparcProper("jpl6@musc.edu","p4ssword")
         goToUserPortal
         findStudy studyName
+        sleep 3
         within accordionInfoBox do
-            first(:xpath, ".//a[contains(@class,'new-portal-notification-button')]").click
+            first("a.new-portal-notification-button").click
+            # first(:xpath, ".//a[contains(@class,'new-portal-notification-button')]").click
             wait_for_javascript_to_finish
         end
         first(".new_notification").click
@@ -115,10 +118,11 @@ module CapybaraUserPortal
         find("td.body_column").should have_text("Test Reply")
         goToUserPortal
         within accordionInfoBox do
-            sleep 2
-            first(:xpath, ".//a[@class='new-portal-notification-button']").click
+            sleep 6
+            first("a.new-portal-notification-button").click
             wait_for_javascript_to_finish
         end
+        sleep 4
         first(".new_notification").click
         wait_for_javascript_to_finish
         page.should have_text("You can not send a message to yourself.")
@@ -382,7 +386,7 @@ module CapybaraUserPortal
         #expects instance of ServiceRequestForComparison as input 
         #Intended as full UP happy test.
         goToUserPortal
-        createNewRequestTest
+        createNewStudyTest
         findStudy(request.study.short)
         editOriginalTest(request)
         editStudyInformation

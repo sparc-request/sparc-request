@@ -102,7 +102,7 @@ module ApplicationHelper
                                       text_field_tag("arm_#{arm.id}_visit_name_#{n}", visit_name, :class => "visit_name", :size => 10, :update => "#{rename_visit_url}?visit_position=#{n-1}&arm_id=#{arm.id}&portal=#{portal}") +
                                       tag(:br) + 
                                       link_to((content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')), 
-                                              "/service_requests/#{service_request.id}/#{action}/#{n}/#{arm.id}",
+                                              "/service_requests/#{service_request.id}/#{action}/#{n}/#{arm.id}?portal=#{portal}",
                                               :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only', :id => "check_all_column_#{n}"),
                                       :width => 60, :class => 'visit_number')
       end
@@ -319,5 +319,16 @@ module ApplicationHelper
   #Determines if an arm can be deleted in sparc proper, based on whether the request is in CWF and has patient data
   def can_be_deleted? arm
     arm.subjects.empty? ? true : arm.subjects.none?{|x| x.has_appointments?}
+  end
+
+  #Will find a particular one time fee line item by its id, then determine if it has any associated fulfillments
+  def one_time_fee_fulfillments? line_item_id
+    has_fulfillments = false
+    otf = LineItem.find(line_item_id)
+    if !otf.fulfillments.empty?
+      has_fulfillments = true
+    end
+
+    has_fulfillments
   end
 end

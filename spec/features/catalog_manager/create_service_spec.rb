@@ -76,7 +76,7 @@ feature 'create new service' do
       wait_for_javascript_to_finish
     end    
 
-    page.execute_script("$('#save_button').click();")
+    first("#save_button").click
     page.should have_content( 'Test Service created successfully' )
   end
 
@@ -131,7 +131,7 @@ feature 'create new service' do
       wait_for_javascript_to_finish
     end      
 
-    page.execute_script("$('#save_button').click();")
+    first("#save_button").click
     page.should have_content( 'Core Test Service created successfully' )
   end
 end 

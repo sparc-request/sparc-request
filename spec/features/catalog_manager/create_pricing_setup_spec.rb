@@ -60,7 +60,7 @@ describe 'as a user on catalog page', :js => true do
       wait_for_javascript_to_finish
     end
   
-    page.execute_script %Q{ $(".save_button").click() }
+    first(".save_button").click
     sleep 3
     
     provider.pricing_setups.first.federal.should eq(150)
@@ -76,7 +76,7 @@ describe 'as a user on catalog page', :js => true do
     click_button("Add Pricing Setup")
     
     page.execute_script("$('.ui-accordion-header').click()")
-    page.execute_script %Q{ $(".save_button").click() }
+    first(".save_button").click
     wait_for_javascript_to_finish
     
     page.should_not have_content "South Carolina Clinical and Translational Institute (SCTR) saved successfully"    
@@ -91,7 +91,7 @@ describe 'as a user on catalog page', :js => true do
     click_button("Add Pricing Setup")
     
     page.execute_script("$('.ui-accordion-header').click()")
-    page.execute_script %Q{ $(".save_button").click() }
+    first(".save_button").click
     wait_for_javascript_to_finish
     
     page.should have_content "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."        
@@ -152,7 +152,7 @@ describe 'as a user on catalog page', :js => true do
       page.execute_script %Q{ $(".rate").change() }
     end
   
-    page.execute_script %Q{ $(".save_button").click() }
+    first(".save_button").click
     wait_for_javascript_to_finish
 
     page.should have_content "South Carolina Clinical and Translational Institute (SCTR) saved successfully"

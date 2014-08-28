@@ -26,17 +26,20 @@ class ProtocolsController < ApplicationController
 
   def new
     @service_request = ServiceRequest.find session[:service_request_id]
+    @epic_services = @service_request.should_push_to_epic? if USE_EPIC
     @protocol = self.model_class.new
     @protocol.requester_id = current_user.id
     @protocol.populate_for_edit
     @errors = nil
     @current_step = 'protocol'
+    @portal = false
   end
 
   def create
     @service_request = ServiceRequest.find session[:service_request_id]
     @current_step = params[:current_step]
     @protocol = self.model_class.new(params[:study] || params[:project])
+    @portal = params[:portal]
 
     # @protocol.assign_attributes(params[:study] || params[:project])
 
@@ -57,15 +60,18 @@ class ProtocolsController < ApplicationController
 
   def edit
     @service_request = ServiceRequest.find session[:service_request_id]
+    @epic_services = @service_request.should_push_to_epic? if USE_EPIC
     @protocol = current_user.protocols.find params[:id]
     @protocol.populate_for_edit
     @current_step = 'protocol'
+    @portal = false
   end
 
   def update
     @service_request = ServiceRequest.find session[:service_request_id]
     @current_step = params[:current_step]
     @protocol = current_user.protocols.find params[:id]
+    @portal = params[:portal]
 
     @protocol.assign_attributes(params[:study] || params[:project])
 

@@ -55,4 +55,24 @@ feature 'create new core', :js => true do
     end
   end
   
+  scenario ': a user with only access to this program can see links for: Create New Core and Create New Service' do
+    create_default_data
+    
+    identity = Identity.create(last_name: 'Miller', first_name: 'Robert', ldap_uid: 'rmiller@musc.edu', email:  'rmiller@musc.edu', password: 'p4ssword',password_confirmation: 'p4ssword',  approved: true )
+    identity.save!
+
+    program = Program.find_by_name('Office of Biomedical Informatics')
+    
+    cm = CatalogManager.create( organization_id: program.id, identity_id: identity.id, )
+    cm.save!
+
+    login_as(Identity.find_by_ldap_uid('rmiller@musc.edu'))
+    ## Logs in the default identity.
+    visit catalog_manager_root_path
+    ## This is used to reveal all nodes in the js tree to make it easier to access during testing.
+    page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
+    expect(page).to have_content('Create New Core')
+    expect(page).to have_content('Create New Service')
+  end
+    
 end

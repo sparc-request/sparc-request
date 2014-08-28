@@ -64,7 +64,7 @@ class Portal::ProtocolsController < Portal::BaseController
   def create
     @current_step = params[:current_step]
     @protocol = Study.new(params[:study])
-    @portal = true
+    @portal = params[:portal]
     session[:protocol_type] = 'study'
 
     # @protocol.assign_attributes(params[:study] || params[:project])

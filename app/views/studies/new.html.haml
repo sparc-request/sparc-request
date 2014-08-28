@@ -26,4 +26,4 @@
 
 = render :partial => 'service_requests/steps'
 .clear
-.new_study= render :partial => 'studies/form', :locals => {:study => @study, :service_request => @service_request, :portal => false}
+.new_study= render :partial => 'studies/form', :locals => {:study => @study, :service_request => @service_request, :portal => @portal}

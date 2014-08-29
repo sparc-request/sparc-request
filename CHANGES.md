@@ -17,4 +17,5 @@ Initial Open Source Release
 <li>catalog manager permissions fix - <a href="https://github.com/sparc-request/sparc-request/commit/d00ad004ba53e6c020f6f6e0359eb1a1c9804171">view commit</a></li> 
 <li>catalog manager permissions fix - <a href="https://github.com/sparc-request/sparc-request/commit/e76221f732dc0b02d80aeb09e9029fb3dafdd29f">view commit</a></li> 
 <li>catalog manager permissions fix - <a href="https://github.com/sparc-request/sparc-request/commit/1e1fd1eb4ae46d0d253bb56479ee5ad9c27bcebd">view commit</a></li> 
-<li>corrects protocol start and end date validations [#77020318] - <a href="https://github.com/sparc-request/sparc-request/commit/07075e9a5dea4a70d96c3a4caa464495c5519327">view commit</a></li>
+<li>corrects protocol start and end date validations [#77020318] - <a href="https://github.com/sparc-request/sparc-request/commit/07075e9a5dea4a70d96c3a4caa464495c5519327">view commit</a></li> 
+<li>fixing service import issue, cdm_code attr_accessible - <a href="https://github.com/sparc-request/sparc-request/commit/d69e4745086020d15d7133be340d24c4363a0ab0">view commit</a></li> 

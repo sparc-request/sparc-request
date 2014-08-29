@@ -166,6 +166,7 @@ describe 'as a user on catalog page', :js => true do
         find(".otf_quantity_type", :visible => true).set("Each")
         find(".otf_quantity_minimum", :visible => true).click
         wait_for_javascript_to_finish
+        sleep 2
         page.should_not have_content("If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.")
       end
    

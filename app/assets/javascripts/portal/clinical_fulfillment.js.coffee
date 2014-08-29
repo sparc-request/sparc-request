@@ -28,22 +28,23 @@ $(document).ready ->
         $(core_name).find('button').prop('disabled', true)
 
   check_core_permissions()
-  # only submit data that has changed or is required for calculations
 
+  # only submit data that has changed or is required for calculations
   $('.procedure_r_qty, .procedure_t_qty, .procedure_box').on 'change', ->
     $(this).addClass('changed_attr')
 
   $('.procedure_box').on 'change', ->
     $(this).parent('td').siblings().children('.procedure_r_qty').addClass('changed_attr')
-
-  $(document).on('click', '#save_appointments', (event) ->
+  
+  $("#save_appointments").click (event) ->
     $('.procedure_r_qty, .procedure_t_qty').not('.changed_attr').prop('disabled', true)
+  # end submit data for changes/requirements
+
+   $(document).on('click', '#save_appointments', (event) ->
     if $('.hasDatepicker:visible').val() == ""
       event.preventDefault()
       alert('Please select a date for this visit before saving.')
   )
-
-  # end submit data for changes/requirements
 
   $('#procedures_added_popup').dialog
     # dialogClass: "no-close"

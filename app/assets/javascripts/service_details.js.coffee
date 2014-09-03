@@ -150,22 +150,26 @@ $ ->
   $('#recruitment_start_date').attr("readOnly", true)
   $('#recruitment_end_date').attr("readOnly", true)
 
-  # Validations for existing arms
-
+  # If any sub service requests are in cwf, the visit and subject counts can not be decreased. Decreasing the counts in this case
+  # causes patient data to be deleted
   $(document).on('change', '.arm_subject_count', ->
-    new_count = $(this).val()
-    min_count = $(this).data('minimum_subject_count')
-    if new_count < min_count
-      alert("You can not reduce the subject count below the count of a previously defined arm.")
-      $(this).val(min_count)
+    in_cwf = $(this).data('in_cwf')
+    if in_cwf
+      new_count = $(this).val()
+      min_count = $(this).data('minimum_subject_count')
+      if new_count < min_count
+        alert("A request associated with this arm is in Clinical Work Fulfillment. The subject count cannot be decreased.")
+        $(this).val(min_count)
   )
 
   $(document).on('change', '.arm_visit_count', ->
-    new_count = $(this).val()
-    min_count = $(this).data('minimum_visit_count')
-    if new_count < min_count
-      alert("You can not reduce the visit count below the count of a previously defined arm.")
-      $(this).val(min_count)
+    in_cwf = $(this).data('in_cwf')
+    if in_cwf
+      new_count = $(this).val()
+      min_count = $(this).data('minimum_visit_count')
+      if new_count < min_count
+        alert("A request associated with this arm is in Clinical Work Fulfillment. The visit count cannot be decreased.")
+        $(this).val(min_count)
   )
 
   $('#navigation_form').submit ->

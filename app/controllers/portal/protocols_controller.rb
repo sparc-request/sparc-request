@@ -66,17 +66,23 @@ class Portal::ProtocolsController < Portal::BaseController
     @protocol = Study.new(params[:study])
     @portal = params[:portal]
     session[:protocol_type] = 'study'
+    @portal = params[:portal]
 
     # @protocol.assign_attributes(params[:study] || params[:project])
-    if @current_step == 'protocol' and @protocol.group_valid? :protocol
+    if @current_step == 'go_back'
+      @current_step = 'protocol'
+      @protocol.populate_for_edit
+    elsif @current_step == 'protocol' and @protocol.group_valid? :protocol
       @current_step = 'user_details'
       @protocol.populate_for_edit
     elsif @current_step == 'user_details' and @protocol.valid?
       @protocol.save
       @current_step = 'return_to_portal'
+    elsif @current_step == 'cancel_protocol'
+      @current_step = 'return_to_portal'
     else
       # TODO: Is this neccessary?
-      @errors = @current_step == 'protocol' ? @protocol.grouped_errors[:protocol].messages : @protocol.grouped_errors[:user_details].messages
+      @errors = @current_step == 'protocol' ? @protocol.grouped_errors[:protocol].try(:messages) : @protocol.grouped_errors[:user_details].try(:messages)
       @protocol.populate_for_edit
     end
   end

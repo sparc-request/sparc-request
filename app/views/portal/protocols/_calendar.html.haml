@@ -29,7 +29,7 @@
         %th.total{:rowspan => 2}= t(:ssr_dialog)[:calendar][:headers][:total]
         
     %tr.table_header
-      = generate_visit_header_row arm, service_request, @pages[arm.id].to_i
+      = generate_visit_header_row arm, service_request, @pages[arm.id].to_i, nil
 
   %tbody.cell-border
     %tr.section_header

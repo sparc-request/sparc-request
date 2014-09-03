@@ -46,13 +46,18 @@ describe "service calendar", :js => true do
 
       it "should save the new quantity" do
         fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", :with => 10
+        find(:xpath, "//img[@src='/assets/sparc_request_header.jpg']").click #allow save by clicking away from field
+        wait_for_javascript_to_finish
         find(:xpath, "//a/img[@alt='Goback']/..").click
         wait_for_javascript_to_finish
+        sleep 3 # TODO: ugh: I got rid of all the sleeps, but I can't get rid of this one
         LineItem.find(line_item.id).quantity.should eq(10)
       end
 
       it "should save the new units per quantity" do
         fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", :with => line_item.service.current_pricing_map.units_per_qty_max
+        find(:xpath, "//img[@src='/assets/sparc_request_header.jpg']").click #allow save by clicking away from field
+        wait_for_javascript_to_finish
         find(:xpath, "//a/img[@alt='Goback']/..").click
         wait_for_javascript_to_finish
         LineItem.find(line_item.id).units_per_quantity.should eq(line_item.service.current_pricing_map.units_per_qty_max)
@@ -67,6 +72,7 @@ describe "service calendar", :js => true do
           fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", :with => 1
           fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", :with => 0
           find("#service_request_line_items_attributes_#{line_item.id}_units_per_quantity").click
+          find(:xpath, "//img[@src='/assets/sparc_request_header.jpg']").click #allow save by clicking away from field
           wait_for_javascript_to_finish
           find("div#one_time_fee_errors").should have_content("is less than the unit minimum")
         end
@@ -76,6 +82,7 @@ describe "service calendar", :js => true do
         it "should throw js error" do
           fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", :with => (line_item.service.current_pricing_map.units_per_qty_max + 1)
           fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", :with => 1
+          find(:xpath, "//img[@src='/assets/sparc_request_header.jpg']").click #allow save by clicking away from field
           wait_for_javascript_to_finish
           find("div#unit_max_error").should have_content("more than the maximum allowed")
         end
@@ -193,13 +200,16 @@ describe "service calendar", :js => true do
           find("#visits_#{@visit_id}_insurance_billing_qty").click()
           wait_for_javascript_to_finish
 
+          find(:xpath, "//img[@src='/assets/sparc_request_header.jpg']").click #allow save by clicking away from field
+          wait_for_javascript_to_finish
           sleep 3 # TODO: ugh: I got rid of all the sleeps, but I can't get rid of this one
 
-          all(".pp_max_total_direct_cost.arm_#{arm1.id}").each do |x|
-            if x.visible?
-              x.should have_exact_text("$300.00")
-            end
-          end
+          first(".pp_max_total_direct_cost.arm_#{arm1.id}", :visible => true).should have_exact_text("$300.00")
+          # all(".pp_max_total_direct_cost.arm_#{arm1.id}").each do |x|
+          #   if x.visible?
+          #     x.should have_exact_text("$300.00")
+          #   end
+          # end
         end
 
         it "should update each visits maximum costs" do
@@ -211,8 +221,10 @@ describe "service calendar", :js => true do
 
           wait_for_javascript_to_finish
 
+          find(:xpath, "//img[@src='/assets/sparc_request_header.jpg']").click #allow save by clicking away from field
+          wait_for_javascript_to_finish
           sleep 3 # TODO: ugh: I got rid of all the sleeps, but I can't get rid of this one
-     
+
           all(".visit_column_2.max_direct_per_patient.arm_#{arm1.id}").each do |x|
             if x.visible?
               x.should have_exact_text("$300.00")
@@ -250,6 +262,9 @@ describe "service calendar", :js => true do
           fill_in "visits_#{@visit_id}_research_billing_qty", :with => 1
           find("#visits_#{@visit_id}_insurance_billing_qty").click()
 
+          find(:xpath, "//img[@src='/assets/sparc_request_header.jpg']").click #allow save by clicking away from field
+          wait_for_javascript_to_finish
+
           all(".pp_max_total_direct_cost.arm_#{arm1.id}").each do |x|
             if x.visible?
               x.should have_exact_text "$30.00"
@@ -284,6 +299,9 @@ describe "service calendar", :js => true do
         wait_for_javascript_to_finish
 
         click_link "quantity_tab"
+        wait_for_javascript_to_finish
+
+        find(:xpath, "//img[@src='/assets/sparc_request_header.jpg']").click #allow save by clicking away from field
         wait_for_javascript_to_finish
 
         all(".visit.visit_column_2.arm_#{arm1.id}").each do |x|

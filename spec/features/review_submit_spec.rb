@@ -96,6 +96,7 @@ describe "review page", :js => true do
       stub_const("QUEUE_EPIC", false) 
       stub_const("USE_EPIC", true) 
       service2.update_attributes(send_to_epic: true)
+      service_request.protocol.update_attributes(selected_for_epic: true)
       clear_emails
       find("#submit_services2").click
       wait_for_javascript_to_finish

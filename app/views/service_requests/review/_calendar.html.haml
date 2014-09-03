@@ -32,7 +32,7 @@
 
     %tr.table_header
       - if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?) 
-        = generate_visit_header_row arm, @service_request, @pages[arm.id].to_i
+        = generate_visit_header_row arm, @service_request, @pages[arm.id].to_i, @sub_service_request
       - else
         %th{:colspan => 6} &nbsp;
 

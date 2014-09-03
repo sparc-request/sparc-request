@@ -60,8 +60,7 @@ describe "study level charges", js: true do
     end
 
     it 'should set and save the fields' do
-  
-      find('.fulfillment_date').click
+      page.execute_script("$('.fulfillment_date').focus()")
       sleep 2
       first('a.ui-state-default.ui-state-highlight').click
       sleep 2
@@ -100,7 +99,7 @@ describe "study level charges", js: true do
       end
 
       it "should validate for a quantity" do
-        find('.fulfillment_date').click
+        page.execute_script("$('.fulfillment_date').focus()")
         sleep 2
         first('a.ui-state-default.ui-state-highlight').click
         sleep 2
@@ -112,7 +111,7 @@ describe "study level charges", js: true do
       end
 
       it "should not require that the notes field is filled in" do
-        find('.fulfillment_date').click
+        page.execute_script("$('.fulfillment_date').focus()")
         sleep 2
         first('a.ui-state-default.ui-state-highlight').click
         sleep 2

@@ -245,27 +245,28 @@ describe "Line Item" do
       context "direct costs for one time fees with fulfillments" do
 
         let!(:otf_line_item) { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service.id, sub_service_request_id: sub_service_request.id, quantity: 5, units_per_quantity: 1) }
-        let!(:fulfillment1)  { FactoryGirl.create(:fulfillment, :quantity => 5, :line_item_id => otf_line_item.id) }
-        let!(:fulfillment2)  { FactoryGirl.create(:fulfillment, :quantity => 5, :line_item_id => otf_line_item.id) }
+        let!(:fulfillment1)  { FactoryGirl.create(:fulfillment, :quantity => 5, :line_item_id => otf_line_item.id, :date => Date.today) }
+        let!(:fulfillment2)  { FactoryGirl.create(:fulfillment, :quantity => 5, :line_item_id => otf_line_item.id, :date => Date.today) }
 
         it "should correctly calculate a line item's cost that has multiple fulfillments" do
-          otf_line_item.direct_cost_for_one_time_fee_with_fulfillments.should eq(10000.0)
+          otf_line_item.direct_cost_for_one_time_fee_with_fulfillments(Date.today, Date.today).should eq(10000.0)
         end
 
         it "should correctly calculate a line item's cost that has a unit factor greater than one" do
           pricing_map.update_attributes(unit_factor: 5)
-          fulfillment3 = FactoryGirl.create(:fulfillment, quantity: 6, :line_item_id => otf_line_item.id)
-          
-          otf_line_item.direct_cost_for_one_time_fee_with_fulfillments.should eq(800.0)
+          fulfillment3 = FactoryGirl.create(:fulfillment, quantity: 6, :line_item_id => otf_line_item.id, :date => Date.today)
+          otf_line_item.direct_cost_for_one_time_fee_with_fulfillments(Date.today, Date.today).should eq(4000.0)
         end
       end
     end
   end
+
   context "methods" do
     before :each do
       add_visits
       build_clinical_data
     end
+
     describe "remove procedures" do
       it "should destroy all procedures linked to this line_item" do
         li_id = line_item2.id

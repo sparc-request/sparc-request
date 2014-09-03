@@ -117,31 +117,23 @@ class LineItem < ActiveRecord::Base
     ![nil, 'first_draft', 'draft'].include?(sub_service_request.status)
   end
 
-  # Returns the cost per unit based on a quantity (usually just the quantity on the line_item)
+  # Returns the cost per unit based on a quantity and the units per quantity if there is one
   def per_unit_cost(quantity_total=self.quantity, appointment_completed_date=nil)
+    units_per_quantity = self.units_per_quantity
     if quantity_total == 0 || quantity_total.nil?
       0
     else
-      # Calculate the total number of packages that must be purchased.
-      # If the quantity requested is not an even multiple of the number
-      # of units per package, then we have to round up, so that a whole
-      # number of packages is being purchased.
-      packages_we_have_to_get = (quantity_total.to_f / self.units_per_package.to_f).ceil
-
+      total_quantity = units_per_quantity * quantity_total
+      # Need to divide by the unit factor here. Defaulted to 1 if there isn't one
+      packages_we_have_to_get = (total_quantity.to_f / self.units_per_package.to_f).ceil
       # The total cost is the number of packages times the rate
       total_cost = packages_we_have_to_get.to_f * self.applicable_rate(appointment_completed_date).to_f
-
       # And the cost per quantity is the total cost divided by the
-      # quantity.  The result here may not be a whole number if the
+      # quantity. The result here may not be a whole number if the
       # quantity is not a multiple of units per package.
       ret_cost = total_cost / quantity_total.to_f
 
-      # Cost per unit is equal to cost per quantity times units per
-      # quantity.
-      unless self.units_per_quantity.blank?
-        ret_cost = ret_cost * self.units_per_quantity
-      end
-      return ret_cost
+      ret_cost
     end
   end
 
@@ -198,16 +190,13 @@ class LineItem < ActiveRecord::Base
 
   # Determine the direct costs for a one-time-fee service
   def direct_costs_for_one_time_fee
-    # TODO: It's a little strange that per_unit_cost divides by
-    # quantity, then here we multiply by quantity.  It would arguably be
-    # better to calculate total cost here in its own method, then
-    # implement per_unit_cost to call that method.
     num = self.quantity || 0.0
     num * self.per_unit_cost
   end
 
   # This determines the complete cost for a line item with fulfillments
   # taking into account the possibility for a unit factor greater than 1
+  # Only fulfillments within date range will be calculated
   def direct_cost_for_one_time_fee_with_fulfillments start_date, end_date
     total = 0.0
     if !self.fulfillments.empty?

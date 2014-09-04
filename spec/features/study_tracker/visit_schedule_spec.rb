@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 require 'spec_helper'
 
 describe "visit schedule", :js => true do
@@ -30,6 +50,7 @@ describe "visit schedule", :js => true do
       it "should save the new status" do
         select("Active", from: "subject[status]")
         click_button "Save Appointments"
+        page.driver.browser.switch_to.alert.dismiss
         find("#subject_status").should have_value("Active")
       end
     end
@@ -41,6 +62,7 @@ describe "visit schedule", :js => true do
         wait_for_javascript_to_finish
         find("#visit").should have_value("#2: Visit 2")
         click_button "Save Appointments"
+        page.driver.browser.switch_to.alert.dismiss
       end
     end
 
@@ -71,6 +93,7 @@ describe "visit schedule", :js => true do
         first('.add_comment_link').click
         page.should have_content("Messages all up in this place.")
         click_button "Save Appointments"
+        page.driver.browser.switch_to.alert.dismiss
       end
     end
 
@@ -80,6 +103,7 @@ describe "visit schedule", :js => true do
         click_on "Nutrition"
         find(".procedure_r_qty", :visible => true).set("10")
         click_button "Save Appointments"
+        page.driver.browser.switch_to.alert.dismiss
         find(".procedure_r_qty", :visible => true).should have_value("10")
       end
     end
@@ -90,6 +114,7 @@ describe "visit schedule", :js => true do
         click_on "Nutrition"
         retry_until { find(".procedure_t_qty", :visible => true).set("10") }
         click_button "Save Appointments"
+        page.driver.browser.switch_to.alert.dismiss
         find(".procedure_t_qty", :visible => true).should have_value("10")
       end
     end
@@ -104,6 +129,7 @@ describe "visit schedule", :js => true do
           find(".procedure_box", :visible => true).should_not be_checked
           find(:css, ".procedure_box", :visible => true).set(true)
           click_button "Save Appointments"
+          page.driver.browser.switch_to.alert.dismiss
           find(".procedure_box", :visible => true).should be_checked
         end
 
@@ -120,8 +146,30 @@ describe "visit schedule", :js => true do
           find(:css, ".procedure_box", :visible => true).set(true)
           find(".procedure_total_cell", :visible => true).should have_text("$150.00")
           click_button "Save Appointments"
+          page.driver.browser.switch_to.alert.dismiss
         end
       end
+    end
+
+    describe "validating the date" do
+
+      it "should not allow you to save if the completed date is not filled in" do
+        click_on "Nutrition"
+        wait_for_javascript_to_finish
+        click_button "Save Appointments"
+        a = page.driver.browser.switch_to.alert
+        a.text.should eq "Please select a date for this visit before saving."
+        a.accept
+      end
+
+      it "should save if the date is entered" do
+        click_on "Nutrition"
+        wait_for_javascript_to_finish
+        find('.hasDatepicker', :visible => true).set("06/13/2014")
+        click_button "Save Appointments"
+        page.should_not have_content("Please select a date for this visit before saving.")
+      end
+
     end
   end
 end

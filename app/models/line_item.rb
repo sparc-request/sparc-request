@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 class LineItem < ActiveRecord::Base
   audited
 
@@ -97,31 +117,23 @@ class LineItem < ActiveRecord::Base
     ![nil, 'first_draft', 'draft'].include?(sub_service_request.status)
   end
 
-  # Returns the cost per unit based on a quantity (usually just the quantity on the line_item)
+  # Returns the cost per unit based on a quantity and the units per quantity if there is one
   def per_unit_cost(quantity_total=self.quantity, appointment_completed_date=nil)
+    units_per_quantity = self.units_per_quantity
     if quantity_total == 0 || quantity_total.nil?
       0
     else
-      # Calculate the total number of packages that must be purchased.
-      # If the quantity requested is not an even multiple of the number
-      # of units per package, then we have to round up, so that a whole
-      # number of packages is being purchased.
-      packages_we_have_to_get = (quantity_total.to_f / self.units_per_package.to_f).ceil
-
+      total_quantity = units_per_quantity * quantity_total
+      # Need to divide by the unit factor here. Defaulted to 1 if there isn't one
+      packages_we_have_to_get = (total_quantity.to_f / self.units_per_package.to_f).ceil
       # The total cost is the number of packages times the rate
       total_cost = packages_we_have_to_get.to_f * self.applicable_rate(appointment_completed_date).to_f
-
       # And the cost per quantity is the total cost divided by the
-      # quantity.  The result here may not be a whole number if the
+      # quantity. The result here may not be a whole number if the
       # quantity is not a multiple of units per package.
       ret_cost = total_cost / quantity_total.to_f
 
-      # Cost per unit is equal to cost per quantity times units per
-      # quantity.
-      unless self.units_per_quantity.blank?
-        ret_cost = ret_cost * self.units_per_quantity
-      end
-      return ret_cost
+      ret_cost
     end
   end
 
@@ -178,12 +190,29 @@ class LineItem < ActiveRecord::Base
 
   # Determine the direct costs for a one-time-fee service
   def direct_costs_for_one_time_fee
-    # TODO: It's a little strange that per_unit_cost divides by
-    # quantity, then here we multiply by quantity.  It would arguably be
-    # better to calculate total cost here in its own method, then
-    # implement per_unit_cost to call that method.
     num = self.quantity || 0.0
     num * self.per_unit_cost
+  end
+
+  # This determines the complete cost for a line item with fulfillments
+  # taking into account the possibility for a unit factor greater than 1
+  # Only fulfillments within date range will be calculated
+  def direct_cost_for_one_time_fee_with_fulfillments start_date, end_date
+    total = 0.0
+    if !self.fulfillments.empty?
+      self.fulfillments.each do |fulfillment|
+        if fulfillment.within_date_range?(start_date, end_date)
+          if fulfillment.unit_quantity?
+            total += fulfillment.quantity * fulfillment.unit_quantity
+          else
+            total += fulfillment.quantity
+          end
+        end
+      end
+      total = ((total / units_per_package).ceil * self.applicable_rate)
+    end
+
+    total
   end
 
   # Determine the indirect cost rate related to a particular line item

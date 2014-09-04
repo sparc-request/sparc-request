@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 module CapybaraAdminPortal
 
     def goToSparcProper(un='jug2',pwd='p4ssword')
@@ -57,8 +77,8 @@ module CapybaraAdminPortal
 
     def documentsTabTest
         #goes to documents tab, adds a new document
-        switchTabTo "Documents"
-        click_link "Add a New Document"
+        switchTabTo "documents"
+        find("a.document_upload_button").click
         wait_for_javascript_to_finish
         first(:xpath,"//input[@id='document']").set("/Users/charlie/Documents/GitHub/sparc-rails/spec/features/quick_happy_test_spec.rb")
         select "Other", :from => "doc_type"
@@ -109,7 +129,7 @@ module CapybaraAdminPortal
     def associatedUsersTest(usersID, usersName)
         #switches to Associated Users tab, if user is already there deletes the user from the request, 
         #adds the user via the dialog box.
-        switchTabTo "Associated Users"
+        switchTabTo "associated_users"
 
         if have_xpath "//tr[contains(@id,'user_')]/td[contains(text(),'#{usersName}')]" then
             find(:xpath, "//tr[contains(@id,'user_')]/td[contains(text(),'#{usersName}')]/parent::tr/td[@class='delete']/a").click
@@ -138,7 +158,7 @@ module CapybaraAdminPortal
         #expects a number between 0 and 100
         #changes the % Subsidy field and checks that 
         #the page reflects the change
-        switchTabTo "Fulfillment"
+        switchTabTo "fulfillment"
 
         click_link "Add a Subsidy"
         wait_for_javascript_to_finish
@@ -207,12 +227,12 @@ module CapybaraAdminPortal
 
     def onTab(tabName)
         #returns boolean for condition: if on tab of tabName string arg.
-        return first(:xpath, "//li[@role='tab' and @aria-selected='true']/a[text()='#{tabName}']").present?
+        return first("li.ui-tabs-active a.#{tabName}-tab").present?
     end
 
     def statusChangeTest
         #changes the status, expects toast messages, and checks history for status change.
-        switchTabTo "Fulfillment"
+        switchTabTo "fulfillment"
 
         select "Get a Quote", :from => "sub_service_request_status"
         expectToastMessage
@@ -225,38 +245,38 @@ module CapybaraAdminPortal
 
     def switchTabTo(tab)
         #switches to tab with name passed in by argument 'tab'
-        if not onTab("#{tab}") then
-            find(:xpath, "//li[@role='tab']/a[contains(@class,'-tab ui-tabs-anchor') and contains(text(),'#{tab}')]").click
+        if not onTab(tab) then
+            find("li a.#{tab}-tab").click
             wait_for_javascript_to_finish
         end
     end
 
     def sendToCWF
         #checks "Ready for Clinical Work Fulfillment" checkbox
-        switchTabTo 'Fulfillment'
-        find(:xpath, "//input[@id='in_work_fulfillment' and @class='cwf_data']").click
+        switchTabTo 'fulfillment'
+        find('input#in_work_fulfillment.cwf_data').click
         wait_for_javascript_to_finish
     end
 
     def checkTabsAP
         #runs through each tab
         wait_for_javascript_to_finish
-        switchTabTo 'Project/Study Information'
+        switchTabTo 'project'
         wait_for_javascript_to_finish
 
-        switchTabTo 'Documents'
+        switchTabTo 'documents'
         wait_for_javascript_to_finish
         
-        switchTabTo 'Related Service Requests'
+        switchTabTo 'related_service_requests'
         wait_for_javascript_to_finish
         
-        switchTabTo 'Associated Users'
+        switchTabTo 'associated_users'
         wait_for_javascript_to_finish
         
-        switchTabTo 'Notifications'
+        switchTabTo 'notifications'
         wait_for_javascript_to_finish
         
-        switchTabTo 'Fulfillment'
+        switchTabTo 'fulfillment'
         wait_for_javascript_to_finish
     end
 
@@ -274,7 +294,7 @@ module CapybaraAdminPortal
         testSubsidy(40)
         testSubsidy(30)
 
-        switchTabTo "Fulfillment"
+        switchTabTo "fulfillment"
         if service.otf then 
             testOTFService(service,20)
             testOTFService(service,3)
@@ -287,7 +307,7 @@ module CapybaraAdminPortal
         documentsTabTest
         associatedUsersTest("bjk7", "Brian Kelsey")
 
-        switchTabTo "Fulfillment"
+        switchTabTo "fulfillment"
 
         if not service.otf then 
             sendToCWF 

@@ -1,26 +1,45 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 require 'spec_helper'
 
 feature 'effective and display date validations' do
-  background do
+  before :each do
     default_catalog_manager_setup
   end    
   
   scenario 'user cannot select the same effective date as an existing pricing_map', :js => true do
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
-    within '#pricing' do
-      find('.legend').click
-      wait_for_javascript_to_finish
-    end
-    click_button("Add Pricing Setup")
+    sleep 1
+
+    first('#pricing').click
+    sleep 1
+
+    first('.add_pricing_setup').click
+    first('.pricing_setup_accordion h3').click
+    sleep 1
  
-    page.execute_script("$('.ui-accordion-header').click()") 
- 
-    within('.ui-accordion') do
-      find('.effective_date').click
-      numerical_day = Date.today.strftime("%d").gsub(/^0/,'')
-      wait_for_javascript_to_finish
-      page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
-    end
+    page.execute_script("$('.effective_date:visible').focus()")
+    sleep 1
+    first('.ui-datepicker-today').click #click on today's date
+    sleep 1
  
     # This is the only way I could figure out how to test the text of the confirmation dialog
     get_alert_window do |prompt|
@@ -33,19 +52,18 @@ feature 'effective and display date validations' do
   
   scenario 'user cannot select the same display date as an existing pricing_map', :js => true do
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
-    within '#pricing' do
-      find('.legend').click
-      wait_for_javascript_to_finish
-    end
-    click_button("Add Pricing Setup")
+    sleep 1
+    first('#pricing').click
+    sleep 1
 
-    page.execute_script("$('.ui-accordion-header').click()") 
+    first('.add_pricing_setup').click
+    first('.pricing_setup_accordion h3').click
+    sleep 1
 
-    within('.ui-accordion') do
-      find('.display_date').click
-      numerical_day = Date.today.strftime("%d").gsub(/^0/,'')
-      page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
-    end
+    page.execute_script("$('.display_date:visible').focus()")
+    sleep 1
+    first('.ui-datepicker-today').click #click on today's date
+    sleep 1
 
     # This is the only way I could figure out how to test the text of
     # the confirmation dialog
@@ -61,20 +79,20 @@ feature 'effective and display date validations' do
 
   scenario 'confirmation appears when a user selects an effective date that is before an existing effective date', :js => true do
     click_link("Office of Biomedical Informatics")
-    within '#pricing' do
-      find('.legend').click
-      wait_for_javascript_to_finish
-    end
-    click_button("Add Pricing Setup")
+    sleep 1
 
-    page.execute_script("$('.ui-accordion-header:nth-of-type(2)').click()") 
+    first('#pricing').click
+    sleep 1
 
-    within('.ui-accordion > div:nth-of-type(2)') do
-      find('.effective_date').click
-      page.execute_script %Q{ $('a.ui-datepicker-prev').trigger("click") } # go back one month
-      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15  
-      sleep 1 # TODO: wait_for_javascript_to_finish doesn't work here
-    end
+    first('.add_pricing_setup').click
+    all('.pricing_setup_accordion h3').last.click
+    sleep 1
+
+    page.execute_script("$('.effective_date:visible').focus()")
+    sleep 1
+    page.execute_script %Q{ $('a.ui-datepicker-prev').trigger("click") } # go back one month
+    page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15
+    sleep 1
 
     # This is the only way I could figure out how to test the text of
     # the confirmation dialog
@@ -94,17 +112,17 @@ feature 'effective and display date validations' do
             the same as a pricing map', :js => true do
 
     click_link('South Carolina Clinical and Translational Institute (SCTR)')
-    within '#pricing' do
-      find('.legend').click
-      wait_for_javascript_to_finish
-    end
-    click_button('Increase or Decrease Rates')
+    sleep 1
+
+    first('#pricing').click
+    sleep 1
+
+    first('.increase_decrease_rates').click
     
-    within('.increase_decrease_dialog') do
-      numerical_day = Date.today.strftime("%d").gsub(/^0/,'')
-      find('.change_rate_display_date').click
-      page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
-    end
+    page.execute_script("$('.change_rate_display_date:visible').focus()")
+    sleep 1
+    first('a.ui-state-default.ui-state-highlight').click #click on today's date
+    sleep 1
 
     # This is the only way I could figure out how to test the text of the confirmation dialog
     get_alert_window do |prompt|

@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 require 'spec_helper'
 
 describe "admin fulfillment tab", :js => true do
@@ -12,6 +32,8 @@ describe "admin fulfillment tab", :js => true do
     add_visits
     subsidy_map.destroy
     subsidy.destroy
+    sub_service_request.update_attributes(:status => "submitted")
+    sub_service_request.reload
     visit portal_admin_sub_service_request_path(sub_service_request)
     wait_for_javascript_to_finish
   end
@@ -29,7 +51,7 @@ describe "admin fulfillment tab", :js => true do
     end
 
     it "should contain the sub service request information" do
-      page.should have_xpath("//option[@value='draft' and @selected='selected']")
+      page.should have_xpath("//option[@value='submitted' and @selected='selected']")
       # More data checks here (more information probably needs to be put in the mocks)
       page.should_not have_content('#service_request_owner')
       page.should have_xpath("//option[@value='#{service.id}' and @selected='selected']")
@@ -58,6 +80,7 @@ describe "admin fulfillment tab", :js => true do
       it 'should save the service request status' do
         select 'Submitted', :from => 'sub_service_request_status'
         visit portal_admin_sub_service_request_path(sub_service_request)
+        wait_for_javascript_to_finish
         page.should have_xpath("//option[@value='submitted' and @selected='selected']")
         page.find('#sub_service_request_owner_id').should have_value ""
       end
@@ -299,7 +322,6 @@ describe "admin fulfillment tab", :js => true do
 
       it "should add visits" do
         find('.add_visit_link').click
-        # click_link 'Add a Visit'
         wait_for_javascript_to_finish
         fill_in "visit_name", :with => 'Pandas'
         fill_in "visit_day", :with => 20
@@ -310,11 +332,11 @@ describe "admin fulfillment tab", :js => true do
       end
 
       it 'should remove visits' do
+        visits = Visit.find(:all).size
         find('.delete_visit_link').click
-        # click_link 'Delete a Visit'
         wait_for_javascript_to_finish
-        page.should have_content 'Service request has been saved.'
-        page.should_not have_content 'Delete Visit 10'
+        
+        Visit.find(:all).size.should eq(visits - 1)
       end
 
       context 'removing a visit on a request that is in clinical work fulfillment' do
@@ -330,7 +352,6 @@ describe "admin fulfillment tab", :js => true do
         it "should not allow a visit to be deleted if any of a visit's appointments are completed" do
           arm1.visit_groups.last.appointments.first.update_attributes(:completed_at => Date.today)
           find('.delete_visit_link').click
-          # click_link 'Delete a Visit'
           wait_for_javascript_to_finish
           page.should have_content 'Completed appointment exists for this visit...'
           page.should have_content 'Delete Visit 10'
@@ -342,7 +363,6 @@ describe "admin fulfillment tab", :js => true do
   describe 'adding an arm' do
     before :each do
       find('.add_arm_link').click
-      # click_link 'Add an Arm'
       wait_for_javascript_to_finish
       fill_in "arm_name", :with => 'Another Arm'
       fill_in "subject_count", :with => 5
@@ -359,10 +379,75 @@ describe "admin fulfillment tab", :js => true do
         find(".visit_day.position_1").value.should eq("1")
         find(".visit_day.position_5").value.should eq("5")
         find('#line_item_service_id').find('option[selected]').text.should eq("Per Patient")
+        sleep 2
         find('.line_items_visit_subject_count').find('option[selected]').text.should eq("5")
       end
-
     end
+  end
+
+  describe 'deleting an arm' do
+
+    it 'should allow you to delete an arm' do
+      find('.add_arm_link').click
+      wait_for_javascript_to_finish
+      fill_in "arm_name", :with => "Arm and a leg"
+      fill_in "subject_count", :with => 1
+      fill_in "visit_count", :with => 5
+      find('#submit_arm').click()
+      wait_for_javascript_to_finish
+      study.reload
+
+      number_of_arms = Arm.find(:all).size
+      select "Arm and a leg", :from => "arm_id"
+      find('.remove_arm_link').click()
+      a = page.driver.browser.switch_to.alert
+      a.accept
+      wait_for_javascript_to_finish
+      Arm.find(:all).size.should eq(number_of_arms - 1)
+    end
+
+    it 'should not allow you to delete the last arm' do
+      select "Arm2", :from => "arm_id"
+      find('.remove_arm_link').click()
+      a = page.driver.browser.switch_to.alert
+      a.accept
+      wait_for_javascript_to_finish
+
+      number_of_arms = Arm.find(:all).size
+      select "Arm", :from => "arm_id"
+      find('.remove_arm_link').click()
+      a = page.driver.browser.switch_to.alert
+      a.text.should eq "You can't delete the last arm while Per-Patient/Per Visit services still exist."
+      a.accept
+      wait_for_javascript_to_finish
+      Arm.find(:all).size.should eq(number_of_arms)
+    end
+
+    it 'should not allow you to delete an arm that has patient data' do
+      number_of_arms = Arm.find(:all).size
+      subject = arm1.subjects.first
+      # appointment = FactoryGirl.create(:appointment, :calendar_id => subject.calendar.id)
+      sub_service_request.update_attributes(:in_work_fulfillment => true)
+      visit study_tracker_sub_service_request_path sub_service_request.id
+      click_link("Subject Tracker")
+      wait_for_javascript_to_finish
+
+      within("div#arm_#{arm1.id}") do
+        find("#schedule_#{subject.id}").click
+        wait_for_javascript_to_finish
+      end
+
+      visit portal_admin_sub_service_request_path(sub_service_request)
+      wait_for_javascript_to_finish
+      select "Arm", :from => "arm_id"
+      find('.remove_arm_link').click()
+      a = page.driver.browser.switch_to.alert
+      a.text.should eq "This arm has subject data and can not be deleted."
+      a.accept
+      wait_for_javascript_to_finish
+      Arm.find(:all).size.should eq(number_of_arms)
+    end
+
   end
 
   describe "notes" do
@@ -374,8 +459,6 @@ describe "admin fulfillment tab", :js => true do
     end
 
     it 'should add notes' do
-      # TODO: This test inconsistently fails on Jenkins, possibly due to
-      # Add Note taking too long.
       increase_wait_time(30) do
         within '.note_body' do
           page.should have_content @notes

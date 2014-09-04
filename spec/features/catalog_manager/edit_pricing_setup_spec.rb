@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 require 'spec_helper'
 
 describe 'edit a pricing setup', :js => true do
@@ -13,21 +33,11 @@ describe 'edit a pricing setup', :js => true do
         
     within('.ui-accordion') do
       
-      find('.display_date').click
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15    
-      wait_for_javascript_to_finish
+      enter_display_date
       
       page.execute_script("$('.dont_fix_pricing_maps_button').click()")
             
-      find('.effective_date').click
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15    
-      wait_for_javascript_to_finish
+      enter_effective_date
       
       page.execute_script("$('.dont_fix_pricing_maps_button').click()")
       
@@ -37,7 +47,7 @@ describe 'edit a pricing setup', :js => true do
       page.execute_script %Q{ $(".rate").change() }
     end
   
-    page.execute_script %Q{ $(".save_button").click() }
+    first(".save_button").click
     wait_for_javascript_to_finish
     
     page.should have_content "Office of Biomedical Informatics saved successfully"
@@ -51,28 +61,18 @@ describe 'edit a pricing setup', :js => true do
     
     within('.ui-accordion') do
       
-      find('.display_date').click
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15    
-      wait_for_javascript_to_finish
+      enter_display_date
       
       page.execute_script("$('.fix_pricing_maps_button').click()")
       wait_for_javascript_to_finish
             
-      find('.effective_date').click
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15    
-      wait_for_javascript_to_finish
+      enter_effective_date
       
       page.execute_script("$('.fix_pricing_maps_button').click()")
       wait_for_javascript_to_finish      
     end
   
-    page.execute_script %Q{ $(".save_button").click() }
+    first(".save_button").click
     wait_for_javascript_to_finish
     
     page.should have_content "Office of Biomedical Informatics saved successfully"
@@ -86,17 +86,16 @@ describe 'edit a pricing setup', :js => true do
   it "should not allow letters into the percentage fields" do
 
     within('.ui-accordion') do
-
       find('.corporate_percentage_field').set("Bob")
-      find('.other_percentage_field').click
+      page.execute_script("$('.corporate_percentage_field').trigger('change');") # shouldn't need this
       page.should have_content "Corporate can only contain numbers."
 
       find('.other_percentage_field').set("Wilfred")
-      find('.corporate_percentage_field').click
+      page.execute_script("$('.other_percentage_field').trigger('change');") # shouldn't need this
       page.should have_content "Other can only contain numbers."
 
       find('.member_percentage_field').set("Slappy")
-      find('.other_percentage_field').click
+      page.execute_script("$('.member_percentage_field').trigger('change');") # shouldn't need this
       page.should have_content "Member can only contain numbers."
     end
   end
@@ -117,3 +116,24 @@ describe 'edit a pricing setup', :js => true do
     find('.member_percentage_field', :visible => true).should have_value('0')
   end
 end
+
+def enter_display_date
+  page.execute_script("$('.display_date:visible').focus()")
+  sleep 2
+  page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move three months forward
+  page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") }
+  page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") }
+  page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15    
+  sleep 2
+end
+
+def enter_effective_date
+  page.execute_script("$('.effective_date:visible').focus()")
+  sleep 2
+  page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move three months forward
+  page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") }
+  page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") }
+  page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15    
+  sleep 2
+end
+

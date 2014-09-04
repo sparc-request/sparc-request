@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 class ProtocolsController < ApplicationController
   respond_to :json, :js, :html
   before_filter :initialize_service_request, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
@@ -6,17 +26,20 @@ class ProtocolsController < ApplicationController
 
   def new
     @service_request = ServiceRequest.find session[:service_request_id]
+    @epic_services = @service_request.should_push_to_epic? if USE_EPIC
     @protocol = self.model_class.new
     @protocol.requester_id = current_user.id
     @protocol.populate_for_edit
     @errors = nil
     @current_step = 'protocol'
+    @portal = false
   end
 
   def create
     @service_request = ServiceRequest.find session[:service_request_id]
     @current_step = params[:current_step]
     @protocol = self.model_class.new(params[:study] || params[:project])
+    @portal = params[:portal]
 
     # @protocol.assign_attributes(params[:study] || params[:project])
 
@@ -37,15 +60,18 @@ class ProtocolsController < ApplicationController
 
   def edit
     @service_request = ServiceRequest.find session[:service_request_id]
+    @epic_services = @service_request.should_push_to_epic? if USE_EPIC
     @protocol = current_user.protocols.find params[:id]
     @protocol.populate_for_edit
     @current_step = 'protocol'
+    @portal = false
   end
 
   def update
     @service_request = ServiceRequest.find session[:service_request_id]
     @current_step = params[:current_step]
     @protocol = current_user.protocols.find params[:id]
+    @portal = params[:portal]
 
     @protocol.assign_attributes(params[:study] || params[:project])
 

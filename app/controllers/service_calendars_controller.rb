@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 class ServiceCalendarsController < ApplicationController
   before_filter :initialize_service_request
   before_filter(:except => [:merged_calendar]) {|c| params[:portal] == 'true' ? true : c.send(:authorize_identity)}
@@ -199,6 +219,87 @@ class ServiceCalendarsController < ApplicationController
 
     @arm.reload
     @arm.visit_groups.reload
+  end
+
+  def select_calendar_row
+    @line_items_visit = LineItemsVisit.find params[:line_items_visit_id]
+    @service = @line_items_visit.line_item.service
+    @sub_service_request = @line_items_visit.line_item.sub_service_request
+    @subsidy = @sub_service_request.try(:subsidy)
+    line_items = @sub_service_request.per_patient_per_visit_line_items
+    line_item = @line_items_visit.line_item
+    has_service_relation = line_item.has_service_relation
+    failed_visit_list = ''
+    @line_items_visit.visits.each do |visit|
+      visit.attributes = {
+          quantity:              @service.displayed_pricing_map.unit_minimum,
+          research_billing_qty:  @service.displayed_pricing_map.unit_minimum,
+          insurance_billing_qty: 0,
+          effort_billing_qty:    0 }
+
+      if has_service_relation
+        if line_item.check_service_relations(line_items, true, visit)
+          visit.save
+        else
+          failed_visit_list << "#{visit.visit_group.name}, "
+          visit.reload
+        end
+      else
+        visit.save
+      end
+    end
+
+    @errors = "The follow visits for #{@service.name} were not checked because they exceeded the linked quantity limit: #{failed_visit_list}" if failed_visit_list.empty? == false
+
+    render :partial => 'update_service_calendar'
+  end
+
+  def unselect_calendar_row
+    @line_items_visit = LineItemsVisit.find params[:line_items_visit_id]
+    @sub_service_request = @line_items_visit.line_item.sub_service_request
+    @subsidy = @sub_service_request.try(:subsidy)
+    @line_items_visit.visits.each do |visit|
+      visit.update_attributes({:quantity => 0, :research_billing_qty => 0, :insurance_billing_qty => 0, :effort_billing_qty => 0})
+    end
+
+    render :partial => 'update_service_calendar'
+  end
+
+  def select_calendar_column
+    column_id = params[:column_id].to_i
+    @arm = Arm.find params[:arm_id]
+
+    @service_request.service_list(false).each do |key, value|
+      next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
+
+      @arm.line_items_visits.each do |liv|
+        next unless value[:line_items].include?(liv.line_item)
+        visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
+        visit.update_attributes(
+            quantity:              liv.line_item.service.displayed_pricing_map.unit_minimum,
+            research_billing_qty:  liv.line_item.service.displayed_pricing_map.unit_minimum,
+            insurance_billing_qty: 0,
+            effort_billing_qty:    0)
+      end
+    end
+
+    render :partial => 'update_service_calendar'
+  end
+
+  def unselect_calendar_column
+    column_id = params[:column_id].to_i
+    @arm = Arm.find params[:arm_id]
+
+    @service_request.service_list(false).each do |key, value|
+      next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
+
+      @arm.line_items_visits.each do |liv|
+        next unless value[:line_items].include?(liv.line_item)
+        visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
+        visit.update_attributes({:quantity => 0, :research_billing_qty => 0, :insurance_billing_qty => 0, :effort_billing_qty => 0})
+      end
+    end
+    render :partial => 'update_service_calendar'
   end
 
   private

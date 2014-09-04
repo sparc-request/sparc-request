@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 class Portal::AssociatedUsersController < Portal::BaseController
   layout nil
 
@@ -51,7 +71,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
       end
 
       if USE_EPIC
-        if @protocol.should_push_to_epic?
+        if @protocol.selected_for_epic
           Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
         end
       end
@@ -87,7 +107,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
       end
 
       if USE_EPIC
-        if @protocol.should_push_to_epic?
+        if @protocol.selected_for_epic
           if epic_access and not @protocol_role.epic_access
             # Access has been removed
             Notifier.notify_for_epic_access_removal(@protocol, @protocol_role).deliver unless QUEUE_EPIC
@@ -125,7 +145,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
       @protocol_role.destroy
 
       if USE_EPIC
-        if protocol.should_push_to_epic?
+        if protocol.selected_for_epic
           if epic_access
             Notifier.notify_primary_pi_for_epic_user_removal(protocol, project_role_clone).deliver unless QUEUE_EPIC
           end

@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 require 'generate_request_grant_billing_pdf'
 
 class ServiceRequestsController < ApplicationController
@@ -232,6 +252,7 @@ class ServiceRequestsController < ApplicationController
   def obtain_research_pricing
     # TODO: refactor into the ServiceRequest model
     @service_request.update_status('get_a_quote')
+    @service_request.previous_submitted_at = @service_request.submitted_at
     @service_request.update_attribute(:submitted_at, Time.now)
     @service_request.ensure_ssr_ids
     
@@ -241,7 +262,8 @@ class ServiceRequestsController < ApplicationController
       arm.update_attributes({:new_with_draft => false})
     end
     @service_list = @service_request.service_list
-    send_notifications(@service_request, @sub_service_request)
+
+    send_confirmation_notifications
 
     render :formats => [:html]
   end
@@ -269,7 +291,7 @@ class ServiceRequestsController < ApplicationController
     # that has been done, one of them will click a link which calls
     # approve_epic_rights.
     if USE_EPIC
-      if @protocol.should_push_to_epic?
+      if @protocol.selected_for_epic
         @protocol.ensure_epic_user
         if QUEUE_EPIC
           EpicQueue.create(:protocol_id => @protocol.id) unless EpicQueue.where(:protocol_id => @protocol.id).size == 1
@@ -402,14 +424,14 @@ class ServiceRequestsController < ApplicationController
       if !['first_draft', 'draft'].include?(@service_request.status) and !@service_request.submitted_at.nil? and @service_request.submitted_at > ssr.created_at
         @protocol = @service_request.protocol
         xls = @protocol.nil? ? nil : render_to_string(:action => 'show', :formats => [:xlsx])
-        send_ssr_service_provider_notifications(@service_request, ssr, xls)
+        send_ssr_service_provider_notifications(@service_request, ssr, xls, ssr_deleted=true)
       end
       ssr.destroy
     end
 
     @service_request.reload
 
-    @line_items = @service_request.line_items
+    @line_items = (@sub_service_request.nil? ? @service_request.line_items : @sub_service_request.line_items)
     render :formats => [:js]
   end
 
@@ -450,78 +472,6 @@ class ServiceRequestsController < ApplicationController
         format.js { render :status => 403, :json => feedback.errors.to_a.map {|k,v| "#{k.humanize} #{v}".rstrip + '.'} }
       end
     end
-  end
-
-  def select_calendar_row
-    @line_items_visit = LineItemsVisit.find params[:line_items_visit_id]
-    @service = @line_items_visit.line_item.service
-    @sub_service_request = @line_items_visit.line_item.sub_service_request
-    @subsidy = @sub_service_request.try(:subsidy)
-    line_items = @sub_service_request.per_patient_per_visit_line_items
-    line_item = @line_items_visit.line_item
-    has_service_relation = line_item.has_service_relation
-    failed_visit_list = ''
-    @line_items_visit.visits.each do |visit|
-      visit.attributes = {
-          quantity:              @service.displayed_pricing_map.unit_minimum,
-          research_billing_qty:  @service.displayed_pricing_map.unit_minimum,
-          insurance_billing_qty: 0,
-          effort_billing_qty:    0 }
-
-      if has_service_relation
-        if line_item.check_service_relations(line_items, true, visit)
-          visit.save
-        else
-          failed_visit_list << "#{visit.visit_group.name}, "
-          visit.reload
-        end
-      else
-        visit.save
-      end
-    end
-
-    @errors = "The follow visits for #{@service.name} were not checked because they exceeded the linked quantity limit: #{failed_visit_list}" if failed_visit_list.empty? == false
-    
-    render :partial => 'update_service_calendar'
-  end
-  
-  def unselect_calendar_row
-    @line_items_visit = LineItemsVisit.find params[:line_items_visit_id]
-    @sub_service_request = @line_items_visit.line_item.sub_service_request
-    @subsidy = @sub_service_request.try(:subsidy)
-    @line_items_visit.visits.each do |visit|
-      visit.update_attributes({:quantity => 0, :research_billing_qty => 0, :insurance_billing_qty => 0, :effort_billing_qty => 0})
-    end
-
-    render :partial => 'update_service_calendar'
-  end
-
-  def select_calendar_column
-    column_id = params[:column_id].to_i
-    @arm = Arm.find params[:arm_id]
-
-    @arm.line_items_visits.each do |liv|
-      visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
-      visit.update_attributes(
-          quantity:              liv.line_item.service.displayed_pricing_map.unit_minimum,
-          research_billing_qty:  liv.line_item.service.displayed_pricing_map.unit_minimum,
-          insurance_billing_qty: 0,
-          effort_billing_qty:    0)
-    end
-    
-    render :partial => 'update_service_calendar'
-  end
-  
-  def unselect_calendar_column
-    column_id = params[:column_id].to_i
-    @arm = Arm.find params[:arm_id]
-
-    @arm.line_items_visits.each do |liv|
-      visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
-      visit.update_attributes({:quantity => 0, :research_billing_qty => 0, :insurance_billing_qty => 0, :effort_billing_qty => 0})
-    end
-    
-    render :partial => 'update_service_calendar'
   end
 
   private
@@ -571,12 +521,12 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def send_ssr_service_provider_notifications(service_request, sub_service_request, xls) #single sub-service request
+  def send_ssr_service_provider_notifications(service_request, sub_service_request, xls, ssr_deleted=false) #single sub-service request
     previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
     audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)
 
     sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-      send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls, audit_report)
+      send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls, audit_report, ssr_deleted)
     end
   end
 
@@ -597,7 +547,7 @@ class ServiceRequestsController < ApplicationController
     return false
   end
 
-  def send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls, audit_report=nil)
+  def send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls, audit_report=nil, ssr_deleted=false)
     attachments = {}
     attachments["service_request_#{service_request.id}.xls"] = xls
 
@@ -613,7 +563,7 @@ class ServiceRequestsController < ApplicationController
       audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)
     end
 
-    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, audit_report).deliver
+    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, audit_report, ssr_deleted).deliver
   end
 
   def send_epic_notification_for_user_approval(protocol)

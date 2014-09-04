@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 class StudyTracker::CalendarsController < StudyTracker::BaseController
   before_filter :check_work_fulfillment_status, :except => [:add_note, :add_service, :delete_toast_messages]
 
@@ -32,8 +52,13 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
   end
 
   def add_service
+    service = Service.find(params[:service_id])
     appointment = Appointment.find(params[:appointment_id])
-    @procedure = appointment.procedures.new(:service_id => params[:service_id])
+
+    #This adds the id's ONLY if they are indicated on the calendar, not just if they exist.
+    existing_service_ids = appointment.procedures.select{|procedure| procedure.should_be_displayed}.collect{|procedure| procedure.direct_service.id}
+    @procedures = add_individual_procedure(service, appointment, existing_service_ids, false)
+
     render :partial => 'new_procedure', :locals => {:appointment_index => params[:appointment_index], :procedure_index => params[:procedure_index]}
   end
 
@@ -63,6 +88,28 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
   end
 
   private
+
+  def add_individual_procedure(service, appointment, existing_service_ids, recursive = true)
+    return if existing_service_ids.include?(service.id)
+
+    procedures = []
+    procedures << appointment.procedures.new(:service_id => service.id)
+    existing_service_ids << service.id
+
+    service.required_services.each do |rs|
+      rs_procedures = add_individual_procedure(rs, appointment, existing_service_ids)
+      rs_procedures.nil? ? procedures : procedures.concat(rs_procedures)
+    end
+
+    unless recursive == true
+      service.optional_services.each do |os|
+        os_procedures = add_individual_procedure(os, appointment, existing_service_ids)
+        os_procedures.nil? ? procedures : procedures.concat(os_procedures)
+      end
+    end
+
+    return procedures
+  end
 
   def check_work_fulfillment_status
     @sub_service_request ||= SubServiceRequest.find(params[:sub_service_request_id])

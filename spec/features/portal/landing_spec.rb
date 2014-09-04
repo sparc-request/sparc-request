@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 require 'spec_helper'
 
 describe "landing page", :js => true do
@@ -88,6 +108,13 @@ describe "landing page", :js => true do
       page.should_not have_text("Editing ID: #{service_request.protocol_id}")
     end
 
+    it 'should allow user to add additional services to request' do
+      find(".add-services-button").click
+      page.should have_text("Welcome to the SPARC Request Services Catalog")
+      page.should_not have_text("Editing ID: #{service_request.protocol_id}")
+      page.should_not have_css("div#services div.line_item")
+    end
+
     it 'should be able to search' do
       wait_for_javascript_to_finish
       find("h3#blue-provider-#{service_request.protocol_id} a").click
@@ -98,14 +125,10 @@ describe "landing page", :js => true do
       find("div.protocol-information-#{service_request.protocol_id}").should be_visible
     end
 
-    context "create new request" do
-
-      it "should redirect to the sparc root url" do
-        new_id = service_request.id + 1
-        find(".portal_create_new_request").click
-        wait_for_javascript_to_finish
-        current_path.should eq("/service_requests/#{new_id}/catalog")
-      end
+     it "should click button in user portal" do 
+      find('.portal_create_new_study').click
+      wait_for_javascript_to_finish
+      page.should have_content "Short Title"
     end
   end
 end

@@ -30,6 +30,7 @@ describe "service calendar", :js => true do
     visit service_calendar_service_request_path service_request.id
     arm1.reload
     arm2.reload
+    wait_for_javascript_to_finish
   end
 
   after :each do
@@ -106,6 +107,47 @@ describe "service calendar", :js => true do
           select("Visits 6 - 10 of 10", from: "jump_to_visit_#{arm1.id}")
           wait_for_javascript_to_finish
           page.should have_content("Visit 6")
+        end
+      end
+
+      describe "sorting visits around" do
+
+        it "should move visit 1 to the end position" do
+          wait_for_javascript_to_finish
+          first(:xpath, "//a[@class='move_visits']").click
+          wait_for_javascript_to_finish
+          select("Visit 1", from: "visit_to_move_1")
+          select("Move to last position", from: "move_to_position_1")
+          find('#submit_move').click
+          wait_for_javascript_to_finish
+          select("Visits 6 - 10 of 10", from: "jump_to_visit_#{arm1.id}")
+          wait_for_javascript_to_finish
+          page.should have_content("Visit 1")
+        end
+
+        it "should move visit 2 between visits 6 and 7" do
+          wait_for_javascript_to_finish
+          first(:xpath, "//a[@class='move_visits']").click
+          wait_for_javascript_to_finish
+          select("Visit 2", from: "visit_to_move_1")
+          select("Insert before 7 - Visit 7", from: "move_to_position_1")
+          find('#submit_move').click
+          wait_for_javascript_to_finish
+          select("Visits 6 - 10 of 10", from: "jump_to_visit_#{arm1.id}")
+          wait_for_javascript_to_finish
+          page.should have_content("Visit 2")
+        end
+
+        it "should not mess up the visit ids" do
+          arm1.visit_groups.each do |vg|
+            wait_for_javascript_to_finish
+            first(:xpath, "//a[@class='move_visits']").click
+            wait_for_javascript_to_finish
+            select("#{vg.name}", from: "visit_to_move_1")
+            select("Move to last position", from: "move_to_position_1")
+            find('#submit_move').click
+            wait_for_javascript_to_finish
+          end
         end
       end
 

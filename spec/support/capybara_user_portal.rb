@@ -205,9 +205,10 @@ module CapybaraUserPortal
 
         # it "should change and save the date" do
         select("Funded", :from => "Proposal Funding Status")
-        find("#funding_start_date").click
-        page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
-        wait_for_javascript_to_finish
+        page.execute_script("$('#funding_start_date').focus()")
+        sleep 2
+        first('a.ui-state-default.ui-state-highlight').click #Click on today's date
+        sleep 2
         find("#funding_start_date").should have_value(Date.today.strftime('%-m/%d/%Y'))
 
         # it "should change the indirect cost rate when a source is selected" do
@@ -228,8 +229,10 @@ module CapybaraUserPortal
         # it "should change and save the date" do
         select("Pending Funding", :from => "Proposal Funding Status")
         select("Federal", :from => "study_potential_funding_source")
-        find("#potential_funding_start_date").click
-        page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") }
+        page.execute_script("$('#potential_funding_start_date').focus()")
+        sleep 2
+        first('a.ui-state-default.ui-state-highlight').click #Click on today's date
+        sleep 2
         find("#potential_funding_start_date").should have_value((Date.today).strftime('%-m/%d/%Y'))
 
         # it "should change the indirect cost rate when a source is selected" do
@@ -276,13 +279,17 @@ module CapybaraUserPortal
         find("#study_human_subjects_info_attributes_submission_type").should have_value("exempt")
 
         # it "should change and save the date" do
-        find("#irb_approval_date").click
-        page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") }
+        page.execute_script("$('#irb_approval_date').focus()")
+        sleep 2
+        first('a.ui-state-default.ui-state-highlight').click #Click on today's date
+        sleep 2
         find("#irb_approval_date").should have_value(Date.today.strftime('%-m/%d/%Y'))
 
         # it "should change and save the date" do
-        find("#irb_expiration_date").click
-        page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") }
+        page.execute_script("$('#irb_expiration_date').focus()")
+        sleep 2
+        first('a.ui-state-default.ui-state-highlight').click #Click on today's date
+        sleep 2
         find("#irb_expiration_date").should have_value(Date.today.strftime('%-m/%d/%Y'))
 
         # it "should change their state when clicked" do

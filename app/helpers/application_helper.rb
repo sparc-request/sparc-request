@@ -69,7 +69,7 @@ module ApplicationHelper
     end
   end
 
-  def generate_visit_header_row arm, service_request, page, portal=nil
+  def generate_visit_header_row arm, service_request, page, sub_service_request, portal=nil
     base_url = "/service_requests/#{service_request.id}/service_calendars"
     rename_visit_url = base_url + "/rename_visit"
     day_url = base_url + "/set_day"
@@ -82,7 +82,13 @@ module ApplicationHelper
     visit_groups = arm.visit_groups
 
     (beginning_visit .. ending_visit).each do |n|
-      checked = line_items_visits.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?
+      if sub_service_request
+        filtered_line_items_visits = line_items_visits.includes(:line_item).where("line_items.sub_service_request_id = ?", sub_service_request.id)
+      else
+        filtered_line_items_visits = line_items_visits.includes(:line_item).where("line_items.service_request_id = ?", service_request.id)
+      end
+
+      checked = filtered_line_items_visits.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?
       action = checked == true ? 'unselect_calendar_column' : 'select_calendar_column'
       icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
       visit_name = visit_groups[n - 1].name || "Visit #{n}"
@@ -319,6 +325,11 @@ module ApplicationHelper
   #Determines if an arm can be deleted in sparc proper, based on whether the request is in CWF and has patient data
   def can_be_deleted? arm
     arm.subjects.empty? ? true : arm.subjects.none?{|x| x.has_appointments?}
+  end
+
+  def current_translations
+    @translations ||= I18n.backend.send(:translations)
+    @translations[I18n.locale].with_indifferent_access
   end
 
   #Will find a particular one time fee line item by its id, then determine if it has any associated fulfillments

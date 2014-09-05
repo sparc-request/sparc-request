@@ -53,6 +53,7 @@
                               %span{:style => "padding-right:5px;"} /
                               = otf_form.object.try(:units_per_quantity)
                             %td.quantity_typ_otf_header= otf_form.object.try(:service).try(:current_effective_pricing_map).try(:otf_unit_type)
+                            %td{:colspan => 2}
                         %tr.fulfillment_fields.fulfillment_header{:style => "#{'display:none;' if otf_form.object.fulfillments.empty?}", :class => "fulfillments_#{otf_form.object.id}"}
                           %th{:colspan => 7, :class => 'ui-accordion-header ui-helper-reset ui-state-default ui-accordion-icons ui-accordion-header-active ui-state-active ui-corner-top'}
                             %span.ui-accordion-header-icon.ui-icon.ui-icon-triangle-1-s

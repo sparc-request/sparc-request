@@ -28,22 +28,23 @@ $(document).ready ->
         $(core_name).find('button').prop('disabled', true)
 
   check_core_permissions()
-  # only submit data that has changed or is required for calculations
 
+  # only submit data that has changed or is required for calculations
   $('.procedure_r_qty, .procedure_t_qty, .procedure_box').on 'change', ->
     $(this).addClass('changed_attr')
 
   $('.procedure_box').on 'change', ->
     $(this).parent('td').siblings().children('.procedure_r_qty').addClass('changed_attr')
-
-  $(document).on('click', '#save_appointments', (event) ->
+  
+  $("#save_appointments").click (event) ->
     $('.procedure_r_qty, .procedure_t_qty').not('.changed_attr').prop('disabled', true)
+  # end submit data for changes/requirements
+
+   $(document).on('click', '#save_appointments', (event) ->
     if $('.hasDatepicker:visible').val() == ""
       event.preventDefault()
       alert('Please select a date for this visit before saving.')
   )
-
-  # end submit data for changes/requirements
 
   $('#procedures_added_popup').dialog
     # dialogClass: "no-close"
@@ -146,7 +147,7 @@ $(document).ready ->
   #Subject Calendars:
   $(document).on('change', '#patient_visit_calendar form.edit_subject', ->
     confirmExit = ->
-      "Changes to patient calendars need to be saved, click 'Stay on page' and save the form to save the calendar, or click 'Leave page' to leave the page and dismiss your changes."
+      I18n["cwf_js"]["calendar_changed"]
     window.onbeforeunload = confirmExit
   )
 
@@ -157,7 +158,7 @@ $(document).ready ->
   #Subject Info
   $(document).on('change', '#subjects form.edit_study', ->
     confirmExit = ->
-      "Changes to subjects need to be saved. Click 'Cancel' to return to the page and save the form, or 'OK' to leave the page and dismiss your changes."
+      I18n["cwf_js"]["subject_changed"]
     window.onbeforeunload = confirmExit
   )
 
@@ -424,7 +425,7 @@ $(document).ready ->
 
   #Validation for deleting a subject with completed appointments
   $(document).on 'click', '.cwf_subject_delete', (event)->
-    alert("This subject has one or more completed appointments and can't be deleted.")
+    alert(I18n["cwf_js"]["subject_delete"])
 
 
 

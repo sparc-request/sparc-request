@@ -158,7 +158,7 @@ $ ->
       new_count = $(this).val()
       min_count = $(this).data('minimum_subject_count')
       if new_count < min_count
-        alert("A request associated with this arm is in Clinical Work Fulfillment. The subject count cannot be decreased.")
+        alert(I18n["service_details_alerts"]["subject_count"])
         $(this).val(min_count)
   )
 
@@ -168,7 +168,7 @@ $ ->
       new_count = $(this).val()
       min_count = $(this).data('minimum_visit_count')
       if new_count < min_count
-        alert("A request associated with this arm is in Clinical Work Fulfillment. The visit count cannot be decreased.")
+        alert(I18n["service_details_alerts"]["visit_count"])
         $(this).val(min_count)
   )
 

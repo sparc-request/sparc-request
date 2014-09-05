@@ -36,7 +36,7 @@ $(document).ready ->
         $('.notification-dialog-form').bind('ajax:success', (data) ->
           enableSubmitButton("Please wait...", "Submit")
           $('.notification_dialog').dialog('close')
-          $().toastmessage('showSuccessToast', "Message has been sent.");
+          $().toastmessage('showSuccessToast', I18n["notifications_js"]["send"]);
         ).submit()
       "Cancel": () ->
         enableSubmitButton("Please wait...", "Submit")

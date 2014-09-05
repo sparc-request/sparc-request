@@ -104,12 +104,6 @@ wb.add_worksheet(name: "Subject report") do |sheet|
   visit_only_procedures.each do |pid|
     completed_for[pid] = []
   end
-
-
-
-
-
-
   appointments = @subject.calendar.appointments.sort_by!{|x| x.try(:position_switch)}
   appointments.group_by{|x| x.visit_group_id ? x.visit_group_id : "#{x.name} #{x.position}"}.each do |g,appts|
     max_date = appts.map(&:completed_at).compact.max.try(:strftime, "%m/%d/%y")
@@ -153,12 +147,6 @@ wb.add_worksheet(name: "Subject report") do |sheet|
       end
     end
   end
-
-
-
-
-
-
 
   visit_name_row << "Totals"
 

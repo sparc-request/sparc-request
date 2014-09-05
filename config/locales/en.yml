@@ -1077,8 +1077,8 @@ en:
     visit_window: "Click to set the window period the visit can be completed."
     jump_to_visit: "Select the visit you would like to view."
   service_details_alerts:
-    subject_count: "You can not reduce the subject count below the count of a previously defined arm."
-    visit_count: "You can not reduce the visit count below the count of a previously defined arm."
+    subject_count: "A request associated with this arm is in Clinical Work Fulfillment. The subject count cannot be decreased." 
+    visit_count: "A request associated with this arm is in Clinical Work Fulfillment. The visit count cannot be decreased."
   ajax_error: "An error happened processing your request: "
   sign_in_dialog: "Please select one of the options below:"
   signed_up_dialog: "New account created:"

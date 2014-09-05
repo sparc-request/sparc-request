@@ -62,14 +62,21 @@ $ ->
         data: data
         success: (data) ->
           if data.same_dates == 'true'
-            alert "A pricing map already exists with that #{(str.replace('_',' '))}.  Please choose another date."
+            if str == 'display_date'
+              alert I18n["catalog_manager_js"]["same_display_date"]
+            else
+              alert I18n["catalog_manager_js"]["same_effective_date"]
             date_element.val('')
             date_element.siblings().val('')
           if data.later_dates == 'true'
-            if (confirm "This #{(str.replace('_',' '))} is before the #{(str.replace('_',' '))} of existing pricing maps, are you sure you want to do this?") == false
+            if str == 'display_date'
+              proceed = confirm I18n["catalog_manager_js"]["later_display_date"]
+            else
+              proceed = confirm I18n["catalog_manager_js"]["later_effective_date"]
+            if proceed == false   
               date_element.val('')
               date_element.siblings().val('')
-            else if (confirm "Are you sure?") == false
+            else if (confirm I18n["js_confirm"]) == false
               date_element.val('')
               date_element.siblings().val('')
       })
@@ -94,7 +101,7 @@ $ ->
   verify_valid_pricing_setups()
   
   $('.associated_survey_delete').live 'click', ->
-    if confirm 'Are you sure you want to remove this Associated Survey?'
+    if confirm I18n["catalog_manager_js"]["survey_delete"]
       $.post '/catalog_manager/catalog/remove_associated_survey', {associated_survey_id: $(this).data('associated_survey_id')}, (data) ->
         $('#associated_survey_info').html(data)
 
@@ -139,28 +146,28 @@ $ ->
       
       # create an institution
       if /^Create New Institution$/.test click_text
-        institution_name = prompt("Please enter the name of the institution to be created")
+        institution_name = prompt(I18n["catalog_manager_js"]["institution_prompt"])
         if institution_name and institution_name.length > 0
           $.post '/catalog_manager/institutions', {name: institution_name}
 
       # create a provider
       if /^Create New Provider$/.test click_text
         institution_id = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('cid')
-        provider_name = prompt("Please enter the name of the provider you would like to create")
+        provider_name = prompt(I18n["catalog_manager_js"]["provider_prompt"])
         if provider_name and provider_name.length > 0
           $.post '/catalog_manager/providers', {name: provider_name, institution_id: institution_id}
 
       # create a program
       if /^Create New Program$/.test click_text
         provider_id = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('cid')
-        program_name = prompt("Please enter the name of the program you would like to create")
+        program_name = prompt(I18n["catalog_manager_js"]["program_prompt"])
         if program_name and program_name.length > 0
           $.post '/catalog_manager/programs', {name: program_name, provider_id: provider_id}
 
       # create a core
       if /^Create New Core$/.test click_text
         program_id = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('cid')
-        core_name = prompt("Please enter the name of the core you would like to create")
+        core_name = prompt(I18n["catalog_manager_js"]["core_prompt"])
         if core_name and core_name.length > 0
           $.post '/catalog_manager/cores', {name: core_name, program_id: program_id}
 
@@ -176,7 +183,7 @@ $ ->
             $.get("/catalog_manager/services/new", {parent_id: parent_id, parent_object_type: parent_object_type}, (data)-> 
               $('#details').html(data) )
           else
-            alert("There needs to be at least one service provider on a parent organization to create a new service.")
+            alert(I18n["catalog_manager_js"]["service_alert"])
         
         
     return unless node_ref.rslt.obj.context.attributes['object_type']
@@ -213,7 +220,7 @@ $ ->
 
 
   $('.rs_delete').live 'click', ->
-    if confirm 'Are you sure you want to remove this Related Service?'
+    if confirm I18n["catalog_manager_js"]["service_remove"]
       $.post '/catalog_manager/services/disassociate', {service_relation_id: $(this).data('service_relation_id')}, (data) ->
         $('#rs_info').html(data)
   
@@ -363,7 +370,7 @@ $ ->
           $('#su_info').html(data)
 
   $('.su_delete').live 'click', ->
-    if confirm 'Are you sure you want to remove this Super User?'
+    if confirm I18n["catalog_manager_js"]["super_user_remove"]
       $.post '/catalog_manager/identities/disassociate_with_org_unit', {relationship: $(this).attr('id'), org_unit: $('#org_unit_id').val(), rel_type: "super_user_organizational_unit"}, (data) ->
         $('#su_info').html(data)
 
@@ -378,7 +385,7 @@ $ ->
           $('#cp_info').html(data)
 
   $('.cp_delete').live 'click', ->
-    if confirm 'Are you sure you want to remove this Clinical Provider?'
+    if confirm I18n["catalog_manager_js"]["clinical_provider_remove"]
       $.post '/catalog_manager/identities/disassociate_with_org_unit', {relationship: $(this).attr('id'), org_unit: $('#org_unit_id').val(), rel_type: "clinical_provider_organizational_unit"}, (data) ->
         $('#cp_info').html(data)
 
@@ -393,7 +400,7 @@ $ ->
           $('#sp_info').html(data)
 
   $('.sp_delete').live 'click', ->
-    if confirm 'Are you sure you want to remove this Service Provider?'
+    if confirm I18n["catalog_manager_js"]["service_provider_remove"]
       $.post '/catalog_manager/identities/disassociate_with_org_unit', {relationship: $(this).attr('id'), org_unit: $('#org_unit_id').val(), rel_type: "service_provider_organizational_unit"}, (data) ->
         $('#sp_info').html(data)
 
@@ -408,7 +415,7 @@ $ ->
           $('#cm_info').html(data)
 
   $('.cm_delete').live 'click', ->
-    if confirm 'Are you sure you want to remove rights for this user from the Catalog Manager?'
+    if confirm I18n["catalog_manager_js"]["cm_rights_remove"]
       $.post '/catalog_manager/identities/disassociate_with_org_unit', {relationship: $(this).attr('id'), org_unit: $('#org_unit_id').val(), rel_type: "catalog_manager_organizational_unit"}, (data) ->
         $('#cm_info').html(data)
 
@@ -430,7 +437,7 @@ $ ->
     $.post '/catalog_manager/identities/set_edit_historic_data', {manager: $(this).attr('identity'), org_id: $(this).attr('org_id')}, (data) ->
       $('#cm_info').html(data)
       if current_user_id == identity_user_id
-        alert("You are changing your own permissions. Your page will refresh automatically when this window closes.")
+        alert(I18n["catalog_manager_js"]["permission_change"])
         window.location = ''
 
   $('.increase_decrease_rates').live('click', ->
@@ -514,7 +521,7 @@ $ ->
 
   $('span.remove_funding_source').live 'click', ->
     remove_this = $(this).parent()
-    if confirm("Are you sure?")
+    if confirm(I18n["js_confirm"])
       $.ajax
         url: '/catalog_manager/catalog/remove_excluded_funding_source'
         type: 'delete'

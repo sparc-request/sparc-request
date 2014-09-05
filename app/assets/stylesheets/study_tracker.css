@@ -47,7 +47,8 @@ table.study_tracker_table {
 }
 
 #visit_form table.study_tracker_table {
-  width:860px;
+  margin-left: -2px;
+  width: 909px;
 }
 
 #controls {
@@ -64,6 +65,11 @@ table.study_tracker_table {
   font-weight:bold;
 }
 
+#controls select {
+  border: 1px solid black;
+  padding: 3px 3px 0px;
+}
+
 td.highlighted {
   background-color:#FFEF8F !important;
 }
@@ -74,10 +80,11 @@ td.text-center {
 
 .comments {
   color:#362B36;
+  margin-top: 30px;
 }
 
 .comments .comment {
-  background-color: #E0E0E0;
+  background-color: #E8E8E8;
   margin: 10px 0;
   overflow: auto;
   padding: 10px;
@@ -103,7 +110,46 @@ td.text-center {
 
 .add_service select {
   float:left;
-  margin-right:5px;
+  margin-right: 5px;
+  border: 1px solid black;
+  padding: 7px;
+  width: 550px;
+}
+.add_service button.cwf_add_service_button {
+  background: url("portal/yellowbutton_blank.png") no-repeat;
+  border: 0 none;
+  color: #FFFFFF;
+  cursor: pointer;
+  height: 35px;
+  width: 230px;
+}
+
+.add_comment_link,
+#bottom_return_link {
+  background: url("portal/yellowbutton_smaller.png") no-repeat;
+  color: white !important;
+  display: block;
+  height: 27px;
+  padding: 8px 0 0;
+  text-align: center;
+  width: 149px;
+}
+#save_appointments {
+  background: url("portal/yellowbutton_smaller.png") no-repeat;
+  border: 0 none;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: block;
+  font-size: 1.1em;
+  height: 35px;
+  width: 149px;
+  margin: 0 auto;
+}
+a#bottom_return_link {
+  background: url("portal/yellowbutton_blank.png") no-repeat;
+  font-size: 1.1em;
+  width: 230px;
+  margin: 20px auto 0;
 }
 
 #audit_form {
@@ -152,13 +198,14 @@ td.text-center {
 }
 
 .dashboard_link {
-  margin: 15px auto 0px;
+  background-color: #3E9F5A;
   border-radius: 5px;
-  padding: 2px;
-  width:900px;
-  display:block;
-  text-align:center;
+  color: white;
   font-size:1.6em;
+  margin: 15px auto 0px;
+  padding: 2px;
+  text-align:center;
+  width:900px;
 }
 
 #subject_tracker_add {
@@ -186,19 +233,17 @@ td.text-center {
 }
 
 #patient_visit_calendar div#dashboard {
-  width: 880px;
-  border: 1px solid #A6C9E2;
-  border-top: 0px;
+  width: 882px;
   padding: 5px;
   position: absolute;
   background-color: white;
   z-index: 10;
-  left: 25px;
+  left: 16px;
 }
 
 #dashboard td {
   padding: 6px 8px;
-  background-color: #C0C0C0;
+  background-color: #E8E8E8;
 }
 
 #research_project_summary_report_date_range {

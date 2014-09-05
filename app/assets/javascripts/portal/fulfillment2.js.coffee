@@ -53,10 +53,10 @@ $(document).ready ->
 
   validateDate = (start,end) ->
     if start == '' or end ==''
-      return true 
+      return true
     if start > end
       return false
-    else 
+    else
       return true
 
   filterNonKeys = (arr) ->
@@ -91,7 +91,7 @@ $(document).ready ->
       if validateDate(start,end)
         put_attribute(object_id, klass, data)
       else
-        $().toastmessage('showErrorToast', "Please enter a start date before the end date")
+        $().toastmessage('showErrorToast', I18n["fulfillment_js"]["date_error"])
         $("##{$(this).attr("name")}_picker").val(original)
     else  
       put_attribute(object_id, klass, data)
@@ -112,11 +112,11 @@ $(document).ready ->
     object_id = $(this).data("#{klass}_id")
     has_fulfillments = $(this).data("has_fulfillments") || null
     if has_fulfillments
-      alert("This line item has one or more fulfillments associated with it and can not be deleted.")
+      alert(I18n["has_fulfillments"])
     else
       data = {}
       data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
-      confirm_message = "Are you sure that you want to remove this service from all subjects' visit calendars in this arm?"
+      confirm_message = I18n["fulfillment_js"]["remove_service"]
       if $(this).data("has_popup") == true
         if confirm(confirm_message)
           $.ajax
@@ -126,7 +126,7 @@ $(document).ready ->
             dataType: "script"
             contentType: 'application/json; charset=utf-8'
             success: ->
-              $().toastmessage('showSuccessToast', "#{klass.humanize()} has been deleted.");
+              $().toastmessage('showSuccessToast', "#{klass.humanize()}" + I18n["fulfillment_js"]["deleted"]);
       else
         $.ajax
           type: 'DELETE'
@@ -135,7 +135,7 @@ $(document).ready ->
           dataType: "script"
           contentType: 'application/json; charset=utf-8'
           success: ->
-            $().toastmessage('showSuccessToast', "#{klass.humanize()} has been deleted.");
+            $().toastmessage('showSuccessToast', "#{klass.humanize()}" + I18n["fulfillment_js"]["deleted"]);
   )
 
   $('#cwf_building_dialog').dialog
@@ -151,7 +151,7 @@ $(document).ready ->
     
 
   put_attribute = (id, klass, data, callback) ->
-    callback ?= -> return null;
+    callback ?= -> return null
     $.ajax
       type: 'PUT'
       url:  "/portal/admin/#{klass}s/#{id}/update_from_fulfillment"
@@ -159,7 +159,7 @@ $(document).ready ->
       dataType: "script"
       contentType: 'application/json; charset=utf-8'
       success: ->
-        $().toastmessage('showSuccessToast', "Service request has been saved.")
+        $().toastmessage('showSuccessToast', I18n["service_request_success"])
         callback()
       error: (jqXHR, textStatus, errorThrown) ->
         if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
@@ -252,7 +252,7 @@ $(document).ready ->
       dataType: 'script'
       contentType: 'application/json; charset=utf-8'
       success: ->
-        $().toastmessage('showSuccessToast', "Service request has been saved.")
+        $().toastmessage('showSuccessToast', I18n["service_request_success"])
       error: (jqXHR, textStatus, errorThrown) ->
         if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
           errors = JSON.parse(jqXHR.responseText)
@@ -263,10 +263,10 @@ $(document).ready ->
 
   $(document).on('click', '.remove_arm_link', ->
     if $(this).data('arm_count') <= 1
-      alert("You can't delete the last arm while Per-Patient/Per Visit services still exist.")
+      alert(I18n["fulfillment_js"]["arm_remove_alert"])
     else if $(this).data('can_be_deleted') == false
-      alert("This arm has subject data and can not be deleted.")
-    else if confirm("Are you sure you want to remove the ARM?")
+      alert(I18n["fulfillment_js"]["arm_subject_data_alert"])
+    else if confirm(I18n["fulfillment_js"]["arm_delete_confirm"])
       sr_id = $(this).data('service_request_id')
       protocol_id = $('#arm_id').data('protocol_id')
       data =
@@ -281,7 +281,7 @@ $(document).ready ->
         dataType: 'script'
         contentType: 'application/json; charset=utf-8'
         success: ->
-          $().toastmessage('showSuccessToast', "Service request has been saved.")
+          $().toastmessage('showSuccessToast', I18n["service_request_success"])
         error: (jqXHR, textStatus, errorThrown) ->
           if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
             errors = JSON.parse(jqXHR.responseText)
@@ -338,7 +338,7 @@ $(document).ready ->
       dataType: 'script'
       contentType: 'application/json; charset=utf-8'
       success: ->
-        $().toastmessage('showSuccessToast', "Service request has been saved.")
+        $().toastmessage('showSuccessToast', I18n["service_request_success"])
         $('#visit-form').dialog('close')
       error: (jqXHR, textStatus, errorThrown) ->
         if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
@@ -352,7 +352,7 @@ $(document).ready ->
 
   $(document).on('click', '.delete_visit_link', ->
     if $(this).data('visit_count') <= 1
-      alert("You can't delete the last visit. Please delete the arm if visits are no longer required.")
+      alert(I18n["fulfillment_js"]["last_visit_delete"])
     else
       sr_id = $(this).data('service_request_id')
       data =
@@ -368,7 +368,7 @@ $(document).ready ->
         dataType: 'script'
         contentType: 'application/json; charset=utf-8'
         success: ->
-          $().toastmessage('showSuccessToast', "Service request has been saved.")
+          $().toastmessage('showSuccessToast', I18n["service_request_success"])
 
         error: (jqXHR, textStatus, errorThrown) ->
           if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
@@ -394,7 +394,7 @@ $(document).ready ->
       dataType:    'script'
       contentType: 'application/json; charset=utf-8'
       success: ->
-        $().toastmessage('showSuccessToast', "Service request has been saved.")
+        $().toastmessage('showSuccessToast', I18n["service_request_success"])
       error: (jqXHR, textStatus, errorThrown) ->
         if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
           errors = JSON.parse(jqXHR.responseText)
@@ -418,7 +418,7 @@ $(document).ready ->
       dataType:    'script'
       contentType: 'application/json; charset=utf-8'
       success: (response_html) ->
-        $().toastmessage('showSuccessToast', "Service request has been saved.")
+        $().toastmessage('showSuccessToast', I18n["service_request_success"])
       error: (jqXHR, textStatus, errorThrown) ->
         if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
           errors = JSON.parse(jqXHR.responseText)
@@ -433,7 +433,7 @@ $(document).ready ->
     object_id = $('#delete_ppv_service_id').val()
     data = {}
     data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
-    confirm_message = "Are you sure that you want to remove this service from all subjects' visit calendars?"
+    confirm_message = I18n["fulfillment_js"]["service_delete_confirm"]
     if confirm(confirm_message)
       $.ajax
         type: 'DELETE'
@@ -442,7 +442,7 @@ $(document).ready ->
         dataType: "script"
         contentType: 'application/json; charset=utf-8'
         success: ->
-          $().toastmessage('showSuccessToast', "Service has been deleted.");
+          $().toastmessage('showSuccessToast', I18n["service_request_success"]);
   )
 
   $(document).on('click', '.cwf_delete_data', ->
@@ -450,11 +450,11 @@ $(document).ready ->
     object_id = $(this).data("#{klass}_id")
     has_fulfillments = $(this).data("has_fulfillments") || null
     if has_fulfillments
-      alert("This line item has one or more fulfillments associated with it and can not be deleted.")
+      alert(I18n["has_fulfillments"])
     else
       data = {}
       data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
-      confirm_message = "Are you sure that you want to remove this service?"
+      confirm_message = I18n["fulfillment_js"]["cwf_service_delete"]
       if confirm(confirm_message)
         $.ajax
           type: 'DELETE'
@@ -463,7 +463,7 @@ $(document).ready ->
           dataType: "script"
           contentType: 'application/json; charset=utf-8'
           success: ->
-            $().toastmessage('showSuccessToast', "Service has been deleted.");
+            $().toastmessage('showSuccessToast', I18n["service_deleted"])
   )
 
   $(document).on('click', '.expand_li', ->
@@ -548,12 +548,12 @@ $(document).ready ->
     subsidy = total - contribution
     max_dollar_cap = parseFloat($('#direct_cost_total').data('max_dollar_cap'))
     if subsidy > max_dollar_cap
-      $().toastmessage('showWarningToast', 'Value is over maximum dollar cap.')
+      $().toastmessage('showWarningToast', I18n["fulfillment_js"]["pi_contribution"])
 
   validate_percent_subsidy = (percent) ->
     max_percentage = parseFloat($('#direct_cost_total').data('max_percentage')) / 100
     if percent > max_percentage
-      $().toastmessage('showWarningToast', 'Value is over maximum subsidy percentage.')
+      $().toastmessage('showWarningToast', I18n["fulfillment_js"]["subsidy"])
 
   
   #######################
@@ -580,7 +580,7 @@ $(document).ready ->
       url: "/portal/admin/sub_service_requests/#{ssr_id}/push_to_epic"
       contentType: 'application/json; charset=utf-8'
       success: ->
-        $().toastmessage('showSuccessToast', "Project/Study has been sent to Epic")
+        $().toastmessage('showSuccessToast', I18n["fulfillment_js"]["epic"])
       error: (jqXHR, textStatus, errorThrown) ->
         if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'application/json'
           errors = JSON.parse(jqXHR.responseText)

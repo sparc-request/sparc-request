@@ -76,7 +76,7 @@ feature 'create new service' do
       wait_for_javascript_to_finish
     end    
 
-    page.execute_script("$('#save_button').click();")
+    first("#save_button").click
     page.should have_content( 'Test Service created successfully' )
   end
 
@@ -131,7 +131,25 @@ feature 'create new service' do
       wait_for_javascript_to_finish
     end      
 
-    page.execute_script("$('#save_button').click();")
+    first("#save_button").click
     page.should have_content( 'Core Test Service created successfully' )
   end
+  
+  scenario ':user only with access to this core can see link for: Create New Service', :js => true do   
+    identity = Identity.create(last_name: 'Miller', first_name: 'Robert', ldap_uid: 'rmiller@musc.edu', email:  'rmiller@musc.edu', password: 'p4ssword',password_confirmation: 'p4ssword',  approved: true )
+    identity.save!
+
+    core = Core.find_by_name('Clinical Data Warehouse')
+    
+    cm = CatalogManager.create( organization_id: core.id, identity_id: identity.id, )
+    cm.save!
+
+    login_as(Identity.find_by_ldap_uid('rmiller@musc.edu'))
+    ## Logs in the default identity.
+    visit catalog_manager_root_path
+    ## This is used to reveal all nodes in the js tree to make it easier to access during testing.
+    page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
+    expect(page).to have_content('Create New Service')
+  end
+  
 end 

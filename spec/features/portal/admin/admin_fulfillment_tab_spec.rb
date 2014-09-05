@@ -32,6 +32,8 @@ describe "admin fulfillment tab", :js => true do
     add_visits
     subsidy_map.destroy
     subsidy.destroy
+    sub_service_request.update_attributes(:status => "submitted")
+    sub_service_request.reload
     visit portal_admin_sub_service_request_path(sub_service_request)
     wait_for_javascript_to_finish
   end
@@ -49,7 +51,7 @@ describe "admin fulfillment tab", :js => true do
     end
 
     it "should contain the sub service request information" do
-      page.should have_xpath("//option[@value='draft' and @selected='selected']")
+      page.should have_xpath("//option[@value='submitted' and @selected='selected']")
       # More data checks here (more information probably needs to be put in the mocks)
       page.should_not have_content('#service_request_owner')
       page.should have_xpath("//option[@value='#{service.id}' and @selected='selected']")
@@ -78,6 +80,7 @@ describe "admin fulfillment tab", :js => true do
       it 'should save the service request status' do
         select 'Submitted', :from => 'sub_service_request_status'
         visit portal_admin_sub_service_request_path(sub_service_request)
+        wait_for_javascript_to_finish
         page.should have_xpath("//option[@value='submitted' and @selected='selected']")
         page.find('#sub_service_request_owner_id').should have_value ""
       end
@@ -376,6 +379,7 @@ describe "admin fulfillment tab", :js => true do
         find(".visit_day.position_1").value.should eq("1")
         find(".visit_day.position_5").value.should eq("5")
         find('#line_item_service_id').find('option[selected]').text.should eq("Per Patient")
+        sleep 2
         find('.line_items_visit_subject_count').find('option[selected]').text.should eq("5")
       end
     end
@@ -422,7 +426,7 @@ describe "admin fulfillment tab", :js => true do
     it 'should not allow you to delete an arm that has patient data' do
       number_of_arms = Arm.find(:all).size
       subject = arm1.subjects.first
-      appointment = FactoryGirl.create(:appointment, :calendar_id => subject.calendar.id)
+      # appointment = FactoryGirl.create(:appointment, :calendar_id => subject.calendar.id)
       sub_service_request.update_attributes(:in_work_fulfillment => true)
       visit study_tracker_sub_service_request_path sub_service_request.id
       click_link("Subject Tracker")

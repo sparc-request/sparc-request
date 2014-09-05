@@ -492,7 +492,9 @@ class ServiceRequest < ActiveRecord::Base
     self.update_attributes(status: new_status)
 
     self.sub_service_requests.each do |ssr|
-      ssr.update_attributes(status: new_status) if ['first_draft', 'draft', nil].include?(ssr.status)
+      if ['first_draft', 'draft', nil].include?(ssr.status) or (['get_a_quote', 'submitted'].include?(ssr.status) and ['get_a_quote', 'submitted'].include?(new_status))
+        ssr.update_attributes(status: new_status)
+      end
     end
   end
 

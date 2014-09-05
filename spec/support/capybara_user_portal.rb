@@ -27,12 +27,12 @@ module CapybaraUserPortal
         wait_for_javascript_to_finish
     end
 
-    def createNewRequestTest
+    def createNewStudyTest
         #clicks on the Create New Request button and 
         #checks that it takes the browser to sparc proper
-        find(:xpath, "//a/img[@class='portal_create_new_request']").click
+        find(:xpath, "//a/img[@class='portal_create_new_study']").click
         wait_for_javascript_to_finish
-        page.should have_xpath "//div[@id='institution_accordion']"
+        page.should have_content "Short Title"
         goToUserPortal
     end
 
@@ -60,7 +60,8 @@ module CapybaraUserPortal
     def accordionInfoBox
         #returns currently expanded study information div that
         #  displays the study information, users, and SRs.
-        find(:xpath, "//div[@aria-expanded='true']")
+        # find(:xpath, "//div[@aria-expanded='true']")
+        find("div.protocol-information.ui-accordion-content-active")
     end
 
     def createNotification(studyName)
@@ -74,8 +75,10 @@ module CapybaraUserPortal
         goToSparcProper("jpl6@musc.edu","p4ssword")
         goToUserPortal
         findStudy studyName
+        sleep 3
         within accordionInfoBox do
-            first(:xpath, ".//a[contains(@class,'new-portal-notification-button')]").click
+            first("a.new-portal-notification-button").click
+            # first(:xpath, ".//a[contains(@class,'new-portal-notification-button')]").click
             wait_for_javascript_to_finish
         end
         first(".new_notification").click
@@ -115,10 +118,11 @@ module CapybaraUserPortal
         find("td.body_column").should have_text("Test Reply")
         goToUserPortal
         within accordionInfoBox do
-            sleep 2
-            first(:xpath, ".//a[@class='new-portal-notification-button']").click
+            sleep 6
+            first("a.new-portal-notification-button").click
             wait_for_javascript_to_finish
         end
+        sleep 4
         first(".new_notification").click
         wait_for_javascript_to_finish
         page.should have_text("You can not send a message to yourself.")
@@ -201,9 +205,10 @@ module CapybaraUserPortal
 
         # it "should change and save the date" do
         select("Funded", :from => "Proposal Funding Status")
-        find("#funding_start_date").click
-        page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
-        wait_for_javascript_to_finish
+        page.execute_script("$('#funding_start_date').focus()")
+        sleep 2
+        first('a.ui-state-default.ui-state-highlight').click #Click on today's date
+        sleep 2
         find("#funding_start_date").should have_value(Date.today.strftime('%-m/%d/%Y'))
 
         # it "should change the indirect cost rate when a source is selected" do
@@ -224,8 +229,10 @@ module CapybaraUserPortal
         # it "should change and save the date" do
         select("Pending Funding", :from => "Proposal Funding Status")
         select("Federal", :from => "study_potential_funding_source")
-        find("#potential_funding_start_date").click
-        page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") }
+        page.execute_script("$('#potential_funding_start_date').focus()")
+        sleep 2
+        first('a.ui-state-default.ui-state-highlight').click #Click on today's date
+        sleep 2
         find("#potential_funding_start_date").should have_value((Date.today).strftime('%-m/%d/%Y'))
 
         # it "should change the indirect cost rate when a source is selected" do
@@ -272,13 +279,17 @@ module CapybaraUserPortal
         find("#study_human_subjects_info_attributes_submission_type").should have_value("exempt")
 
         # it "should change and save the date" do
-        find("#irb_approval_date").click
-        page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") }
+        page.execute_script("$('#irb_approval_date').focus()")
+        sleep 2
+        first('a.ui-state-default.ui-state-highlight').click #Click on today's date
+        sleep 2
         find("#irb_approval_date").should have_value(Date.today.strftime('%-m/%d/%Y'))
 
         # it "should change and save the date" do
-        find("#irb_expiration_date").click
-        page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") }
+        page.execute_script("$('#irb_expiration_date').focus()")
+        sleep 2
+        first('a.ui-state-default.ui-state-highlight').click #Click on today's date
+        sleep 2
         find("#irb_expiration_date").should have_value(Date.today.strftime('%-m/%d/%Y'))
 
         # it "should change their state when clicked" do
@@ -382,7 +393,7 @@ module CapybaraUserPortal
         #expects instance of ServiceRequestForComparison as input 
         #Intended as full UP happy test.
         goToUserPortal
-        createNewRequestTest
+        createNewStudyTest
         findStudy(request.study.short)
         editOriginalTest(request)
         editStudyInformation

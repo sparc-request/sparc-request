@@ -53,10 +53,10 @@ $(document).ready ->
 
   validateDate = (start,end) ->
     if start == '' or end ==''
-      return true 
-    if start > end 
+      return true
+    if start > end
       return false
-    else 
+    else
       return true
 
   filterNonKeys = (arr) ->
@@ -86,8 +86,8 @@ $(document).ready ->
     data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
     data['line_items_visit_id'] = $(this).parents("tr").data("line_items_visit_id") || null
     if $(this).attr('name') == 'protocol_start_date' or $(this).attr('name') == 'protocol_end_date'
-      start = $('#protocol_start_date_picker').val()
-      end = $('#protocol_end_date_picker').val()
+      start = $('#protocol_start_date_picker').datepicker("getDate")
+      end = $('#protocol_end_date_picker').datepicker("getDate")
       if validateDate(start,end)
         put_attribute(object_id, klass, data)
       else
@@ -110,11 +110,24 @@ $(document).ready ->
   $(document).on('click', '.delete_data', ->
     klass = getObjKlass(this)
     object_id = $(this).data("#{klass}_id")
-    data = {}
-    data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
-    confirm_message = I18n["fulfillment_js"]["remove_service"]
-    if $(this).data("has_popup") == true
-      if confirm(confirm_message)
+    has_fulfillments = $(this).data("has_fulfillments") || null
+    if has_fulfillments
+      alert(I18n["has_fulfillments"])
+    else
+      data = {}
+      data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
+      confirm_message = I18n["fulfillment_js"]["remove_service"]
+      if $(this).data("has_popup") == true
+        if confirm(confirm_message)
+          $.ajax
+            type: 'DELETE'
+            url:  "/portal/admin/#{klass}s/#{object_id}"
+            data: JSON.stringify(data)
+            dataType: "script"
+            contentType: 'application/json; charset=utf-8'
+            success: ->
+              $().toastmessage('showSuccessToast', "#{klass.humanize()}" + I18n["fulfillment_js"]["deleted"]);
+      else
         $.ajax
           type: 'DELETE'
           url:  "/portal/admin/#{klass}s/#{object_id}"
@@ -123,15 +136,6 @@ $(document).ready ->
           contentType: 'application/json; charset=utf-8'
           success: ->
             $().toastmessage('showSuccessToast', "#{klass.humanize()}" + I18n["fulfillment_js"]["deleted"]);
-    else
-      $.ajax
-        type: 'DELETE'
-        url:  "/portal/admin/#{klass}s/#{object_id}"
-        data: JSON.stringify(data)
-        dataType: "script"
-        contentType: 'application/json; charset=utf-8'
-        success: ->
-          $().toastmessage('showSuccessToast', "#{klass.humanize()}" + I18n["fulfillment_js"]["deleted"]);
   )
 
   $('#cwf_building_dialog').dialog
@@ -147,7 +151,7 @@ $(document).ready ->
     
 
   put_attribute = (id, klass, data, callback) ->
-    callback ?= -> return null;
+    callback ?= -> return null
     $.ajax
       type: 'PUT'
       url:  "/portal/admin/#{klass}s/#{id}/update_from_fulfillment"
@@ -444,18 +448,22 @@ $(document).ready ->
   $(document).on('click', '.cwf_delete_data', ->
     klass = getObjKlass(this)
     object_id = $(this).data("#{klass}_id")
-    data = {}
-    data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
-    confirm_message = I18n["fulfillment_js"]["cwf_service_delete"]
-    if confirm(confirm_message)
-      $.ajax
-        type: 'DELETE'
-        url:  "/portal/admin/line_items/#{object_id}"
-        data: JSON.stringify(data)
-        dataType: "script"
-        contentType: 'application/json; charset=utf-8'
-        success: ->
-          $().toastmessage('showSuccessToast', I18n["service_request_success"]);
+    has_fulfillments = $(this).data("has_fulfillments") || null
+    if has_fulfillments
+      alert(I18n["has_fulfillments"])
+    else
+      data = {}
+      data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
+      confirm_message = I18n["fulfillment_js"]["cwf_service_delete"]
+      if confirm(confirm_message)
+        $.ajax
+          type: 'DELETE'
+          url:  "/portal/admin/line_items/#{object_id}"
+          data: JSON.stringify(data)
+          dataType: "script"
+          contentType: 'application/json; charset=utf-8'
+          success: ->
+            $().toastmessage('showSuccessToast', I18n["service_deleted"])
   )
 
   $(document).on('click', '.expand_li', ->

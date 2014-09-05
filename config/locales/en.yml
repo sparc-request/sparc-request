@@ -434,6 +434,7 @@ en:
     status_blank: "Select a Funding Status"
     udak_project_number: "Financial Account (UDAK#):"
     sponsor_name: "Sponsor Name:*"
+    push_to_epic: "Publish Study in Epic:"
     rate: "Indirect Cost Rate:"
     funding_rfa: "Funding Opportunity #/RFA:"
     potential_funding_start_date: "Potential Funding Start Date:"
@@ -490,6 +491,7 @@ en:
     description: "Brief Description:"
     rate: "Indirect Cost Rate:"
     save: "Save"
+    push_to_epic: "Publish Project to Epic:"
 
   # Study/Project Shared
   protocol_shared:
@@ -635,6 +637,7 @@ en:
     send_notification: "Send Notification"
     ctrc_services_exist: "SCTR Research Nexus services have been found on another Service Request %{protocol_id}-%{ssr_id} pertaining to this Project/Study %{short_title}. Please edit the original Service Request containing the Nexus services in your User Portal."
     full_calendar: "View Consolidated Request"
+    add_services: "Add Services"
 
   # Portal sub service request dialog
   ssr_dialog:
@@ -897,7 +900,7 @@ en:
     edit_protocol_title: "Dashboard <span>|</span> Edit Protocol Information"
     id: "SRID"
     status: "Status"
-    pi: "Principle Investigator"
+    pi: "Principal Investigator"
     routing: "Routing"
     billing_business: "Billing/Business Manager"
     requester: "Requester"
@@ -1061,6 +1064,8 @@ en:
     return_to_admin_portal: "Return to Admin Portal"
 
   # Javascript localizations
+  has_fulfillments: "This line item has one or more fulfillments associated with it and can not be deleted."
+  service_deleted: "Service has been deleted."
   cart:
     remove_request_confirm: "This action will delete this service request and you will be redirected to your user portal. Click OK to proceed."
   feedback: 

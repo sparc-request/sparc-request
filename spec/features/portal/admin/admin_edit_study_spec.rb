@@ -244,7 +244,7 @@ describe "editing a study", js: true do
 
       it "should change and save the date" do
         find("#irb_approval_date").click
-        page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") }
+        first("a.ui-state-default.ui-state-highlight").click
         find("#irb_approval_date").should have_value(Date.today.strftime('%-m/%d/%Y'))
       end
     end
@@ -253,7 +253,7 @@ describe "editing a study", js: true do
 
       it "should change and save the date" do
         find("#irb_expiration_date").click
-        page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") }
+        first("a.ui-state-default.ui-state-highlight").click
         find("#irb_expiration_date").should have_value(Date.today.strftime('%-m/%d/%Y'))
       end
     end    

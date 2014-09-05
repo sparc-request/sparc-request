@@ -25,7 +25,7 @@ include CapybaraAdminPortal
 include CapybaraClinical 
 include CapybaraUserPortal
 
-describe 'A Happy Test' do
+describe 'A Happy Test', :happy_test do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test

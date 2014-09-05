@@ -93,6 +93,15 @@
             = f.label :sponsor_name, t(:study_form)[:sponsor_name]
             = f.text_field :sponsor_name
 
+          .field
+            = f.label :selected_for_epic, t(:study_form)[:push_to_epic]
+            %span.non_standard_usage_of_radio_buttons
+              = f.radio_button :selected_for_epic, true
+              = f.label :selected_for_epic, "Yes"
+              = f.radio_button :selected_for_epic, false
+              = f.label :selected_for_epic, "No"
+
+
     %td.box-padding
       &nbsp;
 
@@ -286,7 +295,7 @@
   %table.user-details-section#identity_details
     %tr
       %td.box
-        #user_detail_errors.errorExplanation
+        #user_detail_errors.errorExplanation{:style => 'display:none'}
         .info
           = render :partial => 'shared/user_search'
           - hide_user_details = (@protocol.new_record? and @protocol.project_roles.empty?) ? '' : 'display:none;'

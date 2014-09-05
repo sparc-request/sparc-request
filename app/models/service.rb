@@ -56,6 +56,7 @@ class Service < ActiveRecord::Base
   attr_accessible :organization_id
   attr_accessible :send_to_epic
   attr_accessible :tag_list
+  attr_accessible :cdm_code
 
   validate :validate_pricing_maps_present
   

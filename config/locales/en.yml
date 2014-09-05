@@ -1041,7 +1041,7 @@ en:
       grand_total: "Grand Total"
       add_service: "Add Service"
       submit: "Save Appointments"
-      cwf_link: "Return to Clinical Work Fulfillment"
+      cwf_link: "Back to Clinical Work Fulfillment"
       popup_message1: "Attention - An assessment" 
       popup_message2: "has been added at"
       popup_message3: "If subject is past visit, please refer to your IRB-approved protocol."

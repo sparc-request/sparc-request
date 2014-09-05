@@ -156,7 +156,7 @@ $ ->
     new_count = $(this).val()
     min_count = $(this).data('minimum_subject_count')
     if new_count < min_count
-      alert("You can not reduce the subject count below the count of a previously defined arm.")
+      alert(I18n["service_details_alerts"]["subject_count"])
       $(this).val(min_count)
   )
 
@@ -164,7 +164,7 @@ $ ->
     new_count = $(this).val()
     min_count = $(this).data('minimum_visit_count')
     if new_count < min_count
-      alert("You can not reduce the visit count below the count of a previously defined arm.")
+      alert(I18n["service_details_alerts"]["visit_count"])
       $(this).val(min_count)
   )
 

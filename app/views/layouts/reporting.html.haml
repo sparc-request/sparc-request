@@ -26,6 +26,8 @@
     = stylesheet_link_tag 'application', '960', 'jquery-ui', :media => 'all'
     = javascript_include_tag "application"
     = csrf_meta_tags
+    :javascript
+      window.I18n = #{current_translations.to_json.html_safe};
   %body
     // load spinner and cancel images so they are cached
     = image_tag 'spinner.gif', :style => 'display:none'

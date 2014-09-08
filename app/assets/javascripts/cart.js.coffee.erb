@@ -45,10 +45,10 @@ $(document).ready ->
     li_count = $('#line_item_count').val()
     has_fulfillments = $(this).data('has_fulfillments') || null
     if has_fulfillments
-      alert("This line item has one or more fulfillments associated with it and can not be deleted.")
+      alert(I18n["has_fulfillments"])
     else
       if li_count == "1" and ssr_id != ''
-        if confirm("This action will delete this service request and you will be redirected to your user portal. Click OK to proceed.")
+        if confirm(I18n["cart"]["remove_request_confirm"])
           $("#services .line-items").remove()
           $("#services").append('<span class="spinner"><img src="/assets/spinner.gif"/></span>')
           $(this).hide()

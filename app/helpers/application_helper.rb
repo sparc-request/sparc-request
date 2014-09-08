@@ -267,6 +267,11 @@ module ApplicationHelper
     arm.subjects.empty? ? true : arm.subjects.none?{|x| x.has_appointments?}
   end
 
+  def current_translations
+    @translations ||= I18n.backend.send(:translations)
+    @translations[I18n.locale].with_indifferent_access
+  end
+
   #Will find a particular one time fee line item by its id, then determine if it has any associated fulfillments
   def one_time_fee_fulfillments? line_item_id
     has_fulfillments = false

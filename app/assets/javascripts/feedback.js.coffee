@@ -62,7 +62,7 @@ $(document).ready ->
         $('#feedback-form').dialog 'close'
       error: (event) ->
         $('#errors').show()
-        $('#error-text').html("Message can't be blank")
+        $('#error-text').html(I18n["feedback"]["message_error"])
 
         
   

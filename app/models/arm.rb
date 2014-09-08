@@ -62,14 +62,6 @@ class Arm < ActiveRecord::Base
     return !name.nil? && name.length > 0
   end
 
-  def valid_minimum_visit_count?
-    return !visit_count.nil? && visit_count >= minimum_visit_count
-  end
-
-  def valid_minimum_subject_count?
-    return !subject_count.nil? && subject_count >= minimum_subject_count
-  end
-
   def create_line_items_visit line_item
     # if visit_count is nil then set it to 1
     self.update_attribute(:visit_count, 1) if self.visit_count.nil?

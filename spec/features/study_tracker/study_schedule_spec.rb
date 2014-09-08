@@ -54,19 +54,28 @@ describe "study schedule", :js => true do
           it "should not allow invalid days to be entered" do
             wait_for_javascript_to_finish
             elements = all("#day.visit_day")
-            #set visit days on either side 
-            elements[0].set '1'
-            elements[2].set '5'
-            first('th.service_rate_header').click #clicking off randomly on the page to prompt submission for validation 
-            wait_for_javascript_to_finish
-            elements[1].set("1000")
-            first('th.service_rate_header').click 
+            #set visit days on either side
+            elements[0].set(1)
+            page.execute_script("$('#day.position_1:first').change()")
+            sleep 1
+
+            elements[2].set(5)
+            page.execute_script("$('#day.position_3:first').change()")
+            sleep 1
+
+            elements[1].set(1000)
+            page.execute_script("$('#day.position_2:first').change()")
+            sleep 1
+
             a = page.driver.browser.switch_to.alert
             a.text.should eq "The days are out of order. This day appears to go after the next day.\n"
             a.accept
             wait_for_javascript_to_finish
-            elements[1].set '0'
-            first('th.service_rate_header').click 
+
+            elements[1].set(0)
+            find(".user-information-body").click #This is a different method of triggering the outfocus. For some reason, selenium goes bonkers after the first alert box.
+            sleep 1
+
             a = page.driver.browser.switch_to.alert
             a.text.should eq "The days are out of order. This day appears to go before the previous day.\n"
             a.accept
@@ -74,7 +83,9 @@ describe "study schedule", :js => true do
           it "should not allow invalid day ranges to be entered" do 
             wait_for_javascript_to_finish
             first("#window.visit_window").set '-1'
-            first('th.service_rate_header').click 
+            find(".user-information-body").click
+            sleep 1
+
             a = page.driver.browser.switch_to.alert
             a.text.should eq "You've entered an invalid number for the +/- window. Please enter a positive valid number\n"
             a.accept
@@ -281,6 +292,7 @@ describe "study schedule", :js => true do
 
         it "should save the new number of units" do
           find("#quantity.line_item_quantity").set("6")
+          find(".user-information-body").click
           wait_for_javascript_to_finish
           sleep 3
           find(".units_per_quantity").click()
@@ -293,6 +305,7 @@ describe "study schedule", :js => true do
 
         it "should save the new units per quantity" do
           find(".units_per_quantity").set(5)
+          find(".user-information-body").click
           wait_for_javascript_to_finish
           sleep 3
           find(".line_item_quantity").click()

@@ -38,7 +38,7 @@
         %td{:style => "text-align:left"}
           - docs.each do |document|
             - next unless @sub_service_request.nil? or @sub_service_request.organization.name == document.sub_service_request.organization.name
-            = @service_list[document.sub_service_request.organization_id][:name]
+            = @service_list[document.sub_service_request.organization_id][:name] unless @service_list[document.sub_service_request.organization_id].nil?
             %br
             %br
         %td= doc.display_document_type

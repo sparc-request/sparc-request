@@ -30,7 +30,7 @@
     %th.total_per_study{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_study]
 
     %tr.table_header
-      = generate_visit_header_row arm, @service_request, @pages[arm.id].to_i
+      = generate_visit_header_row arm, @service_request, @pages[arm.id].to_i, @sub_service_request
 
 
   - elsif @merged #display merged calendar pppv header
@@ -49,7 +49,7 @@
       - unless @portal
         %th.service_rate_header= t(:calendar_page)[:headers][:service_rate]
         %th.your_cost_header= t(:calendar_page)[:headers][:your_cost]
-      = generate_visit_header_row(arm, @service_request, @pages[arm.id].to_i)
+      = generate_visit_header_row(arm, @service_request, @pages[arm.id].to_i, nil)
 
 
   - else #display default calendar pppv header
@@ -66,7 +66,7 @@
       %th.service_rate_header= t(:calendar_page)[:headers][:service_rate]
       %th.your_cost_header= t(:calendar_page)[:headers][:your_cost]
       %th &nbsp;
-      = generate_visit_header_row arm, service_request, @pages[arm.id].to_i, @portal
+      = generate_visit_header_row arm, service_request, @pages[arm.id].to_i, @sub_service_request, @portal
       - if @portal
         %th &nbsp;
       - else

@@ -105,7 +105,7 @@
               %span{:style => "padding-right:5px;"} /
               = text_field_tag "units_per_quantity", line_item.units_per_quantity, :"data-qty_max" => line_item.service.displayed_pricing_map.units_per_qty_max, :class => "units_per_quantity", :"data-line_item_id" => line_item.id, :"data-study_tracker" => true, :current_units_per_quantity => line_item.units_per_quantity 
             %td= line_item.service.try(:displayed_pricing_map).try(:otf_unit_type).try(:humanize)
-          %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-line_item_id' => line_item.id, :class => 'cwf_delete_data')
+          %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-line_item_id' => line_item.id, :'data-has_fulfillments' => one_time_fee_fulfillments?(line_item.id), :class => 'cwf_delete_data')
 
 
   -else #display default calendar otf line items

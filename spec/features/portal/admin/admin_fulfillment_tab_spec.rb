@@ -165,7 +165,7 @@ describe "admin fulfillment tab", :js => true do
 
         it 'should be able to edit a subsidy' do
           fill_in 'subsidy_percent_subsidy', :with => 50
-          find('#subsidy_pi_contribution').click
+          page.execute_script("$('#subsidy_percent_subsidy').change()")
           wait_for_javascript_to_finish
           page.should have_content "Service request has been saved."
           find('#subsidy_pi_contribution').should have_value('%.1f' % [sub_service_request.grand_total / 100 / 2])
@@ -315,7 +315,7 @@ describe "admin fulfillment tab", :js => true do
     context "changing visit attributes" do
       it 'should update visit names' do
         fill_in "arm_#{arm1.id}_visit_name_1", :with => "HOLYCOW"
-        find("#arm_#{arm1.id}_visit_name_2").click
+        page.execute_script("$('.visit_name:first').change()")
         wait_for_javascript_to_finish
         line_item2.line_items_visits[0].visits[0].visit_group.name.should eq "HOLYCOW"
       end

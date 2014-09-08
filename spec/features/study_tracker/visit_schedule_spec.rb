@@ -69,7 +69,7 @@ describe "visit schedule", :js => true do
     describe "returning to clinical fulfillment" do
 
       it "should return the user to clinical fulfillment" do
-        click_on "Back to Clinical Work Fulfillment"
+        find("#bottom_return_link").click
         wait_for_javascript_to_finish
         page.should have_content("Add a subject")
       end

@@ -78,6 +78,7 @@ group :development, :test, :profile do
   gem 'capybara-firebug'
   gem 'capybara-email'
   gem 'selenium-webdriver', '~> 2.34.0'
+  gem 'activerecord-import'
 
   # You can put gems in here that you want to use for development but
   # don't want to force on other developers (e.g. rubyception).

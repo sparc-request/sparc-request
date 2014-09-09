@@ -329,7 +329,7 @@ describe "study schedule", :js => true do
           within "#one_time_fees" do
             click_on "Cancel"
             a = page.driver.browser.switch_to.alert
-            a.text.should eq "Are you sure that you want to remove this service?"
+            a.text.should eq "Are you sure you want to remove this service?"
             a.accept
             sleep 1
             service.line_items.size.should eq(0)

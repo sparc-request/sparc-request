@@ -480,6 +480,7 @@ legend {
 
 #error_explanation, .error_explanation, #errorExplanation, .errorExplanation {
   width: auto !important;
+  clear: both;
 }
 
 .portal_container .grid_12 {

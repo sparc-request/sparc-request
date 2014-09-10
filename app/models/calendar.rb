@@ -73,7 +73,7 @@ class Calendar < ActiveRecord::Base
   def visit_group_count
     visit_group_ids = []
     self.appointments.each do |appt|
-      visit_group_ids << appt.visit_group.id
+      visit_group_ids << appt.visit_group.id if appt.visit_group
     end
 
     visit_group_ids.uniq.count

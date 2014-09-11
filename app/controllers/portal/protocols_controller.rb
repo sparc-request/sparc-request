@@ -74,6 +74,16 @@ class Portal::ProtocolsController < Portal::BaseController
     elsif @current_step == 'user_details' and @protocol.valid?
       @protocol.save
       @current_step = 'return_to_portal'
+      if USE_EPIC
+        if @protocol.selected_for_epic
+          @protocol.ensure_epic_user
+          if QUEUE_EPIC
+            EpicQueue.create(:protocol_id => @protocol.id) unless EpicQueue.where(:protocol_id => @protocol.id).size == 1
+          else
+            Notifier.notify_for_epic_user_approval(@protocol).deliver
+          end
+        end
+      end
     else
       # TODO: Is this neccessary?
       @errors = @current_step == 'protocol' ? @protocol.grouped_errors[:protocol].messages : @protocol.grouped_errors[:user_details].messages

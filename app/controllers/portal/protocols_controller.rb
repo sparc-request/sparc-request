@@ -149,6 +149,7 @@ class Portal::ProtocolsController < Portal::BaseController
         @pages[arm.id] = @service_request.set_visit_page new_page, arm
       end
     end
+    @merged = true
   end
 
   def change_arm

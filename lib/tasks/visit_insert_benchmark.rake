@@ -5,7 +5,7 @@ namespace :data do
   task :visit_benchmark => :environment do
     ARM = Arm.create
     CONN = ActiveRecord::Base.connection
-    TIMES = 50
+    TIMES = 200
 
     NOW = Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')
     LOOP= 10
@@ -57,22 +57,22 @@ namespace :data do
       end
     end 
 
-    def raw_sql
-      # vg = TIMES.times.map { VisitGroup.create(:arm_id => ARM.id) }
-      vg_columns = [:arm_id]
-      vg_values = []
-      TIMES.times do
-        vg_values.push [ARM.id]
-      end
-      VisitGroup.import vg_columns, vg_values
+    # def raw_sql
+    #   # vg = TIMES.times.map { VisitGroup.create(:arm_id => ARM.id) }
+    #   vg_columns = [:arm_id]
+    #   vg_values = []
+    #   TIMES.times do
+    #     vg_values.push [ARM.id]
+    #   end
+    #   VisitGroup.import vg_columns, vg_values
 
-      ARM.reload
-      vgs = ARM.visit_groups.select { |vg| vg.visits.count == 0 }
+    #   ARM.reload
+    #   vgs = ARM.visit_groups.select { |vg| vg.visits.count == 0 }
 
-      LOOP.times do
-        TIMES.times{ |index| CONN.execute "INSERT INTO visits (`visit_group_id`, `created_at`, `updated_at`) VALUES(#{vgs[index].id}, '#{NOW}', '#{NOW}')"}
-      end
-    end
+    #   LOOP.times do
+    #     TIMES.times{ |index| CONN.execute "INSERT INTO visits (`visit_group_id`, `created_at`, `updated_at`) VALUES(#{vgs[index].id}, '#{NOW}', '#{NOW}')"}
+    #   end
+    # end
 
     def activerecord_import_mass_insert(validate = true)
       # vg = TIMES.times.map { VisitGroup.create(:arm_id => ARM.id) }
@@ -96,8 +96,7 @@ namespace :data do
       Visit.import columns, values, {:validate => validate}
     end 
 
-    def activerecord_import_mass_insert_new(validate=true)
-      # vg = TIMES.times.map { VisitGroup.create(:arm_id => ARM.id) }
+    def activerecord_import_mass_insert_id_array(validate = true)
       vg_columns = [:arm_id]
       vg_values = []
       TIMES.times do
@@ -106,16 +105,43 @@ namespace :data do
       VisitGroup.import vg_columns, vg_values, {:validate => validate}
 
       ARM.reload
-      vgs = ARM.visit_groups.select { |vg| vg.visits.count == 0 }
+      vgs = []
+      ARM.visit_groups.select do |vg| 
+        if vg.visits.count == 0
+          vgs.push(vg.id)
+        end
+      end
 
+      columns = [:visit_group_id]
       values = []
       LOOP.times do
         TIMES.times do |index|
-          values.push Visit.new(:visit_group_id => vgs[index].id)
+          values.push [vgs[index]]
         end
       end
-      Visit.import values, {:validate => validate}
+      Visit.import columns, values, {:validate => validate}
     end
+
+    # def activerecord_import_mass_insert_new(validate=true)
+    #   # vg = TIMES.times.map { VisitGroup.create(:arm_id => ARM.id) }
+    #   vg_columns = [:arm_id]
+    #   vg_values = []
+    #   TIMES.times do
+    #     vg_values.push [ARM.id]
+    #   end
+    #   VisitGroup.import vg_columns, vg_values, {:validate => validate}
+
+    #   ARM.reload
+    #   vgs = ARM.visit_groups.select { |vg| vg.visits.count == 0 }
+
+    #   values = []
+    #   LOOP.times do
+    #     TIMES.times do |index|
+    #       values.push Visit.new(:visit_group_id => vgs[index].id)
+    #     end
+    #   end
+    #   Visit.import values, {:validate => validate}
+    # end
 
 
 
@@ -124,36 +150,36 @@ namespace :data do
     puts "ActiveRecord without transaction:"
     puts base = Benchmark.measure {do_inserts}
 
-    puts "ActiveRecord with transaction:"
-    puts bench = Benchmark.measure { ActiveRecord::Base.transaction { do_inserts } }
+    # puts "ActiveRecord with transaction:"
+    # puts bench = Benchmark.measure { ActiveRecord::Base.transaction { do_inserts } }
+    # puts sprintf("  %2.2fx faster than base", base.real / bench.real)
+
+    # puts "Raw SQL without transaction:"
+    # puts bench = Benchmark.measure { raw_sql }
+    # puts sprintf("  %2.2fx faster than base", base.real / bench.real)
+
+    # puts "Raw SQL with transaction:"
+    # puts bench = Benchmark.measure { ActiveRecord::Base.transaction { raw_sql } }
+    # puts sprintf("  %2.2fx faster than base", base.real / bench.real)
+
+    # puts "Single mass insert:"
+    # puts bench = Benchmark.measure { mass_create_visit_group }
+    # puts sprintf("  %2.2fx faster than base", base.real / bench.real)
+
+    # puts "ActiveRecord::Import mass insert:"
+    # puts bench = Benchmark.measure { activerecord_import_mass_insert }
+    # puts sprintf("  %2.2fx faster than base", base.real / bench.real)
+
+    # puts "ActiveRecord::Import mass insert without validations:"
+    # puts bench = Benchmark.measure { activerecord_import_mass_insert(false)  }
+    # puts sprintf("  %2.2fx faster than base", base.real / bench.real)
+
+    puts "ActiveRecord::Import new mass inserts by storing data in an array and placing it in an array:"
+    puts bench = Benchmark.measure { activerecord_import_mass_insert}
     puts sprintf("  %2.2fx faster than base", base.real / bench.real)
 
-    puts "Raw SQL without transaction:"
-    puts bench = Benchmark.measure { raw_sql }
-    puts sprintf("  %2.2fx faster than base", base.real / bench.real)
-
-    puts "Raw SQL with transaction:"
-    puts bench = Benchmark.measure { ActiveRecord::Base.transaction { raw_sql } }
-    puts sprintf("  %2.2fx faster than base", base.real / bench.real)
-
-    puts "Single mass insert:"
-    puts bench = Benchmark.measure { mass_create_visit_group }
-    puts sprintf("  %2.2fx faster than base", base.real / bench.real)
-
-    puts "ActiveRecord::Import mass insert:"
-    puts bench = Benchmark.measure { activerecord_import_mass_insert }
-    puts sprintf("  %2.2fx faster than base", base.real / bench.real)
-
-    puts "ActiveRecord::Import mass insert without validations:"
-    puts bench = Benchmark.measure { activerecord_import_mass_insert(false)  }
-    puts sprintf("  %2.2fx faster than base", base.real / bench.real)
-
-    puts "ActiveRecord::Import new mass insert:"
-    puts bench = Benchmark.measure { activerecord_import_mass_insert_new }
-    puts sprintf("  %2.2fx faster than base", base.real / bench.real)
-
-    puts "ActiveRecord::Import new mass insert without validations:"
-    puts bench = Benchmark.measure { activerecord_import_mass_insert_new(false)  }
+    puts "ActiveRecord::Import new mass insert by getting visits out of array storage instead of db:"
+    puts bench = Benchmark.measure { activerecord_import_mass_insert_id_array}
     puts sprintf("  %2.2fx faster than base", base.real / bench.real)
 
     # puts "Adding audit data with mass insert:"

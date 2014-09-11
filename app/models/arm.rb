@@ -17,7 +17,7 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+require "activerecord-import"
 class Arm < ActiveRecord::Base
   audited
 
@@ -182,26 +182,37 @@ class Arm < ActiveRecord::Base
   end
 
   def mass_create_visit_group
-    arc = ActiveRecord::Base.connection
     first = self.visit_groups.count
     last = self.visit_count
 
-    # Create all the visit groups
-    (last - first).times { self.visit_groups.create() }
+    # Import the visit groups
+    vg_columns = [:name, :arm_id, :position]
+    vg_values = []
+    (last-first).times do |index|
+      position = first + index + 1
+      vg_values.push ["Visit #{position}", self.id, position]
+    end
+    VisitGroup.import vg_columns, vg_values, {:validate => true}
 
-    vs = []
-    now = Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')
-    # Create visits for the new visit groups
-    self.line_items_visits.each do |liv|
-      # Since arrays start at 0 we need to go to the last - 1
-      (first..last-1).each do |index|
-        # Store the values for the new visits [line_items_visit_id, visit_group_id]
-        vs.push "(#{liv.id}, #{self.visit_groups[index].id}, '#{now}', '#{now}')"
+    self.reload
+    # Grab the ids of the visit groups that were created
+    vg_ids = []
+    self.visit_groups.each do |vg|
+      if vg.visits.count == 0
+        vg_ids.push(vg.id)
       end
     end
 
-    sql = "INSERT INTO visits (`line_items_visit_id`, `visit_group_id`, `created_at`, `updated_at`) VALUES #{vs.join(", ")}"
-    arc.execute sql
+    # Import the visits
+    columns = [:visit_group_id, :line_items_visit_id]
+    values = []
+    self.line_items_visits.each do |liv|
+      vg_ids.each do |id|#here it is creating visits it shouldn't because of the number of ids being returned
+        values.push [id, liv.id]
+      end
+    end
+    Visit.import columns, values, {:validate => true}
+    self.reload
   end
 
   def mass_destroy_visit_group

@@ -18,12 +18,21 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/////////////////////////////////////////////
-//
-// STUDY - Edit Study
-//
-/////////////////////////////////////////////
-
-= render :partial => 'service_requests/steps'
-.clear
-.edit_study= render :partial => 'studies/form', :locals => {:study => @protocol, :service_request => @service_request, :portal => @portal}
+%h3= t(:fulfillments)[:subsidy_changes][:header]
+%table{:id => 'status_history_table', :class => 'tablesorter'}
+  %thead
+    %tr
+      %th= t(:fulfillments)[:subsidy_changes][:date]
+      %th= t(:fulfillments)[:subsidy_changes][:user]
+      %th= t(:fulfillments)[:subsidy_changes][:action]
+      %th= t(:fulfillments)[:subsidy_changes][:pi_contribution]
+      %th= t(:fulfillments)[:subsidy_changes][:subsidy_percent]
+  %tbody
+    - if @sub_service_request && @subsidy
+      - @subsidy.subsidy_audits.each do |audit|
+        %tr
+          %td= audit[:created_at].try(:strftime, "%D %r")
+          %td= full_user_name_from_id(audit[:user_id])
+          %td= audit[:action]
+          %td= extract_subsidy_audit_data(audit[:audited_changes]["pi_contribution"], true)
+          %td= extract_subsidy_audit_data(audit[:audited_changes]["stored_percent_subsidy"])

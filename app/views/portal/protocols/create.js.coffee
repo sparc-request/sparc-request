@@ -24,7 +24,7 @@
 # //
 # /////////////////////////////////////////////
 
-if <%= @protocol.valid? and @current_step == 'return_to_portal' %>
+if <%= @current_step == 'return_to_portal' %>
   window.location.href = "<%= portal_root_path %>"
 else
   #This is to re-enable the submit, it is disabled to prevent multiple posts, if you click rapidly.
@@ -33,3 +33,6 @@ else
 
   $('#current_step').val("<%= @current_step %>")
   $('.new_study').html("<%= escape_javascript(render :partial => 'studies/form', :locals => {:study => @protocol, :portal => @portal}) %>")
+
+  if <%= @current_step == "user_details" %>
+    $('.return-to-previous a span').text("Back")

@@ -830,6 +830,13 @@ en:
       date: "Date Changed"
       from: "Status Changed From"
       to: "Status Changed To"
+    subsidy_changes:
+      header: "Subsidy Changes"
+      date: "Date Changed"
+      user: "Changed by"
+      action: "Action"
+      pi_contribution: "PI Contribution"
+      subsidy_percent: "Subsidy Percent"
     notes:
       header: "Notes"
       link:  "Add Note"

@@ -52,7 +52,7 @@
 - if portal.to_s == 'true'
   - options[:url] = portal_studies_path (study)
 
-= form_for @protocol, options do |f|
+= form_for study, options do |f|
   = hidden_field_tag "portal", portal
 
   -if not portal
@@ -69,7 +69,7 @@
       %div{:class => 'blue-provider'}
         .nav-backward
           .return-to-previous
-            %a{:href => portal.to_s == 'true' ? "#{portal_root_path}" : "#{protocol_service_request_path(service_request)}"}
+            %a.cancel_link{:href => "javascript:void(0)"}
               = image_tag('left_arrow.png', :alt => "Cancel")
               %span= t(:bottom_navigation)[:cancel]
         .exit= image_tag('Filler.png')

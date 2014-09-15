@@ -40,7 +40,10 @@ class ProtocolsController < ApplicationController
     @protocol = self.model_class.new(params[:study] || params[:project])
     @portal = params[:portal]
 
-    if @current_step == 'protocol' and @protocol.group_valid? :protocol and (@protocol.is_study? ? @protocol.human_subjects_info.valid? : true)
+    if @current_step == 'go_back'
+      @current_step = 'protocol'
+      @protocol.populate_for_edit
+    elsif @current_step == 'protocol' and @protocol.group_valid? :protocol and (@protocol.is_study? ? @protocol.human_subjects_info.valid? : true)
       @current_step = 'user_details'
       @protocol.populate_for_edit
     elsif @current_step == 'user_details' and @protocol.valid?
@@ -48,6 +51,8 @@ class ProtocolsController < ApplicationController
       @current_step = 'return_to_service_request'
       session[:saved_protocol_id] = @protocol.id
       flash[:notice] = "New #{@protocol.type.downcase} created"
+    elsif @current_step == 'cancel_protocol'
+      @current_step = 'return_to_service_request'
     else
       @protocol.populate_for_edit
     end

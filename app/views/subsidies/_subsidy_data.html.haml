@@ -69,6 +69,10 @@
                       = t("subsidy_page.table.amount_of_funding")
                       = subsidy_fields.hidden_field :stored_percent_subsidy, :class => "stored_percent_subsidy_#{subsidy.sub_service_request_id}"
               %td{:class => "subsidy_percent_#{sub_service_request.id}"}= "#{calculate_subsidy_percentage(direct_cost_total, pi_contribution)}%"
+            - if subsidy.overridden
+              %tr.overridden
+                %td{:colspan => 4}= t("subsidy_page.overridden")
+              
   %br
   .additional-funding
     = t("subsidy_page.request_additional")

@@ -17,13 +17,15 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-/////////////////////////////////////////////
-//
-// STUDY - Edit Study
-//
-/////////////////////////////////////////////
-
-= render :partial => 'service_requests/steps'
-.clear
-.edit_study= render :partial => 'studies/form', :locals => {:study => @protocol, :service_request => @service_request, :portal => @portal}
+- if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?) or @merged
+  = javascript_include_tag 'service_calendar_logic'
+  - if @merged
+    = hidden_field_tag :indirect_rate, @protocol.try(:indirect_cost_rate)
+  - else
+    = hidden_field_tag :indirect_rate, @service_request.protocol.indirect_cost_rate
+  %table.service_calendar{:class => @review ? arm.id : "arm_id_#{arm.id}", :style => @study_tracker ? "width:917px" : ''}
+    %thead{:class => @review ? thead_class : 'ui-widget-header'}= render :partial => "/service_calendars/master_calendar/pppv_header", :locals => {:service_request => service_request, :arm => arm, :tab => @tab, :portal => @portal}
+    %tbody.cell-border
+      = render :partial => "/service_calendars/master_calendar/pppv_line_items", :locals => {:service_request => service_request, :arm => arm, :tab => @tab, :portal => @portal}
+      -unless @review
+        = render :partial => "/service_calendars/master_calendar/pppv_totals", :locals => {:service_request => service_request, :arm => arm, :tab => @tab, :portal => @portal}

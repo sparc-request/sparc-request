@@ -55,6 +55,8 @@ $(document).ready ->
     resizable: false
     close: -> delete_toast_message()
 
+  $('#processing_request').dialog({ dialogClass: 'processing_request', resizable: false, height: 125, modal: true, autoOpen: false })
+
   delete_toast_message = () ->
     data =
       'id': $("#procedures_added_popup").attr('data-calendar_id')
@@ -101,7 +103,7 @@ $(document).ready ->
 
   ##Triggers:
   $(document).on('change', '.clinical_select_data', ->
-    $('#processing_request').show()
+    $('#processing_request').dialog("open")
     data =
       'visit_group_id': $('option:selected', this).data('visit_group_id')
       'sub_service_request_id': $('#sub_service_request_id').val()
@@ -114,7 +116,7 @@ $(document).ready ->
       dataType: 'script'
       contentType: 'application/json; charset=utf-8'
       success: ->
-        $('#processing_request').hide()
+        $('#processing_request').dialog("close")
         recalc_subtotal()
         check_core_permissions()
   )
@@ -217,7 +219,7 @@ $(document).ready ->
   )
 
   $(document).on('click', '.cwf_add_service_button', ->
-    $('#processing_request').show()
+    $('#processing_request').dialog("open")
     box = $(this).siblings('select')
     appointment_index = $('.new_procedure_wrapper:visible').data('appointment_index')
     procedure_index = $('.appointment_wrapper:visible tr.fields:visible').size()
@@ -244,7 +246,7 @@ $(document).ready ->
         $('.save_alert').show()
         $('.new_procedure_wrapper:visible').replaceWith(response_html)
         $('tr.grand_total_row:visible').before("<tr class='new_procedure_wrapper' data-appointment_index='#{appointment_index}'></tr>")
-        $('#processing_request').hide()
+        $('#processing_request').dialog("close")
     return false
   )
 
@@ -427,5 +429,16 @@ $(document).ready ->
   $(document).on 'click', '.cwf_subject_delete', (event)->
     alert(I18n["cwf_js"]["subject_delete"])
 
-
-
+  # In Study Schedule, allows calendar to hide and show add/remove services and extra otfs when on consolidated calendar tab
+  $("li.pricing_tab").click ->
+    $("#add_ppv_service_container").hide()
+    $("#remove_ppv_service_container").hide()
+    $("#one_time_fees").hide()
+    $("#add_one_time_fee_container").hide()
+    $("#remove_one_time_fee_container").hide()
+  $("li.other_tab").click ->
+    $("#add_ppv_service_container").show()
+    $("#remove_ppv_service_container").show()
+    $("#one_time_fees").show()
+    $("#add_one_time_fee_container").show()
+    $("#remove_one_time_fee_container").show()

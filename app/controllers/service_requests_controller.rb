@@ -247,6 +247,7 @@ class ServiceRequestsController < ApplicationController
     end
 
     @tab = 'calendar'
+    @review = true
   end
 
   def obtain_research_pricing
@@ -284,6 +285,10 @@ class ServiceRequestsController < ApplicationController
       end
     end
     @service_list = @service_request.service_list
+
+    @service_request.sub_service_requests.each do |ssr|
+      ssr.subsidy.update_attributes(:overridden => true)
+    end
 
     send_confirmation_notifications
 

@@ -372,6 +372,15 @@ legend {
   float: left;
 }
 
+.edit-project-view .box .info span.non_standard_usage_of_radio_buttons label,
+.edit-project-view .box .info span.non_standard_usage_of_radio_buttons input {
+  width: auto !important;
+  display: inline-block;
+  float: none;
+  margin: 3px 0px 0px;
+  padding: 0px;
+}
+
 .edit-project-view .authorized-users {
   margin-top: 10px;
   border: 1px solid #fff;

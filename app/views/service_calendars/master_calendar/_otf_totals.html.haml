@@ -18,12 +18,36 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/////////////////////////////////////////////
-//
-// STUDY - Edit Study
-//
-/////////////////////////////////////////////
+- if @merged #display merged calendar otf totals
+  %tr.totals_section.grand-totals{:class => cycle('odd', '', :name => 'otfs')}
+    %td{:colspan => 3}= t(:calendar_page)[:labels][:total_costs_other]
+    %td{:colspan => (@portal or @study_tracker) ? 6 : 9}
+    %td.otf_total_direct_cost= display_protocol_total_otfs @protocol, current_request, @portal
 
-= render :partial => 'service_requests/steps'
-.clear
-.edit_study= render :partial => 'studies/form', :locals => {:study => @protocol, :service_request => @service_request, :portal => @portal}
+
+- elsif @review #display review calendar otf totals
+  %tr.section_header
+    %tr.totals_section
+      %td{:colspan => 7}
+      %td.total_cell= t(:calendar_page)[:labels][:direct_cost]
+      %td.total_cell{:id => 'grand_total_direct'}= display_grand_total_direct_costs @service_request, @line_items
+
+    - if USE_INDIRECT_COST
+      %tr.totals_section
+        %td{:colspan => 7}
+        %td.total_cell= t(:calendar_page)[:labels][:indirect_cost]
+        %td.total_cell{:id => 'grand_total_indirect'}= display_grand_total_indirect_costs @service_request, @line_items
+
+    %tr.totals_section
+      %td{:colspan => 7}
+      %td.total_cell= t(:calendar_page)[:labels][:grand_total]
+      %td.total_cell{:id => 'grand_total'}= display_grand_total @service_request, @line_items
+
+
+- else #display default calendar otf totals
+  %tr.totals_section.begin_totals{:class => cycle('odd', '', :name => 'otfs')}
+    %td{:colspan => 5}= t(:calendar_page)[:labels][:total_direct_other]
+    %td{:colspan => 7}
+    %td.otf_total_direct_cost= display_total_direct_cost_per_study_otfs @service_request, (@line_items.nil? ? @service_request.line_items : @line_items)
+    - if @study_tracker
+      %td

@@ -205,7 +205,9 @@ class ServiceCalendarsController < ApplicationController
     end
     setup_calendar_pages
 
+    @arm.visit_groups.reload
     vg = @arm.visit_groups.find_by_position visit_to_move
+    vg.reload
 
     # The way insert_at works is literal. It inserts at whatever position is given
     # We want to insert before the position given depending on the visit we're moving.

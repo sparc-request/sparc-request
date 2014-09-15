@@ -51,5 +51,10 @@ class Subsidy < ActiveRecord::Base
     self.update_attributes(:pi_contribution => new_contribution)
 
     new_contribution
-  end  
+  end 
+
+  def subsidy_audits
+    subsidy_audits = AuditRecovery.where("auditable_id = ? AND auditable_type = ?", self.id, "Subsidy").order(&:created_at)
+    subsidy_audits
+  end
 end

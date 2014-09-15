@@ -95,7 +95,6 @@ class Protocol < ActiveRecord::Base
     validates :funding_status, :presence => true  
     validate  :validate_funding_source
     validates :sponsor_name, :presence => true, :if => :is_study?
-    validate  :validate_human_subjects_info
   end
 
   validation_group :user_details do
@@ -113,14 +112,6 @@ class Protocol < ActiveRecord::Base
       errors.add(:funding_source, "You must select a funding source")
     elsif self.funding_status == "pending_funding" && self.potential_funding_source.blank?
       errors.add(:potential_funding_source, "You must select a potential funding source")
-    end
-  end
-
-  def validate_human_subjects_info
-    if self.research_types_info.human_subjects?
-      self.human_subjects_info.valid?
-    else
-      return true
     end
   end
 

@@ -219,3 +219,7 @@ $(document).ready ->
 
       $('#iacuc_expiration_date').attr("readOnly", true)
   }
+
+  $("form").submit ->
+    unless $('#study_research_types_info_attributes_human_subjects').is(':checked')
+      $('#study_human_subjects_info_attributes_nct_number').val('')

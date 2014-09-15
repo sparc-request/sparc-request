@@ -217,4 +217,7 @@ $(document).ready ->
 
   #This is to disabled the submit after you click once, so you can't fire multiple posts at once.
   $("form").submit ->
+    unless $('#study_research_types_info_attributes_human_subjects').is(':checked')
+      $('#study_human_subjects_info_attributes_nct_number').val('')
     $('a.continue_button').unbind('click');
+

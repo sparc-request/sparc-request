@@ -38,13 +38,6 @@ class HumanSubjectsInfo < ActiveRecord::Base
   validates :nct_number, :numericality => {:allow_blank => true, :only_integer => true, :message => "must contain 8 numerical digits"}
   validates :nct_number, :length => {:allow_blank => true, :is => 8, :message => "must contain 8 numerical digits"}
 
-  # def validate_nct_number
-  #   nct = self.nct_number.to_s
-  #   if nct != ""
-  #     if 
-  #   end
-  # end
-
   def irb_and_pro_numbers
     string = ""
     string += "HR # #{self.hr_number} " unless hr_number.blank?

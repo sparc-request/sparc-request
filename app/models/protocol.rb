@@ -95,7 +95,7 @@ class Protocol < ActiveRecord::Base
     validates :funding_status, :presence => true  
     validate  :validate_funding_source
     validates :sponsor_name, :presence => true, :if => :is_study?
-    validate  :validate_human_subjects_nct_number
+    validate  :validate_human_subjects_info
   end
 
   validation_group :user_details do
@@ -116,12 +116,11 @@ class Protocol < ActiveRecord::Base
     end
   end
 
-  def validate_human_subjects_nct_number
-    nct = self.human_subjects_info.nct_number.to_s
-    if nct != "" && self.research_types_info.human_subjects
-      unless (/\A[+-]?\d+\Z/).match(nct) && nct.length == 8
-        errors.add(:the, "NCT # must contain 8 numerical digits")
-      end
+  def validate_human_subjects_info
+    if self.research_types_info.human_subjects?
+      self.human_subjects_info.valid?
+    else
+      return true
     end
   end
 

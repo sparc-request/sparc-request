@@ -37,19 +37,8 @@
   = f.hidden_field :requester_id
   = hidden_field_tag :current_step, @current_step
   .clear
-  - if @errors
-    #errorExplanation.errorExplanation
-      %h2
-        = pluralize(@errors.values.map(&:count).sum, "error")
-        prohibited this
-        = @protocol.type.downcase
-        from being saved
-      %ul
-        - @errors.each do |key, msgs|
-          - msgs.each do |msg|
-            %li
-              = key.to_s.humanize unless key == :base # manually added errors should be ignored
-              = msg
+  = f.error_messages
+  
   .edit-project-view= render :partial => 'projects/fields', :locals => {:project => project, :f => f}
   .continue
     .grid_12

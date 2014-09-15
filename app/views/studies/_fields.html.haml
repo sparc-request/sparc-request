@@ -144,7 +144,7 @@
                 = rt.check_box :human_subjects
 
             = f.fields_for :human_subjects_info do |hs|
-              .field.nct_number{:class => @protocol.errors.messages[:the] ? "field_with_errors" : ""}
+              .field.nct_number
                 = hs.label :nct_number, t(:study_form)[:nct_number]
                 = hs.text_field :nct_number
 

@@ -30,7 +30,6 @@ class ProtocolsController < ApplicationController
     @protocol = self.model_class.new
     @protocol.requester_id = current_user.id
     @protocol.populate_for_edit
-    @errors = nil
     @current_step = 'protocol'
     @portal = false
   end
@@ -41,9 +40,7 @@ class ProtocolsController < ApplicationController
     @protocol = self.model_class.new(params[:study] || params[:project])
     @portal = params[:portal]
 
-    # @protocol.assign_attributes(params[:study] || params[:project])
-
-    if @current_step == 'protocol' and @protocol.group_valid? :protocol
+    if @current_step == 'protocol' and @protocol.group_valid? :protocol and @protocol.validate_human_subjects_info
       @current_step = 'user_details'
       @protocol.populate_for_edit
     elsif @current_step == 'user_details' and @protocol.valid?
@@ -52,8 +49,6 @@ class ProtocolsController < ApplicationController
       session[:saved_protocol_id] = @protocol.id
       flash[:notice] = "New #{@protocol.type.downcase} created"
     else
-      # TODO: Is this neccessary?
-      @errors = @current_step == 'protocol' ? @protocol.grouped_errors[:protocol].messages : @protocol.grouped_errors[:user_details].messages
       @protocol.populate_for_edit
     end
   end
@@ -75,7 +70,13 @@ class ProtocolsController < ApplicationController
 
     @protocol.assign_attributes(params[:study] || params[:project])
 
-    if @current_step == 'protocol' and @protocol.group_valid? :protocol 
+    @protocol.validate_human_subjects_info
+    puts '#' * 50
+    puts @protocol.human_subjects_info.errors.inspect
+    puts '#' * 50
+
+
+    if @current_step == 'protocol' and @protocol.group_valid? :protocol and @protocol.validate_human_subjects_info
       @current_step = 'user_details'
       @protocol.populate_for_edit
     elsif (@current_step == 'user_details' and @protocol.valid?)
@@ -84,7 +85,6 @@ class ProtocolsController < ApplicationController
       session[:saved_protocol_id] = @protocol.id
       flash[:notice] = "#{@protocol.type.humanize} updated"
     else
-      @errors = @current_step == 'protocol' ? @protocol.grouped_errors[:protocol].messages : @protocol.grouped_errors[:user_details].messages
       @protocol.populate_for_edit
     end
   end

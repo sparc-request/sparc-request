@@ -286,6 +286,10 @@ class ServiceRequestsController < ApplicationController
     end
     @service_list = @service_request.service_list
 
+    @service_request.sub_service_requests.each do |ssr|
+      ssr.subsidy.update_attributes(:overridden => true)
+    end
+
     send_confirmation_notifications
 
     # Send a notification to Lane et al to create users in Epic.  Once

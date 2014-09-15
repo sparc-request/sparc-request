@@ -78,6 +78,16 @@ class Portal::ProtocolsController < Portal::BaseController
     elsif @current_step == 'user_details' and @protocol.valid?
       @protocol.save
       @current_step = 'return_to_portal'
+      if USE_EPIC
+        if @protocol.selected_for_epic
+          @protocol.ensure_epic_user
+          if QUEUE_EPIC
+            EpicQueue.create(:protocol_id => @protocol.id) unless EpicQueue.where(:protocol_id => @protocol.id).size == 1
+          else
+            Notifier.notify_for_epic_user_approval(@protocol).deliver
+          end
+        end
+      end
     elsif @current_step == 'cancel_protocol'
       @current_step = 'return_to_portal'
     else

@@ -2262,6 +2262,12 @@ input.search-services {
   text-align: center;
 }
 
+.overridden {
+  text-align: center;
+  color: #000000;
+  background: #ffffff;
+}
+
 .visit_number a.ui-button {
   width: 20px;
   height: 20px;

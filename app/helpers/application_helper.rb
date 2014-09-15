@@ -69,7 +69,7 @@ module ApplicationHelper
     end
   end
 
-  def generate_visit_header_row arm, service_request, page, portal=nil
+  def generate_visit_header_row arm, service_request, page, sub_service_request, portal=nil
     base_url = "/service_requests/#{service_request.id}/service_calendars"
     rename_visit_url = base_url + "/rename_visit"
     day_url = base_url + "/set_day"
@@ -82,7 +82,13 @@ module ApplicationHelper
     visit_groups = arm.visit_groups
 
     (beginning_visit .. ending_visit).each do |n|
-      checked = line_items_visits.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?
+      if sub_service_request
+        filtered_line_items_visits = line_items_visits.includes(:line_item).where("line_items.sub_service_request_id = ?", sub_service_request.id)
+      else
+        filtered_line_items_visits = line_items_visits.includes(:line_item).where("line_items.service_request_id = ?", service_request.id)
+      end
+
+      checked = filtered_line_items_visits.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?
       action = checked == true ? 'unselect_calendar_column' : 'select_calendar_column'
       icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
       visit_name = visit_groups[n - 1].name || "Visit #{n}"
@@ -90,6 +96,16 @@ module ApplicationHelper
       
       if params[:action] == 'review' || params[:action] == 'show' || params[:action] == 'refresh_service_calendar'
         returning_html += content_tag(:th, content_tag(:span, visit_name), :width => 60, :class => 'visit_number')
+      elsif @merged
+        returning_html += content_tag(:th,
+                            ((USE_EPIC) ?
+                            label_tag("Day") + "&nbsp;&nbsp;&nbsp;".html_safe + label_tag("+/-") +
+                            tag(:br) +
+                            content_tag(:span, visit_group.day, :style => "display:inline-block;width:40px;") +
+                            content_tag(:span, visit_group.window, :style => "display:inline-block;width:35px;") +
+                            tag(:br) : label_tag("")) +
+                            content_tag(:span, visit_name, :style => "display:inline-block;width:75px;") +
+                            tag(:br))
       else
         returning_html += content_tag(:th,
                                       ((USE_EPIC) ?
@@ -106,36 +122,6 @@ module ApplicationHelper
                                               :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only', :id => "check_all_column_#{n}"),
                                       :width => 60, :class => 'visit_number')
       end
-    end
-
-    ((page * 5) - arm.visit_count).times do
-      returning_html += content_tag(:th, "", :width => 60, :class => 'visit_number')
-    end
-
-    raw(returning_html)
-  end
-
-  def generate_merged_visit_header_row arm, service_request, page
-    page = page == 0 ? 1 : page
-    beginning_visit = (page * 5) - 4
-    ending_visit = (page * 5) > arm.visit_count ? arm.visit_count : (page * 5)
-    returning_html = ""
-    line_items_visits = arm.line_items_visits
-    visit_groups = arm.visit_groups
-
-    (beginning_visit .. ending_visit).each do |n|
-      visit_name = visit_groups[n - 1].name || "Visit #{n}"
-      visit_group = visit_groups[n - 1]
-      
-      returning_html += content_tag(:th,
-                                    ((USE_EPIC) ?
-                                    label_tag("Day") + "&nbsp;&nbsp;&nbsp;".html_safe + label_tag("+/-") +
-                                    tag(:br) +
-                                    content_tag(:span, visit_group.day, :style => "display:inline-block;width:40px;") +
-                                    content_tag(:span, visit_group.window, :style => "display:inline-block;width:35px;") +
-                                    tag(:br) : label_tag("")) +
-                                    content_tag(:span, visit_name, :style => "display:inline-block;width:75px;") +
-                                    tag(:br))
     end
 
     ((page * 5) - arm.visit_count).times do
@@ -169,75 +155,35 @@ module ApplicationHelper
   def generate_visit_navigation arm, service_request, pages, tab, portal=nil
     page = pages[arm.id].to_i == 0 ? 1 : pages[arm.id].to_i
 
+    if @merged
+      pathMethod = method(:merged_calendar_service_request_service_calendars_path)
+    elsif @review
+      pathMethod = method(:refresh_service_calendar_service_request_path)
+    else
+      pathMethod = method(:table_service_request_service_calendars_path)
+    end
+
     returning_html = ""
 
     returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')),
-                              table_service_request_service_calendars_path(service_request, :page => page - 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal),
-                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only left-arrow') unless page <= 1
+                        pathMethod.call(service_request, :page => page - 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal),
+                        :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only left-arrow') unless page <= 1
+
     returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')),
                                   :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled left-arrow', :disabled => true) if page <= 1
 
     returning_html += content_tag(:span, t("calendar_page.labels.jump_to_visit"))
 
-    returning_html += select_tag("jump_to_visit_#{arm.id}", visits_select_options(arm, pages), :class => 'jump_to_visit', :url => table_service_request_service_calendars_path(service_request, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal))
+    returning_html += select_tag("jump_to_visit_#{arm.id}", visits_select_options(arm, pages), :class => 'jump_to_visit', :url => pathMethod.call(service_request, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal))
 
-    returning_html += link_to(image_tag('sort.png'), 'javascript:void(0)', :class => 'move_visits', :'data-arm_id' => arm.id, :'data-tab' => tab, :'data-sr_id' => service_request.id, :'data-portal' => portal) unless portal
-
-    returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')),
-                              table_service_request_service_calendars_path(service_request, :page => page + 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal),
-                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only right-arrow') unless ((page + 1) * 5) - 4 > arm.visit_count
-    returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')),
-                                  :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled right-arrow', :disabled => true) if ((page + 1) * 5) - 4 > arm.visit_count
-
-
-
-    raw(returning_html)
-  end
-
-  # TODO
-  # Refactor this back in
-  def generate_merged_visit_navigation arm, service_request, pages, tab, portal=nil
-    page = pages[arm.id].to_i == 0 ? 1 : pages[arm.id].to_i
-
-    returning_html = ""
-
-    returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')),
-                              merged_calendar_service_request_service_calendars_path(service_request, :page => page - 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal),
-                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only left-arrow') unless page <= 1
-    returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')),
-                                  :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled left-arrow', :disabled => true) if page <= 1
-
-    returning_html += content_tag(:span, t("calendar_page.labels.jump_to_visit"))
-
-    returning_html += select_tag("jump_to_visit_#{arm.id}", visits_select_options(arm, pages), :class => 'jump_to_visit', :url => merged_calendar_service_request_service_calendars_path(service_request, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal))
+    unless (portal or @merged or @review)
+      returning_html += link_to(image_tag('sort.png'), 'javascript:void(0)', :class => 'move_visits', :'data-arm_id' => arm.id, :'data-tab' => tab, :'data-sr_id' => service_request.id, :'data-portal' => portal)
+    end
 
     returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')),
-                              merged_calendar_service_request_service_calendars_path(service_request, :page => page + 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal),
+                              pathMethod.call(service_request, :page => page + 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal),
                               :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only right-arrow') unless ((page + 1) * 5) - 4 > arm.visit_count
-    returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')),
-                                  :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled right-arrow', :disabled => true) if ((page + 1) * 5) - 4 > arm.visit_count
 
-    raw(returning_html)
-  end
-
-  def generate_review_visit_navigation arm, service_request, pages, tab, portal=nil
-    page = pages[arm.id].to_i == 0 ? 1 : pages[arm.id].to_i
-
-    returning_html = ""
-
-    returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')),
-                              refresh_service_calendar_service_request_path(service_request, :page => page - 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal),
-                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only left-arrow') unless page <= 1
-    returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')),
-                                  :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled left-arrow', :disabled => true) if page <= 1
-
-    returning_html += content_tag(:span, t("calendar_page.labels.jump_to_visit"))
-
-    returning_html += select_tag("jump_to_visit_#{arm.id}", visits_select_options(arm, pages), :class => 'jump_to_visit', :url => refresh_service_calendar_service_request_path(service_request, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal))
-
-    returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')),
-                              refresh_service_calendar_service_request_path(service_request, :page => page + 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal),
-                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only right-arrow') unless ((page + 1) * 5) - 4 > arm.visit_count
     returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')),
                                   :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled right-arrow', :disabled => true) if ((page + 1) * 5) - 4 > arm.visit_count
 
@@ -319,6 +265,11 @@ module ApplicationHelper
   #Determines if an arm can be deleted in sparc proper, based on whether the request is in CWF and has patient data
   def can_be_deleted? arm
     arm.subjects.empty? ? true : arm.subjects.none?{|x| x.has_appointments?}
+  end
+
+  def current_translations
+    @translations ||= I18n.backend.send(:translations)
+    @translations[I18n.locale].with_indifferent_access
   end
 
   #Will find a particular one time fee line item by its id, then determine if it has any associated fulfillments

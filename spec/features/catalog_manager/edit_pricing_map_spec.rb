@@ -119,8 +119,9 @@ describe 'as a user on catalog page', :js => true do
       find(".otf_checkbox", :visible => true).click
       wait_for_javascript_to_finish
       find(".service_unit_type", :visible => true).set("Each")
-      find(".service_unit_factor", :visible => true).click
+      page.execute_script("$('.service_unit_type:visible').change()") #Shouldn't need this. Argh.
       wait_for_javascript_to_finish
+      sleep 1
       page.should_not have_content("Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps.")
     end
   end
@@ -164,8 +165,9 @@ describe 'as a user on catalog page', :js => true do
         wait_for_javascript_to_finish
         page.should have_content("If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.")
         find(".otf_quantity_type", :visible => true).set("Each")
-        find(".otf_quantity_minimum", :visible => true).click
+        page.execute_script("$('.otf_quantity_type:visible').change()") #Shouldn't need this. Argh.
         wait_for_javascript_to_finish
+        sleep 1
         page.should_not have_content("If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.")
       end
    

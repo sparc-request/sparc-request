@@ -215,6 +215,7 @@ en:
       amount_of_funding: "amount of funding"
     request_additional: "To request additional research funding go to"
     additional_confirm: "Are you sure you want to leave? Any unsaved changes to this service request will be lost."
+    overridden: "This request has been previously submitted and the subsidy can now only be edited by an Admin."
 
   # Calendar Page
   calendar_page:
@@ -263,6 +264,8 @@ en:
       grand_total_direct: "Grand Total: Direct Costs"
       grand_total_indirect: "Grand Total: Indirect Costs"
       grand_total: "Grand Total:"
+      direct_cost: "Total Direct Cost"
+      indirect_cost: "Total Indirect Cost"
 
   # Documents Page
   documents:
@@ -572,18 +575,6 @@ en:
       role: "Role:"
       proxy_rights: "Proxy Rights:"
     notes_header: "Service Request Notes"
-    calendar:
-      headers:
-        services: "Services"
-        cost: "Your Cost"
-        subjects: "# Subjects"
-        total: "Service Total"
-        total_per_patient: "Total Per Patient"
-        total_per_study: "Total Per Study"
-      totals:
-        direct_cost: "Total Direct Cost"
-        indirect_cost: "Total Indirect Costs"
-        grand: "Grand Total:"
 
   # Service Request Confirmation Page and Obtain Research Pricing Page
   sr_confirmation:
@@ -840,6 +831,13 @@ en:
       date: "Date Changed"
       from: "Status Changed From"
       to: "Status Changed To"
+    subsidy_changes:
+      header: "Subsidy Changes"
+      date: "Date Changed"
+      user: "Changed by"
+      action: "Action"
+      pi_contribution: "PI Contribution"
+      subsidy_percent: "Subsidy Percent"
     notes:
       header: "Notes"
       link:  "Add Note"
@@ -1041,7 +1039,7 @@ en:
       grand_total: "Grand Total"
       add_service: "Add Service"
       submit: "Save Appointments"
-      cwf_link: "Return to Clinical Work Fulfillment"
+      cwf_link: "Back to Clinical Work Fulfillment"
       popup_message1: "Attention - An assessment" 
       popup_message2: "has been added at"
       popup_message3: "If subject is past visit, please refer to your IRB-approved protocol."
@@ -1062,3 +1060,67 @@ en:
     proceed: "Proceed"
     create_report: "Create Report"
     return_to_admin_portal: "Return to Admin Portal"
+
+  # Javascript localizations
+  has_fulfillments: "This line item has one or more fulfillments associated with it and can not be deleted."
+  service_deleted: "Service has been deleted."
+  cart:
+    remove_request_confirm: "This action will delete this service request and you will be redirected to your user portal. Click OK to proceed."
+  feedback: 
+    message_error: "Message can't be blank" 
+  service_request_success: "Service request has been saved."
+  service_calendar_toasts:
+    visit_name: "Click to rename your visits."
+    visit_day: "Click to set the visits day. All days must be in numerical order. Ex. 1, 2, 4, 9"
+    visit_window: "Click to set the window period the visit can be completed."
+    jump_to_visit: "Select the visit you would like to view."
+  service_details_alerts:
+    subject_count: "A request associated with this arm is in Clinical Work Fulfillment. The subject count cannot be decreased." 
+    visit_count: "A request associated with this arm is in Clinical Work Fulfillment. The visit count cannot be decreased."
+  ajax_error: "An error happened processing your request: "
+  sign_in_dialog: "Please select one of the options below:"
+  signed_up_dialog: "New account created:"
+  js_confirm: "Are you sure?"
+  catalog_manager_js:
+    same_display_date: "A pricing map already exists with that display date.  Please choose another date."
+    same_effective_date: "A pricing map already exists with that effective date.  Please choose another date."
+    later_display_date: "This display date is before the display date of existing pricing maps, are you sure you want to do this?"
+    later_effective_date: "This effective date is before the effective date of existing pricing maps, are you sure you want to do this?"
+    survey_delete: "Are you sure you want to remove this Associated Survey?"
+    institution_prompt: "Please enter the name of the institution you would like to create"
+    provider_prompt: "Please enter the name of the provider you would like to create"
+    program_prompt: "Please enter the name of the program you would like to create"
+    core_prompt: "Please enter the name of the core you would like to create"
+    service_alert: "There needs to be at least one service provider on a parent organization to create a new service."
+    service_remove: "Are you sure you want to remove this Related Service?"
+    super_user_remove: "Are you sure you want to remove this Super User?"
+    clinical_provider_remove: "Are you sure you want to remove this Clinical Provider?"
+    service_provider_remove: "Are you sure you want to remove this Service Provider?"
+    cm_rights_remove: "Are you sure you want to remove rights for this user from the Catalog Manager?"
+    permission_change: "You are changing your own permissions. Your page will refresh automatically when this window closes."
+  services_js:
+    same_display_date: "You can't have two display dates on the same day!"
+    same_effective_date: "You can't have two effective dates on the same day!"
+    before_display_date: "You have selected a display date before an existing display date, are you sure you want to do this?"
+    before_effective_date: "You have selected a effective date before an existing effective date, are you sure you want to do this?"
+    rate_field_confirm: "Changing this value will override the pre-calculated rate for this service."
+  cwf_js:
+    calendar_changed: "Changes to patient calendars need to be saved, click 'Stay on page' and save the form to save the calendar, or click 'Leave page' to leave the page and dismiss your changes."
+    subject_changed: "Changes to subjects need to be saved. Click 'Cancel' to return to the page and save the form, or 'OK' to leave the page and dismiss your changes."
+    subject_delete: "This subject has one or more completed appointments and can't be deleted."
+  fulfillment_js:
+    date_error: "Please enter a start date before the end date"
+    remove_service: "Are you sure that you want to remove this service from all subjects' visit calendars in this arm?"
+    deleted: " has been deleted."
+    arm_remove_alert: "You can't delete the last arm while Per-Patient/Per Visit services still exist."
+    arm_subject_data_alert: "This arm has subject data and can not be deleted." 
+    arm_delete_confirm: "Are you sure you want to remove the arm?"
+    last_visit_delete: "You can't delete the last visit. Please delete the arm if visits are no longer required."
+    service_delete_confirm: "Are you sure that you want to remove this service from all subjects' visit calendars?"
+    cwf_service_delete: "Are you sure you want to remove this service?"
+    pi_contribution: "Value is over maximum dollar cap."
+    subsidy: "Value is over maximum subsidy percentage."
+    epic: "Project/Study has been sent to Epic"
+  notifications_js:
+    send: "Message has been sent."
+

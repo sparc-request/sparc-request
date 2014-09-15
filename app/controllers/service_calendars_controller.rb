@@ -160,6 +160,7 @@ class ServiceCalendarsController < ApplicationController
       new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
       @pages[arm.id] = @service_request.set_visit_page new_page, arm
     end
+    @merged = true
   end
 
   def update_otf_qty_and_units_per_qty
@@ -204,7 +205,9 @@ class ServiceCalendarsController < ApplicationController
     end
     setup_calendar_pages
 
+    @arm.visit_groups.reload
     vg = @arm.visit_groups.find_by_position visit_to_move
+    vg.reload
 
     # The way insert_at works is literal. It inserts at whatever position is given
     # We want to insert before the position given depending on the visit we're moving.

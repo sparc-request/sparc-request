@@ -63,7 +63,11 @@ class Portal::LineItemsController < Portal::BaseController
     @line_item = LineItem.find(params[:id])
     @sub_service_request = @line_item.sub_service_request
     @service_request = @sub_service_request.service_request
-    @study_tracker = params[:study_tracker] == "true"
+
+    # @study_tracker = params[:study_tracker] == "true"
+    @study_tracker = true
+    # @study_tracker must be true here, as it is coming from cwf.
+    # problem occurred because there is no :study_tracker param at this point.
 
     updated_service_relations = true
     if params[:quantity]

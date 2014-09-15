@@ -286,7 +286,7 @@ class ServiceRequestsController < ApplicationController
     @service_list = @service_request.service_list
 
     @service_request.sub_service_requests.each do |ssr|
-      ssr.subsidy.update_attributes(:overridden => true)
+      ssr.subsidy.update_attributes(:overridden => true) if ssr.subsidy
     end
 
     send_confirmation_notifications

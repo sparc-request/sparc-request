@@ -40,7 +40,7 @@ class ProtocolsController < ApplicationController
     @protocol = self.model_class.new(params[:study] || params[:project])
     @portal = params[:portal]
 
-    if @current_step == 'protocol' and @protocol.group_valid? :protocol and @protocol.human_subjects_info.valid?
+    if @current_step == 'protocol' and @protocol.group_valid? :protocol and (@protocol.is_study? ? @protocol.human_subjects_info.valid? : true)
       @current_step = 'user_details'
       @protocol.populate_for_edit
     elsif @current_step == 'user_details' and @protocol.valid?
@@ -70,7 +70,7 @@ class ProtocolsController < ApplicationController
 
     @protocol.assign_attributes(params[:study] || params[:project])
 
-    if @current_step == 'protocol' and @protocol.group_valid? :protocol and @protocol.human_subjects_info.valid?
+    if @current_step == 'protocol' and @protocol.group_valid? :protocol and (@protocol.is_study? ? @protocol.human_subjects_info.valid? : true)
       @current_step = 'user_details'
       @protocol.populate_for_edit
     elsif (@current_step == 'user_details' and @protocol.valid?)

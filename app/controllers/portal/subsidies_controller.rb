@@ -45,8 +45,7 @@ class Portal::SubsidiesController < Portal::BaseController
 
     if @subsidy.update_attributes(data)
       @sub_service_request = @subsidy.sub_service_request
-      @subsidy.update_attributes(:stored_percent_subsidy => percent_subsidy)
-      @subsidy.update_attributes(:pi_contribution => pi_contribution)
+      @subsidy.update_attributes(:stored_percent_subsidy => percent_subsidy, :pi_contribution => pi_contribution)
       render 'portal/sub_service_requests/add_subsidy'
     else
       respond_to do |format|

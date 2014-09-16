@@ -38,14 +38,17 @@ class ProtocolsController < ApplicationController
     @service_request = ServiceRequest.find session[:service_request_id]
     @current_step = params[:current_step]
     @protocol = self.model_class.new(params[:study] || params[:project])
+    @protocol.validate_nct = true
     @portal = params[:portal]
 
     if @current_step == 'go_back'
       @current_step = 'protocol'
       @protocol.populate_for_edit
-    elsif @current_step == 'protocol' and @protocol.group_valid? :protocol and (@protocol.is_study? ? @protocol.human_subjects_info.valid? : true)
+    elsif @current_step == 'protocol' and @protocol.group_valid? :protocol
       @current_step = 'user_details'
       @protocol.populate_for_edit
+      #setup human_subjects_info validation
+      @protocol.valid?
     elsif @current_step == 'user_details' and @protocol.valid?
       @protocol.save
       @current_step = 'return_to_service_request'
@@ -71,13 +74,16 @@ class ProtocolsController < ApplicationController
     @service_request = ServiceRequest.find session[:service_request_id]
     @current_step = params[:current_step]
     @protocol = current_user.protocols.find params[:id]
+    @protocol.validate_nct = true
     @portal = params[:portal]
 
     @protocol.assign_attributes(params[:study] || params[:project])
 
-    if @current_step == 'protocol' and @protocol.group_valid? :protocol and (@protocol.is_study? ? @protocol.human_subjects_info.valid? : true)
+    if @current_step == 'protocol' and @protocol.group_valid? :protocol
       @current_step = 'user_details'
       @protocol.populate_for_edit
+      #setup human_subjects_info validation
+      @protocol.valid?
     elsif (@current_step == 'user_details' and @protocol.valid?)
       @protocol.save
       @current_step = 'return_to_service_request'

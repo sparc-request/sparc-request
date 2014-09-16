@@ -30,6 +30,8 @@ en:
   feedback: "Feedback"
   activerecord:
     attributes:
+      protocol:
+        human_subjects_info: "The NCT #"
       human_subjects_info:
         nct_number: "The NCT #"
     errors:

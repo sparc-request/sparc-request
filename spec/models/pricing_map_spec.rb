@@ -21,6 +21,37 @@
 require 'spec_helper'
 
 describe 'PricingMap' do
+
+  describe "validations" do
+    let!(:core)          { FactoryGirl.create(:core) }
+    let!(:service)       { FactoryGirl.create(:service, organization_id: core.id) }
+
+    it "should not raise exception if full_rate, display_date, and effective_date are set" do
+      lambda { FactoryGirl.create(:pricing_map, full_rate: 100, display_date: Date.today - 2.days,
+                                  effective_date: Date.today - 2.days, service_id: service.id).save! }.should_not raise_exception
+    end
+
+    it "should validate the presence of full rate" do
+      lambda { FactoryGirl.create(:pricing_map, full_rate: nil, display_date: Date.today - 2.days,
+                                  effective_date: Date.today - 2.days, service_id: service.id).save! }.should raise_exception(ActiveRecord::RecordInvalid)
+    end
+
+    it "should validate the numericality of full rate" do
+      lambda { FactoryGirl.create(:pricing_map, full_rate: "hello", display_date: Date.today - 2.days,
+                                  effective_date: Date.today - 2.days, service_id: service.id).save! }.should raise_exception(ActiveRecord::RecordInvalid)
+    end
+
+    it "should validate the presence of display_date" do
+      lambda { FactoryGirl.create(:pricing_map, full_rate: 100, display_date: nil,
+                                  effective_date: Date.today - 2.days, service_id: service.id).save! }.should raise_exception(ActiveRecord::RecordInvalid)
+    end
+
+    it "should validate the presence of effective_date" do
+      lambda { FactoryGirl.create(:pricing_map, full_rate: 100, display_date: Date.today - 2.days,
+                                  effective_date: nil, service_id: service.id).save! }.should raise_exception(ActiveRecord::RecordInvalid)
+    end
+  end
+  
   describe 'applicable_rate' do
     it 'should return the full rate if full rate is requested' do
       pricing_map = FactoryGirl.create(:pricing_map)

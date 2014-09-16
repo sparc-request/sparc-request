@@ -34,7 +34,7 @@
       = javascript_include_tag "ie7_warning"
     = csrf_meta_tags
 
-  %body
+  %body{:id => "body"}
     #ie7_warning{:style => 'display: none'}
       %p= t('ie_warning.text1')
       %br
@@ -42,7 +42,7 @@
 
     #container.container
       #header
-        = render :partial => 'layouts/portal/header'
+        = render :partial => 'shared/header_logos'
         %input#current_user_id{:type => 'hidden', :value => @user.try(:id)}
       #welcome_msg{:style => 'float:right;'}= show_welcome_message(@user)
       #main

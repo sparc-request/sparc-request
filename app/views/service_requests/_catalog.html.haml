@@ -22,7 +22,7 @@
 
 .grid_3.service-catalog
   #about
-    = link_to image_tag("about.png"), "javascript:void(0);", :class => "about_sparc_request"
+    = link_to image_tag("#{CUSTOM_ASSET_PATH}about.png",class: 'about_sparc_img'), "javascript:void(0);", :class => "about_sparc_request"
   %h3 Browse Services Catalog:
   = render :partial => 'catalogs/service_accordion', :locals => {:institutions => @institutions}
 .grid_6
@@ -36,7 +36,7 @@
 
 .grid_3.catalog-view-right.right
   #account.create_new_account
-    = link_to(image_tag('account.png'), new_identity_registration_path)
+    = link_to(image_tag("/assets/#{CUSTOM_ASSET_PATH}account.png", width: '196'), new_identity_registration_path)
   #services.ui-widget.ui-widget-content.cart-view
     %h3
       = t(:service_requests)[:catalog][:text1]

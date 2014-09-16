@@ -44,4 +44,23 @@ class Program < Organization
 
     available_statuses.sort!{|a, b| a.position <=> b.position}
   end
+  
+  def has_active_pricing_setup
+    active_pricing_setup = false
+    if self.pricing_setups.size > 0
+      self.pricing_setups.each do |pricing_setup|
+        if pricing_setup.effective_date <= Date.today
+          active_pricing_setup = true
+        end
+      end
+    end
+    if !active_pricing_setup && self.provider.pricing_setups.size > 0
+      self.provider.pricing_setups.each do |pricing_setup|
+        if pricing_setup.effective_date <= Date.today
+          active_pricing_setup = true
+        end
+      end
+    end
+    active_pricing_setup
+  end
 end

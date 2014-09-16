@@ -22,6 +22,12 @@ require 'spec_helper'
 
 describe 'PricingMap' do
   describe 'applicable_rate' do
+    it 'should return the full rate if full rate is requested' do
+      pricing_map = FactoryGirl.create(:pricing_map)
+      pricing_map.full_rate = "60.0"
+      pricing_map.applicable_rate('full', 100).should eq 60
+    end
+    
     it 'should return the full rate times the given percentage if there is no override' do
       pricing_map = FactoryGirl.create(:pricing_map)
       pricing_map.full_rate = "60.0"
@@ -38,6 +44,7 @@ describe 'PricingMap' do
 
   describe 'rate_override' do
     [
+      'full',
       'federal',
       'corporate',
       'member',

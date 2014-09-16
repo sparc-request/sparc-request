@@ -72,8 +72,8 @@ class LineItem < ActiveRecord::Base
       if has_admin_rates? appointment_completed_date
         rate = admin_rate_for_date(appointment_completed_date)
       else
-        pricing_map         = self.pricing_scheme == 'displayed' ? self.service.displayed_pricing_map : self.service.effective_pricing_map_for_date(appointment_completed_date)
-        pricing_setup       = self.pricing_scheme == 'displayed' ? self.service.organization.current_pricing_setup : self.service.organization.effective_pricing_setup_for_date(appointment_completed_date)
+        pricing_map         = self.pricing_scheme == 'displayed' ? self.service.displayed_pricing_map(appointment_completed_date) : self.service.effective_pricing_map_for_date(appointment_completed_date)
+        pricing_setup       = self.pricing_scheme == 'displayed' ? self.service.organization.pricing_setup_for_date(appointment_completed_date) : self.service.organization.effective_pricing_setup_for_date(appointment_completed_date)
         funding_source      = self.service_request.protocol.funding_source_based_on_status
         selected_rate_type  = pricing_setup.rate_type(funding_source)
         applied_percentage  = pricing_setup.applied_percentage(selected_rate_type)
@@ -197,22 +197,31 @@ class LineItem < ActiveRecord::Base
   # This determines the complete cost for a line item with fulfillments
   # taking into account the possibility for a unit factor greater than 1
   # Only fulfillments within date range will be calculated
+  # direct_cost is then calculated by taking the sum of the products of
+  # the fractional (to the total) quantities of each fulfillment and the applicable
+  # rate at the date of the fulfillment's completion.
   def direct_cost_for_one_time_fee_with_fulfillments start_date, end_date
-    total = 0.0
+    total_quantity = 0.0
+    fulfillment_rates = []
     if !self.fulfillments.empty?
       self.fulfillments.each do |fulfillment|
         if fulfillment.within_date_range?(start_date, end_date)
           if fulfillment.unit_quantity?
-            total += fulfillment.quantity * fulfillment.unit_quantity
+            total_quantity += fulfillment.quantity * fulfillment.unit_quantity
+            fulfillment_rates.push({quantity: fulfillment.quantity, rate: self.applicable_rate(fulfillment.date)})
           else
-            total += fulfillment.quantity
+            total_quantity += fulfillment.quantity
+            fulfillment_rates.push({quantity: fulfillment.quantity, rate: self.applicable_rate(fulfillment.date)})
           end
         end
       end
-      total = ((total / units_per_package).ceil * self.applicable_rate)
+    end
+    direct_cost = 0.0
+    fulfillment_rates.each do |fr|
+      direct_cost += ((total_quantity / units_per_package).ceil * ((fr[:quantity] / total_quantity) * fr[:rate]))
     end
 
-    total
+    direct_cost
   end
 
   # Determine the indirect cost rate related to a particular line item

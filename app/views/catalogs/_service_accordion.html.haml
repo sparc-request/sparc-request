@@ -33,7 +33,7 @@
             = link_to provider.name, update_description_catalog_path(provider)
           %div.provider
             - provider.programs.order('`order`').each do |program|
-              - next unless program.is_available? or program.is_available.nil?
+            - next unless (program.is_available? || program.is_available.nil?) && program.has_active_pricing_setup
               - next if @sub_service_request and (@sub_service_request.organization != program and @sub_service_request.organization.parents.exclude?(program))
               %h4{ :class => "#{cycle('even', provider.css_class + '-odd')}"  }
                 = link_to program.name, update_description_catalog_path(program, :sub_service_request_id => (@sub_service_request ? @sub_service_request.id : nil)), :remote => true, :method => :post

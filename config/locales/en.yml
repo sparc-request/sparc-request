@@ -1058,3 +1058,13 @@ en:
     proceed: "Proceed"
     create_report: "Create Report"
     return_to_admin_portal: "Return to Admin Portal"
+  footer:
+    mail_to: "hundc@musc.edu"
+    mail_link: "Sign Up For the SPARC Request Listserv"
+    mail_subject: "SPARC Request Listserv"
+    link_one_text: "SPARC Request Blog"
+    link_one_url: "http://sparcrequestblog.com/"
+    link_two_text: "SCTR"
+    link_two_url: "http://sctr.musc.edu"
+    link_three_text: "SPARC Request Home"
+    link_three_url: "http://academicdepartments.musc.edu/sctr/sparc_request"

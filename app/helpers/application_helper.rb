@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 module ApplicationHelper
   def show_welcome_message current_user
     if current_user
@@ -49,7 +69,7 @@ module ApplicationHelper
     end
   end
 
-  def generate_visit_header_row arm, service_request, page, portal=nil
+  def generate_visit_header_row arm, service_request, page, sub_service_request, portal=nil
     base_url = "/service_requests/#{service_request.id}/service_calendars"
     rename_visit_url = base_url + "/rename_visit"
     day_url = base_url + "/set_day"
@@ -62,7 +82,13 @@ module ApplicationHelper
     visit_groups = arm.visit_groups
 
     (beginning_visit .. ending_visit).each do |n|
-      checked = line_items_visits.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?
+      if sub_service_request
+        filtered_line_items_visits = line_items_visits.includes(:line_item).where("line_items.sub_service_request_id = ?", sub_service_request.id)
+      else
+        filtered_line_items_visits = line_items_visits.includes(:line_item).where("line_items.service_request_id = ?", service_request.id)
+      end
+
+      checked = filtered_line_items_visits.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?
       action = checked == true ? 'unselect_calendar_column' : 'select_calendar_column'
       icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
       visit_name = visit_groups[n - 1].name || "Visit #{n}"
@@ -82,7 +108,7 @@ module ApplicationHelper
                                       text_field_tag("arm_#{arm.id}_visit_name_#{n}", visit_name, :class => "visit_name", :size => 10, :update => "#{rename_visit_url}?visit_position=#{n-1}&arm_id=#{arm.id}&portal=#{portal}") +
                                       tag(:br) + 
                                       link_to((content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')), 
-                                              "/service_requests/#{service_request.id}/#{action}/#{n}/#{arm.id}",
+                                              "/service_requests/#{service_request.id}/#{action}/#{n}/#{arm.id}?portal=#{portal}",
                                               :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only', :id => "check_all_column_#{n}"),
                                       :width => 60, :class => 'visit_number')
       end
@@ -299,5 +325,16 @@ module ApplicationHelper
   #Determines if an arm can be deleted in sparc proper, based on whether the request is in CWF and has patient data
   def can_be_deleted? arm
     arm.subjects.empty? ? true : arm.subjects.none?{|x| x.has_appointments?}
+  end
+
+  #Will find a particular one time fee line item by its id, then determine if it has any associated fulfillments
+  def one_time_fee_fulfillments? line_item_id
+    has_fulfillments = false
+    otf = LineItem.find(line_item_id)
+    if !otf.fulfillments.empty?
+      has_fulfillments = true
+    end
+
+    has_fulfillments
   end
 end

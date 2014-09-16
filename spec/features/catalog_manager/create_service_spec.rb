@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 require 'spec_helper'
 
 feature 'create new service' do
@@ -56,7 +76,7 @@ feature 'create new service' do
       wait_for_javascript_to_finish
     end    
 
-    page.execute_script("$('#save_button').click();")
+    first("#save_button").click
     page.should have_content( 'Test Service created successfully' )
   end
 
@@ -111,7 +131,25 @@ feature 'create new service' do
       wait_for_javascript_to_finish
     end      
 
-    page.execute_script("$('#save_button').click();")
+    first("#save_button").click
     page.should have_content( 'Core Test Service created successfully' )
   end
+  
+  scenario ':user only with access to this core can see link for: Create New Service', :js => true do   
+    identity = Identity.create(last_name: 'Miller', first_name: 'Robert', ldap_uid: 'rmiller@musc.edu', email:  'rmiller@musc.edu', password: 'p4ssword',password_confirmation: 'p4ssword',  approved: true )
+    identity.save!
+
+    core = Core.find_by_name('Clinical Data Warehouse')
+    
+    cm = CatalogManager.create( organization_id: core.id, identity_id: identity.id, )
+    cm.save!
+
+    login_as(Identity.find_by_ldap_uid('rmiller@musc.edu'))
+    ## Logs in the default identity.
+    visit catalog_manager_root_path
+    ## This is used to reveal all nodes in the js tree to make it easier to access during testing.
+    page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
+    expect(page).to have_content('Create New Service')
+  end
+  
 end 

@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 class Portal::ServiceRequestsController < Portal::BaseController
   respond_to :json, :js, :html
 
@@ -35,8 +55,8 @@ class Portal::ServiceRequestsController < Portal::BaseController
     @service_request = ServiceRequest.find(params[:service_request_id]) # TODO: is this different from params[:id] ?
     @selected_arm = Arm.find(params[:arm_id])
     @study_tracker = params[:study_tracker] == "true"
-    
-    if @selected_arm.add_visit(params[:visit_position], params[:visit_day], params[:visit_window], params[:visit_name])
+
+    if @selected_arm.add_visit(params[:visit_position], params[:visit_day], params[:visit_window], params[:visit_name], 'true')
       @subsidy.try(:sub_service_request).try(:reload)
       @subsidy.try(:fix_pi_contribution, percent)
       @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
@@ -108,6 +128,5 @@ class Portal::ServiceRequestsController < Portal::BaseController
       :sending_class_id => sub_service_request.id,
       :message => "The visit count on this service request has been changed"
     )
-  end
-
+  end 
 end

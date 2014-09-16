@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 require 'spec_helper'
 
 describe "editing a project", js: true do
@@ -16,6 +36,7 @@ describe "editing a project", js: true do
       select("Pending Funding", from: "Proposal Funding Status")
       select("Select a Potential Funding Source", from: "Potential Funding Source")
       click_button "Save"
+      wait_for_javascript_to_finish
       page.should have_content("1 error prohibited this project from being saved")
     end
 
@@ -23,6 +44,7 @@ describe "editing a project", js: true do
       select("Funded", from: "Proposal Funding Status")
       select("Select a Funding Source", from: "project_funding_source")
       click_button "Save"
+      wait_for_javascript_to_finish
       page.should have_content("1 error prohibited this project from being saved")
     end
   end
@@ -31,6 +53,8 @@ describe "editing a project", js: true do
 
     it "should redirect back to the main portal page" do
       click_on "Cancel"
+      wait_for_javascript_to_finish
+      sleep 1
       page.should have_content('Dashboard')
       page.should have_content('Welcome')
     end
@@ -60,6 +84,7 @@ describe "editing a project", js: true do
 
     it "should cause the field 'funding source' to be visible" do
       select("Funded", from: "Proposal Funding Status")
+      wait_for_javascript_to_finish
       find("#project_funding_source").should be_visible
     end
   end
@@ -68,6 +93,7 @@ describe "editing a project", js: true do
 
     it "should cause the field 'potential funding source' to be visible" do
       select("Pending Funding", from: "Proposal Funding Status")
+      wait_for_javascript_to_finish
       find("#project_potential_funding_source").should be_visible
     end
   end
@@ -77,12 +103,14 @@ describe "editing a project", js: true do
     it "should save the new funding source" do
       select("Funded", from: "Proposal Funding Status")
       select("Federal", from: "project_funding_source")
+      wait_for_javascript_to_finish
       find("#project_funding_source").should have_value("federal")
     end
 
     it "should save the new pending funding source" do
       select("Pending Funding", from: "Proposal Funding Status")
       select("Federal", from: "Potential Funding Source")
+      wait_for_javascript_to_finish
       find("#project_potential_funding_source").should have_value("federal")
     end
   end

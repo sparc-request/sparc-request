@@ -1,3 +1,23 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 .user-edit-protocol-view
   :javascript
     $(document).ready(function() {
@@ -6,35 +26,36 @@
   
   .grid_7.box
     .info
-      .field
-        = f.label :short_title, t(:protocol_shared)[:title]
-        = f.text_field :short_title
+      %fieldset
+        .field
+          = f.label :short_title, t(:protocol_shared)[:title]
+          = f.text_field :short_title
 
-      .field
-        = f.label :title, t(:project_form)[:title]
-        = f.text_field :title
+        .field
+          = f.label :title, t(:project_form)[:title]
+          = f.text_field :title
+          
+        .field
+          = f.label :funding_status, t(:protocol_shared)[:funding_status]
+          = f.select :funding_status, options_for_select(FUNDING_STATUSES, project.funding_status), :include_blank => t(:project_form)[:dropdown_default1]
         
-      .field
-        = f.label :funding_status, t(:protocol_shared)[:funding_status]
-        = f.select :funding_status, options_for_select(FUNDING_STATUSES, project.funding_status), :include_blank => t(:project_form)[:dropdown_default1]
-      
-      #funded
+        #funded
+          .field
+            = f.label :funding_source, t(:protocol_shared)[:funding_source]
+            = f.select :funding_source, options_for_select(FUNDING_SOURCES, project.funding_source), :include_blank => t(:project_form)[:dropdown_default2]
+
+        #pending_funding 
+          .field
+            = f.label :potential_funding_source, t(:protocol_shared)[:potential_funding_source]
+            = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, project.potential_funding_source), :include_blank => t(:project_form)[:dropdown_default3]
+
         .field
-          = f.label :funding_source, t(:protocol_shared)[:funding_source]
-          = f.select :funding_source, options_for_select(FUNDING_SOURCES, project.funding_source), :include_blank => t(:project_form)[:dropdown_default2]
+          = f.label :brief_description, t(:project_form)[:description]
+          = f.text_area :brief_description, :cols => '115'
 
-      #pending_funding 
-        .field
-          = f.label :potential_funding_source, t(:protocol_shared)[:potential_funding_source]
-          = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, project.potential_funding_source), :include_blank => t(:project_form)[:dropdown_default3]
-
-      .field
-        = f.label :brief_description, t(:project_form)[:description]
-        = f.text_area :brief_description, :cols => '115'
-
-      .field.indirect_cost_rate
-        = f.label :indirect_cost_rate, t(:project_form)[:rate]
-        = f.text_field :indirect_cost_rate
+        .field.indirect_cost_rate
+          = f.label :indirect_cost_rate, t(:project_form)[:rate]
+          = f.text_field :indirect_cost_rate
   
   %br.clear
   #actions

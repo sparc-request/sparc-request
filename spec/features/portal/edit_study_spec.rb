@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 require 'spec_helper'
 
 describe "editing a study", js: true do
@@ -32,6 +52,8 @@ describe "editing a study", js: true do
 
     it "should redirect to the main portal page" do
       click_button "Save"
+      wait_for_javascript_to_finish
+      sleep 6
       page.should have_content('Dashboard')
       page.should have_content('Welcome')
     end
@@ -99,8 +121,10 @@ describe "editing a study", js: true do
     describe "editing the funding start date" do
 
       it "should change and save the date" do
-        find("#funding_start_date").click
-        page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
+        page.execute_script("$('#funding_start_date').focus()")
+        sleep 2
+        first('a.ui-state-default.ui-state-highlight').click #Click on today's date
+        sleep 2
         find("#funding_start_date").should have_value(Date.today.strftime('%-m/%d/%Y'))
       end
     end
@@ -136,8 +160,10 @@ describe "editing a study", js: true do
     describe "editing the potential funding start date" do
 
       it "should change and save the date" do
-        find("#potential_funding_start_date").click
-        page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") }
+        page.execute_script("$('#potential_funding_start_date').focus()")
+        sleep 2
+        first('a.ui-state-default.ui-state-highlight').click #click on today's date
+        sleep 2
         find("#potential_funding_start_date").should have_value((Date.today).strftime('%-m/%d/%Y'))
       end
     end
@@ -214,10 +240,10 @@ describe "editing a study", js: true do
     describe "editing the irb approval date" do
 
       it "should change and save the date" do
-        find("#irb_approval_date").click
-        wait_for_javascript_to_finish
-        page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") }
-        wait_for_javascript_to_finish
+        page.execute_script("$('#irb_approval_date').focus()")
+        sleep 2
+        first('a.ui-state-default.ui-state-highlight').click #click on today's date
+        sleep 2
         find("#irb_approval_date").should have_value(Date.today.strftime('%-m/%d/%Y'))
       end
     end
@@ -225,13 +251,13 @@ describe "editing a study", js: true do
     describe "editing the irb expiration date" do
 
       it "should change and save the date" do
-        find("#irb_expiration_date").click
-        wait_for_javascript_to_finish
-        page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") }
-        wait_for_javascript_to_finish
+        page.execute_script("$('#irb_expiration_date').focus()")
+        sleep 2
+        first('a.ui-state-default.ui-state-highlight').click #click on today's date
+        sleep 2
         find("#irb_expiration_date").should have_value(Date.today.strftime('%-m/%d/%Y'))
       end
-    end    
+    end
   end
 
   context "research check boxes" do
@@ -250,7 +276,7 @@ describe "editing a study", js: true do
         find("#study_research_types_info_attributes_ip_patents").should be_checked
       end
     end
-  end  
+  end
 
   context "study check boxes" do
 

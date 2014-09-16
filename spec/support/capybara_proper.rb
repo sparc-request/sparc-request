@@ -1,3 +1,23 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 module CapybaraProper
 
     #******************************************************************#
@@ -131,17 +151,27 @@ module CapybaraProper
         wait_for_javascript_to_finish
     end
 
+    def fill_in_search_box(field, search_term, result_html)
+        find(field).set('')
+        find("body").click
+        find(field).click
+        sleep 3
+        find(field).native.send_keys(search_term)
+        sleep 3
+        return first(result_html)
+    end
+
     def addService(serviceName)
         #if service is visible on screen,
         #clicks add button next to specified serviceName.
         #otherwise, searches for the service in the searchbox
         #and adds it from there
-        #beware of services with a '(' in the name, capybara does 
+        #beware of services with a '(' in the name, capybara does
         #not want to send that character in, thus causing
         #autocomplete of the searchbox to fail at times. 
         clickOffAndWait
 
-        #ensure the correct service is selected, though portions of names of some services may be the same as others. 
+        #ensure the correct service is selected, though portions of names of some services may be the same as others.
         addServiceButton = first(:xpath, "//a[text()='#{serviceName}']/parent::span/parent::span//button[text()='Add']")
         if addServiceButton.nil? then 
             addServiceButton = first(:xpath, "//a[contains(text(),'#{serviceName}')]/parent::span/parent::span//button[text()='Add']")
@@ -152,13 +182,8 @@ module CapybaraProper
             wait_for_javascript_to_finish
         else #else use the search box to find the service then add it
             wait_for_javascript_to_finish
-            find(:xpath, "//input[@id='service_query']").set(serviceName)
-            sleep 2
-            response = first(:xpath, "//li[@class='search_result']/button[@class='add_service']")
-            if response.nil? or not(response.visible?)
-                sleep 2
-                first(:xpath, "//li[@class='search_result']/button[@class='add_service']").click
-            else response.click end
+            response = fill_in_search_box("input#service_query", serviceName, "li.search_result button.add_service")
+            response.click
             wait_for_javascript_to_finish
         end
     end
@@ -542,6 +567,7 @@ module CapybaraProper
             wait_for_javascript_to_finish
         end
 
+        wait_for_javascript_to_finish
         currentArmTable.find(:xpath, "./tbody/tr/td[text()='#{serviceName}']/parent::tr/td[@visit_column='#{column}']/input[contains(@id,'effort_billing_qty')]").set(qty)
         wait_for_javascript_to_finish
     end
@@ -997,6 +1023,9 @@ module CapybaraProper
             removeService s.short #removes service
             count -= 1 #reduces expected number of services displayed by 1
         end
+
+        visit(root_path)
+        wait_for_javascript_to_finish
 
         services.each do |s|
             addService s.short #readd each service

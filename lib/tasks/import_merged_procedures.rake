@@ -32,7 +32,7 @@ namespace :data do
       # Get R, T, and Completed
       r_quantity = row["Merged R Quantity"].to_i
       t_quantity = row["Merged T Quantity"].to_i
-      completed  = row["Merged Completed"] == 'true' ? true : false
+      completed  = row["Merged Completed"].casecmp('true') == 0 ? true : false
 
       procedure.update_attributes(:r_quantity => r_quantity, :t_quantity => t_quantity, :completed => completed)
     end

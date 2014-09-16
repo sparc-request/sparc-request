@@ -206,7 +206,7 @@ class Arm < ActiveRecord::Base
     columns = [:visit_group_id, :line_items_visit_id]
     values = []
     self.line_items_visits.each do |liv|
-      vg_ids.each do |id|#here it is creating visits it shouldn't because of the number of ids being returned
+      vg_ids.each do |id|
         values.push [id, liv.id]
       end
     end

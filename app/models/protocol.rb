@@ -273,12 +273,8 @@ class Protocol < ActiveRecord::Base
   
   def create_arm(args)
     arm = self.arms.create(args)
-    self.service_requests.each do |service_request|
-      service_request.per_patient_per_visit_line_items.each do |li|
-        arm.create_line_items_visit(li)
-      end
-    end
-    # Lets return this in case we need it for something else
+    arm.mass_create_visit_group
+    # # Lets return this in case we need it for something else
     arm
   end
   

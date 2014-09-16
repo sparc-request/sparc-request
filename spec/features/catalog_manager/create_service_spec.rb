@@ -152,4 +152,182 @@ feature 'create new service' do
     expect(page).to have_content('Create New Service')
   end
   
+  scenario 'create new service under a program does NOT display an error message because a pricing setup has been created at the provider level', :js => true do
+    program = Program.find_by_name 'Office of Biomedical Informatics'
+    
+    pricing_setup = PricingSetup.where(:organization_id => program.id).first 
+    pricing_setup.destroy
+    
+    pricing_setup = FactoryGirl.create(:pricing_setup, organization_id: program.provider.id, display_date: Date.today, effective_date: Date.today,
+      college_rate_type: 'full', federal_rate_type: 'full', foundation_rate_type: 'full', industry_rate_type: 'full', investigator_rate_type:'full', internal_rate_type: 'full')
+    pricing_setup.save!
+    
+    ## Logs in the default identity.
+    visit catalog_manager_root_path
+    ## This is used to reveal all nodes in the js tree to make it easier to access during testing.
+    page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
+    
+    within("#PROGRAM#{program.id} > ul > li:nth-of-type(2)") do
+      click_link('Create New Service')
+    end    
+
+    # Program Select should default to parent Program
+    within('#service_program') do
+      page.should have_content('Office of Biomedical Informatics')
+    end
+  end
+  
+  scenario 'create new service under a core does NOT display an error message because a pricing setup has been created at the provider level', :js => true do
+    core = Core.find_by_name 'Clinical Data Warehouse'
+    
+    pricing_setup = PricingSetup.where(:organization_id => core.program.id).first 
+    pricing_setup.destroy
+    
+    pricing_setup = FactoryGirl.create(:pricing_setup, organization_id: core.program.provider.id, display_date: Date.today, effective_date: Date.today,
+      college_rate_type: 'full', federal_rate_type: 'full', foundation_rate_type: 'full', industry_rate_type: 'full', investigator_rate_type:'full', internal_rate_type: 'full')
+    pricing_setup.save!
+    
+    ## Logs in the default identity.
+    visit catalog_manager_root_path
+    ## This is used to reveal all nodes in the js tree to make it easier to access during testing.
+    page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
+    
+    within("#CORE#{core.id} > ul > li:nth-of-type(1)") do
+      click_link('Create New Service')
+    end    
+
+    # Program Select should default to parent Program
+    within('#service_program') do
+      page.should have_content('Office of Biomedical Informatics')
+    end
+  end
+  
+  scenario 'create new service under a program displays errors message because a service provider has not been set', :js => true do
+    program = Program.find_by_name 'Office of Biomedical Informatics'
+    service_provider = ServiceProvider.where(:organization_id => program.provider.id).first 
+    service_provider.destroy
+    
+    ## Logs in the default identity.
+    visit catalog_manager_root_path
+    ## This is used to reveal all nodes in the js tree to make it easier to access during testing.
+    page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
+    
+    within("#PROGRAM#{program.id} > ul > li:nth-of-type(2)") do
+      click_link('Create New Service')
+    end    
+
+    get_alert_window do |prompt|
+      expect(prompt.text).to  eq("There needs to be at least one service provider on a parent organization to create a new service. ")
+      prompt.accept
+    end
+  end
+  
+  scenario 'create new service under a program displays errors message because program\'s pricing setup is empty', :js => true do
+    program = Program.find_by_name 'Office of Biomedical Informatics'
+    pricing_setup = PricingSetup.where(:organization_id => program.id).first 
+    pricing_setup.destroy
+    
+    ## Logs in the default identity.
+    visit catalog_manager_root_path
+    ## This is used to reveal all nodes in the js tree to make it easier to access during testing.
+    page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
+    
+    within("#PROGRAM#{program.id} > ul > li:nth-of-type(2)") do
+      click_link('Create New Service')
+    end    
+
+    get_alert_window do |prompt|
+      expect(prompt.text).to  eq("Before creating services, please configure an active pricing setup for either the program '"<< program.name << "' or the provider '" << program.provider.name << "'.")
+      prompt.accept
+    end
+  end
+  
+  scenario 'create new service under a program displays two error messages because program\'s pricing setup and service provider are both empty', :js => true do
+    program = Program.find_by_name 'Office of Biomedical Informatics'
+    pricing_setup = PricingSetup.where(:organization_id => program.id).first 
+    pricing_setup.destroy
+    
+    service_provider = ServiceProvider.where(:organization_id => program.provider.id).first 
+    service_provider.destroy
+    
+    ## Logs in the default identity.
+    visit catalog_manager_root_path
+    ## This is used to reveal all nodes in the js tree to make it easier to access during testing.
+    page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
+    
+    within("#PROGRAM#{program.id} > ul > li:nth-of-type(2)") do
+      click_link('Create New Service')
+    end    
+
+    get_alert_window do |prompt|
+      expect(prompt.text).to  eq("There needs to be at least one service provider on a parent organization to create a new service. Before creating services, please configure an active pricing setup for either the program '"<< program.name << "' or the provider '" << program.provider.name << "'.")
+      prompt.accept
+    end
+  end
+  
+
+  scenario 'create new service under a core displays errors message because because a service provider has not been set', :js => true do
+    core = Core.find_by_name 'Clinical Data Warehouse'
+    
+    service_provider = ServiceProvider.where(:organization_id => core.program.provider.id).first 
+    service_provider.destroy
+    
+    ## Logs in the default identity.
+    visit catalog_manager_root_path
+    ## This is used to reveal all nodes in the js tree to make it easier to access during testing.
+    page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
+    
+    within("#CORE#{core.id} > ul > li:nth-of-type(1)") do
+      click_link('Create New Service')
+    end    
+
+    get_alert_window do |prompt|
+      expect(prompt.text).to  eq("There needs to be at least one service provider on a parent organization to create a new service. ")
+      prompt.accept
+    end
+  end
+  
+  scenario 'create new service under a core displays errors message because program\'s pricing setup is empty', :js => true do
+    core = Core.find_by_name 'Clinical Data Warehouse'
+    
+    pricing_setup = PricingSetup.where(:organization_id => core.program.id).first 
+    pricing_setup.destroy
+    
+    ## Logs in the default identity.
+    visit catalog_manager_root_path
+    ## This is used to reveal all nodes in the js tree to make it easier to access during testing.
+    page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
+    
+    within("#CORE#{core.id} > ul > li:nth-of-type(1)") do
+      click_link('Create New Service')
+    end    
+
+    get_alert_window do |prompt|
+      expect(prompt.text).to  eq("Before creating services, please configure an active pricing setup for either the program '"<< core.program.name << "' or the provider '" << core.program.provider.name << "'.")
+      prompt.accept
+    end
+  end
+  
+  scenario 'create new service under a core displays two error messages because program\'s pricing setup and service provider are both empty', :js => true do
+    core = Core.find_by_name 'Clinical Data Warehouse'
+    
+    pricing_setup = PricingSetup.where(:organization_id => core.program.id).first 
+    pricing_setup.destroy
+    
+    service_provider = ServiceProvider.where(:organization_id => core.program.provider.id).first 
+    service_provider.destroy
+    ## Logs in the default identity.
+    visit catalog_manager_root_path
+    ## This is used to reveal all nodes in the js tree to make it easier to access during testing.
+    page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
+    
+    within("#CORE#{core.id} > ul > li:nth-of-type(1)") do
+      click_link('Create New Service')
+    end    
+
+    get_alert_window do |prompt|
+      expect(prompt.text).to  eq("There needs to be at least one service provider on a parent organization to create a new service. Before creating services, please configure an active pricing setup for either the program '"<< core.program.name << "' or the provider '" << core.program.provider.name << "'.")
+      prompt.accept
+    end
+  end
 end 

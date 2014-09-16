@@ -508,7 +508,7 @@ class ServiceRequest < ActiveRecord::Base
     p = self.protocol
     if p.arms.empty?
       arm = p.arms.create(
-        name: 'ARM 1',
+        name: 'Screening Phase',
         visit_count: 1,
         subject_count: 1,
         new_with_draft: true)

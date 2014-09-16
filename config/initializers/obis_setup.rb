@@ -44,6 +44,17 @@ begin
   GOOGLE_USERNAME               = application_config['google_username']
   GOOGLE_PASSWORD               = application_config['google_password']
   SEND_AUTHORIZED_USER_EMAILS   = application_config['send_authorized_user_emails']
+  CUSTOM_ASSET_PATH             = application_config['custom_asset_path']
+  LOCALE_OVERRIDE               = application_config['locale_override']
+  CONSTANTS_YML_OVERRIDE        = application_config['constants_yml_override'] || ''
+  SYSTEM_SATISFACTION_SURVEY    = application_config['system_satisfaction_survey']
+  NO_REPLY_FROM                 = application_config['no_reply_from']
+  
+  if LOCALE_OVERRIDE
+    I18n.available_locales = [:en, LOCALE_OVERRIDE]
+    I18n.default_locale = LOCALE_OVERRIDE
+    I18n.locale = LOCALE_OVERRIDE
+  end
 
   if application_config.include?('wkhtmltopdf_location')
     # Setup PDFKit
@@ -58,7 +69,7 @@ end
 
 # Loads in and sets all the constants from the constants.yml file
 begin
-  constant_file                  = File.join(Rails.root, 'config', 'constants.yml')
+  constant_file                  = File.join(Rails.root, 'config', 'constants'+CONSTANTS_YML_OVERRIDE+'.yml')
   config                         = YAML::load_file(constant_file)
   AFFILIATION_TYPES              = config['affiliations']
   IMPACT_AREAS                   = config['impact_areas']
@@ -88,6 +99,7 @@ begin
   SUBJECT_ETHNICITIES            = config['subject_ethnicities']
   SUBJECT_GENDERS                = config['subject_genders']
   AUDIT_ACTIONS                  = config['audit_actions']
-rescue
-  raise "constants.yml not found"
+rescue Exception => e
+  puts e.message
+  puts e.backtrace.inspect
 end

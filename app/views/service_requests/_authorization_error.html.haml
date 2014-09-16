@@ -25,16 +25,7 @@
     = stylesheet_link_tag 'application', '960', 'jquery-ui', :media => 'all'
   %body
     #container.container
-      #header
-        #org_logo
-          %a{:href => HEADER_LINK_1}
-            = image_tag '/assets/org_logo_197x57.png', :alt => 'org_logo'
-        #department_title
-          %a{:href => HEADER_LINK_2}
-            = image_tag "/assets/department_name_460x60.gif", :alt => "department_logo"
-        #institution_logo
-          %a{:href => HEADER_LINK_3, :target => '_blank'}
-            = image_tag '/assets/institution_logo_136x86.gif', :alt => 'institution_logo'
+      = render :partial => 'shared/header_logos'
       #title
         %h1= t 'application_title'
       #content.container_12

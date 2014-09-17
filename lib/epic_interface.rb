@@ -368,13 +368,16 @@ class EpicInterface
       next unless service.send_to_epic
 
       #service_code_system = nil
-      if not service.cpt_code.blank? then
+      if not service.cdm_code.blank? then
+        service_code = servcie.cdm_code
+        service_code_system = "SPARCCDM"
+      elsif not service.cpt_code.blank? then
         service_code = service.cpt_code
         service_code_system = "SPARCCPT"
       else
         # Skip this service, since it has neither a CPT code nor a CDM
         # code and add to an error list to warn the user
-        error_string = "#{service.name} does not have a CPT code."
+        error_string = "#{service.name} does not have a CPT or CDM code."
         @errors[:no_code] = [] unless @errors[:no_code]
         @errors[:no_code] << error_string unless @errors[:no_code].include?(error_string)
         next

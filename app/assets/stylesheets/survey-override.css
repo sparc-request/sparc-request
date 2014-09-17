@@ -1,0 +1,27 @@
+#container #header {
+   width: 960px;
+}
+#welcome_msg {
+  width: 960px;
+}
+legend {
+	margin-bottom: 0px;
+	border-bottom: 0px;
+}
+#surveyor fieldset {
+  padding-top: 0px; 
+  margin-bottom: 0px; 
+}
+#surveyor fieldset ol li {
+ padding: 0px 0;
+}
+#surveyor fieldset ol li label, #surveyor fieldset ol li input {
+vertical-align: middle;
+}
+
+.flash {
+  float: inherit;
+}
+.flash #flash_notice {
+  color: black;
+}

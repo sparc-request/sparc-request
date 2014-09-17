@@ -47,8 +47,6 @@ class ProtocolsController < ApplicationController
     elsif @current_step == 'protocol' and @protocol.group_valid? :protocol
       @current_step = 'user_details'
       @protocol.populate_for_edit
-      #setup human_subjects_info validation
-      @protocol.valid?
     elsif @current_step == 'user_details' and @protocol.valid?
       @protocol.save
       @current_step = 'return_to_service_request'
@@ -82,8 +80,6 @@ class ProtocolsController < ApplicationController
     if @current_step == 'protocol' and @protocol.group_valid? :protocol
       @current_step = 'user_details'
       @protocol.populate_for_edit
-      #setup human_subjects_info validation
-      @protocol.valid?
     elsif (@current_step == 'user_details' and @protocol.valid?)
       @protocol.save
       @current_step = 'return_to_service_request'

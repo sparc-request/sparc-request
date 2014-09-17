@@ -82,7 +82,7 @@
   /*DOCUMENT MANAGEMENT STYLES*/
   .document-management-container table#new_document a.upload_button,
   .document-management-container table#new_document a.ui_close_button {
-    background: url("blue_button_short.png") no-repeat;
+    background: url("/assets/portal/blue_button_short.png") no-repeat;
     border: 0 none;
     height: 30px;
     width: 92px;
@@ -98,7 +98,7 @@
   }
 
   .document-management-container a.document_upload_button {
-    background: url("yellowbutton_blank.png") no-repeat;
+    background: url("/assets/portal/yellowbutton_blank.png") no-repeat;
     border: 0 none;
     display: inline-block;
     font-size: 1.2em;

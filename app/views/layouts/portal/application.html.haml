@@ -22,7 +22,7 @@
 %html
   %head
     %title= t(:portal_title)
-    = stylesheet_link_tag 'portal/application'
+    = stylesheet_link_tag "#{CUSTOM_ASSET_PATH}portal/application"
     = stylesheet_link_tag 'study_tracker'
     = javascript_include_tag 'portal/application'
     = javascript_include_tag 'jquery.qtip.min.js'

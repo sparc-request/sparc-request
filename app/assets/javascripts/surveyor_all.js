@@ -24,4 +24,6 @@
 //= require surveyor/jquery.selectToUISlider
 //= require surveyor/jquery.surveyor
 //= require surveyor/jquery.maskedinput
-//= require survey_submit
+//= require surveyor/jquery.validate
+//= require surveyor/jquery.validate.additional-methods
+//= require surveyor/surveyor_validations

@@ -32,6 +32,11 @@ class Portal::SubsidiesController < Portal::BaseController
     end
 
     data[:pi_contribution] = data[:pi_contribution].to_f * 100.0
+    data[:overridden] = true
+
+    percent_subsidy = params[:percent_subsidy] ? params[:percent_subsidy] : percent_subsidy
+    pi_contribution = params[:percent_subsidy] ? data[:pi_contribution] : pi_contribution
+
     if @subsidy.update_attributes(data)
       @sub_service_request = @subsidy.sub_service_request
       @subsidy.update_attributes(:stored_percent_subsidy => params[:percent_subsidy])

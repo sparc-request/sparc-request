@@ -41,7 +41,7 @@
     %h3
       = t(:service_requests)[:catalog][:text1]
     = render :partial => 'catalogs/cart'
-  = link_to "Continue", protocol_service_request_path(@service_request), :class => 'submit-request-button', :"data-signed-in" => identity_signed_in?
+  = link_to "Continue", protocol_service_request_path(@service_request), :class => 'submit-request-button btn btn-success btn-lg btn-block', :"data-signed-in" => identity_signed_in?
   = render :partial => 'service_requests/right_navigation'
 
   #submit_error{:style => "display: none"}

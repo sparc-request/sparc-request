@@ -391,7 +391,7 @@ describe ServiceRequestsController do
     let!(:one_time_fee_line_item) { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id) }
 
     it "should set the page if page is passed in" do
-      arm1.update_attribute(:visit_count, 500)
+      arm1.update_attribute(:visit_count, 200)
 
       session[:service_request_id] = service_request.id
       get :service_calendar, { :id => service_request.id, :pages => { arm1.id.to_s => 42 } }.with_indifferent_access

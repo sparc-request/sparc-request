@@ -21,24 +21,25 @@
 !!! 1.1
 %html{"xml:lang" => "en", :xmlns => "http://www.w3.org/1999/xhtml"}
   %head
-    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta(charset="utf-8")
+    %meta(http-equiv="X-UA-Compatible" content="IE=edge")
+    %meta(name="viewport" content="width=device-width, initial-scale=1")
     %title= t 'application_title'
-    = stylesheet_link_tag 'application', '960', :media => 'all'
+    = stylesheet_link_tag "#{CUSTOM_ASSET_PATH}application", '960', :media => 'all'
     = surveyor_includes
+    = stylesheet_link_tag 'bootstrap.min', :media => 'all'
+    = stylesheet_link_tag 'survey-override', :media => 'all'
     = csrf_meta_tags
   %body
     #container.container
-      #header
-        #org_logo
-          %a{:href => HEADER_LINK_1}
-            = image_tag '/assets/org_logo_197x57.png', :alt => 'org_logo'
-        #department_title
-          %a{:href => HEADER_LINK_2}
-            = image_tag "/assets/department_name_460x60.gif", :alt => "department_logo"
-        #institution_logo
-          %a{:href => HEADER_LINK_3, :target => '_blank'}
-            = image_tag '/assets/institution_logo_136x86.gif', :alt => 'institution_logo'
+      = render :partial => 'shared/header_logos'
+      #welcome_msg
+        .welcome= show_welcome_message(current_user)			  
       #sparc_logo_header
         = image_tag('sparc_request_header.jpg')
+        .flash
+          - flash.each do |name, msg|
+            = content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String)
       #content.container_12
         = yield
+      .clear

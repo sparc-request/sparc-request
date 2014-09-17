@@ -38,7 +38,7 @@
       %br
       %br
       
-      %td= link_to t("documents.add_button"), "javascript:void(0)", :class => "document_upload_button blue-button", :location => 'document_management'
+      %td= link_to t("documents.add_button"), "javascript:void(0)", :class => "document_upload_button blue-button btn btn-primary btn-lg", :location => 'document_management'
 
       .document_upload{:style=>'display:none'}
         = render :partial => 'document_form', :locals => {:provider_css => 'orange-provider'}
@@ -53,7 +53,7 @@
       %br
       %br
   .grid_3.document-mgmt-view-right.right
-    = navigation_link t(:right_navigation)[:catalog], @catalog, 'catalog-button'
+    = navigation_link t(:right_navigation)[:catalog], @catalog, 'catalog-button btn btn-info btn-lg btn-block'
     = render :partial => 'right_navigation'
 
   .clear

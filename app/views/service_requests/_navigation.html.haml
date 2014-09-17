@@ -21,9 +21,11 @@
 .grid_12
   %div{:class => @css_class}
     .nav-backward
-      .return-to-previous= navigation_link image_tag('GoBack.png') + t(:bottom_navigation)[:go_back], @back
-    .exit= navigation_link t(:bottom_navigation)[:save_and_exit], 'save_and_exit'
+      .return-to-previous
+        = navigation_link image_tag('GoBack.png'), @back
+        = navigation_link t(:bottom_navigation)[:go_back], @back, "btn btn-success btn-lg "
+    .exit.btn.btn-lg= navigation_link t(:bottom_navigation)[:save_and_exit],  'save_and_exit', "btn btn-success btn-lg "
     .nav-forward
       .save-and-continue
-        = navigation_link t(:bottom_navigation)[:save_and_continue], @forward
+        = navigation_link t(:bottom_navigation)[:save_and_continue], @forward, "btn btn-success btn-lg "
         = navigation_link image_tag('SaveContinue.png'), @forward

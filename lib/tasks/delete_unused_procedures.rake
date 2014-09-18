@@ -120,7 +120,7 @@ namespace :data do
 
       row += prev_quantity_data
 
-      csv << row if completed || r_quantity > 0 || t_quantity > 0b
+      csv << row if completed || r_quantity > 0 || t_quantity > 0
 
       bad_procs = procs.reject { |p| p == existing_visit }
       @procs_to_destroy[protocol_id].concat bad_procs.map { |proc| proc.appointment_id }

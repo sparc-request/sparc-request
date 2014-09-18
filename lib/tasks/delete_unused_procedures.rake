@@ -1,6 +1,7 @@
 namespace :data do
   desc "Delete unused/duplicated procedures and appointments"
   task :destroy_appointments => :environment do
+
     def prompt(*args)
       print(*args)
       STDIN.gets.strip
@@ -44,18 +45,144 @@ namespace :data do
       end
     end
 
+    def duplicated_loop protocol_id, procs, csv
+      @procs_to_destroy[protocol_id] = []
+      @procs_to_update[protocol_id] = []
+      @update_quantities[protocol_id] = []
+
+      procs = procs.reject { |k, c| c == 1 }
+
+      max_procs = procs.values.max
+      row = ["Subject", "Procedure", "Visit", "Appointment ID", "Line Item ID", "Visit ID", "Merged R Quantity", "Merged T Quantity", "Merged Completed"]
+      max_procs.times {|index| row << "Procedure #{index+1} R Qty"; row << "Procedure #{index+1} T Qty"; row << "Procedure #{index+1} Completed";}
+
+      csv << row
+
+      procs.each do |k, count|
+        subj_id, visit_id, line_item_id = k.split(' ')
+        collect_procedures subj_id, visit_id, line_item_id, csv, protocol_id
+      end
+    end
+
+    def generate_reports
+      @dups.each do |protocol_id, procs|
+        CSV.open("tmp/duplicated_appointments_#{protocol_id}.csv", 'wb') do |csv|
+          duplicated_loop protocol_id, procs, csv
+          if csv.lineno() == 1
+            csv << ["Procedures were duplicated but no information was changed."]
+            csv << ["A merge is recommended to clean up duplicated procedures."]
+          end
+        end
+      end
+
+      puts "Report(s) for Protocol(s) #{@dups.keys.join(', ').to_s} have been created"
+
+      merge_data
+    end
+
+    def collect_procedures subject_id, visit_id, line_item_id, csv, protocol_id
+      # SQL Query for finding duplicate procedures
+      # select distinct pr.*
+      # from
+      #    calendars        c
+      #   join appointments a  on (c.id = a.calendar_id)
+      #   join procedures   pr on (pr.appointment_id = a.id)
+      # where c.id = 318 and pr.visit_id = 125678 and pr.line_item_id = 11232
+      subject = Subject.find subject_id
+      calendar = subject.calendar
+      procs = Procedure.joins(appointment: :calendar).where("calendar_id = ? and visit_id = ? and line_item_id = ?", calendar.id, visit_id, line_item_id).order(:appointment_id)
+      appointment_ids = procs.map { |proc| proc.appointment_id }.uniq
+      line_item = LineItem.find line_item_id
+      visit_group = procs.first.visit.visit_group
+
+      r_quantity = 0
+      t_quantity = 0
+      completed = false
+      existing_visit = procs.first
+
+      appt_name = visit_group.name
+      row = [subject.audit_label(nil), line_item.service.name, appt_name, appointment_ids.uniq.join(', ').to_s, line_item_id, visit_group.id]
+
+      prev_quantity_data = []
+      procs.each do |p|
+        r_quantity = p.r_quantity if p.r_quantity && p.r_quantity > r_quantity
+        t_quantity = p.t_quantity if p.t_quantity && p.t_quantity > t_quantity
+        completed  = p.completed  if p.completed
+
+        prev_quantity_data << (p.r_quantity || 0)
+        prev_quantity_data << (p.t_quantity || 0)
+        prev_quantity_data << (p.completed)
+      end
+
+      row << r_quantity
+      row << t_quantity
+      row << completed
+
+      row += prev_quantity_data
+
+      csv << row if completed || r_quantity > 0 || t_quantity > 0b
+
+      bad_procs = procs.reject { |p| p == existing_visit }
+      @procs_to_destroy[protocol_id].concat bad_procs.map { |proc| proc.appointment_id }
+      @procs_to_update[protocol_id] << existing_visit
+      @update_quantities[protocol_id] << {:r_quantity => r_quantity, :t_quantity => t_quantity, :completed => completed}
+    end
+
+    def merge_data
+      @dups.each do |protocol_id, procs|
+        answer = prompt "Would you like to merge procedures for #{protocol_id}? [Y/N]: "
+        if answer == 'Y' || answer == 'Yes'
+          @procs_to_destroy.each { |k, v| Appointment.destroy(v.uniq) }
+          # @procs_to_update[protocol_id].each_with_index do |proc, index|
+          #   update_quantity = @update_quantities[protocol_id][index]
+          #   proc.update_attribute(:r_quantity, update_quantity[:r_quantity]) unless update_quantity[:r_quantity] == 0
+          #   proc.update_attribute(:t_quantity, update_quantity[:t_quantity]) unless update_quantity[:t_quantity] == 0
+          #   proc.update_attribute(:completed,  update_quantity[:completed])  unless update_quantity[:completed] == false
+          # end
+
+          # now that we've merged let's make sure everyones calendar is built out correctly
+          # protocol = Protocol.find protocol_id
+          # protocol.arms.each do |arm|
+          #   arm.subjects.each do |subject|
+          #     calendar = subject.calendar
+          #     calendar.populate_on_request_edit
+          #     calendar.build_subject_data
+          #   end
+          # end
+
+          puts "Data for #{protocol_id} has been merged."
+        else
+          puts "Data unchanged for #{protocol_id}."
+        end
+      end
+    end
+
     # Globals for task
     @protocols = nil
     @dups = Hash.new(0)
     @procs_to_destroy = Hash.new(0)
+    @procs_to_update = Hash.new(0)
+    @update_quantities = Hash.new(0)
 
     ask_for_protocol_ids
     check_for_duplicates
 
+    # Prompt for duplicates
     if @dups.empty?
       puts 'No duplicates found'
     else
       puts "Duplicates were found in Protocol(s): #{@dups.keys.join(', ').to_s}"
+      answer = prompt 'Would you like a report of what will be merged? [Y/N]: '
+      if answer.casecmp('Y') == 0
+        generate_reports
+      else
+        @dups.each do |protocol_id, procs|
+          csv = []
+          duplicated_loop protocol_id, procs, csv
+        end
+
+        merge_data
+      end
     end
 
   end

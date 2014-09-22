@@ -126,18 +126,25 @@ class SubServiceRequest < ActiveRecord::Base
 
   def update_cwf_data_for_new_line_item(li)
     if self.in_work_fulfillment
+      values = []
+      columns = [:line_item_id,:visit_id,:appointment_id]
       self.service_request.arms.each do |arm|
         visits = Visit.joins(:line_items_visit).where(visits: { visit_group_id: arm.visit_groups}, line_items_visits:{ line_item_id: li.id} )
         visits.group_by{|v| v.visit_group_id}.each do |vg_id, group_visits|
           Appointment.where(visit_group_id: vg_id).each do |appointment|
+            appointment_id = appointment.id
             if appointment.organization_id == li.service.organization_id
               group_visits.each do |visit|
-                appointment.procedures.create(:line_item_id => li.id, :visit_id => visit.id)
+                values << [li.id,visit.id,appointment_id]
               end
             end
           end
         end
       end
+      if !(values.empty?)
+        Procedure.import columns, values, {:validate => true}
+      end
+      self.reload
     end
   end
 

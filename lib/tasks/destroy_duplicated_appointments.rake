@@ -8,7 +8,7 @@ namespace :data do
     end
 
     def ask_for_protocol_ids
-      manual_protocol_ids = prompt "Enter the Protocol ID's or type ALL to check for duplicate procedures : "
+      manual_protocol_ids = prompt "Enter the Protocol ID's or type ALL to check for duplicate appointments : "
 
       if manual_protocol_ids.casecmp('ALL') == 0
         @protocols = Protocol.all
@@ -46,7 +46,7 @@ namespace :data do
     end
 
     def duplicated_loop protocol_id, procs, csv
-      @procs_to_destroy[protocol_id] = []
+      @appts_to_destroy[protocol_id] = []
       @procs_to_update[protocol_id] = []
       @update_quantities[protocol_id] = []
 
@@ -60,7 +60,7 @@ namespace :data do
 
       procs.each do |k, count|
         subj_id, visit_id, line_item_id = k.split(' ')
-        collect_procedures subj_id, visit_id, line_item_id, csv, protocol_id
+        collect_appointments subj_id, visit_id, line_item_id, csv, protocol_id
       end
     end
 
@@ -68,19 +68,14 @@ namespace :data do
       @dups.each do |protocol_id, procs|
         CSV.open("tmp/duplicated_appointments_#{protocol_id}.csv", 'wb') do |csv|
           duplicated_loop protocol_id, procs, csv
-          if csv.lineno() == 1
-            csv << ["Procedures were duplicated but no information was changed."]
-            csv << ["A merge is recommended to clean up duplicated procedures."]
-          end
         end
+        puts "Report for Protocol #{protocol_id} has been created"
       end
-
-      puts "Report(s) for Protocol(s) #{@dups.keys.join(', ').to_s} have been created"
 
       merge_data
     end
 
-    def collect_procedures subject_id, visit_id, line_item_id, csv, protocol_id
+    def collect_appointments subject_id, visit_id, line_item_id, csv, protocol_id
       # SQL Query for finding duplicate procedures
       # select distinct pr.*
       # from
@@ -90,7 +85,7 @@ namespace :data do
       # where c.id = 318 and pr.visit_id = 125678 and pr.line_item_id = 11232
       subject = Subject.find subject_id
       calendar = subject.calendar
-      procs = Procedure.joins(appointment: :calendar).where("calendar_id = ? and visit_id = ? and line_item_id = ?", calendar.id, visit_id, line_item_id).order(:appointment_id)
+      procs = Procedure.joins(appointment: :calendar).where("appointments.calendar_id = ? and visit_id = ? and line_item_id = ?", calendar.id, visit_id, line_item_id).order(:appointment_id)
       appointment_ids = procs.map { |proc| proc.appointment_id }.uniq
       line_item = LineItem.find line_item_id
       visit_group = procs.first.visit.visit_group
@@ -123,16 +118,16 @@ namespace :data do
       csv << row if completed || r_quantity > 0 || t_quantity > 0
 
       bad_procs = procs.reject { |p| p == existing_visit }
-      @procs_to_destroy[protocol_id].concat bad_procs.map { |proc| proc.appointment_id }
-      @procs_to_update[protocol_id] << existing_visit
-      @update_quantities[protocol_id] << {:r_quantity => r_quantity, :t_quantity => t_quantity, :completed => completed}
+      @appts_to_destroy[protocol_id].concat bad_procs.map { |proc| proc.appointment_id }
+      # @procs_to_update[protocol_id] << existing_visit
+      # @update_quantities[protocol_id] << {:r_quantity => r_quantity, :t_quantity => t_quantity, :completed => completed}
     end
 
     def merge_data
       @dups.each do |protocol_id, procs|
-        answer = prompt "Would you like to merge procedures for #{protocol_id}? [Y/N]: "
+        answer = prompt "Would you like to destroy duplicated appointments for #{protocol_id}? [Y/N]: "
         if answer == 'Y' || answer == 'Yes'
-          @procs_to_destroy.each { |k, v| Appointment.destroy(v.uniq) }
+          Appointment.destroy(@appts_to_destroy[protocol_id].uniq)
           # @procs_to_update[protocol_id].each_with_index do |proc, index|
           #   update_quantity = @update_quantities[protocol_id][index]
           #   proc.update_attribute(:r_quantity, update_quantity[:r_quantity]) unless update_quantity[:r_quantity] == 0
@@ -160,7 +155,7 @@ namespace :data do
     # Globals for task
     @protocols = nil
     @dups = Hash.new(0)
-    @procs_to_destroy = Hash.new(0)
+    @appts_to_destroy = Hash.new(0)
     @procs_to_update = Hash.new(0)
     @update_quantities = Hash.new(0)
 

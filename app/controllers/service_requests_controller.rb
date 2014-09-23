@@ -580,14 +580,17 @@ class ServiceRequestsController < ApplicationController
   def subsidy_save_update errors
     #### convert dollars to cents for subsidy
     if params[:service_request] && params[:service_request][:sub_service_requests_attributes]
+      percent_of_cost = params[:percent_of_cost]
+      percent_subsidy = (100 - percent_of_cost.to_f)
       params[:service_request][:sub_service_requests_attributes].each do |key, values|
         dollars = values[:subsidy_attributes][:pi_contribution]
+        ssr = @service_request.sub_service_requests.find values[:id]
         if dollars.blank? # we don't want to create a subsidy if it's blank
           values.delete(:subsidy_attributes)
-          ssr = @service_request.sub_service_requests.find values[:id]
           ssr.subsidy.delete if ssr.subsidy
         else
           values[:subsidy_attributes][:pi_contribution] = Service.dollars_to_cents(dollars)
+          values[:subsidy_attributes][:stored_percent_subsidy] = percent_subsidy
         end
       end
     end

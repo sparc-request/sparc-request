@@ -35,4 +35,5 @@ else
   $('.new_study').html("<%= escape_javascript(render :partial => 'studies/form', :locals => {:study => @protocol, :portal => @portal}) %>")
 
   if <%= @current_step == "user_details" %>
-    $('.return-to-previous a span').text("Back")
+    $('.return-to-previous a span').text("Go Back")
+    $('.save-and-continue a span').text("Save & Close")

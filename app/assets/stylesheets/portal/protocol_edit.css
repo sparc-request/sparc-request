@@ -433,6 +433,8 @@ legend {
 .continue{
   margin-top: 15px;
   clear: both;
+  font-weight: normal;
+  font-family: "Calibri", Arial, sans-serif;
 }
 
 .continue a{
@@ -455,16 +457,19 @@ legend {
 .continue div.nav-backward{
   margin-left: 12px;
   vertical-align: bottom;
+  text-align: none !important;
+  width: 252px;
 }
 
 .continue div.nav-backward img {
   vertical-align: middle;
   padding-right: 5px;
   padding-bottom: 2px;
+  text-align: none !important;
 }
 
 .continue div.exit{
-  width: 605px;
+  width: 370px;
 }
 
 .continue div.exit a {
@@ -476,7 +481,7 @@ legend {
   margin-right: 12px;
   vertical-align: bottom;
   text-align: right;
-
+  width: 252px;
 }
 
 .continue div.nav-forward img {

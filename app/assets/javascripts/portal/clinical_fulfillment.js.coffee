@@ -55,7 +55,7 @@ $(document).ready ->
     resizable: false
     close: -> delete_toast_message()
 
-  $('#processing_request').dialog({ dialogClass: 'processing_request', resizable: false, height: 125, modal: true, autoOpen: false })
+  $('#processing_request').dialog({ dialogClass: 'processing_request', resizable: false, minHeight: 85, modal: true, autoOpen: false})
 
   delete_toast_message = () ->
     data =
@@ -406,7 +406,7 @@ $(document).ready ->
     href = $("#research_project_summary_report_in_cwf").attr("href")
     href = href + "?start_date=#{start_date}&end_date=#{end_date}"
     $("#research_project_summary_report_date_range").dialog("close")
-    $('#processing_request').show()
+    $('#processing_request').dialog("open")
     window.location.href = href
 
   #Methods for hiding and displaying the fulfillment headers in the Study Level Charges tab

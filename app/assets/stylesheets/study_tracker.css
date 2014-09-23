@@ -250,3 +250,10 @@ a#bottom_return_link {
   display: none;
 }
 
+div.ui-dialog.processing_request {
+  background: none;
+  border: 0px;
+}
+div.ui-dialog.processing_request div.ui-dialog-titlebar {
+  display: none;
+}

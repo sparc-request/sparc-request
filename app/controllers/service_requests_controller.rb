@@ -587,12 +587,21 @@ class ServiceRequestsController < ApplicationController
         if dollars.blank? # we don't want to create a subsidy if it's blank
           values.delete(:subsidy_attributes)
           ssr.subsidy.delete if ssr.subsidy
-        else
+        elsif !check_for_overridden(ssr)
           values[:subsidy_attributes][:pi_contribution] = Service.dollars_to_cents(dollars)
           values[:subsidy_attributes][:stored_percent_subsidy] = percent_subsidy
         end
       end
     end
+  end
+
+  def check_for_overridden ssr
+    overridden = false
+    if ssr.subsidy && ssr.subsidy.overridden
+      overridden = true
+    end
+
+    overridden
   end
 
   # Document saves/updates

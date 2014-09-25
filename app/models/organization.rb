@@ -162,6 +162,7 @@ class Organization < ActiveRecord::Base
     end
 
     current_setups = self.pricing_setups.select { |x| x.display_date.to_date <= date.to_date }
+
     raise ArgumentError, "Organization has no current pricing setups" if current_setups.empty?
     sorted_setups = current_setups.sort { |lhs, rhs| lhs.display_date <=> rhs.display_date }
     pricing_setup = sorted_setups.last
@@ -177,6 +178,7 @@ class Organization < ActiveRecord::Base
     end
 
     current_setups = self.pricing_setups.select { |x| x.effective_date.to_date <= date.to_date }
+ 
     raise ArgumentError, "Organization has no current effective pricing setups" if current_setups.empty?
     sorted_setups = current_setups.sort { |lhs, rhs| lhs.effective_date <=> rhs.effective_date }
     pricing_setup = sorted_setups.last

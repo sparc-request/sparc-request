@@ -28,8 +28,7 @@ class ServiceRequest < ActiveRecord::Base
   has_many :charges, :dependent => :destroy
   has_many :tokens, :dependent => :destroy
   has_many :approvals, :dependent => :destroy
-  has_many :documents, :through => :sub_service_requests
-  has_many :document_groupings, :dependent => :destroy
+  has_many :documents, :dependent => :destroy
   has_many :arms, :through => :protocol
 
   validation_group :protocol do

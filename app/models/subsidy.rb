@@ -41,7 +41,7 @@ class Subsidy < ActiveRecord::Base
   end
 
   def self.calculate_pi_contribution subsidy_percentage, total
-    contribution = total * (subsidy_percentage.to_f / 100.0)
+    contribution = (total * (subsidy_percentage.to_f / 100.00)).ceil
     contribution = total - contribution
     contribution.nan? ? contribution : contribution.ceil
   end

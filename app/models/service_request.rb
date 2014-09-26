@@ -156,24 +156,16 @@ class ServiceRequest < ActiveRecord::Base
         visitError = false
         subjectError = false
         nameError = false
-        validate_for_cwf_visits = false
-        validate_for_cwf_subjects = false
         arms.each do |arm|
           unless arm.valid_visit_count? then visitError = true end
           unless arm.valid_subject_count? then subjectError = true end
           unless arm.valid_name? then nameError = true end
-          if service_request_has_cwf_ssrs?
-            unless arm.valid_minimum_visit_count? then validate_for_cwf_visits = true end
-            unless arm.valid_minimum_subject_count? then validate_for_cwf_subjects = true end
-          end
           if visitError and subjectError and nameError then break end
         end
 
         if visitError then errors.add(:visit_count, "You must specify the estimated total number of visits (greater than zero) before continuing.") end
         if subjectError then errors.add(:subject_count, "You must specify the estimated total number of subjects before continuing.") end
         if nameError then errors.add(:name, "You must specify a name for each arm before continuing.") end
-        if validate_for_cwf_visits then errors.add(:visit_count, "A request associated with this arm is in Clinical Work Fulfillment. The visit count cannot be decreased.") end
-        if validate_for_cwf_subjects then errors.add(:subject_count, "A request associated with this arm is in Clinical Work Fulfillment. The subject count cannot be decreased.") end
       end
     end
 
@@ -516,7 +508,7 @@ class ServiceRequest < ActiveRecord::Base
     p = self.protocol
     if p.arms.empty?
       arm = p.arms.create(
-        name: 'ARM 1',
+        name: 'Screening Phase',
         visit_count: 1,
         subject_count: 1,
         new_with_draft: true)

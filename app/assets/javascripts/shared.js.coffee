@@ -39,7 +39,7 @@ $(document).ready ->
        request.statusText != 'abort' &&
        settings.url != '/service_requests/feedback' &&
        !settings.error
-      alert("An error happened processing your request: " + settings.url)
+      alert(I18n["ajax_error"] + settings.url)
 
   $('.edit_project_role').live 'click', ->
     parent = $(this).attr('parent')
@@ -59,6 +59,15 @@ $(document).ready ->
       type: 'POST'
       data: data
     return false
+
+  $('.cancel_link').live 'click', ->
+    cur_step = $('#current_step').val()
+    if cur_step == 'protocol'
+      $('#current_step').val('cancel_protocol')
+    else if cur_step == "user_details"
+      $('#current_step').val('go_back')
+
+    $('form').submit()
 
   $('.restore_project_role').live 'click', ->
     parent = $(this).attr('parent')

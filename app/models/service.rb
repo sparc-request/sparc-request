@@ -51,6 +51,7 @@ class Service < ActiveRecord::Base
   attr_accessible :is_available
   attr_accessible :service_center_cost
   attr_accessible :cpt_code
+  attr_accessible :cdm_code
   attr_accessible :charge_code
   attr_accessible :revenue_code
   attr_accessible :organization_id

@@ -41,7 +41,7 @@ class Subsidy < ActiveRecord::Base
   end
 
   def self.calculate_pi_contribution subsidy_percentage, total
-    contribution = total * (subsidy_percentage.to_f / 100.0)
+    contribution = (total * (subsidy_percentage.to_f / 100.00)).ceil
     contribution = total - contribution
     contribution.nan? ? contribution : contribution.ceil
   end
@@ -51,5 +51,10 @@ class Subsidy < ActiveRecord::Base
     self.update_attributes(:pi_contribution => new_contribution)
 
     new_contribution
-  end  
+  end 
+
+  def subsidy_audits
+    subsidy_audits = AuditRecovery.where("auditable_id = ? AND auditable_type = ?", self.id, "Subsidy").order(&:created_at)
+    subsidy_audits
+  end
 end

@@ -68,7 +68,8 @@ $(document).ready ->
   $('#study_funding_source, #study_potential_funding_source').change ->
     switch $(this).val()
       when "internal", "college" then $('#study_indirect_cost_rate').val("0")
-      when "industry", "foundation", "investigator" then $('#study_indirect_cost_rate').val("25")
+      when "industry" then $('#study_indirect_cost_rate').val("30")
+      when "foundation", "investigator" then $('#study_indirect_cost_rate').val("25")
       when "federal" then $('#study_indirect_cost_rate').val("49.5")
 
   $("#funding_start_date").datepicker(
@@ -217,4 +218,7 @@ $(document).ready ->
 
   #This is to disabled the submit after you click once, so you can't fire multiple posts at once.
   $("form").submit ->
+    unless $('#study_research_types_info_attributes_human_subjects').is(':checked')
+      $('#study_human_subjects_info_attributes_nct_number').val('')
     $('a.continue_button').unbind('click');
+

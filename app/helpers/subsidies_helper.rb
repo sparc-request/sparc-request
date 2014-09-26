@@ -26,10 +26,32 @@ module SubsidiesHelper
     currency_converter(rf)
   end
 
-  def calculate_subsidy_percentage direct_cost, contribution
+  def calculate_subsidy_percentage direct_cost, contribution, subsidy
     # multiply contribution by 100 to convert to cents
-    return 0 if direct_cost == 0.0
-    funded_amount = direct_cost - contribution rescue 0
-    ((funded_amount / direct_cost) * 100).round(2)
+    percentage = 0.0
+    unless subsidy.overridden
+      return 0 if direct_cost == 0.0
+      funded_amount = direct_cost - contribution rescue 0
+      percentage = ((funded_amount / direct_cost) * 100).round(2)
+    else
+      percentage = subsidy.stored_percent_subsidy
+    end
+
+    percentage
+  end
+
+  def calculate_pi_contribution subsidy
+    contribution = 0.0
+    if subsidy.overridden
+      direct_cost = subsidy.sub_service_request.direct_cost_total
+      percent_subsidy = subsidy.stored_percent_subsidy
+      contribution = (direct_cost * (percent_subsidy / 100.00)).ceil
+      contribution = direct_cost - contribution
+      subsidy.update_attributes(:pi_contribution => contribution)
+    else
+      contribution = subsidy.pi_contribution
+    end
+
+    contribution
   end
 end

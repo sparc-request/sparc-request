@@ -186,11 +186,6 @@ class ServiceRequestsController < ApplicationController
       if ssr.subsidy
         # we already have a subsidy; add it to the list
         subsidy = ssr.subsidy
-        unless subsidy.stored_percent_subsidy.nil?
-          dct = subsidy.sub_service_request.direct_cost_total
-          subsidy.update_attribute(:pi_contribution, Subsidy.calculate_pi_contribution(subsidy.stored_percent_subsidy, dct))
-        end
-
         @subsidies << subsidy
       elsif ssr.eligible_for_subsidy?
         # we don't have a subsidy yet; add it to the list but don't save
@@ -247,6 +242,7 @@ class ServiceRequestsController < ApplicationController
     end
 
     @tab = 'calendar'
+    @review = true
   end
 
   def obtain_research_pricing
@@ -284,6 +280,10 @@ class ServiceRequestsController < ApplicationController
       end
     end
     @service_list = @service_request.service_list
+
+    @service_request.sub_service_requests.each do |ssr|
+      ssr.subsidy.update_attributes(:overridden => true) if ssr.subsidy
+    end
 
     send_confirmation_notifications
 
@@ -576,16 +576,37 @@ class ServiceRequestsController < ApplicationController
     #### convert dollars to cents for subsidy
     if params[:service_request] && params[:service_request][:sub_service_requests_attributes]
       params[:service_request][:sub_service_requests_attributes].each do |key, values|
-        dollars = values[:subsidy_attributes][:pi_contribution]
-        if dollars.blank? # we don't want to create a subsidy if it's blank
-          values.delete(:subsidy_attributes)
-          ssr = @service_request.sub_service_requests.find values[:id]
-          ssr.subsidy.delete if ssr.subsidy
+        ssr = @service_request.sub_service_requests.find values[:id]
+        if !check_for_overridden(ssr)
+          direct_cost = ssr.direct_cost_total
+          dollars = values[:subsidy_attributes][:pi_contribution]
+          funded_amount = direct_cost - Service.dollars_to_cents(dollars)
+          percent_subsidy = ((funded_amount / direct_cost) * 100).round(2)
+          if dollars.blank? # we don't want to create a subsidy if it's blank
+            values.delete(:subsidy_attributes)
+            ssr.subsidy.delete if ssr.subsidy
+          else
+            values[:subsidy_attributes][:pi_contribution] = Service.dollars_to_cents(dollars)
+            values[:subsidy_attributes][:stored_percent_subsidy] = percent_subsidy
+          end
         else
-          values[:subsidy_attributes][:pi_contribution] = Service.dollars_to_cents(dollars)
+          direct_cost = ssr.direct_cost_total
+          percent_subsidy = ssr.subsidy.stored_percent_subsidy
+          contribution = (direct_cost * (percent_subsidy / 100.00)).ceil
+          contribution = direct_cost - contribution
+          values[:subsidy_attributes][:pi_contribution] = contribution
         end
       end
     end
+  end
+
+  def check_for_overridden ssr
+    overridden = false
+    if ssr.subsidy && ssr.subsidy.overridden
+      overridden = true
+    end
+
+    overridden
   end
 
   # Document saves/updates

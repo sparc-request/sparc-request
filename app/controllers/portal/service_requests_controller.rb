@@ -36,6 +36,7 @@ class Portal::ServiceRequestsController < Portal::BaseController
     @tab = 'calendar'
     @portal = true
     @thead_class = 'ui-widget-header'
+    @review = true
     @selected_arm = Arm.find arm_id if arm_id
     @pages = {}
     @service_request.arms.each do |arm|

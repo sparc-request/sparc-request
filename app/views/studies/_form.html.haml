@@ -52,7 +52,7 @@
 - if portal.to_s == 'true'
   - options[:url] = portal_studies_path (study)
 
-= form_for @protocol, options do |f|
+= form_for study, options do |f|
   = hidden_field_tag "portal", portal
 
   -if not portal
@@ -61,26 +61,15 @@
   = f.hidden_field :requester_id
   = hidden_field_tag :current_step, @current_step
   .clear
-  - if @errors
-    #errorExplanation.errorExplanation
-      %h2
-        = pluralize(@errors.values.map(&:count).sum, "error")
-        prohibited this
-        = @protocol.type.downcase
-        from being saved
-      %ul
-        - @errors.each do |key, msgs|
-          - msgs.each do |msg|
-            %li
-              = key.to_s.humanize unless key == :base # manually added errors should be ignored
-              = msg
+  = f.error_messages
+  
   .edit-project-view.portal_container= render :partial => 'studies/fields', :locals => {:study => study, :f => f, :portal => portal}
   .continue.portal_container
     .grid_12
       %div{:class => 'blue-provider'}
         .nav-backward
           .return-to-previous
-            %a{:href => portal.to_s == 'true' ? "#{portal_root_path}" : "#{protocol_service_request_path(service_request)}"}
+            %a.cancel_link{:href => "javascript:void(0)"}
               = image_tag('left_arrow.png', :alt => "Cancel")
               %span= t(:bottom_navigation)[:cancel]
         .exit= image_tag('Filler.png')

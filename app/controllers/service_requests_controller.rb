@@ -242,6 +242,7 @@ class ServiceRequestsController < ApplicationController
     end
 
     @tab = 'calendar'
+    @review = true
   end
 
   def obtain_research_pricing

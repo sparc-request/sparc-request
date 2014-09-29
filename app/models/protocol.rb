@@ -77,6 +77,7 @@ class Protocol < ActiveRecord::Base
   attr_accessible :selected_for_epic
 
   attr_accessor :requester_id
+  attr_accessor :validate_nct
   
   accepts_nested_attributes_for :research_types_info
   accepts_nested_attributes_for :human_subjects_info
@@ -95,6 +96,7 @@ class Protocol < ActiveRecord::Base
     validates :funding_status, :presence => true  
     validate  :validate_funding_source
     validates :sponsor_name, :presence => true, :if => :is_study?
+    validates_associated :human_subjects_info, :message => "must contain 8 numerical digits", :if => :validate_nct
   end
 
   validation_group :user_details do

@@ -26,6 +26,8 @@
     = stylesheet_link_tag 'application', '960', :media => 'all'
     = surveyor_includes
     = csrf_meta_tags
+    :javascript
+      window.I18n = #{current_translations.to_json.html_safe};
   %body
     #container.container
       #header

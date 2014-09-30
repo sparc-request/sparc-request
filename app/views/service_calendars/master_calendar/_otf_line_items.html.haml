@@ -46,6 +46,7 @@
                   %span{:style => "padding-right:5px;"} /
                   = line_item.units_per_quantity
                 %td= line_item.service.try(:displayed_pricing_map).try(:otf_unit_type).try(:humanize)
+                
             %td{:colspan => (@portal or @study_tracker) ? 7 : 5}
             %td{:class => "otf_total total_#{line_item.id}"}= display_one_time_fee_direct_cost line_item
 
@@ -94,7 +95,6 @@
           %td.service_name
             = line_item.service.name
             = hidden_field_tag "service_request[line_items_attributes][#{line_item.id}][id]", line_item.id
-         
           - if line_item.service.try(:displayed_pricing_map).otf_unit_type == 'N/A'
             %td
             %td

@@ -51,7 +51,6 @@
               - else
                 = otf.service.name + ' (Disabled)'
             %td= otf.try(:service).try(:charge_code)
-            
             - if otf.try(:service).try(:current_effective_pricing_map).otf_unit_type == 'N/A'
               %td
               %td

@@ -368,10 +368,10 @@ class EpicInterface
       next unless service.send_to_epic
 
       #service_code_system = nil
-      if not service.cdm_code.blank? then
-        service_code = servcie.cdm_code
-        service_code_system = "SPARCCDM"
-      elsif not service.cpt_code.blank? then
+#      if not service.cdm_code.blank? then
+#        service_code = service.cdm_code
+#        service_code_system = "SPARCCDM"
+      if not service.cpt_code.blank? then
         service_code = service.cpt_code
         service_code_system = "SPARCCPT"
       else

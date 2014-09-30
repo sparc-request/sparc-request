@@ -22,6 +22,7 @@
   - colspan = (@merged and @portal) ? 4 : 5
   %tr.totals_section.begin_totals{:class => cycle('odd', '', :name => 'pppvs')}
     %td{:colspan => colspan}= t(:calendar_page)[:labels][:maximum_direct]
+    %td
     -unless @merged
       %td &nbsp;
     - 5.times do |i|
@@ -43,6 +44,7 @@
 
   %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
     %td{:colspan => colspan}= t(:calendar_page)[:labels][:maximum_per]
+    %td
     -unless @merged
       %td &nbsp;
     - 5.times do |i|

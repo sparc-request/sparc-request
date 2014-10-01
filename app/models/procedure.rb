@@ -153,9 +153,11 @@ class Procedure < ActiveRecord::Base
           return false
         end
       end
-    else
-      return false
+    elsif procedure.appointment.visit_group_id.nil?
+      return true if self.completed
     end
+
+    return false
   end
 
   ### audit reporting methods ###

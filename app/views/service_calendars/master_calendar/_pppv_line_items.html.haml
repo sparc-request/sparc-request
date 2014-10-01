@@ -116,7 +116,7 @@
           %td.your_cost= display_your_cost line_item
           %td.unit_type= pricing_map.unit_type
         %td.subject_count= select_tag "line_items_visit_#{line_items_visit.id}_count", options_for_select((1..arm.subject_count), line_items_visit.subject_count), :class => 'line_items_visit_subject_count', :update => "/service_requests/#{line_item.service_request_id}/service_calendars?line_items_visit=#{line_items_visit.id}&tab=template&portal=#{@portal}"
-        %td= select_row line_items_visit, @tab
+        %td= select_row line_items_visit, @tab, @portal
         - visits = line_items_visit.visits.paginate(:page => @pages[arm.id].to_i, :per_page => 5)
         - unit_minimum = pricing_map.unit_minimum
         - totals_hash = line_items_visit.try(:per_subject_subtotals, visits)

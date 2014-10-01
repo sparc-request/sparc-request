@@ -87,6 +87,3 @@ $(document).ready ->
 
       name: "light"
       width: 250
-  # $('span#infotip img').qtip
-  #   content: "Test Message"
-

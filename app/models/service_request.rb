@@ -505,6 +505,8 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def add_or_update_arms
+    return if not self.has_per_patient_per_visit_services?
+
     p = self.protocol
     if p.arms.empty?
       arm = p.arms.create(
@@ -512,13 +514,13 @@ class ServiceRequest < ActiveRecord::Base
         visit_count: 1,
         subject_count: 1,
         new_with_draft: true)
-      self.line_items.each do |li|
+      self.per_patient_per_visit_line_items.each do |li|
         arm.create_line_items_visit(li)
       end
     else
       p.arms.each do |arm|
         p.service_requests.each do |sr|
-          sr.line_items.each do |li|
+          sr.per_patient_per_visit_line_items.each do |li|
             arm.create_line_items_visit(li) if arm.line_items_visits.where(:line_item_id => li.id).empty?
           end
         end

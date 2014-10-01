@@ -769,6 +769,10 @@ tr.orange-provider th {
   margin-right: 20px;
 }
 
+span#infotip img {
+  margin: 0px 0px -3px 10px;
+}
+
 .user-actions {
   width: 70px
 }

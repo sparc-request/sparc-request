@@ -63,7 +63,7 @@ class Calendar < ActiveRecord::Base
           new_livs = arm.line_items_visits.reject {|x| existing_liv_ids.include?(x.id)}
           new_livs.each do |new_liv|
             visit = new_liv.visits.where("visit_group_id = ?", appointment.visit_group_id).first
-            if !(new_liv.line_item.service.is_one_time_fee?)&& (new_liv.line_item.service.organization_id == appointment.organization_id)
+            if !(new_liv.line_item.service.is_one_time_fee?) && (new_liv.line_item.service.organization_id == appointment.organization_id)
               values<<[new_liv.line_item.id, visit.id, appointment_id]
             end
           end

@@ -276,7 +276,7 @@ class Protocol < ActiveRecord::Base
     self.service_requests.each do |service_request|
       service_request.per_patient_per_visit_line_items.each do |li|
         arm.create_line_items_visit(li)
-     end
+      end
     end
     # Lets return this in case we need it for something else
     arm

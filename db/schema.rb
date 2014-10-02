@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140915132438) do
+ActiveRecord::Schema.define(:version => 20140923195421) do
 
   create_table "admin_rates", :force => true do |t|
     t.integer  "line_item_id"
@@ -224,30 +224,23 @@ ActiveRecord::Schema.define(:version => 20140915132438) do
   add_index "dependency_conditions", ["dependency_id"], :name => "index_dependency_conditions_on_dependency_id"
   add_index "dependency_conditions", ["question_id"], :name => "index_dependency_conditions_on_question_id"
 
-  create_table "document_groupings", :force => true do |t|
-    t.integer  "service_request_id"
-    t.datetime "created_at",         :null => false
-    t.datetime "updated_at",         :null => false
-  end
-
-  add_index "document_groupings", ["service_request_id"], :name => "index_document_groupings_on_service_request_id"
-
   create_table "documents", :force => true do |t|
-    t.integer  "sub_service_request_id"
     t.datetime "deleted_at"
     t.string   "doc_type"
-    t.datetime "created_at",             :null => false
-    t.datetime "updated_at",             :null => false
+    t.datetime "created_at",            :null => false
+    t.datetime "updated_at",            :null => false
     t.string   "document_file_name"
     t.string   "document_content_type"
     t.integer  "document_file_size"
     t.datetime "document_updated_at"
-    t.integer  "document_grouping_id"
     t.string   "doc_type_other"
+    t.integer  "service_request_id"
   end
 
-  add_index "documents", ["document_grouping_id"], :name => "index_documents_on_document_grouping_id"
-  add_index "documents", ["sub_service_request_id"], :name => "index_documents_on_sub_service_request_id"
+  create_table "documents_sub_service_requests", :id => false, :force => true do |t|
+    t.integer "document_id"
+    t.integer "sub_service_request_id"
+  end
 
   create_table "epic_queues", :force => true do |t|
     t.integer  "protocol_id"
@@ -812,7 +805,6 @@ ActiveRecord::Schema.define(:version => 20140915132438) do
     t.datetime "created_at",                                                            :null => false
     t.datetime "updated_at",                                                            :null => false
     t.datetime "deleted_at"
-    t.string   "cdm_code"
     t.boolean  "send_to_epic",                                       :default => false
   end
 

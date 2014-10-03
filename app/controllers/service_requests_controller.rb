@@ -442,20 +442,20 @@ class ServiceRequestsController < ApplicationController
 
   def delete_documents
     # deletes a group of documents unless we are working with a sub_service_request
-    grouping = @service_request.document_groupings.find params[:document_group_id]
-    @tr_id = "#document_grouping_#{grouping.id}"
+    @document = @service_request.documents.find params[:document_id]
+    @tr_id = "#document_id_#{@document.id}"
 
     if @sub_service_request.nil?
-      grouping.destroy # destroys the grouping and the documents
+      @document.destroy # destroys the grouping and the documents
     else
-      grouping.documents.find_by_sub_service_request_id(@sub_service_request.id).destroy
-      grouping.reload
-      grouping.destroy if grouping.documents.empty?
+      @sub_service_request.documents.delete @document
+      @sub_service_request.save
+      @document.destroy if @document.sub_service_requests.empty?
     end
   end
 
   def edit_documents
-    @grouping = @service_request.document_groupings.find params[:document_group_id]
+    @document = @service_request.documents.find params[:document_id]
     @service_list = @service_request.service_list
   end
 
@@ -609,16 +609,12 @@ class ServiceRequestsController < ApplicationController
   def document_save_update errors
      #### save/update documents if we have them
     process_ssr_organization_ids = params[:process_ssr_organization_ids]
-    document_grouping_id = params[:document_grouping_id]
+    document_id = params[:document_id]
+    docObject = Document.find(document_id) if document_id
     document = params[:document]
     upload_clicked = params[:upload_clicked]
 
-    if document_grouping_id and not process_ssr_organization_ids
-      # we are deleting this grouping, this is essentially the same as clicking delete next to a grouping
-      document_grouping = @service_request.document_groupings.find document_grouping_id
-      errors << {:recipients => ["You must select at least one recipient"]}
-      # document_grouping.destroy
-    elsif upload_clicked == "1" and (!document or params[:doc_type].empty? or !process_ssr_organization_ids) and not document_grouping_id # new document but we didn't provide either the document or document type
+    if upload_clicked == "1" and (!document or params[:doc_type].empty? or !process_ssr_organization_ids) and not document_id # new document but we didn't provide either the document or document type
       # we did not provide a document
       #[{:visit_count=>["You must specify the estimated total number of visits (greater than zero) before continuing."], :subject_count=>["You must specify the estimated total number of subjects before continuing."]}]
       doc_errors = {}
@@ -626,29 +622,33 @@ class ServiceRequestsController < ApplicationController
       doc_errors[:document] = ["You must select a document to upload"] if !document
       doc_errors[:doc_type] = ["You must provide a document type"] if params[:doc_type].empty?
       errors << doc_errors
-    elsif process_ssr_organization_ids and not document_grouping_id
+    elsif process_ssr_organization_ids and not document_id
       # we have a new grouping
-      document_grouping = @service_request.document_groupings.create
+      newDocument = Document.create :document => document, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other], :service_request_id => @service_request.id
       process_ssr_organization_ids.each do |org_id|
         sub_service_request = @service_request.sub_service_requests.find_by_organization_id org_id.to_i
-        sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other], :document_grouping_id => document_grouping.id
+        sub_service_request.documents << newDocument
         sub_service_request.save
       end
-    elsif process_ssr_organization_ids and document_grouping_id
+    elsif process_ssr_organization_ids and document_id
       # we need to update an existing grouping
-      document_grouping = @service_request.document_groupings.find document_grouping_id
-      grouping_org_ids = document_grouping.documents.map{|d| d.sub_service_request.organization_id.to_s}
+      org_ids = docObject.sub_service_requests.map{|ssr| ssr.organization_id.to_s}
 
-      to_delete = grouping_org_ids - process_ssr_organization_ids
-      to_add = process_ssr_organization_ids - grouping_org_ids
-      to_update = process_ssr_organization_ids & grouping_org_ids
+      to_delete = org_ids - process_ssr_organization_ids
+      to_add = process_ssr_organization_ids - org_ids
+      to_update = process_ssr_organization_ids & org_ids
 
       to_add.each do |org_id|
-        document = params[:document] || document_grouping.documents.first.document
+        document = params[:document] || docObject.document
         
         if document and not params[:doc_type].empty? and process_ssr_organization_ids
           sub_service_request = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
-          sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other], :document_grouping_id => document_grouping.id
+          if document_id
+            sub_service_request.documents << docObject
+          else
+            newDocument = Document.create :document => document, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other], :service_request_id => @service_request.id
+            sub_service_request.documents << newDocument
+          end
           sub_service_request.save
         else
           doc_errors = {}
@@ -660,12 +660,11 @@ class ServiceRequestsController < ApplicationController
       end
 
       to_delete.each do |org_id|
-        document_grouping.documents.each do |doc|
-          doc.destroy if doc.organization.id == org_id.to_i
-        end
+        ssr = @service_request.sub_service_requests.find_by_organization_id org_id.to_i
+        docObject.sub_service_requests.delete ssr
 
-        document_grouping.reload
-        document_grouping.destroy if document_grouping.documents.empty?
+        docObject.reload
+        docObject.destroy if docObject.sub_service_requests.empty?
       end
 
       # updating sub_service_request documents should create a new grouping unless the grouping only contains documents for that sub_service_request
@@ -673,17 +672,14 @@ class ServiceRequestsController < ApplicationController
         if params[:doc_type].empty?
           errors << {:document_upload => ["You must provide a document type"]}
         else
-          if @sub_service_request.nil? or document_grouping.documents.size == 1 # we either don't have a sub_service_request or the only document in this group is the one we are updating
-            document_grouping.documents.each do |doc|
-              new_doc = document ? document : doc.document # use the old document
-              doc.update_attributes(:document => new_doc, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other]) if doc.organization.id == org_id.to_i
-            end
+          if @sub_service_request.nil? or docObject.sub_service_requests.size == 1 # we either don't have a sub_service_request or the only document in this group is the one we are updating
+            new_doc = document ? document : docObject.document # use the old document
+            docObject.update_attributes(:document => new_doc, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other])
           else # we have a sub_service_request and the document count is greater than 1 so we need to do some special stuff
-            new_document_grouping = @service_request.document_groupings.create
-            document_grouping.documents.each do |doc|
-              new_doc = document ? document : doc.document # use the old document
-              doc.update_attributes({:document => new_doc, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other], :document_grouping_id => new_document_grouping.id}) if doc.organization.id == @sub_service_request.id
-            end
+            new_doc = document ? document : docObject.document # use the old document
+            newDocument = Document.create(:document => new_doc, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other], :service_request_id => @service_request.id) 
+            newDocument.sub_service_requests << @sub_service_request
+            newDocument.save
           end
         end
       end

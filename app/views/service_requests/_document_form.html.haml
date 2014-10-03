@@ -25,13 +25,11 @@
 - orgs = []
 - first_doc_type = nil
 - first_doc = nil
-- orgs = @grouping.documents.map{|d| d.sub_service_request.organization_id} if @grouping
-- first_doc_type = @grouping.documents.first.doc_type if @grouping
-- first_doc_type_other = @grouping.documents.first.doc_type_other if first_doc_type == 'other'
-- first_doc = @grouping.documents.first if @grouping
-- button_text = @grouping ? t("documents.update_button") : t("documents.upload_button")
-= hidden_field_tag :document_grouping_id, @grouping.id if @grouping
--# ugly but working
+- orgs = @document.sub_service_requests.map{|ssr| ssr.organization_id} if @document
+- doc_type = @document.doc_type if @document
+- doc_type_other = @document.doc_type_other if doc_type == 'other'
+- button_text = @document ? t("documents.update_button") : t("documents.upload_button")
+= hidden_field_tag :document_id, @document.id if @document
 
 %table#new_document
   %tr.ui-dialog-titlebar{:class => provider_css}
@@ -51,16 +49,16 @@
           = check_box_tag "process_ssr_organization_ids[]", key, orgs.include?(key)
         - else
           Yes
-          = hidden_field_tag "process_ssr_organization_ids[]", key, :id => 'process_ssr_organization_ids', :disabled => (@grouping ? false : true)
+          = hidden_field_tag "process_ssr_organization_ids[]", key, :id => 'process_ssr_organization_ids', :disabled => (@document ? false : true)
       - if count == 1
         %td{:rowspan => @service_list.size}
-          = select_tag :doc_type, options_for_select(DOCUMENT_TYPES, first_doc_type), :prompt => t("documents.select_prompt")
-          .document_type_other{:style => first_doc_type == 'other' ? '' : 'display:none;'}
-            = text_field_tag :doc_type_other, first_doc_type_other
+          = select_tag :doc_type, options_for_select(DOCUMENT_TYPES, doc_type), :prompt => t("documents.select_prompt")
+          .document_type_other{:style => doc_type == 'other' ? '' : 'display:none;'}
+            = text_field_tag :doc_type_other, doc_type_other
         %td#file{:rowspan => @service_list.size}
           = hidden_field_tag "upload_clicked", 0
-          - if @grouping
-            = first_doc.document_file_name
+          - if @document
+            = @document.document_file_name
             %br
           = file_field_tag :document
         %td{:rowspan => @service_list.size}

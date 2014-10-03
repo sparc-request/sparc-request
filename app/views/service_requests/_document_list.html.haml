@@ -31,22 +31,20 @@
       - if not review
         %th= t("documents.headers.actions")
 
-    - @service_request.documents.group_by(&:document_grouping_id).each do |grouping_id, docs|
-      - next unless @sub_service_request.nil? or docs.map(&:sub_service_request_id).include?(@sub_service_request.id)
-      - doc = docs.first
-      %tr.document{:id => "document_grouping_#{grouping_id}"}
+    - @service_request.documents.each do |document|
+      - next unless @sub_service_request.nil? or @sub_service_request.documents.include? document
+      %tr.document{:id => "document_id_#{document.id}"}
         %td{:style => "text-align:left"}
-          - docs.each do |document|
-            - next unless @sub_service_request.nil? or @sub_service_request.organization.name == document.sub_service_request.organization.name
-            = @service_list[document.sub_service_request.organization_id][:name] unless @service_list[document.sub_service_request.organization_id].nil?
+          -document.sub_service_requests.each do |ssr|
+            = @service_list[ssr.organization_id][:name] unless @service_list[ssr.organization_id].nil?
             %br
             %br
-        %td= doc.display_document_type
-        %td= link_to doc.document_file_name, doc.document.url
+        %td= document.display_document_type
+        %td= link_to document.document_file_name, document.document.url
         - if not review
           %td
-            = link_to t("documents.edit_button"), "/service_requests/#{@service_request.id}/edit_document_group/#{grouping_id}", :remote => true, :class => 'document_edit blue-button', :style => "display:block; margin-bottom:10px;"
-            = link_to t("documents.delete_button"), "/service_requests/#{@service_request.id}/delete_document_group/#{grouping_id}", :remote => true, :class => 'document_delete blue-button'
+            = link_to t("documents.edit_button"), "/service_requests/#{@service_request.id}/edit_document/#{document.id}", :remote => true, :class => 'document_edit blue-button', :style => "display:block; margin-bottom:10px;"
+            = link_to t("documents.delete_button"), "/service_requests/#{@service_request.id}/delete_document/#{document.id}", :remote => true, :class => 'document_delete blue-button'
 - else
   - if review # let's show the table with the no documents text
     %table.document-table

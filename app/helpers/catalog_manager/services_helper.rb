@@ -35,7 +35,7 @@ module CatalogManager::ServicesHelper
         if pricing_map.otf_unit_type == "N/A"
           attributes = "# " + pricing_map.quantity_type
         else
-          attributes = "# " + pricing_map.quantity_type + " /  # " + pricing_map.otf_unit_type
+          attributes = "# " + pricing_map.otf_unit_type + " /  # " + pricing_map.quantity_type
         end
       end
 

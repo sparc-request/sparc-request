@@ -114,17 +114,26 @@ class Organization < ActiveRecord::Base
   end
 
   # Returns the immediate children of this organization (shallow search)
-  def children
-    return Organization.where(:parent_id => self.id).includes(:services)
+  def children orgs
+    children = []
+
+    orgs.each do |org|
+      if org.parent_id == self.id
+        children << org 
+      end
+    end
+
+    children
   end
 
   # Returns an array of all children (and children of children) of this organization (deep search).
   # Optionally includes self
-  def all_children all_children=[], include_self=true
-    self.children.each do |child|
+  def all_children (all_children=[], include_self=true, orgs)
+    self.children(orgs).each do |child|
       all_children << child
-      child.all_children(all_children)
+      child.all_children(all_children, orgs)
     end
+  
     all_children << self if include_self
 
     all_children.uniq
@@ -133,8 +142,9 @@ class Organization < ActiveRecord::Base
   # Returns an array of all services that are offered by this organization as well of all of its
   # deep children.
   def all_child_services include_self=true
+    orgs = Organization.find(:all)
     all_services = []
-    children = self.all_children [], include_self
+    children = self.all_children [], include_self, orgs
     children.each do |child|
       if child.services
         services = Service.where(:organization_id => child.id).includes(:pricing_maps)
@@ -253,11 +263,12 @@ class Organization < ActiveRecord::Base
   # service providers, as well as the service providers on all parents.  If the process_ssrs flag
   # is true at this organization, also returns the service providers of all children.
   def all_service_providers(include_children=true)
+    orgs = Organization.find(:all)
     all_service_providers = []
     
     # If process_ssrs is true, we need to also get our children's service providers
     if self.process_ssrs and include_children
-      self.all_children.each do |child|
+      self.all_children(orgs).each do |child|
         all_service_providers << child.service_providers
       end
     end
@@ -277,11 +288,12 @@ class Organization < ActiveRecord::Base
   # super users, as well as the super users on all parents.  If the process_ssrs flag
   # is true at this organization, also returns the super users of all children.
   def all_super_users
+    orgs = Organization.find(:all)
     all_super_users = []
     
     # If process_ssrs is true, we need to also get our children's super users
     if self.process_ssrs
-      self.all_children.each do |child|
+      self.all_children(orgs).each do |child|
         all_super_users << child.super_users
       end
     end

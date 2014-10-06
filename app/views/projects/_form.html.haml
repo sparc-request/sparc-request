@@ -45,7 +45,7 @@
       %div{:class => 'blue-provider'}
         .nav-backward
           .return-to-previous
-            %a{:href => "#{protocol_service_request_path(service_request)}"}
+            %a.cancel_link{:href => "javascript:void(0)"}
               = image_tag('left_arrow.png', :alt => "Cancel")
               %span= t(:bottom_navigation)[:cancel]
         .exit= image_tag('Filler.png')

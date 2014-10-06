@@ -32,12 +32,7 @@ else
     $('form').submit()
 
   $('#current_step').val("<%= @current_step %>")
+  $('.edit_study').html("<%= escape_javascript(render :partial => 'studies/form', :locals => {:study => @protocol, :service_request => @service_request, :portal => @portal}) %>")
+
   if <%= @current_step == "user_details" %>
-    $('.return-to-previous a').attr('href', "<%= edit_service_request_study_path(@service_request, @protocol) %>")
     $('.return-to-previous a span').text("Go Back")
-    $('.save-and-continue span').text("Save & Continue")
-    $('#errorExplanation').hide()
-    $('.protocol_details_container').hide()
-    $('.user-details-container').show()
-  else
-    $('.edit_study').html("<%= escape_javascript(render :partial => 'studies/form', :locals => {:study => @protocol, :service_request => @service_request, :portal => @portal}) %>")

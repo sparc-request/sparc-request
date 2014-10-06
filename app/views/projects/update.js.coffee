@@ -32,12 +32,8 @@ else
     $('form').submit()
 
   $('#current_step').val("<%= @current_step %>")
+  $('.edit_project').html("<%= escape_javascript(render :partial => 'projects/form', :locals => {:project => @project, :service_request => @service_request}) %>")
+
   if <%= @current_step == "user_details" %>
-    $('.return-to-previous a').attr('href', "<%= edit_service_request_project_path(@service_request, @protocol) %>")
     $('.return-to-previous a span').text("Go Back")
-    $('.save-and-continue span').text("Save & Continue")
-    $('#errorExplanation').hide()
-    $('.protocol_details_container').hide()
-    $('.user-details-container').show()
-  else
-    $('.edit_project').html("<%= escape_javascript(render :partial => 'projects/form', :locals => {:project => @project, :service_request => @service_request}) %>")
+  

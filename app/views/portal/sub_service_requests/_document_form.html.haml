@@ -20,17 +20,13 @@
 
 = javascript_include_tag 'portal/document_upload'
 
--# TODO this is ugly but works for now
 - orgs = []
-- first_doc_type = nil
-- first_doc = nil
-- orgs = @grouping.documents.map{|d| d.sub_service_request.organization_id} if @grouping
-- first_doc_type = @grouping.documents.first.doc_type if @grouping
-- first_doc_type_other = @grouping.documents.first.doc_type_other if first_doc_type == 'other'
-- first_doc = @grouping.documents.first if @grouping
+- orgs = @document.sub_service_requests.map{|ssr| ssr.organization_id} if @document
+- doc = @document
+- doc_type = @document.doc_type if @document
+- doc_type_other = @document.doc_type_other if doc_type == 'other'
 - button_text = @grouping ? t("documents.update_button") : t("documents.upload_button")
-= hidden_field_tag :document_grouping_id, @grouping.id if @grouping
--# ugly but working
+= hidden_field_tag :document_id, @document.id if @document
 
 %table#new_document
   %tr.header
@@ -39,15 +35,15 @@
     %th &nbsp;
   %tr
     %td{:style => "width:212px;"}
-      = select_tag :doc_type, options_for_select(DOCUMENT_TYPES, first_doc_type), :prompt => "Select Type", :style => "margin-left:5px;"
-      .document_type_other{:style => first_doc_type == 'other' ? '' : 'display:none;'}
-        = text_field_tag :doc_type_other, first_doc_type_other
+      = select_tag :doc_type, options_for_select(DOCUMENT_TYPES, doc_type), :prompt => "Select Type", :style => "margin-left:5px;"
+      .document_type_other{:style => doc_type == 'other' ? '' : 'display:none;'}
+        = text_field_tag :doc_type_other, doc_type_other
     = hidden_field_tag "process_ssr_organization_ids[]", @sub_service_request.organization.id
     - if !defined?(edit).nil?
       = hidden_field_tag "is_edit", "true"
     %td#file
-      - if @grouping
-        = first_doc.document_file_name
+      - if @document
+        = doc.document_file_name
         %br
       = file_field_tag :document
     %td{:style => "width:195px;"}

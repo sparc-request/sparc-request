@@ -21,10 +21,7 @@
 - provider_css ||= 'ui-widget-header'
 = javascript_include_tag 'document_upload'
 
--# TODO this is ugly but works for now
 - orgs = []
-- first_doc_type = nil
-- first_doc = nil
 - orgs = @document.sub_service_requests.map{|ssr| ssr.organization_id} if @document
 - doc_type = @document.doc_type if @document
 - doc_type_other = @document.doc_type_other if doc_type == 'other'
@@ -40,12 +37,12 @@
     %th &nbsp;
   - count = 0
   - @service_list.each do |key, values|
-    - next unless @sub_service_request.nil? or @sub_service_request.organization.name == values[:process_ssr_organization_name]
+    - next unless @sub_service_request.nil? or orgs.map{|org| Organization.find(org).name}.include? values[:process_ssr_organization_name]
     - count += 1
     %tr
       %td= label_tag "process_ssr_organization_ids[]", values[:name]
       %td
-        - if @sub_service_request.nil?
+        - if @sub_service_request.nil? or @sub_service_request.organization.name == values[:process_ssr_organization_name]
           = check_box_tag "process_ssr_organization_ids[]", key, orgs.include?(key)
         - else
           Yes

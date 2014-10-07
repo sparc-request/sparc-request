@@ -27,6 +27,7 @@
   = hidden_field_tag :location, ''
   = hidden_field_tag :validates, ''
   = render :partial => "errors"
+  .clear
   %div
     .document-management-container
       = render :partial => 'portal/sub_service_requests/document_list', :locals => {:review => false}

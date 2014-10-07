@@ -310,8 +310,8 @@ SparcRails::Application.routes.draw do
         delete "/delete_toast_message/:id" => "admin#delete_toast_message"
       end
     end
-    match '/admin/sub_service_requests/:id/edit_document_group/:document_group_id' => 'sub_service_requests#edit_documents'
-    match "/admin/sub_service_requests/:id/delete_document_group/:document_group_id" => "sub_service_requests#delete_documents"
+    match '/admin/sub_service_requests/:id/edit_document/:document_id' => 'sub_service_requests#edit_documents'
+    match "/admin/sub_service_requests/:id/delete_document/:document_id" => "sub_service_requests#delete_documents"
     
     root :to => 'home#index'
   end

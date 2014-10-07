@@ -32,7 +32,7 @@
       - @subsidy.subsidy_audits.each do |audit|
         %tr
           %td= audit[:created_at].try(:strftime, "%D %r")
-          %td= full_user_name_from_id(audit[:user_id])
+          %td= audit[:user_id] ? full_user_name_from_id(audit[:user_id]) : "N/A"
           %td= audit[:action]
           %td= extract_subsidy_audit_data(audit[:audited_changes]["pi_contribution"], true)
           %td= extract_subsidy_audit_data(audit[:audited_changes]["stored_percent_subsidy"])

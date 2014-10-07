@@ -769,6 +769,10 @@ tr.orange-provider th {
   margin-right: 20px;
 }
 
+span#infotip img {
+  margin: 0px 0px -3px 10px;
+}
+
 .user-actions {
   width: 70px
 }
@@ -1067,6 +1071,7 @@ tr.orange-provider th {
   float: left;
   padding: 5px 10px;
   text-align: center;
+  position: relative;
 }
 
 .service-request-setup-view .arm-info .arm-cell-right {
@@ -1081,6 +1086,13 @@ tr.orange-provider th {
   vertical-align: text-bottom;
 }
 
+img.screening_info_img {
+  position: absolute;
+  top: 7px;
+  left: 190px;
+  z-index: 2;
+}
+
 .service-request-setup-view .arm-info .add-arm .add_nested_fields {
   padding: 5px 15px;
   width: 50px;
@@ -1088,6 +1100,7 @@ tr.orange-provider th {
   display: block;
   background: #2C9A4D !important;
   border: 0px !important;
+  border-radius: 3px;
 }
 
 .service-request-setup-view .arm-info .remove_nested_fields {

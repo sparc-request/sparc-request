@@ -1,0 +1,49 @@
+namespace :data do
+  desc "Create CSV report of all one time fee line items under a given provider"
+  task :one_time_fee_report => :environment do
+    def prompt(*args)
+      print(*args)
+      STDIN.gets.strip
+    end
+    providers = Organization.where(:type => "provider")
+    puts ""
+    puts "ID        Name"
+    puts ""
+    providers.each do |org|
+      if org.id < 10
+        puts "#{org.id}         #{org.name}"
+      else
+        puts "#{org.id}        #{org.name}"
+      end
+    end
+    puts ""
+    puts ""
+    provider_id = prompt("Please enter one of the above provider ids you would like to run the report for: ")
+    unless provider_id.blank?
+      provider = Organization.find(provider_id)
+     
+      CSV.open("tmp/#{Date.today}_#{provider.abbreviation}_otf_report.csv", "wb") do |csv|
+        row = ["PID", "SRID", "Short Title", "PI", "Provider", "Program", "Core", "Service Request Owner", "Service", "In Process", "Complete", "Fulfillment Date", "Timeframe", "Time", "Comments"]
+        csv << row
+
+        provider.programs.each do |program|
+          program.cores.each do |core|
+            core.sub_service_requests.each do |ssr|
+              if ssr.service_request.protocol
+                service_request_id = ssr.service_request.id
+                protocol_id = ssr.service_request.protocol.id
+                short_title = ssr.service_request.protocol.short_title
+                pi = ssr.service_request.protocol.try(:primary_principal_investigator).try(:full_name) || ""
+                owner = ssr.owner_id ? Identity.find(ssr.owner_id).full_name : ""
+                
+              end
+
+            end
+          end
+        end
+      end
+    else
+      puts "No provider id specified." 
+    end
+  end
+end

@@ -131,7 +131,7 @@ class Arm < ActiveRecord::Base
     direct_costs_for_visit_based_service(line_items_visits) + indirect_costs_for_visit_based_service(line_items_visits)
   end
   
-  def add_visit position=nil, day=nil, window=0, name='', portal=false
+  def add_visit position=nil, day=nil, window_before=0, window_after=0, name='', portal=false
     result = self.transaction do
       if not self.create_visit_group(position, name) then
         raise ActiveRecord::Rollback
@@ -142,7 +142,10 @@ class Arm < ActiveRecord::Base
         if not self.update_visit_group_day(day, position, portal) then
           raise ActiveRecord::Rollback
         end
-        if not self.update_visit_group_window(window, position, portal) then
+        if not self.update_visit_group_window_before(window_before, position, portal) then
+          raise ActiveRecord::Rollback
+        end
+        if not self.update_visit_group_window_after(window_after, position, portal) then
           raise ActiveRecord::Rollback
         end
       end
@@ -276,17 +279,30 @@ class Arm < ActiveRecord::Base
     return current.update_attributes(:day => day)
   end
 
-  def update_visit_group_window window, position, portal = false
+  def update_visit_group_window_before window_before, position, portal = false
     position = position.blank? ? self.visit_groups.count - 1 : position.to_i
 
-    valid = Integer(window) rescue false
+    valid = Integer(window_before) rescue false
     if !valid || valid < 0
-      self.errors.add(:invalid_window, "You've entered an invalid number for the +/- window. Please enter a positive valid number")
+      self.errors.add(:invalid_window_before, "You've entered an invalid number for the before window. Please enter a positive valid number")
       return false
     end
 
     visit_group = self.visit_groups[position]
-    return visit_group.update_attributes(:window => window)
+    return visit_group.update_attributes(:window_before => window_before)
+  end
+
+  def update_visit_group_window_after window_after, position, portal = false
+    position = position.blank? ? self.visit_groups.count - 1 : position.to_i
+
+    valid = Integer(window_after) rescue false
+    if !valid || valid < 0
+      self.errors.add(:invalid_window_after, "You've entered an invalid number for the after window. Please enter a positive valid number")
+      return false
+    end
+
+    visit_group = self.visit_groups[position]
+    return visit_group.update_attributes(:window_after => window_after)
   end
 
   def service_list

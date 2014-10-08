@@ -73,7 +73,8 @@ module ApplicationHelper
     base_url = "/service_requests/#{service_request.id}/service_calendars"
     rename_visit_url = base_url + "/rename_visit"
     day_url = base_url + "/set_day"
-    window_url = base_url + "/set_window"
+    window_before_url = base_url + "/set_window_before"
+    window_after_url = base_url + "/set_window_after"
     page = page == 0 ? 1 : page
     beginning_visit = (page * 5) - 4
     ending_visit = (page * 5) > arm.visit_count ? arm.visit_count : (page * 5)
@@ -99,20 +100,24 @@ module ApplicationHelper
       elsif @merged
         returning_html += content_tag(:th,
                             ((USE_EPIC) ?
-                            label_tag("Day") + "&nbsp;&nbsp;&nbsp;".html_safe + label_tag("+/-") +
+                            # label_tag("Day") + "&nbsp;&nbsp;&nbsp;".html_safe + label_tag("+/-") +
+                            label_tag("-") + "&nbsp;&nbsp;".html_safe + label_tag("Day") + "&nbsp;&nbsp;".html_safe + label_tag("+") +
                             tag(:br) +
-                            content_tag(:span, visit_group.day, :style => "display:inline-block;width:40px;") +
-                            content_tag(:span, visit_group.window, :style => "display:inline-block;width:35px;") +
+                            content_tag(:span, visit_group.window_before, :style => "display:inline-block;width:25px;") +
+                            content_tag(:span, visit_group.day, :style => "display:inline-block;width:25px;") +
+                            content_tag(:span, visit_group.window_after, :style => "display:inline-block;width:25px;") +
                             tag(:br) : label_tag("")) +
                             content_tag(:span, visit_name, :style => "display:inline-block;width:75px;") +
                             tag(:br))
       else
         returning_html += content_tag(:th,
                                       ((USE_EPIC) ?
-                                      label_tag("Day") + "&nbsp;&nbsp;&nbsp;".html_safe + label_tag("+/-") +
+                                      # label_tag("Day") + "&nbsp;&nbsp;&nbsp;".html_safe + label_tag("+/-") +
+                                      label_tag("-") + "&nbsp;&nbsp;".html_safe + label_tag("Day") + "&nbsp;&nbsp;".html_safe + label_tag("+") +
                                       tag(:br) +
-                                      text_field_tag("day", visit_group.day, :class => "visit_day position_#{n}", :size => 3, :'data-position' => n - 1, :'data-day' => visit_group.day, :update => "#{day_url}?arm_id=#{arm.id}&portal=#{portal}") +
-                                      text_field_tag("window", visit_group.window, :class => "visit_window position_#{n}", :size => 3, :'data-position' => n - 1, :'data-window' => visit_group.window, :update => "#{window_url}?arm_id=#{arm.id}&portal=#{portal}") +
+                                      text_field_tag("window_before", visit_group.window_before, :class => "visit_window visit_window_before position_#{n}", :size => 1, :'data-position' => n - 1, :'data-window-before' => visit_group.window_before, :update => "#{window_before_url}?arm_id=#{arm.id}&portal=#{portal}") +
+                                      text_field_tag("day", visit_group.day, :class => "visit_day position_#{n}", :size => 1, :'data-position' => n - 1, :'data-day' => visit_group.day, :update => "#{day_url}?arm_id=#{arm.id}&portal=#{portal}") +
+                                      text_field_tag("window_after", visit_group.window_after, :class => "visit_window visit_window_after position_#{n}", :size => 1, :'data-position' => n - 1, :'data-window-after' => visit_group.window_after, :update => "#{window_after_url}?arm_id=#{arm.id}&portal=#{portal}") +
                                       tag(:br)
                                       : label_tag('')) +
                                       text_field_tag("arm_#{arm.id}_visit_name_#{n}", visit_name, :class => "visit_name", :size => 10, :update => "#{rename_visit_url}?visit_position=#{n-1}&arm_id=#{arm.id}&portal=#{portal}") +

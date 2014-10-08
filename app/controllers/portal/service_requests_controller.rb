@@ -57,7 +57,7 @@ class Portal::ServiceRequestsController < Portal::BaseController
     @selected_arm = Arm.find(params[:arm_id])
     @study_tracker = params[:study_tracker] == "true"
 
-    if @selected_arm.add_visit(params[:visit_position], params[:visit_day], params[:visit_window], params[:visit_name], 'true')
+    if @selected_arm.add_visit(params[:visit_position], params[:visit_day], params[:visit_window_before],  params[:visit_window_after], params[:visit_name], 'true')
       @subsidy.try(:sub_service_request).try(:reload)
       @subsidy.try(:fix_pi_contribution, percent)
       @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}

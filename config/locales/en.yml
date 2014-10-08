@@ -1078,7 +1078,8 @@ en:
   service_calendar_toasts:
     visit_name: "Click to rename your visits."
     visit_day: "Click to set the visits day. All days must be in numerical order. Ex. 1, 2, 4, 9"
-    visit_window: "Click to set the window period the visit can be completed."
+    visit_window_before: "Click to set the window before the day that the visit can be completed."
+    visit_window_after: "Click to set the window after the day that the visit can be completed."
     jump_to_visit: "Select the visit you would like to view."
   service_details_alerts:
     subject_count: "A request associated with this arm is in Clinical Work Fulfillment. The subject count cannot be decreased." 

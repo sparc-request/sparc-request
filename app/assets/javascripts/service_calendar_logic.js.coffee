@@ -40,10 +40,19 @@ $(document).ready ->
     show:
       ready: false
 
-  # $('.visit_window').live 'mouseover', ->
-  $('.visit_window').qtip
+  $('.visit_window_before').qtip
     overwrite: false
-    content: I18n["service_calendar_toasts"]["visit_window"]
+    content: I18n["service_calendar_toasts"]["visit_window_before"]
+    position:
+      corner:
+        target: 'topLeft'
+        tooltip: 'bottomLeft'
+    show:
+      ready: false
+
+  $('.visit_window_after').qtip
+    overwrite: false
+    content: I18n["service_calendar_toasts"]["visit_window_after"]
     position:
       corner:
         target: 'topLeft'

@@ -136,18 +136,37 @@ $(document).ready ->
       $('.service_calendar_spinner').hide()
   )
 
-  $('.visit_window').live 'change', ->
-    # Grab the day
+  $('.visit_window_before').live 'change', ->
+    # Grab the window_before
     position = $(this).data('position')
-    window_val = $(this).val()
-    original_val = $(this).data('window')
+    window_before_val = $(this).val()
+    original_val = $(this).data('window_before')
     $('.service_calendar_spinner').show()
     $.ajax
       type: 'PUT'
       url: $(this).attr('update')
-      data: {window: window_val, position: position}
+      data: {window_before: window_before_val, position: position}
       success: =>
-        $(this).data('window', window_val)
+        $(this).data('window_before', window_before_val)
+    .error (event, request, test) =>
+      alertText = stack_errors_for_alert(JSON.parse(event.responseText))
+      alert(alertText)
+      $(this).val(original_val)
+    .complete ->
+      $('.service_calendar_spinner').hide()
+
+  $('.visit_window_after').live 'change', ->
+    # Grab the window_after
+    position = $(this).data('position')
+    window_after_val = $(this).val()
+    original_val = $(this).data('window_after')
+    $('.service_calendar_spinner').show()
+    $.ajax
+      type: 'PUT'
+      url: $(this).attr('update')
+      data: {window_after: window_after_val, position: position}
+      success: =>
+        $(this).data('window_after', window_after_val)
     .error (event, request, test) =>
       alertText = stack_errors_for_alert(JSON.parse(event.responseText))
       alert(alertText)

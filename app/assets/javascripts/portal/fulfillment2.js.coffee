@@ -329,8 +329,9 @@ $(document).ready ->
       'arm_id': $('#arm_id').val()
       'study_tracker': $('#study_tracker_hidden_field').val() || null
       'visit_name': $('#visit_name').val()
+      'visit_window_before': $('#visit_window_before')
       'visit_day': $('#visit_day').val()
-      'visit_window': $('#visit_window').val()
+      'visit_window_after': $('#visit_window_after').val()
     $.ajax
       type: 'POST'
       url:   "/portal/admin/service_requests/#{sr_id}/add_per_patient_per_visit_visit"

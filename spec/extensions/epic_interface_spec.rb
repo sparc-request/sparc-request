@@ -679,8 +679,8 @@ describe EpicInterface do
 
           epic_interface.send_billing_calendar(study)
 
-          low = epic_interface.relative_date(visit_group.day - visit_group.window, study.start_date)
-          high = epic_interface.relative_date(visit_group.day + visit_group.window, study.start_date)
+          low = epic_interface.relative_date(visit_group.day - visit_group.window_before, study.start_date)
+          high = epic_interface.relative_date(visit_group.day + visit_group.window_after, study.start_date)
 
           xml = <<-END
             <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">

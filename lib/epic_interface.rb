@@ -433,8 +433,8 @@ class EpicInterface
         day = visit_group.day || visit_group.position
 
         xml.effectiveTime {
-          xml.low(value: relative_date(day - visit_group.window, epoch))
-          xml.high(value: relative_date(day + visit_group.window, epoch))
+          xml.low(value: relative_date(day - visit_group.window_before, epoch))
+          xml.high(value: relative_date(day + visit_group.window_after, epoch))
         }
 
         xml.activityTime(value: relative_date(day, epoch))

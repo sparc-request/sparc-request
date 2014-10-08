@@ -69,7 +69,8 @@ SparcRails::Application.routes.draw do
       collection do
         put 'rename_visit'
         put 'set_day'
-        put 'set_window'
+        put 'set_window_before'
+        put 'set_window_after'
         put 'update_otf_qty_and_units_per_qty'
         put 'move_visit_position'
         put 'show_move_visits'

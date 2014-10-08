@@ -120,6 +120,7 @@ SparcRails::Application.routes.draw do
   match 'service_requests/:id/unselect_calendar_column/:column_id/:arm_id' => 'service_calendars#unselect_calendar_column'
   match 'service_requests/:id/delete_document/:document_id' => 'service_requests#delete_documents'
   match 'service_requests/:id/edit_document/:document_id' => 'service_requests#edit_documents'
+  match 'service_requests/:id/new_document' => 'service_requests#new_document'
   match 'rubyception' => 'rubyception/application#index'
 
   ##### sparc-services routes brought in and namespaced

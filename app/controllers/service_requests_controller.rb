@@ -472,6 +472,10 @@ class ServiceRequestsController < ApplicationController
     @service_list = @service_request.service_list
   end
 
+  def new_document
+    @service_list = @service_request.service_list
+  end
+
   private
 
   # Send notifications to all users.

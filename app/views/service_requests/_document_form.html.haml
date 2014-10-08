@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- provider_css ||= 'ui-widget-header'
+- provider_css ||= 'orange-provider'
 = javascript_include_tag 'document_upload'
 
 - orgs = []
@@ -37,7 +37,7 @@
     %th &nbsp;
   - count = 0
   - @service_list.each do |key, values|
-    - next unless @sub_service_request.nil? or orgs.map{|org| Organization.find(org).name}.include? values[:process_ssr_organization_name]
+    - next unless @sub_service_request.nil? or orgs.map{|org| Organization.find(org).name}.include? values[:process_ssr_organization_name] or @sub_service_request.organization.name == values[:process_ssr_organization_name]
     - count += 1
     %tr
       %td= label_tag "process_ssr_organization_ids[]", values[:name]

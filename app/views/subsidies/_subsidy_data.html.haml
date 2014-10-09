@@ -45,7 +45,7 @@
           = ssr_fields.fields_for :subsidy do |subsidy_fields|
             %tr.subsidy-item
               - direct_cost_total = sub_service_request.direct_cost_total
-              - pi_contribution = calculate_pi_contribution(subsidy)
+              - pi_contribution = calculate_pi_contribution(subsidy, direct_cost_total)
               - organization = sub_service_request.organization
               %td{:class => "core_#{sub_service_request.id}"}= "#{ssr_institution(organization)} -- #{ssr_provider(organization)} -- #{ssr_program_core(organization)}"
               %td{:class => "estimated_cost_#{sub_service_request.id}", :'data-cost' => direct_cost_total}= currency_converter(direct_cost_total)

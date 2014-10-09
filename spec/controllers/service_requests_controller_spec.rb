@@ -840,35 +840,37 @@ describe ServiceRequestsController do
   end
 
   describe 'POST delete_document_group' do
-    let!(:docgroup) { DocumentGrouping.create(:service_request_id => service_request.id) }
-
-    let!(:ssr1) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
+    let!(:doc)  { Document.create(service_request_id: service_request.id) }
+    let!(:ssr1) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id)  }
     let!(:ssr2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
 
-    let!(:doc1) { Document.create(:document_grouping_id => docgroup.id, :sub_service_request_id => ssr1.id) }
-    let!(:doc2) { Document.create(:document_grouping_id => docgroup.id, :sub_service_request_id => ssr2.id) }
+    context('document methods') do
 
-    context('document group methods') do
+      before(:each) do
+        doc.sub_service_requests << ssr1
+        doc.sub_service_requests << ssr2
+      end
+
       it 'should set tr_id' do
         session[:service_request_id] = service_request.id
         post :delete_documents, {
           :id                => service_request.id,
-          :document_group_id => docgroup.id,
+          :document_id       => doc.id,
           :format            => :js,
         }.with_indifferent_access
-        assigns(:tr_id).should eq "#document_grouping_#{docgroup.id}"
+        assigns(:tr_id).should eq "#document_id_#{doc.id}"
       end
 
-      it 'should destroy the grouping if there is no sub service request' do
+      it 'should destroy the document if there is no sub service request' do
         session[:service_request_id] = service_request.id
         post :delete_documents, {
           :id                => service_request.id,
-          :document_group_id => docgroup.id,
+          :document_id       => doc.id,
           :format            => :js,
         }.with_indifferent_access
 
         expect {
-          docgroup.reload
+          doc.reload
         }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
@@ -877,51 +879,32 @@ describe ServiceRequestsController do
         session[:sub_service_request_id] = ssr1.id
         post :delete_documents, {
           :id                      => service_request.id,
-          :document_group_id       => docgroup.id,
+          :document_id             => doc.id,
           :format                  => :js,
         }.with_indifferent_access
 
-        docgroup.reload
-        docgroup.destroyed?.should eq false
-
-        expect {
-          doc1.reload
-        }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-
-      it 'should destroy the document grouping if all documents are destroyed' do
-        doc1.destroy
-
-        session[:service_request_id] = service_request.id
-        session[:sub_service_request_id] = ssr2.id
-        post :delete_documents, {
-          :id                      => service_request.id,
-          :document_group_id       => docgroup.id,
-          :format                  => :js,
-        }.with_indifferent_access
-
-        expect {
-          docgroup.reload
-        }.to raise_error(ActiveRecord::RecordNotFound)
+        doc.reload
+        doc.destroyed?.should eq false
+        doc.sub_service_requests.size.should eq 1
       end
     end
 
     describe 'POST edit_document_group' do
-      it 'should set grouping' do
+      it 'should set document' do
         session[:service_request_id] = service_request.id
         post :edit_documents, {
           :id                      => service_request.id,
-          :document_group_id       => docgroup.id,
+          :document_id             => doc.id,
           :format                  => :js,
         }.with_indifferent_access
-        assigns(:grouping).should eq docgroup
+        assigns(:document).should eq doc
       end
 
       it 'should set service_list' do
         session[:service_request_id] = service_request.id
         post :edit_documents, {
           :id                      => service_request.id,
-          :document_group_id       => docgroup.id,
+          :document_id             => doc.id,
           :format                  => :js,
         }.with_indifferent_access
         assigns(:service_list).should eq service_request.service_list.with_indifferent_access

@@ -77,9 +77,9 @@ wb.add_worksheet(name: "Review") do |sheet|
   sheet.add_row doc_row, :style => sub_header_style
 
   @service_request.documents.each do |doc|
-    next unless @sub_service_request.nil? or doc.sub_service_requests.map(|ssr| ssr.id).include?(@sub_service_request.id)
+    next unless @sub_service_request.nil? or doc.sub_service_requests.map{|ssr| ssr.id}.include?(@sub_service_request.id)
     parents = []
-    docs.sub_service_requests.each do |ssr|
+    doc.sub_service_requests.each do |ssr|
       next unless @service_request.service_list.keys.include?(ssr.organization_id)
       parents << @service_request.service_list[ssr.organization_id][:name]
     end

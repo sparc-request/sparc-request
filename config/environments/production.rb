@@ -91,8 +91,8 @@ SparcRails::Application.configure do
 
   config.middleware.use ExceptionNotifier,
     ignore_if: ->(env, exception) { ['128.23.150.107'].include?(env['REMOTE_ADDR']) },
-    sender_address: 'no-reply@musc.edu',
-    exception_recipients: ['catesa@musc.edu', 'scoma@musc.edu', 'kelsey@musc.edu', 'johstu@musc.edu', 'leonarjp@musc.edu', 'brannan@musc.edu']
+    sender_address: 'donotreply@musc.edu',
+    exception_recipients: ['catesa@musc.edu', 'kelsey@musc.edu', 'johstu@musc.edu', 'leonarjp@musc.edu']
 
   # Will be default in Rails 4.0
   config.threadsafe! unless $rails_rake_task

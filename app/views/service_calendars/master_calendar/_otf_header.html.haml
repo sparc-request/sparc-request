@@ -22,10 +22,10 @@
 
 
   - if @study_tracker and !@merged #display study tracker otf header
-    %th.qty_type_header= t(:calendar_page)[:headers][:number]
-    %th.number_of_units_header{:style => "width:130px;"}= t(:calendar_page)[:headers][:qty_type]
     %th.qty_unit_header{:style => "width:130px;"}= t(:calendar_page)[:headers][:number]
     %th.qty_unit_header{:style => "width:130px;"}= t(:calendar_page)[:headers][:unit_type]
+    %th.qty_type_header= t(:calendar_page)[:headers][:number]
+    %th.number_of_units_header{:style => "width:130px;"}= t(:calendar_page)[:headers][:qty_type]
     %th
 
 
@@ -42,10 +42,10 @@
       %th.total_per_study{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_study]
     - else
       %th.unit_costs_header{:colspan => 2}= t(:calendar_page)[:headers][:unit_costs]
-      %th.qty_type_header{:rowspan => 2}= t(:calendar_page)[:headers][:number]
-      %th.number_of_units_header{:rowspan => 2}= t(:calendar_page)[:headers][:qty_type]
       %th.qty_unit_header{:style => "width:50px;", :rowspan => 2}= t(:calendar_page)[:headers][:number]
       %th.unit_type_header{:rowspan => 2}= t(:calendar_page)[:headers][:unit_type]
+      %th.qty_type_header{:rowspan => 2}= t(:calendar_page)[:headers][:number]
+      %th.number_of_units_header{:rowspan => 2}= t(:calendar_page)[:headers][:qty_type]
       %th{:rowspan => 2, :colspan => 5, :height => 40, :width => 375}
       - if @merged
         %th.total_per_study{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_study]

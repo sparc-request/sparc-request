@@ -31,9 +31,9 @@
           %th.services_selected= t(:fulfillments)[:services][:no_visits][:selected]
           %th= t(:fulfillments)[:services][:no_visits][:code]
           %th= t(:fulfillments)[:services][:no_visits][:number]
-          %th= t(:fulfillments)[:services][:no_visits][:qty_type]
-          %th= t(:fulfillments)[:services][:no_visits][:number]
           %th= t(:fulfillments)[:services][:no_visits][:otf_unit_type]
+          %th= t(:fulfillments)[:services][:no_visits][:number]
+          %th= t(:fulfillments)[:services][:no_visits][:qty_type]
           %th= t(:fulfillments)[:services][:no_visits][:cost]
           %th= t(:fulfillments)[:services][:no_visits][:received]
           %th= t(:fulfillments)[:services][:no_visits][:in_process]
@@ -51,17 +51,20 @@
               - else
                 = otf.service.name + ' (Disabled)'
             %td= otf.try(:service).try(:charge_code)
-            %td.otf_text_field
-              = text_field_tag "line_item_quantity", otf.try(:quantity), :'data-line_item_id' => otf.id, :class => 'fulfillment_data'
-            %td= otf.try(:service).try(:current_effective_pricing_map).try(:quantity_type)
             - if otf.try(:service).try(:current_effective_pricing_map).otf_unit_type == 'N/A'
               %td
               %td
+              %td.otf_text_field{:style => "white-space:nowrap;overflow:hidden;"}
+                = text_field_tag "line_item_quantity", otf.try(:quantity), :'data-line_item_id' => otf.id, :class => 'fulfillment_data'
+              %td= otf.try(:service).try(:current_effective_pricing_map).try(:quantity_type)
             - else
               %td.otf_text_field{:style => "white-space:nowrap;overflow:hidden;"}
-                %span{:style => "padding-right:5px;"} /
                 = text_field_tag "line_item_units_per_quantity", otf.try(:units_per_quantity), :'data-line_item_id' => otf.id, :class => 'fulfillment_data'
               %td= otf.try(:service).try(:current_effective_pricing_map).try(:otf_unit_type)
+              %td.otf_text_field{:style => "white-space:nowrap;overflow:hidden;"}
+                %span{:style => "padding-right:5px;"} /
+                = text_field_tag "line_item_quantity", otf.try(:quantity), :'data-line_item_id' => otf.id, :class => 'fulfillment_data'
+              %td= otf.try(:service).try(:current_effective_pricing_map).try(:quantity_type)
             %td{:id => "line_item_#{otf.id}_cost"}= number_to_currency(otf.direct_costs_for_one_time_fee / 100)
             %td= otf.try(:created_at).try(:strftime, '%D')
             %td

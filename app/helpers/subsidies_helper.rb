@@ -40,17 +40,13 @@ module SubsidiesHelper
     percentage
   end
 
-  def calculate_pi_contribution subsidy
+  def calculate_pi_contribution subsidy, direct_cost
     contribution = 0.0
-    if subsidy.overridden
-      direct_cost = subsidy.sub_service_request.direct_cost_total
-      percent_subsidy = subsidy.stored_percent_subsidy
-      contribution = (direct_cost * (percent_subsidy / 100.00)).ceil
-      contribution = direct_cost - contribution
-      subsidy.update_attributes(:pi_contribution => contribution)
-    else
-      contribution = subsidy.pi_contribution
-    end
+
+    percent_subsidy = subsidy.stored_percent_subsidy
+    contribution = (direct_cost * (percent_subsidy / 100.00)).ceil
+    contribution = direct_cost - contribution
+    subsidy.update_attributes(:pi_contribution => contribution)
 
     contribution
   end

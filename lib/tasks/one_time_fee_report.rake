@@ -33,9 +33,22 @@ namespace :data do
                 service_request_id = ssr.service_request.id
                 protocol_id = ssr.service_request.protocol.id
                 short_title = ssr.service_request.protocol.short_title
-                pi = ssr.service_request.protocol.try(:primary_principal_investigator).try(:full_name) || ""
+                pi = ssr.service_request.protocol.try(:primary_principal_investigator).try(:full_name)
                 owner = ssr.owner_id ? Identity.find(ssr.owner_id).full_name : ""
                 
+                ssr.line_items.each do |li|
+                  if li.service.is_one_time_fee? && (li.created_at.to_date > 2012-03-01)
+                    if li.fulfillments.empty?
+                      row = [protocol_id, service_request_id, short_title, pi, provider.abbreviation, program.abbreviation, core.abbreviation, owner, li.service.name, (li.in_process_date.to_date rescue nil), (li.complete_date.to_date rescue nil), "null", "null", "null", "null"]
+                      csv << row
+                    else
+                      li.fulfillments.each do |fulfillment|
+                        row = [protocol_id, service_request_id, short_title, pi, provider.abbreviation, program.abbreviation, core.abbreviation, owner, li.service.name, (li.in_process_date.to_date rescue nil), (li.complete_date.to_date rescue nil), (fulfillment.date.to_date rescue nil), fulfillment.timeframe, fulfillment.time, fulfillment.notes]
+                        csv << row
+                      end
+                    end
+                  end
+                end
               end
 
             end

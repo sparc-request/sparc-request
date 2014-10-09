@@ -5,19 +5,50 @@ namespace :data do
       print(*args)
       STDIN.gets.strip
     end
-    
-    providers = Organization.where(:type => "provider")
-    puts ""
-    puts "ID        Name"
-    puts ""
 
-    providers.each do |org|
-      puts "#{org.id}".rjust(2) + "        " + "#{org.name}"
+    def get_user_provider_input
+      providers = Organization.where(:type => "provider")
+      puts ""
+      puts "ID        Name"
+      puts ""
+
+      providers.each do |org|
+        puts "#{org.id}".rjust(2) + "        " + "#{org.name}"
+      end
+
+      puts ""
+      puts ""
+      provider_id = prompt("Please enter one of the above provider ids you would like to run the report for: ")
+
+      provider_id
     end
 
-    puts ""
-    puts ""
-    provider_id = prompt("Please enter one of the above provider ids you would like to run the report for: ")
+    def build_one_time_fee_report csv, ssr, provider, program, core
+      if ssr.service_request.protocol
+        service_request_id = ssr.service_request.id
+        protocol_id = ssr.service_request.protocol.id
+        short_title = ssr.service_request.protocol.short_title
+        pi = ssr.service_request.protocol.try(:primary_principal_investigator).try(:full_name)
+        owner = ssr.owner_id ? Identity.find(ssr.owner_id).full_name : ""
+
+        ssr.line_items.each do |li|
+          if li.service.is_one_time_fee? && (li.created_at.to_date > 2012-03-01)
+            if li.fulfillments.empty?
+              row = [protocol_id, service_request_id, short_title, pi, provider.abbreviation, program.abbreviation, core.abbreviation, owner, li.service.name, (li.in_process_date.to_date rescue nil), (li.complete_date.to_date rescue nil), "null", "null", "null", "null"]
+              csv << row
+            else
+              li.fulfillments.each do |fulfillment|
+                row = [protocol_id, service_request_id, short_title, pi, provider.abbreviation, program.abbreviation, core.abbreviation, owner, li.service.name, (li.in_process_date.to_date rescue nil), (li.complete_date.to_date rescue nil), (fulfillment.date.to_date rescue nil), fulfillment.timeframe, fulfillment.time, fulfillment.notes]
+                csv << row
+              end
+            end
+          end
+        end
+      end
+    end
+
+    provider_id = get_user_provider_input
+
     unless provider_id.blank?
       provider = Organization.find(provider_id)
      
@@ -28,27 +59,7 @@ namespace :data do
         provider.programs.each do |program|
           program.cores.each do |core|
             core.sub_service_requests.each do |ssr|
-              if ssr.service_request.protocol
-                service_request_id = ssr.service_request.id
-                protocol_id = ssr.service_request.protocol.id
-                short_title = ssr.service_request.protocol.short_title
-                pi = ssr.service_request.protocol.try(:primary_principal_investigator).try(:full_name)
-                owner = ssr.owner_id ? Identity.find(ssr.owner_id).full_name : ""
-                
-                ssr.line_items.each do |li|
-                  if li.service.is_one_time_fee? && (li.created_at.to_date > 2012-03-01)
-                    if li.fulfillments.empty?
-                      row = [protocol_id, service_request_id, short_title, pi, provider.abbreviation, program.abbreviation, core.abbreviation, owner, li.service.name, (li.in_process_date.to_date rescue nil), (li.complete_date.to_date rescue nil), "null", "null", "null", "null"]
-                      csv << row
-                    else
-                      li.fulfillments.each do |fulfillment|
-                        row = [protocol_id, service_request_id, short_title, pi, provider.abbreviation, program.abbreviation, core.abbreviation, owner, li.service.name, (li.in_process_date.to_date rescue nil), (li.complete_date.to_date rescue nil), (fulfillment.date.to_date rescue nil), fulfillment.timeframe, fulfillment.time, fulfillment.notes]
-                        csv << row
-                      end
-                    end
-                  end
-                end
-              end
+              build_one_time_fee_report(csv, ssr, provider, program, core)
             end
           end
         end

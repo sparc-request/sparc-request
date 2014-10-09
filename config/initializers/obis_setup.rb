@@ -88,6 +88,8 @@ begin
   SUBJECT_ETHNICITIES            = config['subject_ethnicities']
   SUBJECT_GENDERS                = config['subject_genders']
   AUDIT_ACTIONS                  = config['audit_actions']
+  ALERT_TYPES                    = config['alert_types']
+  ALERT_STATUSES                 = config['alert_statuses']
 rescue
   raise "constants.yml not found"
 end

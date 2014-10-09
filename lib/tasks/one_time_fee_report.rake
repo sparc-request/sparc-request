@@ -5,17 +5,16 @@ namespace :data do
       print(*args)
       STDIN.gets.strip
     end
+    
     providers = Organization.where(:type => "provider")
     puts ""
     puts "ID        Name"
     puts ""
+
     providers.each do |org|
-      if org.id < 10
-        puts "#{org.id}         #{org.name}"
-      else
-        puts "#{org.id}        #{org.name}"
-      end
+      puts "#{org.id}".rjust(2) + "        " + "#{org.name}"
     end
+
     puts ""
     puts ""
     provider_id = prompt("Please enter one of the above provider ids you would like to run the report for: ")
@@ -50,7 +49,6 @@ namespace :data do
                   end
                 end
               end
-
             end
           end
         end

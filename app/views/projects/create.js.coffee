@@ -31,7 +31,7 @@ else
     $('form').submit()
 
   $('#current_step').val("<%= @current_step %>")
-  $('.new_project').html("<%= escape_javascript(render :partial => 'projects/form', :locals => {:project => @project, :service_request => @service_request}) %>")
+  $('.new_project').html("<%= escape_javascript(render :partial => 'projects/form', :locals => {:project => @protocol, :service_request => @service_request, :current_step => @current_step}) %>")
 
   if <%= @current_step == "user_details" %>
     $('.return-to-previous a span').text("Go Back")

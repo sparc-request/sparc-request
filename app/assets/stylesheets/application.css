@@ -2461,7 +2461,12 @@ input.search-services {
 }
 
 .number_of_subjects_header, .number_units_header {
-  width: 50px;
+  width: 43px;
+}
+
+.service_calendar .subject_count {
+  padding: 5px 0;
+  text-align: center;
 }
 
 .line_item_quantity, .units_per_quantity {

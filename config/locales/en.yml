@@ -242,7 +242,7 @@ en:
       number: "#"
       qty_type: "Qty Type"
       unit_type: "Unit Type"
-      subjects: "# Subjects"
+      subjects: "N"
       total: "Total"
       total_per_patient: "Total Per Patient"
       total_per_study: "Total Per Study"

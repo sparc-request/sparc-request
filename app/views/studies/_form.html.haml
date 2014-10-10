@@ -57,13 +57,13 @@
 
   -if not portal
     .grid_12
-      %h3.blue-provider.step-header.ui-corner-all= @current_step == 'protocol' ? t(:protocol_shared)[:step_text] : t(:protocol_shared)[:step_text_2]
+      %h3.blue-provider.step-header.ui-corner-all= current_step == 'protocol' ? t(:protocol_shared)[:step_text] : t(:protocol_shared)[:step_text_2]
   = f.hidden_field :requester_id
-  = hidden_field_tag :current_step, @current_step
+  = hidden_field_tag :current_step, current_step
   .clear
   = f.error_messages
   
-  .edit-project-view.portal_container= render :partial => 'studies/fields', :locals => {:study => study, :f => f, :portal => portal}
+  .edit-project-view.portal_container= render :partial => 'studies/fields', :locals => {:study => study, :f => f, :portal => portal, :current_step => @current_step}
   .continue.portal_container
     .grid_12
       %div{:class => 'blue-provider'}

@@ -101,7 +101,7 @@ def build_per_patient_per_visit_services
   let!(:clinical_provider)   { FactoryGirl.create(:clinical_provider, organization_id: program.id, identity_id: jug2.id) }
   let!(:available_status)    { FactoryGirl.create(:available_status, organization_id: program.id, status: 'submitted')}
   let!(:available_status2)   { FactoryGirl.create(:available_status, organization_id: program.id, status: 'draft')}
-  let!(:subsidy)             { FactoryGirl.create(:subsidy, pi_contribution: 2500, sub_service_request_id: sub_service_request.id)}
+  let!(:subsidy)             { Subsidy.auditing_enabled = false; FactoryGirl.create(:subsidy, pi_contribution: 2500, sub_service_request_id: sub_service_request.id)}
   let!(:subsidy_map)         { FactoryGirl.create(:subsidy_map, organization_id: program.id) }
 end
 

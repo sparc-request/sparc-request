@@ -194,6 +194,25 @@ $('.units_per_quantity').live 'change', ->
     $('#unit_max_error').css('border', '')
     $(this).css('border', '')
 
+$(document).ready ->
+  $('input[value="Screening Phase"]').each ->
+    $(this).parent("div").append('<img src="/assets/information.png" class="screening_info_img">')
+  $('img.screening_info_img').qtip
+    content: 'Enter the number of subjects you expect to screen as well as how many screening visits are required. If no screening phase is required, you can change the name of the "Arm" to meet your needs.'
+    position:
+      corner:
+        target: "topRight"
+        tooltip: "bottomLeft"
+
+    style:
+      tip: true
+      border:
+        width: 0
+        radius: 4
+
+      name: "light"
+      width: 250
+
 verify_unit_minimum = (obj) ->
   unit_min = parseInt(obj.attr('unit_minimum'), 10)
   prev_qty = obj.attr('current_quantity')

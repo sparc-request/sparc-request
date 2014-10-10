@@ -114,6 +114,7 @@ class ServiceRequestsReport < ReportingModule
 
   # Conditions
   def where args={}
+    organizations = Organization.find(:all)
     selected_organization_id = args[:core_id] || args[:program_id] || args[:provider_id] || args[:institution_id] # we want to go up the tree, service_organization_ids plural because we might have child organizations to include
 
     if args[:tags]
@@ -126,7 +127,7 @@ class ServiceRequestsReport < ReportingModule
     service_organization_ids = [selected_organization_id]
     if selected_organization_id
       org = Organization.find(selected_organization_id)
-      service_organization_ids += org.all_children.map(&:id)
+      service_organization_ids += org.all_children(organizations).map(&:id)
       service_organization_ids.flatten!
     end
 
@@ -135,7 +136,7 @@ class ServiceRequestsReport < ReportingModule
     # get child organizations that have process_ssr
     if not ssr_organization_ids.empty?
       org = Organization.find(selected_organization_id)
-      ssr_organization_ids = [ssr_organization_ids, org.all_children.select{|x| x.process_ssrs?}.map(&:id)].flatten
+      ssr_organization_ids = [ssr_organization_ids, org.all_children(organizations).select{|x| x.process_ssrs?}.map(&:id)].flatten
     end
 
     if args[:service_requests_submitted_at_from] and args[:service_requests_submitted_at_to]

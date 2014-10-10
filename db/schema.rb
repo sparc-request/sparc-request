@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20140915132438) do
+ActiveRecord::Schema.define(:version => 20141009174948) do
 
   create_table "admin_rates", :force => true do |t|
     t.integer  "line_item_id"
@@ -29,6 +29,13 @@ ActiveRecord::Schema.define(:version => 20140915132438) do
   end
 
   add_index "affiliations", ["protocol_id"], :name => "index_affiliations_on_protocol_id"
+
+  create_table "alerts", :force => true do |t|
+    t.string   "alert_type"
+    t.string   "status"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "answers", :force => true do |t|
     t.integer  "question_id"

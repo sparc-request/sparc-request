@@ -408,7 +408,7 @@ describe 'organization' do
       end
 
       it "should set the status to the default if there are no parent statuses" do
-        provider.get_available_statuses.should include("draft" => "Draft", "submitted" => "Submitted", "complete" => "Complete", "in_process" => "In Process", "awaiting_pi_approval" => "Awaiting PI Approval", "on_hold" => "On Hold")
+        provider.get_available_statuses.should include("draft" => "Draft", "submitted" => "Submitted", "complete" => "Complete", "in_process" => "In Process", "awaiting_pi_approval" => "Awaiting Requester Response", "on_hold" => "On Hold")
       end
 
       it "should not get the parent's status if it already has a status" do

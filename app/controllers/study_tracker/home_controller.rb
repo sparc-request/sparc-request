@@ -52,7 +52,7 @@ class StudyTracker::HomeController < StudyTracker::BaseController
     @protocol_ids = params[:study_tracker_billing_report_protocol_ids] || ["All"]
     @protocol_ids.delete("All")
 
-    if @protocol_ids.blank? or @protocol_ids = ["All"]
+    if @protocol_ids.blank? or @protocol_ids == ["All"]
       @protocol_ids = SubServiceRequest.where(:in_work_fulfillment => true).map{|x| x.service_request.protocol.id}.uniq
     end
 

@@ -26,4 +26,7 @@ $(document).ready ->
     validates = $(this).attr('validates')
     $('#location').val(location)
     $('#validates').val(validates)
+    if location == 'service_subsidy'
+      $('td.visit input').each ->
+        $(this).attr('disabled', true)
     $('#navigation_form').submit()

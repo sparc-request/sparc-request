@@ -112,6 +112,14 @@ body .ui-tabs .ui-tabs-panel {
   padding: 5px;
 }
 
+#service_calendar .service_calendar .table_header th.number_of_subjects_header {
+  width: 43px;
+  padding: 0;
+}
+#service_calendar .service_calendar .line_item td.subject_count {
+  padding: 5px 0;
+}
+
 .service_calendar .odd {
   background: #E8E8E8;
 }

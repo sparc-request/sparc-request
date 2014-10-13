@@ -26,7 +26,7 @@
 
 = javascript_include_tag 'studies'
 
-%table.protocol_details_container{:style => @current_step == 'protocol' ? nil : "display:none;"}
+%table.protocol_details_container{:style => current_step == 'protocol' ? nil : "display:none;"}
   %tr
     %td.box
       .info
@@ -289,7 +289,7 @@
     .clear
     %br
 
-.user-details-container{:style => @current_step == 'user_details' ? nil : "display:none;"}
+.user-details-container{:style => current_step == 'user_details' ? nil : "display:none;"}
   .user-details-js= render :partial => 'shared/user_details'
 
   %table.user-details-section#identity_details

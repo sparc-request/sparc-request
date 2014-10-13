@@ -26,7 +26,7 @@
 
 = javascript_include_tag 'projects'
 
-.container_12.protocol_details_container{:style => @current_step == 'protocol' ? nil : "display:none;"}
+.container_12.protocol_details_container{:style => current_step == 'protocol' ? nil : "display:none;"}
   .grid_6.box
     .info
       .field
@@ -39,17 +39,17 @@
         
       .field
         = f.label :funding_status, t(:protocol_shared)[:funding_status]
-        = f.select :funding_status, options_for_select(FUNDING_STATUSES, @protocol.funding_status), :include_blank => t(:project_form)[:dropdown_default1]
+        = f.select :funding_status, options_for_select(FUNDING_STATUSES, project.funding_status), :include_blank => t(:project_form)[:dropdown_default1]
 
       #funded
         .field
           = f.label :funding_source, t(:protocol_shared)[:funding_source]
-          = f.select :funding_source, options_for_select(FUNDING_SOURCES, @protocol.funding_source), :include_blank => t(:project_form)[:dropdown_default2]
+          = f.select :funding_source, options_for_select(FUNDING_SOURCES, project.funding_source), :include_blank => t(:project_form)[:dropdown_default2]
 
       #pending_funding 
         .field
           = f.label :potential_funding_source, t(:protocol_shared)[:potential_funding_source]
-          = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, @protocol.potential_funding_source), :include_blank => t(:project_form)[:dropdown_default3]
+          = f.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, project.potential_funding_source), :include_blank => t(:project_form)[:dropdown_default3]
 
       .field
         = f.label :brief_description, t(:project_form)[:description]
@@ -61,7 +61,7 @@
   .clear
   %br
 
-.user-details-container{:style => @current_step == 'user_details' ? nil : "display:none;"}
+.user-details-container{:style => current_step == 'user_details' ? nil : "display:none;"}
   .user-details-js= render :partial => 'shared/user_details'
 
   .container_12.user-details-section#identity_details
@@ -69,7 +69,7 @@
     .grid_6.box
       .info
         = render :partial => 'shared/user_search'
-        - hide_user_details = (@protocol.new_record? and @protocol.project_roles.empty?) ? '' : 'display:none;'
+        - hide_user_details = (project.new_record? and project.project_roles.empty?) ? '' : 'display:none;'
         .user_added_message{:style => 'display:none;'}
         %p
           - t(:protocol_shared)[:add_user]
@@ -82,4 +82,4 @@
   .clear
   %br
 
-  .grid_12= render :partial => 'shared/user_list', :locals => {:protocol => @protocol}
+  .grid_12= render :partial => 'shared/user_list', :locals => {:protocol => project}

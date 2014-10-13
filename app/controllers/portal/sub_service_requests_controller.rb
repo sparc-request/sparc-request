@@ -200,8 +200,18 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       @sub_service_request.save
     elsif document_id
       # we need to update an existing document
-      new_doc = document ? document : docObject.document # use the old document
-      docObject.update_attributes(:document => document, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other])
+      if docObject.sub_service_requests.size > 1
+        # if updating here will affect other ssr's docs, create a new document and remove association to old document.
+        new_doc = document ? document : docObject.document # if no new document provided use the old document
+        newDocument = Document.create :document => new_doc, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other], :service_request_id => @service_request.id
+        @sub_service_request.documents << newDocument
+        @sub_service_request.documents.delete docObject
+        @sub_service_request.save
+      else
+        # updating this document will not affect other ssrs.
+        new_doc = document ? document : docObject.document # if no new document provided use the old document
+        docObject.update_attributes(:document => new_doc, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other])
+      end
     end
 
     if errors

@@ -65,8 +65,14 @@ module ApplicationHelper
       returning_html += text_field_tag "visits_#{visit.id}_effort_billing_qty", visit.effort_billing_qty, :current_quantity => visit.effort_billing_qty, :previous_quantity => visit.effort_billing_qty, :"data-unit-minimum" => unit_minimum, :'data-arm_id' => arm.id, :class => "line_item_visit_billing visits_#{visit.id}", :update => "#{base_url}&tab=billing_strategy&column=effort_billing_qty&portal=#{portal}"
       raw(returning_html)
     when 'calendar'
-      label_tag nil, "#{visit.research_billing_qty + visit.insurance_billing_qty} - " + currency_converter(totals_hash["#{visit.id}"]), :class => "line_item_visit_pricing"
+      label_tag nil, qty_cost_label("#{visit.research_billing_qty + visit.insurance_billing_qty} - ", currency_converter(totals_hash["#{visit.id}"])), :class => "line_item_visit_pricing"
     end
+  end
+
+  def qty_cost_label qty, cost
+    return nil if cost.nil?
+
+    qty + cost
   end
 
   def generate_visit_header_row arm, service_request, page, sub_service_request, portal=nil

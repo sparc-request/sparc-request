@@ -329,7 +329,7 @@ $(document).ready ->
       'arm_id': $('#arm_id').val()
       'study_tracker': $('#study_tracker_hidden_field').val() || null
       'visit_name': $('#visit_name').val()
-      'visit_window_before': $('#visit_window_before')
+      'visit_window_before': $('#visit_window_before').val()
       'visit_day': $('#visit_day').val()
       'visit_window_after': $('#visit_window_after').val()
     $.ajax

@@ -20,14 +20,12 @@
 
 module Portal::ProjectsHelper
   def user_rights(project_role)
-    if project_role.can_switch_to?('approve', project_role.project_rights) #user.auth_change_study
-      return  true
-    elsif project_role.can_switch_to?('request', project_role.project_rights) #user.req_app_services
-      return true
-    elsif project_role.can_switch_to?('view', project_role.project_rights) #user.view_only_rights
+    if project_role.project_rights == "view" || project_role.project_rights == "none"
+      return false
+    elsif project_role.role == "primary_pi" || project_role.role == "pi"
       return false
     else
-      return false
+      return true
     end
   end
 

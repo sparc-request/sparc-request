@@ -74,24 +74,12 @@ class ProjectRole < ActiveRecord::Base
     return false
   end
 
-  def can_switch_to?(right, current_user)
-    # none, view, request, approve
-    
-    if current_user == identity
-      if right == 'none' or right == 'view'
-        return false
-      end
-
-      if right == 'request' and role != 'pi' and role != 'primary-pi'
-        return true
-      end
-    end
-
-    if (right == 'none' or right == 'view' or right == 'request') and (role == 'pi' || role == 'primary-pi')
+  def can_switch_to?()
+    if role =='primary-pi'|| role == 'pi'
       return false
+    else
+      return true
     end
-
-    return true
   end
 
   def should_select?(right, current_user)
@@ -110,8 +98,13 @@ class ProjectRole < ActiveRecord::Base
     if current_user == identity and role != 'pi' and role != 'primary-pi' and right == 'request'
       return true
     end
-
     return false
+  end
+
+  def set_default_rights
+    if role == "business-grants-manager" || role == "primary-pi" || role == "pi"
+      self.project_rights = 'approve'
+    end
   end
 
   def display_rights

@@ -32,7 +32,7 @@ else
     $('form').submit()
 
   $('#current_step').val("<%= @current_step %>")
-  $('.new_study').html("<%= escape_javascript(render :partial => 'studies/form', :locals => {:study => @protocol, :portal => @portal}) %>")
+  $('.new_study').html("<%= escape_javascript(render :partial => 'studies/form', :locals => {:study => @protocol, :portal => @portal, :current_step => @current_step}) %>")
 
   if <%= @current_step == "user_details" %>
     $('.return-to-previous a span').text("Go Back")

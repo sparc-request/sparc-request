@@ -305,7 +305,8 @@ describe EpicInterface do
     end
 
     it 'should emit a subjectOf for an nct number' do
-      study.human_subjects_info.update_attributes(nct_number: 'asdf1234')
+      study.human_subjects_info.update_attributes(nct_number: '12345678')
+      study.research_types_info.update_attributes(human_subjects: true)
 
       epic_interface.send_study_creation(study)
 
@@ -315,7 +316,7 @@ describe EpicInterface do
                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
           <studyCharacteristic classCode="OBS" moodCode="EVN">
             <code code="NCT" />
-            <value xsi:type="ST" value="asdf1234" />
+            <value xsi:type="ST" value="12345678" />
           </studyCharacteristic>
         </subjectOf>
       END
@@ -767,8 +768,8 @@ describe EpicInterface do
 
           epic_interface.send_billing_calendar(study)
 
-          low = epic_interface.relative_date(visit_group.day - visit_group.window, study.start_date)
-          high = epic_interface.relative_date(visit_group.day + visit_group.window, study.start_date)
+          low = epic_interface.relative_date(visit_group.day - visit_group.window_before, study.start_date)
+          high = epic_interface.relative_date(visit_group.day + visit_group.window_after, study.start_date)
 
           xml = <<-END
             <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">

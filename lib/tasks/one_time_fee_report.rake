@@ -32,7 +32,7 @@ namespace :data do
     def build_one_time_fee_report csv, ssr, provider, program, core
       if ssr.service_request.protocol
         service_request_id = full_ssr_id(ssr)
-        status = ssr.status.humanize
+        status = AVAILABLE_STATUSES[ssr.status]
         protocol_id = ssr.service_request.protocol.id
         short_title = ssr.service_request.protocol.short_title
         pi = ssr.service_request.protocol.try(:primary_principal_investigator).try(:full_name)

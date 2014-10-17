@@ -19,16 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Portal::ProjectsHelper
-  def user_rights(project_role)
-    if project_role.project_rights == "view" || project_role.project_rights == "none"
-      return false
-    elsif project_role.role == "primary_pi" || project_role.role == "pi"
-      return false
-    else
-      return true
-    end
-  end
-
   def check_or_x(boolean)
     boolean ? content_tag(:span, '', :class => 'icon check') : content_tag(:span, '', :class => 'icon uncheck')
   end

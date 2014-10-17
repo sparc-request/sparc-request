@@ -38,6 +38,15 @@ class ProjectRole < ActiveRecord::Base
 
   validates :role, :presence => true
   validates :project_rights, :presence => true
+   def user_rights()
+    if project_rights == "view" || project_rights == "none"
+      return false
+    elsif role == "primary_pi" || role == "pi"
+      return false
+    else
+      return true
+    end
+  end
 
   def validate_uniqueness_within_protocol
     duplicate_project_roles = self.protocol.project_roles.select {|x| x.identity_id == self.identity_id}

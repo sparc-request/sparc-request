@@ -110,7 +110,7 @@
           %td
             = pretty_program_core(ssr)
           %td
-            = ssr.status
+            = AVAILABLE_STATUSES[ssr.status]
           %td.no_background
             %center
               %a.new-portal-notification-button{:title => "Send Notifications", :'data-ssr_id' => ssr.ssr_id.to_s, :'data-sr_id' => sr.id}

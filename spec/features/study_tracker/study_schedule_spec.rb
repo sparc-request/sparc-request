@@ -292,12 +292,12 @@ describe "study schedule", :js => true do
        describe "changing the number of units" do
 
         it "should save the new number of units" do
+          find("#quantity.line_item_quantity").click
           find("#quantity.line_item_quantity").set("6")
-          find(".user-information-body").click
+          sleep 1
+          page.execute_script("$('#quantity.line_item_quantity').change()")
           wait_for_javascript_to_finish
-          sleep 3
-          find(".units_per_quantity").click()
-          wait_for_javascript_to_finish
+          sleep 2
           find(".line_item_quantity").should have_value("6")
         end
       end
@@ -305,12 +305,12 @@ describe "study schedule", :js => true do
       describe "changing the units per quantity" do
 
         it "should save the new units per quantity" do
-          find(".units_per_quantity").set(5)
-          find(".user-information-body").click
+          find(".units_per_quantity").click
+          find(".units_per_quantity").set("5")
+          sleep 1
+          page.execute_script("$('.units_per_quantity').change()")
           wait_for_javascript_to_finish
-          sleep 3
-          find(".line_item_quantity").click()
-          wait_for_javascript_to_finish
+          sleep 2
           find(".units_per_quantity").should have_value("5")
         end
       end

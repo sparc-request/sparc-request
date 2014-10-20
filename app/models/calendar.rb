@@ -69,11 +69,11 @@ class Calendar < ActiveRecord::Base
           end
         end
       end
-    if !(values.empty?)
-      Procedure.import columns, values, {:validate => true}
-    end
-    self.reload
-    self.subject.update_attributes(arm_edited: false)
+      if !(values.empty?)
+        Procedure.import columns, values, {:validate => true}
+      end
+      self.reload
+      self.subject.update_attributes(arm_edited: false)
     end
   end
 
@@ -90,12 +90,8 @@ class Calendar < ActiveRecord::Base
     if self.appointments.empty? || (self.subject.arm.visit_groups.count > self.visit_group_count)
       subject = self.subject
       groups = VisitGroup.where(arm_id: subject.arm.id).includes(visits: { line_items_visit: :line_item })
-      filtered_groups = groups.select{|x| x.appointments.empty?}
-      if filtered_groups == []
-        self.populate(groups)
-      else
-        self.populate(filtered_groups)
-      end
+      filtered_groups = groups.select{ |vg| !vg.appointments.map(&:calendar_id).include?(self.id) }
+      self.populate(filtered_groups)
     end
   end 
 

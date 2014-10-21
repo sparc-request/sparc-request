@@ -82,7 +82,7 @@ describe "study schedule", :js => true do
           end
           it "should not allow invalid day ranges to be entered" do 
             wait_for_javascript_to_finish
-            sleep 60
+            sleep 2
             first("#window_before.visit_window_before").set '-1'
             find(".user-information-body").click
             sleep 1

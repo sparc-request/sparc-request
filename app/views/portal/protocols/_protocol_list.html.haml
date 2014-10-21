@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- @protocols.each do |protocol|
+- protocols.each do |protocol|
   %h3.blue-provider{:id => "blue-provider-#{protocol.id}", :class => "blue-provider-#{protocol.id}", :'data-protocol_id' => "#{protocol.id}"}
     %a{:href => '#'}
       .left.protocol-accordion-title

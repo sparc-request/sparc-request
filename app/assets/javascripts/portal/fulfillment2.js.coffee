@@ -296,6 +296,7 @@ $(document).ready ->
   )
 
   $('#visit-form').dialog
+    dialogClass: "new_visit_dialog"
     autoOpen: false
     height: 275
     width: 300

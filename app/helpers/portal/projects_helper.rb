@@ -19,18 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Portal::ProjectsHelper
-  def user_rights(project_role)
-    if project_role.can_switch_to?('approve', project_role.project_rights) #user.auth_change_study
-      return  true
-    elsif project_role.can_switch_to?('request', project_role.project_rights) #user.req_app_services
-      return true
-    elsif project_role.can_switch_to?('view', project_role.project_rights) #user.view_only_rights
-      return false
-    else
-      return false
-    end
-  end
-
   def check_or_x(boolean)
     boolean ? content_tag(:span, '', :class => 'icon check') : content_tag(:span, '', :class => 'icon uncheck')
   end

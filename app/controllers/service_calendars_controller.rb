@@ -133,12 +133,24 @@ class ServiceCalendarsController < ApplicationController
     end
   end
 
-  def set_window
-    window = params[:window]
+  def set_window_before
+    window_before = params[:window_before]
     position = params[:position].to_i
     arm = Arm.find params[:arm_id]
 
-    if !arm.update_visit_group_window(window, position)
+    if !arm.update_visit_group_window_before(window_before, position)
+      respond_to do |format|
+        format.js { render :status => 418, :json => clean_messages(arm.errors.messages) }
+      end
+    end
+  end
+
+  def set_window_after
+    window_after = params[:window_after]
+    position = params[:position].to_i
+    arm = Arm.find params[:arm_id]
+
+    if !arm.update_visit_group_window_after(window_after, position)
       respond_to do |format|
         format.js { render :status => 418, :json => clean_messages(arm.errors.messages) }
       end

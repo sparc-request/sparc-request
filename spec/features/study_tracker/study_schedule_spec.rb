@@ -82,12 +82,13 @@ describe "study schedule", :js => true do
           end
           it "should not allow invalid day ranges to be entered" do 
             wait_for_javascript_to_finish
-            first("#window.visit_window").set '-1'
+            sleep 2
+            first("#window_before.visit_window_before").set '-1'
             find(".user-information-body").click
             sleep 1
 
             a = page.driver.browser.switch_to.alert
-            a.text.should eq "You've entered an invalid number for the +/- window. Please enter a positive valid number\n"
+            a.text.should eq "You've entered an invalid number for the before window. Please enter a positive valid number\n"
             a.accept
           end 
         end
@@ -110,20 +111,20 @@ describe "study schedule", :js => true do
             page.should have_content 'Service request has been saved'
             wait_for_javascript_to_finish
 
-            select "Insert before 3 - Visit 3", :from => "visit_position"
+            select "Insert before 3 - Visit 2", :from => "visit_position"
             find(:xpath,"//a[@class='add_visit_link']").click
             fill_in "visit_day", :with => -30
             click_button "submit_visit"
             page.should have_content "Out of order the days are out of order. this day appears to go before the previous day..."
             fill_in "visit_day", :with => 2
-            fill_in "visit_window", :with => -20
+            fill_in "visit_window_before", :with => -20
             click_button "submit_visit"
-            page.should have_content "Invalid window you've entered an invalid number for the +/- window. please enter a positive valid number.."
-            fill_in "visit_window", :with =>1
+            page.should have_content "Invalid window before you've entered an invalid number for the before window. please enter a positive valid number.."
+            fill_in "visit_window_before", :with =>1
             click_button "submit_visit"
             wait_for_javascript_to_finish
 
-            select "Insert before 2 - Visit 2", :from => "visit_position"
+            select "Insert before 2 - Visit Name", :from => "visit_position"
             find(:xpath,"//a[@class='add_visit_link']").click
             fill_in "visit_day", :with => -20
             click_button "submit_visit" 
@@ -291,12 +292,12 @@ describe "study schedule", :js => true do
        describe "changing the number of units" do
 
         it "should save the new number of units" do
+          find("#quantity.line_item_quantity").click
           find("#quantity.line_item_quantity").set("6")
-          find(".user-information-body").click
+          sleep 1
+          page.execute_script("$('#quantity.line_item_quantity').change()")
           wait_for_javascript_to_finish
-          sleep 3
-          find(".units_per_quantity").click()
-          wait_for_javascript_to_finish
+          sleep 2
           find(".line_item_quantity").should have_value("6")
         end
       end
@@ -304,12 +305,12 @@ describe "study schedule", :js => true do
       describe "changing the units per quantity" do
 
         it "should save the new units per quantity" do
-          find(".units_per_quantity").set(5)
-          find(".user-information-body").click
+          find(".units_per_quantity").click
+          find(".units_per_quantity").set("5")
+          sleep 1
+          page.execute_script("$('.units_per_quantity').change()")
           wait_for_javascript_to_finish
-          sleep 3
-          find(".line_item_quantity").click()
-          wait_for_javascript_to_finish
+          sleep 2
           find(".units_per_quantity").should have_value("5")
         end
       end

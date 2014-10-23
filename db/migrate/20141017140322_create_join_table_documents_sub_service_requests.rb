@@ -19,11 +19,11 @@ class CreateJoinTableDocumentsSubServiceRequests < ActiveRecord::Migration
   def clean_grouping grouping
     used_created_dates = []
     grouping.documents.each do |doc|
-      next if used_created_dates.include? doc.created_at #already dealt with this document
+      next if (used_created_dates.include? doc.created_at or used_created_dates.include? doc.created_at-1 or used_created_dates.include? doc.created_at+1)#already dealt with this document
       used_created_dates << doc.created_at # store unique dates from grouping based on created_at date
       ssr_ids = []
       # get ssr_ids of all documents of a particular created_date
-      repeated_docs = grouping.documents.where(created_at: doc.created_at)
+      repeated_docs = grouping.documents.where("created_at >= :startTime AND created_at <= :endTime", {startTime: doc.created_at-1, endTime: doc.created_at+1})
       repeated_docs.each do |copy|
         next if copy.id == doc.id
         doc_change = (doc.document_file_name != copy.document_file_name or doc.document_file_size != copy.document_file_size)

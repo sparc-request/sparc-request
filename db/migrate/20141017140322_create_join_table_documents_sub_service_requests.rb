@@ -22,6 +22,7 @@ class CreateJoinTableDocumentsSubServiceRequests < ActiveRecord::Migration
       next if (used_created_dates.include? doc.created_at or used_created_dates.include? doc.created_at-1 or used_created_dates.include? doc.created_at+1)#already dealt with this document
       used_created_dates << doc.created_at # store unique dates from grouping based on created_at date
       ssr_ids = []
+      ssr_ids << doc.sub_service_request_id
       # get ssr_ids of all documents of a particular created_date
       repeated_docs = grouping.documents.where("created_at >= :startTime AND created_at <= :endTime", {startTime: doc.created_at-1, endTime: doc.created_at+1})
       repeated_docs.each do |copy|

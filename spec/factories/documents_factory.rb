@@ -18,31 +18,15 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#= require navigation
-
-$(document).ready ->
-
-  $(".document_upload_button").click ->
-    $("#process_ssr_organization_ids").removeAttr('disabled')
-    $("#document").removeAttr('disabled')
-    $(".document_upload_button").hide()
-    $('#doc_type').change()
-
-  $(".document_edit").click ->
-    $("#process_ssr_organization_ids").removeAttr('disabled')
-    $("#document").removeAttr('disabled')
-    $(".document_upload_button").hide()
-    $('.document_edit span').html('Loading...')
-    $('.document_delete').hide()
-
-  $("#cancel_upload").live 'click', ->
-    $("#process_ssr_organization_ids").attr('disabled', 'disabled')
-    $("#document").attr('disabled', 'disabled')
-    $('.document_delete').show()
-
-  $(document).on('change', '#doc_type', ->
-    if $(this).val() == 'other'
-      $('.document_type_other').show()
-    else
-      $('.document_type_other').hide()
-  )
+FactoryGirl.define do
+  factory :document do
+    doc_type             { 'other' }
+    doc_type_other       { Faker::Lorem.word }
+    document_file_name   { Faker::Lorem.word + '.docx' }
+    document_content_type{ 'application/msword' }
+    document_file_size   { Random.rand(100000) }
+    document_updated_at  { Time.now }
+    created_at           { Time.now }
+    updated_at           { Time.now }
+  end
+end

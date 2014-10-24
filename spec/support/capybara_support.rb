@@ -368,4 +368,13 @@ module CapybaraSupport
     assert_email_project_roles
     assert_email_admin_information
   end
+
+  def fake_document_upload
+    tempDoc = ActionDispatch::Http::UploadedFile.new({
+      :filename     => 'testDoc.docx',
+      :type         => 'application/msword',
+      :tempfile     => Tempfile.new('testDoc')
+      })
+    tempDoc
+  end
 end

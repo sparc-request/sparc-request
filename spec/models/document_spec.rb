@@ -18,31 +18,27 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#= require navigation
+require 'spec_helper'
 
-$(document).ready ->
+describe Document do
+  it{ should belong_to :service_request }
+  it{ should have_and_belong_to_many :sub_service_requests }
 
-  $(".document_upload_button").click ->
-    $("#process_ssr_organization_ids").removeAttr('disabled')
-    $("#document").removeAttr('disabled')
-    $(".document_upload_button").hide()
-    $('#doc_type').change()
+  it 'should create a document' do
+    doc = Document.create()
+    doc.should be_an_instance_of Document
+  end
 
-  $(".document_edit").click ->
-    $("#process_ssr_organization_ids").removeAttr('disabled')
-    $("#document").removeAttr('disabled')
-    $(".document_upload_button").hide()
-    $('.document_edit span').html('Loading...')
-    $('.document_delete').hide()
+  describe 'display_document_type' do
+    let!(:document1) { FactoryGirl.create(:document, doc_type: 'other', doc_type_other: 'support') }
+    let!(:document2) { FactoryGirl.create(:document, doc_type: 'hipaa') }
 
-  $("#cancel_upload").live 'click', ->
-    $("#process_ssr_organization_ids").attr('disabled', 'disabled')
-    $("#document").attr('disabled', 'disabled')
-    $('.document_delete').show()
+    it 'should display correctly for doc type other' do
+      document1.display_document_type.should eq('Support')
+    end
 
-  $(document).on('change', '#doc_type', ->
-    if $(this).val() == 'other'
-      $('.document_type_other').show()
-    else
-      $('.document_type_other').hide()
-  )
+    it 'should display correctly for typical doc type' do 
+      document2.display_document_type.should eq('HIPAA')
+    end
+  end
+end

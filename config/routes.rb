@@ -119,8 +119,9 @@ SparcRails::Application.routes.draw do
   match 'service_requests/:id/unselect_calendar_row/:line_items_visit_id' => 'service_calendars#unselect_calendar_row'
   match 'service_requests/:id/select_calendar_column/:column_id/:arm_id' => 'service_calendars#select_calendar_column'
   match 'service_requests/:id/unselect_calendar_column/:column_id/:arm_id' => 'service_calendars#unselect_calendar_column'
-  match 'service_requests/:id/delete_document_group/:document_group_id' => 'service_requests#delete_documents'
-  match 'service_requests/:id/edit_document_group/:document_group_id' => 'service_requests#edit_documents'
+  match 'service_requests/:id/delete_document/:document_id' => 'service_requests#delete_documents'
+  match 'service_requests/:id/edit_document/:document_id' => 'service_requests#edit_documents'
+  match 'service_requests/:id/new_document' => 'service_requests#new_document'
   match 'rubyception' => 'rubyception/application#index'
 
   ##### sparc-services routes brought in and namespaced
@@ -311,8 +312,8 @@ SparcRails::Application.routes.draw do
         delete "/delete_toast_message/:id" => "admin#delete_toast_message"
       end
     end
-    match '/admin/sub_service_requests/:id/edit_document_group/:document_group_id' => 'sub_service_requests#edit_documents'
-    match "/admin/sub_service_requests/:id/delete_document_group/:document_group_id" => "sub_service_requests#delete_documents"
+    match '/admin/sub_service_requests/:id/edit_document/:document_id' => 'sub_service_requests#edit_documents'
+    match "/admin/sub_service_requests/:id/delete_document/:document_id" => "sub_service_requests#delete_documents"
     
     root :to => 'home#index'
   end

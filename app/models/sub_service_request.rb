@@ -28,7 +28,7 @@ class SubServiceRequest < ActiveRecord::Base
   belongs_to :organization
   has_many :past_statuses, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
-  has_many :documents, :dependent => :destroy
+  has_and_belongs_to_many :documents
   has_many :notes, :dependent => :destroy
   has_many :approvals, :dependent => :destroy
   has_many :payments, :dependent => :destroy
@@ -55,6 +55,7 @@ class SubServiceRequest < ActiveRecord::Base
   attr_accessible :payments_attributes
   attr_accessible :in_work_fulfillment
   attr_accessible :routing
+  attr_accessible :documents
 
   accepts_nested_attributes_for :subsidy
   accepts_nested_attributes_for :line_items, allow_destroy: true

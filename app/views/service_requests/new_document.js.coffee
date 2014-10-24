@@ -18,31 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#= require navigation
-
-$(document).ready ->
-
-  $(".document_upload_button").click ->
-    $("#process_ssr_organization_ids").removeAttr('disabled')
-    $("#document").removeAttr('disabled')
-    $(".document_upload_button").hide()
-    $('#doc_type').change()
-
-  $(".document_edit").click ->
-    $("#process_ssr_organization_ids").removeAttr('disabled')
-    $("#document").removeAttr('disabled')
-    $(".document_upload_button").hide()
-    $('.document_edit span').html('Loading...')
-    $('.document_delete').hide()
-
-  $("#cancel_upload").live 'click', ->
-    $("#process_ssr_organization_ids").attr('disabled', 'disabled')
-    $("#document").attr('disabled', 'disabled')
-    $('.document_delete').show()
-
-  $(document).on('change', '#doc_type', ->
-    if $(this).val() == 'other'
-      $('.document_type_other').show()
-    else
-      $('.document_type_other').hide()
-  )
+$('#new_document').replaceWith("<%= escape_javascript(render :partial => 'service_requests/document_form', :locals => {:service_list => @service_list}) %>")
+$(".document_upload").show()

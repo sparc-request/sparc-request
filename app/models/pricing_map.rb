@@ -43,7 +43,10 @@ class PricingMap < ActiveRecord::Base
   attr_accessible :otf_unit_type
 
   before_save :upcase_otf_unit_type
-
+  
+  validates :full_rate, :display_date, :effective_date, :presence => true
+  validates :full_rate, :numericality => true
+  
   # Determines the rate for a particular service.
   #
   # +default_percentage+:: a number between 0 and 1
@@ -68,6 +71,7 @@ class PricingMap < ActiveRecord::Base
     when 'corporate'  then self.corporate_rate
     when 'member'     then self.member_rate
     when 'other'      then self.other_rate
+    when 'full'       then self.full_rate
     else raise ArgumentError, "Could not find rate for #{rate_type}"
     end
   end

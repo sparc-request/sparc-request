@@ -747,6 +747,7 @@ en:
     errors: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
     show_in_cwf: "Show in Clinical Work Fulfillment"
     position_in_cwf: "Position"
+    ctrc_label: "Nexus"
 
   pricing_map_form:
     dates: "Dates"
@@ -791,6 +792,7 @@ en:
     ask_a_question_email: "Enter Your Email"
     ask_a_question_email_error: "Valid email address required."
     ask_a_question: "Please ask your question here"
+    srid: "SRID:"
 
   # Mailer
   mailer:
@@ -1058,3 +1060,13 @@ en:
     proceed: "Proceed"
     create_report: "Create Report"
     return_to_admin_portal: "Return to Admin Portal"
+  footer:
+    mail_to: "hundc@musc.edu"
+    mail_link: "Sign Up For the SPARC Request Listserv"
+    mail_subject: "SPARC Request Listserv"
+    link_one_text: "SPARC Request Blog"
+    link_one_url: "http://sparcrequestblog.com/"
+    link_two_text: "SCTR"
+    link_two_url: "http://sctr.musc.edu"
+    link_three_text: "SPARC Request Home"
+    link_three_url: "http://academicdepartments.musc.edu/sctr/sparc_request"

@@ -42,7 +42,7 @@
     height: 17px;
     width: 17px;
     margin: 2px 0 -2px;
-    background: url(orange_plus.png) no-repeat;
+    background: url(/assets/portal/orange_plus.png) no-repeat;
   }
 }
 
@@ -51,7 +51,7 @@
 }
 
 .delete-ssr-button {
-  background: url("delete_red.png") no-repeat;
+  background: url("/assets/portal/delete_red.png") no-repeat;
   display: block;
   height: 34px;
   width: 34px;
@@ -60,7 +60,7 @@
 
 .export_to_excel_button,
 .send_to_epic_button {
-  background: url("blue_button_short.png") no-repeat;
+  background: url("/assets/portal/blue_button_short.png") no-repeat;
   color: white;
   display: block;
   height: 25px;

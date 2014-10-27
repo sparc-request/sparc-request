@@ -119,7 +119,7 @@ table.tablesorter thead tr th, table.tablesorter tfoot tr th {
 }
 
 table.tablesorter thead tr .header {
-  background-image: url(bg.gif);
+  background-image: url(/assets/portal/bg.gif);
   background-repeat: no-repeat;
   background-position: center right;
   cursor: pointer;
@@ -136,11 +136,11 @@ table.tablesorter tbody tr.odd td {
 }
 
 table.tablesorter thead tr .headerSortUp {
-  background-image: url(asc.gif);
+  background-image: url(/assets/portal/asc.gif);
 }
 
 table.tablesorter thead tr .headerSortDown {
-  background-image: url(desc.gif);
+  background-image: url(/assets/portal/desc.gif);
 }
 
 table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
@@ -188,21 +188,21 @@ background-color: #8dbdd8;
 
 .admin-buttons .header_button.create_new_request {
   width: 158px;
-  background: url(portal_header_button.png) no-repeat;
+  background: url(/assets/portal/portal_header_button.png) no-repeat;
 }
 .admin-buttons .header_button.reporting {
   width: 93px;
   margin-left: 20px;
-  background: url(portal_header_button_small.png) no-repeat;
+  background: url(/assets/portal/portal_header_button_small.png) no-repeat;
 }
 .admin-buttons .header_button.billing_report {
   width: 213px;
-  background: url(portal_header_button_large.png) no-repeat;
+  background: url(/assets/portal/portal_header_button_large.png) no-repeat;
 }
 .admin-buttons .return_link,
 .admin-buttons .cwf_return_link,
 #study_tracker_access div.ui-button {
-  background: url("blue_button_long.png") no-repeat;
+  background: url("/assets/portal/blue_button_long.png") no-repeat;
   color: white;
   display: block;
   height: 24px;
@@ -225,7 +225,7 @@ background-color: #8dbdd8;
 
 #information a#ssr_save.ui-button,
 #information a#protocol_billing_business_manager_static_email_save.ui-button {
-  background: url("blue_button_short.png") no-repeat;
+  background: url("/assets/portal/blue_button_short.png") no-repeat;
   border: 0 none;
   height: 30px;
   width: 92px;

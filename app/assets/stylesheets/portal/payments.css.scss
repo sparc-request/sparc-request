@@ -84,7 +84,7 @@ table#payments_list {
     height: 14px;
     text-indent: -1000em;
     overflow: hidden;
-    background: url(../clear_icon.png);
+    background: url(/assets/clear_icon.png);
   }
 }
 
@@ -94,11 +94,11 @@ table#payments_list {
   width: 16px;
   text-indent: -1000em;
   overflow: hidden;
-  background: url(delete.png) no-repeat left top;
+  background: url(/assets/portal/delete.png) no-repeat left top;
 }
 
 .add_nested_fields.payments {
-    background: url(add.png) no-repeat left center;
+    background: url(/assets/portal/add.png) no-repeat left center;
     padding-left: 17px;
     color: #3d8834;
 
@@ -108,7 +108,7 @@ table#payments_list {
 }
 
 .add_nested_fields.uploads {
-    background: url(attach.png) no-repeat left center;
+    background: url(/assets/portal/attach.png) no-repeat left center;
     padding-left: 17px;
     white-space: nowrap;
 

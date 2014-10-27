@@ -747,6 +747,7 @@ en:
     errors: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
     show_in_cwf: "Show in Clinical Work Fulfillment"
     position_in_cwf: "Position"
+    ctrc_label: "Nexus"
 
   pricing_map_form:
     dates: "Dates"

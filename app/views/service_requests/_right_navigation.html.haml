@@ -38,10 +38,10 @@
 #ask-a-question-form{:style => 'display: none', :title => 'Ask a Question'}
   = form_tag ask_a_question_service_requests_path, :method => :post, :remote => true do
     %p
-      = text_field_tag "quick_question[email]", nil, {:placeholder => t(:notifications)[:ask_a_question_email], :size => 35, :tabindex => -1}
+      = text_field_tag "quick_question[email]", nil, {:placeholder => t(:notifications)[:ask_a_question_email], :size => 35, :tabindex => 1}
       %span.quick_question_email_error= t(:notifications)[:ask_a_question_email_error]
       %br
       %br
     %p
-      = text_area_tag "quick_question[body]", nil, {:placeholder => t(:notifications)[:ask_a_question], :cols => 65, :rows => 15, :tabindex => -1}
+      = text_area_tag "quick_question[body]", nil, {:placeholder => t(:notifications)[:ask_a_question], :cols => 65, :rows => 15, :tabindex => 2}
 

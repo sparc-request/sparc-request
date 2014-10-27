@@ -792,6 +792,7 @@ en:
     ask_a_question_email: "Enter Your Email"
     ask_a_question_email_error: "Valid email address required."
     ask_a_question: "Please ask your question here"
+    srid: "SRID:"
 
   # Mailer
   mailer:

@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class UserMailer < ActionMailer::Base
-  default :from => "donotreply@musc.edu"
+  default :from => NO_REPLY_FROM
 
   def authorized_user_changed(user, protocol)
     @send_to = user

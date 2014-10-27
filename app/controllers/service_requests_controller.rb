@@ -453,7 +453,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def ask_a_question
-    from = params['quick_question']['email'].blank? ? 'no-reply@musc.edu' : params['quick_question']['email']
+    from = params['quick_question']['email'].blank? ? NO_REPLY_FROM : params['quick_question']['email']
     body = params['quick_question']['body'].blank? ? 'No question asked' : params['quick_question']['body']
 
     quick_question = QuickQuestion.create :to => DEFAULT_MAIL_TO, :from => from, :body => body

@@ -68,6 +68,7 @@ class PricingMap < ActiveRecord::Base
     when 'corporate'  then self.corporate_rate
     when 'member'     then self.member_rate
     when 'other'      then self.other_rate
+    when 'full'       then self.full_rate
     else raise ArgumentError, "Could not find rate for #{rate_type}"
     end
   end

@@ -26,4 +26,12 @@ module Audited
       end
     end
   end
+
+  module Adapters
+    module ActiveRecord
+      class Audit < ::ActiveRecord::Base
+        establish_connection("audit_development")
+      end
+    end
+  end
 end

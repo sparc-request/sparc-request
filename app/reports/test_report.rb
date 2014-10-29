@@ -121,10 +121,10 @@ class TestReport < ReportingModule
 
     ssr_organization_ids = [args[:core_id], args[:program_id], args[:provider_id], args[:institution_id]].compact
 
-    # get child organizations that have process_ssr
+    # get child organizations
     if not ssr_organization_ids.empty?
       org = Organization.find(selected_organization_id)
-      ssr_organization_ids = [ssr_organization_ids, org.all_children.select{|x| x.process_ssrs?}.map(&:id)].flatten
+      ssr_organization_ids = [ssr_organization_ids, org.all_children.map(&:id)].flatten
     end
 
     if args[:service_requests_submitted_at_from] and args[:service_requests_submitted_at_to]

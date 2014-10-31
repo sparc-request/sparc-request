@@ -45,7 +45,7 @@
         %strong
           = label_tag "identity[phone]", t(:portal_user_form)[:phone]
         %br
-        = text_field_tag "identity[phone]", identity.phone
+        = text_field_tag "identity[phone]", identity.phone, {:disabled => true}
         %br
       .user_role
         %strong

@@ -27,7 +27,31 @@ namespace :data do
     protocol = ssr.service_request.protocol
 
     "#{protocol.id}-#{ssr.ssr_id}"
-  end
+    end
+
+    # Determines whether or not to display the time totals for a line item's fulfillments. If any of the fulfillment's timeframes
+    # are not "Min", don't show the total.
+    def should_be_totaled? line_item
+      should_total = true
+      line_item.fulfillments.each do |fulfillment|
+        if fulfillment.timeframe != "Min"
+          should_total = false
+        end
+      end
+
+      should_total
+    end
+
+    # Will either add a blank row or a total row of fulfillment times, depending on what should_be_totaled? returns
+    def add_totaled_row csv, line_item, total
+      if should_be_totaled?(line_item)
+        row = ["", "", "", "", "", "", "", "", "", "", "", "", "", "", total, ""]
+        csv << row
+      else
+        row = []
+        csv << row
+      end
+    end
 
     def build_one_time_fee_report csv, ssr, provider, program, core
       if ssr.service_request.protocol
@@ -39,21 +63,25 @@ namespace :data do
         owner = ssr.owner_id ? Identity.find(ssr.owner_id).full_name : ""
 
         ssr.line_items.each do |li|
+          total = 0
           if li.service.is_one_time_fee? && (li.created_at.to_date > 2012-03-01)
             if li.fulfillments.empty?
               row = [protocol_id, service_request_id, status, short_title, pi, provider.abbreviation, program.abbreviation, core.abbreviation, owner, li.service.name, (li.in_process_date.to_date rescue nil), (li.complete_date.to_date rescue nil), "null", "null", "null", "null"]
               csv << row
             else
               li.fulfillments.each do |fulfillment|
+                total += fulfillment.time.to_i
                 row = [protocol_id, service_request_id, status, short_title, pi, provider.abbreviation, program.abbreviation, core.abbreviation, owner, li.service.name, (li.in_process_date.to_date rescue nil), (li.complete_date.to_date rescue nil), (fulfillment.date.to_date rescue nil), fulfillment.timeframe, fulfillment.time, fulfillment.notes]
                 csv << row
               end
             end
+            add_totaled_row(csv, li, total)
           end
         end
       end
     end
 
+    # End of helper methods, begin generating the report
     provider_id = get_user_provider_input
 
     unless provider_id.blank?

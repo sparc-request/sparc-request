@@ -219,7 +219,6 @@ class EpicInterface
           end
           xml.code(code: role_code)
           xml.value(
-              'xsi:type' => 'CD',
               code: project_role.identity.netid.upcase,
               codeSystem: 'netid')
         }
@@ -234,9 +233,7 @@ class EpicInterface
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'NCT')
-          xml.value(
-            'xsi:type' => 'ST',
-            value: nct_number)
+          xml.value(value: nct_number)
         }
       }
     end
@@ -250,9 +247,7 @@ class EpicInterface
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'IRB')
-          xml.value(
-              'xsi:type' => 'ST',
-              value: irb_number)
+          xml.value(value: irb_number)
         }
       }
     end

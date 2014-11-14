@@ -3,6 +3,8 @@ module V1
   class Shallow < Grape::Entity
     expose  :id, as: :sparc_id
     expose  :remote_service_callback_url, as: :callback_url
+    
+    format_with(:iso_timestamp) { |dt| dt ? dt.iso8601 : nil }
   end
 
   class ArmShallow < Shallow
@@ -11,6 +13,10 @@ module V1
 
   class ClinicalProviderShallow < Shallow
     root 'clinical_providers', 'clinical_provider'
+  end
+
+  class HumanSubjectsInfoShallow < Shallow
+    root 'human_subjects_info', 'human_subjects_info'
   end
 
   class IdentityShallow < Shallow

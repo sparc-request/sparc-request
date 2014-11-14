@@ -153,5 +153,23 @@ class ProjectRole < ActiveRecord::Base
       end
     end
   end
+
+  private
+
+  def protocol_has_at_least_one_sub_service_request_in_cwf?
+    protocol.has_at_least_one_sub_service_request_in_cwf?
+  end
+
+  def notify_remote_after_create?
+    protocol_has_at_least_one_sub_service_request_in_cwf?
+  end
+
+  def notify_remote_around_update?
+    protocol_has_at_least_one_sub_service_request_in_cwf?
+  end
+
+  def notify_remote_after_destroy?
+    protocol_has_at_least_one_sub_service_request_in_cwf?
+  end
 end
 

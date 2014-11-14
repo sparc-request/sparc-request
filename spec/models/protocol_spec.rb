@@ -22,6 +22,50 @@ require 'date'
 require 'spec_helper'
 
 describe 'Protocol' do
+
+  describe '.has_at_least_one_sub_service_request_in_cwf?' do
+
+    before do
+      @protocol = FactoryGirl.build(:protocol)
+      @protocol.save validate: false
+
+      @service_request = FactoryGirl.build(:service_request, protocol: @protocol)
+      @service_request.save validate: false
+    end
+
+    context 'Protocol has at least one SubServiceRequest in CWF' do
+
+      before do
+        SubServiceRequest.skip_callback(:save, :after, :update_org_tree)
+
+        sub_service_request = FactoryGirl.build(:sub_service_request,
+                                                service_request: @service_request,
+                                                in_work_fulfillment: true)
+        sub_service_request.save validate: false
+      end
+
+      it 'should return: true' do
+        expect(@protocol.has_at_least_one_sub_service_request_in_cwf?).to be
+      end
+    end
+
+    context 'Protocol has no SubServiceRequest in CWF' do
+
+      before do
+        SubServiceRequest.skip_callback(:save, :after, :update_org_tree)
+
+        sub_service_request = FactoryGirl.build(:sub_service_request,
+                                                service_request: @service_request,
+                                                in_work_fulfillment: false)
+        sub_service_request.save validate: false
+      end
+
+      it 'should return: false' do
+        expect(@protocol.has_at_least_one_sub_service_request_in_cwf?).to_not be
+      end
+    end
+  end
+
   describe 'funding_source_based_on_status' do
     it 'should return the potential funding source if funding status is pending_funding' do
       study = Study.create(FactoryGirl.attributes_for(:protocol))

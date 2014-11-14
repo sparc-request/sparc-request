@@ -28,6 +28,7 @@ require 'rspec/autorun'
 # require 'database_cleaner'
 require 'factory_girl'
 require 'faker'
+require 'webmock/rspec'
 
 # Add this to load Capybara integration:
 require 'capybara/rspec'
@@ -177,5 +178,9 @@ RSpec.configure do |config|
       end
     end
   end
+
+  config.include DelayedJobHelpers
+  config.include CwfHelper, type: :request
+  config.include ApiAuthenticationHelper, type: :request
 end
 

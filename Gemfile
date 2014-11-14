@@ -55,6 +55,11 @@ gem 'simplecov', :require => false, :group => :test
 gem 'icalendar'
 
 gem 'activerecord-import'
+gem 'grape', '0.7.0'
+gem 'grape-entity', '~> 0.4.4'
+gem 'rest-client'
+gem 'delayed_job_active_record'
+
 group :development, :test, :profile do
   gem 'bullet'
   gem "rails-erd"
@@ -74,7 +79,7 @@ group :development, :test, :profile do
   gem 'thin'
   gem 'equivalent-xml'
   gem 'turn', :require => false
-  gem 'addressable', '~> 2.3.2'
+  gem 'addressable', '~> 2.3.6'
   gem 'watchr'
   gem 'capybara-firebug'
   gem 'capybara-email'
@@ -94,6 +99,8 @@ group 'test' do
   # poltergeist repository is for Capybara 2.0 support.  Poltergeist
   # should official support Capybara 2.0 after Dec. 20.
   gem 'poltergeist' #, :git => 'git://github.com/brutuscat/poltergeist.git'
+  gem 'webmock', '~> 1.20.4'
+  gem 'shoulda-callback-matchers', '~> 1.1.1'
 end
 
 group :development do
@@ -126,3 +133,5 @@ group :assets do
   gem 'uglifier', '>= 1.0.3'
   gem 'inflection-js-rails'
 end
+
+gem 'newrelic_rpm'

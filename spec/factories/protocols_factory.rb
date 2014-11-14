@@ -49,9 +49,19 @@ FactoryGirl.define do
 
     trait :federal do
       funding_source           "federal"
-      potential_funding_source "federal" 
+      potential_funding_source "federal"
     end
-    
+
+    trait :with_sub_service_request_in_cwf do
+      after(:create) do |protocol, evaluator|
+        service_request = FactoryGirl.create(:service_request, protocol: protocol)
+
+        SubServiceRequest.skip_callback(:save, :after, :update_org_tree)
+        sub_service_request = FactoryGirl.build(:sub_service_request_in_cwf, service_request: service_request)
+        sub_service_request.save validate: false
+      end
+    end
+
     ignore do
       project_role_count 1
       pi nil
@@ -59,7 +69,7 @@ FactoryGirl.define do
 
     # TODO: get this to work!
     # after(:build) do |protocol, evaluator|
-    #   FactoryGirl.create_list(:project_role, evaluator.project_role_count, 
+    #   FactoryGirl.create_list(:project_role, evaluator.project_role_count,
     #     protocol: protocol, identity: evaluator.pi)
     # end
 
@@ -76,5 +86,7 @@ FactoryGirl.define do
 
       type { "Study" }
     end
+
+    factory :protocol_with_sub_service_request_in_cwf, traits: [:with_sub_service_request_in_cwf, :funded, :federal]
   end
 end

@@ -48,6 +48,13 @@ begin
   CONSTANTS_YML_OVERRIDE        = application_config['constants_yml_override'] || ''
   SYSTEM_SATISFACTION_SURVEY    = application_config['system_satisfaction_survey']
   NO_REPLY_FROM                 = application_config['no_reply_from']
+  REMOTE_SERVICE_NOTIFIER_PROTOCOL  = application_config['remote_service_notifier_protocol']
+  REMOTE_SERVICE_NOTIFIER_HOST      = application_config['remote_service_notifier_host']
+  REMOTE_SERVICE_NOTIFIER_PATH      = application_config['remote_service_notifier_path']
+  REMOTE_SERVICE_NOTIFIER_USERNAME  = application_config['remote_service_notifier_username']
+  REMOTE_SERVICE_NOTIFIER_PASSWORD  = application_config['remote_service_notifier_password']
+  HOST                              = application_config['host']
+  CURRENT_API_VERSION               = application_config['current_api_version']
 
   if LOCALE_OVERRIDE
     I18n.available_locales = [:en, LOCALE_OVERRIDE]

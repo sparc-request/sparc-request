@@ -32,10 +32,10 @@ FactoryGirl.define do
     # This line was removed, because it causes duplicate pricing maps to
     # be created (see pricing_map_count, below).
     # pricing_maps        { [ FactoryGirl.create(:pricing_map) ] }
-    
+
     trait :disabled do
       is_available false
-    end 
+    end
 
     ignore do
       line_item_count 0
@@ -70,7 +70,7 @@ FactoryGirl.define do
       line_item_count.times do
         service.line_items.build(FactoryGirl.attributes_for(:line_item))
       end
-      
+
       pricing_map_count.times do
         service.pricing_maps.build(FactoryGirl.attributes_for(:pricing_map))
       end
@@ -83,5 +83,11 @@ FactoryGirl.define do
         service.service_relations.build(FactoryGirl.attributes_for(:service_relation))
       end
     end
+
+    trait :without_callback_notify_remote_service_after_create do
+      before(:create) { |service| service.class.skip_callback(:create, :after, :notify_remote_service_after_create) }
+    end
+
+    factory :service_without_callback_notify_remote_service_after_create, traits: [:without_callback_notify_remote_service_after_create]
   end
 end

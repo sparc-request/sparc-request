@@ -19,6 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Service < ActiveRecord::Base
+
+  include RemotelyNotifiable
+
   audited
   acts_as_taggable
 
@@ -295,18 +298,28 @@ class Service < ActiveRecord::Base
   end
 
   def has_service_providers?
-    self.organization.process_ssrs_parent.service_providers.present? rescue true
+    organization.process_ssrs_parent.service_providers.present? rescue true
   end
 
   def is_ctrc_clinical_service?
-    self.organization.tag_list.include? 'ctrc_clinical_services'
+    organization.tag_list.include? 'ctrc_clinical_services'
   end
 
   def is_ctrc?
-    self.organization.has_tag? 'ctrc'
+    organization.has_tag? 'ctrc'
   end
 
   def parents_available?
     self.parents.map(&:is_available).compact.all?
+  end
+
+  private
+
+  def notify_remote_after_create?
+    is_ctrc_clinical_service?
+  end
+
+  def notify_remote_around_update?
+    is_ctrc_clinical_service?
   end
 end

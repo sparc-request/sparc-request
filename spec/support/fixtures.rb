@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 def let_there_be_lane
-  let!(:jug2) { FactoryGirl.create(:identity, 
+  let!(:jug2) { FactoryGirl.create(:identity,
       last_name:             'Glenn',
       first_name:            'Julia',
       ldap_uid:              'jug2',
@@ -36,7 +36,7 @@ def let_there_be_lane
 end
 
 def let_there_be_j
-  let!(:jpl6) { FactoryGirl.create(:identity, 
+  let!(:jpl6) { FactoryGirl.create(:identity,
       last_name:             'Leonard',
       first_name:            'Jason',
       ldap_uid:              'jpl6@musc.edu',
@@ -70,7 +70,7 @@ def build_service_request_with_project_and_per_patient_per_visit_only
   build_service_request()
   build_project()
   build_arms()
-  build_per_patient_per_visit_services() 
+  build_per_patient_per_visit_services()
 end
 
 def build_service_request_with_study

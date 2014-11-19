@@ -3,45 +3,45 @@
 #   is_mandatory for all questions in a survey.
 survey "Data Request Form survey", :default_mandatory => false do
 #####################################################
-  section "Requestor's Contact Information" do
+  section "Data Request Form survey" do
 #####################################################    
-    label "<h2>Requestor's Contact Information</h2>"
+#    label "<h2>Requestor's Contact Information</h2>"
     
-    q "First Name", :is_mandatory => true
-    a :string
+#    q "First Name", :is_mandatory => true
+#    a :string
   #  validation :rule => "A"
   #  condition_A ">=", :integer_value => 0
     
-    q "Last Name", :is_mandatory => true
-    a :string
+#    q "Last Name", :is_mandatory => true
+#    a :string
    # validation :rule => "Required"
     
-    q "Department", :is_mandatory => true
-    a :string
+#    q "Department", :is_mandatory => true
+#    a :string
     
-    q "Email", :is_mandatory => true
-    a :string
+#    q "Email", :is_mandatory => true
+#    a :string
     
     # Questions may also have input masks with fancy placeholders
-    q "Phone Number"
-    a :string, :input_mask => '(999)999-9999', :input_mask_placeholder => '#'
+#    q "Phone Number"
+#    a :string, :input_mask => '(999)999-9999', :input_mask_placeholder => '#'
     
-    q "Please provide a MFK for billing", :is_mandatory => true
-    a :text, :help_text => "format : NNN-NN-NNNN-NNNNN-NNNNNNNN-NNNN-NNN-NNNNN-NN-NNNN Please note: Complex data requests are charged at a rate of $85.00/hour. Please contact us with questions."
+#    q "Please provide a MFK for billing", :is_mandatory => true
+#    a :text, :help_text => "format : NNN-NN-NNNN-NNNNN-NNNNNNNN-NNNN-NNN-NNNNN-NN-NNNN Please note: Complex data requests are charged at a rate of $85.00/hour. Please contact us with questions."
 #  end
 #####################################################  
 #  section "Data Request Details" do  
 #####################################################    
     label "<h2>Data Request Details</h2>"
     
-    q "Research Title", :is_mandatory => true
-    a :string
+#    q "Research Title", :is_mandatory => true
+#    a :string
     
-    q "PI Name", :is_mandatory => true
-    a :string
+#    q "PI Name", :is_mandatory => true
+#    a :string
     
-    q "PI Email"
-    a :string
+#    q "PI Email"
+#    a :string
     
     # A basic question with radio buttons
     q_healthcare_ids "Does your team have healthcare Id's", :pick => :one 
@@ -76,40 +76,40 @@ survey "Data Request Form survey", :default_mandatory => false do
     condition_A :q_data_from_us_previously, "==", :a_yes
     condition_A :q_data_from_us_previously, "count>0"
     
-    q_request_type "Request Type", :pick => :one, :display_type => :dropdown
-    a_1 "Statistical Complication"
-    a_2 "Research"
-    a_3 "Quality Assurance"
-    a_4 "Operational"
-    a_5 "Grant Submission"
-    a_6 "Inquiry"
+#    q_request_type "Request Type", :pick => :one, :display_type => :dropdown
+#    a_1 "Statistical Complication"
+#    a_2 "Research"
+#    a_3 "Quality Assurance"
+#    a_4 "Operational"
+#    a_5 "Grant Submission"
+#    a_6 "Inquiry"
     
-    q "Description of the research", :pick => :one, :display_type => :dropdown
-    a "NIH funded ongoing research"
-    a "Non-NIH, non-pharmaceutical ongoing research"
-    a "Ongoing pharmaceutical supported research"
-    a "Research to support Grant application (pilot study)"
-    a "Research to support pharmaceutical supported study (pilot study)"
-    a "Research to support students or trainee projects"
-    a "FDA funded research"
+#    q "Description of the research", :pick => :one, :display_type => :dropdown
+#    a "NIH funded ongoing research"
+#    a "Non-NIH, non-pharmaceutical ongoing research"
+#    a "Ongoing pharmaceutical supported research"
+#    a "Research to support Grant application (pilot study)"
+#    a "Research to support pharmaceutical supported study (pilot study)"
+#    a "Research to support students or trainee projects"
+#    a "FDA funded research"
     
-    q "Grant Name"
-    a :string
+#    q "Grant Name"
+#    a :string
     
-    q "Grant (RFA) Number"
-    a :string
+#    q "Grant (RFA) Number"
+#    a :string
     
-    q "Funding agency"
-    a :string
+#    q "Funding agency"
+#    a :string
     
-    q "Grant Submission Date"
-    a :date
-    dependency :rule => "A"
-    condition_A :q_request_type, "==", :a_5
-    condition_A :q_request_type, "count>0"
+#    q "Grant Submission Date"
+#    a :date
+#    dependency :rule => "A"
+#    condition_A :q_request_type, "==", :a_5
+#    condition_A :q_request_type, "count>0"
     
-    q "Description"
-    a :text
+#    q "Description"
+#    a :text
     
     q_data_type "Data Type", :pick => :one
     a_identified "Identified Patient Data"

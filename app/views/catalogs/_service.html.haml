@@ -21,6 +21,6 @@
 .service-view
   %span.title
     %span.name= link_to service.display_service_name, 'javascript:void(0);'
-    %button.add_service{:id => "service-#{service.id}", :sr_id => "#{service_request.id}"} Add
+    %button.add_service.btn.btn-success{:id => "service-#{service.id}", :sr_id => "#{service_request.id}"} Add
     .clear
   %span.service-description.description{:style => 'display:none'}= raw service.description

@@ -23,7 +23,7 @@
   %head
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
     %title= t 'application_title'
-    = stylesheet_link_tag 'application', '960', 'jquery-ui', :media => 'all'
+    = stylesheet_link_tag "#{CUSTOM_ASSET_PATH}application", '960', 'jquery-ui', :media => 'all'
     /[if IE]
       = stylesheet_link_tag 'ie'
     /[if lte IE 8]
@@ -52,16 +52,7 @@
         %br
         = image_tag 'spinner.gif'
 
-      #header
-        #org_logo
-          %a{:href => HEADER_LINK_1}
-            = image_tag '/assets/org_logo_197x57.png', :alt => 'org_logo'
-        #department_title
-          %a{:href => HEADER_LINK_2}
-            = image_tag "/assets/department_name_460x60.gif", :alt => "department_logo"
-        #institution_logo
-          %a{:href => HEADER_LINK_3, :target => '_blank'}
-            = image_tag '/assets/institution_logo_136x86.gif', :alt => 'institution_logo'
+      = render :partial => 'shared/header_logos'
       #welcome_msg
         .flash
           - flash.each do |name, msg|
@@ -90,13 +81,5 @@
               });
           = yield
       .clear
-      #footer
-        .container_12
-          = mail_to 'hundc@musc.edu', "Sign Up For the SPARC Request Listserv", :subject => 'SPARC Request Listserv'
-          |
-          = link_to "SPARC Request Blog", "http://sparcrequestblog.com/", :target => "_blank"
-          |
-          = link_to "SCTR", "http://sctr.musc.edu", :target => "_blank"
-          |
-          = link_to "SPARC Request Home", "http://academicdepartments.musc.edu/sctr/sparc_request", :target => "_blank"
+      = render :partial => 'shared/footer'
       = render :partial => 'shared/piwik_tracking' if Rails.env == 'production'

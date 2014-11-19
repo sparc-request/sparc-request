@@ -38,7 +38,7 @@ class SurveyNotification < ActionMailer::Base
     @ssr = ssr
     email = Rails.env == 'production' ? @identity.email : DEFAULT_MAIL_TO
     subject = Rails.env == 'production' ? "#{I18n.t('application_title')} Survey Notification" : "[#{Rails.env.capitalize} - EMAIL TO #{ADMIN_MAIL_TO} AND CC TO #{SYSTEM_SATISFACTION_SURVEY_CC}] #{I18n.t('application_title')} Survey Notification"
-    mail(:to => email, :from => 'no-reply@musc.edu', :subject => subject) 
+    mail(:to => email, :from => NO_REPLY_FROM, :subject => subject) 
   end
 
 end

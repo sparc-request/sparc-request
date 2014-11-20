@@ -76,13 +76,13 @@ survey "Data Request Form survey", :default_mandatory => false do
     condition_A :q_data_from_us_previously, "==", :a_yes
     condition_A :q_data_from_us_previously, "count>0"
     
-#    q_request_type "Request Type", :pick => :one, :display_type => :dropdown
-#    a_1 "Statistical Complication"
-#    a_2 "Research"
-#    a_3 "Quality Assurance"
-#    a_4 "Operational"
-#    a_5 "Grant Submission"
-#    a_6 "Inquiry"
+    q_request_type "Request Type", :pick => :one, :display_type => :dropdown
+    a_1 "Statistical Complication"
+    a_2 "Research"
+    a_3 "Quality Assurance"
+    a_4 "Operational"
+    a_5 "Grant Submission"
+    a_6 "Inquiry"
     
 #    q "Description of the research", :pick => :one, :display_type => :dropdown
 #    a "NIH funded ongoing research"
@@ -102,11 +102,11 @@ survey "Data Request Form survey", :default_mandatory => false do
 #    q "Funding agency"
 #    a :string
     
-#    q "Grant Submission Date"
-#    a :date
-#    dependency :rule => "A"
-#    condition_A :q_request_type, "==", :a_5
-#    condition_A :q_request_type, "count>0"
+    q "Grant Submission Date"
+    a :date
+    dependency :rule => "A"
+    condition_A :q_request_type, "==", :a_5
+    condition_A :q_request_type, "count>0"
     
 #    q "Description"
 #    a :text

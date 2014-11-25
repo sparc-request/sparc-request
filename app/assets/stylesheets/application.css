@@ -2168,6 +2168,23 @@ input.search-services {
   padding: 5px;
 }
 
+.service_calendar input.visit_window_before,
+.service_calendar input.visit_window_after {
+  width: 9px;
+  background-color: #4fa4cd;
+  border: 0px;
+  padding: 3px 2px;
+}
+
+.service_calendar input#day {
+  margin: 0 6px;
+  text-align: center;
+}
+
+.service_calendar input.visit_name {
+  margin: 2px 0px;
+}
+
 .service_calendar .odd {
   background: #E8E8E8;
 }

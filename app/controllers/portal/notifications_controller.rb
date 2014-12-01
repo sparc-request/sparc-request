@@ -47,6 +47,7 @@ class Portal::NotificationsController < Portal::BaseController
   def new
     @recipient = Identity.find(params[:identity_id])
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    @is_service_provider = params[:is_service_provider]
 
     respond_to do |format|
       format.js
@@ -57,6 +58,7 @@ class Portal::NotificationsController < Portal::BaseController
   def create
     @notification = Notification.create(params[:notification])
     @message = @notification.messages.create(params[:message])
+    is_service_provider = params[:is_service_provider]
     
     if @message.valid? 
       @message.save
@@ -65,7 +67,7 @@ class Portal::NotificationsController < Portal::BaseController
 
       @notifications = @user.all_notifications.where(:sub_service_request_id => @sub_service_request.id)
 
-      UserMailer.notification_received(@message.recipient).deliver unless @message.recipient.email.blank?
+      UserMailer.notification_received(@message.recipient, is_service_provider).deliver unless @message.recipient.email.blank?
     end
     respond_to do |format|
       format.js

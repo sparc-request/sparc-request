@@ -19,6 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class AuditRecovery < ActiveRecord::Base
-  self.table_name = 'audits'
+  set_table_name 'audits'
+  establish_connection("audit_#{Rails.env}") if USE_SEPARATE_AUDIT_DATABASE
   serialize :audited_changes
 end

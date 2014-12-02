@@ -177,6 +177,7 @@ class EpicInterface
         emit_project_roles(xml, study)
         emit_nct_number(xml, study)
         emit_irb_number(xml, study)
+        emit_category_grouper(xml, study)
         emit_visits(xml, study)
         emit_procedures_and_encounters(xml, study)
       }
@@ -201,7 +202,7 @@ class EpicInterface
         emit_project_roles(xml, study)
         emit_nct_number(xml, study)
         emit_irb_number(xml, study)
-
+        emit_category_grouper(xml, study)
       }
     }
 
@@ -253,6 +254,28 @@ class EpicInterface
     end
   end
 
+  def emit_category_grouper(xml, study)
+    # See constants.yml for conversions
+    # GOV - college, federal, foundation, investigator, internal
+    # CORP - industry
+
+    return if study.funding_source.blank?
+
+    sources = ['industry']
+
+    if sources.include?(study.funding_source)
+      grouper = 'CORP'
+    else
+      grouper = 'GOV'
+    end
+
+    xml.subjectOf(typeCode: 'SUBJ') {
+      xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
+        xml.code(code: 'RGCL1')
+        xml.value(value: grouper)
+      }
+    }
+  end
 
   # Build a study calendar definition message to send to epic and return
   # it as a string.

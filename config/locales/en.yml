@@ -681,8 +681,8 @@ en:
     college_prompt: "Select a College"
     department: "Department:"
     department_prompt: "Select a Department"
-    subspeciality: "Subspecialty:"
-    subspeciality_prompt: "Select a Subspecialty"
+    subspecialty: "Subspecialty:"
+    subspecialty_prompt: "Select a Subspecialty"
     rights:
       header: "User Rights:"
       none: 'Study/Project Member Only'

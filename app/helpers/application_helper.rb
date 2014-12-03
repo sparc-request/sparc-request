@@ -293,4 +293,20 @@ module ApplicationHelper
 
     has_fulfillments
   end
+
+  # If any of the subjects under the given arm have completed appointments, returns true
+  def arm_has_subject_data? arm
+    has_data = false
+
+    if arm.subjects
+      arm.subjects.each do |subject|
+        completed_dates = subject.calendar.appointments.map{|x| x.completed_at}.compact
+        unless completed_dates.empty?
+          has_data = true
+        end
+      end
+    end
+
+    has_data
+  end
 end

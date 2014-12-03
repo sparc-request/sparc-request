@@ -574,25 +574,39 @@ $(document).ready ->
       type: 'DELETE'
       url:  "/portal/admin/delete_toast_message/#{toast_id}"
 
-  $('.send_to_epic_button').on('click', ->
+  send_to_epic = ->
     ssr_id = $(this).attr('sub_service_request_id')
-    $(this).unbind('click')
+    $().toastmessage('showToast', {
+                     text: "Study is being sent to Epic",
+                     sticky: true,
+                     type: 'notice'
+                     })
+    $('.send_to_epic_button').off('click', send_to_epic)
     $.ajax
       type: 'PUT'
       url: "/portal/admin/sub_service_requests/#{ssr_id}/push_to_epic"
       contentType: 'application/json; charset=utf-8'
       success: ->
-        $().toastmessage('showSuccessToast', I18n["fulfillment_js"]["epic"])
+        $().toastmessage('showToast', {
+                         text: I18n["fulfillment_js"]["epic"],
+                         type: 'success',
+                         sticky: true
+                         })
       error: (jqXHR, textStatus, errorThrown) ->
         if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'application/json'
           errors = JSON.parse(jqXHR.responseText)
         else
           errors = [textStatus]
         for error in errors
-          $().toastmessage('showErrorToast', "#{error.humanize()}.");
+          $().toastmessage('showToast', {
+                           type: 'error',
+                           text: "#{error.humanize()}.",
+                           sticky: true
+                           })
       complete: =>
-        $(this).bind('click')
-  )
+        $('.send_to_epic_button').on('click', send_to_epic)
+
+  $('.send_to_epic_button').on('click', send_to_epic)
 
   # INSTANTIATE HELPERS
   # set_percent_subsidy()

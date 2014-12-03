@@ -128,9 +128,11 @@ class EpicInterface
           soap_header: soap_header(action),
           message: message)
     rescue
-      h = $!.to_hash
-      fault = $!.nori.find(h, 'Fault')
-      msg = $!.nori.find(fault, "Reason", 'Text')
+      # h = $!.to_hash
+      # fault = $!.nori.find(h, 'Fault')
+      # msg = $!.nori.find(fault, "Reason", 'Text')
+      # msg = $!
+      msg = "Send to Epic Failed"
       raise Error.new(msg)
     end
   end

@@ -43,7 +43,6 @@
   #controls
     %p= t(:study_tracker)[:visit_calendar][:visit_selector]
     = select_tag :visit, options_for_select(appointment_visits(@appointments), selected_key = @selected_key), :class => 'clinical_select_data', :autocomplete => 'off'
-  / %p= link_to "-- Show Dashboard --", 'javascript:void(0);', :class => "dashboard_link"
   .dashboard_link -- Show Dashboard --
 
   #dashboard_container

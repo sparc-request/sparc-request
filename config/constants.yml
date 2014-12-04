@@ -17,7 +17,10 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+alert_types: { 'google_calendar': 'google_calendar',
+               'news_feed': 'news_feed' }
+alert_statuses: { 'active': 'active',
+                  'clear': 'clear' }
 impact_areas: { 'pediatrics': 'Pediatrics',
                'hiv_aids': 'HIV/AIDS',
                'hypertension': 'Hypertension',
@@ -66,13 +69,17 @@ available_statuses: { 'draft': 'Draft',
                       'get_a_quote': 'Get a Quote',
                       'in_process': 'In Process',
                       'complete': 'Complete',
-                      'awaiting_pi_approval': 'Awaiting PI Approval',
+                      'awaiting_pi_approval': 'Awaiting Requester Response',
                       'on_hold': 'On Hold',
-                      'ctrc_review': 'Nexus Review',
-                      'ctrc_approved': 'Nexus Approved',
+                      'ctrc_review': 'In Admin Review',
+                      'ctrc_approved': 'Active',
                       'administrative_review': 'Administrative Review',
-                      'committee_review': 'Committee Review',
-                      'invoiced': 'Invoiced' }
+                      'committee_review': 'In Committee Review',
+                      'invoiced': 'Invoiced',
+                      'fulfillment_queue': 'In Fulfillment Queue',
+                      'approved': 'Approved',
+                      'declined': 'Declined',
+                      'withdrawn': 'Withdrawn' }
 default_statuses : ["draft", "submitted", "get_a_quote", "in_process", "complete", "awaiting_pi_approval", "on_hold"]
 accordion_color_options: { "blue": 'blue-provider',
                            "light-blue": 'light-blue-provider',

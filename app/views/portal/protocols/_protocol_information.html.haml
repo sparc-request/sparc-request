@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- rights = user_rights(protocol_role)
+- rights = protocol_role.user_rights()
 - pi_count_var = protocol.principal_investigators.size
 - billing_manager_count_var = protocol.billing_managers.size
 %input{:type => 'hidden', :value => "#{pi_count_var}", :id => "pi_count_#{protocol.id}"}
@@ -110,7 +110,7 @@
           %td
             = pretty_program_core(ssr)
           %td
-            = ssr.status
+            = AVAILABLE_STATUSES[ssr.status]
           %td.no_background
             %center
               %a.new-portal-notification-button{:title => "Send Notifications", :'data-ssr_id' => ssr.ssr_id.to_s, :'data-sr_id' => sr.id}
@@ -135,6 +135,6 @@
 %table
   %tr
     %td
-      %a.add-services-button{:href => root_path(:protocol_id => protocol.id)}= t(:protocol_information)[:add_services]
+      %a.add-services-button{:href => rights ? root_path(:protocol_id => protocol.id) : "javascript:void(0);", :'data-permission' => rights.to_s}= t(:protocol_information)[:add_services]
     %td
       %a.view-full-calendar-button{:href => "javascript:void(0);", :'data-protocol_id' => protocol.id, :'data-url' => "/portal/protocols/#{protocol.id}/view_full_calendar"}= t(:protocol_information)[:full_calendar]

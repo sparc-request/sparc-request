@@ -21,6 +21,7 @@
 .notification
   - if @recipient.id != @user.id
     = form_tag(portal_notifications_path, :method => :post, :remote => true, :class => 'notification_notification_form') do
+      = hidden_field_tag('is_service_provider', @is_service_provider)
       = hidden_field_tag('notification_originator_id', @user.id, :name => 'notification[originator_id]')
 
       %p

@@ -19,6 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .notifications{:style => 'border-right:0px;'}
+  %h4.ssr_notification_title= "SRID: #{@notification.sub_service_request.service_request.protocol.id}-#{@notification.sub_service_request.ssr_id}"
   %ul.message-list{:style => 'list-style:none;margin-top:5px'}
     - @notification.messages.each_with_index do |message, i|
       - style_class = i == 0 ? 'first_message' : ''

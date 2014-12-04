@@ -839,36 +839,38 @@ describe ServiceRequestsController do
     end
   end
 
-  describe 'POST delete_document_group' do
-    let!(:docgroup) { DocumentGrouping.create(:service_request_id => service_request.id) }
-
-    let!(:ssr1) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
+  describe 'POST delete_documents' do
+    let!(:doc)  { Document.create(service_request_id: service_request.id) }
+    let!(:ssr1) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id)  }
     let!(:ssr2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
 
-    let!(:doc1) { Document.create(:document_grouping_id => docgroup.id, :sub_service_request_id => ssr1.id) }
-    let!(:doc2) { Document.create(:document_grouping_id => docgroup.id, :sub_service_request_id => ssr2.id) }
+    context('document methods') do
 
-    context('document group methods') do
+      before(:each) do
+        doc.sub_service_requests << ssr1
+        doc.sub_service_requests << ssr2
+      end
+
       it 'should set tr_id' do
         session[:service_request_id] = service_request.id
         post :delete_documents, {
           :id                => service_request.id,
-          :document_group_id => docgroup.id,
+          :document_id       => doc.id,
           :format            => :js,
         }.with_indifferent_access
-        assigns(:tr_id).should eq "#document_grouping_#{docgroup.id}"
+        assigns(:tr_id).should eq "#document_id_#{doc.id}"
       end
 
-      it 'should destroy the grouping if there is no sub service request' do
+      it 'should destroy the document if there is no sub service request' do
         session[:service_request_id] = service_request.id
         post :delete_documents, {
           :id                => service_request.id,
-          :document_group_id => docgroup.id,
+          :document_id       => doc.id,
           :format            => :js,
         }.with_indifferent_access
 
         expect {
-          docgroup.reload
+          doc.reload
         }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
@@ -877,55 +879,122 @@ describe ServiceRequestsController do
         session[:sub_service_request_id] = ssr1.id
         post :delete_documents, {
           :id                      => service_request.id,
-          :document_group_id       => docgroup.id,
+          :document_id             => doc.id,
           :format                  => :js,
         }.with_indifferent_access
 
-        docgroup.reload
-        docgroup.destroyed?.should eq false
-
-        expect {
-          doc1.reload
-        }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-
-      it 'should destroy the document grouping if all documents are destroyed' do
-        doc1.destroy
-
-        session[:service_request_id] = service_request.id
-        session[:sub_service_request_id] = ssr2.id
-        post :delete_documents, {
-          :id                      => service_request.id,
-          :document_group_id       => docgroup.id,
-          :format                  => :js,
-        }.with_indifferent_access
-
-        expect {
-          docgroup.reload
-        }.to raise_error(ActiveRecord::RecordNotFound)
+        doc.reload
+        doc.destroyed?.should eq false
+        doc.sub_service_requests.size.should eq 1
       end
     end
+  end
 
-    describe 'POST edit_document_group' do
-      it 'should set grouping' do
+  describe 'POST edit_documents' do
+    let!(:doc)  { Document.create(service_request_id: service_request.id) }
+    let!(:ssr1) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id)  }
+    let!(:ssr2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
+
+    context('document methods') do
+
+      before(:each) do
+        doc.sub_service_requests << ssr1
+        doc.sub_service_requests << ssr2
+      end
+
+      it 'should set document' do
         session[:service_request_id] = service_request.id
         post :edit_documents, {
           :id                      => service_request.id,
-          :document_group_id       => docgroup.id,
+          :document_id             => doc.id,
           :format                  => :js,
         }.with_indifferent_access
-        assigns(:grouping).should eq docgroup
+        assigns(:document).should eq doc
       end
 
       it 'should set service_list' do
         session[:service_request_id] = service_request.id
         post :edit_documents, {
           :id                      => service_request.id,
-          :document_group_id       => docgroup.id,
+          :document_id             => doc.id,
           :format                  => :js,
         }.with_indifferent_access
         assigns(:service_list).should eq service_request.service_list.with_indifferent_access
       end
+    end
+  end
+
+  describe 'POST new_document' do
+    let!(:doc)  { Document.create(service_request_id: service_request.id) }
+    let!(:ssr1) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id)  }
+    let!(:ssr2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
+
+    context('document methods') do
+
+      before(:each) do
+        doc.sub_service_requests << ssr1
+        doc.sub_service_requests << ssr2
+      end
+
+      it 'should set service_list' do
+        session[:service_request_id] = service_request.id
+        post :edit_documents, {
+          :id                      => service_request.id,
+          :document_id             => doc.id,
+          :format                  => :js,
+        }.with_indifferent_access
+        assigns(:service_list).should eq service_request.service_list.with_indifferent_access
+      end
+    end
+  end
+
+  describe 'POST document_management navigate' do
+    let!(:doc)  { Document.create(service_request_id: service_request.id) }
+    let!(:ssr1) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id)  }
+    let!(:ssr2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
+
+    before(:each) do
+      @request.env['HTTP_REFERER'] = "/service_requests/#{service_request.id}/document_management"
+      controller.instance_variable_set(:@validation_groups, {review_view: ['document_management']})
+      session[:service_request_id] = service_request.id
+      doc.sub_service_requests << ssr1
+      doc.sub_service_requests << ssr2
+    end
+
+    it 'should create a new document' do
+      tempDoc = fake_document_upload
+      service_request.documents.size.should eq(1)
+      post :navigate, {
+        :location                     => 'document_management',
+        :current_location             => 'document_management',
+        :process_ssr_organization_ids => [ssr1.organization_id.to_s, ssr2.organization_id.to_s],
+        :doc_type                     => 'budget',
+        :upload_clicked               => '1',
+        :document                     => tempDoc,
+        :action                       => 'document_management',
+        :controller                   => 'service_requests',
+        :id                           => service_request.id
+      }.with_indifferent_access
+      service_request.documents.size.should eq(2)
+    end
+
+    it 'should update an existing document' do
+      doc.sub_service_requests.size.should eq(2)
+      post :navigate, {
+        :location                     => 'document_management',
+        :current_location             => 'document_management',
+        :document_id                  => doc.id.to_s,
+        :process_ssr_organization_ids => [ssr2.organization_id.to_s],
+        :doc_type                     => 'budget',
+        :upload_clicked               => '1',
+        :action                       => 'document_management',
+        :controller                   => 'service_requests',
+        :id                           => service_request.id
+      }.with_indifferent_access
+      # access removed from ssr1 to document and doc_type changed to budget
+      doc.reload
+      doc.sub_service_requests.should eq([ssr2])
+      doc.doc_type.should eq('budget')
     end
   end
 

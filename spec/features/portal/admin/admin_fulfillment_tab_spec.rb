@@ -325,7 +325,8 @@ describe "admin fulfillment tab", :js => true do
         wait_for_javascript_to_finish
         fill_in "visit_name", :with => 'Pandas'
         fill_in "visit_day", :with => 20
-        fill_in "visit_window", :with => 10
+        fill_in "visit_window_before", :with => 10
+        fill_in "visit_window_after", :with => 10
         click_button "submit_visit"
         page.should have_content "Service request has been saved."
         page.should have_content 'Add Visit 12'
@@ -497,6 +498,7 @@ describe "admin fulfillment tab", :js => true do
   describe "push to epic" do
     it 'should display a toast message when push succeeds' do
       click_link 'Send To Epic'
+      sleep 3
       wait_for_javascript_to_finish
       find('.toast-container').should have_content("Project/Study has been sent to Epic")
     end

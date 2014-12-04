@@ -48,10 +48,10 @@
           = f.radio_button :epic_access, true, :checked => project_role.epic_access, :identity_id => project_role.identity.id, :class => "epic_access_radio_yes", :id => "epic_access_yes_#{project_role.identity.id}"
           = f.label :epic_access, 'Yes'
           = link_to image_tag('pencil.png'), 'javascript:void(0)', :identity_id => project_role.identity.id, :class => 'epic_access_edit'
-    %td= f.radio_button :project_rights, 'none', :checked => project_role.should_select?('none', current_user), :disabled => !project_role.can_switch_to?('none', current_user)
-    %td= f.radio_button :project_rights, 'view', :checked => project_role.should_select?('view', current_user), :disabled => !project_role.can_switch_to?('view', current_user)
-    %td= f.radio_button :project_rights, 'request', :checked => project_role.should_select?('request', current_user), :disabled => !project_role.can_switch_to?('request', current_user)
-    %td= f.radio_button :project_rights, 'approve', :checked => project_role.should_select?('approve', current_user), :disabled => !project_role.can_switch_to?('approve', current_user)
+    %td= f.radio_button :project_rights, 'none', :disabled => !project_role.can_switch_to?()
+    %td= f.radio_button :project_rights, 'view',:disabled => !project_role.can_switch_to?()
+    %td= f.radio_button :project_rights, 'request', :disabled => !project_role.can_switch_to?()
+    %td= f.radio_button :project_rights, 'approve'
 
     - if USE_EPIC
       %td.epic_access_dialog{:id => "project_role_identity_#{project_role.identity.id}", :style => "display:none"}

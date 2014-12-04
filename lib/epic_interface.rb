@@ -128,9 +128,11 @@ class EpicInterface
           soap_header: soap_header(action),
           message: message)
     rescue
-      h = $!.to_hash
-      fault = $!.nori.find(h, 'Fault')
-      msg = $!.nori.find(fault, "Reason", 'Text')
+      # h = $!.to_hash
+      # fault = $!.nori.find(h, 'Fault')
+      # msg = $!.nori.find(fault, "Reason", 'Text')
+      # msg = $!
+      msg = "Send to Epic Failed"
       raise Error.new(msg)
     end
   end
@@ -219,7 +221,6 @@ class EpicInterface
           end
           xml.code(code: role_code)
           xml.value(
-              'xsi:type' => 'CD',
               code: project_role.identity.netid.upcase,
               codeSystem: 'netid')
         }
@@ -234,9 +235,7 @@ class EpicInterface
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'NCT')
-          xml.value(
-            'xsi:type' => 'ST',
-            value: nct_number)
+          xml.value(value: nct_number)
         }
       }
     end
@@ -250,9 +249,7 @@ class EpicInterface
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'IRB')
-          xml.value(
-              'xsi:type' => 'ST',
-              value: irb_number)
+          xml.value(value: irb_number)
         }
       }
     end
@@ -433,8 +430,8 @@ class EpicInterface
         day = visit_group.day || visit_group.position
 
         xml.effectiveTime {
-          xml.low(value: relative_date(day - visit_group.window, epoch))
-          xml.high(value: relative_date(day + visit_group.window, epoch))
+          xml.low(value: relative_date(day - visit_group.window_before, epoch))
+          xml.high(value: relative_date(day + visit_group.window_after, epoch))
         }
 
         xml.activityTime(value: relative_date(day, epoch))

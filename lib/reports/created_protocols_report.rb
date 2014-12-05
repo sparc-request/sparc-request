@@ -18,8 +18,32 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class AuditRecovery < ActiveRecord::Base
-  self.table_name = 'audits'
-  establish_connection("audit_#{Rails.env}") if USE_SEPARATE_AUDIT_DATABASE
-  serialize :audited_changes
+class CreatedProtocolsReport < Report
+  def self.description
+    "Provide a total of Protocols created by month"
+  end
+
+  def default_output_file
+    return 'created_protocols.csv'
+  end
+
+  def run
+    header = [
+      'Month',
+      "Number of Protocols"
+    ]
+
+    CSV.open(@output_file, 'wb') do |csv|
+      csv << header
+      months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+      total = 0
+      12.times do |index|
+        count = Protocol.select { |prot| prot.created_at.try(:month) == (index + 1) }.count
+        row = [months[index], count]
+        csv << row
+        total += count
+      end
+      csv << ["Total Protocols", total]
+    end
+  end
 end

@@ -99,14 +99,14 @@ class LineItem < ActiveRecord::Base
   
   def has_admin_rates? appointment_completed_date=nil
     has_admin_rates = !self.admin_rates.empty? && !self.admin_rates.last.admin_cost.blank?
-    has_admin_rates = has_admin_rates && self.admin_rates.select{|ar| ar.created_at.to_date <= appointment_completed_date}.size > 0 if appointment_completed_date
+    has_admin_rates = has_admin_rates && self.admin_rates.select{|ar| ar.created_at.to_date <= appointment_completed_date.to_date}.size > 0 if appointment_completed_date
     has_admin_rates
   end
 
   def admin_rate_for_date appointment_completed_date
     sorted_rates = self.admin_rates.order(:id).reverse
     sorted_rates.each do |rate|
-      if rate.created_at.to_date <= appointment_completed_date
+      if rate.created_at.to_date <= appointment_completed_date.to_date
         return rate.admin_cost
       end
     end

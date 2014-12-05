@@ -256,14 +256,19 @@ class EpicInterface
 
   def emit_category_grouper(xml, study)
     # See constants.yml for conversions
-    # GOV - college, federal, foundation, investigator, internal
+    # GOV - college, federal, foundation, investigator, internal, other
     # CORP - industry
 
-    return if study.funding_source.blank?
+    if study.funding_source.blank? and study.potential_funding_source.blank?
+      error_string = "Protocol #{study.id} does not have a funding source."
+      @errors[:no_funding_source] = [] unless @errors[:no_funding_source]
+      @errors[:no_funding_source] << error_string unless @errors[:no_funding_source].include?(error_string)
+      return
+    end
 
     sources = ['industry']
 
-    if sources.include?(study.funding_source)
+    if sources.include?(study.funding_source) || sources.include?(study.potential_funding_source)
       grouper = 'CORP'
     else
       grouper = 'GOV'

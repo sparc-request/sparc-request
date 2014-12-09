@@ -392,17 +392,16 @@ class EpicInterface
       service = line_item.service
       next unless service.send_to_epic
 
-      #service_code_system = nil
-#      if not service.cdm_code.blank? then
-#        service_code = service.cdm_code
-#        service_code_system = "SPARCCDM"
       if not service.cpt_code.blank? then
         service_code = service.cpt_code
         service_code_system = "SPARCCPT"
+      elsif not service.charge_code.blank? then
+        service_code = service.charge_code
+        service_code_system = "SPARCCDM"
       else
-        # Skip this service, since it has neither a CPT code nor a CDM
+        # Skip this service, since it has neither a CPT code nor a Charge
         # code and add to an error list to warn the user
-        error_string = "#{service.name} does not have a CPT or CDM code."
+        error_string = "#{service.name} does not have a CPT or a Charge code."
         @errors[:no_code] = [] unless @errors[:no_code]
         @errors[:no_code] << error_string unless @errors[:no_code].include?(error_string)
         next
@@ -419,7 +418,7 @@ class EpicInterface
 
       billing_modifiers.each do |modifier, qty|
 
-        qty.times do 
+        qty.times do
           # TODO: there's nowhere in this message to put the quantity
           xml.component1(typeCode: 'COMP') {
             xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {

@@ -1092,8 +1092,8 @@ en:
     visit_window_after: "Click to set the window after the day that the visit can be completed."
     jump_to_visit: "Select the visit you would like to view."
   service_details_alerts:
-    subject_count: "A request associated with this arm is in Clinical Work Fulfillment. The subject count cannot be decreased." 
-    visit_count: "A request associated with this arm is in Clinical Work Fulfillment. The visit count cannot be decreased."
+    subject_count: "This arm has completed subject data in Clinical Work Fulfillment. The subject count cannot be decreased." 
+    visit_count: "This arm has completed subject data in Clinical Work Fulfillment. The visit count cannot be decreased."
   ajax_error: "An error happened processing your request: "
   sign_in_dialog: "Please select one of the options below:"
   signed_up_dialog: "New account created:"

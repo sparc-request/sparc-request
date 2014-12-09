@@ -170,17 +170,6 @@ class ServiceRequest < ActiveRecord::Base
 
   end
 
-  def service_request_has_cwf_ssrs?
-    has_cwf_ssrs = false
-    self.sub_service_requests.each do |ssr|
-      if ssr.in_work_fulfillment
-        has_cwf_ssrs = true
-      end
-    end
-
-    has_cwf_ssrs
-  end
-
   def service_calendar_back
     service_calendar_page('back')
   end

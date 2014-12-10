@@ -51,16 +51,14 @@ class Service < ActiveRecord::Base
   attr_accessible :is_available
   attr_accessible :service_center_cost
   attr_accessible :cpt_code
-  attr_accessible :cdm_code
   attr_accessible :charge_code
   attr_accessible :revenue_code
   attr_accessible :organization_id
   attr_accessible :send_to_epic
   attr_accessible :tag_list
-  attr_accessible :cdm_code
 
   validate :validate_pricing_maps_present
-  
+
   ###############################################
   # Validations
   def validate_pricing_maps_present
@@ -104,17 +102,17 @@ class Service < ActiveRecord::Base
   # do i have any available surveys, otherwise, look up tree and return first available surveys
   def available_surveys
     available = nil
-  
+
     parents.each do |parent|
       next if parent.type == 'Institution' # Institutions can't define associated surveys
       available = parent.associated_surveys.map(&:survey) unless parent.associated_surveys.empty?
     end
-    
+
     available = associated_surveys.map(&:survey) unless associated_surveys.empty? # i have available surveys, use those instead
 
     available
   end
-  
+
   # Given a dollar amount as a String, return an integer number of
   # cents.
   def self.dollars_to_cents dollars
@@ -189,7 +187,7 @@ class Service < ActiveRecord::Base
       else
         pricing_map = current_maps.sort {|a,b| b.display_date <=> a.display_date}.first
       end
-      
+
       return pricing_map
     else
       raise ArgumentError, "Service has no pricing maps!"
@@ -235,7 +233,7 @@ class Service < ActiveRecord::Base
 
     return pricing_map
   end
-  
+
   # Find the rate maps for the given display_date and service_rate
   def get_rate_maps(display_date, full_rate)
     hash = PricingMap.rates_from_full(display_date, self.organization_id, full_rate)
@@ -246,8 +244,8 @@ class Service < ActiveRecord::Base
       "member_rate" => Service.fix_service_rate(hash[:member_rate])
     }
     return_map
-  end  
-  
+  end
+
   # Used to convert and format rates into currency format if rate exists.
   def self.fix_service_rate rate
     if rate.nil?
@@ -265,13 +263,13 @@ class Service < ActiveRecord::Base
     current_map = nil
     begin
       effective_pricing_map = self.effective_pricing_map_for_date(effective_date).attributes
-      
+
       ## Deleting the attributes to prevent mass-assignment errors.
       effective_pricing_map.delete('id')
       effective_pricing_map.delete('created_at')
       effective_pricing_map.delete('updated_at')
       effective_pricing_map.delete('deleted_at')
-      
+
       current_map = PricingMap.new(effective_pricing_map)
       current_map.full_rate = current_map.full_rate + (current_map.full_rate * ( (percent_of_change.to_f * 0.01).floor_to(2) ))
     rescue
@@ -281,12 +279,12 @@ class Service < ActiveRecord::Base
       current_map.unit_minimum = 1
       current_map.unit_type = "Each"
     end
-    
+
     current_map.display_date = display_date
     current_map.effective_date = effective_date
     current_map.save
   end
-  
+
   def has_service_providers?
     self.organization.process_ssrs_parent.service_providers.present? rescue true
   end

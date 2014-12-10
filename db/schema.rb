@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141114160156) do
+ActiveRecord::Schema.define(:version => 20141209202028) do
 
   create_table "admin_rates", :force => true do |t|
     t.integer  "line_item_id"
@@ -198,22 +198,6 @@ ActiveRecord::Schema.define(:version => 20141114160156) do
   end
 
   add_index "cover_letters", ["sub_service_request_id"], :name => "index_cover_letters_on_sub_service_request_id"
-
-  create_table "delayed_jobs", :force => true do |t|
-    t.integer  "priority",   :default => 0, :null => false
-    t.integer  "attempts",   :default => 0, :null => false
-    t.text     "handler",                   :null => false
-    t.text     "last_error"
-    t.datetime "run_at"
-    t.datetime "locked_at"
-    t.datetime "failed_at"
-    t.string   "locked_by"
-    t.string   "queue"
-    t.datetime "created_at",                :null => false
-    t.datetime "updated_at",                :null => false
-  end
-
-  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "dependencies", :force => true do |t|
     t.integer  "question_id"
@@ -828,7 +812,6 @@ ActiveRecord::Schema.define(:version => 20141114160156) do
     t.datetime "created_at",                                                            :null => false
     t.datetime "updated_at",                                                            :null => false
     t.datetime "deleted_at"
-    t.string   "cdm_code"
     t.boolean  "send_to_epic",                                       :default => false
   end
 

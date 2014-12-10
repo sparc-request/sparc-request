@@ -18,8 +18,33 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class AuditRecovery < ActiveRecord::Base
-  self.table_name = 'audits'
-  establish_connection("audit_#{Rails.env}") if USE_SEPARATE_AUDIT_DATABASE
-  serialize :audited_changes
+class SubmittedSsrReport < Report
+  def self.description
+    "Provide a total of SSR's submitted by month"
+  end
+
+  def default_output_file
+    return 'submitted_ssrs.csv'
+  end
+
+  def run
+    header = [
+      'Month',
+      "Number of SSR's"
+    ]
+
+    CSV.open(@output_file, 'wb') do |csv|
+      csv << header
+      audits = AuditRecovery.where("auditable_type = 'SubServiceRequest' and (audited_changes like '%- draft\n- submitted%' or audited_changes like '%- first_draft\n- submitted%') and created_at > '2014-01-01' and created_at < '2014-12-01'")
+      months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+      total = 0
+      12.times do |index|
+        count = audits.select { |audit| audit.created_at.month == (index + 1) }.count
+        row = [months[index], count]
+        csv << row
+        total += count
+      end
+      csv << ["Total SSR's", total]
+    end
+  end
 end

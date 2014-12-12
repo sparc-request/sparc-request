@@ -53,6 +53,7 @@ gem 'surveyor'
 
 gem 'simplecov', :require => false, :group => :test
 gem 'icalendar'
+gem 'whenever', :require => false
 
 gem 'activerecord-import'
 group :development, :test, :profile do

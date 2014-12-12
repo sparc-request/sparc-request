@@ -25,6 +25,7 @@ class Service < ActiveRecord::Base
   RATE_TYPES = [{:display => "Service Rate", :value => "full"}, {:display => "Federal Rate", :value => "federal"}, {:display => "Corporate Rate", :value => "corporate"}, {:display => "Other Rate", :value => "other"}, {:display => "Member Rate", :value => "member"}]
 
   belongs_to :organization, :include => [:pricing_setups]
+  belongs_to :revenue_code_range
   has_many :pricing_maps, :dependent => :destroy
   has_many :service_providers, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
@@ -56,6 +57,7 @@ class Service < ActiveRecord::Base
   attr_accessible :organization_id
   attr_accessible :send_to_epic
   attr_accessible :tag_list
+  attr_accessible :revenue_code_range_id
 
   validate :validate_pricing_maps_present
 

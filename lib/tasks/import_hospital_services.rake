@@ -57,7 +57,7 @@ namespace :data do
               action = service.new_record? ? 'created' : 'updated'
               service.save
               pricing_map.save
-              #puts "#{service.name} #{action} under #{organization.name}"
+              puts "#{service.name} #{action} under #{organization.name}"
             else
               puts "#"*50
               puts "Error importing service"

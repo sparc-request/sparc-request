@@ -38,7 +38,7 @@ namespace :data do
             calculated_rate = (full_rate * range.percentage)/100.0
 
             pricing_map = service.pricing_maps.build(
-                                                  :full_rate => Service.dollars_to_cents(row['Service Rate'].to_s.strip.gsub("$", "").gsub(",", "")),
+                                                  :full_rate => full_rate,
                                                   :corporate_rate => calculated_rate,
                                                   :federal_rate => calculated_rate,
                                                   :member_rate => calculated_rate, 

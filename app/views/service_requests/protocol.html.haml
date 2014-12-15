@@ -56,14 +56,14 @@
         .existing-study.center
           #study.study-select
             #study-select= render :partial => 'study_select', :locals => {:studies => @studies} unless @studies.empty?
-            = link_to(t("study_assignment.new_study"), new_service_request_study_path(@service_request), :class => 'new-study blue-button') if @sub_service_request.nil?
+            = link_to(t("study_assignment.new_study"), new_service_request_study_path(@service_request), :class => 'new-study blue-button btn btn-primary') if @sub_service_request.nil?
             %br
             %br
 
         .existing-project.center
           #project.project-select
             #project-select= render :partial => 'project_select', :locals => {:projects => @projects} unless @projects.empty?
-            = link_to(t("study_assignment.new_project"), new_service_request_project_path(@service_request), :class => 'new-project blue-button') if @sub_service_request.nil?
+            = link_to(t("study_assignment.new_project"), new_service_request_project_path(@service_request), :class => 'new-project blue-button btn btn-primary') if @sub_service_request.nil?
             %br
             %br
 
@@ -73,7 +73,7 @@
         = t("study_assignment.sidebar_box.my_services")
         %span#cart-help= t("study_assignment.sidebar_box.help")
       .line-items= render :partial => 'catalogs/cart'
-    = navigation_link t(:right_navigation)[:catalog], @back, 'catalog-button'
+    = navigation_link t(:right_navigation)[:catalog], @back, 'catalog-button btn btn-info btn-lg btn-block'
     = render :partial => 'right_navigation'
 .continue= render :partial => 'service_requests/navigation'
 

@@ -58,10 +58,12 @@
 
           %div.review-bottom-navigation
             .return-to-step-3.red-provider
-              .return-to-previous= navigation_link image_tag('GoBack.png') + t(:bottom_navigation)[:go_back], @back
-            .save-as-draft.red-provider= navigation_link t(:bottom_navigation)[:save_as_draft], 'save_and_exit'
+              .return-to-previous
+                = navigation_link image_tag('GoBack.png'), @back
+                = navigation_link t(:bottom_navigation)[:go_back], @back, "btn btn-success btn-lg"
+            .save-as-draft.red-provider= navigation_link t(:bottom_navigation)[:save_as_draft], 'save_and_exit', "btn btn-success btn-lg"
             .obtain-research-pricing.red-provider
-              = link_to t(:bottom_navigation)[:get_quote], obtain_research_pricing_service_request_path, :id => 'get_a_quote'
+              = link_to t(:bottom_navigation)[:get_quote], obtain_research_pricing_service_request_path, :class => "btn btn-success btn-lg", :id => 'get_a_quote'
             .submit-request.red-provider
-              = link_to t(:bottom_navigation)[:submit_to_start], confirmation_service_request_path, :class => "save-and-continue", :id => 'submit_services1'
+              = link_to t(:bottom_navigation)[:submit_to_start], confirmation_service_request_path, :class => "save-and-continue btn btn-success btn-lg", :id => 'submit_services1'
               = link_to image_tag("SaveContinue.png"), confirmation_service_request_path, :class => "save-and-continue", :id => 'submit_services2'

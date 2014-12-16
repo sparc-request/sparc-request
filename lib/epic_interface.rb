@@ -397,7 +397,7 @@ class EpicInterface
         service_code_system = "SPARCCPT"
       elsif not service.charge_code.blank? then
         service_code = service.charge_code
-        service_code_system = "SPARCCDM"
+        service_code_system = "SPARCCPT"
       else
         # Skip this service, since it has neither a CPT code nor a Charge
         # code and add to an error list to warn the user

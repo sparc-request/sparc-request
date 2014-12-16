@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141114160156) do
+ActiveRecord::Schema.define(:version => 20141211194834) do
 
   create_table "admin_rates", :force => true do |t|
     t.integer  "line_item_id"
@@ -198,22 +198,6 @@ ActiveRecord::Schema.define(:version => 20141114160156) do
   end
 
   add_index "cover_letters", ["sub_service_request_id"], :name => "index_cover_letters_on_sub_service_request_id"
-
-  create_table "delayed_jobs", :force => true do |t|
-    t.integer  "priority",   :default => 0, :null => false
-    t.integer  "attempts",   :default => 0, :null => false
-    t.text     "handler",                   :null => false
-    t.text     "last_error"
-    t.datetime "run_at"
-    t.datetime "locked_at"
-    t.datetime "failed_at"
-    t.string   "locked_by"
-    t.string   "queue"
-    t.datetime "created_at",                :null => false
-    t.datetime "updated_at",                :null => false
-  end
-
-  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "dependencies", :force => true do |t|
     t.integer  "question_id"
@@ -764,6 +748,17 @@ ActiveRecord::Schema.define(:version => 20141114160156) do
   add_index "responses", ["response_set_id"], :name => "index_responses_on_response_set_id"
   add_index "responses", ["survey_section_id"], :name => "index_responses_on_survey_section_id"
 
+  create_table "revenue_code_ranges", :force => true do |t|
+    t.integer  "from"
+    t.integer  "to"
+    t.float    "percentage"
+    t.integer  "applied_org_id"
+    t.string   "vendor"
+    t.integer  "version"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
+  end
+
   create_table "service_providers", :force => true do |t|
     t.integer  "identity_id"
     t.integer  "organization_id"
@@ -820,16 +815,16 @@ ActiveRecord::Schema.define(:version => 20141114160156) do
     t.integer  "order"
     t.text     "description"
     t.boolean  "is_available"
-    t.decimal  "service_center_cost", :precision => 12, :scale => 4
+    t.decimal  "service_center_cost",   :precision => 12, :scale => 4
     t.string   "cpt_code"
     t.string   "charge_code"
     t.string   "revenue_code"
     t.integer  "organization_id"
-    t.datetime "created_at",                                                            :null => false
-    t.datetime "updated_at",                                                            :null => false
+    t.datetime "created_at",                                                              :null => false
+    t.datetime "updated_at",                                                              :null => false
     t.datetime "deleted_at"
-    t.string   "cdm_code"
-    t.boolean  "send_to_epic",                                       :default => false
+    t.boolean  "send_to_epic",                                         :default => false
+    t.integer  "revenue_code_range_id"
   end
 
   add_index "services", ["is_available"], :name => "index_services_on_is_available"

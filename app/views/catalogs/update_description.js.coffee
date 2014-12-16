@@ -23,3 +23,4 @@ $('.core-accordion').accordion({
   heightStyle: 'content'
   collapsible: true
 })
+$('#processing_request').hide()

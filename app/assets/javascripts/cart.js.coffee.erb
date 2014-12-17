@@ -44,8 +44,11 @@ $(document).ready ->
     id = $(this).attr('id')
     li_count = $('#line_item_count').val()
     has_fulfillments = $(this).data('has_fulfillments') || null
+    in_fulfillment = $(this).attr('in_fulfillment') || null
     if has_fulfillments
       alert(I18n["has_fulfillments"])
+    else if in_fulfillment
+      alert(I18n["in_fulfillment"])
     else
       if li_count == "1" and ssr_id != ''
         if confirm(I18n["cart"]["remove_request_confirm"])

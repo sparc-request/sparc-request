@@ -21,13 +21,17 @@
 class RenameMuhaTag < ActiveRecord::Migration
   def up
     tag = Tag.find_by_name('muha')
-    tag.name = 'required forms'
-    tag.save
+    if tag
+      tag.name = 'required forms'
+      tag.save
+    end
   end
 
   def down
     tag = Tag.find_by_name('required forms')
-    tag.name = 'muha'
-    tag.save
+    if tag
+      tag.name = 'muha'
+      tag.save
+    end
   end
 end

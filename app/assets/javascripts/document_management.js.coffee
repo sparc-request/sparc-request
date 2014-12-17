@@ -26,7 +26,6 @@ $(document).ready ->
     $("#process_ssr_organization_ids").removeAttr('disabled')
     $("#document").removeAttr('disabled')
     $(".document_upload_button").hide()
-    $(".document_upload").show()
     $('#doc_type').change()
 
   $(".document_edit").click ->

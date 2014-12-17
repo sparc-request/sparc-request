@@ -22,7 +22,13 @@ class Portal::ProtocolsController < Portal::BaseController
   respond_to :html, :json
 
   def index
-    @protocols = @user.protocols.sort_by { |pr| (pr.id || '0000') + pr.id }.reverse
+    @protocols = []
+    @user.protocols.each do |protocol|
+      if protocol.project_roles.find_by_identity_id(@user.id).project_rights != 'none'
+         @protocols << protocol
+      end
+    end
+    @protocols = @protocols.sort_by { |pr| (pr.id || '0000') + pr.id }.reverse
     @notifications = @user.user_notifications
     #@projects = Project.remove_projects_due_to_permission(@projects, @user)
 
@@ -41,6 +47,7 @@ class Portal::ProtocolsController < Portal::BaseController
 
   def show
     @protocol = Protocol.find(params[:id])
+    # @project_rights = Project_Role.find_by_identity_id(@user.id);
     @protocol_role = @protocol.project_roles.find_by_identity_id(@user.id)
     #@project.project_associated_users
     #@project.project_service_requests

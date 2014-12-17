@@ -67,7 +67,7 @@
     - @sub_service_request.documents.each do |document|
       %tr
         %td.percent_30.document_download_link= link_to document.document_file_name, document.document.url
-        %td.no-border-right= @service_list[document.sub_service_request.organization_id][:name] 
+        %td.no-border-right= @service_list[@sub_service_request.organization_id][:name] 
         
   %br
   #service_calendar_container

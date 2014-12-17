@@ -128,9 +128,11 @@ class EpicInterface
           soap_header: soap_header(action),
           message: message)
     rescue
-      h = $!.to_hash
-      fault = $!.nori.find(h, 'Fault')
-      msg = $!.nori.find(fault, "Reason", 'Text')
+      # h = $!.to_hash
+      # fault = $!.nori.find(h, 'Fault')
+      # msg = $!.nori.find(fault, "Reason", 'Text')
+      # msg = $!
+      msg = "Send to Epic Failed"
       raise Error.new(msg)
     end
   end
@@ -177,6 +179,7 @@ class EpicInterface
         emit_project_roles(xml, study)
         emit_nct_number(xml, study)
         emit_irb_number(xml, study)
+        emit_category_grouper(xml, study)
         emit_visits(xml, study)
         emit_procedures_and_encounters(xml, study)
       }
@@ -201,7 +204,7 @@ class EpicInterface
         emit_project_roles(xml, study)
         emit_nct_number(xml, study)
         emit_irb_number(xml, study)
-
+        emit_category_grouper(xml, study)
       }
     }
 
@@ -253,6 +256,33 @@ class EpicInterface
     end
   end
 
+  def emit_category_grouper(xml, study)
+    # See constants.yml for conversions
+    # GOV - college, federal, foundation, investigator, internal, other
+    # CORP - industry
+
+    if study.funding_source.blank? and study.potential_funding_source.blank?
+      error_string = "Protocol #{study.id} does not have a funding source."
+      @errors[:no_funding_source] = [] unless @errors[:no_funding_source]
+      @errors[:no_funding_source] << error_string unless @errors[:no_funding_source].include?(error_string)
+      return
+    end
+
+    sources = ['industry']
+
+    if sources.include?(study.funding_source) || sources.include?(study.potential_funding_source)
+      grouper = 'CORP'
+    else
+      grouper = 'GOV'
+    end
+
+    xml.subjectOf(typeCode: 'SUBJ') {
+      xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
+        xml.code(code: 'RGCL1')
+        xml.value(value: grouper)
+      }
+    }
+  end
 
   # Build a study calendar definition message to send to epic and return
   # it as a string.
@@ -362,17 +392,16 @@ class EpicInterface
       service = line_item.service
       next unless service.send_to_epic
 
-      #service_code_system = nil
-#      if not service.cdm_code.blank? then
-#        service_code = service.cdm_code
-#        service_code_system = "SPARCCDM"
       if not service.cpt_code.blank? then
         service_code = service.cpt_code
         service_code_system = "SPARCCPT"
+      elsif not service.charge_code.blank? then
+        service_code = service.charge_code
+        service_code_system = "SPARCCPT"
       else
-        # Skip this service, since it has neither a CPT code nor a CDM
+        # Skip this service, since it has neither a CPT code nor a Charge
         # code and add to an error list to warn the user
-        error_string = "#{service.name} does not have a CPT or CDM code."
+        error_string = "#{service.name} does not have a CPT or a Charge code."
         @errors[:no_code] = [] unless @errors[:no_code]
         @errors[:no_code] << error_string unless @errors[:no_code].include?(error_string)
         next
@@ -389,7 +418,7 @@ class EpicInterface
 
       billing_modifiers.each do |modifier, qty|
 
-        qty.times do 
+        qty.times do
           # TODO: there's nowhere in this message to put the quantity
           xml.component1(typeCode: 'COMP') {
             xml.timePointEventDefinition(classCode: 'CTTEVENT', moodCode: 'DEF') {
@@ -428,8 +457,8 @@ class EpicInterface
         day = visit_group.day || visit_group.position
 
         xml.effectiveTime {
-          xml.low(value: relative_date(day - visit_group.window, epoch))
-          xml.high(value: relative_date(day + visit_group.window, epoch))
+          xml.low(value: relative_date(day - visit_group.window_before, epoch))
+          xml.high(value: relative_date(day + visit_group.window_after, epoch))
         }
 
         xml.activityTime(value: relative_date(day, epoch))

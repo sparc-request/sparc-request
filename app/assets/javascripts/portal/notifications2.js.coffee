@@ -107,10 +107,12 @@ $(document).ready ->
   $(document).on('click', '.new_notification', ->
     sub_service_request_id = $(this).data('sub_service_request_id')
     identity_id = $(this).data('identity_id')
+    is_service_provider = $(this).data('is_service_provider')
+
     $('.new_notification_dialog').dialog('open')
     $.ajax
       type: 'GET'
-      url:  "/portal/notifications/new?sub_service_request_id=#{sub_service_request_id}&identity_id=#{identity_id}"
+      url:  "/portal/notifications/new?sub_service_request_id=#{sub_service_request_id}&identity_id=#{identity_id}&is_service_provider=#{is_service_provider}"
   )
 
   disableSubmitButton = (containing_text, change_to) ->

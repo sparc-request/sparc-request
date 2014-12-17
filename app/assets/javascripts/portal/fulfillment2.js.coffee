@@ -296,6 +296,7 @@ $(document).ready ->
   )
 
   $('#visit-form').dialog
+    dialogClass: "new_visit_dialog"
     autoOpen: false
     height: 275
     width: 300
@@ -329,8 +330,9 @@ $(document).ready ->
       'arm_id': $('#arm_id').val()
       'study_tracker': $('#study_tracker_hidden_field').val() || null
       'visit_name': $('#visit_name').val()
+      'visit_window_before': $('#visit_window_before').val()
       'visit_day': $('#visit_day').val()
-      'visit_window': $('#visit_window').val()
+      'visit_window_after': $('#visit_window_after').val()
     $.ajax
       type: 'POST'
       url:   "/portal/admin/service_requests/#{sr_id}/add_per_patient_per_visit_visit"
@@ -572,25 +574,39 @@ $(document).ready ->
       type: 'DELETE'
       url:  "/portal/admin/delete_toast_message/#{toast_id}"
 
-  $('.send_to_epic_button').on('click', ->
+  send_to_epic = ->
     ssr_id = $(this).attr('sub_service_request_id')
-    $(this).unbind('click')
+    $().toastmessage('showToast', {
+                     text: "Study is being sent to Epic",
+                     sticky: true,
+                     type: 'notice'
+                     })
+    $('.send_to_epic_button').off('click', send_to_epic)
     $.ajax
       type: 'PUT'
       url: "/portal/admin/sub_service_requests/#{ssr_id}/push_to_epic"
       contentType: 'application/json; charset=utf-8'
       success: ->
-        $().toastmessage('showSuccessToast', I18n["fulfillment_js"]["epic"])
+        $().toastmessage('showToast', {
+                         text: I18n["fulfillment_js"]["epic"],
+                         type: 'success',
+                         sticky: true
+                         })
       error: (jqXHR, textStatus, errorThrown) ->
         if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'application/json'
           errors = JSON.parse(jqXHR.responseText)
         else
           errors = [textStatus]
         for error in errors
-          $().toastmessage('showErrorToast', "#{error.humanize()}.");
+          $().toastmessage('showToast', {
+                           type: 'error',
+                           text: "#{error.humanize()}.",
+                           sticky: true
+                           })
       complete: =>
-        $(this).bind('click')
-  )
+        $('.send_to_epic_button').on('click', send_to_epic)
+
+  $('.send_to_epic_button').on('click', send_to_epic)
 
   # INSTANTIATE HELPERS
   # set_percent_subsidy()

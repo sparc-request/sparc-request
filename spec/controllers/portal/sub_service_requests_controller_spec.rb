@@ -28,6 +28,7 @@ describe Portal::SubServiceRequestsController do
   let!(:provider)        { FactoryGirl.create(:provider, parent_id: institution.id) }
   let!(:program)         { FactoryGirl.create(:program, parent_id: provider.id) }
   let!(:core)            { FactoryGirl.create(:core, parent_id: program.id) }
+  let!(:core2)            { FactoryGirl.create(:core, parent_id: program.id) }
 
   before :each do
     @study = Protocol.new(FactoryGirl.attributes_for(:protocol))
@@ -96,6 +97,42 @@ describe Portal::SubServiceRequestsController do
         arms[0].line_items_visits[0].visits.count.should eq 5
         arms[1].line_items_visits.count.should eq 1
         arms[1].line_items_visits[0].visits.count.should eq 5
+      end
+    end
+
+    describe 'documents' do
+      let!(:doc)  { Document.create(service_request_id: @service_request.id, doc_type: 'protocol') }
+      let!(:ssr2) { FactoryGirl.create(:sub_service_request, service_request_id: @service_request.id, organization_id: core2.id) }
+
+      before(:each) do
+        @request.env['HTTP_REFERER'] = "/service_requests/#{@service_request.id}/document_management"
+        doc.sub_service_requests << @ssr
+      end
+
+      it 'should create a new document' do
+        tempDoc = fake_document_upload
+        @ssr.documents.size.should eq(1)
+        post :new_document, {
+          :process_ssr_organization_ids => [@ssr.organization_id.to_s],
+          :doc_type                     => 'budget',
+          :document                     => tempDoc,
+          :id                           => @ssr.id
+        }.with_indifferent_access
+        @ssr.reload
+        @ssr.documents.size.should eq(2)
+      end
+
+      it 'should update an existing document' do
+        doc.doc_type.should eq('protocol')
+        post :new_document, {
+          :document_id                  => doc.id,
+          :doc_type                     => 'hipaa',
+          :process_ssr_organization_ids => [@ssr.organization_id.to_s],
+          :is_edit                      => 'true',
+          :id                           => @ssr.id
+        }.with_indifferent_access
+        doc.reload
+        doc.doc_type.should eq('hipaa')
       end
     end
   end

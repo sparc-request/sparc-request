@@ -67,10 +67,12 @@ class IdentitiesController < ApplicationController
     # should check if this is an existing project role
     if params[:project_role][:id].blank?
       @project_role = ProjectRole.new params[:project_role]
+      @project_role.set_default_rights
       @project_role.identity = identity
     else
       @project_role = ProjectRole.find params[:project_role][:id]
       @project_role.update_attributes params[:project_role]
+      @project_role.set_default_rights
     end
 
     @project_role.set_epic_rights

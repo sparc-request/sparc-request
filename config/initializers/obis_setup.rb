@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-begin 
+begin
   application_config ||= YAML.load_file(Rails.root.join('config', 'application.yml'))[Rails.env]
 
   DEFAULT_MAIL_TO               = application_config['default_mail_to']
@@ -41,8 +41,7 @@ begin
   EPIC_QUEUE_REPORT_TO          = application_config['epic_queue_report_to']
   USE_GOOGLE_CALENDAR           = application_config['use_google_calendar']
   USE_NEWS_FEED                 = application_config['use_news_feed']
-  GOOGLE_USERNAME               = application_config['google_username']
-  GOOGLE_PASSWORD               = application_config['google_password']
+  CALENDAR_URL                  = application_config['calendar_url']
   SEND_AUTHORIZED_USER_EMAILS   = application_config['send_authorized_user_emails']
 
   if application_config.include?('wkhtmltopdf_location')

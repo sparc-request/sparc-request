@@ -18,8 +18,6 @@
 # end
 
 # Learn more: http://github.com/javan/whenever
-if USE_GOOGLE_CALENDAR
-  every :hour do
-    rake "fetch_google_calendar"
-  end
+every :hour do
+  rake "fetch_google_calendar"
 end

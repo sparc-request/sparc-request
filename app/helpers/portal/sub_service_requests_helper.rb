@@ -93,4 +93,28 @@ module Portal::SubServiceRequestsHelper
 
     cores
   end
+
+  def full_user_name_from_id id
+    user = Identity.find(id)
+
+    user.display_name
+  end
+
+  def extract_subsidy_audit_data object, convert_to_dollars=false
+    if object
+      display = []
+      if object.kind_of?(Array) && !object.empty?
+        object.each do |element|
+          if convert_to_dollars
+            display << (element.to_f / 100)
+          else
+            display << element
+          end
+        end
+        return (display[0] ? display[0].to_s : "0") + " => " + (display[1] ? display[1].to_s : "0")
+      else
+        return convert_to_dollars ? (object.to_f / 100) : object
+      end
+    end
+  end
 end

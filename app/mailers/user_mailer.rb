@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class UserMailer < ActionMailer::Base
-  default :from => NO_REPLY_FROM
+  default :from => "donotreply@musc.edu"
 
   def authorized_user_changed(user, protocol)
     @send_to = user
@@ -28,10 +28,10 @@ class UserMailer < ActionMailer::Base
     send_message("#{I18n.t('application_title')} Authorized Users")
   end
 
-  def notification_received(user)
+  def notification_received(user, is_service_provider='false')
     @send_to = user
 
-    send_message("New #{I18n.t('application_title')} Notification")
+    send_message("New #{I18n.t('application_title')} Notification", is_service_provider)
   end
 
   # Disabled (potentially only temporary) as per Lane
@@ -45,9 +45,10 @@ class UserMailer < ActionMailer::Base
 
   private
 
-  def send_message subject
+  def send_message subject, is_service_provider='false'
     email = Rails.env == 'production' ? @send_to.email : DEFAULT_MAIL_TO
     subject = Rails.env == 'production' ? subject : "[#{Rails.env.capitalize} - EMAIL TO #{@send_to.email}] #{subject}"
+    @is_service_provider = is_service_provider
 
     mail(:to => email, :subject => subject)
   end

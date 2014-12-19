@@ -150,22 +150,26 @@ $ ->
   $('#recruitment_start_date').attr("readOnly", true)
   $('#recruitment_end_date').attr("readOnly", true)
 
-  # Validations for existing arms
-
+  # If any sub service requests are in cwf, the visit and subject counts can not be decreased. Decreasing the counts in this case
+  # causes patient data to be deleted
   $(document).on('change', '.arm_subject_count', ->
-    new_count = $(this).val()
-    min_count = $(this).data('minimum_subject_count')
-    if new_count < min_count
-      alert("You can not reduce the subject count below the count of a previously defined arm.")
-      $(this).val(min_count)
+    in_cwf = $(this).data('in_cwf')
+    if in_cwf
+      new_count = $(this).val()
+      min_count = $(this).data('minimum_subject_count')
+      if new_count < min_count
+        alert(I18n["service_details_alerts"]["subject_count"])
+        $(this).val(min_count)
   )
 
   $(document).on('change', '.arm_visit_count', ->
-    new_count = $(this).val()
-    min_count = $(this).data('minimum_visit_count')
-    if new_count < min_count
-      alert("You can not reduce the visit count below the count of a previously defined arm.")
-      $(this).val(min_count)
+    in_cwf = $(this).data('in_cwf')
+    if in_cwf
+      new_count = $(this).val()
+      min_count = $(this).data('minimum_visit_count')
+      if new_count < min_count
+        alert(I18n["service_details_alerts"]["visit_count"])
+        $(this).val(min_count)
   )
 
   $('#navigation_form').submit ->
@@ -189,6 +193,25 @@ $('.units_per_quantity').live 'change', ->
     $('#unit_max_error').hide()
     $('#unit_max_error').css('border', '')
     $(this).css('border', '')
+
+$(document).ready ->
+  $('input[value="Screening Phase"]').each ->
+    $(this).parent("div").append('<img src="/assets/information.png" class="screening_info_img">')
+  $('img.screening_info_img').qtip
+    content: 'Enter the number of subjects you expect to screen as well as how many screening visits are required. If no screening phase is required, you can change the name of the "Arm" to meet your needs.'
+    position:
+      corner:
+        target: "topRight"
+        tooltip: "bottomLeft"
+
+    style:
+      tip: true
+      border:
+        width: 0
+        radius: 4
+
+      name: "light"
+      width: 250
 
 verify_unit_minimum = (obj) ->
   unit_min = parseInt(obj.attr('unit_minimum'), 10)

@@ -30,6 +30,7 @@ describe "service calendar", :js => true do
     visit service_calendar_service_request_path service_request.id
     arm1.reload
     arm2.reload
+    wait_for_javascript_to_finish
   end
 
   after :each do
@@ -46,13 +47,18 @@ describe "service calendar", :js => true do
 
       it "should save the new quantity" do
         fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", :with => 10
+        page.execute_script('$(".line_item_quantity").change()')
+        wait_for_javascript_to_finish
         find(:xpath, "//a/img[@alt='Goback']/..").click
         wait_for_javascript_to_finish
+        sleep 3 # TODO: ugh: I got rid of all the sleeps, but I can't get rid of this one
         LineItem.find(line_item.id).quantity.should eq(10)
       end
 
       it "should save the new units per quantity" do
         fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", :with => line_item.service.current_pricing_map.units_per_qty_max
+        page.execute_script('$(".units_per_quantity").change()')
+        wait_for_javascript_to_finish
         find(:xpath, "//a/img[@alt='Goback']/..").click
         wait_for_javascript_to_finish
         LineItem.find(line_item.id).units_per_quantity.should eq(line_item.service.current_pricing_map.units_per_qty_max)
@@ -65,8 +71,11 @@ describe "service calendar", :js => true do
 
         it "Should throw errors" do
           fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", :with => 1
+          page.execute_script('$(".units_per_quantity").change()')
           fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", :with => 0
-          find("#service_request_line_items_attributes_#{line_item.id}_units_per_quantity").click
+          page.execute_script('$(".line_item_quantity").change()')
+          # find("#service_request_line_items_attributes_#{line_item.id}_units_per_quantity").click
+          # find(:xpath, "//img[@src='/assets/sparc_request_header.jpg']").click #allow save by clicking away from field
           wait_for_javascript_to_finish
           find("div#one_time_fee_errors").should have_content("is less than the unit minimum")
         end
@@ -75,7 +84,10 @@ describe "service calendar", :js => true do
 
         it "should throw js error" do
           fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", :with => (line_item.service.current_pricing_map.units_per_qty_max + 1)
+          page.execute_script('$(".units_per_quantity").change()')
           fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", :with => 1
+          # find(:xpath, "//img[@src='/assets/sparc_request_header.jpg']").click #allow save by clicking away from field
+          page.execute_script('$(".line_item_quantity").change()')
           wait_for_javascript_to_finish
           find("div#unit_max_error").should have_content("more than the maximum allowed")
         end
@@ -99,6 +111,47 @@ describe "service calendar", :js => true do
           select("Visits 6 - 10 of 10", from: "jump_to_visit_#{arm1.id}")
           wait_for_javascript_to_finish
           page.should have_content("Visit 6")
+        end
+      end
+
+      describe "sorting visits around" do
+
+        it "should move visit 1 to the end position" do
+          wait_for_javascript_to_finish
+          first(:xpath, "//a[@class='move_visits']").click
+          wait_for_javascript_to_finish
+          select("Visit 1", from: "visit_to_move_1")
+          select("Move to last position", from: "move_to_position_1")
+          find('#submit_move').click
+          wait_for_javascript_to_finish
+          select("Visits 6 - 10 of 10", from: "jump_to_visit_#{arm1.id}")
+          wait_for_javascript_to_finish
+          page.should have_content("Visit 1")
+        end
+
+        it "should move visit 2 between visits 6 and 7" do
+          wait_for_javascript_to_finish
+          first(:xpath, "//a[@class='move_visits']").click
+          wait_for_javascript_to_finish
+          select("Visit 2", from: "visit_to_move_1")
+          select("Insert before 7 - Visit 7", from: "move_to_position_1")
+          find('#submit_move').click
+          wait_for_javascript_to_finish
+          select("Visits 6 - 10 of 10", from: "jump_to_visit_#{arm1.id}")
+          wait_for_javascript_to_finish
+          page.should have_content("Visit 2")
+        end
+
+        it "should not mess up the visit ids" do
+          arm1.visit_groups.each do |vg|
+            wait_for_javascript_to_finish
+            first(:xpath, "//a[@class='move_visits']").click
+            wait_for_javascript_to_finish
+            select("#{vg.name}", from: "visit_to_move_1")
+            select("Move to last position", from: "move_to_position_1")
+            find('#submit_move').click
+            wait_for_javascript_to_finish
+          end
         end
       end
 
@@ -169,7 +222,6 @@ describe "service calendar", :js => true do
       end
 
       describe "selecting check all row button" do
-
         it "should overwrite the quantity in research billing box" do
           fill_in "visits_#{@visit_id}_research_billing_qty", :with => 10
           wait_for_javascript_to_finish
@@ -180,37 +232,21 @@ describe "service calendar", :js => true do
       end
 
       describe "increasing the 'R' billing quantity" do
-
-        # before :each do
-        #   @visit_id = arm1.line_items_visits.first.visits[1].id
-        # end
-
         it "should increase the total cost" do
-         
-          find("#visits_#{@visit_id}_research_billing_qty").set("")
-          find("#visits_#{@visit_id}_research_billing_qty").click()
-          fill_in( "visits_#{@visit_id}_research_billing_qty", :with => 10)
-          find("#visits_#{@visit_id}_insurance_billing_qty").click()
+          fill_in("visits_#{@visit_id}_research_billing_qty", :with => 10)
+          page.execute_script('$("#visits_2_research_billing_qty").change()')
           wait_for_javascript_to_finish
+          sleep 3 # TODO: ugh: I got rid of all the sleeps, but I can't get rid of this one
 
-          all(".pp_max_total_direct_cost.arm_#{arm1.id}").each do |x|
-            if x.visible?
-              x.should have_exact_text("$300.00")
-            end
-          end
+          first(".pp_max_total_direct_cost.arm_#{arm1.id}", :visible => true).should have_exact_text("$300.00")
         end
 
         it "should update each visits maximum costs" do
-
-          find("#visits_#{@visit_id}_research_billing_qty").set("")
-          find("#visits_#{@visit_id}_research_billing_qty").click()
           fill_in "visits_#{@visit_id}_research_billing_qty", :with => 10
-          find("#visits_#{@visit_id}_insurance_billing_qty").click()
-
+          page.execute_script('$("#visits_2_research_billing_qty").change()')
           wait_for_javascript_to_finish
-
           sleep 3 # TODO: ugh: I got rid of all the sleeps, but I can't get rid of this one
-     
+
           all(".visit_column_2.max_direct_per_patient.arm_#{arm1.id}").each do |x|
             if x.visible?
               x.should have_exact_text("$300.00")
@@ -240,13 +276,17 @@ describe "service calendar", :js => true do
           # Putting values in these fields should not increase the total
           # cost
           fill_in "visits_#{@visit_id}_insurance_billing_qty", :with => 10
-          find("#visits_#{@visit_id}_effort_billing_qty").click()
+          page.execute_script('$("#visits_2_insurance_billing_qty").change()')
+          wait_for_javascript_to_finish
 
           fill_in "visits_#{@visit_id}_effort_billing_qty", :with => 10
-          find("#visits_#{@visit_id}_research_billing_qty").click()
+          page.execute_script('$("#visits_2_effort_billing_qty").change()')
+          wait_for_javascript_to_finish
 
           fill_in "visits_#{@visit_id}_research_billing_qty", :with => 1
-          find("#visits_#{@visit_id}_insurance_billing_qty").click()
+          page.execute_script('$("#visits_2_research_billing_qty").change()')
+          wait_for_javascript_to_finish
+          sleep 3
 
           all(".pp_max_total_direct_cost.arm_#{arm1.id}").each do |x|
             if x.visible?
@@ -270,15 +310,15 @@ describe "service calendar", :js => true do
         visit_id = @visit_id
 
         fill_in "visits_#{visit_id}_research_billing_qty", :with => 10
-        find("#visits_#{visit_id}_insurance_billing_qty").click()
+        page.execute_script('$("#visits_2_research_billing_qty").change()')
         wait_for_javascript_to_finish
 
         fill_in "visits_#{visit_id}_insurance_billing_qty", :with => 10
-        find("#visits_#{visit_id}_effort_billing_qty").click()
+        page.execute_script('$("#visits_2_insurance_billing_qty").change()')
         wait_for_javascript_to_finish
 
         fill_in "visits_#{visit_id}_effort_billing_qty", :with => 10
-        find("#visits_#{visit_id}_research_billing_qty").click()
+        page.execute_script('$("#visits_2_effort_billing_qty").change()')
         wait_for_javascript_to_finish
 
         click_link "quantity_tab"

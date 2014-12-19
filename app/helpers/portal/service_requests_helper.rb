@@ -122,8 +122,9 @@ module Portal::ServiceRequestsHelper
         end
         arr = [["Add Visit #{last_position + 1}", nil]]
         visits = Visit.where(:line_items_visit_id => vg.id).includes(:visit_group)
+        visits = visits.sort_by{|index| index.try(:position)}
         last_position.times do |visit|
-          visit_name = visits[visit].try(:visit_group).try(:name) || visits[visit].try(:name) || "Visit #{visit}" 
+          visit_name = visits[visit].try(:visit_group).try(:name) || "Visit #{visit}"
           arr << ["Insert before #{visit + 1} - #{visit_name}", visit + 1]
         end
       else
@@ -139,16 +140,17 @@ module Portal::ServiceRequestsHelper
   def visits_for_delete arm
     unless arm.line_items_visits.empty?
       vg = arm.line_items_visits.first
-        unless vg.visits.empty?
+        if vg.visits.size > 1
           visit_count = vg.visits.last.position
           arr = []
           visits = Visit.where(:line_items_visit_id => vg.id).includes(:visit_group)
+          visits = visits.sort_by{|index| index.try(:position)}
           visit_count.times do |visit|
-            visit_name = visits[visit].try(:visit_group).try(:name) || visits[visit].try(:name) || "Visit #{visit}" 
+            visit_name = visits[visit].try(:visit_group).try(:name) || "Visit #{visit}"
             arr << ["Delete Visit #{visit + 1} - #{visit_name}", visit + 1]
           end
         else
-          arr = [["No Visits", nil]]
+          arr = [["Visit 1", nil]]
         end
     else
       arr = []
@@ -158,16 +160,11 @@ module Portal::ServiceRequestsHelper
     options_for_select(arr, visit_count)
   end
 
-  def show_delete_visit_link? arm
-    show_link = false
+  def visit_size_for_arm arm
     vg = arm.line_items_visits.first
     if vg
-      unless vg.visits.empty?
-        show_link = true
-      end
+      return vg.visits.size
     end
-
-    show_link
   end
 
 

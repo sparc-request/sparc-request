@@ -34,7 +34,7 @@
           padding: 3px
           width: auto !important
         input.datepicker
-          background: url("/assets/portal/yellow_callendar.png") no-repeat scroll 0 0 #FFFFFF
+          background: url("yellow_callendar.png") no-repeat scroll 0 0 #FFFFFF
 
 #timeline_table, #per_patient_per_visit_table
   th
@@ -119,8 +119,6 @@
 #visit-form
   .label
     font-weight: bold
-  #visit_name, #visit_day, #visit_window
-  width: 270px
 
 .add_subsidy_link
   text-decoration: underline
@@ -137,33 +135,33 @@
   margin-bottom: -11px
   width: 32px
   height: 32px
-  background: url('/assets/portal/yellow_plus.png') no-repeat
+  background: url('yellow_plus.png') no-repeat
 
 .remove_arm_link
   display: inline-block
   margin-bottom: -11px
   width: 32px
   height: 32px
-  background: url('/assets/portal/delete_red_smaller.png') no-repeat
+  background: url('delete_red_smaller.png') no-repeat
 
 .add_visit_link
   display: inline-block
   margin-bottom: -11px
   width: 32px
   height: 32px
-  background: url('/assets/portal/yellow_plus.png') no-repeat
+  background: url('yellow_plus.png') no-repeat
 
 .delete_visit_link
   display: inline-block
   margin-bottom: -11px
   width: 32px
   height: 32px
-  background: url('/assets/portal/delete_red_smaller.png') no-repeat
+  background: url('delete_red_smaller.png') no-repeat
 
 // Notes
 
 .add_note_link
-  background: url("/assets/portal/yellowbutton_smaller.png") no-repeat
+  background: url("yellowbutton_smaller.png") no-repeat
   color: #FFFFFF !important
   display: block
   height: 25px
@@ -173,10 +171,10 @@
 
 .saved_note
   background-color: #FFF
-  width: 892px
+  width: 870px
 
 .note_box
-  width: 892px 
+  width: 870px 
   height: 100px !important
 
 .note_date
@@ -189,7 +187,6 @@
   padding: 4px
 
 .note_body
-  width: 878px
   whitespace: none
   overflow: auto
   word-wrap: break-word
@@ -308,14 +305,14 @@
     float: right
     width: 380px
     padding: 20px
-    margin-bottom: 10px
+    margin: 0 10px 10px 0
     h3
       text-align: center
       margin-bottom: 10px
     ul
       display-style: none
       li
-        background: url("/assets/portal/notification_green_small.png") no-repeat
+        background: url("notification_green_small.png") no-repeat
         padding: 11px 5px 12px 45px
         margin-bottom: 8px
 
@@ -336,7 +333,8 @@
       text-align: center
 
   #service_request_status_changes,
-  #service_request_approval_changes
+  #service_request_approval_changes,
+  #ssr_subsidy_changes
     h3
       margin: 25px 0 0 15px
     table
@@ -374,80 +372,93 @@
       h3
         margin-bottom: 10px
 
+#fulfillment_services
+  #per_patient_services
+    #service_calendar.ui-widget-content
+      border: 0 none
+      padding: 0px
+      .ui-tabs-panel
+        padding: 5px 0px
+        table
+          width: 905px
+    #per_patient_per_visit_table
+      table.arm_stuff
+        margin-bottom: 25px
+        th
+          font-size: 1.2em
+        td
+          select
+            border: 1px solid black
+            margin-right: 5px
+            padding: 3px
+            width: 140px
+            text-align: center
+  #one_time_fee_table
+    background-color: #f3f4f4
+    padding: 15px
+    overflow: scroll
+    input,
+    select
+      border: 1px solid black
+      padding: 3px
+    input.datepicker
+      background: url("yellow_callendar.png") no-repeat scroll 0 0 #FFFFFF
+    td.expand_li
+      div.ui-icon-triangle-1-e
+        background: url('yellow_arrow.png') no-repeat
+      div.ui-icon-triangle-1-s
+        background: url('yellow_arrow_down.png') no-repeat
+
+  #add_otf_service_container,
+  #add_one_time_fee_container,
+  #add_ppv_service_container,
+  #remove_ppv_service_container
+    margin: 10px 0px
+    select
+      border: 1px solid black
+      padding: 7px
+      width: 550px
+    button
+      background: url("yellowbutton_smaller.png") no-repeat
+      border: 0 none
+      color: #FFFFFF
+      cursor: pointer
+      height: 35px
+      width: 149px
+
+#study_tracker_tabs
   #fulfillment_services
-    #one_time_fee_table
-      background-color: #f3f4f4
-      padding: 15px
-      overflow: scroll
-
-    #per_patient_services
-      #service_calendar.ui-widget-content
-        border: 0 none
-        .ui-tabs-panel
-          padding: 5px 0 0
-          table
-            width: 894px
-      #per_patient_per_visit_table
-        table.arm_stuff
-          margin-bottom: 25px
-          th
-            font-size: 1.2em
-          td
-            select
-              border: 1px solid black
-              margin-right: 5px
-              padding: 3px
-              width: 140px
-              text-align: center
-    #one_time_fee_table
-      input,
-      select
-        border: 1px solid black
-        padding: 3px
-      input.datepicker
-        background: url("/assets/portal/yellow_callendar.png") no-repeat scroll 0 0 #FFFFFF
-      td.expand_li
-        div.ui-icon-triangle-1-e
-          background: url('/assets/portal/yellow_arrow.png') no-repeat
-        div.ui-icon-triangle-1-s
-          background: url('/assets/portal/yellow_arrow_down.png') no-repeat
-
-    #add_otf_service_container,
+    #add_one_time_fee_container,
     #add_ppv_service_container,
     #remove_ppv_service_container
-      margin: 10px 0px
-      select
-        border: 1px solid black
-        padding: 7px
-        width: 550px
       button
-        background: url("/assets/portal/yellowbutton_smaller.png") no-repeat
-        border: 0 none
-        color: #FFFFFF
-        cursor: pointer
-        height: 35px
-        width: 149px
+        background: url("yellowbutton_blank.png") no-repeat
+        width: 230px
+  #one_time_fees
+    table
+      width: 905px
 
-  #fulfillment_services, #fulfillment_info, #fulfillment_notes
-    background-color: #FFF
-    padding: 10px
-    margin: 10px auto
+#fulfillment_services, #fulfillment_info, #fulfillment_notes
+  background-color: #FFF
+  padding: 10px
+  margin: 10px auto
 
-  #visit_position, #delete_visit_position
-    width: 130px
+#visit_position, #delete_visit_position
+  width: 130px
 
-  .fulfillment_notifications
-    li:hover
-      background-color: #ccc !important
-      cursor: pointer
+.fulfillment_notifications
+  li:hover
+    background-color: #ccc !important
+    cursor: pointer
 
-  #ssr_notes
-    #notes_container
-      background-color: #f3f4f4
-      margin-bottom: 20px
-      padding: 15px
-      h3
-        margin-bottom: 10px
+#ssr_notes
+  padding: 10px
+  #notes_container
+    background-color: #f3f4f4
+    margin-bottom: 20px
+    padding: 15px
+    h3
+      margin-bottom: 10px
 
 .new_notification
   padding: 5px
@@ -531,7 +542,7 @@ input.in_process, input.complete
   width: 84px
 
 .date
-  background: #FFFFFF url(/assets/portal/calendar_edit.png) left no-repeat
+  background: #FFFFFF url(calendar_edit.png) left no-repeat
   text-align: right !important
   width: 84px
 

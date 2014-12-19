@@ -21,26 +21,25 @@
 require 'spec_helper'
 
 feature 'effective and display date validations' do
-  background do
+  before :each do
     default_catalog_manager_setup
   end    
   
   scenario 'user cannot select the same effective date as an existing pricing_map', :js => true do
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
-    within '#pricing' do
-      find('.legend').click
-      wait_for_javascript_to_finish
-    end
-    click_button("Add Pricing Setup")
+    sleep 1
+
+    first('#pricing').click
+    sleep 1
+
+    first('.add_pricing_setup').click
+    first('.pricing_setup_accordion h3').click
+    sleep 1
  
-    page.execute_script("$('.ui-accordion-header').click()") 
- 
-    within('.ui-accordion') do
-      find('.effective_date').click
-      numerical_day = Date.today.strftime("%d").gsub(/^0/,'')
-      wait_for_javascript_to_finish
-      page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
-    end
+    page.execute_script("$('.effective_date:visible').focus()")
+    sleep 1
+    first('.ui-datepicker-today').click #click on today's date
+    sleep 1
  
     # This is the only way I could figure out how to test the text of the confirmation dialog
     get_alert_window do |prompt|
@@ -53,19 +52,18 @@ feature 'effective and display date validations' do
   
   scenario 'user cannot select the same display date as an existing pricing_map', :js => true do
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
-    within '#pricing' do
-      find('.legend').click
-      wait_for_javascript_to_finish
-    end
-    click_button("Add Pricing Setup")
+    sleep 1
+    first('#pricing').click
+    sleep 1
 
-    page.execute_script("$('.ui-accordion-header').click()") 
+    first('.add_pricing_setup').click
+    first('.pricing_setup_accordion h3').click
+    sleep 1
 
-    within('.ui-accordion') do
-      find('.display_date').click
-      numerical_day = Date.today.strftime("%d").gsub(/^0/,'')
-      page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
-    end
+    page.execute_script("$('.display_date:visible').focus()")
+    sleep 1
+    first('.ui-datepicker-today').click #click on today's date
+    sleep 1
 
     # This is the only way I could figure out how to test the text of
     # the confirmation dialog
@@ -81,20 +79,20 @@ feature 'effective and display date validations' do
 
   scenario 'confirmation appears when a user selects an effective date that is before an existing effective date', :js => true do
     click_link("Office of Biomedical Informatics")
-    within '#pricing' do
-      find('.legend').click
-      wait_for_javascript_to_finish
-    end
-    click_button("Add Pricing Setup")
+    sleep 1
 
-    page.execute_script("$('.ui-accordion-header:nth-of-type(2)').click()") 
+    first('#pricing').click
+    sleep 1
 
-    within('.ui-accordion > div:nth-of-type(2)') do
-      find('.effective_date').click
-      page.execute_script %Q{ $('a.ui-datepicker-prev').trigger("click") } # go back one month
-      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15  
-      sleep 1 # TODO: wait_for_javascript_to_finish doesn't work here
-    end
+    first('.add_pricing_setup').click
+    all('.pricing_setup_accordion h3').last.click
+    sleep 1
+
+    page.execute_script("$('.effective_date:visible').focus()")
+    sleep 1
+    page.execute_script %Q{ $('a.ui-datepicker-prev').trigger("click") } # go back one month
+    page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15
+    sleep 1
 
     # This is the only way I could figure out how to test the text of
     # the confirmation dialog
@@ -114,17 +112,17 @@ feature 'effective and display date validations' do
             the same as a pricing map', :js => true do
 
     click_link('South Carolina Clinical and Translational Institute (SCTR)')
-    within '#pricing' do
-      find('.legend').click
-      wait_for_javascript_to_finish
-    end
-    click_button('Increase or Decrease Rates')
+    sleep 1
+
+    first('#pricing').click
+    sleep 1
+
+    first('.increase_decrease_rates').click
     
-    within('.increase_decrease_dialog') do
-      numerical_day = Date.today.strftime("%d").gsub(/^0/,'')
-      find('.change_rate_display_date').click
-      page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
-    end
+    page.execute_script("$('.change_rate_display_date:visible').focus()")
+    sleep 1
+    first('a.ui-state-default.ui-state-highlight').click #click on today's date
+    sleep 1
 
     # This is the only way I could figure out how to test the text of the confirmation dialog
     get_alert_window do |prompt|

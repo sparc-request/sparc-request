@@ -29,7 +29,8 @@ class VisitGroup < ActiveRecord::Base
   attr_accessible :position
   attr_accessible :arm_id
   attr_accessible :day
-  attr_accessible :window
+  attr_accessible :window_before
+  attr_accessible :window_after
   acts_as_list :scope => :arm
 
   after_create :set_default_name

@@ -65,13 +65,20 @@ $(document).ready ->
     window.location.href = "/service_requests/#{service_request_id}/projects/#{project_id}/edit"
     return false
 
-  $('#infotip').qtip
+  $('#ctrc_dialog').dialog
+    modal: true
+    width: 375
+    height: 200
+
+  $('#redirect').button()
+
+  $('#infotip img').qtip
     content: 'Research Study: An individual research study with defined aims and outcomes'
     position:
       corner:
         target: "topRight"
         tooltip: "bottomLeft"
-        
+
     style:
       tip: true
       border:
@@ -80,10 +87,3 @@ $(document).ready ->
 
       name: "light"
       width: 250
-
-  $('#ctrc_dialog').dialog
-    modal: true
-    width: 375
-    height: 200
-
-  $('#redirect').button()

@@ -25,7 +25,7 @@ include CapybaraAdminPortal
 include CapybaraClinical 
 include CapybaraUserPortal
 
-describe 'A Quick Happy Test' do
+describe 'A Quick Happy Test', :happy_test do
   let_there_be_lane
   fake_login_for_each_test
 
@@ -140,7 +140,7 @@ describe 'A Quick Happy Test' do
 
     #**User Portal**#
     goToUserPortal
-    createNewRequestTest
+    createNewStudyTest
     findStudy('Bob')
     authorizedUsersTest("bjk7", "Brian Kelsey")
     #**END User Portal END**#

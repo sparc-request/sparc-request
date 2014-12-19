@@ -48,7 +48,9 @@ $(document).ready ->
     activate: (event, ui)->
       if url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))
         loadDescription(url)
-  
+
+  $('.program-link').live 'click', ->
+    $('#processing_request').show()
 
   $('.title .name a').live 'click', ->
     $(this).parents('.title').siblings('.service-description').toggle()

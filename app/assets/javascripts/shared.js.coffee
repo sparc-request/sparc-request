@@ -39,23 +39,35 @@ $(document).ready ->
        request.statusText != 'abort' &&
        settings.url != '/service_requests/feedback' &&
        !settings.error
-      alert("An error happened processing your request: " + settings.url)
+      alert(I18n["ajax_error"] + settings.url)
 
   $('.edit_project_role').live 'click', ->
     parent = $(this).attr('parent')
     identity_id = $(this).attr('identity_id')
     data = $(".#{parent} input").serialize()
+    data += '&portal=' + $('#portal').val()
     $.ajax
       url: "/identities/#{identity_id}"
       type: 'POST'
       data: data
 
   $('.add-user button').live 'click', ->
+    data = $('#identity_details :input').serialize()
+    data += '&portal=' + $("#portal").val()
     $.ajax
       url: '/identities/add_to_protocol'
       type: 'POST'
-      data: $('#identity_details :input').serialize()
+      data: data
     return false
+
+  $('.cancel_link').live 'click', ->
+    cur_step = $('#current_step').val()
+    if cur_step == 'protocol'
+      $('#current_step').val('cancel_protocol')
+    else if cur_step == "user_details"
+      $('#current_step').val('go_back')
+
+    $('form').submit()
 
   $('.restore_project_role').live 'click', ->
     parent = $(this).attr('parent')

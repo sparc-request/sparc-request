@@ -25,19 +25,20 @@
   padding: 14px 8px 8px;
 }
 
-.tabs.plain_class {
+.ui-tabs.plain_class {
   border: 0px;
   background: none;
+  padding: 0px
 }
 
-.tabs.plain_class ul.ui-tabs-nav {
+.ui-tabs.plain_class ul.ui-tabs-nav {
   background: #3883A9 !important;
   padding-top: 15px;
   border-radius: 0px;
   -moz-border-radius: 0px;
   -webkit-border-radius: 0px;
 }
-.tabs.plain_class ul.ui-tabs-nav li {
+.ui-tabs.plain_class ul.ui-tabs-nav li {
   background: #3e9f5a !important;
   border: none;
   border-radius: 0px;
@@ -45,12 +46,12 @@
   -webkit-border-radius: 0px;
 }
 
-.tabs.plain_class ul.ui-tabs-nav li.ui-tabs-active {
+.ui-tabs.plain_class ul.ui-tabs-nav li.ui-tabs-active {
   background: #f89c50 !important;
 }
 
-.tabs.plain_class ul.ui-tabs-nav li.ui-state-hover a,
-.tabs.plain_class ul.ui-tabs-nav li.ui-state-focus a {
+.ui-tabs.plain_class ul.ui-tabs-nav li.ui-state-hover a,
+.ui-tabs.plain_class ul.ui-tabs-nav li.ui-state-focus a {
   color: white;
 }
 
@@ -119,7 +120,7 @@ table.tablesorter thead tr th, table.tablesorter tfoot tr th {
 }
 
 table.tablesorter thead tr .header {
-  background-image: url(/assets/portal/bg.gif);
+  background-image: url(bg.gif);
   background-repeat: no-repeat;
   background-position: center right;
   cursor: pointer;
@@ -136,11 +137,11 @@ table.tablesorter tbody tr.odd td {
 }
 
 table.tablesorter thead tr .headerSortUp {
-  background-image: url(/assets/portal/asc.gif);
+  background-image: url(asc.gif);
 }
 
 table.tablesorter thead tr .headerSortDown {
-  background-image: url(/assets/portal/desc.gif);
+  background-image: url(desc.gif);
 }
 
 table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
@@ -188,21 +189,21 @@ background-color: #8dbdd8;
 
 .admin-buttons .header_button.create_new_request {
   width: 158px;
-  background: url(/assets/portal/portal_header_button.png) no-repeat;
+  background: url(portal_header_button.png) no-repeat;
 }
 .admin-buttons .header_button.reporting {
   width: 93px;
   margin-left: 20px;
-  background: url(/assets/portal/portal_header_button_small.png) no-repeat;
+  background: url(portal_header_button_small.png) no-repeat;
 }
 .admin-buttons .header_button.billing_report {
   width: 213px;
-  background: url(/assets/portal/portal_header_button_large.png) no-repeat;
+  background: url(portal_header_button_large.png) no-repeat;
 }
 .admin-buttons .return_link,
 .admin-buttons .cwf_return_link,
 #study_tracker_access div.ui-button {
-  background: url("/assets/portal/blue_button_long.png") no-repeat;
+  background: url("blue_button_long.png") no-repeat;
   color: white;
   display: block;
   height: 24px;
@@ -225,7 +226,7 @@ background-color: #8dbdd8;
 
 #information a#ssr_save.ui-button,
 #information a#protocol_billing_business_manager_static_email_save.ui-button {
-  background: url("/assets/portal/blue_button_short.png") no-repeat;
+  background: url("blue_button_short.png") no-repeat;
   border: 0 none;
   height: 30px;
   width: 92px;
@@ -238,7 +239,7 @@ background-color: #8dbdd8;
   color: white;
 }
 
-.portal_create_new_request {
+.portal_create_new_study {
   margin-right: 30px;
   margin-top: -10px;
   float: right;

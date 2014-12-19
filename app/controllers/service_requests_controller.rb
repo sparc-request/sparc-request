@@ -110,10 +110,11 @@ class ServiceRequestsController < ApplicationController
   
   def protocol
     @service_request.update_attribute(:service_requester_id, current_user.id) if @service_request.service_requester_id.nil?
-    
-    @studies = @sub_service_request.nil? ? current_user.studies(:order => 'id') : @service_request.protocol.type == "Study" ? [@service_request.protocol] : []
+    if @sub_service_request.nil?
+      studies = current_user.project_roles.map{|pr| pr.protocol unless ['view','none'].include? pr.project_rights}.compact
+    end
+    @studies = @sub_service_request.nil? ? studies : @service_request.protocol.type == "Study" ? [@service_request.protocol] : []
     @projects = @sub_service_request.nil? ? current_user.projects(:order => 'id') : @service_request.protocol.type == "Project" ? [@service_request.protocol] : []
-
     if session[:saved_protocol_id]
       @service_request.protocol = Protocol.find session[:saved_protocol_id]
       session.delete :saved_protocol_id
@@ -186,11 +187,6 @@ class ServiceRequestsController < ApplicationController
       if ssr.subsidy
         # we already have a subsidy; add it to the list
         subsidy = ssr.subsidy
-        unless subsidy.stored_percent_subsidy.nil?
-          dct = subsidy.sub_service_request.direct_cost_total
-          subsidy.update_attribute(:pi_contribution, Subsidy.calculate_pi_contribution(subsidy.stored_percent_subsidy, dct))
-        end
-
         @subsidies << subsidy
       elsif ssr.eligible_for_subsidy?
         # we don't have a subsidy yet; add it to the list but don't save
@@ -247,11 +243,13 @@ class ServiceRequestsController < ApplicationController
     end
 
     @tab = 'calendar'
+    @review = true
   end
 
   def obtain_research_pricing
     # TODO: refactor into the ServiceRequest model
     @service_request.update_status('get_a_quote')
+    @service_request.previous_submitted_at = @service_request.submitted_at
     @service_request.update_attribute(:submitted_at, Time.now)
     @service_request.ensure_ssr_ids
     
@@ -261,7 +259,8 @@ class ServiceRequestsController < ApplicationController
       arm.update_attributes({:new_with_draft => false})
     end
     @service_list = @service_request.service_list
-    send_notifications(@service_request, @sub_service_request)
+
+    send_confirmation_notifications
 
     render :formats => [:html]
   end
@@ -283,13 +282,17 @@ class ServiceRequestsController < ApplicationController
     end
     @service_list = @service_request.service_list
 
+    @service_request.sub_service_requests.each do |ssr|
+      ssr.subsidy.update_attributes(:overridden => true) if ssr.subsidy
+    end
+
     send_confirmation_notifications
 
     # Send a notification to Lane et al to create users in Epic.  Once
     # that has been done, one of them will click a link which calls
     # approve_epic_rights.
     if USE_EPIC
-      if @protocol.should_push_to_epic?
+      if @protocol.selected_for_epic
         @protocol.ensure_epic_user
         if QUEUE_EPIC
           EpicQueue.create(:protocol_id => @protocol.id) unless EpicQueue.where(:protocol_id => @protocol.id).size == 1
@@ -315,7 +318,6 @@ class ServiceRequestsController < ApplicationController
       end
     end
   end
-
 
   def approve_changes
     @service_request = ServiceRequest.find params[:id]
@@ -354,7 +356,6 @@ class ServiceRequestsController < ApplicationController
     end
     @tab = 'calendar'
   end
-
 
   # methods only used by ajax requests
 
@@ -422,7 +423,7 @@ class ServiceRequestsController < ApplicationController
       if !['first_draft', 'draft'].include?(@service_request.status) and !@service_request.submitted_at.nil? and @service_request.submitted_at > ssr.created_at
         @protocol = @service_request.protocol
         xls = @protocol.nil? ? nil : render_to_string(:action => 'show', :formats => [:xlsx])
-        send_ssr_service_provider_notifications(@service_request, ssr, xls)
+        send_ssr_service_provider_notifications(@service_request, ssr, xls, ssr_deleted=true)
       end
       ssr.destroy
     end
@@ -433,27 +434,8 @@ class ServiceRequestsController < ApplicationController
     render :formats => [:js]
   end
 
-  def delete_documents
-    # deletes a group of documents unless we are working with a sub_service_request
-    grouping = @service_request.document_groupings.find params[:document_group_id]
-    @tr_id = "#document_grouping_#{grouping.id}"
-
-    if @sub_service_request.nil?
-      grouping.destroy # destroys the grouping and the documents
-    else
-      grouping.documents.find_by_sub_service_request_id(@sub_service_request.id).destroy
-      grouping.reload
-      grouping.destroy if grouping.documents.empty?
-    end
-  end
-
-  def edit_documents
-    @grouping = @service_request.document_groupings.find params[:document_group_id]
-    @service_list = @service_request.service_list
-  end
-
   def ask_a_question
-    from = params['quick_question']['email'].blank? ? NO_REPLY_FROM : params['quick_question']['email']
+    from = params['quick_question']['email'].blank? ? 'no-reply@musc.edu' : params['quick_question']['email']
     body = params['quick_question']['body'].blank? ? 'No question asked' : params['quick_question']['body']
 
     quick_question = QuickQuestion.create :to => DEFAULT_MAIL_TO, :from => from, :body => body
@@ -470,6 +452,29 @@ class ServiceRequestsController < ApplicationController
         format.js { render :status => 403, :json => feedback.errors.to_a.map {|k,v| "#{k.humanize} #{v}".rstrip + '.'} }
       end
     end
+  end
+
+  def delete_documents
+    # deletes a document unless we are working with a sub_service_request
+    @document = @service_request.documents.find params[:document_id]
+    @tr_id = "#document_id_#{@document.id}"
+
+    if @sub_service_request.nil?
+      @document.destroy # destroys the document
+    else
+      @sub_service_request.documents.delete @document # removes doc from ssr
+      @sub_service_request.save
+      @document.destroy if @document.sub_service_requests.empty? #if no ssrs left, destroys document
+    end
+  end
+
+  def edit_documents
+    @document = @service_request.documents.find params[:document_id]
+    @service_list = @service_request.service_list
+  end
+
+  def new_document
+    @service_list = @service_request.service_list
   end
 
   private
@@ -519,12 +524,12 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def send_ssr_service_provider_notifications(service_request, sub_service_request, xls) #single sub-service request
+  def send_ssr_service_provider_notifications(service_request, sub_service_request, xls, ssr_deleted=false) #single sub-service request
     previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
     audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)
 
     sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-      send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls, audit_report)
+      send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls, audit_report, ssr_deleted)
     end
   end
 
@@ -545,7 +550,7 @@ class ServiceRequestsController < ApplicationController
     return false
   end
 
-  def send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls, audit_report=nil)
+  def send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls, audit_report=nil, ssr_deleted=false)
     attachments = {}
     attachments["service_request_#{service_request.id}.xls"] = xls
 
@@ -561,7 +566,7 @@ class ServiceRequestsController < ApplicationController
       audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)
     end
 
-    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, audit_report).deliver
+    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, audit_report, ssr_deleted).deliver
   end
 
   def send_epic_notification_for_user_approval(protocol)
@@ -574,102 +579,101 @@ class ServiceRequestsController < ApplicationController
     #### convert dollars to cents for subsidy
     if params[:service_request] && params[:service_request][:sub_service_requests_attributes]
       params[:service_request][:sub_service_requests_attributes].each do |key, values|
-        dollars = values[:subsidy_attributes][:pi_contribution]
-        if dollars.blank? # we don't want to create a subsidy if it's blank
-          values.delete(:subsidy_attributes)
-          ssr = @service_request.sub_service_requests.find values[:id]
-          ssr.subsidy.delete if ssr.subsidy
+        ssr = @service_request.sub_service_requests.find values[:id]
+        if !check_for_overridden(ssr)
+          direct_cost = ssr.direct_cost_total
+          dollars = values[:subsidy_attributes][:pi_contribution]
+          funded_amount = direct_cost - Service.dollars_to_cents(dollars)
+          percent_subsidy = ((funded_amount / direct_cost) * 100).round(2)
+          if dollars.blank? # we don't want to create a subsidy if it's blank
+            values.delete(:subsidy_attributes)
+            ssr.subsidy.delete if ssr.subsidy
+          else
+            values[:subsidy_attributes][:pi_contribution] = Service.dollars_to_cents(dollars)
+            values[:subsidy_attributes][:stored_percent_subsidy] = percent_subsidy
+          end
         else
-          values[:subsidy_attributes][:pi_contribution] = Service.dollars_to_cents(dollars)
+          direct_cost = ssr.direct_cost_total
+          percent_subsidy = ssr.subsidy.stored_percent_subsidy
+          contribution = (direct_cost * (percent_subsidy / 100.00)).ceil
+          contribution = direct_cost - contribution
+          values[:subsidy_attributes][:pi_contribution] = contribution
         end
       end
     end
+  end
+
+  def check_for_overridden ssr
+    overridden = false
+    if ssr.subsidy && ssr.subsidy.overridden
+      overridden = true
+    end
+
+    overridden
   end
 
   # Document saves/updates
   def document_save_update errors
      #### save/update documents if we have them
     process_ssr_organization_ids = params[:process_ssr_organization_ids]
-    document_grouping_id = params[:document_grouping_id]
+    document_id = params[:document_id]
+    doc_object = Document.find(document_id) if document_id
     document = params[:document]
+    doc_type = params[:doc_type]
+    doc_type_other = params[:doc_type_other]
     upload_clicked = params[:upload_clicked]
 
-    if document_grouping_id and not process_ssr_organization_ids
-      # we are deleting this grouping, this is essentially the same as clicking delete next to a grouping
-      document_grouping = @service_request.document_groupings.find document_grouping_id
-      errors << {:recipients => ["You must select at least one recipient"]}
-      # document_grouping.destroy
-    elsif upload_clicked == "1" and (!document or params[:doc_type].empty? or !process_ssr_organization_ids) and not document_grouping_id # new document but we didn't provide either the document or document type
-      # we did not provide a document
-      #[{:visit_count=>["You must specify the estimated total number of visits (greater than zero) before continuing."], :subject_count=>["You must specify the estimated total number of subjects before continuing."]}]
-      doc_errors = {}
-      doc_errors[:recipients] = ["You must select at least one recipient"] if !process_ssr_organization_ids
-      doc_errors[:document] = ["You must select a document to upload"] if !document
-      doc_errors[:doc_type] = ["You must provide a document type"] if params[:doc_type].empty?
-      errors << doc_errors
-    elsif process_ssr_organization_ids and not document_grouping_id
-      # we have a new grouping
-      document_grouping = @service_request.document_groupings.create
-      process_ssr_organization_ids.each do |org_id|
-        sub_service_request = @service_request.sub_service_requests.find_by_organization_id org_id.to_i
-        sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other], :document_grouping_id => document_grouping.id
-        sub_service_request.save
-      end
-    elsif process_ssr_organization_ids and document_grouping_id
-      # we need to update an existing grouping
-      document_grouping = @service_request.document_groupings.find document_grouping_id
-      grouping_org_ids = document_grouping.documents.map{|d| d.sub_service_request.organization_id.to_s}
+    if doc_type and process_ssr_organization_ids and (document or document_id)
+      # have all required ingredients for successful document
+      if document_id # update existing document
+        org_ids = doc_object.sub_service_requests.map{|ssr| ssr.organization_id.to_s}
+        to_delete = org_ids - process_ssr_organization_ids
+        to_add = process_ssr_organization_ids - org_ids
 
-      to_delete = grouping_org_ids - process_ssr_organization_ids
-      to_add = process_ssr_organization_ids - grouping_org_ids
-      to_update = process_ssr_organization_ids & grouping_org_ids
-
-      to_add.each do |org_id|
-        document = params[:document] || document_grouping.documents.first.document
-        
-        if document and not params[:doc_type].empty? and process_ssr_organization_ids
+        # add access
+        to_add.each do |org_id|
           sub_service_request = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
-          sub_service_request.documents.create :document => document, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other], :document_grouping_id => document_grouping.id
+          sub_service_request.documents << doc_object
           sub_service_request.save
-        else
-          doc_errors = {}
-          doc_errors[:recipients] = ["You must select at least one recipient"] if !process_ssr_organization_ids
-          doc_errors[:document] = ["You must select a document to upload"] if !document
-          doc_errors[:doc_type] = ["You must provide a document type"] if params[:doc_type].empty?
-          errors << doc_errors
-        end
-      end
-
-      to_delete.each do |org_id|
-        document_grouping.documents.each do |doc|
-          doc.destroy if doc.organization.id == org_id.to_i
         end
 
-        document_grouping.reload
-        document_grouping.destroy if document_grouping.documents.empty?
-      end
+        # remove access
+        to_delete.each do |org_id|
+          ssr = @service_request.sub_service_requests.find_by_organization_id org_id.to_i
+          doc_object.sub_service_requests.delete ssr
+          doc_object.reload
+          doc_object.destroy if doc_object.sub_service_requests.empty?
+        end
 
-      # updating sub_service_request documents should create a new grouping unless the grouping only contains documents for that sub_service_request
-      to_update.each do |org_id|
-        if params[:doc_type].empty?
-          errors << {:document_upload => ["You must provide a document type"]}
-        else
-          if @sub_service_request.nil? or document_grouping.documents.size == 1 # we either don't have a sub_service_request or the only document in this group is the one we are updating
-            document_grouping.documents.each do |doc|
-              new_doc = document ? document : doc.document # use the old document
-              doc.update_attributes(:document => new_doc, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other]) if doc.organization.id == org_id.to_i
-            end
-          else # we have a sub_service_request and the document count is greater than 1 so we need to do some special stuff
-            new_document_grouping = @service_request.document_groupings.create
-            document_grouping.documents.each do |doc|
-              new_doc = document ? document : doc.document # use the old document
-              doc.update_attributes({:document => new_doc, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other], :document_grouping_id => new_document_grouping.id}) if doc.organization.id == @sub_service_request.id
-            end
+        # update document's attributes
+        if doc_object
+          if @sub_service_request and doc_object.sub_service_requests.size > 1
+            new_doc = document ? document : doc_object.document # if no new document provided use the old document
+            newDocument = Document.create :document => new_doc, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other], :service_request_id => @service_request.id
+            @sub_service_request.documents << newDocument
+            @sub_service_request.documents.delete doc_object
+            @sub_service_request.save
+          else
+            new_doc = document || doc_object.document
+            doc_object.update_attributes(:document => new_doc, :doc_type => doc_type, :doc_type_other => doc_type_other)
           end
         end
+      else # new document
+        newDocument = Document.create :document => document, :doc_type => doc_type, :doc_type_other => doc_type_other, :service_request_id => @service_request.id
+        process_ssr_organization_ids.each do |org_id|
+          sub_service_request = @service_request.sub_service_requests.find_by_organization_id org_id.to_i
+          sub_service_request.documents << newDocument
+          sub_service_request.save
+        end
       end
+    elsif upload_clicked == "1" and ((doc_type == "" or !process_ssr_organization_ids) or ( !document and !document_id ))
+      # collect errors
+      doc_errors = {}
+      doc_errors[:recipients] = ["You must select at least one recipient"] if !process_ssr_organization_ids 
+      doc_errors[:document] = ["You must select a document to upload"] if !document and !document_id
+      doc_errors[:doc_type] = ["You must provide a document type"] if doc_type == ""
+      errors << doc_errors
     end
-
     # end document saving stuff
   end
 

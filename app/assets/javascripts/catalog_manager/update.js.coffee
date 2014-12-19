@@ -82,13 +82,16 @@ $(document).ready ->
     remove_all_errors()
   )
     
-  $('.save_button').live('click', ->
-    setTimeout( callback, 50)
+  $('.save_button').live('click', (e) ->
+    e.preventDefault()
+    $(this).attr('disabled', 'disabled')
+    $(this).parents('form').submit()
     $('.spinner').show()
-  )
 
-  callback = ->
-    $('.save_button').attr('disabled', 'disabled')
+    $(document).ajaxStop ->
+      $('.save_button').removeAttr('disabled')
+      $('.spinner').hide()
+  )
     
   $('.service_rate').live('blur', ->
     $(this).formatCurrency()

@@ -282,10 +282,11 @@ class Identity < ActiveRecord::Base
   # any child (deep) of any of those organizations.
   # Returns an array of organizations.
   def catalog_manager_organizations
+    organizations = Organization.find(:all)
     orgs = []
 
     self.catalog_managers.map(&:organization).each do |org|
-      orgs << org.all_children
+      orgs << org.all_children(organizations)
     end
 
     orgs.flatten.uniq
@@ -293,10 +294,11 @@ class Identity < ActiveRecord::Base
 
   # Returns an array of organizations where the user has clinical provider rights.
   def clinical_provider_organizations
+    organizations = Organization.find(:all)
     orgs = []
 
     self.clinical_providers.map(&:organization).each do |org|
-      orgs << org.all_children
+      orgs << org.all_children(organizations)
     end
 
     self.admin_organizations({:su_only => true}).each do |org|
@@ -311,27 +313,43 @@ class Identity < ActiveRecord::Base
   # Returns an array of organizations.
   # If you pass in "su_only" it only returns organizations for whom you are a super user.
   def admin_organizations su_only = {:su_only => false}
-    orgs = []
-    arr = []
+    orgs = Organization.find(:all)
+    organizations = []
     attached_array = []
-    arr << self.super_users.map(&:organization)
-    unless su_only[:su_only] == true
-      arr << self.service_providers.map(&:organization)
-    end
-    arr = arr.flatten.compact.uniq
+    arr = organizations_for_users(orgs, su_only)
 
     arr.each do |org|
-      orgs << org.all_children
+      organizations << org.all_children(orgs)
     end
 
     ##In case orgs is empty, return an empty array, instead of crashing.
-    orgs.flatten!.compact.uniq rescue return []
-   
-    orgs.each do |org|
-      attached_array << Organization.includes(:sub_service_requests).find(org.id)
+    organizations.flatten!.compact.uniq rescue return []
+
+    organizations
+  end
+
+  def organizations_for_users(orgs, su_only)
+    arr = []
+    self.super_users.each do |user|
+      orgs.each do |org|
+        if user.organization_id == org.id
+          arr << org 
+        end
+      end
     end
 
-    attached_array
+    unless su_only[:su_only] == true
+      self.service_providers.each do |user|
+        orgs.each do |org|
+          if user.organization_id == org.id
+            arr << org 
+          end
+        end
+      end
+    end
+    arr = arr.flatten.compact.uniq
+
+    arr
   end
 
   def clinical_provider_rights?
@@ -362,6 +380,7 @@ class Identity < ActiveRecord::Base
   # Currently serves largely to insert CTRC statuses if this identity has permissions for the CTRC.
   # Returns an array of statuses as strings.
   def available_workflow_states tag='ctrc', org_id=nil, return_hash=false
+    orgs = Organization.find(:all)
     #added return_keys so you can pass back the keys instead of the values
     #this is necessary when you want to change the value in constants.yml
     available_statuses = AVAILABLE_STATUSES.clone
@@ -371,13 +390,12 @@ class Identity < ActiveRecord::Base
     else # default is to use CTRC tagged organization, this could be different in the future
       parents = Organization.tagged_with(tag)
     end
-
     service_provider_identity_ids = []
     super_user_identity_ids = []
     cwf_provider_identity_ids = []
 
     parents.each do |parent|
-      parent.all_children.each do |org| # check all children and get your available statuses
+      parent.all_children(orgs).each do |org| # check all children and get your available statuses
         service_provider_identity_ids << org.service_providers.map(&:identity_id)
         super_user_identity_ids << org.super_users.map(&:identity_id)
         cwf_provider_identity_ids << org.clinical_providers.map(&:identity_id)

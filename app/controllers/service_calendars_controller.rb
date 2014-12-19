@@ -133,12 +133,24 @@ class ServiceCalendarsController < ApplicationController
     end
   end
 
-  def set_window
-    window = params[:window]
+  def set_window_before
+    window_before = params[:window_before]
     position = params[:position].to_i
     arm = Arm.find params[:arm_id]
 
-    if !arm.update_visit_group_window(window, position)
+    if !arm.update_visit_group_window_before(window_before, position)
+      respond_to do |format|
+        format.js { render :status => 418, :json => clean_messages(arm.errors.messages) }
+      end
+    end
+  end
+
+  def set_window_after
+    window_after = params[:window_after]
+    position = params[:position].to_i
+    arm = Arm.find params[:arm_id]
+
+    if !arm.update_visit_group_window_after(window_after, position)
       respond_to do |format|
         format.js { render :status => 418, :json => clean_messages(arm.errors.messages) }
       end
@@ -160,6 +172,7 @@ class ServiceCalendarsController < ApplicationController
       new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
       @pages[arm.id] = @service_request.set_visit_page new_page, arm
     end
+    @merged = true
   end
 
   def update_otf_qty_and_units_per_qty
@@ -204,7 +217,9 @@ class ServiceCalendarsController < ApplicationController
     end
     setup_calendar_pages
 
+    @arm.visit_groups.reload
     vg = @arm.visit_groups.find_by_position visit_to_move
+    vg.reload
 
     # The way insert_at works is literal. It inserts at whatever position is given
     # We want to insert before the position given depending on the visit we're moving.

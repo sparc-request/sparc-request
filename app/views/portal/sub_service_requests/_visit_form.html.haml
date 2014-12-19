@@ -24,9 +24,12 @@
   - if USE_EPIC
     %br
     %br
-    .label Day:
-    = text_field_tag 'visit_day'
-    %br
-    %br
-    .label +/-
-    = text_field_tag 'visit_window', 0
+    %span{:style => "display:inline-block;text-align:center;"}
+      .label -
+      = text_field_tag 'visit_window_before', 0, :size => 2
+    %span{:style => "display: inline-block;text-align:center;"}
+      .label Day
+      = text_field_tag 'visit_day', nil, :size => 2
+    %span{:style => "display:inline-block;text-align:center;"}
+      .label +
+      = text_field_tag 'visit_window_after', 0, :size => 2

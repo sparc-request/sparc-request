@@ -28,12 +28,11 @@ class ServiceRequest < ActiveRecord::Base
   has_many :charges, :dependent => :destroy
   has_many :tokens, :dependent => :destroy
   has_many :approvals, :dependent => :destroy
-  has_many :documents, :through => :sub_service_requests
-  has_many :document_groupings, :dependent => :destroy
+  has_many :documents, :dependent => :destroy
   has_many :arms, :through => :protocol
 
   validation_group :protocol do
-    # validates :protocol_id, :presence => {:message => "You must identify the service request with a study/project before continuing."} 
+    # validates :protocol_id, :presence => {:message => "You must identify the service request with a study/project before continuing."}
     validate :protocol_page
   end
 
@@ -43,7 +42,7 @@ class ServiceRequest < ActiveRecord::Base
     # validates :subject_count, :numericality => {:message => "You must specify the estimated total number of subjects before continuing.", :if => :has_per_patient_per_visit_services?}
     validate :service_details_forward
   end
-  
+
   validation_group :service_details_back do
     # TODO: Fix validations for this area
     # validates :visit_count, :numericality => { :greater_than => 0, :message => "You must specify the estimated total number of visits (greater than zero) before continuing.", :if => :has_visits?}
@@ -74,7 +73,7 @@ class ServiceRequest < ActiveRecord::Base
   validation_group :review do
     #insert group specific validation
   end
-  
+
   validation_group :obtain_research_pricing do
     #insert group specific validation
   end
@@ -111,7 +110,7 @@ class ServiceRequest < ActiveRecord::Base
       errors.add(:protocol, "Errors in the selected study/project have been detected.  Please click Edit Study/Project to correct")
     else
       if self.has_ctrc_clinical_services?
-        if self.protocol && self.protocol.has_ctrc_clinical_services?(self.id) && self.status == 'first_draft'
+        if self.protocol && self.protocol.has_ctrc_clinical_services?(self.id)
           errors.add(:ctrc_services, "SCTR Research Nexus Services have been removed")
         end
       end
@@ -156,38 +155,19 @@ class ServiceRequest < ActiveRecord::Base
         visitError = false
         subjectError = false
         nameError = false
-        validate_for_cwf_visits = false
-        validate_for_cwf_subjects = false
         arms.each do |arm|
           unless arm.valid_visit_count? then visitError = true end
           unless arm.valid_subject_count? then subjectError = true end
           unless arm.valid_name? then nameError = true end
-          if service_request_has_cwf_ssrs?
-            unless arm.valid_minimum_visit_count? then validate_for_cwf_visits = true end
-            unless arm.valid_minimum_subject_count? then validate_for_cwf_subjects = true end
-          end
           if visitError and subjectError and nameError then break end
         end
 
         if visitError then errors.add(:visit_count, "You must specify the estimated total number of visits (greater than zero) before continuing.") end
         if subjectError then errors.add(:subject_count, "You must specify the estimated total number of subjects before continuing.") end
         if nameError then errors.add(:name, "You must specify a name for each arm before continuing.") end
-        if validate_for_cwf_visits then errors.add(:visit_count, "A request associated with this arm is in Clinical Work Fulfillment. The visit count cannot be decreased.") end
-        if validate_for_cwf_subjects then errors.add(:subject_count, "A request associated with this arm is in Clinical Work Fulfillment. The subject count cannot be decreased.") end
       end
     end
 
-  end
-
-  def service_request_has_cwf_ssrs?
-    has_cwf_ssrs = false
-    self.sub_service_requests.each do |ssr|
-      if ssr.in_work_fulfillment
-        has_cwf_ssrs = true
-      end
-    end
-
-    has_cwf_ssrs
   end
 
   def service_calendar_back
@@ -201,19 +181,19 @@ class ServiceRequest < ActiveRecord::Base
   def service_calendar_page(direction)
     return if direction == 'back' and status == 'first_draft'
     return unless has_per_patient_per_visit_services?
-    
+
     if USE_EPIC
       self.arms.each do |arm|
         days = arm.visit_groups.map(&:day)
 
         visit_group_errors = false
         invalid_day_errors = false
-        
+
         unless days.all?{|x| !x.blank?}
           errors.add(:visit_group, "Please specify a study day for each visit on (#{arm.name}).")
           visit_group_errors = true
         end
-        
+
         unless days.all?{|day| day.is_a? Fixnum}
           errors.add(:invalid_day, "Please enter a valid number for each study day (#{arm.name}).")
           invalid_day_errors = true
@@ -332,7 +312,7 @@ class ServiceRequest < ActiveRecord::Base
       line_item.service.is_one_time_fee? ? line_item : nil
     end.compact
   end
-  
+
   def per_patient_per_visit_line_items
     line_items.map do |line_item|
       line_item.service.is_one_time_fee? ? nil : line_item
@@ -340,12 +320,12 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def set_visit_page page_passed, arm
-    page = case 
+    page = case
            when page_passed <= 0
              1
            when page_passed > (arm.visit_count / 5.0).ceil
              1
-           else 
+           else
              page_passed
            end
     page
@@ -386,7 +366,7 @@ class ServiceRequest < ActiveRecord::Base
         last_parent = service.organization.id
         last_parent_name = service.organization.name
       end
-      
+
       if groupings.include? last_parent
         g = groupings[last_parent]
         g[:services] << service
@@ -513,20 +493,22 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def add_or_update_arms
+    return if not self.has_per_patient_per_visit_services?
+
     p = self.protocol
     if p.arms.empty?
       arm = p.arms.create(
-        name: 'ARM 1',
+        name: 'Screening Phase',
         visit_count: 1,
         subject_count: 1,
         new_with_draft: true)
-      self.line_items.each do |li|
+      self.per_patient_per_visit_line_items.each do |li|
         arm.create_line_items_visit(li)
       end
     else
       p.arms.each do |arm|
         p.service_requests.each do |sr|
-          sr.line_items.each do |li|
+          sr.per_patient_per_visit_line_items.each do |li|
             arm.create_line_items_visit(li) if arm.line_items_visits.where(:line_item_id => li.id).empty?
           end
         end
@@ -553,7 +535,7 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def audit_report identity, start_date=self.previous_submitted_at.utc, end_date=Time.now.utc
-    line_item_audits = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{self.id}%' AND 
+    line_item_audits = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{self.id}%' AND
                                       auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('create', 'destroy') AND
                                       created_at BETWEEN '#{start_date}' AND '#{end_date}'")
                                     .group_by(&:auditable_id)

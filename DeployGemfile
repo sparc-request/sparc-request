@@ -82,4 +82,5 @@ gem "audited-activerecord", "~> 3.0"
 
 gem "surveyor"
 
-gem 'google_calendar'
+gem 'icalendar'
+gem 'activerecord-import'

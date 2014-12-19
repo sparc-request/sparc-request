@@ -139,6 +139,8 @@ class ReportsController < ApplicationController
 
   def cwf_subject
     @subject = Subject.find params[:subject]
+    @subject.calendar.populate_on_request_edit
+    @subject.calendar.build_subject_data
     @arm = Arm.find params[:arm]
     @sub_service_request = SubServiceRequest.find params[:id]
     @service_request = @sub_service_request.service_request 

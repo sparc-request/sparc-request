@@ -35,7 +35,6 @@
           %tr
             %th.notification_icon
             %th.from_column= t(:notifications)[:from]
-            %th.srid_column= t(:notifications)[:srid]
             %th.subject_column= t(:notifications)[:about]
             %th.body_column= t(:notifications)[:preview]
             %th.received_column= t(:notifications)[:received]
@@ -49,7 +48,6 @@
                 - else
                   = image_tag("portal/notification_red_small.png")
               %td.from_column{:'data-notification_id' => notification.id, :'data-sub_service_request_id' => @sub_service_request.try(:id)}= notification.try(:messages).try(:last).try(:sender).try(:full_name)
-              %td.subject_column{:'data-notification_id' => notification.id, :'data-sub_service_request_id' => @sub_service_request.try(:id)}= notification.sub_service_request.display_id
               %td.subject_column{:'data-notification_id' => notification.id, :'data-sub_service_request_id' => @sub_service_request.try(:id)}= notification.try(:messages).try(:last).try(:subject)
               %td.body_column{:'data-notification_id' => notification.id, :'data-sub_service_request_id' => @sub_service_request.try(:id)}= notification.try(:messages).try(:last).try(:body)
               %td.received_column{:'data-notification_id' => notification.id, :'data-sub_service_request_id' => @sub_service_request.try(:id)}= received_at(notification)

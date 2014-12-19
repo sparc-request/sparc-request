@@ -33,8 +33,8 @@
   %br
 
   %input#search_box.search_protocols{:placeholder => 'Search...', :style => "display:none;"}
-  = link_to root_path do
-    = image_tag 'portal/create_new_request.png', :class => 'portal_create_new_request'
+  = link_to new_portal_protocol_path do
+    = image_tag 'portal/create_new_study.png', :class => 'portal_create_new_study'
   .loading_protocol.ui-corner-all{:style => "border: 1px solid black; padding: 3px; width: 200px; margin: 30px auto; text-align: center"}
     = t(:protocol_information)[:loading]
     %br

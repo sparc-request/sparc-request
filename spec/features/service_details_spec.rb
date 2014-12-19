@@ -37,20 +37,14 @@ describe "visit service details page should always show start and end date for o
     numerical_day = 10
     it "should save the start date" do
       old_date = project.start_date
-      find('#start_date').click
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # go forward one month
-      page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
-      wait_for_javascript_to_finish
+      enter_start_date(numerical_day)
       find(:xpath, "//a/img[@alt='Savecontinue']/..").click
       wait_for_javascript_to_finish
       old_date.should_not eq(Protocol.find(project.id).start_date)
     end
     it "should save the end date" do
       old_date = project.end_date
-      find('#end_date').click
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # go forward one month
-      page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
-      wait_for_javascript_to_finish
+      enter_end_date(numerical_day)
       find(:xpath, "//a/img[@alt='Savecontinue']/..").click
       wait_for_javascript_to_finish
       old_date.should_not eq(Protocol.find(project.id).end_date)
@@ -73,20 +67,14 @@ describe "visit service details page should always show start and end date for p
     numerical_day = 10
     it "should save the start date" do
       old_date = project.start_date
-      find('#start_date').click
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # go forward one month
-      page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
-      wait_for_javascript_to_finish
+      enter_start_date(numerical_day)
       find(:xpath, "//a/img[@alt='Savecontinue']/..").click
       wait_for_javascript_to_finish
       old_date.should_not eq(Protocol.find(project.id).start_date)
     end
     it "should save the end date" do
       old_date = project.end_date
-      find('#end_date').click
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # go forward one month
-      page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
-      wait_for_javascript_to_finish
+      enter_end_date(numerical_day)
       find(:xpath, "//a/img[@alt='Savecontinue']/..").click
       wait_for_javascript_to_finish
       old_date.should_not eq(Protocol.find(project.id).end_date)
@@ -110,20 +98,14 @@ describe "submitting a in form", :js => true do
     numerical_day = 10
     it "should save the start date" do
       old_date = project.start_date
-      find('#start_date').click
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # go forward one month
-      page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
-      wait_for_javascript_to_finish
+      enter_start_date(numerical_day)
       find(:xpath, "//a/img[@alt='Savecontinue']/..").click
       wait_for_javascript_to_finish
       old_date.should_not eq(Protocol.find(project.id).start_date)
     end
     it "should save the end date" do
       old_date = project.end_date
-      find('#end_date').click
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # go forward one month
-      page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
-      wait_for_javascript_to_finish
+      enter_end_date(numerical_day)
       find(:xpath, "//a/img[@alt='Savecontinue']/..").click
       wait_for_javascript_to_finish
       old_date.should_not eq(Protocol.find(project.id).end_date)
@@ -232,6 +214,19 @@ describe "submitting a in form", :js => true do
       end
     end
   end
+end
 
-
+def enter_start_date numerical_day
+  page.execute_script("$('#start_date').focus()")
+  sleep 2
+  page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # go forward one month
+  page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
+  sleep 2
+end
+def enter_end_date numerical_day
+  page.execute_script("$('#end_date').focus()")
+  sleep 2
+  page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # go forward one month
+  page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") } # click on todays date
+  sleep 2
 end

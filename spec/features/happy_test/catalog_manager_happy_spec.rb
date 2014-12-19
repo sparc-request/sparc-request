@@ -23,7 +23,7 @@ include CapybaraCatalogManager
 include CapybaraProper
 
 
-describe 'Catalog Manager' do
+describe 'Catalog Manager', :happy_test do
   let_there_be_lane
   fake_login_for_each_test
 

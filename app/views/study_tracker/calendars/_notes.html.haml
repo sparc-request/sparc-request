@@ -31,4 +31,4 @@
           = note.created_at.strftime('%-m/%d/%Y')
 .new_comment
   = text_area_tag "notes", "", :class => "comment_box"
-  = link_to t(:study_tracker)[:notes][:save], 'javascript:void(0);', :'data-appointment_id' => appointment.id, :class => "add_comment_link ui-button ui-state-default ui-button-text-only", :style => "padding:0.45em 1em;font-size:1.2em;"
+  = link_to t(:study_tracker)[:notes][:save], 'javascript:void(0);', :'data-appointment_id' => appointment.id, :class => "add_comment_link"

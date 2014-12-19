@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-begin 
+begin
   application_config ||= YAML.load_file(Rails.root.join('config', 'application.yml'))[Rails.env]
 
   DEFAULT_MAIL_TO               = application_config['default_mail_to']
@@ -41,20 +41,8 @@ begin
   EPIC_QUEUE_REPORT_TO          = application_config['epic_queue_report_to']
   USE_GOOGLE_CALENDAR           = application_config['use_google_calendar']
   USE_NEWS_FEED                 = application_config['use_news_feed']
-  GOOGLE_USERNAME               = application_config['google_username']
-  GOOGLE_PASSWORD               = application_config['google_password']
+  CALENDAR_URL                  = application_config['calendar_url']
   SEND_AUTHORIZED_USER_EMAILS   = application_config['send_authorized_user_emails']
-  CUSTOM_ASSET_PATH             = application_config['custom_asset_path']
-  LOCALE_OVERRIDE               = application_config['locale_override']
-  CONSTANTS_YML_OVERRIDE        = application_config['constants_yml_override'] || ''
-  SYSTEM_SATISFACTION_SURVEY    = application_config['system_satisfaction_survey']
-  NO_REPLY_FROM                 = application_config['no_reply_from']
-  
-  if LOCALE_OVERRIDE
-    I18n.available_locales = [:en, LOCALE_OVERRIDE]
-    I18n.default_locale = LOCALE_OVERRIDE
-    I18n.locale = LOCALE_OVERRIDE
-  end
 
   if application_config.include?('wkhtmltopdf_location')
     # Setup PDFKit
@@ -69,7 +57,7 @@ end
 
 # Loads in and sets all the constants from the constants.yml file
 begin
-  constant_file                  = File.join(Rails.root, 'config', 'constants'+CONSTANTS_YML_OVERRIDE+'.yml')
+  constant_file                  = File.join(Rails.root, 'config', 'constants.yml')
   config                         = YAML::load_file(constant_file)
   AFFILIATION_TYPES              = config['affiliations']
   IMPACT_AREAS                   = config['impact_areas']
@@ -99,7 +87,8 @@ begin
   SUBJECT_ETHNICITIES            = config['subject_ethnicities']
   SUBJECT_GENDERS                = config['subject_genders']
   AUDIT_ACTIONS                  = config['audit_actions']
-rescue Exception => e
-  puts e.message
-  puts e.backtrace.inspect
+  ALERT_TYPES                    = config['alert_types']
+  ALERT_STATUSES                 = config['alert_statuses']
+rescue
+  raise "constants.yml not found"
 end

@@ -22,7 +22,13 @@ class Portal::ProtocolsController < Portal::BaseController
   respond_to :html, :json
 
   def index
-    @protocols = @user.protocols.sort_by { |pr| (pr.id || '0000') + pr.id }.reverse
+    @protocols = []
+    @user.protocols.each do |protocol|
+      if protocol.project_roles.find_by_identity_id(@user.id).project_rights != 'none'
+         @protocols << protocol
+      end
+    end
+    @protocols = @protocols.sort_by { |pr| (pr.id || '0000') + pr.id }.reverse
     @notifications = @user.user_notifications
     #@projects = Project.remove_projects_due_to_permission(@projects, @user)
 
@@ -41,6 +47,7 @@ class Portal::ProtocolsController < Portal::BaseController
 
   def show
     @protocol = Protocol.find(params[:id])
+    # @project_rights = Project_Role.find_by_identity_id(@user.id);
     @protocol_role = @protocol.project_roles.find_by_identity_id(@user.id)
     #@project.project_associated_users
     #@project.project_service_requests
@@ -50,9 +57,55 @@ class Portal::ProtocolsController < Portal::BaseController
       format.html
     end
   end
-  
-  
-   def update_from_fulfillment
+
+  def new
+    @protocol = Study.new
+    @protocol.requester_id = current_user.id
+    @protocol.populate_for_edit
+    @errors = nil
+    @portal = true
+    @current_step = 'protocol'
+    session[:protocol_type] = 'study'
+  end
+
+  def create
+    @current_step = params[:current_step]
+    @protocol = Study.new(params[:study])
+    @protocol.validate_nct = true
+    @portal = params[:portal]
+    session[:protocol_type] = 'study'
+    @portal = params[:portal]
+
+    # @protocol.assign_attributes(params[:study] || params[:project])
+    if @current_step == 'go_back'
+      @current_step = 'protocol'
+      @protocol.populate_for_edit
+    elsif @current_step == 'protocol' and @protocol.group_valid? :protocol
+      @current_step = 'user_details'
+      @protocol.populate_for_edit
+    elsif @current_step == 'user_details' and @protocol.valid?
+      @protocol.save
+      @current_step = 'return_to_portal'
+      if USE_EPIC
+        if @protocol.selected_for_epic
+          @protocol.ensure_epic_user
+          if QUEUE_EPIC
+            EpicQueue.create(:protocol_id => @protocol.id) unless EpicQueue.where(:protocol_id => @protocol.id).size == 1
+          else
+            Notifier.notify_for_epic_user_approval(@protocol).deliver
+          end
+        end
+      end
+    elsif @current_step == 'cancel_protocol'
+      @current_step = 'return_to_portal'
+    else
+      # TODO: Is this neccessary?
+      @errors = @current_step == 'protocol' ? @protocol.grouped_errors[:protocol].try(:messages) : @protocol.grouped_errors[:user_details].try(:messages)
+      @protocol.populate_for_edit
+    end
+  end
+
+  def update_from_fulfillment
     @protocol = Protocol.find(params[:id])
     if @protocol.update_attributes(params[:protocol])
       render :nothing => true
@@ -62,6 +115,7 @@ class Portal::ProtocolsController < Portal::BaseController
       end
     end
   end
+
   def edit
     @edit_protocol = true
     @protocol = Protocol.find(params[:id])
@@ -119,6 +173,7 @@ class Portal::ProtocolsController < Portal::BaseController
         @pages[arm.id] = @service_request.set_visit_page new_page, arm
       end
     end
+    @merged = true
   end
 
   def change_arm

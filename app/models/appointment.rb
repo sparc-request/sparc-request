@@ -49,12 +49,17 @@ class Appointment < ActiveRecord::Base
 
 
   def populate_procedures(visits)
+    columns =[:line_item_id,:visit_id,:toasts_generated, :appointment_id]
+    values =[]
     visits.each do |visit|
       line_item = visit.line_items_visit.line_item
       if line_item.service.is_ctrc? && !line_item.service.is_one_time_fee?
-        procedure = self.procedures.build(:line_item_id => line_item.id, :visit_id => visit.id, :toasts_generated => true)
-        procedure.save
+        values << [line_item.id,visit.id,true,self.id]
       end
+    end
+    if !(values.empty?)
+      Procedure.import columns, values, {:validate=> true}
+      self.reload
     end
   end
 

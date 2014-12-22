@@ -176,14 +176,14 @@ $ ->
         parent_id = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('cid')
         parent_object_type = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('object_type')
         
-        $.get "/catalog_manager/services/verify_parent_service_provider", {parent_id: parent_id, parent_object_type: parent_object_type}, (data)-> 
-          service_providers_size = data
+        $.get "/catalog_manager/services/verify_parent_service_provider", {parent_id: parent_id, parent_object_type: parent_object_type}, (data)->
+          alert_text = data
           
-          if service_providers_size > 0
-            $.get("/catalog_manager/services/new", {parent_id: parent_id, parent_object_type: parent_object_type}, (data)-> 
+          if alert_text.length < 1
+            $.get("/catalog_manager/services/new", {parent_id: parent_id, parent_object_type: parent_object_type}, (data)->
               $('#details').html(data) )
           else
-            alert(I18n["catalog_manager_js"]["service_alert"])
+            alert(alert_text)
         
         
     return unless node_ref.rslt.obj.context.attributes['object_type']

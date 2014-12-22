@@ -24,7 +24,7 @@ set :bundle_gemfile, "DeployGemfile"
 set :bundle_without, [:development, :test]
 
 set :application, "sparc-rails"
-set :repository,  "git@github.com:HSSC/sparc-rails.git"
+set :repository,  "git@github.com:sparc-request/sparc-request.git"
 set :deploy_root, "/var/www/rails"
 set :days_to_keep_backups, 30
 

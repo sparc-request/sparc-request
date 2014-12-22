@@ -83,7 +83,7 @@ table#payments_list {
     height: 14px;
     text-indent: -1000em;
     overflow: hidden;
-    background: url(../clear_icon.png);
+    background: url(/assets/clear_icon.png);
   }
 }
 
@@ -92,7 +92,7 @@ table#payments_list {
   height: 16px;
   width: 16px;
   margin-top: 10px;
-  background: url(cancel.png) no-repeat;
+  background: url(/assets/portal/cancel.png) no-repeat;
 }
 
 .buttons {
@@ -101,7 +101,7 @@ table#payments_list {
 
 .add_nested_fields.payments,
 .add_nested_fields.uploads {
-  background: url("yellowbutton_smaller.png") no-repeat;
+  background: url("/assets/portal/yellowbutton_smaller.png") no-repeat;
   color: #FFFFFF;
   display: block;
   height: 27px;
@@ -116,7 +116,7 @@ a.add_nested_fields.uploads {
 }
 
 .buttons input#save_payments {
-  background: url("yellowbutton_smaller.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+  background: url("/assets/portal/yellowbutton_smaller.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
   border: 0 none;
   color: #FFFFFF;
   cursor: pointer;

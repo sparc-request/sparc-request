@@ -30,7 +30,7 @@ form.edit_cover_letter {
     .buttons {
       margin-top: 1.5em;
       a {
-        background: url("yellowbutton_smaller.png") no-repeat;
+        background: url("/assets/portal/yellowbutton_smaller.png") no-repeat;
         border: 0 none;
         color: #FFFFFF;
         cursor: pointer;
@@ -41,7 +41,7 @@ form.edit_cover_letter {
         text-align: center;
       }
       input {
-        background: url("yellowbutton_smaller.png") no-repeat;
+        background: url("/assets/portal/yellowbutton_smaller.png") no-repeat;
         border: 0 none;
         color: #FFFFFF;
         cursor: pointer;
@@ -81,7 +81,7 @@ table#billings_list {
   padding: 10px;
   .actions, .action {
     a {
-      background: url("yellowbutton_smaller.png") no-repeat;
+      background: url("/assets/portal/yellowbutton_smaller.png") no-repeat;
       border: 0 none;
       color: #FFFFFF;
       cursor: pointer;
@@ -92,7 +92,7 @@ table#billings_list {
       text-align: center;
     }
     a#research_project_summary_report_in_cwf {
-      background: url("yellowbutton_blank.png") no-repeat;
+      background: url("/assets/portal/yellowbutton_blank.png") no-repeat;
       width: 230px;
     }
   }

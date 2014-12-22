@@ -190,6 +190,10 @@ class LineItem < ActiveRecord::Base
 
   # Determine the direct costs for a one-time-fee service
   def direct_costs_for_one_time_fee
+    # TODO: It's a little strange that per_unit_cost divides by
+    # quantity, then here we multiply by quantity.  It would arguably be
+    # better to calculate total cost here in its own method, then
+    # implement per_unit_cost to call that method.
     num = self.quantity || 0.0
     num * self.per_unit_cost
   end

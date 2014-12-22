@@ -24,6 +24,10 @@ class RenameMuhaTag < ActiveRecord::Migration
     if tag
       tag.name = 'required forms'
       tag.save
+    else
+      tag = Tag.new
+      tag.name = 'required forms'
+      tag.save
     end
   end
 

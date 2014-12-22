@@ -411,8 +411,8 @@ en:
     department_select: "Select a Department"
     credentials: "Credentials"
     credentials_select: "Select a Credential"
-    subspeciality: "Subspeciality"
-    subspeciality_select: "Select a Subspeciality"
+    subspecialty: "Subspecialty:"
+    subspecialty_prompt: "Select a Subspecialty"
     update_button: "Update Authorized User"
     add_button: "Add Authorized User"
 

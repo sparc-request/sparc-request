@@ -59,8 +59,8 @@
       %br
 
     .subspecialty
-      = label_tag "identity[subspecialty]", t(:user_details)[:subspeciality] + ":"
-      = select_tag "identity[subspecialty]", options_for_select((SUBSPECIALTIES.sort), identity.subspecialty), :prompt => t(:user_details)[:subspeciality_select]
+      = label_tag "identity[subspecialty]", t(:user_details)[:subspecialty] + ":"
+      = select_tag "identity[subspecialty]", options_for_select((SUBSPECIALTIES.sort), identity.subspecialty), :prompt => t(:user_details)[:subspecialty_select]
       %br
       %br
 

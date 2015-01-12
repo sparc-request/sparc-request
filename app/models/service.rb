@@ -35,8 +35,8 @@ class Service < ActiveRecord::Base
   # TODO: Andrew thinks "related services" is a bad name
   has_many :service_relations, :dependent => :destroy
   has_many :related_services, :through => :service_relations
-  has_many :required_services, :through => :service_relations, :source => :related_service, :conditions => [ "optional = ?", false ]
-  has_many :optional_services, :through => :service_relations, :source => :related_service, :conditions => [ "optional = ?", true ]
+  has_many :required_services, :through => :service_relations, :source => :related_service, :conditions => [ "optional = ? and is_available = ?", false, true ]
+  has_many :optional_services, :through => :service_relations, :source => :related_service, :conditions => [ "optional = ? and is_available = ?", true, true ]
 
   # Services that depend on this service
   has_many :depending_service_relations, :class_name => 'ServiceRelation', :foreign_key => 'related_service_id'

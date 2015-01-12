@@ -63,3 +63,4 @@ cert_file
 fixit.sql
 
 db/imports/*
+config/deploy/*.rb

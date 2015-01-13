@@ -144,8 +144,20 @@ class Identity < ActiveRecord::Base
     @is_super_user ||= self.super_users.count > 0
   end
 
-  def is_service_provider?
-    @is_service_provider ||= self.service_providers.count > 0
+  def is_service_provider? ssr
+   is_provider = false
+   orgs =[]
+   orgs << ssr.organization << ssr.organization.parents
+   orgs.flatten!
+   orgs.each do |org|
+     provider_ids = org.service_providers_lookup.map{|x| x.identity_id}
+     if provider_ids.include?(self.id)
+     is_provider = true
+     end
+   end
+   
+  is_provider
+    
   end
 
   ###############################################################################
@@ -402,10 +414,10 @@ class Identity < ActiveRecord::Base
       end
     end
 
-    unless service_provider_identity_ids.flatten.include?(self.id) || super_user_identity_ids.flatten.include?(self.id) || cwf_provider_identity_ids.flatten.include?(self.id)
-      available_statuses.delete('ctrc_review')
-      available_statuses.delete('ctrc_approved')
-    end
+    # unless service_provider_identity_ids.flatten.include?(self.id) || super_user_identity_ids.flatten.include?(self.id) || cwf_provider_identity_ids.flatten.include?(self.id)
+    #   available_statuses.delete('ctrc_review')
+    #   available_statuses.delete('ctrc_approved')
+    # end
 
     if return_hash
       available_statuses

@@ -31,7 +31,7 @@
   .admin-index-ssr-table
     %input.search-all-service-requests{:type => 'text', :placeholder => t(:admin_root)[:search_placeholder]}
     %select#service_request_workflow_states
-      - @user.available_workflow_states('ctrc', nil, true).each do |key, value|
+      - AVAILABLE_STATUSES.each do |key, value|
         %option{:value => key, :selected => (key == "submitted")} #{value} (#{@service_requests[key].try(:length) || 0})
 
     .admin_indicator

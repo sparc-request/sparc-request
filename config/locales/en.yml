@@ -684,7 +684,7 @@ en:
     role_prompt: "Select a Role"
     era: "ERA Commons Name:"
     credentials: "Credentials:"
-    credentials_prompt: "Select a Credential"
+    credential_prompt: "Select a Credential"
     institution: "Institution:"
     institution_prompt: "Select an Institution"
     college: "College:"

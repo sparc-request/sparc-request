@@ -1090,6 +1090,7 @@ en:
   # Javascript localizations
   has_fulfillments: "This line item has one or more fulfillments associated with it and can not be deleted."
   in_fulfillment: "This line item is associated with a request that is in Clinical Work Fulfillment and cannot be deleted."
+  has_subject_data: "This line item has completed subject data and cannot be deleted."
   service_deleted: "Service has been deleted."
   cart:
     remove_request_confirm: "This action will delete this service request and you will be redirected to your user portal. Click OK to proceed."

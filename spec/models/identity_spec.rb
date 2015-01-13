@@ -106,10 +106,11 @@ describe "Identity" do
     let!(:user2)                {FactoryGirl.create(:identity)}           
     let!(:catalog_manager)      {FactoryGirl.create(:catalog_manager, identity_id: user.id, organization_id: institution.id)}
     let!(:super_user)           {FactoryGirl.create(:super_user, identity_id: user.id, organization_id: institution.id)}
-    let!(:service_provider)     {FactoryGirl.create(:service_provider, identity_id: user.id, organization_id: institution.id)}
+    let!(:service_provider)     {FactoryGirl.create(:service_provider, identity_id: user.id, organization_id: institution.id, is_primary_contact: true)}
     let!(:clinical_provider)    {FactoryGirl.create(:clinical_provider, identity_id: user2.id, organization_id: core.id)}
     let!(:ctrc_provider)        {FactoryGirl.create(:clinical_provider, identity_id: user2.id, organization_id: program.id)}
     let!(:project_role)         {FactoryGirl.create(:project_role, identity_id: user.id, protocol_id: project.id, project_rights: 'approve')}
+    let!(:request)              {FactoryGirl.create(:sub_service_request, organization_id: core.id)}
 
     describe "permission methods" do
     
@@ -205,6 +206,17 @@ describe "Identity" do
 
         it "should return false if the user is not a clinical provider on the ctrc" do
           user.clinical_provider_for_ctrc?.should eq(false)
+        end
+      end
+
+      describe "is service provider" do
+
+        it "should return true if the user is a service provider for a given ssr's organization or any of it's parents" do
+          user.is_service_provider?(request).should eq(true)
+        end
+
+        it "should return false if the user is not a service provider in the org tree" do
+          user2.is_service_provider?(request).should eq(false)
         end
       end
     end

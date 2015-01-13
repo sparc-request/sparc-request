@@ -57,7 +57,7 @@ module ApplicationHelper
     when 'template'
       check_box_tag "visits_#{visit.id}", 1, (visit.research_billing_qty.to_i > 0 or visit.insurance_billing_qty.to_i > 0 or visit.effort_billing_qty.to_i > 0), :class => "line_item_visit_template visits_#{visit.id}", :'data-arm_id' => arm.id, :update => "#{base_url}&tab=template&portal=#{portal}"
     when 'quantity'
-      content_tag(:div, (visit.research_billing_qty.to_i + visit.insurance_billing_qty.to_i + visit.effort_billing_qty.to_i), {:style => 'text-align:center', :class => "line_item_visit_quantity"}) 
+      content_tag(:div, (visit.research_billing_qty.to_i + visit.insurance_billing_qty.to_i + visit.effort_billing_qty.to_i), {:style => 'text-align:center', :class => "line_item_visit_quantity"})
     when 'billing_strategy'
       returning_html = ""
       returning_html += text_field_tag "visits_#{visit.id}_research_billing_qty", visit.research_billing_qty, :current_quantity => visit.research_billing_qty, :previous_quantity => visit.research_billing_qty, :"data-unit-minimum" => unit_minimum, :'data-arm_id' => arm.id, :class => "line_item_visit_research_billing_qty line_item_visit_billing visits_#{visit.id}", :update => "#{base_url}&tab=billing_strategy&column=research_billing_qty&portal=#{portal}"
@@ -65,14 +65,14 @@ module ApplicationHelper
       returning_html += text_field_tag "visits_#{visit.id}_effort_billing_qty", visit.effort_billing_qty, :current_quantity => visit.effort_billing_qty, :previous_quantity => visit.effort_billing_qty, :"data-unit-minimum" => unit_minimum, :'data-arm_id' => arm.id, :class => "line_item_visit_billing visits_#{visit.id}", :update => "#{base_url}&tab=billing_strategy&column=effort_billing_qty&portal=#{portal}"
       raw(returning_html)
     when 'calendar'
-      label_tag nil, qty_cost_label("#{visit.research_billing_qty + visit.insurance_billing_qty} - ", currency_converter(totals_hash["#{visit.id}"])), :class => "line_item_visit_pricing"
+      label_tag nil, qty_cost_label(visit.research_billing_qty + visit.insurance_billing_qty, currency_converter(totals_hash["#{visit.id}"])), :class => "line_item_visit_pricing"
     end
   end
 
   def qty_cost_label qty, cost
-    return nil if cost.nil?
-
-    qty + cost
+    return nil if qty == 0
+    cost = cost || "$0.00"
+    "#{qty} - #{cost}"
   end
 
   def generate_visit_header_row arm, service_request, page, sub_service_request, portal=nil
@@ -100,7 +100,7 @@ module ApplicationHelper
       icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
       visit_name = visit_groups[n - 1].name || "Visit #{n}"
       visit_group = visit_groups[n - 1]
-      
+
       if params[:action] == 'review' || params[:action] == 'show' || params[:action] == 'refresh_service_calendar'
         returning_html += content_tag(:th, content_tag(:span, visit_name), :width => 60, :class => 'visit_number')
       elsif @merged
@@ -127,8 +127,8 @@ module ApplicationHelper
                                       tag(:br)
                                       : label_tag('')) +
                                       text_field_tag("arm_#{arm.id}_visit_name_#{n}", visit_name, :class => "visit_name", :size => 10, :update => "#{rename_visit_url}?visit_position=#{n-1}&arm_id=#{arm.id}&portal=#{portal}") +
-                                      tag(:br) + 
-                                      link_to((content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')), 
+                                      tag(:br) +
+                                      link_to((content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')),
                                               "/service_requests/#{service_request.id}/#{action}/#{n}/#{arm.id}?portal=#{portal}",
                                               :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only', :id => "check_all_column_#{n}"),
                                       :width => 60, :class => 'visit_number')
@@ -200,7 +200,7 @@ module ApplicationHelper
 
     raw(returning_html)
   end
-  
+
   def navigation_link(img_or_txt, location, class_name=nil)
     link_to img_or_txt, "javascript:void(0)", :class => "navigation_link #{class_name}", :location => location
   end
@@ -215,7 +215,7 @@ module ApplicationHelper
       nil
     end
   end
-  
+
   def ssr_provider organization
     case organization.type
     when 'Core'
@@ -228,7 +228,7 @@ module ApplicationHelper
       nil
     end
   end
-  
+
   def ssr_institution organization
     case organization.type
     when 'Core'
@@ -260,14 +260,14 @@ module ApplicationHelper
   def resource_name
     :identity
   end
- 
+
   def resource
     @resource ||= Identity.new
   end
- 
+
   def devise_mapping
     @devise_mapping ||= Devise.mappings[:identity]
-  end 
+  end
 
   def resource_class
     devise_mapping.to

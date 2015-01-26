@@ -27,5 +27,3 @@
     %thead{:class => @review ? thead_class : 'ui-widget-header'}= render :partial => "/service_calendars/master_calendar/pppv_header", :locals => {:service_request => service_request, :arm => arm, :tab => @tab, :portal => @portal}
     %tbody.cell-border
       = render :partial => "/service_calendars/master_calendar/pppv_line_items", :locals => {:service_request => service_request, :arm => arm, :tab => @tab, :portal => @portal}
-      -unless @review
-        = render :partial => "/service_calendars/master_calendar/pppv_totals", :locals => {:service_request => service_request, :arm => arm, :tab => @tab, :portal => @portal}

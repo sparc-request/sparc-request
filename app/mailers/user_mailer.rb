@@ -28,10 +28,10 @@ class UserMailer < ActionMailer::Base
     send_message("#{I18n.t('application_title')} Authorized Users")
   end
 
-  def notification_received(user, is_service_provider='false')
+  def notification_received(user, is_service_provider='false', ssr_id='')
     @send_to = user
 
-    send_message("New #{I18n.t('application_title')} Notification", is_service_provider)
+    send_message("New #{I18n.t('application_title')} Notification", is_service_provider, ssr_id)
   end
 
   # Disabled (potentially only temporary) as per Lane
@@ -45,10 +45,11 @@ class UserMailer < ActionMailer::Base
 
   private
 
-  def send_message subject, is_service_provider='false'
+  def send_message subject, is_service_provider='false', ssr_id
     email = Rails.env == 'production' ? @send_to.email : DEFAULT_MAIL_TO
     subject = Rails.env == 'production' ? subject : "[#{Rails.env.capitalize} - EMAIL TO #{@send_to.email}] #{subject}"
     @is_service_provider = is_service_provider
+    @ssr_id = ssr_id
 
     mail(:to => email, :subject => subject)
   end

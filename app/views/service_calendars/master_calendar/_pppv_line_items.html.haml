@@ -78,7 +78,7 @@
     - if @tab == 'billing_strategy'
       %tr.sub_section_header
         %th{:colspan => @portal ? 3 : 6}= value[:name]
-        -if @portal
+        - if @portal
           %th{:colspan => 2}
         -5.times do
           %th.billing_type_list{:style => "text-align:center"}
@@ -106,7 +106,7 @@
           %td.service_rate{:class => "service_rate_#{line_items_visit.id}"}= display_service_rate line_item
           - if @study_tracker
             %td.your_cost= currency_converter line_item.applicable_rate
-          -else
+          - else
             %td.your_cost{:style => "white-space:nowrap;overflow:hidden;"}
               %span= "$"
               = text_field_tag 'line_item_displayed_cost', number_with_precision(Service.cents_to_dollars(line_item.applicable_rate), :precision => 2), :'data-line_item_id' => line_item.id, :class => 'fulfillment_data fulfillment_your_cost'
@@ -129,3 +129,7 @@
         - else
           %td.pp_line_item_total{:class => "total_#{line_items_visit.id}"}= display_visit_based_direct_cost(line_items_visit)
           %td.pp_line_item_study_total{:class => "total_#{line_items_visit.id}_per_study"}= display_visit_based_direct_cost_per_study(line_items_visit)
+
+
+- unless @review
+  = render :partial => "/service_calendars/master_calendar/pppv_totals", :locals => {:service_request => service_request, :arm => arm, :tab => @tab, :portal => @portal, line_items_visits: line_items_visits}

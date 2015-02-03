@@ -111,8 +111,11 @@ $(document).ready ->
     klass = getObjKlass(this)
     object_id = $(this).data("#{klass}_id")
     has_fulfillments = $(this).data("has_fulfillments") || null
+    arm_has_subject_data = $(this).data("arm_has_subject_data") || null
     if has_fulfillments
       alert(I18n["has_fulfillments"])
+    else if arm_has_subject_data
+      alert(I18n["has_subject_data"])
     else
       data = {}
       data['study_tracker'] = $('#study_tracker_hidden_field').val() || null

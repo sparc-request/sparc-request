@@ -221,19 +221,24 @@ class Identity < ActiveRecord::Base
 
   # As per Lane, a request's status is no longer a factor for editing. 
   # Only users with request or approve rights can edit.
-  def can_edit_request? request
+  def can_edit_service_request? sr
     can_edit = false
-    if request.class == ServiceRequest
-      if request.service_requester_id == self.id or request.service_requester_id.nil?
-        can_edit = true
-      elsif !self.project_roles.select{|pr| pr.protocol_id == request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights}.empty?
-        can_edit = true
-      end
-    elsif (request.class == SubServiceRequest) && (!self.project_roles.select{|pr| pr.protocol_id == request.service_request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights}.empty?)
+ 
+    if request.service_requester_id == self.id or request.service_requester_id.nil?
+      can_edit = true
+    elsif !self.project_roles.select{|pr| pr.protocol_id == request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights}.empty?
       can_edit = true
     end
 
     can_edit
+  end
+
+  def can_edit_sub_service_request? ssr
+    if ssr.can_be_edited? && (self.project_roles.select{|pr| pr.protocol_id == sub_service_request.service_request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights})
+      return true
+    end
+
+    return false
   end
 
   # Determines whether this identity can edit a given organization's information in CatalogManager.

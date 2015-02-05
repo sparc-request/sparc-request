@@ -265,7 +265,13 @@ class SubServiceRequest < ActiveRecord::Base
   end
 
   def can_be_edited?
-    ['first_draft', 'draft', 'submitted', nil, 'obtain_research_pricing'].include?(self.status) ? true : false
+    can_edit = false
+
+    if (['first_draft', 'draft', 'submitted', nil, 'get_a_quote'].include?(self.status) || !self.ctrc?)
+      can_edit = true
+    end
+
+    can_edit
   end
 
   def arms_editable?

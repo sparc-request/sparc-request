@@ -45,7 +45,7 @@ feature 'edit a service' do
     fill_in 'service_order', :with => '1'
     check 'service_is_available'
 
-    page.execute_script("$('#save_button').click();")
+    first("#save_button").click
     page.should have_content( 'Human Subject Review saved successfully' )
   end
 
@@ -67,7 +67,7 @@ feature 'edit a service' do
     fill_in 'service_order', :with => '2'
     check 'service_is_available'
 
-    page.execute_script("$('#save_button').click();")
+    first("#save_button").click
     page.should have_content( 'MUSC Research Data Request (CDW) saved successfully' )
   end
 

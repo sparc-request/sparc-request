@@ -19,8 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class IdentitiesController < ApplicationController
-  before_filter :initialize_service_request, :except => [:approve_account, :disapprove_account]
-  before_filter :authorize_identity, :except => [:approve_account, :disapprove_account]
+  before_filter(:except => [:approve_account, :disapprove_account]) {|c| params[:portal] == 'true' ? true : c.send(:initialize_service_request)}
+  before_filter(:except => [:approve_account, :disapprove_account]) {|c| params[:portal] == 'true' ? true : c.send(:authorize_identity)}
   def show
     @identity = Identity.find params[:id]
     @can_edit = false
@@ -67,10 +67,12 @@ class IdentitiesController < ApplicationController
     # should check if this is an existing project role
     if params[:project_role][:id].blank?
       @project_role = ProjectRole.new params[:project_role]
+      @project_role.set_default_rights
       @project_role.identity = identity
     else
       @project_role = ProjectRole.find params[:project_role][:id]
       @project_role.update_attributes params[:project_role]
+      @project_role.set_default_rights
     end
 
     @project_role.set_epic_rights

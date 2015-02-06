@@ -18,17 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-set :rvm_ruby_string, "ruby-1.9.3-p286"
-set :rvm_type, :system
-set :application, "sparc-rails-2"
-
-set :deploy_to, "#{deploy_root}/#{application}"
-set :rails_env, "demo2"
-set :domain, "sparc-demo.musc.edu"
-set :branch, "demo"
-
-role :web, domain
-role :app, domain, :primary => true
-role :db, domain, :primary => true
-
-require 'rvm/capistrano'
+$('#new_document').replaceWith("<%= escape_javascript(render :partial => 'service_requests/document_form', :locals => {:service_list => @service_list}) %>")
+$(".document_upload").show()

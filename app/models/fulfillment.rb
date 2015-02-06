@@ -48,6 +48,18 @@ class Fulfillment < ActiveRecord::Base
     self.date = parse_date(d)
   end
 
+  def within_date_range? start_date, end_date
+    date = self.date.to_date
+
+    if (date.nil? or start_date.nil? or end_date.nil?)
+      false
+    elsif (date >= start_date) && (date <= end_date)
+      true
+    else
+      false
+    end
+  end
+
   private
 
   def format_date(d)

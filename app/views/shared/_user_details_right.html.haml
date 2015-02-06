@@ -24,6 +24,7 @@
   = hidden_field_tag "project_role[protocol_id]", project_role.protocol.id if project_role.protocol
   = hidden_field_tag "project_role[id]", project_role.id
   = hidden_field_tag "project_role[project_rights]", project_role.project_rights
+
   %h3 User Details:
   %br
   .user_info
@@ -58,8 +59,8 @@
       %br
 
     .subspecialty
-      = label_tag "identity[subspecialty]", t(:user_details)[:subspeciality] + ":"
-      = select_tag "identity[subspecialty]", options_for_select((SUBSPECIALTIES.sort), identity.subspecialty), :prompt => t(:user_details)[:subspeciality_select]
+      = label_tag "identity[subspecialty]", t(:user_details)[:subspecialty] + ":"
+      = select_tag "identity[subspecialty]", options_for_select((SUBSPECIALTIES.sort), identity.subspecialty), :prompt => t(:user_details)[:subspecialty_select]
       %br
       %br
 

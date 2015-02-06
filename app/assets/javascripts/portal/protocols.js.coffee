@@ -27,6 +27,7 @@ $(document).ready ->
     ready: ->
       $('.permissions-dialog').dialog({
         autoOpen:false
+        dialogClass: "permissions_dialog"
         title: "User Rights"
         width: 400
         height: 300
@@ -62,6 +63,11 @@ $(document).ready ->
           $('.permissions-dialog .text').html('Edit.')
       )
 
+      $('.add-services-button').live('click', ->
+        if !$(this).data('permission')
+          $('.permissions-dialog').dialog('open')
+          $('.permissions-dialog .text').html('Edit.')
+      )
 
       $('.view-sub-service-request-button').live('click', ->
         id = $(this).data('service_request_id')

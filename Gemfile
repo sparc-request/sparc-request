@@ -52,8 +52,9 @@ gem "audited-activerecord", "~> 3.0"
 gem 'surveyor'
 
 gem 'simplecov', :require => false, :group => :test
-gem 'google_calendar'
+gem 'icalendar'
 
+gem 'activerecord-import'
 group :development, :test, :profile do
   gem 'bullet'
   gem "rails-erd"
@@ -78,6 +79,7 @@ group :development, :test, :profile do
   gem 'capybara-firebug'
   gem 'capybara-email'
   gem 'selenium-webdriver', '~> 2.34.0'
+
 
   # You can put gems in here that you want to use for development but
   # don't want to force on other developers (e.g. rubyception).

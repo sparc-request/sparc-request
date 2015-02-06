@@ -55,7 +55,7 @@
                     - if event[:all_day]
                       All Day
                     - else
-                      = event[:start_time] + ' - ' + event[:end_time]
-                    = " - #{event[:where]}"
+                      = [event[:start_time], event[:end_time]].join(' - ')
+                    = " - #{event[:where]}" unless event[:where].blank?
               .clear
               %br

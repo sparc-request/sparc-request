@@ -22,7 +22,7 @@ $(document).ready ->
   # $(".visit_name").live 'mouseover', ->
   $(".visit_name").qtip
     overwrite: false
-    content: "Click to rename your visits."
+    content: I18n["service_calendar_toasts"]["visit_name"]
     position:
       corner:
         target: 'bottomLeft'
@@ -32,7 +32,7 @@ $(document).ready ->
   # $('.visit_day').live 'mouseover', ->
   $('.visit_day').qtip
     overwrite: false
-    content: "Click to set the visits day. All days must be in numerical order. Ex. 1, 2, 4, 9"
+    content: I18n["service_calendar_toasts"]["visit_day"]
     position:
       corner:
         target: 'topLeft'
@@ -40,10 +40,19 @@ $(document).ready ->
     show:
       ready: false
 
-  # $('.visit_window').live 'mouseover', ->
-  $('.visit_window').qtip
+  $('.visit_window_before').qtip
     overwrite: false
-    content: "Click to set the window period the visit can be completed."
+    content: I18n["service_calendar_toasts"]["visit_window_before"]
+    position:
+      corner:
+        target: 'topLeft'
+        tooltip: 'bottomLeft'
+    show:
+      ready: false
+
+  $('.visit_window_after').qtip
+    overwrite: false
+    content: I18n["service_calendar_toasts"]["visit_window_after"]
     position:
       corner:
         target: 'topLeft'
@@ -53,7 +62,7 @@ $(document).ready ->
 
   $('.jump_to_visit').qtip
     overwrite: false
-    content: "Select the visit you would like to view."
+    content: I18n["service_calendar_toasts"]["jump_to_visit"]
     position:
       corner:
         target: 'topLeft'

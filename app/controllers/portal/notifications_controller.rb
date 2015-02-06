@@ -47,6 +47,7 @@ class Portal::NotificationsController < Portal::BaseController
   def new
     @recipient = Identity.find(params[:identity_id])
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    @is_service_provider = params[:is_service_provider]
 
     respond_to do |format|
       format.js
@@ -57,6 +58,7 @@ class Portal::NotificationsController < Portal::BaseController
   def create
     @notification = Notification.create(params[:notification])
     @message = @notification.messages.create(params[:message])
+    is_service_provider = params[:is_service_provider]
     
     if @message.valid? 
       @message.save
@@ -64,8 +66,8 @@ class Portal::NotificationsController < Portal::BaseController
       @sub_service_request = @notification.sub_service_request
 
       @notifications = @user.all_notifications.where(:sub_service_request_id => @sub_service_request.id)
-
-      UserMailer.notification_received(@message.recipient).deliver unless @message.recipient.email.blank?
+      ssr_id = @sub_service_request.id.to_s
+      UserMailer.notification_received(@message.recipient, is_service_provider, ssr_id).deliver unless @message.recipient.email.blank?
     end
     respond_to do |format|
       format.js
@@ -83,7 +85,12 @@ class Portal::NotificationsController < Portal::BaseController
       @message.save
       # TODO: this is not set if no message is created; is that correct?
       @notifications = @user.all_notifications
-      UserMailer.notification_received(@message.recipient).deliver unless @message.recipient.email.blank?
+
+      ssr_id = @notification.sub_service_request.id.to_s
+      @is_service_provider =  !@notification.sub_service_request.organization.service_providers.where(:identity_id => @message.recipient.id).empty?
+      is_service_provider = @is_service_provider.to_s
+
+      UserMailer.notification_received(@message.recipient, is_service_provider, ssr_id).deliver unless @message.recipient.email.blank?
     end    
     respond_to do |format|
       format.js { render 'portal/notifications/create' }

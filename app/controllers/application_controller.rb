@@ -37,31 +37,35 @@ class ApplicationController < ActionController::Base
     end
 
     if USE_GOOGLE_CALENDAR
-      curTime = Time.now
+      curTime = Time.now.utc
       startMin = curTime
       startMax  = (curTime + 1.month)
 
-      cal = nil
-      begin
-        cal = Google::Calendar.new(:username => GOOGLE_USERNAME,
-                                   :password => GOOGLE_PASSWORD)
-      rescue Exception => e
-        ExceptionNotifier::Notifier.exception_notification(request.env, e).deliver unless request.remote_ip == '128.23.150.107' # this is an ignored IP address, MUSC security causes issues when they pressure test,  this should be extracted/configurable
-      end
-
       @events = []
+      begin
+        #to parse file and get events
+        cal_file = File.open(Rails.root.join("tmp", "basic.ics"))
 
-      unless cal.nil?
-        events_list = cal.find_events_in_range(startMin, startMax)
-        begin
-          events_list.sort_by! { |event| event.start_time }
-          events_list.each do |event|
-            @events << create_calendar_event(event)
-          end
-        rescue
-          if events_list
-            @events << create_calendar_event(events_list)
-          end
+        cals = Icalendar.parse(cal_file)
+
+        cal = cals.first
+
+        events = cal.events.sort { |x, y| y.dtstart <=> x.dtstart }
+
+        events.each do |event|
+          next if Time.parse(event.dtstart.to_s) > startMax
+          break if Time.parse(event.dtstart.to_s) < startMin
+          @events << create_calendar_event(event)
+        end
+
+        @events.reverse!
+
+        Alert.where(:alert_type => ALERT_TYPES['google_calendar'], :status => ALERT_STATUSES['active']).update_all(:status => ALERT_STATUSES['clear'])
+      rescue Exception => e
+        active_alert = Alert.find_or_initialize_by_alert_type_and_status(ALERT_TYPES['google_calendar'], ALERT_STATUSES['active'])
+        if Rails.env == 'production' && active_alert.new_record?
+          active_alert.save
+          ExceptionNotifier::Notifier.exception_notification(request.env, e).deliver unless request.remote_ip == '128.23.150.107' # this is an ignored IP address, MUSC security causes issues when they pressure test,  this should be extracted/configurable
         end
       end
     end
@@ -77,20 +81,22 @@ class ApplicationController < ActionController::Base
       end
     end
   end
-  
+
   def create_calendar_event event
-    startTime = Time.parse(event.start_time)
-    endTime = Time.parse(event.end_time)
-    { :month => startTime.strftime("%b"),
-      :day => startTime.day,
-      :title => event.title,
-      :all_day => event.all_day?,
-      :start_time => startTime.strftime("%l:%M %p"),
-      :end_time => endTime.strftime("%l:%M %p"),
-      :where => event.where }
+    all_day = !event.dtstart.to_s.include?("UTC")
+    start_time = Time.parse(event.dtstart.to_s).in_time_zone("Eastern Time (US & Canada)")
+    end_time = Time.parse(event.dtend.to_s).in_time_zone("Eastern Time (US & Canada)")
+    { :month => start_time.strftime("%b"),
+      :day => start_time.day,
+      :title => event.summary,
+      :all_day => all_day,
+      :start_time => start_time.strftime("%l:%M %p"),
+      :end_time => end_time.strftime("%l:%M %p"),
+      :where => event.location
+    }
   end
 
-  
+
   def authorization_error msg, ref
     error = msg
     error += "<br />If you believe this is in error please contact, #{I18n.t 'error_contact'}, and provide the following information:"
@@ -188,7 +194,7 @@ class ApplicationController < ActionController::Base
       authorization_error "The service request you are trying to access can not be found.",
                           "SR#{params[:id]}"
     elsif session[:sub_service_request_id] and @sub_service_request.nil?
-      authorization_error "The service request you are trying to access can not be found.", 
+      authorization_error "The service request you are trying to access can not be found.",
                           "SSR#{params[:sub_service_request_id]}"
     end
   end
@@ -219,7 +225,7 @@ class ApplicationController < ActionController::Base
   def authorize_identity
     # can the user edit the service request
     # can the user edit the sub service request
- 
+
     # we have a current user
     if current_user
       if @sub_service_request.nil? and current_user.can_edit_request? @service_request
@@ -232,10 +238,10 @@ class ApplicationController < ActionController::Base
     elsif @service_request.status == 'first_draft' and @service_request.service_requester_id.nil?
       return true
     elsif !@service_request.status.nil? # this is a previous service request so we should attempt to sign in
-      authenticate_identity! 
+      authenticate_identity!
       return true
     end
-    
+
     if @sub_service_request.nil?
       authorization_error "The service request you are trying to access is not editable.",
                           "SR#{session[:service_request_id]}"

@@ -25,7 +25,7 @@ class Notification < ActiveRecord::Base
   belongs_to :sub_service_request
 
   has_many :messages
-  has_many :user_notifications
+  has_many :user_notifications, :dependent => :destroy
 
   attr_accessible :sub_service_request_id
   attr_accessible :originator_id

@@ -17,7 +17,6 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 class Arm < ActiveRecord::Base
   audited
 
@@ -60,14 +59,6 @@ class Arm < ActiveRecord::Base
 
   def valid_name?
     return !name.nil? && name.length > 0
-  end
-
-  def valid_minimum_visit_count?
-    return !visit_count.nil? && visit_count >= minimum_visit_count
-  end
-
-  def valid_minimum_subject_count?
-    return !subject_count.nil? && subject_count >= minimum_subject_count
   end
 
   def create_line_items_visit line_item
@@ -140,20 +131,21 @@ class Arm < ActiveRecord::Base
     direct_costs_for_visit_based_service(line_items_visits) + indirect_costs_for_visit_based_service(line_items_visits)
   end
   
-  def add_visit position=nil, day=nil, window=0, name=''
+  def add_visit position=nil, day=nil, window_before=0, window_after=0, name='', portal=false
     result = self.transaction do
       if not self.create_visit_group(position, name) then
         raise ActiveRecord::Rollback
       end
-
       position = position.to_i - 1 unless position.blank?
 
       if USE_EPIC
-        if not self.update_visit_group_day(day, position) then
+        if not self.update_visit_group_day(day, position, portal) then
           raise ActiveRecord::Rollback
         end
-
-        if not self.update_visit_group_window(window, position) then
+        if not self.update_visit_group_window_before(window_before, position, portal) then
+          raise ActiveRecord::Rollback
+        end
+        if not self.update_visit_group_window_after(window_after, position, portal) then
           raise ActiveRecord::Rollback
         end
       end
@@ -192,26 +184,37 @@ class Arm < ActiveRecord::Base
   end
 
   def mass_create_visit_group
-    arc = ActiveRecord::Base.connection
     first = self.visit_groups.count
     last = self.visit_count
 
-    # Create all the visit groups
-    (last - first).times { self.visit_groups.create() }
+    # Import the visit groups
+    vg_columns = [:name, :arm_id, :position]
+    vg_values = []
+    (last-first).times do |index|
+      position = first + index + 1
+      vg_values.push ["Visit #{position}", self.id, position]
+    end
+    VisitGroup.import vg_columns, vg_values, {:validate => true}
 
-    vs = []
-    now = Time.now.utc.strftime('%Y-%m-%d %H:%M:%S')
-    # Create visits for the new visit groups
-    self.line_items_visits.each do |liv|
-      # Since arrays start at 0 we need to go to the last - 1
-      (first..last-1).each do |index|
-        # Store the values for the new visits [line_items_visit_id, visit_group_id]
-        vs.push "(#{liv.id}, #{self.visit_groups[index].id}, '#{now}', '#{now}')"
+    self.reload
+    # Grab the ids of the visit groups that were created
+    vg_ids = []
+    self.visit_groups.each do |vg|
+      if vg.visits.count == 0
+        vg_ids.push(vg.id)
       end
     end
 
-    sql = "INSERT INTO visits (`line_items_visit_id`, `visit_group_id`, `created_at`, `updated_at`) VALUES #{vs.join(", ")}"
-    arc.execute sql
+    # Import the visits
+    columns = [:visit_group_id, :line_items_visit_id]
+    values = []
+    self.line_items_visits.each do |liv|
+      vg_ids.each do |id|
+        values.push [id, liv.id]
+      end
+    end
+    Visit.import columns, values, {:validate => true}
+    self.reload
   end
 
   def mass_destroy_visit_group
@@ -246,19 +249,18 @@ class Arm < ActiveRecord::Base
     end
   end
 
-  def update_visit_group_day day, position, portal=false
+  def update_visit_group_day day, position, portal= false
     position = position.blank? ? self.visit_groups.count - 1 : position.to_i
     before = self.visit_groups[position - 1] unless position == 0
     current = self.visit_groups[position]
     after = self.visit_groups[position + 1] unless position >= self.visit_groups.size - 1
-    
+
     if portal == 'true' and USE_EPIC
       valid_day = Integer(day) rescue false
       if !valid_day
         self.errors.add(:invalid_day, "You've entered an invalid number for the day. Please enter a valid number.")
         return false
       end
-
       if !before.nil? && !before.day.nil?
         if before.day > valid_day
           self.errors.add(:out_of_order, "The days are out of order. This day appears to go before the previous day.")
@@ -277,17 +279,30 @@ class Arm < ActiveRecord::Base
     return current.update_attributes(:day => day)
   end
 
-  def update_visit_group_window window, position
+  def update_visit_group_window_before window_before, position, portal = false
     position = position.blank? ? self.visit_groups.count - 1 : position.to_i
 
-    valid = Integer(window) rescue false
+    valid = Integer(window_before) rescue false
     if !valid || valid < 0
-      self.errors.add(:invalid_window, "You've entered an invalid number for the +/- window. Please enter a positive valid number")
+      self.errors.add(:invalid_window_before, "You've entered an invalid number for the before window. Please enter a positive valid number")
       return false
     end
 
     visit_group = self.visit_groups[position]
-    return visit_group.update_attributes(:window => window)
+    return visit_group.update_attributes(:window_before => window_before)
+  end
+
+  def update_visit_group_window_after window_after, position, portal = false
+    position = position.blank? ? self.visit_groups.count - 1 : position.to_i
+
+    valid = Integer(window_after) rescue false
+    if !valid || valid < 0
+      self.errors.add(:invalid_window_after, "You've entered an invalid number for the after window. Please enter a positive valid number")
+      return false
+    end
+
+    visit_group = self.visit_groups[position]
+    return visit_group.update_attributes(:window_after => window_after)
   end
 
   def service_list

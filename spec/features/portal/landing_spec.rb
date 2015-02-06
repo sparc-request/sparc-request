@@ -108,6 +108,13 @@ describe "landing page", :js => true do
       page.should_not have_text("Editing ID: #{service_request.protocol_id}")
     end
 
+    it 'should allow user to add additional services to request' do
+      find(".add-services-button").click
+      page.should have_text("Welcome to the SPARC Request Services Catalog")
+      page.should_not have_text("Editing ID: #{service_request.protocol_id}")
+      page.should_not have_css("div#services div.line_item")
+    end
+
     it 'should be able to search' do
       wait_for_javascript_to_finish
       find("h3#blue-provider-#{service_request.protocol_id} a").click
@@ -118,14 +125,10 @@ describe "landing page", :js => true do
       find("div.protocol-information-#{service_request.protocol_id}").should be_visible
     end
 
-    context "create new request" do
-
-      it "should redirect to the sparc root url" do
-        new_id = service_request.id + 1
-        find(".portal_create_new_request").click
-        wait_for_javascript_to_finish
-        current_path.should eq("/service_requests/#{new_id}/catalog")
-      end
+     it "should click button in user portal" do 
+      find('.portal_create_new_study').click
+      wait_for_javascript_to_finish
+      page.should have_content "Short Title"
     end
   end
 end

@@ -23,18 +23,18 @@
 
   = hidden_field_tag 'org_unit[id]', @service.id # added for autocomplete to use
   = hidden_field_tag 'service[id]', @service.id
-  
+
   - unless @service.has_service_providers?
     .service_provider_error
       = t(:organization_form)[:service_error]
-  
+
   #entity_description
     .service_form
 
       %fieldset.actions
         .legend= t(:organization_form)[:actions]
         = f.submit t(:organization_form)[:submit_button], :id => 'save_button', :class => 'save_button btn'
-        %img.spinner{:src => '/assets/catalog_manager/spinner_small.gif'}      
+        %img.spinner{:src => '/assets/catalog_manager/spinner_small.gif'}
       %br
 
       %fieldset#gen_info.parent.active
@@ -81,6 +81,12 @@
                 %th= f.label :cpt_code, t(:organization_form)[:cpt_code]
                 %td= f.text_field :cpt_code
               %tr
+                %th= f.label :charge_code, t(:organization_form)[:charge_code]
+                %td= f.text_field :charge_code
+              %tr
+                %th= f.label :revenue_code, t(:organization_form)[:revenue_code]
+                %td= f.text_field :revenue_code
+              %tr
                 %th= f.label :send_to_epic, t(:organization_form)[:send_to_epic]
                 %td= f.check_box :send_to_epic
         %br
@@ -106,8 +112,8 @@
       %fieldset.actions
         .legend= t(:organization_form)[:actions]
         = f.submit t(:organization_form)[:submit_button], :id => 'save_button', :class => 'save_button btn'
-        %img.spinner{:src => '/assets/catalog_manager/spinner_small.gif'}      
-        
+        %img.spinner{:src => '/assets/catalog_manager/spinner_small.gif'}
+
         %table
           %tr
             %td

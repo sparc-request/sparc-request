@@ -44,7 +44,7 @@ class Program < Organization
 
     available_statuses.sort!{|a, b| a.position <=> b.position}
   end
-  
+
   def has_active_pricing_setup
     active_pricing_setup = false
     if self.pricing_setups.size > 0

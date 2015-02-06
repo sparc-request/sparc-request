@@ -244,6 +244,8 @@ h2.title
 div.associated-user-button
   margin: 10px
   background: url(/assets/portal/yellowbutton_add.png) no-repeat
+  padding-left: 12px
+  width: 218px
 .associated-user-button:hover, .service-request-button:hover
   cursor: pointer
 div.send_notification_dialog_box.ui-dialog
@@ -267,21 +269,34 @@ div.new_message_dialog.ui-dialog
       span.ui-button-text
         line-height: 18px
 div.rsr_dialog.ui-dialog
+div.report_date_range.ui-dialog
   div.ui-dialog-titlebar
     font-size: 1.1em
     border-radius: 15px 15px 0 0
-    padding: 8px 10px 12px
+    padding: 8px 10px 6px
     button.ui-dialog-titlebar-close
       background: url(/assets/portal/close_white_small.png) no-repeat
       height: 30px
       width: 30px
-      top: 5px
+      top: 3px
   div.ui-dialog-content
     padding: 10px
     ul
       border: 1px solid black
       padding: 15px
       list-style: none
+
+div.report_date_range
+  input#rps_continue
+    background: url(/assets/portal/yellowbutton_tiny.png) no-repeat
+    border: 0px
+    color: white
+    cursor: pointer
+    display: block
+    height: 30px
+    margin: 0 auto
+    width: 93px
+
 div.add_user_dialog_box,
 div.edit_user_dialog_box,
 div.full_calendar_dialog_box,
@@ -289,7 +304,10 @@ div.send_notification_dialog_box,
 div.new_message_dialog,
 div.view_request_dialog_box,
 div.ie_warning,
-div.rsr_dialog
+div.rsr_dialog,
+div.report_date_range,
+div.new_visit_dialog,
+div.permissions_dialog
   padding: 0px
   border: 0px
   background: none !important
@@ -466,13 +484,11 @@ div.rsr_dialog
     th
       text-align: left
     td
-      padding: 10px 0
+      padding: 20px 0
     td.sender div
-      width: 90px
-    td.srid div
-      width: 50px
+      width: 130px
     td.subject div
-      width: 160px
+      width: 170px
     .image_placeholder
       padding: 0px
       div
@@ -518,7 +534,15 @@ div.rsr_dialog
   color: white !important
   display: block
   background: url(/assets/portal/yellowbutton_calendar.png) no-repeat
-
+.add-services-button
+  width: 230px
+  height: 26px
+  padding: 9px 9px 9px 9px
+  margin: 10px 0 0 10px
+  text-align: center
+  color: white !important
+  display: block
+  background: url(/assets/portal/yellowbutton_add.png) no-repeat
 // Dialog form styles
 
 .dialog-form
@@ -931,7 +955,6 @@ div.rsr_dialog
   font-weight: bold
   float: left
   width: 452px
-  text-align: right
   padding-right: 10px
   cursor: pointer
 
@@ -1391,3 +1414,15 @@ div.rsr_dialog
     border: 1px solid #8a1f11 !important
     background-color: #FFFFD5 !important
     color: red !important
+
+#processing_request 
+  background: #fff
+  border: 1px solid #000
+  left: 42%
+  padding: 3px
+  top: 200px
+  position: fixed
+  text-align: center
+  width: 200px
+  z-index: 5
+

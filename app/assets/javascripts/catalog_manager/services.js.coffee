@@ -56,15 +56,22 @@ $(document).ready ->
         effective_date = Sparc.config.readyMyDate(div.find('.submitted_date:last').val())
         div.prevAll('h3:first').find('a').html("Effective On #{effective_date} - Display On #{display_date}")
       else if same_date == true
-        alert "You can't have two #{str} dates on the same day!"
+        if str == "display"
+          alert I18n["services_js"]["same_display_date"]
+        else
+          alert I18n["services_js"]["same_effective_date"]
         $(changed_element).val('')
         $(changed_element).siblings().val('')
         date_warning = false
       if date_warning == true
-        if (confirm "You have selected a #{str} date before an existing #{str} date, are you sure you want to do this?") == false
+        if str == "display"
+          proceed = confirm I18n["services_js"]["before_display_date"]
+        else
+          proceed = confirm I18n["services_js"]["before_effective_date"]
+        if proceed == false
           $(changed_element).val('')
           $(changed_element).siblings().val('')
-        else if (confirm "Are you sure?") == false
+        else if (confirm I18n["js_confirm"]) == false
           $(changed_element).val('')
           $(changed_element).siblings().val('')
   }
@@ -117,7 +124,7 @@ $(document).ready ->
     unless $(this).hasClass('service_rate')
       old_value = $(this).attr('old_value')
       rate_type = $(this).attr('rate_type')
-      unless confirm("Changing this value will override the pre-calculated #{rate_type} Rate for this service.")
+      unless confirm(I18n["services_js"]["rate_field_confirm"])
         $(this).attr('old_value', old_value)
         $(this).val(old_value)
   )

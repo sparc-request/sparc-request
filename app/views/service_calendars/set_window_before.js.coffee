@@ -18,20 +18,3 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-set :rvm_ruby_string, "ruby-1.9.3-p286@sparc"
-set :rvm_type, :system
-set :rvm_install_with_sudo, true
-
-set :deploy_to, "#{deploy_root}/#{application}"
-set :rails_env, "testing"
-set :domain, "obis-sparc-dev.mdc.musc.edu"
-set :branch, "testing"
-
-role :web, domain
-role :app, domain, :primary => true
-role :db, domain, :primary => true
-
-before "deploy:setup", "rvm:install_rvm"
-before "deploy:setup", "rvm:install_ruby"
-
-require 'rvm/capistrano'

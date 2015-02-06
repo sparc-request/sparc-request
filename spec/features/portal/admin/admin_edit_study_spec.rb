@@ -30,6 +30,7 @@ describe "editing a study", js: true do
 
   before :each do
     add_visits
+    study.update_attributes(potential_funding_start_date: (Time.now + 1.day))
     visit portal_admin_sub_service_request_path sub_service_request.id
     click_on("Project/Study Information")
     wait_for_javascript_to_finish
@@ -126,8 +127,10 @@ describe "editing a study", js: true do
     describe "editing the funding start date" do
 
       it "should change and save the date" do
-        find("#funding_start_date").click
+        page.execute_script %Q{ $("#funding_start_date").focus()}
+        wait_for_javascript_to_finish
         page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") }
+        wait_for_javascript_to_finish
         find("#funding_start_date").should have_value((Date.today).strftime('%-m/%d/%Y'))
       end
     end
@@ -163,9 +166,9 @@ describe "editing a study", js: true do
     describe "editing the potential funding start date" do
 
       it "should change and save the date" do
-        find("#potential_funding_start_date").click
+        page.execute_script %Q{ $("#potential_funding_start_date").focus()}
         wait_for_javascript_to_finish
-        page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") }
+        first("a.ui-state-default.ui-state-highlight").click
         wait_for_javascript_to_finish
         find("#potential_funding_start_date").should have_value((Date.today).strftime('%-m/%d/%Y'))
       end
@@ -243,8 +246,10 @@ describe "editing a study", js: true do
     describe "editing the irb approval date" do
 
       it "should change and save the date" do
-        find("#irb_approval_date").click
-        page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") }
+        page.execute_script %Q{ $("#irb_approval_date").focus()}
+        wait_for_javascript_to_finish
+        first("a.ui-state-default.ui-state-highlight").click
+        wait_for_javascript_to_finish
         find("#irb_approval_date").should have_value(Date.today.strftime('%-m/%d/%Y'))
       end
     end
@@ -252,8 +257,10 @@ describe "editing a study", js: true do
     describe "editing the irb expiration date" do
 
       it "should change and save the date" do
-        find("#irb_expiration_date").click
-        page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") }
+        page.execute_script %Q{ $("#irb_expiration_date").focus()}
+        wait_for_javascript_to_finish
+        first("a.ui-state-default.ui-state-highlight").click
+        wait_for_javascript_to_finish
         find("#irb_expiration_date").should have_value(Date.today.strftime('%-m/%d/%Y'))
       end
     end    

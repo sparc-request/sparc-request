@@ -168,7 +168,7 @@ describe EpicInterface do
                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
           <studyCharacteristic classCode="OBS" moodCode="EVN">
             <code code="PI" />
-            <value xsi:type="CD" code="#{identity.netid.upcase}" codeSystem="netid" />
+            <value code="#{identity.netid.upcase}" codeSystem="netid" />
           </studyCharacteristic>
         </subjectOf>
       END
@@ -205,7 +205,7 @@ describe EpicInterface do
                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
           <studyCharacteristic classCode="OBS" moodCode="EVN">
             <code code="SC" />
-            <value xsi:type="CD" code="#{identity.netid.upcase}" codeSystem="netid" />
+            <value code="#{identity.netid.upcase}" codeSystem="netid" />
           </studyCharacteristic>
         </subjectOf>
       END
@@ -261,7 +261,7 @@ describe EpicInterface do
                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
           <studyCharacteristic classCode="OBS" moodCode="EVN">
             <code code="IRB" />
-            <value xsi:type="ST" value="1234" />
+            <value value="1234" />
           </studyCharacteristic>
         </subjectOf>
       END
@@ -288,7 +288,7 @@ describe EpicInterface do
                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
           <studyCharacteristic classCode="OBS" moodCode="EVN">
             <code code="IRB" />
-            <value xsi:type="ST" value="5678" />
+            <value value="5678" />
           </studyCharacteristic>
         </subjectOf>
       END
@@ -305,7 +305,8 @@ describe EpicInterface do
     end
 
     it 'should emit a subjectOf for an nct number' do
-      study.human_subjects_info.update_attributes(nct_number: 'asdf1234')
+      study.human_subjects_info.update_attributes(nct_number: '12345678')
+      study.research_types_info.update_attributes(human_subjects: true)
 
       epic_interface.send_study_creation(study)
 
@@ -315,7 +316,7 @@ describe EpicInterface do
                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
           <studyCharacteristic classCode="OBS" moodCode="EVN">
             <code code="NCT" />
-            <value xsi:type="ST" value="asdf1234" />
+            <value value="12345678" />
           </studyCharacteristic>
         </subjectOf>
       END
@@ -343,7 +344,88 @@ describe EpicInterface do
                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
           <studyCharacteristic classCode="OBS" moodCode="EVN">
             <code code="IRB" />
-            <value xsi:type="ST" value="1234" />
+            <value value="1234" />
+          </studyCharacteristic>
+        </subjectOf>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+          '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+          'env' => 'http://www.w3.org/2003/05/soap-envelope',
+          'rpe' => 'urn:ihe:qrph:rpe:2009',
+          'hl7' => 'urn:hl7-org:v3')
+
+      node.should be_equivalent_to(expected)
+    end
+
+    it 'should emit a subjectOf for the category grouper GOV if its funding source is not industry' do
+      study.update_attributes(funding_source: 'college')
+
+      epic_interface.send_study_creation(study)
+
+      xml = <<-END
+        <subjectOf typeCode="SUBJ"
+                   xmlns='urn:hl7-org:v3'
+                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+          <studyCharacteristic classCode="OBS" moodCode="EVN">
+            <code code="RGCL1" />
+            <value value="GOV" />
+          </studyCharacteristic>
+        </subjectOf>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+          '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+          'env' => 'http://www.w3.org/2003/05/soap-envelope',
+          'rpe' => 'urn:ihe:qrph:rpe:2009',
+          'hl7' => 'urn:hl7-org:v3')
+
+      node.should be_equivalent_to(expected)
+    end
+
+    it 'should emit a subjectOf for the category grouper CORP if its funding source is industry' do
+      study.update_attributes(funding_source: 'industry')
+
+      epic_interface.send_study_creation(study)
+
+      xml = <<-END
+        <subjectOf typeCode="SUBJ"
+                   xmlns='urn:hl7-org:v3'
+                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+          <studyCharacteristic classCode="OBS" moodCode="EVN">
+            <code code="RGCL1" />
+            <value value="CORP" />
+          </studyCharacteristic>
+        </subjectOf>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+          '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+          'env' => 'http://www.w3.org/2003/05/soap-envelope',
+          'rpe' => 'urn:ihe:qrph:rpe:2009',
+          'hl7' => 'urn:hl7-org:v3')
+
+      node.should be_equivalent_to(expected)
+    end
+
+    it 'should emit a subjectOf for the category grouper GOV if its potential funding source is other' do
+      study.update_attributes(potential_funding_source: 'other')
+
+      epic_interface.send_study_creation(study)
+
+      xml = <<-END
+        <subjectOf typeCode="SUBJ"
+                   xmlns='urn:hl7-org:v3'
+                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+          <studyCharacteristic classCode="OBS" moodCode="EVN">
+            <code code="RGCL1" />
+            <value value="GOV" />
           </studyCharacteristic>
         </subjectOf>
       END
@@ -679,8 +761,8 @@ describe EpicInterface do
 
           epic_interface.send_billing_calendar(study)
 
-          low = epic_interface.relative_date(visit_group.day - visit_group.window, study.start_date)
-          high = epic_interface.relative_date(visit_group.day + visit_group.window, study.start_date)
+          low = epic_interface.relative_date(visit_group.day - visit_group.window_before, study.start_date)
+          high = epic_interface.relative_date(visit_group.day + visit_group.window_after, study.start_date)
 
           xml = <<-END
             <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
@@ -759,16 +841,192 @@ describe EpicInterface do
           node.should be_equivalent_to(expected.root)
         end
 
+        it 'should send pppv line items with the CPT code if it also has a Charge code' do
+          liv = LineItemsVisit.for(arm, line_item)
+          visit = Visit.for(liv, visit_group)
+          visit.update_attributes(research_billing_qty: 1)
+          service.update_attributes(cpt_code: 4321, send_to_epic: true, charge_code: 1234)
+
+          epic_interface.send_billing_calendar(study)
+
+          low = epic_interface.relative_date(visit_group.day - visit_group.window_before, study.start_date)
+          high = epic_interface.relative_date(visit_group.day + visit_group.window_after, study.start_date)
+
+          xml = <<-END
+            <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
+             <query root="1.2.3.4" extension="STUDY#{study.id}"/>
+             <protocolDef>
+               <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
+                 <id root="1.2.3.4" extension="STUDY#{study.id}"/>
+                 <title>#{study.epic_title}</title>
+                 <text>#{study.brief_description}</text>
+                 <component4 typeCode="COMP">
+                   <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                     <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}"/>
+                     <title>#{arm.name}</title>
+                     <code code="CELL" codeSystem="n/a"/>
+                     <component1 typeCode="COMP">
+                       <sequenceNumber value="1"/>
+                       <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                         <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}.CYCLE1"/>
+                         <title>Cycle 1</title>
+                         <code code="CYCLE" codeSystem="n/a"/>
+                         <effectiveTime>
+                           <low value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
+                           <high value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
+                         </effectiveTime>
+                         <component1 typeCode="COMP">
+                           <sequenceNumber value="1"/>
+                           <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                             <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}.CYCLE1.DAY#{visit_group.id}"/>
+                             <title>#{visit_group.name}</title>
+                           </timePointEventDefinition>
+                         </component1>
+                       </timePointEventDefinition>
+                     </component1>
+                   </timePointEventDefinition>
+                 </component4>
+                 <component4 typeCode="COMP">
+                   <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                     <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}.CYCLE1.DAY#{visit_group.id}"/>
+                     <title>#{visit_group.name}</title>
+                     <code code="VISIT" codeSystem="n/a"/>
+                     <component1 typeCode="COMP">
+                       <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                         <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}.CYCLE1.DAY#{visit_group.id}.PROC#{line_item.id}"/>
+                         <code code="PROC" codeSystem="SPARCCPT"/>
+                         <component2 typeCode="COMP">
+                           <procedure classCode="PROC" moodCode="EVN">
+                             <code code="4321" codeSystem="SPARCCPT"/>
+                           </procedure>
+                         </component2>
+                       </timePointEventDefinition>
+                     </component1>
+                     <component2 typeCode="COMP">
+                       <encounter classCode="ENC" moodCode="DEF">
+                         <effectiveTime>
+                           <low value="#{low}"/>
+                           <high value="#{high}"/>
+                         </effectiveTime>
+                         <activityTime value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
+                       </encounter>
+                     </component2>
+                   </timePointEventDefinition>
+                 </component4>
+               </plannedStudy>
+             </protocolDef>
+            </RetrieveProtocolDefResponse>
+          END
+
+          expected = Nokogiri::XML(xml)
+
+          node = epic_received[0].xpath(
+              '//env:Body/rpe:RetrieveProtocolDefResponse',
+              'env' => 'http://www.w3.org/2003/05/soap-envelope',
+              'rpe' => 'urn:ihe:qrph:rpe:2009',
+              'hl7' => 'urn:hl7-org:v3')
+
+          node.should be_equivalent_to(expected.root)
+        end
+
+        it 'should send pppv line items with only Charge codes' do
+          liv = LineItemsVisit.for(arm, line_item)
+          visit = Visit.for(liv, visit_group)
+          visit.update_attributes(research_billing_qty: 1)
+          service.update_attributes(charge_code: 4321, send_to_epic: true)
+
+          epic_interface.send_billing_calendar(study)
+
+          low = epic_interface.relative_date(visit_group.day - visit_group.window_before, study.start_date)
+          high = epic_interface.relative_date(visit_group.day + visit_group.window_after, study.start_date)
+
+          xml = <<-END
+            <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
+             <query root="1.2.3.4" extension="STUDY#{study.id}"/>
+             <protocolDef>
+               <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
+                 <id root="1.2.3.4" extension="STUDY#{study.id}"/>
+                 <title>#{study.epic_title}</title>
+                 <text>#{study.brief_description}</text>
+                 <component4 typeCode="COMP">
+                   <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                     <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}"/>
+                     <title>#{arm.name}</title>
+                     <code code="CELL" codeSystem="n/a"/>
+                     <component1 typeCode="COMP">
+                       <sequenceNumber value="1"/>
+                       <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                         <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}.CYCLE1"/>
+                         <title>Cycle 1</title>
+                         <code code="CYCLE" codeSystem="n/a"/>
+                         <effectiveTime>
+                           <low value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
+                           <high value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
+                         </effectiveTime>
+                         <component1 typeCode="COMP">
+                           <sequenceNumber value="1"/>
+                           <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                             <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}.CYCLE1.DAY#{visit_group.id}"/>
+                             <title>#{visit_group.name}</title>
+                           </timePointEventDefinition>
+                         </component1>
+                       </timePointEventDefinition>
+                     </component1>
+                   </timePointEventDefinition>
+                 </component4>
+                 <component4 typeCode="COMP">
+                   <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                     <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}.CYCLE1.DAY#{visit_group.id}"/>
+                     <title>#{visit_group.name}</title>
+                     <code code="VISIT" codeSystem="n/a"/>
+                     <component1 typeCode="COMP">
+                       <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
+                         <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}.CYCLE1.DAY#{visit_group.id}.PROC#{line_item.id}"/>
+                         <code code="PROC" codeSystem="SPARCCDM"/>
+                         <component2 typeCode="COMP">
+                           <procedure classCode="PROC" moodCode="EVN">
+                             <code code="4321" codeSystem="SPARCCDM"/>
+                           </procedure>
+                         </component2>
+                       </timePointEventDefinition>
+                     </component1>
+                     <component2 typeCode="COMP">
+                       <encounter classCode="ENC" moodCode="DEF">
+                         <effectiveTime>
+                           <low value="#{low}"/>
+                           <high value="#{high}"/>
+                         </effectiveTime>
+                         <activityTime value="#{epic_interface.relative_date(visit_group.day, study.start_date)}"/>
+                       </encounter>
+                     </component2>
+                   </timePointEventDefinition>
+                 </component4>
+               </plannedStudy>
+             </protocolDef>
+            </RetrieveProtocolDefResponse>
+          END
+
+          expected = Nokogiri::XML(xml)
+
+          node = epic_received[0].xpath(
+              '//env:Body/rpe:RetrieveProtocolDefResponse',
+              'env' => 'http://www.w3.org/2003/05/soap-envelope',
+              'rpe' => 'urn:ihe:qrph:rpe:2009',
+              'hl7' => 'urn:hl7-org:v3')
+
+          node.should be_equivalent_to(expected.root)
+        end
+
         # TODO: Test no CPT Code.
-        it 'should not send pppv line items without a CPT code' do
+        it 'should not send pppv line items without a CPT code or a Charge code' do
           liv = LineItemsVisit.for(arm, line_item)
           visit = Visit.for(liv, visit_group)
           visit.update_attributes(research_billing_qty: 1)
 
           epic_interface.send_billing_calendar(study)
 
-          low = epic_interface.relative_date(visit_group.day - visit_group.window, study.start_date)
-          high = epic_interface.relative_date(visit_group.day + visit_group.window, study.start_date)
+          low = epic_interface.relative_date(visit_group.day - visit_group.window_before, study.start_date)
+          high = epic_interface.relative_date(visit_group.day + visit_group.window_after, study.start_date)
 
           xml = <<-END
             <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">

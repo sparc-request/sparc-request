@@ -18,20 +18,15 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-set :rvm_ruby_string, "ruby-1.9.3-p286@sparc"
-set :rvm_type, :system
-set :rvm_install_with_sudo, true
-
-set :deploy_to, "#{deploy_root}/#{application}"
-set :rails_env, "staging"
-set :domain, "obis-sparc-stg.mdc.musc.edu"
-set :branch, "staging"
-
-role :web, domain
-role :app, domain, :primary => true
-role :db, domain, :primary => true
-
-before "deploy:setup", "rvm:install_rvm"
-before "deploy:setup", "rvm:install_ruby"
-
-require 'rvm/capistrano'
+FactoryGirl.define do
+  factory :document do
+    doc_type             { 'other' }
+    doc_type_other       { Faker::Lorem.word }
+    document_file_name   { Faker::Lorem.word + '.docx' }
+    document_content_type{ 'application/msword' }
+    document_file_size   { Random.rand(100000) }
+    document_updated_at  { Time.now }
+    created_at           { Time.now }
+    updated_at           { Time.now }
+  end
+end

@@ -21,7 +21,7 @@
 $(document).ready ->
   $('#signed_up_but_not_approved').dialog
     modal: true
-    title: "New account created:"
+    title: I18n["signed_up_dialog"]
     width: 800
     height: 150
     dialogClass: 'no-close'

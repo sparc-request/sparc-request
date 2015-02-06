@@ -20,5 +20,6 @@
 
 class AuditRecovery < ActiveRecord::Base
   self.table_name = 'audits'
+  establish_connection("audit_#{Rails.env}") if USE_SEPARATE_AUDIT_DATABASE
   serialize :audited_changes
 end

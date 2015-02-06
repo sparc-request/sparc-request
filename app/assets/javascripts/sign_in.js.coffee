@@ -21,7 +21,7 @@
 $(document).ready ->
   $('#sign_in').dialog
     modal: true
-    title: "Please select one of the options below:"
+    title: I18n["sign_in_dialog"]
     width: 800
     height: 400
     dialogClass: 'no-close'

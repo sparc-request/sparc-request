@@ -30,8 +30,9 @@ $(document).ready ->
         id: 'submit_move'
         text: 'Submit'
         click: ->
+          $('#submit_move').attr('disabled', 'true')
+          $('#cancel_move').attr('disabled', 'true')
           submit_visit_form($(this))
-          $(this).dialog('destroy').remove()
       },
       {
         id: 'cancel_move'
@@ -57,3 +58,7 @@ $(document).ready ->
       dataType: 'script'
       contentType: 'application/json; charset=utf-8'
       success: ->
+        $(obj).dialog('destroy').remove()
+      error: ->
+        $(obj).dialog('destroy').remove()
+        alert("Visit Failed to Move")

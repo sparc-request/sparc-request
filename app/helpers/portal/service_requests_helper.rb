@@ -265,4 +265,15 @@ module Portal::ServiceRequestsHelper
   def display_one_time_fee_direct_cost line_item
     currency_converter line_item.direct_costs_for_one_time_fee
   end
+
+  # If the last sub service request on the service request is not editable,
+  # then a user should not be able to access the request though the 'Edit
+  # Original' button.
+  def last_ssr_is_editable? sr
+    if (sr.sub_service_requests.count == 1) && !sr.sub_service_requests.first.can_be_edited?
+      return false
+    end
+
+    return true
+  end
 end

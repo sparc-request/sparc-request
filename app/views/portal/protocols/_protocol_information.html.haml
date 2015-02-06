@@ -124,7 +124,7 @@
           - if sr.sub_service_requests.size > 0 && first_ssr
             - first_ssr = false
             %td.no_background.edit-original-td
-              - if @user.can_edit_service_request? sr
+              - if (@user.can_edit_service_request?(sr) && last_ssr_is_editable?(srq))
                 %a.edit_service_request{:href => "javascript:void(0);", :'data-permission' => rights.to_s, :'data-url' => "/service_requests/#{sr.id}/catalog?from_user_portal=true&edit_original=true"}= t(:protocol_information)[:edit_original]
         %tr
           %td.notification_td{:colspan => "9"}

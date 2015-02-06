@@ -219,22 +219,23 @@ class Identity < ActiveRecord::Base
     end
   end
 
-  # As per Lane, a request's status is no longer a factor for editing. 
+  # As per Lane, a service request's status is no longer a factor for editing. 
   # Only users with request or approve rights can edit.
   def can_edit_service_request? sr
     can_edit = false
  
-    if request.service_requester_id == self.id or request.service_requester_id.nil?
+    if sr.service_requester_id == self.id or sr.service_requester_id.nil?
       can_edit = true
-    elsif !self.project_roles.select{|pr| pr.protocol_id == request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights}.empty?
+    elsif !self.project_roles.select{|pr| pr.protocol_id == sr.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights}.empty?
       can_edit = true
     end
 
     can_edit
   end
 
+  # If a user has request or approve rights AND the request is editable, then the user can edit.
   def can_edit_sub_service_request? ssr
-    if ssr.can_be_edited? && (self.project_roles.select{|pr| pr.protocol_id == sub_service_request.service_request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights})
+    if ssr.can_be_edited? && (self.project_roles.select{|pr| pr.protocol_id == ssr.service_request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights})
       return true
     end
 

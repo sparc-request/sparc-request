@@ -266,13 +266,11 @@ class SubServiceRequest < ActiveRecord::Base
 
   # Can't edit a Nexus ssr if it's placed in an uneditable status
   def can_be_edited?
-    can_edit = false
-
     if (nexus_editable_status?(self.status) || !self.ctrc?)
-      can_edit = true
+      return true
     end
 
-    can_edit
+    return false
   end
 
   # If the ssr can't be edited AND it's a Nexus request AND there are multiple ssrs under it's service request
@@ -300,7 +298,8 @@ class SubServiceRequest < ActiveRecord::Base
     !self.in_work_fulfillment?
   end
 
-  def candidate_statuses
+  # TODO: Verify that this method is no longer needed or being used
+  def candidate_statusesq
     candidates = ["draft", "submitted", "in process", "complete"]
     #candidates.unshift("submitted") if self.can_be_edited?
     #candidates.unshift("draft") if self.can_be_edited?

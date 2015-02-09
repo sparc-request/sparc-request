@@ -226,7 +226,7 @@ class Identity < ActiveRecord::Base
  
     if sr.service_requester_id == self.id or sr.service_requester_id.nil?
       can_edit = true
-    elsif !self.project_roles.select{|pr| pr.protocol_id == sr.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights}.empty?
+    elsif has_correct_project_role?(sr)
       can_edit = true
     end
 
@@ -235,11 +235,31 @@ class Identity < ActiveRecord::Base
 
   # If a user has request or approve rights AND the request is editable, then the user can edit.
   def can_edit_sub_service_request? ssr
-    if ssr.can_be_edited? && (self.project_roles.select{|pr| pr.protocol_id == ssr.service_request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights})
+    if ssr.can_be_edited? && has_correct_project_role?(ssr)
       return true
     end
 
     return false
+  end
+
+  def has_correct_project_role? request
+    self.project_roles.each do |pr|
+      if (pr.protocol_id == requests_protocol_id(request)) && ['approve', 'request'].include?(pr.project_rights)
+        return true
+      end
+    end
+
+    return false
+  end
+
+  def requests_protocol_id request
+    if request.class == ServiceRequest
+      id = request.try(:protocol).try(:id)
+    else
+      id = request.service_request.try(:protocol).try(:id)
+    end
+
+    id
   end
 
   # Determines whether this identity can edit a given organization's information in CatalogManager.
@@ -393,6 +413,7 @@ class Identity < ActiveRecord::Base
     return false
   end
 
+  # TODO: We are not using this anymore, should it be deleted?
   # Collects all workflow states that are available to the given user based on what organizations
   # they have permissions to.
   # Currently serves largely to insert CTRC statuses if this identity has permissions for the CTRC.
@@ -419,11 +440,6 @@ class Identity < ActiveRecord::Base
         cwf_provider_identity_ids << org.clinical_providers.map(&:identity_id)
       end
     end
-
-    # unless service_provider_identity_ids.flatten.include?(self.id) || super_user_identity_ids.flatten.include?(self.id) || cwf_provider_identity_ids.flatten.include?(self.id)
-    #   available_statuses.delete('ctrc_review')
-    #   available_statuses.delete('ctrc_approved')
-    # end
 
     if return_hash
       available_statuses

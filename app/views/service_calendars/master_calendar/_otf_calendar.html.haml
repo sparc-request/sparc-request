@@ -17,7 +17,7 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- if @portal || !@review
+- unless @review
   - if (@sub_service_request.nil? ? @service_request.has_one_time_fee_services? : @sub_service_request.has_one_time_fee_services?) or @merged
     %table.service_calendar{:class => @review ? 'review_totals' : ''}
       %thead{:class => @review ? thead_class : 'ui-widget-header'}

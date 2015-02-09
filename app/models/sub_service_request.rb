@@ -299,7 +299,7 @@ class SubServiceRequest < ActiveRecord::Base
   end
 
   # TODO: Verify that this method is no longer needed or being used
-  def candidate_statusesq
+  def candidate_statuses
     candidates = ["draft", "submitted", "in process", "complete"]
     #candidates.unshift("submitted") if self.can_be_edited?
     #candidates.unshift("draft") if self.can_be_edited?

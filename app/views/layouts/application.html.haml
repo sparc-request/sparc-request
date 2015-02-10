@@ -59,11 +59,11 @@
         = image_tag 'spinner.gif'
 
       = render :partial => 'shared/header_logos'
-      #welcome_msg
-        .flash
+      #welcome_msg.row.bg-warning
+        .flash.col-md-12
           - flash.each do |name, msg|
             = content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String)
-        .welcome= show_welcome_message(current_user)
+        .welcome.col-md-12= show_welcome_message(current_user)
       / #title
       / %h1= t 'application_title'
       #sparc_logo_header
@@ -72,7 +72,7 @@
           %span#sub_service_request_header
             &nbsp;
             = show_friendly_ssr_id(@sub_service_request) if @sub_service_request
-      #content.container_12
+      #content.container_12.row
         = yield
       .clear
       = render :partial => 'shared/footer'

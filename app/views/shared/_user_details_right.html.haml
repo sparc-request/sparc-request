@@ -28,39 +28,39 @@
   %h3 User Details:
   %br
   .user_info
-    .user_institution
+    .user_institution.form-group
       = label_tag "identity[institution]", t(:user_details)[:institution] + ":"
-      = select_tag "identity[institution]", options_for_select((INSTITUTIONS.sort), identity.institution), :prompt => t(:user_details)[:institution_select]
+      = select_tag "identity[institution]", options_for_select((INSTITUTIONS.sort), identity.institution), :prompt => t(:user_details)[:institution_select], :class => 'form-control'
       %br
       %br
 
-    .user_college
+    .user_college.form-group
       = label_tag "identity[college]", t(:user_details)[:college] + ":"
-      = select_tag "identity[college]", options_for_select(COLLEGES, identity.college), :prompt => t(:user_details)[:college_select]
+      = select_tag "identity[college]", options_for_select(COLLEGES, identity.college), :prompt => t(:user_details)[:college_select], :class => 'form-control'
       %br
       %br
 
-    .user_department
+    .user_department.form-group
       = label_tag "identity[department]", t(:user_details)[:department] + ":"
-      = select_tag "identity[department]", options_for_select(DEPARTMENTS, identity.department), :prompt => t(:user_details)[:department_select]
+      = select_tag "identity[department]", options_for_select(DEPARTMENTS, identity.department), :prompt => t(:user_details)[:department_select], :class => 'form-control'
       %br
       %br
 
-    .user_credentials
+    .user_credentials.form-group
       = label_tag "identity[credentials]", t(:user_details)[:credentials] + ":"
-      = select_tag "identity[credentials]", options_for_select(USER_CREDENTIALS, identity.credentials), :prompt => t(:user_details)[:credentials_select]
+      = select_tag "identity[credentials]", options_for_select(USER_CREDENTIALS, identity.credentials), :prompt => t(:user_details)[:credentials_select], :class => 'form-control'
       %br
       %br
 
-    .credentials_other
+    .credentials_other.form-group
       = label_tag "identity[credentials_other]", "  "
-      = text_field_tag "identity[credentials_other]", identity.credentials_other
+      = text_field_tag "identity[credentials_other]", identity.credentials_other, :class => 'form-control'
       %br
       %br
 
-    .subspecialty
+    .subspecialty.form-group
       = label_tag "identity[subspecialty]", t(:user_details)[:subspecialty] + ":"
-      = select_tag "identity[subspecialty]", options_for_select((SUBSPECIALTIES.sort), identity.subspecialty), :prompt => t(:user_details)[:subspecialty_select]
+      = select_tag "identity[subspecialty]", options_for_select((SUBSPECIALTIES.sort), identity.subspecialty), :prompt => t(:user_details)[:subspecialty_select], :class => 'form-control'
       %br
       %br
 

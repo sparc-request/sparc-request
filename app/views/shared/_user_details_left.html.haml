@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.user_name
+.user_name.form-group
   = label_tag "identity[name]", t(:user_details)[:name] + ":"
   = "#{identity.first_name} #{identity.last_name}"
   = hidden_field_tag "identity[first_name]", identity.first_name
@@ -26,35 +26,35 @@
   %br
   %br
  
-.user_email
+.user_email.form-group
   = label_tag "identity[email]", t(:user_details)[:email] + ":"
   = identity.email
   = hidden_field_tag "identity[email]", identity.email
   %br
   %br
 
-.user_phone
+.user_phone.form-group
   = label_tag "identity[phone]", t(:user_details)[:phone] + ":"
-  = text_field_tag "identity[phone]", identity.phone
+  = text_field_tag "identity[phone]", identity.phone, :class => 'form-control'
   %br
   %br
 
-.user_role
+.user_role.form-group
   = label_tag "project_role[role]", t(:user_details)[:role] + ":*"
-  = select_tag "project_role[role]", options_for_select(USER_ROLES, project_role.role), :prompt => t(:user_details)[:role_select]
+  = select_tag "project_role[role]", options_for_select(USER_ROLES, project_role.role), :prompt => t(:user_details)[:role_select], :class => 'form-control'
 
   %br
   %br
 
-.role_other
+.role_other.form-group
   = label_tag "project_role[role_other]", "   "
-  = text_field_tag "project_role[role_other]", project_role.role_other
+  = text_field_tag "project_role[role_other]", project_role.role_other, :class => 'form-control'
   %br
   %br
 
-.era_commons_name
+.era_commons_name.form-group
   = label_tag "identity[era_commons_name]", t(:user_details)[:ec_name] + ":"
-  = text_field_tag "identity[era_commons_name]", identity.era_commons_name
+  = text_field_tag "identity[era_commons_name]", identity.era_commons_name, :class => 'form-control'
   %br
   %br
 

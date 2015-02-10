@@ -18,9 +18,9 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.inline
+.inline.form-group
   = t("study_assignment.select_protocol")
-  = collection_select :service_request, :protocol_id, studies, :id, :display_protocol_id_and_title, {:include_blank => t("study_assignment.select_study")}, :class => 'edit_study_id'
+  = collection_select :service_request, :protocol_id, studies, :id, :display_protocol_id_and_title, {:include_blank => t("study_assignment.select_study")}, :class => 'edit_study_id form-control'
   .edit-study.blue-button.btn.btn-primary= t("study_assignment.edit_study")
 - if @sub_service_request.nil?
   %br

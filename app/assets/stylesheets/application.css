@@ -240,6 +240,10 @@ p.notice {
   font-size: 14px;
 }
 
+#welcome_message .provider-details-view a {
+  color: #0000EE !important
+}
+
 #calendar-blog {
   margin-top: 30px;
   width: 100%;
@@ -1664,7 +1668,7 @@ tr.grand-totals {
 }
 
 .no-close .ui-dialog-titlebar-close {
-  display: none 
+  display: none
 }
 
 /*DOCUMENT MANAGEMENT STYLES*/

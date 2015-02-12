@@ -224,7 +224,7 @@ class Identity < ActiveRecord::Base
   def can_edit_service_request? sr
     can_edit = false
  
-    if sr.service_requester_id == self.id or sr.service_requester_id.nil?
+    if (sr.service_requester_id == self.id or sr.service_requester_id.nil?) && sr.is_editable?
       can_edit = true
     elsif has_correct_project_role?(sr)
       can_edit = true
@@ -411,41 +411,6 @@ class Identity < ActiveRecord::Base
     end
 
     return false
-  end
-
-  # TODO: We are not using this anymore, should it be deleted?
-  # Collects all workflow states that are available to the given user based on what organizations
-  # they have permissions to.
-  # Currently serves largely to insert CTRC statuses if this identity has permissions for the CTRC.
-  # Returns an array of statuses as strings.
-  def available_workflow_states tag='ctrc', org_id=nil, return_hash=false
-    orgs = Organization.find(:all)
-    #added return_keys so you can pass back the keys instead of the values
-    #this is necessary when you want to change the value in constants.yml
-    available_statuses = AVAILABLE_STATUSES.clone
-
-    if org_id # we are provided with an id to use as the parent
-      parents = Organization.where(:id => org_id)
-    else # default is to use CTRC tagged organization, this could be different in the future
-      parents = Organization.tagged_with(tag)
-    end
-    service_provider_identity_ids = []
-    super_user_identity_ids = []
-    cwf_provider_identity_ids = []
-
-    parents.each do |parent|
-      parent.all_children(orgs).each do |org| # check all children and get your available statuses
-        service_provider_identity_ids << org.service_providers.map(&:identity_id)
-        super_user_identity_ids << org.super_users.map(&:identity_id)
-        cwf_provider_identity_ids << org.clinical_providers.map(&:identity_id)
-      end
-    end
-
-    if return_hash
-      available_statuses
-    else
-      available_statuses.values
-    end
   end  
   
   # Collects all sub service requests under this identity's admin_organizations and sorts that

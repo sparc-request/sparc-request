@@ -219,21 +219,47 @@ class Identity < ActiveRecord::Base
     end
   end
 
-  # As per Lane, a request's status is no longer a factor for editing. 
+  # As per Lane, a service request's status is no longer a factor for editing. 
   # Only users with request or approve rights can edit.
-  def can_edit_request? request
+  def can_edit_service_request? sr
     can_edit = false
-    if request.class == ServiceRequest
-      if request.service_requester_id == self.id or request.service_requester_id.nil?
-        can_edit = true
-      elsif !self.project_roles.select{|pr| pr.protocol_id == request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights}.empty?
-        can_edit = true
-      end
-    elsif (request.class == SubServiceRequest) && (!self.project_roles.select{|pr| pr.protocol_id == request.service_request.try(:protocol).try(:id) and ['approve', 'request'].include? pr.project_rights}.empty?)
+ 
+    if (sr.service_requester_id == self.id or sr.service_requester_id.nil?) && sr.is_editable?
+      can_edit = true
+    elsif has_correct_project_role?(sr)
       can_edit = true
     end
 
     can_edit
+  end
+
+  # If a user has request or approve rights AND the request is editable, then the user can edit.
+  def can_edit_sub_service_request? ssr
+    if ssr.can_be_edited? && has_correct_project_role?(ssr)
+      return true
+    end
+
+    return false
+  end
+
+  def has_correct_project_role? request
+    self.project_roles.each do |pr|
+      if (pr.protocol_id == requests_protocol_id(request)) && ['approve', 'request'].include?(pr.project_rights)
+        return true
+      end
+    end
+
+    return false
+  end
+
+  def requests_protocol_id request
+    if request.class == ServiceRequest
+      id = request.try(:protocol).try(:id)
+    else
+      id = request.service_request.try(:protocol).try(:id)
+    end
+
+    id
   end
 
   # Determines whether this identity can edit a given organization's information in CatalogManager.
@@ -385,45 +411,6 @@ class Identity < ActiveRecord::Base
     end
 
     return false
-  end
-
-  # Collects all workflow states that are available to the given user based on what organizations
-  # they have permissions to.
-  # Currently serves largely to insert CTRC statuses if this identity has permissions for the CTRC.
-  # Returns an array of statuses as strings.
-  def available_workflow_states tag='ctrc', org_id=nil, return_hash=false
-    orgs = Organization.find(:all)
-    #added return_keys so you can pass back the keys instead of the values
-    #this is necessary when you want to change the value in constants.yml
-    available_statuses = AVAILABLE_STATUSES.clone
-
-    if org_id # we are provided with an id to use as the parent
-      parents = Organization.where(:id => org_id)
-    else # default is to use CTRC tagged organization, this could be different in the future
-      parents = Organization.tagged_with(tag)
-    end
-    service_provider_identity_ids = []
-    super_user_identity_ids = []
-    cwf_provider_identity_ids = []
-
-    parents.each do |parent|
-      parent.all_children(orgs).each do |org| # check all children and get your available statuses
-        service_provider_identity_ids << org.service_providers.map(&:identity_id)
-        super_user_identity_ids << org.super_users.map(&:identity_id)
-        cwf_provider_identity_ids << org.clinical_providers.map(&:identity_id)
-      end
-    end
-
-    # unless service_provider_identity_ids.flatten.include?(self.id) || super_user_identity_ids.flatten.include?(self.id) || cwf_provider_identity_ids.flatten.include?(self.id)
-    #   available_statuses.delete('ctrc_review')
-    #   available_statuses.delete('ctrc_approved')
-    # end
-
-    if return_hash
-      available_statuses
-    else
-      available_statuses.values
-    end
   end  
   
   # Collects all sub service requests under this identity's admin_organizations and sorts that

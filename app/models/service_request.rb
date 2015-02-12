@@ -534,6 +534,17 @@ class ServiceRequest < ActiveRecord::Base
     true #self.sub_service_requests.all?{|ssr| ssr.arms_editable?}
   end
 
+  # If the last sub service request on the service request is not editable,
+  # then a user should not be able to access the request though the 'Edit
+  # Original' button.
+  def is_editable?
+    if (self.sub_service_requests.count == 1) && !self.sub_service_requests.first.can_be_edited?
+      return false
+    end
+
+    return true
+  end
+
   def audit_report identity, start_date=self.previous_submitted_at.utc, end_date=Time.now.utc
     line_item_audits = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{self.id}%' AND
                                       auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('create', 'destroy') AND

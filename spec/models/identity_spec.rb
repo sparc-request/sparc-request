@@ -110,34 +110,44 @@ describe "Identity" do
     let!(:clinical_provider)    {FactoryGirl.create(:clinical_provider, identity_id: user2.id, organization_id: core.id)}
     let!(:ctrc_provider)        {FactoryGirl.create(:clinical_provider, identity_id: user2.id, organization_id: program.id)}
     let!(:project_role)         {FactoryGirl.create(:project_role, identity_id: user.id, protocol_id: project.id, project_rights: 'approve')}
-    let!(:request)              {FactoryGirl.create(:sub_service_request, organization_id: core.id)}
+    let!(:request)              {FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id)}
 
     describe "permission methods" do
     
 
-      describe "can edit request " do
+      describe "can edit service request " do
 
-        it "should accept either a ssr or sr as an argument" do
-          user.can_edit_request?(service_request).should eq(true)
-          user.can_edit_request?(sub_service_request).should eq(true)
-        end
 
         it "should return false if the users rights are not 'approve' or request" do
           project_role.update_attributes(project_rights: 'none')
           service_request.update_attributes(service_requester_id: user2.id)
-          user.can_edit_request?(service_request).should eq(false)
-          user.can_edit_request?(sub_service_request).should eq(false)
+          user.can_edit_service_request?(service_request).should eq(false)
         end
 
         it "should return true no matter what the service request's status is" do
           service_request.update_attributes(status: 'approved')
-          user.can_edit_request?(service_request).should eq(true)
+          user.can_edit_service_request?(service_request).should eq(true)
+        end
+      end
+
+      describe "can edit sub service request" do
+
+        it "should return true if the user has the correct rights, and if nexus ssr has the correct status" do
+          program.tag_list = 'ctrc'
+          program.save
+          user.can_edit_sub_service_request?(sub_service_request).should eq(true)
         end
 
-        it "should return true no matter what the sub service request's status is" do
-          sub_service_request.update_attributes(status: 'approved')
-          user.can_edit_request?(sub_service_request).should eq(true)
+        it "should return true if not a nexus request, regardless of status" do
+          request.update_attributes(status: "complete")
+          user.can_edit_sub_service_request?(request).should eq(true)
         end
+
+        it "should return false if the user does not have correct rights" do
+          project_role.update_attributes(project_rights: 'none')
+          service_request.update_attributes(service_requester_id: user2.id)
+          user.can_edit_sub_service_request?(sub_service_request).should eq(false)
+        end 
       end
 
       describe "can edit entity" do
@@ -247,21 +257,6 @@ describe "Identity" do
         it "should not ignore nil organizations" do
           sp = FactoryGirl.create(:service_provider, identity_id: user.id, organization_id: 9999)
           lambda {user.admin_organizations}.should_not raise_exception
-        end
-      end
-
-      describe "available workflow states" do
-
-        it "should not return 'CTRC Review' and 'CTRC Approved' if user does not have ctrc permissions" do
-          user.available_workflow_states.should_not include('CTRC Review', 'CTRC Approved')
-        end
-
-        it "should return 'CTRC Review' and 'CTRC Aproved' if user does have ctrc permissions" do
-          organization = FactoryGirl.create(:organization)
-          organization.tag_list = "ctrc"
-          organization.save
-          super_user.update_attributes(organization_id: organization.id)
-          user.available_workflow_states.should include('Nexus Review', 'Nexus Approved')
         end
       end
 

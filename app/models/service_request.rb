@@ -472,9 +472,7 @@ class ServiceRequest < ActiveRecord::Base
     self.update_attributes(status: new_status)
 
     self.sub_service_requests.each do |ssr|
-      if ['first_draft', 'draft', nil].include?(ssr.status) or (['get_a_quote', 'submitted'].include?(ssr.status) and ['get_a_quote', 'submitted'].include?(new_status))
-        ssr.update_attributes(status: new_status)
-      end
+      ssr.update_attributes(status: new_status)
     end
   end
 
@@ -532,6 +530,17 @@ class ServiceRequest < ActiveRecord::Base
 
   def arms_editable?
     true #self.sub_service_requests.all?{|ssr| ssr.arms_editable?}
+  end
+
+  # If the last sub service request on the service request is not editable,
+  # then a user should not be able to access the request though the 'Edit
+  # Original' button.
+  def is_editable?
+    if (self.sub_service_requests.count == 1) && !self.sub_service_requests.first.can_be_edited?
+      return false
+    end
+
+    return true
   end
 
   def audit_report identity, start_date=self.previous_submitted_at.utc, end_date=Time.now.utc

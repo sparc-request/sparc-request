@@ -47,10 +47,10 @@
           .return-to-previous
             %a.cancel_link{:href => "javascript:void(0)"}
               = image_tag('left_arrow.png', :alt => "Cancel")
-              %span= t(:bottom_navigation)[:cancel]
+              %span.btn.btn-success.btn-lg= t(:bottom_navigation)[:cancel]
         .exit= image_tag('Filler.png')
         .nav-forward
           .save-and-continue
             %a{:href => "javascript:void(0)", :class => 'continue_button'}
-              %span= t(:bottom_navigation)[:continue]
+              %span.btn.btn-success.btn-lg= t(:bottom_navigation)[:continue]
               = image_tag('right_arrow.png', :alt => "SaveAndContinue")

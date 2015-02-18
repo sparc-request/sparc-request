@@ -236,6 +236,15 @@ describe 'SubServiceRequest' do
 
     describe "sub service request status" do
 
+      let!(:org1)       { FactoryGirl.create(:organization) }
+      let!(:org2)       { FactoryGirl.create(:organization) }
+      let!(:ssr1)       { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: org1.id) }
+      let!(:ssr2)       { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: org2.id) }
+      let!(:service)    { FactoryGirl.create(:service, organization_id: org1.id) }
+      let!(:service2)   { FactoryGirl.create(:service, organization_id: org2.id) }
+      let!(:line_item1) { FactoryGirl.create(:line_item, sub_service_request_id: ssr1.id, service_request_id: service_request.id, service_id: service.id) }
+      let!(:line_item2) { FactoryGirl.create(:line_item, sub_service_request_id: ssr2.id, service_request_id: service_request.id, service_id: service2.id) }
+
       context "can be edited" do
 
         it "should return true if the status is draft" do
@@ -253,9 +262,57 @@ describe 'SubServiceRequest' do
           sub_service_request.can_be_edited?.should eq(true)
         end
 
+        it "should return true if the status is nil" do
+          sub_service_request.update_attributes(status: 'get_a_quote')
+          sub_service_request.can_be_edited?.should eq(true)
+        end
+
         it "should return false if status is anything other than above states" do
-          sub_service_request.update_attributes(status: "complete")
+          sub_service_request.update_attributes(status: "on_hold")
           sub_service_request.can_be_edited?.should eq(false)
+        end
+      end
+
+      before :each do
+        org1.tag_list = "ctrc"
+        org1.save
+      end
+
+      context "update based on status" do
+
+        it "should place a sub service request under a new service request if conditions are met" do
+          sr_count = service_request.protocol.service_requests.count
+          ssr1.update_attributes(status: 'on_hold')
+          ssr1.update_based_on_status('submitted')
+          ssr1.service_request.id.should_not eq(service_request.id)
+          service_request.protocol.service_requests.count.should > sr_count
+        end
+
+        it "should assign the ssrs line items to the new service request" do
+          ssr1.update_attributes(status: 'on_hold')
+          ssr1.update_based_on_status('submitted')
+          ssr1.line_items.first.service_request_id.should_not eq(service_request.id)
+          line_item2.service_request_id.should eq(service_request.id)
+        end
+
+        it "should not place a sub service request under a new service request if there is only one ssr" do
+          ssr2.destroy
+          sub_service_request.destroy
+          ssr1.update_attributes(status: 'on_hold')
+          ssr1.update_based_on_status('submitted')
+          ssr1.service_request.id.should eq(service_request.id)
+        end
+
+        it "should not place a sub service request under a new service request if the ssr is not tagged with ctrc" do
+          ssr2.update_attributes(status: 'on_hold')
+          ssr2.update_based_on_status('submitted')
+          ssr2.service_request.id.should eq(service_request.id)
+        end
+
+        it "should not place a sub service request under a new service request if the ssr is being switched to another uneditable status" do
+          ssr1.update_attributes(status: 'on_hold')
+          ssr1.update_based_on_status('complete')
+          ssr1.service_request.id.should_not eq(service_request.id)
         end
       end
 

@@ -21,7 +21,7 @@
 - if organization
   .provider-details-view
     .provider-name{:class => css_class(organization)}= organization.name
-    .provider-description.description.ui-widget.ui-widget-content.ui-corner-all= organization.description
+    .provider-description.description.ui-widget.ui-widget-content.ui-corner-all= raw organization.description
 
   - if organization.type == "Program"
     - unless organization.services.empty?
@@ -56,5 +56,5 @@
     = link_to(t(:rails_root)[:message10link], t(:rails_root)[:message10link])
 
     #red_description.section
-    #blue_description.section 
+    #blue_description.section
 

@@ -36,7 +36,7 @@
     :javascript
       window.I18n = #{current_translations.to_json.html_safe};
 
-  %body
+  %body{:id => "body"}
     #ie7_warning{:style => 'display: none'}
       %p= t('ie_warning.text1')
       %br
@@ -49,7 +49,7 @@
         %br
         = image_tag 'spinner.gif'
       #header
-        = render :partial => 'layouts/portal/header'
+        = render :partial => 'shared/header_logos'
         %input#current_user_id{:type => 'hidden', :value => @user.try(:id)}
       #welcome_msg{:style => 'float:right;'}= show_welcome_message(@user)
       #main

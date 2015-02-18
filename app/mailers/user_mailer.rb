@@ -45,7 +45,7 @@ class UserMailer < ActionMailer::Base
 
   private
 
-  def send_message subject, is_service_provider='false', ssr_id
+  def send_message subject, is_service_provider='false', ssr_id=''
     email = Rails.env == 'production' ? @send_to.email : DEFAULT_MAIL_TO
     subject = Rails.env == 'production' ? subject : "[#{Rails.env.capitalize} - EMAIL TO #{@send_to.email}] #{subject}"
     @is_service_provider = is_service_provider

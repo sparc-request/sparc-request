@@ -78,7 +78,7 @@ class Protocol < ActiveRecord::Base
 
   attr_accessor :requester_id
   attr_accessor :validate_nct
-  
+
   accepts_nested_attributes_for :research_types_info
   accepts_nested_attributes_for :human_subjects_info
   accepts_nested_attributes_for :vertebrate_animals_info
@@ -93,7 +93,7 @@ class Protocol < ActiveRecord::Base
   validation_group :protocol do
     validates :short_title, :presence => true
     validates :title, :presence => true
-    validates :funding_status, :presence => true  
+    validates :funding_status, :presence => true
     validate  :validate_funding_source
     validates :sponsor_name, :presence => true, :if => :is_study?
     validates_associated :human_subjects_info, :message => "must contain 8 numerical digits", :if => :validate_nct
@@ -157,7 +157,7 @@ class Protocol < ActiveRecord::Base
   def role_for identity
     project_roles.detect{|pr| pr.identity_id == identity.id}.try(:role)
   end
-  
+
   def role_other_for identity
     project_roles.detect{|pr| pr.identity_id == identity.id}.try(:role)
   end
@@ -173,7 +173,7 @@ class Protocol < ActiveRecord::Base
         arr << ssr
       end
     end
-    
+
     arr
   end
 
@@ -201,7 +201,7 @@ class Protocol < ActiveRecord::Base
       end
     end
   end
-  
+
   def funding_source_based_on_status
     funding_source = case self.funding_status
       when 'pending_funding' then self.potential_funding_source
@@ -272,7 +272,7 @@ class Protocol < ActiveRecord::Base
       pr.populate_for_edit
     end
   end
-  
+
   def create_arm(args)
     arm = self.arms.create(args)
     self.service_requests.each do |service_request|
@@ -283,7 +283,7 @@ class Protocol < ActiveRecord::Base
     # Lets return this in case we need it for something else
     arm
   end
-  
+
   def should_push_to_epic?
     return self.service_requests.any? { |sr| sr.should_push_to_epic? }
   end
@@ -367,6 +367,23 @@ class Protocol < ActiveRecord::Base
 
   def grand_total service_request
     return direct_cost_total(service_request) + indirect_cost_total(service_request)
+  end
+
+  def arm_cleanup
+    return unless self.arms.count > 0
+
+    remove_arms = true
+
+    self.service_requests.each do |sr|
+      if sr.has_per_patient_per_visit_services?
+        remove_arms = false
+        break
+      end
+    end
+
+    if remove_arms
+      self.arms.destroy_all
+    end
   end
 
 end

@@ -26,7 +26,7 @@
   = hidden_field_tag :current_location, @page
   = render :partial => 'steps'
   = render :partial => 'errors'
-  .grid_9
+  .grid_9.col-md-9
     .select-project-view
       .dotted-border.left
         %p.instructions= t("study_assignment.instructions_1")
@@ -68,7 +68,7 @@
             %br
             %br
 
-  .grid_3.protocol-view-right.right
+  .grid_3.protocol-view-right.right.col-md-3
     #services.ui-widget.ui-widget-content.cart-view
       %h3
         = t("study_assignment.sidebar_box.my_services")
@@ -76,7 +76,7 @@
       .line-items= render :partial => 'catalogs/cart'
     = navigation_link t(:right_navigation)[:catalog], @back, 'catalog-button btn btn-info btn-lg btn-block'
     = render :partial => 'right_navigation'
-.continue= render :partial => 'service_requests/navigation'
+.continue.col-md-12= render :partial => 'service_requests/navigation'
 
 - if @ctrc_services
   #ctrc_dialog

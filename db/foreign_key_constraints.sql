@@ -20,9 +20,6 @@ ALTER TABLE dependencies ADD CONSTRAINT Fk_19 FOREIGN KEY(question_group_id)  RE
 ALTER TABLE dependency_conditions ADD CONSTRAINT Fk_20 FOREIGN KEY(dependency_id)  REFERENCES dependencies (id) ;
 ALTER TABLE dependency_conditions ADD CONSTRAINT Fk_21 FOREIGN KEY(question_id)  REFERENCES questions (id) ;
 ALTER TABLE dependency_conditions ADD CONSTRAINT Fk_22 FOREIGN KEY(answer_id)  REFERENCES answers (id) ;
-ALTER TABLE document_groupings ADD CONSTRAINT Fk_25 FOREIGN KEY(service_request_id)  REFERENCES service_requests (id) ;
-ALTER TABLE documents ADD CONSTRAINT Fk_23 FOREIGN KEY(sub_service_request_id)  REFERENCES sub_service_requests (id) ;
-ALTER TABLE documents ADD CONSTRAINT Fk_24 FOREIGN KEY(document_grouping_id)  REFERENCES document_groupings (id) ;
 ALTER TABLE excluded_funding_sources ADD CONSTRAINT Fk_26 FOREIGN KEY(subsidy_map_id)  REFERENCES subsidy_maps (id) ;
 ALTER TABLE fulfillments ADD CONSTRAINT Fk_27 FOREIGN KEY(line_item_id)  REFERENCES line_items (id) ;
 ALTER TABLE human_subjects_info ADD CONSTRAINT Fk_28 FOREIGN KEY(protocol_id)  REFERENCES protocols (id) ;

@@ -1,10 +1,10 @@
-#header
-  #org_logo
+#header.row
+  #org_logo.col-md-4.hidden-sm.hidden-xs
     %a{:href => HEADER_LINK_1}
       = image_tag "/assets/#{CUSTOM_ASSET_PATH}org_logo_197x57.png", :alt => 'org_logo'
-  #department_title
+  #department_title.col-md-4
     %a{:href => HEADER_LINK_2}
       = image_tag "/assets/#{CUSTOM_ASSET_PATH}department_name_460x60.gif",class: 'header_logo_2', :alt => "department_logo"
-  #institution_logo
+  #institution_logo.col-md-4.hidden-xs
     %a{:href => HEADER_LINK_3, :target => '_blank'}
       = image_tag "/assets/#{CUSTOM_ASSET_PATH}institution_logo_136x86.gif", :alt => 'institution_logo'

@@ -30,7 +30,7 @@
   = hidden_field_tag :current_location, @page
   = render :partial => 'steps'
   = render :partial => 'errors'
-  .grid_9
+  .grid_9.col-md-9
     .document_upload_instructions= t("documents.upload_instructions_html")
     .document-management-container
       = render :partial => 'document_list', :locals => {:review => false, :provider_css => 'orange-provider'}
@@ -52,10 +52,10 @@
 
       %br
       %br
-  .grid_3.document-mgmt-view-right.right
+  .grid_3.document-mgmt-view-right.right.col-md-3
     = navigation_link t(:right_navigation)[:catalog], @catalog, 'catalog-button btn btn-info btn-lg btn-block'
     = render :partial => 'right_navigation'
 
   .clear
 
-  .continue= render :partial => 'service_requests/navigation'
+  .continue.col-md-12= render :partial => 'service_requests/navigation'

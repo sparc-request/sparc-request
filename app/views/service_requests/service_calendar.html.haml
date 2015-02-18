@@ -31,7 +31,7 @@
     %li= t(:calendar_page)[:billing_legend][:third_party]
     %li= t(:calendar_page)[:billing_legend][:effort]
   %div 
-  .grid_12
+  .grid_12.col-md-12
     #service_calendar
       %ul
         %li= link_to t(:calendar_page)[:tabs][:template], table_service_request_service_calendars_path(@service_request, :tab => "template"), :id => 'template_tab'
@@ -40,4 +40,4 @@
         %li= link_to t(:calendar_page)[:tabs][:pricing], merged_calendar_service_request_service_calendars_path(@service_request, :tab => "calendar"), :id => 'calendar_tab'
     .move-visits
   .clear
-  .continue= render :partial => 'service_requests/navigation'
+  .continue.col-md-12= render :partial => 'service_requests/navigation'

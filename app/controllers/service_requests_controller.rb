@@ -48,12 +48,12 @@ class ServiceRequestsController < ApplicationController
   end
 
   def navigate
-    errors = [] 
+    errors = []
     # need to save and navigate to the right page
 
     #### add logic to save data
     referrer = request.referrer.split('/').last
-    
+
     # Save/Update any subsidy info we may have
     subsidy_save_update(errors)
 
@@ -82,7 +82,7 @@ class ServiceRequestsController < ApplicationController
       redirect_to "/service_requests/#{@service_request.id}/#{location}#{additional_params}"
     else
       if @validation_groups[location]
-        @validation_groups[location].each do |vg| 
+        @validation_groups[location].each do |vg|
           errors << @service_request.grouped_errors[vg.to_sym].messages unless @service_request.grouped_errors[vg.to_sym].messages.empty?
         end
       end
@@ -107,7 +107,7 @@ class ServiceRequestsController < ApplicationController
   def catalog
     # uses a before filter defined in application controller named 'prepare_catalog', extracted so that devise controllers could use as well
   end
-  
+
   def protocol
     @service_request.update_attribute(:service_requester_id, current_user.id) if @service_request.service_requester_id.nil?
     if @sub_service_request.nil?
@@ -128,7 +128,7 @@ class ServiceRequestsController < ApplicationController
       end
     end
   end
-  
+
   def service_details
     @service_request.add_or_update_arms
   end
@@ -221,14 +221,14 @@ class ServiceRequestsController < ApplicationController
       return true
     end
   end
-  
+
   def document_management
     if @service_request.sub_service_requests.map(&:subsidy).compact.empty?
       @back = 'service_calendar'
     end
     @service_list = @service_request.service_list
   end
-  
+
   def review
     arm_id = params[:arm_id].to_s if params[:arm_id]
     page = params[:page] if params[:page]
@@ -238,7 +238,7 @@ class ServiceRequestsController < ApplicationController
     @portal = false
     @service_list = @service_request.service_list
     @protocol = @service_request.protocol
-    
+
     # Reset all the page numbers to 1 at the start of the review request
     # step.
     @pages = {}
@@ -256,7 +256,7 @@ class ServiceRequestsController < ApplicationController
     @service_request.previous_submitted_at = @service_request.submitted_at
     @service_request.update_attribute(:submitted_at, Time.now)
     @service_request.ensure_ssr_ids
-    
+
     @protocol = @service_request.protocol
     # As the service request leaves draft, so too do the arms
     @protocol.arms.each do |arm|
@@ -275,7 +275,7 @@ class ServiceRequestsController < ApplicationController
     @service_request.update_attribute(:submitted_at, Time.now)
     @service_request.ensure_ssr_ids
     @service_request.update_arm_minimum_counts
-    
+
     @protocol = @service_request.protocol
     # As the service request leaves draft, so too do the arms
     @protocol.arms.each do |arm|
@@ -327,10 +327,10 @@ class ServiceRequestsController < ApplicationController
     @service_request = ServiceRequest.find params[:id]
     @approval = @service_request.approvals.where(:id => params[:approval_id]).first
     @previously_approved = true
- 
+
     if @approval and @approval.identity.nil?
       @approval.update_attributes(:identity_id => current_user.id, :approval_date => Time.now)
-      @previously_approved = false 
+      @previously_approved = false
     end
   end
 
@@ -342,7 +342,7 @@ class ServiceRequestsController < ApplicationController
       @service_request.ensure_ssr_ids
     end
 
-    redirect_to USER_PORTAL_LINK 
+    redirect_to USER_PORTAL_LINK
   end
 
   def refresh_service_calendar
@@ -369,7 +369,7 @@ class ServiceRequestsController < ApplicationController
     existing_service_ids = @service_request.line_items.map(&:service_id)
 
     if existing_service_ids.include? id
-      render :text => 'Service exists in line items' 
+      render :text => 'Service exists in line items'
     else
       service = Service.find id
 
@@ -413,10 +413,13 @@ class ServiceRequestsController < ApplicationController
 
     @line_items.find_by_service_id(service.id).destroy
     @line_items.reload
-    
+
     #@service_request = current_user.service_requests.find session[:service_request_id]
     @service_request = ServiceRequest.find session[:service_request_id]
     @page = request.referrer.split('/').last # we need for pages other than the catalog
+
+    # Have the protocol clean up the arms
+    @service_request.protocol.arm_cleanup
 
     # clean up sub_service_requests
     @service_request.reload
@@ -673,7 +676,7 @@ class ServiceRequestsController < ApplicationController
     elsif upload_clicked == "1" and ((doc_type == "" or !process_ssr_organization_ids) or ( !document and !document_id ))
       # collect errors
       doc_errors = {}
-      doc_errors[:recipients] = ["You must select at least one recipient"] if !process_ssr_organization_ids 
+      doc_errors[:recipients] = ["You must select at least one recipient"] if !process_ssr_organization_ids
       doc_errors[:document] = ["You must select a document to upload"] if !document and !document_id
       doc_errors[:doc_type] = ["You must provide a document type"] if doc_type == ""
       errors << doc_errors

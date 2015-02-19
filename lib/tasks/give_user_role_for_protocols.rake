@@ -1,15 +1,14 @@
 namespace :data do
   desc "Give user a role for protocols"
   task :give_user_role_for_protocols => :environment do |t|
-    protocol_ids = []
-    CSV.foreach("tmp/april_turner.csv", :headers => true) do |row|
-      protocol_ids << row['SPARC']
-    end
-
     count = 0
     ActiveRecord::Base.transaction do
-      protocol_ids.each do |id|
-        ProjectRole.create(:protocol_id => id, :identity_id => 42251, :role => "general-access-user", :project_rights => "request")
+      CSV.foreach("tmp/user_import.csv", :headers => true) do |row|
+        # example CSV   1234, 5678, 'general-access-user', 'request'
+        ProjectRole.create :protocol_id => row['Protocol ID'], 
+                           :identity_id => row['Identity ID'], 
+                           :role => row['Role'], 
+                           :project_rights => row['Project Right']
         count += 1
       end
     end

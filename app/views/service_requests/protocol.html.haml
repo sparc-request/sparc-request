@@ -20,7 +20,7 @@
 
 = javascript_include_tag 'protocol'
 
-= form_tag navigate_service_request_path(@service_request), :id => 'navigation_form' do
+= form_tag navigate_service_request_path(@service_request), :id => 'navigation_form', :class =>'form-inline' do
   = hidden_field_tag :location, ''
   = hidden_field_tag :validates, ''
   = hidden_field_tag :current_location, @page
@@ -44,12 +44,12 @@
         %hr
         %br
 
-        .type-select.center
+        .type-select.center.form-group
           - if @sub_service_request.nil?
             = t("study_assignment.research_study")
-            = radio_button_tag :protocol, "Research Study", (@service_request.protocol.try(:type) == 'Project' ? false : true)
+            = radio_button_tag :protocol, "Research Study", (@service_request.protocol.try(:type) == 'Project' ? false : true), :class => 'form-control'
             = t("study_assignment.research_project")
-            = radio_button_tag :protocol, "Research Project", (@service_request.protocol.try(:type) == 'Project' ? true : false)
+            = radio_button_tag :protocol, "Research Project", (@service_request.protocol.try(:type) == 'Project' ? true : false), :class => 'form-control'
             %span#infotip= image_tag('information.png')
             %br
             %br

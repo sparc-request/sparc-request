@@ -34,7 +34,7 @@ gem 'axlsx_rails'
 # Deploy with Capistrano
 gem 'capistrano'
 gem 'capistrano-ext'
-gem 'rvm-capistrano'
+gem 'rvm-capistrano', require: false
 
 gem 'exception_notification'
 gem 'letter_opener'

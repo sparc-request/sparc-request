@@ -298,4 +298,8 @@ class Service < ActiveRecord::Base
   def is_ctrc?
     self.organization.has_tag? 'ctrc'
   end
+
+  def parents_available?
+    self.parents.map(&:is_available).compact.all?
+  end
 end

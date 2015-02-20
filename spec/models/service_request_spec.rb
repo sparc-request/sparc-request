@@ -56,7 +56,7 @@ describe 'ServiceRequest' do
     let!(:core)               { FactoryGirl.create(:core, parent_id: program.id, process_ssrs: false) }
     let!(:user)               { FactoryGirl.create(:identity) }
     let!(:service_provider2)  { FactoryGirl.create(:service_provider, identity_id: user.id, organization_id: core.id) }
-  
+
     context "relevant_service_providers_and_super_users" do
 
       it "should return all service providers and super users for related sub service requests" do
@@ -70,7 +70,7 @@ describe 'ServiceRequest' do
   end
 
   context "methods" do
- 
+
     before :each do
       add_visits
     end
@@ -112,6 +112,32 @@ describe 'ServiceRequest' do
           service_request.service_list(false)[id][:services].size.should eq(1)
           service_request.service_list(false)[id][:services].last[:name].should eq("Per Patient")
         end
+      end
+    end
+
+    describe "create_line_items_for_service" do
+      before :each do
+        @new_service      = FactoryGirl.create(:service, organization_id: program.id, name: 'New One Time Fee')
+        @optional_service = FactoryGirl.create(:service, organization_id: program.id, name: 'Optional One Time Fee')
+        @required_service = FactoryGirl.create(:service, organization_id: program.id, name: 'Required One Time Fee')
+        @disabled_program = FactoryGirl.create(:program, type: 'Program', parent_id: provider.id, name: 'Disabled', order: 1, abbreviation: 'Disabled Informatics', process_ssrs: 0, is_available: 0)
+        @disabled_service = FactoryGirl.create(:service, organization_id: @disabled_program.id, name: 'Disabled Program Service')
+        FactoryGirl.create(:service_relation, service_id: @new_service.id, related_service_id: @optional_service.id, optional: true)
+        FactoryGirl.create(:service_relation, service_id: @new_service.id, related_service_id: @required_service.id, optional: false)
+        FactoryGirl.create(:service_relation, service_id: @new_service.id, related_service_id: @disabled_service.id, optional: false)
+        @line_items = service_request.create_line_items_for_service(service: @new_service, optional: true, existing_service_ids: [], allow_duplicates: true, recursive_call: false)
+      end
+
+      it 'should add optional services' do
+        @line_items.map {|li| li.service.name}.include?(@optional_service.name).should eq(true)
+      end
+
+      it 'should add required services' do
+        @line_items.map {|li| li.service.name}.include?(@required_service.name).should eq(true)
+      end
+
+      it 'should not add disabled services' do
+        @line_items.map {|li| li.service.name}.include?(@disabled_service.name).should eq(false)
       end
     end
   end

@@ -261,6 +261,7 @@ class ServiceRequest < ActiveRecord::Base
 
     # add required services to line items
     service.required_services.each do |rs|
+      next unless rs.parents_available?
       rs_line_items = create_line_items_for_service(
         service: rs,
         optional: false,
@@ -273,6 +274,7 @@ class ServiceRequest < ActiveRecord::Base
     # if were in a recursive call, we don't want to add optional services
     unless recursive_call
       service.optional_services.each do |rs|
+        next unless rs.parents_available?
         rs_line_items = create_line_items_for_service(
           service: rs,
           optional: true,

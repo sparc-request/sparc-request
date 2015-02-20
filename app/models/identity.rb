@@ -224,7 +224,9 @@ class Identity < ActiveRecord::Base
   def can_edit_service_request? sr
     can_edit = false
     
-    if (sr.service_requester_id == self.id or sr.service_requester_id.nil?) && sr.is_editable? && has_correct_project_role?(sr)
+    if (sr.service_requester_id == self.id or sr.service_requester_id.nil?) && sr.is_editable?
+      can_edit = true
+    elsif sr.is_editable? && has_correct_project_role?(sr)
       can_edit = true
     end
 

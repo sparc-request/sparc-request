@@ -994,6 +994,10 @@ span#infotip img {
   border: 1px solid #E8E8E8;
 }
 
+.confirmation-details p.instructions {
+  color: #c43149;
+}
+
 /* ServiceRequestSetupView */
 .service-request-setup-view .service-details {
   background: #0775B0 !important;

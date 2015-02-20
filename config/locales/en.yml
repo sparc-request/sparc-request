@@ -593,7 +593,7 @@ en:
 
   # Service Request Confirmation Page and Obtain Research Pricing Page
   sr_confirmation:
-    instructions: "Thank you for submitting a service request through SPARC Request. An email(s) has been submitted on your behalf, and we will respond to your service request shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
+    instructions: "Thank you for submitting your service request(s) through SPARC Request. An email has been sent to each of your service providers and they should be contacting you soon. If you have any questions or concerns, please don't hesitate to contact the SUCCESS Center at 792-8300 or success@musc.edu."
     research_pricing_instructions : "You have successfully submitted a request to get a quote. An email(s) has been submitted on your behalf, and we will respond to your request for a quote shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
     download_button: "Download my Service Request"
     portal_button: "Go to SPARC Request User Portal"

@@ -53,7 +53,7 @@ describe 'Protocol' do
       lambda { study.funding_source_based_on_status }.should raise_exception ArgumentError
     end
   end
-  
+
   describe 'should validate funding source for projects' do
     it 'should raise an exception if funding source is nil' do
       project = Project.create(FactoryGirl.attributes_for(:protocol))
@@ -61,5 +61,14 @@ describe 'Protocol' do
       project.valid?.should eq false
     end
   end
+
+  describe "push to epic" do
+    it "should create a record of the protocols push" do
+      human_subjects_info = FactoryGirl.build(:human_subjects_info, pro_number: nil, hr_number: nil)
+      study = FactoryGirl.build(:study, human_subjects_info: human_subjects_info)
+      study.save(validate: false)
+      expect{ study.push_to_epic(EPIC_INTERFACE) }.to change(EpicQueueRecord, :count).by(1)
+    end
+  end
 end
- 
+

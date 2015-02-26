@@ -145,11 +145,16 @@ class Service < ActiveRecord::Base
   end
 
   def display_service_name
+    service_name = self.name
+
     if self.cpt_code and !self.cpt_code.blank?
-      service_name = self.name + " (#{self.cpt_code})"
-    else
-      service_name = self.name
+      service_name += " (#{self.cpt_code})"
     end
+
+    if self.charge_code and !self.charge_code.blank?
+      service_name += " (#{self.charge_code})"
+    end
+
     return service_name
   end
 

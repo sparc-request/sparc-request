@@ -44,5 +44,5 @@ module CatalogManager::CatalogHelper
   end
 end
 def display_name object
-  (object.respond_to?(:cpt_code) or object.respond_to?(:charge_code)) ? object.display_service_name : object.name
+  (object.respond_to?(:cpt_code) or object.respond_to?(:charge_code)) ? object.display_service_name(charge_code = true) : object.name
 end

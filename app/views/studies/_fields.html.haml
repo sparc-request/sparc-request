@@ -35,11 +35,11 @@
           .field
             = f.label :short_title, t(:protocol_shared)[:title]
             = f.text_field :short_title
-          
+
           .field
             = f.label :title, t(:study_form)[:title]
             = f.text_field :title
-          
+
           .field
             = f.label :funding_status, t(:protocol_shared)[:funding_status]
             = f.select :funding_status, options_for_select(FUNDING_STATUSES, study.funding_status), :include_blank => t(:study_form)[:status_blank]
@@ -71,10 +71,10 @@
               .field
                 = f.label :federal_phs_sponsor, t(:study_form)[:federal_phs_sponsor]
                 = f.select :federal_phs_sponsor, options_for_select(FEDERAL_GRANT_PHS_SPONSORS, study.federal_phs_sponsor), :include_blank => t(:study_form)[:phs_blank]
-              
+
               .field
                 %span -OR-
-          
+
               .field
                 = f.label :federal_non_phs_sponsor, t(:study_form)[:federal_non_phs_sponsor]
                 = f.select :federal_non_phs_sponsor, options_for_select(FEDERAL_GRANT_NON_PHS_SPONSORS, study.federal_non_phs_sponsor), :include_blank => t(:study_form)[:phs_blank]
@@ -101,6 +101,10 @@
                 = f.label :selected_for_epic, "Yes"
                 = f.radio_button :selected_for_epic, false
                 = f.label :selected_for_epic, "No"
+            .study_type{:style => "#{f.object.selected_for_epic ? '' : 'display:none;'}"}
+              .field
+                = f.label :study_type, t(:study_form)[:study_type_label]
+                = f.select :study_type, options_for_select(STUDY_TYPES, study.study_type), :include_blank => t(:study_form)[:study_type]
 
 
     %td.box-padding
@@ -207,7 +211,7 @@
                 = va.label :iacuc_expiration_date, t(:study_form)[:iacuc_expiration_date]
                 = text_field_tag :iacuc_expiration_date, (study.vertebrate_animals_info.iacuc_expiration_date.strftime('%_m/%d/%Y') rescue nil)
                 = va.hidden_field :iacuc_expiration_date
-            
+
             = f.fields_for :research_types_info do |rt|
               .field.investigational_products
                 = rt.label :investigational_products, t(:study_form)[:investigational_products]
@@ -261,14 +265,14 @@
                 = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
                 = rt.hidden_field :name, :value => rt.object.name
         %fieldset
-          %legend= t(:study_form)[:type] 
+          %legend= t(:study_form)[:type]
           %div
             = f.fields_for :study_types do |rt|
               .field{:class => rt.object.name}
                 = rt.label :name, "#{StudyType::TYPES[rt.object.name]}:"
                 = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
                 = rt.hidden_field :name, :value => rt.object.name
-    
+
     %td.box-padding
       &nbsp;
 

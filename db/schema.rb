@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141211194834) do
+ActiveRecord::Schema.define(:version => 20150227200123) do
 
   create_table "admin_rates", :force => true do |t|
     t.integer  "line_item_id"
@@ -627,6 +627,7 @@ ActiveRecord::Schema.define(:version => 20141211194834) do
     t.datetime "recruitment_start_date"
     t.datetime "recruitment_end_date"
     t.boolean  "selected_for_epic",                                                   :default => false
+    t.string   "study_type"
   end
 
   add_index "protocols", ["next_ssr_id"], :name => "index_protocols_on_next_ssr_id"

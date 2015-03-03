@@ -75,6 +75,7 @@ class Protocol < ActiveRecord::Base
   attr_accessible :recruitment_start_date
   attr_accessible :recruitment_end_date
   attr_accessible :selected_for_epic
+  attr_accessible :study_type
 
   attr_accessor :requester_id
   attr_accessor :validate_nct

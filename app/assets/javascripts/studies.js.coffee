@@ -46,6 +46,12 @@ $(document).ready ->
 
   FormFxManager.registerListeners($('.edit-project-view'), display_dependencies)
 
+  $('#study_selected_for_epic_true').click ->
+    $('.study_type').show()
+  $('#study_selected_for_epic_false').click ->
+    $('.study_type').hide()
+    $('.study_type select').val("Select a study type")
+
   $('#study_funding_status').change ->
     $('#study_funding_source').val("")
     $('#study_potential_funding_source').val("")

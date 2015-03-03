@@ -277,6 +277,33 @@ describe EpicInterface do
       node.should be_equivalent_to(expected)
     end
 
+    it 'should emit a subjectOf for a study type' do
+      study.update_attributes(study_type: '1234')
+
+      epic_interface.send_study_creation(study)
+
+      xml = <<-END
+        <subjectOf typeCode="SUBJ"
+                   xmlns='urn:hl7-org:v3'
+                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+          <studyCharacteristic classCode="OBS" moodCode="EVN">
+            <code code="STUDYTYPE" />
+            <value value="1234" />
+          </studyCharacteristic>
+        </subjectOf>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+          '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+          'env' => 'http://www.w3.org/2003/05/soap-envelope',
+          'rpe' => 'urn:ihe:qrph:rpe:2009',
+          'hl7' => 'urn:hl7-org:v3')
+
+      node.should be_equivalent_to(expected)
+    end
+
     it 'should emit a subjectOf for an hr number' do
       study.human_subjects_info.update_attributes(hr_number: '5678')
 

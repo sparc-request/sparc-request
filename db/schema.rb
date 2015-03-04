@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20141211194834) do
+ActiveRecord::Schema.define(:version => 20150224193019) do
 
   create_table "admin_rates", :force => true do |t|
     t.integer  "line_item_id"
@@ -247,6 +247,13 @@ ActiveRecord::Schema.define(:version => 20141211194834) do
   create_table "documents_sub_service_requests", :id => false, :force => true do |t|
     t.integer "document_id"
     t.integer "sub_service_request_id"
+  end
+
+  create_table "epic_queue_records", :force => true do |t|
+    t.integer  "protocol_id"
+    t.string   "status"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "epic_queues", :force => true do |t|

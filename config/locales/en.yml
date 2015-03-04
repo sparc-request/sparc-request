@@ -459,6 +459,8 @@ en:
     phs_blank: "Please Select if Applicable"
     federal_non_phs_sponsor: "Federal Grant Non-PHS Sponsor:"
     federal_grant_serial_number: "Federal Grant Serial Number:"
+    study_type_label: "Study Type:"
+    study_type: "Select a study type"
     study_phase: "Study Phase:"
     phase_blank: "Select a Study Phase"
     research: "Research Involving (Check all that apply)"

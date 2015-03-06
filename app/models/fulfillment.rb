@@ -49,7 +49,7 @@ class Fulfillment < ActiveRecord::Base
   end
 
   def within_date_range? start_date, end_date
-    date = self.date.to_date
+    date = self.date.try(:to_date)
 
     if (date.nil? or start_date.nil? or end_date.nil?)
       false
@@ -68,7 +68,7 @@ class Fulfillment < ActiveRecord::Base
 
   def parse_date(str)
     begin
-      Date.strptime(str.to_s.strip, '%m/%d/%Y')  
+      Date.strptime(str.to_s.strip, '%m/%d/%Y')
     rescue ArgumentError => e
       nil
     end

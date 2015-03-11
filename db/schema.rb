@@ -20,6 +20,8 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
     t.datetime "updated_at",   :null => false
   end
 
+  add_index "admin_rates", ["line_item_id"], :name => "Fk_admin_rates_line_item_id"
+
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
     t.string   "name"
@@ -106,6 +108,8 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
     t.integer  "minimum_visit_count",   :default => 0
     t.integer  "minimum_subject_count", :default => 0
   end
+
+  add_index "arms", ["protocol_id"], :name => "Fk_arms_protocol_id"
 
   create_table "associated_surveys", :force => true do |t|
     t.integer  "surveyable_id"
@@ -262,12 +266,16 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
     t.datetime "updated_at",  :null => false
   end
 
+  add_index "epic_queues", ["protocol_id"], :name => "Fk_epic_queues_protocol_id"
+
   create_table "epic_rights", :force => true do |t|
     t.integer  "project_role_id"
     t.string   "right"
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
   end
+
+  add_index "epic_rights", ["project_role_id"], :name => "Fk_epic_rights_project_role_id"
 
   create_table "excluded_funding_sources", :force => true do |t|
     t.integer  "subsidy_map_id"
@@ -438,7 +446,9 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
     t.datetime "updated_at",      :null => false
   end
 
+  add_index "messages", ["from"], :name => "Fk_messages_from"
   add_index "messages", ["notification_id"], :name => "index_messages_on_notification_id"
+  add_index "messages", ["to"], :name => "Fk_messages_to"
 
   create_table "notes", :force => true do |t|
     t.integer  "identity_id"
@@ -449,6 +459,7 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
     t.integer  "appointment_id"
   end
 
+  add_index "notes", ["appointment_id"], :name => "Fk_notes_appointment_id"
   add_index "notes", ["identity_id"], :name => "index_notes_on_identity_id"
   add_index "notes", ["sub_service_request_id"], :name => "index_notes_on_sub_service_request_id"
 
@@ -583,6 +594,7 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
 
   add_index "procedures", ["appointment_id"], :name => "index_procedures_on_appointment_id"
   add_index "procedures", ["line_item_id"], :name => "index_procedures_on_line_item_id"
+  add_index "procedures", ["service_id"], :name => "Fk_procedures_service_id"
   add_index "procedures", ["visit_id"], :name => "index_procedures_on_visit_id"
 
   create_table "project_roles", :force => true do |t|
@@ -701,6 +713,8 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
     t.datetime "created_at",             :null => false
     t.datetime "updated_at",             :null => false
   end
+
+  add_index "reports", ["sub_service_request_id"], :name => "Fk_reports_sub_service_request_id"
 
   create_table "research_types_info", :force => true do |t|
     t.integer  "protocol_id"
@@ -1020,7 +1034,9 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
     t.datetime "updated_at",       :null => false
   end
 
+  add_index "toast_messages", ["from"], :name => "Fk_toast_messages_from"
   add_index "toast_messages", ["sending_class_id"], :name => "index_toast_messages_on_sending_class_id"
+  add_index "toast_messages", ["to"], :name => "Fk_toast_messages_to"
 
   create_table "tokens", :force => true do |t|
     t.integer  "service_request_id"

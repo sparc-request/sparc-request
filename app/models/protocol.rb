@@ -227,11 +227,13 @@ class Protocol < ActiveRecord::Base
       self.last_epic_push_status = 'complete'
       save(validate: false)
 
+      EpicQueueRecord.create(protocol_id: self.id, status: self.last_epic_push_status)
     rescue Exception => e
       Rails.logger.info("Push to Epic failed.")
 
       self.last_epic_push_status = 'failed'
       save(validate: false)
+      EpicQueueRecord.create(protocol_id: self.id, status: self.last_epic_push_status)
       raise e
     end
   end

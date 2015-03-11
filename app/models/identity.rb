@@ -223,10 +223,10 @@ class Identity < ActiveRecord::Base
   # Only users with request or approve rights can edit.
   def can_edit_service_request? sr
     can_edit = false
- 
+    
     if (sr.service_requester_id == self.id or sr.service_requester_id.nil?) && sr.is_editable?
       can_edit = true
-    elsif has_correct_project_role?(sr)
+    elsif sr.is_editable? && has_correct_project_role?(sr)
       can_edit = true
     end
 

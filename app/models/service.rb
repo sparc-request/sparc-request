@@ -144,12 +144,19 @@ class Service < ActiveRecord::Base
     end
   end
 
-  def display_service_name
+  def display_service_name(charge_code = false)
+    service_name = self.name
+
     if self.cpt_code and !self.cpt_code.blank?
-      service_name = self.name + " (#{self.cpt_code})"
-    else
-      service_name = self.name
+      service_name += " (#{self.cpt_code})"
     end
+
+    if charge_code
+      if self.charge_code and !self.charge_code.blank?
+        service_name += " (#{self.charge_code})"
+      end
+    end
+
     return service_name
   end
 
@@ -297,5 +304,9 @@ class Service < ActiveRecord::Base
 
   def is_ctrc?
     self.organization.has_tag? 'ctrc'
+  end
+
+  def parents_available?
+    self.parents.map(&:is_available).compact.all?
   end
 end

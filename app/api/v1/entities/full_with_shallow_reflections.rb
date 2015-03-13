@@ -10,6 +10,7 @@ module V1
 
   class IdentityFullWithShallowReflection < IdentityFull
     root 'identities', 'identity'
+    expose :protocols, using: V1::ProtocolShallow
   end
 
   class ProjectRoleFullWithShallowReflection < ProjectRoleFull

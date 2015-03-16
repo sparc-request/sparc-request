@@ -17,20 +17,13 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- if @service_request.status == 'first_draft'
-  .inline.form-group
-    = t(:study_assignment)[:select_protocol]
-    = collection_select :service_request, :protocol_id, studies, :id, :display_protocol_id_and_title, {:include_blank => t(:study_assignment)[:select_study]}, :class => 'edit_study_id form-control'
-    .edit-study.blue-button.btn.btn-primary= t(:study_assignment)[:edit_study]
-  - if @sub_service_request.nil?
-    %br
-    %span= t(:study_assignment)[:or]
-    %br
-    %br
-- else
-  = raw(t(:study_assignment)[:current_study])
-  %span{style: 'font-weight:bold;'}= @service_request.protocol.display_protocol_id_and_title
+.inline.form-group
+  = t(:study_assignment)[:select_protocol]
+  = collection_select :service_request, :protocol_id, studies, :id, :display_protocol_id_and_title, {:include_blank => t(:study_assignment)[:select_study]}, :class => 'edit_study_id form-control'
+  .edit-study.blue-button.btn.btn-primary= t(:study_assignment)[:edit_study]
+- if @sub_service_request.nil?
   %br
-  = t(:study_assignment)[:previously_submitted]
+  %span= t(:study_assignment)[:or]
   %br
   %br
+

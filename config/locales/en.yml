@@ -202,8 +202,10 @@ en:
     or: "If not in list above, create NEW Study/Project Below"
     new_study: "New Study"
     new_project: "New Project"
-    previously_submitted: "The request that you are editing has been previously submitted and can not be moved to another study."
+    previously_submitted_study: "The request that you are editing has been previously submitted and can not be moved to another study."
+    previously_submitted_project: "The request that you are editing has been previously submitted and can not be moved to another project."
     current_study: "Current Study: <span>&nbsp</span>"
+    current_project: "Current Project: <span>&nbsp</span>"
     sidebar_box:
       my_services: "My Services"
       help: "Help"

@@ -22,7 +22,7 @@ module CatalogManager::CatalogHelper
   def node object, can_access=true, id=nil
     link_to display_name(object), '#', :id => id, :cid => object.id, :object_type => object.class.to_s.downcase, :class => can_access ? "#{object.class.to_s.downcase}" : "#{object.class.to_s.downcase} disabled_node"
   end
-  
+
   def disable_pricing_setup(pricing_setup, can_edit_historical_data)
     begin
       if can_edit_historical_data == false
@@ -44,5 +44,5 @@ module CatalogManager::CatalogHelper
   end
 end
 def display_name object
-  object.respond_to?(:cpt_code) ? object.display_service_name : object.name
+  (object.respond_to?(:cpt_code) or object.respond_to?(:charge_code)) ? object.display_service_name(charge_code = true) : object.name
 end

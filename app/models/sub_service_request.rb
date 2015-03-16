@@ -286,7 +286,27 @@ class SubServiceRequest < ActiveRecord::Base
     old_sr = self.service_request
     new_sr = old_sr.dup
     new_sr.save validate: false
+
+    #update line items
     self.line_items.each {|li| li.update_attributes(service_request_id: new_sr.id)}
+    
+    #create new documents and/or change service request id for existing documents
+    documents_to_create = []
+    
+    self.documents.each do |doc|
+      if doc.sub_service_requests.count == 1
+        doc.update_attributes(service_request_id: new_sr.id)
+      else
+        documents_to_create << doc
+      end
+    end
+    
+    documents_to_create.each do |doc|
+      new_document = Document.create :document => doc.document, :doc_type => doc.doc_type, :doc_type_other => doc.doc_type_other, :service_request_id => new_sr.id
+      self.documents << new_document
+      self.documents.delete doc
+    end
+
     self.update_attributes(service_request_id: new_sr.id)
   end
 

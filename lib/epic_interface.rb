@@ -215,10 +215,7 @@ class EpicInterface
       next unless project_role.epic_access
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
-          role_code = case project_role.role
-          when 'primary-pi' then 'PI'
-          else 'SC'
-          end
+          role_code = research_role project_role.role
           xml.code(code: role_code)
           xml.value(
               code: project_role.identity.netid.upcase,
@@ -478,6 +475,29 @@ class EpicInterface
   def relative_date(day, epoch)
     date = epoch + day.days
     return date.strftime("%Y%m%d")
+  end
+
+  # Returns the role for Epic based off the SPARC User Role
+  def research_role role
+    return case role
+    when 'primary-pi' then 'PI'
+    when 'pi' then 'OP'
+    when 'co-investigator' then 'OP'
+    when 'faculty-collaborator' then 'RC'
+    when 'consultant' then 'RC'
+    when 'staff-scientist' then 'OP'
+    when 'postdoc' then 'OP'
+    when 'grad-research-assistant' then 'SC'
+    when 'undergrad-research-assistant' then 'SC'
+    when 'research-assistant-coordinator' then 'SC'
+    when 'technician' then 'OP'
+    when 'mentor' then 'RC'
+    when 'general-access-user' then 'RC'
+    when 'business-grants-manager' then 'RC'
+    when 'research-nurse' then 'N'
+    when 'other' then 'RC'
+    else 'NA'
+    end
   end
 end
 

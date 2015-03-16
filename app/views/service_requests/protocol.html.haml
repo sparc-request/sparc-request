@@ -24,7 +24,7 @@
   = hidden_field_tag :location, ''
   = hidden_field_tag :validates, ''
   = hidden_field_tag :current_location, @page
-  = hidden_field_tag :protocol_id, @service_request.protocol.id
+  = hidden_field_tag :protocol_id, @service_request.protocol_id
   = render :partial => 'steps'
   = render :partial => 'errors'
   .grid_9.col-md-9
@@ -35,7 +35,7 @@
         %br
 
         .service-list= render :partial => 'service_list'
-  
+
         %br
         %br
 

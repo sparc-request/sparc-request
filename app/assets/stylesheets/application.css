@@ -545,6 +545,10 @@ div#institution_accordion h3.provider_header {
   padding: 2px !important;
 }
 
+.previously_submitted {
+  text-align: center;
+}
+
 .program-view.selected a {
   color: red !important;
 }

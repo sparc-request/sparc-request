@@ -419,7 +419,7 @@ class ServiceRequestsController < ApplicationController
     @page = request.referrer.split('/').last # we need for pages other than the catalog
 
     # Have the protocol clean up the arms
-    @service_request.protocol.arm_cleanup
+    @service_request.protocol.arm_cleanup if @service_request.protocol
 
     # clean up sub_service_requests
     @service_request.reload

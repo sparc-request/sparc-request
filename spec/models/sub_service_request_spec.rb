@@ -321,7 +321,7 @@ describe 'SubServiceRequest' do
         before :each do
           org1.tag_list = "ctrc"
           org1.save
-        send
+        end
 
         it "should contain 'ctrc approved' and 'ctrc review' if the organization is ctrc" do
           sub_service_request.update_attributes(organization_id: org1.id)

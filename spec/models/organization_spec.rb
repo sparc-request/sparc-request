@@ -121,36 +121,36 @@ describe 'organization' do
     describe 'children' do
 
       it 'should return only the provider if it is an institution' do
-        institution.children.should include(provider)
-        institution.children.should_not include(program)
+        institution.children(Organization.all).should include(provider)
+        institution.children(Organization.all).should_not include(program)
       end
 
       it 'should return the program if it is a provider' do 
-        provider.children.should include(program)
+        provider.children(Organization.all).should include(program)
       end
 
       it 'should return the core if it is a program' do
-        program.children.should include(core)
+        program.children(Organization.all).should include(core)
       end
     end
 
     describe 'all children' do
 
       it 'should return itself if it is a core' do
-        core.all_children.should eq([core])
+        core.all_children(Organization.all).should eq([core])
       end
 
       it 'should return the core if it is a program' do
-        program.all_children.should include(core)
-        program.all_children.should_not include(core2)
+        program.all_children(Organization.all).should include(core)
+        program.all_children(Organization.all).should_not include(core2)
       end
 
       it 'should return multiple programs and cores if it is a provider' do
-        provider.all_children.should include(core, core2, program, program2)
+        provider.all_children(Organization.all).should include(core, core2, program, program2)
       end
 
       it 'should return everything if it is an institution' do
-        institution.all_children.should include(core, core2, program, program2, provider)
+        institution.all_children(Organization.all).should include(core, core2, program, program2, provider)
       end
     end
 

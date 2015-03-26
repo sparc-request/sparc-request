@@ -33,6 +33,7 @@ class Protocol < ActiveRecord::Base
   has_many :affiliations, :dependent => :destroy
   has_many :impact_areas, :dependent => :destroy
   has_many :arms, :dependent => :destroy
+  has_many :study_type_answers, :dependent => :destroy
 
   attr_accessible :identity_id
   attr_accessible :next_ssr_id
@@ -75,9 +76,11 @@ class Protocol < ActiveRecord::Base
   attr_accessible :recruitment_start_date
   attr_accessible :recruitment_end_date
   attr_accessible :selected_for_epic
+  attr_accessible :study_type_answers_attributes
 
   attr_accessor :requester_id
   attr_accessor :validate_nct
+  attr_accessor :study_type_questions
 
   accepts_nested_attributes_for :research_types_info
   accepts_nested_attributes_for :human_subjects_info
@@ -89,6 +92,7 @@ class Protocol < ActiveRecord::Base
   accepts_nested_attributes_for :affiliations, :allow_destroy => true
   accepts_nested_attributes_for :project_roles, :allow_destroy => true
   accepts_nested_attributes_for :arms, :allow_destroy => true
+  accepts_nested_attributes_for :study_type_answers, :allow_destroy => true
 
   validation_group :protocol do
     validates :short_title, :presence => true
@@ -97,6 +101,7 @@ class Protocol < ActiveRecord::Base
     validate  :validate_funding_source
     validates :sponsor_name, :presence => true, :if => :is_study?
     validates_associated :human_subjects_info, :message => "must contain 8 numerical digits", :if => :validate_nct
+    validate  :validate_study_type_answers
   end
 
   validation_group :user_details do
@@ -114,6 +119,15 @@ class Protocol < ActiveRecord::Base
       errors.add(:funding_source, "You must select a funding source")
     elsif self.funding_status == "pending_funding" && self.potential_funding_source.blank?
       errors.add(:potential_funding_source, "You must select a potential funding source")
+    end
+  end
+
+  def validate_study_type_answers
+    q1 = StudyTypeQuestion.find_by_friendly_id('higher_level_of_privacy')
+    a1 = study_type_answers.find{|x| x.study_type_question_id == q1.id}
+
+    if a1.answer.nil?
+      errors.add(:study_type_questions, "must be selected")
     end
   end
 

@@ -62,12 +62,12 @@ epic_push_status_text: { 'started': '',
 study_types: { 'clinical_trials': 'Clinical Trials',
                'basic_science': 'Basic Science',
                'translational_science': 'Translational Science' }
-study_type_questions: ["Does your study require a higher level of privacy for the participants, such as: STD, Crime Victims, Addictions, Psychiatric?",
-                       "Does your study have a Certificate of Confidentiality issued by the Federal Government?",
-                       "Should other clinicians/providers caring for this participant be able to access study related information, such as study title and study related encounters and/or admissions, medications, allergies, labs, and radiology through Login?",
-                       "Do you wish to receive a notification via Epic InBasket when your research participants are admitted to the hospital or ED?",
-                       "Do you wish to remove the 'Research: Active' indicator in the Patient Header for your study participants?",
-                       "Do you need to restrict the sending of study related results, such as laboratory and radiology results, to a participants MyChar?"]
+study_type_questions: ["1a. Does your study require a higher level of privacy for the participants, such as: STD, Crime Victims, Addictions, Psychiatric?",
+                       "1b. Does your study have a Certificate of Confidentiality issued by the Federal Government?",
+                       "1c. Should other clinicians/providers caring for this participant be able to access study related information, such as study title and study related encounters and/or admissions, medications, allergies, labs, and radiology through Login?",
+                       "2. Do you wish to receive a notification via Epic InBasket when your research participants are admitted to the hospital or ED?",
+                       "3. Do you wish to remove the 'Research: Active' indicator in the Patient Header for your study participants?",
+                       "4. Do you need to restrict the sending of study related results, such as laboratory and radiology results, to a participants MyChar?"]
 study_type_answers: { '1' : ['Yes', 'Yes', '', 'No', 'Yes', 'Yes'],
                       '2' : ['Yes', 'Yes', '', 'No', 'No', 'Yes'],
                       '3' : ['Yes', 'Yes', '', 'No', 'Yes', 'No'],

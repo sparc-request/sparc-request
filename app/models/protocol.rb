@@ -101,7 +101,7 @@ class Protocol < ActiveRecord::Base
     validate  :validate_funding_source
     validates :sponsor_name, :presence => true, :if => :is_study?
     validates_associated :human_subjects_info, :message => "must contain 8 numerical digits", :if => :validate_nct
-    validate  :validate_study_type_answers
+    validate  :validate_study_type_answers, :if => :selected_for_epic
   end
 
   validation_group :user_details do

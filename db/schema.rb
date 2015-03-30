@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150326160053) do
+ActiveRecord::Schema.define(:version => 20150326155450) do
 
   create_table "admin_rates", :force => true do |t|
     t.integer  "line_item_id"
@@ -198,6 +198,22 @@ ActiveRecord::Schema.define(:version => 20150326160053) do
   end
 
   add_index "cover_letters", ["sub_service_request_id"], :name => "index_cover_letters_on_sub_service_request_id"
+
+  create_table "delayed_jobs", :force => true do |t|
+    t.integer  "priority",   :default => 0, :null => false
+    t.integer  "attempts",   :default => 0, :null => false
+    t.text     "handler",                   :null => false
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.string   "queue"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
+
+  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "dependencies", :force => true do |t|
     t.integer  "question_id"
@@ -847,19 +863,12 @@ ActiveRecord::Schema.define(:version => 20150326160053) do
   add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
   add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
 
-  create_table "study_type_answers", :force => true do |t|
-    t.integer  "protocol_id"
-    t.integer  "study_type_question_id"
-    t.boolean  "answer"
-    t.datetime "created_at",             :null => false
-    t.datetime "updated_at",             :null => false
-  end
-
   create_table "study_type_questions", :force => true do |t|
     t.integer  "order"
     t.string   "question"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.string   "friendly_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "study_types", :force => true do |t|

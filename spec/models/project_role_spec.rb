@@ -71,25 +71,14 @@ describe "Project Role" do
 
   describe "can switch to" do
 
-    it "should return false if current user is on project role and right == 'none' or 'view'" do
-      @project_role.can_switch_to?('none', user).should eq(false)
+    it "it should return false if the role is 'primary-pi'" do
+      @project_role.update_attributes(role: 'primary-pi')
+      @project_role.can_switch_to?.should eq(false)
     end
 
-    it "should return true if current user is on project role and right == 'request' and role != 'pi'" do
-      @project_role.update_attributes(role: 'mentor')
-      @project_role.can_switch_to?('request', user).should eq(true)
-    end
-
-    it "should return false if right == 'none' or 'view' or 'request', and role == 'pi'" do
-      @project_role.can_switch_to?('none',    user2).should eq(false)
-      @project_role.can_switch_to?('view',    user2).should eq(false)
-      @project_role.can_switch_to?('request', user2).should eq(false)
-    end
-
-    it "should return true if previous conditions are not met" do
-      @project_role.update_attributes(role: 'mentor')
-      @project_role.can_switch_to?('none',   user2).should eq(true)
-      @project_role.can_switch_to?('approve', user).should eq(true)
+    it "it should return false if the role is 'pi'" do
+      @project_role.update_attributes(role: 'pi')
+      @project_role.can_switch_to?.should eq(false)
     end
   end
 

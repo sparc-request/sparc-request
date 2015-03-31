@@ -290,7 +290,7 @@ class EpicInterface
 
     study_type = nil
     STUDY_TYPE_ANSWERS.each do |k, v|
-      if v == answers
+      if v == answers.to_s
         study_type = k
         break
       end

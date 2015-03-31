@@ -475,7 +475,7 @@ describe EpicInterface do
       STUDY_TYPE_QUESTIONS.each_with_index do |stq, index|
         StudyTypeQuestion.create(order: index + 1, question: stq)
       end
-      answers = [true, false, true, false, false, true]
+      answers = [true, true, nil, false, false, true]
       stq_ids = StudyTypeQuestion.all.map(&:id)
       stq_ids.each_with_index do |id, index|
         StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: id, answer: answers[index])
@@ -489,7 +489,7 @@ describe EpicInterface do
                     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
           <studyCharacteristic classCode="OBS" moodCode="EVN">
             <code code="STUDYTYPE" />
-            <value value="10" />
+            <value value="T02" />
           </studyCharacteristic>
         </subjectOf>
       END

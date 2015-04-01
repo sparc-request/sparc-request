@@ -8,6 +8,8 @@ sr.sql
 sr_production.sql
 
 .rvmrc
+.ruby-gemset
+.ruby-version
 
 # Ignore bundler config
 /.bundle

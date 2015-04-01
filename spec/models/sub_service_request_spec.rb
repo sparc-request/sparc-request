@@ -312,24 +312,27 @@ describe 'SubServiceRequest' do
         it "should not place a sub service request under a new service request if the ssr is being switched to another uneditable status" do
           ssr1.update_attributes(status: 'on_hold')
           ssr1.update_based_on_status('complete')
-          ssr1.service_request.id.should eq(service_request.id)
+          ssr1.service_request.id.should_not eq(service_request.id)
         end
       end
 
       context "candidate statuses" do
 
-        before :each do
-          org1.tag_list = "ctrc"
-          org1.save
+        let!(:ctrc) do
+          org = FactoryGirl.create(:provider)
+          org.tag_list = "ctrc"
+          org.save
+          org 
         end
+        let!(:provider) { FactoryGirl.create(:provider) }
 
         it "should contain 'ctrc approved' and 'ctrc review' if the organization is ctrc" do
-          sub_service_request.update_attributes(organization_id: org1.id)
+          sub_service_request.update_attributes(organization_id: ctrc.id)
           sub_service_request.candidate_statuses.should include('ctrc approved', 'ctrc review')
         end
 
         it "should not contain ctrc statuses if the organization is not ctrc" do
-          sub_service_request.update_attributes(organization_id: org2.id)
+          sub_service_request.update_attributes(organization_id: provider.id)
           sub_service_request.candidate_statuses.should_not include('ctrc approved', 'ctrc review')
         end 
       end

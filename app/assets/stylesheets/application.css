@@ -545,10 +545,6 @@ div#institution_accordion h3.provider_header {
   padding: 2px !important;
 }
 
-.previously_submitted {
-  text-align: center;
-}
-
 .program-view.selected a {
   color: red !important;
 }
@@ -996,10 +992,6 @@ span#infotip img {
   text-align: left;
   padding: 4px;
   border: 1px solid #E8E8E8;
-}
-
-.confirmation-details p.instructions {
-  color: #c43149;
 }
 
 /* ServiceRequestSetupView */

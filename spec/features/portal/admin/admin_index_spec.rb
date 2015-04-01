@@ -52,11 +52,6 @@ describe "admin index page", :js => true do
 
     describe "search functionality" do
 
-      it "should search by protocol short title" do
-        find('.search-all-service-requests').set("#{service_request.protocol.short_title}")
-        find('.ui-autocomplete').should have_content("#{service_request.protocol.short_title}")
-      end
-
       it "should search by protocol id" do
         find('.search-all-service-requests').set("#{service_request.protocol.id}")
         find('.ui-autocomplete').should have_content("#{service_request.protocol.id}")

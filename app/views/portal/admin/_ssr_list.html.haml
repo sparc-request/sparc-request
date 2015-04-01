@@ -19,12 +19,12 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 :javascript
-  $(document).ready(function() {
-      $("table#admin-tablesorter").bind("sortStart",function() {
+  $(document).ready(function() { 
+      $("table#admin-tablesorter").bind("sortStart",function() { 
         //Do Nothing
-      }).bind("sortEnd",function() {
+      }).bind("sortEnd",function() { 
           Sparc.admin.stripify_table()
-      });
+      }); 
   });
 
 .admin-index-ssr-list
@@ -61,7 +61,6 @@
               %th= t(:admin_root)[:assigned]
               %th.last= t(:admin_root)[:orgs]
           %tbody
-            - short_titles = []
             - pis = []
             - search_pis = []
             - requesters = []
@@ -69,12 +68,11 @@
             - @service_requests.each do |status, ssrs|
               - ssrs.each do |ssr|
                 - if user_can_view_ssr?(@study_tracker, ssr, @user)
-                  - short_titles << {:value => ssr.try(:service_request).try(:protocol).try(:short_title), :id => pretty_tag(ssr.try(:service_request).try(:protocol).try(:short_title))}
                   - search_pis << {:value => ssr.try(:service_request).try(:protocol).try(:primary_principal_investigator).try(:full_name), :id => pretty_tag(ssr.try(:service_request).try(:protocol).try(:primary_principal_investigator).try(:full_name))}
                   - requesters << {:value => ssr.try(:service_request).try(:service_requester).try(:full_name), :id => pretty_tag(ssr.try(:service_request).try(:service_requester).try(:full_name))}
                   - srids << {:value => /(.*)-/.match(full_ssr_id(ssr))[1], :id => /(.*)-/.match(full_ssr_id(ssr))[1]}
 
-                  %tr.admin_service_request{:class => "services #{pretty_tag(status)} all #{ssr.service_request.protocol.id} #{pretty_tag(ssr.try(:service_request).try(:service_requester).try(:full_name))} #{pretty_tag(ssr.try(:service_request).try(:protocol).try(:short_title))} #{pretty_tag(ssr.try(:service_request).try(:protocol).try(:principal_investigators).try(:first).try(:full_name))}", :style => default_display(status), :'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id}
+                  %tr.admin_service_request{:class => "services #{pretty_tag(status)} all #{ssr.service_request.protocol.id} #{pretty_tag(ssr.try(:service_request).try(:service_requester).try(:full_name))} #{pretty_tag(ssr.try(:service_request).try(:protocol).try(:principal_investigators).try(:first).try(:full_name))}", :style => default_display(status), :'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id}
                     %td{:id => "service_request_ssr.id", :'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}= full_ssr_id(ssr)
                     %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}= AVAILABLE_STATUSES[ssr.status]
                     %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}= ssr.service_request.protocol.try(:short_title)
@@ -83,11 +81,11 @@
                       %ul.services_first
                         %li.ui-corner-top
                           - services = ssr.line_items.map(&:service).sort_by{|srv| srv.name}.map(&:name)
-
+                
                         - if services.size > 1
                           %span.ui-icon.ui-icon-triangle-1-e.open_close_services{:style => 'display:inline-block'}
                           %span.ui-icon.ui-icon-triangle-1-s.open_close_services{:style => 'display:none'}
-
+                
                         %span= services.shift
                       %ul.services_rest{:style => 'display:none'}
                         - services.each do |service|
@@ -103,4 +101,4 @@
                     %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}= ssr.owner.try(:full_name)
                     %td{:'data-sr_id' => ssr.service_request_id, :'data-ssr_id' => ssr.id, :class => @study_tracker ? "service_request_links_cwf" : "service_request_links"}= ssr.org_tree_display
 
-          %input.values_test{:value => (short_titles + search_pis + requesters + srids).uniq.to_json, :type => 'hidden'}
+          %input.values_test{:value => (search_pis + requesters + srids).uniq.to_json, :type => 'hidden'}

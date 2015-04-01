@@ -204,117 +204,6 @@ describe EpicInterface do
                    xmlns='urn:hl7-org:v3'
                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
           <studyCharacteristic classCode="OBS" moodCode="EVN">
-            <code code="RC" />
-            <value code="#{identity.netid.upcase}" codeSystem="netid" />
-          </studyCharacteristic>
-        </subjectOf>
-      END
-
-      expected = Nokogiri::XML(xml)
-
-      node = epic_received[0].xpath(
-          '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
-          'env' => 'http://www.w3.org/2003/05/soap-envelope',
-          'rpe' => 'urn:ihe:qrph:rpe:2009',
-          'hl7' => 'urn:hl7-org:v3')
-
-      node.should be_equivalent_to(expected)
-    end
-
-    it 'should emit a subjectOf for a Co Investigator with Epic Access Rights' do
-      identity = FactoryGirl.create(
-          :identity,
-          ldap_uid: 'happyhappyjoyjoy@musc.edu')
-
-      pi_role = FactoryGirl.create(
-          :project_role,
-          protocol:        study,
-          identity:        identity,
-          project_rights:  "approve",
-          role:            "co-investigator",
-          epic_access:     true, )
-
-      epic_interface.send_study_creation(study)
-
-      xml = <<-END
-        <subjectOf typeCode="SUBJ"
-                   xmlns='urn:hl7-org:v3'
-                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
-          <studyCharacteristic classCode="OBS" moodCode="EVN">
-            <code code="OP" />
-            <value code="#{identity.netid.upcase}" codeSystem="netid" />
-          </studyCharacteristic>
-        </subjectOf>
-      END
-
-      expected = Nokogiri::XML(xml)
-
-      node = epic_received[0].xpath(
-          '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
-          'env' => 'http://www.w3.org/2003/05/soap-envelope',
-          'rpe' => 'urn:ihe:qrph:rpe:2009',
-          'hl7' => 'urn:hl7-org:v3')
-
-      node.should be_equivalent_to(expected)
-    end
-
-    it 'should emit a subjectOf for a Research Nurse with Epic Access Rights' do
-      identity = FactoryGirl.create(
-          :identity,
-          ldap_uid: 'happyhappyjoyjoy@musc.edu')
-
-      pi_role = FactoryGirl.create(
-          :project_role,
-          protocol:        study,
-          identity:        identity,
-          project_rights:  "approve",
-          role:            "research-nurse",
-          epic_access:     true, )
-
-      epic_interface.send_study_creation(study)
-
-      xml = <<-END
-        <subjectOf typeCode="SUBJ"
-                   xmlns='urn:hl7-org:v3'
-                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
-          <studyCharacteristic classCode="OBS" moodCode="EVN">
-            <code code="N" />
-            <value code="#{identity.netid.upcase}" codeSystem="netid" />
-          </studyCharacteristic>
-        </subjectOf>
-      END
-
-      expected = Nokogiri::XML(xml)
-
-      node = epic_received[0].xpath(
-          '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
-          'env' => 'http://www.w3.org/2003/05/soap-envelope',
-          'rpe' => 'urn:ihe:qrph:rpe:2009',
-          'hl7' => 'urn:hl7-org:v3')
-
-      node.should be_equivalent_to(expected)
-    end
-
-    it 'should emit a subjectOf for a Graduate Research Assistant with Epic Access Rights' do
-      identity = FactoryGirl.create(
-          :identity,
-          ldap_uid: 'happyhappyjoyjoy@musc.edu')
-
-      pi_role = FactoryGirl.create(
-          :project_role,
-          protocol:        study,
-          identity:        identity,
-          project_rights:  "approve",
-          role:            "grad-research-assistant",
-          epic_access:     true, )
-
-      epic_interface.send_study_creation(study)
-
-      xml = <<-END
-        <subjectOf typeCode="SUBJ"
-                   xmlns='urn:hl7-org:v3'
-                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
-          <studyCharacteristic classCode="OBS" moodCode="EVN">
             <code code="SC" />
             <value code="#{identity.netid.upcase}" codeSystem="netid" />
           </studyCharacteristic>
@@ -1093,10 +982,10 @@ describe EpicInterface do
                      <component1 typeCode="COMP">
                        <timePointEventDefinition classCode="CTTEVENT" moodCode="DEF">
                          <id root="1.2.3.4" extension="STUDY#{study.id}.ARM#{arm.id}.CYCLE1.DAY#{visit_group.id}.PROC#{line_item.id}"/>
-                         <code code="PROC" codeSystem="SPARCCPT"/>
+                         <code code="PROC" codeSystem="SPARCCDM"/>
                          <component2 typeCode="COMP">
                            <procedure classCode="PROC" moodCode="EVN">
-                             <code code="4321" codeSystem="SPARCCPT"/>
+                             <code code="4321" codeSystem="SPARCCDM"/>
                            </procedure>
                          </component2>
                        </timePointEventDefinition>

@@ -65,18 +65,6 @@ $(document).ready ->
     window.location.href = "/service_requests/#{service_request_id}/projects/#{project_id}/edit"
     return false
 
-  $('.edit_submitted_study').click ->
-    study_id = $('#protocol_id').val()
-    service_request_id = $('#service_request_id').val()
-    window.location.href = "/service_requests/#{service_request_id}/studies/#{study_id}/edit"
-    return false
-
-  $('.edit_submitted_project').click ->
-    project_id = $('#protocol_id').val()
-    service_request_id = $('#service_request_id').val()
-    window.location.href = "/service_requests/#{service_request_id}/projects/#{project_id}/edit"
-    return false
-
   $('#ctrc_dialog').dialog
     modal: true
     width: 375

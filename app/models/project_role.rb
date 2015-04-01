@@ -82,7 +82,7 @@ class ProjectRole < ActiveRecord::Base
     return false
   end
 
-  def can_switch_to?
+  def can_switch_to?()
     if role =='primary-pi'|| role == 'pi'
       return false
     else

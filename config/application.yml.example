@@ -31,6 +31,7 @@ development:
   header_link_3: http://www.musc.edu
   use_indirect_cost: false
   use_shiboleth: true
+  use_shibboleth_only: false # set to true to turn off database authentication sign in options
   use_ldap: true
   wkhtmltopdf_location: '/usr/local/bin/wkhtmltopdf'
   approve_epic_rights_mail_to: "glennj@musc.edu, forney@musc.edu, crossoml@musc.edu"
@@ -64,6 +65,7 @@ test:
   header_link_3: http://www.musc.edu
   use_indirect_cost: false
   use_shiboleth: true
+  use_shibboleth_only: false # set to true to turn off database authentication sign in options
   use_ldap: true
   wkhtmltopdf_location: '/usr/local/bin/wkhtmltopdf'
   approve_epic_rights_mail_to: "glennj@musc.edu, forney@musc.edu, crossoml@musc.edu"

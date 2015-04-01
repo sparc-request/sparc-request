@@ -34,6 +34,7 @@ begin
   HEADER_LINK_3                 = application_config['header_link_3']
   USE_INDIRECT_COST             = application_config['use_indirect_cost']
   USE_SHIBOLETH                 = application_config['use_shiboleth']
+  USE_SHIBBOLETH_ONLY           = application_config['use_shibboleth_only']
   USE_LDAP                      = application_config['use_ldap']
   USE_EPIC                      = application_config['use_epic']
   QUEUE_EPIC                    = application_config['queue_epic']

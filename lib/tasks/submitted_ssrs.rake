@@ -17,8 +17,8 @@ namespace :data do
 
     # start_date = prompt "Enter the starting date (2014-01-01): "
     # end_date   = prompt "Enter the ending date (2014-01-01): "
-    start_date = '2015-01-01'
-    end_date = '2015-03-01'
+    start_date = '2015-03-01'
+    end_date = '2015-04-01'
 
     CSV.open("tmp/submitted_ssrs_#{start_date}_to_#{end_date}.csv","wb") do |csv|
       csv << ["Protocol Title", "SRID", "Program/Core", "Completed Date", "Primary PI", "PI College", "PI Department", "Submitted Date"]

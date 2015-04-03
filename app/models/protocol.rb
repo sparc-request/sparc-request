@@ -130,15 +130,26 @@ class Protocol < ActiveRecord::Base
       answers[fid] = study_type_answers.find{|x| x.study_type_question_id == q.id}
     end
 
-    if answers["higher_level_of_privacy"].answer.nil? || answers["epic_inbasket"].answer.nil? ||
-        answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?
-      errors.add(:study_type_questions, "must be selected")
+    has_errors = false
+
+    if answers["higher_level_of_privacy"].answer.nil?
+      has_errors = true
     elsif answers["higher_level_of_privacy"].answer == true
-      if answers["certificate_of_conf"].answer.nil?
-        errors.add(:study_type_questions, "must be selected")
-      elsif answers["certificate_of_conf"].answer == false && answers["access_study_info"].answer.nil?
-        errors.add(:study_type_questions, "must be selected")
+      if answers["certificate_of_conf"].answer.nil? || answers["access_study_info"].answer.nil?
+        has_errors = true
+      elsif answers["access_study_info"].answer == false
+        if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?
+          has_errors = true
+        end
       end
+    elsif answers["higher_level_of_privacy"].answer == false
+      if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?
+        has_errors = true
+      end
+    end
+
+    if has_errors
+      errors.add(:study_type_questions, "must be selected")
     end
   end
 

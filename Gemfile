@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
-gem 'rails', '3.2.11'
-
+gem 'rails', '3.2.21'
+gem 'nokogiri', '1.5.6'
 gem 'mysql2'
 gem 'haml'
 gem 'redcarpet'

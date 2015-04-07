@@ -2,6 +2,9 @@ source 'https://rubygems.org'
 
 gem 'rails', '3.2.21'
 gem 'nokogiri', '1.5.6'
+# See https://github.com/sstephenson/execjs#readme for more supported runtimes
+gem 'execjs', '1.4.0'
+#gem 'therubyracer', '0.10.2', :platforms => :ruby
 gem 'mysql2'
 gem 'haml'
 gem 'redcarpet'

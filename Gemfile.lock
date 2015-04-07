@@ -374,6 +374,7 @@ DEPENDENCIES
   dynamic_form
   equivalent-xml
   exception_notification
+  execjs (= 1.4.0)
   factory_girl
   faker
   grouped_validations

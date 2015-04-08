@@ -311,7 +311,7 @@ class SubServiceRequest < ActiveRecord::Base
   end
 
   def nexus_editable_status? status
-    ['first_draft', 'draft', 'submitted', nil, 'get_a_quote'].include?(status)
+    ['first_draft', 'draft', 'submitted', nil, 'get_a_quote', 'awaiting_pi_approval'].include?(status)
   end
 
   def arms_editable?

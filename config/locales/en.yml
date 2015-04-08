@@ -628,6 +628,7 @@ en:
     title: "Title:"
     short_title: "Short Title:"
     funding: "Funding Source:"
+    sponsor: "Sponsor Name:"
     authorized_users: "Authorized Users:"
     name: "Name:"
     role: "Role:"

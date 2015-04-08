@@ -135,7 +135,7 @@ class Protocol < ActiveRecord::Base
     if answers["higher_level_of_privacy"].answer.nil?
       has_errors = true
     elsif answers["higher_level_of_privacy"].answer == true
-      if answers["certificate_of_conf"].answer.nil? || answers["access_study_info"].answer.nil?
+      if answers["certificate_of_conf"].answer.nil? || (answers["certificate_of_conf"].answer == false && answers["access_study_info"].answer.nil?)
         has_errors = true
       elsif answers["access_study_info"].answer == false
         if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?

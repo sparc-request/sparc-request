@@ -38,7 +38,7 @@
         = protocol.try(:short_title)
       - if protocol.type == 'Study'
         %li
-          = t(:protocol_information)[:funding]
+          = t(:protocol_information)[:sponsor]
           = protocol.try(:sponsor_name)
       %li
         = display_funding_source(protocol)

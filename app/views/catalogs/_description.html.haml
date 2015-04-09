@@ -40,21 +40,20 @@
               = display_service_in_catalog service, service_request
 
 - else
-  %h1= t(:rails_root)[:welcome]
-  .section.large_section
-    = t(:rails_root)[:message1]
-  .section.large_section
-    = t(:rails_root)[:message4]
-    %br
-    %br
-    %br
-  .section
-    %strong= t(:rails_root)[:message9]
-    = link_to(t(:rails_root)[:message9link], t(:rails_root)[:message9link])
-    %br
-    %strong= t(:rails_root)[:message10]
-    = link_to(t(:rails_root)[:message10link], t(:rails_root)[:message10link])
+  .panel.panel-default
+    .panel-heading
+      %h1.panel-title= t(:rails_root)[:welcome]
+    .section.large_section.panel-body
+      %p= t(:rails_root)[:message1]
+      %p.section.large_section
+        %p= t(:rails_root)[:message4]
+      %p.section
+        = raw(t(:rails_root)[:message9])
+        = link_to(t(:rails_root)[:message9link], t(:rails_root)[:message9link])
+        %br
+        %strong= t(:rails_root)[:message10]
+        = link_to(t(:rails_root)[:message10link], t(:rails_root)[:message10link])
 
-    #red_description.section
-    #blue_description.section
+        #red_description.section
+        #blue_description.section
 

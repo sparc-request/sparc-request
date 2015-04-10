@@ -23,7 +23,7 @@ module HelpersV1
       if invalid_query_parameters && invalid_query_parameters.length > 0
         error!("#{klass} query #{params[:query]} has the following invalid parameters: #{invalid_query_parameters.keys}", 400)
       else
-        error!("#{klass} not found for query #{params[:query]}", 200) unless @object = klass.constantize.where(params[:query]).first
+        error!("#{klass} not found for query #{params[:query]}", 404) unless @object = klass.constantize.where(params[:query]).first
       end
     else
       @objects = klass.constantize.all

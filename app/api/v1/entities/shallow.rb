@@ -27,6 +27,7 @@ module V1
 
   class ProtocolShallow < Shallow
     root 'protocols', 'protocol'
+    expose :short_title
   end
 
   class ProjectShallow < ProtocolShallow

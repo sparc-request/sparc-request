@@ -63,7 +63,7 @@ module V1
 
     expose  :type,
             :next_ssr_id,
-            :short_title,
+          #  :short_title, # included in Shallow
             :title,
             :sponsor_name,
             :brief_description,

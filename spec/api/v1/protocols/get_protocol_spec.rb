@@ -33,8 +33,8 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       before { cwf_sends_api_get_request_for_resource('protocols', @protocol.id, 'shallow') }
 
-      it 'should respond with a single shallow protocol' do
-        expect(response.body).to eq("{\"protocol\":{\"sparc_id\":1,\"callback_url\":\"https://sparc.musc.edu/v1/protocols/1.json\"}}")
+      it 'should respond with a single shallow protocol with its short title' do
+        expect(response.body).to eq("{\"protocol\":{\"sparc_id\":1,\"callback_url\":\"https://sparc.musc.edu/v1/protocols/1.json\",\"short_title\":\"#{@protocol.short_title}\"}}")
       end
     end
 

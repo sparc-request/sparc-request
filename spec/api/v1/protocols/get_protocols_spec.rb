@@ -42,10 +42,10 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       before { cwf_sends_api_get_request_for_resources('protocols', 'shallow') }
 
-      it 'should respond with an array of :sparc_ids' do
+      it 'should respond with an array of :sparc_ids and :short_titles' do
         parsed_body = JSON.parse(response.body)
 
-        expect(parsed_body['protocols'].map(&:keys).flatten.uniq.sort).to eq(['sparc_id', 'callback_url'].sort)
+        expect(parsed_body['protocols'].map(&:keys).flatten.uniq.sort).to eq(['sparc_id', 'callback_url', 'short_title'].sort)
       end
     end
 

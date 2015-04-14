@@ -26,11 +26,6 @@ module HelpersV1
         error!("#{klass} not found for query #{params[:query]}", 404) unless @object = klass.constantize.where(params[:query]).first
       else # return all objects that meet the query criteria
         @objects = klass.constantize.where(params[:query]).limit(params[:limit]) # a nil limit is ignored by ActiveRecord
-        if @objects.length < 1
-          error!("#{klass} not found for query #{params[:query]}", 404)
-        else
-          @objects
-        end 
       end
     else # only apply params[:limit] if params[:query] exists
       @objects = klass.constantize.all

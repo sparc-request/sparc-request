@@ -98,10 +98,9 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
          cwf_sends_api_get_request_for_resources_by_params('identities', params) 
       end
       it 'should respond with an error' do
-        expect(response.status).to eq(404)
+        expect(response.status).to eq(200)
         parsed_body         = JSON.parse(response.body)
-        expect(parsed_body['identities']).to eq(nil)
-        expect(parsed_body['error']).to eq("Identity not found for query #<Hashie::Mash ldap_uid=\"\">")
+        expect(parsed_body['identities'].length).to eq(0)
       end
     end     
      
@@ -130,10 +129,9 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         cwf_sends_api_get_request_for_resources_by_params('identities', params) 
      end
      it 'should respond with an error' do
-       expect(response.status).to eq(404)
+       expect(response.status).to eq(200)
        parsed_body         = JSON.parse(response.body)
-       expect(parsed_body['identities']).to eq(nil)
-       expect(parsed_body['error']).to eq("Identity not found for query #<Hashie::Mash ldap_uid=\"asdfasdfasdfasdfasdf\">")
+       expect(parsed_body['identities'].length).to eq(0)
      end
     end
     
@@ -366,10 +364,9 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
          cwf_sends_api_get_request_for_resources_by_params('identities', params) 
       end
       it 'should respond with an error' do
-        expect(response.status).to eq(404)
+        expect(response.status).to eq(200)
         parsed_body         = JSON.parse(response.body)
-        expect(parsed_body['identities']).to eq(nil)
-        expect(parsed_body['error']).to eq("Identity not found for query #<Hashie::Mash ldap_uid=\"\">")
+        expect(parsed_body['identities'].length).to eq(0)
       end
     end
      
@@ -399,10 +396,9 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
          cwf_sends_api_get_request_for_resources_by_params('identities', params) 
       end
       it 'should respond with an error' do
-        expect(response.status).to eq(404)
+        expect(response.status).to eq(200)
         parsed_body         = JSON.parse(response.body)
-        expect(parsed_body['identities']).to eq(nil)
-        expect(parsed_body['error']).to eq("Identity not found for query #<Hashie::Mash ldap_uid=\"asdfasdfasdfasdfasdf\">")
+        expect(parsed_body['identities'].length).to eq(0)
       end
     end
     
@@ -611,10 +607,9 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
          cwf_sends_api_get_request_for_resources_by_params('identities', params) 
       end
       it 'should respond with an error' do
-        expect(response.status).to eq(404)
+        expect(response.status).to eq(200)
         parsed_body         = JSON.parse(response.body)
-        expect(parsed_body['identities']).to eq(nil)
-        expect(parsed_body['error']).to eq("Identity not found for query #<Hashie::Mash ldap_uid=\"\">")
+        expect(parsed_body['identities'].length).to eq(0)
       end
     end
      
@@ -643,10 +638,9 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         cwf_sends_api_get_request_for_resources_by_params('identities', params) 
      end
      it 'should respond with an error' do
-       expect(response.status).to eq(404)
+       expect(response.status).to eq(200)
        parsed_body         = JSON.parse(response.body)
-       expect(parsed_body['identities']).to eq(nil)
-       expect(parsed_body['error']).to eq("Identity not found for query #<Hashie::Mash ldap_uid=\"asdfasdfasdfasdfasdf\">")
+       expect(parsed_body['identities'].length).to eq(0)
      end
    end
     

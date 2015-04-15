@@ -63,7 +63,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         expected_attributes = FactoryGirl.build(:protocol).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'arms', 'service_requests', 'project_roles').
+                                push('callback_url', 'sparc_id', 'arms', 'service_requests', 'project_roles', 'human_subjects_info').
                                 sort
 
         expect(parsed_body['protocol'].keys.sort).to eq(expected_attributes)

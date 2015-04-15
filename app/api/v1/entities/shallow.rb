@@ -9,6 +9,10 @@ module V1
     root 'arms', 'arm'
   end
 
+  class HumanSubjectsInfoShallow < Shallow
+    root 'human_subjects_info', 'human_subjects_info'
+  end
+  
   class IdentityShallow < Shallow
     root 'identities', 'identity'
   end

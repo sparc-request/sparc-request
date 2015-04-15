@@ -20,6 +20,20 @@ module V1
             :last_name,
             :ldap_uid
   end
+  
+  class HumanSubjectsInfoFull < HumanSubjectsInfoShallow
+    root 'human_subjects_info', 'human_subjects_info'
+
+    expose  :protocol_id,
+            :nct_number,
+            :hr_number,
+            :pro_number,
+            :irb_of_record,
+            :submission_type,
+            :irb_approval_date,
+            :irb_expiration_date,
+            :approval_pending
+  end
 
   class LineItemFull < LineItemShallow
     root 'line_items', 'line_item'

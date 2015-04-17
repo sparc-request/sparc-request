@@ -1,0 +1,21 @@
+language: ruby
+rvm:
+  - 1.9.3
+before_install:
+  - gem update --system
+  - gem --version
+  - gem install bundler
+  - bundle version
+  - bundle update debugger  
+before_script:
+  - cp config/application.yml.example config/application.yml
+  - cp config/database.yml.example config/database.yml
+  - cp config/epic.yml.example config/epic.yml
+  - cp config/ldap.yml.example config/ldap.yml
+  - tail config/database.yml
+script:
+  - RAILS_ENV=test bundle exec rake db:migrate --trace
+  - bundle exec rake db:test:prepare	
+  - bundle exec rspec spec/mailers
+  - bundle exec rspec spec/models
+  - bundle exec rspec spec/controllers

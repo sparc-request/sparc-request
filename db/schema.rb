@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150501153036) do
+ActiveRecord::Schema.define(:version => 20150519185923) do
 
   create_table "admin_rates", :force => true do |t|
     t.integer  "line_item_id"
@@ -106,6 +106,8 @@ ActiveRecord::Schema.define(:version => 20150501153036) do
     t.integer  "minimum_visit_count",   :default => 0
     t.integer  "minimum_subject_count", :default => 0
   end
+
+  add_index "arms", ["protocol_id"], :name => "index_arms_on_protocol_id"
 
   create_table "associated_surveys", :force => true do |t|
     t.integer  "surveyable_id"
@@ -348,12 +350,12 @@ ActiveRecord::Schema.define(:version => 20150501153036) do
     t.string   "credentials"
     t.string   "subspecialty"
     t.string   "phone"
-    t.datetime "created_at",                                :null => false
-    t.datetime "updated_at",                                :null => false
+    t.datetime "created_at",                                                       :null => false
+    t.datetime "updated_at",                                                       :null => false
     t.datetime "deleted_at"
     t.boolean  "catalog_overlord"
     t.string   "credentials_other"
-    t.string   "encrypted_password",     :default => "",    :null => false
+    t.string   "encrypted_password",     :default => "",                           :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -364,7 +366,8 @@ ActiveRecord::Schema.define(:version => 20150501153036) do
     t.string   "last_sign_in_ip"
     t.text     "reason"
     t.string   "company"
-    t.boolean  "approved",               :default => false, :null => false
+    t.boolean  "approved",               :default => false,                        :null => false
+    t.string   "time_zone",              :default => "Eastern Time (US & Canada)"
   end
 
   add_index "identities", ["approved"], :name => "index_identities_on_approved"
@@ -542,7 +545,6 @@ ActiveRecord::Schema.define(:version => 20150501153036) do
     t.string   "unit_type"
     t.decimal  "unit_factor",                :precision => 5,  :scale => 2
     t.decimal  "percent_of_fee",             :precision => 5,  :scale => 2
-    t.boolean  "is_one_time_fee"
     t.decimal  "full_rate",                  :precision => 12, :scale => 4
     t.boolean  "exclude_from_indirect_cost"
     t.integer  "unit_minimum"
@@ -783,6 +785,16 @@ ActiveRecord::Schema.define(:version => 20150501153036) do
     t.datetime "updated_at",     :null => false
   end
 
+  create_table "service_level_components", :force => true do |t|
+    t.integer  "service_id"
+    t.string   "component"
+    t.integer  "position",   :default => 0
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
+
+  add_index "service_level_components", ["service_id"], :name => "index_service_level_components_on_service_id"
+
   create_table "service_providers", :force => true do |t|
     t.integer  "identity_id"
     t.integer  "organization_id"
@@ -839,19 +851,23 @@ ActiveRecord::Schema.define(:version => 20150501153036) do
     t.integer  "order"
     t.text     "description"
     t.boolean  "is_available"
-    t.decimal  "service_center_cost",   :precision => 12, :scale => 4
+    t.decimal  "service_center_cost",            :precision => 12, :scale => 4
     t.string   "cpt_code"
     t.string   "charge_code"
     t.string   "revenue_code"
     t.integer  "organization_id"
-    t.datetime "created_at",                                                              :null => false
-    t.datetime "updated_at",                                                              :null => false
+    t.datetime "created_at",                                                                       :null => false
+    t.datetime "updated_at",                                                                       :null => false
     t.datetime "deleted_at"
-    t.boolean  "send_to_epic",                                         :default => false
+    t.boolean  "send_to_epic",                                                  :default => false
     t.integer  "revenue_code_range_id"
+    t.integer  "service_level_components_count",                                :default => 0
+    t.boolean  "one_time_fee",                                                  :default => false
+    t.integer  "line_items_count",                                              :default => 0
   end
 
   add_index "services", ["is_available"], :name => "index_services_on_is_available"
+  add_index "services", ["one_time_fee"], :name => "index_services_on_one_time_fee"
   add_index "services", ["organization_id"], :name => "index_services_on_organization_id"
 
   create_table "sessions", :force => true do |t|
@@ -906,7 +922,7 @@ ActiveRecord::Schema.define(:version => 20150501153036) do
     t.boolean  "lab_approved",               :default => false
     t.boolean  "imaging_approved",           :default => false
     t.boolean  "src_approved",               :default => false
-    t.boolean  "in_work_fulfillment"
+    t.boolean  "in_work_fulfillment",        :default => false
     t.string   "routing"
     t.text     "org_tree_display"
   end

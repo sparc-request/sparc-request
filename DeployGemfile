@@ -84,3 +84,7 @@ gem "surveyor"
 
 gem 'icalendar'
 gem 'activerecord-import'
+gem 'grape', '0.7.0'
+gem 'grape-entity', '~> 0.4.4'
+gem 'rest-client'
+gem 'delayed_job_active_record'

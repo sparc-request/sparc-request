@@ -709,6 +709,7 @@ en:
 
   # Catalog Manager - Organization Form
   organization_form:
+    service_level_components: "Service Level Components"
     gen_info: "General Information"
     user_rights: "User Rights"
     pricing: "Pricing"

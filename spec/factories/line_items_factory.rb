@@ -22,7 +22,16 @@ FactoryGirl.define do
   factory :line_item do
     optional               { false }
     quantity               { 5 }
-  
+
+    trait :with_service_request do
+      service_request
+      # service_request factory: :service_request_with_protocol
+    end
+
+    trait :with_service do
+      service factory: :service_with_process_ssrs_organization
+    end
+
     trait :is_optional do
       optional true
     end
@@ -33,11 +42,13 @@ FactoryGirl.define do
     end
 
     after(:build) do |line_item, evaluator|
-      FactoryGirl.create_list(:fulfillment, evaluator.fulfillment_count, 
+      FactoryGirl.create_list(:fulfillment, evaluator.fulfillment_count,
         line_item: line_item)
-    
-      FactoryGirl.create_list(:visit, evaluator.visit_count, 
+
+      FactoryGirl.create_list(:visit, evaluator.visit_count,
         line_item: line_item)
     end
+
+    factory :line_item_with_service, traits: [:with_service, :with_service_request]
   end
 end

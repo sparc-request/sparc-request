@@ -33,5 +33,7 @@ FactoryGirl.define do
     trait :exclude_from_indirect_cost do
       excluse_from_indirect_cost true
     end
+
+    factory :pricing_map_is_one_time_fee, traits: [:is_one_time_fee]
   end
 end

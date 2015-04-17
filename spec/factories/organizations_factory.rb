@@ -28,6 +28,12 @@ FactoryGirl.define do
     process_ssrs  { false }
     is_available  { true }
 
+    trait :with_pricing_setup do
+      after(:create) do |organization, evaluator|
+        FactoryGirl.create(:pricing_setup, organization: organization)
+      end
+    end
+
     trait :process_ssrs do
       process_ssrs true
     end
@@ -47,7 +53,7 @@ FactoryGirl.define do
     end
 
     after(:build) do |organization, evaluator|
-      FactoryGirl.create_list(:sub_service_request, evaluator.sub_service_request_count, 
+      FactoryGirl.create_list(:sub_service_request, evaluator.sub_service_request_count,
         organization: organization)
 
       FactoryGirl.create_list(:service, evaluator.service_count,
@@ -68,11 +74,12 @@ FactoryGirl.define do
       FactoryGirl.create_list(:submission_email, evaluator.submission_email_count,
        organization: organization)
     end
-    
+
+    factory :organization_with_process_ssrs, traits: [:process_ssrs, :with_pricing_setup]
   end
 
   factory :institution do
-    id            
+    id
     name          { Faker::Lorem.sentence(3) }
     description   { Faker::Lorem.paragraph(4) }
     abbreviation  { Faker::Lorem.word }
@@ -100,7 +107,7 @@ FactoryGirl.define do
   end
 
   factory :provider do
-    id            
+    id
     name          { Faker::Lorem.sentence(3) }
     description   { Faker::Lorem.paragraph(4) }
     abbreviation  { Faker::Lorem.word }
@@ -126,7 +133,7 @@ FactoryGirl.define do
     end
 
     after(:build) do |organization, evaluator|
-      FactoryGirl.create_list(:sub_service_request, evaluator.sub_service_request_count, 
+      FactoryGirl.create_list(:sub_service_request, evaluator.sub_service_request_count,
         organization: organization)
 
       FactoryGirl.create_list(:catalog_manager,
@@ -148,7 +155,7 @@ FactoryGirl.define do
   end
 
   factory :program do
-    id            
+    id
     name          { Faker::Lorem.sentence(3) }
     description   { Faker::Lorem.paragraph(4) }
     abbreviation  { Faker::Lorem.word }
@@ -163,7 +170,11 @@ FactoryGirl.define do
     trait :disabled do
       is_available false
     end
-  
+
+    trait :with_provider do
+      parent factory: :provider
+    end
+
     ignore do
       sub_service_request_count 0
       service_count 0
@@ -175,7 +186,7 @@ FactoryGirl.define do
     end
 
     after(:build) do |organization, evaluator|
-      FactoryGirl.create_list(:sub_service_request, evaluator.sub_service_request_count, 
+      FactoryGirl.create_list(:sub_service_request, evaluator.sub_service_request_count,
         organization: organization)
 
       FactoryGirl.create_list(:service, evaluator.service_count,
@@ -197,10 +208,11 @@ FactoryGirl.define do
        organization: organization)
     end
 
+    factory :program_with_provider, traits: [:with_provider]
   end
 
   factory :core do
-    id            
+    id
     name          { Faker::Lorem.sentence(3) }
     description   { Faker::Lorem.paragraph(4) }
     abbreviation  { Faker::Lorem.word }
@@ -215,7 +227,7 @@ FactoryGirl.define do
     trait :disabled do
       is_available false
     end
-  
+
     ignore do
       sub_service_request_count 0
       service_count 0
@@ -226,7 +238,7 @@ FactoryGirl.define do
     end
 
     after(:build) do |organization, evaluator|
-      FactoryGirl.create_list(:sub_service_request, evaluator.sub_service_request_count, 
+      FactoryGirl.create_list(:sub_service_request, evaluator.sub_service_request_count,
         organization: organization)
 
       FactoryGirl.create_list(:service, evaluator.service_count,

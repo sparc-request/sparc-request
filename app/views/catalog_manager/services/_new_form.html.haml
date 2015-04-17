@@ -72,6 +72,21 @@
                     %span= f.check_box :tag_list, { :multiple => true }, tag.name, nil
       %br
 
+      %fieldset.service_level_components.parent
+        .legend
+          = t(:organization_form)[:service_level_components]
+
+        %fieldset.single_fieldset
+          .secondary_header Components
+          %table
+            %tbody
+              = f.fields_for :service_level_components do |service_level_components_form|
+                %tr
+                  %td
+                    = service_level_components_form.hidden_field :position
+                    = service_level_components_form.text_field :component
+      %br
+
       #epic_wrapper{:style => "display:none;"}
         %fieldset#epic_fieldset.parent
           .legend= t(:organization_form)[:epic_info]

@@ -32,10 +32,28 @@ FactoryGirl.define do
     # This line was removed, because it causes duplicate pricing maps to
     # be created (see pricing_map_count, below).
     # pricing_maps        { [ FactoryGirl.create(:pricing_map) ] }
-    
+
+    trait :with_service_level_components do
+      after(:create) do |service, evaluator|
+        (1..3).each do |index|
+          service.service_level_components.push FactoryGirl.build(:service_level_component, position: index)
+        end
+      end
+    end
+
+    trait :with_one_time_fee_pricing_map do
+      after(:create) do |service, evaluator|
+        FactoryGirl.create(:pricing_map_is_one_time_fee, service: service)
+      end
+    end
+
+    trait :with_process_ssrs_organization do
+      organization factory: :organization_with_process_ssrs
+    end
+
     trait :disabled do
       is_available false
-    end 
+    end
 
     trait :one_time_fee do
       one_time_fee true
@@ -47,6 +65,10 @@ FactoryGirl.define do
       service_provider_count 0
       service_relation_count 0
     end
+
+    factory :service_with_service_level_components, traits: [:with_service_level_components]
+    factory :service_with_process_ssrs_organization, traits: [:with_process_ssrs_organization]
+    factory :service_with_one_time_fee_pricing_map, traits: [:with_one_time_fee_pricing_map, :with_process_ssrs_organization]
 
     # Note that this is a before(:create) block.  This is necessary to
     # ensure that pricing maps are added to the service _before_ it is
@@ -74,7 +96,7 @@ FactoryGirl.define do
       line_item_count.times do
         service.line_items.build(FactoryGirl.attributes_for(:line_item))
       end
-      
+
       pricing_map_count.times do
         service.pricing_maps.build(FactoryGirl.attributes_for(:pricing_map))
       end
@@ -87,5 +109,11 @@ FactoryGirl.define do
         service.service_relations.build(FactoryGirl.attributes_for(:service_relation))
       end
     end
+
+    trait :without_callback_notify_remote_service_after_create do
+      before(:create) { |service| service.class.skip_callback(:create, :after, :notify_remote_service_after_create) }
+    end
+
+    factory :service_without_callback_notify_remote_service_after_create, traits: [:without_callback_notify_remote_service_after_create]
   end
 end

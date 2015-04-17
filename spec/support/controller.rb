@@ -62,3 +62,5 @@ def stub_portal_controller
   end
 end
 
+alias :stub_catalog_manager_controller :stub_portal_controller
+

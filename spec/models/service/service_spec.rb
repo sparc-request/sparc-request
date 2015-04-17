@@ -21,15 +21,95 @@
 require 'date'
 require 'spec_helper'
 
-describe 'Service' do
+RSpec.describe Service, type: :model do
+
+  it { should have_many(:service_level_components) }
+
+  it { should accept_nested_attributes_for(:service_level_components) }
+
   let_there_be_lane
   let_there_be_j
   build_service_request_with_project
 
+  context 'callbacks' do
+
+    context '#after_create' do
+
+      describe '#notify_remote_after_create', delay: true do
+
+        context 'Service is part of Research Nexus' do
+
+          before do
+            work_off
+
+            research_nexus_program  = FactoryGirl.create(:program, name: 'Research Nexus')
+            organization            = FactoryGirl.create(:core, name: 'Core 1', parent_id: research_nexus_program.id)
+            FactoryGirl.create(:service, organization: organization)
+          end
+
+          it 'should create a RemoteServiceNotifierJob' do
+            expect(Delayed::Job.where("handler LIKE '%RemoteServiceNotifierJob%'").one?).to be
+          end
+        end
+
+        context 'Service is not part of Research Nexus' do
+
+          before do
+            work_off
+
+            FactoryGirl.create(:service)
+          end
+
+          it 'should create a RemoteServiceNotifierJob' do
+            expect(Delayed::Job.where("handler LIKE '%RemoteServiceNotifierJob%'").one?).to_not be
+          end
+        end
+      end
+    end
+
+    context '#around_update' do
+
+      describe '#notify_remote_around_update', delay: true do
+
+        context 'Service is part of Research Nexus' do
+
+          before do
+            research_nexus_program  = FactoryGirl.create(:program, name: 'Research Nexus')
+            organization            = FactoryGirl.create(:core, name: 'Core 1', parent_id: research_nexus_program.id)
+            service                 = FactoryGirl.create(:service, organization: organization)
+
+            work_off
+
+            service.update_attribute :name, 'Test'
+          end
+
+          it 'should create a RemoteServiceNotifierJob' do
+            expect(Delayed::Job.where("handler LIKE '%RemoteServiceNotifierJob%'").one?).to be
+          end
+        end
+
+        context 'Service is not part of Research Nexus' do
+
+          before do
+            service = Service.first
+
+            work_off
+
+            service.update_attribute :name, 'Test'
+          end
+
+          it 'should create a RemoteServiceNotifierJob' do
+            expect(Delayed::Job.where("handler LIKE '%RemoteServiceNotifierJob%'").one?).to_not be
+          end
+        end
+      end
+    end
+  end
+
   describe 'parents' do
 
     it 'should return an array with only the organization if there are no parents' do
-      service.update_attributes(organization_id: institution.id)      
+      service.update_attributes(organization_id: institution.id)
       service.parents.should eq [ institution ]
     end
 
@@ -39,9 +119,9 @@ describe 'Service' do
   end
 
   describe "organization" do
-    
+
     let!(:core) { FactoryGirl.create(:core, parent_id: program.id) }
-    
+
     context 'core' do
 
       it 'should return nil if the organization is not a core' do
@@ -123,7 +203,7 @@ describe 'Service' do
     it "should return the correct cents for a given dollar amount" do
 
       amount = 0
-      
+
       1000.times do
         Service.dollars_to_cents("#{amount / 100.00}").should eq(amount)
         amount = amount + 1
@@ -150,7 +230,7 @@ describe 'Service' do
     let!(:service) { FactoryGirl.create(:service, name: "Foo", abbreviation: "abc") }
 
     context "service name" do
-      
+
       it "should return the service name" do
         service.display_service_name.should eq("Foo")
       end
@@ -298,7 +378,7 @@ describe 'Service' do
     # most of these tests would be duplicates of those for
     # current_effective_pricing_map
   end
-  
+
   describe "can_edit_historical_data_on_new" do
 
     it "should return whether or not the user can edit historical data" do
@@ -306,9 +386,9 @@ describe 'Service' do
       parent = FactoryGirl.create(:organization)
 
       catalog_manager = FactoryGirl.create(:catalog_manager, :can_edit_historic_data, identity: identity, :organization => parent)
-      
+
       child = FactoryGirl.create(:organization, :parent_id => parent.id)
-      
+
       service = FactoryGirl.create(:service, organization: child)
 
       service.can_edit_historical_data_on_new?(identity).should eq(true)
@@ -320,16 +400,16 @@ describe 'Service' do
       parent = FactoryGirl.create(:organization)
 
       catalog_manager = FactoryGirl.create(:catalog_manager, identity: identity, :organization => parent)
-      
+
       child = FactoryGirl.create(:organization, :parent_id => parent.id)
-      
+
       service = FactoryGirl.create(:service, organization: child)
 
       service.can_edit_historical_data_on_new?(identity).should eq(false)
 
     end
   end
-  
+
   describe "get rate maps" do
 
     let!(:core) { FactoryGirl.create(:core) }
@@ -343,7 +423,7 @@ describe 'Service' do
           full_rate: 100,
           display_date: Date.today - 1)
     end
-                                                          
+
     it "should return a hash with the correct rates" do
       pm = PricingMap.find(pricing_map.id)
       hash = { "federal_rate" => "0.25", "corporate_rate" => "0.25", "other_rate" => "0.25", "member_rate" => "0.25" }

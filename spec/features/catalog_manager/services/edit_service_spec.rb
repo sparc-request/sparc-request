@@ -26,7 +26,12 @@ feature 'edit a service' do
     Tag.create(:name => "ctrc")
     Tag.create(:name => "epic")
   end
-  
+
+  scenario "successfully add a ServiceLevelComponent", js: true do
+    click_link('MUSC Research Data Request (CDW)')
+
+  end
+
   scenario 'successfully update a service under a program', :js => true do
     click_link('Human Subject Review')
 
@@ -39,7 +44,7 @@ feature 'edit a service' do
     within ('#service_core') do
       page.should have_content('None')
     end
-  
+
     fill_in 'service_abbreviation', :with => 'TestService'
     fill_in 'service_description', :with => 'Description'
     fill_in 'service_order', :with => '1'
@@ -51,7 +56,7 @@ feature 'edit a service' do
 
   scenario 'successfully update a service under a core', :js => true do
     click_link('MUSC Research Data Request (CDW)')
-    
+
     # Program Select should defalut to parent Program
     within ('#service_program') do
       page.should have_content('Office of Biomedical Informatics')
@@ -61,7 +66,7 @@ feature 'edit a service' do
     within ('#service_core') do
       page.should have_content('Clinical Data Warehouse')
     end
-  
+
     fill_in 'service_abbreviation', :with => 'TestServiceTwo'
     fill_in 'service_description', :with => 'DescriptionTwo'
     fill_in 'service_order', :with => '2'
@@ -94,7 +99,7 @@ feature 'edit a service' do
     before :each do
       click_link("Human Subject Review")
     end
-    
+
     it "should not display epic section by default" do
       page.should_not have_css('#epic_fieldset')
     end

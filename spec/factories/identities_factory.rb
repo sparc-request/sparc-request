@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 FactoryGirl.define do
-  
+
   factory :identity do
     ldap_uid              { Faker::Internet.user_name }
     last_name             { Faker::Name.last_name }
@@ -47,21 +47,21 @@ FactoryGirl.define do
       service_provider_count 0
     end
 
-      after(:build) do |identity, evaluator|
-        FactoryGirl.create_list(:catalog_manager,
-         evaluator.catalog_manager_count, identity: identity)
-    
-        FactoryGirl.create_list(:super_user,
-         evaluator.super_user_count, identity: identity)
-    
-        FactoryGirl.create_list(:approval,
-         evaluator.approval_count, identity: identity)
-    
-        FactoryGirl.create_list(:project_role,
-         evaluator.project_role_count, identity: identity)
-    
-        FactoryGirl.create_list(:service_provider,
-         evaluator.service_provider_count, identity: identity)
+    after(:build) do |identity, evaluator|
+      FactoryGirl.create_list(:catalog_manager,
+       evaluator.catalog_manager_count, identity: identity)
+
+      FactoryGirl.create_list(:super_user,
+       evaluator.super_user_count, identity: identity)
+
+      FactoryGirl.create_list(:approval,
+       evaluator.approval_count, identity: identity)
+
+      FactoryGirl.create_list(:project_role,
+       evaluator.project_role_count, identity: identity)
+
+      FactoryGirl.create_list(:service_provider,
+       evaluator.service_provider_count, identity: identity)
     end
   end
 end

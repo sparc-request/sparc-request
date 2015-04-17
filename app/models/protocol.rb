@@ -19,6 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Protocol < ActiveRecord::Base
+
+  include RemotelyNotifiable
+
   audited
 
   has_many :study_types, :dependent => :destroy
@@ -388,4 +391,15 @@ class Protocol < ActiveRecord::Base
     end
   end
 
+  def notify_remote_around_update?
+    has_at_least_one_sub_service_request_in_cwf?
+  end
+
+  def has_at_least_one_sub_service_request_in_cwf?
+    service_request_ids = service_requests.pluck(:id)
+
+    SubServiceRequest.where(service_request_id: service_request_ids).
+      where(in_work_fulfillment: true).
+      any?
+  end
 end

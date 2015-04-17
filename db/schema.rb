@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150224193019) do
+ActiveRecord::Schema.define(:version => 20150422193755) do
 
   create_table "admin_rates", :force => true do |t|
     t.integer  "line_item_id"
@@ -107,6 +107,8 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
     t.integer  "minimum_subject_count", :default => 0
   end
 
+  add_index "arms", ["protocol_id"], :name => "index_arms_on_protocol_id"
+
   create_table "associated_surveys", :force => true do |t|
     t.integer  "surveyable_id"
     t.string   "surveyable_type"
@@ -198,6 +200,22 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
   end
 
   add_index "cover_letters", ["sub_service_request_id"], :name => "index_cover_letters_on_sub_service_request_id"
+
+  create_table "delayed_jobs", :force => true do |t|
+    t.integer  "priority",   :default => 0, :null => false
+    t.integer  "attempts",   :default => 0, :null => false
+    t.text     "handler",                   :null => false
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.string   "queue"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
+
+  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "dependencies", :force => true do |t|
     t.integer  "question_id"
@@ -766,6 +784,16 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
     t.datetime "updated_at",     :null => false
   end
 
+  create_table "service_level_components", :force => true do |t|
+    t.integer  "service_id"
+    t.string   "component"
+    t.integer  "position",   :default => 0
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
+
+  add_index "service_level_components", ["service_id"], :name => "index_service_level_components_on_service_id"
+
   create_table "service_providers", :force => true do |t|
     t.integer  "identity_id"
     t.integer  "organization_id"
@@ -822,16 +850,17 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
     t.integer  "order"
     t.text     "description"
     t.boolean  "is_available"
-    t.decimal  "service_center_cost",   :precision => 12, :scale => 4
+    t.decimal  "service_center_cost",            :precision => 12, :scale => 4
     t.string   "cpt_code"
     t.string   "charge_code"
     t.string   "revenue_code"
     t.integer  "organization_id"
-    t.datetime "created_at",                                                              :null => false
-    t.datetime "updated_at",                                                              :null => false
+    t.datetime "created_at",                                                                       :null => false
+    t.datetime "updated_at",                                                                       :null => false
     t.datetime "deleted_at"
-    t.boolean  "send_to_epic",                                         :default => false
+    t.boolean  "send_to_epic",                                                  :default => false
     t.integer  "revenue_code_range_id"
+    t.integer  "service_level_components_count",                                :default => 0
   end
 
   add_index "services", ["is_available"], :name => "index_services_on_is_available"
@@ -873,7 +902,7 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
     t.boolean  "lab_approved",               :default => false
     t.boolean  "imaging_approved",           :default => false
     t.boolean  "src_approved",               :default => false
-    t.boolean  "in_work_fulfillment"
+    t.boolean  "in_work_fulfillment",        :default => false
     t.string   "routing"
     t.text     "org_tree_display"
   end

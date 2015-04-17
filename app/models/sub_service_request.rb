@@ -19,6 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class SubServiceRequest < ActiveRecord::Base
+
+  include RemotelyNotifiable
+
   audited
 
   after_save :update_past_status, :update_org_tree
@@ -62,15 +65,19 @@ class SubServiceRequest < ActiveRecord::Base
   accepts_nested_attributes_for :line_items, allow_destroy: true
   accepts_nested_attributes_for :payments, allow_destroy: true
 
-  after_save :work_fulfillment
+  def formatted_status
+    if AVAILABLE_STATUSES.has_key? status
+      AVAILABLE_STATUSES[status]
+    else
+      "STATUS MAPPING NOT PRESENT"
+    end
+  end
 
-  def work_fulfillment
-    if self.in_work_fulfillment_changed?
-      if self.in_work_fulfillment
-        self.service_request.arms.each do |arm|
-          arm.populate_subjects if arm.subjects.empty?
-        end
-      end
+  def stored_percent_subsidy
+    if subsidy.present?
+      subsidy.stored_percent_subsidy
+    else
+      0
     end
   end
 
@@ -90,7 +97,7 @@ class SubServiceRequest < ActiveRecord::Base
   def set_effective_date_for_cost_calculations
     self.line_items.each{|li| li.pricing_scheme = 'effective'}
   end
-  
+
   def unset_effective_date_for_cost_calculations
     self.line_items.each{|li| li.pricing_scheme = 'displayed'}
   end
@@ -157,9 +164,10 @@ class SubServiceRequest < ActiveRecord::Base
 
   def per_patient_per_visit_line_items
     line_items = LineItem.where(:sub_service_request_id => self.id).includes(:service)
-    line_items.select {|li| !li.service.one_time_fee}    
+
+    line_items.select {|li| !li.service.one_time_fee}
   end
-  
+
   def has_one_time_fee_services?
     one_time_fee_line_items.count > 0
   end
@@ -230,7 +238,7 @@ class SubServiceRequest < ActiveRecord::Base
       rescue
         services = self.organization.all_child_services.select {|x| x.is_available?}
       end
-    end 
+    end
 
     services
   end
@@ -291,10 +299,10 @@ class SubServiceRequest < ActiveRecord::Base
 
     #update line items
     self.line_items.each {|li| li.update_attributes(service_request_id: new_sr.id)}
-    
+
     #create new documents and/or change service request id for existing documents
     documents_to_create = []
-    
+
     self.documents.each do |doc|
       if doc.sub_service_requests.count == 1
         doc.update_attributes(service_request_id: new_sr.id)
@@ -302,7 +310,7 @@ class SubServiceRequest < ActiveRecord::Base
         documents_to_create << doc
       end
     end
-    
+
     documents_to_create.each do |doc|
       new_document = Document.create :document => doc.document, :doc_type => doc.doc_type, :doc_type_other => doc.doc_type_other, :service_request_id => new_sr.id
       self.documents << new_document
@@ -402,7 +410,7 @@ class SubServiceRequest < ActiveRecord::Base
   ##########################
   ## SURVEY DISTRIBUTTION ##
   ##########################
- 
+
   def distribute_surveys
     # e-mail primary PI and requester
     primary_pi = service_request.protocol.primary_principal_investigator
@@ -412,15 +420,15 @@ class SubServiceRequest < ActiveRecord::Base
     available_surveys = line_items.map{|li| li.service.available_surveys}.flatten.compact.uniq
 
     # do nothing if we don't have any available surveys
-    
+
     unless available_surveys.blank?
       SurveyNotification.service_survey(available_surveys, primary_pi, self).deliver
       SurveyNotification.service_survey(available_surveys, requester, self).deliver
     end
   end
-  
+
   ### audit reporting methods ###
-  
+
   def audit_label audit
     "Service Request #{display_id}"
   end
@@ -431,7 +439,7 @@ class SubServiceRequest < ActiveRecord::Base
     filtered_audit_trail = {:line_items => []}
 
     full_trail = service_request.audit_report(identity, start_date, end_date)
-    full_line_items_audits = full_trail[:line_items] 
+    full_line_items_audits = full_trail[:line_items]
 
     full_line_items_audits.each do |k, audits|
       # if line item was created and destroyed in the same session we don't care to see it because it wasn't submitted
@@ -446,10 +454,20 @@ class SubServiceRequest < ActiveRecord::Base
       # destroy action
       else
         filtered_audit_trail[:line_items] << audit if audit.audited_changes["sub_service_request_id"] == self.id
-      end 
-    end 
+      end
+    end
     filtered_audit_trail[:sub_service_request_id] = self.id
     filtered_audit_trail
   end
   ### end audit reporting methods ###
+
+  private
+
+  def notify_remote_around_update?
+    true
+  end
+
+  def remotely_notifiable_attributes_to_watch
+    ['in_work_fulfillment']
+  end
 end

@@ -27,7 +27,6 @@ reports/*
 .rspec
 .sass-cache/
 .DS_Store
-.rbenv-version
 scratch
 .jhw-cache/
 *.swp
@@ -66,3 +65,6 @@ fixit.sql
 
 db/imports/*
 config/deploy/*.rb
+.ruby-gemset
+
+Procfile

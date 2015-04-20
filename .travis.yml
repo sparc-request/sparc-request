@@ -6,7 +6,8 @@ before_install:
   - gem --version
   - gem install bundler
   - bundle version
-  - bundle update debugger  
+  - bundle update debugger
+  - bundle update sqlite3
 before_script:
   - cp config/application.yml.example config/application.yml
   - cp config/database.yml.travis-ci config/database.yml

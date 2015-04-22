@@ -245,23 +245,27 @@ $ ->
 
   ############################
   # Begin pricing map logic
-  ############################
+  ############################q
 
-  # pricing maps one time fees
-  $('.otf input[type=checkbox]').live 'click', ->
-    pricing_map_id = $(this).data('pricing_map_id')
-    if pricing_map_id == undefined
-      pricing_map_id = ""
-    if $(this).is(":checked")
-      enable_per_patient_save()
-      show_otf_attributes(pricing_map_id)
-      if ($("#otf_quantity_type_#{pricing_map_id}").val() == "") || ($("#otf_unit_type_#{pricing_map_id}").val() == "") || ($("#otf_quantity_minimum_#{pricing_map_id}").val() == "") || ($("#otf_unit_max_#{pricing_map_id}").val() == "")
-        disable_otf_service_save()
-    else
-      hide_otf_attributes(pricing_map_id)
-      enable_otf_service_save()
-      if ($("#clinical_quantity_#{pricing_map_id}").val() == "") || ($("#unit_factor_#{pricing_map_id}").val() == "") || ($("#unit_minimum_#{pricing_map_id}").val() == "")
-        disable_per_patient_save()
+  $('.one_time_fee').live 'click', ->
+    pricing_map_ids = $(this).data('pricing_map_ids')
+    pricing_map_ids = pricing_map_ids.split(' ')
+    index = 0
+    while index < pricing_map_ids.length
+      if pricing_map_ids[index] == undefined
+        pricing_map_ids[index] = ""
+      if $(this).is(":checked")
+        enable_per_patient_save()
+        show_otf_attributes(pricing_map_ids[index])
+        if ($("#otf_quantity_type_#{pricing_map_ids[index]}").val() == "") || ($("#otf_unit_type_#{pricing_map_ids[index]}").val() == "") || ($("#otf_quantity_minimum_#{pricing_map_ids[index]}").val() == "") || ($("#otf_unit_max_#{pricing_map_ids[index]}").val() == "")
+          disable_otf_service_save()
+      else
+        hide_otf_attributes(pricing_map_ids[index])
+        enable_otf_service_save()
+        if ($("#clinical_quantity_#{pricing_map_ids[index]}").val() == "") || ($("#unit_factor_#{pricing_map_ids[index]}").val() == "") || ($("#unit_minimum_#{pricing_map_ids[index]}").val() == "")
+          disable_per_patient_save()
+      index++
+
 
   $('.otf_quantity_type').live 'change', ->
     pricing_map_id = $(this).data('pricing_map_id')

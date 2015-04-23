@@ -252,8 +252,6 @@ $ ->
     pricing_map_ids = pricing_map_ids.split(' ')
     index = 0
     while index < pricing_map_ids.length
-      if pricing_map_ids[index] == undefined
-        pricing_map_ids[index] = ""
       if $(this).is(":checked")
         enable_per_patient_save()
         show_otf_attributes(pricing_map_ids[index])

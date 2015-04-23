@@ -40,7 +40,7 @@ $(document).ready ->
     $('.procedure_r_qty, .procedure_t_qty').not('.changed_attr').prop('disabled', true)
   # end submit data for changes/requirements
 
-   $(document).on('click', '#save_appointments', (event) ->
+  $(document).on('click', '#save_appointments', (event) ->
     if $('.hasDatepicker:visible').val() == ""
       event.preventDefault()
       alert('Please select a date for this visit before saving.')

@@ -108,7 +108,7 @@ describe "subsidy page" do
         service3 = FactoryGirl.create(:service, organization_id:program2.id, name: 'Per Patient')
         subsidy_map2 = FactoryGirl.create(:subsidy_map, organization_id: program2.id, max_dollar_cap: (sub_service_request.direct_cost_total / 200), max_percentage: 50.00)
         program2.update_attribute(:subsidy_map, subsidy_map2)
-        pricing_map3 = FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service3.id, is_one_time_fee: false, display_date: Time.now - 1.day, full_rate: 2000, federal_rate: 3000, units_per_qty_max: 20)
+        pricing_map3 = FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service3.id, display_date: Time.now - 1.day, full_rate: 2000, federal_rate: 3000, units_per_qty_max: 20)
         @ssr2 = FactoryGirl.create(:sub_service_request, ssr_id: "0001", service_request_id: service_request.id, organization_id: program2.id,status: "draft")
         line_item3 = FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service3.id, sub_service_request_id: @ssr2.id, quantity: 0)
         

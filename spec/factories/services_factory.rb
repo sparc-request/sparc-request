@@ -37,6 +37,10 @@ FactoryGirl.define do
       is_available false
     end 
 
+    trait :one_time_fee do
+      one_time_fee true
+    end
+
     ignore do
       line_item_count 0
       pricing_map_count 1

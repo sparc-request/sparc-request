@@ -94,7 +94,7 @@
     %table
       %tbody
         %tr
-        %table{:style => pricing_map.try(:is_one_time_fee) ? "" : "display:none;", :id => "otf_fields_#{pricing_map.try(:id)}"}
+        %table{:style => @service.one_time_fee ? "" : "display:none;", :id => "otf_fields_#{pricing_map.try(:id)}"}
           %tbody
             %tr
               %th= t(:pricing_map_form)[:otf_unit_type]

@@ -44,8 +44,8 @@ describe 'SubServiceRequest' do
 
         before :each do          
           @ppv = FactoryGirl.create(:service, organization_id: core.id) # PPV Service
-          @otf = FactoryGirl.create(:service, organization_id: core.id) # OTF Service
-          @otf.pricing_maps.build(FactoryGirl.attributes_for(:pricing_map, :is_one_time_fee))
+          @otf = FactoryGirl.create(:service, organization_id: core.id, one_time_fee: true) # OTF Service
+          @otf.pricing_maps.build(FactoryGirl.attributes_for(:pricing_map))
           sub_service_request.update_attributes(organization_id: core.id)
 
           @ssr = sub_service_request
@@ -71,8 +71,8 @@ describe 'SubServiceRequest' do
           
           ppv = FactoryGirl.create(:service, organization_id: core.id, name: "Per Patient Service") # PPV Service
           ppv2 = FactoryGirl.create(:service, :disabled, organization_id: core3.id) # Disabled PPV Service
-          otf = FactoryGirl.create(:service, organization_id: core2.id, name: "OTF Service") # OTF Service
-          otf.pricing_maps.build(FactoryGirl.attributes_for(:pricing_map, :is_one_time_fee))
+          otf = FactoryGirl.create(:service, organization_id: core2.id, name: "OTF Service", one_time_fee: true) # OTF Service
+          otf.pricing_maps.build(FactoryGirl.attributes_for(:pricing_map))
 
           # ssr = FactoryGirl.create(:sub_service_request, organization_id: core.id)
 
@@ -148,7 +148,7 @@ describe 'SubServiceRequest' do
         end
 
         it "should return the direct cost for services that are visit based" do
-          pricing_map.update_attributes(is_one_time_fee: false)
+          service.update_attributes(one_time_fee: false)
           sub_service_request.direct_cost_total.should eq(0)
         end
       end

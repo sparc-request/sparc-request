@@ -145,21 +145,6 @@ describe 'Service' do
     end
   end
 
-    describe "is one time fee" do
-
-    let!(:service) { FactoryGirl.create(:service) }
-    let!(:pricing_map) { service.pricing_maps[0] }
-
-    it "should return false if the pricing map is not a one time fee" do
-      service.is_one_time_fee?.should eq(false)
-    end
-
-    it "should return true if the pricing map is a one time fee" do
-      pricing_map.update_attributes(is_one_time_fee: true)
-      service.is_one_time_fee?.should eq(true)
-    end
-  end
-
   describe "display attribute" do
 
     let!(:service) { FactoryGirl.create(:service, name: "Foo", abbreviation: "abc") }

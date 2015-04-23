@@ -138,11 +138,7 @@ class Service < ActiveRecord::Base
 
   # Checks if the service is currently a one-time-fee
   def is_one_time_fee?
-    begin
-      self.displayed_pricing_map.is_one_time_fee ? true : false
-    rescue
-      false
-    end
+    self.one_time_fee
   end
 
   def display_service_name(charge_code = false)

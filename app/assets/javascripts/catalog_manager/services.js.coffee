@@ -85,8 +85,8 @@ $(document).ready ->
     $('.per_patient_errors').css('display', 'inline-block')
     $('.save_button').attr('disabled', true)
     if $('.one_time_fee').is(":checked")
-      $("#otf_fields_").show()
-      $("#pp_fields_").hide()
+      $('.otf_field_errors').show()
+      $(".per_patient_errors").hide()
   )
 
   $('.remove_pricing_map').live('click', ->

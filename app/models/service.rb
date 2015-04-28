@@ -58,8 +58,8 @@ class Service < ActiveRecord::Base
   attr_accessible :send_to_epic
   attr_accessible :tag_list
   attr_accessible :revenue_code_range_id
+  attr_accessible :line_items_count
   attr_accessible :one_time_fee
-  
 
   validate :validate_pricing_maps_present
 

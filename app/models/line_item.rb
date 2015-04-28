@@ -22,7 +22,7 @@ class LineItem < ActiveRecord::Base
   audited
 
   belongs_to :service_request
-  belongs_to :service, :include => [:pricing_maps, :organization]
+  belongs_to :service, :include => [:pricing_maps, :organization], :counter_cache => true
   belongs_to :sub_service_request
   has_many :fulfillments, :dependent => :destroy
 

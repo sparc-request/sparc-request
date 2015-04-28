@@ -42,6 +42,10 @@ module CatalogManager::CatalogHelper
       false
     end
   end
+
+  def pricing_map_ids service
+    service.pricing_maps.map{|x| x.id}
+  end
 end
 def display_name object
   (object.respond_to?(:cpt_code) or object.respond_to?(:charge_code)) ? object.display_service_name(charge_code = true) : object.name

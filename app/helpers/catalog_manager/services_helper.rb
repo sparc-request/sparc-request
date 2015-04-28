@@ -31,7 +31,7 @@ module CatalogManager::ServicesHelper
   def display_otf_attributes pricing_map
     if pricing_map
       attributes = ""
-      if pricing_map.is_one_time_fee
+      if pricing_map.service.one_time_fee
         if pricing_map.otf_unit_type == "N/A"
           attributes = "# " + pricing_map.quantity_type
         else
@@ -48,7 +48,7 @@ module CatalogManager::ServicesHelper
     style = ""
 
     if pricing_map
-      if pricing_map.is_one_time_fee
+      if pricing_map.service.one_time_fee
         style = "display:none;"
       end
     else

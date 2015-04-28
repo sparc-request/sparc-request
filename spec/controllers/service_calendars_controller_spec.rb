@@ -324,19 +324,19 @@ describe ServiceCalendarsController do
   context('calendar methods') do
     let!(:service1) {
       service = FactoryGirl.create(:service, pricing_map_count: 1, organization_id: program.id)
-      service.pricing_maps[0].update_attributes(display_date: Date.today, is_one_time_fee: false)
+      service.pricing_maps[0].update_attributes(display_date: Date.today)
       service
     }
 
     let!(:service2) {
       service = FactoryGirl.create(:service, pricing_map_count: 1, organization_id: program.id)
-      service.pricing_maps[0].update_attributes(display_date: Date.today, is_one_time_fee: false)
+      service.pricing_maps[0].update_attributes(display_date: Date.today)
       service
     }
 
     let!(:service3) {
       service = FactoryGirl.create(:service, pricing_map_count: 1, organization_id: program.id)
-      service.pricing_maps[0].update_attributes(display_date: Date.today, is_one_time_fee: false)
+      service.pricing_maps[0].update_attributes(display_date: Date.today)
       service
     }
 

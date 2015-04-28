@@ -34,8 +34,8 @@ class Portal::LineItemsVisitsController < Portal::BaseController
       # Have to reload the service request to get the correct direct cost total for the subsidy
       @subsidy.try(:sub_service_request).try(:reload)
       @subsidy.try(:fix_pi_contribution, percent)
-      @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.is_one_time_fee?}
-      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
+      @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
+      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
       render 'portal/sub_service_requests/add_line_item'
     else
       @line_items_visit.reload
@@ -64,8 +64,8 @@ class Portal::LineItemsVisitsController < Portal::BaseController
         @subsidy.try(:sub_service_request).try(:reload)
         @subsidy.try(:fix_pi_contribution, percent)
         @service_request = @sub_service_request.service_request
-        @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.is_one_time_fee?}
-        @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
+        @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
+        @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
         render 'portal/sub_service_requests/add_line_item'
       end
     end

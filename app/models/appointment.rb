@@ -53,7 +53,7 @@ class Appointment < ActiveRecord::Base
     values =[]
     visits.each do |visit|
       line_item = visit.line_items_visit.line_item
-      if line_item.service.is_ctrc? && !line_item.service.is_one_time_fee?
+      if line_item.service.is_ctrc? && !line_item.service.one_time_fee
         values << [line_item.id,visit.id,true,self.id]
       end
     end

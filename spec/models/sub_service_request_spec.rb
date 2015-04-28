@@ -245,6 +245,10 @@ describe 'SubServiceRequest' do
       let!(:line_item1) { FactoryGirl.create(:line_item, sub_service_request_id: ssr1.id, service_request_id: service_request.id, service_id: service.id) }
       let!(:line_item2) { FactoryGirl.create(:line_item, sub_service_request_id: ssr2.id, service_request_id: service_request.id, service_id: service2.id) }
 
+      before :each do
+        EDITABLE_STATUSES[sub_service_request.organization.id] = ['first_draft', 'draft', 'submitted', nil, 'get_a_quote', 'awaiting_pi_approval']
+      end
+
       context "can be edited" do
 
         it "should return true if the status is draft" do
@@ -262,7 +266,7 @@ describe 'SubServiceRequest' do
           sub_service_request.can_be_edited?.should eq(true)
         end
 
-        it "should return true if the status is nil" do
+        it "should return true if the status is get a quote" do
           sub_service_request.update_attributes(status: 'get_a_quote')
           sub_service_request.can_be_edited?.should eq(true)
         end
@@ -274,8 +278,7 @@ describe 'SubServiceRequest' do
       end
 
       before :each do
-        org1.tag_list = "ctrc"
-        org1.save
+        EDITABLE_STATUSES[ssr1.organization.id] = ['first_draft', 'draft', 'submitted', nil, 'get_a_quote', 'awaiting_pi_approval']
       end
 
       context "update based on status" do

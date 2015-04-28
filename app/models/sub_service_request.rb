@@ -264,20 +264,22 @@ class SubServiceRequest < ActiveRecord::Base
     self.organization.tag_list.include? "ctrc"
   end
 
-  # Can't edit a Nexus ssr if it's placed in an uneditable status
+  # Can't edit a request if it's placed in an uneditable status
   def can_be_edited?
-    if (nexus_editable_status?(self.status) || !self.ctrc?)
-      return true
+    if EDITABLE_STATUSES.keys.include? self.organization.id
+      EDITABLE_STATUSES[self.organization.id].include?(self.status)
+    else
+      true
     end
-
-    return false
   end
 
-  # If the ssr can't be edited AND it's a Nexus request AND there are multiple ssrs under it's service request
+  # If the ssr can't be edited AND it's a request that restricts editing AND there are multiple ssrs under it's service request
   # (no need to create a new sr if there's only one ssr) AND it's previous status was an editable one
   # AND it's new status is an uneditable one, then create a new sr and place the ssr under it. Probably don't need the last condition.
   def update_based_on_status previous_status
-    if !self.can_be_edited? && self.ctrc? && (self.service_request.sub_service_requests.count > 1) && nexus_editable_status?(previous_status) && !nexus_editable_status?(self.status)
+    if !self.can_be_edited? && EDITABLE_STATUSES.keys.include?(self.organization.id) && (self.service_request.sub_service_requests.count > 1) &&
+                            EDITABLE_STATUSES[self.organization.id].include?(previous_status) &&
+                            !EDITABLE_STATUSES[self.organization.id].include?(self.status)
       self.switch_to_new_service_request
     end
   end
@@ -308,10 +310,6 @@ class SubServiceRequest < ActiveRecord::Base
     end
 
     self.update_attributes(service_request_id: new_sr.id)
-  end
-
-  def nexus_editable_status? status
-    ['first_draft', 'draft', 'submitted', nil, 'get_a_quote', 'awaiting_pi_approval'].include?(status)
   end
 
   def arms_editable?

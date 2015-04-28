@@ -32,7 +32,7 @@ class Portal::LineItemsController < Portal::BaseController
     @line_items_visit = LineItemsVisit.find(params[:line_items_visit_id]) if params[:line_items_visit_id]
     @service_id = params[:service_id]
 
-    if @line_item.service.is_one_time_fee?
+    if @line_item.service.one_time_fee
       update_otf_line_item()
     else
       if params[:displayed_cost] # we only want to update the displayed cost
@@ -54,8 +54,8 @@ class Portal::LineItemsController < Portal::BaseController
      # Have to reload the service request to get the correct direct cost total for the subsidy
     @subsidy.try(:sub_service_request).try(:reload)
     @subsidy.try(:fix_pi_contribution, @percent)
-    @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.is_one_time_fee?}
-    @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
+    @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
+    @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
     render 'portal/sub_service_requests/add_line_item'
   end
 
@@ -77,7 +77,7 @@ class Portal::LineItemsController < Portal::BaseController
     end
   
     if updated_service_relations && @line_item.update_attributes(params[:line_item])
-      @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.is_one_time_fee?}
+      @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
       render 'portal/sub_service_requests/add_otf_line_item'
     else
       @line_item.reload
@@ -101,8 +101,8 @@ class Portal::LineItemsController < Portal::BaseController
       # Have to reload the service request to get the correct direct cost total for the subsidy
       @subsidy.try(:fix_pi_contribution, percent)
       @service_request = @sub_service_request.service_request
-      @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.is_one_time_fee?}
-      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
+      @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
+      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
 
       render 'portal/sub_service_requests/add_line_item'
     end
@@ -159,8 +159,8 @@ def update_otf_line_item
     # Have to reload the service request to get the correct direct cost total for the subsidy
     @subsidy.try(:sub_service_request).try(:reload)
     @subsidy.try(:fix_pi_contribution, @percent)
-    @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.is_one_time_fee?}
-    @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
+    @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
+    @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
     render 'portal/sub_service_requests/add_line_item'
   else
     @line_item.reload

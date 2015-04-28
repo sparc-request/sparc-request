@@ -35,7 +35,7 @@ class Portal::FulfillmentsController < Portal::BaseController
   def create
     if @fulfillment = Fulfillment.create(params[:fulfillment])
       @sub_service_request = @fulfillment.line_item.sub_service_request
-      @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.is_one_time_fee?}
+      @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
       @active = @fulfillment.line_item.id
       render 'create'
     else
@@ -49,7 +49,7 @@ class Portal::FulfillmentsController < Portal::BaseController
     @fulfillment = Fulfillment.find(params[:id])
     @sub_service_request = @fulfillment.line_item.sub_service_request
     if @fulfillment.delete
-      @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.is_one_time_fee?}
+      @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
       render 'create'
     end
   end

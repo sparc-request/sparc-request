@@ -57,7 +57,7 @@ class Portal::VisitsController < Portal::BaseController
       # Have to reload the service request to get the correct direct cost total for the subsidy
       @subsidy.try(:sub_service_request).try(:reload)
       @subsidy.try(:fix_pi_contribution, percent)
-      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
+      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
       render 'portal/service_requests/add_per_patient_per_visit_visit'
     end
   end

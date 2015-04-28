@@ -152,12 +152,12 @@ class SubServiceRequest < ActiveRecord::Base
 
   def one_time_fee_line_items
     line_items = LineItem.where(:sub_service_request_id => self.id).includes(:service)
-    line_items.select {|li| li.service.is_one_time_fee?}
+    line_items.select {|li| li.service.one_time_fee}
   end
 
   def per_patient_per_visit_line_items
     line_items = LineItem.where(:sub_service_request_id => self.id).includes(:service)
-    line_items.select {|li| !li.service.is_one_time_fee?}    
+    line_items.select {|li| !li.service.one_time_fee}    
   end
   
   def has_one_time_fee_services?
@@ -173,7 +173,7 @@ class SubServiceRequest < ActiveRecord::Base
     total = 0.0
 
     self.line_items.each do |li|
-      if li.service.is_one_time_fee?
+      if li.service.one_time_fee
         total += li.direct_costs_for_one_time_fee
       else
         total += li.direct_costs_for_visit_based_service
@@ -197,7 +197,7 @@ class SubServiceRequest < ActiveRecord::Base
     total = 0.0
 
     self.line_items.each do |li|
-      if li.service.is_one_time_fee?
+      if li.service.one_time_fee
        total += li.indirect_costs_for_one_time_fee
       else
        total += li.indirect_costs_for_visit_based_service

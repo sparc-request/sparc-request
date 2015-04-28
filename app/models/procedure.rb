@@ -142,7 +142,7 @@ class Procedure < ActiveRecord::Base
     elsif procedure.visit
       if procedure.completed
         return true
-      elsif procedure.line_item.service.is_one_time_fee?
+      elsif procedure.line_item.service.one_time_fee
         return false
       elsif procedure.appointment.visit_group_id.nil?
         return true if self.completed

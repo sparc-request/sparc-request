@@ -46,19 +46,6 @@ class LineItem < ActiveRecord::Base
 
   accepts_nested_attributes_for :fulfillments, :allow_destroy => true
 
-  after_create :increment_counter
-  before_destroy :decrement_counter
-
-  def increment_counter
-    self.service.increment(:line_items_count)
-    self.service.save
-  end
-
-  def decrement_counter
-    self.service.decrement(:line_items_count)
-    self.service.save
-  end
-
   def displayed_cost
     applicable_rate
   end

@@ -59,6 +59,7 @@ class Service < ActiveRecord::Base
   attr_accessible :tag_list
   attr_accessible :revenue_code_range_id
   attr_accessible :line_items_count
+  attr_accessible :one_time_fee
 
   validate :validate_pricing_maps_present
 
@@ -134,15 +135,6 @@ class Service < ActiveRecord::Base
   # Display pricing formatting for reporting
   def report_pricing currency
     '$' + sprintf("%.2f", currency.to_f / 100.0)
-  end
-
-  # Checks if the service is currently a one-time-fee
-  def is_one_time_fee?
-    begin
-      self.displayed_pricing_map.is_one_time_fee ? true : false
-    rescue
-      false
-    end
   end
 
   def display_service_name(charge_code = false)

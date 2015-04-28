@@ -141,7 +141,7 @@ describe LineItemsVisit do
       describe "direct costs for one time fee" do
 
         it "should return the correct direct cost" do
-          pricing_map.update_attributes(is_one_time_fee: true)
+          service.update_attributes(one_time_fee: true)
           @line_items_visit.direct_costs_for_one_time_fee.should eq(250)
         end
       end

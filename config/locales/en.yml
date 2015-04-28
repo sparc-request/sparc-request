@@ -723,6 +723,7 @@ en:
     split_notify: "Split/Notify Here"
     css_class: "Color"
     disabled: "Do not display in SPARC"
+    one_time_fee: "One Time Fee"
     core_facility: "Core/Facility Based Services"
     service_center_cost: "Service Center Cost"
     hospital_based_services: "Hospital Based Services"

@@ -28,6 +28,14 @@ FactoryGirl.define do
     process_ssrs  { false }
     is_available  { true }
 
+    trait :ctrc do
+      after(:create) do |organization, evaluator|
+        organization.tag_list = "ctrc_clinical_services"
+
+        organization.save
+      end
+    end
+
     trait :with_pricing_setup do
       after(:create) do |organization, evaluator|
         FactoryGirl.create(:pricing_setup, organization: organization)
@@ -76,6 +84,7 @@ FactoryGirl.define do
     end
 
     factory :organization_with_process_ssrs, traits: [:process_ssrs, :with_pricing_setup]
+    factory :organization_ctrc, traits: [:ctrc]
   end
 
   factory :institution do

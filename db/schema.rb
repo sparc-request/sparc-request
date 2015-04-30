@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150422193755) do
+ActiveRecord::Schema.define(:version => 20150427153650) do
 
   create_table "admin_rates", :force => true do |t|
     t.integer  "line_item_id"
@@ -544,7 +544,6 @@ ActiveRecord::Schema.define(:version => 20150422193755) do
     t.string   "unit_type"
     t.decimal  "unit_factor",                :precision => 5,  :scale => 2
     t.decimal  "percent_of_fee",             :precision => 5,  :scale => 2
-    t.boolean  "is_one_time_fee"
     t.decimal  "full_rate",                  :precision => 12, :scale => 4
     t.boolean  "exclude_from_indirect_cost"
     t.integer  "unit_minimum"
@@ -861,6 +860,8 @@ ActiveRecord::Schema.define(:version => 20150422193755) do
     t.boolean  "send_to_epic",                                                  :default => false
     t.integer  "revenue_code_range_id"
     t.integer  "service_level_components_count",                                :default => 0
+    t.boolean  "one_time_fee",                                                  :default => false
+    t.integer  "line_items_count",                                              :default => 0
   end
 
   add_index "services", ["is_available"], :name => "index_services_on_is_available"

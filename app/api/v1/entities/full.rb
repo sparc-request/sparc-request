@@ -33,9 +33,8 @@ module V1
             :optional,
             :quantity,
             :units_per_quantity,
-            :per_unit_cost
-
-    expose  :is_one_time_fee?, as: :one_time_fee
+            :per_unit_cost,
+            :one_time_fee
 
     with_options(format_with: :iso_timestamp) do
       expose :complete_date
@@ -132,7 +131,9 @@ module V1
             :organization_id,
             :send_to_epic,
             :revenue_code_range_id,
-            :service_level_components_count
+            :service_level_components_count,
+            :one_time_fee,
+            :line_items_count
 
     expose  :process_ssrs_organization, using: V1::ProcessSsrsOrganizationFull
   end

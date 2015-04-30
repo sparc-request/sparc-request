@@ -39,28 +39,22 @@ RSpec.describe Service, type: :model do
 
         context 'Service is part of Research Nexus' do
 
-          before do
+          it 'should create a RemoteServiceNotifierJob' do
             work_off
 
-            research_nexus_program  = FactoryGirl.create(:program, name: 'Research Nexus')
-            organization            = FactoryGirl.create(:core, name: 'Core 1', parent_id: research_nexus_program.id)
-            FactoryGirl.create(:service, organization: organization)
-          end
+            FactoryGirl.create(:service_with_ctrc_organization)
 
-          it 'should create a RemoteServiceNotifierJob' do
             expect(Delayed::Job.where("handler LIKE '%RemoteServiceNotifierJob%'").one?).to be
           end
         end
 
         context 'Service is not part of Research Nexus' do
 
-          before do
+          it 'should create a RemoteServiceNotifierJob' do
             work_off
 
             FactoryGirl.create(:service)
-          end
 
-          it 'should create a RemoteServiceNotifierJob' do
             expect(Delayed::Job.where("handler LIKE '%RemoteServiceNotifierJob%'").one?).to_not be
           end
         end

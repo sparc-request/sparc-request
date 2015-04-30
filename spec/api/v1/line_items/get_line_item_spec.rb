@@ -7,7 +7,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
     before do
       protocol        = FactoryGirl.build(:protocol_federally_funded)
       protocol.save validate: false
-      service         = FactoryGirl.create(:service_with_one_time_fee_pricing_map)
+      service         = FactoryGirl.create(:service_with_pricing_map)
       service_request = FactoryGirl.build(:service_request, protocol: protocol)
       service_request.save validate: false
       @line_item      = FactoryGirl.create(:line_item, service: service,

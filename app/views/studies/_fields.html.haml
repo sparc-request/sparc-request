@@ -35,10 +35,18 @@
           .field
             = f.label :short_title, t(:protocol_shared)[:title]
             = f.text_field :short_title
-          
+
           .field
             = f.label :title, t(:study_form)[:title]
             = f.text_field :title
+
+          .field
+            = f.label :has_cofc, t(:study_form)[:has_cofc], :style => 'width: 250px'
+            %span.non_standard_usage_of_radio_buttons
+              = f.radio_button :has_cofc, true
+              = f.label :has_cofc, 'Yes'
+              = f.radio_button :has_cofc, false
+              = f.label :has_cofc, 'No'
           
           .field
             = f.label :funding_status, t(:protocol_shared)[:funding_status]
@@ -71,10 +79,10 @@
               .field
                 = f.label :federal_phs_sponsor, t(:study_form)[:federal_phs_sponsor]
                 = f.select :federal_phs_sponsor, options_for_select(FEDERAL_GRANT_PHS_SPONSORS, study.federal_phs_sponsor), :include_blank => t(:study_form)[:phs_blank]
-              
+
               .field
                 %span -OR-
-          
+
               .field
                 = f.label :federal_non_phs_sponsor, t(:study_form)[:federal_non_phs_sponsor]
                 = f.select :federal_non_phs_sponsor, options_for_select(FEDERAL_GRANT_NON_PHS_SPONSORS, study.federal_non_phs_sponsor), :include_blank => t(:study_form)[:phs_blank]
@@ -101,7 +109,13 @@
                 = f.label :selected_for_epic, "Yes"
                 = f.radio_button :selected_for_epic, false
                 = f.label :selected_for_epic, "No"
-
+            .study_type{style: "#{f.object.selected_for_epic ? '' : 'display:none;'}"}
+              = f.label :study_type_questions
+              = f.fields_for :study_type_answers do |answer|
+                .field{id: "study_type_answer_#{answer.object.study_type_question.friendly_id}", style: (answer.object.study_type_question.friendly_id == 'higher_level_of_privacy' ? '' : "display:none")}
+                  = answer.label :answer, answer.object.study_type_question.question, class: "long"
+                  = answer.select :answer, options_for_select([['Yes', true], ['No', false]], answer.object.answer), {include_blank: "Select One"}, id: "study_type_answer_#{answer.object.study_type_question.friendly_id}_answer"
+                  = answer.hidden_field :study_type_question_id
 
     %td.box-padding
       &nbsp;
@@ -207,7 +221,7 @@
                 = va.label :iacuc_expiration_date, t(:study_form)[:iacuc_expiration_date]
                 = text_field_tag :iacuc_expiration_date, (study.vertebrate_animals_info.iacuc_expiration_date.strftime('%_m/%d/%Y') rescue nil)
                 = va.hidden_field :iacuc_expiration_date
-            
+
             = f.fields_for :research_types_info do |rt|
               .field.investigational_products
                 = rt.label :investigational_products, t(:study_form)[:investigational_products]
@@ -261,14 +275,14 @@
                 = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
                 = rt.hidden_field :name, :value => rt.object.name
         %fieldset
-          %legend= t(:study_form)[:type] 
+          %legend= t(:study_form)[:type]
           %div
             = f.fields_for :study_types do |rt|
               .field{:class => rt.object.name}
                 = rt.label :name, "#{StudyType::TYPES[rt.object.name]}:"
                 = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
                 = rt.hidden_field :name, :value => rt.object.name
-    
+
     %td.box-padding
       &nbsp;
 

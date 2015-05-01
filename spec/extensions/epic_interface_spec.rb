@@ -471,6 +471,145 @@ describe EpicInterface do
       node.should be_equivalent_to(expected)
     end
 
+    describe 'emitting a subjectOf for a study type' do
+      it 'should handle nils for questions 2, 3, and 4' do
+        STUDY_TYPE_QUESTIONS.each_with_index do |stq, index|
+          StudyTypeQuestion.create(order: index + 1, question: stq)
+        end
+        answers = [true, true, true, nil, nil, nil]
+        stq_ids = StudyTypeQuestion.all.map(&:id)
+        stq_ids.each_with_index do |id, index|
+          StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: id, answer: answers[index])
+        end
+
+        epic_interface.send_study_creation(study)
+
+        xml = <<-END
+          <subjectOf typeCode="SUBJ"
+                      xmlns='urn:hl7-org:v3'
+                      xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+            <studyCharacteristic classCode="OBS" moodCode="EVN">
+              <code code="STUDYTYPE" />
+              <value value="1" />
+            </studyCharacteristic>
+          </subjectOf>
+        END
+
+        expected = Nokogiri::XML(xml)
+
+        node = epic_received[0].xpath(
+        '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+        'env' => 'http://www.w3.org/2003/05/soap-envelope',
+        'rpe' => 'urn:ihe:qrph:rpe:2009',
+        'hl7' => 'urn:hl7-org:v3')
+
+        node.should be_equivalent_to(expected)
+      end
+
+      it 'should handle answering all questions' do
+        STUDY_TYPE_QUESTIONS.each_with_index do |stq, index|
+          StudyTypeQuestion.create(order: index + 1, question: stq)
+        end
+        answers = [true, false, false, true, false, true]
+        stq_ids = StudyTypeQuestion.all.map(&:id)
+        stq_ids.each_with_index do |id, index|
+          StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: id, answer: answers[index])
+        end
+
+        epic_interface.send_study_creation(study)
+
+        xml = <<-END
+          <subjectOf typeCode="SUBJ"
+                      xmlns='urn:hl7-org:v3'
+                      xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+            <studyCharacteristic classCode="OBS" moodCode="EVN">
+              <code code="STUDYTYPE" />
+              <value value="8" />
+            </studyCharacteristic>
+          </subjectOf>
+        END
+
+        expected = Nokogiri::XML(xml)
+
+        node = epic_received[0].xpath(
+        '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+        'env' => 'http://www.w3.org/2003/05/soap-envelope',
+        'rpe' => 'urn:ihe:qrph:rpe:2009',
+        'hl7' => 'urn:hl7-org:v3')
+
+        node.should be_equivalent_to(expected)
+      end
+
+      it 'should handle answering all questions' do
+        STUDY_TYPE_QUESTIONS.each_with_index do |stq, index|
+          StudyTypeQuestion.create(order: index + 1, question: stq)
+        end
+        answers = [true, true, false, true, false, true]
+        stq_ids = StudyTypeQuestion.all.map(&:id)
+        stq_ids.each_with_index do |id, index|
+          StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: id, answer: answers[index])
+        end
+
+        epic_interface.send_study_creation(study)
+
+        xml = <<-END
+          <subjectOf typeCode="SUBJ"
+                      xmlns='urn:hl7-org:v3'
+                      xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+            <studyCharacteristic classCode="OBS" moodCode="EVN">
+              <code code="STUDYTYPE" />
+              <value value="1" />
+            </studyCharacteristic>
+          </subjectOf>
+        END
+
+        expected = Nokogiri::XML(xml)
+
+        node = epic_received[0].xpath(
+        '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+        'env' => 'http://www.w3.org/2003/05/soap-envelope',
+        'rpe' => 'urn:ihe:qrph:rpe:2009',
+        'hl7' => 'urn:hl7-org:v3')
+
+        node.should be_equivalent_to(expected)
+      end
+
+      it 'should handle nils for questions 1b and 1c' do
+        STUDY_TYPE_QUESTIONS.each_with_index do |stq, index|
+          StudyTypeQuestion.create(order: index + 1, question: stq)
+        end
+        answers = [false, nil, nil, false, true, true]
+        stq_ids = StudyTypeQuestion.all.map(&:id)
+        stq_ids.each_with_index do |id, index|
+          StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: id, answer: answers[index])
+        end
+
+        epic_interface.send_study_creation(study)
+
+        xml = <<-END
+          <subjectOf typeCode="SUBJ"
+                      xmlns='urn:hl7-org:v3'
+                      xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+            <studyCharacteristic classCode="OBS" moodCode="EVN">
+              <code code="STUDYTYPE" />
+              <value value="11" />
+            </studyCharacteristic>
+          </subjectOf>
+        END
+
+        expected = Nokogiri::XML(xml)
+
+        node = epic_received[0].xpath(
+        '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+        'env' => 'http://www.w3.org/2003/05/soap-envelope',
+        'rpe' => 'urn:ihe:qrph:rpe:2009',
+        'hl7' => 'urn:hl7-org:v3')
+
+        node.should be_equivalent_to(expected)
+      end
+    end
+
+
     it 'should emit a subjectOf for the category grouper GOV if its funding source is not industry' do
       study.update_attributes(funding_source: 'college')
 

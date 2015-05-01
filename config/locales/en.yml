@@ -32,6 +32,7 @@ en:
     attributes:
       protocol:
         human_subjects_info: "The NCT #"
+        has_cofc: "Does your study have a Certificate of Confidentiality"
       human_subjects_info:
         nct_number: "The NCT #"
     errors:
@@ -443,6 +444,7 @@ en:
     options: "Optional"
     attributes: "Study Attributes"
     title: "Protocol Title:*"
+    has_cofc: "Does your study have a Certificate of Confidentiality?"
     status_blank: "Select a Funding Status"
     udak_project_number: "Financial Account (UDAK#):"
     sponsor_name: "Sponsor Name:*"

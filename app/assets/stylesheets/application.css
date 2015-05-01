@@ -1265,6 +1265,10 @@ legend {
   padding: 2px;
 }
 
+.edit-project-view .box .info label.long {
+  width: 375px;
+}
+
 .edit-project-view .box .info span.non_standard_usage_of_radio_buttons label,
 .edit-project-view .box .info span.non_standard_usage_of_radio_buttons input {
   width: auto !important;

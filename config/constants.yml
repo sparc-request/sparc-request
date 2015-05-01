@@ -85,7 +85,7 @@ study_type_answers: { '1' : [true, true, ~, ~, ~, ~],
                       '15': [false, ~, ~, true, true, true],
                       '16': [false, ~, ~, true, false, true],
                       '17': [false, ~, ~, true, true, false],
-                      '18': [false, ~, ~, true, false, false] }
+                      '0': [false, ~, ~, true, false, false] }
 funding_statuses: { 'Pending Funding': 'pending_funding',
                     'Funded': 'funded' }
 available_statuses: { 'draft': 'Draft',

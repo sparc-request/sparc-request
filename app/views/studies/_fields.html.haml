@@ -41,6 +41,14 @@
             = f.text_field :title
 
           .field
+            = f.label :has_cofc, t(:study_form)[:has_cofc], :style => 'width: 250px'
+            %span.non_standard_usage_of_radio_buttons
+              = f.radio_button :has_cofc, true
+              = f.label :has_cofc, 'Yes'
+              = f.radio_button :has_cofc, false
+              = f.label :has_cofc, 'No'
+          
+          .field
             = f.label :funding_status, t(:protocol_shared)[:funding_status]
             = f.select :funding_status, options_for_select(FUNDING_STATUSES, study.funding_status), :include_blank => t(:study_form)[:status_blank]
 

@@ -180,6 +180,7 @@ class EpicInterface
         emit_irb_number(xml, study)
         emit_category_grouper(xml, study)
         emit_study_type(xml, study)
+        emit_cofc(xml, study)
         emit_visits(xml, study)
         emit_procedures_and_encounters(xml, study)
       }
@@ -206,6 +207,7 @@ class EpicInterface
         emit_irb_number(xml, study)
         emit_category_grouper(xml, study)
         emit_study_type(xml, study)
+        emit_cofc(xml, study)
       }
     }
 
@@ -278,6 +280,17 @@ class EpicInterface
       xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
         xml.code(code: 'RGCL1')
         xml.value(value: grouper)
+      }
+    }
+  end
+
+  def emit_cofc(xml, study)
+    cofc = study.has_cofc? ? 'Yes_CofC' : 'No_CofC'
+
+    xml.subjectOf(typeCode: 'SUBJ') {
+      xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
+        xml.code(code: 'CofC')
+        xml.value(value: cofc)
       }
     }
   end

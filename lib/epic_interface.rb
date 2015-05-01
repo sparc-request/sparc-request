@@ -179,6 +179,8 @@ class EpicInterface
         emit_nct_number(xml, study)
         emit_irb_number(xml, study)
         emit_category_grouper(xml, study)
+        emit_study_type(xml, study)
+        emit_cofc(xml, study)
         emit_visits(xml, study)
         emit_procedures_and_encounters(xml, study)
       }
@@ -204,6 +206,8 @@ class EpicInterface
         emit_nct_number(xml, study)
         emit_irb_number(xml, study)
         emit_category_grouper(xml, study)
+        emit_study_type(xml, study)
+        emit_cofc(xml, study)
       }
     }
 
@@ -278,6 +282,41 @@ class EpicInterface
         xml.value(value: grouper)
       }
     }
+  end
+
+  def emit_cofc(xml, study)
+    cofc = study.has_cofc? ? 'Yes_CofC' : 'No_CofC'
+
+    xml.subjectOf(typeCode: 'SUBJ') {
+      xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
+        xml.code(code: 'CofC')
+        xml.value(value: cofc)
+      }
+    }
+  end
+
+  def emit_study_type(xml, study)
+    answers = []
+    StudyTypeQuestion.find_each do |stq|
+      answers << stq.study_type_answers.find_by_protocol_id(study.id).answer
+    end
+
+    study_type = nil
+    STUDY_TYPE_ANSWERS.each do |k, v|
+      if v == answers
+        study_type = k
+        break
+      end
+    end
+
+    if study_type then
+      xml.subjectOf(typeCode: 'SUBJ') {
+        xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
+          xml.code(code: 'STUDYTYPE')
+          xml.value(value: study_type)
+        }
+      }
+    end
   end
 
   # Build a study calendar definition message to send to epic and return

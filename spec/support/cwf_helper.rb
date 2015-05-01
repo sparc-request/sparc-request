@@ -1,5 +1,11 @@
 module CwfHelper
 
+  def cwf_sends_api_put_request_for_resource(klass, object_id, params)
+    http_login
+
+    put "/v1/#{klass}/#{object_id}.json", params, @env
+  end
+
   def cwf_sends_api_get_request_for_resource(klass, object_id, depth)
     http_login
 

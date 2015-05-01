@@ -78,6 +78,20 @@ module SPARCCWF
           end
         end
       end
+
+      resource :services do
+
+        route_param :id do
+
+          put do
+            find_object('service', params[:id])
+
+            update_service_line_items_count_attribute params[:service]
+
+            :ok
+          end
+        end
+      end
     end
   end
 end

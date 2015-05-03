@@ -285,11 +285,11 @@ class EpicInterface
   end
 
   def emit_cofc(xml, study)
-    cofc = study.has_cofc? ? 'Yes_CofC' : 'No_CofC'
+    cofc = study.has_cofc? ? 'YES_COFC' : 'NO_COFC'
 
     xml.subjectOf(typeCode: 'SUBJ') {
       xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
-        xml.code(code: 'CofC')
+        xml.code(code: 'RGCL3')
         xml.value(value: cofc)
       }
     }

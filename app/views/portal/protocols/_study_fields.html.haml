@@ -38,6 +38,14 @@
           = f.text_field :title
         
         .field
+          = f.label :has_cofc, t(:study_form)[:has_cofc], :style => 'width: 250px'
+          %span.non_standard_usage_of_radio_buttons
+            = f.radio_button :has_cofc, true
+            = f.label :has_cofc, 'Yes'
+            = f.radio_button :has_cofc, false
+            = f.label :has_cofc, 'No'
+        
+        .field
           = f.label :funding_status, t(:protocol_shared)[:funding_status]
           = f.select :funding_status, options_for_select(FUNDING_STATUSES, study.funding_status), :include_blank => t(:study_form)[:status_blank]
     
@@ -106,6 +114,13 @@
               = f.label :selected_for_epic, "Yes"
               = f.radio_button :selected_for_epic, false
               = f.label :selected_for_epic, "No"
+            .study_type{style: "#{f.object.selected_for_epic ? '' : 'display:none;'}"}
+              = f.label :study_type_questions
+              = f.fields_for :study_type_answers do |answer|
+                .field{id: "study_type_answer_#{answer.object.study_type_question.friendly_id}", style: (answer.object.study_type_question.friendly_id == 'higher_level_of_privacy' ? '' : "display:none")}
+                  = answer.label :answer, answer.object.study_type_question.question, class: "long"
+                  = answer.select :answer, options_for_select([['Yes', true], ['No', false]], answer.object.answer), {include_blank: "Select One"}, id: "study_type_answer_#{answer.object.study_type_question.friendly_id}_answer"
+                  = answer.hidden_field :study_type_question_id
 
       %fieldset
         %legend= t(:study_form)[:optional_text]

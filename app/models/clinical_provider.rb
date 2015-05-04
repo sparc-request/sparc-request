@@ -19,12 +19,15 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class ClinicalProvider < ActiveRecord::Base
+
+  include RemotelyNotifiable
+
   audited
 
   belongs_to :organization
   belongs_to :identity
 
-  attr_accessible :identity_id 
+  attr_accessible :identity_id
   attr_accessible :organization_id
 
   def core

@@ -12,6 +12,13 @@ module V1
     root 'identities', 'identity'
   end
 
+  class ClinicalProviderFullWithShallowReflection < ClinicalProviderFull
+    root 'clinical_providers', 'clinical_provider'
+
+    expose :identity,     using: V1::IdentityShallow
+    expose :organization, using: V1::ProcessSsrsOrganizationShallow
+  end
+
   class ProjectRoleFullWithShallowReflection < ProjectRoleFull
     root 'project_roles', 'project_role'
 

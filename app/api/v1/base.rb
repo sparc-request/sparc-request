@@ -27,6 +27,8 @@ module SPARCCWF
       helpers HelpersV1
 
       published_resources = [
+        :organizations,
+        :clinical_providers,
         :identities,
         :project_roles,
         :arms,

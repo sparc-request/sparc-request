@@ -9,6 +9,10 @@ module V1
     root 'arms', 'arm'
   end
 
+  class ClinicalProviderShallow < Shallow
+    root 'clinical_providers', 'clinical_provider'
+  end
+
   class IdentityShallow < Shallow
     root 'identities', 'identity'
   end

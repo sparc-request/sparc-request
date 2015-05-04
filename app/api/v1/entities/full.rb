@@ -12,6 +12,13 @@ module V1
             :minimum_subject_count
   end
 
+  class ClinicalProviderFull < ClinicalProviderShallow
+    root 'clinical_providers', 'clinical_provider'
+
+    expose  :identity_id,
+            :organization_id
+  end
+
   class IdentityFull < IdentityShallow
     root 'identities', 'identity'
 

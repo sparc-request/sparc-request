@@ -444,7 +444,7 @@ en:
     options: "Optional"
     attributes: "Study Attributes"
     title: "Protocol Title:*"
-    has_cofc: "Does your study have a Certificate of Confidentiality?"
+    has_cofc: "Does your study have a Certificate of Confidentiality? *"
     status_blank: "Select a Funding Status"
     udak_project_number: "Financial Account (UDAK#):"
     sponsor_name: "Sponsor Name:*"

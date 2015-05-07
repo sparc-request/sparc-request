@@ -8,8 +8,8 @@ module HelpersV1
 
   def find_object(klass, id)
     klass = klass.classify
-
-    error!("#{klass} not found", 404) unless @object = klass.constantize.find(id)
+    # switched from .find(id) to .where() so that the error!() method will run and, as a result, the content type will be set to JSON
+    error!("#{klass} not found for id=#{id}", 404) unless @object = klass.constantize.where(id: id).first
   end
 
   def find_objects(klass, params)

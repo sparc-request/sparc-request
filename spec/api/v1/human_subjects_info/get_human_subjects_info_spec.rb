@@ -70,5 +70,44 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         expect(parsed_body['human_subjects_info'].keys.sort).to eq(expected_attributes)
       end
     end
+    
+    context 'request for :shallow record with a bogus ID' do
+     
+     before { cwf_sends_api_get_request_for_resource('human_subjects_infos', -1, 'shallow') }
+     
+     it 'should respond with a 404 and JSON content type' do
+       expect(response.status).to eq(404)
+       expect(response.content_type).to eq('application/json')
+       parsed_body         = JSON.parse(response.body)
+       expect(parsed_body['human_subjects_info']).to eq(nil)
+       expect(parsed_body['error']).to eq("HumanSubjectsInfo not found for id=-1")
+     end
+   end
+   
+   context 'request for :full record with a bogus ID' do
+    
+    before { cwf_sends_api_get_request_for_resource('human_subjects_infos', -1, 'full') }
+    
+    it 'should respond with a 404 and JSON content type' do
+      expect(response.status).to eq(404)
+      expect(response.content_type).to eq('application/json')
+      parsed_body         = JSON.parse(response.body)
+      expect(parsed_body['human_subjects_info']).to eq(nil)
+      expect(parsed_body['error']).to eq("HumanSubjectsInfo not found for id=-1")
+    end
+  end
+  
+    context 'request for :full_with_shallow_reflections record with a bogus ID' do
+   
+      before { cwf_sends_api_get_request_for_resource('human_subjects_infos', -1, 'full_with_shallow_reflections') }
+   
+      it 'should respond with a 404 and JSON content type' do
+        expect(response.status).to eq(404)
+        expect(response.content_type).to eq('application/json')
+        parsed_body         = JSON.parse(response.body)
+        expect(parsed_body['human_subjects_info']).to eq(nil)
+        expect(parsed_body['error']).to eq("HumanSubjectsInfo not found for id=-1")
+      end
+    end
   end
 end

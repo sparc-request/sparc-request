@@ -64,6 +64,7 @@ class ProtocolsController < ApplicationController
     @epic_services = @service_request.should_push_to_epic? if USE_EPIC
     @protocol = current_user.protocols.find params[:id]
     @protocol.populate_for_edit
+    @protocol.valid?
     @current_step = 'protocol'
     @portal = false
   end

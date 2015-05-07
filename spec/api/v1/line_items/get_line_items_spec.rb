@@ -5,13 +5,19 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
   describe 'GET /v1/line_items.json' do
 
     before do
+
+      protocol        = FactoryGirl.build(:protocol_federally_funded)
+      protocol.save validate: false
+      service         = FactoryGirl.create(:service_with_pricing_map)
+      service_request = FactoryGirl.build(:service_request, protocol: protocol)
+      service_request.save validate: false
+
+
       5.times do
-        line_item = FactoryGirl.build(:line_item)
-        line_item.save validate: false
+        @line_item      = FactoryGirl.create(:line_item, service: service,
+                                              service_request: service_request)
       end
     end
-
-
     context 'response params' do
 
       before { cwf_sends_api_get_request_for_resources('line_items', 'shallow') }
@@ -58,7 +64,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         expected_attributes = FactoryGirl.build(:line_item).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id').
+                                push('callback_url', 'sparc_id', 'one_time_fee', 'per_unit_cost').
                                 sort
 
         expect(parsed_body['line_items'].map(&:keys).flatten.uniq.sort).to eq(expected_attributes)
@@ -74,7 +80,8 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         expected_attributes = FactoryGirl.build(:line_item).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'line_items_visits', 'service', 'service_request', 'sub_service_request').
+
+                                push('callback_url', 'sparc_id', 'line_items_visits', 'service', 'service_request', 'sub_service_request', 'one_time_fee', 'per_unit_cost').
                                 sort
 
         expect(parsed_body['line_items'].map(&:keys).flatten.uniq.sort).to eq(expected_attributes)

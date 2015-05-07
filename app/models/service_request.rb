@@ -294,7 +294,7 @@ class ServiceRequest < ActiveRecord::Base
     quantity = args.delete(:quantity) || 1
     if line_item = self.line_items.create(args)
 
-      if line_item.service.is_one_time_fee?
+      if line_item.service.one_time_fee
         # quantity is only set for one time fee
         line_item.update_attribute(:quantity, quantity)
 
@@ -314,13 +314,13 @@ class ServiceRequest < ActiveRecord::Base
 
   def one_time_fee_line_items
     line_items.map do |line_item|
-      line_item.service.is_one_time_fee? ? line_item : nil
+      line_item.service.one_time_fee ? line_item : nil
     end.compact
   end
 
   def per_patient_per_visit_line_items
     line_items.map do |line_item|
-      line_item.service.is_one_time_fee? ? nil : line_item
+      line_item.service.one_time_fee ? nil : line_item
     end.compact
   end
 
@@ -422,7 +422,7 @@ class ServiceRequest < ActiveRecord::Base
 
   def total_direct_costs_one_time line_items=self.line_items
     total = 0.0
-    line_items.select {|x| x.service.is_one_time_fee?}.each do |li|
+    line_items.select {|x| x.service.one_time_fee}.each do |li|
       total += li.direct_costs_for_one_time_fee
     end
 
@@ -432,7 +432,7 @@ class ServiceRequest < ActiveRecord::Base
   def total_indirect_costs_one_time line_items=self.line_items
     total = 0.0
     if USE_INDIRECT_COST
-      line_items.select {|x| x.service.is_one_time_fee?}.each do |li|
+      line_items.select {|x| x.service.one_time_fee}.each do |li|
         total += li.indirect_costs_for_one_time_fee
       end
     end

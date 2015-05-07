@@ -107,8 +107,8 @@ describe 'SubServiceRequest' do
 
         before :each do
           @ppv = FactoryGirl.create(:service, organization_id: core.id) # PPV Service
-          @otf = FactoryGirl.create(:service, organization_id: core.id) # OTF Service
-          @otf.pricing_maps.build(FactoryGirl.attributes_for(:pricing_map, :is_one_time_fee))
+          @otf = FactoryGirl.create(:service, organization_id: core.id, one_time_fee: true) # OTF Service
+          @otf.pricing_maps.build(FactoryGirl.attributes_for(:pricing_map))
           sub_service_request.update_attributes(organization_id: core.id)
 
           @ssr = sub_service_request
@@ -134,8 +134,8 @@ describe 'SubServiceRequest' do
 
           ppv = FactoryGirl.create(:service, organization_id: core.id, name: "Per Patient Service") # PPV Service
           ppv2 = FactoryGirl.create(:service, :disabled, organization_id: core3.id) # Disabled PPV Service
-          otf = FactoryGirl.create(:service, organization_id: core2.id, name: "OTF Service") # OTF Service
-          otf.pricing_maps.build(FactoryGirl.attributes_for(:pricing_map, :is_one_time_fee))
+          otf = FactoryGirl.create(:service, organization_id: core2.id, name: "OTF Service", one_time_fee: true) # OTF Service
+          otf.pricing_maps.build(FactoryGirl.attributes_for(:pricing_map))
 
           # ssr = FactoryGirl.create(:sub_service_request, organization_id: core.id)
 
@@ -211,7 +211,7 @@ describe 'SubServiceRequest' do
         end
 
         it "should return the direct cost for services that are visit based" do
-          pricing_map.update_attributes(is_one_time_fee: false)
+          service.update_attributes(one_time_fee: false)
           sub_service_request.direct_cost_total.should eq(0)
         end
       end
@@ -308,6 +308,10 @@ describe 'SubServiceRequest' do
       let!(:line_item1) { FactoryGirl.create(:line_item, sub_service_request_id: ssr1.id, service_request_id: service_request.id, service_id: service.id) }
       let!(:line_item2) { FactoryGirl.create(:line_item, sub_service_request_id: ssr2.id, service_request_id: service_request.id, service_id: service2.id) }
 
+      before :each do
+        EDITABLE_STATUSES[sub_service_request.organization.id] = ['first_draft', 'draft', 'submitted', nil, 'get_a_quote', 'awaiting_pi_approval']
+      end
+
       context "can be edited" do
 
         it "should return true if the status is draft" do
@@ -325,7 +329,7 @@ describe 'SubServiceRequest' do
           sub_service_request.can_be_edited?.should eq(true)
         end
 
-        it "should return true if the status is nil" do
+        it "should return true if the status is get a quote" do
           sub_service_request.update_attributes(status: 'get_a_quote')
           sub_service_request.can_be_edited?.should eq(true)
         end
@@ -337,8 +341,7 @@ describe 'SubServiceRequest' do
       end
 
       before :each do
-        org1.tag_list = "ctrc"
-        org1.save
+        EDITABLE_STATUSES[ssr1.organization.id] = ['first_draft', 'draft', 'submitted', nil, 'get_a_quote', 'awaiting_pi_approval']
       end
 
       context "update based on status" do
@@ -375,27 +378,24 @@ describe 'SubServiceRequest' do
         it "should not place a sub service request under a new service request if the ssr is being switched to another uneditable status" do
           ssr1.update_attributes(status: 'on_hold')
           ssr1.update_based_on_status('complete')
-          ssr1.service_request.id.should_not eq(service_request.id)
+          ssr1.service_request.id.should eq(service_request.id)
         end
       end
 
       context "candidate statuses" do
 
-        let!(:ctrc) do
-          org = FactoryGirl.create(:provider)
-          org.tag_list = "ctrc"
-          org.save
-          org
+        before :each do
+          org1.tag_list = "ctrc"
+          org1.save
         end
-        let!(:provider) { FactoryGirl.create(:provider) }
 
         it "should contain 'ctrc approved' and 'ctrc review' if the organization is ctrc" do
-          sub_service_request.update_attributes(organization_id: ctrc.id)
+          sub_service_request.update_attributes(organization_id: org1.id)
           sub_service_request.candidate_statuses.should include('ctrc approved', 'ctrc review')
         end
 
         it "should not contain ctrc statuses if the organization is not ctrc" do
-          sub_service_request.update_attributes(organization_id: provider.id)
+          sub_service_request.update_attributes(organization_id: org2.id)
           sub_service_request.candidate_statuses.should_not include('ctrc approved', 'ctrc review')
         end
       end

@@ -50,6 +50,8 @@ development:
   no_reply_from: "no-reply@musc.edu"
   use_separate_audit_database: true
   system_satisfaction_survey: false
+  editable_statuses: { 14: ['first_draft', 'draft', 'submitted', nil, 'get_a_quote', 'awaiting_pi_approval'],
+                     48: ['draft', 'submitted'] }
   # API
   remote_service_notifier_protocol: "http"
   remote_service_notifier_host: "127.0.0.1:5001"

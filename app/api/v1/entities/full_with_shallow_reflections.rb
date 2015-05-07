@@ -19,6 +19,13 @@ module V1
     expose :protocol, using: V1::ProtocolShallow
   end
 
+  class ClinicalProviderFullWithShallowReflection < ClinicalProviderFull
+    root 'clinical_providers', 'clinical_provider'
+
+    expose :identity,     using: V1::IdentityShallow
+    expose :organization, using: V1::ProcessSsrsOrganizationShallow
+  end
+
   class ProjectRoleFullWithShallowReflection < ProjectRoleFull
     root 'project_roles', 'project_role'
 
@@ -60,6 +67,7 @@ module V1
     root 'services', 'service'
 
     expose :line_items, using: V1::LineItemShallow
+    expose :service_level_components, using: V1::ServiceLevelComponentShallow
   end
 
   class ServiceRequestFullWithShallowReflection < ServiceRequestFull
@@ -68,6 +76,12 @@ module V1
     expose :protocol,             using: V1::ProtocolShallow
     expose :line_items,           using: V1::LineItemShallow
     expose :sub_service_requests, using: V1::SubServiceRequestShallow
+  end
+
+  class ServiceLevelComponentFullWithShallowReflection < ServiceLevelComponentFull
+    root 'service_level_components', 'service_level_component'
+
+    expose :service, using: V1::ServiceShallow
   end
 
   class StudyFullWithShallowReflection < ProtocolFullWithShallowReflection

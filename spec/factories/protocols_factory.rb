@@ -41,6 +41,7 @@ FactoryGirl.define do
 
     trait :funded do
       funding_status "funded"
+      funding_source "skrill"
     end
 
     trait :pending do
@@ -87,6 +88,7 @@ FactoryGirl.define do
       type { "Study" }
     end
 
+    factory :protocol_federally_funded, traits: [:funded, :federal]
     factory :protocol_with_sub_service_request_in_cwf, traits: [:with_sub_service_request_in_cwf, :funded, :federal]
   end
 end

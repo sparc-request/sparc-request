@@ -19,18 +19,35 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class ClinicalProvider < ActiveRecord::Base
+
+  include RemotelyNotifiable
+
   audited
 
   belongs_to :organization
   belongs_to :identity
 
-  attr_accessible :identity_id 
+  attr_accessible :identity_id
   attr_accessible :organization_id
 
   def core
     org = Organization.find(self.organization_id)
 
     org
+  end
+
+  private
+
+  def notify_remote_after_create?
+    true
+  end
+
+  def notify_remote_around_update?
+    true
+  end
+
+  def notify_remote_after_destroy?
+    true
   end
 end
 

@@ -6,7 +6,7 @@ RSpec.describe 'RemoteServiceNotifierJob', type: :model do
 
   describe 'self#enqueue', delay: true do
 
-    before { RemoteServiceNotifierJob.enqueue(@object, 'create') }
+    before { RemoteServiceNotifierJob.enqueue(@object, @object.class.name, 'create') }
 
     it 'should create a DelayedJob' do
       expect(Delayed::Job.where("handler LIKE '%RemoteServiceNotifierJob%'").one?).to be
@@ -15,7 +15,7 @@ RSpec.describe 'RemoteServiceNotifierJob', type: :model do
 
   describe '#perform' do
 
-    before { @job = RemoteServiceNotifierJob.new(@object, 'create') }
+    before { @job = RemoteServiceNotifierJob.new(@object, @object.class.name, 'create') }
 
     context 'remote service available' do
 

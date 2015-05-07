@@ -73,7 +73,7 @@ $ ->
               proceed = confirm I18n["catalog_manager_js"]["later_display_date"]
             else
               proceed = confirm I18n["catalog_manager_js"]["later_effective_date"]
-            if proceed == false   
+            if proceed == false
               date_element.val('')
               date_element.siblings().val('')
             else if (confirm I18n["js_confirm"]) == false
@@ -81,7 +81,7 @@ $ ->
               date_element.siblings().val('')
       })
   }
-    
+
   $('#processing_request').dialog({ dialogClass: 'processing_request', resizable: false, height: 100, autoOpen: false })
 
   $('.custom_button').button()
@@ -99,7 +99,7 @@ $ ->
         $(".pricing_setup_error").show()
 
   verify_valid_pricing_setups()
-  
+
   $('.associated_survey_delete').live 'click', ->
     if confirm I18n["catalog_manager_js"]["survey_delete"]
       $.post '/catalog_manager/catalog/remove_associated_survey', {associated_survey_id: $(this).data('associated_survey_id')}, (data) ->
@@ -143,7 +143,7 @@ $ ->
     click_text = node_ref.rslt.obj.context.textContent || node_ref.rslt.obj.context.innerText
     if click_text
       click_text = $.trim(click_text)
-      
+
       # create an institution
       if /^Create New Institution$/.test click_text
         institution_name = prompt(I18n["catalog_manager_js"]["institution_prompt"])
@@ -175,19 +175,19 @@ $ ->
       if /^Create New Service$/.test click_text
         parent_id = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('cid')
         parent_object_type = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('object_type')
-        
+
         $.get "/catalog_manager/services/verify_parent_service_provider", {parent_id: parent_id, parent_object_type: parent_object_type}, (data)->
           alert_text = data
-          
+
           if alert_text.length < 1
             $.get("/catalog_manager/services/new", {parent_id: parent_id, parent_object_type: parent_object_type}, (data)->
               $('#details').html(data) )
           else
             alert(alert_text)
-        
-        
+
+
     return unless node_ref.rslt.obj.context.attributes['object_type']
-    
+
     $('#processing_request').dialog('open')
     cid = node_ref.rslt.obj.context.attributes['cid'].nodeValue
     obj_type = node_ref.rslt.obj.context.attributes['object_type'].nodeValue
@@ -223,7 +223,7 @@ $ ->
     if confirm I18n["catalog_manager_js"]["service_remove"]
       $.post '/catalog_manager/services/disassociate', {service_relation_id: $(this).data('service_relation_id')}, (data) ->
         $('#rs_info').html(data)
-  
+
   $('.optional').live 'click', ->
     $.post '/catalog_manager/services/set_optional', {service_relation_id: $(this).attr('id'), optional: $(this).val()}, (data) ->
         $('#rs_info').html(data)
@@ -245,23 +245,25 @@ $ ->
 
   ############################
   # Begin pricing map logic
-  ############################
+  ############################q
 
-  # pricing maps one time fees
-  $('.otf input[type=checkbox]').live 'click', ->
-    pricing_map_id = $(this).data('pricing_map_id')
-    if pricing_map_id == undefined
-      pricing_map_id = ""
-    if $(this).is(":checked")
-      enable_per_patient_save()
-      show_otf_attributes(pricing_map_id)
-      if ($("#otf_quantity_type_#{pricing_map_id}").val() == "") || ($("#otf_unit_type_#{pricing_map_id}").val() == "") || ($("#otf_quantity_minimum_#{pricing_map_id}").val() == "") || ($("#otf_unit_max_#{pricing_map_id}").val() == "")
-        disable_otf_service_save()
-    else
-      hide_otf_attributes(pricing_map_id)
-      enable_otf_service_save()
-      if ($("#clinical_quantity_#{pricing_map_id}").val() == "") || ($("#unit_factor_#{pricing_map_id}").val() == "") || ($("#unit_minimum_#{pricing_map_id}").val() == "")
-        disable_per_patient_save()
+  $('.one_time_fee').live 'click', ->
+    pricing_map_ids = $(this).data('pricing_map_ids')
+    pricing_map_ids = pricing_map_ids.split(' ')
+    index = 0
+    while index < pricing_map_ids.length
+      if $(this).is(":checked")
+        enable_per_patient_save()
+        show_otf_attributes(pricing_map_ids[index])
+        if ($("#otf_quantity_type_#{pricing_map_ids[index]}").val() == "") || ($("#otf_unit_type_#{pricing_map_ids[index]}").val() == "") || ($("#otf_quantity_minimum_#{pricing_map_ids[index]}").val() == "") || ($("#otf_unit_max_#{pricing_map_ids[index]}").val() == "")
+          disable_otf_service_save()
+      else
+        hide_otf_attributes(pricing_map_ids[index])
+        enable_otf_service_save()
+        if ($("#clinical_quantity_#{pricing_map_ids[index]}").val() == "") || ($("#unit_factor_#{pricing_map_ids[index]}").val() == "") || ($("#unit_minimum_#{pricing_map_ids[index]}").val() == "")
+          disable_per_patient_save()
+      index++
+
 
   $('.otf_quantity_type').live 'change', ->
     pricing_map_id = $(this).data('pricing_map_id')
@@ -273,7 +275,7 @@ $ ->
       $("#otf_attributes_#{pricing_map_id}").html('# ' + $(this).val() + ' / ' + '# ' + $("#otf_unit_type_#{pricing_map_id}").val())
 
   $('.otf_unit_type').live 'change', ->
-    pricing_map_id = $(this).data('pricing_map_id') 
+    pricing_map_id = $(this).data('pricing_map_id')
     if pricing_map_id == undefined
       pricing_map_id = ""
     if $(this).val() == "N/A"
@@ -335,7 +337,7 @@ $ ->
   #######################
   # End pricing map logic
   #######################
-      
+
   # submission e-mails
   $('input#new_se').live 'focus', -> $(this).val('')
   $('input#new_se').live 'keypress', (e) ->
@@ -529,7 +531,7 @@ $ ->
         success: ->
           remove_this.remove()
 
-  $('fieldset.parent:not(.active)').live 'click', ->
+  $(document).on 'click', 'fieldset.parent:not(.active)', ->
     $('fieldset.parent.active').removeClass('active').children('fieldset').hide('blind')
     $(this).children('fieldset').show('blind')
     $(this).addClass('active')

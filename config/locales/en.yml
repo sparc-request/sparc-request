@@ -202,6 +202,10 @@ en:
     or: "If not in list above, create NEW Study/Project Below"
     new_study: "New Study"
     new_project: "New Project"
+    previously_submitted_study: "The request that you are editing has been previously submitted and can not be moved to another study."
+    previously_submitted_project: "The request that you are editing has been previously submitted and can not be moved to another project."
+    current_study: "Current Study: <span>&nbsp</span>"
+    current_project: "Current Project: <span>&nbsp</span>"
     sidebar_box:
       my_services: "My Services"
       help: "Help"
@@ -593,7 +597,7 @@ en:
 
   # Service Request Confirmation Page and Obtain Research Pricing Page
   sr_confirmation:
-    instructions: "Thank you for submitting a service request through SPARC Request. An email(s) has been submitted on your behalf, and we will respond to your service request shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
+    instructions: "Thank you for submitting your service request(s) through SPARC Request. An email has been sent to each of your service providers and they should be contacting you soon. If you have any questions or concerns, please don't hesitate to contact the SUCCESS Center at 792-8300 or success@musc.edu."
     research_pricing_instructions : "You have successfully submitted a request to get a quote. An email(s) has been submitted on your behalf, and we will respond to your request for a quote shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
     download_button: "Download my Service Request"
     portal_button: "Go to SPARC Request User Portal"
@@ -624,6 +628,7 @@ en:
     title: "Title:"
     short_title: "Short Title:"
     funding: "Funding Source:"
+    sponsor: "Sponsor Name:"
     authorized_users: "Authorized Users:"
     name: "Name:"
     role: "Role:"
@@ -702,6 +707,7 @@ en:
 
   # Catalog Manager - Organization Form
   organization_form:
+    service_level_components: "Service Level Components"
     gen_info: "General Information"
     user_rights: "User Rights"
     pricing: "Pricing"
@@ -718,6 +724,7 @@ en:
     split_notify: "Split/Notify Here"
     css_class: "Color"
     disabled: "Do not display in SPARC"
+    one_time_fee: "One Time Fee"
     core_facility: "Core/Facility Based Services"
     service_center_cost: "Service Center Cost"
     hospital_based_services: "Hospital Based Services"

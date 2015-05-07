@@ -36,7 +36,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
       before { cwf_sends_api_get_request_for_resource('visit_groups', @visit_group.id, 'shallow') }
 
       it 'should respond with a single shallow visit_group' do
-        expect(response.body).to eq("{\"visit_group\":{\"sparc_id\":1,\"callback_url\":\"https://sparc.musc.edu/v1/visit_groups/1.json\"}}")
+        expect(response.body).to eq("{\"visit_group\":{\"sparc_id\":1,\"callback_url\":\"https://127.0.0.1:5000/v1/visit_groups/1.json\"}}")
       end
     end
 

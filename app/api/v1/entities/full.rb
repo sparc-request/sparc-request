@@ -12,6 +12,13 @@ module V1
             :minimum_subject_count
   end
 
+  class ClinicalProviderFull < ClinicalProviderShallow
+    root 'clinical_providers', 'clinical_provider'
+
+    expose  :identity_id,
+            :organization_id
+  end
+
   class IdentityFull < IdentityShallow
     root 'identities', 'identity'
 
@@ -46,7 +53,9 @@ module V1
             :ssr_id,
             :optional,
             :quantity,
-            :units_per_quantity
+            :units_per_quantity,
+            :per_unit_cost,
+            :one_time_fee
 
     with_options(format_with: :iso_timestamp) do
       expose :complete_date
@@ -60,6 +69,12 @@ module V1
     expose  :arm_id,
             :line_item_id,
             :subject_count
+  end
+
+  class ProcessSsrsOrganizationFull < ProcessSsrsOrganizationShallow
+    root 'process_ssrs_organizations', 'process_ssrs_organization'
+
+    expose :name
   end
 
   class ProjectRoleFull < ProjectRoleShallow
@@ -115,6 +130,13 @@ module V1
     root 'protocols', 'protocol'
   end
 
+  class ServiceLevelComponentFull < ServiceLevelComponentShallow
+    root 'service_level_components', 'service_level_component'
+
+    expose  :component,
+            :position
+  end
+
   class ServiceFull < ServiceShallow
     root 'services', 'service'
 
@@ -128,8 +150,13 @@ module V1
             :charge_code,
             :revenue_code,
             :organization_id,
-            :cdm_code,
-            :send_to_epic
+            :send_to_epic,
+            :revenue_code_range_id,
+            :service_level_components_count,
+            :one_time_fee,
+            :line_items_count
+
+    expose  :process_ssrs_organization, using: V1::ProcessSsrsOrganizationFull
   end
 
   class ServiceRequestFull < ServiceRequestShallow
@@ -163,7 +190,6 @@ module V1
             :organization_id,
             :owner_id,
             :ssr_id,
-            :status,
             :nursing_nutrition_approved,
             :lab_approved,
             :imaging_approved,
@@ -173,6 +199,8 @@ module V1
             :org_tree_display,
             :grand_total,
             :stored_percent_subsidy
+
+    expose  :formatted_status, as: :status
 
     with_options(format_with: :iso_timestamp) do
       expose :status_date

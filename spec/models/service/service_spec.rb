@@ -21,7 +21,12 @@
 require 'date'
 require 'spec_helper'
 
-describe 'Service' do
+RSpec.describe Service, type: :model do
+
+  it { should have_many(:service_level_components) }
+
+  it { should accept_nested_attributes_for(:service_level_components) }
+
   let_there_be_lane
   let_there_be_j
   build_service_request_with_project
@@ -34,28 +39,22 @@ describe 'Service' do
 
         context 'Service is part of Research Nexus' do
 
-          before do
+          it 'should create a RemoteServiceNotifierJob' do
             work_off
 
-            research_nexus_program  = FactoryGirl.create(:program, name: 'Research Nexus')
-            organization            = FactoryGirl.create(:core, name: 'Core 1', parent_id: research_nexus_program.id)
-            FactoryGirl.create(:service, organization: organization)
-          end
+            FactoryGirl.create(:service_with_ctrc_organization)
 
-          it 'should create a RemoteServiceNotifierJob' do
             expect(Delayed::Job.where("handler LIKE '%RemoteServiceNotifierJob%'").one?).to be
           end
         end
 
         context 'Service is not part of Research Nexus' do
 
-          before do
+          it 'should create a RemoteServiceNotifierJob' do
             work_off
 
             FactoryGirl.create(:service)
-          end
 
-          it 'should create a RemoteServiceNotifierJob' do
             expect(Delayed::Job.where("handler LIKE '%RemoteServiceNotifierJob%'").one?).to_not be
           end
         end
@@ -217,21 +216,6 @@ describe 'Service' do
 
     it 'should return 2.5 dollars given 250 cents' do
       Service.cents_to_dollars(250).should eq 2.5
-    end
-  end
-
-    describe "is one time fee" do
-
-    let!(:service) { FactoryGirl.create(:service) }
-    let!(:pricing_map) { service.pricing_maps[0] }
-
-    it "should return false if the pricing map is not a one time fee" do
-      service.is_one_time_fee?.should eq(false)
-    end
-
-    it "should return true if the pricing map is a one time fee" do
-      pricing_map.update_attributes(is_one_time_fee: true)
-      service.is_one_time_fee?.should eq(true)
     end
   end
 

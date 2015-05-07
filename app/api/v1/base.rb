@@ -31,6 +31,8 @@ module SPARCCWF
         :project_roles,
         :arms,
         :human_subjects_infos,
+        :organizations,
+        :clinical_providers,
         :line_items,
         :line_items_visits,
         :protocols,
@@ -38,6 +40,7 @@ module SPARCCWF
         :projects,
         :service_requests,
         :services,
+        :service_level_components,
         :sub_service_requests,
         :visit_groups,
         :visits
@@ -80,6 +83,20 @@ module SPARCCWF
 
               present @object, with: presenter(published_resource_to_s, params[:depth])
             end
+          end
+        end
+      end
+
+      resource :services do
+
+        route_param :id do
+
+          put do
+            find_object('service', params[:id])
+
+            update_service_line_items_count_attribute params[:service]
+
+            :ok
           end
         end
       end

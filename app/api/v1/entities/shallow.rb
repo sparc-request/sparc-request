@@ -13,6 +13,10 @@ module V1
     root 'human_subjects_info', 'human_subjects_info'
   end
   
+  class ClinicalProviderShallow < Shallow
+    root 'clinical_providers', 'clinical_provider'
+  end
+
   class IdentityShallow < Shallow
     root 'identities', 'identity'
   end
@@ -23,6 +27,10 @@ module V1
 
   class LineItemsVisitShallow < Shallow
     root 'line_items_visits', 'line_items_visit'
+  end
+
+  class ProcessSsrsOrganizationShallow < Shallow
+    root 'process_ssrs_organizations', 'process_ssrs_organization'
   end
 
   class ProjectRoleShallow < Shallow
@@ -40,6 +48,10 @@ module V1
 
   class ServiceShallow < Shallow
     root 'services', 'service'
+  end
+
+  class ServiceLevelComponentShallow < Shallow
+    root 'service_level_components', 'service_level_component'
   end
 
   class ServiceRequestShallow < Shallow

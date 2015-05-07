@@ -34,7 +34,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
       before { cwf_sends_api_get_request_for_resource('service_requests', @service_request.id, 'shallow') }
 
       it 'should respond with a single shallow service_request' do
-        expect(response.body).to eq("{\"service_request\":{\"sparc_id\":1,\"callback_url\":\"https://sparc.musc.edu/v1/service_requests/1.json\"}}")
+        expect(response.body).to eq("{\"service_request\":{\"sparc_id\":1,\"callback_url\":\"https://127.0.0.1:5000/v1/service_requests/1.json\"}}")
       end
     end
 

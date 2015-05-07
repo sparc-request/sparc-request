@@ -4,7 +4,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
   describe 'GET /v1/services.json' do
 
-    before { FactoryGirl.create_list(:service, 5) }
+    before { FactoryGirl.create_list(:service_with_process_ssrs_organization, 5) }
 
     context 'response params' do
 
@@ -52,7 +52,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         expected_attributes = FactoryGirl.build(:service).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id').
+                                push('callback_url', 'sparc_id', 'process_ssrs_organization').
                                 sort
 
         expect(parsed_body['services'].map(&:keys).flatten.uniq.sort).to eq(expected_attributes)
@@ -68,7 +68,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         expected_attributes = FactoryGirl.build(:service).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'line_items').
+                                push('callback_url', 'sparc_id', 'process_ssrs_organization', 'line_items', 'service_level_components').
                                 sort
 
         expect(parsed_body['services'].map(&:keys).flatten.uniq.sort).to eq(expected_attributes)

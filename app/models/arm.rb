@@ -310,7 +310,7 @@ class Arm < ActiveRecord::Base
 
   def service_list
     items = self.line_items_visits.map do |liv|
-      liv.line_item.service.is_one_time_fee? ? nil : liv.line_item
+      liv.line_item.service.one_time_fee ? nil : liv.line_item
     end.compact
 
     groupings = {}

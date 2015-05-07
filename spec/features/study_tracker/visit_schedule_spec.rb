@@ -26,7 +26,7 @@ describe "visit schedule", :js => true do
   fake_login_for_each_test
   build_service_request_with_project()
   let!(:service3)     { FactoryGirl.create(:service, organization_id: program.id, name: 'Super Awesome Terrific') }
-  let!(:pricing_map3) { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service3.id, is_one_time_fee: false, display_date: Time.now - 1.day, full_rate: 2000, federal_rate: 3000, units_per_qty_max: 20) }
+  let!(:pricing_map3) { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service3.id, display_date: Time.now - 1.day, full_rate: 2000, federal_rate: 3000, units_per_qty_max: 20) }
   let!(:line_item3)   { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service3.id, sub_service_request_id: sub_service_request.id, quantity: 0) }
 
   context "updating a subject" do

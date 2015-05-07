@@ -196,7 +196,7 @@ describe "Line Item" do
       context "direct costs for one time fee" do
 
         it "should return the correct direct cost with a unit factor of 1" do
-          pricing_map.update_attributes(is_one_time_fee: true)
+          service.update_attributes(one_time_fee: true)
           line_item.update_attributes(quantity: 10)
           line_item.direct_costs_for_one_time_fee.should eq(10000)          
         end
@@ -227,7 +227,7 @@ describe "Line Item" do
       context "indirect costs for one time fee" do
 
         it "should return the correct indirect cost" do
-          pricing_map.update_attributes(is_one_time_fee: true)
+          service.update_attributes(one_time_fee: true)
           line_item.update_attributes(quantity: 10)
           if USE_INDIRECT_COST
             line_item.indirect_costs_for_one_time_fee.should eq(400)
@@ -237,7 +237,8 @@ describe "Line Item" do
         end
 
         it "should return zero if the displayed pricing map is excluded from indirect costs" do
-          pricing_map.update_attributes(is_one_time_fee: true, exclude_from_indirect_cost: true)
+          service.update_attributes(one_time_fee: true)
+          pricing_map.update_attributes(exclude_from_indirect_cost: true)
           line_item.indirect_costs_for_one_time_fee.should eq(0)
         end
       end
@@ -248,7 +249,7 @@ describe "Line Item" do
         let!(:fulfillment1)  { FactoryGirl.create(:fulfillment, :quantity => 5, :line_item_id => otf_line_item.id, :date => Date.yesterday) }
         let!(:fulfillment2)  { FactoryGirl.create(:fulfillment, :quantity => 5, :line_item_id => otf_line_item.id, :date => Date.today) }
         let!(:fulfillment3)  { FactoryGirl.create(:fulfillment, :quantity => 5, :line_item_id => otf_line_item.id, :date => Date.today) }
-        let!(:pricing_map2)  { FactoryGirl.create(:pricing_map, service_id: service.id, unit_type: 'ea', is_one_time_fee: 1, effective_date: Date.today, display_date: Date.today, full_rate: 600, exclude_from_indirect_cost: 0, unit_minimum: 1)}
+        let!(:pricing_map2)  { FactoryGirl.create(:pricing_map, service_id: service.id, unit_type: 'ea', effective_date: Date.today, display_date: Date.today, full_rate: 600, exclude_from_indirect_cost: 0, unit_minimum: 1)}
 
         it "should correctly calculate a line item's cost that has multiple fulfillments" do
           # quantity:10 * rate:(percentage:0.5 * cost:600)

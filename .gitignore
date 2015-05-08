@@ -7,13 +7,10 @@
 sr.sql
 sr_production.sql
 
-<<<<<<< HEAD
-=======
 .rvmrc
 .ruby-gemset
 .ruby-version
 
->>>>>>> 8725b4fb5814ad2d2be05b1aaad5814fd37d21a6
 # Ignore bundler config
 /.bundle
 

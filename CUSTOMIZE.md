@@ -39,20 +39,18 @@ A secondary project's directory structure is flexible but needs to be organized 
 					* layout.css.sass
  
 ## 3. Customize
-As the SPARC OS project continues to evolve, new CSS, images, constants, and display text will be added, updated, and removed. Thus, you'll want to review each OS release to see if your versions of these files need to be updated.
+As the SPARC OS project continues to evolve, new CSS, images, constants, and display text will be added, updated, and removed. Thus, you'll want to review each OS release to see if your versions of these files need to be updated. Customize each file after copying it.
 
 ### 3.1 Locale
-Copy /config/locales/en.yml to uofexample.yml and update it to have text specific to your institution. 
+	cp /sparc-request/config/locales/en.yml /sparc-custom/uofexample.yml
 
 ### 3.2 Constants
-Copy /config/constants.yml to constants-uofexample.yml and update as needed.
+	cp /sparc-request/config/constants.yml /sparc-custom/constants-uofexample.yml
 
 ### 3.3 CSS
-Copy /app/assets/stylesheets/application.css to /sparc-custom/assets/stylesheets/uofexample/application.css and update as needed
-
-Copy /app/assets/stylesheets/portal/application.css to /sparc-custom/assets/stylesheets/uofexample/portal/application.css and update as needed
-
-Copy /app/assets/stylesheets/portal/layout.css.sass to /sparc-custom/assets/stylesheets/uofexample/portal/layout.css.sass and update as needed
+	cp /sparc-request/app/assets/stylesheets/application.css 		/sparc-custom/assets/stylesheets/uofexample/application.css 
+	cp /sparc-request/app/assets/stylesheets/portal/application.css /sparc-custom/assets/stylesheets/uofexample/portal/application.css
+	cp /sparc-request/app/assets/stylesheets/portal/layout.css.sass /sparc-custom/assets/stylesheets/uofexample/portal/layout.css.sass
 
 ## 4. Configure Developer Workstation
 Create symbolic links from /sparc-request/ to your /sparc-custom/ project so that the sparc-request rails server can load your customizations. For example:

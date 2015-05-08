@@ -29,7 +29,7 @@ module V1
   end
   
   class HumanSubjectsInfoFull < HumanSubjectsInfoShallow
-    root 'human_subjects_info', 'human_subjects_info'
+    root 'human_subjects_infos', 'human_subjects_info'
 
     expose  :protocol_id,
             :nct_number,

@@ -24,7 +24,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
           expect(response.content_type).to eq('application/json')
         end
 
-        it 'should respond with a Protocol root object' do
+        it 'should respond with a human_subjects_info root object' do
           expect(response.body).to include('"human_subjects_info":')
         end
       end

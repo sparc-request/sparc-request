@@ -14,7 +14,7 @@ module V1
   end
   
   class HumanSubjectsInfoFullWithShallowReflection < HumanSubjectsInfoFull
-    root 'human_subjects_info', 'human_subjects_info'
+    root 'human_subjects_infos', 'human_subjects_info'
 
     expose :protocol, using: V1::ProtocolShallow
   end

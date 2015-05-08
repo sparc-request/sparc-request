@@ -30,13 +30,13 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         end
 
         it 'should respond with a human_subjects_infos root object' do
-          expect(response.body).to include('"human_subjects_info":')
+          expect(response.body).to include('"human_subjects_infos":')
         end
 
         it 'should respond with an array of human_subjects_infos' do
           parsed_body = JSON.parse(response.body)
 
-          expect(parsed_body['human_subjects_info'].length).to eq(4)
+          expect(parsed_body['human_subjects_infos'].length).to eq(4)
         end
       end
     end
@@ -48,7 +48,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
       it 'should respond with an array of :sparc_ids' do
         parsed_body = JSON.parse(response.body)
 
-        expect(parsed_body['human_subjects_info'].map(&:keys).flatten.uniq.sort).to eq(['sparc_id', 'callback_url'].sort)
+        expect(parsed_body['human_subjects_infos'].map(&:keys).flatten.uniq.sort).to eq(['sparc_id', 'callback_url'].sort)
       end
     end
 
@@ -64,7 +64,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
                                 push('callback_url', 'sparc_id').
                                 sort
 
-        expect(parsed_body['human_subjects_info'].map(&:keys).flatten.uniq.sort).to eq(expected_attributes)
+        expect(parsed_body['human_subjects_infos'].map(&:keys).flatten.uniq.sort).to eq(expected_attributes)
       end
     end
 
@@ -80,7 +80,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
                                 push('callback_url', 'sparc_id', 'protocol').
                                 sort
 
-        expect(parsed_body['human_subjects_info'].map(&:keys).flatten.uniq.sort).to eq(expected_attributes)
+        expect(parsed_body['human_subjects_infos'].map(&:keys).flatten.uniq.sort).to eq(expected_attributes)
       end
     end
   end

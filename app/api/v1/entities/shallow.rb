@@ -10,7 +10,7 @@ module V1
   end
 
   class HumanSubjectsInfoShallow < Shallow
-    root 'human_subjects_info', 'human_subjects_info'
+    root 'human_subjects_infos', 'human_subjects_info'
   end
   
   class ClinicalProviderShallow < Shallow

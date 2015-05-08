@@ -16,7 +16,7 @@ SPARC can be customized to meet the look and feel requirements for your institut
 ## 2. Set Up a Second Project to Hold Customizations
 A secondary project's directory structure is flexible but needs to be organized to fit with the Capistrano deployment. A sample directory structure using an institution named uofexample:
 
-* sparc-custom
+* /sparc-custom/
 	* _piwik_tracking.html.haml (override MUSC analytics with your own)
 	* constants-uofexample.yml
 	* uofexample.yml
@@ -48,27 +48,29 @@ Copy /config/locales/en.yml to uofexample.yml and update it to have text specifi
 Copy /config/constants.yml to constants-uofexample.yml and update as needed.
 
 ### 3.3 CSS
-Copy /app/assets/stylesheets/application.css 		to 	/sparc-custom/assets/stylesheets/uofexample/application.css and update as needed
-Copy /app/assets/stylesheets/portal/application.css to 	/sparc-custom/assets/stylesheets/uofexample/portal/application.css and update as needed
-Copy /app/assets/stylesheets/portal/layout.css.sass to 	/sparc-custom/assets/stylesheets/uofexample/portal/layout.css.sass and update as needed
+Copy /app/assets/stylesheets/application.css to /sparc-custom/assets/stylesheets/uofexample/application.css and update as needed
+
+Copy /app/assets/stylesheets/portal/application.css to /sparc-custom/assets/stylesheets/uofexample/portal/application.css and update as needed
+
+Copy /app/assets/stylesheets/portal/layout.css.sass to /sparc-custom/assets/stylesheets/uofexample/portal/layout.css.sass and update as needed
 
 ## 4. Configure Developer Workstation
 Create symbolic links from /sparc-request/ to your /sparc-custom/ project so that the sparc-request rails server can load your customizations. For example:
 	
 	ln -nfs /sparc-custom/_piwik_tracking.html.haml 	/sparc-request/app/views/shared/_piwik_tracking.html.haml
-	ln -nfs /sparc-custom/constants-uofexample.yml 		/sparc-request/config/constants-uofexample.yml"
-	ln -nfs /sparc-custom/uofexample.yml 				/sparc-request/config/locales/uofexample.yml"
-	ln -nfs /sparc-custom/assets/images/uofexample 		/sparc-request/app/assets/images/uofexample"
-    ln -nfs /sparc-custom/assets/stylesheets/uofexample /sparc-request/app/assets/stylesheets/uofexample"
+	ln -nfs /sparc-custom/constants-uofexample.yml 		/sparc-request/config/constants-uofexample.yml
+	ln -nfs /sparc-custom/uofexample.yml 				/sparc-request/config/locales/uofexample.yml
+	ln -nfs /sparc-custom/assets/images/uofexample 		/sparc-request/app/assets/images/uofexample
+    ln -nfs /sparc-custom/assets/stylesheets/uofexample /sparc-request/app/assets/stylesheets/uofexample
 
 ## 5. Configure Capistrano Deployment
 Wrap your Capistrano deployment within a process that first pulls the latest version of your /sparc-custom/ project, copies it to your server's /sparc-request/shared/ directory, and then starts the Capistrano deployment. In /config/deploy.rb, update the :symlink task to include your customizations:
 	
 	task :symlink do
-    	run "cp /<location to specific to your server>/sparc-custom/_piwik_tracking.html.haml 	/var/www/html/sparc/sparc-request/shared/."
-    	run "cp /<location to specific to your server>/sparc-custom/constants-uofexample.yml 	/var/www/html/sparc/sparc-request/shared/."
-    	run "cp /<location to specific to your server>/sparc-custom/uofexample.yml 				/var/www/html/sparc/sparc-request/shared/."
-    	run "cp -r /<location to specific to your server>/sparc-custom/assets 					/var/www/html/sparc/sparc-request/shared/."
+    	run "cp /<git checkout location>/sparc-custom/_piwik_tracking.html.haml /var/www/html/sparc/sparc-request/shared/."
+    	run "cp /<git checkout location>/sparc-custom/constants-uofexample.yml 	/var/www/html/sparc/sparc-request/shared/."
+    	run "cp /<git checkout location>/sparc-custom/uofexample.yml 			/var/www/html/sparc/sparc-request/shared/."
+    	run "cp -r /<git checkout location>/sparc-custom/assets 				/var/www/html/sparc/sparc-request/shared/."
 		
     	run "ln -nfs #{shared_path}/config/database.yml #{release_path}/config/database.yml"
     	run "ln -nfs #{shared_path}/config/setup_load_paths.rb #{release_path}/config/setup_load_paths.rb"

@@ -130,8 +130,8 @@ namespace :data do
                       if service.save
                         # add a related service
                         if (row[22] == 'Y')
-                          related_service = Service.where(name: row[23])
-                          if !related_service
+                          related_service = Service.where(name: row[23]).first
+                          if related_service.blank?
                             puts "Error: Related Service" + row[23].to_s + " not found for Service[" + row[4].to_s + "] for Institution[" + row[0].to_s + "], Provider[" + row[1].to_s + "], and Program[" + row[2].to_s + "]"
                           elsif service.related_services.include? related_service
                             puts "Error: Related Service" + row[23].to_s + " already exists for Service[" + row[4].to_s + "] for Institution[" + row[0].to_s + "], Provider[" + row[1].to_s + "], and Program[" + row[2].to_s + "]"
@@ -179,4 +179,3 @@ namespace :data do
     end    
   end
 end
-

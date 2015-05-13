@@ -73,8 +73,11 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     @sub_service_request = SubServiceRequest.find params[:id]
 
     attrs = params[@protocol.type.downcase.to_sym]
-    
-    if @protocol.update_attributes attrs
+   
+    ###TODO temporarily disabling validation in Admin Portal
+    @protocol.attributes = attrs
+
+    if @protocol.save(:validate => false) #update_attributes attrs
       redirect_to "/portal/admin/sub_service_requests/#{@sub_service_request.id}"
     else
       @user_toasts = @user.received_toast_messages.select {|x| x.sending_class == 'SubServiceRequest'}

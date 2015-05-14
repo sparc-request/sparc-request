@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150427153650) do
+ActiveRecord::Schema.define(:version => 20150514135702) do
 
   create_table "admin_rates", :force => true do |t|
     t.integer  "line_item_id"
@@ -350,12 +350,12 @@ ActiveRecord::Schema.define(:version => 20150427153650) do
     t.string   "credentials"
     t.string   "subspecialty"
     t.string   "phone"
-    t.datetime "created_at",                                :null => false
-    t.datetime "updated_at",                                :null => false
+    t.datetime "created_at",                                                       :null => false
+    t.datetime "updated_at",                                                       :null => false
     t.datetime "deleted_at"
     t.boolean  "catalog_overlord"
     t.string   "credentials_other"
-    t.string   "encrypted_password",     :default => "",    :null => false
+    t.string   "encrypted_password",     :default => "",                           :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -366,7 +366,8 @@ ActiveRecord::Schema.define(:version => 20150427153650) do
     t.string   "last_sign_in_ip"
     t.text     "reason"
     t.string   "company"
-    t.boolean  "approved",               :default => false, :null => false
+    t.boolean  "approved",               :default => false,                        :null => false
+    t.string   "time_zone",              :default => "Eastern Time (US & Canada)"
   end
 
   add_index "identities", ["approved"], :name => "index_identities_on_approved"

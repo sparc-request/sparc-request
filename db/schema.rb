@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150514135702) do
+ActiveRecord::Schema.define(:version => 20150519185923) do
 
   create_table "admin_rates", :force => true do |t|
     t.integer  "line_item_id"
@@ -866,6 +866,7 @@ ActiveRecord::Schema.define(:version => 20150514135702) do
   end
 
   add_index "services", ["is_available"], :name => "index_services_on_is_available"
+  add_index "services", ["one_time_fee"], :name => "index_services_on_one_time_fee"
   add_index "services", ["organization_id"], :name => "index_services_on_organization_id"
 
   create_table "sessions", :force => true do |t|

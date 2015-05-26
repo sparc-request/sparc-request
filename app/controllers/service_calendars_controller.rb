@@ -33,7 +33,7 @@ class ServiceCalendarsController < ApplicationController
     setup_calendar_pages
 
     # TODO: This needs to be changed for one time fees page in arms
-    @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition {|x| x.is_one_time_fee?} if @sub_service_request
+    @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition {|x| x.one_time_fee} if @sub_service_request
   end
 
   def update
@@ -213,7 +213,7 @@ class ServiceCalendarsController < ApplicationController
     move_to_position = params[:move_to_position].to_i
 
     if @portal
-      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
+      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
     end
     setup_calendar_pages
 

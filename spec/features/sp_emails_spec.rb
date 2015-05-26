@@ -28,9 +28,9 @@ describe "Emails", :js => true do
   fake_login_for_each_test
   build_service_request_with_project
 
-  let!(:service3)            { FactoryGirl.create(:service, organization_id: program.id, name: 'ABCD') }
+  let!(:service3)            { FactoryGirl.create(:service, organization_id: program.id, name: 'ABCD', one_time_fee: true) }
   let!(:pricing_setup)       { FactoryGirl.create(:pricing_setup, organization_id: program.id, display_date: Time.now - 1.day, federal: 50, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal')}
-  let!(:pricing_map)         { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service3.id, is_one_time_fee: true, quantity_type: "Each", quantity_minimum: 5, otf_unit_type: "Week", display_date: Time.now - 1.day, full_rate: 2000, units_per_qty_max: 20) }
+  let!(:pricing_map)         { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service3.id, quantity_type: "Each", quantity_minimum: 5, otf_unit_type: "Week", display_date: Time.now - 1.day, full_rate: 2000, units_per_qty_max: 20) }
 
   before :each do
     add_visits

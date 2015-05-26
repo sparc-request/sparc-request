@@ -64,7 +64,7 @@ namespace :data do
 
         ssr.line_items.each do |li|
           total = 0
-          if li.service.is_one_time_fee? && (li.created_at.to_date > 2012-03-01)
+          if li.service.one_time_fee && (li.created_at.to_date > 2012-03-01)
             if li.fulfillments.empty?
               row = [protocol_id, service_request_id, status, short_title, pi, provider.abbreviation, program.abbreviation, core.blank? ? "" : core.abbreviation, owner, li.service.name, (li.in_process_date.to_date rescue nil), (li.complete_date.to_date rescue nil), "null", "null", "null", "null"]
               csv << row

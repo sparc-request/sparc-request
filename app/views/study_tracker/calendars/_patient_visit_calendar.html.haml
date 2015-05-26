@@ -60,7 +60,7 @@
         #cwf_tab_contents
           = render :partial => 'cwf_tab_contents', :locals => {:calendar_form => calendar_form}
 
-  %p= f.submit t(:study_tracker)[:visit_calendar][:submit], :id => 'save_appointments'
+  %p= f.submit t(:study_tracker)[:visit_calendar][:submit], :disable_with => 'Saving Appointments...', :id => 'save_appointments'
   %p.save_alert{:style => "text-align:center; margin-bottom:12px; display:none; color:red; font-weight:bold;"} You must save this form for any changes to be commited.
   %p= link_to t(:study_tracker)[:visit_calendar][:cwf_link], study_tracker_sub_service_request_path(@sub_service_request), :id => "bottom_return_link"
 

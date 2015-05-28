@@ -10,7 +10,6 @@ class ServiceLevelComponent < ActiveRecord::Base
 
   validates :component,
             :position,
-            :service_id,
             presence: true
 
   private

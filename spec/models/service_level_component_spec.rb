@@ -6,7 +6,6 @@ RSpec.describe ServiceLevelComponent, type: :model do
 
   it { should validate_presence_of(:component) }
   it { should validate_presence_of(:position) }
-  it { should validate_presence_of(:service_id) }
 
   describe "RemotelyNotifiable", delay: true do
 

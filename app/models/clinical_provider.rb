@@ -20,8 +20,6 @@
 
 class ClinicalProvider < ActiveRecord::Base
 
-  include RemotelyNotifiable
-
   audited
 
   belongs_to :organization
@@ -34,20 +32,6 @@ class ClinicalProvider < ActiveRecord::Base
     org = Organization.find(self.organization_id)
 
     org
-  end
-
-  private
-
-  def notify_remote_after_create?
-    true
-  end
-
-  def notify_remote_around_update?
-    true
-  end
-
-  def notify_remote_after_destroy?
-    true
   end
 end
 

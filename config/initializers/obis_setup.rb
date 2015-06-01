@@ -49,6 +49,7 @@ begin
   SYSTEM_SATISFACTION_SURVEY    = application_config['system_satisfaction_survey']
   NO_REPLY_FROM                 = application_config['no_reply_from']
   EDITABLE_STATUSES             = application_config['editable_statuses'] || {}
+  BUG_ENHANCEMENT_URL           = application_config['bug_enhancement_url'] || nil
 
   if LOCALE_OVERRIDE
     I18n.available_locales = [:en, LOCALE_OVERRIDE]

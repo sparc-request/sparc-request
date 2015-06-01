@@ -20,8 +20,6 @@
 
 class LineItemsVisit < ActiveRecord::Base
 
-  include RemotelyNotifiable
-
   audited
 
   belongs_to :arm

@@ -20,8 +20,6 @@
 
 class Protocol < ActiveRecord::Base
 
-  include RemotelyNotifiable
-
   audited
 
   has_many :study_types, :dependent => :destroy
@@ -431,17 +429,5 @@ class Protocol < ActiveRecord::Base
     if remove_arms
       self.arms.destroy_all
     end
-  end
-
-  def notify_remote_around_update?
-    has_at_least_one_sub_service_request_in_cwf?
-  end
-
-  def has_at_least_one_sub_service_request_in_cwf?
-    service_request_ids = service_requests.pluck(:id)
-
-    SubServiceRequest.where(service_request_id: service_request_ids).
-      where(in_work_fulfillment: true).
-      any?
   end
 end

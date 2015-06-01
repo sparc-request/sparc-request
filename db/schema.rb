@@ -652,6 +652,7 @@ ActiveRecord::Schema.define(:version => 20150519185923) do
     t.datetime "recruitment_start_date"
     t.datetime "recruitment_end_date"
     t.boolean  "selected_for_epic",                                                   :default => false
+    t.boolean  "has_cofc"
   end
 
   add_index "protocols", ["next_ssr_id"], :name => "index_protocols_on_next_ssr_id"
@@ -878,6 +879,22 @@ ActiveRecord::Schema.define(:version => 20150519185923) do
 
   add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
   add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
+
+  create_table "study_type_answers", :force => true do |t|
+    t.integer  "protocol_id"
+    t.integer  "study_type_question_id"
+    t.boolean  "answer"
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
+  end
+
+  create_table "study_type_questions", :force => true do |t|
+    t.integer  "order"
+    t.string   "question"
+    t.string   "friendly_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
 
   create_table "study_types", :force => true do |t|
     t.integer  "protocol_id"

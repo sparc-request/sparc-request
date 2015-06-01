@@ -120,6 +120,7 @@ class Portal::ProtocolsController < Portal::BaseController
     @edit_protocol = true
     @protocol = Protocol.find(params[:id])
     @protocol.populate_for_edit if @protocol.type == "Study"
+    @protocol.valid?
     respond_to do |format|
       format.html
     end

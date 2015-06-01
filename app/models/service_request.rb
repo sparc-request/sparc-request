@@ -20,6 +20,8 @@
 
 class ServiceRequest < ActiveRecord::Base
 
+  include RemotelyNotifiable
+
   audited
 
   belongs_to :service_requester, :class_name => "Identity", :foreign_key => "service_requester_id"

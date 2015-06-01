@@ -20,6 +20,8 @@
 
 class ClinicalProvider < ActiveRecord::Base
 
+  include RemotelyNotifiable
+
   audited
 
   belongs_to :organization

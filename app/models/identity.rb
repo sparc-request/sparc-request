@@ -22,6 +22,8 @@ require 'directory'
 
 class Identity < ActiveRecord::Base
 
+  include RemotelyNotifiable
+
   audited
 
   after_create :send_admin_mail

@@ -20,6 +20,8 @@
 
 class Service < ActiveRecord::Base
 
+  include RemotelyNotifiable
+
   audited
   acts_as_taggable
 

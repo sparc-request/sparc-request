@@ -20,6 +20,8 @@
 
 class Protocol < ActiveRecord::Base
 
+  include RemotelyNotifiable
+
   audited
 
   has_many :study_types, :dependent => :destroy

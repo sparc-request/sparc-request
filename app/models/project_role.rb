@@ -20,6 +20,8 @@
 
 class ProjectRole < ActiveRecord::Base
 
+  include RemotelyNotifiable
+
   audited
 
   belongs_to :protocol

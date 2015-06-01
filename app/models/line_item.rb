@@ -20,6 +20,8 @@
 
 class LineItem < ActiveRecord::Base
 
+  include RemotelyNotifiable
+
   audited
 
   belongs_to :service_request

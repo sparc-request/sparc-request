@@ -20,6 +20,8 @@
 
 class Visit < ActiveRecord::Base
 
+  include RemotelyNotifiable
+
   audited
 
   belongs_to :line_items_visit

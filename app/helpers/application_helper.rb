@@ -28,7 +28,7 @@ module ApplicationHelper
       returning_html += content_tag(:span, "Not Logged In")
     end
 
-    returning_html += content_tag(:span, " | ") + link_to(t(:bug_enhancement_link), BUG_ENHANCEMENT_URL, :target => '_blank') if BUG_ENHANCEMENT_URL
+    returning_html += content_tag(:span, " | ") + link_to(t(:bug_enhancement_link), BUG_ENHANCEMENT_URL, :target => '_blank', :class => 'bug-enhancement-link') if BUG_ENHANCEMENT_URL
 
     raw(returning_html)
   end

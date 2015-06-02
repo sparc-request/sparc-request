@@ -196,6 +196,8 @@ en:
     instructions_1: "Please review services below."
     notice: "If Professional Services are covered by % effort, please indicate in Step 2."
     select_protocol: "Select a Research Study/Project"
+    select_study: "Select Study"
+    select_project: "Select Project"
     research_study: "Research Study"
     research_project: "Research Project"
     edit_study: "Edit Study"

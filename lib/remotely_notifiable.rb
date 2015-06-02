@@ -32,7 +32,7 @@ module RemotelyNotifiable
   end
 
   # Default to all attributes
-  def remotely_notifiable_attributes_to_watch
+  def remotely_notifiable_attributes_to_watch_for_change
     attributes.keys
   end
 
@@ -40,16 +40,14 @@ module RemotelyNotifiable
     RemoteServiceNotifierJob.enqueue(self.id, self.class.name, 'create')
   end
 
-  def detected_changes
-    remotely_notifiable_attributes_to_watch & changed
+  def qualifying_changes_detected?
+    (remotely_notifiable_attributes_to_watch_for_change & changed).any?
   end
 
   def notify_remote_around_update
-    remotely_notifiable_attributes_changed = detected_changes.any?
-
     yield
 
-    if remotely_notifiable_attributes_changed
+    if qualifying_changes_detected?
       RemoteServiceNotifierJob.enqueue(self.id, self.class.name, 'update')
     end
   end

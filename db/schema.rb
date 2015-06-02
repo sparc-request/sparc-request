@@ -861,8 +861,8 @@ ActiveRecord::Schema.define(:version => 20150519185923) do
     t.datetime "deleted_at"
     t.boolean  "send_to_epic",                                                  :default => false
     t.integer  "revenue_code_range_id"
-    t.integer  "service_level_components_count",                                :default => 0
     t.boolean  "one_time_fee",                                                  :default => false
+    t.integer  "service_level_components_count",                                :default => 0
     t.integer  "line_items_count",                                              :default => 0
   end
 

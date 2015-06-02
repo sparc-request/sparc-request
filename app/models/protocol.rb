@@ -432,4 +432,14 @@ class Protocol < ActiveRecord::Base
       self.arms.destroy_all
     end
   end
+
+  private
+
+  def notify_remote_around_update?
+    true
+  end
+
+  def remotely_notifiable_attributes_to_watch_for_change
+    ["short_title"]
+  end
 end

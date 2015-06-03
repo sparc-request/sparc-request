@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -34,7 +34,7 @@ feature 'clinical providers' do
     end
 
     a = page.driver.browser.switch_to.alert
-    a.text.should eq "Are you sure you want to remove this Clinical Provider?"
+    a.text.should eq "Are you sure you want to remove this Fulfillment Provider?"
     a.accept
 
     within "#cp_info" do

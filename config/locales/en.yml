@@ -40,7 +40,7 @@ en:
         organization:
           attributes:
             position_in_cwf:
-              blank: "is required if 'Show in Clinical Work Fulfillment' is checked."
+              blank: "is required if 'Show in Fulfillment' is checked."
 
   # bottom navigation
   bottom_navigation:
@@ -386,7 +386,7 @@ en:
       new_related: "New Related Service"
       new_submission: "New Submission Email"
       new_super: "New Super User"
-      new_clinical_provider: "New Clinical Provider"
+      new_clinical_provider: "New Fulfillment Provider"
       survey_name: "Survey"
       new_associated_survey: "New Associated Survey"
       select_survey: "Please select a survey"
@@ -566,7 +566,7 @@ en:
     info:
       text1: "Service Request Status"
       text2: "Service Request Owner"
-      text3: "Ready for Clinical Fulfillment:"
+      text3: "Ready for Fulfillment:"
       text4: "Total Cost"
 
   # Service Request review page
@@ -744,8 +744,8 @@ en:
     new_sp: "New Service Provider"
     service_error: "There are no service providers anywhere on this tree."
     cm_rights: "Catalog Manager Rights"
-    clinical_work_fulfillment: "Clinical Work Fulfillment"
-    clinical_providers: "Clinical Provider Rights:"
+    clinical_work_fulfillment: "Fulfillment"
+    clinical_providers: "Fulfillment Provider Rights:"
     new_cm: "New Catalog Manager"
     auto_price_adj: "Automatic Pricing Adjustment"
     change_rates: "Increase or Decrease Rates"
@@ -763,7 +763,7 @@ en:
     default_statuses: "Default Statuses:"
     color_blank: "Select a Color"
     errors: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
-    show_in_cwf: "Show in Clinical Work Fulfillment"
+    show_in_cwf: "Show in Fulfillment"
     position_in_cwf: "Position"
     ctrc_label: "Nexus"
 
@@ -941,7 +941,7 @@ en:
       related_srs: "Related Service Requests"
       users: "Associated Users"
       notifications: "Notifications"
-      cw_fulfillment: "Clinical Work Fulfillment"
+      cw_fulfillment: "Fulfillment"
       subject_tracker: "Subject Tracker"
       payments: "Payments"
       invoices: "Invoices"
@@ -986,7 +986,7 @@ en:
     disapproved: "Account disapproved"
 
   study_tracker:
-    title: "Clinical Work Fulfillment"
+    title: "Fulfillment"
     save: "Save"
     cancel: "Cancel"
     dashboard:
@@ -1035,7 +1035,7 @@ en:
       remove: "Remove"
       remove_confirm: "Are you sure you want to delete this document?"
     audits:
-      no_start_date: "Unable to determine when this request was put into Clinical Work Fulfillment"
+      no_start_date: "Unable to determine when this request was put into Fulfillment"
       nursing: "Nursing"
       laboratory: "Laboratory"
       imaging: "Imaging"
@@ -1063,7 +1063,7 @@ en:
       grand_total: "Grand Total"
       add_service: "Add Service"
       submit: "Save Appointments"
-      cwf_link: "Back to Clinical Work Fulfillment"
+      cwf_link: "Back to Fulfillment"
       popup_message1: "Attention - An assessment"
       popup_message2: "has been added at"
       popup_message3: "If subject is past visit, please refer to your IRB-approved protocol."
@@ -1097,7 +1097,7 @@ en:
 
   # Javascript localizations
   has_fulfillments: "This line item has one or more fulfillments associated with it and can not be deleted."
-  in_fulfillment: "This line item is associated with a request that is in Clinical Work Fulfillment and cannot be deleted."
+  in_fulfillment: "This line item is associated with a request that is in Fulfillment and cannot be deleted."
   service_deleted: "Service has been deleted."
   cart:
     remove_request_confirm: "This action will delete this service request and you will be redirected to your user portal. Click OK to proceed."
@@ -1111,8 +1111,8 @@ en:
     visit_window_after: "Click to set the window after the day that the visit can be completed."
     jump_to_visit: "Select the visit you would like to view."
   service_details_alerts:
-    subject_count: "This arm has completed subject data in Clinical Work Fulfillment. The subject count cannot be decreased."
-    visit_count: "This arm has completed subject data in Clinical Work Fulfillment. The visit count cannot be decreased."
+    subject_count: "This arm has completed subject data in Fulfillment. The subject count cannot be decreased."
+    visit_count: "This arm has completed subject data in Fulfillment. The visit count cannot be decreased."
   ajax_error: "An error happened processing your request: "
   sign_in_dialog: "Please select one of the options below:"
   signed_up_dialog: "New account created:"
@@ -1130,7 +1130,7 @@ en:
     service_alert: "There needs to be at least one service provider on a parent organization to create a new service."
     service_remove: "Are you sure you want to remove this Related Service?"
     super_user_remove: "Are you sure you want to remove this Super User?"
-    clinical_provider_remove: "Are you sure you want to remove this Clinical Provider?"
+    clinical_provider_remove: "Are you sure you want to remove this Fulfillment Provider?"
     service_provider_remove: "Are you sure you want to remove this Service Provider?"
     cm_rights_remove: "Are you sure you want to remove rights for this user from the Catalog Manager?"
     permission_change: "You are changing your own permissions. Your page will refresh automatically when this window closes."
@@ -1160,3 +1160,8 @@ en:
   notifications_js:
     send: "Message has been sent."
 
+  # Tag label overrides
+  tags:
+    ctrc: "Nexus"
+    clinical_work_fulfillment: "Fulfillment"
+    ctrc_clinical_services: "Nexus clinical services"

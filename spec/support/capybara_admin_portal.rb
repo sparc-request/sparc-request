@@ -252,7 +252,7 @@ module CapybaraAdminPortal
     end
 
     def sendToCWF
-        #checks "Ready for Clinical Work Fulfillment" checkbox
+        #checks "Ready for Fulfillment" checkbox
         switchTabTo 'fulfillment'
         find('input#in_work_fulfillment.cwf_data').click
         wait_for_javascript_to_finish

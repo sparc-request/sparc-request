@@ -64,7 +64,7 @@
     %br
 
     = render :partial => 'catalog_manager/shared/available_statuses', :locals => {:f => f}
-    
+
     %fieldset#user_rights.parent
       .legend= t(:organization_form)[:user_rights]
       %fieldset.sibling_fieldset
@@ -74,7 +74,7 @@
       %fieldset.sibling_fieldset
         .secondary_header= t(:organization_form)[:service_providers]
         #sp_info= render :partial => 'catalog_manager/shared/service_providers', :locals => {:entity => @core}
-      
+
       %fieldset.sibling_fieldset
         .secondary_header= t(:organization_form)[:cm_rights]
         #cm_info= render :partial => 'catalog_manager/shared/catalog_managers', :locals => {:entity => @core}
@@ -90,24 +90,18 @@
         .legend= t(:organization_form)[:clinical_work_fulfillment]
         %fieldset.single_fieldset
           %table
-            %tr.cwf
-              %th= t(:organization_form)[:show_in_cwf]
-              %td= f.check_box :show_in_cwf
-            %tr.cwf.position_field{:style => @core.show_in_cwf ? "" : "display:none;"}
-              %th= t(:organization_form)[:position_in_cwf]
-              %td= f.text_field :position_in_cwf, :class => "cwf_clear"
             %tr
               %th= t(:organization_form)[:clinical_providers]
           #cp_info= render :partial => 'catalog_manager/shared/clinical_providers', :locals => {:entity => @core}
 
       %br
-    
+
     %fieldset#pricing.parent
       .legend= t(:organization_form)[:pricing]
       %fieldset.sibling_fieldset
         .secondary_header= t(:organization_form)[:auto_price_adj]
         = render :partial => 'catalog_manager/shared/increase_decrease_rates', :locals => {:entity => @core, :can_edit_historical_data => @user.can_edit_historical_data_for?(@core)}
-          
+
       %fieldset.sibling_fieldset
         .secondary_header= t(:organization_form)[:subsidy_info]
         %table
@@ -121,7 +115,7 @@
             = render 'catalog_manager/shared/excluded_funding_sources', :entity => @core
 
     %br
-      
+
     %fieldset.parent
       .legend= t(:organization_form)[:associated_surveys]
       %fieldset.single_fieldset
@@ -140,4 +134,4 @@
   $(document).ready( function() {
     Sparc.config.ready();
     Sparc.services.ready();
-  })  
+  })

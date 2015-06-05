@@ -109,13 +109,13 @@ def build_service_request
   let!(:service_request)     { FactoryGirl.create_without_validation(:service_request, status: "draft") }
   let!(:institution)         { FactoryGirl.create(:institution,name: 'Medical University of South Carolina', order: 1, abbreviation: 'MUSC', is_available: 1)}
   let!(:provider)            { FactoryGirl.create(:provider,parent_id:institution.id,name: 'South Carolina Clinical and Translational Institute (SCTR)',order: 1,css_class: 'blue-provider', abbreviation: 'SCTR1',process_ssrs: 0,is_available: 1)}
-  let!(:program)             { FactoryGirl.create(:program,type:'Program',parent_id:provider.id,name:'Office of Biomedical Informatics',order:1, abbreviation:'Informatics', process_ssrs:  0, is_available: 1, show_in_cwf: true, position_in_cwf: 100)}
+  let!(:program)             { FactoryGirl.create(:program,type:'Program',parent_id:provider.id,name:'Office of Biomedical Informatics',order:1, abbreviation:'Informatics', process_ssrs:  0, is_available: 1, show_in_cwf: true)}
   let!(:core)                { FactoryGirl.create(:core, parent_id: program.id)}
-  let!(:core_17)             { FactoryGirl.create(:core, parent_id: program.id, abbreviation: "Nutrition", show_in_cwf: true, position_in_cwf: 4) }
-  let!(:core_13)             { FactoryGirl.create(:core, parent_id: program.id, abbreviation: "Nursing", show_in_cwf: true, position_in_cwf: 1) }
-  let!(:core_16)             { FactoryGirl.create(:core, parent_id: program.id, abbreviation: "Lab and Biorepository", show_in_cwf: true, position_in_cwf: 2) }
-  let!(:core_15)             { FactoryGirl.create(:core, parent_id: program.id, abbreviation: "Imaging", show_in_cwf: true, position_in_cwf: 3) }
-  let!(:core_62)             { FactoryGirl.create(:core, parent_id: program.id, abbreviation: "PWF Services", show_in_cwf: true, position_in_cwf: 5) }
+  let!(:core_17)             { FactoryGirl.create(:core, parent_id: program.id, abbreviation: "Nutrition", show_in_cwf: true) }
+  let!(:core_13)             { FactoryGirl.create(:core, parent_id: program.id, abbreviation: "Nursing", show_in_cwf: true) }
+  let!(:core_16)             { FactoryGirl.create(:core, parent_id: program.id, abbreviation: "Lab and Biorepository", show_in_cwf: true) }
+  let!(:core_15)             { FactoryGirl.create(:core, parent_id: program.id, abbreviation: "Imaging", show_in_cwf: true) }
+  let!(:core_62)             { FactoryGirl.create(:core, parent_id: program.id, abbreviation: "PWF Services", show_in_cwf: true) }
   let!(:sub_service_request) { FactoryGirl.create(:sub_service_request, ssr_id: "0001", service_request_id: service_request.id, organization_id: program.id,status: "draft")}
 
 

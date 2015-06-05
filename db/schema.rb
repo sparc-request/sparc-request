@@ -199,22 +199,6 @@ ActiveRecord::Schema.define(:version => 20150501153036) do
 
   add_index "cover_letters", ["sub_service_request_id"], :name => "index_cover_letters_on_sub_service_request_id"
 
-  create_table "delayed_jobs", :force => true do |t|
-    t.integer  "priority",   :default => 0, :null => false
-    t.integer  "attempts",   :default => 0, :null => false
-    t.text     "handler",                   :null => false
-    t.text     "last_error"
-    t.datetime "run_at"
-    t.datetime "locked_at"
-    t.datetime "failed_at"
-    t.string   "locked_by"
-    t.string   "queue"
-    t.datetime "created_at",                :null => false
-    t.datetime "updated_at",                :null => false
-  end
-
-  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
-
   create_table "dependencies", :force => true do |t|
     t.integer  "question_id"
     t.integer  "question_group_id"
@@ -542,7 +526,6 @@ ActiveRecord::Schema.define(:version => 20150501153036) do
     t.string   "unit_type"
     t.decimal  "unit_factor",                :precision => 5,  :scale => 2
     t.decimal  "percent_of_fee",             :precision => 5,  :scale => 2
-    t.boolean  "is_one_time_fee"
     t.decimal  "full_rate",                  :precision => 12, :scale => 4
     t.boolean  "exclude_from_indirect_cost"
     t.integer  "unit_minimum"
@@ -849,6 +832,8 @@ ActiveRecord::Schema.define(:version => 20150501153036) do
     t.datetime "deleted_at"
     t.boolean  "send_to_epic",                                         :default => false
     t.integer  "revenue_code_range_id"
+    t.boolean  "one_time_fee",                                         :default => false
+    t.integer  "line_items_count",                                     :default => 0
   end
 
   add_index "services", ["is_available"], :name => "index_services_on_is_available"

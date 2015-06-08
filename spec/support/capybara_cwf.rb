@@ -122,7 +122,7 @@ module CapybaraClinical
         wait_for_javascript_to_finish
         save_validation_check
 
-        click_link "Back to Clinical Work Fulfillment"
+        click_link "Back to Fulfillment"
         wait_for_javascript_to_finish
     end
     

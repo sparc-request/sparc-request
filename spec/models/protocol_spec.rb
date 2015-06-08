@@ -23,45 +23,29 @@ require 'spec_helper'
 
 describe 'Protocol' do
 
-  describe '.has_at_least_one_sub_service_request_in_cwf?' do
+  describe ".notify_remote_around_update?" do
 
-    before do
-      @protocol = FactoryGirl.build(:protocol)
-      @protocol.save validate: false
+    context ":short_title update present" do
 
-      @service_request = FactoryGirl.build(:service_request, protocol: @protocol)
-      @service_request.save validate: false
-    end
+      it "should create a RemoteServiceNotifierJob" do
+        protocol = FactoryGirl.build(:protocol)
 
-    context 'Protocol has at least one SubServiceRequest in CWF' do
+        protocol.save validate: false
+        protocol.update_attribute :short_title, "New short title"
 
-      before do
-        SubServiceRequest.skip_callback(:save, :after, :update_org_tree)
-
-        sub_service_request = FactoryGirl.build(:sub_service_request,
-                                                service_request: @service_request,
-                                                in_work_fulfillment: true)
-        sub_service_request.save validate: false
-      end
-
-      it 'should return: true' do
-        expect(@protocol.has_at_least_one_sub_service_request_in_cwf?).to be
+        expect(Delayed::Job.where(queue: "remote_service_notifier").one?).to be
       end
     end
 
-    context 'Protocol has no SubServiceRequest in CWF' do
+    context ":short_title update not present" do
 
-      before do
-        SubServiceRequest.skip_callback(:save, :after, :update_org_tree)
+      it "should not create a RemoteServiceNotifierJob" do
+        protocol = FactoryGirl.build(:protocol)
 
-        sub_service_request = FactoryGirl.build(:sub_service_request,
-                                                service_request: @service_request,
-                                                in_work_fulfillment: false)
-        sub_service_request.save validate: false
-      end
+        protocol.save validate: false
+        protocol.update_attribute :title, "New title"
 
-      it 'should return: false' do
-        expect(@protocol.has_at_least_one_sub_service_request_in_cwf?).to_not be
+        expect(Delayed::Job.where(queue: "remote_service_notifier").one?).to_not be
       end
     end
   end

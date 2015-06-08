@@ -330,14 +330,4 @@ class Service < ActiveRecord::Base
   def parents_available?
     self.parents.map(&:is_available).compact.all?
   end
-
-  private
-
-  def notify_remote_after_create?
-    is_ctrc_clinical_service?
-  end
-
-  def notify_remote_around_update?
-    is_ctrc_clinical_service?
-  end
 end

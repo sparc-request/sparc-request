@@ -467,7 +467,7 @@ class SubServiceRequest < ActiveRecord::Base
     true
   end
 
-  def remotely_notifiable_attributes_to_watch
+  def remotely_notifiable_attributes_to_watch_for_change
     ['in_work_fulfillment']
   end
 end

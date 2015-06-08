@@ -35,19 +35,5 @@ class ClinicalProvider < ActiveRecord::Base
 
     org
   end
-
-  private
-
-  def notify_remote_after_create?
-    true
-  end
-
-  def notify_remote_around_update?
-    true
-  end
-
-  def notify_remote_after_destroy?
-    true
-  end
 end
 

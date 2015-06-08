@@ -21,7 +21,6 @@
 class VisitGroup < ActiveRecord::Base
 
   include RemotelyNotifiable
-
   include Comparable
 
   audited

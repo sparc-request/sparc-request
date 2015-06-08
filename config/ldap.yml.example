@@ -28,6 +28,9 @@ development:
   ldap_last_name: sn
   ldap_first_name: givenname
   ldap_email: mail
+  ldap_auth_username: 'username'
+  ldap_auth_password: 'password'
+  ldap_filter: "(&(|(|(|(cn=#{term}*)(sn=#{term}*))(givenName=#{term}*))(mail=#{term}*))(msRTCSIP-UserEnabled=TRUE))"  
 
 test:
   ldap_host: authldap.musc.edu

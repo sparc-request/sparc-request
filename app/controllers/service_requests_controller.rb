@@ -288,6 +288,7 @@ class ServiceRequestsController < ApplicationController
 
     @service_request.sub_service_requests.each do |ssr|
       ssr.subsidy.update_attributes(:overridden => true) if ssr.subsidy
+      ssr.update_attributes(:nursing_nutrition_approved => false, :lab_approved => false, :imaging_approved => false, :src_approved => false)
     end
 
     send_confirmation_notifications

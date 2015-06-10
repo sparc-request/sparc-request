@@ -58,6 +58,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       @sub_service_request.generate_approvals(@user)
       @sub_service_request.distribute_surveys if @sub_service_request.status == 'complete' and @sub_service_request.status != saved_status #status is complete and it was something different before
       @service_request = @sub_service_request.service_request
+      @protocol = @service_request.protocol
       @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
       email_users @sub_service_request if params[:status] == 'submitted'
       render 'portal/sub_service_requests/update_past_status', :formats => [:js]

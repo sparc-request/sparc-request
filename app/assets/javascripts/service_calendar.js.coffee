@@ -108,14 +108,6 @@ $(document).ready ->
     .complete ->
       $('.service_calendar_spinner').hide()
 
-  $('.visit_name').live 'change', ->
-    $('.service_calendar_spinner').show()
-    $.ajax
-      type: 'PUT'
-      url: $(this).attr('update') + "&name=#{$(this).val()}"
-    .complete ->
-      $('.service_calendar_spinner').hide()
-
   $(document).on('change', '.visit_day', ->
     # Grab the day
     position = $(this).data('position')
@@ -132,6 +124,24 @@ $(document).ready ->
       alertText = stack_errors_for_alert(JSON.parse(event.responseText))
       alert(alertText)
       $(this).val(original_val)
+    .complete ->
+      $('.service_calendar_spinner').hide()
+  )
+
+  $(document).on('change', '.visit_name', ->
+    $('.service_calendar_spinner').show()
+    visit_position = $(this).data('visit_position')
+    arm_id = $(this).data('arm_id')
+    service_request_id = $(this).data('service_request_id')
+    name = $(this).val()
+    data = {}
+    data['visit_position'] = visit_position
+    data['arm_id']         = arm_id
+    data['name']           = name
+    $.ajax
+      type: 'PUT'
+      url: "/service_requests/#{service_request_id}/service_calendars/rename_visit"
+      data: data
     .complete ->
       $('.service_calendar_spinner').hide()
   )
@@ -264,7 +274,6 @@ $(document).ready ->
       dataType: 'script'
       success: ->
         $('.service_calendar_spinner').hide()
-
   )
 
   update_otf_line_item = (obj) ->

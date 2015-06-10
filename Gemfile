@@ -37,7 +37,7 @@ gem 'omniauth'
 gem 'omniauth-shibboleth'
 gem 'paperclip'
 gem 'pdfkit'
-gem 'prawn'
+gem 'prawn', '0.12.0'
 gem 'rails', '3.2.21'
 gem 'redcarpet'
 gem 'rest-client'
@@ -98,6 +98,6 @@ group :profile do
 end
 
 group :import do
-  gem 'mustache'
+  gem 'mustache', '0.99.4'
   gem 'progress_bar'
 end

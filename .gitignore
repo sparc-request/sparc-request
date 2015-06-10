@@ -68,3 +68,5 @@ config/deploy/*.rb
 .ruby-gemset
 
 Procfile
+
+config/setup_load_paths.rb

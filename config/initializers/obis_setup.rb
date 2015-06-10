@@ -51,6 +51,7 @@ begin
   NO_REPLY_FROM                 = application_config['no_reply_from']
   EDITABLE_STATUSES             = application_config['editable_statuses'] || {}
   BUG_ENHANCEMENT_URL           = application_config['bug_enhancement_url'] || nil
+  CLINICAL_WORK_FULFILLMENT_URL = application_config['clinical_work_fulfillment_url'] || nil
 
   if LOCALE_OVERRIDE
     I18n.available_locales = [:en, LOCALE_OVERRIDE]

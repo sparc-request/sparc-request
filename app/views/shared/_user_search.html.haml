@@ -22,7 +22,7 @@
 
 .search_container
   %p= t(:user_search)[:message]
-  %br 
-  %h3= t(:user_search)[:search_box_header] 
+  %br
+  %h3= t(:user_search)[:search_box_header]
   .search.form-group
-    = text_field_tag 'user_search_term', nil, :placeholder => t(:user_search)[:search_placeholder], :class => "search-identities form-control"
+    = text_field_tag 'user_search_term', nil, :placeholder => t(:user_search)[:search_placeholder], :class => "search-identities form-control",  :'data-protocol_use_epic' => protocol.selected_for_epic

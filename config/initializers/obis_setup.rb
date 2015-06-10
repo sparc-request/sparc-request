@@ -34,6 +34,7 @@ begin
   HEADER_LINK_3                 = application_config['header_link_3']
   USE_INDIRECT_COST             = application_config['use_indirect_cost']
   USE_SHIBOLETH                 = application_config['use_shiboleth']
+  USE_SHIBBOLETH_ONLY           = application_config['use_shibboleth_only']
   USE_LDAP                      = application_config['use_ldap']
   USE_EPIC                      = application_config['use_epic']
   QUEUE_EPIC                    = application_config['queue_epic']
@@ -56,6 +57,8 @@ begin
   REMOTE_SERVICE_NOTIFIER_PASSWORD  = application_config['remote_service_notifier_password']
   HOST                              = application_config['host']
   CURRENT_API_VERSION               = application_config['current_api_version']
+  BUG_ENHANCEMENT_URL           = application_config['bug_enhancement_url'] || nil
+  CLINICAL_WORK_FULFILLMENT_URL = application_config['clinical_work_fulfillment_url'] || nil
 
   if LOCALE_OVERRIDE
     I18n.available_locales = [:en, LOCALE_OVERRIDE]

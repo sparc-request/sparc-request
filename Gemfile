@@ -10,9 +10,11 @@ gem 'bluecloth'
 gem 'cache_digests'
 gem 'capistrano'
 gem 'capistrano-ext'
+gem 'coffee-rails', '~> 3.2.1'
 gem 'delayed_job_active_record'
 gem 'devise'
 gem 'dynamic_form'
+gem 'execjs', '1.4.0'
 gem 'exception_notification'
 gem 'grape', '0.7.0'
 gem 'grape-entity', '~> 0.4.4'
@@ -20,6 +22,7 @@ gem 'grouped_validations'
 gem 'gyoku'
 gem 'haml'
 gem 'icalendar'
+gem 'inflection-js-rails'
 gem 'jquery_datepicker'
 gem 'jquery-rails', '2.1.3'
 gem 'json'
@@ -27,6 +30,7 @@ gem 'letter_opener'
 gem 'mysql2'
 gem 'nested_form'
 gem 'newrelic_rpm'
+gem 'nokogiri', '1.5.6'
 gem 'nori', '~> 2.1.0'
 gem 'obis-net-ldap'
 gem 'omniauth'
@@ -34,15 +38,18 @@ gem 'omniauth-shibboleth'
 gem 'paperclip'
 gem 'pdfkit'
 gem 'prawn'
-gem 'rails', '3.2.11'
+gem 'rails', '3.2.21'
 gem 'redcarpet'
 gem 'rest-client'
 gem 'rvm-capistrano', require: false
 gem 'sass'
+gem 'sass-rails',   '~> 3.2.3'
 gem 'savon', '~> 2.2.0'
 gem 'simplecov', require: false, group: :test
 gem 'sinatra'
 gem 'surveyor'
+gem 'therubyracer', '0.10.2', :platforms => :ruby
+gem 'uglifier', '>= 1.0.3'
 gem 'will_paginate'
 
 group :development, :test, :profile do
@@ -71,13 +78,6 @@ group :development, :test, :profile do
   if File.exists?('Gemfile.devel') then
     eval File.read('Gemfile.devel'), nil, 'Gemfile.devel'
   end
-end
-
-group :assets do
-  gem 'coffee-rails', '~> 3.2.1'
-  gem 'inflection-js-rails'
-  gem 'sass-rails', '~> 3.2.3'
-  gem 'uglifier', '>= 1.0.3'
 end
 
 group :development do

@@ -31,7 +31,7 @@ class IdentitiesController < ApplicationController
 
       if id.blank?
         @project_role = ProjectRole.new project_role_params
-      else 
+      else
         @project_role = ProjectRole.find id
         @project_role.project_rights = project_role_params[:project_rights]
       end
@@ -44,7 +44,7 @@ class IdentitiesController < ApplicationController
 
   def add_to_protocol
     @can_edit = params[:can_edit]
-    @error = nil 
+    @error = nil
     @error_field = nil
     if params[:project_role][:role].blank?
       @error = "Role can't be blank"
@@ -58,12 +58,12 @@ class IdentitiesController < ApplicationController
 
     identity = Identity.find params[:identity][:id]
     identity.update_attributes params[:identity]
-    
-    # {"identity_id"=>"11968", "first_name"=>"Colin", "last_name"=>"Alstad", "email"=>"alstad@musc.edu", "phone"=>"843-792-5378", "role"=>"pi", "role_other"=>"", 
-    # "era_commons_name"=>"adfds", "institution"=>"medical_university_of_south_carolina", "college"=>"college_of_medicine", "department"=>"information_services", 
+
+    # {"identity_id"=>"11968", "first_name"=>"Colin", "last_name"=>"Alstad", "email"=>"alstad@musc.edu", "phone"=>"843-792-5378", "role"=>"pi", "role_other"=>"",
+    # "era_commons_name"=>"adfds", "institution"=>"medical_university_of_south_carolina", "college"=>"college_of_medicine", "department"=>"information_services",
     # "credentials"=>"md_phd", "credentials_other"=>"", "subspecialty"=>"1130", "action"=>"add_to_protocol", "controller"=>"identities"}
     # insert logic to update identity
-   
+
     # should check if this is an existing project role
     if params[:project_role][:id].blank?
       @project_role = ProjectRole.new params[:project_role]
@@ -77,7 +77,7 @@ class IdentitiesController < ApplicationController
 
     @project_role.set_epic_rights
     @project_role.populate_for_edit
-
+    @protocol_use_epic = params[:protocol_use_epic]
   end
 
   def approve_account

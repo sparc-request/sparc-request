@@ -21,7 +21,7 @@
 # TODO - this could be cleaned up
 
 if $(".project_role_<%= @project_role.identity.id %>").length > 0 and "<%= @can_edit %>" == "false"
-  alert "<%= @project_role.identity.display_name %> has already been added to this project. Click edit in the table below to make changes to this user." 
+  alert "<%= @project_role.identity.display_name %> has already been added to this project. Click edit in the table below to make changes to this user."
 else if "<%= @error %>" != ""
   $('#user_detail_errors').html("<h2>1 error prohibited this user from being added</h2><p>There were problems with the following fields:</p><ul><li><%= @error %></li></ul>")
 
@@ -36,14 +36,14 @@ else if "<%= @error %>" != ""
   $('.user_info').show()
 else if $(".project_role_<%= @project_role.identity.id %>").length > 0 and "<%= @can_edit %>" == "true"
   $('#user_detail_errors').hide()
-  $(".project_role_<%= @project_role.identity.id %>").replaceWith("<%= escape_javascript(render :partial => 'shared/user_proxy_right', :locals => {:project_role => @project_role}) %>")
+  $(".project_role_<%= @project_role.identity.id %>").replaceWith("<%= escape_javascript(render :partial => 'shared/user_proxy_right', :locals => {:project_role => @project_role, :protocol_use_epic => @protocol_use_epic}) %>")
   $('.user_added_message p').html("<%= escape_javascript(t("protocol_shared.update_user")) %>")
   $('.user_added_message').show().fadeOut(2500, 'linear')
   $('.field_with_errors').removeClass('field_with_errors')
   $('.add-user-details').hide()
 else
   $('#user_detail_errors').hide()
-  $('.authorized-users tbody').append("<%= escape_javascript(render :partial => 'shared/user_proxy_right', :locals => {:project_role => @project_role}) %>")
+  $('.authorized-users tbody').append("<%= escape_javascript(render :partial => 'shared/user_proxy_right', :locals => {:project_role => @project_role, :protocol_use_epic => @protocol_use_epic}) %>")
   $('.user_added_message p').html("<%= escape_javascript(t("protocol_shared.add_user")) %>")
   $('.user_added_message').show().fadeOut(2500, 'linear')
   $('.field_with_errors').removeClass('field_with_errors')

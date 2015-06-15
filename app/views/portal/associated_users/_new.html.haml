@@ -17,7 +17,6 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 = form_for protocol_role, :url => portal_associated_users_path, :method => :post, :remote => true, :html => {:class => 'dialog-form associated_users_form' } do |f|
 
-  = render 'portal/associated_users/form', :f => f, :protocol_role => protocol_role, :identity => identity, :type => "add"
+  = render 'portal/associated_users/form', :f => f, :protocol_role => protocol_role, :identity => identity, :type => "add", :protocol => protocol

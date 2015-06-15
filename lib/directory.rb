@@ -35,6 +35,9 @@ class Directory
       LDAP_LAST_NAME  = ldap_config['ldap_last_name']
       LDAP_FIRST_NAME = ldap_config['ldap_first_name']
       LDAP_EMAIL      = ldap_config['ldap_email']
+      LDAP_AUTH_USERNAME      = ldap_config['ldap_auth_username']
+      LDAP_AUTH_PASSWORD      = ldap_config['ldap_auth_password']
+      LDAP_FILTER      = ldap_config['ldap_filter']
     rescue
       raise "ldap.yml not found, see config/ldap.yml.example"
     end
@@ -83,8 +86,11 @@ class Directory
          port: LDAP_PORT,
          base: LDAP_BASE,
          encryption: LDAP_ENCRYPTION)
-      filter = fields.map { |f| Net::LDAP::Filter.contains(f, term) }.inject(:|)
-      res = ldap.search(:filter => filter)
+      ldap.auth LDAP_AUTH_USERNAME, LDAP_AUTH_PASSWORD unless !LDAP_AUTH_USERNAME || !LDAP_AUTH_PASSWORD       
+      # use LDAP_FILTER to override default filter with custom string 
+      filter = (LDAP_FILTER && LDAP_FILTER.gsub('#{term}', term)) || fields.map { |f| Net::LDAP::Filter.contains(f, term) }.inject(:|)
+      res = ldap.search(:attributes => fields, :filter => filter)
+      Rails.logger.info ldap.get_operation_result unless res  
     rescue => e
       Rails.logger.info '#'*100
       Rails.logger.info "#{e.message} (#{e.class})"

@@ -20,12 +20,17 @@
 
 module ApplicationHelper
   def show_welcome_message current_user
+    returning_html = ""
     if current_user
-      content_tag(:span, "Logged in as #{current_user.display_name}, ") + link_to('logout', destroy_identity_session_path, :method => :delete)
+      returning_html += content_tag(:span, "Logged in as #{current_user.display_name}, ") + link_to('logout', destroy_identity_session_path, :method => :delete)
     else
       # could be used to provide a login link
-      content_tag(:span, "Not Logged In")
+      returning_html += content_tag(:span, "Not Logged In")
     end
+
+    returning_html += content_tag(:span, " | ") + link_to(t(:bug_enhancement_link), BUG_ENHANCEMENT_URL, :target => '_blank', :class => 'bug-enhancement-link') if BUG_ENHANCEMENT_URL
+
+    raw(returning_html)
   end
 
   def show_friendly_ssr_id ssr
@@ -126,7 +131,7 @@ module ApplicationHelper
                                       text_field_tag("window_after", visit_group.window_after, :class => "visit_window visit_window_after position_#{n}", :size => 1, :'data-position' => n - 1, :'data-window-after' => visit_group.window_after, :update => "#{window_after_url}?arm_id=#{arm.id}&portal=#{portal}") +
                                       tag(:br)
                                       : label_tag('')) +
-                                      text_field_tag("arm_#{arm.id}_visit_name_#{n}", visit_name, :class => "visit_name", :size => 10, :update => "#{rename_visit_url}?visit_position=#{n-1}&arm_id=#{arm.id}&portal=#{portal}") +
+                                      text_field_tag("arm_#{arm.id}_visit_name_#{n}", visit_name, :class => "visit_name", :size => 10, :'data-arm_id' => arm.id, :'data-visit_position' => n - 1, :'data-service_request_id' => service_request.id) +
                                       tag(:br) +
                                       link_to((content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')),
                                               "/service_requests/#{service_request.id}/#{action}/#{n}/#{arm.id}?portal=#{portal}",

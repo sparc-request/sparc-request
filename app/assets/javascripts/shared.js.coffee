@@ -54,6 +54,7 @@ $(document).ready ->
   $('.add-user button').live 'click', ->
     data = $('#identity_details :input').serialize()
     data += '&portal=' + $("#portal").val()
+    data += '&protocol_use_epic=' + $("#user_search_term").data('protocol_use_epic')
     $.ajax
       url: '/identities/add_to_protocol'
       type: 'POST'

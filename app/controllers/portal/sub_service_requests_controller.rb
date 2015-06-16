@@ -21,6 +21,8 @@
 class Portal::SubServiceRequestsController < Portal::BaseController
   respond_to :json, :js, :html
 
+  before_filter :protocol_authorizer, :only => [:update_from_project_study_information]
+      
   def show
     @sub_service_request = SubServiceRequest.find(params[:id])
     @admin = true
@@ -70,7 +72,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
   end
 
   def update_from_project_study_information
-    @protocol = Protocol.find(params[:protocol_id])
     @sub_service_request = SubServiceRequest.find params[:id]
 
     attrs = params[@protocol.type.downcase.to_sym]
@@ -316,4 +317,13 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     end
   end
 
+private
+  def protocol_authorizer
+    @protocol = Protocol.find(params[:protocol_id])
+    authorized_user = ProtocolAuthorizer.new(@protocol, @user)
+    if (request.get? && !authorized_user.can_view?) || (!request.get? && !authorized_user.can_edit?)
+      @protocol = nil
+      render :partial => 'service_requests/authorization_error', :locals => {:error => "You are not allowed to access this protocol."}
+    end
+  end
 end

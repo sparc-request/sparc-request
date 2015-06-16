@@ -1,4 +1,4 @@
-namespace :data do
+namespace :reports do
   desc "Create billing only report for CWF"
   task :billing_only_report => :environment do
 

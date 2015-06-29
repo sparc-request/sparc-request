@@ -45,11 +45,21 @@ class LineItem < ActiveRecord::Base
   attr_accessible :fulfillments_attributes
   attr_accessible :displayed_cost
 
+  validate :quantity_must_be_smaller_than_max
   attr_accessor :pricing_scheme
 
   accepts_nested_attributes_for :fulfillments, :allow_destroy => true
 
   delegate :one_time_fee, to: :service
+
+  def quantity_must_be_smaller_than_max
+    unless quantity.nil?
+      max = PricingMap.where(service_id: service_id).first.units_per_qty_max
+      if quantity > max
+        errors.add(:quantity, "The maximum quantity allowed is #{max}")
+      end
+    end
+  end
 
   def displayed_cost
     applicable_rate

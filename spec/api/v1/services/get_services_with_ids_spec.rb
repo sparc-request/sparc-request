@@ -5,6 +5,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
   describe 'GET /v1/services.json' do
 
     before do
+
       FactoryGirl.create_list(:service_with_process_ssrs_organization, 5)
 
       @service_ids = Service.pluck(:id)

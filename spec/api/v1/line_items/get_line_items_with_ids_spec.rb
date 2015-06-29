@@ -5,6 +5,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
   describe 'GET /v1/line_items.json' do
 
     before do
+
       protocol        = FactoryGirl.build(:protocol_federally_funded)
       protocol.save validate: false
       service         = FactoryGirl.create(:service_with_pricing_map)
@@ -66,6 +67,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         expected_attributes = FactoryGirl.build(:line_item).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
+
                                 push('callback_url', 'sparc_id', 'one_time_fee', 'per_unit_cost').
                                 sort
 
@@ -82,6 +84,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         expected_attributes = FactoryGirl.build(:line_item).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
+
                                 push('callback_url', 'sparc_id', 'line_items_visits', 'service', 'service_request', 'sub_service_request', 'one_time_fee', 'per_unit_cost').
                                 sort
 

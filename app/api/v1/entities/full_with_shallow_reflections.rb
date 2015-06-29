@@ -10,6 +10,13 @@ module V1
 
   class IdentityFullWithShallowReflection < IdentityFull
     root 'identities', 'identity'
+    expose :protocols, using: V1::ProtocolShallow
+  end
+  
+  class HumanSubjectsInfoFullWithShallowReflection < HumanSubjectsInfoFull
+    root 'human_subjects_infos', 'human_subjects_info'
+
+    expose :protocol, using: V1::ProtocolShallow
   end
 
   class ClinicalProviderFullWithShallowReflection < ClinicalProviderFull
@@ -29,9 +36,10 @@ module V1
   class ProtocolFullWithShallowReflection < ProtocolFull
     root 'protocols', 'protocol'
 
-    expose :arms,             using: V1::ArmShallow
-    expose :service_requests, using: V1::ServiceRequestShallow
-    expose :project_roles,    using: V1::ProjectRoleShallow
+    expose :arms,                using: V1::ArmShallow
+    expose :service_requests,    using: V1::ServiceRequestShallow
+    expose :project_roles,       using: V1::ProjectRoleShallow
+    expose :human_subjects_info, using: V1::HumanSubjectsInfoShallow
   end
 
   class ProjectFullWithShallowReflection < ProtocolFullWithShallowReflection

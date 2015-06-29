@@ -27,11 +27,12 @@ module SPARCCWF
       helpers HelpersV1
 
       published_resources = [
-        :organizations,
-        :clinical_providers,
         :identities,
         :project_roles,
         :arms,
+        :human_subjects_infos,
+        :organizations,
+        :clinical_providers,
         :line_items,
         :line_items_visits,
         :protocols,
@@ -55,13 +56,18 @@ module SPARCCWF
 
           params do
             use :with_depth
+            use :custom_query
             optional :ids, type: Array, default: Array.new
           end
 
           get do
-            find_objects(published_resource_to_s, params[:ids])
-
-            present @objects, with: presenter(published_resource_to_s, params[:depth])
+            find_objects(published_resource_to_s, params)
+            if @objects
+              present @objects, with: presenter(published_resource_to_s, params[:depth])
+            # for queries with where and a limit of 1  
+            elsif @object
+              present @object, with: presenter(published_resource_to_s, params[:depth])
+            end
           end
 
           route_param :id do

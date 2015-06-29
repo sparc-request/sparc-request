@@ -65,7 +65,8 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       it 'should respond with an array of identities and their attributes and their shallow reflections' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = ['email', 'first_name', 'last_name', 'ldap_uid'].
+        expected_attributes = ['email', 'first_name', 'last_name', 'ldap_uid', 'protocols'].
+
                                 push('callback_url', 'sparc_id').
                                 sort
 

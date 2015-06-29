@@ -20,16 +20,26 @@ module HelpersV1
 
   def find_object(klass, id)
     klass = klass.classify
-
-    error!("#{klass} not found", 404) unless @object = klass.constantize.where(id: id).first
+    # switched from .find(id) to .where() so that the error!() method will run and, as a result, the content type will be set to JSON
+    error!("#{klass} not found for id=#{id}", 404) unless @object = klass.constantize.where(id: id).first
   end
 
-  def find_objects(klass, ids)
+  def find_objects(klass, params)
     klass = klass.classify
 
-    if ids.any?
-      @objects = klass.constantize.where(id: ids)
-    else
+    if params[:ids].any?
+      @objects = klass.constantize.where(id: params[:ids])
+    elsif params[:query].present?
+      # identify invalid parameters (not found in the object)
+      invalid_query_parameters = params[:query].select {|key, value| !klass.constantize.column_names.include? key }
+      if invalid_query_parameters.present?
+        error!("#{klass} query #{params[:query]} has the following invalid parameters: #{invalid_query_parameters.keys}", 400)
+      elsif params[:limit] == 1 # return only one object, the first that meets the query criteria
+        error!("#{klass} not found for query #{params[:query]}", 404) unless @object = klass.constantize.where(params[:query]).first
+      else # return all objects that meet the query criteria
+        @objects = klass.constantize.where(params[:query]).limit(params[:limit]) # a nil limit is ignored by ActiveRecord
+      end
+    else # only apply params[:limit] if params[:query] exists
       @objects = klass.constantize.all
     end
   end

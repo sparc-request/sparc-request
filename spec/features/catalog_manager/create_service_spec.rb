@@ -109,6 +109,7 @@ feature 'create new service' do
     click_button('Add Pricing Map')
     
     within('.ui-accordion') do
+      #do this for fun
       page.execute_script %Q{ $('.ui-accordion-header:last').click() }
       page.execute_script %Q{ $('.pricing_map_display_date:visible').focus() }
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward

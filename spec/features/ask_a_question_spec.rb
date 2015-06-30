@@ -24,6 +24,7 @@ describe "Ask a question", :js => true do
   before :each do
     visit root_path
     find('.ask-a-question-button').click()
+    puts "Adding this to test pushing to go-api"
   end
 
   describe 'clicking the button' do

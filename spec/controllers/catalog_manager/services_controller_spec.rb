@@ -55,26 +55,26 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
 
           put :update, id: service.id, service: { name: "New name" }.merge!(service_level_component_params)
 
-          expect(service.reload.service_level_components.count).to eq(2)
+          expect(service.reload.components.split(',').count).to eq(2)
         end
       end
 
       context "Service has pre-existing ServiceLevelComponents" do
 
-        before { @service = FactoryGirl.create(:service_with_service_level_components) }
+        before { @service = FactoryGirl.create(:service_with_components) }
 
         it "should create new ServiceLevelComponents" do
           put :update, id: @service.id, service: { name: "New name" }.merge!(service_level_component_params)
 
-          expect(@service.reload.service_level_components.count).to eq(5)
+          expect(@service.reload.components.split(',').count).to eq(2)
         end
 
         it "should destroy ServiceLevelComponents marked for destroy" do
-          service_level_component = @service.service_level_components.first
+          service_level_component = @service.components.split(',').first
 
-          put :update, id: @service.id, service: service_level_component_destroy_params(service_level_component)
+          put :update, id: @service.id, service: service_level_component_destroy_params(@service, service_level_component)
 
-          expect(@service.reload.service_level_components.count).to eq(2)
+          expect(@service.reload.components.split(',').count).to eq(2)
         end
       end
     end
@@ -84,45 +84,25 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
       context "Service with pre-existing ServiceLevelComponents" do
 
         it "should build ServiceLevelComponents with the correct :position" do
-          service = FactoryGirl.create(:service_with_service_level_components, organization: organization)
+          service = FactoryGirl.create(:service_with_components, organization: organization)
 
           get :show, id: service.id
 
-          expect(assigns(:service).service_level_components.map(&:position).sort).to eq([1, 2, 3, 4, 5, 6])
+          expect(assigns(:service).components.split(',').count).to eq(3)
         end
       end
     end
   end
 
-  def service_level_component_destroy_params(service_level_component)
+  def service_level_component_destroy_params(service, component)
     {
-      service_level_components_attributes: {
-        service_level_component.id.to_s => {
-          id: service_level_component.id,
-          position: service_level_component.position,
-          component: service_level_component.component,
-          _destroy: 1
-        }
-      }
+      components: (service.components.split(',') - [component]).join(',')
     }
   end
 
   def service_level_component_params
     {
-      service_level_components_attributes: {
-        "0" => {
-          position: 1,
-          component: "ServiceLevelComponent 1"
-        },
-        "1" => {
-          position: 2,
-          component: "ServiceLevelComponent 2"
-        },
-        "2" => {
-          position: 3,
-          component: ""
-        }
-      }
+      components: "ServiceLevelComponent 1,ServiceLevelComponent 2,"
     }
   end
 
@@ -136,20 +116,7 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
         description: "xxx",
         order: 1,
         is_available: true,
-        service_level_components_attributes: {
-          "0" => {
-            position: 1,
-            component: "ServiceLevelComponent 1"
-          },
-          "1" => {
-            position: 2,
-            component: "ServiceLevelComponent 2"
-          },
-          "2" => {
-            position: 3,
-            component: ""
-          }
-        },
+        components: "ServiceLevelComponent 1,ServiceLevelComponent 2,",
         cpt_code: "",
         charge_code: "",
         revenue_code: "",

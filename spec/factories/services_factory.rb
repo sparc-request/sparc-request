@@ -33,12 +33,8 @@ FactoryGirl.define do
       organization factory: :organization_ctrc
     end
 
-    trait :with_service_level_components do
-      after(:create) do |service, evaluator|
-        (1..3).each do |index|
-          service.service_level_components.push FactoryGirl.build(:service_level_component, position: index)
-        end
-      end
+    trait :with_components do
+      components "eine,meine,mo,"
     end
 
     trait :with_pricing_map do
@@ -107,7 +103,7 @@ FactoryGirl.define do
     end
 
     factory :service_with_ctrc_organization, traits: [:with_ctrc_organization]
-    factory :service_with_service_level_components, traits: [:with_service_level_components]
+    factory :service_with_components, traits: [:with_components]
     factory :service_with_process_ssrs_organization, traits: [:with_process_ssrs_organization]
     factory :service_with_pricing_map, traits: [:with_pricing_map, :with_process_ssrs_organization]
   end

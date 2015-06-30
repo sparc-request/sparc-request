@@ -23,10 +23,6 @@ require 'spec_helper'
 
 RSpec.describe Service, type: :model do
 
-  it { should have_many(:service_level_components) }
-
-  it { should accept_nested_attributes_for(:service_level_components) }
-
   let_there_be_lane
   let_there_be_j
   build_service_request_with_project
@@ -451,6 +447,19 @@ RSpec.describe Service, type: :model do
       service.associated_surveys.create :survey_id => survey.id
       service.reload
       service.available_surveys.should include(survey)
+    end
+  end
+
+  describe "#remotely_notify", delay: true do
+    context "around_update" do
+
+      it "should create a Delayed::Job" do
+        service = FactoryGirl.create(:service_with_components)
+        work_off
+        service.update_attribute(:components, "dum,spiro,spero,")
+
+        expect(Delayed::Job.where(queue: "remote_service_notifier").count).to eq(1)
+      end
     end
   end
 end

@@ -30,7 +30,6 @@ class Service < ActiveRecord::Base
   belongs_to :organization, :include => [:pricing_setups]
   belongs_to :revenue_code_range
 
-  has_many :service_level_components, :dependent => :destroy
   has_many :pricing_maps, :dependent => :destroy
   has_many :service_providers, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
@@ -50,10 +49,6 @@ class Service < ActiveRecord::Base
   # Surveys associated with this service
   has_many :associated_surveys, :as => :surveyable
 
-  accepts_nested_attributes_for :service_level_components,
-                                reject_if: :reject_service_level_components?,
-                                allow_destroy: true
-
   attr_accessible :name
   attr_accessible :abbreviation
   attr_accessible :order
@@ -69,7 +64,7 @@ class Service < ActiveRecord::Base
   attr_accessible :revenue_code_range_id
   attr_accessible :line_items_count
   attr_accessible :one_time_fee
-  attr_accessible :service_level_components_attributes
+  attr_accessible :components
 
   validate :validate_pricing_maps_present
 
@@ -81,18 +76,6 @@ class Service < ActiveRecord::Base
     errors.add(:service, "must contain at least 1 pricing map.") if pricing_maps.length < 1
   end
   ###############################################
-
-  def self.new_with_service_level_components(attributes=nil)
-    service = new attributes
-
-    (1..3).each { |index| service.service_level_components.build(position: index) }
-
-    service
-  end
-
-  def reject_service_level_components?(attributes)
-    attributes[:position].empty? || attributes[:component].empty?
-  end
 
   # Return the parent organizations of the service.  Note that this
   # returns the organizations in the reverse order of
@@ -329,5 +312,13 @@ class Service < ActiveRecord::Base
 
   def parents_available?
     self.parents.map(&:is_available).compact.all?
+  end
+
+  def notify_remote_around_update?
+    true
+  end
+
+  def remotely_notifiable_attributes_to_watch_for_change
+    ["components"]
   end
 end

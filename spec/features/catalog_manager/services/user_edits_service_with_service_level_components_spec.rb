@@ -17,9 +17,7 @@ feature "User edits Service with pre-existing ServiceLevelCompnents", js: true d
   def as_a_user_who_is_editing_a_service_which_has_service_level_components
     default_catalog_manager_setup
     service = Service.find_by_name('Human Subject Review')
-    (1..3).each do |index|
-      service.service_level_components.push FactoryGirl.build(:service_level_component, position: index)
-    end
+    service.update_attributes(components: "a,b,c,")
 
     click_link service.name
   end
@@ -27,9 +25,11 @@ feature "User edits Service with pre-existing ServiceLevelCompnents", js: true d
   def when_i_add_service_level_components_to_the_service
     find(".service_level_components").click
     wait_for_javascript_to_finish
-    fill_in "service_service_level_components_attributes_3_component", with: "Test service component 3"
-    fill_in "service_service_level_components_attributes_4_component", with: "Test service component 4"
-    fill_in "service_service_level_components_attributes_5_component", with: "Test service component 5"
+    click_button "Add components"
+    wait_for_javascript_to_finish
+    find(".service_component_field[position='3']").set("Test service component 3")
+    find(".service_component_field[position='4']").set("Test service component 4")
+    find(".service_component_field[position='5']").set("Test service component 5")
     first("#save_button").click
     wait_for_javascript_to_finish
   end
@@ -37,8 +37,8 @@ feature "User edits Service with pre-existing ServiceLevelCompnents", js: true d
   def when_i_remove_service_level_components_from_the_service
     find(".service_level_components").click
     wait_for_javascript_to_finish
-    check "service_service_level_components_attributes_0__destroy"
-    check "service_service_level_components_attributes_1__destroy"
+    within("#service_component_position_0"){ click_button "Remove" }
+    within("#service_component_position_1"){ click_button "Remove" }
     first("#save_button").click
     wait_for_javascript_to_finish
   end

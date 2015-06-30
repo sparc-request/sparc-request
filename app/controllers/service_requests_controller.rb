@@ -77,7 +77,9 @@ class ServiceRequestsController < ApplicationController
     additional_params = request.referrer.split('/').last.split('?').size == 2 ? "?" + request.referrer.split('/').last.split('?').last : nil
     validates = params["validates"]
 
-    if (@validation_groups[location].nil? or @validation_groups[location].map{|vg| @service_request.group_valid? vg.to_sym}.all?) and (validates.blank? or @service_request.group_valid? validates.to_sym) and errors.empty?
+    if params[:clicked_back] == "true"
+      redirect_to "/service_requests/#{@service_request.id}/#{location}#{additional_params}"
+    elsif (@validation_groups[location].nil? or @validation_groups[location].map{|vg| @service_request.group_valid? vg.to_sym}.all?) and (validates.blank? or @service_request.group_valid? validates.to_sym) and errors.empty?
       @service_request.save(:validate => false)
       redirect_to "/service_requests/#{@service_request.id}/#{location}#{additional_params}"
     else

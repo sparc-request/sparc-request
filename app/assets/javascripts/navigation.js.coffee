@@ -20,6 +20,11 @@
 
 $(document).ready ->
   $('.navigation_link').live 'click', ->
+    if $(this).parent().attr('class') == 'return-to-previous'
+      $('input#clicked_back').val('true')
+    else
+      $('input#clicked_back').val('false')
+      
     if $(this).parent('div.exit').size() >= 1
       $('#processing_request').show()
     location = $(this).attr('location')

@@ -24,6 +24,7 @@
   = hidden_field_tag :location, ''
   = hidden_field_tag :validates, ''
   = hidden_field_tag :current_location, @page
+  = hidden_field_tag :clicked_back, false
   = render :partial => 'steps'
   = render :partial => 'errors'
   %ul.billing-info

@@ -39,8 +39,7 @@ feature "create Service", js: true do
   def fill_in_service_form_service_level_components
     find(".service_level_components").click
     wait_for_javascript_to_finish
-    fill_in "service_service_level_components_attributes_0_component", with: "Test service component 1"
-    fill_in "service_service_level_components_attributes_1_component", with: "Test service component 2"
+    find(:css, ".service_component_field").set("Test service component 1")
   end
 
   def fill_in_service_form_pricing_map

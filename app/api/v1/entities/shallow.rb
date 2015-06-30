@@ -45,10 +45,6 @@ module V1
     root 'services', 'service'
   end
 
-  class ServiceLevelComponentShallow < Shallow
-    root 'service_level_components', 'service_level_component'
-  end
-
   class ServiceRequestShallow < Shallow
     root 'service_requests', 'service_request'
   end

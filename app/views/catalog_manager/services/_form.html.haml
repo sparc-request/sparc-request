@@ -83,15 +83,19 @@
           .secondary_header Components
           %table
             %tbody
-              = f.fields_for :service_level_components do |service_level_components_form|
-                %tr
-                  %td
-                    = service_level_components_form.hidden_field :position
-                    = service_level_components_form.text_field :component
-                  - if service_level_components_form.object.persisted?
+              = f.hidden_field :components
+              - if @service.components
+                - components = @service.components.split(",")
+                - components_length = components.length
+                - (0...components_length).each do |i|
+                  %tr{id: "service_component_position_#{i}"}
                     %td
-                      = service_level_components_form.check_box :_destroy
-                      = service_level_components_form.label :_destroy, "Remove"
+                      %input.service_component_field{ value: components[i], position: i, type: 'text'}
+                      %button.delete{type: "button", position: i} Remove
+              %tr{id: "service_component_position_#{components_length}"}
+                %td
+                  %input.service_component_field{ position: components_length, type: 'text' }
+
           %button.add{type: "button"} Add components
       %br
 

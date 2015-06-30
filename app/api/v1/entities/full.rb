@@ -116,13 +116,6 @@ module V1
     root 'protocols', 'protocol'
   end
 
-  class ServiceLevelComponentFull < ServiceLevelComponentShallow
-    root 'service_level_components', 'service_level_component'
-
-    expose  :component,
-            :position
-  end
-
   class ServiceFull < ServiceShallow
     root 'services', 'service'
 
@@ -138,9 +131,9 @@ module V1
             :organization_id,
             :send_to_epic,
             :revenue_code_range_id,
-            :service_level_components_count,
             :one_time_fee,
-            :line_items_count
+            :line_items_count,
+            :components
 
     expose  :process_ssrs_organization, using: V1::ProcessSsrsOrganizationFull
   end

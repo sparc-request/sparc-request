@@ -39,7 +39,6 @@ module SPARCCWF
         :projects,
         :service_requests,
         :services,
-        :service_level_components,
         :sub_service_requests,
         :visit_groups,
         :visits

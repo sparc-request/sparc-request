@@ -34,8 +34,8 @@ feature 'edit a service' do
 
   scenario 'successfully update a service under a program', :js => true do
     click_link('Human Subject Review')
-
     # Program Select should defalut to parent Program
+    wait_for_javascript_to_finish
     within ('#service_program') do
       page.should have_content('Office of Biomedical Informatics')
     end
@@ -58,6 +58,7 @@ feature 'edit a service' do
     click_link('MUSC Research Data Request (CDW)')
 
     # Program Select should defalut to parent Program
+    wait_for_javascript_to_finish
     within ('#service_program') do
       page.should have_content('Office of Biomedical Informatics')
     end

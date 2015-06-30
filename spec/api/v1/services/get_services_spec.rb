@@ -68,7 +68,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         expected_attributes = FactoryGirl.build(:service).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'process_ssrs_organization', 'line_items', 'service_level_components').
+                                push('callback_url', 'sparc_id', 'process_ssrs_organization', 'line_items').
                                 sort
 
         expect(parsed_body['services'].map(&:keys).flatten.uniq.sort).to eq(expected_attributes)

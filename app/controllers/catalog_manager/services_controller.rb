@@ -23,9 +23,11 @@ class CatalogManager::ServicesController < CatalogManager::AppController
   respond_to :js, :html, :json
 
   def show
-    @service = Service.find params[:id]
+    @service  = Service.find params[:id]
     @programs = @service.provider.programs
-    @cores = @service.program.cores
+    @cores    = @service.program.cores
+
+    build_service_level_components
   end
 
   def update_cores
@@ -34,39 +36,47 @@ class CatalogManager::ServicesController < CatalogManager::AppController
 
   def new
     if params[:parent_object_type] == 'program'
-      @program = Program.find params[:parent_id]
-      @entity = @program
+      @program  = Program.find params[:parent_id]
+      @entity   = @program
       @programs = @program.provider.programs
-      @cores = @program.cores
+      @cores    = @program.cores
     elsif params[:parent_object_type] == 'core'
-      @core = Core.find params[:parent_id]
-      @entity = @core
-      @program = @core.program
+      @core     = Core.find params[:parent_id]
+      @entity   = @core
+      @program  = @core.program
       @programs = @program.provider.programs
-      @cores = @program.cores
+      @cores    = @program.cores
     else
       @programs = Program.all
-      @cores = Core.all
+      @cores    = Core.all
     end
-    @service = @entity.services.build({:name => 'New Service', :abbreviation => 'New Service'})
 
+    service_attributes = {
+      name: "New Service",
+      abbreviation: "New Service",
+      organization_id: @entity.id
+    }
+
+    @service = Service.new_with_service_level_components(service_attributes)
   end
 
   def create
     if params[:service][:core] && params[:service][:core] != '0'
-      @core = Core.find(params[:service][:core])
-      params[:service].delete(:program)
-      params[:service].delete(:core)      
-      @service = @core.services.build(params[:service])      
-    elsif params[:service][:program]
-      @program = Program.find(params[:service][:program])
+      organization = Core.find(params[:service][:core])
+
       params[:service].delete(:program)
       params[:service].delete(:core)
-      @service = @program.services.build(params[:service])      
-    else
-      @service = Service.new(params[:service])      
+    elsif params[:service][:program]
+      organization = Program.find(params[:service][:program])
+
+      params[:service].delete(:program)
+      params[:service].delete(:core)
     end
-    
+
+    service_attributes = params[:service].merge!(organization_id: organization.id)
+
+    @service = Service.new(service_attributes)
+
     # This will correctly map the service.organization if a user changes the core of the service.
     unless params[:service][:core].blank? && params[:service][:program].blank?
       orgid = params[:service][:program]
@@ -75,7 +85,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
         new_org = Organization.find(orgid)
         @service.update_attribute(:organization_id, orgid) if new_org
       end
-    end     
+    end
 
     # @service.pricing_maps.build(params[:pricing_map]) if params[:pricing_map]
     params[:pricing_maps].each do |pm|
@@ -86,7 +96,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       pm[1][:member_rate] = Service.dollars_to_cents(pm[1][:member_rate]) unless pm[1][:member_rate].blank?
       @service.pricing_maps.build(pm[1])
     end if params[:pricing_maps]
-    
+
     if params[:cancel]
       render :action => 'cancel'
     else
@@ -104,25 +114,25 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     unless params[:service][:tag_list]
       params[:service][:tag_list] = ""
     end
-    
+
     program = params[:service][:program]
     core = params[:service][:core]
 
     params[:service].delete(:id)
     params[:service].delete(:program)
-    params[:service].delete(:core)    
-    
+    params[:service].delete(:core)
+
     saved = @service.update_attributes(params[:service])
-    
+
     # This will update the service.organization if a user changes the core of the service.
     unless core.blank? && program.blank?
       orgid = program
-      orgid = core unless (core.blank? || core == '0')    
+      orgid = core unless (core.blank? || core == '0')
       unless @service.organization.id.to_s == orgid.to_s
         new_org = Organization.find(orgid)
         @service.update_attribute(:organization_id, orgid) if new_org
       end
-    end       
+    end
 
     params[:pricing_maps].each do |pm|
       pm[1][:full_rate] = Service.dollars_to_cents(pm[1][:full_rate]) unless pm[1][:full_rate].blank?
@@ -133,10 +143,10 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       if pm[1]['id'] == 'blank'
         @service.pricing_maps.build(pm[1])
       else
-        # saved = @service.pricing_maps.find(pm[1]['id']).update_attributes(pm[1])	
+        # saved = @service.pricing_maps.find(pm[1]['id']).update_attributes(pm[1])
         pm_id = pm[1]['id']
         pm[1].delete(:id)
-        saved = @service.pricing_maps.find(pm_id).update_attributes(pm[1])        
+        saved = @service.pricing_maps.find(pm_id).update_attributes(pm[1])
       end
       if saved == true
         saved = @service.save
@@ -148,7 +158,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     # past_maps = @service.pricing_maps.inject([]) do |arr, pm|
     #   arr << pm if Date.parse(pm['effective_date']) < Date.today
     #   arr
-    # end     
+    # end
     if saved
       flash[:notice] = "#{@service.name} saved correctly."
     else
@@ -158,7 +168,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     @service.reload
     @entity = @service
     respond_with @service, :location => catalog_manager_service_path(@service)
-  end 
+  end
 
   def associate
 
@@ -216,7 +226,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
 
     render :json => reformatted_services.to_json
   end
-  
+
   def get_updated_rate_maps
     new_rate = PricingMap.rates_from_full(params[:date].try(:to_date).try(:strftime, "%F"), params[:organization_id], Service.dollars_to_cents(params[:full_rate]))
     new_rate["federal_rate"] = Service.fix_service_rate(new_rate.try(:[], :federal_rate))
@@ -235,20 +245,23 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       @org = Core.find params[:parent_id]
       @program = @org.program
     end
-    
+
     if @org.all_service_providers(false).size < 1
       alert_text << "There needs to be at least one service provider on a parent organization to create a new service. "
     end
-    
+
     if @program && !@program.has_active_pricing_setup
       alert_text << "Before creating services, please configure an active pricing setup for either the program '" << @program.name << "' or the provider '" << @program.provider.name << "'."
     end
-    
-    render :text => alert_text  
+
+    render :text => alert_text
   end
-  
+
   private
 
-  
+  def build_service_level_components
+    index_start = @service.service_level_components_count + 1
 
+    (index_start..(index_start += 2)).each { |index| @service.service_level_components.build position: index }
+  end
 end

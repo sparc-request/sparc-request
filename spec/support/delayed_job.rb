@@ -1,0 +1,17 @@
+module DelayedJobHelpers
+
+  def work_off
+    Delayed::Worker.new.work_off
+  end
+end
+
+RSpec.configure do |config|
+
+  config.before(:each, delay: true) do
+    Delayed::Worker.delay_jobs = true
+  end
+
+  config.after(:each, delay: true) do
+    Delayed::Worker.delay_jobs = false
+  end
+end

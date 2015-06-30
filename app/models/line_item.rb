@@ -19,6 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class LineItem < ActiveRecord::Base
+
+  include RemotelyNotifiable
+
   audited
 
   belongs_to :service_request
@@ -41,10 +44,22 @@ class LineItem < ActiveRecord::Base
   attr_accessible :quantity
   attr_accessible :fulfillments_attributes
   attr_accessible :displayed_cost
- 
+
+  validate :quantity_must_be_smaller_than_max
   attr_accessor :pricing_scheme
 
   accepts_nested_attributes_for :fulfillments, :allow_destroy => true
+
+  delegate :one_time_fee, to: :service
+
+  def quantity_must_be_smaller_than_max
+    unless quantity.nil?
+      max = PricingMap.where(service_id: service_id).first.units_per_qty_max
+      if quantity > max
+        errors.add(:quantity, "The maximum quantity allowed is #{max}")
+      end
+    end
+  end
 
   def displayed_cost
     applicable_rate
@@ -77,11 +92,11 @@ class LineItem < ActiveRecord::Base
         funding_source      = self.service_request.protocol.funding_source_based_on_status
         selected_rate_type  = pricing_setup.rate_type(funding_source)
         applied_percentage  = pricing_setup.applied_percentage(selected_rate_type)
-      
+
         rate = pricing_map.applicable_rate(selected_rate_type, applied_percentage)
       end
-    else 
-      if has_admin_rates? 
+    else
+      if has_admin_rates?
         rate = self.admin_rates.last.admin_cost
       else
         pricing_map         = self.pricing_scheme == 'displayed' ? self.service.displayed_pricing_map : self.service.current_effective_pricing_map
@@ -89,14 +104,14 @@ class LineItem < ActiveRecord::Base
         funding_source      = self.service_request.protocol.funding_source_based_on_status
         selected_rate_type  = pricing_setup.rate_type(funding_source)
         applied_percentage  = pricing_setup.applied_percentage(selected_rate_type)
-      
+
         rate = pricing_map.applicable_rate(selected_rate_type, applied_percentage)
       end
     end
 
     rate
   end
-  
+
   def has_admin_rates? appointment_completed_date=nil
     has_admin_rates = !self.admin_rates.empty? && !self.admin_rates.last.admin_cost.blank?
     has_admin_rates = has_admin_rates && self.admin_rates.select{|ar| ar.created_at.to_date <= appointment_completed_date.to_date}.size > 0 if appointment_completed_date
@@ -172,9 +187,9 @@ class LineItem < ActiveRecord::Base
   def direct_costs_for_visit_based_service_single_subject(line_items_visit)
     # line items visit should also check that it's for the correct protocol
     return 0.0 unless service_request.protocol_id == line_items_visit.arm.protocol_id
-    
+
     research_billing_qty_total = line_items_visit.visits.sum(&:research_billing_qty)
-    
+
     subject_total = research_billing_qty_total * per_unit_cost(quantity_total(line_items_visit))
     subject_total
   end
@@ -271,17 +286,17 @@ class LineItem < ActiveRecord::Base
   def should_push_to_epic?
     return self.service.send_to_epic
   end
-  
+
   ### audit reporting methods ###
-  
+
   def audit_field_value_mapping
     {"service_id" => "Service.find(ORIGINAL_VALUE).name"}
   end
-  
+
   def audit_excluded_fields
     {'create' => ['service_request_id', 'sub_service_request_id', 'service_id', 'ssr_id', 'deleted_at', 'units_per_quantity']}
   end
-  
+
   def audit_label audit
     if audit.action == 'create'
       return "#{service.name} added to Service Request #{sub_service_request.display_id}"
@@ -293,7 +308,7 @@ class LineItem < ActiveRecord::Base
   ### end audit reporting methods ###
 
   # Need this for filtering ssr's by user on the cfw home page
-  def core    
+  def core
     self.service.organization
   end
 

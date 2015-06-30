@@ -26,6 +26,70 @@ describe 'SubServiceRequest' do
   let_there_be_j
   build_service_request_with_study
 
+  context 'callbacks' do
+
+    before { SubServiceRequest.skip_callback(:save, :after, :update_org_tree) }
+
+    context '#around_update' do
+
+      describe '#notify_remote_around_update', delay: true do
+
+        context '.in_work_fulfillment changed' do
+
+          it 'should create a RemoteServiceNotifierJob' do
+            sub_service_request = FactoryGirl.build(:sub_service_request, in_work_fulfillment: false)
+
+            sub_service_request.save validate: false
+            sub_service_request.update_attribute :in_work_fulfillment, true
+
+            expect(Delayed::Job.where("handler LIKE '%RemoteServiceNotifierJob%'").one?).to be
+          end
+        end
+
+        context '.in_work_fulfillment not changed' do
+
+          before do
+            service = Service.first
+
+            work_off
+
+            service.update_attribute :name, 'Test'
+          end
+
+          it 'should create a RemoteServiceNotifierJob' do
+            expect(Delayed::Job.where("handler LIKE '%RemoteServiceNotifierJob%'").one?).to_not be
+          end
+        end
+      end
+    end
+  end
+
+  describe '.stored_percent_subsidy' do
+
+    context 'Subsidy present' do
+
+      it 'should return: subsidy.stored_percent_subsidy' do
+        sub_service_request = SubServiceRequest.first
+        subsidy             = sub_service_request.subsidy
+
+        subsidy.update_attribute :stored_percent_subsidy, 9.9
+
+        expect(sub_service_request.stored_percent_subsidy).to eq(9.9)
+      end
+    end
+
+    context 'Subsidy not present' do
+
+      it 'should return: nil' do
+        sub_service_request = SubServiceRequest.first
+
+        subsidy.update_attribute :stored_percent_subsidy, nil
+
+        expect(sub_service_request.stored_percent_subsidy).to_not be
+      end
+    end
+  end
+
   context 'clinical work fulfillment' do
 
     it 'should populate the subjects when :in_work_fulfillment is set to true' do
@@ -33,7 +97,6 @@ describe 'SubServiceRequest' do
       arm1.subjects.count.should eq(2)
       arm2.subjects.count.should eq(4)
     end
-
   end
 
   context 'fulfillment' do
@@ -42,7 +105,7 @@ describe 'SubServiceRequest' do
 
       context 'single core' do
 
-        before :each do          
+        before :each do
           @ppv = FactoryGirl.create(:service, organization_id: core.id) # PPV Service
           @otf = FactoryGirl.create(:service, organization_id: core.id, one_time_fee: true) # OTF Service
           @otf.pricing_maps.build(FactoryGirl.attributes_for(:pricing_map))
@@ -68,7 +131,7 @@ describe 'SubServiceRequest' do
           core = FactoryGirl.create(:core, parent_id: program.id)
           core2 = FactoryGirl.create(:core, parent_id: program.id)
           core3 = FactoryGirl.create(:core, parent_id: program.id)
-          
+
           ppv = FactoryGirl.create(:service, organization_id: core.id, name: "Per Patient Service") # PPV Service
           ppv2 = FactoryGirl.create(:service, :disabled, organization_id: core3.id) # Disabled PPV Service
           otf = FactoryGirl.create(:service, organization_id: core2.id, name: "OTF Service", one_time_fee: true) # OTF Service
@@ -86,7 +149,7 @@ describe 'SubServiceRequest' do
     describe 'fulfillment line item manipulation' do
 
       let!(:sub_service_request2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
- 
+
       context 'updating a line item' do
 
         it 'should fail if the line item is not on the sub service request' do
@@ -215,7 +278,7 @@ describe 'SubServiceRequest' do
       end
 
       context "eligible for subsidy" do
-        
+
         it "should return true if the organization's max dollar cap is > 0" do
           subsidy_map.update_attributes(max_dollar_cap: 100)
           sub_service_request.eligible_for_subsidy?.should eq(true)
@@ -334,16 +397,16 @@ describe 'SubServiceRequest' do
         it "should not contain ctrc statuses if the organization is not ctrc" do
           sub_service_request.update_attributes(organization_id: org2.id)
           sub_service_request.candidate_statuses.should_not include('ctrc approved', 'ctrc review')
-        end 
+        end
       end
     end
 
     describe "sub service request ownership" do
 
       context "candidate owners" do
-       
+
         let!(:user)               { FactoryGirl.create(:identity) }
-     
+
         before :each do
           provider.update_attributes(process_ssrs: true)
           program.update_attributes(process_ssrs: true)
@@ -361,9 +424,9 @@ describe 'SubServiceRequest' do
 
         it "should not return the same identity twice if it is both the owner and service provider" do
           sub_service_request.update_attributes(owner_id: user.id)
-          sub_service_request.candidate_owners.uniq.length.should eq(sub_service_request.candidate_owners.length) 
+          sub_service_request.candidate_owners.uniq.length.should eq(sub_service_request.candidate_owners.length)
         end
       end
-    end      
+    end
   end
 end

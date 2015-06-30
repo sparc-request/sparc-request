@@ -833,7 +833,7 @@ ActiveRecord::Schema.define(:version => 20150501153036) do
     t.boolean  "send_to_epic",                                         :default => false
     t.integer  "revenue_code_range_id"
     t.boolean  "one_time_fee",                                         :default => false
-    t.integer  "line_items_count",                                     :default => 0
+    t.integer  "line_items_count"                                    :default => 0
   end
 
   add_index "services", ["is_available"], :name => "index_services_on_is_available"

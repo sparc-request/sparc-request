@@ -19,6 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class LineItem < ActiveRecord::Base
+
+  include RemotelyNotifiable
+
   audited
 
   belongs_to :service_request
@@ -45,6 +48,8 @@ class LineItem < ActiveRecord::Base
   attr_accessor :pricing_scheme
 
   accepts_nested_attributes_for :fulfillments, :allow_destroy => true
+
+  delegate :one_time_fee, to: :service
 
   def displayed_cost
     applicable_rate

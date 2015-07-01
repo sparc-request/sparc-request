@@ -180,6 +180,7 @@ $(document).ready ->
   )
 
   $(document).on('change', '#line_item_quantity', ->
+    console.log "here"
     value = $(this).data("line_item_quantity")
     $(this).val(value)
   )

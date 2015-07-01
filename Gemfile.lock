@@ -431,3 +431,6 @@ DEPENDENCIES
   uglifier (>= 1.0.3)
   watchr
   will_paginate
+
+BUNDLED WITH
+   1.10.3

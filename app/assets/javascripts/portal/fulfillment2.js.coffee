@@ -36,9 +36,9 @@ $(document).ready ->
         dateFormat: 'm/dd/yy'
         altFormat: 'yy-mm-dd'
         altField: data
-  
+
   }
-  
+
   $(document).on('change', '.datepicker', ->
     selector = "##{$(this).attr("id").replace('_picker', '')}"
     $("#{selector}").change()
@@ -93,7 +93,7 @@ $(document).ready ->
       else
         $().toastmessage('showErrorToast', I18n["fulfillment_js"]["date_error"])
         $("##{$(this).attr("name")}_picker").val(original)
-    else  
+    else
       put_attribute(object_id, klass, data)
   )
 
@@ -148,7 +148,7 @@ $(document).ready ->
 
   cwf_callback = ->
     $('#cwf_building_dialog').dialog('close')
-    
+
 
   put_attribute = (id, klass, data, callback) ->
     callback ?= -> return null
@@ -177,6 +177,11 @@ $(document).ready ->
       data: JSON.stringify(data)
       dataType: "script"
       contentType: 'application/json; charset=utf-8'
+  )
+
+  $(document).on('change', '#line_item_quantity', ->
+    value = $(this).data("line_item_quantity")
+    $(this).val(value)
   )
 
   $(document).on('change', '#arm_id', ->
@@ -290,7 +295,7 @@ $(document).ready ->
           for error in errors
             $().toastmessage('showErrorToast', "#{error.humanize()}.");
   )
-  
+
   $(document).on('click', '.add_visit_link', ->
     $('#visit-form').dialog('open')
   )
@@ -384,7 +389,7 @@ $(document).ready ->
   $(document).on('click', '#add_service', ->
     ssr_id = $(this).data('sub_service_request_id')
     new_service_id = $(this).data('select_id')
-    data = 
+    data =
       'sub_service_request_id': ssr_id
       'new_service_id': $("##{new_service_id}").val()
       'arm_id': $('#arm_id').val()
@@ -409,7 +414,7 @@ $(document).ready ->
   $(document).on('click', '#add_otf_service', ->
     ssr_id = $(this).data('sub_service_request_id')
     new_service_id = $(this).data('select_id')
-    data = 
+    data =
       'sub_service_request_id': ssr_id
       'new_service_id': $("##{new_service_id}").val()
       'study_tracker': $('#study_tracker_hidden_field').val() || null
@@ -557,7 +562,7 @@ $(document).ready ->
     if percent > max_percentage
       $().toastmessage('showWarningToast', I18n["fulfillment_js"]["subsidy"])
 
-  
+
   #######################
   # VISIT CHANGE TOASTS #
   #######################

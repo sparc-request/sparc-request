@@ -19,6 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Organization < ActiveRecord::Base
+
+  include RemotelyNotifiable
+
   audited
   acts_as_taggable
 
@@ -54,16 +57,12 @@ class Organization < ActiveRecord::Base
   attr_accessible :submission_emails_attributes
   attr_accessible :available_statuses_attributes
   attr_accessible :tag_list
-  attr_accessible :position_in_cwf
   attr_accessible :show_in_cwf
- 
+
   accepts_nested_attributes_for :subsidy_map
   accepts_nested_attributes_for :pricing_setups
   accepts_nested_attributes_for :submission_emails
   accepts_nested_attributes_for :available_statuses, :allow_destroy => true
-
-  validates :position_in_cwf, :numericality => true, :allow_nil => true, :uniqueness => true
-  validates :position_in_cwf, :presence => :true, :if => :show_in_cwf
 
   def label
     abbreviation || name
@@ -95,11 +94,11 @@ class Organization < ActiveRecord::Base
       return self.parents.select {|x| x.process_ssrs}.first
     end
   end
-  
+
   def service_providers_lookup
     if !service_providers.empty?
       return service_providers
-    else 
+    else
       return self.parents.select {|x| !x.service_providers.empty?}.first.try(:service_providers) || []
     end
   end
@@ -107,7 +106,7 @@ class Organization < ActiveRecord::Base
   def submission_emails_lookup
     if !submission_emails.empty?
       return submission_emails
-    else 
+    else
       return self.parents.select {|x| !x.submission_emails.empty?}.first.try(:submission_emails) || []
     end
   end
@@ -118,7 +117,7 @@ class Organization < ActiveRecord::Base
 
     orgs.each do |org|
       if org.parent_id == self.id
-        children << org 
+        children << org
       end
     end
 
@@ -132,7 +131,7 @@ class Organization < ActiveRecord::Base
       all_children << child
       child.all_children(all_children, orgs)
     end
-  
+
     all_children << self if include_self
 
     all_children.uniq
@@ -151,13 +150,13 @@ class Organization < ActiveRecord::Base
       end
     end
 
-    all_services    
+    all_services
   end
-  
+
   ###############################################################################
   ############################## PRICING METHODS ################################
   ###############################################################################
-  
+
   # Returns this organization's pricing setup that is displayed on todays date.
   def current_pricing_setup
     return pricing_setup_for_date(Date.today)
@@ -178,7 +177,7 @@ class Organization < ActiveRecord::Base
 
     return pricing_setup
   end
-  
+
   # Returns this organization's pricing setup that is effective on a given date.
   def effective_pricing_setup_for_date(date=Date.today)
     if self.pricing_setups.blank?
@@ -187,7 +186,7 @@ class Organization < ActiveRecord::Base
     end
 
     current_setups = self.pricing_setups.select { |x| x.effective_date.to_date <= date.to_date }
- 
+
     raise ArgumentError, "Organization has no current effective pricing setups" if current_setups.empty?
     sorted_setups = current_setups.sort { |lhs, rhs| lhs.effective_date <=> rhs.effective_date }
     pricing_setup = sorted_setups.last
@@ -204,7 +203,7 @@ class Organization < ActiveRecord::Base
   def funding_source_excluded_from_subsidy?(funding_source)
     excluded = false
     excluded_funding_sources = self.try(:subsidy_map).try(:excluded_funding_sources)
-    if excluded_funding_sources 
+    if excluded_funding_sources
       funding_source_names = excluded_funding_sources.map {|x| x.funding_source}
       excluded = true if funding_source_names.include?(funding_source)
     end
@@ -234,7 +233,7 @@ class Organization < ActiveRecord::Base
   def service_providers_lookup
     if !service_providers.empty?
       return self.service_providers
-    elsif !self.parents.empty? 
+    elsif !self.parents.empty?
       parent = self.parents.select {|x| !x.service_providers.empty?}.first
       return parent.nil? ? [] : parent.service_providers
     else
@@ -264,7 +263,7 @@ class Organization < ActiveRecord::Base
   def all_service_providers(include_children=true)
     orgs = Organization.find(:all)
     all_service_providers = []
-    
+
     # If process_ssrs is true, we need to also get our children's service providers
     if self.process_ssrs and include_children
       self.all_children(orgs).each do |child|
@@ -279,7 +278,7 @@ class Organization < ActiveRecord::Base
     self.parents.each do |parent|
       all_service_providers << parent.service_providers
     end
-    
+
     return all_service_providers.flatten.uniq {|x| x.identity_id}
   end
 
@@ -289,7 +288,7 @@ class Organization < ActiveRecord::Base
   def all_super_users
     orgs = Organization.find(:all)
     all_super_users = []
-    
+
     # If process_ssrs is true, we need to also get our children's super users
     if self.process_ssrs
       self.all_children(orgs).each do |child|
@@ -309,14 +308,14 @@ class Organization < ActiveRecord::Base
   end
 
   def get_available_statuses
-    tmp_available_statuses = self.available_statuses.reject{|status| status.new_record?} 
+    tmp_available_statuses = self.available_statuses.reject{|status| status.new_record?}
     statuses = []
     if tmp_available_statuses.empty?
       self.parents.each do |parent|
         if !parent.available_statuses.empty?
           statuses = AVAILABLE_STATUSES.select{|k,v| parent.available_statuses.map(&:status).include? k}
           return statuses
-        end        
+        end
       end
     else
       statuses = AVAILABLE_STATUSES.select{|k,v| tmp_available_statuses.map(&:status).include? k}
@@ -342,9 +341,6 @@ class Organization < ActiveRecord::Base
   end
 
   def self.get_cwf_organizations
-    cwf_orgs = Organization.where(:show_in_cwf => true).reject {|x| x.position_in_cwf.nil? }
-    cwf_orgs.sort! { |a,b| a.position_in_cwf <=> b.position_in_cwf }
-
-    cwf_orgs
+    Organization.where(show_in_cwf: true)
   end
 end

@@ -19,6 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Visit < ActiveRecord::Base
+
+  include RemotelyNotifiable
+
   audited
 
   belongs_to :line_items_visit
@@ -34,9 +37,7 @@ class Visit < ActiveRecord::Base
   attr_accessible :insurance_billing_qty # (T) qty billed to the patients insurance or third party
   attr_accessible :effort_billing_qty    # (%) qty billing to % effort
 
-  after_save do
-    self.visit_group.arm.set_arm_edited_flag_on_subjects
-  end
+  after_save :set_arm_edited_flag_on_subjects
 
   validates :research_billing_qty, :numericality => {:only_integer => true}
   validates :insurance_billing_qty, :numericality => {:only_integer => true}
@@ -48,6 +49,10 @@ class Visit < ActiveRecord::Base
     return Visit.find_or_create_by_line_items_visit_id_and_visit_group_id(
         line_items_visit.id,
         visit_group.id)
+  end
+
+  def set_arm_edited_flag_on_subjects
+    self.visit_group.arm.set_arm_edited_flag_on_subjects
   end
 
   def cost(per_unit_cost = self.line_items_visit.per_unit_cost(self.line_items_visit.quantity_total))
@@ -73,9 +78,9 @@ class Visit < ActiveRecord::Base
   def to_be_performed?
     self.research_billing_qty > 0
   end
-  
+
   ### audit reporting methods ###
-    
+
   def audit_label audit
     "#{line_items_visit.line_item.service.name} on #{visit_group.name}"
   end

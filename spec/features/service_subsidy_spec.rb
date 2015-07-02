@@ -34,7 +34,7 @@ describe "subsidy page" do
       #destroy subsidies created in fixtures again...
       subsidy_map.destroy
       subsidy.destroy
-      
+
       subsidy_map = FactoryGirl.create(:subsidy_map, organization_id: program.id, max_dollar_cap: (sub_service_request.direct_cost_total / 200), max_percentage: 50.00)
       program.update_attribute(:subsidy_map, subsidy_map)
       visit service_subsidy_service_request_path service_request.id
@@ -46,9 +46,12 @@ describe "subsidy page" do
       end
 
       describe "leaving the form blank" do
-        it 'should be fine with that', :js => true do
+
+        it 'should be fine with that', js: true do
           find(:xpath, "//a/img[@alt='Savecontinue']/..").click
-          sub_service_request.subsidy.should eq(nil)
+          wait_for_javascript_to_finish
+
+          expect(sub_service_request.subsidy).to eq(nil)
         end
       end
 
@@ -83,9 +86,11 @@ describe "subsidy page" do
           wait_for_javascript_to_finish
         end
 
-        it 'should save PI Contribution', :js => true do
-          find(:xpath, "//a/img[@alt='Savecontinue']/..").click
-          sub_service_request.subsidy.pi_contribution.should eq((@contribution * 100).to_i)
+        it 'should save PI Contribution', js: true do
+          click_link 'Save & Continue'
+          wait_for_javascript_to_finish
+
+          expect(sub_service_request.subsidy.pi_contribution).to eq((@contribution * 100).to_i)
         end
 
         it 'should adjust requested funding correctly', :js => true do
@@ -111,7 +116,7 @@ describe "subsidy page" do
         pricing_map3 = FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service3.id, display_date: Time.now - 1.day, full_rate: 2000, federal_rate: 3000, units_per_qty_max: 20)
         @ssr2 = FactoryGirl.create(:sub_service_request, ssr_id: "0001", service_request_id: service_request.id, organization_id: program2.id,status: "draft")
         line_item3 = FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service3.id, sub_service_request_id: @ssr2.id, quantity: 0)
-        
+
         service_request.reload
         add_visits
         visit service_subsidy_service_request_path service_request.id
@@ -127,16 +132,21 @@ describe "subsidy page" do
       end
     end
 
-    describe "Subsidy is overridden" do
-      it 'Should NOT allow PI Contribution to be set', :js => true do
-        subsidy = FactoryGirl.create(:subsidy, sub_service_request_id: sub_service_request.id, pi_contribution: sub_service_request.direct_cost_total, overridden: true)
+    describe 'Subsidy is overridden' do
+
+      before { Subsidy.destroy_all }
+
+      it 'should NOT allow PI Contribution to be set', js: true do
+        create(:subsidy,
+                sub_service_request_id: sub_service_request.id,
+                pi_contribution: sub_service_request.direct_cost_total,
+                overridden: true)
+
         visit service_subsidy_service_request_path service_request.id
-        page.should have_css("input.pi-contribution[disabled=disabled]")
-        retry_until do
-          find("input.pi-contribution").should have_value("#{(sub_service_request.direct_cost_total / 100).to_f}")
-        end
+        wait_for_javascript_to_finish
+
+        expect(page).to have_css('input.pi-contribution[disabled=disabled]')
       end
     end
   end
 end
-

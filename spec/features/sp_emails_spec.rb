@@ -22,7 +22,7 @@ require 'spec_helper'
 require 'surveyor/parser'
 require 'rake'
 
-describe "Emails", :js => true do
+describe "Emails", js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
@@ -93,7 +93,7 @@ describe "Emails", :js => true do
 
       visit_mail_for 'service provider'
       assert_notification_email_tables
-      
+
       #should have audited information table
       page.should have_xpath "//th[text()='Service']/following-sibling::th[text()='Action']"
       page.should have_xpath "//td[text()='#{service3.name}']/following-sibling::td[text()='Added']"
@@ -140,9 +140,9 @@ describe "Emails", :js => true do
       page.should_not have_xpath "//table//strong[text()='Protocol Arm Information']"
       #should have audited information table
       page.should have_xpath "//th[text()='Service']/following-sibling::th[text()='Action']"
-      page.should have_xpath "//td[text()='#{service2.name}']/following-sibling::td[text()='Removed']"      
+      page.should have_xpath "//td[text()='#{service2.name}']/following-sibling::td[text()='Removed']"
       page.should have_xpath "//td[text()='#{service3.name}']/following-sibling::td[text()='Added']"
-      page.should have_xpath "//td[text()='#{service.name}']/following-sibling::td[text()='Removed']"      
+      page.should have_xpath "//td[text()='#{service.name}']/following-sibling::td[text()='Removed']"
     end
 
     it "if there are no PPPV services on SSR and there is NO audit_report", :js => true do
@@ -162,7 +162,7 @@ describe "Emails", :js => true do
       visit_mail_for 'service provider'
       assert_notification_email_tables
 
-      page.should_not have_xpath "//table//strong[text()='Protocol Arm Information']"  
+      page.should_not have_xpath "//table//strong[text()='Protocol Arm Information']"
       page.should_not have_xpath "//th[text()='Service']/following-sibling::th[text()='Action']"
     end
   end

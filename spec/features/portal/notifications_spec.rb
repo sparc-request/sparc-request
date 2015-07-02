@@ -38,8 +38,7 @@ describe "notifications page", :js => true do
 
   it "should allow user to view unread message" do
     find("td.subject_column").click
-    wait_for_javascript_to_finish
-    find("div.shown-message-body").should be_visible
+    expect(find("div.shown-message-body")).to be_visible
   end
 
   it "should allow user to reply to a message" do
@@ -67,5 +66,4 @@ describe "notifications page", :js => true do
       page.should have_text("You can not send a message to yourself.")
     end
   end
-
 end

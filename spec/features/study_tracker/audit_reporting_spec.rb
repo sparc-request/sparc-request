@@ -1,5 +1,6 @@
-require "spec_helper"
-describe "Audit Reporting", :js => true do
+require 'rails_helper'
+
+RSpec.describe "Audit Reporting", js: true do
   let_there_be_lane
   # Per patient per visit service
   let_there_be_j
@@ -24,29 +25,36 @@ describe "Audit Reporting", :js => true do
   let!(:subsidy_map)         { FactoryGirl.create(:subsidy_map, organization_id: program.id) }
   before :each do
     create_visits
-    sub_service_request.update_attributes(:in_work_fulfillment => true)
+    sub_service_request.update_attributes(in_work_fulfillment: true)
+
     visit study_tracker_sub_service_request_path sub_service_request.id
-    click_link("Audit Reporting") 
+    wait_for_javascript_to_finish
+    click_link("Audit Reporting")
     wait_for_javascript_to_finish
   end
-describe "generating an audit report" do 
-    it "should pick a start date" do 
+
+describe "generating an audit report" do
+
+    it "should pick a start date" do
       wait_for_javascript_to_finish
       find(:xpath, "//input[@name='cwf_audit_start_date_input']").click
       page.execute_script %Q{ $('#protocol_start_date_picker:visible').focus() }
       day = Time.now.day
       page.execute_script %Q{ $("a.ui-state-default:contains('#{day}')").trigger("click") } # click on day 1
-      page.find('#cwf_audit_start_date_input').should_not eq nil
-    end 
-    it "should pick an end date" do
-      wait_for_javascript_to_finish
+      expect(page.find('#cwf_audit_start_date_input')).not_to eq nil
+    end
+
+    it 'should pick an end date' do
+      day = Time.now
+
       find(:xpath, "//input[@name='cwf_audit_end_date_input']").click
       page.execute_script %Q{ $('#protocol_end_date_picker:visible').focus() }
-      day = Time.now
       page.execute_script %Q{ $("a.ui-state-default:contains('#{day}')").trigger("click") } # click on day 1 in the current month
-      page.find('#cwf_audit_end_date_input').should_not eq nil
-    end 
-    it "should generate a report" do 
+
+      expect(page.find('#cwf_audit_end_date_input')).not_to eq nil
+    end
+
+    it "should generate a report" do
       wait_for_javascript_to_finish
       find(:xpath, "//input[@name='cwf_audit_start_date_input']").click
       page.execute_script %Q{ $('#protocol_start_date_picker:visible').focus() }
@@ -57,6 +65,6 @@ describe "generating an audit report" do
       wait_for_javascript_to_finish
       click_button "Get Report"
       page.driver.browser.window_handles.length.should == 1
-    end 
-  end 
-end 
+    end
+  end
+end

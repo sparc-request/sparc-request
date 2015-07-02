@@ -23,20 +23,22 @@ require 'spec_helper'
 feature 'catalog managers' do
   background do
     default_catalog_manager_setup
-  end 
-  
+  end
+
   scenario 'user adds and deletes new catalog manager to institution', :js => true do
     add_catalog_manager
     within "#cm_info" do
       page.should have_text("Jason Leonard (leonarjp@musc.edu)")
     end
-    within "#cm_info" do
-      page.all("img.cm_delete")[1].click
+    accept_confirm do
+      within "#cm_info" do
+        page.all("img.cm_delete")[1].click
+      end
     end
     a = page.driver.browser.switch_to.alert
     a.text.should eq "Are you sure you want to remove rights for this user from the Catalog Manager?"
     a.accept
-    
+
     within "#cm_info" do
       page.should_not have_text("Jason Leonard")
     end

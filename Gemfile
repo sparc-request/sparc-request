@@ -2,8 +2,8 @@ source 'https://rubygems.org'
 
 gem 'activerecord-import'
 gem 'acts_as_list', '0.1.9'
-gem 'acts-as-taggable-on', '~> 2.3.1'
-gem 'audited-activerecord', '~> 3.0'
+gem 'acts-as-taggable-on'
+gem 'audited-activerecord'
 gem 'axlsx'
 gem 'axlsx_rails'
 gem 'bluecloth'
@@ -34,7 +34,7 @@ gem 'nori', '~> 2.1.0'
 gem 'obis-net-ldap'
 gem 'omniauth'
 gem 'omniauth-shibboleth'
-gem 'paperclip'
+gem 'paperclip', '~> 3.4.1'
 gem 'pdfkit'
 gem 'prawn', '0.12.0'
 gem 'rails', '3.2.21'
@@ -87,9 +87,14 @@ group :development do
 end
 
 group :test do
-  gem 'capybara-webkit', '~> 1.5.0'
-  gem 'shoulda-callback-matchers', '~> 1.1.1'
-  gem 'webmock', '~> 1.20.4'
+  gem 'capybara-webkit'
+  gem 'database_cleaner'
+  gem 'email_spec'
+  gem 'factory_girl_rails'
+  gem 'rspec-activemodel-mocks'
+  gem 'shoulda-matchers', require: false
+  gem 'shoulda-callback-matchers'
+  gem 'webmock'
 end
 
 group :profile do

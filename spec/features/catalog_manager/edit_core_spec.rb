@@ -31,7 +31,7 @@ describe 'edit a core', :js => true do
   end
 
   context 'successfully update an existing core' do
-    it "should successfully edit and save the core" do  
+    it "should successfully edit and save the core" do
       # General Information fields
       fill_in 'core_abbreviation', :with => 'PTP'
       fill_in 'core_order', :with => '2'
@@ -53,9 +53,10 @@ describe 'edit a core', :js => true do
       it "should be able to check a tag box" do
         find('#core_tag_list_ctrc').click
         first('#save_button').click
-        page.should have_content('Clinical Data Warehouse')
-        find('#core_tag_list_ctrc').should be_checked
-        @core.tag_list.should eq(['ctrc'])
+        expect(page).to have_content('Clinical Data Warehouse')
+        expect(find('#core_tag_list_ctrc')).to be_checked
+        wait_for_javascript_to_finish
+        expect(@core.tag_list).to eq(['ctrc'])
       end
     end
 

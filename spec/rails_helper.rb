@@ -18,43 +18,34 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module CatalogManager::ServicesHelper
-  def display_service_user_rights user, form_name, organization
-    if user.can_edit_entity? organization, true
-      render form_name
-    else
-      content_tag(:h1, "Sorry, you are not allowed to access this page.") +
-      content_tag(:h3, "Please contact your system administrator.", :style => 'color:#999')
-    end
-  end
+# This file is copied to spec/ when you run 'rails generate rspec:install'
+ENV["RAILS_ENV"] ||= 'test'
+require File.expand_path("../../config/environment", __FILE__)
 
-  def display_otf_attributes(pricing_map)
-    if pricing_map
-      attributes = ""
-      if pricing_map.service.one_time_fee
-        if pricing_map.otf_unit_type == "N/A"
-          attributes = ['#', pricing_map.try(:quantity_type)].compact.join
-        else
-          attributes = ['#', pricing_map.try(:otf_unit_type), '/', '#', pricing_map.try(:quantity_type)].compact.join
-        end
+require 'spec_helper'
+require 'email_spec'
+require 'rspec/rails'
+require 'faker'
+require 'paperclip/matchers'
+
+# Requires supporting ruby files with custom matchers and macros, etc,
+# in spec/support/ and its subdirectories.
+Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
+
+RSpec.configure do |config|
+  # TODO mark spec types explicitly
+  config.infer_spec_type_from_file_location!
+  config.use_transactional_fixtures = false
+
+  config.after(:each) do
+    # wait on all the push to epic calls to finish
+    # TODO: ideally we should call Thread#join for all the 'push to
+    # epic' threads
+    Protocol.all.each do |protocol|
+      while protocol.push_to_epic_in_progress? do
+        sleep 0.1
+        protocol.reload
       end
-
-      attributes
     end
-  end
-
-
-  def per_patient_display_style pricing_map
-    style = ""
-
-    if pricing_map
-      if pricing_map.service.one_time_fee
-        style = "display:none;"
-      end
-    else
-      style = ""
-    end
-
-    style
   end
 end

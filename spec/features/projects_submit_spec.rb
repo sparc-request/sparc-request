@@ -20,23 +20,20 @@
 
 require 'spec_helper'
 
-describe "creating a new project ", :js => true do 
+describe "creating a new project ", :js => true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
   build_service_request_with_project()
 
   before :each do
+    service_request.update_attribute(:status, 'first_draft')
+    service_request.reload
     visit protocol_service_request_path service_request.id
-
     find('#protocol_Research_Project').click
     wait_for_javascript_to_finish
 
     find('.new-project').click
-    wait_for_javascript_to_finish
-  end
-
-  after :each do
     wait_for_javascript_to_finish
   end
 
@@ -58,24 +55,22 @@ describe "creating a new project ", :js => true do
       select "Federal", :from => "project_funding_source"
 
       find('.continue_button').click
-      wait_for_javascript_to_finish
+      expect(page).to have_css('#project_role_role')
 
       select "Primary PI", :from => "project_role_role"
       click_button "Add Authorized User"
-      wait_for_javascript_to_finish
 
-      fill_in "user_search_term", :with => "bjk7"
-      wait_for_javascript_to_finish
-      page.find('a', :text => "Brian Kelsey (kelsey@musc.edu)", :visible => true).click()
-      wait_for_javascript_to_finish
-      select "Billing/Business Manager", :from => "project_role_role"
+      fill_autocomplete('user_search_term', with: 'bjk7');
+
+      page.find('a', text: "Brian Kelsey (kelsey@musc.edu)", visible: true).click()
+
+      select "Billing/Business Manager", from: "project_role_role"
       click_button "Add Authorized User"
-      wait_for_javascript_to_finish
 
       find('.continue_button').click
-      wait_for_javascript_to_finish
-      
-      find(".edit_project_id").should have_value Protocol.last.id.to_s
+
+      expect(page).to have_css('.edit_project_id')
+      expect(find(".edit_project_id")).to have_value Protocol.last.id.to_s
     end
   end
 end
@@ -105,5 +100,4 @@ describe "editing a project" do
       find("#project_short_title").should have_value("Patsy")
     end
   end
-
 end

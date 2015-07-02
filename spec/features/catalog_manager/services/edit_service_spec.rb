@@ -36,14 +36,10 @@ feature 'edit a service' do
     click_link('Human Subject Review')
     # Program Select should defalut to parent Program
     wait_for_javascript_to_finish
-    within ('#service_program') do
-      page.should have_content('Office of Biomedical Informatics')
-    end
+    expect(selected_option('#service_program')).to eq('Office of Biomedical Informatics')
 
     # Core Select should default to None
-    within ('#service_core') do
-      page.should have_content('None')
-    end
+    expect(selected_option('#service_core')).to eq('None')
 
     fill_in 'service_abbreviation', :with => 'TestService'
     fill_in 'service_description', :with => 'Description'
@@ -59,6 +55,7 @@ feature 'edit a service' do
 
     # Program Select should defalut to parent Program
     wait_for_javascript_to_finish
+<<<<<<< HEAD
     within ('#service_program') do
       page.should have_content('Office of Biomedical Informatics')
     end
@@ -67,6 +64,12 @@ feature 'edit a service' do
     within ('#service_core') do
       page.should have_content('Clinical Data Warehouse')
     end
+=======
+    expect(selected_option('#service_program')).to eq('Office of Biomedical Informatics')
+
+    # Core Select should default to parent Core
+    expect(selected_option('#service_core')).to eq('Clinical Data Warehouse')
+>>>>>>> 4beb2ea... Fix super_user_spec.
 
     fill_in 'service_abbreviation', :with => 'TestServiceTwo'
     fill_in 'service_description', :with => 'DescriptionTwo'
@@ -119,4 +122,9 @@ feature 'edit a service' do
       first('#epic_fieldset fieldset').should be_visible
     end
   end
+end
+
+def selected_option(select_selector)
+  value = find(select_selector).value
+  find("option[value='#{value}']").text
 end

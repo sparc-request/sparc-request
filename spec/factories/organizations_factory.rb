@@ -184,7 +184,13 @@ FactoryGirl.define do
       parent factory: :provider
     end
 
-    ignore do
+    trait :with_pricing_setup do
+      after(:create) do |program, evaluator|
+        create(:pricing_setup, organization: program)
+      end
+    end
+
+    transient do
       sub_service_request_count 0
       service_count 0
       catalog_manager_count 0
@@ -218,6 +224,7 @@ FactoryGirl.define do
     end
 
     factory :program_with_provider, traits: [:with_provider]
+    factory :program_with_pricing_setup, traits: [:with_pricing_setup]
   end
 
   factory :core do
@@ -265,7 +272,5 @@ FactoryGirl.define do
       FactoryGirl.create_list(:submission_email, evaluator.submission_email_count,
        organization: organization)
     end
-
   end
-
 end

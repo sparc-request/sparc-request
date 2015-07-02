@@ -26,79 +26,6 @@ describe 'SubServiceRequest' do
   let_there_be_j
   build_service_request_with_study
 
-  context 'callbacks' do
-
-    before { SubServiceRequest.skip_callback(:save, :after, :update_org_tree) }
-
-    context '#around_update' do
-
-      describe '#notify_remote_around_update', delay: true do
-
-        context '.in_work_fulfillment changed' do
-
-          it 'should create a RemoteServiceNotifierJob' do
-            sub_service_request = FactoryGirl.build(:sub_service_request, in_work_fulfillment: false)
-
-            sub_service_request.save validate: false
-            sub_service_request.update_attribute :in_work_fulfillment, true
-
-            expect(Delayed::Job.where("handler LIKE '%RemoteServiceNotifierJob%'").one?).to be
-          end
-        end
-
-        context '.in_work_fulfillment not changed' do
-
-          before do
-            service = Service.first
-
-            work_off
-
-            service.update_attribute :name, 'Test'
-          end
-
-          it 'should create a RemoteServiceNotifierJob' do
-            expect(Delayed::Job.where("handler LIKE '%RemoteServiceNotifierJob%'").one?).to_not be
-          end
-        end
-      end
-    end
-  end
-
-  describe '.stored_percent_subsidy' do
-
-    context 'Subsidy present' do
-
-      it 'should return: subsidy.stored_percent_subsidy' do
-        sub_service_request = SubServiceRequest.first
-        subsidy             = sub_service_request.subsidy
-
-        subsidy.update_attribute :stored_percent_subsidy, 9.9
-
-        expect(sub_service_request.stored_percent_subsidy).to eq(9.9)
-      end
-    end
-
-    context 'Subsidy not present' do
-
-      it 'should return: nil' do
-        sub_service_request = SubServiceRequest.first
-
-        subsidy.update_attribute :stored_percent_subsidy, nil
-
-        expect(sub_service_request.stored_percent_subsidy).to_not be
-      end
-    end
-  end
-
-  context 'clinical work fulfillment' do
-
-    it 'should populate the subjects when :in_work_fulfillment is set to true' do
-      sub_service_request.update_attributes(in_work_fulfillment: true)
-      arm1.subjects.count.should eq(2)
-      arm2.subjects.count.should eq(4)
-    end
-  end
-
   context 'fulfillment' do
 
     describe 'candidate_services' do
@@ -141,9 +68,7 @@ describe 'SubServiceRequest' do
 
           sub_service_request.candidate_services.should include(ppv, otf)
         end
-
       end
-
     end
 
     describe 'fulfillment line item manipulation' do
@@ -196,9 +121,7 @@ describe 'SubServiceRequest' do
               sub_service_request.create_line_item(service_id: @fulfillment_service.id, sub_service_request_id: sub_service_request.id) rescue nil
             }.should_not change(LineItem, :count)
           end
-
         end
-
       end
     end
 

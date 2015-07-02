@@ -35,7 +35,7 @@ describe "admin related service requests tab", :js => true do
 
   it "should list the service request" do
     within "div#related_service_requests" do
-      find("#requests tr td:first").should have_content("#{sub_service_request.ssr_id}")
+      expect(first("#requests tr td")).to have_content("#{sub_service_request.ssr_id}")
     end
   end
 
@@ -50,5 +50,4 @@ describe "admin related service requests tab", :js => true do
     wait_for_javascript_to_finish
     find("div#ssr_#{sub_service_request.id}").should have_content("#{sub_service_request.line_items.last.service.name}")
   end
-
 end

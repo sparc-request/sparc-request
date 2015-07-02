@@ -55,11 +55,12 @@ describe 'edit a program', :js => true do
       end
 
       it "should be able to check a tag box" do
+        find('#program_tag_list_clinical_work_fulfillment').click
         find('#program_tag_list_ctrc').click
         first("#save_button").click
-        page.should have_content('Office of Biomedical Informatics saved successfully')
-        find('#program_tag_list_ctrc').should be_checked
-        @program.tag_list.should eq(['clinical work fulfillment', 'ctrc'])
+        expect(page).to have_content('Office of Biomedical Informatics saved successfully')
+        expect(find('#program_tag_list_ctrc')).to be_checked
+        expect(@program.tag_list).to eq(["ctrc", "clinical work fulfillment"])
       end
     end
 

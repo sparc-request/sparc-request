@@ -90,6 +90,9 @@
         .legend= t(:organization_form)[:clinical_work_fulfillment]
         %fieldset.single_fieldset
           %table
+            %tr.cwf
+              %th= t(:organization_form)[:show_in_cwf]
+              %td= f.check_box :show_in_cwf
             %tr
               %th= t(:organization_form)[:clinical_providers]
           #cp_info= render :partial => 'catalog_manager/shared/clinical_providers', :locals => {:entity => @core}

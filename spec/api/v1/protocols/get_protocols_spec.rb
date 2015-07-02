@@ -57,7 +57,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         parsed_body         = JSON.parse(response.body)
         expected_attributes = FactoryGirl.build(:protocol).attributes.
                                 keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
+                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'has_cofc'].include?(key) }.
                                 push('callback_url', 'sparc_id').
                                 sort
 
@@ -73,7 +73,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         parsed_body         = JSON.parse(response.body)
         expected_attributes = FactoryGirl.build(:protocol).attributes.
                                 keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
+                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'has_cofc'].include?(key) }.
                                 push('callback_url', 'sparc_id', 'arms', 'service_requests', 'project_roles').
                                 sort
 

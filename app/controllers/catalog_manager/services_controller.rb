@@ -26,8 +26,6 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     @service  = Service.find params[:id]
     @programs = @service.provider.programs
     @cores    = @service.program.cores
-
-    build_service_level_components
   end
 
   def update_cores
@@ -57,7 +55,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       organization_id: @entity.id
     }
 
-    @service = Service.new_with_service_level_components(service_attributes)
+    @service = Service.new(service_attributes)
   end
 
   def create
@@ -257,11 +255,4 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     render :text => alert_text
   end
 
-  private
-
-  def build_service_level_components
-    index_start = @service.service_level_components_count + 1
-
-    (index_start..(index_start += 2)).each { |index| @service.service_level_components.build position: index }
-  end
 end

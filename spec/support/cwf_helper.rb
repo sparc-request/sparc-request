@@ -34,3 +34,7 @@ module CwfHelper
     get "/v1/#{klass}.json", params, @env
   end
 end
+
+RSpec.configure do |config|
+  config.include CwfHelper, type: :request
+end

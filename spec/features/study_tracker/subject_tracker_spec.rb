@@ -1,3 +1,4 @@
+# coding: utf-8
 # Copyright © 2011 MUSC Foundation for Research Development
 # All rights reserved.
 
@@ -18,9 +19,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe "Subject Tracker", :js => true do
+RSpec.describe "Subject Tracker", js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
@@ -29,7 +30,7 @@ describe "Subject Tracker", :js => true do
   before :each do
     create_visits
     build_clinical_data(all_subjects = true)
-    sub_service_request.update_attributes(:in_work_fulfillment => true)
+    sub_service_request.update_attributes(in_work_fulfillment: true)
     visit study_tracker_sub_service_request_path sub_service_request.id
     click_link("Subject Tracker")
     wait_for_javascript_to_finish
@@ -37,25 +38,25 @@ describe "Subject Tracker", :js => true do
 
   describe "viewing subjects" do
     it "should show pre-created subject in each arm" do
-      page.should have_css("input#subject_#{arm1.subjects.first.id}_name")
-      page.should have_css("input#subject_#{arm2.subjects.first.id}_name")
+      expect(page).to have_css("input#subject_#{arm1.subjects.first.id}_name")
+      expect(page).to have_css("input#subject_#{arm2.subjects.first.id}_name")
     end
   end
 
   describe "editing a subject" do
     it "should allow you to edit an existing subject" do
-      fill_in "subject_#{arm1.subjects.first.id}_name", :with => "Disco Stu"
-      fill_in "subject_#{arm1.subjects.first.id}_mrn", :with => "1234"
-      fill_in "subject_#{arm1.subjects.first.id}_id", :with => "5678"
-      ##fill_in "subject_#{arm1.subjects.first.id}_dob", :with => "2013-06-20"
+      fill_in "subject_#{arm1.subjects.first.id}_name", with: "Disco Stu"
+      fill_in "subject_#{arm1.subjects.first.id}_mrn", with: "1234"
+      fill_in "subject_#{arm1.subjects.first.id}_id", with: "5678"
+      ##fill_in "subject_#{arm1.subjects.first.id}_dob", with: "2013-06-20"
       within("div#subject_tracker") do
         click_button("Save")
       end
 
       wait_for_javascript_to_finish
-      arm1.subjects.first.name.should eq("Disco Stu")
-      arm1.subjects.first.mrn.should eq("1234")
-      arm1.subjects.first.external_subject_id.should eq("5678")
+      expect(arm1.subjects.first.name).to eq("Disco Stu")
+      expect(arm1.subjects.first.mrn).to eq("1234")
+      expect(arm1.subjects.first.external_subject_id).to eq("5678")
       ##arm1.subjects.first.dob.to_s.should eq("2013-06-20")
     end
   end
@@ -69,16 +70,16 @@ describe "Subject Tracker", :js => true do
         click_link("Add a subject")
       end
 
-      fill_in "subject__name", :with => "Disco Sue"
+      fill_in "subject__name", with: "Disco Sue"
       within("div#subject_tracker") do
         click_button("Save")
       end
 
       wait_for_javascript_to_finish
       arm2.reload
-      arm2.subject_count.should eq(subject_count + 1)
-      arm2.subjects.count.should eq(subjects_count + 1)
-      arm2.subjects.last.name.should eq("Disco Sue")
+      expect(arm2.subject_count).to eq(subject_count + 1)
+      expect(arm2.subjects.count).to eq(subjects_count + 1)
+      expect(arm2.subjects.last.name).to eq("Disco Sue")
     end
   end
 
@@ -88,13 +89,11 @@ describe "Subject Tracker", :js => true do
       subject_count = arm2.subject_count
       subjects_count = arm2.subjects.count
 
-      within("tr.subject_id_#{arm2.subjects.last.id}") do
-        click_link("Delete")
+      accept_alert("Are you sure you want to delete this subject?") do
+        within("tr.subject_id_#{arm2.subjects.last.id}") do
+          click_link("Delete")
+        end
       end
-
-      a = page.driver.browser.switch_to.alert
-      a.text.should eq "Are you sure you want to delete this subject?"
-      a.accept
 
       within("div#subject_tracker") do
         click_button("Save")
@@ -102,28 +101,29 @@ describe "Subject Tracker", :js => true do
 
       wait_for_javascript_to_finish
       arm2.reload
-      arm2.subject_count.should eq(subject_count - 1)
-      arm2.subjects.count.should eq(subjects_count - 1)
+      expect(arm2.subject_count).to eq(subject_count - 1)
+      expect(arm2.subjects.count).to eq(subjects_count - 1)
     end
 
+    # setting in_work_fulfillment to true at the model level isn't populating
+    # arms with subjects; see failing models/sub_service_request/sub_service_request_spec.rb
     it "should not delete a subject if that subject has any completed appointments" do
       subject_count = arm1.subjects.count
-      subject = arm1.subjects.first
-      appointment = FactoryGirl.create(:appointment, :calendar_id => subject.calendar.id, :completed_at => Date.today - 1)
+      subject       = arm1.subjects.first
+      appointment   = create(:appointment, calendar_id: subject.calendar.id, completed_at: Date.today - 1)
 
       within("div#subject_tracker") do
         click_button("Save")
       end
-      
-      within("tr.subject_id_#{arm1.subjects.first.id}") do
-        find(".cwf_subject_delete").click
+
+      accept_alert("This subject has one or more completed appointments and can't be deleted.") do
+        within("tr.subject_id_#{arm1.subjects.first.id}") do
+          find(".cwf_subject_delete").click
+        end
       end
 
-      a = page.driver.browser.switch_to.alert
-      a.text.should eq "This subject has one or more completed appointments and can't be deleted."
-      a.accept
       wait_for_javascript_to_finish
-      subject_count.should eq(arm1.subjects.count)
+      expect(subject_count).to eq(arm1.subjects.count)
     end
   end
 end

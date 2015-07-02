@@ -18,9 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe 'shared views', js: true do
+RSpec.describe 'shared views', js: true do
 
   before :each do
     default_catalog_manager_setup
@@ -43,12 +43,12 @@ describe 'shared views', js: true do
 
       it "should add a new catalog manager" do
         add_identity_to_organization("new_cm")
-        page.should have_content("Jason Leonard")
+        expect(page).to have_content("Jason Leonard")
       end
 
       it "should delete a catalog manager" do
         delete_identity_from_organization("new_cm", ".cm_delete")
-        page.should_not have_content("Jason Leonard")
+        expect(page).not_to have_content("Jason Leonard")
       end
     end
 
@@ -56,12 +56,12 @@ describe 'shared views', js: true do
 
       it "should add a new super user" do
         add_identity_to_organization("new_su")
-        page.should have_content("Jason Leonard")
+        expect(page).to have_content("Jason Leonard")
       end
 
       it "should delete a super user" do
         delete_identity_from_organization("new_su", ".su_delete")
-        page.should_not have_content("Jason Leonard")
+        expect(page).not_to have_content("Jason Leonard")
       end
     end
 
@@ -70,14 +70,14 @@ describe 'shared views', js: true do
       it "should add a new service provider" do
         add_first_identity_to_organization("new_sp")
         add_identity_to_organization("new_sp")
-        page.should have_content("Jason Leonard")
-        page.should have_content("Brian Kelsey")
+        expect(page).to have_content("Jason Leonard")
+        expect(page).to have_content("Brian Kelsey")
       end
 
       it "should delete a service provider but not all" do
         delete_identity_from_organization("new_sp", ".sp_delete")
-        page.should_not have_content("Jason Leonard")
-        page.should have_content("Brian Kelsey")
+        expect(page).not_to have_content("Jason Leonard")
+        expect(page).to have_content("Brian Kelsey")
       end
     end
 
@@ -85,20 +85,18 @@ describe 'shared views', js: true do
 
       it "should add an email to the program" do
         sleep 3
-        fill_in "new_se", with: "franzferdinand@ww1.gov"
-        find('#new_se').native.send_keys(:return)
+        fill_in "new_se", with: "franzferdinand@ww1.gov\n"
         wait_for_javascript_to_finish
 
         find('#user_rights').click
         wait_for_javascript_to_finish
 
-        page.should have_content("franzferdinand@ww1.gov")
+        expect(page).to have_content("franzferdinand@ww1.gov")
       end
 
       it "should delete an email from the program" do
         sleep 3
-        fill_in "new_se", with: "franzferdinand@ww1.gov"
-        find('#new_se').native.send_keys(:return)
+        fill_in "new_se", with: "franzferdinand@ww1.gov\n"
         wait_for_javascript_to_finish
 
         first("#save_button").click
@@ -111,7 +109,7 @@ describe 'shared views', js: true do
           find(".se_delete").click
         end
         wait_for_javascript_to_finish
-        page.should_not have_content("franzferdinand@ww1.gov")
+        expect(page).not_to have_content("franzferdinand@ww1.gov")
       end
     end
   end

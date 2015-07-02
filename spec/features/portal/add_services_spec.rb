@@ -18,9 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe 'adding an additional service', js: true do
+RSpec.describe 'adding an additional service', js: true do
 
   let_there_be_lane
   let_there_be_j
@@ -31,12 +31,12 @@ describe 'adding an additional service', js: true do
     visit portal_root_path
     wait_for_javascript_to_finish
   end
-  
+
   describe 'clicking the button' do
     it "should redirect to the application root page" do
       find('.add-services-button').click
       wait_for_javascript_to_finish
-      page.should have_content("Welcome to the SPARC Request Services Catalog")
+      expect(page).to have_content("Welcome to the SPARC Request Services Catalog")
     end
   end
 end

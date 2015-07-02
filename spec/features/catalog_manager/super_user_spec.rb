@@ -18,37 +18,35 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-feature 'super users' do
+RSpec.feature 'super users' do
   background do
     default_catalog_manager_setup
-  end 
-  
-  scenario 'user adds a new super user to institution', :js => true do
-    add_super_user
-   
-    within "#su_info" do
-      page.should have_text("Julia Glenn (glennj@musc.edu)")
-    end
   end
 
-  scenario 'user deletes a super user from institution', :js => true do
+  scenario 'user adds a new super user to institution', js: true do
     add_super_user
 
     within "#su_info" do
-      find("img.su_delete").click
-    end
-
-    a = page.driver.browser.switch_to.alert
-    a.text.should eq "Are you sure you want to remove this Super User?"
-    a.accept
-
-    within "#su_info" do
-      page.should_not have_text("Julia Glenn")
+      expect(page).to have_text("Julia Glenn (glennj@musc.edu)")
     end
   end
-  
+
+  scenario 'user deletes a super user from institution', js: true do
+    add_super_user
+
+    accept_alert("Are you sure you want to remove this Super User?") do
+      within "#su_info" do
+        find("img.su_delete").click
+      end
+    end
+
+    within "#su_info" do
+      expect(page).not_to have_text("Julia Glenn")
+    end
+  end
+
 end
 
 
@@ -60,8 +58,8 @@ def add_super_user
       wait_for_javascript_to_finish
     end
   sleep 3
-  fill_in "new_su", :with => "Julia"
+  fill_in "new_su", with: "Julia"
   wait_for_javascript_to_finish
-  page.find('a', :text => "Julia Glenn", :visible => true).click()
+  page.find('a', text: "Julia Glenn", visible: true).click()
   wait_for_javascript_to_finish
 end

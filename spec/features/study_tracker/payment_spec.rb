@@ -18,9 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe "payments", js: true do
+RSpec.describe "payments", js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
@@ -28,7 +28,7 @@ describe "payments", js: true do
 
 
   before :each do
-    create_visits    
+    create_visits
     sub_service_request.update_attributes(in_work_fulfillment: true)
   end
 
@@ -43,7 +43,7 @@ describe "payments", js: true do
     end
 
     context "with valid information" do
-      before :each do 
+      before :each do
         within('#payments') do
           within(".fields:last-child") do
             find(".date_submitted input").set("6/13/2013")
@@ -60,29 +60,29 @@ describe "payments", js: true do
       it "saves the record correctly to the database" do
         p = sub_service_request.payments.last
 
-        p.date_submitted.should == Date.new(2013, 6, 13)
-        p.amount_invoiced.should == 500.0
-        p.amount_received.should == 400.0
-        p.date_received.should == Date.new(2013, 6, 14)
-        p.payment_method.should == "Check"
-        p.percent_subsidy.should == 50.0
-        p.details.should == "Some details"
+        expect(p.date_submitted).to eq Date.new(2013, 6, 13)
+        expect(p.amount_invoiced).to eq 500.0
+        expect(p.amount_received).to eq 400.0
+        expect(p.date_received).to eq Date.new(2013, 6, 14)
+        expect(p.payment_method).to eq "Check"
+        expect(p.percent_subsidy).to eq 50.0
+        expect(p.details).to eq "Some details"
       end
 
       it "takes you back to the payments tab with the new record rendered" do
         within('#payments') do
-          find(".date_submitted input").should have_value("6/13/2013")
-          find(".amount_invoiced input").should have_value("500.00")
-          find(".amount_received input").should have_value("400.00")
-          find(".date_received input").should have_value("6/14/2013")
-          find(".payment_method select").should have_value("Check")
-          find(".details textarea").should have_value("Some details")
+          expect(find(".date_submitted input")).to have_value("6/13/2013")
+          expect(find(".amount_invoiced input")).to have_value("500.00")
+          expect(find(".amount_received input")).to have_value("400.00")
+          expect(find(".date_received input")).to have_value("6/14/2013")
+          expect(find(".payment_method select")).to have_value("Check")
+          expect(find(".details textarea")).to have_value("Some details")
         end
       end
     end
 
     context "with invalid information" do
-      before :each do 
+      before :each do
         within('#payments') do
           within(".fields:last-child") do
             find(".date_submitted input").set("6/13/2013")
@@ -98,9 +98,9 @@ describe "payments", js: true do
 
       it "shows the payments tab with errors on the appropriate fields" do
         within('#payments') do
-          page.should have_content("amount invoiced is not a number");
-          page.should have_content("amount received is not a number");
-          page.should have_css(".field_with_errors")
+          expect(page).to have_content("amount invoiced is not a number");
+          expect(page).to have_content("amount received is not a number");
+          expect(page).to have_css(".field_with_errors")
         end
       end
     end
@@ -110,7 +110,7 @@ describe "payments", js: true do
     let(:filename) {  Rails.root.join('spec', 'fixtures', 'files', 'text_document.txt') }
 
     before(:each) do
-      sub_service_request.payments = [FactoryGirl.build(:payment)]
+      sub_service_request.payments = [build(:payment)]
       sub_service_request.save!
 
       visit study_tracker_sub_service_request_path(sub_service_request.id)
@@ -127,15 +127,14 @@ describe "payments", js: true do
 
 
     it "creates a PaymentUpload with the correctly attached file" do
-      sub_service_request.payments.last.uploads.first.file.original_filename.should == File.basename(filename)
+      expect(sub_service_request.payments.last.uploads.first.file.original_filename).to eq File.basename(filename)
     end
 
     it "renders a link to the attached file on subsequent page views" do
       f = sub_service_request.payments.last.uploads.first.file
       within("#payments") do
-        page.should have_link(f.original_filename, href: f.url)
+        expect(page).to have_link(f.original_filename, href: f.url)
       end
     end
-
   end
 end

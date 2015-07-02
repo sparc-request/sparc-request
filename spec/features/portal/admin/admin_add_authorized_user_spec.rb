@@ -18,15 +18,15 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe 'associated users tab', :js => true do
+RSpec.describe 'associated users tab', js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
   build_service_request_with_project
 
-  let!(:bob) { FactoryGirl.create(:identity, 
+  let!(:bob) { create(:identity,
     last_name:             'Dole',
     first_name:            'Bob',
     ldap_uid:              'bob',
@@ -43,7 +43,7 @@ describe 'associated users tab', :js => true do
 
   before :each do
     identity = Identity.find_by_ldap_uid('bob')
-    project_role = FactoryGirl.create(
+    project_role = create(
       :project_role,
       protocol_id:     service_request.protocol.id,
       identity_id:     identity.id,
@@ -51,75 +51,75 @@ describe 'associated users tab', :js => true do
       role:            "co-investigator")
     add_visits
     visit portal_admin_sub_service_request_path sub_service_request.id
-    page.find('a', :text => "Associated Users", :visible => true).click()
+    page.find('a', text: "Associated Users", visible: true).click()
   end
   describe 'adding an authrozied user' do
 
     before :each do
-      page.find(".associated-user-button", :visible => true).click()
+      page.find(".associated-user-button", visible: true).click()
       wait_for_javascript_to_finish
     end
 
     describe 'clicking the add button' do
       it "should show add authrozied user dialog box" do
-        page.should have_text 'Add User'
+        expect(page).to have_text 'Add User'
       end
     end
 
     describe 'searching for an user' do
       before :each do
-        fill_in 'user_search', :with => 'bjk7'
+        fill_in 'user_search', with: 'bjk7'
         wait_for_javascript_to_finish
-        page.find('a', :text => "Brian Kelsey", :visible => true).click()
+        page.find('a', text: "Brian Kelsey", visible: true).click()
         wait_for_javascript_to_finish
       end
 
       it 'should remove the black shield' do
-        page.should_not have_selector('#shield')
+        expect(page).not_to have_selector('#shield')
       end
 
       it 'should display the users information' do
-        find('#full_name').should have_value 'Brian Kelsey'
+        expect(find('#full_name')).to have_value 'Brian Kelsey'
       end
 
       describe 'submitting the user' do
         it 'should add the user to the study/project' do
-          select "Co-Investigator", :from => 'project_role_role'
+          select "Co-Investigator", from: 'project_role_role'
           choose 'project_role_project_rights_request'
           click_button("add_authorized_user_submit_button")
 
           within('#users') do
-            page.should have_text('Brian Kelsey')
-            page.should have_text('Co-Investigator')
-            page.should have_text('Request/Approve Services')
+            expect(page).to have_text('Brian Kelsey')
+            expect(page).to have_text('Co-Investigator')
+            expect(page).to have_text('Request/Approve Services')
           end
         end
 
         it 'should throw errors when missing a role or project rights' do
           click_button("add_authorized_user_submit_button")
-          page.should have_text "Role can't be blank"
-          page.should have_text "Project_rights can't be blank"
+          expect(page).to have_text "Role can't be blank"
+          expect(page).to have_text "Project_rights can't be blank"
         end
 
         it 'should throw an error when adding the same person twice' do
-          select "Co-Investigator", :from => 'project_role_role'
+          select "Co-Investigator", from: 'project_role_role'
           choose 'project_role_project_rights_request'
           click_button("add_authorized_user_submit_button")
           wait_for_javascript_to_finish
 
-          page.find(".associated-user-button", :visible => true).click()
+          page.find(".associated-user-button", visible: true).click()
           wait_for_javascript_to_finish
 
-          fill_in 'user_search', :with => 'bjk7'
+          fill_in 'user_search', with: 'bjk7'
           wait_for_javascript_to_finish
-          page.find('a', :text => "Brian Kelsey", :visible => true).click()
+          page.find('a', text: "Brian Kelsey", visible: true).click()
           wait_for_javascript_to_finish
 
-          select "Co-Investigator", :from => 'project_role_role'
+          select "Co-Investigator", from: 'project_role_role'
           choose 'project_role_project_rights_request'
           click_button("add_authorized_user_submit_button")
 
-          page.should have_text "This user is already associated with this protocol."
+          expect(page).to have_text "This user is already associated with this protocol."
         end
       end
     end
@@ -130,17 +130,17 @@ describe 'associated users tab', :js => true do
     describe 'clicking the remove button' do
       before :each do
         within("#user_#{jug2.id}") do
-          page.find('.delete-associated-user-button', :visible => true).click
+          page.find('.delete-associated-user-button', visible: true).click
         end
       end
 
       it 'should ask for confirmation' do
         a = page.driver.browser.switch_to.alert
-        a.text.should eq "Are you sure?"
+        expect(a.text).to eq "Are you sure?"
         a.accept
 
         a = page.driver.browser.switch_to.alert
-        a.text.should eq "Projects require a PI. Please add a new one before continuing."
+        expect(a.text).to eq "Projects require a PI. Please add a new one before continuing."
         a.accept
       end
 
@@ -149,20 +149,20 @@ describe 'associated users tab', :js => true do
         a.accept
 
         a = page.driver.browser.switch_to.alert
-        a.text.should eq "Projects require a PI. Please add a new one before continuing."
+        expect(a.text).to eq "Projects require a PI. Please add a new one before continuing."
         a.accept
       end
     end
 
     it 'should remove non PD/PIs from the list' do
       within("#user_#{bob.id}") do
-        page.find('.delete-associated-user-button', :visible => true).click
+        page.find('.delete-associated-user-button', visible: true).click
       end
       a = page.driver.browser.switch_to.alert
       a.accept
       wait_for_javascript_to_finish
       within('#users') do
-        page.should_not have_selector("#user_#{bob.id}")
+        expect(page).not_to have_selector("#user_#{bob.id}")
       end
     end
   end
@@ -173,9 +173,9 @@ describe 'associated users tab', :js => true do
         find('.edit-associated-user-button').click
       end
       wait_for_javascript_to_finish
-      page.find('#project_role_role', :visible => true).select "Co-Investigator"
+      page.find('#project_role_role', visible: true).select "Co-Investigator"
       click_button("edit_authorized_user_submit_button")
-      page.should have_text 'Must include one Primary PI.'
+      expect(page).to have_text 'Must include one Primary PI.'
     end
 
     it 'should open with the users information' do
@@ -183,19 +183,19 @@ describe 'associated users tab', :js => true do
         find('.edit-associated-user-button').click
       end
       wait_for_javascript_to_finish
-      find('#full_name', :visible => true).should have_value "Julia Glenn"
-      find('#email', :visible => true).should have_value "glennj@musc.edu"
+      expect(find('#full_name', visible: true)).to have_value "Julia Glenn"
+      expect(find('#email', visible: true)).to have_value "glennj@musc.edu"
     end
 
     it 'should allow user roles to change' do
       within("#user_#{bob.id}") do
         find('.edit-associated-user-button').click
       end
-      page.find('#project_role_role', :visible => true).select 'Technician'
+      page.find('#project_role_role', visible: true).select 'Technician'
       click_button("edit_authorized_user_submit_button")
 
       within("#user_#{bob.id}") do
-        page.should have_text "Technician"
+        expect(page).to have_text "Technician"
       end
     end
   end

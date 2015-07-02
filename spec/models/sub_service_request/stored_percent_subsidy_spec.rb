@@ -1,4 +1,4 @@
-require "spec_helper"
+require 'rails_helper'
 
 RSpec.describe SubServiceRequest, type: :model do
 
@@ -9,8 +9,8 @@ RSpec.describe SubServiceRequest, type: :model do
     context "subsidy present" do
 
       it "should return the Subsidy.stored_percent_subsidy" do
-        sub_service_request = FactoryGirl.create(:sub_service_request)
-        subsidy             = FactoryGirl.create(:subsidy, sub_service_request: sub_service_request,
+        sub_service_request = create(:sub_service_request)
+        subsidy             = create(:subsidy, sub_service_request: sub_service_request,
                                                             stored_percent_subsidy: 1.1)
 
         expect(sub_service_request.stored_percent_subsidy).to eq(1.1)
@@ -20,7 +20,7 @@ RSpec.describe SubServiceRequest, type: :model do
     context "subsidy not present" do
 
       it "should return: 0" do
-        sub_service_request = FactoryGirl.create(:sub_service_request)
+        sub_service_request = create(:sub_service_request)
 
         expect(sub_service_request.stored_percent_subsidy).to eq(0)
       end

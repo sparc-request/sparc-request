@@ -1,11 +1,11 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
   describe 'GET /v1/identities.json' do
 
     before do
-      5.times { @identity = FactoryGirl.create(:identity) }
+      5.times { @identity = create(:identity) }
     end
 
     context 'response params' do

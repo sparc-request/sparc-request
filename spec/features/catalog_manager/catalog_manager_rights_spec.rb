@@ -18,27 +18,26 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-feature 'catalog managers' do
+RSpec.feature 'catalog managers' do
   background do
     default_catalog_manager_setup
-  end 
-  
-  scenario 'user adds and deletes new catalog manager to institution', :js => true do
+  end
+
+  scenario 'user adds and deletes new catalog manager to institution', js: true do
     add_catalog_manager
     within "#cm_info" do
-      page.should have_text("Jason Leonard (leonarjp@musc.edu)")
+      expect(page).to have_text("Jason Leonard (leonarjp@musc.edu)")
     end
-    within "#cm_info" do
-      page.all("img.cm_delete")[1].click
+    accept_alert("Are you sure you want to remove rights for this user from the Catalog Manager?") do
+      within "#cm_info" do
+        page.all("img.cm_delete")[1].click
+      end
     end
-    a = page.driver.browser.switch_to.alert
-    a.text.should eq "Are you sure you want to remove rights for this user from the Catalog Manager?"
-    a.accept
-    
+
     within "#cm_info" do
-      page.should_not have_text("Jason Leonard")
+      expect(page).not_to have_text("Jason Leonard")
     end
   end
 end
@@ -52,8 +51,8 @@ def add_catalog_manager
     wait_for_javascript_to_finish
   end
   sleep 3
-  fill_in "new_cm", :with => "leonarjp"
+  fill_in "new_cm", with: "leonarjp"
   wait_for_javascript_to_finish
-  page.find('a', :text => "Jason Leonard", :visible => true).click()
+  page.find('a', text: "Jason Leonard", visible: true).click()
   wait_for_javascript_to_finish
 end

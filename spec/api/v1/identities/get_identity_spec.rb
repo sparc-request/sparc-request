@@ -1,10 +1,10 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
   describe 'GET /v1/identity/:id.json' do
 
-    before { @identity = FactoryGirl.create(:identity) }
+    before { @identity = create(:identity) }
 
     context 'response params' do
 
@@ -31,7 +31,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
       before { cwf_sends_api_get_request_for_resource('identities', @identity.id, 'shallow') }
 
       it 'should respond with a single shallow identity' do
-        expect(response.body).to eq("{\"identity\":{\"sparc_id\":1,\"callback_url\":\"https://127.0.0.1:5000/v1/identities/1.json\"}}")
+        expect(response.body).to eq("{\"identity\":{\"sparc_id\":#{@identity.id},\"callback_url\":\"https://127.0.0.1:5000/v1/identities/#{@identity.id}.json\"}}")
       end
     end
 

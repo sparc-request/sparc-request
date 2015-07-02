@@ -20,7 +20,7 @@
 
 require 'epic_interface'
 require 'fake_epic_soap_server'
-require 'spec_helper'
+require 'rails_helper'
 
 def strip_xml_whitespace!(root)
   root.xpath('//text()').each do |n|
@@ -33,7 +33,7 @@ def strip_xml_whitespace!(root)
   return root
 end
 
-describe EpicInterface do
+RSpec.describe EpicInterface do
   server = nil
   port = nil
   thread = nil
@@ -83,14 +83,14 @@ describe EpicInterface do
   }
 
   let!(:study) {
-    human_subjects_info = FactoryGirl.build(:human_subjects_info, pro_number: nil, hr_number: nil)
-    study = FactoryGirl.build(:study, human_subjects_info: human_subjects_info)
+    human_subjects_info = build(:human_subjects_info, pro_number: nil, hr_number: nil)
+    study = build(:study, human_subjects_info: human_subjects_info)
     study.save(validate: false)
     study
   }
 
   let!(:provider) {
-    FactoryGirl.create(
+    create(
       :provider,
       parent_id: nil,
       name: 'South Carolina Clinical and Translational Institute (SCTR)',
@@ -102,7 +102,7 @@ describe EpicInterface do
   }
 
   let!(:program) {
-    FactoryGirl.create(
+    create(
         :program,
         type: 'Program',
         parent_id: provider.id,
@@ -144,15 +144,15 @@ describe EpicInterface do
       # p strip_xml_whitespace!(expected.root)
       # p strip_xml_whitespace!(node)
 
-      node.should be_equivalent_to(expected.root)
+      expect(node).to be_equivalent_to(expected.root)
     end
 
     it 'should emit a subjectOf for a PI' do
-      identity = FactoryGirl.create(
+      identity = create(
           :identity,
           ldap_uid: 'happyhappyjoyjoy@musc.edu')
 
-      pi_role = FactoryGirl.create(
+      pi_role = create(
           :project_role,
           protocol:        study,
           identity:        identity,
@@ -181,15 +181,15 @@ describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      node.should be_equivalent_to(expected)
+      expect(node).to be_equivalent_to(expected)
     end
 
     it 'should emit a subjectOf for a Billing Business Manager with Epic Access Rights' do
-      identity = FactoryGirl.create(
+      identity = create(
           :identity,
           ldap_uid: 'happyhappyjoyjoy@musc.edu')
 
-      pi_role = FactoryGirl.create(
+      pi_role = create(
           :project_role,
           protocol:        study,
           identity:        identity,
@@ -218,15 +218,15 @@ describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      node.should be_equivalent_to(expected)
+      expect(node).to be_equivalent_to(expected)
     end
 
     it 'should emit a subjectOf for a Co Investigator with Epic Access Rights' do
-      identity = FactoryGirl.create(
+      identity = create(
           :identity,
           ldap_uid: 'happyhappyjoyjoy@musc.edu')
 
-      pi_role = FactoryGirl.create(
+      pi_role = create(
           :project_role,
           protocol:        study,
           identity:        identity,
@@ -255,15 +255,15 @@ describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      node.should be_equivalent_to(expected)
+      expect(node).to be_equivalent_to(expected)
     end
 
     it 'should emit a subjectOf for a Research Nurse with Epic Access Rights' do
-      identity = FactoryGirl.create(
+      identity = create(
           :identity,
           ldap_uid: 'happyhappyjoyjoy@musc.edu')
 
-      pi_role = FactoryGirl.create(
+      pi_role = create(
           :project_role,
           protocol:        study,
           identity:        identity,
@@ -292,15 +292,15 @@ describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      node.should be_equivalent_to(expected)
+      expect(node).to be_equivalent_to(expected)
     end
 
     it 'should emit a subjectOf for a Graduate Research Assistant with Epic Access Rights' do
-      identity = FactoryGirl.create(
+      identity = create(
           :identity,
           ldap_uid: 'happyhappyjoyjoy@musc.edu')
 
-      pi_role = FactoryGirl.create(
+      pi_role = create(
           :project_role,
           protocol:        study,
           identity:        identity,
@@ -329,15 +329,15 @@ describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      node.should be_equivalent_to(expected)
+      expect(node).to be_equivalent_to(expected)
     end
 
     it 'should not emit a subjectOf for a Billing Business Manager without Epic Access Rights' do
-      identity = FactoryGirl.create(
+      identity = create(
           :identity,
           ldap_uid: 'happyhappyjoyjoy@musc.edu')
 
-      pi_role = FactoryGirl.create(
+      pi_role = create(
           :project_role,
           protocol:        study,
           identity:        identity,
@@ -358,7 +358,7 @@ describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      node.should be_equivalent_to(expected)
+      expect(node).to be_equivalent_to(expected)
     end
 
     it 'should emit a subjectOf for a pro number' do
@@ -385,7 +385,7 @@ describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      node.should be_equivalent_to(expected)
+      expect(node).to be_equivalent_to(expected)
     end
 
     it 'should emit a subjectOf for an hr number' do
@@ -412,7 +412,7 @@ describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      node.should be_equivalent_to(expected)
+      expect(node).to be_equivalent_to(expected)
     end
 
     it 'should emit a subjectOf for an nct number' do
@@ -440,7 +440,7 @@ describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      node.should be_equivalent_to(expected)
+      expect(node).to be_equivalent_to(expected)
     end
 
     it 'should emit a subjectOf for a pro number if the study has both a pro number and an hr number' do
@@ -468,7 +468,7 @@ describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      node.should be_equivalent_to(expected)
+      expect(node).to be_equivalent_to(expected)
     end
 
     describe 'emitting a subjectOf for a study type' do
@@ -503,7 +503,7 @@ describe EpicInterface do
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
 
-        node.should be_equivalent_to(expected)
+        expect(node).to be_equivalent_to(expected)
       end
 
       it 'should handle answering all questions' do
@@ -537,7 +537,7 @@ describe EpicInterface do
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
 
-        node.should be_equivalent_to(expected)
+        expect(node).to be_equivalent_to(expected)
       end
 
       it 'should handle answering all questions' do
@@ -571,7 +571,7 @@ describe EpicInterface do
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
 
-        node.should be_equivalent_to(expected)
+        expect(node).to be_equivalent_to(expected)
       end
 
       it 'should handle nils for questions 1b and 1c' do
@@ -605,7 +605,7 @@ describe EpicInterface do
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
 
-        node.should be_equivalent_to(expected)
+        expect(node).to be_equivalent_to(expected)
       end
     end
 
@@ -634,7 +634,7 @@ describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      node.should be_equivalent_to(expected)
+      expect(node).to be_equivalent_to(expected)
     end
 
     it 'should emit a subjectOf for the category grouper CORP if its funding source is industry' do
@@ -661,7 +661,7 @@ describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      node.should be_equivalent_to(expected)
+      expect(node).to be_equivalent_to(expected)
     end
 
     it 'should emit a subjectOf for the category grouper GOV if its potential funding source is other' do
@@ -688,7 +688,7 @@ describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      node.should be_equivalent_to(expected)
+      expect(node).to be_equivalent_to(expected)
     end
 
   end # send_study_creation
@@ -724,15 +724,15 @@ describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      node.should be_equivalent_to(expected.root)
+      expect(node).to be_equivalent_to(expected.root)
     end
 
     it 'should not send PI or SC' do
-      identity = FactoryGirl.create(
+      identity = create(
           :identity,
           ldap_uid: 'happyhappyjoyjoy@musc.edu')
 
-      pi_role = FactoryGirl.create(
+      pi_role = create(
           :project_role,
           protocol:        study,
           identity:        identity,
@@ -764,16 +764,15 @@ describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      node.should be_equivalent_to(expected.root)
+      expect(node).to be_equivalent_to(expected.root)
     end
 
     it 'should send an arm as a cell' do
-      service_request = FactoryGirl.create_without_validation(
-          :service_request,
-          protocol: study,
-          status: 'draft')
+      service_request = FactoryGirl.create(:service_request_without_validations,
+                                            protocol: study,
+                                            status: 'draft')
 
-      arm1 = FactoryGirl.create(
+      arm1 = create(
           :arm,
           name: 'Arm',
           protocol: study,
@@ -826,23 +825,22 @@ describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      node.should be_equivalent_to(expected.root)
+      expect(node).to be_equivalent_to(expected.root)
     end
 
     it 'should send two arms as two cells' do
-      service_request = FactoryGirl.create_without_validation(
-          :service_request,
-          protocol: study,
-          status: 'draft')
+      service_request = FactoryGirl.create(:service_request_without_validations,
+                                            protocol: study,
+                                            status: 'draft')
 
-      arm1 = FactoryGirl.create(
+      arm1 = create(
           :arm,
           name: 'Arm 1',
           protocol: study,
           visit_count: 10,
           subject_count: 2)
 
-      arm2 = FactoryGirl.create(
+      arm2 = create(
           :arm,
           name: 'Arm 2',
           protocol: study,
@@ -918,20 +916,19 @@ describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      node.should be_equivalent_to(expected.root).respecting_element_order
+      expect(node).to be_equivalent_to(expected.root).respecting_element_order
     end
 
     context 'with line items' do
 
       let!(:service_request) {
-        FactoryGirl.create_without_validation(
-            :service_request,
-            protocol: study,
-            status: 'submitted')
+        FactoryGirl.create(:service_request_without_validations,
+                            protocol: study,
+                            status: 'submitted')
       }
 
       let!(:sub_service_request) {
-        FactoryGirl.create(
+        create(
             :sub_service_request,
             ssr_id: '0001',
             service_request: service_request,
@@ -940,14 +937,14 @@ describe EpicInterface do
       }
 
       let!(:service) {
-        FactoryGirl.create(
+        create(
             :service,
             organization: program,
             name: 'A service')
       }
 
       let!(:line_item) {
-        FactoryGirl.create(
+        create(
             :line_item,
             service_request: service_request,
             service: service,
@@ -982,12 +979,12 @@ describe EpicInterface do
             'rpe' => 'urn:ihe:qrph:rpe:2009',
             'hl7' => 'urn:hl7-org:v3')
 
-        node.should be_equivalent_to(expected.root)
+        expect(node).to be_equivalent_to(expected.root)
       end
 
       context 'CPT codes' do
         let!(:arm) {
-          FactoryGirl.create(
+          create(
               :arm,
               protocol: study,
               name: 'Arm 1',
@@ -996,7 +993,7 @@ describe EpicInterface do
         }
 
         let!(:visit_group) {
-          FactoryGirl.create(
+          create(
               :visit_group,
               arm: arm,
               day: -1)
@@ -1088,7 +1085,7 @@ describe EpicInterface do
               'rpe' => 'urn:ihe:qrph:rpe:2009',
               'hl7' => 'urn:hl7-org:v3')
 
-          node.should be_equivalent_to(expected.root)
+          expect(node).to be_equivalent_to(expected.root)
         end
 
         it 'should send pppv line items with the CPT code if it also has a Charge code' do
@@ -1176,7 +1173,7 @@ describe EpicInterface do
               'rpe' => 'urn:ihe:qrph:rpe:2009',
               'hl7' => 'urn:hl7-org:v3')
 
-          node.should be_equivalent_to(expected.root)
+          expect(node).to be_equivalent_to(expected.root)
         end
 
         it 'should send pppv line items with only Charge codes' do
@@ -1264,7 +1261,7 @@ describe EpicInterface do
               'rpe' => 'urn:ihe:qrph:rpe:2009',
               'hl7' => 'urn:hl7-org:v3')
 
-          node.should be_equivalent_to(expected.root)
+          expect(node).to be_equivalent_to(expected.root)
         end
 
         # TODO: Test no CPT Code.
@@ -1341,7 +1338,7 @@ describe EpicInterface do
               'rpe' => 'urn:ihe:qrph:rpe:2009',
               'hl7' => 'urn:hl7-org:v3')
 
-          node.should be_equivalent_to(expected.root)
+          expect(node).to be_equivalent_to(expected.root)
         end
       end
     end

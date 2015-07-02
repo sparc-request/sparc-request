@@ -18,29 +18,29 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 include CapybaraProper
 
-describe 'A Quick Happy Test on Sparc Proper', :happy_test do
+RSpec.describe 'A Quick Happy Test on Sparc Proper', :happy_test do
   let_there_be_lane
   fake_login_for_each_test
 
-  let!(:institution)  {FactoryGirl.create(:institution,id: 53,name: 'Medical University of South Carolina', order: 1,abbreviation: 'MUSC', is_available: 1)}
-  let!(:provider) {FactoryGirl.create(:provider,id: 10,name: 'South Carolina Clinical and Translational Institute (SCTR)',order: 1,css_class: 'blue-provider',parent_id: institution.id,abbreviation: 'SCTR1',process_ssrs: 0,is_available: 1)}
-  let!(:program) {FactoryGirl.create(:program,id:54,type:'Program',name:'Office of Biomedical Informatics',order:1,parent_id:provider.id,abbreviation:'Informatics',process_ssrs:  0,is_available: 1)}
-  let!(:program2) {FactoryGirl.create(:program,id:5,type:'Program',name:'Clinical and Translational Research Center (CTRC)',order:2,parent_id:provider.id,abbreviation:'Informatics',process_ssrs:0,is_available:1)}
-  let!(:core) {FactoryGirl.create(:core,id:33,type:'Core',name:'Clinical Data Warehouse',order:1,parent_id:program.id,abbreviation:'Clinical Data Warehouse')}
-  let!(:core2) {FactoryGirl.create(:core,id:8,type:'Core',name:'Nursing Services',abbreviation:'Nursing Services',order:1,parent_id:program2.id)}
-  let!(:service) {FactoryGirl.create(:service,id:67,name:'MUSC Research Data Request (CDW)',abbreviation:'CDW',order:1,cpt_code:'',organization_id:core.id, one_time_fee: true)}
-  let!(:service2) {FactoryGirl.create(:service,id:16,name:'Breast Milk Collection',abbreviation:'Breast Milk Collection',order:1,cpt_code:'',organization_id:core2.id)}
-  let!(:pricing_setup) { FactoryGirl.create(:pricing_setup, organization_id: program.id, display_date: Time.now - 1.day, federal: 50, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal')}
-  let!(:pricing_setup2) { FactoryGirl.create(:pricing_setup, organization_id: program2.id, display_date: Time.now - 1.day, federal: 50, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal')}
-  let!(:pricing_map) {FactoryGirl.create(:pricing_map,service_id:service.id, unit_type: 'Per Query', unit_factor: 1, display_date: Time.now - 1.day, full_rate: 200, exclude_from_indirect_cost: 0, unit_minimum:1)}
-  let!(:pricing_map2) {FactoryGirl.create(:pricing_map, service_id: service2.id, unit_type: 'Per patient/visit', unit_factor: 1, display_date: Time.now - 1.day, full_rate: 636, exclude_from_indirect_cost: 0, unit_minimum: 1)}
-  let!(:service_provider)    { FactoryGirl.create(:service_provider, organization_id: program.id, identity_id: jug2.id)}
-  let!(:service_provider2)    { FactoryGirl.create(:service_provider, organization_id: program2.id, identity_id: jug2.id)}
+  let!(:institution)       {create(:institution,id: 53,name: 'Medical University of South Carolina', order: 1,abbreviation: 'MUSC', is_available: 1) }
+  let!(:provider)          {create(:provider,id: 10,name: 'South Carolina Clinical and Translational Institute (SCTR)',order: 1,css_class: 'blue-provider',parent_id: institution.id,abbreviation: 'SCTR1',process_ssrs: 0,is_available: 1) }
+  let!(:program)           {create(:program,id:54,type:'Program',name:'Office of Biomedical Informatics',order:1,parent_id:provider.id,abbreviation:'Informatics',process_ssrs:  0,is_available: 1) }
+  let!(:program2)          {create(:program,id:5,type:'Program',name:'Clinical and Translational Research Center (CTRC)',order:2,parent_id:provider.id,abbreviation:'Informatics',process_ssrs:0,is_available:1) }
+  let!(:core)              {create(:core,id:33,type:'Core',name:'Clinical Data Warehouse',order:1,parent_id:program.id,abbreviation:'Clinical Data Warehouse') }
+  let!(:core2)             {create(:core,id:8,type:'Core',name:'Nursing Services',abbreviation:'Nursing Services',order:1,parent_id:program2.id) }
+  let!(:service)           {create(:service,id:67,name:'MUSC Research Data Request (CDW)',abbreviation:'CDW',order:1,cpt_code:'',organization_id:core.id, one_time_fee: true) }
+  let!(:service2)          {create(:service,id:16,name:'Breast Milk Collection',abbreviation:'Breast Milk Collection',order:1,cpt_code:'',organization_id:core2.id) }
+  let!(:pricing_setup)     { create(:pricing_setup, organization_id: program.id, display_date: Time.now - 1.day, federal: 50, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal') }
+  let!(:pricing_setup2)    { create(:pricing_setup, organization_id: program2.id, display_date: Time.now - 1.day, federal: 50, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal') }
+  let!(:pricing_map)       {create(:pricing_map,service_id:service.id, unit_type: 'Per Query', unit_factor: 1, display_date: Time.now - 1.day, full_rate: 200, exclude_from_indirect_cost: 0, unit_minimum:1) }
+  let!(:pricing_map2)      {create(:pricing_map, service_id: service2.id, unit_type: 'Per patient/visit', unit_factor: 1, display_date: Time.now - 1.day, full_rate: 636, exclude_from_indirect_cost: 0, unit_minimum: 1) }
+  let!(:service_provider)  { create(:service_provider, organization_id: program.id, identity_id: jug2.id) }
+  let!(:service_provider2) { create(:service_provider, organization_id: program2.id, identity_id: jug2.id) }
 
-  it 'should properly make you happy in a quick manner', :js => true do
+  it 'should properly make you happy in a quick manner', js: true do
     visit root_path
 
     #**Submit a service request**#
@@ -49,27 +49,27 @@ describe 'A Quick Happy Test on Sparc Proper', :happy_test do
     find('.submit-request-button').click
     wait_for_javascript_to_finish
     #**END Submit a service request END**#
-    
+
     #**Create a new Study**#
     click_link("New Study")
     wait_for_javascript_to_finish
-    fill_in "study_short_title", :with => "Bob"
-    fill_in "study_title", :with => "Dole"
-    fill_in "study_sponsor_name", :with => "Captain Kurt 'Hotdog' Zanzibar"
-    select "Funded", :from => "study_funding_status"
-    select "Federal", :from => "study_funding_source"
+    fill_in "study_short_title", with: "Bob"
+    fill_in "study_title", with: "Dole"
+    fill_in "study_sponsor_name", with: "Captain Kurt 'Hotdog' Zanzibar"
+    select "Funded", from: "study_funding_status"
+    select "Federal", from: "study_funding_source"
     clickContinueButton
     #**END Create a new Study END**#
 
     #**Select Users**#
-    select "Primary PI", :from => "project_role_role"
+    select "Primary PI", from: "project_role_role"
     click_button "Add Authorized User"
     wait_for_javascript_to_finish
-    fill_in "user_search_term", :with => "bjk7"
+    fill_in "user_search_term", with: "bjk7"
     wait_for_javascript_to_finish
-    page.find('a', :text => "Brian Kelsey (kelsey@musc.edu)", :visible => true).click()
+    page.find('a', text: "Brian Kelsey (kelsey@musc.edu)", visible: true).click()
     wait_for_javascript_to_finish
-    select "Billing/Business Manager", :from => "project_role_role"
+    select "Billing/Business Manager", from: "project_role_role"
     click_button "Add Authorized User"
     wait_for_javascript_to_finish
 
@@ -96,8 +96,8 @@ describe 'A Quick Happy Test on Sparc Proper', :happy_test do
     page.execute_script %Q{ $("a.ui-state-default:contains('#{endDay}')").filter(function(){return $(this).text()==='#{endDay}';}).trigger("click") } # click on end day
     wait_for_javascript_to_finish
         #Add Arm 1**
-    fill_in "study_arms_attributes_0_subject_count", :with => "5" # 5 subjects
-    fill_in "study_arms_attributes_0_visit_count", :with => "5" # 5 visit
+    fill_in "study_arms_attributes_0_subject_count", with: "5" # 5 subjects
+    fill_in "study_arms_attributes_0_visit_count", with: "5" # 5 visit
     wait_for_javascript_to_finish
     saveAndContinue
     #**END Select Dates and Arms END**#
@@ -121,16 +121,11 @@ describe 'A Quick Happy Test on Sparc Proper', :happy_test do
     if have_xpath("//div[@aria-describedby='participate_in_survey' and @display!='none']") then
         first(:xpath, "//button/span[text()='No']").click
         wait_for_javascript_to_finish
-    end  
+    end
     #**END Review Page END**#
 
     #**Submission Confirmation Page**#
     submissionConfirmationPage
     #**END Submission Confirmation Page END**#
-
-
-
-
   end
-
 end

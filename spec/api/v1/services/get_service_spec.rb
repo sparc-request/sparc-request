@@ -1,10 +1,10 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
   describe 'GET /v1/service/:id.json' do
 
-    before { @service = FactoryGirl.create(:service_with_process_ssrs_organization) }
+    before { @service = create(:service_with_process_ssrs_organization) }
 
     context 'response params' do
 
@@ -31,7 +31,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
       before { cwf_sends_api_get_request_for_resource('services', @service.id, 'shallow') }
 
       it 'should respond with a single shallow service' do
-        expect(response.body).to eq("{\"service\":{\"sparc_id\":1,\"callback_url\":\"https://127.0.0.1:5000/v1/services/1.json\"}}")
+        expect(response.body).to eq("{\"service\":{\"sparc_id\":#{@service.id},\"callback_url\":\"https://127.0.0.1:5000/v1/services/#{@service.id}.json\"}}")
       end
     end
 
@@ -41,7 +41,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       it 'should respond with a Service' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryGirl.build(:service).attributes.
+        expected_attributes = build(:service).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
                                 push('callback_url', 'sparc_id', 'process_ssrs_organization').
@@ -57,7 +57,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       it 'should respond with an array of services and their attributes and their shallow reflections' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryGirl.build(:service).attributes.
+        expected_attributes = build(:service).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
                                 push('callback_url', 'sparc_id', 'process_ssrs_organization', 'line_items').

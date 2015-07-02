@@ -18,23 +18,23 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 include CapybaraCatalogManager
 
 
-describe 'Quick Catalog Manager', :happy_test do
+RSpec.describe 'Quick Catalog Manager', :happy_test do
   let_there_be_lane
   fake_login_for_each_test
 
-  it 'Should create a small functional catalog', :js => true do
+  it 'Should create a small functional catalog', js: true do
     visit catalog_manager_root_path
 
     create_new_institution 'someInst'
     create_new_provider 'someProv', 'someInst'
     create_new_program 'someProg', 'someProv'
     create_new_core 'someCore', 'someProg'
-    create_new_service 'someService', 'someCore', :otf => false
-    create_new_service 'someService2', 'someCore', :otf => true
+    create_new_service 'someService', 'someCore', otf: false
+    create_new_service 'someService2', 'someCore', otf: true
     visit root_path
-  end  
+  end
 end

@@ -105,7 +105,8 @@ module V1
             :billing_business_manager_static_email,
             :recruitment_start_date,
             :recruitment_end_date,
-            :selected_for_epic
+            :selected_for_epic,
+            :has_cofc
   end
 
   class ProjectFull < ProtocolFull

@@ -18,16 +18,16 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe "payments", js: true do
+RSpec.describe "payments", js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
   build_service_request_with_project()
 
   before :each do
-    create_visits    
+    create_visits
     sub_service_request.update_attributes(in_work_fulfillment: true)
   end
 
@@ -42,8 +42,8 @@ describe "payments", js: true do
     end
 
     it "should create a new report" do
-      sub_service_request.reports.size.should eq(0)
-      
+      expect(sub_service_request.reports.size).to eq(0)
+
       click_link "Project summary report"
       wait_for_javascript_to_finish
 
@@ -60,11 +60,11 @@ describe "payments", js: true do
       wait_for_javascript_to_finish
 
       within('#billings_list') do
-        page.should have_content("Research Project Summary Report")
+        expect(page).to have_content("Research Project Summary Report")
       end
 
-      sub_service_request.reload 
-      sub_service_request.reports.size.should eq(1)
+      sub_service_request.reload
+      expect(sub_service_request.reports.size).to eq(1)
     end
   end
 
@@ -75,14 +75,14 @@ describe "payments", js: true do
     end
 
     it "should set the routing for a sub service request" do
-      sub_service_request.routing.should be_nil
+      expect(sub_service_request.routing).to be_nil
 
-      fill_in 'ssr_routing', :with => 'Andrew'
+      fill_in 'ssr_routing', with: 'Andrew'
       click_link 'ssr_save'
       wait_for_javascript_to_finish
 
       sub_service_request.reload
-      sub_service_request.routing.should eq('Andrew')
+      expect(sub_service_request.routing).to eq('Andrew')
     end
   end
 end

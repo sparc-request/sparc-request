@@ -18,9 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe "payments", js: true do
+RSpec.describe "payments", js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
@@ -28,7 +28,7 @@ describe "payments", js: true do
 
 
   before :each do
-    create_visits    
+    create_visits
     sub_service_request.update_attributes(in_work_fulfillment: true)
   end
 
@@ -44,17 +44,17 @@ describe "payments", js: true do
     end
 
     it "Renders the cover letter template into an editable element" do
-      find("#cover_letter_content_editor").should have_text "To Whom It May Concern"
+      expect(find("#cover_letter_content_editor")).to have_text "To Whom It May Concern"
     end
 
     it "takes you back to the Billings tab with the new Cover Letter rendered" do
       click_button "Save"
-
-      cl = sub_service_request.cover_letters.last
+      wait_for_javascript_to_finish
+      cl = sub_service_request.reload.cover_letters.last
 
       within('#billings_list') do
-        find("td.actions").should have_link("Download", href: study_tracker_sub_service_request_cover_letter_path(sub_service_request, cl, format: "pdf"))
-        find("td.actions").should have_link("Edit")
+        expect(find("td.actions")).to have_link("Download", href: study_tracker_sub_service_request_cover_letter_path(sub_service_request.id, cl.id, format: "pdf"))
+        expect(find("td.actions")).to have_link("Edit")
       end
     end
   end
@@ -66,7 +66,7 @@ describe "payments", js: true do
     end
 
     it "Shows the letter contents in an editable field" do
-      find("#cover_letter_content_editor").should have_text "my cover letter"
+      expect(find("#cover_letter_content_editor")).to have_text "my cover letter"
     end
 
     it "Saves the model" do

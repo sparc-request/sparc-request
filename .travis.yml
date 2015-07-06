@@ -14,9 +14,9 @@ before_script:
   - cp config/epic.yml.example config/epic.yml
   - cp config/ldap.yml.example config/ldap.yml
   - tail config/database.yml
+  - tail config/database.yml.travis-ci
 script:
-  - RAILS_ENV=test bundle exec rake db:migrate --trace
-  - RAILS_ENV=test bundle exec rake db:test:prepare	
-  - RAILS_ENV=test bundle exec rspec spec/mailers
-  - RAILS_ENV=test bundle exec rspec spec/models
-  - RAILS_ENV=test bundle exec rspec spec/controllers
+  - rake db:test:load
+  - bundle exec rspec spec/mailers
+  - bundle exec rspec spec/models
+  - bundle exec rspec spec/controllers

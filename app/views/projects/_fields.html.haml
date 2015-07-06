@@ -69,7 +69,7 @@
       %td.box
         #user_detail_errors.errorExplanation{:style => 'display:none'}
         .info
-          = render :partial => 'shared/user_search'
+          = render :partial => 'shared/user_search', :locals => {:protocol => project}
           - hide_user_details = (project.new_record? and project.project_roles.empty?) ? '' : 'display:none;'
           .user_added_message{:style => 'display:none;'}
           %p

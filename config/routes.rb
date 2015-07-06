@@ -19,9 +19,10 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 SparcRails::Application.routes.draw do
+
   match '/direct_link_to/:survey_code', :to => 'surveyor#create', :as => 'direct_link_survey', :via => :get
   mount Surveyor::Engine => "/surveys", :as => "surveyor"
-  
+
   devise_for :identities, :controllers => { :omniauth_callbacks => "identities/omniauth_callbacks" }
 
   resources :identities do
@@ -165,7 +166,7 @@ SparcRails::Application.routes.draw do
     match 'update_pricing_maps' => 'catalog#update_pricing_maps'
     match 'update_dates_on_pricing_maps' => 'catalog#update_dates_on_pricing_maps'
     match 'validate_pricing_map_dates' => 'catalog#validate_pricing_map_dates'
-    match '*verify_valid_pricing_setups' => 'catalog#verify_valid_pricing_setups'  
+    match '*verify_valid_pricing_setups' => 'catalog#verify_valid_pricing_setups'
 
     root :to => 'catalog#index'
   end
@@ -190,20 +191,20 @@ SparcRails::Application.routes.draw do
       resources :calendars
       resources :cover_letters
     end
-    
+
     resources :service_requests
     resources :subjects
-    
+
     resources :protocols do
       member do
         put :update_billing_business_manager_static_email
       end
     end
   end
-  
+
   ##### sparc-user routes brought in and namespaced
   namespace :portal do
-    
+
     resources :services, :admin
 
     resources :associated_users do
@@ -314,7 +315,7 @@ SparcRails::Application.routes.draw do
     end
     match '/admin/sub_service_requests/:id/edit_document/:document_id' => 'sub_service_requests#edit_documents'
     match "/admin/sub_service_requests/:id/delete_document/:document_id" => "sub_service_requests#delete_documents"
-    
+
     root :to => 'home#index'
   end
 
@@ -331,6 +332,7 @@ SparcRails::Application.routes.draw do
     end
   end
 
-  root :to => 'service_requests#catalog'
+  mount API::Base => '/'
 
+  root :to => 'service_requests#catalog'
 end

@@ -9,6 +9,7 @@ before_install:
   - bundle update debugger
   - bundle update sqlite3
 before_script:
+  - ls
   - cp config/application.yml.example config/application.yml
   - cp config/database.yml.travis-ci config/database.yml
   - cp config/epic.yml.example config/epic.yml

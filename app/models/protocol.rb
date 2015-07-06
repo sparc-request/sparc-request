@@ -19,6 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Protocol < ActiveRecord::Base
+
+  include RemotelyNotifiable
+
   audited
 
   has_many :study_types, :dependent => :destroy
@@ -343,6 +346,16 @@ class Protocol < ActiveRecord::Base
     return nil
   end
 
+  def has_nexus_services?
+    self.service_requests.each do |sr|
+      if sr.has_ctrc_clinical_services? and sr.status != 'first_draft'
+        return true
+      end
+    end
+
+    return false
+  end
+
   def find_sub_service_request_with_ctrc current_service_request_id
     id = has_ctrc_clinical_services? current_service_request_id
     service_request = self.service_requests.find id
@@ -430,4 +443,13 @@ class Protocol < ActiveRecord::Base
     end
   end
 
+  private
+
+  def notify_remote_around_update?
+    true
+  end
+
+  def remotely_notifiable_attributes_to_watch_for_change
+    ["short_title"]
+  end
 end

@@ -29,9 +29,5 @@ FactoryGirl.define do
     unit_minimum               { 1 }
     display_date               Date.parse('2000-01-01')
     effective_date             Date.parse('2000-01-01')
-
-    trait :exclude_from_indirect_cost do
-      excluse_from_indirect_cost true
-    end
   end
 end

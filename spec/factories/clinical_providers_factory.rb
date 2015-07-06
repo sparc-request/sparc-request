@@ -21,5 +21,14 @@
 FactoryGirl.define do
 
   factory :clinical_provider do
+    identity nil
+    organization nil
+
+    trait :with_identity_and_organization do
+      identity
+      organization
+    end
+
+    factory :clinical_provider_with_identity_and_organization, traits: [:with_identity_and_organization]
   end
 end

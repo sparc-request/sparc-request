@@ -23,8 +23,21 @@
 FactoryGirl.define do
 
   factory :project_role do
+    protocol nil
+    identity nil
+
     project_rights { Faker::Lorem.sentence(2) }
     role           'primary-pi'
-    
+
+    trait :with_identity do
+      identity
+    end
+
+    trait :with_protocol do
+      protocol
+    end
+
+    factory :project_role_with_identity, traits: [:with_identity]
+    factory :project_role_with_identity_and_protocol, traits: [:with_identity, :with_protocol]
   end
 end

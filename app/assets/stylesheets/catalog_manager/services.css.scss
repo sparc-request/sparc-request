@@ -22,6 +22,20 @@
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
 
+fieldset {
+
+  &#service_level_components {
+
+    table {
+      width: 100%;
+
+      td {
+        text-align: right;
+      }
+    }
+  }
+}
+
 td.include_date_picture {
   width: 430px;
 }

@@ -117,4 +117,5 @@
       %td{:colspan => 5}= t("calendar_page.labels.total_direct_other")
       %td{:colspan => 7}
       %td.otf_total_direct_cost= display_total_direct_cost_per_study_otfs @service_request, @line_items
-      - if
+      - if @study_tracker
+        %td

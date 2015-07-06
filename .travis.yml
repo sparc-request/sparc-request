@@ -1,6 +1,9 @@
 language: ruby
+cache: bundler
 rvm:
   - 1.9.3
+env:
+  - DB=test  
 before_install:
   - gem update --system
   - gem --version
@@ -9,15 +12,12 @@ before_install:
   - bundle update debugger
   - bundle update sqlite3
 before_script:
-  - ls
-  - cp config/application.yml.example config/application.yml
   - cp config/database.yml.travis-ci config/database.yml
+  - cp config/application.yml.example config/application.yml
   - cp config/epic.yml.example config/epic.yml
   - cp config/ldap.yml.example config/ldap.yml
-  - tail config/database.yml
-  - tail config/database.yml.travis-ci
 script:
-  - rake db:test:load
+  - bundle exec rake db:test:load
   - bundle exec rspec spec/mailers
   - bundle exec rspec spec/models
   - bundle exec rspec spec/controllers

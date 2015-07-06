@@ -21,5 +21,7 @@
 FactoryGirl.define do
 
   factory :subsidy do
+    sub_service_request nil
+    stored_percent_subsidy 1.0
   end
 end

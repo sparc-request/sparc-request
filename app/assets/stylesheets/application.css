@@ -244,6 +244,11 @@ p.notice {
   color: #0000EE !important
 }
 
+.welcome .bug-enhancement-link {
+  color: #fff;
+  font-size: 14px;
+}
+
 #calendar-blog {
   margin-top: 30px;
   width: 100%;

@@ -19,6 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Service < ActiveRecord::Base
+
+  include RemotelyNotifiable
+
   audited
   acts_as_taggable
 
@@ -26,6 +29,7 @@ class Service < ActiveRecord::Base
 
   belongs_to :organization, :include => [:pricing_setups]
   belongs_to :revenue_code_range
+
   has_many :pricing_maps, :dependent => :destroy
   has_many :service_providers, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
@@ -58,8 +62,13 @@ class Service < ActiveRecord::Base
   attr_accessible :send_to_epic
   attr_accessible :tag_list
   attr_accessible :revenue_code_range_id
+  attr_accessible :line_items_count
+  attr_accessible :one_time_fee
+  attr_accessible :components
 
   validate :validate_pricing_maps_present
+
+  alias :process_ssrs_organization :organization
 
   ###############################################
   # Validations
@@ -133,15 +142,6 @@ class Service < ActiveRecord::Base
   # Display pricing formatting for reporting
   def report_pricing currency
     '$' + sprintf("%.2f", currency.to_f / 100.0)
-  end
-
-  # Checks if the service is currently a one-time-fee
-  def is_one_time_fee?
-    begin
-      self.displayed_pricing_map.is_one_time_fee ? true : false
-    rescue
-      false
-    end
   end
 
   def display_service_name(charge_code = false)
@@ -295,18 +295,30 @@ class Service < ActiveRecord::Base
   end
 
   def has_service_providers?
-    self.organization.process_ssrs_parent.service_providers.present? rescue true
+    organization.process_ssrs_parent.service_providers.present? rescue true
   end
 
   def is_ctrc_clinical_service?
-    self.organization.tag_list.include? 'ctrc_clinical_services'
+    if organization.present?
+      organization.tag_list.include? 'ctrc_clinical_services'
+    else
+      false
+    end
   end
 
   def is_ctrc?
-    self.organization.has_tag? 'ctrc'
+    organization.has_tag? 'ctrc'
   end
 
   def parents_available?
     self.parents.map(&:is_available).compact.all?
+  end
+
+  def notify_remote_around_update?
+    true
+  end
+
+  def remotely_notifiable_attributes_to_watch_for_change
+    ["components"]
   end
 end

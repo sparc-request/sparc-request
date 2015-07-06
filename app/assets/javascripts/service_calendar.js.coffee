@@ -24,7 +24,7 @@
 $(document).ready ->
   $('.visit_number a, .service_calendar_row').live 'click', ->
     $('.service_calendar_spinner').show()
-  
+
   $('.line_item_visit_template').live 'change', ->
     $('.service_calendar_spinner').show()
     obj = $(this)
@@ -62,7 +62,7 @@ $(document).ready ->
       sibling_qty += parseInt($(this).val(), 10)
 
     qty = my_qty + sibling_qty
-    
+
     if intRegex.test qty
       unit_minimum = $(this).attr('data-unit-minimum')
 
@@ -108,14 +108,6 @@ $(document).ready ->
     .complete ->
       $('.service_calendar_spinner').hide()
 
-  $('.visit_name').live 'change', ->
-    $('.service_calendar_spinner').show()
-    $.ajax
-      type: 'PUT'
-      url: $(this).attr('update') + "&name=#{$(this).val()}"
-    .complete ->
-      $('.service_calendar_spinner').hide()
-
   $(document).on('change', '.visit_day', ->
     # Grab the day
     position = $(this).data('position')
@@ -132,6 +124,24 @@ $(document).ready ->
       alertText = stack_errors_for_alert(JSON.parse(event.responseText))
       alert(alertText)
       $(this).val(original_val)
+    .complete ->
+      $('.service_calendar_spinner').hide()
+  )
+
+  $(document).on('change', '.visit_name', ->
+    $('.service_calendar_spinner').show()
+    visit_position = $(this).data('visit_position')
+    arm_id = $(this).data('arm_id')
+    service_request_id = $(this).data('service_request_id')
+    name = $(this).val()
+    data = {}
+    data['visit_position'] = visit_position
+    data['arm_id']         = arm_id
+    data['name']           = name
+    $.ajax
+      type: 'PUT'
+      url: "/service_requests/#{service_request_id}/service_calendars/rename_visit"
+      data: data
     .complete ->
       $('.service_calendar_spinner').hide()
   )
@@ -180,7 +190,7 @@ $(document).ready ->
     max = parseInt($(this).attr('data-qty_max'), 10)
     prev_qty = $(this).attr('current_units_per_quantity')
     user_input = parseInt($(this).val(), 10)
-    
+
     # Handle errors
     unless intRegex.test user_input
       $(this).css({'border': '2px solid red'})
@@ -206,32 +216,10 @@ $(document).ready ->
     return false
 
   $('.line_item_quantity').live 'change', ->
-    intRegex = /^\d+$/
-    unit_min = parseInt($(this).attr('unit_minimum'), 10)
-    prev_qty = $(this).attr('current_quantity')
-    qty = parseInt($(this).val(), 10)
-
-    # Handle errors
-    unless intRegex.test qty
-      $(this).css({'border': '2px solid red'})
-      $('#nan_error').fadeIn('fast').delay(5000).fadeOut(5000, => $(this).css('border', ''))
-      $(this).val(prev_qty)
+    if $(this).data('study_tracker') == true
+      save_line_item_by_ajax(this)
     else
-      if qty < unit_min
-        $(this).css({'border': '2px solid red'})
-        $('#quantity').html(qty)
-        $('#unit_minimum').html(unit_min + ".")
-        $('#one_time_fee_errors').fadeIn('fast').delay(5000).fadeOut(5000, => $(this).css('border', ''))
-        $(this).val(prev_qty)
-      else
-        $(this).attr('current_quantity', qty)
-        $('#one_time_fee_errors').hide()
-        $(this).css('border', '')
-        # If it passes validation and is within study tracker, save by ajax
-        if $(this).data('study_tracker') == true
-          save_line_item_by_ajax(this)
-        else
-          update_otf_line_item this
+      update_otf_line_item this
     recalculate_one_time_fee_totals()
     return false
 
@@ -264,7 +252,6 @@ $(document).ready ->
       dataType: 'script'
       success: ->
         $('.service_calendar_spinner').hide()
-
   )
 
   update_otf_line_item = (obj) ->
@@ -333,7 +320,7 @@ recalculate_one_time_fee_totals = ->
     number_of_kits = Math.ceil(number_of_kits)
     new_otf_total = (number_of_kits * your_cost) / 100.0
     grand_total += new_otf_total
-    
+
     $(otf).find('.otf_total').html('$' + commaSeparateNumber(new_otf_total.toFixed(2)))
 
   $('.otf_total_direct_cost').html('$' + commaSeparateNumber(grand_total.toFixed(2)))

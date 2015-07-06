@@ -31,7 +31,7 @@ describe 'organization' do
       let!(:submission_email_1) {FactoryGirl.create(:submission_email, organization_id: provider.id)}
       let!(:submission_email_2) {FactoryGirl.create(:submission_email, organization_id: program.id)}
       let!(:submission_email_3) {FactoryGirl.create(:submission_email, organization_id: core.id)}
-    
+
       before :each do
         provider.update_attributes(process_ssrs: 1)
         core.update_attributes(process_ssrs: 1)
@@ -81,13 +81,13 @@ describe 'organization' do
     end
   end
 
-  describe 'heirarchy methods' do 
+  describe 'heirarchy methods' do
 
     let!(:program2) { FactoryGirl.create(:program, parent_id: provider.id) }
     let!(:core2) { FactoryGirl.create(:core, parent_id: program2.id) }
 
     describe 'process ssrs parent' do
-               
+
       it 'should return the core if process ssrs is set to true' do
         core.process_ssrs = true
         core.save
@@ -97,7 +97,7 @@ describe 'organization' do
       it 'should return the program if process ssrs is on the program' do
         program.process_ssrs = true
         program.save
-        core.process_ssrs_parent.should eq(program)     
+        core.process_ssrs_parent.should eq(program)
       end
 
       it 'should return the program if process ssrs is on the provider and the program' do
@@ -125,7 +125,7 @@ describe 'organization' do
         institution.children(Organization.all).should_not include(program)
       end
 
-      it 'should return the program if it is a provider' do 
+      it 'should return the program if it is a provider' do
         provider.children(Organization.all).should include(program)
       end
 
@@ -272,7 +272,7 @@ describe 'organization' do
   end
 
   describe 'pricing setup for date' do
-    
+
     it 'should raise an exception if there are no pricing setups' do
       organization = FactoryGirl.create(:provider)
       lambda { organization.pricing_setup_for_date(Date.parse('2012-01-01')) }.should raise_exception(ArgumentError)
@@ -305,7 +305,7 @@ describe 'organization' do
       organization.pricing_setups[3].display_date = base_date - 2
       organization.pricing_setups[4].display_date = base_date - 3
       organization.pricing_setup_for_date(base_date).should eq organization.pricing_setups[1]
-    end 
+    end
   end
 
   describe 'eligible for subsidy?' do
@@ -418,16 +418,12 @@ describe 'organization' do
 
     context "patient visit calendar" do
 
-      let!(:core1)    { FactoryGirl.create(:core, show_in_cwf: true, position_in_cwf: 6) }
-      let!(:core2)    { FactoryGirl.create(:core, show_in_cwf: true, position_in_cwf: 7) }
+      let!(:core1)    { FactoryGirl.create(:core, show_in_cwf: true) }
+      let!(:core2)    { FactoryGirl.create(:core, show_in_cwf: true) }
       describe "get cwf organizations" do
 
         it "should return an array of all organizations flagged to show in clinical work fulfillment" do
           Organization.get_cwf_organizations.should include(core1, core2)
-        end
-
-        it "should be sorted by its 'position_in_cwf' attribute" do
-          Organization.get_cwf_organizations.first.should eq(core_13)          
         end
       end
     end

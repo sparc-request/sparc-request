@@ -35,7 +35,7 @@ class Study < Protocol
     self.setup_study_types
     self.setup_impact_areas
     self.setup_affiliations
-    self.setup_study_type_answers            if USE_EPIC
+    self.setup_study_type_answers
   end
 
   def setup_study_types

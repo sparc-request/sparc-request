@@ -30,7 +30,7 @@
       = f.submit t(:organization_form)[:submit_button], :id => 'save_button', :class => 'save_button btn provider_program_core_save'
       %img.spinner{:src => '/assets/catalog_manager/spinner_small.gif'}
     %br
-  
+
     %fieldset#gen_info.parent.active
       .legend= t(:organization_form)[:gen_info]
       %fieldset.single_fieldset{:style => "display:block;"}
@@ -42,7 +42,7 @@
             %th= t(:organization_form)[:abbreviation]
             %td= f.text_field :abbreviation
           %tr
-            %th= t(:organization_form)[:description] 
+            %th= t(:organization_form)[:description]
             %td= f.text_area :description, :rows => 8
           %tr
             %th= t(:organization_form)[:ack_language]
@@ -50,12 +50,12 @@
           %tr
             %th= t(:organization_form)[:order]
             %td= f.text_field :order
-          
+
           - if @user.is_overlord?
             %tr
               %th= t(:organization_form)[:css_class]
               %td= f.select :css_class, ACCORDION_COLOR_OPTIONS, :include_blank => t(:organization_form)[:color_blank]
-          
+
           %tr
             %th= t(:organization_form)[:split_notify]
             %td= f.check_box :process_ssrs
@@ -67,7 +67,7 @@
             %td
               - Tag.all.each do |tag|
                 %span{:style => "margin-right:10px;"}
-                  %span= f.label tag.name.gsub("ctrc", t(:organization_form)[:ctrc_label])
+                  %span= f.label (t(:tags)[tag.name.gsub(" ", "_").to_sym] ? t(:tags)[tag.name.gsub(" ", "_").to_sym] : tag.name.humanize)
                   %span= f.check_box :tag_list, { :multiple => true }, tag.name, nil
 
     %br
@@ -97,12 +97,25 @@
 
     %br
 
+    #cwf_wrapper{:style => @provider.tag_list.include?("clinical work fulfillment") ? "display: block;" : "display: none;"}
+      %fieldset#cwf_fieldset.parent
+        .legend= t(:organization_form)[:clinical_work_fulfillment]
+        %fieldset.single_fieldset
+          %table
+            %tr.cwf
+              %th= t(:organization_form)[:show_in_cwf]
+              %td= f.check_box :show_in_cwf
+            %tr
+              %th= t(:organization_form)[:clinical_providers]
+          #cp_info= render :partial => 'catalog_manager/shared/clinical_providers', :locals => {:entity => @provider}
+
+      %br
     %fieldset#pricing.parent
       .legend= t(:organization_form)[:pricing]
       %fieldset.sibling_fieldset
         .secondary_header= t(:organization_form)[:auto_price_adj]
         = render :partial => 'catalog_manager/shared/increase_decrease_rates', :locals => {:entity => @provider, :can_edit_historical_data => @user.can_edit_historical_data_for?(@provider)}
-              
+
       %fieldset.sibling_fieldset
         .secondary_header= t(:organization_form)[:pricing_setup]
         %input.add_pricing_setup{:type => 'button', :value => 'Add Pricing Setup'}
@@ -123,7 +136,7 @@
               %td.subsidy_dollar= f_subsidy_map.text_field :max_dollar_cap
             = render 'catalog_manager/shared/excluded_funding_sources', :entity => @provider
     %br
-      
+
     %fieldset.parent
       .legend= t(:organization_form)[:associated_surveys]
       %fieldset.single_fieldset

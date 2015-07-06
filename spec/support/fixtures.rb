@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 def let_there_be_lane
-  let!(:jug2) { FactoryGirl.create(:identity, 
+  let!(:jug2) { FactoryGirl.create(:identity,
       last_name:             'Glenn',
       first_name:            'Julia',
       ldap_uid:              'jug2',
@@ -36,7 +36,7 @@ def let_there_be_lane
 end
 
 def let_there_be_j
-  let!(:jpl6) { FactoryGirl.create(:identity, 
+  let!(:jpl6) { FactoryGirl.create(:identity,
       last_name:             'Leonard',
       first_name:            'Jason',
       ldap_uid:              'jpl6@musc.edu',
@@ -70,7 +70,7 @@ def build_service_request_with_project_and_per_patient_per_visit_only
   build_service_request()
   build_project()
   build_arms()
-  build_per_patient_per_visit_services() 
+  build_per_patient_per_visit_services()
 end
 
 def build_service_request_with_study
@@ -83,17 +83,17 @@ end
 
 def build_one_time_fee_services
   # One time fee service
-  let!(:service)             { FactoryGirl.create(:service, organization_id: program.id, name: 'One Time Fee') }
+  let!(:service)             { FactoryGirl.create(:service, organization_id: program.id, name: 'One Time Fee', one_time_fee: true) }
   let!(:line_item)           { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service.id, sub_service_request_id: sub_service_request.id, quantity: 5, units_per_quantity: 1) }
   let!(:pricing_setup)       { FactoryGirl.create(:pricing_setup, organization_id: program.id, display_date: Time.now - 1.day, federal: 50, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal')}
-  let!(:pricing_map)         { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service.id, is_one_time_fee: true, quantity_type: "Each", quantity_minimum: 5, otf_unit_type: "Week", display_date: Time.now - 1.day, full_rate: 2000, units_per_qty_max: 20) }
+  let!(:pricing_map)         { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service.id, quantity_type: "Each", quantity_minimum: 5, otf_unit_type: "Week", display_date: Time.now - 1.day, full_rate: 2000, units_per_qty_max: 20) }
 end
 
 def build_per_patient_per_visit_services
   # Per patient per visit service
   let!(:service2)            { FactoryGirl.create(:service, organization_id: program.id, name: 'Per Patient') }
   let!(:pricing_setup)       { FactoryGirl.create(:pricing_setup, organization_id: program.id, display_date: Time.now - 1.day, federal: 50, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal')}
-  let!(:pricing_map2)        { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service2.id, is_one_time_fee: false, display_date: Time.now - 1.day, full_rate: 2000, federal_rate: 3000, units_per_qty_max: 20) }
+  let!(:pricing_map2)        { FactoryGirl.create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service2.id, display_date: Time.now - 1.day, full_rate: 2000, federal_rate: 3000, units_per_qty_max: 20) }
   let!(:line_item2)          { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service2.id, sub_service_request_id: sub_service_request.id, quantity: 0) }
   let!(:service_provider)    { FactoryGirl.create(:service_provider, organization_id: program.id, identity_id: jug2.id)}
   let!(:super_user)          { FactoryGirl.create(:super_user, organization_id: program.id, identity_id: jpl6.id)}
@@ -109,13 +109,13 @@ def build_service_request
   let!(:service_request)     { FactoryGirl.create_without_validation(:service_request, status: "draft") }
   let!(:institution)         { FactoryGirl.create(:institution,name: 'Medical University of South Carolina', order: 1, abbreviation: 'MUSC', is_available: 1)}
   let!(:provider)            { FactoryGirl.create(:provider,parent_id:institution.id,name: 'South Carolina Clinical and Translational Institute (SCTR)',order: 1,css_class: 'blue-provider', abbreviation: 'SCTR1',process_ssrs: 0,is_available: 1)}
-  let!(:program)             { FactoryGirl.create(:program,type:'Program',parent_id:provider.id,name:'Office of Biomedical Informatics',order:1, abbreviation:'Informatics', process_ssrs:  0, is_available: 1, show_in_cwf: true, position_in_cwf: 100)}
+  let!(:program)             { FactoryGirl.create(:program,type:'Program',parent_id:provider.id,name:'Office of Biomedical Informatics',order:1, abbreviation:'Informatics', process_ssrs:  0, is_available: 1, show_in_cwf: true)}
   let!(:core)                { FactoryGirl.create(:core, parent_id: program.id)}
-  let!(:core_17)             { FactoryGirl.create(:core, parent_id: program.id, abbreviation: "Nutrition", show_in_cwf: true, position_in_cwf: 4) }
-  let!(:core_13)             { FactoryGirl.create(:core, parent_id: program.id, abbreviation: "Nursing", show_in_cwf: true, position_in_cwf: 1) }
-  let!(:core_16)             { FactoryGirl.create(:core, parent_id: program.id, abbreviation: "Lab and Biorepository", show_in_cwf: true, position_in_cwf: 2) }
-  let!(:core_15)             { FactoryGirl.create(:core, parent_id: program.id, abbreviation: "Imaging", show_in_cwf: true, position_in_cwf: 3) }
-  let!(:core_62)             { FactoryGirl.create(:core, parent_id: program.id, abbreviation: "PWF Services", show_in_cwf: true, position_in_cwf: 5) }
+  let!(:core_17)             { FactoryGirl.create(:core, parent_id: program.id, abbreviation: "Nutrition", show_in_cwf: true) }
+  let!(:core_13)             { FactoryGirl.create(:core, parent_id: program.id, abbreviation: "Nursing", show_in_cwf: true) }
+  let!(:core_16)             { FactoryGirl.create(:core, parent_id: program.id, abbreviation: "Lab and Biorepository", show_in_cwf: true) }
+  let!(:core_15)             { FactoryGirl.create(:core, parent_id: program.id, abbreviation: "Imaging", show_in_cwf: true) }
+  let!(:core_62)             { FactoryGirl.create(:core, parent_id: program.id, abbreviation: "PWF Services", show_in_cwf: true) }
   let!(:sub_service_request) { FactoryGirl.create(:sub_service_request, ssr_id: "0001", service_request_id: service_request.id, organization_id: program.id,status: "draft")}
 
 

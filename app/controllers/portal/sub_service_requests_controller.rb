@@ -36,7 +36,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
         raise ArgumentError, "Sub service request does not have a protocol; is it an invalid sub service request?"
       end
       @protocol.populate_for_edit if @protocol.type == "Study"
-      @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition {|x| x.is_one_time_fee?}
+      @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition {|x| x.one_time_fee}
       @subsidy = @sub_service_request.subsidy
       @notifications = @user.all_notifications.where(:sub_service_request_id => @sub_service_request.id)
       @service_list = @service_request.service_list
@@ -58,6 +58,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       @sub_service_request.generate_approvals(@user)
       @sub_service_request.distribute_surveys if @sub_service_request.status == 'complete' and @sub_service_request.status != saved_status #status is complete and it was something different before
       @service_request = @sub_service_request.service_request
+      @protocol = @service_request.protocol
       @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
       email_users @sub_service_request if params[:status] == 'submitted'
       render 'portal/sub_service_requests/update_past_status', :formats => [:js]
@@ -83,7 +84,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       @user_toasts = @user.received_toast_messages.select {|x| x.sending_class == 'SubServiceRequest'}
       @service_request = @sub_service_request.service_request
       @protocol.populate_for_edit if @protocol.type == "Study"
-      @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition {|x| x.is_one_time_fee?}
+      @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition {|x| x.one_time_fee}
       @subsidy = @sub_service_request.subsidy
       @notifications = @user.all_notifications.where(:sub_service_request_id => @sub_service_request.id)
       @service_list = @service_request.service_list
@@ -112,12 +113,12 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     @subsidy = @sub_service_request.subsidy
     service = Service.find(params[:new_service_id])
     percent = @subsidy.try(:percent_subsidy).try(:*, 100)
-    @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.is_one_time_fee?}
-    @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
+    @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
+    @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
     existing_service_ids = @service_request.line_items.map(&:service_id)
 
     # we don't have arms and we are adding a new per patient per visit service
-    if @service_request.arms.empty? and not service.is_one_time_fee?
+    if @service_request.arms.empty? and not service.one_time_fee
       @service_request.protocol.arms.create(name: 'Screening Phase', visit_count: 1, subject_count: 1)
     end
 
@@ -165,7 +166,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
   def add_otf_line_item
     @sub_service_request = SubServiceRequest.find(params[:id])
     @service_request = @sub_service_request.service_request
-    @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.is_one_time_fee?}
+    @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
 
     @study_tracker = params[:study_tracker] == "true"
     @line_items = @sub_service_request.line_items

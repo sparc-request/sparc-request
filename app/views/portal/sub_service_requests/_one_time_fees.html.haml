@@ -55,7 +55,7 @@
               %td
               %td
               %td.otf_text_field{:style => "white-space:nowrap;overflow:hidden;"}
-                = text_field_tag "line_item_quantity", otf.try(:quantity), :'data-line_item_id' => otf.id, :class => 'fulfillment_data'
+                = text_field_tag "line_item_quantity", otf.try(:quantity), :'data-line_item_id' => otf.id, :'data-line_item_quantity' => otf.quantity, :class => 'fulfillment_data'
               %td= otf.try(:service).try(:current_effective_pricing_map).try(:quantity_type)
             - else
               %td.otf_text_field{:style => "white-space:nowrap;overflow:hidden;"}
@@ -89,14 +89,14 @@
                 %td
                 %td
                   = text_field_tag "fulfillment_#{fulfillment.id}_date_picker", fulfillment.try(:date).try(:strftime, "%D"), :class => 'date datepicker'
-                  = hidden_field_tag "fulfillment_#{fulfillment.id}_date", fulfillment.try(:date).try(:strftime, "%F"), :'data-fulfillment_id' => fulfillment.id, :class => 'fulfillment_data', :name => "fulfillment_date" 
+                  = hidden_field_tag "fulfillment_#{fulfillment.id}_date", fulfillment.try(:date).try(:strftime, "%F"), :'data-fulfillment_id' => fulfillment.id, :class => 'fulfillment_data', :name => "fulfillment_date"
                 %td= select_tag "fulfillment_timeframe", options_for_select(Fulfillment::QUANTITY_TYPES, fulfillment.try(:timeframe)), :'data-fulfillment_id' => fulfillment.id, :class => 'fulfillment_data'
                 %td.fulfillment_text_field= text_field_tag "fulfillment_time", fulfillment.try(:time), :'data-fulfillment_id' => fulfillment.id, :class => 'fulfillment_data'
                 %td.fulfillment_notes{:colspan => 6}= text_area_tag "fulfillment_notes", fulfillment.try(:notes), :'data-fulfillment_id' => fulfillment.id, :class => 'fulfillment_data', :cols => 50, :rows => 1
                 %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-fulfillment_id' => fulfillment.id, :class => 'delete_data')
           %tr.fulfillment{:class => "li_#{otf.id}"}
             %td{:colspan => 11}
-              = link_to "Add a Fulfillment", 'javascript:void(0);', :class => "add_fulfillment_link", :'data-line_item_id' => otf.id 
+              = link_to "Add a Fulfillment", 'javascript:void(0);', :class => "add_fulfillment_link", :'data-line_item_id' => otf.id
         - @sub_service_request.unset_effective_date_for_cost_calculations
 
 :javascript

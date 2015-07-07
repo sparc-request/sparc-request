@@ -66,10 +66,28 @@ class LineItem < ActiveRecord::Base
   validates :service_id, :numericality => true
   validates :service_request_id, :numericality => true
 
+  validates :quantity, :numericality => true, :on => :update, :if => Proc.new { |li| li.service.one_time_fee }
+  validate :quantity_must_be_smaller_than_max_and_greater_than_min, :on => :update, :if => Proc.new { |li| li.service.one_time_fee }
+
   after_destroy :remove_procedures
 
   # TODO: order by date/id instead of just by date?
   default_scope :order => 'line_items.id ASC'
+
+  def quantity_must_be_smaller_than_max_and_greater_than_min
+    pricing = PricingMap.where(service_id: service_id).first
+    max = pricing.units_per_qty_max
+    min = pricing.quantity_minimum
+    if quantity.nil?
+      errors.add(:quantity, "Please enter a quantity")
+    else
+      if quantity < min
+        errors.add(:quantity, "Please enter a quantity greater than or equal to #{min}")
+      elsif quantity > max
+        errors.add(:quantity, "The maximum quantity allowed is #{max}")
+      end
+    end
+  end
 
   def applicable_rate(appointment_completed_date=nil)
     rate = nil

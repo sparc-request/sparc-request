@@ -28,7 +28,7 @@ $ ->
       )
 
       Sparc.config.setDatePicker("with button image")
-    
+
 
     setDatePicker: (button_image=null) ->
       today_button_callback = (input) ->
@@ -37,12 +37,8 @@ $ ->
         # button to prevent the issue.
         buttonPane = $(input).datepicker( "widget" ).find( ".ui-datepicker-buttonpane" )
         buttonPane.find('button.ui-datepicker-current').hide()
-        $( "<button>", {
-          class: "ui-state-default ui-priority-primary ui-corner-all"
-          text: "Clear"
-          click: ->
+        buttonPane.find('button.ui-datepicker-close').on 'click', ->
             $.datepicker._clearDate(input)
-        }).appendTo(buttonPane)
 
       datepicker_attributes = {
         constrainInput: true
@@ -50,6 +46,7 @@ $ ->
         changeYear: true
         changeMonth: true
         showButtonPanel: true
+        closeText: "Clear"
         showMonthAfterYear: true
 
         nextText: ""
@@ -71,7 +68,7 @@ $ ->
         else
           datepicker_attributes.minDate = 0
         $(datepicker).removeClass('hasDatepicker').removeAttr('id').datepicker(datepicker_attributes)
-        
+
 
       $('.datepicker').attr("readOnly", true)
 

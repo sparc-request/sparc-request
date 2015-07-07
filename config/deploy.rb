@@ -129,6 +129,28 @@ namespace :survey do
   end
 end
 
+namespace :delayed_job do
+  desc "Start delayed_job process" 
+  task :start, :roles => :app do
+    run "cd #{current_path} && BUNDLE_GEMFILE=Gemfile RAILS_ENV=#{rails_env} bundle exec script/delayed_job start" 
+  end
+
+  desc "Stop delayed_job process" 
+  task :stop, :roles => :app do
+    run "cd #{current_path} && bundle exec script/delayed_job stop RAILS_ENV=#{rails_env}" 
+    run "cd #{current_path} && BUNDLE_GEMFILE=Gemfile RAILS_ENV=#{rails_env} bundle exec script/delayed_job stop" 
+  end
+
+  desc "Restart delayed_job process" 
+  task :restart, :roles => :app do
+    run "cd #{current_path} && BUNDLE_GEMFILE=Gemfile RAILS_ENV=#{rails_env} bundle exec script/delayed_job restart" 
+  end
+end
+
+after "deploy:start", "delayed_job:start" 
+after "deploy:stop", "delayed_job:stop" 
+after "deploy:restart", "delayed_job:restart"
+
 before "deploy:migrate", 'mysql:backup' 
 before "deploy", 'mysql:backup' 
 after "mysql:backup", "mysql:cleanup_backups"

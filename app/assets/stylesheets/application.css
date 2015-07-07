@@ -2127,13 +2127,28 @@ input.search-services {
 }
 
 #service_calendar ul li.ui-state-active {
-  background: #2C9A4D !important;
+  font-weight: bold !important;
+  font-size: medium;
 }
 
 .service_calendar thead.ui-widget-header {
   background: #0775B0 !important;
 }
+#template_tab {
+  background: #003366
+}
 
+#billing_strategy_tab {
+  background: #F79739
+}
+
+#quantity_tab {
+   background: #C43149
+}
+
+#calendar_tab {
+  background: #53B6E0
+}
 .review-details #service_calendar_container table td,
 .review-details #service_calendar_container table th {
   width: 82px !important;

@@ -124,6 +124,11 @@ a.save-option{
   cursor: pointer;
 }
 
+.pricing-message{
+  font-weight: bold;
+  color: red;
+}
+
 #container {
   width: 962px; /* width: 1202px; */
   height: 100%;
@@ -163,6 +168,10 @@ a.save-option{
   border-left: outset 1px black;
   border-right: outset 1px black;
   padding-top: 10px;
+}
+
+#container #content .pricing-message{
+  padding-left: 10px;
 }
 
 #container #title {

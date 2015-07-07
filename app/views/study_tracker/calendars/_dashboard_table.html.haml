@@ -24,6 +24,8 @@
       %th= t(:study_tracker)[:dashboard][:header1]
       %th= t(:study_tracker)[:dashboard][:header2]
     - completed_appointments.each do |key, array|
+    - puts "#" * 90
+    - puts array
       =render :partial => 'total', :locals => {:appointments => array}
     %tr.ui-widget-header
       %th= t(:study_tracker)[:dashboard][:header3]

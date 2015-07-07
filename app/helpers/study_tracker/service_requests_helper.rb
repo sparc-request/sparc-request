@@ -55,6 +55,8 @@ module StudyTracker::ServiceRequestsHelper
     procedures = []
     if appointments
       appointments.each do |app|
+        puts "*" * 80
+        puts app.procedures.select{|x| x.appointment.completed_for_core?(x.core.id)}.inspect
         procedures << app.procedures.select{|x| x.appointment.completed_for_core?(x.core.id)}
       end
     end

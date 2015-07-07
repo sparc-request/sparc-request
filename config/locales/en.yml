@@ -841,7 +841,7 @@ en:
     remove_service_button: "Remove Service"
     cwf_remove_service_button: "Remove Service from all patients"
     core_approvals:
-      header: "Core Approvals"
+      header: "Administrative Approvals"
       nursing: "Nursing/Nutrition Approved"
       lab: "Lab Approved"
       imaging: "Imaging Approved"

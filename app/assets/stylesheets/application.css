@@ -165,6 +165,11 @@ a.save-option{
   padding-top: 10px;
 }
 
+#container #content .pricing-message{
+  padding-left: 10px;
+  padding-bottom: 5px;
+}
+
 #container #title {
   margin-top: 8px;
   background: white url("banner.png") no-repeat;
@@ -386,6 +391,15 @@ a.catalog-button,
   cursor: pointer;
   color: #fff !important;
   text-decoration: none;
+}
+
+.dark-blue-button{
+  background-color: #036;
+  border-radius: 0.3em;
+  color: #FFF;
+  height: 35px;
+  font-size: 13px;
+  margin-top: 63px;
 }
 
 .blue-button a {

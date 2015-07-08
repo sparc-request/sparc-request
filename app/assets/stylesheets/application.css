@@ -388,6 +388,15 @@ a.catalog-button,
   text-decoration: none;
 }
 
+.dark-blue-button{
+  background-color: #036;
+  border-radius: 0.3em;
+  color: #FFF;
+  height: 35px;
+  font-size: 13px;
+  margin-top: 63px;
+}
+
 .blue-button a {
   color: #fff !important;
 }

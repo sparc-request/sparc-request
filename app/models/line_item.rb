@@ -75,7 +75,7 @@ class LineItem < ActiveRecord::Base
   default_scope :order => 'line_items.id ASC'
 
   def quantity_must_be_smaller_than_max_and_greater_than_min
-    pricing = PricingMap.where(service_id: service_id).first
+    pricing = Service.find(service_id).current_effective_pricing_map
     max = pricing.units_per_qty_max
     min = pricing.quantity_minimum
     if quantity.nil?

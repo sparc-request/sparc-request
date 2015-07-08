@@ -19,7 +19,10 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class VisitGroup < ActiveRecord::Base
+
+  include RemotelyNotifiable
   include Comparable
+
   audited
 
   belongs_to :arm
@@ -34,10 +37,12 @@ class VisitGroup < ActiveRecord::Base
   acts_as_list :scope => :arm
 
   after_create :set_default_name
-  after_save do
+  after_save :set_arm_edited_flag_on_subjects
+  before_destroy :remove_appointments
+
+  def set_arm_edited_flag_on_subjects
     self.arm.set_arm_edited_flag_on_subjects
   end
-  before_destroy :remove_appointments
 
   def set_default_name
     if name.nil? || name == ""
@@ -48,9 +53,9 @@ class VisitGroup < ActiveRecord::Base
   def <=> (other_vg)
     return self.day <=> other_vg.day
   end
-  
+
   ### audit reporting methods ###
-  
+
   def audit_label audit
     "#{arm.name} #{name}"
   end

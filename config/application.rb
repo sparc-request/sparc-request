@@ -39,6 +39,13 @@ module SparcRails
     # Custom directories with classes and modules you want to be autoloadable.
     #config.autoload_paths += %W(#{config.root}/app/reports)
 
+    # /lib path
+    config.autoload_paths += Dir[Rails.root.join('lib')]
+
+    # /app/jobs path
+    config.paths.add File.join('app', 'jobs'), glob: File.join('**', '*.rb')
+    config.autoload_paths += Dir[Rails.root.join('app', 'jobs', '*')]
+
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
     # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
@@ -83,12 +90,12 @@ module SparcRails
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
-    config.middleware.use PDFKit::Middleware, 
+    config.middleware.use PDFKit::Middleware,
       orientation: 'Portrait',
       margin_left: '1in',
       margin_right: '1in',
-      margin_top: '2in', 
-      margin_bottom: '1in', 
+      margin_top: '2in',
+      margin_bottom: '1in',
       print_media_type: true
 
     config.to_prepare do

@@ -19,6 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class LineItemsVisit < ActiveRecord::Base
+
+  include RemotelyNotifiable
+
   audited
 
   belongs_to :arm
@@ -31,7 +34,9 @@ class LineItemsVisit < ActiveRecord::Base
   attr_accessible :subject_count  # number of subjects for this visit grouping
   attr_accessible :hidden
 
-  after_save do
+  after_save :set_arm_edited_flag_on_subjects
+
+  def set_arm_edited_flag_on_subjects
     self.arm.set_arm_edited_flag_on_subjects
   end
 
@@ -201,8 +206,8 @@ class LineItemsVisit < ActiveRecord::Base
   end
 
   ### audit reporting methods ###
- 
-  def audit_excluded_actions 
+
+  def audit_excluded_actions
     ['create', 'update']
   end
 

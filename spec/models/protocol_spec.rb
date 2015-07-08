@@ -22,6 +22,34 @@ require 'date'
 require 'spec_helper'
 
 describe 'Protocol' do
+
+  describe ".notify_remote_around_update?" do
+
+    context ":short_title update present" do
+
+      it "should create a RemoteServiceNotifierJob" do
+        protocol = FactoryGirl.build(:protocol)
+
+        protocol.save validate: false
+        protocol.update_attribute :short_title, "New short title"
+
+        expect(Delayed::Job.where(queue: "remote_service_notifier").one?).to be
+      end
+    end
+
+    context ":short_title update not present" do
+
+      it "should not create a RemoteServiceNotifierJob" do
+        protocol = FactoryGirl.build(:protocol)
+
+        protocol.save validate: false
+        protocol.update_attribute :title, "New title"
+
+        expect(Delayed::Job.where(queue: "remote_service_notifier").one?).to_not be
+      end
+    end
+  end
+
   describe 'funding_source_based_on_status' do
     it 'should return the potential funding source if funding status is pending_funding' do
       study = Study.create(FactoryGirl.attributes_for(:protocol))

@@ -18,6 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class Arm < ActiveRecord::Base
+
+  include RemotelyNotifiable
+
   audited
 
   belongs_to :protocol
@@ -41,9 +44,9 @@ class Arm < ActiveRecord::Base
   after_save :update_liv_subject_counts
 
   def update_liv_subject_counts
-    
+
     self.line_items_visits.each do |liv|
-      if ['first_draft', 'draft', nil].include?(liv.line_item.service_request.status)  
+      if ['first_draft', 'draft', nil].include?(liv.line_item.service_request.status)
         liv.update_attributes(:subject_count => self.subject_count)
       end
     end
@@ -72,9 +75,9 @@ class Arm < ActiveRecord::Base
         raise ActiveRecord::Rollback
       end
     end
-    
+
     liv = LineItemsVisit.for(self, line_item)
-    
+
     liv.create_visits
 
     if line_items_visits.count > 1
@@ -130,7 +133,7 @@ class Arm < ActiveRecord::Base
   def total_costs_for_visit_based_service line_items_visits=self.line_items_visits
     direct_costs_for_visit_based_service(line_items_visits) + indirect_costs_for_visit_based_service(line_items_visits)
   end
-  
+
   def add_visit position=nil, day=nil, window_before=0, window_after=0, name='', portal=false
     result = self.transaction do
       if not self.create_visit_group(position, name) then
@@ -234,7 +237,7 @@ class Arm < ActiveRecord::Base
 
   def populate_subjects
     subject_difference = self.subject_count - self.subjects.count
-  
+
     if subject_difference > 0
       subject_difference.times do
         self.subjects.create
@@ -334,7 +337,7 @@ class Arm < ActiveRecord::Base
         last_parent = service.organization.id
         last_parent_name = service.organization.name
       end
-      
+
       if groupings.include? last_parent
         g = groupings[last_parent]
         g[:services] << service
@@ -356,9 +359,9 @@ class Arm < ActiveRecord::Base
       vg.update_attribute(:day, vg.position)
     end
   end
-  
+
   ### audit reporting methods ###
-  
+
   def audit_label audit
     name
   end

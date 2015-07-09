@@ -397,6 +397,15 @@ a.catalog-button,
   text-decoration: none;
 }
 
+.dark-blue-button{
+  background-color: #036;
+  border-radius: 0.3em;
+  color: #FFF;
+  height: 35px;
+  font-size: 13px;
+  margin-top: 63px;
+}
+
 .blue-button a {
   color: #fff !important;
 }
@@ -1143,6 +1152,7 @@ img.screening_info_img {
 .edit-project-view {
   font-size: 12px;
   font-family: "Calibri", Arial, sans-serif;
+  border: 3px solid #003366;
 }
 
 .edit-project-view .description {
@@ -1154,7 +1164,7 @@ img.screening_info_img {
   width: 100%;
   height: auto;
   margin-left: 8px;
-  border: 3px solid #003366;
+  padding-top: 20px;
 }
 
 .edit-project-view .user-details, .edit-project-view .user_added_message {

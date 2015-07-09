@@ -62,12 +62,12 @@ describe Portal::ServiceRequestsHelper do
   end
 
   context :default_display do
-    it "should be shown when it's sumitted" do
-      default_display('submitted').should eq('')
+    it "should be shown when it's the selected status" do
+      default_display('submitted', 'submitted').should eq('')
     end
 
-    it "should be hidden when it's not sumitted" do
-      default_display('asdf').should eq("display:none;")
+    it "should be hidden when it's not the selected status" do
+      default_display('submitted', 'draft').should eq("display:none;")
     end
   end
 

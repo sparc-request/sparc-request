@@ -48,6 +48,9 @@ en:
     submit_to_start: "Submit to Start Services"
     cancel: "Cancel"
 
+  message:
+    red_message: "Pricing is consistent across locations unless otherwise stated."
+
   # right navigation
   right_navigation:
     ask_a_question: "Ask A Question"
@@ -977,6 +980,7 @@ en:
     message9link: 'http://academicdepartments.musc.edu/sctr/sparc_request'
     message10: "Blog: "
     message10link: 'http://www.sparcrequestblog.com'
+    message11: "Pricing is consistent across locations unless otherwise stated."
 
   # Identities Account Aproved/Disapproved
   identity:

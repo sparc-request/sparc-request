@@ -4,7 +4,7 @@ cache: bundler
 rvm:
   - 1.9.3
 env:
-  - DATABASE_URL=sqlite3://localhost/db/test.sqlite3
+  - DATABASE_URL=sqlite://:memory:
 before_install:
   - gem update --system
   - gem --version

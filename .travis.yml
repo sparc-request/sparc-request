@@ -3,8 +3,6 @@ language: ruby
 cache: bundler
 rvm:
   - 1.9.3
-env:
-  - DATABASE_URL=sqlite3:///":memory:"
 before_install:
   - gem update --system
   - gem --version

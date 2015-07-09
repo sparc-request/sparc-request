@@ -1,17 +1,17 @@
 development:
   adapter: sqlite3
-  database: db/test.sqlite3
+  database: ":memory:"
   pool: 5
   timeout: 30000
   
 test:
   adapter: sqlite3
-  database: db/test.sqlite3
+  database: ":memory:"
   pool: 5
   timeout: 30000
 
 production:
   adapter: sqlite3
-  database: db/test.sqlite3
+  database: ":memory:"
   pool: 5
   timeout: 30000

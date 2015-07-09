@@ -3,8 +3,7 @@ cache: bundler
 rvm:
   - 1.9.3
 env:
-  - DATABASE_URL=sqlite3:///db/test.sqlite3
-  - RAILS_ENV=test
+  - DATABASE_URL=sqlite3:db/test.sqlite3
 before_install:
   - gem update --system
   - gem --version
@@ -14,7 +13,7 @@ before_install:
   - bundle update debugger
   - bundle update sqlite3
 before_script:
-  - cp config/database.yml.travis-ci config/database.yml
+  - echo $DATABASE_URL
   - cp config/application.yml.example config/application.yml
   - cp config/epic.yml.example config/epic.yml
   - cp config/ldap.yml.example config/ldap.yml

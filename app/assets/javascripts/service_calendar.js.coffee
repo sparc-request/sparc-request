@@ -24,7 +24,7 @@
 $(document).ready ->
   $('.visit_number a, .service_calendar_row').live 'click', ->
     $('.service_calendar_spinner').show()
-  
+
   $('.line_item_visit_template').live 'change', ->
     $('.service_calendar_spinner').show()
     obj = $(this)
@@ -62,7 +62,7 @@ $(document).ready ->
       sibling_qty += parseInt($(this).val(), 10)
 
     qty = my_qty + sibling_qty
-    
+
     if intRegex.test qty
       unit_minimum = $(this).attr('data-unit-minimum')
 
@@ -190,7 +190,7 @@ $(document).ready ->
     max = parseInt($(this).attr('data-qty_max'), 10)
     prev_qty = $(this).attr('current_units_per_quantity')
     user_input = parseInt($(this).val(), 10)
-    
+
     # Handle errors
     unless intRegex.test user_input
       $(this).css({'border': '2px solid red'})
@@ -216,32 +216,10 @@ $(document).ready ->
     return false
 
   $('.line_item_quantity').live 'change', ->
-    intRegex = /^\d+$/
-    unit_min = parseInt($(this).attr('unit_minimum'), 10)
-    prev_qty = $(this).attr('current_quantity')
-    qty = parseInt($(this).val(), 10)
-
-    # Handle errors
-    unless intRegex.test qty
-      $(this).css({'border': '2px solid red'})
-      $('#nan_error').fadeIn('fast').delay(5000).fadeOut(5000, => $(this).css('border', ''))
-      $(this).val(prev_qty)
+    if $(this).data('study_tracker') == true
+      save_line_item_by_ajax(this)
     else
-      if qty < unit_min
-        $(this).css({'border': '2px solid red'})
-        $('#quantity').html(qty)
-        $('#unit_minimum').html(unit_min + ".")
-        $('#one_time_fee_errors').fadeIn('fast').delay(5000).fadeOut(5000, => $(this).css('border', ''))
-        $(this).val(prev_qty)
-      else
-        $(this).attr('current_quantity', qty)
-        $('#one_time_fee_errors').hide()
-        $(this).css('border', '')
-        # If it passes validation and is within study tracker, save by ajax
-        if $(this).data('study_tracker') == true
-          save_line_item_by_ajax(this)
-        else
-          update_otf_line_item this
+      update_otf_line_item this
     recalculate_one_time_fee_totals()
     return false
 
@@ -342,7 +320,7 @@ recalculate_one_time_fee_totals = ->
     number_of_kits = Math.ceil(number_of_kits)
     new_otf_total = (number_of_kits * your_cost) / 100.0
     grand_total += new_otf_total
-    
+
     $(otf).find('.otf_total').html('$' + commaSeparateNumber(new_otf_total.toFixed(2)))
 
   $('.otf_total_direct_cost').html('$' + commaSeparateNumber(grand_total.toFixed(2)))

@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+2# Copyright © 2011 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -26,6 +26,9 @@ FactoryGirl.define do
     notes                { Faker::Lorem.sentences(2) }
     approved             { false }
 
+    trait :with_protocol do
+      protocol factory: :protocol_federally_funded
+    end
 
     trait :approved do
       approved true
@@ -42,10 +45,10 @@ FactoryGirl.define do
 
     after(:build) do |service_request, evaluator|
 
-      FactoryGirl.create_list(:sub_service_request, evaluator.sub_service_count, 
+      FactoryGirl.create_list(:sub_service_request, evaluator.sub_service_count,
         service_request: service_request)
 
-      FactoryGirl.create_list(:line_item, evaluator.line_item_count, 
+      FactoryGirl.create_list(:line_item, evaluator.line_item_count,
         service_request: service_request)
 
       FactoryGirl.create_list(:subsidy, evaluator.subsidy_count,
@@ -60,5 +63,7 @@ FactoryGirl.define do
       FactoryGirl.create_list(:approval, evaluator.approval_count,
         service_request: service_request)
     end
+
+    factory :service_request_with_protocol, traits: [:with_protocol]
   end
 end

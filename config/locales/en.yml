@@ -36,12 +36,6 @@ en:
         has_cofc: "Does your study have a Certificate of Confidentiality"
       human_subjects_info:
         nct_number: "The NCT #"
-    errors:
-      models:
-        organization:
-          attributes:
-            position_in_cwf:
-              blank: "is required if 'Show in Fulfillment' is checked."
 
   # bottom navigation
   bottom_navigation:
@@ -54,11 +48,14 @@ en:
     submit_to_start: "Submit to Start Services"
     cancel: "Cancel"
 
+  message:
+    red_message: "Pricing is consistent across locations unless otherwise stated."
+
   # right navigation
   right_navigation:
     ask_a_question: "Ask A Question"
     dashboard: "Dashboard"
-    faq: "Help"
+    faq: "Help/FAQs"
     feedback: "Feedback"
     catalog: "Back to Catalog"
 
@@ -197,6 +194,8 @@ en:
     instructions_1: "Please review services below."
     notice: "If Professional Services are covered by % effort, please indicate in Step 2."
     select_protocol: "Select a Research Study/Project"
+    select_study: "Select Study"
+    select_project: "Select Project"
     research_study: "Research Study"
     research_project: "Research Project"
     edit_study: "Edit Study"
@@ -711,6 +710,7 @@ en:
 
   # Catalog Manager - Organization Form
   organization_form:
+    service_level_components: "Service Level Components"
     gen_info: "General Information"
     user_rights: "User Rights"
     pricing: "Pricing"
@@ -766,7 +766,6 @@ en:
     color_blank: "Select a Color"
     errors: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
     show_in_cwf: "Show in Fulfillment"
-    position_in_cwf: "Position"
     ctrc_label: "Nexus"
 
   pricing_map_form:
@@ -845,7 +844,7 @@ en:
     remove_service_button: "Remove Service"
     cwf_remove_service_button: "Remove Service from all patients"
     core_approvals:
-      header: "Core Approvals"
+      header: "Administrative Approvals"
       nursing: "Nursing/Nutrition Approved"
       lab: "Lab Approved"
       imaging: "Imaging Approved"
@@ -981,6 +980,7 @@ en:
     message9link: 'http://academicdepartments.musc.edu/sctr/sparc_request'
     message10: "Blog: "
     message10link: 'http://www.sparcrequestblog.com'
+    message11: "Pricing is consistent across locations unless otherwise stated."
 
   # Identities Account Aproved/Disapproved
   identity:

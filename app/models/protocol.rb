@@ -19,6 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Protocol < ActiveRecord::Base
+
+  include RemotelyNotifiable
+
   audited
 
   has_many :study_types, :dependent => :destroy
@@ -440,4 +443,13 @@ class Protocol < ActiveRecord::Base
     end
   end
 
+  private
+
+  def notify_remote_around_update?
+    true
+  end
+
+  def remotely_notifiable_attributes_to_watch_for_change
+    ["short_title"]
+  end
 end

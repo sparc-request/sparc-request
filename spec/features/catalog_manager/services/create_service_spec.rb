@@ -21,52 +21,43 @@
 require 'spec_helper'
 
 feature 'create new service' do
+
   background do
     default_catalog_manager_setup
   end
-  
+
   scenario 'create new service under a program', :js => true do
     program = Program.find_by_name 'Office of Biomedical Informatics'
+
     within("#PROGRAM#{program.id} > ul > li:nth-of-type(2)") do
       click_link('Create New Service')
-    end    
-
-    # Program Select should defalut to parent Program
-    within('#service_program') do
-      page.should have_content('Office of Biomedical Informatics')
     end
-
-    # Core Select should default to None
-    within('#service_core') do
-      page.should have_content('None')
-    end
-  
     fill_in 'service_name', :with => 'Test Service'
     fill_in 'service_abbreviation', :with => 'TestService'
     fill_in 'service_order', :with => '1'
     fill_in 'service_description', :with => 'Description'
-    
+
     ## Create a Pricing Map
     within '#pricing' do
       find('.legend').click
       wait_for_javascript_to_finish
     end
     click_button('Add Pricing Map')
-    
+
     within('.ui-accordion') do
       page.execute_script %Q{ $('.ui-accordion-header:last').click() }
       page.execute_script %Q{ $('.pricing_map_display_date:visible').focus() }
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15    
+      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15
       wait_for_javascript_to_finish
 
       page.execute_script %Q{ $('.pricing_map_effective_date:visible').focus() }
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15    
+      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15
       wait_for_javascript_to_finish
 
       fill_in "pricing_maps_blank_pricing_map_full_rate", :with => 4321
@@ -74,7 +65,7 @@ feature 'create new service' do
       wait_for_javascript_to_finish
       find('#unit_factor_', visible: true).click
       wait_for_javascript_to_finish
-    end    
+    end
 
     first("#save_button").click
     page.should have_content( 'Test Service created successfully' )
@@ -82,32 +73,23 @@ feature 'create new service' do
 
   scenario 'create new service under a core', :js => true do
     core = Core.find_by_name 'Clinical Data Warehouse'
+
     within("#CORE#{core.id} > ul > li:nth-of-type(1)") do
       click_link('Create New Service')
-    end    
-
-    # Program Select should defalut to parent Program
-    within('#service_program') do
-      page.should have_content('Office of Biomedical Informatics')
     end
 
-    # Core Select should default to parent Core
-    within('#service_core') do
-      page.should have_content('Clinical Data Warehouse')
-    end
-  
     fill_in 'service_name', :with => 'Core Test Service'
     fill_in 'service_abbreviation', :with => 'CoreTestService'
     fill_in 'service_order', :with => '1'
     fill_in 'service_description', :with => 'Description'
-    
+
     ## Create a Pricing Map
     within '#pricing' do
       find('.legend').click
       wait_for_javascript_to_finish
     end
     click_button('Add Pricing Map')
-    
+
     within('.ui-accordion') do
       #do this for fun
       page.execute_script %Q{ $('.ui-accordion-header:last').click() }
@@ -115,14 +97,14 @@ feature 'create new service' do
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15    
+      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15
       wait_for_javascript_to_finish
 
       page.execute_script %Q{ $('.pricing_map_effective_date:visible').focus() }
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15    
+      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15
       wait_for_javascript_to_finish
 
       fill_in "pricing_maps_blank_pricing_map_full_rate", :with => 4321
@@ -130,18 +112,18 @@ feature 'create new service' do
       wait_for_javascript_to_finish
       find('#unit_factor_', visible: true).click
       wait_for_javascript_to_finish
-    end      
+    end
 
     first("#save_button").click
     page.should have_content( 'Core Test Service created successfully' )
   end
-  
-  scenario ':user only with access to this core can see link for: Create New Service', :js => true do   
+
+  scenario ':user only with access to this core can see link for: Create New Service', :js => true do
     identity = Identity.create(last_name: 'Miller', first_name: 'Robert', ldap_uid: 'rmiller@musc.edu', email:  'rmiller@musc.edu', password: 'p4ssword',password_confirmation: 'p4ssword',  approved: true )
     identity.save!
 
     core = Core.find_by_name('Clinical Data Warehouse')
-    
+
     cm = CatalogManager.create( organization_id: core.id, identity_id: identity.id, )
     cm.save!
 
@@ -152,183 +134,170 @@ feature 'create new service' do
     page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
     expect(page).to have_content('Create New Service')
   end
-  
+
   scenario 'create new service under a program does NOT display an error message because a pricing setup has been created at the provider level', :js => true do
     program = Program.find_by_name 'Office of Biomedical Informatics'
-    
-    pricing_setup = PricingSetup.where(:organization_id => program.id).first 
+
+    pricing_setup = PricingSetup.where(:organization_id => program.id).first
     pricing_setup.destroy
-    
+
     pricing_setup = FactoryGirl.create(:pricing_setup, organization_id: program.provider.id, display_date: Date.today, effective_date: Date.today,
       college_rate_type: 'full', federal_rate_type: 'full', foundation_rate_type: 'full', industry_rate_type: 'full', investigator_rate_type:'full', internal_rate_type: 'full')
     pricing_setup.save!
-    
+
     ## Logs in the default identity.
     visit catalog_manager_root_path
     ## This is used to reveal all nodes in the js tree to make it easier to access during testing.
     page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
-    
+
     within("#PROGRAM#{program.id} > ul > li:nth-of-type(2)") do
       click_link('Create New Service')
-    end    
-
-    # Program Select should default to parent Program
-    within('#service_program') do
-      page.should have_content('Office of Biomedical Informatics')
     end
+
+    expect(find("select#service_program").value.to_i).to eq(program.id)
   end
-  
+
   scenario 'create new service under a core does NOT display an error message because a pricing setup has been created at the provider level', :js => true do
     core = Core.find_by_name 'Clinical Data Warehouse'
-    
-    pricing_setup = PricingSetup.where(:organization_id => core.program.id).first 
+
+    pricing_setup = PricingSetup.where(:organization_id => core.program.id).first
     pricing_setup.destroy
-    
+
     pricing_setup = FactoryGirl.create(:pricing_setup, organization_id: core.program.provider.id, display_date: Date.today, effective_date: Date.today,
       college_rate_type: 'full', federal_rate_type: 'full', foundation_rate_type: 'full', industry_rate_type: 'full', investigator_rate_type:'full', internal_rate_type: 'full')
     pricing_setup.save!
-    
+
     ## Logs in the default identity.
     visit catalog_manager_root_path
     ## This is used to reveal all nodes in the js tree to make it easier to access during testing.
     page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
-    
+
     within("#CORE#{core.id} > ul > li:nth-of-type(1)") do
       click_link('Create New Service')
-    end    
-
-    # Program Select should default to parent Program
-    within('#service_program') do
-      page.should have_content('Office of Biomedical Informatics')
     end
+
+    expect(find("select#service_program").value.to_i).to eq(core.program.id)
   end
-  
+
   scenario 'create new service under a program displays errors message because a service provider has not been set', :js => true do
     program = Program.find_by_name 'Office of Biomedical Informatics'
-    service_provider = ServiceProvider.where(:organization_id => program.provider.id).first 
+    service_provider = ServiceProvider.where(:organization_id => program.provider.id).first
     service_provider.destroy
-    
+
     ## Logs in the default identity.
     visit catalog_manager_root_path
     ## This is used to reveal all nodes in the js tree to make it easier to access during testing.
     page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
-    
-    within("#PROGRAM#{program.id} > ul > li:nth-of-type(2)") do
-      click_link('Create New Service')
-    end    
 
-    get_alert_window do |prompt|
-      expect(prompt.text).to  eq("There needs to be at least one service provider on a parent organization to create a new service. ")
-      prompt.accept
+    message = accept_alert do
+      within("#PROGRAM#{program.id} > ul > li:nth-of-type(2)") do
+        click_link('Create New Service')
+      end
     end
+
+    expect(message).to eq("There needs to be at least one service provider on a parent organization to create a new service. ")
   end
-  
+
   scenario 'create new service under a program displays errors message because program\'s pricing setup is empty', :js => true do
     program = Program.find_by_name 'Office of Biomedical Informatics'
-    pricing_setup = PricingSetup.where(:organization_id => program.id).first 
+    pricing_setup = PricingSetup.where(:organization_id => program.id).first
     pricing_setup.destroy
-    
+
     ## Logs in the default identity.
     visit catalog_manager_root_path
     ## This is used to reveal all nodes in the js tree to make it easier to access during testing.
     page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
-    
-    within("#PROGRAM#{program.id} > ul > li:nth-of-type(2)") do
-      click_link('Create New Service')
-    end    
 
-    get_alert_window do |prompt|
-      expect(prompt.text).to  eq("Before creating services, please configure an active pricing setup for either the program '"<< program.name << "' or the provider '" << program.provider.name << "'.")
-      prompt.accept
+    message = accept_alert do
+      within("#PROGRAM#{program.id} > ul > li:nth-of-type(2)") do
+        click_link('Create New Service')
+      end
     end
+
+    expect(message).to eq("Before creating services, please configure an active pricing setup for either the program '#{program.name}' or the provider '#{program.provider.name}'.")
   end
-  
+
   scenario 'create new service under a program displays two error messages because program\'s pricing setup and service provider are both empty', :js => true do
     program = Program.find_by_name 'Office of Biomedical Informatics'
-    pricing_setup = PricingSetup.where(:organization_id => program.id).first 
+    pricing_setup = PricingSetup.where(:organization_id => program.id).first
     pricing_setup.destroy
-    
-    service_provider = ServiceProvider.where(:organization_id => program.provider.id).first 
+
+    service_provider = ServiceProvider.where(:organization_id => program.provider.id).first
     service_provider.destroy
-    
+
     ## Logs in the default identity.
     visit catalog_manager_root_path
     ## This is used to reveal all nodes in the js tree to make it easier to access during testing.
     page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
-    
-    within("#PROGRAM#{program.id} > ul > li:nth-of-type(2)") do
-      click_link('Create New Service')
-    end    
 
-    get_alert_window do |prompt|
-      expect(prompt.text).to  eq("There needs to be at least one service provider on a parent organization to create a new service. Before creating services, please configure an active pricing setup for either the program '"<< program.name << "' or the provider '" << program.provider.name << "'.")
-      prompt.accept
+    message = accept_alert do
+      within("#PROGRAM#{program.id} > ul > li:nth-of-type(2)") do
+        click_link('Create New Service')
+      end
     end
+
+    expect(message).to eq("There needs to be at least one service provider on a parent organization to create a new service. Before creating services, please configure an active pricing setup for either the program '#{program.name}' or the provider '#{program.provider.name}'.")
   end
-  
 
   scenario 'create new service under a core displays errors message because because a service provider has not been set', :js => true do
     core = Core.find_by_name 'Clinical Data Warehouse'
-    
-    service_provider = ServiceProvider.where(:organization_id => core.program.provider.id).first 
+
+    service_provider = ServiceProvider.where(:organization_id => core.program.provider.id).first
     service_provider.destroy
-    
+
     ## Logs in the default identity.
     visit catalog_manager_root_path
     ## This is used to reveal all nodes in the js tree to make it easier to access during testing.
     page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
-    
-    within("#CORE#{core.id} > ul > li:nth-of-type(1)") do
-      click_link('Create New Service')
-    end    
 
-    get_alert_window do |prompt|
-      expect(prompt.text).to  eq("There needs to be at least one service provider on a parent organization to create a new service. ")
-      prompt.accept
+    message = accept_alert do
+      within("#PROGRAM#{core.program.id} > ul > li:nth-of-type(2)") do
+        click_link('Create New Service')
+      end
     end
+
+    expect(message).to eq("There needs to be at least one service provider on a parent organization to create a new service. ")
   end
-  
+
   scenario 'create new service under a core displays errors message because program\'s pricing setup is empty', :js => true do
     core = Core.find_by_name 'Clinical Data Warehouse'
-    
-    pricing_setup = PricingSetup.where(:organization_id => core.program.id).first 
+
+    pricing_setup = PricingSetup.where(:organization_id => core.program.id).first
     pricing_setup.destroy
-    
+
     ## Logs in the default identity.
     visit catalog_manager_root_path
     ## This is used to reveal all nodes in the js tree to make it easier to access during testing.
     page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
-    
-    within("#CORE#{core.id} > ul > li:nth-of-type(1)") do
-      click_link('Create New Service')
-    end    
 
-    get_alert_window do |prompt|
-      expect(prompt.text).to  eq("Before creating services, please configure an active pricing setup for either the program '"<< core.program.name << "' or the provider '" << core.program.provider.name << "'.")
-      prompt.accept
+    message = accept_alert do
+      within("#PROGRAM#{core.program.id} > ul > li:nth-of-type(2)") do
+        click_link('Create New Service')
+      end
     end
+
+    expect(message).to eq("Before creating services, please configure an active pricing setup for either the program '#{core.program.name}' or the provider '#{core.program.provider.name}'.")
   end
-  
+
   scenario 'create new service under a core displays two error messages because program\'s pricing setup and service provider are both empty', :js => true do
     core = Core.find_by_name 'Clinical Data Warehouse'
-    
-    pricing_setup = PricingSetup.where(:organization_id => core.program.id).first 
+
+    pricing_setup = PricingSetup.where(:organization_id => core.program.id).first
     pricing_setup.destroy
-    
-    service_provider = ServiceProvider.where(:organization_id => core.program.provider.id).first 
+
+    service_provider = ServiceProvider.where(:organization_id => core.program.provider.id).first
     service_provider.destroy
     ## Logs in the default identity.
     visit catalog_manager_root_path
     ## This is used to reveal all nodes in the js tree to make it easier to access during testing.
     page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
-    
-    within("#CORE#{core.id} > ul > li:nth-of-type(1)") do
-      click_link('Create New Service')
-    end    
 
-    get_alert_window do |prompt|
-      expect(prompt.text).to  eq("There needs to be at least one service provider on a parent organization to create a new service. Before creating services, please configure an active pricing setup for either the program '"<< core.program.name << "' or the provider '" << core.program.provider.name << "'.")
-      prompt.accept
+    message = accept_alert do
+      within("#PROGRAM#{core.program.id} > ul > li:nth-of-type(2)") do
+        click_link('Create New Service')
+      end
     end
+
+    expect(message).to eq("There needs to be at least one service provider on a parent organization to create a new service. Before creating services, please configure an active pricing setup for either the program '#{core.program.name}' or the provider '#{core.program.provider.name}'.")
   end
-end 
+end

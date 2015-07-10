@@ -49,7 +49,7 @@ class ServiceCalendarsController < ApplicationController
     checked = params[:checked]
     qty = params[:qty].to_i
     column = params[:column]
-    
+
     case tab
     when 'template'
       if @line_items_visit
@@ -102,7 +102,7 @@ class ServiceCalendarsController < ApplicationController
     @line_item_total_td = ".total_#{@line_items_visit.id}"
     @line_item_total_study_td = ".total_#{@line_items_visit.id}_per_study"
     @arm_id = '.arm_' + @line_items_visit.arm.id.to_s
-   
+
     if @sub_service_request
       @line_items_visits = @line_items_visit.arm.line_items_visits.reject{|x| x.line_item.sub_service_request_id != @sub_service_request.id }
     elsif @service_request
@@ -182,7 +182,7 @@ class ServiceCalendarsController < ApplicationController
     val = params[:val]
     if params[:type] == 'qty'
       line_item.quantity = val
-      if line_item.check_service_relations(one_time_fees)
+      if line_item.check_service_relations(one_time_fees) && line_item.valid?
         line_item.save
       else
         line_item.reload

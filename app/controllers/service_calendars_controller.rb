@@ -77,8 +77,11 @@ class ServiceCalendarsController < ApplicationController
       end
 
     when 'quantity'
-      @errors = "Quantity must be greater than zero" if qty < 0
-      visit.update_attribute(:quantity, qty) unless qty < 0
+      if qty < 0
+        @errors = "Quantity must be greater than zero"
+      else
+        visit.update_attribute(:quantity, qty)
+      end
 
     when 'billing_strategy'
       if qty < 0
@@ -182,7 +185,7 @@ class ServiceCalendarsController < ApplicationController
     val = params[:val]
     if params[:type] == 'qty'
       line_item.quantity = val
-      if line_item.check_service_relations(one_time_fees) && line_item.valid?
+      if line_item.valid_otf_service_relation_quantity?(one_time_fees) && line_item.valid?
         line_item.save
       else
         line_item.reload
@@ -252,7 +255,7 @@ class ServiceCalendarsController < ApplicationController
           effort_billing_qty:    0 }
 
       if has_service_relation
-        if line_item.check_service_relations(line_items, true, visit)
+        if line_item.valid_pppv_service_relation_quantity?(line_items, visit)
           visit.save
         else
           failed_visit_list << "#{visit.visit_group.name}, "
@@ -335,7 +338,7 @@ class ServiceCalendarsController < ApplicationController
     line_item = visit.line_items_visit.line_item
     line_items = @service_request.per_patient_per_visit_line_items
 
-    if line_item.check_service_relations(line_items, true, visit)
+    if line_item.valid_pppv_service_relation_quantity?(line_items, visit)
       visit.save
     else
       visit.reload

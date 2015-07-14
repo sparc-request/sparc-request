@@ -320,54 +320,22 @@ class LineItem < ActiveRecord::Base
     self.service.organization
   end
 
-  # Don't like duplicate code but this will make it easier to
-  # to check for service relations when doing mass visit assignment
-  # like ServiceRequest#select_calendar_row
+  def service_relations
+    # Get the relations for this line item and others to this line item, Narrow the list to those with linked quantities
+    service_relations = ServiceRelation.find_all_by_service_id(self.service_id).reject { |sr| sr.linked_quantity == false }
+    related_service_relations = ServiceRelation.find_all_by_related_service_id(self.service_id).reject { |sr| sr.linked_quantity == false }
+
+    (service_relations + related_service_relations)
+  end
+
   def has_service_relation
-    # Get the relations for this line item and others to this line item
-    service_relations = ServiceRelation.find_all_by_service_id(self.service_id)
-    related_service_relations = ServiceRelation.find_all_by_related_service_id(self.service_id)
-
-    # Narrow the list to those with linked quantities
-    service_relations = service_relations.reject { |sr| sr.linked_quantity == false }
-    related_service_relations = related_service_relations.reject { |sr| sr.linked_quantity == false }
-
-    # Check to see if this line item even has a relation
-    return (service_relations.empty? && related_service_relations.empty?) ? false : true
+    service_relations.any?
   end
 
-  def check_service_relations line_items, pppv_services=false, visit=nil
-    # Get the relations for this line item and others to this line item
-    service_relations = ServiceRelation.find_all_by_service_id(self.service_id)
-    related_service_relations = ServiceRelation.find_all_by_related_service_id(self.service_id)
-
-    # Narrow the list to those with linked quantities
-    service_relations = service_relations.reject { |sr| sr.linked_quantity == false }
-    related_service_relations = related_service_relations.reject { |sr| sr.linked_quantity == false }
-
-    # Check to see if this line item even has a relation
-    return true if service_relations.empty? && related_service_relations.empty?
-
-    # Check to see that the quanties are less than the max together
-    if pppv_services
-      return false if check_service_relation_pppv(service_relations, line_items, visit) == false
-      return false if check_service_relation_pppv(related_service_relations, line_items, visit, true) == false
-    else
-      return false if check_service_relation_otf(service_relations, line_items) == false
-      return false if check_service_relation_otf(related_service_relations, line_items, true) == false
-    end
-
-    # No problems with quantity totals
-    return true
-
-  end
-
-  private
-
-  def check_service_relation_otf service_relations, line_items, related=false
+  def valid_otf_service_relation_quantity? line_items
     service_relations.each do |sr|
       # Check to see if the request has the service in the relation
-      sr_id = related ? sr.service_id : sr.related_service_id
+      sr_id = (service_id == sr.related_service_id ? sr.service_id : sr.related_service_id)
       line_item = line_items.detect { |li| li.service_id == sr_id }
       next unless line_item
 
@@ -380,13 +348,13 @@ class LineItem < ActiveRecord::Base
     return true
   end
 
-  def check_service_relation_pppv service_relations, line_items, visit, related=false
+  def valid_pppv_service_relation_quantity? line_items, visit
     arm_id = visit.visit_group.arm.id
     visit_position = visit.position - 1
 
     service_relations.each do |sr|
       # Check to see if the request has the service in the relation
-      sr_id = related ? sr.service_id : sr.related_service_id
+      sr_id = (service_id == sr.related_service_id ? sr.service_id : sr.related_service_id)
       line_item = line_items.detect { |li| li.service_id == sr_id }
       next unless line_item && line_item.arms.find(arm_id)
 
@@ -401,6 +369,8 @@ class LineItem < ActiveRecord::Base
 
     return true
   end
+
+  private
 
   def remove_procedures
     procedures = self.procedures

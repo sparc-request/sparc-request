@@ -8,6 +8,9 @@ defaults: &defaults
   host: localhost
   <<: *<%= "sqlite" %>
  
+profile:
+  <<: *defaults
+
 development:
   <<: *defaults
  

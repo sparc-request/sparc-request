@@ -1,21 +1,4 @@
-sqlite: &sqlite
-  adapter: sqlite3
-  database: db/<%= Rails.env %>.sqlite3
-
-defaults: &defaults
-  pool: 5
-  timeout: 5000
-  host: localhost
-  <<: *<%= "sqlite" %>
- 
-profile:
-  <<: *defaults
-
-development:
-  <<: *defaults
- 
 test:
-  <<: *defaults
- 
-production:
-  <<: *defaults
+  adapter: sqlite3
+  database: ':memory:'
+

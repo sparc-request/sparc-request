@@ -15,11 +15,13 @@ before_script:
   - cp config/database.yml.travis-ci config/database.yml
   - tail config/database.yml
   - cp config/application.yml.example config/application.yml
+  - tail config/application.yml
   - cp config/epic.yml.example config/epic.yml
+  - tail config/epic.yml
   - cp config/ldap.yml.example config/ldap.yml
+  - tail config/ldap.yml
 script:
-  - RAILS_ENV=test bundle exec rake db:test:load
-  - RAILS_ENV=test bundle exec rake --trace db:migrate test  
+  - bundle exec rspec spec/controllers/ 
   - RAILS_ENV=test bundle exec rspec spec/mailers
   - RAILS_ENV=test bundle exec rspec spec/models
   - RAILS_ENV=test bundle exec rspec spec/controllers

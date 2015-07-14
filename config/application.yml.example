@@ -74,11 +74,11 @@ test:
   queue_epic_load_error_to: 'glennj@musc.edu, hundc@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu'
   use_google_calendar: true
   # insert sub-directory path to override the three header images + account sign-in image and override application.css
-  custom_asset_path: image_override/
+#  custom_asset_path: image_override/
   # override the MUSC specific displayable text inside config/locales/en.yml with your own text (e.g., institution.yml)
-  locale_override: institution
+#  locale_override: institution
   # override the MUSC specific constants (e.g., constants-institution.yml)
-  constants_yml_override: -institution
+#  constants_yml_override: -institution
   use_news_feed: true
   calendar_url: https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics
   send_authorized_user_emails: true

@@ -66,6 +66,7 @@ class ServiceCalendarsController < ApplicationController
         visit.attributes = {
           :quantity => service.displayed_pricing_map.unit_minimum,
           :research_billing_qty => service.displayed_pricing_map.unit_minimum }
+        visit.save
 
       elsif checked == 'false'
         visit.update_attributes(

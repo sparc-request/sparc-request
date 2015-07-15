@@ -83,4 +83,4 @@ test:
   calendar_url: https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics
   send_authorized_user_emails: true
   no_reply_from: "no-reply@musc.edu" 
-  use_separate_audit_database: true
+  use_separate_audit_database: false

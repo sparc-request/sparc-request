@@ -332,15 +332,17 @@ class LineItem < ActiveRecord::Base
     service_relations.any?
   end
 
-  def valid_otf_service_relation_quantity? line_items
+  def valid_otf_service_relation_quantity?
+    line_items = service_request.one_time_fee_line_items
     service_relations.each do |sr|
       # Check to see if the request has the service in the relation
       sr_id = (service_id == sr.related_service_id ? sr.service_id : sr.related_service_id)
       line_item = line_items.detect { |li| li.service_id == sr_id }
       next unless line_item
+      total_quantity_between_line_items = self.quantity + line_item.quantity
 
-      if self.quantity + line_item.quantity > sr.linked_quantity_total
-        self.errors.add(:invalid_total, "The quantity between #{self.service.name} and #{line_item.service.name} is greater than the total quantity amount allowed which is #{sr.linked_quantity_total}")
+      unless (total_quantity_between_line_items == 0 or total_quantity_between_line_items == sr.linked_quantity_total)
+        self.errors.add(:invalid_total, "The quantity between #{self.service.name} and #{line_item.service.name}is not equal to the total quantity amount which is #{sr.linked_quantity_total}")
         return false
       end
     end
@@ -348,21 +350,24 @@ class LineItem < ActiveRecord::Base
     return true
   end
 
-  def valid_pppv_service_relation_quantity? line_items, visit
-    arm_id = visit.visit_group.arm.id
+  def valid_pppv_service_relation_quantity? visit
+    visit_group = visit.visit_group
+    arm = visit_group.arm
+    line_items = arm.line_items
     visit_position = visit.position - 1
 
     service_relations.each do |sr|
       # Check to see if the request has the service in the relation
       sr_id = (service_id == sr.related_service_id ? sr.service_id : sr.related_service_id)
       line_item = line_items.detect { |li| li.service_id == sr_id }
-      next unless line_item && line_item.arms.find(arm_id)
+      next unless line_item && line_item.arms.find(arm.id)
 
-      line_item_visit = line_item.line_items_visits.find_by_arm_id arm_id
+      line_item_visit = line_item.line_items_visits.find_by_arm_id arm.id
       v = line_item_visit.visits[visit_position]
-
-      if visit.quantity_total + v.quantity_total > sr.linked_quantity_total
-        self.errors.add(:invalid_total, "The quantity between #{self.service.name} and #{line_item.service.name} is greater than the total quantity amount allowed which is #{sr.linked_quantity_total}")
+      total_quantity_between_visits = visit.quantity_total + v.quantity_total
+      if not(total_quantity_between_visits == 0 or total_quantity_between_visits == sr.linked_quantity_total)
+        first_service, second_service = [self.service.name, line_item.service.name].sort
+        self.errors.add(:invalid_total, "The quantity on #{visit_group.name} on #{arm.name} between #{first_service} and #{second_service} is not equal to the total quantity amount which is #{sr.linked_quantity_total}")
         return false
       end
     end

@@ -3,26 +3,10 @@ language: ruby
 cache: bundler
 rvm:
   - 1.9.3
-before_install:
-  - gem update --system
-  - gem --version
-  - gem install sqlite3
-  - gem install bundler
-  - bundle version
-  - bundle update debugger
-  - bundle update sqlite3
 before_script:
-  - cp config/database.yml.travis-ci config/database.yml
-  - tail config/database.yml
+  - cp config/database.yml.example config/database.yml
   - cp config/application.yml.example config/application.yml
-  - tail config/application.yml
   - cp config/epic.yml.example config/epic.yml
-  - tail config/epic.yml
   - cp config/ldap.yml.example config/ldap.yml
-  - tail config/ldap.yml
 script:
-  - bundle exec rake db:test:prepare
-  - bundle exec rspec spec/controllers/ 
-  - RAILS_ENV=test bundle exec rspec spec/mailers
-  - RAILS_ENV=test bundle exec rspec spec/models
-  - RAILS_ENV=test bundle exec rspec spec/controllers
+  - bundle exec rspec

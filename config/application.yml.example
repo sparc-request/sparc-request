@@ -100,8 +100,8 @@ test:
   system_satisfaction_survey: true
   use_separate_audit_database: false # needs to be false for tests to run in travis-ci, or for them to run for anyone without an audit database configuration
   # API
-  remote_service_notifier_protocol: "http"
-  remote_service_notifier_host: "127.0.0.1:5001"
+  remote_service_notifier_protocol: "https"
+  remote_service_notifier_host: "127.0.0.1:5000"
   remote_service_notifier_path: "/v1/notifications.json"
   remote_service_notifier_username: ""
   remote_service_notifier_password: ""

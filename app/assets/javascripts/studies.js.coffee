@@ -117,148 +117,45 @@ $(document).ready ->
       when "foundation", "investigator" then $('#study_indirect_cost_rate').val("25")
       when "federal" then $('#study_indirect_cost_rate').val("49.5")
 
-  $("#funding_start_date").datepicker(
-    changeMonth: true,
-    changeYear:true,
-    constrainInput: true,
-    dateFormat: "m/dd/yy",
-    showButtonPanel: true,
-    altField: '#study_funding_start_date',
-    altFormat: 'yy-mm-dd',
+  # id       - where to stick datepicker
+  # altField - input element(s) that is to be updated with
+  #            the selected date from the datepicker
+  setupDatePicker = (id, altField) ->
+    $(id).datepicker(
+      changeMonth: true,
+      changeYear:true,
+      constrainInput: true,
+      dateFormat: "m/dd/yy",
+      showButtonPanel: true,
+      closeText: "Clear",
+      altField: altField,
+      altFormat: 'yy-mm-dd',
 
-    beforeShow: (input)->
-      callback = ->
-        buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane")
-        buttonPane.find('button.ui-datepicker-current').hide()
-        $("<button>", {
-          class: "ui-state-default ui-priority-primary ui-corner-all"
-          text: "Clear"
-          click: ->
+      beforeShow: (input)->
+        callback = ->
+          buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane")
+          buttonPane.find('button.ui-datepicker-current').hide()
+          buttonPane.find('button.ui-datepicker-close').on 'click', ->
             $.datepicker._clearDate(input)
-        }).appendTo(buttonPane)
-      setTimeout( callback, 1)
-    ).addClass('date');
+        setTimeout( callback, 1)
+    ).addClass('date')
 
+  setupDatePicker('#funding_start_date', '#study_funding_start_date')
   $('#funding_start_date').attr("readOnly", true)
 
-  $("#potential_funding_start_date").datepicker(
-    changeMonth: true,
-    changeYear:true,
-    constrainInput: true,
-    dateFormat: "m/dd/yy",
-    showButtonPanel: true,
-    altField: '#study_potential_funding_start_date',
-    altFormat: 'yy-mm-dd',
-
-    beforeShow: (input)->
-      callback = ->
-        buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane")
-        buttonPane.find('button.ui-datepicker-current').hide()
-        $("<button>", {
-          class: "ui-state-default ui-priority-primary ui-corner-all"
-          text: "Clear"
-          click: ->
-            $.datepicker._clearDate(input)
-        }).appendTo(buttonPane)
-      setTimeout( callback, 1)
-    ).addClass('date');
-
+  setupDatePicker('#potential_funding_start_date', '#study_potential_funding_start_date')
   $('#potential_funding_start_date').attr("readOnly", true)
 
-  $("#irb_approval_date").datepicker(
-    changeMonth: true,
-    changeYear:true,
-    constrainInput: true,
-    dateFormat: "m/dd/yy",
-    showButtonPanel: true,
-    altField: '#study_human_subjects_info_attributes_irb_approval_date',
-    altFormat: 'yy-mm-dd',
-
-    beforeShow: (input)->
-      callback = ->
-        buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane")
-        buttonPane.find('button.ui-datepicker-current').hide()
-        $("<button>", {
-          class: "ui-state-default ui-priority-primary ui-corner-all"
-          text: "Clear"
-          click: ->
-            $.datepicker._clearDate(input)
-        }).appendTo(buttonPane)
-      setTimeout( callback, 1)
-    ).addClass('date');
-
+  setupDatePicker('#irb_approval_date', '#study_human_subjects_info_attributes_irb_approval_date')
   $('#irb_approval_date').attr("readOnly", true)
 
-  $("#irb_expiration_date").datepicker(
-    changeMonth: true,
-    changeYear:true,
-    constrainInput: true,
-    dateFormat: "m/dd/yy",
-    showButtonPanel: true,
-    altField: '#study_human_subjects_info_attributes_irb_expiration_date',
-    altFormat: 'yy-mm-dd',
-
-    beforeShow: (input)->
-      callback = ->
-        buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane")
-        buttonPane.find('button.ui-datepicker-current').hide()
-        $("<button>", {
-          class: "ui-state-default ui-priority-primary ui-corner-all"
-          text: "Clear"
-          click: ->
-            $.datepicker._clearDate(input)
-        }).appendTo(buttonPane)
-      setTimeout( callback, 1)
-    ).addClass('date');
-
+  setupDatePicker('#irb_expiration_date', '#study_human_subjects_info_attributes_irb_expiration_date')
   $('#irb_expiration_date').attr("readOnly", true)
 
-  $("#iacuc_approval_date").datepicker(
-    changeMonth: true,
-    changeYear:true,
-    constrainInput: true,
-    dateFormat: "m/dd/yy",
-    showButtonPanel: true,
-    altField: '#study_vertebrate_animals_info_attributes_iacuc_approval_date',
-    altFormat: 'yy-mm-dd',
-
-    beforeShow: (input)->
-      callback = ->
-        buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane")
-        buttonPane.find('button.ui-datepicker-current').hide()
-        $("<button>", {
-          class: "ui-state-default ui-priority-primary ui-corner-all"
-          text: "Clear"
-          click: ->
-            $.datepicker._clearDate(input)
-        }).appendTo(buttonPane)
-      setTimeout( callback, 1)
-    ).addClass('date');
-
+  setupDatePicker('#iacuc_approval_date', '#study_vertebrate_animals_info_attributes_iacuc_approval_date')
   $('#iacuc_approval_date').attr("readOnly", true)
 
-  $("#iacuc_expiration_date").datepicker(
-    changeMonth: true,
-    changeYear:true,
-    constrainInput: true,
-    dateFormat: "m/dd/yy",
-    showButtonPanel: true,
-    altField: '#study_vertebrate_animals_info_attributes_iacuc_expiration_date',
-    altFormat: 'yy-mm-dd',
-
-    beforeShow: (input)->
-      callback = ->
-        buttonPane = $(input).datepicker("widget").find(".ui-datepicker-buttonpane")
-        buttonPane.find('button.ui-datepicker-current').hide()
-        $("<button>", {
-          class: "ui-state-default ui-priority-primary ui-corner-all"
-          text: "Clear"
-          click: ->
-            $.datepicker._clearDate(input)
-        }).appendTo(buttonPane)
-      setTimeout( callback, 1)
-    ).addClass('date');
-
+  setupDatePicker('#iacuc_expiration_date', '#study_vertebrate_animals_info_attributes_iacuc_expiration_date')
   $('#iacuc_expiration_date').attr("readOnly", true)
 
   #This is to disabled the submit after you click once, so you can't fire multiple posts at once.

@@ -57,8 +57,8 @@ module Portal::ServiceRequestsHelper
     end
   end
 
-  def default_display workflow_state
-    workflow_state == 'submitted' ? '' : 'display:none;'
+  def default_display workflow_state, desired_status
+    workflow_state == desired_status ? '' : 'display:none;'
   end
 
   def calculate_status_quantity service_requests, status

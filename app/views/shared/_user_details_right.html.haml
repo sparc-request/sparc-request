@@ -63,7 +63,3 @@
       = select_tag "identity[subspecialty]", options_for_select((SUBSPECIALTIES.sort), identity.subspecialty), :prompt => t(:user_details)[:subspecialty_select], :class => 'form-control'
       %br
       %br
-
-    .add-user
-      %div{:style => 'padding-left:185px;'}
-        = button_tag @can_edit ? t(:user_details)[:update_button] : t(:user_details)[:add_button], :class => 'blue-button add-authorized-user btn btn-primary', :style => 'border:none; width:150px;'

@@ -124,6 +124,11 @@ a.save-option{
   cursor: pointer;
 }
 
+.pricing-message{
+  font-weight: bold;
+  color: red;
+}
+
 #container {
   width: 962px; /* width: 1202px; */
   height: 100%;
@@ -163,6 +168,10 @@ a.save-option{
   border-left: outset 1px black;
   border-right: outset 1px black;
   padding-top: 10px;
+}
+
+#container #content .pricing-message{
+  padding-left: 10px;
 }
 
 #container #title {
@@ -386,6 +395,15 @@ a.catalog-button,
   cursor: pointer;
   color: #fff !important;
   text-decoration: none;
+}
+
+.dark-blue-button{
+  background-color: #036;
+  border-radius: 0.3em;
+  color: #FFF;
+  height: 35px;
+  font-size: 13px;
+  margin-top: 63px;
 }
 
 .blue-button a {
@@ -1134,6 +1152,7 @@ img.screening_info_img {
 .edit-project-view {
   font-size: 12px;
   font-family: "Calibri", Arial, sans-serif;
+  border: 3px solid #003366;
 }
 
 .edit-project-view .description {
@@ -1145,7 +1164,7 @@ img.screening_info_img {
   width: 100%;
   height: auto;
   margin-left: 8px;
-  border: 3px solid #003366;
+  padding-top: 20px;
 }
 
 .edit-project-view .user-details, .edit-project-view .user_added_message {
@@ -2127,13 +2146,28 @@ input.search-services {
 }
 
 #service_calendar ul li.ui-state-active {
-  background: #2C9A4D !important;
+  font-weight: bold !important;
+  font-size: medium;
 }
 
 .service_calendar thead.ui-widget-header {
   background: #0775B0 !important;
 }
+#template_tab {
+  background: #003366
+}
 
+#billing_strategy_tab {
+  background: #F79739
+}
+
+#quantity_tab {
+   background: #C43149
+}
+
+#calendar_tab {
+  background: #53B6E0
+}
 .review-details #service_calendar_container table td,
 .review-details #service_calendar_container table th {
   width: 82px !important;

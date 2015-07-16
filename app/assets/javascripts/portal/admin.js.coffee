@@ -25,6 +25,7 @@ $(document).ready ->
         $('.services').hide()
         $(".#{$(this).val()}").show()
         Sparc.admin.stripify_table()
+        $.cookie('status_filter_value', $(this).val(), {expires: 1})
 
       if $('.search-all-service-requests').length > 0
         $('.search-all-service-requests').autocomplete({

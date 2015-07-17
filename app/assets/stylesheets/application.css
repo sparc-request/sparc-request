@@ -1044,18 +1044,6 @@ span#infotip img {
   margin: 0;
 }
 
-/*.service-request-setup-view .service-details table th {
-  width: 115px;
-  text-align: left;
-}*/
-
-/*.service-request-setup-view .service-details-table td,
-.service-request-setup-view .service-dates-table td,
-.service-request-setup-view .service-details-table th,
-.service-request-setup-view .service-dates-table th{
-  padding: 5px 30px;
-}*/
-
 .service-request-setup-view .service-details .one-time-fees thead{
   border: 0;
   background-color: #FFF;
@@ -1573,16 +1561,6 @@ tr.grand-totals {
   margin: 0px;
   padding:0px;
 }
-
-
-/*.visit-calendar-view td.subject-count{
-  text-align:center;
-}*/
-
-/*.visit-calendar-view td.odd{
-  background-color : #eee;
-}
-*/
 
 .visit-calendar-view td.visit-view div.billing {
   text-align: center;

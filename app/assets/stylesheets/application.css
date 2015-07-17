@@ -2119,22 +2119,6 @@ input.search-services {
   border: 1px solid #ccc;
 }
 
-/*#service_calendar ul.ui-widget-header {
-  background: #CCCCCC !important;
-
-#service_calendar ul li.ui-state-default {
-  background: #0775B0 !important;
-}
-
-#service_calendar ul li.ui-state-active {
-  font-weight: bold !important;
-  font-size: medium;
-}
-
-.service_calendar thead.ui-widget-header {
-  background: #0775B0 !important;
-}*/
-
 #service_calendar {
   border: none;
 }

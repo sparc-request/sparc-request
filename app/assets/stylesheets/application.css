@@ -2143,7 +2143,6 @@ input.search-services {
 
 /*#service_calendar ul.ui-widget-header {
   background: #CCCCCC !important;
-}
 
 #service_calendar ul li.ui-state-default {
   background: #0775B0 !important;
@@ -2184,7 +2183,7 @@ input.search-services {
 .ui-tabs-active #billing_strategy_tab,
 .ui-tabs-active #quantity_tab,
 .ui-tabs-active #calendar_tab {
-  background: #7ABDD9;  
+  background: #0775B0;;  
 }
 
 li:not(.ui-tabs-active) #template_tab:hover,
@@ -2210,6 +2209,7 @@ li:not(.ui-tabs-active) #calendar_tab:hover {
 
 .service_calendar thead tr th {
   border: 1px solid #ccc;
+  background: #0775B0;
 }
 
 .billing-info {

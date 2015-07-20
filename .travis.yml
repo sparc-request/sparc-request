@@ -1,15 +1,18 @@
+sudo: false
 language: ruby
+cache: bundler
 rvm:
   - 1.9.3
 before_install:
-  - bundle update debugger
+  - bundle update debugger  
 before_script:
   - cp config/database.yml.example config/database.yml
   - cp config/application.yml.example config/application.yml
   - cp config/epic.yml.example config/epic.yml
   - cp config/ldap.yml.example config/ldap.yml
 script:
-  - bundle exec rspec spec/api
+#  - bundle exec rspec spec/api
+#  - bundle exec rspec spec/features
   - bundle exec rspec spec/controllers
   - bundle exec rspec spec/mailers
   - bundle exec rspec spec/models

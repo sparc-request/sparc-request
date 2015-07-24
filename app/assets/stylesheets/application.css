@@ -583,7 +583,7 @@ div#institution_accordion h3.provider_header {
 .odd {
   background: #E8E8E8;
 }
-
+ 
 #about {
   width: 220px;
   height: 50px;
@@ -603,6 +603,10 @@ div#institution_accordion h3.provider_header {
 
 #account img {
   margin-left: 16px;
+}
+
+.white ul {
+  background: white;
 }
 
 .service-catalog .ui-accordion-content h4 {
@@ -1039,18 +1043,6 @@ span#infotip img {
   width: 100%;
   margin: 0;
 }
-
-/*.service-request-setup-view .service-details table th {
-  width: 115px;
-  text-align: left;
-}*/
-
-/*.service-request-setup-view .service-details-table td,
-.service-request-setup-view .service-dates-table td,
-.service-request-setup-view .service-details-table th,
-.service-request-setup-view .service-dates-table th{
-  padding: 5px 30px;
-}*/
 
 .service-request-setup-view .service-details .one-time-fees thead{
   border: 0;
@@ -1569,16 +1561,6 @@ tr.grand-totals {
   margin: 0px;
   padding:0px;
 }
-
-
-/*.visit-calendar-view td.subject-count{
-  text-align:center;
-}*/
-
-/*.visit-calendar-view td.odd{
-  background-color : #eee;
-}
-*/
 
 .visit-calendar-view td.visit-view div.billing {
   text-align: center;
@@ -2137,37 +2119,51 @@ input.search-services {
   border: 1px solid #ccc;
 }
 
-#service_calendar ul.ui-widget-header {
-  background: #CCCCCC !important;
+#service_calendar {
+  border: none;
 }
 
-#service_calendar ul li.ui-state-default {
-  background: #0775B0 !important;
+#service_calendar ul li,
+#service_calendar ul li a {
+  border-top-left-radius: 5px !important;
+  border-top-right-radius: 5px !important;
+  background-color: #003366;
 }
 
 #service_calendar ul li.ui-state-active {
   font-weight: bold !important;
-  font-size: medium;
+  border-color: #7ABDD9;
+  background: none;
+  /*font-size: medium;*/
 }
 
-.service_calendar thead.ui-widget-header {
-  background: #0775B0 !important;
-}
-#template_tab {
-  background: #003366
+#service_calendar .ui-widget-header[role='tablist'] {
+  background: none;
 }
 
-#billing_strategy_tab {
-  background: #F79739
+.ui-tabs-active #template_tab,
+.ui-tabs-active #billing_strategy_tab,
+.ui-tabs-active #quantity_tab,
+.ui-tabs-active #calendar_tab {
+  background: #0775B0;;  
 }
 
-#quantity_tab {
-   background: #C43149
+li:not(.ui-tabs-active) #template_tab:hover,
+li:not(.ui-tabs-active) #billing_strategy_tab:hover,
+li:not(.ui-tabs-active) #quantity_tab:hover,
+li:not(.ui-tabs-active) #calendar_tab:hover {
+  background: #4372A2;
+
 }
 
+#template_tab,
+#billing_strategy_tab,
+#quantity_tab,
 #calendar_tab {
-  background: #53B6E0
+  background: #003366;
+  color: #FFF;
 }
+
 .review-details #service_calendar_container table td,
 .review-details #service_calendar_container table th {
   width: 82px !important;
@@ -2175,6 +2171,7 @@ input.search-services {
 
 .service_calendar thead tr th {
   border: 1px solid #ccc;
+  background: #0775B0;
 }
 
 .billing-info {

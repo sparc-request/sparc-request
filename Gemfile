@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'activerecord-import'
-gem 'acts_as_list'
+gem 'acts_as_list', '0.1.9'
 gem 'acts-as-taggable-on'
 gem 'audited-activerecord'
 gem 'axlsx'

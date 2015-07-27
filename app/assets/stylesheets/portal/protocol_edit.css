@@ -101,6 +101,11 @@
   padding: 2px;
   font-size: 1.2em;
 }
+
+.user-edit-protocol-view .box .info label.long {
+  width: 650px !important;
+}
+
 .user-edit-protocol-view label[for='study_funding_status'],
 .user-edit-protocol-view label[for='study_udak_project_number'],
 .user-edit-protocol-view label[for='study_funding_rfa'],

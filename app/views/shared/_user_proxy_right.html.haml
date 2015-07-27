@@ -30,37 +30,25 @@
       = f.hidden_field "_destroy"
       = f.hidden_field :id
       = f.hidden_field :identity_id
-      = f.hidden_field :role 
+      = f.hidden_field :role
       = f.hidden_field :role_other
       = f.hidden_field :protocol_id
-    %td 
+    %td
       .actions
         = link_to image_tag('pencil.png'), 'javascript:void(0)', :class => 'edit_project_role', :parent => parent_class, :identity_id => identity.id
         = link_to image_tag('cancel.png'), 'javascript:void(0)', :class => 'remove_project_role', :parent => parent_class unless identity == current_user
       .restore{:style => 'display:none;'}
         = link_to image_tag('arrow_undo.png'), 'javascript:void(0)', :class => 'restore_project_role', :parent => parent_class
     %td= USER_ROLES.invert[project_role.role]
-    - if USE_EPIC
+    - if USE_EPIC && protocol_use_epic == "true"
       %td
         .epic_access
           = f.radio_button :epic_access, false, :checked => !project_role.epic_access, :project_role_id => project_role.id, :class => "epic_access_radio_no"
           = f.label :epic_access, 'No'
           = f.radio_button :epic_access, true, :checked => project_role.epic_access, :identity_id => project_role.identity.id, :class => "epic_access_radio_yes", :id => "epic_access_yes_#{project_role.identity.id}"
           = f.label :epic_access, 'Yes'
-          = link_to image_tag('pencil.png'), 'javascript:void(0)', :identity_id => project_role.identity.id, :class => 'epic_access_edit'
+
     %td= f.radio_button :project_rights, 'none', :disabled => !project_role.can_switch_to?()
     %td= f.radio_button :project_rights, 'view',:disabled => !project_role.can_switch_to?()
     %td= f.radio_button :project_rights, 'request', :disabled => !project_role.can_switch_to?()
     %td= f.radio_button :project_rights, 'approve'
-
-    - if USE_EPIC
-      %td.epic_access_dialog{:id => "project_role_identity_#{project_role.identity.id}", :style => "display:none"}
-        = t(:user_list)[:check_apply]
-        = f.fields_for :epic_rights do |fer|
-          .pair
-            = fer.check_box "_destroy", {:checked => !fer.object.new, :class => 'epic_access_check_box'}, false, true
-            = fer.hidden_field :right, :value => fer.object.right
-            = fer.label "_destroy", EPIC_RIGHTS[fer.object.right]
-
-        %br
-        %div.epic_rights_info= "#{EPIC_RIGHTS_INFO}"

@@ -29,13 +29,31 @@ FactoryGirl.define do
     charge_code         { Faker::Lorem.words().first }
     revenue_code        { Faker::Lorem.words().first }
 
-    # This line was removed, because it causes duplicate pricing maps to
-    # be created (see pricing_map_count, below).
-    # pricing_maps        { [ FactoryGirl.create(:pricing_map) ] }
-    
+    trait :with_ctrc_organization do
+      organization factory: :organization_ctrc
+    end
+
+    trait :with_components do
+      components "eine,meine,mo,"
+    end
+
+    trait :with_pricing_map do
+      after(:create) do |service, evaluator|
+        FactoryGirl.create(:pricing_map, service: service)
+      end
+    end
+
+    trait :with_process_ssrs_organization do
+      organization factory: :organization_with_process_ssrs
+    end
+
     trait :disabled do
       is_available false
-    end 
+    end
+
+    trait :one_time_fee do
+      one_time_fee true
+    end
 
     ignore do
       line_item_count 0
@@ -70,7 +88,7 @@ FactoryGirl.define do
       line_item_count.times do
         service.line_items.build(FactoryGirl.attributes_for(:line_item))
       end
-      
+
       pricing_map_count.times do
         service.pricing_maps.build(FactoryGirl.attributes_for(:pricing_map))
       end
@@ -83,5 +101,10 @@ FactoryGirl.define do
         service.service_relations.build(FactoryGirl.attributes_for(:service_relation))
       end
     end
+
+    factory :service_with_ctrc_organization, traits: [:with_ctrc_organization]
+    factory :service_with_components, traits: [:with_components]
+    factory :service_with_process_ssrs_organization, traits: [:with_process_ssrs_organization]
+    factory :service_with_pricing_map, traits: [:with_pricing_map, :with_process_ssrs_organization]
   end
 end

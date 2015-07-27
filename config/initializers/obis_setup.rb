@@ -49,6 +49,16 @@ begin
   CONSTANTS_YML_OVERRIDE        = application_config['constants_yml_override'] || ''
   SYSTEM_SATISFACTION_SURVEY    = application_config['system_satisfaction_survey']
   NO_REPLY_FROM                 = application_config['no_reply_from']
+  EDITABLE_STATUSES             = application_config['editable_statuses'] || {}
+  REMOTE_SERVICE_NOTIFIER_PROTOCOL  = application_config['remote_service_notifier_protocol']
+  REMOTE_SERVICE_NOTIFIER_HOST      = application_config['remote_service_notifier_host']
+  REMOTE_SERVICE_NOTIFIER_PATH      = application_config['remote_service_notifier_path']
+  REMOTE_SERVICE_NOTIFIER_USERNAME  = application_config['remote_service_notifier_username']
+  REMOTE_SERVICE_NOTIFIER_PASSWORD  = application_config['remote_service_notifier_password']
+  HOST                              = application_config['host']
+  CURRENT_API_VERSION               = application_config['current_api_version']
+  BUG_ENHANCEMENT_URL           = application_config['bug_enhancement_url'] || nil
+  CLINICAL_WORK_FULFILLMENT_URL = application_config['clinical_work_fulfillment_url'] || nil
 
   if LOCALE_OVERRIDE
     I18n.available_locales = [:en, LOCALE_OVERRIDE]
@@ -77,6 +87,8 @@ begin
   EPIC_RIGHTS_INFO               = config['epic_rights_info']
   EPIC_PUSH_STATUS_TEXT          = config['epic_push_status_text']
   STUDY_TYPES                    = config['study_types']
+  STUDY_TYPE_QUESTIONS           = config['study_type_questions']
+  STUDY_TYPE_ANSWERS             = config['study_type_answers']
   FUNDING_STATUSES               = config['funding_statuses']
   ACCORDION_COLOR_OPTIONS        = config['accordion_color_options']
   PROXY_RIGHTS                   = config['proxy_rights']

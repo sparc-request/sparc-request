@@ -22,7 +22,7 @@
   %thead.ui-widget-header
     %tr.table_header
       %th.services_header{:rowspan => 2, :style => "height: 88px"}= t(:calendar_page)[:headers][:services]
-      - if @portal 
+      - if @portal
         %th{:rowspan => 2, :colspan => 7, :height => 40, :width => 375}
       -else
         %th.unit_costs_header{:colspan => 2}= t(:calendar_page)[:headers][:unit_costs]
@@ -49,7 +49,7 @@
     %tr.section_header
       %th{:colspan => (@study_tracker) ? 13 : 14}
         = t("calendar_page.headers.other_services")
-        
+
         #nan_error{:style => 'display:none;'}
           = t(:service_requests)[:detail_list][:nan]
 
@@ -57,16 +57,16 @@
           = t(:service_requests)[:detail_list][:text1]
           %span#quantity
           = t(:service_requests)[:detail_list][:text2]
-          %span#unit_minimum 
+          %span#unit_minimum
           %br
           = t(:service_requests)[:detail_list][:text3]
-          
+
         #unit_max_error{:style => 'display:none;'}
           = t(:service_requests)[:detail_list][:text4]
           %span#unit_quantity
           = t(:service_requests)[:detail_list][:text5]
           %span#unit_max
-          %br       
+          %br
           = t(:service_requests)[:detail_list][:text6]
 
     - @service_request.service_list(true).each do |key, value| # get only one time fee services and group them
@@ -104,7 +104,7 @@
               -else
                 %td{:style => "width:50px;"}
                   %span{:style => "padding-right:5px;"} /
-                  = text_field_tag "service_request[line_items_attributes][#{line_item.id}][units_per_quantity]", line_item.units_per_quantity, | 
+                  = text_field_tag "service_request[line_items_attributes][#{line_item.id}][units_per_quantity]", line_item.units_per_quantity, |
                      "data-qty_max" => line_item.service.displayed_pricing_map.units_per_qty_max, :class => "units_per_quantity", :current_units_per_quantity => line_item.units_per_quantity, |
                      :update => update_otf_qty_and_units_per_qty_service_request_service_calendars_path(@service_request, :line_item_id => line_item.id, :type => 'units_per_qty') |
                 %td= line_item.service.try(:displayed_pricing_map).try(:otf_unit_type).try(:humanize)

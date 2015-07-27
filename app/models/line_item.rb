@@ -19,10 +19,13 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class LineItem < ActiveRecord::Base
+
+  include RemotelyNotifiable
+
   audited
 
   belongs_to :service_request
-  belongs_to :service, :include => [:pricing_maps, :organization]
+  belongs_to :service, :include => [:pricing_maps, :organization], :counter_cache => true
   belongs_to :sub_service_request
   has_many :fulfillments, :dependent => :destroy
 
@@ -41,10 +44,12 @@ class LineItem < ActiveRecord::Base
   attr_accessible :quantity
   attr_accessible :fulfillments_attributes
   attr_accessible :displayed_cost
- 
+
   attr_accessor :pricing_scheme
 
   accepts_nested_attributes_for :fulfillments, :allow_destroy => true
+
+  delegate :one_time_fee, to: :service
 
   def displayed_cost
     applicable_rate
@@ -61,10 +66,28 @@ class LineItem < ActiveRecord::Base
   validates :service_id, :numericality => true
   validates :service_request_id, :numericality => true
 
+  validates :quantity, :numericality => true, :on => :update, :if => Proc.new { |li| li.service.one_time_fee }
+  validate :quantity_must_be_smaller_than_max_and_greater_than_min, :on => :update, :if => Proc.new { |li| li.service.one_time_fee }
+
   after_destroy :remove_procedures
 
   # TODO: order by date/id instead of just by date?
   default_scope :order => 'line_items.id ASC'
+
+  def quantity_must_be_smaller_than_max_and_greater_than_min
+    pricing = Service.find(service_id).current_effective_pricing_map
+    max = pricing.units_per_qty_max
+    min = pricing.quantity_minimum
+    if quantity.nil?
+      errors.add(:quantity, "Please enter a quantity")
+    else
+      if quantity < min
+        errors.add(:quantity, "Please enter a quantity greater than or equal to #{min}")
+      elsif quantity > max
+        errors.add(:quantity, "The maximum quantity allowed is #{max}")
+      end
+    end
+  end
 
   def applicable_rate(appointment_completed_date=nil)
     rate = nil
@@ -77,11 +100,11 @@ class LineItem < ActiveRecord::Base
         funding_source      = self.service_request.protocol.funding_source_based_on_status
         selected_rate_type  = pricing_setup.rate_type(funding_source)
         applied_percentage  = pricing_setup.applied_percentage(selected_rate_type)
-      
+
         rate = pricing_map.applicable_rate(selected_rate_type, applied_percentage)
       end
-    else 
-      if has_admin_rates? 
+    else
+      if has_admin_rates?
         rate = self.admin_rates.last.admin_cost
       else
         pricing_map         = self.pricing_scheme == 'displayed' ? self.service.displayed_pricing_map : self.service.current_effective_pricing_map
@@ -89,14 +112,14 @@ class LineItem < ActiveRecord::Base
         funding_source      = self.service_request.protocol.funding_source_based_on_status
         selected_rate_type  = pricing_setup.rate_type(funding_source)
         applied_percentage  = pricing_setup.applied_percentage(selected_rate_type)
-      
+
         rate = pricing_map.applicable_rate(selected_rate_type, applied_percentage)
       end
     end
 
     rate
   end
-  
+
   def has_admin_rates? appointment_completed_date=nil
     has_admin_rates = !self.admin_rates.empty? && !self.admin_rates.last.admin_cost.blank?
     has_admin_rates = has_admin_rates && self.admin_rates.select{|ar| ar.created_at.to_date <= appointment_completed_date.to_date}.size > 0 if appointment_completed_date
@@ -172,9 +195,9 @@ class LineItem < ActiveRecord::Base
   def direct_costs_for_visit_based_service_single_subject(line_items_visit)
     # line items visit should also check that it's for the correct protocol
     return 0.0 unless service_request.protocol_id == line_items_visit.arm.protocol_id
-    
+
     research_billing_qty_total = line_items_visit.visits.sum(&:research_billing_qty)
-    
+
     subject_total = research_billing_qty_total * per_unit_cost(quantity_total(line_items_visit))
     subject_total
   end
@@ -271,17 +294,17 @@ class LineItem < ActiveRecord::Base
   def should_push_to_epic?
     return self.service.send_to_epic
   end
-  
+
   ### audit reporting methods ###
-  
+
   def audit_field_value_mapping
     {"service_id" => "Service.find(ORIGINAL_VALUE).name"}
   end
-  
+
   def audit_excluded_fields
     {'create' => ['service_request_id', 'sub_service_request_id', 'service_id', 'ssr_id', 'deleted_at', 'units_per_quantity']}
   end
-  
+
   def audit_label audit
     if audit.action == 'create'
       return "#{service.name} added to Service Request #{sub_service_request.display_id}"
@@ -293,7 +316,7 @@ class LineItem < ActiveRecord::Base
   ### end audit reporting methods ###
 
   # Need this for filtering ssr's by user on the cfw home page
-  def core    
+  def core
     self.service.organization
   end
 

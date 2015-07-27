@@ -21,6 +21,9 @@
 require 'directory'
 
 class Identity < ActiveRecord::Base
+
+  include RemotelyNotifiable
+
   audited
 
   after_create :send_admin_mail
@@ -87,7 +90,7 @@ class Identity < ActiveRecord::Base
   attr_accessible :phone
   attr_accessible :catalog_overlord
   attr_accessible :subspecialty
-  
+
   cattr_accessor :current_user
 
   validates_presence_of :last_name
@@ -98,11 +101,11 @@ class Identity < ActiveRecord::Base
   ###############################################################################
   ############################## DEVISE OVERRIDES ###############################
   ###############################################################################
- 
+
   def password_required?
     !persisted? || !password.nil? || !password_confirmation.nil?
   end
- 
+
   def email_required?
     false
   end
@@ -155,9 +158,9 @@ class Identity < ActiveRecord::Base
      is_provider = true
      end
    end
-   
+
   is_provider
-    
+
   end
 
   ###############################################################################
@@ -171,7 +174,7 @@ class Identity < ActiveRecord::Base
   ###############################################################################
   ########################### PERMISSION METHODS ################################
   ###############################################################################
-  
+
   # DEVISE specific methods
   def self.find_for_shibboleth_oauth(auth, signed_in_resource=nil)
     identity = Identity.where(:ldap_uid => auth.uid).first
@@ -182,16 +185,16 @@ class Identity < ActiveRecord::Base
     identity
   end
 
-  def active_for_authentication? 
-    super && approved? 
-  end 
+  def active_for_authentication?
+    super && approved?
+  end
 
-  def inactive_message 
-    if !approved? 
-      :not_approved 
-    else 
-      super # Use whatever other message 
-    end 
+  def inactive_message
+    if !approved?
+      :not_approved
+    else
+      super # Use whatever other message
+    end
   end
 
   def self.find_first_by_auth_conditions(warden_conditions)
@@ -219,11 +222,11 @@ class Identity < ActiveRecord::Base
     end
   end
 
-  # As per Lane, a service request's status is no longer a factor for editing. 
+  # As per Lane, a service request's status is no longer a factor for editing.
   # Only users with request or approve rights can edit.
   def can_edit_service_request? sr
     can_edit = false
-    
+
     if (sr.service_requester_id == self.id or sr.service_requester_id.nil?) && sr.is_editable?
       can_edit = true
     elsif sr.is_editable? && has_correct_project_role?(sr)
@@ -266,7 +269,7 @@ class Identity < ActiveRecord::Base
   # Returns true if this identity's catalog_manager_organizations includes the given organization.
   def can_edit_entity? organization, deep_search=false
     cm_org_ids = self.catalog_managers.map(&:organization_id)
-    if deep_search 
+    if deep_search
       org_ids = [organization.id].concat(organization.parents(true))
       org_ids -  cm_org_ids != org_ids
     else
@@ -306,7 +309,7 @@ class Identity < ActiveRecord::Base
     arr << self.service_providers.map(&:organization_id)
     arr = arr.flatten.uniq
     if organization.type == 'Institution'
-      arr.include? organization.id 
+      arr.include? organization.id
     else
       can_edit_fulfillment? organization.parent or arr.include? organization.id
     end
@@ -341,7 +344,7 @@ class Identity < ActiveRecord::Base
 
     self.admin_organizations({:su_only => true}).each do |org|
       orgs << org
-    end 
+    end
 
     orgs.flatten.uniq
   end
@@ -371,7 +374,7 @@ class Identity < ActiveRecord::Base
     self.super_users.each do |user|
       orgs.each do |org|
         if user.organization_id == org.id
-          arr << org 
+          arr << org
         end
       end
     end
@@ -380,7 +383,7 @@ class Identity < ActiveRecord::Base
       self.service_providers.each do |user|
         orgs.each do |org|
           if user.organization_id == org.id
-            arr << org 
+            arr << org
           end
         end
       end
@@ -406,13 +409,13 @@ class Identity < ActiveRecord::Base
     return false if org.nil? #if no orgs have nexus tag
     self.clinical_providers.each do |provider|
       if provider.organization_id == org.id
-        return true      
+        return true
       end
     end
 
     return false
-  end  
-  
+  end
+
   # Collects all sub service requests under this identity's admin_organizations and sorts that
   # list by the status of the sub service requests.
   # Used to populate the table (as selectable by the dropdown) in the admin index.
@@ -443,7 +446,7 @@ class Identity < ActiveRecord::Base
         end
       end
     end
-    
+
     hash
   end
 
@@ -466,7 +469,7 @@ class Identity < ActiveRecord::Base
   def unread_notification_count user
     notification_count = 0
     notifications = self.all_notifications
-    
+
     notifications.each do |notification|
       notification_count += 1 unless notification.user_notifications_for_current_user(user).order('created_at DESC').first.read
     end

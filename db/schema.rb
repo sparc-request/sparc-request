@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150224193019) do
+ActiveRecord::Schema.define(:version => 20150618131144) do
 
   create_table "admin_rates", :force => true do |t|
     t.integer  "line_item_id"
@@ -19,8 +19,6 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
     t.datetime "created_at",   :null => false
     t.datetime "updated_at",   :null => false
   end
-
-  add_index "admin_rates", ["line_item_id"], :name => "Fk_admin_rates_line_item_id"
 
   create_table "affiliations", :force => true do |t|
     t.integer  "protocol_id"
@@ -109,7 +107,7 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
     t.integer  "minimum_subject_count", :default => 0
   end
 
-  add_index "arms", ["protocol_id"], :name => "Fk_arms_protocol_id"
+  add_index "arms", ["protocol_id"], :name => "index_arms_on_protocol_id"
 
   create_table "associated_surveys", :force => true do |t|
     t.integer  "surveyable_id"
@@ -203,6 +201,22 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
 
   add_index "cover_letters", ["sub_service_request_id"], :name => "index_cover_letters_on_sub_service_request_id"
 
+  create_table "delayed_jobs", :force => true do |t|
+    t.integer  "priority",   :default => 0, :null => false
+    t.integer  "attempts",   :default => 0, :null => false
+    t.text     "handler",                   :null => false
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.string   "queue"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
+
+  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
+
   create_table "dependencies", :force => true do |t|
     t.integer  "question_id"
     t.integer  "question_group_id"
@@ -266,16 +280,12 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
     t.datetime "updated_at",  :null => false
   end
 
-  add_index "epic_queues", ["protocol_id"], :name => "Fk_epic_queues_protocol_id"
-
   create_table "epic_rights", :force => true do |t|
     t.integer  "project_role_id"
     t.string   "right"
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
   end
-
-  add_index "epic_rights", ["project_role_id"], :name => "Fk_epic_rights_project_role_id"
 
   create_table "excluded_funding_sources", :force => true do |t|
     t.integer  "subsidy_map_id"
@@ -340,12 +350,12 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
     t.string   "credentials"
     t.string   "subspecialty"
     t.string   "phone"
-    t.datetime "created_at",                                :null => false
-    t.datetime "updated_at",                                :null => false
+    t.datetime "created_at",                                                       :null => false
+    t.datetime "updated_at",                                                       :null => false
     t.datetime "deleted_at"
     t.boolean  "catalog_overlord"
     t.string   "credentials_other"
-    t.string   "encrypted_password",     :default => "",    :null => false
+    t.string   "encrypted_password",     :default => "",                           :null => false
     t.string   "reset_password_token"
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
@@ -356,7 +366,8 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
     t.string   "last_sign_in_ip"
     t.text     "reason"
     t.string   "company"
-    t.boolean  "approved",               :default => false, :null => false
+    t.boolean  "approved",               :default => false,                        :null => false
+    t.string   "time_zone",              :default => "Eastern Time (US & Canada)"
   end
 
   add_index "identities", ["approved"], :name => "index_identities_on_approved"
@@ -446,9 +457,7 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
     t.datetime "updated_at",      :null => false
   end
 
-  add_index "messages", ["from"], :name => "Fk_messages_from"
   add_index "messages", ["notification_id"], :name => "index_messages_on_notification_id"
-  add_index "messages", ["to"], :name => "Fk_messages_to"
 
   create_table "notes", :force => true do |t|
     t.integer  "identity_id"
@@ -459,7 +468,6 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
     t.integer  "appointment_id"
   end
 
-  add_index "notes", ["appointment_id"], :name => "Fk_notes_appointment_id"
   add_index "notes", ["identity_id"], :name => "index_notes_on_identity_id"
   add_index "notes", ["sub_service_request_id"], :name => "index_notes_on_sub_service_request_id"
 
@@ -477,18 +485,17 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
     t.string   "type"
     t.string   "name"
     t.integer  "order"
-    t.string   "css_class",       :default => ""
+    t.string   "css_class",    :default => ""
     t.text     "description"
     t.integer  "parent_id"
     t.string   "abbreviation"
     t.text     "ack_language"
     t.boolean  "process_ssrs"
     t.boolean  "is_available"
-    t.datetime "created_at",                      :null => false
-    t.datetime "updated_at",                      :null => false
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
     t.datetime "deleted_at"
     t.boolean  "show_in_cwf"
-    t.integer  "position_in_cwf"
   end
 
   add_index "organizations", ["is_available"], :name => "index_organizations_on_is_available"
@@ -537,7 +544,6 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
     t.string   "unit_type"
     t.decimal  "unit_factor",                :precision => 5,  :scale => 2
     t.decimal  "percent_of_fee",             :precision => 5,  :scale => 2
-    t.boolean  "is_one_time_fee"
     t.decimal  "full_rate",                  :precision => 12, :scale => 4
     t.boolean  "exclude_from_indirect_cost"
     t.integer  "unit_minimum"
@@ -594,7 +600,6 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
 
   add_index "procedures", ["appointment_id"], :name => "index_procedures_on_appointment_id"
   add_index "procedures", ["line_item_id"], :name => "index_procedures_on_line_item_id"
-  add_index "procedures", ["service_id"], :name => "Fk_procedures_service_id"
   add_index "procedures", ["visit_id"], :name => "index_procedures_on_visit_id"
 
   create_table "project_roles", :force => true do |t|
@@ -646,6 +651,7 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
     t.datetime "recruitment_start_date"
     t.datetime "recruitment_end_date"
     t.boolean  "selected_for_epic",                                                   :default => false
+    t.boolean  "has_cofc"
   end
 
   add_index "protocols", ["next_ssr_id"], :name => "index_protocols_on_next_ssr_id"
@@ -713,8 +719,6 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
     t.datetime "created_at",             :null => false
     t.datetime "updated_at",             :null => false
   end
-
-  add_index "reports", ["sub_service_request_id"], :name => "Fk_reports_sub_service_request_id"
 
   create_table "research_types_info", :force => true do |t|
     t.integer  "protocol_id"
@@ -846,9 +850,13 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
     t.datetime "deleted_at"
     t.boolean  "send_to_epic",                                         :default => false
     t.integer  "revenue_code_range_id"
+    t.boolean  "one_time_fee",                                         :default => false
+    t.integer  "line_items_count",                                     :default => 0
+    t.text     "components"
   end
 
   add_index "services", ["is_available"], :name => "index_services_on_is_available"
+  add_index "services", ["one_time_fee"], :name => "index_services_on_one_time_fee"
   add_index "services", ["organization_id"], :name => "index_services_on_organization_id"
 
   create_table "sessions", :force => true do |t|
@@ -860,6 +868,22 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
 
   add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
   add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
+
+  create_table "study_type_answers", :force => true do |t|
+    t.integer  "protocol_id"
+    t.integer  "study_type_question_id"
+    t.boolean  "answer"
+    t.datetime "created_at",             :null => false
+    t.datetime "updated_at",             :null => false
+  end
+
+  create_table "study_type_questions", :force => true do |t|
+    t.integer  "order"
+    t.string   "question"
+    t.string   "friendly_id"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
 
   create_table "study_types", :force => true do |t|
     t.integer  "protocol_id"
@@ -887,7 +911,7 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
     t.boolean  "lab_approved",               :default => false
     t.boolean  "imaging_approved",           :default => false
     t.boolean  "src_approved",               :default => false
-    t.boolean  "in_work_fulfillment"
+    t.boolean  "in_work_fulfillment",        :default => false
     t.string   "routing"
     t.text     "org_tree_display"
   end
@@ -1034,9 +1058,7 @@ ActiveRecord::Schema.define(:version => 20150224193019) do
     t.datetime "updated_at",       :null => false
   end
 
-  add_index "toast_messages", ["from"], :name => "Fk_toast_messages_from"
   add_index "toast_messages", ["sending_class_id"], :name => "index_toast_messages_on_sending_class_id"
-  add_index "toast_messages", ["to"], :name => "Fk_toast_messages_to"
 
   create_table "tokens", :force => true do |t|
     t.integer  "service_request_id"

@@ -373,14 +373,12 @@ describe ServiceRequestsController do
     let!(:service) {
       service = FactoryGirl.create(:service, pricing_map_count: 1)
       service.pricing_maps[0].update_attributes(display_date: Date.today)
-      service.pricing_maps[0].update_attributes(is_one_time_fee: false)
       service
     }
 
     let!(:one_time_fee_service) {
-      service = FactoryGirl.create(:service, pricing_map_count: 1)
+      service = FactoryGirl.create(:service, pricing_map_count: 1, one_time_fee: true)
       service.pricing_maps[0].update_attributes(display_date: Date.today)
-      service.pricing_maps[0].update_attributes(is_one_time_fee: true)
       service
     }
 
@@ -554,10 +552,10 @@ describe ServiceRequestsController do
       service = FactoryGirl.create(
           :service,
           pricing_map_count: 1,
+          one_time_fee: true,
           organization_id: core.id)
       service.pricing_maps[0].update_attributes(
           display_date: Date.today,
-          is_one_time_fee: true,
           quantity_minimum: 42)
       service
     }
@@ -566,10 +564,10 @@ describe ServiceRequestsController do
       service = FactoryGirl.create(
           :service,
           pricing_map_count: 1,
+          one_time_fee: true,
           organization_id: core.id)
       service.pricing_maps[0].update_attributes(
           display_date: Date.today,
-          is_one_time_fee: true,
           quantity_minimum: 54)
       service
     }

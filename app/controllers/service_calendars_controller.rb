@@ -33,7 +33,7 @@ class ServiceCalendarsController < ApplicationController
     setup_calendar_pages
 
     # TODO: This needs to be changed for one time fees page in arms
-    @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition {|x| x.is_one_time_fee?} if @sub_service_request
+    @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition {|x| x.one_time_fee} if @sub_service_request
   end
 
   def update
@@ -49,7 +49,7 @@ class ServiceCalendarsController < ApplicationController
     checked = params[:checked]
     qty = params[:qty].to_i
     column = params[:column]
-    
+
     case tab
     when 'template'
       if @line_items_visit
@@ -102,7 +102,7 @@ class ServiceCalendarsController < ApplicationController
     @line_item_total_td = ".total_#{@line_items_visit.id}"
     @line_item_total_study_td = ".total_#{@line_items_visit.id}_per_study"
     @arm_id = '.arm_' + @line_items_visit.arm.id.to_s
-   
+
     if @sub_service_request
       @line_items_visits = @line_items_visit.arm.line_items_visits.reject{|x| x.line_item.sub_service_request_id != @sub_service_request.id }
     elsif @service_request
@@ -116,7 +116,6 @@ class ServiceCalendarsController < ApplicationController
     name = params[:name]
     position = params[:visit_position].to_i
     arm = Arm.find params[:arm_id]
-
     arm.visit_groups[position].update_attribute(:name, name)
   end
 
@@ -183,7 +182,7 @@ class ServiceCalendarsController < ApplicationController
     val = params[:val]
     if params[:type] == 'qty'
       line_item.quantity = val
-      if line_item.check_service_relations(one_time_fees)
+      if line_item.check_service_relations(one_time_fees) && line_item.valid?
         line_item.save
       else
         line_item.reload
@@ -213,7 +212,7 @@ class ServiceCalendarsController < ApplicationController
     move_to_position = params[:move_to_position].to_i
 
     if @portal
-      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.is_one_time_fee?}
+      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
     end
     setup_calendar_pages
 

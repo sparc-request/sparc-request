@@ -35,8 +35,9 @@ class Study < Protocol
     self.setup_study_types
     self.setup_impact_areas
     self.setup_affiliations
+    self.setup_study_type_answers
   end
-  
+
   def setup_study_types
     position = 1
     obj_names = StudyType::TYPES.map{|k,v| k}
@@ -61,7 +62,7 @@ class Study < Protocol
     end
     impact_areas.sort!{|a, b| a.position <=> b.position}
   end
-  
+
   def setup_affiliations
     position = 1
     obj_names = Affiliation::TYPES.map{|k,v| k}
@@ -73,6 +74,13 @@ class Study < Protocol
     end
 
     affiliations.sort!{|a, b| a.position <=> b.position}
+  end
+
+  def setup_study_type_answers
+    StudyTypeQuestion.find_each do |stq|
+      study_type_answer = study_type_answers.detect{|obj| obj.study_type_question_id == stq.id}
+      study_type_answer = study_type_answers.build(study_type_question_id: stq.id) unless study_type_answer
+    end
   end
 
 end

@@ -18,14 +18,22 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-def get_alert_window
-  # TODO: not yet supported by poltergeist
-  if Capybara.javascript_driver == :poltergeist then
-    warn "WARNING: called accept_alert with poltergeist as driver"
-    return
+task :create_user_rights => :environment do
+
+  def prompt(*args)
+      print(*args)
+      STDIN.gets.strip
+  end
+    
+  puts "This task will give an existing user catalog manager, super user, and clinical provider rights for MUSC."
+  id = prompt "Enter user's id: "
+  identity = Identity.find(id.to_i)
+  unless identity.present?
+    id = prompt "That user does not exist, please enter another or run the 'create_user' task to create: "
   end
 
-  prompt = page.driver.browser.switch_to.alert
-  yield prompt if block_given?
+  CatalogManager.create(:identity_id => identity.id, :organization_id => 45, :edit_historic_data => 1)
+  SuperUser.create(:identity_id => identity.id, :organization_id => 45)
+  ClinicalProvider.create(:identity_id => identity.id, :organization_id => 45)
+  identity.update_attributes(:password => 'doc1291', :password_confirmation => 'doc1291')
 end
-

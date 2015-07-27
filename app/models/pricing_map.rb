@@ -27,7 +27,6 @@ class PricingMap < ActiveRecord::Base
   attr_accessible :unit_type
   attr_accessible :unit_factor
   attr_accessible :percent_of_fee
-  attr_accessible :is_one_time_fee
   attr_accessible :full_rate
   attr_accessible :exclude_from_indirect_cost
   attr_accessible :unit_minimum

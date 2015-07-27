@@ -23,18 +23,6 @@ require 'spec_helper'
 describe Portal::NotificationsController do
   stub_portal_controller
 
-  let!(:identity1) { FactoryGirl.create(:identity) }
-  let!(:identity2) { FactoryGirl.create(:identity) }
-
-  let!(:notification1) { Notification.create() }
-  let!(:notification2) { Notification.create() }
-  let!(:notification3) { Notification.create() }
-
-  let!(:user_notification1) { UserNotification.create(identity_id: identity1.id, notification_id: notification1.id) }
-  let!(:user_notification2) { UserNotification.create(identity_id: identity1.id, notification_id: notification2.id) }
-
-  let!(:user_notification3) { UserNotification.create(identity_id: identity2.id, notification_id: notification3.id) }
-
   let!(:institution) { FactoryGirl.create(:institution) }
   let!(:provider) { FactoryGirl.create(:provider, parent_id: institution.id) }
   let!(:program) { FactoryGirl.create(:program, parent_id: provider.id) }
@@ -42,6 +30,19 @@ describe Portal::NotificationsController do
 
   let!(:service_request) { FactoryGirl.create_without_validation(:service_request) }
   let!(:ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
+
+  let!(:identity1) { FactoryGirl.create(:identity) }
+  let!(:identity2) { FactoryGirl.create(:identity) }
+
+  let!(:notification1) { Notification.create() }
+  let!(:notification2) { Notification.create() }
+  let!(:notification3) { Notification.create() }
+  let!(:notification4) { Notification.create(sub_service_request_id: ssr.id) }
+
+  let!(:user_notification1) { UserNotification.create(identity_id: identity1.id, notification_id: notification1.id) }
+  let!(:user_notification2) { UserNotification.create(identity_id: identity1.id, notification_id: notification2.id) }
+
+  let!(:user_notification3) { UserNotification.create(identity_id: identity2.id, notification_id: notification3.id) }
 
   let!(:notification_with_ssr) { Notification.create(sub_service_request_id: ssr.id) }
 
@@ -243,7 +244,7 @@ describe Portal::NotificationsController do
       session[:identity_id] = identity1.id
       post :user_portal_update, {
         format: :json,
-        id: notification1.id,
+        id: notification4.id,
         message: {
           from: identity1.id,
           to:   identity2.id,
@@ -253,11 +254,11 @@ describe Portal::NotificationsController do
         },
       }.with_indifferent_access
 
-      notification1.reload
-      notification1.messages.count.should eq 1
-      message = notification1.messages[0]
+      notification4.reload
+      notification4.messages.count.should eq 1
+      message = notification4.messages[0]
       message.id.should_not eq nil
-      message.notification.should eq notification1
+      message.notification.should eq notification4
       message.sender.should eq identity1
       message.recipient.should eq identity2
       message.email.should eq 'abe.lincoln@whitehouse.gov'
@@ -269,7 +270,7 @@ describe Portal::NotificationsController do
       session[:identity_id] = identity1.id
       post :user_portal_update, {
         format: :json,
-        id: notification1.id,
+        id: notification4.id,
         message: {
           from: identity1.id,
           to:   identity2.id,
@@ -278,7 +279,7 @@ describe Portal::NotificationsController do
           body:    'Four score and seven years ago...',
         },
       }.with_indifferent_access
-      assigns(:notifications).should eq [ notification1, notification2 ]
+      assigns(:notifications).should eq [ notification1, notification2, notification4 ]
     end
 
     it 'should deliver the notification via email' do
@@ -287,7 +288,7 @@ describe Portal::NotificationsController do
       session[:identity_id] = identity1.id
       post :user_portal_update, {
         format: :json,
-        id: notification1.id,
+        id: notification4.id,
         message: {
           from: identity1.id,
           to:   identity2.id,

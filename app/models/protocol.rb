@@ -19,6 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Protocol < ActiveRecord::Base
+
+  include RemotelyNotifiable
+
   audited
 
   has_many :study_types, :dependent => :destroy
@@ -33,6 +36,7 @@ class Protocol < ActiveRecord::Base
   has_many :affiliations, :dependent => :destroy
   has_many :impact_areas, :dependent => :destroy
   has_many :arms, :dependent => :destroy
+  has_many :study_type_answers, :dependent => :destroy
 
   attr_accessible :identity_id
   attr_accessible :next_ssr_id
@@ -75,9 +79,12 @@ class Protocol < ActiveRecord::Base
   attr_accessible :recruitment_start_date
   attr_accessible :recruitment_end_date
   attr_accessible :selected_for_epic
+  attr_accessible :study_type_answers_attributes
+  attr_accessible :has_cofc
 
   attr_accessor :requester_id
   attr_accessor :validate_nct
+  attr_accessor :study_type_questions
 
   accepts_nested_attributes_for :research_types_info
   accepts_nested_attributes_for :human_subjects_info
@@ -89,6 +96,7 @@ class Protocol < ActiveRecord::Base
   accepts_nested_attributes_for :affiliations, :allow_destroy => true
   accepts_nested_attributes_for :project_roles, :allow_destroy => true
   accepts_nested_attributes_for :arms, :allow_destroy => true
+  accepts_nested_attributes_for :study_type_answers, :allow_destroy => true
 
   validation_group :protocol do
     validates :short_title, :presence => true
@@ -96,7 +104,9 @@ class Protocol < ActiveRecord::Base
     validates :funding_status, :presence => true
     validate  :validate_funding_source
     validates :sponsor_name, :presence => true, :if => :is_study?
+    validates :has_cofc, :inclusion => {:in => [true, false], :message => "must be answered"}, :if => :is_study?
     validates_associated :human_subjects_info, :message => "must contain 8 numerical digits", :if => :validate_nct
+    validate  :validate_study_type_answers, :if => :selected_for_epic
   end
 
   validation_group :user_details do
@@ -114,6 +124,41 @@ class Protocol < ActiveRecord::Base
       errors.add(:funding_source, "You must select a funding source")
     elsif self.funding_status == "pending_funding" && self.potential_funding_source.blank?
       errors.add(:potential_funding_source, "You must select a potential funding source")
+    end
+  end
+
+  def validate_study_type_answers
+    friendly_ids = ["higher_level_of_privacy", "certificate_of_conf", "access_study_info", "epic_inbasket", "research_active", "restrict_sending"]
+    answers = {}
+    friendly_ids.each do |fid|
+      q = StudyTypeQuestion.find_by_friendly_id(fid)
+      answers[fid] = study_type_answers.find{|x| x.study_type_question_id == q.id}
+    end
+
+    has_errors = false
+
+    begin
+      if answers["higher_level_of_privacy"].answer.nil?
+        has_errors = true
+      elsif answers["higher_level_of_privacy"].answer == true
+        if answers["certificate_of_conf"].answer.nil? || (answers["certificate_of_conf"].answer == false && answers["access_study_info"].answer.nil?)
+          has_errors = true
+        elsif answers["access_study_info"].answer == false
+          if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?
+            has_errors = true
+          end
+        end
+      elsif answers["higher_level_of_privacy"].answer == false
+        if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?
+          has_errors = true
+        end
+      end
+    rescue
+      has_errors = true
+    end
+
+    if has_errors
+      errors.add(:study_type_questions, "must be selected")
     end
   end
 
@@ -301,6 +346,16 @@ class Protocol < ActiveRecord::Base
     return nil
   end
 
+  def has_nexus_services?
+    self.service_requests.each do |sr|
+      if sr.has_ctrc_clinical_services? and sr.status != 'first_draft'
+        return true
+      end
+    end
+
+    return false
+  end
+
   def find_sub_service_request_with_ctrc current_service_request_id
     id = has_ctrc_clinical_services? current_service_request_id
     service_request = self.service_requests.find id
@@ -388,4 +443,13 @@ class Protocol < ActiveRecord::Base
     end
   end
 
+  private
+
+  def notify_remote_around_update?
+    true
+  end
+
+  def remotely_notifiable_attributes_to_watch_for_change
+    ["short_title"]
+  end
 end

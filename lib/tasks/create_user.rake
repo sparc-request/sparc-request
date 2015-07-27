@@ -50,10 +50,11 @@ task :create_user => :environment do
 
   users = Identity.all
   puts "This task will create a user with all rights for a given organization, for testing and development purposes."
-  user_name = prompt "Enter a user name: "
+  login_id = prompt "Enter musc email: "
+
   users.each do |user|
-    while user.ldap_uid == user_name
-      user_name = prompt "That user already exists, please enter another: "
+    while user.ldap_uid == login_id
+      login_id = prompt "That user already exists, please enter another: "
     end
   end
 
@@ -67,11 +68,11 @@ task :create_user => :environment do
   desired_organization = Organization.find(id.to_i)
   continue = prompt "You have indicated that you wish to have rights for #{desired_organization.name}, do you want to proceed? (Yes/No) "
   if continue == "Yes"
-    puts "Creating #{user_name}..."
-    identity = Identity.create(:ldap_uid => "#{user_name}", 
-                             :email => "#{user_name}@gmail.com", 
+    puts "Creating #{login_id}..."
+    identity = Identity.create(:ldap_uid => "#{login_id}", 
+                             :email => "#{login_id}", 
                              :last_name => 'Castillo', 
-                             :first_name => "#{user_name.capitalize}", 
+                             :first_name => "Juan", 
                              :phone => '555-555-5555', 
                              :catalog_overlord => 1,
                              :password => 'password',
@@ -80,6 +81,8 @@ task :create_user => :environment do
     identity.save
     CatalogManager.create(:identity_id => identity.id, :organization_id => id.to_i, :edit_historic_data => 1)
     SuperUser.create(:identity_id => identity.id, :organization_id => id.to_i)
+    ClinicalProvider.create(:identity_id => identity.id, :organization_id => id.to_i)
+
   else
     puts "Task aborted"
   end

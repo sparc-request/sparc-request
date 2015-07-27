@@ -48,17 +48,31 @@ development:
   use_news_feed: true
   calendar_url: https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics
   send_authorized_user_emails: true
-  no_reply_from: "no-reply@musc.edu" 
+  no_reply_from: "no-reply@musc.edu"
   use_separate_audit_database: true
-  system_satisfaction_survey: false  
+  system_satisfaction_survey: false
+  editable_statuses: { 14: ['first_draft', 'draft', 'submitted', nil, 'get_a_quote', 'awaiting_pi_approval'],
+                     48: ['draft', 'submitted'] }
+  # API
+  remote_service_notifier_protocol: "http"
+  remote_service_notifier_host: "127.0.0.1:5001"
+  remote_service_notifier_path: "/v1/notifications.json"
+  remote_service_notifier_username: ""
+  remote_service_notifier_password: ""
+  host: "127.0.0.1:5000"
+  current_api_version: "v1"
+  # end API
+  bug_enhancement_url: "http://something.com"
+  clinical_work_fulfillment_url: http://fulfillment-future-url.com
+
 
 test:
-  default_mail_to: nobody@nowhere.com 
-  admin_mail_to: nobody@nowhere.com 
+  default_mail_to: nobody@nowhere.com
+  admin_mail_to: nobody@nowhere.com
   feedback_mail_to: "glennj@musc.edu, hundc@musc.edu"
   new_user_cc: "amcates@gmail.com, no-reply@musc.edu"
   system_satisfaction_survey_cc: 'amcates@gmail.com, catesa@musc.edu'
-  root_url: / 
+  root_url: /
   user_portal_link: /portal
   header_link_1: http://sctr.musc.edu
   header_link_2: http://sctr.musc.edu
@@ -74,14 +88,24 @@ test:
   queue_epic_load_error_to: 'glennj@musc.edu, hundc@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu'
   use_google_calendar: true
   # insert sub-directory path to override the three header images + account sign-in image and override application.css
-#  custom_asset_path: image_override/
+  custom_asset_path: image_override/
   # override the MUSC specific displayable text inside config/locales/en.yml with your own text (e.g., institution.yml)
-#  locale_override: institution
+  locale_override: institution
   # override the MUSC specific constants (e.g., constants-institution.yml)
-#  constants_yml_override: -institution
+  constants_yml_override: -institution
   use_news_feed: true
   calendar_url: https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics
   send_authorized_user_emails: true
-  no_reply_from: "no-reply@musc.edu" 
-  # needs to be false for tests to run in travis-ci and will prevent new developers/institutions from having errors during initial install
-  use_separate_audit_database: false
+  no_reply_from: "no-reply@musc.edu"
+  use_separate_audit_database: true
+  # API
+  remote_service_notifier_protocol: "http"
+  remote_service_notifier_host: "127.0.0.1:5001"
+  remote_service_notifier_path: "/v1/notifications.json"
+  remote_service_notifier_username: ""
+  remote_service_notifier_password: ""
+  host: "127.0.0.1:5000"
+  current_api_version: "v1"
+  # end API
+  bug_enhancement_url: "http://something.com"
+  clinical_work_fulfillment_url: http://fulfillment-future-url.com

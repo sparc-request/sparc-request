@@ -111,7 +111,6 @@ module CapybaraSupport
       effective_date:               Date.yesterday,
       unit_type:                    'Per Query',
       unit_factor:                  1,
-      is_one_time_fee:              1,
       quantity_type:                'Each',
       quantity_minimum:             5,
       otf_unit_type:                'Week',
@@ -128,6 +127,7 @@ module CapybaraSupport
       cpt_code:             '',
       organization_id:      program.id,
       is_available:         true,
+      one_time_fee:         1,
       pricing_maps:         [program_service_pricing_map])
     program_service.save!      
 
@@ -136,7 +136,6 @@ module CapybaraSupport
       effective_date:               Date.yesterday,
       unit_type:                    'Per Query',
       unit_factor:                  1,
-      is_one_time_fee:              1,
       quantity_type:                'Each',
       quantity_minimum:             5,
       otf_unit_type:                'Week',
@@ -152,6 +151,7 @@ module CapybaraSupport
       order:                1,
       cpt_code:             '',
       organization_id:      core.id,
+      one_time_fee:         1,
       pricing_maps:         [service_pricing_map])
     service.save!
     
@@ -221,7 +221,6 @@ module CapybaraSupport
       effective_date:               Date.yesterday,
       unit_type:                    'Each',
       unit_factor:                  1,
-      is_one_time_fee:              0,
       full_rate:                    4500.0000,
       exclude_from_indirect_cost:   0,
       unit_minimum:                 1,

@@ -19,6 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class SubServiceRequest < ActiveRecord::Base
+
+  include RemotelyNotifiable
+
   audited
 
   after_save :update_past_status, :update_org_tree
@@ -35,7 +38,7 @@ class SubServiceRequest < ActiveRecord::Base
   has_many :cover_letters, :dependent => :destroy
   has_one :subsidy, :dependent => :destroy
   has_many :reports, :dependent => :destroy
-  has_many :notification, :dependent => :destroy
+  has_many :notifications, :dependent => :destroy
 
   # These two ids together form a unique id for the sub service request
   attr_accessible :service_request_id
@@ -62,15 +65,19 @@ class SubServiceRequest < ActiveRecord::Base
   accepts_nested_attributes_for :line_items, allow_destroy: true
   accepts_nested_attributes_for :payments, allow_destroy: true
 
-  after_save :work_fulfillment
+  def formatted_status
+    if AVAILABLE_STATUSES.has_key? status
+      AVAILABLE_STATUSES[status]
+    else
+      "STATUS MAPPING NOT PRESENT"
+    end
+  end
 
-  def work_fulfillment
-    if self.in_work_fulfillment_changed?
-      if self.in_work_fulfillment
-        self.service_request.arms.each do |arm|
-          arm.populate_subjects if arm.subjects.empty?
-        end
-      end
+  def stored_percent_subsidy
+    if subsidy.present?
+      subsidy.stored_percent_subsidy
+    else
+      0
     end
   end
 
@@ -90,7 +97,7 @@ class SubServiceRequest < ActiveRecord::Base
   def set_effective_date_for_cost_calculations
     self.line_items.each{|li| li.pricing_scheme = 'effective'}
   end
-  
+
   def unset_effective_date_for_cost_calculations
     self.line_items.each{|li| li.pricing_scheme = 'displayed'}
   end
@@ -152,14 +159,15 @@ class SubServiceRequest < ActiveRecord::Base
 
   def one_time_fee_line_items
     line_items = LineItem.where(:sub_service_request_id => self.id).includes(:service)
-    line_items.select {|li| li.service.is_one_time_fee?}
+    line_items.select {|li| li.service.one_time_fee}
   end
 
   def per_patient_per_visit_line_items
     line_items = LineItem.where(:sub_service_request_id => self.id).includes(:service)
-    line_items.select {|li| !li.service.is_one_time_fee?}    
+
+    line_items.select {|li| !li.service.one_time_fee}
   end
-  
+
   def has_one_time_fee_services?
     one_time_fee_line_items.count > 0
   end
@@ -173,7 +181,7 @@ class SubServiceRequest < ActiveRecord::Base
     total = 0.0
 
     self.line_items.each do |li|
-      if li.service.is_one_time_fee?
+      if li.service.one_time_fee
         total += li.direct_costs_for_one_time_fee
       else
         total += li.direct_costs_for_visit_based_service
@@ -197,7 +205,7 @@ class SubServiceRequest < ActiveRecord::Base
     total = 0.0
 
     self.line_items.each do |li|
-      if li.service.is_one_time_fee?
+      if li.service.one_time_fee
        total += li.indirect_costs_for_one_time_fee
       else
        total += li.indirect_costs_for_visit_based_service
@@ -230,7 +238,7 @@ class SubServiceRequest < ActiveRecord::Base
       rescue
         services = self.organization.all_child_services.select {|x| x.is_available?}
       end
-    end 
+    end
 
     services
   end
@@ -264,20 +272,22 @@ class SubServiceRequest < ActiveRecord::Base
     self.organization.tag_list.include? "ctrc"
   end
 
-  # Can't edit a Nexus ssr if it's placed in an uneditable status
+  # Can't edit a request if it's placed in an uneditable status
   def can_be_edited?
-    if (nexus_editable_status?(self.status) || !self.ctrc?)
-      return true
+    if EDITABLE_STATUSES.keys.include? self.organization.id
+      EDITABLE_STATUSES[self.organization.id].include?(self.status)
+    else
+      true
     end
-
-    return false
   end
 
-  # If the ssr can't be edited AND it's a Nexus request AND there are multiple ssrs under it's service request
+  # If the ssr can't be edited AND it's a request that restricts editing AND there are multiple ssrs under it's service request
   # (no need to create a new sr if there's only one ssr) AND it's previous status was an editable one
   # AND it's new status is an uneditable one, then create a new sr and place the ssr under it. Probably don't need the last condition.
   def update_based_on_status previous_status
-    if !self.can_be_edited? && self.ctrc? && (self.service_request.sub_service_requests.count > 1) && nexus_editable_status?(previous_status) && !nexus_editable_status?(self.status)
+    if !self.can_be_edited? && EDITABLE_STATUSES.keys.include?(self.organization.id) && (self.service_request.sub_service_requests.count > 1) &&
+                            EDITABLE_STATUSES[self.organization.id].include?(previous_status) &&
+                            !EDITABLE_STATUSES[self.organization.id].include?(self.status)
       self.switch_to_new_service_request
     end
   end
@@ -289,10 +299,10 @@ class SubServiceRequest < ActiveRecord::Base
 
     #update line items
     self.line_items.each {|li| li.update_attributes(service_request_id: new_sr.id)}
-    
+
     #create new documents and/or change service request id for existing documents
     documents_to_create = []
-    
+
     self.documents.each do |doc|
       if doc.sub_service_requests.count == 1
         doc.update_attributes(service_request_id: new_sr.id)
@@ -300,7 +310,7 @@ class SubServiceRequest < ActiveRecord::Base
         documents_to_create << doc
       end
     end
-    
+
     documents_to_create.each do |doc|
       new_document = Document.create :document => doc.document, :doc_type => doc.doc_type, :doc_type_other => doc.doc_type_other, :service_request_id => new_sr.id
       self.documents << new_document
@@ -308,10 +318,6 @@ class SubServiceRequest < ActiveRecord::Base
     end
 
     self.update_attributes(service_request_id: new_sr.id)
-  end
-
-  def nexus_editable_status? status
-    ['first_draft', 'draft', 'submitted', nil, 'get_a_quote'].include?(status)
   end
 
   def arms_editable?
@@ -404,7 +410,7 @@ class SubServiceRequest < ActiveRecord::Base
   ##########################
   ## SURVEY DISTRIBUTTION ##
   ##########################
- 
+
   def distribute_surveys
     # e-mail primary PI and requester
     primary_pi = service_request.protocol.primary_principal_investigator
@@ -414,15 +420,15 @@ class SubServiceRequest < ActiveRecord::Base
     available_surveys = line_items.map{|li| li.service.available_surveys}.flatten.compact.uniq
 
     # do nothing if we don't have any available surveys
-    
+
     unless available_surveys.blank?
       SurveyNotification.service_survey(available_surveys, primary_pi, self).deliver
       SurveyNotification.service_survey(available_surveys, requester, self).deliver
     end
   end
-  
+
   ### audit reporting methods ###
-  
+
   def audit_label audit
     "Service Request #{display_id}"
   end
@@ -433,7 +439,7 @@ class SubServiceRequest < ActiveRecord::Base
     filtered_audit_trail = {:line_items => []}
 
     full_trail = service_request.audit_report(identity, start_date, end_date)
-    full_line_items_audits = full_trail[:line_items] 
+    full_line_items_audits = full_trail[:line_items]
 
     full_line_items_audits.each do |k, audits|
       # if line item was created and destroyed in the same session we don't care to see it because it wasn't submitted
@@ -448,10 +454,20 @@ class SubServiceRequest < ActiveRecord::Base
       # destroy action
       else
         filtered_audit_trail[:line_items] << audit if audit.audited_changes["sub_service_request_id"] == self.id
-      end 
-    end 
+      end
+    end
     filtered_audit_trail[:sub_service_request_id] = self.id
     filtered_audit_trail
   end
   ### end audit reporting methods ###
+
+  private
+
+  def notify_remote_around_update?
+    true
+  end
+
+  def remotely_notifiable_attributes_to_watch_for_change
+    ['in_work_fulfillment']
+  end
 end

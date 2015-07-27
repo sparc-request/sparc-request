@@ -37,7 +37,7 @@ $(document).ready ->
         collapsible: true,
         active: false
       })
-    
+
     create_date_display: (changed_element, selector, str) ->
       date = Date.parse($(changed_element).val())
       arr = $(selector)
@@ -76,6 +76,35 @@ $(document).ready ->
           $(changed_element).siblings().val('')
   }
 
+  add_service_level_component_input = (position) ->
+    html      = "<tr id='service_component_position_#{position}'><td><input class='service_component_field' position='#{position}' type='text'></td></tr>"
+    table     = $('fieldset.service_level_components table tbody')
+    table.append html
+
+  update_components_field = () ->
+    hidden_field = $("input[name='service[components]']")
+    inputs = $('fieldset.service_level_components input[type="text"]')
+    components_string = ""
+    inputs.each ->
+      input = $(@)
+      if input.val().length > 0
+        components_string += input.val() + ","
+    hidden_field.val(components_string)
+
+  $(document).on 'click', 'fieldset.service_level_components button.add', ->
+    input_count   = $('fieldset.service_level_components').find('input[type="text"]').length
+    new_input_ids = [input_count, input_count += 1, input_count += 1]
+
+    add_service_level_component_input new_input_id for new_input_id in new_input_ids
+
+  $(document).on 'change', '.service_component_field', ->
+    update_components_field()
+
+  $(document).on 'click', 'fieldset.service_level_components button.delete', ->
+    position = $(this).attr('position')
+    $("#service_component_position_#{position}").remove()
+    update_components_field()
+
   $('.add_pricing_map').live('click', ->
     blank_pricing_map = $('.blank_pricing_map').html()
     $('.pricing_map_accordion').append(blank_pricing_map)
@@ -84,6 +113,9 @@ $(document).ready ->
     $('.blank_field_errors').css('display', 'inline-block')
     $('.per_patient_errors').css('display', 'inline-block')
     $('.save_button').attr('disabled', true)
+    if $('.one_time_fee').is(":checked")
+      $('.otf_field_errors').show()
+      $(".per_patient_errors").hide()
   )
 
   $('.remove_pricing_map').live('click', ->
@@ -113,13 +145,13 @@ $(document).ready ->
   $('.pricing_map_effective_date_hidden').live('change', ->
     Sparc.services.create_date_display(this, $(this).attr('date_type'), 'effective')
   )
-  
+
   $('.pricing_map_display_date_hidden').live('change', ->
     Sparc.services.create_date_display(this, $(this).attr('date_type'), 'display')
   )
 
   # $(document).on('input')
-  
+
   $(".rate_field").live('change', ->
     unless $(this).hasClass('service_rate')
       old_value = $(this).attr('old_value')
@@ -128,7 +160,7 @@ $(document).ready ->
         $(this).attr('old_value', old_value)
         $(this).val(old_value)
   )
-  
+
   $('.service_rate').live('change', ->
     rate = $(this).val()
     organization_id = $(this).attr('organization_id')
@@ -145,4 +177,4 @@ $(document).ready ->
         service_rate.closest('tr').siblings('.member_rate_row').find('.set_rate').html("#{data.member_rate}")
     })
   )
-  
+

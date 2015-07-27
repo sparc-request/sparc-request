@@ -54,6 +54,7 @@ $(document).ready ->
   $('.add-user button').live 'click', ->
     data = $('#identity_details :input').serialize()
     data += '&portal=' + $("#portal").val()
+    data += '&protocol_use_epic=' + $("#user_search_term").data('protocol_use_epic')
     $.ajax
       url: '/identities/add_to_protocol'
       type: 'POST'
@@ -85,28 +86,6 @@ $(document).ready ->
 
   $('.ask-us-button').click ->
     toggle_form_slide()
-
-  $(document).on('click', '.epic_access_radio_yes', ->
-    identity_id = $(this).attr('identity_id')
-    show_epic_access(identity_id)
-  )
-
-  $(document).on('click', '.epic_access_edit', ->
-    identity_id = $(this).attr('identity_id')
-    $("#epic_access_yes_#{identity_id}").click()
-  )
-
-show_epic_access = (identity_id) ->
-  $(".epic_access_dialog#project_role_identity_#{identity_id}").dialog({
-    height: 425
-    width: 500
-    modal: true
-    title: 'Epic User Access'
-    buttons:
-      Ok: ->
-        $(this).dialog('destroy')
-  })
-
 
 (exports ? this).toggle_form_slide = ->
   if $('.ask-a-question-form-container').is(":visible")

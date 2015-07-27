@@ -145,7 +145,7 @@ describe 'as a user on catalog page', :js => true do
       wait_for_javascript_to_finish
 
       service.reload
-      retry_until { service.is_one_time_fee?.should eq(false) }
+      retry_until { service.one_time_fee.should eq(false) }
     end
 
     context 'validations' do

@@ -340,6 +340,7 @@ class SubServiceRequest < ActiveRecord::Base
   # Make sure that @prev_status is set whenever status is changed.
   def status= status
     @prev_status = self.status
+    reset_approvals_when_submitted status
     super(status)
   end
 
@@ -350,6 +351,13 @@ class SubServiceRequest < ActiveRecord::Base
     old_status = self.past_statuses.last
     if @prev_status and (not old_status or old_status.status != @prev_status)
       self.past_statuses.create(:status => @prev_status, :date => Time.now)
+    end
+  end
+
+  def reset_approvals_when_submitted new_status
+    if new_status == 'submitted' && !self.approvals.empty?
+      self.approvals.destroy_all
+      self.update_attributes(:nursing_nutrition_approved => false, :lab_approved => false, :imaging_approved => false, :src_approved => false)
     end
   end
 

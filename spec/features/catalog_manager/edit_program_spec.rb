@@ -59,7 +59,7 @@ RSpec.describe 'edit a program', js: true do
         first("#save_button").click
         expect(page).to have_content('Office of Biomedical Informatics saved successfully')
         expect(find('#program_tag_list_ctrc')).to be_checked
-        expect(@program.tag_list).to eq(['clinical work fulfillment', 'ctrc'])
+        expect(@program.tag_list).to eq(["clinical work fulfillment program #{@program.id}", 'ctrc'])
       end
     end
 
@@ -100,9 +100,6 @@ RSpec.describe 'edit a program', js: true do
     end
 
     context "viewing cwf section" do
-      it "should display cwf by default" do
-        expect(page).to have_css('#cwf_fieldset')
-      end
 
       it "should display cwf if tagged with cwf" do
         first('#program_tag_list_clinical_work_fulfillment').click

@@ -82,7 +82,7 @@ module CapybaraSupport
       abbreviation:         'Informatics',
       process_ssrs:         0,
       is_available:         1)
-    program.tag_list.add("clinical work fulfillment")
+    program.tag_list.add("clinical work fulfillment program #{program.id}")
     program.save!
 
     subsidy_map = SubsidyMap.create(

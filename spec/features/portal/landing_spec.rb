@@ -21,13 +21,12 @@
 require 'rails_helper'
 
 RSpec.describe "landing page", js: true do
+
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
 
-  after :each do
-    wait_for_javascript_to_finish
-  end
+  let(:identity) { Identity.find_by_ldap_uid 'jug2' }
 
   describe "notifications link" do
     it 'should work' do
@@ -59,32 +58,28 @@ RSpec.describe "landing page", js: true do
     end
 
     it 'should bring up the edit user box' do
-      within(".Julia") do
-        find("a.edit-associated-user-button").click
-        wait_for_javascript_to_finish
-      end
+      test_user     = create(:identity, last_name:'Glenn2', first_name:'Julia2', ldap_uid:'jug3', institution:'medical_university_of_south_carolina', college:'college_of_medecine', department:'other', email:'glennj2@musc.edu', credentials:'BS,    MRA', catalog_overlord: true, password:'p4ssword', password_confirmation:'p4ssword', approved: true)
+      project_role  = create(:project_role, protocol_id: service_request.protocol.id, identity_id: test_user.id, project_rights: "approve", role: "co-investigator")
+
+      find("tr[data-user-id='#{test_user.id}'] .edit-associated-user-button").click
+
       expect(page).to have_text("Edit an Authorized User")
     end
 
     it 'should allow user to delete users' do
-      test_user = create(:identity, last_name:'Glenn2', first_name:'Julia2', ldap_uid:'jug3', institution:'medical_university_of_south_carolina', college:'college_of_medecine', department:'other', email:'glennj2@musc.edu', credentials:'BS,    MRA', catalog_overlord: true, password:'p4ssword', password_confirmation:'p4ssword', approved: true)
-      project_role = create(:project_role, protocol_id: service_request.protocol.id, identity_id: test_user.id, project_rights: "approve", role: "co-investigator")
-      visit portal_root_path
+      test_user     = create(:identity, last_name:'Glenn2', first_name:'Julia2', ldap_uid:'jug3', institution:'medical_university_of_south_carolina', college:'college_of_medecine', department:'other', email:'glennj2@musc.edu', credentials:'BS,    MRA', catalog_overlord: true, password:'p4ssword', password_confirmation:'p4ssword', approved: true)
+      project_role  = create(:project_role, protocol_id: service_request.protocol.id, identity_id: test_user.id, project_rights: "approve", role: "co-investigator")
 
-      accept_alert do
-        find("tr.Julia2 .delete-associated-user-button").click
-      end
-      expect(page).not_to have_css("tr.Julia2")
+      find("tr[data-user-id='#{test_user.id}'] .delete-associated-user-button").click
+      wait_for_javascript_to_finish
+
+      expect(page).not_to have_css("tr[data-user-id='#{test_user.id}']")
     end
 
     it 'should not delete the user if only pi' do
+      find("tr[data-user-id='#{identity.id}'] .delete-associated-user-button").click
 
-      accept_alert do
-        within(".Julia") do
-          find("a.delete-associated-user-button").click
-        end
-      end
-      expect(page).to have_css('tr.Julia')
+      expect(page).to have_css("tr[data-user-id='#{identity.id}']")
     end
 
     it 'should bring up the add user box' do
@@ -130,6 +125,7 @@ RSpec.describe "landing page", js: true do
      it "should click button in user portal" do
       find('.portal_create_new_study').click
       wait_for_javascript_to_finish
+
       expect(page).to have_content "Short Title"
     end
   end

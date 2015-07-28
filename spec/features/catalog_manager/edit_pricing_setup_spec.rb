@@ -25,7 +25,7 @@ RSpec.describe 'edit a pricing setup', js: true do
   before :each do
     default_catalog_manager_setup
     click_link("Office of Biomedical Informatics")
-    sleep 2
+    wait_for_javascript_to_finish
     page.execute_script("$('.ui-accordion-header').click()")
   end
 
@@ -119,20 +119,28 @@ end
 
 def enter_display_date
   page.execute_script("$('.display_date:visible').focus()")
-  sleep 2
+
   page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move three months forward
   page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") }
   page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") }
   page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15
-  sleep 2
+
+  # close datepicker, which may overlap other elements on the page
+  page.execute_script %Q{ $('.display_date').datepicker('destroy') }
+  page.execute_script %Q{ $('.displat_date').hide() }
+  wait_for_javascript_to_finish
 end
 
 def enter_effective_date
   page.execute_script("$('.effective_date:visible').focus()")
-  sleep 2
+
   page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move three months forward
   page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") }
   page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") }
   page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15
-  sleep 2
+
+  # close datepicker, which may overlap other elements on the page
+  page.execute_script %Q{ $('.effective_date').datepicker('destroy') }
+  page.execute_script %Q{ $('.effective_date').hide() }
+  wait_for_javascript_to_finish
 end

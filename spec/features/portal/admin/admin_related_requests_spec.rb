@@ -35,7 +35,7 @@ RSpec.describe "admin related service requests tab", js: true do
 
   it "should list the service request" do
     within "div#related_service_requests" do
-      expect(find("#requests tr td:first")).to have_content("#{sub_service_request.ssr_id}")
+      expect(first("#requests tr td")).to have_content("#{sub_service_request.ssr_id}")
     end
   end
 

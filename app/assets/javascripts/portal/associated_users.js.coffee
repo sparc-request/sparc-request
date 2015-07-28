@@ -38,7 +38,7 @@ $(document).ready ->
         other          : ['.credentials_other']
 
     ready: ->
-        
+
       $('.associated-user-button').live('click', ->
         if $(this).data('permission')
           $('.add-associated-user-dialog').dialog('open')
@@ -212,11 +212,12 @@ $(document).ready ->
       })
 
     createTip: (element) ->
-      if ($('#tip').length == 0) then $('<div>')
-        .html('<span>Drag and drop this item within a project to add.</span><span class="arrow"></span>')
-        .attr('id', 'tip')
-        .css({ left: element.pageX + 30, top: element.pageY - 16 })
-        .appendTo('body').fadeIn(2000)
+      if $('#tip').length == 0
+        $('<div>').
+          html('<span>Drag and drop this item within a project to add.</span><span class="arrow"></span>').
+          attr('id', 'tip').
+          css({ left: element.pageX + 30, top: element.pageY - 16 }).
+          appendTo('body').fadeIn(2000)
       else null
 
     disableSubmitButton: (containing_text, change_to) ->

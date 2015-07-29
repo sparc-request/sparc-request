@@ -73,15 +73,6 @@ RSpec.describe "creating a new project ", js: true do
       expect(find(".edit_project_id")).to have_value Protocol.last.id.to_s
     end
   end
-
-  def fill_autocomplete(field, options = {})
-    fill_in field, with: options[:with]
-    page.execute_script %Q{ $('##{field}').trigger('focus') }
-    page.execute_script %Q{ $('##{field}').trigger('keydown') }
-    selector = %Q{ul.ui-autocomplete li.ui-menu-item a:contains('#{options[:with]}')}
-    expect(page).to have_css('ul.ui-autocomplete li.ui-menu-item a')
-    page.execute_script %Q{ $("##{selector}").trigger('mouseenter').click() }
-  end
 end
 
 RSpec.describe "editing a project" do
@@ -109,5 +100,4 @@ RSpec.describe "editing a project" do
       expect(find("#project_short_title")).to have_value("Patsy")
     end
   end
-
 end

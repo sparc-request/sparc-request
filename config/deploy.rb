@@ -73,7 +73,7 @@ end
 namespace :mysql do
   desc "performs a backup (using mysqldump) in app shared dir"
   task :backup, :roles => :db, :only => { :primary => true } do
-    unless ENV['skip_db_backups']
+    if ENV['perform_db_backups']
       filename = "#{application}.db_backup.#{Time.now.to_f}.sql.bz2"
       filepath = "#{shared_path}/database_backups/#{filename}"
       text = capture "cat #{shared_path}/config/database.yml"
@@ -94,7 +94,7 @@ namespace :mysql do
 
   desc "removes all database backups that are older than days_to_keep_backups"
   task :cleanup_backups, :roles => :db, :only => { :primary => true } do
-    unless ENV['skip_db_backups']
+    if ENV['perform_db_backups']
       backup_dir = "#{shared_path}/database_backups"
       # Gets the output of ls as a string and splits on new lines and
       # selects the bziped files.
@@ -132,18 +132,17 @@ end
 namespace :delayed_job do
   desc "Start delayed_job process" 
   task :start, :roles => :app do
-    run "cd #{current_path} && BUNDLE_GEMFILE=Gemfile RAILS_ENV=#{rails_env} bundle exec script/delayed_job start" 
+    run "cd #{current_path} && RAILS_ENV=#{rails_env} bundle exec script/delayed_job start"
   end
 
   desc "Stop delayed_job process" 
   task :stop, :roles => :app do
-    run "cd #{current_path} && bundle exec script/delayed_job stop RAILS_ENV=#{rails_env}" 
-    run "cd #{current_path} && BUNDLE_GEMFILE=Gemfile RAILS_ENV=#{rails_env} bundle exec script/delayed_job stop" 
+    run "cd #{current_path} && RAILS_ENV=#{rails_env} bundle exec script/delayed_job stop"
   end
 
   desc "Restart delayed_job process" 
   task :restart, :roles => :app do
-    run "cd #{current_path} && BUNDLE_GEMFILE=Gemfile RAILS_ENV=#{rails_env} bundle exec script/delayed_job restart" 
+    run "cd #{current_path} && RAILS_ENV=#{rails_env} bundle exec script/delayed_job restart" 
   end
 end
 

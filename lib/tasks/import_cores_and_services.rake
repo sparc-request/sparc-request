@@ -41,6 +41,7 @@ namespace :data do
                           full_uid = (uid << args[:uid_domain]).strip
                           super_user = core.super_users.new
                           super_user.identity = Identity.where(:ldap_uid => full_uid).first
+                          raise "Error: super user ["+full_uid+"] not found in database" unless super_user.identity
                           if super_user.save
                             puts "Inserted: Super User["+full_uid+"] for Core["+row[3].to_s+"] "      
                           else
@@ -55,6 +56,7 @@ namespace :data do
                           full_uid = (uid << args[:uid_domain]).strip
                           service_provider = core.service_providers.new
                           service_provider.identity = Identity.where(:ldap_uid => full_uid).first
+                          raise "Error: service provider ["+full_uid+"] not found in database" unless service_provider.identity
                           if service_provider.save
                             puts "Inserted: Service Provider["+full_uid+"] for Core["+row[3].to_s+"] "    
                           else
@@ -71,6 +73,7 @@ namespace :data do
                           full_uid = (uid << args[:uid_domain]).strip
                           catalog_manager = core.catalog_managers.new
                           catalog_manager.identity = Identity.where(:ldap_uid => full_uid).first
+                          raise "Error: catalog_manager ["+full_uid+"] not found in database" unless catalog_manager.identity
                           if catalog_manager.save
                             puts "Inserted: Catalog Manager["+full_uid+"] for Core["+row[3].to_s+"] "   
                           else
@@ -105,19 +108,19 @@ namespace :data do
                   end
                   # create new service if it doesn't already exist
                   if service.nil?
+                    is_one_time_fee = (row[13] == 'OT' ? true : false)
                     service = Service.new(:name => row[4],
                                         :description => row[5],
                                         :abbreviation => row[4],
                                         :order => row[6],
                                         :organization_id => organization_id,
-                                        :is_available => (row[7] == 'N' ? true : false))         
-                  
-                    is_one_time_fee = (row[13] == 'OT' ? true : false)
+                                        :is_available => (row[7] == 'N' ? true : false),
+                                        :one_time_fee => is_one_time_fee)         
+      
                     pricing_map = service.pricing_maps.build(:display_date => Date.strptime(row[10], "%m/%d/%y"),
                                                           :effective_date => Date.strptime(row[11], "%m/%d/%y"),
                                                           :full_rate => Service.dollars_to_cents(row[12].to_s.strip.gsub("$", "").gsub(",", "")),
                                                           :unit_factor => (is_one_time_fee ? row[20] : row[15]), 
-                                                          :is_one_time_fee => is_one_time_fee,
                                                           # one time fee specific fields
                                                           :units_per_qty_max => (is_one_time_fee ? row[21] : nil),
                                                           :otf_unit_type => (is_one_time_fee ? row[19] : nil), # one time fee unit type

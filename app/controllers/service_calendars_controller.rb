@@ -20,7 +20,7 @@
 
 class ServiceCalendarsController < ApplicationController
   before_filter :initialize_service_request
-  before_filter(:except => [:merged_calendar]) {|c| params[:portal] == 'true' ? true : c.send(:authorize_identity)}
+  before_filter(:except => [:merged_calendar, :rename_visit]) {|c| params[:portal] == 'true' ? true : c.send(:authorize_identity)}
   layout false
 
   def table
@@ -116,7 +116,7 @@ class ServiceCalendarsController < ApplicationController
     name = params[:name]
     position = params[:visit_position].to_i
     arm = Arm.find params[:arm_id]
-    arm.visit_groups[position].update_attribute(:name, name)
+    arm.visit_groups[position].update_attributes(:name => name)
   end
 
   def set_day

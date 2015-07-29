@@ -28,8 +28,8 @@ RSpec.describe "creating a new study ", js: true do
 
   before :each do
     visit protocol_service_request_path service_request.id
+    expect(page).to have_css('.new-study')
     click_link "New Study"
-    wait_for_javascript_to_finish
   end
 
   describe "submitting a blank form" do
@@ -48,27 +48,24 @@ RSpec.describe "creating a new study ", js: true do
     it "should clear errors and submit the form" do
       fill_in "study_short_title", with: "Bob"
       fill_in "study_title", with: "Dole"
+      choose('study_has_cofc_true')
       fill_in "study_sponsor_name", with: "Captain Kurt 'Hotdog' Zanzibar"
       select "Funded", from: "study_funding_status"
       select "Federal", from: "study_funding_source"
 
       find('.continue_button').click
-      wait_for_javascript_to_finish
 
       select "Primary PI", from: "project_role_role"
       click_button "Add Authorized User"
-      wait_for_javascript_to_finish
+      sleep 1
 
-      fill_in "user_search_term", with: "bjk7"
-      wait_for_javascript_to_finish
+      fill_autocomplete('user_search_term', with: 'bjk7')
+      save_and_open_screenshot
       page.find('a', text: "Brian Kelsey (kelsey@musc.edu)", visible: true).click()
-      wait_for_javascript_to_finish
       select "Billing/Business Manager", from: "project_role_role"
       click_button "Add Authorized User"
-      wait_for_javascript_to_finish
 
       find('.continue_button').click
-      wait_for_javascript_to_finish
 
       expect(find(".edit_study_id")).to have_value Protocol.last.id.to_s
     end

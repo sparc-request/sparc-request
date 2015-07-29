@@ -106,7 +106,7 @@ def build_per_patient_per_visit_services
 end
 
 def build_service_request
-  let!(:service_request)     { FactoryGirl.create(:service_request_without_validations, status: "draft") }
+  let!(:service_request)     { FactoryGirl.create(:service_request_without_validations, status: "first_draft") }
   let!(:institution)         { create(:institution,name: 'Medical University of South Carolina', order: 1, abbreviation: 'MUSC', is_available: 1)}
   let!(:provider)            { create(:provider,parent_id:institution.id,name: 'South Carolina Clinical and Translational Institute (SCTR)',order: 1,css_class: 'blue-provider', abbreviation: 'SCTR1',process_ssrs: 0,is_available: 1)}
   let!(:program)             { create(:program,type:'Program',parent_id:provider.id,name:'Office of Biomedical Informatics',order:1, abbreviation:'Informatics', process_ssrs:  0, is_available: 1, show_in_cwf: true)}
@@ -116,14 +116,14 @@ def build_service_request
   let!(:core_16)             { create(:core, parent_id: program.id, abbreviation: "Lab and Biorepository", show_in_cwf: true) }
   let!(:core_15)             { create(:core, parent_id: program.id, abbreviation: "Imaging", show_in_cwf: true) }
   let!(:core_62)             { create(:core, parent_id: program.id, abbreviation: "PWF Services", show_in_cwf: true) }
-  let!(:sub_service_request) { create(:sub_service_request, ssr_id: "0001", service_request_id: service_request.id, organization_id: program.id,status: "draft")}
+  let!(:sub_service_request) { create(:sub_service_request, ssr_id: "0001", service_request_id: service_request.id, organization_id: program.id,status: "first_draft")}
 
 
   before :each do
     program.tag_list.add("ctrc")
     program.save
     service_request.update_attribute(:service_requester_id, Identity.find_by_ldap_uid("jug2").id)
-    service_request.update_attribute(:status, 'draft')
+    service_request.update_attribute(:status, 'first_draft')
   end
 end
 

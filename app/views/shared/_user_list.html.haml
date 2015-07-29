@@ -18,9 +18,6 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.add-user
-  %div{:style => 'padding-left:395px; padding-bottom: 55px; margin-top: -157px;'}
-    = button_tag @can_edit ? t(:user_details)[:update_button] : t(:user_details)[:add_button], :class => 'dark-blue-button add-authorized-user btn btn-primary', :style => 'border:none; width:150px;'
 %table.authorized-users
   %thead
     %tr

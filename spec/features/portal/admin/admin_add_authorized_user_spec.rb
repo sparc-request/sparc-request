@@ -53,7 +53,7 @@ RSpec.describe 'associated users tab', js: true do
     visit portal_admin_sub_service_request_path sub_service_request.id
     page.find('a', text: "Associated Users", visible: true).click()
   end
-  describe 'adding an authrozied user' do
+  describe 'adding an authorized user' do
 
     before :each do
       page.find(".associated-user-button", visible: true).click()
@@ -61,17 +61,15 @@ RSpec.describe 'associated users tab', js: true do
     end
 
     describe 'clicking the add button' do
-      it "should show add authrozied user dialog box" do
+      it "should show add authorized user dialog box" do
         expect(page).to have_text 'Add User'
       end
     end
 
     describe 'searching for an user' do
       before :each do
-        fill_in 'user_search', with: 'bjk7'
-        wait_for_javascript_to_finish
-        page.find('a', text: "Brian Kelsey", visible: true).click()
-        wait_for_javascript_to_finish
+        fill_autocomplete('user_search', with: 'bjk7');
+        page.find('a', text: "Brian Kelsey (kelsey@musc.edu)", visible: true).click()
       end
 
       it 'should remove the black shield' do
@@ -96,6 +94,10 @@ RSpec.describe 'associated users tab', js: true do
         end
 
         it 'should throw errors when missing a role or project rights' do
+          # Wait for form to activate before we submit.
+          # Submitting too fast before this has occured will
+          # send the controller no protocol id.
+          expect(find('#full_name')).to have_value 'Brian Kelsey'
           click_button("add_authorized_user_submit_button")
           expect(page).to have_text "Role can't be blank"
           expect(page).to have_text "Project_rights can't be blank"
@@ -105,15 +107,11 @@ RSpec.describe 'associated users tab', js: true do
           select "Co-Investigator", from: 'project_role_role'
           choose 'project_role_project_rights_request'
           click_button("add_authorized_user_submit_button")
-          wait_for_javascript_to_finish
 
           page.find(".associated-user-button", visible: true).click()
-          wait_for_javascript_to_finish
 
-          fill_in 'user_search', with: 'bjk7'
-          wait_for_javascript_to_finish
+          fill_autocomplete('user_search', with: 'bjk7')
           page.find('a', text: "Brian Kelsey", visible: true).click()
-          wait_for_javascript_to_finish
 
           select "Co-Investigator", from: 'project_role_role'
           choose 'project_role_project_rights_request'
@@ -128,39 +126,34 @@ RSpec.describe 'associated users tab', js: true do
   describe 'removing an authorized user' do
 
     describe 'clicking the remove button' do
-      before :each do
-        within("#user_#{jug2.id}") do
-          page.find('.delete-associated-user-button', visible: true).click
+
+      it 'should ask for confirmation' do
+        accept_alert("Projects require a PI. Please add a new one before continuing.") do
+          accept_confirm("Are you sure?") do
+            within("#user_#{jug2.id}") do
+              page.find('.delete-associated-user-button', visible: true).click
+            end
+          end
         end
       end
 
-      it 'should ask for confirmation' do
-        a = page.driver.browser.switch_to.alert
-        expect(a.text).to eq "Are you sure?"
-        a.accept
-
-        a = page.driver.browser.switch_to.alert
-        expect(a.text).to eq "Projects require a PI. Please add a new one before continuing."
-        a.accept
-      end
-
       it 'should not allow the only PD/PI to be removed' do
-        a = page.driver.browser.switch_to.alert
-        a.accept
-
-        a = page.driver.browser.switch_to.alert
-        expect(a.text).to eq "Projects require a PI. Please add a new one before continuing."
-        a.accept
+        accept_alert("Projects require a PI. Please add a new one before continuing.") do
+          accept_confirm do
+            within("#user_#{jug2.id}") do
+              page.find('.delete-associated-user-button', visible: true).click
+            end
+          end
+        end
       end
     end
 
     it 'should remove non PD/PIs from the list' do
-      within("#user_#{bob.id}") do
-        page.find('.delete-associated-user-button', visible: true).click
+      accept_confirm('Are you sure?') do
+        within("#user_#{bob.id}") do
+          page.find('.delete-associated-user-button', visible: true).click
+        end
       end
-      a = page.driver.browser.switch_to.alert
-      a.accept
-      wait_for_javascript_to_finish
       within('#users') do
         expect(page).not_to have_selector("#user_#{bob.id}")
       end
@@ -172,7 +165,6 @@ RSpec.describe 'associated users tab', js: true do
       within("#user_#{jug2.id}") do
         find('.edit-associated-user-button').click
       end
-      wait_for_javascript_to_finish
       page.find('#project_role_role', visible: true).select "Co-Investigator"
       click_button("edit_authorized_user_submit_button")
       expect(page).to have_text 'Must include one Primary PI.'
@@ -182,7 +174,6 @@ RSpec.describe 'associated users tab', js: true do
       within("#user_#{jug2.id}") do
         find('.edit-associated-user-button').click
       end
-      wait_for_javascript_to_finish
       expect(find('#full_name', visible: true)).to have_value "Julia Glenn"
       expect(find('#email', visible: true)).to have_value "glennj@musc.edu"
     end

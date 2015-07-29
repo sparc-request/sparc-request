@@ -30,6 +30,7 @@ namespace :data do
                                 :name => row['Procedure Name'],
                                 :abbreviation => row['Procedure Name'],
                                 :order => nil,
+                                :one_time_fee => (row['Is One Time Fee?'] == 'Y' ? true : false),
                                 :is_available => true)
 
             service.tag_list = "epic" if row['Send to Epic'] == 'Y'
@@ -43,7 +44,6 @@ namespace :data do
                                                   :federal_rate => calculated_rate,
                                                   :member_rate => calculated_rate, 
                                                   :other_rate => calculated_rate, 
-                                                  :is_one_time_fee => (row['Is One Time Fee?'] == 'Y' ? true : false),
                                                   :unit_type => (row['Is One Time Fee?'] == 'Y' ? nil : row['Clinical Qty Type']),
                                                   :quantity_type => (row['Is One Time Fee?'] != 'Y' ? nil : row['Clinical Qty Type']),
                                                   :unit_factor => row['Unit Factor'],
@@ -69,7 +69,7 @@ namespace :data do
           end
         end
       rescue Exception => e
-        puts "Usage: rake data:import_hospital_services rate_file=tmp/hospital_file.csv"
+        puts "Usage: rake data:import_hospital_services hospital_file=tmp/hospital_file.csv"
         puts e.message
       end
     end

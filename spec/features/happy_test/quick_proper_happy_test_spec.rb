@@ -40,10 +40,20 @@ RSpec.describe 'A Quick Happy Test on Sparc Proper', :happy_test do
   let!(:service_provider)  { create(:service_provider, organization_id: program.id, identity_id: jug2.id) }
   let!(:service_provider2) { create(:service_provider, organization_id: program2.id, identity_id: jug2.id) }
 
+  before(:each) do
+    StudyTypeQuestion.create("order"=>1, "question"=>"1a. Does your study require a higher level of privacy for the participants?", "friendly_id"=>"higher_level_of_privacy")
+    StudyTypeQuestion.create("order"=>2, "question"=>"1b. Does your study have a Certificate of Confidentiality?", "friendly_id"=>"certificate_of_conf")
+    StudyTypeQuestion.create("order"=>3, "question"=>"1c. Do participants enrolled in your study require a second DEIDENTIFIED Medical Record that is not connected to their primary record in Epic?", "friendly_id"=>"access_study_info")
+    StudyTypeQuestion.create("order"=>4, "question"=>"2. Do you wish to receive a notification via Epic InBasket when your research participants are admitted to the hospital or ED?", "friendly_id"=>"epic_inbasket")
+    StudyTypeQuestion.create("order"=>5, "question"=>"3. Do you wish to remove the 'Research: Active' indicator in the Patient Header for your study participants?", "friendly_id"=>"research_active")
+    StudyTypeQuestion.create("order"=>6, "question"=>"4. Do you need to restrict the sending of study related results, such as laboratory and radiology results, to a participants MyChart?", "friendly_id"=>"restrict_sending")
+  end
+
   it 'should properly make you happy in a quick manner', js: true do
     visit root_path
 
     #**Submit a service request**#
+    wait_for_javascript_to_finish
     addService 'CDW'
     addService 'Breast Milk Collection'
     find('.submit-request-button').click
@@ -53,6 +63,7 @@ RSpec.describe 'A Quick Happy Test on Sparc Proper', :happy_test do
     #**Create a new Study**#
     click_link("New Study")
     wait_for_javascript_to_finish
+    find('#study_has_cofc_true').click
     fill_in "study_short_title", with: "Bob"
     fill_in "study_title", with: "Dole"
     fill_in "study_sponsor_name", with: "Captain Kurt 'Hotdog' Zanzibar"
@@ -62,16 +73,15 @@ RSpec.describe 'A Quick Happy Test on Sparc Proper', :happy_test do
     #**END Create a new Study END**#
 
     #**Select Users**#
+    expect(page).to have_css('#project_role_role')
+
     select "Primary PI", from: "project_role_role"
     click_button "Add Authorized User"
-    wait_for_javascript_to_finish
-    fill_in "user_search_term", with: "bjk7"
-    wait_for_javascript_to_finish
+    fill_autocomplete('user_search_term', with: 'bjk7')
     page.find('a', text: "Brian Kelsey (kelsey@musc.edu)", visible: true).click()
     wait_for_javascript_to_finish
     select "Billing/Business Manager", from: "project_role_role"
     click_button "Add Authorized User"
-    wait_for_javascript_to_finish
 
     #test edit epic rights here
     # editEpicUserAccess
@@ -95,16 +105,20 @@ RSpec.describe 'A Quick Happy Test on Sparc Proper', :happy_test do
     end
     page.execute_script %Q{ $("a.ui-state-default:contains('#{endDay}')").filter(function(){return $(this).text()==='#{endDay}';}).trigger("click") } # click on end day
     wait_for_javascript_to_finish
+
         #Add Arm 1**
+    fill_in "study_arms_attributes_0_name", with: "ARM 1"
     fill_in "study_arms_attributes_0_subject_count", with: "5" # 5 subjects
-    fill_in "study_arms_attributes_0_visit_count", with: "5" # 5 visit
+    fill_in "study_arms_attributes_0_visit_count", with: "8" # 8 visit
     wait_for_javascript_to_finish
     saveAndContinue
     #**END Select Dates and Arms END**#
 
     #**Completing Visit Calender**#
-    setVisitDays('ARM 1',5) #set days in increasing order
+    wait_for_javascript_to_finish
+    setVisitDays('ARM 1',8) #set days in increasing order
     check('visits_2') #Check 1st visit
+    select 'Visits 6 - 8 of 8', from: 'jump_to_visit_1'
     check('visits_7') #Check 2nd visit
     check('visits_8') #Check 3rd visit
     first(:xpath, "//input[@class='line_item_quantity']").set("3") #set CDW quantity to 3

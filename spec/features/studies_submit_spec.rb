@@ -27,6 +27,7 @@ RSpec.describe "creating a new study ", js: true do
   build_service_request_with_study()
 
   before :each do
+    service_request.update_attribute(:status, "first_draft")
     visit protocol_service_request_path service_request.id
     expect(page).to have_css('.new-study')
     click_link "New Study"
@@ -57,10 +58,9 @@ RSpec.describe "creating a new study ", js: true do
 
       select "Primary PI", from: "project_role_role"
       click_button "Add Authorized User"
-      sleep 1
+      sleep 1 
 
-      fill_autocomplete('user_search_term', with: 'bjk7')
-      save_and_open_screenshot
+      fill_in "user_search_term", :with => "bjk7"
       page.find('a', text: "Brian Kelsey (kelsey@musc.edu)", visible: true).click()
       select "Billing/Business Manager", from: "project_role_role"
       click_button "Add Authorized User"

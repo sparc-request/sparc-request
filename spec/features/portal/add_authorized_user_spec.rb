@@ -29,7 +29,6 @@ RSpec.describe 'adding an authorized user', js: true do
   before :each do
     visit portal_root_path
     page.find(".associated-user-button", visible: true).click()
-    wait_for_javascript_to_finish
   end
 
   describe 'clicking the add button' do
@@ -41,12 +40,11 @@ RSpec.describe 'adding an authorized user', js: true do
   describe 'searching for an user' do
     before :each do
       fill_in 'user_search', with: 'bjk7'
-      wait_for_javascript_to_finish
       page.find('a', text: "Brian Kelsey", visible: true).click()
-      wait_for_javascript_to_finish
     end
 
     it 'should display the users information' do
+      expect(page).to have_css('#full_name')
       expect(find('#full_name')).to have_value 'Brian Kelsey'
     end
 
@@ -86,15 +84,12 @@ RSpec.describe 'adding an authorized user', js: true do
         select "Co-Investigator", from: 'project_role_role'
         choose 'project_role_project_rights_request'
         click_button("add_authorized_user_submit_button")
-        wait_for_javascript_to_finish
 
+        expect(page).to have_css('.associated-user-button')
         page.find(".associated-user-button", visible: true).click()
-        wait_for_javascript_to_finish
 
         fill_in 'user_search', with: 'bjk7'
-        wait_for_javascript_to_finish
         page.find('a', text: "Brian Kelsey", visible: true).click()
-        wait_for_javascript_to_finish
 
         select "Co-Investigator", from: 'project_role_role'
         choose 'project_role_project_rights_request'

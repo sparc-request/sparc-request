@@ -115,11 +115,12 @@ $(document).ready ->
             alert(alert_message1)
           else
             if confirm(confirm_message)
+              # Seems like the only way to pass parameters when performing a DELETE ajax
+              # request is through the URL.
               $.ajax
                 dataType: 'script'
                 type: 'delete'
-                data: {sub_service_request_id: sub_service_request_id}
-                url: "/portal/associated_users/#{pr_id}/"
+                url: "/portal/associated_users/#{pr_id}?sub_service_request_id=#{sub_service_request_id}"
                 success: ->
                   if sub_service_request_id
                     # Nothing

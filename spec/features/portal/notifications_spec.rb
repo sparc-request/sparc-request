@@ -39,7 +39,6 @@ RSpec.describe "notifications page", js: true do
   it "should allow user to view unread message" do
     find("td.subject_column").click
     save_and_open_screenshot
-    wait_for_javascript_to_finish
     expect(find("div.shown-message-body")).to be_visible
   end
 

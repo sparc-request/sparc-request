@@ -78,9 +78,6 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
-    capybara-email (2.4.0)
-      capybara (~> 2.4)
-      mail
     capybara-webkit (1.6.0)
       capybara (>= 2.3.0, < 2.5.0)
       json
@@ -122,6 +119,9 @@ GEM
     domain_name (0.5.24)
       unf (>= 0.0.5, < 1.0.0)
     dynamic_form (1.1.4)
+    email_spec (1.6.0)
+      launchy (~> 2.1)
+      mail (~> 2.2)
     equalizer (0.0.11)
     equivalent-xml (0.6.0)
       nokogiri (>= 1.4.3)
@@ -405,7 +405,6 @@ DEPENDENCIES
   cache_digests
   capistrano
   capistrano-ext
-  capybara-email
   capybara-webkit
   coffee-rails
   connection_pool
@@ -413,6 +412,7 @@ DEPENDENCIES
   delayed_job_active_record
   devise (~> 3.5.1)
   dynamic_form
+  email_spec
   equivalent-xml
   exception_notification
   execjs

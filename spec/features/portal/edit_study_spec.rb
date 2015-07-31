@@ -24,12 +24,15 @@ RSpec.describe "editing a study", js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
-  build_service_request_with_study()
+  build_study_type_questions
+  build_service_request_with_study
 
   let(:numerical_day) { Date.today.strftime("%d").gsub(/^0/,'') }
 
   before :each do
     visit edit_portal_protocol_path service_request.protocol.id
+    find('#study_has_cofc_true').click
+    wait_for_javascript_to_finish
   end
 
   context "validations" do
@@ -38,6 +41,7 @@ RSpec.describe "editing a study", js: true do
       select("Pending Funding", from: "Proposal Funding Status")
       click_button "Save"
       expect(page).to have_content("1 error prohibited this study from being saved")
+      expect(page).to have_content("You must select a potential funding source")
     end
 
     it "should raise an error message if study's status is funded but no funding source is selected" do
@@ -45,6 +49,7 @@ RSpec.describe "editing a study", js: true do
       select("Select a Funding Source", from: "study_funding_source")
       click_button "Save"
       expect(page).to have_content("1 error prohibited this study from being saved")
+      expect(page).to have_content('You must select a funding source')
     end
   end
 
@@ -119,7 +124,6 @@ RSpec.describe "editing a study", js: true do
     end
 
     describe "editing the funding start date" do
-
       it "should change and save the date" do
         page.execute_script("$('#funding_start_date').focus()")
         wait_for_javascript_to_finish
@@ -143,13 +147,16 @@ RSpec.describe "editing a study", js: true do
   context "pending funding fields" do
 
     before :each do
+      expect(page).to have_css('#study_funding_status')
       select("Pending Funding", from: "Proposal Funding Status")
+      expect(page).to have_css('#study_potential_funding_source', visible: true)
       select("Federal", from: "study_potential_funding_source")
     end
 
     describe "editing the funding opportunity number" do
 
       it "should save the new funding opportunity number" do
+        wait_for_javascript_to_finish
         fill_in "study_funding_rfa", with: "12345"
         click_button "Save"
         visit edit_portal_protocol_path service_request.protocol.id
@@ -161,7 +168,6 @@ RSpec.describe "editing a study", js: true do
 
       it "should change and save the date" do
         page.execute_script("$('#potential_funding_start_date').focus()")
-        wait_for_javascript_to_finish
         first('a.ui-state-default.ui-state-highlight').click #click on today's date
         wait_for_javascript_to_finish
         expect(find("#potential_funding_start_date")).to have_value((Date.today).strftime('%-m/%d/%Y'))

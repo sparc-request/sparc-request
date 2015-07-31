@@ -40,26 +40,27 @@ RSpec.describe SurveyNotification do
   let(:response_set)  { mock_model(ResponseSet, user_id: identity.id, survey_id: survey.id, access_code: 'abc123', survey: survey) }
 
   describe 'system satisfaction survey' do
+
     let(:mail) { SurveyNotification.system_satisfaction_survey(response_set) }
 
     #ensure that the subject is correct
     it 'renders the subject' do
-      expect(mail.subject).to eq "[Test - EMAIL TO #{ADMIN_MAIL_TO} AND CC TO amcates@gmail.com, catesa@musc.edu] System satisfaction survey completed in SPARC Request"
+      expect(mail).to have_subject("[Test - EMAIL TO catesa@musc.edu AND CC TO amcates@gmail.com, catesa@musc.edu] System satisfaction survey completed in SPARC Request")
     end
 
     #ensure that the receiver is correct
     it 'renders the receiver email' do
-      expect(mail.from).to eq ['nobody@nowhere.com'] # set in application.yml as the default_mail_to
+      expect(mail).to deliver_from('nobody@nowhere.com') # set in application.yml as the default_mail_to
     end
 
     #ensure that the sender is correct
     it 'renders the sender email' do
-      expect(mail.to).to eq [DEFAULT_MAIL_TO]
+      expect(mail).to deliver_to(DEFAULT_MAIL_TO)
     end
 
     #ensure that the e-mail body is correct
     it 'contains survey name' do
-      expect(mail.body.encoded).to include("#{identity.display_name}\r\nhas completed a system satisfaction survey.\r\nResults can be found\r\n<a href=\"http://localhost:0/surveys/system-satisfaction-survey/abc123\">here</a>\r\n")
+      expect(mail).to have_body_text("#{identity.display_name}\r\nhas completed a system satisfaction survey.\r\nResults can be found\r\n<a href=\"http://localhost:0/surveys/system-satisfaction-survey/abc123\">here</a>\r\n")
     end
   end
 
@@ -74,22 +75,22 @@ RSpec.describe SurveyNotification do
 
     #ensure that the subject is correct
     it 'renders the subject' do
-      expect(mail.subject).to eq "[Test - EMAIL TO #{ADMIN_MAIL_TO} AND CC TO amcates@gmail.com, catesa@musc.edu] SPARC Request Survey Notification"
+      expect(mail).to have_subject("[Test - EMAIL TO #{ADMIN_MAIL_TO} AND CC TO amcates@gmail.com, catesa@musc.edu] SPARC Request Survey Notification")
     end
 
     #ensure that the receiver is correct
     it 'renders the receiver email' do
-      expect(mail.to).to eq [DEFAULT_MAIL_TO]
+      expect(mail).to deliver_to(DEFAULT_MAIL_TO)
     end
 
     #ensure that the sender is correct
     it 'renders the sender email' do
-      expect(mail.from).to eq ['no-reply@musc.edu']
+      expect(mail).to deliver_from('no-reply@musc.edu')
     end
 
     #ensure that the e-mail body is correct
     it 'contains survey name' do
-      expect(mail.body.encoded).to include("Dear #{identity.full_name},\r\n<br>\r\n<br>\r\nThank you for requesting services from\r\n#{ssr_institution(institution)} - #{ssr_provider(provider)} - #{ssr_program_core(core)}.\r\nThe service(s) you requested have now been completed.\r\n<br>\r\nPlease click on the link(s) below to complete the following survey(s) regarding the service(s) you received. Your feedback is important and appreciated!\r\n<br>\r\n<br>\r\n<ul></ul>\r\n<li><a href=\"http://localhost:0/direct_link_to/system-satisfaction-survey?survey_version=0\">System Satisfaction survey</a></li>\r\n")
+      expect(mail).to have_body_text("Dear #{identity.full_name},\r\n<br>\r\n<br>\r\nThank you for requesting services from\r\n#{ssr_institution(institution)} - #{ssr_provider(provider)} - #{ssr_program_core(core)}.\r\nThe service(s) you requested have now been completed.\r\n<br>\r\nPlease click on the link(s) below to complete the following survey(s) regarding the service(s) you received. Your feedback is important and appreciated!\r\n<br>\r\n<br>\r\n<ul></ul>\r\n<li><a href=\"http://localhost:0/direct_link_to/system-satisfaction-survey?survey_version=0\">System Satisfaction survey</a></li>\r\n")
     end
   end
 end

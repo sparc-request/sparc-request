@@ -138,7 +138,7 @@ module CapybaraProper
         #allows javascript to complete
         #by clicking in a nonactive part of the page
         #then calls wait for javascript to finish method.
-        first(:xpath, "//div[@class='welcome']").click
+        first("div.welcome").click
         wait_for_javascript_to_finish
     end
 
@@ -1093,6 +1093,7 @@ module CapybaraProper
     def documentsPage
         click_link "Add a New Document"
         file = Tempfile.new 'doc'
+        expect(page).to have_css('#document')
         first(:xpath,"//input[@id='document']").set(file.path)
         select "Other", from: "doc_type"
         first(:xpath,"//input[@id='process_ssr_organization_ids_']").click

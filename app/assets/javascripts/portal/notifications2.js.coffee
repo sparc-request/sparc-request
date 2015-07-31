@@ -42,7 +42,7 @@ $(document).ready ->
         enableSubmitButton("Please wait...", "Submit")
         $(this).dialog('close')
 
-  $(document).on('click', 'tr.notification_row td.notification_icon, td.from_column, td.subject_column, td.body_column, td.received_column, .notifications_popup tr', ->
+  $(document).on('click', 'tr.notification_row td.notification_icon, td.from_column, td.srid_column, td.subject_column, td.body_column, td.received_column, .notifications_popup tr', ->
     id = $(this).data('notification_id')
     sub_service_request_id = $(this).data('sub_service_request_id')
     # The following data hash assembly refuses to work on one line -_-

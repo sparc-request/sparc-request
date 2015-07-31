@@ -65,32 +65,6 @@ RSpec.describe 'SubServiceRequest' do
     end
   end
 
-  describe '.stored_percent_subsidy' do
-
-    context 'Subsidy present' do
-
-      it 'should return: subsidy.stored_percent_subsidy' do
-        sub_service_request = SubServiceRequest.first
-        subsidy             = sub_service_request.subsidy
-
-        subsidy.update_attribute :stored_percent_subsidy, 9.9
-
-        expect(sub_service_request.stored_percent_subsidy).to eq(9.9)
-      end
-    end
-
-    context 'Subsidy not present' do
-
-      it 'should return: nil' do
-        sub_service_request = SubServiceRequest.first
-
-        subsidy.update_attribute :stored_percent_subsidy, nil
-
-        expect(sub_service_request.stored_percent_subsidy).not_to be
-      end
-    end
-  end
-
   context 'clinical work fulfillment' do
 
     it 'should populate the subjects when :in_work_fulfillment is set to true' do

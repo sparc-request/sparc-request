@@ -4,19 +4,16 @@ RSpec.describe "creating a new study from user portal", js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
-
+  build_study_type_questions
   before :each do
     visit new_portal_protocol_path
-  end
-
-  after :each do
-    wait_for_javascript_to_finish
   end
 
   describe "submitting a blank form" do
 
     before :each do
       find('.continue_button').click
+      wait_for_javascript_to_finish
     end
 
     it "should show errors" do
@@ -27,10 +24,10 @@ RSpec.describe "creating a new study from user portal", js: true do
     end
 
     it 'should remove errors when the form is filled in' do
-      wait_for_javascript_to_finish
       fill_in "study_short_title", with: "Bob"
       fill_in "study_title", with: "Dole"
       fill_in "study_sponsor_name", with: "Captain Kurt 'Hotdog' Zanzibar"
+      find('#study_has_cofc_true').click
       select "Funded", from: "study_funding_status"
       select "Federal", from: "study_funding_source"
       find('.continue_button').click
@@ -45,6 +42,7 @@ RSpec.describe "creating a new study from user portal", js: true do
       fill_in "study_short_title", with: "Bob"
       fill_in "study_title", with: "Dole"
       fill_in "study_sponsor_name", with: "Captain Kurt 'Hotdog' Zanzibar"
+      find('#study_has_cofc_true').click
       select "Funded", from: "study_funding_status"
       select "Federal", from: "study_funding_source"
       find('.continue_button').click

@@ -23,10 +23,10 @@ ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 
 require 'spec_helper'
+require 'email_spec'
 require 'rspec/rails'
 require 'faker'
 require 'paperclip/matchers'
-require 'capybara/email/rspec'
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.

@@ -41,7 +41,8 @@ RSpec.describe "admin index page", js: true do
     end
 
     it "should have a service request listed in draft status" do
-      expect(page).to have_content 'Draft (1)'
+      select('Draft', :from => 'service_request_workflow_states')
+      expect(page).to have_content 'Draft'
     end
 
     it "should show sub service requests for the status I have selected" do
@@ -94,7 +95,8 @@ RSpec.describe "admin index page", js: true do
       end
 
       it "should not open if I click an expandable field" do
-        find('ul.services_first li').click()
+        find(:css, 'ul.services_first li').click()
+        save_and_open_screenshot
         wait_for_javascript_to_finish
         expect(page).not_to have_content('Send Notifications')
       end

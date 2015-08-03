@@ -55,11 +55,12 @@ RSpec.describe 'edit a program', js: true do
       end
 
       it "should be able to check a tag box" do
+        find('#program_tag_list_clinical_work_fulfillment').click
         find('#program_tag_list_ctrc').click
         first("#save_button").click
         expect(page).to have_content('Office of Biomedical Informatics saved successfully')
         expect(find('#program_tag_list_ctrc')).to be_checked
-        expect(@program.tag_list).to eq(["clinical work fulfillment program #{@program.id}", 'ctrc'])
+        expect(@program.tag_list).to eq(["ctrc", "clinical work fulfillment"])
       end
     end
 

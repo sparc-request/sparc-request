@@ -90,13 +90,12 @@ RSpec.describe "admin index page", js: true do
     describe "opening a sub service request" do
 
       before :each do
-        select('Draft (1)', from: 'service_request_workflow_states')
+        select('Draft', from: 'service_request_workflow_states')
         wait_for_javascript_to_finish
       end
 
       it "should not open if I click an expandable field" do
-        find(:css, 'ul.services_first li').click()
-        save_and_open_screenshot
+        find('ul.services_first li').click()
         wait_for_javascript_to_finish
         expect(page).not_to have_content('Send Notifications')
       end

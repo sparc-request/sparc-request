@@ -27,10 +27,11 @@ RSpec.feature 'catalog managers' do
 
   scenario 'user adds and deletes new catalog manager to institution', js: true do
     add_catalog_manager
+    save_and_open_page
     within "#cm_info" do
       expect(page).to have_text("Jason Leonard (leonarjp@musc.edu)")
     end
-    accept_alert("Are you sure you want to remove rights for this user from the Catalog Manager?") do
+    accept_confirm do
       within "#cm_info" do
         page.all("img.cm_delete")[1].click
       end

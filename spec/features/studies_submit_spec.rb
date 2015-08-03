@@ -20,58 +20,6 @@
 
 require 'rails_helper'
 
-RSpec.describe "creating a new study ", js: true do
-  let_there_be_lane
-  let_there_be_j
-  fake_login_for_each_test
-  build_service_request_with_study()
-
-  before :each do
-    service_request.update_attribute(:status, "first_draft")
-    visit protocol_service_request_path service_request.id
-    expect(page).to have_css('.new-study')
-    click_link "New Study"
-  end
-
-  describe "submitting a blank form" do
-
-    it "should show errors when submitting a blank form" do
-      find('.continue_button').click
-      expect(page).to have_content("Short title can't be blank")
-      expect(page).to have_content("Title can't be blank")
-      expect(page).to have_content("Funding status can't be blank")
-      expect(page).to have_content("Sponsor name can't be blank")
-    end
-  end
-
-  describe "submitting a filled form" do
-
-    it "should clear errors and submit the form" do
-      fill_in "study_short_title", with: "Bob"
-      fill_in "study_title", with: "Dole"
-      choose('study_has_cofc_true')
-      fill_in "study_sponsor_name", with: "Captain Kurt 'Hotdog' Zanzibar"
-      select "Funded", from: "study_funding_status"
-      select "Federal", from: "study_funding_source"
-
-      find('.continue_button').click
-
-      select "Primary PI", from: "project_role_role"
-      click_button "Add Authorized User"
-      sleep 1 
-
-      fill_in "user_search_term", :with => "bjk7"
-      page.find('a', text: "Brian Kelsey (kelsey@musc.edu)", visible: true).click()
-      select "Billing/Business Manager", from: "project_role_role"
-      click_button "Add Authorized User"
-
-      find('.continue_button').click
-
-      expect(find(".edit_study_id")).to have_value Protocol.last.id.to_s
-    end
-  end
-end
-
 RSpec.describe "editing a study", js: true do
   let_there_be_lane
   let_there_be_j
@@ -106,6 +54,5 @@ RSpec.describe "editing a study", js: true do
       find('.continue_button').click
       expect(find("#study_project_roles_attributes_#{jpl6.id}_epic_access_false")).to be_checked
     end
-
   end
 end

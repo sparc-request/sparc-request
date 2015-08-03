@@ -106,21 +106,20 @@
           = f.label :sponsor_name, t(:study_form)[:sponsor_name]
           = f.text_field :sponsor_name
 
-        - if USE_EPIC
-          .field
-            = f.label :selected_for_epic, t(:study_form)[:push_to_epic]
-            %span.non_standard_usage_of_radio_buttons
-              = f.radio_button :selected_for_epic, true
-              = f.label :selected_for_epic, "Yes"
-              = f.radio_button :selected_for_epic, false
-              = f.label :selected_for_epic, "No"
-            .study_type{style: "#{f.object.selected_for_epic ? '' : 'display:none;'}"}
-              = f.label :study_type_questions
-              = f.fields_for :study_type_answers do |answer|
-                .field{id: "study_type_answer_#{answer.object.study_type_question.friendly_id}", style: (answer.object.study_type_question.friendly_id == 'higher_level_of_privacy' ? '' : "display:none")}
-                  = answer.label :answer, answer.object.study_type_question.question, class: "long"
-                  = answer.select :answer, options_for_select([['Yes', true], ['No', false]], answer.object.answer), {include_blank: "Select One"}, id: "study_type_answer_#{answer.object.study_type_question.friendly_id}_answer"
-                  = answer.hidden_field :study_type_question_id
+        .field{:style => "#{USE_EPIC ? nil : 'display:none;'}"}
+          = f.label :selected_for_epic, t(:study_form)[:push_to_epic]
+          %span.non_standard_usage_of_radio_buttons
+            = f.radio_button :selected_for_epic, true
+            = f.label :selected_for_epic, "Yes"
+            = f.radio_button :selected_for_epic, false
+            = f.label :selected_for_epic, "No"
+          .study_type{style: "#{f.object.selected_for_epic ? '' : 'display:none;'}"}
+            = f.label :study_type_questions
+            = f.fields_for :study_type_answers do |answer|
+              .field{id: "study_type_answer_#{answer.object.study_type_question.friendly_id}", style: (answer.object.study_type_question.friendly_id == 'higher_level_of_privacy' ? '' : "display:none")}
+                = answer.label :answer, answer.object.study_type_question.question, class: "long"
+                = answer.select :answer, options_for_select([['Yes', true], ['No', false]], answer.object.answer), {include_blank: "Select One"}, id: "study_type_answer_#{answer.object.study_type_question.friendly_id}_answer"
+                = answer.hidden_field :study_type_question_id
 
       %fieldset
         %legend= t(:study_form)[:optional_text]

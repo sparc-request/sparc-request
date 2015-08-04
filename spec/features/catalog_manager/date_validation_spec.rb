@@ -21,90 +21,81 @@
 require 'rails_helper'
 
 RSpec.feature 'effective and display date validations', js: true do
+
   before :each do
     default_catalog_manager_setup
   end
 
   scenario 'user cannot select the same effective date as an existing pricing_map' do
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
-    sleep 1
-
+    wait_for_javascript_to_finish
     first('#pricing').click
-    sleep 1
-
+    wait_for_javascript_to_finish
     first('.add_pricing_setup').click
+    wait_for_javascript_to_finish
     first('.pricing_setup_accordion h3').click
-    sleep 1
-
+    wait_for_javascript_to_finish
     page.execute_script("$('.effective_date:visible').focus()")
-    sleep 1
-
-    message = accept_confirm do
-      first('.ui-datepicker-today').click #click on today's date
+    wait_for_javascript_to_finish
+    message = accept_alert do
+      first('.ui-datepicker-today').click
     end
+    wait_for_javascript_to_finish
 
     expect(message).to eq('A pricing map already exists with that effective date.  Please choose another date.')
   end
 
   scenario 'user cannot select the same display date as an existing pricing_map' do
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
-    sleep 1
+    wait_for_javascript_to_finish
     first('#pricing').click
-    sleep 1
-
+    wait_for_javascript_to_finish
     first('.add_pricing_setup').click
+    wait_for_javascript_to_finish
     first('.pricing_setup_accordion h3').click
-    sleep 1
-
+    wait_for_javascript_to_finish
     page.execute_script("$('.display_date:visible').focus()")
-    sleep 1
-
-    message = accept_confirm do
-      first('.ui-datepicker-today').click #click on today's date
+    wait_for_javascript_to_finish
+    message = accept_alert do
+      find('.ui-datepicker-today').click
     end
+    wait_for_javascript_to_finish
 
     expect(message).to eq('A pricing map already exists with that display date.  Please choose another date.')
   end
 
   scenario 'confirmation appears when a user selects an effective date that is before an existing effective date' do
     click_link("Office of Biomedical Informatics")
-    sleep 1
-
+    wait_for_javascript_to_finish
     first('#pricing').click
-    sleep 1
-
+    wait_for_javascript_to_finish
     first('.add_pricing_setup').click
     all('.pricing_setup_accordion h3').last.click
-    sleep 1
-
+    wait_for_javascript_to_finish
     page.execute_script("$('.effective_date:visible').focus()")
-    sleep 1
-    page.execute_script %Q{ $('a.ui-datepicker-prev').trigger("click") } # go back one month
-
+    wait_for_javascript_to_finish
+    page.execute_script %Q{ $('a.ui-datepicker-prev').trigger("click") }
+    wait_for_javascript_to_finish
     message = dismiss_confirm do
       page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15
     end
+    wait_for_javascript_to_finish
 
     expect(message).to eq('This effective date is before the effective date of existing pricing maps, are you sure you want to do this?')
   end
 
-  scenario 'an alert will pop when a user selects an effective date in the increase/decrease rates dialog that is
-            the same as a pricing map' do
-
+  scenario 'an alert will pop when a user selects an effective date in the increase/decrease rates dialog that is the same as a pricing map' do
     click_link('South Carolina Clinical and Translational Institute (SCTR)')
-    sleep 1
-
+    wait_for_javascript_to_finish
     first('#pricing').click
-    sleep 1
-
+    wait_for_javascript_to_finish
     first('.increase_decrease_rates').click
-
     page.execute_script("$('.change_rate_display_date:visible').focus()")
-    sleep 1
-
-    message = accept_confirm do
+    wait_for_javascript_to_finish
+    message = accept_alert do
       first('a.ui-state-default.ui-state-highlight').click #click on today's date
     end
+    wait_for_javascript_to_finish
 
     expect(message).to eq('A pricing map already exists with that display date.  Please choose another date.')
   end

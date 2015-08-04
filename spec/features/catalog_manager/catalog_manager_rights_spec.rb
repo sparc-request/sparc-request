@@ -27,7 +27,6 @@ RSpec.feature 'catalog managers' do
 
   scenario 'user adds and deletes new catalog manager to institution', js: true do
     add_catalog_manager
-    save_and_open_page
     within "#cm_info" do
       expect(page).to have_text("Jason Leonard (leonarjp@musc.edu)")
     end

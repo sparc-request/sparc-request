@@ -96,8 +96,8 @@ RSpec.describe "review page", js: true do
     before :each do
       stub_const("QUEUE_EPIC", false)
       stub_const("USE_EPIC", true)
-      service2.update_attributes(send_to_epic: true)
-      service_request.protocol.update_attributes(selected_for_epic: true)
+      service2.update_attributes(send_to_epic: true, charge_code: nil, cpt_code: nil)
+      service_request.protocol.update_attribute(:selected_for_epic, true)
       clear_emails
       find("#submit_services2").click
       wait_for_javascript_to_finish
@@ -108,67 +108,65 @@ RSpec.describe "review page", js: true do
     end
 
     it 'should send an email to the Epic admins' do
-      expect(@email).to have_content "To approve the users and rights"
+      expect(@email.body).to have_content "To approve the users and rights"
     end
 
     # Table is filled correctly
     it 'should have the correct users in the table' do
-      visit_email @email
       project_role = project.project_roles.first
+      expect(@email.body).not_to have_content project.project_roles.last.identity.full_name
 
-      expect(page).not_to have_content project.project_roles.last.identity.full_name
-
-      within("#project_role_#{project.project_roles.first.id}") do
-        expect(find(".name")).to have_content project_role.identity.full_name
-        expect(find(".role")).to have_content USER_ROLES.invert[project_role.role]
-        expect(find(".epic_rights")).to have_content(EPIC_RIGHTS["view_rights"])
-      end
+      n = Capybara::Node::Simple.new(@email.body.to_s).find("#project_role_#{project.project_roles.first.id}")
+      expect(n.find(".name")).to have_content project_role.identity.full_name
+      expect(n.find(".role")).to have_content USER_ROLES.invert[project_role.role]
+      expect(n.find(".epic_rights")).to have_content(EPIC_RIGHTS["view_rights"])
     end
 
     # Primary PI link
     it 'should be able to click the send to primary pi link' do
-      visit_email @email
-      click_link "Send to Primary PI"
+      visit Capybara::Node::Simple.new(@email.body.to_s).find_link("Send to Primary PI")['href']
       expect(page).to have_content "Thank you. An email has been sent to the primary PI for the final approval."
     end
 
     context 'primary pi emails' do
       before :each do
-        visit_email @email
         clear_emails
-        click_link "Send to Primary PI"
+        visit Capybara::Node::Simple.new(@email.body.to_s).find_link("Send to Primary PI")['href']
 
         @email = all_emails.find { |email| email.subject == "Epic Rights User Approval"}
       end
 
       it "should send an email to the Primary PI" do
-        expect(@email).to have_content("The following SPARC Request users have requested access to Epic for your study ##{project.id}")
+        expect(@email.body).to have_content("The following SPARC Request users have requested access to Epic for your study ##{project.id}")
       end
 
       it "should have the correct users in the table" do
-        visit_email @email
         project_role = project.project_roles.first
+        expect(@email.body.to_s).not_to have_content project.project_roles.last.identity.full_name
 
-        expect(page).not_to have_content project.project_roles.last.identity.full_name
-
-        within("#project_role_#{project.project_roles.first.id}") do
-          expect(find(".name")).to have_content project_role.identity.full_name
-          expect(find(".role")).to have_content USER_ROLES.invert[project_role.role]
-          expect(find(".epic_rights")).to have_content(EPIC_RIGHTS["view_rights"])
-        end
+        n = Capybara::Node::Simple.new(@email.body.to_s).find("#project_role_#{project.project_roles.first.id}")
+        expect(n.find(".name")).to have_content project_role.identity.full_name
+        expect(n.find(".role")).to have_content USER_ROLES.invert[project_role.role]
+        expect(n.find(".epic_rights")).to have_content(EPIC_RIGHTS["view_rights"])
       end
 
       it "should send the study to epic" do
-        visit_email @email
-        click_link "Send to Epic"
+        visit Capybara::Node::Simple.new(@email.body.to_s).find_link("Send to Epic")['href']
         expect(page).to have_content "Study has been sent to Epic"
       end
 
-      it "should not send services missing cpt code" do
-        visit_email @email
-        click_link "Send to Epic"
-        expect(page).to have_content "#{service2.name} does not have a CPT code."
+      it "should not send services missing cpt code and charge code" do
+        visit Capybara::Node::Simple.new(@email.body.to_s).find_link("Send to Epic")['href']
+        expect(page).to have_content "#{service2.name} does not have a CPT or a Charge code."
       end
     end
   end
+end
+
+def clear_emails
+  ActionMailer::Base.deliveries = []
+end
+
+def all_emails
+  ActionMailer::Base.deliveries
 end

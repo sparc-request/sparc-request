@@ -43,7 +43,6 @@ RSpec.describe "study tracker index page", js: true do
 
     it "should have a service request listed in draft status" do
       select('Draft', :from => 'service_request_workflow_states')
-      save_and_open_screenshot
       expect(page).to have_content 'Draft'
     end
 

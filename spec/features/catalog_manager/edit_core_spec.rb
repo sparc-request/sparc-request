@@ -55,6 +55,7 @@ RSpec.describe 'edit a core', js: true do
         first('#save_button').click
         expect(page).to have_content('Clinical Data Warehouse')
         expect(find('#core_tag_list_ctrc')).to be_checked
+        wait_for_javascript_to_finish
         expect(@core.tag_list).to eq(['ctrc'])
       end
     end

@@ -20,38 +20,41 @@
 
 require 'rails_helper'
 
-RSpec.feature 'clinical providers' do
-  background do
+RSpec.feature 'clinical_providers' do
+  before :each do
     default_catalog_manager_setup
-  end
-
-  scenario 'user adds and a clinical provider from an organization', js: true do
-    add_clinical_provider
-
-    accept_alert("Are you sure you want to remove this Fulfillment Provider?") do
-      within "#cp_info" do
-        expect(page).to have_text("Julia Glenn (glennj@musc.edu)")
-        find("img.cp_delete").click
-      end
-    end
-
-    within "#cp_info" do
-      expect(page).not_to have_text("Julia Glenn")
-    end
-  end
-end
-
-
-def add_clinical_provider
-  wait_for_javascript_to_finish
-  click_link('Office of Biomedical Informatics')
-  within '#cwf_fieldset' do
-    find('.legend').click
+    Tag.create(name: "clinical work fulfillment")
+    click_link('Office of Biomedical Informatics')
     wait_for_javascript_to_finish
   end
-  sleep 3
-  fill_in "new_cp", with: "Julia"
-  wait_for_javascript_to_finish
-  page.find('a', text: "Julia Glenn", visible: true).click()
-  wait_for_javascript_to_finish
+
+  context "adding fulfillment tag" do
+    before :each do
+      @program = Organization.where(abbreviation: "Informatics").first
+      wait_for_javascript_to_finish
+      find('#program_tag_list_clinical_work_fulfillment').click
+      within '#cwf_fieldset' do
+        find('.legend').click
+        wait_for_javascript_to_finish
+      end
+      sleep 3
+      fill_in "new_cp", with: "Julia"
+      wait_for_javascript_to_finish
+      page.find('a', text: "Julia Glenn", visible: true).click()
+      wait_for_javascript_to_finish
+    end
+
+    it "should add a clinical provider from an organization", js: true do 
+      expect(page).to have_content("Julia Glenn (glennj@musc.edu)")
+    end
+
+    it "should delete a clinical provider from an organization", js: true do
+      within "#cp_info" do
+        find("img.cp_delete").click
+      end
+      within "#cp_info" do
+        expect(page).not_to have_text("Julia Glenn")
+      end
+    end
+  end
 end

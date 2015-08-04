@@ -27,53 +27,6 @@ RSpec.describe 'SubServiceRequest' do
   let_there_be_j
   build_service_request_with_study
 
-  context 'callbacks' do
-
-    before { SubServiceRequest.skip_callback(:save, :after, :update_org_tree) }
-
-    context '#around_update' do
-
-      describe '#notify_remote_around_update', delay: true do
-
-        context '.in_work_fulfillment changed' do
-
-          it 'should create a RemoteServiceNotifierJob' do
-            sub_service_request = build(:sub_service_request, in_work_fulfillment: false)
-
-            sub_service_request.save validate: false
-            sub_service_request.update_attribute :in_work_fulfillment, true
-
-            expect(Delayed::Job.where("handler LIKE '%RemoteServiceNotifierJob%'").one?).to be
-          end
-        end
-
-        context '.in_work_fulfillment not changed' do
-
-          before do
-            service = Service.first
-
-            work_off
-
-            service.update_attribute :name, 'Test'
-          end
-
-          it 'should create a RemoteServiceNotifierJob' do
-            expect(Delayed::Job.where("handler LIKE '%RemoteServiceNotifierJob%'").one?).not_to be
-          end
-        end
-      end
-    end
-  end
-
-  context 'clinical work fulfillment' do
-
-    it 'should populate the subjects when :in_work_fulfillment is set to true' do
-      sub_service_request.update_attributes(in_work_fulfillment: true)
-      expect(arm1.subjects.count).to eq(2)
-      expect(arm2.subjects.count).to eq(4)
-    end
-  end
-
   context 'fulfillment' do
 
     describe 'candidate_services' do

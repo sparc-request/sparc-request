@@ -95,7 +95,7 @@ RSpec.describe "admin index page", js: true do
       end
 
       it "should not open if I click an expandable field" do
-        find('ul.services_first li').click()
+        find('.open_close_services').click()
         wait_for_javascript_to_finish
         expect(page).not_to have_content('Send Notifications')
       end

@@ -46,8 +46,11 @@ RSpec.describe "subsidy page" do
       end
 
       describe "leaving the form blank" do
+
         it 'should be fine with that', js: true do
           find(:xpath, "//a/img[@alt='Savecontinue']/..").click
+          wait_for_javascript_to_finish
+
           expect(sub_service_request.subsidy).to eq(nil)
         end
       end
@@ -84,7 +87,9 @@ RSpec.describe "subsidy page" do
         end
 
         it 'should save PI Contribution', js: true do
-          find(:xpath, "//a/img[@alt='Savecontinue']/..").click
+          click_link 'Save & Continue'
+          wait_for_javascript_to_finish
+
           expect(sub_service_request.subsidy.pi_contribution).to eq((@contribution * 100).to_i)
         end
 
@@ -127,14 +132,20 @@ RSpec.describe "subsidy page" do
       end
     end
 
-    describe "Subsidy is overridden" do
-      it 'Should NOT allow PI Contribution to be set', js: true do
-        subsidy = create(:subsidy, sub_service_request_id: sub_service_request.id, pi_contribution: sub_service_request.direct_cost_total, overridden: true)
+    describe 'Subsidy is overridden' do
+
+      before { Subsidy.destroy_all }
+
+      it 'should NOT allow PI Contribution to be set', js: true do
+        create(:subsidy,
+                sub_service_request_id: sub_service_request.id,
+                pi_contribution: sub_service_request.direct_cost_total,
+                overridden: true)
+
         visit service_subsidy_service_request_path service_request.id
-        expect(page).to have_css("input.pi-contribution[disabled=disabled]")
-        retry_until do
-          expect(find("input.pi-contribution")).to have_value("#{(sub_service_request.direct_cost_total / 100).to_f}")
-        end
+        wait_for_javascript_to_finish
+
+        expect(page).to have_css('input.pi-contribution[disabled=disabled]')
       end
     end
   end

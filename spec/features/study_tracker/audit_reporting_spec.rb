@@ -1,4 +1,5 @@
 require 'rails_helper'
+
 RSpec.describe "Audit Reporting", js: true do
   let_there_be_lane
   # Per patient per visit service
@@ -26,7 +27,9 @@ RSpec.describe "Audit Reporting", js: true do
   before :each do
     create_visits
     sub_service_request.update_attributes(in_work_fulfillment: true)
+
     visit study_tracker_sub_service_request_path sub_service_request.id
+    wait_for_javascript_to_finish
     click_link("Audit Reporting")
     wait_for_javascript_to_finish
   end
@@ -41,12 +44,13 @@ RSpec.describe "Audit Reporting", js: true do
       expect(page.find('#cwf_audit_start_date_input')).not_to eq nil
     end
 
-    it "should pick an end date" do
-      wait_for_javascript_to_finish
+    it 'should pick an end date' do
+      day = Time.now
+
       find(:xpath, "//input[@name='cwf_audit_end_date_input']").click
       page.execute_script %Q{ $('#protocol_end_date_picker:visible').focus() }
-      day = Time.now
       page.execute_script %Q{ $("a.ui-state-default:contains('#{day}')").trigger("click") } # click on day 1 in the current month
+
       expect(page.find('#cwf_audit_end_date_input')).not_to eq nil
     end
 

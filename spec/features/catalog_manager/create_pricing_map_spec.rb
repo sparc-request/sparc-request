@@ -77,6 +77,10 @@ RSpec.describe 'as a user on catalog page', js: true do
 
   it 'should display an error message when required fields are missing' do
     click_link("MUSC Research Data Request (CDW)")
+    wait_for_javascript_to_finish
+    first('#gen_info').click
+    find('#service_one_time_fee').click
+    wait_for_javascript_to_finish
     within '#pricing' do
       find('.legend').click
       wait_for_javascript_to_finish
@@ -105,13 +109,16 @@ RSpec.describe 'as a user on catalog page', js: true do
 
     before :each do
       click_link("MUSC Research Data Request (CDW)")
+      wait_for_javascript_to_finish
+      check 'service_one_time_fee'
+      wait_for_javascript_to_finish
       within '#pricing' do
         find('.legend').click
         wait_for_javascript_to_finish
       end
       click_button("Add Pricing Map")
+      wait_for_javascript_to_finish
       click_link("Effective on - Display on")
-      find("#otf_checkbox_").click
       wait_for_javascript_to_finish
     end
 
@@ -126,7 +133,6 @@ RSpec.describe 'as a user on catalog page', js: true do
     end
 
     it "should remove the error message if one time fee is unchecked" do
-      find("#otf_checkbox_").click
       expect(page).not_to have_content "If the Pricing Map is a one time fee (the box is checked), Quantity Type, Unit Type, and Unit Maximum are required."
     end
 
@@ -142,7 +148,5 @@ RSpec.describe 'as a user on catalog page', js: true do
     it "should also not have any of the per patient errors on the page" do
       expect(page).not_to have_content "Name and Order on the Service, and Clinical Quantity Type, Unit Factor, Unit Minimum, Units Per Qty Maximum, Effective Date, and Display Date on all Pricing Maps are required."
     end
-
   end
-
 end

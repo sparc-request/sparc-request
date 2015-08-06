@@ -463,6 +463,10 @@ module CapybaraCatalogManager
     end
     options[:tags].each do |tagName| setTag tagName end
 
+    first('#gen_info').click
+    find('#service_one_time_fee').click
+    wait_for_javascript_to_finish
+
     find(:xpath, "//div[text()='Pricing']").click
     find(:xpath, "//input[@class='add_pricing_map']").click
     first(:xpath, "//a[@href='#' and contains(text(),'Effective on')]").click
@@ -478,13 +482,12 @@ module CapybaraCatalogManager
 
     first(:xpath, "//input[@id='pricing_maps_blank_pricing_map_full_rate']").set(options[:rate])
     if options[:otf] then
-      first(:xpath, "//input[@id='otf_checkbox_']").click
-      wait_for_javascript_to_finish
       first(:xpath, "//input[@id='otf_quantity_type_']").set(options[:quantity_type])
       first(:xpath, "//input[@id='otf_unit_type_']").set(options[:unit_type])
       first(:xpath, "//table[@id='otf_fields_']//input[@id='unit_factor_']").set(options[:unit_factor])
       first(:xpath, "//input[@id='otf_unit_max_']").set(options[:unit_max])
     else
+      save_and_open_screenshot
       first(:xpath, "//input[@id='clinical_quantity_']").set(options[:unit_type])
       first(:xpath, "//input[@id='unit_minimum_']").set(options[:unit_minimum])
       first(:xpath, "//table[@id='pp_fields_']//input[@id='unit_factor_']").set(options[:unit_factor])

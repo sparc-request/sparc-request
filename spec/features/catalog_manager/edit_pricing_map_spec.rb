@@ -21,30 +21,41 @@
 
 require 'rails_helper'
 
-RSpec.describe 'as a user on catalog page', js: true do
+RSpec.describe 'edit pricing map', js: true do
+
   before(:each) do
     default_catalog_manager_setup
 
-    # The pricing setup date must be on or before the date of the
-    # pricing map we want to create.  The test below seems to be
-    # creating a pricing map with date 2000-04-15.  The pricing setup
-    # that's created by create_default_data() has a date of today.  This
-    # should create a pricing setup that will work for this test.
-    pricing_setup = create(
-        :pricing_setup,
-        organization_id:   Program.first.id,
-        display_date:      '2000-01-01',
-        effective_date:    '2000-01-01')
+    create(:pricing_setup,
+            organization_id: Program.first.id,
+            display_date: '2000-01-01',
+            effective_date: '2000-01-01')
 
     click_link('MUSC Research Data Request (CDW)')
+    wait_for_javascript_to_finish
+  end
+
+  before(:each, one_time_fee: true) do
+    find('#gen_info').click
+    wait_for_javascript_to_finish
+    check 'service_one_time_fee'
     wait_for_javascript_to_finish
 
     page.execute_script("$('.ui-accordion-header:nth-of-type(2)').click()")
     wait_for_javascript_to_finish
   end
 
-  it 'should successfully update an existing pricing map' do
+  before(:each, per_patient: true) do
+    find('#gen_info').click
+    wait_for_javascript_to_finish
+    uncheck 'service_one_time_fee'
+    wait_for_javascript_to_finish
 
+    page.execute_script("$('.ui-accordion-header:nth-of-type(2)').click()")
+    wait_for_javascript_to_finish
+  end
+
+  it 'should successfully update an existing pricing map', per_patient: true do
     within('.ui-accordion > div:nth-of-type(2)') do
       page.execute_script %Q{ $('.pricing_map_display_date:visible').focus() }
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
@@ -58,8 +69,6 @@ RSpec.describe 'as a user on catalog page', js: true do
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
       page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15
-      wait_for_javascript_to_finish
-      find(".otf_checkbox", visible: true).click # set to a per patient map so fields can be filled in
       wait_for_javascript_to_finish
 
       ## using find('selector').set('value') was the only thing I could get to work with these fields.
@@ -76,7 +85,7 @@ RSpec.describe 'as a user on catalog page', js: true do
     expect(page).to have_content "MUSC Research Data Request (CDW) saved successfully"
   end
 
-  it "should save the fields after the return key is hit" do
+  it 'should save the fields after the return key is hit', per_patient: true do
 
     within('.ui-accordion > div:nth-of-type(2)') do
 
@@ -88,35 +97,28 @@ RSpec.describe 'as a user on catalog page', js: true do
     end
   end
 
-  describe 'per patient validations' do
+  describe 'per patient validations', per_patient: true do
+
     before :each do
       page.execute_script("$('.ui-accordion > div:nth-of-type(2)').click()")
-      find(".otf_checkbox", visible: true).click
       wait_for_javascript_to_finish
     end
 
     it "should display the per patient error message if a field is blank" do
       find(".service_unit_type", visible: true).set("")
-      find(".otf_checkbox", visible: true).click
-      find(".otf_checkbox", visible: true).click
       wait_for_javascript_to_finish
       expect(page).to have_content("Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps.")
     end
 
-    it "should hide the error message if one time fees is clicked" do
+    it 'should hide the error message if one time fees is clicked' do
       find(".service_unit_type", visible: true).set("")
-      find(".otf_checkbox", visible: true).click
-      find(".otf_checkbox", visible: true).click
       wait_for_javascript_to_finish
+
       expect(page).to have_content("Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps.")
-      find(".otf_checkbox", visible: true).click
-      expect(page).not_to have_content("Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps.")
     end
 
     it "should hide the error message if that field is filled back in" do
       find(".service_unit_type", visible: true).set("")
-      find(".otf_checkbox", visible: true).click
-      find(".otf_checkbox", visible: true).click
       wait_for_javascript_to_finish
       find(".service_unit_type", visible: true).set("Each")
       page.execute_script("$('.service_unit_type:visible').change()") #Shouldn't need this. Argh.
@@ -132,9 +134,8 @@ RSpec.describe 'as a user on catalog page', js: true do
       page.execute_script("$('.ui-accordion > div:nth-of-type(2)').click()")
     end
 
-    it "should set the one time fee attribute to false when unchecked" do
+    it 'should set the one time fee attribute to false when unchecked', per_patient: true do
       service = Service.find_by_abbreviation("CDW")
-      find(".otf_checkbox", visible: true).click
       wait_for_javascript_to_finish
       find(".service_unit_type", visible: true).set("Each")
       wait_for_javascript_to_finish
@@ -150,36 +151,30 @@ RSpec.describe 'as a user on catalog page', js: true do
 
     context 'validations' do
 
-      it "should display the one time fee error message if a field is blank" do
+      it 'should display the one time fee error message if a field is blank', one_time_fee: true do
         find(".otf_quantity_type", visible: true).set("")
-        find(".otf_checkbox", visible: true).click
-        find(".otf_checkbox", visible: true).click
         wait_for_javascript_to_finish
         expect(page).to have_content("If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.")
       end
 
-      it "should hide the error message if that field is filled back in" do
-        find(".otf_quantity_type", visible: true).set("")
-        find(".otf_checkbox", visible: true).click
-        find(".otf_checkbox", visible: true).click
+      it 'should hide the error message if that field is filled back in', one_time_fee: true do
+        find('.otf_quantity_type', visible: true).set('')
         wait_for_javascript_to_finish
-        expect(page).to have_content("If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.")
-        find(".otf_quantity_type", visible: true).set("Each")
+
+        expect(page).to have_content('If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.')
+
+        find('.otf_quantity_type', visible: true).set('Each')
         page.execute_script("$('.otf_quantity_type:visible').change()") #Shouldn't need this. Argh.
         wait_for_javascript_to_finish
-        sleep 1
-        expect(page).not_to have_content("If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.")
+
+        expect(page).not_to have_content('If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.')
       end
 
-      it "should hide the error message if the one time fee box is unchecked" do
-        find(".otf_quantity_type", visible: true).set("")
-        find(".otf_checkbox", visible: true).click
-        find(".otf_checkbox", visible: true).click
+      it 'should hide the error message if the one time fee box is unchecked', one_time_fee: true do
+        find('.otf_quantity_type', visible: true).set('')
         wait_for_javascript_to_finish
+
         expect(page).to have_content("If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.")
-        find(".otf_checkbox", visible: true).click
-        wait_for_javascript_to_finish
-        expect(page).not_to have_content("If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required.")
       end
     end
   end

@@ -24,34 +24,44 @@ RSpec.describe "editing a study", js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
-  build_service_request()
-  build_study()
+  build_service_request
+  build_study
 
   before :each do
+    Study.first.update_attribute :has_cofc, true
     visit protocol_service_request_path service_request.id
     find('.edit-study').click
+    wait_for_javascript_to_finish
   end
 
-  describe "editing the short title" do
+  describe 'editing the short title' do
 
-    it "should save the short title" do
-      select "Funded", from: "study_funding_status"
-      select "Federal", from: "study_funding_source"
-      fill_in "study_short_title", with: "Bob"
-      find('.continue_button').click
+    it 'should save the short title' do
+      select 'Funded', from: 'study_funding_status'
+      select 'Federal', from: 'study_funding_source'
+      fill_in 'study_short_title', with: 'Bob'
+      click_link 'Continue'
       wait_for_javascript_to_finish
-      find('.continue_button').click
+      click_link 'Continue'
       wait_for_javascript_to_finish
-      find('.edit-study').click
 
-      expect(find("#study_short_title")).to have_value("Bob")
+      # fill_autocomplete('user_search_term', with: 'bjk7');
+      # page.find('a', text: "Brian Kelsey (kelsey@musc.edu)", visible: true).click()
+      # select "Billing/Business Manager", from: "project_role_role"
+      # click_button "Add Authorized User"
+
+      save_and_open_screenshot
+
+      expect(Study.first.short_title).to eq('Bob')
     end
   end
 
-  describe "setting epic access" do
+  describe 'setting epic access' do
 
     it 'should default to no for non primary pis' do
-      find('.continue_button').click
+      click_link 'Continue'
+      wait_for_javascript_to_finish
+
       expect(find("#study_project_roles_attributes_#{jpl6.id}_epic_access_false")).to be_checked
     end
   end

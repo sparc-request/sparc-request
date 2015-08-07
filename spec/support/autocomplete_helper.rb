@@ -4,7 +4,7 @@ module AutocompleteHelper
   # See features/projects_submit_spec.rb for an example.
   def fill_autocomplete(field, options = {})
     page.execute_script %Q{ $('##{field}').autocomplete('search', '#{options[:with]}') }
-    selector = %Q{ul.ui-autocomplete li.ui-menu-item a:contains('#{options[:with]}')}
+    selector = %Q{ ul.ui-autocomplete li.ui-menu-item a:contains('#{options[:with]}') }
     expect(page).to have_css('ul.ui-autocomplete li.ui-menu-item a')
     page.execute_script %Q{ $("##{selector}").trigger('mouseenter') }
   end

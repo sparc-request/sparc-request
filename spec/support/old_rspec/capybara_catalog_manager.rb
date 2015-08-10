@@ -487,7 +487,6 @@ module CapybaraCatalogManager
       first(:xpath, "//table[@id='otf_fields_']//input[@id='unit_factor_']").set(options[:unit_factor])
       first(:xpath, "//input[@id='otf_unit_max_']").set(options[:unit_max])
     else
-      save_and_open_screenshot
       first(:xpath, "//input[@id='clinical_quantity_']").set(options[:unit_type])
       first(:xpath, "//input[@id='unit_minimum_']").set(options[:unit_minimum])
       first(:xpath, "//table[@id='pp_fields_']//input[@id='unit_factor_']").set(options[:unit_factor])

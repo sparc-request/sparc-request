@@ -6,7 +6,7 @@ module AutocompleteHelper
     page.execute_script %Q{ $('##{field}').autocomplete('search', '#{options[:with]}') }
     selector = %Q{ ul.ui-autocomplete li.ui-menu-item a:contains('#{options[:with]}') }
     expect(page).to have_css('ul.ui-autocomplete li.ui-menu-item a')
-    page.execute_script %Q{ $("##{selector}").trigger('mouseenter') }
+    page.execute_script %Q{ $("#{selector}").trigger('mouseenter') }
   end
 end
 

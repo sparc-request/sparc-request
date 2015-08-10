@@ -71,9 +71,8 @@ class Portal::LineItemsController < Portal::BaseController
 
     updated_service_relations = true
     if params[:quantity]
-      one_time_fees = @service_request.one_time_fee_line_items
       @line_item.quantity = params[:quantity]
-      updated_service_relations = @line_item.check_service_relations(one_time_fees)
+      updated_service_relations = @line_item.valid_otf_service_relation_quantity?
     end
   
     if updated_service_relations && @line_item.update_attributes(params[:line_item])
@@ -150,9 +149,8 @@ end
 def update_otf_line_item
   updated_service_relations = true
   if params[:quantity]
-    one_time_fees = @service_request.one_time_fee_line_items
     @line_item.quantity = params[:quantity]
-    updated_service_relations = @line_item.check_service_relations(one_time_fees)
+    updated_service_relations = @line_item.valid_otf_service_relation_quantity?
   end
 
   if updated_service_relations && @line_item.update_attributes(params[:line_item])

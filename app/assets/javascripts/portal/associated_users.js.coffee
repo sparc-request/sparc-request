@@ -120,7 +120,7 @@ $(document).ready ->
               $.ajax
                 dataType: 'script'
                 type: 'delete'
-                url: "/portal/associated_users/#{pr_id}?sub_service_request_id=#{sub_service_request_id}"
+                url: if sub_service_request_id then "/portal/associated_users/#{pr_id}?sub_service_request_id=#{sub_service_request_id}" else "/portal/associated_users/#{pr_id}"
                 success: ->
                   if sub_service_request_id
                     # Nothing

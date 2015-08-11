@@ -70,6 +70,8 @@ RSpec.describe "landing page", js: true do
       test_user     = create(:identity, last_name:'Glenn2', first_name:'Julia2', ldap_uid:'jug3', institution:'medical_university_of_south_carolina', college:'college_of_medecine', department:'other', email:'glennj2@musc.edu', credentials:'BS,    MRA', catalog_overlord: true, password:'p4ssword', password_confirmation:'p4ssword', approved: true)
       project_role  = create(:project_role, protocol_id: service_request.protocol.id, identity_id: test_user.id, project_rights: "approve", role: "co-investigator")
 
+      sleep 10
+      save_and_open_page
       find("tr[data-user-id='#{test_user.id}'] .delete-associated-user-button").click
       wait_for_javascript_to_finish
 

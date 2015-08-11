@@ -31,10 +31,6 @@ RSpec.describe "payments", js: true do
     sub_service_request.update_attributes(in_work_fulfillment: true)
   end
 
-  after :each do
-    wait_for_javascript_to_finish
-  end
-
   describe "Generate research project summary report" do
     before(:each) do
       visit study_tracker_sub_service_request_path(sub_service_request.id)
@@ -51,9 +47,14 @@ RSpec.describe "payments", js: true do
       wait_for_javascript_to_finish
       page.execute_script %Q{ $("td.ui-datepicker-week-end:first").trigger("click") } # click on day
       wait_for_javascript_to_finish
+      page.execute_script %Q{ $("#rps_start_date").datepicker("hide") }
+      wait_for_javascript_to_finish
+
       find("#rps_end_date").click
       wait_for_javascript_to_finish
       page.execute_script %Q{ $("td.ui-datepicker-week-end:first").trigger("click") } # click on day
+      wait_for_javascript_to_finish
+      page.execute_script %Q{ $("#rps_end_date").datepicker("hide") }
       wait_for_javascript_to_finish
 
       find("#rps_continue").click

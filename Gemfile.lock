@@ -198,7 +198,6 @@ GEM
     net-ssh-gateway (1.2.0)
       net-ssh (>= 2.6.5)
     netrc (0.10.2)
-    newrelic_rpm (3.9.7.266)
     nokogiri (1.5.6)
     nori (2.1.0)
     obis-net-ldap (0.4.0)
@@ -428,7 +427,6 @@ DEPENDENCIES
   mustache (= 0.99.4)
   mysql2
   nested_form
-  newrelic_rpm
   nokogiri (= 1.5.6)
   nori (~> 2.1.0)
   obis-net-ldap

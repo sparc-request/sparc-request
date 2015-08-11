@@ -1,7 +1,17 @@
 task :completed_procedures => :environment do
 
+  def prompt(*args)
+      print(*args)
+      STDIN.gets.strip
+  end
+  
+  puts ""
+  puts ""
+  puts "This task will display all completed procedures for all services under an organization."
+  org_id = prompt ("Enter the organization id: ").to_i
+
   completed_procedures = Procedure.where(:completed => true)
-  services = Service.where(:organization_id => 62)
+  services = Service.where(:organization_id => org_id)
   service_ids = services.map(&:id)
   procedures_for_services = []
 

@@ -42,7 +42,7 @@ RSpec.describe "study schedule", js: true do
 
     describe "back link" do
       it "should take you back to study tracker landing page" do
-        click_link("Back to Fulfillment")
+        click_link "Back to Clinical Work Fulfillment"
         wait_for_javascript_to_finish
         expect(current_path).to eq("/clinical_work_fulfillment")
       end
@@ -322,7 +322,7 @@ RSpec.describe "study schedule", js: true do
 
         it "should successfully delete a service" do
           within "#one_time_fees" do
-            accept_alert("Are you sure you want to remove this service?") do
+            accept_confirm("Are you sure you want to remove this service?") do
               click_on "Cancel"
             end
             sleep 1
@@ -350,10 +350,8 @@ RSpec.describe "study schedule", js: true do
           expect(arm1.line_items_visits.size).to eq(2)
 
           #Delete the new line_item_visit
-          accept_alert do
-            within("table.arm_id_#{arm1.id} tr.line_item.odd") do
-              click_on "Cancel"
-            end
+          within("table.arm_id_#{arm1.id} tr.line_item.odd") do
+            click_on "Cancel"
           end
 
           wait_for_javascript_to_finish
@@ -361,13 +359,12 @@ RSpec.describe "study schedule", js: true do
         end
 
         it "should warn user about deleting procedures" do
-          accept_alert("Are you sure that you want to remove this service from all subjects' visit calendars in this arm?") do
+          accept_confirm("Are you sure that you want to remove this service from all subjects' visit calendars in this arm?") do
             within("table.arm_id_#{arm1.id} tr.line_item.odd") do
               click_on "Cancel"
             end
+            wait_for_javascript_to_finish
           end
-
-          wait_for_javascript_to_finish
         end
       end
 
@@ -375,7 +372,7 @@ RSpec.describe "study schedule", js: true do
 
         it "should delete the line_item" do
           expect(arm1.line_items.size).to eq(2)
-          accept_alert("Are you sure that you want to remove this service from all subjects' visit calendars?") do
+          accept_confirm("Are you sure that you want to remove this service from all subjects' visit calendars?") do
             click_button('Remove Service from all patients')
           end
 

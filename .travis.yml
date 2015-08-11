@@ -11,4 +11,4 @@ before_script:
   - cp config/epic.yml.example config/epic.yml
   - cp config/ldap.yml.example config/ldap.yml
 script:
-  - bundle exec rspec
+  - bundle exec rspec spec/api spec/helpers spec/lib spec/mailers spec/support 

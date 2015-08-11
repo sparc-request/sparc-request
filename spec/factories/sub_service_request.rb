@@ -22,6 +22,12 @@ FactoryGirl.define do
   factory :sub_service_request do
     owner_id           { Random.rand(1000) }
 
+    trait :with_payment do
+      after(:create) do |sub_service_request, evaluator|
+        FactoryGirl.create(:payment, sub_service_request: sub_service_request)
+      end
+    end
+
     transient do
       line_item_count 0
       past_status_count 0
@@ -45,6 +51,7 @@ FactoryGirl.define do
       end
     end
 
+    factory :sub_service_request_with_payment, traits: [:with_payment]
     factory :sub_service_request_in_cwf, traits: [:in_cwf]
     factory :sub_service_request_with_subsidy, traits: [:with_subsidy]
   end

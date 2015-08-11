@@ -19,10 +19,15 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 FactoryGirl.define do
+
   factory :payment do
+    sub_service_request nil
     amount_invoiced 100.0
     amount_received 100.0
     date_submitted  Date.parse('2000-01-01')
     date_received   Date.parse('2000-01-01')
+    payment_method 'Check'
+    percent_subsidy 50.0
+    details 'details'
   end
 end

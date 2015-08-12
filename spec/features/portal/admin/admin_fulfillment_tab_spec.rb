@@ -25,10 +25,13 @@ RSpec.describe "admin fulfillment tab", js: true do
   let_there_be_j
   fake_login_for_each_test
   build_service_request_with_study
+  build_study_type_questions
 
   let!(:pricing_map3)        { create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service2.id, display_date: Time.now - 1.day, effective_date: Time.now + 10.days, full_rate: 1000, federal_rate: 2000, units_per_qty_max: 20) }
 
   before :each do
+    @protocol = service_request.protocol
+    @protocol.update_attributes(has_cofc: "true")
     add_visits
     subsidy_map.destroy
     subsidy.destroy
@@ -133,7 +136,7 @@ RSpec.describe "admin fulfillment tab", js: true do
         it "should disable the cwf access once it has been checked" do
           find("#in_work_fulfillment").click
           wait_for_javascript_to_finish
-          expect(find("#in_work_fulfillment")['disabled']).to eq("true")
+          expect(find("#in_work_fulfillment")['disabled']).to eq(true)
         end
 
         it "should add the cwf access to the sub service request" do
@@ -202,7 +205,7 @@ RSpec.describe "admin fulfillment tab", js: true do
         it "should disable the approval once it has been checked" do
           find("#sub_service_request_lab_approved[data-sub_service_request_id='#{sub_service_request.id}']").click
           wait_for_javascript_to_finish
-          expect(find("#sub_service_request_lab_approved[data-sub_service_request_id='#{sub_service_request.id}']")['disabled']).to eq("true")
+          expect(find("#sub_service_request_lab_approved[data-sub_service_request_id='#{sub_service_request.id}']")['disabled']).to eq(true)
         end
 
         it "should add the approval to the approval history table" do
@@ -328,8 +331,11 @@ RSpec.describe "admin fulfillment tab", js: true do
         fill_in "visit_window_before", with: 10
         fill_in "visit_window_after", with: 10
         click_button "submit_visit"
+        wait_for_javascript_to_finish
         expect(page).to have_content "Service request has been saved."
-        expect(page).to have_content 'Add Visit 12'
+
+
+        expect(find("#jump_to_visit_#{arm1.id} option:last-child").value).to eq("--Pandas")
       end
 
       it 'should remove visits' do
@@ -352,10 +358,11 @@ RSpec.describe "admin fulfillment tab", js: true do
 
         it "should not allow a visit to be deleted if any of a visit's appointments are completed" do
           arm1.visit_groups.last.appointments.first.update_attributes(completed_at: Date.today)
+          current_visit = find('#delete_visit_position').value
           find('.delete_visit_link').click
           wait_for_javascript_to_finish
           expect(page).to have_content 'Completed appointment exists for this visit...'
-          expect(page).to have_content 'Delete Visit 10'
+          expect(find('#delete_visit_position').value).to eq(current_visit)
         end
       end
     end
@@ -397,19 +404,21 @@ RSpec.describe "admin fulfillment tab", js: true do
       find('#submit_arm').click()
       wait_for_javascript_to_finish
       study.reload
-
       number_of_arms = Arm.find(:all).size
       select "Arm and a leg", from: "arm_id"
-      accept_alert do
-        find('.remove_arm_link').click()
+      wait_for_javascript_to_finish
+
+      accept_confirm("Are you sure you want to remove the arm?") do
+        find('.remove_arm_link').click
       end
+
       wait_for_javascript_to_finish
       expect(Arm.find(:all).size).to eq(number_of_arms - 1)
     end
 
     it 'should not allow you to delete the last arm' do
       select "Arm2", from: "arm_id"
-      accept_alert do
+      accept_confirm("Are you sure you want to remove the arm?") do
         find('.remove_arm_link').click()
       end
       wait_for_javascript_to_finish
@@ -496,9 +505,8 @@ RSpec.describe "admin fulfillment tab", js: true do
   describe "push to epic" do
     it 'should display a toast message when push succeeds' do
       click_link 'Send To Epic'
-      sleep 3
       wait_for_javascript_to_finish
-      expect(find('.toast-container')).to have_content("Project/Study has been sent to Epic")
+      expect(find('.toast-type-success').value).to eq("Project/Study has been sent to Epic")
     end
 
     it 'should display a toast message when push fails' do

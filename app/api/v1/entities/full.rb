@@ -27,7 +27,7 @@ module V1
             :last_name,
             :ldap_uid
   end
-  
+
   class HumanSubjectsInfoFull < HumanSubjectsInfoShallow
     root 'human_subjects_infos', 'human_subjects_info'
 
@@ -38,11 +38,11 @@ module V1
             :irb_of_record,
             :submission_type,
             :approval_pending
-            
+
     with_options(format_with: :iso_timestamp) do
       expose :irb_approval_date
       expose :irb_expiration_date
-    end        
+    end
   end
 
   class LineItemFull < LineItemShallow
@@ -93,7 +93,7 @@ module V1
 
     expose  :type,
             :next_ssr_id,
-          #  :short_title, # included in Shallow
+            :short_title,
             :title,
             :sponsor_name,
             :brief_description,
@@ -115,7 +115,7 @@ module V1
             :last_epic_push_status,
             :billing_business_manager_static_email,
             :selected_for_epic
-    
+
     with_options(format_with: :iso_timestamp) do
       expose :start_date
       expose :end_date
@@ -123,7 +123,7 @@ module V1
       expose :funding_start_date
       expose :recruitment_start_date
       expose :recruitment_end_date
-    end           
+    end
   end
 
   class ProjectFull < ProtocolFull

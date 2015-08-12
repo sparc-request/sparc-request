@@ -45,7 +45,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
       it 'should respond with an array of :sparc_ids and :short_titles' do
         parsed_body = JSON.parse(response.body)
 
-        expect(parsed_body['protocols'].map(&:keys).flatten.uniq.sort).to eq(['sparc_id', 'callback_url', 'short_title'].sort)
+        expect(parsed_body['protocols'].map(&:keys).flatten.uniq.sort).to eq(['sparc_id', 'callback_url'].sort)
       end
     end
 
@@ -73,7 +73,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         parsed_body         = JSON.parse(response.body)
         expected_attributes = FactoryGirl.build(:protocol).attributes.
                                 keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
+                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'has_cofc'].include?(key) }.
                                 push('callback_url', 'sparc_id', 'arms', 'service_requests', 'project_roles', 'human_subjects_info').
                                 sort
 

@@ -2,11 +2,11 @@ namespace :reports do
   desc "Create billing only report for CWF"
   task :billing_only_report => :environment do
 
-    start_date = "2015-05-01".to_date # start date
-    end_date = "2015-05-31".to_date # end date
+    start_date = "2015-06-01".to_date # start date
+    end_date = "2015-06-30".to_date # end date
 
-    protocol_ids = [8303]
-    # protocol_ids = Protocol.find(:all)
+    # protocol_ids = [8303]
+    protocol_ids = Protocol.find(:all)
 
     CSV.open("tmp/admin_billing_only_report.csv", "wb") do |csv|
       csv << ["From", start_date, "To", end_date]

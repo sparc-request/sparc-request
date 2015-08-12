@@ -208,7 +208,8 @@ end
 
 def build_study
   let!(:study) {
-    protocol = Study.create(attributes_for(:protocol))
+
+    protocol = build(:protocol)
     protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month)
     protocol.save validate: false
     identity = Identity.find_by_ldap_uid('jug2')

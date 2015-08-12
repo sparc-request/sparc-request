@@ -19,7 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 FactoryGirl.define do
-
   factory :protocol, aliases: [:project] do
     next_ssr_id                  { Random.rand(10000) }
     short_title                  { Faker::Lorem.word }
@@ -84,6 +83,8 @@ FactoryGirl.define do
       protocol.build_investigational_products_info(attributes_for(:investigational_products_info)) if not protocol.investigational_products_info
       protocol.build_research_types_info(attributes_for(:research_types_info)) if not protocol.research_types_info
       protocol.build_vertebrate_animals_info(attributes_for(:vertebrate_animals_info))  if not protocol.vertebrate_animals_info
+
+
     end
 
 

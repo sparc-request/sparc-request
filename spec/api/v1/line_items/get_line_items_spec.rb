@@ -17,6 +17,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
                                               service_request: service_request)
       end
     end
+
     context 'response params' do
 
       before { cwf_sends_api_get_request_for_resources('line_items', 'shallow') }

@@ -320,59 +320,29 @@ class LineItem < ActiveRecord::Base
     self.service.organization
   end
 
-  # Don't like duplicate code but this will make it easier to
-  # to check for service relations when doing mass visit assignment
-  # like ServiceRequest#select_calendar_row
+  def service_relations
+    # Get the relations for this line item and others to this line item, Narrow the list to those with linked quantities
+    service_relations = ServiceRelation.find_all_by_service_id(self.service_id).reject { |sr| sr.linked_quantity == false }
+    related_service_relations = ServiceRelation.find_all_by_related_service_id(self.service_id).reject { |sr| sr.linked_quantity == false }
+
+    (service_relations + related_service_relations)
+  end
+
   def has_service_relation
-    # Get the relations for this line item and others to this line item
-    service_relations = ServiceRelation.find_all_by_service_id(self.service_id)
-    related_service_relations = ServiceRelation.find_all_by_related_service_id(self.service_id)
-
-    # Narrow the list to those with linked quantities
-    service_relations = service_relations.reject { |sr| sr.linked_quantity == false }
-    related_service_relations = related_service_relations.reject { |sr| sr.linked_quantity == false }
-
-    # Check to see if this line item even has a relation
-    return (service_relations.empty? && related_service_relations.empty?) ? false : true
+    service_relations.any?
   end
 
-  def check_service_relations line_items, pppv_services=false, visit=nil
-    # Get the relations for this line item and others to this line item
-    service_relations = ServiceRelation.find_all_by_service_id(self.service_id)
-    related_service_relations = ServiceRelation.find_all_by_related_service_id(self.service_id)
-
-    # Narrow the list to those with linked quantities
-    service_relations = service_relations.reject { |sr| sr.linked_quantity == false }
-    related_service_relations = related_service_relations.reject { |sr| sr.linked_quantity == false }
-
-    # Check to see if this line item even has a relation
-    return true if service_relations.empty? && related_service_relations.empty?
-
-    # Check to see that the quanties are less than the max together
-    if pppv_services
-      return false if check_service_relation_pppv(service_relations, line_items, visit) == false
-      return false if check_service_relation_pppv(related_service_relations, line_items, visit, true) == false
-    else
-      return false if check_service_relation_otf(service_relations, line_items) == false
-      return false if check_service_relation_otf(related_service_relations, line_items, true) == false
-    end
-
-    # No problems with quantity totals
-    return true
-
-  end
-
-  private
-
-  def check_service_relation_otf service_relations, line_items, related=false
+  def valid_otf_service_relation_quantity?
+    line_items = service_request.one_time_fee_line_items
     service_relations.each do |sr|
       # Check to see if the request has the service in the relation
-      sr_id = related ? sr.service_id : sr.related_service_id
+      sr_id = (service_id == sr.related_service_id ? sr.service_id : sr.related_service_id)
       line_item = line_items.detect { |li| li.service_id == sr_id }
       next unless line_item
+      total_quantity_between_line_items = self.quantity + line_item.quantity
 
-      if self.quantity + line_item.quantity > sr.linked_quantity_total
-        self.errors.add(:invalid_total, "The quantity between #{self.service.name} and #{line_item.service.name} is greater than the total quantity amount allowed which is #{sr.linked_quantity_total}")
+      unless (total_quantity_between_line_items == 0 or total_quantity_between_line_items == sr.linked_quantity_total)
+        self.errors.add(:invalid_total, "The quantity between #{self.service.name} and #{line_item.service.name}is not equal to the total quantity amount which is #{sr.linked_quantity_total}")
         return false
       end
     end
@@ -380,27 +350,32 @@ class LineItem < ActiveRecord::Base
     return true
   end
 
-  def check_service_relation_pppv service_relations, line_items, visit, related=false
-    arm_id = visit.visit_group.arm.id
+  def valid_pppv_service_relation_quantity? visit
+    visit_group = visit.visit_group
+    arm = visit_group.arm
+    line_items = arm.line_items
     visit_position = visit.position - 1
 
     service_relations.each do |sr|
       # Check to see if the request has the service in the relation
-      sr_id = related ? sr.service_id : sr.related_service_id
+      sr_id = (service_id == sr.related_service_id ? sr.service_id : sr.related_service_id)
       line_item = line_items.detect { |li| li.service_id == sr_id }
-      next unless line_item && line_item.arms.find(arm_id)
+      next unless line_item && line_item.arms.find(arm.id)
 
-      line_item_visit = line_item.line_items_visits.find_by_arm_id arm_id
+      line_item_visit = line_item.line_items_visits.find_by_arm_id arm.id
       v = line_item_visit.visits[visit_position]
-
-      if visit.quantity_total + v.quantity_total > sr.linked_quantity_total
-        self.errors.add(:invalid_total, "The quantity between #{self.service.name} and #{line_item.service.name} is greater than the total quantity amount allowed which is #{sr.linked_quantity_total}")
+      total_quantity_between_visits = visit.quantity_total + v.quantity_total
+      if not(total_quantity_between_visits == 0 or total_quantity_between_visits == sr.linked_quantity_total)
+        first_service, second_service = [self.service.name, line_item.service.name].sort
+        self.errors.add(:invalid_total, "The quantity on #{visit_group.name} on #{arm.name} between #{first_service} and #{second_service} is not equal to the total quantity amount which is #{sr.linked_quantity_total}")
         return false
       end
     end
 
     return true
   end
+
+  private
 
   def remove_procedures
     procedures = self.procedures

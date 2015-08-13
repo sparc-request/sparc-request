@@ -33,6 +33,12 @@ module CwfHelper
 
     get "/v1/#{klass}.json", params, @env
   end
+
+  def cwf_sends_api_get_request_for_resources_by_params(klass, params)
+    http_login
+
+    get "/v1/#{klass}.json", params, @env
+  end
 end
 
 RSpec.configure do |config|

@@ -29,7 +29,8 @@ gem 'json'
 gem 'letter_opener'
 gem 'mysql2'
 gem 'nested_form'
-gem 'nokogiri', '1.5.6'
+gem 'newrelic_rpm'
+gem 'nokogiri'
 gem 'nori', '~> 2.1.0'
 gem 'obis-net-ldap'
 gem 'omniauth'
@@ -47,7 +48,6 @@ gem 'savon', '~> 2.2.0'
 gem 'simplecov', require: false, group: :test
 gem 'sinatra'
 gem 'surveyor'
-gem 'therubyracer', '0.10.2', :platforms => :ruby
 gem 'uglifier', '>= 1.0.3'
 gem 'will_paginate'
 
@@ -56,7 +56,6 @@ group :development, :test, :profile do
   gem 'bullet'
   gem 'connection_pool'
   gem 'database_cleaner'
-  gem 'debugger'
   gem 'equivalent-xml'
   gem 'factory_girl'
   gem 'faker'
@@ -87,7 +86,7 @@ group :development do
 end
 
 group :test do
-  gem 'capybara-webkit', '~> 1.5.0'
+  gem 'capybara-webkit'
   gem 'shoulda-callback-matchers', '~> 1.1.1'
   gem 'webmock', '~> 1.20.4'
 end

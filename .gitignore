@@ -70,3 +70,7 @@ config/deploy/*.rb
 Procfile
 
 config/setup_load_paths.rb
+
+bin/*
+
+spec/examples.txt

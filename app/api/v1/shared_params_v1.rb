@@ -8,4 +8,10 @@ module SharedParamsV1
                       values: ['full', 'shallow', 'full_with_shallow_reflections']
 
   end
+  
+  params :custom_query do
+    optional :limit, type: Integer
+#    optional :order, type: String   
+    optional :query, type: Hash
+  end
 end

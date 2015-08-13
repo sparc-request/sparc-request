@@ -214,6 +214,18 @@ class ServiceRequest < ActiveRecord::Base
         end
       end
     end
+
+    self.arms.map(&:visit_groups).flatten.map(&:visits).flatten.each do |visit|
+      line_item = visit.line_items_visit.line_item
+      unless line_item.valid_pppv_service_relation_quantity? visit
+        line_item.reload.errors.each{ |k,v| errors.add(k, v) unless errors[k].include?(v)}
+      end
+    end
+    self.one_time_fee_line_items.each do |li|
+      unless li.valid_otf_service_relation_quantity?
+        li.reload.errors.each{ |e| errors.add(e) }
+      end
+    end
   end
 
   # Given a service, create a line item for that service and for all

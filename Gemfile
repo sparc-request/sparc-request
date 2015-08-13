@@ -15,6 +15,7 @@ gem 'delayed_job_active_record'
 gem 'devise'
 gem 'dynamic_form'
 gem 'execjs', '1.4.0'
+gem 'therubyracer', '0.10.2', :platforms => :ruby
 gem 'exception_notification'
 gem 'grape', '0.7.0'
 gem 'grape-entity', '~> 0.4.4'

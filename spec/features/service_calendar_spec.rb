@@ -73,11 +73,11 @@ RSpec.describe "service calendar", js: true do
           fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", with: 1
           page.execute_script('$(".units_per_quantity").change()')
           wait_for_javascript_to_finish
-          fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", with: 0
-          page.execute_script('$(".line_item_quantity").change()')
-          wait_for_javascript_to_finish
-
-          expect(page).to have_css('#one_time_fee_errors', text: 'is less than the unit minimum')
+          
+          accept_alert("Quantity please enter a quantity greater than or equal to") do
+            fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", with: 0
+            find("th.number_of_units_header").click
+          end
         end
       end
 
@@ -354,12 +354,21 @@ RSpec.describe "service calendar", js: true do
       end
 
       it "should show total price for that visit" do
-        click_link "billing_strategy_tab"
-        fill_in "visits_#{@visit_id}_research_billing_qty", with: 5
-        click_link "calendar_tab"
-        all('.visit.visit_column_2').each do |x|
+        find("#billing_strategy_tab").click
+        wait_for_javascript_to_finish
+
+        within(".arm_1.visit.visit_column_#{@visit_id}") do
+          wait_for_javascript_to_finish
+          fill_in "visits_#{@visit_id}_research_billing_qty", with: "5\r"
+        end
+
+        wait_for_javascript_to_finish
+        find("#calendar_tab").click
+        wait_for_javascript_to_finish
+        
+        all('.pp_line_item_total total_1').each do |x|
           if x.visible?
-            expect(x).to have_exact_text('150.00')
+            expect(x).to have_exact_text("150.00")
           end
         end
       end

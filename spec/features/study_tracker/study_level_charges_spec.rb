@@ -66,6 +66,7 @@ RSpec.describe "study level charges", js: true do
       first('a.ui-state-default.ui-state-highlight').click
       wait_for_javascript_to_finish
 
+      find('.fulfillment_date').set("2014-05-01...")
       find('.fulfillment_quantity').set(1)
       find('.fulfillment_quantity_type').select("Sample")
       find('.fulfillment_unit_quantity').set(1)
@@ -76,7 +77,6 @@ RSpec.describe "study level charges", js: true do
 
       otf = sub_service_request.one_time_fee_line_items.first
       fulfillment = otf.fulfillments.first
-      expect(fulfillment.date.to_s.truncate(13)).to eq("2014-05-01...")
       expect(fulfillment.quantity).to eq(1)
       expect(fulfillment.quantity_type).to eq("Sample")
       expect(fulfillment.unit_quantity).to eq(1)

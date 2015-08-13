@@ -215,13 +215,14 @@ $(document).ready ->
     recalculate_one_time_fee_totals()
     return false
 
-  $('.line_item_quantity').live 'change', ->
+  $(document).on('change', '.line_item_quantity', ->
     if $(this).data('study_tracker') == true
       save_line_item_by_ajax(this)
     else
       update_otf_line_item this
     recalculate_one_time_fee_totals()
     return false
+  )
 
   $(document).on('click', '.move_visits', ->
     sr_id = $(this).data('sr_id')

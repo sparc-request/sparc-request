@@ -222,8 +222,8 @@ class ServiceRequest < ActiveRecord::Base
       end
     end
     self.one_time_fee_line_items.each do |li|
-      unless line_item.valid_otf_service_relation_quantity?
-        line_item.reload.errors.each{ |e| errors.add(e) }
+      unless li.valid_otf_service_relation_quantity?
+        li.reload.errors.each{ |e| errors.add(e) }
       end
     end
   end

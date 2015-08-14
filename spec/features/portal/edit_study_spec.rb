@@ -57,7 +57,6 @@ RSpec.describe "editing a study", js: true do
     it "should redirect to the main portal page" do
       click_button "Save"
       wait_for_javascript_to_finish
-      wait_for_javascript_to_finish
       expect(page).to have_content('Dashboard')
       expect(page).to have_content('Welcome')
     end

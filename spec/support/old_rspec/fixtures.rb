@@ -62,12 +62,12 @@ def build_study_type_questions
 end
 
 def build_study_type_answers
-  let!(:answer1)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: 1, answer: false)}
-  let!(:answer2)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: 2, answer: true)}
-  let!(:answer3)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: 3, answer: false)}
-  let!(:answer4)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: 4, answer: false)}
-  let!(:answer5)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: 5, answer: false)}
-  let!(:answer6)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: 6, answer: false)}
+  let!(:answer1)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_higher_level_of_privacy.id, answer: 0)}
+  let!(:answer2)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_certificate_of_conf.id, answer: 1)}
+  let!(:answer3)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_access_study_info.id, answer: 0)}
+  let!(:answer4)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_epic_inbasket.id, answer: 0)}
+  let!(:answer5)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_research_active.id, answer: 0)}
+  let!(:answer6)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_restrict_sending.id, answer: 0)}
 end
 
 def build_service_request_with_project

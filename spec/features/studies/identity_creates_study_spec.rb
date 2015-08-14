@@ -25,9 +25,10 @@ RSpec.describe "Identity creates Study", js: true do
   let_there_be_j
   fake_login_for_each_test
   build_service_request_with_study()
+  build_study_type_questions
 
   before :each do
-    service_request.update_attribute(:status, "first_draft")
+    service_request.update_attribute(:status, 'first_draft')
     visit protocol_service_request_path service_request.id
     expect(page).to have_css('.new-study')
     click_link "New Study"

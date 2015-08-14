@@ -25,7 +25,6 @@ RSpec.describe "admin fulfillment tab", js: true do
   let_there_be_j
   fake_login_for_each_test
   build_service_request_with_study
-  build_study_type_questions
 
   let!(:pricing_map3)        { create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service2.id, display_date: Time.now - 1.day, effective_date: Time.now + 10.days, full_rate: 1000, federal_rate: 2000, units_per_qty_max: 20) }
 

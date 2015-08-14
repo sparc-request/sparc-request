@@ -40,7 +40,6 @@ RSpec.describe 'A Quick Happy Test on Sparc Proper', :happy_test do
   let!(:service_provider)  { create(:service_provider, organization_id: program.id, identity_id: jug2.id) }
   let!(:service_provider2) { create(:service_provider, organization_id: program2.id, identity_id: jug2.id) }
 
-build_study_type_questions
 
   it 'should properly make you happy in a quick manner', js: true do
     visit root_path

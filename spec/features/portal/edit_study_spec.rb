@@ -24,7 +24,6 @@ RSpec.describe "editing a study", js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
-  build_study_type_questions
   build_service_request_with_study
 
   let(:numerical_day) { Date.today.strftime("%d").gsub(/^0/,'') }

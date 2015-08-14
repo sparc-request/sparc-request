@@ -61,6 +61,15 @@ def build_study_type_questions
   let!(:stq_restrict_sending)        { StudyTypeQuestion.create("order"=>6, "question"=>"4. Do you need to restrict the sending of study related results, such as laboratory and radiology results, to a participants MyChart?", "friendly_id"=>"restrict_sending") }
 end
 
+def build_study_type_answers
+  let!(:answer1)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: 1, answer: false)}
+  let!(:answer2)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: 2, answer: true)}
+  let!(:answer3)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: 3, answer: false)}
+  let!(:answer4)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: 4, answer: false)}
+  let!(:answer5)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: 5, answer: false)}
+  let!(:answer6)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: 6, answer: false)}
+end
+
 def build_service_request_with_project
   build_service_request()
   build_project()
@@ -207,9 +216,10 @@ def build_project
 end
 
 def build_study
+  build_study_type_questions()
   let!(:study) {
 
-    protocol = build(:protocol)
+    protocol = build(:study)
     protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month)
     protocol.save validate: false
     identity = Identity.find_by_ldap_uid('jug2')
@@ -230,6 +240,7 @@ def build_study
     protocol.reload
     protocol
   }
+  build_study_type_answers()
 end
 
 def build_clinical_data all_subjects = nil

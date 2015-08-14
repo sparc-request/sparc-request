@@ -23,7 +23,6 @@ require 'rails_helper'
 RSpec.describe "editing a study", js: true do
   let_there_be_lane
   let_there_be_j
-  build_study_type_questions
   fake_login_for_each_test
   build_service_request_with_study()
 

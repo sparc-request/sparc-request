@@ -50,8 +50,6 @@ RSpec.describe "editing a study", js: true do
       # select "Billing/Business Manager", from: "project_role_role"
       # click_button "Add Authorized User"
 
-      save_and_open_screenshot
-
       expect(Study.first.short_title).to eq('Bob')
     end
   end

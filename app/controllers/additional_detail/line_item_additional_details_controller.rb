@@ -1,0 +1,2 @@
+class AdditionalDetail::LineItemAdditionalDetailsController < ApplicationController
+end

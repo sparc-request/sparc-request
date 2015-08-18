@@ -49,6 +49,9 @@ class Service < ActiveRecord::Base
   # Surveys associated with this service
   has_many :associated_surveys, :as => :surveyable
 
+  # Additional Detail forms, has many versions but only the recent by effective_date is active
+  has_many :additional_details
+  
   attr_accessible :name
   attr_accessible :abbreviation
   attr_accessible :order

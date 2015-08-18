@@ -1,0 +1,9 @@
+/* bootstrap-accessibility requires that the JS file be loaded at the bottom of the layout template (application.html.haml) */
+
+/*
+ *= require additional_detail/bootstrap.min
+ *= require additional_detail/bootstrap-accessibility
+ *= require additional_detail/ui-grid.min
+ 
+ *= require_self
+*/

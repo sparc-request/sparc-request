@@ -332,6 +332,15 @@ SparcRails::Application.routes.draw do
       get :cwf_subject
     end
   end
-
+  
+  ##### Additional Detail #####
+  namespace :additional_detail do
+    root :to => 'additional_details#index'
+    
+    resources :additional_details do
+      
+    end
+  end
+  
   root :to => 'service_requests#catalog'
 end

@@ -1,4 +1,59 @@
-%div{"ng-app" => "job", "ng-controller" => "JobController"}
+%html{"ng-app" => "job", "ng-controller" => "JobController"}
   .row
     .col-md-7
       .panel.panel-default
+        .panel-heading
+          %form{:id=>"form",:name=>"form",:role=>"form", "data-toggle"=>"validator"}
+            %fieldset
+              %legend Form Fields
+              .row
+                .col-md-6
+                  .form-group
+                    %label{"for"=>"key"} Key
+                    %input.form-control{:id=>"key", :pattern=>"([a-zA-Z0-9]| |/|\|@|#|$|%|&)+", "ng-model"=>"field.key", "type"=>"text", :value=>"", :placeholder=>"Key", :required=>"required"}
+                    .help-block.with-errors
+                .col-md-6
+                  .form-group
+                    %label{:for=>"kind"} Type
+                    %select.form-control{:id=>"kind", "ng-model"=>"field.kind", :required=>"required"}
+                      %option{:disabled=>"disabled", :value=>'', :selected=>"selected"} Please Select One
+                      %option{"ng-repeat"=>"kind in typeHashKeyList", :value=>'', :title=>''} Test
+                    .help-block.with-errors
+              .row
+                .col-md-4
+                  .form-group.has-feedback
+                    %label{:for=>"name"} Question
+                    %textarea.form-control{:id=>"name",:type=>"text", :placeholder=>"Question", :required=>"required", "ng-model"=>"field.name"}
+                    .help-block.with-errors
+                .col-md-4
+                  .form-group
+                    %label{:for=>"description"} Description
+                    %textarea.form-control{:id=>"description",:type=>"text", :placeholder=>"Description", :required=>"required", "ng-model"=>"field.name"}
+                    .help-block.with-errors
+                .col-md-4
+                  .form-group
+                    %label{:for=>"values"} Values
+                    %textarea.form-control{:id=>"values", "ng-model"=>"field.values", :type=>"text", :placeholder=>"Values", "aria-describedby"=>"valuesHelpBlock"}
+                    %span.help-block{:id=>"valuesHelpBlock"} Please separate values with commas.
+            %fieldset
+              %legend Validation
+              .row
+                .col-md-2
+                  .form-group
+                    %label{:for=>"required"} Required
+                    %input{:id=>"required", "ng-model"=>"field.required", :type=>"checkbox", :value=>""}
+                .col-md-5
+                  .form-group
+                    %label{:for=>"min"} Mininum
+                    %input.form-control{:id=>"min", "ng-model"=>"field.min", :type=>"number", :placeholder=>"Min"}
+                .col-md-5
+                  .form-group
+                    %label{:for=>"max"} Maxinum
+                    %input.form-control{:id=>"max", "ng-model"=>"field.max", :type=>"number", :placeholder=>"Max"}
+                    
+                    
+               
+                    
+                  
+                  
+                  

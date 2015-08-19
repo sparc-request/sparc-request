@@ -13,6 +13,7 @@
 //= require additional_detail/schema-form-date-time-picker.min
 //= require additional_detail/angular-strap.min
 //= require additional_detail/angular-strap-tpl.min
+//= require additional_detail/angular-schema-form-dynamic-select.min
 var typeHash;
 
 //$(function() {

@@ -389,21 +389,21 @@ class SubServiceRequest < ActiveRecord::Base
     candidates
   end
 
-  def generate_approvals current_user
-    if self.nursing_nutrition_approved?
-      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Date.today, :approval_type => "Nursing/Nutrition Approved"}) unless self.approvals.find_by_approval_type("Nursing/Nutrition Approved")
+  def generate_approvals current_user, params
+    if params[:nursing_nutrition_approved]
+      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Date.today, :approval_type => "Nursing/Nutrition Approved"})
     end
 
-    if self.lab_approved?
-      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Date.today, :approval_type => "Lab Approved"}) unless self.approvals.find_by_approval_type("Lab Approved")
+    if params[:lab_approved]
+      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Date.today, :approval_type => "Lab Approved"})
     end
 
-    if imaging_approved?
-      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Date.today, :approval_type => "Imaging Approved"}) unless self.approvals.find_by_approval_type("Imaging Approved")
+    if params[:imaging_approved]
+      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Date.today, :approval_type => "Imaging Approved"})
     end
 
-    if src_approved?
-      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Date.today, :approval_type => "SRC Approved"}) unless self.approvals.find_by_approval_type("SRC Approved")
+    if params[:src_approved]
+      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Date.today, :approval_type => "SRC Approved"})
     end
   end
 

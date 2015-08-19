@@ -65,7 +65,6 @@ development:
   bug_enhancement_url: "http://something.com"
   clinical_work_fulfillment_url: http://fulfillment-future-url.com
 
-
 test:
   default_mail_to: nobody@nowhere.com
   admin_mail_to: nobody@nowhere.com

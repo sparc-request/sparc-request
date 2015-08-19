@@ -27,9 +27,12 @@ namespace :data do
            
             current_range = current_associated_revenue_code_range.first
             previous_range = previous_associated_revenue_code_range.first || current_associated_revenue_code_range.first # if the range did not exist in the previous version
+
  
-            attr = {:charge_code => row['Charge Code'], :organization_id => organization.id, :revenue_code_range_id => previous_range.id} # we want to find based on past revenue_code_range_id for updates
-            service = Service.where(attr).first || Service.new(attr)
+            attr_previous = {:charge_code => row['Charge Code'], :organization_id => organization.id, :revenue_code_range_id => previous_range.id} # we want to find based on past revenue_code_range_id for updates first
+            attr_current = {:charge_code => row['Charge Code'], :organization_id => organization.id, :revenue_code_range_id => current_range.id} # we want to find based on current revenue_code_range_id for updates second
+
+            service = Service.where(attr_previous).first || Service.where(attr_current).first || Service.new(attr_current) # look for previous range, current range, create new
             service.assign_attributes(
                                 :revenue_code_range_id => current_range.id,
                                 :revenue_code => revenue_code,
@@ -44,14 +47,26 @@ namespace :data do
             service.tag_list = "epic" if row['Send to Epic'] == 'Y'
 
             full_rate = Service.dollars_to_cents(row['Service Rate'].to_s.strip.gsub("$", "").gsub(",", ""))
-            calculated_rate = (full_rate * range.percentage)/100.0
+
+            if ENV['addendum_b'] == 'yes'
+              corporate_rate = Service.dollars_to_cents(row['Corporate Rate'].to_s.strip.gsub("$", "").gsub(",", ""))
+              federal_rate = Service.dollars_to_cents(row['Federal Rate'].to_s.strip.gsub("$", "").gsub(",", ""))
+              member_rate = Service.dollars_to_cents(row['Member Rate'].to_s.strip.gsub("$", "").gsub(",", ""))
+              other_rate = Service.dollars_to_cents(row['Other Rate'].to_s.strip.gsub("$", "").gsub(",", ""))
+            else
+              calculated_rate = (full_rate * range.percentage)/100.0
+              corporate_rate = calculated_rate
+              federal_rate = calculated_rate
+              member_rate = calculated_rate
+              other_rate = calculated_rate
+            end
 
             pricing_map = service.pricing_maps.build(
                                                   :full_rate => full_rate,
-                                                  :corporate_rate => calculated_rate,
-                                                  :federal_rate => calculated_rate,
-                                                  :member_rate => calculated_rate, 
-                                                  :other_rate => calculated_rate, 
+                                                  :corporate_rate => corporate_rate,
+                                                  :federal_rate => federal_rate,
+                                                  :member_rate => member_rate, 
+                                                  :other_rate => other_rate, 
                                                   :unit_type => (row['Is One Time Fee?'] == 'Y' ? nil : row['Clinical Qty Type']),
                                                   :quantity_type => (row['Is One Time Fee?'] != 'Y' ? nil : row['Clinical Qty Type']),
                                                   :unit_factor => row['Unit Factor'],

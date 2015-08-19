@@ -10,14 +10,14 @@
                 .col-md-6
                   .form-group
                     %label{"for"=>"key"} Key
-                    %input.form-control{:id=>"key", :pattern=>"([a-zA-Z0-9]| |/|\|@|#|$|%|&)+", "ng-model"=>"field.key", "type"=>"text", :value=>"", :placeholder=>"Key", :required=>"required"}
+                    %input.form-control{:id=>"key", :pattern=>"([a-zA-Z0-9]| |/|\|@|#|$|%|&)+", "ng-model"=>"field.key", "type"=>"text", :value=>"", "data-error"=>"{{keyError}}", :placeholder=>"Key", :required=>"required"}
                     .help-block.with-errors
                 .col-md-6
                   .form-group
                     %label{:for=>"kind"} Type
                     %select.form-control{:id=>"kind", "ng-model"=>"field.kind", :required=>"required"}
                       %option{:disabled=>"disabled", :value=>'', :selected=>"selected"} Please Select One
-                      %option{"ng-repeat"=>"kind in typeHashKeyList", :value=>'', :title=>''} Test
+                      %option{"ng-repeat"=>"kind in typeHashKeyList", :value=>"{{kind}}", :title=>"{{typeHash[kind]}}"} {{typeHash[kind]}}
                     .help-block.with-errors
               .row
                 .col-md-4
@@ -28,10 +28,10 @@
                 .col-md-4
                   .form-group
                     %label{:for=>"description"} Description
-                    %textarea.form-control{:id=>"description",:type=>"text", :placeholder=>"Description", "ng-model"=>"field.name"}
+                    %textarea.form-control{:id=>"description",:type=>"text", :placeholder=>"Description", "ng-model"=>"field.description"}
                     .help-block.with-errors
                 .col-md-4
-                  .form-group
+                  .form-group{:style=>"{{displayValue}}"}
                     %label{:for=>"values"} Values
                     %textarea.form-control{:id=>"values", "ng-model"=>"field.values", :type=>"text", :placeholder=>"Values", "aria-describedby"=>"valuesHelpBlock"}
                     %span.help-block{:id=>"valuesHelpBlock"} Please separate values with commas.
@@ -43,16 +43,26 @@
                     %label{:for=>"required"} Required
                     %input{:id=>"required", "ng-model"=>"field.required", :type=>"checkbox", :value=>""}
                 .col-md-5
-                  .form-group
-                    %label{:for=>"min"} Mininum
+                  .form-group{:style=>"{{minMaxDisplay}}"}
+                    %label{:for=>"min"} {{minDisplay}}
                     %input.form-control{:id=>"min", "ng-model"=>"field.min", :type=>"number", :placeholder=>"Min"}
                 .col-md-5
-                  .form-group
-                    %label{:for=>"max"} Maxinum
+                  .form-group{:style=>"{{minMaxDisplay}}"}
+                    %label{:for=>"max"} {{maxDisplay}}
                     %input.form-control{:id=>"max", "ng-model"=>"field.max", :type=>"number", :placeholder=>"Max"}
             %input.btn.btn-primary{:type=>"submit", "ng-click"=>"add(field)", :value=>"Add"}
             %input.btn.btn-primary{:type=>"reset", :value=>"Reset"}    
             %input.btn.btn-primary{:type=>"button", "ng-click"=>"deleteSelected()", :value=>"Delete Selected"}
+      .panel-body.alert{"ng-show"=>"alertMessage", "ng-class"=>"{ 'alert-success' : resourceSuccessful, 'alert-danger' : !resourceSuccessful }", :role=>"alert"} {{alertMessage}}
+      %div{:id=>"gridId", "ui-grid"=>"gridModel", "ui-grid-edit"=>"true", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 400px;"}
+    .col-md-5
+      %fieldset
+        %legend Preview Form
+        %from.ng-pristine.ng-vaild
+          %div{"sf-schema"=>"schema", "sf-form"=>"form", "sf-model"=>"model"}
+        %pre{"ng-cloak"=>"true"} {{pretty()}}  
+      
+  
         
                
                     

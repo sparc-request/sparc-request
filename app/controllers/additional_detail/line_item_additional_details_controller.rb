@@ -1,6 +1,8 @@
 class AdditionalDetail::LineItemAdditionalDetailsController < ApplicationController
   layout 'additional_detail/application'
 
+  before_filter :authorize_identity
+  
   def show
     
   end

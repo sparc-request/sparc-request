@@ -335,11 +335,11 @@ SparcRails::Application.routes.draw do
   
   ##### Additional Detail #####
   namespace :additional_detail do
-    root :to => 'additional_details#index'
-    
-    resources :additional_details do
-      
+    root :to => 'services#index'
+    resources :services, only: [:index] do
+      resources :additional_details
     end
+    resources :line_item_additional_details, only: [:show, :update]
   end
   
   root :to => 'service_requests#catalog'

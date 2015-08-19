@@ -1,0 +1,2 @@
+module AdditionalDetail::ServicesHelper
+end

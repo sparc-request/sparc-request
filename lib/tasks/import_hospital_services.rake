@@ -5,26 +5,34 @@ namespace :data do
     Service.transaction do
       begin
         current_version = RevenueCodeRange.maximum('version').to_i
+        previous_version = [1, current_version - 1].max
 
         CSV.foreach(ENV['hospital_file'], :headers => true, :encoding => 'windows-1251:utf-8') do |row|
+          revenue_code = row['Revenue Code'].rjust(4, '0')
           
-          associated_revenue_code_range = RevenueCodeRange.find_by_sql("SELECT * FROM revenue_code_ranges WHERE version = #{current_version} AND #{row['Revenue Code'].to_i} BETWEEN `from` AND `to`")
-          if associated_revenue_code_range.empty?
+          previous_associated_revenue_code_range = RevenueCodeRange.find_by_sql("SELECT * FROM revenue_code_ranges WHERE version = #{previous_version} AND #{revenue_code.to_i} BETWEEN `from` AND `to`")
+          current_associated_revenue_code_range = RevenueCodeRange.find_by_sql("SELECT * FROM revenue_code_ranges WHERE version = #{current_version} AND #{revenue_code.to_i} BETWEEN `from` AND `to`")
+
+          if current_associated_revenue_code_range.empty?
             # what do we do
-            puts "No revenue code range found, skipping #{row['Charge Code']} - #{row['Procedure Name']} - #{row['Revenue Code']}"
-          elsif associated_revenue_code_range.size > 1
-            raise "Why do we have multiple revenue code ranges for:\n\n#{row.inspect}\n\n#{associated_revenue_code_range.inspect}"
+            puts "No revenue code range found, skipping #{row['Charge Code']} - #{row['Procedure Name']} - #{revenue_code}"
+          elsif current_associated_revenue_code_range.size > 1
+            raise "Why do we have multiple revenue code ranges for:\n\n#{row.inspect}\n\n#{current_associated_revenue_code_range.inspect}"
           else
-            range = associated_revenue_code_range.first
+            range = current_associated_revenue_code_range.first
             organization = range.organization
 
             #CPT Code,Charge Code,Revenue Code,Send to Epic,Procedure Name,Service Rate, Corporate Rate ,Federal Rate,Member Rate,Other Rate,Is One Time Fee?,Clinical Qty Type,Unit Factor,Qty Min,Display Date,Effective Date
             #111111,11000001,0113,Y,ROOM & BOARD - PRIVATE GENERAL," 1,328.00 "," 1,177.27 "," 1,177.27 "," 1,177.27 "," 1,177.27 ",N,Each,1,1,11/21/14,11/21/14
-
-            attr = {:charge_code => row['Charge Code'], :organization_id => organization.id, :revenue_code_range_id => range.id}
+           
+            current_range = current_associated_revenue_code_range.first
+            previous_range = previous_associated_revenue_code_range.first || current_associated_revenue_code_range.first # if the range did not exist in the previous version
+ 
+            attr = {:charge_code => row['Charge Code'], :organization_id => organization.id, :revenue_code_range_id => previous_range.id} # we want to find based on past revenue_code_range_id for updates
             service = Service.where(attr).first || Service.new(attr)
             service.assign_attributes(
-                                :revenue_code => row['Revenue Code'],
+                                :revenue_code_range_id => current_range.id,
+                                :revenue_code => revenue_code,
                                 :cpt_code => row['CPT Code'],
                                 :send_to_epic => (row['Send to Epic'] == 'Y' ? true : false),
                                 :name => row['Procedure Name'],

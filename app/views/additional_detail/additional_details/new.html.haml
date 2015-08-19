@@ -1,4 +1,4 @@
-%html{"ng-app" => "job", "ng-controller" => "JobController"}
+%div{"ng-controller" => "FormCreationController"}
   .row
     .col-md-7
       .panel.panel-default
@@ -28,7 +28,7 @@
                 .col-md-4
                   .form-group
                     %label{:for=>"description"} Description
-                    %textarea.form-control{:id=>"description",:type=>"text", :placeholder=>"Description", :required=>"required", "ng-model"=>"field.name"}
+                    %textarea.form-control{:id=>"description",:type=>"text", :placeholder=>"Description", "ng-model"=>"field.name"}
                     .help-block.with-errors
                 .col-md-4
                   .form-group
@@ -50,8 +50,10 @@
                   .form-group
                     %label{:for=>"max"} Maxinum
                     %input.form-control{:id=>"max", "ng-model"=>"field.max", :type=>"number", :placeholder=>"Max"}
-                    
-                    
+            %input.btn.btn-primary{:type=>"submit", "ng-click"=>"add(field)", :value=>"Add"}
+            %input.btn.btn-primary{:type=>"reset", :value=>"Reset"}    
+            %input.btn.btn-primary{:type=>"button", "ng-click"=>"deleteSelected()", :value=>"Delete Selected"}
+        
                
                     
                   

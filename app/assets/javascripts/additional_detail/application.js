@@ -15,11 +15,23 @@
 //= require additional_detail/angular-strap-tpl.min
 var typeHash;
 
+//$(function() {
+//    $( ".datepicker" ).datepicker({
+//    	autoclose: true//
+//    });
+//  });
+//
+//$(".datepicker.day").css('cursor','pointer');
 var app = angular.module('app', ['ngAria','schemaForm','ui.grid','ui.grid.resizeColumns', 'mgcrea.ngStrap', 'schemaForm-datepicker', 'schemaForm-timepicker', 'schemaForm-datetimepicker','ui.grid.selection','ngSanitize', 'ui.grid.autoResize','ui.grid.expandable', 'ui.grid.edit']);
 
 app.controller('FormCreationController', ['$scope', '$http', function ($scope, $http, $compile) {
-
-$scope.typeHash = {
+	
+	if(!$scope.additionalDetails){
+		$scope.additionalDetails={};
+		$scope.additionalDetails.approved = true;
+	}
+	
+	$scope.typeHash = {
 	    text: 'Text',
 	    textarea : 'Text Area',
 	    radiobuttons: 'Radiobuttons',
@@ -38,9 +50,10 @@ $scope.typeHash = {
 	    multiDropdown : "Multiple Dropdown"
 	  };
 	  
-typeHash = $scope.typeHash;	  
-$scope.typeHashKeyList = Object.keys($scope.typeHash);
+	typeHash = $scope.typeHash;	  
+	$scope.typeHashKeyList = Object.keys($scope.typeHash);
 
+	$scope.invaildDate = new Date((new Date()-86400000));
 
     $scope.formDefinition = JSON.stringify({ "schema": { "type": "object","title": "Comment", "properties": {},"required": []}, "form": []},undefined,2);
     
@@ -121,7 +134,7 @@ $scope.typeHashKeyList = Object.keys($scope.typeHash);
  		 }
  		 
 		  }); 
- 	 
+ 	
  	 $scope.pretty = function(){
 		    return JSON.stringify($scope.model,undefined,2,2);
 		  };

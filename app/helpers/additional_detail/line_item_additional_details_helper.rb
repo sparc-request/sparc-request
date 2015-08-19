@@ -1,0 +1,2 @@
+module AdditionalDetail::LineItemAdditionalDetailsHelper
+end

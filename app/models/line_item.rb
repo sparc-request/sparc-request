@@ -33,7 +33,8 @@ class LineItem < ActiveRecord::Base
   has_many :arms, :through => :line_items_visits
   has_many :procedures
   has_many :admin_rates, :dependent => :destroy
-
+  has_one :line_item_additional_detail, :dependent => :destroy
+  
   attr_accessible :service_request_id
   attr_accessible :sub_service_request_id
   attr_accessible :service_id

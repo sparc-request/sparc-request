@@ -24,12 +24,15 @@ describe "editing a study", js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
-  build_service_request_with_study()
+  build_study_type_questions
+  build_service_request_with_study
 
   let(:numerical_day) { Date.today.strftime("%d").gsub(/^0/,'') }
 
   before :each do
     visit edit_portal_protocol_path service_request.protocol.id
+    find('#study_has_cofc_true').click
+    wait_for_javascript_to_finish
   end
 
   context "validations" do
@@ -37,14 +40,16 @@ describe "editing a study", js: true do
     it "should raise an error message if study's status is pending and no potential funding source is selected" do
       select("Pending Funding", from: "Proposal Funding Status")
       click_button "Save"
-      page.should have_content("1 error prohibited this study from being saved")
+      expect(page).to have_content("1 error prohibited this study from being saved")
+      expect(page).to have_content("You must select a potential funding source")
     end
 
     it "should raise an error message if study's status is funded but no funding source is selected" do
       select("Funded", from: "Proposal Funding Status")
       select("Select a Funding Source", from: "study_funding_source")
       click_button "Save"
-      page.should have_content("1 error prohibited this study from being saved")
+      expect(page).to have_content("1 error prohibited this study from being saved")
+      expect(page).to have_content('You must select a funding source')
     end
   end
 
@@ -99,7 +104,7 @@ describe "editing a study", js: true do
       click_button "Save"
       visit edit_portal_protocol_path service_request.protocol.id
       find("#study_udak_project_number").should have_value("12345")
-    end    
+    end
   end
 
   context "editing the sponsor name" do
@@ -119,7 +124,6 @@ describe "editing a study", js: true do
     end
 
     describe "editing the funding start date" do
-
       it "should change and save the date" do
         page.execute_script("$('#funding_start_date').focus()")
         sleep 2
@@ -143,25 +147,27 @@ describe "editing a study", js: true do
   context "pending funding fields" do
 
     before :each do
+      expect(page).to have_css('#study_funding_status')
       select("Pending Funding", from: "Proposal Funding Status")
+      expect(page).to have_css('#study_potential_funding_source', visible: true)
       select("Federal", from: "study_potential_funding_source")
     end
 
     describe "editing the funding opportunity number" do
 
       it "should save the new funding opportunity number" do
+        wait_for_javascript_to_finish
         fill_in "study_funding_rfa", with: "12345"
         click_button "Save"
         visit edit_portal_protocol_path service_request.protocol.id
         find("#study_funding_rfa").should have_value("12345")
-      end      
+      end
     end
 
     describe "editing the potential funding start date" do
 
       it "should change and save the date" do
         page.execute_script("$('#potential_funding_start_date').focus()")
-        sleep 2
         first('a.ui-state-default.ui-state-highlight').click #click on today's date
         sleep 2
         find("#potential_funding_start_date").should have_value((Date.today).strftime('%-m/%d/%Y'))
@@ -208,7 +214,7 @@ describe "editing a study", js: true do
       it "should save the new hr and pro number" do
         field_array = ["hr_number", "pro_number"]
         field_num = 0
-        2.times do 
+        2.times do
           fill_in "study_human_subjects_info_attributes_#{field_array[field_num]}", with: "12345"
           field_num += 1
         end
@@ -318,7 +324,7 @@ describe "editing a study", js: true do
 
         it "should open up text field when 'other' is checked" do
           check("study_impact_areas_attributes_6__destroy")
-          find("#study_impact_areas_other").should be_visible 
+          find("#study_impact_areas_other").should be_visible
         end
 
         it "should save the value after text is entered" do
@@ -335,7 +341,7 @@ describe "editing a study", js: true do
   context "affiliations check boxes" do
 
     describe "cancer center, lipidomics, oral health, cardiovascular, cchp, inbre, reach" do
-      
+
       it "should change theit state when clicked" do
         box_num = 0
         7.times do
@@ -349,7 +355,7 @@ describe "editing a study", js: true do
         find("#study_affiliations_attributes_4__destroy").should be_checked
         find("#study_affiliations_attributes_5__destroy").should be_checked
         find("#study_affiliations_attributes_6__destroy").should be_checked
-      end    
+      end
     end
   end
 end

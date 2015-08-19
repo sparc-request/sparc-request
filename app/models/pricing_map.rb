@@ -42,9 +42,14 @@ class PricingMap < ActiveRecord::Base
   attr_accessible :otf_unit_type
 
   before_save :upcase_otf_unit_type
-  validates :full_rate, :display_date, :effective_date, :presence => true
-  validates :full_rate, :numericality => true
-  
+
+  validates :full_rate,
+            :display_date,
+            :effective_date,
+            presence: true
+  validates :full_rate,
+            numericality: true
+
   # Determines the rate for a particular service.
   #
   # +default_percentage+:: a number between 0 and 1
@@ -117,5 +122,5 @@ class PricingMap < ActiveRecord::Base
       self.otf_unit_type.upcase!
     end
   end
-  
+
 end

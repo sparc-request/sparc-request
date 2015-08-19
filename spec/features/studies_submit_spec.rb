@@ -20,95 +20,49 @@
 
 require 'spec_helper'
 
-describe "creating a new study ", :js => true do
+RSpec.describe "editing a study", js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
-  build_service_request_with_study()
+  build_service_request
+  build_study
 
   before :each do
+    Study.first.update_attribute :has_cofc, true
     visit protocol_service_request_path service_request.id
-    click_link "New Study"
+    find('.edit-study').click
     wait_for_javascript_to_finish
   end
 
-  describe "submitting a blank form" do
+  describe 'editing the short title' do
 
-    it "should show errors when submitting a blank form" do
-      find('.continue_button').click
-      page.should have_content("Short title can't be blank")
-      page.should have_content("Title can't be blank")
-      page.should have_content("Funding status can't be blank")
-      page.should have_content("Sponsor name can't be blank")
+    it 'should save the short title' do
+      select 'Funded', from: 'study_funding_status'
+      select 'Federal', from: 'study_funding_source'
+      fill_in 'study_short_title', with: 'Bob'
+      click_link 'Continue'
+      wait_for_javascript_to_finish
+      click_link 'Continue'
+      wait_for_javascript_to_finish
+
+      # fill_autocomplete('user_search_term', with: 'bjk7');
+      # page.find('a', text: "Brian Kelsey (kelsey@musc.edu)", visible: true).click()
+      # select "Billing/Business Manager", from: "project_role_role"
+      # click_button "Add Authorized User"
+
+      save_and_open_screenshot
+
+      expect(Study.first.short_title).to eq('Bob')
     end
   end
 
-  describe "submitting a filled form" do
-
-    it "should clear errors and submit the form" do
-      fill_in "study_short_title", :with => "Bob"
-      fill_in "study_title", :with => "Dole"
-      fill_in "study_sponsor_name", :with => "Captain Kurt 'Hotdog' Zanzibar"
-      select "Funded", :from => "study_funding_status"
-      select "Federal", :from => "study_funding_source"
-
-      find('.continue_button').click
-      wait_for_javascript_to_finish
-
-      select "Primary PI", :from => "project_role_role"
-      click_button "Add Authorized User"
-      wait_for_javascript_to_finish
-
-      fill_in "user_search_term", :with => "bjk7"
-      wait_for_javascript_to_finish
-      page.find('a', :text => "Brian Kelsey (kelsey@musc.edu)", :visible => true).click()
-      wait_for_javascript_to_finish
-      select "Billing/Business Manager", :from => "project_role_role"
-      click_button "Add Authorized User"
-      wait_for_javascript_to_finish
-
-      find('.continue_button').click
-      wait_for_javascript_to_finish
-
-      find(".edit_study_id").should have_value Protocol.last.id.to_s
-    end
-  end
-end
-
-describe "editing a study", :js => true do
-  let_there_be_lane
-  let_there_be_j
-  fake_login_for_each_test
-  build_service_request()
-  build_study()
-
-  before :each do
-    visit protocol_service_request_path service_request.id
-    find('.edit-study').click
-  end
-
-  describe "editing the short title" do
-
-    it "should save the short title" do
-      select "Funded", :from => "study_funding_status"
-      select "Federal", :from => "study_funding_source"
-      fill_in "study_short_title", :with => "Bob"
-      find('.continue_button').click
-      wait_for_javascript_to_finish
-      find('.continue_button').click
-      wait_for_javascript_to_finish
-      find('.edit-study').click
-
-      find("#study_short_title").should have_value("Bob")
-    end
-  end
-
-  describe "setting epic access" do
+  describe 'setting epic access' do
 
     it 'should default to no for non primary pis' do
-      find('.continue_button').click
-      find("#study_project_roles_attributes_#{jpl6.id}_epic_access_false").should be_checked
-    end
+      click_link 'Continue'
+      wait_for_javascript_to_finish
 
+      expect(find("#study_project_roles_attributes_#{jpl6.id}_epic_access_false")).to be_checked
+    end
   end
 end

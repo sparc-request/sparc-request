@@ -71,6 +71,6 @@ Procfile
 
 config/setup_load_paths.rb
 
-bin/*
+bin/
 
 spec/examples.txt

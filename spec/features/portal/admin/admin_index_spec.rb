@@ -41,7 +41,9 @@ describe "admin index page", :js => true do
     end
 
     it "should have a service request listed in draft status" do
-      page.should have_content 'Draft (1)'
+      select('Draft', :from => 'service_request_workflow_states')
+
+      expect(page).to have_content 'Draft'
     end
 
     it "should show sub service requests for the status I have selected" do
@@ -89,12 +91,12 @@ describe "admin index page", :js => true do
     describe "opening a sub service request" do
 
       before :each do
-        select('Draft (1)', :from => 'service_request_workflow_states')
+        select('Draft', from: 'service_request_workflow_states')
         wait_for_javascript_to_finish
       end
 
       it "should not open if I click an expandable field" do
-        find('ul.services_first li').click()
+        find('.open_close_services').click()
         wait_for_javascript_to_finish
         page.should_not have_content('Send Notifications')
       end
@@ -131,7 +133,5 @@ describe "admin index page", :js => true do
         page.should have_content 'Welcome'
       end
     end
-
   end
-
 end

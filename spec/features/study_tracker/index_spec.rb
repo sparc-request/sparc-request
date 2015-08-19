@@ -42,7 +42,9 @@ describe "study tracker index page", :js => true do
     end
 
     it "should have a service request listed in draft status" do
-      page.should have_content 'Draft (1)'
+      select('Draft', :from => 'service_request_workflow_states')
+      save_and_open_screenshot
+      expect(page).to have_content 'Draft'
     end
 
     it "should show sub service requests for the status I have selected" do
@@ -90,7 +92,7 @@ describe "study tracker index page", :js => true do
       end
 
       it "should not open if I click an expandable field" do
-        find('ul.services_first li').click()
+        find('.open_close_services').click()
         wait_for_javascript_to_finish
         page.should_not have_content('Send Notifications')
       end
@@ -98,11 +100,9 @@ describe "study tracker index page", :js => true do
       it "should open a sub service request if I click that sub service request" do
         find('td', :text => "#{service_request.protocol.id}-").click
         wait_for_javascript_to_finish
-        page.should have_content('Back to Fulfillment')
+        expect(page).to have_content('Back to Clinical Work Fulfillment')
       end
-
     end
-
   end
 
   context "without clinical provider rights" do
@@ -128,7 +128,5 @@ describe "study tracker index page", :js => true do
         page.should have_content 'Dashboard'
       end
     end
-
   end
-
 end

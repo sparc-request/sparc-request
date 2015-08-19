@@ -20,7 +20,7 @@
 
 require 'spec_helper'
 
-describe "service calendar", :js => true do
+describe "service calendar", js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
@@ -36,7 +36,7 @@ describe "service calendar", :js => true do
   after :each do
     wait_for_javascript_to_finish
   end
-  
+
   describe "one time fee form" do
     before :each do
       arm1.visit_groups.each {|vg| vg.update_attribute(:day, 1)}
@@ -65,31 +65,33 @@ describe "service calendar", :js => true do
       end
     end
 
-    describe "validation" do
+    describe 'validation' do
 
-      describe "unit minimum too low" do
+      describe 'unit minimum too low' do
 
-        it "Should throw errors" do
-          fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", :with => 1
+        it 'should throw js error' do
+          fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", with: 1
           page.execute_script('$(".units_per_quantity").change()')
-          fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", :with => 0
-          page.execute_script('$(".line_item_quantity").change()')
-          # find("#service_request_line_items_attributes_#{line_item.id}_units_per_quantity").click
-          # find(:xpath, "//img[@src='/assets/sparc_request_header.jpg']").click #allow save by clicking away from field
           wait_for_javascript_to_finish
-          find("div#one_time_fee_errors").should have_content("is less than the unit minimum")
+          fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", with: 0
+          page.execute_script('$(".line_item_quantity").change()')
+          wait_for_javascript_to_finish
+
+          expect(page).to have_css('#one_time_fee_errors', text: 'is less than the unit minimum')
         end
       end
-      describe "units per quantity too high" do
 
-        it "should throw js error" do
-          fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", :with => (line_item.service.current_pricing_map.units_per_qty_max + 1)
+      describe 'units per quantity too high' do
+
+        it 'should throw js error' do
+          fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", with: 50
           page.execute_script('$(".units_per_quantity").change()')
-          fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", :with => 1
-          # find(:xpath, "//img[@src='/assets/sparc_request_header.jpg']").click #allow save by clicking away from field
+          wait_for_javascript_to_finish
+          fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", with: 1
           page.execute_script('$(".line_item_quantity").change()')
           wait_for_javascript_to_finish
-          find("div#unit_max_error").should have_content("more than the maximum allowed")
+
+          expect(page).to have_css('#unit_max_error', text: 'more than the maximum allowed')
         end
       end
     end
@@ -101,22 +103,23 @@ describe "service calendar", :js => true do
     end
   end
 
-  describe "per patient per visit" do
+  describe 'per patient per visit' do
 
-    describe "template tab" do
+    describe 'template tab' do
 
       describe 'selecting visits' do
 
         it 'should jump to the selected visits' do
-          select("Visits 6 - 10 of 10", from: "jump_to_visit_#{arm1.id}")
+          select('Visits 6 - 10 of 10', from: "jump_to_visit_#{arm1.id}")
           wait_for_javascript_to_finish
-          page.should have_content("Visit 6")
+
+          expect(page).to have_css("input.visit_name[value='Visit 6']")
         end
       end
 
-      describe "sorting visits around" do
+      describe 'sorting visits around' do
 
-        it "should move visit 1 to the end position" do
+        it 'should move visit 1 to the end position' do
           wait_for_javascript_to_finish
           first(:xpath, "//a[@class='move_visits']").click
           wait_for_javascript_to_finish
@@ -126,20 +129,23 @@ describe "service calendar", :js => true do
           wait_for_javascript_to_finish
           select("Visits 6 - 10 of 10", from: "jump_to_visit_#{arm1.id}")
           wait_for_javascript_to_finish
-          page.should have_content("Visit 1")
+
+          expect(page).to have_css("input.visit_name[value='Visit 1']")
         end
 
-        it "should move visit 2 between visits 6 and 7" do
+        it 'should move visit 2 between visits 6 and 7' do
           wait_for_javascript_to_finish
           first(:xpath, "//a[@class='move_visits']").click
           wait_for_javascript_to_finish
           select("Visit 2", from: "visit_to_move_1")
+          wait_for_javascript_to_finish
           select("Insert before 7 - Visit 7", from: "move_to_position_1")
           find('#submit_move').click
           wait_for_javascript_to_finish
           select("Visits 6 - 10 of 10", from: "jump_to_visit_#{arm1.id}")
           wait_for_javascript_to_finish
-          page.should have_content("Visit 2")
+
+          expect(page).to have_css("input.visit_name[value='Visit 2']")
         end
 
         it "should not mess up the visit ids" do
@@ -187,9 +193,9 @@ describe "service calendar", :js => true do
 
         it "should uncheck all visits in the given column" do
           wait_for_javascript_to_finish
-          first("#check_all_column_3").click        
+          first("#check_all_column_3").click
           wait_for_javascript_to_finish
-          
+
 
           find("#visits_#{arm1.line_items_visits.first.visits[2].id}").checked?.should eq(true)
           wait_for_javascript_to_finish

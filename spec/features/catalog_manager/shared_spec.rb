@@ -83,35 +83,22 @@ describe 'shared views', js: true do
 
     context "submission emails" do
 
-      it "should add an email to the program" do
-        sleep 3
-        fill_in "new_se", with: "franzferdinand@ww1.gov"
-        find('#new_se').native.send_keys(:return)
-        wait_for_javascript_to_finish
-
+      before :each do
         find('#user_rights').click
-        wait_for_javascript_to_finish
+        # "\r" acts as enter!!!
+        fill_in "new_se", with: "franzferdinand@ww1.gov\r"
+      end
 
-        page.should have_content("franzferdinand@ww1.gov")
+      it "should add an email to the program" do
+        expect(page).to have_content("franzferdinand@ww1.gov")
       end
 
       it "should delete an email from the program" do
-        sleep 3
-        fill_in "new_se", with: "franzferdinand@ww1.gov"
-        find('#new_se').native.send_keys(:return)
-        wait_for_javascript_to_finish
-
-        first("#save_button").click
-        wait_for_javascript_to_finish
-
-        find('#user_rights').click
-        wait_for_javascript_to_finish
-
+        expect(page).to have_css(".se_table")
         within(".se_table") do
           find(".se_delete").click
         end
-        wait_for_javascript_to_finish
-        page.should_not have_content("franzferdinand@ww1.gov")
+        expect(page).not_to have_content("franzferdinand@ww1.gov")
       end
     end
   end

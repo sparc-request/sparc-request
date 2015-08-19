@@ -29,7 +29,12 @@ describe 'adding an additional service', js: true do
 
   before :each do
     visit portal_root_path
-    wait_for_javascript_to_finish
+
+    # wait_for_javascript_to_finish not working here.
+    # Needs to be replaced with something more sophisticated.
+    # If `Unable to find css ".add-services-button"` error occurs,
+    # bump this up, for now.
+    sleep 1
   end
   
   describe 'clicking the button' do

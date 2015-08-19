@@ -25,61 +25,61 @@ describe 'edit a pricing setup', :js => true do
   before :each do
     default_catalog_manager_setup
     click_link("Office of Biomedical Informatics")
-    sleep 2
-    page.execute_script("$('.ui-accordion-header').click()") 
+    wait_for_javascript_to_finish
+    page.execute_script("$('.ui-accordion-header').click()")
   end
-  
+
   it 'should successfully update a pricing_setup' do
-        
+
     within('.ui-accordion') do
-      
+
       enter_display_date
-      
+
       page.execute_script("$('.dont_fix_pricing_maps_button').click()")
-            
+
       enter_effective_date
-      
+
       page.execute_script("$('.dont_fix_pricing_maps_button').click()")
-      
+
       find('.federal_percentage_field').set('250')
       click_link('Apply Federal % to All')
       page.execute_script %Q{ $(".rate").val("full") }
       page.execute_script %Q{ $(".rate").change() }
     end
-  
+
     first(".save_button").click
     wait_for_javascript_to_finish
-    
+
     page.should have_content "Office of Biomedical Informatics saved successfully"
-    
+
   end
-  
+
   ## Need to create a test that will confirm that a dialog pops when changing a date of a pricing_setup that has a related pricing_map.
   ## Need to confirm that changing the pricing_map date to match the pricing_setup works.
 
   it "should update the date of a pricing map if updated on pricing setup" do
-    
+
     within('.ui-accordion') do
-      
+
       enter_display_date
-      
+
       page.execute_script("$('.fix_pricing_maps_button').click()")
       wait_for_javascript_to_finish
-            
+
       enter_effective_date
-      
+
       page.execute_script("$('.fix_pricing_maps_button').click()")
-      wait_for_javascript_to_finish      
+      wait_for_javascript_to_finish
     end
-  
+
     first(".save_button").click
     wait_for_javascript_to_finish
-    
+
     page.should have_content "Office of Biomedical Informatics saved successfully"
-    
+
     new_date = Date.parse(PricingSetup.last.display_date.to_s)
     pricing_map_date = Date.parse(PricingMap.last.display_date.to_s)
-    
+
     new_date.should eq(pricing_map_date)
   end
 
@@ -119,21 +119,28 @@ end
 
 def enter_display_date
   page.execute_script("$('.display_date:visible').focus()")
-  sleep 2
+
   page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move three months forward
   page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") }
   page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") }
-  page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15    
-  sleep 2
+  page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15
+
+  # close datepicker, which may overlap other elements on the page
+  page.execute_script %Q{ $('.display_date').datepicker('destroy') }
+  page.execute_script %Q{ $('.displat_date').hide() }
+  wait_for_javascript_to_finish
 end
 
 def enter_effective_date
   page.execute_script("$('.effective_date:visible').focus()")
-  sleep 2
+
   page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move three months forward
   page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") }
   page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") }
-  page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15    
-  sleep 2
-end
+  page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15
 
+  # close datepicker, which may overlap other elements on the page
+  page.execute_script %Q{ $('.effective_date').datepicker('destroy') }
+  page.execute_script %Q{ $('.effective_date').hide() }
+  wait_for_javascript_to_finish
+end

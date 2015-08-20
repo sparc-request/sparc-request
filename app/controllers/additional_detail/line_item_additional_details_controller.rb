@@ -1,4 +1,6 @@
 class AdditionalDetail::LineItemAdditionalDetailsController < ApplicationController
+  protect_from_forgery
+  
   layout 'additional_detail/application'
 
   before_filter :authorize_identity

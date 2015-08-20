@@ -1,4 +1,6 @@
 class AdditionalDetail::AdditionalDetailsController < ApplicationController
+  protect_from_forgery
+  
   layout 'additional_detail/application'
     
   before_filter :authenticate_identity!
@@ -44,9 +46,13 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
   
   def load_service_and_authorize_user
     @service = Service.find(params[:service_id])
-    # verify that user is either a super user or catalog manager for this service
-    if current_identity.admin_organizations().include?(@service.organization)
+    # verify that user is either a super user or catalog manager for this service; service providers are not allowed!
+    if current_identity.admin_organizations(:su_only => true).include?(@service.organization) || current_identity.can_edit_entity?(@service.organization, true)
       return true
+    else
+      @service = nil
+      # @TODO: render JSON authorized message??
+      render "unauthorized", :status => :unauthorized
     end
   end
 end

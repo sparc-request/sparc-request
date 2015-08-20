@@ -1,11 +1,45 @@
 %div{"ng-controller" => "FormCreationController"}
   .row
-    .col-md-7
+    .col-md-12
       .panel.panel-default
-        .panel-heading
-          %form{:id=>"form",:name=>"form",:role=>"form", "data-toggle"=>"validator"}
-            %fieldset
+        %form{:id=>"additionalDetails", :name=>"ad", :role=>"form", "data-toggle"=>"validator"}
+          %fieldset
+            .panel-heading
+              %legend Additional Details
+            .panel-body
+              .row
+                .col-md-6
+                  .form-group
+                    %label{"for"=>"additionalDetailsName"} Name
+                    %input.form-control{:id=>"additionalDetailsName", "ng-model"=>"additionalDetails.name", :type=>"text", :value=>"", :placeholder=>"Name", :required=>"required"}
+                    .help-block.with-errors
+                .col-md-6
+                  .form-group
+                    %label{:for=>"effectiveDate"} Effective Date
+                    %input.form-control.datepicker{:id=>"effectiveDate", "data-min-date"=> "{{invaildDate}}", "data-date-type"=>"string", :required=>"required", "ng-model"=>"additionalDetails.effective_date", :cursor=>"pointer", "bs-datepicker"=>"bs-datepicker", :placeholder=>"Effective Date", :autoclose=>"true"}
+              .row
+                .col-md-6
+                  .form-group
+                    %label{"for"=>"additionalDetailsDescription"} Description
+                    %textarea.form-control{:id=>"additionalDetailsDescription", "ng-model"=>"additionalDetails.description", :type=>"text", :value=>"", :placeholder=>"Description (Optional)"}
+                    .help-block.with-errors
+                .col-md-1
+                  .form-group
+                  %label{:for=>"approved"} Approved
+                  %input{:id=>"approved", :type=>"checkbox", "ng-model"=>"additionalDetails.approved"}
+                .col-md-5
+                  .form-group
+                    %input.btn.btn-primary{:type=>"submit", :value=>"Save Additional Details Form"}
+                    %input.btn.btn-primary{:type=>"reset", :value=>"Reset Form"}    
+                    %input.btn.btn-primary{:type=>"button", :value=>"Cancel"}
+                    
+    .col-md-7                  
+      .panel.panel-default
+        %form{:id=>"questions",:name=>"form", :role=>"form", "data-toggle"=>"validator"}
+          %fieldset
+            .panel-heading
               %legend Form Fields
+            .panel-body
               .row
                 .col-md-6
                   .form-group
@@ -18,23 +52,25 @@
                     %select.form-control{:id=>"kind", "ng-model"=>"field.kind", :required=>"required"}
                       %option{:disabled=>"disabled", :value=>'', :selected=>"selected"} Please Select One
                       %option{"ng-repeat"=>"kind in typeHashKeyList", :value=>"{{kind}}", :title=>"{{typeHash[kind]}}"} {{typeHash[kind]}}
-                    .help-block.with-errors
+                      .help-block.with-errors
               .row
-                .col-md-4
+                .col-md-8
                   .form-group.has-feedback
                     %label{:for=>"name"} Question
                     %textarea.form-control{:id=>"name",:type=>"text", :placeholder=>"Question", :required=>"required", "ng-model"=>"field.name"}
                     .help-block.with-errors
-                .col-md-4
-                  .form-group
-                    %label{:for=>"description"} Description
-                    %textarea.form-control{:id=>"description",:type=>"text", :placeholder=>"Description", "ng-model"=>"field.description"}
-                    .help-block.with-errors
-                .col-md-4
+              .row
+                .col-md-6
                   .form-group{:style=>"{{displayValue}}"}
                     %label{:for=>"values"} Values
                     %textarea.form-control{:id=>"values", "ng-model"=>"field.values", :type=>"text", :placeholder=>"Values", "aria-describedby"=>"valuesHelpBlock"}
                     %span.help-block{:id=>"valuesHelpBlock"} Please separate values with commas.
+              .row
+                .col-md-6
+                  .form-group
+                    %label{:for=>"description"} Description
+                    %textarea.form-control{:id=>"description",:type=>"text", :placeholder=>"Description (Optional)", "ng-model"=>"field.description"}
+                    .help-block.with-errors
             %fieldset
               %legend Validation
               .row
@@ -56,11 +92,18 @@
       .panel-body.alert{"ng-show"=>"alertMessage", "ng-class"=>"{ 'alert-success' : resourceSuccessful, 'alert-danger' : !resourceSuccessful }", :role=>"alert"} {{alertMessage}}
       %div{:id=>"gridId", "ui-grid"=>"gridModel", "ui-grid-edit"=>"true", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 400px;"}
     .col-md-5
-      %fieldset
-        %legend Preview Form
-        %from.ng-pristine.ng-vaild
-          %div{"sf-schema"=>"schema", "sf-form"=>"form", "sf-model"=>"model"}
-        %pre{"ng-cloak"=>"true"} {{pretty()}}  
+      .panel.panel-default
+        %fieldset
+          .panel-heading
+            %legend Preview Form
+          .panel-body
+            %div{"sf-schema"=>"schema", "sf-form"=>"form", "sf-model"=>"model"}
+    .col-md-5
+      .panel.panel-default
+        %fieldset
+          .panel-heading
+            %legend Results
+          %pre{"ng-cloak"=>"true"} {{pretty()}}  
       
   
         

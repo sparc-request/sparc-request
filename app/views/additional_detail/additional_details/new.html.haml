@@ -7,22 +7,22 @@
             .panel-heading
               %h3.panel-title Additional Details Form Creator
             .panel-body
-              %form{:id=>"additionalDetails", :name=>"ad", :role=>"form", "data-toggle"=>"validator"}
+              = form_for [:additional_detail, @service, @additional_detail], :html => { :role=>"form", "data-toggle"=>"validator"} do |f|
                 .row
                   .col-md-6
                     .form-group
-                      %label{"for"=>"additionalDetailsName"} Form Name
-                      %input.form-control{:id=>"additionalDetailsName", "ng-model"=>"additionalDetails.name", :type=>"text", :value=>"", :placeholder=>"Form Name", :required=>"required"}
+                      = f.label :name 
+                      = f.text_field :name, class: "form-control", "ng-model" => "additionalDetails.name", :placeholder=>"Form Name", :required=>"required"
                       .help-block.with-errors
                   .col-md-6
                     .form-group
-                      %label{:for=>"effectiveDate"} Effective Date
-                      %input.form-control.datepicker{:id=>"effectiveDate", "data-min-date"=> "{{invaildDate}}", "data-date-type"=>"string", :required=>"required", "ng-model"=>"additionalDetails.effective_date", :cursor=>"pointer", "bs-datepicker"=>"bs-datepicker", :placeholder=>"Effective Date", :autoclose=>"true"}
+                      = f.label :effective_date
+                      = f.text_field :effective_date, class: "form-control datepicker", "ng-model" => "additionalDetails.effective_date", :placeholder=>"Effective Date", :required=>"required", "data-min-date"=> "{{invaildDate}}", "data-date-type"=>"string", "cursor"=>"pointer", "bs-datepicker"=>"bs-datepicker", "autoclose" =>"true"
                 .row
                   .col-md-6
                     .form-group
-                      %label{"for"=>"additionalDetailsDescription"} Description
-                      %textarea.form-control{:id=>"additionalDetailsDescription", "ng-model"=>"additionalDetails.description", :type=>"text", :value=>"", :placeholder=>"Description (Optional)"}
+                      = f.label :description
+                      = f.text_area :description, class: "form-control", "ng-model" => "additionalDetails.description", :placeholder=>"Description (Optional)", "rows" => "", "cols" => ""
                       .help-block.with-errors
                   .col-md-6
                     .form-group
@@ -31,6 +31,7 @@
                 .row
                   .col-md-12
                     .form-group
+                      = f.text_area :form_definition_json, class: "hidden", "ng-model" => "formDefinition", "rows" => "0", "cols" => "0"
                       %input.btn.btn-primary{:type=>"submit", :value=>"Save Additional Details Form"}
                       %input.btn.btn-danger{:type=>"reset", :value=>"Reset Form"}    
                       %input.btn.btn-default{:type=>"button", :value=>"Cancel"}

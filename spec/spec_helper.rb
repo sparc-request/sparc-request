@@ -106,5 +106,6 @@ RSpec.configure do |config|
   config.include DelayedJobHelpers
   config.include CwfHelper, type: :request
   config.include ApiAuthenticationHelper, type: :request
+  config.include Devise::TestHelpers, type: :controller
 end
 

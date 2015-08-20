@@ -57,4 +57,5 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
       render "unauthorized", :status => :unauthorized
     end
   end
+  
 end

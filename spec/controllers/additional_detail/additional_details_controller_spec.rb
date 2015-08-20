@@ -225,6 +225,39 @@ describe AdditionalDetail::AdditionalDetailsController do
         assigns(:service).should_not be_blank
         assigns(:additional_detail).should_not be_blank
       end
+      
+      # CRUD an additional detail as a catalog_manager
+      describe 'a core service and can' do
+        before :each do
+          @catalog_manager = CatalogManager.new
+          @catalog_manager.identity_id = @identity.id
+          @catalog_manager.organization_id = @core.id
+          @catalog_manager.save(validate: false) 
+        end
+          
+        it 'create an additional detail record' do
+          expect {
+            post(:create, {:service_id => @core_service, :format => :html, 
+              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => "8/20/15", :approved => "true"}
+            }) 
+            response.should redirect_to(additional_detail_service_additional_details_path(@core_service))
+            #assigns(:service).should_not be_blank
+            #assigns(:additional_detail).should be_blank
+           }.to change(AdditionalDetail, :count).by(1)
+        end
+        
+        it 'see failed validation for blank :name when trying to create an additional detail record' do          
+          expect {
+            post(:create, {:service_id => @core_service, :format => :html, 
+              :additional_detail => {:name => "", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => "8/20/15", :approved => "true"}
+            }) 
+            response.should render_template("new")
+            expect(response.status).to eq(200)
+            assigns(:service).should_not be_blank
+            assigns(:additional_detail).should_not be_blank
+           }.to change(AdditionalDetail, :count).by(0)
+        end
+      end
   
     end
     

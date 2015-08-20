@@ -24,7 +24,9 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
   def create
     @additional_detail = @service.additional_details.new(params[:additional_detail])
     if @additional_detail.save
-      # success page or success JSON response
+      redirect_to additional_detail_service_additional_details_path(@service) #, flash: "Additional Detail form was successfully created."
+    else
+      render :new
     end
   end
   

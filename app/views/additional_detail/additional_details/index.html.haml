@@ -1,3 +1,2 @@
-
-%strong{:class => "code", :id=>"hello"} Hello, Additional Details world!
-
+%h1= @service.name
+= link_to "Add new Additional Details Form", new_additional_detail_service_additional_detail_path(@service), class: "btn btn-primary"

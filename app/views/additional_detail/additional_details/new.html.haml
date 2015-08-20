@@ -7,6 +7,14 @@
             .panel-heading
               %h3.panel-title Additional Details Form Creator
             .panel-body
+              - if @additional_detail.errors.any?
+                #error_explanation
+                  %h3
+                    = pluralize(@additional_detail.errors.count, "error")
+                    "prohibited this user from being saved:"
+                  %ul 
+                    - @additional_detail.errors.full_messages.each do |msg|
+                      %li= msg
               = form_for [:additional_detail, @service, @additional_detail], :html => { :role=>"form", "data-toggle"=>"validator"} do |f|
                 .row
                   .col-md-6

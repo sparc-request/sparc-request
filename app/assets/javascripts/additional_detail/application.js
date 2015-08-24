@@ -27,6 +27,8 @@ var app = angular.module('app', ['ngAria','schemaForm','ui.grid','ui.grid.resize
 
 app.controller('FormCreationController', ['$scope', '$http', function ($scope, $http, $compile) {
 	
+	
+	
 	if(!$scope.additionalDetails){
 		$scope.additionalDetails={};
 		$scope.additionalDetails.approved = true;

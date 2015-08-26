@@ -247,6 +247,21 @@ describe AdditionalDetail::AdditionalDetailsController do
           }.to change(AdditionalDetail, :count).by(1)
         end
 
+        it 'see failed validation for :description being too long' do
+          expect {
+            post(:create, {:service_id => @core_service, :format => :html,
+              :additional_detail => {:name => "Form # 1", :description => "0"*256, :form_definition_json => "{}", :effective_date => Time.now, :approved => "true"}
+            })
+            expect(assigns(:additional_detail).errors[:description].size).to eq(1)
+            message = "is too long (maximum is 255 characters)"
+            expect(assigns(:additional_detail).errors[:description][0]).to eq(message)
+            response.should render_template("new")
+            expect(response.status).to eq(200)
+            assigns(:service).should_not be_blank
+            assigns(:additional_detail).should_not be_blank
+          }.to change(AdditionalDetail, :count).by(0)
+        end
+
         it 'see failed validation for blank :name when trying to create an additional detail record' do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
@@ -289,8 +304,7 @@ describe AdditionalDetail::AdditionalDetailsController do
             assigns(:service).should_not be_blank
             assigns(:additional_detail).should_not be_blank
           }.to change(AdditionalDetail, :count).by(1)
-
-        end
+      	end
 
         it 'see failed validation for blank :form_definition_json when trying to create an additional detail record' do
           expect {

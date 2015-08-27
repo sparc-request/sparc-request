@@ -57,6 +57,18 @@ describe AdditionalDetail do
       expect(ad.errors[:effective_date][0]).to eq(message)
     end
 
+    it 'should fail vailidation when :effective_date is too far in the past' do
+      ad = AdditionalDetail.new
+      ad.service_id= @core_service.id
+      ad.effective_date= 1.day.ago
+      ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":{test},"required":[]},"form":[]}'
+      ad.name = "Name"
+      expect(!ad.valid?)
+      expect(ad.errors[:effective_date].size).to eq(1)
+      message = "Date must be in past."
+      expect(ad.errors[:effective_date][0]).to eq(message)
+    end
+
     it 'should fail vailidation when :name is null' do
       ad = AdditionalDetail.new
       ad.service_id= @core_service.id
@@ -76,6 +88,20 @@ describe AdditionalDetail do
       expect(!ad.valid?)
       expect(ad.errors[:form_definition_json].size).to eq(1)
       message = "can't be blank"
+      expect(ad.errors[:form_definition_json][0]).to eq(message)
+    end
+
+    it 'should fail vailidation when :form_definition_json has no questions with white space' do
+      ad = AdditionalDetail.new
+      ad.form_definition_json = '  {"schema": {"type":   "object","title":
+        "Comment","properties": {},"required": []}
+      ,"form": []}  '
+      ad.service_id= @core_service.id
+      ad.effective_date= Time.now
+      ad.name= "Test"
+      expect(!ad.valid?)
+      expect(ad.errors[:form_definition_json].size).to eq(1)
+      message = "Form must contain at least one question."
       expect(ad.errors[:form_definition_json][0]).to eq(message)
     end
 

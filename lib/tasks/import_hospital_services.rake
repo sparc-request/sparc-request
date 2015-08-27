@@ -61,6 +61,9 @@ namespace :data do
               other_rate = calculated_rate
             end
 
+            effective_date = row['Effective Date'].match("[0-1]?[0-9]/[0-3]?[0-9]/[0-9]{4}") ? Date.strptime(row['Effective Date'], "%m/%d/%Y") : Date.strptime(row['Effective Date'], "%m/%d/%y") # four digit or two digit year makes a difference
+            display_date = row['Display Date'].match("[0-1]?[0-9]/[0-3]?[0-9]/[0-9]{4}") ? Date.strptime(row['Display Date'], "%m/%d/%Y") : Date.strptime(row['Display Date'], "%m/%d/%y") # see above
+
             pricing_map = service.pricing_maps.build(
                                                   :full_rate => full_rate,
                                                   :corporate_rate => corporate_rate,
@@ -72,8 +75,8 @@ namespace :data do
                                                   :unit_factor => row['Unit Factor'],
                                                   :unit_minimum => (row['Is One Time Fee?'] == 'Y' ? nil : row['Qty Min']),
                                                   :quantity_minimum => (row['Is One Time Fee?'] != 'Y' ? nil : row['Qty Min']),
-                                                  :display_date => Date.strptime(row['Display Date'], "%m/%d/%y"),
-                                                  :effective_date => Date.strptime(row['Effective Date'], "%m/%d/%y")
+                                                  :display_date => display_date,
+                                                  :effective_date => effective_date
                                                   )
 
             if service.valid? and pricing_map.valid?

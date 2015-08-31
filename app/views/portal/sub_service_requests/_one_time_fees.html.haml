@@ -55,7 +55,7 @@
               %td
               %td
               %td.otf_text_field{:style => "white-space:nowrap;overflow:hidden;"}
-                = text_field_tag "line_item_quantity", otf.try(:quantity), :'data-line_item_id' => otf.id, :'data-line_item_quantity' => otf.quantity, :class => 'fulfillment_data'
+                = text_field_tag "line_item_quantity", otf.try(:quantity), :'data-line_item_id' => otf.id, :'data-line_item_quantity_min' => otf.service.current_effective_pricing_map.quantity_minimum, :'data-line_item_quantity_max' => otf.service.current_effective_pricing_map.units_per_qty_max, :'data-line_item_quantity' => otf.quantity, :class => 'fulfillment_data'
               %td= otf.try(:service).try(:current_effective_pricing_map).try(:quantity_type)
             - else
               %td.otf_text_field{:style => "white-space:nowrap;overflow:hidden;"}

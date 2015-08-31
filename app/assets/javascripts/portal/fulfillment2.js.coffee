@@ -180,8 +180,12 @@ $(document).ready ->
   )
 
   $(document).on('change', '#line_item_quantity', ->
-    value = $(this).data("line_item_quantity")
-    $(this).val(value)
+    old_value = $(this).data("line_item_quantity")
+    new_value = $(this).val()
+    max       = $(this).data("line_item_quantity_max")
+    min       = $(this).data("line_item_quantity_min")
+    if new_value > max || new_value < min
+      $(this).val(old_value)
   )
 
   $(document).on('change', '#arm_id', ->

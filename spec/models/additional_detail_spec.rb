@@ -91,6 +91,35 @@ describe AdditionalDetail do
       expect(ad.errors[:form_definition_json][0]).to eq(message)
     end
 
+    it 'should fail vailidation when line_item_additional_details are present' do
+      count = AdditionalDetail.count
+      ad = AdditionalDetail.new
+      ad.service_id= @core_service.id
+      ad.effective_date= Time.now
+      ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":{test},"required":[]},"form":[]}'
+      ad.name = "Name"
+      expect(ad.valid?)
+      expect(ad.errors.count).to eq(0)
+      ad.save
+      expect(AdditionalDetail.count).to eq(count+1)
+      
+      line_count = LineItemAdditionalDetail.count
+      liad = LineItemAdditionalDetail.new
+      liad.additional_detail_id = ad.id
+      liad.save(validate: false)
+      expect(LineItemAdditionalDetail.count).to eq(line_count+1)
+
+      l = LineItemAdditionalDetail.where(id: liad.id)
+      expect(!l.nil?)
+      
+      ad2 = AdditionalDetail.find(ad.id)
+      ad2.name = "Name 2"
+      expect(!ad2.valid?)
+      expect(ad.errors[:form_definition_json].size).to eq(1)
+      message = "Cannot be edited when response has been saved"
+      expect(ad.errors[:form_definition_json][0]).to eq(message)
+    end
+
     it 'should fail vailidation when :form_definition_json has no questions with white space' do
       ad = AdditionalDetail.new
       ad.form_definition_json = '  {"schema": {"type":   "object","title":
@@ -105,7 +134,7 @@ describe AdditionalDetail do
       expect(ad.errors[:form_definition_json][0]).to eq(message)
     end
 
-    it 'should fail vailidation when :form_definition_json is null' do
+    it 'should fail vailidation when :description is too long' do
       ad = AdditionalDetail.new
       ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":{test},"required":[]},"form":[]}'
       ad.service_id= @core_service.id

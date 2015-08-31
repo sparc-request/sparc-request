@@ -9,8 +9,14 @@ class AdditionalDetail < ActiveRecord::Base
   validates :name,:effective_date, :form_definition_json, :presence => true
   validates :description, :length => {:maximum => 255}
   
-  validate :date_in_past, :effective_date_cannot_be_shared, :form_definition_cannot_be_blank
+  validate :date_in_past, :effective_date_cannot_be_shared, :form_definition_cannot_be_blank, :no_line_item_additional_detail
 
+  def no_line_item_additional_detail
+    unless LineItemAdditionalDetail.where(additional_detail_id: id).size == 0
+      errors.add(:form_definition_json, "Form must contain at least one question.")
+    end
+  end
+  
   def date_in_past
     if  !effective_date.blank? and effective_date.beginning_of_day <= Date.yesterday.beginning_of_day
       errors.add(:effective_date, "Date must be in past.")

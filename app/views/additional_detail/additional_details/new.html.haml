@@ -1,3 +1,5 @@
+:javascript
+  var effective_date = '#{@additional_detail.effective_date ? @additional_detail.effective_date : ""}';
 %div{"ng-controller" => "FormCreationController"}
   .row
     .col-md-8
@@ -25,7 +27,7 @@
                   .col-md-6
                     .form-group
                       = f.label :effective_date
-                      = f.text_field :effective_date,  :type => 'text',class: "form-control datepicker", "ng-model" => "effective_date", "date-format"=>"yyyy-MM-dd", :placeholder=>"Effective Date", :required=>"required", "data-min-date"=> "{{invaildDate}}", "data-date-type"=>"string", :cursor=>"pointer", "bs-datepicker"=>"bs-datepicker", :autoclose =>"true"
+                      = f.text_field :effective_date, :type => 'text',class: "form-control datepicker", "ng-model" => "effective_date", "date-format"=>"yyyy-MM-dd", :placeholder=>"Effective Date", :required=>"required", "data-min-date"=> "{{invaildDate}}", "data-date-type"=>"string", :cursor=>"pointer", "bs-datepicker"=>"bs-datepicker", :autoclose =>"true"
                 .row
                   .col-md-6
                     .form-group

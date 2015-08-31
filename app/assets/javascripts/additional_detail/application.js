@@ -15,25 +15,17 @@
 //= require additional_detail/angular-strap-tpl.min
 //= require additional_detail/angular-schema-form-dynamic-select.min
 var typeHash;
-
-//$(function() {
-//    $( ".datepicker" ).datepicker({
-//    	autoclose: true//
-//    });
-//  });
-//
-//$(".datepicker.day").css('cursor','pointer');
 var app = angular.module('app', ['ngAria','schemaForm','ui.grid','ui.grid.resizeColumns', 'mgcrea.ngStrap', 'schemaForm-datepicker', 'schemaForm-timepicker', 'schemaForm-datetimepicker','ui.grid.selection','ngSanitize', 'ui.grid.autoResize','ui.grid.expandable', 'ui.grid.edit']);
 
 app.controller('FormCreationController', ['$scope', '$http', function ($scope, $http, $compile) {
-	
-	
-	
+		
 	if(!$scope.additionalDetails){
 		$scope.additionalDetails={};
 		$scope.additionalDetails.approved = true;
 	}
 	
+	$scope.effective_date = effective_date;
+		
 	$scope.typeHash = {
 	    text: 'Text',
 	    textarea : 'Text Area',

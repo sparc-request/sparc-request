@@ -20,7 +20,7 @@
 
 class ServiceCalendarsController < ApplicationController
   before_filter :initialize_service_request
-  before_filter(:except => [:merged_calendar]) {|c| params[:portal] == 'true' ? true : c.send(:authorize_identity)}
+  before_filter(:except => [:merged_calendar, :rename_visit]) {|c| params[:portal] == 'true' ? true : c.send(:authorize_identity)}
   layout false
 
   def table
@@ -66,8 +66,8 @@ class ServiceCalendarsController < ApplicationController
         visit.attributes = {
           :quantity => service.displayed_pricing_map.unit_minimum,
           :research_billing_qty => service.displayed_pricing_map.unit_minimum }
+        visit.save
 
-        check_service_relations(visit)
       elsif checked == 'false'
         visit.update_attributes(
           quantity: 0,
@@ -77,8 +77,11 @@ class ServiceCalendarsController < ApplicationController
       end
 
     when 'quantity'
-      @errors = "Quantity must be greater than zero" if qty < 0
-      visit.update_attribute(:quantity, qty) unless qty < 0
+      if qty < 0
+        @errors = "Quantity must be greater than zero"
+      else
+        visit.update_attribute(:quantity, qty)
+      end
 
     when 'billing_strategy'
       if qty < 0
@@ -90,8 +93,7 @@ class ServiceCalendarsController < ApplicationController
         visit.attributes = {
           column => qty,
           :quantity => total }
-
-        check_service_relations(visit)
+        visit.save
       end
     end
 
@@ -116,7 +118,7 @@ class ServiceCalendarsController < ApplicationController
     name = params[:name]
     position = params[:visit_position].to_i
     arm = Arm.find params[:arm_id]
-    arm.visit_groups[position].update_attribute(:name, name)
+    arm.visit_groups[position].update_attributes(:name => name)
   end
 
   def set_day
@@ -182,7 +184,7 @@ class ServiceCalendarsController < ApplicationController
     val = params[:val]
     if params[:type] == 'qty'
       line_item.quantity = val
-      if line_item.check_service_relations(one_time_fees) && line_item.valid?
+      if line_item.valid?
         line_item.save
       else
         line_item.reload
@@ -251,16 +253,7 @@ class ServiceCalendarsController < ApplicationController
           insurance_billing_qty: 0,
           effort_billing_qty:    0 }
 
-      if has_service_relation
-        if line_item.check_service_relations(line_items, true, visit)
-          visit.save
-        else
-          failed_visit_list << "#{visit.visit_group.name}, "
-          visit.reload
-        end
-      else
-        visit.save
-      end
+      visit.save
     end
 
     @errors = "The follow visits for #{@service.name} were not checked because they exceeded the linked quantity limit: #{failed_visit_list}" if failed_visit_list.empty? == false
@@ -328,20 +321,6 @@ class ServiceCalendarsController < ApplicationController
     @service_request.arms.each do |arm|
       new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
       @pages[arm.id] = @service_request.set_visit_page new_page, arm
-    end
-  end
-
-  def check_service_relations visit
-    line_item = visit.line_items_visit.line_item
-    line_items = @service_request.per_patient_per_visit_line_items
-
-    if line_item.check_service_relations(line_items, true, visit)
-      visit.save
-    else
-      visit.reload
-      respond_to do |format|
-        format.js { render :status => 500, :json => clean_errors(line_item.errors) }
-      end
     end
   end
 

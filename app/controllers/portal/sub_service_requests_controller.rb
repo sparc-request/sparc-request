@@ -21,6 +21,8 @@
 class Portal::SubServiceRequestsController < Portal::BaseController
   respond_to :json, :js, :html
 
+  before_filter :protocol_authorizer, :only => [:update_from_project_study_information]
+      
   def show
     @sub_service_request = SubServiceRequest.find(params[:id])
     @admin = true
@@ -55,7 +57,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
 
     if @sub_service_request.update_attributes(params[:sub_service_request])
       @sub_service_request.update_based_on_status(saved_status)
-      @sub_service_request.generate_approvals(@user)
+      @sub_service_request.generate_approvals(@user, params)
       @sub_service_request.distribute_surveys if @sub_service_request.status == 'complete' and @sub_service_request.status != saved_status #status is complete and it was something different before
       @service_request = @sub_service_request.service_request
       @protocol = @service_request.protocol
@@ -70,7 +72,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
   end
 
   def update_from_project_study_information
-    @protocol = Protocol.find(params[:protocol_id])
     @sub_service_request = SubServiceRequest.find params[:id]
 
     attrs = params[@protocol.type.downcase.to_sym]
@@ -316,4 +317,13 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     end
   end
 
+private
+  def protocol_authorizer
+    @protocol = Protocol.find(params[:protocol_id])
+    authorized_user = ProtocolAuthorizer.new(@protocol, @user)
+    if (request.get? && !authorized_user.can_view?) || (!request.get? && !authorized_user.can_edit?)
+      @protocol = nil
+      render :partial => 'service_requests/authorization_error', :locals => {:error => "You are not allowed to access this protocol."}
+    end
+  end
 end

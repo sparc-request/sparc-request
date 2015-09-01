@@ -21,7 +21,7 @@
 require 'date'
 require 'spec_helper'
 
-describe 'ProtocolAuthorizer' do
+RSpec.describe 'ProtocolAuthorizer' do
   before :each do
     @identity = Identity.new
     @identity.approved = true

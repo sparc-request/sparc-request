@@ -114,10 +114,12 @@ describe AdditionalDetail do
       
       ad2 = AdditionalDetail.find(ad.id)
       ad2.name = "Name 2"
+      ad2.save
+      expect(AdditionalDetail.count).to eq(count+1)
       expect(!ad2.valid?)
-      expect(ad.errors[:form_definition_json].size).to eq(1)
-      message = "Cannot be edited when response has been saved"
-      expect(ad.errors[:form_definition_json][0]).to eq(message)
+      expect(ad2.errors[:form_definition_json].size).to eq(1)
+      message = "Cannot be edited when response has been saved."
+      expect(ad2.errors[:form_definition_json][0]).to eq(message)
     end
 
     it 'should fail vailidation when :form_definition_json has no questions with white space' do

@@ -11,9 +11,9 @@ class AdditionalDetail < ActiveRecord::Base
   
   validate :date_in_past, :effective_date_cannot_be_shared, :form_definition_cannot_be_blank, :no_line_item_additional_detail
 
-  def no_line_item_additional_detail
-    unless LineItemAdditionalDetail.where(additional_detail_id: id).size == 0
-      errors.add(:form_definition_json, "Form must contain at least one question.")
+  def no_line_item_additional_detail   
+    if LineItemAdditionalDetail.where(additional_detail_id: id).size.to_i > 0
+      errors.add(:form_definition_json, "Cannot be edited when response has been saved.")
     end
   end
   

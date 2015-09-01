@@ -180,6 +180,7 @@ class EpicInterface
         emit_irb_number(xml, study)
         emit_category_grouper(xml, study)
         emit_study_type(xml, study)
+        emit_ide_number(xml, study)
         emit_cofc(xml, study)
         emit_visits(xml, study)
         emit_procedures_and_encounters(xml, study)
@@ -207,6 +208,7 @@ class EpicInterface
         emit_irb_number(xml, study)
         emit_category_grouper(xml, study)
         emit_study_type(xml, study)
+        emit_ide_number(xml, study)
         emit_cofc(xml, study)
       }
     }
@@ -314,6 +316,19 @@ class EpicInterface
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'STUDYTYPE')
           xml.value(value: study_type)
+        }
+      }
+    end
+  end
+  
+  def emit_ide_number(xml, study)
+    ide_number = study.investigational_products_info.try(:ide_number)
+
+    if study.investigational_products_info && !ide_number.blank? then
+      xml.subjectOf(typeCode: 'SUBJ') {
+        xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
+          xml.code(code: 'RGFT2')
+          xml.value(value: ide_number)
         }
       }
     end

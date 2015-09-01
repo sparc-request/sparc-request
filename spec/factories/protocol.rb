@@ -88,14 +88,12 @@ FactoryGirl.define do
 
     end
 
-
-    factory :study do
-
-      type { "Study" }
-    end
-
     factory :protocol_without_validations, traits: [:without_validations]
     factory :protocol_federally_funded, traits: [:funded, :federal]
     factory :protocol_with_sub_service_request_in_cwf, traits: [:with_sub_service_request_in_cwf, :funded, :federal]
+  end
+
+  factory :study, parent: :protocol, class: 'Study' do
+    type "Study"
   end
 end

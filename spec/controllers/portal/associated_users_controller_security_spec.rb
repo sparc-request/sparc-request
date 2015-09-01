@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
 ##########################
 # Test Protocol Security #
@@ -51,20 +51,20 @@ RSpec.describe Portal::AssociatedUsersController do
   describe 'identity has NO related roles and, thus, no access to' do
     it 'show' do
       get(:show, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user.id })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'edit' do
       get(:edit, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'new' do
       get(:new, {:format => :js, :protocol_id => @protocol.id, :user_id => @associated_user.id })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'create' do
@@ -73,14 +73,14 @@ RSpec.describe Portal::AssociatedUsersController do
       @user_to_be_associated.save(validate: false)
 
       post(:create, {:format => :js, :protocol_id => @protocol.id, :project_role => { :protocol_id => @protocol.id, :identity_id => @user_to_be_associated.id, :project_rights => 'approve' } })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'update' do
       post(:update, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id, :project_role => {} })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
   end
 
@@ -95,20 +95,20 @@ RSpec.describe Portal::AssociatedUsersController do
 
     it 'show' do
       get(:show, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user.id })
-      assigns(:protocol).should eq @protocol
-      response.body.should be_blank
+      expect(assigns(:protocol)).to eq @protocol
+      expect(response.body).to be_blank
     end
 
     it 'edit' do
       get(:edit, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id })
-      assigns(:protocol).should eq @protocol
-      response.should render_template("edit")
+      expect(assigns(:protocol)).to eq @protocol
+      expect(response).to render_template("edit")
     end
 
     it 'new' do
       get(:new, {:format => :js, :protocol_id => @protocol.id, :user_id => @associated_user.id })
-      assigns(:protocol).should eq @protocol
-      response.should render_template("new")
+      expect(assigns(:protocol)).to eq @protocol
+      expect(response).to render_template("new")
     end
 
     it 'create' do
@@ -117,14 +117,14 @@ RSpec.describe Portal::AssociatedUsersController do
       @user_to_be_associated.save(validate: false)
 
       post(:create, {:format => :js, :protocol_id => @protocol.id, :project_role => { :protocol_id => @protocol.id, :identity_id => @user_to_be_associated.id, :project_rights => 'approve' } })
-      assigns(:protocol).should eq @protocol
-      response.body.should be_blank
+      expect(assigns(:protocol)).to eq @protocol
+      expect(response.body).to be_blank
     end
 
     it 'update' do
       post(:update, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id, :project_role => {} })
-      assigns(:protocol).should eq @protocol
-      response.body.should be_blank
+      expect(assigns(:protocol)).to eq @protocol
+      expect(response.body).to be_blank
     end
   end
 
@@ -139,20 +139,20 @@ RSpec.describe Portal::AssociatedUsersController do
 
     it 'show' do
       get(:show, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user.id })
-      assigns(:protocol).should eq @protocol
-      response.body.should be_blank
+      expect(assigns(:protocol)).to eq @protocol
+      expect(response.body).to be_blank
     end
 
     it 'edit' do
       get(:edit, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id })
-      assigns(:protocol).should eq @protocol
-      response.should render_template("edit")
+      expect(assigns(:protocol)).to eq @protocol
+      expect(response).to render_template("edit")
     end
 
     it 'new' do
       get(:new, {:format => :js, :protocol_id => @protocol.id, :user_id => @associated_user.id })
-      assigns(:protocol).should eq @protocol
-      response.should render_template("new")
+      expect(assigns(:protocol)).to eq @protocol
+      expect(response).to render_template("new")
     end
 
     it 'create' do
@@ -161,14 +161,14 @@ RSpec.describe Portal::AssociatedUsersController do
       @user_to_be_associated.save(validate: false)
 
       post(:create, {:format => :js, :protocol_id => @protocol.id, :project_role => { :protocol_id => @protocol.id, :identity_id => @user_to_be_associated.id, :project_rights => 'approve' } })
-      assigns(:protocol).should eq @protocol
-      response.body.should be_blank
+      expect(assigns(:protocol)).to eq @protocol
+      expect(response.body).to be_blank
     end
 
     it 'update' do
       post(:update, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id, :project_role => {} })
-      assigns(:protocol).should eq @protocol
-      response.body.should be_blank
+      expect(assigns(:protocol)).to eq @protocol
+      expect(response.body).to be_blank
     end
   end
 
@@ -183,20 +183,20 @@ RSpec.describe Portal::AssociatedUsersController do
 
     it 'authorize show' do
       get(:show, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user.id })
-      assigns(:protocol).should eq @protocol
-      response.body.should be_blank
+      expect(assigns(:protocol)).to eq @protocol
+      expect(response.body).to be_blank
     end
 
     it 'do NOT authorize edit' do
       get(:edit, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'do NOT authorize new' do
       get(:new, {:format => :js, :protocol_id => @protocol.id, :user_id => @associated_user.id })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'do NOT authorize create' do
@@ -205,14 +205,14 @@ RSpec.describe Portal::AssociatedUsersController do
       @user_to_be_associated.save(validate: false)
 
       post(:create, {:format => :js, :protocol_id => @protocol.id, :project_role => { :protocol_id => @protocol.id, :identity_id => @user_to_be_associated.id, :project_rights => 'approve' } })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'do NOT authorize update' do
       post(:update, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id, :project_role => {} })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
   end
 
@@ -227,20 +227,20 @@ RSpec.describe Portal::AssociatedUsersController do
 
     it 'show' do
       get(:show, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user.id })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'edit' do
       get(:edit, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'new' do
       get(:new, {:format => :js, :protocol_id => @protocol.id, :user_id => @associated_user.id })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'create' do
@@ -249,14 +249,14 @@ RSpec.describe Portal::AssociatedUsersController do
       @user_to_be_associated.save(validate: false)
 
       post(:create, {:format => :js, :protocol_id => @protocol.id, :project_role => { :protocol_id => @protocol.id, :identity_id => @user_to_be_associated.id, :project_rights => 'approve' } })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'update' do
       post(:update, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id, :project_role => {} })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
   end
 
@@ -307,28 +307,28 @@ RSpec.describe Portal::AssociatedUsersController do
           @service_provider.save(validate: false)
 
           get(:show, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user.id })
-          assigns(:protocol).should eq @protocol
-          response.body.should be_blank
+          expect(assigns(:protocol)).to eq @protocol
+          expect(response.body).to be_blank
 
           get(:edit, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id })
-          assigns(:protocol).should eq @protocol
-          response.should render_template("edit")
+          expect(assigns(:protocol)).to eq @protocol
+          expect(response).to render_template("edit")
 
           get(:new, {:format => :js, :protocol_id => @protocol.id, :user_id => @associated_user.id })
-          assigns(:protocol).should eq @protocol
-          response.should render_template("new")
+          expect(assigns(:protocol)).to eq @protocol
+          expect(response).to render_template("new")
 
           post(:update, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id, :project_role => {} })
-          assigns(:protocol).should eq @protocol
-          response.body.should be_blank
+          expect(assigns(:protocol)).to eq @protocol
+          expect(response.body).to be_blank
 
           @user_to_be_associated = Identity.new
           @user_to_be_associated.approved = true
           @user_to_be_associated.save(validate: false)
 
           post(:create, {:format => :js, :protocol_id => @protocol.id, :project_role => { :protocol_id => @protocol.id, :identity_id => @user_to_be_associated.id, :project_rights => 'approve' } })
-          assigns(:protocol).should eq @protocol
-          response.body.should be_blank
+          expect(assigns(:protocol)).to eq @protocol
+          expect(response.body).to be_blank
         end
 
         it 'should NOT authorize view and edit if identity is a clinical provider for a sub service request that is servicing the protocol' do
@@ -338,28 +338,28 @@ RSpec.describe Portal::AssociatedUsersController do
           @clinical_provider.save(validate: false)
 
           get(:show, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user.id })
-          assigns(:protocol).should eq nil
-          response.should render_template(:partial => "_authorization_error")
+          expect(assigns(:protocol)).to eq nil
+          expect(response).to render_template(:partial => "_authorization_error")
 
           get(:edit, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id })
-          assigns(:protocol).should eq nil
-          response.should render_template(:partial => "_authorization_error")
+          expect(assigns(:protocol)).to eq nil
+          expect(response).to render_template(:partial => "_authorization_error")
 
           get(:new, {:format => :js, :protocol_id => @protocol.id, :user_id => @associated_user.id })
-          assigns(:protocol).should eq nil
-          response.should render_template(:partial => "_authorization_error")
+          expect(assigns(:protocol)).to eq nil
+          expect(response).to render_template(:partial => "_authorization_error")
 
           post(:update, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id, :project_role => {} })
-          assigns(:protocol).should eq nil
-          response.should render_template(:partial => "_authorization_error")
+          expect(assigns(:protocol)).to eq nil
+          expect(response).to render_template(:partial => "_authorization_error")
 
           @user_to_be_associated = Identity.new
           @user_to_be_associated.approved = true
           @user_to_be_associated.save(validate: false)
 
           post(:create, {:format => :js, :protocol_id => @protocol.id, :project_role => { :protocol_id => @protocol.id, :identity_id => @user_to_be_associated.id, :project_rights => 'approve' } })
-          assigns(:protocol).should eq nil
-          response.should render_template(:partial => "_authorization_error")
+          expect(assigns(:protocol)).to eq nil
+          expect(response).to render_template(:partial => "_authorization_error")
         end
 
         it 'should authorize view and edit if identity is a super user for a sub service request that is servicing the protocol' do
@@ -369,28 +369,28 @@ RSpec.describe Portal::AssociatedUsersController do
           @super_user.save(validate: false)
 
           get(:show, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user.id })
-          assigns(:protocol).should eq @protocol
-          response.body.should be_blank
+          expect(assigns(:protocol)).to eq @protocol
+          expect(response.body).to be_blank
 
           get(:edit, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id })
-          assigns(:protocol).should eq @protocol
-          response.should render_template("edit")
+          expect(assigns(:protocol)).to eq @protocol
+          expect(response).to render_template("edit")
 
           get(:new, {:format => :js, :protocol_id => @protocol.id, :user_id => @associated_user.id })
-          assigns(:protocol).should eq @protocol
-          response.should render_template("new")
+          expect(assigns(:protocol)).to eq @protocol
+          expect(response).to render_template("new")
 
           post(:update, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id, :project_role => {} })
-          assigns(:protocol).should eq @protocol
-          response.body.should be_blank
+          expect(assigns(:protocol)).to eq @protocol
+          expect(response.body).to be_blank
 
           @user_to_be_associated = Identity.new
           @user_to_be_associated.approved = true
           @user_to_be_associated.save(validate: false)
 
           post(:create, {:format => :js, :protocol_id => @protocol.id, :project_role => { :protocol_id => @protocol.id, :identity_id => @user_to_be_associated.id, :project_rights => 'approve' } })
-          assigns(:protocol).should eq @protocol
-          response.body.should be_blank
+          expect(assigns(:protocol)).to eq @protocol
+          expect(response.body).to be_blank
         end
       end
     end

@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe Portal::ProtocolsController, :type => :controller do
   stub_portal_controller
@@ -39,26 +39,26 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
 
     it 'show protocol' do
       get(:show, {:format => :js, :id => @protocol.id })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'update_from_fulfillment' do
       post(:update_from_fulfillment, {:format => :js, :id => @protocol.id, :protocol => {}  })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'edit protocol' do
       get(:edit, {:format => :html, :id => @protocol.id })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'update protocol' do
       post(:update, {:format => :html, :id => @protocol.id })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
   #    @Todo: how to test this route?
@@ -78,14 +78,14 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
       @sub_service_request.save(validate: false)
 
       post(:update_protocol_type, {:format => :html, :id => @protocol.id, :protocol => { :type => "Project"}, :sub_service_request_id =>  @sub_service_request.id })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'view_full_calendar' do
       get(:view_full_calendar, {:format => :js, :id => @protocol.id })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
   end
 
@@ -100,27 +100,27 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
 
     it 'show protocol' do
       get(:show, {:format => :js, :id => @protocol.id })
-      assigns(:protocol).should eq @protocol
-      assigns(:protocol_role).identity.should eq @identity
+      expect(assigns(:protocol)).to eq @protocol
+      expect(assigns(:protocol_role).identity).to eq @identity
     end
 
     it 'update_from_fulfillment' do
       post(:update_from_fulfillment, {:format => :js, :id => @protocol.id, :protocol => {}  })
-      assigns(:protocol).should eq @protocol
+      expect(assigns(:protocol)).to eq @protocol
       # expect protocol to fail validation but that's fine, it means we made it through the authorization filter.
       expect(response.status).to eq(500)
     end
 
     it 'edit protocol' do
       get(:edit, {:format => :html, :id => @protocol.id })
-      assigns(:protocol).should eq @protocol
-      assigns(:edit_protocol).should eq true
+      expect(assigns(:protocol)).to eq @protocol
+      expect(assigns(:edit_protocol)).to eq true
     end
 
     it 'update protocol' do
       post(:update, {:format => :html, :id => @protocol.id })
-      assigns(:protocol).should eq @protocol
-      response.should render_template("edit")
+      expect(assigns(:protocol)).to eq @protocol
+      expect(response).to render_template("edit")
     end
 
 #    @Todo: how to test this route?
@@ -140,13 +140,13 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
       @sub_service_request.save(validate: false)
 
       post(:update_protocol_type, {:format => :html, :id => @protocol.id, :protocol => { :type => "Project"}, :sub_service_request_id =>  @sub_service_request.id })
-      assigns(:protocol).should eq @protocol
-      assigns(:sub_service_request).should eq @sub_service_request
+      expect(assigns(:protocol)).to eq @protocol
+      expect(assigns(:sub_service_request)).to eq @sub_service_request
     end
 
     it 'view_full_calendar' do
       get(:view_full_calendar, {:format => :js, :id => @protocol.id })
-      assigns(:protocol).should eq @protocol
+      expect(assigns(:protocol)).to eq @protocol
       assigns(:merged)
     end
   end
@@ -162,27 +162,27 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
 
     it 'show protocol' do
       get(:show, {:format => :js, :id => @protocol.id })
-      assigns(:protocol).should eq @protocol
-      assigns(:protocol_role).identity.should eq @identity
+      expect(assigns(:protocol)).to eq @protocol
+      expect(assigns(:protocol_role).identity).to eq @identity
     end
 
     it 'update_from_fulfillment' do
       post(:update_from_fulfillment, {:format => :js, :id => @protocol.id, :protocol => {}  })
-      assigns(:protocol).should eq @protocol
+      expect(assigns(:protocol)).to eq @protocol
       # expect protocol to fail validation but that's fine, it means we made it through the authorization filter.
       expect(response.status).to eq(500)
     end
 
     it 'edit protocol' do
       get(:edit, {:format => :html, :id => @protocol.id })
-      assigns(:protocol).should eq @protocol
-      assigns(:edit_protocol).should eq true
+      expect(assigns(:protocol)).to eq @protocol
+      expect(assigns(:edit_protocol)).to eq true
     end
 
     it 'update protocol' do
       post(:update, {:format => :html, :id => @protocol.id })
-      assigns(:protocol).should eq @protocol
-      response.should render_template("edit")
+      expect(assigns(:protocol)).to eq @protocol
+      expect(response).to render_template("edit")
     end
 
 #    @Todo: how to test this route?
@@ -202,13 +202,13 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
       @sub_service_request.save(validate: false)
 
       post(:update_protocol_type, {:format => :html, :id => @protocol.id, :protocol => { :type => "Project"}, :sub_service_request_id =>  @sub_service_request.id })
-      assigns(:protocol).should eq @protocol
-      assigns(:sub_service_request).should eq @sub_service_request
+      expect(assigns(:protocol)).to eq @protocol
+      expect(assigns(:sub_service_request)).to eq @sub_service_request
     end
 
     it 'view_full_calendar' do
       get(:view_full_calendar, {:format => :js, :id => @protocol.id })
-      assigns(:protocol).should eq @protocol
+      expect(assigns(:protocol)).to eq @protocol
       assigns(:merged)
     end
   end
@@ -224,26 +224,26 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
 
     it 'show protocol' do
       get(:show, {:format => :js, :id => @protocol.id })
-      assigns(:protocol).should eq @protocol
-      assigns(:protocol_role).identity.should eq @identity
+      expect(assigns(:protocol)).to eq @protocol
+      expect(assigns(:protocol_role).identity).to eq @identity
     end
 
     it 'update_from_fulfillment' do
       post(:update_from_fulfillment, {:format => :js, :id => @protocol.id, :protocol => {}  })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'edit protocol' do
       get(:edit, {:format => :html, :id => @protocol.id })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'update protocol' do
       post(:update, {:format => :html, :id => @protocol.id })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
 #    @Todo: how to test this route?
@@ -263,13 +263,13 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
       @sub_service_request.save(validate: false)
 
       post(:update_protocol_type, {:format => :html, :id => @protocol.id, :protocol => { :type => "Project"}, :sub_service_request_id =>  @sub_service_request.id })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'view_full_calendar' do
       get(:view_full_calendar, {:format => :js, :id => @protocol.id })
-      assigns(:protocol).should eq @protocol
+      expect(assigns(:protocol)).to eq @protocol
       assigns(:merged)
     end
   end
@@ -285,26 +285,26 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
 
     it 'show protocol' do
       get(:show, {:format => :js, :id => @protocol.id })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'update_from_fulfillment' do
       post(:update_from_fulfillment, {:format => :js, :id => @protocol.id, :protocol => {}  })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'edit protocol' do
       get(:edit, {:format => :html, :id => @protocol.id })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'update protocol' do
       post(:update, {:format => :html, :id => @protocol.id })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
 #    @Todo: how to test this route?
@@ -324,13 +324,13 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
       @sub_service_request.save(validate: false)
 
       post(:update_protocol_type, {:format => :html, :id => @protocol.id, :protocol => { :type => "Project"}, :sub_service_request_id =>  @sub_service_request.id })
-      response.should render_template(:partial => "_authorization_error")
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'view_full_calendar' do
       get(:view_full_calendar, {:format => :js, :id => @protocol.id })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
   end
 
@@ -381,24 +381,24 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
           @service_provider.save(validate: false)
 
           get(:show, {:format => :js, :id => @protocol.id })
-          assigns(:protocol).should eq @protocol
-          assigns(:protocol_role).should eq nil
+          expect(assigns(:protocol)).to eq @protocol
+          expect(assigns(:protocol_role)).to eq nil
 
           post(:update_from_fulfillment, {:format => :js, :id => @protocol.id, :protocol => {}  })
-          assigns(:protocol).should eq @protocol
+          expect(assigns(:protocol)).to eq @protocol
           # expect protocol to fail validation but that's fine, it means we made it through the authorization filter.
           expect(response.status).to eq(500)
 
           get(:edit, {:format => :html, :id => @protocol.id })
-          assigns(:protocol).should eq @protocol
-          assigns(:edit_protocol).should eq true
+          expect(assigns(:protocol)).to eq @protocol
+          expect(assigns(:edit_protocol)).to eq true
 
           post(:update, {:format => :html, :id => @protocol.id })
-          assigns(:protocol).should eq @protocol
-          response.should render_template("edit")
+          expect(assigns(:protocol)).to eq @protocol
+          expect(response).to render_template("edit")
 
           get(:view_full_calendar, {:format => :js, :id => @protocol.id })
-          assigns(:protocol).should eq @protocol
+          expect(assigns(:protocol)).to eq @protocol
           assigns(:merged)
 
           @provider = Provider.new
@@ -410,8 +410,8 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
           @sub_service_request.save(validate: false)
 
           post(:update_protocol_type, {:format => :html, :id => @protocol.id, :protocol => { :type => "Project"}, :sub_service_request_id =>  @sub_service_request.id })
-          assigns(:protocol).should eq @protocol
-          assigns(:sub_service_request).should eq @sub_service_request
+          expect(assigns(:protocol)).to eq @protocol
+          expect(assigns(:sub_service_request)).to eq @sub_service_request
         end
 
         it 'should NOT authorize view and edit if identity is a clinical provider for a sub service request that is servicing the protocol' do
@@ -421,24 +421,24 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
           @clinical_provider.save(validate: false)
 
           get(:show, {:format => :js, :id => @protocol.id })
-          assigns(:protocol).should eq nil
-          response.should render_template(:partial => "_authorization_error")
+          expect(assigns(:protocol)).to eq nil
+          expect(response).to render_template(:partial => "_authorization_error")
 
           post(:update_from_fulfillment, {:format => :js, :id => @protocol.id, :protocol => {}  })
-          assigns(:protocol).should eq nil
-          response.should render_template(:partial => "_authorization_error")
+          expect(assigns(:protocol)).to eq nil
+          expect(response).to render_template(:partial => "_authorization_error")
 
           get(:edit, {:format => :html, :id => @protocol.id })
-          assigns(:protocol).should eq nil
-          response.should render_template(:partial => "_authorization_error")
+          expect(assigns(:protocol)).to eq nil
+          expect(response).to render_template(:partial => "_authorization_error")
 
           post(:update, {:format => :html, :id => @protocol.id })
-          assigns(:protocol).should eq nil
-          response.should render_template(:partial => "_authorization_error")
+          expect(assigns(:protocol)).to eq nil
+          expect(response).to render_template(:partial => "_authorization_error")
 
           get(:view_full_calendar, {:format => :js, :id => @protocol.id })
-          assigns(:protocol).should eq nil
-          response.should render_template(:partial => "_authorization_error")
+          expect(assigns(:protocol)).to eq nil
+          expect(response).to render_template(:partial => "_authorization_error")
 
           @provider = Provider.new
           @provider.type = "Provider"
@@ -449,8 +449,8 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
           @sub_service_request.save(validate: false)
 
           post(:update_protocol_type, {:format => :html, :id => @protocol.id, :protocol => { :type => "Project"}, :sub_service_request_id =>  @sub_service_request.id })
-          assigns(:protocol).should eq nil
-          response.should render_template(:partial => "_authorization_error")
+          expect(assigns(:protocol)).to eq nil
+          expect(response).to render_template(:partial => "_authorization_error")
         end
 
         it 'should authorize view and edit if identity is a super user for a sub service request that is servicing the protocol' do
@@ -460,24 +460,24 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
           @super_user.save(validate: false)
 
           get(:show, {:format => :js, :id => @protocol.id })
-          assigns(:protocol).should eq @protocol
-          assigns(:protocol_role).should eq nil
+          expect(assigns(:protocol)).to eq @protocol
+          expect(assigns(:protocol_role)).to eq nil
 
           post(:update_from_fulfillment, {:format => :js, :id => @protocol.id, :protocol => {}  })
-          assigns(:protocol).should eq @protocol
+          expect(assigns(:protocol)).to eq @protocol
           # expect protocol to fail validation but that's fine, it means we made it through the authorization filter.
           expect(response.status).to eq(500)
 
           get(:edit, {:format => :html, :id => @protocol.id })
-          assigns(:protocol).should eq @protocol
-          assigns(:edit_protocol).should eq true
+          expect(assigns(:protocol)).to eq @protocol
+          expect(assigns(:edit_protocol)).to eq true
 
           post(:update, {:format => :html, :id => @protocol.id })
-          assigns(:protocol).should eq @protocol
-          response.should render_template("edit")
+          expect(assigns(:protocol)).to eq @protocol
+          expect(response).to render_template("edit")
 
           get(:view_full_calendar, {:format => :js, :id => @protocol.id })
-          assigns(:protocol).should eq @protocol
+          expect(assigns(:protocol)).to eq @protocol
           assigns(:merged)
 
           @provider = Provider.new
@@ -489,8 +489,8 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
           @sub_service_request.save(validate: false)
 
           post(:update_protocol_type, {:format => :html, :id => @protocol.id, :protocol => { :type => "Project"}, :sub_service_request_id =>  @sub_service_request.id })
-          assigns(:protocol).should eq @protocol
-          assigns(:sub_service_request).should eq @sub_service_request
+          expect(assigns(:protocol)).to eq @protocol
+          expect(assigns(:sub_service_request)).to eq @sub_service_request
         end
       end
     end

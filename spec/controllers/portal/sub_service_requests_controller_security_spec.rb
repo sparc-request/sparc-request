@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe Portal::SubServiceRequestsController do
   stub_portal_controller
@@ -82,15 +82,15 @@ RSpec.describe Portal::SubServiceRequestsController do
   describe 'identity has NO related roles and, thus, no access to' do
     it 'show update_from_project_study_information' do
       get(:update_from_project_study_information, {:format => :html, :protocol_id => @protocol.id, :id => @sub_service_request.id })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'update update_from_project_study_information' do
       post(:update_from_project_study_information, {:format => :html, :protocol_id => @protocol.id, :id => @sub_service_request.id,
               :study => { :sponsor_name => 'New Sponsor', :short_title => 'Short Study', :title => 'Long Title', :funding_status => 'funded', :funding_source => 'grant', :has_cofc => false } })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
   end
 
@@ -105,17 +105,17 @@ RSpec.describe Portal::SubServiceRequestsController do
 
     it 'show' do
       get(:update_from_project_study_information, {:format => :html, :protocol_id => @protocol.id, :id => @sub_service_request.id })
-      assigns(:protocol).should eq @protocol
-      assigns(:sub_service_request).should eq @sub_service_request
-      response.should render_template("show")
+      expect(assigns(:protocol)).to eq @protocol
+      expect(assigns(:sub_service_request)).to eq @sub_service_request
+      expect(response).to render_template("show")
     end
 
     it 'update' do
       post(:update_from_project_study_information, {:format => :html, :protocol_id => @protocol.id, :id => @sub_service_request.id,
               :study => { :sponsor_name => 'New Sponsor', :short_title => 'Short Study', :title => 'Long Title', :funding_status => 'funded', :funding_source => 'grant', :has_cofc => false } })
-      assigns(:protocol).should eq @protocol
-      assigns(:sub_service_request).should eq @sub_service_request
-      response.should redirect_to "/portal/admin/sub_service_requests/#{@sub_service_request.id}"
+      expect(assigns(:protocol)).to eq @protocol
+      expect(assigns(:sub_service_request)).to eq @sub_service_request
+      expect(response).to redirect_to "/portal/admin/sub_service_requests/#{@sub_service_request.id}"
     end
   end
 
@@ -130,17 +130,17 @@ RSpec.describe Portal::SubServiceRequestsController do
 
     it 'show' do
       get(:update_from_project_study_information, {:format => :html, :protocol_id => @protocol.id, :id => @sub_service_request.id })
-      assigns(:protocol).should eq @protocol
-      assigns(:sub_service_request).should eq @sub_service_request
-      response.should render_template("show")
+      expect(assigns(:protocol)).to eq @protocol
+      expect(assigns(:sub_service_request)).to eq @sub_service_request
+      expect(response).to render_template("show")
     end
 
     it 'update' do
       post(:update_from_project_study_information, {:format => :html, :protocol_id => @protocol.id, :id => @sub_service_request.id,
               :study => { :sponsor_name => 'New Sponsor', :short_title => 'Short Study', :title => 'Long Title', :funding_status => 'funded', :funding_source => 'grant', :has_cofc => false } })
-      assigns(:protocol).should eq @protocol
-      assigns(:sub_service_request).should eq @sub_service_request
-      response.should redirect_to "/portal/admin/sub_service_requests/#{@sub_service_request.id}"
+      expect(assigns(:protocol)).to eq @protocol
+      expect(assigns(:sub_service_request)).to eq @sub_service_request
+      expect(response).to redirect_to "/portal/admin/sub_service_requests/#{@sub_service_request.id}"
     end
   end
 
@@ -155,16 +155,16 @@ RSpec.describe Portal::SubServiceRequestsController do
 
     it 'show' do
       get(:update_from_project_study_information, {:format => :html, :protocol_id => @protocol.id, :id => @sub_service_request.id })
-      assigns(:protocol).should eq @protocol
-      assigns(:sub_service_request).should eq @sub_service_request
-      response.should render_template("show")
+      expect(assigns(:protocol)).to eq @protocol
+      expect(assigns(:sub_service_request)).to eq @sub_service_request
+      expect(response).to render_template("show")
     end
 
     it 'do NOT update' do
       post(:update_from_project_study_information, {:format => :html, :protocol_id => @protocol.id, :id => @sub_service_request.id,
               :study => { :sponsor_name => 'New Sponsor', :short_title => 'Short Study', :title => 'Long Title', :funding_status => 'funded', :funding_source => 'grant', :has_cofc => false } })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
   end
 
@@ -179,15 +179,15 @@ RSpec.describe Portal::SubServiceRequestsController do
 
     it 'show update_from_project_study_information' do
       get(:update_from_project_study_information, {:format => :html, :protocol_id => @protocol.id, :id => @sub_service_request.id })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'update update_from_project_study_information' do
       post(:update_from_project_study_information, {:format => :html, :protocol_id => @protocol.id, :id => @sub_service_request.id,
               :study => { :sponsor_name => 'New Sponsor', :short_title => 'Short Study', :title => 'Long Title', :funding_status => 'funded', :funding_source => 'grant', :has_cofc => false } })
-      assigns(:protocol).should eq nil
-      response.should render_template(:partial => "_authorization_error")
+      expect(assigns(:protocol)).to eq nil
+      expect(response).to render_template(:partial => "_authorization_error")
     end
   end
 
@@ -238,15 +238,15 @@ RSpec.describe Portal::SubServiceRequestsController do
           @service_provider.save(validate: false)
 
           get(:update_from_project_study_information, {:format => :html, :protocol_id => @protocol.id, :id => @sub_service_request.id })
-          assigns(:protocol).should eq @protocol
-          assigns(:sub_service_request).should eq @sub_service_request
-          response.should render_template("show")
+          expect(assigns(:protocol)).to eq @protocol
+          expect(assigns(:sub_service_request)).to eq @sub_service_request
+          expect(response).to render_template("show")
 
           post(:update_from_project_study_information, {:format => :html, :protocol_id => @protocol.id, :id => @sub_service_request.id,
                   :study => { :sponsor_name => 'New Sponsor', :short_title => 'Short Study', :title => 'Long Title', :funding_status => 'funded', :funding_source => 'grant', :has_cofc => false } })
-          assigns(:protocol).should eq @protocol
-          assigns(:sub_service_request).should eq @sub_service_request
-          response.should redirect_to "/portal/admin/sub_service_requests/#{@sub_service_request.id}"
+          expect(assigns(:protocol)).to eq @protocol
+          expect(assigns(:sub_service_request)).to eq @sub_service_request
+          expect(response).to redirect_to "/portal/admin/sub_service_requests/#{@sub_service_request.id}"
         end
 
         it 'should NOT authorize view and edit if identity is a clinical provider for a sub service request that is servicing the protocol' do
@@ -256,13 +256,13 @@ RSpec.describe Portal::SubServiceRequestsController do
           @clinical_provider.save(validate: false)
 
           get(:update_from_project_study_information, {:format => :html, :protocol_id => @protocol.id, :id => @sub_service_request.id })
-          assigns(:protocol).should eq nil
-          response.should render_template(:partial => "_authorization_error")
+          expect(assigns(:protocol)).to eq nil
+          expect(response).to render_template(:partial => "_authorization_error")
 
           post(:update_from_project_study_information, {:format => :html, :protocol_id => @protocol.id, :id => @sub_service_request.id,
                   :study => { :sponsor_name => 'New Sponsor', :short_title => 'Short Study', :title => 'Long Title', :funding_status => 'funded', :funding_source => 'grant', :has_cofc => false } })
-          assigns(:protocol).should eq nil
-          response.should render_template(:partial => "_authorization_error")
+          expect(assigns(:protocol)).to eq nil
+          expect(response).to render_template(:partial => "_authorization_error")
         end
 
         it 'should authorize view and edit if identity is a super user for a sub service request that is servicing the protocol' do
@@ -272,15 +272,15 @@ RSpec.describe Portal::SubServiceRequestsController do
           @super_user.save(validate: false)
 
           get(:update_from_project_study_information, {:format => :html, :protocol_id => @protocol.id, :id => @sub_service_request.id })
-          assigns(:protocol).should eq @protocol
-          assigns(:sub_service_request).should eq @sub_service_request
-          response.should render_template("show")
+          expect(assigns(:protocol)).to eq @protocol
+          expect(assigns(:sub_service_request)).to eq @sub_service_request
+          expect(response).to render_template("show")
 
           post(:update_from_project_study_information, {:format => :html, :protocol_id => @protocol.id, :id => @sub_service_request.id,
                   :study => { :sponsor_name => 'New Sponsor', :short_title => 'Short Study', :title => 'Long Title', :funding_status => 'funded', :funding_source => 'grant', :has_cofc => false } })
-          assigns(:protocol).should eq @protocol
-          assigns(:sub_service_request).should eq @sub_service_request
-          response.should redirect_to "/portal/admin/sub_service_requests/#{@sub_service_request.id}"
+          expect(assigns(:protocol)).to eq @protocol
+          expect(assigns(:sub_service_request)).to eq @sub_service_request
+          expect(response).to redirect_to "/portal/admin/sub_service_requests/#{@sub_service_request.id}"
         end
       end
     end

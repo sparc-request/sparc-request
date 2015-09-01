@@ -84,7 +84,8 @@ describe EpicInterface do
 
   let!(:study) {
     human_subjects_info = FactoryGirl.build(:human_subjects_info, pro_number: nil, hr_number: nil)
-    study = FactoryGirl.build(:study, human_subjects_info: human_subjects_info)
+    investigational_products_info = FactoryGirl.build(:investigational_products_info, ide_number: nil)
+    study = FactoryGirl.build(:study, human_subjects_info: human_subjects_info, investigational_products_info: investigational_products_info)
     study.save(validate: false)
     study
   }
@@ -427,6 +428,33 @@ describe EpicInterface do
                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
           <studyCharacteristic classCode="OBS" moodCode="EVN">
             <code code="NCT" />
+            <value value="12345678" />
+          </studyCharacteristic>
+        </subjectOf>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+          '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+          'env' => 'http://www.w3.org/2003/05/soap-envelope',
+          'rpe' => 'urn:ihe:qrph:rpe:2009',
+          'hl7' => 'urn:hl7-org:v3')
+
+      node.should be_equivalent_to(expected)
+    end
+    
+    it 'should emit a subjectOf for an ide number' do
+      study.investigational_products_info.update_attributes(ide_number: '12345678')
+
+      epic_interface.send_study_creation(study)
+
+      xml = <<-END
+        <subjectOf typeCode="SUBJ"
+                   xmlns='urn:hl7-org:v3'
+                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+          <studyCharacteristic classCode="OBS" moodCode="EVN">
+            <code code="RGFT2" />
             <value value="12345678" />
           </studyCharacteristic>
         </subjectOf>

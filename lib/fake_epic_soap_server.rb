@@ -266,10 +266,6 @@ class FakeEpicServer < WEBrick::HTTPServer
   def endpoint
     return "http://localhost:#{port}"
   end
-
-  def endpoint
-    return "http://localhost:#{self.port}/"
-  end
 end
 
 if $0 == __FILE__ then

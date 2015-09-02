@@ -64,7 +64,9 @@ development:
   # end API
   bug_enhancement_url: "http://something.com"
   clinical_work_fulfillment_url: http://fulfillment-future-url.com
-
+  # allow catalog_manager to turn on work fulfillment one organization at a time
+  fulfillment_contingent_on_catalog_manager: true
+  
 test:
   default_mail_to: nobody@nowhere.com
   admin_mail_to: nobody@nowhere.com
@@ -109,3 +111,5 @@ test:
   # end API
   bug_enhancement_url: "http://something.com"
   clinical_work_fulfillment_url: http://fulfillment-future-url.com
+  # allow catalog_manager to turn on work fulfillment one organization at a time
+#  fulfillment_contingent_on_catalog_manager: true

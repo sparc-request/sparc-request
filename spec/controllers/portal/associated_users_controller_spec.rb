@@ -33,6 +33,10 @@ describe Portal::AssociatedUsersController do
   let!(:service_request) { FactoryGirl.create_without_validation(:service_request) }
   let!(:sub_service_request) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id ) }
 
+  before :each do
+    session[:identity_id] = identity.id
+  end
+    
   describe 'GET show' do
     it 'should set user if user is an associated user' do
       get(:show, {

@@ -23,7 +23,9 @@ class Portal::AssociatedUsersController < Portal::BaseController
 
   respond_to :html, :json, :js
   before_filter :find_project, :only => [:show, :edit, :new, :create, :update]
-
+  before_filter :protocol_authorizer_view, :only => [:show]
+  before_filter :protocol_authorizer_edit, :only => [:edit, :new, :create, :update]
+    
   def show
     # TODO: is it right to call to_i here?
     # TODO: id here should be the id of a project role, not an identity

@@ -19,12 +19,15 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 SparcRails::Application.routes.draw do
-
   match '/direct_link_to/:survey_code', :to => 'surveyor#create', :as => 'direct_link_survey', :via => :get
   mount Surveyor::Engine => "/surveys", :as => "surveyor"
-
-  devise_for :identities, :controllers => { :omniauth_callbacks => "identities/omniauth_callbacks" }
-
+  
+  if USE_SHIBBOLETH_ONLY
+    devise_for :identities, :controllers => { :omniauth_callbacks => "identities/omniauth_callbacks" }, :path_names => {:sign_in => 'auth/shibboleth' }
+  else 
+    devise_for :identities, :controllers => { :omniauth_callbacks => "identities/omniauth_callbacks" }
+  end
+  
   resources :identities do
     collection do
       post 'add_to_protocol'

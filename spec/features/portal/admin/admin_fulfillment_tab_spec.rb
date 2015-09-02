@@ -515,7 +515,7 @@ RSpec.describe "admin fulfillment tab", js: true do
 
       click_link 'Send To Epic'
       wait_for_javascript_to_finish
-      expect(find('.toast-container')).to have_content("There was an error.")
+      expect(find('.toast-container')).to have_content("there was an error.")
     end
   end
 end

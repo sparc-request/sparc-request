@@ -74,7 +74,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         expected_attributes = build(:protocol).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'has_cofc'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'arms', 'service_requests', 'project_roles', 'human_subjects_info').
+                                push('callback_url', 'sparc_id', 'arms', 'service_requests', 'project_roles', 'has_cofc', 'human_subjects_info').
                                 sort
 
         expect(parsed_body['protocols'].map(&:keys).flatten.uniq.sort).to eq(expected_attributes)

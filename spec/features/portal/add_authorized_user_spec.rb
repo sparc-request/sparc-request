@@ -39,7 +39,7 @@ RSpec.describe 'adding an authorized user', js: true do
 
   describe 'searching for an user' do
     before :each do
-      fill_in 'user_search', with: 'bjk7'
+      fill_autocomplete('user_search', with: 'bjk7')
       page.find('a', text: "Brian Kelsey", visible: true).click()
     end
 
@@ -75,6 +75,7 @@ RSpec.describe 'adding an authorized user', js: true do
       end
 
       it 'should throw errors when missing a role or project rights' do
+        expect(find('#full_name')).to have_value 'Brian Kelsey'
         click_button("add_authorized_user_submit_button")
         expect(page).to have_text "Role can't be blank"
         expect(page).to have_text "Project_rights can't be blank"

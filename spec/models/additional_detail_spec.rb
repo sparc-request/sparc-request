@@ -57,7 +57,7 @@ describe AdditionalDetail do
       expect(ad.errors[:effective_date][0]).to eq(message)
     end
 
-    it 'should fail vailidation when :effective_date is too far in the past' do
+    it 'should fail vailidation when :effective_date is not in the past' do
       ad = AdditionalDetail.new
       ad.service_id= @core_service.id
       ad.effective_date= 1.day.ago
@@ -67,6 +67,26 @@ describe AdditionalDetail do
       expect(ad.errors[:effective_date].size).to eq(1)
       message = "Date must be in past."
       expect(ad.errors[:effective_date][0]).to eq(message)
+    end
+
+    it 'should not fail vailidation when :effective_date the same but so is id' do
+      ad = AdditionalDetail.new
+      ad.service_id= @core_service.id
+      ad.effective_date= Time.now
+      ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":{test},"required":[]},"form":[]}'
+      ad.name = "Name"
+      expect(ad.valid?)
+      expect(ad.errors[:effective_date].size).to eq(0)
+      count = AdditionalDetail.count
+      ad.save
+      expect(AdditionalDetail.count).to eq(count+1)
+      
+      ad2 = AdditionalDetail.find(ad.id)
+      expect(ad2.valid?)
+      expect(ad2.errors[:effective_date].size).to eq(0)
+      ad2.save
+      expect(AdditionalDetail.count).to eq(count+1)
+      
     end
 
     it 'should fail vailidation when :name is null' do
@@ -102,7 +122,7 @@ describe AdditionalDetail do
       expect(ad.errors.count).to eq(0)
       ad.save
       expect(AdditionalDetail.count).to eq(count+1)
-      
+
       line_count = LineItemAdditionalDetail.count
       liad = LineItemAdditionalDetail.new
       liad.additional_detail_id = ad.id
@@ -111,7 +131,7 @@ describe AdditionalDetail do
 
       l = LineItemAdditionalDetail.where(id: liad.id)
       expect(!l.nil?)
-      
+
       ad2 = AdditionalDetail.find(ad.id)
       ad2.name = "Name 2"
       ad2.save

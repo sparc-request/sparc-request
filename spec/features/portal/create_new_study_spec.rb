@@ -5,6 +5,7 @@ RSpec.describe "creating a new study from user portal", js: true do
   let_there_be_j
   fake_login_for_each_test
   build_study_type_questions
+
   before :each do
     visit new_portal_protocol_path
   end

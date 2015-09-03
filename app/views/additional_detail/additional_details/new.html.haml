@@ -1,5 +1,6 @@
 :javascript
   var effective_date = '#{@additional_detail.effective_date ? @additional_detail.effective_date : ""}';
+  var form_definition = '#{@additional_detail.form_definition_json ? @additional_detail.form_definition_json : ""}';
 %div{"ng-controller" => "FormCreationController"}
   .row
     .col-md-8
@@ -36,8 +37,8 @@
                       .help-block.with-errors
                   .col-md-6
                     .form-group
-                      %label{:for=>"approved"} Approved
-                      %input{:id=>"approved", :type=>"checkbox"}
+                      =f.label :approved
+                      =f.check_box :approved, class: "checkbox"
                 .row
                   .col-md-12
                     .form-group

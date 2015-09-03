@@ -288,6 +288,20 @@ describe AdditionalDetail::AdditionalDetailsController do
             assigns(:additional_detail).should_not be_blank
           }.to change(AdditionalDetail, :count).by(0)
         end
+        
+      it 'see failed validation for blank :effective_date when trying to create an additional detail record' do
+                expect {
+                  post(:create, {:service_id => @core_service, :format => :html,
+                    :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => "", :approved => "true"}
+                  })
+                  expect(assigns(:additional_detail).errors[:effective_date].size).to eq(1)
+                  response.should render_template("new")
+                  expect(response.status).to eq(200)
+                  assigns(:service).should_not be_blank
+                  assigns(:additional_detail).should_not be_blank
+                }.to change(AdditionalDetail, :count).by(0)
+              end
+        
         it 'see failed validation for :effective_date that is already taken when trying to create an additional detail record' do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
@@ -304,7 +318,7 @@ describe AdditionalDetail::AdditionalDetailsController do
             assigns(:service).should_not be_blank
             assigns(:additional_detail).should_not be_blank
           }.to change(AdditionalDetail, :count).by(1)
-      	end
+        end
 
         it 'see failed validation for blank :form_definition_json when trying to create an additional detail record' do
           expect {

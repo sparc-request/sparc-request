@@ -31,8 +31,9 @@ class AdditionalDetail < ActiveRecord::Base
   end
  
   def effective_date_cannot_be_shared
-    unless AdditionalDetail.where(effective_date: effective_date,  service_id: service).size == 0
-      errors.add(:effective_date, "Effective date cannot be the same as any other effective dates.")
+    shared_dates = AdditionalDetail.where(effective_date: effective_date,  service_id: service)
+    if shared_dates.size > 1 ||  (shared_dates.size == 1 and shared_dates[0].id != id)
+        errors.add(:effective_date, "Effective date cannot be the same as any other effective dates.")
     end
   end
   

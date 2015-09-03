@@ -17,6 +17,11 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
     render :json => @service.additional_details.find(params[:id])
   end
   
+  def edit
+    @additional_detail = @service.additional_details.find(params[:id])
+    render :new
+    end
+  
   def new
     @additional_detail = @service.additional_details.new
   end
@@ -32,8 +37,11 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
   
   def update
     @additional_detail = @service.additional_details.find(params[:id])
-    if @additional_detail.update_attributes(params[:additional_detail])
-      # success page or success JSON response
+      if @additional_detail.update_attributes(params[:additional_detail])
+        # success page or success JSON response
+        redirect_to additional_detail_service_additional_details_path(@service)
+      else
+        render :new
     end
   end
 

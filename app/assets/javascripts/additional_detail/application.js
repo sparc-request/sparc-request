@@ -17,13 +17,29 @@
 var typeHash;
 var app = angular.module('app', ['ngAria','schemaForm','ui.grid','ui.grid.resizeColumns', 'mgcrea.ngStrap', 'schemaForm-datepicker', 'schemaForm-timepicker', 'schemaForm-datetimepicker','ui.grid.selection','ngSanitize', 'ui.grid.autoResize','ui.grid.expandable', 'ui.grid.edit']);
 
-app.controller('FormCreationController', ['$scope', '$http', function ($scope, $http, $compile) {
-		
-	if(!$scope.additionalDetails){
-		$scope.additionalDetails={};
-		$scope.additionalDetails.approved = true;
-	}
+app.config([
+     "$httpProvider", function($httpProvider) {
+     $httpProvider.defaults.headers.common["Accept"] = "application/json";
+     $httpProvider.defaults.headers.common["Content-Type"] = "application/json";
+     $httpProvider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
+     }]);
+
+
+app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', function($scope, $http) {
+	$scope.gridModel = {enableFiltering: true, enableColumnResizing: true, showColumnFooter: true , enableSorting: false, showGridFooter: true, enableRowHeaderSelection: false, rowHeight: 42};
+	$scope.gridModel.columnDefs = [{enableFiltering: false, enableCellEdit: false,enableColumnResizing: false,name: 'Edit',width: 55, enableColumnMenu: false, cellTemplate: '<a class="btn btn-primary" role="button" ng-href="/additional_detail/services/'+id+'/additional_details/{{row.entity.additional_detail.id}}/edit">Edit</a>'},
+	                               {field: 'additional_detail.name', name: 'Name',enableCellEdit: false,  width: '30%', enableColumnMenu: false ,}, { field:'additional_detail.effective_date',enableCellEdit: false,name: 'Effective Date', width: '25%', enableColumnMenu: false },{field: 'additional_detail.approved',enableCellEdit: false,name: 'Approved', width: '10%', enableColumnMenu: false},
+	                                {field: 'additional_detail.description',enableCellEdit: false, name: 'Description', enableColumnMenu: false}];
 	
+	$http.get('/additional_detail/services/'+id+'/additional_details/').
+		then(function(response){
+			 $scope.gridModel.data = response.data;
+		});
+	
+}]);
+
+app.controller('FormCreationController', ['$scope', '$http', function ($scope, $http, $compile) {
+			
 	$scope.effective_date = effective_date;
 		
 	$scope.typeHash = {
@@ -50,7 +66,7 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
 
 	$scope.invaildDate = new Date((new Date()-86400000));
 
-    $scope.formDefinition = JSON.stringify({ "schema": { "type": "object","title": "Comment", "properties": {},"required": []}, "form": []},undefined,2);
+    $scope.formDefinition = (form_definition != "") ? form_definition : JSON.stringify({ schema: { type: "object",title: "Comment", properties: {},required: []}, form: []},undefined,2);
     
 	 var dropdownKindList = ["multiDropdown", "dropdown", "state", "country"];
 	 function generateGridArray(schema, form){
@@ -191,8 +207,8 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
 	                                 {name: 'question', field: 'name',  width: '21%', enableColumnMenu: false }, { name: 'key', width: '7%', enableColumnMenu: false }, 
 	                                 { name: 'type', field: "kind", width: '15%',editableCellTemplate: 'ui-grid/dropdownEditor', cellFilter: 'mapKind', editDropdownValueLabel: 'kind', editDropdownOptionsArray: getKindHashArray(), enableColumnMenu: false},
 	                               	 {field: 'values', name : "Values/Range", width: '13%', enableColumnMenu: false }, {name: 'required', width :'12%' ,editableCellTemplate: 'ui-grid/dropdownEditor',cellFilter: 'mapBoolean', editDropdownValueLabel: 'required', editDropdownOptionsArray: [
-	                               	 {id: 'true', required: 'Yes' },{ id: 'false', required: 'No' }], enableColumnMenu: false},{field: "description", width :"19%", enableColumnMenu: false},
-	                               	 {enableFiltering: false, enableCellEdit: false,enableColumnResizing: false,name:'Order', field :'up', width: "12%",cellTemplate: '<button class="btn btn-primary glyphicon glyphicon-chevron-up" ng-click="grid.appScope.up(row.entity.key)"></button><button class="btn btn-primary glyphicon glyphicon-chevron-down" ng-click="grid.appScope.down(row.entity.key)"></button>', enableColumnMenu: false}
+	                               	 {id: 'true', required: 'Yes' },{ id: 'false', required: 'No' }], enableColumnMenu: false},{field: "description", enableColumnMenu: false},
+	                               	 {enableFiltering: false, enableCellEdit: false,enableColumnResizing: false,name:'Order', field :'up', width: 83,cellTemplate: '<button class="btn btn-primary glyphicon glyphicon-chevron-up" ng-click="grid.appScope.up(row.entity.key)"></button><button class="btn btn-primary glyphicon glyphicon-chevron-down" ng-click="grid.appScope.down(row.entity.key)"></button>', enableColumnMenu: false}
  	                                 ];
 
 		function removeSpecial(value){

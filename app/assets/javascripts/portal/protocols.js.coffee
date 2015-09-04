@@ -112,6 +112,10 @@ $(document).ready ->
           height: 700
           modal: true
           buttons: {
+            "Print": () ->
+              id = $('#id').val()
+              ssr_id = $('#ssr_id').val()
+              window.open("/portal/service_requests/#{id}?ssr_id=#{ssr_id}")
             "Ok": () ->
               $(this).dialog('close')
           }

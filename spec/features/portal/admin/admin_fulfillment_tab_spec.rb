@@ -218,7 +218,7 @@ describe "admin fulfillment tab", :js => true do
         it "should add the approvals in the proper order" do
           find("#sub_service_request_imaging_approved[data-sub_service_request_id='#{sub_service_request.id}']").click
           wait_for_javascript_to_finish
-          find("#sub_service_request_src_approved[data-sub_service_request_id='#{sub_service_request.id}']").click
+          find("#sub_service_request_committee_approved[data-sub_service_request_id='#{sub_service_request.id}']").click
           wait_for_javascript_to_finish
           find("#sub_service_request_lab_approved[data-sub_service_request_id='#{sub_service_request.id}']").click
           wait_for_javascript_to_finish
@@ -231,7 +231,7 @@ describe "admin fulfillment tab", :js => true do
             page.should have_content("Imaging Approved")
           end
           within(tr[2]) do
-            page.should have_content("SRC Approved")
+            page.should have_content("Committee Approved")
           end
           within(tr[3]) do
             page.should have_content("Lab Approved")

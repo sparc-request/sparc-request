@@ -5,7 +5,7 @@
 
 -# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
 
--# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# 2. Redistributions in binary form must reproduce the above scopyright notice, this list of conditions and the following
 -# disclaimer in the documentation and/or other materials provided with the distribution.
 
 -# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
@@ -18,9 +18,9 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%h3= t(:fulfillments)[:src_approval][:header]
-#admin_src_approval
+%h3= t(:fulfillments)[:committee_approval][:header]
+#admin_committee_approval
   .approval
-    = label_tag "sub_service_request_src_approved", t(:fulfillments)[:src_approval][:label]
-    = check_box_tag "sub_service_request_src_approved", true, @sub_service_request.src_approved, :'data-sub_service_request_id' => @sub_service_request.id, :class => 'fulfillment_data', :disabled => @sub_service_request.src_approved?
+    = label_tag "sub_service_request_committee_approved", t(:fulfillments)[:committee_approval][:label]
+    = check_box_tag "sub_service_request_committee_approved", true, @sub_service_request.committee_approved, :'data-sub_service_request_id' => @sub_service_request.id, :class => 'fulfillment_data', :disabled => @sub_service_request.committee_approved?
   

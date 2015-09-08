@@ -45,7 +45,7 @@ describe "Line Item" do
       service.pricing_maps[0].update_attributes(display_date: Date.today - 1)
       project = Project.create(FactoryGirl.attributes_for(:protocol))
       service_request = ServiceRequest.create(FactoryGirl.attributes_for(:service_request, protocol_id: project.id)); service_request.save!(:validate => false); service_request
-      line_item = FactworyGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id)
+      line_item = FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id)
       lambda { line_item.applicable_rate }.should raise_exception(ArgumentError)
     end
 

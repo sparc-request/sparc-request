@@ -21,13 +21,20 @@
 FactoryGirl.define do
 
   factory :pricing_map do
-    unit_type                  { Faker::Lorem.word }
     unit_factor                { 1 }
     percent_of_fee             { 50 }
     full_rate                  { 100 }
     exclude_from_indirect_cost { false }
-    unit_minimum               { 1 }
     display_date               Date.parse('2000-01-01')
     effective_date             Date.parse('2000-01-01')
+    # one time fee specific fields
+    units_per_qty_max          { 52 }
+    otf_unit_type              { "N/A" }
+    quantity_type              { Faker::Lorem.word }   
+    quantity_minimum           { 1 }
+    # per patient specific fields
+    unit_type                  { Faker::Lorem.word }
+    unit_minimum               { 1 }
   end
+    
 end

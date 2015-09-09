@@ -58,9 +58,11 @@ RSpec.describe "Identity creates Study", js: true do
     sleep 1
 
     fill_autocomplete "user_search_term", with: "bjk7"
+    wait_for_javascript_to_finish
     page.find('a', text: "Brian Kelsey (kelsey@musc.edu)", visible: true).click()
     select "Billing/Business Manager", from: "project_role_role"
     click_button "Add Authorized User"
+
 
     find('.continue_button').click
 

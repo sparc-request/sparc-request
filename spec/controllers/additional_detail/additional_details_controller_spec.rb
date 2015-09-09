@@ -33,6 +33,10 @@ describe AdditionalDetail::AdditionalDetailsController do
     @program_service = Service.new
     @program_service.organization_id = @program.id
     @program_service.save(validate: false)
+    
+    @additional_detail = AdditionalDetail.new
+    @additional_detail.service_id = @core_service.id
+    
   end
 
   describe 'user is not logged in and, thus, has no access to' do
@@ -246,7 +250,7 @@ describe AdditionalDetail::AdditionalDetailsController do
             #assigns(:additional_detail).should be_blank
           }.to change(AdditionalDetail, :count).by(1)
         end
-
+        
         it 'see failed validation for :description being too long' do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
@@ -351,6 +355,23 @@ describe AdditionalDetail::AdditionalDetailsController do
       end
 
     end
+    
+#    describe 'Put update' do
+#      before :each do
+#        @additional_detail.name = "Form # 1"
+#        @additional_detail.description = "10 essential questions" 
+#        @additional_detail.form_definition_json = "{}"
+#        @additional_detail.effective_date = Time.now
+#        @additional_detail.approved = "true"
+#      end
+#        context "vaild attributes" do 
+#          it "locate requested @additional_detail" do
+#            put :update, id: @additional_detail, additional_detail: Factory.attributes_for(:additional_detail)
+#                  assigns(:additional_detail).should eq(@additional_detail)
+#          end
+#        end
+#      
+#    end
 
     describe 'is a super_user and has access to' do
       it 'a core service index' do

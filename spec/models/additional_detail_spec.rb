@@ -68,27 +68,7 @@ describe AdditionalDetail do
       message = "Date must be in past."
       expect(ad.errors[:effective_date][0]).to eq(message)
     end
-
-    it 'should not fail vailidation when :effective_date the same but so is id' do
-      ad = AdditionalDetail.new
-      ad.service_id= @core_service.id
-      ad.effective_date= Time.now
-      ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":{test},"required":[]},"form":[]}'
-      ad.name = "Name"
-      expect(ad.valid?)
-      expect(ad.errors[:effective_date].size).to eq(0)
-      count = AdditionalDetail.count
-      ad.save
-      expect(AdditionalDetail.count).to eq(count+1)
-      
-      ad2 = AdditionalDetail.find(ad.id)
-      expect(ad2.valid?)
-      expect(ad2.errors[:effective_date].size).to eq(0)
-      ad2.save
-      expect(AdditionalDetail.count).to eq(count+1)
-      
-    end
-
+    
     it 'should fail vailidation when :name is null' do
       ad = AdditionalDetail.new
       ad.service_id= @core_service.id

@@ -29,6 +29,7 @@
                     .form-group
                       = f.label :effective_date
                       = f.text_field :effective_date, :type => 'text',class: "form-control datepicker", "ng-model" => "effective_date", "date-format"=>"yyyy-MM-dd", :placeholder=>"Effective Date", :required=>"required", "data-min-date"=> "{{invaildDate}}", "data-date-type"=>"string", :cursor=>"pointer", "bs-datepicker"=>"bs-datepicker", :autoclose =>"true"
+                      .help-block.with-errors
                 .row
                   .col-md-6
                     .form-group

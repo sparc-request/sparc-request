@@ -29,7 +29,7 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', functio
 	$scope.gridModel = {enableFiltering: true, enableColumnResizing: true, showColumnFooter: true , enableSorting: false, showGridFooter: true, enableRowHeaderSelection: false, rowHeight: 42};
 	$scope.gridModel.columnDefs = [{enableFiltering: false, enableCellEdit: false,enableColumnResizing: false,name: 'Edit',width: 55, enableColumnMenu: false, cellTemplate: '<a class="btn btn-primary" role="button" ng-href="/additional_detail/services/'+id+'/additional_details/{{row.entity.additional_detail.id}}/edit">Edit</a>'},
 	                               {field: 'additional_detail.name', name: 'Name',enableCellEdit: false,  width: '30%', enableColumnMenu: false ,}, { field:'additional_detail.effective_date',enableCellEdit: false,name: 'Effective Date', width: '25%', enableColumnMenu: false },{field: 'additional_detail.approved',enableCellEdit: false,name: 'Approved', width: '10%', enableColumnMenu: false},
-	                                {field: 'additional_detail.description',enableCellEdit: false, name: 'Description', enableColumnMenu: false}];
+	                                {field: 'additional_detail.description',enableCellEdit: false, name: 'Description', enableColumnMenu: false},{enableFiltering: false, enableCellEdit: false,enableColumnResizing: false,name: 'Delete',width: 70, enableColumnMenu: false, cellTemplate: '<a class="btn btn-primary" role="button" ng-href="/additional_detail/services/'+id+'/additional_details/{{row.entity.additional_detail.id}}/destroy">Delete</a>'}];
 	
 	$http.get('/additional_detail/services/'+id+'/additional_details/').
 		then(function(response){
@@ -40,8 +40,9 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', functio
 
 app.controller('FormCreationController', ['$scope', '$http', function ($scope, $http, $compile) {
 			
+	$scope.form ={};
 	$scope.effective_date = effective_date;
-		
+
 	$scope.typeHash = {
 	    text: 'Text',
 	    textarea : 'Text Area',

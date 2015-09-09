@@ -37,7 +37,6 @@ module RemotelyNotifiable
   end
 
   def notify_remote_after_create
-    puts 'notify_remote_after_create'
     RemoteServiceNotifierJob.enqueue(self.id, self.class.name, 'create')
   end
 

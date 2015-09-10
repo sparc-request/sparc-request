@@ -8,5 +8,7 @@ before_script:
   - cp config/application.yml.example config/application.yml
   - cp config/epic.yml.example config/epic.yml
   - cp config/ldap.yml.example config/ldap.yml
+  - mysql -e 'create database test_sparc_request;'
 script:
+  - RAILS_ENV=test bundle exec rake db:migrate 
   - bundle exec rspec

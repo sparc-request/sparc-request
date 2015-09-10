@@ -27,7 +27,7 @@ class LineItemsVisit < ActiveRecord::Base
   belongs_to :arm
   belongs_to :line_item
 
-  has_many :visits, :dependent => :destroy, :include => :visit_group, :order => 'visit_groups.position'
+  has_many :visits, -> { includes(:visit_group).order("visit_groups.position") }, :dependent => :destroy
 
   attr_accessible :arm_id
   attr_accessible :line_item_id

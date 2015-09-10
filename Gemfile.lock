@@ -184,6 +184,7 @@ GEM
       addressable (~> 2.3)
     letter_opener (1.4.1)
       launchy (~> 2.2)
+    libv8 (3.3.10.4)
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
@@ -351,6 +352,8 @@ GEM
       rails (~> 3.0)
       sass
       uuidtools (~> 2.1)
+    therubyracer (0.10.2)
+      libv8 (~> 3.3.10)
     thin (1.6.3)
       daemons (~> 1.0, >= 1.0.9)
       eventmachine (~> 1.0)
@@ -461,11 +464,9 @@ DEPENDENCIES
   spring
   spring-commands-rspec
   surveyor
+  therubyracer (= 0.10.2)
   thin
   timecop
   uglifier (>= 1.0.3)
   webmock
   will_paginate
-
-BUNDLED WITH
-   1.10.3

@@ -318,20 +318,20 @@ RSpec.describe 'PricingMap' do
     it 'should return the full rate if full rate is requested' do
       pricing_map = create(:pricing_map)
       pricing_map.full_rate = "60.0"
-      expect(pricing_map.applicable_rate('full', 100)).to eq 60
+      expect(pricing_map.applicable_rate('full', 100)).to eq(60)
     end
 
     it 'should return the full rate times the given percentage if there is no override' do
       pricing_map = create(:pricing_map)
       pricing_map.full_rate = "60.0"
-      expect(pricing_map.applicable_rate('federal', 0.7)).to eq 42.0
+      expect(pricing_map.applicable_rate('federal', 0.7)).to eq(42.0)
     end
 
     it 'should return the override rate if there is one' do
       pricing_map = create(:pricing_map)
       pricing_map.full_rate = "60.0"
       pricing_map.federal_rate = 10.0
-      expect(pricing_map.applicable_rate('federal', 0.7)).to eq 10.0
+      expect(pricing_map.applicable_rate('federal', 0.7)).to eq(10.0)
     end
   end
 
@@ -350,7 +350,7 @@ RSpec.describe 'PricingMap' do
         pricing_map.other_rate = 10.0
         pricing_map.member_rate = 10.0
         eval("pricing_map.#{rate_type}_rate = 42.0")
-        expect(pricing_map.rate_override(rate_type)).to eq 42.0
+        expect(pricing_map.rate_override(rate_type)).to eq(42.0)
       end
     end
   end
@@ -359,7 +359,7 @@ RSpec.describe 'PricingMap' do
     it 'should return the full rate times the given percentage' do
       pricing_map = create(:pricing_map)
       pricing_map.full_rate = "60.0"
-      expect(pricing_map.calculate_rate(0.7)).to eq 42.0
+      expect(pricing_map.calculate_rate(0.7)).to eq(42.0)
     end
   end
 

@@ -1,10 +1,10 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
   describe 'GET /v1/clinical_providers.json' do
 
-    before { @clinical_provider = FactoryGirl.create(:clinical_provider_with_identity_and_organization) }
+    before { @clinical_provider = create(:clinical_provider_with_identity_and_organization) }
 
     context 'response params' do
 
@@ -43,7 +43,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       it 'should respond with an array of clinical_providers and their attributes' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryGirl.build(:clinical_provider).attributes.
+        expected_attributes = build(:clinical_provider).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
                                 push('callback_url', 'sparc_id').
@@ -59,7 +59,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       it 'should respond with an array of clinical_providers and their attributes and their shallow reflections' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryGirl.build(:clinical_provider).attributes.
+        expected_attributes = build(:clinical_provider).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
                                 push('callback_url', 'sparc_id', 'identity', 'organization').

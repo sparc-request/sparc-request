@@ -18,10 +18,10 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 Capybara.ignore_hidden_elements = true
 
-describe 'as a user on catalog page', :js => true do
+RSpec.describe 'as a user on catalog page', js: true do
   before :each do
     default_catalog_manager_setup
   end
@@ -41,26 +41,26 @@ describe 'as a user on catalog page', :js => true do
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15    
+      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15
       wait_for_javascript_to_finish
 
       page.execute_script %Q{ $('.pricing_map_effective_date:visible').focus() }
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
       page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15    
+      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15
       wait_for_javascript_to_finish
 
-      fill_in "pricing_maps_blank_pricing_map_full_rate", :with => 4321
-      fill_in "clinical_quantity_", :with => "Each"
+      fill_in "pricing_maps_blank_pricing_map_full_rate", with: 4321
+      fill_in "clinical_quantity_", with: "Each"
 
       page.execute_script %Q{ $(".service_unit_factor").change() }
     end
-    
+
     first(".save_button").click
-    page.should have_content "MUSC Research Data Request (CDW) saved successfully"   
+    expect(page).to have_content "MUSC Research Data Request (CDW) saved successfully"
   end
-  
+
   it 'should not save if required fields are missing' do
     click_link("MUSC Research Data Request (CDW)")
     within '#pricing' do
@@ -68,23 +68,27 @@ describe 'as a user on catalog page', :js => true do
       wait_for_javascript_to_finish
     end
     click_button("Add Pricing Map")
-    
+
     page.execute_script("$('.ui-accordion-header:last').click()")
     first(".save_button").click
     wait_for_javascript_to_finish
-    page.should_not have_content "MUSC Research Data Request (CDW) saved successfully"    
+    expect(page).not_to have_content "MUSC Research Data Request (CDW) saved successfully"
   end
-  
+
   it 'should display an error message when required fields are missing' do
     click_link("MUSC Research Data Request (CDW)")
+    wait_for_javascript_to_finish
+    first('#gen_info').click
+    find('#service_one_time_fee').click
+    wait_for_javascript_to_finish
     within '#pricing' do
       find('.legend').click
       wait_for_javascript_to_finish
     end
     click_button("Add Pricing Map")
     wait_for_javascript_to_finish
-    page.should have_content "Name and Order are required on the Service.  Effective Date, Display Date, and Service Rate are required on all Pricing Maps."
-    page.should have_content "Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps."
+    expect(page).to have_content "Name and Order are required on the Service.  Effective Date, Display Date, and Service Rate are required on all Pricing Maps."
+    expect(page).to have_content "Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps."
   end
 
   it "should remove the errors if the pricing map is removed" do
@@ -97,37 +101,39 @@ describe 'as a user on catalog page', :js => true do
     click_link("Effective on - Display on")
     wait_for_javascript_to_finish
     click_button("Remove Pricing Map")
-    page.should_not have_content "Name and Order are required on the Service.  Effective Date, Display Date, and Service Rate are required on all Pricing Maps."
-    page.should_not have_content "Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps."
+    expect(page).not_to have_content "Name and Order are required on the Service.  Effective Date, Display Date, and Service Rate are required on all Pricing Maps."
+    expect(page).not_to have_content "Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps."
   end
 
   describe 'one time fee checked' do
 
     before :each do
       click_link("MUSC Research Data Request (CDW)")
+      wait_for_javascript_to_finish
+      check 'service_one_time_fee'
+      wait_for_javascript_to_finish
       within '#pricing' do
         find('.legend').click
         wait_for_javascript_to_finish
       end
       click_button("Add Pricing Map")
+      wait_for_javascript_to_finish
       click_link("Effective on - Display on")
-      find("#otf_checkbox_").click
       wait_for_javascript_to_finish
     end
 
     it "should open up the one time fee section correctly and display error message" do
-      page.should have_content "If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required."
+      expect(page).to have_content "If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required."
     end
 
     it "should not allow save if one time fee fields are not filled in" do
       first(".save_button").click
       wait_for_javascript_to_finish
-      page.should_not have_content "MUSC Research Data Request (CDW) saved successfully"  
+      expect(page).not_to have_content "MUSC Research Data Request (CDW) saved successfully"
     end
 
     it "should remove the error message if one time fee is unchecked" do
-      find("#otf_checkbox_").click
-      page.should_not have_content "If the Pricing Map is a one time fee (the box is checked), Quantity Type, Unit Type, and Unit Maximum are required."
+      expect(page).not_to have_content "If the Pricing Map is a one time fee (the box is checked), Quantity Type, Unit Type, and Unit Maximum are required."
     end
 
     it "should remove the error message if the fields are filled in" do
@@ -136,13 +142,11 @@ describe 'as a user on catalog page', :js => true do
       find(".otf_unit_type").set("Week")
       wait_for_javascript_to_finish
 
-      page.should_not have_content "If the Pricing Map is a one time fee (the box is checked), Quantity Type, Unit Type, and Unit Maximum are required."
+      expect(page).not_to have_content "If the Pricing Map is a one time fee (the box is checked), Quantity Type, Unit Type, and Unit Maximum are required."
     end
 
     it "should also not have any of the per patient errors on the page" do
-      page.should_not have_content "Name and Order on the Service, and Clinical Quantity Type, Unit Factor, Unit Minimum, Units Per Qty Maximum, Effective Date, and Display Date on all Pricing Maps are required."
+      expect(page).not_to have_content "Name and Order on the Service, and Clinical Quantity Type, Unit Factor, Unit Minimum, Units Per Qty Maximum, Effective Date, and Display Date on all Pricing Maps are required."
     end
-
-  end    
-
+  end
 end

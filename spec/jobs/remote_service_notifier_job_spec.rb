@@ -1,8 +1,8 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe 'RemoteServiceNotifierJob', type: :model do
 
-  before { @object = FactoryGirl.create(:service_without_callback_notify_remote_service_after_create) }
+  before { @object = create(:service_without_callback_notify_remote_service_after_create) }
 
   describe 'self#enqueue', delay: true do
 

@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 require 'spec_helper'
 
-describe 'SubServiceRequest' do
+RSpec.describe 'SubServiceRequest' do
   before :each do
     @institution = Institution.new
     @institution.type = "Institution"
@@ -52,62 +52,62 @@ describe 'SubServiceRequest' do
   it 'is ready for fulfillment if already in work fulfillment and FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is true' do
     FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER = true
     @sub_service_request.in_work_fulfillment = true
-    @sub_service_request.ready_for_fulfillment?.should eq (true)
+    expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
   end
   
   it 'is ready for fulfillment if already in work fulfillment and FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is false' do
     FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER = false
     @sub_service_request.in_work_fulfillment = true
-    @sub_service_request.ready_for_fulfillment?.should eq (true)
+    expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
   end
   
   it 'is ready for fulfillment if already in work fulfillment and FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is nil' do
     FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER = nil
     @sub_service_request.in_work_fulfillment = true
-    @sub_service_request.ready_for_fulfillment?.should eq (true)
+    expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
   end
  
   it 'is NOT ready for fulfillment if FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is true' do
     FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER = true
-    @sub_service_request.ready_for_fulfillment?.should eq (false)
+    expect(@sub_service_request.ready_for_fulfillment?).to eq(false)
   end
        
   it 'is ready for fulfillment if FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is false' do
     FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER = false
-    @sub_service_request.ready_for_fulfillment?.should eq (true)
+    expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
   end
   
   it 'is ready for fulfillment if FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is nil' do
     FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER = nil
-    @sub_service_request.ready_for_fulfillment?.should eq (true)
+    expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
   end
   
   it 'is ready for fulfillment if the service is directly under an organization with the tag "clinical work fulfillment" and FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is true' do
     FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER = true
     @core.tag_list << "clinical work fulfillment"
     @core.save(validate: false)
-    @sub_service_request.ready_for_fulfillment?.should eq (true)
+    expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
   end
   
   it 'is ready for fulfillment if the service is directly under an organization with the tag "clinical work fulfillment" and FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is false' do
     FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER = false
     @core.tag_list << "clinical work fulfillment"
     @core.save(validate: false)
-    @sub_service_request.ready_for_fulfillment?.should eq (true)
+    expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
   end
   
   it 'is ready for fulfillment if the service is directly under an organization with the tag "clinical work fulfillment" and FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is nil' do
     FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER = nil
     @core.tag_list << "clinical work fulfillment"
     @core.save(validate: false)
-    @sub_service_request.ready_for_fulfillment?.should eq (true)
+    expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
   end
   
   it 'is NOT ready for fulfillment if the service has a grandparent organization with the tag "clinical work fulfillment" and FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is true' do
     FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER = true
     @program.tag_list << "clinical work fulfillment"
     @program.save(validate: false)
-    @sub_service_request.ready_for_fulfillment?.should eq (false)
+    expect(@sub_service_request.ready_for_fulfillment?).to eq(false)
   end
  
 end

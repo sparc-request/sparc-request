@@ -2,9 +2,7 @@ sudo: false
 language: ruby
 cache: bundler
 rvm:
-  - 1.9.3
-before_install:
-  - bundle update debugger  
+  - 1.9.3  
 before_script:
   - cp config/database.yml.example config/database.yml
   - cp config/application.yml.example config/application.yml

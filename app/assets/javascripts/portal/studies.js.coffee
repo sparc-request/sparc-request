@@ -110,10 +110,10 @@ $(document).ready ->
 
       $('#study_funding_source, #study_potential_funding_source').change ->
         switch $(this).val()
-          when "internal", "college" then $('#study_indirect_cost_rate').val("0")
-          when "industry" then $('#study_indirect_cost_rate').val("30")
-          when "foundation", "investigator" then $('#study_indirect_cost_rate').val("25")
-          when "federal" then $('#study_indirect_cost_rate').val("49.5")
+          when "internal", "college" then $('#study_indirect_cost_rate').val(I18n["indirect_cost_rates"]["internal_and_college"])
+          when "industry" then $('#study_indirect_cost_rate').val(I18n["indirect_cost_rates"]["industry"])
+          when "foundation", "investigator" then $('#study_indirect_cost_rate').val(I18n["indirect_cost_rates"]["foundation_and_investigator"])
+          when "federal" then $('#study_indirect_cost_rate').val(I18n["indirect_cost_rates"]["federal"])
 
       $('#study_research_types_info_attributes_investigational_products').change ->
         if !$(this).is(':checked')

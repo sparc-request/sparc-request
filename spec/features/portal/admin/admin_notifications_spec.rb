@@ -18,17 +18,16 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe "admin portal notifications", :js => true do
+RSpec.describe "admin portal notifications", js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
   build_service_request_with_project
   build_fake_notification
-  let!(:first_reply) {FactoryGirl.create(:message, notification_id: notification.id, to: sender.id, from: jug2.id, email: "test2@test.org", subject: "Test Reply", body: "This is a test, and only a test")}
-  let!(:project_role) {FactoryGirl.create(:project_role, protocol_id: service_request.protocol.id, identity_id: sender.id, project_rights: "approve", role: "co-investigator")}
-
+  let!(:first_reply)  { create(:message, notification_id: notification.id, to: sender.id, from: jug2.id, email: "test2@test.org", subject: "Test Reply", body: "This is a test, and only a test") }
+  let!(:project_role) { create(:project_role, protocol_id: service_request.protocol.id, identity_id: sender.id, project_rights: "approve", role: "co-investigator") }
 
   before :each do
     add_visits
@@ -38,13 +37,13 @@ describe "admin portal notifications", :js => true do
   it "should allow user to create new message" do
     find("li.new_notification[data-identity_id='#{sender.id}']").click
     wait_for_javascript_to_finish
-    page.fill_in "message_subject", :with => "Test Subject"
-    page.fill_in "message_body", :with => "Test Body"
-    within "div.ui-dialog-buttonpane", :visible => true do
+    page.fill_in "message_subject", with: "Test Subject"
+    page.fill_in "message_body", with: "Test Body"
+    within "div.ui-dialog-buttonpane", visible: true do
       click_button("Send")
     end
     wait_for_javascript_to_finish
-    Message.find_by_subject("Test Subject").body.should eq("Test Body")
+    expect(Message.find_by_subject("Test Subject").body).to eq("Test Body")
   end
 
   describe "viewing and replying" do
@@ -52,20 +51,19 @@ describe "admin portal notifications", :js => true do
       find("a.notifications-tab").click
       find("td.subject_column").click
       wait_for_javascript_to_finish
-      find("div.shown-message-body").should be_visible
+      expect(find("div.shown-message-body")).to be_visible
     end
 
     it "when replying to a message" do
       find("a.notifications-tab").click
       find("td.subject_column").click
       wait_for_javascript_to_finish
-      page.fill_in 'message[body]', :with => "Test Reply II, Reply to Reply"
-      within "div.ui-dialog-buttonpane", :visible => true do
+      page.fill_in 'message[body]', with: "Test Reply II, Reply to Reply"
+      within "div.ui-dialog-buttonpane", visible: true do
         click_button("Submit")
       end
       wait_for_javascript_to_finish
-      find("td.body_column").should have_exact_text("Test Reply II, Reply to Reply")
+      expect(find("td.body_column")).to have_exact_text("Test Reply II, Reply to Reply")
     end
   end
-
 end

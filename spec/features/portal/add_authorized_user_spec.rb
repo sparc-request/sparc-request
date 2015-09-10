@@ -18,9 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe 'adding an authorized user', :js => true do
+RSpec.describe 'adding an authorized user', js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
@@ -28,79 +28,75 @@ describe 'adding an authorized user', :js => true do
 
   before :each do
     visit portal_root_path
-    page.find(".associated-user-button", :visible => true).click()
-    wait_for_javascript_to_finish
+    page.find(".associated-user-button", visible: true).click()
   end
 
   describe 'clicking the add button' do
     it "should show add authrozied user dialog box" do
-      page.should have_text 'Add User'
+      expect(page).to have_text 'Add User'
     end
   end
 
   describe 'searching for an user' do
     before :each do
-      fill_in 'user_search', :with => 'bjk7'
-      wait_for_javascript_to_finish
-      page.find('a', :text => "Brian Kelsey", :visible => true).click()
-      wait_for_javascript_to_finish
+      fill_autocomplete('user_search', with: 'bjk7')
+      page.find('a', text: "Brian Kelsey", visible: true).click()
     end
 
     it 'should display the users information' do
-      find('#full_name').should have_value 'Brian Kelsey'
+      expect(page).to have_css('#full_name')
+      expect(find('#full_name')).to have_value 'Brian Kelsey'
     end
 
     describe 'setting the proper rights' do
 
       it 'should default to the highest rights for pi' do
-        select "PD/PI", :from => 'project_role_role'
-        find("#project_role_project_rights_approve").should be_checked()
+        select "PD/PI", from: 'project_role_role'
+        expect(find("#project_role_project_rights_approve")).to be_checked()
       end
 
       it 'should default to the highest rights for billing/business manager' do
-        select "Billing/Business Manager", :from => 'project_role_role'
-        find("#project_role_project_rights_approve").should be_checked()
+        select "Billing/Business Manager", from: 'project_role_role'
+        expect(find("#project_role_project_rights_approve")).to be_checked()
       end
     end
 
     describe 'submitting the user' do
       it 'should add the user to the study/project' do
-        select "Co-Investigator", :from => 'project_role_role'
+        select "Co-Investigator", from: 'project_role_role'
         choose 'project_role_project_rights_request'
         click_button("add_authorized_user_submit_button")
 
         within('.protocol-information-table') do
-          page.should have_text('Brian Kelsey')
-          page.should have_text('Co-Investigator')
-          page.should have_text('Request/Approve Services')
+          expect(page).to have_text('Brian Kelsey')
+          expect(page).to have_text('Co-Investigator')
+          expect(page).to have_text('Request/Approve Services')
         end
       end
 
       it 'should throw errors when missing a role or project rights' do
+        expect(find('#full_name')).to have_value 'Brian Kelsey'
         click_button("add_authorized_user_submit_button")
-        page.should have_text "Role can't be blank"
-        page.should have_text "Project_rights can't be blank"
+        expect(page).to have_text "Role can't be blank"
+        expect(page).to have_text "Project_rights can't be blank"
       end
 
       it 'should throw an error when adding the same person twice' do
-        select "Co-Investigator", :from => 'project_role_role'
-        choose 'project_role_project_rights_request'
-        click_button("add_authorized_user_submit_button")
-        wait_for_javascript_to_finish
-
-        page.find(".associated-user-button", :visible => true).click()
-        wait_for_javascript_to_finish
-
-        fill_in 'user_search', :with => 'bjk7'
-        wait_for_javascript_to_finish
-        page.find('a', :text => "Brian Kelsey", :visible => true).click()
-        wait_for_javascript_to_finish
-
-        select "Co-Investigator", :from => 'project_role_role'
+        select "Co-Investigator", from: 'project_role_role'
         choose 'project_role_project_rights_request'
         click_button("add_authorized_user_submit_button")
 
-        page.should have_text "This user is already associated with this protocol."
+        expect(page).to have_css('.associated-user-button')
+        page.find(".associated-user-button", visible: true).click()
+
+        fill_in 'user_search', with: 'bjk7'
+        page.find('a', text: "Brian Kelsey", visible: true).click()
+
+        select "Co-Investigator", from: 'project_role_role'
+        choose 'project_role_project_rights_request'
+        click_button("add_authorized_user_submit_button")
+
+        expect(page).to have_text "This user is already associated with this protocol."
       end
     end
   end

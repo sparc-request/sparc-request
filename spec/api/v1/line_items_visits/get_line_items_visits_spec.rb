@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
@@ -8,7 +8,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
       LineItemsVisit.skip_callback(:save, :after, :set_arm_edited_flag_on_subjects)
 
       5.times do
-        line_items_visit = FactoryGirl.build(:line_items_visit)
+        line_items_visit = build(:line_items_visit)
         line_items_visit.save validate: false
       end
     end
@@ -57,7 +57,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       it 'should respond with an array of line_items_visits and their attributes' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryGirl.build(:line_items_visit).attributes.
+        expected_attributes = build(:line_items_visit).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
                                 push('callback_url', 'sparc_id').
@@ -73,7 +73,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       it 'should respond with an array of line_items_visits and their attributes and their shallow reflections' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryGirl.build(:line_items_visit).attributes.
+        expected_attributes = build(:line_items_visit).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
                                 push('callback_url', 'sparc_id', 'visits', 'line_item', 'arm').

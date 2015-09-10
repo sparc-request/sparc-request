@@ -1,4 +1,4 @@
-require "spec_helper"
+require 'rails_helper'
 
 RSpec.describe SubServiceRequest, type: :model do
 
@@ -9,7 +9,7 @@ RSpec.describe SubServiceRequest, type: :model do
     context "constants.yml mapping present" do
 
       it "should return the value from constants.yml" do
-        sub_service_request = FactoryGirl.create(:sub_service_request, status: "get_a_quote")
+        sub_service_request = create(:sub_service_request, status: "get_a_quote")
 
         expect(sub_service_request.formatted_status).to eq("Get a Quote")
       end
@@ -18,7 +18,7 @@ RSpec.describe SubServiceRequest, type: :model do
     context "constants.yml mapping not present" do
 
       it "should return a default status" do
-        sub_service_request = FactoryGirl.create(:sub_service_request, status: "bad_status")
+        sub_service_request = create(:sub_service_request, status: "bad_status")
 
         expect(sub_service_request.formatted_status).to eq("STATUS MAPPING NOT PRESENT")
       end

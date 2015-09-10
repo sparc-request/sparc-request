@@ -1,3 +1,4 @@
+# coding: utf-8
 # Copyright © 2011 MUSC Foundation for Research Development
 # All rights reserved.
 
@@ -19,7 +20,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # This file is used by Rack-based servers to start the application.
-
 require ::File.expand_path('../config/environment',  __FILE__)
 
 #require 'ruby-prof'
@@ -35,4 +35,3 @@ require ::File.expand_path('../config/environment',  __FILE__)
 #end
 
 run SparcRails::Application
-

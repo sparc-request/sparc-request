@@ -21,18 +21,21 @@
 SparcRails::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
-  # Will be default in Rails 4.0
-  config.threadsafe! unless defined?($rails_rake_task) && $rails_rake_task
-
   # Code is not reloaded between requests
   config.cache_classes = true
+
+  # Eager load code on boot. This eager loads most of Rails and
+  # your application in memory, allowing both threaded web servers
+  # and those relying on copy on write to perform better.
+  # Rake tasks automatically ignore this option for performance.
+  config.eager_load = true
 
   # Full error reports are disabled and caching is turned on
   config.consider_all_requests_local       = false
   config.action_controller.perform_caching = true
 
   # Disable Rails's static asset server (Apache or nginx will already do this)
-  config.serve_static_assets = false
+  config.serve_static_files = false
 
   # Compress JavaScripts and CSS
   config.assets.compress = true
@@ -42,6 +45,8 @@ SparcRails::Application.configure do
 
   # Generate digests for assets URLs
   config.assets.digest = true
+
+  config.eager_load 
 
   # Defaults to nil and saved in location specified by config.assets.prefix
   # config.assets.manifest = YOUR_PATH

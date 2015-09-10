@@ -18,9 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe Portal::ServiceRequestsController do
+RSpec.describe Portal::ServiceRequestsController do
 
   let_there_be_lane
   fake_login_for_each_test
@@ -31,7 +31,7 @@ describe Portal::ServiceRequestsController do
   before(:each) do
     session[:identity_id] = jug2
   end
-  
+
   describe 'GET show' do
     it 'should set instance variables' do
       session[:service_calendar_page] = 1
@@ -44,13 +44,13 @@ describe Portal::ServiceRequestsController do
 
       service_request.reload
 
-      assigns(:service_request).should eq service_request
+      expect(assigns(:service_request)).to eq service_request
 
       # Not using assigns() here since it calls with_indifferent_access
-      controller.instance_eval { @service_list }.should eq service_request.service_list
-      assigns(:protocol).should eq study
-      assigns(:pages).should eq({ arm1.id => 1, arm2.id => 1 })
-      assigns(:tab).should eq 'calendar'
+      expect(controller.instance_eval { @service_list }).to eq service_request.service_list
+      expect(assigns(:protocol)).to eq study
+      expect(assigns(:pages)).to eq({ arm1.id => 1, arm2.id => 1 })
+      expect(assigns(:tab)).to eq 'calendar'
     end
   end
 
@@ -68,10 +68,10 @@ describe Portal::ServiceRequestsController do
         visit_window_after: 10,
       }.with_indifferent_access
 
-      assigns(:sub_service_request).should eq sub_service_request
-      assigns(:subsidy).should eq subsidy
-      assigns(:candidate_per_patient_per_visit).should eq [ service2 ]
-      assigns(:service_request).should eq service_request
+      expect(assigns(:sub_service_request)).to eq sub_service_request
+      expect(assigns(:subsidy)).to eq subsidy
+      expect(assigns(:candidate_per_patient_per_visit)).to eq [ service2 ]
+      expect(assigns(:service_request)).to eq service_request
     end
 
     # TODO: test candidate_per_patient_per_visit
@@ -94,8 +94,8 @@ describe Portal::ServiceRequestsController do
         visit_window_after: 10,
       }.with_indifferent_access
 
-      LineItemsVisit.for(arm1, line_item).visits.count.should eq 0
-      LineItemsVisit.for(arm1, line_item2).visits.count.should eq 1
+      expect(LineItemsVisit.for(arm1, line_item).visits.count).to eq 0
+      expect(LineItemsVisit.for(arm1, line_item2).visits.count).to eq 1
     end
 
     # TODO: test visit_position
@@ -125,10 +125,10 @@ describe Portal::ServiceRequestsController do
         visit_position: 2,
       }.with_indifferent_access
 
-      assigns(:sub_service_request).should eq sub_service_request
-      assigns(:subsidy).should eq subsidy
-      assigns(:candidate_per_patient_per_visit).should eq [ service2 ]
-      assigns(:service_request).should eq service_request
+      expect(assigns(:sub_service_request)).to eq sub_service_request
+      expect(assigns(:subsidy)).to eq subsidy
+      expect(assigns(:candidate_per_patient_per_visit)).to eq [ service2 ]
+      expect(assigns(:service_request)).to eq service_request
     end
 
     it 'should remove the visit at the given position' do
@@ -147,8 +147,8 @@ describe Portal::ServiceRequestsController do
         visit_position: 2,
       }.with_indifferent_access
 
-      LineItemsVisit.for(arm1, line_item).visits.count.should eq(0)
-      LineItemsVisit.for(arm1, line_item2).visits.count.should eq(visit_count - 1)
+      expect(LineItemsVisit.for(arm1, line_item).visits.count).to eq(0)
+      expect(LineItemsVisit.for(arm1, line_item2).visits.count).to eq(visit_count - 1)
       # TODO: test that the right visit was removed
     end
 
@@ -165,4 +165,3 @@ describe Portal::ServiceRequestsController do
     # TODO
   end
 end
-

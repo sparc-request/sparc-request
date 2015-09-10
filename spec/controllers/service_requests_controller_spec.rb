@@ -1,3 +1,4 @@
+# coding: utf-8
 # Copyright © 2011 MUSC Foundation for Research Development
 # All rights reserved.
 
@@ -18,22 +19,22 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 require 'timecop'
 
 def add_visits_to_arm_line_item(arm, line_item, n=arm.visit_count)
   line_items_visit = LineItemsVisit.for(arm, line_item)
 
   n.times do |index|
-    FactoryGirl.create(:visit_group, arm_id: arm.id, day: index )
+    create(:visit_group, arm_id: arm.id, day: index )
   end
 
   n.times do |index|
-     FactoryGirl.create(:visit, quantity: 0, line_items_visit_id: line_items_visit.id, visit_group_id: arm.visit_groups[index].id)
+     create(:visit, quantity: 0, line_items_visit_id: line_items_visit.id, visit_group_id: arm.visit_groups[index].id)
   end
 end
 
-describe ServiceRequestsController do
+RSpec.describe ServiceRequestsController do
   stub_controller
 
   let_there_be_lane
@@ -46,29 +47,29 @@ describe ServiceRequestsController do
     add_visits
   end
 
-  let!(:core2) { FactoryGirl.create(:core, parent_id: program.id) }
+  let!(:core2) { create(:core, parent_id: program.id) }
 
   describe 'GET show' do
     it 'should set protocol and service_list' do
       session[:service_request_id] = service_request.id
-      get :show, :id => service_request.id
-      assigns(:protocol).should eq service_request.protocol
-      assigns(:service_list).should eq service_request.service_list.with_indifferent_access
+      get :show, id: service_request.id
+      expect(assigns(:protocol)).to eq service_request.protocol
+      expect(assigns(:service_list)).to eq service_request.service_list.with_indifferent_access
     end
   end
 
   describe 'GET catalog' do
     it 'should set institutions to all institutions if there is no sub service request id' do
       session[:service_request_id] = service_request.id
-      get :catalog, :id => service_request.id
-      assigns(:institutions).should eq Institution.all.sort_by { |i| i.order.to_i }
+      get :catalog, id: service_request.id
+      expect(assigns(:institutions)).to eq Institution.all.sort_by { |i| i.order.to_i }
     end
 
     it "should set instutitions to the sub service request's institution if there is a sub service request id" do
       session[:service_request_id] = service_request.id
       session[:sub_service_request_id] = sub_service_request.id
-      get :catalog, :id => service_request.id
-      assigns(:institutions).should eq [ institution ]
+      get :catalog, id: service_request.id
+      expect(assigns(:institutions)).to eq [ institution ]
     end
   end
 
@@ -81,9 +82,9 @@ describe ServiceRequestsController do
         session[:service_request_id] = service_request.id
         session[:sub_service_request_id] = sub_service_request.id
         session[:saved_protocol_id] = study.id
-        get :protocol, :id => service_request.id
-        assigns(:service_request).protocol.should eq study
-        session[:saved_protocol_id].should eq nil
+        get :protocol, id: service_request.id
+        expect(assigns(:service_request).protocol).to eq study
+        expect(session[:saved_protocol_id]).to eq nil
       end
 
       it "should set studies to the service request's studies if there is a sub service request" do
@@ -104,9 +105,9 @@ describe ServiceRequestsController do
         session[:service_request_id] = service_request.id
         session[:sub_service_request_id] = sub_service_request.id
         session[:saved_protocol_id] = project.id
-        get :protocol, :id => service_request.id
-        assigns(:service_request).protocol.should eq project
-        session[:saved_protocol_id].should eq nil
+        get :protocol, id: service_request.id
+        expect(assigns(:service_request).protocol).to eq project
+        expect(session[:saved_protocol_id]).to eq nil
       end
 
       it "should set projects to the service request's projects if there is a sub service request" do
@@ -127,30 +128,30 @@ describe ServiceRequestsController do
       arm1.update_attribute(:visit_count, 200)
 
       session[:service_request_id] = service_request.id
-      get :review, { :id => service_request.id, :pages => { arm1.id.to_s => 42 } }.with_indifferent_access
-      session[:service_calendar_pages].should eq({arm1.id.to_s => '42'})
+      get :review, { id: service_request.id, pages: { arm1.id.to_s => 42 } }.with_indifferent_access
+      expect(session[:service_calendar_pages]).to eq({arm1.id.to_s => '42'})
 
-      assigns(:pages).should eq({arm1.id => 1, arm2.id => 1})
+      expect(assigns(:pages)).to eq({arm1.id => 1, arm2.id => 1})
 
       # TODO: check that set_visit_page is called?
     end
 
     it "should set service_list to the service request's service list" do
       session[:service_request_id] = service_request.id
-      get :review, :id => service_request.id
-      assigns(:service_request).service_list.should eq service_request.service_list
+      get :review, id: service_request.id
+      expect(assigns(:service_request).service_list).to eq service_request.service_list
     end
 
     it "should set protocol to the service request's protocol" do
       session[:service_request_id] = service_request.id
-      get :review, :id => service_request.id
-      assigns(:service_request).protocol.should eq service_request.protocol
+      get :review, id: service_request.id
+      expect(assigns(:service_request).protocol).to eq service_request.protocol
     end
 
     it "should set tab to full calendar" do
       session[:service_request_id] = service_request.id
-      get :review, :id => service_request.id
-      assigns(:tab).should eq 'calendar'
+      get :review, id: service_request.id
+      expect(assigns(:tab)).to eq 'calendar'
     end
   end
 
@@ -162,8 +163,8 @@ describe ServiceRequestsController do
       it "should set the service request's status to submitted" do
         session[:identity_id] = jug2.id
         session[:service_request_id] = service_request.id
-        get :confirmation, :id => service_request.id
-        assigns(:service_request).status.should eq 'submitted'
+        get :confirmation, id: service_request.id
+        expect(assigns(:service_request).status).to eq 'submitted'
       end
 
       it "should set the service request's submitted_at to Time.now" do
@@ -172,9 +173,9 @@ describe ServiceRequestsController do
         Timecop.freeze(time) do
           service_request.update_attribute(:submitted_at, nil)
           session[:service_request_id] = service_request.id
-          get :confirmation, :id => service_request.id
+          get :confirmation, id: service_request.id
           service_request.reload
-          service_request.submitted_at.should eq Time.now
+          expect(service_request.submitted_at).to eq Time.now
         end
       end
 
@@ -182,14 +183,14 @@ describe ServiceRequestsController do
         session[:identity_id] = jug2.id
         service_request.protocol.update_attribute(:next_ssr_id, 42)
         service_request.sub_service_requests.each { |ssr| ssr.destroy }
-        ssr = FactoryGirl.create(
+        ssr = create(
             :sub_service_request,
             service_request_id: service_request.id,
             organization_id: core.id)
         session[:service_request_id] = service_request.id
-        get :confirmation, :id => service_request.id
+        get :confirmation, id: service_request.id
         service_request.protocol.reload
-        service_request.protocol.next_ssr_id.should eq 43
+        expect(service_request.protocol.next_ssr_id).to eq 43
       end
 
       it 'should should set status and ssr_id on all the sub service request' do
@@ -197,28 +198,28 @@ describe ServiceRequestsController do
         service_request.protocol.update_attribute(:next_ssr_id, 42)
         service_request.sub_service_requests.each { |ssr| ssr.destroy }
 
-        ssr1 = FactoryGirl.create(
+        ssr1 = create(
             :sub_service_request,
             service_request_id: service_request.id,
             ssr_id: nil,
             organization_id: provider.id)
-        ssr2 = FactoryGirl.create(
+        ssr2 = create(
             :sub_service_request,
             service_request_id: service_request.id,
             ssr_id: nil,
             organization_id: core.id)
 
         session[:service_request_id] = service_request.id
-        get :confirmation, :id => service_request.id
+        get :confirmation, id: service_request.id
 
         ssr1.reload
         ssr2.reload
 
-        ssr1.status.should eq 'submitted'
-        ssr2.status.should eq 'submitted'
+        expect(ssr1.status).to eq 'submitted'
+        expect(ssr2.status).to eq 'submitted'
 
-        ssr1.ssr_id.should eq '0042'
-        ssr2.ssr_id.should eq '0043'
+        expect(ssr1.ssr_id).to eq '0042'
+        expect(ssr2.ssr_id).to eq '0043'
       end
 
       it 'should set ssr_id correctly when next_ssr_id > 9999' do
@@ -226,17 +227,17 @@ describe ServiceRequestsController do
         service_request.protocol.update_attribute(:next_ssr_id, 10042)
         service_request.sub_service_requests.each { |ssr| ssr.destroy }
 
-        ssr1 = FactoryGirl.create(
+        ssr1 = create(
             :sub_service_request,
             service_request_id: service_request.id,
             ssr_id: nil,
             organization_id: core.id)
 
         session[:service_request_id] = service_request.id
-        get :confirmation, :id => service_request.id
+        get :confirmation, id: service_request.id
 
         ssr1.reload
-        ssr1.ssr_id.should eq '10042'
+        expect(ssr1.ssr_id).to eq '10042'
       end
 
       it 'should send an email if services are set to send to epic' do
@@ -249,18 +250,18 @@ describe ServiceRequestsController do
         service.update_attributes(send_to_epic: false)
         service2.update_attributes(send_to_epic: true)
         protocol = service_request.protocol
-        protocol.project_roles.first.update_attributes(epic_access: true)
-
+        protocol.project_roles.first.update_attribute(:epic_access, true)
+        protocol.update_attribute(:selected_for_epic, true)
         deliverer = double()
-        deliverer.should_receive(:deliver)
-        Notifier.stub!(:notify_for_epic_user_approval) { |sr|
-          sr.should eq(protocol)
+        expect(deliverer).to receive(:deliver)
+        allow(Notifier).to receive(:notify_for_epic_user_approval) { |sr|
+          expect(sr).to eq(protocol)
           deliverer
         }
 
         get :confirmation, {
-          :id => service_request.id,
-          :format => :js
+          id: service_request.id,
+          format: :js
         }
       end
 
@@ -272,15 +273,15 @@ describe ServiceRequestsController do
         service2.update_attributes(send_to_epic: false)
 
         deliverer = double()
-        deliverer.should_not_receive(:deliver)
-        Notifier.stub!(:notify_for_epic_user_approval) { |sr|
-          sr.should eq(service_request)
+        expect(deliverer).not_to receive(:deliver)
+        allow(Notifier).to receive(:notify_for_epic_user_approval) do |sr|
+          expect(sr).to eq(service_request)
           deliverer
-        }
+        end
 
         get :confirmation, {
-          :id => service_request.id,
-          :format => :js
+          id: service_request.id,
+          format: :js
         }
       end
     end
@@ -293,8 +294,8 @@ describe ServiceRequestsController do
 
       it "should set the service request's status to submitted" do
         session[:service_request_id] = service_request.id
-        get :save_and_exit, :id => service_request.id
-        assigns(:service_request).status.should eq 'draft'
+        get :save_and_exit, id: service_request.id
+        expect(assigns(:service_request).status).to eq 'draft'
       end
 
       it "should NOT set the service request's submitted_at to Time.now" do
@@ -302,59 +303,59 @@ describe ServiceRequestsController do
         Timecop.freeze(time) do
           service_request.update_attribute(:submitted_at, nil)
           session[:service_request_id] = service_request.id
-          get :save_and_exit, :id => service_request.id
+          get :save_and_exit, id: service_request.id
           service_request.reload
-          service_request.submitted_at.should eq nil
+          expect(service_request.submitted_at).to eq nil
         end
       end
 
       it 'should increment next_ssr_id' do
         service_request.protocol.update_attribute(:next_ssr_id, 42)
         service_request.sub_service_requests.each { |ssr| ssr.destroy }
-        ssr = FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id)
+        ssr = create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id)
         session[:service_request_id] = service_request.id
-        get :save_and_exit, :id => service_request.id
+        get :save_and_exit, id: service_request.id
         service_request.protocol.reload
-        service_request.protocol.next_ssr_id.should eq 43
+        expect(service_request.protocol.next_ssr_id).to eq 43
       end
 
       it 'should should set status and ssr_id on all the sub service request' do
         service_request.protocol.update_attribute(:next_ssr_id, 42)
 
         service_request.sub_service_requests.each { |ssr| ssr.destroy }
-        ssr1 = FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, ssr_id: nil, organization_id: core.id)
-        ssr2 = FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, ssr_id: nil, organization_id: core.id)
+        ssr1 = create(:sub_service_request, service_request_id: service_request.id, ssr_id: nil, organization_id: core.id)
+        ssr2 = create(:sub_service_request, service_request_id: service_request.id, ssr_id: nil, organization_id: core.id)
 
         session[:service_request_id] = service_request.id
-        get :save_and_exit, :id => service_request.id
+        get :save_and_exit, id: service_request.id
 
         ssr1.reload
         ssr2.reload
 
-        ssr1.status.should eq 'draft'
-        ssr2.status.should eq 'draft'
+        expect(ssr1.status).to eq 'draft'
+        expect(ssr2.status).to eq 'draft'
 
-        ssr1.ssr_id.should eq '0042'
-        ssr2.ssr_id.should eq '0043'
+        expect(ssr1.ssr_id).to eq '0042'
+        expect(ssr2.ssr_id).to eq '0043'
       end
 
       it 'should set ssr_id correctly when next_ssr_id > 9999' do
         service_request.protocol.update_attribute(:next_ssr_id, 10042)
 
         service_request.sub_service_requests.each { |ssr| ssr.destroy }
-        ssr1 = FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, ssr_id: nil, organization_id: core.id)
+        ssr1 = create(:sub_service_request, service_request_id: service_request.id, ssr_id: nil, organization_id: core.id)
 
         session[:service_request_id] = service_request.id
-        get :save_and_exit, :id => service_request.id
+        get :save_and_exit, id: service_request.id
 
         ssr1.reload
-        ssr1.ssr_id.should eq '10042'
+        expect(ssr1.ssr_id).to eq '10042'
       end
 
       it 'should redirect the user to the user portal link' do
         session[:service_request_id] = service_request.id
-        get :save_and_exit, :id => service_request.id
-        response.should redirect_to(USER_PORTAL_LINK)
+        get :save_and_exit, id: service_request.id
+        expect(response).to redirect_to(USER_PORTAL_LINK)
       end
     end
   end
@@ -366,18 +367,18 @@ describe ServiceRequestsController do
     describe 'GET service_details' do
       it 'should do nothing?' do
         session[:service_request_id] = service_request.id
-        get :service_details, :id => service_request.id
+        get :service_details, id: service_request.id
       end
     end
 
     let!(:service) {
-      service = FactoryGirl.create(:service, pricing_map_count: 1)
+      service = create(:service, pricing_map_count: 1)
       service.pricing_maps[0].update_attributes(display_date: Date.today)
       service
     }
 
     let!(:one_time_fee_service) {
-      service = FactoryGirl.create(:service, pricing_map_count: 1, one_time_fee: true)
+      service = create(:service, pricing_map_count: 1, one_time_fee: true)
       service.pricing_maps[0].update_attributes(display_date: Date.today)
       service
     }
@@ -385,15 +386,15 @@ describe ServiceRequestsController do
     let!(:pricing_map) { service.pricing_maps[0] }
     let!(:one_time_fee_pricing_map) { one_time_fee_service.pricing_maps[0] }
 
-    let!(:line_item) { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id) }
-    let!(:one_time_fee_line_item) { FactoryGirl.create(:line_item, service_id: service.id, service_request_id: service_request.id) }
+    let!(:line_item) { create(:line_item, service_id: service.id, service_request_id: service_request.id) }
+    let!(:one_time_fee_line_item) { create(:line_item, service_id: service.id, service_request_id: service_request.id) }
 
     it "should set the page if page is passed in" do
       arm1.update_attribute(:visit_count, 500)
 
       session[:service_request_id] = service_request.id
-      get :service_calendar, { :id => service_request.id, :pages => { arm1.id.to_s => 42 } }.with_indifferent_access
-      session[:service_calendar_pages].should eq({arm1.id.to_s => '42'})
+      get :service_calendar, { id: service_request.id, pages: { arm1.id.to_s => 42 } }.with_indifferent_access
+      expect(session[:service_calendar_pages]).to eq({arm1.id.to_s => '42'})
     end
 
     it 'should set subject count on the per patient per visit line items if it is not set' do
@@ -403,10 +404,10 @@ describe ServiceRequestsController do
       liv.update_attribute(:subject_count, nil)
 
       session[:service_request_id] = service_request.id
-      get :service_calendar, { :id => service_request.id, :pages => { arm1.id => 42 } }.with_indifferent_access
+      get :service_calendar, { id: service_request.id, pages: { arm1.id => 42 } }.with_indifferent_access
 
       liv.reload
-      liv.subject_count.should eq 42
+      expect(liv.subject_count).to eq 42
     end
 
     it 'should set subject count on the per patient per visit line items if it is set and is higher than the visit grouping subject count' do
@@ -416,10 +417,10 @@ describe ServiceRequestsController do
       liv.update_attribute(:subject_count, 500)
 
       session[:service_request_id] = service_request.id
-      get :service_calendar, { :id => service_request.id, :pages => { arm1.id => 42 } }.with_indifferent_access
+      get :service_calendar, { id: service_request.id, pages: { arm1.id => 42 } }.with_indifferent_access
 
       liv.reload
-      liv.subject_count.should eq 42
+      expect(liv.subject_count).to eq 42
     end
 
     it 'should NOT set subject count on the per patient per visit line items if it is set and is lower than the visit grouping subject count' do
@@ -429,10 +430,10 @@ describe ServiceRequestsController do
       liv.update_attribute(:subject_count, 10)
 
       session[:service_request_id] = service_request.id
-      get :service_calendar, { :id => service_request.id, :pages => { arm1.id => 42 } }.with_indifferent_access
+      get :service_calendar, { id: service_request.id, pages: { arm1.id => 42 } }.with_indifferent_access
 
       liv.reload
-      liv.subject_count.should eq 10
+      expect(liv.subject_count).to eq 10
     end
 
     it 'should delete extra visits on per patient per visit line items' do
@@ -443,10 +444,10 @@ describe ServiceRequestsController do
       add_visits_to_arm_line_item(arm1, line_item, 20)
 
       session[:service_request_id] = service_request.id
-      get :service_calendar, { :id => service_request.id, :pages => { arm1.id => 42 } }.with_indifferent_access
+      get :service_calendar, { id: service_request.id, pages: { arm1.id => 42 } }.with_indifferent_access
 
       liv.reload
-      liv.visits.count.should eq 10
+      expect(liv.visits.count).to eq 10
     end
 
     it 'should create visits if too few on per patient per visit line items' do
@@ -456,69 +457,68 @@ describe ServiceRequestsController do
       add_visits_to_arm_line_item(arm1, line_item, 0)
 
       session[:service_request_id] = service_request.id
-      get :service_calendar, { :id => service_request.id, :pages => { arm1.id => 42 } }.with_indifferent_access
+      get :service_calendar, { id: service_request.id, pages: { arm1.id => 42 } }.with_indifferent_access
 
       liv.reload
-      liv.visits.count.should eq 10
+      expect(liv.visits.count).to eq 10
     end
   end
 
   describe 'GET document_management' do
-    let!(:service1) { service = FactoryGirl.create(:service) }
-    let!(:service2) { service = FactoryGirl.create(:service) }
+    let!(:service1) { service = create(:service) }
+    let!(:service2) { service = create(:service) }
 
     before(:each) do
       service_list = [ service1, service2 ]
 
-      controller.stub!(:initialize_service_request) do
+      allow(controller).to receive(:initialize_service_request) do
         controller.instance_eval do
           @service_request = ServiceRequest.find_by_id(session[:service_request_id])
           @sub_service_request = SubServiceRequest.find_by_id(session[:sub_service_request_id])
-
-          @service_request.stub!(:service_list) { service_list }
         end
+        allow(controller.instance_variable_get(:@service_request)).to receive(:service_list) { service_list }
       end
     end
 
     it "should set the service list to the service request's service list" do
       session[:service_request_id] = service_request.id
-      get :document_management, :id => service_request.id
+      get :document_management, id: service_request.id
 
-      assigns(:service_list).should eq [ service1, service2 ]
+      expect(assigns(:service_list)).to eq [ service1, service2 ]
     end
   end
 
   describe 'POST ask_a_question' do
     it 'should call ask_a_question and then deliver' do
       deliverer = double()
-      deliverer.should_receive(:deliver)
-      Notifier.stub!(:ask_a_question) { |quick_question|
-        quick_question.to.should eq DEFAULT_MAIL_TO
-        quick_question.from.should eq 'no-reply@musc.edu'
-        quick_question.body.should eq 'No question asked'
+      expect(deliverer).to receive(:deliver)
+      allow(Notifier).to receive(:ask_a_question) { |quick_question|
+        expect(quick_question.to).to eq DEFAULT_MAIL_TO
+        expect(quick_question.from).to eq 'no-reply@musc.edu'
+        expect(quick_question.body).to eq 'No question asked'
         deliverer
       }
-      get :ask_a_question, { :quick_question => { :email => ''}, :quick_question => { :body => ''}, :id => service_request.id, :format => :js }
+      get :ask_a_question, { quick_question: { email: ''}, quick_question: { body: ''}, id: service_request.id, format: :js }
     end
 
     it 'should use question_email if passed in' do
       deliverer = double()
-      deliverer.should_receive(:deliver)
-      Notifier.stub!(:ask_a_question) { |quick_question|
-        quick_question.from.should eq 'no-reply@musc.edu'
+      expect(deliverer).to receive(:deliver)
+      allow(Notifier).to receive(:ask_a_question) { |quick_question|
+        expect(quick_question.from).to eq 'no-reply@musc.edu'
         deliverer
       }
-      get :ask_a_question, { :id => service_request.id, :quick_question => { :email => 'no-reply@musc.edu' }, :quick_question => { :body => '' }, :format => :js }
+      get :ask_a_question, { id: service_request.id, quick_question: { email: 'no-reply@musc.edu' }, quick_question: { body: '' }, format: :js }
     end
 
     it 'should use question_body if passed in' do
       deliverer = double()
-      deliverer.should_receive(:deliver)
-      Notifier.stub!(:ask_a_question) { |quick_question|
-        quick_question.body.should eq 'is this thing on?'
+      expect(deliverer).to receive(:deliver)
+      allow(Notifier).to receive(:ask_a_question) { |quick_question|
+        expect(quick_question.body).to eq 'is this thing on?'
         deliverer
       }
-      get :ask_a_question, { :id => service_request.id, :quick_question => { :email => '' }, :quick_question => { :body => 'is this thing on?' }, :format => :js }
+      get :ask_a_question, { id: service_request.id, quick_question: { email: '' }, quick_question: { body: 'is this thing on?' }, format: :js }
     end
   end
 
@@ -530,26 +530,26 @@ describe ServiceRequestsController do
       arm1.update_attribute(:visit_count, 500)
 
       session[:service_request_id] = service_request.id
-      get :refresh_service_calendar, { :id => service_request.id, :arm_id => arm1.id, :pages => { arm1.id.to_s => 42 }, :format => :js }.with_indifferent_access
-      session[:service_calendar_pages].should eq({arm1.id.to_s => 42})
-    
+      get :refresh_service_calendar, { id: service_request.id, arm_id: arm1.id, pages: { arm1.id.to_s => 42 }, format: :js }.with_indifferent_access
+      expect(session[:service_calendar_pages]).to eq({arm1.id.to_s => 42})
+
       # TODO: sometimes this is 1 and sometimes it is 42.  I don't know
       # why.
-      assigns(:pages).should eq({arm1.id => 42, arm2.id => 1})
-    
+      expect(assigns(:pages)).to eq({arm1.id => 42, arm2.id => 1})
+
       # TODO: check that set_visit_page is called?
     end
-    
+
     it 'should set tab to full calendar' do
       session[:service_request_id] = service_request.id
-      get :refresh_service_calendar, :id => service_request.id, :arm_id => arm1.id, :format => :js
-      assigns(:tab).should eq 'calendar'
+      get :refresh_service_calendar, id: service_request.id, arm_id: arm1.id, format: :js
+      expect(assigns(:tab)).to eq 'calendar'
     end
   end
 
   describe 'POST add_service' do
     let!(:new_service) {
-      service = FactoryGirl.create(
+      service = create(
           :service,
           pricing_map_count: 1,
           one_time_fee: true,
@@ -561,7 +561,7 @@ describe ServiceRequestsController do
     }
 
     let!(:new_service2) {
-      service = FactoryGirl.create(
+      service = create(
           :service,
           pricing_map_count: 1,
           one_time_fee: true,
@@ -573,7 +573,7 @@ describe ServiceRequestsController do
     }
 
     let!(:new_service3) {
-      service = FactoryGirl.create(
+      service = create(
           :service,
           pricing_map_count: 1,
           organization_id: core2.id)
@@ -582,7 +582,7 @@ describe ServiceRequestsController do
     }
 
     it 'should give an error if the service request already has a line item for the service' do
-      line_item = FactoryGirl.create(
+      line_item = create(
           :line_item,
           service_id: new_service.id,
           service_request_id: service_request.id)
@@ -592,7 +592,7 @@ describe ServiceRequestsController do
         :service_id  => new_service.id,
         :format      => :js
       }.with_indifferent_access
-      response.body.should eq 'Service exists in line items'
+      expect(response.body).to eq 'Service exists in line items'
     end
 
     it 'should create a line item for the service' do
@@ -606,40 +606,40 @@ describe ServiceRequestsController do
       }.with_indifferent_access
 
       service_request.reload
-      service_request.line_items.count.should eq orig_count + 1
+      expect(service_request.line_items.count).to eq orig_count + 1
       line_item = service_request.line_items.find_by_service_id(new_service.id)
-      line_item.service.should eq new_service
-      line_item.optional.should eq true
-      line_item.quantity.should eq 42
+      expect(line_item.service).to eq new_service
+      expect(line_item.optional).to eq true
+      expect(line_item.quantity).to eq 42
     end
 
     it 'should create a line item for a required service' do
       orig_count = service_request.line_items.count
 
-      FactoryGirl.create(
+      create(
           :service_relation,
           service_id: new_service.id,
           related_service_id: new_service2.id,
           optional: false)
 
       session[:service_request_id] = service_request.id
-      post :add_service, { :id => service_request.id, :service_id => new_service.id, :format => :js }.with_indifferent_access
+      post :add_service, { id: service_request.id, service_id: new_service.id, format: :js }.with_indifferent_access
 
       # there was one service and one line item already, then we added
       # one
 
       service_request.reload
-      service_request.line_items.count.should eq orig_count + 2
+      expect(service_request.line_items.count).to eq orig_count + 2
       line_item = service_request.line_items.find_by_service_id(new_service2.id)
-      line_item.service.should eq new_service2
-      line_item.optional.should eq false
-      line_item.quantity.should eq 54
+      expect(line_item.service).to eq new_service2
+      expect(line_item.optional).to eq false
+      expect(line_item.quantity).to eq 54
     end
 
     it 'should create a line item for an optional service' do
       orig_count = service_request.line_items.count
 
-      FactoryGirl.create(
+      create(
           :service_relation,
           service_id: new_service.id,
           related_service_id: new_service2.id,
@@ -653,17 +653,17 @@ describe ServiceRequestsController do
       }.with_indifferent_access
 
       service_request.reload
-      service_request.line_items.count.should eq orig_count + 2
+      expect(service_request.line_items.count).to eq orig_count + 2
 
       line_item = service_request.line_items.find_by_service_id(new_service.id)
-      line_item.service.should eq new_service
-      line_item.optional.should eq true
-      line_item.quantity.should eq 42
+      expect(line_item.service).to eq new_service
+      expect(line_item.optional).to eq true
+      expect(line_item.quantity).to eq 42
 
       line_item = service_request.line_items.find_by_service_id(new_service2.id)
-      line_item.service.should eq new_service2
-      line_item.optional.should eq true
-      line_item.quantity.should eq 54
+      expect(line_item.service).to eq new_service2
+      expect(line_item.optional).to eq true
+      expect(line_item.quantity).to eq 54
     end
 
     it 'should create a sub service request for each organization in the service list' do
@@ -680,9 +680,9 @@ describe ServiceRequestsController do
       end
 
       service_request.reload
-      service_request.sub_service_requests.count.should eq orig_count + 2
-      service_request.sub_service_requests[-2].organization.should eq core
-      service_request.sub_service_requests[-1].organization.should eq core2
+      expect(service_request.sub_service_requests.count).to eq orig_count + 2
+      expect(service_request.sub_service_requests[-2].organization).to eq core
+      expect(service_request.sub_service_requests[-1].organization).to eq core2
     end
 
     it 'should update each of the line items with the appropriate ssr id' do
@@ -702,29 +702,29 @@ describe ServiceRequestsController do
       core2_ssr = service_request.sub_service_requests.find_by_organization_id(core2.id)
 
       service_request.reload
-      service_request.line_items.count.should eq(orig_count + 3)
-      service_request.line_items[-3].sub_service_request.should eq core_ssr
-      service_request.line_items[-2].sub_service_request.should eq core_ssr
-      service_request.line_items[-1].sub_service_request.should eq core2_ssr
+      expect(service_request.line_items.count).to eq(orig_count + 3)
+      expect(service_request.line_items[-3].sub_service_request).to eq core_ssr
+      expect(service_request.line_items[-2].sub_service_request).to eq core_ssr
+      expect(service_request.line_items[-1].sub_service_request).to eq core2_ssr
     end
 
     # TODO: test for adding an already added service
   end
 
   describe 'POST remove_service' do
-    let!(:service1) { service = FactoryGirl.create( :service, organization_id: core.id) }
-    let!(:service2) { service = FactoryGirl.create( :service, organization_id: core.id) }
-    let!(:service3) { service = FactoryGirl.create( :service, organization_id: core2.id) }
+    let!(:service1) { service = create( :service, organization_id: core.id) }
+    let!(:service2) { service = create( :service, organization_id: core.id) }
+    let!(:service3) { service = create( :service, organization_id: core2.id) }
 
-    let!(:line_item1) { FactoryGirl.create(:line_item, service_id: service1.id, service_request_id: service_request.id) }
-    let!(:line_item2) { FactoryGirl.create(:line_item, service_id: service2.id, service_request_id: service_request.id) }
-    let!(:line_item3) { FactoryGirl.create(:line_item, service_id: service3.id, service_request_id: service_request.id) }
+    let!(:line_item1) { create(:line_item, service_id: service1.id, service_request_id: service_request.id) }
+    let!(:line_item2) { create(:line_item, service_id: service2.id, service_request_id: service_request.id) }
+    let!(:line_item3) { create(:line_item, service_id: service3.id, service_request_id: service_request.id) }
 
-    let!(:ssr1) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
-    let!(:ssr2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
+    let!(:ssr1) { create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
+    let!(:ssr2) { create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
 
     it 'should delete any line items for the removed service' do
-      controller.request.stub referrer: 'http://example.com'
+      allow(controller.request).to receive(:referrer).and_return('http://example.com')
 
       line_item1 # create line item (service1, core)
       line_item2 # create line item (service2, core)
@@ -739,13 +739,13 @@ describe ServiceRequestsController do
       }.with_indifferent_access
 
       service_request.reload
-      service_request.line_items.should_not include(line_item1)
-      service_request.line_items.should include(line_item2)
-      service_request.line_items.should include(line_item3)
+      expect(service_request.line_items).not_to include(line_item1)
+      expect(service_request.line_items).to include(line_item2)
+      expect(service_request.line_items).to include(line_item3)
     end
 
     it 'should delete sub service requests for organizations that no longer have a service in the service request' do
-      controller.request.stub referrer: 'http://example.com'
+      allow(controller.request).to receive(:referrer).and_return('http://example.com')
 
       line_item1 # create line item (service1, core)
       line_item2 # create line item (service2, core)
@@ -764,8 +764,8 @@ describe ServiceRequestsController do
       }.with_indifferent_access
 
       service_request.reload
-      service_request.sub_service_requests.should include(ssr1)
-      service_request.sub_service_requests.should include(ssr2)
+      expect(service_request.sub_service_requests).to include(ssr1)
+      expect(service_request.sub_service_requests).to include(ssr2)
 
       post :remove_service, {
         :id            => service_request.id,
@@ -775,8 +775,8 @@ describe ServiceRequestsController do
       }.with_indifferent_access
 
       service_request.reload
-      service_request.sub_service_requests.should_not include(ssr1)
-      service_request.sub_service_requests.should include(ssr2)
+      expect(service_request.sub_service_requests).not_to include(ssr1)
+      expect(service_request.sub_service_requests).to include(ssr2)
 
       post :remove_service, {
         :id            => service_request.id,
@@ -786,12 +786,12 @@ describe ServiceRequestsController do
       }.with_indifferent_access
 
       service_request.reload
-      service_request.sub_service_requests.should_not include(ssr1)
-      service_request.sub_service_requests.should_not include(ssr2)
+      expect(service_request.sub_service_requests).not_to include(ssr1)
+      expect(service_request.sub_service_requests).not_to include(ssr2)
     end
 
     it 'should set the page' do
-      controller.request.stub referrer: 'http://example.com/foo/bar'
+      allow(controller.request).to receive(:referrer).and_return('http://example.com/foo/bar')
 
       line_item1 # create line item (service1, core)
       line_item2 # create line item (service2, core)
@@ -807,11 +807,11 @@ describe ServiceRequestsController do
 
       # TODO: why is @page set to a string in this method but set to an
       # integer elsewhere?
-      assigns(:page).should eq 'bar'
+      expect(assigns(:page)).to eq 'bar'
     end
 
     it 'should raise an exception if a service is removed twice' do
-      controller.request.stub referrer: 'http://example.com'
+      allow(controller.request).to receive(:referrer).and_return('http://example.com')
 
       line_item1 # create line item (service1, core)
       line_item2 # create line item (service2, core)
@@ -826,21 +826,21 @@ describe ServiceRequestsController do
         :format        => :js,
       }.with_indifferent_access
 
-      proc {
+      expect {
         post :remove_service, {
           :id            => service_request.id,
           :service_id    => service1.id,
           :line_item_id  => line_item1.id,
           :format        => :js,
         }.with_indifferent_access
-      }.should raise_error(ActiveRecord::RecordNotFound)
+      }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 
   describe 'POST delete_documents' do
     let!(:doc)  { Document.create(service_request_id: service_request.id) }
-    let!(:ssr1) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id)  }
-    let!(:ssr2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
+    let!(:ssr1) { create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id)  }
+    let!(:ssr2) { create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
 
     context('document methods') do
 
@@ -856,7 +856,7 @@ describe ServiceRequestsController do
           :document_id       => doc.id,
           :format            => :js,
         }.with_indifferent_access
-        assigns(:tr_id).should eq "#document_id_#{doc.id}"
+        expect(assigns(:tr_id)).to eq "#document_id_#{doc.id}"
       end
 
       it 'should destroy the document if there is no sub service request' do
@@ -882,16 +882,16 @@ describe ServiceRequestsController do
         }.with_indifferent_access
 
         doc.reload
-        doc.destroyed?.should eq false
-        doc.sub_service_requests.size.should eq 1
+        expect(doc.destroyed?).to eq false
+        expect(doc.sub_service_requests.size).to eq 1
       end
     end
   end
 
   describe 'POST edit_documents' do
     let!(:doc)  { Document.create(service_request_id: service_request.id) }
-    let!(:ssr1) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id)  }
-    let!(:ssr2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
+    let!(:ssr1) { create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id)  }
+    let!(:ssr2) { create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
 
     context('document methods') do
 
@@ -907,7 +907,7 @@ describe ServiceRequestsController do
           :document_id             => doc.id,
           :format                  => :js,
         }.with_indifferent_access
-        assigns(:document).should eq doc
+        expect(assigns(:document)).to eq doc
       end
 
       it 'should set service_list' do
@@ -917,15 +917,15 @@ describe ServiceRequestsController do
           :document_id             => doc.id,
           :format                  => :js,
         }.with_indifferent_access
-        assigns(:service_list).should eq service_request.service_list.with_indifferent_access
+        expect(assigns(:service_list)).to eq service_request.service_list.with_indifferent_access
       end
     end
   end
 
   describe 'POST new_document' do
     let!(:doc)  { Document.create(service_request_id: service_request.id) }
-    let!(:ssr1) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id)  }
-    let!(:ssr2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
+    let!(:ssr1) { create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id)  }
+    let!(:ssr2) { create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
 
     context('document methods') do
 
@@ -941,15 +941,15 @@ describe ServiceRequestsController do
           :document_id             => doc.id,
           :format                  => :js,
         }.with_indifferent_access
-        assigns(:service_list).should eq service_request.service_list.with_indifferent_access
+        expect(assigns(:service_list)).to eq service_request.service_list.with_indifferent_access
       end
     end
   end
 
   describe 'POST document_management navigate' do
     let!(:doc)  { Document.create(service_request_id: service_request.id) }
-    let!(:ssr1) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id)  }
-    let!(:ssr2) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
+    let!(:ssr1) { create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id)  }
+    let!(:ssr2) { create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
 
     before(:each) do
       @request.env['HTTP_REFERER'] = "/service_requests/#{service_request.id}/document_management"
@@ -960,29 +960,28 @@ describe ServiceRequestsController do
     end
 
     it 'should create a new document' do
-      tempDoc = fake_document_upload
-      service_request.documents.size.should eq(1)
+      expect(service_request.documents.size).to eq(1)
       post :navigate, {
         :location                     => 'document_management',
         :current_location             => 'document_management',
-        :process_ssr_organization_ids => [ssr1.organization_id.to_s, ssr2.organization_id.to_s],
+        process_ssr_organization_ids: [ssr1.organization_id.to_s, ssr2.organization_id.to_s],
         :doc_type                     => 'budget',
         :upload_clicked               => '1',
-        :document                     => tempDoc,
+        :document                     => file_for_upload,
         :action                       => 'document_management',
         :controller                   => 'service_requests',
         :id                           => service_request.id
       }.with_indifferent_access
-      service_request.documents.size.should eq(2)
+      expect(service_request.documents.size).to eq(2)
     end
 
     it 'should update an existing document' do
-      doc.sub_service_requests.size.should eq(2)
+      expect(doc.sub_service_requests.size).to eq(2)
       post :navigate, {
         :location                     => 'document_management',
         :current_location             => 'document_management',
         :document_id                  => doc.id.to_s,
-        :process_ssr_organization_ids => [ssr2.organization_id.to_s],
+        process_ssr_organization_ids: [ssr2.organization_id.to_s],
         :doc_type                     => 'budget',
         :upload_clicked               => '1',
         :action                       => 'document_management',
@@ -991,8 +990,8 @@ describe ServiceRequestsController do
       }.with_indifferent_access
       # access removed from ssr1 to document and doc_type changed to budget
       doc.reload
-      doc.sub_service_requests.should eq([ssr2])
-      doc.doc_type.should eq('budget')
+      expect(doc.sub_service_requests).to eq([ssr2])
+      expect(doc.doc_type).to eq('budget')
     end
   end
 
@@ -1001,14 +1000,14 @@ describe ServiceRequestsController do
       service_request.sub_service_requests.each { |ssr| ssr.destroy }
       service_request.reload
       session[:service_request_id] = service_request.id
-      get :service_subsidy, :id => service_request.id
-      assigns(:subsidies).should eq [ ]
+      get :service_subsidy, id: service_request.id
+      expect(assigns(:subsidies)).to eq [ ]
     end
 
     it 'should put the subsidy into subsidies if the ssr has a subsidy' do
       session[:service_request_id] = service_request.id
-      get :service_subsidy, :id => service_request.id
-      assigns(:subsidies).should eq [ subsidy ]
+      get :service_subsidy, id: service_request.id
+      expect(assigns(:subsidies)).to eq [ subsidy ]
     end
 
     it 'should create a new subsidy and put it into subsidies if the ssr does not have a subsidy and it is eligible for subsidy' do
@@ -1017,14 +1016,14 @@ describe ServiceRequestsController do
           max_percentage: 100)
 
       session[:service_request_id] = service_request.id
-      get :service_subsidy, :id => service_request.id
+      get :service_subsidy, id: service_request.id
 
-      assigns(:subsidies).map { |s| s.class}.should eq [ Subsidy ]
+      expect(assigns(:subsidies).map { |s| s.class}).to eq [ Subsidy ]
     end
 
     context 'with subsidy maps' do
-      let!(:core_subsidy_map)     { FactoryGirl.create(:subsidy_map, organization_id: core.id) }
-      let!(:provider_subsidy_map) { FactoryGirl.create(:subsidy_map, organization_id: provider.id) }
+      let!(:core_subsidy_map)     { create(:subsidy_map, organization_id: core.id) }
+      let!(:provider_subsidy_map) { create(:subsidy_map, organization_id: provider.id) }
       let!(:program_subsidy_map)  { subsidy_map }
 
       it 'should not create a new subsidy if the ssr does not have a subsidy and it not is eligible for subsidy' do
@@ -1048,18 +1047,18 @@ describe ServiceRequestsController do
 
         # make sure before we start the test that the ssr is not
         # eligible for subsidy
-        sub_service_request.eligible_for_subsidy?.should_not eq nil
+        expect(sub_service_request.eligible_for_subsidy?).not_to eq nil
 
         # call service_subsidy
         session[:service_request_id] = service_request.id
-        get :service_subsidy, :id => service_request.id
+        get :service_subsidy, id: service_request.id
 
         # Now the ssr should not have a subsidy
         sub_service_request.reload
         subsidy = sub_service_request.subsidy
-        subsidy.should eq nil
+        expect(subsidy).to eq nil
 
-        assigns(:subsidies).should eq [ ]
+        expect(assigns(:subsidies)).to eq [ ]
       end
     end
   end
@@ -1074,4 +1073,3 @@ describe ServiceRequestsController do
     # for.
   end
 end
-

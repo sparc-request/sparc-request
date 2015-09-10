@@ -1,3 +1,4 @@
+# coding: utf-8
 # Copyright © 2011 MUSC Foundation for Research Development
 # All rights reserved.
 
@@ -18,11 +19,11 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe CoverLetterSanitizer do
+RSpec.describe CoverLetterSanitizer do
   subject(:sanitizer){ CoverLetterSanitizer.new }
   it 'strips out <em> tags, but leaves the contents of those tags' do
-    sanitizer.sanitize("<p>hello <em>world</em></p>").should == "<p>hello world</p>"
+    expect(sanitizer.sanitize("<p>hello <em>world</em></p>")).to eq "<p>hello world</p>"
   end
 end

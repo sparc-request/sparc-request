@@ -42,8 +42,15 @@ class PricingMap < ActiveRecord::Base
   attr_accessible :otf_unit_type
 
   before_save :upcase_otf_unit_type
-  validates :full_rate, :display_date, :effective_date, :unit_factor, :presence => true
-  validates :full_rate, :unit_factor, :numericality => true
+  
+  validates :full_rate,
+            :display_date,
+            :effective_date,
+            :unit_factor,
+            presence: true
+  validates :full_rate,
+            :unit_factor,
+            numericality: true
   # One time fee pricing maps require: units_per_qty_max, otf_unit_type, quantity_type, and quantity_minimum
   with_options :if => :is_one_time_fee? do |one_time_fee|
     one_time_fee.validates :otf_unit_type, :quantity_type, :presence => true
@@ -58,7 +65,7 @@ class PricingMap < ActiveRecord::Base
   def is_one_time_fee?
     service && service.one_time_fee
   end
-  
+
   # Determines the rate for a particular service.
   #
   # +default_percentage+:: a number between 0 and 1
@@ -131,5 +138,5 @@ class PricingMap < ActiveRecord::Base
       self.otf_unit_type.upcase!
     end
   end
-  
+
 end

@@ -18,40 +18,40 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe 'Directory' do
+RSpec.describe 'Directory' do
   describe 'search' do
     # no tests for search it's the top-level method
   end
 
-  let!(:id1) { FactoryGirl.create(:identity, ldap_uid: 'mobama@musc.edu', email: 'mo_bama@whitehouse.gov', last_name: 'Obama', first_name: 'Mo') }
-  let!(:id2) { FactoryGirl.create(:identity, ldap_uid: 'georgec@musc.edu', email: 'castanza@uranus.planet', last_name: 'Pluto', first_name: 'Isaplanettoo') }
-  let!(:id3) { FactoryGirl.create(:identity, ldap_uid: 'omally@musc.edu', email: 'omally@musc.edu', last_name: "O'Mally", first_name: 'Shameless') }
+  let!(:id1) { create(:identity, ldap_uid: 'mobama@musc.edu', email: 'mo_bama@whitehouse.gov', last_name: 'Obama', first_name: 'Mo') }
+  let!(:id2) { create(:identity, ldap_uid: 'georgec@musc.edu', email: 'castanza@uranus.planet', last_name: 'Pluto', first_name: 'Isaplanettoo') }
+  let!(:id3) { create(:identity, ldap_uid: 'omally@musc.edu', email: 'omally@musc.edu', last_name: "O'Mally", first_name: 'Shameless') }
 
   describe 'search_database' do
     it 'should search the ldap uid field' do
-      Directory.search_database('mobama').should eq [ id1 ]
+      expect(Directory.search_database('mobama')).to eq [ id1 ]
     end
 
     it 'should search the email field' do
-      Directory.search_database('mo_bama').should eq [ id1 ]
+      expect(Directory.search_database('mo_bama')).to eq [ id1 ]
     end
 
     it 'should search the last_name field' do
-      Directory.search_database('Obama').should eq [ id1 ]
+      expect(Directory.search_database('Obama')).to eq [ id1 ]
     end
 
     it 'should search the first_name field' do
-      Directory.search_database('Mo').should eq [ id1 ]
+      expect(Directory.search_database('Mo')).to eq [ id1 ]
     end
 
     it 'should search case-independently' do
-      Directory.search_database('WhItEhOuSe').should eq [ id1 ]
+      expect(Directory.search_database('WhItEhOuSe')).to eq [ id1 ]
     end
 
     it "should search with single quote" do
-      Directory.search_database("O'Mally").should eq [ id3 ]
+      expect(Directory.search_database("O'Mally")).to eq [ id3 ]
     end
   end
 
@@ -64,17 +64,17 @@ describe 'Directory' do
     it 'should do nothing if ldap_results is nil' do
       orig_count = Identity.count
       Directory.create_or_update_database_from_ldap(nil, Identity.all)
-      Identity.count.should eq orig_count
+      expect(Identity.count).to eq orig_count
     end
 
     it 'should do nothing if ldap_results is an empty array' do
       orig_count = Identity.count
       Directory.create_or_update_database_from_ldap([], Identity.all)
-      Identity.count.should eq orig_count
+      expect(Identity.count).to eq orig_count
     end
 
     it 'should create identities that are not already there' do
-      r = { 
+      r = {
           "uid" =>       [ 'foo' ],
           "mail" =>      [ 'foo@bar.com' ],
           "givenname" => [ 'Foo' ],
@@ -82,18 +82,18 @@ describe 'Directory' do
 
       orig_count = Identity.count
       Directory.create_or_update_database_from_ldap([r], Identity.all)
-      Identity.count.should eq orig_count + 1
+      expect(Identity.count).to eq orig_count + 1
 
       id = Identity.find_by_ldap_uid('foo@musc.edu')
-      id.should_not eq nil
-      id.ldap_uid.should eq 'foo@musc.edu'
-      id.email.should eq 'foo@bar.com'
-      id.first_name.should eq 'Foo'
-      id.last_name.should eq 'Bar'
+      expect(id).not_to eq nil
+      expect(id.ldap_uid).to eq 'foo@musc.edu'
+      expect(id.email).to eq 'foo@bar.com'
+      expect(id.first_name).to eq 'Foo'
+      expect(id.last_name).to eq 'Bar'
     end
 
     it 'should update identities that need to be updated' do
-      r = { 
+      r = {
           "uid" =>       [ 'mobama' ],
           "mail" =>      [ 'bobama@whitehouse.gov' ],
           "givenname" => [ 'Bo' ],
@@ -101,15 +101,14 @@ describe 'Directory' do
 
       orig_count = Identity.count
       Directory.create_or_update_database_from_ldap([r], Identity.all)
-      Identity.count.should eq orig_count
+      expect(Identity.count).to eq orig_count
 
       id = Identity.find_by_ldap_uid('mobama@musc.edu')
-      id.should_not eq nil
-      id.ldap_uid.should eq 'mobama@musc.edu'
-      id.email.should eq 'bobama@whitehouse.gov'
-      id.first_name.should eq 'Bo'
-      id.last_name.should eq 'Bama'
+      expect(id).not_to eq nil
+      expect(id.ldap_uid).to eq 'mobama@musc.edu'
+      expect(id.email).to eq 'bobama@whitehouse.gov'
+      expect(id.first_name).to eq 'Bo'
+      expect(id.last_name).to eq 'Bama'
     end
   end
 end
-

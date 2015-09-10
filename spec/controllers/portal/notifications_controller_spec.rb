@@ -1,3 +1,4 @@
+# coding: utf-8
 # Copyright © 2011 MUSC Foundation for Research Development
 # All rights reserved.
 
@@ -18,48 +19,48 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe Portal::NotificationsController do
+RSpec.describe Portal::NotificationsController do
   stub_portal_controller
 
-  let!(:institution) { FactoryGirl.create(:institution) }
-  let!(:provider) { FactoryGirl.create(:provider, parent_id: institution.id) }
-  let!(:program) { FactoryGirl.create(:program, parent_id: provider.id) }
-  let!(:core) { FactoryGirl.create(:core, parent_id: program.id) }
+  let!(:institution)           { create(:institution) }
+  let!(:provider)              { create(:provider, parent_id: institution.id) }
+  let!(:program)               { create(:program, parent_id: provider.id) }
+  let!(:core)                  { create(:core, parent_id: program.id) }
 
-  let!(:service_request) { FactoryGirl.create_without_validation(:service_request) }
-  let!(:ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
+  let!(:service_request)       { create(:service_request_without_validations) }
+  let!(:ssr)                   { create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
 
-  let!(:identity1) { FactoryGirl.create(:identity) }
-  let!(:identity2) { FactoryGirl.create(:identity) }
+  let!(:identity1)             { create(:identity) }
+  let!(:identity2)             { create(:identity) }
 
-  let!(:notification1) { Notification.create() }
-  let!(:notification2) { Notification.create() }
-  let!(:notification3) { Notification.create() }
-  let!(:notification4) { Notification.create(sub_service_request_id: ssr.id) }
+  let!(:notification1)         { Notification.create() }
+  let!(:notification2)         { Notification.create() }
+  let!(:notification3)         { Notification.create() }
+  let!(:notification4)         { Notification.create(sub_service_request_id: ssr.id) }
 
-  let!(:user_notification1) { UserNotification.create(identity_id: identity1.id, notification_id: notification1.id) }
-  let!(:user_notification2) { UserNotification.create(identity_id: identity1.id, notification_id: notification2.id) }
+  let!(:user_notification1)    { UserNotification.create(identity_id: identity1.id, notification_id: notification1.id) }
+  let!(:user_notification2)    { UserNotification.create(identity_id: identity1.id, notification_id: notification2.id) }
 
-  let!(:user_notification3) { UserNotification.create(identity_id: identity2.id, notification_id: notification3.id) }
+  let!(:user_notification3)    { UserNotification.create(identity_id: identity2.id, notification_id: notification3.id) }
 
   let!(:notification_with_ssr) { Notification.create(sub_service_request_id: ssr.id) }
 
-  let!(:deliverer) { double() }
+  let!(:deliverer)             { double() }
 
   before(:each) do
-    UserMailer.stub!(:notification_received) {
-      deliverer.should_receive(:deliver)
+    allow(UserMailer).to receive(:notification_received) do
+      expect(deliverer).to receive(:deliver)
       deliverer
-    }
+    end
   end
 
   describe 'GET index' do
     it 'should set notifications to all notifications for the user' do
       session[:identity_id] = identity1.id
       get(:index, format: :json)
-      assigns(:notifications).should eq [ notification1, notification2 ]
+      expect(assigns(:notifications)).to eq [ notification1, notification2 ]
     end
 
     it 'should return the user and all notifications' do
@@ -67,7 +68,7 @@ describe Portal::NotificationsController do
       get(:index, format: :json)
       # TODO: can't just use as_json, because it formats time
       # differently
-      JSON.parse(response.body).should eq(JSON.parse(ActiveSupport::JSON.encode([ notification1, notification2 ])))
+      expect(JSON.parse(response.body)).to eq(JSON.parse(ActiveSupport::JSON.encode([ notification1, notification2 ])))
     end
   end
 
@@ -79,7 +80,7 @@ describe Portal::NotificationsController do
         id: notification1.id,
         sub_service_request_id: ssr.id,
       }.with_indifferent_access
-      assigns(:sub_service_request).should eq ssr
+      expect(assigns(:sub_service_request)).to eq ssr
     end
 
     it 'should not set sub_service_request if sub_service_request_id was not sent' do
@@ -88,7 +89,7 @@ describe Portal::NotificationsController do
         format: :json,
         id: notification1.id,
       }.with_indifferent_access
-      assigns(:sub_service_request).should eq nil
+      expect(assigns(:sub_service_request)).to eq nil
     end
 
     it 'should send back the notification' do
@@ -97,7 +98,7 @@ describe Portal::NotificationsController do
         format: :js,
         id: notification1.id,
       }.with_indifferent_access
-      response.body.should eq '' # TODO: looks like nothing is getting sent back just yet
+      expect(response.body).to eq '' # TODO: looks like nothing is getting sent back just yet
     end
   end
 
@@ -108,7 +109,7 @@ describe Portal::NotificationsController do
         identity_id: identity1.id,
         sub_service_request_id: ssr.id,
       }.with_indifferent_access
-      assigns(:recipient).should eq identity1
+      expect(assigns(:recipient)).to eq identity1
     end
 
     it 'should set sub service request' do
@@ -117,7 +118,7 @@ describe Portal::NotificationsController do
         identity_id: identity1.id,
         sub_service_request_id: ssr.id,
       }.with_indifferent_access
-      assigns(:sub_service_request).should eq ssr
+      expect(assigns(:sub_service_request)).to eq ssr
     end
 
     # TODO: should #new create a new notification?  it doesn't.
@@ -135,9 +136,9 @@ describe Portal::NotificationsController do
       }.with_indifferent_access
 
       notification = assigns(:notification)
-      notification.id.should_not eq nil
-      notification.sub_service_request.should eq ssr
-      notification.originator.should eq identity2
+      expect(notification.id).not_to eq nil
+      expect(notification.sub_service_request).to eq ssr
+      expect(notification.originator).to eq identity2
     end
 
     it 'should create a new message' do
@@ -159,13 +160,13 @@ describe Portal::NotificationsController do
 
       notification = assigns(:notification)
       message = assigns(:message)
-      message.id.should_not eq nil
-      message.notification.should eq notification
-      message.sender.should eq identity1
-      message.recipient.should eq identity2
-      message.email.should eq 'abe.lincoln@whitehouse.gov'
-      message.subject.should eq 'Emancipation'
-      message.body.should eq 'Four score and seven years ago...'
+      expect(message.id).not_to eq nil
+      expect(message.notification).to eq notification
+      expect(message.sender).to eq identity1
+      expect(message.recipient).to eq identity2
+      expect(message.email).to eq 'abe.lincoln@whitehouse.gov'
+      expect(message.subject).to eq 'Emancipation'
+      expect(message.body).to eq 'Four score and seven years ago...'
     end
 
     it 'should set sub_service_request' do
@@ -185,7 +186,7 @@ describe Portal::NotificationsController do
         },
       }.with_indifferent_access
 
-      assigns(:sub_service_request).should eq ssr
+      expect(assigns(:sub_service_request)).to eq ssr
     end
 
     it 'should set notifications' do
@@ -206,11 +207,11 @@ describe Portal::NotificationsController do
       }.with_indifferent_access
 
       new_notification = assigns(:notification)
-      assigns(:notifications).should eq [new_notification] # TODO: should new_notification be in the list?
+      expect(assigns(:notifications)).to eq [new_notification] # TODO: should new_notification be in the list?
     end
 
     it 'should deliver the notification via email' do
-      UserMailer.should_receive(:notification_received)
+      expect(UserMailer).to receive(:notification_received)
 
       session[:identity_id] = identity1.id
       post :create, {
@@ -237,7 +238,7 @@ describe Portal::NotificationsController do
         format: :json,
         id: notification1.id,
       }.with_indifferent_access
-      assigns(:notification).should eq notification1
+      expect(assigns(:notification)).to eq notification1
     end
 
     it 'should create a new message' do
@@ -255,15 +256,15 @@ describe Portal::NotificationsController do
       }.with_indifferent_access
 
       notification4.reload
-      notification4.messages.count.should eq 1
+      expect(notification4.messages.count).to eq 1
       message = notification4.messages[0]
-      message.id.should_not eq nil
-      message.notification.should eq notification4
-      message.sender.should eq identity1
-      message.recipient.should eq identity2
-      message.email.should eq 'abe.lincoln@whitehouse.gov'
-      message.subject.should eq 'Emancipation'
-      message.body.should eq 'Four score and seven years ago...'
+      expect(message.id).not_to eq nil
+      expect(message.notification).to eq notification4
+      expect(message.sender).to eq identity1
+      expect(message.recipient).to eq identity2
+      expect(message.email).to eq 'abe.lincoln@whitehouse.gov'
+      expect(message.subject).to eq 'Emancipation'
+      expect(message.body).to eq 'Four score and seven years ago...'
     end
 
     it 'should set notifications' do
@@ -279,11 +280,11 @@ describe Portal::NotificationsController do
           body:    'Four score and seven years ago...',
         },
       }.with_indifferent_access
-      assigns(:notifications).should eq [ notification1, notification2, notification4 ]
+      expect(assigns(:notifications)).to eq [ notification1, notification2, notification4 ]
     end
 
     it 'should deliver the notification via email' do
-      UserMailer.should_receive(:notification_received)
+      expect(UserMailer).to receive(:notification_received)
 
       session[:identity_id] = identity1.id
       post :user_portal_update, {
@@ -307,7 +308,7 @@ describe Portal::NotificationsController do
         format: :json,
         id: notification_with_ssr.id,
       }.with_indifferent_access
-      assigns(:notification).should eq notification_with_ssr
+      expect(assigns(:notification)).to eq notification_with_ssr
     end
 
     it 'should create a new message' do
@@ -325,15 +326,15 @@ describe Portal::NotificationsController do
       }.with_indifferent_access
 
       notification_with_ssr.reload
-      notification_with_ssr.messages.count.should eq 1
+      expect(notification_with_ssr.messages.count).to eq 1
       message = notification_with_ssr.messages[0]
-      message.id.should_not eq nil
-      message.notification.should eq notification_with_ssr
-      message.sender.should eq identity1
-      message.recipient.should eq identity2
-      message.email.should eq 'abe.lincoln@whitehouse.gov'
-      message.subject.should eq 'Emancipation'
-      message.body.should eq 'Four score and seven years ago...'
+      expect(message.id).not_to eq nil
+      expect(message.notification).to eq notification_with_ssr
+      expect(message.sender).to eq identity1
+      expect(message.recipient).to eq identity2
+      expect(message.email).to eq 'abe.lincoln@whitehouse.gov'
+      expect(message.subject).to eq 'Emancipation'
+      expect(message.body).to eq 'Four score and seven years ago...'
     end
 
     it 'should set sub_service_request' do
@@ -349,7 +350,7 @@ describe Portal::NotificationsController do
           body:    'Four score and seven years ago...',
         },
       }.with_indifferent_access
-      assigns(:sub_service_request).should eq ssr
+      expect(assigns(:sub_service_request)).to eq ssr
     end
 
     it 'should set notifications' do
@@ -365,11 +366,11 @@ describe Portal::NotificationsController do
           body:    'Four score and seven years ago...',
         },
       }.with_indifferent_access
-      assigns(:notifications).should eq [ notification_with_ssr ]
+      expect(assigns(:notifications)).to eq [ notification_with_ssr ]
     end
 
     it 'should deliver the notification via email' do
-      UserMailer.should_receive(:notification_received)
+      expect(UserMailer).to receive(:notification_received)
 
       session[:identity_id] = identity1.id
       post :admin_update, {
@@ -395,7 +396,7 @@ describe Portal::NotificationsController do
         sub_service_request_id: ssr.id,
         notifications: { },
       }
-      assigns(:sub_service_request).should eq ssr
+      expect(assigns(:sub_service_request)).to eq ssr
     end
 
     it 'should set notifications if sub_service_request_id is sent' do
@@ -406,7 +407,7 @@ describe Portal::NotificationsController do
         sub_service_request_id: ssr.id,
         notifications: { },
       }
-      assigns(:notifications).should eq [ ]
+      expect(assigns(:notifications)).to eq [ ]
     end
 
     it 'should not set sub_service_request if sub_service_request_id is not sent' do
@@ -416,7 +417,7 @@ describe Portal::NotificationsController do
         id: notification_with_ssr.id,
         notifications: { },
       }
-      assigns(:sub_service_request).should eq nil
+      expect(assigns(:sub_service_request)).to eq nil
     end
 
     it 'should set notifications if sub_service_request_id is not sent' do
@@ -426,7 +427,7 @@ describe Portal::NotificationsController do
         id: notification_with_ssr.id,
         notifications: { },
       }
-      assigns(:notifications).should eq [ notification1, notification2 ]
+      expect(assigns(:notifications)).to eq [ notification1, notification2 ]
     end
 
     it 'should set the read attribute on all notifications that are passed in' do
@@ -441,9 +442,9 @@ describe Portal::NotificationsController do
       user_notification2.reload
       user_notification3.reload
 
-      user_notification1.read.should eq true
-      user_notification2.read.should eq false
-      user_notification3.read.should eq nil
+      expect(user_notification1.read).to eq true
+      expect(user_notification2.read).to eq false
+      expect(user_notification3.read).to eq nil
     end
   end
 end

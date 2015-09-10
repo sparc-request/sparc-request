@@ -59,7 +59,7 @@
       %th{:colspan => 2}= t(:protocol_information)[:actions]
     - protocol.project_roles.each do |pr|
       - u = pr.identity
-      %tr{:class => "#{u.first_name}"}
+      %tr{data: {"user-id" => pr.identity.id}}
         %td
           = u.first_name
           = u.last_name

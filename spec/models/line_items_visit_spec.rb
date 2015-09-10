@@ -18,19 +18,19 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe LineItemsVisit do
+RSpec.describe LineItemsVisit do
 
   let_there_be_lane
   let_there_be_j
   build_service_request_with_study
 
   it 'should be possible to create a line items visit' do
-    arm = FactoryGirl.create(:arm)
-    line_items_visit = FactoryGirl.create(:line_items_visit, arm_id: arm.id)
-    line_items_visit.line_item.should eq nil
-    line_items_visit.visits.should eq [ ]
+    arm = create(:arm)
+    line_items_visit = create(:line_items_visit, arm_id: arm.id)
+    expect(line_items_visit.line_item).to eq nil
+    expect(line_items_visit.visits).to eq [ ]
   end
 
   describe "methods" do
@@ -42,31 +42,31 @@ describe LineItemsVisit do
     end
 
     context "business methods" do
-      
-      let!(:service)         { FactoryGirl.create(:service, organization_id: program.id)}
-      let!(:pricing_map)     { FactoryGirl.create(:pricing_map, service_id: service.id, display_date: Date.today) }
-      let!(:pricing_map2)    { FactoryGirl.create(:pricing_map, service_id: service.id, display_date: Date.today + 1) }
 
-      describe "per unit cost" do  
+      let!(:service)         { create(:service, organization_id: program.id)}
+      let!(:pricing_map)     { create(:pricing_map, service_id: service.id, display_date: Date.today) }
+      let!(:pricing_map2)    { create(:pricing_map, service_id: service.id, display_date: Date.today + 1) }
+
+      describe "per unit cost" do
 
         before(:each) do
-          line_item.stub!(:applicable_rate) { 100 }
+          allow(line_item).to receive(:applicable_rate) { 100 }
         end
 
         it "should return the per unit cost for full quantity with no arguments" do
-          @line_items_visit.per_unit_cost.should eq(50)
+          expect(@line_items_visit.per_unit_cost).to eq(50)
         end
 
         it "should return 0 if the quantity is 0" do
           @line_items_visit.line_item.quantity = 0
-          @line_items_visit.per_unit_cost.should eq(0)
+          expect(@line_items_visit.per_unit_cost).to eq(0)
         end
 
         it "should return the per unit cost for a specific quantity from arguments" do
           line_items_visit1 = @line_items_visit.dup
           line_items_visit2 = @line_items_visit.dup
           line_items_visit1.line_item.quantity = 5
-          line_items_visit1.per_unit_cost.should eq(line_items_visit2.per_unit_cost(5))
+          expect(line_items_visit1.per_unit_cost).to eq(line_items_visit2.per_unit_cost(5))
         end
       end
 
@@ -75,14 +75,14 @@ describe LineItemsVisit do
         it "should select the correct pricing map based on display date" do
           pricing_map.update_attributes(unit_factor: 5)
           pricing_map2.update_attributes(unit_factor: 10)
-          @line_items_visit.units_per_package.should eq(5)
+          expect(@line_items_visit.units_per_package).to eq(5)
         end
       end
 
       describe "quantity total" do
 
         it "should return the correct quantity" do
-          @line_items_visit.quantity_total.should eq(100)
+          expect(@line_items_visit.quantity_total).to eq(100)
         end
 
         it "should return zero if the research billing qantity is zero" do
@@ -90,7 +90,7 @@ describe LineItemsVisit do
             visit.update_attributes(research_billing_qty: 0)
           end
 
-          @line_items_visit.quantity_total.should eq(0)
+          expect(@line_items_visit.quantity_total).to eq(0)
         end
       end
 
@@ -102,7 +102,7 @@ describe LineItemsVisit do
             costs[visit.id.to_s] = 250
           end
 
-          @line_items_visit.per_subject_subtotals.should eq(costs)
+          expect(@line_items_visit.per_subject_subtotals).to eq(costs)
         end
 
         it "should return nil if the visit has no research billing" do
@@ -112,29 +112,29 @@ describe LineItemsVisit do
             research_billing[visit.id.to_s] = nil
           end
 
-          @line_items_visit.per_subject_subtotals.should eq(research_billing)
-        end        
+          expect(@line_items_visit.per_subject_subtotals).to eq(research_billing)
+        end
       end
 
       describe "direct costs for visit based service single subject" do
 
         it "should return the correct cost for one subject" do
-          @line_items_visit.direct_costs_for_visit_based_service_single_subject.should eq(2500)
-        end 
+          expect(@line_items_visit.direct_costs_for_visit_based_service_single_subject).to eq(2500)
+        end
 
         it "should return zero if the research billing quantity is zero" do
           @line_items_visit.visits.each do |visit|
             visit.update_attributes(research_billing_qty: 0)
           end
 
-          @line_items_visit.direct_costs_for_visit_based_service_single_subject.should eq(0)
+          expect(@line_items_visit.direct_costs_for_visit_based_service_single_subject).to eq(0)
         end
       end
 
       describe "direct costs for visit based services" do
 
         it "should return the correct cost for all subjects" do
-          @line_items_visit.direct_costs_for_visit_based_service.should eq(5000)
+          expect(@line_items_visit.direct_costs_for_visit_based_service).to eq(5000)
         end
       end
 
@@ -142,7 +142,7 @@ describe LineItemsVisit do
 
         it "should return the correct direct cost" do
           service.update_attributes(one_time_fee: true)
-          @line_items_visit.direct_costs_for_one_time_fee.should eq(250)
+          expect(@line_items_visit.direct_costs_for_one_time_fee).to eq(250)
         end
       end
 
@@ -150,33 +150,34 @@ describe LineItemsVisit do
 
         before :each do
           stub_const("USE_INDIRECT_COST", true)
+          study.update_attribute(:indirect_cost_rate, 200)
         end
 
         context "indirect cost rate" do
 
           it "should determine the indirect cost rate" do
-            @line_items_visit.indirect_cost_rate.should eq(2)
+            expect(@line_items_visit.indirect_cost_rate).to eq(2)
           end
         end
 
         context "indirect costs for visit based service single subject" do
 
           it "should return the correct indirect cost" do
-            @line_items_visit.indirect_costs_for_visit_based_service_single_subject.should eq(5000)
+            expect(@line_items_visit.indirect_costs_for_visit_based_service_single_subject).to eq(5000)
           end
         end
 
         context "indirect costs for visit based service" do
 
           it "should return the correct cost" do
-            @line_items_visit.indirect_costs_for_visit_based_service.should eq(10000)
+            expect(@line_items_visit.indirect_costs_for_visit_based_service).to eq(10000)
           end
         end
 
         context "indirect costs for one time fee" do
 
           it "should return the correct cost" do
-            @line_items_visit.indirect_costs_for_one_time_fee.should eq(500)
+            expect(@line_items_visit.indirect_costs_for_one_time_fee).to eq(500)
           end
         end
       end
@@ -186,7 +187,7 @@ describe LineItemsVisit do
         it "should add a visit" do
           vg = arm1.visit_groups.create(position: nil)
           @line_items_visit.add_visit(vg)
-          @line_items_visit.visits.count.should eq(11)
+          expect(@line_items_visit.visits.count).to eq(11)
         end
       end
 
@@ -196,15 +197,15 @@ describe LineItemsVisit do
           vg = arm1.visit_groups.create(position: nil)
           @line_items_visit.add_visit(vg)
           @line_items_visit.remove_visit(vg)
-          @line_items_visit.visits.count.should eq(10)
+          expect(@line_items_visit.visits.count).to eq(10)
         end
       end
 
       describe "remove procedures" do
 
-        let!(:sub_service_request2) { FactoryGirl.create(:sub_service_request, ssr_id: "0002", service_request_id: service_request.id, organization_id: program.id, status: "submitted") }
-        let!(:service3)             { FactoryGirl.create(:service, organization_id: program.id, name: 'Per Patient') }
-        let!(:line_item3)           { FactoryGirl.create(:line_item, service_request_id: service_request.id, service_id: service3.id, sub_service_request_id: sub_service_request2.id, quantity: 0) }
+        let!(:sub_service_request2) { create(:sub_service_request, ssr_id: "0002", service_request_id: service_request.id, organization_id: program.id, status: "submitted") }
+        let!(:service3)             { create(:service, organization_id: program.id, name: 'Per Patient') }
+        let!(:line_item3)           { create(:line_item, service_request_id: service_request.id, service_id: service3.id, sub_service_request_id: sub_service_request2.id, quantity: 0) }
 
         before :each do
           add_visits
@@ -215,15 +216,14 @@ describe LineItemsVisit do
 
           liv = line_item3.line_items_visits.first
 
-          liv.procedures.should_not eq(nil)
+          expect(liv.procedures).not_to eq(nil)
 
           liv.remove_procedures
           liv.reload
 
-          liv.procedures.should eq([])
-          line_item3.procedures.should_not eq([])
+          expect(liv.procedures).to eq([])
+          expect(line_item3.procedures).not_to eq([])
         end
-
       end
     end
   end

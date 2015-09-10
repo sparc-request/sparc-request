@@ -1,10 +1,10 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
   describe 'GET /v1/services.json' do
 
-    before { FactoryGirl.create_list(:service_with_process_ssrs_organization, 5) }
+    before { create_list(:service_with_process_ssrs_organization, 5) }
 
     context 'response params' do
 
@@ -49,7 +49,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       it 'should respond with an array of services and their attributes' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryGirl.build(:service).attributes.
+        expected_attributes = build(:service).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
                                 push('callback_url', 'sparc_id', 'process_ssrs_organization').
@@ -65,7 +65,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       it 'should respond with an array of services and their attributes and their shallow reflections' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryGirl.build(:service).attributes.
+        expected_attributes = build(:service).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
                                 push('callback_url', 'sparc_id', 'process_ssrs_organization', 'line_items').

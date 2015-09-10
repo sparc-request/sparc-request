@@ -18,18 +18,20 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe "editing a study", js: true do
+RSpec.describe "editing a study", js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
-  build_service_request_with_study()
+  build_service_request_with_study
 
   let(:numerical_day) { Date.today.strftime("%d").gsub(/^0/,'') }
 
   before :each do
     visit edit_portal_protocol_path service_request.protocol.id
+    find('#study_has_cofc_true').click
+    wait_for_javascript_to_finish
   end
 
   context "validations" do
@@ -37,14 +39,16 @@ describe "editing a study", js: true do
     it "should raise an error message if study's status is pending and no potential funding source is selected" do
       select("Pending Funding", from: "Proposal Funding Status")
       click_button "Save"
-      page.should have_content("1 error prohibited this study from being saved")
+      expect(page).to have_content("1 error prohibited this study from being saved")
+      expect(page).to have_content("You must select a potential funding source")
     end
 
     it "should raise an error message if study's status is funded but no funding source is selected" do
       select("Funded", from: "Proposal Funding Status")
       select("Select a Funding Source", from: "study_funding_source")
       click_button "Save"
-      page.should have_content("1 error prohibited this study from being saved")
+      expect(page).to have_content("1 error prohibited this study from being saved")
+      expect(page).to have_content('You must select a funding source')
     end
   end
 
@@ -53,9 +57,8 @@ describe "editing a study", js: true do
     it "should redirect to the main portal page" do
       click_button "Save"
       wait_for_javascript_to_finish
-      sleep 6
-      page.should have_content('Dashboard')
-      page.should have_content('Welcome')
+      expect(page).to have_content('Dashboard')
+      expect(page).to have_content('Welcome')
     end
   end
 
@@ -65,7 +68,7 @@ describe "editing a study", js: true do
       fill_in "study_short_title", with: "Bob"
       click_button "Save"
       visit edit_portal_protocol_path service_request.protocol.id
-      find("#study_short_title").should have_value("Bob")
+      expect(find("#study_short_title")).to have_value("Bob")
     end
   end
 
@@ -75,7 +78,7 @@ describe "editing a study", js: true do
       fill_in "study_title", with: "Slappy"
       click_button "Save"
       visit edit_portal_protocol_path service_request.protocol.id
-      find("#study_title").should have_value("Slappy")
+      expect(find("#study_title")).to have_value("Slappy")
     end
   end
 
@@ -83,12 +86,12 @@ describe "editing a study", js: true do
 
     it "should change to pending funding" do
       select("Pending Funding", from: "Proposal Funding Status")
-      find("#study_funding_status").should have_value("pending_funding")
+      expect(find("#study_funding_status")).to have_value("pending_funding")
     end
 
     it "should change to funded" do
       select("Funded", from: "Proposal Funding Status")
-      find("#study_funding_status").should have_value("funded")
+      expect(find("#study_funding_status")).to have_value("funded")
     end
   end
 
@@ -98,8 +101,8 @@ describe "editing a study", js: true do
       fill_in "study_udak_project_number", with: "12345"
       click_button "Save"
       visit edit_portal_protocol_path service_request.protocol.id
-      find("#study_udak_project_number").should have_value("12345")
-    end    
+      expect(find("#study_udak_project_number")).to have_value("12345")
+    end
   end
 
   context "editing the sponsor name" do
@@ -108,7 +111,7 @@ describe "editing a study", js: true do
       fill_in "study_sponsor_name", with: "Kurt Zanzibar"
       click_button "Save"
       visit edit_portal_protocol_path service_request.protocol.id
-      find("#study_sponsor_name").should have_value("Kurt Zanzibar")
+      expect(find("#study_sponsor_name")).to have_value("Kurt Zanzibar")
     end
   end
 
@@ -119,13 +122,12 @@ describe "editing a study", js: true do
     end
 
     describe "editing the funding start date" do
-
       it "should change and save the date" do
         page.execute_script("$('#funding_start_date').focus()")
-        sleep 2
+        wait_for_javascript_to_finish
         first('a.ui-state-default.ui-state-highlight').click #Click on today's date
-        sleep 2
-        find("#funding_start_date").should have_value(Date.today.strftime('%-m/%d/%Y'))
+        wait_for_javascript_to_finish
+        expect(find("#funding_start_date")).to have_value(Date.today.strftime('%-m/%d/%Y'))
       end
     end
 
@@ -133,9 +135,9 @@ describe "editing a study", js: true do
 
       it "should change the indirect cost rate when a source is selected" do
         select("Foundation/Organization", from: "study_funding_source")
-        find("#study_indirect_cost_rate").should have_value("25")
+        expect(find("#study_indirect_cost_rate")).to have_value("25")
         select("Federal", from: "study_funding_source")
-        find("#study_indirect_cost_rate").should have_value("49.5")
+        expect(find("#study_indirect_cost_rate")).to have_value("49.5")
       end
     end
   end
@@ -143,28 +145,30 @@ describe "editing a study", js: true do
   context "pending funding fields" do
 
     before :each do
+      expect(page).to have_css('#study_funding_status')
       select("Pending Funding", from: "Proposal Funding Status")
+      expect(page).to have_css('#study_potential_funding_source', visible: true)
       select("Federal", from: "study_potential_funding_source")
     end
 
     describe "editing the funding opportunity number" do
 
       it "should save the new funding opportunity number" do
+        wait_for_javascript_to_finish
         fill_in "study_funding_rfa", with: "12345"
         click_button "Save"
         visit edit_portal_protocol_path service_request.protocol.id
-        find("#study_funding_rfa").should have_value("12345")
-      end      
+        expect(find("#study_funding_rfa")).to have_value("12345")
+      end
     end
 
     describe "editing the potential funding start date" do
 
       it "should change and save the date" do
         page.execute_script("$('#potential_funding_start_date').focus()")
-        sleep 2
         first('a.ui-state-default.ui-state-highlight').click #click on today's date
-        sleep 2
-        find("#potential_funding_start_date").should have_value((Date.today).strftime('%-m/%d/%Y'))
+        wait_for_javascript_to_finish
+        expect(find("#potential_funding_start_date")).to have_value((Date.today).strftime('%-m/%d/%Y'))
       end
     end
 
@@ -172,7 +176,7 @@ describe "editing a study", js: true do
 
       it "should change the indirect cost rate when a source is selected" do
         select("Foundation/Organization", from: "study_potential_funding_source")
-        find("#study_indirect_cost_rate").should have_value("25")
+        expect(find("#study_indirect_cost_rate")).to have_value("25")
       end
     end
 
@@ -180,7 +184,7 @@ describe "editing a study", js: true do
 
       it "should change the study phase" do
         select("IV", from: "Study Phase")
-        find("#study_study_phase").should have_value("iv")
+        expect(find("#study_study_phase")).to have_value("iv")
       end
     end
   end
@@ -194,12 +198,12 @@ describe "editing a study", js: true do
     describe "human subjects checkbox" do
 
       it "should cause all the human subjects fields to become visible" do
-        find("#study_human_subjects_info_attributes_hr_number").should be_visible
+        expect(find("#study_human_subjects_info_attributes_hr_number")).to be_visible
       end
 
       it "should change state when clicked" do
         check("study_research_types_info_attributes_human_subjects")
-        find("#study_research_types_info_attributes_human_subjects").should be_checked
+        expect(find("#study_research_types_info_attributes_human_subjects")).to be_checked
       end
     end
 
@@ -208,14 +212,14 @@ describe "editing a study", js: true do
       it "should save the new hr and pro number" do
         field_array = ["hr_number", "pro_number"]
         field_num = 0
-        2.times do 
+        2.times do
           fill_in "study_human_subjects_info_attributes_#{field_array[field_num]}", with: "12345"
           field_num += 1
         end
         click_button "Save"
         visit edit_portal_protocol_path service_request.protocol.id
-        find("#study_human_subjects_info_attributes_hr_number").should have_value("12345")
-        find("#study_human_subjects_info_attributes_pro_number").should have_value("12345")
+        expect(find("#study_human_subjects_info_attributes_hr_number")).to have_value("12345")
+        expect(find("#study_human_subjects_info_attributes_pro_number")).to have_value("12345")
       end
     end
 
@@ -225,7 +229,7 @@ describe "editing a study", js: true do
         fill_in "study_human_subjects_info_attributes_irb_of_record", with: "crazy town"
         click_button "Save"
         visit edit_portal_protocol_path service_request.protocol.id
-        find("#study_human_subjects_info_attributes_irb_of_record").should have_value("crazy town")
+        expect(find("#study_human_subjects_info_attributes_irb_of_record")).to have_value("crazy town")
       end
     end
 
@@ -233,7 +237,7 @@ describe "editing a study", js: true do
 
       it "should change the submission type" do
         select("Exempt", from: "Submission Type")
-        find("#study_human_subjects_info_attributes_submission_type").should have_value("exempt")
+        expect(find("#study_human_subjects_info_attributes_submission_type")).to have_value("exempt")
       end
     end
 
@@ -241,10 +245,10 @@ describe "editing a study", js: true do
 
       it "should change and save the date" do
         page.execute_script("$('#irb_approval_date').focus()")
-        sleep 2
+        wait_for_javascript_to_finish
         first('a.ui-state-default.ui-state-highlight').click #click on today's date
-        sleep 2
-        find("#irb_approval_date").should have_value(Date.today.strftime('%-m/%d/%Y'))
+        wait_for_javascript_to_finish
+        expect(find("#irb_approval_date")).to have_value(Date.today.strftime('%-m/%d/%Y'))
       end
     end
 
@@ -252,10 +256,10 @@ describe "editing a study", js: true do
 
       it "should change and save the date" do
         page.execute_script("$('#irb_expiration_date').focus()")
-        sleep 2
+        wait_for_javascript_to_finish
         first('a.ui-state-default.ui-state-highlight').click #click on today's date
-        sleep 2
-        find("#irb_expiration_date").should have_value(Date.today.strftime('%-m/%d/%Y'))
+        wait_for_javascript_to_finish
+        expect(find("#irb_expiration_date")).to have_value(Date.today.strftime('%-m/%d/%Y'))
       end
     end
   end
@@ -271,9 +275,9 @@ describe "editing a study", js: true do
           check("study_research_types_info_attributes_#{box_array[box_num]}")
           box_num += 1
         end
-        find("#study_research_types_info_attributes_vertebrate_animals").should be_checked
-        find("#study_research_types_info_attributes_investigational_products").should be_checked
-        find("#study_research_types_info_attributes_ip_patents").should be_checked
+        expect(find("#study_research_types_info_attributes_vertebrate_animals")).to be_checked
+        expect(find("#study_research_types_info_attributes_investigational_products")).to be_checked
+        expect(find("#study_research_types_info_attributes_ip_patents")).to be_checked
       end
     end
   end
@@ -288,9 +292,9 @@ describe "editing a study", js: true do
           check("study_study_types_attributes_#{box_num}__destroy")
           box_num += 1
         end
-        find("#study_study_types_attributes_0__destroy").should be_checked
-        find("#study_study_types_attributes_1__destroy").should be_checked
-        find("#study_study_types_attributes_2__destroy").should be_checked
+        expect(find("#study_study_types_attributes_0__destroy")).to be_checked
+        expect(find("#study_study_types_attributes_1__destroy")).to be_checked
+        expect(find("#study_study_types_attributes_2__destroy")).to be_checked
       end
     end
   end
@@ -305,20 +309,20 @@ describe "editing a study", js: true do
           check("study_impact_areas_attributes_#{box_num}__destroy")
           box_num += 1
         end
-        find("#study_impact_areas_attributes_0__destroy").should be_checked
-        find("#study_impact_areas_attributes_1__destroy").should be_checked
-        find("#study_impact_areas_attributes_2__destroy").should be_checked
-        find("#study_impact_areas_attributes_3__destroy").should be_checked
-        find("#study_impact_areas_attributes_4__destroy").should be_checked
-        find("#study_impact_areas_attributes_5__destroy").should be_checked
-        find("#study_impact_areas_attributes_6__destroy").should be_checked
+        expect(find("#study_impact_areas_attributes_0__destroy")).to be_checked
+        expect(find("#study_impact_areas_attributes_1__destroy")).to be_checked
+        expect(find("#study_impact_areas_attributes_2__destroy")).to be_checked
+        expect(find("#study_impact_areas_attributes_3__destroy")).to be_checked
+        expect(find("#study_impact_areas_attributes_4__destroy")).to be_checked
+        expect(find("#study_impact_areas_attributes_5__destroy")).to be_checked
+        expect(find("#study_impact_areas_attributes_6__destroy")).to be_checked
       end
 
       context "other checkbox" do
 
         it "should open up text field when 'other' is checked" do
           check("study_impact_areas_attributes_6__destroy")
-          find("#study_impact_areas_other").should be_visible 
+          expect(find("#study_impact_areas_other")).to be_visible
         end
 
         it "should save the value after text is entered" do
@@ -326,7 +330,7 @@ describe "editing a study", js: true do
           fill_in "study_impact_areas_other", with: "El Guapo's Area"
           click_button "Save"
           visit edit_portal_protocol_path service_request.protocol.id
-          find("#study_impact_areas_other").should have_value("El Guapo's Area")
+          expect(find("#study_impact_areas_other")).to have_value("El Guapo's Area")
         end
       end
     end
@@ -335,21 +339,21 @@ describe "editing a study", js: true do
   context "affiliations check boxes" do
 
     describe "cancer center, lipidomics, oral health, cardiovascular, cchp, inbre, reach" do
-      
+
       it "should change theit state when clicked" do
         box_num = 0
         7.times do
           check("study_affiliations_attributes_#{box_num}__destroy")
           box_num += 1
         end
-        find("#study_affiliations_attributes_0__destroy").should be_checked
-        find("#study_affiliations_attributes_1__destroy").should be_checked
-        find("#study_affiliations_attributes_2__destroy").should be_checked
-        find("#study_affiliations_attributes_3__destroy").should be_checked
-        find("#study_affiliations_attributes_4__destroy").should be_checked
-        find("#study_affiliations_attributes_5__destroy").should be_checked
-        find("#study_affiliations_attributes_6__destroy").should be_checked
-      end    
+        expect(find("#study_affiliations_attributes_0__destroy")).to be_checked
+        expect(find("#study_affiliations_attributes_1__destroy")).to be_checked
+        expect(find("#study_affiliations_attributes_2__destroy")).to be_checked
+        expect(find("#study_affiliations_attributes_3__destroy")).to be_checked
+        expect(find("#study_affiliations_attributes_4__destroy")).to be_checked
+        expect(find("#study_affiliations_attributes_5__destroy")).to be_checked
+        expect(find("#study_affiliations_attributes_6__destroy")).to be_checked
+      end
     end
   end
 end

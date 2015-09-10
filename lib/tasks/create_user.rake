@@ -24,7 +24,7 @@ task :create_user => :environment do
       print(*args)
       STDIN.gets.strip
   end
-    
+
   def list_orgs
     puts "#"*50
     institutions = Institution.order(:name)
@@ -69,11 +69,11 @@ task :create_user => :environment do
   continue = prompt "You have indicated that you wish to have rights for #{desired_organization.name}, do you want to proceed? (Yes/No) "
   if continue == "Yes"
     puts "Creating #{login_id}..."
-    identity = Identity.create(:ldap_uid => "#{login_id}", 
-                             :email => "#{login_id}", 
-                             :last_name => 'Castillo', 
-                             :first_name => "Juan", 
-                             :phone => '555-555-5555', 
+    identity = Identity.create(:ldap_uid => "#{login_id}",
+                             :email => "#{login_id}",
+                             :last_name => 'Castillo',
+                             :first_name => "Juan",
+                             :phone => '555-555-5555',
                              :catalog_overlord => 1,
                              :password => 'password',
                              :password_confirmation => 'password',
@@ -81,8 +81,6 @@ task :create_user => :environment do
     identity.save
     CatalogManager.create(:identity_id => identity.id, :organization_id => id.to_i, :edit_historic_data => 1)
     SuperUser.create(:identity_id => identity.id, :organization_id => id.to_i)
-    ClinicalProvider.create(:identity_id => identity.id, :organization_id => id.to_i)
-
   else
     puts "Task aborted"
   end

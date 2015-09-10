@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 require 'ostruct'
-require 'spec_helper'
+require 'rails_helper'
 
 # modified:   app/models/affiliation.rb
 # # modified:   app/models/appointment.rb
@@ -73,7 +73,7 @@ require 'spec_helper'
 # # modified:   app/models/visit.rb
 # # modified:   app/models/visit_group.rb
 
-describe 'Audit trail' do
+RSpec.describe 'Audit trail' do
   to_test = [
     OpenStruct.new(class_name: 'Affiliation',                 key: 'name',               value: 'Foo Bar Baz'),
     OpenStruct.new(class_name: 'Approval',                    key: 'approval_date',      value: Date.parse('1914-08-01')),
@@ -118,13 +118,13 @@ describe 'Audit trail' do
   to_test.each do |entity|
     describe entity.class_name do
       # it 'should include audit information' do
-      #   attrs = FactoryGirl.attributes_for(entity.class_name.underscore.to_sym)
+      #   attrs = attributes_for(entity.class_name.underscore.to_sym)
       #   record = entity.class_name.constantize.new(attrs)
-      #   record.save!(:validate => false)
+      #   record.save!(validate: false)
       #   orig_value = record[entity.key]
 
       #   record[entity.key] = entity.value
-      #   record.save!(:validate => false)
+      #   record.save!(validate: false)
       #   record[entity.key].should eq entity.value
       #   new_value = record[entity.key]
 
@@ -133,4 +133,3 @@ describe 'Audit trail' do
     end
   end
 end
-

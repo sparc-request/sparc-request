@@ -1,6 +1,6 @@
-require "spec_helper"
+require 'rails_helper'
 
-feature "User edits Service with pre-existing ServiceLevelCompnents", js: true do
+RSpec.feature "User edits Service with pre-existing ServiceLevelCompnents", js: true do
 
   scenario "and adds new ServiceLevelCompnents" do
     as_a_user_who_is_editing_a_service_which_has_service_level_components
@@ -44,6 +44,6 @@ feature "User edits Service with pre-existing ServiceLevelCompnents", js: true d
   end
 
   def then_i_should_be_notified_that_the_service_was_successfully_updated
-    page.should have_content "Human Subject Review saved successfully"
+    expect(page).to have_content "Human Subject Review saved successfully"
   end
 end

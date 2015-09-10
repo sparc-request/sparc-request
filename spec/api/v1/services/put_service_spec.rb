@@ -1,11 +1,11 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
   describe 'PUT /v1/service/:id.json' do
 
     before do
-      @service = FactoryGirl.create(:service)
+      @service = create(:service)
     end
 
     context "success" do
@@ -50,7 +50,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         context 'response params' do
 
           before do
-            line_item = FactoryGirl.build(:line_item, service: @service)
+            line_item = build(:line_item, service: @service)
             line_item.save validate: false
 
             service_params = {

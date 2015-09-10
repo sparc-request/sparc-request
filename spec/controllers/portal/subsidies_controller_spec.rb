@@ -18,19 +18,19 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe Portal::SubsidiesController do
+RSpec.describe Portal::SubsidiesController do
   stub_portal_controller
 
-  let!(:institution) { FactoryGirl.create(:institution) }
-  let!(:provider) { FactoryGirl.create(:provider, parent_id: institution.id) }
-  let!(:program) { FactoryGirl.create(:program, parent_id: provider.id) }
-  let!(:core) { FactoryGirl.create(:core, parent_id: program.id) }
-  let!(:study) { study = Study.create(FactoryGirl.attributes_for(:protocol)); study.save!(:validate => false); study }
-  let!(:service_request) { service_request = ServiceRequest.create(FactoryGirl.attributes_for(:service_request, protocol_id: study.id)); service_request.save!(:validate => false); service_request }
-  let!(:ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
-  let!(:subsidy) { FactoryGirl.create(:subsidy, sub_service_request_id: ssr.id) }
+  let!(:institution)     { create(:institution) }
+  let!(:provider)        { create(:provider, parent_id: institution.id) }
+  let!(:program)         { create(:program, parent_id: provider.id) }
+  let!(:core)            { create(:core, parent_id: program.id) }
+  let!(:study)           { study = Study.create(attributes_for(:protocol)); study.save!(validate: false); study }
+  let!(:service_request) { service_request = ServiceRequest.create(attributes_for(:service_request, protocol_id: study.id)); service_request.save!(validate: false); service_request }
+  let!(:ssr)             { create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
+  let!(:subsidy)         { create(:subsidy, sub_service_request_id: ssr.id) }
 
   describe 'POST update_from_fulfillment' do
     it 'should set subsidy' do
@@ -46,8 +46,8 @@ describe Portal::SubsidiesController do
           sub_service_request_id: ssr.id,
         },
       }.with_indifferent_access
-      assigns(:subsidy).should_not eq nil
-      assigns(:subsidy).sub_service_request.should eq ssr
+      expect(assigns(:subsidy)).not_to eq nil
+      expect(assigns(:subsidy).sub_service_request).to eq ssr
     end
 
     it 'should set sub_service_request' do
@@ -57,18 +57,18 @@ describe Portal::SubsidiesController do
           sub_service_request_id: ssr.id,
         },
       }.with_indifferent_access
-      assigns(:sub_service_request).should eq ssr
+      expect(assigns(:sub_service_request)).to eq ssr
     end
 
     it 'should set pi_contribution to direct_cost_total' do
-      SubServiceRequest.any_instance.stub(:direct_cost_total) { 12.34 }
+      allow_any_instance_of(SubServiceRequest).to receive(:direct_cost_total).and_return(12.34)
       post :create, {
         format: :js,
         subsidy: {
           sub_service_request_id: ssr.id,
         },
       }.with_indifferent_access
-      assigns(:subsidy).pi_contribution.should eq 12 # pi_contribution is an integer
+      expect(assigns(:subsidy).pi_contribution).to eq 12 # pi_contribution is an integer
     end
   end
 
@@ -79,7 +79,7 @@ describe Portal::SubsidiesController do
         id: subsidy.id,
       }.with_indifferent_access
       expect { subsidy.reload }.to raise_exception(ActiveRecord::RecordNotFound)
-      assigns(:subsidy).should eq nil
+      expect(assigns(:subsidy)).to eq nil
     end
 
     it 'should set service_request and sub_service_request' do
@@ -87,9 +87,8 @@ describe Portal::SubsidiesController do
         format: :js,
         id: subsidy.id,
       }.with_indifferent_access
-      assigns(:sub_service_request).should eq ssr
-      assigns(:service_request).should eq service_request
+      expect(assigns(:sub_service_request)).to eq ssr
+      expect(assigns(:service_request)).to eq service_request
     end
   end
 end
-

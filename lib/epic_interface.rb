@@ -234,7 +234,7 @@ class EpicInterface
   def emit_nct_number(xml, study)
     nct_number = study.human_subjects_info.try(:nct_number)
 
-    if study.research_types_info.human_subjects && !nct_number.blank? then
+    if study.research_types_info.try(:human_subjects) && !nct_number.blank? then
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'NCT')
@@ -554,4 +554,3 @@ class EpicInterface
     end
   end
 end
-

@@ -28,14 +28,14 @@ module CatalogManager::ServicesHelper
     end
   end
 
-  def display_otf_attributes pricing_map
+  def display_otf_attributes(pricing_map)
     if pricing_map
       attributes = ""
       if pricing_map.service.one_time_fee
         if pricing_map.otf_unit_type == "N/A"
-          attributes = "# " + pricing_map.quantity_type
+          attributes = ['#', pricing_map.try(:quantity_type)].compact.join
         else
-          attributes = "# " + pricing_map.otf_unit_type + " /  # " + pricing_map.quantity_type
+          attributes = ['#', pricing_map.try(:otf_unit_type), '/', '#', pricing_map.try(:quantity_type)].compact.join
         end
       end
 
@@ -43,7 +43,7 @@ module CatalogManager::ServicesHelper
     end
   end
 
- 
+
   def per_patient_display_style pricing_map
     style = ""
 

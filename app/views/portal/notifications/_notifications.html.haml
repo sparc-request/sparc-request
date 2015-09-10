@@ -49,7 +49,7 @@
                 - else
                   = image_tag("portal/notification_red_small.png")
               %td.from_column{:'data-notification_id' => notification.id, :'data-sub_service_request_id' => @sub_service_request.try(:id)}= notification.try(:messages).try(:last).try(:sender).try(:full_name)
-              %td.subject_column{:'data-notification_id' => notification.id, :'data-sub_service_request_id' => @sub_service_request.try(:id)}= notification.sub_service_request.display_id
+              %td.srid_column{:'data-notification_id' => notification.id, :'data-sub_service_request_id' => @sub_service_request.try(:id)}= notification.sub_service_request.display_id
               %td.subject_column{:'data-notification_id' => notification.id, :'data-sub_service_request_id' => @sub_service_request.try(:id)}= notification.try(:messages).try(:last).try(:subject)
               %td.body_column{:'data-notification_id' => notification.id, :'data-sub_service_request_id' => @sub_service_request.try(:id)}= notification.try(:messages).try(:last).try(:body)
               %td.received_column{:'data-notification_id' => notification.id, :'data-sub_service_request_id' => @sub_service_request.try(:id)}= received_at(notification)

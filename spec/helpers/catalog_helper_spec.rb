@@ -18,13 +18,13 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe CatalogManager::CatalogHelper do
+RSpec.describe CatalogManager::CatalogHelper do
 
-  context :node do
+  context '#node' do
     let(:institution){
-      FactoryGirl.create(:institution,
+      create(:institution,
         name:                 'Medical University of South Carolina',
         order:                1,
         abbreviation:         'MUSC',
@@ -32,8 +32,8 @@ describe CatalogManager::CatalogHelper do
       )
     }
 
-    let(:provider){ 
-      FactoryGirl.create(:provider,
+    let(:provider){
+      create(:provider,
         name:                 'South Carolina Clinical and Translational Institute (SCTR)',
         order:                1,
         css_class:            'blue-provider',
@@ -45,7 +45,7 @@ describe CatalogManager::CatalogHelper do
     }
 
     let(:program){
-      FactoryGirl.create(:program,
+      create(:program,
         type:                 'Program',
         name:                 'Office of Biomedical Informatics',
         order:                1,
@@ -56,85 +56,83 @@ describe CatalogManager::CatalogHelper do
         is_available:         1
       )
     }
-    
+
     it 'should return a organization node for js.tree' do
-      helper.node(institution).should eq "<a href=\"#\" cid=\"#{institution.id}\" class=\"institution\" object_type=\"institution\">Medical University of South Carolina</a>"
+      expect(helper.node(institution)).to eq "<a href=\"#\" cid=\"#{institution.id}\" class=\"institution\" object_type=\"institution\">Medical University of South Carolina</a>"
     end
 
     it 'should return a organization node for js.tree' do
-      helper.node(institution, false).should eq "<a href=\"#\" cid=\"#{institution.id}\" class=\"institution disabled_node\" object_type=\"institution\">Medical University of South Carolina</a>"
+      expect(helper.node(institution, false)).to eq "<a href=\"#\" cid=\"#{institution.id}\" class=\"institution disabled_node\" object_type=\"institution\">Medical University of South Carolina</a>"
     end
 
     it 'should return a organization node for js.tree' do
-      helper.node(provider).should eq "<a href=\"#\" cid=\"#{provider.id}\" class=\"provider\" object_type=\"provider\">South Carolina Clinical and Translational Institute (SCTR)</a>"
+      expect(helper.node(provider)).to eq "<a href=\"#\" cid=\"#{provider.id}\" class=\"provider\" object_type=\"provider\">South Carolina Clinical and Translational Institute (SCTR)</a>"
     end
 
     it 'should return a organization node for js.tree' do
-      helper.node(provider, false).should eq "<a href=\"#\" cid=\"#{provider.id}\" class=\"provider disabled_node\" object_type=\"provider\">South Carolina Clinical and Translational Institute (SCTR)</a>"
+      expect(helper.node(provider, false)).to eq "<a href=\"#\" cid=\"#{provider.id}\" class=\"provider disabled_node\" object_type=\"provider\">South Carolina Clinical and Translational Institute (SCTR)</a>"
     end
 
     it 'should return a organization node for js.tree' do
-      helper.node(program).should eq "<a href=\"#\" cid=\"#{program.id}\" class=\"program\" object_type=\"program\">Office of Biomedical Informatics</a>"
-    end    
+      expect(helper.node(program)).to eq "<a href=\"#\" cid=\"#{program.id}\" class=\"program\" object_type=\"program\">Office of Biomedical Informatics</a>"
+    end
 
     it 'should return a organization node for js.tree' do
-      helper.node(program, false).should eq "<a href=\"#\" cid=\"#{program.id}\" class=\"program disabled_node\" object_type=\"program\">Office of Biomedical Informatics</a>"
+      expect(helper.node(program, false)).to eq "<a href=\"#\" cid=\"#{program.id}\" class=\"program disabled_node\" object_type=\"program\">Office of Biomedical Informatics</a>"
     end
   end
-  
-  context :disable_pricing_setup do
+
+  context '#disable_pricing_setup' do
     it "should return whether or not it can edit a pricing setup based on date" do
-      pricing_setup = FactoryGirl.create(:pricing_setup)
-      helper.disable_pricing_setup(pricing_setup, true).should eq(false)
+      pricing_setup = create(:pricing_setup)
+      expect(helper.disable_pricing_setup(pricing_setup, true)).to eq(false)
     end
 
     it "should return whether or not it can edit a pricing setup based on date" do
-      pricing_setup = FactoryGirl.create(:pricing_setup, :display_date => Date.parse('2018-01-01'))
-      helper.disable_pricing_setup(pricing_setup, true).should eq(false)
+      pricing_setup = create(:pricing_setup, display_date: Date.parse('2018-01-01'))
+      expect(helper.disable_pricing_setup(pricing_setup, true)).to eq(false)
     end
 
     it "should return whether or not it can edit a pricing setup based on date" do
-      pricing_setup = FactoryGirl.create(:pricing_setup, :display_date => Date.parse('2018-01-01'))
-      helper.disable_pricing_setup(pricing_setup, false).should eq(true)
+      pricing_setup = create(:pricing_setup, display_date: Date.parse('2018-01-01'))
+      expect(helper.disable_pricing_setup(pricing_setup, false)).to eq(true)
     end
 
     it "should return whether or not it can edit a pricing setup based on date" do
-      pricing_setup = FactoryGirl.create(:pricing_setup, :effective_date => Date.parse('2018-01-01'))
-      helper.disable_pricing_setup(pricing_setup, true).should eq(false)
+      pricing_setup = create(:pricing_setup, effective_date: Date.parse('2018-01-01'))
+      expect(helper.disable_pricing_setup(pricing_setup, true)).to eq(false)
     end
 
     it "should return whether or not it can edit a pricing setup based on date" do
-      pricing_setup = FactoryGirl.create(:pricing_setup, :effective_date => Date.parse('2018-01-01'))
-      helper.disable_pricing_setup(pricing_setup, false).should eq(true)
+      pricing_setup = create(:pricing_setup, effective_date: Date.parse('2018-01-01'))
+      expect(helper.disable_pricing_setup(pricing_setup, false)).to eq(true)
     end
   end
-  
-  context :disable_pricing_map do
+
+  context '#disable_pricing_map' do
     it "should return whether or not it can edit a pricing map based on date" do
-      pricing_map = FactoryGirl.create(:pricing_map)
-      helper.disable_pricing_map(pricing_map, true).should eq(false)
+      pricing_map = create(:pricing_map)
+      expect(helper.disable_pricing_map(pricing_map, true)).to eq(false)
     end
 
     it "should return whether or not it can edit a pricing map based on date" do
-      pricing_map = FactoryGirl.create(:pricing_map, :display_date => Date.parse('2018-01-01'))
-      helper.disable_pricing_map(pricing_map, true).should eq(false)
+      pricing_map = create(:pricing_map, display_date: Date.parse('2018-01-01'))
+      expect(helper.disable_pricing_map(pricing_map, true)).to eq(false)
     end
 
     it "should return whether or not it can edit a pricing map based on date" do
-      pricing_map = FactoryGirl.create(:pricing_map, :display_date => Date.parse('2018-01-01'))
-      helper.disable_pricing_map(pricing_map, false).should eq(true)
+      pricing_map = create(:pricing_map, display_date: Date.parse('2018-01-01'))
+      expect(helper.disable_pricing_map(pricing_map, false)).to eq(true)
     end
 
     it "should return whether or not it can edit a pricing map based on date" do
-      pricing_map = FactoryGirl.create(:pricing_setup, :effective_date => Date.parse('2018-01-01'))
-      helper.disable_pricing_map(pricing_map, true).should eq(false)
+      pricing_map = create(:pricing_setup, effective_date: Date.parse('2018-01-01'))
+      expect(helper.disable_pricing_map(pricing_map, true)).to eq(false)
     end
 
     it "should return whether or not it can edit a pricing map based on date" do
-      pricing_map = FactoryGirl.create(:pricing_map, :effective_date => Date.parse('2018-01-01'))
-      helper.disable_pricing_map(pricing_map, false).should eq(true)
+      pricing_map = create(:pricing_map, effective_date: Date.parse('2018-01-01'))
+      expect(helper.disable_pricing_map(pricing_map, false)).to eq(true)
     end
   end
-  
 end
-

@@ -18,9 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe Portal::DocumentsController do
+RSpec.describe Portal::DocumentsController do
   describe 'GET download' do
     # TODO: looks like this method is no longer used
   end
@@ -42,7 +42,7 @@ describe Portal::DocumentsController do
   # render_views
   #
   # before(:each) do
-  #   @doc = stub_model Document, :title => 'document.xml', :content_type => 'xml'
+  #   @doc = stub_model Document, title: 'document.xml', content_type: 'xml'
   # end
   #
   # describe "GET documents/:object_id/download" do
@@ -50,7 +50,7 @@ describe Portal::DocumentsController do
   #   it "should download a document given an id" do
   #     Document.should_receive(:find).and_return(@doc)
   #     @doc.should_receive(:url).and_return("spec/fixtures/document.xml")
-  #     get "download", :object_id => @doc.id
+  #     get "download", object_id: @doc.id
   #   end
   #
   # end
@@ -58,11 +58,11 @@ describe Portal::DocumentsController do
   # describe "POST documents/override" do
   #   it "should ovveride an already existing file" # do
   #   #
-  #   #       test_document = stub_model ActionDispatch::Http::UploadedFile, :filename => 'document.xml', :type => 'xml', :tempfile => File.new("#{Rails.root}/spec/fixtures/document.xml")
+  #   #       test_document = stub_model ActionDispatch::Http::UploadedFile, filename: 'document.xml', type: 'xml', tempfile: File.new("#{Rails.root}/spec/fixtures/document.xml")
   #   #
   #   #       Document.should_receive(:ticket).and_return('abc123')
   #   #       puts @doc.inspect
-  #   #       get "override", :document => test_document, :document_id => @doc.id
+  #   #       get "override", document: test_document, document_id: @doc.id
   #   #     end
   #
   #   # Fuck it I'm not dealing with this
@@ -77,7 +77,7 @@ describe Portal::DocumentsController do
   #   it "should delete a document" do
   #     Document.should_receive(:find).and_return(@doc)
   #     @doc.should_receive(:destroy)
-  #     delete "destroy", :id => @doc.id
+  #     delete "destroy", id: @doc.id
   #   end
   # end
 

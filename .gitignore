@@ -71,6 +71,8 @@ Procfile
 
 config/setup_load_paths.rb
 
+# Ignore Bundler binstubs
 bin/*
 
+# Ignore spec examples
 spec/examples.txt

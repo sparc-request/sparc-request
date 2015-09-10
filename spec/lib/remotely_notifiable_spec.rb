@@ -1,11 +1,11 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe RemotelyNotifiable, type: :model do
 
   describe 'callbacks' do
 
     before do
-      @service = FactoryGirl.build(:service)
+      @service = build(:service)
 
       @service.save(validate: false)
     end

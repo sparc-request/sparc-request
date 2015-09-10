@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
@@ -35,7 +35,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
       before { cwf_sends_api_get_request_for_resource('human_subjects_infos', @study.human_subjects_info.id, 'shallow') }
 
       it 'should respond with a single shallow human_subjects_info' do
-        expect(response.body).to eq("{\"human_subjects_info\":{\"sparc_id\":1,\"callback_url\":\"https://127.0.0.1:5000/v1/human_subjects_infos/1.json\"}}")
+        expect(response.body).to eq("{\"human_subjects_info\":{\"sparc_id\":#{@study.human_subjects_info.id},\"callback_url\":\"https://127.0.0.1:5000/v1/human_subjects_infos/#{@study.human_subjects_info.id}.json\"}}")
       end
     end
 

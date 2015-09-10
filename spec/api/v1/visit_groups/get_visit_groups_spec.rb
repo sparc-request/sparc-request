@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
@@ -8,7 +8,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
       VisitGroup.skip_callback(:save, :after, :set_arm_edited_flag_on_subjects)
 
       5.times do
-        visit_group = FactoryGirl.build(:visit_group)
+        visit_group = build(:visit_group)
         visit_group.save validate: false
       end
     end
@@ -57,7 +57,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       it 'should respond with an array of visit_groups and their attributes' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryGirl.build(:visit_group).attributes.
+        expected_attributes = build(:visit_group).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
                                 push('callback_url', 'sparc_id').
@@ -73,7 +73,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       it 'should respond with an array of visit_groups and their attributes and their shallow reflections' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryGirl.build(:visit_group).attributes.
+        expected_attributes = build(:visit_group).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
                                 push('callback_url', 'sparc_id', 'visits', 'arm').

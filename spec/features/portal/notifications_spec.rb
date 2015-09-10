@@ -18,9 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe "notifications page", :js => true do
+RSpec.describe "notifications page", js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
@@ -33,22 +33,21 @@ describe "notifications page", :js => true do
   end
 
   it "should have an unread notification" do
-    page.should have_css("tr.notification_row.unread")
+    expect(page).to have_css("tr.notification_row.unread")
   end
 
   it "should allow user to view unread message" do
     find("td.subject_column").click
-    wait_for_javascript_to_finish
-    find("div.shown-message-body").should be_visible
+    expect(find("div.shown-message-body")).to be_visible
   end
 
   it "should allow user to reply to a message" do
     find("td.subject_column").click
     wait_for_javascript_to_finish
-    page.fill_in 'message[body]', :with => "Test Reply"
+    page.fill_in 'message[body]', with: "Test Reply"
     click_button("Submit")
     wait_for_javascript_to_finish
-    find("td.body_column").should have_text("Test Reply")
+    expect(find("td.body_column")).to have_text("Test Reply")
   end
 
   describe "sending a new notification" do
@@ -61,10 +60,10 @@ describe "notifications page", :js => true do
       wait_for_javascript_to_finish
       find(".new-portal-notification-button").click
       wait_for_javascript_to_finish
-      sleep 3
+      wait_for_javascript_to_finish
       first(".new_notification").click
       wait_for_javascript_to_finish
-      page.should have_text("You can not send a message to yourself.")
+      expect(page).to have_text("You can not send a message to yourself.")
     end
   end
 

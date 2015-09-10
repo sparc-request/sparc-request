@@ -1,6 +1,6 @@
-require "spec_helper"
+require 'rails_helper'
 
-feature "create Service", js: true do
+RSpec.feature "create Service", js: true do
 
   scenario "with ServiceLevelRequest" do
     as_a_user_who_is_logged_into_catalog_manager
@@ -67,6 +67,6 @@ feature "create Service", js: true do
   end
 
   def then_i_should_be_notified_that_the_service_was_successfully_created
-    page.should have_content "Test Service created successfully"
+    expect(page).to have_content "Test Service created successfully"
   end
 end

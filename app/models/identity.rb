@@ -55,8 +55,8 @@ class Identity < ActiveRecord::Base
   has_many :approvals, :dependent => :destroy
   has_many :project_roles, :dependent => :destroy
   has_many :protocols, :through => :project_roles
-  has_many :projects, :through => :project_roles, :source => :protocol, :conditions => "protocols.type = 'Project'"
-  has_many :studies, :through => :project_roles, :source => :protocol, :conditions => "protocols.type = 'Study'"
+  has_many :projects, -> { where("protocols.type = 'Project'")}, :through => :project_roles, :source => :protocol
+  has_many :studies, -> { where("protocols.type = 'Study'")}, :through => :project_roles, :source => :protocol
   has_many :super_users, :dependent => :destroy
   has_many :catalog_managers, :dependent => :destroy
   has_many :clinical_providers, :dependent => :destroy

@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'activerecord-import'
+gem 'activerecord-session_store'
 gem 'acts_as_list', '0.1.9'
 gem 'acts-as-taggable-on'
 gem 'audited-activerecord'

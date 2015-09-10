@@ -89,9 +89,6 @@ GEM
     bullet (4.14.7)
       activesupport (>= 3.0.0)
       uniform_notifier (~> 1.9.0)
-    cache_digests (0.3.1)
-      actionpack (>= 3.2)
-      thread_safe
     capistrano (2.15.6)
       highline
       net-scp (>= 1.0.0)
@@ -430,7 +427,6 @@ DEPENDENCIES
   axlsx_rails
   bluecloth
   bullet
-  cache_digests
   capistrano
   capistrano-ext
   capybara-webkit

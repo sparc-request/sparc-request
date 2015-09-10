@@ -52,7 +52,7 @@ class SubServiceRequest < ActiveRecord::Base
   attr_accessible :nursing_nutrition_approved
   attr_accessible :lab_approved
   attr_accessible :imaging_approved
-  attr_accessible :src_approved
+  attr_accessible :committee_approved
   attr_accessible :requester_contacted_date
   attr_accessible :line_items_attributes
   attr_accessible :subsidy_attributes
@@ -412,8 +412,8 @@ class SubServiceRequest < ActiveRecord::Base
       self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Date.today, :approval_type => "Imaging Approved"})
     end
 
-    if params[:src_approved]
-      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Date.today, :approval_type => "SRC Approved"})
+    if params[:committee_approved]
+      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Date.today, :approval_type => "Committee Approved"})
     end
   end
 

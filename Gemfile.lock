@@ -466,3 +466,6 @@ DEPENDENCIES
   uglifier (>= 1.0.3)
   webmock
   will_paginate
+
+BUNDLED WITH
+   1.10.3

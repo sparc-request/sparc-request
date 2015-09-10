@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150724142718) do
+ActiveRecord::Schema.define(:version => 20150908182153) do
 
   create_table "admin_rates", :force => true do |t|
     t.integer  "line_item_id"
@@ -910,7 +910,7 @@ ActiveRecord::Schema.define(:version => 20150724142718) do
     t.boolean  "nursing_nutrition_approved", :default => false
     t.boolean  "lab_approved",               :default => false
     t.boolean  "imaging_approved",           :default => false
-    t.boolean  "src_approved",               :default => false
+    t.boolean  "committee_approved",         :default => false
     t.boolean  "in_work_fulfillment",        :default => false
     t.string   "routing"
     t.text     "org_tree_display"

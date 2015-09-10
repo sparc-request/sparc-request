@@ -21,7 +21,7 @@
 $("#service_request_status_changes").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/status_changes')) %>");
 $("#service_request_approval_changes").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/approval_changes')) %>");
 $("#service_request_core_approvals").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/core_approvals')) %>");
-$("#service_request_src_approval").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/src_approval')) %>");
+$("#service_request_committee_approval").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/committee_approval')) %>");
 $("#ssr_subsidy_changes").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/subsidy_changes')) %>");
 $(".merged_grand_totals").html("<%= escape_javascript(render(:partial =>'service_calendars/merged_grand_totals', :locals => {:service_request => @service_request, :@protocol => @protocol, :@portal => true})) %>");
 $("#service_request_info").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/service_request_info')) %>");

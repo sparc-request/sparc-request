@@ -1,11 +1,11 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
   describe 'GET /v1/identities.json' do
 
     before do
-      FactoryGirl.create_list(:identity, 5)
+      create_list(:identity, 5)
 
       @identity_ids = Identity.pluck(:id)
     end

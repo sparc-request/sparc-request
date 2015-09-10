@@ -114,7 +114,8 @@ module V1
             :last_epic_push_time,
             :last_epic_push_status,
             :billing_business_manager_static_email,
-            :selected_for_epic
+            :selected_for_epic,
+            :has_cofc
 
     with_options(format_with: :iso_timestamp) do
       expose :start_date

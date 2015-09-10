@@ -48,14 +48,7 @@ module Portal::NotificationsHelper
     new_notification_path(:user_id => user_id)
   end
 
-  def unread_notifications user_id
-    Notification.find_by_user_id(user_id).map do |note|
-      note.messages.reject {|m| m.read }.length
-    end.inject(0){|a,b|a+b}
-  end
-
   def message_hide_or_show(notification, index)
     notification.messages.length - 1 == index ? 'shown' : 'hidden'
   end
-
 end

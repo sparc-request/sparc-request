@@ -18,27 +18,27 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe Document do
+RSpec.describe Document do
   it{ should belong_to :service_request }
   it{ should have_and_belong_to_many :sub_service_requests }
 
   it 'should create a document' do
     doc = Document.create()
-    doc.should be_an_instance_of Document
+    expect(doc).to be_an_instance_of Document
   end
 
   describe 'display_document_type' do
-    let!(:document1) { FactoryGirl.create(:document, doc_type: 'other', doc_type_other: 'support') }
-    let!(:document2) { FactoryGirl.create(:document, doc_type: 'hipaa') }
+    let!(:document1) { create(:document, doc_type: 'other', doc_type_other: 'support') }
+    let!(:document2) { create(:document, doc_type: 'hipaa') }
 
     it 'should display correctly for doc type other' do
-      document1.display_document_type.should eq('Support')
+      expect(document1.display_document_type).to eq('Support')
     end
 
-    it 'should display correctly for typical doc type' do 
-      document2.display_document_type.should eq('HIPAA')
+    it 'should display correctly for typical doc type' do
+      expect(document2.display_document_type).to eq('HIPAA')
     end
   end
 end

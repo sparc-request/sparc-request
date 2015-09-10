@@ -18,18 +18,18 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe Portal::VisitsController do
+RSpec.describe Portal::VisitsController do
   stub_portal_controller
 
-  let!(:institution) { FactoryGirl.create(:institution) }
-  let!(:provider) { FactoryGirl.create(:provider, parent_id: institution.id) }
-  let!(:program) { FactoryGirl.create(:program, parent_id: provider.id) }
-  let!(:core) { FactoryGirl.create(:core, parent_id: program.id) }
+  let!(:institution) { create(:institution) }
+  let!(:provider) { create(:provider, parent_id: institution.id) }
+  let!(:program) { create(:program, parent_id: provider.id) }
+  let!(:core) { create(:core, parent_id: program.id) }
 
   let!(:service) {
-    service = FactoryGirl.create(
+    service = create(
         :service,
         organization: core,
         pricing_map_count: 1)
@@ -37,19 +37,19 @@ describe Portal::VisitsController do
     service
   }
 
-  let!(:project) { project = Protocol.create(FactoryGirl.attributes_for(:protocol)); project.save!(:validate => false); project }
-  let!(:service_request) { service_request = ServiceRequest.create(FactoryGirl.attributes_for(:service_request, protocol_id: project.id)); service_request.save!(:validate => false); service_request }
-  let!(:arm) { FactoryGirl.create(:arm, protocol_id: project.id, visit_count: 0, subject_count: 1) }
+  let!(:project) { project = Protocol.create(attributes_for(:protocol)); project.save!(validate: false); project }
+  let!(:service_request) { service_request = ServiceRequest.create(attributes_for(:service_request, protocol_id: project.id)); service_request.save!(validate: false); service_request }
+  let!(:arm) { create(:arm, protocol_id: project.id, visit_count: 0, subject_count: 1) }
 
   let!(:ssr) {
-    FactoryGirl.create(
+    create(
         :sub_service_request,
         service_request_id: service_request.id,
         organization_id: core.id)
   }
 
   let!(:subsidy) {
-    FactoryGirl.create(
+    create(
         :subsidy,
         sub_service_request_id: ssr.id)
   }
@@ -61,7 +61,7 @@ describe Portal::VisitsController do
   describe 'destroy' do
     context 'we have one line item' do
       let!(:line_item) {
-        FactoryGirl.create(
+        create(
             :line_item,
             service_id: service.id,
             service_request_id: service_request.id,
@@ -79,11 +79,11 @@ describe Portal::VisitsController do
           format: :js,
           id: visit.id,
         }.with_indifferent_access
-        assigns(:visit).should eq visit
-        assigns(:sub_service_request).should eq ssr
-        assigns(:service_request).should eq service_request
-        assigns(:subsidy).should eq subsidy
-        assigns(:candidate_per_patient_per_visit).should eq [ service ]
+        expect(assigns(:visit)).to eq visit
+        expect(assigns(:sub_service_request)).to eq ssr
+        expect(assigns(:service_request)).to eq service_request
+        expect(assigns(:subsidy)).to eq subsidy
+        expect(assigns(:candidate_per_patient_per_visit)).to eq [ service ]
       end
 
       it 'should destroy the visit' do
@@ -95,7 +95,7 @@ describe Portal::VisitsController do
       end
 
       it 'should fix the pi contribution on the subsidy' do
-        Subsidy.any_instance.stub(:fix_pi_contribution) {
+        allow_any_instance_of(Subsidy).to receive(:fix_pi_contribution) {
           subsidy.update_attributes(pi_contribution: 12)
         }
 
@@ -104,13 +104,13 @@ describe Portal::VisitsController do
           id: visit.id,
         }.with_indifferent_access
         subsidy.reload
-        subsidy.pi_contribution.should eq 12
+        expect(subsidy.pi_contribution).to eq 12
       end
     end
 
     context 'we have multiple line items' do
       let!(:line_item1) {
-        FactoryGirl.create(
+        create(
             :line_item,
             service_id: service.id,
             service_request_id: service_request.id,
@@ -118,7 +118,7 @@ describe Portal::VisitsController do
       }
 
       let!(:line_item2) {
-        FactoryGirl.create(
+        create(
             :line_item,
             service_id: service.id,
             service_request_id: service_request.id,
@@ -126,7 +126,7 @@ describe Portal::VisitsController do
       }
 
       let!(:line_item3) {
-        FactoryGirl.create(
+        create(
             :line_item,
             service_id: service.id,
             service_request_id: service_request.id,
@@ -154,9 +154,9 @@ describe Portal::VisitsController do
           expect { v.reload }.to raise_exception(ActiveRecord::RecordNotFound)
         end
 
-        LineItemsVisit.for(arm, line_item1).visits.count.should eq 9
-        LineItemsVisit.for(arm, line_item2).visits.count.should eq 9
-        LineItemsVisit.for(arm, line_item3).visits.count.should eq 9
+        expect(LineItemsVisit.for(arm, line_item1).visits.count).to eq 9
+        expect(LineItemsVisit.for(arm, line_item2).visits.count).to eq 9
+        expect(LineItemsVisit.for(arm, line_item3).visits.count).to eq 9
       end
 
       it 'should update visit count' do
@@ -174,9 +174,8 @@ describe Portal::VisitsController do
         }.with_indifferent_access
 
         arm.reload
-        arm.visit_count.should eq 9
+        expect(arm.visit_count).to eq 9
       end
     end
   end
 end
-

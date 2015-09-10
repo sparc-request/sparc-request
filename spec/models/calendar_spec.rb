@@ -18,16 +18,16 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe Calendar do
+RSpec.describe Calendar do
   let_there_be_lane
   let_there_be_j
   build_service_request_with_study
 
   it "should have created a calendar when the subjects were created" do
     arm1.populate_subjects
-    arm1.subjects.first.calendar.should_not eq(nil)
+    expect(arm1.subjects.first.calendar).not_to eq(nil)
   end
 
   before :each do
@@ -41,7 +41,7 @@ describe Calendar do
       arm1.populate_subjects
       calendar = arm1.subjects.first.calendar
       calendar.populate(arm1.visit_groups)
-      calendar.appointments.should_not eq([])
+      expect(calendar.appointments).not_to eq([])
     end
   end
 end

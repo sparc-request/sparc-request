@@ -38,7 +38,7 @@ $(document).ready ->
         other          : ['.credentials_other']
 
     ready: ->
-        
+
       $('.associated-user-button').live('click', ->
         if $(this).data('permission')
           $('.add-associated-user-dialog').dialog('open')
@@ -115,11 +115,12 @@ $(document).ready ->
             alert(alert_message1)
           else
             if confirm(confirm_message)
+              # Seems like the only way to pass parameters when performing a DELETE ajax
+              # request is through the URL.
               $.ajax
                 dataType: 'script'
                 type: 'delete'
-                data: {sub_service_request_id: sub_service_request_id}
-                url: "/portal/associated_users/#{pr_id}/"
+                url: if sub_service_request_id then "/portal/associated_users/#{pr_id}?sub_service_request_id=#{sub_service_request_id}" else "/portal/associated_users/#{pr_id}"
                 success: ->
                   if sub_service_request_id
                     # Nothing
@@ -212,11 +213,12 @@ $(document).ready ->
       })
 
     createTip: (element) ->
-      if ($('#tip').length == 0) then $('<div>')
-        .html('<span>Drag and drop this item within a project to add.</span><span class="arrow"></span>')
-        .attr('id', 'tip')
-        .css({ left: element.pageX + 30, top: element.pageY - 16 })
-        .appendTo('body').fadeIn(2000)
+      if $('#tip').length == 0
+        $('<div>').
+          html('<span>Drag and drop this item within a project to add.</span><span class="arrow"></span>').
+          attr('id', 'tip').
+          css({ left: element.pageX + 30, top: element.pageY - 16 }).
+          appendTo('body').fadeIn(2000)
       else null
 
     disableSubmitButton: (containing_text, change_to) ->

@@ -18,14 +18,14 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe 'edit an institution', :js => true do
+RSpec.describe 'edit an institution', js: true do
 
 
   before :each do
     default_catalog_manager_setup
-    Tag.create(:name => "ctrc")
+    Tag.create(name: "ctrc")
     click_link('Medical University of South Carolina')
   end
 
@@ -33,15 +33,15 @@ describe 'edit an institution', :js => true do
   context 'successfully update an existing institution' do
     it "should successfully edit and save the institution" do
       # General Information fields
-      fill_in 'institution_abbreviation', :with => 'GreatestInstitution'
-      fill_in 'institution_description', :with => 'Description'
-      fill_in 'institution_ack_language', :with => 'Language'
-      fill_in 'institution_order', :with => '1'
-      select('blue', :from => 'institution_css_class')
+      fill_in 'institution_abbreviation', with: 'GreatestInstitution'
+      fill_in 'institution_description', with: 'Description'
+      fill_in 'institution_ack_language', with: 'Language'
+      fill_in 'institution_order', with: '1'
+      select('blue', from: 'institution_css_class')
       uncheck('institution_is_available')
-      
+
       first("#save_button").click
-      page.should have_content( 'Medical University of South Carolina saved successfully' )
+      expect(page).to have_content( 'Medical University of South Carolina saved successfully' )
     end
 
 
@@ -52,15 +52,15 @@ describe 'edit an institution', :js => true do
       end
 
       it "should list the tags" do
-        page.should have_css("#institution_tag_list_ctrc")
+        expect(page).to have_css("#institution_tag_list_ctrc")
       end
 
       it "should be able to check a tag box" do
         find('#institution_tag_list_ctrc').click
         first("#save_button").click
-        page.should have_content( 'Medical University of South Carolina saved successfully' )
-        find('#institution_tag_list_ctrc').should be_checked
-        @institution.tag_list.should eq(['ctrc'])
+        expect(page).to have_content( 'Medical University of South Carolina saved successfully' )
+        expect(find('#institution_tag_list_ctrc')).to be_checked
+        expect(@institution.tag_list).to eq(['ctrc'])
       end
     end
 
@@ -69,7 +69,7 @@ describe 'edit an institution', :js => true do
       it "should show user rights section" do
         find('#user_rights').click
         sleep 3
-        find('#su_info').should be_visible
+        expect(find('#su_info')).to be_visible
       end
     end
   end

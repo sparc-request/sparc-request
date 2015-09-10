@@ -18,28 +18,27 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 # require 'extensions/float'
 
-describe 'Float' do
+RSpec.describe 'Float' do
   context "testing decimal extension methods" do
     describe "floor_to" do
       it "should cut off any decimals after the number you pass in" do
-        10.21341.floor_to(2).should eq(10.21)
+        expect(10.21341.floor_to(2)).to eq(10.21)
       end
 
       it "should cut off any decimals after the number you pass in" do
-        10.21341.floor_to(3).should eq(10.213)
+        expect(10.21341.floor_to(3)).to eq(10.213)
       end
 
       it "should cut off any decimals after the number you pass in" do
-        10.21.floor_to(3).should eq(10.210)
+        expect(10.21.floor_to(3)).to eq(10.210)
       end
 
       it "should cut off any decimals after the number you pass in" do
-        10.2121212121.floor_to(8).should eq(10.21212121)
+        expect(10.2121212121.floor_to(8)).to eq(10.21212121)
       end
     end
   end
 end
-

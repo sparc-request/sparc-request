@@ -49,6 +49,6 @@
           = f.label :epic_access, 'Yes'
 
     %td= f.radio_button :project_rights, 'none', :disabled => !project_role.can_switch_to?()
-    %td= f.radio_button :project_rights, 'view',:disabled => !project_role.can_switch_to?()
+    %td= f.radio_button :project_rights, 'view', :disabled => !project_role.can_switch_to?()
     %td= f.radio_button :project_rights, 'request', :disabled => !project_role.can_switch_to?()
     %td= f.radio_button :project_rights, 'approve'

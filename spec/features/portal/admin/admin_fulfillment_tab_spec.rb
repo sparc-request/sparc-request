@@ -338,11 +338,11 @@ RSpec.describe "admin fulfillment tab", js: true do
       end
 
       it 'should remove visits' do
-        visits = Visit.find(:all).size
+        visits = Visit.all.size
         find('.delete_visit_link').click
         wait_for_javascript_to_finish
 
-        expect(Visit.find(:all).size).to eq(visits - 1)
+        expect(Visit.all.size).to eq(visits - 1)
       end
 
       context 'removing a visit on a request that is in clinical work fulfillment' do
@@ -403,7 +403,7 @@ RSpec.describe "admin fulfillment tab", js: true do
       find('#submit_arm').click()
       wait_for_javascript_to_finish
       study.reload
-      number_of_arms = Arm.find(:all).size
+      number_of_arms = Arm.all.size
       select "Arm and a leg", from: "arm_id"
       wait_for_javascript_to_finish
 
@@ -412,7 +412,7 @@ RSpec.describe "admin fulfillment tab", js: true do
       end
 
       wait_for_javascript_to_finish
-      expect(Arm.find(:all).size).to eq(number_of_arms - 1)
+      expect(Arm.all.size).to eq(number_of_arms - 1)
     end
 
     it 'should not allow you to delete the last arm' do
@@ -422,17 +422,17 @@ RSpec.describe "admin fulfillment tab", js: true do
       end
       wait_for_javascript_to_finish
 
-      number_of_arms = Arm.find(:all).size
+      number_of_arms = Arm.all.size
       select "Arm", from: "arm_id"
       accept_alert("You can't delete the last arm while Per-Patient/Per Visit services still exist.") do
         find('.remove_arm_link').click()
       end
       wait_for_javascript_to_finish
-      expect(Arm.find(:all).size).to eq(number_of_arms)
+      expect(Arm.all.size).to eq(number_of_arms)
     end
 
     it 'should not allow you to delete an arm that has patient data' do
-      number_of_arms = Arm.find(:all).size
+      number_of_arms = Arm.all.size
       subject = arm1.subjects.first
       # appointment = create(:appointment, calendar_id: subject.calendar.id)
       sub_service_request.update_attributes(in_work_fulfillment: true)
@@ -452,7 +452,7 @@ RSpec.describe "admin fulfillment tab", js: true do
         find('.remove_arm_link').click()
       end
       wait_for_javascript_to_finish
-      expect(Arm.find(:all).size).to eq(number_of_arms)
+      expect(Arm.all.size).to eq(number_of_arms)
     end
 
   end

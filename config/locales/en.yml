@@ -174,7 +174,12 @@ en:
         answer_text: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARC Request uses this data to calculate your total overall indirect costs."
       - question_text: "I\\'m stuck! Who can I contact for assistance with SPARC Request?"
         answer_text: "The SUCCESS Center is happy to assist you! Please contact us at <a href=\"mailto:success@musc.edu\">success@musc.edu</a> or (843) 792-3357."
-
+  # indirect cost rates, default values used to prepopulate forms
+  indirect_cost_rates:
+    internal_and_college: "0"
+    industry: "30"
+    foundation_and_investigator: "25"
+    federal: "49.5"
   # new/editing projects
   sr_project:
     message: "Before you can complete a service request, please tell us more about your research project.  This information will be used by our staff to decide the best way to process your request."
@@ -848,9 +853,9 @@ en:
       nursing: "Nursing/Nutrition Approved"
       lab: "Lab Approved"
       imaging: "Imaging Approved"
-    src_approval:
-      headar: "SRC Approval"
-      label: "SRC Approved"
+    committee_approval:
+      headar: "Committee Approval"
+      label: "Committee Approved"
     status_changes:
       header: "Status Changes"
       date: "Date Changed"

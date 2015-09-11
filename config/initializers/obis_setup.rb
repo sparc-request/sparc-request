@@ -59,7 +59,8 @@ begin
   CURRENT_API_VERSION               = application_config['current_api_version']
   BUG_ENHANCEMENT_URL           = application_config['bug_enhancement_url'] || nil
   CLINICAL_WORK_FULFILLMENT_URL = application_config['clinical_work_fulfillment_url'] || nil
-
+  FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER = application_config['fulfillment_contingent_on_catalog_manager'] || nil
+    
   if LOCALE_OVERRIDE
     I18n.available_locales = [:en, LOCALE_OVERRIDE]
     I18n.default_locale = LOCALE_OVERRIDE

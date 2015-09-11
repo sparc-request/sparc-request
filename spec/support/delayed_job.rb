@@ -7,6 +7,8 @@ end
 
 RSpec.configure do |config|
 
+  config.include DelayedJobHelpers
+
   config.before(:each, delay: true) do
     Delayed::Worker.delay_jobs = true
   end

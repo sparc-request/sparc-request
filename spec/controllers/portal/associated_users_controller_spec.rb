@@ -1,3 +1,4 @@
+# coding: utf-8
 # Copyright © 2011 MUSC Foundation for Research Development
 # All rights reserved.
 
@@ -18,21 +19,25 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe Portal::AssociatedUsersController do
+RSpec.describe Portal::AssociatedUsersController do
   stub_portal_controller
 
   let_there_be_lane
   let_there_be_j
   build_service_request_with_project
 
-  let!(:identity) { FactoryGirl.create(:identity) }
-  let!(:identity2) { FactoryGirl.create(:identity) }
-  let!(:project_role) { FactoryGirl.create(:project_role, protocol_id: project.id, identity_id: identity.id, project_rights: "approve", role: "pi") }
-  let!(:service_request) { FactoryGirl.create_without_validation(:service_request) }
-  let!(:sub_service_request) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id ) }
+  let!(:identity) { create(:identity) }
+  let!(:identity2) { create(:identity) }
+  let!(:project_role) { create(:project_role, protocol_id: project.id, identity_id: identity.id, project_rights: "approve", role: "pi") }
+  let!(:service_request) { FactoryGirl.create(:service_request_without_validations) }
+  let!(:sub_service_request) { create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id ) }
 
+  before :each do
+    session[:identity_id] = identity.id
+  end
+    
   describe 'GET show' do
     it 'should set user if user is an associated user' do
       get(:show, {
@@ -41,7 +46,7 @@ describe Portal::AssociatedUsersController do
         protocol_id: project.id,
       }.with_indifferent_access)
 
-      assigns(:user).should eq identity
+      expect(assigns(:user)).to eq identity
     end
 
     it 'should not set user if user is not an associated user' do
@@ -51,7 +56,7 @@ describe Portal::AssociatedUsersController do
         protocol_id: project.id,
       }.with_indifferent_access)
 
-      assigns(:user).should eq nil
+      expect(assigns(:user)).to eq nil
     end
   end
 
@@ -63,7 +68,7 @@ describe Portal::AssociatedUsersController do
         identity_id: identity.id,
         protocol_id: project.id,
       }.with_indifferent_access)
-      assigns(:identity).should eq identity
+      expect(assigns(:identity)).to eq identity
     end
 
     it 'should set protocol_role' do
@@ -73,7 +78,7 @@ describe Portal::AssociatedUsersController do
         identity_id: identity.id,
         protocol_id: project.id,
       }.with_indifferent_access)
-      assigns(:protocol_role).should eq project.project_roles[0]
+      expect(assigns(:protocol_role)).to eq project.project_roles[0]
     end
 
     it 'should set sub_service_request if sub_service_request_id is set' do
@@ -84,7 +89,7 @@ describe Portal::AssociatedUsersController do
         protocol_id: project.id,
         sub_service_request_id: sub_service_request.id,
       }.with_indifferent_access)
-      assigns(:sub_service_request).should eq sub_service_request
+      expect(assigns(:sub_service_request)).to eq sub_service_request
     end
   end
 
@@ -96,7 +101,7 @@ describe Portal::AssociatedUsersController do
         user_id: identity.id,
         protocol_id: project.id,
       }.with_indifferent_access)
-      assigns(:identity).should eq identity
+      expect(assigns(:identity)).to eq identity
     end
 
     it 'should set protocol_role' do
@@ -106,7 +111,7 @@ describe Portal::AssociatedUsersController do
         user_id: identity.id,
         protocol_id: project.id,
       }.with_indifferent_access)
-      assigns(:protocol_role).should_not eq project.project_roles[0]
+      expect(assigns(:protocol_role)).to_not eq project.project_roles[0]
       assigns(:protocol_role).identity eq identity
     end
 
@@ -140,11 +145,11 @@ describe Portal::AssociatedUsersController do
     it "should update the associated user" do
       # TODO
     end
-  
+
     it "should fix the booleans" do
       # TODO
     end
-  
+
     it "should change the proxy rights" do
       # TODO
     end
@@ -163,15 +168,15 @@ describe Portal::AssociatedUsersController do
   # render_views
   #
   # before(:each) do
-  #   @protocol = make_project :short_title => "Obvious Waste of Taxpayer Dollars"
-  #   @user = make_user :first_name => "Gunnels", :last_name => "Marcus", :email => "chester@wester.bear"
-  #   @new_user = make_user :first_name => "Cates", :last_name => "Andronicus", :email => "catesa@musc.edu"
+  #   @protocol = make_project short_title: "Obvious Waste of Taxpayer Dollars"
+  #   @user = make_user first_name: "Gunnels", last_name: "Marcus", email: "chester@wester.bear"
+  #   @new_user = make_user first_name: "Cates", last_name: "Andronicus", email: "catesa@musc.edu"
   #   attach_user_to_project(@user, @protocol, 'pi')
   # end
   #
   # describe "GET protocol/:id/associated_users/new" do
   #   it "should attach the correct project on new" do
-  #     get 'new', :protocol_id => @protocol['id']
+  #     get 'new', protocol_id: @protocol['id']
   #     assigns[:protocol].id.should eq(@protocol['id'])
   #   end
   # end
@@ -181,7 +186,7 @@ describe Portal::AssociatedUsersController do
   #   describe "with valid params" do
   #
   #     before(:each) do
-  #       post 'create', :protocol_id => @protocol['id'], :associated_user => @new_user
+  #       post 'create', protocol_id: @protocol['id'], associated_user: @new_user
   #     end
   #
   #     it "should create the associated user relationship" do
@@ -207,7 +212,7 @@ describe Portal::AssociatedUsersController do
   #
   #     before(:each) do
   #       pr_id = JSON.parse(RestClient.get("http://localhost:4567/obisentity/projects/#{@protocol['id']}/relationships")).first['relationship_id']
-  #       put 'update', :protocol_id => @protocol['id'], :id => @user['id'], :associated_user => {:pr_id => pr_id, :subspecialty => '3421', :auth_change_study => 'true'}
+  #       put 'update', protocol_id: @protocol['id'], id: @user['id'], associated_user: {pr_id: pr_id, subspecialty: '3421', auth_change_study: 'true'}
   #     end
   #
   #     it "should update the associated user" do
@@ -232,7 +237,7 @@ describe Portal::AssociatedUsersController do
   #
   #   it "should delete the associated user relationship" do
   #     pr_id = JSON.parse(RestClient.get("http://localhost:4567/obisentity/projects/#{@protocol['id']}/relationships")).first['relationship_id']
-  #     delete 'destroy', :protocol_id => @protocol['id'], :id => pr_id
+  #     delete 'destroy', protocol_id: @protocol['id'], id: pr_id
   #     JSON.parse(RestClient.get("http://localhost:4567/obisentity/projects/#{@protocol['id']}/relationships")).count.should eq(0)
   #   end
   #

@@ -18,9 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe "Ask a question", :js => true do
+RSpec.describe "Ask a question", js: true do
   before :each do
     visit root_path
     find('.ask-a-question-button').click()
@@ -29,7 +29,7 @@ describe "Ask a question", :js => true do
   describe 'clicking the button' do
 
     it 'should display the ask a question form' do
-      find_by_id('ask-a-question-form').visible?.should eq(true)
+      expect(find_by_id('ask-a-question-form').visible?).to eq(true)
     end
   end
 
@@ -40,15 +40,15 @@ describe "Ask a question", :js => true do
       page.find('#quick_question_email').set 'juan@gmail.com'
       find('#submit_question').click()
       wait_for_javascript_to_finish
-      find('#ask-a-question-form', :visible => false).visible?.should eq(false)
+      expect(find('#ask-a-question-form', visible: false).visible?).to eq(false)
     end
 
     it "should require an email" do
       find_by_id('quick_question_email').click()
       find('#submit_question').click()
       wait_for_javascript_to_finish
-      find_by_id('ask-a-question-form').visible?.should eq(true)
-      page.should have_content("Valid email address required.")
+      expect(find_by_id('ask-a-question-form').visible?).to eq(true)
+      expect(page).to have_content("Valid email address required.")
     end
 
     it "should display the error and not allow the form to submit if the email is not valid" do
@@ -56,8 +56,8 @@ describe "Ask a question", :js => true do
       page.find('#quick_question_email').set 'Pappy'
       find('#submit_question').click()
       wait_for_javascript_to_finish
-      find_by_id('ask-a-question-form').visible?.should eq(true)
-      page.should have_content("Valid email address required.")
+      expect(find_by_id('ask-a-question-form').visible?).to eq(true)
+      expect(page).to have_content("Valid email address required.")
     end
   end
 end

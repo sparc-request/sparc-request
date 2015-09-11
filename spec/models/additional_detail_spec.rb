@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe AdditionalDetail do
+RSpec.describe AdditionalDetail do
 
   before :each do
     @institution = Institution.new

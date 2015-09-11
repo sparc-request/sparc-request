@@ -18,31 +18,31 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe SearchController do
+RSpec.describe SearchController do
   stub_controller
 
   describe 'GET services' do
-    let!(:identity) { FactoryGirl.create(:identity) }
-    let!(:institution) { FactoryGirl.create(:institution) }
-    let!(:provider) { FactoryGirl.create(:provider, parent_id: institution.id) }
-    let!(:program) { FactoryGirl.create(:program, parent_id: provider.id) }
-    let!(:core) { FactoryGirl.create(:core, parent_id: program.id) }
-    let!(:core2) { FactoryGirl.create(:core, parent_id: program.id) }
-    let!(:unavailable_core) { FactoryGirl.create(:core, parent_id: program.id, is_available: false) }
+    let!(:identity)             { create(:identity) }
+    let!(:institution)          { create(:institution) }
+    let!(:provider)             { create(:provider, parent_id: institution.id) }
+    let!(:program)              { create(:program, parent_id: provider.id) }
+    let!(:core)                 { create(:core, parent_id: program.id) }
+    let!(:core2)                { create(:core, parent_id: program.id) }
+    let!(:unavailable_core)     { create(:core, parent_id: program.id, is_available: false) }
 
-    let!(:service_request) { FactoryGirl.create_without_validation(:service_request) }
+    let!(:service_request)      { FactoryGirl.create(:service_request_without_validations) }
 
-    let!(:core_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
-    let!(:core2_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
-    let!(:program_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id) }
-    let!(:provider_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: provider.id) }
-    let!(:institution_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: institution.id) }
-    let!(:unavailable_core_ssr) { FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: unavailable_core.id) }
+    let!(:core_ssr)             { create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
+    let!(:core2_ssr)            { create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
+    let!(:program_ssr)          { create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id) }
+    let!(:provider_ssr)         { create(:sub_service_request, service_request_id: service_request.id, organization_id: provider.id) }
+    let!(:institution_ssr)      { create(:sub_service_request, service_request_id: service_request.id, organization_id: institution.id) }
+    let!(:unavailable_core_ssr) { create(:sub_service_request, service_request_id: service_request.id, organization_id: unavailable_core.id) }
 
     let!(:service1a) {
-      service = FactoryGirl.create(
+      service = create(
           :service,
           name: 'service1a',
           abbreviation: 'ser1a',
@@ -53,7 +53,7 @@ describe SearchController do
     }
 
     let!(:service1b) {
-      service = FactoryGirl.create(
+      service = create(
           :service,
           name: 'service1b',
           abbreviation: 'ser1b',
@@ -64,7 +64,7 @@ describe SearchController do
     }
 
     let!(:service2) {
-      service = FactoryGirl.create(
+      service = create(
           :service,
           name: 'service2',
           abbreviation: 'ser2',
@@ -75,7 +75,7 @@ describe SearchController do
     }
 
     let!(:service3) {
-      service = FactoryGirl.create(
+      service = create(
           :service,
           name: 'service3',
           abbreviation: 'ser3',
@@ -85,7 +85,7 @@ describe SearchController do
     }
 
     let!(:unavailable_service) {
-      service = FactoryGirl.create(
+      service = create(
           :service,
           name: 'unavailable service',
           abbreviation: 'unavail',
@@ -98,38 +98,38 @@ describe SearchController do
       session['service_request_id'] = service_request.id
 
       get :services, {
-        :format => :js,
-        :id => nil,
-        :term => 'service2',
+        format: :js,
+        id: nil,
+        term: 'service2',
       }.with_indifferent_access
 
       results = JSON.parse(response.body)
 
       parents = core2.parents.reverse + [ core2 ]
 
-      results.count.should eq 1
-      results[0]['parents'].should eq parents.map { |p| p.abbreviation }.join(' | ')
-      results[0]['label'].should eq 'service2'
-      results[0]['value'].should eq service2.id
-      results[0]['description'].should eq 'this is service 2'
-      results[0]['sr_id'].should eq service_request.id
+      expect(results.count).to eq 1
+      expect(results[0]['parents']).to eq parents.map { |p| p.abbreviation }.join(' | ')
+      expect(results[0]['label']).to eq 'service2'
+      expect(results[0]['value']).to eq service2.id
+      expect(results[0]['description']).to eq 'this is service 2'
+      expect(results[0]['sr_id']).to eq service_request.id
     end
 
     it 'should find by cpt code' do
       session['service_request_id'] = service_request.id
 
       get :services, {
-        :format => :js,
-        :id => nil,
-        :term => '123',
+        format: :js,
+        id: nil,
+        term: '123',
       }.with_indifferent_access
 
       results = JSON.parse(response.body)
 
-      results.count.should eq 1
-      results[0]['label'].should eq 'service1a'
-      results[0]['value'].should eq service1a.id
-      results[0]['description'].should eq 'this is service 1a'
+      expect(results.count).to eq 1
+      expect(results[0]['label']).to eq 'service1a'
+      expect(results[0]['value']).to eq service1a.id
+      expect(results[0]['description']).to eq 'this is service 1a'
 
     end
 
@@ -137,44 +137,44 @@ describe SearchController do
       session['service_request_id'] = service_request.id
 
       get :services, {
-        :format => :js,
-        :id => nil,
-        :term => 'service1',
+        format: :js,
+        id: nil,
+        term: 'service1',
       }.with_indifferent_access
 
       results = JSON.parse(response.body)
 
-      results.count.should eq 2
+      expect(results.count).to eq 2
 
       parents1 = core.parents.reverse + [ core ]
-      results[0]['parents'].should eq parents1.map { |p| p.abbreviation }.join(' | ')
-      results[0]['label'].should eq 'service1a'
-      results[0]['value'].should eq service1a.id
-      results[0]['description'].should eq 'this is service 1a'
-      results[0]['sr_id'].should eq service_request.id
+      expect(results[0]['parents']).to eq parents1.map { |p| p.abbreviation }.join(' | ')
+      expect(results[0]['label']).to eq 'service1a'
+      expect(results[0]['value']).to eq service1a.id
+      expect(results[0]['description']).to eq 'this is service 1a'
+      expect(results[0]['sr_id']).to eq service_request.id
 
       parents2 = core.parents.reverse + [ core ]
-      results[1]['parents'].should eq parents2.map { |p| p.abbreviation }.join(' | ')
-      results[1]['label'].should eq 'service1b'
-      results[1]['value'].should eq service1b.id
-      results[1]['description'].should eq 'this is service 1b'
-      results[1]['sr_id'].should eq service_request.id
+      expect(results[1]['parents']).to eq parents2.map { |p| p.abbreviation }.join(' | ')
+      expect(results[1]['label']).to eq 'service1b'
+      expect(results[1]['value']).to eq service1b.id
+      expect(results[1]['description']).to eq 'this is service 1b'
+      expect(results[1]['sr_id']).to eq service_request.id
     end
 
     it 'should return no results if no service matches' do
       session['service_request_id'] = service_request.id
 
       get :services, {
-        :format => :js,
-        :id => nil,
-        :term => 'service5',
+        format: :js,
+        id: nil,
+        term: 'service5',
       }.with_indifferent_access
 
       results = JSON.parse(response.body)
 
       parents = core2.parents.reverse + [ core2 ]
 
-      results.should eq [ { 'label' => 'No Results' } ]
+      expect(results).to eq [ { 'label' => 'No Results' } ]
     end
 
     it "should not return a service whose organization is not a parent of the sub service request's organization" do
@@ -182,16 +182,16 @@ describe SearchController do
       session['sub_service_request_id'] = core_ssr.id
 
       get :services, {
-        :format => :js,
-        :id => nil,
-        :term => 'service2', # service2's parent is core2
+        format: :js,
+        id: nil,
+        term: 'service2', # service2's parent is core2
       }.with_indifferent_access
 
       results = JSON.parse(response.body)
 
       parents = core2.parents.reverse + [ core2 ]
 
-      results.should eq [ { 'label' => 'No Results' } ]
+      expect(results).to eq [ { 'label' => 'No Results' } ]
     end
 
     it "should return a service whose organization is a parent of the sub service request's organization" do
@@ -199,21 +199,21 @@ describe SearchController do
       session['sub_service_request_id'] = core2.id
 
       get :services, {
-        :format => :js,
-        :id => nil,
-        :term => 'service2', # service2's parent is core2
+        format: :js,
+        id: nil,
+        term: 'service2', # service2's parent is core2
       }.with_indifferent_access
 
       results = JSON.parse(response.body)
 
       parents = core2.parents.reverse + [ core2 ]
 
-      results.count.should eq 1
-      results[0]['parents'].should eq parents.map { |p| p.abbreviation }.join(' | ')
-      results[0]['label'].should eq 'service2'
-      results[0]['value'].should eq service2.id
-      results[0]['description'].should eq 'this is service 2'
-      results[0]['sr_id'].should eq service_request.id
+      expect(results.count).to eq 1
+      expect(results[0]['parents']).to eq parents.map { |p| p.abbreviation }.join(' | ')
+      expect(results[0]['label']).to eq 'service2'
+      expect(results[0]['value']).to eq service2.id
+      expect(results[0]['description']).to eq 'this is service 2'
+      expect(results[0]['sr_id']).to eq service_request.id
     end
 
     it 'should not return a service that is not available' do
@@ -221,20 +221,20 @@ describe SearchController do
       session['sub_service_request_id'] = unavailable_core_ssr.id
 
       get :services, {
-        :format => :json,
-        :id => nil,
-        :term => 'unavailable_core',
+        format: :json,
+        id: nil,
+        term: 'unavailable_core',
       }.with_indifferent_access
 
       results = JSON.parse(response.body)
 
-      results.should eq [ { 'label' => 'No Results' } ]
+      expect(results).to eq [ { 'label' => 'No Results' } ]
     end
   end
 
   describe 'GET identities' do
     let!(:identity) {
-      identity = FactoryGirl.create(
+      identity = create(
           :identity,
           first_name:        'Justin',
           last_name:         'Frankel',
@@ -252,7 +252,7 @@ describe SearchController do
     }
 
     let!(:identity2) {
-      identity = FactoryGirl.create(
+      identity = create(
           :identity,
           first_name:        'John',
           last_name:         'McAfee',
@@ -269,67 +269,66 @@ describe SearchController do
     }
 
     it 'should return one instance if search returns one instance' do
-      Identity.stub(:search) { [ identity ] }
-      Identity.should_receive(:search).with('search term')
+      allow(Identity).to receive(:search) { [ identity ] }
+      expect(Identity).to receive(:search).with('search term')
 
       get :identities, {
-        :format => :json,
-        :id => nil,
-        :term => 'search term',
+        format: :json,
+        id: nil,
+        term: 'search term',
       }.with_indifferent_access
 
       results = JSON.parse(response.body)
 
-      results.length.should eq 1
+      expect(results.length).to eq 1
 
-      results[0]['label'].should              eq 'Justin Frankel (burn@nullsoft.com)'
-      results[0]['value'].should              eq identity.id
-      results[0]['email'].should              eq 'burn@nullsoft.com'
-      results[0]['institution'].should        eq 'Nullsoft'
-      results[0]['phone'].should              eq '555-1212'
-      results[0]['era_commons_name'].should   eq 'huh?'
-      results[0]['college'].should            eq 'Winamp'
-      results[0]['department'].should         eq 'Awesomeness'
-      results[0]['credentials'].should        eq 'Master Hacker'
-      results[0]['credentials_other'].should  eq 'Irc Junkie'
+      expect(results[0]['label']).to              eq 'Justin Frankel (burn@nullsoft.com)'
+      expect(results[0]['value']).to              eq identity.id
+      expect(results[0]['email']).to              eq 'burn@nullsoft.com'
+      expect(results[0]['institution']).to        eq 'Nullsoft'
+      expect(results[0]['phone']).to              eq '555-1212'
+      expect(results[0]['era_commons_name']).to   eq 'huh?'
+      expect(results[0]['college']).to            eq 'Winamp'
+      expect(results[0]['department']).to         eq 'Awesomeness'
+      expect(results[0]['credentials']).to        eq 'Master Hacker'
+      expect(results[0]['credentials_other']).to  eq 'Irc Junkie'
     end
 
     it 'should return two instances if search returns two instances' do
-      Identity.stub(:search) { [ identity, identity2 ] }
-      Identity.should_receive(:search).with('search term')
+      allow(Identity).to receive(:search) { [ identity, identity2 ] }
+      expect(Identity).to receive(:search).with('search term')
 
       get :identities, {
-        :format => :json,
-        :id => nil,
-        :term => 'search term',
+        format: :json,
+        id: nil,
+        term: 'search term',
       }.with_indifferent_access
 
       results = JSON.parse(response.body)
 
-      results.length.should eq 2
+      expect(results.length).to eq 2
 
-      results[0]['label'].should              eq 'Justin Frankel (burn@nullsoft.com)'
-      results[0]['value'].should              eq identity.id
-      results[0]['email'].should              eq 'burn@nullsoft.com'
-      results[0]['institution'].should        eq 'Nullsoft'
-      results[0]['phone'].should              eq '555-1212'
-      results[0]['era_commons_name'].should   eq 'huh?'
-      results[0]['college'].should            eq 'Winamp'
-      results[0]['department'].should         eq 'Awesomeness'
-      results[0]['credentials'].should        eq 'Master Hacker'
-      results[0]['credentials_other'].should  eq 'Irc Junkie'
+      expect(results[0]['label']).to              eq 'Justin Frankel (burn@nullsoft.com)'
+      expect(results[0]['value']).to              eq identity.id
+      expect(results[0]['email']).to              eq 'burn@nullsoft.com'
+      expect(results[0]['institution']).to        eq 'Nullsoft'
+      expect(results[0]['phone']).to              eq '555-1212'
+      expect(results[0]['era_commons_name']).to   eq 'huh?'
+      expect(results[0]['college']).to            eq 'Winamp'
+      expect(results[0]['department']).to         eq 'Awesomeness'
+      expect(results[0]['credentials']).to        eq 'Master Hacker'
+      expect(results[0]['credentials_other']).to  eq 'Irc Junkie'
 
       # TODO: should this be "Mcafee" or "McAfee"?
-      results[1]['label'].should              eq 'John Mcafee (john@mcafee.com)'
-      results[1]['value'].should              eq identity2.id
-      results[1]['email'].should              eq 'john@mcafee.com'
-      results[1]['institution'].should        eq 'McAfee'
-      results[1]['phone'].should              eq '867-5309'
-      results[1]['era_commons_name'].should   eq 'wtf?'
-      results[1]['college'].should            eq 'Roanoke College'
-      results[1]['credentials'].should        eq 'Running from the authorities'
-      results[1]['credentials_other'].should  eq 'Dangerous hobbies'
+      expect(results[1]['label']).to              eq 'John Mcafee (john@mcafee.com)'
+      expect(results[1]['value']).to              eq identity2.id
+      expect(results[1]['email']).to              eq 'john@mcafee.com'
+      expect(results[1]['institution']).to        eq 'McAfee'
+      expect(results[1]['phone']).to              eq '867-5309'
+      expect(results[1]['era_commons_name']).to   eq 'wtf?'
+      expect(results[1]['college']).to            eq 'Roanoke College'
+      expect(results[1]['credentials']).to        eq 'Running from the authorities'
+      expect(results[1]['credentials_other']).to  eq 'Dangerous hobbies'
     end
   end
 end
-

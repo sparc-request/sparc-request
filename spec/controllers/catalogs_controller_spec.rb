@@ -18,17 +18,17 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe CatalogsController do
+RSpec.describe CatalogsController do
   stub_controller
 
-  let!(:institution) { FactoryGirl.create(:institution) }
-  let!(:provider) { FactoryGirl.create(:provider, parent_id: institution.id) }
-  let!(:program) { FactoryGirl.create(:program, parent_id: provider.id) }
-  let!(:core) { FactoryGirl.create(:core, parent_id: program.id) }
+  let!(:institution) { create(:institution) }
+  let!(:provider) { create(:provider, parent_id: institution.id) }
+  let!(:program) { create(:program, parent_id: provider.id) }
+  let!(:core) { create(:core, parent_id: program.id) }
 
-  let!(:service_request) { FactoryGirl.create_without_validation(:service_request) }
+  let!(:service_request) { FactoryGirl.create(:service_request_without_validations) }
 
   describe 'POST update_description' do
     it 'should set organization and service_request' do
@@ -38,9 +38,8 @@ describe CatalogsController do
         :id                  => core.id,
         :service_request_id  => service_request.id,
       }.with_indifferent_access
-      assigns(:organization).should eq core
-      assigns(:service_request).should eq service_request
+      expect(assigns(:organization)).to eq core
+      expect(assigns(:service_request)).to eq service_request
     end
   end
 end
-

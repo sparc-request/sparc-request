@@ -1,6 +1,6 @@
-require 'spec_helper'
+require 'rails_helper'
 
-describe AdditionalDetail::AdditionalDetailsController do
+RSpec.describe AdditionalDetail::AdditionalDetailsController do
 
   before :each do
     @institution = Institution.new
@@ -42,22 +42,22 @@ describe AdditionalDetail::AdditionalDetailsController do
   describe 'user is not logged in and, thus, has no access to' do
     it 'a core service index' do
       get(:index, {:service_id => @core_service, :format => :html})
-      response.should redirect_to("/identities/sign_in")
+      expect(response).to redirect_to("/identities/sign_in")
     end
 
     it 'a program service index' do
       get(:index, {:service_id => @program_service, :format => :html})
-      response.should redirect_to("/identities/sign_in")
+      expect(response).to redirect_to("/identities/sign_in")
     end
 
     it 'a core service new additional detail page' do
       get(:new, {:service_id => @core_service, :format => :html})
-      response.should redirect_to("/identities/sign_in")
+      expect(response).to redirect_to("/identities/sign_in")
     end
 
     it 'a program service new additional detail page' do
       get(:new, {:service_id => @program_service, :format => :html})
-      response.should redirect_to("/identities/sign_in")
+      expect(response).to redirect_to("/identities/sign_in")
     end
   end
 
@@ -75,9 +75,10 @@ describe AdditionalDetail::AdditionalDetailsController do
 
       it 'a core service index' do
         get(:index, {:service_id => @core_service, :format => :html})
-        response.should render_template("unauthorized")
+        expect(response).to render_template("unauthorized")
         expect(response.status).to eq(401)
-        assigns(:service).should be_blank
+        expect(assigns(:service)).to be_blank
+        #expect(assigns(:service)).to be_blank
       end
 
       it 'a core service index even if user is a service provider' do
@@ -87,16 +88,16 @@ describe AdditionalDetail::AdditionalDetailsController do
         @service_provider.save(validate: false)
 
         get(:index, {:service_id => @core_service, :format => :html})
-        response.should render_template("unauthorized")
+        expect(response).to render_template("unauthorized")
         expect(response.status).to eq(401)
-        assigns(:service).should be_blank
+        expect(assigns(:service)).to be_blank
       end
 
       it 'a program service index' do
         get(:index, {:service_id => @program_service, :format => :html})
-        response.should render_template("unauthorized")
+        expect(response).to render_template("unauthorized")
         expect(response.status).to eq(401)
-        assigns(:service).should be_blank
+        expect(assigns(:service)).to be_blank
       end
 
       it 'a program service index even if user is a service provider' do
@@ -106,17 +107,17 @@ describe AdditionalDetail::AdditionalDetailsController do
         @service_provider.save(validate: false)
 
         get(:index, {:service_id => @program_service, :format => :html})
-        response.should render_template("unauthorized")
+        expect(response).to render_template("unauthorized")
         expect(response.status).to eq(401)
-        assigns(:service).should be_blank
+        expect(assigns(:service)).to be_blank
       end
 
       it 'a new core service additional detail page' do
         get(:new, {:service_id => @core_service, :format => :html})
-        response.should render_template("unauthorized")
+        expect(response).to render_template("unauthorized")
         expect(response.status).to eq(401)
-        assigns(:service).should be_blank
-        assigns(:additional_detail).should be_blank
+        expect(assigns(:service)).to be_blank
+        expect(assigns(:additional_detail)).to be_blank
       end
 
       it 'a new core service additional detail page even if user is a service provider' do
@@ -126,18 +127,18 @@ describe AdditionalDetail::AdditionalDetailsController do
         @service_provider.save(validate: false)
 
         get(:new, {:service_id => @core_service, :format => :html})
-        response.should render_template("unauthorized")
+        expect(response).to render_template("unauthorized")
         expect(response.status).to eq(401)
-        assigns(:service).should be_blank
-        assigns(:additional_detail).should be_blank
+        expect(assigns(:service)).to be_blank
+        expect(assigns(:additional_detail)).to be_blank
       end
 
       it 'a new program service additional detail page' do
         get(:new, {:service_id => @program_service, :format => :html})
-        response.should render_template("unauthorized")
+        expect(response).to render_template("unauthorized")
         expect(response.status).to eq(401)
-        assigns(:service).should be_blank
-        assigns(:additional_detail).should be_blank
+        expect(assigns(:service)).to be_blank
+        expect(assigns(:additional_detail)).to be_blank
       end
 
       it 'a new program service additional detail page even if user is a service provider' do
@@ -147,10 +148,10 @@ describe AdditionalDetail::AdditionalDetailsController do
         @service_provider.save(validate: false)
 
         get(:new, {:service_id => @program_service, :format => :html})
-        response.should render_template("unauthorized")
+        expect(response).to render_template("unauthorized")
         expect(response.status).to eq(401)
-        assigns(:service).should be_blank
-        assigns(:additional_detail).should be_blank
+        expect(assigns(:service)).to be_blank
+        expect(assigns(:additional_detail)).to be_blank
       end
     end
 
@@ -162,9 +163,9 @@ describe AdditionalDetail::AdditionalDetailsController do
         @catalog_manager.save(validate: false)
 
         get(:index, {:service_id => @core_service, :format => :html})
-        response.should render_template("index")
+        expect(response).to render_template("index")
         expect(response.status).to eq(200)
-        assigns(:service).should_not be_blank
+        expect(assigns(:service)).to_not be_blank
       end
 
       it 'a core service index because user is a catalog_manager for its program' do
@@ -174,9 +175,9 @@ describe AdditionalDetail::AdditionalDetailsController do
         @catalog_manager.save(validate: false)
 
         get(:index, {:service_id => @core_service, :format => :html})
-        response.should render_template("index")
+        expect(response).to render_template("index")
         expect(response.status).to eq(200)
-        assigns(:service).should_not be_blank
+        expect(assigns(:service)).to_not be_blank
       end
 
       it 'a program service index' do
@@ -186,9 +187,9 @@ describe AdditionalDetail::AdditionalDetailsController do
         @catalog_manager.save(validate: false)
 
         get(:index, {:service_id => @program_service, :format => :html})
-        response.should render_template("index")
+        expect(response).to render_template("index")
         expect(response.status).to eq(200)
-        assigns(:service).should_not be_blank
+        expect(assigns(:service)).to_not be_blank
       end
 
       it 'a core service new additional detail page' do
@@ -198,10 +199,10 @@ describe AdditionalDetail::AdditionalDetailsController do
         @catalog_manager.save(validate: false)
 
         get(:new, {:service_id => @core_service, :format => :html})
-        response.should render_template("new")
+        expect(response).to render_template("new")
         expect(response.status).to eq(200)
-        assigns(:service).should_not be_blank
-        assigns(:additional_detail).should_not be_blank
+        expect(assigns(:service)).to_not be_blank
+        expect(assigns(:additional_detail)).to_not be_blank
       end
 
       it 'a core service new additional detail page because user is a catalog_manager for its program' do
@@ -211,10 +212,10 @@ describe AdditionalDetail::AdditionalDetailsController do
         @catalog_manager.save(validate: false)
 
         get(:new, {:service_id => @core_service, :format => :html})
-        response.should render_template("new")
+        expect(response).to render_template("new")
         expect(response.status).to eq(200)
-        assigns(:service).should_not be_blank
-        assigns(:additional_detail).should_not be_blank
+        expect(assigns(:service)).to_not be_blank
+        expect(assigns(:additional_detail)).to_not be_blank
       end
 
       it 'a program service new additional detail page' do
@@ -224,10 +225,10 @@ describe AdditionalDetail::AdditionalDetailsController do
         @catalog_manager.save(validate: false)
 
         get(:new, {:service_id => @program_service, :format => :html})
-        response.should render_template("new")
+        expect(response).to render_template("new")
         expect(response.status).to eq(200)
-        assigns(:service).should_not be_blank
-        assigns(:additional_detail).should_not be_blank
+        expect(assigns(:service)).to_not be_blank
+        expect(assigns(:additional_detail)).to_not be_blank
       end
 
       # CRUD an additional detail as a catalog_manager
@@ -244,10 +245,10 @@ describe AdditionalDetail::AdditionalDetailsController do
             post(:create, {:service_id => @core_service, :format => :html,
               :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Time.now, :approved => "true"}
             })
-            assigns(:additional_detail).errors.should be_blank
-            response.should redirect_to(additional_detail_service_additional_details_path(@core_service))
-            #assigns(:service).should_not be_blank
-            #assigns(:additional_detail).should be_blank
+            expect(assigns(:additional_detail).errors).to be_blank
+            expect(response).to redirect_to(additional_detail_service_additional_details_path(@core_service))
+            #expect(assigns(:service)).to_not be_blank
+            #expect(assigns(:additional_detail)).to be_blank
           }.to change(AdditionalDetail, :count).by(1)
         end
         
@@ -259,10 +260,10 @@ describe AdditionalDetail::AdditionalDetailsController do
             expect(assigns(:additional_detail).errors[:description].size).to eq(1)
             message = "is too long (maximum is 255 characters)"
             expect(assigns(:additional_detail).errors[:description][0]).to eq(message)
-            response.should render_template("new")
+            expect(response).to render_template("new")
             expect(response.status).to eq(200)
-            assigns(:service).should_not be_blank
-            assigns(:additional_detail).should_not be_blank
+            expect(assigns(:service)).to_not be_blank
+            expect(assigns(:additional_detail)).to_not be_blank
           }.to change(AdditionalDetail, :count).by(0)
         end
 
@@ -273,10 +274,10 @@ describe AdditionalDetail::AdditionalDetailsController do
             })
             expect(assigns(:additional_detail).errors[:name].size).to eq(1)
             expect(assigns(:additional_detail).errors[:effective_date].size).to eq(0)
-            response.should render_template("new")
+            expect(response).to render_template("new")
             expect(response.status).to eq(200)
-            assigns(:service).should_not be_blank
-            assigns(:additional_detail).should_not be_blank
+            expect(assigns(:service)).to_not be_blank
+            expect(assigns(:additional_detail)).to_not be_blank
           }.to change(AdditionalDetail, :count).by(0)
         end
 
@@ -286,10 +287,10 @@ describe AdditionalDetail::AdditionalDetailsController do
               :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => "", :approved => "true"}
             })
             expect(assigns(:additional_detail).errors[:effective_date].size).to eq(1)
-            response.should render_template("new")
+            expect(response).to render_template("new")
             expect(response.status).to eq(200)
-            assigns(:service).should_not be_blank
-            assigns(:additional_detail).should_not be_blank
+            expect(assigns(:service)).to_not be_blank
+            expect(assigns(:additional_detail)).to_not be_blank
           }.to change(AdditionalDetail, :count).by(0)
         end
         
@@ -299,10 +300,10 @@ describe AdditionalDetail::AdditionalDetailsController do
                     :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => "", :approved => "true"}
                   })
                   expect(assigns(:additional_detail).errors[:effective_date].size).to eq(1)
-                  response.should render_template("new")
+                  expect(response).to render_template("new")
                   expect(response.status).to eq(200)
-                  assigns(:service).should_not be_blank
-                  assigns(:additional_detail).should_not be_blank
+                  expect(assigns(:service)).to_not be_blank
+                  expect(assigns(:additional_detail)).to_not be_blank
                 }.to change(AdditionalDetail, :count).by(0)
               end
         
@@ -317,10 +318,10 @@ describe AdditionalDetail::AdditionalDetailsController do
             expect(assigns(:additional_detail).errors[:effective_date].size).to eq(1)
             message = "Effective date cannot be the same as any other effective dates."
             expect(assigns(:additional_detail).errors[:effective_date][0]).to eq(message)
-            response.should render_template("new")
+            expect(response).to render_template("new")
             expect(response.status).to eq(200)
-            assigns(:service).should_not be_blank
-            assigns(:additional_detail).should_not be_blank
+            expect(assigns(:service)).to_not be_blank
+            expect(assigns(:additional_detail)).to_not be_blank
           }.to change(AdditionalDetail, :count).by(1)
         end
 
@@ -330,10 +331,10 @@ describe AdditionalDetail::AdditionalDetailsController do
               :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "", :effective_date => Time.now, :approved => "true"}
             })
             expect(assigns(:additional_detail).errors[:form_definition_json].size).to eq(1)
-            response.should render_template("new")
+            expect(response).to render_template("new")
             expect(response.status).to eq(200)
-            assigns(:service).should_not be_blank
-            assigns(:additional_detail).should_not be_blank
+            expect(assigns(:service)).to_not be_blank
+            expect(assigns(:additional_detail)).to_not be_blank
           }.to change(AdditionalDetail, :count).by(0)
         end
         it 'see failed validation for form with no questions :form_definition_json when trying to create an additional detail record' do
@@ -345,10 +346,10 @@ describe AdditionalDetail::AdditionalDetailsController do
             expect(assigns(:additional_detail).errors[:form_definition_json].size).to eq(1)
             message = "Form must contain at least one question."
             expect(assigns(:additional_detail).errors[:form_definition_json][0]).to eq(message)
-            response.should render_template("new")
+            expect(response).to render_template("new")
             expect(response.status).to eq(200)
-            assigns(:service).should_not be_blank
-            assigns(:additional_detail).should_not be_blank
+            expect(assigns(:service)).to_not be_blank
+            expect(assigns(:additional_detail)).to_not be_blank
           }.to change(AdditionalDetail, :count).by(0)
         end
 
@@ -367,7 +368,7 @@ describe AdditionalDetail::AdditionalDetailsController do
 #        context "vaild attributes" do 
 #          it "locate requested @additional_detail" do
 #            put :update, id: @additional_detail, additional_detail: Factory.attributes_for(:additional_detail)
-#                  assigns(:additional_detail).should eq(@additional_detail)
+#                  expect(assigns(:additional_detail)).to eq(@additional_detail)
 #          end
 #        end
 #      
@@ -381,9 +382,9 @@ describe AdditionalDetail::AdditionalDetailsController do
         @super_user.save(validate: false)
 
         get(:index, {:service_id => @core_service, :format => :html})
-        response.should render_template("index")
+        expect(response).to render_template("index")
         expect(response.status).to eq(200)
-        assigns(:service).should_not be_blank
+        expect(assigns(:service)).to_not be_blank
       end
 
       it 'a program service index' do
@@ -393,9 +394,9 @@ describe AdditionalDetail::AdditionalDetailsController do
         @super_user.save(validate: false)
 
         get(:index, {:service_id => @program_service, :format => :html})
-        response.should render_template("index")
+        expect(response).to render_template("index")
         expect(response.status).to eq(200)
-        assigns(:service).should_not be_blank
+        expect(assigns(:service)).to_not be_blank
       end
 
       it 'a core service new additional detail page' do
@@ -405,10 +406,10 @@ describe AdditionalDetail::AdditionalDetailsController do
         @super_user.save(validate: false)
 
         get(:new, {:service_id => @core_service, :format => :html})
-        response.should render_template("new")
+        expect(response).to render_template("new")
         expect(response.status).to eq(200)
-        assigns(:service).should_not be_blank
-        assigns(:additional_detail).should_not be_blank
+        expect(assigns(:service)).to_not be_blank
+        expect(assigns(:additional_detail)).to_not be_blank
       end
 
       it 'a program service new additional detail page' do
@@ -418,10 +419,10 @@ describe AdditionalDetail::AdditionalDetailsController do
         @super_user.save(validate: false)
 
         get(:new, {:service_id => @program_service, :format => :html})
-        response.should render_template("new")
+        expect(response).to render_template("new")
         expect(response.status).to eq(200)
-        assigns(:service).should_not be_blank
-        assigns(:additional_detail).should_not be_blank
+        expect(assigns(:service)).to_not be_blank
+        expect(assigns(:additional_detail)).to_not be_blank
       end
     end
   end

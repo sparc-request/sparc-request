@@ -37,8 +37,8 @@ $(document).ready ->
 
       $('#project_funding_source, #project_potential_funding_source').change ->
         switch $(this).val()
-          when "internal", "college" then $('#project_indirect_cost_rate').val("0")
-          when "industry" then $('#project_indirect_cost_rate').val("30")
-          when "foundation", "investigator" then $('#project_indirect_cost_rate').val("25")
-          when "federal" then $('#project_indirect_cost_rate').val("49.5")
+          when "internal", "college" then $('#project_indirect_cost_rate').val(I18n["indirect_cost_rates"]["internal_and_college"])
+          when "industry" then $('#project_indirect_cost_rate').val(I18n["indirect_cost_rates"]["industry"])
+          when "foundation", "investigator" then $('#project_indirect_cost_rate').val(I18n["indirect_cost_rates"]["foundation_and_investigator"])
+          when "federal" then $('#project_indirect_cost_rate').val(I18n["indirect_cost_rates"]["federal"])
   }

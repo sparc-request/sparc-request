@@ -101,8 +101,7 @@ RSpec.describe 'landing page', js: true do
 
     it 'should allow user to view printer-friendly service request' do
       find(".view-sub-service-request-button").click
-      find_button('Print').click
-      new_window = page.driver.browser.window_handles.last
+      new_window = window_opened_by { click_button 'Print' }
       within_window new_window do
         find("td.protocol-id-td").should have_exact_text(service_request.protocol_id.to_s + '-' + sub_service_request.ssr_id)
         expect(current_path).to eq URI.parse("/portal/service_requests/#{service_request.protocol_id}?ssr_id=#{sub_service_request.ssr_id}").path

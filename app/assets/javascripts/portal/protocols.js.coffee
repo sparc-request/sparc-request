@@ -141,6 +141,13 @@ $(document).ready ->
           modal: true
           buttons: [
             {
+              text: "Print"
+              click: ->
+                id = $('#id').val()
+                printerFriendly = window.open("/portal/protocols/#{id}/view_full_calendar")
+                printerFriendly.print()
+            }
+            {
             id: "ok_button"
             text: "Ok"
             click: ->

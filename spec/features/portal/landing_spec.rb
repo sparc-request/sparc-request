@@ -99,6 +99,25 @@ RSpec.describe 'landing page', js: true do
       end
     end
 
+    it 'should allow user to view consolidated request' do
+      find('.view-full-calendar-button').click
+      wait_for_javascript_to_finish
+      within ".project_information" do
+        expect(find("td.protocol-id-td")).to have_exact_text(service_request.protocol_id.to_s)
+      end
+    end
+
+    it 'should allow user to view printer friendly consolidated request' do
+      find('.view-full-calendar-button').click
+      wait_for_javascript_to_finish
+      new_window = window_opened_by { click_button 'Print' }
+      wait_for_javascript_to_finish
+      within_window new_window do
+        expect(find('td.protocol-id-td')).to have_exact_text(service_request.protocol_id.to_s)
+        expect(current_path).to eq URI.parse("/portal/protocols/#{service_request.protocol_id}/view_full_calendar").path
+      end
+    end
+
     it 'should allow user to edit original service request' do
       find("td.edit-original-td a").click
       expect(page).to have_text("Welcome to the SPARC Request Services Catalog")

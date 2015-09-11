@@ -143,8 +143,8 @@ $(document).ready ->
             {
               text: "Print"
               click: ->
-                id = $('#id').val()
-                printerFriendly = window.open("/portal/protocols/#{id}/view_full_calendar")
+                calendar_id = $('#calendar_id').val()
+                printerFriendly = window.open("/portal/protocols/#{calendar_id}/view_full_calendar")
                 printerFriendly.print()
             }
             {

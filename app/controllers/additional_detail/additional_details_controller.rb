@@ -47,9 +47,8 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
 
   def destroy
     @additional_detail = @service.additional_details.find(params[:id])
-    if @additional_detail.destroy
-      # success page or success JSON response
-    end
+    @additional_detail.destroy
+    head :no_content
   end
   
   private

@@ -60,7 +60,8 @@ GEM
       tzinfo (~> 1.1)
     acts-as-taggable-on (3.5.0)
       activerecord (>= 3.2, < 5)
-    acts_as_list (0.1.9)
+    acts_as_list (0.7.2)
+      activerecord (>= 3.0)
     addressable (2.3.8)
     afm (0.2.2)
     akami (1.2.2)
@@ -420,7 +421,7 @@ DEPENDENCIES
   activerecord-import
   activerecord-session_store
   acts-as-taggable-on
-  acts_as_list (= 0.1.9)
+  acts_as_list
   addressable (~> 2.3.6)
   audited-activerecord
   axlsx

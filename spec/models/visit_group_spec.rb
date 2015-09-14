@@ -22,21 +22,21 @@ require 'rails_helper'
 
 RSpec.describe "VisitGroup" do
 
-  let_there_be_lane
-  let_there_be_j
-  build_service_request_with_study
-  let!(:visit_group)         { create(:visit_group, arm_id: arm1.id, position: 1, day: 1)}
+  before :each do
+    arm = create(:arm)
+    @visit_group = create(:visit_group, arm_id: arm.id, position: 1)
+  end
 
   context "setting the default name" do
 
     it "should set a default name based on its position" do
-      expect(visit_group.name).to eq("Visit 1")
+      expect(@visit_group.name).to eq("Visit 1")
     end
 
     it "should not set the name if it already has one" do
-      visit_group.update_attributes(name: "Foobar")
-      visit_group.set_default_name
-      expect(visit_group.name).to eq("Foobar")
+      @visit_group.update_attributes(name: "Foobar")
+      @visit_group.set_default_name
+      expect(@visit_group.name).to eq("Foobar")
     end
   end
 end

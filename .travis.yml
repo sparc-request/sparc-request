@@ -1,12 +1,21 @@
-sudo: false
+sudo: true
 language: ruby
 cache: bundler
 rvm:
   - 1.9.3  
+#before_install:
+#  - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
+#  - sudo apt-get update -qq
+#  - sudo apt-get install -qq libqt5webkit5-dev qtdeclarative5-dev
+#  - export QMAKE=/usr/lib/x86_64-linux-gnu/qt5/bin/qmake
+#  - gem install capybara-webkit -v '1.6.0'
+#  - gem install polyglot -v '0.3.5'
 before_script:
   - cp config/database.yml.example config/database.yml
   - cp config/application.yml.example config/application.yml
   - cp config/epic.yml.example config/epic.yml
   - cp config/ldap.yml.example config/ldap.yml
+  - mysql -e 'create database test_sparc_request;'
 script:
-  - bundle exec rspec
+  - RAILS_ENV=test bundle exec rake db:migrate 
+  - bundle exec rspec spec/api spec/controllers spec/extensions spec/helpers spec/jobs spec/lib spec/mailers spec/models

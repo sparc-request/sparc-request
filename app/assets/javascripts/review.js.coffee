@@ -22,7 +22,7 @@
 
 $(document).ready ->
   survey_offered = false
-  route_to = "" 
+  route_to = ""
   $('#participate_in_survey').dialog
     resizable: false,
     height: 220,
@@ -37,7 +37,7 @@ $(document).ready ->
         $('#participate_in_survey').load "/surveys/system-satisfaction-survey", {survey_version: ""}, ->
           $('#survey_form').append("<input type='hidden' id='redirect_to' name='redirect_to' value='#{route_to}'>")
           $('#surveyor').dialog
-            position: 
+            position:
               my: "left top"
               at: "left bottom"
               of: $('#sparc_logo_header')
@@ -53,15 +53,15 @@ $(document).ready ->
         $('#welcome_msg').hide()
         $('#feedback').hide()
         $('.ask-a-question').hide()
-      "No": -> 
+      "No": ->
         survey_offered = true
         $(this).dialog("close")
-        $('#submit_services1, #submit_services2, #get_a_quote').unbind('click')
-        $('#submit_services1, #submit_services2, #get_a_quote').click ->
+        $('#submit_services1, #submit_services2, #get_a_cost_estimate').unbind('click')
+        $('#submit_services1, #submit_services2, #get_a_cost_estimate').click ->
           return false
         window.location.href = route_to
 
-  $('#submit_services1, #submit_services2, #get_a_quote').click (event)->
+  $('#submit_services1, #submit_services2, #get_a_cost_estimate').click (event)->
     event.preventDefault()
     route_to = $(this).attr('href')
 

@@ -28,7 +28,7 @@ module SurveyorControllerCustomMethods
     # base.send :before_filter, :login_required  # Restful Authentication
     base.send :layout, 'surveyor_custom'
   end
-  
+
   def set_current_user
     @current_user = current_user
   end
@@ -49,6 +49,12 @@ module SurveyorControllerCustomMethods
   end
   def update
     super
+  end
+
+  def destroy
+    survey_ids = Survey.where(access_code: params[:survey_code]).pluck(:id)
+    ResponseSet.where(survey_id: survey_ids, access_code: params[:response_set_code]).first.destroy
+    render nothing: true
   end
 
   def export
@@ -84,7 +90,7 @@ module SurveyorControllerCustomMethods
       end
     end
 
-    send_file full_path    
+    send_file full_path
   end
 
   # Paths

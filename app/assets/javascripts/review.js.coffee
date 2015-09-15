@@ -51,9 +51,15 @@ $(document).ready ->
           $('#surveyor').dialog('open')
           $('#processing_request').hide()
           $("#surveyor input[name='cancel']").click (event) ->
+            auth_token = $("form#survey_form input[name='authenticity_token']").attr('value')
+            response_set_path = $('form#survey_form').attr('action') + "?authenticity_token=#{auth_token}"
             $('#surveyor').dialog('close')
             $('#participate_in_survey').html('')
-            window.location.href = route_to
+            $.ajax
+              type: "DELETE"
+              url: response_set_path
+              success: ->
+                window.location.href = route_to
 
         $('#welcome_msg').hide()
         $('#feedback').hide()

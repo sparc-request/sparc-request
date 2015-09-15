@@ -17,7 +17,7 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+= hidden_field_tag :calendar_id, @protocol.id
 .service_request_information
   %table.project_information
     %tr
@@ -32,11 +32,11 @@
       %td.no-border-right= @protocol.short_title
     %tr
       %td.percent_30.highlight
-        %strong= t(:ssr_dialog)[:project_study_details][:project_title] 
+        %strong= t(:ssr_dialog)[:project_study_details][:project_title]
       %td.no-border-right= @protocol.title
     %tr
       %td.percent_30.highlight
-        %strong= t(:ssr_dialog)[:project_study_details][:sponsor_name]  
+        %strong= t(:ssr_dialog)[:project_study_details][:sponsor_name]
       %td.no-border-right= @protocol.sponsor_name
     %tr
       %td.percent_30.highlight
@@ -49,7 +49,7 @@
       %th.blue_header{:colspan => 3} Users
     %tr
       %th.highlight{:colspan => 1}= t(:ssr_dialog)[:auth_users][:name]
-      %th.highlight{:colspan => 1}= t(:ssr_dialog)[:auth_users][:role] 
+      %th.highlight{:colspan => 1}= t(:ssr_dialog)[:auth_users][:role]
       %th.highlight{:colspan => 1}= t(:ssr_dialog)[:auth_users][:proxy_rights]
     - @protocol.project_roles.each do |pr|
       %tr

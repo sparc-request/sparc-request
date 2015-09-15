@@ -168,7 +168,7 @@ en:
         answer_text: "Yes. Please feel free to browse, select, and add services from any Service Provider, Program, and/or Core displayed in the system for any given research study/project."
       - question_text: "How many Authorized Users can I add?"
         answer_text: "Add as many Authorized Users as you feel is pertinent. There is no limit."
-      - question_text: "What is the difference  between a Research Study and a Research Project?"
+      - question_text: "What is the difference  between a Research Study and a Project?"
         answer_text: "A Research Study is an individual research protocol with defined aims and outcomes."
       - question_text: "How is SPARC Request calculating my indirect costs?"
         answer_text: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARC Request uses this data to calculate your total overall indirect costs."
@@ -182,7 +182,7 @@ en:
     federal: "49.5"
   # new/editing projects
   sr_project:
-    message: "Before you can complete a service request, please tell us more about your research project.  This information will be used by our staff to decide the best way to process your request."
+    message: "Before you can complete a service request, please tell us more about your project.  This information will be used by our staff to decide the best way to process your request."
     title1: "Short Title:*"
     title2: "Project Title:*"
     funding_status: "Proposal Funding Status:*"
@@ -202,7 +202,7 @@ en:
     select_study: "Select Study"
     select_project: "Select Project"
     research_study: "Research Study"
-    research_project: "Research Project"
+    research_project: "Project"
     edit_study: "Edit Study"
     edit_project: "Edit Project"
     or: "If not in list above, create NEW Study/Project Below"
@@ -502,7 +502,7 @@ en:
 
   # Edit Project Form
   project_form:
-    message: "Before you can complete a service request, please tell us more about your research project.  This information will be used by our staff to decide the best way to process your request."
+    message: "Before you can complete a service request, please tell us more about your project.  This information will be used by our staff to decide the best way to process your request."
     title: "Project Title:*"
     dropdown_default1: "Select a Funding Status"
     dropdown_default2: "Select a Funding Source"

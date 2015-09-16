@@ -53,7 +53,7 @@ module SurveyorControllerCustomMethods
 
   def destroy
     survey_ids = Survey.where(access_code: params[:survey_code]).pluck(:id)
-    ResponseSet.where(survey_id: survey_ids, access_code: params[:response_set_code]).first.destroy
+    ResponseSet.where(survey_id: survey_ids, access_code: params[:response_set_code]).each(&:destroy)
     render nothing: true
   end
 

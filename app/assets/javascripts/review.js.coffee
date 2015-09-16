@@ -22,7 +22,7 @@
 
 $(document).ready ->
   survey_offered = false
-  route_to = "" 
+  route_to = ""
   $('#participate_in_survey').dialog
     resizable: false,
     height: 220,
@@ -34,10 +34,11 @@ $(document).ready ->
         survey_offered = true
         $(this).dialog("close")
         service_request_id = $('#service_request_id').val()
-        $('#participate_in_survey').load "/surveys/system-satisfaction-survey", {survey_version: ""}, ->
+        $('#participate_in_survey').load "/surveys/system-satisfaction-survey	", {survey_version: ""}, ->
           $('#survey_form').append("<input type='hidden' id='redirect_to' name='redirect_to' value='#{route_to}'>")
+          $('#survey_form div.next_section').append("<input type='button' name='cancel' value='Cancel'/>")
           $('#surveyor').dialog
-            position: 
+            position:
               my: "left top"
               at: "left bottom"
               of: $('#sparc_logo_header')
@@ -49,11 +50,21 @@ $(document).ready ->
 
           $('#surveyor').dialog('open')
           $('#processing_request').hide()
+          $("#surveyor input[name='cancel']").click (event) ->
+            auth_token = $("form#survey_form input[name='authenticity_token']").attr('value')
+            response_set_path = $('form#survey_form').attr('action') + "?authenticity_token=#{auth_token}"
+            $('#surveyor').dialog('close')
+            $('#participate_in_survey').html('')
+            $.ajax
+              type: "DELETE"
+              url: response_set_path
+              success: ->
+                window.location.href = route_to
 
         $('#welcome_msg').hide()
         $('#feedback').hide()
         $('.ask-a-question').hide()
-      "No": -> 
+      "No": ->
         survey_offered = true
         $(this).dialog("close")
         $('#submit_services1, #submit_services2, #get_a_quote').unbind('click')

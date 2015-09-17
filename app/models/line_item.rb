@@ -322,8 +322,8 @@ class LineItem < ActiveRecord::Base
 
   def service_relations
     # Get the relations for this line item and others to this line item, Narrow the list to those with linked quantities
-    service_relations = ServiceRelation.find_all_by_service_id(self.service_id).reject { |sr| sr.linked_quantity == false }
-    related_service_relations = ServiceRelation.find_all_by_related_service_id(self.service_id).reject { |sr| sr.linked_quantity == false }
+    service_relations = ServiceRelation.where(service_id: self.service_id).reject { |sr| sr.linked_quantity == false }
+    related_service_relations = ServiceRelation.where(related_service_id: self.service_id).reject { |sr| sr.linked_quantity == false }
 
     (service_relations + related_service_relations)
   end

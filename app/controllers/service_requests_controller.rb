@@ -384,7 +384,7 @@ class ServiceRequestsController < ApplicationController
       @service_request.reload
       @service_request.service_list.each do |org_id, values|
         line_items = values[:line_items]
-        ssr = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
+        ssr = @service_request.sub_service_requests.where(organization_id: org_id.to_i).first_or_create
         unless @service_request.status.nil? and !ssr.status.nil?
           ssr.update_attribute(:status, @service_request.status) if ['first_draft', 'draft', nil].include?(ssr.status)
           @service_request.ensure_ssr_ids unless ['first_draft', 'draft'].include?(@service_request.status)

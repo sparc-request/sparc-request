@@ -196,7 +196,7 @@ class LineItem < ActiveRecord::Base
     # line items visit should also check that it's for the correct protocol
     return 0.0 unless service_request.protocol_id == line_items_visit.arm.protocol_id
 
-    research_billing_qty_total = line_items_visit.visits.sum(&:research_billing_qty)
+    research_billing_qty_total = line_items_visit.visits.sum(:research_billing_qty)
 
     subject_total = research_billing_qty_total * per_unit_cost(quantity_total(line_items_visit))
     subject_total

@@ -43,10 +43,7 @@ class LineItemsVisit < ActiveRecord::Base
   # Find a LineItemsVisit for the given arm and line item.  If it does
   # not exist, create it first, then return it.
   def self.for(arm, line_item)
-    return LineItemsVisit.find_or_create_by_arm_id_and_line_item_id(
-        arm.id,
-        line_item.id,
-        subject_count: arm.subject_count)
+    return LineItemsVisit.where(arm_id: arm.id, line_item_id: line_item.id, subject_count: arm.subject_count).first_or_create
   end
 
   def create_visits

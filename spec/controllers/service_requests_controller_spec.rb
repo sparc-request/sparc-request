@@ -52,23 +52,23 @@ RSpec.describe ServiceRequestsController do
   describe 'GET show' do
     it 'should set protocol and service_list' do
       session[:service_request_id] = service_request.id
-      get :show, id: service_request.id
+      xhr :get, :show, id: service_request.id
       expect(assigns(:protocol)).to eq service_request.protocol
-      expect(assigns(:service_list)).to eq service_request.service_list.with_indifferent_access
+      expect(assigns(:service_list)).to eq(service_request.service_list.with_indifferent_access)
     end
   end
 
   describe 'GET catalog' do
     it 'should set institutions to all institutions if there is no sub service request id' do
       session[:service_request_id] = service_request.id
-      get :catalog, id: service_request.id
+      xhr :get, :catalog, id: service_request.id
       expect(assigns(:institutions)).to eq Institution.all.sort_by { |i| i.order.to_i }
     end
 
     it "should set instutitions to the sub service request's institution if there is a sub service request id" do
       session[:service_request_id] = service_request.id
       session[:sub_service_request_id] = sub_service_request.id
-      get :catalog, id: service_request.id
+      xhr :get, :catalog, id: service_request.id
       expect(assigns(:institutions)).to eq [ institution ]
     end
   end
@@ -82,7 +82,7 @@ RSpec.describe ServiceRequestsController do
         session[:service_request_id] = service_request.id
         session[:sub_service_request_id] = sub_service_request.id
         session[:saved_protocol_id] = study.id
-        get :protocol, id: service_request.id
+        xhr :get, :protocol, id: service_request.id
         expect(assigns(:service_request).protocol).to eq study
         expect(session[:saved_protocol_id]).to eq nil
       end
@@ -105,7 +105,7 @@ RSpec.describe ServiceRequestsController do
         session[:service_request_id] = service_request.id
         session[:sub_service_request_id] = sub_service_request.id
         session[:saved_protocol_id] = project.id
-        get :protocol, id: service_request.id
+        xhr :get, :protocol, id: service_request.id
         expect(assigns(:service_request).protocol).to eq project
         expect(session[:saved_protocol_id]).to eq nil
       end
@@ -128,7 +128,7 @@ RSpec.describe ServiceRequestsController do
       arm1.update_attribute(:visit_count, 200)
 
       session[:service_request_id] = service_request.id
-      get :review, { id: service_request.id, pages: { arm1.id.to_s => 42 } }.with_indifferent_access
+      xhr :get, :review, { id: service_request.id, pages: { arm1.id.to_s => 42 } }.with_indifferent_access
       expect(session[:service_calendar_pages]).to eq({arm1.id.to_s => '42'})
 
       expect(assigns(:pages)).to eq({arm1.id => 1, arm2.id => 1})
@@ -138,19 +138,19 @@ RSpec.describe ServiceRequestsController do
 
     it "should set service_list to the service request's service list" do
       session[:service_request_id] = service_request.id
-      get :review, id: service_request.id
+      xhr :get, :review, id: service_request.id
       expect(assigns(:service_request).service_list).to eq service_request.service_list
     end
 
     it "should set protocol to the service request's protocol" do
       session[:service_request_id] = service_request.id
-      get :review, id: service_request.id
+      xhr :get, :review, id: service_request.id
       expect(assigns(:service_request).protocol).to eq service_request.protocol
     end
 
     it "should set tab to full calendar" do
       session[:service_request_id] = service_request.id
-      get :review, id: service_request.id
+      xhr :get, :review, id: service_request.id
       expect(assigns(:tab)).to eq 'calendar'
     end
   end
@@ -163,7 +163,7 @@ RSpec.describe ServiceRequestsController do
       it "should set the service request's status to submitted" do
         session[:identity_id] = jug2.id
         session[:service_request_id] = service_request.id
-        get :confirmation, id: service_request.id
+        xhr :get, :confirmation, id: service_request.id
         expect(assigns(:service_request).status).to eq 'submitted'
       end
 
@@ -173,7 +173,7 @@ RSpec.describe ServiceRequestsController do
         Timecop.freeze(time) do
           service_request.update_attribute(:submitted_at, nil)
           session[:service_request_id] = service_request.id
-          get :confirmation, id: service_request.id
+          xhr :get, :confirmation, id: service_request.id
           service_request.reload
           expect(service_request.submitted_at).to eq Time.now
         end
@@ -188,7 +188,7 @@ RSpec.describe ServiceRequestsController do
             service_request_id: service_request.id,
             organization_id: core.id)
         session[:service_request_id] = service_request.id
-        get :confirmation, id: service_request.id
+        xhr :get, :confirmation, id: service_request.id
         service_request.protocol.reload
         expect(service_request.protocol.next_ssr_id).to eq 43
       end
@@ -210,7 +210,7 @@ RSpec.describe ServiceRequestsController do
             organization_id: core.id)
 
         session[:service_request_id] = service_request.id
-        get :confirmation, id: service_request.id
+        xhr :get, :confirmation, id: service_request.id
 
         ssr1.reload
         ssr2.reload
@@ -234,7 +234,7 @@ RSpec.describe ServiceRequestsController do
             organization_id: core.id)
 
         session[:service_request_id] = service_request.id
-        get :confirmation, id: service_request.id
+        xhr :get, :confirmation, id: service_request.id
 
         ssr1.reload
         expect(ssr1.ssr_id).to eq '10042'
@@ -259,7 +259,7 @@ RSpec.describe ServiceRequestsController do
           deliverer
         }
 
-        get :confirmation, {
+        xhr :get, :confirmation, {
           id: service_request.id,
           format: :js
         }
@@ -279,7 +279,7 @@ RSpec.describe ServiceRequestsController do
           deliverer
         end
 
-        get :confirmation, {
+        xhr :get, :confirmation, {
           id: service_request.id,
           format: :js
         }
@@ -294,7 +294,7 @@ RSpec.describe ServiceRequestsController do
 
       it "should set the service request's status to submitted" do
         session[:service_request_id] = service_request.id
-        get :save_and_exit, id: service_request.id
+        xhr :get, :save_and_exit, id: service_request.id
         expect(assigns(:service_request).status).to eq 'draft'
       end
 
@@ -303,7 +303,7 @@ RSpec.describe ServiceRequestsController do
         Timecop.freeze(time) do
           service_request.update_attribute(:submitted_at, nil)
           session[:service_request_id] = service_request.id
-          get :save_and_exit, id: service_request.id
+          xhr :get, :save_and_exit, id: service_request.id
           service_request.reload
           expect(service_request.submitted_at).to eq nil
         end
@@ -314,7 +314,7 @@ RSpec.describe ServiceRequestsController do
         service_request.sub_service_requests.each { |ssr| ssr.destroy }
         ssr = create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id)
         session[:service_request_id] = service_request.id
-        get :save_and_exit, id: service_request.id
+        xhr :get, :save_and_exit, id: service_request.id
         service_request.protocol.reload
         expect(service_request.protocol.next_ssr_id).to eq 43
       end
@@ -327,7 +327,7 @@ RSpec.describe ServiceRequestsController do
         ssr2 = create(:sub_service_request, service_request_id: service_request.id, ssr_id: nil, organization_id: core.id)
 
         session[:service_request_id] = service_request.id
-        get :save_and_exit, id: service_request.id
+        xhr :get, :save_and_exit, id: service_request.id
 
         ssr1.reload
         ssr2.reload
@@ -346,7 +346,7 @@ RSpec.describe ServiceRequestsController do
         ssr1 = create(:sub_service_request, service_request_id: service_request.id, ssr_id: nil, organization_id: core.id)
 
         session[:service_request_id] = service_request.id
-        get :save_and_exit, id: service_request.id
+        xhr :get, :save_and_exit, id: service_request.id
 
         ssr1.reload
         expect(ssr1.ssr_id).to eq '10042'
@@ -354,7 +354,7 @@ RSpec.describe ServiceRequestsController do
 
       it 'should redirect the user to the user portal link' do
         session[:service_request_id] = service_request.id
-        get :save_and_exit, id: service_request.id
+        xhr :get, :save_and_exit, id: service_request.id
         expect(response).to redirect_to(USER_PORTAL_LINK)
       end
     end
@@ -367,7 +367,7 @@ RSpec.describe ServiceRequestsController do
     describe 'GET service_details' do
       it 'should do nothing?' do
         session[:service_request_id] = service_request.id
-        get :service_details, id: service_request.id
+        xhr :get, :service_details, id: service_request.id
       end
     end
 
@@ -393,7 +393,7 @@ RSpec.describe ServiceRequestsController do
       arm1.update_attribute(:visit_count, 500)
 
       session[:service_request_id] = service_request.id
-      get :service_calendar, { id: service_request.id, pages: { arm1.id.to_s => 42 } }.with_indifferent_access
+      xhr :get, :service_calendar, { id: service_request.id, pages: { arm1.id.to_s => 42 } }.with_indifferent_access
       expect(session[:service_calendar_pages]).to eq({arm1.id.to_s => '42'})
     end
 
@@ -404,7 +404,7 @@ RSpec.describe ServiceRequestsController do
       liv.update_attribute(:subject_count, nil)
 
       session[:service_request_id] = service_request.id
-      get :service_calendar, { id: service_request.id, pages: { arm1.id => 42 } }.with_indifferent_access
+      xhr :get, :service_calendar, { id: service_request.id, pages: { arm1.id => 42 } }.with_indifferent_access
 
       liv.reload
       expect(liv.subject_count).to eq 42
@@ -417,7 +417,7 @@ RSpec.describe ServiceRequestsController do
       liv.update_attribute(:subject_count, 500)
 
       session[:service_request_id] = service_request.id
-      get :service_calendar, { id: service_request.id, pages: { arm1.id => 42 } }.with_indifferent_access
+      xhr :get, :service_calendar, { id: service_request.id, pages: { arm1.id => 42 } }.with_indifferent_access
 
       liv.reload
       expect(liv.subject_count).to eq 42
@@ -430,7 +430,7 @@ RSpec.describe ServiceRequestsController do
       liv.update_attribute(:subject_count, 10)
 
       session[:service_request_id] = service_request.id
-      get :service_calendar, { id: service_request.id, pages: { arm1.id => 42 } }.with_indifferent_access
+      xhr :get, :service_calendar, { id: service_request.id, pages: { arm1.id => 42 } }.with_indifferent_access
 
       liv.reload
       expect(liv.subject_count).to eq 10
@@ -444,7 +444,7 @@ RSpec.describe ServiceRequestsController do
       add_visits_to_arm_line_item(arm1, line_item, 20)
 
       session[:service_request_id] = service_request.id
-      get :service_calendar, { id: service_request.id, pages: { arm1.id => 42 } }.with_indifferent_access
+      xhr :get, :service_calendar, { id: service_request.id, pages: { arm1.id => 42 } }.with_indifferent_access
 
       liv.reload
       expect(liv.visits.count).to eq 10
@@ -457,7 +457,7 @@ RSpec.describe ServiceRequestsController do
       add_visits_to_arm_line_item(arm1, line_item, 0)
 
       session[:service_request_id] = service_request.id
-      get :service_calendar, { id: service_request.id, pages: { arm1.id => 42 } }.with_indifferent_access
+      xhr :get, :service_calendar, { id: service_request.id, pages: { arm1.id => 42 } }.with_indifferent_access
 
       liv.reload
       expect(liv.visits.count).to eq 10
@@ -482,7 +482,7 @@ RSpec.describe ServiceRequestsController do
 
     it "should set the service list to the service request's service list" do
       session[:service_request_id] = service_request.id
-      get :document_management, id: service_request.id
+      xhr :get, :document_management, id: service_request.id
 
       expect(assigns(:service_list)).to eq [ service1, service2 ]
     end
@@ -498,7 +498,7 @@ RSpec.describe ServiceRequestsController do
         expect(quick_question.body).to eq 'No question asked'
         deliverer
       }
-      get :ask_a_question, { quick_question: { email: ''}, quick_question: { body: ''}, id: service_request.id, format: :js }
+      xhr :get, :ask_a_question, { quick_question: { email: ''}, quick_question: { body: ''}, id: service_request.id, format: :js }
     end
 
     it 'should use question_email if passed in' do
@@ -508,7 +508,7 @@ RSpec.describe ServiceRequestsController do
         expect(quick_question.from).to eq 'no-reply@musc.edu'
         deliverer
       }
-      get :ask_a_question, { id: service_request.id, quick_question: { email: 'no-reply@musc.edu' }, quick_question: { body: '' }, format: :js }
+      xhr :get, :ask_a_question, { id: service_request.id, quick_question: { email: 'no-reply@musc.edu' }, quick_question: { body: '' }, format: :js }
     end
 
     it 'should use question_body if passed in' do
@@ -518,7 +518,7 @@ RSpec.describe ServiceRequestsController do
         expect(quick_question.body).to eq 'is this thing on?'
         deliverer
       }
-      get :ask_a_question, { id: service_request.id, quick_question: { email: '' }, quick_question: { body: 'is this thing on?' }, format: :js }
+      xhr :get, :ask_a_question, { id: service_request.id, quick_question: { email: '' }, quick_question: { body: 'is this thing on?' }, format: :js }
     end
   end
 
@@ -530,7 +530,7 @@ RSpec.describe ServiceRequestsController do
       arm1.update_attribute(:visit_count, 500)
 
       session[:service_request_id] = service_request.id
-      get :refresh_service_calendar, { id: service_request.id, arm_id: arm1.id, pages: { arm1.id.to_s => 42 }, format: :js }.with_indifferent_access
+      xhr :get, :refresh_service_calendar, { id: service_request.id, arm_id: arm1.id, pages: { arm1.id.to_s => 42 }, format: :js }.with_indifferent_access
       expect(session[:service_calendar_pages]).to eq({arm1.id.to_s => 42})
 
       # TODO: sometimes this is 1 and sometimes it is 42.  I don't know
@@ -542,7 +542,7 @@ RSpec.describe ServiceRequestsController do
 
     it 'should set tab to full calendar' do
       session[:service_request_id] = service_request.id
-      get :refresh_service_calendar, id: service_request.id, arm_id: arm1.id, format: :js
+      xhr :get, :refresh_service_calendar, id: service_request.id, arm_id: arm1.id, format: :js
       expect(assigns(:tab)).to eq 'calendar'
     end
   end
@@ -1000,13 +1000,13 @@ RSpec.describe ServiceRequestsController do
       service_request.sub_service_requests.each { |ssr| ssr.destroy }
       service_request.reload
       session[:service_request_id] = service_request.id
-      get :service_subsidy, id: service_request.id
+      xhr :get, :service_subsidy, id: service_request.id
       expect(assigns(:subsidies)).to eq [ ]
     end
 
     it 'should put the subsidy into subsidies if the ssr has a subsidy' do
       session[:service_request_id] = service_request.id
-      get :service_subsidy, id: service_request.id
+      xhr :get, :service_subsidy, id: service_request.id
       expect(assigns(:subsidies)).to eq [ subsidy ]
     end
 
@@ -1016,7 +1016,7 @@ RSpec.describe ServiceRequestsController do
           max_percentage: 100)
 
       session[:service_request_id] = service_request.id
-      get :service_subsidy, id: service_request.id
+      xhr :get, :service_subsidy, id: service_request.id
 
       expect(assigns(:subsidies).map { |s| s.class}).to eq [ Subsidy ]
     end
@@ -1051,7 +1051,7 @@ RSpec.describe ServiceRequestsController do
 
         # call service_subsidy
         session[:service_request_id] = service_request.id
-        get :service_subsidy, id: service_request.id
+        xhr :get, :service_subsidy, id: service_request.id
 
         # Now the ssr should not have a subsidy
         sub_service_request.reload

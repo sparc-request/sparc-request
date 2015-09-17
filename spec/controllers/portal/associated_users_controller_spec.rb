@@ -37,7 +37,7 @@ RSpec.describe Portal::AssociatedUsersController do
   before :each do
     session[:identity_id] = identity.id
   end
-    
+
   describe 'GET show' do
     it 'should set user if user is an associated user' do
       get(:show, {

@@ -35,7 +35,7 @@ RSpec.describe Portal::ServiceRequestsController do
   describe 'GET show' do
     it 'should set instance variables' do
       session[:service_calendar_page] = 1
-      get :show, {
+      xhr :get, :show, {
         format: :js,
         id: service_request.id,
         arm_id: arm1.id,

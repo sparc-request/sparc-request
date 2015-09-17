@@ -241,6 +241,7 @@ end
 
 def build_clinical_data all_subjects = nil
   service_request.arms.each do |arm|
+    arm.populate_subjects
     arm.subjects.each do |subject|
       subject.calendar.populate(arm.visit_groups)
     end

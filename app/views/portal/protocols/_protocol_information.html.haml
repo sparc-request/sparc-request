@@ -138,6 +138,4 @@
     %td
       %a.view-full-calendar-button{:href => "javascript:void(0);", :'data-protocol_id' => protocol.id, :'data-url' => "/portal/protocols/#{protocol.id}/view_full_calendar"}= t(:protocol_information)[:full_calendar]
     %td
-      %a.consolidated_request{:href => "javascript:void(0);", :'data-protocol_id' => protocol.id, :'data-url' => "/portal/protocols/#{protocol.id}/view_full_calendar"}
-        = t(:protocol_information)[:consolidated_request]
-}
+      = link_to t(:protocol_information)[:consolidated_request], portal_protocol_path(protocol, format: :xlsx), class: 'consolidated_request'

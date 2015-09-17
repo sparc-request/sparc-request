@@ -27,27 +27,6 @@ RSpec.describe Arm, type: :model do
     expect(arm.line_items).to eq [ ]
   end
 
-  #TODO: This needs to be a unit test on the protocol, not arm.  Also, create_arm
-  #no longer actually builds subjects
-  # context 'clinical work fulfillment' do
-  #   let_there_be_lane
-  #   let_there_be_j
-  #   build_service_request_with_study
-
-
-  #   before :each do
-  #     add_visits
-  #     sub_service_request.update_attribute(:in_work_fulfillment, true)
-  #     sub_service_request.reload
-  #   end
-
-  #   it 'should populate its subjects if it has a sub service request in cwf status' do
-  #     arm = service_request.protocol.create_arm(subject_count: 5, visit_count: 5, name: 'CWF ARM')
-  #     arm.subjects.count.should eq(5)
-  #   end
-
-  # end
-
   context "methods" do
     let_there_be_lane
     let_there_be_j
@@ -200,9 +179,8 @@ RSpec.describe Arm, type: :model do
         expect(arm1.line_items_visits.last.visits.count).to eq(arm1.visit_count)
 
         #Go through new visits, and ensure they are connected to the correct visit_group (visit.position simply points to position on the visit_group)
-        arm1.line_items_visits.last.visits.each_with_index do |visit,position|
-          #Compare position of visit to index. It's bumped up one because acts_as_list starts from 1, not 0.
-          expect(visit.position).to eq(position + 1)
+        arm1.line_items_visits.last.visits.each do |visit|
+          expect(visit.position).to eq(visit.visit_group.position)
         end
       end
     end

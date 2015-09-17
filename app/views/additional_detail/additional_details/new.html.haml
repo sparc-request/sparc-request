@@ -1,6 +1,10 @@
 :javascript
+  var id = '#{@service.id}';
   var effective_date = '#{@additional_detail.effective_date ? @additional_detail.effective_date : ""}';
   var form_definition = '#{@additional_detail.form_definition_json ? @additional_detail.form_definition_json : ""}';
+  var service_name = '#{@service.name}';
+  var additionalDetail_name = '#{@additional_detail.name ? @additional_detail.name : false}'
+  
 %div{"ng-controller" => "FormCreationController"}
   .row
     .col-md-8

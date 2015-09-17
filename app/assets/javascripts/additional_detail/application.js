@@ -24,14 +24,29 @@ app.config([
      $httpProvider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
      }]);
 
+app.controller('AdditionalDetailsRootController', ['$scope', '$http', function($scope, $http) { 
+	$scope.gridModel = {enableFiltering: true, enableColumnResizing: true, showColumnFooter: true , enableSorting: false, showGridFooter: true, enableRowHeaderSelection: false, rowHeight: 42};
+	$scope.gridModel.columnDefs = [{field: 'service.name', name: 'Name',  width: '30%', enableColumnMenu: false ,}
+	                               ];
+	
+//	$scope.reloadGrid = function(){
+//		$http.get('/additional_detail/services').
+//			then(function(response){
+//				$scope.gridModel.data = response.data;
+//			});
+//	}
+//	$scope.reloadGrid();
+	
+}]);
+
 
 app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', function($scope, $http) {
 	$scope.gridModel = {enableFiltering: true, enableColumnResizing: true, showColumnFooter: true , enableSorting: false, showGridFooter: true, enableRowHeaderSelection: false, rowHeight: 42};
-	$scope.gridModel.columnDefs = [{enableFiltering: false, enableCellEdit: false,enableColumnResizing: false,name: 'Edit',width: 55, enableColumnMenu: false, cellTemplate: '<a class="btn btn-primary" role="button" ng-href="/additional_detail/services/'+id+'/additional_details/{{row.entity.additional_detail.id}}/edit">Edit</a>'},
-	                               {field: 'additional_detail.name', name: 'Name',enableCellEdit: false,  width: '30%', enableColumnMenu: false ,}, 
-	                               {field:'additional_detail.effective_date',enableCellEdit: false,name: 'Effective Date', width: '25%', enableColumnMenu: false },{field: 'additional_detail.approved',enableCellEdit: false,name: 'Approved', width: '10%', enableColumnMenu: false},
-	                               {field: 'additional_detail.description',enableCellEdit: false, name: 'Description', enableColumnMenu: false},
-	                               {enableFiltering: false, enableCellEdit: false,enableColumnResizing: false,name: 'Delete',width: 70, enableColumnMenu: false, cellTemplate: '<button class="btn btn-primary" ng-click="grid.appScope.deleteAdditonalDetail(row.entity.additional_detail.id)">Delete</button>'}
+	$scope.gridModel.columnDefs = [{enableFiltering: false, enableColumnResizing: false,name: 'Edit',width: 55, enableColumnMenu: false, cellTemplate: '<a class="btn btn-primary" role="button" ng-href="/additional_detail/services/'+id+'/additional_details/{{row.entity.additional_detail.id}}/edit">Edit</a>'},
+	                               {field: 'additional_detail.name', name: 'Name',  width: '30%', enableColumnMenu: false ,}, 
+	                               {field:'additional_detail.effective_date',name: 'Effective Date', width: '25%', enableColumnMenu: false },{field: 'additional_detail.approved',name: 'Approved', width: '10%', enableColumnMenu: false},
+	                               {field: 'additional_detail.description', name: 'Description', enableColumnMenu: false},
+	                               {enableFiltering: false, enableColumnResizing: false,name: 'Delete',width: 70, enableColumnMenu: false, cellTemplate: '<button class="btn btn-primary" ng-click="grid.appScope.deleteAdditonalDetail(row.entity.additional_detail.id)">Delete</button>'}
 	                               ];
 	
 	$scope.reloadGrid = function(){
@@ -43,16 +58,49 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', functio
 	$scope.reloadGrid();
 	
 	$scope.deleteAdditonalDetail = function(additonalDetailId){
-		console.log("test");
 		$http.delete('/additional_detail/services/'+id+'/additional_details/'+additonalDetailId).
 			then(function(response){
-				console.log("ping");
+				$scope.reloadGrid();
 			}, function(response) {
 				console.log(response);
-
 			  });
-		$scope.reloadGrid();
+		
 	}
+	
+}]);
+
+app.controller('navController', ['$scope', function($scope){
+	
+	function addLink(name, active, href){
+		var li = document.createElement("li");
+		if(href){
+			var a = document.createElement("a");
+			a.href = href;
+			a.appendChild(document.createTextNode(name));
+			li.appendChild(a);
+		}
+		else{
+			li.appendChild(document.createTextNode(name));
+		}
+		return li;
+	}
+	var nav = angular.element('#nav');
+	if(typeof service_name  !='undefined' && typeof additionalDetail_name  === 'undefined'){
+		nav.append(addLink(service_name, true));
+	}
+	else if(typeof service_name  !='undefined' && additionalDetail_name){
+		var href = "/additional_detail/services/"+id+"/additional_details"
+		nav.append(addLink(service_name, false, href));
+		console.log(additionalDetail_name);
+		if(additionalDetail_name=="false"){
+			nav.append(addLink("New", true));
+		}
+		else{
+			nav.append(addLink(additionalDetail_name, true));
+		}
+	}
+	
+	
 	
 }]);
 

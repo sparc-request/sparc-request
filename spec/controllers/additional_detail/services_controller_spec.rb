@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe AdditionalDetail::ServicesController do
+RSpec.describe AdditionalDetail::ServicesController do
   
   
   describe 'user is not logged in and, thus, has no access to' do

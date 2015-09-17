@@ -1,5 +1,6 @@
 :javascript
   var id = '#{@service.id}';
+  var service_name = '#{@service.name}';
 %div{"ng-controller" => "AdditionalDetailsDisplayController"}
   .row
     .col-md-12
@@ -12,4 +13,4 @@
               = link_to "Add new Additional Details Form", new_additional_detail_service_additional_detail_path(@service), class: "btn btn-primary"
           .row
             .col-md-12
-              %div{:id=>"displayGrid", "ui-grid"=>"gridModel", "ui-grid-edit"=>"true", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 400px;"}
+              %div{:id=>"displayGrid", "ui-grid"=>"gridModel", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 400px;"}

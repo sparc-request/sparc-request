@@ -33,10 +33,10 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
     @program_service = Service.new
     @program_service.organization_id = @program.id
     @program_service.save(validate: false)
-    
+
     @additional_detail = AdditionalDetail.new
     @additional_detail.service_id = @core_service.id
-    
+
   end
 
   describe 'user is not logged in and, thus, has no access to' do
@@ -231,6 +231,21 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         expect(assigns(:additional_detail)).to_not be_blank
       end
 
+      it "delete additional detail" do
+        @ad = AdditionalDetail.new
+        @ad.service_id = @core_service.id
+        @ad.save(validate: false)
+
+        @catalog_manager = CatalogManager.new
+        @catalog_manager.identity_id = @identity.id
+        @catalog_manager.organization_id = @core.id
+        @catalog_manager.save(validate: false)
+        expect{
+          delete(:destroy, {:service_id => @core_service, :id => @ad, :format => :json})
+          expect(response.status).to eq(204)
+        }.to change(AdditionalDetail, :count).by(-1)
+      end
+
       # CRUD an additional detail as a catalog_manager
       describe 'a core service and can' do
         before :each do
@@ -238,6 +253,55 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
           @catalog_manager.identity_id = @identity.id
           @catalog_manager.organization_id = @core.id
           @catalog_manager.save(validate: false)
+        end
+        
+        describe 'with an additional detail present' do
+          before :each do
+            @ad = AdditionalDetail.new
+            @ad.name = "Test"
+            @ad.service_id = @core_service.id
+            @ad.form_definition_json = "{test}"
+            @ad.effective_date = Time.now
+            @ad.approved = "false"
+            expect{
+              @ad.save
+            }.to change(AdditionalDetail, :count).by(1)
+          end
+
+          it "can update" do 
+            put(:update, {:service_id => @core_service, :id => @ad, :additional_detail=> @ad.attributes = { :name => "Test2"} }) 
+            expect(response).to redirect_to(additional_detail_service_additional_details_path(@core_service))
+            expect(AdditionalDetail.find(@ad.id).name).to eq("Test2")
+          end
+          
+          it "can delete" do 
+            expect{
+              delete(:destroy, {:service_id => @core_service, :id => @ad, :format => :json})
+              expect(response.status).to eq(204)    
+            }.to change(AdditionalDetail, :count).by(-1)
+          end
+          
+          describe 'with a line item additional detail present' do
+            before :each do
+              @line_item_additional_detail = LineItemAdditionalDetail.new
+              @line_item_additional_detail.additional_detail_id = @ad.id
+              @line_item_additional_detail.save(validate: false)
+            end
+            
+            it "cannot delete" do
+              expect{
+                delete(:destroy, {:service_id => @core_service, :id => @ad, :format => :json})
+                expect(response.status).to eq(403)
+              }.to change(AdditionalDetail, :count).by(0)
+            end
+            
+            it "cannot update" do
+              put(:update, {:service_id => @core_service, :id => @ad, :additional_detail=> @ad.attributes = { :name => "Test2"} }) 
+              expect(response.status).to eq(403)
+              expect(AdditionalDetail.find(@ad.id).name).to eq("Test")
+              end
+          end
+
         end
 
         it 'create an additional detail record' do
@@ -251,7 +315,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
             #expect(assigns(:additional_detail)).to be_blank
           }.to change(AdditionalDetail, :count).by(1)
         end
-        
+
         it 'see failed validation for :description being too long' do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
@@ -293,20 +357,20 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
             expect(assigns(:additional_detail)).to_not be_blank
           }.to change(AdditionalDetail, :count).by(0)
         end
-        
-      it 'see failed validation for blank :effective_date when trying to create an additional detail record' do
-                expect {
-                  post(:create, {:service_id => @core_service, :format => :html,
-                    :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => "", :approved => "true"}
-                  })
-                  expect(assigns(:additional_detail).errors[:effective_date].size).to eq(1)
-                  expect(response).to render_template("new")
-                  expect(response.status).to eq(200)
-                  expect(assigns(:service)).to_not be_blank
-                  expect(assigns(:additional_detail)).to_not be_blank
-                }.to change(AdditionalDetail, :count).by(0)
-              end
-        
+
+        it 'see failed validation for blank :effective_date when trying to create an additional detail record' do
+          expect {
+            post(:create, {:service_id => @core_service, :format => :html,
+              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => "", :approved => "true"}
+            })
+            expect(assigns(:additional_detail).errors[:effective_date].size).to eq(1)
+            expect(response).to render_template("new")
+            expect(response.status).to eq(200)
+            expect(assigns(:service)).to_not be_blank
+            expect(assigns(:additional_detail)).to_not be_blank
+          }.to change(AdditionalDetail, :count).by(0)
+        end
+
         it 'see failed validation for :effective_date that is already taken when trying to create an additional detail record' do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
@@ -356,23 +420,6 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
       end
 
     end
-    
-#    describe 'Put update' do
-#      before :each do
-#        @additional_detail.name = "Form # 1"
-#        @additional_detail.description = "10 essential questions" 
-#        @additional_detail.form_definition_json = "{}"
-#        @additional_detail.effective_date = Time.now
-#        @additional_detail.approved = "true"
-#      end
-#        context "vaild attributes" do 
-#          it "locate requested @additional_detail" do
-#            put :update, id: @additional_detail, additional_detail: Factory.attributes_for(:additional_detail)
-#                  expect(assigns(:additional_detail)).to eq(@additional_detail)
-#          end
-#        end
-#      
-#    end
 
     describe 'is a super_user and has access to' do
       it 'a core service index' do

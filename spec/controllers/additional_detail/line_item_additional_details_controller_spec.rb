@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe AdditionalDetail::LineItemAdditionalDetailsController do
+RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
     
   
 end

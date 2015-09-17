@@ -35,7 +35,7 @@
 
     - @sub_service_request.reports.where(:report_type => 'research_project_summary').each do |research_project_summary_report|
       %tr{ class: cycle('even', 'odd') }
-        %td.type Research Project Summary Report 
+        %td.type Project Summary Report
         %td.created_on= research_project_summary_report.xlsx_updated_at.to_s(:short)
         %td.action
           = link_to 'Download', research_project_summary_report.xlsx.url, id: "report_#{research_project_summary_report.id}"

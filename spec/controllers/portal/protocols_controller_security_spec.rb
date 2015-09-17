@@ -99,7 +99,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
     end
 
     it 'show protocol' do
-      get(:show, {:format => :js, :id => @protocol.id })
+      xhr :get, :show, {:format => :js, :id => @protocol.id }
       expect(assigns(:protocol)).to eq @protocol
       expect(assigns(:protocol_role).identity).to eq @identity
     end
@@ -145,7 +145,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
     end
 
     it 'view_full_calendar' do
-      get(:view_full_calendar, {:format => :js, :id => @protocol.id })
+      xhr :get, :view_full_calendar, {:format => :js, :id => @protocol.id }
       expect(assigns(:protocol)).to eq @protocol
       assigns(:merged)
     end
@@ -161,7 +161,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
     end
 
     it 'show protocol' do
-      get(:show, {:format => :js, :id => @protocol.id })
+      xhr :get, :show, {:format => :js, :id => @protocol.id }
       expect(assigns(:protocol)).to eq @protocol
       expect(assigns(:protocol_role).identity).to eq @identity
     end
@@ -207,7 +207,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
     end
 
     it 'view_full_calendar' do
-      get(:view_full_calendar, {:format => :js, :id => @protocol.id })
+      xhr :get, :view_full_calendar, {:format => :js, :id => @protocol.id }
       expect(assigns(:protocol)).to eq @protocol
       assigns(:merged)
     end
@@ -223,7 +223,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
     end
 
     it 'show protocol' do
-      get(:show, {:format => :js, :id => @protocol.id })
+      xhr :get, :show, {:format => :js, :id => @protocol.id }
       expect(assigns(:protocol)).to eq @protocol
       expect(assigns(:protocol_role).identity).to eq @identity
     end
@@ -268,7 +268,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
     end
 
     it 'view_full_calendar' do
-      get(:view_full_calendar, {:format => :js, :id => @protocol.id })
+      xhr :get, :view_full_calendar, {:format => :js, :id => @protocol.id }
       expect(assigns(:protocol)).to eq @protocol
       assigns(:merged)
     end
@@ -380,7 +380,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
           @service_provider.organization_id = @core.id
           @service_provider.save(validate: false)
 
-          get(:show, {:format => :js, :id => @protocol.id })
+          xhr :get, :show, {:format => :js, :id => @protocol.id }
           expect(assigns(:protocol)).to eq @protocol
           expect(assigns(:protocol_role)).to eq nil
 
@@ -459,7 +459,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
           @super_user.organization_id = @core.id
           @super_user.save(validate: false)
 
-          get(:show, {:format => :js, :id => @protocol.id })
+          xhr :get, :show, {:format => :js, :id => @protocol.id }
           expect(assigns(:protocol)).to eq @protocol
           expect(assigns(:protocol_role)).to eq nil
 

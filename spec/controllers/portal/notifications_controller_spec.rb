@@ -143,7 +143,7 @@ RSpec.describe Portal::NotificationsController do
 
     it 'should create a new message' do
       session[:identity_id] = identity1.id
-      get :create, {
+      xhr :get, :create, {
         format: :js,
         notification: {
           sub_service_request_id: ssr.id,
@@ -191,7 +191,7 @@ RSpec.describe Portal::NotificationsController do
 
     it 'should set notifications' do
       session[:identity_id] = identity1.id
-      get :create, {
+      xhr :get, :create, {
         format: :js,
         notification: {
           sub_service_request_id: ssr.id,

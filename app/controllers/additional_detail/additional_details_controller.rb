@@ -17,8 +17,13 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
   end
 
   def edit
-    @additional_detail = @service.additional_details.find(params[:id])
-    render :new
+    if LineItemAdditionalDetail.where(:additional_detail_id => params[:id]).count > 0
+#      @additional_detail.errors.add(:id, "Cannot update additional detail with line item details")
+      render status: :forbidden
+    else 
+      @additional_detail = @service.additional_details.find(params[:id])
+      render :new
+    end
   end
 
   def new

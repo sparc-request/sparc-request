@@ -344,26 +344,6 @@ RSpec.describe "admin fulfillment tab", js: true do
 
         expect(Visit.all.size).to eq(visits - 1)
       end
-
-      context 'removing a visit on a request that is in clinical work fulfillment' do
-
-        before :each do
-          add_visits
-          sub_service_request.update_attributes(in_work_fulfillment: true, status: "submitted")
-          build_clinical_data(all_subjects = true)
-          arm1.reload
-          arm2.reload
-        end
-
-        it "should not allow a visit to be deleted if any of a visit's appointments are completed" do
-          arm1.visit_groups.last.appointments.first.update_attributes(completed_at: Date.today)
-          current_visit = find('#delete_visit_position').value
-          find('.delete_visit_link').click
-          wait_for_javascript_to_finish
-          expect(page).to have_content 'Completed appointment exists for this visit...'
-          expect(find('#delete_visit_position').value).to eq(current_visit)
-        end
-      end
     end
   end
 

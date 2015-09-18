@@ -200,31 +200,6 @@ RSpec.describe LineItemsVisit do
           expect(@line_items_visit.visits.count).to eq(10)
         end
       end
-
-      describe "remove procedures" do
-
-        let!(:sub_service_request2) { create(:sub_service_request, ssr_id: "0002", service_request_id: service_request.id, organization_id: program.id, status: "submitted") }
-        let!(:service3)             { create(:service, organization_id: program.id, name: 'Per Patient') }
-        let!(:line_item3)           { create(:line_item, service_request_id: service_request.id, service_id: service3.id, sub_service_request_id: sub_service_request2.id, quantity: 0) }
-
-        before :each do
-          add_visits
-          build_clinical_data
-        end
-
-        it "should remove procedures when line_item_visit is destroyed" do
-
-          liv = line_item3.line_items_visits.first
-
-          expect(liv.procedures).not_to eq(nil)
-
-          liv.remove_procedures
-          liv.reload
-
-          expect(liv.procedures).to eq([])
-          expect(line_item3.procedures).not_to eq([])
-        end
-      end
     end
   end
 end

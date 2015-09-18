@@ -239,15 +239,6 @@ def build_study
   build_study_type_answers()
 end
 
-def build_clinical_data all_subjects = nil
-  service_request.arms.each do |arm|
-    arm.populate_subjects
-    arm.subjects.each do |subject|
-      subject.calendar.populate(arm.visit_groups)
-    end
-  end
-end
-
 def build_fake_notification
   let!(:sender) {create(:identity, last_name:'Glenn2', first_name:'Julia2', ldap_uid:'jug3', institution:'medical_university_of_south_carolina', college:'college_of_medecine', department:'other', email:'glennj2@musc.edu', credentials:'BS,    MRA', catalog_overlord: true, password:'p4ssword', password_confirmation:'p4ssword', approved: true)}
   let!(:notification) {create(:notification, sub_service_request_id: sub_service_request.id, originator_id: sender.id)}

@@ -293,19 +293,4 @@ RSpec.describe "Line Item" do
       expect(otf_line_item.valid?).to_not be
     end
   end
-
-  context "methods" do
-    before :each do
-      add_visits
-      build_clinical_data
-    end
-
-    describe "remove procedures" do
-      it "should destroy all procedures linked to this line_item" do
-        li_id = line_item2.id
-        line_item2.destroy
-        expect(Procedure.find_by_line_item_id(li_id)).to eq(nil)
-      end
-    end
-  end
 end

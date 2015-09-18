@@ -29,7 +29,7 @@ class AdditionalDetail < ActiveRecord::Base
   
   def date_in_past
     if  !effective_date.blank? and effective_date.beginning_of_day <= Date.yesterday.beginning_of_day
-      errors.add(:effective_date, "Date must be in past.")
+      errors.add(:effective_date, "Date cannot be in past.")
     end
   end
 

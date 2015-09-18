@@ -220,6 +220,56 @@ RSpec.describe Service, type: :model do
     end
   end
 
+  describe 'additional_detail_for_date/current_additional_detail' do
+    before :each do
+      @service = create(:service)
+      @service.save(validate: false)
+    end
+
+    it 'should return nil if no additional detail present' do
+      expect(@service.current_additional_detail).to eq(nil)
+    end
+
+    describe 'with an additional detail present with a current effective date' do
+      before :each do
+        @ad = AdditionalDetail.new
+        @ad.service_id = @service.id
+        @ad.effective_date = 1.day.ago
+        @ad.save(validate: false)
+      end
+
+      it 'additional_detail_for_date should return additional detail before date' do
+        @ad2 = AdditionalDetail.new
+        @ad2.service_id = @service.id
+        @ad2.effective_date = 3.day.ago
+        @ad2.save(validate: false)
+        expect(@service.additional_detail_for_date(2.day.ago)).to eq(@ad2)
+      end
+
+      it 'should return an additional detail' do
+        expect(@service.current_additional_detail).to eq(@ad)
+      end
+
+      it 'should return the most recent additional detail' do
+        @ad2 = AdditionalDetail.new
+        @ad2.service_id = @service.id
+        @ad2.effective_date = 2.day.ago
+        @ad2.save(validate: false)
+        expect(@service.current_additional_detail).to eq(@ad)
+      end
+
+      it 'should not return additional details with effective dates in the future' do
+        @ad2 = AdditionalDetail.new
+        @ad2.service_id = @service.id
+        @ad2.effective_date = Time.now + 1.day
+        @ad2.save(validate: false)
+        expect(@service.current_additional_detail).to eq(@ad)
+      end
+
+    end
+
+  end
+
   describe 'current_pricing_map' do
 
     it 'should raise an exception if there are no pricing maps' do
@@ -360,12 +410,12 @@ RSpec.describe Service, type: :model do
     let!(:service) { create(:service, organization_id: core.id) }
     let!(:pricing_map) { service.pricing_maps[0] }
     let!(:pricing_setup) { create(:pricing_setup, display_date: Date.today - 1, federal: 25,
-                           corporate: 25, other: 25, member: 25, organization_id: core.id)}
+      corporate: 25, other: 25, member: 25, organization_id: core.id)}
 
     before(:each) do
       pricing_map.update_attributes(
-          full_rate: 100,
-          display_date: Date.today - 1)
+      full_rate: 100,
+      display_date: Date.today - 1)
     end
 
     it "should return a hash with the correct rates" do

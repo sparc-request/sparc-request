@@ -281,6 +281,12 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
             }.to change(AdditionalDetail, :count).by(-1)
           end
           
+          it "will render edit page" do
+            get(:edit,{:service_id => @core_service, :id => @ad, :format =>:html})
+            expect(response.status).to eq(200)
+            expect(response).to render_template(:action => 'new')
+          end
+          
           describe 'with a line item additional detail present' do
             before :each do
               @line_item_additional_detail = LineItemAdditionalDetail.new
@@ -300,6 +306,13 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
               expect(response.status).to eq(403)
               expect(AdditionalDetail.find(@ad.id).name).to eq("Test")
               end
+             
+            it "will not render the edit page" do
+              get(:edit,{:service_id => @core_service, :id => @ad, :format =>:html})
+              expect(response.status).to eq(401)
+              expect(response).to render_template("unauthorized", :status => :unauthorized)
+            end
+               
           end
 
         end

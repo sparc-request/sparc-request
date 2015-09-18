@@ -18,8 +18,7 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
 
   def edit
     if LineItemAdditionalDetail.where(:additional_detail_id => params[:id]).count > 0
-#      @additional_detail.errors.add(:id, "Cannot update additional detail with line item details")
-      render status: :forbidden
+      render "unauthorized", :status => :unauthorized
     else 
       @additional_detail = @service.additional_details.find(params[:id])
       render :new

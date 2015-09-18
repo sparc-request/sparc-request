@@ -29,14 +29,6 @@ app.controller('AdditionalDetailsRootController', ['$scope', '$http', function($
 	$scope.gridModel.columnDefs = [{field: 'service.name', name: 'Name',  width: '30%', enableColumnMenu: false ,}
 	                               ];
 	
-//	$scope.reloadGrid = function(){
-//		$http.get('/additional_detail/services').
-//			then(function(response){
-//				$scope.gridModel.data = response.data;
-//			});
-//	}
-//	$scope.reloadGrid();
-	
 }]);
 
 
@@ -55,6 +47,7 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', functio
 				$scope.gridModel.data = response.data;
 			});
 	}
+	
 	$scope.reloadGrid();
 	
 	$scope.deleteAdditonalDetail = function(additonalDetailId){

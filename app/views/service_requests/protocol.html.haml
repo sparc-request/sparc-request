@@ -51,7 +51,7 @@
               = t("study_assignment.research_study")
               = radio_button_tag :protocol, "Research Study", (@service_request.protocol.try(:type) == 'Project' ? false : true), :class => 'form-control'
               = t("study_assignment.research_project")
-              = radio_button_tag :protocol, "Research Project", (@service_request.protocol.try(:type) == 'Project' ? true : false), :class => 'form-control'
+              = radio_button_tag :protocol, "Project", (@service_request.protocol.try(:type) == 'Project' ? true : false), :class => 'form-control'
               %span#infotip= image_tag('information.png')
               %br
               %br

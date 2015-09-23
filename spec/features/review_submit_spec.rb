@@ -58,19 +58,19 @@ RSpec.describe "review page", js: true do
     end
   end
 
-  describe "clicking get a quote and declining the system satisfaction survey" do
+  describe "clicking get a cost estimate and declining the system satisfaction survey" do
     it 'Should submit the page', js: true do
-      find("#get_a_quote").click
+      find("#get_a_cost_estimate").click
       find(:xpath, "//button/span[text()='No']/..").click
       wait_for_javascript_to_finish
       service_request_test = ServiceRequest.find(service_request.id)
-      expect(service_request_test.status).to eq("get_a_quote")
+      expect(service_request_test.status).to eq("get_a_cost_estimate")
     end
   end
 
-  describe "clicking get a quote and accepting the system satisfaction survey" do
+  describe "clicking get a cost estimate and accepting the system satisfaction survey" do
     it 'Should submit the page', js: true do
-      find("#get_a_quote").click
+      find("#get_a_cost_estimate").click
       find(:xpath, "//button/span[text()='Yes']/..").click
       wait_for_javascript_to_finish
 

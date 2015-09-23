@@ -44,7 +44,7 @@ en:
     save_and_continue: "Save & Continue"
     continue: "Continue"
     save_as_draft: "Save As Draft"
-    get_quote: "Get Quote"
+    get_cost_estimate: "Get Cost Estimate"
     submit_to_start: "Submit to Start Services"
     cancel: "Cancel"
 
@@ -111,7 +111,7 @@ en:
   # Notifier
   notifier:
     service_request: "Service Request"
-    welcome_obtain_research_pricing: "A request has been made to get a quote"
+    welcome_obtain_research_pricing: "A request has been made to get a cost estimate"
     welcome_submit: "Services have been requested or changed"
     body1: "Dear %{full_name},"
     body2_pi: "%{welcome} in %{application_title} (%{root_url}) for your %{protocol_type} listed below. In addition, below is a list of users who have been granted access to this %{protocol_type} on your behalf."
@@ -168,7 +168,7 @@ en:
         answer_text: "Yes. Please feel free to browse, select, and add services from any Service Provider, Program, and/or Core displayed in the system for any given research study/project."
       - question_text: "How many Authorized Users can I add?"
         answer_text: "Add as many Authorized Users as you feel is pertinent. There is no limit."
-      - question_text: "What is the difference  between a Research Study and a Research Project?"
+      - question_text: "What is the difference  between a Research Study and a Project?"
         answer_text: "A Research Study is an individual research protocol with defined aims and outcomes."
       - question_text: "How is SPARC Request calculating my indirect costs?"
         answer_text: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARC Request uses this data to calculate your total overall indirect costs."
@@ -182,7 +182,7 @@ en:
     federal: "49.5"
   # new/editing projects
   sr_project:
-    message: "Before you can complete a service request, please tell us more about your research project.  This information will be used by our staff to decide the best way to process your request."
+    message: "Before you can complete a service request, please tell us more about your project.  This information will be used by our staff to decide the best way to process your request."
     title1: "Short Title:*"
     title2: "Project Title:*"
     funding_status: "Proposal Funding Status:*"
@@ -202,7 +202,7 @@ en:
     select_study: "Select Study"
     select_project: "Select Project"
     research_study: "Research Study"
-    research_project: "Research Project"
+    research_project: "Project"
     edit_study: "Edit Study"
     edit_project: "Edit Project"
     or: "If not in list above, create NEW Study/Project Below"
@@ -502,7 +502,7 @@ en:
 
   # Edit Project Form
   project_form:
-    message: "Before you can complete a service request, please tell us more about your research project.  This information will be used by our staff to decide the best way to process your request."
+    message: "Before you can complete a service request, please tell us more about your project.  This information will be used by our staff to decide the best way to process your request."
     title: "Project Title:*"
     dropdown_default1: "Select a Funding Status"
     dropdown_default2: "Select a Funding Source"
@@ -579,7 +579,7 @@ en:
   sr_review:
     participate_in_survey: "Would you like to participate in a brief 1 question SPARC Request satisfaction survey?"
     participate_in_survey_title: "System Satisfaction Survey"
-    instructions: "<ul class='review_instructions'><li>Review your request.</li><li>Makes changes (if needed).</li><li>Save as draft for later, get a quote, or submit to start services.</li></ul>"
+    instructions: "<ul class='review_instructions'><li>Review your request.</li><li>Makes changes (if needed).</li><li>Save as draft for later, get a cost estimate, or submit to start services.</li></ul>"
     study_project_info:
       title: "Study/Project Information"
       id: "Study/Project ID:"
@@ -606,7 +606,7 @@ en:
   # Service Request Confirmation Page and Obtain Research Pricing Page
   sr_confirmation:
     instructions: "Thank you for submitting your service request(s) through SPARC Request. An email has been sent to each of your service providers and they should be contacting you soon. If you have any questions or concerns, please don't hesitate to contact the SUCCESS Center at 792-8300 or success@musc.edu."
-    research_pricing_instructions : "You have successfully submitted a request to get a quote. An email(s) has been submitted on your behalf, and we will respond to your request for a quote shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
+    research_pricing_instructions : "You have successfully submitted a request to get a cost estimate. An email(s) has been submitted on your behalf, and we will respond to your request for a cost estimate shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
     download_button: "Download my Service Request"
     portal_button: "Go to SPARC Request User Portal"
     details:

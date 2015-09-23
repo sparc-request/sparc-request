@@ -58,6 +58,46 @@ RSpec.describe ServiceRequestsController do
     end
   end
 
+  describe 'line_item_additional_details' do
+    before :each do  
+      @service = Service.new
+      expect{
+        @service.save(:validate => false)
+      }.to change(Service, :count).by(1)
+     
+      @line_item = LineItem.new
+      @line_item.service_request_id = service_request.id
+      @line_item.service_id = @service.id
+      expect{
+        @line_item.save(:validate => false)
+      }.to change(LineItem, :count).by(1)
+    end
+
+    it "should return empty json if no additional details exist" do
+      get(:line_item_additional_details, { :id=>service_request.id }, :format => :json)
+        expect(response.status).to eq(200)
+        expect(response.body).to eq([].to_json)  
+    end
+    
+    before :each do
+      @ad = AdditionalDetail.new
+      @ad.name = :test
+      @ad.service_id = @service.id
+      expect{
+        @ad.save(:validate => false)
+      }.to change(AdditionalDetail, :count).by(1)
+    end
+    
+    it "should return json with additional details when additional details present" do
+      get(:line_item_additional_details, { :id=>service_request.id }, :format => :json)
+      expect(response.status).to eq(200)
+      expect(response.body).to eq([@ad].to_json)
+    end
+    
+    
+    
+  end
+
   describe 'GET catalog' do
     it 'should set institutions to all institutions if there is no sub service request id' do
       session[:service_request_id] = service_request.id
@@ -184,9 +224,9 @@ RSpec.describe ServiceRequestsController do
         service_request.protocol.update_attribute(:next_ssr_id, 42)
         service_request.sub_service_requests.each { |ssr| ssr.destroy }
         ssr = create(
-            :sub_service_request,
-            service_request_id: service_request.id,
-            organization_id: core.id)
+        :sub_service_request,
+        service_request_id: service_request.id,
+        organization_id: core.id)
         session[:service_request_id] = service_request.id
         get :confirmation, id: service_request.id
         service_request.protocol.reload
@@ -199,15 +239,15 @@ RSpec.describe ServiceRequestsController do
         service_request.sub_service_requests.each { |ssr| ssr.destroy }
 
         ssr1 = create(
-            :sub_service_request,
-            service_request_id: service_request.id,
-            ssr_id: nil,
-            organization_id: provider.id)
+        :sub_service_request,
+        service_request_id: service_request.id,
+        ssr_id: nil,
+        organization_id: provider.id)
         ssr2 = create(
-            :sub_service_request,
-            service_request_id: service_request.id,
-            ssr_id: nil,
-            organization_id: core.id)
+        :sub_service_request,
+        service_request_id: service_request.id,
+        ssr_id: nil,
+        organization_id: core.id)
 
         session[:service_request_id] = service_request.id
         get :confirmation, id: service_request.id
@@ -228,10 +268,10 @@ RSpec.describe ServiceRequestsController do
         service_request.sub_service_requests.each { |ssr| ssr.destroy }
 
         ssr1 = create(
-            :sub_service_request,
-            service_request_id: service_request.id,
-            ssr_id: nil,
-            organization_id: core.id)
+        :sub_service_request,
+        service_request_id: service_request.id,
+        ssr_id: nil,
+        organization_id: core.id)
 
         session[:service_request_id] = service_request.id
         get :confirmation, id: service_request.id
@@ -550,42 +590,42 @@ RSpec.describe ServiceRequestsController do
   describe 'POST add_service' do
     let!(:new_service) {
       service = create(
-          :service,
-          pricing_map_count: 1,
-          one_time_fee: true,
-          organization_id: core.id)
+      :service,
+      pricing_map_count: 1,
+      one_time_fee: true,
+      organization_id: core.id)
       service.pricing_maps[0].update_attributes(
-          display_date: Date.today,
-          quantity_minimum: 42)
+      display_date: Date.today,
+      quantity_minimum: 42)
       service
     }
 
     let!(:new_service2) {
       service = create(
-          :service,
-          pricing_map_count: 1,
-          one_time_fee: true,
-          organization_id: core.id)
+      :service,
+      pricing_map_count: 1,
+      one_time_fee: true,
+      organization_id: core.id)
       service.pricing_maps[0].update_attributes(
-          display_date: Date.today,
-          quantity_minimum: 54)
+      display_date: Date.today,
+      quantity_minimum: 54)
       service
     }
 
     let!(:new_service3) {
       service = create(
-          :service,
-          pricing_map_count: 1,
-          organization_id: core2.id)
+      :service,
+      pricing_map_count: 1,
+      organization_id: core2.id)
       service.pricing_maps[0].update_attributes(display_date: Date.today)
       service
     }
 
     it 'should give an error if the service request already has a line item for the service' do
       line_item = create(
-          :line_item,
-          service_id: new_service.id,
-          service_request_id: service_request.id)
+      :line_item,
+      service_id: new_service.id,
+      service_request_id: service_request.id)
       session[:service_request_id] = service_request.id
       post :add_service, {
         :id          => service_request.id,
@@ -617,10 +657,10 @@ RSpec.describe ServiceRequestsController do
       orig_count = service_request.line_items.count
 
       create(
-          :service_relation,
-          service_id: new_service.id,
-          related_service_id: new_service2.id,
-          optional: false)
+      :service_relation,
+      service_id: new_service.id,
+      related_service_id: new_service2.id,
+      optional: false)
 
       session[:service_request_id] = service_request.id
       post :add_service, { id: service_request.id, service_id: new_service.id, format: :js }.with_indifferent_access
@@ -640,10 +680,10 @@ RSpec.describe ServiceRequestsController do
       orig_count = service_request.line_items.count
 
       create(
-          :service_relation,
-          service_id: new_service.id,
-          related_service_id: new_service2.id,
-          optional: true)
+      :service_relation,
+      service_id: new_service.id,
+      related_service_id: new_service2.id,
+      optional: true)
 
       session[:service_request_id] = service_request.id
       post :add_service, {
@@ -1012,8 +1052,8 @@ RSpec.describe ServiceRequestsController do
 
     it 'should create a new subsidy and put it into subsidies if the ssr does not have a subsidy and it is eligible for subsidy' do
       sub_service_request.organization.subsidy_map.update_attributes(
-          max_dollar_cap: 100,
-          max_percentage: 100)
+      max_dollar_cap: 100,
+      max_percentage: 100)
 
       session[:service_request_id] = service_request.id
       get :service_subsidy, id: service_request.id
@@ -1036,14 +1076,14 @@ RSpec.describe ServiceRequestsController do
         program.build_subsidy_map
 
         core.subsidy_map.update_attributes!(
-            max_dollar_cap: 0,
-            max_percentage: 0)
+        max_dollar_cap: 0,
+        max_percentage: 0)
         provider.subsidy_map.update_attributes!(
-            max_dollar_cap: 0,
-            max_percentage: 0)
+        max_dollar_cap: 0,
+        max_percentage: 0)
         program.subsidy_map.update_attributes!(
-            max_dollar_cap: 0,
-            max_percentage: 0)
+        max_dollar_cap: 0,
+        max_percentage: 0)
 
         # make sure before we start the test that the ssr is not
         # eligible for subsidy

@@ -16,7 +16,6 @@
 //= require additional_detail/angular-schema-form-dynamic-select.min
 var typeHash;
 var app = angular.module('app', ['ngAria','schemaForm','ui.grid','ui.grid.resizeColumns', 'mgcrea.ngStrap', 'schemaForm-datepicker', 'schemaForm-timepicker', 'schemaForm-datetimepicker','ui.grid.selection','ngSanitize', 'ui.grid.autoResize','ui.grid.expandable', 'ui.grid.edit']);
-
 app.config([
      "$httpProvider", function($httpProvider) {
      $httpProvider.defaults.headers.common["Accept"] = "application/json";
@@ -28,6 +27,22 @@ app.controller('AdditionalDetailsRootController', ['$scope', '$http', function($
 	$scope.gridModel = {enableFiltering: true, enableColumnResizing: true, showColumnFooter: true , enableSorting: false, showGridFooter: true, enableRowHeaderSelection: false, rowHeight: 42};
 	$scope.gridModel.columnDefs = [{field: 'service.name', name: 'Name',  width: '30%', enableColumnMenu: false ,}
 	                               ];
+	
+}]);
+
+app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$http', function($scope, $http) { 
+	$scope.gridModel = {enableFiltering: true, enableColumnResizing: true, showColumnFooter: true , enableSorting: false, showGridFooter: true, enableRowHeaderSelection: false, rowHeight: 42};
+	$scope.gridModel.columnDefs = [{field: 'service.name', name: 'Name',  width: '30%', enableColumnMenu: false ,}
+	                               ];
+	
+	$scope.reloadGrid = function(){
+		$http.get('/service_requests/'+id+'/line_item_additional_details').
+			then(function(response){
+				console.log(response);
+			});
+	}
+	
+	$scope.reloadGrid();
 	
 }]);
 

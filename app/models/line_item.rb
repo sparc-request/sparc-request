@@ -75,6 +75,10 @@ class LineItem < ActiveRecord::Base
   # TODO: order by date/id instead of just by date?
   default_scope :order => 'line_items.id ASC'
 
+  def get_additional_detail
+    service.current_additional_detail
+  end
+  
   def quantity_must_be_smaller_than_max_and_greater_than_min
     pricing = Service.find(service_id).current_effective_pricing_map
     max = pricing.units_per_qty_max

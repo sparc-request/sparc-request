@@ -83,7 +83,7 @@ RSpec.describe "Line Item" do
 
       line_item.applicable_rate
     end
-
+    
     it 'should call applicable_rate on the pricing map of a study with the applied percentage and rate type returned by the pricing setup' do
       # TODO: it's obvious by the complexity of this test that
       # applicable_rate() is doing too much, but I'm not sure how to

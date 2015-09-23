@@ -81,6 +81,16 @@ class SubServiceRequest < ActiveRecord::Base
     end
   end
 
+  def get_additional_details 
+    results =[]
+      for li in self.line_items
+        if li.get_additional_detail != nil
+          results.push(li.get_additional_detail)
+        end
+      end
+    results
+  end
+  
   def update_org_tree
     my_tree = nil
     if organization.type == "Core"

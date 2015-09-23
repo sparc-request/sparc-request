@@ -42,6 +42,9 @@ SparcRails::Application.routes.draw do
   end
 
   resources :service_requests do
+    member do
+            get :line_item_additional_details
+          end
     resources :projects
     resources :studies
     member do

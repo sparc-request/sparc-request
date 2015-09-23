@@ -18,8 +18,13 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+:javascript
+  var id = '#{@service_request.id}';
+
 = javascript_include_tag 'document_management'
 = javascript_include_tag 'cart'
+= javascript_include_tag 'additional_detail/application.js'
+= stylesheet_link_tag    "additional_detail/application"
 
 #upload_message{:style => 'display:none'}
   = t("documents.message")
@@ -31,6 +36,14 @@
   = render :partial => 'steps'
   = render :partial => 'errors'
   .grid_9.col-md-9
+    .panel.panel-default{"ng-controller" => "DocumentManagementAdditionalDetailsController"}
+      .panel-heading
+        %h3.panel-title Additional Details
+      .row
+        .col-md-12
+          %div{"ui-grid"=>"gridModel", "ui-grid-edit"=>"true", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 400px;"}
+
+      
     .document_upload_instructions= t("documents.upload_instructions_html")
     .document-management-container
       = render :partial => 'document_list', :locals => {:review => false, :provider_css => 'orange-provider'}
@@ -45,7 +58,6 @@
       .clear
       %br
       %br
-
       %div{:style => 'text-align: center'}
         = t("documents.notes_instructions")
         = text_area_tag 'service_request[notes]', @service_request.notes, :rows => 14, :cols => 75

@@ -226,16 +226,12 @@ class Service < ActiveRecord::Base
     return pricing_map
   end
 
-  # Find a pricing map with an effective date for today's date.
-  def current_effective_pricing_map
-    return effective_pricing_map_for_date(Date.today)
-  end
-
   # Find most recent additional detail with an effective date before today
   def current_additional_detail
     return additional_detail_for_date(Date.today)
   end
   
+  # Find most recent additional detail before given date
   def additional_detail_for_date(date=Date.today)
     current_additional_details = AdditionalDetail.where("service_id= :id AND effective_date <= :date" , {:id => id, :date => date.beginning_of_day})
     if(current_additional_details.count >0)
@@ -243,6 +239,11 @@ class Service < ActiveRecord::Base
     else
       return nil
     end
+  end
+  
+  # Find a pricing map with an effective date for today's date.
+  def current_effective_pricing_map
+    return effective_pricing_map_for_date(Date.today)
   end
   
   # Find a pricing map with an effective date corresponding to the given

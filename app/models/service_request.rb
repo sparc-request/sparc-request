@@ -106,6 +106,16 @@ class ServiceRequest < ActiveRecord::Base
 
   #after_save :fix_missing_visits
 
+  def get_additional_details 
+    results =[]
+      for li in self.line_items
+        if li.get_additional_detail != nil
+          results.push(li.get_additional_detail)
+        end
+      end
+    results
+  end
+   
   def protocol_page
     if self.protocol_id.blank?
       errors.add(:protocol_id, "You must identify the service request with a study/project before continuing.")

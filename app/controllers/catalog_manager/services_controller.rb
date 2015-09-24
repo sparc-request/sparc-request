@@ -146,7 +146,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
         pm_id = pm[1]['id']
         pm[1].delete(:id)
 
-        saved = @service.pricing_maps.where(id: pm_id).first.update_attributes(pm[1])
+        saved = @service.pricing_maps.find(pm_id).update_attributes(pm[1])
       end
       if saved == true
         saved = @service.save

@@ -73,7 +73,7 @@ module SurveyorControllerCustomMethods
     File.open(full_path, 'w') do |f|
       if pretty_print
         f.write(['Identity', 'College', 'Department', survey.response_sets.first.survey.sections.map{|section| section.questions.order(:display_order).map(&:text)}].flatten.to_csv) #header
-        question_ids = survey.sections.map{|section| section.questions.order(&:display_order).map(&:id)}.flatten
+        question_ids = survey.sections.map{|section| section.questions.order(:display_order).map(&:id)}.flatten
         survey.response_sets.each do |response_set|
           next if response_set.responses.empty?
           identity = Identity.find(response_set.user_id)

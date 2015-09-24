@@ -24,7 +24,7 @@
   = hidden_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][id]", "#{pricing_setup ? pricing_setup.id : 'blank'}" 
   - if pricing_setup_disabled
     %input{:name => "diabled_fields_present", :value => 'true', :type => 'hidden'} 
-  - unless pricing_setup
+  - if pricing_setup.id.blank?
     %input.remove_pricing_setup{:type => 'button', :value => 'Remove Pricing Setup', :style => 'width:auto; margin-bottom:12px;'} 
     / %a.button.remove_pricing_setup{:href => 'javascript:void(0);'} Remove Pricing Setup
   %fieldset
@@ -36,15 +36,15 @@
             = t("cm_shared.labels.display_date")
             *
           %td
-            %input.display_date{:type => 'text', :value => pricing_setup.try(:[], 'display_date'), :class => "#{pricing_setup_disabled ? 'disabled_datepicker' : 'datepicker'} #{pricing_setup ? 'validate' : ''} ", :disabled => pricing_setup_disabled, :past_date => (can_edit_historical_data ? 'true' : 'false'), :display => 'display_date'}
-            = hidden_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][display_date]", pricing_setup.try(:[], 'display_date'), :class => "submitted_date display_date_hidden #{pricing_setup ? 'fix_pricing_maps_on_change' : ''}", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled, :date_type => '.display_date_hidden', :old_value => pricing_setup.try(:[], 'display_date'), :entity_name => entity.try(:name), :entity_id => entity.try(:id)
+            %input.display_date{:type => 'text', :value => pricing_setup.try(:[], 'display_date'), :class => "#{pricing_setup_disabled ? 'disabled_datepicker' : 'datepicker'} #{(pricing_setup.id != nil) ? 'validate' : ''} ", :disabled => pricing_setup_disabled, :past_date => (can_edit_historical_data ? 'true' : 'false'), :display => 'display_date'}
+            = hidden_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][display_date]", pricing_setup.try(:[], 'display_date'), :class => "submitted_date display_date_hidden #{(pricing_setup.id != nil) ? 'fix_pricing_maps_on_change' : ''}", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled, :date_type => '.display_date_hidden', :old_value => pricing_setup.try(:[], 'display_date'), :entity_name => entity.try(:name), :entity_id => entity.try(:id)
         %tr
           %th
             = t("cm_shared.labels.effective_date")
             *
           %td
-            %input.effective_date{:type => 'text', :value => pricing_setup.try(:[], 'effective_date'), :class => "#{pricing_setup_disabled ? 'disabled_datepicker' : 'datepicker'} #{pricing_setup ? 'validate' : ''} ", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled, :past_date => (can_edit_historical_data ? 'true' : 'false'), :display => 'effective_date'}
-            = hidden_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][effective_date]", pricing_setup.try(:[], 'effective_date'), :class => "submitted_date effective_date_hidden #{pricing_setup ? 'fix_pricing_maps_on_change' : ''}", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled, :date_type => '.effective_date_hidden', :old_value => pricing_setup.try(:[], 'effective_date'), :entity_name => entity.try(:name), :entity_id => entity.try(:id)
+            %input.effective_date{:type => 'text', :value => pricing_setup.try(:[], 'effective_date'), :class => "#{pricing_setup_disabled ? 'disabled_datepicker' : 'datepicker'} #{(pricing_setup.id != nil) ? 'validate' : ''} ", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled, :past_date => (can_edit_historical_data ? 'true' : 'false'), :display => 'effective_date'}
+            = hidden_field_tag "pricing_setups[#{pricing_setup.try(:[], 'id') || 'blank_pricing_setup'}][effective_date]", pricing_setup.try(:[], 'effective_date'), :class => "submitted_date effective_date_hidden #{(pricing_setup.id != nil) ? 'fix_pricing_maps_on_change' : ''}", :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled, :date_type => '.effective_date_hidden', :old_value => pricing_setup.try(:[], 'effective_date'), :entity_name => entity.try(:name), :entity_id => entity.try(:id)
         %tr
           %th &nbsp;
           %td.footnote= t("cm_shared.labels.required_field")

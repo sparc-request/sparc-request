@@ -148,7 +148,7 @@ class SubServiceRequest < ActiveRecord::Base
       values = []
       columns = [:line_item_id,:visit_id,:appointment_id]
       self.service_request.arms.each do |arm|
-        visits = Visit.joins(:line_items_visit).where(visits: { visit_group_id: arm.visit_groups}, line_items_visits:{ line_item_id: li.id} )
+        visits = Visit.joins(:line_items_visit).where(visits: { visit_group_id: arm.visit_groups}, line_items_visits: { line_item_id: li.id} )
         visits.group_by{|v| v.visit_group_id}.each do |vg_id, group_visits|
           Appointment.where(visit_group_id: vg_id).each do |appointment|
             appointment_id = appointment.id

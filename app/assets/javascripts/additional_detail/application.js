@@ -62,7 +62,7 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', functio
 				$scope.gridModel.data = response.data;
 			});
 	}
-	
+	  
 	$scope.reloadGrid();
 	
 	$scope.deleteAdditonalDetail = function(additonalDetailId){
@@ -113,7 +113,10 @@ app.controller('navController', ['$scope', function($scope){
 }]);
 
 app.controller('FormCreationController', ['$scope', '$http', function ($scope, $http, $compile) {
-			
+		
+	//var form_definition =  ;
+ 
+	//$scope.formDefinition = $('#additional_detail_form_definition_json').val()
 	$scope.form ={};
 	$scope.effective_date = effective_date;
 
@@ -141,7 +144,7 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
 
 	$scope.invaildDate = new Date((new Date()-86400000));
 
-    $scope.formDefinition = (form_definition != "") ? form_definition : JSON.stringify({ schema: { type: "object",title: "Comment", properties: {},required: []}, form: []},undefined,2);
+    $scope.formDefinition = ($('#additional_detail_form_definition_json').val() != "") ? $('#additional_detail_form_definition_json').val() : JSON.stringify({ schema: { type: "object",title: "Comment", properties: {},required: []}, form: []},undefined,2);
     
 	 var dropdownKindList = ["multiDropdown", "dropdown", "state", "country"];
 	 function generateGridArray(schema, form){
@@ -395,6 +398,7 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
 		    	}
 		    	// update schema/form definitions
 	   			$scope.formDefinition = JSON.stringify(formDef,undefined,2,2);
+	   			$scope.gridModel.data = generateGridArray($scope.schema, $scope.form); 
 		  	}
 	  	};   	
 	  

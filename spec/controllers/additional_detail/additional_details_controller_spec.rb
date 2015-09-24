@@ -260,7 +260,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
             @ad = AdditionalDetail.new
             @ad.name = "Test"
             @ad.service_id = @core_service.id
-            @ad.form_definition_json = "{test}"
+            @ad.form_definition_json = '{"test": "test"}'
             @ad.effective_date = Time.now
             @ad.approved = "false"
             expect{

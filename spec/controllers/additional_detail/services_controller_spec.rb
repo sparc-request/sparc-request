@@ -6,7 +6,7 @@ RSpec.describe AdditionalDetail::ServicesController do
   describe 'user is not logged in and, thus, has no access to' do
     it 'index' do
       get(:index, {:format => :html}) 
-      response.should redirect_to("/identities/sign_in")
+      expect(response).to redirect_to("/identities/sign_in")
     end
    end
    
@@ -22,7 +22,7 @@ RSpec.describe AdditionalDetail::ServicesController do
     
     it 'index' do
       get(:index, {:format => :html}) 
-      response.should render_template("index")
+      expect(response).to render_template("index")
       expect(response.status).to eq(200)
     end
   end

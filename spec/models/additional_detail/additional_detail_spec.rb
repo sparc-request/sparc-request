@@ -43,14 +43,14 @@ RSpec.describe AdditionalDetail do
 
     it 'should create new additional detail' do
       @ad.effective_date= Time.now
-      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":{test},"required":[]},"form":[]}'
+      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":[]},"form":[]}'
       @ad.name = "Name"
       expect(@ad.valid?)
       expect(@ad.errors.count).to eq(0)
     end
 
     it 'should fail vailidation when :effective_date is null' do
-      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":{test},"required":[]},"form":[]}'
+      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":[]},"form":[]}'
       @ad.name = "Name"
       expect(!@ad.valid?)
       expect(@ad.errors[:effective_date].size).to eq(1)
@@ -60,7 +60,7 @@ RSpec.describe AdditionalDetail do
 
     it 'should fail vailidation when :effective_date is not in the past' do
       @ad.effective_date= 1.day.ago
-      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":{test},"required":[]},"form":[]}'
+      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":[]},"form":[]}'
       @ad.name = "Name"
       expect(!@ad.valid?)
       expect(@ad.errors[:effective_date].size).to eq(1)
@@ -81,7 +81,7 @@ RSpec.describe AdditionalDetail do
     it 'update should fail if line item additional details present' do
       @ad.name= "Test"
       @ad.effective_date= Time.now
-      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":{test},"required":[]},"form":[]}'
+      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":[]},"form":[]}'
       expect{@ad.save}.to change(AdditionalDetail, :count).by(1)
       @line_item_additional_detail = LineItemAdditionalDetail.new
       @line_item_additional_detail.additional_detail_id = @ad.id
@@ -94,7 +94,7 @@ RSpec.describe AdditionalDetail do
 
     it 'should fail vailidation when :name is null' do
       @ad.effective_date= Time.now
-      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":{test},"required":[]},"form":[]}'
+      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":[]},"form":[]}'
       expect(!@ad.valid?)
       expect(@ad.errors[:name].size).to eq(1)
       message = "can't be blank"
@@ -113,7 +113,7 @@ RSpec.describe AdditionalDetail do
     it 'should fail vailidation when line_item_additional_details are present' do
       count = AdditionalDetail.count
       @ad.effective_date= Time.now
-      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":{test},"required":[]},"form":[]}'
+      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":[]},"form":[]}'
       @ad.name = "Name"
       expect(@ad.valid?)
       expect(@ad.errors.count).to eq(0)
@@ -153,7 +153,7 @@ RSpec.describe AdditionalDetail do
     end
 
     it 'should fail vailidation when :description is too long' do
-      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":{test},"required":[]},"form":[]}'
+      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":[]},"form":[]}'
       @ad.effective_date= Time.now
       @ad.description = "0"*256
       @ad.name= "Test"

@@ -34,9 +34,9 @@ class AdditionalDetail < ActiveRecord::Base
   end
 
   def form_definition_cannot_be_blank
-    invaildList = ['{"schema":{"type":"object","title":"Comment","properties":{},"required":[]},"form":[]}']
-    if !form_definition_json.blank? and invaildList.include?(form_definition_json.gsub!(/\s+/, ""))
-      errors.add(:form_definition_json, "Form must contain at least one question.")
+    blankForm = '{ "schema": { "type": "object","title": "Comment", "properties": {},"required": []}, "form": []}'
+    if !form_definition_json.blank? and JSON.parse(form_definition_json) == JSON.parse(blankForm)
+        errors.add(:form_definition_json, "Form must contain at least one question.")
     end
   end
  

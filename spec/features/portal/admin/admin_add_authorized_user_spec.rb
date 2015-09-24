@@ -68,7 +68,7 @@ RSpec.describe 'associated users tab', js: true do
 
     describe 'searching for an user' do
       before :each do
-        fill_autocomplete('user_search', with: 'bjk7');
+        fill_in 'user_search', with: 'bjk7'
         page.find('a', text: "Brian Kelsey (kelsey@musc.edu)", visible: true).click()
       end
 
@@ -87,6 +87,7 @@ RSpec.describe 'associated users tab', js: true do
           click_button("add_authorized_user_submit_button")
 
           within('#users') do
+            
             expect(page).to have_text('Brian Kelsey')
             expect(page).to have_text('Co-Investigator')
             expect(page).to have_text('Request/Approve Services')

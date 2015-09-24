@@ -1,8 +1,14 @@
-sudo: false
+sudo: true
 language: ruby
 cache: bundler
 rvm:
   - 1.9.3  
+before_install:
+  sudo apt-add-repository ppa:ubuntu-sdk-team/ppa
+  sudo apt-get update
+  sudo apt-get install qt5-default libqt5webkit5-dev qtdeclarative5-dev g++    
+#  - gem install capybara-webkit -v '1.6.0'
+#  - gem install polyglot -v '0.3.5'  
 before_script:
   - cp config/database.yml.example config/database.yml
   - cp config/application.yml.example config/application.yml

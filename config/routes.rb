@@ -256,7 +256,7 @@ SparcRails::Application.routes.draw do
       resources :sub_service_requests do
         member do
           put :update_from_fulfillment
-          put :update_from_project_study_information
+          patch :update_from_project_study_information
           put :push_to_epic
           put :add_line_item
           put :add_otf_line_item

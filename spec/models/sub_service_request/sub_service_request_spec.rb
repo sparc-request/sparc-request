@@ -237,7 +237,7 @@ RSpec.describe 'SubServiceRequest' do
       let!(:line_item2) { create(:line_item, sub_service_request_id: ssr2.id, service_request_id: service_request.id, service_id: service2.id) }
 
       before :each do
-        EDITABLE_STATUSES[sub_service_request.organization.id] = ['first_draft', 'draft', 'submitted', nil, 'get_a_quote', 'awaiting_pi_approval']
+        EDITABLE_STATUSES[sub_service_request.organization.id] = ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval']
       end
 
       context "can be edited" do
@@ -257,8 +257,8 @@ RSpec.describe 'SubServiceRequest' do
           expect(sub_service_request.can_be_edited?).to eq(true)
         end
 
-        it "should return true if the status is get a quote" do
-          sub_service_request.update_attributes(status: 'get_a_quote')
+        it "should return true if the status is get a cost estimate" do
+          sub_service_request.update_attributes(status: 'get_a_cost_estimate')
           expect(sub_service_request.can_be_edited?).to eq(true)
         end
 
@@ -269,7 +269,7 @@ RSpec.describe 'SubServiceRequest' do
       end
 
       before :each do
-        EDITABLE_STATUSES[ssr1.organization.id] = ['first_draft', 'draft', 'submitted', nil, 'get_a_quote', 'awaiting_pi_approval']
+        EDITABLE_STATUSES[ssr1.organization.id] = ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval']
       end
 
       context "update based on status" do

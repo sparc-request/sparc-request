@@ -59,7 +59,6 @@ class CatalogManager::ServicesController < CatalogManager::AppController
   end
 
   def create
-    puts params[:pricing_maps]
     if params[:service][:core] && params[:service][:core] != '0'
       organization = Core.find(params[:service][:core])
 

@@ -657,6 +657,7 @@ en:
     ctrc_services_exist: "SCTR Research Nexus services have been found on another Service Request %{protocol_id}-%{ssr_id} pertaining to this Project/Study %{short_title}. To edit this request, please contact the Nexus at 792-8688."
     full_calendar: "View Consolidated Request"
     add_services: "Add Services"
+    consolidated_request: 'Export Consolidated Request'
 
   # Portal sub service request dialog
   ssr_dialog:

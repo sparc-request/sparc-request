@@ -360,12 +360,12 @@ RSpec.describe Service, type: :model do
     let!(:service) { create(:service, organization_id: core.id) }
     let!(:pricing_map) { service.pricing_maps[0] }
     let!(:pricing_setup) { create(:pricing_setup, display_date: Date.today - 1, federal: 25,
-      corporate: 25, other: 25, member: 25, organization_id: core.id)}
+                           corporate: 25, other: 25, member: 25, organization_id: core.id)}
 
     before(:each) do
       pricing_map.update_attributes(
-      full_rate: 100,
-      display_date: Date.today - 1)
+          full_rate: 100,
+          display_date: Date.today - 1)
     end
 
     it "should return a hash with the correct rates" do

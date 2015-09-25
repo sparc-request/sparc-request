@@ -19,52 +19,55 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#require 'rails_helper'
-#require 'timecop'
-#
-#RSpec.describe ServiceRequestsController do
-#  stub_controller
-#
-#  describe 'line_item_additional_details' do
-#    before :each do  
-#      @service_request = ServiceRequest.new
-#      @service_request.save(:validate => false)
-#      
-#      @service = Service.new
-#      expect{
-#        @service.save(:validate => false)
-#      }.to change(Service, :count).by(1)
-#     
-#      @line_item = LineItem.new
-#      @line_item.service_request_id = @service_request.id
-#      @line_item.service_id = @service.id
-#      expect{
-#        @line_item.save(:validate => false)
-#      }.to change(LineItem, :count).by(1)
-#    end
-#
-#    it "should return empty json if no additional details exist" do
-#      get(:line_item_additional_details, { :id=>@service_request.id }, :format => :json)
-#        expect(response.status).to eq(200)
-#        expect(response.body).to eq([].to_json)  
-#    end
-#    
-#    describe 'with an additional detail present' do
-#      before :each do
-#        @ad = AdditionalDetail.new
-#        @ad.name = :test
-#        @ad.service_id = @service.id
-#        expect{
-#          @ad.save(:validate => false)
-#        }.to change(AdditionalDetail, :count).by(1)
-#      end
-#      
-#      it "should return json with additional details when additional details present" do
-#        get(:line_item_additional_details, { :id=>@service_request.id }, :format => :json)
-#        expect(response.status).to eq(200)
-#        expect(response.body).to eq([@ad].to_json)
-#      end
-#    end
-#  end
-#  
-#end
+require 'rails_helper'
+require 'timecop'
+
+RSpec.describe ServiceRequestsController do
+  stub_controller
+
+  describe 'line_item_additional_details' do
+    before :each do
+      @service_request = ServiceRequest.new
+      
+      expect{
+      @service_request.save(:validate => false)
+      }.to change{ServiceRequest.count}.by(1)
+      @sub_service_request = SubServiceRequest.new
+      @sub_service_request.class.skip_callback(:save, :after, :update_org_tree)
+      @sub_service_request.service_request_id = @service_request.id
+      @sub_service_request.save(:validate => false)
+
+      @service = Service.new
+      @service.save(:validate => false)
+
+      @line_item = LineItem.new
+      @line_item.service_id = @service.id
+      @line_item.sub_service_request_id = @sub_service_request.id
+      @line_item.save(:validate => false)
+    end
+
+    it "should return empty json if no additional details exist" do
+      get(:line_item_additional_details, { :id => @service_request.id }, :format => :json)
+      expect(response.status).to eq(200)
+      expect(response.body).to eq([].to_json)
+    end
+
+    describe 'with an additional detail present' do
+      before :each do
+        @ad = AdditionalDetail.new
+        @ad.name = :test
+        @ad.service_id = @service.id
+        expect{
+          @ad.save(:validate => false)
+        }.to change(AdditionalDetail, :count).by(1)
+      end
+
+      it "should return json with additional details when additional details present" do
+        get(:line_item_additional_details, { :id=>@service_request.id }, :format => :json)
+        expect(response.status).to eq(200)
+        expect(response.body).to eq([@ad].to_json)
+      end
+    end
+  end
+
+end

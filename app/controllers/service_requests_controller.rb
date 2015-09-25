@@ -104,14 +104,7 @@ class ServiceRequestsController < ApplicationController
 
   #return json data of each line item additional detail
   def line_item_additional_details
-    @result = [];
-#    @line_items = LineItem.where("service_request_id = ?", params[:id])
-    for line_item in @line_items
-       if line_item.service.current_additional_detail != nil
-         @result.push(line_item.service.current_additional_detail)
-       end
-    end 
-    render :json => @result
+    render :json => @service_request.get_additional_details
   end
   
   

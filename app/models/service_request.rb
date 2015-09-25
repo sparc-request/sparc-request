@@ -573,8 +573,7 @@ class ServiceRequest < ActiveRecord::Base
   def audit_report identity, start_date=self.previous_submitted_at.utc, end_date=Time.now.utc
     line_item_audits = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{self.id}%' AND
                                       auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('create', 'destroy') AND
-                                      created_at BETWEEN '#{start_date}' AND '#{end_date}'")
-                                    .group_by(&:auditable_id)
+                                      created_at BETWEEN '#{start_date}' AND '#{end_date}'").group_by(&:auditable_id)
 
     {:line_items => line_item_audits}
   end

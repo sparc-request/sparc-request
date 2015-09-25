@@ -68,7 +68,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
       @identity.update_attributes params[:identity]
       if SEND_AUTHORIZED_USER_EMAILS
         @protocol.emailed_associated_users.each do |project_role|
-          UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver unless project_role.identity.email.blank?
+          UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver_now unless project_role.identity.email.blank?
         end
       end
 
@@ -104,7 +104,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
       @protocol_role.save
       if SEND_AUTHORIZED_USER_EMAILS
         @protocol.emailed_associated_users.each do |project_role|
-          UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver unless project_role.identity.email.blank?
+          UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver_now unless project_role.identity.email.blank?
         end
       end
 

@@ -250,9 +250,9 @@ module CapybaraSupport
   def increase_wait_time(seconds)
     orig_seconds = seconds
     begin
-      Capybara.default_wait_time = seconds
+      Capybara.default_max_wait_time = seconds
     ensure
-      Capybara.default_wait_time = orig_seconds
+      Capybara.default_max_wait_time = orig_seconds
     end
   end
 

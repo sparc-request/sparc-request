@@ -19,7 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Portal::ProtocolsController < Portal::BaseController
-  respond_to :html, :json
+
+  respond_to :html, :json, :xlsx
+
   before_filter :find_protocol, :only => [:show, :view_full_calendar, :update_from_fulfillment, :edit, :update, :update_protocol_type]
   before_filter :protocol_authorizer_view, :only => [:show, :view_full_calendar]
   before_filter :protocol_authorizer_edit, :only => [:update_from_fulfillment, :edit, :update, :update_protocol_type]
@@ -55,8 +57,9 @@ class Portal::ProtocolsController < Portal::BaseController
     #@project.project_service_requests
 
     respond_to do |format|
-      format.js
-      format.html
+      format.js   { render }
+      format.html { render }
+      format.xlsx { render }
     end
   end
 

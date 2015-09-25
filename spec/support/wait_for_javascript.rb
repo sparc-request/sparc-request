@@ -13,6 +13,10 @@ module WaitForJavascript
   def finished_all_animations?
     page.evaluate_script('$(":animated").length') == 0
   end
+
+  def sos
+    save_and_open_screenshot
+  end
 end
 
 RSpec.configure do |config|

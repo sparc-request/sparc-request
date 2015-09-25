@@ -26,11 +26,11 @@ RSpec.describe "editing a study", js: true do
   fake_login_for_each_test
   build_service_request_with_study()
 
-  let(:numerical_day) { Date.today.strftime("%d").gsub(/^0/,'') }
-
   before :each do
     add_visits
     study.update_attributes(potential_funding_start_date: (Time.now + 1.day))
+    study.update_attributes(funding_start_date: nil)
+    study.human_subjects_info.update_attributes(irb_expiration_date: nil)
     visit portal_admin_sub_service_request_path sub_service_request.id
     click_on("Project/Study Information")
     wait_for_javascript_to_finish
@@ -127,7 +127,7 @@ RSpec.describe "editing a study", js: true do
       it "should change and save the date" do
         page.execute_script %Q{ $("#funding_start_date").focus()}
         wait_for_javascript_to_finish
-        page.execute_script %Q{ $("a.ui-state-default:contains('#{numerical_day}'):first").trigger("click") }
+        page.execute_script %Q{ $("a.ui-state-default:contains('#{(Date.today).strftime('%d')}'):first").trigger("click") }
         wait_for_javascript_to_finish
         expect(find("#funding_start_date")).to have_value((Date.today).strftime('%-m/%d/%Y'))
       end
@@ -257,7 +257,7 @@ RSpec.describe "editing a study", js: true do
       it "should change and save the date" do
         page.execute_script %Q{ $("#irb_expiration_date").focus()}
         wait_for_javascript_to_finish
-        first("a.ui-state-default.ui-state-highlight").click
+        page.execute_script %Q{ $("a.ui-state-default:contains('#{(Date.today).strftime('%d')}'):first").trigger("click") }
         wait_for_javascript_to_finish
         expect(find("#irb_expiration_date")).to have_value(Date.today.strftime('%-m/%d/%Y'))
       end
@@ -328,7 +328,6 @@ RSpec.describe "editing a study", js: true do
         it "should save the value after text is entered" do
           check("study_impact_areas_attributes_6__destroy")
           fill_in "study_impact_areas_other", with: "El Guapo's Area"
-          click_button "Save"
           wait_for_javascript_to_finish
           expect(find("#study_impact_areas_other")).to have_value("El Guapo's Area")
         end

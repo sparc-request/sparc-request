@@ -328,6 +328,7 @@ RSpec.describe "editing a study", js: true do
         it "should save the value after text is entered" do
           check("study_impact_areas_attributes_6__destroy")
           fill_in "study_impact_areas_other", with: "El Guapo's Area"
+          click_button "Save"
           wait_for_javascript_to_finish
           expect(find("#study_impact_areas_other")).to have_value("El Guapo's Area")
         end

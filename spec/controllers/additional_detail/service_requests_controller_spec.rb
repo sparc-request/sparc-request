@@ -20,32 +20,47 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 require 'rails_helper'
-require 'timecop'
 
 RSpec.describe ServiceRequestsController do
-  stub_controller
+  before :each do
+    # authenticate user
+    @identity = Identity.new
+    @identity.approved = true
+    @identity.save(validate: false)
+    session[:identity_id] = @identity.id
+    # Devise test helper method: sign_in
+    sign_in @identity
+    
+    # mock a service request      
+    @service_request = ServiceRequest.new
+    # associate user to the service request to give them authorization to view its additional details
+    @service_request.service_requester = @identity
+    # need to set a status so the user will be authenticated
+    @service_request.status = "first_draft"
+    expect{
+    @service_request.save(:validate => false)
+    }.to change{ServiceRequest.count}.by(1)
+    
+    SubServiceRequest.skip_callback(:save, :after, :update_org_tree)
+    @sub_service_request = SubServiceRequest.new
+    @sub_service_request.service_request_id = @service_request.id
+    @sub_service_request.save(:validate => false)
+    SubServiceRequest.set_callback(:save, :after, :update_org_tree)
+    
+    # the controller looks for the service request ID in the session
+    session[:service_request_id] = @service_request.id
+    session[:sub_service_request_id] = @sub_service_request.id
+        
+    @service = Service.new
+    @service.save(:validate => false)
+
+    @line_item = LineItem.new
+    @line_item.service_id = @service.id
+    @line_item.sub_service_request_id = @sub_service_request.id
+    @line_item.save(:validate => false)
+  end
 
   describe 'line_item_additional_details' do
-    before :each do
-      @service_request = ServiceRequest.new
-      
-      expect{
-      @service_request.save(:validate => false)
-      }.to change{ServiceRequest.count}.by(1)
-      @sub_service_request = SubServiceRequest.new
-      @sub_service_request.class.skip_callback(:save, :after, :update_org_tree)
-      @sub_service_request.service_request_id = @service_request.id
-      @sub_service_request.save(:validate => false)
-
-      @service = Service.new
-      @service.save(:validate => false)
-
-      @line_item = LineItem.new
-      @line_item.service_id = @service.id
-      @line_item.sub_service_request_id = @sub_service_request.id
-      @line_item.save(:validate => false)
-    end
-
     it "should return empty json if no additional details exist" do
       get(:line_item_additional_details, { :id => @service_request.id }, :format => :json)
       expect(response.status).to eq(200)
@@ -69,5 +84,4 @@ RSpec.describe ServiceRequestsController do
       end
     end
   end
-
 end

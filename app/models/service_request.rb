@@ -108,9 +108,9 @@ class ServiceRequest < ActiveRecord::Base
 
   def get_additional_details 
     results =[]
-      for li in self.line_items
-        if li.get_additional_detail != nil
-          results.push(li.get_additional_detail)
+      for sub_service_request in self.sub_service_requests
+        if sub_service_request.get_additional_details != nil
+          results.concat(sub_service_request.get_additional_details)
         end
       end
     results

@@ -1,0 +1,93 @@
+require 'rails_helper'
+
+RSpec.describe 'ServiceRequest' do
+
+  describe "get_additional_details" do
+    before(:each) do
+      @service_request = ServiceRequest.new
+      @service_request.save(:validate => false)
+
+      @sub_service_request = SubServiceRequest.new
+      @sub_service_request.class.skip_callback(:save, :after, :update_org_tree)
+      @sub_service_request.service_request_id = @service_request.id
+      @sub_service_request.save(:validate => false)
+
+      @service = Service.new
+      @service.save(:validate => false)
+
+      @line_item = LineItem.new
+      @line_item.service_id = @service.id
+      @line_item.sub_service_request_id = @sub_service_request.id
+      @line_item.save(:validate => false)
+    end
+
+    it "should return an empty array if no additionl details present" do
+      expect(@service_request.get_additional_details).to eq([])
+    end
+
+    describe "when additional details present" do
+      before(:each) do
+        @ad = AdditionalDetail.new
+        @ad.effective_date = Time.now
+        @ad.service_id = @service.id
+        @ad.save(:validate => false)
+      end
+
+      it "should return array of additional details" do
+        expect(@service_request.get_additional_details).to eq([@ad])
+      end
+
+      describe "when multiple sub_service_requests present" do
+
+        before(:each) do
+          @sub_service_request2 = SubServiceRequest.new
+          @sub_service_request2.class.skip_callback(:save, :after, :update_org_tree)
+          @sub_service_request2.service_request_id = @service_request.id
+          @sub_service_request2.save(:validate => false)
+
+          @service2 = Service.new
+          @service2.save(:validate => false)
+
+          @line_item2 = LineItem.new
+          @line_item2.service_id = @service2.id
+          @line_item2.sub_service_request_id = @sub_service_request2.id
+          @line_item2.save(:validate => false)
+
+          @ad2 = AdditionalDetail.new
+          @ad2.effective_date = Time.now
+          @ad2.service_id = @service2.id
+          @ad2.save(:validate => false)
+        end
+
+        it "should return multiple additional details" do
+          expect(@service_request.get_additional_details).to eq([@ad, @ad2])
+        end
+
+        describe "when a sub_service_request has multiple service requests" do
+          before(:each) do
+            @service3 = Service.new
+            @service3.save(:validate => false)
+
+            @line_item3 = LineItem.new
+            @line_item3.service_id = @service3.id
+            @line_item3.sub_service_request_id = @sub_service_request2.id
+            @line_item3.save(:validate => false)
+
+            @ad3 = AdditionalDetail.new
+            @ad3.effective_date = Time.now
+            @ad3.service_id = @service3.id
+            @ad3.save(:validate => false)
+          end
+
+          it "should return multiple additional details from the same sub_service_request" do
+            expect(@service_request.get_additional_details).to eq([@ad, @ad2, @ad3])
+          end
+
+        end
+
+      end
+
+    end
+  end
+
+end

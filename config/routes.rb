@@ -19,17 +19,25 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 SparcRails::Application.routes.draw do
-  match '/direct_link_to/:survey_code', :to => 'surveyor#create', :as => 'direct_link_survey', :via => :get
-  match '/surveys/:survey_code/:response_set_code', :to => 'surveyor#destroy', :via => :delete
-  mount Surveyor::Engine => "/surveys", :as => "surveyor"
+  get '/direct_link_to/:survey_code',
+      to: 'surveyor#create',
+      as: 'direct_link_survey'
+  delete '/surveys/:survey_code/:response_set_code', to: 'surveyor#destroy'
+  mount Surveyor::Engine => '/surveys', as: 'surveyor'
 
   if USE_SHIBBOLETH_ONLY
-    devise_for :identities, :controllers => { :omniauth_callbacks => "identities/omniauth_callbacks" }, :path_names => {:sign_in => 'auth/shibboleth' }
+    devise_for :identities,
+               controllers: {
+                 omniauth_callbacks: 'identities/omniauth_callbacks'
+               }, path_names: { sign_in: 'auth/shibboleth' }
   else
-    devise_for :identities, :controllers => { :omniauth_callbacks => "identities/omniauth_callbacks" }
+    devise_for :identities,
+               controllers: {
+                 omniauth_callbacks: 'identities/omniauth_callbacks'
+               }
   end
 
-  resources :identities do
+  resources :identities, only: [] do
     collection do
       post 'add_to_protocol'
     end
@@ -81,7 +89,6 @@ SparcRails::Application.routes.draw do
         put 'show_move_visits'
       end
     end
-
   end
 
   resources :protocols do
@@ -172,17 +179,17 @@ SparcRails::Application.routes.draw do
     match 'validate_pricing_map_dates' => 'catalog#validate_pricing_map_dates'
     match '*verify_valid_pricing_setups' => 'catalog#verify_valid_pricing_setups'
 
-    root :to => 'catalog#index'
+    root to: 'catalog#index'
   end
 
   ##### Study Tracker/Clinical Work Fulfillment Portal#####
-  namespace :study_tracker, :path => "clinical_work_fulfillment" do
+  namespace :study_tracker, path: 'clinical_work_fulfillment' do
     match 'appointments/add_note' => 'calendars#add_note'
     match 'calendars/delete_toast_messages' => 'calendars#delete_toast_messages'
     match 'calendars/change_visit_group' => 'calendars#change_visit_group'
     match 'appointments/add_service' => 'calendars#add_service'
 
-    root :to => 'home#index'
+    root to: 'home#index'
 
     resources :home do
       collection do
@@ -208,7 +215,6 @@ SparcRails::Application.routes.draw do
 
   ##### sparc-user routes brought in and namespaced
   namespace :portal do
-
     resources :services, :admin
 
     resources :associated_users do
@@ -232,8 +238,8 @@ SparcRails::Application.routes.draw do
       resources :associated_users
     end
 
-    resources :studies, :controller => :protocols
-    resources :projects, :controller => :protocols
+    resources :studies, controller: :protocols
+    resources :projects, controller: :protocols
 
     resources :notifications do
       member do
@@ -320,7 +326,7 @@ SparcRails::Application.routes.draw do
     match '/admin/sub_service_requests/:id/edit_document/:document_id' => 'sub_service_requests#edit_documents'
     match "/admin/sub_service_requests/:id/delete_document/:document_id" => "sub_service_requests#delete_documents"
 
-    root :to => 'home#index'
+    root to: 'home#index'
   end
 
   resources :reports do
@@ -338,5 +344,5 @@ SparcRails::Application.routes.draw do
 
   mount API::Base => '/'
 
-  root :to => 'service_requests#catalog'
+  root to: 'service_requests#catalog'
 end

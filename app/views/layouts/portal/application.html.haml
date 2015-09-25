@@ -24,6 +24,7 @@
     %title= t(:portal_title)
     = stylesheet_link_tag "#{CUSTOM_ASSET_PATH}portal/application"
     = stylesheet_link_tag 'study_tracker'
+    = stylesheet_link_tag "portal/printer_friendly_requests", media: 'print'
     = javascript_include_tag 'portal/application'
     = javascript_include_tag 'jquery.qtip.min.js'
     /[if IE]

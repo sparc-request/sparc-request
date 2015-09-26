@@ -45,7 +45,6 @@ SparcRails::Application.routes.draw do
     resources :projects
     resources :studies
     member do
-      get :line_item_additional_details
       get 'catalog'
       get 'protocol'
       get 'review'
@@ -344,6 +343,7 @@ SparcRails::Application.routes.draw do
       resources :additional_details
     end
     resources :line_item_additional_details, only: [:show, :update]
+    resources :service_requests, only: [:show]
   end
 
   mount API::Base => '/'

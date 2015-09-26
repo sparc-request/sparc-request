@@ -32,13 +32,20 @@ app.controller('AdditionalDetailsRootController', ['$scope', '$http', function($
 
 app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$http', function($scope, $http) { 
 	$scope.gridModel = {enableFiltering: true, enableColumnResizing: true, showColumnFooter: true , enableSorting: false, showGridFooter: true, enableRowHeaderSelection: false, rowHeight: 42};
-	$scope.gridModel.columnDefs = [{field: 'service.name', name: 'Name',  width: '30%', enableColumnMenu: false ,}
+
+	$scope.gridModel.columnDefs = [{enableFiltering: false, enableColumnResizing: false,name: 'Edit',width: 55, enableColumnMenu: false, cellTemplate: '<a class="btn btn-primary" role="button" ng-href="/additional_detail/services/'+id+'/additional_details/{{row.entity.additional_detail.id}}/edit">Edit</a>'},
+	                               {field: 'additional_detail.name', name: 'Name',  width: '30%', enableColumnMenu: false ,}, 
+	                               {field:'additional_detail.effective_date',name: 'Effective Date', width: '25%', enableColumnMenu: false },{field: 'additional_detail.approved',name: 'Approved', width: '10%', enableColumnMenu: false},
+	                               {field: 'additional_detail.description', name: 'Description', enableColumnMenu: false},
+	                               {enableFiltering: false, enableColumnResizing: false,name: 'Delete',width: 70, enableColumnMenu: false, cellTemplate: '<button class="btn btn-primary" ng-click="grid.appScope.deleteAdditonalDetail(row.entity.additional_detail.id)">Delete</button>'}
 	                               ];
+
 	
 	$scope.reloadGrid = function(){
-		$http.get('/service_requests/'+id+'/line_item_additional_details').
+		$http.get('/additional_detail/service_requests/'+id+'').
 			then(function(response){
 				console.log(response);
+				$scope.gridModel.data = response.data;
 			});
 	}
 	

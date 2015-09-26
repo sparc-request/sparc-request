@@ -21,35 +21,26 @@
 
 require 'rails_helper'
 
-RSpec.describe ServiceRequestsController do
+RSpec.describe AdditionalDetail::ServiceRequestsController do
   before :each do
     # authenticate user
     @identity = Identity.new
     @identity.approved = true
     @identity.save(validate: false)
-    session[:identity_id] = @identity.id
-    # Devise test helper method: sign_in
-    sign_in @identity
-    
+    session[:identity_id] = @identity.id 
+    sign_in @identity # Devise test helper method: sign_in
+
     # mock a service request      
     @service_request = ServiceRequest.new
     # associate user to the service request to give them authorization to view its additional details
-    @service_request.service_requester = @identity
-    # need to set a status so the user will be authenticated
-    @service_request.status = "first_draft"
-    expect{
+    @service_request.service_requester_id = @identity.id
     @service_request.save(:validate => false)
-    }.to change{ServiceRequest.count}.by(1)
     
     SubServiceRequest.skip_callback(:save, :after, :update_org_tree)
     @sub_service_request = SubServiceRequest.new
     @sub_service_request.service_request_id = @service_request.id
     @sub_service_request.save(:validate => false)
     SubServiceRequest.set_callback(:save, :after, :update_org_tree)
-    
-    # the controller looks for the service request ID in the session
-    session[:service_request_id] = @service_request.id
-    session[:sub_service_request_id] = @sub_service_request.id
         
     @service = Service.new
     @service.save(:validate => false)
@@ -62,23 +53,21 @@ RSpec.describe ServiceRequestsController do
 
   describe 'line_item_additional_details' do
     it "should return empty json if no additional details exist" do
-      get(:line_item_additional_details, { :id => @service_request.id }, :format => :json)
+      get(:show, { :id => @service_request.id }, :format => :json)
       expect(response.status).to eq(200)
       expect(response.body).to eq([].to_json)
     end
 
     describe 'with an additional detail present' do
       before :each do
-        @ad = AdditionalDetail.new
-        @ad.name = :test
+        @ad = AdditionalDetail.new 
+        @ad.effective_date = Time.now.strftime("%Y-%m-%d")
         @ad.service_id = @service.id
-        expect{
-          @ad.save(:validate => false)
-        }.to change(AdditionalDetail, :count).by(1)
+        @ad.save(:validate => false)
       end
 
       it "should return json with additional details when additional details present" do
-        get(:line_item_additional_details, { :id=>@service_request.id }, :format => :json)
+        get(:show, { :id=>@service_request.id }, :format => :json)
         expect(response.status).to eq(200)
         expect(response.body).to eq([@ad].to_json)
       end

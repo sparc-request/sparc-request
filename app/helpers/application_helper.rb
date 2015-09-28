@@ -127,7 +127,7 @@ module ApplicationHelper
                                       label_tag("-") + "&nbsp;&nbsp;".html_safe + label_tag("Day") + "&nbsp;&nbsp;".html_safe + label_tag("+") +
                                       tag(:br) +
                                       text_field_tag("window_before", visit_group.window_before, :class => "visit_window visit_window_before position_#{n}", :size => 1, :'data-position' => n - 1, :'data-window-before' => visit_group.window_before, :update => "#{window_before_url}?arm_id=#{arm.id}&portal=#{portal}") +
-                                      text_field_tag("day", visit_group.day, :class => "visit_day position_#{n}", :size => 1, :'data-position' => n - 1, :'data-day' => visit_group.day, :update => "#{day_url}?arm_id=#{arm.id}&portal=#{portal}") +
+                                      text_field_tag("day", visit_group.day, :class => "visit_day position_#{n}", :maxlength => 4, :'data-position' => n - 1, :'data-day' => visit_group.day, :update => "#{day_url}?arm_id=#{arm.id}&portal=#{portal}") +
                                       text_field_tag("window_after", visit_group.window_after, :class => "visit_window visit_window_after position_#{n}", :size => 1, :'data-position' => n - 1, :'data-window-after' => visit_group.window_after, :update => "#{window_after_url}?arm_id=#{arm.id}&portal=#{portal}") +
                                       tag(:br)
                                       : label_tag('')) +

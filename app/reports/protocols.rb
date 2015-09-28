@@ -22,7 +22,7 @@ class ProtocolsReport < ReportingModule
   $canned_reports << name unless $canned_reports.include? name # update global variable so that we can populate the list, report won't show in the list without this, unless is necessary so we don't add on refresh in dev. mode
 
   ################## BEGIN REPORT SETUP #####################
-  
+
   def self.title
     "Protocols"
   end
@@ -35,9 +35,9 @@ class ProtocolsReport < ReportingModule
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
       Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
-      "Current Status" => {:field_type => :check_box_tag, :for => 'status', :multiple => AVAILABLE_STATUSES, 
+      "Current Status" => {:field_type => :check_box_tag, :for => 'status', :multiple => AVAILABLE_STATUSES,
                            :grouping => {"Active" => ['submitted', 'in_process', 'ctrc_review', 'ctrc_approved', 'administrative_review', 'committee_review'],
-                                         "Other" => ['draft', 'get_a_quote', 'complete', 'awaiting_pi_approval', 'on_hold', 'invoiced']},
+                                         "Other" => ['draft', 'get_a_cost_estimate', 'complete', 'awaiting_pi_approval', 'on_hold', 'invoiced']},
                            :selected => ['submitted', 'in_process', 'ctrc_review', 'ctrc_approved', 'administrative_review', 'committee_review']},
     }
   end
@@ -49,15 +49,15 @@ class ProtocolsReport < ReportingModule
     if params[:institution_id]
       attrs[Institution] = [params[:institution_id], :abbreviation]
     end
-    
+
     if params[:provider_id]
       attrs[Provider] = [params[:provider_id], :abbreviation]
     end
-    
+
     if params[:program_id]
       attrs[Program] = [params[:program_id], :abbreviation]
     end
-    
+
     if params[:core_id]
       attrs[Core] = [params[:core_id], :abbreviation]
     end
@@ -66,7 +66,7 @@ class ProtocolsReport < ReportingModule
     #attrs["Date Submitted"] = "service_request.submitted_at.strftime('%Y-%m-%d')"
 
     attrs["Primary PI Last Name"] = "primary_principal_investigator.try(:last_name)"
-    attrs["Primary PI First Name"] = "primary_principal_investigator.try(:first_name)" 
+    attrs["Primary PI First Name"] = "primary_principal_investigator.try(:first_name)"
     attrs["Primary PI College"] = ["primary_principal_investigator.try(:college)", COLLEGES.invert] # we invert since our hash is setup {"Bio Medical" => "bio_med"} for some crazy reason
     attrs["Primary PI Department"] = ["primary_principal_investigator.try(:department)", DEPARTMENTS.invert]
 
@@ -74,7 +74,7 @@ class ProtocolsReport < ReportingModule
   end
 
   ################## END REPORT SETUP  #####################
-  
+
   ################## BEGIN QUERY SETUP #####################
   # def table => primary table to query
   # includes, where, uniq, order, and group get passed to AR methods, http://apidock.com/rails/v3.2.13/ActiveRecord/QueryMethods
@@ -85,7 +85,7 @@ class ProtocolsReport < ReportingModule
   # def order => order by these attributes (include table name is always a safe bet, ex. identities.id DESC, protocols.title ASC)
   # Primary table to query
   def table
-    Protocol 
+    Protocol
   end
 
   # Other tables to include

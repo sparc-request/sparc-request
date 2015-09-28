@@ -20,6 +20,7 @@
 
 SparcRails::Application.routes.draw do
   match '/direct_link_to/:survey_code', :to => 'surveyor#create', :as => 'direct_link_survey', :via => :get
+  match '/surveys/:survey_code/:response_set_code', :to => 'surveyor#destroy', :via => :delete
   mount Surveyor::Engine => "/surveys", :as => "surveyor"
 
   if USE_SHIBBOLETH_ONLY

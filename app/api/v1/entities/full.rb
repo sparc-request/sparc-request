@@ -187,7 +187,7 @@ module V1
             :nursing_nutrition_approved,
             :lab_approved,
             :imaging_approved,
-            :src_approved,
+            :committee_approved,
             :in_work_fulfillment,
             :routing,
             :org_tree_display,

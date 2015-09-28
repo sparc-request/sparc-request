@@ -2,13 +2,13 @@ sudo: false
 language: ruby
 cache: bundler
 rvm:
-  - 1.9.3
-before_install:
-  - bundle update debugger  
+  - 1.9.3  
 before_script:
   - cp config/database.yml.example config/database.yml
   - cp config/application.yml.example config/application.yml
   - cp config/epic.yml.example config/epic.yml
   - cp config/ldap.yml.example config/ldap.yml
+  - mysql -e 'create database test_sparc_request;'
 script:
-  - bundle exec rspec
+  - RAILS_ENV=test bundle exec rake db:migrate 
+  - bundle exec rspec spec/api spec/controllers spec/extensions spec/helpers spec/jobs spec/lib spec/mailers spec/models

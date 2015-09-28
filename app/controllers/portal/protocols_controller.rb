@@ -19,11 +19,13 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Portal::ProtocolsController < Portal::BaseController
-  respond_to :html, :json
+
+  respond_to :html, :json, :xlsx
+
   before_filter :find_protocol, :only => [:show, :view_full_calendar, :update_from_fulfillment, :edit, :update, :update_protocol_type]
   before_filter :protocol_authorizer_view, :only => [:show, :view_full_calendar]
   before_filter :protocol_authorizer_edit, :only => [:update_from_fulfillment, :edit, :update, :update_protocol_type]
-    
+
   def index
     @protocols = []
     @user.protocols.each do |protocol|
@@ -55,8 +57,9 @@ class Portal::ProtocolsController < Portal::BaseController
     #@project.project_service_requests
 
     respond_to do |format|
-      format.js
-      format.html
+      format.js   { render }
+      format.html { render }
+      format.xlsx { render }
     end
   end
 
@@ -112,7 +115,7 @@ class Portal::ProtocolsController < Portal::BaseController
       render :nothing => true
     else
       respond_to do |format|
-        format.js { render :status => 500, :json => clean_errors(@protocol.errors) } 
+        format.js { render :status => 500, :json => clean_errors(@protocol.errors) }
       end
     end
   end
@@ -173,6 +176,10 @@ class Portal::ProtocolsController < Portal::BaseController
       end
     end
     @merged = true
+    respond_to do |format|
+      format.js
+      format.html
+    end
   end
 
   def change_arm

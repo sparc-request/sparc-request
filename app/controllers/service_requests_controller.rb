@@ -252,7 +252,7 @@ class ServiceRequestsController < ApplicationController
 
   def obtain_research_pricing
     # TODO: refactor into the ServiceRequest model
-    @service_request.update_status('get_a_quote')
+    @service_request.update_status('get_a_cost_estimate')
     @service_request.previous_submitted_at = @service_request.submitted_at
     @service_request.update_attribute(:submitted_at, Time.now)
     @service_request.ensure_ssr_ids
@@ -288,7 +288,7 @@ class ServiceRequestsController < ApplicationController
 
     @service_request.sub_service_requests.each do |ssr|
       ssr.subsidy.update_attributes(:overridden => true) if ssr.subsidy
-      ssr.update_attributes(:nursing_nutrition_approved => false, :lab_approved => false, :imaging_approved => false, :src_approved => false)
+      ssr.update_attributes(:nursing_nutrition_approved => false, :lab_approved => false, :imaging_approved => false, :committee_approved => false)
     end
 
     send_confirmation_notifications

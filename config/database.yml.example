@@ -35,7 +35,12 @@ profile:
   pool: 5
   timeout: 5000
 
+# configured for travis-ci
 test:
-  adapter: sqlite3
-  database: ':memory:'
+  adapter: mysql2
+  database: test_sparc_request
+  encoding: utf8
+  username: travis
+  pool: 5
+  timeout: 5000
 

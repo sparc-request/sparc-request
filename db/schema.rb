@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150915155404) do
+ActiveRecord::Schema.define(version: 20150915155404) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -140,6 +140,7 @@ ActiveRecord::Schema.define(:version => 20150915155404) do
   add_index "audits", ["associated_id", "associated_type"], name: "associated_index", using: :btree
   add_index "audits", ["auditable_id", "auditable_type"], name: "auditable_index", using: :btree
   add_index "audits", ["created_at"], name: "index_audits_on_created_at", using: :btree
+  add_index "audits", ["request_uuid"], name: "index_audits_on_request_uuid", using: :btree
   add_index "audits", ["user_id", "user_type"], name: "user_index", using: :btree
 
   create_table "available_statuses", force: :cascade do |t|
@@ -908,11 +909,10 @@ ActiveRecord::Schema.define(:version => 20150915155404) do
     t.datetime "deleted_at"
     t.datetime "consult_arranged_date"
     t.datetime "requester_contacted_date"
-<<<<<<< HEAD
     t.boolean  "nursing_nutrition_approved",               default: false
     t.boolean  "lab_approved",                             default: false
     t.boolean  "imaging_approved",                         default: false
-    t.boolean  "src_approved",                             default: false
+    t.boolean  "committee_approved",                       default: false
     t.boolean  "in_work_fulfillment",                      default: false
     t.string   "routing",                    limit: 255
     t.text     "org_tree_display",           limit: 65535
@@ -931,30 +931,6 @@ ActiveRecord::Schema.define(:version => 20150915155404) do
     t.string   "name",                limit: 255
     t.string   "mrn",                 limit: 255
     t.string   "external_subject_id", limit: 255
-=======
-    t.boolean  "nursing_nutrition_approved", :default => false
-    t.boolean  "lab_approved",               :default => false
-    t.boolean  "imaging_approved",           :default => false
-    t.boolean  "committee_approved",         :default => false
-    t.boolean  "in_work_fulfillment",        :default => false
-    t.string   "routing"
-    t.text     "org_tree_display"
-  end
-
-  add_index "sub_service_requests", ["organization_id"], :name => "index_sub_service_requests_on_organization_id"
-  add_index "sub_service_requests", ["owner_id"], :name => "index_sub_service_requests_on_owner_id"
-  add_index "sub_service_requests", ["service_request_id"], :name => "index_sub_service_requests_on_service_request_id"
-  add_index "sub_service_requests", ["ssr_id"], :name => "index_sub_service_requests_on_ssr_id"
-  add_index "sub_service_requests", ["status"], :name => "index_sub_service_requests_on_status"
-
-  create_table "subjects", :force => true do |t|
-    t.datetime "created_at",          :null => false
-    t.datetime "updated_at",          :null => false
-    t.integer  "arm_id"
-    t.string   "name"
-    t.string   "mrn"
-    t.string   "external_subject_id"
->>>>>>> master
     t.date     "dob"
     t.string   "gender",              limit: 255
     t.string   "ethnicity",           limit: 255

@@ -57,7 +57,7 @@ RSpec.describe "admin fulfillment tab", js: true do
       # More data checks here (more information probably needs to be put in the mocks)
       expect(page).not_to have_content('#service_request_owner')
       expect(page).to have_xpath("//option[@value='#{service.id}' and @selected='selected']")
-      expect(page.find("#arm_#{arm1.id}_visit_name_4")).to have_value 'Visit 4'
+      expect(page.find("#arm_#{arm1.id}_visit_name_4")).to have_value 'Visit 6'
       expect(page).to have_xpath("//option[@value='#{service2.id}' and @selected='selected']")
     end
 
@@ -363,8 +363,8 @@ RSpec.describe "admin fulfillment tab", js: true do
       new_arm = study.arms.last
       within(".arm_id_#{new_arm.id}") do
         expect(page).to have_content 'Another Arm'
-        expect(find(".visit_day.position_1").value).to eq("1")
-        expect(find(".visit_day.position_5").value).to eq("5")
+        expect(find(".visit_day.position_1").value).to eq("2")
+        expect(find(".visit_day.position_5").value).to eq("10")
         expect(find('#line_item_service_id').find('option[selected]').text).to eq("Per Patient")
         wait_for_javascript_to_finish
         expect(find('.line_items_visit_subject_count').find('option[selected]').text).to eq("5")
@@ -405,30 +405,6 @@ RSpec.describe "admin fulfillment tab", js: true do
       number_of_arms = Arm.all.size
       select "Arm", from: "arm_id"
       accept_alert("You can't delete the last arm while Per-Patient/Per Visit services still exist.") do
-        find('.remove_arm_link').click()
-      end
-      wait_for_javascript_to_finish
-      expect(Arm.all.size).to eq(number_of_arms)
-    end
-
-    it 'should not allow you to delete an arm that has patient data' do
-      number_of_arms = Arm.all.size
-      subject = arm1.subjects.first
-      # appointment = create(:appointment, calendar_id: subject.calendar.id)
-      sub_service_request.update_attributes(in_work_fulfillment: true)
-      visit study_tracker_sub_service_request_path sub_service_request.id
-      click_link("Subject Tracker")
-      wait_for_javascript_to_finish
-
-      within("div#arm_#{arm1.id}") do
-        find("#schedule_#{subject.id}").click
-        wait_for_javascript_to_finish
-      end
-
-      visit portal_admin_sub_service_request_path(sub_service_request)
-      wait_for_javascript_to_finish
-      select "Arm", from: "arm_id"
-      accept_alert("This arm has subject data and can not be deleted.") do
         find('.remove_arm_link').click()
       end
       wait_for_javascript_to_finish
@@ -500,26 +476,4 @@ RSpec.describe "admin fulfillment tab", js: true do
   end
 end
 
-RSpec.describe 'fulfillment tab with disabled services', js: true do
-  let_there_be_lane
-  let_there_be_j
-  fake_login_for_each_test
-  build_service_request_with_study
 
-  before :each do
-    add_visits
-    service2.update_attributes(is_available: false)
-    visit portal_admin_sub_service_request_path(sub_service_request)
-    wait_for_javascript_to_finish
-  end
-
-  after :each do
-    wait_for_javascript_to_finish
-  end
-
-  it 'should not display dropdown' do
-    arm1.reload
-    expect(find('.line_item.odd')).to have_content "#{service2.name} (Disabled)"
-    expect(find('.line_item.odd')).not_to have_selector("#services_#{arm1.line_items_visits.first.id}")
-  end
-end

@@ -67,7 +67,7 @@ class Portal::NotificationsController < Portal::BaseController
 
       @notifications = @user.all_notifications.where(:sub_service_request_id => @sub_service_request.id)
       ssr_id = @sub_service_request.id.to_s
-      UserMailer.notification_received(@message.recipient, is_service_provider, ssr_id).deliver unless @message.recipient.email.blank?
+      UserMailer.notification_received(@message.recipient, is_service_provider, ssr_id).deliver_now unless @message.recipient.email.blank?
     end
     respond_to do |format|
       format.js
@@ -106,7 +106,7 @@ class Portal::NotificationsController < Portal::BaseController
       # @notification.reload
       @sub_service_request = @notification.sub_service_request
       @notifications = @user.all_notifications.where(:sub_service_request_id => @sub_service_request.id)
-      UserMailer.notification_received(@message.recipient).deliver unless @message.recipient.email.blank?
+      UserMailer.notification_received(@message.recipient).deliver_now unless @message.recipient.email.blank?
     end
     respond_to do |format|
       format.js

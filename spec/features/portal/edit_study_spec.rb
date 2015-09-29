@@ -125,9 +125,9 @@ RSpec.describe "editing a study", js: true do
       it "should change and save the date" do
         page.execute_script("$('#funding_start_date').focus()")
         wait_for_javascript_to_finish
-        first('a.ui-state-default.ui-state-highlight').click #Click on today's date
+        page.execute_script("$('#funding_start_date').val('12/20/2015')")
         wait_for_javascript_to_finish
-        expect(find("#funding_start_date")).to have_value(Date.today.strftime('%-m/%d/%Y'))
+        expect(find("#funding_start_date")).to have_value(Date.today.strftime('12/20/2015'))
       end
     end
 
@@ -166,9 +166,9 @@ RSpec.describe "editing a study", js: true do
 
       it "should change and save the date" do
         page.execute_script("$('#potential_funding_start_date').focus()")
-        first('a.ui-state-default.ui-state-highlight').click #click on today's date
+        page.execute_script("$('#potential_funding_start_date').val('12/20/2015')")
         wait_for_javascript_to_finish
-        expect(find("#potential_funding_start_date")).to have_value((Date.today).strftime('%-m/%d/%Y'))
+        expect(find("#potential_funding_start_date")).to have_value('12/20/2015')
       end
     end
 
@@ -257,9 +257,9 @@ RSpec.describe "editing a study", js: true do
       it "should change and save the date" do
         page.execute_script("$('#irb_expiration_date').focus()")
         wait_for_javascript_to_finish
-        first('a.ui-state-default.ui-state-highlight').click #click on today's date
+        page.execute_script("$('#irb_expiration_date').val('12/20/2015')")
         wait_for_javascript_to_finish
-        expect(find("#irb_expiration_date")).to have_value(Date.today.strftime('%-m/%d/%Y'))
+        expect(find("#irb_expiration_date")).to have_value('12/20/2015')
       end
     end
   end

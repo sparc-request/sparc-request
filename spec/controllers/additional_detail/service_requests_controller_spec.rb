@@ -22,6 +22,7 @@
 require 'rails_helper'
 
 RSpec.describe AdditionalDetail::ServiceRequestsController do
+  
   before :each do
     # authenticate user
     @identity = Identity.new
@@ -51,7 +52,7 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
     @line_item.save(:validate => false)
   end
 
-  describe 'line_item_additional_details' do
+  describe 'show' do
     it "should return empty json if no additional details exist" do
       get(:show, { :id => @service_request.id }, :format => :json)
       expect(response.status).to eq(200)
@@ -66,11 +67,18 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
         @ad.save(:validate => false)
       end
 
-      it "should return json with additional details when additional details present" do
-        get(:show, { :id=>@service_request.id }, :format => :json)
+      it "should return json with line_item_additional_details when additional details present" do
+        expect{
+          get(:show, { :id=>@service_request.id }, :format => :json)
+        
+        }.to change{LineItemAdditionalDetail.count}.by(1)
+        @line_item_additional_detail = LineItemAdditionalDetail.where(:id => @line_item.id)
+        expect(@line_item_additional_detail.additional_detail_id).to eq(@ad.id)
+        expect(@line_item_additional_detail.line_item_id).to eq(@line_item.id)
         expect(response.status).to eq(200)
-        expect(response.body).to eq([@ad].to_json)
+        expect(response.body).to eq([@line_item_additional_detail].to_json)
       end
     end
-  end
+  end 
+  
 end

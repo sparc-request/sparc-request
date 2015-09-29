@@ -28,6 +28,11 @@ RSpec.describe 'SubServiceRequest' do
       expect(@sub_service_request.get_additional_details).to eq([])
     end
     
+    it "should return empty array for line_item_additional_details when no additional details are present" do
+      expect(@sub_service_request.get_line_item_additional_details).to eq([])
+    end
+    
+    
     describe "when additional details present" do
       before(:each) do 
         @ad = AdditionalDetail.new
@@ -38,6 +43,13 @@ RSpec.describe 'SubServiceRequest' do
       
       it "should return array of additional details" do
         expect(@sub_service_request.get_additional_details).to eq([@ad])
+      end
+      
+      it "a new line_item_additional_detail_should be created and returned in the array" do
+        expect{@sub_service_request.get_line_item_additional_detail}.to change(LineItemAdditionalDetail.count).by(1)
+        @liad = LineItemAdditionalDetail.where(:line_item_id => @line_item.id)
+        expect([@liad]).to eq(@sub_service_request.get_line_item_additional_detail)
+        
       end
       
       it "should return multiple additional details when multiple present" do

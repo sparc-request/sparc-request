@@ -36,6 +36,10 @@ RSpec.describe "Line Item" do
       it "should return nil when no additional details present" do
         expect(@line_item.get_additional_detail).to eq(nil)
       end
+      
+      it "should return nil for get_line_item_additional_detail if no additional detail present" do
+        expect(@line_item.get_line_item_additional_detail).to eq(nil)
+      end
     
       describe 'with a line additional detail present' do
         before(:each) do
@@ -58,7 +62,30 @@ RSpec.describe "Line Item" do
           expect(@line_item.get_additional_detail).to eq(@ad)
           
         end
-      
+        
+        it "should create a new line_item_additional detail when none is present" do
+          expect{
+            @line_item_additional_detail = @line_item.get_line_item_additional_detail
+          }.to change{LineItemAdditionalDetail.count}.by(1)
+                   
+          @line_item_additional_detail.additional_detail_id = @ad.id
+          @line_item_additional_detail.line_item_id = @line_item.id
+        end
+        
+      it "should not create a new line_item_additional_detail when one already exists" do
+        @line_item_additional_detail = LineItemAdditionalDetail.new
+        @line_item_additional_detail.additional_detail_id = @ad.id
+        @line_item_additional_detail.line_item_id = @line_item.id
+        @line_item_additional_detail.save
+        
+        expect{
+          @liad = @line_item.get_line_item_additional_detail
+        }.to change{LineItemAdditionalDetail.count}.by(0)
+        
+        @liad.additional_detail_id = @ad.id
+        @liad.line_item_id = @line_item.id
+      end
+        
       end
       
   end

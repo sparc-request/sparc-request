@@ -37,7 +37,6 @@ app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$htt
 	                               {field: 'additional_detail.name', name: 'Name',  width: '30%', enableColumnMenu: false ,}, 
 	                               {field:'additional_detail.effective_date',name: 'Effective Date', width: '25%', enableColumnMenu: false },{field: 'additional_detail.approved',name: 'Approved', width: '10%', enableColumnMenu: false},
 	                               {field: 'additional_detail.description', name: 'Description', enableColumnMenu: false},
-	                               {enableFiltering: false, enableColumnResizing: false,name: 'Delete',width: 70, enableColumnMenu: false, cellTemplate: '<button class="btn btn-primary" ng-click="grid.appScope.deleteAdditonalDetail(row.entity.additional_detail.id)">Delete</button>'}
 	                               ];
 
 	

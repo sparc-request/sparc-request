@@ -79,6 +79,22 @@ class LineItem < ActiveRecord::Base
     service.current_additional_detail
   end
   
+  def get_line_item_additional_detail
+    if get_additional_detail == nil
+      nil
+    
+    else if line_item_additional_detail == nil and get_additional_detail != nil
+      liad = LineItemAdditionalDetail.new
+      liad.additional_detail_id = get_additional_detail.id
+      liad.line_item_id = id
+      liad.save
+      liad
+    else 
+      line_item_additional_detail
+    end
+  end
+  end
+  
   def quantity_must_be_smaller_than_max_and_greater_than_min
     pricing = Service.find(service_id).current_effective_pricing_map
     max = pricing.units_per_qty_max

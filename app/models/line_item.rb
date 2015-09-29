@@ -82,17 +82,16 @@ class LineItem < ActiveRecord::Base
   def get_line_item_additional_detail
     if get_additional_detail == nil
       nil
-    
-    else if line_item_additional_detail == nil and get_additional_detail != nil
-      liad = LineItemAdditionalDetail.new
-      liad.additional_detail_id = get_additional_detail.id
-      liad.line_item_id = id
-      liad.save
-      liad
     else 
-      line_item_additional_detail
-    end
-  end
+      if self.line_item_additional_detail == nil
+        liad = LineItemAdditionalDetail.new
+        liad.additional_detail_id = get_additional_detail.id
+        liad.line_item_id = id
+        liad.save
+        self.line_item_additional_detail = liad
+      end
+        self.line_item_additional_detail
+      end
   end
   
   def quantity_must_be_smaller_than_max_and_greater_than_min

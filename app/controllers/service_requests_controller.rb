@@ -447,13 +447,13 @@ class ServiceRequestsController < ApplicationController
     body = params['quick_question']['body'].blank? ? 'No question asked' : params['quick_question']['body']
 
     quick_question = QuickQuestion.create :to => DEFAULT_MAIL_TO, :from => from, :body => body
-    Notifier.ask_a_question(quick_question).deliver
+    Notifier.ask_a_question(quick_question).deliver_now
   end
 
   def feedback
     feedback = Feedback.new(params[:feedback])
     if feedback.save
-      Notifier.provide_feedback(feedback).deliver
+      Notifier.provide_feedback(feedback).deliver_now
       render :nothing => true
     else
       respond_to do |format|
@@ -514,7 +514,7 @@ class ServiceRequestsController < ApplicationController
     # send e-mail to all folks with view and above
     service_request.protocol.project_roles.each do |project_role|
       next if project_role.project_rights == 'none'
-      Notifier.notify_user(project_role, service_request, xls, approval, current_user).deliver unless project_role.identity.email.blank?
+      Notifier.notify_user(project_role, service_request, xls, approval, current_user).deliver_now unless project_role.identity.email.blank?
     end
   end
 
@@ -574,7 +574,7 @@ class ServiceRequestsController < ApplicationController
       audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)
     end
 
-    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, audit_report, ssr_deleted).deliver
+    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, audit_report, ssr_deleted).deliver_now
   end
 
   def send_epic_notification_for_user_approval(protocol)

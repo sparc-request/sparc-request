@@ -70,7 +70,7 @@ $(document).ready ->
       )
 
       $('.protocol-archive-button').live('click', ->
-        $(this).prop('value', 'archive')
+        
       )
 
       $('.view-sub-service-request-button').live('click', ->

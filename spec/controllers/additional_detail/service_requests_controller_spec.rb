@@ -70,9 +70,8 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
       it "should return json with line_item_additional_details when additional details present" do
         expect{
           get(:show, { :id=>@service_request.id }, :format => :json)
-        
         }.to change{LineItemAdditionalDetail.count}.by(1)
-        @line_item_additional_detail = LineItemAdditionalDetail.where(:id => @line_item.id)
+        @line_item_additional_detail = LineItemAdditionalDetail.where(:line_item_id => @line_item.id).last
         expect(@line_item_additional_detail.additional_detail_id).to eq(@ad.id)
         expect(@line_item_additional_detail.line_item_id).to eq(@line_item.id)
         expect(response.status).to eq(200)

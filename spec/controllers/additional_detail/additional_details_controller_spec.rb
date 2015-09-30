@@ -33,10 +33,6 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
     @program_service = Service.new
     @program_service.organization_id = @program.id
     @program_service.save(validate: false)
-
-    @additional_detail = AdditionalDetail.new
-    @additional_detail.service_id = @core_service.id
-
   end
 
   describe 'user is not logged in and, thus, has no access to' do

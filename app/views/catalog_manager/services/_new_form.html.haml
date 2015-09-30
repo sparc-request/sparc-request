@@ -70,6 +70,10 @@
                   %span{:style => "margin-right:10px;"}
                     %span= f.label tag.name.gsub("ctrc", t(:organization_form)[:ctrc_label])
                     %span= f.check_box :tag_list, { :multiple => true }, tag.name, nil
+            %tr
+              %th= t(:organization_form)[:additional_details]
+              %td
+                %span= t(:organization_form)[:additional_details_pre_creation]
       %br
 
       %fieldset.service_level_components.parent

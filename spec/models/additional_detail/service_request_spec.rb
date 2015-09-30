@@ -25,6 +25,10 @@ RSpec.describe 'ServiceRequest' do
       expect(@service_request.get_additional_details).to eq([])
     end
 
+    it "line_item_additional_details should return an empty array is no dditionl details present" do
+      expect(@service_request.get_line_item_additional_details).to eq([])
+    end
+
     describe "when additional details present" do
       before(:each) do
         @ad = AdditionalDetail.new
@@ -35,6 +39,14 @@ RSpec.describe 'ServiceRequest' do
 
       it "should return array of additional details" do
         expect(@service_request.get_additional_details).to eq([@ad])
+      end
+
+      it "get_line_item_additional_details should create a line_item_additional_detail" do
+        expect{
+          results = @service_request.get_line_item_additional_details
+        }.to change{LineItemAdditionalDetail.count}.by(1)
+        liad = LineItemAdditionalDetail.where(:line_item_id => @line_item.id)
+        expect(@service_request.get_line_item_additional_details).to eq(liad)
       end
 
       describe "when multiple sub_service_requests present" do
@@ -62,6 +74,15 @@ RSpec.describe 'ServiceRequest' do
         it "should return multiple additional details" do
           expect(@service_request.get_additional_details).to eq([@ad, @ad2])
         end
+        
+        it "get_line_item_additional_details should return multiple line_item_additional_details" do
+                expect{
+                  results = @service_request.get_line_item_additional_details
+                }.to change{LineItemAdditionalDetail.count}.by(2)
+                liad = LineItemAdditionalDetail.where(:line_item_id => @line_item.id)
+                liad.concat(LineItemAdditionalDetail.where(:line_item_id => @line_item2.id))
+                expect(@service_request.get_line_item_additional_details).to eq(liad)
+              end
 
         describe "when a sub_service_request has multiple service requests" do
           before(:each) do

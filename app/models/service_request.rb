@@ -115,6 +115,14 @@ class ServiceRequest < ActiveRecord::Base
       end
     results
   end
+  
+  def get_line_item_additional_details
+    results =[]
+      for sub_service_request in self.sub_service_requests
+        results.concat(sub_service_request.get_line_item_additional_details)
+      end
+    results  
+  end
    
   def protocol_page
     if self.protocol_id.blank?

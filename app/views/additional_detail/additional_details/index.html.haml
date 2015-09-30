@@ -4,9 +4,12 @@
 %div{"ng-controller" => "AdditionalDetailsDisplayController"}
   .row
     .col-md-12
+      = render :partial => 'organization_breadcrumb'
+  .row
+    .col-md-12
       .panel.panel-default
         .panel-heading
-          %h3= @service.name
+          = "Additional Details for #{@service.name}"
         .panel-body
           .row
             .col-md-12

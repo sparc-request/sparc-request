@@ -57,7 +57,7 @@ RSpec.describe "admin fulfillment tab", js: true do
       # More data checks here (more information probably needs to be put in the mocks)
       expect(page).not_to have_content('#service_request_owner')
       expect(page).to have_xpath("//option[@value='#{service.id}' and @selected='selected']")
-      expect(page.find("#arm_#{arm1.id}_visit_name_4")).to have_value 'Visit 6'
+      expect(page.find("#arm_#{arm1.id}_visit_name_4")).to have_value 'Visit 4'
       expect(page).to have_xpath("//option[@value='#{service2.id}' and @selected='selected']")
     end
 
@@ -363,8 +363,8 @@ RSpec.describe "admin fulfillment tab", js: true do
       new_arm = study.arms.last
       within(".arm_id_#{new_arm.id}") do
         expect(page).to have_content 'Another Arm'
-        expect(find(".visit_day.position_1").value).to eq("2")
-        expect(find(".visit_day.position_5").value).to eq("10")
+        expect(find(".visit_day.position_1").value).to eq("1")
+        expect(find(".visit_day.position_5").value).to eq("5")
         expect(find('#line_item_service_id').find('option[selected]').text).to eq("Per Patient")
         wait_for_javascript_to_finish
         expect(find('.line_items_visit_subject_count').find('option[selected]').text).to eq("5")

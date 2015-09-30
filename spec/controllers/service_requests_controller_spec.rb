@@ -916,7 +916,7 @@ RSpec.describe ServiceRequestsController do
           :document_id             => doc.id,
           :format                  => :js,
         }.with_indifferent_access
-        expect(assigns(:service_list)).to eq service_request.service_list.with_indifferent_access
+        expect(assigns(:service_list)).to eq service_request.service_list
       end
     end
   end
@@ -940,7 +940,7 @@ RSpec.describe ServiceRequestsController do
           :document_id             => doc.id,
           :format                  => :js,
         }.with_indifferent_access
-        expect(assigns(:service_list)).to eq service_request.service_list.with_indifferent_access
+        expect(assigns(:service_list)).to eq service_request.service_list
       end
     end
   end

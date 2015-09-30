@@ -447,7 +447,7 @@ class ServiceRequestsController < ApplicationController
     body = params['quick_question']['body'].blank? ? 'No question asked' : params['quick_question']['body']
 
     quick_question = QuickQuestion.create :to => DEFAULT_MAIL_TO, :from => from, :body => body
-    Notifier.ask_a_question(quick_question).deliver_now
+    Notifier.ask_a_question(quick_question).deliver
   end
 
   def feedback

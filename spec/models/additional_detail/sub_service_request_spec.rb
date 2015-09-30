@@ -47,7 +47,7 @@ RSpec.describe 'SubServiceRequest' do
       it "a new line_item_additional_detail_should be created and returned in the array" do
         expect{@sub_service_request.get_line_item_additional_details}.to change{LineItemAdditionalDetail.count}.by(1)
         @liad = LineItemAdditionalDetail.where(:line_item_id => @line_item.id)
-        expect{expect([@liad]).to eq(@sub_service_request.get_line_item_additional_details)}.to change{LineItemAdditionalDetail.count}.by(0)
+        expect{expect(@sub_service_request.get_line_item_additional_details).to eq(@liad)}.to change{LineItemAdditionalDetail.count}.by(0)
       end
 
       describe "when  multiple additional details present" do
@@ -69,7 +69,19 @@ RSpec.describe 'SubServiceRequest' do
         it "should return multiple additional details" do
           expect(@sub_service_request.get_additional_details).to eq([@ad, @ad2])
         end
+        
+        it "should return multiple line_item_additional_details" do 
+          expect{@sub_service_request.get_line_item_additional_details}.to change{LineItemAdditionalDetail.count}.by(2)
+          @liad = LineItemAdditionalDetail.where(:line_item_id => @line_item.id)
+          @liad2 = LineItemAdditionalDetail.where(:line_item_id => @line_item2.id)
+          results =[]
+          results.concat(@liad)
+          results.concat(@liad2)
+          expect{expect(@sub_service_request.get_line_item_additional_details).to eq(results)}.to change{LineItemAdditionalDetail.count}.by(0)
+        end
+      
       end
+      
     end
   end
 

@@ -127,7 +127,7 @@ RSpec.describe "editing a study", js: true do
         wait_for_javascript_to_finish
         page.execute_script("$('#funding_start_date').val('12/20/2015')")
         wait_for_javascript_to_finish
-        expect(find("#funding_start_date")).to have_value(Date.today.strftime('12/20/2015'))
+        expect(find("#funding_start_date")).to have_value('12/20/2015')
       end
     end
 

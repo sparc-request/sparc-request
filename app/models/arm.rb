@@ -226,12 +226,11 @@ class Arm < ActiveRecord::Base
 
   def remove_visit position
     visit_group = self.visit_groups.find_by_position(position)
-    unless visit_group.appointments.reject{|x| !x.completed_at?}.empty?
-      self.errors.add(:completed_appointment, "exists for this visit.")
-      return false
-    else
+    if visit_group
       self.update_attributes(:visit_count => self.visit_count - 1)
       return visit_group.destroy
+    else
+      return false
     end
   end
 

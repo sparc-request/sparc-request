@@ -389,7 +389,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
           # expect protocol to fail validation but that's fine, it means we made it through the authorization filter.
           expect(response.status).to eq(500)
 
-          get(:edit, {:format => :html, :id => @protocol.id })
+          xhr :get, :edit, {:format => :html, :id => @protocol.id }
           expect(assigns(:protocol)).to eq @protocol
           expect(assigns(:edit_protocol)).to eq true
 
@@ -397,7 +397,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
           expect(assigns(:protocol)).to eq @protocol
           expect(response).to render_template("edit")
 
-          get(:view_full_calendar, {:format => :js, :id => @protocol.id })
+          xhr :get, :view_full_calendar, {:format => :js, :id => @protocol.id }
           expect(assigns(:protocol)).to eq @protocol
           assigns(:merged)
 
@@ -468,7 +468,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
           # expect protocol to fail validation but that's fine, it means we made it through the authorization filter.
           expect(response.status).to eq(500)
 
-          get(:edit, {:format => :html, :id => @protocol.id })
+          xhr :get, :edit, {:format => :html, :id => @protocol.id }
           expect(assigns(:protocol)).to eq @protocol
           expect(assigns(:edit_protocol)).to eq true
 
@@ -476,7 +476,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
           expect(assigns(:protocol)).to eq @protocol
           expect(response).to render_template("edit")
 
-          get(:view_full_calendar, {:format => :js, :id => @protocol.id })
+          xhr :get, :view_full_calendar, {:format => :js, :id => @protocol.id }
           expect(assigns(:protocol)).to eq @protocol
           assigns(:merged)
 

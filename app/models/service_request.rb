@@ -509,7 +509,7 @@ class ServiceRequest < ActiveRecord::Base
 
   def add_or_update_arms
     return if not self.has_per_patient_per_visit_services?
-
+    
     p = self.protocol
     if p.arms.empty?
       arm = p.arms.create(

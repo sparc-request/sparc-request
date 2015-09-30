@@ -54,7 +54,7 @@ RSpec.describe ServiceRequestsController do
       session[:service_request_id] = service_request.id
       xhr :get, :show, id: service_request.id
       expect(assigns(:protocol)).to eq service_request.protocol
-      expect(assigns(:service_list)).to eq(service_request.service_list.with_indifferent_access)
+      expect(assigns(:service_list)).to eq(service_request.service_list)
     end
   end
 
@@ -437,9 +437,8 @@ RSpec.describe ServiceRequestsController do
     end
 
     it 'should delete extra visits on per patient per visit line items' do
-      arm1.update_attribute(:visit_count, 10)
-
-      liv = LineItemsVisit.for(arm1, line_item)
+      arm1.update_attributes(visit_count: 10)
+      liv = LineItemsVisit.where(arm_id: arm1.id, line_item_id: line_item.id).first
       liv.visits.each { |visit| visit.destroy }
       add_visits_to_arm_line_item(arm1, line_item, 20)
 

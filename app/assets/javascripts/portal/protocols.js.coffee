@@ -69,6 +69,10 @@ $(document).ready ->
           $('.permissions-dialog .text').html('Edit.')
       )
 
+      $('.protocol-archive-button').live('click', ->
+        $(this).prop('value', 'archive')
+      )
+
       $('.view-sub-service-request-button').live('click', ->
         id = $(this).data('service_request_id')
         protocol_id = $(this).data('protocol_id')

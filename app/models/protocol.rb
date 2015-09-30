@@ -81,6 +81,7 @@ class Protocol < ActiveRecord::Base
   attr_accessible :selected_for_epic
   attr_accessible :study_type_answers_attributes
   attr_accessible :has_cofc
+  attr_accessible :archived
 
   attr_accessor :requester_id
   attr_accessor :validate_nct

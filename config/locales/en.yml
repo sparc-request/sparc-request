@@ -608,7 +608,7 @@ en:
     instructions: "Thank you for submitting your service request(s) through SPARC Request. An email has been sent to each of your service providers and they should be contacting you soon. If you have any questions or concerns, please don't hesitate to contact the SUCCESS Center at 792-8300 or success@musc.edu."
     research_pricing_instructions : "You have successfully submitted a request to get a cost estimate. An email(s) has been submitted on your behalf, and we will respond to your request for a cost estimate shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
     download_button: "Download my Service Request"
-    portal_button: "Go to SPARC Request User Portal"
+    portal_button: "Go to SPARC Request Dashboard"
     details:
       date_submitted: "Date Submitted: "
       short_title: "Short Title: "
@@ -1108,7 +1108,7 @@ en:
   in_fulfillment: "This line item is associated with a request that is in Fulfillment and cannot be deleted."
   service_deleted: "Service has been deleted."
   cart:
-    remove_request_confirm: "This action will delete this service request and you will be redirected to your user portal. Click OK to proceed."
+    remove_request_confirm: "This action will delete this service request and you will be redirected to the dashboard. Click OK to proceed."
   feedback:
     message_error: "Message can't be blank"
   service_request_success: "Service request has been saved."

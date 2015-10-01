@@ -14,12 +14,14 @@ class AdditionalDetail::LineItemAdditionalDetailsController < ApplicationControl
   private
   
   def load_line_item_additional_detail_and_authorize_user
-    @line_item_additional_detail = LineItemAdditionalDetail.find(params[:id])
+    @line_item_additional_detail = LineItemAdditionalDetail.where(id: params[:id]).first()
+    if !@line_item_additional_detail 
+      render :json => "", :status => :not_found
     # verify that user is either a super user or service provider for this service; catalog managers are not allowed!
-    if current_identity.admin_organizations(:su_only => false).include?(@line_item_additional_detail.line_item.service.organization) 
-      return true
+#    elsif current_identity.admin_organizations(:su_only => false).include?(@line_item_additional_detail.line_item.service.organization) 
+#      return true
     # next, try to verify that the user is either the original service requestor or a team member on the project 
-    elsif true
+    elsif ServiceRequest.where(:id => @line_item_additional_detail.line_item.service_request_id, :service_requester_id => current_identity.id).first
       return true
     else
       @line_item_additional_detail = nil

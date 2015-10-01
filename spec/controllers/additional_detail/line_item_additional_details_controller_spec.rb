@@ -32,25 +32,35 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       sign_in @identity
     end
 
+    it 'should see a 404 for an invalid line_item_additional_detail.id' do
+      get(:show, {:id => 1231231231, :format => :json})
+      expect(response.status).to eq(404)
+      expect(response.body).to eq("")
+    end
+    
     describe 'has no affiliation with the project and, thus, has no access to' do
-      it 'view a line_item_additional_detail HTML and JSON' do
+      it 'view a line_item_additional_detail' do
         get(:show, {:id => @line_item_additional_detail, :format => :json})
         expect(response.status).to eq(401)
-        expect(response.body).to eq("".to_json)
+        expect(response.body).to eq("")
       end
     end
     
-    describe 'is a service provider and, thus, has access to' do
-
-      it 'view a line_item_additional_detail' do
-        get(:show, {:id => @line_item_additional_detail, :format => :json})
-        expect(response.status).to eq(200)
-        expect(response.body).to eq(@line_item_additional_detail.to_json) 
-      end
-    end
+    describe 'is the service requester and, thus, has access to' do
+      before :each do
+        @service_request = ServiceRequest.new
+        @service_request.service_requester_id = @identity.id
+        @service_request.save(:validate => false)
+            
+        @service = Service.new
+        @service.save(:validate => false)
     
-    describe 'is the service requestor and, thus, has access to' do
-
+        # update the line item
+        @line_item.service_id = @service.id
+        @line_item.service_request_id = @service_request.id
+        @line_item.save(:validate => false)
+      end
+      
       it 'view a line_item_additional_detail' do
         get(:show, {:id => @line_item_additional_detail, :format => :json})
         expect(response.status).to eq(200)
@@ -58,14 +68,22 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       end
     end
     
-    describe 'is a project team member and, thus, has access to' do
-
-      it 'view a line_item_additional_detail HTML and JSON' do
-        get(:show, {:id => @line_item_additional_detail, :format => :json})
-        expect(response.status).to eq(200)
-        expect(response.body).to eq(@line_item_additional_detail.to_json)
-      end
-    end
+#    describe 'is a service provider and, thus, has access to' do
+#      it 'view a line_item_additional_detail' do
+#        get(:show, {:id => @line_item_additional_detail, :format => :json})
+#        expect(response.status).to eq(200)
+#        expect(response.body).to eq(@line_item_additional_detail.to_json) 
+#      end
+#    end
+    
+#   describe 'is a project team member and, thus, has access to' do
+#
+ #     it 'view a line_item_additional_detail HTML and JSON' do
+ #       get(:show, {:id => @line_item_additional_detail, :format => :json})
+ #       expect(response.status).to eq(200)
+ #       expect(response.body).to eq(@line_item_additional_detail.to_json)
+ #     end
+ #   end
   
   end
 end

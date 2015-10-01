@@ -226,6 +226,8 @@ SparcRails::Application.routes.draw do
 
     resources :protocols do
       member do
+        put :archive_protocol
+        put :unarchive_protocol
         get :add_user
         get :view_full_calendar
       end

@@ -69,8 +69,12 @@ $(document).ready ->
           $('.permissions-dialog .text').html('Edit.')
       )
 
-      $('.protocol-archive-button').live('click', ->
-        
+      $(document).on('click', '.protocol-archive-button', ->
+        protocol_id = $(this).data('protocol_id')
+        $.ajax
+          type: "PUT"
+          url:  "/portal/protocols/#{protocol_id}/archive_protocol.js"
+          data: {protocol_id: protocol_id}
       )
 
       $('.view-sub-service-request-button').live('click', ->

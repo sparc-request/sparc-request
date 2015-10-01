@@ -142,13 +142,13 @@ class Portal::ProtocolsController < Portal::BaseController
   end
 
   def archive_protocol
-    @protocol = Protocol.find(params[:protocol_id])
-    @protocol.update_attribute(archived: true)
+    protocol = Protocol.find(params[:protocol_id])
+    protocol.update_attributes(archived: true)
   end
 
   def unarchive_protocol
-    @protocol = Protocol.find(params[:protocol_id])
-    @protocol.update_attribute(archived: false)
+    protocol = Protocol.find(params[:protocol_id])
+    protocol.update_attributes(archived: false)
   end
 
   # @TODO: add to an authorization filter?

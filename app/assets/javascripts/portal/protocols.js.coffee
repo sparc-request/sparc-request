@@ -71,10 +71,11 @@ $(document).ready ->
 
       $(document).on('click', '.protocol-archive-button', ->
         protocol_id = $(this).data('protocol_id')
+        archived = $(this).data('archive')
         $.ajax
           type: "PUT"
-          url:  "/portal/protocols/#{protocol_id}/archive_protocol.js"
-          data: {protocol_id: protocol_id}
+          url:  "/portal/protocols/#{protocol_id}/update_archive.js"
+          data: {protocol_id: protocol_id, archived: archived}
       )
 
       $('.view-sub-service-request-button').live('click', ->

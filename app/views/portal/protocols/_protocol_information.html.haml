@@ -45,8 +45,8 @@
   .info_right
     .protocol-information-button.ui-corner-all{:'data-permission' => permission.to_s, :'data-protocol_id' => protocol.id}
       = "EDIT #{protocol.type.capitalize} Information"
-    .protocol-archive-button.ui-corner-all{:'data-protocol_id' => protocol.id}
-      = "ARCHIVE #{protocol.type.capitalize}"
+    .protocol-archive-button.ui-corner-all{:'data-protocol_id' => protocol.id, :'data-archive' => protocol.archived ? 0 : 1}
+      = "#{protocol.archived ? 'UNARCHIVE' : 'ARCHIVE'} #{protocol.type.capitalize}"
   .clear
 #spacer
 

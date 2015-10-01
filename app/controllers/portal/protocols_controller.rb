@@ -27,7 +27,8 @@ class Portal::ProtocolsController < Portal::BaseController
   before_filter :protocol_authorizer_edit, :only => [:update_from_fulfillment, :edit, :update, :update_protocol_type]
 
   def index
-    params[:show_archived] ? protocols = @user.protocols.where(archived: true) : protocols = @user.protocols.where(archived: false)
+    @show_archived = params[:show_archived] ? true : false
+    @show_archived ? protocols = @user.protocols.where(archived: true) : protocols = @user.protocols.where(archived: false)
     @protocols = []
     protocols.each do |protocol|
       if protocol.project_roles.find_by_identity_id(@user.id).project_rights != 'none'
@@ -141,14 +142,9 @@ class Portal::ProtocolsController < Portal::BaseController
     end
   end
 
-  def archive_protocol
+  def update_archive
     protocol = Protocol.find(params[:protocol_id])
-    protocol.update_attributes(archived: true)
-  end
-
-  def unarchive_protocol
-    protocol = Protocol.find(params[:protocol_id])
-    protocol.update_attributes(archived: false)
+    protocol.update_attributes(archived: params[:archived])
   end
 
   # @TODO: add to an authorization filter?

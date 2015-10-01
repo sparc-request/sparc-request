@@ -1,23 +1,12 @@
 class AdditionalDetail::LineItemAdditionalDetailsController < ApplicationController
   protect_from_forgery
-  
-  #layout 'additional_detail/application'
-
   before_filter :authenticate_identity!
   before_filter :load_line_item_additional_detail_and_authorize_user
   
   def show
-    respond_to do |format|
-      format.html # show.haml
-      format.json { render :json => @line_item_additional_detail }
-    end
+     render :json => @line_item_additional_detail
   end
 
-# create a record as part of the service request flow?    
-#  def create
-#    
-#  end
-  
 #  def update
     
  # end
@@ -34,10 +23,7 @@ class AdditionalDetail::LineItemAdditionalDetailsController < ApplicationControl
       return true
     else
       @line_item_additional_detail = nil
-      respond_to do |format|
-        format.html { render "unauthorized", :status => :unauthorized }
-        format.json { render :json => "", :status => :unauthorized }
-      end
+      render :json => "", :status => :unauthorized
     end
   end
 end

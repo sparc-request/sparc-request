@@ -20,7 +20,7 @@
 
 require 'generate_request_grant_billing_pdf'
 
-class ServiceRequestsController < ApplicationController 
+class ServiceRequestsController < ApplicationController
   before_filter :initialize_service_request, :except => [:approve_changes]
   before_filter :authorize_identity, :except => [:approve_changes, :show]
   before_filter :authenticate_identity!, :except => [:catalog, :add_service, :remove_service, :ask_a_question, :feedback]
@@ -101,7 +101,7 @@ class ServiceRequestsController < ApplicationController
       end
     end
   end
-  
+
   # service request wizard pages
 
   def catalog
@@ -486,7 +486,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   private
-  
+
   # Send notifications to all users.
   def send_notifications(service_request, sub_service_request)
     xls = render_to_string :action => 'show', :formats => [:xlsx]

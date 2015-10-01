@@ -24,17 +24,8 @@ require 'rails_helper'
 RSpec.describe AdditionalDetail::ServiceRequestsController do
   
   before :each do
-    # authenticate user
-    @identity = Identity.new
-    @identity.approved = true
-    @identity.save(validate: false)
-    session[:identity_id] = @identity.id 
-    sign_in @identity # Devise test helper method: sign_in
-
     # mock a service request      
     @service_request = ServiceRequest.new
-    # associate user to the service request to give them authorization to view its additional details
-    @service_request.service_requester_id = @identity.id
     @service_request.save(:validate => false)
     
     SubServiceRequest.skip_callback(:save, :after, :update_org_tree)
@@ -52,32 +43,66 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
     @line_item.save(:validate => false)
   end
 
-  describe 'show' do
-    it "should return empty json if no additional details exist" do
-      get(:show, { :id => @service_request.id }, :format => :json)
-      expect(response.status).to eq(200)
-      expect(response.body).to eq([].to_json)
+  describe 'user is not logged in and, thus, has no access to' do
+    it 'a grid of line_item_additional_details' do
+      get(:show, { :id=>@service_request.id , :format => :html })
+      expect(response).to redirect_to("/identities/sign_in")
     end
-
-    describe 'with an additional detail present' do
-      before :each do
-        @ad = AdditionalDetail.new 
-        @ad.effective_date = Time.now.strftime("%Y-%m-%d")
-        @ad.service_id = @service.id
-        @ad.save(:validate => false)
-      end
-
-      it "should return json with line_item_additional_details when additional details present" do
-        expect{
-          get(:show, { :id=>@service_request.id }, :format => :json)
-        }.to change{LineItemAdditionalDetail.count}.by(1)
-        @line_item_additional_detail = LineItemAdditionalDetail.where(:line_item_id => @line_item.id).last
-        expect(@line_item_additional_detail.additional_detail_id).to eq(@ad.id)
-        expect(@line_item_additional_detail.line_item_id).to eq(@line_item.id)
-        expect(response.status).to eq(200)
-        expect(response.body).to eq([@line_item_additional_detail].to_json)
-      end
-    end
-  end 
+  end
   
+  describe 'authenticated identity' do
+    before :each do
+      @identity = Identity.new
+      @identity.approved = true
+      @identity.save(validate: false)
+      session[:identity_id] = @identity.id
+      # Devise test helper method: sign_in
+      sign_in @identity
+    end
+    
+    describe 'has no affiliation with the project and, thus, has no access to' do
+      it 'line_item_additional_details' do
+        get(:show, { :id => @service_request.id , :format => :json})
+        expect(response.status).to eq(401)
+        expect(response.body).to eq("")
+      end
+    end
+    
+    describe 'is the original service requester and, thus, has access to' do
+     
+      it "an empty set of line_item_additional_details" do
+        # associate user to the service request to give them authorization to view its additional details
+        @service_request.service_requester_id = @identity.id
+        @service_request.save(:validate => false)
+            
+        get(:show, { :id => @service_request.id , :format => :json})
+        expect(response.status).to eq(200)
+        expect(response.body).to eq([].to_json)
+      end
+  
+      describe 'view a list of line_item_additional_details' do
+        before :each do
+          # associate user to the service request to give them authorization to view its additional details
+          @service_request.service_requester_id = @identity.id
+          @service_request.save(:validate => false)
+              
+          @ad = AdditionalDetail.new 
+          @ad.effective_date = Time.now.strftime("%Y-%m-%d")
+          @ad.service_id = @service.id
+          @ad.save(:validate => false)
+        end
+  
+        it "should return json with line_item_additional_details" do
+          expect{
+            get(:show, { :id=>@service_request.id , :format => :json })
+          }.to change{LineItemAdditionalDetail.count}.by(1)
+          @line_item_additional_detail = LineItemAdditionalDetail.where(:line_item_id => @line_item.id).last
+          expect(@line_item_additional_detail.additional_detail_id).to eq(@ad.id)
+          expect(@line_item_additional_detail.line_item_id).to eq(@line_item.id)
+          expect(response.status).to eq(200)
+          expect(response.body).to eq([@line_item_additional_detail].to_json)
+        end
+      end
+    end 
+  end
 end

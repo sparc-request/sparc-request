@@ -84,41 +84,6 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', functio
 	
 }]);
 
-app.controller('navController', ['$scope', function($scope){
-	
-	function addLink(name, active, href){
-		var li = document.createElement("li");
-		if(href){
-			var a = document.createElement("a");
-			a.href = href;
-			a.appendChild(document.createTextNode(name));
-			li.appendChild(a);
-		}
-		else{
-			li.appendChild(document.createTextNode(name));
-		}
-		return li;
-	}
-	var nav = angular.element('#nav');
-	if(typeof service_name  !='undefined' && typeof additionalDetail_name  === 'undefined'){
-		nav.append(addLink(service_name, true));
-	}
-	else if(typeof service_name  !='undefined' && additionalDetail_name){
-		var href = "/additional_detail/services/"+id+"/additional_details"
-		nav.append(addLink(service_name, false, href));
-		console.log(additionalDetail_name);
-		if(additionalDetail_name=="false"){
-			nav.append(addLink("New", true));
-		}
-		else{
-			nav.append(addLink(additionalDetail_name, true));
-		}
-	}
-	
-	
-	
-}]);
-
 app.controller('FormCreationController', ['$scope', '$http', function ($scope, $http, $compile) {
 		
 	//var form_definition =  ;

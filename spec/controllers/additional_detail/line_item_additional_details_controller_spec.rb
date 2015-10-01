@@ -32,31 +32,29 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       sign_in @identity
     end
 
-    describe 'is a service provider and, thus, has access to' do
-
+    describe 'has no affiliation with the project and, thus, has no access to' do
       it 'view a line_item_additional_detail HTML and JSON' do
         get(:show, {:id => @line_item_additional_detail, :format => :json})
+        expect(response.status).to eq(401)
+        expect(response.body).to eq("".to_json)
+      end
+    end
+    
+    describe 'is a service provider and, thus, has access to' do
+
+      it 'view a line_item_additional_detail' do
+        get(:show, {:id => @line_item_additional_detail, :format => :json})
         expect(response.status).to eq(200)
-        expect(response.body).to eq(@line_item_additional_detail.to_json)
-        
-        get(:show, {:id => @line_item_additional_detail, :format => :html})
-        expect(response.status).to eq(200)
-        expect(response).to render_template("show")
-        expect(assigns(:line_item_additional_detail)).to_not be_blank
+        expect(response.body).to eq(@line_item_additional_detail.to_json) 
       end
     end
     
     describe 'is the service requestor and, thus, has access to' do
 
-      it 'view a line_item_additional_detail HTML and JSON' do
+      it 'view a line_item_additional_detail' do
         get(:show, {:id => @line_item_additional_detail, :format => :json})
         expect(response.status).to eq(200)
         expect(response.body).to eq(@line_item_additional_detail.to_json)
-        
-        get(:show, {:id => @line_item_additional_detail, :format => :html})
-        expect(response.status).to eq(200)
-        expect(response).to render_template("show")
-        expect(assigns(:line_item_additional_detail)).to_not be_blank
       end
     end
     
@@ -66,25 +64,8 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
         get(:show, {:id => @line_item_additional_detail, :format => :json})
         expect(response.status).to eq(200)
         expect(response.body).to eq(@line_item_additional_detail.to_json)
-        
-        get(:show, {:id => @line_item_additional_detail, :format => :html})
-        expect(response.status).to eq(200)
-        expect(response).to render_template("show")
-        expect(assigns(:line_item_additional_detail)).to_not be_blank
       end
     end
-    
-    describe 'has no affiliation with the project and, thus, has no access to' do
-      it 'view a line_item_additional_detail HTML and JSON' do
-        get(:show, {:id => @line_item_additional_detail, :format => :json})
-        expect(response.status).to eq(401)
-        expect(response.body).to eq("".to_json)
-        
-        get(:show, {:id => @line_item_additional_detail, :format => :html})
-        expect(response).to render_template("unauthorized")
-        expect(response.status).to eq(401)
-        expect(assigns(:line_item_additional_detail)).to be_blank
-      end
-    end
+  
   end
 end

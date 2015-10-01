@@ -342,8 +342,9 @@ SparcRails::Application.routes.draw do
     resources :services, only: [:index] do
       resources :additional_details
     end
-    resources :line_item_additional_details, except: [:index, :destroy]
-    resources :service_requests, only: [:show]
+    # we may add :destroy later so a service provider can allow an updated version of the form to be rendered and completed
+    resources :line_item_additional_details, only: [:show, :update], :defaults => { :format => :json } 
+    resources :service_requests, only: [:show], :defaults => { :format => :json } 
   end
 
   mount API::Base => '/'

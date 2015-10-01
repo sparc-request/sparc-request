@@ -227,8 +227,6 @@ class ApplicationController < ActionController::Base
     # can the user edit the sub service request
 
     # we have a current user
-    puts current_user.inspect
-    puts current_identity.inspect
     if current_user
       if @sub_service_request.nil? and current_user.can_edit_service_request? @service_request
         return true

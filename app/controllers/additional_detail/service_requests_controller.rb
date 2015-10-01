@@ -1,13 +1,18 @@
 class AdditionalDetail::ServiceRequestsController < ApplicationController
   protect_from_forgery
-  #before_filter :authenticate_identity! 
+  before_filter :authenticate_identity! 
   
   # return json data of each line item additional detail, authorize using service_requester_id
   def show
-    #puts params.inspect
-    #puts session.inspect # why doesn't this include :identity_id ??
-    @service_request = ServiceRequest.where(:id => params[:id]).first # need to add , :service_requester_id => session[:identity_id]
-    render :json => @service_request.get_line_item_additional_details
+    # version 1.0 only allows original service requester to view grid 
+    # but we'll likely add more types of users to the list of authorized viewers
+    @service_request = ServiceRequest.where(:id => params[:id], :service_requester_id => current_identity.id).first
+    # as needed, get_line_item_additional_details creates new line item additional details
+    if @service_request
+      render :json => @service_request.get_line_item_additional_details
+    else 
+      render :json => "", :status => :unauthorized
+    end
   end
   
 end

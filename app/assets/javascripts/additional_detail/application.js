@@ -31,11 +31,11 @@ app.controller('AdditionalDetailsRootController', ['$scope', '$http', function($
 }]);
 
 app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$http', function($scope, $http) { 
-	$scope.gridModel = {enableFiltering: true, enableColumnResizing: true, showColumnFooter: true , enableSorting: false, showGridFooter: true, enableRowHeaderSelection: false, rowHeight: 42};
+	$scope.gridModel = {enableFiltering: true, enableColumnResizing: true, showColumnFooter: true , enableSorting: false, showGridFooter: true, enableRowHeaderSelection: false, rowHeight: 42, enableCellEdit:false};
 
 	$scope.gridModel.columnDefs = [{enableFiltering: false, enableColumnResizing: false,name: 'Edit',width: 55, enableColumnMenu: false, cellTemplate: '<a class="btn btn-primary" role="button" ng-href="/additional_detail/services/'+id+'/additional_details/{{row.entity.additional_detail.id}}/edit">Edit</a>'},
-	                               {field: 'additional_detail.name', name: 'Name',  width: '30%', enableColumnMenu: false ,}, 
-	                               {field:'additional_detail.effective_date',name: 'Effective Date', width: '25%', enableColumnMenu: false },{field: 'additional_detail.approved',name: 'Approved', width: '10%', enableColumnMenu: false},
+	                               {field: 'data.getServiceName("test")', name: 'Name',  width: '30%', enableColumnMenu: false ,}, 
+	                               {field:'line_item_additional_detail.additional_detail_id',name: 'Effective Date', width: '25%', enableColumnMenu: false },{field: 'additional_detail.approved',name: 'Approved', width: '10%', enableColumnMenu: false},
 	                               {field: 'additional_detail.description', name: 'Description', enableColumnMenu: false},
 	                               ];
 
@@ -45,9 +45,10 @@ app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$htt
 			then(function(response){
 				console.log(response);
 				$scope.gridModel.data = response.data;
+				$scope.gridModel.data.getServiceName = function(id){return "Test: "+id;};
 			});
 	}
-	
+		
 	$scope.reloadGrid();
 	
 }]);

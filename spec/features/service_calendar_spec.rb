@@ -51,17 +51,16 @@ RSpec.describe "service calendar", js: true do
         wait_for_javascript_to_finish
         find(:xpath, "//a/img[@alt='Goback']/..").click
         wait_for_javascript_to_finish
-        sleep 3 # TODO: ugh: I got rid of all the sleeps, but I can't get rid of this one
         expect(LineItem.find(line_item.id).quantity).to eq(10)
       end
 
       it "should save the new units per quantity" do
-        fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", with: line_item.service.current_pricing_map.units_per_qty_max
+        fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", with: 10
         page.execute_script('$(".units_per_quantity").change()')
         wait_for_javascript_to_finish
         find(:xpath, "//a/img[@alt='Goback']/..").click
         wait_for_javascript_to_finish
-        expect(LineItem.find(line_item.id).units_per_quantity).to eq(line_item.service.current_pricing_map.units_per_qty_max)
+        expect(LineItem.find(line_item.id).units_per_quantity).to eq(10)
       end
     end
 
@@ -73,7 +72,7 @@ RSpec.describe "service calendar", js: true do
           fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", with: 1
           page.execute_script('$(".units_per_quantity").change()')
           wait_for_javascript_to_finish
-          
+
           accept_alert("Quantity please enter a quantity greater than or equal to") do
             fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", with: 0
             find("th.number_of_units_header").click
@@ -229,11 +228,13 @@ RSpec.describe "service calendar", js: true do
 
       describe "selecting check all row button" do
         it "should overwrite the quantity in research billing box" do
-          fill_in "visits_#{@visit_id}_research_billing_qty", with: 10
-          wait_for_javascript_to_finish
-          click_link "check_row_#{arm1.line_items_visits.first.id}_billing_strategy"
+          find("#check_row_#{arm1.line_items_visits.first.id}_billing_strategy").click
           wait_for_javascript_to_finish
           expect(find("#visits_#{@visit_id}_research_billing_qty")).to have_value("1")
+
+          find("#check_row_#{arm1.line_items_visits.first.id}_billing_strategy").click
+          wait_for_javascript_to_finish
+          expect(find("#visits_#{@visit_id}_research_billing_qty")).to have_value("0")
         end
       end
 
@@ -242,8 +243,6 @@ RSpec.describe "service calendar", js: true do
           fill_in("visits_#{@visit_id}_research_billing_qty", with: 10)
           page.execute_script('$("#visits_2_research_billing_qty").change()')
           wait_for_javascript_to_finish
-          sleep 3 # TODO: ugh: I got rid of all the sleeps, but I can't get rid of this one
-
           expect(first(".pp_max_total_direct_cost.arm_#{arm1.id}", visible: true)).to have_exact_text("$300.00")
         end
 
@@ -251,8 +250,6 @@ RSpec.describe "service calendar", js: true do
           fill_in "visits_#{@visit_id}_research_billing_qty", with: 10
           page.execute_script('$("#visits_2_research_billing_qty").change()')
           wait_for_javascript_to_finish
-          sleep 3 # TODO: ugh: I got rid of all the sleeps, but I can't get rid of this one
-
           all(".visit_column_2.max_direct_per_patient.arm_#{arm1.id}").each do |x|
             if x.visible?
               expect(x).to have_exact_text("$300.00")
@@ -365,7 +362,7 @@ RSpec.describe "service calendar", js: true do
         wait_for_javascript_to_finish
         find("#calendar_tab").click
         wait_for_javascript_to_finish
-        
+
         all('.pp_line_item_total total_1').each do |x|
           if x.visible?
             expect(x).to have_exact_text("150.00")

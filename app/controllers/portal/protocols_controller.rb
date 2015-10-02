@@ -28,9 +28,11 @@ class Portal::ProtocolsController < Portal::BaseController
 
   def index
     @protocols = []
-    @user.protocols.unarchived.each do |protocol|
+    include_archived = (params[:include_archived] == "true")
+
+    @user.protocols.each do |protocol|
       if protocol.project_roles.find_by_identity_id(@user.id).project_rights != 'none'
-         @protocols << protocol
+         @protocols << protocol if include_archived || !protocol.archived
       end
     end
     @protocols = @protocols.sort_by { |pr| (pr.id || '0000') + pr.id }.reverse

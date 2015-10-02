@@ -80,6 +80,13 @@ $(document).ready ->
             $(".protocol-information-#{protocol_id}").hide()
       )
 
+      $(document).on('click', '.archive_button', ->
+        $.ajax
+          method: "GET"
+          url: "/portal/protocols.js"
+          data: { include_archived: "true" }
+      )
+
       $('.view-sub-service-request-button').live('click', ->
         id = $(this).data('service_request_id')
         protocol_id = $(this).data('protocol_id')

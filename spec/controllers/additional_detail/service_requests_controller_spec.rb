@@ -100,7 +100,7 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
           expect(@line_item_additional_detail.additional_detail_id).to eq(@ad.id)
           expect(@line_item_additional_detail.line_item_id).to eq(@line_item.id)
           expect(response.status).to eq(200)
-          expect(response.body).to eq([@line_item_additional_detail].to_json(:include => {:line_item => {:include => :service} }))
+          expect(response.body).to eq([@line_item_additional_detail].to_json(:include => [{:line_item => {:include => :service} }, :additional_detail]))
         end
       end
     end 

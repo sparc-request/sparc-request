@@ -7,9 +7,13 @@ class AdditionalDetail::LineItemAdditionalDetailsController < ApplicationControl
      render :json => @line_item_additional_detail
   end
 
-#  def update
-    
- # end
+  def update
+    @line_item_additional_detail = LineItemAdditionalDetail.find(params[:id])
+    puts :jdkleqwjfklqjss
+      puts params[:line_item_additional_detail]
+    @line_item_additional_detail.update_attributes(params[:line_item_additional_detail])
+    head :no_content
+  end
   
   private
   

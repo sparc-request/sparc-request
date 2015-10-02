@@ -16,6 +16,11 @@
 //= require additional_detail/angular-schema-form-dynamic-select.min
 var typeHash;
 var app = angular.module('app', ['ngAria','schemaForm','ui.grid','ui.grid.resizeColumns', 'mgcrea.ngStrap', 'schemaForm-datepicker', 'schemaForm-timepicker', 'schemaForm-datetimepicker','ui.grid.selection','ngSanitize', 'ui.grid.autoResize','ui.grid.expandable', 'ui.grid.edit']);
+
+$('#myModal').on('shown.bs.modal', function () {
+	$('#myInput').focus()
+});
+
 app.config([
      "$httpProvider", function($httpProvider) {
      $httpProvider.defaults.headers.common["Accept"] = "application/json";
@@ -33,15 +38,16 @@ app.controller('AdditionalDetailsRootController', ['$scope', '$http', function($
 app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$http', function($scope, $http) { 
 	$scope.gridModel = {enableFiltering: true, enableColumnResizing: true, showColumnFooter: true , enableSorting: false, showGridFooter: true, enableRowHeaderSelection: false, rowHeight: 42, enableCellEdit:false};
 
-	$scope.gridModel.columnDefs = [{enableFiltering: false, enableColumnResizing: false,name: 'Take Survey',width: 105, enableColumnMenu: false, cellTemplate: '<a class="btn btn-primary" role="button" ng-href="/additional_detail/services/'+id+'/additional_details/{{row.entity.additional_detail.id}}/edit">Take Survey</a>'},
+	$scope.gridModel.columnDefs = [{enableFiltering: false, enableColumnResizing: false,name: 'Survey',width: 105, enableColumnMenu: false, cellTemplate: '<button data-toggle="modal" type="button" data-target="#myModal" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.line_item_additional_detail.id)">{{(row.entity.line_item_additional_detail.form_data_json==null) ? "Take Survey" : "Edit Survey"}}</button>'},
 	                               {field: 'line_item_additional_detail.line_item.service.name', name: 'Service', enableColumnMenu: false ,}, 
-	                               {field:'status', width: '25%', enableColumnMenu: false }
+	                               {field:'status', width: '20%', enableColumnMenu: false }
 	                               ];
 
 	$scope.reloadGrid = function(){
 		$http.get('/additional_detail/service_requests/'+id+'').
 			then(function(response){
 				$scope.gridModel.data = response.data;
+				//console.log(response.data);
 				data = $scope.gridModel.data
 				for(var i=0; i<data.length; i++){
 					data[i].status = (data[i].line_item_additional_detail.form_data_json==null) ? "Incomplete" : "Complete"
@@ -49,15 +55,43 @@ app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$htt
 				
 			});
 	}
-	
-	$scope.getService = function(id){
-		return "Test "+id;
-//		$http.get('/line_items/'+id+'/getService').
-//			then(function(response){
-//				return response.data;
-//			});
+	$scope.showSurvey = function(id){
+		$scope.currentLineItemAD = $scope.getLineItemAdditionalDetail(id);
+		if($scope.currentLineItemAD){
+			var liad = $scope.currentLineItemAD;
+			$scope.modal_title = liad.line_item.service.name;
+			var object = JSON.parse(liad.additional_detail.form_definition_json);
+			$scope.schema = object.schema;
+			$scope.form   = object.form;		
+			$scope.model = (liad.form_data_json==null) ? {} : JSON.parse(liad.form_data_json);
+		}
+		
 	}
 	
+	$scope.getLineItemAdditionalDetail = function(id){
+		var data = $scope.gridModel.data;
+		for(var i=0; i< data.length; i++){
+			if(data[i].line_item_additional_detail.id==id){
+				return data[i].line_item_additional_detail;
+			}
+		}
+		return null;
+		
+	}
+	
+	
+	$scope.saveFormResponse = function(){
+		if($scope.currentLineItemAD){
+			var liad = $scope.currentLineItemAD;
+			liad.form_data_json = JSON.stringify($scope.model);
+			$http.put("/additional_detail/line_item_additional_details/"+liad.id, JSON.stringify(liad)).
+				then(function(response){
+					$scope.reloadGrid();
+			});
+			
+		}
+	}
+		
 	$scope.reloadGrid();
 	
 }]);

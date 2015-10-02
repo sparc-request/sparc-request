@@ -116,6 +116,8 @@ class Protocol < ActiveRecord::Base
     validate :primary_pi_exists
   end
 
+  scope :unarchived, -> { where(archived: false)}
+
   def is_study?
     self.type == 'Study'
   end

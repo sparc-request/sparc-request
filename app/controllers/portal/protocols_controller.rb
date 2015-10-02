@@ -27,10 +27,8 @@ class Portal::ProtocolsController < Portal::BaseController
   before_filter :protocol_authorizer_edit, :only => [:update_from_fulfillment, :edit, :update, :update_protocol_type]
 
   def index
-    @show_archived = params[:show_archived] ? true : false
-    @show_archived ? protocols = @user.protocols.where(archived: true) : protocols = @user.protocols.where(archived: false)
     @protocols = []
-    protocols.each do |protocol|
+    @user.protocols.unarchived.each do |protocol|
       if protocol.project_roles.find_by_identity_id(@user.id).project_rights != 'none'
          @protocols << protocol
       end

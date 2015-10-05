@@ -47,14 +47,23 @@ app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$htt
 		$http.get('/additional_detail/service_requests/'+id+'').
 			then(function(response){
 				$scope.gridModel.data = response.data;
-				//console.log(response.data);
 				data = $scope.gridModel.data
 				for(var i=0; i<data.length; i++){
-					data[i].status = (data[i].line_item_additional_detail.form_data_json==null) ? "Incomplete" : "Complete"
+					var required = JSON.parse(data[i].line_item_additional_detail.additional_detail.form_definition_json).schema.required;
+					var model = JSON.parse(data[i].line_item_additional_detail.form_data_json);
+					data[i].status = (allPresent(model, required)==false) ? "Incomplete" : "Complete"
 				}
-				
 			});
 	}
+	
+	function allPresent(model, required){
+		for(var i=0; i<required.length; i++){
+			if(!(required[i] in model)){return false;}
+		}
+		return true;
+	}
+	
+	
 	$scope.showSurvey = function(id){
 		$scope.currentLineItemAD = $scope.getLineItemAdditionalDetail(id);
 		if($scope.currentLineItemAD){
@@ -81,15 +90,12 @@ app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$htt
 	
 	
 	$scope.saveFormResponse = function(){
-		if($scope.currentLineItemAD){
-			var liad = $scope.currentLineItemAD;
-			liad.form_data_json = JSON.stringify($scope.model);
-			$http.put("/additional_detail/line_item_additional_details/"+liad.id, JSON.stringify(liad)).
-				then(function(response){
-					$scope.reloadGrid();
-			});
-			
-		}
+		var liad = $scope.currentLineItemAD;
+		liad.form_data_json = JSON.stringify($scope.model);
+		$http.put("/additional_detail/line_item_additional_details/"+liad.id, JSON.stringify(liad)).
+			then(function(response){
+				$scope.reloadGrid();
+		});
 	}
 		
 	$scope.reloadGrid();

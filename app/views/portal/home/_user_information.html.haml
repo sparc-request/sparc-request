@@ -23,7 +23,7 @@
     = @user.full_name
     |
     = @user.email
-= link_to @show_archived ? "Show Active Protocols" : "Show Archived Protocols", 'javascript:void(0)', :class => "archive_button"
+= link_to @show_archived ? "Show Active Protocols" : "Show Archived Protocols", 'javascript:void(0)', :class => "archive_button", data: { showing_archived: (@show_archived ? '1' : '0') }
 .notifications-link
   = link_to 'javascript:void(0)', :class => "hyperlink" do
     = image_tag @user.unread_notification_count(@user) >= 1 ? 'portal/notification_white.png' : 'portal/unreadnotification_white.png', :class => 'left'

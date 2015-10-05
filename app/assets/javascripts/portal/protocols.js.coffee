@@ -75,9 +75,6 @@ $(document).ready ->
           type: "POST"
           url:  "/protocol_archive/create.js"
           data: {protocol_id: protocol_id}
-          success: ->
-            $("#blue-provider-#{protocol_id}").hide()
-            $(".protocol-information-#{protocol_id}").hide()
       )
 
       $(document).on('click', '.archive_button', ->
@@ -85,6 +82,11 @@ $(document).ready ->
           method: "GET"
           url: "/portal/protocols.js"
           data: { include_archived: "true" }
+          success: ->
+            if $('.archive_button').data('showing-archived') == 0
+              $('.archive_button').data('showing-archived', 1)
+            else
+              $('.archive_button').data('showing-archived', 0)
       )
 
       $('.view-sub-service-request-button').live('click', ->

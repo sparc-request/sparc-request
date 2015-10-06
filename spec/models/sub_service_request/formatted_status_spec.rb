@@ -9,9 +9,9 @@ RSpec.describe SubServiceRequest, type: :model do
     context "constants.yml mapping present" do
 
       it "should return the value from constants.yml" do
-        sub_service_request = create(:sub_service_request, status: "get_a_quote")
+        sub_service_request = create(:sub_service_request, status: "get_a_cost_estimate")
 
-        expect(sub_service_request.formatted_status).to eq("Get a Quote")
+        expect(sub_service_request.formatted_status).to eq("Get a Cost Estimate")
       end
     end
 

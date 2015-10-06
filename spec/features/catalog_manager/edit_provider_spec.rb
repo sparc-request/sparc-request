@@ -75,7 +75,7 @@ RSpec.describe 'edit a provider', js: true do
       end
 
       it "should get the default statuses" do
-        expect(@provider.get_available_statuses).to eq( {"draft" => "Draft", "submitted" => "Submitted", "get_a_quote" => "Get a Quote", "in_process" => "In Process", "complete" => "Complete", "awaiting_pi_approval" => "Awaiting Requester Response", "on_hold" => "On Hold"} )
+        expect(@provider.get_available_statuses).to eq( {"draft" => "Draft", "submitted" => "Submitted", "get_a_cost_estimate" => "Get a Cost Estimate", "in_process" => "In Process", "complete" => "Complete", "awaiting_pi_approval" => "Awaiting Requester Response", "on_hold" => "On Hold"} )
       end
 
       it "should only get the statuses that are checked" do

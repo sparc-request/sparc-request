@@ -525,7 +525,7 @@ div.permissions_dialog
   margin-top: 3px
 .user-buttons
   margin: 8px auto auto 10px
-.view-full-calendar-button
+.view-full-calendar-button, .consolidated_request
   width: 230px
   height: 26px
   padding: 9px 9px 9px 15px
@@ -534,6 +534,11 @@ div.permissions_dialog
   color: white !important
   display: block
   background: url(/assets/portal/yellowbutton_calendar.png) no-repeat
+
+.consolidated_request
+  background: url(/assets/portal/yellowbutton_report.png) no-repeat
+  padding-left: 20px
+
 .add-services-button
   width: 230px
   height: 26px
@@ -822,6 +827,11 @@ div.permissions_dialog
 
 .blue-provider
   background: #0775B0 !important
+
+.blue-provider.ui-state-hover 
+  .protocol-accordion-title
+    color: #BBBBBB !important
+
 
 .orange-provider
   background: #ff9933 !important
@@ -1415,7 +1425,7 @@ div.permissions_dialog
     background-color: #FFFFD5 !important
     color: red !important
 
-#processing_request 
+#processing_request
   background: #fff
   border: 1px solid #000
   left: 42%

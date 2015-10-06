@@ -87,14 +87,6 @@ RSpec.describe Arm, type: :model do
         new_first_visit = arm1.line_items_visits.first.visits.first
         expect(new_first_visit.billing).not_to eq("your mom")
       end
-
-      it "should not remove a visit if there is a completed appointment associated with the visit" do
-        visit_count = arm1.visit_count
-        appointment = create(:appointment, visit_group_id: arm1.visit_groups.first.id, completed_at: Date.today)
-        arm1.remove_visit(1)
-        expect(arm1.visit_count).not_to eq(visit_count - 1)
-        expect(arm1.errors.messages).to eq({:completed_appointment=>["exists for this visit."]})
-      end
     end
 
     describe "per patient per visit" do

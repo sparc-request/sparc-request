@@ -78,6 +78,8 @@ $(document).ready ->
       )
 
       $(document).on('click', '.archive_button', ->
+        $('.search_protocols').hide()
+        $('.loading_protocol').show()
         include_archived = 'true'
 
         if $('.archive_button').data('showing-archived') == 1
@@ -90,10 +92,12 @@ $(document).ready ->
           success: ->
             if $('.archive_button').data('showing-archived') == 0
               $('.archive_button').data('showing-archived', 1)
-              $('.archive_button').text("Show Active Studies")
+              $('.archive_button').text("Show Active Projects/Studies")
             else
               $('.archive_button').data('showing-archived', 0)
-              $('.archive_button').text("Show All Studies")
+              $('.archive_button').text("Show All Projects/Studies")
+            $('.loading_protocol').hide()
+            $('.search_protocols').show()
       )
 
       $('.view-sub-service-request-button').live('click', ->

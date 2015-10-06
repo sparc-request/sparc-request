@@ -78,15 +78,22 @@ $(document).ready ->
       )
 
       $(document).on('click', '.archive_button', ->
+        include_archived = 'true'
+
+        if $('.archive_button').data('showing-archived') == 1
+          include_archived = 'false'
+  
         $.ajax
           method: "GET"
           url: "/portal/protocols.js"
-          data: { include_archived: "true" }
+          data: { include_archived: include_archived }
           success: ->
             if $('.archive_button').data('showing-archived') == 0
               $('.archive_button').data('showing-archived', 1)
+              $('.archive_button').text("Show Active Studies")
             else
               $('.archive_button').data('showing-archived', 0)
+              $('.archive_button').text("Show All Studies")
       )
 
       $('.view-sub-service-request-button').live('click', ->

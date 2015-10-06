@@ -7,7 +7,9 @@ RSpec.feature 'user unarchives a study', js: true do
   fake_login_for_each_test
   build_service_request_with_project
 
-  let(:protocol) { create(:protocol_without_validations, archived: true) }
+  before(:each) do
+    project.update_attributes(archived: true)
+  end
 
   scenario " and sees 'Unarchive Study' button " do
     when_i_visit_the_portal_root
@@ -33,15 +35,14 @@ RSpec.feature 'user unarchives a study', js: true do
   end
 
   def then_i_should_see_an_unarchive_study_button
-    save_and_open_screenshot
-    expect(page).to have_css(".protocol-archive-button[data-protocol_id='#{protocol.id}']", text: "UNARCHIVE")
+    expect(page).to have_css(".protocol-archive-button[data-protocol_id='#{project.id}']", text: "UNARCHIVE")
   end
 
   def and_i_unarchive_the_study
-    find(".protocol-archive-button[data-protocol_id='#{protocol.id}']").click
+    find(".protocol-archive-button[data-protocol_id='#{project.id}']").click
   end
 
   def then_i_should_be_able_to_archive_the_study
-    expect(page).to have_css(".protocol-archive-button[data-protocol_id='#{protocol.id}']", text: "ARCHIVE")
+    expect(page).to have_css(".protocol-archive-button[data-protocol_id='#{project.id}']", text: "ARCHIVE")
   end
 end

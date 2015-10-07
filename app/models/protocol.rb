@@ -81,6 +81,7 @@ class Protocol < ActiveRecord::Base
   attr_accessible :selected_for_epic
   attr_accessible :study_type_answers_attributes
   attr_accessible :has_cofc
+  attr_accessible :archived
 
   attr_accessor :requester_id
   attr_accessor :validate_nct
@@ -114,6 +115,8 @@ class Protocol < ActiveRecord::Base
     validate :requester_included, :on => :create
     validate :primary_pi_exists
   end
+
+  scope :unarchived, -> { where(archived: false)}
 
   def is_study?
     self.type == 'Study'

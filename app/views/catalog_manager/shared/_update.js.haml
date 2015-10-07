@@ -64,6 +64,10 @@
   :plain
     $('#se_info').html("#{escape_javascript(render :partial => 'catalog_manager/shared/submission_emails', :locals => {:entity => @entity})}")
 
+- if @service.is_available == false
+  $("#SERVICE#{@service.id}").remove();
+  $('#details').empty();
+
 :plain
   $('#flash').slideDown();
   $('#flash').delay(3000);

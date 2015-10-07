@@ -23,6 +23,10 @@
   = text_field_tag 'search'
   = submit_tag t(:cm_index)[:submit], :class => 'custom_button', :id => 'search_button'
   %button#clear_search.custom_button Clear Search
+  - if @show_unavailable.length == 2
+    = link_to "Show Available Services", 'javascript:void(0)', :class => "unavailable_button", data: { 'show-unavailable' => 'true' }
+  - else
+    = link_to "Show All Services", 'javascript:void(0)', :class => "unavailable_button", data: { 'show-unavailable' => 'false' }
 
   %span.ui-corner-all.pricing_setup_error
     %p 
@@ -58,14 +62,14 @@
                         - if can_access_program
                           %li= link_to t(:cm_index)[:core], '#', :class => "core"
                           %li= link_to t(:cm_index)[:service], '#'
-                        - program.services.order("`order`, `name`").each do |service|
+                        - program.services.where(is_available: @show_unavailable).order("`order`, `name`").each do |service|
                           %li{:id => 'SERVICE' + service.id.to_s}= node service
                     - else
                       %ul
                         - if can_access_program
                           %li= link_to t(:cm_index)[:core], '#', :class => "core"
                           %li= link_to t(:cm_index)[:service], '#'
-                        - program.services.order("`order`, `name`").each do |service|
+                        - program.services.where(is_available: @show_unavailable).order("`order`, `name`").each do |service|
                           %li{:id => 'SERVICE' + service.id.to_s}= node service                            
                         - program.cores.order("`order`").each do |core|
                           %li{:id => 'CORE' + core.id.to_s}
@@ -75,7 +79,7 @@
                               - if can_access_core
                                 %li= link_to t(:cm_index)[:service], '#'
                               - unless core.services.empty?
-                                - core.services.order("`order`, `name`").each do |service|
+                                - core.services.where(is_available: @show_unavailable).order("`order`, `name`").each do |service|
                                   %li{:id => 'SERVICE' + service.id.to_s}= node service
 #details
 

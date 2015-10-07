@@ -484,7 +484,7 @@ RSpec.describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      expect(node).to be_equivalent_to(expected)
+      expect(node[0]).to be_equivalent_to(expected.root)
     end
 
     it 'should emit a subjectOf for a pro number if the study has both a pro number and an hr number' do

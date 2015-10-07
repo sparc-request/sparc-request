@@ -45,6 +45,7 @@ RSpec.describe 'as a user on catalog page', js: true do
     page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
     page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15
     sleep 1
+
     find(".dont_fix_pricing_maps_button").click
 
     page.execute_script("$('.effective_date:visible').focus()")

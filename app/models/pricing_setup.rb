@@ -40,6 +40,10 @@ class PricingSetup < ActiveRecord::Base
   
   after_create :create_pricing_maps
 
+  validates :display_date, :effective_date, :corporate, :other, :member, :college_rate_type,
+            :federal_rate_type, :foundation_rate_type, :industry_rate_type, :investigator_rate_type, 
+            :internal_rate_type, presence: true
+
   def rate_type(funding_source)
     case funding_source
     when 'college'       then self.college_rate_type

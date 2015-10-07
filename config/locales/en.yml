@@ -797,6 +797,9 @@ en:
     per_patient: "Per Patient"
     one_time_fee: "One Time Fee"
 
+  pricing_setup:
+    pricing_setup_display_date: "Pricing setup's display date"
+
   # Notifications
   notifications:
     recipient: "Recipient:"

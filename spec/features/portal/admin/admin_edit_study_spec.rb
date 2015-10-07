@@ -127,9 +127,9 @@ RSpec.describe "editing a study", js: true do
       it "should change and save the date" do
         page.execute_script %Q{ $("#funding_start_date").focus()}
         wait_for_javascript_to_finish
-        page.execute_script %Q{ $("a.ui-state-default:contains('#{(Date.today).strftime('%d')}'):first").trigger("click") }
+        page.execute_script("$('#funding_start_date').val('12/20/15')")
         wait_for_javascript_to_finish
-        expect(find("#funding_start_date")).to have_value((Date.today).strftime('%-m/%d/%Y'))
+        expect(find("#funding_start_date")).to have_value('12/20/15')
       end
     end
 
@@ -257,9 +257,9 @@ RSpec.describe "editing a study", js: true do
       it "should change and save the date" do
         page.execute_script %Q{ $("#irb_expiration_date").focus()}
         wait_for_javascript_to_finish
-        page.execute_script %Q{ $("a.ui-state-default:contains('#{(Date.today).strftime('%d')}'):first").trigger("click") }
+        page.execute_script("$('#irb_expiration_date').val('12/20/15')")
         wait_for_javascript_to_finish
-        expect(find("#irb_expiration_date")).to have_value(Date.today.strftime('%-m/%d/%Y'))
+        expect(find("#irb_expiration_date")).to have_value('12/20/15')
       end
     end
   end

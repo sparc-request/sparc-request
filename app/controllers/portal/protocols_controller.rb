@@ -142,11 +142,6 @@ class Portal::ProtocolsController < Portal::BaseController
     end
   end
 
-  def update_archive
-    protocol = Protocol.find(params[:protocol_id])
-    protocol.update_attributes(archived: params[:archived])
-  end
-
   # @TODO: add to an authorization filter?
   def add_associated_user
     @protocol = Protocol.find(params[:id])

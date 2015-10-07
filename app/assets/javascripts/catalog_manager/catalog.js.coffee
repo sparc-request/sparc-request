@@ -44,6 +44,7 @@ $ ->
           #{error_string}
         </ul>
       ").show()
+      $("html, body").animate({ scrollTop: 0 }, "slow")
 
     humanize_error_message: (key, error) ->
       new_key = key.replace(/.\./g, '_')

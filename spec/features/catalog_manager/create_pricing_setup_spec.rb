@@ -26,7 +26,7 @@ RSpec.describe 'as a user on catalog page', js: true do
     default_catalog_manager_setup
   end
 
-  it 'the user should create a pricing setup' do    
+  it 'the user should create a pricing setup' do
     create_pricing_setup
     sleep 3
     expect(@provider.pricing_setups.first.federal).to eq(150)
@@ -63,7 +63,7 @@ RSpec.describe 'as a user on catalog page', js: true do
     first(".save_button").click
     wait_for_javascript_to_finish
 
-    expect(page).to have_content "Pricing setup's display date can't be blank"
+    expect(page).to have_content "Pricing setup's 'display date' can't be blank"
   end
 
   it 'should display an error when rates are less than the federal rate in the percent of fee section' do

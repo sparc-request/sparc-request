@@ -798,7 +798,18 @@ en:
     one_time_fee: "One Time Fee"
 
   pricing_setup:
-    pricing_setup_display_date: "Pricing setup's display date"
+    pricing_setup_display_date: "Pricing setup's 'display date'"
+    pricing_setup_effective_date: "Pricing setup's 'effective date'"
+    pricing_setup_corporate: "Pricing setup's 'corporate percent'"
+    pricing_setup_other: "Pricing setup's 'other percent'"
+    pricing_setup_member: "Pricing setup's 'member percent'"
+    pricing_setup_college_rate_type: "Pricing setup's 'college rate type'"
+    pricing_setup_foundation_rate_type: "Pricing setup's 'foundation rate type'"
+    pricing_setup_industry_rate_type: "Pricing setup's 'industry rate type'"
+    pricing_setup_investigator_rate_type: "Pricing setup's 'investigator rate type'"
+    pricing_setup_internal_rate_type: "Pricing setup's 'internal rate type'"
+
+
 
   # Notifications
   notifications:

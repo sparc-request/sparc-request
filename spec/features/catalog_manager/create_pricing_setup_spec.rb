@@ -26,8 +26,105 @@ RSpec.describe 'as a user on catalog page', js: true do
     default_catalog_manager_setup
   end
 
-  it 'the user should create a pricing setup' do
-    provider = Organization.where(abbreviation: 'SCTR1').first
+  it 'the user should create a pricing setup' do    
+    create_pricing_setup
+    sleep 3
+    expect(@provider.pricing_setups.first.federal).to eq(150)
+  end
+
+  it 'should not save if required fields are missing' do
+    click_link("South Carolina Clinical and Translational Institute (SCTR)")
+    sleep 1
+
+    first('#pricing').click
+    sleep 1
+
+    first('.add_pricing_setup').click
+    first('.pricing_setup_accordion h3').click
+    sleep 1
+
+    first(".save_button").click
+    wait_for_javascript_to_finish
+
+    expect(page).not_to have_content "South Carolina Clinical and Translational Institute (SCTR) saved successfully"
+  end
+
+  it 'should display an error message when required fields are missing' do
+    click_link("South Carolina Clinical and Translational Institute (SCTR)")
+    sleep 1
+
+    first('#pricing').click
+    sleep 1
+
+    first('.add_pricing_setup').click
+    first('.pricing_setup_accordion h3').click
+    sleep 1
+
+    first(".save_button").click
+    wait_for_javascript_to_finish
+
+    expect(page).to have_content "Pricing setup's display date can't be blank"
+  end
+
+  it 'should display an error when rates are less than the federal rate in the percent of fee section' do
+    click_link("South Carolina Clinical and Translational Institute (SCTR)")
+    sleep 1
+
+    first('#pricing').click
+    sleep 1
+
+    first('.add_pricing_setup').click
+    first('.pricing_setup_accordion h3').click
+    sleep 1
+
+    within('.ui-accordion') do
+      find('.federal_percentage_field').set('50')
+
+      find('.corporate_percentage_field').set('49')
+      page.execute_script %Q{ $(".corporate_percentage_field").change() }
+      expect(page).to have_content "Corporate percentage must be >= to the Federal percentage."
+
+      find('.other_percentage_field').set('49')
+      page.execute_script %Q{ $(".other_percentage_field").change() }
+      expect(page).to have_content "Other percentage must be >= to the Federal percentage."
+
+      find('.member_percentage_field').set('49')
+      page.execute_script %Q{ $(".member_percentage_field").change() }
+      expect(page).to have_content "Member percentage must be >= to the Federal percentage."
+    end
+  end
+
+  it 'should create a pricing map with the same dates as the pricing setup' do
+    create_pricing_setup
+    wait_for_javascript_to_finish
+    expect(page).to have_content "South Carolina Clinical and Translational Institute (SCTR) saved successfully"
+
+    ## Check to verify pricing map was created.
+    click_link("South Carolina Clinical and Translational Institute (SCTR)")
+    click_link("MUSC Research Data Request (CDW)")
+    wait_for_javascript_to_finish
+
+    first('#gen_info').click
+    find('#service_one_time_fee').click
+    wait_for_javascript_to_finish
+
+    first('#pricing').click
+    wait_for_javascript_to_finish
+
+    # increase_decrease_date = (Date.today + 2.month).strftime("%-m/15/%Y")
+    # expect(page).to have_content("Effective on #{increase_decrease_date} - Display on #{increase_decrease_date}")
+
+    # ## Ensure pricing map copied over the content from the existing pricing map
+    page.execute_script("$('.ui-accordion-header:last').click()")
+    wait_for_javascript_to_finish
+
+    # # Check the last pricing map.
+    expect(find('.service_rate')).to have_value '45.00'
+    expect(find('.service_unit_type')).to have_value 'self'
+  end
+
+  def create_pricing_setup
+    @provider = Organization.where(abbreviation: 'SCTR1').first
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
     sleep 1
 
@@ -66,126 +163,5 @@ RSpec.describe 'as a user on catalog page', js: true do
     wait_for_javascript_to_finish
 
     first(".save_button").click
-    sleep 3
-
-    expect(provider.pricing_setups.first.federal).to eq(150)
-
-  end
-
-  it 'should not save if required fields are missing' do
-    click_link("South Carolina Clinical and Translational Institute (SCTR)")
-    sleep 1
-
-    first('#pricing').click
-    sleep 1
-
-    first('.add_pricing_setup').click
-    first('.pricing_setup_accordion h3').click
-    sleep 1
-
-    first(".save_button").click
-    wait_for_javascript_to_finish
-
-    expect(page).not_to have_content "South Carolina Clinical and Translational Institute (SCTR) saved successfully"
-  end
-
-  it 'should display an error message when required fields are missing' do
-    click_link("South Carolina Clinical and Translational Institute (SCTR)")
-    sleep 1
-
-    first('#pricing').click
-    sleep 1
-
-    first('.add_pricing_setup').click
-    first('.pricing_setup_accordion h3').click
-    sleep 1
-
-    first(".save_button").click
-    wait_for_javascript_to_finish
-
-    expect(page).to have_content "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
-  end
-
-  it 'should display an error when rates are less than the federal rate in the percent of fee section' do
-    click_link("South Carolina Clinical and Translational Institute (SCTR)")
-    sleep 1
-
-    first('#pricing').click
-    sleep 1
-
-    first('.add_pricing_setup').click
-    first('.pricing_setup_accordion h3').click
-    sleep 1
-
-    within('.ui-accordion') do
-      find('.federal_percentage_field').set('50')
-
-      find('.corporate_percentage_field').set('49')
-      page.execute_script %Q{ $(".corporate_percentage_field").change() }
-      expect(page).to have_content "Corporate percentage must be >= to the Federal percentage."
-
-      find('.other_percentage_field').set('49')
-      page.execute_script %Q{ $(".other_percentage_field").change() }
-      expect(page).to have_content "Other percentage must be >= to the Federal percentage."
-
-      find('.member_percentage_field').set('49')
-      page.execute_script %Q{ $(".member_percentage_field").change() }
-      expect(page).to have_content "Member percentage must be >= to the Federal percentage."
-    end
-  end
-
-  it 'should create a pricing map with the same dates as the pricing setup' do
-    click_link("South Carolina Clinical and Translational Institute (SCTR)")
-    wait_for_javascript_to_finish
-    first('#pricing').click
-    wait_for_javascript_to_finish
-    first('.add_pricing_setup').click
-    first('.pricing_setup_accordion h3').click
-    wait_for_javascript_to_finish
-    within('.ui-accordion') do
-      page.execute_script("$('.display_date:visible').focus()")
-      wait_for_javascript_to_finish
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15
-      wait_for_javascript_to_finish
-      page.execute_script("$('.effective_date:visible').focus()")
-      wait_for_javascript_to_finish
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15
-      wait_for_javascript_to_finish
-      find('.federal_percentage_field').set('150')
-      click_link('Apply Federal % to All')
-      page.execute_script %Q{ $(".rate").val("full") }
-      page.execute_script %Q{ $(".rate").change() }
-    end
-    first(".save_button").click
-    wait_for_javascript_to_finish
-
-    expect(page).to have_content "South Carolina Clinical and Translational Institute (SCTR) saved successfully"
-
-    ## Check to verify pricing map was created.
-    click_link("South Carolina Clinical and Translational Institute (SCTR)")
-    click_link("MUSC Research Data Request (CDW)")
-    wait_for_javascript_to_finish
-
-    first('#gen_info').click
-    find('#service_one_time_fee').click
-    wait_for_javascript_to_finish
-
-    first('#pricing').click
-    wait_for_javascript_to_finish
-
-    # increase_decrease_date = (Date.today + 2.month).strftime("%-m/15/%Y")
-    # expect(page).to have_content("Effective on #{increase_decrease_date} - Display on #{increase_decrease_date}")
-
-    # ## Ensure pricing map copied over the content from the existing pricing map
-    page.execute_script("$('.ui-accordion-header:last').click()")
-    wait_for_javascript_to_finish
-
-    # # Check the last pricing map.
-    expect(find('.service_rate')).to have_value '45.00'
-    expect(find('.service_unit_type')).to have_value 'self'
   end
 end

@@ -35,7 +35,7 @@ $(document).ready ->
     $('.document_edit span').html('Loading...')
     $('.document_delete').hide()
 
-  $("#cancel_upload").live 'click', ->
+  $("#cancel_upload").on 'click', ->
     $("#process_ssr_organization_ids").attr('disabled', 'disabled')
     $("#document").attr('disabled', 'disabled')
     $('.document_delete').show()

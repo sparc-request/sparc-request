@@ -28,10 +28,10 @@ $(document).ready ->
   .ajaxStop -> 
     ajaxDefer.resolve()
 
-  $('.submit-request-button').on 'click', (event) ->
+  $(document).on 'click','.submit-request-button', (event) ->
     defer_until_complete event, 'click', '.submit-request-button'
 
-  $('#navigation_form').on 'submit', (event) ->
+  $(document).on 'submit', '#navigation_form', (event) ->
     defer_until_complete event, 'submit', '#navigation_form'
 
 defer_until_complete = (event, action, selector) ->

@@ -28,7 +28,7 @@ $(document).ready ->
       event.preventDefault()
       $(this).change()
 
-  $('.percent_of_cost').live 'change', ->
+  $(document).on 'change','.percent_of_cost', ->
     id = $(this).attr('data-id')
     direct_cost = $(this).data('cost')/100
     pi_contribution_field = ".ssr_#{id}"
@@ -48,7 +48,7 @@ $(document).ready ->
 
   # Recalculate requested funding and subsidy percentage whenever pi
   # contribution changes
-  $('.pi-contribution').live 'change', ->
+  $(document).on 'change','.pi-contribution', ->
     id = $(this).attr('data-id')
     direct_cost = $('.estimated_cost_' + id).data('cost') / 100
     contribution = $(this).val()

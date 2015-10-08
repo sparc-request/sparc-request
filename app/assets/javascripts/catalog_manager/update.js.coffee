@@ -53,7 +53,7 @@ $(document).ready ->
         $(selector).val('')        
 
     
-  $('.percentage_field').live('change', ->
+  $(document).on('change','.percentage_field', ->
     remove_error(this)
     unless $(this).hasClass('federal_percentage_field')
       federal_number = $(this).closest('tr').siblings('.federal_row').find('.federal_percentage_field').val()
@@ -61,7 +61,7 @@ $(document).ready ->
     validate_numbers_only(this)
   )
   
-  $('.federal_percentage_field').live('change', ->
+  $(document).on('change','.federal_percentage_field', ->
     remove_error(this)
     field = $(this).closest('fieldset').find('.percentage_field')
     for percentage in $(field)
@@ -69,12 +69,12 @@ $(document).ready ->
       validate_numbers_only(percentage)
   )
   
-  $('.unit_field, .rate_field').live('change', ->
+  $(document).on('change','.unit_field, .rate_field', ->
     remove_error(this)
     validate_numbers_only(this)
   )
   
-  $('.apply_federal_to_all_link').live('click', ->
+  $(document).on('click','.apply_federal_to_all_link', ->
     federal_value = $(this).closest('tr').siblings('.federal_row').find('.federal_percentage_field').val()
     $(this).closest('tr').siblings('.corporate_row').find('.corporate_percentage_field').val(federal_value).change()
     $(this).closest('tr').siblings('.other_row').find('.other_percentage_field').val(federal_value).change()
@@ -82,7 +82,7 @@ $(document).ready ->
     remove_all_errors()
   )
     
-  $('.save_button').live('click', (e) ->
+  $(document).on('click','.save_button', (e) ->
     e.preventDefault()
     $(this).attr('disabled', 'disabled')
     $(this).parents('form').submit()
@@ -93,7 +93,7 @@ $(document).ready ->
       $('.spinner').hide()
   )
     
-  $('.service_rate').live('blur', ->
+  $(document).on('blur','.service_rate', ->
     $(this).formatCurrency()
   )
   
@@ -106,7 +106,7 @@ $(document).ready ->
     height: 200
   })
   
-  $('.fix_pricing_maps_button').live('click', ->
+  $(document).on('click','.fix_pricing_maps_button', ->
     if $(this).attr("class").search("disabled_button") == -1
       $('.pricing_map_fix_spinner').show()
       button_text = $(this)
@@ -126,11 +126,11 @@ $(document).ready ->
       })
   )
 
-  $('.dont_fix_pricing_maps_button').live('click', ->
+  $(document).on('click','.dont_fix_pricing_maps_button', ->
     $('#fix_pricing_maps_dialog').dialog('close')
   )
   
-  $('.fix_pricing_maps_on_change').live('change', ->
+  $(document).on('change','.fix_pricing_maps_on_change', ->
     entity_name = $(this).attr('entity_name')
     $('.fix_pricing_maps_entity_id').val($(this).attr('entity_id'))
     $('.fix_pricing_maps_entity_type').val($(this).attr('entity_type'))

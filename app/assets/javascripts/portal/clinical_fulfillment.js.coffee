@@ -30,10 +30,10 @@ $(document).ready ->
   check_core_permissions()
 
   # only submit data that has changed or is required for calculations
-  $('.procedure_r_qty, .procedure_t_qty, .procedure_box').on 'change', ->
+  $(document).on 'change','.procedure_r_qty, .procedure_t_qty, .procedure_box', ->
     $(this).addClass('changed_attr')
 
-  $('.procedure_box').on 'change', ->
+  $(document).on 'change','.procedure_box', ->
     $(this).parent('td').siblings().children('.procedure_r_qty').addClass('changed_attr')
 
   $("#save_appointments").click (event) ->
@@ -300,7 +300,7 @@ $(document).ready ->
   ####Sub Service Request Save button
   $('#ssr_save').button()
 
-  $('#ssr_save').on 'click', ->
+  $(document).on 'click','#ssr_save', ->
     routing = $('#ssr_routing').val()
     ssr_id = $('#ssr_routing').data('ssr_id')
     $.ajax
@@ -312,7 +312,7 @@ $(document).ready ->
   ####Sub Service Request Save button
   $('#protocol_billing_business_manager_static_email_save').button()
 
-  $('#protocol_billing_business_manager_static_email_save').on 'click', ->
+  $(document).on 'click', '#protocol_billing_business_manager_static_email_save', ->
     billing_business_manager_static_email = $('#protocol_billing_business_manager_static_email').val()
     protocol_id = $('#protocol_billing_business_manager_static_email').data('protocol_id')
     $.ajax
@@ -379,9 +379,9 @@ $(document).ready ->
   $('.search-all-subjects').focus ->
     $(this).val('')
 
-  $('.search-all-subjects').live('keyup', ->
+  $(document).on('keyup','.search-all-subjects', ->
     $('.subject').show() if $(this).val() is ''
-  ).live('click', ->
+  ).on('click', ->
     $('.subject').show() if $(this).val() is ''
   )
 

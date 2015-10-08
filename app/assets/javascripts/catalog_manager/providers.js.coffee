@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  $('input.edit_historical_data_checkbox').live('change', ->
+  $(document).on('change','input.edit_historical_data_checkbox', ->
     if $(this).attr('checked')
       $(this).val('true')
     else

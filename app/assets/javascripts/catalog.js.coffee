@@ -49,10 +49,10 @@ $(document).ready ->
       if url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))
         loadDescription(url)
 
-  $('.program-link').on 'click', ->
+  $(document).on 'click','.program-link', ->
     $('#processing_request').show()
 
-  $('.title .name a').on 'click', ->
+  $(document).on 'click','.title .name a', ->
     $(this).parents('.title').siblings('.service-description').toggle()
 
 
@@ -109,7 +109,7 @@ $(document).ready ->
       .append("#{item.parents}<br><span class='service-name' title='#{item.description}'>#{item.label}</span><br><button id='service-#{item.value}' sr_id='#{item.sr_id}' style='font-size: 11px;' class='add_service'>Add to Cart</button><span class='service-description'>#{item.description}</span>")
       .appendTo(ul)
   
-  $('.catalog-search-clear-icon').on 'click', ->
+  $(document).on 'click','.catalog-search-clear-icon', ->
     $("#service_query").autocomplete("close")
     $("#service_query").clearFields()
 

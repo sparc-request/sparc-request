@@ -609,9 +609,9 @@ $(document).ready ->
                            sticky: true
                            })
       complete: =>
-        $('.send_to_epic_button').on('click', send_to_epic)
+        $(document).on('click', '.send_to_epic_button', send_to_epic)
 
-  $('.send_to_epic_button').on('click', send_to_epic)
+  $(document).on('click', '.send_to_epic_button', send_to_epic)
 
   # INSTANTIATE HELPERS
   # set_percent_subsidy()

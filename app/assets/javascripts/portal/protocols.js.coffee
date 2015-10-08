@@ -38,7 +38,7 @@ $(document).ready ->
         }
       })
 
-      $('.protocol-information-button').live('click', ->
+      $(document).on('click','.protocol-information-button', ->
         if $(this).data('permission')
           protocol_id = $(this).data('protocol_id')
           window.location = "/portal/protocols/#{protocol_id}/edit"
@@ -47,7 +47,7 @@ $(document).ready ->
           $('.permissions-dialog .text').html('Edit.')
       )
 
-      $('.edit_service_request').live('click', ->
+      $(document).on('click', '.edit_service_request', ->
         if $(this).data('permission')
           window.location = $(this).data('url')
         else
@@ -55,7 +55,7 @@ $(document).ready ->
           $('.permissions-dialog .text').html('Edit.')
       )
 
-      $('.service-request-button').live('click', ->
+      $(document).on('click','.service-request-button', ->
         if $(this).data('permission')
           window.location = $(this).data('url')
         else
@@ -63,13 +63,13 @@ $(document).ready ->
           $('.permissions-dialog .text').html('Edit.')
       )
 
-      $('.add-services-button').live('click', ->
+      $(document).on('click','.add-services-button', ->
         if !$(this).data('permission')
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
       )
 
-      $('.view-sub-service-request-button').live('click', ->
+      $(document).on('click','.view-sub-service-request-button', ->
         id = $(this).data('service_request_id')
         protocol_id = $(this).data('protocol_id')
         status = $(this).data('status')
@@ -122,7 +122,7 @@ $(document).ready ->
           }
       })
 
-      $('.view-full-calendar-button').live('click', ->
+      $(document).on('click','.view-full-calendar-button', ->
         protocol_id = $(this).data('protocol_id')
         $.ajax({
             method: 'get'
@@ -196,15 +196,15 @@ $(document).ready ->
           ui.draggable.draggable('disable')
       })
 
-      $('#previous').live('click', ->
+      $(document).on('click','#previous', ->
         Sparc.protocol.navigateCostTable('decrease') unless $(this).attr('disabled') == 'disabled'
       )
 
-      $('#next').live('click', ->
+      $(document).on('click', '#next',->
         Sparc.protocol.navigateCostTable('increase') unless $(this).attr('disabled') == 'disabled'
       )
 
-      $('.blue-provider').live('click', ->
+      $(document).on('click','.blue-provider',->
         protocol_id = $(this).data('protocol_id')
         visible = if $(this).children('.ui-icon').hasClass('ui-icon-triangle-1-s') then true else false
         if visible && $(this).siblings(".protocol-information-#{protocol_id}").children('.protocol-information-title').length == 0

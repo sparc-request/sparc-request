@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $ ->
-  $('#payments_list').on 'nested:fieldAdded:uploads', (event) ->
+  $(document).on 'nested:fieldAdded:uploads', '#payments_list', (event) ->
     event.field.find('input[type=file]').click()
 
   $('#payments_list .remove_nested_fields.payments').qtip

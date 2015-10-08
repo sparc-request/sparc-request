@@ -96,6 +96,14 @@ a.add_new_excluded_funding_source {
   }
 }
 
+#show_all_services a.btn.unavailable_button {
+  margin-left: 45px;
+  text-decoration: none;
+  border-width: 1px !important;
+  border-style: solid !important;
+  margin-bottom: 10px;
+}
+
 #catalog {
   width: 531px;
   min-height: 300px;

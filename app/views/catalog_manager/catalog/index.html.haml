@@ -31,9 +31,9 @@
   %p There were no results matching your search criteria. Please search again, or clear the search, and browse manually.
 #show_all_services
   - if @show_unavailable.length == 2
-    = link_to "Show Available Services", 'javascript:void(0)', :class => "btn unavailable_button", data: { 'show-unavailable' => 'true' }
+    = link_to "Show Available", 'javascript:void(0)', :class => "btn unavailable_button", data: { 'show-unavailable' => 'true' }
   - else
-    = link_to "Show All Services", 'javascript:void(0)', :class => "btn unavailable_button", data: { 'show-unavailable' => 'false' }
+    = link_to "Show All", 'javascript:void(0)', :class => "btn unavailable_button", data: { 'show-unavailable' => 'false' }
 #catalog
   %ul
     - can_create_institution = @user.is_overlord?

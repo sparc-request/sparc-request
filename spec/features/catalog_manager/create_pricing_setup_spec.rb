@@ -26,7 +26,7 @@ RSpec.describe 'as a user on catalog page', js: true do
     default_catalog_manager_setup
   end
 
-  it 'the user should create a pricing setup' do    
+  it 'the user should create a pricing setup' do
     create_pricing_setup
     sleep 3
     expect(@provider.pricing_setups.first.federal).to eq(150)

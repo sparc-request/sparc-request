@@ -32,8 +32,6 @@ RSpec.feature 'User sets Service availability', js: true do
 
   def when_i_set_the_service_availability_to_unavailable
     page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
-    puts "Available service name"
-    puts @service_available.name
     find("#SERVICE#{@service_available.id} a").click
     find('#service_is_available').click
     first('#save_button').click
@@ -41,8 +39,6 @@ RSpec.feature 'User sets Service availability', js: true do
   end
 
   def and_then_i_set_the_service_availability_to_available
-    puts "Unavailable service name"
-    puts @service_unavailable.name
     page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
     find("#SERVICE#{@service_unavailable.id}").click
     find('#service_is_available').click

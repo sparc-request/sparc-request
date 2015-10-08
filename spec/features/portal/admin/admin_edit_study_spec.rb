@@ -340,7 +340,7 @@ RSpec.describe "editing a study", js: true do
 
     describe "cancer center, lipidomics, oral health, cardiovascular, cchp, inbre, reach" do
 
-      it "should change theit state when clicked" do
+      it "should change their state when clicked" do
         box_num = 0
         7.times do
           check("study_affiliations_attributes_#{box_num}__destroy")

@@ -19,7 +19,7 @@ RSpec.feature 'User sets Service availability', js: true do
   scenario 'to available' do
     given_i_am_viewing_catalog_manager
     when_i_view_all_services
-    when_i_set_the_service_availability_to_available
+    and_then_i_set_the_service_availability_to_available
     and_i_am_viewing_only_available_services
     then_i_should_see_the_service
   end
@@ -40,7 +40,7 @@ RSpec.feature 'User sets Service availability', js: true do
     wait_for_javascript_to_finish
   end
 
-  def when_i_set_the_service_availability_to_available
+  def and_then_i_set_the_service_availability_to_available
     puts "Unavailable service name"
     puts @service_unavailable.name
     page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")

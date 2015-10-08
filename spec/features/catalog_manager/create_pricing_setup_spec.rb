@@ -63,7 +63,7 @@ RSpec.describe 'as a user on catalog page', js: true do
     first(".save_button").click
     wait_for_javascript_to_finish
 
-    expect(page).to have_content "Pricing setup's display date can't be blank"
+    expect(page).to have_content "Pricing setup's 'display date' can't be blank"
   end
 
   it 'should display an error when rates are less than the federal rate in the percent of fee section' do

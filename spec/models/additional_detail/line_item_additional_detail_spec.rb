@@ -47,5 +47,14 @@ RSpec.describe LineItemAdditionalDetail do
       expect(@line_item_additional_detail.update_attributes({ :form_data_json => ""})).to eq(false)
     end
     
+    it 'should succeed on update if form_data_json is NOT empty' do
+      @line_item_additional_detail = LineItemAdditionalDetail.new
+      @line_item_additional_detail.line_item_id = @line_item.id
+      @line_item_additional_detail.additional_detail_id = @additional_detail.id
+      @line_item_additional_detail.save(:validate => false)
+      
+      expect(@line_item_additional_detail.update_attributes({ :form_data_json => "{ fake json }"})).to eq(true)
+    end
+    
   end
 end

@@ -115,6 +115,7 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', functio
 	$scope.reloadGrid = function(){
 		$http.get('/additional_detail/services/'+id+'/additional_details/').
 			then(function(response){
+				console.log(response.data);
 				$scope.gridModel.data = response.data;
 			});
 	}

@@ -120,7 +120,7 @@ $ ->
         go = false
     return go
 
-$('.units_per_quantity').on 'change', ->
+$('.units_per_quantity').live 'change', ->
   max = parseInt($(this).attr('data-qty_max'), 10)
   user_input = parseInt($(this).val(), 10)
   if user_input > max

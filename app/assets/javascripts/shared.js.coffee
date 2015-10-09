@@ -41,7 +41,7 @@ $(document).ready ->
        !settings.error
       alert(I18n["ajax_error"] + settings.url)
 
-  $('.edit_project_role').on 'click', ->
+  $('.edit_project_role').live 'click', ->
     parent = $(this).attr('parent')
     identity_id = $(this).attr('identity_id')
     data = $(".#{parent} input").serialize()
@@ -51,7 +51,7 @@ $(document).ready ->
       type: 'POST'
       data: data
 
-  $('.add-user button').on 'click', ->
+  $('.add-user button').live 'click', ->
     data = $('#identity_details :input').serialize()
     data += '&portal=' + $("#portal").val()
     data += '&protocol_use_epic=' + $("#user_search_term").data('protocol_use_epic')
@@ -61,7 +61,7 @@ $(document).ready ->
       data: data
     return false
 
-  $('.cancel_link').on 'click', ->
+  $('.cancel_link').live 'click', ->
     cur_step = $('#current_step').val()
     if cur_step == 'protocol'
       $('#current_step').val('cancel_protocol')
@@ -70,14 +70,14 @@ $(document).ready ->
 
     $('form').submit()
 
-  $('.restore_project_role').on 'click', ->
+  $('.restore_project_role').live 'click', ->
     parent = $(this).attr('parent')
     $(".#{parent}").css({opacity: 1})
     $(".#{parent} .actions").show()
     $(".#{parent} .restore").hide()
     $(".#{parent} input[name*='destroy']").val(false)
 
-  $('.remove_project_role').on 'click', ->
+  $('.remove_project_role').live 'click', ->
     parent = $(this).attr('parent')
     $(".#{parent}").css({opacity: 0.5})
     $(".#{parent} .actions").hide()

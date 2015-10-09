@@ -22,10 +22,10 @@
 #= require constants
 
 $(document).ready ->
-  $('.visit_number a, .service_calendar_row').on 'click', ->
+  $('.visit_number a, .service_calendar_row').live 'click', ->
     $('.service_calendar_spinner').show()
 
-  $('.line_item_visit_template').on 'change', ->
+  $('.line_item_visit_template').live 'change', ->
     $('.service_calendar_spinner').show()
     obj = $(this)
     $.ajax
@@ -44,7 +44,7 @@ $(document).ready ->
       arm_id = $(this).data("arm_id")
       calculate_max_rates(arm_id)
 
-  $('.line_item_visit_quantity').on 'change', ->
+  $('.line_item_visit_quantity').live 'change', ->
     $('.service_calendar_spinner').show()
     $.ajax
       type: 'PUT'
@@ -52,7 +52,7 @@ $(document).ready ->
     .complete =>
       $('.service_calendar_spinner').hide()
 
-  $('.line_item_visit_billing').on 'change', ->
+  $('.line_item_visit_billing').live 'change', ->
     intRegex = /^\d+$/
 
     my_qty = parseInt($(this).val(), 10)
@@ -100,7 +100,7 @@ $(document).ready ->
       $('.service_calendar_spinner').hide()
       $(this).val(0)
 
-  $('.line_items_visit_subject_count').on 'change', ->
+  $('.line_items_visit_subject_count').live 'change', ->
     $('.service_calendar_spinner').show()
     $.ajax
       type: 'PUT'
@@ -146,7 +146,7 @@ $(document).ready ->
       $('.service_calendar_spinner').hide()
   )
 
-  $('.visit_window_before').on 'change', ->
+  $('.visit_window_before').live 'change', ->
     # Grab the window_before
     position = $(this).data('position')
     window_before_val = $(this).val()
@@ -165,7 +165,7 @@ $(document).ready ->
     .complete ->
       $('.service_calendar_spinner').hide()
 
-  $('.visit_window_after').on 'change', ->
+  $('.visit_window_after').live 'change', ->
     # Grab the window_after
     position = $(this).data('position')
     window_after_val = $(this).val()
@@ -185,7 +185,7 @@ $(document).ready ->
       $('.service_calendar_spinner').hide()
 
 # Triggers for changing attributes on one time fee line items
-  $('.units_per_quantity').on 'change', ->
+  $('.units_per_quantity').live 'change', ->
     intRegex = /^\d+$/
     max = parseInt($(this).attr('data-qty_max'), 10)
     prev_qty = $(this).attr('current_units_per_quantity')

@@ -5,9 +5,6 @@ class LineItemAdditionalDetail < ActiveRecord::Base
   belongs_to :additional_detail
   attr_accessible :form_data_json
   
-  def service_name 
-    return :TestMe
-    
-  end
+  validates :form_data_json, presence: true, on: :update
   
 end

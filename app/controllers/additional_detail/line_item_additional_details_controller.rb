@@ -8,9 +8,6 @@ class AdditionalDetail::LineItemAdditionalDetailsController < ApplicationControl
   end
 
   def update
-    @line_item_additional_detail = LineItemAdditionalDetail.find(params[:id])
-    puts :jdkleqwjfklqjss
-      puts params[:line_item_additional_detail]
     @line_item_additional_detail.update_attributes(params[:line_item_additional_detail])
     head :no_content
   end
@@ -24,7 +21,7 @@ class AdditionalDetail::LineItemAdditionalDetailsController < ApplicationControl
     # verify that user is either a super user or service provider for this service; catalog managers are not allowed!
 #    elsif current_identity.admin_organizations(:su_only => false).include?(@line_item_additional_detail.line_item.service.organization) 
 #      return true
-    # next, try to verify that the user is either the original service requestor or a team member on the project 
+    # next, try to verify that the user is either the original service requester or a team member on the project 
     elsif ServiceRequest.where(:id => @line_item_additional_detail.line_item.service_request_id, :service_requester_id => current_identity.id).first
       return true
     else

@@ -38,7 +38,7 @@ RSpec.describe "Line Item" do
       end
       
       it "should return nil for get_line_item_additional_detail if no additional detail present" do
-        expect(@line_item.get_line_item_additional_detail).to eq(nil)
+        expect(@line_item.get_or_create_line_item_additional_detail).to eq(nil)
       end
     
       describe 'with a line additional detail present' do
@@ -65,7 +65,7 @@ RSpec.describe "Line Item" do
         
         it "should create a new line_item_additional detail when none is present" do
           expect{
-            @line_item_additional_detail = @line_item.get_line_item_additional_detail
+            @line_item_additional_detail = @line_item.get_or_create_line_item_additional_detail
           }.to change{LineItemAdditionalDetail.count}.by(1)
                    
           @line_item_additional_detail.additional_detail_id = @ad.id
@@ -79,7 +79,7 @@ RSpec.describe "Line Item" do
         @line_item_additional_detail.save
         
         expect{
-          @liad = @line_item.get_line_item_additional_detail
+          @liad = @line_item.get_or_create_line_item_additional_detail
         }.to change{LineItemAdditionalDetail.count}.by(0)
         
         @liad.additional_detail_id = @ad.id

@@ -94,7 +94,7 @@ class SubServiceRequest < ActiveRecord::Base
   def get_line_item_additional_details
     results = []
     for li in self.line_items
-      liad = li.get_line_item_additional_detail
+      liad = li.get_or_create_line_item_additional_detail
       if liad != nil
             results.push(liad)
         end

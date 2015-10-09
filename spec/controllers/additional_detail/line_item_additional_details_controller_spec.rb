@@ -16,9 +16,15 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
   end
     
   describe 'user is not logged in and, thus, has no access to' do
-    it 'a line_item_additional_detail' do
-      get(:show, {:id => @line_item_additional_detail, :format => :html})
+    it 'view a line_item_additional_detail' do
+      get(:show, {:id => @line_item_additional_detail})
       expect(response).to redirect_to("/identities/sign_in")
+    end
+    
+    it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do
+      put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => "{ fake json }"} }) 
+      expect(response).to redirect_to("/identities/sign_in")
+      expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq(nil)
     end
   end
   
@@ -32,10 +38,15 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       sign_in @identity
     end
 
-    it 'should see a 404 for an invalid line_item_additional_detail.id' do
+    it 'should see 404s for an invalid line_item_additional_detail.id' do
       get(:show, {:id => 1231231231, :format => :json})
       expect(response.status).to eq(404)
       expect(response.body).to eq("")
+      
+      put(:update, {:id => 1231231231, :line_item_additional_detail => { :form_data_json => "{ fake json }"} }) 
+      expect(response.status).to eq(404)
+      expect(response.body).to eq("")
+      expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq(nil)
     end
     
     describe 'has no affiliation with the project and, thus, has no access to' do
@@ -43,6 +54,13 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
         get(:show, {:id => @line_item_additional_detail, :format => :json})
         expect(response.status).to eq(401)
         expect(response.body).to eq("")
+      end
+      
+      it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do
+        put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => "{ fake json }"} }) 
+        expect(response.status).to eq(401)
+        expect(response.body).to eq("")
+        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq(nil)
       end
     end
     
@@ -65,6 +83,12 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
         get(:show, {:id => @line_item_additional_detail, :format => :json})
         expect(response.status).to eq(200)
         expect(response.body).to eq(@line_item_additional_detail.to_json)
+      end
+      
+      it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do
+        put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => "{ fake json }"} }) 
+        expect(response.status).to eq(204)
+        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq("{ fake json }")
       end
     end
     

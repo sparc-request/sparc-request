@@ -2,6 +2,9 @@ class AdditionalDetail < ActiveRecord::Base
   audited
 
   belongs_to :service
+  before_destroy :line_items_present
+  before_update :line_items_present
+  
   has_many :line_item_additional_details
 
   attr_accessible :approved, :description, :effective_date, :form_definition_json, :name
@@ -9,22 +12,10 @@ class AdditionalDetail < ActiveRecord::Base
   validates :name,:effective_date, :form_definition_json, :presence => true
   validates :description, :length => {:maximum => 255}
   
-  before_destroy :line_items_present
-  before_update :line_items_present
-    
-  validate :date_in_past, :effective_date_cannot_be_shared, :form_definition_cannot_be_blank, :no_line_item_additional_detail
-
-  def no_line_item_additional_detail   
-    if LineItemAdditionalDetail.where(additional_detail_id: id).size.to_i > 0
-      errors.add(:form_definition_json, "Cannot be edited when response has been saved.")
-    end
-  end
+  validate :date_in_past, :effective_date_cannot_be_shared, :form_definition_cannot_be_blank
   
   def line_items_present
-    if LineItemAdditionalDetail.where(:additional_detail_id => @additional_detail).count > 0
-      errors.add(:form_definition_json, "Cannot delete or update additional detail with line item additional details")
-    end
-    errors.blank?
+    line_item_additional_details.empty?
   end
   
   def date_in_past

@@ -8,7 +8,9 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
   def index
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render :json => @service.additional_details }
+      format.json { 
+        result = @service.additional_details.to_json(:include => :line_item_additional_details)
+        render :json => result }
     end
   end
 

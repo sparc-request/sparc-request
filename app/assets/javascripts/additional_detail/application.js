@@ -115,14 +115,14 @@ app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$htt
 	
 }]);
 
-
 app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', function($scope, $http) {
 	$scope.gridModel = {enableFiltering: true, enableColumnResizing: true, showColumnFooter: true , enableSorting: false, showGridFooter: true, enableRowHeaderSelection: false, rowHeight: 42};
 	$scope.gridModel.columnDefs = [{enableFiltering: false, enableColumnResizing: false,name: 'Edit',width: 55, enableColumnMenu: false, cellTemplate: '<a class="btn btn-primary" role="button" ng-href="/additional_detail/services/'+id+'/additional_details/{{row.entity.additional_detail.id}}/edit">Edit</a>'},
-	                               {field: 'additional_detail.name', name: 'Name',  width: '30%', enableColumnMenu: false ,}, 
+	                               {name: "Responses", enableFiltering: false, width: '10%', enableColumnMenu: false, cellTemplate: '<a style="width: 100%" class="btn btn-info" ng-disabled="row.entity.additional_detail.line_item_additional_details.length==0" ng-href="/additional_detail/services/'+id+'/additional_details/{{row.entity.additional_detail.id}}/line_item_additional_details">{{row.entity.additional_detail.line_item_additional_details.length}} {{(row.entity.additional_detail.line_item_additional_details.length == 1) ? "Response" : "Responses"}}</a>'},
+	                               {field: 'additional_detail.name', name: 'Name',  width: '30%', enableColumnMenu: false}, 
 	                               {field:'additional_detail.effective_date',name: 'Effective Date', width: '25%', enableColumnMenu: false },{field: 'additional_detail.approved',name: 'Approved', width: '10%', enableColumnMenu: false},
 	                               {field: 'additional_detail.description', name: 'Description', enableColumnMenu: false},
-	                               {enableFiltering: false, enableColumnResizing: false,name: 'Delete',width: 70, enableColumnMenu: false, cellTemplate: '<button class="btn btn-primary" ng-click="grid.appScope.deleteAdditonalDetail(row.entity.additional_detail.id)">Delete</button>'}
+	                               {enableFiltering: false, enableColumnResizing: false,name: 'Delete',width: 70, enableColumnMenu: false, cellTemplate: '<button class="btn btn-danger" ng-disabled="row.entity.additional_detail.line_item_additional_details.length >0" ng-click="grid.appScope.deleteAdditonalDetail(row.entity.additional_detail.id)">Delete</button>'}
 	                               ];
 	
 	$scope.reloadGrid = function(){

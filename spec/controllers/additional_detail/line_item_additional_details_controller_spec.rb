@@ -90,6 +90,13 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
         expect(response.status).to eq(204)
         expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq("{ fake json }")
       end
+      
+      it 'view failed validation messages after an attempt to update a line_item_additional_detail (i.e., submit/update answers to questions)' do
+        put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => ""} }) 
+        expect(response.status).to eq(422)
+        expect(response.body).to eq("{\"form_data_json\":[\"can't be blank\"]}")
+        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq(nil)
+      end
     end
     
 #    describe 'is a service provider and, thus, has access to' do

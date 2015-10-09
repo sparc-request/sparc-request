@@ -8,8 +8,11 @@ class AdditionalDetail::LineItemAdditionalDetailsController < ApplicationControl
   end
 
   def update
-    @line_item_additional_detail.update_attributes(params[:line_item_additional_detail])
-    head :no_content
+    if @line_item_additional_detail.update_attributes(params[:line_item_additional_detail])
+      head :no_content
+    else
+      render json: @line_item_additional_detail.errors, status: :unprocessable_entity
+    end
   end
   
   private

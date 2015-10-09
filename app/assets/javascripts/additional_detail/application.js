@@ -65,6 +65,8 @@ app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$htt
 	
 	
 	$scope.showSurvey = function(id){
+		// hide the alert message before showing a survey
+		$scope.alertMessage = null;
 		$scope.currentLineItemAD = $scope.getLineItemAdditionalDetail(id);
 		if($scope.currentLineItemAD){
 			var liad = $scope.currentLineItemAD;
@@ -93,9 +95,20 @@ app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$htt
 		var liad = $scope.currentLineItemAD;
 		liad.form_data_json = JSON.stringify($scope.model);
 		$http.put("/additional_detail/line_item_additional_details/"+liad.id, JSON.stringify(liad)).
-			then(function(response){
-				$scope.reloadGrid();
-		});
+			then(function successCallback(response){
+				$scope.reloadGrid(); // we may not need to reload the grid if when we use ngResource
+				$scope.alertMessage = "Additional detail successfully saved.";
+	  	        $scope.resourceSuccessful = true;
+		     }, function errorCallback(response) { 
+				// failed server side validation
+		    	 $scope.alertMessage = "";
+				_.each(response.data, function(errors, key) {
+				  _.each(errors, function(e) {
+				    $scope.alertMessage += key + " " + e + ". ";
+				  });
+				});
+	  	        $scope.resourceSuccessful = false;
+		     });
 	}
 		
 	$scope.reloadGrid();

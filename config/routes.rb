@@ -253,6 +253,9 @@ SparcRails::Application.routes.draw do
       get :download
     end
 
+    resources :epic_queues do
+    end
+
     resource :admin do
       resources :sub_service_requests do
         member do
@@ -272,7 +275,7 @@ SparcRails::Application.routes.draw do
           put :update_from_fulfillment
         end
       end
-
+  
       resources :subsidies do
         member do
           put :update_from_fulfillment

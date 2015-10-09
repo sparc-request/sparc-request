@@ -1092,6 +1092,15 @@ en:
     proceed: "Proceed"
     create_report: "Create Report"
     return_to_admin_portal: "Return to Admin Portal"
+  epic_queues:
+    protocol: "Queued Protocol"
+    PIs: "PI(s)"
+    date: "Last Queue Date"
+    date_formatter: "%m/%d/%Y %I:%M:%S %p"
+    status: "Last Queue Status"
+    delete: "Delete"
+
+
   footer:
     mail_to: "hundc@musc.edu"
     mail_link: "Sign Up For the SPARC Request Listserv"

@@ -18,11 +18,6 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-:javascript
-  $(document).ready( function() {
-    Sparc.admin.ready();
-  });
-
 .admin-right-dashboard
   .user-information-body
     %p
@@ -30,10 +25,7 @@
       |
       = @user.email
     .admin-buttons
-      = link_to "Create A Request", root_path, :class => 'create_new_request header_button'
-      - if @user.is_super_user?
-        = link_to "Reporting", reports_path, :class => 'reporting header_button'
-      - if QUEUE_EPIC_EDIT_LDAP_UIDS.include?(current_user.ldap_uid)
-        = link_to "View Epic Queue", portal_epic_queues_path, :class => 'epic_queues header_button'
-
-= render :partial => 'ssr_list'
+      =link_to "Return to Admin Portal", portal_admin_index_path, :class => 'return_link'
+%br
+#epic-queue-container
+  = render :partial => 'epic_queue_list'

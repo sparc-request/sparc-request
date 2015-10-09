@@ -63,6 +63,7 @@ RSpec.feature 'User sets Service availability', js: true do
 
   def then_i_should_not_see_the_service
     expect(page).to_not have_css("#SERVICE#{@service_available.id}")
+    expect(page).to_not have_css("edit_service_#{@service_available.id}")
   end
 
   def then_i_should_see_the_service

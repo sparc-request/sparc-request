@@ -4,8 +4,9 @@ RSpec.feature 'User views Services', js: true do
 
   before(:each) do
     create_default_data
-    @service = Service.first()
-    @service.update_attributes(is_available: false)
+    @service_unavailable = Service.first()
+    @service_unavailable.update_attributes(is_available: false)
+    @service_available = Service.last()
     login_as(Identity.find_by_ldap_uid('jug2@musc.edu'))
   end
 
@@ -14,7 +15,7 @@ RSpec.feature 'User views Services', js: true do
     then_i_should_only_see_available_services
   end
 
-  scenario 'and views available and unavailable Services' do
+  scenario 'and sees all Services' do
     given_i_am_viewing_catalog_manager
     when_i_view_all_services
     then_i_should_see_all_services
@@ -27,7 +28,8 @@ RSpec.feature 'User views Services', js: true do
   end
 
   def then_i_should_only_see_available_services
-    expect(page).to_not have_css("#SERVICE#{@service.id}")
+    expect(page).to have_css("#SERVICE#{@service_available.id}")
+    expect(page).to_not have_css ("#SERVICE#{@service_unavailable.id}")
   end
 
   def when_i_view_all_services
@@ -38,6 +40,7 @@ RSpec.feature 'User views Services', js: true do
   end
 
   def then_i_should_see_all_services
-    expect(page).to have_css("#SERVICE#{@service.id}")
+    expect(page).to have_css("#SERVICE#{@service_available.id}")
+    expect(page).to have_css("#SERVICE#{@service_unavailable.id}")
   end
 end

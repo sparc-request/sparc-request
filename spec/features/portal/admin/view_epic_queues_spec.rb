@@ -18,29 +18,48 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module Portal::EpicQueuesHelper
+require 'rails_helper'
 
-  def format_protocol(protocol)
-    "#{protocol.type.capitalize}: #{protocol.id} - #{protocol.short_title}"
-  end
+RSpec.describe 'view epic queues', js: true do
 
-  def format_date(protocol)
-    date = protocol.last_epic_push_time
-    puts "*" * 50
-    puts date
-    if date.present?
-      date.strftime(t(:epic_queues)[:date_formatter])
-    else
-      ''
+  describe "if I have special access" do
+    before :each do
+      let_there_be_lane
+      fake_login_for_each_test("jug2@musc.edu")
+      visit portal_admin_path
+    end
+
+    it "should display the 'View Epic Queue' button" do
+      expect(page).to have_text('View Epic Queue')
+    end
+
+    describe "clicking the 'View Epic Queue' button" do
+      it 'should take me to the Epic Queues portal' do
+        find("a.epic_queues").click
+        wait_for_javascript_to_finish
+        expect(page).to have_text("Queued Protocol")
+      end
+    end
+
+    describe "viewing the Epic Queues" do
+      it 'should display the Epic Queues' do
+        protocol = create(:protocol_with_sub_service_request_in_cwf)
+        epic_queue = create(:epic_queue, protocol: protocol)
+        find("a.epic_queues").click
+        wait_for_javascript_to_finish
+      end
     end
   end
+  
+  describe "if I don't have special access" do
+    before :each do
+      let_there_be_j
+      fake_login_for_each_test("jpl6@musc.edu")
+      visit portal_admin_path
+    end
 
-  def format_status(protocol)
-    status = protocol.last_epic_push_status
-    if status.present?
-      "#{status.capitalize}"
-    else
-      ''
+    it "should not display the 'View Epic Queue' button" do
+      expect(page).not_to have_text('View Epic Queue')
     end
   end
 end

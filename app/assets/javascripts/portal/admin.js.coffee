@@ -40,9 +40,9 @@ $(document).ready ->
       $('.search-all-service-requests').focus ->
         $(this).val('')
 
-      $(document).on('keyup','.search-all-service-requests',->
+      $('.search-all-service-requests').live('keyup', ->
         $('#service_request_workflow_states').change() if $(this).val() is ''
-      ).on('click', ->
+      ).live('click', ->
         $('#service_request_workflow_states').change() if $(this).val() is ''
       )
 
@@ -55,7 +55,7 @@ $(document).ready ->
       $('.upload-document').click ->
         $('#upload-spinner').show()
 
-      $(document).on('click','.open_close_services', ->
+      $('.open_close_services').live('click', ->
         services_rest = $(this).closest('.services_first').siblings('.services_rest')
         triangle_1_s = $(this).siblings('.ui-icon-triangle-1-s')
         triangle_1_e = $(this).siblings('.ui-icon-triangle-1-e')
@@ -78,7 +78,7 @@ $(document).ready ->
       tables.tablesorter()
 
     clickify_table_datas: () ->
-      $(document).on("click",'.service_request_links', () ->
+      $('.service_request_links').live("click", () ->
         $('.admin_indicator').css('display', 'inline-block')
         sr_id = $(this).data('sr_id')
         ssr_id = $(this).attr('data-ssr_id')
@@ -88,7 +88,7 @@ $(document).ready ->
       )
 
     clickify_cwf_table_datas: () ->
-      $(document).on("click", '.service_request_links_cwf',() ->
+      $('.service_request_links_cwf').live("click", () ->
         $('.admin_indicator').css('display', 'inline-block')
         sr_id = $(this).data('sr_id')
         ssr_id = $(this).attr('data-ssr_id')

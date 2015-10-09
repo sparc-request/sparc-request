@@ -33,7 +33,7 @@ removeService = (sr_id, id, move_on) ->
 
 $(document).ready ->
 
-  $(document).on 'click', '.add_service', ->
+  $('.add_service').on 'click', ->
     sr_id = $(this).attr('sr_id')
     id = $(this).attr('id')
     addService(sr_id, id)

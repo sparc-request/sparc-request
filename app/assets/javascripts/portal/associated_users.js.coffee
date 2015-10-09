@@ -39,7 +39,7 @@ $(document).ready ->
 
     ready: ->
 
-      $(document).on('click','.associated-user-button', ->
+      $('.associated-user-button').live('click', ->
         if $(this).data('permission')
           $('.add-associated-user-dialog').dialog('open')
           $('#add-user-form #protocol_id').val($(this).data('protocol_id'))
@@ -50,13 +50,13 @@ $(document).ready ->
       )
 
       $('.user_credentials').attr('name', 'user[credentials_other]') if $('.user_credentials').val() == 'other'
-      $(document).on('change','.user_credentials', ->
+      $('.user_credentials').live('change', ->
         Sparc.associated_users.redoCredentials()
       )
 
       # Set the rights if the role is 'pi' or 'business-grants-manager'
       # and disable all other radio buttons if 'pi'
-      $(document).on('change','#project_role_role', ->
+      $('#project_role_role').live('change', ->
         role = $(this).val()
         if role == 'pi' or role == 'business-grants-manager' or role == 'primary-pi'
           $('#project_role_project_rights_approve').attr('checked', true)
@@ -96,7 +96,7 @@ $(document).ready ->
           $('.permissions-dialog .text').html('Edit.')
       )
 
-      $(document).on('click','.delete-associated-user-button', ->
+      $('.delete-associated-user-button').live('click', ->
         if $(this).data('permission')
           adminUsersList = $(".admin#users")
           current_user_id = $('#current_user_id').val()
@@ -136,7 +136,7 @@ $(document).ready ->
           $('.permissions-dialog .text').html('Edit.')
       )
 
-      $(document).on('change','#associated_user_role', ->
+      $('#associated_user_role').live('change', ->
         roles_to_hide = ['', 'grad-research-assistant', 'undergrad-research-assistant', 'research-assistant-coordinator', 'technician', 'general-access-user', 'business-grants-manager', 'other']
         role = $(this).val()
         if role == 'other' then $('.role_other').show() else $('.role_other').hide()

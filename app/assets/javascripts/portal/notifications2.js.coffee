@@ -20,7 +20,7 @@
 
 $(document).ready ->
 
-  $(document).on('click','.notifications-link .hyperlink', ->
+  $('.notifications-link .hyperlink').live('click', ->
     $('.notifications-link .notifications_popup').toggle('blind')
   )
 
@@ -63,7 +63,7 @@ $(document).ready ->
       $.ajax({ type: 'GET', url: "/portal/notifications/#{id}" })
   )
 
-  $(document).on('click','.hidden-message', ->
+  $('.hidden-message').live('click', ->
     message_id = $(this).data('message_id')
     message_header = $(this).children('.message-header')
     $(this).removeClass('hidden-message').addClass('shown-message')
@@ -74,7 +74,7 @@ $(document).ready ->
     $(".white_arrow_up_#{message_id}").show()
   )
 
-  $(document).on('click','.clickable-message-header', ->
+  $('.clickable-message-header').live('click', ->
     message = $(this).parent('.shown-message')
     message_id = message.data('message_id')
     message.children('message-header').removeClass('clickable-message-header')

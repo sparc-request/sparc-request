@@ -21,8 +21,8 @@
 $ ->
   Sparc.config = {
     ready: ->
-      $(document).off('change','.datepicker')
-      $(document).on('change','.datepicker', ->
+      $('.datepicker').die('change')
+      $('.datepicker').live('change', ->
         submitted_field = $(this).siblings('.submitted_date')
         submitted_field.val(Sparc.config.readyMyDate($(this).val(), 'send')).change()
       )

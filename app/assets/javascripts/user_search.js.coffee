@@ -53,7 +53,7 @@ $(document).ready ->
       .append("<a>" + item.label + "</a>")
       .appendTo(ul)
 
-  $(document).on 'click', '.user-search-clear-icon',->
+  $('.user-search-clear-icon').on 'click', ->
     $("#user_search_term").autocomplete("close")
     $("#user_search_term").clearFields()
 

@@ -20,7 +20,7 @@
 
 $(document).ready ->
 
-  $(document).on 'click','.ask-a-question-button', ->
+  $('.ask-a-question-button').on 'click', ->
     $("#ask-a-question-form").dialog( "open" )
 
   $("#ask-a-question-form").dialog

@@ -105,7 +105,7 @@ $(document).ready ->
     $("#service_component_position_#{position}").remove()
     update_components_field()
 
-  $(document).on('click','.add_pricing_map', ->
+  $('.add_pricing_map').live('click', ->
     blank_pricing_map = $('.blank_pricing_map').html()
     $('.pricing_map_accordion').append(blank_pricing_map)
     Sparc.services.create_accordion()
@@ -118,7 +118,7 @@ $(document).ready ->
       $(".per_patient_errors").hide()
   )
 
-  $(document).on('click','.remove_pricing_map', ->
+  $('.remove_pricing_map').live('click', ->
     div = $(this).closest('div')
     div.prevAll('h3:first').remove()
     div.remove()
@@ -128,7 +128,7 @@ $(document).ready ->
     $('.otf_field_errors').hide()
   )
 
-  $(document).on('click','.add_pricing_setup', ->
+  $('.add_pricing_setup').live('click', ->
     blank_pricing_setup = $('.blank_pricing_setup').html()
     pricing_setup_form = $('.pricing_setup_accordion').append(blank_pricing_setup)
     pricing_setup_form.find('.effective_date').addClass('validate')
@@ -142,17 +142,17 @@ $(document).ready ->
     $('.save_button').attr('disabled', true)
   )
 
-  $(document).on('change','.pricing_map_effective_date_hidden', ->
+  $('.pricing_map_effective_date_hidden').live('change', ->
     Sparc.services.create_date_display(this, $(this).attr('date_type'), 'effective')
   )
 
-  $(document).on('change','.pricing_map_display_date_hidden', ->
+  $('.pricing_map_display_date_hidden').live('change', ->
     Sparc.services.create_date_display(this, $(this).attr('date_type'), 'display')
   )
 
   # $(document).on('input')
 
-  $(document).on('change',".rate_field", ->
+  $(".rate_field").live('change', ->
     unless $(this).hasClass('service_rate')
       old_value = $(this).attr('old_value')
       rate_type = $(this).attr('rate_type')
@@ -161,7 +161,7 @@ $(document).ready ->
         $(this).val(old_value)
   )
 
-  $(document).on('change','.service_rate', ->
+  $('.service_rate').live('change', ->
     rate = $(this).val()
     organization_id = $(this).attr('organization_id')
     display_date = $(this).closest('div').find(".pricing_map_display_date_hidden").val()

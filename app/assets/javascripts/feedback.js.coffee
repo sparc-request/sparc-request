@@ -22,7 +22,7 @@ $(document).ready ->
 
   $('#errors').hide()
 
-  $(document).on 'click', '.feedback-button',->
+  $('.feedback-button').on 'click', ->
     $("#feedback-form").dialog( "open" )
 
   $("#feedback-form").dialog

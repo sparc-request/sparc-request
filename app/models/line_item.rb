@@ -85,14 +85,12 @@ class LineItem < ActiveRecord::Base
     else 
       additional_detail = get_additional_detail
       if additional_detail 
-        if self.line_item_additional_detail == nil
-          build_line_item_additional_detail
-          self.line_item_additional_detail.additional_detail_id = additional_detail.id
-          if self.line_item_additional_detail.save
-            self.line_item_additional_detail
-          else
-            nil
-          end
+        build_line_item_additional_detail
+        self.line_item_additional_detail.additional_detail_id = additional_detail.id
+        if self.line_item_additional_detail.save
+          self.line_item_additional_detail
+        else
+          nil
         end
       else
         nil

@@ -8,9 +8,11 @@ RSpec.describe 'ServiceRequest' do
       @service_request.save(:validate => false)
 
       @sub_service_request = SubServiceRequest.new
-      @sub_service_request.class.skip_callback(:save, :after, :update_org_tree)
+      SubServiceRequest.skip_callback(:save, :after, :update_org_tree)
       @sub_service_request.service_request_id = @service_request.id
       @sub_service_request.save(:validate => false)
+      SubServiceRequest.set_callback(:save, :after, :update_org_tree)
+      
 
       @service = Service.new
       @service.save(:validate => false)
@@ -32,7 +34,7 @@ RSpec.describe 'ServiceRequest' do
     describe "when additional details present" do
       before(:each) do
         @ad = AdditionalDetail.new
-        @ad.effective_date = Time.now
+        @ad.effective_date = 1.day.ago
         @ad.service_id = @service.id
         @ad.save(:validate => false)
       end
@@ -53,9 +55,10 @@ RSpec.describe 'ServiceRequest' do
 
         before(:each) do
           @sub_service_request2 = SubServiceRequest.new
-          @sub_service_request2.class.skip_callback(:save, :after, :update_org_tree)
+          SubServiceRequest.skip_callback(:save, :after, :update_org_tree)
           @sub_service_request2.service_request_id = @service_request.id
           @sub_service_request2.save(:validate => false)
+          SubServiceRequest.set_callback(:save, :after, :update_org_tree)
 
           @service2 = Service.new
           @service2.save(:validate => false)
@@ -66,7 +69,7 @@ RSpec.describe 'ServiceRequest' do
           @line_item2.save(:validate => false)
 
           @ad2 = AdditionalDetail.new
-          @ad2.effective_date = Time.now
+          @ad2.effective_date = 1.day.ago
           @ad2.service_id = @service2.id
           @ad2.save(:validate => false)
         end
@@ -95,7 +98,7 @@ RSpec.describe 'ServiceRequest' do
             @line_item3.save(:validate => false)
 
             @ad3 = AdditionalDetail.new
-            @ad3.effective_date = Time.now
+            @ad3.effective_date = 1.day.ago
             @ad3.service_id = @service3.id
             @ad3.save(:validate => false)
           end

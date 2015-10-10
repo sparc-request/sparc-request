@@ -6,10 +6,11 @@ RSpec.describe 'SubServiceRequest' do
     before(:each) do
 
       @sub_service_request = SubServiceRequest.new
-      @sub_service_request.class.skip_callback(:save, :after, :update_org_tree)
+      SubServiceRequest.skip_callback(:save, :after, :update_org_tree)
       expect{
         @sub_service_request.save(:validate => false)
       }.to change{SubServiceRequest.count}.by(1)
+      SubServiceRequest.set_callback(:save, :after, :update_org_tree)
 
       @service = Service.new
       expect{
@@ -35,7 +36,7 @@ RSpec.describe 'SubServiceRequest' do
     describe "when additional details present" do
       before(:each) do
         @ad = AdditionalDetail.new
-        @ad.effective_date = Time.now
+        @ad.effective_date = 1.day.ago
         @ad.service_id = @service.id
         @ad.save(:validate => false)
       end
@@ -61,7 +62,7 @@ RSpec.describe 'SubServiceRequest' do
           @line_item2.save(:validate => false)
 
           @ad2 = AdditionalDetail.new
-          @ad2.effective_date = Time.now
+          @ad2.effective_date = 1.day.ago
           @ad2.service_id = @service2.id
           @ad2.save(:validate => false)
         end

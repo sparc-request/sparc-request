@@ -9,7 +9,7 @@ class AdditionalDetail::ServiceRequestsController < ApplicationController
     @service_request = ServiceRequest.where(:id => params[:id], :service_requester_id => current_identity.id).first
     # as needed, get_line_item_additional_details creates new line item additional details
     if @service_request
-      results = @service_request.get_line_item_additional_details.to_json(:include => [{:line_item => {:include => :service} }, :additional_detail])
+      results = @service_request.get_line_item_additional_details.to_json(:include => [{:line_item => {:include => {:service => { :methods => :additional_detail_breadcrumb } }} }, :additional_detail])
       render :json => results
     else 
       render :json => "", :status => :unauthorized

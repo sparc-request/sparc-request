@@ -241,6 +241,22 @@ class Service < ActiveRecord::Base
     end
   end
   
+  # for display within additional details
+  def additional_detail_breadcrumb
+    breadcrumb = ""
+    if self.organization && self.organization.name
+      breadcrumb += self.organization.name + " / "
+    end
+    if self.name 
+      breadcrumb += self.name + " / "
+    end
+    additional_detail = self.current_additional_detail
+    if additional_detail && additional_detail.name
+      breadcrumb += additional_detail.name 
+    end
+    breadcrumb
+  end
+  
   # Find a pricing map with an effective date for today's date.
   def current_effective_pricing_map
     return effective_pricing_map_for_date(Date.today)

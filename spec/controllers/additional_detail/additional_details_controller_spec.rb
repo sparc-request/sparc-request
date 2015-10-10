@@ -316,7 +316,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         it 'create an additional detail record' do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
-              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Time.now, :approved => "true"}
+              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Time.now.tomorrow, :approved => "true"}
             })
             expect(assigns(:additional_detail).errors).to be_blank
             expect(response).to redirect_to(additional_detail_service_additional_details_path(@core_service))
@@ -343,7 +343,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         it 'see failed validation for blank :name when trying to create an additional detail record' do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
-              :additional_detail => {:name => "", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Time.now, :approved => "true"}
+              :additional_detail => {:name => "", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Time.now.tomorrow, :approved => "true"}
             })
             expect(assigns(:additional_detail).errors[:name].size).to eq(1)
             expect(assigns(:additional_detail).errors[:effective_date].size).to eq(0)
@@ -383,10 +383,10 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         it 'see failed validation for :effective_date that is already taken when trying to create an additional detail record' do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
-              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Time.now, :approved => "true"}
+              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Time.now.tomorrow, :approved => "true"}
             })
             post(:create, {:service_id => @core_service, :format => :html,
-              :additional_detail => {:name => "Form # 2", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Time.now, :approved => "true"}
+              :additional_detail => {:name => "Form # 2", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Time.now.tomorrow, :approved => "true"}
             })
             expect(assigns(:additional_detail).errors[:effective_date].size).to eq(1)
             message = "Effective date cannot be the same as any other effective dates."

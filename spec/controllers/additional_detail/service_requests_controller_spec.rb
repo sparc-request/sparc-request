@@ -34,7 +34,12 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
     @sub_service_request.save(:validate => false)
     SubServiceRequest.set_callback(:save, :after, :update_org_tree)
         
+    @core = Core.new
+    @core.name = "REDCap"
+    @core.save(validate: false)
+
     @service = Service.new
+    @service.organization_id = @core.id
     @service.save(:validate => false)
 
     @line_item = LineItem.new
@@ -87,7 +92,7 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
           @service_request.save(:validate => false)
               
           @ad = AdditionalDetail.new 
-          @ad.effective_date = Time.now.strftime("%Y-%m-%d")
+          @ad.effective_date = 1.day.ago.strftime("%Y-%m-%d")
           @ad.service_id = @service.id
           @ad.save(:validate => false)
         end
@@ -100,7 +105,7 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
           expect(@line_item_additional_detail.additional_detail_id).to eq(@ad.id)
           expect(@line_item_additional_detail.line_item_id).to eq(@line_item.id)
           expect(response.status).to eq(200)
-          expect(response.body).to eq([@line_item_additional_detail].to_json(:include => [{:line_item => {:include => :service} }, :additional_detail]))
+          expect(response.body).to eq([@line_item_additional_detail].to_json(:include => [{:line_item => {:include => {:service => { :methods => :additional_detail_breadcrumb } }} }, :additional_detail]))
         end
       end
     end 

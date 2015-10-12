@@ -190,7 +190,7 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', functio
 			
 		});
 	}
-	  
+	$scope.modal_title = service_name;
 	$scope.reloadGrid();
 	$scope.updateLineItemAdditionalDetails();
 	

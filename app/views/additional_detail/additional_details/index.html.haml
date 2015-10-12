@@ -41,7 +41,7 @@
     .modal-dialog.modal-lg{:role=>"document"}
       %form.modal-content{:name=>"survey"}
         .modal-header
-          %h4.modal-title #{@service.name}
+          %h4.modal-title {{modal_title}}
         .modal-body
           %div{:name=>"modalForm",  "sf-schema"=>"schema", "sf-form"=>"form", "sf-model"=>"model"}
         .modal-footer

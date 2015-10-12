@@ -169,6 +169,9 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', functio
 					}
 				}
 			}
+			else{
+				$('#myTabs a[href="#liadGrid"]').tab('show')
+			}
 			var line_item_data = [];
 			for(var y=0; y<data.length; y++){
 				var hash = data[y].additional_detail;
@@ -182,6 +185,7 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', functio
 			}
 			//console.log(line_item_data);
 			$scope.line_item_ad_gridModel.data = line_item_data;
+			
 		});
 	}
 	  

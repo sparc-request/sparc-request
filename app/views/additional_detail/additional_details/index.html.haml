@@ -5,25 +5,37 @@
   .row
     .col-md-12
       = render :partial => 'organization_breadcrumb'
-  .row
-    .col-md-12
-      .panel.panel-default
-        .panel-heading
-          = "Additional Details for #{@service.name}"
-        .panel-body
-          .row
-            .col-md-12
-              = link_to "Add new Additional Details Form", new_additional_detail_service_additional_detail_path(@service), class: "btn btn-primary"
-          .row
-            .col-md-12
-              %div{:id=>"displayGrid", "ui-grid"=>"gridModel", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 300px;"}
-      .panel.panel-default
-        .panel-heading
-          = "Additional Details Responses"
-        .panel-body
-          .row
-            .col-md-12
-              %div{:id=>"liadGrid", "ui-grid"=>"line_item_ad_gridModel", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 300px;"}
+  %div    
+    %ul.nav.nav-tabs.nav-pills{:id=>:myTabs, :role=>:tablist}
+      %li.active{:role=>"presentation"}
+        %a{:href=>"#adGrid", "aria-controls"=>:adGrid, :role=>:tab, "data-toggle"=>:tab} Additional Details
+      %li{:role=>"presentation"}
+        %a{:href=>"#liadGrid", "aria-controls"=>:liadGrid, :role=>:tab, "data-toggle"=>:tab} Results
+    
+    .tab-content
+      .tab-pane.fade.in.active{:role=>:tabpanel, :id=>:adGrid}
+        .row
+          .col-md-12
+          .panel.panel-default
+            .panel-heading
+              = "Additional Details for #{@service.name}"
+            .panel-body
+              .row
+                .col-md-12
+                  = link_to "Add new Additional Details Form", new_additional_detail_service_additional_detail_path(@service), class: "btn btn-primary"
+              .row
+                .col-md-12
+                  %div{:id=>"displayGrid", "ui-grid"=>"gridModel", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 300px;"}
+      .tab-pane.fade{:role=>:tabpanel, :id=>:liadGrid}
+        .row
+          .col-md-12
+            .panel.panel-default
+              .panel-heading
+                = "Additional Details Responses"
+              .panel-body
+                .row
+                  .col-md-12
+                    %div{:id=>"liadGrid", "ui-grid"=>"line_item_ad_gridModel", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 300px;"}
 
   .modal.fade{:id=>"resultModal", :role=>"dialog", :tabindex=>"-1", "aria-labelledby"=>"myModalLabel"}
     .modal-dialog.modal-lg{:role=>"document"}

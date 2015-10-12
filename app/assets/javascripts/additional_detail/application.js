@@ -15,7 +15,7 @@
 //= require additional_detail/angular-strap-tpl.min
 //= require additional_detail/angular-schema-form-dynamic-select.min
 var typeHash;
-var app = angular.module('app', ['ngAria','schemaForm','ui.grid','ui.grid.resizeColumns', 'mgcrea.ngStrap', 'schemaForm-datepicker', 'schemaForm-timepicker', 'schemaForm-datetimepicker','ui.grid.selection','ngSanitize', 'ui.grid.autoResize','ui.grid.expandable', 'ui.grid.edit']);
+var app = angular.module('app', ['ngAria','schemaForm','ui.grid','ui.grid.resizeColumns', 'mgcrea.ngStrap', 'schemaForm-datepicker', 'schemaForm-timepicker', 'schemaForm-datetimepicker','ngSanitize', 'ui.grid.autoResize','ui.grid.expandable', 'ui.grid.edit']);
 
 $('#myModal').on('shown.bs.modal', function () {
 	$('#myInput').focus()
@@ -96,7 +96,8 @@ app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$htt
 		liad.form_data_json = JSON.stringify($scope.model);
 		$http.put("/additional_detail/line_item_additional_details/"+liad.id, JSON.stringify(liad)).
 			then(function successCallback(response){
-				$scope.reloadGrid(); // we may not need to reload the grid if when we use ngResource
+				$scope.reloadGrid(); // we may not need to reload the grid if
+										// when we use ngResource
 				$scope.alertMessage = "Additional detail successfully saved.";
 	  	        $scope.resourceSuccessful = true;
 		     }, function errorCallback(response) { 
@@ -111,7 +112,8 @@ app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$htt
 		     });
 	}
 		
-	// dynamically change grid height relative to window height, only works if one grid is being displayed on the page
+	// dynamically change grid height relative to window height, only works if
+	// one grid is being displayed on the page
   	$scope.getTableHeight = function() {
         return {
         	height: (($scope.gridModel.data.length * $scope.gridModel.rowHeight) + $( ".ui-grid-header-cell-row" ).height() ) + "px"
@@ -127,22 +129,64 @@ app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$htt
 app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', function($scope, $http) {
 	$scope.gridModel = {enableFiltering: true, enableColumnResizing: true, showColumnFooter: false , enableSorting: true, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 42};
 	$scope.gridModel.columnDefs = [{enableFiltering: false, enableColumnResizing: false,name: 'Edit',width: 55, enableColumnMenu: false, cellTemplate: '<a class="btn btn-primary" ng-disabled="row.entity.additional_detail.line_item_additional_details.length > 0" role="button" ng-href="/additional_detail/services/'+id+'/additional_details/{{row.entity.additional_detail.id}}/edit">Edit</a>'},
-	                               {name: "Responses", enableFiltering: false, width: '10%', enableColumnMenu: false, cellTemplate: '<a style="width: 100%" class="btn btn-info" ng-disabled="row.entity.additional_detail.line_item_additional_details.length==0" ng-href="/additional_detail/services/'+id+'/additional_details/{{row.entity.additional_detail.id}}/line_item_additional_details">{{row.entity.additional_detail.line_item_additional_details.length}} {{(row.entity.additional_detail.line_item_additional_details.length == 1) ? "Response" : "Responses"}}</a>'},
+	                               {name: "Responses", enableFiltering: false, width: '10%', enableColumnMenu: false, cellTemplate: '<a style="width: 100%" class="btn btn-info" ng-disabled="row.entity.additional_detail.line_item_additional_details.length==0" ng-click="grid.appScope.updateLineItemAdditionalDetails(row.entity.additional_detail.id)">{{row.entity.additional_detail.line_item_additional_details.length}} {{(row.entity.additional_detail.line_item_additional_details.length == 1) ? "Response" : "Responses"}}</a>'},
 	                               {field: 'additional_detail.name', name: 'Name',  width: '30%', enableColumnMenu: false}, 
 	                               {field:'additional_detail.effective_date',name: 'Effective Date', width: '25%', enableColumnMenu: false },{field: 'additional_detail.approved',name: 'Approved', width: '10%', enableColumnMenu: false},
 	                               {field: 'additional_detail.description', name: 'Description', enableColumnMenu: false},
 	                               {enableFiltering: false, enableColumnResizing: false,name: 'Delete',width: 70, enableColumnMenu: false, cellTemplate: '<button class="btn btn-danger" ng-disabled="row.entity.additional_detail.line_item_additional_details.length > 0" ng-click="grid.appScope.deleteAdditonalDetail(row.entity.additional_detail.id)">Delete</button>'}
 	                               ];
 	
+	$scope.line_item_ad_gridModel = {enableFiltering: true, enableColumnResizing: true, showColumnFooter: false , enableSorting: true, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 42};
+	$scope.line_item_ad_gridModel.columnDefs = [
+	                               {name: "Show", enableFiltering: false, width: 63, enableColumnMenu: false, cellTemplate: '<button data-toggle="modal" type="button" data-target="#resultModal" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">Show</button>'},
+	                               {field: 'status', enableColumnMenu: false}, 
+	                               {field: 'completed_at',name: 'Date Completed', enableColumnMenu: false},
+	                               {field:'created_at',name: 'Date Started', enableColumnMenu: false }
+	                               //{enableFiltering: false, enableColumnResizing: false,name: 'Delete',width: 70, enableColumnMenu: false, cellTemplate: '<button class="btn btn-danger" ng-disabled="row.entity.additional_detail.line_item_additional_details.length > 0" ng-click="grid.appScope.deleteAdditonalDetail(row.entity.additional_detail.id)">Delete</button>'}
+	                               ];
+	
 	$scope.reloadGrid = function(){
 		$http.get('/additional_detail/services/'+id+'/additional_details/').
 			then(function(response){
-				console.log(response.data);
+				//console.log(response.data);
 				$scope.gridModel.data = response.data;
 			});
 	}
+	
+	$scope.updateLineItemAdditionalDetails = function(liad_id){
+		$http.get('/additional_detail/services/'+id+'/additional_details/').
+		then(function(response){
+			var data = response.data;
+			//When no id is given then it will display the most recent line_item_additional_details
+			if(!liad_id){
+				var date = null;
+				for(var i=0; i<data.length; i++){
+					var ad = data[i].additional_detail
+					var ef = new Date(ad.effective_date).getTime();
+					if(!date || ef>=date && (ad.line_item_additional_details && ad.line_item_additional_details.length>0)){
+						date = ef;
+						liad_id =ad.id; 
+					}
+				}
+			}
+			var line_item_data = [];
+			for(var y=0; y<data.length; y++){
+				var hash = data[y].additional_detail;
+				if(hash.id == liad_id){
+					for(var x=0; x<hash.line_item_additional_details.length; x++){
+						var liad = hash.line_item_additional_details[x];
+						liad.form_definition_json = data[y].additional_detail.form_definition_json;
+						line_item_data.push(liad);
+					}
+				}
+			}
+			//console.log(line_item_data);
+			$scope.line_item_ad_gridModel.data = line_item_data;
+		});
+	}
 	  
 	$scope.reloadGrid();
+	$scope.updateLineItemAdditionalDetails();
 	
 	$scope.deleteAdditonalDetail = function(additonalDetailId){
 		$http.delete('/additional_detail/services/'+id+'/additional_details/'+additonalDetailId).
@@ -154,13 +198,65 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', functio
 		
 	}
 	
+	$scope.getLineItemAdditionalDetail = function(liad_id){
+		var data = $scope.line_item_ad_gridModel.data;
+		for(var i=0; i< data.length; i++){
+			if(data[i].id==liad_id){
+				return data[i];
+			}
+		}
+		return null;
+		
+	}
+	
+	$scope.showSurvey = function(liad_id){
+		// hide the alert message before showing a survey
+		$scope.alertMessage = null;
+		$scope.currentLineItemAD = $scope.getLineItemAdditionalDetail(liad_id);
+		if($scope.currentLineItemAD){
+			var liad = $scope.currentLineItemAD;
+			$scope.modal_title = service_name;
+			if(liad.form_definition_json){
+				var object = JSON.parse(liad.form_definition_json);
+				$scope.schema = object.schema;
+				$scope.form   = object.form;		
+			}
+			$scope.model = (liad.form_data_json==null) ? {} : JSON.parse(liad.form_data_json);
+		}
+		
+	}
+	
+	$scope.saveFormResponse = function(){
+		var liad = $scope.currentLineItemAD;
+		liad.form_data_json = JSON.stringify($scope.model);
+		$http.put("/additional_detail/line_item_additional_details/"+liad.id, JSON.stringify(liad)).
+			then(function successCallback(response){
+				$scope.reloadGrid(); // we may not need to reload the grid if
+										// when we use ngResource
+				$scope.alertMessage = "Additional detail successfully saved.";
+	  	        $scope.resourceSuccessful = true;
+		     }, function errorCallback(response) { 
+				// failed server side validation
+		    	 $scope.alertMessage = "";
+				_.each(response.data, function(errors, key) {
+				  _.each(errors, function(e) {
+				    $scope.alertMessage += key + " " + e + ". ";
+				  });
+				});
+	  	        $scope.resourceSuccessful = false;
+		     });
+	}
+	
+	
+
 }]);
 
 app.controller('FormCreationController', ['$scope', '$http', function ($scope, $http, $compile) {
 		
-	//var form_definition =  ;
+	// var form_definition = ;
  
-	//$scope.formDefinition = $('#additional_detail_form_definition_json').val()
+	// $scope.formDefinition =
+	// $('#additional_detail_form_definition_json').val()
 	$scope.form ={};
 	$scope.effective_date = effective_date;
 

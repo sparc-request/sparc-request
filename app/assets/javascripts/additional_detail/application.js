@@ -165,6 +165,7 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', functio
 					var ef = new Date(ad.effective_date).getTime();
 					if(!date || ef>=date && (ad.line_item_additional_details && ad.line_item_additional_details.length>0)){
 						date = ef;
+						
 						liad_id =ad.id; 
 					}
 				}
@@ -174,10 +175,11 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', functio
 			}
 			var line_item_data = [];
 			for(var y=0; y<data.length; y++){
-				var hash = data[y].additional_detail;
-				if(hash.id == liad_id){
-					for(var x=0; x<hash.line_item_additional_details.length; x++){
-						var liad = hash.line_item_additional_details[x];
+				var ad = data[y].additional_detail;
+				if(ad.id == liad_id){
+					$scope.activeAdditionalDetail = ad;
+					for(var x=0; x<ad.line_item_additional_details.length; x++){
+						var liad = ad.line_item_additional_details[x];
 						liad.form_definition_json = data[y].additional_detail.form_definition_json;
 						line_item_data.push(liad);
 					}

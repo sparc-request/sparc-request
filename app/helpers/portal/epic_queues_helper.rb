@@ -26,8 +26,6 @@ module Portal::EpicQueuesHelper
 
   def format_date(protocol)
     date = protocol.last_epic_push_time
-    puts "*" * 50
-    puts date
     if date.present?
       date.strftime(t(:epic_queues)[:date_formatter])
     else

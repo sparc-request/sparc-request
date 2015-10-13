@@ -18,52 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'rails_helper'
-
-RSpec.describe 'view epic queues', js: true do
-
-  let_there_be_lane
-  let_there_be_j
-  build_service_request_with_study
-
-  describe "if I have special access" do
-
-    fake_login_for_each_test
-
-    it "should display the 'View Epic Queue' button" do
-      visit portal_admin_index_path
-      wait_for_javascript_to_finish
-      expect(page).to have_text('View Epic Queue')
-    end
-
-    describe "clicking the 'View Epic Queue' button" do
-      it 'should take me to the Epic Queues portal' do
-        visit portal_admin_index_path
-        wait_for_javascript_to_finish
-        find("a.epic_queues").click
-        wait_for_javascript_to_finish
-        expect(page).to have_text("Queued Protocol")
-      end
-    end
-
-    describe "viewing the Epic Queues" do
-      it 'should display the Epic Queues' do
-        visit portal_epic_queues_path
-        wait_for_javascript_to_finish
-        protocol = Protocol.first
-        expect(page).to have_text("#{protocol.short_title}")
-      end
-    end
-  end
-  
-  describe "if I don't have special access" do
-
-    fake_login_for_each_test('jpl6@musc.edu')
-
-    it "should not display the 'View Epic Queue' button" do
-      visit portal_admin_index_path
-      wait_for_javascript_to_finish
-      expect(page).not_to have_text('View Epic Queue')
-    end
+FactoryGirl.define do
+  factory :epic_queue, aliases: [:eq] do
+    created_at   { Time.now }
+    updated_at   { Time.now }
   end
 end

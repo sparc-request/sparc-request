@@ -21,23 +21,21 @@
 require 'rails_helper'
 
 RSpec.describe Portal::EpicQueuesController, :type => :controller do
-  stub_portal_controller
 
   let_there_be_lane
+  fake_login_for_each_test
   let_there_be_j
+  build_service_request_with_study
+  stub_portal_controller
 
-  before :each do 
-    @protocol = create(:protocol_with_sub_service_request_in_cwf)
-    @epic_queue = create(:epic_queue, protocol: protocol)
-    @protocol = create(:protocol_with_sub_service_request_in_cwf)
-    @epic_queue = create(:epic_queue, protocol: protocol)
-  end
+  let!(:identity)   { Identity.find_by_ldap_uid('jug2') }
+  let!(:epic_queue) { create(:epic_queue, protocol_id: Protocol.first.id) }
 
   describe "GET #index" do
     it "should set epic queues" do
       session[:identity_id] = identity.id
       get(:index, format: :html)
-      expect(assigns(:epic_queues).count).to eq 2
+      expect(assigns(:epic_queues).count).to eq 1
     end
   end
 

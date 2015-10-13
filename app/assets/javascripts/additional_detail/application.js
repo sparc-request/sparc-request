@@ -132,6 +132,7 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', functio
 	$scope.line_item_ad_gridModel = {enableFiltering: true, enableColumnResizing: true, showColumnFooter: false , enableSorting: true, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 42};
 	$scope.line_item_ad_gridModel.columnDefs = [
 	                               {name: "Show", enableFiltering: false, width: 63, enableColumnMenu: false, cellTemplate: '<button data-toggle="modal" type="button" data-target="#additionalDetailModal" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">Show</button>'},
+	                               {name: "Edit", enableFiltering: false, width: 63, enableColumnMenu: false, cellTemplate: '<button data-toggle="modal" type="button" data-target="#additionalDetailModal" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">Edit</button>'},
 	                               {field: 'status', enableColumnMenu: false}, 
 	                               {field: 'completed_at',name: 'Date Completed', enableColumnMenu: false},
 	                               {field:'created_at',name: 'Date Started', enableColumnMenu: false }

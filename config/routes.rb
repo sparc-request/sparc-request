@@ -253,8 +253,7 @@ SparcRails::Application.routes.draw do
       get :download
     end
 
-    resources :epic_queues do
-    end
+    resources :epic_queues, only: ['index', 'destroy']
 
     resource :admin do
       resources :sub_service_requests do

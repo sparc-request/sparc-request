@@ -20,8 +20,7 @@
 
 $(document).ready ->
   $(".delete-eq").live("click", ->
-    confirm_message = 'Are you sure?'
-    if confirm(confirm_message)
+    if confirm(I18n["epic_queues"]["confirm"])
       eq_id = $(this).data("eq-id")
       protocol_id = $(this).data("protocol-id")
       $.ajax

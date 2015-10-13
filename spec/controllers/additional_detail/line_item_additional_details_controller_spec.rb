@@ -111,7 +111,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       it 'view a line_item_additional_detail' do
         get(:show, {:id => @line_item_additional_detail})
         expect(response.status).to eq(200)
-        expect(response.body).to eq(@line_item_additional_detail.to_json)
+        expect(response.body).to eq(@line_item_additional_detail.to_json(:root => false))
       end
       
       it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do
@@ -140,7 +140,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       it 'view a line_item_additional_detail' do
         get(:show, {:id => @line_item_additional_detail})
         expect(response.status).to eq(200)
-        expect(response.body).to eq(@line_item_additional_detail.to_json)
+        expect(response.body).to eq(@line_item_additional_detail.to_json(:root => false))
       end
       
       it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do
@@ -163,7 +163,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       it 'has access to view a line_item_additional_detail' do
         get(:show, {:id => @line_item_additional_detail})
         expect(response.status).to eq(200)
-        expect(response.body).to eq(@line_item_additional_detail.to_json)
+        expect(response.body).to eq(@line_item_additional_detail.to_json(:root => false))
       end
       
       it 'does NOT have access to update a line_item_additional_detail (i.e., submit/update answers to questions)' do
@@ -222,7 +222,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       it 'view a line_item_additional_detail' do
         get(:show, {:id => @line_item_additional_detail})
         expect(response.status).to eq(200)
-        expect(response.body).to eq(@line_item_additional_detail.to_json)
+        expect(response.body).to eq(@line_item_additional_detail.to_json(:root => false))
       end
       
       it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do
@@ -257,7 +257,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       it 'view a line_item_additional_detail' do
         get(:show, {:id => @line_item_additional_detail})
         expect(response.status).to eq(200)
-        expect(response.body).to eq(@line_item_additional_detail.to_json)
+        expect(response.body).to eq(@line_item_additional_detail.to_json(:root => false))
       end
       
       it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do
@@ -288,7 +288,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       it 'view a line_item_additional_detail' do
         get(:show, {:id => @line_item_additional_detail})
         expect(response.status).to eq(200)
-        expect(response.body).to eq(@line_item_additional_detail.to_json)
+        expect(response.body).to eq(@line_item_additional_detail.to_json(:root => false))
       end
       
       it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do
@@ -319,7 +319,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       it 'view a line_item_additional_detail' do
         get(:show, {:id => @line_item_additional_detail})
         expect(response.status).to eq(200)
-        expect(response.body).to eq(@line_item_additional_detail.to_json)
+        expect(response.body).to eq(@line_item_additional_detail.to_json(:root => false))
       end
       
       it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do

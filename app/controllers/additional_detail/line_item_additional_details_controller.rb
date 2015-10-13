@@ -7,7 +7,7 @@ class AdditionalDetail::LineItemAdditionalDetailsController < ApplicationControl
 
   
   def show
-     render :json => @line_item_additional_detail.to_json(:include => {:additional_detail => {:include => {:service => { :methods => :additional_detail_breadcrumb } }} })
+     render :json => @line_item_additional_detail.to_json(:root => false, :include => {:additional_detail => {:include => {:service => { :methods => :additional_detail_breadcrumb } }} })
   end
 
   def update

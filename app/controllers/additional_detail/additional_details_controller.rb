@@ -9,13 +9,12 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
     respond_to do |format|
       format.html # index.html.erb
       format.json { 
-        result = @service.additional_details.to_json(:include => :line_item_additional_details)
-        render :json => result }
+        render :json => @service.additional_details.to_json(:root => false, :include => :line_item_additional_details) }
     end
   end
 
   def show
-    render :json => @service.additional_details.find(params[:id])
+    render :json => @service.additional_details.find(params[:id]).to_json(:root => false, :include => :line_item_additional_details)
   end
 
   def edit

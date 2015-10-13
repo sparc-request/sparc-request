@@ -1,7 +1,26 @@
 :javascript
-  var id = '#{@service.id}';
+  var service_id = '#{@service.id}';
   var service_name = '#{@service.name}';
 %div{"ng-controller" => "AdditionalDetailsDisplayController"}
+  = render :partial => 'additional_detail/additional_details/survey_modal'
+  .modal.fade{:id=>"additionalDetailResultsModal", :role=>"dialog", :tabindex=>"-1", "aria-labelledby"=>"myModalLabel"}
+    .modal-dialog.modal-lg{:role=>"document"}
+      %form.modal-content{:name=>"survey"}
+        .modal-header
+          %button{"type"=>"button", "class"=>"close", "data-dismiss"=>"modal", "aria-label"=>"Close"}
+            %span{"aria-hidden"=>"true"} &times;
+          %h4.modal-title {{modal_title}}
+        .modal-body
+          .panel.panel-default
+            .panel-heading
+              %h3.panel-title Survey Response
+            .panel-body
+              .row{"ng-repeat"=>"(key, value) in model"}
+                .col-md-2
+                  %label {{key}}
+                .col-md-10 {{value}}
+        .modal-footer
+          %button.btn.btn-primary{"data-dismiss"=>"modal"} Close
   = render :partial => 'organization_breadcrumb'
   .alert{ "ng-show"=>"alertMessage", "ng-class"=>"{ 'alert-success' : resourceSuccessful, 'alert-danger' : !resourceSuccessful }", "role"=>"alert"}
     = "{{alertMessage}}"
@@ -10,7 +29,7 @@
       %li.active{:role=>"presentation"}
         %a{:href=>"#adGrid", "aria-controls"=>:adGrid, :role=>:tab, "data-toggle"=>:tab} Additional Details
       %li{:role=>"presentation"}
-        %a{:href=>"#liadGrid", "aria-controls"=>:liadGrid, :role=>:tab, "data-toggle"=>:tab} Results for {{activeAdditionalDetail.name}}
+        %a{:id => "resultsTab", :href=>"#liadGrid", "aria-controls"=>:liadGrid, :role=>:tab} {{resultsTabText}}
     .tab-content
       .tab-pane.fade.in.active{:role=>:tabpanel, :id=>:adGrid}
         .panel.panel-default
@@ -25,5 +44,4 @@
             = "Additional Details Responses for {{activeAdditionalDetail.name}}"
           .panel-body
             %div{:id=>"liadGrid", "ui-grid"=>"line_item_ad_gridModel", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 300px;"}
-  = render :partial => 'additional_detail/additional_details/survey_modal'
       

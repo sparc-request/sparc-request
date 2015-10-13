@@ -2,49 +2,28 @@
   var id = '#{@service.id}';
   var service_name = '#{@service.name}';
 %div{"ng-controller" => "AdditionalDetailsDisplayController"}
-  .row
-    .col-md-12
-      = render :partial => 'organization_breadcrumb'
+  = render :partial => 'organization_breadcrumb'
+  .alert{ "ng-show"=>"alertMessage", "ng-class"=>"{ 'alert-success' : resourceSuccessful, 'alert-danger' : !resourceSuccessful }", "role"=>"alert"}
+    = "{{alertMessage}}"
   %div    
     %ul.nav.nav-tabs.nav-pills{:id=>:myTabs, :role=>:tablist}
       %li.active{:role=>"presentation"}
         %a{:href=>"#adGrid", "aria-controls"=>:adGrid, :role=>:tab, "data-toggle"=>:tab} Additional Details
       %li{:role=>"presentation"}
         %a{:href=>"#liadGrid", "aria-controls"=>:liadGrid, :role=>:tab, "data-toggle"=>:tab} Results for {{activeAdditionalDetail.name}}
-    
     .tab-content
       .tab-pane.fade.in.active{:role=>:tabpanel, :id=>:adGrid}
-        .row
-          .col-md-12
-          .panel.panel-default
-            .panel-heading
-              = "Additional Details for #{@service.name}"
-            .panel-body
-              .row
-                .col-md-12
-                  = link_to "Add new Additional Details Form", new_additional_detail_service_additional_detail_path(@service), class: "btn btn-primary"
-              .row
-                .col-md-12
-                  %div{:id=>"displayGrid", "ui-grid"=>"gridModel", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 300px;"}
+        .panel.panel-default
+          .panel-heading
+            = "Additional Details for #{@service.name}"
+          .panel-body
+            = link_to "Add new Additional Details Form", new_additional_detail_service_additional_detail_path(@service), class: "btn btn-primary"
+            %div{:id=>"displayGrid", "ui-grid"=>"gridModel", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 300px;"}
       .tab-pane.fade{:role=>:tabpanel, :id=>:liadGrid}
-        .row
-          .col-md-12
-            .panel.panel-default
-              .panel-heading
-                = "Additional Details Responses for {{activeAdditionalDetail.name}}"
-              .panel-body
-                .row
-                  .col-md-12
-                    %div{:id=>"liadGrid", "ui-grid"=>"line_item_ad_gridModel", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 300px;"}
-
-  .modal.fade{:id=>"resultModal", :role=>"dialog", :tabindex=>"-1", "aria-labelledby"=>"myModalLabel"}
-    .modal-dialog.modal-lg{:role=>"document"}
-      %form.modal-content{:name=>"survey"}
-        .modal-header
-          %h4.modal-title {{modal_title}}
-        .modal-body
-          %div{:name=>"modalForm",  "sf-schema"=>"schema", "sf-form"=>"form", "sf-model"=>"model"}
-        .modal-footer
-          %a.btn.btn-danger{"data-dismiss"=>"modal"} Cancel
-          %button.btn.btn-primary{"data-dismiss"=>"modal", "ng-click"=> "saveFormResponse()"} Save
+        .panel.panel-default
+          .panel-heading
+            = "Additional Details Responses for {{activeAdditionalDetail.name}}"
+          .panel-body
+            %div{:id=>"liadGrid", "ui-grid"=>"line_item_ad_gridModel", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 300px;"}
+  = render :partial => 'additional_detail/additional_details/survey_modal'
       

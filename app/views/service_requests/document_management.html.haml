@@ -73,13 +73,4 @@
     .clear
 
     .continue.col-md-12= render :partial => 'service_requests/navigation'
-    .modal.fade{:id=>"myModal", :role=>"dialog", :tabindex=>"-1", "aria-labelledby"=>"myModalLabel"}
-      .modal-dialog.modal-lg{:role=>"document"}
-        %form.modal-content{:name=>"survey"}
-          .modal-header
-            %h4.modal-title {{modal_title}}
-          .modal-body
-            %div{:name=>"modalForm",  "sf-schema"=>"schema", "sf-form"=>"form", "sf-model"=>"model"}
-          .modal-footer
-            %a.btn.btn-danger{"data-dismiss"=>"modal"} Cancel
-            %button.btn.btn-primary{"data-dismiss"=>"modal", "ng-click"=> "saveFormResponse()"} Save
+    = render :partial => 'additional_detail/additional_details/survey_modal'

@@ -99,7 +99,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       end
     end
     
-    describe 'is a project team member with "approve" rights and, thus, has no access to' do
+    describe 'is a project team member with "approve" rights and, thus, has access to' do
       before :each do
         @project_role = ProjectRole.new
         @project_role.identity_id = @identity.id
@@ -128,7 +128,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       end
     end
     
-    describe 'is a project team member with "request" rights and, thus, has no access to' do
+    describe 'is a project team member with "request" rights and, thus, has access to' do
       before :each do
         @project_role = ProjectRole.new
         @project_role.identity_id = @identity.id

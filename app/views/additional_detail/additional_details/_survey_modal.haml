@@ -1,0 +1,16 @@
+.modal.fade{:id=>"additionalDetailModal", :role=>"dialog", :tabindex=>"-1", "aria-labelledby"=>"myModalLabel"}
+  .modal-dialog.modal-lg{:role=>"document"}
+    %form.modal-content{:name=>"survey"}
+      .modal-header
+        %button{"type"=>"button", "class"=>"close", "data-dismiss"=>"modal", "aria-label"=>"Close"}
+          %span{"aria-hidden"=>"true"} &times;
+        %h4.modal-title {{modal_title}}
+      .modal-body
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title Please Answer the Following Questions
+          .panel-body
+            %div{:name=>"modalForm",  "sf-schema"=>"schema", "sf-form"=>"form", "sf-model"=>"model"}
+      .modal-footer
+        %a.btn.btn-danger{"data-dismiss"=>"modal"} Cancel
+        %button.btn.btn-primary{"data-dismiss"=>"modal", "ng-click"=> "saveFormResponse()"} Save

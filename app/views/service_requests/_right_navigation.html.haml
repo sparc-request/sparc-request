@@ -45,3 +45,13 @@
     %p
       = text_area_tag "quick_question[body]", nil, {:placeholder => t(:notifications)[:ask_a_question], :cols => 65, :rows => 15, :tabindex => 4}
 
+
+#cart-help{:style => 'display: none', :title => 'Help/FAQs'}
+  %ul
+  - t(:cart_help)[:questions].each_with_index do |question, idx|
+    %li
+      %span.help_question{style:  "text-decoration: underline;"}= "#{question[:question_text]}"
+      %br
+      %br
+      %span.help_answer{style: "display: inline-block;", id: "help_answer_#{idx + 1}"}= "#{question[:answer_text]}"
+

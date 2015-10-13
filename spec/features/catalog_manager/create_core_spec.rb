@@ -68,6 +68,7 @@ RSpec.feature 'create new core', js: true do
     visit catalog_manager_root_path
     ## This is used to reveal all nodes in the js tree to make it easier to access during testing.
     page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
+    wait_for_javascript_to_finish
     expect(page).to have_content('Create New Core')
     expect(page).to have_content('Create New Service')
   end

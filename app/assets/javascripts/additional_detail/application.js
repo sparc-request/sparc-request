@@ -28,6 +28,10 @@ app.config([
      $httpProvider.defaults.headers.common["Content-Type"] = "application/json";
      $httpProvider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
      }]);
+// $http.get("/additional_detail/line_item_additional_details/"+id).
+app.factory("LineItemAdditionalDetail", function($resource) {
+  return $resource("/additional_detail/line_item_additional_details/:id");
+});
 
 app.controller('AdditionalDetailsRootController', ['$scope', '$http', function($scope, $http) { 
 	$scope.gridModel = {enableFiltering: true, enableColumnResizing: true, showColumnFooter: true , enableSorting: true, showGridFooter: true, enableRowHeaderSelection: false, rowHeight: 42};
@@ -119,7 +123,7 @@ app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$htt
 	
 }]);
 
-app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', function($scope, $http) {
+app.controller('AdditionalDetailsDisplayController', ['$scope', '$http','LineItemAdditionalDetail', function($scope, $http, LineItemAdditionalDetail) {
 	$scope.gridModel = {enableFiltering: true, enableColumnResizing: true, showColumnFooter: false , enableSorting: true, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 42};
 	$scope.gridModel.columnDefs = [{enableFiltering: false, enableColumnResizing: false,name: 'Edit',width: 55, enableColumnMenu: false, cellTemplate: '<a class="btn btn-primary" ng-disabled="row.entity.additional_detail.line_item_additional_details.length > 0" role="button" ng-href="/additional_detail/services/'+id+'/additional_details/{{row.entity.additional_detail.id}}/edit">Edit</a>'},
 	                               {name: "Responses", enableFiltering: false, width: '10%', enableColumnMenu: false, cellTemplate: '<a style="width: 100%" class="btn btn-info" ng-disabled="row.entity.additional_detail.line_item_additional_details.length==0" ng-click="grid.appScope.updateLineItemAdditionalDetails(row.entity.additional_detail.id)">{{row.entity.additional_detail.line_item_additional_details.length}} {{(row.entity.additional_detail.line_item_additional_details.length == 1) ? "Response" : "Responses"}}</a>'},
@@ -202,17 +206,18 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', functio
 		// hide the alert message before showing a survey
 		$scope.alertMessage = null;
 		// We need to load the survey data from this controller because it authorizes the current user to view it.
-		$http.get("/additional_detail/line_item_additional_details/"+liad_id).
-		then(function(response){
-			$scope.currentLineItemAD = response.data.line_item_additional_detail;
-			$scope.modal_title = response.data.line_item_additional_detail.additional_detail.service.additional_detail_breadcrumb;
-			var object = JSON.parse(response.data.line_item_additional_detail.additional_detail.form_definition_json);
+		LineItemAdditionalDetail.get({ id: liad_id }).$promise.then(function(response) {
+	//	$http.get("/additional_detail/line_item_additional_details/"+liad_id).
+	//	then(function(response){
+			$scope.currentLineItemAD = response.line_item_additional_detail;
+			$scope.modal_title = response.line_item_additional_detail.additional_detail.service.additional_detail_breadcrumb;
+			var object = JSON.parse(response.line_item_additional_detail.additional_detail.form_definition_json);
 			$scope.schema = object.schema;
 			$scope.form   = object.form;
-			$scope.model = JSON.parse(response.data.line_item_additional_detail.form_data_json);
+			$scope.model = JSON.parse(response.line_item_additional_detail.form_data_json);
 		}, function errorCallback(response) { 
 			// failed server side request
-	    	 $scope.alertMessage = response.data;
+	    	 $scope.alertMessage = response;
 	    }); 
 	}
 	

@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe "Ask a query", js: true do
+RSpec.describe "Ask a question", js: true do
   before :each do
     visit root_path
     find('.ask-a-question-button').click()

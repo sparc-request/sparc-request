@@ -14,6 +14,9 @@ class LineItemAdditionalDetail < ActiveRecord::Base
     line_item.sub_service_request.status
   end
   
+  def form_data_hash
+    JSON.parse(self.form_data_json)
+  end
   
   private
   

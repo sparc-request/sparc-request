@@ -30,6 +30,26 @@
   .clear
   %div
     .document-management-container
+      %h3 Additional Details
+      %table.document-table
+        %thead
+          %tr.header
+            %th Service
+            %th Additional Detail
+        %tbody
+          - @sub_service_request.line_items.each do |line_item|
+            %tr
+              %td
+                %a{:style => "text-decoration: underline;", :href => additional_detail_service_additional_details_path(line_item.service)}=line_item.service.name 
+              %td
+                %ul
+                  - line_item.additional_details_form_data_hash.each do |key, value|
+                    %li
+                      %strong=key + ":"
+                      %span=value
+      %br
+      %br
+      %h3 Uploaded Files
       = render :partial => 'portal/sub_service_requests/document_list', :locals => {:review => false}
       .clear
       %br

@@ -79,6 +79,14 @@ class LineItem < ActiveRecord::Base
     service.current_additional_detail
   end
   
+  def additional_details_form_data_hash
+    if self.line_item_additional_detail
+      self.line_item_additional_detail.form_data_hash
+    else
+      Hash.new
+    end   
+  end
+  
   def get_or_create_line_item_additional_detail
     if self.line_item_additional_detail
       self.line_item_additional_detail

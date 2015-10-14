@@ -90,4 +90,32 @@ RSpec.describe "Line Item" do
       
   end
   
+describe "additional_details_hash" do
+  it 'should return a hash with zero key/value pairs because LineItemAdditionalDetail is nil' do
+    @line_item = LineItem.new
+    expect(@line_item.additional_details_form_data_hash).to eq({})
+  end
+  
+  it 'should return a hash with zero key/value pairs because LineItemAdditionalDetail is empty' do
+    @line_item = LineItem.new
+    @line_item.line_item_additional_detail = LineItemAdditionalDetail.new
+    @line_item.line_item_additional_detail.form_data_json = "{}"
+    expect(@line_item.additional_details_form_data_hash).to eq({})
+  end
+  
+  it 'should return a hash with one key/value pair' do
+    @line_item = LineItem.new
+    @line_item.line_item_additional_detail = LineItemAdditionalDetail.new
+    @line_item.line_item_additional_detail.form_data_json = "{\"date\":\"10/13/2015\"}"
+    expect(@line_item.additional_details_form_data_hash).to eq({ "date" => "10/13/2015" })
+  end
+  
+  it 'should return a hash with two key/value pairs' do
+    @line_item = LineItem.new
+    @line_item.line_item_additional_detail = LineItemAdditionalDetail.new
+    @line_item.line_item_additional_detail.form_data_json = "{\"date\":\"10/13/2015\", \"email\":\"test@test.com\"}"
+    expect(@line_item.additional_details_form_data_hash).to eq({ "date" => "10/13/2015", "email" => "test@test.com" })
+  end
+  
+end
 end

@@ -79,7 +79,7 @@ RSpec.describe LineItemAdditionalDetail do
     end
   end
 
-  describe "get_sub_service_request_stats" do
+  describe "get_sub_service_request_status" do
 
     before :each do
       @sub_service_request = SubServiceRequest.new
@@ -100,6 +100,28 @@ RSpec.describe LineItemAdditionalDetail do
     it 'should return the status of the sub_service_request' do
       expect(@line_item_additional_detail.get_sub_service_request_status).to eq(@sub_service_request.status)
     end
+  end
+  
+  describe "details_hash" do
+    
+    it 'should return a hash with zero key/value pairs' do
+      @line_item_additional_detail = LineItemAdditionalDetail.new
+      @line_item_additional_detail.form_data_json = "{}"
+      expect(@line_item_additional_detail.form_data_hash).to eq({})
+    end
+    
+    it 'should return a hash with one key/value pair' do
+      @line_item_additional_detail = LineItemAdditionalDetail.new
+      @line_item_additional_detail.form_data_json = "{\"date\":\"10/13/2015\"}"
+      expect(@line_item_additional_detail.form_data_hash).to eq({ "date" => "10/13/2015" })
+    end
+    
+    it 'should return a hash with two key/value pairs' do
+      @line_item_additional_detail = LineItemAdditionalDetail.new
+      @line_item_additional_detail.form_data_json = "{\"date\":\"10/13/2015\", \"email\":\"test@test.com\"}"
+      expect(@line_item_additional_detail.form_data_hash).to eq({ "date" => "10/13/2015", "email" => "test@test.com" })
+    end
+    
   end
 
 end

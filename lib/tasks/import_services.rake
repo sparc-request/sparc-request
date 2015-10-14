@@ -24,11 +24,8 @@ namespace :data do
     def header
       [
        "CPT Code",
-       "CDM Code",
        "Send to Epic",
        "Procedure Name",
-       "Abbreviation",
-       "Order",
        "Service Rate",
        "Corporate Rate",
        "Federal Rate",
@@ -122,12 +119,12 @@ namespace :data do
       CSV.foreach(input_file, :headers => true) do |row|
         service = Service.new(
                             :cpt_code => row['CPT Code'],
-                            :cdm_code => row['CDM Code'],
                             :send_to_epic => (row['Send to Epic'] == 'Y' ? true : false),
-                            :name => row['Procedure Name'],
+                            :name => ('PB ' + row['Procedure Name']),
                             :abbreviation => row['Abbreviation'],
-                            :order => row['Order'],
+                            :order => 1,
                             :organization_id => org.id,
+                            :one_time_fee => (row['Is One Time Fee?'] == 'Y' ? true : false),
                             :is_available => true)
 
         service.tag_list = "epic" if row['Send to Epic'] == 'Y'
@@ -138,7 +135,6 @@ namespace :data do
                                               :federal_rate => Service.dollars_to_cents(row['Federal Rate'].to_s.strip.gsub("$", "").gsub(",", "")),
                                               :member_rate => Service.dollars_to_cents(row['Member Rate'].to_s.strip.gsub("$", "").gsub(",", "")),
                                               :other_rate => Service.dollars_to_cents(row['Other Rate'].to_s.strip.gsub("$", "").gsub(",", "")),
-                                              :is_one_time_fee => (row['Is One Time Fee?'] == 'Y' ? true : false),
                                               :unit_type => (row['Is One Time Fee?'] == 'Y' ? nil : row['Clinical Qty Type']),
                                               :quantity_type => (row['Is One Time Fee?'] != 'Y' ? nil : row['Clinical Qty Type']),
                                               :unit_factor => row['Unit Factor'],

@@ -59,7 +59,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
     it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do
       put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => '{ "real" : "JSON" }'} }) 
       expect(response).to redirect_to("/identities/sign_in")
-      expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq(nil)
+      expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq("{}")
     end
   end
   
@@ -81,7 +81,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       put(:update, {:id => 1231231231, :line_item_additional_detail => { :form_data_json => '{ "real" : "JSON" }'} }) 
       expect(response.status).to eq(404)
       expect(response.body).to eq("")
-      expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq(nil)
+      expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq("{}")
     end
     
     describe 'has no affiliation with the project and, thus, has no access to' do
@@ -95,7 +95,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
         put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => '{ "real" : "JSON" }'} }) 
         expect(response.status).to eq(401)
         expect(response.body).to eq("")
-        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq(nil)
+        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq("{}")
       end
     end
     
@@ -124,7 +124,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
         put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => ""} }) 
         expect(response.status).to eq(422)
         expect(response.body).to eq("{\"form_data_json\":[\"can't be blank\"]}")
-        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq(nil)
+        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq("{}")
       end
     end
     
@@ -170,7 +170,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
         put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => '{ "real" : "JSON" }'} }) 
         expect(response.status).to eq(401)
         expect(response.body).to eq("")
-        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq(nil)
+        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq("{}")
       end
     end   
     
@@ -193,7 +193,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
         put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => '{ "real" : "JSON" }'} }) 
         expect(response.status).to eq(401)
         expect(response.body).to eq("")
-        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq(nil)
+        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq("{}")
       end
     end        
           
@@ -357,7 +357,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
         put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => '{ "real" : "JSON" }'} }) 
         expect(response.status).to eq(401)
         expect(response.body).to eq("")
-        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq(nil)
+        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq("{}")
       end
     end     
 
@@ -389,7 +389,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
         put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => '{ "real" : "JSON" }'} }) 
         expect(response.status).to eq(401)
         expect(response.body).to eq("")
-        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq(nil)
+        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq("{}")
       end
     end                  
   end

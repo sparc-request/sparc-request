@@ -16,9 +16,9 @@
               %h3.panel-title Survey Response
             .panel-body
               .row{"ng-repeat"=>"(key, value) in model"}
-                .col-md-2
+                .col-md-4
                   %label {{key}}
-                .col-md-10 {{value}}
+                .col-md-8 {{value}}
         .modal-footer
           %button.btn.btn-primary{"data-dismiss"=>"modal"} Close
   = render :partial => 'organization_breadcrumb'

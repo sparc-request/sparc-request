@@ -82,7 +82,7 @@ app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$htt
 			var object = JSON.parse(line_item_additional_detail.additional_detail.form_definition_json);
 			$scope.schema = object.schema;
 			$scope.form   = object.form;
-			$scope.model = JSON.parse(line_item_additional_detail.form_data_json);
+			$scope.model = (line_item_additional_detail.form_data_json==null) ? {} : JSON.parse(line_item_additional_detail.form_data_json);
 			$('#additionalDetailModal').modal();
 		}, function errorCallback(error) { 
 	    	 $scope.alertMessage = error.statusText;
@@ -95,7 +95,7 @@ app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$htt
 		$scope.currentLineItemAD.form_data_json = JSON.stringify($scope.model);
 		$scope.currentLineItemAD.$update(function() { 
 			$scope.reloadGrid(); 
-			$scope.alertMessage = "Additional detail successfully saved!";
+			$scope.alertMessage = "Additional detail successfully saved.";
 			$scope.resourceSuccessful = true;
   	     }, function(error) {
 	    	// failed server side validation
@@ -199,7 +199,7 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', 'Additi
 			var object = JSON.parse(line_item_additional_detail.additional_detail.form_definition_json);
 			$scope.schema = object.schema;
 			$scope.form   = object.form;
-			$scope.model = JSON.parse(line_item_additional_detail.form_data_json);
+			$scope.model = (line_item_additional_detail.form_data_json==null) ? {} : JSON.parse(line_item_additional_detail.form_data_json);
 			$('#additionalDetailModal').modal();
 		}, function errorCallback(error) { 
 	    	 $scope.alertMessage = error.statusText;
@@ -210,19 +210,13 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', 'Additi
 	$scope.saveFormResponse = function(){
 		$scope.currentLineItemAD.form_data_json = JSON.stringify($scope.model);
 		$scope.currentLineItemAD.$update(function() { 
-			// reload data into Grid
   			$scope.gridModel.data = AdditionalDetail.query();
-			$scope.alertMessage = "Additional detail successfully saved!";
+			$scope.alertMessage = "Additional detail successfully saved.";
 			$scope.resourceSuccessful = true;
   	     }, function(error) {
-	    	// failed server side validation
-	    	$scope.alertMessage = "";
-			_.each(error.data, function(errors, key) {
-			  _.each(errors, function(e) {
-			    $scope.alertMessage += key + " " + e + ". ";
-			  });
-			});
-	        $scope.resourceSuccessful = false;
+  	        // failed server side validation
+ 	    	$scope.alertMessage = error.data;
+ 	        $scope.resourceSuccessful = false;
 	     });
 	}
 	

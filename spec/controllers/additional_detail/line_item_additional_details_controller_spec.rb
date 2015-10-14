@@ -57,7 +57,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
     end
     
     it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do
-      put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => "{ fake json }"} }) 
+      put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => '{ "real" : "JSON" }'} }) 
       expect(response).to redirect_to("/identities/sign_in")
       expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq(nil)
     end
@@ -78,7 +78,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       expect(response.status).to eq(404)
       expect(response.body).to eq("")
       
-      put(:update, {:id => 1231231231, :line_item_additional_detail => { :form_data_json => "{ fake json }"} }) 
+      put(:update, {:id => 1231231231, :line_item_additional_detail => { :form_data_json => '{ "real" : "JSON" }'} }) 
       expect(response.status).to eq(404)
       expect(response.body).to eq("")
       expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq(nil)
@@ -92,7 +92,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       end
       
       it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do
-        put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => "{ fake json }"} }) 
+        put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => '{ "real" : "JSON" }'} }) 
         expect(response.status).to eq(401)
         expect(response.body).to eq("")
         expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq(nil)
@@ -115,9 +115,9 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       end
       
       it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do
-        put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => "{ fake json }"} }) 
+        put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => '{ "real" : "JSON" }'} }) 
         expect(response.status).to eq(204)
-        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq("{ fake json }")
+        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq('{ "real" : "JSON" }')
       end
       
       it 'view failed validation messages after an attempt to update a line_item_additional_detail (i.e., submit/update answers to questions)' do
@@ -144,9 +144,9 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       end
       
       it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do
-        put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => "{ fake json }"} }) 
+        put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => '{ "real" : "JSON" }'} }) 
         expect(response.status).to eq(204)
-        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq("{ fake json }")
+        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq('{ "real" : "JSON" }')
       end
      
     end 
@@ -167,7 +167,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       end
       
       it 'does NOT have access to update a line_item_additional_detail (i.e., submit/update answers to questions)' do
-        put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => "{ fake json }"} }) 
+        put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => '{ "real" : "JSON" }'} }) 
         expect(response.status).to eq(401)
         expect(response.body).to eq("")
         expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq(nil)
@@ -190,7 +190,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       end
       
       it 'does NOT have access to update a line_item_additional_detail (i.e., submit/update answers to questions)' do
-        put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => "{ fake json }"} }) 
+        put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => '{ "real" : "JSON" }'} }) 
         expect(response.status).to eq(401)
         expect(response.body).to eq("")
         expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq(nil)
@@ -226,9 +226,9 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       end
       
       it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do
-        put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => "{ fake json }"} }) 
+        put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => '{ "real" : "JSON" }'} }) 
         expect(response.status).to eq(204)
-        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq("{ fake json }")
+        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq('{ "real" : "JSON" }')
       end
     end
     
@@ -261,9 +261,9 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       end
       
       it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do
-        put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => "{ fake json }"} }) 
+        put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => '{ "real" : "JSON" }'} }) 
         expect(response.status).to eq(204)
-        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq("{ fake json }")
+        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq('{ "real" : "JSON" }')
       end
     end    
     
@@ -292,9 +292,9 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       end
       
       it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do
-        put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => "{ fake json }"} }) 
+        put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => '{ "real" : "JSON" }'} }) 
         expect(response.status).to eq(204)
-        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq("{ fake json }")
+        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq('{ "real" : "JSON" }')
       end
     end     
 
@@ -323,9 +323,9 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       end
       
       it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do
-        put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => "{ fake json }"} }) 
+        put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => '{ "real" : "JSON" }'} }) 
         expect(response.status).to eq(204)
-        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq("{ fake json }")
+        expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq('{ "real" : "JSON" }')
       end
     end   
 
@@ -354,7 +354,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       end
       
       it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do
-        put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => "{ fake json }"} }) 
+        put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => '{ "real" : "JSON" }'} }) 
         expect(response.status).to eq(401)
         expect(response.body).to eq("")
         expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq(nil)
@@ -386,7 +386,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       end
       
       it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do
-        put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => "{ fake json }"} }) 
+        put(:update, {:id => @line_item_additional_detail, :line_item_additional_detail => { :form_data_json => '{ "real" : "JSON" }'} }) 
         expect(response.status).to eq(401)
         expect(response.body).to eq("")
         expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq(nil)

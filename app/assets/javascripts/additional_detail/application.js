@@ -46,8 +46,8 @@ app.controller('AdditionalDetailsRootController', ['$scope', '$http', function($
 app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$http', 'LineItemAdditionalDetail', function($scope, $http, LineItemAdditionalDetail) { 
 	$scope.gridModel = {enableFiltering: false, enableColumnResizing: true, showColumnFooter: false , enableSorting: true, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 42, enableCellEdit:false};
 
-	$scope.gridModel.columnDefs = [{enableFiltering: false, enableColumnResizing: false,name: 'Survey',width: 105, enableColumnMenu: false, cellTemplate: '<button type="button" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.line_item_additional_detail.id)">{{(row.entity.line_item_additional_detail.form_data_json==null) ? "Take Survey" : "Edit Survey"}}</button>'},
-	                               {field: 'line_item_additional_detail.line_item.service.additional_detail_breadcrumb', name: 'Service', enableColumnMenu: false ,}, 
+	$scope.gridModel.columnDefs = [{enableFiltering: false, enableColumnResizing: false,name: 'Survey',width: 105, enableColumnMenu: false, cellTemplate: '<button type="button" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">{{(row.entity.form_data_json==null) ? "Take Survey" : "Edit Survey"}}</button>'},
+	                               {field: 'line_item.service.additional_detail_breadcrumb', name: 'Service', enableColumnMenu: false ,}, 
 	                               {field:'status', width: '15%', name: 'Complete', enableColumnMenu: false }
 	                               ];
 
@@ -57,16 +57,15 @@ app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$htt
 				$scope.gridModel.data = response.data;
 				data = $scope.gridModel.data
 				for(var i=0; i<data.length; i++){
-					var required = JSON.parse(data[i].line_item_additional_detail.additional_detail.form_definition_json).schema.required;
-					var model = JSON.parse(data[i].line_item_additional_detail.form_data_json);
-					data[i].status = (!model || allPresent(model, required)==false) ? "No" : "Yes"
+					if(!data[i].status){data[i].status = "Incomplete";}
 				}
 			});
 	}
 	
 	function allPresent(model, required){
 		for(var i=0; i<required.length; i++){
-			if(!(required[i] in model)){return false;}
+			if(!(required[i] in model) || model[required[i]] == undefined){
+				return false;}
 		}
 		return true;
 	}
@@ -93,9 +92,11 @@ app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$htt
 	
 	$scope.saveFormResponse = function(){
 		$scope.currentLineItemAD.form_data_json = JSON.stringify($scope.model);
-		$scope.currentLineItemAD.$update(function() { 
+		$scope.currentLineItemAD.status = (allPresent($scope.model, $scope.schema.required)) ? "Complete" : "Incomplete";
+		if($scope.currentLineItemAD.status=="Complete"){$scope.currentLineItemAD.date_completed = new Date();}
+		$scope.currentLineItemAD.$update(function(response) { 
 			$scope.reloadGrid(); 
-			$scope.alertMessage = "Additional detail successfully saved.";
+			$scope.alertMessage = "Response saved.";
 			$scope.resourceSuccessful = true;
   	     }, function(error) {
 	    	// failed server side validation
@@ -138,7 +139,7 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', 'Additi
 	                               {name: "Show", enableFiltering: false, width: 63, enableColumnMenu: false, cellTemplate: '<button data-toggle="modal" class="btn btn-primary" ng-click="grid.appScope.showResults(row.entity.id)">Show</button>'},
 	                               {name: "Edit", enableFiltering: false, width: 63, enableColumnMenu: false, cellTemplate: '<button data-toggle="modal" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">Edit</button>'},
 	                               {field: 'status', enableColumnMenu: false}, 
-	                               {field: 'completed_at',name: 'Date Completed', enableColumnMenu: false},
+	                               {field: 'date_completed',name: 'Date Completed', enableColumnMenu: false},
 	                               {field:'created_at',name: 'Date Started', enableColumnMenu: false }
 	                               //{enableFiltering: false, enableColumnResizing: false,name: 'Delete',width: 70, enableColumnMenu: false, cellTemplate: '<button class="btn btn-danger" ng-disabled="row.entity.line_item_additional_details.length > 0" ng-click="grid.appScope.deleteAdditonalDetail(row.entity.id)">Delete</button>'}
 	                               ];
@@ -199,7 +200,7 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', 'Additi
 			var object = JSON.parse(line_item_additional_detail.additional_detail.form_definition_json);
 			$scope.schema = object.schema;
 			$scope.form   = object.form;
-			$scope.model = (line_item_additional_detail.form_data_json==null) ? {} : JSON.parse(line_item_additional_detail.form_data_json);
+			$scope.model = JSON.parse(line_item_additional_detail.form_data_json);
 			$('#additionalDetailModal').modal();
 		}, function errorCallback(error) { 
 	    	 $scope.alertMessage = error.statusText;

@@ -29,14 +29,14 @@ app.config([
      $httpProvider.defaults.headers.common['X-CSRF-Token'] = $('meta[name=csrf-token]').attr('content');
      }]);
 
-app.factory("AdditionalDetail", function($resource) {
+app.factory("AdditionalDetail",  ['$resource', function($resource) {
   // service_id is a global variable set in a HAML file
   return $resource("/additional_detail/services/:service_id/additional_details/:id", {service_id: service_id, id: '@id'});
-});
+}]);
 
-app.factory("LineItemAdditionalDetail", function($resource) {
+app.factory("LineItemAdditionalDetail",  ['$resource', function($resource) {
   return $resource("/additional_detail/line_item_additional_details/:id", { id: '@id'}, {'update': { method: 'PUT'} });
-});
+}]);
 
 app.controller('AdditionalDetailsRootController', ['$scope', '$http', function($scope, $http) { 
 	$scope.gridModel = {enableFiltering: true, enableColumnResizing: true, showColumnFooter: true , enableSorting: true, showGridFooter: true, enableRowHeaderSelection: false, rowHeight: 42};

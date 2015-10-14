@@ -527,22 +527,21 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
 				  $scope.keyError = "Key already exists.";
 				  f.key = "";
 			  } else {
-				 
 				  $scope.keyError ="Please fill out this field. Valid characters are A-Z a-z 0-9";
 				  if(field.description== null && (field.kind=="time" || field.kind=="datepicker")){
 					  field.description = (field.kind=="time") ? "ex. 12:00 AM" : "ex. 06/13/2015";
 				  }
- 			  // add field form array
-			  formDef.form.push ($scope.getForm(field));
-			  // add field to schema
-			  formDef.schema.properties[field.key] =  $scope.getSchema(field);
+	 			  // add field form array
+				  formDef.form.push ($scope.getForm(field));
+				  // add field to schema
+				  formDef.schema.properties[field.key] =  $scope.getSchema(field);
 				  
-			if(field.required ==true){formDef.schema.required.push(field.key);}
+				  if(field.required ==true){formDef.schema.required.push(field.key);}
 				  
-			  $scope.formDefinition = JSON.stringify(formDef,undefined,2,2);
+				  $scope.formDefinition = JSON.stringify(formDef,undefined,2,2);
+				  // clear the field after successfully adding it to the form? 
+				  //$scope.field = {};
 			  }
-			  
-			  // update schema/form definitions
 			}
 	 };	 
 	 
@@ -566,7 +565,7 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
 		 var hash = {key: field.key, kind : field.kind, style: radioButtonStyle};
 		 
 		 if(field.kind == "yesNo"){
-			 hash.type = "radiobuttons"; hash.titleMap= [{"value": "y","name": "Yes"},{"value": "n","name": "No"}];
+			 hash.type = "radiobuttons"; hash.titleMap= [{"value": "yes","name": "Yes"},{"value": "no","name": "No"}];
 			 return hash; 
 		 }
 		 if(field.kind == "state"){
@@ -771,7 +770,7 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
 	 		return hash;
 	 	 }
 		 else if(field.kind == "yesNo"){
-			 hash["enum"] = ["y","n"]; hash.type="string";
+			 hash["enum"] = ["yes","no"]; hash.type="string";
 				return hash;
 			}
 		 else if(field.kind == "state"){

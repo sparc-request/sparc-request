@@ -4,18 +4,8 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
   
   before :each do
     # create a catalog hierarchy
-    @institution = Institution.new
-    @institution.type = "Institution"
-    @institution.save(validate: false)
-
-    @provider = Provider.new
-    @provider.type = "Provider"
-    @provider.parent_id = @institution.id
-    @provider.save(validate: false)
-
     @program = Program.new
     @program.type = "Program"
-    @program.parent_id = @provider.id
     @program.save(validate: false)
 
     @core = Core.new

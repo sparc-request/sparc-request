@@ -2,47 +2,17 @@ require 'rails_helper'
 
 RSpec.describe AdditionalDetail do
 
-  before :each do
-    @institution = Institution.new
-    @institution.type = "Institution"
-    @institution.abbreviation = "TECHU"
-    @institution.save(validate: false)
-
-    @provider = Provider.new
-    @provider.type = "Provider"
-    @provider.abbreviation = "ICTS"
-    @provider.parent_id = @institution.id
-    @provider.save(validate: false)
-
-    @program = Program.new
-    @program.type = "Program"
-    @program.name = "BMI"
-    @program.parent_id = @provider.id
-    @program.save(validate: false)
-
-    @core = Core.new
-    @core.type = "Core"
-    @core.name = "REDCap"
-    @core.parent_id = @program.id
-    @core.save(validate: false)
-
-    @core_service = Service.new
-    @core_service.organization_id = @core.id
-    @core_service.save(validate: false)
-
-    @program_service = Service.new
-    @program_service.organization_id = @program.id
-    @program_service.save(validate: false)
-  end
-
-  describe "model" do
+  describe "validation" do
     before :each do
+      @core_service = Service.new
+      @core_service.save(validate: false)
+      
       @ad = AdditionalDetail.new
       @ad.service_id= @core_service.id
     end
 
     it 'should create new additional detail' do
-      @ad.effective_date= Time.now
+      @ad.effective_date= Date.today
       @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":[]},"form":[]}'
       @ad.name = "Name"
       expect(@ad.valid?)
@@ -59,7 +29,7 @@ RSpec.describe AdditionalDetail do
     end
 
     it 'should fail vailidation when :effective_date is not in the past' do
-      @ad.effective_date= 1.day.ago
+      @ad.effective_date= Date.yesterday
       @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":[]},"form":[]}'
       @ad.name = "Name"
       expect(!@ad.valid?)
@@ -70,7 +40,7 @@ RSpec.describe AdditionalDetail do
 
     it 'update should fail if line item additional details present' do
       @ad.name= "Test"
-      @ad.effective_date= Time.now
+      @ad.effective_date= Date.today
       @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":[]},"form":[]}'
       expect{@ad.save}.to change(AdditionalDetail, :count).by(1)
       @line_item_additional_detail = LineItemAdditionalDetail.new
@@ -83,7 +53,7 @@ RSpec.describe AdditionalDetail do
     end
 
     it 'should fail vailidation when :name is null' do
-      @ad.effective_date= Time.now
+      @ad.effective_date= Date.today
       @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":[]},"form":[]}'
       expect(!@ad.valid?)
       expect(@ad.errors[:name].size).to eq(1)
@@ -92,7 +62,7 @@ RSpec.describe AdditionalDetail do
     end
 
     it 'should fail vailidation when :form_definition_json is null' do
-      @ad.effective_date= Time.now
+      @ad.effective_date= Date.today
       @ad.name= "Test"
       expect(!@ad.valid?)
       expect(@ad.errors[:form_definition_json].size).to eq(1)
@@ -102,7 +72,7 @@ RSpec.describe AdditionalDetail do
 
     describe "when line_item_additional_detail present" do
       before :each do
-        @ad.effective_date= Time.now
+        @ad.effective_date= Date.today
         @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":[]},"form":[]}'
         @ad.name = "Name"
         expect(@ad.valid?)
@@ -136,7 +106,7 @@ RSpec.describe AdditionalDetail do
         "Comment","properties": {},"required": []}
       ,"form": []}  '
 
-      @ad.effective_date= Time.now
+      @ad.effective_date= Date.today
       @ad.name= "Test"
       expect(!@ad.valid?)
       expect(@ad.errors[:form_definition_json].size).to eq(1)
@@ -146,7 +116,7 @@ RSpec.describe AdditionalDetail do
 
     it 'should fail vailidation when :description is too long' do
       @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":[]},"form":[]}'
-      @ad.effective_date= Time.now
+      @ad.effective_date= Date.today
       @ad.description = "0"*256
       @ad.name= "Test"
       expect(!@ad.valid?)

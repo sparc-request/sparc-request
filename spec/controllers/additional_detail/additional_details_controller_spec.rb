@@ -3,21 +3,9 @@ require 'rails_helper'
 RSpec.describe AdditionalDetail::AdditionalDetailsController do
 
   before :each do
-    @institution = Institution.new
-    @institution.type = "Institution"
-    @institution.abbreviation = "TECHU"
-    @institution.save(validate: false)
-
-    @provider = Provider.new
-    @provider.type = "Provider"
-    @provider.abbreviation = "ICTS"
-    @provider.parent_id = @institution.id
-    @provider.save(validate: false)
-
     @program = Program.new
     @program.type = "Program"
     @program.name = "BMI"
-    @program.parent_id = @provider.id
     @program.save(validate: false)
 
     @core = Core.new
@@ -257,7 +245,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
             @ad.name = "Test"
             @ad.service_id = @core_service.id
             @ad.form_definition_json = '{"test": "test"}'
-            @ad.effective_date = Time.now
+            @ad.effective_date = Date.today
             @ad.approved = "false"
             expect{
               @ad.save
@@ -316,7 +304,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         it 'create an additional detail record' do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
-              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Time.now.tomorrow, :approved => "true"}
+              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Date.tomorrow, :approved => "true"}
             })
             expect(assigns(:additional_detail).errors).to be_blank
             expect(response).to redirect_to(additional_detail_service_additional_details_path(@core_service))
@@ -328,7 +316,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         it 'see failed validation for :description being too long' do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
-              :additional_detail => {:name => "Form # 1", :description => "0"*256, :form_definition_json => "{}", :effective_date => Time.now, :approved => "true"}
+              :additional_detail => {:name => "Form # 1", :description => "0"*256, :form_definition_json => "{}", :effective_date => Date.today, :approved => "true"}
             })
             expect(assigns(:additional_detail).errors[:description].size).to eq(1)
             message = "is too long (maximum is 255 characters)"
@@ -343,7 +331,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         it 'see failed validation for blank :name when trying to create an additional detail record' do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
-              :additional_detail => {:name => "", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Time.now.tomorrow, :approved => "true"}
+              :additional_detail => {:name => "", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Date.tomorrow, :approved => "true"}
             })
             expect(assigns(:additional_detail).errors[:name].size).to eq(1)
             expect(assigns(:additional_detail).errors[:effective_date].size).to eq(0)
@@ -383,10 +371,10 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         it 'see failed validation for :effective_date that is already taken when trying to create an additional detail record' do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
-              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Time.now.tomorrow, :approved => "true"}
+              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Date.tomorrow, :approved => "true"}
             })
             post(:create, {:service_id => @core_service, :format => :html,
-              :additional_detail => {:name => "Form # 2", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Time.now.tomorrow, :approved => "true"}
+              :additional_detail => {:name => "Form # 2", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Date.tomorrow, :approved => "true"}
             })
             expect(assigns(:additional_detail).errors[:effective_date].size).to eq(1)
             message = "Effective date cannot be the same as any other effective dates."
@@ -401,7 +389,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         it 'see failed validation for blank :form_definition_json when trying to create an additional detail record' do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
-              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "", :effective_date => Time.now, :approved => "true"}
+              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "", :effective_date => Date.today, :approved => "true"}
             })
             expect(assigns(:additional_detail).errors[:form_definition_json].size).to eq(1)
             expect(response).to render_template("new")
@@ -414,7 +402,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
               :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => '{"schema": {"type": "object","title": "Comment","properties": {},"required": []},"form": []}',
-              :effective_date => Time.now, :approved => "true"}
+              :effective_date => Date.today, :approved => "true"}
             })
             expect(assigns(:additional_detail).errors[:form_definition_json].size).to eq(1)
             message = "Form must contain at least one question."

@@ -30,13 +30,13 @@ RSpec.describe 'SubServiceRequest' do
     end
 
     it "should return empty array for line_item_additional_details when no additional details are present" do
-      expect(@sub_service_request.get_line_item_additional_details).to eq([])
+      expect(@sub_service_request.get_or_create_line_item_additional_details).to eq([])
     end
 
     describe "when additional details present" do
       before(:each) do
         @ad = AdditionalDetail.new
-        @ad.effective_date = 1.day.ago
+        @ad.effective_date = Date.yesterday
         @ad.service_id = @service.id
         @ad.save(:validate => false)
       end
@@ -46,9 +46,9 @@ RSpec.describe 'SubServiceRequest' do
       end
 
       it "a new line_item_additional_detail_should be created and returned in the array" do
-        expect{@sub_service_request.get_line_item_additional_details}.to change{LineItemAdditionalDetail.count}.by(1)
+        expect{@sub_service_request.get_or_create_line_item_additional_details}.to change{LineItemAdditionalDetail.count}.by(1)
         @liad = LineItemAdditionalDetail.where(:line_item_id => @line_item.id)
-        expect{expect(@sub_service_request.get_line_item_additional_details).to eq(@liad)}.to change{LineItemAdditionalDetail.count}.by(0)
+        expect{expect(@sub_service_request.get_or_create_line_item_additional_details).to eq(@liad)}.to change{LineItemAdditionalDetail.count}.by(0)
       end
 
       describe "when  multiple additional details present" do
@@ -62,7 +62,7 @@ RSpec.describe 'SubServiceRequest' do
           @line_item2.save(:validate => false)
 
           @ad2 = AdditionalDetail.new
-          @ad2.effective_date = 1.day.ago
+          @ad2.effective_date = Date.yesterday
           @ad2.service_id = @service2.id
           @ad2.save(:validate => false)
         end
@@ -72,13 +72,13 @@ RSpec.describe 'SubServiceRequest' do
         end
         
         it "should return multiple line_item_additional_details" do 
-          expect{@sub_service_request.get_line_item_additional_details}.to change{LineItemAdditionalDetail.count}.by(2)
+          expect{@sub_service_request.get_or_create_line_item_additional_details}.to change{LineItemAdditionalDetail.count}.by(2)
           @liad = LineItemAdditionalDetail.where(:line_item_id => @line_item.id)
           @liad2 = LineItemAdditionalDetail.where(:line_item_id => @line_item2.id)
           results =[]
           results.concat(@liad)
           results.concat(@liad2)
-          expect{expect(@sub_service_request.get_line_item_additional_details).to eq(results)}.to change{LineItemAdditionalDetail.count}.by(0)
+          expect{expect(@sub_service_request.get_or_create_line_item_additional_details).to eq(results)}.to change{LineItemAdditionalDetail.count}.by(0)
         end
       
       end

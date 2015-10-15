@@ -92,7 +92,7 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
           @service_request.save(:validate => false)
               
           @ad = AdditionalDetail.new 
-          @ad.effective_date = 1.day.ago.strftime("%Y-%m-%d")
+          @ad.effective_date = Date.yesterday
           @ad.service_id = @service.id
           @ad.save(:validate => false)
         end

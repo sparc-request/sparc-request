@@ -116,10 +116,10 @@ class ServiceRequest < ActiveRecord::Base
     results
   end
   
-  def get_line_item_additional_details
+  def get_or_create_line_item_additional_details
     results =[]
       for sub_service_request in self.sub_service_requests
-        results.concat(sub_service_request.get_line_item_additional_details)
+        results.concat(sub_service_request.get_or_create_line_item_additional_details)
       end
     results  
   end

@@ -7,9 +7,9 @@ class AdditionalDetail::ServiceRequestsController < ApplicationController
     # version 1.0 only allows original service requester to view grid 
     # but we'll likely add more types of users to the list of authorized viewers
     @service_request = ServiceRequest.where(:id => params[:id], :service_requester_id => current_identity.id).first
-    # as needed, get_line_item_additional_details creates new line item additional details
+    # as needed, get_or_create_line_item_additional_details creates new line item additional details
     if @service_request
-      render :json => @service_request.get_line_item_additional_details.to_json(:root=> false, :include => [{:line_item => {:include => {:service => { :methods => :additional_detail_breadcrumb } }} }, :additional_detail])
+      render :json => @service_request.get_or_create_line_item_additional_details.to_json(:root=> false, :include => [{:line_item => {:include => {:service => { :methods => :additional_detail_breadcrumb } }} }, :additional_detail])
     else 
       render :json => "", :status => :unauthorized
     end

@@ -41,14 +41,6 @@ RSpec.describe Service, type: :model do
         @ad.save(validate: false)
       end
 
-      it 'additional_detail_for_date should return additional detail before date' do
-        @ad2 = AdditionalDetail.new
-        @ad2.service_id = @service.id
-        @ad2.effective_date = 3.day.ago
-        @ad2.save(validate: false)
-        expect(@service.additional_detail_for_date(2.day.ago)).to eq(@ad2)
-      end
-
       it 'should return an additional detail' do
         expect(@service.current_additional_detail).to eq(@ad)
       end

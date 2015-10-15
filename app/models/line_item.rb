@@ -79,6 +79,10 @@ class LineItem < ActiveRecord::Base
     service.current_additional_detail
   end
   
+  def additional_detail_breadcrumb
+    self.service.additional_detail_breadcrumb
+  end
+  
   def additional_details_form_data_hash
     if self.line_item_additional_detail
       self.line_item_additional_detail.form_data_hash

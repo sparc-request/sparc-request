@@ -228,12 +228,7 @@ class Service < ActiveRecord::Base
 
   # Find most recent additional detail with an effective date before today
   def current_additional_detail
-    return additional_detail_for_date(Date.today)
-  end
-  
-  # Find most recent additional detail before given date
-  def additional_detail_for_date(date=Date.today)
-    current_additional_details = AdditionalDetail.where("service_id= :id AND effective_date <= :date" , {:id => id, :date => date.beginning_of_day})
+    current_additional_details = self.additional_details.select { |additional_detail| additional_detail.effective_date <= Date.today }
     if(current_additional_details.count >0)
       return current_additional_details.sort { |lhs, rhs| lhs.effective_date <=> rhs.effective_date }.last
     else

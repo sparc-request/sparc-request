@@ -44,7 +44,7 @@ RSpec.describe "Line Item" do
       describe 'with a line additional detail present' do
         before(:each) do
           @ad = AdditionalDetail.new
-          @ad.effective_date = 1.day.ago
+          @ad.effective_date = Date.today
           @ad.service_id = @service.id
           @ad.save(:validate => false)
         end
@@ -55,7 +55,7 @@ RSpec.describe "Line Item" do
          
         it "should return additional detail with most recent active " do 
           @ad2 = AdditionalDetail.new
-          @ad2.effective_date = 2.day.ago
+          @ad2.effective_date = 1.day.ago
           @ad2.service_id = @service.id
           @ad2.save(:vailidate => false)
           
@@ -90,32 +90,90 @@ RSpec.describe "Line Item" do
       
   end
   
-describe "additional_details_hash" do
-  it 'should return a hash with zero key/value pairs because LineItemAdditionalDetail is nil' do
-    @line_item = LineItem.new
-    expect(@line_item.additional_details_form_data_hash).to eq({})
+  describe "additional_details_hash" do
+    it 'should return a hash with zero key/value pairs because LineItemAdditionalDetail is nil' do
+      @line_item = LineItem.new
+      expect(@line_item.additional_details_form_data_hash).to eq({})
+    end
+    
+    it 'should return a hash with zero key/value pairs because LineItemAdditionalDetail is empty' do
+      @line_item = LineItem.new
+      @line_item.line_item_additional_detail = LineItemAdditionalDetail.new
+      @line_item.line_item_additional_detail.form_data_json = "{}"
+      expect(@line_item.additional_details_form_data_hash).to eq({})
+    end
+    
+    it 'should return a hash with one key/value pair' do
+      @line_item = LineItem.new
+      @line_item.line_item_additional_detail = LineItemAdditionalDetail.new
+      @line_item.line_item_additional_detail.form_data_json = "{\"date\":\"10/13/2015\"}"
+      expect(@line_item.additional_details_form_data_hash).to eq({ "date" => "10/13/2015" })
+    end
+    
+    it 'should return a hash with two key/value pairs' do
+      @line_item = LineItem.new
+      @line_item.line_item_additional_detail = LineItemAdditionalDetail.new
+      @line_item.line_item_additional_detail.form_data_json = "{\"date\":\"10/13/2015\", \"email\":\"test@test.com\"}"
+      expect(@line_item.additional_details_form_data_hash).to eq({ "date" => "10/13/2015", "email" => "test@test.com" })
+    end
   end
+
+  describe "additional_detail_breadcrumb" do
+     
+    it 'should return core / service, without additional detail name' do
+      @line_item = LineItem.new
+      @line_item.service = Service.new
+      @line_item.service.name = "New Project"
+      @line_item.service.organization = Core.new
+      @line_item.service.organization.type = "Core"
+      @line_item.service.organization.name = "REDCap"
+                  
+      expect(@line_item.additional_detail_breadcrumb).to eq("REDCap / New Project / ")
+    end
+    
+    it 'should return core / service / additional detail name' do
+      @line_item = LineItem.new
+      @line_item.service = Service.new
+      @line_item.service.name = "New Project"
+      @line_item.service.organization = Core.new
+      @line_item.service.organization.type = "Core"
+      @line_item.service.organization.name = "REDCap"
+        
+      @additional_detail = AdditionalDetail.new
+      @additional_detail.name = "Project Details"
+      @additional_detail.effective_date = Date.today
+      
+      @line_item.service.additional_details << @additional_detail
+              
+      expect(@line_item.additional_detail_breadcrumb).to eq("REDCap / New Project / Project Details")
+    end
   
-  it 'should return a hash with zero key/value pairs because LineItemAdditionalDetail is empty' do
-    @line_item = LineItem.new
-    @line_item.line_item_additional_detail = LineItemAdditionalDetail.new
-    @line_item.line_item_additional_detail.form_data_json = "{}"
-    expect(@line_item.additional_details_form_data_hash).to eq({})
-  end
-  
-  it 'should return a hash with one key/value pair' do
-    @line_item = LineItem.new
-    @line_item.line_item_additional_detail = LineItemAdditionalDetail.new
-    @line_item.line_item_additional_detail.form_data_json = "{\"date\":\"10/13/2015\"}"
-    expect(@line_item.additional_details_form_data_hash).to eq({ "date" => "10/13/2015" })
-  end
-  
-  it 'should return a hash with two key/value pairs' do
-    @line_item = LineItem.new
-    @line_item.line_item_additional_detail = LineItemAdditionalDetail.new
-    @line_item.line_item_additional_detail.form_data_json = "{\"date\":\"10/13/2015\", \"email\":\"test@test.com\"}"
-    expect(@line_item.additional_details_form_data_hash).to eq({ "date" => "10/13/2015", "email" => "test@test.com" })
-  end
-  
-end
+    it 'should return program / service, without additional detail name' do
+      @line_item = LineItem.new
+      @line_item.service = Service.new
+      @line_item.service.name = "Consulting"
+      @line_item.service.organization = Program.new
+      @line_item.service.organization.type = "Program"
+      @line_item.service.organization.name = "BMI"
+            
+      expect(@line_item.additional_detail_breadcrumb).to eq("BMI / Consulting / ")
+    end
+    
+    it 'should return program / service / additional detail name' do
+      @line_item = LineItem.new
+      @line_item.service = Service.new
+      @line_item.service.name = "Consulting"
+      @line_item.service.organization = Program.new
+      @line_item.service.organization.type = "Program"
+      @line_item.service.organization.name = "BMI"
+                  
+      @additional_detail = AdditionalDetail.new
+      @additional_detail.name = "Project Team Members"
+      @additional_detail.effective_date = Date.today
+      
+      @line_item.service.additional_details << @additional_detail
+      
+      expect(@line_item.additional_detail_breadcrumb).to eq("BMI / Consulting / Project Team Members")
+    end    
+  end  
 end

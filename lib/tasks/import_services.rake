@@ -147,6 +147,7 @@ namespace :data do
         if service.valid? and pricing_map.valid?
           service.save
           pricing_map.save
+          puts "Saving #{service.name} with an id of #{service.id}"
         else
           puts "#"*50
           puts "Error importing service"

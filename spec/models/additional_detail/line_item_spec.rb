@@ -55,7 +55,7 @@ RSpec.describe "Line Item" do
          
         it "should return additional detail with most recent active " do 
           @ad2 = AdditionalDetail.new
-          @ad2.effective_date = 1.day.ago
+          @ad2.effective_date = Date.yesterday
           @ad2.service_id = @service.id
           @ad2.save(:vailidate => false)
           

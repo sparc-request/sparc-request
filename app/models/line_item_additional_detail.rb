@@ -31,6 +31,10 @@ class LineItemAdditionalDetail < ActiveRecord::Base
     JSON.parse(self.form_data_json)
   end
   
+  def additional_detail_breadcrumb
+    self.line_item.additional_detail_breadcrumb
+  end
+  
   private
   
   def form_data_json_must_be_parsable

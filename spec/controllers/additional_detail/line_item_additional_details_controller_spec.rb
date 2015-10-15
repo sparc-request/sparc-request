@@ -96,12 +96,19 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
         @project_role.protocol_id = @protocol.id
         @project_role.project_rights = 'approve'
         @project_role.save(validate: false)
+        
+        # associate a service to the line_item for additional_detail_breadcrumb, but not otherwise related authorization
+        @core_service = Service.new
+        @core_service.organization_id = @core.id
+        @core_service.save(validate: false)       
+        @line_item.service_id = @core_service.id
+        @line_item.save(:validate => false)
       end
       
       it 'view a line_item_additional_detail' do
         get(:show, {:id => @line_item_additional_detail})
         expect(response.status).to eq(200)
-        expect(response.body).to eq(@line_item_additional_detail.to_json(:root => false))
+        expect(response.body).to eq(@line_item_additional_detail.to_json(:root => false, :methods => :additional_detail_breadcrumb, :include => :additional_detail))
       end
       
       it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do
@@ -125,12 +132,19 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
         @project_role.protocol_id = @protocol.id
         @project_role.project_rights = 'request'
         @project_role.save(validate: false)
+        
+        # associate a service to the line_item for additional_detail_breadcrumb, but not otherwise related authorization
+        @core_service = Service.new
+        @core_service.organization_id = @core.id
+        @core_service.save(validate: false)       
+        @line_item.service_id = @core_service.id
+        @line_item.save(:validate => false)
       end
       
       it 'view a line_item_additional_detail' do
         get(:show, {:id => @line_item_additional_detail})
         expect(response.status).to eq(200)
-        expect(response.body).to eq(@line_item_additional_detail.to_json(:root => false))
+        expect(response.body).to eq(@line_item_additional_detail.to_json(:root => false, :methods => :additional_detail_breadcrumb, :include => :additional_detail))
       end
       
       it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do
@@ -148,12 +162,19 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
         @project_role.protocol_id = @protocol.id
         @project_role.project_rights = 'view'
         @project_role.save(validate: false)
+        
+        # associate a service to the line_item for additional_detail_breadcrumb, but not otherwise related authorization
+        @core_service = Service.new
+        @core_service.organization_id = @core.id
+        @core_service.save(validate: false)       
+        @line_item.service_id = @core_service.id
+        @line_item.save(:validate => false)
       end
       
       it 'has access to view a line_item_additional_detail' do
         get(:show, {:id => @line_item_additional_detail})
         expect(response.status).to eq(200)
-        expect(response.body).to eq(@line_item_additional_detail.to_json(:root => false))
+        expect(response.body).to eq(@line_item_additional_detail.to_json(:root => false, :methods => :additional_detail_breadcrumb, :include => :additional_detail))
       end
       
       it 'does NOT have access to update a line_item_additional_detail (i.e., submit/update answers to questions)' do
@@ -171,6 +192,13 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
         @project_role.protocol_id = @protocol.id
         @project_role.project_rights = 'none'
         @project_role.save(validate: false)
+        
+        # associate a service to the line_item for additional_detail_breadcrumb, but not otherwise related authorization
+        @core_service = Service.new
+        @core_service.organization_id = @core.id
+        @core_service.save(validate: false)       
+        @line_item.service_id = @core_service.id
+        @line_item.save(:validate => false)
       end
       
       it 'does NOT have access to view a line_item_additional_detail' do
@@ -212,7 +240,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       it 'view a line_item_additional_detail' do
         get(:show, {:id => @line_item_additional_detail})
         expect(response.status).to eq(200)
-        expect(response.body).to eq(@line_item_additional_detail.to_json(:root => false))
+        expect(response.body).to eq(@line_item_additional_detail.to_json(:root => false, :methods => :additional_detail_breadcrumb, :include => :additional_detail))
       end
       
       it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do
@@ -247,7 +275,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       it 'view a line_item_additional_detail' do
         get(:show, {:id => @line_item_additional_detail})
         expect(response.status).to eq(200)
-        expect(response.body).to eq(@line_item_additional_detail.to_json(:root => false))
+        expect(response.body).to eq(@line_item_additional_detail.to_json(:root => false, :methods => :additional_detail_breadcrumb, :include => :additional_detail))
       end
       
       it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do
@@ -262,6 +290,10 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
         @core_service = Service.new
         @core_service.organization_id = @core.id
         @core_service.save(validate: false)
+        
+        # associate a service to the line_item for additional_detail_breadcrumb, but not otherwise related authorization  
+        @line_item.service_id = @core_service.id
+        @line_item.save(:validate => false)
         
         @super_user = SuperUser.new
         @super_user.identity_id = @identity.id
@@ -278,7 +310,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       it 'view a line_item_additional_detail' do
         get(:show, {:id => @line_item_additional_detail})
         expect(response.status).to eq(200)
-        expect(response.body).to eq(@line_item_additional_detail.to_json(:root => false))
+        expect(response.body).to eq(@line_item_additional_detail.to_json(:root => false, :methods => :additional_detail_breadcrumb, :include => :additional_detail))
       end
       
       it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do
@@ -293,6 +325,10 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
         @program_service = Service.new
         @program_service.organization_id = @program.id
         @program_service.save(validate: false)
+        
+        # associate a service to the line_item for additional_detail_breadcrumb, but not otherwise related authorization  
+        @line_item.service_id = @program_service.id
+        @line_item.save(:validate => false)
         
         @super_user = SuperUser.new
         @super_user.identity_id = @identity.id
@@ -309,7 +345,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
       it 'view a line_item_additional_detail' do
         get(:show, {:id => @line_item_additional_detail})
         expect(response.status).to eq(200)
-        expect(response.body).to eq(@line_item_additional_detail.to_json(:root => false))
+        expect(response.body).to eq(@line_item_additional_detail.to_json(:root => false, :methods => :additional_detail_breadcrumb, :include => :additional_detail))
       end
       
       it 'update a line_item_additional_detail (i.e., submit/update answers to questions)' do

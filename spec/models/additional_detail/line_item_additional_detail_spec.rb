@@ -147,5 +147,73 @@ RSpec.describe LineItemAdditionalDetail do
     end
     
   end
-
+  
+  describe "additional_detail_breadcrumb" do
+     
+    it 'should return core / service, without additional detail name' do
+      @line_item = LineItem.new
+      @line_item.service = Service.new
+      @line_item.service.name = "New Project"
+      @line_item.service.organization = Core.new
+      @line_item.service.organization.type = "Core"
+      @line_item.service.organization.name = "REDCap"
+                  
+      @line_item_additional_detail = LineItemAdditionalDetail.new
+      @line_item_additional_detail.line_item = @line_item
+      expect(@line_item_additional_detail.additional_detail_breadcrumb).to eq("REDCap / New Project / ")
+    end
+    
+    it 'should return core / service / additional detail name' do
+      @line_item = LineItem.new
+      @line_item.service = Service.new
+      @line_item.service.name = "New Project"
+      @line_item.service.organization = Core.new
+      @line_item.service.organization.type = "Core"
+      @line_item.service.organization.name = "REDCap"
+        
+      @additional_detail = AdditionalDetail.new
+      @additional_detail.name = "Project Details"
+      @additional_detail.effective_date = Date.today
+      
+      @line_item.service.additional_details << @additional_detail
+      
+      @line_item_additional_detail = LineItemAdditionalDetail.new
+      @line_item_additional_detail.line_item = @line_item
+      expect(@line_item_additional_detail.additional_detail_breadcrumb).to eq("REDCap / New Project / Project Details")
+    end
+  
+    it 'should return program / service, without additional detail name' do
+      @line_item = LineItem.new
+      @line_item.service = Service.new
+      @line_item.service.name = "Consulting"
+      @line_item.service.organization = Program.new
+      @line_item.service.organization.type = "Program"
+      @line_item.service.organization.name = "BMI"
+            
+      @line_item_additional_detail = LineItemAdditionalDetail.new
+      @line_item_additional_detail.line_item = @line_item
+      expect(@line_item_additional_detail.additional_detail_breadcrumb).to eq("BMI / Consulting / ")
+    end
+    
+    it 'should return program / service / additional detail name' do
+      @line_item = LineItem.new
+      @line_item.service = Service.new
+      @line_item.service.name = "Consulting"
+      @line_item.service.organization = Program.new
+      @line_item.service.organization.type = "Program"
+      @line_item.service.organization.name = "BMI"
+                  
+      @additional_detail = AdditionalDetail.new
+      @additional_detail.name = "Project Team Members"
+      @additional_detail.effective_date = Date.today
+      
+      @line_item.service.additional_details << @additional_detail
+      
+      @line_item_additional_detail = LineItemAdditionalDetail.new
+      @line_item_additional_detail.line_item = @line_item
+      expect(@line_item_additional_detail.additional_detail_breadcrumb).to eq("BMI / Consulting / Project Team Members")
+    end    
+  end  
+  
 end
+

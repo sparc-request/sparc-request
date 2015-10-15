@@ -138,14 +138,14 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
       end
     end
 
-    describe 'is a catalog_manager and has access to' do
+    describe 'is a catalog_manager' do
       
       before :each do
         @catalog_manager = CatalogManager.new
         @catalog_manager.identity_id = @identity.id
       end
       
-      describe 'is a core manager' do
+      describe 'for a core and and has access to' do
         before :each do
           @catalog_manager.organization_id = @core.id
           @catalog_manager.save(validate: false)
@@ -205,18 +205,13 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
               expect(response.body).to eq(@ad.to_json(:root => false, :include => {:line_item_additional_details  => {:methods => [:sub_service_request_status, :required_fields_present]}}))
             end
           end
-          
-          
         end
-        
-        
-
       end
       
-      describe 'is a program manager' do
+      describe 'for a program and and has access to' do
         before :each do
           @catalog_manager.organization_id = @program.id
-           @catalog_manager.save(validate: false)
+          @catalog_manager.save(validate: false)
         end
         
         it 'a core service index because user is a catalog_manager for its program' do

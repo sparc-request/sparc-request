@@ -105,7 +105,7 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
           expect(@line_item_additional_detail.additional_detail_id).to eq(@ad.id)
           expect(@line_item_additional_detail.line_item_id).to eq(@line_item.id)
           expect(response.status).to eq(200)
-          expect(response.body).to eq([@line_item_additional_detail].to_json(:root=> false, :methods => :required_fields_present, :include => [{:line_item => {:include => {:service => { :methods => :additional_detail_breadcrumb } }} }, :additional_detail]))
+          expect(response.body).to eq([@line_item_additional_detail].to_json(:root=> false, :methods => [:required_fields_present, :additional_detail_breadcrumb], :include => :additional_detail))
         end
       end
     end 

@@ -48,13 +48,14 @@ app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$htt
 
 	$scope.gridModel.columnDefs = [{enableFiltering: false, enableColumnResizing: false,name: 'Survey',width: 105, enableColumnMenu: false, cellTemplate: '<button type="button" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">{{(row.entity.form_data_json==null) ? "Take Survey" : "Edit Survey"}}</button>'},
 	                               {field: 'line_item.service.additional_detail_breadcrumb', name: 'Service', enableColumnMenu: false ,}, 
-	                               {field:'status', width: '15%', name: 'Complete', enableColumnMenu: false }
+	                               {name: 'Completed',field: 'required_fields_present', width: '15%', enableColumnMenu: false }
 	                               ];
 
 	$scope.reloadGrid = function(){
 		$http.get('/additional_detail/service_requests/'+service_request_id).
 			then(function(response){
 				$scope.gridModel.data = response.data;
+				console.log($scope.gridModel.data);
 				data = $scope.gridModel.data
 				for(var i=0; i<data.length; i++){
 					if(!data[i].status){data[i].status = "Incomplete";}
@@ -139,7 +140,7 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', 'Additi
 	                               {name: "Show", enableFiltering: false, width: 63, enableColumnMenu: false, cellTemplate: '<button data-toggle="modal" class="btn btn-primary" ng-click="grid.appScope.showResults(row.entity.id)">Show</button>'},
 	                               {name: "Edit", enableFiltering: false, width: 63, enableColumnMenu: false, cellTemplate: '<button data-toggle="modal" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">Edit</button>'},
 	                               {name: 'Request Status', field: 'sub_service_request_status', enableColumnMenu: false}, 
-	                               {name: 'Form Status',field: 'required_fields_present', enableColumnMenu: false},
+	                               {name: 'Completed',field: 'required_fields_present', enableColumnMenu: false},
 	                               {field:'created_at',name: 'Date Started', enableColumnMenu: false }
 	                               //{enableFiltering: false, enableColumnResizing: false,name: 'Delete',width: 70, enableColumnMenu: false, cellTemplate: '<button class="btn btn-danger" ng-disabled="row.entity.line_item_additional_details.length > 0" ng-click="grid.appScope.deleteAdditonalDetail(row.entity.id)">Delete</button>'}
 	                               ];
@@ -160,6 +161,7 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', 'Additi
 	}
 	// initialize the main grid
 	$scope.gridModel.data = AdditionalDetail.query();
+	console.log($scope.gridModel.data);
 	// (don't) initialize the response grid to the first additional
 	$scope.resultsTabText = "Results";
 	//$scope.updateLineItemAdditionalDetails();

@@ -15,7 +15,16 @@ class LineItemAdditionalDetail < ActiveRecord::Base
   end
   
   def required_fields_present
-    :test
+    if self.additional_detail and self.additional_detail.form_definition_json and self.form_data_json
+      required_data = JSON.parse(self.additional_detail.form_definition_json).fetch('schema').fetch('required')
+      results = JSON.parse(self.form_data_json)
+      for required in required_data do
+        if !results.has_key?(required)
+          return false
+        end
+      end
+      return true
+    end
   end
   
   def form_data_hash

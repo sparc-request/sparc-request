@@ -79,7 +79,31 @@ RSpec.describe LineItemAdditionalDetail do
     end
   end
 
-  describe "get_sub_service_request_status" do
+  describe "required_fields_present" do
+    
+    before :each do
+     @additional_detail = AdditionalDetail.new
+     @additional_detail.form_definition_json= '{"schema": {"type": "object","title": "Comment","properties": {"t": {"title": "t","type": "string"} },"required": ["t"] },"form": [{"key": "t","kind": "textarea", "style": {"selected": "btn-success","unselected": "btn-default"},"type": "textarea"}]}'
+     @additional_detail.save(:validate => false)
+     
+     @line_item_additional_detail = LineItemAdditionalDetail.new
+     @line_item_additional_detail.additional_detail_id = @additional_detail.id
+    end
+    
+    it 'should return false when not all data is present' do
+      @line_item_additional_detail.form_data_json = "{}"
+      expect(@line_item_additional_detail.required_fields_present).to eq(false)
+    end
+    
+    it 'should return true when all data is present' do
+          @line_item_additional_detail.form_data_json = '{"t" : "This is a test."}'
+          expect(@line_item_additional_detail.required_fields_present).to eq(true)
+        end
+    
+  end
+  
+  
+  describe "sub_service_request_status" do
 
     before :each do
       @sub_service_request = SubServiceRequest.new

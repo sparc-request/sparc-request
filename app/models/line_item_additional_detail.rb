@@ -10,8 +10,12 @@ class LineItemAdditionalDetail < ActiveRecord::Base
 
   before_create :default_empty_json
   
-  def get_sub_service_request_status
+  def sub_service_request_status
     line_item.sub_service_request.status
+  end
+  
+  def required_fields_present
+    :test
   end
   
   def form_data_hash

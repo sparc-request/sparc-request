@@ -98,7 +98,7 @@ RSpec.describe LineItemAdditionalDetail do
     end
 
     it 'should return the status of the sub_service_request' do
-      expect(@line_item_additional_detail.get_sub_service_request_status).to eq(@sub_service_request.status)
+      expect(@line_item_additional_detail.sub_service_request_status).to eq(@sub_service_request.status)
     end
   end
   

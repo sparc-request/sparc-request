@@ -138,8 +138,8 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', 'Additi
 	$scope.line_item_ad_gridModel.columnDefs = [
 	                               {name: "Show", enableFiltering: false, width: 63, enableColumnMenu: false, cellTemplate: '<button data-toggle="modal" class="btn btn-primary" ng-click="grid.appScope.showResults(row.entity.id)">Show</button>'},
 	                               {name: "Edit", enableFiltering: false, width: 63, enableColumnMenu: false, cellTemplate: '<button data-toggle="modal" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">Edit</button>'},
-	                               {field: 'status', enableColumnMenu: false}, 
-	                               {field: 'date_completed',name: 'Date Completed', enableColumnMenu: false},
+	                               {name: 'Request Status', field: 'sub_service_request_status', enableColumnMenu: false}, 
+	                               {name: 'Form Status',field: 'required_fields_present', enableColumnMenu: false},
 	                               {field:'created_at',name: 'Date Started', enableColumnMenu: false }
 	                               //{enableFiltering: false, enableColumnResizing: false,name: 'Delete',width: 70, enableColumnMenu: false, cellTemplate: '<button class="btn btn-danger" ng-disabled="row.entity.line_item_additional_details.length > 0" ng-click="grid.appScope.deleteAdditonalDetail(row.entity.id)">Delete</button>'}
 	                               ];
@@ -148,6 +148,7 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', 'Additi
 		AdditionalDetail.get({ id: ad_id }).$promise.then(function(additional_detail) {
 			$scope.activeAdditionalDetail = additional_detail;
 			$scope.line_item_ad_gridModel.data = additional_detail.line_item_additional_details;
+			console.log($scope.line_item_ad_gridModel.data);
 			$scope.resultsTabText = "Results for " + additional_detail.name; 
 			// activate the the results tab
 			$('#resultsTab').attr('data-toggle', 'tab');

@@ -56,7 +56,6 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
     end
 
     describe 'is not a catalog_manager or super_user and, thus, has no access to' do
-
       it 'a core service index' do
         get(:index, {:service_id => @core_service, :format => :html})
         expect(response).to render_template("unauthorized")
@@ -140,96 +139,117 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
     end
 
     describe 'is a catalog_manager and has access to' do
-      it 'a core service index' do
+      
+      before :each do
         @catalog_manager = CatalogManager.new
         @catalog_manager.identity_id = @identity.id
-        @catalog_manager.organization_id = @core.id
-        @catalog_manager.save(validate: false)
-
-        get(:index, {:service_id => @core_service, :format => :html})
-        expect(response).to render_template("index")
-        expect(response.status).to eq(200)
-        expect(assigns(:service)).to_not be_blank
       end
+      
+      describe 'is a core manager' do
+        before :each do
+          @catalog_manager.organization_id = @core.id
+          @catalog_manager.save(validate: false)
+        end
+          
+        it 'a core service index' do
+          get(:index, {:service_id => @core_service, :format => :html})
+          expect(response).to render_template("index")
+          expect(response.status).to eq(200)
+          expect(assigns(:service)).to_not be_blank
+        end
+     
+        it 'a core service new additional detail page' do
+          get(:new, {:service_id => @core_service, :format => :html})
+          expect(response).to render_template("new")
+          expect(response.status).to eq(200)
+          expect(assigns(:service)).to_not be_blank
+          expect(assigns(:additional_detail)).to_not be_blank
+        end
+        
+        describe 'with an additional detail present' do
+          before :each do
+            @ad = AdditionalDetail.new
+            @ad.service_id = @core_service.id
+            @ad.save(validate: false)
+          end
+          
+          it "should delete" do
+            expect{
+              delete(:destroy, {:service_id => @core_service, :id => @ad, :format => :json})
+              expect(response.status).to eq(204)
+            }.to change(AdditionalDetail, :count).by(-1)
+          end
+          
+          describe 'with line_item_additional_details present' do
+            before :each do
+              @sub_service_request = SubServiceRequest.new
+              @sub_service_request.status = 'first_draft'
+              SubServiceRequest.skip_callback(:save, :after, :update_org_tree)
+              @sub_service_request.save(:validate => false)
+              SubServiceRequest.set_callback(:save, :after, :update_org_tree)
+              
+              @line_item = LineItem.new
+              @line_item.sub_service_request_id = @sub_service_request.id
+              @line_item.service_id = @core_service.id
+              @line_item.save(validate: false)
+              
+              @line_item_additional_detail = LineItemAdditionalDetail.new
+              @line_item_additional_detail.line_item_id = @line_item.id
+              @line_item_additional_detail.additional_detail_id = @ad.id
+              @line_item_additional_detail.save(validate: false)
+            end
+            
+            it "should show additional detail" do
+              get(:show, {:service_id => @core_service, :id => @ad, :format => :json })
+              expect(response.status).to eq(200)
+              expect(response.body).to eq(@ad.to_json(:root => false, :include => {:line_item_additional_details  => {:methods => [:sub_service_request_status, :required_fields_present]}}))
+            end
+          end
+          
+          
+        end
+        
+        
 
-      it 'a core service index because user is a catalog_manager for its program' do
-        @catalog_manager = CatalogManager.new
-        @catalog_manager.identity_id = @identity.id
-        @catalog_manager.organization_id = @program.id
-        @catalog_manager.save(validate: false)
-
-        get(:index, {:service_id => @core_service, :format => :html})
-        expect(response).to render_template("index")
-        expect(response.status).to eq(200)
-        expect(assigns(:service)).to_not be_blank
       end
-
-      it 'a program service index' do
-        @catalog_manager = CatalogManager.new
-        @catalog_manager.identity_id = @identity.id
-        @catalog_manager.organization_id = @program.id
-        @catalog_manager.save(validate: false)
-
-        get(:index, {:service_id => @program_service, :format => :html})
-        expect(response).to render_template("index")
-        expect(response.status).to eq(200)
-        expect(assigns(:service)).to_not be_blank
+      
+      describe 'is a program manager' do
+        before :each do
+          @catalog_manager.organization_id = @program.id
+           @catalog_manager.save(validate: false)
+        end
+        
+        it 'a core service index because user is a catalog_manager for its program' do
+          get(:index, {:service_id => @core_service, :format => :html})
+          expect(response).to render_template("index")
+          expect(response.status).to eq(200)
+          expect(assigns(:service)).to_not be_blank
+        end
+        
+        it 'a program service index' do
+          get(:index, {:service_id => @program_service, :format => :html})
+          expect(response).to render_template("index")
+          expect(response.status).to eq(200)
+          expect(assigns(:service)).to_not be_blank
+        end
+        
+        it 'a core service new additional detail page because user is a catalog_manager for its program' do
+          get(:new, {:service_id => @core_service, :format => :html})
+          expect(response).to render_template("new")
+          expect(response.status).to eq(200)
+          expect(assigns(:service)).to_not be_blank
+          expect(assigns(:additional_detail)).to_not be_blank
+        end
+        
+        it 'a program service new additional detail page' do
+          get(:new, {:service_id => @program_service, :format => :html})
+          expect(response).to render_template("new")
+          expect(response.status).to eq(200)
+          expect(assigns(:service)).to_not be_blank
+          expect(assigns(:additional_detail)).to_not be_blank
+        end
       end
-
-      it 'a core service new additional detail page' do
-        @catalog_manager = CatalogManager.new
-        @catalog_manager.identity_id = @identity.id
-        @catalog_manager.organization_id = @core.id
-        @catalog_manager.save(validate: false)
-
-        get(:new, {:service_id => @core_service, :format => :html})
-        expect(response).to render_template("new")
-        expect(response.status).to eq(200)
-        expect(assigns(:service)).to_not be_blank
-        expect(assigns(:additional_detail)).to_not be_blank
-      end
-
-      it 'a core service new additional detail page because user is a catalog_manager for its program' do
-        @catalog_manager = CatalogManager.new
-        @catalog_manager.identity_id = @identity.id
-        @catalog_manager.organization_id = @program.id
-        @catalog_manager.save(validate: false)
-
-        get(:new, {:service_id => @core_service, :format => :html})
-        expect(response).to render_template("new")
-        expect(response.status).to eq(200)
-        expect(assigns(:service)).to_not be_blank
-        expect(assigns(:additional_detail)).to_not be_blank
-      end
-
-      it 'a program service new additional detail page' do
-        @catalog_manager = CatalogManager.new
-        @catalog_manager.identity_id = @identity.id
-        @catalog_manager.organization_id = @program.id
-        @catalog_manager.save(validate: false)
-
-        get(:new, {:service_id => @program_service, :format => :html})
-        expect(response).to render_template("new")
-        expect(response.status).to eq(200)
-        expect(assigns(:service)).to_not be_blank
-        expect(assigns(:additional_detail)).to_not be_blank
-      end
-
-      it "delete additional detail" do
-        @ad = AdditionalDetail.new
-        @ad.service_id = @core_service.id
-        @ad.save(validate: false)
-
-        @catalog_manager = CatalogManager.new
-        @catalog_manager.identity_id = @identity.id
-        @catalog_manager.organization_id = @core.id
-        @catalog_manager.save(validate: false)
-        expect{
-          delete(:destroy, {:service_id => @core_service, :id => @ad, :format => :json})
-          expect(response.status).to eq(204)
-        }.to change(AdditionalDetail, :count).by(-1)
-      end
-
+                 
       # CRUD an additional detail as a catalog_manager
       describe 'a core service and can' do
         before :each do

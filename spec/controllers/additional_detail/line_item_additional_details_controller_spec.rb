@@ -253,7 +253,7 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
         @sub_service_request.save(validate: false)
         SubServiceRequest.set_callback(:save, :after, :update_org_tree)
       end
-      
+            
       it 'view a line_item_additional_detail' do
         get(:show, {:id => @line_item_additional_detail})
         expect(response.status).to eq(200)
@@ -392,6 +392,6 @@ RSpec.describe AdditionalDetail::LineItemAdditionalDetailsController do
         expect(LineItemAdditionalDetail.find(@line_item_additional_detail).form_data_json).to eq("{}")
       end
     end                  
-  end
+  end 
   
 end

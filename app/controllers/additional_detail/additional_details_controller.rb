@@ -8,13 +8,12 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
   def index
     respond_to do |format|
       format.html # index.html.erb
-      format.json { 
-        render :json => @service.additional_details.to_json(:root => false, :include => :line_item_additional_details) }
+      format.json {render :json => @service.additional_details.to_json(:root => false, :include => :line_item_additional_details)}
     end
   end
 
   def show
-    render :json => @service.additional_details.find(params[:id]).to_json(:root => false, :include => :line_item_additional_details)
+    render :json => @service.additional_details.find(params[:id]).to_json(:root => false, :include => {:line_item_additional_details  => {:methods => [:sub_service_request_status, :required_fields_present]}})
   end
 
   def edit

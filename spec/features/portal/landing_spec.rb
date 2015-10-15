@@ -118,12 +118,6 @@ RSpec.describe 'landing page', js: true do
       end
     end
 
-    it 'should allow user to export consolidated request' do
-      find('.consolidated_request').click
-      wait_for_javascript_to_finish
-      expect(page).to have_content("Opening #{service_request.protocol.id.to_s}.xlsx")
-    end
-
     it 'should allow user to view printer-friendly service request' do
       find(".view-sub-service-request-button").click
       new_window = window_opened_by { click_button 'Print' }

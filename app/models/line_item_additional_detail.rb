@@ -14,6 +14,12 @@ class LineItemAdditionalDetail < ActiveRecord::Base
     line_item.sub_service_request.status
   end
   
+  def service_requester_name
+    owner = self.line_item.sub_service_request.owner
+    return owner.first_name.concat(" ").concat(owner.last_name)
+  end
+ 
+  
   def required_fields_present
     if self.additional_detail and self.additional_detail.form_definition_json and self.form_data_json
       required_data = JSON.parse(self.additional_detail.form_definition_json).fetch('schema').fetch('required')

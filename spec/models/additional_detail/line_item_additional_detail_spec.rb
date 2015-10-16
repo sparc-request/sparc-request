@@ -98,9 +98,30 @@ RSpec.describe LineItemAdditionalDetail do
       end
       
     end
+  end
+  
+  describe "service_requester_name" do
+    before :each do
+      @service_requester =  Identity.new
+      @service_requester.first_name = "Test"
+      @service_requester.last_name = "Man"
+
+      @sub_service_request = SubServiceRequest.new
+      @sub_service_request.owner = @service_requester
+
+      @line_item = LineItem.new
+      @line_item.sub_service_request = @sub_service_request
+
+      @line_item_additional_detail = LineItemAdditionalDetail.new
+      @line_item_additional_detail.line_item = @line_item
+    end
     
+    it 'should return first and last name of service_requester' do
+      expect(@line_item_additional_detail.service_requester_name).to eq("Test Man")
+    end
     
   end
+  
   
   
   describe "sub_service_request_status" do

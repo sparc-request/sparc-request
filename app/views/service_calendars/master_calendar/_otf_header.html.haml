@@ -45,11 +45,11 @@
       %th{rowspan: 2, colspan: 2}
         %span
           = t(:calendar_page)[:headers][:number]
-          = t(:calendar_page)[:headers][:unit_type]
+          = t(:calendar_page)[:headers][:qty_type]
       %th{rowspan: 2, colspan: 2}
         %span
           = t(:calendar_page)[:headers][:number]
-          = t(:calendar_page)[:headers][:qty_type]
+          = t(:calendar_page)[:headers][:unit_type]
       %th{:rowspan => 2, :colspan => 5, :height => 40, :width => 375}
       - if @merged
         %th.total_per_study{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_study]

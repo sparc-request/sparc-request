@@ -37,6 +37,11 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
       render :new
     end
   end
+  
+  def duplicate
+    @additional_detail = @service.additional_details.find(params[:id]).dup
+    render :new
+  end
 
   def update
     @additional_detail = @service.additional_details.find(params[:id])

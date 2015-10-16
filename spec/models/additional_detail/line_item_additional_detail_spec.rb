@@ -43,20 +43,43 @@ RSpec.describe LineItemAdditionalDetail do
     
     before :each do
      @additional_detail = AdditionalDetail.new
-     @additional_detail.form_definition_json= '{"schema": {"required": ["t"] }}'
 
      @line_item_additional_detail = LineItemAdditionalDetail.new
      @line_item_additional_detail.additional_detail = @additional_detail
     end
     
-    it 'should return false when not all data is present' do
-      @line_item_additional_detail.form_data_json = "{}"
-      expect(@line_item_additional_detail.required_fields_present).to eq(false)
+    describe "with no required fields" do
+      before :each do
+        @additional_detail.form_definition_json= '{"schema": {"required": [] }}'
+      end
+
+      it 'should return true when questions are answered' do
+        @line_item_additional_detail.form_data_json = "{}"
+        expect(@line_item_additional_detail.required_fields_present).to eq(true)
+      end
+
+      it 'should return true with questions answered' do
+        @line_item_additional_detail.form_data_json = '{"t" : "This is a test."}'
+        expect(@line_item_additional_detail.required_fields_present).to eq(true)
+      end
+
     end
-    
-    it 'should return true when all data is present' do
-          @line_item_additional_detail.form_data_json = '{"t" : "This is a test."}'
-          expect(@line_item_additional_detail.required_fields_present).to eq(true)
+
+    describe "with one required fields" do
+      before :each do
+        @additional_detail.form_definition_json= '{"schema": {"required": ["t"] }}'
+      end
+
+      it 'should return false when not all data is present' do
+        @line_item_additional_detail.form_data_json = "{}"
+        expect(@line_item_additional_detail.required_fields_present).to eq(false)
+      end
+
+      it 'should return true when all data is present' do
+        @line_item_additional_detail.form_data_json = '{"t" : "This is a test."}'
+        expect(@line_item_additional_detail.required_fields_present).to eq(true)
+      end
+
     end
     
     describe "with two required fields" do
@@ -69,7 +92,7 @@ RSpec.describe LineItemAdditionalDetail do
         expect(@line_item_additional_detail.required_fields_present).to eq(false)
       end
       
-      it 'should return false when only one question is present' do
+      it 'should return true when all questions is present' do
         @line_item_additional_detail.form_data_json = '{"t" : "This is a test.", "r" : "World, hello!"}'
         expect(@line_item_additional_detail.required_fields_present).to eq(true)
       end

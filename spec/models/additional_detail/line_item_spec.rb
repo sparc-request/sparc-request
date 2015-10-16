@@ -176,4 +176,40 @@ RSpec.describe "Line Item" do
       expect(@line_item.additional_detail_breadcrumb).to eq("BMI / Consulting / Project Team Members")
     end    
   end  
+  
+  describe "additional_detail_required_questions_answered?" do
+    before :each do
+      @additional_detail = AdditionalDetail.new
+      @additional_detail.form_definition_json= '{"schema": {"type": "object","title": "Comment","properties": {"t": {"title": "t","type": "string"} },"required": ["t","date"] },"form": [{"key": "t","kind": "textarea", "style": {"selected": "btn-success","unselected": "btn-default"},"type": "textarea"}]}'
+
+      @line_item_additional_detail = LineItemAdditionalDetail.new
+      @line_item_additional_detail.additional_detail = @additional_detail 
+     
+      @line_item = LineItem.new
+      @line_item.line_item_additional_detail = @line_item_additional_detail
+    end
+    
+    it 'should return false when two required questions and no data has been submitted' do
+      @line_item_additional_detail.form_data_json = "{}"
+      expect(@line_item.additional_detail_required_questions_answered?).to eq(false)
+    end
+    
+    it 'should return false when one of two required questions has been answered' do
+      @line_item_additional_detail.form_data_json = '{"t" : "This is a test."}'
+      expect(@line_item.additional_detail_required_questions_answered?).to eq(false)
+    end
+    
+    it 'should return true when both required questions have been answered' do
+      @line_item_additional_detail.form_data_json = '{"t" : "This is a test.", "date" : "2015-10-15"}'
+      expect(@line_item.additional_detail_required_questions_answered?).to eq(true)
+    end
+    
+    it 'should return true when zero questions are required' do
+      @additional_detail.form_definition_json= '{"schema": {"type": "object","title": "Comment","properties": {"t": {"title": "t","type": "string"} },"required": [] },"form": [{"key": "t","kind": "textarea", "style": {"selected": "btn-success","unselected": "btn-default"},"type": "textarea"}]}'
+      @line_item_additional_detail.form_data_json = '{}'
+      expect(@line_item.additional_detail_required_questions_answered?).to eq(true)
+    end
+    
+  end  
+    
 end

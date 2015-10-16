@@ -75,6 +75,10 @@ class LineItem < ActiveRecord::Base
   # TODO: order by date/id instead of just by date?
   default_scope :order => 'line_items.id ASC'
 
+  def additional_detail_required_questions_answered?
+    self.line_item_additional_detail.required_fields_present
+  end
+ 
   def get_additional_detail
     service.current_additional_detail
   end

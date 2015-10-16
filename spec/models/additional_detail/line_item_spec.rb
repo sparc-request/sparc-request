@@ -1,24 +1,3 @@
-# coding: utf-8
-# Copyright © 2011 MUSC Foundation for Research Development
-# All rights reserved.
-
-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
-# disclaimer in the documentation and/or other materials provided with the distribution.
-
-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
-# derived from this software without specific prior written permission.
-
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 require 'rails_helper'
 
 RSpec.describe "Line Item" do
@@ -179,35 +158,65 @@ RSpec.describe "Line Item" do
   
   describe "additional_detail_required_questions_answered?" do
     before :each do
-      @additional_detail = AdditionalDetail.new
-      @additional_detail.form_definition_json= '{"schema": {"type": "object","title": "Comment","properties": {"t": {"title": "t","type": "string"} },"required": ["t","date"] },"form": [{"key": "t","kind": "textarea", "style": {"selected": "btn-success","unselected": "btn-default"},"type": "textarea"}]}'
-
-      @line_item_additional_detail = LineItemAdditionalDetail.new
-      @line_item_additional_detail.additional_detail = @additional_detail 
-     
+      @service = Service.new
+      
       @line_item = LineItem.new
-      @line_item.line_item_additional_detail = @line_item_additional_detail
+      @line_item.service = @service
+      
+      @additional_detail = AdditionalDetail.new
+      @additional_detail.effective_date = Date.yesterday
     end
     
-    it 'should return false when two required questions and no data has been submitted' do
-      @line_item_additional_detail.form_data_json = "{}"
-      expect(@line_item.additional_detail_required_questions_answered?).to eq(false)
+    describe "line_item_additional_detail not yet created," do
+      
+      it 'should return true when no line_item_additional_detail exists and the service does not have an additional detail' do
+        expect(@line_item.additional_detail_required_questions_answered?).to eq(true)
+      end
+      
+      it 'should return true when no line_item_additional_detail exists and the service has an additional detail with no required questions' do
+        @additional_detail.form_definition_json= '{"schema": {"required": [] }}'
+        @service.additional_details << @additional_detail 
+        expect(@line_item.additional_detail_required_questions_answered?).to eq(true)
+      end
+      
+      it 'should return false when no line_item_additional_detail exists and the service has an additional detail with required questions' do
+        @additional_detail.form_definition_json= '{"schema": {"required": ["t","date"] }}'
+        @service.additional_details << @additional_detail 
+        expect(@line_item.additional_detail_required_questions_answered?).to eq(false)
+      end
     end
     
-    it 'should return false when one of two required questions has been answered' do
-      @line_item_additional_detail.form_data_json = '{"t" : "This is a test."}'
-      expect(@line_item.additional_detail_required_questions_answered?).to eq(false)
-    end
-    
-    it 'should return true when both required questions have been answered' do
-      @line_item_additional_detail.form_data_json = '{"t" : "This is a test.", "date" : "2015-10-15"}'
-      expect(@line_item.additional_detail_required_questions_answered?).to eq(true)
-    end
-    
-    it 'should return true when zero questions are required' do
-      @additional_detail.form_definition_json= '{"schema": {"type": "object","title": "Comment","properties": {"t": {"title": "t","type": "string"} },"required": [] },"form": [{"key": "t","kind": "textarea", "style": {"selected": "btn-success","unselected": "btn-default"},"type": "textarea"}]}'
-      @line_item_additional_detail.form_data_json = '{}'
-      expect(@line_item.additional_detail_required_questions_answered?).to eq(true)
+    describe "line_item_additional_detail created" do
+      before :each do  
+        @additional_detail.form_definition_json= '{"schema": {"required": ["t","date"] }}'
+        @service.additional_details << @additional_detail 
+
+        # add a line_item_additional_detail
+        @line_item_additional_detail = LineItemAdditionalDetail.new
+        @line_item_additional_detail.additional_detail = @additional_detail 
+        @line_item.line_item_additional_detail = @line_item_additional_detail
+      end
+      
+      it 'should return false when two required questions and no data has been submitted' do
+        @line_item_additional_detail.form_data_json = "{}"
+        expect(@line_item.additional_detail_required_questions_answered?).to eq(false)
+      end
+      
+      it 'should return false when one of two required questions has been answered' do
+        @line_item_additional_detail.form_data_json = '{"t" : "This is a test."}'
+        expect(@line_item.additional_detail_required_questions_answered?).to eq(false)
+      end
+      
+      it 'should return true when both required questions have been answered' do
+        @line_item_additional_detail.form_data_json = '{"t" : "This is a test.", "date" : "2015-10-15"}'
+        expect(@line_item.additional_detail_required_questions_answered?).to eq(true)
+      end
+      
+      it 'should return true when zero questions are required' do
+        @additional_detail.form_definition_json= '{"schema": {"required": [] }}'
+        @line_item_additional_detail.form_data_json = '{}'
+        expect(@line_item.additional_detail_required_questions_answered?).to eq(true)
+      end
     end
     
   end  

@@ -48,7 +48,7 @@ app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$htt
 
 	$scope.gridModel.columnDefs = [{enableFiltering: false, enableColumnResizing: false,name: 'Survey',width: 105, enableColumnMenu: false, cellTemplate: '<button type="button" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">{{(row.entity.form_data_json==null) ? "Take Survey" : "Edit Survey"}}</button>'},
 	                               {field: 'additional_detail_breadcrumb', name: 'Service', enableColumnMenu: false ,}, 
-	                               {name: 'Completed',field: 'required_fields_present', width: '15%', enableColumnMenu: false }
+	                               {name: 'Completed',field: 'has_answered_all_required_questions?', width: '15%', enableColumnMenu: false }
 	                               ];
 
 	$scope.reloadGrid = function(){
@@ -144,7 +144,7 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', '$windo
 	                               {name: "Show", enableFiltering: false, width: 63, enableColumnMenu: false, cellTemplate: '<button data-toggle="modal" class="btn btn-primary" ng-click="grid.appScope.showResults(row.entity.id)">Show</button>'},
 	                               {name: "Edit", enableFiltering: false, width: 63, enableColumnMenu: false, cellTemplate: '<button data-toggle="modal" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">Edit</button>'},
 	                               {name: 'Service Request Status', field: 'sub_service_request_status', enableColumnMenu: false}, 
-	                               {name: 'Required Questions Answered',field: 'required_fields_present', enableColumnMenu: false},
+	                               {name: 'Required Questions Answered',field: 'has_answered_all_required_questions?', enableColumnMenu: false},
 	                               {field:'updated_at',name: 'Last Updated', enableColumnMenu: false, sort: { direction: uiGridConstants.DESC, priority: 1 } }
 	                               //{enableFiltering: false, enableColumnResizing: false,name: 'Delete',width: 70, enableColumnMenu: false, cellTemplate: '<button class="btn btn-danger" ng-disabled="row.entity.line_item_additional_details.length > 0" ng-click="grid.appScope.deleteAdditonalDetail(row.entity.id)">Delete</button>'}
 	                               ];

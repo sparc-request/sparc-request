@@ -15,22 +15,21 @@ class LineItemAdditionalDetail < ActiveRecord::Base
   end
   
   def service_requester_name
-    owner = self.line_item.sub_service_request.owner
-    return owner.first_name.concat(" ").concat(owner.last_name)
-  end
- 
+     owner = self.line_item.sub_service_request.owner
+     return owner.first_name.concat(" ").concat(owner.last_name)
+   end
   
-  def required_fields_present
-    if self.additional_detail and self.additional_detail.form_definition_json and self.form_data_json
-      required_data = JSON.parse(self.additional_detail.form_definition_json).fetch('schema').fetch('required')
-      results = JSON.parse(self.form_data_json)
-      for required in required_data do
-        if !results.has_key?(required)
+  
+  def has_answered_all_required_questions?
+    if self.additional_detail and self.additional_detail.has_required_questions? and self.form_data_json
+      user_answers = JSON.parse(self.form_data_json)
+      self.additional_detail.required_question_keys.each do |required_question_key|
+        if !user_answers.has_key?(required_question_key)
           return false
         end
       end
-      return true
     end
+    true
   end
   
   def form_data_hash

@@ -126,4 +126,43 @@ RSpec.describe AdditionalDetail do
     end
   end
 
+  describe 'has_required_questions?' do
+    it 'should return false if has zero required questions' do
+      @additional_detail = AdditionalDetail.new
+      @additional_detail.form_definition_json= '{"schema": {"required": [] }}'
+      expect(@additional_detail.has_required_questions?).to eq(false)
+    end
+    
+    it 'should return true if has one required question' do
+      @additional_detail = AdditionalDetail.new
+      @additional_detail.form_definition_json= '{"schema": {"required": ["date"] }}'
+      expect(@additional_detail.has_required_questions?).to eq(true)
+    end
+    
+    it 'should return true if has two required questions' do
+      @additional_detail = AdditionalDetail.new
+      @additional_detail.form_definition_json= '{"schema": {"required": ["t","date"] }}'
+      expect(@additional_detail.has_required_questions?).to eq(true)
+    end
+  end
+  
+  describe 'required_question_keys' do
+    it 'should return empty array if has zero required questions' do
+      @additional_detail = AdditionalDetail.new
+      @additional_detail.form_definition_json= '{"schema": {"required": [] }}'
+      expect(@additional_detail.required_question_keys).to eq([])
+    end
+    
+    it 'should return one required question key' do
+      @additional_detail = AdditionalDetail.new
+      @additional_detail.form_definition_json= '{"schema": {"required": ["date"] }}'
+      expect(@additional_detail.required_question_keys).to eq(["date"])
+    end
+    
+    it 'should return two required question keys' do
+      @additional_detail = AdditionalDetail.new
+      @additional_detail.form_definition_json= '{"schema": {"required": ["t","date"] }}'
+      expect(@additional_detail.required_question_keys).to eq(["t","date"])
+    end
+  end
 end

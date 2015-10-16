@@ -39,7 +39,7 @@ RSpec.describe LineItemAdditionalDetail do
     end
   end
 
-  describe "required_fields_present" do
+  describe "has_answered_all_required_questions?" do
     
     before :each do
      @additional_detail = AdditionalDetail.new
@@ -48,19 +48,21 @@ RSpec.describe LineItemAdditionalDetail do
      @line_item_additional_detail.additional_detail = @additional_detail
     end
     
+
+
     describe "with no required fields" do
       before :each do
         @additional_detail.form_definition_json= '{"schema": {"required": [] }}'
       end
 
-      it 'should return true when questions are answered' do
+      it 'should return true when no questions are answered' do
         @line_item_additional_detail.form_data_json = "{}"
-        expect(@line_item_additional_detail.required_fields_present).to eq(true)
+        expect(@line_item_additional_detail.has_answered_all_required_questions?).to eq(true)
       end
 
       it 'should return true with questions answered' do
         @line_item_additional_detail.form_data_json = '{"t" : "This is a test."}'
-        expect(@line_item_additional_detail.required_fields_present).to eq(true)
+        expect(@line_item_additional_detail.has_answered_all_required_questions?).to eq(true)
       end
 
     end
@@ -72,12 +74,12 @@ RSpec.describe LineItemAdditionalDetail do
 
       it 'should return false when not all data is present' do
         @line_item_additional_detail.form_data_json = "{}"
-        expect(@line_item_additional_detail.required_fields_present).to eq(false)
+        expect(@line_item_additional_detail.has_answered_all_required_questions?).to eq(false)
       end
 
       it 'should return true when all data is present' do
         @line_item_additional_detail.form_data_json = '{"t" : "This is a test."}'
-        expect(@line_item_additional_detail.required_fields_present).to eq(true)
+        expect(@line_item_additional_detail.has_answered_all_required_questions?).to eq(true)
       end
 
     end
@@ -89,43 +91,17 @@ RSpec.describe LineItemAdditionalDetail do
       
       it 'should return false when only one question is present' do
         @line_item_additional_detail.form_data_json = '{"t" : "This is a test.", "s" : "Hello world!"}'
-        expect(@line_item_additional_detail.required_fields_present).to eq(false)
+        expect(@line_item_additional_detail.has_answered_all_required_questions?).to eq(false)
       end
       
       it 'should return true when all questions is present' do
         @line_item_additional_detail.form_data_json = '{"t" : "This is a test.", "r" : "World, hello!"}'
-        expect(@line_item_additional_detail.required_fields_present).to eq(true)
+        expect(@line_item_additional_detail.has_answered_all_required_questions?).to eq(true)
       end
-      
     end
   end
-  
-  describe "service_requester_name" do
-    before :each do
-      @service_requester =  Identity.new
-      @service_requester.first_name = "Test"
-      @service_requester.last_name = "Man"
-
-      @sub_service_request = SubServiceRequest.new
-      @sub_service_request.owner = @service_requester
-
-      @line_item = LineItem.new
-      @line_item.sub_service_request = @sub_service_request
-
-      @line_item_additional_detail = LineItemAdditionalDetail.new
-      @line_item_additional_detail.line_item = @line_item
-    end
-    
-    it 'should return first and last name of service_requester' do
-      expect(@line_item_additional_detail.service_requester_name).to eq("Test Man")
-    end
-    
-  end
-  
-  
   
   describe "sub_service_request_status" do
-
     before :each do
       @sub_service_request = SubServiceRequest.new
       @sub_service_request.status = 'first_draft'
@@ -163,6 +139,29 @@ RSpec.describe LineItemAdditionalDetail do
     end
     
   end
+  
+  describe "service_requester_name" do
+      before :each do
+        @service_requester =  Identity.new
+        @service_requester.first_name = "Test"
+        @service_requester.last_name = "Man"
+  
+        @sub_service_request = SubServiceRequest.new
+        @sub_service_request.owner = @service_requester
+  
+        @line_item = LineItem.new
+        @line_item.sub_service_request = @sub_service_request
+  
+        @line_item_additional_detail = LineItemAdditionalDetail.new
+        @line_item_additional_detail.line_item = @line_item
+      end
+      
+      it 'should return first and last name of service_requester' do
+        expect(@line_item_additional_detail.service_requester_name).to eq("Test Man")
+      end
+      
+    end
+  
   
   describe "additional_detail_breadcrumb" do
      
@@ -232,4 +231,3 @@ RSpec.describe LineItemAdditionalDetail do
   end  
   
 end
-

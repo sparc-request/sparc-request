@@ -63,24 +63,47 @@
                           %li= link_to t(:cm_index)[:core], '#', :class => "core"
                           %li= link_to t(:cm_index)[:service], '#'
                         - program.services.where(is_available: @show_unavailable).order("`order`, `name`").each do |service|
-                          %li{:id => 'SERVICE' + service.id.to_s}= node service
+                          - if service.is_available == false
+                            %li{:id => 'SERVICE' + service.id.to_s, :class => "visually_unavailable"}= node service
+                          - else
+                            %li{:id => 'SERVICE' + service.id.to_s}= node service
                     - else
                       %ul
                         - if can_access_program
                           %li= link_to t(:cm_index)[:core], '#', :class => "core"
                           %li= link_to t(:cm_index)[:service], '#'
                         - program.services.where(is_available: @show_unavailable).order("`order`, `name`").each do |service|
-                          %li{:id => 'SERVICE' + service.id.to_s}= node service                            
+                          - if service.is_available == false
+                            %li{:id => 'SERVICE' + service.id.to_s, :class => "visually_unavailable"}= node service
+                          - else 
+                            %li{:id => 'SERVICE' + service.id.to_s}= node service                        
                         - program.cores.where(is_available: @show_unavailable).order("`order`").each do |core|
-                          %li{:id => 'CORE' + core.id.to_s}
-                            - can_access_core = can_access_program || (@user.can_edit_entity? core)
-                            = node core, can_access_core
-                            %ul
-                              - if can_access_core
-                                %li= link_to t(:cm_index)[:service], '#'
-                              - unless core.services.empty?
-                                - core.services.where(is_available: @show_unavailable).order("`order`, `name`").each do |service|
-                                  %li{:id => 'SERVICE' + service.id.to_s}= node service
+                          - if core.is_available == false
+                            %li{:id => 'CORE' + core.id.to_s, :class => "visually_unavailable"}
+                              - can_access_core = can_access_program || (@user.can_edit_entity? core)
+                              = node core, can_access_core
+                              %ul
+                                - if can_access_core
+                                  %li= link_to t(:cm_index)[:service], '#'
+                                - unless core.services.empty?
+                                  - core.services.where(is_available: @show_unavailable).order("`order`, `name`").each do |service|
+                                    - if service.is_available == false
+                                      %li{:id => 'SERVICE' + service.id.to_s, :class => "visually_unavailable"}= node service
+                                    - else 
+                                      %li{:id => 'SERVICE' + service.id.to_s}= node service
+                          - else
+                            %li{:id => 'CORE' + core.id.to_s}
+                              - can_access_core = can_access_program || (@user.can_edit_entity? core)
+                              = node core, can_access_core
+                              %ul
+                                - if can_access_core
+                                  %li= link_to t(:cm_index)[:service], '#'
+                                - unless core.services.empty?
+                                  - core.services.where(is_available: @show_unavailable).order("`order`, `name`").each do |service|
+                                    - if service.is_available == false
+                                      %li{:id => 'SERVICE' + service.id.to_s, :class => "visually_unavailable"}= node service
+                                    - else 
+                                      %li{:id => 'SERVICE' + service.id.to_s}= node service
 #details
 
 #processing_request.ui-corner-all{:style => "border: 1px solid black; padding: 3px; width: 200px; margin: 30px auto; text-align: center"}

@@ -64,9 +64,11 @@
   :plain
     $('#se_info').html("#{escape_javascript(render :partial => 'catalog_manager/shared/submission_emails', :locals => {:entity => @entity})}")
 
-- if @entity.is_available == false
+- #  console.log($("#show_all_services").find('.unavailable_button').data('show-unavailable'))
+- if @entity.is_available == false && $("#show_all_services").find('.unavailable_button').data('show-unavailable') == "false"
   $("##{@entity.class.name.upcase}#{@entity.id}").remove();
   $('#details').empty();
+
 
 
 

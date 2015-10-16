@@ -340,7 +340,11 @@ SparcRails::Application.routes.draw do
   namespace :additional_detail do
     root :to => 'services#index'
     resources :services, only: [:index] do
-      resources :additional_details
+      resources :additional_details do
+        member do
+          get :duplicate
+        end
+      end
     end
     # we may add :destroy later so a service provider can allow an updated version of the form to be rendered and completed
     resources :line_item_additional_details, only: [:show, :update], :defaults => { :format => :json } 

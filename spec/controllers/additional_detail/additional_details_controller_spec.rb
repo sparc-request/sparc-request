@@ -268,6 +268,16 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
             }.to change(AdditionalDetail, :count).by(1)
           end
 
+          it "can duplicate" do
+            get(:duplicate,{:service_id => @core_service, :id => @ad, :format =>:html})
+            expect(response.status).to eq(200)
+            expect(response).to render_template(:action => 'new')
+            expect(assigns(:additional_detail).name).to eq(@ad.name)
+            expect(assigns(:additional_detail).form_definition_json).to eq(@ad.form_definition_json)
+            expect(assigns(:additional_detail).effective_date).to eq(@ad.effective_date)
+            expect(assigns(:additional_detail).approved).to eq(@ad.approved)
+          end
+          
           it "can update" do 
             put(:update, {:service_id => @core_service, :id => @ad, :additional_detail=> @ad.attributes = { :name => "Test2"} }) 
             expect(response).to redirect_to(additional_detail_service_additional_details_path(@core_service))

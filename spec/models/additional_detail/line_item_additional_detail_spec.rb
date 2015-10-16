@@ -6,74 +6,34 @@ RSpec.describe LineItemAdditionalDetail do
 
     before :each do
       @additional_detail = AdditionalDetail.new
-      @additional_detail.save(:validate => false)
-
       @line_item = LineItem.new
-      @line_item.save(:validate => false)
+      @line_item_additional_detail = LineItemAdditionalDetail.new
+      @line_item_additional_detail.line_item = @line_item
+      @line_item_additional_detail.additional_detail = @additional_detail
     end
 
     it 'should succeed on create if form_data_json is nil' do
-      @line_item_additional_detail = LineItemAdditionalDetail.new
-      @line_item_additional_detail.line_item_id = @line_item.id
-      @line_item_additional_detail.additional_detail_id = @additional_detail.id
-
       expect(@line_item_additional_detail.save()).to eq(true)
     end
 
     it 'form_data_json should default to {}' do
-      @line_item_additional_detail = LineItemAdditionalDetail.new
-      @line_item_additional_detail.line_item_id = @line_item.id
-      @line_item_additional_detail.additional_detail_id = @additional_detail.id
-      @line_item_additional_detail.save(:validate => false)
-
+      @line_item_additional_detail.save(vailidate: false)
       expect(@line_item_additional_detail.form_data_json).to eq("{}")
     end
 
-    it 'should fail on update if form_data_json is nil' do
-      @line_item_additional_detail = LineItemAdditionalDetail.new
-      @line_item_additional_detail.line_item_id = @line_item.id
-      @line_item_additional_detail.additional_detail_id = @additional_detail.id
-      @line_item_additional_detail.save(:validate => false)
-
-      expect(@line_item_additional_detail.update_attributes({ :form_data_json => nil})).to eq(false)
-      expect(@line_item_additional_detail.errors[:form_data_json]).to eq(["can't be blank"])
-    end
-
-    it 'should fail on update if form_data_json is empty' do
-      @line_item_additional_detail = LineItemAdditionalDetail.new
-      @line_item_additional_detail.line_item_id = @line_item.id
-      @line_item_additional_detail.additional_detail_id = @additional_detail.id
-      @line_item_additional_detail.save(:validate => false)
-
-      expect(@line_item_additional_detail.update_attributes({ :form_data_json => ""})).to eq(false)
-      expect(@line_item_additional_detail.errors[:form_data_json]).to eq(["can't be blank"])
-    end
-
     it 'should succeed on update if form_data_json is NOT empty' do
-      @line_item_additional_detail = LineItemAdditionalDetail.new
-      @line_item_additional_detail.line_item_id = @line_item.id
-      @line_item_additional_detail.additional_detail_id = @additional_detail.id
-      @line_item_additional_detail.save(:validate => false)
-
+      @line_item_additional_detail.save()
       expect(@line_item_additional_detail.update_attributes({ :form_data_json => '{ "real" : "JSON" }'})).to eq(true)
     end
 
     it 'should fail on update if form_data_json equals the word "null"' do
-      @line_item_additional_detail = LineItemAdditionalDetail.new
-      @line_item_additional_detail.line_item_id = @line_item.id
-      @line_item_additional_detail.additional_detail_id = @additional_detail.id
-      @line_item_additional_detail.save(:validate => false)
-
+      @line_item_additional_detail.save()
       expect(@line_item_additional_detail.update_attributes({ :form_data_json => "null"})).to eq(false)
       expect(@line_item_additional_detail.errors[:form_data_json]).to eq(["must be valid JSON"])
     end
 
     it 'should fail on update if form_data_json is not valid JSON' do
-      @line_item_additional_detail = LineItemAdditionalDetail.new
-      @line_item_additional_detail.line_item_id = @line_item.id
-      @line_item_additional_detail.additional_detail_id = @additional_detail.id
-      @line_item_additional_detail.save(:validate => false)
-
+      @line_item_additional_detail.save()
       expect(@line_item_additional_detail.update_attributes({ :form_data_json => "{ asdfasdf : {"})).to eq(false)
       expect(@line_item_additional_detail.errors[:form_data_json]).to eq(["must be valid JSON"])
     end
@@ -83,11 +43,10 @@ RSpec.describe LineItemAdditionalDetail do
     
     before :each do
      @additional_detail = AdditionalDetail.new
-     @additional_detail.form_definition_json= '{"schema": {"type": "object","title": "Comment","properties": {"t": {"title": "t","type": "string"} },"required": ["t"] },"form": [{"key": "t","kind": "textarea", "style": {"selected": "btn-success","unselected": "btn-default"},"type": "textarea"}]}'
-     @additional_detail.save(:validate => false)
-     
+     @additional_detail.form_definition_json= '{"schema": {"required": ["t"] }}'
+
      @line_item_additional_detail = LineItemAdditionalDetail.new
-     @line_item_additional_detail.additional_detail_id = @additional_detail.id
+     @line_item_additional_detail.additional_detail = @additional_detail
     end
     
     it 'should return false when not all data is present' do
@@ -98,7 +57,25 @@ RSpec.describe LineItemAdditionalDetail do
     it 'should return true when all data is present' do
           @line_item_additional_detail.form_data_json = '{"t" : "This is a test."}'
           expect(@line_item_additional_detail.required_fields_present).to eq(true)
-        end
+    end
+    
+    describe "with two required fields" do
+      before :each do
+        @additional_detail.form_definition_json= '{"schema": {"required": ["t","r"] }}'
+      end
+      
+      it 'should return false when only one question is present' do
+        @line_item_additional_detail.form_data_json = '{"t" : "This is a test.", "s" : "Hello world!"}'
+        expect(@line_item_additional_detail.required_fields_present).to eq(false)
+      end
+      
+      it 'should return false when only one question is present' do
+        @line_item_additional_detail.form_data_json = '{"t" : "This is a test.", "r" : "World, hello!"}'
+        expect(@line_item_additional_detail.required_fields_present).to eq(true)
+      end
+      
+    end
+    
     
   end
   
@@ -108,17 +85,12 @@ RSpec.describe LineItemAdditionalDetail do
     before :each do
       @sub_service_request = SubServiceRequest.new
       @sub_service_request.status = 'first_draft'
-      SubServiceRequest.skip_callback(:save, :after, :update_org_tree)
-      @sub_service_request.save(:validate => false)
-      SubServiceRequest.set_callback(:save, :after, :update_org_tree)
 
       @line_item = LineItem.new
-      @line_item.sub_service_request_id = @sub_service_request.id
-      @line_item.save(:validate => false)
+      @line_item.sub_service_request = @sub_service_request
 
       @line_item_additional_detail = LineItemAdditionalDetail.new
-      @line_item_additional_detail.line_item_id = @line_item.id
-      @line_item_additional_detail.save(:validate => false)
+      @line_item_additional_detail.line_item = @line_item
     end
 
     it 'should return the status of the sub_service_request' do

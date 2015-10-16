@@ -15,11 +15,10 @@ class LineItemAdditionalDetail < ActiveRecord::Base
   end
   
   def service_requester_name
-     owner = self.line_item.sub_service_request.owner
-     return owner.first_name.concat(" ").concat(owner.last_name)
-   end
-  
-  
+    owner = self.line_item.sub_service_request.owner
+    owner.first_name.concat(" ").concat(owner.last_name)
+  end
+
   def has_answered_all_required_questions?
     if self.additional_detail and self.additional_detail.has_required_questions? and self.form_data_json
       user_answers = JSON.parse(self.form_data_json)

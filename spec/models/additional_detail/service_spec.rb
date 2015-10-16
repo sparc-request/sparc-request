@@ -165,4 +165,51 @@ RSpec.describe Service do #, type: :model
       expect(@orphaned_service.additional_detail_breadcrumb).to eq("")
     end
   end
+  
+  describe 'has_required_additional_detail_questions?' do
+    it 'should return false if has zero additional_details' do
+      @service = Service.new
+      expect(@service.has_required_additional_detail_questions?).to eq(false)
+    end
+    
+    it 'should return false if has zero active additional_details' do
+      @additional_detail = AdditionalDetail.new
+      @additional_detail.effective_date = Date.tomorrow # not yet effective/active
+      @additional_detail.form_definition_json= '{"schema": {"required": ["date"] }}'
+      
+      @service = Service.new
+      @service.additional_details << @additional_detail
+      expect(@service.has_required_additional_detail_questions?).to eq(false)
+    end
+    
+    it 'should return false if has zero required questions' do
+      @additional_detail = AdditionalDetail.new
+      @additional_detail.effective_date = Date.today
+      @additional_detail.form_definition_json= '{"schema": {"required": [] }}'
+      
+      @service = Service.new
+      @service.additional_details << @additional_detail
+      expect(@service.has_required_additional_detail_questions?).to eq(false)
+    end
+    
+    it 'should return true if has one required question' do
+      @additional_detail = AdditionalDetail.new
+      @additional_detail.effective_date = Date.today
+      @additional_detail.form_definition_json= '{"schema": {"required": ["date"] }}'
+      
+      @service = Service.new
+      @service.additional_details << @additional_detail
+      expect(@service.has_required_additional_detail_questions?).to eq(true)
+    end
+    
+    it 'should return true if has two required questions' do
+      @additional_detail = AdditionalDetail.new
+      @additional_detail.effective_date = Date.today
+      @additional_detail.form_definition_json= '{"schema": {"required": ["t","date"] }}'
+      
+      @service = Service.new
+      @service.additional_details << @additional_detail
+      expect(@service.has_required_additional_detail_questions?).to eq(true)
+    end
+  end
 end

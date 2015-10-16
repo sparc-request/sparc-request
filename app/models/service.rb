@@ -226,15 +226,20 @@ class Service < ActiveRecord::Base
     return pricing_map
   end
 
-  # Find most recent additional detail with an effective date before today
+  # Find most recent additional detail with an effective date of today or earlier
   def current_additional_detail
     current_additional_details = self.additional_details.select { |additional_detail| additional_detail.effective_date <= Date.today }
     current_additional_details = current_additional_details.sort_by &:effective_date
     if(current_additional_details.count >0)
-      return current_additional_details.last
+      current_additional_details.last
     else
-      return nil
+      nil
     end
+  end
+  
+  def has_required_additional_detail_questions?
+    active_additional_detail = self.current_additional_detail
+    !active_additional_detail.blank? && active_additional_detail.has_required_questions?
   end
   
   # for display within additional details

@@ -129,7 +129,7 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', '$windo
 	
 	$scope.gridModel = {enableFiltering: true, enableColumnResizing: true, enableRowSelection: false, showColumnFooter: false , enableSorting: true, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 42};
 	$scope.gridModel.columnDefs = [
-	                               {enableFiltering: false, enableColumnResizing: false,name: 'Duplicate',width: 90, enableColumnMenu: false, cellTemplate: '<button class="btn btn-info" ng-click="grid.appScope.duplicateLink(row.entity.id)">Duplicate</button>'},
+	                               {enableFiltering: false, enableColumnResizing: false,name: 'Duplicate',width: 90, enableColumnMenu: false, cellTemplate: '<button class="btn btn-primary" ng-click="grid.appScope.duplicateLink(row.entity.id)">Duplicate</button>'},
 	                               {enableFiltering: false, enableColumnResizing: false,name: 'Edit',width: 55, enableColumnMenu: false, cellTemplate: '<button class="btn btn-primary" ng-disabled="row.entity.line_item_additional_details.length > 0" ng-click="grid.appScope.editLink(row.entity.id)">Edit</button>'},
 	                               {name: "Responses", enableFiltering: false, width: '10%', enableColumnMenu: false, cellTemplate: '<button style="width: 100%" class="btn btn-info" ng-disabled="row.entity.line_item_additional_details.length==0" ng-click="grid.appScope.updateLineItemAdditionalDetails(row.entity.id)">{{row.entity.line_item_additional_details.length}} {{(row.entity.line_item_additional_details.length == 1) ? "Response" : "Responses"}}</button>'},
 	                               {field: 'name', name: 'Name',  width: '30%', enableColumnMenu: false}, 

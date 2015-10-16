@@ -127,7 +127,8 @@
                 %a.edit_service_request{:href => "javascript:void(0);", :'data-permission' => permission.to_s, :'data-url' => "/service_requests/#{sr.id}/catalog?from_user_portal=true&edit_original=true"}= t(:protocol_information)[:edit_original]
         - if !ssr.additional_details_required_questions_answered?
           %tr{:class => "errorExplanation"}
-            %td{:colspan => "1"} &nbsp;
+            %td.center
+              = pretty_ssr_id(protocol, ssr)
             %td{:colspan => "8"}
               %a{:style => "text-decoration: underline;", :href => document_management_service_request_path(:id => sr, :sub_service_request_id => ssr.id)} Please complete the required Additional Details for this request.  
         %tr

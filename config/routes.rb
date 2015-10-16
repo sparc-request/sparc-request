@@ -19,11 +19,11 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 SparcRails::Application.routes.draw do
-  get '/direct_link_to/:survey_code',
-      to: 'surveyor#create',
-      as: 'direct_link_survey'
-  delete '/surveys/:survey_code/:response_set_code', to: 'surveyor#destroy'
-  mount Surveyor::Engine => '/surveys', as: 'surveyor'
+  post "protocol_archive/create"
+
+  match '/direct_link_to/:survey_code', :to => 'surveyor#create', :as => 'direct_link_survey', :via => :get
+  match '/surveys/:survey_code/:response_set_code', :to => 'surveyor#destroy', :via => :delete
+  mount Surveyor::Engine => "/surveys", :as => "surveyor"
 
   if USE_SHIBBOLETH_ONLY
     devise_for :identities,
@@ -254,6 +254,10 @@ SparcRails::Application.routes.draw do
 
     resource :admin, only: [:index] do
       resources :sub_service_requests, only: [:show, :destroy] do
+    resources :epic_queues, only: ['index', 'destroy']
+
+    resource :admin do
+      resources :sub_service_requests do
         member do
           put :update_from_fulfillment
           put :update_from_project_study_information
@@ -273,6 +277,8 @@ SparcRails::Application.routes.draw do
       end
 
       resources :subsidies, only: [:create, :destroy] do
+
+      resources :subsidies do
         member do
           put :update_from_fulfillment
         end

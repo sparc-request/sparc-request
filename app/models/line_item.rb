@@ -74,9 +74,16 @@ class LineItem < ActiveRecord::Base
 
   # TODO: order by date/id instead of just by date?
   default_scope :order => 'line_items.id ASC'
-
+  
+  # line_item_additional_details are created when the user first visits the Notes & Documents page
+  # if a line_item doesn't have a line_item_additional_detail (i.e., the user hasn't yet reached or skipped the Notes & Documents page), 
+  #   then we need to ask the service if it has an active additional_detail with required questions
   def additional_detail_required_questions_answered?
-    self.line_item_additional_detail.required_fields_present
+    if self.line_item_additional_detail
+      self.line_item_additional_detail.has_answered_all_required_questions?
+    else
+      true
+    end
   end
  
   def get_additional_detail

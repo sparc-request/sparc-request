@@ -39,7 +39,7 @@ RSpec.describe LineItemAdditionalDetail do
     end
   end
 
-  describe "required_fields_present" do
+  describe "has_answered_all_required_questions?" do
     
     before :each do
      @additional_detail = AdditionalDetail.new
@@ -51,12 +51,12 @@ RSpec.describe LineItemAdditionalDetail do
     
     it 'should return false when not all data is present' do
       @line_item_additional_detail.form_data_json = "{}"
-      expect(@line_item_additional_detail.required_fields_present).to eq(false)
+      expect(@line_item_additional_detail.has_answered_all_required_questions?).to eq(false)
     end
     
     it 'should return true when all data is present' do
           @line_item_additional_detail.form_data_json = '{"t" : "This is a test."}'
-          expect(@line_item_additional_detail.required_fields_present).to eq(true)
+          expect(@line_item_additional_detail.has_answered_all_required_questions?).to eq(true)
     end
     
     describe "with two required fields" do
@@ -66,22 +66,17 @@ RSpec.describe LineItemAdditionalDetail do
       
       it 'should return false when only one question is present' do
         @line_item_additional_detail.form_data_json = '{"t" : "This is a test.", "s" : "Hello world!"}'
-        expect(@line_item_additional_detail.required_fields_present).to eq(false)
+        expect(@line_item_additional_detail.has_answered_all_required_questions?).to eq(false)
       end
       
       it 'should return false when only one question is present' do
         @line_item_additional_detail.form_data_json = '{"t" : "This is a test.", "r" : "World, hello!"}'
-        expect(@line_item_additional_detail.required_fields_present).to eq(true)
+        expect(@line_item_additional_detail.has_answered_all_required_questions?).to eq(true)
       end
-      
     end
-    
-    
   end
   
-  
   describe "sub_service_request_status" do
-
     before :each do
       @sub_service_request = SubServiceRequest.new
       @sub_service_request.status = 'first_draft'

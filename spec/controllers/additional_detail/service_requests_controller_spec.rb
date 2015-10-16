@@ -94,6 +94,7 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
           @ad = AdditionalDetail.new 
           @ad.effective_date = Date.yesterday
           @ad.service_id = @service.id
+          @ad.form_definition_json= '{"schema": {"required": ["t","date"] }}'
           @ad.save(:validate => false)
         end
   
@@ -105,7 +106,7 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
           expect(@line_item_additional_detail.additional_detail_id).to eq(@ad.id)
           expect(@line_item_additional_detail.line_item_id).to eq(@line_item.id)
           expect(response.status).to eq(200)
-          expect(response.body).to eq([@line_item_additional_detail].to_json(:root=> false, :methods => [:required_fields_present, :additional_detail_breadcrumb], :include => :additional_detail))
+          expect(response.body).to eq([@line_item_additional_detail].to_json(:root=> false, :methods => [:has_answered_all_required_questions?, :additional_detail_breadcrumb], :include => :additional_detail))
         end
       end
     end 

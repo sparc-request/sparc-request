@@ -70,6 +70,9 @@ FactoryGirl.define do
     transient do
       project_role_count 1
       pi nil
+      identity nil
+      project_rights nil
+      role nil
     end
 
     # TODO: get this to work!
@@ -78,14 +81,18 @@ FactoryGirl.define do
     #     protocol: protocol, identity: evaluator.pi)
     # end
 
-    after(:build) do |protocol|
+    after(:build) do |protocol, evaluator|
       protocol.build_ip_patents_info(attributes_for(:ip_patents_info)) if not protocol.ip_patents_info
       protocol.build_human_subjects_info(attributes_for(:human_subjects_info)) if not protocol.human_subjects_info
       protocol.build_investigational_products_info(attributes_for(:investigational_products_info)) if not protocol.investigational_products_info
       protocol.build_research_types_info(attributes_for(:research_types_info)) if not protocol.research_types_info
       protocol.build_vertebrate_animals_info(attributes_for(:vertebrate_animals_info))  if not protocol.vertebrate_animals_info
+    end
 
-
+    after(:create) do |protocol, evaluator|
+      if evaluator.identity && evaluator.project_rights && evaluator.role
+        create(:project_role, protocol_id: protocol.id, identity_id: evaluator.identity.id, project_rights: evaluator.project_rights, role: evaluator.role)
+      end
     end
 
     factory :protocol_without_validations, traits: [:without_validations]

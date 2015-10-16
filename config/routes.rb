@@ -252,8 +252,6 @@ SparcRails::Application.routes.draw do
       get :download
     end
 
-    resource :admin, only: [:index] do
-      resources :sub_service_requests, only: [:show, :destroy] do
     resources :epic_queues, only: ['index', 'destroy']
 
     resource :admin do
@@ -277,8 +275,6 @@ SparcRails::Application.routes.draw do
       end
 
       resources :subsidies, only: [:create, :destroy] do
-
-      resources :subsidies do
         member do
           put :update_from_fulfillment
         end

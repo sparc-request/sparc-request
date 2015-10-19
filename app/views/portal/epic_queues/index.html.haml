@@ -18,19 +18,14 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- protocols.each do |protocol|
-  %h3.blue-provider{:id => "blue-provider-#{protocol.id}", :class => "blue-provider-#{protocol.id}", :'data-protocol_id' => "#{protocol.id}"}
-    %a{:href => '#'}
-      .left.protocol-accordion-title
-        = "#{protocol.type.capitalize}:"
-        = protocol.id
-        = "-"
-        = protocol.short_title
-        - if protocol.principal_investigators
-          %br
-          = "PI(s): #{protocol.principal_investigators.map(&:display_name).join(', ')}"
-      .protocol-archive-button.ui-corner-all{:'data-protocol_id' => protocol.id, :'data-archive' => protocol.archived ? 0 : 1}
-        = "#{protocol.archived ? 'UNARCHIVE' : 'ARCHIVE'} #{protocol.type.capitalize}"
-      .clear
-
-  .protocol-information{:class => "protocol-information-#{protocol.id}"}
+.admin-right-dashboard
+  .user-information-body
+    %p
+      = @user.full_name
+      |
+      = @user.email
+    .admin-buttons
+      =link_to "Return to Admin Portal", portal_admin_index_path, :class => 'return_link'
+%br
+#epic-queue-container
+  = render :partial => 'epic_queue_list'

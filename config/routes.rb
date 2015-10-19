@@ -19,6 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 SparcRails::Application.routes.draw do
+  post "protocol_archive/create"
+
   match '/direct_link_to/:survey_code', :to => 'surveyor#create', :as => 'direct_link_survey', :via => :get
   match '/surveys/:survey_code/:response_set_code', :to => 'surveyor#destroy', :via => :delete
   mount Surveyor::Engine => "/surveys", :as => "surveyor"
@@ -253,6 +255,8 @@ SparcRails::Application.routes.draw do
       get :download
     end
 
+    resources :epic_queues, only: ['index', 'destroy']
+
     resource :admin do
       resources :sub_service_requests do
         member do
@@ -272,7 +276,7 @@ SparcRails::Application.routes.draw do
           put :update_from_fulfillment
         end
       end
-
+  
       resources :subsidies do
         member do
           put :update_from_fulfillment

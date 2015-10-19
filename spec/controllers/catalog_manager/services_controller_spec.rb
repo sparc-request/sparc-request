@@ -22,7 +22,7 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
 
     context "success" do
 
-      before { post :create, post_create_valid_params }
+      before(:each) { post :create, post_create_valid_params }
 
       it "should persist a Service" do
         expect(Service.count).to eq(1)
@@ -125,7 +125,7 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
           corporate_rate: "",
           other_rate: "",
           member_rate: "",
-          unit_type: "",
+          unit_type: "Per Infusion",
           unit_factor: 1,
           unit_minimum: 1,
           otf_unit_type: "N/A",

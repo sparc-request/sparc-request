@@ -139,25 +139,25 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
     end
 
     describe 'is a catalog_manager' do
-      
+
       before :each do
         @catalog_manager = CatalogManager.new
         @catalog_manager.identity_id = @identity.id
       end
-      
+
       describe 'for a core and and has access to' do
         before :each do
           @catalog_manager.organization_id = @core.id
           @catalog_manager.save(validate: false)
         end
-          
+
         it 'a core service index' do
           get(:index, {:service_id => @core_service, :format => :html})
           expect(response).to render_template("index")
           expect(response.status).to eq(200)
           expect(assigns(:service)).to_not be_blank
         end
-     
+
         it 'a core service new additional detail page' do
           get(:new, {:service_id => @core_service, :format => :html})
           expect(response).to render_template("new")
@@ -165,7 +165,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
           expect(assigns(:service)).to_not be_blank
           expect(assigns(:additional_detail)).to_not be_blank
         end
-        
+
         describe 'with an additional detail present' do
           before :each do
             @ad = AdditionalDetail.new
@@ -173,62 +173,94 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
             @ad.form_definition_json= '{"schema": {"required": ["t","date"] }}'
             @ad.save(validate: false)
           end
-          
+
           it "should delete" do
             expect{
               delete(:destroy, {:service_id => @core_service, :id => @ad, :format => :json})
               expect(response.status).to eq(204)
             }.to change(AdditionalDetail, :count).by(-1)
           end
-          
+
           describe 'with line_item_additional_details present' do
             before :each do
+              @service_request = ServiceRequest.new
+              @service_request.save(validate: false)
+              
               @sub_service_request = SubServiceRequest.new
+              @sub_service_request.service_request_id = @service_request.id
               @sub_service_request.status = 'first_draft'
               SubServiceRequest.skip_callback(:save, :after, :update_org_tree)
               @sub_service_request.save(:validate => false)
               SubServiceRequest.set_callback(:save, :after, :update_org_tree)
-              
+
               @line_item = LineItem.new
               @line_item.sub_service_request_id = @sub_service_request.id
               @line_item.service_id = @core_service.id
               @line_item.save(validate: false)
-              
+
               @line_item_additional_detail = LineItemAdditionalDetail.new
               @line_item_additional_detail.line_item_id = @line_item.id
               @line_item_additional_detail.additional_detail_id = @ad.id
               @line_item_additional_detail.save(validate: false)
             end
-            
-            it "should show additional detail" do
-              get(:show, {:service_id => @core_service, :id => @ad, :format => :json })
-              expect(response.status).to eq(200)
-              expect(response.body).to eq(@ad.to_json(:root => false, :include => {:line_item_additional_details  => {:methods => [:sub_service_request_status, :has_answered_all_required_questions?]}}))
+
+            describe "show show status" do
+              before :each do
+                @sub_service_request.status = 'first_draft'
+              end
+              it "should show additional detail" do
+                get(:show, {:service_id => @core_service, :id => @ad, :format => :json })
+                expect(response.status).to eq(200)
+
+                expect(JSON.parse(response.body)["line_item_additional_details"][0]["sub_service_request_status"]).to eq(@sub_service_request.status)
+              end
+            end
+
+            describe 'with owner name present' do
+              before :each do
+                @owner = Identity.new
+                @owner.first_name = "Test"
+                @owner.last_name = "Man"
+                @owner.email = "test@test.uiowa.edu"
+                Identity.skip_callback(:create, :after, :send_admin_mail)
+                @owner.save(validate: false)
+                Identity.set_callback(:create, :after, :send_admin_mail)
+
+                @service_request.service_requester_id = @owner.id
+                @service_request.save(validate: false)
+                
+              end
+
+              it "should show additional detail" do
+                get(:show, {:service_id => @core_service, :id => @ad, :format => :json })
+                expect(response.status).to eq(200)
+                expect(JSON.parse(response.body)["line_item_additional_details"][0]["service_requester_name"]).to eq("Test Man (test@test.uiowa.edu)")
+              end
             end
           end
         end
       end
-      
+
       describe 'for a program and and has access to' do
         before :each do
           @catalog_manager.organization_id = @program.id
           @catalog_manager.save(validate: false)
         end
-        
+
         it 'a core service index because user is a catalog_manager for its program' do
           get(:index, {:service_id => @core_service, :format => :html})
           expect(response).to render_template("index")
           expect(response.status).to eq(200)
           expect(assigns(:service)).to_not be_blank
         end
-        
+
         it 'a program service index' do
           get(:index, {:service_id => @program_service, :format => :html})
           expect(response).to render_template("index")
           expect(response.status).to eq(200)
           expect(assigns(:service)).to_not be_blank
         end
-        
+
         it 'a core service new additional detail page because user is a catalog_manager for its program' do
           get(:new, {:service_id => @core_service, :format => :html})
           expect(response).to render_template("new")
@@ -236,7 +268,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
           expect(assigns(:service)).to_not be_blank
           expect(assigns(:additional_detail)).to_not be_blank
         end
-        
+
         it 'a program service new additional detail page' do
           get(:new, {:service_id => @program_service, :format => :html})
           expect(response).to render_template("new")
@@ -245,7 +277,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
           expect(assigns(:additional_detail)).to_not be_blank
         end
       end
-                 
+
       # CRUD an additional detail as a catalog_manager
       describe 'a core service and can' do
         before :each do
@@ -254,7 +286,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
           @catalog_manager.organization_id = @core.id
           @catalog_manager.save(validate: false)
         end
-        
+
         describe 'with an additional detail present' do
           before :each do
             @ad = AdditionalDetail.new
@@ -277,52 +309,52 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
             expect(assigns(:additional_detail).effective_date).to eq(@ad.effective_date)
             expect(assigns(:additional_detail).approved).to eq(@ad.approved)
           end
-          
-          it "can update" do 
-            put(:update, {:service_id => @core_service, :id => @ad, :additional_detail=> @ad.attributes = { :name => "Test2"} }) 
+
+          it "can update" do
+            put(:update, {:service_id => @core_service, :id => @ad, :additional_detail=> @ad.attributes = { :name => "Test2"} })
             expect(response).to redirect_to(additional_detail_service_additional_details_path(@core_service))
             expect(AdditionalDetail.find(@ad.id).name).to eq("Test2")
           end
-          
-          it "can delete" do 
+
+          it "can delete" do
             expect{
               delete(:destroy, {:service_id => @core_service, :id => @ad, :format => :json})
-              expect(response.status).to eq(204)    
+              expect(response.status).to eq(204)
             }.to change(AdditionalDetail, :count).by(-1)
           end
-          
+
           it "will render edit page" do
             get(:edit,{:service_id => @core_service, :id => @ad, :format =>:html})
             expect(response.status).to eq(200)
             expect(response).to render_template(:action => 'new')
           end
-          
+
           describe 'with a line item additional detail present' do
             before :each do
               @line_item_additional_detail = LineItemAdditionalDetail.new
               @line_item_additional_detail.additional_detail_id = @ad.id
               @line_item_additional_detail.save(validate: false)
             end
-            
+
             it "cannot delete" do
               expect{
                 delete(:destroy, {:service_id => @core_service, :id => @ad, :format => :json})
                 expect(response.status).to eq(403)
               }.to change(AdditionalDetail, :count).by(0)
             end
-            
+
             it "cannot update" do
-              put(:update, {:service_id => @core_service, :id => @ad, :additional_detail=> @ad.attributes = { :name => "Test2"} }) 
+              put(:update, {:service_id => @core_service, :id => @ad, :additional_detail=> @ad.attributes = { :name => "Test2"} })
               expect(response.status).to eq(403)
               expect(AdditionalDetail.find(@ad.id).name).to eq("Test")
-              end
-             
+            end
+
             it "will not render the edit page" do
               get(:edit,{:service_id => @core_service, :id => @ad, :format =>:html})
               expect(response.status).to eq(401)
               expect(response).to render_template("unauthorized", :status => :unauthorized)
             end
-               
+
           end
 
         end

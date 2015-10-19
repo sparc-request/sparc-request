@@ -143,10 +143,10 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', '$windo
 	$scope.line_item_ad_gridModel.columnDefs = [
 	                               {name: "Show", enableFiltering: false, width: 63, enableColumnMenu: false, cellTemplate: '<button data-toggle="modal" class="btn btn-primary" ng-click="grid.appScope.showResults(row.entity.id)">Show</button>'},
 	                               {name: "Edit", enableFiltering: false, width: 63, enableColumnMenu: false, cellTemplate: '<button data-toggle="modal" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">Edit</button>'},
+	                               {name: "Requester", enableColumnMenu: false, field: "service_requester_name"},
 	                               {name: 'Service Request Status', field: 'sub_service_request_status', enableColumnMenu: false}, 
 	                               {name: 'Required Questions Answered',field: 'has_answered_all_required_questions?', enableColumnMenu: false},
 	                               {field:'updated_at',name: 'Last Updated', enableColumnMenu: false, sort: { direction: uiGridConstants.DESC, priority: 1 } }
-	                               //{enableFiltering: false, enableColumnResizing: false,name: 'Delete',width: 70, enableColumnMenu: false, cellTemplate: '<button class="btn btn-danger" ng-disabled="row.entity.line_item_additional_details.length > 0" ng-click="grid.appScope.deleteAdditonalDetail(row.entity.id)">Delete</button>'}
 	                               ];
 	
 	$scope.reroute = function(path){

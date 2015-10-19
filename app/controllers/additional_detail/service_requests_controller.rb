@@ -2,7 +2,7 @@ class AdditionalDetail::ServiceRequestsController < ApplicationController
   protect_from_forgery
   before_filter :authenticate_identity! 
   
-  # return json data of each line item additional detail, authorize using service_requester_id
+  # return json data for each line item additional detail, authorize using service_requester_id
   def show
     # version 1.0 only allows original service requester to view grid 
     # but we'll likely add more types of users to the list of authorized viewers

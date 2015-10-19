@@ -64,10 +64,22 @@
   :plain
     $('#se_info').html("#{escape_javascript(render :partial => 'catalog_manager/shared/submission_emails', :locals => {:entity => @entity})}")
 
-- #  console.log($("#show_all_services").find('.unavailable_button').data('show-unavailable'))
-- if @entity.is_available == false && $("#show_all_services").find('.unavailable_button').data('show-unavailable') == "false"
-  $("##{@entity.class.name.upcase}#{@entity.id}").remove();
-  $('#details').empty();
+show_unavailable = $("#show_all_services").find('.unavailable_button').data('show-unavailable')
+
+- if @entity.is_available == false
+  :plain
+    if (show_unavailable  == false) {
+      $("##{@entity.class.name.upcase}#{@entity.id}").remove();
+      $('#details').empty();
+    }
+    else {
+      $("##{@entity.class.name.upcase}#{@entity.id}").addClass("visually_unavailable");
+    }
+- else
+  :plain
+    $("##{@entity.class.name.upcase}#{@entity.id}").removeClass("visually_unavailable");
+
+      
 
 
 

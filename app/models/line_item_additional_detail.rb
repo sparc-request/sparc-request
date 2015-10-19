@@ -15,8 +15,19 @@ class LineItemAdditionalDetail < ActiveRecord::Base
   end
   
   def service_requester_name
-    owner = self.line_item.sub_service_request.owner
-    owner.first_name.concat(" ").concat(owner.last_name)
+    if self.line_item.sub_service_request.service_request.service_requester
+      owner = self.line_item.sub_service_request.service_request.service_requester
+      if owner.first_name and owner.last_name
+        name = owner.first_name + " " + owner.last_name
+      elsif owner.first_name and !owner.last_name
+        name = owner.first_name
+      elsif !owner.first_name and owner.last_name
+        name = owner.last_name
+      elsif !owner.first_name and !owner.last_name and owner.email
+        name = owner.email
+      end
+    end
+    name
   end
 
   def has_answered_all_required_questions?

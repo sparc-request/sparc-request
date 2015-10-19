@@ -221,6 +221,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
                 @owner = Identity.new
                 @owner.first_name = "Test"
                 @owner.last_name = "Man"
+                @owner.email = "test@test.uiowa.edu"
                 Identity.skip_callback(:create, :after, :send_admin_mail)
                 @owner.save(validate: false)
                 Identity.set_callback(:create, :after, :send_admin_mail)
@@ -233,7 +234,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
               it "should show additional detail" do
                 get(:show, {:service_id => @core_service, :id => @ad, :format => :json })
                 expect(response.status).to eq(200)
-                expect(JSON.parse(response.body)["line_item_additional_details"][0]["service_requester_name"]).to eq("Test Man")
+                expect(JSON.parse(response.body)["line_item_additional_details"][0]["service_requester_name"]).to eq("Test Man (test@test.uiowa.edu)")
               end
             end
           end

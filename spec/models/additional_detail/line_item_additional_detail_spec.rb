@@ -137,6 +137,33 @@ RSpec.describe LineItemAdditionalDetail do
     end
 
   end
+  
+  describe "protocol_short_title" do
+    before :each do
+      
+      @protocol = Protocol.new
+      @protocol.short_title = "Super Short Title"
+      
+      @service_request = ServiceRequest.new
+      @service_request.protocol = @protocol
+      
+      @sub_service_request = SubServiceRequest.new
+      @sub_service_request.service_request = @service_request
+      
+      @line_item = LineItem.new
+      @line_item.sub_service_request = @sub_service_request
+      
+      @line_item_additional_detail = LineItemAdditionalDetail.new
+      @line_item_additional_detail.line_item = @line_item
+      
+    end
+    
+    it "should return short title of protocol" do
+      expect(@line_item_additional_detail.protocol_short_title).to eq(@protocol.short_title)
+    end
+    
+  end
+  
 
   describe "service_requester_name" do
     before :each do
@@ -159,10 +186,11 @@ RSpec.describe LineItemAdditionalDetail do
       before :each do
         @service_requester.first_name = "Test"
         @service_requester.last_name = "Man"
+        @service_requester.email = "test@test.uiowa.edu"
       end
 
       it 'should return first and last name of service_requester' do
-        expect(@line_item_additional_detail.service_requester_name).to eq("Test Man")
+        expect(@line_item_additional_detail.service_requester_name).to eq("Test Man (test@test.uiowa.edu)")
       end
 
     end
@@ -173,7 +201,7 @@ RSpec.describe LineItemAdditionalDetail do
       end
 
       it 'should return first name of service_requester' do
-        expect(@line_item_additional_detail.service_requester_name).to eq("Test")
+        expect(@line_item_additional_detail.service_requester_name).to eq("Test  ()")
       end
 
     end
@@ -184,23 +212,13 @@ RSpec.describe LineItemAdditionalDetail do
       end
 
       it 'should return last name of service_requester' do
-        expect(@line_item_additional_detail.service_requester_name).to eq("Man")
-      end
-    end
-
-    describe "with no first or last name but with email" do
-      before :each do
-        @service_requester.email = "test@test.uiowa.edu"
-      end
-
-      it 'should return enail of service_requester' do
-        expect(@line_item_additional_detail.service_requester_name).to eq("test@test.uiowa.edu")
+        expect(@line_item_additional_detail.service_requester_name).to eq("Man ()")
       end
     end
 
     describe "with no first or last name or email" do
       it 'should return nil' do
-        expect(@line_item_additional_detail.service_requester_name).to eq(nil)
+        expect(@line_item_additional_detail.service_requester_name).to eq("()")
       end
     end
 

@@ -547,3 +547,8 @@ $ ->
     $("#cwf_wrapper input[type='checkbox']").attr('checked', false)
   )
 
+  $(document).on('click','.unavailable_button', ->
+    show_unavailable = $(this).data('show-unavailable')
+    window.location.assign("/catalog_manager?show_unavailable=#{show_unavailable}")
+  ) 
+

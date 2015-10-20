@@ -2,7 +2,7 @@
   var service_id = '#{@service.id}';
   var effective_date = '#{@additional_detail.effective_date ? @additional_detail.effective_date : ""}';
   var service_name = '#{@service.name}';
-  var additionalDetail_name = '#{@additional_detail.name ? @additional_detail.name : false}'
+  var additionalDetail_name = '#{@additional_detail.name ? @additional_detail.name : false}';
   
 %div{"ng-controller" => "FormCreationController"}
   .row
@@ -25,6 +25,22 @@
                     - @additional_detail.errors.full_messages.each do |msg|
                       %li= msg
               = form_for [:additional_detail, @service, @additional_detail], :html => { :role=>"form", "data-toggle"=>"validator"} do |f|
+                .modal.fade{:id=>"importExportModal", :role=>"dialog", :tabindex=>"-1", "aria-labelledby"=>"myModalLabel"}
+                  .modal-dialog.modal-lg{:role=>"document"}
+                    .modal-content
+                      .modal-header
+                        %button{"type"=>"button", "class"=>"close", "data-dismiss"=>"modal", "aria-label"=>"Close"}
+                          %span{"aria-hidden"=>"true"} &times;
+                        %h4.modal-title Import or Export an Additional Detail Form
+                      .modal-body
+                        .panel.panel-default
+                          .panel-heading
+                            %h3.panel-title Select All and then "Copy" to Export or "Paste" to Import
+                          .panel-body
+                            .form-group
+                              = f.text_area :form_definition_json, "ng-model" => "formDefinition", "rows" => "20", class: "form-control"
+                      .modal-footer
+                        %button.btn.btn-success{"data-dismiss"=>"modal"} Close
                 .row
                   .col-md-12
                     .form-group
@@ -50,10 +66,9 @@
                       =f.check_box :approved, class: "checkbox"
                 .row
                   .col-md-12
-                    .form-group
-                      = f.text_area :form_definition_json, class: "hidden", "ng-model" => "formDefinition", "rows" => "0", "cols" => "0"
-                      %input.btn.btn-primary{:type=>"submit", :value=>"Save Additional Details Form"}
-                      %input.btn.btn-danger{:type=>"reset", :value=>"Reset Form"}    
+                    %input.btn.btn-primary{:type=>"submit", :value=>"Save Form"}
+                    %button.btn.btn-info{"type"=>"button", "data-toggle"=>"modal", "data-target"=>"#importExportModal"} Import / Export Form
+                    %input.btn.btn-danger{:type=>"reset", :value=>"Reset Form"}    
         .col-md-7
           .panel.panel-default
             .panel-heading
@@ -124,7 +139,10 @@
           %h3.panel-title Form Data
         .panel-body
           %pre{"ng-cloak"=>"true"} {{pretty()}}  
-      
+:javascript
+  $('#importExportModal').on('shown.bs.modal', function () {
+    $('#additional_detail_form_definition_json').focus();
+  }) 
   
         
                

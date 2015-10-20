@@ -127,6 +127,14 @@ RSpec.describe 'landing page', js: true do
       end
     end
 
+    it 'should allow user to export consolidated request' do
+      new_window = window_opened_by { click_on 'Export Consolidated Request' }
+      within_window new_window do
+        expect(page).to have_text('Opening' + ' ' + service_request.protocol_id.to_s + '.xlsx')
+      end
+
+    end
+
     it 'should allow user to edit original service request' do
       find("td.edit-original-td a").click
       expect(page).to have_text("Welcome to the SPARC Request Services Catalog")

@@ -551,8 +551,6 @@ $ ->
     $('#processing_request').dialog('open')
     show_unavailable = $(this).data('show-unavailable')
     window.location.assign("/catalog_manager?show_unavailable=#{show_unavailable}")
-    $(document).ajaxStop ->
-      $('#processing_request').dialog('close')
   ) 
 
   

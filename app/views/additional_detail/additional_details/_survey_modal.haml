@@ -1,16 +1,17 @@
 .modal.fade{:id=>"additionalDetailModal", :role=>"dialog", :tabindex=>"-1", "aria-labelledby"=>"myModalLabel"}
   .modal-dialog.modal-lg{:role=>"document"}
-    %form.modal-content{:name=>"survey"}
+    .modal-content
       .modal-header
         %button{"type"=>"button", "class"=>"close", "data-dismiss"=>"modal", "aria-label"=>"Close"}
           %span{"aria-hidden"=>"true"} &times;
-        %h4.modal-title {{modal_title}}
+        %h4.modal-title {{currentLineItemAD.additional_detail_breadcrumb}}
       .modal-body
         .panel.panel-default
           .panel-heading
             %h3.panel-title Please Answer the Following Questions
           .panel-body
-            %div{:name=>"modalForm",  "sf-schema"=>"schema", "sf-form"=>"form", "sf-model"=>"model"}
+            %div
+              %form{ "sf-schema"=>"currentLineItemAD.additional_detail_schema_hash", "sf-form"=>"currentLineItemAD.additional_detail_form_array", "sf-model"=>"currentLineItemAD.form_data_hash", "sf-options"=>"{validateOnRender:true}"}
       .modal-footer
-        %a.btn.btn-danger{"data-dismiss"=>"modal"} Cancel
-        %button.btn.btn-primary{"data-dismiss"=>"modal", "ng-click"=> "saveFormResponse()"} Save
+        %a.btn.btn-default{"data-dismiss"=>"modal"} Cancel
+        %button.btn.btn-success{"data-dismiss"=>"modal", "ng-click"=> "saveFormResponse()"} Save

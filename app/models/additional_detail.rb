@@ -14,18 +14,28 @@ class AdditionalDetail < ActiveRecord::Base
   
   validate :date_in_past, :effective_date_cannot_be_shared, :form_definition_cannot_be_blank
   
+  def schema_hash
+    JSON.parse(self.form_definition_json).fetch('schema')
+  end
+  
+  def form_array
+    JSON.parse(self.form_definition_json).fetch('form')
+  end
+  
   def required_question_keys
-    JSON.parse(self.form_definition_json).fetch('schema').fetch('required')
+    self.schema_hash.fetch('required')
   end
   
   def has_required_questions?
     self.required_question_keys.length > 0
   end
   
+  private
+  
   def line_items_present
     line_item_additional_details.empty?
   end
-  
+
   def date_in_past
     if  !effective_date.blank? and effective_date.beginning_of_day <= Date.yesterday.beginning_of_day
       errors.add(:effective_date, "Date cannot be in past.")

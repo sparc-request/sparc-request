@@ -38,6 +38,22 @@ class LineItemAdditionalDetail < ActiveRecord::Base
     JSON.parse(self.form_data_json)
   end
   
+  def additional_detail_schema_hash
+    if self.additional_detail
+      self.additional_detail.schema_hash
+    else
+      {}
+    end
+  end
+  
+  def additional_detail_form_array
+    if self.additional_detail
+      self.additional_detail.form_array
+    else
+      []
+    end
+  end
+  
   def additional_detail_breadcrumb
     self.line_item.additional_detail_breadcrumb
   end

@@ -25,21 +25,21 @@
 = javascript_include_tag 'cart'
 = javascript_include_tag 'additional_detail/application.js'
 = stylesheet_link_tag    "additional_detail/application"
+%div{"ng-controller" => "DocumentManagementAdditionalDetailsController"}
+  = render :partial => 'additional_detail/additional_details/survey_modal'
 
-#upload_message{:style => 'display:none'}
-  = t("documents.message")
+  #upload_message{:style => 'display:none'}
+    = t("documents.message")
 
 
-= form_tag navigate_service_request_path(@service_request), {:id => 'navigation_form', :class => 'root-view', :multipart => true} do
-  = hidden_field_tag :location, ''
-  = hidden_field_tag :validates, ''
-  = hidden_field_tag :current_location, @page
-  = render :partial => 'steps'
-  = render :partial => 'errors'
-  %div{"ng-controller" => "DocumentManagementAdditionalDetailsController"}
+  = form_tag navigate_service_request_path(@service_request), {:id => 'navigation_form', :class => 'root-view', :multipart => true} do
+    = hidden_field_tag :location, ''
+    = hidden_field_tag :validates, ''
+    = hidden_field_tag :current_location, @page
+    = render :partial => 'steps'
+    = render :partial => 'errors'
     .grid_9.col-md-9
-      .alert{ "ng-show"=>"alertMessage", "ng-class"=>"{ 'alert-success' : resourceSuccessful, 'alert-danger' : !resourceSuccessful }", "role"=>"alert"}
-        = "{{alertMessage}}"
+      .alert{ "ng-show"=>"alertMessage", "ng-class"=>"{ 'alert-success' : resourceSuccessful, 'alert-danger' : !resourceSuccessful }", "role"=>"alert"}= "{{alertMessage}}"
       .panel.panel-default{"ng-if"=>"gridModel.data.length > 0"}
         .panel-heading
           %h3.panel-title Additional Details
@@ -73,4 +73,4 @@
     .clear
 
     .continue.col-md-12= render :partial => 'service_requests/navigation'
-    = render :partial => 'additional_detail/additional_details/survey_modal'
+    

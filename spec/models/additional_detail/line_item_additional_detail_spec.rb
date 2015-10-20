@@ -290,5 +290,28 @@ RSpec.describe LineItemAdditionalDetail do
       expect(@line_item_additional_detail.additional_detail_breadcrumb).to eq("BMI / Consulting / Project Team Members")
     end
   end
-
+  
+  describe 'additional_detail_schema_hash and additional_detail_form_array' do
+    it 'should return empty hash and empty array when additional_detail is nil' do
+      @line_item_additional_detail = LineItemAdditionalDetail.new
+      expect(@line_item_additional_detail.additional_detail_schema_hash).to eq({})
+      expect(@line_item_additional_detail.additional_detail_form_array).to eq([])
+    end
+    
+    it 'should return empty hash and empty array when each is empty' do
+      @line_item_additional_detail = LineItemAdditionalDetail.new
+      @line_item_additional_detail.additional_detail = AdditionalDetail.new
+      @line_item_additional_detail.additional_detail.form_definition_json= '{ "schema": {}, "form": []}'
+      expect(@line_item_additional_detail.additional_detail_schema_hash).to eq({})
+      expect(@line_item_additional_detail.additional_detail_form_array).to eq([])
+    end
+    
+    it 'should return hash and array for one field' do
+      @line_item_additional_detail = LineItemAdditionalDetail.new
+      @line_item_additional_detail.additional_detail = AdditionalDetail.new
+      @line_item_additional_detail.additional_detail.form_definition_json = '{"schema":{"type":"object","title":"Comment","properties":{"birthdate":{"title":"birthdate","description":"ex. 06/13/2015","type":"string","format":"datepicker","validationMessage":"Please enter vaild date ex. 06/13/2015"}},"required":[]},"form":[{"key":"birthdate","kind":"datepicker","style":{"selected":"btn-success","unselected":"btn-default"},"type":"datepicker","dateOptions":{"dateFormat":"MM/dd/yyyy"}}]}'
+      expect(@line_item_additional_detail.additional_detail_schema_hash).to eq({"type"=>"object","title"=>"Comment","properties"=>{"birthdate"=>{"title"=>"birthdate","description"=>"ex. 06/13/2015","type"=>"string","format"=>"datepicker","validationMessage"=>"Please enter vaild date ex. 06/13/2015"}},"required"=>[]})
+      expect(@line_item_additional_detail.additional_detail_form_array).to eq([{"key"=>"birthdate","kind"=>"datepicker","style"=>{"selected"=>"btn-success","unselected"=>"btn-default"},"type"=>"datepicker","dateOptions"=>{"dateFormat"=>"MM/dd/yyyy"}}])
+    end
+  end
 end

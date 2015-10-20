@@ -38,39 +38,24 @@ app.factory("LineItemAdditionalDetail",  ['$resource', function($resource) {
   return $resource("/additional_detail/line_item_additional_details/:id", { id: '@id'}, {'update': { method: 'PUT'} });
 }]);
 
+// The AdditionalDetailsRootController is not used yet.
 app.controller('AdditionalDetailsRootController', ['$scope', '$http', function($scope, $http) { 
-	$scope.gridModel = {enableFiltering: true, enableColumnResizing: true, showColumnFooter: true , enableSorting: true, showGridFooter: true, enableRowHeaderSelection: false, rowHeight: 42};
-	$scope.gridModel.columnDefs = [{field: 'service.name', name: 'Name',  width: '30%', enableColumnMenu: false ,}];
+	$scope.gridModel = {enableColumnMenus: false, enableFiltering: true, enableColumnResizing: true, showColumnFooter: true , enableSorting: true, showGridFooter: true, enableRowHeaderSelection: false, rowHeight: 45};
+	$scope.gridModel.columnDefs = [{field: 'service.name', name: 'Name',  width: '30%'}];
 }]);
 
 app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$http', 'LineItemAdditionalDetail', function($scope, $http, LineItemAdditionalDetail) { 
-	$scope.gridModel = {enableFiltering: false, enableColumnResizing: true, enableRowSelection: false, showColumnFooter: false , enableSorting: true, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 42, enableCellEdit:false};
-
-	$scope.gridModel.columnDefs = [{enableFiltering: false, enableColumnResizing: false,name: 'Survey',width: 105, enableColumnMenu: false, cellTemplate: '<button type="button" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">{{(row.entity.form_data_json==null) ? "Take Survey" : "Edit Survey"}}</button>'},
-	                               {field: 'additional_detail_breadcrumb', name: 'Service', enableColumnMenu: false ,}, 
-	                               {name: 'Completed',field: 'has_answered_all_required_questions?', width: '15%', enableColumnMenu: false }
-	                               ];
+	$scope.gridModel = {enableColumnMenus: false, enableFiltering: false, enableColumnResizing: false, enableRowSelection: false, showColumnFooter: false , enableSorting: true, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 45, enableCellEdit:false};
+	$scope.gridModel.columnDefs = [{name: 'Add/Edit Buttons', displayName:'', enableSorting: false, width: 105, cellTemplate: '<button type="button" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">{{(row.entity.form_data_json=="{}") ? "Add Details" : "Edit Details"}}</button>'},
+	                               {field: 'additional_detail_breadcrumb', name: 'Service'}, 
+	                               {name: 'Completed',field: 'has_answered_all_required_questions?', width: '15%' }];
 
 	$scope.reloadGrid = function(){
 		$http.get('/additional_detail/service_requests/'+service_request_id).
 			then(function(response){
 				$scope.gridModel.data = response.data;
-				console.log($scope.gridModel.data);
-				data = $scope.gridModel.data
-				for(var i=0; i<data.length; i++){
-					if(!data[i].status){data[i].status = "Incomplete";}
-				}
 			});
-	}
-	
-	function allPresent(model, required){
-		for(var i=0; i<required.length; i++){
-			if(!(required[i] in model) || model[required[i]] == undefined){
-				return false;}
-		}
-		return true;
-	}
-	
+	}	
 	
 	$scope.showSurvey = function(id){
 		// hide the alert message before showing a survey
@@ -78,23 +63,16 @@ app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$htt
 		// We need to load the survey data from this controller because it authorizes the current user to view it.
 		LineItemAdditionalDetail.get({ id: id }).$promise.then(function(line_item_additional_detail) {
 			$scope.currentLineItemAD = line_item_additional_detail;
-			$scope.modal_title = line_item_additional_detail.additional_detail_breadcrumb;
-			var object = JSON.parse(line_item_additional_detail.additional_detail.form_definition_json);
-			$scope.schema = object.schema;
-			$scope.form   = object.form;
-			$scope.model = (line_item_additional_detail.form_data_json==null) ? {} : JSON.parse(line_item_additional_detail.form_data_json);
 			$('#additionalDetailModal').modal();
 		}, function errorCallback(error) { 
 	    	 $scope.alertMessage = error.statusText;
 	    	 $scope.resourceSuccessful = false;
 	    });
-		
 	}	
 	
 	$scope.saveFormResponse = function(){
-		$scope.currentLineItemAD.form_data_json = JSON.stringify($scope.model);
-		$scope.currentLineItemAD.status = (allPresent($scope.model, $scope.schema.required)) ? "Complete" : "Incomplete";
-		if($scope.currentLineItemAD.status=="Complete"){$scope.currentLineItemAD.date_completed = new Date();}
+		// convert the form response from an object to a string
+		$scope.currentLineItemAD.form_data_json = JSON.stringify($scope.currentLineItemAD.form_data_hash);
 		$scope.currentLineItemAD.$update(function(response) { 
 			$scope.reloadGrid(); 
 			$scope.alertMessage = "Response saved.";
@@ -120,33 +98,30 @@ app.controller("DocumentManagementAdditionalDetailsController", ['$scope', '$htt
      };
      
 	$scope.reloadGrid();
-	
-
-	
 }]);
 
 app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', '$window', 'AdditionalDetail', 'LineItemAdditionalDetail', 'uiGridConstants', function($scope, $http, $window, AdditionalDetail, LineItemAdditionalDetail, uiGridConstants) {
 	
-	$scope.gridModel = {enableFiltering: true, enableColumnResizing: true, enableRowSelection: false, showColumnFooter: false , enableSorting: true, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 42};
+	$scope.gridModel = {enableColumnMenus: false, enableFiltering: true, enableColumnResizing: true, enableRowSelection: false, showColumnFooter: false , enableSorting: true, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 45};
 	$scope.gridModel.columnDefs = [
-	                               {enableFiltering: false, enableColumnResizing: false,name: 'Duplicate',width: 90, enableColumnMenu: false, cellTemplate: '<button class="btn btn-primary" ng-click="grid.appScope.duplicateLink(row.entity.id)">Duplicate</button>'},
-	                               {enableFiltering: false, enableColumnResizing: false,name: 'Edit',width: 55, enableColumnMenu: false, cellTemplate: '<button class="btn btn-primary" ng-disabled="row.entity.line_item_additional_details.length > 0" ng-click="grid.appScope.editLink(row.entity.id)">Edit</button>'},
-	                               {name: "Responses", enableFiltering: false, width: '10%', enableColumnMenu: false, cellTemplate: '<button style="width: 100%" class="btn btn-info" ng-disabled="row.entity.line_item_additional_details.length==0" ng-click="grid.appScope.updateLineItemAdditionalDetails(row.entity.id)">{{row.entity.line_item_additional_details.length}} {{(row.entity.line_item_additional_details.length == 1) ? "Response" : "Responses"}}</button>'},
-	                               {field: 'name', name: 'Name',  width: '30%', enableColumnMenu: false}, 
-	                               {field:'effective_date',name: 'Effective Date', width: '25%', enableColumnMenu: false, sort: { direction: uiGridConstants.DESC, priority: 1 } },
-	                               {field: 'approved',name: 'Approved', width: '10%', enableColumnMenu: false},
-	                               {field: 'description', name: 'Description', enableColumnMenu: false},
-	                               {enableFiltering: false, enableColumnResizing: false,name: 'Delete',width: 70, enableColumnMenu: false, cellTemplate: '<button class="btn btn-danger" ng-disabled="row.entity.line_item_additional_details.length > 0" ng-click="grid.appScope.deleteAdditonalDetail(row.entity)">Delete</button>'}
+	                               {enableFiltering: false, enableColumnResizing: false, width: 90,  name: 'Duplicate',  cellTemplate: '<button class="btn btn-primary" ng-click="grid.appScope.duplicateLink(row.entity.id)">Duplicate</button>'},
+	                               {enableFiltering: false, enableColumnResizing: false, width: 55,  name: 'Edit',       cellTemplate: '<button class="btn btn-primary" ng-disabled="row.entity.line_item_additional_details.length > 0" ng-click="grid.appScope.editLink(row.entity.id)">Edit</button>'},
+	                               {enableFiltering: false, enableColumnResizing: false, width: 115, name: "Responses",  cellTemplate: '<button class="btn btn-info" ng-disabled="row.entity.line_item_additional_details.length==0" ng-click="grid.appScope.updateLineItemAdditionalDetails(row.entity.id)">{{row.entity.line_item_additional_details.length}} {{(row.entity.line_item_additional_details.length == 1) ? "Response" : "Responses"}}</button>'},
+	                               {field: 'name', name: 'Name', width: '25%'}, 
+	                               {field:'effective_date',name: 'Effective Date', width: '15%',  sort: { direction: uiGridConstants.DESC, priority: 1 } },
+	                               {field: 'approved',name: 'Approved'},
+	                               {field: 'description', name: 'Description'},
+	                               {enableFiltering: false, enableColumnResizing: false,name: 'Delete',width: 70, cellTemplate: '<button class="btn btn-danger" ng-disabled="row.entity.line_item_additional_details.length > 0" ng-click="grid.appScope.deleteAdditonalDetail(row.entity)">Delete</button>'}
 	                               ];
 	
-	$scope.line_item_ad_gridModel = {enableFiltering: true, enableColumnResizing: true, enableRowSelection: false, showColumnFooter: false , enableSorting: true, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 42};
+	$scope.line_item_ad_gridModel = {enableColumnMenus: false, enableFiltering: true, enableColumnResizing: true, enableRowSelection: false, showColumnFooter: false , enableSorting: true, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 45};
 	$scope.line_item_ad_gridModel.columnDefs = [
-	                               {name: "Show", enableFiltering: false, width: 63, enableColumnMenu: false, cellTemplate: '<button data-toggle="modal" class="btn btn-primary" ng-click="grid.appScope.showResults(row.entity.id)">Show</button>'},
-	                               {name: "Edit", enableFiltering: false, width: 63, enableColumnMenu: false, cellTemplate: '<button data-toggle="modal" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">Edit</button>'},
-	                               {name: "Requester", enableColumnMenu: false, field: "service_requester_name"},
-	                               {name: 'Service Request Status', field: 'sub_service_request_status', enableColumnMenu: false}, 
-	                               {name: 'Required Questions Answered',field: 'has_answered_all_required_questions?', enableColumnMenu: false},
-	                               {field:'updated_at',name: 'Last Updated', enableColumnMenu: false, sort: { direction: uiGridConstants.DESC, priority: 1 } }
+	                               {name: "Show",displayName:'', enableFiltering: false, width: 63, cellTemplate: '<button data-toggle="modal" class="btn btn-primary" ng-click="grid.appScope.showResults(row.entity.id)">Show</button>'},
+	                               {name: "Edit",displayName:'', enableFiltering: false, width: 63, cellTemplate: '<button data-toggle="modal" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">Edit</button>'},
+	                               {name: "Requester", field: "service_requester_name"},
+	                               {name: 'Service Request Status', field: 'sub_service_request_status'}, 
+	                               {name: 'Required Questions Answered',field: 'has_answered_all_required_questions?'},
+	                               {field:'updated_at',name: 'Last Updated', sort: { direction: uiGridConstants.DESC, priority: 1 } }
 	                               ];
 	
 	$scope.reroute = function(path){
@@ -165,8 +140,6 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', '$windo
 		AdditionalDetail.get({ id: ad_id }).$promise.then(function(additional_detail) {
 			$scope.activeAdditionalDetail = additional_detail;
 			$scope.line_item_ad_gridModel.data = additional_detail.line_item_additional_details;
-			console.log($scope.line_item_ad_gridModel.data);
-			$scope.resultsTabText = "Results for " + additional_detail.name; 
 			// activate the the results tab
 			$('#resultsTab').attr('data-toggle', 'tab');
 			$('#myTabs a[href="#liadGrid"]').tab('show');
@@ -177,10 +150,6 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', '$windo
 	}
 	// initialize the main grid
 	$scope.gridModel.data = AdditionalDetail.query();
-	console.log($scope.gridModel.data);
-	// (don't) initialize the response grid to the first additional
-	$scope.resultsTabText = "Results";
-	//$scope.updateLineItemAdditionalDetails();
 	
     $scope.deleteAdditonalDetail = function(additionalDetail) {
     	additionalDetail.$delete(function() { 
@@ -200,8 +169,6 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', '$windo
 		// We need to load the survey data from this controller because it authorizes the current user to view it.
 		LineItemAdditionalDetail.get({ id: liad_id }).$promise.then(function(line_item_additional_detail) {
 			$scope.currentLineItemAD = line_item_additional_detail;
-			$scope.modal_title = line_item_additional_detail.additional_detail_breadcrumb;
-			$scope.model = JSON.parse(line_item_additional_detail.form_data_json);
 			$('#additionalDetailResultsModal').modal();
 		}, function errorCallback(error) { 
 	    	 $scope.alertMessage = error.statusText;
@@ -215,11 +182,6 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', '$windo
 		// We need to load the survey data from this controller because it authorizes the current user to view it.
 		LineItemAdditionalDetail.get({ id: liad_id }).$promise.then(function(line_item_additional_detail) {
 			$scope.currentLineItemAD = line_item_additional_detail;
-			$scope.modal_title = line_item_additional_detail.additional_detail_breadcrumb;
-			var object = JSON.parse(line_item_additional_detail.additional_detail.form_definition_json);
-			$scope.schema = object.schema;
-			$scope.form   = object.form;
-			$scope.model = JSON.parse(line_item_additional_detail.form_data_json);
 			$('#additionalDetailModal').modal();
 		}, function errorCallback(error) { 
 	    	 $scope.alertMessage = error.statusText;
@@ -228,7 +190,8 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', '$windo
 	}
 	
 	$scope.saveFormResponse = function(){
-		$scope.currentLineItemAD.form_data_json = JSON.stringify($scope.model);
+		// convert the form response from an object to a string
+		$scope.currentLineItemAD.form_data_json = JSON.stringify($scope.currentLineItemAD.form_data_hash);
 		$scope.currentLineItemAD.$update(function() { 
   			$scope.gridModel.data = AdditionalDetail.query();
 			$scope.alertMessage = "Response saved.";
@@ -239,7 +202,6 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', '$windo
  	        $scope.resourceSuccessful = false;
 	     });
 	}	
-
 }]);
 
 app.controller('FormCreationController', ['$scope', '$http', function ($scope, $http, $compile) {
@@ -398,13 +360,15 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
 		  return Objects.keys($scope.model.form);
 	  };
 	  
-	  $scope.gridModel = {enableFiltering: true, enableColumnResizing: true, showColumnFooter: true , enableSorting: false, showGridFooter: true, enableRowHeaderSelection: false, rowHeight: 42};
+	  $scope.gridModel = {enableColumnMenus: false, enableFiltering: true, enableColumnResizing: true, showColumnFooter: true , enableSorting: false, showGridFooter: true, enableRowHeaderSelection: false, rowHeight: 45};
 	  $scope.gridModel.columnDefs = [
-	                                 {name: 'question', field: 'name',  width: '21%', enableColumnMenu: false }, { name: 'key', width: '7%', enableColumnMenu: false }, 
-	                                 { name: 'type', field: "kind", width: '15%',editableCellTemplate: 'ui-grid/dropdownEditor', cellFilter: 'mapKind', editDropdownValueLabel: 'kind', editDropdownOptionsArray: getKindHashArray(), enableColumnMenu: false},
-	                               	 {field: 'values', name : "Values/Range", width: '13%', enableColumnMenu: false }, {name: 'required', width :'12%' ,editableCellTemplate: 'ui-grid/dropdownEditor',cellFilter: 'mapBoolean', editDropdownValueLabel: 'required', editDropdownOptionsArray: [
-	                               	 {id: 'true', required: 'Yes' },{ id: 'false', required: 'No' }], enableColumnMenu: false},{field: "description", enableColumnMenu: false},
-	                               	 {enableFiltering: false, enableCellEdit: false,enableColumnResizing: false,name:'Order', field :'up', width: 83,cellTemplate: '<button class="btn btn-primary glyphicon glyphicon-chevron-up" ng-click="grid.appScope.up(row.entity.key)"></button><button class="btn btn-primary glyphicon glyphicon-chevron-down" ng-click="grid.appScope.down(row.entity.key)"></button>', enableColumnMenu: false}
+	                                 {name: 'question', field: 'name',  width: '21%' }, 
+	                                 {name: 'key', width: '7%'}, 
+	                                 {name: 'type', field: "kind", width: '15%',editableCellTemplate: 'ui-grid/dropdownEditor', cellFilter: 'mapKind', editDropdownValueLabel: 'kind', editDropdownOptionsArray: getKindHashArray()},
+	                               	 {name: "Values/Range", field: 'values',  width: '13%'}, 
+	                               	 {name: 'required', width :'12%' ,editableCellTemplate: 'ui-grid/dropdownEditor',cellFilter: 'mapBoolean', editDropdownValueLabel: 'required', editDropdownOptionsArray: [{id: 'true', required: 'Yes' }, { id: 'false', required: 'No' }]},
+	                               	 {field: "description"},
+	                               	 {enableFiltering: false, enableCellEdit: false, enableColumnResizing: false,name:'Order', field :'up', width: 83, cellTemplate: '<button class="btn btn-primary glyphicon glyphicon-chevron-up" ng-click="grid.appScope.up(row.entity.key)"></button><button class="btn btn-primary glyphicon glyphicon-chevron-down" ng-click="grid.appScope.down(row.entity.key)"></button>'}
  	                                 ];
 
 		function removeSpecial(value){

@@ -306,7 +306,8 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
             expect(response).to render_template(:action => 'new')
             expect(assigns(:additional_detail).name).to eq(@ad.name)
             expect(assigns(:additional_detail).form_definition_json).to eq(@ad.form_definition_json)
-            expect(assigns(:additional_detail).effective_date).to eq(@ad.effective_date)
+            # effective date should be nil so that the admin user has decide when to make it effective
+            expect(assigns(:additional_detail).effective_date).to eq(nil)
             expect(assigns(:additional_detail).approved).to eq(@ad.approved)
           end
 

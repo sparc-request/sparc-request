@@ -40,6 +40,8 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
   
   def duplicate
     @additional_detail = @service.additional_details.find(params[:id]).dup
+    # force the admin user to choose a new effective date, should help prevent validation that checks for duplicate effective dates
+    @additional_detail.effective_date = nil
     render :new
   end
 

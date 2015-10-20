@@ -5,17 +5,17 @@
   = render :partial => 'additional_detail/additional_details/survey_modal'
   .modal.fade{:id=>"additionalDetailResultsModal", :role=>"dialog", :tabindex=>"-1", "aria-labelledby"=>"myModalLabel"}
     .modal-dialog.modal-lg{:role=>"document"}
-      %form.modal-content{:name=>"survey"}
+      .modal-content{:name=>"survey"}
         .modal-header
           %button{"type"=>"button", "class"=>"close", "data-dismiss"=>"modal", "aria-label"=>"Close"}
             %span{"aria-hidden"=>"true"} &times;
-          %h4.modal-title {{modal_title}}
+          %h4.modal-title {{currentLineItemAD.additional_detail_breadcrumb}}
         .modal-body
           .panel.panel-default
             .panel-heading
               %h3.panel-title Survey Response
             .panel-body
-              .row{"ng-repeat"=>"(key, value) in model"}
+              .row{"ng-repeat"=>"(key, value) in currentLineItemAD.form_data_hash"}
                 .col-md-4
                   %label {{key}}
                 .col-md-8 {{value}}
@@ -29,7 +29,9 @@
       %li.active{:role=>"presentation"}
         %a{:href=>"#adGrid", "aria-controls"=>:adGrid, :role=>:tab, "data-toggle"=>:tab} Additional Details
       %li{:role=>"presentation"}
-        %a{:id => "resultsTab", :href=>"#liadGrid", "aria-controls"=>:liadGrid, :role=>:tab} {{resultsTabText}}
+        %a{:id => "resultsTab", :href=>"#liadGrid", "aria-controls"=>:liadGrid, :role=>:tab} 
+          Results 
+          %span{"ng-if"=> "activeAdditionalDetail"} for {{activeAdditionalDetail.name}}
     .tab-content
       .tab-pane.fade.in.active{:role=>:tabpanel, :id=>:adGrid}
         .panel.panel-default

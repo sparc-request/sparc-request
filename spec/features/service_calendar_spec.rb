@@ -344,6 +344,11 @@ RSpec.describe "service calendar", js: true do
         @visit_id = arm1.line_items_visits.first.visits[1].id
       end
 
+      it "should show a spinner when changed" do
+        click_link "calendar_tab"
+        expect(page).to have_css("#tab_load_spinner", visible: true)
+      end
+
       it "should be blank if the visit is not checked" do
         click_link "calendar_tab"
         all('.visit.visit_column_2').each do |x|

@@ -1120,7 +1120,7 @@ module CapybaraProper
 
 
     def submissionConfirmationPage
-        click_link("Go to SPARC Request User Portal")
+        click_link("Go to SPARC Request Dashboard")
         wait_for_javascript_to_finish
     end
 

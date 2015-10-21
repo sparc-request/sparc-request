@@ -48,7 +48,7 @@ Once you have created an initial institution and set yourself as a catalog manag
 
 Some basic important URLs for the application are as follows:
 <root_url> - The main SPARC Request shopping screen
-<root_url/portal> - The SPARC Request User Portal.
+<root_url/portal> - The SPARC Request Dashboard.
 <root_url/portal/admin> - The SPARC Request Admin Portal (rights are require to gain access)
 <root_url/catalog_manager> - The Catalog Manager application for managing organizational structure and service offerings.
 

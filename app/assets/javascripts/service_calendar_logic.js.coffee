@@ -71,10 +71,10 @@ $(document).ready ->
       ready: false
 
   $('#service_calendar').tabs
-    beforeActivate: (event, ui) -> 
-      #// $(ui.panel).html('<div class="ui-corner-all" style = "border: 1px solid black; padding: 25px; width: 200px; margin: 30px auto; text-align: center">Loading data....<br /><img src="/assets/spinner.gif" /></div>')
+    beforeActivate: (event, ui) ->
+      $("#service_calendar #tab_load_spinner").show()
     load: (event, ui) ->
-      #// $(ui.panel).html('<div class="ui-corner-all" style = "border: 1px solid black; padding: 25px; width: 200px; margin: 30px auto; text-align: center">Loading data....<br /><img src="/assets/spinner.gif" /></div>')
+      $("#service_calendar #tab_load_spinner").hide()
 
   # $('.billing_type_list').live 'mouseover', ->
   $('.billing_type_list').qtip

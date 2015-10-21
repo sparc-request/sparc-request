@@ -25,12 +25,13 @@ module ServiceCalendarHelper
     action = checked == true ? 'unselect_calendar_row' : 'select_calendar_row'
     icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
     link_to(
-        (content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')), 
+        (content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')),
         "/service_requests/#{line_items_visit.line_item.service_request.id}/#{action}/#{line_items_visit.id}?portal=#{portal}",
         :remote  => true,
         :role    => 'button',
         :class   => "ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only service_calendar_row",
-        :id      => "check_row_#{line_items_visit.id}_#{tab}")
+        :id      => "check_row_#{line_items_visit.id}_#{tab}",
+        :data    => {confirm: "This will reset custom values for this row, do you wish to continue?"})
   end
 
   def currency_converter cents
@@ -39,7 +40,7 @@ module ServiceCalendarHelper
 
   def display_service_rate line_item
     full_rate = line_item.service.displayed_pricing_map.full_rate
-    
+
     full_rate < line_item.applicable_rate ? "" : currency_converter(full_rate)
   end
 
@@ -131,7 +132,7 @@ module ServiceCalendarHelper
   def display_total_indirect_cost_per_study_otfs service_request, line_items
     sum = 0
     sum = service_request.total_indirect_costs_one_time line_items
-    currency_converter sum 
+    currency_converter sum
   end
 
   def display_total_cost_per_study_otfs service_request, line_items

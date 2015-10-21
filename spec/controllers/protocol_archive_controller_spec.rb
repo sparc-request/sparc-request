@@ -5,7 +5,7 @@ RSpec.describe ProtocolArchiveController, :type => :controller do
   describe "GET #create" do
   	context "protocol is not archived" do
 	  	let!(:protocol) { create(:protocol_without_validations, archived: false) }
-	  	before {get :create, {protocol_id: protocol.id}}
+	  	before {post :create, format: :js, protocol_id: protocol.id}
 	    it "returns http success" do
 	      expect(response).to have_http_status(:success)
 	    end

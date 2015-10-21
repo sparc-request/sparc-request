@@ -134,7 +134,11 @@ ActiveRecord::Schema.define(version: 20151012140439) do
     t.string   "comment",         limit: 255
     t.string   "remote_address",  limit: 255
     t.datetime "created_at"
+<<<<<<< HEAD
     t.string   "request_uuid",    limit: 255
+=======
+    t.string   "request_uuid"
+>>>>>>> master
   end
 
   add_index "audits", ["associated_id", "associated_type"], name: "associated_index", using: :btree
@@ -654,6 +658,7 @@ ActiveRecord::Schema.define(version: 20151012140439) do
     t.datetime "recruitment_end_date"
     t.boolean  "selected_for_epic",                                                           default: false
     t.boolean  "has_cofc"
+    t.boolean  "archived",                                                            :default => false
   end
 
   add_index "protocols", ["next_ssr_id"], name: "index_protocols_on_next_ssr_id", using: :btree

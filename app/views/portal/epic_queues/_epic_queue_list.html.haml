@@ -17,19 +17,36 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-#visit-form{:style => 'display: none', :title => 'Add a new visit'}
-  .label Visit Name:
-  = text_field_tag 'visit_name', "Visit Name"
-  - if USE_EPIC
-    %br
-    %br
-    %span{:style => "display:inline-block;text-align:center;"}
-      .label -
-      = text_field_tag 'visit_window_before', 0, :size => 2
-    %span{:style => "display: inline-block;text-align:center;"}
-      .label Day
-      = text_field_tag 'visit_day', nil, :size => 4, :maxlength => 4
-    %span{:style => "display:inline-block;text-align:center;"}
-      .label +
-      = text_field_tag 'visit_window_after', 0, :size => 2
+%div
+  %table.epic-queue-table
+    %colgroup
+      %col
+      %col
+      %col
+      %col
+      %col.last
+    %thead
+      %tr{class: "even"}
+        %th{class: "eq-protocol", align: "left"}= t(:epic_queues)[:protocol]
+        %th{class: "eq-protocol-PIs", align: "left"}= t(:epic_queues)[:PIs]
+        %th{class: "eq-date", align: "left"}= t(:epic_queues)[:date]
+        %th{class: "eq-status", align: "left"}= t(:epic_queues)[:status]
+        %th.last{class: "eq-delete", align: "center"}= t(:epic_queues)[:delete]
+    %tbody
+      - row_index = 1
+      - @epic_queues.each do |eq|
+        - protocol = eq.protocol
+        %tr.epic-queue-protocol{class: row_index % 2 == 0 ? "even" : "odd"}
+          - row_index += 1
+          %td{class: "eq-protocol", align: "left"}
+            = format_protocol(protocol)
+          %td{class: "eq-protocol-PIs", align: "left"}
+            %ul{class: "eq-protocol-PIs-list"}
+              - protocol.principal_investigators.map(&:full_name).each do |pi|
+                %li{class: "#{protocol.id}-PI"}= pi
+          %td{class: "eq-date", align: "left"}
+            = format_date(protocol)
+          %td{class: "eq-status", align: "left"}
+            = format_status(protocol)
+          %td.last{class: "eq-delete", align: "center"}
+            %a{class: "delete-eq", title: "Delete Epic Queue", href: "javascript:void(0)", data: {eq_id: eq.id, protocol_id: protocol.id}}

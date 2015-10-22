@@ -37,6 +37,6 @@ RSpec.feature 'User views Organizations', js: true do
   end
 
   def then_i_should_see_all_organizations
-    expect(page).to have_css("#PROVIDER#{@provider.id}")
+    expect(page).to have_css("#PROVIDER#{@provider.id}.visually_unavailable")
   end
 end

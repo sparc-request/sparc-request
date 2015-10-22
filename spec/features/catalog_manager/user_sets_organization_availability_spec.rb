@@ -10,18 +10,25 @@ RSpec.feature 'User sets organization availability', js: true do
     login_as(Identity.find_by_ldap_uid('jug2@musc.edu'))
   end
 
-  scenario 'to unavailable' do
+  scenario 'to unavailable in show available' do
     given_i_am_viewing_catalog_manager
     when_i_set_the_organization_availability_to_unavailable
     then_i_should_not_see_the_organization
   end
 
-  scenario 'to available' do
+  scenario 'to available in show all' do
     given_i_am_viewing_catalog_manager
     when_i_view_all_organizations
     and_then_i_set_the_organization_availability_to_available
     and_i_am_viewing_only_available_organizations
     then_i_should_see_the_organization
+  end
+
+  scenario 'to unavailable in show all' do
+    given_i_am_viewing_catalog_manager
+    when_i_view_all_organizations
+    and_then_i_set_the_organization_availability_to_unavailable
+    then_i_should_see_the_organization_as_visually_distinguished 
   end
 
   def given_i_am_viewing_catalog_manager
@@ -44,7 +51,19 @@ RSpec.feature 'User sets organization availability', js: true do
     find('#core_is_available').click
     first('#save_button').click
     wait_for_javascript_to_finish
+  end
 
+  def and_then_i_set_the_organization_availability_to_unavailable
+    page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
+    first("#PROVIDER#{@provider_available.id} a").click
+    wait_for_javascript_to_finish
+    find('#provider_is_available').click
+    first('#save_button').click
+    wait_for_javascript_to_finish
+  end
+
+  def then_i_should_see_the_organization_as_visually_distinguished
+    expect(page).to have_css("#PROVIDER#{@provider_available.id}.visually_unavailable")
   end
 
   def and_i_am_viewing_only_available_organizations

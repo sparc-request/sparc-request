@@ -41,6 +41,6 @@ RSpec.feature 'User views Services', js: true do
 
   def then_i_should_see_all_services
     expect(page).to have_css("#SERVICE#{@service_available.id}")
-    expect(page).to have_css("#SERVICE#{@service_unavailable.id}")
+    expect(page).to have_css("#SERVICE#{@service_unavailable.id}.visually_unavailable")
   end
 end

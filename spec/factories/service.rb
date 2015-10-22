@@ -31,7 +31,7 @@ FactoryGirl.define do
 
      trait :without_callback_notify_remote_service_after_create do
        before(:create) { |service| service.class.skip_callback(:create, :after, :notify_remote_service_after_create) }
-       after(:create) { Service.set_callback(:create, :after, :notify_remote_service_after_create) }
+     #  after(:create) { Service.set_callback(:create, :after, :notify_remote_service_after_create) }
      end
 
     trait :with_ctrc_organization do

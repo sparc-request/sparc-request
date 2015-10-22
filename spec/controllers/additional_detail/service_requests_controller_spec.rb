@@ -24,8 +24,14 @@ require 'rails_helper'
 RSpec.describe AdditionalDetail::ServiceRequestsController do
   
   before :each do
+    # associate a protocol to a service request and sub service request
+    @protocol = Study.new
+    @protocol.type = 'Study'
+    @protocol.save(validate: false)
+    
     # mock a service request      
     @service_request = ServiceRequest.new
+    @service_request.protocol_id = @protocol.id
     @service_request.save(:validate => false)
     
     SubServiceRequest.skip_callback(:save, :after, :update_org_tree)
@@ -65,6 +71,12 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
       sign_in @identity
     end
     
+    it 'should see 404 for an invalid service_request.id' do
+      get(:show, { :id => 1231231231 , :format => :json})
+      expect(response.status).to eq(404)
+      expect(response.body).to eq("")
+    end
+    
     describe 'has no affiliation with the project and, thus, has no access to' do
       it 'line_item_additional_details' do
         get(:show, { :id => @service_request.id , :format => :json})
@@ -74,41 +86,177 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
     end
     
     describe 'is the original service requester and, thus, has access to' do
-     
-      it "an empty set of line_item_additional_details" do
+      before :each do
         # associate user to the service request to give them authorization to view its additional details
         @service_request.service_requester_id = @identity.id
         @service_request.save(:validate => false)
-            
+      end
+              
+      it "view an empty set of line_item_additional_details" do
         get(:show, { :id => @service_request.id , :format => :json})
         expect(response.status).to eq(200)
         expect(response.body).to eq([].to_json)
       end
   
-      describe 'view a list of line_item_additional_details' do
-        before :each do
-          # associate user to the service request to give them authorization to view its additional details
-          @service_request.service_requester_id = @identity.id
-          @service_request.save(:validate => false)
-              
-          @ad = AdditionalDetail.new 
-          @ad.effective_date = Date.yesterday
-          @ad.service_id = @service.id
-          @ad.form_definition_json= '{"schema": {"required": ["t","date"] }}'
-          @ad.save(:validate => false)
-        end
-  
-        it "should return json with line_item_additional_details" do
-          expect{
-            get(:show, { :id=>@service_request.id , :format => :json })
-          }.to change{LineItemAdditionalDetail.count}.by(1)
-          @line_item_additional_detail = LineItemAdditionalDetail.where(:line_item_id => @line_item.id).last
-          expect(@line_item_additional_detail.additional_detail_id).to eq(@ad.id)
-          expect(@line_item_additional_detail.line_item_id).to eq(@line_item.id)
-          expect(response.status).to eq(200)
-          expect(response.body).to eq([@line_item_additional_detail].to_json(:root=> false, :methods => [:has_answered_all_required_questions?, :additional_detail_breadcrumb]))
-        end
+      it "view a list of line_item_additional_details, after the controller creates a line_item_additional_detail record" do
+        @ad = AdditionalDetail.new 
+        @ad.effective_date = Date.yesterday
+        @ad.service_id = @service.id
+        @ad.form_definition_json= '{"schema": {"required": ["t","date"] }}'
+        @ad.save(:validate => false)
+                  
+        expect{
+          get(:show, { :id=>@service_request.id , :format => :json })
+        }.to change{LineItemAdditionalDetail.count}.by(1)
+        @line_item_additional_detail = LineItemAdditionalDetail.where(:line_item_id => @line_item.id).last
+        expect(@line_item_additional_detail.additional_detail_id).to eq(@ad.id)
+        expect(@line_item_additional_detail.line_item_id).to eq(@line_item.id)
+        expect(response.status).to eq(200)
+        expect(response.body).to eq([@line_item_additional_detail].to_json(:root=> false, :methods => [:has_answered_all_required_questions?, :additional_detail_breadcrumb]))
       end
     end 
+    
+    describe 'is a project team member with "approve" rights and, thus, has access to' do
+      before :each do
+        @project_role = ProjectRole.new
+        @project_role.identity_id = @identity.id
+        @project_role.protocol_id = @protocol.id
+        @project_role.project_rights = 'approve'
+        @project_role.save(validate: false)
+      end
+      
+      it "view an empty set of line_item_additional_details" do          
+        get(:show, { :id => @service_request.id , :format => :json})
+        expect(response.status).to eq(200)
+        expect(response.body).to eq([].to_json)
+      end
+  
+      it "view a list of line_item_additional_details, after the controller creates a line_item_additional_detail record" do
+        @ad = AdditionalDetail.new 
+        @ad.effective_date = Date.yesterday
+        @ad.service_id = @service.id
+        @ad.form_definition_json= '{"schema": {"required": ["t","date"] }}'
+        @ad.save(:validate => false)
+        
+        expect{
+          get(:show, { :id=>@service_request.id , :format => :json })
+        }.to change{LineItemAdditionalDetail.count}.by(1)
+        @line_item_additional_detail = LineItemAdditionalDetail.where(:line_item_id => @line_item.id).last
+        expect(@line_item_additional_detail.additional_detail_id).to eq(@ad.id)
+        expect(@line_item_additional_detail.line_item_id).to eq(@line_item.id)
+        expect(response.status).to eq(200)
+        expect(response.body).to eq([@line_item_additional_detail].to_json(:root=> false, :methods => [:has_answered_all_required_questions?, :additional_detail_breadcrumb]))
+      end
+    end 
+    
+    describe 'is a project team member with "request" rights and, thus, has access to' do
+      before :each do
+        @project_role = ProjectRole.new
+        @project_role.identity_id = @identity.id
+        @project_role.protocol_id = @protocol.id
+        @project_role.project_rights = 'request'
+        @project_role.save(validate: false)
+      end
+      
+      it "view an empty set of line_item_additional_details" do          
+        get(:show, { :id => @service_request.id , :format => :json})
+        expect(response.status).to eq(200)
+        expect(response.body).to eq([].to_json)
+      end
+    
+      it "view a list of line_item_additional_details, after the controller creates a line_item_additional_detail record" do
+        @ad = AdditionalDetail.new 
+        @ad.effective_date = Date.yesterday
+        @ad.service_id = @service.id
+        @ad.form_definition_json= '{"schema": {"required": ["t","date"] }}'
+        @ad.save(:validate => false)
+        
+        expect{
+          get(:show, { :id=>@service_request.id , :format => :json })
+        }.to change{LineItemAdditionalDetail.count}.by(1)
+        @line_item_additional_detail = LineItemAdditionalDetail.where(:line_item_id => @line_item.id).last
+        expect(@line_item_additional_detail.additional_detail_id).to eq(@ad.id)
+        expect(@line_item_additional_detail.line_item_id).to eq(@line_item.id)
+        expect(response.status).to eq(200)
+        expect(response.body).to eq([@line_item_additional_detail].to_json(:root=> false, :methods => [:has_answered_all_required_questions?, :additional_detail_breadcrumb]))
+      end
+    end 
+    
+    describe 'is a project team member with "view" rights and, thus, has NO access to' do
+      before :each do
+        @project_role = ProjectRole.new
+        @project_role.identity_id = @identity.id
+        @project_role.protocol_id = @protocol.id
+        @project_role.project_rights = 'view'
+        @project_role.save(validate: false)
+      end
+      
+      it "view an empty set of line_item_additional_details" do          
+        get(:show, { :id => @service_request.id , :format => :json})
+        expect(response.status).to eq(401)
+        expect(response.body).to eq("")
+      end
+    end  
+    
+    describe 'is a project team member with "none" rights and, thus, has NO access to' do
+      before :each do
+        @project_role = ProjectRole.new
+        @project_role.identity_id = @identity.id
+        @project_role.protocol_id = @protocol.id
+        @project_role.project_rights = 'none'
+        @project_role.save(validate: false)
+      end
+      
+      it "view an empty set of line_item_additional_details" do          
+        get(:show, { :id => @service_request.id , :format => :json})
+        expect(response.status).to eq(401)
+        expect(response.body).to eq("")
+      end
+    end    
+    
+  describe 'is a service provider and, thus, has NO access to' do
+    before :each do
+      @service_provider = ServiceProvider.new
+      @service_provider.identity_id = @identity.id
+      @service_provider.organization_id = @core.id
+      @service_provider.save(validate: false)
+    end
+    
+    it "view an empty set of line_item_additional_details" do          
+      get(:show, { :id => @service_request.id , :format => :json})
+      expect(response.status).to eq(401)
+      expect(response.body).to eq("")
+    end
+  end 
+  
+  describe 'is a catalog manager and, thus, has NO access to' do
+    before :each do
+      @catalog_manager = CatalogManager.new
+      @catalog_manager.identity_id = @identity.id
+      @catalog_manager.organization_id = @core.id
+      @catalog_manager.save(validate: false)
+    end
+    
+    it "view an empty set of line_item_additional_details" do          
+      get(:show, { :id => @service_request.id , :format => :json})
+      expect(response.status).to eq(401)
+      expect(response.body).to eq("")
+    end
+  end 
+  
+  describe 'is a super user and, thus, has NO access to' do
+    before :each do
+      @super_user = SuperUser.new
+      @super_user.identity_id = @identity.id
+      @super_user.organization_id = @core.id
+      @super_user.save(validate: false)
+    end
+    
+    it "view an empty set of line_item_additional_details" do          
+      get(:show, { :id => @service_request.id , :format => :json})
+      expect(response.status).to eq(401)
+      expect(response.body).to eq("")
+    end
+  end 
   end
 end

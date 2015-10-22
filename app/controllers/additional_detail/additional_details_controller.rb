@@ -13,7 +13,7 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
   end
 
   def show
-    render :json => @service.additional_details.find(params[:id]).to_json(:root => false, :include => {:line_item_additional_details  => {:methods => [:sub_service_request_status, :protocol_short_title, :service_requester_name, :has_answered_all_required_questions?]}})
+    render :json => @service.additional_details.find(params[:id]).to_json(:root => false, :include => {:line_item_additional_details  => {:methods => [:sub_service_request_status, :pi_name, :protocol_short_title, :service_requester_name, :has_answered_all_required_questions?]}})
   end
 
   def edit

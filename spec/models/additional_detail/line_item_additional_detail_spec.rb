@@ -138,12 +138,11 @@ RSpec.describe LineItemAdditionalDetail do
 
   end
   
-  describe "protocol_short_title" do
+  describe "with a protocol" do
     before :each do
       
       @protocol = Protocol.new
-      @protocol.short_title = "Super Short Title"
-      
+     
       @service_request = ServiceRequest.new
       @service_request.protocol = @protocol
       
@@ -158,8 +157,14 @@ RSpec.describe LineItemAdditionalDetail do
       
     end
     
-    it "should return short title of protocol" do
+    it "protocol_short_title should return short title of protocol" do
+      @protocol.short_title = "Super Short Title"
       expect(@line_item_additional_detail.protocol_short_title).to eq(@protocol.short_title)
+    end
+    
+    it "pi_name should return the name of the primary investigator" do
+      @protocol.sponsor_name = "Hudson Cassio"
+      expect(@line_item_additional_detail.pi_name).to eq(@protocol.sponsor_name)
     end
     
   end

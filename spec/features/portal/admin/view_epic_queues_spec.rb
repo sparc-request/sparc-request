@@ -48,9 +48,10 @@ RSpec.describe 'view epic queues', js: true do
 
     describe "viewing the Epic Queues" do
       it 'should display the Epic Queues' do
+        protocol = Protocol.first
+        create(:epic_queue, protocol: protocol)
         visit portal_epic_queues_path
         wait_for_javascript_to_finish
-        protocol = Protocol.first
         expect(page).to have_text("#{protocol.short_title}")
       end
     end

@@ -23,6 +23,13 @@ class CatalogManager::CatalogController < CatalogManager::AppController
 
   def index
     @institutions = Institution.order('`order`')
+
+    @show_unavailable = [true]
+
+    if /false/.match(params[:show_unavailable])
+      @show_unavailable << false
+    end
+
   end
 
   def update_pricing_maps

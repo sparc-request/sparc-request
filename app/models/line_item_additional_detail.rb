@@ -14,6 +14,10 @@ class LineItemAdditionalDetail < ActiveRecord::Base
     line_item.sub_service_request.status
   end
   
+  def sub_service_request_id
+    line_item.sub_service_request_id
+  end
+  
   def service_requester_name
     self.try(:line_item).try(:sub_service_request).try(:service_request).try(:service_requester).try(:display_name)
   end

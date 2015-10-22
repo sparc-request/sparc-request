@@ -104,37 +104,25 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', '$windo
 	
 	$scope.gridModel = {enableColumnMenus: false, enableFiltering: true, enableColumnResizing: true, enableRowSelection: false, showColumnFooter: false , enableSorting: true, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 45};
 	$scope.gridModel.columnDefs = [
-	                               {enableFiltering: false, enableColumnResizing: false, width: 90,  name: 'Duplicate',  cellTemplate: '<button class="btn btn-primary" ng-click="grid.appScope.duplicateLink(row.entity.id)">Duplicate</button>'},
-	                               {enableFiltering: false, enableColumnResizing: false, width: 55,  name: 'Edit',       cellTemplate: '<button class="btn btn-primary" ng-disabled="row.entity.line_item_additional_details.length > 0" ng-click="grid.appScope.editLink(row.entity.id)">Edit</button>'},
+	                               {enableFiltering: false, enableColumnResizing: false, width: 215,  name: 'Additional Detail Form',  cellTemplate: '<a class="btn btn-primary" href="/additional_detail/services/'+service_id+'/additional_details/{{row.entity.id}}/duplicate">Duplicate</a> <a class="btn btn-primary" ng-disabled="row.entity.line_item_additional_details.length > 0" href="/additional_detail/services/'+service_id+'/additional_details/{{row.entity.id}}/edit">Edit</a> <button class="btn btn-danger" ng-disabled="row.entity.line_item_additional_details.length > 0" ng-click="grid.appScope.deleteAdditonalDetail(row.entity)">Delete</button>'},
 	                               {enableFiltering: false, enableColumnResizing: false, width: 115, name: "Responses",  cellTemplate: '<button class="btn btn-info" ng-disabled="row.entity.line_item_additional_details.length==0" ng-click="grid.appScope.updateLineItemAdditionalDetails(row.entity.id)">{{row.entity.line_item_additional_details.length}} {{(row.entity.line_item_additional_details.length == 1) ? "Response" : "Responses"}}</button>'},
 	                               {field: 'name', name: 'Name', width: '25%'}, 
 	                               {field:'effective_date',name: 'Effective Date', width: '15%',  sort: { direction: uiGridConstants.DESC, priority: 1 } },
 	                               {field: 'approved',name: 'Approved'},
-	                               {field: 'description', name: 'Description'},
-	                               {enableFiltering: false, enableColumnResizing: false,name: 'Delete',width: 70, cellTemplate: '<button class="btn btn-danger" ng-disabled="row.entity.line_item_additional_details.length > 0" ng-click="grid.appScope.deleteAdditonalDetail(row.entity)">Delete</button>'}
+	                               {field: 'description', name: 'Description'}
 	                               ];
 	
 	$scope.line_item_ad_gridModel = {enableColumnMenus: false, enableFiltering: true, enableColumnResizing: true, enableRowSelection: false, showColumnFooter: false , enableSorting: true, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 45};
 	$scope.line_item_ad_gridModel.columnDefs = [
-	                               {name: "Show",displayName:'', enableFiltering: false, width: 63, cellTemplate: '<button data-toggle="modal" class="btn btn-primary" ng-click="grid.appScope.showResults(row.entity.id)">Show</button>'},
-	                               {name: "Edit",displayName:'', enableFiltering: false, width: 63, cellTemplate: '<button data-toggle="modal" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">Edit</button>'},
-	                               {name: "Requester", field: "service_requester_name"},{name: "Title", field: "protocol_short_title"},{name: "Primary Investigator", field: "pi_name"},
-	                               {name: 'Service Request Status', field: 'sub_service_request_status'}, 
-	                               {name: 'Required Questions Answered',field: 'has_answered_all_required_questions?'},
-	                               {field:'updated_at',name: 'Last Updated', sort: { direction: uiGridConstants.DESC, priority: 1 } }
+	                               {name: "Response", enableFiltering: false, width: 125, cellTemplate: '<button data-toggle="modal" class="btn btn-primary" ng-click="grid.appScope.showResults(row.entity.id)">Show</button> <button data-toggle="modal" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">Edit</button>'},
+	                               {name: "Portal Admin", field: "sub_service_request_id", enableFiltering: false, width: 115, cellTemplate: '<a class="btn btn-info" href="/portal/admin/sub_service_requests/{{COL_FIELD}}" role="button">Portal Admin</a>'},
+	                               {name: "Principal Investigator", field: "pi_name", width: '15%'},
+	                               {name: "Requester", field: "service_requester_name", width: '15%'},
+	                               {name: "Short Title", field: "protocol_short_title", cellTooltip: true, width: '20%'},
+	                               {name: 'Status', field: 'sub_service_request_status', headerTooltip: 'Service Request Status', width: '8%'}, 
+	                               {name: 'Required Questions Answered',field: 'has_answered_all_required_questions?', headerTooltip: 'Required Questions Answered'},
+	                               {field:'updated_at',name: 'Last Updated', sort: { direction: uiGridConstants.DESC, priority: 1 }, width: '12%' }
 	                               ];
-	
-	$scope.reroute = function(path){
-		$window.location.href = path;
-	}
-
-	$scope.duplicateLink = function(id){
-		$scope.reroute("/additional_detail/services/"+service_id+"/additional_details/"+id+"/duplicate/");
-	}
-	
-	$scope.editLink = function(id){
-		$scope.reroute("/additional_detail/services/"+service_id+"/additional_details/"+id+"/edit/");
-	}
 	
 	$scope.updateLineItemAdditionalDetails = function(ad_id){
 		AdditionalDetail.get({ id: ad_id }).$promise.then(function(additional_detail) {

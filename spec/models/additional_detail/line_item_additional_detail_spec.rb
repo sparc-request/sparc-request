@@ -115,6 +115,24 @@ RSpec.describe LineItemAdditionalDetail do
       expect(@line_item_additional_detail.sub_service_request_status).to eq(@sub_service_request.status)
     end
   end
+  
+  describe "sub_service_request_id" do
+    before :each do
+      @sub_service_request = SubServiceRequest.new
+      @sub_service_request.status = 'first_draft'
+      @sub_service_request.id = 1
+      
+      @line_item = LineItem.new
+      @line_item.sub_service_request = @sub_service_request
+
+      @line_item_additional_detail = LineItemAdditionalDetail.new
+      @line_item_additional_detail.line_item = @line_item
+    end
+
+    it 'should return the id of the sub_service_request' do
+      expect(@line_item_additional_detail.sub_service_request_id).to eq(1)
+    end
+  end
 
   describe "details_hash" do
 

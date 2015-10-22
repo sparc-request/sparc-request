@@ -237,6 +237,25 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
                 expect(JSON.parse(response.body)["line_item_additional_details"][0]["service_requester_name"]).to eq("Test Man (test@test.uiowa.edu)")
               end
             end
+            
+            describe 'with protocol short title present' do
+              before :each do
+                @protocol = Protocol.new
+                @protocol.short_title = "Short Title"
+                @protocol.save(validate: false)
+
+                @service_request.protocol_id = @protocol.id
+                @service_request.save(validate: false)
+              end
+
+              it "should show protocal short title" do
+                get(:show, {:service_id => @core_service, :id => @ad, :format => :json })
+                expect(response.status).to eq(200)
+                expect(JSON.parse(response.body)["line_item_additional_details"][0]["protocol_short_title"]).to eq("Short Title")
+              end
+
+            end
+
           end
         end
       end

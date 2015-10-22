@@ -118,7 +118,7 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', '$windo
 	$scope.line_item_ad_gridModel.columnDefs = [
 	                               {name: "Show",displayName:'', enableFiltering: false, width: 63, cellTemplate: '<button data-toggle="modal" class="btn btn-primary" ng-click="grid.appScope.showResults(row.entity.id)">Show</button>'},
 	                               {name: "Edit",displayName:'', enableFiltering: false, width: 63, cellTemplate: '<button data-toggle="modal" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">Edit</button>'},
-	                               {name: "Requester", field: "service_requester_name"},
+	                               {name: "Requester", field: "service_requester_name"},{name: "Title", field: "protocol_short_title"},
 	                               {name: 'Service Request Status', field: 'sub_service_request_status'}, 
 	                               {name: 'Required Questions Answered',field: 'has_answered_all_required_questions?'},
 	                               {field:'updated_at',name: 'Last Updated', sort: { direction: uiGridConstants.DESC, priority: 1 } }

@@ -72,7 +72,7 @@ $(document).ready ->
           return false
         window.location.href = route_to
 
-  $('#submit_services1, #submit_services2, #get_a_cost_estimate').click (event)->
+  $(document).on('click', '#submit_services1, #submit_services2, #get_a_cost_estimate', (event)->
     event.preventDefault()
     route_to = $(this).attr('href')
 
@@ -85,3 +85,4 @@ $(document).ready ->
       $(this).click ->
         return false
       window.location.href = route_to
+  )

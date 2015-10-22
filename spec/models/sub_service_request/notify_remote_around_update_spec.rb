@@ -9,7 +9,8 @@ RSpec.describe 'SubServiceRequest' do
   describe '#notify_remote_around_update', delay: true do
 
     before { SubServiceRequest.skip_callback(:save, :after, :update_org_tree) }
-
+    after { SubServiceRequest.set_callback(:save, :after, :update_org_tree) }
+      
     context '.in_work_fulfillment changed' do
 
       it 'should create a RemoteServiceNotifierJob' do

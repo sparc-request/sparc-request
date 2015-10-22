@@ -31,7 +31,7 @@ module ServiceCalendarHelper
         :role    => 'button',
         :class   => "ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only service_calendar_row",
         :id      => "check_row_#{line_items_visit.id}_#{tab}",
-        :data    => {confirm: "This will reset custom values for this row, do you wish to continue?"})
+        data:       {confirm: "This will reset custom values for this row, do you wish to continue?"})
   end
 
   def currency_converter cents

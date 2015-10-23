@@ -18,20 +18,23 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-survey "System Satisfaction survey", :default_mandatory => false do
-  section "System Satisfaction" do
-    question_1 "1) Are you satisfied with your use of SPARC Request <span class='underline'>today</span>?", :pick => :one
+survey "SCTR Customer Satisfaction Survey", :default_mandatory => false do
+  section "Customer Satisfaction" do
+
+    question "Thank you for working with the South Carolina Clinical and
+    Translational Research Institute (SCTR). SCTR is committed to providing quality
+    support and requests your feedback on services and tools provided to you.
+    The results of your responses will help provide invaluable data to our stakeholders,
+    evaluate service provider performance, and guide the development of future resources.
+    We would greatly appreciate your participation in a one-question survey.
+    Be assured that your answers will be kept confidential."
+
+    question_1 "1) Would you recommend this SCTR service to a colleague?", :pick => :one
     answer_yes "Yes"
     answer_no "No"
 
-    question "If yes, please tell us why. (Intuitive? User Friendly? Other? Have suggestions for us?)"
+    question "If you would like to provide additional feedback, please use the space below."
     answer :text
-    dependency :rule => "Y"
-    condition_Y :question_1, "==", :answer_yes
 
-    question "If no, please tell us why. (Have suggestions for us to make it better?)"
-    answer :text
-    dependency :rule => "N"
-    condition_N :question_1, "==", :answer_no
   end
 end

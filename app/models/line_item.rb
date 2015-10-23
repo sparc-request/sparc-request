@@ -85,7 +85,19 @@ class LineItem < ActiveRecord::Base
       !self.service.has_required_additional_detail_questions?
     end
   end
- 
+  
+  def service_requester_name
+    self.try(:service_request).try(:service_requester).try(:display_name)
+  end
+  
+  def protocol_short_title
+    self.try(:service_request).try(:protocol).try(:short_title)
+  end  
+
+  def pi_name
+    self.try(:service_request).try(:protocol).try(:primary_principal_investigator).try(:display_name) 
+  end
+  
   def get_additional_detail
     service.current_additional_detail
   end

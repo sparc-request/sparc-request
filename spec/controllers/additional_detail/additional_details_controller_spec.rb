@@ -195,6 +195,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
 
               @line_item = LineItem.new
               @line_item.sub_service_request_id = @sub_service_request.id
+              @line_item.service_request = @service_request
               @line_item.service_id = @core_service.id
               @line_item.save(validate: false)
 
@@ -220,7 +221,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
               before :each do
                 @owner = Identity.new
                 @owner.first_name = "Test"
-                @owner.last_name = "Man"
+                @owner.last_name = "Person"
                 @owner.email = "test@test.uiowa.edu"
                 Identity.skip_callback(:create, :after, :send_admin_mail)
                 @owner.save(validate: false)
@@ -234,40 +235,39 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
               it "should show additional detail" do
                 get(:show, {:service_id => @core_service, :id => @ad, :format => :json })
                 expect(response.status).to eq(200)
-                expect(JSON.parse(response.body)["line_item_additional_details"][0]["service_requester_name"]).to eq("Test Man (test@test.uiowa.edu)")
+                expect(JSON.parse(response.body)["line_item_additional_details"][0]["service_requester_name"]).to eq("Test Person (test@test.uiowa.edu)")
               end
             end
             
             describe 'with protocol' do
               before :each do
                 @protocol = Protocol.new
+                @protocol.short_title = "Short Title"
                 @protocol.save(validate: false)
+
+                @primary_pi = Identity.new
+                @primary_pi.first_name = "Primary"
+                @primary_pi.last_name = "Person"
+                @primary_pi.email = "test@test.uiowa.edu"
+                @primary_pi.save(validate: false)
+                
+                @project_role_pi = ProjectRole.new
+                @project_role_pi.identity = @primary_pi
+                @project_role_pi.role = 'primary-pi'        
+                @project_role_pi.protocol = @protocol
+                @project_role_pi.save(validate: false)    
 
                 @service_request.protocol_id = @protocol.id
                 @service_request.save(validate: false)
               end
 
-              it "with short title present, should show protocal short title" do
-                @protocol.short_title = "Short Title"
-                @protocol.save(validate: false)
-
+              it "should show protocol short title and primary_pi" do
                 get(:show, {:service_id => @core_service, :id => @ad, :format => :json })
                 expect(response.status).to eq(200)
                 expect(JSON.parse(response.body)["line_item_additional_details"][0]["protocol_short_title"]).to eq("Short Title")
+                expect(JSON.parse(response.body)["line_item_additional_details"][0]["pi_name"]).to eq("Primary Person (test@test.uiowa.edu)")
               end
-              
-              it "with short title present, should show protocal short title" do
-                @protocol.sponsor_name = "Hudson Cassio"
-                @protocol.save(validate: false)
-
-                get(:show, {:service_id => @core_service, :id => @ad, :format => :json })
-                expect(response.status).to eq(200)
-                expect(JSON.parse(response.body)["line_item_additional_details"][0]["pi_name"]).to eq("Hudson Cassio")
-              end
-
-
             end
-
           end
         end
       end

@@ -1,2 +1,0 @@
-module AdditionalDetail::AdditionalDetailsHelper
-end

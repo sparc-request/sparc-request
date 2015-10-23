@@ -19,15 +19,15 @@ class LineItemAdditionalDetail < ActiveRecord::Base
   end
   
   def service_requester_name
-    self.try(:line_item).try(:sub_service_request).try(:service_request).try(:service_requester).try(:display_name)
+    self.line_item.service_requester_name
   end
   
   def protocol_short_title
-    self.try(:line_item).try(:sub_service_request).try(:service_request).try(:protocol).try(:short_title)
+    self.line_item.protocol_short_title
   end  
 
   def pi_name
-    self.try(:line_item).try(:sub_service_request).try(:service_request).try(:protocol).try(:sponsor_name)
+    self.line_item.pi_name
   end
   
   def has_answered_all_required_questions?

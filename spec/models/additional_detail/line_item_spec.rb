@@ -220,5 +220,86 @@ RSpec.describe "Line Item" do
     end
     
   end  
+
+  describe "protocol short_title and pi_name" do
+    before :each do
+      @primary_pi = Identity.new
+      @primary_pi.first_name = "Primary"
+      @primary_pi.last_name = "Person"
+      @primary_pi.email = "test@test.uiowa.edu"
+           
+      @project_role_pi = ProjectRole.new
+      @project_role_pi.identity = @primary_pi
+      @project_role_pi.role = 'primary-pi'
+         
+      @protocol = Protocol.new
+      @protocol.short_title = "Super Short Title"
+      @protocol.project_roles << @project_role_pi
+      
+      @service_request = ServiceRequest.new
+      @service_request.protocol = @protocol
+      
+      @line_item = LineItem.new
+      @line_item.service_request = @service_request
+    end
     
+    it "protocol_short_title should return short title of protocol" do
+      expect(@line_item.protocol_short_title).to eq(@protocol.short_title)
+    end
+    
+    it "pi_name should return the name of the primary investigator" do
+      expect(@line_item.pi_name).to eq("Primary Person (test@test.uiowa.edu)")
+    end
+  end
+  
+  describe "service_requester_name" do
+    before :each do
+      @service_requester =  Identity.new
+  
+      @service_request = ServiceRequest.new
+      @service_request.service_requester = @service_requester
+  
+      @line_item = LineItem.new
+      @line_item.service_request = @service_request
+    end
+  
+    describe "with first and last name" do
+      before :each do
+        @service_requester.first_name = "Test"
+        @service_requester.last_name = "Person"
+        @service_requester.email = "test@test.uiowa.edu"
+      end
+  
+      it 'should return first and last name of service_requester' do
+        expect(@line_item.service_requester_name).to eq("Test Person (test@test.uiowa.edu)")
+      end
+    end
+  
+    describe "with only first name" do
+      before :each do
+        @service_requester.first_name = "Test"
+      end
+  
+      it 'should return first name of service_requester' do
+        expect(@line_item.service_requester_name).to eq("Test  ()")
+      end
+    end
+  
+    describe "with only last name" do
+      before :each do
+        @service_requester.last_name = "Person"
+      end
+  
+      it 'should return last name of service_requester' do
+        expect(@line_item.service_requester_name).to eq("Person ()")
+      end
+    end
+  
+    describe "with no first or last name or email" do
+      it 'should return nil' do
+        expect(@line_item.service_requester_name).to eq("()")
+      end
+    end
+  end
+      
 end

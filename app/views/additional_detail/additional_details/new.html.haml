@@ -8,6 +8,7 @@
   .row
     .col-md-12
       = render :partial => 'organization_breadcrumb'
+      = render :partial => 'additional_detail/additional_details/additional_details_question_modal'
   .row
     .col-md-8
       .row
@@ -85,7 +86,7 @@
                   .col-md-6
                     .form-group
                       %label{:for=>"key"} Key
-                      %input.form-control{:id=>"key", :pattern=>"([a-zA-Z0-9]| |/|\|@|#|$|%|&)+", "ng-model"=>"field.key", "type"=>"text", :value=>"", "data-error"=>"{{keyError}}", :placeholder=>"Key", :required=>"required"}
+                      %input.form-control{:id=>"key", :pattern=>"([a-zA-Z0-9]| |_|/|\|@|#|$|%|&)+", "ng-model"=>"field.key", "type"=>"text", :value=>"", "data-error"=>"{{keyError}}", :placeholder=>"Key", :required=>"required"}
                       .help-block.with-errors         
                   .col-md-6
                     .form-group
@@ -122,10 +123,11 @@
                           %input.form-control{:id=>"max", "ng-model"=>"field.max", :type=>"number", :placeholder=>"Max"}
                     .row
                       .col-md-12
-                        %input.btn.btn-primary{:type=>"submit", "ng-click"=>"add(field)", :value=>"Add Question"}
+                        %input.btn.btn-primary{:type=>"submit", "ng-click"=>"addQuestion(field)", :value=>"Add Question"}
                         %input.btn.btn-default{:type=>"reset", :value=>"Clear Question"}    
         .col-md-12
-          %input.btn.btn-warning{:type=>"button", "ng-click"=>"deleteSelected()", :value=>"Delete Selected Question"}
+          %button.btn.btn-primary{"ng-click"=>"editQuestion()"} Add Question
+          %button.btn.btn-warning{"ng-click"=>"deleteSelected()"} Delete Selected Question
           %div{:id=>"gridId", "ui-grid"=>"gridModel", "ui-grid-edit"=>"true", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 400px;"}
       .panel-body.alert{"ng-show"=>"alertMessage", "ng-class"=>"{ 'alert-success' : resourceSuccessful, 'alert-danger' : !resourceSuccessful }", :role=>"alert"} {{alertMessage}}
     .col-md-4

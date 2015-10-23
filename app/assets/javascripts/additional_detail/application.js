@@ -15,6 +15,7 @@
 //= require additional_detail/angular-strap.min
 //= require additional_detail/angular-strap-tpl.min
 //= require additional_detail/angular-schema-form-dynamic-select.min
+//= require additional_detail/uuid
 var typeHash;
 var app = angular.module('app', ['ngResource','ngAria','schemaForm','ui.grid','ui.grid.selection','ui.grid.resizeColumns', 'mgcrea.ngStrap', 'schemaForm-datepicker', 'schemaForm-timepicker', 'schemaForm-datetimepicker','ngSanitize', 'ui.grid.autoResize','ui.grid.expandable', 'ui.grid.edit']);
 
@@ -223,27 +224,89 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
 
     $scope.formDefinition = ($('#additional_detail_form_definition_json').val() != "") ? $('#additional_detail_form_definition_json').val() : JSON.stringify({ schema: { type: "object",title: "Comment", properties: {},required: []}, form: []},undefined,2);
     
+    //Uses a key name to populate add/edit question model with question data, if key==null then a new question will be created
+    
+    $scope.resetQuestion = function(){$scope.field = {};}
+    
+    $scope.getSchemaParsed = function(){
+    	return JSON.parse($scope.formDefinition).schema;
+    }
+    
+    $scope.getRequired = function(){
+    	var required = JSON.parse($scope.formDefinition).required
+    	return (required) ? required : [];
+    }
+    
+    $scope.getFormParsed = function(){
+    	return JSON.parse($scope.formDefinition).form;
+    }
+    
+    //Taking a key as input this function will return a question hash with all relevent data
+    $scope.getQuestion =  function(id){ 
+    	//loop through hashkeys in schema and find object with same id
+    	var schemaQuestion;
+    	var properties = $scope.getSchemaParsed().properties
+    	for(var key in properties){
+    		if(properties[key].id ==id){
+    			schemaQuestion = properties[key];
+    		}
+    	}
+    	
+    	var form = $scope.getFormParsed();
+    	var formQuestion;
+    	for(var i=0; i<form.length; i++){
+    		if(form[i].key == key){
+    			formQuestion = form[i];
+    		}
+    	}
+    	var question = {};
+    	var required = false;
+    	var requiredList = $scope.getRequired();
+    	for(var i=0; i<requiredList.length; i++){
+    		if(requiredList[i] == key){required = true;}
+    	}
+    	
+    	question.name = schemaQuestion.title;
+    	question.key = formQuestion.key;
+    	question.id = id
+    	question.kind = formQuestion.kind;
+    	question.description = schemaQuestion.description;
+    	question.min = (schemaQuestion.minLength) ? schemaQuestion.minLength : schemaQuestion.minimum;
+    	question.max = (schemaQuestion.maxLength) ? schemaQuestion.maxLength : schemaQuestion.maximum;
+    	question.required = required;
+    	
+    	return question;
+    }
+    
+    $scope.editQuestion = function(key){
+    	//find key if it exists
+    	if(key){
+    		$scope.field = $scope.getQuestion(key);
+    		$scope.modalSaveText = "Update"
+    	}
+    	else{
+    		$scope.resetQuestion();
+    		$scope.modalSaveText = "Add"
+    	}
+    	
+    	//open modal
+    	$('#additionalDetailQuestionEditModal').modal();
+    	
+    }
+    
+    $scope.hideModal = function(){
+    	$('#additionalDetailQuestionEditModal').modal('hide');
+    }
+    
+    $scope.vaildQuestion = function(){
+    	return true;
+    }
+        
 	 var dropdownKindList = ["multiDropdown", "dropdown", "state", "country"];
 	 function generateGridArray(schema, form){
 		 var gridArray = [];
 		 for (var x=0; x < form.length; x++){
-	     	var field = { name: "", key: form[x].key, kind: (form[x].kind != null) ? form[x].kind : form[x].type, values: "", required : inList(schema.required, form[x].key) };
-	     	if (schema.properties[field.key]){
-	     		var row = schema.properties[field.key];
-	     		field.name = row.title;
-				field.description = row.description;
-				
-			}
-	     	if(inList(dropdownKindList, field.kind)=="true"){
-	     		field.values = enumDisplay(form[x]);
-	     	}
-	     	else if(schema.properties[field.key]){
-				var row = schema.properties[field.key];
-				row.kind = field.kind;
-				field.values = enumDisplay(row);	
-	     	}
-	     	if(field.key && field.key.length==1){field.key= field.key[0];}
-	     	gridArray.push(field);
+			 gridArray.push($scope.getQuestion(form[x].id));
 		  }
 		 
 		 return gridArray;
@@ -350,6 +413,7 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
 	  
 	  $scope.gridModel = {enableColumnMenus: false, enableFiltering: true, enableColumnResizing: true, showColumnFooter: true , enableSorting: false, showGridFooter: true, enableRowHeaderSelection: false, rowHeight: 45};
 	  $scope.gridModel.columnDefs = [
+	                                 {name: 'Edit', enableCellEdit: false, cellTemplate: '<button class="btn btn-primary" ng-click="grid.appScope.editQuestion(row.entity.id)">Edit</button>' },
 	                                 {name: 'question', field: 'name',  width: '21%' }, 
 	                                 {name: 'key', width: '7%'}, 
 	                                 {name: 'type', field: "kind", width: '15%',editableCellTemplate: 'ui-grid/dropdownEditor', cellFilter: 'mapKind', editDropdownValueLabel: 'kind', editDropdownOptionsArray: getKindHashArray()},
@@ -474,33 +538,61 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
 	  
 	  	$scope.keyError = "Please fill out this field. Valid characters are A-Z a-z 0-9";
 	  	
-      $scope.add = function(f) {
-    	  // prevent duplicates
-    	 var field = hashCopy(f);
-		 if(field.key && field.name && field.kind){
-			  var formDef = JSON.parse($scope.formDefinition)
-			  if (formDef.schema.properties[field.key]){
-				  $scope.keyError = "Key already exists.";
-				  f.key = "";
-			  } else {
-				  $scope.keyError ="Please fill out this field. Valid characters are A-Z a-z 0-9";
-				  if(field.description== null && (field.kind=="time" || field.kind=="datepicker")){
-					  field.description = (field.kind=="time") ? "ex. 12:00 AM" : "ex. 06/13/2015";
-				  }
-	 			  // add field form array
-				  formDef.form.push ($scope.getForm(field));
-				  // add field to schema
-				  formDef.schema.properties[field.key] =  $scope.getSchema(field);
-				  
-				  if(field.required ==true){formDef.schema.required.push(field.key);}
-				  
-				  $scope.formDefinition = JSON.stringify(formDef,undefined,2,2);
-				  // clear the field after successfully adding it to the form? 
-				  //$scope.field = {};
-			  }
-			}
-	 };	 
-	 
+      
+	  	$scope.addQuestion = function(q){
+	  		var question = hashCopy(q);
+	  		 //check to see if all required fields present
+	  		if(question.key && question.name && question.kind){
+	  			var keyVaild = false;
+	  			var questionSchema = $scope.getSchemaParsed().properties[question.key]
+	  			//If a new question with no other key the key is vaild
+	  			if(!question.id && !questionSchema){
+	  				question.id = uuid.v1();
+	  				keyVaild = true;
+	  			}
+	  			//If editing question and current key == oldKey
+	  			else if(question.id && questionSchema && questionSchema.id ==question.id){
+	  				keyVaild = true;
+	  			}
+	  			else{
+	  				console.log("Key already exists.");
+	  				$scope.keyError = "Key already exists.";
+	    			//q.key = "";
+	  			}
+	  			if(keyVaild){
+	  				$scope.keyError ="Please fill out this field. Valid characters are A-Z a-z 0-9";
+					if(question.description== null && (question.kind=="time" || question.kind=="datepicker")){
+						question.description = (question.kind=="time") ? "ex. 12:00 AM" : "ex. 06/13/2015";
+					  }
+					
+					var formDef = JSON.parse($scope.formDefinition)
+					var added = false;
+					// add field form array
+					for(var i=0; i<formDef.form.length; i++){
+						if(formDef.form[i].id == question.id){
+							var ques = $scope.getForm(question); 
+							ques.id = question.id
+							formDef.form[i] = ques; 
+							added=true;
+							}
+					}
+					if(!added){
+						form.id = question.id;
+						formDef.form.push (form);
+					}
+					
+					var s = $scope.getSchema(question);
+					s.id = question.id;
+					// add field to schema
+					formDef.schema.properties[question.key] = s 
+					if(question.required ==true){formDef.schema.required.push(question.key);}
+					  
+					$scope.formDefinition = JSON.stringify(formDef,undefined,2,2);
+	  			}
+	  		}
+	  		
+	  	}
+	  	
 	 function hashCopy(hash){
 		 var newHash={};
 		 var keyList = Object.keys(hash);

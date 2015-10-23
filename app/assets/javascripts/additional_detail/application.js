@@ -109,7 +109,7 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', '$windo
 	                               {enableFiltering: false, enableColumnResizing: false, width: 115, name: "Responses",  cellTemplate: '<button class="btn btn-info" ng-disabled="row.entity.line_item_additional_details.length==0" ng-click="grid.appScope.updateLineItemAdditionalDetails(row.entity.id)">{{row.entity.line_item_additional_details.length}} {{(row.entity.line_item_additional_details.length == 1) ? "Response" : "Responses"}}</button>'},
 	                               {field: 'name', name: 'Name', width: '25%'}, 
 	                               {field:'effective_date',name: 'Effective Date', width: '15%',  sort: { direction: uiGridConstants.DESC, priority: 1 } },
-	                               {field: 'approved',name: 'Approved'},
+	                               {field: 'enabled',name: 'Enabled'},
 	                               {field: 'description', name: 'Description'}
 	                               ];
 	

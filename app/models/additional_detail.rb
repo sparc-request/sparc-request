@@ -7,7 +7,7 @@ class AdditionalDetail < ActiveRecord::Base
   
   has_many :line_item_additional_details
 
-  attr_accessible :approved, :description, :effective_date, :form_definition_json, :name
+  attr_accessible :enabled, :description, :effective_date, :form_definition_json, :name
 
   validates :name,:effective_date, :form_definition_json, :presence => true
   validates :description, :length => {:maximum => 255}

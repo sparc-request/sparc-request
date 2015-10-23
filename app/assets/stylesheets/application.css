@@ -1938,6 +1938,11 @@ li.organization-option {
   cursor    : pointer;
 }
 
+.tab-spinner {
+  width: 16px;
+  height: 16px;
+}
+
 .service_calendar_spinner {
   width: 16px;
   height: 16px;
@@ -2131,7 +2136,12 @@ input.search-services {
   border: none;
 }
 
-#service_calendar ul li,
+#tab_load_spinner {
+  margin-right: 0px;
+  margin-top: 7px;
+}
+
+#service_calendar ul li:not(#tab_load_spinner),
 #service_calendar ul li a {
   border-top-left-radius: 5px !important;
   border-top-right-radius: 5px !important;

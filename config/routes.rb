@@ -26,12 +26,18 @@ SparcRails::Application.routes.draw do
   mount Surveyor::Engine => "/surveys", :as => "surveyor"
 
   if USE_SHIBBOLETH_ONLY
-    devise_for :identities, :controllers => { :omniauth_callbacks => "identities/omniauth_callbacks" }, :path_names => {:sign_in => 'auth/shibboleth' }
+    devise_for :identities,
+               controllers: {
+                 omniauth_callbacks: 'identities/omniauth_callbacks'
+               }, path_names: { sign_in: 'auth/shibboleth' }
   else
-    devise_for :identities, :controllers => { :omniauth_callbacks => "identities/omniauth_callbacks" }
+    devise_for :identities,
+               controllers: {
+                 omniauth_callbacks: 'identities/omniauth_callbacks'
+               }
   end
 
-  resources :identities do
+  resources :identities, only: [:show] do
     collection do
       post 'add_to_protocol'
     end
@@ -43,9 +49,9 @@ SparcRails::Application.routes.draw do
     end
   end
 
-  resources :service_requests do
-    resources :projects
-    resources :studies
+  resources :service_requests, only: [:show] do
+    resources :projects, except: [:index, :show, :destroy]
+    resources :studies, except: [:index, :show, :destroy]
     member do
       get 'catalog'
       get 'protocol'
@@ -54,7 +60,6 @@ SparcRails::Application.routes.draw do
       get 'confirmation'
       get 'service_details'
       get 'service_calendar'
-      get 'calendar_totals'
       get 'service_subsidy'
       get 'document_management'
       post 'navigate'
@@ -68,7 +73,7 @@ SparcRails::Application.routes.draw do
       post 'feedback'
     end
 
-    resource :service_calendars do
+    resource :service_calendars, only: [:update, :index] do
       member do
         get 'table'
         get 'merged_calendar'
@@ -83,37 +88,36 @@ SparcRails::Application.routes.draw do
         put 'show_move_visits'
       end
     end
-
   end
 
-  resources :protocols do
+  resources :protocols, except: [:index, :show, :destroy] do
     member do
       get :approve_epic_rights
       get :push_to_epic
     end
   end
 
-  resources :projects do
+  resources :projects, except: [:index, :show, :destroy] do
     member do
       get :push_to_epic_status
     end
   end
 
-  resources :studies do
-    resources :identities
+  resources :studies, except: [:index, :show, :destroy] do
+    resources :identities, only: [:show]
 
     member do
       get :push_to_epic_status
     end
   end
 
-  resources :catalogs do
+  resources :catalogs, only: [] do
     member do
       post 'update_description'
     end
   end
 
-  resources :search do
+  resources :search, only: [] do
     collection do
       get :services
       get :identities
@@ -129,7 +133,6 @@ SparcRails::Application.routes.draw do
   match 'service_requests/:id/delete_document/:document_id' => 'service_requests#delete_documents'
   match 'service_requests/:id/edit_document/:document_id' => 'service_requests#edit_documents'
   match 'service_requests/:id/new_document' => 'service_requests#new_document'
-  match 'rubyception' => 'rubyception/application#index'
 
   ##### sparc-services routes brought in and namespaced
   namespace :catalog_manager do
@@ -141,7 +144,7 @@ SparcRails::Application.routes.draw do
     match 'services/set_linked_quantity_total' => 'services#set_linked_quantity_total'
     match 'services/get_updated_rate_maps' => 'services#get_updated_rate_maps'
 
-    resources :catalog do
+    resources :catalog, only: [:index] do
       collection do
         post :add_excluded_funding_source
         delete :remove_excluded_funding_source
@@ -151,11 +154,11 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :institutions
-    resources :providers
-    resources :programs
-    resources :cores
-    resources :services do
+    resources :institutions, only: [:show, :update, :create]
+    resources :providers, only: [:show, :update, :create]
+    resources :programs, only: [:show, :update, :create]
+    resources :cores, only: [:show, :update, :create]
+    resources :services, except: [:index, :edit, :destroy] do
       collection do
         get :verify_parent_service_provider
       end
@@ -174,34 +177,34 @@ SparcRails::Application.routes.draw do
     match 'validate_pricing_map_dates' => 'catalog#validate_pricing_map_dates'
     match '*verify_valid_pricing_setups' => 'catalog#verify_valid_pricing_setups'
 
-    root :to => 'catalog#index'
+    root to: 'catalog#index'
   end
 
   ##### Study Tracker/Clinical Work Fulfillment Portal#####
-  namespace :study_tracker, :path => "clinical_work_fulfillment" do
+  namespace :study_tracker, path: 'clinical_work_fulfillment' do
     match 'appointments/add_note' => 'calendars#add_note'
     match 'calendars/delete_toast_messages' => 'calendars#delete_toast_messages'
     match 'calendars/change_visit_group' => 'calendars#change_visit_group'
     match 'appointments/add_service' => 'calendars#add_service'
 
-    root :to => 'home#index'
+    root to: 'home#index'
 
-    resources :home do
+    resources :home, only: [:index] do
       collection do
         get :billing_report_setup
         post :billing_report
       end
     end
 
-    resources :sub_service_requests do
-      resources :calendars
-      resources :cover_letters
+    resources :sub_service_requests, only: [:show, :update] do
+      resources :calendars, only: [:show]
+      resources :cover_letters, except: [:index, :destroy]
     end
 
-    resources :service_requests
-    resources :subjects
+    resources :service_requests, only: [:update]
+    resources :subjects, only: [:update]
 
-    resources :protocols do
+    resources :protocols, only: [:update] do
       member do
         put :update_billing_business_manager_static_email
       end
@@ -210,34 +213,28 @@ SparcRails::Application.routes.draw do
 
   ##### sparc-user routes brought in and namespaced
   namespace :portal do
+    resources :services, only: [:show]
+    resources :admin, only: [:index]
 
-    resources :services, :admin
-
-    resources :associated_users do
+    resources :associated_users, except: [:index] do
       collection do
         get :search
       end
     end
 
-    resources :service_requests do
-      member do
-        put :update_line_item
-        get 'refresh_service_calendar'
-      end
-    end
+    resources :service_requests, only: [:show]
 
-    resources :protocols do
+    resources :protocols, except: [:destroy] do
       member do
-        get :add_user
         get :view_full_calendar
       end
-      resources :associated_users
+      resources :associated_users, except: [:index]
     end
 
-    resources :studies, :controller => :protocols
-    resources :projects, :controller => :protocols
+    resources :studies, controller: :protocols, except: [:destroy]
+    resources :projects, controller: :protocols, except: [:destroy]
 
-    resources :notifications do
+    resources :notifications, except: [:edit, :update, :destroy] do
       member do
         put :user_portal_update
         put :admin_update
@@ -247,7 +244,7 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :documents do
+    resources :documents, only: [:destroy] do
       collection do
         post :upload
         post :override
@@ -270,39 +267,39 @@ SparcRails::Application.routes.draw do
         end
       end
 
-      resources :protocols do
+      resources :protocols, except: [:destroy] do
         member do
           put :update_protocol_type
           put :update_from_fulfillment
         end
       end
-  
-      resources :subsidies do
+
+      resources :subsidies, only: [:create, :destroy] do
         member do
           put :update_from_fulfillment
         end
       end
 
-      resources :fulfillments do
+      resources :fulfillments, only: [:create, :destroy] do
         member do
           put :update_from_fulfillment
         end
       end
 
-      resources :line_items do
+      resources :line_items, only: [:destroy] do
         member do
           put :update_from_fulfillment
           put :update_from_cwf
         end
       end
 
-      resources :line_items_visits do
+      resources :line_items_visits, only: [:destroy] do
         member do
           put :update_from_fulfillment
         end
       end
 
-      resources :visits do
+      resources :visits, only: [:destroy] do
         member do
           put :update_from_fulfillment
         end
@@ -324,10 +321,10 @@ SparcRails::Application.routes.draw do
     match '/admin/sub_service_requests/:id/edit_document/:document_id' => 'sub_service_requests#edit_documents'
     match "/admin/sub_service_requests/:id/delete_document/:document_id" => "sub_service_requests#delete_documents"
 
-    root :to => 'home#index'
+    root to: 'home#index'
   end
 
-  resources :reports do
+  resources :reports, only: [:index] do
     collection do
       get :setup
       post :generate
@@ -342,5 +339,5 @@ SparcRails::Application.routes.draw do
 
   mount API::Base => '/'
 
-  root :to => 'service_requests#catalog'
+  root to: 'service_requests#catalog'
 end

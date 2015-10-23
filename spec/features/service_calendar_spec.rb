@@ -56,12 +56,12 @@ RSpec.describe "service calendar", js: true do
       end
 
       it "should save the new units per quantity" do
-        fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", with: 20
+        fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", with: 10
         page.execute_script('$(".units_per_quantity").change()')
         wait_for_javascript_to_finish
         find(:xpath, "//a/img[@alt='Goback']/..").click
         wait_for_javascript_to_finish
-        expect(LineItem.find(line_item.id).units_per_quantity).to eq(20)
+        expect(LineItem.find(line_item.id).units_per_quantity).to eq(10)
       end
     end
 
@@ -73,7 +73,7 @@ RSpec.describe "service calendar", js: true do
           fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", with: 1
           page.execute_script('$(".units_per_quantity").change()')
           wait_for_javascript_to_finish
-          
+
           accept_alert("Quantity please enter a quantity greater than or equal to") do
             fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", with: 0
             find("th.number_of_units_header").click
@@ -428,7 +428,7 @@ RSpec.describe "service calendar", js: true do
         wait_for_javascript_to_finish
         find("#calendar_tab").click
         wait_for_javascript_to_finish
-        
+
         all('.pp_line_item_total total_1').each do |x|
           if x.visible?
             expect(x).to have_exact_text("150.00")

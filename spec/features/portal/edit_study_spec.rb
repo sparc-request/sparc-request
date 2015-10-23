@@ -164,12 +164,12 @@ RSpec.describe "editing a study", js: true do
 
     describe "editing the potential funding start date" do
 
-      it "should change and save the date" do
-        page.execute_script("$('#potential_funding_start_date').focus()")
-        first('a.ui-state-default.ui-state-highlight').click #click on today's date
-        wait_for_javascript_to_finish
-        expect(find("#potential_funding_start_date")).to have_value((Date.today).strftime('%-m/%d/%Y'))
-      end
+     it "should change and save the date" do
+       page.execute_script("$('#potential_funding_start_date').focus()")
+       page.execute_script("$('#potential_funding_start_date').val('12/20/2015')")
+       wait_for_javascript_to_finish
+       expect(find("#potential_funding_start_date")).to have_value('12/20/2015')
+     end
     end
 
     describe "selecting a potential funding source" do

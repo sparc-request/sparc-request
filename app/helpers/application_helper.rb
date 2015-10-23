@@ -304,7 +304,7 @@ module ApplicationHelper
     arm.subjects ? arm.subjects.any?{|subject| subject.calendar.appointments.any?{|appt| !appt.completed_at.nil?}} : false
   end
 
-  def organization_available? organization
-    organization.is_available == false ? 'visually_unavailable' : ''
+  def entity_visibility_class entity
+    entity.is_available == false ? 'entity_visibility' : ''
   end
 end

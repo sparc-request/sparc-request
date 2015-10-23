@@ -63,7 +63,7 @@ RSpec.feature 'User sets organization availability', js: true do
   end
 
   def then_i_should_see_the_organization_as_visually_distinguished
-    expect(page).to have_css("#PROVIDER#{@provider_available.id}.visually_unavailable")
+    expect(page).to have_css("#PROVIDER#{@provider_available.id}.entity_visibility")
   end
 
   def and_i_am_viewing_only_available_organizations

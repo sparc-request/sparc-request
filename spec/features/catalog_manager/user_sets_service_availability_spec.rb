@@ -62,7 +62,7 @@ RSpec.feature 'User sets Service availability', js: true do
   end
 
   def then_i_should_see_the_service_as_visually_distinguished
-    expect(page).to have_css("#SERVICE#{@service_available.id}.visually_unavailable")
+    expect(page).to have_css("#SERVICE#{@service_available.id}.entity_visibility")
   end
 
   def and_i_am_viewing_only_available_services

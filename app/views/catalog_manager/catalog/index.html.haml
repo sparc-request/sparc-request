@@ -40,21 +40,21 @@
     - if can_create_institution
       %li= link_to t(:cm_index)[:institution], '#', :class => "institution"
     - @institutions.where(is_available: @show_unavailable).each do |institution|
-      %li{:id => 'INSTITUTION' + institution.id.to_s, :class => organization_available?(institution)}
+      %li{:id => 'INSTITUTION' + institution.id.to_s, :class => entity_visibility_class(institution)}
         - can_access_institution = @user.can_edit_entity? institution
         = node institution, can_access_institution, 'root'
         %ul
           - if can_access_institution
             %li= link_to t(:cm_index)[:provider], '#', :class => "provider"
           - institution.providers.where(is_available: @show_unavailable).order("`order`").each do |provider|
-            %li{:id => 'PROVIDER' + provider.id.to_s, :class => organization_available?(provider)}
+            %li{:id => 'PROVIDER' + provider.id.to_s, :class => entity_visibility_class(provider)}
               - can_access_provider = can_access_institution || (@user.can_edit_entity? provider)
               = node provider, can_access_provider
               %ul
                 - if can_access_provider
                   %li= link_to t(:cm_index)[:program], '#', :class => "program"
                 - provider.programs.where(is_available: @show_unavailable).order("`order`").each do |program|
-                  %li{:id => 'PROGRAM' + program.id.to_s, :class => organization_available?(program)}
+                  %li{:id => 'PROGRAM' + program.id.to_s, :class => entity_visibility_class(program)}
                     - can_access_program = can_access_provider || (@user.can_edit_entity? program)
                     = node program, can_access_program
                     - if program.cores.empty?
@@ -63,16 +63,16 @@
                           %li= link_to t(:cm_index)[:core], '#', :class => "core"
                           %li= link_to t(:cm_index)[:service], '#'
                         - program.services.where(is_available: @show_unavailable).order("`order`, `name`").each do |service|
-                          %li{:id => 'SERVICE' + service.id.to_s, :class => organization_available?(service)}= node service
+                          %li{:id => 'SERVICE' + service.id.to_s, :class => entity_visibility_class(service)}= node service
                     - else
                       %ul
                         - if can_access_program
                           %li= link_to t(:cm_index)[:core], '#', :class => "core"
                           %li= link_to t(:cm_index)[:service], '#'
                         - program.services.where(is_available: @show_unavailable).order("`order`, `name`").each do |service|
-                          %li{:id => 'SERVICE' + service.id.to_s, :class => organization_available?(service)}= node service                            
+                          %li{:id => 'SERVICE' + service.id.to_s, :class => entity_visibility_class(service)}= node service                            
                         - program.cores.where(is_available: @show_unavailable).order("`order`").each do |core|
-                          %li{:id => 'CORE' + core.id.to_s, :class => organization_available?(core)}
+                          %li{:id => 'CORE' + core.id.to_s, :class => entity_visibility_class(core)}
                             - can_access_core = can_access_program || (@user.can_edit_entity? core)
                             = node core, can_access_core
                             %ul
@@ -80,7 +80,7 @@
                                 %li= link_to t(:cm_index)[:service], '#'
                               - unless core.services.empty?
                                 - core.services.where(is_available: @show_unavailable).order("`order`, `name`").each do |service|
-                                  %li{:id => 'SERVICE' + service.id.to_s, :class => organization_available?(service)}= node service
+                                  %li{:id => 'SERVICE' + service.id.to_s, :class => entity_visibility_class(service)}= node service
                                     
 
 #details

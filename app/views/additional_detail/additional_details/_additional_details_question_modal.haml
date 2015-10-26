@@ -18,9 +18,9 @@
                     .help-block.with-errors
               .row
                 .col-md-6
-                  .form-group
+                  .form-group.has-feedback
                     %label{:for=>"key"} Key
-                    %input.form-control{:id=>"key", :pattern=>"([a-zA-Z0-9]| |_|/|\|@|#|$|%|&)+", "ng-model"=>"field.key", "type"=>"text", :value=>"", "data-error"=>"{{keyError}}", :placeholder=>"Key", :required=>"required"}
+                    %input.form-control{:id=>"key", :pattern=>"([a-zA-Z0-9]| |_|/|\|@|#|$|%|&)+", "ng-model"=>"field.key", "type"=>"text", :value=>"", "data-error"=>"{{keyError()}}", :placeholder=>"Key", :required=>"required"}
                     .help-block.with-errors         
                 .col-md-6
                   .form-group
@@ -57,7 +57,6 @@
                         %input.form-control{:id=>"max", "ng-model"=>"field.max", :type=>"number", :placeholder=>"Max"}
               .row
                 .col-md-12
-                  .row
-                    %button.btn.btn-success{:type=>"submit", "ng-click"=> "addQuestion(field); hideModal()"} {{modalSaveText}}
-                    %button.btn.btn-info{"ng-click"=>"resetQuestion()"} Clear Question
-                    %button.btn.btn-danger{"data-dismiss"=>"modal"} Cancel
+                  %button.btn.btn-success{:type=>"submit", "ng-click"=> "addQuestion(field)"} {{modalSaveText}}
+                  %button.btn.btn-info{"ng-click"=>"resetQuestion()"} Clear Question
+                  %button.btn.btn-danger{"data-dismiss"=>"modal"} Cancel

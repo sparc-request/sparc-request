@@ -343,7 +343,7 @@ SparcRails::Application.routes.draw do
   ##### Additional Detail #####
   namespace :additional_detail do
     root :to => 'services#index'
-    resources :services, only: [:index] do
+    resources :services, only: [:index, :show] do
       resources :additional_details do
         member do
           get :duplicate

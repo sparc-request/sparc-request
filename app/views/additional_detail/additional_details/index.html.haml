@@ -1,6 +1,5 @@
 :javascript
   var service_id = '#{@service.id}';
-  var service_name = '#{@service.name}';
 %div{"ng-controller" => "AdditionalDetailsDisplayController"}
   = render :partial => 'additional_detail/additional_details/survey_modal'
   .modal.fade{:id=>"additionalDetailResultsModal", :role=>"dialog", :tabindex=>"-1", "aria-labelledby"=>"myModalLabel"}
@@ -29,7 +28,7 @@
       %li.active{:role=>"presentation"}
         %a{:href=>"#adGrid", "aria-controls"=>:adGrid, :role=>:tab, "data-toggle"=>:tab}
           Additional Details
-          %span.badge= @service.current_additional_detail ? "Enabled" : "Disabled"
+          %span.badge= "{{service.current_additional_detail ? 'Enabled' : 'Disabled'}}"
       %li{:role=>"presentation"}
         %a{:id => "resultsTab", :href=>"#liadGrid", "aria-controls"=>:liadGrid, :role=>:tab} 
           Results 
@@ -38,7 +37,7 @@
       .tab-pane.fade.in.active{:role=>:tabpanel, :id=>:adGrid}
         .panel.panel-default
           .panel-heading
-            = "Additional Detail Forms for #{@service.name}"
+            = "Additional Detail Forms for {{service.name}}"
           .panel-body
             = link_to "Add new Additional Details Form", new_additional_detail_service_additional_detail_path(@service), class: "btn btn-primary"
             %div{:id=>"displayGrid", "ui-grid"=>"gridModel", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 300px;"}

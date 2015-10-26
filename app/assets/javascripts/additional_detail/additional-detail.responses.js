@@ -2,6 +2,11 @@ $('#additionalDetailModal').on('shown.bs.modal', function () {
 	$('#myInput').focus()
 });
 
+angular.module('app').factory("Service",  ['$resource', function($resource) {
+  // service_id is a global variable set in a HAML file
+  return $resource("/additional_detail/services/:id", {id: service_id});
+}]);
+
 angular.module('app').factory("AdditionalDetail",  ['$resource', function($resource) {
   // service_id is a global variable set in a HAML file
   return $resource("/additional_detail/services/:service_id/additional_details/:id", {service_id: service_id, id: '@id'}, {'update': { method: 'PUT'} });
@@ -22,7 +27,7 @@ angular.module('app').controller("DocumentManagementAdditionalDetailsController"
 	$scope.gridModel.columnDefs = [{name: 'Add/Edit Buttons', displayName:'', enableSorting: false, width: 105, cellTemplate: '<button type="button" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">{{(row.entity.form_data_json=="{}") ? "Add Details" : "Edit Details"}}</button>'},
 	                               {field: 'additional_detail_breadcrumb', name: 'Service'}, 
 	                               {name: 'Completed',field: 'has_answered_all_required_questions?', width: '15%' }];
-
+	
 	$scope.reloadGrid = function(){
 		$http.get('/additional_detail/service_requests/'+service_request_id).
 			then(function(response){
@@ -73,7 +78,7 @@ angular.module('app').controller("DocumentManagementAdditionalDetailsController"
 	$scope.reloadGrid();
 }]);
 
-angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope', '$http', '$window', 'AdditionalDetail', 'LineItemAdditionalDetail', 'uiGridConstants', function($scope, $http, $window, AdditionalDetail, LineItemAdditionalDetail, uiGridConstants) {
+angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope', '$http', '$window', 'Service', 'AdditionalDetail', 'LineItemAdditionalDetail', 'uiGridConstants', function($scope, $http, $window, Service, AdditionalDetail, LineItemAdditionalDetail, uiGridConstants) {
 	
 	$scope.gridModel = {enableColumnMenus: false, enableFiltering: true, enableColumnResizing: true, enableRowSelection: false, showColumnFooter: false , enableSorting: true, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 45};
 	$scope.gridModel.columnDefs = [
@@ -81,7 +86,7 @@ angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope'
 	                               {enableFiltering: false, enableColumnResizing: false, width: 115, name: "Responses",  cellTemplate: '<button class="btn btn-info" ng-disabled="row.entity.line_item_additional_details.length==0" ng-click="grid.appScope.updateLineItemAdditionalDetails(row.entity.id)">{{row.entity.line_item_additional_details.length}} {{(row.entity.line_item_additional_details.length == 1) ? "Response" : "Responses"}}</button>'},
 	                               {field: 'name', name: 'Name', width: '25%'}, 
 	                               {field:'effective_date',name: 'Effective Date', width: '15%',  sort: { direction: uiGridConstants.DESC, priority: 1 } },
-	                               {field: 'enabled',name: 'Enabled', cellTemplate: '<label>Enabled <input type="checkbox" ng-change="grid.appScope.updateAdditionalDetail(row.entity)" ng-model="row.entity.enabled" ng-disabled="row.entity.line_item_additional_details.length > 0"/></label>'},
+	                               {field: 'enabled',name: 'Enabled', cellTemplate: '<label>Enabled <input type="checkbox" ng-change="grid.appScope.updateAdditionalDetail(row.entity)" ng-model="row.entity.enabled"/></label>'},
 	                               {field: 'description', name: 'Description'}
 	                               ];
 	
@@ -111,12 +116,15 @@ angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope'
 	    	$scope.alertMessage = response;
 	    }); 
 	}
+	$scope.service = Service.get();
+
 	// initialize the main grid
 	$scope.gridModel.data = AdditionalDetail.query();
 	
     $scope.updateAdditionalDetail = function(additionalDetail) {
     	additionalDetail.$update(function() { 
-  			// reload data into Grid
+  			// reload the Service
+    		$scope.service = Service.get();
   			$scope.alertMessage = "Additional Detail updated.";
   	        $scope.resourceSuccessful = true;
   		}, function(error) {

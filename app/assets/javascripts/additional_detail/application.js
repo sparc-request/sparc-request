@@ -365,13 +365,17 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
 		  }); 
  	
  	 $scope.pretty = function(){
-		    return JSON.stringify($scope.model,undefined,2,2);
-		  };
- 		  
+ 		 return JSON.stringify($scope.model,undefined,2,2);
+		 };
+		  
 	// form def management
 	  // default type to text for new fields
 	  $scope.field = {};
 	  // select list options
+	  
+	  $scope.keyError = function(){
+	  		return ($scope.field.key && findByKey($scope.field.key)) ? "Key already exists." : "Please fill out this field. Valid characters are A-Z a-z 0-9";
+	  	}
 	  
 	 $scope.displayValue; $scope.minMaxDisplay;
 	 $scope.$watch('field.kind', function(val){
@@ -520,6 +524,42 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
 		        }
 		    }
 		}
+	    
+	    $scope.deleteById = function(id){
+	    	var formDef = JSON.parse($scope.formDefinition);
+	    	//loop through schema keys
+	    	for(key in formDef.schema.properties){
+	    		var question = $scope.getSchemaParsed().properties[key];
+	    		if(question.id == id){
+	    			delete formDef.schema.properties[key];
+	    			//look in required to see if key is inside
+	    			var index = formDef.schema.required.indexOf(key);
+	    			if(index > -1){
+	    				//remove if present
+	    				formDef.schema.required.splice(index, 1);
+	    			}
+	    			break;
+	    			}
+	    	}
+	    	//loop through form array and remove id
+	    	for(var i=0; i<formDef.form.length; i++){
+	    		var question = formDef.form[i];
+	    		if(question.id == id){
+	    			formDef.form.splice(i,1);
+	    			break;
+	    		}
+	    	}
+	    	$scope.formDefinition = JSON.stringify(formDef,undefined,2,2);
+	    	
+	    }
+	    
+	    //Will delete all questions
+	    $scope.deleteAllQuestion = function(){
+	    	for(key in JSON.parse($scope.formDefinition).schema.properties){
+	    		$scope.deleteById(findByKey(key).id);
+	    	}
+	    }
+	    
 	    $scope.deleteSelected = function() {
 		    var rows = $scope.gridApi.selection.getSelectedRows($scope.gridModel);
 	    	var formDef = JSON.parse($scope.formDefinition)
@@ -534,9 +574,6 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
 		  	}
 	  	};   	
 	  
-	  	$scope.keyError = "Please fill out this field. Valid characters are A-Z a-z 0-9";
-	  	
-      
 	  	$scope.addQuestion = function(q){
 	  		var question = hashCopy(q);
 	  		 //check to see if all required fields present
@@ -568,10 +605,13 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
 	  			//Else duplicate key present
 	  			else{
 	  				console.log("Key already exists.");
-	  				$scope.keyError = "Key already exists.";
+	  				//$scope.keyError = "Key already exists.";
+	  				$scope.field.key.$error.alreadyPresent ="Test";
+	  				
+	  				q.key ='';
 	  			}
 	  			if(keyVaild){
-	  				$scope.keyError ="Please fill out this field. Valid characters are A-Z a-z 0-9";
+	  				//$scope.keyError ="Please fill out this field. Valid characters are A-Z a-z 0-9";
 					if(question.description== null && (question.kind=="time" || question.kind=="datepicker")){
 						question.description = (question.kind=="time") ? "ex. 12:00 AM" : "ex. 06/13/2015";
 					  }
@@ -597,8 +637,8 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
 					if(!question.required && inRequired(question.key)){formDef.schema.required = removeRequired(question.key)}
 					if(question.required && !inRequired(question.key)){formDef.schema.required.push(question.key);}
 					
-					  
 					$scope.formDefinition = JSON.stringify(formDef,undefined,2,2);
+					$scope.hideModal();					
 	  			}
 	  		}
 	  		
@@ -622,6 +662,13 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
 		 return required;
 	 }
 	  	
+	 function findByKey(key){
+		 if(key && $scope.getSchemaParsed().properties[key]){
+			 var id = $scope.getSchemaParsed().properties[key].id
+			 return (id) ? $scope.getQuestion(id) : null;
+		 }
+		 return null;
+	 }
 	  	
 	 function hashCopy(hash){
 		 var newHash={};
@@ -924,6 +971,11 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
 	 }
 	 	      
   $scope.model = {};
+  
+  $scope.dataDisplay = function(){
+	  return (!$scope.pretty() || $scope.pretty()=="{}") ? "display : none" : "";
+  }
+
   
 }]).filter('mapKind', function() { 
   return function(input) {

@@ -18,9 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe 'Full service request' do
+RSpec.describe 'Full service request' do
 
   # before :each do
   #   create_default_data
@@ -37,13 +37,13 @@ describe 'Full service request' do
       project.arms.each {|x| x.destroy}
     end
 
-    it "should create a complete service request", :js => true do
+    it "should create a complete service request", js: true do
       ### CATALOG PAGE ###
       visit root_path
 
       click_link("South Carolina Clinical and Translational Institute (SCTR)")
       wait_for_javascript_to_finish
-      find(".provider-name").should have_text("South Carolina Clinical and Translational Institute (SCTR)")
+      expect(find(".provider-name")).to have_text("South Carolina Clinical and Translational Institute (SCTR)")
 
       click_link("Office of Biomedical Informatics")
       find("#service-1").click() # Add service 'Human Subject Review' to cart
@@ -57,8 +57,8 @@ describe 'Full service request' do
 
       click_link "Outside Users Click Here"
       ### LOGIN PAGE ###
-      fill_in("identity_ldap_uid", :with => 'jug2')
-      fill_in("identity_password", :with => 'p4ssword')
+      fill_in("identity_ldap_uid", with: 'jug2')
+      fill_in("identity_password", with: 'p4ssword')
       find(".devise_submit_button").click
     end
   end

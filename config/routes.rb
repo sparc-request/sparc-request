@@ -19,11 +19,15 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 SparcRails::Application.routes.draw do
-
   match '/direct_link_to/:survey_code', :to => 'surveyor#create', :as => 'direct_link_survey', :via => :get
+  match '/surveys/:survey_code/:response_set_code', :to => 'surveyor#destroy', :via => :delete
   mount Surveyor::Engine => "/surveys", :as => "surveyor"
 
-  devise_for :identities, :controllers => { :omniauth_callbacks => "identities/omniauth_callbacks" }
+  if USE_SHIBBOLETH_ONLY
+    devise_for :identities, :controllers => { :omniauth_callbacks => "identities/omniauth_callbacks" }, :path_names => {:sign_in => 'auth/shibboleth' }
+  else
+    devise_for :identities, :controllers => { :omniauth_callbacks => "identities/omniauth_callbacks" }
+  end
 
   resources :identities do
     collection do
@@ -309,7 +313,7 @@ SparcRails::Application.routes.draw do
         post "/service_requests/:id/add_per_patient_per_visit_visit" => "service_requests#add_per_patient_per_visit_visit"
         put "/subsidys/:id/update_from_fulfillment" => "subsidies#update_from_fulfillment"
         delete "/subsidys/:id" => "subsidies#destroy"
-        delete "/service_requests/:id/remove_per_patient_per_visit_visit" => "service_requests#remove_per_patient_per_visit_visit"
+        put "/service_requests/:id/remove_per_patient_per_visit_visit" => "service_requests#remove_per_patient_per_visit_visit"
         delete "/delete_toast_message/:id" => "admin#delete_toast_message"
       end
     end

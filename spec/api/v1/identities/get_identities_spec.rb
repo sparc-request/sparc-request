@@ -1,11 +1,11 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
   describe 'GET /v1/identities.json' do
 
     before do
-      5.times { @identity = FactoryGirl.create(:identity) }
+      5.times { @identity = create(:identity) }
     end
 
     context 'response params' do
@@ -65,7 +65,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       it 'should respond with an array of identities and their attributes and their shallow reflections' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = ['email', 'first_name', 'last_name', 'ldap_uid'].
+        expected_attributes = ['email', 'first_name', 'last_name', 'ldap_uid', 'protocols'].
                                 push('callback_url', 'sparc_id').
                                 sort
 

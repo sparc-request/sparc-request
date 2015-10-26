@@ -112,6 +112,11 @@ $(document).ready ->
           height: 700
           modal: true
           buttons: {
+            "Print": () ->
+              id = $('#id').val()
+              ssr_id = $('#ssr_id').val()
+              printerFriendly = window.open("/portal/service_requests/#{id}?ssr_id=#{ssr_id}")
+              printerFriendly.print()
             "Ok": () ->
               $(this).dialog('close')
           }
@@ -135,6 +140,13 @@ $(document).ready ->
           height: 700
           modal: true
           buttons: [
+            {
+              text: "Print"
+              click: ->
+                calendar_id = $('#calendar_id').val()
+                printerFriendly = window.open("/portal/protocols/#{calendar_id}/view_full_calendar")
+                printerFriendly.print()
+            }
             {
             id: "ok_button"
             text: "Ok"

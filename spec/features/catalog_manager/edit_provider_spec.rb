@@ -18,14 +18,14 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe 'edit a provider', :js => true do
+RSpec.describe 'edit a provider', js: true do
 
 
   before :each do
     default_catalog_manager_setup
-    Tag.create(:name => "ctrc")
+    Tag.create(name: "ctrc")
     click_link('South Carolina Clinical and Translational Institute (SCTR)')
   end
 
@@ -33,16 +33,16 @@ describe 'edit a provider', :js => true do
   context 'successfully update an existing provider'  do
     it "should successfully edit and save the provider" do
       # General Information fields
-      fill_in 'provider_abbreviation', :with => 'PTP'
-      fill_in 'provider_description', :with => 'Description'
-      fill_in 'provider_ack_language', :with => 'Language'
-      fill_in 'provider_order', :with => '2'
-      select('orange', :from => 'provider_css_class')
+      fill_in 'provider_abbreviation', with: 'PTP'
+      fill_in 'provider_description', with: 'Description'
+      fill_in 'provider_ack_language', with: 'Language'
+      fill_in 'provider_order', with: '2'
+      select('orange', from: 'provider_css_class')
       check('provider_process_ssrs')
       check('provider_is_available')
 
       first('#save_button').click
-      page.should have_content( 'South Carolina Clinical and Translational Institute (SCTR) saved successfully' )
+      expect(page).to have_content( 'South Carolina Clinical and Translational Institute (SCTR) saved successfully' )
     end
 
 
@@ -53,15 +53,15 @@ describe 'edit a provider', :js => true do
       end
 
       it "should list the tags" do
-        page.should have_css("#provider_tag_list_ctrc")
+        expect(page).to have_css("#provider_tag_list_ctrc")
       end
 
       it "should be able to check a tag box" do
         find('#provider_tag_list_ctrc').click
         first("#save_button").click
-        page.should have_content( 'South Carolina Clinical and Translational Institute (SCTR) saved successfully' )
-        find('#provider_tag_list_ctrc').should be_checked
-        @provider.tag_list.should eq(['ctrc'])
+        expect(page).to have_content( 'South Carolina Clinical and Translational Institute (SCTR) saved successfully' )
+        expect(find('#provider_tag_list_ctrc')).to be_checked
+        expect(@provider.tag_list).to eq(['ctrc'])
       end
     end
 
@@ -75,14 +75,14 @@ describe 'edit a provider', :js => true do
       end
 
       it "should get the default statuses" do
-        @provider.get_available_statuses.should eq( {"draft" => "Draft", "submitted" => "Submitted", "get_a_quote" => "Get a Quote", "in_process" => "In Process", "complete" => "Complete", "awaiting_pi_approval" => "Awaiting Requester Response", "on_hold" => "On Hold"} )
+        expect(@provider.get_available_statuses).to eq( {"draft" => "Draft", "submitted" => "Submitted", "get_a_cost_estimate" => "Get a Cost Estimate", "in_process" => "In Process", "complete" => "Complete", "awaiting_pi_approval" => "Awaiting Requester Response", "on_hold" => "On Hold"} )
       end
 
       it "should only get the statuses that are checked" do
         find("#provider_available_statuses_attributes_0__destroy").click
         first("#save_button").click
         wait_for_javascript_to_finish
-        @provider.get_available_statuses.should eq( {"draft" => "Draft"} )
+        expect(@provider.get_available_statuses).to eq( {"draft" => "Draft"} )
       end
 
       it "should not create duplicates if saved twice" do
@@ -91,7 +91,7 @@ describe 'edit a provider', :js => true do
         wait_for_javascript_to_finish
         first("#save_button").click
         wait_for_javascript_to_finish
-        @provider.get_available_statuses.should eq( {"draft" => "Draft"} )
+        expect(@provider.get_available_statuses).to eq( {"draft" => "Draft"} )
       end
     end
 
@@ -100,7 +100,7 @@ describe 'edit a provider', :js => true do
       it "should show user rights section" do
         find('#user_rights').click
         sleep 3
-        find('#su_info').should be_visible
+        expect(find('#su_info')).to be_visible
       end
     end
 
@@ -111,16 +111,16 @@ describe 'edit a provider', :js => true do
       end
 
       it "should show the pricing section" do
-        first('#pricing fieldset').should be_visible
+        expect(first('#pricing fieldset')).to be_visible
       end
-      
+
       it "should have a functional subsidy section" do
         # Subsidy Information fields
-        fill_in 'provider_subsidy_map_attributes_max_percentage', :with => '55.5'
-        fill_in 'provider_subsidy_map_attributes_max_dollar_cap', :with => '65'
+        fill_in 'provider_subsidy_map_attributes_max_percentage', with: '55.5'
+        fill_in 'provider_subsidy_map_attributes_max_dollar_cap', with: '65'
 
         first('#save_button').click
-        page.should have_content( 'South Carolina Clinical and Translational Institute (SCTR) saved successfully' )
+        expect(page).to have_content( 'South Carolina Clinical and Translational Institute (SCTR) saved successfully' )
       end
     end
   end

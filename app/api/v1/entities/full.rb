@@ -28,10 +28,25 @@ module V1
             :ldap_uid
   end
 
+  class HumanSubjectsInfoFull < HumanSubjectsInfoShallow
+    root 'human_subjects_infos', 'human_subjects_info'
+
+    expose  :protocol_id,
+            :nct_number,
+            :hr_number,
+            :pro_number,
+            :irb_of_record,
+            :submission_type,
+            :approval_pending
+
+    with_options(format_with: :iso_timestamp) do
+      expose :irb_approval_date
+      expose :irb_expiration_date
+    end
+  end
+
   class LineItemFull < LineItemShallow
     root 'line_items', 'line_item'
-
-    format_with(:iso_timestamp) { |dt| dt ? dt.iso8601 : nil }
 
     expose  :service_request_id,
             :sub_service_request_id,
@@ -88,9 +103,7 @@ module V1
             :funding_rfa,
             :funding_status,
             :potential_funding_source,
-            :potential_funding_start_date,
             :funding_source,
-            :funding_start_date,
             :federal_grant_serial_number,
             :federal_grant_title,
             :federal_grant_code_id,
@@ -100,12 +113,18 @@ module V1
             :funding_source_other,
             :last_epic_push_time,
             :last_epic_push_status,
-            :start_date,
-            :end_date,
             :billing_business_manager_static_email,
-            :recruitment_start_date,
-            :recruitment_end_date,
-            :selected_for_epic
+            :selected_for_epic,
+            :has_cofc
+
+    with_options(format_with: :iso_timestamp) do
+      expose :start_date
+      expose :end_date
+      expose :potential_funding_start_date
+      expose :funding_start_date
+      expose :recruitment_start_date
+      expose :recruitment_end_date
+    end
   end
 
   class ProjectFull < ProtocolFull
@@ -141,8 +160,6 @@ module V1
   class ServiceRequestFull < ServiceRequestShallow
     root 'service_requests', 'service_request'
 
-    format_with(:iso_timestamp) { |dt| dt ? dt.iso8601 : nil }
-
     expose  :protocol_id,
             :status,
             :service_requester_id,
@@ -162,8 +179,6 @@ module V1
   class SubServiceRequestFull < SubServiceRequestShallow
     root 'sub_service_requests', 'sub_service_request'
 
-    format_with(:iso_timestamp) { |dt| dt ? dt.iso8601 : nil }
-
     expose  :id, as: :sparc_id
     expose  :service_request_id,
             :organization_id,
@@ -172,7 +187,7 @@ module V1
             :nursing_nutrition_approved,
             :lab_approved,
             :imaging_approved,
-            :src_approved,
+            :committee_approved,
             :in_work_fulfillment,
             :routing,
             :org_tree_display,

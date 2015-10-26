@@ -1,14 +1,14 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
   describe 'GET /v1/project_roles.json' do
 
     before do
-      protocol = FactoryGirl.build(:protocol)
+      protocol = build(:protocol)
       protocol.save validate: false
 
-      FactoryGirl.create_list(:project_role_with_identity, 5, protocol: protocol)
+      create_list(:project_role_with_identity, 5, protocol: protocol)
 
       @project_role_ids = ProjectRole.pluck(:id)
     end

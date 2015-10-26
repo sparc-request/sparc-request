@@ -18,18 +18,18 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe Portal::ServicesController do
+RSpec.describe Portal::ServicesController do
   stub_portal_controller
 
-  let!(:institution) { FactoryGirl.create(:institution) }
-  let!(:provider) { FactoryGirl.create(:provider, parent_id: institution.id) }
-  let!(:program) { FactoryGirl.create(:program, parent_id: provider.id) }
-  let!(:core) { FactoryGirl.create(:core, parent_id: program.id) }
+  let!(:institution) { create(:institution) }
+  let!(:provider) { create(:provider, parent_id: institution.id) }
+  let!(:program) { create(:program, parent_id: provider.id) }
+  let!(:core) { create(:core, parent_id: program.id) }
 
   let!(:service) {
-    service = FactoryGirl.create(
+    service = create(
         :service,
         organization: core,
         pricing_map_count: 1)

@@ -42,15 +42,15 @@ module CapybaraAdminPortal
         visit "/identities/sign_in"
         wait_for_javascript_to_finish
         loginDiv = first(:xpath,"//div[@id='login']")
-        if loginDiv.nil? then 
+        if loginDiv.nil? then
             if not currentUrl==page.current_url then visit "#{currentUrl}" end
             wait_for_javascript_to_finish
             return #if the login dialog is not displayed quit here.
-        end 
+        end
         click_link "Outside Users Click Here"
         wait_for_javascript_to_finish
-        fill_in "identity_ldap_uid", :with => un
-        fill_in "identity_password", :with => pwd
+        fill_in "identity_ldap_uid", with: un
+        fill_in "identity_password", with: pwd
         first(:xpath, "//input[@type='submit' and @value='Sign In']").click
         wait_for_javascript_to_finish
     end
@@ -59,18 +59,18 @@ module CapybaraAdminPortal
         #allows javascript to complete
         #by clicking in a nonactive part of the page
         #then calls wait for javascript to finish method.
-        #equivalent of clickOffAndWait in CapybaraProper, 
+        #equivalent of clickOffAndWait in CapybaraProper,
         #however a different part of the page is clicked as
         #the xpath used in CapybaraProper is unavailable in the Admin Portal.
         first(:xpath, "//div[@id='welcome_msg']/span").click
         wait_for_javascript_to_finish
-    end    
+    end
 
     def notificationTest
-        #clicks to send notification and checks that notification dialog appears, then closes the dialog.  
+        #clicks to send notification and checks that notification dialog appears, then closes the dialog.
         find(:xpath, "//ul[@class='fulfillment_notifications']/li[1]").click
         wait_for_javascript_to_finish
-        page.should have_xpath "//div[contains(@class,'ui-dialog') and contains(@style,'display: block;')]"
+        expect(page).to have_xpath "//div[contains(@class,'ui-dialog') and contains(@style,'display: block;')]"
         find(:xpath, "//div[contains(@class,'ui-dialog') and contains(@style,'display: block;')]//button/span[text()='Cancel']").click
         wait_for_javascript_to_finish
     end
@@ -81,7 +81,7 @@ module CapybaraAdminPortal
         find("a.document_upload_button").click
         wait_for_javascript_to_finish
         first(:xpath,"//input[@id='document']").set("/Users/charlie/Documents/GitHub/sparc-rails/spec/features/quick_happy_test_spec.rb")
-        select "Other", :from => "doc_type"
+        select "Other", from: "doc_type"
         click_link "Upload"
         wait_for_javascript_to_finish
     end
@@ -90,17 +90,17 @@ module CapybaraAdminPortal
         #Expects a boolean whether the search is being done in User Portal or not
         #If not, assumes test is in admin portal or CWF
         #also expects a string of text to enter into the search box and expects that
-        #that string will appear in one of the responses as well. 
+        #that string will appear in one of the responses as well.
         #types searchText into search box then if a response exists with the searchText in it,
         #clicks on that response.
         wait_for_javascript_to_finish
         if upBoolean then searchBox = find(:xpath, "//input[@id='search_box']")
-        else searchBox = find(:xpath, "//input[contains(@class,'search-all-service-requests')]") end 
+        else searchBox = find(:xpath, "//input[contains(@class,'search-all-service-requests')]") end
         searchBox.set(searchText)
         wait_for_javascript_to_finish
         response = first(:xpath, "//ul/li[@role='presentation']/a[contains(text(),'#{searchText}')]")
         if not response.nil? then response.click end
-    end        
+    end
 
     def enterServiceRequest(studyShortName, serviceName)
         #clicks on a specific row in the admin portal display table
@@ -111,23 +111,23 @@ module CapybaraAdminPortal
 
     def expectToastMessage
         #checks for presence of toast message
-        page.should have_xpath("//div[@class='toast-item-wrapper']")
+        expect(page).to have_xpath("//div[@class='toast-item-wrapper']")
     end
 
     def expectStatusChangeRecord(changedFrom, changedTo)
         #checks for presence of record in Status Changes table
-        page.should have_xpath("//table[@id='status_history_table']/tbody/tr/td[contains(text(),'#{changedFrom}')]/following-sibling::td[contains(text(),'#{changedTo}')]")
+        expect(page).to have_xpath("//table[@id='status_history_table']/tbody/tr/td[contains(text(),'#{changedFrom}')]/following-sibling::td[contains(text(),'#{changedTo}')]")
     end
 
     def addNote(text)
         #adds a new note and checks that the note was added
-        fill_in "notes", :with => text
+        fill_in "notes", with: text
         click_link "Add Note"
-        page.should have_xpath("//div[@class='note_body' and text()='#{text}']")
+        expect(page).to have_xpath("//div[@class='note_body' and text()='#{text}']")
     end
 
     def associatedUsersTest(usersID, usersName)
-        #switches to Associated Users tab, if user is already there deletes the user from the request, 
+        #switches to Associated Users tab, if user is already there deletes the user from the request,
         #adds the user via the dialog box.
         switchTabTo "associated_users"
 
@@ -145,18 +145,18 @@ module CapybaraAdminPortal
         wait_for_javascript_to_finish
         find(:xpath, "//ul[contains(@class,'ui-autocomplete')]/li/a[contains(text(),'#{usersName}')]").click
         wait_for_javascript_to_finish
-        select "Other", :from => 'project_role_role'
+        select "Other", from: 'project_role_role'
         find(:xpath, "//input[@id='project_role_project_rights_approve']").click
 
         addBox.find(:xpath, ".//button/span[text()='Submit']").click
         wait_for_javascript_to_finish
 
-        page.should have_xpath "//tr[contains(@id,'user_')]/td[contains(text(),'#{usersName}')]"
+        expect(page).to have_xpath "//tr[contains(@id,'user_')]/td[contains(text(),'#{usersName}')]"
     end
 
     def testSubsidy(percentage)
         #expects a number between 0 and 100
-        #changes the % Subsidy field and checks that 
+        #changes the % Subsidy field and checks that
         #the page reflects the change
         switchTabTo "fulfillment"
 
@@ -169,12 +169,12 @@ module CapybaraAdminPortal
         subCurrentCost = (currentCost*decimal).round(2)
         subDisplayCost = (userDisplayCost*decimal).round(2)
 
-        fill_in "subsidy_percent_subsidy", :with => "#{percentage}"
+        fill_in "subsidy_percent_subsidy", with: "#{percentage}"
         waitAndClickOff
 
-        find(:xpath, "//input[@id='subsidy_pi_contribution']")['value'].to_f.should eq(piContribution)
-        find(:xpath, "//td[@class='subsidy_effective_current_cost']").text[1..-1].to_f.should eq(subCurrentCost)
-        find(:xpath, "//td[@class='subsidy_user_display_cost']").text[1..-1].to_f.should eq(subDisplayCost)
+        expect(find(:xpath, "//input[@id='subsidy_pi_contribution']")['value'].to_f).to eq(piContribution)
+        expect(find(:xpath, "//td[@class='subsidy_effective_current_cost']").text[1..-1].to_f).to eq(subCurrentCost)
+        expect(find(:xpath, "//td[@class='subsidy_user_display_cost']").text[1..-1].to_f).to eq(subDisplayCost)
 
         find(:xpath, "//div[@id='subsidy_table']//a[@class='delete_data']/img[@alt='Cancel']").click
         wait_for_javascript_to_finish
@@ -183,18 +183,18 @@ module CapybaraAdminPortal
     def testOTFService(service,quantity)
         #expects instance of ServiceWithAddress, and integer quantity as input
         #quantity will round down if not integer and will be input to service quantity box.
-        #the cost will then 
+        #the cost will then
 
         if not service.otf then return end #if service sent in was not one time fee, stop here.
         unitPrice = service.unitPrice
-        fill_in "line_item_quantity", :with => quantity
+        fill_in "line_item_quantity", with: quantity
         expectToastMessage
         waitAndClickOff
         quantity = quantity.floor
         expectedCost = (unitPrice/2*quantity).round(2) #divided by 2 here because the effective percentage is 50
         #this makes this method only effective for the SR of the happy_test suite until effective percentage is
-        #pulled out from either the SR or service. 
-        first(:xpath, "//div[@id='one_time_fee_table']/table/tbody/tr/td[contains(@id,'_cost')]").text[1..-1].to_f.should eq(expectedCost)
+        #pulled out from either the SR or service.
+        expect(first(:xpath, "//div[@id='one_time_fee_table']/table/tbody/tr/td[contains(@id,'_cost')]").text[1..-1].to_f).to eq(expectedCost)
         wait_for_javascript_to_finish
     end
 
@@ -214,13 +214,13 @@ module CapybaraAdminPortal
         find(:xpath, "//a[@class='add_visit_link']").click
         currentBox = find(:xpath, "//div[contains(@class,'ui-dialog ') and contains(@style,'display: block;')]")
         within currentBox do
-            fill_in 'visit_name', :with => visitText
-            fill_in 'visit_day', :with => visitDay
+            fill_in 'visit_name', with: visitText
+            fill_in 'visit_day', with: visitDay
             find(:xpath, ".//button/span[text()='Submit']").click
             wait_for_javascript_to_finish
         end
 
-        select "Delete #{visitText} - #{visitText}", :from => 'delete_visit_position'
+        select "Delete #{visitText} - #{visitText}", from: 'delete_visit_position'
         find(:xpath, "//a[@class='delete_visit_link']").click
         wait_for_javascript_to_finish
     end
@@ -234,13 +234,13 @@ module CapybaraAdminPortal
         #changes the status, expects toast messages, and checks history for status change.
         switchTabTo "fulfillment"
 
-        select "Get a Quote", :from => "sub_service_request_status"
+        select "Get a Cost Estimate", from: "sub_service_request_status"
         expectToastMessage
         wait_for_javascript_to_finish
-        select "Submitted", :from => "sub_service_request_status"
+        select "Submitted", from: "sub_service_request_status"
         expectToastMessage
         wait_for_javascript_to_finish
-        expectStatusChangeRecord("Get a Quote","Submitted")
+        expectStatusChangeRecord("Get a Cost Estimate","Submitted")
     end
 
     def switchTabTo(tab)
@@ -266,23 +266,23 @@ module CapybaraAdminPortal
 
         switchTabTo 'documents'
         wait_for_javascript_to_finish
-        
+
         switchTabTo 'related_service_requests'
         wait_for_javascript_to_finish
-        
+
         switchTabTo 'associated_users'
         wait_for_javascript_to_finish
-        
+
         switchTabTo 'notifications'
         wait_for_javascript_to_finish
-        
+
         switchTabTo 'fulfillment'
         wait_for_javascript_to_finish
     end
 
     def adminPortal(study, service)
-        #expects instance of CustomStudy as input 
-        #expects instance of ServiceRequestForComparison as input 
+        #expects instance of CustomStudy as input
+        #expects instance of ServiceRequestForComparison as input
         #Intended as full admin portal happy test.
         goToAdminPortal
         enterServiceRequest(study.short,service.name)
@@ -295,11 +295,11 @@ module CapybaraAdminPortal
         testSubsidy(30)
 
         switchTabTo "fulfillment"
-        if service.otf then 
+        if service.otf then
             testOTFService(service,20)
             testOTFService(service,3)
             testOTFService(service,service.quantity)
-        else 
+        else
             testPPService(service)
         end
 
@@ -309,8 +309,8 @@ module CapybaraAdminPortal
 
         switchTabTo "fulfillment"
 
-        if not service.otf then 
-            sendToCWF 
+        if not service.otf then
+            sendToCWF
         end
 
     end

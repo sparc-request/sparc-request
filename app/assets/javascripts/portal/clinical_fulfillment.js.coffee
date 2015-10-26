@@ -22,7 +22,7 @@ $(document).ready ->
 
   check_core_permissions = () ->
     $('.clinical_tab_data').each ->
-      if $(this).attr('data-has_access') == "false" 
+      if $(this).attr('data-has_access') == "false"
         core_name = $(this).attr('href')
         $(core_name).find('input').prop('disabled', true)
         $(core_name).find('button').prop('disabled', true)
@@ -35,7 +35,7 @@ $(document).ready ->
 
   $('.procedure_box').on 'change', ->
     $(this).parent('td').siblings().children('.procedure_r_qty').addClass('changed_attr')
-  
+
   $("#save_appointments").click (event) ->
     $('.procedure_r_qty, .procedure_t_qty').not('.changed_attr').prop('disabled', true)
   # end submit data for changes/requirements
@@ -49,7 +49,7 @@ $(document).ready ->
   $('#procedures_added_popup').dialog
     # dialogClass: "no-close"
     autoOpen: true
-    # height: 80 
+    # height: 80
     width: 350
     modal: true
     resizable: false
@@ -83,7 +83,7 @@ $(document).ready ->
     onClose: (selectedDate) ->
       unless selectedDate == ''
         $('#study_tracker_billing_report_start_date_input').datepicker("option", "maxDate", selectedDate)
-  
+
   $("#study_tracker_billing_report_start_date_input").datepicker
     altField: "#study_tracker_billing_report_start_date"
     altFormat: "yy-mm-dd"
@@ -242,7 +242,7 @@ $(document).ready ->
         confirmExit = ->
           "Changes to patient calendars need to be saved, click 'Stay on page' and save the form to save the calendar, or click 'Leave page' to leave the page and dismiss your changes."
         window.onbeforeunload = confirmExit
-        
+
         $('.save_alert').show()
         $('.new_procedure_wrapper:visible').replaceWith(response_html)
         $('tr.grand_total_row:visible').before("<tr class='new_procedure_wrapper' data-appointment_index='#{appointment_index}'></tr>")
@@ -296,11 +296,11 @@ $(document).ready ->
       success: (html) ->
         $('.comments:visible').html(html)
   )
-  
+
   ####Sub Service Request Save button
   $('#ssr_save').button()
 
-  $('#ssr_save').on 'click', -> 
+  $('#ssr_save').on 'click', ->
     routing = $('#ssr_routing').val()
     ssr_id = $('#ssr_routing').data('ssr_id')
     $.ajax
@@ -308,11 +308,11 @@ $(document).ready ->
       url: "/clinical_work_fulfillment/sub_service_requests/#{ssr_id}"
       data: { "sub_service_request[routing]": routing }
     return false
-  
+
   ####Sub Service Request Save button
   $('#protocol_billing_business_manager_static_email_save').button()
 
-  $('#protocol_billing_business_manager_static_email_save').on 'click', -> 
+  $('#protocol_billing_business_manager_static_email_save').on 'click', ->
     billing_business_manager_static_email = $('#protocol_billing_business_manager_static_email').val()
     protocol_id = $('#protocol_billing_business_manager_static_email').data('protocol_id')
     $.ajax
@@ -331,8 +331,8 @@ $(document).ready ->
       if has_errors
         event.preventDefault()
         $().toastmessage('showWarningToast', 'Unit quantity must be a number')
-        return false 
-        
+        return false
+
     $('.fulfillment_quantity:visible, .fulfillment_date:visible').each (index, field) ->
       has_errors = false
       if ($(field).val() == "")
@@ -359,7 +359,7 @@ $(document).ready ->
         corner:
           target: "topMiddle"
           tooltip: "bottomMiddle"
-          
+
   ####Support Functions
   commaSeparateNumber = (val) ->
     while (/(\d+)(\d{3})/.test(val.toString()))
@@ -386,7 +386,7 @@ $(document).ready ->
   )
 
 
-  #Research project summary report start and end date
+  #Project summary report start and end date
   $(document).on('click','#research_project_summary_report_in_cwf', ->
     $('#project_summary_report').dialog('open')
     $("#rps_start_date").datepicker(dateFormat: "yy-mm-dd")
@@ -398,8 +398,8 @@ $(document).ready ->
     if continue_with_research_project_summary_report == false
       $("#research_project_summary_report_date_range").dialog("open")
       event.preventDefault()
-  
-  $(document).on 'click', '#rps_continue', -> 
+
+  $(document).on 'click', '#rps_continue', ->
     continue_with_research_project_summary_report = true
     start_date = $('#rps_start_date').val()
     end_date = $('#rps_end_date').val()

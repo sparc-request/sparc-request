@@ -369,7 +369,7 @@ $(document).ready ->
         'arm_id': $('#arm_id').val()
         'study_tracker': $('#study_tracker_hidden_field').val() || null
       $.ajax
-        type: 'DELETE'
+        type: 'PUT'
         url:   "/portal/admin/service_requests/#{sr_id}/remove_per_patient_per_visit_visit"
         data:  JSON.stringify(data)
         dataType: 'script'

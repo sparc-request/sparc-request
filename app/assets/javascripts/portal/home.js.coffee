@@ -26,7 +26,7 @@ $(document).ready ->
   $('.btn').button()
 
   Sparc.home = {
-    
+
     handle_ajax_errors: (errors_array, entity_type) ->
       errors_array = JSON.parse(errors_array)
       error_string = ""
@@ -35,14 +35,14 @@ $(document).ready ->
         for error in value
           error_number += 1
           error_string += "<li>#{key[0].toUpperCase()}#{key.substr(1, key.length - 1)} #{error}</li>"
-   
+
       $('.errorExplanation').html("<h2>#{error_number} error(s) prevented this #{entity_type} from being saved:</h2>
         <p>There were problems with the following fields:</p>
         <ul>
           #{error_string}
         </ul>
       ").show()
-    
+
     getInfo: (info, force=null) ->
       spinner = $(".#{info}-spinner")
       if (spinner.length > 0) or (force is 'force')
@@ -59,17 +59,14 @@ $(document).ready ->
               changeMonth: true
               changeYear: true
               showButtonPanel: true
+              closeText: "Clear"
               beforeShow: (input) ->
                 callback = ->
                   buttonPane = $(input).datepicker( "widget" ).find( ".ui-datepicker-buttonpane" )
-                  $( "<button>", {
-                    class: "ui-state-default ui-priority-primary ui-corner-all"
-                    text: "Clear"
-                    click: ->
-                      $.datepicker._clearDate(input)
-                  }).appendTo(buttonPane)
+                  buttonPane.find('button.ui-datepicker-close').on 'click', ->
+                    $.datepicker._clearDate(input)
                 setTimeout( callback, 1)
-              
+
             $('.date').attr("readOnly", true)
             spinner.remove()
   }

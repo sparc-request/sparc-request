@@ -18,9 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe Appointment do
+RSpec.describe Appointment, type: :model do
 
   let_there_be_lane
   let_there_be_j
@@ -29,19 +29,19 @@ describe Appointment do
 
   context "clinical work fulfillment" do
 
-    let!(:core_18)       { FactoryGirl.create(:core) }
-    let!(:appointment)  { FactoryGirl.create(:appointment, organization_id: core_18.id, completed_at: Date.today) }
+    let!(:core_18)      { create(:core) }
+    let!(:appointment)  { create(:appointment, organization_id: core_18.id, completed_at: Date.today) }
 
     describe "completed for core" do
 
       it "should return true if the appointment is completed for a particular core" do
-        appointment.completed_for_core?(core_18.id).should eq(true)
+        expect(appointment.completed_for_core?(core_18.id)).to eq(true)
       end
 
       it "should return false if this is not the case" do
-        appointment.completed_for_core?(core_17.id).should eq(false)
+        expect(appointment.completed_for_core?(core_17.id)).to eq(false)
         appointment.update_attributes(completed_at: nil)
-        appointment.completed_for_core?(core_18.id).should eq(false)
+        expect(appointment.completed_for_core?(core_18.id)).to eq(false)
       end
     end
   end

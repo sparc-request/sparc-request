@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
@@ -6,7 +6,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
     before do
       5.times do
-        protocol = FactoryGirl.build(:protocol)
+        protocol = build(:protocol)
         protocol.save validate: false
       end
 
@@ -56,9 +56,9 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       it 'should respond with an array of protocols and their attributes' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryGirl.build(:protocol).attributes.
+        expected_attributes = build(:protocol).attributes.
                                 keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'has_cofc'].include?(key) }.
+                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
                                 push('callback_url', 'sparc_id').
                                 sort
 
@@ -72,10 +72,10 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       it 'should respond with an array of protocols and their attributes and their shallow reflections' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryGirl.build(:protocol).attributes.
+        expected_attributes = build(:protocol).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'has_cofc'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'arms', 'service_requests', 'project_roles').
+                                push('callback_url', 'sparc_id', 'arms', 'service_requests', 'project_roles', 'has_cofc', 'human_subjects_info').
                                 sort
 
         expect(parsed_body['protocols'].map(&:keys).flatten.uniq.sort).to eq(expected_attributes)

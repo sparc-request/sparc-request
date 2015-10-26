@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150618131144) do
+ActiveRecord::Schema.define(:version => 20150930181724) do
 
   create_table "admin_rates", :force => true do |t|
     t.integer  "line_item_id"
@@ -910,7 +910,7 @@ ActiveRecord::Schema.define(:version => 20150618131144) do
     t.boolean  "nursing_nutrition_approved", :default => false
     t.boolean  "lab_approved",               :default => false
     t.boolean  "imaging_approved",           :default => false
-    t.boolean  "src_approved",               :default => false
+    t.boolean  "committee_approved",         :default => false
     t.boolean  "in_work_fulfillment",        :default => false
     t.string   "routing"
     t.text     "org_tree_display"
@@ -1040,13 +1040,16 @@ ActiveRecord::Schema.define(:version => 20150618131144) do
     t.datetime "created_at"
   end
 
-  add_index "taggings", ["tag_id"], :name => "index_taggings_on_tag_id"
+  add_index "taggings", ["tag_id", "taggable_id", "taggable_type", "context", "tagger_id", "tagger_type"], :name => "taggings_idx", :unique => true
   add_index "taggings", ["taggable_id", "taggable_type", "context"], :name => "index_taggings_on_taggable_id_and_taggable_type_and_context"
   add_index "taggings", ["tagger_id"], :name => "index_taggings_on_tagger_id"
 
   create_table "tags", :force => true do |t|
-    t.string "name"
+    t.string  "name"
+    t.integer "taggings_count", :default => 0
   end
+
+  add_index "tags", ["name"], :name => "index_tags_on_name", :unique => true
 
   create_table "toast_messages", :force => true do |t|
     t.integer  "from"

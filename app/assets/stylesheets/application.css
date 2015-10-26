@@ -124,6 +124,11 @@ a.save-option{
   cursor: pointer;
 }
 
+.pricing-message{
+  font-weight: bold;
+  color: red;
+}
+
 #container {
   width: 962px; /* width: 1202px; */
   height: 100%;
@@ -163,6 +168,10 @@ a.save-option{
   border-left: outset 1px black;
   border-right: outset 1px black;
   padding-top: 10px;
+}
+
+#container #content .pricing-message{
+  padding-left: 10px;
 }
 
 #container #title {
@@ -388,6 +397,23 @@ a.catalog-button,
   text-decoration: none;
 }
 
+.dark-blue-button{
+  background-color: #036;
+  border-radius: 0.3em;
+  color: #FFF;
+  height: 35px;
+  font-size: 13px;
+  margin-top: 63px;
+  border: none;
+  width: 150px;
+}
+
+.add-user{
+  padding-left: 395px;
+  padding-bottom: 55px;
+  margin-top: -157px;
+}
+
 .blue-button a {
   color: #fff !important;
 }
@@ -565,7 +591,7 @@ div#institution_accordion h3.provider_header {
 .odd {
   background: #E8E8E8;
 }
-
+ 
 #about {
   width: 220px;
   height: 50px;
@@ -585,6 +611,10 @@ div#institution_accordion h3.provider_header {
 
 #account img {
   margin-left: 16px;
+}
+
+.white ul {
+  background: white;
 }
 
 .service-catalog .ui-accordion-content h4 {
@@ -1022,18 +1052,6 @@ span#infotip img {
   margin: 0;
 }
 
-/*.service-request-setup-view .service-details table th {
-  width: 115px;
-  text-align: left;
-}*/
-
-/*.service-request-setup-view .service-details-table td,
-.service-request-setup-view .service-dates-table td,
-.service-request-setup-view .service-details-table th,
-.service-request-setup-view .service-dates-table th{
-  padding: 5px 30px;
-}*/
-
 .service-request-setup-view .service-details .one-time-fees thead{
   border: 0;
   background-color: #FFF;
@@ -1134,6 +1152,7 @@ img.screening_info_img {
 .edit-project-view {
   font-size: 12px;
   font-family: "Calibri", Arial, sans-serif;
+  border: 3px solid #003366;
 }
 
 .edit-project-view .description {
@@ -1145,7 +1164,7 @@ img.screening_info_img {
   width: 100%;
   height: auto;
   margin-left: 8px;
-  border: 3px solid #003366;
+  padding-top: 20px;
 }
 
 .edit-project-view .user-details, .edit-project-view .user_added_message {
@@ -1550,16 +1569,6 @@ tr.grand-totals {
   margin: 0px;
   padding:0px;
 }
-
-
-/*.visit-calendar-view td.subject-count{
-  text-align:center;
-}*/
-
-/*.visit-calendar-view td.odd{
-  background-color : #eee;
-}
-*/
 
 .visit-calendar-view td.visit-view div.billing {
   text-align: center;
@@ -2118,20 +2127,49 @@ input.search-services {
   border: 1px solid #ccc;
 }
 
-#service_calendar ul.ui-widget-header {
-  background: #CCCCCC !important;
+#service_calendar {
+  border: none;
 }
 
-#service_calendar ul li.ui-state-default {
-  background: #0775B0 !important;
+#service_calendar ul li,
+#service_calendar ul li a {
+  border-top-left-radius: 5px !important;
+  border-top-right-radius: 5px !important;
+  background-color: #003366;
 }
 
 #service_calendar ul li.ui-state-active {
-  background: #2C9A4D !important;
+  font-weight: bold !important;
+  border-color: #7ABDD9;
+  background: none;
+  /*font-size: medium;*/
 }
 
-.service_calendar thead.ui-widget-header {
-  background: #0775B0 !important;
+#service_calendar .ui-widget-header[role='tablist'] {
+  background: none;
+}
+
+.ui-tabs-active #template_tab,
+.ui-tabs-active #billing_strategy_tab,
+.ui-tabs-active #quantity_tab,
+.ui-tabs-active #calendar_tab {
+  background: #0775B0;;  
+}
+
+li:not(.ui-tabs-active) #template_tab:hover,
+li:not(.ui-tabs-active) #billing_strategy_tab:hover,
+li:not(.ui-tabs-active) #quantity_tab:hover,
+li:not(.ui-tabs-active) #calendar_tab:hover {
+  background: #4372A2;
+
+}
+
+#template_tab,
+#billing_strategy_tab,
+#quantity_tab,
+#calendar_tab {
+  background: #003366;
+  color: #FFF;
 }
 
 .review-details #service_calendar_container table td,
@@ -2141,6 +2179,7 @@ input.search-services {
 
 .service_calendar thead tr th {
   border: 1px solid #ccc;
+  background: #0775B0;
 }
 
 .billing-info {

@@ -5,94 +5,86 @@
   var additionalDetail_name = '#{@additional_detail.name ? @additional_detail.name : false}';
   
 %div{"ng-controller" => "FormCreationController"}
+  = render :partial => 'additional_detail/additional_details/additional_details_question_modal'
   .row
     .col-md-12
       = render :partial => 'organization_breadcrumb'
-      = render :partial => 'additional_detail/additional_details/additional_details_question_modal'
   .row
-    .col-md-12
-      .row
-        .col-md-12
-          = form_for [:additional_detail, @service, @additional_detail], :html => { :role=>"form", "data-toggle"=>"validator"} do |f|
-            .panel.panel-default
-              .panel-heading
-                %h3.panel-title.pull-left Additional Details Form Creator
-                %button.btn.btn-info.pull-right{"type"=>"button", "data-toggle"=>"modal", "data-target"=>"#importExportModal"} Import / Export Form
-                .clearfix
-              .panel-body
-                - if @additional_detail.errors.any?
-                  #error_explanation
-                    %h3
-                      = pluralize(@additional_detail.errors.count, "error")
-                      "prohibited this user from being saved:"
-                    %ul 
-                      - @additional_detail.errors.full_messages.each do |msg|
-                        %li= msg
-                .modal.fade{:id=>"importExportModal", :role=>"dialog", :tabindex=>"-1", "aria-labelledby"=>"myModalLabel"}
-                  .modal-dialog.modal-lg{:role=>"document"}
-                    .modal-content
-                      .modal-header
-                        %button{"type"=>"button", "class"=>"close", "data-dismiss"=>"modal", "aria-label"=>"Close"}
-                          %span{"aria-hidden"=>"true"} &times;
-                        %h4.modal-title Import or Export an Additional Detail Form
-                      .modal-body
-                        .panel.panel-default
-                          .panel-heading
-                            %h3.panel-title Select All and then "Copy" to Export or "Paste" to Import
-                          .panel-body
-                            .form-group
-                              = f.text_area :form_definition_json, "ng-model" => "formDefinition", "rows" => "20", class: "form-control"
-                      .modal-footer
-                        %button.btn.btn-success{"data-dismiss"=>"modal"} Close
-                .row
-                  .col-md-5
-                    .form-group
-                      = f.label :name 
-                      = f.text_field :name, class: "form-control", :placeholder=>"Form Name", :required=>"required"
-                      .help-block.with-errors
-                  .col-md-5
-                    .form-group
-                      = f.label :effective_date
-                      = f.text_field :effective_date, :type => 'text',class: "form-control datepicker", "ng-model" => "effective_date", "date-format"=>"yyyy-MM-dd", :placeholder=>"Effective Date", :required=>"required", "data-min-date"=> "{{invaildDate}}", "data-date-type"=>"string", :cursor=>"pointer", "bs-datepicker"=>"bs-datepicker", :autoclose =>"true"
-                      .help-block.with-errors
-                  .col-md-2
-                    .form-group
-                      =f.label :enabled
-                      =f.check_box :enabled, class: "checkbox"
-                      
-                .row
-                  .col-md-8
-                    .form-group
-                      = f.label :description
-                      = f.text_area :description, class: "form-control", :placeholder=>"Description (Optional)", "rows" => "", "cols" => ""
-                      .help-block.with-errors
-                .row
-                  .col-md-8
-                    .panel.panel-default
-                      .panel-heading 
-                        %h3.panel-title.pull-left Questions
-                        %button.btn.btn-danger.pull-right{:type=>"button","ng-click"=>"deleteAllQuestion()"} Delete All
-                        %button.btn.btn-warning.pull-right{:type=>"button","ng-click"=>"deleteSelected()"} Delete Selected 
-                        %button.btn.btn-primary.pull-right{:type=>"button","ng-click"=>"editQuestion()"} Add Question
-                        .clearfix
-                      .panel-body
-                        %div{:id=>"gridId", "ui-grid"=>"gridModel", "ui-grid-edit"=>"true", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 400px;"}
-                    .panel-body.alert{"ng-show"=>"alertMessage", "ng-class"=>"{ 'alert-success' : resourceSuccessful, 'alert-danger' : !resourceSuccessful }", :role=>"alert"} {{alertMessage}}
-                  .col-md-4
+    .col-md-8
+      = form_for [:additional_detail, @service, @additional_detail], :html => { :role=>"form", "data-toggle"=>"validator"} do |f|
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title Additional Details Form Creator
+          .panel-body
+            - if @additional_detail.errors.any?
+              #error_explanation
+                %h3
+                  = pluralize(@additional_detail.errors.count, "error")
+                  "prohibited this user from being saved:"
+                %ul 
+                  - @additional_detail.errors.full_messages.each do |msg|
+                    %li= msg
+            .modal.fade{:id=>"importExportModal", :role=>"dialog", :tabindex=>"-1", "aria-labelledby"=>"myModalLabel"}
+              .modal-dialog.modal-lg{:role=>"document"}
+                .modal-content
+                  .modal-header
+                    %button{"type"=>"button", "class"=>"close", "data-dismiss"=>"modal", "aria-label"=>"Close"}
+                      %span{"aria-hidden"=>"true"} &times;
+                    %h4.modal-title Import or Export an Additional Detail Form
+                  .modal-body
                     .panel.panel-default
                       .panel-heading
-                        %h3.panel-title Form Preview
+                        %h3.panel-title Select All and then "Copy" to Export or "Paste" to Import
                       .panel-body
-                        %div{"sf-schema"=>"schema", "sf-form"=>"form", "sf-model"=>"model"}
-                    .panel.panel-default{:style=>"{{dataDisplay()}}"}
-                      .panel-heading
-                        %h3.panel-title Form Data
-                      .panel-body
-                        %pre{"ng-cloak"=>"true"} {{pretty()}}  
-                .row
-                  .col-md-12
-                    %input.btn.btn-primary{:type=>"submit", :value=>"Save"}
-                    %a.btn.btn-danger{:type=>"button", :href=>"/additional_detail/services/#{@service.id}/additional_details/"} Cancel
+                        .form-group
+                        = f.text_area :form_definition_json, "ng-model" => "formDefinition", "rows" => "20", class: "form-control"
+                  .modal-footer
+                    %button.btn.btn-success{"data-dismiss"=>"modal"} Close
+            .row
+              .col-md-3
+                .form-group
+                  = f.label :name 
+                  = f.text_field :name, class: "form-control", :placeholder=>"Form Name", :required=>"required"
+                  .help-block.with-errors
+              .col-md-3
+                .form-group
+                  = f.label :effective_date
+                  = f.text_field :effective_date, class: "form-control datepicker", "ng-model" => "effective_date", "date-format"=>"yyyy-MM-dd", :placeholder=>"Effective Date", :required=>"required", "data-min-date"=> "{{invaildDate}}", "data-date-type"=>"string", :cursor=>"pointer", "bs-datepicker"=>"bs-datepicker", :autoclose =>"true"
+                  .help-block.with-errors
+              .col-md-2
+                .form-group
+                  =f.label :enabled
+                  =f.check_box :enabled, class: "checkbox"
+              .col-md-4
+                .form-group
+                  = f.label :description
+                  = f.text_field :description, class: "form-control", :placeholder=>"Description (Optional)"
+                  .help-block.with-errors
+            .row
+              .col-md-6
+                %input.btn.btn-success{:type=>"submit", :value=>"Save Form"}
+                %button.btn.btn-info{"type"=>"button", "data-toggle"=>"modal", "data-target"=>"#importExportModal"} Import / Export Form
+                %a.btn.btn-danger{:type=>"button", :href=>"/additional_detail/services/#{@service.id}/additional_details/"} Cancel
+            .row
+              .col-md-6 &nbsp;
+              .col-md-6
+                %button.btn.btn-primary{:type=>"button","ng-click"=>"editQuestion()"} Add a Question
+                %button.btn.btn-warning{:type=>"button","ng-click"=>"deleteSelected()"} Delete Selected
+                %button.btn.btn-danger{:type=>"button","ng-click"=>"deleteAllQuestion()"} Delete All
+            .row
+              .col-md-12
+                %div{:id=>"gridId", "ui-grid"=>"gridModel", "ui-grid-edit"=>"true", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 400px;"}
+    .col-md-4
+      .panel.panel-default
+        .panel-heading
+          %h3.panel-title Form Preview
+        .panel-body
+          %div{"sf-schema"=>"schema", "sf-form"=>"form", "sf-model"=>"model"}
+      .panel.panel-default{:style=>"{{dataDisplay()}}"}
+        .panel-heading
+          %h3.panel-title Form Data
+        .panel-body
+          %pre{"ng-cloak"=>"true"} {{pretty()}} 
 :javascript
   $('#importExportModal').on('shown.bs.modal', function () {
     $('#additional_detail_form_definition_json').focus();

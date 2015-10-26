@@ -4,59 +4,56 @@
       .modal-header 
         %button{"type"=>"button", "class"=>"close", "data-dismiss"=>"modal", "aria-label"=>"Close"}
           %span{"aria-hidden"=>"true"} &times;
-        %h4.modal-title {{modalSaveText}} Question
-        .panel.panel-default
-          .panel-heading
-            %h3.panel-title 
-          .panel-body
-            %form{:id=>"questions",:name=>"form", :role=>"form", "data-toggle"=>"validator"}
+        %h4.modal-title {{modalSaveText}} a Question
+      .modal-body
+        .alert{"ng-show"=>"alertMessage", "ng-class"=>"{ 'alert-success' : resourceSuccessful, 'alert-danger' : !resourceSuccessful }", :role=>"alert"} {{alertMessage}}
+        %form{:id=>"questions",:name=>"form", :role=>"form", "data-toggle"=>"validator"}
+          .row
+            .col-md-12
+              .form-group.has-feedback
+                %label{:for=>"name"} Question
+                %input.form-control{:id=>"name",:type=>"text", :placeholder=>"Question", :required=>"required", "ng-model"=>"field.name"}
+                .help-block.with-errors
+          .row
+            .col-md-6
+              .form-group.has-feedback
+                %label{:for=>"key"} Key
+                %input.form-control{:id=>"key", :pattern=>"([a-zA-Z0-9]| |_|/|\|@|#|$|%|&)+", "ng-model"=>"field.key", "type"=>"text", :value=>"", "data-error"=>"{{keyError()}}", :placeholder=>"Key", :required=>"required"}
+                .help-block.with-errors         
+            .col-md-6
+              .form-group
+                %label{:for=>"kind"} Type
+                %select.form-control{:id=>"kind", "ng-model"=>"field.kind", :required=>"required"}
+                  %option{:disabled=>"disabled", :value=>'', :selected=>"selected"} Please Select One
+                  %option{"ng-repeat"=>"kind in typeHashKeyList", :value=>"{{kind}}", :title=>"{{typeHash[kind]}}"} {{typeHash[kind]}}
+                .help-block.with-errors
+          .row
+            .col-md-6
+              .form-group
+                %label{:for=>"description"} Description
+                %textarea.form-control{:id=>"description",:type=>"text", :placeholder=>"Description (Optional)", "ng-model"=>"field.description"}
+                .help-block.with-errors
+            .col-md-6
+              .form-group{:style=>"{{displayValue}}"}
+                %label{:for=>"values"} Values
+                %textarea.form-control{:id=>"values", "ng-model"=>"field.values", :type=>"text", :placeholder=>"Values", "aria-describedby"=>"valuesHelpBlock"}
+                %span.help-block{:id=>"valuesHelpBlock"} Please separate values with commas.
+          .row
+            .col-md-12
               .row
-                .col-md-12
-                  .form-group.has-feedback
-                    %label{:for=>"name"} Question
-                    %input.form-control{:id=>"name",:type=>"text", :placeholder=>"Question", :required=>"required", "ng-model"=>"field.name"}
-                    .help-block.with-errors
-              .row
-                .col-md-6
-                  .form-group.has-feedback
-                    %label{:for=>"key"} Key
-                    %input.form-control{:id=>"key", :pattern=>"([a-zA-Z0-9]| |_|/|\|@|#|$|%|&)+", "ng-model"=>"field.key", "type"=>"text", :value=>"", "data-error"=>"{{keyError()}}", :placeholder=>"Key", :required=>"required"}
-                    .help-block.with-errors         
-                .col-md-6
+                .col-md-2
                   .form-group
-                    %label{:for=>"kind"} Type
-                    %select.form-control{:id=>"kind", "ng-model"=>"field.kind", :required=>"required"}
-                      %option{:disabled=>"disabled", :value=>'', :selected=>"selected"} Please Select One
-                      %option{"ng-repeat"=>"kind in typeHashKeyList", :value=>"{{kind}}", :title=>"{{typeHash[kind]}}"} {{typeHash[kind]}}
-                    .help-block.with-errors
-              .row
-                .col-md-6
-                  .form-group
-                    %label{:for=>"description"} Description
-                    %textarea.form-control{:id=>"description",:type=>"text", :placeholder=>"Description (Optional)", "ng-model"=>"field.description"}
-                    .help-block.with-errors
-                .col-md-6
-                  .form-group{:style=>"{{displayValue}}"}
-                    %label{:for=>"values"} Values
-                    %textarea.form-control{:id=>"values", "ng-model"=>"field.values", :type=>"text", :placeholder=>"Values", "aria-describedby"=>"valuesHelpBlock"}
-                    %span.help-block{:id=>"valuesHelpBlock"} Please separate values with commas.
-              .row
-                .col-md-12
-                  .row
-                    .col-md-2
-                      .form-group
-                        %label{:for=>"required"} Required
-                        %input{:id=>"required", "ng-model"=>"field.required", :type=>"checkbox", :value=>""}
-                    .col-md-5
-                      .form-group{:style=>"{{minMaxDisplay}}"}
-                        %label{:for=>"min"} {{minDisplay}}
-                        %input.form-control{:id=>"min", "ng-model"=>"field.min", :type=>"number", :placeholder=>"Min"}
-                    .col-md-5
-                      .form-group{:style=>"{{minMaxDisplay}}"}
-                        %label{:for=>"max"} {{maxDisplay}}
-                        %input.form-control{:id=>"max", "ng-model"=>"field.max", :type=>"number", :placeholder=>"Max"}
-              .row
-                .col-md-12
-                  %button.btn.btn-success{:type=>"submit", "ng-click"=> "addQuestion(field)"} {{modalSaveText}}
-                  %button.btn.btn-info{"ng-click"=>"resetQuestion()"} Clear Question
-                  %button.btn.btn-danger{"data-dismiss"=>"modal"} Cancel
+                    %label{:for=>"required"} Required
+                    %input{:id=>"required", "ng-model"=>"field.required", :type=>"checkbox", :value=>""}
+                .col-md-5
+                  .form-group{:style=>"{{minMaxDisplay}}"}
+                    %label{:for=>"min"} {{minDisplay}}
+                    %input.form-control{:id=>"min", "ng-model"=>"field.min", :type=>"number", :placeholder=>"Min"}
+                .col-md-5
+                  .form-group{:style=>"{{minMaxDisplay}}"}
+                    %label{:for=>"max"} {{maxDisplay}}
+                    %input.form-control{:id=>"max", "ng-model"=>"field.max", :type=>"number", :placeholder=>"Max"}
+      .modal-footer
+        %button.btn.btn-success{:type=>"submit", "ng-click"=> "addQuestion(field)", "ng-disabled"=>"!field.key || !field.name || !field.kind"} {{modalSaveText}} Question
+        %button.btn.btn-warning{"ng-click"=>"resetQuestion()"} Clear Question
+        %button.btn.btn-default{"data-dismiss"=>"modal"} Cancel

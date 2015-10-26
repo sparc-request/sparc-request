@@ -233,7 +233,7 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
     }
     
     $scope.getRequired = function(){
-    	var required = JSON.parse($scope.formDefinition).required
+    	var required = JSON.parse($scope.formDefinition).schema.required
     	return (required) ? required : [];
     }
     
@@ -255,27 +255,27 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
     	var form = $scope.getFormParsed();
     	var formQuestion;
     	for(var i=0; i<form.length; i++){
-    		if(form[i].key == key){
+    		if(form[i].id == id){
     			formQuestion = form[i];
     		}
     	}
     	var question = {};
     	var required = false;
-    	var requiredList = $scope.getRequired();
-    	for(var i=0; i<requiredList.length; i++){
-    		if(requiredList[i] == key){required = true;}
+    	if(schemaQuestion && formQuestion){
+	    	question.name = schemaQuestion.title;
+	    	question.key = formQuestion.key;
+	    	question.id = id
+	    	question.values = formQuestion.values;
+	    	question.kind = formQuestion.kind;
+	    	question.description = schemaQuestion.description;
+	    	question.min = (schemaQuestion.minLength) ? schemaQuestion.minLength : schemaQuestion.minimum;
+	    	question.max = (schemaQuestion.maxLength) ? schemaQuestion.maxLength : schemaQuestion.maximum;
+	    	question.required = inRequired(formQuestion.key);
+	    	
+	    	return question;
+    	}else{
+    		return null;
     	}
-    	
-    	question.name = schemaQuestion.title;
-    	question.key = formQuestion.key;
-    	question.id = id
-    	question.kind = formQuestion.kind;
-    	question.description = schemaQuestion.description;
-    	question.min = (schemaQuestion.minLength) ? schemaQuestion.minLength : schemaQuestion.minimum;
-    	question.max = (schemaQuestion.maxLength) ? schemaQuestion.maxLength : schemaQuestion.maximum;
-    	question.required = required;
-    	
-    	return question;
     }
     
     $scope.editQuestion = function(key){
@@ -411,17 +411,15 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
 		  return Objects.keys($scope.model.form);
 	  };
 	  
-	  $scope.gridModel = {enableColumnMenus: false, enableFiltering: true, enableColumnResizing: true, showColumnFooter: true , enableSorting: false, showGridFooter: true, enableRowHeaderSelection: false, rowHeight: 45};
+	  $scope.gridModel = {enableColumnMenus: false, enableFiltering: true,enableCellEdit: false, enableColumnResizing: true, showColumnFooter: true , enableSorting: false, showGridFooter: true, enableRowHeaderSelection: false, rowHeight: 45};
 	  $scope.gridModel.columnDefs = [
-	                                 {name: 'Edit', enableCellEdit: false, cellTemplate: '<button class="btn btn-primary" ng-click="grid.appScope.editQuestion(row.entity.id)">Edit</button>' },
-	                                 {name: 'question', field: 'name',  width: '21%' }, 
-	                                 {name: 'key', width: '7%'}, 
-	                                 {name: 'type', field: "kind", width: '15%',editableCellTemplate: 'ui-grid/dropdownEditor', cellFilter: 'mapKind', editDropdownValueLabel: 'kind', editDropdownOptionsArray: getKindHashArray()},
-	                               	 {name: "Values/Range", field: 'values',  width: '13%'}, 
-	                               	 {name: 'required', width :'12%' ,editableCellTemplate: 'ui-grid/dropdownEditor',cellFilter: 'mapBoolean', editDropdownValueLabel: 'required', editDropdownOptionsArray: [{id: 'true', required: 'Yes' }, { id: 'false', required: 'No' }]},
+	                                 {name: 'Edit',enableFiltering: false, enableColumnResizing: false, width: 53, cellTemplate: '<button type="button" class="btn btn-primary" ng-click="grid.appScope.editQuestion(row.entity.id)">Edit</button>' },
+	                                 {name: 'question', field: 'name',  width: '33%' }, 
+	                                 {name: 'type', field: "kind", width: '15%'},
+	                               	 {name: 'required', width :'12%'},
 	                               	 {field: "description"},
-	                               	 {enableFiltering: false, enableCellEdit: false, enableColumnResizing: false,name:'Order', field :'up', width: 83, cellTemplate: '<button class="btn btn-primary glyphicon glyphicon-chevron-up" ng-click="grid.appScope.up(row.entity.key)"></button><button class="btn btn-primary glyphicon glyphicon-chevron-down" ng-click="grid.appScope.down(row.entity.key)"></button>'}
- 	                                 ];
+	                               	 {enableFiltering: false,  enableColumnResizing: false,name:'Order', field :'up', width: 83, cellTemplate: '<button type="button" class="btn btn-primary glyphicon glyphicon-chevron-up" ng-click="grid.appScope.up(row.entity.key)"></button><button type="button" class="btn btn-primary glyphicon glyphicon-chevron-down" ng-click="grid.appScope.down(row.entity.key)"></button>'}
+	                               	 ];
 
 		function removeSpecial(value){
 			if(value){
@@ -543,21 +541,34 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
 	  		var question = hashCopy(q);
 	  		 //check to see if all required fields present
 	  		if(question.key && question.name && question.kind){
+	  			var formDef = JSON.parse($scope.formDefinition)
 	  			var keyVaild = false;
-	  			var questionSchema = $scope.getSchemaParsed().properties[question.key]
+	  			var questionSchema = $scope.getSchemaParsed().properties[question.key];
 	  			//If a new question with no other key the key is vaild
 	  			if(!question.id && !questionSchema){
+	  				//Generate new id for question, unique value based on time
 	  				question.id = uuid.v1();
 	  				keyVaild = true;
 	  			}
-	  			//If editing question and current key == oldKey
-	  			else if(question.id && questionSchema && questionSchema.id ==question.id){
+	  			//If editing question
+	  			else if(questionSchema && questionSchema.id == question.id){
 	  				keyVaild = true;
 	  			}
+	  			//If changing key
+	  			else if(question.id && !questionSchema && $scope.getQuestion(question.id)){
+	  				var oldKey = $scope.getQuestion(question.id).key
+	  				//remove old key from schema properties
+					delete formDef.schema.properties[oldKey];
+	  				//if in required remove it from there
+					formDef.schema.required = (inRequired(oldKey)) ? removeRequired(oldKey) : formDef.schema.required;
+					//remove from anaswers
+					delete $scope.model[oldKey];
+					keyVaild = true;
+				}
+	  			//Else duplicate key present
 	  			else{
 	  				console.log("Key already exists.");
 	  				$scope.keyError = "Key already exists.";
-	    			//q.key = "";
 	  			}
 	  			if(keyVaild){
 	  				$scope.keyError ="Please fill out this field. Valid characters are A-Z a-z 0-9";
@@ -565,7 +576,6 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
 						question.description = (question.kind=="time") ? "ex. 12:00 AM" : "ex. 06/13/2015";
 					  }
 					
-					var formDef = JSON.parse($scope.formDefinition)
 					var added = false;
 					// add field form array
 					for(var i=0; i<formDef.form.length; i++){
@@ -577,21 +587,41 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
 							}
 					}
 					if(!added){
-						form.id = question.id;
-						formDef.form.push (form);
+						formDef.form.push (question);
 					}
 					
 					var s = $scope.getSchema(question);
 					s.id = question.id;
 					// add field to schema
-					formDef.schema.properties[question.key] = s 
-					if(question.required ==true){formDef.schema.required.push(question.key);}
+					formDef.schema.properties[question.key] = s;
+					if(!question.required && inRequired(question.key)){formDef.schema.required = removeRequired(question.key)}
+					if(question.required && !inRequired(question.key)){formDef.schema.required.push(question.key);}
+					
 					  
 					$scope.formDefinition = JSON.stringify(formDef,undefined,2,2);
 	  			}
 	  		}
 	  		
 	  	}
+	  	
+	 function inRequired(key){
+		 var required = $scope.getRequired();
+		 for(var i=0; i<required.length; i++){
+ 			if(required[i] == key){return true;}
+ 		}
+		 return false;
+	 }
+	 
+	 //Returns list of required keys with the key input removed
+	 function removeRequired(key){
+		 var index = $scope.getRequired().indexOf(key);
+		 var required = JSON.parse($scope.formDefinition).schema.required;
+		 if(index > -1){
+			 required.splice(index, 1);
+		 }
+		 return required;
+	 }
+	  	
 	  	
 	 function hashCopy(hash){
 		 var newHash={};
@@ -611,6 +641,7 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
 	 $scope.getForm = function(field){
 		 field.key = removeSpecial(field.key); // removes special characters
 		 var hash = {key: field.key, kind : field.kind, style: radioButtonStyle};
+		 hash.values = field.values;
 		 
 		 if(field.kind == "yesNo"){
 			 hash.type = "radiobuttons"; hash.titleMap= [{"value": "yes","name": "Yes"},{"value": "no","name": "No"}];
@@ -782,7 +813,7 @@ app.controller('FormCreationController', ['$scope', '$http', function ($scope, $
 	 function getTileMap(list){
 		 var tileMap =[];
 		 for(var i=0; i<list.length; i++){
-			 var tile = {value : list[i], name : capitalizeFirstLetter(list[i])};
+			 var tile = {value : list[i], name : list[i]};
 			 tileMap.push(tile);	 
 		 }
 		 return tileMap;

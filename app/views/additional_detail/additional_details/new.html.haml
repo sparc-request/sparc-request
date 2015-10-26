@@ -10,22 +10,25 @@
       = render :partial => 'organization_breadcrumb'
       = render :partial => 'additional_detail/additional_details/additional_details_question_modal'
   .row
-    .col-md-8
+    .col-md-12
       .row
-        .col-md-5
-          .panel.panel-default
-            .panel-heading
-              %h3.panel-title Additional Details Form Creator
-            .panel-body
-              - if @additional_detail.errors.any?
-                #error_explanation
-                  %h3
-                    = pluralize(@additional_detail.errors.count, "error")
-                    "prohibited this user from being saved:"
-                  %ul 
-                    - @additional_detail.errors.full_messages.each do |msg|
-                      %li= msg
-              = form_for [:additional_detail, @service, @additional_detail], :html => { :role=>"form", "data-toggle"=>"validator"} do |f|
+        .col-md-12
+          = form_for [:additional_detail, @service, @additional_detail], :html => { :role=>"form", "data-toggle"=>"validator"} do |f|
+            .panel.panel-default
+              .panel-heading
+                %h3.panel-title.pull-left Additional Details Form Creator
+                %button.btn.btn-danger.pull-right{:type=>"reset"} Reset Form
+                %button.btn.btn-info.pull-right{"type"=>"button", "data-toggle"=>"modal", "data-target"=>"#importExportModal"} Import / Export Form
+                .clearfix
+              .panel-body
+                - if @additional_detail.errors.any?
+                  #error_explanation
+                    %h3
+                      = pluralize(@additional_detail.errors.count, "error")
+                      "prohibited this user from being saved:"
+                    %ul 
+                      - @additional_detail.errors.full_messages.each do |msg|
+                        %li= msg
                 .modal.fade{:id=>"importExportModal", :role=>"dialog", :tabindex=>"-1", "aria-labelledby"=>"myModalLabel"}
                   .modal-dialog.modal-lg{:role=>"document"}
                     .modal-content
@@ -43,104 +46,53 @@
                       .modal-footer
                         %button.btn.btn-success{"data-dismiss"=>"modal"} Close
                 .row
-                  .col-md-12
+                  .col-md-5
                     .form-group
                       = f.label :name 
                       = f.text_field :name, class: "form-control", :placeholder=>"Form Name", :required=>"required"
                       .help-block.with-errors
-                .row     
-                  .col-md-12
+                  .col-md-5
                     .form-group
                       = f.label :effective_date
                       = f.text_field :effective_date, :type => 'text',class: "form-control datepicker", "ng-model" => "effective_date", "date-format"=>"yyyy-MM-dd", :placeholder=>"Effective Date", :required=>"required", "data-min-date"=> "{{invaildDate}}", "data-date-type"=>"string", :cursor=>"pointer", "bs-datepicker"=>"bs-datepicker", :autoclose =>"true"
                       .help-block.with-errors
+                  .col-md-2
+                    .form-group
+                      =f.label :enabled
+                      =f.check_box :enabled, class: "checkbox"
+                      
                 .row
-                  .col-md-12
+                  .col-md-8
                     .form-group
                       = f.label :description
                       = f.text_area :description, class: "form-control", :placeholder=>"Description (Optional)", "rows" => "", "cols" => ""
                       .help-block.with-errors
-                .row      
-                  .col-md-12
-                    .form-group
-                      =f.label :enabled
-                      =f.check_box :enabled, class: "checkbox"
+                .row
+                  .col-md-8
+                    .panel.panel-default
+                      .panel-heading 
+                        %h3.panel-title.pull-left Questions
+                        %button.btn.btn-warning.pull-right{:type=>"button","ng-click"=>"deleteSelected()"} Delete Selected Question
+                        %button.btn.btn-primary.pull-right{:type=>"button","ng-click"=>"editQuestion()"} Add Question
+                        .clearfix
+                      .panel-body
+                        %div{:id=>"gridId", "ui-grid"=>"gridModel", "ui-grid-edit"=>"true", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 400px;"}
+                    .panel-body.alert{"ng-show"=>"alertMessage", "ng-class"=>"{ 'alert-success' : resourceSuccessful, 'alert-danger' : !resourceSuccessful }", :role=>"alert"} {{alertMessage}}
+                  .col-md-4
+                    .panel.panel-default
+                      .panel-heading
+                        %h3.panel-title Form Preview
+                      .panel-body
+                      %div{"sf-schema"=>"schema", "sf-form"=>"form", "sf-model"=>"model"}
+                    .panel.panel-default
+                      .panel-heading
+                        %h3.panel-title Form Data
+                      .panel-body
+                        %pre{"ng-cloak"=>"true"} {{pretty()}}  
                 .row
                   .col-md-12
-                    %input.btn.btn-primary{:type=>"submit", :value=>"Save Form"}
-                    %button.btn.btn-info{"type"=>"button", "data-toggle"=>"modal", "data-target"=>"#importExportModal"} Import / Export Form
-                    %input.btn.btn-danger{:type=>"reset", :value=>"Reset Form"}    
-        .col-md-7
-          .panel.panel-default
-            .panel-heading
-              %h3.panel-title Form Fields
-            .panel-body
-              %form{:id=>"questions",:name=>"form", :role=>"form", "data-toggle"=>"validator"}
-                .row
-                  .col-md-12
-                    .form-group.has-feedback
-                      %label{:for=>"name"} Question
-                      %input.form-control{:id=>"name",:type=>"text", :placeholder=>"Question", :required=>"required", "ng-model"=>"field.name"}
-                      .help-block.with-errors
-                .row
-                  .col-md-6
-                    .form-group
-                      %label{:for=>"key"} Key
-                      %input.form-control{:id=>"key", :pattern=>"([a-zA-Z0-9]| |_|/|\|@|#|$|%|&)+", "ng-model"=>"field.key", "type"=>"text", :value=>"", "data-error"=>"{{keyError}}", :placeholder=>"Key", :required=>"required"}
-                      .help-block.with-errors         
-                  .col-md-6
-                    .form-group
-                      %label{:for=>"kind"} Type
-                      %select.form-control{:id=>"kind", "ng-model"=>"field.kind", :required=>"required"}
-                        %option{:disabled=>"disabled", :value=>'', :selected=>"selected"} Please Select One
-                        %option{"ng-repeat"=>"kind in typeHashKeyList", :value=>"{{kind}}", :title=>"{{typeHash[kind]}}"} {{typeHash[kind]}}
-                      .help-block.with-errors
-                .row
-                  .col-md-6
-                    .form-group
-                      %label{:for=>"description"} Description
-                      %textarea.form-control{:id=>"description",:type=>"text", :placeholder=>"Description (Optional)", "ng-model"=>"field.description"}
-                      .help-block.with-errors
-                  .col-md-6
-                    .form-group{:style=>"{{displayValue}}"}
-                      %label{:for=>"values"} Values
-                      %textarea.form-control{:id=>"values", "ng-model"=>"field.values", :type=>"text", :placeholder=>"Values", "aria-describedby"=>"valuesHelpBlock"}
-                      %span.help-block{:id=>"valuesHelpBlock"} Please separate values with commas.
-                .row
-                  .col-md-12
-                    .row
-                      .col-md-2
-                        .form-group
-                          %label{:for=>"required"} Required
-                          %input{:id=>"required", "ng-model"=>"field.required", :type=>"checkbox", :value=>""}
-                      .col-md-5
-                        .form-group{:style=>"{{minMaxDisplay}}"}
-                          %label{:for=>"min"} {{minDisplay}}
-                          %input.form-control{:id=>"min", "ng-model"=>"field.min", :type=>"number", :placeholder=>"Min"}
-                      .col-md-5
-                        .form-group{:style=>"{{minMaxDisplay}}"}
-                          %label{:for=>"max"} {{maxDisplay}}
-                          %input.form-control{:id=>"max", "ng-model"=>"field.max", :type=>"number", :placeholder=>"Max"}
-                    .row
-                      .col-md-12
-                        %input.btn.btn-primary{:type=>"submit", "ng-click"=>"addQuestion(field)", :value=>"Add Question"}
-                        %input.btn.btn-default{:type=>"reset", :value=>"Clear Question"}    
-        .col-md-12
-          %button.btn.btn-primary{"ng-click"=>"editQuestion()"} Add Question
-          %button.btn.btn-warning{"ng-click"=>"deleteSelected()"} Delete Selected Question
-          %div{:id=>"gridId", "ui-grid"=>"gridModel", "ui-grid-edit"=>"true", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 400px;"}
-      .panel-body.alert{"ng-show"=>"alertMessage", "ng-class"=>"{ 'alert-success' : resourceSuccessful, 'alert-danger' : !resourceSuccessful }", :role=>"alert"} {{alertMessage}}
-    .col-md-4
-      .panel.panel-default
-        .panel-heading
-          %h3.panel-title Form Preview
-        .panel-body
-          %div{"sf-schema"=>"schema", "sf-form"=>"form", "sf-model"=>"model"}
-      .panel.panel-default
-        .panel-heading
-          %h3.panel-title Form Data
-        .panel-body
-          %pre{"ng-cloak"=>"true"} {{pretty()}}  
+                    %input.btn.btn-primary{:type=>"submit", :value=>"Save"}
+                    %a.btn.btn-danger{:type=>"button", :href=>"/additional_detail/services/#{@service.id}/additional_details/"} Cancel
 :javascript
   $('#importExportModal').on('shown.bs.modal', function () {
     $('#additional_detail_form_definition_json').focus();

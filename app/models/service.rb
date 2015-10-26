@@ -226,14 +226,13 @@ class Service < ActiveRecord::Base
     return pricing_map
   end
 
-  # Find most recent additional detail with an effective date of today or earlier
+  # Find the most recent additional detail with an effective date of today or earlier,
+  #   and then confirm that it is "enabled", return nil otherwise
   def current_additional_detail
     current_additional_details = self.additional_details.select { |additional_detail| additional_detail.effective_date <= Date.today }
-    current_additional_details = current_additional_details.sort_by &:effective_date
-    if(current_additional_details.count >0)
-      current_additional_details.last
-    else
-      nil
+    if(current_additional_details.count > 0)
+      current_additional_detail = current_additional_details.sort_by(&:effective_date).last
+      current_additional_detail unless current_additional_detail.enabled.blank?
     end
   end
   

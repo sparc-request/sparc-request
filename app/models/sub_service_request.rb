@@ -88,16 +88,6 @@ class SubServiceRequest < ActiveRecord::Base
     true
   end
   
-  def get_additional_details 
-    results =[]
-      for li in self.line_items
-        if li.get_additional_detail != nil
-          results.push(li.get_additional_detail)
-        end
-      end
-    results
-  end
-  
   def get_or_create_line_item_additional_details
     results = []
     for li in self.line_items
@@ -108,7 +98,6 @@ class SubServiceRequest < ActiveRecord::Base
     end      
     results
   end
-  
   
   def update_org_tree
     my_tree = nil

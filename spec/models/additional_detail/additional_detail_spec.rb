@@ -19,7 +19,7 @@ RSpec.describe AdditionalDetail do
       expect(@ad.errors.count).to eq(0)
     end
 
-    it 'should fail vailidation when :effective_date is null' do
+    it 'should fail validation when :effective_date is null' do
       @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":[]},"form":[]}'
       @ad.name = "Name"
       expect(!@ad.valid?)
@@ -28,7 +28,7 @@ RSpec.describe AdditionalDetail do
       expect(@ad.errors[:effective_date][0]).to eq(message)
     end
 
-    it 'should fail vailidation when :effective_date is not in the past' do
+    it 'should fail validation when :effective_date is in the past' do
       @ad.effective_date= Date.yesterday
       @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":[]},"form":[]}'
       @ad.name = "Name"
@@ -52,7 +52,7 @@ RSpec.describe AdditionalDetail do
 
     end
 
-    it 'should fail vailidation when :name is null' do
+    it 'should fail validation when :name is null' do
       @ad.effective_date= Date.today
       @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":[]},"form":[]}'
       expect(!@ad.valid?)
@@ -61,7 +61,7 @@ RSpec.describe AdditionalDetail do
       expect(@ad.errors[:name][0]).to eq(message)
     end
 
-    it 'should fail vailidation when :form_definition_json is null' do
+    it 'should fail validation when :form_definition_json is null' do
       @ad.effective_date= Date.today
       @ad.name= "Test"
       expect(!@ad.valid?)
@@ -101,7 +101,7 @@ RSpec.describe AdditionalDetail do
 
     end
 
-    it 'should fail vailidation when :form_definition_json has no questions with white space' do
+    it 'should fail validation when :form_definition_json has no questions with white space' do
       @ad.form_definition_json = '  {"schema": {"type":   "object","title":
         "Comment","properties": {},"required": []}
       ,"form": []}  '
@@ -114,7 +114,7 @@ RSpec.describe AdditionalDetail do
       expect(@ad.errors[:form_definition_json][0]).to eq(message)
     end
 
-    it 'should fail vailidation when :description is too long' do
+    it 'should fail validation when :description is too long' do
       @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":[]},"form":[]}'
       @ad.effective_date= Date.today
       @ad.description = "0"*256

@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'SubServiceRequest' do
 
-  describe "get_additional_details" do
+  describe "get_or_create_line_item_additional_details" do
     before(:each) do
 
       @sub_service_request = SubServiceRequest.new
@@ -25,10 +25,6 @@ RSpec.describe 'SubServiceRequest' do
       }.to change{LineItem.count}.by(1)
     end
 
-    it "should return an empty array if no additionl details present" do
-      expect(@sub_service_request.get_additional_details).to eq([])
-    end
-
     it "should return empty array for line_item_additional_details when no additional details are present" do
       expect(@sub_service_request.get_or_create_line_item_additional_details).to eq([])
     end
@@ -36,13 +32,10 @@ RSpec.describe 'SubServiceRequest' do
     describe "when additional details present" do
       before(:each) do
         @ad = AdditionalDetail.new
+        @ad.enabled = true
         @ad.effective_date = Date.yesterday
         @ad.service_id = @service.id
         @ad.save(:validate => false)
-      end
-
-      it "should return array of additional details" do
-        expect(@sub_service_request.get_additional_details).to eq([@ad])
       end
 
       it "a new line_item_additional_detail_should be created and returned in the array" do
@@ -62,13 +55,10 @@ RSpec.describe 'SubServiceRequest' do
           @line_item2.save(:validate => false)
 
           @ad2 = AdditionalDetail.new
+          @ad2.enabled = true
           @ad2.effective_date = Date.yesterday
           @ad2.service_id = @service2.id
           @ad2.save(:validate => false)
-        end
-
-        it "should return multiple additional details" do
-          expect(@sub_service_request.get_additional_details).to eq([@ad, @ad2])
         end
         
         it "should return multiple line_item_additional_details" do 

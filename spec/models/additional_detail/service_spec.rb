@@ -3,7 +3,7 @@ require 'date'
 
 RSpec.describe Service do #, type: :model
 
-  describe 'additional_detail_for_date/current_additional_detail' do
+  describe 'current_additional_detail' do
     before :each do
       @service = Service.new
     end
@@ -12,9 +12,10 @@ RSpec.describe Service do #, type: :model
       expect(@service.current_additional_detail).to eq(nil)
     end
 
-    describe 'with an additional detail present with a current effective date' do
+    describe 'effective_date' do
       before :each do
         @ad = AdditionalDetail.new
+        @ad.enabled = true
         @ad.effective_date = Date.today
         @service.additional_details << @ad
       end
@@ -25,6 +26,7 @@ RSpec.describe Service do #, type: :model
 
       it 'should return the most recent additional detail' do
         @ad2 = AdditionalDetail.new
+        @ad2.enabled = true
         @ad2.effective_date = Date.yesterday
         @service.additional_details << @ad2
         @service.current_additional_detail
@@ -33,9 +35,55 @@ RSpec.describe Service do #, type: :model
 
       it 'should not return additional details with effective dates in the future' do
         @ad2 = AdditionalDetail.new
+        @ad2.enabled = true
         @ad2.effective_date = Date.tomorrow
         @service.additional_details << @ad2
         expect(@service.current_additional_detail).to eq(@ad)
+      end
+    end
+    
+    describe 'enabled' do
+      before :each do
+        @ad = AdditionalDetail.new
+        @ad.effective_date = Date.today
+        @service.additional_details << @ad
+      end
+
+      it 'should return an additional detail' do
+        @ad.enabled = true
+        expect(@service.current_additional_detail).to eq(@ad)
+      end
+
+      it 'should return the most recent enabled additional detail' do
+        @ad.enabled = true
+        @ad2 = AdditionalDetail.new
+        @ad2.enabled = true
+        @ad2.effective_date = Date.yesterday
+        @service.additional_details << @ad2
+        expect(@service.current_additional_detail).to eq(@ad)
+      end
+
+      it 'should not return disabled additional detail' do
+        @ad.enabled = false
+        expect(@service.current_additional_detail).to eq(nil)
+      end
+      
+      it 'should not return an additional detail even if older one is enabled' do
+        @ad.enabled = false
+        @ad2 = AdditionalDetail.new
+        @ad2.enabled = true
+        @ad2.effective_date = Date.yesterday
+        @service.additional_details << @ad2
+        expect(@service.current_additional_detail).to eq(nil)
+      end
+      
+      it 'should not return an additional detail even if future one is enabled' do
+        @ad.enabled = false
+        @ad2 = AdditionalDetail.new
+        @ad2.enabled = true
+        @ad2.effective_date = Date.tomorrow
+        @service.additional_details << @ad2
+        expect(@service.current_additional_detail).to eq(nil)
       end
     end
   end
@@ -78,6 +126,7 @@ RSpec.describe Service do #, type: :model
       
       @additional_detail = AdditionalDetail.new
       @additional_detail.name = "Project Details"
+      @additional_detail.enabled = true
       @additional_detail.effective_date = Date.today
       @core_service.additional_details << @additional_detail
             
@@ -112,6 +161,7 @@ RSpec.describe Service do #, type: :model
                   
       @additional_detail = AdditionalDetail.new
       @additional_detail.name = "Project Team Members"
+      @additional_detail.enabled = true
       @additional_detail.effective_date = Date.today
       @program_service.additional_details << @additional_detail
       
@@ -124,6 +174,7 @@ RSpec.describe Service do #, type: :model
       
       @additional_detail = AdditionalDetail.new
       @additional_detail.name = "Email List"
+      @additional_detail.enabled = true
       @additional_detail.effective_date = Date.today
       @orphaned_service.additional_details << @additional_detail
             
@@ -135,6 +186,7 @@ RSpec.describe Service do #, type: :model
       
       @additional_detail = AdditionalDetail.new
       @additional_detail.name = "Email List"
+      @additional_detail.enabled = true
       @additional_detail.effective_date = Date.today
       @orphaned_service.additional_details << @additional_detail
             
@@ -153,6 +205,7 @@ RSpec.describe Service do #, type: :model
       @orphaned_service.name = "Consulting Only"
       
       @additional_detail = AdditionalDetail.new
+      @additional_detail.enabled = true
       @additional_detail.effective_date = Date.today
       @orphaned_service.additional_details << @additional_detail
 
@@ -174,6 +227,7 @@ RSpec.describe Service do #, type: :model
     
     it 'should return false if has zero active additional_details' do
       @additional_detail = AdditionalDetail.new
+      @additional_detail.enabled = true
       @additional_detail.effective_date = Date.tomorrow # not yet effective/active
       @additional_detail.form_definition_json= '{"schema": {"required": ["date"] }}'
       
@@ -184,6 +238,7 @@ RSpec.describe Service do #, type: :model
     
     it 'should return false if has zero required questions' do
       @additional_detail = AdditionalDetail.new
+      @additional_detail.enabled = true
       @additional_detail.effective_date = Date.today
       @additional_detail.form_definition_json= '{"schema": {"required": [] }}'
       
@@ -194,6 +249,7 @@ RSpec.describe Service do #, type: :model
     
     it 'should return true if has one required question' do
       @additional_detail = AdditionalDetail.new
+      @additional_detail.enabled = true
       @additional_detail.effective_date = Date.today
       @additional_detail.form_definition_json= '{"schema": {"required": ["date"] }}'
       
@@ -204,6 +260,7 @@ RSpec.describe Service do #, type: :model
     
     it 'should return true if has two required questions' do
       @additional_detail = AdditionalDetail.new
+      @additional_detail.enabled = true
       @additional_detail.effective_date = Date.today
       @additional_detail.form_definition_json= '{"schema": {"required": ["t","date"] }}'
       

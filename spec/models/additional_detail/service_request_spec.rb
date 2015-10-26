@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe 'ServiceRequest' do
 
-  describe "get_additional_details" do
+  describe "get_or_create_line_item_additional_details" do
     before(:each) do
       @service_request = ServiceRequest.new
       @service_request.save(:validate => false)
@@ -23,24 +23,17 @@ RSpec.describe 'ServiceRequest' do
       @line_item.save(:validate => false)
     end
 
-    it "should return an empty array if no additionl details present" do
-      expect(@service_request.get_additional_details).to eq([])
-    end
-
-    it "line_item_additional_details should return an empty array is no dditionl details present" do
+    it "line_item_additional_details should return an empty array is no additional details present" do
       expect(@service_request.get_or_create_line_item_additional_details).to eq([])
     end
 
     describe "when additional details present" do
       before(:each) do
         @ad = AdditionalDetail.new
+        @ad.enabled = true
         @ad.effective_date = Date.yesterday
         @ad.service_id = @service.id
         @ad.save(:validate => false)
-      end
-
-      it "should return array of additional details" do
-        expect(@service_request.get_additional_details).to eq([@ad])
       end
 
       it "get_or_create_line_item_additional_details should create a line_item_additional_detail" do
@@ -69,23 +62,20 @@ RSpec.describe 'ServiceRequest' do
           @line_item2.save(:validate => false)
 
           @ad2 = AdditionalDetail.new
+          @ad2.enabled = true
           @ad2.effective_date = Date.yesterday
           @ad2.service_id = @service2.id
           @ad2.save(:validate => false)
         end
-
-        it "should return multiple additional details" do
-          expect(@service_request.get_additional_details).to eq([@ad, @ad2])
-        end
         
         it "get_or_create_line_item_additional_details should return multiple line_item_additional_details" do
-                expect{
-                  results = @service_request.get_or_create_line_item_additional_details
-                }.to change{LineItemAdditionalDetail.count}.by(2)
-                liad = LineItemAdditionalDetail.where(:line_item_id => @line_item.id)
-                liad.concat(LineItemAdditionalDetail.where(:line_item_id => @line_item2.id))
-                expect(@service_request.get_or_create_line_item_additional_details).to eq(liad)
-              end
+          expect{
+            results = @service_request.get_or_create_line_item_additional_details
+          }.to change{LineItemAdditionalDetail.count}.by(2)
+          liad = LineItemAdditionalDetail.where(:line_item_id => @line_item.id)
+          liad.concat(LineItemAdditionalDetail.where(:line_item_id => @line_item2.id))
+          expect(@service_request.get_or_create_line_item_additional_details).to eq(liad)
+        end
 
         describe "when a sub_service_request has multiple service requests" do
           before(:each) do
@@ -98,19 +88,23 @@ RSpec.describe 'ServiceRequest' do
             @line_item3.save(:validate => false)
 
             @ad3 = AdditionalDetail.new
+            @ad3.enabled = true
             @ad3.effective_date = Date.yesterday
             @ad3.service_id = @service3.id
             @ad3.save(:validate => false)
           end
 
           it "should return multiple additional details from the same sub_service_request" do
-            expect(@service_request.get_additional_details).to eq([@ad, @ad2, @ad3])
+            expect{
+              results = @service_request.get_or_create_line_item_additional_details
+            }.to change{LineItemAdditionalDetail.count}.by(3)
+            liad = LineItemAdditionalDetail.where(:line_item_id => @line_item.id)
+            liad.concat(LineItemAdditionalDetail.where(:line_item_id => @line_item2.id))
+            liad.concat(LineItemAdditionalDetail.where(:line_item_id => @line_item3.id))
+            expect(@service_request.get_or_create_line_item_additional_details).to eq(liad)
           end
-
         end
-
       end
-
     end
   end
 

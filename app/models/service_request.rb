@@ -105,16 +105,6 @@ class ServiceRequest < ActiveRecord::Base
   alias_attribute :service_request_id, :id
 
   #after_save :fix_missing_visits
-
-  def get_additional_details 
-    results =[]
-      for sub_service_request in self.sub_service_requests
-        if sub_service_request.get_additional_details != nil
-          results.concat(sub_service_request.get_additional_details)
-        end
-      end
-    results
-  end
   
   def get_or_create_line_item_additional_details
     results =[]

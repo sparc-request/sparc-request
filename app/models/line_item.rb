@@ -86,39 +86,11 @@ class LineItem < ActiveRecord::Base
     end
   end
   
-  def service_requester_name
-    self.try(:service_request).try(:service_requester).try(:display_name)
-  end
-  
-  def protocol_short_title
-    self.try(:service_request).try(:protocol).try(:short_title)
-  end  
-
-  def pi_name
-    self.try(:service_request).try(:protocol).try(:primary_principal_investigator).try(:display_name) 
-  end
-  
-  def get_additional_detail
-    service.current_additional_detail
-  end
-  
-  def additional_detail_breadcrumb
-    self.service.additional_detail_breadcrumb
-  end
-  
-  def additional_details_form_data_hash
-    if self.line_item_additional_detail
-      self.line_item_additional_detail.form_data_hash
-    else
-      Hash.new
-    end   
-  end
-  
   def get_or_create_line_item_additional_detail
     if self.line_item_additional_detail
       self.line_item_additional_detail
     else 
-      additional_detail = get_additional_detail
+      additional_detail = service.current_additional_detail
       if additional_detail 
         build_line_item_additional_detail
         self.line_item_additional_detail.additional_detail_id = additional_detail.id
@@ -131,6 +103,30 @@ class LineItem < ActiveRecord::Base
         nil
       end
     end
+  end
+  
+  def service_requester_name
+    self.try(:service_request).try(:service_requester).try(:display_name)
+  end
+  
+  def protocol_short_title
+    self.try(:service_request).try(:protocol).try(:short_title)
+  end  
+
+  def pi_name
+    self.try(:service_request).try(:protocol).try(:primary_principal_investigator).try(:display_name) 
+  end
+  
+  def additional_detail_breadcrumb
+    self.service.additional_detail_breadcrumb
+  end
+  
+  def additional_details_form_data_hash
+    if self.line_item_additional_detail
+      self.line_item_additional_detail.form_data_hash
+    else
+      Hash.new
+    end   
   end
   
   def quantity_must_be_smaller_than_max_and_greater_than_min

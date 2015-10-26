@@ -100,6 +100,7 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
   
       it "view a list of line_item_additional_details, after the controller creates a line_item_additional_detail record" do
         @ad = AdditionalDetail.new 
+        @ad.enabled = true
         @ad.effective_date = Date.yesterday
         @ad.service_id = @service.id
         @ad.form_definition_json= '{"schema": {"required": ["t","date"] }}'
@@ -133,6 +134,7 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
   
       it "view a list of line_item_additional_details, after the controller creates a line_item_additional_detail record" do
         @ad = AdditionalDetail.new 
+        @ad.enabled = true
         @ad.effective_date = Date.yesterday
         @ad.service_id = @service.id
         @ad.form_definition_json= '{"schema": {"required": ["t","date"] }}'
@@ -166,6 +168,7 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
     
       it "view a list of line_item_additional_details, after the controller creates a line_item_additional_detail record" do
         @ad = AdditionalDetail.new 
+        @ad.enabled = true
         @ad.effective_date = Date.yesterday
         @ad.service_id = @service.id
         @ad.form_definition_json= '{"schema": {"required": ["t","date"] }}'

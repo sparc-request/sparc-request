@@ -269,6 +269,7 @@ RSpec.describe LineItemAdditionalDetail do
 
       @additional_detail = AdditionalDetail.new
       @additional_detail.name = "Project Details"
+      @additional_detail.enabled = true
       @additional_detail.effective_date = Date.today
 
       @line_item.service.additional_details << @additional_detail
@@ -301,6 +302,7 @@ RSpec.describe LineItemAdditionalDetail do
 
       @additional_detail = AdditionalDetail.new
       @additional_detail.name = "Project Team Members"
+      @additional_detail.enabled = true
       @additional_detail.effective_date = Date.today
 
       @line_item.service.additional_details << @additional_detail

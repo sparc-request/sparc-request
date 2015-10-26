@@ -32,7 +32,7 @@ app.config([
 
 app.factory("AdditionalDetail",  ['$resource', function($resource) {
   // service_id is a global variable set in a HAML file
-  return $resource("/additional_detail/services/:service_id/additional_details/:id", {service_id: service_id, id: '@id'});
+  return $resource("/additional_detail/services/:service_id/additional_details/:id", {service_id: service_id, id: '@id'}, {'update': { method: 'PUT'} });
 }]);
 
 app.factory("LineItemAdditionalDetail",  ['$resource', function($resource) {
@@ -109,7 +109,7 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', '$windo
 	                               {enableFiltering: false, enableColumnResizing: false, width: 115, name: "Responses",  cellTemplate: '<button class="btn btn-info" ng-disabled="row.entity.line_item_additional_details.length==0" ng-click="grid.appScope.updateLineItemAdditionalDetails(row.entity.id)">{{row.entity.line_item_additional_details.length}} {{(row.entity.line_item_additional_details.length == 1) ? "Response" : "Responses"}}</button>'},
 	                               {field: 'name', name: 'Name', width: '25%'}, 
 	                               {field:'effective_date',name: 'Effective Date', width: '15%',  sort: { direction: uiGridConstants.DESC, priority: 1 } },
-	                               {field: 'enabled',name: 'Enabled'},
+	                               {field: 'enabled',name: 'Enabled', cellTemplate: '<label>Enabled <input type="checkbox" ng-change="grid.appScope.updateAdditionalDetail(row.entity)" ng-model="row.entity.enabled" ng-disabled="row.entity.line_item_additional_details.length > 0"/></label>'},
 	                               {field: 'description', name: 'Description'}
 	                               ];
 	
@@ -126,6 +126,8 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', '$windo
 	                               ];
 	
 	$scope.updateLineItemAdditionalDetails = function(ad_id){
+		// hide the alert message before results
+		$scope.alertMessage = null;
 		AdditionalDetail.get({ id: ad_id }).$promise.then(function(additional_detail) {
 			$scope.activeAdditionalDetail = additional_detail;
 			$scope.line_item_ad_gridModel.data = additional_detail.line_item_additional_details;
@@ -140,11 +142,24 @@ app.controller('AdditionalDetailsDisplayController', ['$scope', '$http', '$windo
 	// initialize the main grid
 	$scope.gridModel.data = AdditionalDetail.query();
 	
+    $scope.updateAdditionalDetail = function(additionalDetail) {
+    	additionalDetail.$update(function() { 
+  			// reload data into Grid
+  			$scope.alertMessage = "Additional Detail updated.";
+  	        $scope.resourceSuccessful = true;
+  		}, function(error) {
+  	        $scope.alertMessage = error.statusText;
+  	        $scope.resourceSuccessful = false;
+  	        // reload data into Grid
+  			$scope.gridModel.data = AdditionalDetail.query();
+  	    });
+  	};
+  	
     $scope.deleteAdditonalDetail = function(additionalDetail) {
     	additionalDetail.$delete(function() { 
   			// reload data into Grid
   			$scope.gridModel.data = AdditionalDetail.query();
-  			$scope.alertMessage = "Row successfully deleted.";
+  			$scope.alertMessage = "Additional Detail deleted.";
   	        $scope.resourceSuccessful = true;
   		}, function(error) {
   	        $scope.alertMessage = error.statusText;

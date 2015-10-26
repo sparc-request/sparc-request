@@ -52,7 +52,10 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
       head :forbidden
     else if @additional_detail.update_attributes(params[:additional_detail])
         # success page or success JSON response
-        redirect_to additional_detail_service_additional_details_path(@service)
+        respond_to do |format|
+          format.html {redirect_to additional_detail_service_additional_details_path(@service)}
+          format.json {head :no_content}
+        end
       else
         render :new
       end

@@ -19,7 +19,12 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Portal::ProtocolsController < Portal::BaseController
-  respond_to :html, :json
+
+  respond_to :html, :json, :xlsx
+
+  before_filter :find_protocol, :only => [:show, :view_full_calendar, :update_from_fulfillment, :edit, :update, :update_protocol_type]
+  before_filter :protocol_authorizer_view, :only => [:show, :view_full_calendar]
+  before_filter :protocol_authorizer_edit, :only => [:update_from_fulfillment, :edit, :update, :update_protocol_type]
 
   def index
     @protocols = []
@@ -46,15 +51,15 @@ class Portal::ProtocolsController < Portal::BaseController
   end
 
   def show
-    @protocol = Protocol.find(params[:id])
     # @project_rights = Project_Role.find_by_identity_id(@user.id);
     @protocol_role = @protocol.project_roles.find_by_identity_id(@user.id)
     #@project.project_associated_users
     #@project.project_service_requests
 
     respond_to do |format|
-      format.js
-      format.html
+      format.js   { render }
+      format.html { render }
+      format.xlsx { render }
     end
   end
 
@@ -106,19 +111,17 @@ class Portal::ProtocolsController < Portal::BaseController
   end
 
   def update_from_fulfillment
-    @protocol = Protocol.find(params[:id])
     if @protocol.update_attributes(params[:protocol])
       render :nothing => true
     else
       respond_to do |format|
-        format.js { render :status => 500, :json => clean_errors(@protocol.errors) } 
+        format.js { render :status => 500, :json => clean_errors(@protocol.errors) }
       end
     end
   end
 
   def edit
     @edit_protocol = true
-    @protocol = Protocol.find(params[:id])
     @protocol.populate_for_edit if @protocol.type == "Study"
     @protocol.valid?
     respond_to do |format|
@@ -127,7 +130,6 @@ class Portal::ProtocolsController < Portal::BaseController
   end
 
   def update
-    @protocol = Protocol.find(params[:id])
     attrs = params[@protocol.type.downcase.to_sym]
     if @protocol.update_attributes attrs
       flash[:notice] = "Study updated"
@@ -138,6 +140,7 @@ class Portal::ProtocolsController < Portal::BaseController
     end
   end
 
+  # @TODO: add to an authorization filter?
   def add_associated_user
     @protocol = Protocol.find(params[:id])
 
@@ -149,7 +152,6 @@ class Portal::ProtocolsController < Portal::BaseController
   end
 
   def update_protocol_type
-    @protocol = Protocol.find(params[:id])
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     # Using update_attribute here is intentional, type is a protected attribute
     if @protocol.update_attribute(:type, params[:protocol][:type])
@@ -158,7 +160,6 @@ class Portal::ProtocolsController < Portal::BaseController
   end
 
   def view_full_calendar
-    @protocol = Protocol.find(params[:id])
     @service_request = @protocol.any_service_requests_to_display?
 
     arm_id = params[:arm_id] if params[:arm_id]
@@ -175,6 +176,10 @@ class Portal::ProtocolsController < Portal::BaseController
       end
     end
     @merged = true
+    respond_to do |format|
+      format.js
+      format.html
+    end
   end
 
   def change_arm
@@ -228,6 +233,11 @@ class Portal::ProtocolsController < Portal::BaseController
 
 
   private
+
+  def find_protocol
+    @protocol = Protocol.find(params[:id])
+  end
+
   # TODO: Move this somewhere else. Short on time, though. - nb
   def merge_attributes(protocol, data)
     protocol.instance_values.each do |k, v|

@@ -1,22 +1,23 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
   describe 'GET /v1/line_items.json' do
 
     before do
-      protocol        = FactoryGirl.build(:protocol_federally_funded)
+      protocol        = build(:protocol_federally_funded)
       protocol.save validate: false
-      service         = FactoryGirl.create(:service_with_pricing_map)
-      service_request = FactoryGirl.build(:service_request, protocol: protocol)
+      service         = create(:service_with_pricing_map)
+      service_request = build(:service_request, protocol: protocol)
       service_request.save validate: false
 
 
       5.times do
-        @line_item      = FactoryGirl.create(:line_item, service: service,
+        @line_item      = create(:line_item, service: service,
                                               service_request: service_request)
       end
     end
+
     context 'response params' do
 
       before { cwf_sends_api_get_request_for_resources('line_items', 'shallow') }
@@ -60,7 +61,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       it 'should respond with an array of line_items and their attributes' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryGirl.build(:line_item).attributes.
+        expected_attributes = build(:line_item).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
                                 push('callback_url', 'sparc_id', 'one_time_fee', 'per_unit_cost').
@@ -76,7 +77,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       it 'should respond with an array of line_items and their attributes and their shallow reflections' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryGirl.build(:line_item).attributes.
+        expected_attributes = build(:line_item).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
                                 push('callback_url', 'sparc_id', 'line_items_visits', 'service', 'service_request', 'sub_service_request', 'one_time_fee', 'per_unit_cost').

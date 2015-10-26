@@ -188,7 +188,7 @@ module Portal::ServiceRequestsHelper
       end
       remaining_visits -= visits_length
     end
-    remaining_visits.times { |i| visit_quantities += create_quantity_content_tag('', service_id, visits_length < 5 ? i + visits_length : i) }
+    remaining_visits.times { |i| visit_quantities += create_quantity_content_tag('', service_id, visits_length < 5 ? i + visits_length +1 : i + 1) }
 
     visit_quantities.html_safe
   end

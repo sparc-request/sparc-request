@@ -1,3 +1,4 @@
+# coding: utf-8
 # Copyright © 2011 MUSC Foundation for Research Development
 # All rights reserved.
 
@@ -29,15 +30,15 @@ module CapybaraClinical
 
     def upperInputTest
         ##routing##
-        fill_in 'ssr_routing', :with => 'HWY 17S'
+        fill_in 'ssr_routing', with: 'HWY 17S'
         find(:xpath, "//a[@id='ssr_save']/span[text()='Save']").click
         wait_for_javascript_to_finish
-        page.should have_xpath "//span[@class='routing_message icon check']"
+        expect(page).to have_xpath "//span[@class='routing_message icon check']"
         ##billing/business manager##
-        fill_in 'protocol_billing_business_manager_static_email', :with => 'elhombre@thefeds.gov'
+        fill_in 'protocol_billing_business_manager_static_email', with: 'elhombre@thefeds.gov'
         find(:xpath, "//a[@id='protocol_billing_business_manager_static_email_save']/span[text()='Save']").click
         wait_for_javascript_to_finish
-        page.should have_xpath "//span[@class='billing_business_message icon check']"
+        expect(page).to have_xpath "//span[@class='billing_business_message icon check']"
     end
 
     def testService(service)
@@ -50,20 +51,20 @@ module CapybaraClinical
         find(:xpath, "//a[@class='add_visit_link']").click
         currentBox = first(:xpath, "//div[contains(@class,'ui-dialog ') and contains(@style,'display: block;')]")
         within currentBox do
-            fill_in 'visit_name', :with => visitText
-            fill_in 'visit_day', :with => visitDay
+            fill_in 'visit_name', with: visitText
+            fill_in 'visit_day', with: visitDay
             find(:xpath, ".//button/span[text()='Submit']").click
             wait_for_javascript_to_finish
         end
 
-        select "Delete #{visitText} - #{visitText}", :from => 'delete_visit_position'
+        select "Delete #{visitText} - #{visitText}", from: 'delete_visit_position'
         find(:xpath, "//a[@class='delete_visit_link']").click
         wait_for_javascript_to_finish
     end
 
     def check_subject_tracker_totals(service)
         #expects instance of ServiceWithAddress as input
-        #meant to be ran on the subject tracker page where 
+        #meant to be ran on the subject tracker page where
         #the service passed in is in view and available
         completedBox = find(:xpath, "//div[@aria-hidden='false']//td[text()='#{service.name}']/following-sibling::td[contains(@class, 'check_box_cell')]/input[@type='checkbox']")
         unit = find(:xpath, "//div[@aria-hidden='false']//td[text()='#{service.name}']/following-sibling::td[contains(@class,'unit_cost_cell')]").text[1..-1].to_f
@@ -71,14 +72,14 @@ module CapybaraClinical
         actualTotal = find(:xpath, "//div[@aria-hidden='false']//td[text()='#{service.name}']/following-sibling::td[contains(@class, 'procedure_total_cell')]").text[1..-1].to_f
 
         expectedTotal = completedBox.checked? ? unit*rQuantity : 0.0
-        actualTotal.should eq(expectedTotal)
-    end        
+        expect(actualTotal).to eq(expectedTotal)
+    end
 
     def save_validation_check
         #will check if save warning occurs
         #then save the page
         #then make sure save warning disappears.
-        page.should have_content "You must save this form for any changes to be commited."
+        expect(page).to have_content "You must save this form for any changes to be commited."
         find("#save_appointments").click
         page.driver.browser.switch_to.alert.accept
         find(".hasDatepicker").click
@@ -87,7 +88,7 @@ module CapybaraClinical
         sleep 2
         find("#save_appointments").click
         wait_for_javascript_to_finish
-        page.should_not have_content "You must save this form for any changes to be commited."
+        expect(page).not_to have_content "You must save this form for any changes to be commited."
     end
 
     def subjectVisitCalendarTest(subjectName, service)
@@ -100,32 +101,32 @@ module CapybaraClinical
         commentBox.set("This is a fresh comment. Fresh comments smell nice.")
         find(:xpath, "//div[@aria-hidden='false']//a[contains(@class, 'add_comment_link')]").click
         wait_for_javascript_to_finish
-        page.should have_content "This is a fresh comment. Fresh comments smell nice."
-        
+        expect(page).to have_content "This is a fresh comment. Fresh comments smell nice."
+
         click_link service.core
         #it is assumed here that the service sent in
         #is checked for fulfillment in the first visit available.
-        page.should have_xpath "//div[@aria-hidden='false']//td[text()='#{service.name}']"
+        expect(page).to have_xpath "//div[@aria-hidden='false']//td[text()='#{service.name}']"
         check_subject_tracker_totals(service)
-        
+
         completedBox = find(:xpath, "//div[@aria-hidden='false']//td[text()='#{service.name}']/following-sibling::td[contains(@class, 'check_box_cell')]/input[@type='checkbox']")
         completedBox.click
         wait_for_javascript_to_finish
         check_subject_tracker_totals(service)
         save_validation_check
 
-        select 'Active', :from => 'subject_status'
+        select 'Active', from: 'subject_status'
         wait_for_javascript_to_finish
         save_validation_check
-        
-        select '--Choose a Status--', :from => 'subject_status'
+
+        select '--Choose a Status--', from: 'subject_status'
         wait_for_javascript_to_finish
         save_validation_check
 
         click_link "Back to Fulfillment"
         wait_for_javascript_to_finish
     end
-    
+
 
 
     def subjectTracker(service)
@@ -155,7 +156,7 @@ module CapybaraClinical
         #test search for subject
         find(:xpath, "//input[@class='search-all-subjects ui-autocomplete-input']").set('Bobby')
         wait_for_javascript_to_finish
-        page.should have_xpath "//li/a[text()='Bobby Cancerpatient']"
+        expect(page).to have_xpath "//li/a[text()='Bobby Cancerpatient']"
         find(:xpath, "//li/a[text()='Bobby Cancerpatient']").click
         wait_for_javascript_to_finish
         find(:xpath, "//div[@id='subjects']/form/p/input[@value='Save']").click
@@ -170,7 +171,7 @@ module CapybaraClinical
         first(:xpath, "//a[@id='subject_tracker_add']").click
         wait_for_javascript_to_finish
         newSubjectsNum = all(:xpath, "//div/h3[text()='ARM 1']/following-sibling::table[contains(@id,'subjects_list')]/tbody/tr").length
-        newSubjectsNum.should eq(subjectsNum+1)
+        expect(newSubjectsNum).to eq(subjectsNum+1)
         subjectsNum = newSubjectsNum
 
         #test remove subject
@@ -180,14 +181,14 @@ module CapybaraClinical
         find("#subject_tracker_save").click
         wait_for_javascript_to_finish
         newSubjectsNum = all(:xpath, "//div/h3[text()='ARM 1']/following-sibling::table[contains(@id,'subjects_list')]/tbody/tr").length
-        newSubjectsNum.should eq(subjectsNum-1)
+        expect(newSubjectsNum).to eq(subjectsNum-1)
     end
 
     def paymentsTab
         #tests the payments tab
         switchTabTo "payments"
         paymentsNum = all(:xpath, "//table[@id='payments_list']/tbody/tr[not(@style)]").length
-        if paymentsNum == 0 then 
+        if paymentsNum == 0 then
             click_link "Add a payment"
             wait_for_javascript_to_finish
         end
@@ -222,15 +223,14 @@ module CapybaraClinical
         find(:xpath, "//div[@id='payments']/form/p/input[@value='Save']").click
         wait_for_javascript_to_finish
         newPaymentsNum = all(:xpath, "//table[@id='payments_list']/tbody/tr[not(@style)]").length
-        if paymentsNum==1 then newPaymentsNum.should eq(paymentsNum)
-        else newPaymentsNum.should eq(paymentsNum-1) end
+        expect(newPaymentsNum).to eq((paymentsNum == 1) ? paymentsNum : (paymentsNum - 1))
 
         #test add payment
         paymentsNum = all(:xpath, "//table[@id='payments_list']/tbody/tr[not(@style)]").length
         click_link "Add a payment"
         wait_for_javascript_to_finish
         newPaymentsNum = all(:xpath, "//table[@id='payments_list']/tbody/tr[not(@style)]").length
-        newPaymentsNum.should eq(paymentsNum+1)
+        expect(newPaymentsNum).to eq(paymentsNum+1)
         paymentsNum = newPaymentsNum
 
     end
@@ -242,13 +242,13 @@ module CapybaraClinical
 
         switchTabTo 'study_level_charges'
         wait_for_javascript_to_finish
-        
+
         switchTabTo 'payments'
         wait_for_javascript_to_finish
-        
+
         switchTabTo 'billing'
         wait_for_javascript_to_finish
-        
+
         switchTabTo 'study_schedule'
         wait_for_javascript_to_finish
     end
@@ -260,7 +260,7 @@ module CapybaraClinical
         wait_for_javascript_to_finish
         find(:xpath, "//input[@type='submit']").click
         wait_for_javascript_to_finish
-        page.should have_xpath "//table[@id='billings_list']/tbody/tr/td[@class='type' and text()='Cover Letter']"
+        expect(page).to have_xpath "//table[@id='billings_list']/tbody/tr/td[@class='type' and text()='Cover Letter']"
     end
 
     def clinicalWorkFulfillment(study, service)

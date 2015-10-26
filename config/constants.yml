@@ -90,7 +90,7 @@ funding_statuses: { 'Pending Funding': 'pending_funding',
                     'Funded': 'funded' }
 available_statuses: { 'draft': 'Draft',
                       'submitted': 'Submitted',
-                      'get_a_quote': 'Get a Quote',
+                      'get_a_cost_estimate': 'Get a Cost Estimate',
                       'in_process': 'In Process',
                       'complete': 'Complete',
                       'awaiting_pi_approval': 'Awaiting Requester Response',
@@ -104,7 +104,7 @@ available_statuses: { 'draft': 'Draft',
                       'approved': 'Approved',
                       'declined': 'Declined',
                       'withdrawn': 'Withdrawn' }
-default_statuses : ["draft", "submitted", "get_a_quote", "in_process", "complete", "awaiting_pi_approval", "on_hold"]
+default_statuses : ["draft", "submitted", "get_a_cost_estimate", "in_process", "complete", "awaiting_pi_approval", "on_hold"]
 accordion_color_options: { "blue": 'blue-provider',
                            "light-blue": 'light-blue-provider',
                            "orange": 'orange-provider',

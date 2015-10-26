@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
@@ -6,10 +6,10 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
     before do
       5.times do
-        protocol = FactoryGirl.build(:protocol)
+        protocol = build(:protocol)
         protocol.save validate: false
 
-        FactoryGirl.create(:project_role_with_identity, protocol: protocol)
+        create(:project_role_with_identity, protocol: protocol)
       end
     end
 

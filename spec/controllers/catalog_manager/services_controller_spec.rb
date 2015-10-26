@@ -1,4 +1,4 @@
-require "spec_helper"
+require 'rails_helper'
 
 RSpec.describe CatalogManager::ServicesController, type: :controller do
 
@@ -27,12 +27,6 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
       it "should persist a Service" do
         expect(Service.count).to eq(1)
       end
-
-      it "should persist associated ServiceLevelComponents" do
-        service = Service.first
-
-        expect(service.service_level_components).to be
-      end
     end
   end
 
@@ -41,7 +35,7 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
     context "success" do
 
       it "should update the Service" do
-        service = FactoryGirl.create(:service)
+        service = create(:service)
 
         put :update, id: service.id, service: { name: "New name" }
 
@@ -51,7 +45,7 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
       context "Service has no pre-existing ServiceLevelComponents" do
 
         it "should create ServiceLevelComponents" do
-          service = FactoryGirl.create(:service)
+          service = create(:service)
 
           put :update, id: service.id, service: { name: "New name" }.merge!(service_level_component_params)
 
@@ -124,7 +118,6 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
       },
       pricing_maps: {
         blank_pricing_map: {
-          id: "blank",
           display_date: "2015-04-22",
           effective_date: "2015-04-29",
           full_rate: "123.00",
@@ -135,7 +128,6 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
           unit_type: "",
           unit_factor: 1,
           unit_minimum: 1,
-          is_one_time_fee: 0,
           otf_unit_type: "N/A",
           quantity_type: "",
           quantity_minimum: 1,
@@ -153,6 +145,6 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
   end
 
   def organization
-    @organization ||= FactoryGirl.create(:program_with_provider)
+    @organization ||= create(:program_with_provider)
   end
 end

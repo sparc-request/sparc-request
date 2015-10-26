@@ -18,9 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe "admin related service requests tab", :js => true do
+RSpec.describe "admin related service requests tab", js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
@@ -35,20 +35,19 @@ describe "admin related service requests tab", :js => true do
 
   it "should list the service request" do
     within "div#related_service_requests" do
-      find("#requests tr td:first").should have_content("#{sub_service_request.ssr_id}")
+      expect(first("#requests tr td")).to have_content("#{sub_service_request.ssr_id}")
     end
   end
 
   it "should show the first service when the plus link is clicked" do
     find("div#requests td a.rsr-link").click
     wait_for_javascript_to_finish
-    find("div#ssr_#{sub_service_request.id}").should have_content("#{sub_service_request.line_items.first.service.name}")
+    expect(find("div#ssr_#{sub_service_request.id}")).to have_content("#{sub_service_request.line_items.first.service.name}")
   end
 
   it "should also show the second service when the plus link is clicked" do
     find("div#requests td a.rsr-link").click
     wait_for_javascript_to_finish
-    find("div#ssr_#{sub_service_request.id}").should have_content("#{sub_service_request.line_items.last.service.name}")
+    expect(find("div#ssr_#{sub_service_request.id}")).to have_content("#{sub_service_request.line_items.last.service.name}")
   end
-
 end

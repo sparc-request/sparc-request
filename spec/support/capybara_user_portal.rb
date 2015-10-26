@@ -32,7 +32,7 @@ module CapybaraUserPortal
         #checks that it takes the browser to sparc proper
         find(:xpath, "//a/img[@class='portal_create_new_study']").click
         wait_for_javascript_to_finish
-        page.should have_content "Short Title"
+        expect(page).to have_content "Short Title"
         goToUserPortal
     end
 
@@ -40,7 +40,7 @@ module CapybaraUserPortal
         #expects instance of ServiceRequestForComparison as input 
         find(:xpath, "//a[@class='edit_service_request' and text()='Edit Original']").click
         wait_for_javascript_to_finish
-        assert_selector(:xpath, "//div[@class='line-items']/div[@class]", :count => request.services.length)
+        assert_selector(:xpath, "//div[@class='line-items']/div[@class]", count: request.services.length)
         goToUserPortal
         findStudy(request.study.short)
     end
@@ -108,14 +108,14 @@ module CapybaraUserPortal
             goToUserPortal
             return
         end
-        page.should have_content "This text sent to Julia"
+        expect(page).to have_content "This text sent to Julia"
         find("td.subject_column").click
         wait_for_javascript_to_finish
-        find("div.shown-message-body").should be_visible
-        page.fill_in 'message[body]', :with => "Test Reply"
+        expect(find("div.shown-message-body")).to be_visible
+        page.fill_in 'message[body]', with: "Test Reply"
         click_button("Submit")
         wait_for_javascript_to_finish
-        find("td.body_column").should have_text("Test Reply")
+        expect(find("td.body_column")).to have_text("Test Reply")
         goToUserPortal
         within accordionInfoBox do
             sleep 6
@@ -125,7 +125,7 @@ module CapybaraUserPortal
         sleep 4
         first(".new_notification").click
         wait_for_javascript_to_finish
-        page.should have_text("You can not send a message to yourself.")
+        expect(page).to have_text("You can not send a message to yourself.")
         goToUserPortal
     end
 
@@ -153,144 +153,144 @@ module CapybaraUserPortal
             editInfoButton.click
         end
         # it "should raise an error message if study's status is pending and no potential funding source is selected" do
-        select("Pending Funding", :from => "Proposal Funding Status")
+        select("Pending Funding", from: "Proposal Funding Status")
         saveStudy
-        page.should have_content("1 error prohibited this study from being saved")
+        expect(page).to have_content("1 error prohibited this study from being saved")
 
         # it "should raise an error message if study's status is funded but no funding source is selected" do
-        select("Funded", :from => "Proposal Funding Status")
-        select("Select a Funding Source", :from => "study_funding_source")
+        select("Funded", from: "Proposal Funding Status")
+        select("Select a Funding Source", from: "study_funding_source")
         saveStudy
-        page.should have_content("1 error prohibited this study from being saved")
+        expect(page).to have_content("1 error prohibited this study from being saved")
 
         # it "should redirect to the main portal page" do
-        select("Federal", :from => "study_funding_source")
+        select("Federal", from: "study_funding_source")
         saveStudy
-        page.should have_content("Welcome")
+        expect(page).to have_content("Welcome")
 
         # it "should save the new short title" do
         goToEditStudy(studyID)
         wait_for_javascript_to_finish
-        fill_in "study_short_title", :with => "Bob"
+        fill_in "study_short_title", with: "Bob"
         saveStudy
         goToEditStudy(studyID)
-        find("#study_short_title").should have_value("Bob")
+        expect(find("#study_short_title")).to have_value("Bob")
 
         # it "should save the new protocol title" do
-        fill_in "study_title", :with => "Slappy"
+        fill_in "study_title", with: "Slappy"
         saveStudy
         goToEditStudy(studyID)
-        find("#study_title").should have_value("Slappy")
+        expect(find("#study_title")).to have_value("Slappy")
 
         # it "should change to pending funding" do
-        select("Pending Funding", :from => "Proposal Funding Status")
-        find("#study_funding_status").should have_value("pending_funding")
+        select("Pending Funding", from: "Proposal Funding Status")
+        expect(find("#study_funding_status")).to have_value("pending_funding")
 
         # it "should change to funded" do
-        select("Funded", :from => "Proposal Funding Status")
-        find("#study_funding_status").should have_value("funded")
-        select("Federal", :from => "study_funding_source")
+        select("Funded", from: "Proposal Funding Status")
+        expect(find("#study_funding_status")).to have_value("funded")
+        select("Federal", from: "study_funding_source")
 
         # it "should save the new udak/project number" do
-        fill_in "study_udak_project_number", :with => "12345"
+        fill_in "study_udak_project_number", with: "12345"
         saveStudy
         goToEditStudy(studyID)
-        find("#study_udak_project_number").should have_value("12345")
+        expect(find("#study_udak_project_number")).to have_value("12345")
 
         # it "should save the new sponsor name" do
-        fill_in "study_sponsor_name", :with => "Kurt Zanzibar"
+        fill_in "study_sponsor_name", with: "Kurt Zanzibar"
         saveStudy
         goToEditStudy(studyID)
-        find("#study_sponsor_name").should have_value("Kurt Zanzibar")
+        expect(find("#study_sponsor_name")).to have_value("Kurt Zanzibar")
 
         # it "should change and save the date" do
-        select("Funded", :from => "Proposal Funding Status")
+        select("Funded", from: "Proposal Funding Status")
         page.execute_script("$('#funding_start_date').focus()")
         sleep 2
         first('a.ui-state-default.ui-state-highlight').click #Click on today's date
         sleep 2
-        find("#funding_start_date").should have_value(Date.today.strftime('%-m/%d/%Y'))
+        expect(find("#funding_start_date")).to have_value(Date.today.strftime('%-m/%d/%Y'))
 
         # it "should change the indirect cost rate when a source is selected" do
-        select("Funded", :from => "Proposal Funding Status")
-        select("Foundation/Organization", :from => "study_funding_source")
-        find("#study_indirect_cost_rate").should have_value("25")
-        select("Federal", :from => "study_funding_source")
-        find("#study_indirect_cost_rate").should have_value("49.5")
+        select("Funded", from: "Proposal Funding Status")
+        select("Foundation/Organization", from: "study_funding_source")
+        expect(find("#study_indirect_cost_rate")).to have_value("25")
+        select("Federal", from: "study_funding_source")
+        expect(find("#study_indirect_cost_rate")).to have_value("49.5")
 
         # it "should save the new funding opportunity number" do
-        select("Pending Funding", :from => "Proposal Funding Status")
-        select("Federal", :from => "study_potential_funding_source")
-        fill_in "study_funding_rfa", :with => "12345"
+        select("Pending Funding", from: "Proposal Funding Status")
+        select("Federal", from: "study_potential_funding_source")
+        fill_in "study_funding_rfa", with: "12345"
         saveStudy
         goToEditStudy(studyID)
-        find("#study_funding_rfa").should have_value("12345")
+        expect(find("#study_funding_rfa")).to have_value("12345")
 
         # it "should change and save the date" do
-        select("Pending Funding", :from => "Proposal Funding Status")
-        select("Federal", :from => "study_potential_funding_source")
+        select("Pending Funding", from: "Proposal Funding Status")
+        select("Federal", from: "study_potential_funding_source")
         page.execute_script("$('#potential_funding_start_date').focus()")
         sleep 2
         first('a.ui-state-default.ui-state-highlight').click #Click on today's date
         sleep 2
-        find("#potential_funding_start_date").should have_value((Date.today).strftime('%-m/%d/%Y'))
+        expect(find("#potential_funding_start_date")).to have_value((Date.today).strftime('%-m/%d/%Y'))
 
         # it "should change the indirect cost rate when a source is selected" do
-        select("Pending Funding", :from => "Proposal Funding Status")
-        select("Federal", :from => "study_potential_funding_source")
-        select("Foundation/Organization", :from => "study_potential_funding_source")
-        find("#study_indirect_cost_rate").should have_value("25")
+        select("Pending Funding", from: "Proposal Funding Status")
+        select("Federal", from: "study_potential_funding_source")
+        select("Foundation/Organization", from: "study_potential_funding_source")
+        expect(find("#study_indirect_cost_rate")).to have_value("25")
 
         # it "should change the study phase" do
-        select("Pending Funding", :from => "Proposal Funding Status")
-        select("Federal", :from => "study_potential_funding_source")
-        select("IV", :from => "Study Phase")
-        find("#study_study_phase").should have_value("iv")
+        select("Pending Funding", from: "Proposal Funding Status")
+        select("Federal", from: "study_potential_funding_source")
+        select("IV", from: "Study Phase")
+        expect(find("#study_study_phase")).to have_value("iv")
 
         # it "should cause all the human subjects fields to become visible" do
         check("study_research_types_info_attributes_human_subjects")
-        find("#study_human_subjects_info_attributes_hr_number").should be_visible
+        expect(find("#study_human_subjects_info_attributes_hr_number")).to be_visible
 
         # it "should change state when clicked" do
         check("study_research_types_info_attributes_human_subjects")
         check("study_research_types_info_attributes_human_subjects")
-        find("#study_research_types_info_attributes_human_subjects").should be_checked
+        expect(find("#study_research_types_info_attributes_human_subjects")).to be_checked
 
         # it "should save the new hr and pro number" do
         field_array = ["hr_number", "pro_number"]
         field_num = 0
         2.times do 
-            fill_in "study_human_subjects_info_attributes_#{field_array[field_num]}", :with => "12345"
+            fill_in "study_human_subjects_info_attributes_#{field_array[field_num]}", with: "12345"
             field_num += 1
         end
         saveStudy
         goToEditStudy(studyID)
-        find("#study_human_subjects_info_attributes_hr_number").should have_value("12345")
-        find("#study_human_subjects_info_attributes_pro_number").should have_value("12345")
+        expect(find("#study_human_subjects_info_attributes_hr_number")).to have_value("12345")
+        expect(find("#study_human_subjects_info_attributes_pro_number")).to have_value("12345")
 
         # it "should save the new irb" do
-        fill_in "study_human_subjects_info_attributes_irb_of_record", :with => "crazy town"
+        fill_in "study_human_subjects_info_attributes_irb_of_record", with: "crazy town"
         saveStudy
         goToEditStudy(studyID)
-        find("#study_human_subjects_info_attributes_irb_of_record").should have_value("crazy town")
+        expect(find("#study_human_subjects_info_attributes_irb_of_record")).to have_value("crazy town")
 
         # it "should change the submission type" do
-        select("Exempt", :from => "Submission Type")
-        find("#study_human_subjects_info_attributes_submission_type").should have_value("exempt")
+        select("Exempt", from: "Submission Type")
+        expect(find("#study_human_subjects_info_attributes_submission_type")).to have_value("exempt")
 
         # it "should change and save the date" do
         page.execute_script("$('#irb_approval_date').focus()")
         sleep 2
         first('a.ui-state-default.ui-state-highlight').click #Click on today's date
         sleep 2
-        find("#irb_approval_date").should have_value(Date.today.strftime('%-m/%d/%Y'))
+        expect(find("#irb_approval_date")).to have_value(Date.today.strftime('%-m/%d/%Y'))
 
         # it "should change and save the date" do
         page.execute_script("$('#irb_expiration_date').focus()")
         sleep 2
         first('a.ui-state-default.ui-state-highlight').click #Click on today's date
         sleep 2
-        find("#irb_expiration_date").should have_value(Date.today.strftime('%-m/%d/%Y'))
+        expect(find("#irb_expiration_date")).to have_value(Date.today.strftime('%-m/%d/%Y'))
 
         # it "should change their state when clicked" do
         box_array = ["vertebrate_animals", "investigational_products", "ip_patents"]
@@ -299,9 +299,9 @@ module CapybaraUserPortal
             check("study_research_types_info_attributes_#{box_array[box_num]}")
             box_num += 1
         end
-        find("#study_research_types_info_attributes_vertebrate_animals").should be_checked
-        find("#study_research_types_info_attributes_investigational_products").should be_checked
-        find("#study_research_types_info_attributes_ip_patents").should be_checked
+        expect(find("#study_research_types_info_attributes_vertebrate_animals")).to be_checked
+        expect(find("#study_research_types_info_attributes_investigational_products")).to be_checked
+        expect(find("#study_research_types_info_attributes_ip_patents")).to be_checked
 
         # it "should change their state when clicked" do
         box_num = 0
@@ -309,9 +309,9 @@ module CapybaraUserPortal
             check("study_study_types_attributes_#{box_num}__destroy")
             box_num += 1
         end
-        find("#study_study_types_attributes_0__destroy").should be_checked
-        find("#study_study_types_attributes_1__destroy").should be_checked
-        find("#study_study_types_attributes_2__destroy").should be_checked
+        expect(find("#study_study_types_attributes_0__destroy")).to be_checked
+        expect(find("#study_study_types_attributes_1__destroy")).to be_checked
+        expect(find("#study_study_types_attributes_2__destroy")).to be_checked
 
         # it "should change their state when clicked" do
         box_num = 0
@@ -323,21 +323,21 @@ module CapybaraUserPortal
         box_num = 0
         7.times do
             #each checkbox should be checked
-            find("#study_impact_areas_attributes_#{box_num}__destroy").should be_checked
+            expect(find("#study_impact_areas_attributes_#{box_num}__destroy")).to be_checked
             box_num += 1
         end
 
         # it "should open up text field when 'other' is checked" do
         check("study_impact_areas_attributes_6__destroy")
-        find("#study_impact_areas_other").should be_visible 
+        expect(find("#study_impact_areas_other")).to be_visible 
 
         # it "should save the value after text is entered" do
         check("study_impact_areas_attributes_6__destroy")
-        fill_in "study_impact_areas_other", :with => "El Guapo's Area"
+        fill_in "study_impact_areas_other", with: "El Guapo's Area"
         wait_for_javascript_to_finish
         saveStudy
         goToEditStudy(studyID)
-        find("#study_impact_areas_other").should have_value("El Guapo's Area")
+        expect(find("#study_impact_areas_other")).to have_value("El Guapo's Area")
 
         # it "should change their state when clicked" do
         box_num = 0
@@ -349,7 +349,7 @@ module CapybaraUserPortal
         box_num = 0
         7.times do
             #each checkbox should be checked
-            find("#study_affiliations_attributes_#{box_num}__destroy").should be_checked
+            expect(find("#study_affiliations_attributes_#{box_num}__destroy")).to be_checked
             box_num += 1
         end        
         saveStudy
@@ -379,13 +379,13 @@ module CapybaraUserPortal
             first(:xpath, "//ul[contains(@class,'ui-autocomplete')]/li/a[contains(text(),'#{usersName}')]").click
         end
         wait_for_javascript_to_finish
-        select "Other", :from => 'project_role_role'
+        select "Other", from: 'project_role_role'
         find(:xpath, "//input[@id='project_role_project_rights_approve']").click
 
         addBox.find(:xpath, ".//button/span[text()='Submit']").click
         wait_for_javascript_to_finish
 
-        page.should have_xpath "//div[@aria-expanded='true']/div[@class='protocol-information-table']/table/tbody/tr/td[contains(text(), '#{usersFirstName}')]"
+        expect(page).to have_xpath "//div[@aria-expanded='true']/div[@class='protocol-information-table']/table/tbody/tr/td[contains(text(), '#{usersFirstName}')]"
 
     end
 

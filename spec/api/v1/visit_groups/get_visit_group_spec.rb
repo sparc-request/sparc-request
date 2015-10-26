@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
@@ -7,7 +7,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
     before do
       VisitGroup.skip_callback(:save, :after, :set_arm_edited_flag_on_subjects)
 
-      @visit_group = FactoryGirl.build(:visit_group)
+      @visit_group = build(:visit_group)
       @visit_group.save validate: false
     end
 
@@ -36,7 +36,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
       before { cwf_sends_api_get_request_for_resource('visit_groups', @visit_group.id, 'shallow') }
 
       it 'should respond with a single shallow visit_group' do
-        expect(response.body).to eq("{\"visit_group\":{\"sparc_id\":1,\"callback_url\":\"https://127.0.0.1:5000/v1/visit_groups/1.json\"}}")
+        expect(response.body).to eq("{\"visit_group\":{\"sparc_id\":#{@visit_group.id},\"callback_url\":\"https://127.0.0.1:5000/v1/visit_groups/#{@visit_group.id}.json\"}}")
       end
     end
 
@@ -46,7 +46,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       it 'should respond with a Protocol' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryGirl.build(:visit_group).attributes.
+        expected_attributes = build(:visit_group).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
                                 push('callback_url', 'sparc_id').
@@ -62,7 +62,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       it 'should respond with an array of visit_groups and their attributes and their shallow reflections' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryGirl.build(:visit_group).attributes.
+        expected_attributes = build(:visit_group).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
                                 push('callback_url', 'sparc_id', 'visits', 'arm').

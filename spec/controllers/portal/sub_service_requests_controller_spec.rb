@@ -18,24 +18,24 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe Portal::SubServiceRequestsController do
+RSpec.describe Portal::SubServiceRequestsController do
   stub_portal_controller
 
-  let!(:identity)        { FactoryGirl.create(:identity) }
-  let!(:institution)     { FactoryGirl.create(:institution) }
-  let!(:provider)        { FactoryGirl.create(:provider, parent_id: institution.id) }
-  let!(:program)         { FactoryGirl.create(:program, parent_id: provider.id) }
-  let!(:core)            { FactoryGirl.create(:core, parent_id: program.id) }
-  let!(:core2)            { FactoryGirl.create(:core, parent_id: program.id) }
+  let!(:identity)        { create(:identity) }
+  let!(:institution)     { create(:institution) }
+  let!(:provider)        { create(:provider, parent_id: institution.id) }
+  let!(:program)         { create(:program, parent_id: provider.id) }
+  let!(:core)            { create(:core, parent_id: program.id) }
+  let!(:core2)            { create(:core, parent_id: program.id) }
 
   before :each do
-    @study = Protocol.new(FactoryGirl.attributes_for(:protocol))
-    @study.save(:validate => false)
-    @service_request = ServiceRequest.new(FactoryGirl.attributes_for(:service_request, :protocol_id => @study.id))
-    @service_request.save(:validate => false)
-    @ssr = FactoryGirl.create(:sub_service_request, service_request_id: @service_request.id, organization_id: core.id)
+    @study = Protocol.new(attributes_for(:protocol))
+    @study.save(validate: false)
+    @service_request = ServiceRequest.new(attributes_for(:service_request, protocol_id: @study.id))
+    @service_request.save(validate: false)
+    @ssr = create(:sub_service_request, service_request_id: @service_request.id, organization_id: core.id)
   end
 
   describe 'methods' do
@@ -49,16 +49,16 @@ describe Portal::SubServiceRequestsController do
           id: @ssr.id,
         }.with_indifferent_access
 
-        assigns(:sub_service_request).should eq @ssr
+        expect(assigns(:sub_service_request)).to eq @ssr
       end
     end
 
     describe 'add_line_item' do
 
-      let!(:service)              { FactoryGirl.create(:service, organization_id: core.id, ) }
+      let!(:service)              { create(:service, organization_id: core.id, ) }
 
       before(:each) do
-        request.env["HTTP_ACCEPT"] = "application/javascript" 
+        request.env["HTTP_ACCEPT"] = "application/javascript"
       end
 
       it 'should work (smoke test)' do
@@ -68,10 +68,10 @@ describe Portal::SubServiceRequestsController do
             :new_service_id  => service.id)
 
         @service_request.reload
-        @service_request.arms.count.should eq 1
-        @service_request.line_items.count.should eq 1
-        @service_request.line_items[0].quantity.should eq nil
-        @service_request.line_items[0].line_items_visits.count.should eq 1
+        expect(@service_request.arms.count).to eq 1
+        expect(@service_request.line_items.count).to eq 1
+        expect(@service_request.line_items[0].quantity).to eq nil
+        expect(@service_request.line_items[0].line_items_visits.count).to eq 1
       end
 
       it 'should create a new visit grouping for each arm' do
@@ -87,22 +87,22 @@ describe Portal::SubServiceRequestsController do
         line_items = @service_request.line_items
         arms = @service_request.arms
 
-        line_items.count.should eq 1
-        line_items[0].quantity.should eq nil
-        line_items[0].line_items_visits.count.should eq 2
-        line_items[0].line_items_visits[0].should eq arms[0].line_items_visits[0]
-        line_items[0].line_items_visits[1].should eq arms[1].line_items_visits[0]
-        line_items[0].line_items_visits[1].visits.count.should eq 5
-        arms[0].line_items_visits.count.should eq 1
-        arms[0].line_items_visits[0].visits.count.should eq 5
-        arms[1].line_items_visits.count.should eq 1
-        arms[1].line_items_visits[0].visits.count.should eq 5
+        expect(line_items.count).to eq 1
+        expect(line_items[0].quantity).to eq nil
+        expect(line_items[0].line_items_visits.count).to eq 2
+        expect(line_items[0].line_items_visits[0]).to eq arms[0].line_items_visits[0]
+        expect(line_items[0].line_items_visits[1]).to eq arms[1].line_items_visits[0]
+        expect(line_items[0].line_items_visits[1].visits.count).to eq 5
+        expect(arms[0].line_items_visits.count).to eq 1
+        expect(arms[0].line_items_visits[0].visits.count).to eq 5
+        expect(arms[1].line_items_visits.count).to eq 1
+        expect(arms[1].line_items_visits[0].visits.count).to eq 5
       end
     end
 
     describe 'documents' do
       let!(:doc)  { Document.create(service_request_id: @service_request.id, doc_type: 'protocol') }
-      let!(:ssr2) { FactoryGirl.create(:sub_service_request, service_request_id: @service_request.id, organization_id: core2.id) }
+      let!(:ssr2) { create(:sub_service_request, service_request_id: @service_request.id, organization_id: core2.id) }
 
       before(:each) do
         @request.env['HTTP_REFERER'] = "/service_requests/#{@service_request.id}/document_management"
@@ -110,31 +110,29 @@ describe Portal::SubServiceRequestsController do
       end
 
       it 'should create a new document' do
-        tempDoc = fake_document_upload
-        @ssr.documents.size.should eq(1)
+        expect(@ssr.documents.size).to eq(1)
         post :new_document, {
-          :process_ssr_organization_ids => [@ssr.organization_id.to_s],
+          process_ssr_organization_ids: [@ssr.organization_id.to_s],
           :doc_type                     => 'budget',
-          :document                     => tempDoc,
+          :document                     => file_for_upload,
           :id                           => @ssr.id
         }.with_indifferent_access
         @ssr.reload
-        @ssr.documents.size.should eq(2)
+        expect(@ssr.documents.size).to eq(2)
       end
 
       it 'should update an existing document' do
-        doc.doc_type.should eq('protocol')
+        expect(doc.doc_type).to eq('protocol')
         post :new_document, {
           :document_id                  => doc.id,
           :doc_type                     => 'hipaa',
-          :process_ssr_organization_ids => [@ssr.organization_id.to_s],
+          process_ssr_organization_ids: [@ssr.organization_id.to_s],
           :is_edit                      => 'true',
           :id                           => @ssr.id
         }.with_indifferent_access
         doc.reload
-        doc.doc_type.should eq('hipaa')
+        expect(doc.doc_type).to eq('hipaa')
       end
     end
   end
 end
-

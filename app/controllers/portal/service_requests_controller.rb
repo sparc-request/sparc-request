@@ -46,6 +46,7 @@ class Portal::ServiceRequestsController < Portal::BaseController
 
     respond_to do |format|
       format.js
+      format.html
     end
   end
 
@@ -102,7 +103,7 @@ class Portal::ServiceRequestsController < Portal::BaseController
       render :nothing => true
     else
       respond_to do |format|
-        format.js { render :status => 500, :json => clean_errors(@service_request.errors) } 
+        format.js { render :status => 500, :json => clean_errors(@service_request.errors) }
       end
     end
   end
@@ -129,5 +130,5 @@ class Portal::ServiceRequestsController < Portal::BaseController
       :sending_class_id => sub_service_request.id,
       :message => "The visit count on this service request has been changed"
     )
-  end 
+  end
 end

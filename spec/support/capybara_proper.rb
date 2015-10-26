@@ -1,3 +1,4 @@
+# coding: utf-8
 # Copyright © 2011 MUSC Foundation for Research Development
 # All rights reserved.
 
@@ -56,18 +57,18 @@ module CapybaraProper
     end
 
     class ServiceWithAddress
-        #intended as service testing data structure that also contains 
+        #intended as service testing data structure that also contains
         # "address" of its core, program, provider, and institution
         def initialize(options = {})
             defaults = {
-                :instit => false,
-                :prov => false,
-                :prog => false,
-                :core => false,
-                :name => false,
-                :short => false,
-                :otf => false,
-                :unitPrice => 0
+                instit: false,
+                prov: false,
+                prog: false,
+                core: false,
+                name: false,
+                short: false,
+                otf: false,
+                unitPrice: 0
             }
             options = defaults.merge(options)
             if not options[:short] then options[:short] = options[:name] end
@@ -91,9 +92,9 @@ module CapybaraProper
         #Intended as arm testing data structure
         def initialize(options = {})
             defaults = {
-                :name => "ARM",
-                :subjects => 1,
-                :visits => 5
+                name: "ARM",
+                subjects: 1,
+                visits: 5
             }
             options = defaults.merge(options)
             @name = options[:name]
@@ -111,11 +112,11 @@ module CapybaraProper
         #Intended as study testing data structure
         def initialize(options = {})
             defaults = {
-                :short => "Study Short Title",
-                :title => "Study Long Title",
-                :fundingStatus => "Funded",
-                :fundingSource => "Federal",
-                :sponsorName => "Super Sponsor"
+                short: "Study Short Title",
+                title: "Study Long Title",
+                fundingStatus: "Funded",
+                fundingSource: "Federal",
+                sponsorName: "Super Sponsor"
             }
             options = defaults.merge(options)
             @short = options[:short]
@@ -137,13 +138,13 @@ module CapybaraProper
         #allows javascript to complete
         #by clicking in a nonactive part of the page
         #then calls wait for javascript to finish method.
-        first(:xpath, "//div[@class='welcome']").click
+        first("div.welcome").click
         wait_for_javascript_to_finish
-    end    
+    end
 
     def saveAndContinue
         click_link("Save & Continue")
-        wait_for_javascript_to_finish 
+        wait_for_javascript_to_finish
     end
 
     def clickContinueButton
@@ -156,7 +157,8 @@ module CapybaraProper
         find("body").click
         find(field).click
         sleep 3
-        find(field).native.send_keys(search_term)
+#        find(field).native.send_keys(search_term)
+        find(field).set(search_term)
         sleep 3
         return first(result_html)
     end
@@ -168,12 +170,12 @@ module CapybaraProper
         #and adds it from there
         #beware of services with a '(' in the name, capybara does
         #not want to send that character in, thus causing
-        #autocomplete of the searchbox to fail at times. 
+        #autocomplete of the searchbox to fail at times.
         clickOffAndWait
 
         #ensure the correct service is selected, though portions of names of some services may be the same as others.
         addServiceButton = first(:xpath, "//a[text()='#{serviceName}']/parent::span/parent::span//button[text()='Add']")
-        if addServiceButton.nil? then 
+        if addServiceButton.nil? then
             addServiceButton = first(:xpath, "//a[contains(text(),'#{serviceName}')]/parent::span/parent::span//button[text()='Add']")
         end
 
@@ -232,7 +234,7 @@ module CapybaraProper
                         end
                     end
 
-                else return #if program is not provided (still false) end method 
+                else return #if program is not provided (still false) end method
                 end
 
             else return #if provider is not provided (still false) end method
@@ -247,14 +249,14 @@ module CapybaraProper
     def submitExpectError
         #submits the service request and
         #asserts that an error is expected.
-        #this is intended to be used before adding services 
-        #to check that an error is given for a request that 
+        #this is intended to be used before adding services
+        #to check that an error is given for a request that
         #is submitted with no services added.
-        page.should_not have_xpath("//div[@id='submit_error' and @style!='display: none']") #should not have error
+        expect(page).not_to have_xpath("//div[@id='submit_error' and @style!='display: none']") #should not have error
         find('.submit-request-button').click #Submit click
         wait_for_javascript_to_finish
-        page.should have_xpath("//div[@id='submit_error' and @style!='display: none']") #should have error dialog
-        click_button('Ok') #acknowledge error 
+        expect(page).to have_xpath("//div[@id='submit_error' and @style!='display: none']") #should have error dialog
+        click_button('Ok') #acknowledge error
         wait_for_javascript_to_finish
     end
 
@@ -262,14 +264,14 @@ module CapybaraProper
     def checkLineItemsNumber(numberExpected)
         #asserts that the line item count
         #shoud equal the number expected.
-        # wait_until {first(:xpath, "//input[@id='line_item_count']")}['value'].should eq(numberExpected)
-        assert_selector(:xpath, "//div[@class='line-items']/div[@class]", :count => numberExpected)
-    end 
+        # wait_until {first(:xpath, "//input[@id='line_item_count']")}['value']).should eq(numberExpected)
+        assert_selector(:xpath, "//div[@class='line-items']/div[@class]", count: numberExpected)
+    end
 
 
     def addAllServices(services)
         #expects list of ServiceWithAddress objects
-        if services.empty? 
+        if services.empty?
             return #if no services passed in, end method here.
         end
 
@@ -278,7 +280,7 @@ module CapybaraProper
             addService s.short #adds service
         end
         checkLineItemsNumber "#{services.length}" #check if correct number of services displayed
-    end  
+    end
 
 
     def removeAllServices
@@ -339,16 +341,16 @@ module CapybaraProper
     def testVisitDaysValidation(armName,numVisits)
         #expects browser to be on step 2b visit calendar for first time with no visit info filled in.
         saveAndContinue
-        page.should have_error_on "study day for each visit" #Please specify a study day for each visit.
+        expect(page).to have_error_on "study day for each visit" #Please specify a study day for each visit.
         if numVisits <3 then return end #if there are less than 3 visits, then ascending visit days validation can not be tested: quit here.
-        
+
         table = armTable(armName)
         setVisitDays(armName, numVisits)
         #set visit days in descending order, should cause immediate error response
         table.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='0']").set(2)
         table.first(:xpath, "./thead/tr/th[@class='visit_number']/input[@id='day' and @data-position='1']").set(1)
         saveAndContinue
-        page.should have_error_on "Please make sure study days are in sequential order" 
+        expect(page).to have_error_on "Please make sure study days are in sequential order"
         # first(:xpath, "//div[@class='welcome']").click #allows for refocus by clicking out of the input box
         # page.driver.browser.switch_to.alert.accept #accepts the error dialog box. will cause test to fail if no dialog appears.
         wait_for_javascript_to_finish
@@ -374,8 +376,8 @@ module CapybaraProper
             wait_for_javascript_to_finish
         end
         #bring first visit set back into view
-        while !(currentArmTable.first(:xpath, "./thead/tr/th/a/span[@class='ui-button-icon-primary ui-icon ui-icon-circle-arrow-w']", :visible => true).nil?)
-            currentArmTable.first(:xpath, "./thead/tr/th/a/span[@class='ui-button-icon-primary ui-icon ui-icon-circle-arrow-w']", :visible => true).click
+        while !(currentArmTable.first(:xpath, "./thead/tr/th/a/span[@class='ui-button-icon-primary ui-icon ui-icon-circle-arrow-w']", visible: true).nil?)
+            currentArmTable.first(:xpath, "./thead/tr/th/a/span[@class='ui-button-icon-primary ui-icon ui-icon-circle-arrow-w']", visible: true).click
             wait_for_javascript_to_finish
         end
     end
@@ -386,7 +388,7 @@ module CapybaraProper
         clickOffAndWait
         currentArmTable = armTable(armName)
         total = currentArmTable.find(:xpath, "./tbody/tr/td[contains(text(),'#{serviceName}')]/parent::tr/td[contains(@class, 'pp_line_item_study_total')]").text[1..-1].to_f
-        total.should eq(expected)
+        expect(total).to eq(expected)
     end
 
     def checkPPTotal(armName, serviceName, expected)
@@ -395,8 +397,8 @@ module CapybaraProper
         clickOffAndWait
         currentArmTable = armTable(armName)
         total = currentArmTable.find(:xpath, "./tbody/tr/td[contains(text(),'#{serviceName}')]/parent::tr/td[contains(@class, 'pp_line_item_total')]").text[1..-1].to_f
-        total.should eq(expected)          
-    end     
+        expect(total).to eq(expected)
+    end
 
     def checkArmTotals(arm)
         #expects instance of ASingleArm as input
@@ -425,14 +427,14 @@ module CapybaraProper
         yourCost = currentArmTable.first(:xpath, "./tbody/tr/td[@class='your_cost']").text[1..-1].to_f
         otfExpected = (yourCost * quantity).round(2)
         total = currentArmTable.find(:xpath, "./tbody/tr/td[contains(text(),'#{service.name}')]/parent::tr/td[contains(@class, 'otf_total')]").text[1..-1].to_f
-        total.should eq(otfExpected)
+        expect(total).to eq(otfExpected)
         service.totalPrice = otfExpected
 
-        # end            
-    end   
+        # end
+    end
 
     def checkTotals(serviceRequestFC)
-        #for entire service request, checks 
+        #for entire service request, checks
         #both pp services and otf services for correct totals.
         serviceRequestFC.arms.each do |arm|
             checkArmTotals(arm)
@@ -448,10 +450,10 @@ module CapybaraProper
         #and visit number desired to be marked for input.
         #checks a checkbox in the template tab of the service calendar
         if visitNumber>arm.visits or visitNumber<=0 then return end #if number is greater than #vists, impossible, quit here
-        
+
         armService = nil
         arm.services.each do |service|
-            if service.name == serviceName then 
+            if service.name == serviceName then
                 armService=service
                 break
             end
@@ -469,7 +471,7 @@ module CapybaraProper
         end
 
         box = currentArmTable.find(:xpath, "./tbody/tr/td[text()='#{serviceName}']/parent::tr/td[@visit_column='#{column}']/input[@type='checkbox']")
-        if not box.checked? then 
+        if not box.checked? then
             box.click
             armService.quantity += 1 #in order to keep correct quantity count,
             #the service object passed in must be the object kept in the arm's services list
@@ -483,10 +485,10 @@ module CapybaraProper
         #visit number desired to be changed to qty.
         #Changes the research quantity number on a visit in the Quantity and Billing tab
         if visitNumber>arm.visits or visitNumber<=0 then return end #if visitNumber is greater than #vists, impossible, quit here
-        
+
         armService = nil
         arm.services.each do |service|
-            if service.name == serviceName then 
+            if service.name == serviceName then
                 armService=service
                 break
             end
@@ -517,10 +519,10 @@ module CapybaraProper
         #visit number desired to be changed of quantity.
         #Changes the insurance quantity number on a visit in the Quantity and Billing tab
         if visitNumber>arm.visits or visitNumber<=0 then return end #if visitNumber is greater than #vists, impossible, quit here
-        
+
         armService = nil
         arm.services.each do |service|
-            if service.name == serviceName then 
+            if service.name == serviceName then
                 armService=service
                 break
             end
@@ -547,10 +549,10 @@ module CapybaraProper
         #visit number desired to be changed of quantity.
         #Changes the effort quantity number on a visit in the Quantity and Billing tab
         if visitNumber>arm.visits or visitNumber<=0 then return end #if visitNumber is greater than #vists, impossible, quit here
-        
+
         armService = nil
         arm.services.each do |service|
-            if service.name == serviceName then 
+            if service.name == serviceName then
                 armService=service
                 break
             end
@@ -572,7 +574,7 @@ module CapybaraProper
         wait_for_javascript_to_finish
     end
 
-    def setOTFQuantity (serviceName, quantity) 
+    def setOTFQuantity (serviceName, quantity)
         #changes the quantity for the specified OTF service
         #in the template tab of the service calendar
         currentArmTable = armTable("Other Services")
@@ -580,24 +582,24 @@ module CapybaraProper
     end
 
     def checkReviewTotals(request)
-        #expects instance of ServiceRequestForComparison as input 
+        #expects instance of ServiceRequestForComparison as input
         grandTotal = 0
         calendarContainer = first(:xpath,"//div[@id='service_calendar_container']")
         request.arms.each do |arm|
             armTab = calendarContainer.first(:xpath,"./table/tbody/tr/th[contains(text(),'#{arm.name}')]/parent::tr/parent::tbody/parent::table")
             arm.services.each do |service|
                 reflectedTotal = armTab.first(:xpath,"./tbody/tr[@class='line_item']/td[contains(@class,'per_study')]").text[1..-1].to_f
-                reflectedTotal.should eq(service.totalPrice)
+                expect(reflectedTotal).to eq(service.totalPrice)
                 grandTotal += reflectedTotal
             end
         end
         request.otfServices.each do |otfservice|
             table = calendarContainer.first(:xpath,"./table/tbody/tr/th[contains(text(),'Other Services')]/parent::tr/parent::tbody/parent::table")
             reflectedTotal = table.first(:xpath,"./tbody/tr[@class='line_item']/td[not(@class) and contains(text(),'$')]").text[1..-1].to_f
-            reflectedTotal.should eq(otfservice.totalPrice)
+            expect(reflectedTotal).to eq(otfservice.totalPrice)
             grandTotal += reflectedTotal
         end
-        first(:xpath, "//td[@id='grand_total']").text[1..-1].to_f.should eq(grandTotal)        
+        expect(first(:xpath, "//td[@id='grand_total']").text[1..-1].to_f).to eq(grandTotal)
     end
 
     #####################^^^^ NECESSARY TOOLS ^^^^######################
@@ -605,7 +607,7 @@ module CapybaraProper
     ##################vvvv NECESSARY COMPONENTS vvvv####################
 
     def createNewStudy(request)
-        #expects instance of ServiceRequestForComparison as input 
+        #expects instance of ServiceRequestForComparison as input
         study = request.study
 
         click_link("New Study")
@@ -614,58 +616,58 @@ module CapybaraProper
         clickContinueButton #click continue with no form info
 
         #should display error div with 4 errors
-        page.should have_error_on "Short title"
-        page.should have_error_on "Title"
-        page.should have_error_on "Funding status"
-        page.should have_error_on "Sponsor name"
+        expect(page).to have_error_on "Short title"
+        expect(page).to have_error_on "Title"
+        expect(page).to have_error_on "Funding status"
+        expect(page).to have_error_on "Sponsor name"
 
-        fill_in "study_short_title", :with => study.short #fill in short title
+        fill_in "study_short_title", with: study.short #fill in short title
         clickContinueButton #click continue without Title, Funding Status, Sponsor Name
 
         #should not display error div for field with info
-        page.should_not have_error_on "Short title"
+        expect(page).not_to have_error_on "Short title"
         #should display error div with 3 errors
-        page.should have_error_on "Title"
-        page.should have_error_on "Funding status"
-        page.should have_error_on "Sponsor name"
+        expect(page).to have_error_on "Title"
+        expect(page).to have_error_on "Funding status"
+        expect(page).to have_error_on "Sponsor name"
 
-        fill_in "study_title", :with => study.title #fill in title
+        fill_in "study_title", with: study.title #fill in title
         clickContinueButton #click continue without Funding Status, Sponsor Name
 
         #should not display error div for filled in info
-        page.should_not have_error_on "Short title"
-        page.should_not have_error_on "Title"
+        expect(page).not_to have_error_on "Short title"
+        expect(page).not_to have_error_on "Title"
         #should display error div with 2 errors for missing info
-        page.should have_error_on "Funding status"
-        page.should have_error_on "Sponsor name"
+        expect(page).to have_error_on "Funding status"
+        expect(page).to have_error_on "Sponsor name"
 
-        fill_in "study_sponsor_name", :with => study.sponsorName #fill in sponsor name
+        fill_in "study_sponsor_name", with: study.sponsorName #fill in sponsor name
         clickContinueButton #click continue without Funding Status
 
         #should not display error divs for filled in info
-        page.should_not have_error_on "Short title"
-        page.should_not have_error_on "Title"
-        page.should_not have_error_on "Sponsor name"
+        expect(page).not_to have_error_on "Short title"
+        expect(page).not_to have_error_on "Title"
+        expect(page).not_to have_error_on "Sponsor name"
         #should display funding status missing error
-        page.should have_error_on "Funding status"
+        expect(page).to have_error_on "Funding status"
 
-        select study.fundingStatus, :from => "study_funding_status" #select funding status
-        clickContinueButton #click continue without Funding Source  
+        select study.fundingStatus, from: "study_funding_status" #select funding status
+        clickContinueButton #click continue without Funding Source
 
         #should not display error divs for filled in info
-        page.should_not have_error_on "Short title"
-        page.should_not have_error_on "Title"
-        page.should_not have_error_on "Sponsor name"
-        page.should_not have_error_on "Funding status"
+        expect(page).not_to have_error_on "Short title"
+        expect(page).not_to have_error_on "Title"
+        expect(page).not_to have_error_on "Sponsor name"
+        expect(page).not_to have_error_on "Funding status"
         #should display funding source missing error
-        page.should have_error_on "Funding source"
-         
-        select study.fundingSource, :from => "study_funding_source" #select funding source
+        expect(page).to have_error_on "Funding source"
+
+        select study.fundingSource, from: "study_funding_source" #select funding source
         clickContinueButton
     end
 
     def createNewProject(request)
-        #expects instance of ServiceRequestForComparison as input 
+        #expects instance of ServiceRequestForComparison as input
         project = request.study
 
         find('input#protocol_Research_Project').click
@@ -677,39 +679,39 @@ module CapybaraProper
         clickContinueButton #click continue with no form info
 
         #should display error div with 3 errors
-        page.should have_error_on "Short title"
-        page.should have_error_on "Title"
-        page.should have_error_on "Funding status"
+        expect(page).to have_error_on "Short title"
+        expect(page).to have_error_on "Title"
+        expect(page).to have_error_on "Funding status"
 
-        fill_in "project_short_title", :with => 'Carl' #fill in short title
+        fill_in "project_short_title", with: 'Carl' #fill in short title
         clickContinueButton #click continue without Title, Funding Status, Sponsor Name
 
         #should not display error div for field with info
-        page.should_not have_error_on "Short title"
+        expect(page).not_to have_error_on "Short title"
         #should display error div with 2 errors
-        page.should have_error_on "Title"
-        page.should have_error_on "Funding status"
+        expect(page).to have_error_on "Title"
+        expect(page).to have_error_on "Funding status"
 
-        fill_in "project_title", :with => project.title+'2' #fill in title
+        fill_in "project_title", with: project.title+'2' #fill in title
         clickContinueButton #click continue without Funding Status, Sponsor Name
 
         #should not display error div for filled in info
-        page.should_not have_error_on "Short title"
-        page.should_not have_error_on "Title"
+        expect(page).not_to have_error_on "Short title"
+        expect(page).not_to have_error_on "Title"
         #should display error div with 1 error for missing info
-        page.should have_error_on "Funding status"
+        expect(page).to have_error_on "Funding status"
 
-        select project.fundingStatus, :from => "project_funding_status" #select funding status
-        clickContinueButton #click continue without Funding Source  
+        select project.fundingStatus, from: "project_funding_status" #select funding status
+        clickContinueButton #click continue without Funding Source
 
         #should not display error divs for filled in info
-        page.should_not have_error_on "Short title"
-        page.should_not have_error_on "Title"
-        page.should_not have_error_on "Funding status"
+        expect(page).not_to have_error_on "Short title"
+        expect(page).not_to have_error_on "Title"
+        expect(page).not_to have_error_on "Funding status"
         #should display funding source missing error
-        page.should have_error_on "Funding source"
-         
-        select project.fundingSource, :from => "project_funding_source" #select funding source
+        expect(page).to have_error_on "Funding source"
+
+        select project.fundingSource, from: "project_funding_source" #select funding source
         clickContinueButton
         selectStudyUsers
         find('input#protocol_Research_Study').click
@@ -724,54 +726,54 @@ module CapybaraProper
     def selectStudyUsers
         clickContinueButton #click continue with no users added
         wait_for_javascript_to_finish
-        page.should have_error_on "must add yourself" #You must add yourself as an authorized user
-        page.should have_error_on "Primary PI" #You must add a Primary PI to the study/project
+        expect(page).to have_error_on "must add yourself" #You must add yourself as an authorized user
+        expect(page).to have_error_on "Primary PI" #You must add a Primary PI to the study/project
 
         click_button "Add Authorized User" #add the user without a role
         wait_for_javascript_to_finish
         #should have 'Role can't be blank' error
-        page.should have_xpath("//div[@id='user_detail_errors']/ul/li[contains(text(),'Role can')]")
-        page.should have_xpath("//div[@class='field_with_errors']/label[text()='Role:*']")
+        expect(page).to have_xpath("//div[@id='user_detail_errors']/ul/li[contains(text(),'Role can')]")
+        expect(page).to have_xpath("//div[@class='field_with_errors']/label[text()='Role:*']")
 
-        select "Primary PI", :from => "project_role_role"
+        select "Primary PI", from: "project_role_role"
         click_button "Add Authorized User"
         wait_for_javascript_to_finish
 
-        fill_in "user_search_term", :with => "bjk7"
+        fill_in "user_search_term", with: "bjk7"
         wait_for_javascript_to_finish
         sleep 4
-        response = find('a', :text => "Brian Kelsey (kelsey@musc.edu)")
+        response = find('a', text: "Brian Kelsey (kelsey@musc.edu)")
         if response.nil? or not(response.visible?)
             wait_for_javascript_to_finish
-            find('a', :text => "Brian Kelsey (kelsey@musc.edu)").click
+            find('a', text: "Brian Kelsey (kelsey@musc.edu)").click
         else response.click end
         wait_for_javascript_to_finish
 
         click_button "Add Authorized User" #add the user without a role
         wait_for_javascript_to_finish
         #should have 'Role can't be blank' error
-        page.should have_xpath("//div[@id='user_detail_errors']/ul/li[contains(text(),'Role can')]")
-        page.should have_xpath("//div[@class='field_with_errors']/label[text()='Role:*']")
+        expect(page).to have_xpath("//div[@id='user_detail_errors']/ul/li[contains(text(),'Role can')]")
+        expect(page).to have_xpath("//div[@class='field_with_errors']/label[text()='Role:*']")
 
-        select "Primary PI", :from => "project_role_role"
+        select "Primary PI", from: "project_role_role"
         click_button "Add Authorized User" #Add second Primary PI
         wait_for_javascript_to_finish
 
         clickContinueButton
-        page.should have_error_on "Primary PI" #should reject multiple Primary PIs
+        expect(page).to have_error_on "Primary PI" #should reject multiple Primary PIs
 
         clickUpdateUserButtonFor "Brian Kelsey"
-        select "Other", :from => "project_role_role" #set role to other
-        fill_in "project_role_role_other", :with => "Primary PI" #set name of other role to Primary PI
+        select "Other", from: "project_role_role" #set role to other
+        fill_in "project_role_role_other", with: "Primary PI" #set name of other role to Primary PI
         click_button "Update Authorized User"
 
         clickUpdateUserButtonFor "Brian Kelsey"
-        select "Billing/Business Manager", :from => "project_role_role"
+        select "Billing/Business Manager", from: "project_role_role"
         click_button "Update Authorized User"
         wait_for_javascript_to_finish
 
         clickContinueButton
-    end 
+    end
 
 
 
@@ -779,9 +781,9 @@ module CapybaraProper
         #Expects a list of ASingleArm objects
         if arms.empty? then return end#If arms list is empty then end method here
             #edit Arm 1
-        fill_in "study_arms_attributes_0_name", :with => arms[0].name
-        fill_in "study_arms_attributes_0_subject_count", :with => arms[0].subjects # of subjects
-        fill_in "study_arms_attributes_0_visit_count", :with => arms[0].visits # of visits
+        fill_in "study_arms_attributes_0_name", with: arms[0].name
+        fill_in "study_arms_attributes_0_subject_count", with: arms[0].subjects # of subjects
+        fill_in "study_arms_attributes_0_visit_count", with: arms[0].visits # of visits
         wait_for_javascript_to_finish
             #edit rest of arms
         (1..arms.length-1).each do |i|
@@ -836,11 +838,11 @@ module CapybaraProper
         click_link("Quantity/Billing Tab")
         wait_for_javascript_to_finish
     end
-    
+
     def completeQuantityBillingTab(request)
         #expects instance of ServiceRequestForComparison as input
         #tests the quantity and billing tab of the service calendar
-        
+
         checkTotals(request)
 
         request.arms.each do |arm|#set 1st visit research qty of all services on all arms to 3
@@ -849,7 +851,7 @@ module CapybaraProper
             end
         end
         checkTotals(request)
-        
+
         request.arms.each do |arm|#set 1st visit insurance qty of all services on all arms to 5
             arm.services.each do |service|
                 changeInsuranceBillingQty(arm, service.name, 1, 5)
@@ -878,50 +880,50 @@ module CapybaraProper
         end
         find('.ask-a-question-button').click
         wait_for_javascript_to_finish
-        assert_selector('#ask-a-question-form', :visible => true)
+        assert_selector('#ask-a-question-form', visible: true)
         find('#submit_question').click
         wait_for_javascript_to_finish
-        assert_selector('#ask-a-question-form', :visible => true)
-        page.should have_content("Valid email address required.")
+        assert_selector('#ask-a-question-form', visible: true)
+        expect(page).to have_content("Valid email address required.")
 
         find('#quick_question_email').set('Pappy')
         find('#submit_question').click
         wait_for_javascript_to_finish
-        assert_selector('#ask-a-question-form', :visible => true)
-        page.should have_content("Valid email address required.")
+        assert_selector('#ask-a-question-form', visible: true)
+        expect(page).to have_content("Valid email address required.")
 
         find('#quick_question_email').set('juan@gmail.com')
         find('#submit_question').click
         wait_for_javascript_to_finish
-        assert_no_selector('#ask-a-question-form', :visible => true)
+        assert_no_selector('#ask-a-question-form', visible: true)
     end
 
     def feedbackTest
         #tests the "Feedback" button on the sparc proper catalog page
         find('.feedback-button').click
         wait_for_javascript_to_finish
-        assert_selector('#feedback-form', :visible => true)
+        assert_selector('#feedback-form', visible: true)
         find('#submit_feedback').click
         wait_for_javascript_to_finish
-        find('#error-text').text.should eq("Message can't be blank")
+        expect(find('#error-text').text).to eq("Message can't be blank")
 
         within("#feedback-form") do
-          fill_in 'feedback_message', :with => "Testing 123"
+          fill_in 'feedback_message', with: "Testing 123"
           wait_for_javascript_to_finish
         end
         find('#submit_feedback').click
         wait_for_javascript_to_finish
-        assert_no_selector('#feedback-form', :visible => true)
+        assert_no_selector('#feedback-form', visible: true)
     end
 
     def helpTest
         #tests the "Help" button on the sparc proper catalog page
         find('.faq-button').click
         wait_for_javascript_to_finish
-        assert_selector(:xpath, "//span[@class='help_question']", :visible => true)
+        assert_selector(:xpath, "//span[@class='help_question']", visible: true)
         first(:xpath, "//span[@class='help_question']").click
         wait_for_javascript_to_finish
-        assert_selector(:xpath, "//span[@class='help_answer']", :visible => true)
+        assert_selector(:xpath, "//span[@class='help_answer']", visible: true)
         find('.qtip-button').click
         wait_for_javascript_to_finish
     end
@@ -932,15 +934,15 @@ module CapybaraProper
         visit "/identities/sign_in"
         wait_for_javascript_to_finish
         loginDiv = first(:xpath,"//div[@id='login']")
-        if loginDiv.nil? then 
+        if loginDiv.nil? then
             if not currentUrl==page.current_url then visit "#{currentUrl}" end
             wait_for_javascript_to_finish
             return #if the login dialog is not displayed quit here.
-        end 
+        end
         click_link "Outside Users Click Here"
         wait_for_javascript_to_finish
-        fill_in "identity_ldap_uid", :with => un
-        fill_in "identity_password", :with => pwd
+        fill_in "identity_ldap_uid", with: un
+        fill_in "identity_password", with: pwd
         first(:xpath, "//input[@type='submit' and @value='Sign In']").click
         wait_for_javascript_to_finish
     end
@@ -952,37 +954,37 @@ module CapybaraProper
         find(:xpath, "//div[@class='create_new_account']/a").click
         wait_for_javascript_to_finish
         currentBox = find(:xpath, "//div[contains(@class,'ui-dialog') and contains(@style,'display: block;') and not(@id)]")
-        within currentBox do 
+        within currentBox do
             find(:xpath, ".//input[@value='Create New User']").click
             wait_for_javascript_to_finish
-            page.should have_error_on_user_field "Password"
-            page.should have_error_on_user_field "Ldap uid"
-            page.should have_error_on_user_field "First name"
-            page.should have_error_on_user_field "Last name"
+            expect(page).to have_error_on_user_field "Password"
+            expect(page).to have_error_on_user_field "Ldap uid"
+            expect(page).to have_error_on_user_field "First name"
+            expect(page).to have_error_on_user_field "Last name"
             sleep 2
 
-            fill_in 'identity_last_name', :with => 'Jingleheimerschmidt'
+            fill_in 'identity_last_name', with: 'Jingleheimerschmidt'
             wait_for_javascript_to_finish
-            fill_in 'identity_first_name', :with => 'John'
+            fill_in 'identity_first_name', with: 'John'
             wait_for_javascript_to_finish
-            fill_in 'identity_ldap_uid', :with => 'JJJ123'
+            fill_in 'identity_ldap_uid', with: 'JJJ123'
             wait_for_javascript_to_finish
-            fill_in 'identity_password', :with => 'Jacob'
+            fill_in 'identity_password', with: 'Jacob'
             wait_for_javascript_to_finish
             find(:xpath, ".//input[@value='Create New User']").click
             wait_for_javascript_to_finish
-            page.should have_error_on_user_field "confirmation"
-            page.should have_error_on_user_field "short"
+            expect(page).to have_error_on_user_field "confirmation"
+            expect(page).to have_error_on_user_field "short"
             wait_for_javascript_to_finish
 
-            fill_in 'identity_password', :with => 'Jacob1'
+            fill_in 'identity_password', with: 'Jacob1'
             wait_for_javascript_to_finish
-            fill_in 'identity_password_confirmation', :with => 'Jacob1'
+            fill_in 'identity_password_confirmation', with: 'Jacob1'
             wait_for_javascript_to_finish
             find(:xpath, ".//input[@value='Create New User']").click
             wait_for_javascript_to_finish
             wait_for_javascript_to_finish
-            page.should have_content "New account created"
+            expect(page).to have_content "New account created"
         end
 
         click_link "Close Window"
@@ -994,7 +996,7 @@ module CapybaraProper
         #tests the "About SPARC Request" button on the sparc proper catalog page
         find('a.about_sparc_request').click
         wait_for_javascript_to_finish
-        page.should have_content "is a web-based research management system that provides a central portal"
+        expect(page).to have_content "is a web-based research management system that provides a central portal"
         find(:xpath, "//span[text()='About SPARC Request']/following-sibling::button[@title='close']").click
         wait_for_javascript_to_finish
     end
@@ -1005,7 +1007,7 @@ module CapybaraProper
     ###################vvvv NECESSARY SCRIPTS vvvv######################
 
     def submitServiceRequestPage (request)
-        #expects instance of ServiceRequestForComparison as input 
+        #expects instance of ServiceRequestForComparison as input
         submitExpectError #checks submit with no services error display
 
         aboutSparcTest
@@ -1033,7 +1035,7 @@ module CapybaraProper
 
         checkLineItemsNumber "#{services.length}" #check if correct number of services displayed
 
-        addAllServices(services)#adds all services in 'services' list a second time 
+        addAllServices(services)#adds all services in 'services' list a second time
         checkLineItemsNumber "#{services.length}" #should still display same number of services
 
         find('.submit-request-button').click #submit request
@@ -1041,12 +1043,12 @@ module CapybaraProper
     end
 
     def selectStudyPage(request)
-        #expects instance of ServiceRequestForComparison as input 
+        #expects instance of ServiceRequestForComparison as input
 
-        page.should_not have_xpath("//div[@id='errorExplanation']")#should not have any errors displayed
+        expect(page).not_to have_xpath("//div[@id='errorExplanation']")#should not have any errors displayed
         saveAndContinue #click continue without study/project selected
-        page.should have_error_on "You must identify the service request with a study/project before continuing."
-        
+        expect(page).to have_error_on "You must identify the service request with a study/project before continuing."
+
         createNewProject(request)
 
         createNewStudy(request)
@@ -1054,23 +1056,23 @@ module CapybaraProper
 
         removeAllServices
 
-        saveAndContinue  
+        saveAndContinue
         wait_for_javascript_to_finish
         #Should have no services and instruct to add some
-        page.should have_error_on 'Your cart is empty.'
+        expect(page).to have_error_on 'Your cart is empty.'
         click_link("Back to Catalog")
-        addAllServices(request.services) #re-adds all services   
+        addAllServices(request.services) #re-adds all services
         find('.submit-request-button').click #submit service request and go to Select Study page
         wait_for_javascript_to_finish
         saveAndContinue #Continue past select study page
     end
 
     def selectDatesAndArmsPage(request)
-        #expects instance of ServiceRequestForComparison as input 
+        #expects instance of ServiceRequestForComparison as input
 
         saveAndContinue #save and continue with no start or end date
-        page.should have_error_on "start date" #should complain about not having a start date
-        page.should have_error_on "end date" #should complain about not having an end date
+        expect(page).to have_error_on "start date" #should complain about not having a start date
+        expect(page).to have_error_on "end date" #should complain about not having an end date
 
         enterProtocolDates
 
@@ -1079,20 +1081,21 @@ module CapybaraProper
     end
 
     def serviceCalendarPage(request)
-        #expects instance of ServiceRequestForComparison as input 
+        #expects instance of ServiceRequestForComparison as input
         completeTemplateTab(request)
 
         switchToBillingTab
         completeQuantityBillingTab(request)
 
-        saveAndContinue   
+        saveAndContinue
     end
 
     def documentsPage
         click_link "Add a New Document"
         file = Tempfile.new 'doc'
+        expect(page).to have_css('#document')
         first(:xpath,"//input[@id='document']").set(file.path)
-        select "Other", :from => "doc_type"
+        select "Other", from: "doc_type"
         first(:xpath,"//input[@id='process_ssr_organization_ids_']").click
         click_link "Upload"
         wait_for_javascript_to_finish
@@ -1101,18 +1104,18 @@ module CapybaraProper
         click_link "Update"
         wait_for_javascript_to_finish
         file.unlink
-        saveAndContinue      
+        saveAndContinue
     end
 
     def reviewPage(request)
-        #expects instance of ServiceRequestForComparison as input 
+        #expects instance of ServiceRequestForComparison as input
         checkReviewTotals(request)
         click_link("Submit to Start Services")
         wait_for_javascript_to_finish
         if have_xpath("//div[@aria-describedby='participate_in_survey' and @display!='none']") then
             first(:xpath, "//button/span[text()='No']").click
             wait_for_javascript_to_finish
-        end   
+        end
     end
 
 

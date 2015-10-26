@@ -1,11 +1,11 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
   describe 'authentication' do
 
     before do
-      @protocol = FactoryGirl.build(:protocol)
+      @protocol = build(:protocol)
       @protocol.save validate: false
     end
 

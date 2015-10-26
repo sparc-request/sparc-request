@@ -18,13 +18,13 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-feature 'edit a service' do
+RSpec.feature 'edit a service' do
   background do
     default_catalog_manager_setup
-    Tag.create(:name => "ctrc")
-    Tag.create(:name => "epic")
+    Tag.create(name: "ctrc")
+    Tag.create(name: "epic")
   end
 
   scenario "successfully add a ServiceLevelComponent", js: true do
@@ -32,91 +32,88 @@ feature 'edit a service' do
 
   end
 
-  scenario 'successfully update a service under a program', :js => true do
+  scenario 'successfully update a service under a program', js: true do
     click_link('Human Subject Review')
     # Program Select should defalut to parent Program
     wait_for_javascript_to_finish
-    within ('#service_program') do
-      page.should have_content('Office of Biomedical Informatics')
-    end
+    expect(selected_option('#service_program')).to eq('Office of Biomedical Informatics')
 
     # Core Select should default to None
-    within ('#service_core') do
-      page.should have_content('None')
-    end
+    expect(selected_option('#service_core')).to eq('None')
 
-    fill_in 'service_abbreviation', :with => 'TestService'
-    fill_in 'service_description', :with => 'Description'
-    fill_in 'service_order', :with => '1'
+    fill_in 'service_abbreviation', with: 'TestService'
+    fill_in 'service_description', with: 'Description'
+    fill_in 'service_order', with: '1'
     check 'service_is_available'
 
     first("#save_button").click
-    page.should have_content( 'Human Subject Review saved successfully' )
+    expect(page).to have_content( 'Human Subject Review saved successfully' )
   end
 
-  scenario 'successfully update a service under a core', :js => true do
+  scenario 'successfully update a service under a core', js: true do
     click_link('MUSC Research Data Request (CDW)')
 
     # Program Select should defalut to parent Program
     wait_for_javascript_to_finish
-    within ('#service_program') do
-      page.should have_content('Office of Biomedical Informatics')
-    end
+    expect(selected_option('#service_program')).to eq('Office of Biomedical Informatics')
 
     # Core Select should default to parent Core
-    within ('#service_core') do
-      page.should have_content('Clinical Data Warehouse')
-    end
+    expect(selected_option('#service_core')).to eq('Clinical Data Warehouse')
 
-    fill_in 'service_abbreviation', :with => 'TestServiceTwo'
-    fill_in 'service_description', :with => 'DescriptionTwo'
-    fill_in 'service_order', :with => '2'
+    fill_in 'service_abbreviation', with: 'TestServiceTwo'
+    fill_in 'service_description', with: 'DescriptionTwo'
+    fill_in 'service_order', with: '2'
     check 'service_is_available'
 
     first("#save_button").click
-    page.should have_content( 'MUSC Research Data Request (CDW) saved successfully' )
+    expect(page).to have_content( 'MUSC Research Data Request (CDW) saved successfully' )
   end
 
-  context "adding and removing tags", :js => true do
+  context "adding and removing tags", js: true do
     before :each do
       @service = Service.find_by_name("Human Subject Review")
       click_link("Human Subject Review")
     end
 
     it "should list the tags" do
-      page.should have_css('#service_tag_list_ctrc')
+      expect(page).to have_css('#service_tag_list_ctrc')
     end
 
     it "should be able to check a tag box" do
       find('#service_tag_list_epic').click
       first('#save_button').click
-      page.should have_content("Human Subject Review saved successfully")
-      find('#service_tag_list_epic').should be_checked
-      @service.tag_list.should eq(['epic'])
+      expect(page).to have_content("Human Subject Review saved successfully")
+      expect(find('#service_tag_list_epic')).to be_checked
+      expect(@service.tag_list).to eq(['epic'])
     end
   end
 
-  context "viewing epic section", :js => true do
+  context "viewing epic section", js: true do
     before :each do
       click_link("Human Subject Review")
     end
 
     it "should not display epic section by default" do
-      page.should_not have_css('#epic_fieldset')
+      expect(page).not_to have_css('#epic_fieldset')
     end
 
     it "should display epic section if tagged with epic" do
       find('#service_tag_list_epic').click
       first("#save_button").click
       wait_for_javascript_to_finish
-      page.should have_content("Human Subject Review saved successfully")
+      expect(page).to have_content("Human Subject Review saved successfully")
       click_link('Human Subject Review')
       wait_for_javascript_to_finish
 
-      find('#epic_fieldset').should be_visible
+      expect(find('#epic_fieldset')).to be_visible
       find('#epic_fieldset').click
       sleep 3
-      first('#epic_fieldset fieldset').should be_visible
+      expect(first('#epic_fieldset fieldset')).to be_visible
     end
   end
+end
+
+def selected_option(select_selector)
+  value = find(select_selector).value
+  find("option[value='#{value}']").text
 end

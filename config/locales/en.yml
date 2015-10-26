@@ -731,7 +731,7 @@ en:
     tag_list: "Tags"
     additional_details: "Additional Details"
     additional_details_pre_creation: "This service must be saved before additional details can be added."
-    additional_details_admin_link_text_active: " [Active]"
+    additional_details_admin_link_text_active: " [Enabled]"
     additional_details_admin_link_text_inactive: "Add Additional Details"
     is_ctrc: "Is CTRC?"
     split_notify: "Split/Notify Here"

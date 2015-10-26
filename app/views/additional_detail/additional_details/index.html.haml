@@ -25,9 +25,11 @@
   .alert{ "ng-show"=>"alertMessage", "ng-class"=>"{ 'alert-success' : resourceSuccessful, 'alert-danger' : !resourceSuccessful }", "role"=>"alert"}
     = "{{alertMessage}}"
   %div    
-    %ul.nav.nav-tabs.nav-pills{:id=>:myTabs, :role=>:tablist}
+    %ul.nav.nav-pills{:id=>:myTabs, :role=>:tablist}
       %li.active{:role=>"presentation"}
-        %a{:href=>"#adGrid", "aria-controls"=>:adGrid, :role=>:tab, "data-toggle"=>:tab} Additional Details
+        %a{:href=>"#adGrid", "aria-controls"=>:adGrid, :role=>:tab, "data-toggle"=>:tab}
+          Additional Details
+          %span.badge= @service.current_additional_detail ? "Enabled" : "Disabled"
       %li{:role=>"presentation"}
         %a{:id => "resultsTab", :href=>"#liadGrid", "aria-controls"=>:liadGrid, :role=>:tab} 
           Results 
@@ -36,14 +38,14 @@
       .tab-pane.fade.in.active{:role=>:tabpanel, :id=>:adGrid}
         .panel.panel-default
           .panel-heading
-            = "Additional Details for #{@service.name}"
+            = "Additional Detail Forms for #{@service.name}"
           .panel-body
             = link_to "Add new Additional Details Form", new_additional_detail_service_additional_detail_path(@service), class: "btn btn-primary"
             %div{:id=>"displayGrid", "ui-grid"=>"gridModel", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 300px;"}
       .tab-pane.fade{:role=>:tabpanel, :id=>:liadGrid}
         .panel.panel-default
           .panel-heading
-            = "Additional Details Responses for {{activeAdditionalDetail.name}}"
+            = "Additional Detail Responses for {{activeAdditionalDetail.name}}"
           .panel-body
             %div{:id=>"liadGrid", "ui-grid"=>"line_item_ad_gridModel", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 300px;"}
       

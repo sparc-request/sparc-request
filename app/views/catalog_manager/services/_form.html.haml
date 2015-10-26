@@ -75,7 +75,7 @@
             %tr
               %th= t(:organization_form)[:additional_details]
               %td
-                %a{:href => additional_detail_service_additional_details_path(@service) }= @service.current_additional_detail ? t(:organization_form)[:additional_details_admin_link_text_active] : t(:organization_form)[:additional_details_admin_link_text_inactive]
+                %a{:href => additional_detail_service_additional_details_path(@service) }= @service.current_additional_detail ? @service.current_additional_detail.name + t(:organization_form)[:additional_details_admin_link_text_active] : t(:organization_form)[:additional_details_admin_link_text_inactive]
 
       %br
 

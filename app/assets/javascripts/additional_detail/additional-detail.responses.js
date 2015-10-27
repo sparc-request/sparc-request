@@ -16,12 +16,6 @@ angular.module('app').factory("LineItemAdditionalDetail",  ['$resource', functio
   return $resource("/additional_detail/line_item_additional_details/:id", { id: '@id'}, {'update': { method: 'PUT'} });
 }]);
 
-// The AdditionalDetailsRootController is not used yet.
-angular.module('app').controller('AdditionalDetailsRootController', ['$scope', '$http', function($scope, $http) { 
-	$scope.gridModel = {enableColumnMenus: false, enableFiltering: true, enableColumnResizing: true, showColumnFooter: true , enableSorting: true, showGridFooter: true, enableRowHeaderSelection: false, rowHeight: 45};
-	$scope.gridModel.columnDefs = [{field: 'service.name', name: 'Name',  width: '30%'}];
-}]);
-
 angular.module('app').controller("DocumentManagementAdditionalDetailsController", ['$scope', '$http', 'LineItemAdditionalDetail', function($scope, $http, LineItemAdditionalDetail) { 
 	$scope.gridModel = {enableColumnMenus: false, enableFiltering: false, enableColumnResizing: false, enableRowSelection: false, showColumnFooter: false , enableSorting: true, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 45, enableCellEdit:false};
 	$scope.gridModel.columnDefs = [{name: 'Add/Edit Buttons', displayName:'', enableSorting: false, width: 105, cellTemplate: '<button type="button" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">{{(row.entity.form_data_json=="{}") ? "Add Details" : "Edit Details"}}</button>'},

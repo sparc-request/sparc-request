@@ -57,7 +57,14 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
     
     it "update_enabled" do
       put(:update_enabled, {:service_id => @core_service, :id => @additional_detail, :additional_detail=> @additional_detail.attributes = { :enabled => "false"} })
-      expect(response.status).to eq(302)
+      expect(response).to redirect_to("/identities/sign_in")
+    end
+    
+    it 'create an additional detail record' do
+      post(:create, {:service_id => @core_service, :format => :html,
+        :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Date.tomorrow, :enabled => "true"}
+      })
+      expect(response).to redirect_to("/identities/sign_in")
     end
       
     it 'a program service index' do
@@ -72,6 +79,21 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
       get(:new, {:service_id => @program_service, :format => :html})
       expect(response).to redirect_to("/identities/sign_in")
     end
+    
+    it "view an additional detail edit page" do
+      get(:edit,{:service_id => @core_service, :id => @additional_detail, :format =>:html})
+      expect(response).to redirect_to("/identities/sign_in")
+    end
+    
+    it "update an additional detail" do
+      put(:update, {:service_id => @core_service, :id => @additional_detail, :additional_detail=> @additional_detail.attributes = { :name => "Test2"} })
+      expect(response).to redirect_to("/identities/sign_in")
+    end
+    
+    it "delete an additional detail" do
+      delete(:destroy, {:service_id => @core_service, :id => @additional_detail, :format => :json})
+      expect(response.status).to eq(401)
+    end
   end
 
   describe 'authenticated identity' do
@@ -83,6 +105,16 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
       # Devise test helper method: sign_in
       sign_in @identity
     end
+    
+    it 'should see a 404 for a bogus service id' do
+      get(:index, {:service_id => 23423423, :format => :html})
+      expect(response.status).to eq(404)
+      expect(response).to render_template("additional_detail/services/not_found")
+      
+      get(:index, {:service_id => 23423423, :format => :json})
+      expect(response.status).to eq(404)
+      expect(response.body).to eq("")
+    end
 
     describe 'is not a service_provider, catalog_manager, or super_user and, thus, has no access to' do
       it 'a core service index' do
@@ -90,7 +122,6 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         expect(response).to render_template("unauthorized")
         expect(response.status).to eq(401)
         expect(assigns(:service)).to be_blank
-        #expect(assigns(:service)).to be_blank
       end
       
       it 'a new core service additional detail page' do
@@ -119,6 +150,13 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         expect(response.status).to eq(401)
       end
       
+      it 'create an additional detail record' do
+        post(:create, {:service_id => @core_service, :format => :html,
+          :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Date.tomorrow, :enabled => "true"}
+        })
+        expect(response.status).to eq(401)
+      end
+      
       it 'a program service index' do
         get(:index, {:service_id => @program_service, :format => :html})
         expect(response).to render_template("unauthorized")
@@ -132,6 +170,21 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         expect(response.status).to eq(401)
         expect(assigns(:service)).to be_blank
         expect(assigns(:additional_detail)).to be_blank
+      end
+      
+      it "view an additional detail edit page" do
+        get(:edit,{:service_id => @core_service, :id => @additional_detail, :format =>:html})
+        expect(response.status).to eq(401)
+      end
+      
+      it "should NOT be able to update an additional detail" do
+        put(:update, {:service_id => @core_service, :id => @additional_detail, :additional_detail=> @additional_detail.attributes = { :name => "Test2"} })
+        expect(response.status).to eq(401)
+      end
+      
+      it "should NOT be able to delete an additional detail" do
+        delete(:destroy, {:service_id => @core_service, :id => @additional_detail, :format => :json})
+        expect(response.status).to eq(401)
       end
     end
 
@@ -171,6 +224,33 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         put(:update_enabled, {:service_id => @core_service, :id => @additional_detail, :additional_detail=> @additional_detail.attributes = { :enabled => "false"} })
         expect(response.status).to eq(401)
       end
+      
+      it 'should NOT be able to create an additional detail record' do
+        post(:create, {:service_id => @core_service, :format => :html,
+          :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Date.tomorrow, :enabled => "true"}
+        })
+        expect(response.status).to eq(401)
+      end
+      
+      it 'should NOT be able to see a new core service additional detail page' do
+        get(:new, {:service_id => @core_service, :format => :html})
+        expect(response.status).to eq(401)
+      end
+      
+      it "should NOT be able to view an additional detail edit page" do
+        get(:edit,{:service_id => @core_service, :id => @additional_detail, :format =>:html})
+        expect(response.status).to eq(401)
+      end
+      
+      it "should NOT be able to update an additional detail" do
+        put(:update, {:service_id => @core_service, :id => @additional_detail, :additional_detail=> @additional_detail.attributes = { :name => "Test2"} })
+        expect(response.status).to eq(401)
+      end
+      
+      it "should NOT be able to delete an additional detail" do
+        delete(:destroy, {:service_id => @core_service, :id => @additional_detail, :format => :json})
+        expect(response.status).to eq(401)
+      end
     end
     
     describe 'is a program service provider and' do
@@ -207,6 +287,33 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
       
       it "should NOT be able to update_enabled" do
         put(:update_enabled, {:service_id => @core_service, :id => @additional_detail, :additional_detail=> @additional_detail.attributes = { :enabled => "false"} })
+        expect(response.status).to eq(401)
+      end
+
+      it 'should NOT be able to create an additional detail record' do
+        post(:create, {:service_id => @core_service, :format => :html,
+          :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Date.tomorrow, :enabled => "true"}
+        })
+        expect(response.status).to eq(401)
+      end  
+         
+      it 'should NOT be able to see a new core service additional detail page' do
+        get(:new, {:service_id => @core_service, :format => :html})
+        expect(response.status).to eq(401)
+      end 
+      
+      it "should NOT be able to view an additional detail edit page" do
+        get(:edit,{:service_id => @core_service, :id => @additional_detail, :format =>:html})
+        expect(response.status).to eq(401)
+      end
+      
+      it "should NOT be able to update an additional detail" do
+        put(:update, {:service_id => @core_service, :id => @additional_detail, :additional_detail=> @additional_detail.attributes = { :name => "Test2"} })
+        expect(response.status).to eq(401)
+      end
+      
+      it "should NOT be able to delete an additional detail" do
+        delete(:destroy, {:service_id => @core_service, :id => @additional_detail, :format => :json})
         expect(response.status).to eq(401)
       end
     end
@@ -569,6 +676,21 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
           expect(assigns(:service)).to_not be_blank
           expect(assigns(:additional_detail)).to_not be_blank
         end
+        
+        it "view an additional detail edit page" do
+          get(:edit,{:service_id => @core_service, :id => @additional_detail, :format =>:html})
+          expect(response.status).to eq(200)
+        end
+        
+        it "update an additional detail" do
+          put(:update, {:service_id => @core_service, :id => @additional_detail, :additional_detail=> @additional_detail.attributes = { :name => "Test2"} })
+          expect(response).to redirect_to(additional_detail_service_additional_details_path(@core_service))
+        end
+        
+        it "delete an additional detail" do
+          delete(:destroy, {:service_id => @core_service, :id => @additional_detail, :format => :json})
+          expect(response.status).to eq(204)
+        end
       end
     end
 
@@ -614,6 +736,28 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         put(:update_enabled, {:service_id => @core_service, :id => @additional_detail, :additional_detail=> @additional_detail.attributes = { :enabled => "false"} })
         expect(response.status).to eq(204)
       end
+      
+      it 'create an additional detail record' do
+        post(:create, {:service_id => @core_service, :format => :html,
+          :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Date.tomorrow, :enabled => "true"}
+        })
+        expect(response).to redirect_to(additional_detail_service_additional_details_path(@core_service))
+      end
+      
+      it "view an additional detail edit page" do
+        get(:edit,{:service_id => @core_service, :id => @additional_detail, :format =>:html})
+        expect(response.status).to eq(200)
+      end
+      
+      it "update an additional detail" do
+        put(:update, {:service_id => @core_service, :id => @additional_detail, :additional_detail=> @additional_detail.attributes = { :name => "Test2"} })
+        expect(response).to redirect_to(additional_detail_service_additional_details_path(@core_service))
+      end
+      
+      it "delete an additional detail" do
+        delete(:destroy, {:service_id => @core_service, :id => @additional_detail, :format => :json})
+        expect(response.status).to eq(204)
+      end
     end
     
     describe 'is a program super_user and has access to' do
@@ -656,6 +800,28 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
       
       it "update_enabled" do
         put(:update_enabled, {:service_id => @core_service, :id => @additional_detail, :additional_detail=> @additional_detail.attributes = { :enabled => "false"} })
+        expect(response.status).to eq(204)
+      end
+      
+      it 'create an additional detail record' do
+        post(:create, {:service_id => @core_service, :format => :html,
+          :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Date.tomorrow, :enabled => "true"}
+        })
+        expect(response).to redirect_to(additional_detail_service_additional_details_path(@core_service))
+      end
+      
+      it "view an additional detail edit page" do
+        get(:edit,{:service_id => @core_service, :id => @additional_detail, :format =>:html})
+        expect(response.status).to eq(200)
+      end
+      
+      it "update an additional detail" do
+        put(:update, {:service_id => @core_service, :id => @additional_detail, :additional_detail=> @additional_detail.attributes = { :name => "Test2"} })
+        expect(response).to redirect_to(additional_detail_service_additional_details_path(@core_service))
+      end
+      
+      it "delete an additional detail" do
+        delete(:destroy, {:service_id => @core_service, :id => @additional_detail, :format => :json})
         expect(response.status).to eq(204)
       end
     end

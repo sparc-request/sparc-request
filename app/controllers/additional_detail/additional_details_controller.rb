@@ -5,8 +5,8 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
 
   before_filter :authenticate_identity! # returns 401 for failed JSON authentication
   before_filter :load_service
-  before_filter :authorize_index, :only => [:index]
-  before_filter :authorize_admin_user, :except => [:index]
+  before_filter :authorize_admin_user, :only => [:index]
+  before_filter :authorize_super_users_catalog_managers, :except => [:index]
   
   # service providers need access to the index page so that they can click through to see responses
   def index
@@ -77,11 +77,17 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
   private
 
   def load_service
-    @service = Service.find(params[:service_id])
+    @service = Service.where(id: params[:service_id]).first()
+    if !@service
+      respond_to do |format|
+        format.html {render "additional_detail/services/not_found", :status => :not_found}
+        format.json {render :json => "", :status => :not_found }
+      end
+    end
   end
 
-  def authorize_index
-    # verify that user is either a service provider, catalog manager, or super user  for this service; service providers are not allowed!
+  def authorize_admin_user
+    # verify that user is either a service provider, catalog manager, or super user for this service
     if current_identity.admin_organizations().include?(@service.organization) || current_identity.can_edit_entity?(@service.organization, true)
       return true
     else
@@ -90,7 +96,7 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
     end
   end
   
-  def authorize_admin_user
+  def authorize_super_users_catalog_managers
     # verify that user is either a super user or catalog manager for this service; service providers are not allowed!
     if current_identity.admin_organizations(:su_only => true).include?(@service.organization) || current_identity.can_edit_entity?(@service.organization, true)
       return true

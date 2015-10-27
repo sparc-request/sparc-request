@@ -48,7 +48,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
     	return JSON.parse($scope.formDefinition).form;
     }
     
-    //Taking a key as input this function will return a question hash with all relevent data
+    //Taking a id as input this function will return a question hash with all relevent data
     $scope.getQuestion =  function(id){ 
     	//loop through hashkeys in schema and find object with same id
     	var schemaQuestion;
@@ -68,6 +68,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
     	}
     	var question = {};
     	var required = false;
+    	
     	if(schemaQuestion && formQuestion){
 	    	question.name = schemaQuestion.title;
 	    	question.key = formQuestion.key;
@@ -384,10 +385,8 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 		  	}
 	  	};   	
 	  
-	  	$scope.addQuestion = function(q){
-
-	  		
-	  		var question = hashCopy(q);
+	  	$scope.addQuestion = function(ques){
+	  		var question = hashCopy(ques);
 	  		 //check to see if all required fields present
 	  		if(question.key && question.name && question.kind){
 	  			var formDef = JSON.parse($scope.formDefinition)
@@ -395,8 +394,6 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 	  			var questionSchema = $scope.getSchemaParsed().properties[question.key];
 	  			//If a new question with no other key the key is vaild
 	  			if(!question.id && !questionSchema){
-	  				//Generate new id for question, unique value based on time
-	  				question.id = uuid.v1();
 	  				keyVaild = true;
 	  			}
 	  			//If editing question
@@ -418,37 +415,46 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 	  			else{
 	  				$scope.alertMessage = "Key already exists."; 				
 	  			//	$scope.field.key.$error.alreadyPresent ="Test";
-	  				
-	  				q.key ='';
+	  				ques.key ='';
 	  			}
 	  			if(keyVaild){
-	  				//$scope.keyError ="Please fill out this field. Valid characters are A-Z a-z 0-9";
+	  				//Add default description to date and time pickers
 					if(question.description== null && (question.kind=="time" || question.kind=="datepicker")){
 						question.description = (question.kind=="time") ? "ex. 12:00 AM" : "ex. 06/13/2015";
 					  }
-					
-					var added = false;
-					// add field form array
-					for(var i=0; i<formDef.form.length; i++){
-						if(formDef.form[i].id == question.id){
-							var ques = $scope.getForm(question); 
-							ques.id = question.id
-							formDef.form[i] = ques; 
-							added=true;
+					// add to field form array
+					var q = $scope.getForm(question); 
+					//If new question
+					if(!question.id){
+						//Generate new id for question, unique value based on time
+						question.id = uuid.v1();
+						q.id = question.id;
+		  				//And add to array
+		  				formDef.form.push(q);
+					}
+					//Find question in form array
+					else{
+						q.id = question.id
+						//If not required but inside of required array, remove it
+						if(!question.required && inRequired(question.key)){formDef.schema.required = removeRequired(question.key)}
+						for(var i=0; i<formDef.form.length; i++){
+							//And update question
+							if(formDef.form[i].id == question.id){
+								formDef.form[i] = q; 
+								added=true;
 							}
+						}
 					}
-					if(!added){
-						formDef.form.push (question);
-					}
-					
+					//Update schema
 					var s = $scope.getSchema(question);
 					s.id = question.id;
 					// add field to schema
 					formDef.schema.properties[question.key] = s;
-					if(!question.required && inRequired(question.key)){formDef.schema.required = removeRequired(question.key)}
+					//If required at it to required array if not already present
 					if(question.required && !inRequired(question.key)){formDef.schema.required.push(question.key);}
-					
+					//Update form definition
 					$scope.formDefinition = JSON.stringify(formDef,undefined,2,2);
+					//Lastly hide modal
 					$scope.hideModal();					
 	  			} 
 	  		}
@@ -577,7 +583,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 			                  { "value" : 'TJ', "name" : 'Tajikistan'},{ "value" : 'TK', "name" : 'Tokelau'},{ "value" : 'TL', "name" : 'Timor-Leste'},{ "value" : 'TM', "name" : 'Turkmenistan'},
 			                  { "value" : 'TN', "name" : 'Tunisia'},{ "value" : 'TO', "name" : 'Tonga'},{ "value" : 'TR', "name" : 'Turkey'},{ "value" : 'TT', "name" : 'Trinidad and Tobago'},
 			                  { "value" : 'TV', "name" : 'Tuvalu'},{ "value" : 'TW', "name" : 'Taiwan'},{ "value" : 'TZ', "name" : 'Tanzania'},{ "value" : 'UA', "name" : 'Ukraine'},
-			                  { "value" : 'UG', "name" : 'Uganda'},{ "value" : 'UM', "name" : 'United States Minor Outlying Islands'},{ "value" : 'UY', "name" : 'Uruguay'},
+			                  { "value" : 'UG', "name" : 'Uganda'},{ "value" : 'UM', "name" : 'United States Minor Outlying Islands'},{ "value" : "US", "name" : "United States"},{ "value" : 'UY', "name" : 'Uruguay'},
 			                  { "value" : 'UZ', "name" : 'Uzbekistan'},{ "value" : 'VA', "name" : 'Vatican'},{ "value" : 'VC', "name" : 'Saint Vincent and the Grenadines'},{ "value" : 'VE', "name" : 'Venezuela'},
 			                  { "value" : 'VG', "name" : 'Virgin Islands (British)'},{ "value" : 'VI', "name" : 'Virgin Islands (U.S.)'},{ "value" : 'VN', "name" : 'Vietnam'},{ "value" : 'VU', "name" : 'Vanuatu'},
 			                  { "value" : 'WF', "name" : 'Wallis and Futuna Islands'},{ "value" : 'WS', "name" : 'Samoa'},{ "value" : 'YE', "name" : 'Yemen'},{ "value" : 'YT', "name" : 'Mayotte'},
@@ -596,6 +602,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 		 }
 		 else if(field.kind =="dropdown"){
 			 hash.type = "strapselect";
+			 hash.placeholder="Select One";
 			 var valueList = (field.values) ? cleanSplit(field.values) : radioDefaultValues;
 			 hash.titleMap = getTileMap(valueList);  hash.placeholder="Select One";
 			 return hash;
@@ -607,6 +614,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 		 }
 		 else if(field.kind == "multiDropdown"){
 			 hash.type = "strapselect";
+			 hash.placeholder="Select One";
 			 var valueList = (field.values) ? cleanSplit(field.values) : radioDefaultValues;
 			 hash.options = {multiple : true}; hash.placeholder ="Select One or More"
 			 hash.titleMap = getTileMap(valueList);
@@ -615,7 +623,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 		 else if(field.kind == "datepicker"){
 			 hash.type = "datepicker";
 			 hash.dateOptions = {
-					 dateFormat : "MM/dd/yyyy" 
+					 "dateFormat" : "MM/dd/yyyy" 
 			 }
 			 return hash;
 		 }

@@ -3,8 +3,12 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
 
   layout 'additional_detail/application'
 
-  before_filter :authenticate_identity!
-  before_filter :load_service_and_authorize_user
+  before_filter :authenticate_identity! # returns 401 for failed JSON authentication
+  before_filter :load_service
+  before_filter :authorize_index, :only => [:index]
+  before_filter :authorize_admin_user, :except => [:index]
+  
+  # service providers need access to the index page so that they can click through to see responses
   def index
     respond_to do |format|
       format.html # index.html.erb
@@ -72,14 +76,26 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
 
   private
 
-  def load_service_and_authorize_user
+  def load_service
     @service = Service.find(params[:service_id])
+  end
+
+  def authorize_index
+    # verify that user is either a service provider, catalog manager, or super user  for this service; service providers are not allowed!
+    if current_identity.admin_organizations().include?(@service.organization) || current_identity.can_edit_entity?(@service.organization, true)
+      return true
+    else
+      @service = nil
+      render "unauthorized", :status => :unauthorized
+    end
+  end
+  
+  def authorize_admin_user
     # verify that user is either a super user or catalog manager for this service; service providers are not allowed!
     if current_identity.admin_organizations(:su_only => true).include?(@service.organization) || current_identity.can_edit_entity?(@service.organization, true)
       return true
     else
       @service = nil
-      # @TODO: render JSON authorized message??
       render "unauthorized", :status => :unauthorized
     end
   end

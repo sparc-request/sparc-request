@@ -1,18 +1,17 @@
 class AdditionalDetail < ActiveRecord::Base
   audited
 
-  belongs_to :service
-  before_destroy :line_items_present
-  before_update :line_items_present
-  
+  belongs_to :service    
   has_many :line_item_additional_details
 
   attr_accessible :enabled, :description, :effective_date, :form_definition_json, :name
 
+  before_destroy :line_items_present
+  validate :line_items_present
   validates :name,:effective_date, :form_definition_json, :presence => true
   validates :description, :length => {:maximum => 255}
-  
   validate :date_in_past, :effective_date_cannot_be_shared, :form_definition_cannot_be_blank
+  
   
   def schema_hash
     JSON.parse(self.form_definition_json).fetch('schema')
@@ -33,7 +32,12 @@ class AdditionalDetail < ActiveRecord::Base
   private
   
   def line_items_present
-    line_item_additional_details.empty?
+    if line_item_additional_details.empty?
+      true
+    else
+      errors[:base] << "This Additional Detail cannot be changed if responses exist."
+      false
+    end
   end
 
   def date_in_past

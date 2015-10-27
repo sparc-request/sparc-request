@@ -9,7 +9,7 @@ angular.module('app').factory("Service",  ['$resource', function($resource) {
 
 angular.module('app').factory("AdditionalDetail",  ['$resource', function($resource) {
   // service_id is a global variable set in a HAML file
-  return $resource("/additional_detail/services/:service_id/additional_details/:id", {service_id: service_id, id: '@id'}, {'update': { method: 'PUT'} });
+  return $resource("/additional_detail/services/:service_id/additional_details/:id", {service_id: service_id, id: '@id'}, {'update_enabled': { method: 'PUT', url: '/additional_detail/services/:service_id/additional_details/:id/update_enabled'} });
 }]);
 
 angular.module('app').factory("LineItemAdditionalDetail",  ['$resource', function($resource) {
@@ -82,8 +82,8 @@ angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope'
 	
 	$scope.gridModel = {enableColumnMenus: false, enableFiltering: true, enableColumnResizing: true, enableRowSelection: false, showColumnFooter: false , enableSorting: true, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 45};
 	$scope.gridModel.columnDefs = [
-	                               {enableFiltering: false, enableColumnResizing: false, width: 215,  name: 'Additional Detail Form',  cellTemplate: '<a class="btn btn-primary" href="/additional_detail/services/'+service_id+'/additional_details/{{row.entity.id}}/duplicate">Duplicate</a> <a class="btn btn-primary" ng-disabled="row.entity.line_item_additional_details.length > 0" href="/additional_detail/services/'+service_id+'/additional_details/{{row.entity.id}}/edit">Edit</a> <button class="btn btn-danger" ng-disabled="row.entity.line_item_additional_details.length > 0" ng-click="grid.appScope.deleteAdditonalDetail(row.entity)">Delete</button>'},
-	                               {enableFiltering: false, enableColumnResizing: false, width: 115, name: "Responses",  cellTemplate: '<button class="btn btn-info" ng-disabled="row.entity.line_item_additional_details.length==0" ng-click="grid.appScope.updateLineItemAdditionalDetails(row.entity.id)">{{row.entity.line_item_additional_details.length}} {{(row.entity.line_item_additional_details.length == 1) ? "Response" : "Responses"}}</button>'},
+	                               {enableFiltering: false, enableColumnResizing: false, width: 215,  name: 'Additional Detail Form',  cellTemplate: '<a class="btn btn-primary" href="/additional_detail/services/'+service_id+'/additional_details/{{row.entity.id}}/duplicate">Duplicate</a> <a class="btn btn-primary" ng-if="row.entity.line_item_additional_details.length == 0" href="/additional_detail/services/'+service_id+'/additional_details/{{row.entity.id}}/edit">Edit</a> <button class="btn btn-danger" ng-if="row.entity.line_item_additional_details.length == 0" ng-click="grid.appScope.deleteAdditonalDetail(row.entity)">Delete</button>'},
+	                               {enableFiltering: false, enableColumnResizing: false, width: 120, name: "Responses",  cellTemplate: '<button class="btn btn-info" ng-disabled="row.entity.line_item_additional_details.length==0" ng-click="grid.appScope.updateLineItemAdditionalDetails(row.entity.id)">{{row.entity.line_item_additional_details.length}} {{(row.entity.line_item_additional_details.length == 1) ? "Response" : "Responses"}}</button>'},
 	                               {field: 'name', name: 'Name', width: '25%'}, 
 	                               {field:'effective_date',name: 'Effective Date', width: '15%',  sort: { direction: uiGridConstants.DESC, priority: 1 } },
 	                               {field: 'enabled',name: 'Enabled', cellTemplate: '<label>Enabled <input type="checkbox" ng-change="grid.appScope.updateAdditionalDetail(row.entity)" ng-model="row.entity.enabled"/></label>'},
@@ -116,20 +116,20 @@ angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope'
 	    	$scope.alertMessage = response;
 	    }); 
 	}
+	// initialize the service
 	$scope.service = Service.get();
-
 	// initialize the main grid
 	$scope.gridModel.data = AdditionalDetail.query();
 	
     $scope.updateAdditionalDetail = function(additionalDetail) {
-    	additionalDetail.$update(function() { 
+    	additionalDetail.$update_enabled(function() { 
   			// reload the Service
     		$scope.service = Service.get();
   			$scope.alertMessage = "Additional Detail updated.";
   	        $scope.resourceSuccessful = true;
   		}, function(error) {
+  			$scope.resourceSuccessful = false;
   	        $scope.alertMessage = error.statusText;
-  	        $scope.resourceSuccessful = false;
   	        // reload data into Grid
   			$scope.gridModel.data = AdditionalDetail.query();
   	    });
@@ -137,6 +137,8 @@ angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope'
   	
     $scope.deleteAdditonalDetail = function(additionalDetail) {
     	additionalDetail.$delete(function() { 
+    		// reload the Service
+    		$scope.service = Service.get();
   			// reload data into Grid
   			$scope.gridModel.data = AdditionalDetail.query();
   			$scope.alertMessage = "Additional Detail deleted.";

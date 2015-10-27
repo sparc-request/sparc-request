@@ -371,20 +371,14 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
             it "cannot delete" do
               expect{
                 delete(:destroy, {:service_id => @core_service, :id => @ad, :format => :json})
-                expect(response.status).to eq(403)
+                expect(response.status).to eq(422)
               }.to change(AdditionalDetail, :count).by(0)
             end
 
             it "cannot update" do
               put(:update, {:service_id => @core_service, :id => @ad, :additional_detail=> @ad.attributes = { :name => "Test2"} })
-              expect(response.status).to eq(403)
+              expect(response.status).to eq(200)
               expect(AdditionalDetail.find(@ad.id).name).to eq("Test")
-            end
-
-            it "will not render the edit page" do
-              get(:edit,{:service_id => @core_service, :id => @ad, :format =>:html})
-              expect(response.status).to eq(401)
-              expect(response).to render_template("unauthorized", :status => :unauthorized)
             end
 
           end

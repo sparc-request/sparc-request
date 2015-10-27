@@ -17,12 +17,8 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
   end
 
   def edit
-    if LineItemAdditionalDetail.where(:additional_detail_id => params[:id]).count > 0
-      render "unauthorized", :status => :unauthorized
-    else 
-      @additional_detail = @service.additional_details.find(params[:id])
-      render :new
-    end
+    @additional_detail = @service.additional_details.find(params[:id])
+    render :new
   end
 
   def new
@@ -47,29 +43,30 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
 
   def update
     @additional_detail = @service.additional_details.find(params[:id])
-    if LineItemAdditionalDetail.where(:additional_detail_id => @additional_detail).count > 0
-      @additional_detail.errors.add(:id, "Cannot update additional detail with line item details")
-      head :forbidden
-    else if @additional_detail.update_attributes(params[:additional_detail])
-        # success page or success JSON response
-        respond_to do |format|
-          format.html {redirect_to additional_detail_service_additional_details_path(@service)}
-          format.json {head :no_content}
-        end
-      else
-        render :new
-      end
+    if @additional_detail.update_attributes(params[:additional_detail])
+      redirect_to additional_detail_service_additional_details_path(@service)
+    else
+      render :new
+    end
+  end
+  
+  # from a JSON PUT, toggle only the :enabled attribute 
+  def update_enabled
+    @additional_detail = @service.additional_details.find(params[:id])
+    # bypass validation to toggle :enabled
+    if @additional_detail.update_attribute(:enabled, params[:additional_detail][:enabled])
+      head :no_content
+    else
+      render json: @additional_detail.errors, status: :unprocessable_entity
     end
   end
 
   def destroy
     @additional_detail = @service.additional_details.find(params[:id])
-    if LineItemAdditionalDetail.where(:additional_detail_id => @additional_detail).count > 0
-      @additional_detail.errors.add(:id, "Cannot delete additional detail with line item details")
-      head :forbidden
-    else
-      @additional_detail.destroy
+    if @additional_detail.destroy
       head :no_content
+    else
+      render json: @additional_detail.errors, status: :unprocessable_entity
     end
   end
 

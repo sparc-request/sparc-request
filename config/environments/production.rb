@@ -93,7 +93,7 @@ SparcRails::Application.configure do
     :email => {
       ignore_if: ->(env, exception) { ['128.23.150.107'].include?(env['REMOTE_ADDR']) },
       sender_address: 'donotreply@musc.edu',
-      exception_recipients: ['catesa@musc.edu', 'kelsey@musc.edu', 'johstu@musc.edu', 'leonarjp@musc.edu']
+      exception_recipients: ['catesa@musc.edu', 'johstu@musc.edu', 'leonarjp@musc.edu']
     }
 
   # Will be default in Rails 4.0

@@ -193,7 +193,7 @@ module ApplicationHelper
     returning_html += select_tag("jump_to_visit_#{arm.id}", visits_select_options(arm, pages), :class => 'jump_to_visit', :url => pathMethod.call(service_request, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal))
 
     unless (portal or @merged or @review)
-      returning_html += link_to 'Move Visit', 'javascript:void(0)', class: 'ui-button ui-widget ui-state-default ui-corner-all move_visits', data: { arm_id: arm.id, tab: tab, sr_id: service_request.id, portal: portal }
+      returning_html += link_to 'Move Visit', 'javascript:void(0)', class: 'ui-button ui-widget ui-state-default ui-corner-all move_visits', data: { 'arm-id' => arm.id, tab: tab, 'sr-id' => service_request.id, portal: portal }
     end
 
     returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')),

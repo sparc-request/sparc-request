@@ -58,6 +58,10 @@ RSpec.describe AdditionalDetail::ServicesController do
     it 'but NOT access to show' do
       get(:show, {:id => @service, :format => :json })
       expect(response.status).to eq(401)
+      
+      get(:show, {:id => @service, :format => :html })
+      expect(response.status).to eq(401)
+      expect(response).to render_template("additional_detail/shared/unauthorized")
     end
     
     it 'should see a 404 for a bogus service id' do
@@ -77,7 +81,7 @@ RSpec.describe AdditionalDetail::ServicesController do
       it 'has access to show with the current additional_detail' do
         get(:show, {:id => @service, :format => :json })
         expect(response.status).to eq(200)
-        expect(response.body).to eq(@service.to_json(:root => false, :include => :current_additional_detail))
+        expect(response.body).to eq(@service.to_json(:root => false, :only => [:name], :include => :current_additional_detail))
       end
       
       it 'has access to show HTML that redirects to additional_details' do
@@ -97,7 +101,7 @@ RSpec.describe AdditionalDetail::ServicesController do
       it 'has access to show with the current additional_detail' do
         get(:show, {:id => @service, :format => :json })
         expect(response.status).to eq(200)
-        expect(response.body).to eq(@service.to_json(:root => false, :include => :current_additional_detail))
+        expect(response.body).to eq(@service.to_json(:root => false, :only => [:name], :include => :current_additional_detail))
       end
       
       it 'has access to show HTML that redirects to additional_details' do
@@ -117,7 +121,7 @@ RSpec.describe AdditionalDetail::ServicesController do
       it 'show with the current additional_detail' do
         get(:show, {:id => @service, :format => :json })
         expect(response.status).to eq(200)
-        expect(response.body).to eq(@service.to_json(:root => false, :include => :current_additional_detail))
+        expect(response.body).to eq(@service.to_json(:root => false, :only => [:name], :include => :current_additional_detail))
       end
       
       it 'has access to show HTML that redirects to additional_details' do
@@ -137,7 +141,7 @@ RSpec.describe AdditionalDetail::ServicesController do
       it 'show with the current additional_detail' do
         get(:show, {:id => @service, :format => :json })
         expect(response.status).to eq(200)
-        expect(response.body).to eq(@service.to_json(:root => false, :include => :current_additional_detail))
+        expect(response.body).to eq(@service.to_json(:root => false, :only => [:name], :include => :current_additional_detail))
       end
       
       it 'has access to show HTML that redirects to additional_details' do
@@ -157,7 +161,7 @@ RSpec.describe AdditionalDetail::ServicesController do
       it 'show with the current additional_detail' do
         get(:show, {:id => @service, :format => :json })
         expect(response.status).to eq(200)
-        expect(response.body).to eq(@service.to_json(:root => false, :include => :current_additional_detail))
+        expect(response.body).to eq(@service.to_json(:root => false, :only => [:name], :include => :current_additional_detail))
       end
       
       it 'has access to show HTML that redirects to additional_details' do
@@ -176,7 +180,7 @@ RSpec.describe AdditionalDetail::ServicesController do
       it 'show with the current additional_detail' do
         get(:show, {:id => @service, :format => :json })
         expect(response.status).to eq(200)
-        expect(response.body).to eq(@service.to_json(:root => false, :include => :current_additional_detail))
+        expect(response.body).to eq(@service.to_json(:root => false, :only => [:name], :include => :current_additional_detail))
       end
       
       it 'has access to show HTML that redirects to additional_details' do

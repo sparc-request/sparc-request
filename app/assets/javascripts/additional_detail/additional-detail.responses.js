@@ -2,6 +2,11 @@ $('#additionalDetailModal').on('shown.bs.modal', function () {
 	$('#myInput').focus()
 });
 
+angular.module('app').factory("ServiceRequest",  ['$resource', function($resource) {
+  // service_request_id is a global variable set in a HAML file
+  return $resource("/additional_detail/service_requests/:id", {id: service_request_id});
+}]);
+
 angular.module('app').factory("Service",  ['$resource', function($resource) {
   // service_id is a global variable set in a HAML file
   return $resource("/additional_detail/services/:id", {id: service_id});
@@ -16,19 +21,17 @@ angular.module('app').factory("LineItemAdditionalDetail",  ['$resource', functio
   return $resource("/additional_detail/line_item_additional_details/:id", { id: '@id'}, {'update': { method: 'PUT'} });
 }]);
 
-angular.module('app').controller("DocumentManagementAdditionalDetailsController", ['$scope', '$http', 'LineItemAdditionalDetail', function($scope, $http, LineItemAdditionalDetail) { 
+angular.module('app').controller("DocumentManagementAdditionalDetailsController", ['$scope', '$http', 'ServiceRequest', 'LineItemAdditionalDetail', function($scope, $http, ServiceRequest, LineItemAdditionalDetail) { 
 	$scope.gridModel = {enableColumnMenus: false, enableFiltering: false, enableColumnResizing: false, enableRowSelection: false, showColumnFooter: false , enableSorting: true, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 45, enableCellEdit:false};
 	$scope.gridModel.columnDefs = [{name: 'Add/Edit Buttons', displayName:'', enableSorting: false, width: 105, cellTemplate: '<button type="button" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">{{(row.entity.form_data_json=="{}") ? "Add Details" : "Edit Details"}}</button>'},
 	                               {field: 'additional_detail_breadcrumb', name: 'Service'}, 
 	                               {name: 'Completed',field: 'has_answered_all_required_questions?', width: '15%' }];
 	
-	$scope.reloadGrid = function(){
-		$http.get('/additional_detail/service_requests/'+service_request_id).
-			then(function(response){
-				$scope.gridModel.data = response.data;
-			});
-	}	
-	
+	// initialize the service request and the grid
+	$scope.serviceRequest = ServiceRequest.get( function() {
+	   $scope.gridModel.data = $scope.serviceRequest.get_or_create_line_item_additional_details;
+	});
+   
 	$scope.showSurvey = function(id){
 		// hide the alert message before showing a survey
 		$scope.alertMessage = null;
@@ -46,7 +49,10 @@ angular.module('app').controller("DocumentManagementAdditionalDetailsController"
 		// convert the form response from an object to a string
 		$scope.currentLineItemAD.form_data_json = JSON.stringify($scope.currentLineItemAD.form_data_hash);
 		$scope.currentLineItemAD.$update(function(response) { 
-			$scope.reloadGrid(); 
+			// reload the Service Request and the grid
+			$scope.serviceRequest = ServiceRequest.get( function() {
+			   $scope.gridModel.data = $scope.serviceRequest.get_or_create_line_item_additional_details;
+			});
 			$scope.alertMessage = "Response saved.";
 			$scope.resourceSuccessful = true;
   	     }, function(error) {
@@ -61,15 +67,13 @@ angular.module('app').controller("DocumentManagementAdditionalDetailsController"
 	     });
 	}
 		
-	// dynamically change grid height relative to window height, only works if
-	// one grid is being displayed on the page
+	// dynamically change grid height relative to the # of rows of data, 
+	//   only works if one grid is being displayed on the page
   	$scope.getTableHeight = function() {
         return {
         	height: (($scope.gridModel.data.length * $scope.gridModel.rowHeight) + $( ".ui-grid-header-cell-row" ).height() ) + "px"
         };
      };
-     
-	$scope.reloadGrid();
 }]);
 
 angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope', '$http', '$window', 'Service', 'AdditionalDetail', 'LineItemAdditionalDetail', 'uiGridConstants', function($scope, $http, $window, Service, AdditionalDetail, LineItemAdditionalDetail, uiGridConstants) {

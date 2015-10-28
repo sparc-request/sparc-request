@@ -1,6 +1,5 @@
 //= require additional_detail/jquery.min
 //= require additional_detail/bootstrap.min
-//= require additional_detail/bootstrap-datepicker.min
 //= require additional_detail/validator
 //= require additional_detail/angular.min
 //= require additional_detail/angular-resource.min
@@ -12,6 +11,7 @@
 //= require additional_detail/schema-form.min
 //= require additional_detail/bootstrap-decorator.min
 //= require additional_detail/schema-form-date-time-picker.min
+// not used? require additional_detail/bootstrap-datepicker.min
 //= require additional_detail/angular-strap.min
 //= require additional_detail/angular-strap-tpl.min
 //= require additional_detail/angular-schema-form-dynamic-select.min

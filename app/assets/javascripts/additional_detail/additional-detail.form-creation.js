@@ -12,6 +12,14 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 	$scope.form ={};
 	$scope.model = {};
 	
+	// dynamically change grid height relative to the # of rows of data, 
+	//   only works if one grid is being displayed on the page
+  	$scope.getTableHeight = function() {
+        return {
+        	height: (($scope.gridModel.data.length * $scope.gridModel.rowHeight) + $( ".ui-grid-header-cell-row" ).height() ) + "px"
+        };
+     };
+     
 	//Displays result data that will be exported when a user requests a service and anaswers the questions
 	$scope.pretty = function(){
 		 return JSON.stringify($scope.model,undefined,2,2);
@@ -119,7 +127,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 		$scope.alertMessage = null;
 		
     	//find key if it exists
-    	if(key){
+    	if(id){
     		$scope.field = $scope.getQuestion(id);
     		$scope.modalSaveText = "Update"
     	}

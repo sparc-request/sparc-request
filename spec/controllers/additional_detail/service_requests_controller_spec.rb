@@ -26,6 +26,7 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
   before :each do
     # associate a protocol to a service request and sub service request
     @protocol = Study.new
+    @protocol.short_title = 'REDCap Project'
     @protocol.type = 'Study'
     @protocol.save(validate: false)
     
@@ -56,6 +57,11 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
 
   describe 'user is not logged in and, thus, has no access to' do
     it 'a grid of line_item_additional_details' do
+      get(:show, { :id=>@service_request.id , :format => :json })
+      expect(response.status).to eq(401)
+    end
+    
+    it 'a grid of line_item_additional_details' do
       get(:show, { :id=>@service_request.id , :format => :html })
       expect(response).to redirect_to("/identities/sign_in")
     end
@@ -75,6 +81,11 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
       get(:show, { :id => 1231231231 , :format => :json})
       expect(response.status).to eq(404)
       expect(response.body).to eq("")
+      
+      get(:show, { :id => 1231231231 , :format => :html})
+      expect(response.status).to eq(404)
+      expect(response).to render_template("additional_detail/service_requests/not_found")
+      expect(assigns(:service_request)).to be_blank
     end
     
     describe 'has no affiliation with the project and, thus, has no access to' do
@@ -82,6 +93,11 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
         get(:show, { :id => @service_request.id , :format => :json})
         expect(response.status).to eq(401)
         expect(response.body).to eq("")
+        
+        get(:show, { :id => @service_request.id , :format => :html})
+        expect(response.status).to eq(401)
+        expect(response).to render_template("additional_detail/shared/unauthorized")
+        expect(assigns(:service_request)).to be_blank
       end
     end
     
@@ -95,7 +111,12 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
       it "view an empty set of line_item_additional_details" do
         get(:show, { :id => @service_request.id , :format => :json})
         expect(response.status).to eq(200)
-        expect(response.body).to eq([].to_json)
+        expect(response.body).to eq("{\"protocol_short_title\":\"REDCap Project\",\"get_or_create_line_item_additional_details\":[]}")
+          
+        get(:show, { :id => @service_request.id , :format => :html})
+        expect(response.status).to eq(200)
+        expect(response).to render_template("show") 
+        expect(assigns(:service_request)).to eq(@service_request) 
       end
   
       it "view a list of line_item_additional_details, after the controller creates a line_item_additional_detail record" do
@@ -105,7 +126,11 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
         @ad.service_id = @service.id
         @ad.form_definition_json= '{"schema": {"required": ["t","date"] }}'
         @ad.save(:validate => false)
-                  
+        # HTML requests should not create LineItemAdditionalDetails          
+        expect{
+          get(:show, { :id=>@service_request.id , :format => :html })
+        }.to change{LineItemAdditionalDetail.count}.by(0)
+        
         expect{
           get(:show, { :id=>@service_request.id , :format => :json })
         }.to change{LineItemAdditionalDetail.count}.by(1)
@@ -113,7 +138,7 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
         expect(@line_item_additional_detail.additional_detail_id).to eq(@ad.id)
         expect(@line_item_additional_detail.line_item_id).to eq(@line_item.id)
         expect(response.status).to eq(200)
-        expect(response.body).to eq([@line_item_additional_detail].to_json(:root=> false, :methods => [:has_answered_all_required_questions?, :additional_detail_breadcrumb]))
+        expect(response.body).to eq(@service_request.to_json(:root=> false, :only => [], :methods => [:protocol_short_title], :include => { :get_or_create_line_item_additional_details => {:methods => [:has_answered_all_required_questions?, :additional_detail_breadcrumb] }}))
       end
     end 
     
@@ -129,7 +154,12 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
       it "view an empty set of line_item_additional_details" do          
         get(:show, { :id => @service_request.id , :format => :json})
         expect(response.status).to eq(200)
-        expect(response.body).to eq([].to_json)
+        expect(response.body).to eq("{\"protocol_short_title\":\"REDCap Project\",\"get_or_create_line_item_additional_details\":[]}")
+          
+        get(:show, { :id => @service_request.id , :format => :html})
+        expect(response.status).to eq(200)
+        expect(response).to render_template("show")
+        expect(assigns(:service_request)).to eq(@service_request) 
       end
   
       it "view a list of line_item_additional_details, after the controller creates a line_item_additional_detail record" do
@@ -140,6 +170,11 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
         @ad.form_definition_json= '{"schema": {"required": ["t","date"] }}'
         @ad.save(:validate => false)
         
+        # HTML requests should not create LineItemAdditionalDetails          
+        expect{
+          get(:show, { :id=>@service_request.id , :format => :html })
+        }.to change{LineItemAdditionalDetail.count}.by(0)      
+          
         expect{
           get(:show, { :id=>@service_request.id , :format => :json })
         }.to change{LineItemAdditionalDetail.count}.by(1)
@@ -147,7 +182,7 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
         expect(@line_item_additional_detail.additional_detail_id).to eq(@ad.id)
         expect(@line_item_additional_detail.line_item_id).to eq(@line_item.id)
         expect(response.status).to eq(200)
-        expect(response.body).to eq([@line_item_additional_detail].to_json(:root=> false, :methods => [:has_answered_all_required_questions?, :additional_detail_breadcrumb]))
+        expect(response.body).to eq(@service_request.to_json(:root=> false, :only => [], :methods => [:protocol_short_title], :include => { :get_or_create_line_item_additional_details => {:methods => [:has_answered_all_required_questions?, :additional_detail_breadcrumb] }}))
       end
     end 
     
@@ -163,7 +198,12 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
       it "view an empty set of line_item_additional_details" do          
         get(:show, { :id => @service_request.id , :format => :json})
         expect(response.status).to eq(200)
-        expect(response.body).to eq([].to_json)
+        expect(response.body).to eq("{\"protocol_short_title\":\"REDCap Project\",\"get_or_create_line_item_additional_details\":[]}")
+          
+        get(:show, { :id => @service_request.id , :format => :html})
+        expect(response.status).to eq(200)
+        expect(response).to render_template("show")
+        expect(assigns(:service_request)).to eq(@service_request) 
       end
     
       it "view a list of line_item_additional_details, after the controller creates a line_item_additional_detail record" do
@@ -173,7 +213,12 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
         @ad.service_id = @service.id
         @ad.form_definition_json= '{"schema": {"required": ["t","date"] }}'
         @ad.save(:validate => false)
-        
+
+        # HTML requests should not create LineItemAdditionalDetails          
+        expect{
+          get(:show, { :id=>@service_request.id , :format => :html })
+        }.to change{LineItemAdditionalDetail.count}.by(0)
+                
         expect{
           get(:show, { :id=>@service_request.id , :format => :json })
         }.to change{LineItemAdditionalDetail.count}.by(1)
@@ -181,7 +226,7 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
         expect(@line_item_additional_detail.additional_detail_id).to eq(@ad.id)
         expect(@line_item_additional_detail.line_item_id).to eq(@line_item.id)
         expect(response.status).to eq(200)
-        expect(response.body).to eq([@line_item_additional_detail].to_json(:root=> false, :methods => [:has_answered_all_required_questions?, :additional_detail_breadcrumb]))
+        expect(response.body).to eq(@service_request.to_json(:root=> false, :only => [], :methods => [:protocol_short_title], :include => { :get_or_create_line_item_additional_details => {:methods => [:has_answered_all_required_questions?, :additional_detail_breadcrumb] }}))
       end
     end 
     
@@ -198,6 +243,11 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
         get(:show, { :id => @service_request.id , :format => :json})
         expect(response.status).to eq(401)
         expect(response.body).to eq("")
+        
+        get(:show, { :id => @service_request.id , :format => :html})
+        expect(response.status).to eq(401)
+        expect(response).to render_template("additional_detail/shared/unauthorized")
+        expect(assigns(:service_request)).to be_blank
       end
     end  
     
@@ -214,6 +264,11 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
         get(:show, { :id => @service_request.id , :format => :json})
         expect(response.status).to eq(401)
         expect(response.body).to eq("")
+        
+        get(:show, { :id => @service_request.id , :format => :html})
+        expect(response.status).to eq(401)
+        expect(response).to render_template("additional_detail/shared/unauthorized")
+        expect(assigns(:service_request)).to be_blank
       end
     end    
     
@@ -229,6 +284,11 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
       get(:show, { :id => @service_request.id , :format => :json})
       expect(response.status).to eq(401)
       expect(response.body).to eq("")
+      
+      get(:show, { :id => @service_request.id , :format => :html})
+      expect(response.status).to eq(401)
+      expect(response).to render_template("additional_detail/shared/unauthorized")
+      expect(assigns(:service_request)).to be_blank
     end
   end 
   
@@ -244,6 +304,11 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
       get(:show, { :id => @service_request.id , :format => :json})
       expect(response.status).to eq(401)
       expect(response.body).to eq("")
+      
+      get(:show, { :id => @service_request.id , :format => :html})
+      expect(response.status).to eq(401)
+      expect(response).to render_template("additional_detail/shared/unauthorized")
+      expect(assigns(:service_request)).to be_blank
     end
   end 
   
@@ -259,6 +324,11 @@ RSpec.describe AdditionalDetail::ServiceRequestsController do
       get(:show, { :id => @service_request.id , :format => :json})
       expect(response.status).to eq(401)
       expect(response.body).to eq("")
+      
+      get(:show, { :id => @service_request.id , :format => :html})
+      expect(response.status).to eq(401)
+      expect(response).to render_template("additional_detail/shared/unauthorized")
+      expect(assigns(:service_request)).to be_blank
     end
   end 
   end

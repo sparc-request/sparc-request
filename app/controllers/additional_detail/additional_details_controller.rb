@@ -1,8 +1,6 @@
 class AdditionalDetail::AdditionalDetailsController < ApplicationController
   protect_from_forgery
 
-  layout 'additional_detail/application'
-
   before_filter :authenticate_identity! # returns 401 for failed JSON authentication
   before_filter :load_service
   before_filter :authorize_admin_user, :only => [:index]
@@ -92,7 +90,7 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
       return true
     else
       @service = nil
-      render "unauthorized", :status => :unauthorized
+      render "additional_detail/shared/unauthorized", :status => :unauthorized
     end
   end
   
@@ -102,7 +100,7 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
       return true
     else
       @service = nil
-      render "unauthorized", :status => :unauthorized
+      render "additional_detail/shared/unauthorized", :status => :unauthorized
     end
   end
 

@@ -19,34 +19,34 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 en:
-  application_title: "SPARC Request"
-  about_title: "About SPARC Request"
   about_text: "SPARC Request (Services, Pricing, & Application for Research Centers) is a web-based research management system that provides a central portal (one-stop shop) to researchers and their study teams to browse for research services and resources, as well as submit service and pricing requests with a focus on billing compliance and proposal/budget development. The free software is open to MUSC affiliates and CTSA institutions to adopt and capitalize on efficiencies."
-  portal_title: "SPARC Request Portal"
-  admin_portal_title: "SPARC Request Administration"
-  catalog_manager_title: "SPARC Request Catalog Manager"
-  error_contact: "(843) 792-8300 or success@musc.edu"
-  issue_contact: "Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have."
-  feedback: "Feedback"
-  bug_enhancement_link: "Report a bug or request an enhancement"
+  about_title: "About SPARC Request"
   activerecord:
     attributes:
-      protocol:
-        human_subjects_info: "The NCT #"
-        has_cofc: "Does your study have a Certificate of Confidentiality"
       human_subjects_info:
         nct_number: "The NCT #"
+      protocol:
+        has_cofc: "Does your study have a Certificate of Confidentiality"
+        human_subjects_info: "The NCT #"
+  admin_portal_title: "SPARC Request Administration"
+  application_title: "SPARC Request"
+  bug_enhancement_link: "Report a bug or request an enhancement"
+  catalog_manager_title: "SPARC Request Catalog Manager"
+  error_contact: "(843) 792-8300 or success@musc.edu"
+  feedback: "Feedback"
+  issue_contact: "Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have."
+  portal_title: "SPARC Request Portal"
 
   # bottom navigation
   bottom_navigation:
-    go_back: "Go Back"
-    save_and_exit: "Save as Draft"
-    save_and_continue: "Save & Continue"
-    continue: "Continue"
-    save_as_draft: "Save As Draft"
-    get_cost_estimate: "Get Cost Estimate"
-    submit_to_start: "Submit to Start Services"
     cancel: "Cancel"
+    continue: "Continue"
+    get_cost_estimate: "Get Cost Estimate"
+    go_back: "Go Back"
+    save_and_continue: "Save & Continue"
+    save_and_exit: "Save as Draft"
+    save_as_draft: "Save As Draft"
+    submit_to_start: "Submit to Start Services"
 
   message:
     red_message: "Pricing is consistent across locations unless otherwise stated."
@@ -54,10 +54,10 @@ en:
   # right navigation
   right_navigation:
     ask_a_question: "Ask A Question"
+    catalog: "Back to Catalog"
     dashboard: "Dashboard"
     faq: "Help/FAQs"
     feedback: "Feedback"
-    catalog: "Back to Catalog"
 
   # steps navigation
   step_navigation:
@@ -68,41 +68,41 @@ en:
     step_5: "STEP 5: <br /> Submission <br /> Confirmation"
 
   # sign in page
+  login_name: "Username:"
+  login_password: "Password:"
+  remember_user: "Remember me:"
   signin:
+    button1: "MUSC Users Click Here"
+    button2: "Outside Users Click Here"
+    button3: "Sign In"
     message1: "MUSC Users- Sign in here"
     message2: ""
     message3: "Outside Users- Sign in here with your SPARC Request account"
     message4: ""
-    button1: "MUSC Users Click Here"
-    button2: "Outside Users Click Here"
-    button3: "Sign In"
-  login_name: "Username:"
-  login_password: "Password:"
-  remember_user: "Remember me:"
 
   # new user sign up
   signup:
-    message: "To create an account for the utilization of the SPARC Request application, please provide the following information:"
-    lname: "Last Name:"
-    fname: "First Name:"
+    cancel: "Cancel"
     company: "Company:"
-    mail: "Email:"
-    phone: "Telephone Number:"
     confirm: "Password Confirmation:"
+    fname: "First Name:"
+    lname: "Last Name:"
+    mail: "Email:"
+    message: "To create an account for the utilization of the SPARC Request application, please provide the following information:"
+    not_approved: "Close Window"
+    phone: "Telephone Number:"
     reason: "Reason for account/login request:"
     submit: "Create New User"
-    cancel: "Cancel"
-    not_approved: "Close Window"
 
   # password reset
   password_reset_message: "Forgot your password?"
   password_reset_submit: "Send password reset"
 
   # sign in popup
-  initial_signin_dialog: "You are not currently logged into SPARC Request. If you are affiliated with an institution and have an institutional login OR have created a SPARC Request account and have a SPARC Request login and password, please click the top button to proceed. If you are not currently affiliated with an institution OR do not have a SPARC Request login/password, please click the button on the bottom to proceed with creating a new account."
-  proceed_to_shibboleth: "MUSC Users"
-  proceed_to_database_login: "Outside Users with existing SPARC Request Accounts"
   create_new_account_link: "Outside Users: Don't have an account? Click here."
+  initial_signin_dialog: "You are not currently logged into SPARC Request. If you are affiliated with an institution and have an institutional login OR have created a SPARC Request account and have a SPARC Request login and password, please click the top button to proceed. If you are not currently affiliated with an institution OR do not have a SPARC Request login/password, please click the button on the bottom to proceed with creating a new account."
+  proceed_to_database_login: "Outside Users with existing SPARC Request Accounts"
+  proceed_to_shibboleth: "MUSC Users"
 
   ie_warning:
     text1: "Your browser version is out of date. SPARC Request does not support Internet Explorer versions older than version 8."
@@ -110,54 +110,56 @@ en:
 
   # Notifier
   notifier:
-    service_request: "Service Request"
-    welcome_obtain_research_pricing: "A request has been made to get a cost estimate"
-    welcome_submit: "Services have been requested or changed"
-    body1: "Dear %{full_name},"
-    body2_pi: "%{welcome} in %{application_title} (%{root_url}) for your %{protocol_type} listed below. In addition, below is a list of users who have been granted access to this %{protocol_type} on your behalf."
-    body2_non_pi: "%{welcome} in %{application_title} (%{root_url}) for a %{protocol_type} to which you have been granted access."
-    p_title: "Project Title:"
-    p_info: "Project Information"
-    p_id: "Project ID:"
-    title1: "Short Title:"
-    title2: "Project Title:"
-    s_name: "Sponsor Name:"
-    source: "Funding Source:"
-    name: "Name:"
-    role: "Role:"
-    proxy: "Proxy Rights:"
-    body6: "A list of requested services is attached."
-    body7: "To approve the charges associated with the selected services please click"
-    link: "HERE"
+    action: "Action"
     admin_data: "Admin Information"
-    triggered_by: "Current Identity:"
-    sr_id: "Service Request ID:"
-    ssr_ids: "Sub Service Request IDs:"
-    ssr_id: "Sub Service Request ID:"
+    all_on_request: "All Services on Request Have Been Deleted"
     arm_data: "Protocol Arm Information"
     arm_name: "Arm Name"
     arm_subject_count: "Subject Count"
     arm_visit_count: "Visit Count"
+    body1: "Dear %{full_name},"
+    body2_pi: "%{welcome} in %{application_title} (%{root_url}) for your %{protocol_type} listed below. In addition, below is a list of users who have been granted access to this %{protocol_type} on your behalf."
+    body2_non_pi: "%{welcome} in %{application_title} (%{root_url}) for a %{protocol_type} to which you have been granted access."
+    body6: "A list of requested services is attached."
+    body7: "To approve the charges associated with the selected services please click"
+    link: "HERE"
+    name: "Name:"
     notice:
+      approve: "Approve Account"
       body1: "Request for new SPARC Request account submitted and awaiting approval"
       body2: "A new SPARC Request account is waiting for approval."
-      last: "Last Name"
-      first: "First Name"
       company: "Company"
+      disapprove: "Disapprove Account"
       email: "Email"
+      first: "First Name"
+      last: "Last Name"
       number: "Telephone Number"
       reason: "Reason for account/login request"
-      approve: "Approve Account"
-      disapprove: "Disapprove Account"
+    p_id: "Project ID:"
+    p_info: "Project Information"
+    p_title: "Project Title:"
+    proxy: "Proxy Rights:"
+    role: "Role:"
+    s_name: "Sponsor Name:"
+    service: "Service"
+    service_request: "Service Request"
+    source: "Funding Source:"
+    sr_id: "Service Request ID:"
+    ssr_ids: "Sub Service Request IDs:"
+    ssr_id: "Sub Service Request ID:"
     status_change:
       body1: "Request for new SPARC Request account status change"
       body2: "Your request for a new SPARC Request account has been approved.  You may proceed with your service "
       body3: "request using your newly created"
       body4: "username and password."
       body5: "Your request for a new SPARC Request account has NOT been approved."
-    service: "Service"
-    action: "Action"
-    all_on_request: "All Services on Request Have Been Deleted"
+    title1: "Short Title:"
+    title2: "Project Title:"
+    triggered_by: "Current Identity:"
+    welcome_obtain_research_pricing: "A request has been made to get a cost estimate"
+    welcome_submit: "Services have been requested or changed"
+
+
 
   # Tooltip help dialogs
   cart_help:
@@ -174,63 +176,65 @@ en:
         answer_text: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARC Request uses this data to calculate your total overall indirect costs."
       - question_text: "I\\'m stuck! Who can I contact for assistance with SPARC Request?"
         answer_text: "The SUCCESS Center is happy to assist you! Please contact us at <a href=\"mailto:success@musc.edu\">success@musc.edu</a> or (843) 792-3357."
+
   # indirect cost rates, default values used to prepopulate forms
   indirect_cost_rates:
-    internal_and_college: "0"
     industry: "30"
-    foundation_and_investigator: "25"
+    internal_and_college: "0"
     federal: "49.5"
+    foundation_and_investigator: "25"
+
   # new/editing projects
   sr_project:
-    message: "Before you can complete a service request, please tell us more about your project.  This information will be used by our staff to decide the best way to process your request."
-    title1: "Short Title:*"
-    title2: "Project Title:*"
-    funding_status: "Proposal Funding Status:*"
+    description: "Brief Description:"
     dropdown_default1: "Select a Funding Status"
-    funding_source: "Funding Source:*"
-    potential_funding_source: "Potential Funding Source:*"
     dropdown_default2: "Select a Funding Source"
     dropdown_default3: "Select a Potential Funding Source"
-    description: "Brief Description:"
+    funding_source: "Funding Source:*"
+    funding_status: "Proposal Funding Status:*"
+    message: "Before you can complete a service request, please tell us more about your project.  This information will be used by our staff to decide the best way to process your request."
+    potential_funding_source: "Potential Funding Source:*"
     rate: "Indirect Cost Rate:"
+    title1: "Short Title:*"
+    title2: "Project Title:*"
 
   # Project/Study assignment page
   study_assignment:
-    instructions_1: "Please review services below."
-    notice: "If Professional Services are covered by % effort, please indicate in Step 2."
-    select_protocol: "Select a Research Study/Project"
-    select_study: "Select Study"
-    select_project: "Select Project"
-    research_study: "Research Study"
-    research_project: "Project"
-    edit_study: "Edit Study"
+    current_project: "Current Project: <span>&nbsp</span>"
+    current_study: "Current Study: <span>&nbsp</span>"
     edit_project: "Edit Project"
-    or: "If not in list above, create NEW Study/Project Below"
-    new_study: "New Study"
+    edit_study: "Edit Study"
+    instructions_1: "Please review services below."
     new_project: "New Project"
+    new_study: "New Study"
+    notice: "If Professional Services are covered by % effort, please indicate in Step 2."
+    or: "If not in list above, create NEW Study/Project Below"
     previously_submitted_study: "The request that you are editing has been previously submitted and can not be moved to another study."
     previously_submitted_project: "The request that you are editing has been previously submitted and can not be moved to another project."
-    current_study: "Current Study: <span>&nbsp</span>"
-    current_project: "Current Project: <span>&nbsp</span>"
+    research_project: "Project"
+    research_study: "Research Study"
+    select_project: "Select Project"
+    select_protocol: "Select a Research Study/Project"
+    select_study: "Select Study"
     sidebar_box:
-      my_services: "My Services"
       help: "Help"
+      my_services: "My Services"
 
   # Subsidy Page
   subsidy_page:
-    not_eligible: "None of the services you have selected are eligible for a subsidy."
+    additional_confirm: "Are you sure you want to leave? Any unsaved changes to this service request will be lost."
     eligible_html: "The services selected below may be eligible for a <b><i>funding award</i></b> or subsidy to cover some or all of the costs of the services. For example, SCTR (CTSA) provides funding awards for the Research Nexus."
+    not_eligible: "None of the services you have selected are eligible for a subsidy."
+    overridden: "This request has been previously submitted and the subsidy can now only be edited by an Admin."
+    request_additional: "To request additional research funding go to"
     table:
+      amount_of_funding: "amount of funding"
       institution: "Institution/Provider/Program/Core"
-      total_estimated: "Total Estimated Costs"
+      percent_of_cost: "percent of cost"
       pi_contribution: "Study Contribution"
       requested_funding: "Requested Funding"
       subsidy: "% Requested Subsidy"
-      percent_of_cost: "percent of cost"
-      amount_of_funding: "amount of funding"
-    request_additional: "To request additional research funding go to"
-    additional_confirm: "Are you sure you want to leave? Any unsaved changes to this service request will be lost."
-    overridden: "This request has been previously submitted and the subsidy can now only be edited by an Admin."
+      total_estimated: "Total Estimated Costs"
 
   # Calendar Page
   calendar_page:
@@ -608,7 +612,7 @@ en:
     instructions: "Thank you for submitting your service request(s) through SPARC Request. An email has been sent to each of your service providers and they should be contacting you soon. If you have any questions or concerns, please don't hesitate to contact the SUCCESS Center at 792-8300 or success@musc.edu."
     research_pricing_instructions : "You have successfully submitted a request to get a cost estimate. An email(s) has been submitted on your behalf, and we will respond to your request for a cost estimate shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
     download_button: "Download my Service Request"
-    portal_button: "Go to SPARC Request Dashboard"
+    portal_button: "Go to SPARC Request User Portal"
     details:
       date_submitted: "Date Submitted: "
       short_title: "Short Title: "
@@ -1118,7 +1122,7 @@ en:
   in_fulfillment: "This line item is associated with a request that is in Fulfillment and cannot be deleted."
   service_deleted: "Service has been deleted."
   cart:
-    remove_request_confirm: "This action will delete this service request and you will be redirected to the dashboard. Click OK to proceed."
+    remove_request_confirm: "This action will delete this service request and you will be redirected to your user portal. Click OK to proceed."
   feedback:
     message_error: "Message can't be blank"
   service_request_success: "Service request has been saved."

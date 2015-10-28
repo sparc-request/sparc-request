@@ -120,7 +120,7 @@ funding_sources: { 'College Department': 'college',
                    'Industry-Initiated/Industry-Sponsored': 'industry',
                    'Investigator-Initiated/Industry-Sponsored': 'investigator',
                    'Internal Funded Pilot Project': 'internal',
-                   'Unfunded College Research': 'unfunded' }
+                   'Unfunded Student Research': 'unfunded' }
 potential_funding_sources: { 'College Department': 'college',
                              'Federal': 'federal',
                              'Foundation/Organization': 'foundation',

@@ -25,7 +25,7 @@
                 %label{:for=>"kind"} Type
                 %select.form-control{:id=>"kind", "ng-model"=>"field.kind", :required=>"required"}
                   %option{:disabled=>"disabled", :value=>'', :selected=>"selected"} Please Select One
-                  %option{"ng-repeat"=>"kind in typeHashKeyList", :value=>"{{kind}}", :title=>"{{typeHash[kind]}}"} {{typeHash[kind]}}
+                  %option{"ng-repeat"=>"(key,value) in typeHash", :value=>"{{key}}"} {{value}}
                 .help-block.with-errors
           .row
             .col-md-6

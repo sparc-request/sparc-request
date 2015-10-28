@@ -1,18 +1,28 @@
 angular.module('app').controller('FormCreationController', ['$scope', '$http', function ($scope, $http, $compile) {
-
 	$scope.gridModel = {enableColumnMenus: false, enableFiltering: true,enableCellEdit: false, enableColumnResizing: true, showColumnFooter: false , enableSorting: false, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 45};
-	  $scope.gridModel.columnDefs = [
+	$scope.gridModel.columnDefs = [
 	                                 {name: 'Edit',enableFiltering: false, enableColumnResizing: false, width: 53, cellTemplate: '<button type="button" class="btn btn-primary" ng-click="grid.appScope.editQuestion(row.entity.id)">Edit</button>' },
 	                                 {name: 'question', field: 'name',  width: '33%' }, 
 	                                 {name: 'type', field: "kind", width: '15%'},
 	                               	 {name: 'required', width :'12%'},
 	                               	 {field: "description"},
 	                               	 {enableFiltering: false,  enableColumnResizing: false,name:'Order', field :'up', width: 83, cellTemplate: '<button type="button" class="btn btn-primary glyphicon glyphicon-chevron-up" ng-click="grid.appScope.up(row.entity.key)"></button><button type="button" class="btn btn-primary glyphicon glyphicon-chevron-down" ng-click="grid.appScope.down(row.entity.key)"></button>'}
-	                               	 ];
-	
-	var typeHash;
+	                               	];
 	
 	$scope.form ={};
+	$scope.model = {};
+	
+	//Displays result data that will be exported when a user requests a service and anaswers the questions
+	$scope.pretty = function(){
+		 return JSON.stringify($scope.model,undefined,2,2);
+		 };
+		 
+	//Will hide results data if no data is present
+	$scope.dataDisplay = function(){
+		return (!$scope.pretty() || $scope.pretty()=="{}") ? "display : none" : "";
+		} 
+
+	//Required to use datepicker
 	$scope.effective_date = effective_date;
 
 	$scope.typeHash = {
@@ -33,29 +43,37 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 	    dropdown : "Dropdown",
 	    multiDropdown : "Multiple Dropdown"
 	  };
-	  
-	typeHash = $scope.typeHash;	  
-	$scope.typeHashKeyList = Object.keys($scope.typeHash);
+	
+	//used is setting display text for dropdown
 
 	$scope.invaildDate = new Date((new Date()-86400000));
-
+	
+	//Creates formDefinition String, will populate if null
     $scope.formDefinition = ($('#additional_detail_form_definition_json').val() != "") ? $('#additional_detail_form_definition_json').val() : JSON.stringify({ schema: { type: "object",title: "Comment", properties: {},required: []}, form: []},undefined,2);
     
     //Uses a key name to populate add/edit question model with question data, if key==null then a new question will be created
     
+    $scope.getFormDefinition = function(){
+    	return JSON.parse($scope.formDefinition);
+    }
+    
+    $scope.setFormDefinition = function(formDef){
+    	$scope.formDefinition = JSON.stringify(formDef,undefined,2,2);
+    }
+    
     $scope.resetQuestion = function(){$scope.field = {};}
     
     $scope.getSchemaParsed = function(){
-    	return JSON.parse($scope.formDefinition).schema;
+    	return $scope.getFormDefinition().schema;
     }
     
     $scope.getRequired = function(){
-    	var required = JSON.parse($scope.formDefinition).schema.required
+    	var required = $scope.getSchemaParsed().required
     	return (required) ? required : [];
     }
     
     $scope.getFormParsed = function(){
-    	return JSON.parse($scope.formDefinition).form;
+    	return $scope.getFormDefinition().form;
     }
     
     //Taking a id as input this function will return a question hash with all relevent data
@@ -96,13 +114,13 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
     	}
     }
     
-    $scope.editQuestion = function(key){
+    $scope.editQuestion = function(id){
 		// hide the alert message before showing new question
 		$scope.alertMessage = null;
 		
     	//find key if it exists
     	if(key){
-    		$scope.field = $scope.getQuestion(key);
+    		$scope.field = $scope.getQuestion(id);
     		$scope.modalSaveText = "Update"
     	}
     	else{
@@ -111,7 +129,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
     	}
     	
     	//open modal
-    	$('#additionalDetailQuestionEditModal').modal();
+    	$scope.showModal();
     	
     }
     
@@ -119,17 +137,16 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
     	$('#additionalDetailQuestionEditModal').modal('hide');
     }
     
-    $scope.vaildQuestion = function(){
-    	return true;
+    $scope.showModal = function(){
+    	$('#additionalDetailQuestionEditModal').modal();
     }
-        
+    
 	 var dropdownKindList = ["multiDropdown", "dropdown", "state", "country"];
 	 function generateGridArray(schema, form){
 		 var gridArray = [];
 		 for (var x=0; x < form.length; x++){
 			 gridArray.push($scope.getQuestion(form[x].id));
 		  }
-		 
 		 return gridArray;
 	 }
 	
@@ -149,18 +166,14 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
  		 }
 	}); 
  	
- 	 $scope.pretty = function(){
- 		 return JSON.stringify($scope.model,undefined,2,2);
-		 };
-		  
 	  // form def management
 	  // default type to text for new fields
 	  $scope.field = {};
 	  // select list options
 	  
 	  $scope.keyError = function(){
-	  		return ($scope.field.key && findByKey($scope.field.key)) ? "Key already exists." : "Please fill out this field. Valid characters are A-Z a-z 0-9";
-	  	}
+	  		return ($scope.field && $scope.field.key && findByKey($scope.field.key)) ? "Key already exists." : "Please fill out this field. Valid characters are A-Z a-z 0-9";
+	  }
 	  
 	 
 	 //This will determine if the min max values or values input boxes shouldd be displayed in the add question modal
@@ -214,70 +227,18 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 						form[i+1] = row;
 						form[i] = rowReplased;
 					}
-					$scope.formDefinition = JSON.stringify(formDef,undefined,2,2);
+					$scope.setFormDefinition(formDef);
 					break;
 				}
 			}
 		}
 		
-		// update data inline
+		
 		$scope.gridModel.onRegisterApi = function(gridApi){
-	        // set gridApi on scope
-	        $scope.gridApi = gridApi;
-	         gridApi.edit.on.afterCellEdit($scope,function(rowEntity, colDef, newValue, oldValue){
-	        var formDef = JSON.parse($scope.formDefinition);
-	        
-	        // when the key get changed
-	        if(!formDef.schema.properties[rowEntity.key] && formDef.schema.properties[oldValue]){
-	        	rowEntity.key = removeSpecial(rowEntity.key); // removes
-																// special
-																// characters
-	        	var newForm = formDef.schema.properties[oldValue];
-	        	formDef.schema.properties[rowEntity.key] = newForm;
-	        	$scope.model[rowEntity.key] = $scope.model[oldValue];
-	        	delete $scope.model[oldValue];
-	        	delete formDef.schema.properties[oldValue];
-	        	for(var x=0; x < formDef.form.length; x++){
-	        		if (formDef.form[x].key && formDef.form[x].key == oldValue){
-	        			formDef.form[x].key = rowEntity.key;
-	        			break;
-	        		}
-	        	}
-		        // update required array
-		        for(var x=0; x<formDef.schema.required.length; x++){
-		        	if(oldValue==formDef.schema.required[x]){
-		        		formDef.schema.required.splice(x,1);
-		        		formDef.schema.required.push(rowEntity.key);
-		        		break;
-		        	}
-		        }	
-	        }
-	        
-	        // when type is changed erase current value of key in model
-	        if(typeHash[oldValue] && formDef.schema.properties[rowEntity.key]){
-	        	delete $scope.model[rowEntity.key];
-	        }
-	        
-	        // add into required if it is not there
-	        if(rowEntity.required =='true' && inList(formDef.schema.required, rowEntity.key)=="false"){formDef.schema.required.push(rowEntity.key);}
-	        else if(rowEntity.required =='false' && inList(formDef.schema.required, rowEntity.key)=="true"){
-	        	var index = formDef.schema.required.indexOf(rowEntity.key);
-	        	if(index > -1) {formDef.schema.required.splice(index, 1);}
-	        }
-        	formDef.schema.properties[rowEntity.key] = $scope.getSchema(rowEntity);
-        	
-        	for(var x=0; x<formDef.form.length; x++){
-        		if(formDef.form[x].key==rowEntity.key){
-        			formDef.form[x] = $scope.getForm(rowEntity);
-        			break;
-        		}
-        	}      	
-	   		$scope.formDefinition = JSON.stringify(formDef,undefined,2,2);
-	   		$scope.gridModel.data = generateGridArray($scope.schema, $scope.form); 
-	   		delete $scope.model[rowEntity.key];
-	         })
-	        	  
-	      }
+			$scope.gridApi = gridApi;
+			
+		}
+
 	    // delete selected rows
 	    Array.prototype.removeByFormKey = function(val) {
 		    for(var i=0; i<this.length; i++) {
@@ -305,7 +266,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 	    				formDef.schema.required.splice(index, 1);
 	    			}
 	    			break;
-	    			}
+	    		}
 	    	}
 	    	//loop through form array and remove id
 	    	for(var i=0; i<formDef.form.length; i++){
@@ -315,7 +276,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 	    			break;
 	    		}
 	    	}
-	    	$scope.formDefinition = JSON.stringify(formDef,undefined,2,2);
+	    	$scope.setFormDefinition(formDef);
 	    }
 	    
 	    //Will delete all questions
@@ -400,12 +361,11 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 					//If required at it to required array if not already present
 					if(question.required && !inRequired(question.key)){formDef.schema.required.push(question.key);}
 					//Update form definition
-					$scope.formDefinition = JSON.stringify(formDef,undefined,2,2);
+					$scope.setFormDefinition(formDef);
 					//Lastly hide modal
 					$scope.hideModal();					
 	  			} 
 	  		}
-	  		
 	  	}
 	  	
 	 function inRequired(key){
@@ -689,31 +649,5 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 		}
 		
 	 }
-	 	      
-  $scope.model = {};
   
-  $scope.dataDisplay = function(){
-	  return (!$scope.pretty() || $scope.pretty()=="{}") ? "display : none" : "";
-  }
-  
-}]).filter('mapKind', function() { 
-  return function(input) {
-    if (!input){
-      return '';
-    } else {
-      return typeHash[input];
-    }
-  };
-}).filter('mapBoolean', function() { 
-  var hash = {
-	"true" : "Yes",
-	"false" : "No"
-  }
-	return function(input) {
-		if (!input) {
-			return '';
-		}else{
-			return hash[input];
-		}
-	};
-});
+}]);

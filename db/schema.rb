@@ -134,7 +134,6 @@ ActiveRecord::Schema.define(:version => 20151019183218) do
     t.string   "comment"
     t.string   "remote_address"
     t.datetime "created_at"
-    t.string   "request_uuid"
   end
 
   add_index "audits", ["associated_id", "associated_type"], :name => "associated_index"

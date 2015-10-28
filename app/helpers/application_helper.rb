@@ -135,7 +135,7 @@ module ApplicationHelper
                                       tag(:br) +
                                       link_to((content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')),
                                               "/service_requests/#{service_request.id}/#{action}/#{n}/#{arm.id}?portal=#{portal}",
-                                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only', :id => "check_all_column_#{n}"),
+                                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only', :id => "check_all_column_#{n}", data: {confirm: "This will reset custom values for this column, do you wish to continue?"}),
                                       :width => 60, :class => 'visit_number')
       end
     end
@@ -302,5 +302,9 @@ module ApplicationHelper
   # If any of the subjects under the given arm have completed appointments, returns true
   def arm_has_subject_data? arm
     arm.subjects ? arm.subjects.any?{|subject| subject.calendar.appointments.any?{|appt| !appt.completed_at.nil?}} : false
+  end
+
+  def entity_visibility_class entity
+    entity.is_available == false ? 'entity_visibility' : ''
   end
 end

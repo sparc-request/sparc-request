@@ -62,6 +62,7 @@ class ServiceRequestsReport < ReportingModule
     end
 
     attrs["SRID"] = :display_id
+    attrs["Status"] = :status
 
     if params[:apr_data]
       if params[:apr_data].include?("irb") || params[:apr_data].include?("iacuc")
@@ -70,7 +71,6 @@ class ServiceRequestsReport < ReportingModule
     end
 
     attrs["Date Submitted"] = "service_request.submitted_at.strftime('%Y-%m-%d')"
-
     attrs["Primary PI Last Name"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:last_name)"
     attrs["Primary PI First Name"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:first_name)"
     attrs["Primary PI College"] = ["service_request.try(:protocol).try(:primary_principal_investigator).try(:college)", COLLEGES.invert] # we invert since our hash is setup {"Bio Medical" => "bio_med"} for some crazy reason

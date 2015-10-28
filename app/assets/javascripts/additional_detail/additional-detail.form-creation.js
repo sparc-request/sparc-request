@@ -1,5 +1,15 @@
 angular.module('app').controller('FormCreationController', ['$scope', '$http', function ($scope, $http, $compile) {
 
+	$scope.gridModel = {enableColumnMenus: false, enableFiltering: true,enableCellEdit: false, enableColumnResizing: true, showColumnFooter: false , enableSorting: false, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 45};
+	  $scope.gridModel.columnDefs = [
+	                                 {name: 'Edit',enableFiltering: false, enableColumnResizing: false, width: 53, cellTemplate: '<button type="button" class="btn btn-primary" ng-click="grid.appScope.editQuestion(row.entity.id)">Edit</button>' },
+	                                 {name: 'question', field: 'name',  width: '33%' }, 
+	                                 {name: 'type', field: "kind", width: '15%'},
+	                               	 {name: 'required', width :'12%'},
+	                               	 {field: "description"},
+	                               	 {enableFiltering: false,  enableColumnResizing: false,name:'Order', field :'up', width: 83, cellTemplate: '<button type="button" class="btn btn-primary glyphicon glyphicon-chevron-up" ng-click="grid.appScope.up(row.entity.key)"></button><button type="button" class="btn btn-primary glyphicon glyphicon-chevron-down" ng-click="grid.appScope.down(row.entity.key)"></button>'}
+	                               	 ];
+	
 	var typeHash;
 	
 	$scope.form ={};
@@ -123,41 +133,6 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 		 return gridArray;
 	 }
 	
-	 function enumDisplay(row){
-		if(row.kind == "text" || row.kind=="textarea"){
-			if(row.minLength && !row.maxLength){return row.minLength;}
-			else if(!row.minLength && row.maxLength){return "0,"+row.maxLength;}
-			else if(row.minLength && row.maxLength){return row.minLength +","+ row.maxLength;}
-			return '';
-		}
-		else if(row.kind == "number"){
-			if(row.minimum && !row.maximum){return row.minimum;}
-			else if(!row.minimum && row.maximum){return "0,"+row.maximum;}
-			else if(row.minimum && row.maximum){return row.minimum +","+ row.maximum;}
-			return '';
-		}
-		else if(inList(dropdownKindList,row.kind)=="true"){
-			var list = "";
-			for(var i=0; i<row.titleMap.length-1; i++){
-				list = list+row.titleMap[i].value+",";
-			}
-			list = list+row.titleMap[row.titleMap.length-1].value;
-			return list;
-			
-		}
-		else{
-			var list = (row.items && row.items["enum"]) ? row.items["enum"] : row["enum"];			
-			if(list){
-				var s = "";
-				for(var i=0; i<list.length-1; i++){
-					s = s+list[i]+","
-					}
-				return s+list[list.length-1];
-			}
-			return '';
-		}
-	 }
-	 
 	 function inList(list, item){
 		 for(var i=0; i<list.length; i++){
 			 if(list[i]== item){return 'true';}
@@ -172,14 +147,13 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 		        $scope.form   = object.form;
 		        $scope.gridModel.data = generateGridArray($scope.schema, $scope.form);
  		 }
- 		 
-		  }); 
+	}); 
  	
  	 $scope.pretty = function(){
  		 return JSON.stringify($scope.model,undefined,2,2);
 		 };
 		  
-	// form def management
+	  // form def management
 	  // default type to text for new fields
 	  $scope.field = {};
 	  // select list options
@@ -188,6 +162,8 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 	  		return ($scope.field.key && findByKey($scope.field.key)) ? "Key already exists." : "Please fill out this field. Valid characters are A-Z a-z 0-9";
 	  	}
 	  
+	 
+	 //This will determine if the min max values or values input boxes shouldd be displayed in the add question modal
 	 $scope.displayValue; $scope.minMaxDisplay;
 	 $scope.$watch('field.kind', function(val){
 		 if(val =="radiobuttons" || val == "checkboxes" || val=="dropdown" || val=="multiDropdown"){
@@ -207,35 +183,11 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 		}
 		else{$scope.minMaxDisplay = "display : none";}
 	 });
-	  
-	  function getKindHashArray(){
-		  var hashArray =[];
-		  var typeList  = Object.keys($scope.typeHash)
-		  for(var i=0; i<typeList.length; i++){
-			  var hash = {
-					 id: typeList[i],
-					 kind : $scope.typeHash[typeList[i]]
-			  };
-			  hashArray.push(hash);
-		  }
-		  return hashArray;
-	  }
-	    
-	 
+	   
 	  $scope.formKeySet = function(){
 		  return Objects.keys($scope.model.form);
 	  };
 	  
-	  $scope.gridModel = {enableColumnMenus: false, enableFiltering: true,enableCellEdit: false, enableColumnResizing: true, showColumnFooter: false , enableSorting: false, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 45};
-	  $scope.gridModel.columnDefs = [
-	                                 {name: 'Edit',enableFiltering: false, enableColumnResizing: false, width: 53, cellTemplate: '<button type="button" class="btn btn-primary" ng-click="grid.appScope.editQuestion(row.entity.id)">Edit</button>' },
-	                                 {name: 'question', field: 'name',  width: '33%' }, 
-	                                 {name: 'type', field: "kind", width: '15%'},
-	                               	 {name: 'required', width :'12%'},
-	                               	 {field: "description"},
-	                               	 {enableFiltering: false,  enableColumnResizing: false,name:'Order', field :'up', width: 83, cellTemplate: '<button type="button" class="btn btn-primary glyphicon glyphicon-chevron-up" ng-click="grid.appScope.up(row.entity.key)"></button><button type="button" class="btn btn-primary glyphicon glyphicon-chevron-down" ng-click="grid.appScope.down(row.entity.key)"></button>'}
-	                               	 ];
-
 		function removeSpecial(value){
 			if(value){
 				return value.replace(/[^\w\s]/gi, '');
@@ -342,7 +294,10 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 	    	for(key in formDef.schema.properties){
 	    		var question = $scope.getSchemaParsed().properties[key];
 	    		if(question.id == id){
+	    			//remove from schema
 	    			delete formDef.schema.properties[key];
+	    			//remove any input value from data preview
+	    			delete $scope.model[key];
 	    			//look in required to see if key is inside
 	    			var index = formDef.schema.required.indexOf(key);
 	    			if(index > -1){
@@ -361,7 +316,6 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 	    		}
 	    	}
 	    	$scope.formDefinition = JSON.stringify(formDef,undefined,2,2);
-	    	
 	    }
 	    
 	    //Will delete all questions
@@ -373,15 +327,8 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 	    
 	    $scope.deleteSelected = function() {
 		    var rows = $scope.gridApi.selection.getSelectedRows($scope.gridModel);
-	    	var formDef = JSON.parse($scope.formDefinition)
-		    for (var x=0;x<rows.length;x++) {
-		    	if (formDef.schema.properties[rows[x].key]){
-		    		delete formDef.schema.properties[rows[x].key];
-		    		formDef.form.removeByFormKey([rows[x].key]);
-		    	}
-		    	// update schema/form definitions
-	   			$scope.formDefinition = JSON.stringify(formDef,undefined,2,2);
-	   			$scope.gridModel.data = generateGridArray($scope.schema, $scope.form); 
+		    for (var i=0; i<rows.length; i++) {
+		    	$scope.deleteById(rows[i].id)
 		  	}
 	  	};   	
 	  
@@ -496,19 +443,15 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 		 return newHash;
 	 }
 	 
-	 $scope.clear = function(field){
-		 field = {};
-	 }
-	 
-	 var radioButtonStyle = {'selected': 'btn-success',  'unselected': 'btn-default'};
-	 var radioDefaultValues = ["1","2","3","4","5","6","7","8","9","10"]; 
+	 var radioDefaultValues = ["1","2","3","4","5"]; 
 	 $scope.getForm = function(field){
 		 field.key = removeSpecial(field.key); // removes special characters
-		 var hash = {key: field.key, kind : field.kind, style: radioButtonStyle};
+		 var hash = {key: field.key, kind : field.kind, style: {'selected': 'btn-success',  'unselected': 'btn-default'}};
 		 hash.values = field.values;
 		 
 		 if(field.kind == "yesNo"){
-			 hash.type = "radiobuttons"; hash.titleMap= [{"value": "yes","name": "Yes"},{"value": "no","name": "No"}];
+			 hash.type = "radiobuttons"; 
+			 hash.titleMap= [{"value": "yes","name": "Yes"},{"value": "no","name": "No"}];
 			 return hash; 
 		 }
 		 if(field.kind == "state"){
@@ -566,7 +509,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 			                  {"value" : "SJ" ,"name" : "Svalbard and Jan Mayen"}, {"value" : "SZ" ,"name" : "Swaziland"}, {"value" : "SE" ,"name" : "Sweden"}, {"value" : "CH" ,"name" : "Switzerland"}, {"value" : "SY" ,"name" : "Syrian Arab Republic"}, {"value" : "TW" ,"name" : "Taiwan, Province Of China"}, 
 			                  {"value" : "TJ" ,"name" : "Tajikistan"}, {"value" : "TZ" ,"name" : "Tanzania, United Republic Of"}, {"value" : "TH" ,"name" : "Thailand"}, {"value" : "TL" ,"name" : "Timor-Leste"}, {"value" : "TG" ,"name" : "Togo"}, {"value" : "TK" ,"name" : "Tokelau"}, {"value" : "TO" ,"name" : "Tonga"}, 
 			                  {"value" : "TT" ,"name" : "Trinidad and Tobago"}, {"value" : "TN" ,"name" : "Tunisia"}, {"value" : "TR" ,"name" : "Turkey"}, {"value" : "TM" ,"name" : "Turkmenistan"}, {"value" : "TC" ,"name" : "Turks and Caicos Islands"}, {"value" : "TV" ,"name" : "Tuvalu"}, {"value" : "UG" ,"name" : "Uganda"}, 
-			                  {"value" : "UA" ,"name" : "Ukraine"}, {"value" : "AE" ,"name" : "United Arab Emirates"}, {"value" : "GB" ,"name" : "United Kingdom"}, {"value" : "US" ,"name" : "United States"}, {"value" : "UM" ,"name" : "United States Minor Outlying Islands"}, {"value" : "UY" ,"name" : "Uruguay"}, {"value" : "UZ" ,"name" : "Uzbekistan"}, 
+			                  {"value" : "UA" ,"name" : "Ukraine"}, {"value" : "AE" ,"name" : "United Arab Emirates"}, {"value" : "GB" ,"name" : "United Kingdom"}, {"value" : "UM" ,"name" : "United States Minor Outlying Islands"}, {"value" : "UY" ,"name" : "Uruguay"}, {"value" : "UZ" ,"name" : "Uzbekistan"}, 
 			                  {"value" : "VU" ,"name" : "Vanuatu"}, {"value" : "VE" ,"name" : "Venezuela, Bolivarian Republic Of"}, {"value" : "VN" ,"name" : "Vietnam"}, {"value" : "VG" ,"name" : "Virgin Islands, British"}, {"value" : "VI" ,"name" : "Virgin Islands, U.S."}, {"value" : "WF" ,"name" : "Wallis and Futuna"}, 
 			                  {"value" : "EH" ,"name" : "Western Sahara"}, {"value" : "YE" ,"name" : "Yemen"}, {"value" : "ZM" ,"name" : "Zambia"}, {"value" : "ZW" ,"name" : "Zimbabwe"}];
 			 return hash;
@@ -584,8 +527,8 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 		 else if(field.kind =="dropdown"){
 			 hash.type = "strapselect";
 			 hash.placeholder="Select One";
-			 var valueList = (field.values) ? cleanSplit(field.values) : radioDefaultValues;
-			 hash.titleMap = getTileMap(valueList);  hash.placeholder="Select One";
+			 hash.titleMap = getTileMap((field.values) ? cleanSplit(field.values) : radioDefaultValues);  
+			 hash.placeholder="Select One";
 			 return hash;
 			 }
 		 else if(field.kind == "phone"){
@@ -596,9 +539,9 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 		 else if(field.kind == "multiDropdown"){
 			 hash.type = "strapselect";
 			 hash.placeholder="Select One";
-			 var valueList = (field.values) ? cleanSplit(field.values) : radioDefaultValues;
-			 hash.options = {multiple : true}; hash.placeholder ="Select One or More"
-			 hash.titleMap = getTileMap(valueList);
+			 hash.options = {multiple : true}; 
+			 hash.placeholder ="Select One or More"
+			 hash.titleMap = getTileMap((field.values) ? cleanSplit(field.values) : radioDefaultValues);
 			 return hash
 		 }
 		 else if(field.kind == "datepicker"){
@@ -627,14 +570,12 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 		 }
 		 else if(field.kind == "checkboxes"){
 			hash.type = field.kind;
-			var valueList = (field.values) ? cleanSplit(field.values) : radioDefaultValues;
-			hash.titleMap = getTileMap(valueList);
+			hash.titleMap = getTileMap((field.values) ? cleanSplit(field.values) : radioDefaultValues);
 			return hash;
 		 }
 		 else if(field.kind == "radiobuttons"){
 			 hash.type = field.kind;
-			 var valueList = (field.values) ? cleanSplit(field.values) : radioDefaultValues;
-			 hash.titleMap = getTileMap(valueList);	
+			 hash.titleMap = getTileMap((field.values) ? cleanSplit(field.values) : radioDefaultValues);	
 			 return hash;
 		 }
 		 else{
@@ -652,11 +593,6 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 		 return cleanList;
 	 }
 	 
-
-	 function capitalizeFirstLetter(string) {
-		    return string.charAt(0).toUpperCase() + string.slice(1);
-		}
-	 
 	 function getTileMap(list){
 		 var tileMap =[];
 		 for(var i=0; i<list.length; i++){
@@ -666,19 +602,10 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 		 return tileMap;
 	 }
 	 
-	 function minMaxSwitch(hash){
-		var maxType = (hash.maxLength) ? "maxLength" : "maximum";	 
-		var minType= (hash.minLength) ? "minLength" : "minimum";
-		 if(typeof hash[maxType] =="string"){hash[maxType] = parseInt(hash[maxType]);}
-			if(typeof hash[minType] =="string"){hash[minType] = parseInt(hash[minType]);}
-	 		if(hash[maxType] && hash[minType] && (hash[maxType]<hash[minType])){
-	 			var newHash = hash[minType];
-	 			hash[minType]= hash[maxType];
-	 			hash[maxType]= newHash;
-	 		}
-	 	return hash;
+	 //Will return false if field.min and field.max are invaild
+	 $scope.validMinMax = function(){
+		 return !$scope.field.min || !$scope.field.max || $scope.field.min <= $scope.field.max;
 	 }
-	 
 	 
 	 $scope.getSchema = function(field){			 
 		 field.key = removeSpecial(field.key); // removes special characters
@@ -690,9 +617,8 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 	 		}
 	 	 else if(field.kind == "text" || field.kind == "textarea"){
 	 		hash.type = "string";
-	 		 if(field.min || field.values){hash.minLength =(field.values) ? cleanSplit(field.values)[0] : field.min;}
-	 		if(field.max || (field.values && cleanSplit(field.values).length >1)){hash.maxLength =(field.values) ? cleanSplit(field.values)[1] : field.max;}
-	 		 hash = minMaxSwitch(hash);
+	 		hash.minLength = field.min;
+	 		hash.maxLength = field.max;
 	 		return hash;
 	 	 }
 		 else if(field.kind == "yesNo"){
@@ -729,7 +655,6 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 			 hash.type = "string";
 			 return hash;
 		}
-	 	 
 		else if(field.kind =="checkboxes"){
 			hash.items = {"type": "string", "enum": (field.values) ? cleanSplit(field.values)  : radioDefaultValues};
 			hash.type = "array";
@@ -753,13 +678,8 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 			return hash;
 		}
 		else if(field.kind == "number"){
-			if(field.min || (field.values && cleanSplit(field.values)[0])){
-				hash.minimum = (field.min) ? field.min : cleanSplit(field.values)[0];
-			}
-			if(field.max || (field.values && cleanSplit(field.values)[1])){
-	 			hash.maximum = (field.max) ? field.max : cleanSplit(field.values)[1];
-			}
-			hash = minMaxSwitch(hash);
+	 		hash.minimum = field.min;
+	 		hash.maximum = field.max;
 			hash.type = "integer";
 			return hash;
 		}
@@ -775,7 +695,6 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
   $scope.dataDisplay = function(){
 	  return (!$scope.pretty() || $scope.pretty()=="{}") ? "display : none" : "";
   }
-
   
 }]).filter('mapKind', function() { 
   return function(input) {
@@ -791,10 +710,10 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 	"false" : "No"
   }
 	return function(input) {
-					if (!input) {
-						return '';
-					} else {
-						return hash[input];
-					}
-				};
-			});		
+		if (!input) {
+			return '';
+		}else{
+			return hash[input];
+		}
+	};
+});

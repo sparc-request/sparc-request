@@ -48,12 +48,14 @@
                 .col-md-5
                   .form-group{:style=>"{{minMaxDisplay}}"}
                     %label{:for=>"min"} {{minDisplay}}
-                    %input.form-control{:id=>"min", "ng-model"=>"field.min", :type=>"number", :placeholder=>"Min"}
+                    %input.form-control{:id=>"min", "ng-model"=>"field.min", "data-error"=>"Minimum value must be greater than maximum value", :type=>"number", :placeholder=>"Min"}
+                    .help-block.with-errors 
                 .col-md-5
                   .form-group{:style=>"{{minMaxDisplay}}"}
                     %label{:for=>"max"} {{maxDisplay}}
-                    %input.form-control{:id=>"max", "ng-model"=>"field.max", :type=>"number", :placeholder=>"Max"}
+                    %input.form-control{:id=>"max", "ng-model"=>"field.max", "data-error"=>"Maximum value must be greater than minimum value", :type=>"number", :placeholder=>"Max"}
+                    .help-block.with-errors 
       .modal-footer
-        %button.btn.btn-success{:type=>"submit", "ng-click"=> "addQuestion(field)", "ng-disabled"=>"!field.key || !field.name || !field.kind"} {{modalSaveText}} Question
+        %button.btn.btn-success{:type=>"submit", "ng-click"=> "addQuestion(field)", "ng-disabled"=>"!field.key || !field.name || !field.kind || !validMinMax()"} {{modalSaveText}} Question
         %button.btn.btn-warning{"ng-click"=>"resetQuestion()"} Clear Question
         %button.btn.btn-default{"data-dismiss"=>"modal"} Cancel

@@ -1,3 +1,4 @@
+// for import/export form schema, put the user's focus inside the textarea that contains the JSON form schema
 $('#additionalDetailModal').on('shown.bs.modal', function () {
 	$('#myInput').focus()
 });

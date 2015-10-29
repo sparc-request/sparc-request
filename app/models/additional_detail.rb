@@ -29,6 +29,15 @@ class AdditionalDetail < ActiveRecord::Base
     self.required_question_keys.length > 0
   end
   
+  def export_array
+    export_array = Array.new
+    # sort by??
+    self.line_item_additional_details.each do |line_item_additional_detail|
+      export_array << line_item_additional_detail.export_hash
+    end
+    export_array
+  end
+  
   private
   
   def line_items_present

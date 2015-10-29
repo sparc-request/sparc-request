@@ -66,6 +66,19 @@ class LineItemAdditionalDetail < ActiveRecord::Base
     self.line_item.additional_detail_breadcrumb
   end
   
+  def export_hash
+    export_hash = Hash.new
+    export_hash["Additional-Detail"] = self.additional_detail_breadcrumb
+    export_hash["Effective-Date"] = self.additional_detail.effective_date
+    export_hash["SSR-ID"] = self.sub_service_request_id
+    export_hash["SSR-Status"] = self.sub_service_request_status
+    export_hash["Requester-Name"] = self.service_requester_name
+    export_hash["PI-Name"] = self.pi_name
+    export_hash["Protocol-Short-Title"] = self.protocol_short_title
+    export_hash["Required-Questions-Answered"] = self.has_answered_all_required_questions?
+    export_hash
+  end
+  
   private
   
   def form_data_json_must_be_parsable

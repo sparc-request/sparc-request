@@ -336,4 +336,68 @@ RSpec.describe LineItemAdditionalDetail do
       expect(@line_item_additional_detail.additional_detail_form_array).to eq([{"key"=>"birthdate","kind"=>"datepicker","style"=>{"selected"=>"btn-success","unselected"=>"btn-default"},"type"=>"datepicker","dateOptions"=>{"dateFormat"=>"MM/dd/yyyy"}}])
     end
   end
+  
+  describe "export_hash" do
+    before :each do
+      @primary_pi = Identity.new
+      @primary_pi.first_name = "Primary"
+      @primary_pi.last_name = "Investigator"
+      @primary_pi.email = "pi@test.edu"
+           
+      @project_role_pi = ProjectRole.new
+      @project_role_pi.identity = @primary_pi
+      @project_role_pi.role = 'primary-pi'
+         
+      @protocol = Protocol.new
+      @protocol.short_title = "Super Short Title"
+      @protocol.project_roles << @project_role_pi
+      
+      @service_requester = Identity.new
+      @service_requester.first_name = "Requester"
+      @service_requester.last_name = "Person"
+      @service_requester.email = "requester@test.edu"
+      
+      @sub_service_request = SubServiceRequest.new
+      @sub_service_request.status = 'first_draft'
+      @sub_service_request.id = 1
+           
+      @line_item = LineItem.new
+      @line_item.service_request = ServiceRequest.new
+      @line_item.service_request.service_requester = @service_requester
+      @line_item.service_request.protocol = @protocol
+      @line_item.sub_service_request = @sub_service_request
+      @line_item.service = Service.new
+      @line_item.service.name = "Consulting"
+      @line_item.service.organization = Program.new
+      @line_item.service.organization.type = "Program"
+      @line_item.service.organization.name = "BMI"
+      
+      @additional_detail = AdditionalDetail.new
+      @additional_detail.name = "Project Team Members"
+      @additional_detail.enabled = true
+      @additional_detail.effective_date = Date.today
+      @additional_detail.form_definition_json = '{"schema": {"required": ["birthdate", "email"] }, "form":[{"key":"birthdate"},{"key":"email"},{"key":"firstName"} ]}'
+      @line_item.service.additional_details << @additional_detail
+      
+      @line_item_additional_detail = LineItemAdditionalDetail.new
+      @line_item_additional_detail.line_item = @line_item
+      @line_item_additional_detail.form_data_json = '{}'
+      @line_item_additional_detail.additional_detail = @additional_detail
+      @additional_detail.line_item_additional_details << @line_item_additional_detail 
+    end
+    
+    it "should return additional details export info with no line item additional detail info" do
+      expect(@line_item_additional_detail.export_hash).to include(
+        "Additional-Detail" => "BMI / Consulting / Project Team Members", 
+        "Effective-Date" => Date.today,
+        "SSR-ID" => 1,
+        "SSR-Status" => "first_draft",
+        "Requester-Name" => "Requester Person (requester@test.edu)",
+        "PI-Name" => "Primary Investigator (pi@test.edu)",
+        "Protocol-Short-Title" => "Super Short Title",
+        "Required-Questions-Answered" => false
+        # updated_at
+      )
+    end
+  end
 end

@@ -60,7 +60,7 @@
               = f.text_area :description, class: "form-control", :placeholder=>"Description (Optional)", "rows" => "", "cols" => ""
               .help-block.with-errors
         .row
-          .col-md-8
+          %div{:style => "transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s","ng-class"=>"noQuestions() ? 'col-md-12' : 'col-md-8'"}
             .panel.panel-default
               .panel-heading 
                 %h3.panel-title.pull-left Questions
@@ -70,7 +70,7 @@
                 .clearfix
               .panel-body
                 %div{:id=>"gridId", "ui-grid"=>"gridModel", "ui-grid-edit"=>"true", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 400px;"}
-          .col-md-4
+          .col-md-4{"ng-hide"=>"noQuestions()"}
             .panel.panel-default
               .panel-heading
                 %h3.panel-title Form Preview

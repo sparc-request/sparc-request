@@ -76,6 +76,10 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
     	return $scope.getFormDefinition().form;
     }
     
+    $scope.noQuestions = function(){
+    	return $scope.getFormParsed().length == 0 ;
+    }
+    
     //Taking a id as input this function will return a question hash with all relevent data
     $scope.getQuestion =  function(id){ 
     	//loop through hashkeys in schema and find object with same id
@@ -233,7 +237,6 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 			}
 		}
 		
-		
 		$scope.gridModel.onRegisterApi = function(gridApi){
 			$scope.gridApi = gridApi;
 			
@@ -291,7 +294,9 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 		    for (var i=0; i<rows.length; i++) {
 		    	$scope.deleteById(rows[i].id)
 		  	}
-	  	};   	
+	  	}; 
+	  	
+	  	
 	  
 	  	$scope.addQuestion = function(ques){
 	  		var question = hashCopy(ques);

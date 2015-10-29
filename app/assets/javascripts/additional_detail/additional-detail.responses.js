@@ -72,7 +72,7 @@ angular.module('app').controller("DocumentManagementAdditionalDetailsController"
 	//   only works if one grid is being displayed on the page
   	$scope.getTableHeight = function() {
         return {
-        	height: (($scope.gridModel.data.length * $scope.gridModel.rowHeight) + $( ".ui-grid-header-cell-row" ).height() ) + "px"
+        	height: (($scope.gridModel.data.length * $scope.gridModel.rowHeight) + $( ".ui-grid-header-cell-row" ).height() )+18 + "px"
         };
      };
 }]);

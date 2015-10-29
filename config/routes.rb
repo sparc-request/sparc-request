@@ -351,9 +351,9 @@ SparcRails::Application.routes.draw do
         end
       end
     end
-    # we may add :destroy later so a service provider can allow an updated version of the form to be rendered and completed
+    # we may add :destroy so a service provider can allow an updated version of the form to be rendered and completed
     resources :line_item_additional_details, only: [:show, :update], :defaults => { :format => :json } 
-    resources :service_requests, only: [:show], :defaults => { :format => :json } 
+    resources :service_requests, only: [:show]
   end
 
   mount API::Base => '/'

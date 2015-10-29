@@ -26,9 +26,7 @@
             %button.btn.btn-success{"data-dismiss"=>"modal"} Close  
     .panel.panel-default
       .panel-heading
-        %h3.panel-title.pull-left Additional Details Form Creator
-        %button.btn.btn-info.pull-right{"type"=>"button", "data-toggle"=>"modal", "data-target"=>"#importExportModal"} Import / Export Form
-        .clearfix
+        %h3.panel-title Additional Details Form Creator
       .panel-body
         - if @additional_detail.errors.any?
           #error_explanation
@@ -60,16 +58,16 @@
               = f.text_area :description, class: "form-control", :placeholder=>"Description (Optional)", "rows" => "", "cols" => ""
               .help-block.with-errors
         .row
-          %div{:style => "transition:all cubic-bezier(0.250, 0.460, 0.450, 0.940) 0.5s","ng-class"=>"noQuestions() ? 'col-md-12' : 'col-md-8'"}
+          %div{:style=>"transition: 0.5s", "ng-class"=>"noQuestions() ? 'col-md-12' : 'col-md-8'"}
             .panel.panel-default
               .panel-heading 
                 %h3.panel-title.pull-left Questions
-                %button.btn.btn-danger.pull-right{:type=> "button","ng-click"=>"deleteAllQuestion()"} Delete All
-                %button.btn.btn-warning.pull-right{:type=>"button","ng-click"=>"deleteSelected()"} Delete Selected 
-                %button.btn.btn-primary.pull-right{:type=>"button","ng-click"=>"editQuestion()"} Add Question
+                %button.btn.btn-danger.btn-sm.pull-right{:type=> "button","ng-click"=>"deleteAllQuestion()"} Delete All
+                %button.btn.btn-sm.btn-warning.pull-right{:type=>"button","ng-click"=>"deleteSelected()"} Delete Selected 
+                %button.btn.btn-sm.btn-primary.pull-right{:type=>"button","ng-click"=>"editQuestion()"} Add Question
                 .clearfix
               .panel-body
-                %div{:id=>"gridId", "ui-grid"=>"gridModel", "ui-grid-edit"=>"true", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 400px;"}
+                %div{:id=>"gridId", "ui-grid"=>"gridModel", "ui-grid-edit"=>"true", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", "ng-style"=> "getTableHeight()"}
           .col-md-4{"ng-hide"=>"noQuestions()"}
             .panel.panel-default
               .panel-heading
@@ -83,6 +81,7 @@
                 %pre{"ng-cloak"=>"true"} {{pretty()}}  
         
         %input.btn.btn-success{:type=>"submit", :value=>"Save Form"}
+        %button.btn.btn-info{"type"=>"button", "data-toggle"=>"modal", "data-target"=>"#importExportModal"} Import / Export Form
         %a.btn.btn-default{:type=>"button", :href=>"/additional_detail/services/#{@service.id}/additional_details/"} Cancel
 :javascript
   $('#importExportModal').on('shown.bs.modal', function () {

@@ -130,7 +130,7 @@
             %td.center
               = pretty_ssr_id(protocol, ssr)
             %td{:colspan => "8"}
-              %a{:style => "text-decoration: underline;", :href => document_management_service_request_path(:id => sr, :sub_service_request_id => ssr.id)} Please complete the required Additional Details for this request.  
+              %a{:style => "text-decoration: underline;", :href => additional_detail_service_request_path(:id => sr)} Please complete the required Additional Details for this request.  
         %tr
           %td.notification_td{:colspan => "9"}
             %div{:style => "display:none;", :id => "portal_notifications_#{ssr.ssr_id.to_s}_#{sr.id}", :class => "portal_notifications"}

@@ -106,15 +106,15 @@ class LineItem < ActiveRecord::Base
   end
   
   def service_requester_name
-    self.try(:service_request).try(:service_requester).try(:display_name)
+    self.service_request.service_requester_name
   end
   
   def protocol_short_title
-    self.try(:service_request).try(:protocol).try(:short_title)
+    self.service_request.protocol_short_title
   end  
 
   def pi_name
-    self.try(:service_request).try(:protocol).try(:primary_principal_investigator).try(:display_name) 
+    self.service_request.pi_name
   end
   
   def additional_detail_breadcrumb

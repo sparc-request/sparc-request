@@ -1,7 +1,7 @@
 class AdditionalDetail::ServicesController < ApplicationController
   protect_from_forgery
   
-  layout 'additional_detail/application'
+  layout 'additional_detail/additional_details'
     
   before_filter :authenticate_identity!
   before_filter :load_service, :only => [:show]
@@ -16,7 +16,7 @@ class AdditionalDetail::ServicesController < ApplicationController
       # redirect HTML requests to the additional details admin page
       format.html {redirect_to additional_detail_service_additional_details_path(@service)}
       # JSON used by additional details admin page
-      format.json {render :json => @service.to_json(:root => false, :include => :current_additional_detail) }
+      format.json {render :json => @service.to_json(:root => false, :only => [:name], :include => :current_additional_detail) }
     end
   end
   
@@ -38,8 +38,10 @@ class AdditionalDetail::ServicesController < ApplicationController
       return true
     else
       @service = nil
-      render :json => "", :status => :unauthorized
+      respond_to do |format|
+        format.html {render "additional_detail/shared/unauthorized", :status => :unauthorized}
+        format.json {render :json => "", :status => :unauthorized}
+      end
     end
   end
-
 end

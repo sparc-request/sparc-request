@@ -1,0 +1,6 @@
+.alert{ "ng-show"=>"alertMessage", "ng-class"=>"{ 'alert-success' : resourceSuccessful, 'alert-danger' : !resourceSuccessful }", "role"=>"alert"}= "{{alertMessage}}"
+.panel.panel-default{"ng-if"=>"gridModel.data.length > 0"}
+  .panel-heading
+    %h3.panel-title Additional Details for {{serviceRequest.protocol_short_title}}
+  .panel-body
+    %div{"ui-grid"=>"gridModel", "ui-grid-edit"=>"true", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", "ng-style"=> "getTableHeight()"}

@@ -12,6 +12,14 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 	$scope.form ={};
 	$scope.model = {};
 	
+	// dynamically change grid height relative to the # of rows of data, 
+	//   only works if one grid is being displayed on the page
+  	$scope.getTableHeight = function() {
+        return {
+        	height: (($scope.gridModel.data.length * $scope.gridModel.rowHeight) + $( ".ui-grid-header-cell-row" ).height() )+18 + "px"
+        };
+     };
+     
 	//Displays result data that will be exported when a user requests a service and anaswers the questions
 	$scope.pretty = function(){
 		 return JSON.stringify($scope.model,undefined,2,2);
@@ -123,7 +131,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 		$scope.alertMessage = null;
 		
     	//find key if it exists
-    	if(key){
+    	if(id){
     		$scope.field = $scope.getQuestion(id);
     		$scope.modalSaveText = "Update"
     	}
@@ -413,14 +421,17 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 		 field.key = removeSpecial(field.key); // removes special characters
 		 var hash = {key: field.key, kind : field.kind, style: {'selected': 'btn-success',  'unselected': 'btn-default'}};
 		 hash.values = field.values;
+		 hash.placeholder =  field.required ? "Required" : "Optional";
 		 
 		 if(field.kind == "yesNo"){
 			 hash.type = "radiobuttons"; 
 			 hash.titleMap= [{"value": "yes","name": "Yes"},{"value": "no","name": "No"}];
+			 hash.description =  field.description ? field.description+" ("+(field.required ? "required" : "optional")+")" : field.required ? "Required" : "Optional";
 			 return hash; 
 		 }
 		 if(field.kind == "state"){
-			 hash.placeholder="Select One"; hash.type = "strapselect";
+			 hash.placeholder="Select One ("+(field.required ? "required" : "optional")+")";
+			 hash.type = "strapselect";
 			 hash.titleMap = [{'value' : 'AL','name' : 'Alabama'},{'value' : 'AK','name' : 'Alaska'},{'value' : 'AZ','name' : 'Arizona'},{'value' : 'AR','name' : 'Arkansas'},
                               {'value' : 'CA','name' : 'California'},{'value' : 'CO','name' : 'Colorado'},{'value' : 'CT','name' : 'Connecticut'},{'value' : 'DE','name' : 'Delaware'},
                               {'value' : 'DC','name' : 'District of Columbia'},{'value' : 'FL','name' : 'Florida'},{'value' : 'GA','name' : 'Georgia'},{'value' : 'HI','name' : 'Hawaii'},
@@ -438,7 +449,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 		 }
 		 
 		 else if(field.kind == 'country'){
-			 hash.placeholder="Select One";
+			 hash.placeholder="Select One ("+(field.required ? "required" : "optional")+")";
 			 hash.type = "strapselect";
 			 hash.titleMap = [{"value" : "US" ,"name" : "United States"}, {"value" : "AF" ,"name" : "Afghanistan"}, {"value" : "AX" ,"name" : "Åland Islands"}, {"value" : "AL" ,"name" : "Albania"}, {"value" : "DZ" ,"name" : "Algeria"}, {"value" : "AS" ,"name" : "American Samoa"}, 
 			                  {"value" : "AD" ,"name" : "Andorra"}, {"value" : "AO" ,"name" : "Angola"}, {"value" : "AI" ,"name" : "Anguilla"}, {"value" : "AQ" ,"name" : "Antarctica"}, {"value" : "AG" ,"name" : "Antigua and Barbuda"}, {"value" : "AR" ,"name" : "Argentina"}, {"value" : "AM" ,"name" : "Armenia"}, 
@@ -481,31 +492,25 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 		 } 
 		 else if(field.kind == "email"){
 			 hash.type = "string";
-			 hash.placeholder ="ex. youremail@email.com";
-			 return hash;
-		 }
-		 else if(field.kind == "file"){
-			 hash.type = "string";
-			 hash.format ="file-reader"
+			 hash.placeholder ="ex. youremail@email.com ("+(field.required ? "required" : "optional")+")";
 			 return hash;
 		 }
 		 else if(field.kind =="dropdown"){
 			 hash.type = "strapselect";
-			 hash.placeholder="Select One";
+			 console.log("ping");
+			 hash.placeholder="Select One ("+(field.required ? "required" : "optional")+")";
 			 hash.titleMap = getTileMap((field.values) ? cleanSplit(field.values) : radioDefaultValues);  
-			 hash.placeholder="Select One";
 			 return hash;
 			 }
 		 else if(field.kind == "phone"){
 			 hash.type = "string";
-			 hash.placeholder = "ex. 555-555-5555"
+			 hash.placeholder = "ex. 555-555-5555 ("+(field.required ? "required" : "optional")+")";
 			 return hash;
 		 }
 		 else if(field.kind == "multiDropdown"){
 			 hash.type = "strapselect";
-			 hash.placeholder="Select One";
 			 hash.options = {multiple : true}; 
-			 hash.placeholder ="Select One or More"
+			 hash.placeholder="Select One or More ("+(field.required ? "required" : "optional")+")";
 			 hash.titleMap = getTileMap((field.values) ? cleanSplit(field.values) : radioDefaultValues);
 			 return hash
 		 }
@@ -530,17 +535,19 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 		 }
 		 else if(field.kind == "zipcode"){
 			 hash.type = "string";
-			 hash.placeholder = "ex. 55555 or 55555-5555"
+			 hash.placeholder = "ex. 55555 or 55555-5555 ("+(field.required ? "required" : "optional")+")";
 			 return hash;
 		 }
 		 else if(field.kind == "checkboxes"){
 			hash.type = field.kind;
 			hash.titleMap = getTileMap((field.values) ? cleanSplit(field.values) : radioDefaultValues);
+			hash.description =  field.description ? field.description+" ("+(field.required ? "required" : "optional")+")" : field.required ? "Required" : "Optional";
 			return hash;
 		 }
 		 else if(field.kind == "radiobuttons"){
 			 hash.type = field.kind;
-			 hash.titleMap = getTileMap((field.values) ? cleanSplit(field.values) : radioDefaultValues);	
+			 hash.titleMap = getTileMap((field.values) ? cleanSplit(field.values) : radioDefaultValues);
+			 hash.description =  field.description ? field.description+" ("+(field.required ? "required" : "optional")+")" : field.required ? "Required" : "Optional";
 			 return hash;
 		 }
 		 else{

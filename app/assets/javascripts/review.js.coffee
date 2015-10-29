@@ -98,7 +98,7 @@ $(document).ready ->
       $("#participate_in_survey").dialog("open")
       return false
     else
-      # this should never be the case but just in case some browser allows it let's just redirect to confirmation page'
+      # this should never be the case but just in case some browser allows it let's just redirect to confirmation page
       $(this).unbind('click')
       $(this).click ->
         return false

@@ -231,7 +231,10 @@ h2.title
         background: url(/assets/portal/edit_blue.png) no-repeat
       .delete-associated-user-button
         background: url(/assets/portal/delete_red.png) no-repeat
+.protocol-archive-button
+  float: right
 
+.protocol-archive-button,
 .protocol-information-button,
 .associated-user-button
   width: 230px
@@ -514,13 +517,24 @@ div.permissions_dialog
   border-radius: 0 !important
   float: left
   height: 40px
-  width: 640px
+  width: 372px
   padding: 20px 25px 0px
   margin: 0 5px 0 0
   background: #3883a9 !important
   p
     color: white
     font-size: 1.4em
+.archive_button
+  width: 242px
+  float: left
+  font-size: 1.2em
+  font-weight: bold
+  height: 40px
+  padding: 20px 10px 0px
+  margin: 0 5px 0 0
+  background: #FBAF41
+  color: white
+  display: block
 .my_navigation
   margin-top: 3px
 .user-buttons
@@ -807,7 +821,6 @@ div.permissions_dialog
 .qtip-content ul li
   margin-bottom: 10px
 
-
 // CatalogView
 .catalog-view .left
   width: 199px
@@ -827,6 +840,11 @@ div.permissions_dialog
 
 .blue-provider
   background: #0775B0 !important
+
+.blue-provider.ui-state-hover 
+  .protocol-accordion-title
+    color: #BBBBBB !important
+
 
 .orange-provider
   background: #ff9933 !important

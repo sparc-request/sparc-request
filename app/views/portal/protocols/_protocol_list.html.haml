@@ -29,6 +29,8 @@
         - if protocol.principal_investigators
           %br
           = "PI(s): #{protocol.principal_investigators.map(&:display_name).join(', ')}"
+      .protocol-archive-button.ui-corner-all{:'data-protocol_id' => protocol.id, :'data-archive' => protocol.archived ? 0 : 1}
+        = "#{protocol.archived ? 'UNARCHIVE' : 'ARCHIVE'} #{protocol.type.capitalize}"
       .clear
 
   .protocol-information{:class => "protocol-information-#{protocol.id}"}

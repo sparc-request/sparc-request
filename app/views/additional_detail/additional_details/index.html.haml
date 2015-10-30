@@ -31,24 +31,26 @@
           %span.badge= "{{service.current_additional_detail ? 'Enabled' : 'Disabled'}}"
       %li{:role=>"presentation"}
         %a{:id => "resultsTab", :href=>"#liadGrid", "aria-controls"=>:liadGrid, :role=>:tab} 
-          Results 
+          Responses 
           %span{"ng-if"=> "activeAdditionalDetail"} for {{activeAdditionalDetail.name}}
     .tab-content
       .tab-pane.fade.in.active{:role=>:tabpanel, :id=>:adGrid}
         .panel.panel-default
           .panel-heading
-            = "Additional Detail Forms for {{service.name}}"
+            %h3.panel-title= "Additional Detail Forms for {{service.name}}"
           .panel-body
             = link_to "Add new Additional Details Form", new_additional_detail_service_additional_detail_path(@service), class: "btn btn-primary"
-            %div{:id=>"displayGrid", "ui-grid"=>"gridModel", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 400px;"}
+            %div{:id=>"displayGrid", "ui-grid"=>"gridModel", "ui-grid-resize-columns" => "true", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 400px;"}
       .tab-pane.fade{:role=>:tabpanel, :id=>:liadGrid}
         .panel.panel-default
           .panel-heading
-            = "Additional Detail Responses for {{activeAdditionalDetail.name}}"
+            %h3.panel-title= "Administer Responses for {{activeAdditionalDetail.name}}"
           .panel-body
-            %h4 Administer Responses
-            %div{:id=>"liadGrid", "ui-grid"=>"line_item_ad_gridModel", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 300px;"}
-            %h4 Export Responses
-            %div{:id=>"liadExportGrid", "ui-grid"=>"line_item_export_gridModel", "ui-grid-auto-resize"=>"true", "ui-grid-exporter"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 300px;"}
+            %div{:id=>"liadGrid", "ui-grid"=>"line_item_ad_gridModel", "ui-grid-resize-columns" => "true", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 300px;"}
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title= "Export Responses for {{activeAdditionalDetail.name}}"
+          .panel-body
+            %div{:id=>"liadExportGrid", "ui-grid"=>"line_item_export_gridModel", "ui-grid-resize-columns" => "true", "ui-grid-auto-resize"=>"true", "ui-grid-exporter"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 300px;"}
 
       

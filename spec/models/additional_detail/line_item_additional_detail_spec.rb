@@ -53,6 +53,11 @@ RSpec.describe LineItemAdditionalDetail do
         @additional_detail.form_definition_json= '{"schema": {"required": [] }}'
       end
 
+      it 'should return true when form_data_json is nil' do
+        @line_item_additional_detail.form_data_json = nil
+        expect(@line_item_additional_detail.has_answered_all_required_questions?).to eq(true)
+      end
+      
       it 'should return true when no questions are answered' do
         @line_item_additional_detail.form_data_json = "{}"
         expect(@line_item_additional_detail.has_answered_all_required_questions?).to eq(true)
@@ -382,6 +387,7 @@ RSpec.describe LineItemAdditionalDetail do
       @line_item_additional_detail = LineItemAdditionalDetail.new
       @line_item_additional_detail.line_item = @line_item
       @line_item_additional_detail.form_data_json = '{}'
+      @line_item_additional_detail.updated_at = Date.today
       @line_item_additional_detail.additional_detail = @additional_detail
       @additional_detail.line_item_additional_details << @line_item_additional_detail 
     end
@@ -390,13 +396,92 @@ RSpec.describe LineItemAdditionalDetail do
       expect(@line_item_additional_detail.export_hash).to include(
         "Additional-Detail" => "BMI / Consulting / Project Team Members", 
         "Effective-Date" => Date.today,
-        "SSR-ID" => 1,
-        "SSR-Status" => "first_draft",
+        "Ssr-Id" => 1,
+        "Ssr-Status" => "first_draft",
         "Requester-Name" => "Requester Person (requester@test.edu)",
-        "PI-Name" => "Primary Investigator (pi@test.edu)",
+        "Pi-Name" => "Primary Investigator (pi@test.edu)",
         "Protocol-Short-Title" => "Super Short Title",
-        "Required-Questions-Answered" => false
-        # updated_at
+        "Required-Questions-Answered" => false,
+        "Last-Updated-At" => Date.today.strftime("%Y-%m-%d"),
+        "birthdate" => "",
+        "email" => "",
+        "firstName" => ""
+      )
+    end
+    
+    it "should return additional details export info with one email answered from line item additional detail info" do
+      @line_item_additional_detail.form_data_json = '{"email" : "test@test.edu"}'
+      
+      expect(@line_item_additional_detail.export_hash).to include(
+        "Additional-Detail" => "BMI / Consulting / Project Team Members", 
+        "Effective-Date" => Date.today,
+        "Ssr-Id" => 1,
+        "Ssr-Status" => "first_draft",
+        "Requester-Name" => "Requester Person (requester@test.edu)",
+        "Pi-Name" => "Primary Investigator (pi@test.edu)",
+        "Protocol-Short-Title" => "Super Short Title",
+        "Required-Questions-Answered" => false,
+        "Last-Updated-At" => Date.today.strftime("%Y-%m-%d"),
+        "birthdate" => "",
+        "email" => "test@test.edu",
+        "firstName" => ""
+      )
+    end
+    
+    it "should return additional details export info with both required questions answered from line item additional detail info" do
+      @line_item_additional_detail.form_data_json = '{"firstName" : "Test Subject", "email" : "test@test.edu", "birthdate":"03/01/1978"}'
+      
+      expect(@line_item_additional_detail.export_hash).to include(
+        "Additional-Detail" => "BMI / Consulting / Project Team Members", 
+        "Effective-Date" => Date.today,
+        "Ssr-Id" => 1,
+        "Ssr-Status" => "first_draft",
+        "Requester-Name" => "Requester Person (requester@test.edu)",
+        "Pi-Name" => "Primary Investigator (pi@test.edu)",
+        "Protocol-Short-Title" => "Super Short Title",
+        "Required-Questions-Answered" => true,
+        "Last-Updated-At" => Date.today.strftime("%Y-%m-%d"),
+        "birthdate" => "03/01/1978",
+        "email" => "test@test.edu",
+        "firstName" => "Test Subject"
+      )
+    end
+    
+    it "should return additional details export info with all three required questions answered from line item additional detail info" do
+      @line_item_additional_detail.form_data_json = '{"email" : "test@test.edu", "birthdate":"03/01/1978"}'
+      
+      expect(@line_item_additional_detail.export_hash).to include(
+        "Additional-Detail" => "BMI / Consulting / Project Team Members", 
+        "Effective-Date" => Date.today,
+        "Ssr-Id" => 1,
+        "Ssr-Status" => "first_draft",
+        "Requester-Name" => "Requester Person (requester@test.edu)",
+        "Pi-Name" => "Primary Investigator (pi@test.edu)",
+        "Protocol-Short-Title" => "Super Short Title",
+        "Required-Questions-Answered" => true,
+        "Last-Updated-At" => Date.today.strftime("%Y-%m-%d"),
+        "birthdate" => "03/01/1978",
+        "email" => "test@test.edu",
+        "firstName" => ""
+      )
+    end
+    
+    it "should return blank Last-Updated-At for nil updated_at" do
+      @line_item_additional_detail.updated_at = nil
+      
+      expect(@line_item_additional_detail.export_hash).to include(
+        "Additional-Detail" => "BMI / Consulting / Project Team Members", 
+        "Effective-Date" => Date.today,
+        "Ssr-Id" => 1,
+        "Ssr-Status" => "first_draft",
+        "Requester-Name" => "Requester Person (requester@test.edu)",
+        "Pi-Name" => "Primary Investigator (pi@test.edu)",
+        "Protocol-Short-Title" => "Super Short Title",
+        "Required-Questions-Answered" => false,
+        "Last-Updated-At" => "",
+        "birthdate" => "",
+        "email" => "",
+        "firstName" => ""
       )
     end
   end

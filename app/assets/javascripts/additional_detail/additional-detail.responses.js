@@ -17,9 +17,10 @@ angular.module('app').factory("AdditionalDetail",  ['$resource', function($resou
   // service_id is a global variable set in a HAML file
   return $resource("/additional_detail/services/:service_id/additional_details/:id", 
 		  {service_id: service_id, id: '@id'}, 
-		  {'export_grid': { method: 'GET', params: {service_id: service_id, id: '@id'}, isArray: true,  url: '/additional_detail/services/:service_id/additional_details/:id/export_grid'} ,
-		   'update_enabled': { method: 'PUT', url: '/additional_detail/services/:service_id/additional_details/:id/update_enabled'} }
-		  );
+		  {
+		    'export_grid': { method: 'GET', isArray: true, url: '/additional_detail/services/:service_id/additional_details/:id/export_grid'} ,
+		    'update_enabled': { method: 'PUT', url: '/additional_detail/services/:service_id/additional_details/:id/update_enabled'}
+		  });
 }]);
 
 angular.module('app').factory("LineItemAdditionalDetail",  ['$resource', function($resource) {
@@ -27,7 +28,7 @@ angular.module('app').factory("LineItemAdditionalDetail",  ['$resource', functio
 }]);
 
 angular.module('app').controller("DocumentManagementAdditionalDetailsController", ['$scope', '$http', 'ServiceRequest', 'LineItemAdditionalDetail', function($scope, $http, ServiceRequest, LineItemAdditionalDetail) { 
-	$scope.gridModel = {enableColumnMenus: false, enableFiltering: false, enableColumnResizing: false, enableRowSelection: false, showColumnFooter: false , enableSorting: true, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 45, enableCellEdit:false};
+	$scope.gridModel = {enableColumnMenus: false, enableFiltering: false, enableColumnResizing: false, enableRowSelection: false, enableSorting: true, enableRowHeaderSelection: false, rowHeight: 45};
 	$scope.gridModel.columnDefs = [{name: 'Add/Edit Buttons', displayName:'', enableSorting: false, width: 105, cellTemplate: '<button type="button" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">{{(row.entity.form_data_json=="{}") ? "Add Details" : "Edit Details"}}</button>'},
 	                               {field: 'additional_detail_breadcrumb', name: 'Service'}, 
 	                               {name: 'Completed',field: 'has_answered_all_required_questions?', width: '15%' }];
@@ -83,7 +84,7 @@ angular.module('app').controller("DocumentManagementAdditionalDetailsController"
 
 angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope', '$http', '$window', 'Service', 'AdditionalDetail', 'LineItemAdditionalDetail', 'uiGridConstants', function($scope, $http, $window, Service, AdditionalDetail, LineItemAdditionalDetail, uiGridConstants) {
 	
-	$scope.gridModel = {enableColumnMenus: false, enableFiltering: true, enableColumnResizing: true, enableRowSelection: false, showColumnFooter: false , enableSorting: true, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 45};
+	$scope.gridModel = {enableColumnMenus: false, enableFiltering: true, enableRowSelection: false, enableSorting: true, enableRowHeaderSelection: false, rowHeight: 45};
 	$scope.gridModel.columnDefs = [
 	                               {enableFiltering: false, enableColumnResizing: false, width: 215,  name: 'Additional Detail Form',  cellTemplate: '<a class="btn btn-primary" href="/additional_detail/services/'+service_id+'/additional_details/{{row.entity.id}}/duplicate">Duplicate</a> <a class="btn btn-primary" ng-if="row.entity.line_item_additional_details.length == 0" href="/additional_detail/services/'+service_id+'/additional_details/{{row.entity.id}}/edit">Edit</a> <button class="btn btn-danger" ng-if="row.entity.line_item_additional_details.length == 0" ng-click="grid.appScope.deleteAdditonalDetail(row.entity)">Delete</button>'},
 	                               {enableFiltering: false, enableColumnResizing: false, width: 120, name: "Responses",  cellTemplate: '<button class="btn btn-info" ng-disabled="row.entity.line_item_additional_details.length==0" ng-click="grid.appScope.updateLineItemAdditionalDetails(row.entity.id)">{{row.entity.line_item_additional_details.length}} {{(row.entity.line_item_additional_details.length == 1) ? "Response" : "Responses"}}</button>'},
@@ -93,7 +94,7 @@ angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope'
 	                               {field: 'description', name: 'Description'}
 	                               ];
 	
-	$scope.line_item_ad_gridModel = {enableColumnMenus: false, enableFiltering: true, enableColumnResizing: true, enableRowSelection: false, showColumnFooter: false , enableSorting: true, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 45};
+	$scope.line_item_ad_gridModel = {enableColumnMenus: false, enableFiltering: true, enableRowSelection: false, enableSorting: true, enableRowHeaderSelection: false, rowHeight: 45};
 	$scope.line_item_ad_gridModel.columnDefs = [
 	                               {name: "Response", enableFiltering: false, width: 125, cellTemplate: '<button data-toggle="modal" class="btn btn-primary" ng-click="grid.appScope.showResults(row.entity.id)">Show</button> <button data-toggle="modal" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">Edit</button>'},
 	                               {name: "Portal Admin", field: "sub_service_request_id", enableFiltering: false, width: 115, cellTemplate: '<a class="btn btn-info" href="/portal/admin/sub_service_requests/{{COL_FIELD}}" role="button">Portal Admin</a>'},
@@ -104,8 +105,9 @@ angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope'
 	                               {name: 'Required Questions Answered',field: 'has_answered_all_required_questions?', headerTooltip: 'Required Questions Answered'},
 	                               {field:'updated_at',name: 'Last Updated', sort: { direction: uiGridConstants.DESC, priority: 1 }, width: '12%' }
 	                               ];
-	
-	$scope.line_item_export_gridModel = {enableGridMenu: true, enableColumnMenus: false, enableFiltering: true, enableColumnResizing: true, enableRowSelection: false, showColumnFooter: false , enableSorting: true, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 45};
+	// don't define columns for the export grid so that it will dynamically include the custom keys from additional details
+	// Angular UI Grid supports PDF export but it's turned off to keep things simple.
+	$scope.line_item_export_gridModel = {enableGridMenu: true, exporterMenuPdf: false, enableFiltering: true, enableSorting: true, enableRowHeaderSelection: false, rowHeight: 45};
 	
 	$scope.updateLineItemAdditionalDetails = function(ad_id){
 		// hide the alert message before results
@@ -116,6 +118,8 @@ angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope'
 			// activate the the results tab
 			$('#resultsTab').attr('data-toggle', 'tab');
 			$('#myTabs a[href="#liadGrid"]').tab('show');
+			// update the export grid's downloadable CSV filename
+			$scope.line_item_export_gridModel.exporterCsvFilename = additional_detail.name + ".csv";
 		}, function errorCallback(response) { 
 			// failed server side request
 	    	$scope.alertMessage = response;

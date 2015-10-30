@@ -1,4 +1,4 @@
-angular.module('app', ['ngResource','ngAria','schemaForm','ui.grid','ui.grid.selection','ui.grid.resizeColumns', 'mgcrea.ngStrap', 'schemaForm-datepicker', 'schemaForm-timepicker', 'schemaForm-datetimepicker','ngSanitize', 'ui.grid.autoResize','ui.grid.expandable', 'ui.grid.edit']);
+angular.module('app', ['ngResource','ngAria','schemaForm','ui.grid','ui.grid.selection', 'ui.grid.exporter', 'ui.grid.resizeColumns', 'mgcrea.ngStrap', 'schemaForm-datepicker', 'schemaForm-timepicker', 'schemaForm-datetimepicker','ngSanitize', 'ui.grid.autoResize','ui.grid.expandable', 'ui.grid.edit']);
 
 angular.module('app').config([
      "$httpProvider", function($httpProvider) {

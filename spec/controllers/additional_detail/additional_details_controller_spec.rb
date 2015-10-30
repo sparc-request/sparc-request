@@ -356,14 +356,17 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
             expect(response.status).to eq(200)
             expect(JSON.parse(response.body)[0]).to include(
                     "Additional-Detail" => "REDCap / Consulting / Test", 
-                    "Effective-Date" => "2015-10-29",
-                    "SSR-ID" => @sub_service_request.id,
-                    "SSR-Status" => "first_draft",
+                    "Effective-Date" => Date.today.strftime("%Y-%m-%d"),
+                    "Ssr-Id" => @sub_service_request.id,
+                    "Ssr-Status" => "first_draft",
                     "Requester-Name" => "Test Person (test@test.uiowa.edu)",
-                    "PI-Name" => "Primary Person (test@test.uiowa.edu)",
+                    "Pi-Name" => "Primary Person (test@test.uiowa.edu)",
                     "Protocol-Short-Title" => "Short Title",
-                    "Required-Questions-Answered" => false
-                    # updated_at
+                    "Required-Questions-Answered" => false,
+                    "Last-Updated-At" => Date.today.strftime("%Y-%m-%d"),
+                    "birthdate" => "",
+                    "email" => "",
+                    "firstName" => ""
             )
           end
         end

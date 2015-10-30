@@ -236,13 +236,16 @@ RSpec.describe AdditionalDetail do
       expect(@additional_detail.export_array[0]).to include(
         "Additional-Detail" => "BMI / Consulting / Project Team Members", 
         "Effective-Date" => Date.today,
-        "SSR-ID" => 1,
-        "SSR-Status" => "first_draft",
+        "Ssr-Id" => 1,
+        "Ssr-Status" => "first_draft",
         "Requester-Name" => "Requester Person (requester@test.edu)",
-        "PI-Name" => "Primary Investigator (pi@test.edu)",
+        "Pi-Name" => "Primary Investigator (pi@test.edu)",
         "Protocol-Short-Title" => "Super Short Title",
-        "Required-Questions-Answered" => false
-        # updated_at
+        "Required-Questions-Answered" => false,
+        "Last-Updated-At" => "",
+        "birthdate" => "",
+        "email" => "",
+        "firstName" => ""
       )
     end
   end

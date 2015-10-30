@@ -1,14 +1,12 @@
 angular.module('app').controller('FormCreationController', ['$scope', '$http', function ($scope, $http, $compile) {
-	$scope.gridModel = {enableColumnMenus: false, enableFiltering: true,enableCellEdit: false, enableColumnResizing: true, showColumnFooter: false , enableSorting: false, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 45};
-	$scope.gridModel.columnDefs = [
-	                                 {name: 'Edit',enableFiltering: false, enableColumnResizing: false, width: 53, cellTemplate: '<button type="button" class="btn btn-primary" ng-click="grid.appScope.editQuestion(row.entity.id)">Edit</button>' },
+	$scope.gridModel = {enableColumnMenus: false, enableSorting: false, enableRowHeaderSelection: false, rowHeight: 45};
+	$scope.gridModel.columnDefs = [{name: ' ', width: 53, cellTemplate: '<button type="button" class="btn btn-primary" ng-click="grid.appScope.editQuestion(row.entity.id)">Edit</button>' },
 	                                 {name: 'question', field: 'name',  width: '33%' }, 
 	                                 {name: 'type', field: "kind", width: '15%'},
 	                               	 {name: 'required', width :'12%'},
 	                               	 {field: "description"},
-	                               	 {enableFiltering: false,  enableColumnResizing: false,name:'Order', field :'up', width: 83, cellTemplate: '<button type="button" class="btn btn-primary glyphicon glyphicon-chevron-up" ng-click="grid.appScope.up(row.entity.key)"></button><button type="button" class="btn btn-primary glyphicon glyphicon-chevron-down" ng-click="grid.appScope.down(row.entity.key)"></button>'}
+	                               	 {name:'Order', field :'up', width: 83, cellTemplate: '<button type="button" class="btn btn-primary glyphicon glyphicon-chevron-up" ng-click="grid.appScope.up(row.entity.key)"></button><button type="button" class="btn btn-primary glyphicon glyphicon-chevron-down" ng-click="grid.appScope.down(row.entity.key)"></button>'}
 	                               	];
-	
 	$scope.form ={};
 	$scope.model = {};
 	

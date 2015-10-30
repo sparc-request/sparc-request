@@ -31,8 +31,8 @@ class LineItemAdditionalDetail < ActiveRecord::Base
   end
   
   def has_answered_all_required_questions?
-    if self.additional_detail and self.additional_detail.has_required_questions? and self.form_data_json
-      user_answers = JSON.parse(self.form_data_json)
+    if self.additional_detail && self.additional_detail.has_required_questions? && self.form_data_json
+      user_answers = self.form_data_hash
       self.additional_detail.required_question_keys.each do |required_question_key|
         if !user_answers.has_key?(required_question_key)
           return false
@@ -66,16 +66,27 @@ class LineItemAdditionalDetail < ActiveRecord::Base
     self.line_item.additional_detail_breadcrumb
   end
   
+  # form_data_json hash keys are not allowed to have dashes so include dashes in 
+  #   these hash keys to prevent naming conflicts. also, AngularJS UI-Grid separates 
+  #   capital letters with spaces so camel case is recommended for hash keys.
   def export_hash
     export_hash = Hash.new
     export_hash["Additional-Detail"] = self.additional_detail_breadcrumb
     export_hash["Effective-Date"] = self.additional_detail.effective_date
-    export_hash["SSR-ID"] = self.sub_service_request_id
-    export_hash["SSR-Status"] = self.sub_service_request_status
+    export_hash["Ssr-Id"] = self.sub_service_request_id
+    export_hash["Ssr-Status"] = self.sub_service_request_status
     export_hash["Requester-Name"] = self.service_requester_name
-    export_hash["PI-Name"] = self.pi_name
+    export_hash["Pi-Name"] = self.pi_name
     export_hash["Protocol-Short-Title"] = self.protocol_short_title
     export_hash["Required-Questions-Answered"] = self.has_answered_all_required_questions?
+    export_hash["Last-Updated-At"] = self.updated_at ? self.updated_at.strftime("%Y-%m-%d") : ""
+    # loop over each field in the additional detail form schema 
+    #   and attempt to find its value in the line item additional detail form data
+    user_answers = self.form_data_hash
+    self.additional_detail_form_array.each do |question|
+      # if value not found, insert an empty string so that all rows of responses will have the same # of columns/questions 
+      export_hash[question["key"]] = user_answers.has_key?(question["key"]) ? user_answers[question["key"]] : ""
+    end
     export_hash
   end
   

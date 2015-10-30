@@ -15,7 +15,11 @@ angular.module('app').factory("Service",  ['$resource', function($resource) {
 
 angular.module('app').factory("AdditionalDetail",  ['$resource', function($resource) {
   // service_id is a global variable set in a HAML file
-  return $resource("/additional_detail/services/:service_id/additional_details/:id", {service_id: service_id, id: '@id'}, {'update_enabled': { method: 'PUT', url: '/additional_detail/services/:service_id/additional_details/:id/update_enabled'} });
+  return $resource("/additional_detail/services/:service_id/additional_details/:id", 
+		  {service_id: service_id, id: '@id'}, 
+		  {'export_grid': { method: 'GET', params: {service_id: service_id, id: '@id'}, isArray: true,  url: '/additional_detail/services/:service_id/additional_details/:id/export_grid'} ,
+		   'update_enabled': { method: 'PUT', url: '/additional_detail/services/:service_id/additional_details/:id/update_enabled'} }
+		  );
 }]);
 
 angular.module('app').factory("LineItemAdditionalDetail",  ['$resource', function($resource) {
@@ -101,6 +105,8 @@ angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope'
 	                               {field:'updated_at',name: 'Last Updated', sort: { direction: uiGridConstants.DESC, priority: 1 }, width: '12%' }
 	                               ];
 	
+	$scope.line_item_export_gridModel = {enableGridMenu: true, enableColumnMenus: false, enableFiltering: true, enableColumnResizing: true, enableRowSelection: false, showColumnFooter: false , enableSorting: true, showGridFooter: false, enableRowHeaderSelection: false, rowHeight: 45};
+	
 	$scope.updateLineItemAdditionalDetails = function(ad_id){
 		// hide the alert message before results
 		$scope.alertMessage = null;
@@ -110,6 +116,13 @@ angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope'
 			// activate the the results tab
 			$('#resultsTab').attr('data-toggle', 'tab');
 			$('#myTabs a[href="#liadGrid"]').tab('show');
+		}, function errorCallback(response) { 
+			// failed server side request
+	    	$scope.alertMessage = response;
+	    }); 
+        // load the export grid
+		AdditionalDetail.export_grid({ id: ad_id }, {}).$promise.then(function(line_item_additional_details_export) {
+			$scope.line_item_export_gridModel.data = line_item_additional_details_export;
 		}, function errorCallback(response) { 
 			// failed server side request
 	    	$scope.alertMessage = response;

@@ -4,7 +4,8 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
   before_filter :authenticate_identity! # returns 401 for failed JSON authentication
   before_filter :load_service
   before_filter :authorize_admin_user, :only => [:index]
-  before_filter :authorize_super_users_catalog_managers, :except => [:index]
+  before_filter :authorize_super_users_service_providers, :only => [:show, :export_grid]
+  before_filter :authorize_super_users_catalog_managers, :except => [:index, :show, :export_grid]
   
   # service providers need access to the index page so that they can click through to see responses
   def index
@@ -14,18 +15,14 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
     end
   end
 
-  # show responses with high level detail to be used for admin editing
+  # show responses with high level detail to be used by admins to edit those responses
   def show
     render :json => @service.additional_details.find(params[:id]).to_json(:root => false, :include => {:line_item_additional_details  => {:methods => [:sub_service_request_status, :pi_name, :protocol_short_title, :service_requester_name, :sub_service_request_id, :has_answered_all_required_questions?]}})
   end
 
   # show responses with low level details to be used for exporting
-  # def export_grid
-  # end
-  
-  def edit
-    @additional_detail = @service.additional_details.find(params[:id])
-    render :new
+  def export_grid
+    render :json => @service.additional_details.find(params[:id]).export_array.to_json(:root => false)
   end
 
   def new
@@ -45,6 +42,11 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
     @additional_detail = @service.additional_details.find(params[:id]).dup
     # force the admin user to choose a new effective date, should help prevent validation that checks for duplicate effective dates
     @additional_detail.effective_date = nil
+    render :new
+  end
+
+  def edit
+    @additional_detail = @service.additional_details.find(params[:id])
     render :new
   end
 
@@ -92,6 +94,16 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
   def authorize_admin_user
     # verify that user is either a service provider, catalog manager, or super user for this service
     if current_identity.admin_organizations().include?(@service.organization) || current_identity.can_edit_entity?(@service.organization, true)
+      return true
+    else
+      @service = nil
+      render "additional_detail/shared/unauthorized", :status => :unauthorized
+    end
+  end
+  
+  def authorize_super_users_service_providers
+    # verify that user is either a service provider or super user for this service but not catalog managers 
+    if current_identity.admin_organizations().include?(@service.organization)
       return true
     else
       @service = nil

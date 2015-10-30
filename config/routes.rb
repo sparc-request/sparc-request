@@ -347,6 +347,7 @@ SparcRails::Application.routes.draw do
       resources :additional_details do
         member do
           get :duplicate
+          get :export_grid
           put :update_enabled
         end
       end

@@ -46,5 +46,9 @@
           .panel-heading
             = "Additional Detail Responses for {{activeAdditionalDetail.name}}"
           .panel-body
-            %div{:id=>"liadGrid", "ui-grid"=>"line_item_ad_gridModel", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 400px;"}
+            %h4 Administer Responses
+            %div{:id=>"liadGrid", "ui-grid"=>"line_item_ad_gridModel", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 300px;"}
+            %h4 Export Responses
+            %div{:id=>"liadExportGrid", "ui-grid"=>"line_item_export_gridModel", "ui-grid-auto-resize"=>"true", "ui-grid-exporter"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 300px;"}
+
       

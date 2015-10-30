@@ -15,16 +15,20 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
     @core.save(validate: false)
 
     @core_service = Service.new
+    @core_service.name = "Consulting"
     @core_service.organization_id = @core.id
     @core_service.save(validate: false)
 
     @additional_detail = AdditionalDetail.new
     @additional_detail.name = "Test"
     @additional_detail.service_id = @core_service.id
-    @additional_detail.form_definition_json= '{"schema": {"required": ["t","date"] }}'
+    @additional_detail.form_definition_json = '{"schema": {"required": ["birthdate", "email"] }, "form":[{"key":"birthdate"},{"key":"email"},{"key":"firstName"} ]}'
     @additional_detail.effective_date = Date.today
     @additional_detail.enabled = "true"
-    @additional_detail.save
+    @additional_detail.save(validate: false)
+    
+    @core_service.additional_details << @additional_detail
+    @core_service.save(validate: false)
     
     @program_service = Service.new
     @program_service.organization_id = @program.id
@@ -52,6 +56,11 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
     
     it "show an additional detail" do
       get(:show, {:service_id => @core_service, :id => @additional_detail, :format => :json })
+      expect(response.status).to eq(401)
+    end
+    
+    it "export_grid" do
+      get(:export_grid, {:service_id => @core_service, :id => @additional_detail, :format => :json })
       expect(response.status).to eq(401)
     end
     
@@ -145,6 +154,11 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         expect(response.status).to eq(401)
       end
       
+      it "export_grid" do
+        get(:export_grid, {:service_id => @core_service, :id => @additional_detail, :format => :json })
+        expect(response.status).to eq(401)
+      end
+      
       it "update_enabled" do
         put(:update_enabled, {:service_id => @core_service, :id => @additional_detail, :additional_detail=> @additional_detail.attributes = { :enabled => "false"} })
         expect(response.status).to eq(401)
@@ -215,9 +229,14 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         expect(assigns(:additional_detail)).to be_blank
       end
       
-      it "should NOT be able to show an additional detail" do
+      it "should be able to show an additional detail" do
         get(:show, {:service_id => @core_service, :id => @additional_detail, :format => :json })
-        expect(response.status).to eq(401)
+        expect(response.status).to eq(200)
+      end
+      
+      it "should be able to see the export_grid " do
+        get(:export_grid, {:service_id => @core_service, :id => @additional_detail, :format => :json })
+        expect(response.status).to eq(200)
       end
       
       it "should NOT be able to update_enabled" do
@@ -251,6 +270,106 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         delete(:destroy, {:service_id => @core_service, :id => @additional_detail, :format => :json})
         expect(response.status).to eq(401)
       end
+      
+      describe 'view line_item_additional_details' do
+        before :each do
+          @service_request = ServiceRequest.new
+          @service_request.save(validate: false)
+          
+          @sub_service_request = SubServiceRequest.new
+          @sub_service_request.service_request_id = @service_request.id
+          @sub_service_request.status = 'first_draft'
+          SubServiceRequest.skip_callback(:save, :after, :update_org_tree)
+          @sub_service_request.save(:validate => false)
+          SubServiceRequest.set_callback(:save, :after, :update_org_tree)
+
+          @line_item = LineItem.new
+          @line_item.sub_service_request_id = @sub_service_request.id
+          @line_item.service_request_id = @service_request.id
+          @line_item.service_id = @core_service.id
+          @line_item.save(validate: false)
+
+          @line_item_additional_detail = LineItemAdditionalDetail.new
+          @line_item_additional_detail.line_item_id = @line_item.id
+          @line_item_additional_detail.additional_detail_id = @additional_detail.id
+          @line_item_additional_detail.form_data_json = '{}'
+          @line_item_additional_detail.save(validate: false)
+          
+          @additional_detail.line_item_additional_details << @line_item_additional_detail
+          @additional_detail.save(validate: false)
+        end
+
+        it "should show additional detail with sub_service_request_status status" do
+          get(:show, {:service_id => @core_service, :id => @additional_detail, :format => :json })
+          expect(response.status).to eq(200)
+          expect(JSON.parse(response.body)["line_item_additional_details"][0]["sub_service_request_status"]).to eq(@sub_service_request.status)
+        end
+        
+        describe 'with protocol and owner name present' do
+          before :each do
+            @service_requester = Identity.new
+            @service_requester.first_name = "Test"
+            @service_requester.last_name = "Person"
+            @service_requester.email = "test@test.uiowa.edu"
+            Identity.skip_callback(:create, :after, :send_admin_mail)
+            @service_requester.save(validate: false)
+            Identity.set_callback(:create, :after, :send_admin_mail)
+
+            @service_request.service_requester_id = @service_requester.id
+            @service_request.save(validate: false)
+                        
+            @protocol = Protocol.new
+            @protocol.short_title = "Short Title"
+            @protocol.save(validate: false)
+
+            @primary_pi = Identity.new
+            @primary_pi.first_name = "Primary"
+            @primary_pi.last_name = "Person"
+            @primary_pi.email = "test@test.uiowa.edu"
+            @primary_pi.save(validate: false)
+            
+            @project_role_pi = ProjectRole.new
+            @project_role_pi.identity = @primary_pi
+            @project_role_pi.role = 'primary-pi'        
+            @project_role_pi.protocol = @protocol
+            @project_role_pi.save(validate: false)    
+
+            @service_request.protocol_id = @protocol.id
+            @service_request.save(validate: false)
+          end
+
+          it "should show service_requester_name detail" do
+            get(:show, {:service_id => @core_service, :id => @additional_detail, :format => :json })
+            expect(response.status).to eq(200)
+            expect(JSON.parse(response.body)["line_item_additional_details"][0]["service_requester_name"]).to eq("Test Person (test@test.uiowa.edu)")
+          end
+          
+          it "should show protocol short title and primary_pi" do
+            get(:show, {:service_id => @core_service, :id => @additional_detail, :format => :json })
+            expect(response.status).to eq(200)
+            expect(JSON.parse(response.body)["line_item_additional_details"][0]["protocol_short_title"]).to eq("Short Title")
+            expect(JSON.parse(response.body)["line_item_additional_details"][0]["pi_name"]).to eq("Primary Person (test@test.uiowa.edu)")
+          end
+          
+          it "should be able to see the export_grid without line item additional details" do
+            get(:export_grid, {:service_id => @core_service, :id => @additional_detail, :format => :json })
+            expect(response.status).to eq(200)
+            expect(JSON.parse(response.body)[0]).to include(
+                    "Additional-Detail" => "REDCap / Consulting / Test", 
+                    "Effective-Date" => "2015-10-29",
+                    "SSR-ID" => @sub_service_request.id,
+                    "SSR-Status" => "first_draft",
+                    "Requester-Name" => "Test Person (test@test.uiowa.edu)",
+                    "PI-Name" => "Primary Person (test@test.uiowa.edu)",
+                    "Protocol-Short-Title" => "Short Title",
+                    "Required-Questions-Answered" => false
+                    # updated_at
+            )
+          end
+        end
+        
+        
+      end
     end
     
     describe 'is a program service provider and' do
@@ -280,9 +399,9 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         expect(assigns(:additional_detail)).to be_blank
       end
       
-      it "should NOT be able to show an additional detail" do
+      it "should be able to show an additional detail" do
         get(:show, {:service_id => @core_service, :id => @additional_detail, :format => :json })
-        expect(response.status).to eq(401)
+        expect(response.status).to eq(200)
       end
       
       it "should NOT be able to update_enabled" do
@@ -349,6 +468,16 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
           expect(assigns(:additional_detail)).to_not be_blank
         end
 
+        it "NOT see show an additional detail" do
+          get(:show, {:service_id => @core_service, :id => @additional_detail, :format => :json })
+          expect(response.status).to eq(401)
+        end
+        
+        it "NOT see the export_grid " do
+          get(:export_grid, {:service_id => @core_service, :id => @additional_detail, :format => :json })
+          expect(response.status).to eq(401)
+        end
+        
         it "duplicate an additional detail" do
           get(:duplicate,{:service_id => @core_service, :id => @additional_detail, :format =>:html})
           expect(response.status).to eq(200)
@@ -542,97 +671,8 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
             expect(assigns(:additional_detail)).to_not be_blank
           }.to change(AdditionalDetail, :count).by(0)
         end  
-
-        describe 'view line_item_additional_details' do
-          before :each do
-            @service_request = ServiceRequest.new
-            @service_request.save(validate: false)
-            
-            @sub_service_request = SubServiceRequest.new
-            @sub_service_request.service_request_id = @service_request.id
-            @sub_service_request.status = 'first_draft'
-            SubServiceRequest.skip_callback(:save, :after, :update_org_tree)
-            @sub_service_request.save(:validate => false)
-            SubServiceRequest.set_callback(:save, :after, :update_org_tree)
-
-            @line_item = LineItem.new
-            @line_item.sub_service_request_id = @sub_service_request.id
-            @line_item.service_request = @service_request
-            @line_item.service_id = @core_service.id
-            @line_item.save(validate: false)
-
-            @line_item_additional_detail = LineItemAdditionalDetail.new
-            @line_item_additional_detail.line_item_id = @line_item.id
-            @line_item_additional_detail.additional_detail_id = @additional_detail.id
-            @line_item_additional_detail.save(validate: false)
-          end
-
-          describe "show status" do
-            before :each do
-              @sub_service_request.status = 'first_draft'
-            end
-            it "should show additional detail" do
-              get(:show, {:service_id => @core_service, :id => @additional_detail, :format => :json })
-              expect(response.status).to eq(200)
-
-              expect(JSON.parse(response.body)["line_item_additional_details"][0]["sub_service_request_status"]).to eq(@sub_service_request.status)
-            end
-          end
-
-          describe 'with owner name present' do
-            before :each do
-              @owner = Identity.new
-              @owner.first_name = "Test"
-              @owner.last_name = "Person"
-              @owner.email = "test@test.uiowa.edu"
-              Identity.skip_callback(:create, :after, :send_admin_mail)
-              @owner.save(validate: false)
-              Identity.set_callback(:create, :after, :send_admin_mail)
-
-              @service_request.service_requester_id = @owner.id
-              @service_request.save(validate: false)
-              
-            end
-
-            it "should show additional detail" do
-              get(:show, {:service_id => @core_service, :id => @additional_detail, :format => :json })
-              expect(response.status).to eq(200)
-              expect(JSON.parse(response.body)["line_item_additional_details"][0]["service_requester_name"]).to eq("Test Person (test@test.uiowa.edu)")
-            end
-          end
-          
-          describe 'with protocol' do
-            before :each do
-              @protocol = Protocol.new
-              @protocol.short_title = "Short Title"
-              @protocol.save(validate: false)
-
-              @primary_pi = Identity.new
-              @primary_pi.first_name = "Primary"
-              @primary_pi.last_name = "Person"
-              @primary_pi.email = "test@test.uiowa.edu"
-              @primary_pi.save(validate: false)
-              
-              @project_role_pi = ProjectRole.new
-              @project_role_pi.identity = @primary_pi
-              @project_role_pi.role = 'primary-pi'        
-              @project_role_pi.protocol = @protocol
-              @project_role_pi.save(validate: false)    
-
-              @service_request.protocol_id = @protocol.id
-              @service_request.save(validate: false)
-            end
-
-            it "should show protocol short title and primary_pi" do
-              get(:show, {:service_id => @core_service, :id => @additional_detail, :format => :json })
-              expect(response.status).to eq(200)
-              expect(JSON.parse(response.body)["line_item_additional_details"][0]["protocol_short_title"]).to eq("Short Title")
-              expect(JSON.parse(response.body)["line_item_additional_details"][0]["pi_name"]).to eq("Primary Person (test@test.uiowa.edu)")
-            end
-          end
-        end
       end
-
+      
       describe 'for a program and and has access to' do
         before :each do
           @catalog_manager.organization_id = @program.id
@@ -661,6 +701,16 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
           expect(response.body).to eq("[]")
         end
 
+        it "NOT see show an additional detail" do
+          get(:show, {:service_id => @core_service, :id => @additional_detail, :format => :json })
+          expect(response.status).to eq(401)
+        end
+        
+        it "NOT see the export_grid " do
+          get(:export_grid, {:service_id => @core_service, :id => @additional_detail, :format => :json })
+          expect(response.status).to eq(401)
+        end
+        
         it 'a core service new additional detail page because user is a catalog_manager for its program' do
           get(:new, {:service_id => @core_service, :format => :html})
           expect(response).to render_template("new")
@@ -732,6 +782,11 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         expect(response.status).to eq(200)
       end
       
+      it "export_grid" do
+        get(:export_grid, {:service_id => @core_service, :id => @additional_detail, :format => :json })
+        expect(response.status).to eq(200)
+      end
+      
       it "update_enabled" do
         put(:update_enabled, {:service_id => @core_service, :id => @additional_detail, :additional_detail=> @additional_detail.attributes = { :enabled => "false"} })
         expect(response.status).to eq(204)
@@ -795,6 +850,11 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
       
       it "show an additional detail" do
         get(:show, {:service_id => @core_service, :id => @additional_detail, :format => :json })
+        expect(response.status).to eq(200)
+      end
+      
+      it "export_grid" do
+        get(:export_grid, {:service_id => @core_service, :id => @additional_detail, :format => :json })
         expect(response.status).to eq(200)
       end
       

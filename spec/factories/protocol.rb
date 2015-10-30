@@ -30,7 +30,7 @@ FactoryGirl.define do
     udak_project_number          { Random.rand(1000).to_s }
     funding_rfa                  { Faker::Lorem.word }
     potential_funding_start_date { Time.now + 1.year }
-    funding_start_date           { Time.now + 10.day }
+    funding_start_date           { '2015-10-15' }
     federal_grant_serial_number  { Random.rand(200000).to_s }
     federal_grant_title          { Faker::Lorem.sentence(2) }
     federal_grant_code_id        { Random.rand(1000).to_s }

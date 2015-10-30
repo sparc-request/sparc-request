@@ -159,21 +159,6 @@ en:
     action: "Action"
     all_on_request: "All Services on Request Have Been Deleted"
 
-  # Tooltip help dialogs
-  cart_help:
-    questions:
-      - question_text: "May I submit a request for services for multiple research studies/projects simultaneously?"
-        answer_text: "No. Please browse and select services for only one research study/project at a time."
-      - question_text: "May I select and add services from multiple Service Providers and Programs at one time?"
-        answer_text: "Yes. Please feel free to browse, select, and add services from any Service Provider, Program, and/or Core displayed in the system for any given research study/project."
-      - question_text: "How many Authorized Users can I add?"
-        answer_text: "Add as many Authorized Users as you feel is pertinent. There is no limit."
-      - question_text: "What is the difference  between a Research Study and a Project?"
-        answer_text: "A Research Study is an individual research protocol with defined aims and outcomes."
-      - question_text: "How is SPARC Request calculating my indirect costs?"
-        answer_text: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARC Request uses this data to calculate your total overall indirect costs."
-      - question_text: "I\\'m stuck! Who can I contact for assistance with SPARC Request?"
-        answer_text: "The SUCCESS Center is happy to assist you! Please contact us at <a href=\"mailto:success@musc.edu\">success@musc.edu</a> or (843) 792-3357."
   # indirect cost rates, default values used to prepopulate forms
   indirect_cost_rates:
     internal_and_college: "0"

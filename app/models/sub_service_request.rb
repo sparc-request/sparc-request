@@ -434,6 +434,7 @@ class SubServiceRequest < ActiveRecord::Base
 
     unless available_surveys.blank?
       SurveyNotification.service_survey(available_surveys, primary_pi, self).deliver
+    # only send survey email to both users if they are unique
       if primary_pi != requester
         SurveyNotification.service_survey(available_surveys, requester, self).deliver
       end

@@ -39,11 +39,32 @@ RSpec.describe LineItemAdditionalDetail do
     end
   end
 
+  describe "additional_detail_description" do
+    before :each do
+      @additional_detail = AdditionalDetail.new
+      @line_item_additional_detail = LineItemAdditionalDetail.new
+      @line_item_additional_detail.additional_detail = @additional_detail
+    end
+    
+    it 'should return nil when description is nil' do
+      expect(@line_item_additional_detail.additional_detail_description).to eq(nil)
+    end
+    
+    it 'should return nil if somehow additional detail is nil' do
+      @line_item_additional_detail.additional_detail = nil
+      expect(@line_item_additional_detail.additional_detail_description).to eq(nil)
+    end
+  
+    it 'should return value' do
+      @additional_detail.description = "Important form to fill out."
+      expect(@line_item_additional_detail.additional_detail_description).to eq("Important form to fill out.")
+    end
+  end
+  
   describe "has_answered_all_required_questions?" do
 
     before :each do
       @additional_detail = AdditionalDetail.new
-
       @line_item_additional_detail = LineItemAdditionalDetail.new
       @line_item_additional_detail.additional_detail = @additional_detail
     end

@@ -66,6 +66,10 @@ class LineItemAdditionalDetail < ActiveRecord::Base
     self.line_item.additional_detail_breadcrumb
   end
   
+  def additional_detail_description
+    self.additional_detail.description unless self.additional_detail.blank?
+  end
+  
   # form_data_json hash keys are not allowed to have dashes so include dashes in 
   #   these hash keys to prevent naming conflicts. also, AngularJS UI-Grid separates 
   #   capital letters with spaces so camel case is recommended for hash keys.

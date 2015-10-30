@@ -82,7 +82,7 @@ angular.module('app').controller("DocumentManagementAdditionalDetailsController"
      };
 }]);
 
-angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope', '$http', '$window', 'Service', 'AdditionalDetail', 'LineItemAdditionalDetail', 'uiGridConstants', function($scope, $http, $window, Service, AdditionalDetail, LineItemAdditionalDetail, uiGridConstants) {
+angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope', '$http', '$window', 'Service', 'AdditionalDetail', 'LineItemAdditionalDetail', 'uiGridConstants', 'uiGridExporterConstants', function($scope, $http, $window, Service, AdditionalDetail, LineItemAdditionalDetail, uiGridConstants, uiGridExporterConstants) {
 	
 	$scope.gridModel = {enableColumnMenus: false, enableFiltering: true, enableRowSelection: false, enableSorting: true, enableRowHeaderSelection: false, rowHeight: 45};
 	$scope.gridModel.columnDefs = [
@@ -107,7 +107,11 @@ angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope'
 	                               ];
 	// don't define columns for the export grid so that it will dynamically include the custom keys from additional details
 	// Angular UI Grid supports PDF export but it's turned off to keep things simple.
-	$scope.line_item_export_gridModel = {enableGridMenu: true, exporterMenuPdf: false, enableFiltering: true, enableSorting: true, enableRowHeaderSelection: false, rowHeight: 45};
+	$scope.line_item_export_gridModel = {enableGridMenu: true, exporterMenuPdf: false, enableFiltering: true, enableSorting: true, enableRowHeaderSelection: false, rowHeight: 45,
+	  onRegisterApi: function(line_item_export_gridApi){ 
+	    $scope.line_item_export_gridApi = line_item_export_gridApi;
+	  }
+	};
 	
 	$scope.updateLineItemAdditionalDetails = function(ad_id){
 		// hide the alert message before results
@@ -132,6 +136,12 @@ angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope'
 	    	$scope.alertMessage = response;
 	    }); 
 	}
+	
+	$scope.export = function(){
+	  // all columns and all rows
+	  $scope.line_item_export_gridApi.exporter.csvExport(uiGridExporterConstants.ALL, uiGridExporterConstants.ALL);
+    };
+	  
 	// initialize the service
 	$scope.service = Service.get();
 	// initialize the main grid

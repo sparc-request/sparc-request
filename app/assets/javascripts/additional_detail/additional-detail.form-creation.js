@@ -28,8 +28,9 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 		return (!$scope.pretty() || $scope.pretty()=="{}") ? "display : none" : "";
 		} 
 
-	//Required to use datepicker
+	//Required to use datepicker, these two fields should be pulled from an ngResource call not global variables
 	$scope.effective_date = effective_date;
+	$scope.description = description;
 
 	$scope.typeHash = {
 	    text: 'Text',

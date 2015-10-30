@@ -51,6 +51,7 @@
           .panel-heading
             %h3.panel-title= "Export Responses for {{activeAdditionalDetail.name}}"
           .panel-body
+            %button.btn.btn-primary{:type=>"button","ng-click"=>"export()"} Export All Data
             %div{:id=>"liadExportGrid", "ui-grid"=>"line_item_export_gridModel", "ui-grid-resize-columns" => "true", "ui-grid-auto-resize"=>"true", "ui-grid-exporter"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 300px;"}
 
       

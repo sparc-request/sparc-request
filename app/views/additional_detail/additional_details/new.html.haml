@@ -1,6 +1,7 @@
 :javascript
   var service_id = '#{@service.id}';
-  var effective_date = '#{@additional_detail.effective_date ? @additional_detail.effective_date : ""}';  
+  var effective_date = '#{@additional_detail.effective_date ? @additional_detail.effective_date : ""}'; 
+  var description = '#{@additional_detail.description ? @additional_detail.description : ""}';  
 %div{"ng-controller" => "FormCreationController"}
   = render :partial => 'additional_detail/additional_details/additional_details_question_modal'
   = render :partial => 'organization_breadcrumb'
@@ -44,7 +45,7 @@
               .col-md-6
                 .form-group
                   = f.label :description
-                  = f.text_field :description, class: "form-control", :placeholder=>"Description (Optional)"
+                  = f.text_field :description, class: "form-control", :placeholder=>"Description (Optional)", "ng-model" => "description"
                   .help-block.with-errors
             .row
               .col-md-6
@@ -62,8 +63,8 @@
                   .panel-heading.clearfix 
                     %h3.panel-title.pull-left Questions
                     .btn-group.btn-group-sm.pull-right
-                      %button.btn.btn-sm.btn-primary{:type=>"button","ng-click"=>"editQuestion()"} Add Question
-                      %button.btn.btn-sm.btn-warning{:type=>"button","ng-click"=>"deleteSelected()"} Delete Selected 
+                      %button.btn.btn-primary{:type=>"button","ng-click"=>"editQuestion()"} Add Question
+                      %button.btn.btn-warning{:type=>"button","ng-click"=>"deleteSelected()"} Delete Selected 
                       %button.btn.btn-danger{:type=> "button","ng-click"=>"deleteAllQuestion()"} Delete All
                   .panel-body
                     %div{:id=>"gridId", "ui-grid"=>"gridModel", "ui-grid-edit"=>"true", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", "ng-style"=> "getTableHeight()"}
@@ -71,9 +72,10 @@
                 %button.btn.btn-info{"type"=>"button", "data-toggle"=>"modal", "data-target"=>"#importExportModal"} Import / Export Form
                 %a.btn.btn-default{:type=>"button", :href=>"/additional_detail/services/#{@service.id}/additional_details/"} Cancel
       .col-md-4{"ng-hide"=>"noQuestions()"}
+        .alert.alert-info{"ng-show"=>"description"} {{description}}
         .panel.panel-default
           .panel-heading
-            %h3.panel-title Form Preview
+            %h3.panel-title Please Answer the Following Questions
           .panel-body
             %div{"sf-schema"=>"schema", "sf-form"=>"form", "sf-model"=>"model"}
         .panel.panel-default{:style=>"{{dataDisplay()}}"}

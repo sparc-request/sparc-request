@@ -163,7 +163,11 @@ module ApplicationHelper
       (beginning_visit..ending_visit).each do |y|
         visit_group = arm.visit_groups[y - 1]
 
-        arr << ["--#{visit_group.name}/Day #{visit_group.day}".html_safe, :parent_page => page]
+        if visit_group.day.present?
+          arr << ["--#{visit_group.name}/Day #{visit_group.day}".html_safe, parent_page: page]
+        else
+          arr << ["--#{visit_group.name}".html_safe, parent_page: page]
+        end
       end
     end
 

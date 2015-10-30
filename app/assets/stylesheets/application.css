@@ -2841,9 +2841,9 @@ input.devise_submit_button {
   display: none;
 }
 
-.move_visits img{
-  vertical-align: middle;
-  padding-right: 5px;
+.move_visits {
+  padding: 2px !important;
+  margin-left: 5px;
 }
 
 .left-arrow {

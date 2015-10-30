@@ -61,7 +61,7 @@ class Notifier < ActionMailer::Base
     @triggered_by = user_current.id
     @ssr_ids = service_request.sub_service_requests.map{ |ssr| ssr.id }.join(", ")
 
-    attachments["service_request_#{@service_request.protocol.id}.xls"] = xls
+    attachments["service_request_#{@service_request.protocol.id}.xlsx"] = xls
 
     # only send these to the correct person in the production env
     email = Rails.env == 'production' ? @identity.email : DEFAULT_MAIL_TO
@@ -82,7 +82,7 @@ class Notifier < ActionMailer::Base
     @triggered_by = user_current.id
     @ssr_ids = service_request.sub_service_requests.map{ |ssr| ssr.id }.join(", ")
 
-    attachments["service_request_#{@service_request.protocol.id}.xls"] = xls
+    attachments["service_request_#{@service_request.protocol.id}.xlsx"] = xls
 
     # only send these to the correct person in the production env
     email = Rails.env == 'production' ?  submission_email_address : DEFAULT_MAIL_TO

@@ -408,7 +408,6 @@ RSpec.describe LineItemAdditionalDetail do
       @line_item_additional_detail = LineItemAdditionalDetail.new
       @line_item_additional_detail.line_item = @line_item
       @line_item_additional_detail.form_data_json = '{}'
-      @line_item_additional_detail.updated_at = Date.today
       @line_item_additional_detail.additional_detail = @additional_detail
       @additional_detail.line_item_additional_details << @line_item_additional_detail 
     end
@@ -423,7 +422,7 @@ RSpec.describe LineItemAdditionalDetail do
         "Pi-Name" => "Primary Investigator (pi@test.edu)",
         "Protocol-Short-Title" => "Super Short Title",
         "Required-Questions-Answered" => false,
-        "Last-Updated-At" => Date.today.strftime("%Y-%m-%d"),
+        "Last-Updated-At" => "",
         "birthdate" => "",
         "email" => "",
         "firstName" => ""
@@ -442,7 +441,7 @@ RSpec.describe LineItemAdditionalDetail do
         "Pi-Name" => "Primary Investigator (pi@test.edu)",
         "Protocol-Short-Title" => "Super Short Title",
         "Required-Questions-Answered" => false,
-        "Last-Updated-At" => Date.today.strftime("%Y-%m-%d"),
+        "Last-Updated-At" => "",
         "birthdate" => "",
         "email" => "test@test.edu",
         "firstName" => ""
@@ -461,7 +460,7 @@ RSpec.describe LineItemAdditionalDetail do
         "Pi-Name" => "Primary Investigator (pi@test.edu)",
         "Protocol-Short-Title" => "Super Short Title",
         "Required-Questions-Answered" => true,
-        "Last-Updated-At" => Date.today.strftime("%Y-%m-%d"),
+        "Last-Updated-At" => "",
         "birthdate" => "03/01/1978",
         "email" => "test@test.edu",
         "firstName" => "Test Subject"
@@ -480,7 +479,7 @@ RSpec.describe LineItemAdditionalDetail do
         "Pi-Name" => "Primary Investigator (pi@test.edu)",
         "Protocol-Short-Title" => "Super Short Title",
         "Required-Questions-Answered" => true,
-        "Last-Updated-At" => Date.today.strftime("%Y-%m-%d"),
+        "Last-Updated-At" => "",
         "birthdate" => "03/01/1978",
         "email" => "test@test.edu",
         "firstName" => ""

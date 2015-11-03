@@ -113,6 +113,10 @@ class LineItem < ActiveRecord::Base
     self.service_request.protocol_short_title
   end  
 
+  def srid
+    "#{self.service_request.try(:protocol).try(:id)}-#{self.sub_service_request.ssr_id}"
+  end
+  
   def pi_name
     self.service_request.pi_name
   end

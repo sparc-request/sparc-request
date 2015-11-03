@@ -194,6 +194,7 @@ RSpec.describe AdditionalDetail do
       @project_role_pi.role = 'primary-pi'
          
       @protocol = Protocol.new
+      @protocol.id = 1001
       @protocol.short_title = "Super Short Title"
       @protocol.project_roles << @project_role_pi
       
@@ -205,6 +206,7 @@ RSpec.describe AdditionalDetail do
       @sub_service_request = SubServiceRequest.new
       @sub_service_request.status = 'first_draft'
       @sub_service_request.id = 1
+      @sub_service_request.ssr_id = "0007"
            
       @line_item = LineItem.new
       @line_item.service_request = ServiceRequest.new
@@ -236,7 +238,7 @@ RSpec.describe AdditionalDetail do
       expect(@additional_detail.export_array[0]).to include(
         "Additional-Detail" => "BMI / Consulting / Project Team Members", 
         "Effective-Date" => Date.today,
-        "Ssr-Id" => 1,
+        "Srid" => "1001-0007",
         "Ssr-Status" => "first_draft",
         "Requester-Name" => "Requester Person (requester@test.edu)",
         "Pi-Name" => "Primary Investigator (pi@test.edu)",

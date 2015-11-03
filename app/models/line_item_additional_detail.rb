@@ -26,6 +26,10 @@ class LineItemAdditionalDetail < ActiveRecord::Base
     self.line_item.protocol_short_title
   end  
 
+  def srid
+    self.line_item.srid
+  end
+  
   def pi_name
     self.line_item.pi_name
   end
@@ -77,7 +81,7 @@ class LineItemAdditionalDetail < ActiveRecord::Base
     export_hash = Hash.new
     export_hash["Additional-Detail"] = self.additional_detail_breadcrumb
     export_hash["Effective-Date"] = self.additional_detail.effective_date
-    export_hash["Ssr-Id"] = self.sub_service_request_id
+    export_hash["Srid"] = self.srid
     export_hash["Ssr-Status"] = self.sub_service_request_status
     export_hash["Requester-Name"] = self.service_requester_name
     export_hash["Pi-Name"] = self.pi_name

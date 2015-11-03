@@ -98,6 +98,7 @@ angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope'
 	$scope.line_item_ad_gridModel.columnDefs = [
 	                               {name: "Response", enableFiltering: false, width: 125, cellTemplate: '<button data-toggle="modal" class="btn btn-primary" ng-click="grid.appScope.showResults(row.entity.id)">Show</button> <button data-toggle="modal" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">Edit</button>'},
 	                               {name: "Portal Admin", field: "sub_service_request_id", enableFiltering: false, width: 115, cellTemplate: '<a class="btn btn-info" href="/portal/admin/sub_service_requests/{{COL_FIELD}}" role="button">Portal Admin</a>'},
+	                               {name: "SRID", field: "srid"},
 	                               {name: "Principal Investigator", field: "pi_name", width: '15%'},
 	                               {name: "Requester", field: "service_requester_name", width: '15%'},
 	                               {name: "Short Title", field: "protocol_short_title", cellTooltip: true, width: '20%'},

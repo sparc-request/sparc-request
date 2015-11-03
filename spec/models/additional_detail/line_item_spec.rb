@@ -285,5 +285,38 @@ RSpec.describe "Line Item" do
       end
     end
   end
+
+  describe "srid" do
+    before :each do         
+      @protocol = Protocol.new
+      @protocol.id = 1      
       
+      @service_request = ServiceRequest.new      
+      @sub_service_request = SubServiceRequest.new
+      
+      @line_item = LineItem.new
+      @line_item.service_request = @service_request
+      @line_item.sub_service_request = @sub_service_request
+    end
+    
+    it "should return empty protocol id followed by empty SRID" do
+      expect(@line_item.srid).to eq("-")
+    end
+    
+    it "should return protocol id followed by SRID" do
+      @service_request.protocol = @protocol
+      @sub_service_request.ssr_id = "0002"
+      expect(@line_item.srid).to eq("1-0002")
+    end
+    
+    it "should return protocol id followed by empty SRID" do
+      @service_request.protocol = @protocol
+      expect(@line_item.srid).to eq("1-")
+    end
+    
+    it "should return empty protocol id followed by SRID" do
+      @sub_service_request.ssr_id = "0002"
+      expect(@line_item.srid).to eq("-0002")
+    end
+  end        
 end

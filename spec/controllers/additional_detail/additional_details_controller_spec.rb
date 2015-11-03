@@ -277,6 +277,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
           @service_request.save(validate: false)
           
           @sub_service_request = SubServiceRequest.new
+          @sub_service_request.ssr_id = "0005"
           @sub_service_request.service_request_id = @service_request.id
           @sub_service_request.status = 'first_draft'
           SubServiceRequest.skip_callback(:save, :after, :update_org_tree)
@@ -344,11 +345,12 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
             expect(JSON.parse(response.body)["line_item_additional_details"][0]["service_requester_name"]).to eq("Test Person (test@test.uiowa.edu)")
           end
           
-          it "should show protocol short title and primary_pi" do
+          it "should show protocol short title, primary_pi, and srid" do
             get(:show, {:service_id => @core_service, :id => @additional_detail, :format => :json })
             expect(response.status).to eq(200)
             expect(JSON.parse(response.body)["line_item_additional_details"][0]["protocol_short_title"]).to eq("Short Title")
             expect(JSON.parse(response.body)["line_item_additional_details"][0]["pi_name"]).to eq("Primary Person (test@test.uiowa.edu)")
+            expect(JSON.parse(response.body)["line_item_additional_details"][0]["srid"]).to eq("#{@protocol.id}-0005")
           end
           
           it "should be able to see the export_grid without line item additional details" do
@@ -357,7 +359,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
             expect(JSON.parse(response.body)[0]).to include(
                     "Additional-Detail" => "REDCap / Consulting / Test", 
                     "Effective-Date" => Date.today.strftime("%Y-%m-%d"),
-                    "Ssr-Id" => @sub_service_request.id,
+                    "Srid" => "#{@protocol.id}-0005",
                     "Ssr-Status" => "first_draft",
                     "Requester-Name" => "Test Person (test@test.uiowa.edu)",
                     "Pi-Name" => "Primary Person (test@test.uiowa.edu)",

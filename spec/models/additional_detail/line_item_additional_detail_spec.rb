@@ -363,6 +363,33 @@ RSpec.describe LineItemAdditionalDetail do
     end
   end
   
+  describe "srid" do
+    before :each do         
+      @protocol = Protocol.new
+      @protocol.id = 1      
+      
+      @service_request = ServiceRequest.new      
+      @sub_service_request = SubServiceRequest.new
+      
+      @line_item = LineItem.new
+      @line_item.service_request = @service_request
+      @line_item.sub_service_request = @sub_service_request
+      
+      @line_item_additional_detail = LineItemAdditionalDetail.new
+      @line_item_additional_detail.line_item = @line_item
+    end
+    
+    it "should return empty protocol id followed by empty SRID" do
+      expect(@line_item_additional_detail.srid).to eq("-")
+    end
+    
+    it "should return protocol id followed by SRID" do
+      @service_request.protocol = @protocol
+      @sub_service_request.ssr_id = "0002"
+      expect(@line_item_additional_detail.srid).to eq("1-0002")
+    end
+  end       
+  
   describe "export_hash" do
     before :each do
       @primary_pi = Identity.new
@@ -375,6 +402,7 @@ RSpec.describe LineItemAdditionalDetail do
       @project_role_pi.role = 'primary-pi'
          
       @protocol = Protocol.new
+      @protocol.id = 10
       @protocol.short_title = "Super Short Title"
       @protocol.project_roles << @project_role_pi
       
@@ -386,6 +414,7 @@ RSpec.describe LineItemAdditionalDetail do
       @sub_service_request = SubServiceRequest.new
       @sub_service_request.status = 'first_draft'
       @sub_service_request.id = 1
+      @sub_service_request.ssr_id = "0005"
            
       @line_item = LineItem.new
       @line_item.service_request = ServiceRequest.new
@@ -416,7 +445,7 @@ RSpec.describe LineItemAdditionalDetail do
       expect(@line_item_additional_detail.export_hash).to include(
         "Additional-Detail" => "BMI / Consulting / Project Team Members", 
         "Effective-Date" => Date.today,
-        "Ssr-Id" => 1,
+        "Srid" => "10-0005",
         "Ssr-Status" => "first_draft",
         "Requester-Name" => "Requester Person (requester@test.edu)",
         "Pi-Name" => "Primary Investigator (pi@test.edu)",
@@ -435,7 +464,7 @@ RSpec.describe LineItemAdditionalDetail do
       expect(@line_item_additional_detail.export_hash).to include(
         "Additional-Detail" => "BMI / Consulting / Project Team Members", 
         "Effective-Date" => Date.today,
-        "Ssr-Id" => 1,
+        "Srid" => "10-0005",
         "Ssr-Status" => "first_draft",
         "Requester-Name" => "Requester Person (requester@test.edu)",
         "Pi-Name" => "Primary Investigator (pi@test.edu)",
@@ -454,7 +483,7 @@ RSpec.describe LineItemAdditionalDetail do
       expect(@line_item_additional_detail.export_hash).to include(
         "Additional-Detail" => "BMI / Consulting / Project Team Members", 
         "Effective-Date" => Date.today,
-        "Ssr-Id" => 1,
+        "Srid" => "10-0005",
         "Ssr-Status" => "first_draft",
         "Requester-Name" => "Requester Person (requester@test.edu)",
         "Pi-Name" => "Primary Investigator (pi@test.edu)",
@@ -473,7 +502,7 @@ RSpec.describe LineItemAdditionalDetail do
       expect(@line_item_additional_detail.export_hash).to include(
         "Additional-Detail" => "BMI / Consulting / Project Team Members", 
         "Effective-Date" => Date.today,
-        "Ssr-Id" => 1,
+         "Srid" => "10-0005",
         "Ssr-Status" => "first_draft",
         "Requester-Name" => "Requester Person (requester@test.edu)",
         "Pi-Name" => "Primary Investigator (pi@test.edu)",
@@ -492,7 +521,7 @@ RSpec.describe LineItemAdditionalDetail do
       expect(@line_item_additional_detail.export_hash).to include(
         "Additional-Detail" => "BMI / Consulting / Project Team Members", 
         "Effective-Date" => Date.today,
-        "Ssr-Id" => 1,
+        "Srid" => "10-0005",
         "Ssr-Status" => "first_draft",
         "Requester-Name" => "Requester Person (requester@test.edu)",
         "Pi-Name" => "Primary Investigator (pi@test.edu)",

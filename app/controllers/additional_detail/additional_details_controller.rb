@@ -17,7 +17,7 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
 
   # show responses with high level detail to be used by admins to edit those responses
   def show
-    render :json => @service.additional_details.find(params[:id]).to_json(:root => false, :include => {:line_item_additional_details  => {:methods => [:sub_service_request_status, :pi_name, :protocol_short_title, :service_requester_name, :sub_service_request_id, :has_answered_all_required_questions?]}})
+    render :json => @service.additional_details.find(params[:id]).to_json(:root => false, :include => {:line_item_additional_details  => {:methods => [:sub_service_request_status, :srid, :pi_name, :protocol_short_title, :service_requester_name, :sub_service_request_id, :has_answered_all_required_questions?]}})
   end
 
   # show responses with low level details to be used for exporting

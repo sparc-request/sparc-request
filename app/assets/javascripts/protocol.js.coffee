@@ -22,6 +22,9 @@
 #= require navigation
 
 $(document).ready ->
+
+  infotip.setText('Research Study: An individual research study with defined aims and outcomes', '#infotip img')
+
   $("input[name=protocol]:radio").change ->
     if $(this).val() == 'Research Study'
       $('.existing-study').show()
@@ -29,12 +32,14 @@ $(document).ready ->
       $('.existing-project').hide()
       $('#study-select #service_request_protocol_id').removeAttr('disabled')
       $('#project-select #service_request_protocol_id').attr('disabled', 'disabled')
+      infotip.setText('Research Study: An individual research study with defined aims and outcomes', '#infotip img')
     else
       $('.existing-project').show()
       $('.edit-project').show() unless $('.edit_project_id').val() == ""
       $('.existing-study').hide()
       $('#project-select #service_request_protocol_id').removeAttr('disabled')
       $('#study-select #service_request_protocol_id').attr('disabled', 'disabled')
+      infotip.setText('Use "Project" for non-study specific service requests, or anything that is not a study.', '#infotip img')
 
   $("input[name=protocol]:radio:checked").change()
 
@@ -83,19 +88,3 @@ $(document).ready ->
     height: 200
 
   $('#redirect').button()
-
-  $('#infotip img').qtip
-    content: 'Research Study: An individual research study with defined aims and outcomes'
-    position:
-      corner:
-        target: "topRight"
-        tooltip: "bottomLeft"
-
-    style:
-      tip: true
-      border:
-        width: 0
-        radius: 4
-
-      name: "light"
-      width: 250

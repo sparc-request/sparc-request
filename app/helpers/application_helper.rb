@@ -120,7 +120,7 @@ module ApplicationHelper
                             tag(:br) : label_tag("")) +
                             content_tag(:span, visit_name, :style => "display:inline-block;width:75px;") +
                             tag(:br))
-      elsif @tab == 'billing_strategy'
+      elsif @tab != 'template'
         returning_html += content_tag(:th,
                                       ((USE_EPIC) ?
                                       # label_tag("Day") + "&nbsp;&nbsp;&nbsp;".html_safe + label_tag("+/-") +

@@ -134,11 +134,7 @@ ActiveRecord::Schema.define(version: 20151012140439) do
     t.string   "comment",         limit: 255
     t.string   "remote_address",  limit: 255
     t.datetime "created_at"
-<<<<<<< HEAD
     t.string   "request_uuid",    limit: 255
-=======
-    t.string   "request_uuid"
->>>>>>> master
   end
 
   add_index "audits", ["associated_id", "associated_type"], name: "associated_index", using: :btree

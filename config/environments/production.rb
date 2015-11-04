@@ -90,13 +90,13 @@ SparcRails::Application.configure do
   # Log the query plan for queries taking more than this (works
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
-  config.action_mailer.default_url_options = { :host => 'sparc.musc.edu' }
+  config.action_mailer.default_url_options = { host: 'sparc.musc.edu' }
 
   config.middleware.use ExceptionNotifier::Rack,
     email: {
       ignore_if: ->(env, exception) { ['128.23.150.107'].include?(env['REMOTE_ADDR']) },
       sender_address: 'donotreply@musc.edu',
-      exception_recipients: ['catesa@musc.edu', 'kelsey@musc.edu', 'johstu@musc.edu', 'leonarjp@musc.edu']
+      exception_recipients: ['catesa@musc.edu', 'johstu@musc.edu', 'leonarjp@musc.edu', 'wiel@musc.edu', 'lohrp@musc.edu', 'holtw@musc.edu']
     }
 
 end

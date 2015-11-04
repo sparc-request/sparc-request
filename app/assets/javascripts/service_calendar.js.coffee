@@ -224,9 +224,9 @@ $(document).ready ->
   )
 
   $(document).on('click', '.move_visits', ->
-    sr_id = $(this).data('sr_id')
+    sr_id = $(this).data('sr-id')
     data =
-      'arm_id': $(this).data('arm_id')
+      'arm_id': $(this).data('arm-id')
       'tab': $(this).data('tab')
       'portal': $(this).data('portal')
     $.ajax

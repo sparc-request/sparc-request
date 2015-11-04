@@ -70,6 +70,7 @@ group :development, :test do
 end
 
 group :development do
+  gem 'traceroute'
   gem 'sqlite3'
   gem 'highline'
   gem 'spring'

@@ -44,6 +44,7 @@ begin
   USE_GOOGLE_CALENDAR           = application_config['use_google_calendar']
   USE_NEWS_FEED                 = application_config['use_news_feed']
   CALENDAR_URL                  = application_config['calendar_url']
+  FAQ_URL                       = application_config['faq_url']
   SEND_AUTHORIZED_USER_EMAILS   = application_config['send_authorized_user_emails']
   CUSTOM_ASSET_PATH             = application_config['custom_asset_path']
   LOCALE_OVERRIDE               = application_config['locale_override']

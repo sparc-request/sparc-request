@@ -591,7 +591,7 @@ div#institution_accordion h3.provider_header {
 .odd {
   background: #E8E8E8;
 }
- 
+
 #about {
   width: 220px;
   height: 50px;
@@ -2153,7 +2153,7 @@ input.search-services {
 .ui-tabs-active #billing_strategy_tab,
 .ui-tabs-active #quantity_tab,
 .ui-tabs-active #calendar_tab {
-  background: #0775B0;;  
+  background: #0775B0;;
 }
 
 li:not(.ui-tabs-active) #template_tab:hover,
@@ -2299,6 +2299,7 @@ li:not(.ui-tabs-active) #calendar_tab:hover {
   border: 2px solid red;
   padding: 5px;
   margin-bottom: 5px;
+  display: none;
 }
 
 .document-table tbody tr th {
@@ -2840,9 +2841,9 @@ input.devise_submit_button {
   display: none;
 }
 
-.move_visits img{
-  vertical-align: middle;
-  padding-right: 5px;
+.move_visits {
+  padding: 2px !important;
+  margin-left: 5px;
 }
 
 .left-arrow {

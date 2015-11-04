@@ -135,7 +135,7 @@ module ApplicationHelper
                                       tag(:br) +
                                       link_to((content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')),
                                               "/service_requests/#{service_request.id}/#{action}/#{n}/#{arm.id}?portal=#{portal}",
-                                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only', :id => "check_all_column_#{n}"),
+                                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only', :id => "check_all_column_#{n}", data: {confirm: "This will reset custom values for this column, do you wish to continue?"}),
                                       :width => 60, :class => 'visit_number')
       end
     end
@@ -193,7 +193,7 @@ module ApplicationHelper
     returning_html += select_tag("jump_to_visit_#{arm.id}", visits_select_options(arm, pages), :class => 'jump_to_visit', :url => pathMethod.call(service_request, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal))
 
     unless (portal or @merged or @review)
-      returning_html += link_to(image_tag('sort.png'), 'javascript:void(0)', :class => 'move_visits', :'data-arm_id' => arm.id, :'data-tab' => tab, :'data-sr_id' => service_request.id, :'data-portal' => portal)
+      returning_html += link_to 'Move Visit', 'javascript:void(0)', class: 'ui-button ui-widget ui-state-default ui-corner-all move_visits', data: { 'arm-id' => arm.id, tab: tab, 'sr-id' => service_request.id, portal: portal }
     end
 
     returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')),
@@ -302,5 +302,9 @@ module ApplicationHelper
   # If any of the subjects under the given arm have completed appointments, returns true
   def arm_has_subject_data? arm
     arm.subjects ? arm.subjects.any?{|subject| subject.calendar.appointments.any?{|appt| !appt.completed_at.nil?}} : false
+  end
+
+  def entity_visibility_class entity
+    entity.is_available == false ? 'entity_visibility' : ''
   end
 end

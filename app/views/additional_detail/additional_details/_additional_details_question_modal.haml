@@ -90,7 +90,7 @@
                 .col-md-2
                   .form-group
                     %label{:for=>"required"} Required
-                    %input{:id=>"required", "ng-model"=>"field.required", :type=>"checkbox", :value=>""}
+                    %input{"ng-disabled"=>"field.conditionId", :id=>"required", "ng-model"=>"field.required", :type=>"checkbox", :value=>""}
                 .col-md-5
                   .form-group{:style=>"{{minMaxDisplay}}"}
                     %label{:for=>"min"} {{minDisplay}}

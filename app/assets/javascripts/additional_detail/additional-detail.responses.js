@@ -17,7 +17,10 @@ angular.module('app').factory("LineItemAdditionalDetail",  ['$resource', functio
   return $resource("/additional_detail/line_item_additional_details/:id", { id: '@id'}, {'update': { method: 'PUT'} });
 }]);
 
-angular.module('app').controller("DocumentManagementAdditionalDetailsController", ['$scope', '$http', 'ServiceRequest', 'LineItemAdditionalDetail', function($scope, $http, ServiceRequest, LineItemAdditionalDetail) { 
+angular.module('app').controller("DocumentManagementAdditionalDetailsController", ['$scope', '$http', 'ServiceRequest', 'LineItemAdditionalDetail', '$controller', function($scope, $http, ServiceRequest, LineItemAdditionalDetail, $controller) { 
+	
+	angular.extend(this, $controller('ConditionFormController', {$scope: $scope}));
+	
 	$scope.gridModel = {enableColumnMenus: false, enableFiltering: false, enableColumnResizing: false, enableRowSelection: false, enableSorting: true, enableRowHeaderSelection: false, rowHeight: 45};
 	$scope.gridModel.columnDefs = [{name: 'Add/Edit Buttons', displayName:'', enableSorting: false, width: 105, cellTemplate: '<button type="button" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">{{(row.entity.form_data_json=="{}") ? "Add Details" : "Edit Details"}}</button>'},
 	                               {field: 'additional_detail_breadcrumb', name: 'Service'}, 
@@ -27,20 +30,27 @@ angular.module('app').controller("DocumentManagementAdditionalDetailsController"
 	$scope.serviceRequest = ServiceRequest.get( function() {
 	   $scope.gridModel.data = $scope.serviceRequest.get_or_create_line_item_additional_details;
 	});
-   
+	   
 	$scope.showSurvey = function(id){
 		// hide the alert message before showing a survey
 		$scope.alertMessage = null;
 		// We need to load the survey data from this controller because it authorizes the current user to view it.
 		LineItemAdditionalDetail.get({ id: id }).$promise.then(function(line_item_additional_detail) {
 			$scope.currentLineItemAD = line_item_additional_detail;
+			
+			var formDef = {};
+			formDef.form = $scope.currentLineItemAD.additional_detail_form_array;
+			formDef.schema = $scope.currentLineItemAD.additional_detail_schema_hash;
+			$scope.setFormDefinition(formDef);
+			$scope.model = $scope.currentLineItemAD.form_data_hash;
+			
 			$('#additionalDetailModal').modal();
 		}, function errorCallback(error) { 
 	    	 $scope.alertMessage = error.statusText;
 	    	 $scope.resourceSuccessful = false;
 	    });
-	}	
-	
+	}
+		
 	$scope.saveFormResponse = function(){
 		// convert the form response from an object to a string
 		$scope.currentLineItemAD.form_data_json = JSON.stringify($scope.currentLineItemAD.form_data_hash);

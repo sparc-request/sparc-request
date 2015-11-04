@@ -19,3 +19,4 @@
 //= require additional_detail/additional-detail.module
 //= require additional_detail/additional-detail.responses
 //= require additional_detail/additional-detail.form-creation
+//= require additional_detail/additional-detail.show-question

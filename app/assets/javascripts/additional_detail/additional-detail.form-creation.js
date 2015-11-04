@@ -1,4 +1,4 @@
-angular.module('app').controller('FormCreationController', ['$scope', '$http', function ($scope, $http, $compile) {
+angular.module('app').controller('FormCreationController', ['$scope', '$http', 'AdditionalDetail', function ($scope, $http, AdditionalDetail, $compile) {
 	$scope.gridModel = {enableColumnMenus: false, enableSorting: false, enableRowHeaderSelection: false, rowHeight: 45};
 	$scope.gridModel.columnDefs = [{name: ' ', width: 53, cellTemplate: '<button type="button" class="btn btn-primary" ng-click="grid.appScope.editQuestion(row.entity.id)">Edit</button>' },
 	                                 {name: 'question', field: 'name'}, 
@@ -28,9 +28,20 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', f
 		return (!$scope.pretty() || $scope.pretty()=="{}") ? "display : none" : "";
 		} 
 
-	//Required to use datepicker, these two fields should be pulled from an ngResource call not global variables
-	$scope.effective_date = effective_date;
-	$scope.description = description;
+	// Load the Additional Detail into the form using AngularJS so that we can use other AngularJS functionality like the date picker
+	if (additional_detail_id) {
+		// edit or duplicate scenarios
+		AdditionalDetail.get({ id: additional_detail_id }).$promise.then(function(additional_detail) {
+		  $scope.additionalDetail = additional_detail;
+		});
+	}
+    else {
+    	// must be "new" scenario
+    	AdditionalDetail.new().$promise.then(function(additional_detail) {
+		  $scope.additionalDetail = additional_detail;
+		}); 	
+	}
+
 
 	$scope.typeHash = {
 	    text: 'Text',

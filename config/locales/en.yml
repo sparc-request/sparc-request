@@ -408,24 +408,24 @@ en:
 
   # user details partial
   user_details:
-    name: "Name"
+    add_button: "Add Authorized User"
+    college: "College"
+    college_select: "Select a College"
+    credentials: "Credentials"
+    credentials_select: "Select a Credential"
+    department: "Department"
+    department_select: "Select a Department"
+    ec_name: "ERA Commons Name"
     email: "Email"
+    institution: "Institution"
+    institution_select: "Select an Institution"
+    name: "Name"
     phone: "Phone"
     role: "Role"
     role_select: "Select a Role"
-    ec_name: "ERA Commons Name"
-    institution: "Institution"
-    institution_select: "Select an Institution"
-    college: "College"
-    college_select: "Select a College"
-    department: "Department"
-    department_select: "Select a Department"
-    credentials: "Credentials"
-    credentials_select: "Select a Credential"
     subspecialty: "Subspecialty:"
     subspecialty_prompt: "Select a Subspecialty"
     update_button: "Update Authorized User"
-    add_button: "Add Authorized User"
 
   # user list partial
   user_list:

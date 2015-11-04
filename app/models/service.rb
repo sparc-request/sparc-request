@@ -27,7 +27,7 @@ class Service < ActiveRecord::Base
 
   RATE_TYPES = [{:display => "Service Rate", :value => "full"}, {:display => "Federal Rate", :value => "federal"},
                 {:display => "Corporate Rate", :value => "corporate"}, {:display => "Other Rate", :value => "other"},
-                {:display => "Member Rate", :value => "member"}, {:display => "Unfunded Student Research Rate", :value => 'unfunded'}]
+                {:display => "Member Rate", :value => "member"}]
 
   belongs_to :organization, :include => [:pricing_setups]
   belongs_to :revenue_code_range

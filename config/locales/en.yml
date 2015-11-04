@@ -371,6 +371,7 @@ en:
       industry: "Industry*"
       investigator: "Investigator*"
       internal: "Internal*"
+      unfunded: "Unfunded Student Research*"
       service: "Service"
       required: "Required"
       new_related: "New Related Service"

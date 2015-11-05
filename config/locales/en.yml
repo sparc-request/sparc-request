@@ -532,46 +532,47 @@ en:
 
   # Service Request Details form
   service_request_details:
-    one_time_fee_instructions: "Please enter service details for SPARC Request Services that you selected"
-    one_time_fee_and_per_patient_instructions: "Next, please enter the following information specific to your research study/project. This information will help us generate applicable service fees for your review."
-    per_patient_instructions: "Please enter the following information specific to your research study/project. This information will help us generate applicable service fees for your review."
+    help: "Help"
+    name: "ARM Name"
     number_of_subjects: "Estimated Total Number of Subjects"
     number_of_visits: "Estimated Total Number of Visits"
-    study_start_date: "Estimated Study Start Date"
-    study_end_date: "Estimated Study End Date"
-    recruitment_start_date: "Estimated Recruitment Start Date"
+    one_time_fee_and_per_patient_instructions: "Next, please enter the following information specific to your research study/project. This information will help us generate applicable service fees for your review."
+    one_time_fee_instructions: "Please enter service details for SPARC Request Services that you selected"
+    per_patient_instructions: "Please enter the following information specific to your research study/project. This information will help us generate applicable service fees for your review."
     recruitment_end_date: "Estimated Recruitment End Date"
+    recruitment_start_date: "Estimated Recruitment Start Date"
     services_required: "You can't continue unless you have services in your cart."
-    name: "ARM Name"
     services: "My Services"
-    help: "Help"
+    study_end_date: "Estimated Study End Date"
+    study_start_date: "Estimated Study Start Date"
+
 
   # Service Requests
   service_requests:
     detail_list:
-      nan  : "Please enter a valid number."
+      description1: "(Samples, hours, etc...)"
+      description2: "(Slides, etc...)"
+      nan: "Please enter a valid number."
+      q_type: "Quantity Type"
+      quantity: "Quantity"
+      service: "Service"
       text1: "Quantity of"
       text2: "is less than the unit minimum of"
       text3: "Quantity is being reset to the previous value."
       text4: "Units Per Quantity of"
       text5: "is more than the maximum allowed of"
       text6: "Units Per Quantity is being set to the maximum allowed value."
-      service: "Service"
-      quantity: "Quantity"
-      description1: "(Samples, hours, etc...)"
       up_quantity: "Units Per Quantity"
-      description2: "(Slides, etc...)"
-      q_type: "Quantity Type"
     approve_changes:
       text1: "has already approved these changes"
       text2: "You have successfully approved the changes requested."
     catalog:
+      event: "No events scheduled within a month from today."
       search_placeholder: "Search by service name or CPT code ..."
       text1: "My Services"
       text2: "Help"
       text3: "Please ensure that you have added all necessary research services to your My Services cart before proceeding. For a listing of available services to add, click on any of the Programs listed on the left-hand side of the page. Services will appear in the middle of the screen. Add services by clicking \"Add\"."
       text4: "At least 1 service needs to be in cart first time through before clicking \"Submit request\" from catalog page."
-      event: "No events scheduled within a month from today."
     info:
       text1: "Service Request Status"
       text2: "Service Request Owner"

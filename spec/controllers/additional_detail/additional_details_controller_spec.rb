@@ -471,17 +471,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
           expect(response.status).to eq(200)
           expect(assigns(:service)).to_not be_blank
           expect(assigns(:additional_detail)).to_not be_blank
-            
-          get(:new, {:service_id => @core_service, :format => :json})
-          expect(response.status).to eq(200)
-          expect(JSON.parse(response.body)).to include("service_id" => @core_service.id,
-                                                       "id" => nil,
-                                                       "name" => nil,
-                                                       "description" => nil,
-                                                       # set default empty form
-                                                       "form_definition_json" => '{"schema":{"type":"object","title":"Comment","properties":{},"required":[]},"form":[]}',
-                                                       "effective_date" => nil,
-                                                       "enabled" =>nil)
+          expect(assigns(:additional_detail).form_definition_json).to eq('{"schema":{"type":"object","title":"Comment","properties":{},"required":[]},"form":[]}')
         end
 
         it "NOT see show an additional detail" do

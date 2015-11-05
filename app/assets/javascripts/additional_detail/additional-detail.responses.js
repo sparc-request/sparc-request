@@ -13,6 +13,16 @@ angular.module('app').factory("Service",  ['$resource', function($resource) {
   return $resource("/additional_detail/services/:id", {id: service_id});
 }]);
 
+angular.module('app').factory("AdditionalDetail",  ['$resource', function($resource) {
+  // service_id is a global variable set in a HAML file
+  return $resource("/additional_detail/services/:service_id/additional_details/:id", 
+		  {service_id: service_id, id: '@id'}, 
+		  {
+		    'export_grid': { method: 'GET', isArray: true, url: '/additional_detail/services/:service_id/additional_details/:id/export_grid'} ,
+		    'update_enabled': { method: 'PUT', url: '/additional_detail/services/:service_id/additional_details/:id/update_enabled'}
+		  });
+}]);
+
 angular.module('app').factory("LineItemAdditionalDetail",  ['$resource', function($resource) {
   return $resource("/additional_detail/line_item_additional_details/:id", { id: '@id'}, {'update': { method: 'PUT'} });
 }]);

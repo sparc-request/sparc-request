@@ -2,6 +2,12 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
 	
 	angular.extend(this, $controller('ConditionFormController', {$scope: $scope}));
 	
+	// Load the Additional Detail fields used by Angular from the server side values set in new.html.haml
+	// this is not how Angular likes to operate but we wanted the server side to be able to duplicate additional detail forms
+	$scope.effective_date = $('#additional_detail_effective_date').val();
+	$scope.description = $('#additional_detail_description').val();
+    $scope.formDefinition = $('#additional_detail_form_definition_json').val();
+
 	$scope.gridModel = {enableColumnMenus: false, enableSorting: false, enableRowHeaderSelection: false, rowHeight: 45};
 	$scope.gridModel.columnDefs = [{name: ' ', width: 53, cellTemplate: '<button type="button" class="btn btn-primary" ng-click="grid.appScope.editQuestion(row.entity.id)">Edit</button>' },
 	                                 {name: 'question', field: 'name'}, 
@@ -31,19 +37,8 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
 		return (!$scope.pretty() || $scope.pretty()=="{}") ? "display : none" : "";
 		} 
 
-	// Load the Additional Detail into the form using AngularJS so that we can use other AngularJS functionality like the date picker
-	if (additional_detail_id) {
-		// edit or duplicate scenarios
-		AdditionalDetail.get({ id: additional_detail_id }).$promise.then(function(additional_detail) {
-		  $scope.additionalDetail = additional_detail;
-		});
-	}
-    else {
-    	// must be "new" scenario
-    	AdditionalDetail.new().$promise.then(function(additional_detail) {
-		  $scope.additionalDetail = additional_detail;
-		}); 	
-	}
+	
+
 
 
 	$scope.typeHash = {
@@ -54,7 +49,6 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
 	    checkboxes: 'Checkboxes',
 	    yesNo: 'Yes/No',
 	    email: 'Email',
-	    range : 'Slider',
 	    datepicker : 'Date',
 	    number: 'Number',
 	    zipcode : 'Zipcode',
@@ -68,11 +62,8 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
 	
 	//used is setting display text for dropdown
 
-	$scope.invaildDate = new Date((new Date()-86400000));
-	
-	//Creates formDefinition String, will populate if null
-    $scope.formDefinition = ($('#additional_detail_form_definition_json').val() != "") ? $('#additional_detail_form_definition_json').val() : JSON.stringify({ schema: { type: "object",title: "Comment", properties: {},required: []}, form: []},undefined,2);
-    
+	$scope.invalidDate = new Date((new Date()-86400000));
+	    
     //Uses a key name to populate add/edit question model with question data, if key==null then a new question will be created
     
     $scope.resetQuestion = function(){
@@ -587,7 +578,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
 		 return tileMap;
 	 }
 	 
-	 //Will return false if field.min and field.max are invaild
+	 //Will return false if field.min and field.max are invalid
 	 $scope.validMinMax = function(){
 		 return !$scope.field.min || !$scope.field.max || $scope.field.min <= $scope.field.max;
 	 }

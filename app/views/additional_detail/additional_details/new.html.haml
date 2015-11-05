@@ -1,6 +1,5 @@
 :javascript
-  var additional_detail_id = '#{@additional_detail.id}';
-  var service_id = '#{@additional_detail.service.id}';  
+  var service_id = '#{@additional_detail.service.id}'; 
 %div{"ng-controller" => "FormCreationController"}
   = render :partial => 'additional_detail/additional_details/additional_details_question_modal'
   = render :partial => 'organization_breadcrumb'
@@ -39,23 +38,23 @@
               .col-md-6
                 .form-group
                   = f.label :name 
-                  = f.text_field :name, class: "form-control", :placeholder=>"Form Name", :required=>"required", "ng-model" => "additionalDetail.name" 
+                  = f.text_field :name, class: "form-control", :placeholder=>"Form Name", :required=>"required" 
                   .help-block.with-errors
               .col-md-6
                 .form-group
                   = f.label :description
-                  = f.text_field :description, class: "form-control", :placeholder=>"Description (Optional)", "ng-model" => "additionalDetail.description"
+                  = f.text_field :description, class: "form-control", :placeholder=>"Description (Optional)","ng-model" => "description"
                   .help-block.with-errors
             .row
               .col-md-6
                 .form-group
                   = f.label :effective_date
-                  = f.text_field :effective_date, :type => 'text',class: "form-control datepicker", "ng-model" => "additionalDetail.effective_date", "date-format"=>"yyyy-MM-dd", :placeholder=>"Effective Date", :required=>"required", "data-min-date"=> "{{invaildDate}}", "data-date-type"=>"string", :cursor=>"pointer", "bs-datepicker"=>"bs-datepicker", :autoclose =>"true"
+                  = f.text_field :effective_date, :type => 'text',class: "form-control datepicker", "ng-model" => "effective_date", "date-format"=>"yyyy-MM-dd", :placeholder=>"Effective Date", :required=>"required", "data-min-date"=> "{{invalidDate}}", "data-date-type"=>"string", :cursor=>"pointer", "bs-datepicker"=>"bs-datepicker", :autoclose =>"true"
                   .help-block.with-errors
               .col-md-6
                 .form-group
                   =f.label :enabled
-                  =f.check_box :enabled, class: "checkbox", "ng-model" => "additionalDetail.enabled"    
+                  =f.check_box :enabled, class: "checkbox"    
             .row
               .col-md-12
                 .panel.panel-default
@@ -71,7 +70,7 @@
                 %button.btn.btn-info{"type"=>"button", "data-toggle"=>"modal", "data-target"=>"#importExportModal"} Import / Export Form
                 %a.btn.btn-default{:type=>"button", :href=>"/additional_detail/services/#{@service.id}/additional_details/"} Cancel
       .col-md-4{"ng-hide"=>"noQuestions()"}
-        .alert.alert-info{"ng-show"=>"additionalDetail.description"} {{additionalDetail.description}}
+        .alert.alert-info{"ng-show"=>"description"} {{description}}
         .panel.panel-default
           .panel-heading
             %h3.panel-title Please Answer the Following Questions

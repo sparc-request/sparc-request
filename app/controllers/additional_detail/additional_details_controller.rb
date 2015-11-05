@@ -21,20 +21,14 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
   end
 
   # show responses with low level details to be used for exporting
-  # also used by edit, and duplicate
   def export_grid
     render :json => @service.additional_details.find(params[:id]).export_array.to_json(:root => false)
   end
 
-  # generate JSON for AngularJS and server side for Rails validation
   def new
     @additional_detail = @service.additional_details.new
     # set default empty form definition
     @additional_detail.form_definition_json = '{"schema":{"type":"object","title":"Comment","properties":{},"required":[]},"form":[]}'
-    respond_to do |format|
-      format.html # new.html
-      format.json {render :json => @additional_detail.to_json(:root => false) }
-    end
   end
 
   def create

@@ -46,7 +46,23 @@ module CatalogManager::CatalogHelper
   def pricing_map_ids service
     service.pricing_maps.map{|x| x.id}
   end
+
+  def display_organization_tree(organization)
+    tree = []
+
+    if organization.parents.empty?
+      tree << organization.name
+    else
+      organization.parents.reverse_each do |parent|
+        tree << parent.name
+      end
+      tree << organization.name
+    end
+
+    tree.join(' / ')
+  end
 end
+
 def display_name object
   (object.respond_to?(:cpt_code) or object.respond_to?(:charge_code)) ? object.display_service_name(charge_code = true) : object.name
 end

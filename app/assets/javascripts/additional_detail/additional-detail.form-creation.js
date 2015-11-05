@@ -214,7 +214,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
 	  
 	  
 	  $scope.keyError = function(){
-	  		return ($scope.field && $scope.field.key && findByKey($scope.field.key)) ? "Key already exists." : "Please fill out this field. Valid characters are A-Z a-z 0-9";
+	  		return ($scope.field && $scope.field.key && findByKey($scope.field.key)) ? "Key already exists." : "Please fill out this field. Valid characters are A-Z a-z 0-9 and '_'";
 	  }
 	  
 	 

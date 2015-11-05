@@ -279,7 +279,7 @@ en:
     here: "here"
     add_button: "Add a New Document"
     headers:
-      recipients: "Service Providers/Share Documents"
+      recipients: "Service Providers"
       allow: "Allow Access"
       type: "Type"
       file: "File"

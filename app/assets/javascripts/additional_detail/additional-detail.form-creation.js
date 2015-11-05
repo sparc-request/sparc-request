@@ -54,6 +54,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
 	    checkboxes: 'Checkboxes',
 	    yesNo: 'Yes/No',
 	    email: 'Email',
+	    range : 'Slider',
 	    datepicker : 'Date',
 	    number: 'Number',
 	    zipcode : 'Zipcode',
@@ -79,25 +80,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
     	$scope.field.minInclusive = true;
     	$scope.field.maxInclusive = true;
     }
-    
-//    $scope.getFormDefinition = function(){
-//    	return JSON.parse($scope.formDefinition);
-//    }
-//    
-//    
-//    
-//    $scope.getRequired = function(){
-//    	var required = $scope.getSchemaParsed().required
-//    	return (required) ? required : [];
-//    }
-//    $scope.getSchemaParsed = function(){
-//    	return $scope.getFormDefinition().schema;
-//    }
-//    
-//    $scope.getFormParsed = function(){
-//    	return $scope.getFormDefinition().form;
-//    }
-    
+      
     $scope.noQuestions = function(){
     	return $scope.getFormParsed().length == 0 ;
     }
@@ -161,58 +144,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
 	  // default type to text for new fields
 	  $scope.field = {};
 	  // select list options
-	  
-	//Taking a id as input this function will return a question hash with all relevent data
-//	    $scope.getQuestion =  function(id){ 
-//	    	//loop through hashkeys in schema and find object with same id
-//	    	var schemaQuestion;
-//	    	var properties = $scope.getSchemaParsed().properties
-//	    	for(var key in properties){
-//	    		if(properties[key].id ==id){
-//	    			schemaQuestion = properties[key];
-//	    		}
-//	    	}
-//	    	
-//	    	var form = $scope.getFormParsed();
-//	    	var formQuestion;
-//	    	for(var i=0; i<form.length; i++){
-//	    		if(form[i].id == id){
-//	    			formQuestion = form[i];
-//	    		}
-//	    	}
-//	    	var question = {};
-//	    	var required = false;
-//	    	
-//	    	if(schemaQuestion && formQuestion){
-//		    	question.name = schemaQuestion.title;
-//		    	question.key = formQuestion.key;
-//		    	question.id = id
-//		    	question.titleMap = formQuestion.titleMap;
-//		    	question.conditional = (formQuestion.condition != null);
-//		    	if(question.conditional){
-//		    		question.conditionId = formQuestion.conditionId;
-//		    		question.conditionValueMin = formQuestion.conditionValueMin;
-//		    		question.conditionValueMax = formQuestion.conditionValueMax;
-//		    		question.minInclusive = formQuestion.minInclusive;
-//		    		question.maxInclusive = formQuestion.maxInclusive;
-//		    		question.conditionValue = formQuestion.conditionValue;
-//		    		question.conditionStartDate = formQuestion.conditionStartDate;
-//		    		question.conditionEndDate = formQuestion.conditionEndDate
-//		    	}
-//		    	question.values = formQuestion.values;
-//		    	question.kind = formQuestion.kind;
-//		    	question.description = schemaQuestion.description;
-//		    	question.min = (schemaQuestion.minLength) ? schemaQuestion.minLength : schemaQuestion.minimum;
-//		    	question.max = (schemaQuestion.maxLength) ? schemaQuestion.maxLength : schemaQuestion.maximum;
-//		    	question.required = inRequired(formQuestion.key);
-//		    	
-//		    	return question;
-//	    	}else{
-//	    		return null;
-//	    	}
-//	    }
-	  
-	  
+	 
 	  $scope.keyError = function(){
 	  		return ($scope.field && $scope.field.key && findByKey($scope.field.key)) ? "Key already exists." : "Please fill out this field. Valid characters are A-Z a-z 0-9 and '_'";
 	  }
@@ -435,118 +367,6 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
 		 }
 		 return newHash;
 	 }
-	 
-//	 $scope.showByAnswer = function(id, value){
-//		 var question = $scope.getQuestion(id);
-//		 if(question){
-//			 return $scope.model[question.key] == value;
-//		 }
-//		 return false;
-//	 }
-//	 
-//	 $scope.showByBoolean = function(id, value){
-//		 var question = $scope.getQuestion(id);
-//		 if(question){
-//			return $scope.model[question.key] == Boolean(value);
-//		 }
-//		 return false;
-//	 }
-//	 
-//	 $scope.showByDateRange = function(id, startDate, endDate){
-//		 var question = $scope.getQuestion(id);
-//		 if(question){
-//			 var value = Date.parse($scope.model[question.key]);
-//			 if(value){
-//				 var minInMillis = (startDate) ? Date.parse(startDate) : null;
-//				 var maxInMillis = (endDate) ? Date.parse(endDate) : null;
-//				 if(minInMillis && !maxInMillis){
-//					 return  value >= minInMillis;
-//				 }
-//				 else if(!minInMillis && maxInMillis){
-//					 return value <= maxInMillis;
-//				 }
-//				 else if(minInMillis && maxInMillis){
-//					 return value <= maxInMillis &&  value >= minInMillis;
-//				 }
-//				 return true;
-//			 }
-//		 }
-//		 return false;
-//	 }
-//	 
-//	 $scope.showByAnswerRange = function(id, minValue, maxValue, minInclusive, maxInclusive){
-//		 var question = $scope.getQuestion(id);
-//		 if(question){
-//			 var value = $scope.model[question.key];
-//			 if(minInclusive && !maxInclusive){
-//				 return value >= minValue && value < maxValue;
-//			 }
-//			 else if(!minInclusive && maxInclusive){
-//				 return value > minValue && value <= maxValue;
-//			 }
-//			 else if(!minInclusive && !maxInclusive){
-//				 return value > minValue && value < maxValue;
-//			 }
-//			 else{
-//				 return value >= minValue && value <= maxValue;
-//			 }
-//		 }
-//		 return false;
-//	 }
-//	 
-//	 $scope.showByTextInput = ['text','textarea',"email",'zipcode','phone','time',];
-//	 $scope.showByDropDown = ['radiobuttons',"dropdown",'multiDropdown','checkboxes',"yesNo",'checkbox'];
-//	 $scope.showByDropDownWithTitleMapping = ['state','country'];
-//	 
-//	 $scope.questionKindInArray = function(id, array){
-//		 var question = $scope.getQuestion(id);
-//		 if(question){
-//			 return inArray(array, question.kind);
-//		 }
-//		 return false;
-//	 }
-//	 
-//	 function inArray(array, value){
-//		 for(var i=0; i<array.length; i++){
-//			 if(array[i] == value){
-//				 return true;
-//			 }
-//		 }
-//		 return false;
-//	 }
-//	 
-//	 	 
-//	 //getQuestion(field.conditionId).kind == 'text' || getQuestion(field.conditionId).kind == 'textarea'
-//	 
-//	 $scope.showByAnswerGreaterThen = function(id, minValue, minInclusive){
-//		 var question = $scope.getQuestion(id);
-//		 if(question){
-//			 var value = $scope.model[question.key];
-//			 if(minInclusive){
-//				 return value >= minValue;
-//			 }
-//			 else{
-//				 return value > minValue;
-//			 }
-//		 }
-//		 return false;
-//	 }
-//	 
-//	 $scope.showByAnswerLessThen = function(id, maxValue, maxInclusive){
-//		 var question = $scope.getQuestion(id);
-//		 if(question){
-//			 var value = $scope.model[question.key];
-//			 if(value){
-//				 if(maxInclusive){
-//					 return value <= maxValue;
-//				 }
-//				 else{
-//					 return value < maxValue;
-//				 }
-//			 }
-//		 }
-//		 return false;
-//	 }
 	 
 	 var radioDefaultValues = ["1","2","3","4","5"]; 
 	 $scope.$watch('field.conditionId', function(id){
@@ -783,81 +603,89 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
 		var hash = {title: field.name, description : field.description};
 	 	 if(field.kind =="datepicker"){
 	 		 hash.type = "string"; hash.format = "datepicker"; hash.validationMessage = "Please enter vaild date ex. 06/13/2015";
-	 			return hash;
+	 			
 	 		}
 	 	 else if(field.kind == "text" || field.kind == "textarea"){
 	 		hash.type = "string";
 	 		if(field.min != null){hash.minLength = field.min;}
 	 		if(field.max != null){hash.maxLength = field.max;}
-	 		return hash;
+	 		
 	 	 }
 		 else if(field.kind == "yesNo"){
 			 hash["enum"] = ["yes","no"]; hash.type="string";
-				return hash;
+				
 			}
 		 else if(field.kind == "state"){
 			 hash.type = "string";
-			 return hash;
+			 
 		 }
 		 else if(field.kind == "country"){
 			 hash.type = "string";
-			 return hash;
+			 
 		 }
 		 else if(field.kind == "multiDropdown"){
 			 hash.items = {"type": "string"}; 
 			 hash.type = "array"; 
-			 return hash;
+			 
 		 }
 		 else if(field.kind == "phone"){
 				hash.type = "string"; hash.pattern = "^[0-9]{3}-[0-9]{3}-[0-9]{4}$"; hash.validationMessage = "Please enter vaild phone number.";
-				return hash;
+				
 			}
 		else if(field.kind == "radiobuttons"){
 			 hash["enum"] = (field.values) ? cleanSplit(field.values)  : radioDefaultValues;
 			 hash.type = "string"; 
-			return hash;
+			
 		}
 		else if(field.kind == "file"){
 			hash.type = "string";
-			return hash;
+			
 		}
 		else if(field.kind == "dropdown"){
 			 hash.type = "string";
-			 return hash;
+			 
 		}
 		else if(field.kind =="checkboxes"){
 			hash.items = {"type": "string", "enum": (field.values) ? cleanSplit(field.values)  : radioDefaultValues};
 			hash.type = "array";
-			return hash;
+			
 		}
 		else if(field.kind == "email"){
 			hash.type = "string"; hash.pattern = "^\\S+@\\S+$"; hash.validationMessage = "Please enter vaild email.";
-			return hash;
+			
 		}
 		else if(field.kind == "zipcode"){
 			hash.type = "string"; hash.pattern = "^[0-9]{5}(-[0-9]{4})?$"; hash.validationMessage = "Please enter vaild zip code.";
-			return hash;
+			
 		}
 		else if(field.kind == "time"){
 			hash.validationMessage = "Please a vaild time ex. 12:00 AM"; hash.type = "string";
 			hash.format = "timepicker";
-			return hash;
+			
 		}
 		else if(field.kind == "checkbox"){
 			hash.type = "boolean";
-			return hash;
+			
 		}
 		else if(field.kind == "number"){
 	 		if(field.min != null){hash.minimum = field.min;}
 	 		if(field.max != null){hash.maximum = field.max;}
 			hash.type = "integer";
-			return hash;
+			
 		}
+		else if(field.kind == "range"){
+			if(field.min != null){hash.minimum = field.min;}
+	 		if(field.max != null){hash.maximum = field.max;}
+	 		hash.type = field.kind;
+	 		
+		}
+	 	 
 		else{
 			hash.type = "string";
-			return hash;
+			
 		}
 		
+	 	 return hash;
 	 }
   
 }]);

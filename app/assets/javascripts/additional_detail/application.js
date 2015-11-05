@@ -6,7 +6,8 @@
 //= require additional_detail/angular-aria.min
 //= require additional_detail/angular-sanitize.min
 //= require additional_detail/angular-strap.min
-//= require additional_detail/angular-strap.tpl.min
+// renamed angular-strap.tpl to angular-strap-tpl
+//= require additional_detail/angular-strap-tpl.min
 //= require additional_detail/ui-grid.min
 //= require additional_detail/tv4
 //= require additional_detail/ObjectPath

@@ -503,30 +503,32 @@ en:
 
   # Edit Project Form
   project_form:
-    message: "Before you can complete a service request, please tell us more about your project.  This information will be used by our staff to decide the best way to process your request."
-    title: "Project Title:*"
+    description: "Brief Description:"
     dropdown_default1: "Select a Funding Status"
     dropdown_default2: "Select a Funding Source"
     dropdown_default3: "Select a Potential Funding Source"
-    description: "Brief Description:"
+    message: "Before you can complete a service request, please tell us more about your project.  This information will be used by our staff to decide the best way to process your request."
+    push_to_epic: "Publish Project to Epic:"
     rate: "Indirect Cost Rate:"
     save: "Save"
-    push_to_epic: "Publish Project to Epic:"
+    title: "Project Title:*"
+
 
   # Study/Project Shared
   protocol_shared:
-    step_text: "STEP 1: Protocol Information"
-    step_text_2: "STEP 1: Add Users"
-    title: "Short Title:*"
+    add_user: "User added!  See table below to set proxy rights."
+    button: "Change Type"
+    cancel: "Cancel"
+    change: "Project/Study Type:"
+    confirm: "This will change the type of this Project/Study.  Are you sure?"
     funding_source: "Funding Source:*"
     funding_status: "Proposal Funding Status:*"
     potential_funding_source: "Potential Funding Source:*"
-    cancel: "Cancel"
-    change: "Project/Study Type:"
-    button: "Change Type"
-    confirm: "This will change the type of this Project/Study.  Are you sure?"
-    add_user: "User added!  See table below to set proxy rights."
+    step_text_2: "STEP 1: Add Users"
+    step_text: "STEP 1: Protocol Information"
+    title: "Short Title:*"
     update_user: 'User updated!  See table below to set proxy rights.'
+
 
   # Service Request Details form
   service_request_details:

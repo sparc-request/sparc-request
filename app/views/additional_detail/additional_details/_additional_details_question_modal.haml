@@ -18,7 +18,7 @@
             .col-md-6
               .form-group.has-feedback
                 %label{:for=>"key"} Key
-                %input.form-control{:id=>"key", "ng-pattern"=>"/^([A-Za-z0-9\_]+)$/", "ng-model"=>"field.key", "type"=>"text", :value=>"", "data-error"=>"{{keyError()}}", :placeholder=>"Key", :required=>"required"}
+                %input.form-control{:id=>"key", "pattern"=>"([A-Za-z0-9\_]+)", "ng-model"=>"field.key", "type"=>"text", :value=>"", "data-error"=>"{{keyError()}}", :placeholder=>"Key", :required=>"required"}
                 .help-block Only letters, numbers, and underscores
                 .help-block.with-errors 
             .col-md-6

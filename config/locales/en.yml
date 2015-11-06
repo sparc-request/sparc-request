@@ -279,7 +279,7 @@ en:
     here: "here"
     add_button: "Add a New Document"
     headers:
-      recipients: "Recipients"
+      recipients: "Service Providers"
       allow: "Allow Access"
       type: "Type"
       file: "File"

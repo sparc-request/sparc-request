@@ -1,6 +1,7 @@
 /* bootstrap-accessibility requires that the JS file be loaded at the bottom of the layout template (application.html.haml) */
 
 /*
+/* after upgrading bootstrap.min, replace "../fonts/" with "fonts/"
  *= require additional_detail/bootstrap.min
  *= require additional_detail/bootstrap-theme.min
  *= require additional_detail/bootstrap-accessibility

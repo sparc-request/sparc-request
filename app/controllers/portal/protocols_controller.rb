@@ -28,9 +28,11 @@ class Portal::ProtocolsController < Portal::BaseController
 
   def index
     @protocols = []
+    include_archived = (params[:include_archived] == "true")
+
     @user.protocols.each do |protocol|
       if protocol.project_roles.find_by_identity_id(@user.id).project_rights != 'none'
-         @protocols << protocol
+         @protocols << protocol if include_archived || !protocol.archived
       end
     end
     @protocols = @protocols.sort_by { |pr| (pr.id || '0000') + pr.id }.reverse
@@ -94,11 +96,7 @@ class Portal::ProtocolsController < Portal::BaseController
       if USE_EPIC
         if @protocol.selected_for_epic
           @protocol.ensure_epic_user
-          if QUEUE_EPIC
-            EpicQueue.create(:protocol_id => @protocol.id) unless EpicQueue.where(:protocol_id => @protocol.id).size == 1
-          else
-            Notifier.notify_for_epic_user_approval(@protocol).deliver
-          end
+          Notifier.notify_for_epic_user_approval(@protocol).deliver
         end
       end
     elsif @current_step == 'cancel_protocol'

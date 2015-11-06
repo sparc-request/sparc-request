@@ -196,7 +196,7 @@ RSpec.describe SearchController do
 
     it "should return a service whose organization is a parent of the sub service request's organization" do
       session['service_request_id'] = service_request.id
-      session['sub_service_request_id'] = core2.id
+      session['sub_service_request_id'] = core2_ssr.id
 
       get :services, {
         format: :js,

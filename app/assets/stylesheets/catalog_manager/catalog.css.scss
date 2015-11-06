@@ -96,6 +96,14 @@ a.add_new_excluded_funding_source {
   }
 }
 
+#show_all_services a.btn.unavailable_button {
+  margin-left: 45px;
+  text-decoration: none;
+  border-width: 1px !important;
+  border-style: solid !important;
+  margin-bottom: 10px;
+}
+
 #catalog {
   width: 531px;
   min-height: 300px;
@@ -243,6 +251,13 @@ fieldset.actions .legend {
   margin-top: 4px;
 }
 
+.org_tree {
+  width: 770px;
+  font-weight: bold;
+  margin-bottom: 3px;
+  padding-left: 3px;
+}
+
 #entity_description, #rates {
   padding-bottom: 20px;
 
@@ -297,7 +312,9 @@ fieldset.actions .legend {
 
 }
 
-
+.entity_visibility {
+  font-style: italic;
+}
 
 .jstree-search {
   font-style: italic !important;

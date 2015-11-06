@@ -86,8 +86,8 @@ class ServiceRequestsReport < ReportingModule
       if params[:apr_data].include?("iacuc")
         attrs["IACUC Checked Y/N"] = "service_request.try(:protocol).try(:research_types_info).try(:vertebrate_animals) ? \"Y\" : \"N\""
         attrs["If true, IACUC #"] = "service_request.try(:protocol).try(:vertebrate_animals_info).try(:iacuc_number)"
-        attrs["IRB Approval Date"] = "service_request.try(:protocol).try(:vertebrate_animals_info).try(:iacuc_approval_date).try(:strftime, \"%D\")"
-        attrs["IRB Expiration Date"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_expiration_date).try(:strftime, \"%D\")"
+        attrs["IACUC Approval Date"] = "service_request.try(:protocol).try(:vertebrate_animals_info).try(:iacuc_approval_date).try(:strftime, \"%D\")"
+        attrs["IACUC Expiration Date"] = "service_request.try(:protocol).try(:vertebrate_animals_info).try(:iacuc_expiration_date).try(:strftime, \"%D\")"
       end
     end
 

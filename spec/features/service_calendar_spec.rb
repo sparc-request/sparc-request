@@ -236,70 +236,6 @@ RSpec.describe "service calendar", js: true do
         @visit_id = arm1.line_items_visits.first.visits[1].id
       end
 
-      describe "selecting check all row button and accepting the validation alert" do
-          
-        it "should overwrite the quantities in the row" do
-          fill_in "visits_#{@visit_id}_research_billing_qty", with: 10
-          wait_for_javascript_to_finish
-          accept_confirm("This will reset custom values for this row, do you wish to continue?") do
-            click_link "check_row_#{arm1.line_items_visits.first.id}_billing_strategy"
-          end
-          expect(find("#visits_#{@visit_id}_research_billing_qty")).to have_value("1")
-          expect(find("#visits_#{@visit_id}_effort_billing_qty")).to have_value("0")
-          expect(find("#visits_#{@visit_id}_insurance_billing_qty")).to have_value("0")
-        end
-      end
-
-      describe "selecting check all row button and canceling the validation alert" do
-
-        it "should not overwrite the quantities in the row" do
-          fill_in "visits_#{@visit_id}_research_billing_qty", with: 10
-          wait_for_javascript_to_finish
-          fill_in "visits_#{@visit_id}_effort_billing_qty", with: 10
-          wait_for_javascript_to_finish
-          fill_in "visits_#{@visit_id}_insurance_billing_qty", with: 10
-          wait_for_javascript_to_finish
-          dismiss_confirm("This will reset custom values for this row, do you wish to continue?") do
-            click_link "check_row_#{arm1.line_items_visits.first.id}_billing_strategy"
-          end
-          expect(find("#visits_#{@visit_id}_research_billing_qty")).to have_value("10")
-          expect(find("#visits_#{@visit_id}_effort_billing_qty")).to have_value("10")
-          expect(find("#visits_#{@visit_id}_insurance_billing_qty")).to have_value("10")
-        end
-      end
-
-      describe "selecting check all column button and accepting the validation alert" do
-          
-        it "should overwrite the quantities in the column" do
-          fill_in "visits_#{@visit_id}_research_billing_qty", with: 10
-          wait_for_javascript_to_finish
-          accept_confirm("This will reset custom values for this column, do you wish to continue?") do
-            first("#check_all_column_2").click()
-          end
-          expect(find("#visits_#{@visit_id}_research_billing_qty")).to have_value("1")
-          expect(find("#visits_#{@visit_id}_effort_billing_qty")).to have_value("0")
-          expect(find("#visits_#{@visit_id}_insurance_billing_qty")).to have_value("0")
-        end
-      end
-
-      describe "selecting check all column button and canceling the validation alert" do
-
-        it "should not overwrite the quantities in the column" do
-          fill_in "visits_#{@visit_id}_research_billing_qty", with: 10
-          wait_for_javascript_to_finish
-          fill_in "visits_#{@visit_id}_effort_billing_qty", with: 10
-          wait_for_javascript_to_finish
-          fill_in "visits_#{@visit_id}_insurance_billing_qty", with: 10
-          wait_for_javascript_to_finish
-          dismiss_confirm("This will reset custom values for this column, do you wish to continue?") do
-            first("#check_all_column_2").click 
-          end
-          expect(find("#visits_#{@visit_id}_research_billing_qty")).to have_value("10")
-          expect(find("#visits_#{@visit_id}_effort_billing_qty")).to have_value("10")
-          expect(find("#visits_#{@visit_id}_insurance_billing_qty")).to have_value("10")
-        end
-      end
-
       describe "increasing the 'R' billing quantity" do
         it "should increase the total cost" do
           fill_in("visits_#{@visit_id}_research_billing_qty", with: 10)
@@ -405,6 +341,11 @@ RSpec.describe "service calendar", js: true do
 
       before :each do
         @visit_id = arm1.line_items_visits.first.visits[1].id
+      end
+
+      it "should show a spinner when changed" do
+        click_link "calendar_tab"
+        expect(page).to have_css("#tab_load_spinner", visible: true)
       end
 
       it "should be blank if the visit is not checked" do

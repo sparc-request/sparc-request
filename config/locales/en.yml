@@ -286,6 +286,7 @@ en:
       institution: "Institution/Provider/Program/Core"
       title: "Title"
       actions: "Actions"
+      versions: "Version"
       uploads: "Document Uploads"
       uploaded: "Uploaded"
     upload_button: "Upload"

@@ -64,6 +64,7 @@ FactoryGirl.define do
         SubServiceRequest.skip_callback(:save, :after, :update_org_tree)
         sub_service_request = build(:sub_service_request_in_cwf, service_request: service_request)
         sub_service_request.save validate: false
+        SubServiceRequest.set_callback(:save, :after, :update_org_tree)
       end
     end
 

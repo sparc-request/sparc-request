@@ -5,7 +5,8 @@ RSpec.describe SubServiceRequest, type: :model do
   describe '.stored_percent_subsidy' do
 
     before { SubServiceRequest.skip_callback(:save, :after, :update_org_tree) }
-
+    after { SubServiceRequest.set_callback(:save, :after, :update_org_tree) }
+      
     context 'subsidy present' do
 
       it 'should return the Subsidy.stored_percent_subsidy' do

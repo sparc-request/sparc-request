@@ -76,3 +76,7 @@ bin/*
 
 # Ignore spec examples
 spec/examples.txt
+
+# Ignore ctags files (JJH)
+.tags
+.tags1

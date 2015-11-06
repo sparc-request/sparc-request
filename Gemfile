@@ -71,7 +71,6 @@ group :development, :test do
 end
 
 group :development do
-  gem 'guard-rspec', require: false
   gem 'sqlite3'
   gem 'highline'
   gem 'spring'

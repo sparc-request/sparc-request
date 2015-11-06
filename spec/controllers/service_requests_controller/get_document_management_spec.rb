@@ -10,44 +10,20 @@ RSpec.describe ServiceRequestsController do
     let_there_be_j
     build_service_request
 
-    before(:each) { session[:service_request_id] = service_request.id }
-
-    context 'ServiceRequest has subsidies' do
-
-      before(:each) do
-        create(:subsidy, sub_service_request: service_request.sub_service_requests.first)
-
-        allow(controller).to receive(:initialize_service_request) do
-          controller.instance_eval do
-            @service_request = ServiceRequest.find_by_id(session[:service_request_id])
-            @sub_service_request = SubServiceRequest.find_by_id(session[:sub_service_request_id])
-          end
-          allow(controller.instance_variable_get(:@service_request)).to receive(:service_list) { :service_list }
+    before(:each) do
+      # stub initialize_service_request so we can stub @service_request's
+      # service_list method
+      expect(controller).to receive(:initialize_service_request) do
+        controller.instance_eval do
+          @service_request = ServiceRequest.find_by_id(params[:id])
         end
-
-        get :document_management, id: service_request.id
-      end
-
-      it "should set the service list to the service request's service list" do
-        expect(assigns(:service_list)).to eq :service_list
-      end
-
-      it "should not set @back" do
-        expect(assigns(:back)).to eq 'service_subsidy'
+        expect(controller.instance_variable_get(:@service_request)).to receive(:service_list) { :service_list }
       end
     end
 
-    context 'ServiceRequest has no subsidies' do
-
+    context 'ServiceRequest has no Subsidies' do
       before(:each) do
-        allow(controller).to receive(:initialize_service_request) do
-          controller.instance_eval do
-            @service_request = ServiceRequest.find_by_id(session[:service_request_id])
-            @sub_service_request = SubServiceRequest.find_by_id(session[:sub_service_request_id])
-          end
-          allow(controller.instance_variable_get(:@service_request)).to receive(:service_list) { :service_list }
-        end
-        get :document_management, id: service_request.id
+        get :document_management, id: service_request.id        
       end
 
       it "should set the service list to the service request's service list" do
@@ -56,6 +32,17 @@ RSpec.describe ServiceRequestsController do
 
       it "should set @back to 'service_calendar'" do
         expect(assigns(:back)).to eq 'service_calendar'
+      end
+    end
+
+    context 'ServiceRequest has Subsidies' do
+      before(:each) do
+        create(:subsidy, sub_service_request: service_request.sub_service_requests.first)
+        get :document_management, id: service_request.id
+      end
+
+      it "should set @service_list to the ServiceRequest's service list" do
+        expect(assigns(:service_list)).to eq :service_list
       end
     end
   end

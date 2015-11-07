@@ -17,11 +17,11 @@
                 %h3.panel-title Select All and then "Copy" to Export or "Paste" to Import
               .panel-body
                 .form-group
-                  = f.text_area :form_definition_json, "ng-model" => "formDefinition", "rows" => "20", class: "form-control"
+                  = f.text_area :form_definition_json, "rows" => "20", class: "form-control"
           .modal-footer
             %button.btn.btn-success{"data-dismiss"=>"modal"} Close  
     .row
-      %div{:style=>"transition: 0.5s", "ng-class"=>"noQuestions() ? 'col-md-12' : 'col-md-8'"}
+      .col-md-8 
         .panel.panel-default
           .panel-heading
             %h3.panel-title Additional Details Form Creator
@@ -43,13 +43,13 @@
               .col-md-6
                 .form-group
                   = f.label :description
-                  = f.text_field :description, class: "form-control", :placeholder=>"Description (Optional)","ng-model" => "description"
+                  = f.text_field :description, class: "form-control", :placeholder=>"Description (Optional)","ng-model" => "currentLineItemAD.additional_detail_description"
                   .help-block.with-errors
             .row
               .col-md-6
                 .form-group
                   = f.label :effective_date
-                  = f.text_field :effective_date, :type => 'text',class: "form-control datepicker", "ng-model" => "effective_date", "date-format"=>"yyyy-MM-dd", :placeholder=>"Effective Date", :required=>"required", "data-min-date"=> "{{invalidDate}}", "data-date-type"=>"string", :cursor=>"pointer", "bs-datepicker"=>"bs-datepicker", :autoclose =>"true"
+                  = f.text_field :effective_date, :type => 'text',class: "form-control datepicker", "ng-model" => "effective_date", "date-format"=>"yyyy-MM-dd", :placeholder=>"Effective Date", :required=>"required", "data-min-date"=> "{{datePickerMinDate}}", "data-date-type"=>"string", :cursor=>"pointer", "bs-datepicker"=>"bs-datepicker", :autoclose =>"true"
                   .help-block.with-errors
               .col-md-6
                 .form-group
@@ -69,19 +69,15 @@
                 %input.btn.btn-success{:type=>"submit", :value=>"Save Form"}
                 %button.btn.btn-info{"type"=>"button", "data-toggle"=>"modal", "data-target"=>"#importExportModal"} Import / Export Form
                 %a.btn.btn-default{:type=>"button", :href=>"/additional_detail/services/#{@service.id}/additional_details/"} Cancel
-      .col-md-4{"ng-hide"=>"noQuestions()"}
-        .alert.alert-info{"ng-show"=>"description"} {{description}}
+      .col-md-4 
+        = render :partial => 'additional_detail/shared/additional_detail_form_panel'
         .panel.panel-default
-          .panel-heading
-            %h3.panel-title Please Answer the Following Questions
-          .panel-body
-            %div{"sf-schema"=>"schema", "sf-form"=>"form", "sf-model"=>"model"}
-        .panel.panel-default{:style=>"{{dataDisplay()}}"}
           .panel-heading
             %h3.panel-title Form Data
           .panel-body
             %pre{"ng-cloak"=>"true"} {{pretty()}}          
 :javascript
+  // for import/export form schema, put the user's focus inside the textarea that contains the JSON form schema
   $('#importExportModal').on('shown.bs.modal', function () {
     $('#additional_detail_form_definition_json').focus();
-  }) 
+  })

@@ -1,0 +1,7 @@
+.alert.alert-info{"ng-show"=>"currentLineItemAD.additional_detail_description"} {{currentLineItemAD.additional_detail_description}}
+.panel.panel-default
+  .panel-heading
+    %h3.panel-title Please Answer the Following Questions
+  .panel-body
+    %form{"sf-schema"=>"currentLineItemAD.additional_detail_schema_hash", "sf-form"=>"currentLineItemAD.additional_detail_form_array", "sf-model"=>"currentLineItemAD.form_data_hash", "sf-options"=>"{validateOnRender:true}"}
+

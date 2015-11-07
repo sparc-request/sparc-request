@@ -1,14 +1,26 @@
-angular.module('app').controller('FormCreationController', ['$scope', '$http', 'AdditionalDetail', '$controller', function ($scope, $http, AdditionalDetail, $controller) {
-	
+angular.module('app').controller('FormCreationController', ['$scope', '$controller', function ($scope, $controller) {
 	angular.extend(this, $controller('ConditionFormController', {$scope: $scope}));
-	
+
 	// Load the Additional Detail fields used by Angular from the server side values set in new.html.haml
 	// this is not how Angular likes to operate but we wanted the server side to be able to duplicate additional detail forms
 	$scope.effective_date = $('#additional_detail_effective_date').val();
-	$scope.description = $('#additional_detail_description').val();
-    $scope.formDefinition = $('#additional_detail_form_definition_json').val();
-
-	$scope.gridModel = {enableColumnMenus: false, enableSorting: false, enableRowHeaderSelection: false, rowHeight: 45};
+	// on page load, initialize the additional detail form and description scope variables to equal the server side values
+    $scope.currentLineItemAD = { additional_detail_schema_hash: JSON.parse($('#additional_detail_form_definition_json').val()).schema, 
+  		   						 additional_detail_form_array: JSON.parse($('#additional_detail_form_definition_json').val()).form,
+  		                         form_data_hash: {}, 
+    		                     additional_detail_description: $('#additional_detail_description').val() }; 
+    
+	$scope.$watch('currentLineItemAD.additional_detail_schema_hash',function(newValue, oldValue){
+	   // initialize or reload the grid
+	   $scope.gridModel.data = $scope.getAllQuestions();
+	   // update the value for the hidden text area that gets submitted to the server
+	   $('#additional_detail_form_definition_json').val(JSON.stringify({ schema : $scope.currentLineItemAD.additional_detail_schema_hash, 
+		   			                                        form : $scope.currentLineItemAD.additional_detail_form_array },
+		   				   								  undefined,2,2));
+	   // reset the preview section to have no answers after each form change
+	   $scope.currentLineItemAD.form_data_hash = {};
+	}, true); 
+    $scope.gridModel = {enableColumnMenus: false, enableSorting: false, enableRowHeaderSelection: false, rowHeight: 45};
 	$scope.gridModel.columnDefs = [{name: ' ', width: 53, cellTemplate: '<button type="button" class="btn btn-primary" ng-click="grid.appScope.editQuestion(row.entity.id)">Edit</button>' },
 	                                 {name: 'question', field: 'name'}, 
 	                                 {name: 'type', field: "kind", width: '15%'},
@@ -16,9 +28,17 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
 	                               	 {name: 'conditional', width: '15%'},
 	                               	 {name:'Order', field :'up', width: 83, cellTemplate: '<button type="button" class="btn btn-primary glyphicon glyphicon-chevron-up" ng-click="grid.appScope.up(row.entity.key)"></button><button type="button" class="btn btn-primary glyphicon glyphicon-chevron-down" ng-click="grid.appScope.down(row.entity.key)"></button>'}
 	                               	];
-	$scope.form ={};
-	$scope.model = {};
-	
+
+	 $scope.getAllQuestions = function(){
+		 var questions = [];
+		 var f = $scope.getFormParsed();
+		 for (var x=0; x < f.length; x++){
+			 var q = $scope.getQuestion(f[x].id)
+			 if(q != null){questions.push(q);}
+		  }
+		 return questions;
+	 }    
+    
 	// dynamically change grid height relative to the # of rows of data, 
 	//   only works if one grid is being displayed on the page
   	$scope.getTableHeight = function() {
@@ -29,18 +49,9 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
      
 	//Displays result data that will be exported when a user requests a service and anaswers the questions
 	$scope.pretty = function(){
-		 return JSON.stringify($scope.model,undefined,2,2);
-		 };
-		 
-	//Will hide results data if no data is present
-	$scope.dataDisplay = function(){
-		return (!$scope.pretty() || $scope.pretty()=="{}") ? "display : none" : "";
-		} 
-
+	  return JSON.stringify($scope.currentLineItemAD.form_data_hash,undefined,2,2);
+	};
 	
-
-
-
 	$scope.typeHash = {
 	    text: 'Text',
 	    textarea : 'Text Area',
@@ -58,79 +69,35 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
 	    phone : "Phone",
 	    dropdown : "Dropdown",
 	    multiDropdown : "Multiple Dropdown"
-	  };
-	
-	//used is setting display text for dropdown
-
-	$scope.invalidDate = new Date((new Date()-86400000));
+	};
+	// used to limit the additional detail's effective date date picker to a day of today or in the future
+	$scope.datePickerMinDate = new Date() -86400000;
 	    
     //Uses a key name to populate add/edit question model with question data, if key==null then a new question will be created
-    
     $scope.resetQuestion = function(){
     	$scope.field = {};
     	$scope.field.minInclusive = true;
     	$scope.field.maxInclusive = true;
-    }
+    };
       
-    $scope.noQuestions = function(){
-    	return $scope.getFormParsed().length == 0 ;
-    }
-    
-    
-    
     $scope.editQuestion = function(id){
 		// hide the alert message before showing new question
 		$scope.alertMessage = null;
-		
     	//find key if it exists
     	if(id){
     		$scope.field = $scope.getQuestion(id);
     		$scope.modalSaveText = "Update"
-    	}
-    	else{
+    	} else {
     		$scope.resetQuestion();
     		$scope.modalSaveText = "Add"
     	}
-    	
     	//open modal
-    	$scope.showModal();
-    	
-    }
-    
-    $scope.hideModal = function(){
-    	$('#additionalDetailQuestionEditModal').modal('hide');
-    }
-    
-    $scope.showModal = function(){
     	$('#additionalDetailQuestionEditModal').modal();
-    }
+    };    
     
 	 var dropdownKindList = ["multiDropdown", "dropdown", "state", "country"];
-	 $scope.getAllQuestions = function(){
-		 var questions = [];
-		 var f = $scope.getFormParsed();
-		 for (var x=0; x < f.length; x++){
-			 var q = $scope.getQuestion(f[x].id)
-			 if(q != null){questions.push(q);}
-		  }
-		 return questions;
-	 }
-	
-	 function inList(list, item){
-		 for(var i=0; i<list.length; i++){
-			 if(list[i]== item){return 'true';}
-		 }
-		 return 'false';
-	 }
-	 	 
- 	 $scope.$watch('formDefinition',function(val){
- 		 if (val) {
- 			 	$scope.form = $scope.getFormParsed();
- 			 	$scope.schema = $scope.getSchemaParsed();
-		        $scope.gridModel.data = $scope.getAllQuestions();
- 		 }
-	}); 
- 	
+
+
 	  // form def management
 	  // default type to text for new fields
 	  $scope.field = {};
@@ -138,11 +105,12 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
 	 
 	  $scope.keyError = function(){
 	  		return ($scope.field && $scope.field.key && findByKey($scope.field.key)) ? "Key already exists." : "Please fill out this field. Valid characters are A-Z a-z 0-9 and '_'";
-	  }
+	  };
 	  
 	 
-	 //This will determine if the min max values or values input boxes shouldd be displayed in the add question modal
-	 $scope.displayValue; $scope.minMaxDisplay;
+	 //This will determine if the min max values or values input boxes should be displayed in the add question modal
+	 $scope.displayValue; 
+	 $scope.minMaxDisplay;
 	 $scope.$watch('field.kind', function(val){
 		 if(val =="radiobuttons" || val == "checkboxes" || val=="dropdown" || val=="multiDropdown"){
 			$scope.displayValue = "";
@@ -162,23 +130,19 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
 		else{$scope.minMaxDisplay = "display : none";}
 	 });
 	   
-	  $scope.formKeySet = function(){
-		  return Objects.keys($scope.model.form);
-	  };
 	  
 		function removeSpecial(value){
 			if(value){
 				return value.replace(/[^\w\s]/gi, '');
 			}
 			return '';
-		}
+		};
 
-		$scope.up= function(key){move(key, true);}
-		$scope.down= function(key){move(key, false);}
+		$scope.up= function(key){move(key, true);};
+		$scope.down= function(key){move(key, false);};
 		
 		function move(key, up){
-			var formDef = JSON.parse($scope.formDefinition);
-			var form = formDef.form;
+			var form = $scope.currentLineItemAD.additional_detail_form_array;
 			for(var i=0; i<form.length; i++){
 				if(form[i].key==key){
 					var row = form[i];
@@ -192,16 +156,15 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
 						form[i+1] = row;
 						form[i] = rowReplased;
 					}
-					$scope.setFormDefinition(formDef);
 					break;
 				}
 			}
-		}
+		};
 		
 		$scope.gridModel.onRegisterApi = function(gridApi){
 			$scope.gridApi = gridApi;
 			
-		}
+		};
 
 	    // delete selected rows
 	    Array.prototype.removeByFormKey = function(val) {
@@ -211,44 +174,42 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
 		            break;
 		        }
 		    }
-		}
+		};
 	    
 	    $scope.deleteById = function(id){
-	    	var formDef = JSON.parse($scope.formDefinition);
 	    	//loop through schema keys
-	    	for(key in formDef.schema.properties){
+	    	for(key in $scope.currentLineItemAD.additional_detail_schema_hash.properties){
 	    		var question = $scope.getSchemaParsed().properties[key];
 	    		if(question.id == id){
 	    			//remove from schema
-	    			delete formDef.schema.properties[key];
+	    			delete $scope.currentLineItemAD.additional_detail_schema_hash.properties[key];
 	    			//remove any input value from data preview
-	    			delete $scope.model[key];
+	    			//delete $scope.currentLineItemAD.form_data_hash[key];
 	    			//look in required to see if key is inside
-	    			var index = formDef.schema.required.indexOf(key);
+	    			var index = $scope.currentLineItemAD.additional_detail_schema_hash.required.indexOf(key);
 	    			if(index > -1){
 	    				//remove if present
-	    				formDef.schema.required.splice(index, 1);
+	    				$scope.currentLineItemAD.additional_detail_schema_hash.required.splice(index, 1);
 	    			}
 	    			break;
 	    		}
 	    	}
 	    	//loop through form array and remove id
-	    	for(var i=0; i<formDef.form.length; i++){
-	    		var question = formDef.form[i];
+	    	for(var i=0; i<$scope.currentLineItemAD.additional_detail_form_array.length; i++){
+	    		var question = $scope.currentLineItemAD.additional_detail_form_array[i];
 	    		if(question.id == id){
-	    			formDef.form.splice(i,1);
+	    			$scope.currentLineItemAD.additional_detail_form_array.splice(i,1);
 	    			break;
 	    		}
 	    	}
-	    	$scope.setFormDefinition(formDef);
-	    }
+	    };
 	    
 	    //Will delete all questions
 	    $scope.deleteAllQuestion = function(){
-	    	for(key in JSON.parse($scope.formDefinition).schema.properties){
+	    	for(key in $scope.currentLineItemAD.additional_detail_schema_hash.properties){
 	    		$scope.deleteById(findByKey(key).id);
 	    	}
-	    }
+	    };
 	    
 	    $scope.deleteSelected = function() {
 		    var rows = $scope.gridApi.selection.getSelectedRows($scope.gridModel);
@@ -261,7 +222,6 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
 	  		var question = hashCopy(ques);
 	  		 //check to see if all required fields present
 	  		if(question.key && question.name && question.kind){
-	  			var formDef = JSON.parse($scope.formDefinition)
 	  			var keyVaild = false;
 	  			var questionSchema = $scope.getSchemaParsed().properties[question.key];
 	  			//If a new question with no other key the key is vaild
@@ -276,11 +236,13 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
 	  			else if(question.id && !questionSchema && $scope.getQuestion(question.id)){
 	  				var oldKey = $scope.getQuestion(question.id).key
 	  				//remove old key from schema properties
-					delete formDef.schema.properties[oldKey];
+					delete $scope.currentLineItemAD.additional_detail_schema_hash.properties[oldKey];
 	  				//if in required remove it from there
-					formDef.schema.required = ($scope.inRequired(oldKey)) ? removeRequired(oldKey) : formDef.schema.required;
-					//remove from anaswers
-					delete $scope.model[oldKey];
+					if ($scope.inRequired(oldKey)) {
+					  removeRequired(oldKey) ;
+					}
+					//remove from answers
+				//	delete $scope.currentLineItemAD.form_data_hash[oldKey];
 					keyVaild = true;
 				}
 	  			//Else duplicate key present
@@ -302,17 +264,19 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
 						question.id = uuid.v1();
 						q.id = question.id;
 		  				//And add to array
-		  				formDef.form.push(q);
+		  				$scope.currentLineItemAD.additional_detail_form_array.push(q);
 					}
 					//Find question in form array
 					else{
 						q.id = question.id
 						//If not required but inside of required array, remove it
-						if(!question.required && $scope.inRequired(question.key)){formDef.schema.required = removeRequired(question.key)}
-						for(var i=0; i<formDef.form.length; i++){
+						if(!question.required && $scope.inRequired(question.key)){
+							removeRequired(question.key);
+					    }
+						for(var i=0; i<$scope.currentLineItemAD.additional_detail_form_array.length; i++){
 							//And update question
-							if(formDef.form[i].id == question.id){
-								formDef.form[i] = q; 
+							if($scope.currentLineItemAD.additional_detail_form_array[i].id == question.id){
+								$scope.currentLineItemAD.additional_detail_form_array[i] = q; 
 								added=true;
 							}
 						}
@@ -321,25 +285,22 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
 					var s = $scope.getSchema(question);
 					s.id = question.id;
 					// add field to schema
-					formDef.schema.properties[question.key] = s;
+					$scope.currentLineItemAD.additional_detail_schema_hash.properties[question.key] = s;
 					//If required at it to required array if not already present
-					if(question.required && !$scope.inRequired(question.key)){formDef.schema.required.push(question.key);}
-					//Update form definition
-					$scope.setFormDefinition(formDef);
-					//Lastly hide modal
-					$scope.hideModal();					
+					if(question.required && !$scope.inRequired(question.key)){
+						$scope.currentLineItemAD.additional_detail_schema_hash.required.push(question.key);
+					}	    
+		 		    // Lastly hide modal
+					$('#additionalDetailQuestionEditModal').modal('hide');				
 	  			} 
 	  		}
-	  	}
+	  	};
 	  		 
-	 //Returns list of required keys with the key input removed
 	 function removeRequired(key){
-		 var index = $scope.getRequired().indexOf(key);
-		 var required = JSON.parse($scope.formDefinition).schema.required;
+		 var index = $scope.currentLineItemAD.additional_detail_schema_hash.required.indexOf(key);
 		 if(index > -1){
-			 required.splice(index, 1);
+			 $scope.currentLineItemAD.additional_detail_schema_hash.required.splice(index, 1);
 		 }
-		 return required;
 	 }
 	  	
 	 function findByKey(key){
@@ -369,15 +330,6 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
 			}
 		} 
 	 });
-	 
-	 //When filed kind changes remove save modal value
-	 $scope.$watch('field.kind',function(val, oldVal){
-		if($scope.field.id){
-			var key = $scope.getQuestion($scope.field.id).key;
-			delete $scope.model[key];
-		}
-	 });
-	 
 	 
 	 $scope.getForm = function(field){
 		 field.key = removeSpecial(field.key); // removes special characters
@@ -416,8 +368,6 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
 				 hash.conditionStartDate = field.conditionStartDate;
 				 hash.conditionEndDate = field.conditionEndDate;
 			 }
-			 
-			 
 		 }
 		 hash.placeholder =  field.required ? "Required" : "Optional";
 		 
@@ -583,6 +533,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
 		 return !$scope.field.min || !$scope.field.max || $scope.field.min <= $scope.field.max;
 	 }
 	 
+	 // don't the user to make conditional questions required
 	 $scope.$watch('field.conditionId', function(val){
 		 if(val){
 			$scope.field.required = false;
@@ -670,13 +621,10 @@ angular.module('app').controller('FormCreationController', ['$scope', '$http', '
 	 		hash.type = field.kind;
 	 		
 		}
-	 	 
 		else{
 			hash.type = "string";
 			
 		}
-		
 	 	 return hash;
 	 }
-  
 }]);

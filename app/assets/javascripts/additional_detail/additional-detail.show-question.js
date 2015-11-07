@@ -1,25 +1,17 @@
 angular.module('app').controller('ConditionFormController', ['$scope', function ($scope) {
-
-	$scope.getFormDefinition = function(){
-    	return JSON.parse($scope.formDefinition);
-    }
 	
-	$scope.getSchemaParsed = function(){
-    	return $scope.getFormDefinition().schema;
-    }
+	$scope.getSchemaParsed = function(){		
+      return $scope.currentLineItemAD.additional_detail_schema_hash
+    };
     
     $scope.getFormParsed = function(){
-    	return $scope.getFormDefinition().form;
-    }
+      return $scope.currentLineItemAD.additional_detail_form_array
+    };
     
     $scope.getRequired = function(){
     	var required = $scope.getSchemaParsed().required
     	return (required) ? required : [];
-    }
-    
-    $scope.setFormDefinition = function(formDef){
-    	$scope.formDefinition = JSON.stringify(formDef,undefined,2,2);
-    }
+    };
     
     $scope.inRequired = function(key){
 		 var required = $scope.getRequired();
@@ -27,7 +19,7 @@ angular.module('app').controller('ConditionFormController', ['$scope', function 
 			if(required[i] == key){return true;}
 		}
 		 return false;
-	 }
+	 };
     
 	//Taking a id as input this function will return a question hash with all relevent data
     $scope.getQuestion =  function(id){ 
@@ -76,28 +68,28 @@ angular.module('app').controller('ConditionFormController', ['$scope', function 
     	}else{
     		return null;
     	}
-    }
+    };
     
     $scope.showByAnswer = function(id, value){
 		 var question = $scope.getQuestion(id);
 		 if(question){
-			 return $scope.model[question.key] == value;
+			 return $scope.currentLineItemAD.form_data_hash[question.key] == value;
 		 }
 		 return false;
-	 }
+	 };
 	 
 	 $scope.showByBoolean = function(id, value){
 		 var question = $scope.getQuestion(id);
 		 if(question){
-			return $scope.model[question.key] == Boolean(value);
+			return $scope.currentLineItemAD.form_data_hash[question.key] == Boolean(value);
 		 }
 		 return false;
-	 }
+	 };
 	 
 	 $scope.showByDateRange = function(id, startDate, endDate){
 		 var question = $scope.getQuestion(id);
 		 if(question){
-			 var value = Date.parse($scope.model[question.key]);
+			 var value = Date.parse($scope.currentLineItemAD.form_data_hash[question.key]);
 			 if(value){
 				 var minInMillis = (startDate) ? Date.parse(startDate) : null;
 				 var maxInMillis = (endDate) ? Date.parse(endDate) : null;
@@ -114,12 +106,12 @@ angular.module('app').controller('ConditionFormController', ['$scope', function 
 			 }
 		 }
 		 return false;
-	 }
+	 };
 	 
 	 $scope.showByAnswerRange = function(id, minValue, maxValue, minInclusive, maxInclusive){
 		 var question = $scope.getQuestion(id);
 		 if(question){
-			 var value = $scope.model[question.key];
+			 var value = $scope.currentLineItemAD.form_data_hash[question.key];
 			 if(minInclusive && !maxInclusive){
 				 return value >= minValue && value < maxValue;
 			 }
@@ -134,7 +126,7 @@ angular.module('app').controller('ConditionFormController', ['$scope', function 
 			 }
 		 }
 		 return false;
-	 }
+	 };
 	 
 	 $scope.showByTextInput = ['text','textarea',"email",'zipcode','phone','time',];
 	 $scope.showByDropDown = ['radiobuttons',"dropdown",'multiDropdown','checkboxes',"yesNo",'checkbox'];
@@ -146,7 +138,7 @@ angular.module('app').controller('ConditionFormController', ['$scope', function 
 			 return inArray(array, question.kind);
 		 }
 		 return false;
-	 }
+	 };
 	 
 	 function inArray(array, value){
 		 for(var i=0; i<array.length; i++){
@@ -155,12 +147,12 @@ angular.module('app').controller('ConditionFormController', ['$scope', function 
 			 }
 		 }
 		 return false;
-	 }
+	 };
 	 
 	 $scope.showByAnswerGreaterThen = function(id, minValue, minInclusive){
 		 var question = $scope.getQuestion(id);
 		 if(question){
-			 var value = $scope.model[question.key];
+			 var value = $scope.currentLineItemAD.form_data_hash[question.key];
 			 if(minInclusive){
 				 return value >= minValue;
 			 }
@@ -169,12 +161,12 @@ angular.module('app').controller('ConditionFormController', ['$scope', function 
 			 }
 		 }
 		 return false;
-	 }
+	 };
 	 
 	 $scope.showByAnswerLessThen = function(id, maxValue, maxInclusive){
 		 var question = $scope.getQuestion(id);
 		 if(question){
-			 var value = $scope.model[question.key];
+			 var value = $scope.currentLineItemAD.form_data_hash[question.key];
 			 if(value){
 				 if(maxInclusive){
 					 return value <= maxValue;
@@ -186,6 +178,4 @@ angular.module('app').controller('ConditionFormController', ['$scope', function 
 		 }
 		 return false;
 	 }
-    
-	
 }]);

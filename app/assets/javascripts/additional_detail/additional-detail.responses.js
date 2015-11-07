@@ -1,8 +1,3 @@
-// for import/export form schema, put the user's focus inside the textarea that contains the JSON form schema
-$('#additionalDetailModal').on('shown.bs.modal', function () {
-	$('#myInput').focus()
-});
-
 angular.module('app').factory("ServiceRequest",  ['$resource', function($resource) {
   // service_request_id is a global variable set in a HAML file
   return $resource("/additional_detail/service_requests/:id", {id: service_request_id});
@@ -27,8 +22,26 @@ angular.module('app').factory("LineItemAdditionalDetail",  ['$resource', functio
   return $resource("/additional_detail/line_item_additional_details/:id", { id: '@id'}, {'update': { method: 'PUT'} });
 }]);
 
-angular.module('app').controller("DocumentManagementAdditionalDetailsController", ['$scope', '$http', 'ServiceRequest', 'LineItemAdditionalDetail', '$controller', function($scope, $http, ServiceRequest, LineItemAdditionalDetail, $controller) { 
-	
+// define a base controller that features the $scope.showSurvey function that will be reused by customers and administrators
+angular.module('app').controller("ShowSurveyController", ['$scope', 'LineItemAdditionalDetail', function($scope, LineItemAdditionalDetail) { 
+	$scope.showSurvey = function(id){
+		// hide the alert message before showing a survey
+		$scope.alertMessage = null;
+		// We need to load the survey data from this controller because it authorizes the current user to view it.
+		LineItemAdditionalDetail.get({ id: id }).$promise.then(function(line_item_additional_detail) {
+			$scope.currentLineItemAD = line_item_additional_detail;			
+			$('#additionalDetailModal').modal();
+		}, function errorCallback(error) { 
+	    	 $scope.alertMessage = error.statusText;
+	    	 $scope.resourceSuccessful = false;
+	    });
+	};
+}]);
+
+angular.module('app').controller("DocumentManagementAdditionalDetailsController", ['$scope', 'ServiceRequest', 'LineItemAdditionalDetail', '$controller', function($scope, ServiceRequest, LineItemAdditionalDetail, $controller) { 
+	// extend the ShowSurveyController to share the $scope.showSurvey function
+	angular.extend(this, $controller('ShowSurveyController', {$scope: $scope}));
+	// extend the ConditionFormController to gain access to the conditional question functions
 	angular.extend(this, $controller('ConditionFormController', {$scope: $scope}));
 	
 	$scope.gridModel = {enableColumnMenus: false, enableFiltering: false, enableColumnResizing: false, enableRowSelection: false, enableSorting: true, enableRowHeaderSelection: false, rowHeight: 45};
@@ -41,26 +54,6 @@ angular.module('app').controller("DocumentManagementAdditionalDetailsController"
 	   $scope.gridModel.data = $scope.serviceRequest.get_or_create_line_item_additional_details;
 	});
 	   
-	$scope.showSurvey = function(id){
-		// hide the alert message before showing a survey
-		$scope.alertMessage = null;
-		// We need to load the survey data from this controller because it authorizes the current user to view it.
-		LineItemAdditionalDetail.get({ id: id }).$promise.then(function(line_item_additional_detail) {
-			$scope.currentLineItemAD = line_item_additional_detail;
-			
-			var formDef = {};
-			formDef.form = $scope.currentLineItemAD.additional_detail_form_array;
-			formDef.schema = $scope.currentLineItemAD.additional_detail_schema_hash;
-			$scope.setFormDefinition(formDef);
-			$scope.model = $scope.currentLineItemAD.form_data_hash;
-			
-			$('#additionalDetailModal').modal();
-		}, function errorCallback(error) { 
-	    	 $scope.alertMessage = error.statusText;
-	    	 $scope.resourceSuccessful = false;
-	    });
-	}
-		
 	$scope.saveFormResponse = function(){
 		// convert the form response from an object to a string
 		$scope.currentLineItemAD.form_data_json = JSON.stringify($scope.currentLineItemAD.form_data_hash);
@@ -81,7 +74,7 @@ angular.module('app').controller("DocumentManagementAdditionalDetailsController"
 			});
 	        $scope.resourceSuccessful = false;
 	     });
-	}
+	};
 		
 	// dynamically change grid height relative to the # of rows of data, 
 	//   only works if one grid is being displayed on the page
@@ -92,7 +85,11 @@ angular.module('app').controller("DocumentManagementAdditionalDetailsController"
      };
 }]);
 
-angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope', '$http', '$window', 'Service', 'AdditionalDetail', 'LineItemAdditionalDetail', 'uiGridConstants', 'uiGridExporterConstants', function($scope, $http, $window, Service, AdditionalDetail, LineItemAdditionalDetail, uiGridConstants, uiGridExporterConstants) {
+angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope', 'Service', 'AdditionalDetail', 'LineItemAdditionalDetail', 'uiGridConstants', 'uiGridExporterConstants', '$controller', function($scope, Service, AdditionalDetail, LineItemAdditionalDetail, uiGridConstants, uiGridExporterConstants, $controller) {
+	// extend the ShowSurveyController to share the $scope.showSurvey function
+	angular.extend(this, $controller('ShowSurveyController', {$scope: $scope}));
+	// extend the ConditionFormController to gain access to the conditional question functions
+	angular.extend(this, $controller('ConditionFormController', {$scope: $scope}));
 	
 	$scope.gridModel = {enableColumnMenus: false, enableFiltering: true, enableRowSelection: false, enableSorting: true, enableRowHeaderSelection: false, rowHeight: 45};
 	$scope.gridModel.columnDefs = [
@@ -146,7 +143,7 @@ angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope'
 			// failed server side request
 	    	$scope.alertMessage = response;
 	    }); 
-	}
+	};
 	
 	$scope.export = function(){
 	  // all columns and all rows
@@ -199,19 +196,6 @@ angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope'
 	    }); 
 	}
   	
-	$scope.showSurvey = function(liad_id){
-		// hide the alert message before showing a survey
-		$scope.alertMessage = null;
-		// We need to load the survey data from this controller because it authorizes the current user to view it.
-		LineItemAdditionalDetail.get({ id: liad_id }).$promise.then(function(line_item_additional_detail) {
-			$scope.currentLineItemAD = line_item_additional_detail;
-			$('#additionalDetailModal').modal();
-		}, function errorCallback(error) { 
-	    	 $scope.alertMessage = error.statusText;
-	    	 $scope.resourceSuccessful = false;
-	    }); 
-	}
-	
 	$scope.saveFormResponse = function(){
 		// convert the form response from an object to a string
 		$scope.currentLineItemAD.form_data_json = JSON.stringify($scope.currentLineItemAD.form_data_hash);

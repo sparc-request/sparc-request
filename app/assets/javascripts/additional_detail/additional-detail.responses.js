@@ -200,7 +200,8 @@ angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope'
 		// convert the form response from an object to a string
 		$scope.currentLineItemAD.form_data_json = JSON.stringify($scope.currentLineItemAD.form_data_hash);
 		$scope.currentLineItemAD.$update(function() { 
-  			$scope.gridModel.data = AdditionalDetail.query();
+			// refresh the response and export grids
+			$scope.updateLineItemAdditionalDetails($scope.currentLineItemAD.additional_detail_id);
 			$scope.alertMessage = "Response saved.";
 			$scope.resourceSuccessful = true;
   	     }, function(error) {

@@ -163,11 +163,14 @@ class Service < ActiveRecord::Base
   end
 
   def display_service_abbreviation
-    if self.cpt_code and !self.cpt_code.blank?
+    if self.abbreviation.blank?
+      service_abbreviation = self.name
+    elsif self.cpt_code and !self.cpt_code.blank?
       service_abbreviation = self.abbreviation + " (#{self.cpt_code})"
     else
       service_abbreviation = self.abbreviation
     end
+
     return service_abbreviation
   end
 

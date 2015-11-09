@@ -5,7 +5,8 @@ RSpec.describe SubServiceRequest, type: :model do
   describe ".formatted_status" do
 
     before { SubServiceRequest.skip_callback(:save, :after, :update_org_tree) }
-
+    after { SubServiceRequest.set_callback(:save, :after, :update_org_tree) }
+      
     context "constants.yml mapping present" do
 
       it "should return the value from constants.yml" do

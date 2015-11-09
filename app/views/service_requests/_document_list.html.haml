@@ -30,6 +30,7 @@
       %th= t("documents.headers.title")
       - if not review
         %th= t("documents.headers.actions")
+      %th= t('documents.headers.version')
 
     - @service_request.documents.each do |document|
       - next unless @sub_service_request.nil? or @sub_service_request.documents.include? document
@@ -45,6 +46,7 @@
           %td
             = link_to t("documents.edit_button"), "/service_requests/#{@service_request.id}/edit_document/#{document.id}", :remote => true, :class => 'document_edit blue-button'
             = link_to t("documents.delete_button"), "/service_requests/#{@service_request.id}/delete_document/#{document.id}", :remote => true, :class => 'document_delete blue-button'
+        %td= document.updated_at.strftime("%m/%d/%Y at %I:%M%p")
 - else
   - if review # let's show the table with the no documents text
     %table.document-table

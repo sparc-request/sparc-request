@@ -120,6 +120,19 @@ module ApplicationHelper
                             tag(:br) : label_tag("")) +
                             content_tag(:span, visit_name, :style => "display:inline-block;width:75px;") +
                             tag(:br))
+      elsif @tab != 'template'
+        returning_html += content_tag(:th,
+                                      ((USE_EPIC) ?
+                                      # label_tag("Day") + "&nbsp;&nbsp;&nbsp;".html_safe + label_tag("+/-") +
+                                      label_tag("-") + "&nbsp;&nbsp;".html_safe + label_tag("Day") + "&nbsp;&nbsp;".html_safe + label_tag("+") +
+                                      tag(:br) +
+                                      text_field_tag("window_before", visit_group.window_before, :class => "visit_window visit_window_before position_#{n} input_small", :size => 1, :'data-position' => n - 1, :'data-window-before' => visit_group.window_before, :update => "#{window_before_url}?arm_id=#{arm.id}&portal=#{portal}") +
+                                      text_field_tag("day", visit_group.day, :class => "visit_day position_#{n}", :maxlength => 4, :size => 4, :'data-position' => n - 1, :'data-day' => visit_group.day, :update => "#{day_url}?arm_id=#{arm.id}&portal=#{portal}") +
+                                      text_field_tag("window_after", visit_group.window_after, :class => "visit_window visit_window_after position_#{n} input_small", :size => 1, :'data-position' => n - 1, :'data-window-after' => visit_group.window_after, :update => "#{window_after_url}?arm_id=#{arm.id}&portal=#{portal}") +
+                                      tag(:br)
+                                      : label_tag('')) +
+                                      text_field_tag("arm_#{arm.id}_visit_name_#{n}", visit_name, :class => "visit_name", :size => 10, :'data-arm_id' => arm.id, :'data-visit_position' => n - 1, :'data-service_request_id' => service_request.id) +
+                                      tag(:br))
       else
         returning_html += content_tag(:th,
                                       ((USE_EPIC) ?
@@ -141,7 +154,7 @@ module ApplicationHelper
     end
 
     ((page * 5) - arm.visit_count).times do
-      returning_html += content_tag(:th, "", :width => 60, :class => 'visit_number')
+      returning_html += content_tag(:th, "", :width => 70, :class => 'visit_number')
     end
 
     raw(returning_html)

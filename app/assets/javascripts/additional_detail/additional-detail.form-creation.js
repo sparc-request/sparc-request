@@ -3,11 +3,8 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 	// Load the Additional Detail fields used by Angular from the server side values set in new.html.haml
 	// this is not how Angular likes to operate but we wanted the server side to be able to duplicate additional detail forms
 	$scope.effective_date = $('#additional_detail_effective_date').val();
-	// on page load, initialize the additional detail form and description scope variables to equal the server side values
-    $scope.currentLineItemAD = { additional_detail_schema_hash: JSON.parse($('#additional_detail_form_definition_json').val()).schema, 
-  		   						 additional_detail_form_array: JSON.parse($('#additional_detail_form_definition_json').val()).form,
-  		                         form_data_hash: {}, 
-    		                     additional_detail_description: $('#additional_detail_description').val() }; 	
+	$scope.form_definition_json = $('#additional_detail_form_definition_json').val();
+    $scope.currentLineItemAD = { additional_detail_description: $('#additional_detail_description').val() }; 	
 	
     $scope.gridModel = {enableColumnMenus: false, enableSorting: false, enableRowHeaderSelection: false, rowHeight: 45};
 	$scope.gridModel.columnDefs = [{name: ' ', width: 53, cellTemplate: '<button type="button" class="btn btn-primary" ng-click="grid.appScope.editQuestion(row.entity.id)">Edit</button>' },
@@ -26,40 +23,32 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
         };
      };
      
- 	$scope.$watch('currentLineItemAD.additional_detail_schema_hash',function(newValue, oldValue){
-	   // initialize or reload the grid
-	   $scope.gridModel.data = $scope.getAllQuestions();
-	   // update the value for the hidden text area that gets submitted to the server
-	   $('#additional_detail_form_definition_json').val(JSON.stringify({ schema: $scope.currentLineItemAD.additional_detail_schema_hash, 
-		   			                                        form: $scope.currentLineItemAD.additional_detail_form_array },
-	   				   								  undefined,2,2));
-	   // reset the preview section to have no answers after each form change
-	   $scope.currentLineItemAD.form_data_hash = {};
-	}, true); 
-	
-	$scope.$watch('currentLineItemAD.additional_detail_form_array',function(newValue, oldValue){
-		   // initialize or reload the grid
-		   $scope.gridModel.data = $scope.getAllQuestions();
-		   // update the value for the hidden text area that gets submitted to the server
-		   $('#additional_detail_form_definition_json').val(JSON.stringify({ schema : $scope.currentLineItemAD.additional_detail_schema_hash, 
-			   			                                        form : $scope.currentLineItemAD.additional_detail_form_array },
-			   				   								  undefined,2,2));
-		   // reset the preview section to have no answers after each form change
-		   $scope.currentLineItemAD.form_data_hash = {};
-		}, true); 
-	
-	 $scope.getAllQuestions = function(){
-		 var questions = [];
-		 for (var x=0; x < $scope.currentLineItemAD.additional_detail_form_array.length; x++){
-			 var q = $scope.getQuestion($scope.currentLineItemAD.additional_detail_form_array[x].id)
-			 if(q != null){
-				 questions.push(q);
-			 }
-		  }
-		 return questions;
-	 };   
+	$scope.gridModel.onRegisterApi = function(gridApi){
+		$scope.gridApi = gridApi;
+		
+	};
     
-
+    // this watch is called when the user imports or exports a schema
+    $scope.$watch('form_definition_json',function(newValue, oldValue){
+       $scope.currentLineItemAD.additional_detail_schema_hash = JSON.parse(newValue).schema; 
+       $scope.currentLineItemAD.additional_detail_form_array = JSON.parse(newValue).form;
+       // reset the preview's answers after a change to the schema
+       $scope.currentLineItemAD.form_data_hash = {}; 	     
+       // initialize or reload the grid
+       var questions = [];
+	   for (var x=0; x < $scope.currentLineItemAD.additional_detail_form_array.length; x++){
+		 var q = $scope.getQuestion($scope.currentLineItemAD.additional_detail_form_array[x].id);
+		 if(q != null){
+			 questions.push(q);
+		 }
+	   }
+ 	   $scope.gridModel.data = questions;
+  	}); 
+    // this triggers the $watch above and needs to be called any time the form schema or array has changed.
+    $scope.updateFormDefinition = function(){
+    	$scope.form_definition_json = JSON.stringify({ schema: $scope.currentLineItemAD.additional_detail_schema_hash, 
+            										   form:   $scope.currentLineItemAD.additional_detail_form_array }, undefined,2,2)
+    }
      
 	//Displays result data that will be exported when a user requests a service and anaswers the questions
 	$scope.pretty = function(){
@@ -110,16 +99,9 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
     
 	 var dropdownKindList = ["multiDropdown", "dropdown", "state", "country"];
 
-
 	  // form def management
 	  // default type to text for new fields
 	  $scope.field = { minInclusive: true, maxInclusive: true};
-	  // select list options
-	 
-	  $scope.keyError = function(){
-	  		return ($scope.field && $scope.field.key && findByKey($scope.field.key)) ? "Key already exists." : "Please fill out this field. Valid characters are A-Z a-z 0-9 and '_'";
-	  };
-	  
 	 
 	 //This will determine if the min max values or values input boxes should be displayed in the add question modal
 	 $scope.displayValue; 
@@ -167,24 +149,10 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 						$scope.currentLineItemAD.additional_detail_form_array[i] = $scope.currentLineItemAD.additional_detail_form_array[i+1];
 						$scope.currentLineItemAD.additional_detail_form_array[i+1] = row;
 					}
+					$scope.updateFormDefinition();
 					break;
 				}
 			}
-		};
-		
-		$scope.gridModel.onRegisterApi = function(gridApi){
-			$scope.gridApi = gridApi;
-			
-		};
-
-	    // delete selected rows
-	    Array.prototype.removeByFormKey = function(val) {
-		    for(var i=0; i<this.length; i++) {
-		        if(this[i].key == val) {
-		            this.splice(i, 1);
-		            break;
-		        }
-		    }
 		};
 	    
 	    $scope.deleteById = function(id){
@@ -194,8 +162,6 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 	    		if(question.id == id){
 	    			//remove from schema
 	    			delete $scope.currentLineItemAD.additional_detail_schema_hash.properties[key];
-	    			//remove any input value from data preview
-	    			//delete $scope.currentLineItemAD.form_data_hash[key];
 	    			//look in required to see if key is inside
 	    			var index = $scope.currentLineItemAD.additional_detail_schema_hash.required.indexOf(key);
 	    			if(index > -1){
@@ -220,6 +186,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 	    	for(key in $scope.currentLineItemAD.additional_detail_schema_hash.properties){
 	    		$scope.deleteById(findByKey(key).id);
 	    	}
+	    	$scope.updateFormDefinition();
 	    };
 	    
 	    $scope.deleteSelected = function() {
@@ -227,21 +194,22 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 		    for (var i=0; i<rows.length; i++) {
 		    	$scope.deleteById(rows[i].id)
 		  	}
+		    $scope.updateFormDefinition();
 	  	}; 
 	  	
 	  	$scope.addQuestion = function(ques){
 	  		var question = hashCopy(ques);
 	  		 //check to see if all required fields present
 	  		if(question.key && question.name && question.kind){
-	  			var keyVaild = false;
+	  			var keyValid = false;
 	  			var questionSchema = $scope.currentLineItemAD.additional_detail_schema_hash.properties[question.key];
 	  			//If a new question with no other key the key is vaild
 	  			if(!question.id && !questionSchema){
-	  				keyVaild = true;
+	  				keyValid = true;
 	  			}
 	  			//If editing question
 	  			else if(questionSchema && questionSchema.id == question.id){
-	  				keyVaild = true;
+	  				keyValid = true;
 	  			}
 	  			//If changing key
 	  			else if(question.id && !questionSchema && $scope.getQuestion(question.id)){
@@ -252,17 +220,14 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 					if ($scope.inRequired(oldKey)) {
 					  removeRequired(oldKey) ;
 					}
-					//remove from answers
-				//	delete $scope.currentLineItemAD.form_data_hash[oldKey];
-					keyVaild = true;
+					keyValid = true;
 				}
 	  			//Else duplicate key present
 	  			else{
 	  				$scope.alertMessage = "Key already exists."; 				
-	  			//	$scope.field.key.$error.alreadyPresent ="Test";
 	  				ques.key ='';
 	  			}
-	  			if(keyVaild){
+	  			if(keyValid){
 	  				//Add default description to date and time pickers
 					if(question.description== null && (question.kind=="time" || question.kind=="datepicker")){
 						question.description = (question.kind=="time") ? "ex. 12:00 AM" : "ex. 06/13/2015";
@@ -302,7 +267,8 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 						$scope.currentLineItemAD.additional_detail_schema_hash.required.push(question.key);
 					}	    
 		 		    // Lastly hide modal
-					$('#additionalDetailQuestionEditModal').modal('hide');				
+					$('#additionalDetailQuestionEditModal').modal('hide');	
+					$scope.updateFormDefinition();
 	  			} 
 	  		}
 	  	};
@@ -341,7 +307,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 			}
 		} 
 	 });
-	 
+	 // returns a Form object to be added to the list of form fields.
 	 $scope.getForm = function(field){
 		 field.key = removeSpecial(field.key); // removes special characters
 		 var hash = {key: field.key, kind : field.kind, style: {'selected': 'btn-success',  'unselected': 'btn-default'}};
@@ -544,13 +510,14 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 		 return !$scope.field.min || !$scope.field.max || $scope.field.min <= $scope.field.max;
 	 };
 	 
-	 // don't the user to make conditional questions required
+	 // don't let the user to make conditional questions required
 	 $scope.$watch('field.conditionId', function(val){
 		 if(val){
 			$scope.field.required = false;
 		} 
 	 });
 	 
+	 // returns a form input field's schema definition with default configuration values for specific types (e.g., Yes/No, date picker)
 	 $scope.getSchema = function(field){			 
 		 field.key = removeSpecial(field.key); // removes special characters
 		var hash = {title: field.name, description : field.description};

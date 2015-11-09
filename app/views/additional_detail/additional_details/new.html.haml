@@ -17,7 +17,7 @@
                 %h3.panel-title Select All and then "Copy" to Export or "Paste" to Import
               .panel-body
                 .form-group
-                  = f.text_area :form_definition_json, "rows" => "20", class: "form-control"
+                  = f.text_area :form_definition_json, "rows" => "20", class: "form-control", "ng-model" => "form_definition_json"
           .modal-footer
             %button.btn.btn-success{"data-dismiss"=>"modal"} Close  
     .row

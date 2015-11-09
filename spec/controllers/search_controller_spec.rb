@@ -32,7 +32,7 @@ RSpec.describe SearchController do
     let!(:core2)                { create(:core, parent_id: program.id) }
     let!(:unavailable_core)     { create(:core, parent_id: program.id, is_available: false) }
 
-    let!(:service_request)      { FactoryGirl.create(:service_request_without_validations) }
+    let!(:service_request)      { create(:service_request_without_validations) }
 
     let!(:core_ssr)             { create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
     let!(:core2_ssr)            { create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
@@ -196,7 +196,7 @@ RSpec.describe SearchController do
 
     it "should return a service whose organization is a parent of the sub service request's organization" do
       session['service_request_id'] = service_request.id
-      session['sub_service_request_id'] = core2.id
+      session['sub_service_request_id'] = core2_ssr.id
 
       get :services, {
         format: :js,
@@ -267,6 +267,11 @@ RSpec.describe SearchController do
           )
       identity
     }
+
+    before(:each) do
+      # shouldn't need to mess around with a ServiceRequest
+      allow(controller).to receive(:initialize_service_request) {}
+    end
 
     it 'should return one instance if search returns one instance' do
       allow(Identity).to receive(:search) { [ identity ] }

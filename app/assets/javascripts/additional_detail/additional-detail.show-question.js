@@ -1,22 +1,10 @@
 angular.module('app').controller('ConditionFormController', ['$scope', function ($scope) {
-	
-	$scope.getSchemaParsed = function(){		
-      return $scope.currentLineItemAD.additional_detail_schema_hash
-    };
-    
-    $scope.getFormParsed = function(){
-      return $scope.currentLineItemAD.additional_detail_form_array
-    };
-    
-    $scope.getRequired = function(){
-    	var required = $scope.getSchemaParsed().required
-    	return (required) ? required : [];
-    };
     
     $scope.inRequired = function(key){
-		 var required = $scope.getRequired();
-		 for(var i=0; i<required.length; i++){
-			if(required[i] == key){return true;}
+		 for(var i=0; i<$scope.currentLineItemAD.additional_detail_schema_hash.required.length; i++){
+			if($scope.currentLineItemAD.additional_detail_schema_hash.required[i] == key){
+				return true;
+			}
 		}
 		 return false;
 	 };
@@ -25,23 +13,20 @@ angular.module('app').controller('ConditionFormController', ['$scope', function 
     $scope.getQuestion =  function(id){ 
     	//loop through hashkeys in schema and find object with same id
     	var schemaQuestion;
-    	var properties = $scope.getSchemaParsed().properties
-    	for(var key in properties){
-    		if(properties[key].id ==id){
-    			schemaQuestion = properties[key];
+    	for(var key in $scope.currentLineItemAD.additional_detail_schema_hash.properties){
+    		if($scope.currentLineItemAD.additional_detail_schema_hash.properties[key].id ==id){
+    			schemaQuestion = $scope.currentLineItemAD.additional_detail_schema_hash.properties[key];
     		}
     	}
 
-    	var form = $scope.getFormParsed();
     	var formQuestion;
-    	for(var i=0; i<form.length; i++){
-    		if(form[i].id == id){
-    			formQuestion = form[i];
+    	for(var i=0; i<$scope.currentLineItemAD.additional_detail_form_array.length; i++){
+    		if($scope.currentLineItemAD.additional_detail_form_array[i].id == id){
+    			formQuestion = $scope.currentLineItemAD.additional_detail_form_array[i];
     		}
     	}
     	var question = {};
     	var required = false;
-    	
     	if(schemaQuestion && formQuestion){
 	    	question.name = schemaQuestion.title;
 	    	question.key = formQuestion.key;
@@ -135,15 +120,10 @@ angular.module('app').controller('ConditionFormController', ['$scope', function 
 	 $scope.questionKindInArray = function(id, array){
 		 var question = $scope.getQuestion(id);
 		 if(question){
-			 return inArray(array, question.kind);
-		 }
-		 return false;
-	 };
-	 
-	 function inArray(array, value){
-		 for(var i=0; i<array.length; i++){
-			 if(array[i] == value){
-				 return true;
+			 for(var i=0; i<array.length; i++){
+				 if(array[i] == question.kind){
+					 return true;
+				 }
 			 }
 		 }
 		 return false;

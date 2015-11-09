@@ -17,6 +17,6 @@
 //= require additional_detail/schema-form-date-time-picker.min
 //= require additional_detail/uuid
 //= require additional_detail/additional-detail.module
+//= require additional_detail/additional-detail.show-question
 //= require additional_detail/additional-detail.responses
 //= require additional_detail/additional-detail.form-creation
-//= require additional_detail/additional-detail.show-question

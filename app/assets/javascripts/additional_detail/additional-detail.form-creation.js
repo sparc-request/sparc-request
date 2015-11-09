@@ -1,6 +1,5 @@
 angular.module('app').controller('FormCreationController', ['$scope', '$controller', function ($scope, $controller) {
 	angular.extend(this, $controller('ConditionFormController', {$scope: $scope}));
-
 	// Load the Additional Detail fields used by Angular from the server side values set in new.html.haml
 	// this is not how Angular likes to operate but we wanted the server side to be able to duplicate additional detail forms
 	$scope.effective_date = $('#additional_detail_effective_date').val();
@@ -8,37 +7,17 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
     $scope.currentLineItemAD = { additional_detail_schema_hash: JSON.parse($('#additional_detail_form_definition_json').val()).schema, 
   		   						 additional_detail_form_array: JSON.parse($('#additional_detail_form_definition_json').val()).form,
   		                         form_data_hash: {}, 
-    		                     additional_detail_description: $('#additional_detail_description').val() }; 
-    
-	$scope.$watch('currentLineItemAD.additional_detail_schema_hash',function(newValue, oldValue){
-	   // initialize or reload the grid
-	   $scope.gridModel.data = $scope.getAllQuestions();
-	   // update the value for the hidden text area that gets submitted to the server
-	   $('#additional_detail_form_definition_json').val(JSON.stringify({ schema : $scope.currentLineItemAD.additional_detail_schema_hash, 
-		   			                                        form : $scope.currentLineItemAD.additional_detail_form_array },
-		   				   								  undefined,2,2));
-	   // reset the preview section to have no answers after each form change
-	   $scope.currentLineItemAD.form_data_hash = {};
-	}, true); 
+    		                     additional_detail_description: $('#additional_detail_description').val() }; 	
+	
     $scope.gridModel = {enableColumnMenus: false, enableSorting: false, enableRowHeaderSelection: false, rowHeight: 45};
 	$scope.gridModel.columnDefs = [{name: ' ', width: 53, cellTemplate: '<button type="button" class="btn btn-primary" ng-click="grid.appScope.editQuestion(row.entity.id)">Edit</button>' },
-	                                 {name: 'question', field: 'name'}, 
+	                                 {name: 'question', field: 'name'},
+	                                 {name: 'key', field: 'key'},
 	                                 {name: 'type', field: "kind", width: '15%'},
 	                               	 {name: 'required', width :'15%'},
 	                               	 {name: 'conditional', width: '15%'},
 	                               	 {name:'Order', field :'up', width: 83, cellTemplate: '<button type="button" class="btn btn-primary glyphicon glyphicon-chevron-up" ng-click="grid.appScope.up(row.entity.key)"></button><button type="button" class="btn btn-primary glyphicon glyphicon-chevron-down" ng-click="grid.appScope.down(row.entity.key)"></button>'}
 	                               	];
-
-	 $scope.getAllQuestions = function(){
-		 var questions = [];
-		 var f = $scope.getFormParsed();
-		 for (var x=0; x < f.length; x++){
-			 var q = $scope.getQuestion(f[x].id)
-			 if(q != null){questions.push(q);}
-		  }
-		 return questions;
-	 }    
-    
 	// dynamically change grid height relative to the # of rows of data, 
 	//   only works if one grid is being displayed on the page
   	$scope.getTableHeight = function() {
@@ -46,6 +25,41 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
         	height: (($scope.gridModel.data.length * $scope.gridModel.rowHeight) + $( ".ui-grid-header-cell-row" ).height() )+18 + "px"
         };
      };
+     
+ 	$scope.$watch('currentLineItemAD.additional_detail_schema_hash',function(newValue, oldValue){
+	   // initialize or reload the grid
+	   $scope.gridModel.data = $scope.getAllQuestions();
+	   // update the value for the hidden text area that gets submitted to the server
+	   $('#additional_detail_form_definition_json').val(JSON.stringify({ schema: $scope.currentLineItemAD.additional_detail_schema_hash, 
+		   			                                        form: $scope.currentLineItemAD.additional_detail_form_array },
+	   				   								  undefined,2,2));
+	   // reset the preview section to have no answers after each form change
+	   $scope.currentLineItemAD.form_data_hash = {};
+	}, true); 
+	
+	$scope.$watch('currentLineItemAD.additional_detail_form_array',function(newValue, oldValue){
+		   // initialize or reload the grid
+		   $scope.gridModel.data = $scope.getAllQuestions();
+		   // update the value for the hidden text area that gets submitted to the server
+		   $('#additional_detail_form_definition_json').val(JSON.stringify({ schema : $scope.currentLineItemAD.additional_detail_schema_hash, 
+			   			                                        form : $scope.currentLineItemAD.additional_detail_form_array },
+			   				   								  undefined,2,2));
+		   // reset the preview section to have no answers after each form change
+		   $scope.currentLineItemAD.form_data_hash = {};
+		}, true); 
+	
+	 $scope.getAllQuestions = function(){
+		 var questions = [];
+		 for (var x=0; x < $scope.currentLineItemAD.additional_detail_form_array.length; x++){
+			 var q = $scope.getQuestion($scope.currentLineItemAD.additional_detail_form_array[x].id)
+			 if(q != null){
+				 questions.push(q);
+			 }
+		  }
+		 return questions;
+	 };   
+    
+
      
 	//Displays result data that will be exported when a user requests a service and anaswers the questions
 	$scope.pretty = function(){
@@ -75,9 +89,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 	    
     //Uses a key name to populate add/edit question model with question data, if key==null then a new question will be created
     $scope.resetQuestion = function(){
-    	$scope.field = {};
-    	$scope.field.minInclusive = true;
-    	$scope.field.maxInclusive = true;
+    	$scope.field = { minInclusive: true, maxInclusive: true};
     };
       
     $scope.editQuestion = function(id){
@@ -88,6 +100,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
     		$scope.field = $scope.getQuestion(id);
     		$scope.modalSaveText = "Update"
     	} else {
+    		// reset the question
     		$scope.resetQuestion();
     		$scope.modalSaveText = "Add"
     	}
@@ -100,7 +113,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 
 	  // form def management
 	  // default type to text for new fields
-	  $scope.field = {};
+	  $scope.field = { minInclusive: true, maxInclusive: true};
 	  // select list options
 	 
 	  $scope.keyError = function(){
@@ -143,18 +156,16 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 		
 		function move(key, up){
 			var form = $scope.currentLineItemAD.additional_detail_form_array;
-			for(var i=0; i<form.length; i++){
-				if(form[i].key==key){
-					var row = form[i];
+			for(var i=0; i<$scope.currentLineItemAD.additional_detail_form_array.length; i++){
+				if($scope.currentLineItemAD.additional_detail_form_array[i].key==key){
+					var row = $scope.currentLineItemAD.additional_detail_form_array[i];
 					if(up==true && i != 0){
-						var rowReplased  = form[i-1];
-						form[i-1] = row;
-						form[i] = rowReplased;
+						$scope.currentLineItemAD.additional_detail_form_array[i] = $scope.currentLineItemAD.additional_detail_form_array[i-1];
+						$scope.currentLineItemAD.additional_detail_form_array[i-1] = row;						
 					}
-					else if(up==false && i+1 !=form.length){
-						var rowReplased  = form[i+1];
-						form[i+1] = row;
-						form[i] = rowReplased;
+					else if(up==false && i+1 !=$scope.currentLineItemAD.additional_detail_form_array.length){
+						$scope.currentLineItemAD.additional_detail_form_array[i] = $scope.currentLineItemAD.additional_detail_form_array[i+1];
+						$scope.currentLineItemAD.additional_detail_form_array[i+1] = row;
 					}
 					break;
 				}
@@ -179,7 +190,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 	    $scope.deleteById = function(id){
 	    	//loop through schema keys
 	    	for(key in $scope.currentLineItemAD.additional_detail_schema_hash.properties){
-	    		var question = $scope.getSchemaParsed().properties[key];
+	    		var question = $scope.currentLineItemAD.additional_detail_schema_hash.properties[key];
 	    		if(question.id == id){
 	    			//remove from schema
 	    			delete $scope.currentLineItemAD.additional_detail_schema_hash.properties[key];
@@ -223,7 +234,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 	  		 //check to see if all required fields present
 	  		if(question.key && question.name && question.kind){
 	  			var keyVaild = false;
-	  			var questionSchema = $scope.getSchemaParsed().properties[question.key];
+	  			var questionSchema = $scope.currentLineItemAD.additional_detail_schema_hash.properties[question.key];
 	  			//If a new question with no other key the key is vaild
 	  			if(!question.id && !questionSchema){
 	  				keyVaild = true;
@@ -304,8 +315,8 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 	 }
 	  	
 	 function findByKey(key){
-		 if(key && $scope.getSchemaParsed().properties[key]){
-			 var id = $scope.getSchemaParsed().properties[key].id
+		 if(key && $scope.currentLineItemAD.additional_detail_schema_hash.properties[key]){
+			 var id = $scope.currentLineItemAD.additional_detail_schema_hash.properties[key].id
 			 return (id) ? $scope.getQuestion(id) : null;
 		 }
 		 return null;
@@ -508,7 +519,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 			 hash.type =field.kind;
 			 return hash;
 		 }
-	 }
+	 };
 	 
 	 function cleanSplit(value){
 		 var list = value.split(","); var cleanList=[];
@@ -531,7 +542,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 	 //Will return false if field.min and field.max are invalid
 	 $scope.validMinMax = function(){
 		 return !$scope.field.min || !$scope.field.max || $scope.field.min <= $scope.field.max;
-	 }
+	 };
 	 
 	 // don't the user to make conditional questions required
 	 $scope.$watch('field.conditionId', function(val){
@@ -626,5 +637,5 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 			
 		}
 	 	 return hash;
-	 }
+	 };
 }]);

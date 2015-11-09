@@ -48,25 +48,25 @@
                   %option{"ng-repeat"=>"question in gridModel.data", "ng-disabled"=>"question.id == field.id", :value=>"{{question.id}}"} {{question.key}}
             .col-md-6{"ng-show"=>"field.conditionId"}
               .form-group
-                %div{"ng-show" => "questionKindInArray(field.conditionId, showByTextInput)"}
+                %div{"ng-show" => "field.conditionId && questionKindInArray(field.conditionId, showByTextInput)"}
                   %label{:for => "conditionValue"} Value
                   %input.form-control{:id => :conditionValue, :type=>"text", :placeholder=>"Value needed to Show", "ng-model"=>"field.conditionValue"}
-                %div{"ng-show" => "questionKindInArray(field.conditionId, showByDropDown)"}
+                %div{"ng-show" => "field.conditionId && questionKindInArray(field.conditionId, showByDropDown)"}
                   %label{:for => :conditionValue} Value
                   %select.form-control{:id => :conditionId, "ng-model"=>"field.conditionValue"}
                     %option{:disabled=>"disabled", :value=>'', :selected=>"selected"} Please Select One
                     %option{"ng-repeat"=>"value in conditionalEnum", :value=>"{{value}}"} {{value}}
-                %div{"ng-show" => "questionKindInArray(field.conditionId, showByDropDownWithTitleMapping)"}
+                %div{"ng-show" => "field.conditionId && questionKindInArray(field.conditionId, showByDropDownWithTitleMapping)"}
                   %label{:for => :conditionValue} Value
                   %select.form-control{:id => :conditionId, "ng-model"=>"field.conditionValue"}
                     %option{:disabled=>"disabled", :value=>'', :selected=>"selected"} Please Select One
                     %option{"ng-repeat"=>"value in conditionalTitleMap", :value=>"{{value.value}}"} {{value.name}}
-                %div{"ng-show" => "getQuestion(field.conditionId).kind == 'datepicker'"}
+                %div{"ng-show" => "field.conditionId && getQuestion(field.conditionId).kind == 'datepicker'"}
                   %label{:for => :conditionStartDate} Date After
                   %input{:id=> :conditionStartDate, :type => 'text',class: "form-control datepicker", "ng-model" => "field.conditionStartDate", "date-format"=>"MM/dd/yyyy", :placeholder=>"Start Date", "data-date-type"=>"string", :cursor=>"pointer", "bs-datepicker"=>"bs-datepicker", :autoclose =>"true"}
                   %label{:for => :conditionEndDate} Date Before
                   %input{:id=> :conditionEndDate, :type => 'text',class: "form-control datepicker", "ng-model" => "field.conditionEndDate", "date-format"=>"MM/dd/yyyy", :placeholder=>"End Date", "data-date-type"=>"string", :cursor=>"pointer", "bs-datepicker"=>"bs-datepicker", :autoclose =>"true"}
-                %div{"ng-show" => "getQuestion(field.conditionId).kind == 'number'"}
+                %div{"ng-show" => "field.conditionId && getQuestion(field.conditionId).kind == 'number'"}
                   %div 
                   .row
                     .col-md-9

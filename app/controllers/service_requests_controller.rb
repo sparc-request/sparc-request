@@ -661,7 +661,7 @@ class ServiceRequestsController < ApplicationController
             @sub_service_request.documents << newDocument
             @sub_service_request.documents.delete doc_object
             @sub_service_request.save
-          elsif !doc_object.destroyed?
+          else
             new_doc = document || doc_object.document
             doc_object.update_attributes(:document => new_doc, :doc_type => doc_type, :doc_type_other => doc_type_other)
           end

@@ -212,28 +212,6 @@ RSpec.describe ServiceRequestsController do
             end
           end
         end
-
-
-        context 'params[:process_ssr_organization_ids] empty' do
-
-          it 'should destroy Document' do
-            expect(doc.sub_service_requests.size).to eq(2)
-            post :navigate, {
-                   :location                     => 'document_management',
-                   :current_location             => 'document_management',
-                   :document_id                  => doc.id.to_s,
-                   process_ssr_organization_ids: [],
-                   :doc_type                     => 'budget',
-                   :upload_clicked               => '1',
-                   :action                       => 'document_management',
-                   :controller                   => 'service_requests',
-                   :id                           => service_request.id
-                 }.with_indifferent_access
-
-            expect { doc.reload }.to raise_error(ActiveRecord::RecordNotFound)
-            expect(service_request.documents.size).to eq 0
-          end
-        end
       end
 
       context 'params[:document] present' do

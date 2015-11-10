@@ -22,9 +22,9 @@ class Portal::ProtocolsController < Portal::BaseController
 
   respond_to :html, :json, :xlsx
 
-  before_filter :find_protocol, :only: [:show, :view_full_calendar, :update_from_fulfillment, :edit, :update, :update_protocol_type]
-  before_filter :protocol_authorizer_view, :only: [:show, :view_full_calendar]
-  before_filter :protocol_authorizer_edit, :only: [:update_from_fulfillment, :edit, :update, :update_protocol_type]
+  before_filter :find_protocol, only: [:show, :view_full_calendar, :update_from_fulfillment, :edit, :update, :update_protocol_type]
+  before_filter :protocol_authorizer_view, only: [:show, :view_full_calendar]
+  before_filter :protocol_authorizer_edit, only: [:update_from_fulfillment, :edit, :update, :update_protocol_type]
 
   def index
     @protocols = Portal::ProtocolFinder.new(current_user, params).protocols

@@ -6,22 +6,19 @@ RSpec.describe Portal::ProtocolsController do
 
   let!(:identity) { create(:identity)}
 
-  before :each do
-    session[:identity_id] = identity.id
-  end
+  before(:each) { session[:identity_id] = identity.id }
 
   describe 'GET #index.js' do
 
   	let!(:archived_protocol)   { create(:protocol_without_validations, archived: true) }
-  	let!(:unarchived_protocol) { create(:protocol_without_validations, archived: false) }
-  	let!(:project_role_one)    { create(:project_role,
-                                        protocol: unarchived_protocol,
-                                        identity: identity,
-                                        project_rights: 'not none') }
-  	let!(:project_role_two)    { create(:project_role,
-                                        protocol: archived_protocol,
-                                        identity: identity,
-                                        project_rights: 'not none') }
+  	let!(:unarchived_protocol) { create(:protocol_without_validations) }
+
+    before do
+    	create(:project_role_approve, protocol: unarchived_protocol,
+                                    identity: identity)
+    	create(:project_role_approve, protocol: archived_protocol,
+                                    identity: identity)
+    end
 
   	context 'default portal view' do
 
@@ -37,7 +34,7 @@ RSpec.describe Portal::ProtocolsController do
   	  before { get :index, include_archived: 'true', format: :js }
 
   	  it 'shows archived and unarchived protocols' do
-  		  expect(assigns(:protocols).sort).to eq([unarchived_protocol, archived_protocol].sort)
+  		  expect(assigns(:protocols).sort).to eq([archived_protocol, unarchived_protocol])
   	  end
   	end
   end

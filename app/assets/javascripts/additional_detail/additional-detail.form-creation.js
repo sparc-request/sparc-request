@@ -50,11 +50,12 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
             										   form:   $scope.currentLineItemAD.additional_detail_form_array }, undefined,2,2)
     }
      
-	//Displays result data that will be exported when a user requests a service and anaswers the questions
+	// Displays the form data that will be exported when a user answers the questions
 	$scope.pretty = function(){
 	  return JSON.stringify($scope.currentLineItemAD.form_data_hash,undefined,2,2);
 	};
 	
+	// The list of question types
 	$scope.typeHash = {
 	    text: 'Text',
 	    textarea : 'Text Area',
@@ -73,6 +74,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 	    dropdown : "Dropdown",
 	    multiDropdown : "Multiple Dropdown"
 	};
+	
 	// used to limit the additional detail's effective date date picker to a day of today or in the future
 	$scope.datePickerMinDate = new Date() -86400000;
 	    
@@ -99,7 +101,6 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
     
 	 var dropdownKindList = ["multiDropdown", "dropdown", "state", "country"];
 
-	  // form def management
 	  // default type to text for new fields
 	  $scope.field = { minInclusive: true, maxInclusive: true};
 	 
@@ -305,8 +306,18 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 				$scope.conditionalTitleMap = question.titleMap
 				$scope.conditionalEnum = (question.values) ? cleanSplit(question.values) : radioDefaultValues;
 			}
+			// don't let admin users make conditional questions required
+			$scope.field.required = false;
 		} 
 	 });
+	 
+	 //Will return false if field.min and field.max are invalid
+	 $scope.validMinMax = function(){
+		 return !$scope.field.min || !$scope.field.max || $scope.field.min <= $scope.field.max;
+	 };
+	 
+
+	 
 	 // returns a Form object to be added to the list of form fields.
 	 $scope.getForm = function(field){
 		 field.key = removeSpecial(field.key); // removes special characters
@@ -505,17 +516,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 		 return tileMap;
 	 }
 	 
-	 //Will return false if field.min and field.max are invalid
-	 $scope.validMinMax = function(){
-		 return !$scope.field.min || !$scope.field.max || $scope.field.min <= $scope.field.max;
-	 };
-	 
-	 // don't let the user to make conditional questions required
-	 $scope.$watch('field.conditionId', function(val){
-		 if(val){
-			$scope.field.required = false;
-		} 
-	 });
+
 	 
 	 // returns a form input field's schema definition with default configuration values for specific types (e.g., Yes/No, date picker)
 	 $scope.getSchema = function(field){			 

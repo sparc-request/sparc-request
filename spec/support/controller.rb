@@ -27,19 +27,9 @@ def stub_controller
       Identity.find_by_id(session[:identity_id])
     end
 
-    allow(controller).to receive(:initialize_service_request) do
-      controller.instance_eval do
-        @service_request     = ServiceRequest.find_by_id(session[:service_request_id])
-        @sub_service_request = SubServiceRequest.find_by_id(session[:sub_service_request_id])
-        @line_items          = @service_request.try(:line_items)
-      end
-    end
-
     allow(controller).to receive(:authorize_identity) { }
 
     allow(controller).to receive(:authenticate_identity!) { }
-
-    allow(controller).to receive(:setup_navigation) { }
   end
 end
 

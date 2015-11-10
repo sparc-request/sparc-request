@@ -160,7 +160,7 @@ module ApplicationHelper
     raw(returning_html)
   end
 
-  def visits_select_options arm, pages
+  def visits_select_options(arm, pages)
     num_pages = (arm.visit_count / 5.0).ceil
     arr = []
     selected = pages[arm.id].to_i == 0 ? 1 : pages[arm.id].to_i
@@ -174,7 +174,13 @@ module ApplicationHelper
       arr << option
 
       (beginning_visit..ending_visit).each do |y|
-        arr << ["--#{arm.visit_groups[y - 1].name}".html_safe, :parent_page => page]
+        visit_group = arm.visit_groups[y - 1]
+
+        if visit_group.day.present?
+          arr << ["--#{visit_group.name}/Day #{visit_group.day}".html_safe, parent_page: page]
+        else
+          arr << ["--#{visit_group.name}".html_safe, parent_page: page]
+        end
       end
     end
 

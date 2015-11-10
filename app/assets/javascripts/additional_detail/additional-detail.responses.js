@@ -64,14 +64,8 @@ angular.module('app').controller("DocumentManagementAdditionalDetailsController"
 			});
 			$scope.alertMessage = "Response saved.";
 			$scope.resourceSuccessful = true;
-  	     }, function(error) {
-	    	// failed server side validation
-	    	$scope.alertMessage = "";
-			_.each(error.data, function(errors, key) {
-			  _.each(errors, function(e) {
-			    $scope.alertMessage += key + " " + e + ". ";
-			  });
-			});
+  	     }, function errorCallback(error) { 
+  	    	$scope.alertMessage = error.statusText;
 	        $scope.resourceSuccessful = false;
 	     });
 	};
@@ -132,16 +126,18 @@ angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope'
 			$('#myTabs a[href="#liadGrid"]').tab('show');
 			// update the export grid's downloadable CSV filename
 			$scope.line_item_export_gridModel.exporterCsvFilename = additional_detail.name + ".csv";
-		}, function errorCallback(response) { 
+		}, function errorCallback(error) { 
 			// failed server side request
-	    	$scope.alertMessage = response;
+			$scope.alertMessage = error.statusText;
+			$scope.resourceSuccessful = false;
 	    }); 
         // load the export grid
 		AdditionalDetail.export_grid({ id: ad_id }, {}).$promise.then(function(line_item_additional_details_export) {
 			$scope.line_item_export_gridModel.data = line_item_additional_details_export;
-		}, function errorCallback(response) { 
+		}, function errorCallback(error) { 
 			// failed server side request
-	    	$scope.alertMessage = response;
+			$scope.alertMessage = error.statusText;
+			$scope.resourceSuccessful = false;
 	    }); 
 	};
 	
@@ -161,7 +157,7 @@ angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope'
     		$scope.service = Service.get();
   			$scope.alertMessage = "Additional Detail updated.";
   	        $scope.resourceSuccessful = true;
-  		}, function(error) {
+  		}, function errorCallback(error) { 
   			$scope.resourceSuccessful = false;
   	        $scope.alertMessage = error.statusText;
   	        // reload data into Grid
@@ -177,7 +173,7 @@ angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope'
   			$scope.gridModel.data = AdditionalDetail.query();
   			$scope.alertMessage = "Additional Detail deleted.";
   	        $scope.resourceSuccessful = true;
-  		}, function(error) {
+  		}, function errorCallback(error) { 
   	        $scope.alertMessage = error.statusText;
   	        $scope.resourceSuccessful = false;
   	    });
@@ -204,9 +200,9 @@ angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope'
 			$scope.updateLineItemAdditionalDetails($scope.currentLineItemAD.additional_detail_id);
 			$scope.alertMessage = "Response saved.";
 			$scope.resourceSuccessful = true;
-  	     }, function(error) {
+  	     }, function errorCallback(error) { 
   	        // failed server side validation
- 	    	$scope.alertMessage = error.data;
+  	    	$scope.alertMessage = error.statusText;
  	        $scope.resourceSuccessful = false;
 	     });
 	}	

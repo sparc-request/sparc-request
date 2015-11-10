@@ -8,5 +8,5 @@
       .modal-body
         = render :partial => 'additional_detail/shared/additional_detail_form_panel' 
       .modal-footer
-        %a.btn.btn-default{"data-dismiss"=>"modal"} Cancel
-        %button.btn.btn-success{"data-dismiss"=>"modal", "ng-click"=> "saveFormResponse()"} Save
+        %a.btn.btn-default{"data-dismiss"=>"modal"}= t(:additional_details)[:service_requests][:cancel_button]
+        %button.btn.btn-success{"data-dismiss"=>"modal", "ng-click"=> "saveFormResponse()"}= t(:additional_details)[:service_requests][:save_button]

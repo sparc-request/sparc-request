@@ -24,8 +24,7 @@ RSpec.describe AdditionalDetail do
       @ad.name = "Name"
       expect(!@ad.valid?)
       expect(@ad.errors[:effective_date].size).to eq(1)
-      message = "can't be blank"
-      expect(@ad.errors[:effective_date][0]).to eq(message)
+      expect(@ad.errors[:effective_date][0]).to eq("can't be blank")
     end
 
     it 'should fail validation when :effective_date is in the past' do
@@ -34,8 +33,7 @@ RSpec.describe AdditionalDetail do
       @ad.name = "Name"
       expect(!@ad.valid?)
       expect(@ad.errors[:effective_date].size).to eq(1)
-      message = "Date cannot be in past."
-      expect(@ad.errors[:effective_date][0]).to eq(message)
+      expect(@ad.errors[:effective_date][0]).to eq("cannot be in past.")
     end
 
     it 'update should fail if line item additional details present' do
@@ -49,7 +47,7 @@ RSpec.describe AdditionalDetail do
       @ad.name= "Test 2"
       @ad.save
       expect(AdditionalDetail.find(@ad.id).name).to eq("Test")
-
+      expect(@ad.errors[:base][0]).to eq("This Additional Detail cannot be changed if responses exist.")
     end
 
     it 'should fail validation when :name is null' do
@@ -57,8 +55,7 @@ RSpec.describe AdditionalDetail do
       @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":[]},"form":[]}'
       expect(!@ad.valid?)
       expect(@ad.errors[:name].size).to eq(1)
-      message = "can't be blank"
-      expect(@ad.errors[:name][0]).to eq(message)
+      expect(@ad.errors[:name][0]).to eq("can't be blank")
     end
 
     it 'should fail validation when :form_definition_json is null' do
@@ -66,8 +63,7 @@ RSpec.describe AdditionalDetail do
       @ad.name= "Test"
       expect(!@ad.valid?)
       expect(@ad.errors[:form_definition_json].size).to eq(1)
-      message = "can't be blank"
-      expect(@ad.errors[:form_definition_json][0]).to eq(message)
+      expect(@ad.errors[:form_definition_json][0]).to eq("can't be blank")
     end
 
     describe "when line_item_additional_detail present" do
@@ -110,8 +106,7 @@ RSpec.describe AdditionalDetail do
       @ad.name= "Test"
       expect(!@ad.valid?)
       expect(@ad.errors[:form_definition_json].size).to eq(1)
-      message = "Form must contain at least one question."
-      expect(@ad.errors[:form_definition_json][0]).to eq(message)
+      expect(@ad.errors[:form_definition_json][0]).to eq("must contain at least one question.")
     end
 
     it 'should fail validation when :description is too long' do
@@ -121,8 +116,7 @@ RSpec.describe AdditionalDetail do
       @ad.name= "Test"
       expect(!@ad.valid?)
       expect(@ad.errors[:description].size).to eq(1)
-      message = "is too long (maximum is 255 characters)"
-      expect(@ad.errors[:description][0]).to eq(message)
+      expect(@ad.errors[:description][0]).to eq("is too long (maximum is 255 characters)")
     end
   end
 

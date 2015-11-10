@@ -640,7 +640,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
               :additional_detail => {:name => "Form # 2", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Date.tomorrow, :enabled => "true"}
             })
             expect(assigns(:additional_detail).errors[:effective_date].size).to eq(1)
-            message = "Effective date cannot be the same as any other effective dates."
+            message = "is being used by another version of this form, please choose a different date."
             expect(assigns(:additional_detail).errors[:effective_date][0]).to eq(message)
             expect(response).to render_template("new")
             expect(response.status).to eq(200)
@@ -669,7 +669,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
               :effective_date => Date.today, :enabled => "true"}
             })
             expect(assigns(:additional_detail).errors[:form_definition_json].size).to eq(1)
-            message = "Form must contain at least one question."
+            message = "must contain at least one question."
             expect(assigns(:additional_detail).errors[:form_definition_json][0]).to eq(message)
             expect(response).to render_template("new")
             expect(response.status).to eq(200)

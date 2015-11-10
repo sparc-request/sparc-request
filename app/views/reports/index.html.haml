@@ -31,11 +31,10 @@
     %br
     %br
     %br
-    = link_to t(:reports)[:custom_report], 'javascript:void(0);', :class => "reporting_button", :id => "custom_report_link"
-  
+
   %br
   %br
-    
+
   = link_to t(:reports)[:return_to_admin_portal], portal_admin_index_path, :id => 'return_to_admin_portal'
 
   #defined_reports
@@ -46,9 +45,8 @@
         = select_tag "report", options_for_select($canned_reports.map{|x| [x.constantize.title, x]})
         %br
         %br
-        = submit_tag t(:reports)[:proceed] 
+        = submit_tag t(:reports)[:proceed]
         %br
         %br
     #defined_reports_step_2
 
-  #custom_report

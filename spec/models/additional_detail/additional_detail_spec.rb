@@ -176,8 +176,8 @@ RSpec.describe AdditionalDetail do
     
     it 'should return hash and array for one field' do
       @additional_detail = AdditionalDetail.new
-      @additional_detail.form_definition_json= '{"schema":{"type":"object","title":"Comment","properties":{"birthdate":{"title":"birthdate","description":"ex. 06/13/2015","type":"string","format":"datepicker","validationMessage":"Please enter vaild date ex. 06/13/2015"}},"required":[]},"form":[{"key":"birthdate","kind":"datepicker","style":{"selected":"btn-success","unselected":"btn-default"},"type":"datepicker","dateOptions":{"dateFormat":"MM/dd/yyyy"}}]}'
-      expect(@additional_detail.schema_hash).to eq({"type"=>"object","title"=>"Comment","properties"=>{"birthdate"=>{"title"=>"birthdate","description"=>"ex. 06/13/2015","type"=>"string","format"=>"datepicker","validationMessage"=>"Please enter vaild date ex. 06/13/2015"}},"required"=>[]})
+      @additional_detail.form_definition_json= '{"schema":{"type":"object","title":"Comment","properties":{"birthdate":{"title":"birthdate","description":"ex. 06/13/2015","type":"string","format":"datepicker","validationMessage":"Please enter valid date ex. 06/13/2015"}},"required":[]},"form":[{"key":"birthdate","kind":"datepicker","style":{"selected":"btn-success","unselected":"btn-default"},"type":"datepicker","dateOptions":{"dateFormat":"MM/dd/yyyy"}}]}'
+      expect(@additional_detail.schema_hash).to eq({"type"=>"object","title"=>"Comment","properties"=>{"birthdate"=>{"title"=>"birthdate","description"=>"ex. 06/13/2015","type"=>"string","format"=>"datepicker","validationMessage"=>"Please enter valid date ex. 06/13/2015"}},"required"=>[]})
       expect(@additional_detail.form_array).to eq([{"key"=>"birthdate","kind"=>"datepicker","style"=>{"selected"=>"btn-success","unselected"=>"btn-default"},"type"=>"datepicker","dateOptions"=>{"dateFormat"=>"MM/dd/yyyy"}}])
     end
   end

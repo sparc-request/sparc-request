@@ -33,7 +33,7 @@
       %table
         %thead
           %tr
-            %th.blue_header Additional Details
+            %th.blue_header= t(:additional_details)[:portal_admin][:label]
         %tbody
           - @sub_service_request.line_items.each do |line_item|
             %tr

@@ -203,7 +203,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 	  		if(question.key && question.name && question.kind){
 	  			var keyValid = false;
 	  			var questionSchema = $scope.currentLineItemAD.additional_detail_schema_hash.properties[question.key];
-	  			//If a new question with no other key the key is vaild
+	  			//If a new question with no other key the key is valid
 	  			if(!question.id && !questionSchema){
 	  				keyValid = true;
 	  			}
@@ -522,7 +522,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 		 field.key = removeSpecial(field.key); // removes special characters
 		var hash = {title: field.name, description : field.description};
 	 	 if(field.kind =="datepicker"){
-	 		 hash.type = "string"; hash.format = "datepicker"; hash.validationMessage = "Please enter vaild date ex. 06/13/2015";
+	 		 hash.type = "string"; hash.format = "datepicker"; hash.validationMessage = "Please enter a valid date ex. 06/13/2015";
 	 			
 	 		}
 	 	 else if(field.kind == "text" || field.kind == "textarea"){
@@ -549,7 +549,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 			 
 		 }
 		 else if(field.kind == "phone"){
-				hash.type = "string"; hash.pattern = "^[0-9]{3}-[0-9]{3}-[0-9]{4}$"; hash.validationMessage = "Please enter vaild phone number.";
+				hash.type = "string"; hash.pattern = "^[0-9]{3}-[0-9]{3}-[0-9]{4}$"; hash.validationMessage = "Please enter a valid phone number.";
 				
 			}
 		else if(field.kind == "radiobuttons"){
@@ -571,15 +571,15 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 			
 		}
 		else if(field.kind == "email"){
-			hash.type = "string"; hash.pattern = "^\\S+@\\S+$"; hash.validationMessage = "Please enter vaild email.";
+			hash.type = "string"; hash.pattern = "^\\S+@\\S+$"; hash.validationMessage = "Please enter a valid email.";
 			
 		}
 		else if(field.kind == "zipcode"){
-			hash.type = "string"; hash.pattern = "^[0-9]{5}(-[0-9]{4})?$"; hash.validationMessage = "Please enter vaild zip code.";
+			hash.type = "string"; hash.pattern = "^[0-9]{5}(-[0-9]{4})?$"; hash.validationMessage = "Please enter a valid zip code.";
 			
 		}
 		else if(field.kind == "time"){
-			hash.validationMessage = "Please a vaild time ex. 12:00 AM"; hash.type = "string";
+			hash.validationMessage = "Please enter a valid time ex. 12:00 AM"; hash.type = "string";
 			hash.format = "timepicker";
 			
 		}

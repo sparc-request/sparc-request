@@ -16,15 +16,15 @@
             %span.icon-bar
             %span.icon-bar
             %span.icon-bar
-          %a.navbar-brand{:href => @service ? additional_detail_service_additional_details_path(@service) : "/additional_detail/"} Additional Details
+          %a.navbar-brand{:href => @service ? additional_detail_service_additional_details_path(@service) : "/additional_detail/"}= t(:additional_details)[:admin][:home]
         .collapse.navbar-collapse{:id=>"bs-example-navbar-collapse-1"}
           %ul.nav.navbar-nav
             %li
-              %a{:href=>"/catalog_manager/"} Catalog Manager
+              %a{:href=>"/catalog_manager/"}= t(:additional_details)[:admin][:catalog_manager]
             %li
-              %a{:href=>"/portal/admin"} Portal Admin
+              %a{:href=>"/portal/admin"}= t(:additional_details)[:admin][:portal_admin]
             %li
-              %a{:href=>"/"} Request Services
+              %a{:href=>"/"}= t(:additional_details)[:admin][:request_services] 
     .container-fluid
       = yield
     = javascript_include_tag "additional_detail/bootstrap-accessibility.min"

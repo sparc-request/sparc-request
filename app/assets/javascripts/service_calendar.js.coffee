@@ -250,7 +250,6 @@ $(document).ready ->
       type: 'GET'
       url: $(this).attr('url')
       data: {"page": page}
-      dataType: 'script'
       success: ->
         $('.service_calendar_spinner').hide()
   )

@@ -2328,6 +2328,18 @@ li:not(.ui-tabs-active) #calendar_tab:hover {
   word-break: break-all;
 }
 
+.document-button-seperator {
+  margin-top: 5px;
+}
+
+.document-title-header{
+  width: 150px;
+}
+
+.document-actions-header {
+  width: 63px;
+}
+
 .total_cell {
   font-weight: bold !important;
   background-color: #CCCCCC;

@@ -27,9 +27,9 @@
     %tr.header{:class => provider_css}
       %th= t("documents.headers.institution")
       %th= t("documents.headers.type")
-      %th{style: 'width:150px'}= t("documents.headers.title")
+      %th.document-title-header= t("documents.headers.title")
       - if not review
-        %th{style: 'width:63px'}= t("documents.headers.actions")
+        %th.document-actions-header= t("documents.headers.actions")
       %th= t('documents.headers.version')
 
     - @service_request.documents.each do |document|
@@ -45,7 +45,7 @@
         - if not review
           %td
             = link_to t("documents.edit_button"), "/service_requests/#{@service_request.id}/edit_document/#{document.id}", :remote => true, :class => 'document_edit blue-button'
-            %br{style: 'margin-top:5px'}
+            %br.document-button-seperator
             %br
             = link_to t("documents.delete_button"), "/service_requests/#{@service_request.id}/delete_document/#{document.id}", :remote => true, :class => 'document_delete blue-button'
         %td= document.updated_at.strftime("%m/%d/%Y at %I:%M%p")

@@ -133,8 +133,9 @@
     - reset_cycle('protocol')
 %table{ width: '100%' }
   %tr
-    %td
-      %a.add-services-button{:href => permission ? root_path(:protocol_id => protocol.id) : "javascript:void(0);", :'data-permission' => permission.to_s}= t(:protocol_information)[:add_services]
+    - if (protocol.service_requests.count == 1) && (protocol.service_requests.first.status  == 'first_draft')
+      %td
+        %a.add-services-button{:href => permission ? root_path(:protocol_id => protocol.id) : "javascript:void(0);", :'data-permission' => permission.to_s}= t(:protocol_information)[:add_services]
     %td
       %a.view-full-calendar-button{:href => "javascript:void(0);", :'data-protocol_id' => protocol.id, :'data-url' => "/portal/protocols/#{protocol.id}/view_full_calendar"}= t(:protocol_information)[:full_calendar]
     %td

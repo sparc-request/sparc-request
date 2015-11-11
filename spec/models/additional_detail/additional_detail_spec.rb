@@ -13,14 +13,14 @@ RSpec.describe AdditionalDetail do
 
     it 'should create new additional detail' do
       @ad.effective_date= Date.today
-      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":[]},"form":[]}'
+      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":["date"]},"form":[]}'
       @ad.name = "Name"
       expect(@ad.valid?)
       expect(@ad.errors.count).to eq(0)
     end
 
     it 'should fail validation when :effective_date is null' do
-      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":[]},"form":[]}'
+      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":["date"]},"form":[]}'
       @ad.name = "Name"
       expect(!@ad.valid?)
       expect(@ad.errors[:effective_date].size).to eq(1)
@@ -29,7 +29,7 @@ RSpec.describe AdditionalDetail do
 
     it 'should fail validation when :effective_date is in the past' do
       @ad.effective_date= Date.yesterday
-      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":[]},"form":[]}'
+      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":["date"]},"form":[]}'
       @ad.name = "Name"
       expect(!@ad.valid?)
       expect(@ad.errors[:effective_date].size).to eq(1)
@@ -39,7 +39,7 @@ RSpec.describe AdditionalDetail do
     it 'update should fail if line item additional details present' do
       @ad.name= "Test"
       @ad.effective_date= Date.today
-      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":[]},"form":[]}'
+      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":["date"]},"form":[]}'
       expect{@ad.save}.to change(AdditionalDetail, :count).by(1)
       @line_item_additional_detail = LineItemAdditionalDetail.new
       @line_item_additional_detail.additional_detail_id = @ad.id
@@ -52,7 +52,7 @@ RSpec.describe AdditionalDetail do
 
     it 'should fail validation when :name is null' do
       @ad.effective_date= Date.today
-      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":[]},"form":[]}'
+      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":["date"]},"form":[]}'
       expect(!@ad.valid?)
       expect(@ad.errors[:name].size).to eq(1)
       expect(@ad.errors[:name][0]).to eq("can't be blank")
@@ -69,7 +69,7 @@ RSpec.describe AdditionalDetail do
     describe "when line_item_additional_detail present" do
       before :each do
         @ad.effective_date= Date.today
-        @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":[]},"form":[]}'
+        @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":["date"]},"form":[]}'
         @ad.name = "Name"
         expect(@ad.valid?)
         expect(@ad.errors.count).to eq(0)
@@ -97,20 +97,17 @@ RSpec.describe AdditionalDetail do
 
     end
 
-    it 'should fail validation when :form_definition_json has no questions with white space' do
-      @ad.form_definition_json = '  {"schema": {"type":   "object","title":
-        "Comment","properties": {},"required": []}
-      ,"form": []}  '
-
+    it 'should fail validation when :form_definition_json has no required questions' do
+      @ad.form_definition_json = '{"schema":{"type":"object","title":"Comment","properties":{},"required": []},"form": [{"key":"birthdate"},{"key":"date"}]}'
       @ad.effective_date= Date.today
       @ad.name= "Test"
       expect(!@ad.valid?)
       expect(@ad.errors[:form_definition_json].size).to eq(1)
-      expect(@ad.errors[:form_definition_json][0]).to eq("must contain at least one question.")
+      expect(@ad.errors[:form_definition_json][0]).to eq("must contain at least one required question.")
     end
 
     it 'should fail validation when :description is too long' do
-      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":[]},"form":[]}'
+      @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":["date"]},"form":[]}'
       @ad.effective_date= Date.today
       @ad.description = "0"*256
       @ad.name= "Test"

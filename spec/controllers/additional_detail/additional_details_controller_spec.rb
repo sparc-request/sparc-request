@@ -567,7 +567,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         it 'create an additional detail record' do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
-              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Date.tomorrow, :enabled => "true"}
+              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => '{"schema": {"required": ["birthdate"] }, "form":[{"key":"birthdate"}]}', :effective_date => Date.tomorrow, :enabled => "true"}
             })
             expect(assigns(:additional_detail).errors).to be_blank
             expect(response).to redirect_to(additional_detail_service_additional_details_path(@core_service))
@@ -579,7 +579,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         it 'see failed validation for :description being too long' do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
-              :additional_detail => {:name => "Form # 1", :description => "0"*256, :form_definition_json => "{}", :effective_date => Date.today, :enabled => "true"}
+              :additional_detail => {:name => "Form # 1", :description => "0"*256, :form_definition_json => '{"schema": {"required": ["birthdate"] }, "form":[{"key":"birthdate"}]}', :effective_date => Date.today, :enabled => "true"}
             })
             expect(assigns(:additional_detail).errors[:description].size).to eq(1)
             message = "is too long (maximum is 255 characters)"
@@ -594,7 +594,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         it 'see failed validation for blank :name when trying to create an additional detail record' do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
-              :additional_detail => {:name => "", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Date.tomorrow, :enabled => "true"}
+              :additional_detail => {:name => "", :description => "10 essential questions", :form_definition_json => '{"schema": {"required": ["birthdate"] }, "form":[{"key":"birthdate"}]}', :effective_date => Date.tomorrow, :enabled => "true"}
             })
             expect(assigns(:additional_detail).errors[:name].size).to eq(1)
             expect(assigns(:additional_detail).errors[:effective_date].size).to eq(0)
@@ -608,7 +608,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         it 'see failed validation for blank :effective_date when trying to create an additional detail record' do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
-              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => "", :enabled => "true"}
+              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => '{"schema": {"required": ["birthdate"] }, "form":[{"key":"birthdate"}]}', :effective_date => "", :enabled => "true"}
             })
             expect(assigns(:additional_detail).errors[:effective_date].size).to eq(1)
             expect(response).to render_template("new")
@@ -621,7 +621,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         it 'see failed validation for blank :effective_date when trying to create an additional detail record' do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
-              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => "", :enabled => "true"}
+              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => '{"schema": {"required": ["birthdate"] }, "form":[{"key":"birthdate"}]}', :effective_date => "", :enabled => "true"}
             })
             expect(assigns(:additional_detail).errors[:effective_date].size).to eq(1)
             expect(response).to render_template("new")
@@ -634,10 +634,10 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         it 'see failed validation for :effective_date that is already taken when trying to create an additional detail record' do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
-              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Date.tomorrow, :enabled => "true"}
+              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => '{"schema": {"required": ["birthdate"] }, "form":[{"key":"birthdate"}]}', :effective_date => Date.tomorrow, :enabled => "true"}
             })
             post(:create, {:service_id => @core_service, :format => :html,
-              :additional_detail => {:name => "Form # 2", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Date.tomorrow, :enabled => "true"}
+              :additional_detail => {:name => "Form # 2", :description => "10 essential questions", :form_definition_json => '{"schema": {"required": ["birthdate"] }, "form":[{"key":"birthdate"}]}', :effective_date => Date.tomorrow, :enabled => "true"}
             })
             expect(assigns(:additional_detail).errors[:effective_date].size).to eq(1)
             message = "is being used by another version of this form, please choose a different date."
@@ -662,14 +662,14 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
           }.to change(AdditionalDetail, :count).by(0)
         end
         
-        it 'see failed validation for form with no questions :form_definition_json when trying to create an additional detail record' do
+        it 'see failed validation for form with no required questions :form_definition_json when trying to create an additional detail record' do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
-              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => '{"schema": {"type": "object","title": "Comment","properties": {},"required": []},"form": []}',
+              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => '{"schema": {"type": "object","title": "Comment","properties": {},"required": []},"form": [{"key":"birthdate"},{"key":"date"}]}',
               :effective_date => Date.today, :enabled => "true"}
             })
             expect(assigns(:additional_detail).errors[:form_definition_json].size).to eq(1)
-            message = "must contain at least one question."
+            message = "must contain at least one required question."
             expect(assigns(:additional_detail).errors[:form_definition_json][0]).to eq(message)
             expect(response).to render_template("new")
             expect(response.status).to eq(200)
@@ -800,7 +800,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
       
       it 'create an additional detail record' do
         post(:create, {:service_id => @core_service, :format => :html,
-          :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Date.tomorrow, :enabled => "true"}
+          :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => '{"schema": {"required": ["birthdate"] }, "form":[{"key":"birthdate"}]}', :effective_date => Date.tomorrow, :enabled => "true"}
         })
         expect(response).to redirect_to(additional_detail_service_additional_details_path(@core_service))
       end
@@ -871,7 +871,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
       
       it 'create an additional detail record' do
         post(:create, {:service_id => @core_service, :format => :html,
-          :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Date.tomorrow, :enabled => "true"}
+          :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => '{"schema": {"required": ["birthdate"] }, "form":[{"key":"birthdate"}]}', :effective_date => Date.tomorrow, :enabled => "true"}
         })
         expect(response).to redirect_to(additional_detail_service_additional_details_path(@core_service))
       end

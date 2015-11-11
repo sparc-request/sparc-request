@@ -10,7 +10,7 @@ class AdditionalDetail < ActiveRecord::Base
   validate :line_items_present
   validates :name,:effective_date, :form_definition_json, :presence => true
   validates :description, :length => {:maximum => 255}
-  validate :date_in_past, :effective_date_cannot_be_shared, :form_definition_cannot_be_blank
+  validate :date_in_past, :effective_date_cannot_be_shared, :form_definition_must_have_at_least_one_required_question
   
   
   def schema_hash
@@ -50,15 +50,14 @@ class AdditionalDetail < ActiveRecord::Base
   end
 
   def date_in_past
-    if  !effective_date.blank? and effective_date.beginning_of_day <= Date.yesterday.beginning_of_day
+    if  !effective_date.blank? && effective_date.beginning_of_day <= Date.yesterday.beginning_of_day
       errors.add(:effective_date, "cannot be in past.")
     end
   end
 
-  def form_definition_cannot_be_blank
-    blankForm = '{ "schema": { "type": "object","title": "Comment", "properties": {},"required": []}, "form": []}'
-    if !form_definition_json.blank? and JSON.parse(form_definition_json) == JSON.parse(blankForm)
-        errors.add(:form_definition_json, "must contain at least one question.")
+  def form_definition_must_have_at_least_one_required_question
+    if !form_definition_json.blank? && !has_required_questions?
+        errors.add(:form_definition_json, "must contain at least one required question.")
     end
   end
  

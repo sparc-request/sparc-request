@@ -17,6 +17,8 @@
 //= require additional_detail/schema-form-date-time-picker.min
 //= require additional_detail/uuid
 //= require additional_detail/additional-detail.module
+// logic for conditional questions is not ready to be used because it needs fine tuning and testing 
+// require additional_detail/additional-detail.conditional_questions
 //= require additional_detail/additional-detail.show-question
 //= require additional_detail/additional-detail.responses
 //= require additional_detail/additional-detail.form-creation

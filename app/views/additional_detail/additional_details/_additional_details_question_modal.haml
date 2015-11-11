@@ -35,72 +35,32 @@
                 %textarea.form-control{:id=>"description",:type=>"text", :placeholder=>"Description (Optional)", "ng-model"=>"field.description"}
                 .help-block.with-errors
             .col-md-6
-              .form-group{:style=>"{{displayValue}}"}
+              .form-group
                 %label{:for=>"values"}= t(:additional_details)[:admin][:question_modal_values_field]
-                %textarea.form-control{:id=>"values", "ng-model"=>"field.values", :type=>"text", :placeholder=>"Values", "aria-describedby"=>"valuesHelpBlock"}
-                %span.help-block{:id=>"valuesHelpBlock"} Please separate values with commas.
-          .row
-            .col-md-6
-              .form-group
-                %label{:for => :conditionId}= t(:additional_details)[:admin][:question_modal_condition_field]
-                %select.form-control{:id => :conditionId, "ng-model"=>"field.conditionId"}
-                  %option{:value=>'', :selected=>"selected"} None
-                  %option{"ng-repeat"=>"question in gridModel.data", "ng-disabled"=>"question.id == field.id", :value=>"{{question.id}}"} {{question.key}}
-                .help-block Branching logic
-            .col-md-6{"ng-show"=>"field.conditionId"}
-              .form-group
-                %div{"ng-show" => "field.conditionId && questionKindInArray(field.conditionId, showByTextInput)"}
-                  %label{:for => "conditionValue"} Value
-                  %input.form-control{:id => :conditionValue, :type=>"text", :placeholder=>"Value needed to Show", "ng-model"=>"field.conditionValue"}
-                %div{"ng-show" => "field.conditionId && questionKindInArray(field.conditionId, showByDropDown)"}
-                  %label{:for => :conditionValue} Value
-                  %select.form-control{:id => :conditionId, "ng-model"=>"field.conditionValue"}
-                    %option{:disabled=>"disabled", :value=>'', :selected=>"selected"} Select One
-                    %option{"ng-repeat"=>"value in conditionalEnum", :value=>"{{value}}"} {{value}}
-                %div{"ng-show" => "field.conditionId && questionKindInArray(field.conditionId, showByDropDownWithTitleMapping)"}
-                  %label{:for => :conditionValue} Value
-                  %select.form-control{:id => :conditionId, "ng-model"=>"field.conditionValue"}
-                    %option{:disabled=>"disabled", :value=>'', :selected=>"selected"} Select One
-                    %option{"ng-repeat"=>"value in conditionalTitleMap", :value=>"{{value.value}}"} {{value.name}}
-                %div{"ng-show" => "field.conditionId && getQuestion(field.conditionId).kind == 'datepicker'"}
-                  %label{:for => :conditionStartDate} Date After
-                  %input{:id=> :conditionStartDate, :type => 'text',class: "form-control datepicker", "ng-model" => "field.conditionStartDate", "date-format"=>"MM/dd/yyyy", :placeholder=>"Start Date", "data-date-type"=>"string", :cursor=>"pointer", "bs-datepicker"=>"bs-datepicker", :autoclose =>"true"}
-                  %label{:for => :conditionEndDate} Date Before
-                  %input{:id=> :conditionEndDate, :type => 'text',class: "form-control datepicker", "ng-model" => "field.conditionEndDate", "date-format"=>"MM/dd/yyyy", :placeholder=>"End Date", "data-date-type"=>"string", :cursor=>"pointer", "bs-datepicker"=>"bs-datepicker", :autoclose =>"true"}
-                %div{"ng-show" => "field.conditionId && getQuestion(field.conditionId).kind == 'number'"}
-                  %div 
-                  .row
-                    .col-md-9
-                      %label{:for => :conditionValueMin} Minimum Value
-                      %input.form-control{:id => "conditionValueMin", :type=>"number", :placeholder=>"Minimum value needed to Show", "ng-model"=>"field.conditionValueMin"}
-                    .col-md-3.checkbox
-                      %label
-                        %input{:id => :minInclusive, :type => :checkbox, "ng-model"=>"field.minInclusive"} Inclusive
-                  .row
-                    .col-md-9
-                      %label{:for => :conditionValueMax} Maximum Value
-                      %input.form-control{:id => :conditionValueMax, :type=>"number", :placeholder=>"Maximum value needed to Show", "ng-model"=>"field.conditionValueMax"}
-                    .col-md-3.checkbox
-                      %label
-                        %input{:id => :maxInclusive, :type => :checkbox, "ng-model"=>"field.maxInclusive"} Inclusive
+                %textarea.form-control{:id=>"values", "ng-disabled"=>"!csvValuesRequired", "ng-required"=>"csvValuesRequired", "ng-model"=>"field.values", :type=>"text", :placeholder=>"Values", "aria-describedby"=>"valuesHelpBlock"}
+                %span.help-block{:id=>"valuesHelpBlock"} Please add values separated by commas.
           .row
             .col-md-12
-              .row
-                .col-md-2
-                  .form-group
-                    %label{:for=>"required"}= t(:additional_details)[:admin][:question_modal_required_field]
-                    %input{"ng-disabled"=>"field.conditionId", :id=>"required", "ng-model"=>"field.required", :type=>"checkbox", :value=>""}
-                .col-md-5
-                  .form-group{:style=>"{{minMaxDisplay}}"}
-                    %label{:for=>"min"} {{minDisplay}}
-                    %input.form-control{:id=>"min", "ng-model"=>"field.min", "data-error"=>"Minimum value must be greater than maximum value", :type=>"number", :placeholder=>"Min"}
-                    .help-block.with-errors 
-                .col-md-5
-                  .form-group{:style=>"{{minMaxDisplay}}"}
-                    %label{:for=>"max"} {{maxDisplay}}
-                    %input.form-control{:id=>"max", "ng-model"=>"field.max", "data-error"=>"Maximum value must be greater than minimum value", :type=>"number", :placeholder=>"Max"}
-                    .help-block.with-errors 
+              %fieldset
+                %legend Validation
+                .row
+                  .col-md-2
+                    .form-group
+                      %label{:for=>"required"}= t(:additional_details)[:admin][:question_modal_required_field]
+                      %input{"ng-disabled"=>"field.conditionId", :id=>"required", "ng-model"=>"field.required", :type=>"checkbox", :value=>""}
+                  .col-md-5
+                    .form-group
+                      %label{:for=>"min"} {{minDisplay}}
+                      %input.form-control{:id=>"min", "ng-disabled"=>"!minMaxValuesRequired", "ng-model"=>"field.min", "data-error"=>"Minimum value must be greater than maximum value", :type=>"number", :placeholder=>"Min (optional)"}
+                      .help-block.with-errors 
+                  .col-md-5
+                    .form-group
+                      %label{:for=>"max"} {{maxDisplay}}
+                      %input.form-control{:id=>"max", "ng-disabled"=>"!minMaxValuesRequired", "ng-model"=>"field.max", "data-error"=>"Maximum value must be greater than minimum value", :type=>"number", :placeholder=>"Max (optional)"}
+                      .help-block.with-errors 
+              -# logic for conditional questions is not ready to be used because it needs fine tuning and testing
+            -#= render :partial => 'form_creation_conditional_questions'
       .modal-footer
-        %button.btn.btn-success{:type=>"submit", "ng-click"=> "addQuestion(field)", "ng-disabled"=>"!field.key || !field.name || !field.kind || !validMinMax()"}= "{{modalSaveText}}" + t(:additional_details)[:admin][:question_modal_add_update_question_button]
+        %button.btn.btn-success{:type=>"submit", "ng-click"=> "addQuestion(field)", "ng-disabled"=>"!isValidQuestion()"}= "{{modalSaveText}}" + t(:additional_details)[:admin][:question_modal_add_update_question_button]
         %button.btn.btn-warning{"ng-click"=>"resetQuestion()"}= t(:additional_details)[:admin][:question_modal_clear_question_button]
         %button.btn.btn-default{"data-dismiss"=>"modal"}= t(:additional_details)[:admin][:cancel_button]

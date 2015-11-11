@@ -41,8 +41,11 @@ angular.module('app').controller("ShowSurveyController", ['$scope', 'LineItemAdd
 angular.module('app').controller("DocumentManagementAdditionalDetailsController", ['$scope', 'ServiceRequest', 'LineItemAdditionalDetail', '$controller', function($scope, ServiceRequest, LineItemAdditionalDetail, $controller) { 
 	// extend the ShowSurveyController to share the $scope.showSurvey function
 	angular.extend(this, $controller('ShowSurveyController', {$scope: $scope}));
-	// extend the ConditionFormController to gain access to the conditional question functions
-	angular.extend(this, $controller('ConditionFormController', {$scope: $scope}));
+	// extend the ConditionalQuestionsFormController to gain access to the conditional question functions
+	// logic for conditional questions is not ready to be used because it needs fine tuning and testing 
+	// angular.extend(this, $controller('ConditionalQuestionsFormController', {$scope: $scope}));
+	// extend the QuestionsFormController to gain access to basic question functions
+	angular.extend(this, $controller('QuestionsFormController', {$scope: $scope}));
 	
 	$scope.gridModel = {enableColumnMenus: false, enableFiltering: false, enableColumnResizing: false, enableRowSelection: false, enableSorting: true, enableRowHeaderSelection: false, rowHeight: 45};
 	$scope.gridModel.columnDefs = [{name: 'Add/Edit Buttons', displayName:'', enableSorting: false, width: 105, cellTemplate: '<button type="button" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">{{(row.entity.form_data_json=="{}") ? "Add Details" : "Edit Details"}}</button>'},
@@ -82,8 +85,11 @@ angular.module('app').controller("DocumentManagementAdditionalDetailsController"
 angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope', 'Service', 'AdditionalDetail', 'LineItemAdditionalDetail', 'uiGridConstants', 'uiGridExporterConstants', '$controller', function($scope, Service, AdditionalDetail, LineItemAdditionalDetail, uiGridConstants, uiGridExporterConstants, $controller) {
 	// extend the ShowSurveyController to share the $scope.showSurvey function
 	angular.extend(this, $controller('ShowSurveyController', {$scope: $scope}));
-	// extend the ConditionFormController to gain access to the conditional question functions
-	angular.extend(this, $controller('ConditionFormController', {$scope: $scope}));
+	// extend the ConditionalQuestionsFormController to gain access to the conditional question functions
+	// logic for conditional questions is not ready to be used because it needs fine tuning and testing 
+	// angular.extend(this, $controller('ConditionalQuestionsFormController', {$scope: $scope}));
+	// extend the QuestionsFormController to gain access to basic question functions
+	angular.extend(this, $controller('QuestionsFormController', {$scope: $scope}));
 	
 	$scope.gridModel = {enableColumnMenus: false, enableFiltering: true, enableRowSelection: false, enableSorting: true, enableRowHeaderSelection: false, rowHeight: 45};
 	$scope.gridModel.columnDefs = [

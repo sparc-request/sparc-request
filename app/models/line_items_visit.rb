@@ -212,4 +212,15 @@ class LineItemsVisit < ActiveRecord::Base
   end
 
   ### end audit reporting methods ###
+
+  def any_visit_quantities_set?
+    has_quantity = false
+    puts "<>"*100
+    visits.each do |visit|
+      puts visit.quantity_total
+      has_quantity = true if (visit.quantity_total > 0)
+    end
+    puts has_quantity
+    has_quantity
+  end
 end

@@ -24,10 +24,10 @@ class Visit < ActiveRecord::Base
 
   audited
 
-  belongs_to :line_items_visit
   has_many :procedures
   has_many :appointments, :through => :procedures
   belongs_to :visit_group
+  belongs_to :line_items_visit
 
   attr_accessible :line_items_visit_id
   attr_accessible :visit_group_id
@@ -87,6 +87,16 @@ class Visit < ActiveRecord::Base
 
   def audit_excluded_actions
     ['create']
+  end
+
+  def belongs_to_service_request?(service_request)
+    belongs_to = false
+
+    if line_items_visit.line_item.service_request_id == service_request.id
+      belongs_to = true
+    end
+
+    belongs_to
   end
 
   ### end audit reporting methods ###

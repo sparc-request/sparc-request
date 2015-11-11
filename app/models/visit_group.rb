@@ -66,6 +66,16 @@ class VisitGroup < ActiveRecord::Base
 
   ### end audit reporting methods ###
 
+  def any_visit_quantities_set?(service_request)
+    has_quantity = false
+
+    visits.each do |visit|
+      has_quantity = true if ((visit.quantity_total > 0) && (visit.belongs_to_service_request?(service_request)))
+    end
+
+    has_quantity
+  end
+
 
   private
 

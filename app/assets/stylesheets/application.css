@@ -2324,6 +2324,10 @@ li:not(.ui-tabs-active) #calendar_tab:hover {
   text-align: left;
 }
 
+.document-title {
+  word-break: break-all;
+}
+
 .total_cell {
   font-weight: bold !important;
   background-color: #CCCCCC;

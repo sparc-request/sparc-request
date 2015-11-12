@@ -33,30 +33,36 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 	};
     
     // this watch is called on page load, when the user imports a schema, and after $scope.updateFormDefinition
-    $scope.$watch('form_definition_json',function(newValue, oldValue){    
-       var parsedFormDefinitionJSON = $.parseJSON(newValue);
-       $scope.currentLineItemAD.additional_detail_schema_hash = parsedFormDefinitionJSON.schema; 
-       $scope.currentLineItemAD.additional_detail_form_array = parsedFormDefinitionJSON.form;
-       // reset the preview's answers after a change to the schema
-       $scope.currentLineItemAD.form_data_hash = {}; 	     
-       // initialize or reload the grid
-       var questions = [];
-	   for (var x=0; x < $scope.currentLineItemAD.additional_detail_form_array.length; x++){
-		 var q = $scope.getQuestion($scope.currentLineItemAD.additional_detail_form_array[x].id);
-		 if(q != null){
-			 questions.push(q);
-		 }
-	   }
- 	   $scope.gridModel.data = questions;
+    $scope.$watch('form_definition_json',function(newValue, oldValue){  
+      if (newValue){
+        var parsedFormDefinitionJSON = $.parseJSON(newValue);
+        $scope.currentLineItemAD.additional_detail_schema_hash = parsedFormDefinitionJSON.schema; 
+        $scope.currentLineItemAD.additional_detail_form_array = parsedFormDefinitionJSON.form;
+        // reset the preview's answers after a change to the schema
+        $scope.currentLineItemAD.form_data_hash = {}; 	     
+        // initialize or reload the grid
+        var questions = [];
+    	for (var x=0; x < $scope.currentLineItemAD.additional_detail_form_array.length; x++){
+		  var q = $scope.getQuestion($scope.currentLineItemAD.additional_detail_form_array[x].id);
+		  if(q != null){
+		    questions.push(q);
+		  }
+	    }
+ 	    $scope.gridModel.data = questions;
+      }
   	}); 
     // this triggers the $watch above and needs to be called any time the form schema or array has changed.
     $scope.updateFormDefinition = function(){
-  		$scope.currentLineItemAD.additional_detail_form_array;
 	  // something unexplained is happening, the form array's key values are being converted to a type of Array instead of staying as strings
   	  // loop through and convert Array keys to String keys
 	  for(var x=0; x<$scope.currentLineItemAD.additional_detail_form_array.length; x++){
 		if(Array.isArray($scope.currentLineItemAD.additional_detail_form_array[x].key)){
 			$scope.currentLineItemAD.additional_detail_form_array[x].key = $scope.currentLineItemAD.additional_detail_form_array[x].key[0];
+		}
+		// another interesting issue, for field.kind == "multiDropdown" we get a "Converting circular structure to JSON" error
+		// if we don't reset the options value; which removes a "scope" object
+		if($scope.currentLineItemAD.additional_detail_form_array[x].kind == "multiDropdown"){
+		  $scope.currentLineItemAD.additional_detail_form_array[x].options = {multiple: true}; 
 		}
 	  }
       $scope.form_definition_json = JSON.stringify({ schema: $scope.currentLineItemAD.additional_detail_schema_hash, 
@@ -111,9 +117,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
     	//open modal
     	$('#additionalDetailQuestionEditModal').modal();
     };    
-    
-	 var dropdownKindList = ["multiDropdown", "dropdown", "state", "country"];
-	 
+  	 
 	 //This will determine if the min max values or values input boxes should be displayed in the add question modal
 	 $scope.csvValuesRequired = false; 
 	 $scope.minMaxValuesRequired = false;
@@ -455,9 +459,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 		 }
 		 else if(field.kind == "datepicker"){
 			 hash.type = "datepicker";
-			 hash.dateOptions = {
-					 "dateFormat" : "MM/dd/yyyy" 
-			 }
+			 hash.dateOptions = { "dateFormat" : "MM/dd/yyyy"  };
 			 return hash;
 		 }
 		 else if(field.kind == "number"){
@@ -469,7 +471,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 			 hash.timeOptions= {
 					title : field.title,
 				    minuteStep: 1,
-				  }
+				  };
 			 return hash;
 		 }
 		 else if(field.kind == "zipcode"){
@@ -501,10 +503,13 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 	 };
 	 
 	 function cleanSplit(value){
-		 var list = value.split(","); var cleanList=[];
+		 var list = value.split(","); 
+		 var cleanList=[];
 		 for(var i=0; i<list.length; i++){
 			 var e = list[i].trim();
-			 if(e != ''){cleanList.push(e);}
+			 if(e != ''){
+				 cleanList.push(e);
+			 }
 		 }
 		 return cleanList;
 	 }

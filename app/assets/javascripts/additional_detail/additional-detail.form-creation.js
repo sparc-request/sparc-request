@@ -30,13 +30,20 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
      
 	$scope.gridModel.onRegisterApi = function(gridApi){
 		$scope.gridApi = gridApi;
-		
 	};
     
-    // this watch is called when the user imports or exports a schema
+    // this watch is called on page load, when the user imports a schema, and after $scope.updateFormDefinition
     $scope.$watch('form_definition_json',function(newValue, oldValue){
-       $scope.currentLineItemAD.additional_detail_schema_hash = JSON.parse(newValue).schema; 
-       $scope.currentLineItemAD.additional_detail_form_array = JSON.parse(newValue).form;
+    	console.log("form_definition_json");
+    	console.log(JSON.parse(newValue).form);
+    	console.log(JSON.parse(newValue).form);
+    //	console.log($.parseJSON(newValue));
+       var parsedFormDefinitionJSON = $.parseJSON(newValue);
+       console.log(parsedFormDefinitionJSON.form);
+       $scope.currentLineItemAD.additional_detail_schema_hash = parsedFormDefinitionJSON.schema; 
+       $scope.currentLineItemAD.additional_detail_form_array = parsedFormDefinitionJSON.form;
+       console.log($scope.currentLineItemAD.additional_detail_form_array);
+       console.log(parsedFormDefinitionJSON.form);
        // reset the preview's answers after a change to the schema
        $scope.currentLineItemAD.form_data_hash = {}; 	     
        // initialize or reload the grid
@@ -51,6 +58,8 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
   	}); 
     // this triggers the $watch above and needs to be called any time the form schema or array has changed.
     $scope.updateFormDefinition = function(){
+    	console.log("updateFormDefinition");
+    	console.log($scope.currentLineItemAD.additional_detail_form_array);
     	$scope.form_definition_json = JSON.stringify({ schema: $scope.currentLineItemAD.additional_detail_schema_hash, 
             										   form:   $scope.currentLineItemAD.additional_detail_form_array }, undefined,2,2)
     }
@@ -367,8 +376,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 			 hash.titleMap= [{"value": "yes","name": "Yes"},{"value": "no","name": "No"}];
 			 hash.description =  field.description ? field.description+" ("+(field.required ? "required" : "optional")+")" : field.required ? "Required" : "Optional";
 			 return hash; 
-		 }
-		 if(field.kind == "state"){
+		 } else if(field.kind == "state"){
 			 hash.placeholder="Select One ("+(field.required ? "required" : "optional")+")";
 			 hash.type = "strapselect";
 			 hash.titleMap = [{'value' : 'AL','name' : 'Alabama'},{'value' : 'AK','name' : 'Alaska'},{'value' : 'AZ','name' : 'Arizona'},{'value' : 'AR','name' : 'Arkansas'},
@@ -385,9 +393,7 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
                               {'value' : 'UT','name' : 'Utah'},{'value' : 'VT','name' : 'Vermont'},{'value' : 'VA','name' : 'Virginia'},{'value' : 'WA','name' : 'Washington'},{'value' : 'WV','name' : 'West Virginia'},
                               {'value' : 'WI','name' : 'Wisconsin'},{'value' : 'WY','name' : 'Wyoming'}];
 			 return hash;
-		 }
-		 
-		 else if(field.kind == 'country'){
+		 } else if(field.kind == 'country'){
 			 hash.placeholder="Select One ("+(field.required ? "required" : "optional")+")";
 			 hash.type = "strapselect";
 			 hash.titleMap = [{"value" : "US" ,"name" : "United States"}, {"value" : "AF" ,"name" : "Afghanistan"}, {"value" : "AX" ,"name" : "Åland Islands"}, {"value" : "AL" ,"name" : "Albania"}, {"value" : "DZ" ,"name" : "Algeria"}, {"value" : "AS" ,"name" : "American Samoa"}, 

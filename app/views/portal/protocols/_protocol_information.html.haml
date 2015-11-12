@@ -133,7 +133,7 @@
     - reset_cycle('protocol')
 %table{ width: '100%' }
   %tr
-    - if (protocol.service_requests.count == 1) && (protocol.service_requests.first.status  == 'first_draft')
+    - if display_add_services_button? protocol.service_requests
       %td
         %a.add-services-button{:href => permission ? root_path(:protocol_id => protocol.id) : "javascript:void(0);", :'data-permission' => permission.to_s}= t(:protocol_information)[:add_services]
     %td

@@ -265,4 +265,22 @@ module Portal::ServiceRequestsHelper
   def display_one_time_fee_direct_cost line_item
     currency_converter line_item.direct_costs_for_one_time_fee
   end
+
+  def display_add_services_button? service_reqs
+    if service_reqs.count == 0 
+      true
+    elsif service_reqs.count >= 1
+      ssr_status = []
+      service_reqs.each do |sr|
+        sr.sub_service_requests.each do |ssr|
+          ssr_status << ssr.status
+        end
+      end
+      if (ssr_status.uniq.count == 1) && (ssr_status.uniq.to_s == "[\"first_draft\"]")
+        true
+      end
+    else
+      false
+    end
+  end
 end

@@ -13,6 +13,8 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
       end
 
       @visit_group_ids = VisitGroup.pluck(:id)
+      
+      VisitGroup.set_callback(:save, :after, :set_arm_edited_flag_on_subjects)
     end
 
     context 'with ids' do

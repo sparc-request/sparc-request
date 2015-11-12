@@ -29,6 +29,7 @@
       = t(:organization_form)[:service_error]
 
   #entity_description
+    %p.org_tree= display_organization_tree(f.object.organization) + ' / ' + f.object.name
     .service_form
 
       %fieldset.actions

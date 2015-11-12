@@ -5,11 +5,12 @@
 #   git config --global core.excludesfile ~/.gitignore_global
 
 sr.sql
-sr_production.sql
+fulfillment_production.sql
 
 .rvmrc
 .ruby-gemset
 .ruby-version
+.rubocop.yml
 
 # Ignore bundler config
 /.bundle
@@ -76,3 +77,7 @@ bin/*
 
 # Ignore spec examples
 spec/examples.txt
+
+# Ignore ctags files
+.tags
+.tags1

@@ -25,7 +25,9 @@ class Service < ActiveRecord::Base
   audited
   acts_as_taggable
 
-  RATE_TYPES = [{:display => "Service Rate", :value => "full"}, {:display => "Federal Rate", :value => "federal"}, {:display => "Corporate Rate", :value => "corporate"}, {:display => "Other Rate", :value => "other"}, {:display => "Member Rate", :value => "member"}]
+  RATE_TYPES = [{:display => "Service Rate", :value => "full"}, {:display => "Federal Rate", :value => "federal"},
+                {:display => "Corporate Rate", :value => "corporate"}, {:display => "Other Rate", :value => "other"},
+                {:display => "Member Rate", :value => "member"}]
 
   belongs_to :organization, :include => [:pricing_setups]
   belongs_to :revenue_code_range

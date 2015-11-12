@@ -25,7 +25,7 @@
     %th.your_cost_header{:rowspan => 2}= t(:calendar_page)[:headers][:your_cost]
     %th.number_of_subjects_header{:rowspan => 2}= t(:calendar_page)[:headers][:subjects]
     %th{:colspan => 5, :height => 40, :width => 375}
-      = generate_visit_navigation arm, @service_request, @pages, tab, portal
+      = render partial: 'visit_selector', locals: { arm: arm, service_request: @service_request, pages: @pages, tab: tab, portal: portal }
     %th{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_patient]
     %th.total_per_study{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_study]
 
@@ -41,7 +41,7 @@
     %th.qty_type_header{:rowspan => 2}= t(:calendar_page)[:headers][:clinical_qty]
     %th.number_of_subjects_header{:rowspan => 2}= t(:calendar_page)[:headers][:subjects]
     %th{:colspan => 5, :height => 40, :width => 375}
-      = generate_visit_navigation arm, @service_request, @pages, @tab, @portal
+      = render partial: 'visit_selector', locals: { arm: arm, service_request: @service_request, pages: @pages, tab: tab, portal: portal }
     %th{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_patient]
     %th.total_per_study{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_study]
 
@@ -57,15 +57,17 @@
     - unless @portal
       %th.qty_type_header{:rowspan => 2}= t(:calendar_page)[:headers][:clinical_qty]
     %th.number_of_subjects_header{:rowspan => 2}= t(:calendar_page)[:headers][:subjects]
-    %th
+    -if @tab == 'template'
+      %th
     %th{:colspan => 5, :height => 40, :width => 375}
-      = generate_visit_navigation arm, service_request, @pages, @tab, @portal
+      = render partial: 'visit_selector', locals: { arm: arm, service_request: @service_request, pages: @pages, tab: tab, portal: portal }
     %th{:colspan => 2}= image_tag 'spinner.gif', :class => 'service_calendar_spinner'
 
     %tr.table_header
       %th.service_rate_header= t(:calendar_page)[:headers][:service_rate]
       %th.your_cost_header= t(:calendar_page)[:headers][:your_cost]
-      %th &nbsp;
+      -if @tab == 'template'
+        %th &nbsp;
       = generate_visit_header_row arm, service_request, @pages[arm.id].to_i, @sub_service_request, @portal
       - if @portal
         %th &nbsp;

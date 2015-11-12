@@ -159,21 +159,6 @@ en:
     action: "Action"
     all_on_request: "All Services on Request Have Been Deleted"
 
-  # Tooltip help dialogs
-  cart_help:
-    questions:
-      - question_text: "May I submit a request for services for multiple research studies/projects simultaneously?"
-        answer_text: "No. Please browse and select services for only one research study/project at a time."
-      - question_text: "May I select and add services from multiple Service Providers and Programs at one time?"
-        answer_text: "Yes. Please feel free to browse, select, and add services from any Service Provider, Program, and/or Core displayed in the system for any given research study/project."
-      - question_text: "How many Authorized Users can I add?"
-        answer_text: "Add as many Authorized Users as you feel is pertinent. There is no limit."
-      - question_text: "What is the difference  between a Research Study and a Project?"
-        answer_text: "A Research Study is an individual research protocol with defined aims and outcomes."
-      - question_text: "How is SPARC Request calculating my indirect costs?"
-        answer_text: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARC Request uses this data to calculate your total overall indirect costs."
-      - question_text: "I\\'m stuck! Who can I contact for assistance with SPARC Request?"
-        answer_text: "The SUCCESS Center is happy to assist you! Please contact us at <a href=\"mailto:success@musc.edu\">success@musc.edu</a> or (843) 792-3357."
   # indirect cost rates, default values used to prepopulate forms
   indirect_cost_rates:
     internal_and_college: "0"
@@ -295,13 +280,14 @@ en:
     here: "here"
     add_button: "Add a New Document"
     headers:
-      recipients: "Recipients"
+      recipients: "Service Providers"
       allow: "Allow Access"
       type: "Type"
       file: "File"
       institution: "Institution/Provider/Program/Core"
       title: "Title"
       actions: "Actions"
+      versions: "Version"
       uploads: "Document Uploads"
       uploaded: "Uploaded"
     upload_button: "Upload"
@@ -387,6 +373,7 @@ en:
       industry: "Industry*"
       investigator: "Investigator*"
       internal: "Internal*"
+      unfunded: "Unfunded Student Research*"
       service: "Service"
       required: "Required"
       new_related: "New Related Service"
@@ -580,6 +567,8 @@ en:
   sr_review:
     participate_in_survey: "Would you like to participate in a brief 1 question SPARC Request satisfaction survey?"
     participate_in_survey_title: "System Satisfaction Survey"
+    save_as_draft_notification_title: "Notification"
+    save_as_draft_notification: "This study will be saved as a draft, and no notifications or emails will be sent to the service providers. Do you wish to proceed?"
     instructions: "<ul class='review_instructions'><li>Review your request.</li><li>Makes changes (if needed).</li><li>Save as draft for later, get a cost estimate, or submit to start services.</li></ul>"
     study_project_info:
       title: "Study/Project Information"
@@ -609,7 +598,7 @@ en:
     instructions: "Thank you for submitting your service request(s) through SPARC Request. An email has been sent to each of your service providers and they should be contacting you soon. If you have any questions or concerns, please don't hesitate to contact the SUCCESS Center at 792-8300 or success@musc.edu."
     research_pricing_instructions : "You have successfully submitted a request to get a cost estimate. An email(s) has been submitted on your behalf, and we will respond to your request for a cost estimate shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
     download_button: "Download my Service Request"
-    portal_button: "Go to SPARC Request User Portal"
+    portal_button: "Go to SPARC Request Dashboard"
     details:
       date_submitted: "Date Submitted: "
       short_title: "Short Title: "
@@ -1089,7 +1078,6 @@ en:
     intro: "Welcome to the SPARC Request Reporting Module. Please select a report type to proceed."
     defined_reports: "Defined Reports"
     defined_reports_desc: "Please select a defined report below and click to proceed with report customizations."
-    custom_report: "Custom Report"
     proceed: "Proceed"
     create_report: "Create Report"
     return_to_admin_portal: "Return to Admin Portal"
@@ -1119,7 +1107,7 @@ en:
   in_fulfillment: "This line item is associated with a request that is in Fulfillment and cannot be deleted."
   service_deleted: "Service has been deleted."
   cart:
-    remove_request_confirm: "This action will delete this service request and you will be redirected to your user portal. Click OK to proceed."
+    remove_request_confirm: "This action will delete this service request and you will be redirected to the dashboard. Click OK to proceed."
   feedback:
     message_error: "Message can't be blank"
   service_request_success: "Service request has been saved."

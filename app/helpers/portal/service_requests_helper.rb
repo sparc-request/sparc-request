@@ -267,19 +267,20 @@ module Portal::ServiceRequestsHelper
   end
 
   def display_add_services_button? service_requests
+    add_services_button = false
     if service_requests.count == 0 
-      true
+      add_services_button = true
     elsif service_requests.count >= 1
       ssr_status = []
       service_requests.each do |sr|
         ssr_status << sr.sub_service_requests.map(&:status)
       end
       ssr_status.flatten!
-      if (ssr_status.uniq.count == 1) && (ssr_status.first == 'first_draft')
-        true
+      if (ssr_status.uniq.count == 1) && (ssr_status.first == 'first_draft') 
+        add_services_button = true
       end
-    else
-      false
-    end
+     end 
+
+    add_services_button
   end
 end

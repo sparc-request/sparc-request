@@ -59,10 +59,10 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 		if(Array.isArray($scope.currentLineItemAD.additional_detail_form_array[x].key)){
 			$scope.currentLineItemAD.additional_detail_form_array[x].key = $scope.currentLineItemAD.additional_detail_form_array[x].key[0];
 		}
-		// another interesting issue, for field.kind == "multiDropdown" we get a "Converting circular structure to JSON" error
-		// if we don't reset the options value; which removes a "scope" object
-		if($scope.currentLineItemAD.additional_detail_form_array[x].kind == "multiDropdown"){
-		  $scope.currentLineItemAD.additional_detail_form_array[x].options = {multiple: true}; 
+		// another interesting issue, we get a "Converting circular structure to JSON" error
+		// if we don't remove the scope key from the options value
+		if($scope.currentLineItemAD.additional_detail_form_array[x].options && $scope.currentLineItemAD.additional_detail_form_array[x].options.scope){
+		  delete $scope.currentLineItemAD.additional_detail_form_array[x].options.scope; 
 		}
 	  }
       $scope.form_definition_json = JSON.stringify({ schema: $scope.currentLineItemAD.additional_detail_schema_hash, 

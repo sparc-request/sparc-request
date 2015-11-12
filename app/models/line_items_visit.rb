@@ -215,12 +215,11 @@ class LineItemsVisit < ActiveRecord::Base
 
   def any_visit_quantities_set?
     has_quantity = false
-    puts "<>"*100
+
     visits.each do |visit|
-      puts visit.quantity_total
-      has_quantity = true if (visit.quantity_total > 0)
+      has_quantity = true if (visit.quantities_customized)
     end
-    puts has_quantity
+
     has_quantity
   end
 end

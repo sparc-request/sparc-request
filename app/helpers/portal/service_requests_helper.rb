@@ -266,17 +266,16 @@ module Portal::ServiceRequestsHelper
     currency_converter line_item.direct_costs_for_one_time_fee
   end
 
-  def display_add_services_button? service_reqs
-    if service_reqs.count == 0 
+  def display_add_services_button? service_requests
+    if service_requests.count == 0 
       true
-    elsif service_reqs.count >= 1
+    elsif service_requests.count >= 1
       ssr_status = []
-      service_reqs.each do |sr|
-        sr.sub_service_requests.each do |ssr|
-          ssr_status << ssr.status
-        end
+      service_requests.each do |sr|
+        ssr_status << sr.sub_service_requests.map(&:status)
       end
-      if (ssr_status.uniq.count == 1) && (ssr_status.uniq.to_s == "[\"first_draft\"]")
+      ssr_status.flatten!
+      if (ssr_status.uniq.count == 1) && (ssr_status.first == 'first_draft')
         true
       end
     else

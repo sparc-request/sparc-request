@@ -9,7 +9,7 @@ angular.module('app').controller('QuestionsFormController', ['$scope', function 
 		return false;
 	 };
     
-	//Taking a id as input this function will return a question hash with all relevent data
+	//Taking a id as input this function will return a question hash with all relevant data
     $scope.getQuestion =  function(id){ 
     	//loop through hashkeys in schema and find object with same id
     	var matchingKey, schemaQuestion, formQuestion;

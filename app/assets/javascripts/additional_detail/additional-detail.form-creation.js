@@ -33,17 +33,10 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 	};
     
     // this watch is called on page load, when the user imports a schema, and after $scope.updateFormDefinition
-    $scope.$watch('form_definition_json',function(newValue, oldValue){
-    	console.log("form_definition_json");
-    	console.log(JSON.parse(newValue).form);
-    	console.log(JSON.parse(newValue).form);
-    //	console.log($.parseJSON(newValue));
+    $scope.$watch('form_definition_json',function(newValue, oldValue){    
        var parsedFormDefinitionJSON = $.parseJSON(newValue);
-       console.log(parsedFormDefinitionJSON.form);
        $scope.currentLineItemAD.additional_detail_schema_hash = parsedFormDefinitionJSON.schema; 
        $scope.currentLineItemAD.additional_detail_form_array = parsedFormDefinitionJSON.form;
-       console.log($scope.currentLineItemAD.additional_detail_form_array);
-       console.log(parsedFormDefinitionJSON.form);
        // reset the preview's answers after a change to the schema
        $scope.currentLineItemAD.form_data_hash = {}; 	     
        // initialize or reload the grid
@@ -58,10 +51,16 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
   	}); 
     // this triggers the $watch above and needs to be called any time the form schema or array has changed.
     $scope.updateFormDefinition = function(){
-    	console.log("updateFormDefinition");
-    	console.log($scope.currentLineItemAD.additional_detail_form_array);
-    	$scope.form_definition_json = JSON.stringify({ schema: $scope.currentLineItemAD.additional_detail_schema_hash, 
-            										   form:   $scope.currentLineItemAD.additional_detail_form_array }, undefined,2,2)
+  		$scope.currentLineItemAD.additional_detail_form_array;
+	  // something unexplained is happening, the form array's key values are being converted to a type of Array instead of staying as strings
+  	  // loop through and convert Array keys to String keys
+	  for(var x=0; x<$scope.currentLineItemAD.additional_detail_form_array.length; x++){
+		if(Array.isArray($scope.currentLineItemAD.additional_detail_form_array[x].key)){
+			$scope.currentLineItemAD.additional_detail_form_array[x].key = $scope.currentLineItemAD.additional_detail_form_array[x].key[0];
+		}
+	  }
+      $scope.form_definition_json = JSON.stringify({ schema: $scope.currentLineItemAD.additional_detail_schema_hash, 
+            										 form:   $scope.currentLineItemAD.additional_detail_form_array }, undefined,2);     	
     }
      
 	// Displays the form data that will be exported when a user answers the questions
@@ -145,7 +144,6 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 		$scope.down= function(key){move(key, false);};
 		
 		function move(key, up){
-			var form = $scope.currentLineItemAD.additional_detail_form_array;
 			for(var i=0; i<$scope.currentLineItemAD.additional_detail_form_array.length; i++){
 				if($scope.currentLineItemAD.additional_detail_form_array[i].key==key){
 					var row = $scope.currentLineItemAD.additional_detail_form_array[i];
@@ -166,23 +164,20 @@ angular.module('app').controller('FormCreationController', ['$scope', '$controll
 		function deleteById(id){
 	    	//loop through schema keys
 	    	for(key in $scope.currentLineItemAD.additional_detail_schema_hash.properties){
-	    		var question = $scope.currentLineItemAD.additional_detail_schema_hash.properties[key];
-	    		if(question.id == id){
+	    		if($scope.currentLineItemAD.additional_detail_schema_hash.properties[key].id == id){
 	    			//remove from schema
 	    			delete $scope.currentLineItemAD.additional_detail_schema_hash.properties[key];
 	    			//look in required to see if key is inside
-	    			var index = $scope.currentLineItemAD.additional_detail_schema_hash.required.indexOf(key);
-	    			if(index > -1){
+	    			if($scope.currentLineItemAD.additional_detail_schema_hash.required.indexOf(key) > -1){
 	    				//remove if present
-	    				$scope.currentLineItemAD.additional_detail_schema_hash.required.splice(index, 1);
+	    				$scope.currentLineItemAD.additional_detail_schema_hash.required.splice($scope.currentLineItemAD.additional_detail_schema_hash.required.indexOf(key), 1);
 	    			}
 	    			break;
 	    		}
 	    	}
 	    	//loop through form array and remove id
 	    	for(var i=0; i<$scope.currentLineItemAD.additional_detail_form_array.length; i++){
-	    		var question = $scope.currentLineItemAD.additional_detail_form_array[i];
-	    		if(question.id == id){
+	    		if($scope.currentLineItemAD.additional_detail_form_array[i].id == id){
 	    			$scope.currentLineItemAD.additional_detail_form_array.splice(i,1);
 	    			break;
 	    		}

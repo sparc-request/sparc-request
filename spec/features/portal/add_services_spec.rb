@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.feature 'user decides to add services', js: true do
+RSpec.feature 'user views Add Services link', js: true do
 
   let_there_be_lane
   let_there_be_j
@@ -28,11 +28,39 @@ RSpec.feature 'user decides to add services', js: true do
   build_study_type_questions
   build_service_request_with_project
 
-  scenario "user creates a New Study and decides sees Add Services link" do
+
+  scenario "user views a protocol with a sub_service_request of status 'first_draft'" do
+    sub_service_request.update_attributes(status: 'first_draft')
+    when_i_visit_portal_path
+    then_i_should_see_a_link_to_add_services
+  end
+
+  scenario "user views a protocol with a sub_service_request of status 'draft'" do
+    when_i_visit_portal_path
+    then_i_should_not_see_a_link_to_add_services
+  end
+
+  scenario "user creates a New Study and sees Add Services link" do
     when_i_visit_portal_path
     and_i_create_a_new_study_by_filling_out_study_info
     and_add_an_authorized_user
     then_i_should_see_a_link_to_add_services
+  end
+
+  scenario "user views a protocol and visits 'Add Services'" do
+    sub_service_request.update_attributes(status: 'first_draft')
+    when_i_visit_portal_path
+    and_i_visit_add_services
+    then_i_should_be_redierected_to_the_app_root_page
+  end
+
+  def and_i_visit_add_services
+    find('.add-services-button').click
+    wait_for_javascript_to_finish
+  end
+
+  def then_i_should_be_redierected_to_the_app_root_page
+    expect(page).to have_content("Welcome to the SPARC Request Services Catalog")
   end
 
   def when_i_visit_portal_path
@@ -41,9 +69,11 @@ RSpec.feature 'user decides to add services', js: true do
   end
 
   def then_i_should_see_a_link_to_add_services
-    wait_for_javascript_to_finish
-    save_and_open_screenshot
     expect(page).to have_selector('.add-services-button')
+  end
+
+  def then_i_should_not_see_a_link_to_add_services
+    expect(page).to_not have_selector('.add-services-button')
   end
 
   def and_i_create_a_new_study_by_filling_out_study_info
@@ -65,6 +95,5 @@ RSpec.feature 'user decides to add services', js: true do
     wait_for_javascript_to_finish
     find('.continue_button').click
     wait_for_javascript_to_finish
-    sleep 10
   end
 end

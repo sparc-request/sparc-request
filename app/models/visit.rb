@@ -70,6 +70,18 @@ class Visit < ActiveRecord::Base
     return research_billing_qty.to_i + insurance_billing_qty.to_i + effort_billing_qty.to_i
   end
 
+  # A check to see if the billing quantities have either been customized, or are set to the
+  # default of research == 1, insurance == 0, and effort == 0
+  def quantities_customized?
+    customized = false
+
+    if (research_billing_qty > 1) || (insurance_billing_qty > 0) || (effort_billing_qty > 0)
+      customized = true
+    end
+
+    customized
+  end
+
   def position
     ##get position from visit_group
     return self.visit_group.position

@@ -36,6 +36,7 @@ begin
   USE_SHIBOLETH                 = application_config['use_shiboleth']
   USE_SHIBBOLETH_ONLY           = application_config['use_shibboleth_only']
   USE_LDAP                      = application_config['use_ldap']
+  SUPPRESS_LDAP_FOR_USER_SEARCH = application_config['suppress_ldap_for_user_search'] || nil
   USE_EPIC                      = application_config['use_epic']
   QUEUE_EPIC                    = application_config['queue_epic']
   QUEUE_EPIC_LOAD_ERROR_TO      = application_config['queue_epic_load_error_to']

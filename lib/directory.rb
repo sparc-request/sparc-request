@@ -49,7 +49,7 @@ class Directory
   # Returns an array of Identities that match the query.
   def self.search(term)
     # Search ldap (if enabled) and the database
-    if USE_LDAP
+    if USE_LDAP && !SUPPRESS_LDAP_FOR_USER_SEARCH
       ldap_results = search_ldap(term)
     else
       ldap_results = []

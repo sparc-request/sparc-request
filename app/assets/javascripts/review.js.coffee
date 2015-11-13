@@ -21,6 +21,7 @@
 #= require navigation
 
 $(document).ready ->
+  #Survey
   survey_offered = false
   route_to = ""
   $('#participate_in_survey').dialog
@@ -72,6 +73,23 @@ $(document).ready ->
           return false
         window.location.href = route_to
 
+  #Save as Draft Notification
+  notification_open = false
+  $('#draft_notification').dialog
+    resizable: false,
+    height: 220,
+    modal: true,
+    autoOpen: false,
+    buttons:
+      "Yes": ->
+        sr_id = $(this).data('sr-id')
+        survey_offered = true
+        window.location = "/service_requests/#{sr_id}/save_and_exit"
+
+      "No": ->
+        notification_open = false
+        $(this).dialog('close')
+
   $(document).on('click', '#submit_services1, #submit_services2, #get_a_cost_estimate', (event)->
     event.preventDefault()
     route_to = $(this).attr('href')
@@ -85,4 +103,10 @@ $(document).ready ->
       $(this).click ->
         return false
       window.location.href = route_to
+  )
+
+  $(document).on('click', '#save-as-draft', (event) ->
+    event.preventDefault()
+    if notification_open == false
+      $('#draft_notification').dialog('open')
   )

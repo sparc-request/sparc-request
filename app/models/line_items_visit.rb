@@ -217,7 +217,7 @@ class LineItemsVisit < ActiveRecord::Base
     has_quantity = false
 
     visits.each do |visit|
-      has_quantity = true if (visit.quantities_customized)
+      has_quantity = true if (visit.quantities_customized?)
     end
 
     has_quantity

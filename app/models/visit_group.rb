@@ -70,7 +70,7 @@ class VisitGroup < ActiveRecord::Base
     has_quantity = false
 
     visits.each do |visit|
-      has_quantity = true if ((visit.quantities_customized) && (visit.belongs_to_service_request?(service_request)))
+      has_quantity = true if ((visit.quantities_customized?) && (visit.belongs_to_service_request?(service_request)))
     end
 
     has_quantity

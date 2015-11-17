@@ -22,6 +22,9 @@ require 'date'
 require 'rails_helper'
 
 RSpec.describe 'Protocol' do
+  let_there_be_lane
+  let_there_be_j
+  build_service_request_with_study
 
   describe ".notify_remote_around_update?", delay: true do
 
@@ -66,6 +69,20 @@ RSpec.describe 'Protocol' do
       study.potential_funding_source = 'foundation'
       expect(study.funding_source_based_on_status).to eq 'college'
     end
+  end
+
+  describe 'display add services button?' do
+    
+    it "should return true if status is 'first_draft'" do 
+      service_request.update_attributes(status: 'first_draft')
+      expect(study.has_first_draft?).to eq true
+    end
+
+    it "should return false if status is NOT 'first_draft'" do 
+      service_request.update_attributes(status: 'draft')
+      expect(study.has_first_draft?).to eq false
+    end
+
   end
 
   describe 'should validate funding status and source for studies' do

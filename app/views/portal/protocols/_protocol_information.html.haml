@@ -80,7 +80,7 @@
 %br
 
 
-- if first_draft? protocol.service_requests
+- if protocol.has_first_draft?
   .service-request-title.ui-corner-top= t(:protocol_information)[:service_requests]
   .service_request-body
     %table

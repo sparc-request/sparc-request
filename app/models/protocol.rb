@@ -121,6 +121,10 @@ class Protocol < ActiveRecord::Base
     self.type == 'Study'
   end
 
+  def has_first_draft?
+    self.service_requests.any? && self.service_requests.map(&:status).all? { |status| status == 'first_draft'}
+  end
+
   def validate_funding_source
     if self.funding_status == "funded" && self.funding_source.blank?
       errors.add(:funding_source, "You must select a funding source")

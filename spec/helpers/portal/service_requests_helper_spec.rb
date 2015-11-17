@@ -24,6 +24,7 @@ require 'rails_helper'
 RSpec.describe Portal::ServiceRequestsHelper do
   let_there_be_lane
   let_there_be_j
+  build_study
   build_service_request_with_study
 
   include Portal::ApplicationHelper
@@ -105,23 +106,6 @@ RSpec.describe Portal::ServiceRequestsHelper do
     it "should display the first and last name of the person with the PI role" do
       expect(display_pi(roles)).to eq("Roberto Pearce")
     end
-  end
-
-  describe 'display add services button?' do
-    
-    it "should return true if status is 'first_draft'" do 
-      service_request.update_attributes(status: 'first_draft')
-      requests = []
-      requests << service_request
-      expect(first_draft?(requests)).to eq true
-    end
-
-    it "should return false if status is NOT 'first_draft'" do 
-      requests = []
-      requests << service_request
-      expect(first_draft?(requests)).to eq false
-    end
-
   end
 
   # Method not being used anywhere -rp

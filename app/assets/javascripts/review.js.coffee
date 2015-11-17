@@ -21,9 +21,6 @@
 #= require navigation
 
 $(document).ready ->
-  survey_offered = false
-  route_to = ""
-
   #Save as Draft Notification
   notification_open = false
   $('#draft_notification').dialog
@@ -34,7 +31,6 @@ $(document).ready ->
     buttons:
       "Yes": ->
         sr_id = $(this).data('sr-id')
-        survey_offered = true
         window.location = "/service_requests/#{sr_id}/save_and_exit"
 
       "No": ->

@@ -39,7 +39,7 @@ $(document).ready ->
 
     ready: ->
 
-      $('.associated-user-button').live('click', ->
+      $('.associated-user-button').live 'click', ->
         if $(this).data('permission')
           $('.add-associated-user-dialog').dialog('open')
           $('#add-user-form #protocol_id').val($(this).data('protocol_id'))
@@ -47,16 +47,13 @@ $(document).ready ->
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
 
-      )
-
       $('.user_credentials').attr('name', 'user[credentials_other]') if $('.user_credentials').val() == 'other'
-      $('.user_credentials').live('change', ->
+      $('.user_credentials').live 'change', ->
         Sparc.associated_users.redoCredentials()
-      )
 
       # Set the rights if the role is 'pi' or 'business-grants-manager'
       # and disable all other radio buttons if 'pi'
-      $('#project_role_role').live('change', ->
+      $('#project_role_role').live 'change', ->
         role = $(this).val()
         if role == 'pi' or role == 'business-grants-manager' or role == 'primary-pi'
           $('#project_role_project_rights_approve').attr('checked', true)
@@ -69,15 +66,13 @@ $(document).ready ->
           $('#project_role_project_rights_view').attr('disabled', false)
           $('#project_role_project_rights_none').attr('disabled', false)
 
-      )
-
-      $(document).on('click', '.edit-associated-user-button', ->
+      $(document).on 'click', '.edit-associated-user-button', ->
         if $(this).data('permission')
           protocol_id = $(this).data('protocol_id')
           pr_id = $(this).data('pr_id')
           user_id = $(this).data('user_id')
           sub_service_request_id = $(this).data('sub_service_request_id')
-          $.ajax({
+          $.ajax
               method: 'get'
               url: "/portal/associated_users/#{pr_id}/edit"
               data: {protocol_id: protocol_id, identity_id: user_id, sub_service_request_id: sub_service_request_id}
@@ -85,18 +80,15 @@ $(document).ready ->
                 $('.edit-associated-user-dialog').dialog('open')
                 Sparc.associated_users.showEpicRights($('.epic_access:checked').val())
               error: (request, status, error) ->
-                $().toastmessage("showMessage", {
+                $().toastmessage "showMessage",
                   type: "error"
                   sticky: true
                   text: error.toString()
-                  })
-            })
         else
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
-      )
 
-      $('.delete-associated-user-button').live('click', ->
+      $('.delete-associated-user-button').live 'click', ->
         if $(this).data('permission')
           adminUsersList = $(".admin#users")
           current_user_id = $('#current_user_id').val()
@@ -134,9 +126,8 @@ $(document).ready ->
         else
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
-      )
 
-      $('#associated_user_role').live('change', ->
+      $('#associated_user_role').live 'change', ->
         roles_to_hide = ['', 'grad-research-assistant', 'undergrad-research-assistant', 'research-assistant-coordinator', 'technician', 'general-access-user', 'business-grants-manager', 'other']
         role = $(this).val()
         if role == 'other' then $('.role_other').show() else $('.role_other').hide()
@@ -147,69 +138,57 @@ $(document).ready ->
         else
           $('.commons_name').show()
           $('.subspecialty').show()
-      )
 
       Sparc.associated_users.create_edit_associated_user_dialog()
       Sparc.associated_users.create_add_associated_user_dialog()
 
     create_add_associated_user_dialog: () ->
-      $('.add-associated-user-dialog').dialog({
+      $('.add-associated-user-dialog').dialog
         autoOpen: false
         dialogClass: "add_user_dialog_box"
         title: 'Add an Authorized User'
         width: 750
         modal: true
         resizable: false
-        buttons: [
-          {
-            id: "add_authorized_user_submit_button"
-            text: "Submit"
+        buttons:
+          'Submit':
+            id: 'add_authorized_user_submit_button'
             click: ->
               $("#new_project_role").submit()
-          },
-          {
-            id: "add_authorized_user_cancel_button"
-            text: "Cancel"
+          'Cancel':
+            id: 'add_authorized_user_cancel_button'
             click: ->
               $(this).dialog('close')
               $("#errorExplanation").remove()
-          }]
         open: ->
           Sparc.associated_users.reset_fields()
           $('.dialog-form input,.dialog-form select').attr('disabled',true)
           # $('.ui-dialog .ui-dialog-buttonpane button:contains(Submit)').filter(":visible").attr('disabled',true).addClass('button-disabled')
-      })
 
     create_edit_associated_user_dialog: () ->
-      $('.edit-associated-user-dialog').dialog({
+      $('.edit-associated-user-dialog').dialog
           autoOpen: false
           dialogClass: "edit_user_dialog_box"
           title: 'Edit an Authorized User'
           width: 750
           modal: true
           resizable: false
-          buttons: [
-            {
+          buttons:
+            'Submit':
               id: 'edit_authorized_user_submit_button'
-              text: 'Submit'
               click: ->
                 form = $(".edit-associated-user-dialog").children('form')
                 $('#edit_authorized_user_submit_button').attr('disabled', true)
                 form.submit()
-            },
-            {
+            'Cancel':
               id: 'edit_authorized_user_cancel_button'
-              text: 'Cancel'
               click: ->
                 $(this).dialog("close")
                 $("#errorExplanation").remove()
-            }
-          ]
           open: ->
             Sparc.associated_users.reset_fields()
             $('#edit_authorized_user_submit_button').attr('disabled', false)
             $('#associated_user_role').change()
-      })
 
     reset_fields: () ->
       $('.add-associated-user-dialog input').val('')

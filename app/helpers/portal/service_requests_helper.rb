@@ -265,11 +265,4 @@ module Portal::ServiceRequestsHelper
   def display_one_time_fee_direct_cost line_item
     currency_converter line_item.direct_costs_for_one_time_fee
   end
-
-  # Determines whether service_requests only contain "first draft" statuses
-  def first_draft? service_requests
-    unless service_requests.empty?
-      service_requests.map(&:status).all? { |status| status == 'first_draft'}
-    end
-  end
 end

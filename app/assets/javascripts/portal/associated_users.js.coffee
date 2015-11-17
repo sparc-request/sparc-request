@@ -166,24 +166,22 @@ $(document).ready ->
             text: "Submit"
             click: ->
               $("#new_project_role").submit()
-              $("#user_search").val('')
           },
           {
             id: "add_authorized_user_cancel_button"
             text: "Cancel"
             click: ->
               $(this).dialog('close')
-              $("#user_search").val('')
               $("#errorExplanation").remove()
           }]
         open: ->
+          Sparc.associated_users.reset_fields()
           $('.dialog-form input,.dialog-form select').attr('disabled',true)
           # $('.ui-dialog .ui-dialog-buttonpane button:contains(Submit)').filter(":visible").attr('disabled',true).addClass('button-disabled')
       })
 
     create_edit_associated_user_dialog: () ->
       $('.edit-associated-user-dialog').dialog({
-          dialogClass: "edit_user_dialog_box"
           autoOpen: false
           dialogClass: "edit_user_dialog_box"
           title: 'Edit an Authorized User'
@@ -208,9 +206,16 @@ $(document).ready ->
             }
           ]
           open: ->
+            Sparc.associated_users.reset_fields()
             $('#edit_authorized_user_submit_button').attr('disabled', false)
             $('#associated_user_role').change()
       })
+
+    reset_fields: () ->
+      $('.add-associated-user-dialog input').val('')
+      $('.add-associated-user-dialog select').prop('selectedIndex', 0)
+      $('.add-associated-user-dialog #epic_access input').prop('checked', false)
+      $('.add-associated-user-dialog .rights_radios input').prop('checked', false)
 
     createTip: (element) ->
       if $('#tip').length == 0

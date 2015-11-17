@@ -19,22 +19,11 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  $('#defined_reports_step_1').dialog
-    autoOpen: false
-    modal: true
-    width: 'auto'
-    height: 'auto'
-
-  $('#defined_report_link').click ->
-    #$('#defined_reports_step_1').show()
-    $('#defined_reports_step_2').hide()
-    $('#defined_reports_step_1').dialog("open")
 
   $(document).on "click", "#reporting_return_to_list", (event) ->
     event.preventDefault()
     $('#defined_reports_step_2').hide()
     $("#report_selection").show()
-    $('#defined_reports_step_1').dialog("open")
 
   $(document).on "change", ".reporting_field", ->
     window.check_deps()

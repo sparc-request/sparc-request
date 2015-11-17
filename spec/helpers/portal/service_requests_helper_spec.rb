@@ -110,16 +110,16 @@ RSpec.describe Portal::ServiceRequestsHelper do
   describe 'display add services button?' do
     
     it "should return true if status is 'first_draft'" do 
-      sub_service_request.update_attributes(status: 'first_draft')
+      service_request.update_attributes(status: 'first_draft')
       requests = []
       requests << service_request
-      expect(display_add_services_button?(requests)).to eq true
+      expect(first_draft?(requests)).to eq true
     end
 
     it "should return false if status is NOT 'first_draft'" do 
       requests = []
       requests << service_request
-      expect(display_add_services_button?(requests)).to eq false
+      expect(first_draft?(requests)).to eq false
     end
 
   end

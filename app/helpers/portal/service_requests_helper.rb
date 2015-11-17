@@ -266,21 +266,10 @@ module Portal::ServiceRequestsHelper
     currency_converter line_item.direct_costs_for_one_time_fee
   end
 
-  def display_add_services_button? service_requests
-    add_services_button = false
-    if service_requests.count == 0 
-      add_services_button = true
-    elsif service_requests.count >= 1
-      ssr_status = []
-      service_requests.each do |sr|
-        ssr_status << sr.sub_service_requests.map(&:status)
-      end
-      ssr_status.flatten!
-      if (ssr_status.uniq.count == 1) && (ssr_status.first == 'first_draft') 
-        add_services_button = true
-      end
-     end 
-
-    add_services_button
+  # Determines whether service_requests only contain "first draft" statuses
+  def first_draft? service_requests
+    unless service_requests.empty?
+      service_requests.map(&:status).all? { |status| status == 'first_draft'}
+    end
   end
 end

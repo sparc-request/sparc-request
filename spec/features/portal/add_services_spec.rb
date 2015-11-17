@@ -29,26 +29,19 @@ RSpec.feature 'user views Add Services link', js: true do
   build_service_request_with_project
 
 
-  scenario "user views a protocol with a sub_service_request of status 'first_draft'" do
-    sub_service_request.update_attributes(status: 'first_draft')
+  scenario "user views a protocol with service request status of 'first_draft'" do
+    service_request.update_attributes(status: 'first_draft')
     when_i_visit_portal_path
-    then_i_should_see_a_link_to_add_services
+    then_i_should_see_request_in_progress_text
   end
 
-  scenario "user views a protocol with a sub_service_request of status 'draft'" do
+  scenario "user views a protocol with a service_request of status 'draft'" do
     when_i_visit_portal_path
     then_i_should_not_see_a_link_to_add_services
   end
 
-  scenario "user creates a New Study and sees Add Services link" do
-    when_i_visit_portal_path
-    and_i_create_a_new_study_by_filling_out_study_info
-    and_add_an_authorized_user
-    then_i_should_see_a_link_to_add_services
-  end
-
-  scenario "user views a protocol and visits 'Add Services'" do
-    sub_service_request.update_attributes(status: 'first_draft')
+  scenario "user views a protocol without a service_request and visits 'Add Services'" do
+    service_request.destroy
     when_i_visit_portal_path
     and_i_visit_add_services
     then_i_should_be_redierected_to_the_app_root_page
@@ -57,6 +50,10 @@ RSpec.feature 'user views Add Services link', js: true do
   def and_i_visit_add_services
     find('.add-services-button').click
     wait_for_javascript_to_finish
+  end
+
+  def then_i_should_see_request_in_progress_text
+    expect(page).to have_text('Request in Progress')
   end
 
   def then_i_should_be_redierected_to_the_app_root_page

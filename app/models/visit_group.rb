@@ -66,11 +66,11 @@ class VisitGroup < ActiveRecord::Base
 
   ### end audit reporting methods ###
 
-  def any_visit_quantities_set?(service_request)
+  def any_visit_quantities_customized?(service_request)
     has_quantity = false
 
     visits.each do |visit|
-      has_quantity = true if ((visit.quantities_customized?) && (visit.belongs_to_service_request?(service_request)))
+      has_quantity = true if ((visit.quantities_customized?) && (visit.line_items_visit.line_item.service_request_id == service_request.id))
     end
 
     has_quantity

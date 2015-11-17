@@ -73,13 +73,7 @@ class Visit < ActiveRecord::Base
   # A check to see if the billing quantities have either been customized, or are set to the
   # default of research == 1, insurance == 0, and effort == 0
   def quantities_customized?
-    customized = false
-
-    if (research_billing_qty > 1) || (insurance_billing_qty > 0) || (effort_billing_qty > 0)
-      customized = true
-    end
-
-    customized
+    ((research_billing_qty > 1) || (insurance_billing_qty > 0) || (effort_billing_qty > 0))
   end
 
   def position
@@ -100,16 +94,5 @@ class Visit < ActiveRecord::Base
   def audit_excluded_actions
     ['create']
   end
-
-  def belongs_to_service_request?(service_request)
-    belongs_to = false
-
-    if line_items_visit.line_item.service_request_id == service_request.id
-      belongs_to = true
-    end
-
-    belongs_to
-  end
-
   ### end audit reporting methods ###
 end

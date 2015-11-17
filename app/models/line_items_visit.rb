@@ -213,7 +213,7 @@ class LineItemsVisit < ActiveRecord::Base
 
   ### end audit reporting methods ###
 
-  def any_visit_quantities_set?
+  def any_visit_quantities_customized?
     has_quantity = false
 
     visits.each do |visit|

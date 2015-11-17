@@ -19,11 +19,11 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  $('#defined_reports_step_1').dialog
-    autoOpen: false
-    modal: true
-    width: 'auto'
-    height: 'auto'
+  # $('#defined_reports_step_1').dialog
+  #   autoOpen: false
+  #   modal: true
+  #   width: 'auto'
+  #   height: 'auto'
 
   $('#defined_report_link').click ->
     #$('#defined_reports_step_1').show()

@@ -226,7 +226,7 @@ RSpec.describe LineItemsVisit do
         end
       end
 
-      describe 'any visit quantities set' do
+      describe 'any visit quantities customized' do
 
         let!(:arm)               { create(:arm) }
         let!(:line_items_visit1) { create(:line_items_visit, arm_id: arm.id) }
@@ -236,11 +236,11 @@ RSpec.describe LineItemsVisit do
 
         it 'should return true if any of the visits have quantities' do
           visit2.update_attributes(research_billing_qty: 2)
-          expect(line_items_visit1.any_visit_quantities_set?).to eq(true)
+          expect(line_items_visit1.any_visit_quantities_customized?).to eq(true)
         end
 
         it 'should return false if the quantity is zero' do
-          expect(line_items_visit1.any_visit_quantities_set?).to eq(false)
+          expect(line_items_visit1.any_visit_quantities_customized?).to eq(false)
         end
       end
     end

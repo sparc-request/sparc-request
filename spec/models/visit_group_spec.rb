@@ -42,7 +42,7 @@ RSpec.describe "VisitGroup" do
     end
   end
 
-  describe 'any visit quantities set' do
+  describe 'any visit quantities customized' do
 
     let!(:arm)               { create(:arm) }
     let!(:line_items_visit1) { create(:line_items_visit, arm_id: arm.id, line_item_id: line_item.id) }
@@ -52,11 +52,11 @@ RSpec.describe "VisitGroup" do
 
     it 'should return true if any of the visits have quantities' do
       visit2.update_attributes(research_billing_qty: 2)
-      expect(visit_group.any_visit_quantities_set?(service_request)).to eq(true)
+      expect(visit_group.any_visit_quantities_customized?(service_request)).to eq(true)
     end
 
     it 'should return false if the quantity is zero' do
-      expect(visit_group.any_visit_quantities_set?(service_request)).to eq(false)
+      expect(visit_group.any_visit_quantities_customized?(service_request)).to eq(false)
     end
   end
 end

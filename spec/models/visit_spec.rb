@@ -24,11 +24,4 @@ RSpec.describe 'Visit' do
       expect(visit1.quantities_customized?).to eq(true)
     end
   end
-
-  describe 'belongs to service request' do
-
-    it 'should return true if the visit belongs to a given service request' do
-      expect(visit1.belongs_to_service_request?(service_request)).to eq(true)
-    end
-  end
 end

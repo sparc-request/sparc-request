@@ -13,10 +13,8 @@ GIT
       sass
       uuidtools (~> 2.1)
 
-GIT
-  remote: git://github.com/jleonardw9/grouped_validations.git
-  revision: 18bb1caefc9ce504afbb0b0be122ce6f40120ee0
-  branch: master
+PATH
+  remote: ~/musc/grouped_validations
   specs:
     grouped_validations (0.3.3)
 
@@ -395,9 +393,6 @@ GEM
     timecop (0.8.0)
     traceroute (0.5.0)
       rails (>= 3.0.0)
-    treetop (1.4.15)
-      polyglot
-      polyglot (>= 0.3.1)
     ttfunk (1.0.3)
     tzinfo (1.2.2)
       thread_safe (~> 0.1)

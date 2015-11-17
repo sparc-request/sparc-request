@@ -181,19 +181,11 @@ SparcRails::Application.routes.draw do
   end
 
   ##### Study Tracker/Clinical Work Fulfillment Portal#####
-<<<<<<< HEAD
   namespace :study_tracker, :path => "clinical_work_fulfillment" do
     match 'appointments/add_note' => 'calendars#add_note', via: [:get, :post]
     match 'calendars/delete_toast_messages' => 'calendars#delete_toast_messages', via: [:all]
     match 'calendars/change_visit_group' => 'calendars#change_visit_group', via: [:get, :post]
     match 'appointments/add_service' => 'calendars#add_service', via: [:get, :post]
-=======
-  namespace :study_tracker, path: 'clinical_work_fulfillment' do
-    match 'appointments/add_note' => 'calendars#add_note'
-    match 'calendars/delete_toast_messages' => 'calendars#delete_toast_messages'
-    match 'calendars/change_visit_group' => 'calendars#change_visit_group'
-    match 'appointments/add_service' => 'calendars#add_service'
->>>>>>> master
 
     root to: 'home#index'
 

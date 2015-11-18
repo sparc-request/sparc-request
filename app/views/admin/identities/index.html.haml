@@ -1,1 +1,18 @@
 %div{"ng-controller" => "AdminUserSearchController"}
+  .panel.panel-default
+    .panel-heading
+      %h3.panel-title
+        %label{:for=>"search_term"} Advanced User Search
+    .panel-body
+      .alert{"ng-show"=>"alertMessage", "ng-class"=>"{ 'alert-success' : resourceSuccessful, 'alert-danger' : !resourceSuccessful }", :role=>"alert"} {{alertMessage}}
+      .row
+        .col-sm-6
+          .form-group
+            %input.form-control{:id=>"search_term",:type=>"text", :placeholder=>"Find users by first name, last name, email, or user id", "ng-model"=>"search_term"}
+            %span.help-block Filter the results by searching within the column headers in the grid below. Edit User buttons are displayed for people already in I-CART and only usable by I-CART administrators.
+        .col-sm-4
+          %button.btn.btn-primary{"ng-click"=>"search()", "ng-disabled"=>"search_in_progress"} Search
+      .row
+        .col-md-12
+          %div{"ng-show"=>"gridModel.data.length > 0", "ui-grid"=>"gridModel", "ui-grid-edit"=>"true", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope",:style=>"height: 450px;"}
+    .panel-footer * Close this window or tab when you're done adding new users to I-CART.   

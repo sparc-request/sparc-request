@@ -1,4 +1,4 @@
-angular.module('app', ['ngResource','ngAria','ui.grid','ui.grid.selection', 'ui.grid.exporter', 'ui.grid.resizeColumns', 'ui.grid.autoResize','ui.grid.expandable', 'ui.grid.edit']);
+angular.module('app', ['ngResource','ngAria','ui.grid','ui.grid.selection', 'ui.grid.exporter', 'ui.grid.resizeColumns', 'ui.grid.autoResize','ui.grid.expandable']);
 
 angular.module('app').config([
      "$httpProvider", function($httpProvider) {

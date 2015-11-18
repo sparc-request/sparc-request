@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Admin::IdentitiesController do
-
+      
   describe 'user is not logged in and, thus, has no access to' do
     it 'index' do
       get(:index, {:format => :html})
@@ -10,6 +10,25 @@ RSpec.describe Admin::IdentitiesController do
 
     it 'search' do
       get(:search, {:term => "abcd", :format => :json})
+      expect(response.status).to eq(401)
+    end
+    
+    it 'create' do
+      expect {
+        post(:create, {:format => :json,
+          :identity => {:first_name => "John", :last_name => "Smith", :email => "johnsmith@techu.edu", :ldap_uid => "jsmith@techu.edu"}
+        })
+        expect(response.status).to eq(401)
+      }.to change(Identity, :count).by(0)
+    end
+    
+    it 'show' do 
+      get(:show, {:id => 1, :format => :json})
+      expect(response.status).to eq(401)
+    end
+   
+    it 'update' do
+      put(:update, {:id => 1, :format => :json})
       expect(response.status).to eq(401)
     end
   end
@@ -24,16 +43,44 @@ RSpec.describe Admin::IdentitiesController do
       sign_in @identity
     end
    
-    describe 'is not a service_provider or super_user and, thus, has no access to' do
-      it 'index' do
-        get(:index, {:format => :html})
-        expect(response).to render_template("unauthorized")
-        expect(response.status).to eq(401)
+    describe 'is not a service_provider or super_user and, thus,' do
+      describe 'should have access to' do
+        it 'index' do 
+          get(:index, {:format => :html})
+          expect(response.status).to eq(200)
+          expect(response).to render_template("index")
+        end
+       
+        it 'search' do
+          get(:search, {:term => "abcd", :format => :json})
+          expect(response.status).to eq(200)
+        end
+        
+        it 'create' do
+          expect {
+            post(:create, {:format => :json,
+              :identity => {:first_name => "John", :last_name => "Smith", :email => "johnsmith@techu.edu", :ldap_uid => "jsmith@techu.edu"}
+            })
+            expect(response.status).to eq(200)
+            new_identity = Identity.where(email: "johnsmith@techu.edu").first
+            expect(new_identity.approved).to eq(true)
+            expect(new_identity.encrypted_password).not_to be_blank
+            expect(JSON.parse(response.body)).to include("id" => new_identity.id, "first_name" => "John", "last_name" => "Smith", 
+                                                         "email" => "johnsmith@techu.edu", "ldap_uid" => "jsmith@techu.edu") 
+          }.to change(Identity, :count).by(1)
+        end
       end
       
-      it 'search' do
-        get(:search, {:term => "abcd", :format => :json})
-        expect(response.status).to eq(401)
+      describe 'should NOT have access to' do
+        it 'show' do 
+          get(:show, {:id => @identity, :format => :json})
+          expect(response.status).to eq(401)
+        end
+       
+        it 'update' do
+          put(:update, {:id => 1, :format => :json})
+          expect(response.status).to eq(401)
+        end
       end
     end
 
@@ -54,9 +101,23 @@ RSpec.describe Admin::IdentitiesController do
         get(:search, {:term => "abcd", :format => :json})
         expect(response.status).to eq(200)
       end
+      
+      it 'create' do
+        expect {
+          post(:create, {:format => :json,
+            :identity => {:first_name => "John", :last_name => "Smith", :email => "johnsmith@techu.edu", :ldap_uid => "jsmith@techu.edu"}
+          })
+          expect(response.status).to eq(200)
+          new_identity = Identity.where(email: "johnsmith@techu.edu").first
+          expect(new_identity.approved).to eq(true)
+          expect(new_identity.encrypted_password).not_to be_blank
+          expect(JSON.parse(response.body)).to include("id" => new_identity.id, "first_name" => "John", "last_name" => "Smith", 
+                                                       "email" => "johnsmith@techu.edu", "ldap_uid" => "jsmith@techu.edu") 
+        }.to change(Identity, :count).by(1)
+      end
     end
     
-    describe 'is a super_user and, thus, has access to' do
+    describe 'is a super_user and, thus, should have access to' do
       before :each do
         @super_user = SuperUser.new
         @super_user.identity_id = @identity.id
@@ -73,24 +134,66 @@ RSpec.describe Admin::IdentitiesController do
         get(:search, {:term => "abcd", :format => :json})
         expect(response.status).to eq(200)
       end
+      
+      it 'create' do
+        expect {
+          post(:create, {:format => :json,
+            :identity => {:first_name => "John", :last_name => "Smith", :email => "johnsmith@techu.edu", :ldap_uid => "jsmith@techu.edu"}
+          })
+          expect(response.status).to eq(200)
+          new_identity = Identity.where(email: "johnsmith@techu.edu").first
+          expect(new_identity.approved).to eq(true)
+          expect(new_identity.encrypted_password).not_to be_blank
+          expect(JSON.parse(response.body)).to include("id" => new_identity.id, "first_name" => "John", "last_name" => "Smith", 
+                                                       "email" => "johnsmith@techu.edu", "ldap_uid" => "jsmith@techu.edu") 
+        }.to change(Identity, :count).by(1)
+      end
     end
     
-    describe 'is only a catalog_manager and, thus, should NOT have access to' do
+    describe 'is only a catalog_manager and, thus,' do
       before :each do
         @catalog_manager = CatalogManager.new
         @catalog_manager.identity_id = @identity.id
         @catalog_manager.save(validate: false)
       end
       
-      it 'index' do
-        get(:index, {:format => :html})
-        expect(response).to render_template("unauthorized")
-        expect(response.status).to eq(401)
+      describe 'should have access to' do
+        it 'index' do 
+          get(:index, {:format => :html})
+          expect(response.status).to eq(200)
+          expect(response).to render_template("index")
+        end
+       
+        it 'search' do
+          get(:search, {:term => "abcd", :format => :json})
+          expect(response.status).to eq(200)
+        end
+        
+        it 'create' do
+          expect {
+            post(:create, {:format => :json,
+              :identity => {:first_name => "John", :last_name => "Smith", :email => "johnsmith@techu.edu", :ldap_uid => "jsmith@techu.edu"}
+            })
+            expect(response.status).to eq(200)
+            new_identity = Identity.where(email: "johnsmith@techu.edu").first
+            expect(new_identity.approved).to eq(true)
+            expect(new_identity.encrypted_password).not_to be_blank
+            expect(JSON.parse(response.body)).to include("id" => new_identity.id, "first_name" => "John", "last_name" => "Smith", 
+                                                         "email" => "johnsmith@techu.edu", "ldap_uid" => "jsmith@techu.edu") 
+          }.to change(Identity, :count).by(1)
+        end
       end
       
-      it 'search' do
-        get(:search, {:term => "abcd", :format => :json})
-        expect(response.status).to eq(401)
+      describe 'should NOT have access to' do
+        it 'show' do 
+          get(:show, {:id => @identity, :format => :json})
+          expect(response.status).to eq(401)
+        end
+       
+        it 'update' do
+          put(:update, {:id => 1, :format => :json})
+          expect(response.status).to eq(401)
+        end
       end
     end
   end

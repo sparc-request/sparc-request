@@ -1,45 +1,69 @@
 angular.module('app').factory("Identity",  ['$resource', function($resource) {
   return $resource("/admin/identities/:id", 
 		  {id: '@id'}, 
-		  {'search': { method: 'GET', isArray: true, url: '/admin/identities/search'}});
+		  {'update': { method: 'PUT'},
+		   'search': { method: 'GET', isArray: true, url: '/admin/identities/search', params:{term: '@term'}}});
 }]);
 
 angular.module('app').controller("AdminUserSearchController", ['$scope', 'Identity',function($scope, Identity) { 
-
+    $scope.search_term = "";
+    $scope.search_in_progress= false;
+	$scope.gridModel = {enableColumnMenus: false, enableFiltering: true, enableColumnResizing: false, enableRowSelection: false, enableSorting: true, enableRowHeaderSelection: false, rowHeight: 45};
+	$scope.gridModel.columnDefs = [{name: 'Add/Edit Buttons', displayName:'', enableSorting: false, enableFiltering: false, width: 200, cellTemplate: '<button type="button" class="btn " ng-class="{ \'btn-warning\': row.entity.id, \'btn-success\': !row.entity.id }" ng-click="grid.appScope.AddOrShowUser(row.entity)">{{(row.entity.id) ? "Edit User" : "Add User to I-CART"}}</button>'},
+	                               {field: 'first_name'},
+	                               {field: 'last_name'},
+	                               {field: 'email'},
+	                               {field: 'ldap_uid'}];
 	
-	$scope.gridModel = {enableColumnMenus: false, enableFiltering: false, enableColumnResizing: false, enableRowSelection: false, enableSorting: true, enableRowHeaderSelection: false, rowHeight: 45};
-	$scope.gridModel.columnDefs = [{name: 'Add/Edit Buttons', displayName:'', enableSorting: false, width: 105, cellTemplate: '<button type="button" class="btn btn-primary" ng-click="grid.appScope.showSurvey(row.entity.id)">{{(row.entity.form_data_json=="{}") ? "Add Details" : "Edit Details"}}</button>'},
-	                               {field: 'additional_detail_breadcrumb', name: 'Service'}, 
-	                               {name: 'Completed',field: 'has_answered_all_required_questions?', width: '15%' }];
+	$scope.search = function(){  
+	   // limit the user to one search request at at time
+	   $scope.search_in_progress = true;
+       $scope.searchResults = Identity.search({term: $scope.search_term}, function() {
+    	 // reset the alert message
+    	 $scope.alertMessage = "";
+	     $scope.gridModel.data = $scope.searchResults;
+	     $scope.search_in_progress = false;
+	     $scope.resourceSuccessful = true;
+	   }, function errorCallback(error) { 
+    	 $scope.alertMessage = error.statusText;
+    	 $scope.resourceSuccessful = false;
+    	 $scope.search_in_progress = false;
+       });
+  	}; 
 	
-	// initialize the service request and the grid
-//	$scope.serviceRequest = ServiceRequest.get( function() {
-//	   $scope.gridModel.data = $scope.serviceRequest.get_or_create_line_item_additional_details;
-//	});
+  	$scope.AddOrShowUser = function(identity) {
+  		if (identity.id){
+  			// display the user's info for editing
+  			
+  		} else {
+  			// create the user in the database, grid automatically gets updated via object reference
+  			identity.$save(function() {
+  	  			$scope.alertMessage = identity.first_name +" " + identity.last_name + " has been added.";
+  	  	        $scope.resourceSuccessful = true;
+  	  		}, function errorCallback(error) { 
+  	  			$scope.resourceSuccessful = false;
+  	  	        $scope.alertMessage = error.statusText;
+  	  	    });
+  		}
+  	};
+ 
 	   
-	$scope.saveFormResponse = function(){
-		// convert the form response from an object to a string
-		$scope.currentLineItemAD.form_data_json = JSON.stringify($scope.currentLineItemAD.form_data_hash);
-		$scope.currentLineItemAD.$update(function(response) { 
-			// reload the Service Request and the grid
-			$scope.serviceRequest = ServiceRequest.get( function() {
-			   $scope.gridModel.data = $scope.serviceRequest.get_or_create_line_item_additional_details;
-			});
-			$scope.alertMessage = "Response saved.";
-			$scope.resourceSuccessful = true;
-  	     }, function errorCallback(error) { 
-  	    	$scope.alertMessage = error.statusText;
-	        $scope.resourceSuccessful = false;
-	     });
-	};
-		
-	// dynamically change grid height relative to the # of rows of data, 
-	//   only works if one grid is being displayed on the page
-  	$scope.getTableHeight = function() {
-        return {
-        	height: (($scope.gridModel.data.length * $scope.gridModel.rowHeight) + $( ".ui-grid-header-cell-row" ).height() )+18 + "px"
-        };
-     };
+//	$scope.saveFormResponse = function(){
+//		// convert the form response from an object to a string
+//		$scope.currentLineItemAD.form_data_json = JSON.stringify($scope.currentLineItemAD.form_data_hash);
+//		$scope.currentLineItemAD.$update(function(response) { 
+//			// reload the Service Request and the grid
+//			$scope.serviceRequest = ServiceRequest.get( function() {
+//			   $scope.gridModel.data = $scope.serviceRequest.get_or_create_line_item_additional_details;
+//			});
+//			$scope.alertMessage = "Response saved.";
+//			$scope.resourceSuccessful = true;
+//  	     }, function errorCallback(error) { 
+//  	    	$scope.alertMessage = error.statusText;
+//	        $scope.resourceSuccessful = false;
+//	     });
+//	};
+	
 }]);
 
 angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope', 'Service', 'AdditionalDetail', 'LineItemAdditionalDetail', 'uiGridConstants', 'uiGridExporterConstants', '$controller', function($scope, Service, AdditionalDetail, LineItemAdditionalDetail, uiGridConstants, uiGridExporterConstants, $controller) {

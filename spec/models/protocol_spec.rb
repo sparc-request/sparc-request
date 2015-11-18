@@ -75,12 +75,12 @@ RSpec.describe 'Protocol' do
     
     it "should return true if status is 'first_draft'" do 
       service_request.update_attributes(status: 'first_draft')
-      expect(study.has_first_draft?).to eq true
+      expect(study.has_first_draft_service_request?).to eq true
     end
 
     it "should return false if status is NOT 'first_draft'" do 
       service_request.update_attributes(status: 'draft')
-      expect(study.has_first_draft?).to eq false
+      expect(study.has_first_draft_service_request?).to eq false
     end
 
   end

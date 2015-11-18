@@ -36,6 +36,10 @@ RSpec.describe Admin::IdentitiesController do
   describe 'authenticated identity' do
     before :each do
       @identity = Identity.new
+      @identity.first_name = "Jane"
+      @identity.last_name = "Doe"
+      @identity.email = "janedoe@techu.edu"
+      @identity.ldap_uid = "jdoe@techu.edu"
       @identity.approved = true
       @identity.save(validate: false)
       session[:identity_id] = @identity.id
@@ -52,6 +56,7 @@ RSpec.describe Admin::IdentitiesController do
         end
        
         it 'search' do
+          allow(Directory).to receive(:search_and_merge_ldap_and_database_results) { [] }
           get(:search, {:term => "abcd", :format => :json})
           expect(response.status).to eq(200)
         end
@@ -84,36 +89,51 @@ RSpec.describe Admin::IdentitiesController do
       end
     end
 
-    describe 'is a service provider and, thus, should have access to' do
+    describe 'is a service provider and, thus,' do
       before :each do
         @service_provider = ServiceProvider.new
         @service_provider.identity_id = @identity.id
         @service_provider.save(validate: false)
       end
       
-      it 'index' do 
-        get(:index, {:format => :html})
-        expect(response.status).to eq(200)
-        expect(response).to render_template("index")
-      end
-     
-      it 'search' do
-        get(:search, {:term => "abcd", :format => :json})
-        expect(response.status).to eq(200)
+      describe 'should have access to' do
+        it 'index' do 
+          get(:index, {:format => :html})
+          expect(response.status).to eq(200)
+          expect(response).to render_template("index")
+        end
+       
+        it 'search' do
+          allow(Directory).to receive(:search_and_merge_ldap_and_database_results) { [] }
+          get(:search, {:term => "abcd", :format => :json})
+          expect(response.status).to eq(200)
+        end
+  
+        it 'create' do
+          expect {
+            post(:create, {:format => :json,
+              :identity => {:first_name => "John", :last_name => "Smith", :email => "johnsmith@techu.edu", :ldap_uid => "jsmith@techu.edu"}
+            })
+            expect(response.status).to eq(200)
+            new_identity = Identity.where(email: "johnsmith@techu.edu").first
+            expect(new_identity.approved).to eq(true)
+            expect(new_identity.encrypted_password).not_to be_blank
+            expect(JSON.parse(response.body)).to include("id" => new_identity.id, "first_name" => "John", "last_name" => "Smith", 
+                                                         "email" => "johnsmith@techu.edu", "ldap_uid" => "jsmith@techu.edu") 
+          }.to change(Identity, :count).by(1)
+        end
       end
       
-      it 'create' do
-        expect {
-          post(:create, {:format => :json,
-            :identity => {:first_name => "John", :last_name => "Smith", :email => "johnsmith@techu.edu", :ldap_uid => "jsmith@techu.edu"}
-          })
-          expect(response.status).to eq(200)
-          new_identity = Identity.where(email: "johnsmith@techu.edu").first
-          expect(new_identity.approved).to eq(true)
-          expect(new_identity.encrypted_password).not_to be_blank
-          expect(JSON.parse(response.body)).to include("id" => new_identity.id, "first_name" => "John", "last_name" => "Smith", 
-                                                       "email" => "johnsmith@techu.edu", "ldap_uid" => "jsmith@techu.edu") 
-        }.to change(Identity, :count).by(1)
+      describe 'should NOT have access to' do
+        it 'show' do 
+          get(:show, {:id => @identity, :format => :json})
+          expect(response.status).to eq(401)
+        end
+       
+        it 'update' do
+          put(:update, {:id => 1, :format => :json})
+          expect(response.status).to eq(401)
+        end
       end
     end
     
@@ -131,6 +151,7 @@ RSpec.describe Admin::IdentitiesController do
       end
      
       it 'search' do
+        allow(Directory).to receive(:search_and_merge_ldap_and_database_results) { [] }
         get(:search, {:term => "abcd", :format => :json})
         expect(response.status).to eq(200)
       end
@@ -147,6 +168,37 @@ RSpec.describe Admin::IdentitiesController do
           expect(JSON.parse(response.body)).to include("id" => new_identity.id, "first_name" => "John", "last_name" => "Smith", 
                                                        "email" => "johnsmith@techu.edu", "ldap_uid" => "jsmith@techu.edu") 
         }.to change(Identity, :count).by(1)
+      end
+      
+      it 'show' do 
+        get(:show, {:id => @identity, :format => :json})
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)).to include("id" => @identity.id, "first_name" => "Jane", "last_name" => "Doe", 
+                                                     "email" => "janedoe@techu.edu", "ldap_uid" => "jdoe@techu.edu") 
+      end
+      
+      it 'update (and LDAP_UID should not be allowed to change)' do
+        expect {
+          put(:update, {:format => :json, :id => @identity,
+            :identity => {:first_name => "John", :last_name => "Smith", :email => "johnsmith@techu.edu", :ldap_uid => "jsmith@techu.edu"}
+          })
+          expect(response.status).to eq(200)
+          updated_identity = Identity.where(ldap_uid: "jdoe@techu.edu").first
+          expect(JSON.parse(response.body)).to include("id" => @identity.id, "first_name" => "John", "last_name" => "Smith", 
+                                                       "email" => "johnsmith@techu.edu", "ldap_uid" => "jdoe@techu.edu") 
+        }.to change(Identity, :count).by(0)
+      end
+      
+      it '404s for a bogus identity id' do
+        get(:show, {:id => 23234234, :format => :json})        
+        expect(response.status).to eq(404)
+        expect(response.body).to eq("")
+        
+        put(:update, {:format => :json, :id => 23234234,
+          :identity => {:first_name => "John", :last_name => "Smith", :email => "johnsmith@techu.edu", :ldap_uid => "jsmith@techu.edu"}
+        })
+        expect(response.status).to eq(404)
+        expect(response.body).to eq("")
       end
     end
     
@@ -165,6 +217,7 @@ RSpec.describe Admin::IdentitiesController do
         end
        
         it 'search' do
+          allow(Directory).to receive(:search_and_merge_ldap_and_database_results) { [] }
           get(:search, {:term => "abcd", :format => :json})
           expect(response.status).to eq(200)
         end

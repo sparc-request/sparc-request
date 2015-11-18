@@ -79,13 +79,16 @@
 
 %br
 
-
 - if protocol.has_first_draft_service_request?
   .service-request-title.ui-corner-top= t(:protocol_information)[:service_requests]
   .service_request-body
     %table
       %tr{:style => 'width:100%'}
         %th.request-in-progress{:style => 'width:100%'}= 'Request in Progress'
+- elsif !protocol.service_requests.present?
+  .service-request-title.ui-corner-top= t(:protocol_information)[:service_requests]
+  .service_request-body
+  %a.add-services-button{:href => permission ? root_path(:protocol_id => protocol.id) : "javascript:void(0);", :'data-permission' => permission.to_s}= t(:protocol_information)[:add_services]
 - else
   .service-request-title.ui-corner-top= t(:protocol_information)[:service_requests]
   .service_request-body
@@ -140,9 +143,6 @@
         - reset_cycle('protocol')
   %table{ width: '100%' }
     %tr
-      - unless protocol.service_requests.present?
-        %td
-          %a.add-services-button{:href => permission ? root_path(:protocol_id => protocol.id) : "javascript:void(0);", :'data-permission' => permission.to_s}= t(:protocol_information)[:add_services]
       %td#no-add-services-button
         %a.view-full-calendar-button{:href => "javascript:void(0);", :'data-protocol_id' => protocol.id, :'data-url' => "/portal/protocols/#{protocol.id}/view_full_calendar"}= t(:protocol_information)[:full_calendar]
       %td

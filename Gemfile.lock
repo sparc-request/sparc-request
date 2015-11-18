@@ -13,8 +13,10 @@ GIT
       sass
       uuidtools (~> 2.1)
 
-PATH
-  remote: ~/musc/grouped_validations
+GIT
+  remote: git://github.com/jleonardw9/grouped_validations.git
+  revision: dc4207a7966fe691a240a47718b3d9689861a76f
+  branch: master
   specs:
     grouped_validations (0.3.3)
 

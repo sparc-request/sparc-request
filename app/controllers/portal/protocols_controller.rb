@@ -22,33 +22,15 @@ class Portal::ProtocolsController < Portal::BaseController
 
   respond_to :html, :json, :xlsx
 
-  before_filter :find_protocol, :only => [:show, :view_full_calendar, :update_from_fulfillment, :edit, :update, :update_protocol_type]
-  before_filter :protocol_authorizer_view, :only => [:show, :view_full_calendar]
-  before_filter :protocol_authorizer_edit, :only => [:update_from_fulfillment, :edit, :update, :update_protocol_type]
+  before_filter :find_protocol, only: [:show, :view_full_calendar, :update_from_fulfillment, :edit, :update, :update_protocol_type]
+  before_filter :protocol_authorizer_view, only: [:show, :view_full_calendar]
+  before_filter :protocol_authorizer_edit, only: [:update_from_fulfillment, :edit, :update, :update_protocol_type]
 
   def index
-    @protocols = []
-    include_archived = (params[:include_archived] == "true")
-
-    @user.protocols.each do |protocol|
-      if protocol.project_roles.find_by_identity_id(@user.id).project_rights != 'none'
-         @protocols << protocol if include_archived || !protocol.archived
-      end
-    end
-    @protocols = @protocols.sort_by { |pr| (pr.id || '0000') + pr.id }.reverse
-    @notifications = @user.user_notifications
-    #@projects = Project.remove_projects_due_to_permission(@projects, @user)
-
-    # params[:default_project] = '0f6a4d750fd369ff4ae409373000ba69'
-    if params[:default_protocol] && @protocols.map(&:id).include?(params[:default_protocol].to_i)
-      protocol = @protocols.select{ |p| p.id == params[:default_protocol].to_i}[0]
-      @protocols.delete(protocol)
-      @protocols.insert(0, protocol)
-    end
+    @protocols = Portal::ProtocolFinder.new(current_user, params).protocols
 
     respond_to do |format|
-      format.js
-      format.html
+      format.js { render }
     end
   end
 
@@ -96,11 +78,7 @@ class Portal::ProtocolsController < Portal::BaseController
       if USE_EPIC
         if @protocol.selected_for_epic
           @protocol.ensure_epic_user
-          if QUEUE_EPIC
-            EpicQueue.create(:protocol_id => @protocol.id) unless EpicQueue.where(:protocol_id => @protocol.id).size == 1
-          else
-            Notifier.notify_for_epic_user_approval(@protocol).deliver
-          end
+          Notifier.notify_for_epic_user_approval(@protocol).deliver
         end
       end
     elsif @current_step == 'cancel_protocol'
@@ -232,7 +210,6 @@ class Portal::ProtocolsController < Portal::BaseController
 
     render 'portal/service_requests/add_per_patient_per_visit_visit'
   end
-
 
   private
 

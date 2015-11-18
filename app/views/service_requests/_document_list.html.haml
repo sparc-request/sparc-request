@@ -27,9 +27,10 @@
     %tr.header{:class => provider_css}
       %th= t("documents.headers.institution")
       %th= t("documents.headers.type")
-      %th= t("documents.headers.title")
+      %th.document-title-header= t("documents.headers.title")
       - if not review
-        %th= t("documents.headers.actions")
+        %th.document-actions-header= t("documents.headers.actions")
+      %th= t('documents.headers.version')
 
     - @service_request.documents.each do |document|
       - next unless @sub_service_request.nil? or @sub_service_request.documents.include? document
@@ -40,11 +41,14 @@
             %br
             %br
         %td= document.display_document_type
-        %td= link_to document.document_file_name, document.document.url
+        %td.document-title= link_to document.document_file_name, document.document.url
         - if not review
           %td
             = link_to t("documents.edit_button"), "/service_requests/#{@service_request.id}/edit_document/#{document.id}", :remote => true, :class => 'document_edit blue-button'
+            %br.document-button-seperator
+            %br
             = link_to t("documents.delete_button"), "/service_requests/#{@service_request.id}/delete_document/#{document.id}", :remote => true, :class => 'document_delete blue-button'
+        %td= document.updated_at.strftime("%m/%d/%Y at %I:%M%p")
 - else
   - if review # let's show the table with the no documents text
     %table.document-table

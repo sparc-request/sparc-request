@@ -560,7 +560,7 @@ class ServiceRequestsController < ApplicationController
 
   def send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls, audit_report=nil, ssr_deleted=false)
     attachments = {}
-    attachments["service_request_#{service_request.id}.xls"] = xls
+    attachments["service_request_#{service_request.id}.xlsx"] = xls
 
     #TODO this is not very multi-institutional
     # generate the required forms pdf if it's required

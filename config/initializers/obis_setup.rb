@@ -44,11 +44,12 @@ begin
   USE_GOOGLE_CALENDAR           = application_config['use_google_calendar']
   USE_NEWS_FEED                 = application_config['use_news_feed']
   CALENDAR_URL                  = application_config['calendar_url']
+  FAQ_URL                       = application_config['faq_url']
   SEND_AUTHORIZED_USER_EMAILS   = application_config['send_authorized_user_emails']
   CUSTOM_ASSET_PATH             = application_config['custom_asset_path']
   LOCALE_OVERRIDE               = application_config['locale_override']
   CONSTANTS_YML_OVERRIDE        = application_config['constants_yml_override'] || ''
-  SYSTEM_SATISFACTION_SURVEY    = application_config['system_satisfaction_survey']
+  SYSTEM_SATISFACTION_SURVEY    = application_config['system_satisfaction_survey'] || false
   NO_REPLY_FROM                 = application_config['no_reply_from']
   EDITABLE_STATUSES             = application_config['editable_statuses'] || {}
   REMOTE_SERVICE_NOTIFIER_PROTOCOL  = application_config['remote_service_notifier_protocol']

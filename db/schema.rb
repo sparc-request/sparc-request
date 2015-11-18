@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20150930181724) do
+ActiveRecord::Schema.define(:version => 20151116155206) do
 
   create_table "admin_rates", :force => true do |t|
     t.integer  "line_item_id"
@@ -580,6 +580,7 @@ ActiveRecord::Schema.define(:version => 20150930181724) do
     t.string   "internal_rate_type"
     t.string   "foundation_rate_type"
     t.datetime "deleted_at"
+    t.string   "unfunded_rate_type"
   end
 
   add_index "pricing_setups", ["organization_id"], :name => "index_pricing_setups_on_organization_id"

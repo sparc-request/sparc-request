@@ -84,7 +84,7 @@ en:
   associated_users:
     add: "Add a new Associated User"
 
-  # bottom navigation
+  # Bottom navigation
   bottom_navigation:
     cancel: "Cancel"
     continue: "Continue"
@@ -100,11 +100,6 @@ en:
 
   # Calendar Page
   calendar_page:
-    tabs:
-      billing: "Quantity/Billing Tab"
-      pricing: "Consolidated Request Tab"
-      quantity: "Quantity Display Tab"
-      template: "Template Tab"
     billing_legend:
       effort: "% = % Effort"
       research: "R = Research"
@@ -117,33 +112,39 @@ en:
       service_rate: "Service Rate"
       services: "Services"
       subjects: "N"
-      total: "Total"
       total_per_patient: "Total Per Patient"
       total_per_study: "Total Per Study"
       total_study: "Study Cost Totals"
+      total: "Total"
       unit_costs: "Unit Costs"
       unit_type: "Unit Type"
       your_cost: "Your Cost"
-    per_patient: "Per Patient/Visit Services"
     labels:
       direct_cost: "Total Direct Cost"
-      grand_total: "Grand Total:"
       grand_total_direct: "Grand Total: Direct Costs"
       grand_total_indirect: "Grand Total: Indirect Costs"
+      grand_total: "Grand Total:"
       indirect_cost: "Total Indirect Cost"
       jump_to_visit: "Jump To:"
       maximum_direct: "Maximum Total Direct Costs Per Patient"
       maximum_indirect: "Maximum Total Indirect Costs Per Patient"
       maximum_per: "Maximum Total Per Patient"
-      total_costs: "Total Costs (Per Patient/Visit Services) Per Study"
       total_costs_arm: "Total Costs (Per Patient/Visit Services) All ARMs"
       total_costs_other: "Total Costs (Other Services) Per Study"
-      total_direct: "Total Direct Costs (Per Patient/Visit Services) Per Study"
+      total_costs: "Total Costs (Per Patient/Visit Services) Per Study"
       total_direct_arm: "Total Direct Costs (Per Patient/Visit Services) All ARMs"
       total_direct_other: "Total Direct Costs (Other Services) Per Study"
-      total_indirect: "Total Indirect Costs (Per Patient/Visit Services) Per Study"
+      total_direct: "Total Direct Costs (Per Patient/Visit Services) Per Study"
       total_indirect_arm: "Total Indirect Costs (Per Patient/Visit Services) All ARMs"
       total_indirect_other: "Total Indirect Costs (Other Services) Per Study"
+      total_indirect: "Total Indirect Costs (Per Patient/Visit Services) Per Study"
+      totals_costs_other: "Total Costs (Other Services) Per Study"
+    per_patient: "Per Patient/Visit Services"
+    tabs:
+      billing: "Quantity/Billing Tab"
+      pricing: "Consolidated Request Tab"
+      quantity: "Quantity Display Tab"
+      template: "Template Tab"
 
   # Catalog Manager Index Page
   cm_index:
@@ -305,6 +306,7 @@ en:
       source: "Funding Source"
       source_of_price: "Source of Price / Rate"
       survey_name: "Survey"
+      unfunded: "Unfunded Student Research*"
     title: "SPARC Request Services Catalog"
 
   # Documents Page
@@ -324,11 +326,12 @@ en:
       allow: "Allow Access"
       file: "File"
       institution: "Institution/Provider/Program/Core"
-      recipients: "Recipients"
+      recipients: "Service Providers"
       title: "Title"
       type: "Type"
       uploaded: "Uploaded"
       uploads: "Document Uploads"
+      versions: "Version"
     select_prompt: "Select a Type"
     update_button: "Update"
     upload_button: "Upload"
@@ -613,6 +616,13 @@ en:
       visit_complete: "Date of Visit (entering date signifies a completed visit)"
       visit_selector: "Please select a visit:"
 
+  # Indirect cost rates, default values used to prepopulate forms
+  indirect_cost_rates:
+    internal_and_college: "0"
+    industry: "30"
+    foundation_and_investigator: "25"
+    federal: "49.5"
+
   # Javascript localizations
   ajax_error: "An error happened processing your request: "
   cart:
@@ -697,7 +707,7 @@ en:
     title2: "Project Title:"
     user_info: "User Information:"
 
-  # new/editing projects
+  # New/editing projects
   sr_project:
     description: "Brief Description:"
     dropdown_default1: "Select a Funding Status"
@@ -711,7 +721,7 @@ en:
     title1: "Short Title:*"
     title2: "Project Title:*"
 
-  # new user sign up
+  # New user sign up
   signup:
     cancel: "Cancel"
     company: "Company:"
@@ -797,7 +807,7 @@ en:
     welcome_obtain_research_pricing: "A request has been made to get a cost estimate"
     welcome_submit: "Services have been requested or changed"
 
-  # password reset
+  # Password reset
   password_reset_message: "Forgot your password?"
   password_reset_submit: "Send password reset"
 
@@ -944,7 +954,7 @@ en:
       service: "Service"
       srid: "SRID"
 
-  # right navigation
+  # Right navigation
   right_navigation:
     ask_a_question: "Ask A Question"
     catalog: "Back to Catalog"
@@ -1007,6 +1017,8 @@ en:
     notes_header: "Service Request Notes"
     participate_in_survey: "Would you like to participate in a brief 1 question SPARC Request satisfaction survey?"
     participate_in_survey_title: "System Satisfaction Survey"
+    save_as_draft_notification: "This study will be saved as a draft, and no notifications or emails will be sent to the service providers. Do you wish to proceed?"
+    save_as_draft_notification_title: "Notification"
     study_project_info:
       id: "Study/Project ID:"
       funding_source: "Funding Source:"
@@ -1046,7 +1058,7 @@ en:
       text3: "Ready for Fulfillment:"
       text4: "Total Cost"
 
-  # sign in page
+  # Sign in page
   login_name: "Username:"
   login_password: "Password:"
   remember_user: "Remember me:"
@@ -1059,13 +1071,13 @@ en:
     message3: "Outside Users- Sign in here with your SPARC Request account"
     message4: ""
 
-  # sign in popup
+  # Sign in popup
   create_new_account_link: "Outside Users: Don't have an account? Click here."
   initial_signin_dialog: "You are not currently logged into SPARC Request. If you are affiliated with an institution and have an institutional login OR have created a SPARC Request account and have a SPARC Request login and password, please click the top button to proceed. If you are not currently affiliated with an institution OR do not have a SPARC Request login/password, please click the button on the bottom to proceed with creating a new account."
   proceed_to_database_login: "Outside Users with existing SPARC Request Accounts"
   proceed_to_shibboleth: "MUSC Users"
 
-  # steps navigation
+  # Steps navigation
   step_navigation:
     step_1: "STEP 1: <br /> Review Services & <br /> Assign Study or Project"
     step_2: "STEP 2: <br /> Enter Service <br /> Details"
@@ -1130,7 +1142,7 @@ en:
       - question_text: "I\\'m stuck! Who can I contact for assistance with SPARC Request?"
         answer_text: "The SUCCESS Center is happy to assist you! Please contact us at <a href=\"mailto:success@musc.edu\">success@musc.edu</a> or (843) 792-3357."
 
-  # user details partial
+  # User details partial
   user_details:
     add_button: "Add Authorized User"
     college: "College"
@@ -1151,7 +1163,7 @@ en:
     subspecialty_prompt: "Select a Subspecialty"
     update_button: "Update Authorized User"
 
-  # user list partial
+  # User list partial
   user_list:
     actions: "Actions"
     check_apply: "Check the appropriate securities for Epic access:"
@@ -1165,7 +1177,7 @@ en:
     rights4: "Authorize/Change"
     rights5: "Study Charges:"
 
-  # user search partial
+  # User search partial
   user_search:
     message: "To begin to search and add authorized users to this study/project, type in the first or last name of the user.  Select as appropriate."
     search_box_header: "User Search"

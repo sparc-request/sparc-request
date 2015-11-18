@@ -44,6 +44,11 @@ RSpec.describe IdentitiesController do
 
   stub_controller
 
+  before(:each) do
+    # shouldn't need to mess around with a ServiceRequest
+    allow(controller).to receive(:initialize_service_request) {}
+  end
+
   describe 'GET show' do
     it 'should should set identity' do
       session[:identity_id] = identity.id

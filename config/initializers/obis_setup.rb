@@ -49,7 +49,7 @@ begin
   CUSTOM_ASSET_PATH             = application_config['custom_asset_path']
   LOCALE_OVERRIDE               = application_config['locale_override']
   CONSTANTS_YML_OVERRIDE        = application_config['constants_yml_override'] || ''
-  SYSTEM_SATISFACTION_SURVEY    = application_config['system_satisfaction_survey']
+  SYSTEM_SATISFACTION_SURVEY    = application_config['system_satisfaction_survey'] || false
   NO_REPLY_FROM                 = application_config['no_reply_from']
   EDITABLE_STATUSES             = application_config['editable_statuses'] || {}
   REMOTE_SERVICE_NOTIFIER_PROTOCOL  = application_config['remote_service_notifier_protocol']

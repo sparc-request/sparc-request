@@ -20,7 +20,7 @@
 
 = form_tag generate_reports_path, :id => "reporting_form" do
   = hidden_field_tag "report[type]", @report.class.name
-  = link_to @report.title, "javascript:void(0);", :class => 'reporting_title'
+  .reporting_title= @report.title
 
   #report_fields
 

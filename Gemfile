@@ -65,6 +65,7 @@ group :development, :test, :profile do
 end
 
 group :development, :test do
+  gem 'pry'
   gem 'rails-erd'
   gem 'rspec-rails', '~> 3.3.3'
 end

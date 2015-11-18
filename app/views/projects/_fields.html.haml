@@ -55,9 +55,10 @@
         = f.label :brief_description, t(:project_form)[:description]
         = f.text_area :brief_description
 
-      .indirect_cost_rate
-        = f.label :indirect_cost_rate, t(:project_form)[:rate]
-        = f.text_field :indirect_cost_rate
+      - if USE_INDIRECT_COST
+        .indirect_cost_rate
+          = f.label :indirect_cost_rate, t(:project_form)[:rate]
+          = f.text_field :indirect_cost_rate
   .clear
   %br
 

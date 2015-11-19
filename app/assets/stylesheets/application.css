@@ -2628,18 +2628,6 @@ table.service_calendar tbody td.visit {
   text-shadow:1px 1px 0px #1570cd;
 }
 
-.reporting_title:hover {
-  background:-webkit-gradient( linear, left top, left bottom, color-stop(0.05, #1e62d0), color-stop(1, #3d94f6) );
-  background:-moz-linear-gradient( center top, #1e62d0 5%, #3d94f6 100% );
-  filter:progid:DXImageTransform.Microsoft.gradient(startColorstr='#1e62d0', endColorstr='#3d94f6');
-  background-color:#1e62d0;
-}
-
-.reporting_title:active {
-  position:relative;
-  top:1px;
-}
-
 .reporting_button {
   -moz-box-shadow:inset 0px 1px 0px 0px #97c4fe;
   -webkit-box-shadow:inset 0px 1px 0px 0px #97c4fe;
@@ -2665,12 +2653,10 @@ table.service_calendar tbody td.visit {
   display:inline-block;
   color:#ffffff;
   font-family:Arial;
-  font-size:20px;
+  font-size:1.5em;
   font-weight:bold;
   font-style:normal;
-  height:100px;
-  line-height:100px;
-  width:250px;
+  padding:15px;
   text-decoration:none;
   text-align:center;
   text-shadow:1px 1px 0px #1570cd;

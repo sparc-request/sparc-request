@@ -7,6 +7,8 @@
     = stylesheet_link_tag    "admin/application"
     = javascript_include_tag "admin/application"
     = csrf_meta_tags
+    :javascript
+      window.I18n = #{current_translations.to_json.html_safe};
   %body
     %nav.navbar.navbar-default
       .container-fluid

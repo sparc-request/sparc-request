@@ -9,15 +9,15 @@
         .modal-body
           %form{"name"=>"identityForm"}
             .form-group{"ng-class"=> "{'has-error': identityForm.email.$invalid}"}
-              %label{"for"=>"email"}= t(:admin_identities)[:edit_user_email]
+              %label.control-label{"for"=>"email"}= t(:admin_identities)[:edit_user_email]
               %input.form-control{"name"=>"email","type"=>"email", "id"=>"email", "required"=>"required", "ng-model" => "currentIdentity.email"}
               %span.help-block{"ng-show"=>"identityForm.email.$invalid"}= t(:admin_identities)[:edit_user_valid_email_required] 
             .form-group{"ng-class"=> "{'has-error': identityForm.firstName.$invalid}"}
-              %label{"for"=>"firstName"}= t(:admin_identities)[:edit_user_first_name]
+              %label.control-label{"for"=>"firstName"}= t(:admin_identities)[:edit_user_first_name]
               %input.form-control{"name"=>"firstName","type"=>"text", "id"=>"firstName", "required"=>"required", "ng-model" => "currentIdentity.first_name"}
               %span.help-block{"ng-show"=>"identityForm.firstName.$invalid"}= t(:admin_identities)[:edit_user_required] 
             .form-group{"ng-class"=> "{'has-error': identityForm.lastName.$invalid}"}
-              %label{"for"=>"lastName"}= t(:admin_identities)[:edit_user_last_name]
+              %label.control-label{"for"=>"lastName"}= t(:admin_identities)[:edit_user_last_name]
               %input.form-control{"name"=>"lastName","type"=>"text", "id"=>"lastName", "required"=>"required", "ng-model" => "currentIdentity.last_name"}
               %span.help-block{"ng-show"=>"identityForm.lastName.$invalid"}= t(:admin_identities)[:edit_user_required]            
         .modal-footer

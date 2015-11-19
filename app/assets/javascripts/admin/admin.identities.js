@@ -9,7 +9,7 @@ angular.module('app').controller("AdminUserSearchController", ['$scope', 'Identi
     $scope.search_term = "";
     $scope.search_in_progress= false;
 	$scope.gridModel = {enableColumnMenus: false, enableFiltering: true, enableColumnResizing: false, enableRowSelection: false, enableSorting: true, enableRowHeaderSelection: false, rowHeight: 45};
-	$scope.gridModel.columnDefs = [{name: 'Add/Edit Buttons', displayName:'', enableSorting: false, enableFiltering: false, width: 200, cellTemplate: '<button type="button" class="btn " ng-class="{ \'btn-warning\': row.entity.id, \'btn-success\': !row.entity.id }" ng-click="grid.appScope.AddOrShowUser(row.entity)">{{(row.entity.id) ? "Edit User" : "Add User to I-CART"}}</button>'},
+	$scope.gridModel.columnDefs = [{name: 'Add/Edit Buttons', displayName:'', enableSorting: false, enableFiltering: false, width: 200, cellTemplate: '<button type="button" class="btn " ng-class="{ \'btn-warning\': row.entity.id, \'btn-success\': !row.entity.id }" ng-click="grid.appScope.AddOrShowUser(row.entity)">{{(row.entity.id) ? "' +I18n["admin_identities"]["button_edit_user"] +'" : "' +I18n["admin_identities"]["button_add_user"] +'"}}</button>'},
 	                               {field: 'ldap_uid'},
 	                               {field: 'first_name'},
 	                               {field: 'last_name'},

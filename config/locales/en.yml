@@ -73,7 +73,7 @@ en:
   admin_identities:
     button_cancel: "Cancel"
     button_add_user: "Add User"
-    button_edit_user: "Edit User to I-CART"
+    button_edit_user: "Edit User"
     button_search: "Search"
     button_update_user: "Update User"
     catalog_manager: "Catalog Manager" 
@@ -83,14 +83,14 @@ en:
     edit_user_last_name: "Last name" 
     edit_user_required: "Required"
     edit_user_valid_email_required: "Valid email required"
-    footer: "* Close this window or tab when you're done adding new users to I-CART."
+    footer: "* Close this window or tab when you're done adding new users."
     home: "Users"
     page_title: "Advanced User Search"
     portal: "Dashboard"
     portal_admin: "Portal Admin"
     request_services: "Request Services"
-    search_help_block: "Filter the results by searching within the column headers in the grid below. Edit User buttons are displayed for people already in I-CART and only usable by I-CART administrators."
-    search_placeholder: "Find users by first name, last name, email, or HawkID"
+    search_help_block: "Filter the results by searching within the column headers in the grid below. Edit User buttons are displayed for people already in the system and only usable by administrators."
+    search_placeholder: "Find users by first name, last name, email, or user ID"
     
   # Admin Root Page
   admin_root:

@@ -60,10 +60,10 @@ RSpec.describe "notifications page", js: true do
       wait_for_javascript_to_finish
       find(".new-portal-notification-button").click
       wait_for_javascript_to_finish
-      wait_for_javascript_to_finish
-      first(".new_notification").click
-      wait_for_javascript_to_finish
-      expect(page).to have_text("You can not send a message to yourself.")
+      message = accept_alert do
+        find('.requester').click
+      end
+      expect(message).to eq 'You can not send a message to yourself.'
     end
   end
 

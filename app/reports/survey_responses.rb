@@ -10,7 +10,7 @@ class SurveyResponseReport < ReportingModule
   # see app/reports/test_report.rb for all options
   def default_options
     {
-      "Date Range" => {:field_type => :date_range, :for => "response_sets_completed_at", :from => "2012-03-01".to_date, :to => Date.today},
+      "Date Range" => {:field_type => :date_range, :for => "completed_at", :from => "2012-03-01".to_date, :to => Date.today},
       Survey => {:field_type => :select_tag, :custom_name_method => :title, :required => true}
     }
   end
@@ -62,9 +62,11 @@ class SurveyResponseReport < ReportingModule
 
   # Conditions
   def where args={}
+    if args[:completed_at_from] and args[:completed_at_to]
+      completed_at = args[:completed_at_from].to_time.strftime("%Y-%m-%d 00:00:00")..args[:completed_at_to].to_time.strftime("%Y-%m-%d 23:59:59")
+    end
 
     completed_at ||= self.default_options["Date Range"][:from]..self.default_options["Date Range"][:to]
-
 
     return :response_sets => {:completed_at => completed_at}
   end

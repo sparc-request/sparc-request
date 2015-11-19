@@ -108,7 +108,7 @@ class Notifier < ActionMailer::Base
 
     attachments_to_add.each do |file_name, document|
       next if document.nil?
-      attachments[file_name] = document
+      attachments["#(file_name)"] = document
     end
 
     # only send these to the correct person in the production env

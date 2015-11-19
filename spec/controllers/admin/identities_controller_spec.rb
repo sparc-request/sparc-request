@@ -170,6 +170,16 @@ RSpec.describe Admin::IdentitiesController do
         }.to change(Identity, :count).by(1)
       end
       
+      it 'create and messages for failed validation' do
+        expect {
+          post(:create, {:format => :json,
+            :identity => {:first_name => "John", :last_name => "", :email => "johnsmith@techu.edu", :ldap_uid => "jsmith@techu.edu"}
+          })
+          expect(response.status).to eq(422)
+          expect(JSON.parse(response.body)).to include("last_name" => ["can't be blank"])
+        }.to change(Identity, :count).by(0)
+      end
+      
       it 'show' do 
         get(:show, {:id => @identity, :format => :json})
         expect(response.status).to eq(200)
@@ -183,9 +193,22 @@ RSpec.describe Admin::IdentitiesController do
             :identity => {:first_name => "John", :last_name => "Smith", :email => "johnsmith@techu.edu", :ldap_uid => "jsmith@techu.edu"}
           })
           expect(response.status).to eq(200)
-          updated_identity = Identity.where(ldap_uid: "jdoe@techu.edu").first
           expect(JSON.parse(response.body)).to include("id" => @identity.id, "first_name" => "John", "last_name" => "Smith", 
-                                                       "email" => "johnsmith@techu.edu", "ldap_uid" => "jdoe@techu.edu") 
+                                                       "email" => "johnsmith@techu.edu", "ldap_uid" => "jdoe@techu.edu")
+          updated_identity = Identity.where(ldap_uid: "jdoe@techu.edu").first
+          expect(updated_identity.first_name).to eq("John")  
+        }.to change(Identity, :count).by(0)
+      end
+      
+      it 'update and messages for failed validation' do
+        expect {
+          put(:update, {:format => :json, :id => @identity,
+            :identity => {:first_name => "", :last_name => "Smith", :email => "johnsmith@techu.edu", :ldap_uid => "jsmith@techu.edu"}
+          })
+          expect(response.status).to eq(422)
+          expect(JSON.parse(response.body)).to include("first_name" => ["can't be blank"])
+          updated_identity = Identity.where(ldap_uid: "jdoe@techu.edu").first
+          expect(updated_identity.first_name).to eq("Jane") 
         }.to change(Identity, :count).by(0)
       end
       

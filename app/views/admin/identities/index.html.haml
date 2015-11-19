@@ -32,9 +32,10 @@
       .alert{"ng-show"=>"alertMessage", "ng-class"=>"{ 'alert-success' : resourceSuccessful, 'alert-danger' : !resourceSuccessful }", :role=>"alert"} {{alertMessage}}
       .row
         .col-sm-6
-          .form-group
-            %input.form-control{:id=>"search_term",:type=>"text", :placeholder=>"Find users by first name, last name, email, or user id", "ng-model"=>"search_term"}
-            %span.help-block Filter the results by searching within the column headers in the grid below. Edit User buttons are displayed for people already in I-CART and only usable by I-CART administrators.
+          %form{"ng-submit"=>"search()"}
+            .form-group
+              %input.form-control{:id=>"search_term",:type=>"text", :placeholder=>"Find users by first name, last name, email, or user id", "ng-model"=>"search_term"}
+              %span.help-block Filter the results by searching within the column headers in the grid below. Edit User buttons are displayed for people already in I-CART and only usable by I-CART administrators.
         .col-sm-4
           %button.btn.btn-primary{"ng-click"=>"search()", "ng-disabled"=>"search_in_progress"} Search
       .row

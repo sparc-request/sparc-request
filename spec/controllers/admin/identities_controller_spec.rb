@@ -59,6 +59,37 @@ RSpec.describe Admin::IdentitiesController do
           allow(Directory).to receive(:search_and_merge_ldap_and_database_results) { [] }
           get(:search, {:term => "abcd", :format => :json})
           expect(response.status).to eq(200)
+          expect(response.body).to eq("[]")
+        end
+        
+        it 'search and view results that includes data merged from database and LDAP' do
+          database_user = Identity.new(ldap_uid: "jsmith@musc.edu", first_name: "John", last_name: "Smith", email: "johnsmith@musc.edu")
+          database_user.save(validate: false)
+          
+          ldap_user = Hash.new
+          ldap_user['sn'] = ["Smith"]
+          ldap_user['givenname'] = ["John"]
+          ldap_user['mail'] = ["johnsmith@musc.edu"]
+          ldap_user['uid'] = ["jsmith"]
+            
+          ldap_user_two = Hash.new
+          ldap_user_two['sn'] = ["Doe"]
+          ldap_user_two['givenname'] = ["Jane"]
+          ldap_user_two['mail'] = ["janedoe@musc.edu"]
+          ldap_user_two['uid'] = ["jdoe"]
+
+          allow(Directory).to receive(:search_database) { [ database_user ]}
+          allow(Directory).to receive(:search_ldap) { [ ldap_user, ldap_user_two ] }
+          
+          get(:search, {:term => "abcd", :format => :json})
+          expect(response.status).to eq(200)
+
+          # record found in both the database and LDAP has an "id" value
+          expect(JSON.parse(response.body)[0]).to include("id" => database_user.id, "first_name" => "John", "last_name" => "Smith", 
+                                                          "email" => "johnsmith@musc.edu", "ldap_uid" => "jsmith@musc.edu") 
+          # record found only in LDAP should not have an "id" field
+          expect(JSON.parse(response.body)[1]).to include("id" => nil, "first_name" => "Jane", "last_name" => "Doe", 
+                                                          "email" => "janedoe@musc.edu", "ldap_uid" => "jdoe@musc.edu")
         end
         
         it 'create' do

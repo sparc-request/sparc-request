@@ -15,8 +15,7 @@ class Admin::IdentitiesController < ApplicationController
     if params[:term] && params[:term].length > 2
       results = Directory.search_and_merge_ldap_and_database_results(params[:term])
     end
-    # @TODO: limit result objects to only data that is needed/used
-    render :json => results.to_json(:root => false) 
+    render :json => results.to_json(:root => false, :only => [:id, :first_name, :last_name, :email, :ldap_uid]) 
   end
   
   # respond to JSON requests to create new Identities

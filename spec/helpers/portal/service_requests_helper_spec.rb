@@ -22,6 +22,7 @@
 require 'rails_helper'
 
 RSpec.describe Portal::ServiceRequestsHelper do
+
   include Portal::ApplicationHelper
   include Portal::ServiceRequestsHelper
 

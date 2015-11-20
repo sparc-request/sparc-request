@@ -58,6 +58,7 @@ RSpec.describe "notifications page", js: true do
 
     it "should open up the dialog box" do
       wait_for_javascript_to_finish
+      wait_for_javascript_to_finish
       find(".new-portal-notification-button").click
       wait_for_javascript_to_finish
       message = accept_alert do

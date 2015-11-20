@@ -161,57 +161,55 @@ RSpec.describe "service calendar", js: true do
         end
       end
 
-      describe "selecting check all row button and accepting the validation alert" do
-          
-        it "should overwrite the quantities in the row" do
-   
-          accept_confirm("This will reset custom values for this row, do you wish to continue?") do
+      context 'check all buttons' do
+
+        describe "selecting check all row button and accepting the validation alert" do
+            
+          it "should overwrite the quantities in the row if they are not customized" do
             click_link "check_row_#{arm1.line_items_visits.first.id}_template"
+            wait_for_javascript_to_finish
+            expect(first(".visits_1")).to be_checked
           end
-          wait_for_javascript_to_finish
-          expect(first(".visits_1")).to be_checked
-          expect(first(".visits_2")).to be_checked
-          expect(first(".visits_3")).to be_checked
-          expect(first(".visits_4")).to be_checked
-          expect(first(".visits_5")).to be_checked
         end
-      end
 
-      describe "selecting check all row button and canceling the validation alert" do
-          
-        it "should not overwrite the quantities in the row" do
-        
-          dismiss_confirm("This will reset custom values for this row, do you wish to continue?") do
-            click_link "check_row_#{arm1.line_items_visits.first.id}_template"
+        describe "selecting check all row button and canceling the validation alert" do
+            
+          it "should not overwrite the quantities in the row if they are customized" do
+            
+            Visit.update_all(research_billing_qty: 2)
+            visit service_calendar_service_request_path service_request.id
+            wait_for_javascript_to_finish
+
+            dismiss_confirm("This will reset custom values for this row, do you wish to continue?") do
+              click_link "check_row_#{arm1.line_items_visits.first.id}_template"
+            end
+            wait_for_javascript_to_finish
+            expect(first(".visits_1")).to be_checked
           end
-          wait_for_javascript_to_finish
-          expect(first(".visits_1")).to_not be_checked
-          expect(first(".visits_2")).to_not be_checked
-          expect(first(".visits_3")).to_not be_checked
-          expect(first(".visits_4")).to_not be_checked
-          expect(first(".visits_5")).to_not be_checked
         end
-      end
 
-      describe "selecting check all column button and accepting the validation alert" do
-          
-        it "should overwrite the quantities in the column" do
-          accept_confirm("This will reset custom values for this column, do you wish to continue?") do
+        describe "selecting check all column button and accepting the validation alert" do
+            
+          it "should overwrite the quantities in the column if they are not customized" do
             first("#check_all_column_3").click
+            wait_for_javascript_to_finish
+            expect(first(".visits_3")).to be_checked
           end
-          wait_for_javascript_to_finish
-          expect(first(".visits_3")).to be_checked
         end
-      end
 
-      describe "selecting check all column button and canceling the validation alert" do
-          
-        it "should not overwrite the quantities in the column" do
-          dismiss_confirm("This will reset custom values for this column, do you wish to continue?") do
-            first("#check_all_column_3").click
+        describe "selecting check all column button and canceling the validation alert" do
+            
+          it "should not overwrite the quantities in the column if they are customized" do
+            Visit.update_all(research_billing_qty: 2)
+            visit service_calendar_service_request_path service_request.id
+            wait_for_javascript_to_finish
+
+            dismiss_confirm("This will reset custom values for this column, do you wish to continue?") do
+              first("#check_all_column_3").click
+            end
+            wait_for_javascript_to_finish
+            expect(first(".visits_3")).to be_checked
           end
-          wait_for_javascript_to_finish
-          expect(first(".visits_3")).to_not be_checked
         end
       end
 

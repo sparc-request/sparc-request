@@ -120,13 +120,14 @@ funding_sources: { 'College Department': 'college',
                    'Industry-Initiated/Industry-Sponsored': 'industry',
                    'Investigator-Initiated/Industry-Sponsored': 'investigator',
                    'Internal Funded Pilot Project': 'internal',
-                   'Unfunded Student Research': 'unfunded' }
+                   'Student Funded Research': 'unfunded' }
 potential_funding_sources: { 'College Department': 'college',
                              'Federal': 'federal',
                              'Foundation/Organization': 'foundation',
                              'Industry-Initiated/Industry-Sponsored': 'industry',
                              'Investigator-Initiated/Industry-Sponsored': 'investigator',
-                             'Internal Funded Pilot Project': 'internal' }
+                             'Internal Funded Pilot Project': 'internal',
+                             'Student Funded Research': 'unfunded' }
 federal_grant_codes: { "B09 Mental Health Services Block Grant": "B09",
                        "C06 Research Facilities Construction Grants": "C06",
                        "DP1 NIH Director's Pioneer Award": "DP1",

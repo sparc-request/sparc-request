@@ -20,4 +20,4 @@
 
 $('.jump_to_visit').
   empty().
-  html("<%= escape_javascript(render(partial: 'visit_selector', locals: { arm: @arm, service_request: @service_request, pages: session[:service_calendar_pages], tab: 'calendar', portal: @portal })) %>");
+  html("<%= escape_javascript(render(partial: 'service_calendars/visit_selector', locals: { arm: @arm, service_request: @service_request, pages: session[:service_calendar_pages], tab: 'calendar', portal: @portal })) %>");

@@ -337,6 +337,13 @@ SparcRails::Application.routes.draw do
     end
   end
 
+  ##### Admin Identities #####
+  namespace :admin do
+    root :to => 'identities#index'
+    match 'identities/search' => 'identities#search', :via => :get
+    resources :identities, only: [:index, :show, :create, :update]
+  end
+  
   mount API::Base => '/'
 
   root to: 'service_requests#catalog'

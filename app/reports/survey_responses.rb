@@ -68,7 +68,7 @@ class SurveyResponseReport < ReportingModule
 
     completed_at ||= self.default_options["Date Range"][:from]..self.default_options["Date Range"][:to]
 
-    return :response_sets => {:completed_at => completed_at}
+    return :response_sets => {:completed_at => completed_at, :survey_id => args[:survey_id]}
   end
 
   # Return only uniq records for

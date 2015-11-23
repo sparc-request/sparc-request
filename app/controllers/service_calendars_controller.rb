@@ -128,7 +128,7 @@ class ServiceCalendarsController < ApplicationController
 
     if !arm.update_visit_group_day(day, position, portal)
       respond_to do |format|
-        format.js { render :status => 418, :json => clean_messages(@rm.errors.messages) }
+        format.js { render :status => 418, :json => clean_messages(arm.errors.messages) }
       end
     end
   end

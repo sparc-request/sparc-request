@@ -1,7 +1,7 @@
 class UpdateStudyTypeQuestions < ActiveRecord::Migration
   def change
   	drop_table :study_type_questions 
-  	
+
     create_table :study_type_questions do |t|
       t.integer :order
       t.string :question
@@ -15,13 +15,5 @@ class UpdateStudyTypeQuestions < ActiveRecord::Migration
     STUDY_TYPE_QUESTIONS.each_with_index do |stq, index|
       StudyTypeQuestion.create(order: index + 1, question: stq, friendly_id: friendly_ids[index])
     end
-    answers = StudyTypeAnswer.all
-  	answers.each do |answer|
-  		if answer.study_type_question_id == 1
-  			answer.update_attributes(study_type_question_id: 2)
-  		elsif answer.study_type_question_id == 2
-  			answer.update_attributes(study_type_question_id: 1)
-  		end
-  	end
   end
 end

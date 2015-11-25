@@ -81,7 +81,6 @@ class Protocol < ActiveRecord::Base
   attr_accessible :recruitment_end_date
   attr_accessible :selected_for_epic
   attr_accessible :study_type_answers_attributes
-  attr_accessible :has_cofc
   attr_accessible :archived
 
   attr_accessor :requester_id
@@ -106,7 +105,6 @@ class Protocol < ActiveRecord::Base
     validates :funding_status, :presence => true
     validate  :validate_funding_source
     validates :sponsor_name, :presence => true, :if => :is_study?
-    validates :has_cofc, :inclusion => {:in => [true, false], :message => "must be answered"}, :if => :is_study?
     validates_associated :human_subjects_info, :message => "must contain 8 numerical digits", :if => :validate_nct
     validate  :validate_study_type_answers, :if => :selected_for_epic
   end

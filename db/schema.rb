@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151116155206) do
+ActiveRecord::Schema.define(:version => 20151124182002) do
 
   create_table "admin_rates", :force => true do |t|
     t.integer  "line_item_id"
@@ -652,7 +652,6 @@ ActiveRecord::Schema.define(:version => 20151116155206) do
     t.datetime "recruitment_start_date"
     t.datetime "recruitment_end_date"
     t.boolean  "selected_for_epic",                                                   :default => false
-    t.boolean  "has_cofc"
     t.boolean  "archived",                                                            :default => false
   end
 

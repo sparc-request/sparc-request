@@ -14,7 +14,6 @@ task :study_type_report => :environment do
       STUDY_TYPE_ANSWERS.each do |k, v|
         if v == answers
           study_type = k
-          study.update_attributes(epic_study_type: study_type)
           break
         end
       end

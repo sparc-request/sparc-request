@@ -20,7 +20,7 @@
 
 class Study < Protocol
   validates :sponsor_name, :presence => true
-
+  belongs_to :study_type_question_group
   def classes
     return [ 'project' ] # for backward-compatibility
   end

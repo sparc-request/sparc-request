@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151124182002) do
+ActiveRecord::Schema.define(:version => 20151130205119) do
 
   create_table "admin_rates", :force => true do |t|
     t.integer  "line_item_id"
@@ -653,6 +653,7 @@ ActiveRecord::Schema.define(:version => 20151124182002) do
     t.datetime "recruitment_end_date"
     t.boolean  "selected_for_epic",                                                   :default => false
     t.boolean  "archived",                                                            :default => false
+    t.integer  "study_type_question_group_id"
   end
 
   add_index "protocols", ["next_ssr_id"], :name => "index_protocols_on_next_ssr_id"
@@ -878,12 +879,19 @@ ActiveRecord::Schema.define(:version => 20151124182002) do
     t.datetime "updated_at",             :null => false
   end
 
+  create_table "study_type_question_groups", :force => true do |t|
+    t.boolean  "active",     :default => false
+    t.datetime "created_at",                    :null => false
+    t.datetime "updated_at",                    :null => false
+  end
+
   create_table "study_type_questions", :force => true do |t|
     t.integer  "order"
     t.string   "question"
     t.string   "friendly_id"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
+    t.integer  "study_type_question_group_id"
   end
 
   create_table "study_types", :force => true do |t|

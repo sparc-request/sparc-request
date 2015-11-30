@@ -1,9 +1,10 @@
 desc "preserve historic study types"
 task :preserve_historic_study_types => :environment do 
-	study_answers = []
+	
 	studies = Study.all
 
 	studies.each do |study|
+		study_answers = []
 		if study.study_type_answers.present?
       StudyTypeQuestion.find_each do |stq|
         study_answers << stq.study_type_answers.find_by_protocol_id(study.id).answer 
@@ -30,19 +31,23 @@ task :preserve_historic_study_types => :environment do
 							                     '0' => [false, nil, nil, true, false, false] }
 
     historic_study_type_answers.each do |historic_study_type, historic_answer|
+    	puts "historic_study_type.inspect"
+    	puts historic_study_type.inspect
+    	puts "historic_answer.inspect"
+    	puts historic_answer.inspect
     	if historic_answer == study_answers #then we have the historic study type
     		STUDY_TYPE_ANSWERS.each do |new_study_type, new_answer|
-    			if historic_study_type == new_study_type
-    				#we need to take the new_answers and populate them into the study_answers
-    				StudyTypeQuestion.find_each.with_index do |study_type_question, index| 
-           		study_type_question.study_type_answers[index].update_attributes(answer: new_answer)
-      # STUDY_TYPE_ANSWERS.each do |new_study_type, new_answers|
-      #   if historic_study_type == new_study_type
-      #     new_answers.each_with_index do |answer, index|
-      #     	StudyTypeQuestion.find_each do |study_type_question| 
-      #     		study_type_question.study_type_answers[index].update_attributes(answer: answer)
-          	# StudyTypeQuestion.first.study_type_answers[1].update_attributes(answer: 0)
-            # study.study_type_answers[index].update_attributes(answer: answer)
+    			puts "study type answers loop"
+    			if new_study_type == historic_study_type
+    				puts "new study type == historic study type"
+    				puts "new_study_type"
+    				puts new_study_type.inspect
+    				puts "historic_study_type"
+    				puts historic_study_type.inspect
+    				StudyTypeQuestion.find_each do |study_type_question|
+    					puts "looping through sutdy type question" 
+    					puts study_type_question.study_type_answers.find_by_protocol_id(study.id).inspect
+           		study_type_question.study_type_answers.find_by_protocol_id(study.id).update_attributes(answer: new_answer)
           	end
           end
         end

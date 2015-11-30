@@ -992,6 +992,16 @@ en:
     approved: "Account approved"
     disapproved: "Account disapproved"
 
+  protocol:
+    study_schedule:
+      add_arm: "Add Arm"
+      add_visit_group: "Add Visit Group"
+      edit_arm: "Edit Arm"
+      manage_arms: "Manage Arms"
+      manage_visits: "Manage Visits"
+      remove_arm: "Remove Arm"
+
+
   study_tracker:
     title: "Fulfillment"
     save: "Save"

@@ -26,24 +26,19 @@
     = t(:fulfillments)[:services][:visits][:no_requests]
 - else
   #per_patient_per_visit_table{:style => "margin: 20px 0 0;"}
-    %table.arm_stuff
-      %thead
-        %tr
-          %th= t(:fulfillments)[:services][:visits][:arm]
-          %th= t(:fulfillments)[:services][:visits][:add]
-          %th= t(:fulfillments)[:services][:visits][:delete]
-        %tr
-          %td
-            = select_tag "arm_id", arms_for_select(@service_request, @selected_arm), :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id, :'data-protocol_id' => @service_request.protocol.id
-            - unless @study_tracker
-              = link_to '', 'javascript:void(0);', :class => "add_arm_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id, :'data-protocol_id' => @service_request.protocol.id
-              = link_to '', 'javascript:void(0);', :class => "remove_arm_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id, :'data-arm_count' => @service_request.arms.count, :'data-protocol_id' => @service_request.protocol.id, :'data-can_be_deleted' => can_be_deleted?(@selected_arm)
-          %td
-            = select_tag "visit_position", visits_for_select(@selected_arm)
-            = link_to '', 'javascript:void(0);', :class => "add_visit_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id
-          %td
-            = select_tag "delete_visit_position", visits_for_delete(@selected_arm)
-            = link_to '', 'javascript:void(0);', :class => "delete_visit_link", :'data-sub_service_request_id' => @sub_service_request.id, :'data-service_request_id' => @service_request.id, :'data-visit_count' => visit_size_for_arm(@selected_arm)
+    #study_schedule_buttons{ data: { protocol_id: @service_request.protocol.id } }
+      .col-sm-6.col-md-6.text-center
+        =t(:protocol)[:study_schedule][:manage_arms]
+        #manage_arms
+          .btn.btn-success.btn-sm.glyphicon.glyphicon-plus#add_arm_button{title: t(:protocol)[:study_schedule][:add_arm], type: "button", aria: {label: "Add Arm"}}
+          .btn.btn-danger.btn-sm.glyphicon.glyphicon-remove#remove_arm_button{title: t(:protocol)[:study_schedule][:remove_arm], type: "button", aria: {label: "Remove Arm"}}
+          .btn.btn-warning.btn-sm.glyphicon.glyphicon-edit#edit_arm_button{title: t(:protocol)[:study_schedule][:edit_arm], type: "button", aria: {label: "Edit Arm"}}
+      .col-sm-6.col-md-6.text-center
+        =t(:protocol)[:study_schedule][:manage_visits]
+        #manage_visit_groups
+          .btn.btn-success.btn-sm.glyphicon.glyphicon-plus#add_visit_group_button{title: t(:protocol)[:study_schedule][:add_visit_group], type: "button", aria: {label: "Add Visit Group"}}
+          .btn.btn-danger.btn-sm.glyphicon.glyphicon-remove#remove_visit_group_button{title: t(:protocol)[:study_schedule][:remove_visit_group], type: "button", aria: {label: "Remove Visit Group"}}
+
     #service_calendar
       - if @study_tracker
         = hidden_field_tag('study_tracker', true, :id => "study_tracker_hidden_field")

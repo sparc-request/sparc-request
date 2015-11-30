@@ -1,0 +1,11 @@
+= form_for arm, {remote: true, html: {class: "form-horizontal edit_arm", role: "form"}} do |a|
+  .form-group
+    = a.label "name", t(:arm)[:name], class: "col-sm-4 control-label"
+    .col-sm-7= a.text_field "name", {class: 'form-control'}
+  .form-group
+    = a.label "subject_count", t(:arm)[:subject_count], class: "col-sm-4 control-label"
+    .col-sm-7= a.text_field "subject_count", {class: 'form-control'}
+  .modal-footer
+    .center-block
+      %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}= t(:actions)[:close]
+      %input.btn.btn-primary{type: 'submit', value: t(:actions)[:save]}

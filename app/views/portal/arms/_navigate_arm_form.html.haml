@@ -1,0 +1,22 @@
+.modal-dialog
+  .modal-content
+    .modal-header
+      %button.close{type: 'button', data: {dismiss: 'modal'}}
+        %span{aria: {hidden:'true'}} &times;
+        %span.sr-only= t(:actions)[:close]
+      %h4.modal-title.text-center= intended_action == "edit" ? t(:arm)[:edit_arm] : t(:arm)[:remove_arm]
+    .modal-body
+      #modal_errors
+      .row
+        .col-md-12.form-horizontal#navigate_arm_form{data: { intended_action: intended_action }}
+          .form-group
+            = label_tag 'arm_form_label', t(:arm)[:object], class: "col-sm-4 control-label"
+            .col-sm-7= select_tag "arm_form_select", options_from_collection_for_select(protocol_arms, 'id', 'name', arm.id), class: "selectpicker form-control"
+      - if intended_action == "edit"
+        %hr
+          .edit_arm_area= render partial: '/study_schedule/management/manage_arms/edit_arm_form', locals: {arm: arm}
+      -else
+        .modal-footer
+          .center-block
+            %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}= t(:actions)[:close]
+            %input.btn.btn-primary#remove_arm_form_button{type: 'submit', value: t(:actions)[:remove]}

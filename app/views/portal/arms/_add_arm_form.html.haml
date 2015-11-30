@@ -1,0 +1,27 @@
+.modal-dialog
+  .modal-content
+    = form_for arm, {remote: true, html: {class: "form-horizontal new_visit", role: "form"}} do |a|
+      .modal-header
+        %button.close{type: 'button', data: {dismiss: 'modal'}}
+          %span{aria: {hidden:'true'}} &times;
+          %span.sr-only= t(:actions)[:close]
+        %h4#add_arm.modal-title.text-center Add Arm
+      .modal-body
+        #modal_errors
+        .row
+          .col-md-12
+            = a.hidden_field :protocol_id
+            = hidden_field_tag :schedule_tab, schedule_tab
+            .form-group
+              = a.label "name", t(:arm)[:name], class: "col-sm-4 control-label"
+              .col-sm-7= a.text_field "name", {class: 'form-control'}
+            .form-group
+              = a.label "subject_count", t(:arm)[:subject_count], class: "col-sm-4 control-label"
+              .col-sm-7= a.text_field "subject_count", {class: 'form-control'}
+            .form-group
+              = a.label "visit_count", t(:arm)[:visit_count], class: "col-sm-4 control-label"
+              .col-sm-7= a.text_field "visit_count", {class: 'form-control'}
+      .modal-footer
+        .center-block
+          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}= t(:actions)[:close]
+          %input.btn.btn-primary{type: 'submit', value: t(:actions)[:add]}

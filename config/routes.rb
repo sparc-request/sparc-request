@@ -216,6 +216,10 @@ SparcRails::Application.routes.draw do
     resources :services, only: [:show]
     resources :admin, only: [:index]
 
+    resources :arms, only: [:new, :create, :update, :destroy] do
+      get :navigate_to_arm
+    end
+
     resources :associated_users, except: [:index] do
       collection do
         get :search

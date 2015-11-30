@@ -1,0 +1,2 @@
+$("#modal_area").html("<%= escape_javascript(render(:partial =>'portal/arms/add_arm_form', locals: {protocol: @protocol, arm: @arm, current_page: @current_page, services: @services, schedule_tab: @schedule_tab})) %>");
+$("#modal_place").modal 'show'

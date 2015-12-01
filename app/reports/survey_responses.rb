@@ -64,13 +64,6 @@ class SurveyResponseReport < ReportingModule
   def where args={}
     completed_at = (args[:completed_at_from] ? args[:completed_at_from] : self.default_options["Date Range"][:from]).to_time.strftime("%Y-%m-%d 00:00:00")..(args[:completed_at_to] ? args[:completed_at_to] : self.default_options["Date Range"][:to]).to_time.strftime("%Y-%m-%d 23:59:59")
 
-
-    # if args[:completed_at_from] and args[:completed_at_to]
-    #   completed_at = args[:completed_at_from].to_time.strftime("%Y-%m-%d 00:00:00")..args[:completed_at_to].to_time.strftime("%Y-%m-%d 23:59:59")
-    # end
-
-    # completed_at ||= self.default_options["Date Range"][:from]..self.default_options["Date Range"][:to]
-
     return :response_sets => {:completed_at => completed_at, :survey_id => args[:survey_id]}
   end
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151012140439) do
+ActiveRecord::Schema.define(version: 20151116155206) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -582,6 +582,7 @@ ActiveRecord::Schema.define(version: 20151012140439) do
     t.string   "internal_rate_type",     limit: 255
     t.string   "foundation_rate_type",   limit: 255
     t.datetime "deleted_at"
+    t.string   "unfunded_rate_type",     limit: 255
   end
 
   add_index "pricing_setups", ["organization_id"], name: "index_pricing_setups_on_organization_id", using: :btree
@@ -654,7 +655,7 @@ ActiveRecord::Schema.define(version: 20151012140439) do
     t.datetime "recruitment_end_date"
     t.boolean  "selected_for_epic",                                                           default: false
     t.boolean  "has_cofc"
-    t.boolean  "archived",                                                            :default => false
+    t.boolean  "archived",                                                                    default: false
   end
 
   add_index "protocols", ["next_ssr_id"], name: "index_protocols_on_next_ssr_id", using: :btree

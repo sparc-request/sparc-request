@@ -116,6 +116,8 @@ class Protocol < ActiveRecord::Base
     validate :primary_pi_exists
   end
 
+  scope :active, -> {where(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first)}
+
   def is_study?
     self.type == 'Study'
   end

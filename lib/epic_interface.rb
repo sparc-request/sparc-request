@@ -298,6 +298,10 @@ class EpicInterface
   end
 
   def emit_study_type(xml, study)
+    if study.active
+
+
+
     answers = []
     StudyTypeQuestion.find_each do |stq|
       answers << stq.study_type_answers.find_by_protocol_id(study.id).answer
@@ -320,6 +324,8 @@ class EpicInterface
       }
     end
   end
+
+  # def determine_study_type()
   
   def emit_ide_number(xml, study)
     ide_number = study.investigational_products_info.try(:ide_number)

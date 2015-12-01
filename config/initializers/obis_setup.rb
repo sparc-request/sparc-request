@@ -91,6 +91,7 @@ begin
   EPIC_PUSH_STATUS_TEXT          = config['epic_push_status_text']
   STUDY_TYPES                    = config['study_types']
   STUDY_TYPE_QUESTIONS           = config['study_type_questions']
+  STUDY_TYPE_QUESTIONS_VERSION_2 = config['study_type_questions_version_2']
   STUDY_TYPE_ANSWERS             = config['study_type_answers']
   FUNDING_STATUSES               = config['funding_statuses']
   ACCORDION_COLOR_OPTIONS        = config['accordion_color_options']

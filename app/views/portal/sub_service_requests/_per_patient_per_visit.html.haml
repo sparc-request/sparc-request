@@ -27,17 +27,18 @@
 - else
   #per_patient_per_visit_table{:style => "margin: 20px 0 0;"}
     #study_schedule_buttons{ data: { protocol_id: @service_request.protocol.id } }
-      .col-sm-6.col-md-6.text-center
-        =t(:protocol)[:study_schedule][:manage_arms]
-        #manage_arms
-          .btn.btn-success.btn-sm.glyphicon.glyphicon-plus#add_arm_button{title: t(:protocol)[:study_schedule][:add_arm], type: "button", aria: {label: "Add Arm"}}
-          .btn.btn-danger.btn-sm.glyphicon.glyphicon-remove#remove_arm_button{title: t(:protocol)[:study_schedule][:remove_arm], type: "button", aria: {label: "Remove Arm"}}
-          .btn.btn-warning.btn-sm.glyphicon.glyphicon-edit#edit_arm_button{title: t(:protocol)[:study_schedule][:edit_arm], type: "button", aria: {label: "Edit Arm"}}
-      .col-sm-6.col-md-6.text-center
-        =t(:protocol)[:study_schedule][:manage_visits]
-        #manage_visit_groups
-          .btn.btn-success.btn-sm.glyphicon.glyphicon-plus#add_visit_group_button{title: t(:protocol)[:study_schedule][:add_visit_group], type: "button", aria: {label: "Add Visit Group"}}
-          .btn.btn-danger.btn-sm.glyphicon.glyphicon-remove#remove_visit_group_button{title: t(:protocol)[:study_schedule][:remove_visit_group], type: "button", aria: {label: "Remove Visit Group"}}
+      .row
+        .col-sm-6.col-md-6.text-center
+          =t(:protocol)[:study_schedule][:manage_arms]
+          #manage_arms
+            .btn.btn-success.btn-sm.glyphicon.glyphicon-plus#add_arm_button{title: t(:protocol)[:study_schedule][:add_arm], type: "button", aria: {label: "Add Arm"}}
+            .btn.btn-danger.btn-sm.glyphicon.glyphicon-remove#remove_arm_button{title: t(:protocol)[:study_schedule][:remove_arm], type: "button", aria: {label: "Remove Arm"}}
+            .btn.btn-warning.btn-sm.glyphicon.glyphicon-edit#edit_arm_button{title: t(:protocol)[:study_schedule][:edit_arm], type: "button", aria: {label: "Edit Arm"}}
+        .col-sm-6.col-md-6.text-center
+          =t(:protocol)[:study_schedule][:manage_visits]
+          #manage_visit_groups
+            .btn.btn-success.btn-sm.glyphicon.glyphicon-plus#add_visit_group_button{title: t(:protocol)[:study_schedule][:add_visit_group], type: "button", aria: {label: "Add Visit Group"}}
+            .btn.btn-danger.btn-sm.glyphicon.glyphicon-remove#remove_visit_group_button{title: t(:protocol)[:study_schedule][:remove_visit_group], type: "button", aria: {label: "Remove Visit Group"}}
 
     #service_calendar
       - if @study_tracker

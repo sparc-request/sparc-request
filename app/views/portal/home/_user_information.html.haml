@@ -18,8 +18,8 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.user-information-body
-  %p
+.row.admin-dashboard
+  %p.col-xs-6.text-left
     = @user.full_name
     |
     = @user.email
@@ -44,7 +44,7 @@
             %td.image_placeholder
               %div
             %td.srid
-              %div= notification.sub_service_request.display_id
+              %div= 0
             %td.sender
               %div= notification.try(:messages).try(:last).try(:sender).try(:full_name)
             %td.subject

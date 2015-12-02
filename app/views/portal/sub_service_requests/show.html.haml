@@ -23,14 +23,13 @@
     Sparc.associated_users.ready();
   });
 
-.admin-right-dashboard.row
-  .user-information-body.row
-    %p
-      = @user.full_name
-      |
-      = @user.email
-    .admin-buttons
-      = link_to "Return to Admin Portal", portal_admin_index_path, :class => "return_link"
+.row.admin-dashboard
+  %p.col-xs-6.text-left
+    = @user.full_name
+    |
+    = @user.email
+  .col-xs-6.text-right
+    = link_to "Return to Admin Portal", portal_admin_index_path, :class => "return_link btn btn-primary btn-sm"
 
 #information
   #wrapper
@@ -52,10 +51,10 @@
           %td= @protocol.try(:principal_investigators).try(:first).try(:display_name)
           %td= @sub_service_request.try(:service_request).try(:service_requester).try(:display_name)
           %td= @protocol.try(:short_title)
-          %td= link_to t(:admin_dashboard)[:export_link], service_request_path(@sub_service_request.service_request, :format => :xlsx, :admin_offset => 1), :class => "export_to_excel_button"
-          %td= link_to "", "/portal/admin/sub_service_requests/#{@sub_service_request.id}", :method => :delete, :confirm => t(:admin_dashboard)[:delete_confirm], :class => "delete-ssr-button"
+          %td= link_to t(:admin_dashboard)[:export_link], service_request_path(@sub_service_request.service_request, :format => :xlsx, :admin_offset => 1), :class => "export_to_excel_button btn btn-sm btn-primary"
+          %td= link_to "", "/portal/admin/sub_service_requests/#{@sub_service_request.id}", :method => :delete, :confirm => t(:admin_dashboard)[:delete_confirm], :class => "delete-ssr-button btn btn-sm btn-danger glyphicon glyphicon-remove"
           - if USE_EPIC
-            %td= link_to t(:admin_dashboard)[:send_to_epic], 'javascript:void(0)', :class => "send_to_epic_button", :sub_service_request_id => @sub_service_request.id
+            %td= link_to t(:admin_dashboard)[:send_to_epic], 'javascript:void(0)', :class => "send_to_epic_button btn btn-sm btn-primary", :sub_service_request_id => @sub_service_request.id
 
 .tabs{role: 'tabpanel'}
   %ul.nav.nav-tabs.nav-justified{role: 'tablist'}

@@ -23,17 +23,17 @@
     Sparc.admin.ready();
   });
 
-.admin-right-dashboard
-  .user-information-body
-    %p
-      = @user.full_name
-      |
-      = @user.email
-    .admin-buttons
-      = link_to "Create A Request", root_path, :class => 'create_new_request header_button'
-      - if @user.is_super_user?
-        = link_to "Reporting", reports_path, :class => 'reporting header_button'
-      - if QUEUE_EPIC_EDIT_LDAP_UIDS.include?(current_user.ldap_uid)
-        = link_to "View Epic Queue", portal_epic_queues_path, :class => 'epic_queues header_button'
+
+.row.admin-dashboard
+  %p.col-xs-6.text-left
+    = @user.full_name
+    |
+    = @user.email
+  .col-xs-6.text-right
+    = link_to "Create A Request", root_path, :class => 'create_new_request header_button btn btn-primary btn-md'
+    - if @user.is_super_user?
+      = link_to "Reporting", reports_path, :class => 'reporting header_button btn btn-primary btn-md'
+    - if QUEUE_EPIC_EDIT_LDAP_UIDS.include?(current_user.ldap_uid)
+      = link_to "View Epic Queue", portal_epic_queues_path, :class => 'epic_queues header_button btn btn-primary btn-md'
 
 = render :partial => 'ssr_list'

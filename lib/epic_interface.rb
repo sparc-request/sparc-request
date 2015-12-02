@@ -299,19 +299,30 @@ class EpicInterface
 
   def emit_study_type(xml, study)
     if study.active
+      active_answers = []
+      StudyTypeQuestion.active.find_each do |stq|
+        active_answers << stq.study_type_answers.find_by_protocol_id(study.id).answer
+      end
 
+      study_type = nil
+      STUDY_TYPE_ANSWERS_VERSION_2.each do |k, v|
+        if v == active_answers
+          study_type = k
+          break
+        end
+      end
+    else study.inactive
+      answers = []
+      StudyTypeQuestion.find_each do |stq|
+        answers << stq.study_type_answers.find_by_protocol_id(study.id).answer
+      end
 
-
-    answers = []
-    StudyTypeQuestion.find_each do |stq|
-      answers << stq.study_type_answers.find_by_protocol_id(study.id).answer
-    end
-
-    study_type = nil
-    STUDY_TYPE_ANSWERS.each do |k, v|
-      if v == answers
-        study_type = k
-        break
+      study_type = nil
+      STUDY_TYPE_ANSWERS.each do |k, v|
+        if v == answers
+          study_type = k
+          break
+        end
       end
     end
 

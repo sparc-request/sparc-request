@@ -83,6 +83,7 @@ class Protocol < ActiveRecord::Base
   attr_accessible :selected_for_epic
   attr_accessible :study_type_answers_attributes
   attr_accessible :archived
+  attr_accessible :study_type_question_group_id
 
   attr_accessor :requester_id
   attr_accessor :validate_nct
@@ -117,6 +118,7 @@ class Protocol < ActiveRecord::Base
   end
 
   scope :active, -> {where(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first)}
+  scope :inactive, -> {where(study_type_question_group_id: StudyTypeQuestionGroup.inactive.pluck(:id).first)}
 
   def is_study?
     self.type == 'Study'

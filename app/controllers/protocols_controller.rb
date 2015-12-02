@@ -37,7 +37,8 @@ class ProtocolsController < ApplicationController
   def create
     @service_request = ServiceRequest.find session[:service_request_id]
     @current_step = params[:current_step]
-    @protocol = self.model_class.new(params[:study] || params[:project])
+    @protocol = self.model_class.new(params[:study].merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first) || params[:project])
+
     @protocol.validate_nct = true
     @portal = params[:portal]
 

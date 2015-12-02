@@ -93,6 +93,7 @@ begin
   STUDY_TYPE_QUESTIONS           = config['study_type_questions']
   STUDY_TYPE_QUESTIONS_VERSION_2 = config['study_type_questions_version_2']
   STUDY_TYPE_ANSWERS             = config['study_type_answers']
+  STUDY_TYPE_ANSWERS_VERSION_2   = config['study_type_answers_version_2']
   FUNDING_STATUSES               = config['funding_statuses']
   ACCORDION_COLOR_OPTIONS        = config['accordion_color_options']
   PROXY_RIGHTS                   = config['proxy_rights']

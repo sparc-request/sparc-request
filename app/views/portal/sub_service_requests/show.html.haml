@@ -23,8 +23,8 @@
     Sparc.associated_users.ready();
   });
 
-.admin-right-dashboard
-  .user-information-body
+.admin-right-dashboard.row
+  .user-information-body.row
     %p
       = @user.full_name
       |
@@ -57,30 +57,35 @@
           - if USE_EPIC
             %td= link_to t(:admin_dashboard)[:send_to_epic], 'javascript:void(0)', :class => "send_to_epic_button", :sub_service_request_id => @sub_service_request.id
 
-.tabs.plain_class
-  %ul
-    %li= link_to t(:admin_dashboard)[:tabs][:fulfillment], "#fulfillment", :class => 'fulfillment-tab'
-    %li= link_to t(:admin_dashboard)[:tabs][:protocol_info], "#protocol", :class => 'project-tab'
-    %li= link_to t(:admin_dashboard)[:tabs][:docs], "#documents", :class => 'documents-tab'
-    %li= link_to t(:admin_dashboard)[:tabs][:related_srs], "#related_service_requests", :class => 'related_service_requests-tab'
-    %li= link_to t(:admin_dashboard)[:tabs][:users], "#associated_users", :class => 'associated_users-tab'
-    %li= link_to t(:admin_dashboard)[:tabs][:notifications], "#notifications", :class => 'notifications-tab'
+.tabs{role: 'tabpanel'}
+  %ul.nav.nav-tabs.nav-justified{role: 'tablist'}
+    %li.custom-tab.ssr_tab.active{role: 'presentation'}
+      = link_to t(:admin_dashboard)[:tabs][:fulfillment], "#fulfillment", {class: 'fulfillment-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'fulfillment-tab'}
+    %li.custom-tab.ssr_tab{role: 'presentation'}
+      = link_to t(:admin_dashboard)[:tabs][:protocol_info], "#protocol", {class: 'project-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'project-tab'}
+    %li.custom-tab.ssr_tab{role: 'presentation'}
+      = link_to t(:admin_dashboard)[:tabs][:docs], "#documents", {class: 'documents-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'documents-tab'}
+    %li.custom-tab.ssr_tab{role: 'presentation'}
+      = link_to t(:admin_dashboard)[:tabs][:related_srs], "#related_service_requests", {class: 'related_service_requests-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'related_service_requests-tab'}
+    %li.custom-tab.ssr_tab{role: 'presentation'}
+      = link_to t(:admin_dashboard)[:tabs][:users], "#associated_users", {class: 'associated_users-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'associated_users-tab'}
+    %li.custom-tab.ssr_tab{role: 'presentation'}
+      = link_to t(:admin_dashboard)[:tabs][:notifications], "#notifications", {class: 'notifications-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'notifications-tab'}
 
-  #fulfillment
-    = render 'fulfillment'
-    
-  #protocol{:style => 'padding:15px;'}
-    = render :partial => 'portal/protocols/type_form'
-    = render :partial => 'portal/protocols/form', :locals => {:protocol => @protocol, :admin => true}
-      
-  #documents
-    = render 'portal/sub_service_requests/documents'
-  #related_service_requests
-    = render 'portal/sub_service_requests/related_service_requests'
-  #associated_users
-    = render 'portal/sub_service_requests/associated_users'
-  #notifications
-    = render 'portal/notifications/notifications'
+  .tab-content
+    .tab-pane#fulfillment{role: 'tabpanel', class: 'active'}
+      = render 'fulfillment'
+    .tab-pane#protocol{role: 'tabpanel', style: 'padding:15px;'}
+      = render :partial => 'portal/protocols/type_form'
+      = render :partial => 'portal/protocols/form', :locals => {:protocol => @protocol, :admin => true}
+    .tab-pane#documents{role: 'tabpanel'}
+      = render 'portal/sub_service_requests/documents'
+    .tab-pane#related_service_requests{role: 'tabpanel'}
+      = render 'portal/sub_service_requests/related_service_requests'
+    .tab-pane#associated_users{role: 'tabpanel'}
+      = render 'portal/sub_service_requests/associated_users'
+    .tab-pane#notifications{role: 'tabpanel'}
+      = render 'portal/notifications/notifications'
 
 = render 'cwf_building'
   

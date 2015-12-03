@@ -184,34 +184,6 @@ $(document).ready ->
     $(this).val(value)
   )
 
-  $(document).on('change', '#arm_id', ->
-    $("#visit_position").attr('disabled', 'disabled')
-    $("#delete_visit_position").attr('disabled', 'disabled')
-    sr_id = $(this).data('service_request_id')
-    protocol_id = $('#arm_id').data('protocol_id')
-    data =
-      'sub_service_request_id': $(this).data('sub_service_request_id')
-      'service_request_id': sr_id
-      'protocol_id': protocol_id
-      'arm_id': $('#arm_id').val()
-      'study_tracker': $('#study_tracker_hidden_field').val() || null
-    $.ajax
-      type: 'GET'
-      url:  "/portal/admin/protocols/#{protocol_id}/change_arm"
-      data:  data
-      success: ->
-        $("#visit_position").attr('disabled', false)
-        $("#delete_visit_position").attr('disabled', false)
-      error: (jqXHR, textStatus, errorThrown) ->
-        if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
-          errors = JSON.parse(jqXHR.responseText)
-        else
-          errors = [textStatus]
-        for error in errors
-          $().toastmessage('showErrorToast', "#{error.humanize()}.");
-  )
-
-
 ##              **BEGIN MANAGE ARMS**                     ##
 
   $(document).on 'click', '#add_arm_button', ->
@@ -354,91 +326,6 @@ $(document).ready ->
 
 ##          **END MANAGE VISIT GROUPS**               ##
 
-
-  # $(document).on('click', '.add_arm_link', ->
-  #   $('#arm-form').dialog('open')
-  # )
-
-  # $('#arm-form').dialog
-  #   autoOpen: false
-  #   height: 275
-  #   width: 300
-  #   modal: true
-  #   resizable: false
-  #   buttons: [
-  #     {
-  #       id: "submit_arm"
-  #       text: "Submit"
-  #       click: ->
-  #         $("#arm-form").submit()
-  #         $(this).dialog('close')
-  #     },
-  #     {
-  #       id: "cancel_arm"
-  #       text: "Cancel"
-  #       click: ->
-  #         $(this).dialog('close')
-  #     }]
-  #   open: ->
-  #     originalContent = $('#arm-form').html()
-  #   close: ->
-  #     $('#arm-form').html(originalContent)
-
-  # $('#arm-form').submit ->
-  #   sr_id = $('#arm_id').data('service_request_id')
-  #   protocol_id = $('#arm_id').data('protocol_id')
-  #   data =
-  #     'sub_service_request_id': $('#arm_id').data('sub_service_request_id')
-  #     'service_request_id': sr_id
-  #     'protocol_id': protocol_id
-  #     'arm_name': $('#arm_name').val()
-  #     'subject_count': $('#subject_count').val()
-  #     'visit_count': $('#visit_count').val()
-  #   $.ajax
-  #     type: 'POST'
-  #     url:   "/portal/admin/protocols/#{protocol_id}/add_arm"
-  #     data:  JSON.stringify(data)
-  #     dataType: 'script'
-  #     contentType: 'application/json; charset=utf-8'
-  #     success: ->
-  #       $().toastmessage('showSuccessToast', I18n["service_request_success"])
-  #     error: (jqXHR, textStatus, errorThrown) ->
-  #       if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
-  #         errors = JSON.parse(jqXHR.responseText)
-  #       else
-  #         errors = [textStatus]
-  #       for error in errors
-  #         $().toastmessage('showErrorToast', "#{error.humanize()}.");
-
-  # $(document).on('click', '.remove_arm_link', ->
-  #   if $(this).data('arm_count') <= 1
-  #     alert(I18n["fulfillment_js"]["arm_remove_alert"])
-  #   else if $(this).data('can_be_deleted') == false
-  #     alert(I18n["fulfillment_js"]["arm_subject_data_alert"])
-  #   else if confirm(I18n["fulfillment_js"]["arm_delete_confirm"])
-  #     sr_id = $(this).data('service_request_id')
-  #     protocol_id = $('#arm_id').data('protocol_id')
-  #     data =
-  #       'sub_service_request_id': $(this).data('sub_service_request_id')
-  #       'service_request_id': sr_id
-  #       'protocol_id': protocol_id
-  #       'arm_id': $('#arm_id').val()
-  #     $.ajax
-  #       type: 'POST'
-  #       url:   "/portal/admin/protocols/#{protocol_id}/remove_arm"
-  #       data:  JSON.stringify(data)
-  #       dataType: 'script'
-  #       contentType: 'application/json; charset=utf-8'
-  #       success: ->
-  #         $().toastmessage('showSuccessToast', I18n["service_request_success"])
-  #       error: (jqXHR, textStatus, errorThrown) ->
-  #         if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
-  #           errors = JSON.parse(jqXHR.responseText)
-  #         else
-  #           errors = [textStatus]
-  #         for error in errors
-  #           $().toastmessage('showErrorToast', "#{error.humanize()}.");
-  # )
 
   # $(document).on('click', '.add_visit_link', ->
   #   $('#visit-form').dialog('open')

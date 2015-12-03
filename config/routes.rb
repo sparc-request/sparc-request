@@ -314,9 +314,6 @@ SparcRails::Application.routes.draw do
       collection do
         put "/visits/:id/update_from_fulfillment" => "visits#update_from_fulfillment"
         put "/service_requests/:id/update_from_fulfillment" => "service_requests#update_from_fulfillment"
-        get "/protocols/:id/change_arm" => "protocols#change_arm"
-        post "/protocols/:id/add_arm" => "protocols#add_arm"
-        post "/protocols/:id/remove_arm" => "protocols#remove_arm"
         post "/service_requests/:id/add_per_patient_per_visit_visit" => "service_requests#add_per_patient_per_visit_visit"
         put "/subsidys/:id/update_from_fulfillment" => "subsidies#update_from_fulfillment"
         delete "/subsidys/:id" => "subsidies#destroy"

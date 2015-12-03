@@ -108,6 +108,10 @@ $(document).ready ->
     sub_service_request_id = $(this).data('sub_service_request_id')
     identity_id = $(this).data('identity_id')
     is_service_provider = $(this).data('is_service_provider')
+    if identity_id == current_user_id
+      alert("You can not send a message to yourself.")
+      
+
 
     $('.new_notification_dialog').dialog('open')
     $.ajax

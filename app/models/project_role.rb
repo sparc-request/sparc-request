@@ -50,7 +50,7 @@ class ProjectRole < ActiveRecord::Base
     end
   end
 
-  def validate_uniqueness_within_protocol
+  def unique_to_protocol?
     duplicate_project_roles = self.protocol.project_roles.select {|x| x.identity_id == self.identity_id}
     duplicate_project_roles << self
     if duplicate_project_roles.count > 1
@@ -61,12 +61,49 @@ class ProjectRole < ActiveRecord::Base
     return true
   end
 
+  def fully_valid?
+    valid = self.valid?
+    other_selections_valid = self.validate_other_selections
+    one_primary_pi = self.validate_one_primary_pi
+
+    return (valid && other_selections_valid && one_primary_pi)
+  end
+
+  def validate_other_selections
+    role_other_filled = true
+    credentials_other_filled = true
+
+    if self.role == 'other'
+      if self.role_other.nil? || (!self.role_other.nil? && self.role_other.blank?)
+        role_other_filled = false
+        errors.add(:must, "specify this User's Role.")
+      end
+    end
+
+    if self.identity.credentials == 'other'
+      if self.identity.credentials_other.nil? || (!self.identity.credentials_other.nil? && self.identity.credentials_other.blank?)
+        credentials_other_filled = false
+        errors.add(:must, "specify this User's Credentials.")
+      end
+    end
+
+    return role_other_filled && credentials_other_filled
+  end
+
   def validate_one_primary_pi
-    unless self.has_minimum_pi?
+    if !self.has_minimum_pi?
       errors.add(:must, "include one Primary PI.")
       return false
+    elsif self.role == 'primary-pi'
+      project_roles = self.protocol.project_roles.select {|x| x.role == 'primary-pi'}
+      unless project_roles.include?(self)
+        errors.add(:role, "- This protocol already has a Primary PI.")
+        return false
+      end
+      return true
+    else
+      return true
     end
-    return true
   end
 
   def has_minimum_pi?

@@ -38,7 +38,6 @@ $(document).ready ->
         other          : ['.credentials_other']
 
     ready: ->
-
       $('.associated-user-button').live 'click', ->
         if $(this).data('permission')
           $('.add-associated-user-dialog').dialog('open')
@@ -55,16 +54,13 @@ $(document).ready ->
       # and disable all other radio buttons if 'pi'
       $('#project_role_role').live 'change', ->
         role = $(this).val()
-        if role == 'pi' or role == 'business-grants-manager' or role == 'primary-pi'
-          $('#project_role_project_rights_approve').attr('checked', true)
-        if role == 'pi' or role == 'primary-pi'
-          $('#project_role_project_rights_request').attr('disabled', true)
-          $('#project_role_project_rights_view').attr('disabled', true)
+        if role == 'pi' or role == 'primary-pi' or role == 'business-grants-manager'
           $('#project_role_project_rights_none').attr('disabled', true)
+          $('#project_role_project_rights_view').attr('disabled', true)
+          $('#project_role_project_rights_request').attr('disabled', true)
+          $('#project_role_project_rights_approve').attr('checked', true)
         else
-          $('#project_role_project_rights_request').attr('disabled', false)
-          $('#project_role_project_rights_view').attr('disabled', false)
-          $('#project_role_project_rights_none').attr('disabled', false)
+          $('.rights_radios input').attr('disabled', false)
 
       $(document).on 'click', '.edit-associated-user-button', ->
         if $(this).data('permission')
@@ -78,7 +74,6 @@ $(document).ready ->
               data: {protocol_id: protocol_id, identity_id: user_id, sub_service_request_id: sub_service_request_id}
               success: ->
                 $('.edit-associated-user-dialog').dialog('open')
-                Sparc.associated_users.showEpicRights($('.epic_access:checked').val())
               error: (request, status, error) ->
                 $().toastmessage "showMessage",
                   type: "error"
@@ -98,10 +93,9 @@ $(document).ready ->
           pr_id = $(this).data('pr_id')
           user_id = $(this).data('user_id')
           user_role = $(this).data('user_role')
-          pi_count = parseInt($("#pi_count_#{protocol_id}").val(), 10)
           confirm_message = if current_user_id == user_id then 'This action will remove you from the project. Are you sure?' else 'Are you sure?'
-          alert_message1 = 'Projects require a PI. Please add a new one before continuing.'
-          cannot_remove_pi = (current_user_role == 'primary-pi' or user_role == 'primary-pi') and pi_count == 1
+          alert_message1 = I18n["protocol_information"]["require_primary_pi_message"]
+          cannot_remove_pi = (current_user_role == 'primary-pi' or user_role == 'primary-pi')
 
           if cannot_remove_pi
             alert(alert_message1)
@@ -142,6 +136,15 @@ $(document).ready ->
       Sparc.associated_users.create_edit_associated_user_dialog()
       Sparc.associated_users.create_add_associated_user_dialog()
 
+    reset_fields: () ->
+      $('.errorExplanation').html('').hide()
+      $('.hidden').hide()
+      $('#epic_access').hide()
+      $('.add-associated-user-dialog input').val('')
+      $('.add-associated-user-dialog select').prop('selectedIndex', 0)
+      $('.add-associated-user-dialog #epic_access input').prop('checked', false)
+      $('.add-associated-user-dialog .rights_radios input').prop('checked', false)
+
     create_add_associated_user_dialog: () ->
       $('.add-associated-user-dialog').dialog
         autoOpen: false
@@ -153,10 +156,12 @@ $(document).ready ->
         buttons:
           'Submit':
             id: 'add_authorized_user_submit_button'
+            text: 'Submit'
             click: ->
               $("#new_project_role").submit()
           'Cancel':
             id: 'add_authorized_user_cancel_button'
+            text: 'Cancel'
             click: ->
               $(this).dialog('close')
               $("#errorExplanation").remove()
@@ -164,6 +169,8 @@ $(document).ready ->
           Sparc.associated_users.reset_fields()
           $('.dialog-form input,.dialog-form select').attr('disabled',true)
           # $('.ui-dialog .ui-dialog-buttonpane button:contains(Submit)').filter(":visible").attr('disabled',true).addClass('button-disabled')
+        close: ->
+          Sparc.associated_users.reset_fields()
 
     create_edit_associated_user_dialog: () ->
       $('.edit-associated-user-dialog').dialog
@@ -176,21 +183,27 @@ $(document).ready ->
           buttons:
             'Submit':
               id: 'edit_authorized_user_submit_button'
+              text: 'Submit'
               click: ->
                 form = $(".edit-associated-user-dialog").children('form')
                 $('#edit_authorized_user_submit_button').attr('disabled', true)
                 form.submit()
             'Cancel':
               id: 'edit_authorized_user_cancel_button'
+              text: 'Cancel'
               click: ->
                 $(this).dialog("close")
                 $("#errorExplanation").remove()
           open: ->
-            Sparc.associated_users.reset_fields()
             $('#edit_authorized_user_submit_button').attr('disabled', false)
             $('#associated_user_role').change()
+          close: ->
+            Sparc.associated_users.reset_fields()
 
     reset_fields: () ->
+      $('.errorExplanation').html('').hide()
+      $('.hidden').hide()
+      $('#epic_access').hide()
       $('.add-associated-user-dialog input').val('')
       $('.add-associated-user-dialog select').prop('selectedIndex', 0)
       $('.add-associated-user-dialog #epic_access input').prop('checked', false)
@@ -217,17 +230,6 @@ $(document).ready ->
         .attr('disabled',false)
         .removeClass('button-disabled')
       button.attr('disabled',false)
-
-    validatePiPresence: (role) ->
-      pi_count = parseInt($('.edit-user #pi_count').val(), 10)
-      pi_validation_message = $('.edit-user #pi-validation-message')
-      pi_count -= 1 if role != 'primary-pi'
-      if pi_count <= 0
-        pi_validation_message.show()
-        Sparc.associated_users.disableSubmitButton("Submit", "Submit")
-      else
-        pi_validation_message.hide()
-        Sparc.associated_users.enableSubmitButton("Submit", "Submit")
 
     validateRolePresence: (role) ->
       role_validation = $('#user-role-validation-message')

@@ -25,15 +25,19 @@ class Portal::ArmsController < Portal::BaseController
 
   def new
     @protocol = Protocol.find(params[:protocol_id])
-    @arm = Arm.new(protocol: @protocol)
+    @service_request = ServiceRequest.find(params[:service_request_id])
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    @arm = Arm.new(protocol_id: params[:protocol_id])
     @schedule_tab = params[:schedule_tab]
   end
 
   def create
-    @protocol = Protocol.find(params[:protocol_id])
-    name = params[:arm_name] ? params[:arm_name] : "ARM #{@service_request.arms.count + 1}"
-    visit_count = params[:visit_count] ? params[:visit_count].to_i : 1
-    subject_count = params[:subject_count] ? params[:subject_count].to_i : 1
+    @protocol = Protocol.find(params[:arm][:protocol_id])
+    @service_request = ServiceRequest.find(params[:service_request_id])
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    name = params[:arm][:arm_name] || "ARM #{@protocol.arms.count + 1}"
+    visit_count = params[:arm][:visit_count] ? params[:arm][:visit_count].to_i : 1
+    subject_count = params[:arm][:subject_count] ? params[:arm][:subject_count].to_i : 1
 
     if @selected_arm = @protocol.create_arm(name: name, visit_count: visit_count, subject_count: subject_count)
       @selected_arm.default_visit_days
@@ -42,22 +46,26 @@ class Portal::ArmsController < Portal::BaseController
       if @protocol.service_requests.map {|x| x.sub_service_requests.map {|y| y.in_work_fulfillment}}.flatten.include?(true)
         @selected_arm.populate_subjects
       end
-      flash[:success] = t(:arm)[:flash_messages][:created]
+      flash[:success] = "Arm Created!"
     else
       @errors = @arm.errors
     end
   end
 
-  def navigate_to_arm
+  def navigate
     # Used in study schedule management for navigating to a arm.
     @protocol = Protocol.find(params[:protocol_id])
+    @service_request = ServiceRequest.find(params[:service_request_id])
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @intended_action = params[:intended_action]
     @arm = params[:arm_id].present? ? Arm.find(params[:arm_id]) : @protocol.arms.first
   end
 
   def update
-    if @arm.update_attributes(arm_params)
-      flash[:success] = t(:arm)[:flash_messages][:updated]
+    @service_request = ServiceRequest.find(params[:service_request_id])
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    if @arm.update_attributes(params[:arm])
+      flash[:success] = "Arm Updated!"
     else
       @errors = @arm.errors
     end

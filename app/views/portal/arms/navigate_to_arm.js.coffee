@@ -1,2 +1,0 @@
-$("#modal_area").html("<%= escape_javascript(render(:partial =>'/portal/arms/navigate_arm_form', locals: {intended_action: @intended_action, arm: @arm, protocol_arms: @protocol.arms})) %>");
-$("#modal_place").modal 'show'

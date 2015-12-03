@@ -11,7 +11,6 @@ RSpec.describe "Identity edits Study", js: true do
     visit protocol_service_request_path service_request.id
     find('.edit-study').click
 
-    find('#study_has_cofc_true').click
     select "Funded", from: "study_funding_status"
     select "Federal", from: "study_funding_source"
     fill_in "study_short_title", with: "Bob"
@@ -24,7 +23,6 @@ RSpec.describe "Identity edits Study", js: true do
   end
 
   scenario 'and sets epic access' do
-    study.update_attribute(:has_cofc, true)
     study.update_attribute(:selected_for_epic, true)
     stub_const("USE_EPIC", true)
 
@@ -32,7 +30,10 @@ RSpec.describe "Identity edits Study", js: true do
     find('.edit-study').click
     wait_for_javascript_to_finish
 
-    find('#study_type_answer_higher_level_of_privacy_answer').set(false)
+    find("#study_type_answer_certificate_of_conf_answer").set(false)
+    find("#study_type_answer_certificate_of_conf_answer").trigger('change')
+
+    find('#study_type_answer_higher_level_of_privacy_answer').set(true)
     find('#study_type_answer_higher_level_of_privacy_answer').trigger('change')
 
     find('#study_type_answer_epic_inbasket_answer').set(false)

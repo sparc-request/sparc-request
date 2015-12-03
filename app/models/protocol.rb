@@ -40,6 +40,8 @@ class Protocol < ActiveRecord::Base
   has_many :study_type_answers, :dependent => :destroy
   has_many :study_type_questions, through: :study_type_question_group
 
+  belongs_to :study_type_question_group
+
   attr_accessible :identity_id
   attr_accessible :next_ssr_id
   attr_accessible :short_title
@@ -117,8 +119,9 @@ class Protocol < ActiveRecord::Base
     validate :primary_pi_exists
   end
 
-  scope :active, -> {where(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first)}
-  scope :inactive, -> {where(study_type_question_group_id: StudyTypeQuestionGroup.inactive.pluck(:id).first)}
+  def active?
+    study_type_question_group.active
+  end
 
   def is_study?
     self.type == 'Study'

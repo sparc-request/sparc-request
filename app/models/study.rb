@@ -77,7 +77,7 @@ class Study < Protocol
   end
 
   def setup_study_type_answers
-    StudyTypeQuestion.find_each do |stq|
+    StudyTypeQuestion.active.find_each do |stq|
       study_type_answer = study_type_answers.detect{|obj| obj.study_type_question_id == stq.id}
       study_type_answer = study_type_answers.build(study_type_question_id: stq.id) unless study_type_answer
     end

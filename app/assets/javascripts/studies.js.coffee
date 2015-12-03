@@ -60,6 +60,13 @@ $(document).ready ->
     $('.study_type').hide()
     $('.study_type select').val("").change()
 
+  $("#study_type_answer_certificate_of_conf_answer").change ->
+    if $(this).val() == 'true'
+      $("#study_type_answer_access_study_info_answer").val("").change()
+      $("#study_type_answer_epic_inbasket_answer").val("").change()
+      $("#study_type_answer_research_active_answer").val("").change()
+      $("#study_type_answer_restrict_sending_answer").val("").change()
+
   $("#study_type_answer_higher_level_of_privacy_answer").change ->
     if $(this).val() != 'false'
       for elem in ['#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
@@ -76,12 +83,7 @@ $(document).ready ->
       for elem in ['#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
         $(elem).show()
 
-  $("#study_type_answer_certificate_of_conf_answer").change ->
-    if $(this).val() == 'true'
-      $("#study_type_answer_access_study_info_answer").val("").change()
-      $("#study_type_answer_epic_inbasket_answer").val("").change()
-      $("#study_type_answer_research_active_answer").val("").change()
-      $("#study_type_answer_restrict_sending_answer").val("").change()
+
 
   $("#study_type_answer_access_study_info_answer").change ->
     if $(this).val() == 'true'

@@ -298,7 +298,7 @@ class EpicInterface
   end
 
   def emit_study_type(xml, study)
-    if study.active
+    if study.active?
       active_answers = []
       StudyTypeQuestion.active.find_each do |stq|
         active_answers << stq.study_type_answers.find_by_protocol_id(study.id).answer
@@ -311,7 +311,7 @@ class EpicInterface
           break
         end
       end
-    else study.inactive
+    else 
       answers = []
       StudyTypeQuestion.find_each do |stq|
         answers << stq.study_type_answers.find_by_protocol_id(study.id).answer

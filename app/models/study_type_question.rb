@@ -4,6 +4,7 @@ class StudyTypeQuestion < ActiveRecord::Base
   has_many :study_type_answers
 
   attr_accessible :order, :question, :friendly_id, :study_type_question_group_id
-  scope :active, -> { where(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first) }
-  scope :inactive, -> { where(study_type_question_group_id: StudyTypeQuestionGroup.inactive.pluck(:id).first) }
+
+  scope :active, -> { joins(:study_type_question_group).where(study_type_question_groups: { active: true })  }
+  scope :inactive, -> { joins(:study_type_question_group).where(study_type_question_groups: { active: false }) }
 end

@@ -141,28 +141,36 @@ class Protocol < ActiveRecord::Base
   end
 
   def validate_study_type_answers
-    friendly_ids = ["higher_level_of_privacy", "certificate_of_conf", "access_study_info", "epic_inbasket", "research_active", "restrict_sending"]
+    friendly_ids = ["certificate_of_conf", "higher_level_of_privacy", "access_study_info", "epic_inbasket", "research_active", "restrict_sending"]
     answers = {}
     friendly_ids.each do |fid|
-      q = StudyTypeQuestion.find_by_friendly_id(fid)
+      q = StudyTypeQuestion.active.find_by_friendly_id(fid)
       answers[fid] = study_type_answers.find{|x| x.study_type_question_id == q.id}
     end
 
     has_errors = false
 
     begin
-      if answers["higher_level_of_privacy"].answer.nil?
+      if answers["certificate_of_conf"].answer.nil?
         has_errors = true
-      elsif answers["higher_level_of_privacy"].answer == true
-        if answers["certificate_of_conf"].answer.nil? || (answers["certificate_of_conf"].answer == false && answers["access_study_info"].answer.nil?)
-          has_errors = true
-        elsif answers["access_study_info"].answer == false
-          if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?
+      elsif answers["certificate_of_conf"].answer == false
+        if (answers["higher_level_of_privacy"].answer.nil?) 
+          has_errors = true     
+        elsif (answers["higher_level_of_privacy"].answer == false)
+          if answers["epic_inbasket"].answer.nil? && answers["research_active"].answer.nil? && answers["restrict_sending"].answer.nil?
             has_errors = true
           end
+        elsif (answers["higher_level_of_privacy"].answer == true)
+          if (answers["access_study_info"].answer.nil?)
+            has_errors = true
+          elsif (answers["access_study_info"].answer == false)
+            if answers["epic_inbasket"].answer.nil? && answers["research_active"].answer.nil? && answers["restrict_sending"].answer.nil?
+              has_errors = true
+            end
+          end
         end
-      elsif answers["higher_level_of_privacy"].answer == false
-        if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?
+      elsif answers["certificate_of_conf"].answer == true
+        if answers["higher_level_of_privacy"].answer.nil?
           has_errors = true
         end
       end

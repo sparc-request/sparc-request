@@ -75,7 +75,7 @@ $(document).ready ->
             if $(this).val() == 'true' || $(this).val() == 'false'
               for elem in ['#study_type_answer_access_study_info', '#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
                 $(elem).hide()
-              for elem in ['#study_type_answer_access_study_info', '#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
+              for elem in ['#study_type_answer_access_study_info_answer', '#study_type_answer_epic_inbasket_answer', '#study_type_answer_research_active_answer', '#study_type_answer_restrict_sending_answer']
                 $(elem).val("").change()
         
         else if $(this).val() == 'false'

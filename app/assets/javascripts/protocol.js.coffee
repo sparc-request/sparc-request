@@ -23,6 +23,9 @@
 
 $(document).ready ->
 
+  $('.new-study-button').tooltip()
+  $('.new-project-button').tooltip()
+
   infotip.setText('Research Study: An individual research study with defined aims and outcomes', '#infotip img')
 
   $("input[name=protocol]:radio").change ->

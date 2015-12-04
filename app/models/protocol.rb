@@ -127,6 +127,39 @@ class Protocol < ActiveRecord::Base
     self.type == 'Study'
   end
 
+  def determine_study_type
+    active_answers = []
+    inactive_answers = []
+    if study_type_answers.present?
+      if active?
+        StudyTypeQuestion.active.find_each do |stq|
+          active_answers << stq.study_type_answers.find_by_protocol_id(id).answer 
+        end
+        puts active_answers.inspect
+        study_type = nil
+        STUDY_TYPE_ANSWERS_VERSION_2.each do |k, v|
+          if v == active_answers
+            study_type = k
+            break
+          end
+        end
+        study_type
+      elsif !active?
+        StudyTypeQuestion.inactive.find_each do |stq|
+          inactive_answers << stq.study_type_answers.find_by_protocol_id(id).answer 
+        end
+        study_type = nil
+        STUDY_TYPE_ANSWERS.each do |k, v|
+          if v == inactive_answers
+            study_type = k
+            break
+          end
+        end
+        study_type
+      end
+    end
+  end
+
   # Determines whether a protocol contains a service_request with only a "first draft" status
   def has_first_draft_service_request?
     service_requests.any? && service_requests.map(&:status).all? { |status| status == 'first_draft'}

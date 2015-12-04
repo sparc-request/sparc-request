@@ -35,7 +35,7 @@ class Portal::ArmsController < Portal::BaseController
     @protocol = Protocol.find(params[:arm][:protocol_id])
     @service_request = ServiceRequest.find(params[:service_request_id])
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    name = params[:arm][:arm_name] || "ARM #{@protocol.arms.count + 1}"
+    name = params[:arm][:name] || "ARM #{@protocol.arms.count + 1}"
     visit_count = params[:arm][:visit_count] ? params[:arm][:visit_count].to_i : 1
     subject_count = params[:arm][:subject_count] ? params[:arm][:subject_count].to_i : 1
 

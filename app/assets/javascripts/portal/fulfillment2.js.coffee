@@ -210,7 +210,7 @@ $(document).ready ->
 
   $(document).on 'click', '#remove_arm_form_button', ->
     arm_id = $("#arm_form_select").val()
-    arm_name = $(".bootstrap-select > button[data-id='arm_form_select']").attr('title')
+    arm_name = $("#arm_form_select option:selected").text()
     data =
       "protocol_id"             : $('#study_schedule_buttons').data('protocol-id')
       "sub_service_request_id"  : $('#study_schedule_buttons').data("sub-service-request-id")

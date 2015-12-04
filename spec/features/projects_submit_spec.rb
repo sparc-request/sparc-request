@@ -30,10 +30,7 @@ RSpec.describe "creating a new project ", js: true do
     service_request.update_attribute(:status, 'first_draft')
     service_request.reload
     visit protocol_service_request_path service_request.id
-    find('#protocol_Project').click
-    wait_for_javascript_to_finish
-
-    find('.new-project').click
+    click_link 'Project'
     wait_for_javascript_to_finish
   end
 
@@ -68,9 +65,6 @@ RSpec.describe "creating a new project ", js: true do
       click_button "Add Authorized User"
 
       find('.continue_button').click
-
-      expect(page).to have_css('.edit_project_id')
-      expect(find(".edit_project_id")).to have_value Protocol.last.id.to_s
     end
   end
 end

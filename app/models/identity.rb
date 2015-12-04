@@ -138,7 +138,7 @@ class Identity < ActiveRecord::Base
   ###############################################################################
 
   # Returns true if the user is a catalog overlord.  Should only be true for three uids:
-  # jug2, anc63, mas244
+  # lmf5, anc63, mas244
   def is_overlord?
     @is_overlord ||= self.catalog_overlord?
   end

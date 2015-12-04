@@ -20,28 +20,77 @@
 
 require 'rails_helper'
 
-RSpec.describe 'adding an additional service', js: true do
+RSpec.feature 'user views Add Services link', js: true do
 
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
+  build_study_type_questions
   build_service_request_with_project
 
-  before :each do
-    visit portal_root_path
 
-    # wait_for_javascript_to_finish not working here.
-    # Needs to be replaced with something more sophisticated.
-    # If `Unable to find css ".add-services-button"` error occurs,
-    # bump this up, for now.
-    sleep 1
+  scenario "user views a protocol with service request status of 'first_draft'" do
+    service_request.update_attributes(status: 'first_draft')
+    when_i_visit_portal_path
+    then_i_should_see_request_in_progress_text
   end
 
-  describe 'clicking the button' do
-    it "should redirect to the application root page" do
-      find('.add-services-button').click
-      wait_for_javascript_to_finish
-      expect(page).to have_content("Welcome to the SPARC Request Services Catalog")
-    end
+  scenario "user views a protocol with a service_request of status 'draft'" do
+    when_i_visit_portal_path
+    then_i_should_not_see_a_link_to_add_services
+  end
+
+  scenario "user views a protocol without a service_request and visits 'Add Services'" do
+    service_request.destroy
+    when_i_visit_portal_path
+    and_i_visit_add_services
+    then_i_should_be_redierected_to_the_app_root_page
+  end
+
+  def and_i_visit_add_services
+    find('.add-services-button').click
+    wait_for_javascript_to_finish
+  end
+
+  def then_i_should_see_request_in_progress_text
+    expect(page).to have_text('Request in Progress')
+  end
+
+  def then_i_should_be_redierected_to_the_app_root_page
+    expect(page).to have_content("Welcome to the SPARC Request Services Catalog")
+  end
+
+  def when_i_visit_portal_path
+    visit portal_root_path
+    wait_for_javascript_to_finish
+  end
+
+  def then_i_should_see_a_link_to_add_services
+    expect(page).to have_selector('.add-services-button')
+  end
+
+  def then_i_should_not_see_a_link_to_add_services
+    expect(page).to_not have_selector('.add-services-button')
+  end
+
+  def and_i_create_a_new_study_by_filling_out_study_info
+    find('.portal_create_new_study').click
+    fill_in "study_short_title", with: "Bob"
+    fill_in "study_title", with: "Dole"
+    fill_in "study_sponsor_name", with: "Captain Kurt 'Hotdog' Zanzibar"
+    find('#study_has_cofc_true').click
+    select "Funded", from: "study_funding_status"
+    select "College Department", from: "study_funding_source"
+    find('#study_selected_for_epic_false').click
+    find('.continue_button').click
+    wait_for_javascript_to_finish
+  end
+
+  def and_add_an_authorized_user
+    select "Primary PI", from: "project_role_role"
+    find('.add-authorized-user').click
+    wait_for_javascript_to_finish
+    find('.continue_button').click
+    wait_for_javascript_to_finish
   end
 end

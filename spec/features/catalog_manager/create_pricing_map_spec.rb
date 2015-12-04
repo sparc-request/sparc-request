@@ -52,7 +52,7 @@ RSpec.describe 'as a user on catalog page', js: true do
       wait_for_javascript_to_finish
 
       fill_in "pricing_maps_blank_pricing_map_full_rate", with: 4321
-      fill_in "clinical_quantity_", with: "Each"
+      fill_in "otf_quantity_type_", with: "hours"
 
       page.execute_script %Q{ $(".service_unit_factor").change() }
     end

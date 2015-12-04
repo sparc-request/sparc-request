@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 - if SYSTEM_SATISFACTION_SURVEY != false
-  = javascript_include_tag 'review'
+  = javascript_include_tag 'system_satisfaction'
 = javascript_include_tag 'service_calendar.js'
 
 = form_tag navigate_service_request_path(@service_request), {:id => 'navigation_form', :class => 'root-view', :multipart => true} do
@@ -29,6 +29,9 @@
 
   #participate_in_survey{:title => t(:sr_review)[:participate_in_survey_title]}
     = t(:sr_review)[:participate_in_survey]
+
+  #draft_notification{:title => t(:sr_review)[:save_as_draft_notification_title], data: {sr_id: @service_request.id}}
+    = t(:sr_review)[:save_as_draft_notification]
 
   .grid_12.col-md-12
     .view-anchor
@@ -62,7 +65,9 @@
               .return-to-previous
                 = navigation_link image_tag('GoBack.png'), @back
                 = navigation_link t(:bottom_navigation)[:go_back], @back, "btn btn-success btn-lg"
-            .save-as-draft.red-provider= navigation_link t(:bottom_navigation)[:save_as_draft], 'save_and_exit', "btn btn-success btn-lg"
+            .save-as-draft.red-provider
+              %a.btn.btn-success.btn-lg#save-as-draft{href: 'javascript:void(0)'}
+                = t(:bottom_navigation)[:save_as_draft]
             .obtain-research-pricing.red-provider
               = link_to t(:bottom_navigation)[:get_cost_estimate], obtain_research_pricing_service_request_path, :class => "btn btn-success btn-lg", :id => 'get_a_cost_estimate'
             .submit-request.red-provider

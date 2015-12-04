@@ -22,7 +22,7 @@ class ServiceRequestsReport < ReportingModule
   $canned_reports << name unless $canned_reports.include? name # update global variable so that we can populate the list, report won't show in the list without this, unless is necessary so we don't add on refresh in dev. mode
 
   ################## BEGIN REPORT SETUP #####################
-  
+
   def self.title
     "Service Requests"
   end
@@ -48,20 +48,21 @@ class ServiceRequestsReport < ReportingModule
     if params[:institution_id]
       attrs[Institution] = [params[:institution_id], :abbreviation]
     end
-    
+
     if params[:provider_id]
       attrs[Provider] = [params[:provider_id], :abbreviation]
     end
-    
+
     if params[:program_id]
       attrs[Program] = [params[:program_id], :abbreviation]
     end
-    
+
     if params[:core_id]
       attrs[Core] = [params[:core_id], :abbreviation]
     end
 
     attrs["SRID"] = :display_id
+    attrs["Status"] = :formatted_status
 
     if params[:apr_data]
       if params[:apr_data].include?("irb") || params[:apr_data].include?("iacuc")
@@ -70,9 +71,8 @@ class ServiceRequestsReport < ReportingModule
     end
 
     attrs["Date Submitted"] = "service_request.submitted_at.strftime('%Y-%m-%d')"
-
     attrs["Primary PI Last Name"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:last_name)"
-    attrs["Primary PI First Name"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:first_name)" 
+    attrs["Primary PI First Name"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:first_name)"
     attrs["Primary PI College"] = ["service_request.try(:protocol).try(:primary_principal_investigator).try(:college)", COLLEGES.invert] # we invert since our hash is setup {"Bio Medical" => "bio_med"} for some crazy reason
     attrs["Primary PI Department"] = ["service_request.try(:protocol).try(:primary_principal_investigator).try(:department)", DEPARTMENTS.invert]
 
@@ -81,11 +81,13 @@ class ServiceRequestsReport < ReportingModule
         attrs["IRB Checked Y/N"] = "service_request.try(:protocol).try(:research_types_info).try(:human_subjects) ? \"Y\" : \"N\""
         attrs["If true, IRB # (HR or PRO)"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_and_pro_numbers)"
         attrs["IRB Approval Date"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_approval_date).try(:strftime, \"%D\")"
+        attrs["IRB Expiration Date"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_expiration_date).try(:strftime, \"%D\")"
       end
       if params[:apr_data].include?("iacuc")
         attrs["IACUC Checked Y/N"] = "service_request.try(:protocol).try(:research_types_info).try(:vertebrate_animals) ? \"Y\" : \"N\""
         attrs["If true, IACUC #"] = "service_request.try(:protocol).try(:vertebrate_animals_info).try(:iacuc_number)"
-        attrs["IRB Approval Date"] = "service_request.try(:protocol).try(:vertebrate_animals_info).try(:iacuc_approval_date).try(:strftime, \"%D\")"
+        attrs["IACUC Approval Date"] = "service_request.try(:protocol).try(:vertebrate_animals_info).try(:iacuc_approval_date).try(:strftime, \"%D\")"
+        attrs["IACUC Expiration Date"] = "service_request.try(:protocol).try(:vertebrate_animals_info).try(:iacuc_expiration_date).try(:strftime, \"%D\")"
       end
     end
 
@@ -93,7 +95,7 @@ class ServiceRequestsReport < ReportingModule
   end
 
   ################## END REPORT SETUP  #####################
-  
+
   ################## BEGIN QUERY SETUP #####################
   # def table => primary table to query
   # includes, where, uniq, order, and group get passed to AR methods, http://apidock.com/rails/v3.2.13/ActiveRecord/QueryMethods
@@ -104,7 +106,7 @@ class ServiceRequestsReport < ReportingModule
   # def order => order by these attributes (include table name is always a safe bet, ex. identities.id DESC, protocols.title ASC)
   # Primary table to query
   def table
-    SubServiceRequest 
+    SubServiceRequest
   end
 
   # Other tables to include

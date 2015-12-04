@@ -39,8 +39,8 @@ RSpec.describe "service calendar", js: true do
 
   describe "one time fee form" do
     before :each do
-      arm1.visit_groups.each {|vg| vg.update_attribute(:day, 1)}
-      arm2.visit_groups.each {|vg| vg.update_attribute(:day, 1)}
+      arm1.visit_groups.each_with_index {|vg, index| vg.update_attribute(:day, index)}
+      arm2.visit_groups.each_with_index {|vg, index| vg.update_attribute(:day, index)}
     end
 
     describe "submitting form" do
@@ -56,12 +56,12 @@ RSpec.describe "service calendar", js: true do
       end
 
       it "should save the new units per quantity" do
-        fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", with: line_item.service.current_pricing_map.units_per_qty_max
+        fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", with: 10
         page.execute_script('$(".units_per_quantity").change()')
         wait_for_javascript_to_finish
         find(:xpath, "//a/img[@alt='Goback']/..").click
         wait_for_javascript_to_finish
-        expect(LineItem.find(line_item.id).units_per_quantity).to eq(line_item.service.current_pricing_map.units_per_qty_max)
+        expect(LineItem.find(line_item.id).units_per_quantity).to eq(10)
       end
     end
 
@@ -73,7 +73,7 @@ RSpec.describe "service calendar", js: true do
           fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", with: 1
           page.execute_script('$(".units_per_quantity").change()')
           wait_for_javascript_to_finish
-          
+
           accept_alert("Quantity please enter a quantity greater than or equal to") do
             fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", with: 0
             find("th.number_of_units_header").click
@@ -161,48 +161,55 @@ RSpec.describe "service calendar", js: true do
         end
       end
 
-      describe "selecting check row button" do
+      context 'check all buttons' do
 
-        it "should check all visits" do
-          click_link "check_row_#{arm1.line_items_visits.first.id}_template"
-          wait_for_javascript_to_finish
-          expect(first(".total_#{arm1.line_items_visits.first.id}")).to have_exact_text('$300.00') # Probably a better way to do this. But this should be the 10 visits added together.
+        describe "selecting check all row button and accepting the validation alert" do
+            
+          it "should overwrite the quantities in the row if they are not customized" do
+            click_link "check_row_#{arm1.line_items_visits.first.id}_template"
+            wait_for_javascript_to_finish
+            expect(first(".visits_1")).to be_checked
+          end
         end
 
-        it "should uncheck all visits" do
-          click_link "check_row_#{arm1.line_items_visits.first.id}_template"
-          wait_for_javascript_to_finish
-          expect(first(".total_#{arm1.line_items_visits.first.id}")).to have_exact_text('$300.00') # this is here to wait for javascript to finish
+        describe "selecting check all row button and canceling the validation alert" do
+            
+          it "should not overwrite the quantities in the row if they are customized" do
+            
+            Visit.update_all(research_billing_qty: 2)
+            visit service_calendar_service_request_path service_request.id
+            wait_for_javascript_to_finish
 
-          remove_from_dom(".total_#{arm1.line_items_visits.first.id}")
-          click_link "check_row_#{arm1.line_items_visits.first.id}_template"
-          wait_for_javascript_to_finish
-          expect(first(".total_#{arm1.line_items_visits.first.id}")).to have_exact_text('$0.00') # Probably a better way to do this.
-        end
-      end
-
-      describe "selecting check column button" do
-
-        it "should check all visits in the given column" do
-          wait_for_javascript_to_finish
-          first("#check_all_column_3").click
-          wait_for_javascript_to_finish
-
-          expect(find("#visits_#{arm1.line_items_visits.first.visits[2].id}").checked?).to eq(true)
+            dismiss_confirm("This will reset custom values for this row, do you wish to continue?") do
+              click_link "check_row_#{arm1.line_items_visits.first.id}_template"
+            end
+            wait_for_javascript_to_finish
+            expect(first(".visits_1")).to be_checked
+          end
         end
 
-        it "should uncheck all visits in the given column" do
-          wait_for_javascript_to_finish
-          first("#check_all_column_3").click
-          wait_for_javascript_to_finish
+        describe "selecting check all column button and accepting the validation alert" do
+            
+          it "should overwrite the quantities in the column if they are not customized" do
+            first("#check_all_column_3").click
+            wait_for_javascript_to_finish
+            expect(first(".visits_3")).to be_checked
+          end
+        end
 
+        describe "selecting check all column button and canceling the validation alert" do
+            
+          it "should not overwrite the quantities in the column if they are customized" do
+            Visit.update_all(research_billing_qty: 2)
+            visit service_calendar_service_request_path service_request.id
+            wait_for_javascript_to_finish
 
-          expect(find("#visits_#{arm1.line_items_visits.first.visits[2].id}").checked?).to eq(true)
-          wait_for_javascript_to_finish
-          first("#check_all_column_3").click
-          wait_for_javascript_to_finish
-
-          expect(find("#visits_#{arm1.line_items_visits.first.visits[2].id}").checked?).to eq(false)
+            dismiss_confirm("This will reset custom values for this column, do you wish to continue?") do
+              first("#check_all_column_3").click
+            end
+            wait_for_javascript_to_finish
+            expect(first(".visits_3")).to be_checked
+          end
         end
       end
 
@@ -225,16 +232,6 @@ RSpec.describe "service calendar", js: true do
       before :each do
         click_link "billing_strategy_tab"
         @visit_id = arm1.line_items_visits.first.visits[1].id
-      end
-
-      describe "selecting check all row button" do
-        it "should overwrite the quantity in research billing box" do
-          fill_in "visits_#{@visit_id}_research_billing_qty", with: 10
-          wait_for_javascript_to_finish
-          click_link "check_row_#{arm1.line_items_visits.first.id}_billing_strategy"
-          wait_for_javascript_to_finish
-          expect(find("#visits_#{@visit_id}_research_billing_qty")).to have_value("1")
-        end
       end
 
       describe "increasing the 'R' billing quantity" do
@@ -344,6 +341,11 @@ RSpec.describe "service calendar", js: true do
         @visit_id = arm1.line_items_visits.first.visits[1].id
       end
 
+      it "should show a spinner when changed" do
+        click_link "calendar_tab"
+        expect(page).to have_css("#tab_load_spinner", visible: true)
+      end
+
       it "should be blank if the visit is not checked" do
         click_link "calendar_tab"
         all('.visit.visit_column_2').each do |x|
@@ -365,7 +367,7 @@ RSpec.describe "service calendar", js: true do
         wait_for_javascript_to_finish
         find("#calendar_tab").click
         wait_for_javascript_to_finish
-        
+
         all('.pp_line_item_total total_1').each do |x|
           if x.visible?
             expect(x).to have_exact_text("150.00")

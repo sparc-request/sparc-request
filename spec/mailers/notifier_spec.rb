@@ -187,6 +187,9 @@ RSpec.describe Notifier do
           expect(mail).to have_xpath("//th[text()='Service']/following-sibling::th[text()='Action']")
           expect(mail).to have_xpath("//td[text()='#{service.name}']/following-sibling::td[text()='Removed']")
         end
+        it "should have the correct subject" do
+          expect(mail).to have_subject("#{service_request.protocol.id} - [Test - EMAIL TO glennj@musc.edu] SPARC Request service request")
+        end
       end
     end
 

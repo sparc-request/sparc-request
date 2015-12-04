@@ -129,36 +129,28 @@ namespace :data do
                                                           # per patient specific fields
                                                           :unit_type => (is_one_time_fee ? nil : row[14]), # per patient unit type
                                                           :unit_minimum => (is_one_time_fee ? nil : row[16]))
-                    if service.valid? and pricing_map.valid?
-                      if service.save
-                        # add a related service
-                        if (row[22] == 'Y')
-                          related_service = Service.where(name: row[23]).first
-                          if related_service.blank?
-                            puts "Error: Related Service" + row[23].to_s + " not found for Service[" + row[4].to_s + "] for Institution[" + row[0].to_s + "], Provider[" + row[1].to_s + "], and Program[" + row[2].to_s + "]"
-                          elsif service.related_services.include? related_service
-                            puts "Error: Related Service" + row[23].to_s + " already exists for Service[" + row[4].to_s + "] for Institution[" + row[0].to_s + "], Provider[" + row[1].to_s + "], and Program[" + row[2].to_s + "]"
-                          else
-                            service.service_relations.create :related_service_id => related_service.id, :optional => false
-                            puts "Inserted: Related Service" + row[23].to_s + " for Service[" + row[4].to_s + "] for Institution[" + row[0].to_s + "], Provider[" + row[1].to_s + "], and Program[" + row[2].to_s + "]"
-                          end
+                    if service.save
+                      # add a related service
+                      if (row[22] == 'Y')
+                        related_service = Service.where(name: row[23]).first
+                        if related_service.blank?
+                          puts "Error: Related Service" + row[23].to_s + " not found for Service[" + row[4].to_s + "] for Institution[" + row[0].to_s + "], Provider[" + row[1].to_s + "], and Program[" + row[2].to_s + "]"
+                        elsif service.related_services.include? related_service
+                          puts "Error: Related Service" + row[23].to_s + " already exists for Service[" + row[4].to_s + "] for Institution[" + row[0].to_s + "], Provider[" + row[1].to_s + "], and Program[" + row[2].to_s + "]"
+                        else
+                          service.service_relations.create :related_service_id => related_service.id, :optional => false
+                          puts "Inserted: Related Service" + row[23].to_s + " for Service[" + row[4].to_s + "] for Institution[" + row[0].to_s + "], Provider[" + row[1].to_s + "], and Program[" + row[2].to_s + "]"
                         end
-                        puts "Inserted: Service[" + row[4].to_s + "] for Institution[" + row[0].to_s + "], Provider[" + row[1].to_s + "], and Program[" + row[2].to_s + "]"
-                      else
-                        puts "NOT Inserted: Service[" + row[4].to_s + "] for Institution[" + row[0].to_s + "], Provider[" + row[1].to_s + "], and Program[" + row[2].to_s + "]"
                       end
+                      puts "Inserted: Service[" + row[4].to_s + "] for Institution[" + row[0].to_s + "], Provider[" + row[1].to_s + "], and Program[" + row[2].to_s + "]"
+                      # associate Pricing Map
                       if pricing_map.save
                         puts "Inserted: Pricing Map for Service[" + row[4].to_s + "]"
                       else
-                        puts "NOT Inserted: Pricing Map for Service[" + row[4].to_s + "]"
-                      end
+                        puts "NOT Inserted: Pricing Map for Service[" + row[4].to_s + "]: "+ pricing_map.errors.full_messages.inspect
+                      end  
                     else
-                      if !service.valid?
-                        puts "Error: Service["+service.inspect+"] not valid: "+ service.errors
-                      end
-                      if !pricing_map.valid?
-                        puts "Error: Pricing Map["+pricing_map.inspect+"] not valid: "+ pricing_map.errors
-                      end
+                      puts "NOT Inserted: Service[" + row[4].to_s + "] for Institution[" + row[0].to_s + "], Provider[" + row[1].to_s + "], and Program[" + row[2].to_s + "]: "+ service.errors.full_messages.inspect + pricing_map.errors.full_messages.inspect
                     end
                   end
                 else

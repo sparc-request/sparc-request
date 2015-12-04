@@ -37,6 +37,7 @@ class PricingSetup < ActiveRecord::Base
   attr_accessible :industry_rate_type
   attr_accessible :investigator_rate_type
   attr_accessible :internal_rate_type
+  attr_accessible :unfunded_rate_type
   
   after_create :create_pricing_maps
 
@@ -48,6 +49,7 @@ class PricingSetup < ActiveRecord::Base
     when 'industry'      then self.industry_rate_type
     when 'investigator'  then self.investigator_rate_type
     when 'internal'      then self.internal_rate_type
+    when 'unfunded'      then self.unfunded_rate_type
     else raise ArgumentError, "Could not find rate type for funding source #{funding_source}"
     end
   end

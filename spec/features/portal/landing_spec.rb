@@ -122,7 +122,7 @@ RSpec.describe 'landing page', js: true do
       find(".view-sub-service-request-button").click
       new_window = window_opened_by { click_button 'Print' }
       within_window new_window do
-        find("td.protocol-id-td").should have_exact_text(service_request.protocol_id.to_s + '-' + sub_service_request.ssr_id)
+        expect(find("td.protocol-id-td")).to have_exact_text(service_request.protocol_id.to_s + '-' + sub_service_request.ssr_id)
         expect(current_path).to eq URI.parse("/portal/service_requests/#{service_request.protocol_id}?ssr_id=#{sub_service_request.ssr_id}").path
       end
     end
@@ -131,13 +131,6 @@ RSpec.describe 'landing page', js: true do
       find("td.edit-original-td a").click
       expect(page).to have_text("Welcome to the SPARC Request Services Catalog")
       expect(page).not_to have_text("Editing ID: #{service_request.protocol_id}")
-    end
-
-    it 'should allow user to add additional services to request' do
-      find(".add-services-button").click
-      expect(page).to have_text("Welcome to the SPARC Request Services Catalog")
-      expect(page).not_to have_text("Editing ID: #{service_request.protocol_id}")
-      expect(page).not_to have_css("div#services div.line_item")
     end
 
     it 'should be able to search' do

@@ -33,6 +33,7 @@ class Protocol < ActiveRecord::Base
   has_many :project_roles, :dependent => :destroy
   has_many :identities, :through => :project_roles
   has_many :service_requests
+  has_many :sub_service_requests, through: :service_requests
   has_many :affiliations, :dependent => :destroy
   has_many :impact_areas, :dependent => :destroy
   has_many :arms, :dependent => :destroy
@@ -81,6 +82,7 @@ class Protocol < ActiveRecord::Base
   attr_accessible :selected_for_epic
   attr_accessible :study_type_answers_attributes
   attr_accessible :has_cofc
+  attr_accessible :archived
 
   attr_accessor :requester_id
   attr_accessor :validate_nct
@@ -117,6 +119,11 @@ class Protocol < ActiveRecord::Base
 
   def is_study?
     self.type == 'Study'
+  end
+
+  # Determines whether a protocol contains a service_request with only a "first draft" status
+  def has_first_draft_service_request?
+    service_requests.any? && service_requests.map(&:status).all? { |status| status == 'first_draft'}
   end
 
   def validate_funding_source

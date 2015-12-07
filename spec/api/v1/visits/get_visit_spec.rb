@@ -9,6 +9,8 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       @visit = build(:visit)
       @visit.save validate: false
+      
+      Visit.set_callback(:save, :after, :set_arm_edited_flag_on_subjects)
     end
 
     context 'response params' do

@@ -48,7 +48,7 @@ wb.add_worksheet(name: "Consolidated Report") do |sheet|
   @protocol.arms.each do |arm|
     @per_patient_line_items = arm.per_patient_per_visit_line_items
 
-    if @per_patient_line_items.any?
+    if @per_patient_line_items
       protocol_has_per_patient_per_visit = true
       (arm_visit_count_max * 2 + 2).times do
         proxy_row.push ""
@@ -93,7 +93,7 @@ wb.add_worksheet(name: "Consolidated Report") do |sheet|
   merge_service_rows    = []
   merge_sub_header_rows = []
 
-  if @per_patient_line_items.any?
+  if @per_patient_line_items
 
     @protocol.arms.each do |arm|
       services_row = ["Selected Services", ""]
@@ -178,8 +178,10 @@ wb.add_worksheet(name: "Consolidated Report") do |sheet|
   services_row << "Current Cost" if @admin_offset
   services_row += ["Your Cost", ""]
 
-  (arm_visit_count_max*2 + 1).times do
-    services_row << ""
+  unless @protocol.arms.empty?
+    (arm_visit_count_max*2 + 1).times do
+      services_row << ""
+    end
   end
 
   services_row << "Total Per Study"
@@ -329,64 +331,66 @@ wb.add_worksheet(name: "Consolidated Report") do |sheet|
   end_column = "E"
 
   alpha_array = ("A".."Z").to_a
-  additional_alpha_arrays_needed = ((arm_visit_count_max * 2 + 5 + @admin_offset.to_i)/26.0).ceil + 1 #add one since some columns get pushed over, safety.  doesn't matter if we have extra here
-  additional_alpha_arrays = []
-  additional_alpha_arrays_needed.times do |n|
-    additional_alpha_arrays << alpha_array.map{|char| alpha_array[n] + char}
-  end
-
-  alpha_array = alpha_array + additional_alpha_arrays.flatten
-
-  end_column = alpha_array[arm_visit_count_max * 2 + 5 + @admin_offset.to_i]
-
-  sheet.merge_cells("A1:#{end_column}1") #info header
-  sheet.merge_cells("B2:D2") #id
-  sheet["A2"].style = row_header_style
-  sheet.merge_cells("B3:D3") #short title
-  sheet["A3"].style = row_header_style
-  sheet.merge_cells("B4:D4") #title
-  sheet["A4"].style = row_header_style
-  sheet.merge_cells("B5:D5") #funding source
-  sheet["A5"].style = row_header_style
-
-  sheet.merge_cells("A7:#{end_column}7") #authorized user header
-  sheet.merge_cells("B8:C8") #table sub header
-  last_authorized_user_row_number = 0 #store it so we know where the document uploads start
-  @protocol.project_roles.size.times do |n|
-    sheet.merge_cells("B#{8+n+1}:C#{8+n+1}")
-    last_authorized_user_row_number = 8+n+1
-  end
-
-  document_uploads_row_number = last_authorized_user_row_number + 2 #row number for the document uploads header
-  sheet.merge_cells("A#{document_uploads_row_number}:#{end_column}#{document_uploads_row_number}")
-
-  merge_services_row.each do |services_row|
-    sheet.merge_cells("A#{services_row.index+1}:B#{services_row.index+1}")
-    arm_visit_count_max.times do |idx|
-      start_idx = 2 * idx + 4 + @admin_offset.to_i
-      end_idx = 2 * idx + 5 + @admin_offset.to_i
-      sheet.merge_cells("#{alpha_array[start_idx]}#{services_row.index+1}:#{alpha_array[end_idx]}#{services_row.index+1}")
-      sheet["#{alpha_array[start_idx]}#{services_row.index+1}"].style = header_centered_style
+  unless @protocol.arms.empty?
+    additional_alpha_arrays_needed = ((arm_visit_count_max * 2 + 5 + @admin_offset.to_i)/26.0).ceil + 1 #add one since some columns get pushed over, safety.  doesn't matter if we have extra here
+    additional_alpha_arrays = []
+    additional_alpha_arrays_needed.times do |n|
+      additional_alpha_arrays << alpha_array.map{|char| alpha_array[n] + char}
     end
-  end
 
-  merge_sub_header_rows.each do |services_sub_header_rows|
-    services_sub_header_rows.each do |sshr|
-      sheet.merge_cells("A#{sshr.index+1}:#{end_column}#{sshr.index+1}") #selected services sub header row
+    alpha_array = alpha_array + additional_alpha_arrays.flatten
+  
+    end_column = alpha_array[arm_visit_count_max * 2 + 5 + @admin_offset.to_i]
+    sheet.merge_cells("A1:#{end_column}1") #info header
+    sheet.merge_cells("B2:D2") #id
+    sheet["A2"].style = row_header_style
+    sheet.merge_cells("B3:D3") #short title
+    sheet["A3"].style = row_header_style
+    sheet.merge_cells("B4:D4") #title
+    sheet["A4"].style = row_header_style
+    sheet.merge_cells("B5:D5") #funding source
+    sheet["A5"].style = row_header_style
+
+    sheet.merge_cells("A7:#{end_column}7") #authorized user header
+    sheet.merge_cells("B8:C8") #table sub header
+    last_authorized_user_row_number = 0 #store it so we know where the document uploads start
+    @protocol.project_roles.size.times do |n|
+      sheet.merge_cells("B#{8+n+1}:C#{8+n+1}")
+      last_authorized_user_row_number = 8+n+1
     end
-  end
 
-  merge_service_rows.each do |service_rows|
-    service_rows.each do |sr|
-      sheet.merge_cells("A#{sr.index+1}:B#{sr.index+1}")
+    document_uploads_row_number = last_authorized_user_row_number + 2 #row number for the document uploads header
+    sheet.merge_cells("A#{document_uploads_row_number}:#{end_column}#{document_uploads_row_number}")
+
+    merge_services_row.each do |services_row|
+      sheet.merge_cells("A#{services_row.index+1}:B#{services_row.index+1}")
+      arm_visit_count_max.times do |idx|
+        start_idx = 2 * idx + 4 + @admin_offset.to_i
+        end_idx = 2 * idx + 5 + @admin_offset.to_i
+        sheet.merge_cells("#{alpha_array[start_idx]}#{services_row.index+1}:#{alpha_array[end_idx]}#{services_row.index+1}")
+        sheet["#{alpha_array[start_idx]}#{services_row.index+1}"].style = header_centered_style
+      end
     end
-  end
 
-  ######## +4 from left and then -3 from visit count to align correctly #######
-  from_left = 4
-  begin_column = alpha_array[arm_visit_count_max + from_left - 3]
-  end_column = alpha_array[arm_visit_count_max + from_left - 2]
-  sheet.merge_cells("#{begin_column}#{direct_cost_total_row.index+1}:#{end_column}#{direct_cost_total_row.index+1}") if protocol_has_per_patient_per_visit
-  sheet.merge_cells("#{begin_column}#{indirect_cost_total_row.index+1}:#{end_column}#{indirect_cost_total_row.index+1}") if protocol_has_per_patient_per_visit if USE_INDIRECT_COST
-  sheet.merge_cells("#{begin_column}#{grand_total_row.index+1}:#{end_column}#{grand_total_row.index+1}") if protocol_has_per_patient_per_visit
+    merge_sub_header_rows.each do |services_sub_header_rows|
+      services_sub_header_rows.each do |sshr|
+        sheet.merge_cells("A#{sshr.index+1}:#{end_column}#{sshr.index+1}") #selected services sub header row
+      end
+    end
+
+    merge_service_rows.each do |service_rows|
+      service_rows.each do |sr|
+        sheet.merge_cells("A#{sr.index+1}:B#{sr.index+1}")
+      end
+    end
+
+    ######## +4 from left and then -3 from visit count to align correctly #######
+    from_left = 4
+
+    begin_column = alpha_array[arm_visit_count_max + from_left - 3]
+    end_column = alpha_array[arm_visit_count_max + from_left - 2]
+    sheet.merge_cells("#{begin_column}#{direct_cost_total_row.index+1}:#{end_column}#{direct_cost_total_row.index+1}") if protocol_has_per_patient_per_visit
+    sheet.merge_cells("#{begin_column}#{indirect_cost_total_row.index+1}:#{end_column}#{indirect_cost_total_row.index+1}") if protocol_has_per_patient_per_visit if USE_INDIRECT_COST
+    sheet.merge_cells("#{begin_column}#{grand_total_row.index+1}:#{end_column}#{grand_total_row.index+1}") if protocol_has_per_patient_per_visit
+  end
 end

@@ -71,7 +71,6 @@ ALTER TABLE subsidy_maps ADD CONSTRAINT Fk_77 FOREIGN KEY(organization_id)  REFE
 ALTER TABLE super_users ADD CONSTRAINT Fk_82 FOREIGN KEY(organization_id)  REFERENCES organizations (id) ;
 ALTER TABLE survey_sections ADD CONSTRAINT Fk_84 FOREIGN KEY(survey_id)  REFERENCES surveys (id) ;
 ALTER TABLE survey_translations ADD CONSTRAINT Fk_85 FOREIGN KEY(survey_id)  REFERENCES surveys (id) ;
-ALTER TABLE taggings ADD CONSTRAINT Fk_86 FOREIGN KEY(tag_id)  REFERENCES tags (id) ;
 ALTER TABLE tokens ADD CONSTRAINT Fk_89 FOREIGN KEY(service_request_id)  REFERENCES service_requests (id) ;
 ALTER TABLE tokens ADD CONSTRAINT Fk_90 FOREIGN KEY(identity_id)  REFERENCES identities (id) ;
 ALTER TABLE user_notifications ADD CONSTRAINT Fk_91 FOREIGN KEY(identity_id)  REFERENCES identities (id) ;

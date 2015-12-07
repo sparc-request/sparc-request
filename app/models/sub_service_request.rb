@@ -264,7 +264,7 @@ class SubServiceRequest < ActiveRecord::Base
   ###############################################################################
   ######################## FULFILLMENT RELATED METHODS ##########################
   ###############################################################################
-  def ready_for_fulfillment? 
+  def ready_for_fulfillment?
     # return true if work fulfillment has already been turned "on" or global variable FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is set to false or nil
     # otherwise, return true only if FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is true and the parent organization has tag 'clinical work fulfillment'
     if self.in_work_fulfillment || !FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER ||
@@ -274,7 +274,7 @@ class SubServiceRequest < ActiveRecord::Base
       return false
     end
   end
-   
+
   ########################
   ## SSR STATUS METHODS ##
   ########################
@@ -422,6 +422,7 @@ class SubServiceRequest < ActiveRecord::Base
   ##########################
 
   def distribute_surveys
+
     # e-mail primary PI and requester
     primary_pi = service_request.protocol.primary_principal_investigator
     requester = service_request.service_requester
@@ -433,7 +434,10 @@ class SubServiceRequest < ActiveRecord::Base
 
     unless available_surveys.blank?
       SurveyNotification.service_survey(available_surveys, primary_pi, self).deliver
-      SurveyNotification.service_survey(available_surveys, requester, self).deliver
+    # only send survey email to both users if they are unique
+      if primary_pi != requester
+        SurveyNotification.service_survey(available_surveys, requester, self).deliver
+      end
     end
   end
 

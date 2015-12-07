@@ -25,12 +25,14 @@ class Service < ActiveRecord::Base
   audited
   acts_as_taggable
 
-  RATE_TYPES = [{:display => "Service Rate", :value => "full"}, {:display => "Federal Rate", :value => "federal"}, {:display => "Corporate Rate", :value => "corporate"}, {:display => "Other Rate", :value => "other"}, {:display => "Member Rate", :value => "member"}]
+  RATE_TYPES = [{:display => "Service Rate", :value => "full"}, {:display => "Federal Rate", :value => "federal"},
+                {:display => "Corporate Rate", :value => "corporate"}, {:display => "Other Rate", :value => "other"},
+                {:display => "Member Rate", :value => "member"}]
 
   belongs_to :organization, :include => [:pricing_setups]
   belongs_to :revenue_code_range
-
-  has_many :pricing_maps, :dependent => :destroy
+  # set ":inverse_of => :service" so that the first pricing map can be validated before the service has been saved
+  has_many :pricing_maps, :inverse_of => :service, :dependent => :destroy 
   has_many :service_providers, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
   has_many :identities, :through => :service_providers

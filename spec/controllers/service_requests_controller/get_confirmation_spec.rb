@@ -55,7 +55,7 @@ RSpec.describe ServiceRequestsController do
         end
 
         get :confirmation, id: service_request.id
-        expect(service_request.reload.sub_service_requests).to all (satisfy do |ssr|
+        expect(service_request.reload.sub_service_requests).to all(satisfy do |ssr|
                                                                       !(ssr.nursing_nutrition_approved ||
                                                                         ssr.lab_approved ||
                                                                         ssr.imaging_approved ||

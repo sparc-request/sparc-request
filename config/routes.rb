@@ -222,6 +222,12 @@ SparcRails::Application.routes.draw do
       end
     end
 
+    resources :visit_groups, only: [:new, :create, :update, :destroy] do
+      collection do
+        get :navigate
+      end
+    end
+
     resources :associated_users, except: [:index] do
       collection do
         get :search

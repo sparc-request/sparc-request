@@ -54,6 +54,10 @@ class VisitGroup < ActiveRecord::Base
     return self.day <=> other_vg.day
   end
 
+  def insertion_name
+    "insert before " + name
+  end
+
   ### audit reporting methods ###
 
   def audit_label audit

@@ -50,52 +50,6 @@ class Portal::ServiceRequestsController < Portal::BaseController
     end
   end
 
-  def add_per_patient_per_visit_visit
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @subsidy = @sub_service_request.subsidy
-    percent = @subsidy.try(:percent_subsidy).try(:*, 100)
-    @service_request = ServiceRequest.find(params[:service_request_id]) # TODO: is this different from params[:id] ?
-    @selected_arm = Arm.find(params[:arm_id])
-    @study_tracker = params[:study_tracker] == "true"
-
-    if @selected_arm.add_visit(params[:visit_position], params[:visit_day], params[:visit_window_before], params[:visit_window_after], params[:visit_name], 'true')
-      @subsidy.try(:sub_service_request).try(:reload)
-      @subsidy.try(:fix_pi_contribution, percent)
-      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
-      @selected_arm.update_attributes(:minimum_visit_count => @selected_arm.minimum_visit_count + 1)
-      @service_request.relevant_service_providers_and_super_users.each do |identity|
-        create_visit_change_toast(identity, @sub_service_request) unless identity == @user
-      end
-    else
-      respond_to do |format|
-        format.js { render :status => 500, :json => clean_errors(@selected_arm.errors) }
-      end
-    end
-  end
-
-  def remove_per_patient_per_visit_visit
-    @service_request = ServiceRequest.find(params[:id])
-    @selected_arm = Arm.find(params[:arm_id])
-    @study_tracker = params[:study_tracker] == "true"
-    if @selected_arm.remove_visit(params[:visit_position])
-      @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-      @subsidy = @sub_service_request.subsidy
-      percent = @subsidy.try(:percent_subsidy).try(:*, 100)
-      @subsidy.try(:sub_service_request).try(:reload)
-      @subsidy.try(:fix_pi_contribution, percent)
-      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
-      @selected_arm.update_attributes(:minimum_visit_count => @selected_arm.minimum_visit_count - 1)
-      @service_request.relevant_service_providers_and_super_users.each do |identity|
-        create_visit_change_toast(identity, @sub_service_request) unless identity == @user
-      end
-      render 'portal/service_requests/add_per_patient_per_visit_visit'
-    else
-      respond_to do |format|
-        format.js { render :status => 500, :json => clean_errors(@selected_arm.errors) }
-      end
-    end
-  end
-
   def update_from_fulfillment
     @service_request = ServiceRequest.find(params[:id])
     if @service_request.update_attributes(params[:service_request])
@@ -121,13 +75,5 @@ class Portal::ServiceRequestsController < Portal::BaseController
     max_count
   end
 
-  def create_visit_change_toast identity, sub_service_request
-    ToastMessage.create(
-      :to => identity.id,
-      :from => current_identity.id,
-      :sending_class => 'SubServiceRequest',
-      :sending_class_id => sub_service_request.id,
-      :message => "The visit count on this service request has been changed"
-    )
-  end
+
 end

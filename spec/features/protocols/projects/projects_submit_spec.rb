@@ -20,43 +20,59 @@
 
 require 'rails_helper'
 
-RSpec.describe "creating a new project ", js: true do
+RSpec.feature 'User creates a new project', js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
-  build_service_request_with_project()
+  build_service_request_with_project
 
   before :each do
     service_request.update_attribute(:status, 'first_draft')
     service_request.reload
     visit protocol_service_request_path service_request.id
-    find('#protocol_Project').click
-    wait_for_javascript_to_finish
-
-    find('.new-project').click
     wait_for_javascript_to_finish
   end
 
-  describe "submitting a blank form" do
-    it "should show errors when submitting a blank form" do
-      find('.continue_button').click
-      expect(page).to have_content("Short title can't be blank")
-      expect(page).to have_content("Title can't be blank")
-      expect(page).to have_content("Funding status can't be blank")
+  context 'and submits a blank protocol form' do
+    scenario 'and sees some errors' do
+      given_im_viewing_a_new_project
+      when_i_submit_the_form
+      then_i_should_see_some_errors_of_type 'protocol form'
     end
   end
 
-  describe "submitting a filled form" do
+  context 'and fills in the protocol form and submits it' do
+    scenario 'and sees the authorized users page' do
+      given_im_viewing_a_new_project
+      when_i_fill_in_the_required_fields
+      when_i_submit_the_form
+      then_i_should_see_the_authorized_users_page
+    end
 
-    it "should clear errors and submit the form" do
-      fill_in "project_short_title", with: "Bob"
-      fill_in "project_title", with: "Dole"
-      select "Funded", from: "project_funding_status"
-      select "Federal", from: "project_funding_source"
+    context 'and tries to add an authorized user without picking a role' do
+      scenario 'and sees an error' do
+        given_i_am_viewing_the_authorized_user_page
+        when_i_press_add_authorized_user
+        then_i_should_see_an_error_of_type 'missing role'
+      end
+    end
 
-      find('.continue_button').click
-      expect(page).to have_css('#project_role_role')
+    context 'and tries to submit the form without adding a primary pi'
 
+    context 'and adds an authorized user not yet on the protocol' do
+      scenario 'and sees the user was added correctly' do
+        given_i_am_viewing_the_authorized_user_page
+        when_i_add_jug2_as_an_authorized_user
+        then_i_should_see_jug2_in_the_authorized_users_list
+      end
+    end
+
+    context 'and adds an authorized user already on the protocol' do
+      scenario 'and sees an error' do
+        given_i_am_viewing_the_authorized_user_page
+      end
+    end
+  end
       select "Primary PI", from: "project_role_role"
       click_button "Add Authorized User"
 
@@ -98,6 +114,60 @@ RSpec.describe "editing a project" do
       find('.edit-project').click
 
       expect(find("#project_short_title")).to have_value("Patsy")
+    end
+  end
+
+  def given_im_viewing_a_new_project
+    find('#protocol_Project').click
+    wait_for_javascript_to_finish
+    
+    find('.new-project').click
+    wait_for_javascript_to_finish
+  end
+
+  def given_i_am_viewing_the_authorized_user_page
+    given_im_viewing_a_new_project
+    when_i_fill_in_the_required_fields
+    when_i_submit_the_form
+  end
+
+  def when_i_fill_in_the_required_fields
+    fill_in "project_short_title", with: "Bob"
+    fill_in "project_title", with: "Dole"
+    select "Funded", from: "project_funding_status"
+    select "Federal", from: "project_funding_source"
+  end
+
+  def when_i_submit_the_form
+    find('.continue_button').click
+  end
+
+  def when_i_press_add_authorized_user
+    click_button "Add Authorized User"
+  end
+
+  def when_i_add_jug2_as_an_authorized_user
+    #Page defaults the current user in the form
+    select "Primary PI", from: "project_role_role"
+    click_button "Add Authorized User"
+  end
+
+  def then_i_should_see_the_authorized_users_page
+    expect(page).to have_css('#project_role_role')
+  end
+
+  def then_i_should_see_jug2_in_the_authorized_users_list
+    expect(page).to have_content('td', text: 'Julia Glenn')
+  end
+
+  def then_i_should_see_some_errors_of_type error_type
+    case error_type
+      when 'protocol form'
+        expect(page).to have_content("Short title can't be blank")
+        expect(page).to have_content("Title can't be blank")
+        expect(page).to have_content("Funding status can't be blank")
+      when 'missing role'
+        expect(page).to have_text("Role can't be blank")
     end
   end
 end

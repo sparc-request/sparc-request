@@ -27,10 +27,10 @@
 if <%= @current_step == 'return_to_service_request' %>
   window.location.href = "<%= protocol_service_request_path @service_request %>"
 else
+  #This is to re-enable the submit, it is disabled to prevent multiple posts, if you click rapidly.
   $('a.continue_button').click ->
     $('form').submit()
 
-  $('#current_step').val("<%= @current_step %>")
   $('.new_project').html("<%= escape_javascript(render :partial => 'projects/form', :locals => {:project => @protocol, :service_request => @service_request, :current_step => @current_step}) %>")
 
   if <%= @current_step == "user_details" %>

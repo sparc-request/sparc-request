@@ -20,7 +20,7 @@
 
 # /////////////////////////////////////////////
 # //
-# // STUDY - Edit.js for Editing Studies
+# // STUDY - Update.js for Editing Studies
 # //
 # /////////////////////////////////////////////
 
@@ -31,7 +31,6 @@ else
   $('a.continue_button').click ->
     $('form').submit()
 
-  $('#current_step').val("<%= @current_step %>")
   $('.edit_study').html("<%= escape_javascript(render :partial => 'studies/form', :locals => {:study => @protocol, :service_request => @service_request, :portal => @portal, :current_step =>@current_step}) %>")
 
   if <%= @current_step == "user_details" %>

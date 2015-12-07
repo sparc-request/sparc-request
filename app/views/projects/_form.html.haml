@@ -21,6 +21,7 @@
 :javascript
   $(document).ready( function() {
     $('a.continue_button').click(function() {
+      $('.continue-spinner').show();
       $('form').submit();
     });
   })
@@ -45,12 +46,14 @@
       %div{:class => 'blue-provider'}
         .nav-backward
           .return-to-previous
-            %a.cancel_link{:href => "javascript:void(0)"}
+            %a.cancel_link{:class => cookies['current_step'] == 'protocol' ? 'cancel' : 'go-back', :href => "javascript:void(0)"}
               = image_tag('left_arrow.png', :alt => "Cancel")
               %span.btn.btn-success.btn-lg= t(:bottom_navigation)[:cancel]
+          = image_tag 'spinner.gif', :class => 'return-spinner hidden'
         .exit= image_tag('Filler.png')
         .nav-forward
+          = image_tag 'spinner.gif', :class => 'continue-spinner hidden'
           .save-and-continue
-            %a{:href => "javascript:void(0)", :class => 'continue_button'}
+            %a.continue_button{:class => cookies['current_step'] == 'protocol' ? 'continue' : 'save', :href => "javascript:void(0)"}
               %span.btn.btn-success.btn-lg= t(:bottom_navigation)[:continue]
               = image_tag('right_arrow.png', :alt => "SaveAndContinue")

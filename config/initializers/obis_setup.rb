@@ -36,6 +36,7 @@ begin
   USE_SHIBOLETH                 = application_config['use_shiboleth']
   USE_SHIBBOLETH_ONLY           = application_config['use_shibboleth_only']
   USE_LDAP                      = application_config['use_ldap']
+  SUPPRESS_LDAP_FOR_USER_SEARCH = application_config['suppress_ldap_for_user_search'] || nil
   USE_EPIC                      = application_config['use_epic']
   QUEUE_EPIC                    = application_config['queue_epic']
   QUEUE_EPIC_LOAD_ERROR_TO      = application_config['queue_epic_load_error_to']
@@ -45,6 +46,7 @@ begin
   USE_NEWS_FEED                 = application_config['use_news_feed']
   CALENDAR_URL                  = application_config['calendar_url']
   FAQ_URL                       = application_config['faq_url']
+  USE_FAQ_LINK                  = application_config['use_faq_link'] || false
   SEND_AUTHORIZED_USER_EMAILS   = application_config['send_authorized_user_emails']
   CUSTOM_ASSET_PATH             = application_config['custom_asset_path']
   LOCALE_OVERRIDE               = application_config['locale_override']

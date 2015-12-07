@@ -50,6 +50,9 @@ RSpec.describe 'Full service request' do
       wait_for_javascript_to_finish
 
       # # TODO: Switch this to a search
+      find("button.ui-button .ui-button-text", text: "Yes").click
+      wait_for_javascript_to_finish
+      
       find("#service-2").click()
       wait_for_javascript_to_finish
 

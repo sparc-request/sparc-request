@@ -31,11 +31,11 @@ $(document).ready ->
     autoOpen: false,
     buttons:
       "Yes": ->
+        $(this).dialog("close")
         $('#processing_request').show()
         survey_offered = true
-        $(this).dialog("close")
         service_request_id = $('#service_request_id').val()
-        $('#participate_in_survey').load "/surveys/system-satisfaction-survey ", {survey_version: ""}, ->
+        $('#surveyor').load "/surveys/system-satisfaction-survey", {survey_version: ""}, ->
           $('#survey_form').append("<input type='hidden' id='redirect_to' name='redirect_to' value='#{route_to}'>")
           $('#survey_form div.next_section').append("<input type='button' name='cancel' value='Cancel'/>")
           $('#surveyor').dialog
@@ -73,7 +73,7 @@ $(document).ready ->
           return false
         window.location.href = route_to
 
-  $(document).on('click', '#submit_services1, #submit_services2, #get_a_cost_estimate', (event)->
+  $(document).on 'click', '#submit_services1, #submit_services2, #get_a_cost_estimate', (event)->
     event.preventDefault()
     route_to = $(this).attr('href')
 
@@ -81,9 +81,8 @@ $(document).ready ->
       $("#participate_in_survey").dialog("open")
       return false
     else
-      # this should never be the case but just in case some browser allows it let's just redirect to confirmation page
+      # this should never be the case but just in case some browser allows it lets just redirect to confirmation page
       $(this).unbind('click')
       $(this).click ->
         return false
       window.location.href = route_to
-  )

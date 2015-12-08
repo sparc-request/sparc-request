@@ -21,8 +21,6 @@
 #= require navigation
 
 $(document).ready ->
-  #Save as Draft Notification
-  notification_open = false
   $('#draft_notification').dialog
     resizable: false,
     height: 220,

@@ -124,7 +124,8 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
       when 'no access'
         expect(page).to have_text("You do not have appropriate rights to")
     else
-      puts "An unaccounted-for error was found. Perhaps there was a typo in the test."
+      puts "An unexpected error was found in then_i_should_see_an_error_of_type. Perhaps there was a typo in the test?"
+      expect(0).to eq(1)
     end
   end
 end

@@ -203,7 +203,8 @@ RSpec.feature 'User wants to add an authorized user', js: true do
       when 'only 1 Primary PI'
         expect(page).to have_text("This protocol already has a Primary PI.")
       else
-        puts "An unaccounted-for error was found. Perhaps there was a typo in the test."
+        puts "An unexpected error was found in then_i_should_see_an_error_of_type. Perhaps there was a typo in the test?"
+        expect(0).to eq(1)
     end
   end
 
@@ -213,7 +214,8 @@ RSpec.feature 'User wants to add an authorized user', js: true do
         expect(page).to_not have_text("Must specify this User's Role.")
         expect(page).to_not have_text("Must specify this User's Credentials.")
       else
-        puts "An unaccounted-for error was found. Perhaps there was a typo in the test."
+        puts "An unexpected error was found in then_i_should_not_see_an_error_of_type. Perhaps there was a typo in the test?"
+        expect(0).to eq(1)
     end
   end
 end
